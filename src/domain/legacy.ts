@@ -30,7 +30,7 @@ import { bigNumberify, expandDecimals, parseValue } from "lib/numbers";
 import { getTokenBySymbol } from "config/tokens";
 import { t } from "@lingui/macro";
 import { REQUIRED_UI_VERSION_KEY } from "config/localStorage";
-import { useWeb3React } from "@web3-react/core";
+import useWallet from "lib/wallets/useWallet";
 
 export * from "./prices";
 
@@ -129,7 +129,7 @@ export function useLiquidationsData(chainId, account) {
   return data;
 }
 
-export function useAllPositions(chainId, library) {
+export function useAllPositions(chainId, signer) {
   const count = 1000;
   const query = gql(`{
     aggregatedTradeOpens(
@@ -161,7 +161,7 @@ export function useAllPositions(chainId, library) {
   const key = res ? `allPositions${count}__` : null;
 
   const { data: positions = [] } = useSWR(key, async () => {
-    const provider = getProvider(library, chainId);
+    const provider = getProvider(signer, chainId);
     const vaultAddress = getContract(chainId, "Vault");
     const contract = new ethers.Contract(vaultAddress, Vault.abi, provider);
     const ret = await Promise.all(
@@ -197,7 +197,7 @@ export function useAllPositions(chainId, library) {
   return positions;
 }
 
-export function useAllOrders(chainId, library) {
+export function useAllOrders(chainId, signer) {
   const query = gql(`{
     orders(
       first: 1000,
@@ -221,7 +221,7 @@ export function useAllOrders(chainId, library) {
 
   const key = res ? res.data.orders.map((order) => `${order.type}-${order.account}-${order.index}`) : null;
   const { data: orders = [] } = useSWR(key, () => {
-    const provider = getProvider(library, chainId);
+    const provider = getProvider(signer, chainId);
     const orderBookAddress = getContract(chainId, "OrderBook");
     const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, provider);
     return Promise.all(
@@ -253,10 +253,10 @@ export function useAllOrders(chainId, library) {
   return orders.filter(Boolean);
 }
 
-export function usePositionsForOrders(chainId, library, orders) {
+export function usePositionsForOrders(chainId, signer, orders) {
   const key = orders ? orders.map((order) => getOrderKey(order) + "____") : null;
   const { data: positions = {} } = useSWR(key, async () => {
-    const provider = getProvider(library, chainId);
+    const provider = getProvider(signer, chainId);
     const vaultAddress = getContract(chainId, "Vault");
     const contract = new ethers.Contract(vaultAddress, Vault.abi, provider);
     const data = await Promise.all(
@@ -354,18 +354,18 @@ export function useTrades(chainId, account, forSingleAccount, afterId) {
   return { trades, updateTrades };
 }
 
-export function useExecutionFee(library, active, chainId, infoTokens) {
+export function useExecutionFee(signer, active, chainId, infoTokens) {
   const positionRouterAddress = getContract(chainId, "PositionRouter");
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
 
   const { data: minExecutionFee } = useSWR<BigNumber>([active, chainId, positionRouterAddress, "minExecutionFee"], {
-    fetcher: contractFetcher(library, PositionRouter),
+    fetcher: contractFetcher(signer, PositionRouter),
   });
 
   const { data: gasPrice } = useSWR<BigNumber | undefined>(["gasPrice", chainId], {
     fetcher: () => {
       return new Promise(async (resolve, reject) => {
-        const provider = getProvider(library, chainId);
+        const provider = getProvider(signer, chainId);
         if (!provider) {
           resolve(undefined);
           return;
@@ -415,14 +415,14 @@ export function useExecutionFee(library, active, chainId, infoTokens) {
   };
 }
 
-export function useStakedGmxSupply(library, active) {
+export function useStakedGmxSupply(signer, active) {
   const gmxAddressArb = getContract(ARBITRUM, "GMX");
   const stakedGmxTrackerAddressArb = getContract(ARBITRUM, "StakedGmxTracker");
 
   const { data: arbData, mutate: arbMutate } = useSWR<any>(
     [`StakeV2:stakedGmxSupply:${active}`, ARBITRUM, gmxAddressArb, "balanceOf", stakedGmxTrackerAddressArb],
     {
-      fetcher: contractFetcher(library, Token),
+      fetcher: contractFetcher(signer, Token),
     }
   );
 
@@ -450,7 +450,7 @@ export function useStakedGmxSupply(library, active) {
 }
 
 export function useHasOutdatedUi() {
-  const { active } = useWeb3React();
+  const { active } = useWallet();
 
   const url = getServerUrl(ARBITRUM, `/ui_version?client_version=${UI_VERSION}&active=${active}`);
   const { data, mutate } = useSWR([url], {
@@ -618,12 +618,12 @@ function useGmxPriceFromAvalanche() {
   return { data: gmxPrice, mutate };
 }
 
-function useGmxPriceFromArbitrum(library, active) {
+function useGmxPriceFromArbitrum(signer, active) {
   const poolAddress = getContract(ARBITRUM, "UniswapGmxEthPool");
   const { data: uniPoolSlot0, mutate: updateUniPoolSlot0 } = useSWR<any>(
     [`StakeV2:uniPoolSlot0:${active}`, ARBITRUM, poolAddress, "slot0"],
     {
-      fetcher: contractFetcher(library, UniPool),
+      fetcher: contractFetcher(signer, UniPool),
     }
   );
 
@@ -632,7 +632,7 @@ function useGmxPriceFromArbitrum(library, active) {
   const { data: ethPrice, mutate: updateEthPrice } = useSWR<BigNumber>(
     [`StakeV2:ethPrice:${active}`, ARBITRUM, vaultAddress, "getMinPrice", ethAddress],
     {
-      fetcher: contractFetcher(library, Vault),
+      fetcher: contractFetcher(signer, Vault),
     }
   );
 
@@ -667,9 +667,9 @@ function useGmxPriceFromArbitrum(library, active) {
   return { data: gmxPrice, mutate };
 }
 
-export async function approvePlugin(chainId, pluginAddress, { library, setPendingTxns, sentMsg, failMsg }) {
+export async function approvePlugin(chainId, pluginAddress, { signer, setPendingTxns, sentMsg, failMsg }) {
   const routerAddress = getContract(chainId, "Router");
-  const contract = new ethers.Contract(routerAddress, Router.abi, library.getSigner());
+  const contract = new ethers.Contract(routerAddress, Router.abi, signer);
   return callContract(chainId, contract, "approvePlugin", [pluginAddress], {
     sentMsg,
     failMsg,
@@ -679,7 +679,7 @@ export async function approvePlugin(chainId, pluginAddress, { library, setPendin
 
 export async function createSwapOrder(
   chainId,
-  library,
+  signer,
   path,
   amountIn,
   minOut,
@@ -705,14 +705,14 @@ export async function createSwapOrder(
   const params = [path, amountIn, minOut, triggerRatio, triggerAboveThreshold, executionFee, shouldWrap, shouldUnwrap];
 
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library.getSigner());
+  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, signer);
 
   return callContract(chainId, contract, "createSwapOrder", params, opts);
 }
 
 export async function createIncreaseOrder(
   chainId,
-  library,
+  signer,
   nativeTokenAddress,
   path,
   amountIn,
@@ -754,14 +754,14 @@ export async function createIncreaseOrder(
   }
 
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library.getSigner());
+  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, signer);
 
   return callContract(chainId, contract, "createIncreaseOrder", params, opts);
 }
 
 export async function createDecreaseOrder(
   chainId,
-  library,
+  signer,
   indexTokenAddress,
   sizeDelta,
   collateralTokenAddress,
@@ -788,39 +788,39 @@ export async function createDecreaseOrder(
   ];
   opts.value = executionFee;
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library.getSigner());
+  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, signer);
 
   return callContract(chainId, contract, "createDecreaseOrder", params, opts);
 }
 
-export async function cancelSwapOrder(chainId, library, index, opts) {
+export async function cancelSwapOrder(chainId, signer, index, opts) {
   const params = [index];
   const method = "cancelSwapOrder";
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library.getSigner());
+  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, signer);
 
   return callContract(chainId, contract, method, params, opts);
 }
 
-export async function cancelDecreaseOrder(chainId, library, index, opts) {
+export async function cancelDecreaseOrder(chainId, signer, index, opts) {
   const params = [index];
   const method = "cancelDecreaseOrder";
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library.getSigner());
+  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, signer);
 
   return callContract(chainId, contract, method, params, opts);
 }
 
-export async function cancelIncreaseOrder(chainId, library, index, opts) {
+export async function cancelIncreaseOrder(chainId, signer, index, opts) {
   const params = [index];
   const method = "cancelIncreaseOrder";
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library.getSigner());
+  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, signer);
 
   return callContract(chainId, contract, method, params, opts);
 }
 
-export function handleCancelOrder(chainId, library, order, opts) {
+export function handleCancelOrder(chainId, signer, order, opts) {
   let func;
   if (order.type === SWAP) {
     func = cancelSwapOrder;
@@ -830,7 +830,7 @@ export function handleCancelOrder(chainId, library, order, opts) {
     func = cancelDecreaseOrder;
   }
 
-  return func(chainId, library, order.index, {
+  return func(chainId, signer, order.index, {
     successMsg: t`Order cancelled.`,
     failMsg: t`Cancel failed.`,
     sentMsg: t`Cancel submitted.`,
@@ -839,7 +839,7 @@ export function handleCancelOrder(chainId, library, order, opts) {
   });
 }
 
-export async function cancelMultipleOrders(chainId, library, allIndexes = [], opts) {
+export async function cancelMultipleOrders(chainId, signer, allIndexes = [], opts) {
   const ordersWithTypes = groupBy(allIndexes, (v) => v.split("-")[0]);
   function getIndexes(key) {
     if (!ordersWithTypes[key]) return;
@@ -849,13 +849,13 @@ export async function cancelMultipleOrders(chainId, library, allIndexes = [], op
   const params = ["Swap", "Increase", "Decrease"].map((key) => getIndexes(key) || []);
   const method = "cancelMultiple";
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library.getSigner());
+  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, signer);
   return callContract(chainId, contract, method, params, opts);
 }
 
 export async function updateDecreaseOrder(
   chainId,
-  library,
+  signer,
   index,
   collateralDelta,
   sizeDelta,
@@ -866,14 +866,14 @@ export async function updateDecreaseOrder(
   const params = [index, collateralDelta, sizeDelta, triggerPrice, triggerAboveThreshold];
   const method = "updateDecreaseOrder";
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library.getSigner());
+  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, signer);
 
   return callContract(chainId, contract, method, params, opts);
 }
 
 export async function updateIncreaseOrder(
   chainId,
-  library,
+  signer,
   index,
   sizeDelta,
   triggerPrice,
@@ -883,35 +883,35 @@ export async function updateIncreaseOrder(
   const params = [index, sizeDelta, triggerPrice, triggerAboveThreshold];
   const method = "updateIncreaseOrder";
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library.getSigner());
+  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, signer);
 
   return callContract(chainId, contract, method, params, opts);
 }
 
-export async function updateSwapOrder(chainId, library, index, minOut, triggerRatio, triggerAboveThreshold, opts) {
+export async function updateSwapOrder(chainId, signer, index, minOut, triggerRatio, triggerAboveThreshold, opts) {
   const params = [index, minOut, triggerRatio, triggerAboveThreshold];
   const method = "updateSwapOrder";
   const orderBookAddress = getContract(chainId, "OrderBook");
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library.getSigner());
+  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, signer);
 
   return callContract(chainId, contract, method, params, opts);
 }
 
-export async function _executeOrder(chainId, library, method, account, index, feeReceiver, opts) {
+export async function _executeOrder(chainId, signer, method, account, index, feeReceiver, opts) {
   const params = [account, index, feeReceiver];
   const positionManagerAddress = getContract(chainId, "PositionManager");
-  const contract = new ethers.Contract(positionManagerAddress, PositionManager.abi, library.getSigner());
+  const contract = new ethers.Contract(positionManagerAddress, PositionManager.abi, signer);
   return callContract(chainId, contract, method, params, opts);
 }
 
-export function executeSwapOrder(chainId, library, account, index, feeReceiver, opts) {
-  return _executeOrder(chainId, library, "executeSwapOrder", account, index, feeReceiver, opts);
+export function executeSwapOrder(chainId, signer, account, index, feeReceiver, opts) {
+  return _executeOrder(chainId, signer, "executeSwapOrder", account, index, feeReceiver, opts);
 }
 
-export function executeIncreaseOrder(chainId, library, account, index, feeReceiver, opts) {
-  return _executeOrder(chainId, library, "executeIncreaseOrder", account, index, feeReceiver, opts);
+export function executeIncreaseOrder(chainId, signer, account, index, feeReceiver, opts) {
+  return _executeOrder(chainId, signer, "executeIncreaseOrder", account, index, feeReceiver, opts);
 }
 
-export function executeDecreaseOrder(chainId, library, account, index, feeReceiver, opts) {
-  return _executeOrder(chainId, library, "executeDecreaseOrder", account, index, feeReceiver, opts);
+export function executeDecreaseOrder(chainId, signer, account, index, feeReceiver, opts) {
+  return _executeOrder(chainId, signer, "executeDecreaseOrder", account, index, feeReceiver, opts);
 }

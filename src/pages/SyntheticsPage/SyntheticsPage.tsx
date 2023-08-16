@@ -1,6 +1,5 @@
 import Helmat from "react-helmet";
 import { Plural, Trans, t } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
 import Checkbox from "components/Checkbox/Checkbox";
 import Footer from "components/Footer/Footer";
@@ -36,6 +35,7 @@ import { useMarketsInfo } from "domain/synthetics/markets";
 import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTradeOption";
 import { TradeMode } from "domain/synthetics/trade";
 import { helperToast } from "lib/helperToast";
+import useWallet from "lib/wallets/useWallet";
 
 export type Props = {
   savedIsPnlInLeverage: boolean;
@@ -44,7 +44,6 @@ export type Props = {
   showPnlAfterFees: boolean;
   savedShowPnlAfterFees: boolean;
   savedSlippageAmount: number;
-  onConnectWallet: () => void;
   setSavedShouldShowPositionLines: (value: boolean) => void;
   setPendingTxns: (txns: any) => void;
   tradePageVersion: number;
@@ -66,7 +65,6 @@ export function SyntheticsPage(p: Props) {
     savedShouldShowPositionLines,
     showPnlAfterFees,
     tradePageVersion,
-    onConnectWallet,
     setSavedShouldShowPositionLines,
     setPendingTxns,
     setTradePageVersion,
@@ -75,7 +73,7 @@ export function SyntheticsPage(p: Props) {
     openSettings,
   } = p;
   const { chainId } = useChainId();
-  const { library, account } = useWeb3React();
+  const { signer, account } = useWallet();
   const { marketsInfoData, tokensData, pricesUpdatedAt } = useMarketsInfo(chainId);
 
   const { positionsInfoData, isLoading: isPositionsLoading } = usePositionsInfo(chainId, {
@@ -224,8 +222,9 @@ export function SyntheticsPage(p: Props) {
   }, []);
 
   function onCancelOrdersClick() {
+    if (!signer) return;
     setIsCancelOrdersProcessig(true);
-    cancelOrdersTxn(chainId, library, {
+    cancelOrdersTxn(chainId, signer, {
       orderKeys: selectedOrdersKeysArr,
       setPendingTxns: setPendingTxns,
     })
@@ -398,7 +397,6 @@ export function SyntheticsPage(p: Props) {
               onSelectToTokenAddress={setToTokenAddress}
               onSelectTradeMode={setTradeMode}
               onSelectTradeType={setTradeType}
-              onConnectWallet={onConnectWallet}
               setIsEditingAcceptablePriceImpact={onEditAcceptablePriceImpact}
               setPendingTxns={setPendingTxns}
               setIsClaiming={setIsClaiming}
@@ -472,7 +470,6 @@ export function SyntheticsPage(p: Props) {
         availableTokensOptions={availableTokensOptions}
         isHigherSlippageAllowed={isHigherSlippageAllowed}
         setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
-        onConnectWallet={onConnectWallet}
         shouldDisableValidation={shouldDisableValidation}
         onSelectPositionClick={onSelectPositionClick}
       />
@@ -484,7 +481,6 @@ export function SyntheticsPage(p: Props) {
         allowedSlippage={allowedSlippage}
         onClose={onPositionEditorClose}
         setPendingTxns={setPendingTxns}
-        onConnectWallet={onConnectWallet}
         shouldDisableValidation={shouldDisableValidation}
       />
 

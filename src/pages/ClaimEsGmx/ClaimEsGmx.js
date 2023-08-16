@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import useSWR from "swr";
 import { ethers } from "ethers";
-import { useWeb3React } from "@web3-react/core";
 import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
 
 import { getContract } from "config/contracts";
@@ -23,6 +22,7 @@ import { bigNumberify, formatAmount, formatAmountFree, parseValue } from "lib/nu
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Button from "components/Button/Button";
+import useWallet from "lib/wallets/useWallet";
 
 const VEST_WITH_GMX_ARB = "VEST_WITH_GMX_ARB";
 const VEST_WITH_GLP_ARB = "VEST_WITH_GLP_ARB";
@@ -127,7 +127,7 @@ function getVestingValues({ minRatio, amount, vestingDataItem }) {
 }
 
 export default function ClaimEsGmx({ setPendingTxns }) {
-  const { active, account, library } = useWeb3React();
+  const { active, account, signer } = useWallet();
   const { chainId } = useChainId();
   const [selectedOption, setSelectedOption] = useState("");
   const [isClaiming, setIsClaiming] = useState(false);
@@ -146,7 +146,7 @@ export default function ClaimEsGmx({ setPendingTxns }) {
       account || PLACEHOLDER_ACCOUNT,
     ],
     {
-      fetcher: contractFetcher(library, Token),
+      fetcher: contractFetcher(signer, Token),
     }
   );
 
@@ -315,7 +315,7 @@ export default function ClaimEsGmx({ setPendingTxns }) {
       receiver = "0x28863Dd19fb52DF38A9f2C6dfed40eeB996e3818";
     }
 
-    const contract = new ethers.Contract(esGmxIouAddress, Token.abi, library.getSigner());
+    const contract = new ethers.Contract(esGmxIouAddress, Token.abi, signer);
     callContract(chainId, contract, "transfer", [receiver, amount], {
       sentMsg: t`Claim submitted!`,
       failMsg: t`Claim failed.`,

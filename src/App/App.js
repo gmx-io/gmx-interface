@@ -89,7 +89,6 @@ import SyntheticsActions from "pages/SyntheticsActions/SyntheticsActions";
 import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsFallbackPage";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
-import WalletProvider from "lib/wallets/WalletProvider";
 import { watchNetwork } from "@wagmi/core";
 import { useDisconnect } from "wagmi";
 import useWallet from "lib/wallets/useWallet";
@@ -108,7 +107,7 @@ const Zoom = cssTransition({
 });
 
 function FullApp() {
-  const { isConnected: active, signer } = useWallet();
+  const { active, signer } = useWallet();
   const { disconnect } = useDisconnect();
   const isHome = isHomeSite();
   const exchangeRef = useRef();
@@ -696,19 +695,17 @@ function App() {
 
   return (
     <SWRConfig value={{ refreshInterval: 5000 }}>
-      <WalletProvider>
-        <SettingsContextProvider>
-          <SyntheticsEventsProvider>
-            <SEO>
-              <Router>
-                <I18nProvider i18n={i18n}>
-                  <FullApp />
-                </I18nProvider>
-              </Router>
-            </SEO>
-          </SyntheticsEventsProvider>
-        </SettingsContextProvider>
-      </WalletProvider>
+      <SettingsContextProvider>
+        <SyntheticsEventsProvider>
+          <SEO>
+            <Router>
+              <I18nProvider i18n={i18n}>
+                <FullApp />
+              </I18nProvider>
+            </Router>
+          </SEO>
+        </SyntheticsEventsProvider>
+      </SettingsContextProvider>
     </SWRConfig>
   );
 }

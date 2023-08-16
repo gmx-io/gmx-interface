@@ -29,22 +29,6 @@ msgstr "6 Янв 2022"
 msgid "24h Volume"
 msgstr "24ч Объём"
 
-#: src/App/App.js
-msgid "<0>Install Coinbase Wallet</0> to start using GMX."
-msgstr ""
-
-#: src/App/App.js
-msgid "<0>Install Coinbase Wallet</0>, and use GMX with its built-in browser."
-msgstr ""
-
-#: src/App/App.js
-msgid "<0>Install MetaMask</0> to start using GMX."
-msgstr ""
-
-#: src/App/App.js
-msgid "<0>Install MetaMask</0>, and use GMX with its built-in browser."
-msgstr ""
-
 #: src/components/Exchange/OrdersToa.js
 msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
 msgstr "<0>Недостаточная ликвидность для выполнения заказа</0><1>Цена маркировки, которая представляет собой средневзвешенную биржевую стоимость, не достигла указанной цены</1><2>Указанная цена была достигнута, но недостаточно долго для ее выполнения</2><3>Ни один держатель не взял заказ для исполнения</3>"
@@ -82,7 +66,6 @@ msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>This value may 
 msgstr ""
 
 #: src/lib/contracts/transactionErrors.tsx
-#: src/lib/wallets/index.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr "<0>Ваш кошелек не подключен к {0}.</0><1/><2>Перейти на {1}</2>"
 
@@ -849,14 +832,6 @@ msgstr ""
 msgid "Code already taken"
 msgstr "Код уже занят"
 
-#: src/App/App.js
-msgid "Coinbase Wallet"
-msgstr "Кошелек Coinbase"
-
-#: src/App/App.js
-msgid "Coinbase Wallet not detected."
-msgstr "Кошелек Coinbase не обнаружен."
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -992,7 +967,6 @@ msgstr ""
 msgid "Connect"
 msgstr "Подключение"
 
-#: src/App/App.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Header/AppHeaderUser.tsx
@@ -1012,10 +986,6 @@ msgstr "Подключение"
 #: src/pages/Stake/StakeV2.js
 msgid "Connect Wallet"
 msgstr "Подключить Кошелек"
-
-#: src/lib/wallets/index.tsx
-msgid "Connected to {0}"
-msgstr "Подключение к {0}"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
@@ -2740,14 +2710,6 @@ msgstr "Максимально: {maxAmountFormatted}"
 #: src/components/Footer/constants.ts
 msgid "Media Kit"
 msgstr "Медиа-Кит"
-
-#: src/App/App.js
-msgid "MetaMask"
-msgstr "MetaMask"
-
-#: src/App/App.js
-msgid "MetaMask not detected."
-msgstr "MetaMask не обнаружена."
 
 #: src/components/Migration/Migration.js
 #: src/components/Migration/Migration.js
@@ -4726,10 +4688,6 @@ msgstr ""
 msgid "Unstaking..."
 msgstr "Снятие стакинга..."
 
-#: src/lib/wallets/index.tsx
-msgid "Unsupported chain. Switch to Arbitrum network on your wallet and try again"
-msgstr "Неподдерживаемая цепочка. Переключитесь на сеть Arbitrum на вашем кошельке и повторите попытку"
-
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/JoinReferralCode.js
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
@@ -5003,10 +4961,6 @@ msgstr "Кошелёк не подключен"
 #: src/pages/Stake/StakeV1.js
 msgid "Wallet not yet connected"
 msgstr "Кошелёк ещё не подключен"
-
-#: src/App/App.js
-msgid "WalletConnect"
-msgstr "WalletConnect"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Weight"

@@ -12,6 +12,8 @@ import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import LanguageModalContent from "./LanguageModalContent";
 import { useChainId } from "lib/chains";
 import { getIcon } from "config/icons";
+import { switchNetwork } from "lib/wallets";
+import useWallet from "lib/wallets/useWallet";
 
 const LANGUAGE_MODAL_KEY: string = "LANGUAGE";
 const NETWORK_MODAL_KEY: string = "NETWORK";
@@ -29,7 +31,6 @@ export default function NetworkDropdown(props) {
           <NetworkModalContent
             setActiveModal={setActiveModal}
             networkOptions={props.networkOptions}
-            onNetworkSelect={props.onNetworkSelect}
             selectorLabel={props.selectorLabel}
             openSettings={props.openSettings}
           />
@@ -109,11 +110,7 @@ function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, onNetw
             <Trans>Networks</Trans>
           </div>
           <div className="network-dropdown-list">
-            <NetworkMenuItems
-              networkOptions={networkOptions}
-              selectorLabel={selectorLabel}
-              onNetworkSelect={onNetworkSelect}
-            />
+            <NetworkMenuItems networkOptions={networkOptions} selectorLabel={selectorLabel} />
           </div>
           <div className="network-dropdown-divider" />
           <Menu.Item>
@@ -149,17 +146,12 @@ function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, onNetw
   );
 }
 
-function NetworkMenuItems({ networkOptions, selectorLabel, onNetworkSelect }) {
-  async function handleNetworkSelect(option) {
-    await onNetworkSelect(option);
-  }
+function NetworkMenuItems({ networkOptions, selectorLabel }) {
+  const { active } = useWallet();
   return networkOptions.map((network) => {
     return (
       <Menu.Item key={network.value}>
-        <div
-          className="network-dropdown-menu-item menu-item"
-          onClick={() => handleNetworkSelect({ value: network.value })}
-        >
+        <div className="network-dropdown-menu-item menu-item" onClick={() => switchNetwork(network.value, active)}>
           <div className="menu-item-group">
             <div className="menu-item-icon">
               <img className="network-dropdown-icon" src={network.icon} alt={network.label} />
@@ -175,10 +167,8 @@ function NetworkMenuItems({ networkOptions, selectorLabel, onNetworkSelect }) {
   });
 }
 
-function NetworkModalContent({ networkOptions, onNetworkSelect, selectorLabel, setActiveModal, openSettings }) {
-  async function handleNetworkSelect(option) {
-    await onNetworkSelect(option);
-  }
+function NetworkModalContent({ networkOptions, selectorLabel, setActiveModal, openSettings }) {
+  const { active } = useWallet();
   return (
     <div className="network-dropdown-items">
       <div className="network-dropdown-list">
@@ -188,11 +178,7 @@ function NetworkModalContent({ networkOptions, onNetworkSelect, selectorLabel, s
 
         {networkOptions.map((network) => {
           return (
-            <div
-              className="network-option"
-              onClick={() => handleNetworkSelect({ value: network.value })}
-              key={network.value}
-            >
+            <div className="network-option" onClick={() => switchNetwork(network.value, active)} key={network.value}>
               <div className="menu-item-group">
                 <img src={network.icon} alt={network.label} />
                 <span>{network.label}</span>

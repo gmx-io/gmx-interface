@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
 import Checkbox from "components/Checkbox/Checkbox";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import { OrdersInfoData, isLimitOrderType, isTriggerDecreaseOrderType } from "domain/synthetics/orders";
@@ -10,6 +9,7 @@ import { useChainId } from "lib/chains";
 import { Dispatch, SetStateAction, useState } from "react";
 import { OrderEditor } from "../OrderEditor/OrderEditor";
 import { OrderItem } from "../OrderItem/OrderItem";
+import useWallet from "lib/wallets/useWallet";
 
 type Props = {
   hideActions?: boolean;
@@ -26,7 +26,7 @@ type Props = {
 export function OrderList(p: Props) {
   const { marketsInfoData, tokensData, positionsData } = p;
   const { chainId } = useChainId();
-  const { library } = useWeb3React();
+  const { signer } = useWallet();
 
   const [canellingOrdersKeys, setCanellingOrdersKeys] = useState<string[]>([]);
   const [editingOrderKey, setEditingOrderKey] = useState<string>();
@@ -54,9 +54,10 @@ export function OrderList(p: Props) {
   }
 
   function onCancelOrder(key: string) {
+    if (!signer) return;
     setCanellingOrdersKeys((prev) => [...prev, key]);
 
-    cancelOrdersTxn(chainId, library, { orderKeys: [key], setPendingTxns: p.setPendingTxns }).finally(() =>
+    cancelOrdersTxn(chainId, signer, { orderKeys: [key], setPendingTxns: p.setPendingTxns }).finally(() =>
       setCanellingOrdersKeys((prev) => prev.filter((k) => k !== key))
     );
   }

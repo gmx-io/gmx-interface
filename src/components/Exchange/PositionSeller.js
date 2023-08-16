@@ -182,7 +182,7 @@ export default function PositionSeller(props) {
     isVisible,
     setIsVisible,
     account,
-    library,
+    signer,
     infoTokens,
     setPendingTxns,
     flagOrdersEnabled,
@@ -831,7 +831,7 @@ export default function PositionSeller(props) {
 
       createDecreaseOrder(
         chainId,
-        library,
+        signer,
         indexTokenAddress,
         sizeDelta,
         collateralTokenAddress,
@@ -903,7 +903,7 @@ export default function PositionSeller(props) {
     const sizeDeltaUsd = formatAmount(sizeDelta, USD_DECIMALS, 2);
     const successMsg = t`Requested decrease of ${position.indexToken.symbol} ${longOrShortText} by ${sizeDeltaUsd} USD.`;
 
-    const contract = new ethers.Contract(positionRouterAddress, PositionRouter.abi, library.getSigner());
+    const contract = new ethers.Contract(positionRouterAddress, PositionRouter.abi, signer);
 
     callContract(chainId, contract, "createDecreasePosition", params, {
       value: minExecutionFee,

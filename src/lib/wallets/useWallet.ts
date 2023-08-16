@@ -5,10 +5,10 @@ export default function useWallet() {
   const { chain } = useNetwork();
   const { data: signer } = useSigner();
   return {
-    address,
-    isConnected,
+    account: address,
+    active: isConnected,
     connector,
     chainId: chain?.id,
-    signer,
+    signer: signer ?? undefined,
   };
 }

@@ -29,22 +29,6 @@ msgstr "06 Jan 2022"
 msgid "24h Volume"
 msgstr "24小时数量"
 
-#: src/App/App.js
-msgid "<0>Install Coinbase Wallet</0> to start using GMX."
-msgstr ""
-
-#: src/App/App.js
-msgid "<0>Install Coinbase Wallet</0>, and use GMX with its built-in browser."
-msgstr ""
-
-#: src/App/App.js
-msgid "<0>Install MetaMask</0> to start using GMX."
-msgstr ""
-
-#: src/App/App.js
-msgid "<0>Install MetaMask</0>, and use GMX with its built-in browser."
-msgstr ""
-
 #: src/components/Exchange/OrdersToa.js
 msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
 msgstr "执行订单的流动性不足</0><1>作为交易所价格总和的标记价格未达到指定价格</1><2>已达到指定价格但时间不足以执行 </2><3>没有守门员领取执行令</3>"
@@ -82,7 +66,6 @@ msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>This value may 
 msgstr ""
 
 #: src/lib/contracts/transactionErrors.tsx
-#: src/lib/wallets/index.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr ""
 
@@ -849,14 +832,6 @@ msgstr ""
 msgid "Code already taken"
 msgstr "已采取的代码"
 
-#: src/App/App.js
-msgid "Coinbase Wallet"
-msgstr "Coinbase钱包"
-
-#: src/App/App.js
-msgid "Coinbase Wallet not detected."
-msgstr "无法侦测Coinbase钱包"
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -992,7 +967,6 @@ msgstr ""
 msgid "Connect"
 msgstr "连接"
 
-#: src/App/App.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Header/AppHeaderUser.tsx
@@ -1012,10 +986,6 @@ msgstr "连接"
 #: src/pages/Stake/StakeV2.js
 msgid "Connect Wallet"
 msgstr "连接钱包"
-
-#: src/lib/wallets/index.tsx
-msgid "Connected to {0}"
-msgstr "连接至"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
@@ -2740,14 +2710,6 @@ msgstr "最高: {maxAmountFormatted}"
 #: src/components/Footer/constants.ts
 msgid "Media Kit"
 msgstr "多媒体工具"
-
-#: src/App/App.js
-msgid "MetaMask"
-msgstr "MetaMask"
-
-#: src/App/App.js
-msgid "MetaMask not detected."
-msgstr "未侦测到MetaMask "
 
 #: src/components/Migration/Migration.js
 #: src/components/Migration/Migration.js
@@ -4726,10 +4688,6 @@ msgstr ""
 msgid "Unstaking..."
 msgstr "解除质押中..."
 
-#: src/lib/wallets/index.tsx
-msgid "Unsupported chain. Switch to Arbitrum network on your wallet and try again"
-msgstr "不支持的链。在你的钱包上切换到Arbitrum网络并重试"
-
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/JoinReferralCode.js
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
@@ -5003,10 +4961,6 @@ msgstr "钱包未连接"
 #: src/pages/Stake/StakeV1.js
 msgid "Wallet not yet connected"
 msgstr "钱包尚未连接"
-
-#: src/App/App.js
-msgid "WalletConnect"
-msgstr "连接钱包"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Weight"

@@ -29,22 +29,6 @@ msgstr "2022년 1월 6일"
 msgid "24h Volume"
 msgstr "24시간 거래량"
 
-#: src/App/App.js
-msgid "<0>Install Coinbase Wallet</0> to start using GMX."
-msgstr ""
-
-#: src/App/App.js
-msgid "<0>Install Coinbase Wallet</0>, and use GMX with its built-in browser."
-msgstr ""
-
-#: src/App/App.js
-msgid "<0>Install MetaMask</0> to start using GMX."
-msgstr ""
-
-#: src/App/App.js
-msgid "<0>Install MetaMask</0>, and use GMX with its built-in browser."
-msgstr ""
-
 #: src/components/Exchange/OrdersToa.js
 msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
 msgstr "<0>주문을 체결하기 위한 유동성이 부족합니다</0><1>시장 평균가가 지정된 가격에 도달하지 않았습니다</1><2>지정된 가격에 도달했지만 실행하기에 충분한 시간이 지나지 않았습니다</2>주문을 체결할 수 있는 키퍼가 없습니다.<3>"
@@ -82,7 +66,6 @@ msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>This value may 
 msgstr ""
 
 #: src/lib/contracts/transactionErrors.tsx
-#: src/lib/wallets/index.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr ""
 
@@ -849,14 +832,6 @@ msgstr ""
 msgid "Code already taken"
 msgstr "이미 사용된 코드입니다"
 
-#: src/App/App.js
-msgid "Coinbase Wallet"
-msgstr "Coinbase 지갑"
-
-#: src/App/App.js
-msgid "Coinbase Wallet not detected."
-msgstr "Coinbase 지갑이 존재하지 않습니다."
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -992,7 +967,6 @@ msgstr ""
 msgid "Connect"
 msgstr "연동"
 
-#: src/App/App.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Header/AppHeaderUser.tsx
@@ -1012,10 +986,6 @@ msgstr "연동"
 #: src/pages/Stake/StakeV2.js
 msgid "Connect Wallet"
 msgstr "지갑 연동"
-
-#: src/lib/wallets/index.tsx
-msgid "Connected to {0}"
-msgstr "{0}에 연동하기"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
@@ -2740,14 +2710,6 @@ msgstr "최대: {maxAmountFormatted}"
 #: src/components/Footer/constants.ts
 msgid "Media Kit"
 msgstr "미디어 키트"
-
-#: src/App/App.js
-msgid "MetaMask"
-msgstr "메타마스크"
-
-#: src/App/App.js
-msgid "MetaMask not detected."
-msgstr "메타마스크가 탐지되지 않았습니다."
 
 #: src/components/Migration/Migration.js
 #: src/components/Migration/Migration.js
@@ -4726,10 +4688,6 @@ msgstr ""
 msgid "Unstaking..."
 msgstr "언스테이킹중..."
 
-#: src/lib/wallets/index.tsx
-msgid "Unsupported chain. Switch to Arbitrum network on your wallet and try again"
-msgstr "지원하지 않는 체인입니다. 지갑을 Arbitrum 네트워크로 변경하여 다시 시도해주세요"
-
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/JoinReferralCode.js
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
@@ -5003,10 +4961,6 @@ msgstr "지갑이 연결되지 않음"
 #: src/pages/Stake/StakeV1.js
 msgid "Wallet not yet connected"
 msgstr "지갑이 아직 연동되지 않았습니다"
-
-#: src/App/App.js
-msgid "WalletConnect"
-msgstr "지갑연결"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Weight"

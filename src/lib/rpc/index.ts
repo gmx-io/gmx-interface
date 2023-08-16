@@ -1,4 +1,4 @@
-import { JsonRpcProvider, Web3Provider, WebSocketProvider } from "@ethersproject/providers";
+import { JsonRpcProvider, WebSocketProvider } from "@ethersproject/providers";
 import {
   ARBITRUM,
   ARBITRUM_GOERLI,
@@ -9,14 +9,14 @@ import {
   getFallbackRpcUrl,
   getRpcUrl,
 } from "config/chains";
-import { ethers } from "ethers";
+import { Signer, ethers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 
-export function getProvider(library: Web3Provider | undefined, chainId: number) {
+export function getProvider(signer: Signer | undefined, chainId: number) {
   let provider;
 
-  if (library) {
-    return library.getSigner();
+  if (signer) {
+    return signer;
   }
 
   provider = getRpcUrl(chainId);

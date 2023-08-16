@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
 import { useCallback, useState } from "react";
 
 import Checkbox from "components/Checkbox/Checkbox";
@@ -55,6 +54,8 @@ import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "lib/numbers";
 import "./StakeV2.css";
+import useWallet from "lib/wallets/useWallet";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 const { AddressZero } = ethers.constants;
 
@@ -875,9 +876,10 @@ function ClaimModal(props) {
   );
 }
 
-export default function StakeV2({ setPendingTxns, connectWallet }) {
-  const { active, library, account } = useWeb3React();
+export default function StakeV2({ setPendingTxns }) {
+  const { active, signer, account } = useWallet();
   const { chainId } = useChainId();
+  const { openConnectModal } = useConnectModal();
 
   const chainName = getChainName(chainId);
 
@@ -992,7 +994,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
       account || PLACEHOLDER_ACCOUNT,
     ],
     {
-      fetcher: contractFetcher(library, ReaderV2, [walletTokens]),
+      fetcher: contractFetcher(signer, ReaderV2, [walletTokens]),
     }
   );
 
@@ -1005,52 +1007,52 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
       account || PLACEHOLDER_ACCOUNT,
     ],
     {
-      fetcher: contractFetcher(library, RewardReader, [depositTokens, rewardTrackersForDepositBalances]),
+      fetcher: contractFetcher(signer, RewardReader, [depositTokens, rewardTrackersForDepositBalances]),
     }
   );
 
   const { data: stakingInfo } = useSWR(
     [`StakeV2:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account || PLACEHOLDER_ACCOUNT],
     {
-      fetcher: contractFetcher(library, RewardReader, [rewardTrackersForStakingInfo]),
+      fetcher: contractFetcher(signer, RewardReader, [rewardTrackersForStakingInfo]),
     }
   );
 
   const { data: stakedGmxSupply } = useSWR(
     [`StakeV2:stakedGmxSupply:${active}`, chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress],
     {
-      fetcher: contractFetcher(library, Token),
+      fetcher: contractFetcher(signer, Token),
     }
   );
 
   const { data: aums } = useSWR([`StakeV2:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
-    fetcher: contractFetcher(library, GlpManager),
+    fetcher: contractFetcher(signer, GlpManager),
   });
 
   const { data: nativeTokenPrice } = useSWR(
     [`StakeV2:nativeTokenPrice:${active}`, chainId, vaultAddress, "getMinPrice", nativeTokenAddress],
     {
-      fetcher: contractFetcher(library, Vault),
+      fetcher: contractFetcher(signer, Vault),
     }
   );
 
   const { data: esGmxSupply } = useSWR(
     [`StakeV2:esGmxSupply:${active}`, chainId, readerAddress, "getTokenSupply", esGmxAddress],
     {
-      fetcher: contractFetcher(library, ReaderV2, [excludedEsGmxAccounts]),
+      fetcher: contractFetcher(signer, ReaderV2, [excludedEsGmxAccounts]),
     }
   );
 
   const { data: vestingInfo } = useSWR(
     [`StakeV2:vestingInfo:${active}`, chainId, readerAddress, "getVestingInfo", account || PLACEHOLDER_ACCOUNT],
     {
-      fetcher: contractFetcher(library, ReaderV2, [vesterAddresses]),
+      fetcher: contractFetcher(signer, ReaderV2, [vesterAddresses]),
     }
   );
 
   const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useGmxPrice(
     chainId,
-    { arbitrum: chainId === ARBITRUM ? library : undefined },
+    { arbitrum: chainId === ARBITRUM ? signer : undefined },
     active
   );
 
@@ -1340,7 +1342,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         setValue={setStakeValue}
         active={active}
         account={account}
-        library={library}
+        signer={signer}
         stakingTokenSymbol={stakingTokenSymbol}
         stakingTokenAddress={stakingTokenAddress}
         farmAddress={stakingFarmAddress}
@@ -1361,7 +1363,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         reservedAmount={unstakeModalReservedAmount}
         value={unstakeValue}
         setValue={setUnstakeValue}
-        library={library}
+        signer={signer}
         unstakingTokenSymbol={unstakingTokenSymbol}
         rewardRouterAddress={rewardRouterAddress}
         unstakeMethodName={unstakeMethodName}
@@ -1384,7 +1386,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         maxReserveAmount={vesterDepositMaxReserveAmount}
         value={vesterDepositValue}
         setValue={setVesterDepositValue}
-        library={library}
+        signer={signer}
         vesterAddress={vesterDepositAddress}
         setPendingTxns={setPendingTxns}
       />
@@ -1394,7 +1396,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         vesterAddress={vesterWithdrawAddress}
         chainId={chainId}
         title={vesterWithdrawTitle}
-        library={library}
+        signer={signer}
         setPendingTxns={setPendingTxns}
       />
       <CompoundModal
@@ -1407,7 +1409,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         totalVesterRewards={processedData.totalVesterRewards}
         wrappedTokenSymbol={wrappedTokenSymbol}
         nativeTokenSymbol={nativeTokenSymbol}
-        library={library}
+        signer={signer}
         chainId={chainId}
       />
       <ClaimModal
@@ -1420,7 +1422,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         totalVesterRewards={processedData.totalVesterRewards}
         wrappedTokenSymbol={wrappedTokenSymbol}
         nativeTokenSymbol={nativeTokenSymbol}
-        library={library}
+        signer={signer}
         chainId={chainId}
       />
       <div className="section-title-block">
@@ -1705,7 +1707,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     </Button>
                   )}
                   {!active && (
-                    <Button variant="secondary" onClick={() => connectWallet()}>
+                    <Button variant="secondary" onClick={openConnectModal}>
                       <Trans>Connect Wallet</Trans>
                     </Button>
                   )}
@@ -1947,7 +1949,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                   </Button>
                 )}
                 {!active && (
-                  <Button variant="secondary" onClick={() => connectWallet()}>
+                  <Button variant="secondary" onClick={openConnectModal}>
                     <Trans> Connect Wallet</Trans>
                   </Button>
                 )}
@@ -2085,7 +2087,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 <div className="App-card-divider"></div>
                 <div className="App-card-buttons m-0">
                   {!active && (
-                    <Button variant="secondary" onClick={() => connectWallet()}>
+                    <Button variant="secondary" onClick={openConnectModal}>
                       <Trans>Connect Wallet</Trans>
                     </Button>
                   )}
@@ -2172,7 +2174,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 <div className="App-card-divider"></div>
                 <div className="App-card-buttons m-0">
                   {!active && (
-                    <Button variant="secondary" onClick={() => connectWallet()}>
+                    <Button variant="secondary" onClick={openConnectModal}>
                       <Trans>Connect Wallet</Trans>
                     </Button>
                   )}

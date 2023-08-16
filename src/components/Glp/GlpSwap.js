@@ -1,5 +1,4 @@
 import { t, Trans } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
 import { getContract } from "config/contracts";
 import { ethers } from "ethers";
@@ -55,6 +54,8 @@ import { IoChevronDownOutline } from "react-icons/io5";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import "./GlpSwap.css";
 import SwapErrorModal from "./SwapErrorModal";
+import useWallet from "lib/wallets/useWallet";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 const { AddressZero } = ethers.constants;
 
@@ -97,18 +98,12 @@ function getTooltipContent(managedUsd, tokenInfo, token) {
 }
 
 export default function GlpSwap(props) {
-  const {
-    savedSlippageAmount,
-    isBuying,
-    setPendingTxns,
-    connectWallet,
-    setIsBuying,
-    savedShouldDisableValidationForTesting,
-  } = props;
+  const { savedSlippageAmount, isBuying, setPendingTxns, setIsBuying, savedShouldDisableValidationForTesting } = props;
   const history = useHistory();
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp";
   const tabLabel = isBuying ? t`Buy GLP` : t`Sell GLP`;
-  const { active, library, account } = useWeb3React();
+  const { active, signer, account } = useWallet();
+  const { openConnectModal } = useConnectModal();
   const { chainId } = useChainId();
   const tokens = getV1Tokens(chainId);
   const whitelistedTokens = getWhitelistedV1Tokens(chainId);
@@ -147,7 +142,7 @@ export default function GlpSwap(props) {
   const { data: tokenBalances } = useSWR(
     [`GlpSwap:getTokenBalances:${active}`, chainId, readerAddress, "getTokenBalances", account || PLACEHOLDER_ACCOUNT],
     {
-      fetcher: contractFetcher(library, ReaderV2, [tokenAddresses]),
+      fetcher: contractFetcher(signer, ReaderV2, [tokenAddresses]),
     }
   );
 
@@ -160,18 +155,18 @@ export default function GlpSwap(props) {
       account || PLACEHOLDER_ACCOUNT,
     ],
     {
-      fetcher: contractFetcher(library, ReaderV2, [tokensForBalanceAndSupplyQuery]),
+      fetcher: contractFetcher(signer, ReaderV2, [tokensForBalanceAndSupplyQuery]),
     }
   );
 
   const { data: aums } = useSWR([`GlpSwap:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
-    fetcher: contractFetcher(library, GlpManager),
+    fetcher: contractFetcher(signer, GlpManager),
   });
 
   const { data: totalTokenWeights } = useSWR(
     [`GlpSwap:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],
     {
-      fetcher: contractFetcher(library, VaultV2),
+      fetcher: contractFetcher(signer, VaultV2),
     }
   );
 
@@ -179,21 +174,21 @@ export default function GlpSwap(props) {
   const { data: tokenAllowance } = useSWR(
     [active, chainId, tokenAllowanceAddress, "allowance", account || PLACEHOLDER_ACCOUNT, glpManagerAddress],
     {
-      fetcher: contractFetcher(library, Token),
+      fetcher: contractFetcher(signer, Token),
     }
   );
 
   const { data: lastPurchaseTime } = useSWR(
     [`GlpSwap:lastPurchaseTime:${active}`, chainId, glpManagerAddress, "lastAddedAt", account || PLACEHOLDER_ACCOUNT],
     {
-      fetcher: contractFetcher(library, GlpManager),
+      fetcher: contractFetcher(signer, GlpManager),
     }
   );
 
   const { data: glpBalance } = useSWR(
     [`GlpSwap:glpBalance:${active}`, chainId, feeGlpTrackerAddress, "stakedAmounts", account || PLACEHOLDER_ACCOUNT],
     {
-      fetcher: contractFetcher(library, RewardTracker),
+      fetcher: contractFetcher(signer, RewardTracker),
     }
   );
 
@@ -201,17 +196,17 @@ export default function GlpSwap(props) {
   const { data: reservedAmount } = useSWR(
     [`GlpSwap:reservedAmount:${active}`, chainId, glpVesterAddress, "pairAmounts", account || PLACEHOLDER_ACCOUNT],
     {
-      fetcher: contractFetcher(library, Vester),
+      fetcher: contractFetcher(signer, Vester),
     }
   );
 
-  const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? library : undefined }, active);
+  const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
 
   const rewardTrackersForStakingInfo = [stakedGlpTrackerAddress, feeGlpTrackerAddress];
   const { data: stakingInfo } = useSWR(
     [`GlpSwap:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account || PLACEHOLDER_ACCOUNT],
     {
-      fetcher: contractFetcher(library, RewardReader, [rewardTrackersForStakingInfo]),
+      fetcher: contractFetcher(signer, RewardReader, [rewardTrackersForStakingInfo]),
     }
   );
 
@@ -246,7 +241,7 @@ export default function GlpSwap(props) {
     maxSellAmount = glpBalance.sub(reservedAmount);
   }
 
-  const { infoTokens } = useInfoTokens(library, chainId, active, tokenBalances, undefined);
+  const { infoTokens } = useInfoTokens(signer, chainId, active, tokenBalances, undefined);
   const swapToken = getToken(chainId, swapTokenAddress);
   const swapTokenInfo = getTokenInfo(infoTokens, swapTokenAddress);
 
@@ -548,7 +543,7 @@ export default function GlpSwap(props) {
   const approveFromToken = () => {
     approveTokens({
       setIsApproving,
-      library,
+      signer,
       tokenAddress: swapToken.address,
       spender: glpManagerAddress,
       chainId: chainId,
@@ -565,7 +560,7 @@ export default function GlpSwap(props) {
 
     const minGlp = glpAmount.mul(BASIS_POINTS_DIVISOR - savedSlippageAmount).div(BASIS_POINTS_DIVISOR);
 
-    const contract = new ethers.Contract(glpRewardRouterAddress, RewardRouter.abi, library.getSigner());
+    const contract = new ethers.Contract(glpRewardRouterAddress, RewardRouter.abi, signer);
     const method = swapTokenAddress === AddressZero ? "mintAndStakeGlpETH" : "mintAndStakeGlp";
     const params = swapTokenAddress === AddressZero ? [0, minGlp] : [swapTokenAddress, swapAmount, 0, minGlp];
     const value = swapTokenAddress === AddressZero ? swapAmount : 0;
@@ -593,7 +588,7 @@ export default function GlpSwap(props) {
 
     const minOut = swapAmount.mul(BASIS_POINTS_DIVISOR - savedSlippageAmount).div(BASIS_POINTS_DIVISOR);
 
-    const contract = new ethers.Contract(glpRewardRouterAddress, RewardRouter.abi, library.getSigner());
+    const contract = new ethers.Contract(glpRewardRouterAddress, RewardRouter.abi, signer);
     const method = swapTokenAddress === AddressZero ? "unstakeAndRedeemGlpETH" : "unstakeAndRedeemGlp";
     const params =
       swapTokenAddress === AddressZero ? [glpAmount, minOut, account] : [swapTokenAddress, glpAmount, minOut, account];
@@ -617,7 +612,7 @@ export default function GlpSwap(props) {
 
   const onClickPrimary = () => {
     if (!active) {
-      connectWallet();
+      openConnectModal();
       return;
     }
 

@@ -37,7 +37,7 @@ function getOrderTitle(order, indexTokenSymbol) {
 export default function OrdersList(props) {
   const {
     account,
-    library,
+    signer,
     setPendingTxns,
     pendingTxns,
     infoTokens,
@@ -56,9 +56,9 @@ export default function OrdersList(props) {
 
   const onCancelClick = useCallback(
     (order) => {
-      handleCancelOrder(chainId, library, order, { pendingTxns, setPendingTxns });
+      handleCancelOrder(chainId, signer, order, { pendingTxns, setPendingTxns });
     },
-    [library, pendingTxns, setPendingTxns, chainId]
+    [signer, pendingTxns, setPendingTxns, chainId]
   );
 
   const onEditClick = useCallback(
@@ -570,7 +570,7 @@ export default function OrdersList(props) {
           setPendingTxns={setPendingTxns}
           getPositionForOrder={getPositionForOrder}
           positionsMap={positionsMap}
-          library={library}
+          signer={signer}
           totalTokenWeights={totalTokenWeights}
           usdgSupply={usdgSupply}
           savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}

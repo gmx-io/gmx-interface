@@ -1,7 +1,6 @@
 import React from "react";
 import useSWR from "swr";
 import { ethers } from "ethers";
-import { useWeb3React } from "@web3-react/core";
 import { useParams } from "react-router-dom";
 
 import "./Actions.css";
@@ -25,12 +24,13 @@ import { getTokenInfo } from "domain/tokens/utils";
 import { formatAmount } from "lib/numbers";
 import { getToken, getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
 import { useChainId } from "lib/chains";
+import useWallet from "lib/wallets/useWallet";
 
 const USD_DECIMALS = 30;
 
 export default function Actions({ savedIsPnlInLeverage, savedShowPnlAfterFees }) {
   const { account } = useParams();
-  const { active, library } = useWeb3React();
+  const { active, signer } = useWallet();
 
   const { chainId } = useChainId();
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
@@ -55,11 +55,11 @@ export default function Actions({ savedIsPnlInLeverage, savedShowPnlAfterFees })
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
   const tokenAddresses = tokens.map((token) => token.address);
   const { data: tokenBalances } = useSWR([active, chainId, readerAddress, "getTokenBalances", account], {
-    fetcher: contractFetcher(library, Reader, [tokenAddresses]),
+    fetcher: contractFetcher(signer, Reader, [tokenAddresses]),
   });
 
   const { data: positionData } = useSWR([active, chainId, readerAddress, "getPositions", vaultAddress, account], {
-    fetcher: contractFetcher(library, Reader, [
+    fetcher: contractFetcher(signer, Reader, [
       positionQuery.collateralTokens,
       positionQuery.indexTokens,
       positionQuery.isLong,
@@ -67,10 +67,10 @@ export default function Actions({ savedIsPnlInLeverage, savedShowPnlAfterFees })
   });
 
   const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
-    fetcher: contractFetcher(library, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
+    fetcher: contractFetcher(signer, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
   });
 
-  const { infoTokens } = useInfoTokens(library, chainId, active, tokenBalances, fundingRateInfo);
+  const { infoTokens } = useInfoTokens(signer, chainId, active, tokenBalances, fundingRateInfo);
   const { positions, positionsMap } = getPositions(
     chainId,
     positionQuery,
@@ -134,7 +134,7 @@ export default function Actions({ savedIsPnlInLeverage, savedShowPnlAfterFees })
             active={active}
             orders={orders}
             account={checkSummedAccount}
-            library={library}
+            signer={signer}
             flagOrdersEnabled={false}
             chainId={chainId}
             nativeTokenAddress={nativeTokenAddress}

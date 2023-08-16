@@ -1,5 +1,4 @@
 import { t } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
 import Button from "components/Button/Button";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import Modal from "components/Modal/Modal";
@@ -17,6 +16,7 @@ import { claimAffiliateRewardsTxn } from "domain/synthetics/referrals/claimAffil
 
 import "./ClaimAffiliatesModal.scss";
 import { useState } from "react";
+import useWallet from "lib/wallets/useWallet";
 
 type Props = {
   onClose: () => void;
@@ -25,7 +25,7 @@ type Props = {
 
 export function ClaimAffiliatesModal(p: Props) {
   const { onClose, setPendingTxns = () => null } = p;
-  const { account, library } = useWeb3React();
+  const { account, signer } = useWallet();
   const { chainId } = useChainId();
 
   const { marketsInfoData } = useMarketsInfo(chainId);
@@ -96,7 +96,7 @@ export function ClaimAffiliatesModal(p: Props) {
   }
 
   function onSubmit() {
-    if (!account || !library || !affiliateRewardsData || !marketsInfoData) return;
+    if (!account || !signer || !affiliateRewardsData || !marketsInfoData) return;
 
     const marketAddresses: string[] = [];
     const tokenAddresses: string[] = [];
@@ -121,7 +121,7 @@ export function ClaimAffiliatesModal(p: Props) {
 
     setIsSubmitting(true);
 
-    claimAffiliateRewardsTxn(chainId, library, {
+    claimAffiliateRewardsTxn(chainId, signer, {
       account,
       rewardsParams: {
         marketAddresses: marketAddresses,

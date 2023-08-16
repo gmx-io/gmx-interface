@@ -82,6 +82,7 @@ import FeesTooltip from "./FeesTooltip";
 import NoLiquidityErrorModal from "./NoLiquidityErrorModal";
 import UsefulLinks from "./UsefulLinks";
 import { ErrorCode, ErrorDisplayType } from "./constants";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -164,6 +165,7 @@ export default function SwapBox(props) {
   const [modalError, setModalError] = useState(false);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
   const { attachedOnChain, userReferralCode } = useUserReferralCode(library, chainId, account);
+  const { openConnectModal } = useConnectModal();
 
   let allowedSlippage = savedSlippageAmount;
   if (isHigherSlippageAllowed) {
@@ -1554,7 +1556,7 @@ export default function SwapBox(props) {
 
   const onConfirmationClick = () => {
     if (!active) {
-      props.connectWallet();
+      openConnectModal();
       return;
     }
 
@@ -1602,7 +1604,7 @@ export default function SwapBox(props) {
     }
 
     if (!active) {
-      props.connectWallet();
+      openConnectModal();
       return;
     }
 

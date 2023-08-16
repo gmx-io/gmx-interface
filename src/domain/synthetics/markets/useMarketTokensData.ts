@@ -1,4 +1,3 @@
-import { useWeb3React } from "@web3-react/core";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import TokenAbi from "abis/Token.json";
 import { getContract } from "config/contracts";
@@ -14,6 +13,7 @@ import { getContractMarketPrices } from "./utils";
 import { useRef } from "react";
 import { BigNumber } from "ethers";
 import { getExplorerUrl } from "config/chains";
+import useWallet from "lib/wallets/useWallet";
 
 type MarketTokensDataResult = {
   marketTokensData?: TokensData;
@@ -21,7 +21,7 @@ type MarketTokensDataResult = {
 
 export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }): MarketTokensDataResult {
   const { isDeposit } = p;
-  const { account } = useWeb3React();
+  const { account } = useWallet();
   const { tokensData, pricesUpdatedAt } = useTokensData(chainId);
   const { marketsData, marketsAddresses } = useMarkets(chainId);
 

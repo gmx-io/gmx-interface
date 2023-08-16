@@ -18,7 +18,6 @@ import { GmList } from "components/Synthetics/GmList/GmList";
 import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
 
 type Props = {
-  connectWallet: () => void;
   setPendingTxns: (txns: any) => void;
   shouldDisableValidation?: boolean;
 };
@@ -75,7 +74,6 @@ export function MarketPoolsPage(p: Props) {
 
           <div className="MarketPoolsPage-swap-box">
             <GmSwapBox
-              onConnectWallet={p.connectWallet}
               selectedMarketAddress={selectedMarketKey}
               markets={markets}
               shouldDisableValidation={p.shouldDisableValidation}

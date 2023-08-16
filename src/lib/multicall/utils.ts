@@ -1,4 +1,3 @@
-import { Web3Provider } from "@ethersproject/providers";
 import CustomErrors from "abis/CustomErrors.json";
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, getFallbackRpcUrl, getRpcUrl } from "config/chains";
 import { PublicClient, createPublicClient, http } from "viem";
@@ -6,6 +5,7 @@ import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "viem/chains"
 import { MulticallRequestConfig, MulticallResult } from "./types";
 
 import { sleep } from "lib/sleep";
+import { Signer } from "ethers";
 
 export const MAX_TIMEOUT = 2000;
 
@@ -69,7 +69,7 @@ const BATCH_CONFIGS = {
 
 export async function executeMulticall(
   chainId: number,
-  library: Web3Provider | undefined,
+  signer: Signer | undefined,
   request: MulticallRequestConfig<any>
 ) {
   const multicall = await Multicall.getInstance(chainId);

@@ -41,7 +41,6 @@ import {
 } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 
-import { useWeb3React } from "@web3-react/core";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS } from "config/factors";
 import { SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BPS_KEY } from "config/localStorage";
@@ -62,6 +61,7 @@ import { getByKey } from "lib/objects";
 
 import Button from "components/Button/Button";
 import "./OrderEditor.scss";
+import useWallet from "lib/wallets/useWallet";
 
 type Props = {
   positionsData?: PositionsInfoData;
@@ -75,7 +75,7 @@ type Props = {
 export function OrderEditor(p: Props) {
   const { marketsInfoData, tokensData } = p;
   const { chainId } = useChainId();
-  const { library } = useWeb3React();
+  const { signer } = useWallet();
 
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
@@ -333,11 +333,12 @@ export function OrderEditor(p: Props) {
   }
 
   function onSubmit() {
+    if (!signer) return;
     const positionOrder = p.order as PositionOrderInfo;
 
     setIsSubmitting(true);
 
-    updateOrderTxn(chainId, library, {
+    updateOrderTxn(chainId, signer, {
       orderKey: p.order.key,
       sizeDeltaUsd: sizeDeltaUsd || positionOrder.sizeDeltaUsd,
       triggerPrice: triggerPrice || positionOrder.triggerPrice,

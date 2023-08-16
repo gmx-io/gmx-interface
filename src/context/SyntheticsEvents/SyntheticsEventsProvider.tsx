@@ -1,5 +1,4 @@
 import { t } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
 import EventEmitter from "abis/EventEmitter.json";
 import { GmStatusNotification } from "components/Synthetics/StatusNotification/GmStatusNotification";
 import { OrderStatusNotification } from "components/Synthetics/StatusNotification/OrderStatusNotification";
@@ -43,6 +42,7 @@ import {
   WithdrawalStatuses,
 } from "./types";
 import { parseEventLogData } from "./utils";
+import useWallet from "lib/wallets/useWallet";
 
 export const DEPOSIT_CREATED_HASH = ethers.utils.id("DepositCreated");
 export const DEPOSIT_EXECUTED_HASH = ethers.utils.id("DepositExecuted");
@@ -67,7 +67,7 @@ export function useSyntheticsEvents(): SyntheticsEventsContextType {
 
 export function SyntheticsEventsProvider({ children }: { children: ReactNode }) {
   const { chainId } = useChainId();
-  const { active, account: currentAccount } = useWeb3React();
+  const { active, account: currentAccount } = useWallet();
 
   const { tokensData } = useTokensData(chainId);
   const { marketsInfoData } = useMarketsInfo(chainId);

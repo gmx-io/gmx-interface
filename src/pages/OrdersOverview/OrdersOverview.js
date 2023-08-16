@@ -1,4 +1,3 @@
-import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
 
 import { NavLink } from "react-router-dom";
@@ -25,10 +24,11 @@ import { useInfoTokens } from "domain/tokens";
 import { formatAmount } from "lib/numbers";
 import { useChainId } from "lib/chains";
 import { formatDateTime } from "lib/dates";
+import useWallet from "lib/wallets/useWallet";
 
 export default function OrdersOverview() {
   const { chainId } = useChainId();
-  const { library, account, active } = useWeb3React();
+  const { library, account, active } = useWallet();
 
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
 

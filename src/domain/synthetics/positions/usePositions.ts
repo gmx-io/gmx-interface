@@ -1,4 +1,3 @@
-import { useWeb3React } from "@web3-react/core";
 import DataStore from "abis/DataStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
@@ -17,6 +16,7 @@ import { ContractMarketPrices, MarketsData, getContractMarketPrices } from "../m
 import { TokensData } from "../tokens";
 import { Position, PositionsData } from "./types";
 import { getPositionKey, parsePositionKey } from "./utils";
+import useWallet from "lib/wallets/useWallet";
 
 const MAX_PENDING_UPDATE_AGE = 600 * 1000; // 10 minutes
 
@@ -34,7 +34,7 @@ export function usePositions(
   }
 ): PositionsResult {
   const { marketsInfoData, tokensData, pricesUpdatedAt } = p;
-  const { account } = useWeb3React();
+  const { account } = useWallet();
 
   // Use ref to cache data from previos key with old prices
   const positionsDataCache = useRef<PositionsData>();

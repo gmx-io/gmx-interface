@@ -33,23 +33,26 @@ input {
   font-family: "RelativeNumber";
 }
 
+::-webkit-scrollbar {
+  width: 0.6rem;
+  height: 0.6rem;
+}
+
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #1c1c1c;
+  background: #17182e;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #383838;
+  background: #a0a3c4;
   border-radius: 1.5rem;
-  border: 1px solid #212121;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #4a4a4a;
+  background: #b3b4c2;
 }
-
 :root {
   --main-bg-color: #101124;
   --dark-blue: #17182c;
