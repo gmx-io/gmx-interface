@@ -98,7 +98,7 @@ function NavIcons({ selectorLabel }) {
   );
 }
 
-function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, onNetworkSelect, openSettings }) {
+function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, openSettings }) {
   return (
     <div className="App-header-network">
       <Menu>
