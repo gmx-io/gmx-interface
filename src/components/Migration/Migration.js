@@ -16,7 +16,6 @@ import GmxMigrator from "abis/GmxMigrator.json";
 import { CHAIN_ID, getExplorerUrl } from "config/chains";
 import { contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
-import { useEagerConnect, useInactiveListener } from "lib/wallets";
 import { approveTokens } from "domain/tokens";
 import {
   bigNumberify,
@@ -315,18 +314,9 @@ export default function Migration() {
   const [isPendingApproval, setIsPendingApproval] = useState(false);
   const [migrationIndex, setMigrationIndex] = useState(0);
   const [migrationValue, setMigrationValue] = useState("");
-
-  const { connector, active, account, signer } = useWallet();
   const { openConnectModal } = useConnectModal();
-  const [activatingConnector, setActivatingConnector] = useState();
-  useEffect(() => {
-    if (activatingConnector && activatingConnector === connector) {
-      setActivatingConnector(undefined);
-    }
-  }, [activatingConnector, connector]);
-  const triedEager = useEagerConnect();
-  useInactiveListener(!triedEager || !!activatingConnector);
 
+  const { active, account, signer } = useWallet();
   const tokenAddresses = tokens.map((token) => token.address);
   const iouTokenAddresses = tokens.map((token) => token.iouToken);
 
