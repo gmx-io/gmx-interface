@@ -70,7 +70,6 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import Tab from "components/Tab/Tab";
 import { useMedia } from "react-use";
 import { useHasOutdatedUi } from "domain/legacy";
-import { POSITION_CLOSE_SUGGESTION_LISTS } from "config/ui";
 
 export type Props = {
   position?: PositionInfo;
@@ -113,7 +112,6 @@ export function PositionSeller(p: Props) {
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
   const userReferralInfo = useUserReferralInfo(library, chainId, account);
   const { data: hasOutdatedUi } = useHasOutdatedUi();
-  const [isPercentagePanelVisible, setIsPercentagePanelVisible] = useState(false);
 
   const isMobile = useMedia("(max-width: 1100px)");
   const isVisible = Boolean(position);
@@ -444,26 +442,14 @@ export function PositionSeller(p: Props) {
                 onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
                 showMaxButton={maxCloseSize?.gt(0) && !closeSizeUsd?.eq(maxCloseSize)}
                 onClickMax={() => setCloseUsdInputValue(formatAmountFree(maxCloseSize, USD_DECIMALS))}
-                onFocus={() => setIsPercentagePanelVisible(true)}
-                onBlur={() => setIsPercentagePanelVisible(false)}
+                showPercentSelector={true}
+                onPercentChange={(percentage) => {
+                  const formattedAmount = formatAmountFree(maxCloseSize.mul(percentage).div(100), USD_DECIMALS, 2);
+                  setCloseUsdInputValue(formattedAmount);
+                }}
               >
                 USD
               </BuyInputSection>
-              {isPercentagePanelVisible && (
-                <ul className="Percentage-list">
-                  {POSITION_CLOSE_SUGGESTION_LISTS.map((percentage) => (
-                    <li
-                      key={percentage}
-                      onMouseDown={() => {
-                        setCloseUsdInputValue(formatAmountFree(maxCloseSize.mul(percentage).div(100), USD_DECIMALS, 2));
-                        setIsPercentagePanelVisible(false);
-                      }}
-                    >
-                      {percentage}%
-                    </li>
-                  ))}
-                </ul>
-              )}
             </div>
 
             <div className="PositionEditor-info-box">

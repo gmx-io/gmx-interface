@@ -1047,6 +1047,10 @@ export function TradeBox(p: Props) {
         onClickTopRightLabel={() => setCloseSizeInputValue(formatAmount(existingPosition?.sizeInUsd, USD_DECIMALS, 2))}
         showMaxButton={existingPosition?.sizeInUsd.gt(0) && !closeSizeUsd?.eq(existingPosition.sizeInUsd)}
         onClickMax={() => setCloseSizeInputValue(formatAmount(existingPosition?.sizeInUsd, USD_DECIMALS, 2))}
+        showPercentSelector={existingPosition?.sizeInUsd.gt(0)}
+        onPercentChange={(percent) =>
+          setCloseSizeInputValue(formatAmount(existingPosition?.sizeInUsd.mul(percent).div(100), USD_DECIMALS, 2))
+        }
       >
         USD
       </BuyInputSection>

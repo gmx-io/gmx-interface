@@ -13,7 +13,7 @@ import { ARBITRUM, IS_NETWORK_DISABLED, getChainName, getConstant } from "config
 import { getContract } from "config/contracts";
 import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "config/localStorage";
 import { getPriceDecimals, getV1Tokens, getWrappedToken } from "config/tokens";
-import { POSITION_CLOSE_SUGGESTION_LISTS, TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
+import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { createDecreaseOrder, useHasOutdatedUi } from "domain/legacy";
 import { getTokenAmountFromUsd } from "domain/tokens";
 import { getTokenInfo, getUsd } from "domain/tokens/utils";
@@ -59,6 +59,7 @@ import FeesTooltip from "./FeesTooltip";
 import "./PositionSeller.css";
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -211,7 +212,6 @@ export default function PositionSeller(props) {
   const [fromValue, setFromValue] = useState("");
   const [isProfitWarningAccepted, setIsProfitWarningAccepted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isPercentagePanelVisible, setIsPercentagePanelVisible] = useState(false);
   const prevIsVisible = usePrevious(isVisible);
   const [allowedSlippage, setAllowedSlippage] = useState(savedSlippageAmount);
   const positionPriceDecimal = getPriceDecimals(chainId, position?.indexToken?.symbol);
@@ -1041,95 +1041,41 @@ export default function PositionSeller(props) {
             />
           )}
           <div className="relative">
-            <div className="Exchange-swap-section">
-              <div className="Exchange-swap-section-top">
-                <div className="muted">
-                  {convertedAmountFormatted && (
-                    <div className="Exchange-swap-usd">
-                      <Trans>
-                        Close: {convertedAmountFormatted} {position.collateralToken.symbol}
-                      </Trans>
-                    </div>
-                  )}
-                  {!convertedAmountFormatted && t`Close`}
-                </div>
-                {maxAmount && (
-                  <div className="muted align-right clickable" onClick={() => setFromValue(maxAmountFormattedFree)}>
-                    <Trans>Max: {maxAmountFormatted}</Trans>
-                  </div>
-                )}
-              </div>
-              <div className="Exchange-swap-section-bottom">
-                <div className="Exchange-swap-input-container">
-                  <input
-                    type="number"
-                    min="0"
-                    placeholder="0.0"
-                    className="Exchange-swap-input"
-                    value={fromValue}
-                    onChange={(e) => setFromValue(e.target.value)}
-                    onFocus={() => setIsPercentagePanelVisible(true)}
-                    onBlur={() => setIsPercentagePanelVisible(false)}
-                  />
-                  {fromValue !== maxAmountFormattedFree && (
-                    <div
-                      className="Exchange-swap-max"
-                      onClick={() => {
-                        setFromValue(maxAmountFormattedFree);
-                      }}
-                    >
-                      <Trans>MAX</Trans>
-                    </div>
-                  )}
-                </div>
-                <div className="PositionEditor-token-symbol">USD</div>
-              </div>
-            </div>
-            {isPercentagePanelVisible && (
-              <ul className="Percentage-list">
-                {POSITION_CLOSE_SUGGESTION_LISTS.map((percentage) => (
-                  <li
-                    key={percentage}
-                    onMouseDown={() => {
-                      setFromValue(formatAmountFree(maxAmount.mul(percentage).div(100), USD_DECIMALS, 2));
-                      setIsPercentagePanelVisible(false);
-                    }}
-                  >
-                    {percentage}%
-                  </li>
-                ))}
-              </ul>
-            )}
+            <BuyInputSection
+              inputValue={fromValue}
+              onInputValueChange={(e) => setFromValue(e.target.value)}
+              topLeftLabel={t`Close`}
+              topLeftValue={
+                convertedAmountFormatted ? `${convertedAmountFormatted} ${position.collateralToken.symbol}` : ""
+              }
+              topRightLabel={t`Max`}
+              topRightValue={maxAmount && maxAmountFormatted}
+              onClickTopRightLabel={() => setFromValue(maxAmountFormattedFree)}
+              onClickMax={() => setFromValue(maxAmountFormattedFree)}
+              showMaxButton={fromValue !== maxAmountFormattedFree}
+              showPercentSelector={true}
+              onPercentChange={(percentage) => {
+                setFromValue(formatAmountFree(maxAmount.mul(percentage).div(100), USD_DECIMALS, 2));
+              }}
+            >
+              USD
+            </BuyInputSection>
           </div>
           {orderOption === STOP && (
-            <div className="Exchange-swap-section">
-              <div className="Exchange-swap-section-top">
-                <div className="muted">
-                  <Trans>Price</Trans>
-                </div>
-                <div
-                  className="muted align-right clickable"
-                  onClick={() => {
-                    setTriggerPriceValue(formatAmountFree(position.markPrice, USD_DECIMALS, positionPriceDecimal));
-                  }}
-                >
-                  <Trans>Mark: {formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}</Trans>
-                </div>
-              </div>
-              <div className="Exchange-swap-section-bottom">
-                <div className="Exchange-swap-input-container">
-                  <input
-                    type="number"
-                    min="0"
-                    placeholder="0.0"
-                    className="Exchange-swap-input"
-                    value={triggerPriceValue}
-                    onChange={onTriggerPriceChange}
-                  />
-                </div>
-                <div className="PositionEditor-token-symbol">USD</div>
-              </div>
-            </div>
+            <BuyInputSection
+              inputValue={triggerPriceValue}
+              onInputValueChange={onTriggerPriceChange}
+              topLeftLabel={t`Price`}
+              topRightLabel={t`Mark`}
+              topRightValue={
+                position.markPrice && formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)
+              }
+              onClickTopRightLabel={() => {
+                setTriggerPriceValue(formatAmountFree(position.markPrice, USD_DECIMALS, positionPriceDecimal));
+              }}
+            >
+              USD
+            </BuyInputSection>
           )}
           {renderReceiveSpreadWarning()}
           {shouldShowExistingOrderWarning && renderExistingOrderWarning()}

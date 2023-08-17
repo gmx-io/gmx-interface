@@ -457,6 +457,14 @@ export function PositionEditor(p: Props) {
                       formatAmountFree(maxWithdrawAmount!, position?.collateralToken?.decimals || 0)
                     )
               }
+              showPercentSelector={!isDeposit}
+              onPercentChange={(percent) => {
+                if (!isDeposit) {
+                  setCollateralInputValue(
+                    formatAmountFree(maxWithdrawAmount!.mul(percent).div(100), position?.collateralToken?.decimals || 0)
+                  );
+                }
+              }}
             >
               {availableSwapTokens ? (
                 <TokenSelector

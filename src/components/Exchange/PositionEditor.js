@@ -27,6 +27,7 @@ import FeesTooltip from "./FeesTooltip";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { getLeverage } from "lib/positions/getLeverage";
 import { getPriceDecimals } from "config/tokens";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";
@@ -522,49 +523,27 @@ export default function PositionEditor(props) {
             />
             {(isDeposit || isWithdrawal) && (
               <div>
-                <div className="Exchange-swap-section">
-                  <div className="Exchange-swap-section-top">
-                    <div className="muted">
-                      {convertedAmountFormatted && (
-                        <div className="Exchange-swap-usd">
-                          {isDeposit ? t`Deposit` : t`Withdraw`}: {convertedAmountFormatted}{" "}
-                          {isDeposit ? "USD" : position.collateralToken.symbol}
-                        </div>
-                      )}
-                      {!convertedAmountFormatted && `${isDeposit ? t`Deposit` : t`Withdraw`}`}
-                    </div>
-                    {maxAmount && (
-                      <div className="muted align-right clickable" onClick={() => setFromValue(maxAmountFormattedFree)}>
-                        <Trans>Max: {maxAmountFormatted}</Trans>
-                      </div>
-                    )}
-                  </div>
-                  <div className="Exchange-swap-section-bottom">
-                    <div className="Exchange-swap-input-container">
-                      <input
-                        type="number"
-                        min="0"
-                        placeholder="0.0"
-                        className="Exchange-swap-input"
-                        value={fromValue}
-                        onChange={(e) => setFromValue(e.target.value)}
-                      />
-                      {fromValue !== maxAmountFormattedFree && maxAmount?.gt(0) && (
-                        <button
-                          className="Exchange-swap-max"
-                          onClick={() => {
-                            setFromValue(maxAmountFormattedFree);
-                          }}
-                        >
-                          <Trans>MAX</Trans>
-                        </button>
-                      )}
-                    </div>
-                    <div className="PositionEditor-token-symbol">
-                      {isDeposit ? position.collateralToken.symbol : "USD"}
-                    </div>
-                  </div>
-                </div>
+                <BuyInputSection
+                  inputValue={fromValue}
+                  onInputValueChange={(e) => setFromValue(e.target.value)}
+                  topLeftLabel={isDeposit ? t`Deposit` : t`Withdraw`}
+                  topLeftValue={
+                    convertedAmountFormatted
+                      ? `${convertedAmountFormatted} ${isDeposit ? "USD" : position.collateralToken.symbol}`
+                      : ""
+                  }
+                  topRightLabel={t`Max`}
+                  topRightValue={maxAmount && maxAmountFormatted}
+                  onClickTopRightLabel={() => setFromValue(maxAmountFormattedFree)}
+                  onClickMax={() => setFromValue(maxAmountFormattedFree)}
+                  showMaxButton={fromValue !== maxAmountFormattedFree}
+                  showPercentSelector={!isDeposit}
+                  onPercentChange={(percentage) => {
+                    setFromValue(formatAmountFree(maxAmount.mul(percentage).div(100), USD_DECIMALS, 2));
+                  }}
+                >
+                  {isDeposit ? position.collateralToken.symbol : "USD"}
+                </BuyInputSection>
                 <div className="PositionEditor-info-box">
                   {minExecutionFeeErrorMessage && (
                     <div className="Confirmation-box-warning">{minExecutionFeeErrorMessage}</div>
