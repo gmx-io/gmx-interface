@@ -3010,6 +3010,10 @@ msgstr "Abriendo..."
 msgid "Order"
 msgstr "Orden"
 
+#: src/domain/synthetics/orders/utils.ts
+msgid "Order Trigger Price is beyond position's Liquidation Price."
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Order cancelled"
