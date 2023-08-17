@@ -9,7 +9,7 @@ import { useMarketTokensData, useMarketsInfo } from "domain/synthetics/markets";
 import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { getTokenData } from "domain/synthetics/tokens";
 import { getByKey } from "lib/objects";
@@ -25,6 +25,11 @@ type Props = {
 
 export function MarketPoolsPage(p: Props) {
   const { chainId } = useChainId();
+  const gmSwapBoxRef = useRef<HTMLDivElement>(null);
+
+  function buySellActionHandler() {
+    gmSwapBoxRef?.current?.scrollIntoView({ behavior: "smooth" });
+  }
 
   const { marketsInfoData = {}, tokensData } = useMarketsInfo(chainId);
   const markets = Object.values(marketsInfoData);
@@ -73,7 +78,7 @@ export function MarketPoolsPage(p: Props) {
         <div className="MarketPoolsPage-content">
           <MarketStats marketsTokensAPRData={marketsTokensAPRData} marketInfo={marketInfo} marketToken={marketToken} />
 
-          <div className="MarketPoolsPage-swap-box">
+          <div className="MarketPoolsPage-swap-box" ref={gmSwapBoxRef}>
             <GmSwapBox
               onConnectWallet={p.connectWallet}
               selectedMarketAddress={selectedMarketKey}
@@ -101,7 +106,7 @@ export function MarketPoolsPage(p: Props) {
           marketTokensData={depositMarketTokensData}
           marketsInfoData={marketsInfoData}
           tokensData={tokensData}
-          shouldScrollToTop={true}
+          buySellActionHandler={buySellActionHandler}
         />
       </div>
       <Footer />

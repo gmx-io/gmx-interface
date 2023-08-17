@@ -30,6 +30,7 @@ type Props = {
   marketTokensData?: TokensData;
   marketsTokensAPRData?: MarketTokensAPRData;
   shouldScrollToTop?: boolean;
+  buySellActionHandler?: () => void;
 };
 
 export function GmList({
@@ -39,6 +40,7 @@ export function GmList({
   tokensData,
   marketsTokensAPRData,
   shouldScrollToTop,
+  buySellActionHandler,
 }: Props) {
   const { chainId } = useChainId();
   const currentIcons = getIcons(chainId);
@@ -227,7 +229,7 @@ export function GmList({
 
                     <td>{apr ? `${formatAmount(apr, 2, 2)}%` : "..."}</td>
 
-                    <td className="GmList-actions">
+                    <td className="GmList-actions" onClick={buySellActionHandler}>
                       <Button
                         className="GmList-action"
                         variant="secondary"
@@ -370,7 +372,7 @@ export function GmList({
                     </div>
 
                     <div className="App-card-divider"></div>
-                    <div className="App-card-buttons m-0">
+                    <div className="App-card-buttons m-0" onClick={buySellActionHandler}>
                       <Button
                         variant="secondary"
                         to={`/pools?operation=${Operation.Deposit}&market=${token.address}&scroll=${
