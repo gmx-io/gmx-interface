@@ -849,10 +849,6 @@ msgid "Close {longOrShortText} {0}"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Close: {convertedAmountFormatted} {0}"
-msgstr ""
-
-#: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
 msgstr ""
 
@@ -1275,7 +1271,6 @@ msgstr "Уменьшено {tokenSymbol} {longOrShortText}, -{0} USD."
 msgid "Decreasing"
 msgstr ""
 
-#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -2509,8 +2504,6 @@ msgid "MARKET"
 msgstr ""
 
 #: src/components/BuyInputSection/BuyInputSection.tsx
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
 #: src/components/InputSection/InputSection.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
@@ -2524,6 +2517,7 @@ msgstr "Оптимизатор MEV"
 msgid "MINTABLE"
 msgstr ""
 
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -2559,7 +2553,6 @@ msgid "Mark Price:"
 msgstr "Отмеченная Цена:"
 
 #: src/components/Exchange/OrderEditor.js
-#: src/components/Exchange/PositionSeller.js
 msgid "Mark: {0}"
 msgstr "Отметка: {0}"
 
@@ -2598,6 +2591,8 @@ msgstr ""
 msgid "Market Swap"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/pages/Stake/StakeV2.js
@@ -2740,11 +2735,6 @@ msgstr ""
 #: src/pages/Stake/StakeV1.js
 msgid "Max: {0}"
 msgstr "Максимально: {0}"
-
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
-msgid "Max: {maxAmountFormatted}"
-msgstr "Максимально: {maxAmountFormatted}"
 
 #: src/components/Footer/constants.ts
 #: src/components/Footer/constants.ts
@@ -5026,7 +5016,6 @@ msgstr "Вес"
 msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr "При закрытии позиции вы можете выбрать, в каком токене вы хотели бы получить прибыль."
 
-#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
