@@ -816,7 +816,7 @@ function App() {
     dynamicActivate(defaultLanguage);
   }, []);
   return (
-    <SWRConfig value={{ refreshInterval: 5000 }}>
+    <SWRConfig value={{ refreshInterval: 5000, refreshWhenHidden: false, refreshWhenOffline: false }}>
       <Web3ReactProvider getLibrary={getLibrary}>
         <SettingsContextProvider>
           <SyntheticsEventsProvider>

@@ -24,7 +24,7 @@ const BATCH_CONFIGS = {
     },
     client: {
       multicall: {
-        batchSize: 1024 * 1024, // here batchSize is the number of bytes in a multicall
+        batchSize: 1024 * 10, // here batchSize is the number of bytes in a multicall
         wait: 0, // zero delay means formation of a batch in the current macro-task, like setTimeout(fn, 0)
       },
     },
@@ -36,7 +36,7 @@ const BATCH_CONFIGS = {
     },
     client: {
       multicall: {
-        batchSize: 1024 * 1024,
+        batchSize: 1024 * 10,
         wait: 0,
       },
     },
@@ -48,7 +48,7 @@ const BATCH_CONFIGS = {
     },
     client: {
       multicall: {
-        batchSize: 1024 * 1024,
+        batchSize: 1024 * 10,
         wait: 0,
       },
     },
@@ -60,12 +60,16 @@ const BATCH_CONFIGS = {
     },
     client: {
       multicall: {
-        batchSize: 1024 * 1024,
+        batchSize: 1024 * 10,
         wait: 0,
       },
     },
   },
 };
+
+function formatViemError(e: Error) {
+  return new Error(e.message.slice(0, 150));
+}
 
 export async function executeMulticall(
   chainId: number,
@@ -108,6 +112,7 @@ export class Multicall {
         retryDelay: 10000000,
         batch: BATCH_CONFIGS[chainId].http,
       }),
+      pollingInterval: undefined,
       batch: BATCH_CONFIGS[chainId].client,
       chain: CHAIN_BY_CHAIN_ID[chainId],
     });
@@ -168,29 +173,30 @@ export class Multicall {
     const response: any = await Promise.race([
       this.viemClient.multicall({ contracts: encodedPayload as any }),
       sleep(maxTimeout).then(() => Promise.reject("multicall timeout")),
-    ])
-      .catch((e) => {
-        // eslint-disable-next-line no-console
-        console.groupCollapsed("multicall error:");
-        // eslint-disable-next-line no-console
-        console.error(e);
-        // eslint-disable-next-line no-console
-        console.groupEnd();
+    ]).catch((viemError) => {
+      const e = formatViemError(viemError);
 
-        const rpcUrl = getFallbackRpcUrl(this.chainId);
+      // eslint-disable-next-line no-console
+      console.groupCollapsed("multicall error:");
+      // eslint-disable-next-line no-console
+      console.error(e);
+      // eslint-disable-next-line no-console
+      console.groupEnd();
 
-        if (!rpcUrl) {
-          throw e;
-        }
+      const rpcUrl = getFallbackRpcUrl(this.chainId);
 
-        const fallbackClient = Multicall.getViemClient(this.chainId, rpcUrl);
+      if (!rpcUrl) {
+        throw e;
+      }
 
-        // eslint-disable-next-line no-console
-        console.log(`using multicall fallback for chain ${this.chainId}`);
+      const fallbackClient = Multicall.getViemClient(this.chainId, rpcUrl);
 
-        return fallbackClient.multicall({ contracts: encodedPayload as any });
-      })
-      .catch((e) => {
+      // eslint-disable-next-line no-console
+      console.log(`using multicall fallback for chain ${this.chainId}`);
+
+      return fallbackClient.multicall({ contracts: encodedPayload as any }).catch((viemError) => {
+        const e = formatViemError(viemError);
+
         // eslint-disable-next-line no-console
         console.groupCollapsed("multicall error:");
         // eslint-disable-next-line no-console
@@ -200,6 +206,7 @@ export class Multicall {
 
         throw e;
       });
+    });
 
     const multicallResult: MulticallResult<any> = {
       success: true,
