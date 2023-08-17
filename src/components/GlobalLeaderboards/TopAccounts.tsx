@@ -1,20 +1,15 @@
-import Pagination from "components/Pagination/Pagination";
-import Tab from "components/Tab/Tab";
-import Table from "components/Table";
-import TableFilterSearch from "components/TableFilterSearch";
-import { t } from "@lingui/macro";
-import { useDebounce } from "lib/useDebounce";
 import { useState } from "react";
-import { useLeaderboardContext } from "./Context";
-import { PerfPeriod } from "domain/synthetics/leaderboards";
-import { formatAmount } from "lib/numbers";
-import { USD_DECIMALS } from "lib/legacy";
-import { BigNumber, BigNumberish } from "ethers";
+import { BigNumber } from "ethers";
 import classnames from "classnames";
-
-const formatUsdAmount = (x: BigNumberish, displayDecimals = 2, useCommas = false) => (
-  formatAmount(x, USD_DECIMALS, displayDecimals, useCommas)
-);
+import { t } from "@lingui/macro";
+import { formatUsd } from "lib/numbers";
+import { useDebounce } from "lib/useDebounce";
+import Pagination from "components/Pagination/Pagination";
+import { PerfPeriod } from "domain/synthetics/leaderboards";
+import TableFilterSearch from "components/TableFilterSearch";
+import Table from "components/Table";
+import Tab from "components/Tab/Tab";
+import { useLeaderboardContext } from "./Context";
 
 export default function TopAccounts() {
   const perPage = 15;
@@ -32,24 +27,24 @@ export default function TopAccounts() {
       target: "_blank"
     },
     absPnl: {
-      value: formatUsdAmount(s.absPnl),
+      value: formatUsd(s.absPnl),
       className: classnames(
         s.absPnl.isNegative() ? "negative" : "positive",
         "top-accounts-pnl-abs"
       ),
     },
     relPnl: {
-      value: formatUsdAmount(s.relPnl.mul(BigNumber.from(100)), 1),
+      value: formatUsd(s.relPnl.mul(BigNumber.from(100))),
       className: classnames(
         s.relPnl.isNegative() ? "negative" : "positive",
         "top-accounts-pnl-rel"
       )
     },
     sizeLev: [{
-      value: formatUsdAmount(s.size),
+      value: formatUsd(s.size),
       className: "top-accounts-size"
     }, {
-      value: formatUsdAmount(s.leverage),
+      value: formatUsd(s.leverage),
       className: "top-accounts-leverage"
     }],
     perf: {
