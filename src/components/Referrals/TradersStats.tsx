@@ -82,10 +82,12 @@ function TradersStats({
                   className={discountShare?.gt(0) ? "tier-discount-warning" : ""}
                   renderContent={() => (
                     <p className="text-white">
+                      <Trans>You will receive a {currentTierDiscount}% discount on opening and closing fees.</Trans>
+                      <br />
+                      <br />
                       <Trans>
-                        You will receive a {currentTierDiscount}% discount on your opening and closing fees. This
-                        discount on V1 will be airdropped to your account every Wednesday. For trades on V2, discounts
-                        are applied automatically and will reduce your fees when you make a trade.
+                        For trades on V1, this discount will be airdropped to your account every Wednesday. On V2,
+                        discounts are applied automatically and will reduce your fees when you make a trade.
                       </Trans>
                       {discountShare?.gt(0) && (
                         <>
