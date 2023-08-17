@@ -248,9 +248,9 @@ msgstr "Требуется дополнительный резерв"
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr "Кроме того, триггерные ордера являются рыночными и не гарантируют расчет по триггерной цене."
 
-#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
-#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
-#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 msgid "Address"
 msgstr ""
 
@@ -258,15 +258,16 @@ msgstr ""
 msgid "Address copied to your clipboard"
 msgstr ""
 
-#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
-msgid "Affiliate Rewards Claimed"
-
 #: src/pages/Leaderboard/Leaderboard.tsx
 #~ msgid "Addresses trading statistics. Choose between general or competitions leaderboards."
 #~ msgstr ""
 
 #: src/pages/Leaderboards/index.tsx
 msgid "Addresses trading statistics. Choose between global or competitions leaderboards."
+msgstr ""
+
+#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
+msgid "Affiliate Rewards Claimed"
 msgstr ""
 
 #: src/pages/Referrals/Referrals.tsx
@@ -285,7 +286,7 @@ msgstr "После подачи заявки токены esGMX будут пе�
 msgid "Agree"
 msgstr "Согласен"
 
-#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
 msgid "All time"
 msgstr ""
 
@@ -1599,8 +1600,9 @@ msgstr "Введите новую Цену"
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Enter new amount or price"
+msgstr ""
 
-#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 msgid "Entry"
 msgstr ""
 
@@ -2495,7 +2497,7 @@ msgstr "Загрузка..."
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
-#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -3194,7 +3196,7 @@ msgstr ""
 msgid "Overview"
 msgstr "Аннотация"
 
-#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 msgid "P&L ($)"
 msgstr ""
 
@@ -3333,6 +3335,7 @@ msgid "Pools Value"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "Position"
 msgstr "Позиция"
@@ -3922,7 +3925,7 @@ msgstr "Позиция Акции"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
-#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -4019,7 +4022,11 @@ msgstr "Размер"
 #~ msgstr ""
 
 #: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
-msgid "Size (Liq)"
+#~ msgid "Size (Liq)"
+#~ msgstr ""
+
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Size (Liq. Price)"
 msgstr ""
 
 #: src/App/App.js
@@ -4518,8 +4525,8 @@ msgstr "Чтобы уменьшить комиссию, выберите дру�
 #~ msgstr ""
 
 #: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
-msgid "Token (L/S)"
-msgstr ""
+#~ msgid "Token (L/S)"
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Tokens"

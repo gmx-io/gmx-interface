@@ -248,9 +248,9 @@ msgstr "必要な追加リザーブ額"
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr "それに加え、トリガー注文はマーケット注文であり、トリガー価格での決済は保証されていません。"
 
-#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
-#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
-#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 msgid "Address"
 msgstr ""
 
@@ -258,15 +258,16 @@ msgstr ""
 msgid "Address copied to your clipboard"
 msgstr ""
 
-#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
-msgid "Affiliate Rewards Claimed"
-
 #: src/pages/Leaderboard/Leaderboard.tsx
 #~ msgid "Addresses trading statistics. Choose between general or competitions leaderboards."
 #~ msgstr ""
 
 #: src/pages/Leaderboards/index.tsx
 msgid "Addresses trading statistics. Choose between global or competitions leaderboards."
+msgstr ""
+
+#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
+msgid "Affiliate Rewards Claimed"
 msgstr ""
 
 #: src/pages/Referrals/Referrals.tsx
@@ -285,7 +286,7 @@ msgstr "請求後7日以内に指定のネットワーク上のあなたのア�
 msgid "Agree"
 msgstr "同意する"
 
-#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
 msgid "All time"
 msgstr ""
 
@@ -1599,8 +1600,9 @@ msgstr "新しい価格を入力"
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Enter new amount or price"
+msgstr ""
 
-#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 msgid "Entry"
 msgstr ""
 
@@ -2495,7 +2497,7 @@ msgstr "ロード中"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
-#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -3194,7 +3196,7 @@ msgstr ""
 msgid "Overview"
 msgstr "概要"
 
-#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 msgid "P&L ($)"
 msgstr ""
 
@@ -3333,6 +3335,7 @@ msgid "Pools Value"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "Position"
 msgstr "ポジション"
@@ -3922,7 +3925,7 @@ msgstr "ポジションをシェアする"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
-#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -4019,7 +4022,11 @@ msgstr "サイズ"
 #~ msgstr ""
 
 #: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
-msgid "Size (Liq)"
+#~ msgid "Size (Liq)"
+#~ msgstr ""
+
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Size (Liq. Price)"
 msgstr ""
 
 #: src/App/App.js
@@ -4518,8 +4525,8 @@ msgstr "手数料を削減するには別のアセットで受け取ってくだ
 #~ msgstr ""
 
 #: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
-msgid "Token (L/S)"
-msgstr ""
+#~ msgid "Token (L/S)"
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Tokens"

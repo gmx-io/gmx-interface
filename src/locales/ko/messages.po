@@ -248,9 +248,9 @@ msgstr "추가의 리저브양이 필요합니다"
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr "추가로, 트리거 주문은 시장가 주문이며 트리거 가격으로 결제되지 않을 수도 있습니다."
 
-#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
-#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
-#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 msgid "Address"
 msgstr ""
 
@@ -258,15 +258,16 @@ msgstr ""
 msgid "Address copied to your clipboard"
 msgstr ""
 
-#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
-msgid "Affiliate Rewards Claimed"
-
 #: src/pages/Leaderboard/Leaderboard.tsx
 #~ msgid "Addresses trading statistics. Choose between general or competitions leaderboards."
 #~ msgstr ""
 
 #: src/pages/Leaderboards/index.tsx
 msgid "Addresses trading statistics. Choose between global or competitions leaderboards."
+msgstr ""
+
+#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
+msgid "Affiliate Rewards Claimed"
 msgstr ""
 
 #: src/pages/Referrals/Referrals.tsx
@@ -285,7 +286,7 @@ msgstr "수령 후, esGMX 토큰은 7일 이내에 선택한 네트워크의 계
 msgid "Agree"
 msgstr "동의하기"
 
-#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
 msgid "All time"
 msgstr ""
 
@@ -1599,8 +1600,9 @@ msgstr "새로운 가격 입력"
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Enter new amount or price"
+msgstr ""
 
-#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 msgid "Entry"
 msgstr ""
 
@@ -2495,7 +2497,7 @@ msgstr "로딩중..."
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
-#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -3194,7 +3196,7 @@ msgstr ""
 msgid "Overview"
 msgstr "개요"
 
-#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 msgid "P&L ($)"
 msgstr ""
 
@@ -3333,6 +3335,7 @@ msgid "Pools Value"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "Position"
 msgstr "포지션"
@@ -3922,7 +3925,7 @@ msgstr "포지션 공유"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
-#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -4019,7 +4022,11 @@ msgstr "사이즈"
 #~ msgstr ""
 
 #: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
-msgid "Size (Liq)"
+#~ msgid "Size (Liq)"
+#~ msgstr ""
+
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Size (Liq. Price)"
 msgstr ""
 
 #: src/App/App.js
@@ -4518,8 +4525,8 @@ msgstr "수수료를 줄이기 위해서는 다른 자산으로 수령해주세�
 #~ msgstr ""
 
 #: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
-msgid "Token (L/S)"
-msgstr ""
+#~ msgid "Token (L/S)"
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Tokens"
