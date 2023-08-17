@@ -685,6 +685,7 @@ function App() {
 
   useEffect(() => {
     const unwatch = watchNetwork(({ chain, chains }) => {
+      if (!chain || !chains) return;
       const isValidChain = !!chains.find((c) => c.id === chain.id);
       if (!isValidChain) {
         disconnect();

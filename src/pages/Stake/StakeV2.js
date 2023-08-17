@@ -70,7 +70,7 @@ function StakeModal(props) {
     setValue,
     active,
     account,
-    library,
+    signer,
     stakingTokenSymbol,
     stakingTokenAddress,
     farmAddress,
@@ -84,7 +84,7 @@ function StakeModal(props) {
   const { data: tokenAllowance } = useSWR(
     active && stakingTokenAddress && [active, chainId, stakingTokenAddress, "allowance", account, farmAddress],
     {
-      fetcher: contractFetcher(library, Token),
+      fetcher: contractFetcher(signer, Token),
     }
   );
 
@@ -104,7 +104,7 @@ function StakeModal(props) {
     if (needApproval) {
       approveTokens({
         setIsApproving,
-        library,
+        signer,
         tokenAddress: stakingTokenAddress,
         spender: farmAddress,
         chainId,
@@ -113,7 +113,7 @@ function StakeModal(props) {
     }
 
     setIsStaking(true);
-    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, library.getSigner());
+    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, signer);
 
     callContract(chainId, contract, stakeMethodName, [amount], {
       sentMsg: t`Stake submitted!`,
@@ -193,7 +193,7 @@ function UnstakeModal(props) {
     maxAmount,
     value,
     setValue,
-    library,
+    signer,
     unstakingTokenSymbol,
     rewardRouterAddress,
     unstakeMethodName,
@@ -235,7 +235,7 @@ function UnstakeModal(props) {
 
   const onClickPrimary = () => {
     setIsUnstaking(true);
-    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, library.getSigner());
+    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, signer);
     callContract(chainId, contract, unstakeMethodName, [amount], {
       sentMsg: t`Unstake submitted!`,
       failMsg: t`Unstake failed.`,
@@ -328,7 +328,7 @@ function VesterDepositModal(props) {
     vestedAmount,
     averageStakedAmount,
     maxVestableAmount,
-    library,
+    signer,
     stakeTokenLabel,
     reserveAmount,
     maxReserveAmount,
@@ -368,7 +368,7 @@ function VesterDepositModal(props) {
 
   const onClickPrimary = () => {
     setIsDepositing(true);
-    const contract = new ethers.Contract(vesterAddress, Vester.abi, library.getSigner());
+    const contract = new ethers.Contract(vesterAddress, Vester.abi, signer);
 
     callContract(chainId, contract, "deposit", [amount], {
       sentMsg: t`Deposit submitted!`,
@@ -520,12 +520,12 @@ function VesterDepositModal(props) {
 }
 
 function VesterWithdrawModal(props) {
-  const { isVisible, setIsVisible, chainId, title, library, vesterAddress, setPendingTxns } = props;
+  const { isVisible, setIsVisible, chainId, title, signer, vesterAddress, setPendingTxns } = props;
   const [isWithdrawing, setIsWithdrawing] = useState(false);
 
   const onClickPrimary = () => {
     setIsWithdrawing(true);
-    const contract = new ethers.Contract(vesterAddress, Vester.abi, library.getSigner());
+    const contract = new ethers.Contract(vesterAddress, Vester.abi, signer);
 
     callContract(chainId, contract, "withdraw", [], {
       sentMsg: t`Withdraw submitted.`,
@@ -575,7 +575,7 @@ function CompoundModal(props) {
     rewardRouterAddress,
     active,
     account,
-    library,
+    signer,
     chainId,
     setPendingTxns,
     totalVesterRewards,
@@ -617,7 +617,7 @@ function CompoundModal(props) {
   const { data: tokenAllowance } = useSWR(
     active && [active, chainId, gmxAddress, "allowance", account, stakedGmxTrackerAddress],
     {
-      fetcher: contractFetcher(library, Token),
+      fetcher: contractFetcher(signer, Token),
     }
   );
 
@@ -644,7 +644,7 @@ function CompoundModal(props) {
     if (needApproval) {
       approveTokens({
         setIsApproving,
-        library,
+        signer,
         tokenAddress: gmxAddress,
         spender: stakedGmxTrackerAddress,
         chainId,
@@ -654,7 +654,7 @@ function CompoundModal(props) {
 
     setIsCompounding(true);
 
-    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, library.getSigner());
+    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, signer);
     callContract(
       chainId,
       contract,
@@ -765,7 +765,7 @@ function ClaimModal(props) {
     isVisible,
     setIsVisible,
     rewardRouterAddress,
-    library,
+    signer,
     chainId,
     setPendingTxns,
     nativeTokenSymbol,
@@ -803,7 +803,7 @@ function ClaimModal(props) {
   const onClickPrimary = () => {
     setIsClaiming(true);
 
-    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, library.getSigner());
+    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, signer);
     callContract(
       chainId,
       contract,

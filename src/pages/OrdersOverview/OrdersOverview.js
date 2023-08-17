@@ -28,13 +28,13 @@ import useWallet from "lib/wallets/useWallet";
 
 export default function OrdersOverview() {
   const { chainId } = useChainId();
-  const { library, account, active } = useWallet();
+  const { signer, account, active } = useWallet();
 
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
 
-  const { infoTokens } = useInfoTokens(library, chainId, active, undefined, undefined);
+  const { infoTokens } = useInfoTokens(signer, chainId, active, undefined, undefined);
 
-  const orders = useAllOrders(chainId, library);
+  const orders = useAllOrders(chainId, signer);
   const stats = useAllOrdersStats(chainId);
   const ORDER_TYPE_LABELS = {
     Increase: t`Increase`,
@@ -44,7 +44,7 @@ export default function OrdersOverview() {
 
   const positionsForOrders = usePositionsForOrders(
     chainId,
-    library,
+    signer,
     orders.filter((order) => order.type === DECREASE)
   );
 
@@ -63,7 +63,7 @@ export default function OrdersOverview() {
   const executeOrder = (evt, order) => {
     evt.preventDefault();
 
-    const params = [chainId, library, order.account, order.index, account];
+    const params = [chainId, signer, order.account, order.index, account];
     let method;
     if (order.type === "Swap") {
       method = "executeSwapOrder";

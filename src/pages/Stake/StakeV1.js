@@ -433,8 +433,7 @@ function StakeModal(props) {
 }
 
 function UnstakeModal(props) {
-  const { isVisible, setIsVisible, title, maxAmount, value, setValue, library, stakingTokenSymbol, farmAddress } =
-    props;
+  const { isVisible, setIsVisible, title, maxAmount, value, setValue, signer, stakingTokenSymbol, farmAddress } = props;
   const [isUnstaking, setIsUnstaking] = useState(false);
 
   let amount = parseValue(value, 18);
@@ -450,7 +449,7 @@ function UnstakeModal(props) {
 
   const onClickPrimary = () => {
     setIsUnstaking(true);
-    const contract = new ethers.Contract(farmAddress, YieldFarm.abi, library.getSigner());
+    const contract = new ethers.Contract(farmAddress, YieldFarm.abi, signer);
     contract
       .unstake(amount)
       .then(async (res) => {

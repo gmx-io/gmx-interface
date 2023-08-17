@@ -962,9 +962,6 @@ export const Exchange = forwardRef((props, ref) => {
               flagOrdersEnabled={flagOrdersEnabled}
               chainId={chainId}
               infoTokens={infoTokens}
-              active={active}
-              signer={signer}
-              account={account}
               positionsMap={positionsMap}
               fromTokenAddress={fromTokenAddress}
               setFromTokenAddress={setFromTokenAddress}
