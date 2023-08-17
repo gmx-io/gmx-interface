@@ -80,10 +80,16 @@
   color: #a9a9b0;
   margin-right: 0.775rem;
 }
+
+.active-referral-code .tier .tier-discount-warning span {
+  color: var(--warning-yellow);
+}
+
 .active-referral-code .tier a {
   text-decoration: none;
   font-size: 0;
 }
+
 .mb-sm {
   margin-bottom: 1.5rem;
 }
