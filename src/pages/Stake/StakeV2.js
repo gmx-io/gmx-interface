@@ -352,7 +352,6 @@ function VesterDepositModal(props) {
     setPendingTxns,
   } = props;
   const [isDepositing, setIsDepositing] = useState(false);
-  const isMetamaskMobile = useIsMetamaskMobile();
 
   let amount = parseValue(value, 18);
 
@@ -431,13 +430,7 @@ function VesterDepositModal(props) {
             topLeftLabel={t`Deposit`}
             topRightLabel={t`Max`}
             topRightValue={formatAmount(maxAmount, 18, 4, true)}
-            onClickTopRightLabel={() => {
-              const formattedMaxAmount = formatAmountFree(maxAmount, 18, 18);
-              const finalMaxAmount = isMetamaskMobile
-                ? limitDecimals(formattedMaxAmount, MAX_METAMASK_MOBILE_DECIMALS)
-                : formattedMaxAmount;
-              setValue(finalMaxAmount);
-            }}
+            onClickTopRightLabel={() => setValue(formatAmountFree(maxAmount, 18, 18))}
             inputValue={value}
             onInputValueChange={(e) => setValue(e.target.value)}
             showMaxButton={false}
