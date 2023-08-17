@@ -66,18 +66,19 @@ export function useUserReferralInfo(
     chainId,
     account
   );
+
   const { codeOwner } = useCodeOwner(library, chainId, account, userReferralCode);
   const { affiliateTier: tierId } = useAffiliateTier(library, chainId, codeOwner);
-  const { totalRebate } = useTiers(library, chainId, tierId);
-  const { discountShare } = useReferrerDiscountShare(library, chainId, codeOwner);
-
+  const { totalRebate, discountShare } = useTiers(library, chainId, tierId);
+  const { discountShare: customDiscountShare } = useReferrerDiscountShare(library, chainId, codeOwner);
+  const finalDiscountShare = customDiscountShare?.gt(0) ? customDiscountShare : discountShare;
   if (
     !userReferralCode ||
     !userReferralCodeString ||
     !codeOwner ||
     !tierId ||
     !totalRebate ||
-    !discountShare ||
+    !finalDiscountShare ||
     !referralCodeForTxn
   ) {
     return undefined;
@@ -92,8 +93,8 @@ export function useUserReferralInfo(
     tierId,
     totalRebate,
     totalRebateFactor: basisPointsToFloat(totalRebate),
-    discountShare,
-    discountFactor: basisPointsToFloat(discountShare),
+    discountShare: finalDiscountShare,
+    discountFactor: basisPointsToFloat(finalDiscountShare),
   };
 }
 
