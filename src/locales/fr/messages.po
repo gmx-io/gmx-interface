@@ -1731,6 +1731,10 @@ msgstr "Rapports financiers et analyses de protocoles"
 msgid "Floor Price Fund"
 msgstr "Fond de prix plancher"
 
+#: src/components/Referrals/TradersStats.tsx
+msgid "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Forfeit profit"
 msgstr "Renoncer aux profits"
@@ -5230,8 +5234,12 @@ msgid "You will need to be on this page to accept the transfer, <0>click here</0
 msgstr "Vous devrez être sur cette page pour accepter le transfert, <0>cliquez ici</0> pour copier le lien vers cette page si nécessaire."
 
 #: src/components/Referrals/TradersStats.tsx
-msgid "You will receive a {currentTierDiscount}% discount on your opening and closing fees. This discount on V1 will be airdropped to your account every Wednesday. For trades on V2, discounts are applied automatically and will reduce your fees when you make a trade."
+msgid "You will receive a {currentTierDiscount}% discount on opening and closing fees."
 msgstr ""
+
+#: src/components/Referrals/TradersStats.tsx
+#~ msgid "You will receive a {currentTierDiscount}% discount on your opening and closing fees. This discount on V1 will be airdropped to your account every Wednesday. For trades on V2, discounts are applied automatically and will reduce your fees when you make a trade."
+#~ msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 msgid "You will receive at least {0} {1} if this order is executed. The exact execution price may vary depending on fees at the time the order is executed."
