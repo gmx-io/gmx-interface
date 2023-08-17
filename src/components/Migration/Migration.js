@@ -106,7 +106,7 @@ function MigrationModal(props) {
   if (balances) {
     maxAmount = balances[index * 2];
   }
-  //  VIPINETH check again
+
   useEffect(() => {
     if (active) {
       signer.on("block", () => {
@@ -356,8 +356,6 @@ export default function Migration() {
 
     totalMigratedUsd = totalMigratedGmx.mul(gmxPrice);
   }
-
-  //VIPINETH TODO: check the function below
 
   useEffect(() => {
     if (active) {

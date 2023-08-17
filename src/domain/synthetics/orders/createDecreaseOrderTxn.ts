@@ -118,7 +118,6 @@ export async function createDecreaseOrderTxn(chainId: number, signer: Signer, p:
   }
 
   const txnCreatedAt = Date.now();
-  // vipineth recheck
   const txnCreatedAtBlock = await signer.provider?.getBlockNumber();
 
   const txn = await callContract(chainId, exchangeRouter, "multicall", [encodedPayload], {

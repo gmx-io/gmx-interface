@@ -1,7 +1,14 @@
 import React from "react";
 import "@rainbow-me/rainbowkit/styles.css";
 import { connectorsForWallets, darkTheme, getDefaultWallets, RainbowKitProvider, Theme } from "@rainbow-me/rainbowkit";
-import { ledgerWallet, trustWallet, argentWallet, zerionWallet, safeWallet } from "@rainbow-me/rainbowkit/wallets";
+import {
+  ledgerWallet,
+  trustWallet,
+  argentWallet,
+  zerionWallet,
+  safeWallet,
+  rabbyWallet,
+} from "@rainbow-me/rainbowkit/wallets";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
@@ -38,6 +45,7 @@ const connectors = connectorsForWallets([
   {
     groupName: "More",
     wallets: [
+      rabbyWallet({ chains }),
       trustWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
       ledgerWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
       zerionWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
