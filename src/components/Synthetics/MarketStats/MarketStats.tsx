@@ -54,7 +54,7 @@ export function MarketStats(p: Props) {
             <div className="App-card-title-mark-subtitle">GMX Market Tokens</div>
           </div>
           <div>
-            <AssetDropdown assetSymbol={"GM"} token={marketToken} />
+            <AssetDropdown assetSymbol={"GM"} token={marketToken} position="left" />
           </div>
         </div>
       </div>

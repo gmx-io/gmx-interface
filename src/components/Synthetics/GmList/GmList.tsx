@@ -181,7 +181,7 @@ export function GmList({
                             {getMarketIndexName({ indexToken, isSpotOnly: market?.isSpotOnly })}
                             {!market.isSpotOnly && (
                               <div className="Asset-dropdown-container">
-                                <AssetDropdown assetSymbol={indexToken.symbol} tooltipPosition="left" />
+                                <AssetDropdown assetSymbol={indexToken.symbol} position="left" />
                               </div>
                             )}
                           </div>
@@ -293,7 +293,7 @@ export function GmList({
                       />
                       <div className="token-symbol-text">{market?.name}</div>
                       <div>
-                        <AssetDropdown assetSymbol={indexToken.symbol} tooltipPosition="left" />
+                        <AssetDropdown assetSymbol={indexToken.symbol} position="left" />
                       </div>
                     </div>
                   </div>
