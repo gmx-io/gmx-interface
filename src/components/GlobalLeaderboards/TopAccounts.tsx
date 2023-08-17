@@ -16,7 +16,7 @@ const formatUsdAmount = (x: BigNumberish, displayDecimals = 2, useCommas = false
   formatAmount(x, USD_DECIMALS, displayDecimals, useCommas)
 );
 
-export default function AccountsLeaderboard() {
+export default function TopAccounts() {
   const perPage = 15;
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");

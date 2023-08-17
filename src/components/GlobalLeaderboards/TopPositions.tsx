@@ -7,7 +7,7 @@ import { useLeaderboardContext } from "./Context";
 import { t } from "@lingui/macro";
 import { formatUsd } from "lib/numbers";
 
-export default function PositionsLeaderboard() {
+export default function TopPositions() {
   const perPage = 15;
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
