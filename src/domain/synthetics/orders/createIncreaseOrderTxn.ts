@@ -123,6 +123,9 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
     });
   }
 
+  const txnCreatedAt = Date.now();
+  const txnCreatedAtBlock = await library.getBlockNumber();
+
   const txn = await callContract(chainId, exchangeRouter, "multicall", [encodedPayload], {
     value: totalWntAmount,
     hideSentMsg: true,
@@ -138,6 +141,8 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
         collateralDeltaAmount: p.collateralDeltaAmount,
         sizeDeltaUsd: p.sizeDeltaUsd,
         sizeDeltaInTokens: p.sizeDeltaInTokens,
+        updatedAt: txnCreatedAt,
+        updatedAtBlock: BigNumber.from(txnCreatedAtBlock),
       });
     }
 

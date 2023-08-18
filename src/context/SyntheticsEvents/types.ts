@@ -12,10 +12,13 @@ export type SyntheticsEventsContextType = {
   setPendingPosition: SetPendingPosition;
   setPendingDeposit: SetPendingDeposit;
   setPendingWithdrawal: SetPendingWithdrawal;
+  setOrderStatusViewed: (key: string) => void;
+  setDepositStatusViewed: (key: string) => void;
+  setWithdrawalStatusViewed: (key: string) => void;
 };
 
 export type SetPendingOrder = (data: PendingOrderData) => void;
-export type SetPendingPosition = (update: Omit<PendingPositionUpdate, "updatedAt" | "updatedAtBlock">) => void;
+export type SetPendingPosition = (update: PendingPositionUpdate) => void;
 export type SetPendingDeposit = (data: PendingDepositData) => void;
 export type SetPendingWithdrawal = (data: PendingWithdrawalData) => void;
 
@@ -117,6 +120,7 @@ export type MultiTransactionStatus<TEventData> = {
   cancelledTxnHash?: string;
   executedTxnHash?: string;
   createdAt: number;
+  isViewed?: boolean;
 };
 
 export type OrderStatus = MultiTransactionStatus<OrderCreatedEventData>;

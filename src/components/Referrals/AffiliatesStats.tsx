@@ -7,7 +7,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getNativeToken, getToken, getTokenBySymbol } from "config/tokens";
-import { RebateDistributionType, ReferralCodeStats, TotalReferralsStats } from "domain/referrals";
+import { RebateDistributionType, ReferralCodeStats, TotalReferralsStats, useTiers } from "domain/referrals";
 import { useMarketsInfo } from "domain/synthetics/markets";
 import { useAffiliateRewards } from "domain/synthetics/referrals/useAffiliateRewards";
 import { getTotalClaimableAffiliateRewardsUsd } from "domain/synthetics/referrals/utils";
@@ -31,13 +31,14 @@ import EmptyMessage from "./EmptyMessage";
 import ReferralInfoCard from "./ReferralInfoCard";
 import {
   getReferralCodeTradeUrl,
+  getSharePercentage,
   getTierIdDisplay,
   getTwitterShareUrl,
   getUSDValue,
   isRecentReferralCodeNotExpired,
-  tierRebateInfo,
 } from "./referralsHelper";
 import usePagination from "./usePagination";
+import { useWeb3React } from "@web3-react/core";
 
 type Props = {
   chainId: number;
@@ -54,6 +55,7 @@ function AffiliatesStats({
   handleCreateReferralCode,
   setRecentlyAddedCodes,
 }: Props) {
+  const { library } = useWeb3React();
   const [isAddReferralCodeModalOpen, setIsAddReferralCodeModalOpen] = useState(false);
   const addNewModalRef = useRef<HTMLDivElement>(null);
 
@@ -106,6 +108,9 @@ function AffiliatesStats({
 
   const currentAffiliatesData = getCurrentAffiliatesData();
   const tierId = affiliateTierInfo?.tierId;
+  const discountShare = affiliateTierInfo?.discountShare;
+  const { totalRebate } = useTiers(library, chainId, tierId);
+  const currentRebatePercentage = getSharePercentage(tierId, BigNumber.from(discountShare || 0), totalRebate, true);
 
   const totalClaimableRewardsUsd = useMemo(() => {
     if (!affiliateRewardsData || !marketsInfoData) {
@@ -262,7 +267,7 @@ function AffiliatesStats({
               <p className="title">
                 <Trans>Referral Codes</Trans>{" "}
                 <span className="sub-title">
-                  {affiliateTierInfo && t`Tier ${getTierIdDisplay(tierId)} (${tierRebateInfo[tierId]}% rebate)`}
+                  {affiliateTierInfo && t`Tier ${getTierIdDisplay(tierId)} (${currentRebatePercentage}% rebate)`}
                 </span>
               </p>
               <Button variant="secondary" onClick={open}>

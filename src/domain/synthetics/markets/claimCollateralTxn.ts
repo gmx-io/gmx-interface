@@ -25,7 +25,7 @@ export function claimCollateralTxn(chainId: number, library: Web3Provider, p: Pa
     "claimFundingFees",
     [fundingFees.marketAddresses, fundingFees.tokenAddresses, account],
     {
-      sentMsg: t`Claim request sent`,
+      sentMsg: t`Funding Claimed`,
       successMsg: t`Success claimings`,
       failMsg: t`Claiming failed`,
       hideSuccessMsg: true,
