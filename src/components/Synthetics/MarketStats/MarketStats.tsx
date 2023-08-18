@@ -41,6 +41,7 @@ export function MarketStats(p: Props) {
   const shortPoolAmountUsd = marketInfo ? getPoolUsdWithoutPnl(marketInfo, false, "midPrice") : undefined;
 
   const apr = getByKey(marketsTokensAPRData, marketInfo?.marketTokenAddress);
+  const [indexName, poolName] = marketInfo?.name.split(" ") || [];
 
   return (
     <div className="App-card MarketStats-card">
@@ -50,7 +51,10 @@ export function MarketStats(p: Props) {
             <img className="MarketStats-gm-icon" src={getIcon(chainId, "gm")} alt="GM" />
           </div>
           <div className="App-card-title-mark-info">
-            <div className="App-card-title-mark-title">GM{marketInfo && `: ${marketInfo.name}`}</div>
+            <div className="App-card-title-mark-title items-center">
+              <span>GM{indexName && `: ${indexName}`}</span>
+              <span className="subtext">{poolName && poolName}</span>
+            </div>
             <div className="App-card-title-mark-subtitle">GMX Market Tokens</div>
           </div>
           <div>

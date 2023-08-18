@@ -462,6 +462,7 @@ export function PositionItem(p: Props) {
   }
 
   function renderSmall() {
+    const [indexName, poolName] = p.position.marketInfo.name.split(" ") || [];
     return (
       <div className="App-card">
         <div>
@@ -497,7 +498,12 @@ export function PositionItem(p: Props) {
               <div className="label">
                 <Trans>Market</Trans>
               </div>
-              <div onClick={() => p.onSelectPositionClick?.()}>{p.position.marketInfo.name}</div>
+              <div onClick={() => p.onSelectPositionClick?.()}>
+                <div className="items-top">
+                  <span>{indexName && indexName}</span>
+                  <span className="subtext">{poolName && poolName}</span>
+                </div>
+              </div>
             </div>
             <div className="App-card-row">
               <div className="label">

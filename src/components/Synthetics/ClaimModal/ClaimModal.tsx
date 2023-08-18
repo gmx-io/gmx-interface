@@ -35,6 +35,7 @@ export function ClaimModal(p: Props) {
 
   function renderMarketSection(market: MarketInfo) {
     const marketName = market.name;
+    const [indexName, poolName] = marketName.split(" ") || [];
     const longToken = market.longToken;
     const shortToken = market.shortToken;
 
@@ -62,7 +63,16 @@ export function ClaimModal(p: Props) {
 
     return (
       <div key={market.marketTokenAddress} className="App-card-content">
-        <ExchangeInfoRow className="ClaimModal-row" label={t`Market`} value={marketName} />
+        <ExchangeInfoRow
+          className="ClaimModal-row"
+          label={t`Market`}
+          value={
+            <div className="items-top">
+              <span>{indexName && indexName}</span>
+              <span className="subtext">{poolName && poolName}</span>
+            </div>
+          }
+        />
         <ExchangeInfoRow
           className="ClaimModal-row"
           label={t`Funding fee`}

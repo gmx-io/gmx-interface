@@ -429,6 +429,11 @@ button.btn-link:hover .logout-icon {
   align-items: center;
 }
 
+.items-top {
+  display: flex;
+  align-items: flex-start;
+}
+
 .w-full {
   width: 100%;
 }
@@ -471,4 +476,11 @@ button.btn-link:hover .logout-icon {
 
 .ml-xs {
   margin-left: 0.5rem;
+}
+
+.subtext {
+  font-size: 1.2rem;
+  color: var(--text-gray);
+  margin-left: 0.25rem;
+  line-height: 1;
 }

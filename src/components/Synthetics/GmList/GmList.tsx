@@ -281,6 +281,7 @@ export function GmList({
               if (!indexToken) {
                 return null;
               }
+              const [indexName, poolName] = market?.name.split(" ") || [];
 
               return (
                 <div className="App-card" key={token.address}>
@@ -293,7 +294,12 @@ export function GmList({
                         alt={indexToken.symbol}
                         width="20"
                       />
-                      <div className="token-symbol-text">{market?.name}</div>
+                      <div className="token-symbol-text">
+                        <div className="items-top">
+                          <span>{indexName && indexName}</span>
+                          <span className="subtext">{poolName && poolName}</span>
+                        </div>
+                      </div>
                       <div>
                         <AssetDropdown assetSymbol={indexToken.symbol} position="left" />
                       </div>

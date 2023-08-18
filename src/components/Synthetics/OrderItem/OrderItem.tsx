@@ -127,6 +127,7 @@ export function OrderItem(p: Props) {
       }
 
       const positionOrder = p.order as PositionOrderInfo;
+      const [indexName, poolName] = positionOrder.marketInfo.name.split(" ") || [];
 
       return (
         <Tooltip
@@ -135,7 +136,16 @@ export function OrderItem(p: Props) {
           renderContent={() => {
             return (
               <>
-                <StatsTooltipRow label={t`Market`} value={positionOrder.marketInfo.name} showDollar={false} />
+                <StatsTooltipRow
+                  label={t`Market`}
+                  value={
+                    <div className="items-top">
+                      <span>{indexName && indexName}</span>
+                      <span className="subtext">{poolName && poolName}</span>
+                    </div>
+                  }
+                  showDollar={false}
+                />
                 <StatsTooltipRow label={t`Collateral`} value={getCollateralText()} showDollar={false} />
 
                 {isCollateralSwap && (
