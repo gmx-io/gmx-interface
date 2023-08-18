@@ -56,6 +56,16 @@ function getOrderActionText(tradeAction: TradeAction) {
   return actionText;
 }
 
+function renderMarketName(marketName: string) {
+  const [indexName, poolName] = marketName.split(" ") || [];
+  return (
+    <div className="items-top">
+      <span>{indexName}</span>
+      <span className="subtext">{poolName}</span>
+    </div>
+  );
+}
+
 function getSwapOrderMessage(tradeAction: SwapTradeAction) {
   const tokenIn = tradeAction.initialCollateralToken!;
   const tokenOut = tradeAction.targetCollateralToken!;
@@ -117,17 +127,22 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
     const actionText = getOrderActionText(tradeAction);
 
     if (tradeAction.eventName === TradeActionType.OrderExecuted) {
-      return t`Execute Order: ${increaseText} ${positionText} ${sizeDeltaText}, ${indexToken.symbol} Price: ${formatUsd(
-        executionPrice,
-        { displayDecimals: priceDecimals }
-      )}, Market: ${tradeAction.marketInfo.name}`;
+      return (
+        <Trans>
+          Execute Order: {increaseText} {positionText} {sizeDeltaText}, {indexToken.symbol} Price:
+          {formatUsd(executionPrice, { displayDecimals: priceDecimals })}, Market:{" "}
+          {renderMarketName(tradeAction.marketInfo.name)}
+        </Trans>
+      );
     }
 
-    return t`${actionText} Order: ${increaseText} ${positionText} ${sizeDeltaText}, ${
-      indexToken.symbol
-    } Price: ${pricePrefix} ${formatUsd(triggerPrice, { displayDecimals: priceDecimals })}, Market: ${
-      tradeAction.marketInfo.name
-    }`;
+    return (
+      <Trans>
+        {actionText} Order: {increaseText} {positionText} {sizeDeltaText}, {indexToken.symbol} Price: {pricePrefix}{" "}
+        {formatUsd(triggerPrice, { displayDecimals: priceDecimals })}, Market:{" "}
+        {renderMarketName(tradeAction.marketInfo.name)}
+      </Trans>
+    );
   }
 
   if (isMarketOrderType(tradeAction.orderType!)) {
@@ -146,19 +161,32 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
           ? tradeAction.executionPrice
           : tradeAction.acceptablePrice;
 
-      return t`${actionText} ${increaseText} ${positionText} ${sizeDeltaText}, ${pricePrefix}: ${formatAcceptablePrice(
-        price,
-        {
-          displayDecimals: priceDecimals,
-        }
-      )},  Market: ${tradeAction.marketInfo.name}`;
+      return (
+        <Trans>
+          {actionText} {increaseText} {positionText} {sizeDeltaText}, {pricePrefix}:{" "}
+          {formatAcceptablePrice(price, {
+            displayDecimals: priceDecimals,
+          })}
+          , Market: {renderMarketName(tradeAction.marketInfo.name)}
+        </Trans>
+      );
     } else {
       const collateralText = formatTokenAmount(collateralDeltaAmount, collateralToken.decimals, collateralToken.symbol);
 
       if (isIncreaseOrderType(tradeAction.orderType!)) {
-        return t`${actionText} Deposit ${collateralText} into ${positionText},  Market: ${tradeAction.marketInfo.name}`;
+        return (
+          <Trans>
+            {actionText} Deposit {collateralText} into {positionText}, Market:{" "}
+            {renderMarketName(tradeAction.marketInfo.name)}
+          </Trans>
+        );
       } else {
-        return t`${actionText} Withdraw ${collateralText} from ${positionText},  Market: ${tradeAction.marketInfo.name}`;
+        return (
+          <Trans>
+            {actionText} Withdraw {collateralText} from {positionText}, Market:{" "}
+            {renderMarketName(tradeAction.marketInfo.name)}
+          </Trans>
+        );
       }
     }
   }
@@ -172,7 +200,7 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
         {" "}
         <Trans>
           {positionText} {sizeDeltaText}, Price: {formatUsd(executionPrice, { displayDecimals: priceDecimals })},
-          Market: {tradeAction.marketInfo.name}
+          Market: {renderMarketName(tradeAction.marketInfo.name)}
         </Trans>
       </>
     );

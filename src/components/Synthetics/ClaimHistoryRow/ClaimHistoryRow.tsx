@@ -61,12 +61,18 @@ export function ClaimHistoryRow(p: Props) {
           renderContent={() => (
             <>
               {claimAction.claimItems.map(({ marketInfo: market, longTokenAmount, shortTokenAmount }, index) => {
+                const [indexName, poolName] = market.name.split(" ") || [];
                 return (
                   <>
                     <StatsTooltipRow
                       className="ClaimHistoryRow-tooltip-row"
                       key={market.marketTokenAddress}
-                      label={market.name}
+                      label={
+                        <div className="items-top">
+                          <span>{indexName}</span>
+                          <span className="subtext">{poolName}</span>
+                        </div>
+                      }
                       showDollar={false}
                       value={
                         <>
