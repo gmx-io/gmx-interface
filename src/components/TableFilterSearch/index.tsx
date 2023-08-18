@@ -1,18 +1,19 @@
 import React from "react";
-import { FiSearch } from "react-icons/fi";
 import classnames from "classnames";
+import "./index.css"
 
 export default function TableFilterSearch({value, onInput, label, className = ""}) {
   return (
-    <div className="input-wrapper">
+    <div className="filter-search">
       <input
         type="text"
-        placeholder={label}
-        className={classnames("leaderboard-search-input", "text-input", "input-small", className)}
-        value={value}
-        onInput={onInput}
+        placeholder={ label }
+        value={ value }
+        onChange={ onInput }
+        onKeyDown={ () => undefined }
+        autoFocus={ false }
+        className={ classnames("filter-search-input", className) }
       />
-      <FiSearch className="input-logo" />
     </div>
-  )
+  );
 }

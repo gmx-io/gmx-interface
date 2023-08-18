@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useLeaderboardContext } from "./Context";
 import { t } from "@lingui/macro";
 import { formatUsd } from "lib/numbers";
+import classnames from "classnames";
 
 export default function TopPositions() {
   const perPage = 15;
@@ -17,8 +18,14 @@ export default function TopPositions() {
   const firstItemIndex = (page - 1) * perPage;
   const displayedStats = filteredStats.slice(firstItemIndex, page * perPage).map(p => ({
     id: { value: p.key, },
-    account: { value: p.account },
-    unrealizedPnl: { value: formatUsd(p.unrealizedPnlAfterFees) },
+    account: { value: p.account, linkTo: `/actions/v2/${p.account}`, target: "_blank" },
+    unrealizedPnl: {
+      value: formatUsd(p.unrealizedPnlAfterFees),
+      className: classnames(
+        p.unrealizedPnlAfterFees.isNegative() ? "negative" : "positive",
+        "top-accounts-pnl-abs"
+      ),
+    },
     market: [{
       value: p.marketInfo.name
     }, {
@@ -33,7 +40,7 @@ export default function TopPositions() {
   const handleSearchInput = ({ target }) => setSearch(target.value);
   const titles = {
     account: { title: t`Address` },
-    unrealizedPnl: { title: t`P&L ($)` },
+    unrealizedPnl: { title: t`PnL ($)` },
     market: { title: t`Position` },
     entryPrice: { title: t`Entry` },
     sizeLiqPrice: { title: t`Size (Liq. Price)` },
@@ -42,7 +49,7 @@ export default function TopPositions() {
   return (
     <div>
       <div className="leaderboard-header">
-        <TableFilterSearch label={t`Address`} value={search} onInput={handleSearchInput}/>
+        <TableFilterSearch label={t`Search Address`} value={search} onInput={handleSearchInput}/>
       </div>
       <Table
         enumerate={ true }

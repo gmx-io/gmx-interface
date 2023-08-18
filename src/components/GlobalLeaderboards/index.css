@@ -58,31 +58,6 @@
   cursor: pointer;
 }
 
-.table .top-accounts-pnl-abs::before {
-  content: "$";
-  display: inline;
-}
-
-.table .top-accounts-pnl-rel::after {
-  content: "%";
-  display: inline;
-}
-
-.table .top-accounts-size::before {
-  content: "$";
-  display: inline;
-}
-
-.table .top-accounts-leverage::before {
-  content: "(";
-  display: inline;
-}
-
-.table .top-accounts-leverage::after {
-  content: "x)";
-  display: inline;
-}
-
 .transparent-btn:hover {
   background: rgba(128, 138, 255, 0.0784313725490196);
 }
