@@ -64,7 +64,19 @@ export function MarketStats(p: Props) {
       </div>
       <div className="App-card-divider" />
       <div className="App-card-content">
-        <CardRow label={t`Market`} value={marketInfo?.name || "..."} />
+        <CardRow
+          label={t`Market`}
+          value={
+            indexName && poolName ? (
+              <div className="items-top">
+                <span>{indexName}</span>
+                <span className="subtext">{poolName}</span>
+              </div>
+            ) : (
+              "..."
+            )
+          }
+        />
         <CardRow
           label={t`Price`}
           value={

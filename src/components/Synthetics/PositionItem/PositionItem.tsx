@@ -327,6 +327,7 @@ export function PositionItem(p: Props) {
   }
 
   function renderLarge() {
+    const [indexName, poolName] = p.position.marketInfo.name.split(" ") || [];
     return (
       <tr
         className={cx("Exchange-list-item", {
@@ -342,7 +343,16 @@ export function PositionItem(p: Props) {
               handleClassName="plain"
               renderContent={() => (
                 <div>
-                  <StatsTooltipRow label={t`Market`} value={p.position.marketInfo.name} showDollar={false} />
+                  <StatsTooltipRow
+                    label={t`Market`}
+                    value={
+                      <div className="items-top">
+                        <span>{indexName && indexName}</span>
+                        <span className="subtext">{poolName && poolName}</span>
+                      </div>
+                    }
+                    showDollar={false}
+                  />
 
                   <br />
 

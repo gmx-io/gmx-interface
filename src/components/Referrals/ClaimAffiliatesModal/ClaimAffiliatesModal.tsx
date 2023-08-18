@@ -46,6 +46,7 @@ export function ClaimAffiliatesModal(p: Props) {
     }
 
     const { longToken, shortToken } = marketInfo;
+    const [indexName, poolName] = marketInfo.name.split(" ") || [];
 
     const { longTokenAmount, shortTokenAmount } = reward;
 
@@ -70,7 +71,16 @@ export function ClaimAffiliatesModal(p: Props) {
 
     return (
       <div key={marketInfo.marketTokenAddress} className="App-card-content">
-        <ExchangeInfoRow className="ClaimModal-row" label={t`Market`} value={marketInfo.name} />
+        <ExchangeInfoRow
+          className="ClaimModal-row"
+          label={t`Market`}
+          value={
+            <div className="items-top">
+              <span>{indexName}</span>
+              <span className="subtext">{poolName}</span>
+            </div>
+          }
+        />
         <ExchangeInfoRow
           className="ClaimModal-row"
           label={t`Rewards`}
