@@ -256,8 +256,6 @@ msgstr "Additional reserve required"
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 
-#: src/components/GlobalLeaderboards/TopAccounts.tsx
-#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/GlobalLeaderboards/TopPositions.tsx
 msgid "Address"
 msgstr "Address"
@@ -266,13 +264,17 @@ msgstr "Address"
 msgid "Address copied to your clipboard"
 msgstr "Address copied to your clipboard"
 
+#: src/pages/Leaderboards/index.tsx
+msgid "Addresses trading statistics"
+msgstr "Addresses trading statistics"
+
 #: src/pages/Leaderboard/Leaderboard.tsx
 #~ msgid "Addresses trading statistics. Choose between general or competitions leaderboards."
 #~ msgstr "Addresses trading statistics. Choose between general or competitions leaderboards."
 
 #: src/pages/Leaderboards/index.tsx
-msgid "Addresses trading statistics. Choose between global or competitions leaderboards."
-msgstr "Addresses trading statistics. Choose between global or competitions leaderboards."
+#~ msgid "Addresses trading statistics. Choose between global or competitions leaderboards."
+#~ msgstr "Addresses trading statistics. Choose between global or competitions leaderboards."
 
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
@@ -295,8 +297,8 @@ msgid "Agree"
 msgstr "Agree"
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
-msgid "All time"
-msgstr "All time"
+#~ msgid "All time"
+#~ msgstr "All time"
 
 #: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 msgid "Allow {0} to be spent"
@@ -1994,8 +1996,8 @@ msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>F
 msgstr "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 
 #: src/pages/Leaderboards/index.tsx
-msgid "Global"
-msgstr "Global"
+#~ msgid "Global"
+#~ msgstr "Global"
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
@@ -3178,8 +3180,8 @@ msgid "Overview"
 msgstr "Overview"
 
 #: src/components/GlobalLeaderboards/TopPositions.tsx
-msgid "P&L ($)"
-msgstr "P&L ($)"
+#~ msgid "P&L ($)"
+#~ msgstr "P&L ($)"
 
 #: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
 #~ msgid "P&L (%)"
@@ -3288,6 +3290,10 @@ msgstr "Please uncheck \"Keep Leverage\", or close a larger position amount."
 #: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "PnL"
+
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "PnL ($)"
+msgstr "PnL ($)"
 
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -3725,6 +3731,11 @@ msgstr "Save on Costs"
 #: src/components/Glp/GlpSwap.js
 msgid "Save on Fees"
 msgstr "Save on Fees"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Search Address"
+msgstr "Search Address"
 
 #: src/components/MarketSelector/MarketSelector.tsx
 msgid "Search Market"

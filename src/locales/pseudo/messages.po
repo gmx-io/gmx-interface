@@ -248,8 +248,6 @@ msgstr ""
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr ""
 
-#: src/components/GlobalLeaderboards/TopAccounts.tsx
-#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/GlobalLeaderboards/TopPositions.tsx
 msgid "Address"
 msgstr ""
@@ -258,13 +256,17 @@ msgstr ""
 msgid "Address copied to your clipboard"
 msgstr ""
 
+#: src/pages/Leaderboards/index.tsx
+msgid "Addresses trading statistics"
+msgstr ""
+
 #: src/pages/Leaderboard/Leaderboard.tsx
 #~ msgid "Addresses trading statistics. Choose between general or competitions leaderboards."
 #~ msgstr ""
 
 #: src/pages/Leaderboards/index.tsx
-msgid "Addresses trading statistics. Choose between global or competitions leaderboards."
-msgstr ""
+#~ msgid "Addresses trading statistics. Choose between global or competitions leaderboards."
+#~ msgstr ""
 
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
@@ -287,8 +289,8 @@ msgid "Agree"
 msgstr ""
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
-msgid "All time"
-msgstr ""
+#~ msgid "All time"
+#~ msgstr ""
 
 #: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 msgid "Allow {0} to be spent"
@@ -1994,8 +1996,8 @@ msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>F
 msgstr ""
 
 #: src/pages/Leaderboards/index.tsx
-msgid "Global"
-msgstr ""
+#~ msgid "Global"
+#~ msgstr ""
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
@@ -3197,8 +3199,8 @@ msgid "Overview"
 msgstr ""
 
 #: src/components/GlobalLeaderboards/TopPositions.tsx
-msgid "P&L ($)"
-msgstr ""
+#~ msgid "P&L ($)"
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "POOL"
@@ -3304,10 +3306,9 @@ msgstr ""
 msgid "PnL"
 msgstr ""
 
-#: src/components/Leaderboard/GeneralOpenLeaderboard.tsx
-#: src/components/Leaderboard/GeneralSettledLeaderboard.tsx
-#~ msgid "PnL ($)"
-#~ msgstr ""
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "PnL ($)"
+msgstr ""
 
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -3744,6 +3745,11 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Save on Fees"
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Search Address"
 msgstr ""
 
 #: src/components/MarketSelector/MarketSelector.tsx

@@ -67,9 +67,9 @@ type TableCellProps = {
 const TableCell = ({ data, key }: TableCellProps) => {
   const multipleValues = Array.isArray(data);
   const cellClassName = classnames(!multipleValues && typeof data !== "string" && data.className);
-  const renderValue = d => d.value || d
+  const renderValue = d => typeof d.render === "function" ? d.render(d.value) : d.value || d
   const renderLink = (d: TableCellData, key: string) => (
-    <Link key={ key } to={ d.linkTo! } target={ d.target } className={ d.className }>{ d.value }</Link>
+    <Link key={ key } to={ d.linkTo! } target={ d.target } className={ d.className }>{ renderValue(d) }</Link>
   );
 
   let cellContent;

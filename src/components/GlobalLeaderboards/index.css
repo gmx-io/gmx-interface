@@ -74,3 +74,13 @@
     width: 100%;
   }
 }
+
+.trader-account-lable {
+  display: flex;
+  flex-direction: row;
+}
+
+.trader-account-lable div {
+  display: inline-block;
+  margin-right: 1rem;
+}
