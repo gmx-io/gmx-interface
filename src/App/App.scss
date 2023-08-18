@@ -1258,6 +1258,11 @@ button.App-button {
   display: none;
 }
 
+// rainbowkit overrides
+#rk_connect_title {
+  font-weight: 400;
+}
+
 @media (max-width: 1100px) {
   .chart-positions-settings {
     display: block;
