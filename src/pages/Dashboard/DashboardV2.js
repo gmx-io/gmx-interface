@@ -668,7 +668,9 @@ export default function DashboardV2() {
                           <ChainsStatsTooltipRow
                             entries={{
                               "V1 Arbitrum": currentFees?.[ARBITRUM],
+                              "V2 Arbitrum": v2MarketsOverview?.[ARBITRUM]?.weeklyFees,
                               "V1 Avalanche": currentFees?.[AVALANCHE],
+                              "V2 Avalanche": v2MarketsOverview?.[AVALANCHE]?.weeklyFees,
                             }}
                           />
                         )}
@@ -698,7 +700,13 @@ export default function DashboardV2() {
                           decimalsForConversion={0}
                           entries={{
                             "V1 Arbitrum": totalFees?.[ARBITRUM],
+                            "V2 Arbitrum":
+                              v2MarketsOverview &&
+                              formatAmount(v2MarketsOverview?.[ARBITRUM]?.totalFees, USD_DECIMALS, 0),
                             "V1 Avalanche": totalFees?.[AVALANCHE],
+                            "V2 Avalanche":
+                              v2MarketsOverview &&
+                              formatAmount(v2MarketsOverview?.[AVALANCHE]?.totalFees, USD_DECIMALS, 0),
                           }}
                         />
                       )}

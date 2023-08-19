@@ -82,7 +82,7 @@ export default function ChainsStatsTooltipRow({
     <>
       {Object.entries(entries).map(([title, value]) => {
         return (
-          <p className="Tooltip-row">
+          <p key={title} className="Tooltip-row">
             <span className="label">
               <Trans>{title}</Trans>:{" "}
             </span>

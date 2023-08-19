@@ -64,8 +64,8 @@ export default function useVolumeInfo(chains: number[]) {
   }
 
   // Use SWR to fetch and cache the volume data
-  const { data: volumes } = useSWR("24hVolume", fetcher, {
-    refreshInterval: 30000, // Fetch volume data every 30 seconds
+  const { data: volumes } = useSWR("v2VolumeInfos", fetcher, {
+    refreshInterval: 10000,
   });
 
   return volumes;
