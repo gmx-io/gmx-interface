@@ -21,10 +21,14 @@ export default function useMarketsOverview(chains: number[]) {
   const feesInfo = useFeesInfo(chains);
   const { marketsInfoData: chainOneMarketsInfo } = useMarketsInfo(chainOne);
   const { marketsInfoData: chainTwoMarketsInfo } = useMarketsInfo(chainTwo);
-  const chainsMarketInfo = {
-    [chainOne]: chainOneMarketsInfo,
-    [chainTwo]: chainTwoMarketsInfo,
-  };
+
+  const chainsMarketInfo = useMemo(() => {
+    return {
+      [chainOne]: chainOneMarketsInfo,
+      [chainTwo]: chainTwoMarketsInfo,
+    };
+  }, [chainOne, chainOneMarketsInfo, chainTwo, chainTwoMarketsInfo]);
+
   const stats = useMemo(() => {
     return chains.reduce((acc: { [key: string]: MarketOverview }, chain, index) => {
       const currentMarketInfo = chainsMarketInfo[chain];
@@ -45,10 +49,13 @@ export default function useMarketsOverview(chains: number[]) {
       }, BigNumber.from(0));
 
       acc[chain] = {
-        totalGMLiquidity: totalLiquidity,
-        totalLongPositionSizes: totalLongInterestUsd,
-        totalShortPositionSizes: totalShortInterestUsd,
-        openInterest: totalLongInterestUsd.add(totalShortInterestUsd),
+        totalGMLiquidity: totalLiquidity || BigNumber.from(0),
+        totalLongPositionSizes: totalLongInterestUsd || BigNumber.from(0),
+        totalShortPositionSizes: totalShortInterestUsd || BigNumber.from(0),
+        openInterest:
+          totalLongInterestUsd && totalShortInterestUsd
+            ? totalLongInterestUsd.add(totalShortInterestUsd)
+            : BigNumber.from(0),
         dailyVolume: currentVolumeInfo?.dailyVolume || BigNumber.from(0),
         totalVolume: currentVolumeInfo?.totalVolume || BigNumber.from(0),
         weeklyFees: currentFeesInfo?.weeklyFees || BigNumber.from(0),
@@ -56,8 +63,7 @@ export default function useMarketsOverview(chains: number[]) {
       };
       return acc;
     }, {});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chains]);
+  }, [chains, chainsMarketInfo, volumeInfo, feesInfo]);
 
   return stats;
 }

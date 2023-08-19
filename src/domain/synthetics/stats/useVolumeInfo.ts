@@ -3,7 +3,11 @@ import { BigNumber } from "ethers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import useSWR from "swr";
 
-// Define the GraphQL query
+type VolumeInfo = {
+  dailyVolume: BigNumber;
+  totalVolume: BigNumber;
+};
+
 const query = gql`
   query volumeInfo($lastTimestamp: Int!) {
     hourlyVolumeInfos: volumeInfos(where: { id_gte: $lastTimestamp, period: "1h" }) {
@@ -40,7 +44,10 @@ export default function useVolumeInfo(chains: number[]) {
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(`Error fetching volume data for chain ${chain}:`, error);
-      return BigNumber.from(0);
+      return {
+        dailyVolume: BigNumber.from(0),
+        totalVolume: BigNumber.from(0),
+      };
     }
   }
 
@@ -51,7 +58,7 @@ export default function useVolumeInfo(chains: number[]) {
       const volumes = results
         .filter((result) => result.status === "fulfilled")
         .reduce((acc, result, index) => {
-          const value = (result as PromiseFulfilledResult<BigNumber>).value;
+          const value = (result as PromiseFulfilledResult<VolumeInfo>).value;
           acc[chains[index]] = value;
           return acc;
         }, {});
@@ -64,9 +71,7 @@ export default function useVolumeInfo(chains: number[]) {
   }
 
   // Use SWR to fetch and cache the volume data
-  const { data: volumes } = useSWR("v2VolumeInfos", fetcher, {
-    refreshInterval: 10000,
-  });
+  const { data: volumes } = useSWR("v2VolumeInfos", fetcher);
 
   return volumes;
 }

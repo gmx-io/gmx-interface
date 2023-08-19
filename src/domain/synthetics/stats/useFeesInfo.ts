@@ -4,6 +4,11 @@ import { BigNumber } from "ethers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import useSWR from "swr";
 
+type FeesInfo = {
+  weeklyFees: BigNumber;
+  totalFees: BigNumber;
+};
+
 const query = gql`
   query feesInfo($lastTimestamp: Int!) {
     hourlyFeesInfos: collectedMarketFeesInfos(where: { timestampGroup_gte: $lastTimestamp, period: "1h" }) {
@@ -17,11 +22,6 @@ const query = gql`
     }
   }
 `;
-
-type FeesInfo = {
-  weeklyFees: BigNumber;
-  totalFees: BigNumber;
-};
 
 export default function useFeesInfo(chains: number[]) {
   const { data: feesSummaryByChain } = useFeesSummary();
@@ -61,8 +61,8 @@ export default function useFeesInfo(chains: number[]) {
     }
   }
 
-  async function fetcher() {
-    if (!lastUpdatedAt) return;
+  async function fetcher(timestamp: number) {
+    if (!timestamp) return;
     try {
       const promises = chains.map(fetchFeesInfo);
       const results = await Promise.allSettled(promises);
@@ -81,9 +81,7 @@ export default function useFeesInfo(chains: number[]) {
     }
   }
 
-  const { data: feesInfo } = useSWR("v2FeesInfo", fetcher, {
-    refreshInterval: 10000,
-  });
+  const { data: feesInfo } = useSWR(["v2FeesInfo", lastUpdatedAt], fetcher);
 
   return feesInfo;
 }
