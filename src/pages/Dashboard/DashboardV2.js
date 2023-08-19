@@ -569,7 +569,9 @@ export default function DashboardV2() {
                         <ChainsStatsTooltipRow
                           entries={{
                             "V1 Arbitrum": currentVolumeInfo?.[ARBITRUM],
+                            "V2 Arbitrum": v2MarketsOverview?.[ARBITRUM]?.dailyVolume,
                             "V1 Avalanche": currentVolumeInfo?.[AVALANCHE],
+                            "V2 Avalanche": v2MarketsOverview?.[AVALANCHE]?.dailyVolume,
                           }}
                         />
                       )}
@@ -716,7 +718,9 @@ export default function DashboardV2() {
                         <ChainsStatsTooltipRow
                           entries={{
                             "V1 Arbitrum": totalVolume?.[ARBITRUM],
+                            "V2 Arbitrum": v2MarketsOverview?.[ARBITRUM]?.totalVolume,
                             "V1 Avalanche": totalVolume?.[AVALANCHE],
+                            "V2 Avalanche": v2MarketsOverview?.[AVALANCHE]?.totalVolume,
                           }}
                         />
                       )}
