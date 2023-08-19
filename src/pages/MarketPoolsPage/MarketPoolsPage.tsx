@@ -28,7 +28,8 @@ export function MarketPoolsPage(p: Props) {
   const gmSwapBoxRef = useRef<HTMLDivElement>(null);
 
   function buySellActionHandler() {
-    gmSwapBoxRef?.current?.scrollIntoView({ behavior: "smooth" });
+    gmSwapBoxRef?.current?.scrollIntoView();
+    window.scrollBy(0, -25); // add some offset
   }
 
   const { marketsInfoData = {}, tokensData } = useMarketsInfo(chainId);
@@ -107,6 +108,7 @@ export function MarketPoolsPage(p: Props) {
           marketsInfoData={marketsInfoData}
           tokensData={tokensData}
           buySellActionHandler={buySellActionHandler}
+          shouldScrollToTop={true}
         />
       </div>
       <Footer />

@@ -229,7 +229,7 @@ export function GmList({
 
                     <td>{apr ? `${formatAmount(apr, 2, 2)}%` : "..."}</td>
 
-                    <td className="GmList-actions" onClick={buySellActionHandler}>
+                    <td className="GmList-actions">
                       <Button
                         className="GmList-action"
                         variant="secondary"
@@ -381,17 +381,13 @@ export function GmList({
                     <div className="App-card-buttons m-0" onClick={buySellActionHandler}>
                       <Button
                         variant="secondary"
-                        to={`/pools?operation=${Operation.Deposit}&market=${token.address}&scroll=${
-                          shouldScrollToTop ? "1" : "0"
-                        }`}
+                        to={`/pools?operation=${Operation.Deposit}&market=${token.address}&scroll=0`}
                       >
                         <Trans>Buy</Trans>
                       </Button>
                       <Button
                         variant="secondary"
-                        to={`/pools?operation=${Operation.Withdrawal}&market=${token.address}&scroll=${
-                          shouldScrollToTop ? "1" : "0"
-                        }`}
+                        to={`/pools?operation=${Operation.Withdrawal}&market=${token.address}&scroll=0`}
                       >
                         <Trans>Sell</Trans>
                       </Button>
