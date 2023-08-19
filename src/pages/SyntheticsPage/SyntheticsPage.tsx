@@ -252,8 +252,18 @@ export function SyntheticsPage(p: Props) {
 
   function onSelectPositionClick(key: string, tradeMode?: TradeMode) {
     const position = getByKey(positionsInfoData, key);
+    const [indexName, poolName] = position?.marketInfo.name.split(" ") || [];
     setActivePosition(getByKey(positionsInfoData, key), tradeMode);
-    const message = t`${position?.isLong ? "Long" : "Short"} ${position?.marketInfo.name} market selected`;
+    const message = (
+      <Trans>
+        {position?.isLong ? "Long" : "Short"}{" "}
+        <div className="inline-flex">
+          <span>{indexName}</span>
+          <span className="subtext gm-toast">{poolName}</span>
+        </div>{" "}
+        <span>market selected</span>;
+      </Trans>
+    );
     helperToast.success(message);
   }
 

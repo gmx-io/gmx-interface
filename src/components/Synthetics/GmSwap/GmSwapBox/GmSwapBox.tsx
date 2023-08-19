@@ -682,7 +682,16 @@ export function GmSwapBox(p: Props) {
         if (marketInfo) {
           setIndexName(getMarketIndexName(marketInfo));
           onSelectMarket(marketInfo?.marketTokenAddress);
-          helperToast.success(t`${marketInfo.name} selected in order form`);
+          const [indexName, poolName] = marketInfo.name.split(" ") || [];
+          helperToast.success(
+            <Trans>
+              <div className="inline-flex">
+                <span>{indexName}</span>
+                <span className="subtext gm-toast">{poolName}</span>
+              </div>{" "}
+              <span>selected in order form</span>
+            </Trans>
+          );
         }
 
         if (queryParams.get("scroll") === "1") {

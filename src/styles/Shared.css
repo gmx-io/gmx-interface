@@ -434,6 +434,10 @@ button.btn-link:hover .logout-icon {
   align-items: flex-start;
 }
 
+.inline-flex {
+  display: inline-flex;
+}
+
 .w-full {
   width: 100%;
 }
@@ -482,5 +486,4 @@ button.btn-link:hover .logout-icon {
   font-size: 1.2rem;
   color: var(--text-gray);
   margin-left: 0.25rem;
-  line-height: 1;
 }
