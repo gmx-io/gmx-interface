@@ -295,8 +295,8 @@ export function PositionItem(p: Props) {
           handle={t`Orders (${positionOrders.length})`}
           position="left-bottom"
           handleClassName={cx(
-            ["Exchange-list-info-label", "Exchange-position-list-orders", "plain", "clickable", "muted"],
-            { "order-error": ordersErrorList.length > 0 }
+            ["Exchange-list-info-label", "Exchange-position-list-orders", "plain", "clickable", "text-gray"],
+            { "position-order-error": ordersErrorList.length > 0 }
           )}
           renderContent={() => {
             return (

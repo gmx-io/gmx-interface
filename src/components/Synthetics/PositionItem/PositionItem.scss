@@ -19,7 +19,8 @@
   }
 }
 
-.order-error-text-msg .Tooltip-handle {
+.order-error-text-msg .Tooltip-handle,
+.position-order-error {
   text-decoration-color: var(--error-red);
   color: var(--error-red);
 }
