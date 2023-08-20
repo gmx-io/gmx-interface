@@ -53,6 +53,12 @@ const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
 
+function addTwoNumbers(a, b) {
+  if (!a || !b || bigNumberify(a).isZero() || bigNumberify(b).isZero()) return bigNumberify(0);
+
+  return bigNumberify(a).add(bigNumberify(b));
+}
+
 function getPositionStats(positionStats) {
   if (!positionStats || positionStats.length === 0) {
     return null;
@@ -564,7 +570,12 @@ export default function DashboardV2() {
                     <TooltipComponent
                       position="right-bottom"
                       className="nowrap"
-                      handle={`$${formatAmount(currentVolumeInfo?.[chainId], USD_DECIMALS, 0, true)}`}
+                      handle={`$${formatAmount(
+                        addTwoNumbers(currentVolumeInfo?.[chainId], v2MarketsOverview?.[chainId]?.dailyVolume),
+                        USD_DECIMALS,
+                        0,
+                        true
+                      )}`}
                       renderContent={() => (
                         <ChainsStatsTooltipRow
                           entries={{
@@ -586,7 +597,15 @@ export default function DashboardV2() {
                     <TooltipComponent
                       position="right-bottom"
                       className="nowrap"
-                      handle={`$${formatAmount(positionStatsInfo?.[chainId]?.openInterest, USD_DECIMALS, 0, true)}`}
+                      handle={`$${formatAmount(
+                        addTwoNumbers(
+                          positionStatsInfo?.[chainId]?.openInterest,
+                          v2MarketsOverview?.[chainId].openInterest
+                        ),
+                        USD_DECIMALS,
+                        0,
+                        true
+                      )}`}
                       renderContent={() => (
                         <ChainsStatsTooltipRow
                           entries={{
@@ -609,7 +628,10 @@ export default function DashboardV2() {
                       position="right-bottom"
                       className="nowrap"
                       handle={`$${formatAmount(
-                        positionStatsInfo?.[chainId]?.totalLongPositionSizes,
+                        addTwoNumbers(
+                          positionStatsInfo?.[chainId]?.totalLongPositionSizes,
+                          v2MarketsOverview?.[chainId].totalLongPositionSizes
+                        ),
                         USD_DECIMALS,
                         0,
                         true
@@ -636,7 +658,10 @@ export default function DashboardV2() {
                       position="right-bottom"
                       className="nowrap"
                       handle={`$${formatAmount(
-                        positionStatsInfo?.[chainId]?.totalShortPositionSizes,
+                        addTwoNumbers(
+                          positionStatsInfo?.[chainId]?.totalShortPositionSizes,
+                          v2MarketsOverview?.[chainId].totalShortPositionSizes
+                        ),
                         USD_DECIMALS,
                         0,
                         true
@@ -663,7 +688,12 @@ export default function DashboardV2() {
                       <TooltipComponent
                         position="right-bottom"
                         className="nowrap"
-                        handle={`$${formatAmount(currentFees?.[chainId], USD_DECIMALS, 2, true)}`}
+                        handle={`$${formatAmount(
+                          addTwoNumbers(currentFees?.[chainId], v2MarketsOverview?.[chainId]?.weeklyFees),
+                          USD_DECIMALS,
+                          2,
+                          true
+                        )}`}
                         renderContent={() => (
                           <ChainsStatsTooltipRow
                             entries={{
@@ -694,7 +724,12 @@ export default function DashboardV2() {
                     <TooltipComponent
                       position="right-bottom"
                       className="nowrap"
-                      handle={`$${numberWithCommas(totalFees?.[chainId])}`}
+                      handle={`$${numberWithCommas(
+                        addTwoNumbers(
+                          totalFees?.[chainId],
+                          formatAmount(v2MarketsOverview?.[chainId]?.totalFees, USD_DECIMALS, 0)
+                        )
+                      )}`}
                       renderContent={() => (
                         <ChainsStatsTooltipRow
                           decimalsForConversion={0}
@@ -721,7 +756,12 @@ export default function DashboardV2() {
                     <TooltipComponent
                       position="right-bottom"
                       className="nowrap"
-                      handle={`$${formatAmount(totalVolume?.[chainId], USD_DECIMALS, 0, true)}`}
+                      handle={`$${formatAmount(
+                        addTwoNumbers(totalVolume?.[chainId], v2MarketsOverview?.[chainId]?.totalVolume),
+                        USD_DECIMALS,
+                        0,
+                        true
+                      )}`}
                       renderContent={() => (
                         <ChainsStatsTooltipRow
                           entries={{
@@ -843,8 +883,8 @@ export default function DashboardV2() {
                               decimalsForConversion={GMX_DECIMALS}
                               showDollar={false}
                               entries={{
-                                "V1 Arbitrum": arbitrumStakedGmx,
-                                "V1 Avalanche": avaxStakedGmx,
+                                "Staked on Arbitrum": arbitrumStakedGmx,
+                                "Staked on Avalanche": avaxStakedGmx,
                               }}
                             />
                           )}
