@@ -81,7 +81,9 @@ export default function useFeesInfo(chains: number[]) {
     }
   }
 
-  const { data: feesInfo } = useSWR(["v2FeesInfo", lastUpdatedAt], fetcher);
+  const { data: feesInfo } = useSWR(lastUpdatedAt, fetcher, {
+    refreshInterval: 60000,
+  });
 
   return feesInfo;
 }

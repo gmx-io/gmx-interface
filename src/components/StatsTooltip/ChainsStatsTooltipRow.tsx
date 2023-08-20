@@ -5,7 +5,7 @@ import "./StatsTooltip.css";
 import { formatAmount } from "lib/numbers";
 
 type Props = {
-  entries: { [key: string]: BigNumber };
+  entries: { [key: string]: BigNumber | string | undefined };
   showDollar?: boolean;
   decimalsForConversion?: number;
   symbol?: string;
@@ -19,13 +19,18 @@ export default function ChainsStatsTooltipRow({
   symbol,
   shouldFormat = true,
 }: Props) {
-  const total = entries
-    ? Object.values(entries).reduce((acc, curr) => acc.add(curr), BigNumber.from(0))
-    : BigNumber.from(0);
+  const validEntries = Object.entries(entries).filter(
+    ([_, value]) => Boolean(value) || BigNumber.from(value)?.isZero()
+  );
+  const total = validEntries.reduce((acc, [_, value]) => acc.add(value ?? BigNumber.from(0)), BigNumber.from(0));
+
+  if (validEntries.length === 0) {
+    return null;
+  }
+
   return (
     <>
-      {Object.entries(entries).map(([title, value]) => {
-        if (!value) return null;
+      {validEntries.map(([title, value]) => {
         return (
           <p key={title} className="Tooltip-row">
             <span className="label">

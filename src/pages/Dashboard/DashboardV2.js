@@ -699,7 +699,7 @@ export default function DashboardV2() {
                         <ChainsStatsTooltipRow
                           decimalsForConversion={0}
                           entries={{
-                            "V1 Arbitrum": totalFees?.[ARBITRUM],
+                            "V1 Arbitrum": totalFees?.[ARBITRUM] || 0,
                             "V2 Arbitrum":
                               v2MarketsOverview &&
                               formatAmount(v2MarketsOverview?.[ARBITRUM]?.totalFees, USD_DECIMALS, 0),

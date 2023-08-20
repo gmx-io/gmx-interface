@@ -70,8 +70,9 @@ export default function useVolumeInfo(chains: number[]) {
     }
   }
 
-  // Use SWR to fetch and cache the volume data
-  const { data: volumes } = useSWR("v2VolumeInfos", fetcher);
+  const { data: volumes } = useSWR("v2VolumeInfos", fetcher, {
+    refreshInterval: 60000,
+  });
 
   return volumes;
 }
