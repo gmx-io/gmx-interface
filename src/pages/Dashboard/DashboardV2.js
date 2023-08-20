@@ -262,7 +262,7 @@ export default function DashboardV2() {
   }
 
   let tvl;
-  if (glpMarketCap && gmxPrice && totalStakedGmx && currentV2MarketOverview.totalGMLiquidity) {
+  if (glpMarketCap && gmxPrice && totalStakedGmx && currentV2MarketOverview?.totalGMLiquidity) {
     tvl = glpMarketCap
       .add(gmxPrice.mul(totalStakedGmx).div(expandDecimals(1, GMX_DECIMALS)))
       .add(currentV2MarketOverview.totalGMLiquidity);
@@ -548,7 +548,7 @@ export default function DashboardV2() {
                   </div>
                   <div>
                     <TooltipComponent
-                      handle={`$${formatAmount(currentV2MarketOverview.totalGMLiquidity, USD_DECIMALS, 0, true)}`}
+                      handle={`$${formatAmount(currentV2MarketOverview?.totalGMLiquidity, USD_DECIMALS, 0, true)}`}
                       position="right-bottom"
                       renderContent={() => (
                         <Trans>
@@ -600,7 +600,7 @@ export default function DashboardV2() {
                       handle={`$${formatAmount(
                         addTwoNumbers(
                           positionStatsInfo?.[chainId]?.openInterest,
-                          v2MarketsOverview?.[chainId].openInterest
+                          v2MarketsOverview?.[chainId]?.openInterest
                         ),
                         USD_DECIMALS,
                         0,
@@ -630,7 +630,7 @@ export default function DashboardV2() {
                       handle={`$${formatAmount(
                         addTwoNumbers(
                           positionStatsInfo?.[chainId]?.totalLongPositionSizes,
-                          v2MarketsOverview?.[chainId].totalLongPositionSizes
+                          v2MarketsOverview?.[chainId]?.totalLongPositionSizes
                         ),
                         USD_DECIMALS,
                         0,
@@ -660,7 +660,7 @@ export default function DashboardV2() {
                       handle={`$${formatAmount(
                         addTwoNumbers(
                           positionStatsInfo?.[chainId]?.totalShortPositionSizes,
-                          v2MarketsOverview?.[chainId].totalShortPositionSizes
+                          v2MarketsOverview?.[chainId]?.totalShortPositionSizes
                         ),
                         USD_DECIMALS,
                         0,

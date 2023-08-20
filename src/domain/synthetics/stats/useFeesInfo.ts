@@ -39,6 +39,7 @@ export default function useFeesInfo(chains: number[]) {
       });
 
       const { hourlyFeesInfos, totalFeesInfos } = data;
+
       const weeklyFees = hourlyFeesInfos.reduce(
         (acc, { cummulativeFeeUsdForPool }) => acc.add(cummulativeFeeUsdForPool),
         BigNumber.from(0)
