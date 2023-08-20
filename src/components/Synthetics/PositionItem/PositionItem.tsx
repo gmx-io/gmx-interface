@@ -288,18 +288,16 @@ export function PositionItem(p: Props) {
   function renderPositionOrders() {
     if (positionOrders.length === 0) return null;
 
+    const ordersErrorList = positionOrders.map((order) => getOrderError(order, p.position)).filter(Boolean);
     return (
       <div onClick={p.onOrdersClick}>
         <Tooltip
           handle={t`Orders (${positionOrders.length})`}
           position="left-bottom"
-          handleClassName={cx([
-            "Exchange-list-info-label",
-            "Exchange-position-list-orders",
-            "plain",
-            "clickable",
-            "muted",
-          ])}
+          handleClassName={cx(
+            ["Exchange-list-info-label", "Exchange-position-list-orders", "plain", "clickable", "muted"],
+            { "order-error": ordersErrorList.length > 0 }
+          )}
           renderContent={() => {
             return (
               <>

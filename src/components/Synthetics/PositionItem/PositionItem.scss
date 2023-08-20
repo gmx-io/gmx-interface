@@ -19,6 +19,11 @@
   }
 }
 
+.order-error-text-msg .Tooltip-handle {
+  text-decoration-color: var(--error-red);
+  color: var(--error-red);
+}
+
 @media (max-width: 1300px) {
   .Position-collateral-amount {
     margin-left: 0.8rem;
