@@ -11,13 +11,13 @@ type FeesInfo = {
 
 const query = gql`
   query feesInfo($lastTimestamp: Int!) {
-    hourlyFeesInfos: collectedMarketFeesInfos(where: { timestampGroup_gte: $lastTimestamp, period: "1h" }) {
-      cummulativeFeeUsdForPool
+    dailyFeeInfos: collectedMarketFeesInfos(first: 1000, where: { timestampGroup_gte: $lastTimestamp, period: "1d" }) {
+      feeUsdForPool
       period
       timestampGroup
     }
     totalFeesInfos: collectedMarketFeesInfos(where: { period: "total" }) {
-      cummulativeFeeUsdForPool
+      feeUsdForPool
       period
     }
   }
@@ -38,16 +38,10 @@ export default function useFeesInfo(chains: number[]) {
         fetchPolicy: "no-cache",
       });
 
-      const { hourlyFeesInfos, totalFeesInfos } = data;
+      const { dailyFeeInfos, totalFeesInfos } = data;
 
-      const weeklyFees = hourlyFeesInfos.reduce(
-        (acc, { cummulativeFeeUsdForPool }) => acc.add(cummulativeFeeUsdForPool),
-        BigNumber.from(0)
-      );
-      const totalFees = totalFeesInfos.reduce(
-        (acc, { cummulativeFeeUsdForPool }) => acc.add(cummulativeFeeUsdForPool),
-        BigNumber.from(0)
-      );
+      const weeklyFees = dailyFeeInfos.reduce((acc, { feeUsdForPool }) => acc.add(feeUsdForPool), BigNumber.from(0));
+      const totalFees = totalFeesInfos.reduce((acc, { feeUsdForPool }) => acc.add(feeUsdForPool), BigNumber.from(0));
       return {
         weeklyFees,
         totalFees,
