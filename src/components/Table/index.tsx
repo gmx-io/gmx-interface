@@ -1,19 +1,18 @@
 import React from "react";
-import { Trans, t } from "@lingui/macro";
-import { TableProps } from "./types";
+import { t } from "@lingui/macro";
 import classnames from "classnames";
-import "./index.css";
-import { Link } from "react-router-dom";
-import { useJsonRpcProvider } from "lib/rpc";
 import Davatar from "@davatar/react";
+import { Link } from "react-router-dom";
+import { createBreakpoint } from "react-use";
+import { TableProps } from "./types";
+import { useJsonRpcProvider } from "lib/rpc";
 import { shortenAddress } from "lib/legacy";
 import { ETH_MAINNET } from "config/chains";
-import { createBreakpoint } from "react-use";
 import Tooltip from "../Tooltip/Tooltip";
 
+import "./index.css";
+
 export default function Table<T extends Record<string, any>>({
-  enumerate = false,
-  offset = 0,
   isLoading,
   error,
   content,
@@ -28,9 +27,6 @@ export default function Table<T extends Record<string, any>>({
     <table className="Exchange-list large App-box table">
       <tbody>
         <tr className="Exchange-list-header">
-          {
-            enumerate && <th key={`table_header_rank`}><Trans>Rank</Trans></th>
-          }
           {
             Object.keys(titles).filter(k => titles[k]).map(k => (
               <th key={`table_header_${k}`} className={titles[k]!.className}>
@@ -53,9 +49,8 @@ export default function Table<T extends Record<string, any>>({
           isLoading ? <tr><td colSpan={5}>{ t`Loading...` }</td></tr> : (
             error ? <tr><td colSpan={9}>{ t`Error` + ": " + errorMsg }</td></tr> : (
               !content.length ? <tr><td colSpan={9}>{ t`No data yet` }</td></tr> : (
-                content.map((row, i) => (
+                content.map(row => (
                   <tr key={row[rowKey]}>
-                    { enumerate && (<td key={`${row[rowKey]}_rank`}>{`${offset + i + 1}`}</td>) }
                     { Object.keys(titles).map(k => <TableCell data={ row[k] } key={ `${row[rowKey]}_${k}` }/>) }
                   </tr>
                 ))

@@ -14,10 +14,12 @@ export default function TopPositions() {
   const [search, setSearch] = useState("");
   const term = useDebounce(search, 300);
   const { topPositions } = useLeaderboardContext();
+  const { isLoading, error } = topPositions;
   const filteredStats = topPositions.data.filter(a => a.account.indexOf(term.toLowerCase()) >= 0);
   const firstItemIndex = (page - 1) * perPage;
-  const displayedStats = filteredStats.slice(firstItemIndex, page * perPage).map(p => ({
+  const rows = filteredStats.slice(firstItemIndex, page * perPage).map((p, i)=> ({
     id: { value: p.key, },
+    rank: firstItemIndex + i + 1,
     account: { value: p.account, isAddress: true },
     unrealizedPnl: {
       value: formatUsd(p.unrealizedPnlAfterFees),
@@ -39,6 +41,7 @@ export default function TopPositions() {
   const pageCount = Math.ceil(filteredStats.length / perPage);
   const handleSearchInput = ({ target }) => setSearch(target.value);
   const titles = {
+    rank: { title: t`Rank` },
     account: { title: t`Address` },
     unrealizedPnl: { title: t`PnL ($)`, tooltip: t`Total Unrealized Profit` },
     market: { title: t`Position` },
@@ -51,16 +54,8 @@ export default function TopPositions() {
       <div className="leaderboard-header">
         <TableFilterSearch label={t`Search Address`} value={search} onInput={handleSearchInput}/>
       </div>
-      <Table
-        enumerate={ true }
-        offset={ firstItemIndex }
-        isLoading={ topPositions.isLoading }
-        error={ topPositions.error }
-        content={ displayedStats }
-        titles={ titles }
-        rowKey={ "id" }
-      />
-      <Pagination page={ page } pageCount={ pageCount } onPageChange={ setPage }/>
+      <Table isLoading={isLoading} error={error} content={rows} titles={titles} rowKey={"id"}/>
+      <Pagination page={page} pageCount={pageCount} onPageChange={setPage}/>
     </div>
   );
 }

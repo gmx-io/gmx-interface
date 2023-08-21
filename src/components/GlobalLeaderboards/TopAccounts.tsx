@@ -16,10 +16,12 @@ export default function TopAccounts() {
   const [search, setSearch] = useState("");
   const term = useDebounce(search, 300);
   const { topAccounts } = useLeaderboardContext();
+  const { isLoading, error } = topAccounts;
   const filteredStats = topAccounts.data.filter(a => a.account.indexOf(term.toLowerCase()) >= 0);
   const firstItemIndex = (page - 1) * perPage;
-  const displayedStats = filteredStats.slice(firstItemIndex, page * perPage).map(s => ({
+  const rows = filteredStats.slice(firstItemIndex, page * perPage).map((s, i) => ({
     id: s.id,
+    rank: firstItemIndex + i + 1,
     account: { value: s.account, isAddress: true },
     absPnl: {
       value: formatUsd(s.absPnl),
@@ -52,6 +54,7 @@ export default function TopAccounts() {
   const pageCount = Math.ceil(filteredStats.length / perPage);
   const handleSearchInput = ({ target }) => setSearch(target.value);
   const titles = {
+    rank: { title: t`Rank` },
     account: { title: t`Address` },
     absPnl: { title: t`PnL ($)`, tooltip: t`Total Realized and Unrealized Profit` },
     relPnl: {
@@ -79,16 +82,8 @@ export default function TopAccounts() {
           optionLabels={[t`24 hours`, t`7 days`, t`1 month`, t`All time`]}
         /> */}
       </div>
-      <Table
-        enumerate={ true }
-        offset={ firstItemIndex }
-        isLoading={ topAccounts.isLoading }
-        error={ topAccounts.error }
-        content={ displayedStats }
-        titles={ titles }
-        rowKey={ "id" }
-      />
-      <Pagination page={ page } pageCount={ pageCount } onPageChange={ setPage }/>
+      <Table isLoading={isLoading} error={error} content={rows} titles={titles} rowKey={"id"}/>
+      <Pagination page={page} pageCount={pageCount} onPageChange={setPage}/>
     </div>
   );
 }
