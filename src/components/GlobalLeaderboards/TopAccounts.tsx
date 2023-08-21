@@ -57,7 +57,7 @@ export default function TopAccounts() {
     relPnl: {
       title: t`PnL (%)`,
       tooltip: (
-        t`PnL ($) compared to the Max Collateral used by this Address<br/>` +
+        t`PnL ($) compared to the Max Collateral used by this Address\n` +
         t`Max Collateral is the highest value of [Sum of Collateral of Open Positions -  RPnL]`
       ),
     },

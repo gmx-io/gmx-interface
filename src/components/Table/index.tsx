@@ -37,13 +37,13 @@ export default function Table<T extends Record<string, any>>({
                 {
                   titles[k]!.tooltip ? (
                     <Tooltip
-                      handle={ <Trans>{titles[k]!.title}</Trans> }
+                      handle={ titles[k]!.title }
                       position="center-top"
-                      renderContent={() => titles[k]!.tooltip}
+                      renderContent={() => (
+                        titles[k]!.tooltip!.split("\\n").map(s => <div key={s}>{s}</div>)
+                      )}
                     />
-                  ) : (
-                    <Trans>{titles[k]!.title}</Trans>
-                  )
+                  ) : titles[k]!.title
                 }
               </th>
             ))
@@ -77,30 +77,29 @@ type TableCellData = {
 };
 
 type TableCellProps = {
-  data: string | TableCellData | Array<TableCellData>
-  key: string;
-}
+  data: string | TableCellData | Array<TableCellData>;
+};
 
-const TableCell = ({ data, key }: TableCellProps) => {
+const TableCell = ({ data }: TableCellProps) => {
   const multipleValues = Array.isArray(data);
   const cellClassName = classnames(!multipleValues && typeof data !== "string" && data.className);
   const renderValue = d => typeof d.render === "function" ? d.render(d.value) : d.value || d
-  const renderLink = (d: TableCellData, key: string) => (
-    <Link key={ key } to={ d.linkTo! } target={ d.target } className={ d.className }>{ renderValue(d) }</Link>
+  const renderLink = (d: TableCellData) => (
+    <Link to={ d.linkTo! } target={ d.target } className={ d.className }>{ renderValue(d) }</Link>
   );
 
   let cellContent;
   if (multipleValues) {
-    cellContent = data.map((c, i) => c.linkTo ? renderLink(c, `${key}_${i}`) : (
-      <span key={ `${key}_${i}` } className={ classnames(c.className) }>{ renderValue(c) }</span>
+    cellContent = data.map(c => c.linkTo ? renderLink(c) : (
+      <span key={ c.value } className={ classnames(c.className) }>{ renderValue(c) }</span>
     ));
   } else if (typeof data !== 'string' && data.isAddress) {
     cellContent = <AddressTableCell address={ data.value as string }/>
   } else {
-    cellContent = typeof data !== "string" && data.linkTo ? renderLink(data, key) : renderValue(data);
+    cellContent = typeof data !== "string" && data.linkTo ? renderLink(data) : renderValue(data);
   }
 
-  return <td className={ cellClassName } key={ key }>{ cellContent }</td>;
+  return <td className={ cellClassName }>{ cellContent }</td>;
 };
 
 const AddressTableCell = ({ address }: { address: string }) => {
