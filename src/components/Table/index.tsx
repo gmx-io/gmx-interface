@@ -4,6 +4,11 @@ import { TableProps } from "./types";
 import classnames from "classnames";
 import "./index.css";
 import { Link } from "react-router-dom";
+import { useJsonRpcProvider } from "lib/rpc";
+import Davatar from "@davatar/react";
+import { shortenAddress } from "lib/legacy";
+import { ETH_MAINNET } from "config/chains";
+import { createBreakpoint } from "react-use";
 
 export default function Table<T extends Record<string, any>>({
   enumerate = false,
@@ -57,6 +62,7 @@ type TableCellData = {
   className?: string;
   linkTo?: string;
   target?: string;
+  isAddress?: boolean;
 };
 
 type TableCellProps = {
@@ -77,9 +83,24 @@ const TableCell = ({ data, key }: TableCellProps) => {
     cellContent = data.map((c, i) => c.linkTo ? renderLink(c, `${key}_${i}`) : (
       <span key={ `${key}_${i}` } className={ classnames(c.className) }>{ renderValue(c) }</span>
     ));
+  } else if (typeof data !== 'string' && data.isAddress) {
+    cellContent = <AddressTableCell address={ data.value as string }/>
   } else {
     cellContent = typeof data !== "string" && data.linkTo ? renderLink(data, key) : renderValue(data);
   }
 
   return <td className={ cellClassName } key={ key }>{ cellContent }</td>;
+};
+
+const AddressTableCell = ({ address }: { address: string }) => {
+  const { provider } = useJsonRpcProvider(ETH_MAINNET);
+  const useBreakpoint = createBreakpoint({ L: 600, M: 550, S: 400 });
+  const breakpoint = useBreakpoint();
+
+  return (
+    <Link className="trader-account-lable" to={`/actions/v2/${address}`} target="_blank">
+      { provider ? <Davatar size={20} address={address} provider={provider}/> : null }
+      <span>{ shortenAddress(address, breakpoint === "S" ? 20 :42) }</span>
+    </Link>
+  );
 };

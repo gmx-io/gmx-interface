@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { BigNumber } from "ethers";
 import classnames from "classnames";
-import Davatar from "@davatar/react";
-import { createBreakpoint } from "react-use";
 import { t } from "@lingui/macro";
 import { formatAmount, formatUsd } from "lib/numbers";
 import { useDebounce } from "lib/useDebounce";
@@ -10,34 +8,19 @@ import Pagination from "components/Pagination/Pagination";
 import TableFilterSearch from "components/TableFilterSearch";
 import Table from "components/Table";
 import { useLeaderboardContext } from "./Context";
-import { USD_DECIMALS, shortenAddress } from "lib/legacy";
-import { useJsonRpcProvider } from "lib/rpc";
-import { ETH_MAINNET } from "config/chains";
+import { USD_DECIMALS } from "lib/legacy";
 
 export default function TopAccounts() {
   const perPage = 15;
-  const useBreakpoint = createBreakpoint({ L: 600, M: 550, S: 400 });
-  const breakpoint = useBreakpoint();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const term = useDebounce(search, 300);
   const { topAccounts } = useLeaderboardContext();
   const filteredStats = topAccounts.data.filter(a => a.account.indexOf(term.toLowerCase()) >= 0);
-  const { provider } = useJsonRpcProvider(ETH_MAINNET);
   const firstItemIndex = (page - 1) * perPage;
   const displayedStats = filteredStats.slice(firstItemIndex, page * perPage).map(s => ({
     id: s.id,
-    account: {
-      render: v => provider ? (
-        <div className="trader-account-lable">
-          <Davatar size={20} address={v} provider={provider}/>
-          { shortenAddress(v, breakpoint === "S" ? 20 :42) }
-        </div>
-      ) : v,
-      value: s.account,
-      linkTo: `/actions/v2/${s.account}`,
-      target: "_blank"
-    },
+    account: { value: s.account, isAddress: true },
     absPnl: {
       value: formatUsd(s.absPnl),
       className: classnames(

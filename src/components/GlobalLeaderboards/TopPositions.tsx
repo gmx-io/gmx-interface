@@ -18,7 +18,7 @@ export default function TopPositions() {
   const firstItemIndex = (page - 1) * perPage;
   const displayedStats = filteredStats.slice(firstItemIndex, page * perPage).map(p => ({
     id: { value: p.key, },
-    account: { value: p.account, linkTo: `/actions/v2/${p.account}`, target: "_blank" },
+    account: { value: p.account, isAddress: true },
     unrealizedPnl: {
       value: formatUsd(p.unrealizedPnlAfterFees),
       className: classnames(
