@@ -40,7 +40,7 @@ export default function TopPositions() {
   const handleSearchInput = ({ target }) => setSearch(target.value);
   const titles = {
     account: { title: t`Address` },
-    unrealizedPnl: { title: t`PnL ($)` },
+    unrealizedPnl: { title: t`PnL ($)`, tooltip: t`Total Unrealized Profit` },
     market: { title: t`Position` },
     entryPrice: { title: t`Entry` },
     sizeLiqPrice: { title: t`Size (Liq. Price)` },

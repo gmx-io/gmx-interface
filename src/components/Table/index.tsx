@@ -9,6 +9,7 @@ import Davatar from "@davatar/react";
 import { shortenAddress } from "lib/legacy";
 import { ETH_MAINNET } from "config/chains";
 import { createBreakpoint } from "react-use";
+import Tooltip from "../Tooltip/Tooltip";
 
 export default function Table<T extends Record<string, any>>({
   enumerate = false,
@@ -33,7 +34,17 @@ export default function Table<T extends Record<string, any>>({
           {
             Object.keys(titles).filter(k => titles[k]).map(k => (
               <th key={`table_header_${k}`} className={titles[k]!.className}>
-                <Trans>{titles[k]!.title}</Trans>
+                {
+                  titles[k]!.tooltip ? (
+                    <Tooltip
+                      handle={ <Trans>{titles[k]!.title}</Trans> }
+                      position="center-top"
+                      renderContent={() => titles[k]!.tooltip}
+                    />
+                  ) : (
+                    <Trans>{titles[k]!.title}</Trans>
+                  )
+                }
               </th>
             ))
           }

@@ -52,12 +52,18 @@ export default function TopAccounts() {
   const pageCount = Math.ceil(filteredStats.length / perPage);
   const handleSearchInput = ({ target }) => setSearch(target.value);
   const titles = {
-    account: { title: "Address" },
-    absPnl: { title: "PnL ($)" },
-    relPnl: { title: "PnL (%)" },
-    size: { title: "Size" },
-    leverage: { title: "Leverage" },
-    perf: { title: "Win/Loss", className: "text-right" },
+    account: { title: t`Address` },
+    absPnl: { title: t`PnL ($)`, tooltip: t`Total Realized and Unrealized Profit` },
+    relPnl: {
+      title: t`PnL (%)`,
+      tooltip: (
+        t`PnL ($) compared to the Max Collateral used by this Address<br/>` +
+        t`Max Collateral is the highest value of [Sum of Collateral of Open Positions -  RPnL]`
+      ),
+    },
+    size: { title: t`Size`, tooltip: t`Average Position Size` },
+    leverage: { title: t`Leverage`, tooltip: t`Average Leverage used` },
+    perf: { title: t`Win/Loss`, className: "text-right", tooltip: t`Wins and Losses for fully closed Positions` },
   };
 
   return (

@@ -1,6 +1,7 @@
 export type TableHeader = {
   title: string;
   className?: string;
+  tooltip?: string;
 };
 
 export type TableProps<T extends Record<string, any>> = {
