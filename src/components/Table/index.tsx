@@ -1,14 +1,8 @@
 import React from "react";
 import { t } from "@lingui/macro";
 import classnames from "classnames";
-import Davatar from "@davatar/react";
-import { Link } from "react-router-dom";
-import { createBreakpoint } from "react-use";
-import { useJsonRpcProvider } from "lib/rpc";
-import { shortenAddress } from "lib/legacy";
-import { ETH_MAINNET } from "config/chains";
 import Tooltip from "../Tooltip/Tooltip";
-import { TableCellData, TableCellProps, TableProps } from "./types";
+import { TableCellProps, TableProps } from "./types";
 
 import "./index.css";
 
@@ -64,37 +58,14 @@ export default function Table<T extends Record<string, any>>({
 };
 
 const TableCell = ({ data }: TableCellProps) => {
-  const multipleValues = Array.isArray(data);
-  const isCellData = !multipleValues && typeof data === "object";
-  const cellClassName = classnames(isCellData && data.className);
-  const renderValue = d => typeof d.render === "function" ? d.render(d.value) : d.value || d
-  const renderLink = (d: TableCellData) => (
-    <Link to={ d.linkTo! } target={ d.target } className={ d.className }>{ renderValue(d) }</Link>
-  );
-
-  let cellContent;
-  if (multipleValues) {
-    cellContent = data.map(c => c.linkTo ? renderLink(c) : (
-      <span key={ c.value } className={ classnames(c.className) }>{ renderValue(c) }</span>
-    ));
-  } else if (isCellData && data.isAddress) {
-    cellContent = <AddressTableCell address={ data.value as string }/>
+  const isObject = typeof data === "object";
+  const cellClassName = classnames(isObject && data.className);
+  let content;
+  if (isObject) {
+    content = typeof data.render === "function" ? data.render(data.value) : data.value;
   } else {
-    cellContent = isCellData && data.linkTo ? renderLink(data) : renderValue(data);
+    content = data;
   }
 
-  return <td className={ cellClassName }>{ cellContent }</td>;
-};
-
-const AddressTableCell = ({ address }: { address: string }) => {
-  const { provider } = useJsonRpcProvider(ETH_MAINNET);
-  const useBreakpoint = createBreakpoint({ L: 600, M: 550, S: 400 });
-  const breakpoint = useBreakpoint();
-
-  return (
-    <Link className="trader-account-lable" to={`/actions/v2/${address}`} target="_blank">
-      { provider ? <Davatar size={20} address={address} provider={provider}/> : null }
-      <span>{ shortenAddress(address, breakpoint === "S" ? 20 :42) }</span>
-    </Link>
-  );
+  return <td className={ cellClassName }>{ content }</td>;
 };

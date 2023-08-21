@@ -78,9 +78,11 @@
 .trader-account-lable {
   display: flex;
   flex-direction: row;
+  align-items: center;
 }
 
-.trader-account-lable div {
+.leaderboard-position img,
+.leaderboard-position span {
   display: inline-block;
   margin-right: 1rem;
 }

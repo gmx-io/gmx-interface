@@ -1,0 +1,10 @@
+.leaderboard-position {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.trader-account-lable div {
+  display: inline-block;
+  margin-right: 1rem;
+}

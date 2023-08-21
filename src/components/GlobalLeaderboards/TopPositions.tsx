@@ -9,6 +9,8 @@ import { formatUsd } from "lib/numbers";
 import classnames from "classnames";
 import { TableCell, TableHeader } from "components/Table/types";
 import { AccountOpenPosition } from "domain/synthetics/leaderboards";
+import { importImage } from "lib/legacy";
+import AddressView from "components/AddressView";
 
 const titles: Record<string, TableHeader> = {
   rank: { title: t`Rank` },
@@ -21,22 +23,30 @@ const titles: Record<string, TableHeader> = {
 
 const parseRow = (start: number) => (p: AccountOpenPosition, i: number): Record<keyof typeof titles, TableCell> => ({
   id: p.key,
-  lolwtf: "",
   rank: start + i + 1,
-  account: { value: p.account, isAddress: true },
+  account: { value: "", render: () => <AddressView address={ p.account } size={ 24 }/> },
   unrealizedPnl: {
     value: formatUsd(p.unrealizedPnlAfterFees) || "",
     className: classnames(
       p.unrealizedPnlAfterFees.isNegative() ? "negative" : "positive",
-      "top-accounts-pnl-abs"
+      "leaderboard-pnl-abs"
     ),
   },
-  market: [{
-    value: p.marketInfo.name
-  }, {
-    value: p.isLong ? t`Long` : t`Short`,
-    className: p.isLong ? "positive" : "negative",
-  }],
+  market: {
+    value: "",
+    render: () => {
+      const { symbol } = p.marketInfo.indexToken;
+      const { name } = p.marketInfo;
+
+      return (
+        <div className="leaderboard-position">
+          <img src={ importImage(`ic_${ symbol.toLocaleLowerCase() }_40.svg`) } alt={ name } width="24"/>
+          <span>{ symbol }</span>
+          <span className={ p.isLong ? "positive" : "negative" }>{ p.isLong ? t`Long` : t`Short` }</span>
+        </div>
+      );
+    }
+  },
   entryPrice: { value: formatUsd(p.entryPrice) || "" },
   sizeLiqPrice: { value: `${formatUsd(p.sizeInUsd)} (${formatUsd(p.liquidationPrice)})` }
 });

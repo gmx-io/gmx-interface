@@ -11,6 +11,7 @@ import { useLeaderboardContext } from "./Context";
 import { USD_DECIMALS } from "lib/legacy";
 import { TableCell, TableHeader } from "components/Table/types";
 import { TopAccountsRow } from "domain/synthetics/leaderboards";
+import AddressView from "components/AddressView";
 
 const titles: Record<string, TableHeader> = {
   rank: { title: t`Rank` },
@@ -31,28 +32,28 @@ const titles: Record<string, TableHeader> = {
 const parseRow = (start: number) => (s: TopAccountsRow, i: number): Record<keyof typeof titles, TableCell> => ({
   id: s.id,
   rank: start + i + 1,
-  account: { value: s.account, isAddress: true },
+  account: { value: "", render: () => <AddressView address={ s.account } size={ 24 }/> },
   absPnl: {
     value: formatUsd(s.absPnl) || "",
     className: classnames(
       s.absPnl.isNegative() ? "negative" : "positive",
-      "top-accounts-pnl-abs"
+      "leaderboard-pnl-abs"
     ),
   },
   relPnl: {
     value: `${ formatAmount(s.relPnl.mul(BigNumber.from(100)), USD_DECIMALS, 2, true) }%`,
     className: classnames(
       s.relPnl.isNegative() ? "negative" : "positive",
-      "top-accounts-pnl-rel"
+      "leaderboard-pnl-rel"
     )
   },
   size: {
     value: formatUsd(s.size) || "",
-    className: "top-accounts-size"
+    className: "leaderboard-size"
   },
   leverage: {
     value: `${formatAmount(s.leverage, USD_DECIMALS, 2)}x`,
-    className: "top-accounts-leverage"
+    className: "leaderboard-leverage"
   },
   perf: {
     value: `${ s.wins.toNumber() }/${ s.losses.toNumber() }`,

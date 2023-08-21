@@ -1,3 +1,5 @@
+import { ReactElement } from "react";
+
 export type TableHeader = {
   title: string;
   className?: string;
@@ -15,12 +17,10 @@ export type TableProps<T extends Record<string, any>> = {
 export type TableCellData = {
   value: string | number;
   className?: string;
-  linkTo?: string;
-  target?: string;
-  isAddress?: boolean;
+  render?: (value?: string | number) => ReactElement | string | null;
 };
 
-export type TableCell = string | number | TableCellData | Array<TableCellData>;
+export type TableCell = string | number | TableCellData;
 
 export type TableCellProps = {
   data: TableCell;
