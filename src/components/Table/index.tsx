@@ -4,11 +4,11 @@ import classnames from "classnames";
 import Davatar from "@davatar/react";
 import { Link } from "react-router-dom";
 import { createBreakpoint } from "react-use";
-import { TableProps } from "./types";
 import { useJsonRpcProvider } from "lib/rpc";
 import { shortenAddress } from "lib/legacy";
 import { ETH_MAINNET } from "config/chains";
 import Tooltip from "../Tooltip/Tooltip";
+import { TableCellData, TableCellProps, TableProps } from "./types";
 
 import "./index.css";
 
@@ -63,21 +63,10 @@ export default function Table<T extends Record<string, any>>({
   )
 };
 
-type TableCellData = {
-  value: string | number;
-  className?: string;
-  linkTo?: string;
-  target?: string;
-  isAddress?: boolean;
-};
-
-type TableCellProps = {
-  data: string | TableCellData | Array<TableCellData>;
-};
-
 const TableCell = ({ data }: TableCellProps) => {
   const multipleValues = Array.isArray(data);
-  const cellClassName = classnames(!multipleValues && typeof data !== "string" && data.className);
+  const isCellData = !multipleValues && typeof data === "object";
+  const cellClassName = classnames(isCellData && data.className);
   const renderValue = d => typeof d.render === "function" ? d.render(d.value) : d.value || d
   const renderLink = (d: TableCellData) => (
     <Link to={ d.linkTo! } target={ d.target } className={ d.className }>{ renderValue(d) }</Link>
@@ -88,10 +77,10 @@ const TableCell = ({ data }: TableCellProps) => {
     cellContent = data.map(c => c.linkTo ? renderLink(c) : (
       <span key={ c.value } className={ classnames(c.className) }>{ renderValue(c) }</span>
     ));
-  } else if (typeof data !== 'string' && data.isAddress) {
+  } else if (isCellData && data.isAddress) {
     cellContent = <AddressTableCell address={ data.value as string }/>
   } else {
-    cellContent = typeof data !== "string" && data.linkTo ? renderLink(data) : renderValue(data);
+    cellContent = isCellData && data.linkTo ? renderLink(data) : renderValue(data);
   }
 
   return <td className={ cellClassName }>{ cellContent }</td>;

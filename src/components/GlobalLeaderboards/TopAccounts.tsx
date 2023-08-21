@@ -9,6 +9,56 @@ import TableFilterSearch from "components/TableFilterSearch";
 import Table from "components/Table";
 import { useLeaderboardContext } from "./Context";
 import { USD_DECIMALS } from "lib/legacy";
+import { TableCell, TableHeader } from "components/Table/types";
+import { TopAccountsRow } from "domain/synthetics/leaderboards";
+
+const titles: Record<string, TableHeader> = {
+  rank: { title: t`Rank` },
+  account: { title: t`Address` },
+  absPnl: { title: t`PnL ($)`, tooltip: t`Total Realized and Unrealized Profit` },
+  relPnl: {
+    title: t`PnL (%)`,
+    tooltip: (
+      t`PnL ($) compared to the Max Collateral used by this Address\n` +
+      t`Max Collateral is the highest value of [Sum of Collateral of Open Positions -  RPnL]`
+    ),
+  },
+  size: { title: t`Size`, tooltip: t`Average Position Size` },
+  leverage: { title: t`Leverage`, tooltip: t`Average Leverage used` },
+  perf: { title: t`Win/Loss`, className: "text-right", tooltip: t`Wins and Losses for fully closed Positions` },
+};
+
+const parseRow = (start: number) => (s: TopAccountsRow, i: number): Record<keyof typeof titles, TableCell> => ({
+  id: s.id,
+  rank: start + i + 1,
+  account: { value: s.account, isAddress: true },
+  absPnl: {
+    value: formatUsd(s.absPnl) || "",
+    className: classnames(
+      s.absPnl.isNegative() ? "negative" : "positive",
+      "top-accounts-pnl-abs"
+    ),
+  },
+  relPnl: {
+    value: `${ formatAmount(s.relPnl.mul(BigNumber.from(100)), USD_DECIMALS, 2, true) }%`,
+    className: classnames(
+      s.relPnl.isNegative() ? "negative" : "positive",
+      "top-accounts-pnl-rel"
+    )
+  },
+  size: {
+    value: formatUsd(s.size) || "",
+    className: "top-accounts-size"
+  },
+  leverage: {
+    value: `${formatAmount(s.leverage, USD_DECIMALS, 2)}x`,
+    className: "top-accounts-leverage"
+  },
+  perf: {
+    value: `${ s.wins.toNumber() }/${ s.losses.toNumber() }`,
+    className: "text-right",
+  }
+});
 
 export default function TopAccounts() {
   const perPage = 15;
@@ -18,56 +68,10 @@ export default function TopAccounts() {
   const { topAccounts } = useLeaderboardContext();
   const { isLoading, error } = topAccounts;
   const filteredStats = topAccounts.data.filter(a => a.account.indexOf(term.toLowerCase()) >= 0);
-  const firstItemIndex = (page - 1) * perPage;
-  const rows = filteredStats.slice(firstItemIndex, page * perPage).map((s, i) => ({
-    id: s.id,
-    rank: firstItemIndex + i + 1,
-    account: { value: s.account, isAddress: true },
-    absPnl: {
-      value: formatUsd(s.absPnl),
-      className: classnames(
-        s.absPnl.isNegative() ? "negative" : "positive",
-        "top-accounts-pnl-abs"
-      ),
-    },
-    relPnl: {
-      value: `${ formatAmount(s.relPnl.mul(BigNumber.from(100)), USD_DECIMALS, 2, true) }%`,
-      className: classnames(
-        s.relPnl.isNegative() ? "negative" : "positive",
-        "top-accounts-pnl-rel"
-      )
-    },
-    size: {
-      value: formatUsd(s.size),
-      className: "top-accounts-size"
-    },
-    leverage: {
-      value: `${formatAmount(s.leverage, USD_DECIMALS, 2)}x`,
-      className: "top-accounts-leverage"
-    },
-    perf: {
-      value: `${ s.wins.toNumber() }/${ s.losses.toNumber() }`,
-      className: "text-right",
-    }
-  }));
-
+  const indexFrom = (page - 1) * perPage;
+  const rows = filteredStats.slice(indexFrom, indexFrom + perPage).map(parseRow(indexFrom));
   const pageCount = Math.ceil(filteredStats.length / perPage);
   const handleSearchInput = ({ target }) => setSearch(target.value);
-  const titles = {
-    rank: { title: t`Rank` },
-    account: { title: t`Address` },
-    absPnl: { title: t`PnL ($)`, tooltip: t`Total Realized and Unrealized Profit` },
-    relPnl: {
-      title: t`PnL (%)`,
-      tooltip: (
-        t`PnL ($) compared to the Max Collateral used by this Address\n` +
-        t`Max Collateral is the highest value of [Sum of Collateral of Open Positions -  RPnL]`
-      ),
-    },
-    size: { title: t`Size`, tooltip: t`Average Position Size` },
-    leverage: { title: t`Leverage`, tooltip: t`Average Leverage used` },
-    perf: { title: t`Win/Loss`, className: "text-right", tooltip: t`Wins and Losses for fully closed Positions` },
-  };
 
   return (
     <div>

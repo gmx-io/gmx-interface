@@ -7,6 +7,39 @@ import { useLeaderboardContext } from "./Context";
 import { t } from "@lingui/macro";
 import { formatUsd } from "lib/numbers";
 import classnames from "classnames";
+import { TableCell, TableHeader } from "components/Table/types";
+import { AccountOpenPosition } from "domain/synthetics/leaderboards";
+
+const titles: Record<string, TableHeader> = {
+  rank: { title: t`Rank` },
+  account: { title: t`Address` },
+  unrealizedPnl: { title: t`PnL ($)`, tooltip: t`Total Unrealized Profit` },
+  market: { title: t`Position` },
+  entryPrice: { title: t`Entry` },
+  sizeLiqPrice: { title: t`Size (Liq. Price)` },
+};
+
+const parseRow = (start: number) => (p: AccountOpenPosition, i: number): Record<keyof typeof titles, TableCell> => ({
+  id: p.key,
+  lolwtf: "",
+  rank: start + i + 1,
+  account: { value: p.account, isAddress: true },
+  unrealizedPnl: {
+    value: formatUsd(p.unrealizedPnlAfterFees) || "",
+    className: classnames(
+      p.unrealizedPnlAfterFees.isNegative() ? "negative" : "positive",
+      "top-accounts-pnl-abs"
+    ),
+  },
+  market: [{
+    value: p.marketInfo.name
+  }, {
+    value: p.isLong ? t`Long` : t`Short`,
+    className: p.isLong ? "positive" : "negative",
+  }],
+  entryPrice: { value: formatUsd(p.entryPrice) || "" },
+  sizeLiqPrice: { value: `${formatUsd(p.sizeInUsd)} (${formatUsd(p.liquidationPrice)})` }
+});
 
 export default function TopPositions() {
   const perPage = 15;
@@ -16,38 +49,10 @@ export default function TopPositions() {
   const { topPositions } = useLeaderboardContext();
   const { isLoading, error } = topPositions;
   const filteredStats = topPositions.data.filter(a => a.account.indexOf(term.toLowerCase()) >= 0);
-  const firstItemIndex = (page - 1) * perPage;
-  const rows = filteredStats.slice(firstItemIndex, page * perPage).map((p, i)=> ({
-    id: { value: p.key, },
-    rank: firstItemIndex + i + 1,
-    account: { value: p.account, isAddress: true },
-    unrealizedPnl: {
-      value: formatUsd(p.unrealizedPnlAfterFees),
-      className: classnames(
-        p.unrealizedPnlAfterFees.isNegative() ? "negative" : "positive",
-        "top-accounts-pnl-abs"
-      ),
-    },
-    market: [{
-      value: p.marketInfo.name
-    }, {
-      value: p.isLong ? t`Long` : t`Short`,
-      className: p.isLong ? "positive" : "negative",
-    }],
-    entryPrice: { value: formatUsd(p.entryPrice) },
-    sizeLiqPrice: { value: `${formatUsd(p.sizeInUsd)} (${formatUsd(p.liquidationPrice)})` }
-  }));
-
+  const indexFrom = (page - 1) * perPage;
+  const rows = filteredStats.slice(indexFrom, indexFrom + perPage).map(parseRow(indexFrom));
   const pageCount = Math.ceil(filteredStats.length / perPage);
   const handleSearchInput = ({ target }) => setSearch(target.value);
-  const titles = {
-    rank: { title: t`Rank` },
-    account: { title: t`Address` },
-    unrealizedPnl: { title: t`PnL ($)`, tooltip: t`Total Unrealized Profit` },
-    market: { title: t`Position` },
-    entryPrice: { title: t`Entry` },
-    sizeLiqPrice: { title: t`Size (Liq. Price)` },
-  };
 
   return (
     <div>
