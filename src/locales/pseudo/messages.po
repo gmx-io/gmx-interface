@@ -297,6 +297,7 @@ msgstr ""
 msgid "Amount of traders you referred."
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Amount should be greater than zero"
 msgstr ""
@@ -334,6 +335,7 @@ msgstr ""
 msgid "Approve GMX"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
@@ -349,6 +351,7 @@ msgstr ""
 msgid "Approving GMX..."
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 msgid "Approving {0}..."
@@ -449,6 +452,7 @@ msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
@@ -865,6 +869,7 @@ msgid "Collateral"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -1253,6 +1258,9 @@ msgstr ""
 msgid "Decreasing"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1265,12 +1273,32 @@ msgstr ""
 msgid "Deposit Fee"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
+msgid "Deposit amount is insufficient to bring leverage below the max allowed leverage of 100x"
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.js
+msgid "Deposit disabled, pending {0} upgrade"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "Deposit failed!"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
+msgid "Deposit failed."
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.js
+msgid "Deposit not enough to cover fees"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "Deposit submitted!"
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.js
+msgid "Deposit submitted."
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -1297,6 +1325,7 @@ msgstr ""
 msgid "Depositing {0} to {positionText}"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
 #: src/pages/Stake/StakeV2.js
 msgid "Depositing..."
 msgstr ""
@@ -1380,6 +1409,11 @@ msgstr ""
 msgid "Edit {0} {1}"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
+msgid "Edit {longOrShortText} {0}"
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enable Leverage"
@@ -1390,6 +1424,14 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enable Orders"
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.js
+msgid "Enable deposit failed."
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.js
+msgid "Enable deposit sent."
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
@@ -1410,6 +1452,19 @@ msgstr ""
 msgid "Enable orders sent."
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
+msgid "Enable withdraw failed."
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.js
+msgid "Enable withdraw sent."
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.js
+msgid "Enabling Leverage"
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -1480,6 +1535,7 @@ msgstr ""
 msgid "Enter a trigger price"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -1519,6 +1575,7 @@ msgid "Enter new amount or price"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -1595,6 +1652,7 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -2104,6 +2162,9 @@ msgstr ""
 msgid "Invalid execution fee buffer value"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionEditor.js
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Invalid liq. price"
@@ -2172,9 +2233,17 @@ msgstr ""
 msgid "Leaderboard for GMX traders"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
+msgid "Leave at least {0} ETH for gas"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Leave at least {0} {1} for gas"
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.js
+msgid "Leftover Collateral not enough to cover fees"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
@@ -2190,6 +2259,7 @@ msgid "Leftover position below 10 USD"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -2282,6 +2352,7 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrderEditor.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -2321,6 +2392,10 @@ msgstr ""
 msgid "Liquidation Fee"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
+msgid "Liquidation price would cross mark price."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Liquidity data not loaded"
@@ -2350,6 +2425,7 @@ msgstr ""
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -2450,6 +2526,7 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -2510,6 +2587,7 @@ msgstr ""
 msgid "Market Swap"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
@@ -2576,6 +2654,11 @@ msgstr ""
 msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
+msgid "Max leverage without PnL: {0}x"
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2699,6 +2782,7 @@ msgstr ""
 msgid "Min collateral: {0} USD"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Min leverage: 1.1x"
@@ -2715,6 +2799,10 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "Min required collateral"
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.js
+msgid "Min residual collateral: 10 USD"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -3496,8 +3584,16 @@ msgstr ""
 msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
+msgid "Requested deposit of {0} {1} into {2} {longOrShortText}."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Requested increase of {tokenSymbol} {longOrShortText} by {0} USD."
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.js
+msgid "Requested withdrawal of {0} USD from {1} {longOrShortText}."
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
@@ -3711,6 +3807,7 @@ msgstr ""
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -3796,6 +3893,7 @@ msgstr ""
 msgid "Single"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -4187,6 +4285,10 @@ msgstr ""
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "The owner of this Referral Code has set a custom discount of {currentTierDiscount}% instead of the standard {0}% for Tier {1}."
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.js
+msgid "The pending borrow fee will be charged on this transaction."
 msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
@@ -4923,10 +5025,17 @@ msgstr ""
 msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Withdraw"
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.js
+msgid "Withdraw disabled, pending {0} upgrade"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
@@ -4949,8 +5058,20 @@ msgstr ""
 msgid "Withdraw {0} USD from {1} {longOrShortText}"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
+msgid "Withdrawal failed."
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.js
+msgid "Withdrawal submitted."
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Withdrawing {0} from {positionText}"
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.js
+msgid "Withdrawing..."
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
