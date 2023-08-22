@@ -87,18 +87,6 @@ export function OrderItem(p: Props) {
   }
 
   function renderTitle() {
-    if (p.error) {
-      return (
-        <Tooltip
-          className="order-error"
-          handle={p.order.title}
-          position="right-bottom"
-          handleClassName="plain"
-          renderContent={() => <span className="negative">{p.error}</span>}
-        />
-      );
-    }
-
     if (p.isLarge) {
       if (isSwapOrderType(p.order.orderType)) {
         if (showDebugValues) {
@@ -132,6 +120,7 @@ export function OrderItem(p: Props) {
         <Tooltip
           handle={positionOrder.title}
           position="left-bottom"
+          className={p.error ? "order-error-text-msg" : undefined}
           renderContent={() => {
             return (
               <>
@@ -163,6 +152,11 @@ export function OrderItem(p: Props) {
                     />
                   </>
                 )}
+
+                <>
+                  <br />
+                  {p.error && <span className="negative">{p.error}</span>}
+                </>
               </>
             );
           }}
