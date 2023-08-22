@@ -192,7 +192,7 @@ export function OrderItem(p: Props) {
       const fromTokenWithIcon = (
         <span className="nobr">
           <TokenIcon className="mr-xs ml-xxs" symbol={initialCollateralToken.symbol} displaySize={20} importSize={24} />
-          {fromTokenText}
+          {initialCollateralToken.symbol}
         </span>
       );
 
@@ -201,7 +201,7 @@ export function OrderItem(p: Props) {
       const toTokenWithIcon = (
         <span className="nobr">
           <TokenIcon className="mr-xs ml-xxs" symbol={targetCollateralToken.symbol} displaySize={20} importSize={24} />
-          {toTokenText}
+          {targetCollateralToken.symbol}
         </span>
       );
 
