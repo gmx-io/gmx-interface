@@ -1,6 +1,5 @@
 import TokenIcon from "./TokenIcon";
 import cx from "classnames";
-import "./TokenIcon.scss";
 
 type Props = {
   displaySize: number;
@@ -10,7 +9,7 @@ type Props = {
 };
 
 export default function TokenWithIcon({ symbol, className, importSize, displaySize }: Props) {
-  const classNames = cx("inline-items-center nobr Token-with-icon", className);
+  const classNames = cx("inline-items-center nobr Token-icon", className);
 
   if (!symbol) return <></>;
   return (

@@ -4,21 +4,6 @@
   font-size: var(--font-sm);
 }
 
-.Order-list-item-text span,
-.Order-list-card-title {
-  display: inline-block;
-}
-
-.Order-list-card-title .Tooltip-handle {
-  display: inline-block;
-}
-
-.Order-list-item-text img,
-.Order-list-card-title img {
-  vertical-align: bottom;
-  height: 18px;
-}
-
 .Orders-list.small {
   display: none;
 }

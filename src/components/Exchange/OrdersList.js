@@ -26,18 +26,22 @@ import { formatAmount } from "lib/numbers";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getPriceDecimals } from "config/tokens";
 import Button from "components/Button/Button";
-import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 
 function getOrderTitle(order, indexTokenSymbol) {
   const orderTypeText = order.type === INCREASE ? t`Increase` : t`Decrease`;
   const longShortText = order.isLong ? t`Long` : t`Short`;
   const sizeDeltaText = formatAmount(order.sizeDelta, USD_DECIMALS, 2, true);
+  const symbolWithIcon = (
+    <>
+      <TokenIcon className="mx-xxs" symbol={indexTokenSymbol} displaySize={18} importSize={24} /> {indexTokenSymbol}
+    </>
+  );
 
   return (
-    <>
-      {orderTypeText} <TokenWithIcon className="ml-xs" symbol={indexTokenSymbol} displaySize={18} /> {longShortText} by
-      ${sizeDeltaText}
-    </>
+    <span>
+      {orderTypeText} {symbolWithIcon} {longShortText} by ${sizeDeltaText}
+    </span>
   );
 }
 
@@ -173,18 +177,18 @@ export default function OrdersList(props) {
         const markExchangeRate = getExchangeRate(fromTokenInfo, toTokenInfo);
         const orderId = `${order.type}-${order.index}`;
         const titleText = (
-          <>
+          <span>
             <Trans>Swap</Trans>{" "}
             {formatAmount(
               order.amountIn,
               fromTokenInfo.decimals,
               fromTokenInfo.isStable || fromTokenInfo.isUsdg ? 2 : 4,
               true
-            )}
-            <TokenWithIcon className="ml-xs" symbol={fromTokenInfo.symbol} displaySize={18} /> for{" "}
-            {formatAmount(order.minOut, toTokenInfo.decimals, toTokenInfo.isStable || toTokenInfo.isUsdg ? 2 : 4, true)}
-            <TokenWithIcon className="ml-xs" symbol={toTokenInfo.symbol} displaySize={18} />
-          </>
+            )}{" "}
+            <TokenIcon symbol={fromTokenInfo.symbol} displaySize={18} importSize={24} /> {fromTokenInfo.symbol} for{" "}
+            {formatAmount(order.minOut, toTokenInfo.decimals, toTokenInfo.isStable || toTokenInfo.isUsdg ? 2 : 4, true)}{" "}
+            <TokenIcon symbol={toTokenInfo.symbol} displaySize={18} importSize={24} /> {toTokenInfo.symbol}
+          </span>
         );
 
         return (
@@ -397,10 +401,10 @@ export default function OrdersList(props) {
         const collateralUSD = getUsd(order.amountIn, fromTokenInfo.address, true, infoTokens);
         const titleText = (
           <>
-            Swap {formatAmount(order.amountIn, fromTokenInfo.decimals, fromTokenInfo.isStable ? 2 : 4, true)}
-            <TokenWithIcon symbol={fromTokenInfo.symbol} displaySize={18} /> for{" "}
-            {formatAmount(order.minOut, toTokenInfo.decimals, toTokenInfo.isStable ? 2 : 4, true)}
-            <TokenWithIcon symbol={toTokenInfo.symbol} displaySize={18} />
+            Swap {formatAmount(order.amountIn, fromTokenInfo.decimals, fromTokenInfo.isStable ? 2 : 4, true)}{" "}
+            <TokenIcon symbol={fromTokenInfo.symbol} displaySize={18} importSize={24} /> {fromTokenInfo.symbol} for{" "}
+            {formatAmount(order.minOut, toTokenInfo.decimals, toTokenInfo.isStable ? 2 : 4, true)}{" "}
+            <TokenIcon symbol={toTokenInfo.symbol} displaySize={18} importSize={24} /> {toTokenInfo.symbol}
           </>
         );
         return (

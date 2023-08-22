@@ -1,4 +1,6 @@
 import { importImage } from "lib/legacy";
+import cx from "classnames";
+import "./TokenIcon.scss";
 
 function getIconUrlPath(symbol, size: 24 | 40) {
   if (!symbol || !size) return;
@@ -14,8 +16,9 @@ type Props = {
 
 function TokenIcon({ className, symbol, displaySize, importSize = 24 }: Props) {
   const iconPath = getIconUrlPath(symbol, importSize);
+  const classNames = cx("Token-icon", className);
   if (!iconPath) return <></>;
-  return <img className={className} src={importImage(iconPath)} alt={symbol} width={displaySize} />;
+  return <img className={classNames} src={importImage(iconPath)} alt={symbol} width={displaySize} />;
 }
 
 export default TokenIcon;
