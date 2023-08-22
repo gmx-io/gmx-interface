@@ -457,6 +457,10 @@
   white-space: pre-line;
 }
 
+.Order-list-item-text {
+  line-height: 1.4;
+}
+
 .Exchange-list .App-card {
   margin-bottom: 1.5rem;
   display: flex;
