@@ -53,8 +53,18 @@ import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "lib/numbers";
+import {
+  bigNumberify,
+  expandDecimals,
+  formatAmount,
+  formatAmountFree,
+  formatKeyAmount,
+  limitDecimals,
+  parseValue,
+} from "lib/numbers";
 import "./StakeV2.css";
+import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
+import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 
 const { AddressZero } = ethers.constants;
 
@@ -78,6 +88,7 @@ function StakeModal(props) {
     setPendingTxns,
   } = props;
   const [isStaking, setIsStaking] = useState(false);
+  const isMetamaskMobile = useIsMetamaskMobile();
   const [isApproving, setIsApproving] = useState(false);
 
   const { data: tokenAllowance } = useSWR(
@@ -165,7 +176,13 @@ function StakeModal(props) {
           topLeftLabel={t`Stake`}
           topRightLabel={t`Max`}
           topRightValue={formatAmount(maxAmount, 18, 4, true)}
-          onClickTopRightLabel={() => setValue(formatAmountFree(maxAmount, 18, 18))}
+          onClickTopRightLabel={() => {
+            const formattedMaxAmount = formatAmountFree(maxAmount, 18, 18);
+            const finalMaxAmount = isMetamaskMobile
+              ? limitDecimals(formattedMaxAmount, MAX_METAMASK_MOBILE_DECIMALS)
+              : formattedMaxAmount;
+            setValue(finalMaxAmount);
+          }}
           inputValue={value}
           onInputValueChange={(e) => setValue(e.target.value)}
           showMaxButton={false}
