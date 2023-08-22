@@ -2277,6 +2277,10 @@ msgstr ""
 msgid "Leverage"
 msgstr "Levier"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Leverage Trading Terminal"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Leverage disabled, pending {0} upgrade"
 msgstr "Levier désactivé, en attente de {0} actualisations"
