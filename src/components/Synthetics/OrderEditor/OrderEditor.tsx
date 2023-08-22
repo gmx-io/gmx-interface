@@ -390,17 +390,8 @@ export function OrderEditor(p: Props) {
           <>
             <BuyInputSection
               topLeftLabel={isTriggerDecreaseOrderType(p.order.orderType) ? t`Close` : t`Size`}
-              topRightLabel={t`Max`}
-              topRightValue={formatAmount(p.order.sizeDeltaUsd, USD_DECIMALS, 2)}
-              onClickTopRightLabel={() => setSizeInputValue(formatAmount(p.order.sizeDeltaUsd, USD_DECIMALS))}
               inputValue={sizeInputValue}
               onInputValueChange={(e) => setSizeInputValue(e.target.value)}
-              showPercentSelector={true}
-              onPercentChange={(percent) => {
-                if (p.order.sizeDeltaUsd) {
-                  setSizeInputValue(formatAmountFree(p.order.sizeDeltaUsd.mul(percent).div(100), USD_DECIMALS));
-                }
-              }}
             >
               USD
             </BuyInputSection>
