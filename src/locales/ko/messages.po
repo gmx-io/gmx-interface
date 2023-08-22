@@ -5226,10 +5226,6 @@ msgstr "이전을 수락하려면 이 페이지에 있어야 합니다. 필요�
 msgid "You will receive a {currentTierDiscount}% discount on opening and closing fees."
 msgstr ""
 
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "You will receive a {currentTierDiscount}% discount on your opening and closing fees. This discount on V1 will be airdropped to your account every Wednesday. For trades on V2, discounts are applied automatically and will reduce your fees when you make a trade."
-#~ msgstr ""
-
 #: src/components/Exchange/OrdersList.js
 msgid "You will receive at least {0} {1} if this order is executed. The exact execution price may vary depending on fees at the time the order is executed."
 msgstr "해당 주문이 실행되게 되면 최소 {0} {1}을 받을 수 있습니다. 정확한 실행가격은 주문이 실행된 수수료에 의해 상이합니다."

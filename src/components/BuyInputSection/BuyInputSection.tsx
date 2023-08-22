@@ -2,7 +2,7 @@ import "./BuyInputSection.scss";
 import React, { useRef, ReactNode, ChangeEvent, useState } from "react";
 import cx from "classnames";
 import { Trans } from "@lingui/macro";
-import { POSITION_CLOSE_SUGGESTION_LISTS } from "config/ui";
+import { PERCENTAGE_SUGGESTIONS } from "config/ui";
 
 type Props = {
   topLeftLabel: string;
@@ -109,7 +109,7 @@ export default function BuyInputSection(props: Props) {
       </div>
       {showPercentSelector && isPercentSelectorVisible && onPercentChange && (
         <ul className="PercentSelector">
-          {POSITION_CLOSE_SUGGESTION_LISTS.map((percentage) => (
+          {PERCENTAGE_SUGGESTIONS.map((percentage) => (
             <li
               className="PercentSelector-item"
               key={percentage}
