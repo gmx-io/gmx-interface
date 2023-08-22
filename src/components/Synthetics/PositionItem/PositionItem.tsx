@@ -603,7 +603,7 @@ export function PositionItem(p: Props) {
                   disabled={p.position.sizeInUsd.eq(0)}
                   onClick={p.onClosePositionClick}
                 >
-                  <Trans>Edit</Trans>
+                  <Trans>Close</Trans>
                 </Button>
                 <Button
                   variant="secondary"
@@ -611,7 +611,7 @@ export function PositionItem(p: Props) {
                   disabled={p.position.sizeInUsd.eq(0)}
                   onClick={p.onEditCollateralClick}
                 >
-                  <Trans>Cancel</Trans>
+                  <Trans>Edit Collateral</Trans>
                 </Button>
                 <Button
                   variant="secondary"

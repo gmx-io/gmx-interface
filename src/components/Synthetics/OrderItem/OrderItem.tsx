@@ -419,27 +419,26 @@ export function OrderItem(p: Props) {
                 </div>
               </div>
             )}
-
-            {!p.hideActions && (
-              <>
-                <div className="App-card-divider"></div>
-                <div className="remove-top-margin">
-                  {p.onEditOrder && (
-                    <Button variant="secondary" className="mr-md mt-md" onClick={p.onEditOrder}>
-                      <Trans>Edit</Trans>
-                    </Button>
-                  )}
-
-                  {p.onCancelOrder && (
-                    <Button variant="secondary" className="mt-md" onClick={p.onCancelOrder}>
-                      <Trans>Edit</Trans>
-                    </Button>
-                  )}
-                </div>
-              </>
-            )}
           </div>
         </div>
+        {!p.hideActions && (
+          <div className="App-card-actions">
+            <div className="App-card-divider"></div>
+            <div className="remove-top-margin">
+              {p.onEditOrder && (
+                <Button variant="secondary" className="mr-md mt-md" onClick={p.onEditOrder}>
+                  <Trans>Edit</Trans>
+                </Button>
+              )}
+
+              {p.onCancelOrder && (
+                <Button variant="secondary" className="mt-md" onClick={p.onCancelOrder}>
+                  <Trans>Cancel</Trans>
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     );
   }
