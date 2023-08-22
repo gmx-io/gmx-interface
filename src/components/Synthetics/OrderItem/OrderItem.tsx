@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TokenIcon from "components/TokenIcon/TokenIcon";
+import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import Tooltip from "components/Tooltip/Tooltip";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { MarketsInfoData } from "domain/synthetics/markets";
@@ -189,25 +189,13 @@ export function OrderItem(p: Props) {
       const { initialCollateralToken, targetCollateralToken, minOutputAmount, initialCollateralDeltaAmount } = order;
 
       const fromTokenText = formatTokenAmount(initialCollateralDeltaAmount, initialCollateralToken.decimals, "");
-      const fromTokenWithIcon = (
-        <span className="nobr">
-          <TokenIcon className="mr-xs ml-xxs" symbol={initialCollateralToken.symbol} displaySize={20} importSize={24} />
-          {initialCollateralToken.symbol}
-        </span>
-      );
 
       const toTokenText = formatTokenAmount(minOutputAmount, targetCollateralToken.decimals, "");
 
-      const toTokenWithIcon = (
-        <span className="nobr">
-          <TokenIcon className="mr-xs ml-xxs" symbol={targetCollateralToken.symbol} displaySize={20} importSize={24} />
-          {targetCollateralToken.symbol}
-        </span>
-      );
-
       return (
         <span>
-          Swap {fromTokenText} {fromTokenWithIcon} for {toTokenText} {toTokenWithIcon}
+          Swap {fromTokenText} <TokenWithIcon symbol={initialCollateralToken.symbol} displaySize={18} /> for{" "}
+          {toTokenText} <TokenWithIcon symbol={targetCollateralToken.symbol} displaySize={18} />
         </span>
       );
     } else {
@@ -215,22 +203,14 @@ export function OrderItem(p: Props) {
       const indexToken = marketInfo?.indexToken;
       const { orderType, isLong, sizeDeltaUsd } = order;
 
-      const symbolWithIcon = (
-        <span>
-          {indexToken && (
-            <TokenIcon className="mr-xs ml-xxs" symbol={indexToken?.symbol} displaySize={20} importSize={24} />
-          )}
-          {indexToken?.symbol}
-        </span>
-      );
-
       const longShortText = isLong ? t`Long` : t`Short`;
       const sizeText = formatUsd(sizeDeltaUsd);
       const increaseOrDecreaseText = isIncreaseOrderType(orderType) ? t`Increase` : t`Decrease`;
 
       return (
         <span>
-          {increaseOrDecreaseText} {symbolWithIcon} {longShortText} by {sizeText}
+          {increaseOrDecreaseText} <TokenWithIcon symbol={indexToken?.symbol} displaySize={18} /> {longShortText} by{" "}
+          {sizeText}
         </span>
       );
     }

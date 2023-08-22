@@ -24,23 +24,19 @@ import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { getTokenInfo, getUsd } from "domain/tokens/utils";
 import { formatAmount } from "lib/numbers";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import TokenIcon from "components/TokenIcon/TokenIcon";
 import { getPriceDecimals } from "config/tokens";
 import Button from "components/Button/Button";
+import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 
 function getOrderTitle(order, indexTokenSymbol) {
   const orderTypeText = order.type === INCREASE ? t`Increase` : t`Decrease`;
   const longShortText = order.isLong ? t`Long` : t`Short`;
   const sizeDeltaText = formatAmount(order.sizeDelta, USD_DECIMALS, 2, true);
-  const symbolWithIcon = (
-    <>
-      <TokenIcon className="mx-xs" symbol={indexTokenSymbol} displaySize={20} importSize={24} />
-      {indexTokenSymbol}
-    </>
-  );
+
   return (
     <>
-      {orderTypeText} {symbolWithIcon} {longShortText} by ${sizeDeltaText}
+      {orderTypeText} <TokenWithIcon className="ml-xs" symbol={indexTokenSymbol} displaySize={18} /> {longShortText} by
+      ${sizeDeltaText}
     </>
   );
 }
@@ -185,11 +181,9 @@ export default function OrdersList(props) {
               fromTokenInfo.isStable || fromTokenInfo.isUsdg ? 2 : 4,
               true
             )}
-            <TokenIcon className="mx-xs" symbol={fromTokenInfo.symbol} displaySize={20} importSize={24} />
-            {fromTokenInfo.symbol} for{" "}
+            <TokenWithIcon className="ml-xs" symbol={fromTokenInfo.symbol} displaySize={18} /> for{" "}
             {formatAmount(order.minOut, toTokenInfo.decimals, toTokenInfo.isStable || toTokenInfo.isUsdg ? 2 : 4, true)}
-            <TokenIcon className="mx-xs" symbol={toTokenInfo.symbol} displaySize={20} importSize={24} />
-            {toTokenInfo.symbol}
+            <TokenWithIcon className="ml-xs" symbol={toTokenInfo.symbol} displaySize={18} />
           </>
         );
 
@@ -404,11 +398,9 @@ export default function OrdersList(props) {
         const titleText = (
           <>
             Swap {formatAmount(order.amountIn, fromTokenInfo.decimals, fromTokenInfo.isStable ? 2 : 4, true)}
-            <TokenIcon className="mx-xs" symbol={fromTokenInfo.symbol} displaySize={20} importSize={24} />
-            {fromTokenInfo.symbol} for{" "}
+            <TokenWithIcon symbol={fromTokenInfo.symbol} displaySize={18} /> for{" "}
             {formatAmount(order.minOut, toTokenInfo.decimals, toTokenInfo.isStable ? 2 : 4, true)}
-            <TokenIcon className="mx-xs" symbol={toTokenInfo.symbol} displaySize={20} importSize={24} />
-            {toTokenInfo.symbol}
+            <TokenWithIcon symbol={toTokenInfo.symbol} displaySize={18} />
           </>
         );
         return (
