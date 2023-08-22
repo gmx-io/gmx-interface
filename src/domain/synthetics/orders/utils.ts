@@ -3,11 +3,12 @@ import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { Order, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo } from "./types";
-import { parsePositionKey } from "../positions";
+import { PositionInfo, parsePositionKey } from "../positions";
 import { MarketsInfoData } from "../markets";
 import { getSwapPathOutputAddresses, getSwapPathStats, getTriggerThresholdType } from "../trade";
 import { TokensData, convertToTokenAmount, convertToUsd, getTokensRatioByAmounts, parseContractPrice } from "../tokens";
 import { getByKey } from "lib/objects";
+import { getPositionKey } from "lib/legacy";
 
 export function isVisibleOrder(orderType: OrderType) {
   return isLimitOrderType(orderType) || isTriggerDecreaseOrderType(orderType) || isLimitSwapOrderType(orderType);
@@ -245,5 +246,27 @@ export function getOrderInfo(
     };
 
     return orderInfo;
+  }
+}
+
+export function getOrderError(order: OrderInfo, position?: PositionInfo) {
+  const positionKey = getPositionKey(
+    order.account,
+    order.marketAddress,
+    order.initialCollateralTokenAddress,
+    order.isLong
+  );
+  const errorMessage = t`Order Trigger Price is beyond position's Liquidation Price.`;
+
+  if (isOrderForPosition(order, positionKey) && isDecreaseOrderType(order.orderType)) {
+    if (position?.isLong) {
+      if (position.liquidationPrice?.gt(order.triggerPrice)) {
+        return errorMessage;
+      }
+    } else {
+      if (position?.liquidationPrice?.lt(order.triggerPrice)) {
+        return errorMessage;
+      }
+    }
   }
 }
