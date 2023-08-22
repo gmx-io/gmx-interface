@@ -254,7 +254,9 @@ export default function PositionsList(props) {
                         displaySize={20}
                         importSize={24}
                       />
-                      <span className="Exchange-list-title">{position.indexToken.symbol}</span>
+                      <span className="Exchange-list-title" onClick={() => onPositionClick(position)}>
+                        {position.indexToken.symbol}
+                      </span>
                       <div>
                         <span className="Position-leverage" onClick={openSettings}>
                           {position.leverageStr}
@@ -285,11 +287,12 @@ export default function PositionsList(props) {
                         </div>
                         <div>
                           <span
-                            className={cx("Exchange-list-info-label", {
+                            className={cx("Exchange-list-info-label Position-pnl", {
                               positive: hasPositionProfit && positionDelta.gt(0),
                               negative: !hasPositionProfit && positionDelta.gt(0),
                               muted: positionDelta.eq(0),
                             })}
+                            onClick={openSettings}
                           >
                             {position.deltaStr} ({position.deltaPercentageStr})
                           </span>
@@ -520,8 +523,8 @@ export default function PositionsList(props) {
 
             return (
               <tr key={position.key}>
-                <td className="clickable" onClick={() => onPositionClick(position)}>
-                  <div className="Exchange-list-title">
+                <td className={!hideActions ? "clickable" : ""} onClick={() => onPositionClick(position)}>
+                  <div className="Exchange-list-title" onClick={() => onPositionClick(position)}>
                     {!hideActions ? (
                       <Tooltip
                         handle={

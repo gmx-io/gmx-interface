@@ -292,6 +292,7 @@ export function getDecreasePositionAmounts(p: {
   if (values.isFullClose) {
     values.collateralDeltaUsd = estimatedCollateralUsd;
     values.collateralDeltaAmount = position.collateralAmount;
+    values.receiveTokenAmount = payedInfo.outputAmount.add(payedInfo.remainingCollateralAmount);
   } else if (
     keepLeverage &&
     position.sizeInUsd.gt(0) &&
@@ -320,12 +321,13 @@ export function getDecreasePositionAmounts(p: {
       collateralToken.decimals,
       values.collateralPrice
     )!;
+    values.receiveTokenAmount = payedInfo.outputAmount.add(values.collateralDeltaAmount);
   } else {
     values.collateralDeltaUsd = BigNumber.from(0);
     values.collateralDeltaAmount = BigNumber.from(0);
+    values.receiveTokenAmount = payedInfo.outputAmount;
   }
 
-  values.receiveTokenAmount = values.receiveTokenAmount.add(values.collateralDeltaAmount);
   values.receiveUsd = convertToUsd(values.receiveTokenAmount, collateralToken.decimals, values.collateralPrice)!;
 
   return values;

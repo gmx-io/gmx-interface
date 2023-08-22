@@ -5,6 +5,7 @@ import { getContract } from "config/contracts";
 import { ethers } from "ethers";
 import {
   adjustForDecimals,
+  DUST_BNB,
   getBuyGlpFromAmount,
   getBuyGlpToAmount,
   getSellGlpFromAmount,
@@ -48,7 +49,15 @@ import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageByChainId } from "lib/localStorage";
-import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "lib/numbers";
+import {
+  bigNumberify,
+  expandDecimals,
+  formatAmount,
+  formatAmountFree,
+  formatKeyAmount,
+  limitDecimals,
+  parseValue,
+} from "lib/numbers";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { IoChevronDownOutline } from "react-icons/io5";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
@@ -56,6 +65,8 @@ import "./GlpSwap.css";
 import SwapErrorModal from "./SwapErrorModal";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import PageTitle from "components/PageTitle/PageTitle";
+import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
+import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 
 const { AddressZero } = ethers.constants;
 
@@ -107,6 +118,7 @@ export default function GlpSwap(props) {
     savedShouldDisableValidationForTesting,
   } = props;
   const history = useHistory();
+  const isMetamaskMobile = useIsMetamaskMobile();
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp";
   const tabLabel = isBuying ? t`Buy GLP` : t`Sell GLP`;
   const { active, library, account } = useWeb3React();
@@ -425,12 +437,25 @@ export default function GlpSwap(props) {
   const fillMaxAmount = () => {
     if (isBuying) {
       setAnchorOnSwapAmount(true);
-      setSwapValue(formatAmountFree(swapTokenBalance, swapToken.decimals, swapToken.decimals));
+      const maxAvailableAmount = swapToken.isNative
+        ? swapTokenBalance.sub(bigNumberify(DUST_BNB).mul(2))
+        : swapTokenBalance;
+
+      const formattedAmount = formatAmountFree(
+        maxAvailableAmount.gt(0) ? maxAvailableAmount : 0,
+        swapToken.decimals,
+        swapToken.decimals
+      );
+      const finalAmount = isMetamaskMobile
+        ? limitDecimals(formattedAmount, MAX_METAMASK_MOBILE_DECIMALS)
+        : formattedAmount;
+      setSwapValue(finalAmount);
       return;
     }
 
     setAnchorOnSwapAmount(false);
-    setGlpValue(formatAmountFree(maxSellAmount, GLP_DECIMALS, GLP_DECIMALS));
+    const formattedMaxSellAmount = formatAmountFree(maxSellAmount, GLP_DECIMALS, GLP_DECIMALS);
+    setGlpValue(formattedMaxSellAmount);
   };
 
   const getError = () => {

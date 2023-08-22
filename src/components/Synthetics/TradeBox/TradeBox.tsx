@@ -79,6 +79,7 @@ import {
   formatPercentage,
   formatTokenAmount,
   formatUsd,
+  limitDecimals,
   parseValue,
 } from "lib/numbers";
 import { useSafeState } from "lib/useSafeState";
@@ -96,6 +97,8 @@ import "./TradeBox.scss";
 import Banner from "components/Banner/Banner";
 import { useHasOutdatedUi } from "domain/legacy";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
+import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
+import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 
 export type Props = {
   tradeType: TradeType;
@@ -208,6 +211,7 @@ export function TradeBox(p: Props) {
   };
 
   const { chainId } = useChainId();
+  const isMetamaskMobile = useIsMetamaskMobile();
   const { library, account } = useWeb3React();
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
@@ -930,7 +934,11 @@ export function TradeBox(p: Props) {
         ? fromToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
         : fromToken.balance;
       setFocusedInput("from");
-      setFromTokenInputValue(formatAmountFree(maxAvailableAmount, fromToken.decimals));
+      const formattedAmount = formatAmountFree(maxAvailableAmount, fromToken.decimals);
+      const finalAmount = isMetamaskMobile
+        ? limitDecimals(formattedAmount, MAX_METAMASK_MOBILE_DECIMALS)
+        : formattedAmount;
+      setFromTokenInputValue(finalAmount);
     }
   }
 

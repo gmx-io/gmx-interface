@@ -3,7 +3,7 @@ import cx from "classnames";
 import PositionDropdown from "components/Exchange/PositionDropdown";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import { PositionOrderInfo, isIncreaseOrderType } from "domain/synthetics/orders";
+import { PositionOrderInfo, getOrderError, isIncreaseOrderType } from "domain/synthetics/orders";
 import {
   PositionInfo,
   formatEstimatedLiquidationTime,
@@ -290,18 +290,16 @@ export function PositionItem(p: Props) {
   function renderPositionOrders() {
     if (positionOrders.length === 0) return null;
 
+    const ordersErrorList = positionOrders.map((order) => getOrderError(order, p.position)).filter(Boolean);
     return (
       <div onClick={p.onOrdersClick}>
         <Tooltip
           handle={t`Orders (${positionOrders.length})`}
           position="left-bottom"
-          handleClassName={cx([
-            "Exchange-list-info-label",
-            "Exchange-position-list-orders",
-            "plain",
-            "clickable",
-            "muted",
-          ])}
+          handleClassName={cx(
+            ["Exchange-list-info-label", "Exchange-position-list-orders", "plain", "clickable", "text-gray"],
+            { "position-order-error": ordersErrorList.length > 0 }
+          )}
           renderContent={() => {
             return (
               <>
@@ -309,6 +307,7 @@ export function PositionItem(p: Props) {
                   <Trans>Active Orders</Trans>
                 </strong>
                 {positionOrders.map((order) => {
+                  const error = getOrderError(order, p.position);
                   return (
                     <div key={order.key} className="Position-list-order active-order-tooltip">
                       {getTriggerThresholdType(order.orderType, order.isLong)}{" "}
@@ -317,6 +316,8 @@ export function PositionItem(p: Props) {
                       })}
                       : {isIncreaseOrderType(order.orderType) ? "+" : "-"}
                       {formatUsd(order.sizeDeltaUsd)}
+                      <br />
+                      {error && <div className="order-error-text">{error}</div>}
                     </div>
                   );
                 })}

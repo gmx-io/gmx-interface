@@ -32,7 +32,7 @@ import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatAmountFree, formatTokenAmount, formatUsd, parseValue } from "lib/numbers";
+import { formatAmountFree, formatTokenAmount, formatUsd, limitDecimals, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 import { IoMdSwap } from "react-icons/io";
@@ -54,6 +54,8 @@ import { DUST_BNB } from "lib/legacy";
 import { useHasOutdatedUi } from "domain/legacy";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import { getIcon } from "config/icons";
+import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
+import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 
 export enum Operation {
   Deposit = "Deposit",
@@ -109,6 +111,7 @@ export function GmSwapBox(p: Props) {
     shouldDisableValidation,
   } = p;
   const { search } = useLocation();
+  const isMetamaskMobile = useIsMetamaskMobile();
   const history = useHistory();
   const queryParams = useMemo(() => new URLSearchParams(search), [search]);
 
@@ -813,7 +816,13 @@ export function GmSwapBox(p: Props) {
                 const maxAvailableAmount = firstToken.isNative
                   ? firstToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
                   : firstToken.balance;
-                setFirstTokenInputValue(formatAmountFree(maxAvailableAmount, firstToken.decimals));
+
+                const formattedMaxAvailableAmount = formatAmountFree(maxAvailableAmount, firstToken.decimals);
+                const finalAmount = isMetamaskMobile
+                  ? limitDecimals(formattedMaxAvailableAmount, MAX_METAMASK_MOBILE_DECIMALS)
+                  : formattedMaxAvailableAmount;
+
+                setFirstTokenInputValue(finalAmount);
                 onFocusedCollateralInputChange(firstToken.address);
               }
             }}
@@ -869,7 +878,12 @@ export function GmSwapBox(p: Props) {
                   const maxAvailableAmount = secondToken.isNative
                     ? secondToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
                     : secondToken.balance;
-                  setSecondTokenInputValue(formatAmountFree(maxAvailableAmount, secondToken.decimals));
+
+                  const formattedMaxAvailableAmount = formatAmountFree(maxAvailableAmount, secondToken.decimals);
+                  const finalAmount = isMetamaskMobile
+                    ? limitDecimals(formattedMaxAvailableAmount, MAX_METAMASK_MOBILE_DECIMALS)
+                    : formattedMaxAvailableAmount;
+                  setSecondTokenInputValue(finalAmount);
                   onFocusedCollateralInputChange(secondToken.address);
                 }
               }}
@@ -909,7 +923,11 @@ export function GmSwapBox(p: Props) {
             })}
             onClickMax={() => {
               if (marketToken?.balance) {
-                setMarketTokenInputValue(formatAmountFree(marketToken.balance, marketToken.decimals));
+                const formattedGMBalance = formatAmountFree(marketToken.balance, marketToken.decimals);
+                const finalGMBalance = isMetamaskMobile
+                  ? limitDecimals(formattedGMBalance, MAX_METAMASK_MOBILE_DECIMALS)
+                  : formattedGMBalance;
+                setMarketTokenInputValue(finalGMBalance);
                 setFocusedInput("market");
               }
             }}

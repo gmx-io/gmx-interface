@@ -474,6 +474,11 @@
   display: none;
 }
 
+.Collateral-warning .Tooltip-handle {
+  color: var(--warning-yellow);
+  text-decoration-color: var(--warning-yellow);
+}
+
 button.Exchange-list-action {
   font-size: var(--font-base);
   padding: 0;

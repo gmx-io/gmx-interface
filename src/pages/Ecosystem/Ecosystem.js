@@ -425,7 +425,7 @@ export default function Ecosystem() {
       chainIds: [ARBITRUM],
     },
     {
-      title: "Beefy.com",
+      title: "Beefy",
       link: "https://app.beefy.com/",
       linkLabel: "beefy.com",
       about: t`GLP and GMX autocompounding vaults`,
@@ -455,6 +455,14 @@ export default function Ecosystem() {
       about: t`Decentralized Money Market`,
 
       chainIds: [ARBITRUM],
+    },
+    {
+      title: "UniDex Leverage",
+      link: "https://leverage.unidex.exchange/",
+      linkLabel: "unidex.exchange",
+      about: t`Leverage Trading Terminal`,
+
+      chainIds: [ARBITRUM, AVALANCHE],
     },
   ];
 

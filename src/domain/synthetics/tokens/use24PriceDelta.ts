@@ -1,17 +1,13 @@
-import useSWR from "swr";
-import { getOracleKeeperUrl } from "config/oracleKeeper";
 import { useMemo } from "react";
-
-export type DayPriceCandle = {
-  tokenSymbol: string;
-  high: number;
-  low: number;
-  open: number;
-  close: number;
-};
+import useSWR from "swr";
+import { useOracleKeeperFetcher } from "./useOracleKeeperFetcher";
 
 export function use24hPriceDelta(chainId: number, tokenSymbol?: string) {
-  const { data } = useSWR<DayPriceCandle[]>(getOracleKeeperUrl(chainId, "/prices/24h"));
+  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
+
+  const { data } = useSWR([chainId, oracleKeeperFetcher.oracleKeeperUrl, "use24PriceDelta"], {
+    fetcher: () => oracleKeeperFetcher.fetch24hPrices(),
+  });
 
   const priceDelta = useMemo(() => {
     const tokenDelta = data?.find((candle) => candle.tokenSymbol === tokenSymbol);

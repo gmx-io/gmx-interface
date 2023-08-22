@@ -20,7 +20,7 @@ import { helperToast } from "lib/helperToast";
 import { getTokenInfo } from "domain/tokens/utils";
 import { approveTokens, shouldRaiseGasError } from "domain/tokens";
 import { usePrevious } from "lib/usePrevious";
-import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
+import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, limitDecimals, parseValue } from "lib/numbers";
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import Button from "components/Button/Button";
 import FeesTooltip from "./FeesTooltip";
@@ -28,6 +28,8 @@ import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { getLeverage } from "lib/positions/getLeverage";
 import { getPriceDecimals } from "config/tokens";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
+import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";
@@ -63,6 +65,7 @@ export default function PositionEditor(props) {
     isContractAccount,
   } = props;
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
+  const isMetamaskMobile = useIsMetamaskMobile();
   const position = positionsMap && positionKey ? positionsMap[positionKey] : undefined;
   const [option, setOption] = useState(DEPOSIT);
   const [fromValue, setFromValue] = useState("");
@@ -554,7 +557,10 @@ export default function PositionEditor(props) {
                         <button
                           className="Exchange-swap-max"
                           onClick={() => {
-                            setFromValue(maxAmountFormattedFree);
+                            const finalMaxAmount = isMetamaskMobile
+                              ? limitDecimals(maxAmountFormattedFree, MAX_METAMASK_MOBILE_DECIMALS)
+                              : maxAmountFormattedFree;
+                            setFromValue(finalMaxAmount);
                           }}
                         >
                           <Trans>MAX</Trans>

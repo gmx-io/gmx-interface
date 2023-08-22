@@ -887,6 +887,7 @@ msgstr "Kollateral ({0})"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
@@ -1733,6 +1734,10 @@ msgstr "Finanzberichte und Protokollanalyse"
 msgid "Floor Price Fund"
 msgstr "Preisboden-Fund"
 
+#: src/components/Referrals/TradersStats.tsx
+msgid "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Forfeit profit"
 msgstr "Verzicht auf Gewinn"
@@ -2275,6 +2280,10 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Leverage"
 msgstr "Hebelwirkung"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Leverage Trading Terminal"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Leverage disabled, pending {0} upgrade"
@@ -3022,6 +3031,10 @@ msgstr "Öffnen..."
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Order"
 msgstr "Order"
+
+#: src/domain/synthetics/orders/utils.ts
+msgid "Order Trigger Price is beyond position's Liquidation Price."
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
@@ -4183,6 +4196,10 @@ msgstr "Swapping..."
 msgid "Swaps disabled, pending {0} upgrade"
 msgstr "Swaps deaktiviert, {0} Upgrade steht an"
 
+#: src/components/Exchange/SwapBox.js
+msgid "Switch to {0} collateral."
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.js
@@ -4295,6 +4312,10 @@ msgstr "Der Auftrag wird nur ausgeführt, wenn die Preisbedingungen erfüllt sin
 msgid "The order will only execute if the price conditions are met and there is sufficient liquidity."
 msgstr ""
 
+#: src/components/Referrals/TradersStats.tsx
+msgid "The owner of this Referral Code has set a custom discount of {currentTierDiscount}% instead of the standard {0}% for Tier {1}."
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 msgid "The pending borrow fee will be charged on this transaction."
 msgstr ""
@@ -4376,13 +4397,13 @@ msgstr ""
 msgid "Three tokens create our ecosystem"
 msgstr ""
 
-#: src/components/Referrals/TradersStats.tsx
-msgid "Tier {0} ({1}% discount)"
-msgstr "Tier {0} ({1}% Discount)"
-
 #: src/components/Referrals/AffiliatesStats.tsx
-msgid "Tier {0} ({1}% rebate)"
-msgstr "Tier {0} ({1}% Rabatt)"
+msgid "Tier {0} ({currentRebatePercentage}% rebate)"
+msgstr ""
+
+#: src/components/Referrals/TradersStats.tsx
+msgid "Tier {0} ({currentTierDiscount}% discount)"
+msgstr ""
 
 #: src/components/Migration/Migration.js
 msgid "To Receive"
@@ -5194,6 +5215,10 @@ msgstr ""
 msgid "You have an existing position in the {0} market pool. <0>Switch to {1} market pool.</0>"
 msgstr ""
 
+#: src/components/Exchange/SwapBox.js
+msgid "You have an existing position with {0} as collateral."
+msgstr ""
+
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
 msgid "You have an existing position with {0} as collateral. <0>Switch to {1} collateral.</0>"
 msgstr ""
@@ -5240,8 +5265,8 @@ msgid "You will need to be on this page to accept the transfer, <0>click here</0
 msgstr "Du musst auf dieser Seite sein, um den Transfer zu akzeptieren. <0>Klicke hier</0>, um den Link zu dieser Seite zu kopieren, falls nötig."
 
 #: src/components/Referrals/TradersStats.tsx
-msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday"
-msgstr "Du erhältst einen Rabatt von {0}% auf deine Eröffnungs- und Schließungsgebühren, dieser Rabatt wird jeden Mittwoch auf dein Konto überwiesen"
+msgid "You will receive a {currentTierDiscount}% discount on opening and closing fees."
+msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 msgid "You will receive at least {0} {1} if this order is executed. The exact execution price may vary depending on fees at the time the order is executed."
