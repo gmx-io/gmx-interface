@@ -8,10 +8,13 @@ import useSWR from "swr";
 import { getConstant, getExplorerUrl } from "config/chains";
 import { approvePlugin, cancelMultipleOrders, useExecutionFee } from "domain/legacy";
 import {
+  LEVERAGE_ORDER_OPTIONS,
   LONG,
   MARGIN_FEE_BASIS_POINTS,
+  MARKET,
   SHORT,
   SWAP,
+  SWAP_OPTIONS,
   USD_DECIMALS,
   getDeltaStr,
   getFundingFee,
@@ -53,6 +56,8 @@ import { bigNumberify, formatAmount } from "lib/numbers";
 import { getLeverage, getLeverageStr } from "lib/positions/getLeverage";
 import "./Exchange.css";
 import { getIsV1Supported } from "config/features";
+import useRouteQuery from "lib/useRouteQuery";
+import { useHistory } from "react-router-dom";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
@@ -360,6 +365,8 @@ export const Exchange = forwardRef((props, ref) => {
   } = props;
   const [showBanner, setShowBanner] = useLocalStorageSerializeKey("showBanner", true);
   const [bannerHidden, setBannerHidden] = useLocalStorageSerializeKey("bannerHidden", null);
+  const queryParams = useRouteQuery();
+  const history = useHistory();
 
   const [pendingPositions, setPendingPositions] = useState({});
   const [updatedPositions, setUpdatedPositions] = useState({});
@@ -424,9 +431,27 @@ export const Exchange = forwardRef((props, ref) => {
     defaultTokenSelection
   );
   const [swapOption, setSwapOption] = useLocalStorageByChainId(chainId, "Swap-option-v2", LONG);
+  const [, setOrderOption] = useLocalStorageSerializeKey([chainId, "Order-option"], MARKET);
 
   const fromTokenAddress = tokenSelection[swapOption].from;
   const toTokenAddress = tokenSelection[swapOption].to;
+
+  useEffect(() => {
+    const queryTradeType = queryParams.get("tradeType");
+    const queryTradeMode = queryParams.get("tradeMode");
+
+    if (queryTradeType && SWAP_OPTIONS.includes(queryTradeType)) {
+      setSwapOption(queryTradeType);
+    }
+
+    if (queryTradeMode && LEVERAGE_ORDER_OPTIONS.includes(queryTradeMode)) {
+      setOrderOption(queryTradeMode);
+    }
+
+    if (history.location.search) {
+      history.replace({ search: "" });
+    }
+  }, [history, queryParams, setOrderOption, setSwapOption]);
 
   const setFromTokenAddress = useCallback(
     (selectedSwapOption, address) => {

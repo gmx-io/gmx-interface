@@ -34,8 +34,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useMarketsInfo } from "domain/synthetics/markets";
 import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTradeOption";
-import { TradeMode } from "domain/synthetics/trade";
+import { TradeMode, TradeType } from "domain/synthetics/trade";
 import { helperToast } from "lib/helperToast";
+import useRouteQuery from "lib/useRouteQuery";
+import { useHistory } from "react-router-dom";
 
 export type Props = {
   savedIsPnlInLeverage: boolean;
@@ -77,6 +79,8 @@ export function SyntheticsPage(p: Props) {
   const { chainId } = useChainId();
   const { library, account } = useWeb3React();
   const { marketsInfoData, tokensData, pricesUpdatedAt } = useMarketsInfo(chainId);
+  const queryParams = useRouteQuery();
+  const history = useHistory();
 
   const { positionsInfoData, isLoading: isPositionsLoading } = usePositionsInfo(chainId, {
     marketsInfoData,
@@ -121,6 +125,23 @@ export function SyntheticsPage(p: Props) {
     getSyntheticsListSectionKey(chainId),
     ListSection.Positions
   );
+
+  useEffect(() => {
+    const queryTradeType = queryParams.get("tradeType");
+    const queryTradeMode = queryParams.get("tradeMode");
+
+    if (queryTradeType && Object.values(TradeType).includes(queryTradeType as TradeType)) {
+      setTradeType(queryTradeType as TradeType);
+    }
+
+    if (queryTradeMode && Object.values(TradeMode).includes(queryTradeMode as TradeMode)) {
+      setTradeMode(queryTradeMode as TradeMode);
+    }
+
+    if (history.location.search) {
+      history.replace({ search: "" });
+    }
+  }, [history, queryParams, setTradeMode, setTradeType]);
 
   const { isSwap, isLong } = tradeFlags;
   const { indexTokens, sortedIndexTokensWithPoolValue } = availableTokensOptions;
