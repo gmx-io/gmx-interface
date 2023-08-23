@@ -15,7 +15,7 @@ import Token from "abis/Token.json";
 import Vault from "abis/Vault.json";
 import Vester from "abis/Vester.json";
 
-import { ARBITRUM, getChainName, getConstant } from "config/chains";
+import { ARBITRUM, getConstant } from "config/chains";
 import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 import { ethers } from "ethers";
 import {
@@ -44,6 +44,7 @@ import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { GmList } from "components/Synthetics/GmList/GmList";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { getIcons } from "config/icons";
 import { getServerUrl } from "config/backend";
 import { getIsSyntheticsSupported } from "config/features";
 import { useMarketTokensData, useMarketsInfo } from "domain/synthetics/markets";
@@ -63,6 +64,7 @@ import {
   parseValue,
 } from "lib/numbers";
 import "./StakeV2.css";
+import PageTitle from "components/PageTitle/PageTitle";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 
@@ -90,7 +92,7 @@ function StakeModal(props) {
   const [isStaking, setIsStaking] = useState(false);
   const isMetamaskMobile = useIsMetamaskMobile();
   const [isApproving, setIsApproving] = useState(false);
-
+  const icons = getIcons(chainId);
   const { data: tokenAllowance } = useSWR(
     active && stakingTokenAddress && [active, chainId, stakingTokenAddress, "allowance", account, farmAddress],
     {
@@ -187,7 +189,15 @@ function StakeModal(props) {
           onInputValueChange={(e) => setValue(e.target.value)}
           showMaxButton={false}
         >
-          {stakingTokenSymbol}
+          <div className="Stake-modal-icons">
+            <img
+              className="mr-xs icon"
+              width="25"
+              src={icons[stakingTokenSymbol.toLowerCase()]}
+              alt={stakingTokenSymbol}
+            />
+            {stakingTokenSymbol}
+          </div>
         </BuyInputSection>
 
         <div className="Exchange-swap-button-container">
@@ -219,6 +229,7 @@ function UnstakeModal(props) {
     setPendingTxns,
   } = props;
   const [isUnstaking, setIsUnstaking] = useState(false);
+  const icons = getIcons(chainId);
 
   let amount = parseValue(value, 18);
   let burnAmount;
@@ -300,7 +311,15 @@ function UnstakeModal(props) {
           onInputValueChange={(e) => setValue(e.target.value)}
           showMaxButton={false}
         >
-          {unstakingTokenSymbol}
+          <div className="Stake-modal-icons">
+            <img
+              className="mr-xs icon"
+              width="25"
+              src={icons[unstakingTokenSymbol.toLowerCase()]}
+              alt={unstakingTokenSymbol}
+            />
+            {unstakingTokenSymbol}
+          </div>
         </BuyInputSection>
         {reservedAmount && reservedAmount.gt(0) && (
           <div className="Modal-note">
@@ -352,6 +371,7 @@ function VesterDepositModal(props) {
     setPendingTxns,
   } = props;
   const [isDepositing, setIsDepositing] = useState(false);
+  const icons = getIcons(chainId);
 
   let amount = parseValue(value, 18);
 
@@ -435,7 +455,10 @@ function VesterDepositModal(props) {
             onInputValueChange={(e) => setValue(e.target.value)}
             showMaxButton={false}
           >
-            esGMX
+            <div className="Stake-modal-icons">
+              <img className="mr-xs icon" width="25" src={icons.esgmx} alt="esGMX" />
+              esGMX
+            </div>
           </BuyInputSection>
 
           <div className="VesterDepositModal-info-rows">
@@ -895,11 +918,8 @@ function ClaimModal(props) {
 export default function StakeV2({ setPendingTxns, connectWallet }) {
   const { active, library, account } = useWeb3React();
   const { chainId } = useChainId();
-
-  const chainName = getChainName(chainId);
-
+  const icons = getIcons(chainId);
   const hasInsurance = true;
-
   const [isStakeModalVisible, setIsStakeModalVisible] = useState(false);
   const [stakeModalTitle, setStakeModalTitle] = useState("");
   const [stakeModalMaxAmount, setStakeModalMaxAmount] = useState(undefined);
@@ -1440,25 +1460,29 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         library={library}
         chainId={chainId}
       />
-      <div className="section-title-block">
-        <div className="section-title-icon"></div>
-        <div className="section-title-content">
-          <div className="Page-title">
-            <Trans>Earn</Trans>
-          </div>
-          <div className="Page-description">
+
+      <PageTitle
+        isTop
+        title={t`Earn`}
+        subtitle={
+          <div>
             <Trans>
               Stake <ExternalLink href="https://docs.gmx.io/docs/tokenomics/gmx-token">GMX</ExternalLink> and{" "}
               <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v1">GLP</ExternalLink> to earn rewards.
             </Trans>
+            {earnMsg && <div className="Page-description">{earnMsg}</div>}
           </div>
-          {earnMsg && <div className="Page-description">{earnMsg}</div>}
-        </div>
-      </div>
+        }
+      />
       <div className="StakeV2-content">
         <div className="StakeV2-cards">
           <div className="App-card StakeV2-gmx-card">
-            <div className="App-card-title">GMX</div>
+            <div className="App-card-title">
+              <div className="inline-items-center">
+                <img className="mr-xs" alt="GMX" src={icons.gmx} height={20} />
+                GMX
+              </div>
+            </div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
@@ -1731,7 +1755,12 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
             </div>
           </div>
           <div className="App-card">
-            <div className="App-card-title">GLP ({chainName})</div>
+            <div className="App-card-title">
+              <div className="inline-items-center">
+                <img className="mr-xs" alt="GLP" src={icons.glp} height={20} />
+                GLP
+              </div>
+            </div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
@@ -1885,7 +1914,12 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
           </div>
           <div className="App-card">
             <div className="App-card-title">
-              <Trans>Escrowed GMX</Trans>
+              <div className="inline-items-center">
+                <img className="mr-xs" alt="GLP" src={icons.esgmx} height={20} />
+                <span>
+                  <Trans>Escrowed GMX</Trans>
+                </span>
+              </div>
             </div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
@@ -1987,11 +2021,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
       )}
 
       <div>
-        <div className="Tab-title-section">
-          <div className="Page-title">
-            <Trans>Vest</Trans>
-          </div>
-          <div className="Page-description">
+        <PageTitle
+          title={t`Vest`}
+          subtitle={
             <Trans>
               Convert esGMX tokens to GMX tokens.
               <br />
@@ -2001,13 +2033,16 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </ExternalLink>{" "}
               before using the vaults.
             </Trans>
-          </div>
-        </div>
+          }
+        />
         <div>
           <div className="StakeV2-cards">
             <div className="App-card StakeV2-gmx-card">
               <div className="App-card-title">
-                <Trans>GMX Vault</Trans>
+                <div className="inline-items-center">
+                  <img className="mr-xs" alt="GMX" src={icons.gmx} height={20} />
+                  <Trans>GMX Vault</Trans>
+                </div>
               </div>
               <div className="App-card-divider"></div>
               <div className="App-card-content">
@@ -2121,7 +2156,10 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
             </div>
             <div className="App-card StakeV2-gmx-card">
               <div className="App-card-title">
-                <Trans>GLP Vault</Trans>
+                <div className="inline-items-center">
+                  <img className="mr-xs" alt="GLP" src={icons.glp} height={20} />
+                  <Trans>GLP Vault</Trans>
+                </div>
               </div>
               <div className="App-card-divider"></div>
               <div className="App-card-content">

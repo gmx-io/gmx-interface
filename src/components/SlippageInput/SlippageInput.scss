@@ -33,9 +33,11 @@
     }
 
     &:hover,
-    &:focus-within,
     &:focus {
       border-color: #3a3f798f;
+    }
+    &:focus-within {
+      border-color: #3a3f79;
     }
 
     &.input-error {

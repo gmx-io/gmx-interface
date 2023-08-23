@@ -64,20 +64,6 @@
   padding-right: 0.5rem;
 }
 
-.Modal-body::-webkit-scrollbar {
-  width: 0.6rem;
-}
-
-.Modal-body::-webkit-scrollbar-track {
-  background-color: #1c1c1c;
-  border-radius: 155rem;
-}
-
-.Modal-body::-webkit-scrollbar-thumb {
-  background-color: #949393;
-  border-radius: 155rem;
-}
-
 .Modal-title {
   text-align: left;
   font-size: var(--font-md);

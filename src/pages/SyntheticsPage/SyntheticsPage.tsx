@@ -411,7 +411,12 @@ export function SyntheticsPage(p: Props) {
           <div className="Exchange-list-tab-container">
             <Tab
               options={Object.keys(ListSection)}
-              optionLabels={ListSection}
+              optionLabels={{
+                [ListSection.Positions]: t`Positions${positionsCount ? ` (${positionsCount})` : ""}`,
+                [ListSection.Orders]: t`Orders${ordersCount ? ` (${ordersCount})` : ""}`,
+                [ListSection.Trades]: t`Trades`,
+                [ListSection.Claims]: t`Claims`,
+              }}
               option={listSection}
               onChange={(section) => setListSection(section)}
               type="inline"

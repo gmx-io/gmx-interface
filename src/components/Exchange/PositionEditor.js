@@ -27,6 +27,7 @@ import FeesTooltip from "./FeesTooltip";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { getLeverage } from "lib/positions/getLeverage";
 import { getPriceDecimals } from "config/tokens";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 
@@ -566,8 +567,20 @@ export default function PositionEditor(props) {
                         </button>
                       )}
                     </div>
-                    <div className="PositionEditor-token-symbol">
-                      {isDeposit ? position.collateralToken.symbol : "USD"}
+                    <div className="PositionEditor-token-symbol inline-items-center">
+                      {isDeposit ? (
+                        <>
+                          <TokenIcon
+                            className="mr-xs"
+                            symbol={position.collateralToken.symbol}
+                            displaySize={20}
+                            importSize={24}
+                          />
+                          {position.collateralToken.symbol}
+                        </>
+                      ) : (
+                        "USD"
+                      )}
                     </div>
                   </div>
                 </div>

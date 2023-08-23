@@ -537,7 +537,7 @@ msgid "Buy GMX from decentralized exchanges"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX on {0}"
+msgid "Buy GMX on {chainName}"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -781,6 +781,7 @@ msgstr ""
 msgid "Claiming..."
 msgstr "Утверждение..."
 
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims"
 msgstr ""
@@ -1061,8 +1062,8 @@ msgid "Could not execute withdrawal from {0} {longOrShortText}"
 msgstr "Не удалось выполнить вывод из {0} {longOrShortText}"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Could not increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}"
-msgstr "Не удалось увеличить {0} {longOrShortText}, +{1} USD, Приемлемая Цена: {2}"
+msgid "Could not increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}  USD"
+msgstr ""
 
 #: src/pages/Exchange/Exchange.js
 msgid "Could not increase {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
@@ -1235,6 +1236,7 @@ msgstr "Децентрализованная<0/>Бессрочная Биржа"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/domain/synthetics/orders/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
@@ -2011,6 +2013,7 @@ msgstr "Неправильная сеть"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/domain/synthetics/orders/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
@@ -2392,9 +2395,6 @@ msgid ""
 "-{1} USD,\n"
 "{2} Price: {3} USD"
 msgstr ""
-"Ликвидировано {0} {longOrShortText},\n"
-"-{1} USD,\n"
-"{2} Цена: {3} USD"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidation Fee"
@@ -2452,6 +2452,7 @@ msgstr "Загрузка..."
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -2476,6 +2477,10 @@ msgstr "Лонг"
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "Long Collateral"
+msgstr ""
+
+#: src/components/Exchange/ChartTokenSelector.tsx
+msgid "Long Liquidity"
 msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
@@ -2627,8 +2632,16 @@ msgstr ""
 msgid "Max Execution Fee buffer below {0}% may result in failed orders."
 msgstr ""
 
+#: src/components/Exchange/ChartTokenSelector.tsx
+msgid "Max In"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Max Leverage without PnL: 100x"
+msgstr ""
+
+#: src/components/Exchange/ChartTokenSelector.tsx
+msgid "Max Out"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -3104,6 +3117,7 @@ msgid "Orders cancelled."
 msgstr "Ордера отменены"
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Orders{0}"
 msgstr ""
 
@@ -3271,6 +3285,7 @@ msgstr "Позиции"
 msgid "Positions ({0})"
 msgstr "Позиции ({0})"
 
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Positions{0}"
 msgstr ""
@@ -3564,12 +3579,9 @@ msgstr "Реферальный код обновлен!"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Referrals/Referrals.tsx
+#: src/pages/Referrals/Referrals.tsx
 msgid "Referrals"
 msgstr "Рефералы"
-
-#: src/pages/Referrals/Referrals.tsx
-msgid "Referrals <0/>"
-msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
@@ -3661,7 +3673,7 @@ msgstr ""
 msgid "Search Pool"
 msgstr ""
 
-#: src/components/TokenSelector/TokenSelector.tsx
+#: src/components/SearchInput/SearchInput.tsx
 msgid "Search Token"
 msgstr "Искать Токен"
 
@@ -3838,6 +3850,7 @@ msgstr "Позиция Акции"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -3862,6 +3875,10 @@ msgstr "Шорт"
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "Short Collateral"
+msgstr ""
+
+#: src/components/Exchange/ChartTokenSelector.tsx
+msgid "Short Liquidity"
 msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
@@ -4129,8 +4146,8 @@ msgid "Swap {0}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Swap {0} USDG for {1} {2}"
-msgstr "Обмен {0} USDG на {1} {2}"
+msgid "Swap {0} USDG for{1} {2}"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Swap {0} on 1inch"
@@ -4149,12 +4166,12 @@ msgid "Swap {0} to {1} on 1inch"
 msgstr "Обмен {0} на {1} на 1 дюйм"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Swap {0} {1} for {2} USDG"
-msgstr "Обмен {0} {1} на {2} USDG"
+msgid "Swap {0} {1} for {2} {3}"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Swap {0} {1} for {2} {3}"
-msgstr "Обмен {0} {1} на {2} {3}"
+msgid "Swap {0} {1} for{2} USDG"
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "Swap {fromTokenText} for {toTokenText}"
@@ -4194,7 +4211,7 @@ msgid "TOTAL SUPPLY"
 msgstr ""
 
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-msgid "Take-Profit and Stop-Loss orders are created in the main Tradebox.<0/><1/><2>Set Trigger Order for this position.</2><3/><4/><5>Read More</5>."
+msgid "Take-Profit and Stop-Loss orders are created in the main Tradebox.<0/><1/><2>Set Trigger Order for this position.</2><3/><4/><5>More Info</5>."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -4538,6 +4555,7 @@ msgstr ""
 
 #: src/pages/Exchange/Exchange.js
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trades"
 msgstr "Торги"
 
@@ -4869,10 +4887,6 @@ msgstr ""
 msgid "V2 Claim"
 msgstr ""
 
-#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-msgid "V2 Pools"
-msgstr ""
-
 #: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
 msgid "V2 doesn't currently support this network"
 msgstr ""
@@ -5068,8 +5082,8 @@ msgid "Withdraw submitted."
 msgstr "Вывод подтверждён"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Withdraw {0} USD from {1} {longOrShortText}"
-msgstr "Вывести {0} USD с {1} {longOrShortText}"
+msgid "Withdraw {0} USD from {1}{longOrShortText}"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Withdrawal failed."
@@ -5253,10 +5267,6 @@ msgstr "Вам нужно будет находиться на этой стра
 #: src/components/Referrals/TradersStats.tsx
 msgid "You will receive a {currentTierDiscount}% discount on opening and closing fees."
 msgstr ""
-
-#: src/components/Referrals/TradersStats.tsx
-#~ msgid "You will receive a {currentTierDiscount}% discount on your opening and closing fees. This discount on V1 will be airdropped to your account every Wednesday. For trades on V2, discounts are applied automatically and will reduce your fees when you make a trade."
-#~ msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 msgid "You will receive at least {0} {1} if this order is executed. The exact execution price may vary depending on fees at the time the order is executed."
@@ -5465,20 +5475,11 @@ msgid "{0} {1} not supported"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-msgid ""
-"{0}:\n"
-"{1},\n"
-"Price: {priceDisplay}"
+msgid "{0}: Swap {amountInDisplay}{1} for{minOutDisplay} {2}, Price:{3} USD"
 msgstr ""
-"{0}:\n"
-"{1},\n"
-"Цена: {priceDisplay}"
 
 #: src/components/Exchange/TradeHistory.js
-msgid ""
-"{0}: Swap {amountInDisplay}\n"
-"{1} for {minOutDisplay} {2},\n"
-"Price: {3}"
+msgid "{0}: {1}, Price: {priceDisplay}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js

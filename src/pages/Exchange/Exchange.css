@@ -4,8 +4,7 @@
   justify-content: space-between;
 }
 
-.Exchange-trigger-order-info,
-.Exchange-trigger-order-info a {
+.Exchange-trigger-order-info {
   color: rgba(255, 255, 255, 0.7);
   border: 1px solid #23263b;
 }
@@ -265,16 +264,6 @@
   font-size: 1.7rem;
 }
 
-.ExchangeChart-title {
-  font-size: 2.15rem;
-  font-weight: bold;
-}
-
-.ExchangeChart-title:hover .chart-token-dropdown,
-.ExchangeChart-title:hover .chart-token-dropdown span {
-  color: #7885ff !important;
-}
-
 .ExchangeChart-info-label {
   font-size: 1.25rem;
   opacity: 0.7;
@@ -418,6 +407,16 @@
   text-align: right;
 }
 
+.Order-editor-tokens .Order-editor-icon {
+  vertical-align: bottom;
+  height: 2.5rem;
+}
+
+.Swap-limit-icon {
+  vertical-align: bottom;
+  height: 2.5rem;
+}
+
 .ExchangeChart-container {
   position: absolute;
   left: 0;
@@ -456,6 +455,10 @@
 
 .order-error .Tooltip-popup {
   white-space: pre-line;
+}
+
+.Order-list-item-text {
+  line-height: 1.4;
 }
 
 .Exchange-list .App-card {
@@ -577,6 +580,7 @@ table.Exchange-list .Exchange-list-item-active {
   grid-template-columns: auto auto;
   font-size: var(--font-sm);
   margin-bottom: 0.465rem;
+  align-items: baseline;
 }
 
 .Exchange-info-row.top-line {
@@ -629,6 +633,7 @@ table.Exchange-list .Exchange-list-item-active {
 .Exchange-swap-market-box-title {
   font-size: var(--font-md);
   margin-bottom: 1.25rem;
+  display: flex;
 }
 
 .Exchange-swap-box-inner {
@@ -676,14 +681,16 @@ table.Exchange-list .Exchange-list-item-active {
   margin-bottom: 1.05rem;
   border-radius: 0.3rem;
   background: linear-gradient(90deg, rgba(30, 34, 61, 0.9) 0%, rgba(38, 43, 71, 0.9) 100%);
-  box-shadow: inset 0px 0px 3rem 0.5rem rgba(255, 255, 255, 0.01);
-  outline: 1px solid transparent;
-  outline-offset: -1px;
+  outline: 0.05rem solid transparent;
+  outline-offset: -0.1rem;
 }
 
-.Exchange-swap-section:hover,
-.Exchange-swap-section:focus-within {
+.Exchange-swap-section:hover {
   outline-color: #3a3f798f;
+}
+
+.Exchange-swap-section:focus-within {
+  outline-color: #3a3f79;
 }
 
 .Exchange-swap-option-tabs.Tab.block .Tab-option {
@@ -733,7 +740,6 @@ table.Exchange-list .Exchange-list-item-active {
   font-size: var(--font-sm);
   background: var(--primary-btn-bg);
   border: none;
-  opacity: 0.8;
 }
 
 .Exchange-swap-max:hover {
@@ -803,7 +809,6 @@ input.Exchange-swap-input.small {
   align-items: center;
   border: none;
   color: white;
-  opacity: 0.8;
 }
 
 .Exchange-swap-ball:hover {
@@ -839,6 +844,14 @@ table.Exchange-list-small td {
 .Exchange-list-title {
   display: inline-block;
   white-space: nowrap;
+}
+
+.PositionList-token-icon {
+  margin-right: 0.5rem;
+}
+
+.remove-top-margin {
+  margin-top: -1.05rem;
 }
 
 .Exchange-list-info-label {
@@ -1100,10 +1113,6 @@ table.Exchange-list-small td {
     grid-column-gap: 0.8rem;
   }
 
-  .ExchangeChart-title {
-    font-size: 1.85rem;
-  }
-
   .ExchangeChart-additional-info {
     display: none;
   }
@@ -1127,6 +1136,12 @@ table.Exchange-list-small td {
   }
   .Exchange-list.small {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 350px) {
+  .ExchnageChart-24h {
+    display: none;
   }
 }
 
