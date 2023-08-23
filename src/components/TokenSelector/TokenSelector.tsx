@@ -6,17 +6,15 @@ import { BiChevronDown } from "react-icons/bi";
 import Modal from "../Modal/Modal";
 
 import dropDownIcon from "img/DROP_DOWN.svg";
-import searchIcon from "img/search.svg";
-import "./TokenSelector.css";
+import "./TokenSelector.scss";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
 import { getToken } from "config/tokens";
-import { importImage } from "lib/legacy";
-import { t } from "@lingui/macro";
-import { useMedia } from "react-use";
 import { InfoTokens, Token, TokenInfo } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { convertToUsd } from "domain/synthetics/tokens";
+import SearchInput from "components/SearchInput/SearchInput";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 
 type TokenState = {
   disabled?: boolean;
@@ -45,7 +43,6 @@ type Props = {
 };
 
 export default function TokenSelector(props: Props) {
-  const isSmallerScreen = useMedia("(max-width: 700px)");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
   let tokenInfo: TokenInfo | undefined;
@@ -162,8 +159,6 @@ export default function TokenSelector(props: Props) {
     return null;
   }
 
-  const tokenImage = showSymbolImage ? importImage(`ic_${tokenInfo.symbol.toLowerCase()}_24.svg`) : undefined;
-
   return (
     <div className={cx("TokenSelector", { disabled }, props.className)} onClick={(event) => event.stopPropagation()}>
       <Modal
@@ -171,25 +166,16 @@ export default function TokenSelector(props: Props) {
         setIsVisible={setIsModalVisible}
         label={props.label}
         headerContent={() => (
-          <div className="TokenSelector-token-row TokenSelector-token-input-row">
-            <input
-              type="text"
-              placeholder={t`Search Token`}
-              value={searchKeyword}
-              onChange={(e) => onSearchKeywordChange(e)}
-              onKeyDown={_handleKeyDown}
-              autoFocus={!isSmallerScreen}
-              className="Tokenselector-search-input"
-              style={{
-                backgroundImage: `url(${searchIcon})`,
-              }}
-            />
-          </div>
+          <SearchInput
+            className="mt-md"
+            value={searchKeyword}
+            setValue={onSearchKeywordChange}
+            onKeyDown={_handleKeyDown}
+          />
         )}
       >
         <div className="TokenSelector-tokens">
           {sortedFilteredTokens.map((token, tokenIndex) => {
-            const tokenPopupImage = importImage(`ic_${token.symbol.toLowerCase()}_40.svg`);
             let info = infoTokens?.[token.address] || ({} as TokenInfo);
 
             let mintAmount;
@@ -225,7 +211,9 @@ export default function TokenSelector(props: Props) {
                   />
                 )}
                 <div className="Token-info">
-                  {showTokenImgInDropdown && <img src={tokenPopupImage} alt={token.name} className="token-logo" />}
+                  {showTokenImgInDropdown && (
+                    <TokenIcon symbol={token.symbol} className="token-logo" displaySize={40} importSize={40} />
+                  )}
                   <div className="Token-symbol">
                     <div className="Token-text">{token.symbol}</div>
                     <span className="text-accent">{token.name}</span>
@@ -258,8 +246,12 @@ export default function TokenSelector(props: Props) {
         </div>
       ) : (
         <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
-          {tokenInfo.symbol}
-          {showSymbolImage && <img src={tokenImage} alt={tokenInfo.symbol} className="TokenSelector-box-symbol" />}
+          <span className="inline-items-center">
+            {showSymbolImage && (
+              <TokenIcon className="mr-xs" symbol={tokenInfo.symbol} importSize={24} displaySize={20} />
+            )}
+            <span className="Token-symbol-text">{tokenInfo.symbol}</span>
+          </span>
           {showNewCaret && <img src={dropDownIcon} alt="Dropdown Icon" className="TokenSelector-box-caret" />}
           {!showNewCaret && <BiChevronDown className="TokenSelector-caret" />}
         </div>

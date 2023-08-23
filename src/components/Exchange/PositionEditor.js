@@ -28,6 +28,7 @@ import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { getLeverage } from "lib/positions/getLeverage";
 import { getPriceDecimals } from "config/tokens";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 
@@ -545,12 +546,25 @@ export default function PositionEditor(props) {
                     setFromValue(finalMaxAmount);
                   }}
                   showMaxButton={fromValue !== maxAmountFormattedFree}
+                  onClickMax={() => setFromValue(maxAmountFormattedFree)}
                   showPercentSelector={!isDeposit}
                   onPercentChange={(percentage) => {
                     setFromValue(formatAmountFree(maxAmount.mul(percentage).div(100), USD_DECIMALS, 2));
                   }}
                 >
-                  {isDeposit ? position.collateralToken.symbol : "USD"}
+                  {isDeposit ? (
+                    <>
+                      <TokenIcon
+                        className="mr-xs"
+                        symbol={position.collateralToken.symbol}
+                        displaySize={20}
+                        importSize={24}
+                      />
+                      {position.collateralToken.symbol}
+                    </>
+                  ) : (
+                    "USD"
+                  )}
                 </BuyInputSection>
                 <div className="PositionEditor-info-box">
                   {minExecutionFeeErrorMessage && (

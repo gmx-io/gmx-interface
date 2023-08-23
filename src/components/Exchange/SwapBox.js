@@ -82,6 +82,7 @@ import FeesTooltip from "./FeesTooltip";
 import NoLiquidityErrorModal from "./NoLiquidityErrorModal";
 import UsefulLinks from "./UsefulLinks";
 import { ErrorCode, ErrorDisplayType } from "./constants";
+import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 
@@ -1182,13 +1183,16 @@ export default function SwapBox(props) {
       setAnchorOnFromAmount(!anchorOnFromAmount);
     }
     setIsWaitingForApproval(false);
+    const shouldSwitch = toTokens.find((token) => token.address === fromTokenAddress);
+    if (shouldSwitch) {
+      const updatedTokenSelection = JSON.parse(JSON.stringify(tokenSelection));
 
-    const updatedTokenSelection = JSON.parse(JSON.stringify(tokenSelection));
-    updatedTokenSelection[swapOption] = {
-      from: toTokenAddress,
-      to: fromTokenAddress,
-    };
-    setTokenSelection(updatedTokenSelection);
+      updatedTokenSelection[swapOption] = {
+        from: toTokenAddress,
+        to: fromTokenAddress,
+      };
+      setTokenSelection(updatedTokenSelection);
+    }
   };
 
   const wrap = async () => {
@@ -1962,6 +1966,7 @@ export default function SwapBox(props) {
                   infoTokens={infoTokens}
                   showMintingCap={false}
                   showTokenImgInDropdown={true}
+                  showSymbolImage
                 />
               </BuyInputSection>
               <div className="Exchange-swap-ball-container">
@@ -1990,6 +1995,7 @@ export default function SwapBox(props) {
                   tokens={toTokens}
                   infoTokens={infoTokens}
                   showTokenImgInDropdown={true}
+                  showSymbolImage
                   showBalances={false}
                 />
               </BuyInputSection>
@@ -2019,7 +2025,9 @@ export default function SwapBox(props) {
                   : [fromTokenInfo, toTokenInfo];
                 return (
                   <div className="PositionEditor-token-symbol">
-                    {tokenA.symbol}&nbsp;per&nbsp;{tokenB.symbol}
+                    <TokenWithIcon className="Swap-limit-icon" symbol={tokenA.symbol} displaySize={20} />
+                    &nbsp;per&nbsp;
+                    <TokenWithIcon className="Swap-limit-icon" symbol={tokenB.symbol} displaySize={20} />
                   </div>
                 );
               })()}
@@ -2296,7 +2304,7 @@ export default function SwapBox(props) {
         {(isLong || isShort) && (
           <div className="Exchange-swap-market-box App-box App-box-border">
             <div className="Exchange-swap-market-box-title">
-              {isLong ? t`Long` : t`Short`}&nbsp;{toToken.symbol}
+              {isLong ? t`Long` : t`Short`} {toToken.symbol}
             </div>
             <div className="App-card-divider" />
             <div className="Exchange-info-row">

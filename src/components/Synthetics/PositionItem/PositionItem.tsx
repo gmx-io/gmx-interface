@@ -23,6 +23,8 @@ import { CHART_PERIODS } from "lib/legacy";
 import "./PositionItem.scss";
 import { useChainId } from "lib/chains";
 import { useMedia } from "react-use";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+import Button from "components/Button/Button";
 
 export type Props = {
   position: PositionInfo;
@@ -338,7 +340,17 @@ export function PositionItem(p: Props) {
           {/* title */}
           <div className="Exchange-list-title">
             <Tooltip
-              handle={p.position.marketInfo.indexToken.symbol}
+              handle={
+                <>
+                  <TokenIcon
+                    className="PositionList-token-icon"
+                    symbol={p.position.marketInfo.indexToken.symbol}
+                    displaySize={20}
+                    importSize={24}
+                  />
+                  {p.position.marketInfo.indexToken.symbol}
+                </>
+              }
               position="left-bottom"
               handleClassName="plain"
               renderContent={() => (
@@ -467,7 +479,13 @@ export function PositionItem(p: Props) {
       <div className="App-card">
         <div>
           <div className={cx("App-card-title Position-card-title", { "Position-active-card": isCurrentMarket })}>
-            <span className="Exchange-list-title" onClick={() => p.onSelectPositionClick?.()}>
+            <span className="Exchange-list-title inline-flex" onClick={() => p.onSelectPositionClick?.()}>
+              <TokenIcon
+                className="PositionList-token-icon"
+                symbol={p.position.marketInfo.indexToken?.symbol}
+                displaySize={20}
+                importSize={24}
+              />
               {p.position.marketInfo.indexToken?.symbol}
             </span>
             <div>
@@ -578,23 +596,26 @@ export function PositionItem(p: Props) {
           {!p.hideActions && (
             <>
               <div className="App-card-divider"></div>
-              <div className="App-card-options">
-                <button
-                  className="App-button-option App-card-option"
+              <div className="remove-top-margin">
+                <Button
+                  variant="secondary"
+                  className="mr-md mt-md"
                   disabled={p.position.sizeInUsd.eq(0)}
                   onClick={p.onClosePositionClick}
                 >
                   <Trans>Close</Trans>
-                </button>
-                <button
-                  className="App-button-option App-card-option"
+                </Button>
+                <Button
+                  variant="secondary"
+                  className="mr-md mt-md"
                   disabled={p.position.sizeInUsd.eq(0)}
                   onClick={p.onEditCollateralClick}
                 >
                   <Trans>Edit Collateral</Trans>
-                </button>
-                <button
-                  className="App-button-option App-card-option"
+                </Button>
+                <Button
+                  variant="secondary"
+                  className="mt-md"
                   disabled={p.position.sizeInUsd.eq(0)}
                   onClick={() => {
                     // TODO: remove after adding trigger functionality to Modal
@@ -603,7 +624,7 @@ export function PositionItem(p: Props) {
                   }}
                 >
                   <Trans>Trigger</Trans>
-                </button>
+                </Button>
               </div>
             </>
           )}

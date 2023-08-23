@@ -10,7 +10,6 @@ import JoinReferralCode from "components/Referrals/JoinReferralCode";
 import TradersStats from "components/Referrals/TradersStats";
 import { deserializeSampleStats, isRecentReferralCodeNotExpired } from "components/Referrals/referralsHelper";
 import Tab from "components/Tab/Tab";
-import { getIcon } from "config/icons";
 import { REFERRALS_SELECTED_TAB_KEY } from "config/localStorage";
 import {
   ReferralCodeStats,
@@ -28,6 +27,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useParams } from "react-router-dom";
 import { useLocalStorage } from "react-use";
 import "./Referrals.css";
+import PageTitle from "components/PageTitle/PageTitle";
 
 const TRADERS = "Traders";
 const AFFILIATES = "Affiliates";
@@ -58,7 +58,6 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   const { codeOwner } = useCodeOwner(library, chainId, account, userReferralCode);
   const { affiliateTier: traderTier } = useAffiliateTier(library, chainId, codeOwner);
   const { discountShare } = useReferrerDiscountShare(library, chainId, codeOwner);
-  const networkIcon = getIcon(chainId, "network");
 
   function handleCreateReferralCode(referralCode) {
     return registerReferralCode(chainId, referralCode, library, {
@@ -127,24 +126,18 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   return (
     <SEO title={getPageTitle(t`Referrals`)}>
       <div className="default-container page-layout Referrals">
-        <div className="section-title-block">
-          <div className="section-title-icon" />
-          <div className="section-title-content">
-            <div className="Page-title">
-              <Trans>
-                Referrals <img width="24" src={networkIcon} alt="Network Icon" />
-              </Trans>
-            </div>
-            <div className="Page-description">
-              <Trans>
-                Get fee discounts and earn rebates through the GMX referral program.
-                <br />
-                For more information, please read the{" "}
-                <ExternalLink href="https://docs.gmx.io/docs/referrals">referral program details</ExternalLink>.
-              </Trans>
-            </div>
-          </div>
-        </div>
+        <PageTitle
+          isTop
+          title={t`Referrals`}
+          subtitle={
+            <Trans>
+              Get fee discounts and earn rebates through the GMX referral program.
+              <br />
+              For more information, please read the{" "}
+              <ExternalLink href="https://docs.gmx.io/docs/referrals">referral program details</ExternalLink>.
+            </Trans>
+          }
+        />
         <div className="referral-tab-container">
           <Tab
             options={TAB_OPTIONS}
