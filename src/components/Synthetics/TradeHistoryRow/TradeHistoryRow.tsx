@@ -59,7 +59,7 @@ function getOrderActionText(tradeAction: TradeAction) {
 function renderMarketName(marketName: string) {
   const [indexName, poolName] = marketName.split(" ") || [];
   return (
-    <div className="items-top">
+    <div className="items-center">
       <span>{indexName}</span>
       <span className="subtext">{poolName}</span>
     </div>

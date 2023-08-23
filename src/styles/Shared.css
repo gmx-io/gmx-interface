@@ -487,3 +487,7 @@ button.btn-link:hover .logout-icon {
   color: var(--text-gray);
   margin-left: 0.25rem;
 }
+
+.lh-1 {
+  line-height: 1;
+}

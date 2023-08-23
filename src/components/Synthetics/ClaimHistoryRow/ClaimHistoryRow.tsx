@@ -70,7 +70,7 @@ export function ClaimHistoryRow(p: Props) {
                       label={
                         <div className="items-top">
                           <span>{indexName}</span>
-                          <span className="subtext">{poolName}</span>
+                          <span className="subtext lh-1">{poolName}</span>
                         </div>
                       }
                       showDollar={false}

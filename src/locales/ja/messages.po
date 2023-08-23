@@ -5434,10 +5434,6 @@ msgstr "{0}トークンがべスティング用に入金された{1} esGMXから
 msgid "{0} will be swapped to {1} on order execution."
 msgstr ""
 
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
-#~ msgid "{0} {1} market selected"
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 msgid "{0} {1} not supported"
 msgstr ""

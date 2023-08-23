@@ -141,7 +141,7 @@ export function OrderItem(p: Props) {
                   value={
                     <div className="items-top">
                       <span>{indexName && indexName}</span>
-                      <span className="subtext">{poolName && poolName}</span>
+                      <span className="subtext lh-1">{poolName && poolName}</span>
                     </div>
                   }
                   showDollar={false}

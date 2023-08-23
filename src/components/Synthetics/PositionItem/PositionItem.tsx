@@ -348,7 +348,7 @@ export function PositionItem(p: Props) {
                     value={
                       <div className="items-top">
                         <span>{indexName && indexName}</span>
-                        <span className="subtext">{poolName && poolName}</span>
+                        <span className="subtext lh-1">{poolName && poolName}</span>
                       </div>
                     }
                     showDollar={false}
@@ -511,7 +511,7 @@ export function PositionItem(p: Props) {
               <div onClick={() => p.onSelectPositionClick?.()}>
                 <div className="items-top">
                   <span>{indexName && indexName}</span>
-                  <span className="subtext">{poolName && poolName}</span>
+                  <span className="subtext lh-1">{poolName && poolName}</span>
                 </div>
               </div>
             </div>

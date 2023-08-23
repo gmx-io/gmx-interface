@@ -109,10 +109,6 @@
   text-align: right;
 }
 
-.Tooltip-row-value .subtext {
-  line-height: 1;
-}
-
 .Tooltip-row-values {
   list-style: none;
   margin: 0;

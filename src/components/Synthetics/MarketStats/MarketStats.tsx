@@ -51,7 +51,7 @@ export function MarketStats(p: Props) {
             <img className="MarketStats-gm-icon" src={getIcon(chainId, "gm")} alt="GM" />
           </div>
           <div className="App-card-title-mark-info">
-            <div className="App-card-title-mark-title items-top">
+            <div className="App-card-title-mark-title Gm-stats-title items-center">
               <span>GM{indexName && `: ${indexName}`}</span>
               <span className="subtext">{poolName && poolName}</span>
             </div>
@@ -68,9 +68,9 @@ export function MarketStats(p: Props) {
           label={t`Market`}
           value={
             indexName && poolName ? (
-              <div className="items-top">
+              <div className="items-center">
                 <span>{indexName}</span>
-                <span className="subtext">{poolName}</span>
+                <span className="subtext gm-market-name">{poolName}</span>
               </div>
             ) : (
               "..."
