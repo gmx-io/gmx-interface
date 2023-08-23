@@ -13,23 +13,7 @@ import { TableCell, TableHeader } from "components/Table/types";
 import { TopAccountsRow } from "domain/synthetics/leaderboards";
 import AddressView from "components/AddressView";
 
-const titles: Record<string, TableHeader> = {
-  rank: { title: t`Rank` },
-  account: { title: t`Address` },
-  absPnl: { title: t`PnL ($)`, tooltip: t`Total Realized and Unrealized Profit` },
-  relPnl: {
-    title: t`PnL (%)`,
-    tooltip: (
-      t`PnL ($) compared to the Max Collateral used by this Address\n` +
-      t`Max Collateral is the highest value of [Sum of Collateral of Open Positions -  RPnL]`
-    ),
-  },
-  size: { title: t`Size`, tooltip: t`Average Position Size` },
-  leverage: { title: t`Leverage`, tooltip: t`Average Leverage used` },
-  perf: { title: t`Win/Loss`, className: "text-right", tooltip: t`Wins and Losses for fully closed Positions` },
-};
-
-const parseRow = (start: number) => (s: TopAccountsRow, i: number): Record<keyof typeof titles, TableCell> => ({
+const parseRow = (start: number) => (s: TopAccountsRow, i: number): Record<string, TableCell> => ({
   id: s.id,
   rank: start + i + 1,
   account: { value: "", render: () => <AddressView address={ s.account } size={ 24 }/> },
@@ -66,13 +50,38 @@ export default function TopAccounts() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const term = useDebounce(search, 300);
-  const { topAccounts } = useLeaderboardContext();
+  const { topAccounts, setAccountsOrderBy, setAccountsOrderDirection } = useLeaderboardContext();
   const { isLoading, error } = topAccounts;
   const filteredStats = topAccounts.data.filter(a => a.account.indexOf(term.toLowerCase()) >= 0);
   const indexFrom = (page - 1) * perPage;
   const rows = filteredStats.slice(indexFrom, indexFrom + perPage).map(parseRow(indexFrom));
   const pageCount = Math.ceil(filteredStats.length / perPage);
   const handleSearchInput = ({ target }) => setSearch(target.value);
+  const titles: Record<string, TableHeader> = {
+    rank: { title: t`Rank` },
+    account: { title: t`Address` },
+    absPnl: { title: t`PnL ($)`, tooltip: t`Total Realized and Unrealized Profit` },
+    relPnl: {
+      title: t`PnL (%)`,
+      tooltip: (
+        t`PnL ($) compared to the Max Collateral used by this Address\n` +
+        t`Max Collateral is the highest value of [Sum of Collateral of Open Positions -  RPnL]`
+      ),
+      onClick() {
+        setAccountsOrderBy((key: keyof TopAccountsRow): keyof TopAccountsRow => {
+          if (key === "relPnl") {
+            setAccountsOrderDirection((direction: number) => -1 * direction);
+          } else {
+            setAccountsOrderDirection(1);
+          }
+          return "relPnl" as keyof TopAccountsRow;
+        })
+      },
+    },
+    size: { title: t`Size`, tooltip: t`Average Position Size` },
+    leverage: { title: t`Leverage`, tooltip: t`Average Leverage used` },
+    perf: { title: t`Win/Loss`, className: "text-right", tooltip: t`Wins and Losses for fully closed Positions` },
+  };
 
   return (
     <div>

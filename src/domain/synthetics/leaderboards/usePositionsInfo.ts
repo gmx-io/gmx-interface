@@ -1,5 +1,3 @@
-import useSWR from "swr";
-import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { MAX_ALLOWED_LEVERAGE } from "config/factors";
@@ -22,6 +20,8 @@ import {
   getPositionPnlUsd,
   usePositionsConstants
 } from "../positions";
+import { useMulticall } from "lib/multicall";
+import { useEffect, useState } from "react";
 
 type PositionsResult = {
   isLoading: boolean;
@@ -221,62 +221,53 @@ export function usePositionsInfo(
   positionKeys: string[],
   marketPrices: ContractMarketPrices[],
 ): PositionsResult {
-
-  const { library } = useWeb3React();
   const keys = [...positionKeys].sort((a, b) => a < b ? -1 : 1).join("-");
-  const method = "getAccountPositionInfoList";
-  const contractName = "SyntheticsReader";
   const { minCollateralUsd } = usePositionsConstants(chainId);
-  const { marketsInfoData, tokensData } = useMarketsInfo(chainId);
-  const { data: positionsData, error } = useSWR<Array<PositionJson>>([
-    chainId,
-    contractName,
-    method,
-    keys
-  ], () => {
-    if (!positionKeys.length) {
-      return {};
-    }
-    if (positionKeys.length !== marketPrices.length) {
-      throw new Error("The numbers of market prices and position keys do not match");
-    }
-
-    const contract = new ethers.Contract(
-      getContract(chainId, contractName),
-      SyntheticsReader.abi,
-      library.getSigner()
-    );
-
-    const args = [
-      getContract(chainId, "DataStore"),
-      getContract(chainId, "ReferralStorage"),
-      positionKeys,
-      marketPrices,
-      ethers.constants.AddressZero, // uiFeeReceiver
-    ];
-
-    return contract[method](...args);
+  const { marketsInfoData, tokensData, pricesUpdatedAt } = useMarketsInfo(chainId);
+  const [positions, setPositions] = useState<PositionsInfoData>();
+  const positionsData = useMulticall(chainId, "usePositionsData", {
+    key: [keys, pricesUpdatedAt],
+    refreshInterval: null, // Refresh on every prices update
+    request: () => ({
+      reader: {
+        contractAddress: getContract(chainId, "SyntheticsReader"),
+        abi: SyntheticsReader.abi,
+        calls: positionKeys && positionKeys.length ? {
+          positions: {
+            methodName: "getAccountPositionInfoList",
+            params: [
+              getContract(chainId, "DataStore"),
+              getContract(chainId, "ReferralStorage"),
+              positionKeys,
+              marketPrices,
+              ethers.constants.AddressZero, // uiFeeReceiver
+            ],
+          },
+        } : {},
+      },
+    }),
   });
 
-  const positionsCount = Object.keys(positionsData || {}).length;
-  const positionsLoaded = positionsCount === positionKeys.length;
-  const isLoading = !(
-    Array.isArray(positionsData) &&
-    positionsLoaded &&
-    marketsInfoData &&
-    tokensData &&
-    minCollateralUsd
-  );
+  useEffect(() => {
+    const positions = positionsData?.data?.data?.reader?.positions?.returnValues;
+    if (positions && marketsInfoData && tokensData && minCollateralUsd) {
+      setPositions(parsePositionsInfo(
+        positionKeys,
+        positions as Array<PositionJson>,
+        marketsInfoData,
+        tokensData,
+        minCollateralUsd
+      ));
+    }
+  // The dependencies below derive from the values used within the effect callback
+  // eslint-disable-next-line
+  }, [
+    keys,
+    pricesUpdatedAt,
+    positionsData?.data?.data?.reader?.positions?.returnValues,
+  ]);
 
-  return {
-    isLoading,
-    error,
-    data: isLoading ? {} : parsePositionsInfo(
-      positionKeys,
-      positionsData!,
-      marketsInfoData,
-      tokensData,
-      minCollateralUsd
-    )
-  };
+  const isLoading = !(positions && marketsInfoData && tokensData && minCollateralUsd);
+
+  return { isLoading, error: null, data: isLoading ? {} : positions };
 }

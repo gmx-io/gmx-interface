@@ -157,4 +157,8 @@ export type LeaderboardContextType = {
   topAccounts: RemoteData<TopAccountsRow>;
   period: PerfPeriod;
   setPeriod: (_: PerfPeriod) => void;
+  setAccountsOrderBy: React.Dispatch<React.SetStateAction<keyof TopAccountsRow>>;
+  setAccountsOrderDirection: React.Dispatch<React.SetStateAction<number>>;
+  setPositionsOrderBy: React.Dispatch<React.SetStateAction<keyof AccountOpenPosition>>;
+  setPositionsOrderDirection: React.Dispatch<React.SetStateAction<number>>;
 };

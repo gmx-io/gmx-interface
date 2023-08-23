@@ -118,7 +118,5 @@ export function useTopAccounts(period: PerfPeriod) {
     data.push(scores);
   }
 
-  const orderedData: Array<TopAccountsRow> = data.sort((a, b) => a.absPnl.gt(b.absPnl) ? -1 : 1);
-
-  return { isLoading: false, error: null, data: orderedData };
+  return { isLoading: false, error: null, data };
 }

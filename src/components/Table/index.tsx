@@ -22,18 +22,24 @@ export default function Table<T extends Record<string, any>>({
       <tbody>
         <tr className="Exchange-list-header">
           {
-            Object.keys(titles).filter(k => titles[k]).map(k => (
-              <th key={`table_header_${k}`} className={titles[k]!.className}>
+            Object.entries(titles).filter(([_, v]) => v).map(([k, v]) => (
+              <th
+                key={ `table_header_${k}` }
+                onClick={ v!.onClick || (() => {}) }
+                className={
+                  classnames(v!.className, typeof v!.onClick === "function" && "clickable-header")
+                }
+              >
                 {
-                  titles[k]!.tooltip ? (
+                  v!.tooltip ? (
                     <Tooltip
-                      handle={ titles[k]!.title }
+                      handle={ v!.title }
                       position="center-top"
                       renderContent={() => (
-                        titles[k]!.tooltip!.split("\\n").map(s => <div key={s}>{s}</div>)
+                        v!.tooltip!.split("\\n").map(s => <div key={s}>{s}</div>)
                       )}
                     />
-                  ) : titles[k]!.title
+                  ) : v!.title
                 }
               </th>
             ))
