@@ -839,10 +839,6 @@ msgid "Close {longOrShortText} {0}"
 msgstr "Close {longOrShortText} {0}"
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Close: {convertedAmountFormatted} {0}"
-msgstr "Close: {convertedAmountFormatted} {0}"
-
-#: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
 msgstr "Closing..."
 
@@ -1264,7 +1260,6 @@ msgstr "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 msgid "Decreasing"
 msgstr "Decreasing"
 
-#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -2516,8 +2511,6 @@ msgid "MARKET"
 msgstr "MARKET"
 
 #: src/components/BuyInputSection/BuyInputSection.tsx
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
 #: src/components/InputSection/InputSection.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
@@ -2531,6 +2524,7 @@ msgstr "MEV Optimizer"
 msgid "MINTABLE"
 msgstr "MINTABLE"
 
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -2566,7 +2560,6 @@ msgid "Mark Price:"
 msgstr "Mark Price:"
 
 #: src/components/Exchange/OrderEditor.js
-#: src/components/Exchange/PositionSeller.js
 msgid "Mark: {0}"
 msgstr "Mark: {0}"
 
@@ -2605,6 +2598,8 @@ msgstr "Market Increase"
 msgid "Market Swap"
 msgstr "Market Swap"
 
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/pages/Stake/StakeV2.js
@@ -2755,11 +2750,6 @@ msgstr "Max {0} {longShortText} capacity"
 #: src/pages/Stake/StakeV1.js
 msgid "Max: {0}"
 msgstr "Max: {0}"
-
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
-msgid "Max: {maxAmountFormatted}"
-msgstr "Max: {maxAmountFormatted}"
 
 #: src/components/Footer/constants.ts
 #: src/components/Footer/constants.ts
@@ -5054,7 +5044,6 @@ msgstr "Weight"
 msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr "When closing the position, you can select which token you would like to receive the profits in."
 
-#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js

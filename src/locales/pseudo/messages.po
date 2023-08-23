@@ -839,10 +839,6 @@ msgid "Close {longOrShortText} {0}"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Close: {convertedAmountFormatted} {0}"
-msgstr ""
-
-#: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
 msgstr ""
 
@@ -1264,7 +1260,6 @@ msgstr ""
 msgid "Decreasing"
 msgstr ""
 
-#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -2513,8 +2508,6 @@ msgid "MARKET"
 msgstr ""
 
 #: src/components/BuyInputSection/BuyInputSection.tsx
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
 #: src/components/InputSection/InputSection.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
@@ -2528,6 +2521,7 @@ msgstr ""
 msgid "MINTABLE"
 msgstr ""
 
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -2563,7 +2557,6 @@ msgid "Mark Price:"
 msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
-#: src/components/Exchange/PositionSeller.js
 msgid "Mark: {0}"
 msgstr ""
 
@@ -2602,6 +2595,8 @@ msgstr ""
 msgid "Market Swap"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/pages/Stake/StakeV2.js
@@ -2751,11 +2746,6 @@ msgstr ""
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 msgid "Max: {0}"
-msgstr ""
-
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
-msgid "Max: {maxAmountFormatted}"
 msgstr ""
 
 #: src/components/Footer/constants.ts
@@ -5051,7 +5041,6 @@ msgstr ""
 msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr ""
 
-#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
