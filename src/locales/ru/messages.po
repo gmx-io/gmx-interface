@@ -248,6 +248,7 @@ msgstr "Требуется дополнительный резерв"
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr "Кроме того, триггерные ордера являются рыночными и не гарантируют расчет по триггерной цене."
 
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
 #: src/components/GlobalLeaderboards/TopPositions.tsx
 msgid "Address"
 msgstr ""
@@ -443,6 +444,14 @@ msgstr "Доступно в предпочитаемой сети"
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Average Leverage used"
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Average Position Size"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -2319,6 +2328,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
@@ -2670,6 +2680,10 @@ msgstr "Максимальная Вместимость"
 #: src/components/Glp/GlpSwap.js
 msgid "Max Capacity for {0} Reached"
 msgstr "Максимальная Вместимость для {0} Достигнута"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Max Collateral is the highest value of [Sum of Collateral of Open Positions -  RPnL]"
+msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -3306,8 +3320,17 @@ msgstr ""
 msgid "PnL"
 msgstr "PnL"
 
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
 #: src/components/GlobalLeaderboards/TopPositions.tsx
 msgid "PnL ($)"
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "PnL ($) compared to the Max Collateral used by this Address\\n"
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "PnL (%)"
 msgstr ""
 
 #: src/components/Exchange/NetValueTooltip.tsx
@@ -3527,7 +3550,8 @@ msgstr ""
 msgid "Purchase Insurance"
 msgstr "Приобрести Страховку"
 
-#: src/components/Table/index.tsx
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 msgid "Rank"
 msgstr ""
 
@@ -4013,6 +4037,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
@@ -4571,6 +4596,10 @@ msgstr ""
 msgid "Total Fees"
 msgstr "Общая сумма Комиссии"
 
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Total Realized and Unrealized Profit"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Rebates"
 msgstr "Всего Ребайтов"
@@ -4610,6 +4639,10 @@ msgstr "Общее количество снабжения"
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "Общий Объем Торгов"
+
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Total Unrealized Profit"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
@@ -5165,6 +5198,14 @@ msgstr "При закрытии позиции вы можете выбрать,
 #~ msgid "Win / Loss"
 #~ msgstr ""
 
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Win/Loss"
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Wins and Losses for fully closed Positions"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -5478,8 +5519,8 @@ msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsT
 msgstr ""
 
 #: src/components/Table/index.tsx
-msgid "{0}"
-msgstr ""
+#~ msgid "{0}"
+#~ msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"

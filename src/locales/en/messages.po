@@ -256,6 +256,7 @@ msgstr "Additional reserve required"
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
 #: src/components/GlobalLeaderboards/TopPositions.tsx
 msgid "Address"
 msgstr "Address"
@@ -451,6 +452,14 @@ msgstr "Available on your preferred network"
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Average Leverage used"
+msgstr "Average Leverage used"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Average Position Size"
+msgstr "Average Position Size"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -2319,6 +2328,7 @@ msgstr "Leftover position below 10 USD"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
@@ -2669,6 +2679,10 @@ msgstr "Max Capacity"
 #: src/components/Glp/GlpSwap.js
 msgid "Max Capacity for {0} Reached"
 msgstr "Max Capacity for {0} Reached"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Max Collateral is the highest value of [Sum of Collateral of Open Positions -  RPnL]"
+msgstr "Max Collateral is the highest value of [Sum of Collateral of Open Positions -  RPnL]"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -3291,9 +3305,18 @@ msgstr "Please uncheck \"Keep Leverage\", or close a larger position amount."
 msgid "PnL"
 msgstr "PnL"
 
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
 #: src/components/GlobalLeaderboards/TopPositions.tsx
 msgid "PnL ($)"
 msgstr "PnL ($)"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "PnL ($) compared to the Max Collateral used by this Address\\n"
+msgstr "PnL ($) compared to the Max Collateral used by this Address\\n"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "PnL (%)"
+msgstr "PnL (%)"
 
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -3512,7 +3535,8 @@ msgstr "Purchase <0>GM Tokens</0> to earn fees from swaps and leverage trading."
 msgid "Purchase Insurance"
 msgstr "Purchase Insurance"
 
-#: src/components/Table/index.tsx
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 msgid "Rank"
 msgstr "Rank"
 
@@ -3998,6 +4022,7 @@ msgstr "Single"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
@@ -4548,6 +4573,10 @@ msgstr "Total Claimable"
 msgid "Total Fees"
 msgstr "Total Fees"
 
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Total Realized and Unrealized Profit"
+msgstr "Total Realized and Unrealized Profit"
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Rebates"
 msgstr "Total Rebates"
@@ -4587,6 +4616,10 @@ msgstr "Total Supply"
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "Total Trading Volume"
+
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Total Unrealized Profit"
+msgstr "Total Unrealized Profit"
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
@@ -5138,9 +5171,13 @@ msgstr "Weight"
 msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr "When closing the position, you can select which token you would like to receive the profits in."
 
-#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
-#~ msgid "Win/Loss"
-#~ msgstr "Win/Loss"
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Win/Loss"
+msgstr "Win/Loss"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Wins and Losses for fully closed Positions"
+msgstr "Wins and Losses for fully closed Positions"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -5455,8 +5492,8 @@ msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsT
 msgstr "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 
 #: src/components/Table/index.tsx
-msgid "{0}"
-msgstr "{0}"
+#~ msgid "{0}"
+#~ msgstr "{0}"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"
