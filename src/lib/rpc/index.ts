@@ -137,7 +137,7 @@ export function useWsProvider(active: boolean, chainId: number) {
           console.log(`ws provider for chain ${chainId} disconnected`);
           newProvider.removeAllListeners();
           WS_PROVIDERS_CACHE[chainId] = undefined;
-          setNeedToReconnect(true);
+          // setNeedToReconnect(true);
         };
       }
 
