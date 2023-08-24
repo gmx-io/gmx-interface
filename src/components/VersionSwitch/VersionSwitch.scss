@@ -1,20 +1,17 @@
 .VersionSwitch {
   display: inline-flex;
   background: linear-gradient(90deg, rgba(30, 34, 61, 0.9) 0%, rgba(38, 43, 71, 0.9) 100%);
-  position: absolute;
-  right: 1rem;
-  border-radius: 2px;
-  overflow: hidden;
+  border-radius: 3px;
 }
 
 .VersionSwitch-option {
-  padding: 0.76rem 1.2rem;
+  padding: 0.76rem 1.275rem;
   text-decoration: none;
   font-size: var(--font-sm);
+  border-radius: 3px;
 
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.7);
-  opacity: 0.7;
+  color: var(--text-gray);
 
   &:hover {
     color: rgba(255, 255, 255, 1);
@@ -22,8 +19,8 @@
   }
 
   &.active {
-    background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
-    color: rgba(255, 255, 255, 1);
+    background: #f3b50c;
+    color: #000000;
     opacity: 1;
   }
 }

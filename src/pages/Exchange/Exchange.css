@@ -978,6 +978,12 @@ table.Exchange-list-small td {
   color: #56dba8;
 }
 
+.TVChart-header {
+  display: grid;
+  grid-template-columns: auto 116.32px;
+  grid-column-gap: 1rem;
+}
+
 @media (max-width: 1500px) {
   .Exchange-swap-box {
     width: 38.75rem;
@@ -1107,10 +1113,9 @@ table.Exchange-list-small td {
   }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 800px) {
   .ExchangeChart-top-inner {
     grid-template-columns: auto auto auto;
-    grid-column-gap: 0.8rem;
   }
 
   .ExchangeChart-additional-info {
@@ -1139,7 +1144,10 @@ table.Exchange-list-small td {
   }
 }
 
-@media (max-width: 350px) {
+@media (max-width: 550px) {
+  .ExchangeChart-top-inner {
+    grid-template-columns: auto auto;
+  }
   .ExchnageChart-24h {
     display: none;
   }
@@ -1148,5 +1156,11 @@ table.Exchange-list-small td {
 @media (max-width: 450px) {
   .chart-positions {
     display: none;
+  }
+  .Chart-min-max-price {
+    display: none;
+  }
+  .ExchangeChart-top-inner {
+    grid-template-columns: auto;
   }
 }
