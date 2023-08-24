@@ -68,7 +68,7 @@ export function MarketStats(p: Props) {
           label={t`Market`}
           value={
             indexName && poolName ? (
-              <div className="items-center">
+              <div className="items-top">
                 <span>{indexName}</span>
                 <span className="subtext gm-market-name">{poolName}</span>
               </div>
