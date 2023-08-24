@@ -2,7 +2,13 @@ import "./BuyInputSection.scss";
 import React, { useRef, ReactNode, ChangeEvent, useState } from "react";
 import cx from "classnames";
 import { Trans } from "@lingui/macro";
-import { PERCENTAGE_SUGGESTIONS } from "config/ui";
+import { INPUT_LABEL_SEPARATOR, PERCENTAGE_SUGGESTIONS } from "config/ui";
+
+function escapeSpecialRegExpChars(string: string): string {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+const inputRegex = RegExp(`^\\d*(?:\\\\[.])?\\d*$`);
 
 type Props = {
   topLeftLabel: string;
@@ -42,7 +48,6 @@ export default function BuyInputSection(props: Props) {
   } = props;
   const [isPercentSelectorVisible, setIsPercentSelectorVisible] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const seperator = ":";
 
   function handleOnFocus() {
     if (showPercentSelector && onPercentChange) {
@@ -64,19 +69,34 @@ export default function BuyInputSection(props: Props) {
     }
   }
 
+  function onUserInput(e) {
+    if (onInputValueChange) {
+      // Replace comma with dot
+      let newValue = e.target.value.replace(/,/g, ".");
+      if (newValue === ".") {
+        newValue = "0.";
+      }
+
+      if (newValue === "" || inputRegex.test(escapeSpecialRegExpChars(newValue))) {
+        e.target.value = newValue;
+        onInputValueChange(e);
+      }
+    }
+  }
+
   return (
     <div>
       <div className="Exchange-swap-section buy-input" onClick={handleBoxClick}>
         <div className="buy-input-top-row">
           <div className="text-gray">
             {topLeftLabel}
-            {topLeftValue && `${seperator} ${topLeftValue}`}
+            {topLeftValue && `${INPUT_LABEL_SEPARATOR} ${topLeftValue}`}
           </div>
           <div className={cx("align-right", { clickable: onClickTopRightLabel })} onClick={onClickTopRightLabel}>
             <span className="text-gray">{topRightLabel}</span>
             {topRightValue && (
               <span className="Exchange-swap-label">
-                {topRightLabel ? seperator : ""}&nbsp;{topRightValue}
+                {topRightLabel ? INPUT_LABEL_SEPARATOR : ""}&nbsp;{topRightValue}
               </span>
             )}
           </div>
@@ -85,14 +105,18 @@ export default function BuyInputSection(props: Props) {
           <div className="Exchange-swap-input-container">
             {!staticInput && (
               <input
-                type="number"
-                min="0"
+                type="text"
+                inputMode="decimal"
                 placeholder="0.0"
-                step="any"
                 className="Exchange-swap-input"
                 value={inputValue}
-                onChange={onInputValueChange}
                 ref={inputRef}
+                onChange={onUserInput}
+                autoComplete="off"
+                autoCorrect="off"
+                minLength={1}
+                maxLength={15}
+                spellCheck="false"
                 onFocus={handleOnFocus}
                 onBlur={handleOnBlur}
               />
