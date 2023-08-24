@@ -263,7 +263,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
               <Button
                 variant="secondary"
                 textAlign="left"
-                to={"https://app.bondprotocol.finance/#/issuers/GMX"}
+                to="https://app.bondprotocol.finance/#/tokens/42161/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a"
                 imgInfo={{ src: bondProtocolIcon, alt: "Bond Protocol" }}
                 newTab
               >
