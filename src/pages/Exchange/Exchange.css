@@ -287,19 +287,14 @@
   display: inline-block;
 }
 
-.ExchangeChart-top {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: auto;
-  z-index: 2;
-}
-
-.ExchangeChart.tv .ExchangeChart-top {
-  position: relative;
+.ExchangeChart-info {
+  background: var(--dark-blue-bg);
+  border-radius: 0.4rem;
+  font-size: var(--font-base);
   padding: 0.9rem 0.31rem;
-  z-index: 2;
+  height: 58px;
+  display: flex;
+  align-items: center;
 }
 
 .ExchangeChart.tv .ExchangeChart-bottom {
@@ -978,10 +973,14 @@ table.Exchange-list-small td {
   color: #56dba8;
 }
 
-.TVChart-header {
+.ExchangeChart-header {
   display: grid;
   grid-template-columns: auto 116.32px;
   grid-column-gap: 1rem;
+}
+
+.VersionSwitch-wrapper {
+  padding: 1.5rem;
 }
 
 @media (max-width: 1500px) {
@@ -1009,6 +1008,9 @@ table.Exchange-list-small td {
 }
 
 @media (max-width: 1100px) {
+  .ExchangeChart-info {
+    height: 53px;
+  }
   .Exchange-swap-box {
     width: auto;
   }
@@ -1166,7 +1168,7 @@ table.Exchange-list-small td {
 }
 
 @media (max-width: 350px) {
-  .TVChart-header {
+  .ExchangeChart-header {
     grid-column-gap: 0.5rem;
   }
 }

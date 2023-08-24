@@ -161,8 +161,8 @@ export function TVChart({
 
   return (
     <div className="ExchangeChart tv">
-      <div className="TVChart-header">
-        <div className="TVChart-top-card ExchangeChart-top App-box App-box-border">
+      <div className="ExchangeChart-header">
+        <div className="ExchangeChart-info">
           <div className="ExchangeChart-top-inner">
             <div>
               <Dropdown
@@ -215,7 +215,7 @@ export function TVChart({
             </div>
           </div>
         </div>
-        <div className="App-card TVChart-top-card">
+        <div className="ExchangeChart-info VersionSwitch-wrapper">
           <VersionSwitch currentVersion={tradePageVersion} setCurrentVersion={setTradePageVersion} />
         </div>
       </div>

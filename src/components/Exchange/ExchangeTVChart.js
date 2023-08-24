@@ -320,8 +320,8 @@ export default function ExchangeTVChart(props) {
 
   return (
     <div className="ExchangeChart tv" ref={ref}>
-      <div className="TVChart-header">
-        <div className="TVChart-top-card ExchangeChart-top App-box App-box-border">
+      <div className="ExchangeChart-header">
+        <div className="ExchangeChart-info">
           <div className="ExchangeChart-top-inner">
             <ChartTokenSelector
               chainId={chainId}
@@ -362,7 +362,7 @@ export default function ExchangeTVChart(props) {
             </div>
           </div>
         </div>
-        <div className="App-card TVChart-top-card VersionSwitch-wrapper">
+        <div className="ExchangeChart-info VersionSwitch-wrapper">
           <VersionSwitch currentVersion={tradePageVersion} setCurrentVersion={setTradePageVersion} />
         </div>
       </div>
