@@ -3,16 +3,15 @@ import cx from "classnames";
 import { MarketInfo, MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { TokensData, convertToUsd } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
-import searchIcon from "img/search.svg";
 import { importImage } from "lib/legacy";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { ReactNode, useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
-import { useMedia } from "react-use";
 import Modal from "../Modal/Modal";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 import "./MarketSelector.scss";
+import SearchInput from "components/SearchInput/SearchInput";
 
 type Props = {
   label?: string;
@@ -56,7 +55,6 @@ export function PoolSelector({
   onSelectMarket,
   getMarketState,
 }: Props) {
-  const isSmallerScreen = useMedia("(max-width: 700px)");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
 
@@ -122,20 +120,13 @@ export function PoolSelector({
         setIsVisible={setIsModalVisible}
         label={label}
         headerContent={() => (
-          <div className="TokenSelector-token-row TokenSelector-token-input-row">
-            <input
-              type="text"
-              placeholder={t`Search Pool`}
-              value={searchKeyword}
-              onChange={(e) => setSearchKeyword(e.target.value)}
-              onKeyDown={_handleKeyDown}
-              autoFocus={!isSmallerScreen}
-              className="Tokenselector-search-input"
-              style={{
-                backgroundImage: `url(${searchIcon})`,
-              }}
-            />
-          </div>
+          <SearchInput
+            className="mt-md"
+            value={searchKeyword}
+            setValue={(e) => setSearchKeyword(e.target.value)}
+            placeholder={t`Search Pool`}
+            onKeyDown={_handleKeyDown}
+          />
         )}
       >
         <div className="TokenSelector-tokens">
