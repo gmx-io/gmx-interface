@@ -362,7 +362,7 @@ export default function ExchangeTVChart(props) {
             </div>
           </div>
         </div>
-        <div className="App-card TVChart-top-card">
+        <div className="App-card TVChart-top-card VersionSwitch-wrapper">
           <VersionSwitch currentVersion={tradePageVersion} setCurrentVersion={setTradePageVersion} />
         </div>
       </div>

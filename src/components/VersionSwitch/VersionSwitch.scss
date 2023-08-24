@@ -18,9 +18,13 @@
     background: #3a3f798f;
   }
 
-  &.active {
+  &.v1.active {
     background: #f3b50c;
     color: #000000;
-    opacity: 1;
+  }
+
+  &.v2.active {
+    background: var(--primary-btn-bg);
+    color: rgba(255, 255, 255, 1);
   }
 }

@@ -1164,3 +1164,9 @@ table.Exchange-list-small td {
     grid-template-columns: auto;
   }
 }
+
+@media (max-width: 350px) {
+  .TVChart-header {
+    grid-column-gap: 0.5rem;
+  }
+}
