@@ -5,13 +5,21 @@
 }
 
 .VersionSwitch-option {
-  padding: 0.76rem 1.275rem;
+  padding: 0.6rem 1.275rem;
   text-decoration: none;
   font-size: var(--font-sm);
-  border-radius: 3px;
-
   cursor: pointer;
   color: var(--text-gray);
+
+  &.v1 {
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+  }
+
+  &.v2 {
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+  }
 
   &:hover {
     color: rgba(255, 255, 255, 1);
