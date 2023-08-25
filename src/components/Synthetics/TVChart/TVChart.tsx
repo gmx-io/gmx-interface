@@ -186,7 +186,7 @@ export function TVChart({
               </div>
             </div>
 
-            <div className="ExchnageChart-24h">
+            <div className="Chart-24h-change">
               <div className="ExchangeChart-info-label">24h Change</div>
               <div
                 className={cx({
@@ -205,7 +205,7 @@ export function TVChart({
                   : "-"}
               </div>
             </div>
-            <div className="ExchangeChart-additional-info">
+            <div className="ExchangeChart-additional-info Chart-24h-low">
               <div className="ExchangeChart-info-label">24h Low</div>
               <div>
                 {dayPriceDelta?.low

@@ -271,7 +271,7 @@
 
 .ExchangeChart-top-inner {
   display: grid;
-  grid-template-columns: auto auto auto auto auto 1fr;
+  grid-template-columns: auto auto auto auto auto;
   grid-column-gap: 4.65rem;
   align-items: center;
   padding-left: 0.6rem;
@@ -1007,7 +1007,23 @@ table.Exchange-list-small td {
   }
 }
 
+@media (max-width: 1275px) {
+  .ExchangeChart-top-inner {
+    grid-gap: 2.5rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .Chart-24h-low {
+    display: none;
+  }
+}
+
 @media (max-width: 1100px) {
+  .Chart-24h-low {
+    display: block;
+  }
+
   .ExchangeChart-header {
     grid-template-columns: auto 103px;
   }
@@ -1122,12 +1138,6 @@ table.Exchange-list-small td {
   }
 }
 
-@media (max-width: 1200px) {
-  .ExchangeChart-top-inner {
-    grid-column-gap: 3rem;
-  }
-}
-
 @media (max-width: 800px) {
   .ExchangeChart-top-inner {
     grid-template-columns: auto auto auto;
@@ -1163,7 +1173,7 @@ table.Exchange-list-small td {
   .ExchangeChart-top-inner {
     grid-template-columns: auto auto;
   }
-  .ExchnageChart-24h {
+  .Chart-24h-change {
     display: none;
   }
 }
