@@ -31,6 +31,7 @@ import { getTokenBySymbol } from "config/tokens";
 import { t } from "@lingui/macro";
 import { REQUIRED_UI_VERSION_KEY } from "config/localStorage";
 import { useWeb3React } from "@web3-react/core";
+import { UrlJsonRpcProvider } from "@ethersproject/providers";
 
 export * from "./prices";
 
@@ -308,7 +309,7 @@ export function useTrades(chainId, account, forSingleAccount, afterId) {
   const { data: trades, mutate: updateTrades } = useSWR(url ? url : null, {
     dedupingInterval: 10000,
     // @ts-ignore
-    fetcher: (...args) => fetch(...args).then((res) => res.json()),
+    fetcher: (url) => fetch(url).then((res) => res.json()),
   });
 
   if (trades) {
@@ -359,12 +360,12 @@ export function useExecutionFee(library, active, chainId, infoTokens) {
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
 
   const { data: minExecutionFee } = useSWR<BigNumber>([active, chainId, positionRouterAddress, "minExecutionFee"], {
-    fetcher: contractFetcher(library, PositionRouter),
+    fetcher: contractFetcher(library, PositionRouter) as any,
   });
 
   const { data: gasPrice } = useSWR<BigNumber | undefined>(["gasPrice", chainId], {
     fetcher: () => {
-      return new Promise(async (resolve, reject) => {
+      return new Promise<BigNumber | undefined>(async (resolve, reject) => {
         const provider = getProvider(library, chainId);
         if (!provider) {
           resolve(undefined);
@@ -455,7 +456,7 @@ export function useHasOutdatedUi() {
   const url = getServerUrl(ARBITRUM, `/ui_version?client_version=${UI_VERSION}&active=${active}`);
   const { data, mutate } = useSWR([url], {
     // @ts-ignore
-    fetcher: (...args) => fetch(...args).then((res) => res.text()),
+    fetcher: (url) => fetch(url).then((res) => res.text()),
   });
 
   let hasOutdatedUi = false;
@@ -495,9 +496,9 @@ export function useGmxPrice(chainId, libraries, active) {
 export function useTotalGmxSupply() {
   const gmxSupplyUrlArbitrum = getServerUrl(ARBITRUM, "/gmx_supply");
 
-  const { data: gmxSupply, mutate: updateGmxSupply } = useSWR([gmxSupplyUrlArbitrum], {
+  const { data: gmxSupply, mutate: updateGmxSupply } = useSWR(gmxSupplyUrlArbitrum, {
     // @ts-ignore
-    fetcher: (...args) => fetch(...args).then((res) => res.text()),
+    fetcher: (url) => fetch(url).then((res) => res.text()),
   });
 
   return {
@@ -519,7 +520,7 @@ export function useTotalGmxStaked() {
       stakedGmxTrackerAddressArbitrum,
     ],
     {
-      fetcher: contractFetcher(undefined, Token),
+      fetcher: contractFetcher(undefined, Token) as any,
     }
   );
   const { data: stakedGmxSupplyAvax, mutate: updateStakedGmxSupplyAvax } = useSWR<BigNumber>(
@@ -531,7 +532,7 @@ export function useTotalGmxStaked() {
       stakedGmxTrackerAddressAvax,
     ],
     {
-      fetcher: contractFetcher(undefined, Token),
+      fetcher: contractFetcher(undefined, Token) as any,
     }
   );
 
@@ -632,7 +633,7 @@ function useGmxPriceFromArbitrum(library, active) {
   const { data: ethPrice, mutate: updateEthPrice } = useSWR<BigNumber>(
     [`StakeV2:ethPrice:${active}`, ARBITRUM, vaultAddress, "getMinPrice", ethAddress],
     {
-      fetcher: contractFetcher(library, Vault),
+      fetcher: contractFetcher(library, Vault) as any,
     }
   );
 

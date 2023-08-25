@@ -1060,7 +1060,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
 
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply");
   const { data: gmxSupply } = useSWR([gmxSupplyUrl], {
-    fetcher: (...args) => fetch(...args).then((res) => res.text()),
+    fetcher: (args) => fetch(...args).then((res) => res.text()),
   });
 
   const isGmxTransferEnabled = true;
