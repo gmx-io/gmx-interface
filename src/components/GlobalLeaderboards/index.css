@@ -75,7 +75,7 @@
   }
 }
 
-.trader-account-lable {
+.leaderboard-position {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -84,5 +84,5 @@
 .leaderboard-position img,
 .leaderboard-position span {
   display: inline-block;
-  margin-right: 1rem;
+  margin-right: 0.5rem;
 }

@@ -5,6 +5,7 @@
   "dependencies": {
     "@apollo/client": "3.5.6",
     "@davatar/react": "1.8.1",
+    "@ensdomains/ens-avatar": "^0.3.3",
     "@ethersproject/providers": "5.5.1",
     "@ethersproject/units": "5.5.0",
     "@headlessui/react": "1.6.1",
@@ -45,6 +46,7 @@
     "react-helmet": "6.1.0",
     "react-hot-toast": "2.2.0",
     "react-icons": "4.3.1",
+    "react-jazzicon": "^1.0.4",
     "react-remove-scroll": "2.5.5",
     "react-router-dom": "5.3.0",
     "react-scripts": "5.0.1",

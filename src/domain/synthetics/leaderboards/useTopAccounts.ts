@@ -112,14 +112,6 @@ export function useTopAccounts(period: PerfPeriod) {
 
       const sumMaxSize = perf.sumMaxSize.add(openPositions.sumMaxSize);
       const positionsCount = perf.closedCount.add(BigNumber.from(openPositions.openPositionsCount));
-      if (positionsCount.isZero()) {
-        console.error("Invalid positions count", {
-          closed: perf.closedCount.toString(),
-          open: openPositions.openPositionsCount.toString(),
-          positions: Object.keys(openPositionsByAccount),
-          account: perf.account,
-        })
-      }
       const leverage = cumsumSize.mul(expandDecimals(1, USD_DECIMALS)).div(cumsumCollateral);
       const size = sumMaxSize.div(positionsCount);
       const scores = {
