@@ -113,7 +113,8 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
         maxPrice: p.triggerPrice,
       };
     }
-    await simulateExecuteOrderTxn(chainId, library, {
+    await simulateExecuteOrderTxn(chainId, {
+      account: p.account,
       primaryPriceOverrides,
       secondaryPriceOverrides,
       createOrderMulticallPayload: encodedPayload,

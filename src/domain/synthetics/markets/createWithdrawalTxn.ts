@@ -73,7 +73,8 @@ export async function createWithdrawalTxn(chainId: number, library: Web3Provider
     .map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
 
   if (!p.skipSimulation) {
-    await simulateExecuteOrderTxn(chainId, library, {
+    await simulateExecuteOrderTxn(chainId, {
+      account: p.account,
       primaryPriceOverrides: {},
       secondaryPriceOverrides: {},
       tokensData: p.tokensData,

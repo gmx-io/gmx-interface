@@ -90,7 +90,8 @@ export async function createDepositTxn(chainId: number, library: Web3Provider, p
     .map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
 
   if (!p.skipSimulation) {
-    await simulateExecuteOrderTxn(chainId, library, {
+    await simulateExecuteOrderTxn(chainId, {
+      account: p.account,
       primaryPriceOverrides: {},
       secondaryPriceOverrides: {},
       tokensData: p.tokensData,

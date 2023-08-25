@@ -114,7 +114,8 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
   }
 
   if (!p.skipSimulation) {
-    await simulateExecuteOrderTxn(chainId, library, {
+    await simulateExecuteOrderTxn(chainId, {
+      account: p.account,
       tokensData: p.tokensData,
       primaryPriceOverrides,
       secondaryPriceOverrides,

@@ -95,7 +95,8 @@ export async function createSwapOrderTxn(chainId: number, library: Web3Provider,
     .map((call) => exchangeRouter.interface.encodeFunctionData(call!.method, call!.params));
 
   if (p.orderType !== OrderType.LimitSwap) {
-    await simulateExecuteOrderTxn(chainId, library, {
+    await simulateExecuteOrderTxn(chainId, {
+      account: p.account,
       primaryPriceOverrides: {},
       secondaryPriceOverrides: {},
       createOrderMulticallPayload: encodedPayload,
