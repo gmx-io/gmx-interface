@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Jazzicon, { jsNumberForAddress } from 'react-jazzicon'
 import { Link } from "react-router-dom";
 import { createBreakpoint } from "react-use";
@@ -21,6 +21,11 @@ export default function AddressView({ address, size = 24 }: AddressViewProps) {
   const useBreakpoint = createBreakpoint({ L: 600, M: 550, S: 400 });
   const breakpoint = useBreakpoint();
   const [url, setUrl] = useState<string>();
+  const provider = useRef<StaticJsonRpcProvider>();
+
+  if (!provider.current) {
+    provider.current = getProvider(undefined, chainId) as StaticJsonRpcProvider;
+  }
 
   useEffect(() => {
     if (!ensName) {
@@ -28,9 +33,8 @@ export default function AddressView({ address, size = 24 }: AddressViewProps) {
     }
 
     void (async () => {
-      const provider = getProvider(undefined, chainId);
       // @ts-ignore
-      const avatar = new AvatarResolver(provider as StaticJsonRpcProvider);
+      const avatar = new AvatarResolver(provider.current);
       const metadata = await avatar.getMetadata(ensName);
       const url = metadata && utils.getImageURI({ metadata });
       if (url) {

@@ -3,9 +3,10 @@ import {
   createContext,
   FC,
   PropsWithChildren,
+  useCallback,
   useContext,
   useMemo,
-  useState
+  useState,
 } from "react";
 
 import { useChainId } from "lib/chains";
@@ -28,6 +29,8 @@ export const LeaderboardContext = createContext<LeaderboardContextType>({
   setAccountsOrderDirection: () => {},
   setPositionsOrderBy: () => {},
   setPositionsOrderDirection: () => {},
+  topAccountsHeaderClick: () => () => {},
+  topPositionsHeaderClick: () => () => {},
 });
 
 export const useLeaderboardContext = () => useContext(LeaderboardContext);
@@ -41,6 +44,26 @@ export const LeaderboardContextProvider: FC<PropsWithChildren> = ({ children }) 
   const [positionsOrderDirection, setPositionsOrderDirection] = useState<number>(1);
   const topPositions = useTopPositions();
   const topAccounts = useTopAccounts(period);
+  const topAccountsHeaderClick = useCallback((key: string) => () => {
+    if (key === "wins") {
+      setAccountsOrderBy(accountsOrderBy === "wins" ? "losses" : "wins");
+      setAccountsOrderDirection(1);
+    } else if (key === accountsOrderBy) {
+      setAccountsOrderDirection((d: number) => -1 * d);
+    } else {
+      setAccountsOrderBy(key as keyof TopAccountsRow);
+      setAccountsOrderDirection(1);
+    }
+  }, [accountsOrderBy]);
+
+  const topPositionsHeaderClick = useCallback((key: string) => () => {
+    if (key === accountsOrderBy) {
+      setPositionsOrderDirection((d: number) => -1 * d);
+    } else {
+      setPositionsOrderBy(key as keyof AccountOpenPosition);
+      setPositionsOrderDirection(1);
+    }
+  }, [accountsOrderBy]);
 
   const positionsKey = topPositions.data && topPositions.data
     .map(a => a.unrealizedPnlAfterFees.toString())
@@ -94,6 +117,8 @@ export const LeaderboardContextProvider: FC<PropsWithChildren> = ({ children }) 
     setAccountsOrderDirection,
     setPositionsOrderBy,
     setPositionsOrderDirection,
+    topAccountsHeaderClick,
+    topPositionsHeaderClick,
   };
 
   return <LeaderboardContext.Provider value={ context }>{ children }</LeaderboardContext.Provider>;

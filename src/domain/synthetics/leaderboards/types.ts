@@ -161,4 +161,6 @@ export type LeaderboardContextType = {
   setAccountsOrderDirection: React.Dispatch<React.SetStateAction<number>>;
   setPositionsOrderBy: React.Dispatch<React.SetStateAction<keyof AccountOpenPosition>>;
   setPositionsOrderDirection: React.Dispatch<React.SetStateAction<number>>;
+  topAccountsHeaderClick: (key: keyof TopAccountsRow) => () => void;
+  topPositionsHeaderClick: (key: keyof AccountOpenPosition) => () => void;
 };

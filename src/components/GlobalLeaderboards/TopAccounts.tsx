@@ -50,7 +50,7 @@ export default function TopAccounts() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const term = useDebounce(search, 300);
-  const { topAccounts, setAccountsOrderBy, setAccountsOrderDirection } = useLeaderboardContext();
+  const { topAccounts, topAccountsHeaderClick } = useLeaderboardContext();
   const { isLoading, error } = topAccounts;
   const filteredStats = topAccounts.data.filter(a => a.account.indexOf(term.toLowerCase()) >= 0);
   const indexFrom = (page - 1) * perPage;
@@ -60,27 +60,35 @@ export default function TopAccounts() {
   const titles: Record<string, TableHeader> = {
     rank: { title: t`Rank` },
     account: { title: t`Address` },
-    absPnl: { title: t`PnL ($)`, tooltip: t`Total Realized and Unrealized Profit` },
+    absPnl: {
+      title: t`PnL ($)`,
+      tooltip: t`Total Realized and Unrealized Profit`,
+      onClick: topAccountsHeaderClick("absPnl"),
+    },
     relPnl: {
       title: t`PnL (%)`,
       tooltip: (
         t`PnL ($) compared to the Max Collateral used by this Address\n` +
         t`Max Collateral is the highest value of [Sum of Collateral of Open Positions -  RPnL]`
       ),
-      onClick() {
-        setAccountsOrderBy((key: keyof TopAccountsRow): keyof TopAccountsRow => {
-          if (key === "relPnl") {
-            setAccountsOrderDirection((direction: number) => -1 * direction);
-          } else {
-            setAccountsOrderDirection(1);
-          }
-          return "relPnl" as keyof TopAccountsRow;
-        })
-      },
+      onClick: topAccountsHeaderClick("relPnl"),
     },
-    size: { title: t`Size`, tooltip: t`Average Position Size` },
-    leverage: { title: t`Leverage`, tooltip: t`Average Leverage used` },
-    perf: { title: t`Win/Loss`, className: "text-right", tooltip: t`Wins and Losses for fully closed Positions` },
+    size: {
+      title: t`Size`,
+      tooltip: t`Average Position Size`,
+      onClick: topAccountsHeaderClick("size"),
+    },
+    leverage: {
+      title: t`Leverage`,
+      tooltip: t`Average Leverage used`,
+      onClick: topAccountsHeaderClick("leverage"),
+    },
+    perf: {
+      title: t`Win/Loss`,
+      className: "text-right",
+      tooltip: t`Wins and Losses for fully closed Positions`,
+      onClick: topAccountsHeaderClick("wins"),
+    },
   };
 
   return (
