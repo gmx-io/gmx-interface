@@ -37,3 +37,9 @@
     color: rgba(255, 255, 255, 1);
   }
 }
+
+@media (max-width: 1100px) {
+  .VersionSwitch-option {
+    padding: 0.75rem 1.2rem;
+  }
+}

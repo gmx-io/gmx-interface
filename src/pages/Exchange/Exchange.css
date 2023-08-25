@@ -1008,6 +1008,22 @@ table.Exchange-list-small td {
 }
 
 @media (max-width: 1100px) {
+  .ExchangeChart-header {
+    grid-template-columns: auto 103px;
+  }
+
+  .VersionSwitch-wrapper {
+    padding: 1rem;
+  }
+
+  .ExchangeChart.tv .ExchangeChart-bottom {
+    top: 6rem;
+  }
+
+  .ExchangeChart-info {
+    height: 50px;
+  }
+
   .Exchange-swap-box {
     width: auto;
   }
