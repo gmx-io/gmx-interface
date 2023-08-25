@@ -251,13 +251,14 @@ export function usePositionsInfo(
   useEffect(() => {
     const positions = positionsData?.data?.data?.reader?.positions?.returnValues;
     if (positions && marketsInfoData && tokensData && minCollateralUsd) {
-      setPositions(parsePositionsInfo(
+      const parsedData = parsePositionsInfo(
         positionKeys,
         positions as Array<PositionJson>,
         marketsInfoData,
         tokensData,
         minCollateralUsd
-      ));
+      );
+      setPositions(parsedData);
     }
   // The dependencies below derive from the values used within the effect callback
   // eslint-disable-next-line

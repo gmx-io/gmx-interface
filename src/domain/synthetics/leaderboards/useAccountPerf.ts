@@ -4,6 +4,7 @@ import { PerfPeriod, AccountPerf, AccountPerfJson, PerfByAccount, RemoteData } f
 import { queryAccountPerformance } from "./queries";
 import { arbitrumGoerliLeaderboardsClient as graph } from "lib/subgraph/clients";
 import { getAddress } from "ethers/lib/utils";
+import { useEffect, useState } from "react";
 
 const daysAgo = (x: number) => (
   new Date(Date.now() - 1000 * 60 * 60 * 24 * x).setHours(0, 0, 0, 0) / 1000
@@ -105,7 +106,11 @@ const sumPerfByAccount = (accountPerfs: AccountPerfJson[], period: PerfPeriod) =
 };
 
 export function useAccountPerf(period: PerfPeriod) {
-  const accounts = useSWR("leaderboards/accounts", async () => {
+  const [data, setData] = useState<PerfByAccount>({});
+  const accounts = useSWR([
+    "leaderboards/accounts",
+    period,
+  ], async () => {
     const pageSize = 1000;
     let data: Array<AccountPerfJson> = [];
     let skip = 0;
@@ -122,10 +127,16 @@ export function useAccountPerf(period: PerfPeriod) {
     return data;
   });
 
-  const data: PerfByAccount = sumPerfByAccount(accounts.data || [], period);
+  const key = (accounts.data || []).map(p => p.account).join("-");
+  useEffect(() => {
+    if (accounts.data) {
+      setData(sumPerfByAccount(accounts.data, period));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key, period]);
 
   return {
-    isLoading: !accounts.data && !accounts.error,
+    isLoading: !data && !accounts.error,
     data: data ? Object.values(data) : [],
     error: accounts.error || null,
   } as RemoteData<AccountPerf>;

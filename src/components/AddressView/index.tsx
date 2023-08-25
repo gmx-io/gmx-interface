@@ -20,11 +20,11 @@ export default function AddressView({ address, size = 24 }: AddressViewProps) {
 
   return (
     <Link className="trader-account-lable" to={ `/actions/v2/${address}` } target="_blank">
-      {
+      {/* {
         provider
           ? <Davatar size={size} address={address} provider={provider}/>
           : <div className="davatar-placeholder" style={{ width: `${size}px`, height: `${size}px` }}/>
-      }
+      } */}
       <span>{ shortenAddress(address, breakpoint === "S" ? 20 :42) }</span>
     </Link>
   );

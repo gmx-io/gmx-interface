@@ -9,6 +9,7 @@ import { convertToUsd } from "../tokens";
 import { useChainId } from "lib/chains";
 import { usePositionsInfo } from "./usePositionsInfo";
 import { PositionsInfoData, getPositionKey } from "../positions";
+import { useEffect, useState } from "react";
 
 const fetchAccountOpenPositionsPage = async (
   first: number,
@@ -110,12 +111,25 @@ const fetchAccountOpenPositions = async () => {
 
 export function useAccountOpenPositions() {
   const { chainId } = useChainId();
-  const { tokensData, marketsInfoData } = useMarketsInfo(chainId);
+  const { tokensData, marketsInfoData, pricesUpdatedAt } = useMarketsInfo(chainId);
   const positions = useSWR('/leaderboards/positions', fetchAccountOpenPositions);
-  const keys: string[] = [];
-  const prices: ContractMarketPrices[] = [];
+  const [keys, setKeys] = useState<string[]>([]);
+  const [prices, setPrices] = useState<ContractMarketPrices[]>([]);
+  const [data, setData] = useState<AccountOpenPosition[]>([]);
 
-  if (marketsInfoData && tokensData) {
+  let positionKeys: string = "";
+
+  for (const {id} of positions.data || []) {
+    positionKeys += id;
+  }
+
+  useEffect(() => {
+    if (!marketsInfoData || !tokensData) {
+      return;
+    }
+
+    const keys: string[] = [];
+    const prices: ContractMarketPrices[] = [];
     for (const p of positions.data || []) {
       const marketData = marketsInfoData[getAddress(p.market)];
       const contractMarketPrices = getContractMarketPrices(tokensData, marketData);
@@ -124,7 +138,10 @@ export function useAccountOpenPositions() {
         prices.push(contractMarketPrices);
       }
     }
-  }
+    setKeys(keys);
+    setPrices(prices);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pricesUpdatedAt, chainId, positionKeys]);
 
   const positionsInfo = usePositionsInfo(chainId, keys, prices);
   const error = positions.error || positionsInfo.error;
@@ -136,10 +153,12 @@ export function useAccountOpenPositions() {
     positions.data.length === Object.keys(positionsInfo.data).length
   );
 
-  const data = isLoading || error ? [] : parseAccountOpenPositions(
-    positions.data!,
-    positionsInfo.data,
-  );
+  useEffect(() => {
+    if (!isLoading && !error) {
+      setData(parseAccountOpenPositions(positions.data!, positionsInfo.data));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading, error, pricesUpdatedAt, chainId, positionKeys]);
 
   return { isLoading, error, data };
 };
