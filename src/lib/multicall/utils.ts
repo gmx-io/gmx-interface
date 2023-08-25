@@ -168,7 +168,7 @@ export class Multicall {
 
     const response: any = await Promise.race([
       this.viemClient.multicall({ contracts: encodedPayload as any }),
-      sleep(maxTimeout).then(() => new Error("multicall timeout")),
+      sleep(maxTimeout).then(() => Promise.reject(new Error("multicall timeout"))),
     ]).catch((_viemError) => {
       const e = new Error(_viemError.message.slice(0, 150));
 

@@ -7,7 +7,7 @@ import { closeWsConnection, getWsProvider, isProviderInClosedState, isWebsocketP
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 
-const WS_HEALTH_CHECK_INTERVAL = 1000 * 10;
+const WS_HEALTH_CHECK_INTERVAL = 1000 * 30;
 const WS_RECONNECT_INTERVAL = 1000 * 5;
 
 export type WebsocketContextType = {
@@ -48,9 +48,7 @@ export function WebsocketContextProvider({ children }: { children: React.ReactNo
         clearTimeout(healthCheckTimerId.current);
 
         if (isWebsocketProvider(provider)) {
-          setTimeout(() => {
-            closeWsConnection(provider);
-          });
+          closeWsConnection(provider);
         }
 
         // eslint-disable-next-line no-console
@@ -71,7 +69,11 @@ export function WebsocketContextProvider({ children }: { children: React.ReactNo
           return;
         }
 
-        if (isDevelopment()) {
+        // wait ws provider to be connected and avoid too often reconnects
+        const isReconnectingIntervalPassed =
+          initializedTime.current && Date.now() - initializedTime.current > WS_RECONNECT_INTERVAL;
+
+        if (isDevelopment() && isReconnectingIntervalPassed) {
           // eslint-disable-next-line no-console
           console.log(
             `ws provider health check, state: ${wsProvider._websocket.readyState}, subs: ${
@@ -80,11 +82,7 @@ export function WebsocketContextProvider({ children }: { children: React.ReactNo
           );
         }
 
-        if (
-          isProviderInClosedState(wsProvider) &&
-          initializedTime.current &&
-          Date.now() - initializedTime.current > WS_RECONNECT_INTERVAL
-        ) {
+        if (isProviderInClosedState(wsProvider) && isReconnectingIntervalPassed) {
           closeWsConnection(wsProvider);
           const provider = getWsProvider(chainId);
           setWsProvider(provider);
