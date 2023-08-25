@@ -15,8 +15,8 @@ import {
   LeaderboardContextType,
   useTopAccounts,
   useTopPositions,
-  AccountOpenPosition,
   TopAccountsRow,
+  TopPositionsRow,
 } from "domain/synthetics/leaderboards";
 
 export const LeaderboardContext = createContext<LeaderboardContextType>({
@@ -40,11 +40,11 @@ export const LeaderboardContextProvider: FC<PropsWithChildren> = ({ children }) 
   const [period, setPeriod] = useState<PerfPeriod>(PerfPeriod.TOTAL);
   const [accountsOrderBy, setAccountsOrderBy] = useState<keyof TopAccountsRow>("absPnl");
   const [accountsOrderDirection, setAccountsOrderDirection] = useState<number>(1);
-  const [positionsOrderBy, setPositionsOrderBy] = useState<keyof AccountOpenPosition>("unrealizedPnl");
+  const [positionsOrderBy, setPositionsOrderBy] = useState<keyof TopPositionsRow>("unrealizedPnl");
   const [positionsOrderDirection, setPositionsOrderDirection] = useState<number>(1);
   const topPositions = useTopPositions();
   const topAccounts = useTopAccounts(period);
-  const topAccountsHeaderClick = useCallback((key: string) => () => {
+  const topAccountsHeaderClick = useCallback((key: keyof TopAccountsRow) => () => {
     if (key === "wins") {
       setAccountsOrderBy(accountsOrderBy === "wins" ? "losses" : "wins");
       setAccountsOrderDirection(1);
@@ -56,17 +56,17 @@ export const LeaderboardContextProvider: FC<PropsWithChildren> = ({ children }) 
     }
   }, [accountsOrderBy]);
 
-  const topPositionsHeaderClick = useCallback((key: string) => () => {
-    if (key === accountsOrderBy) {
+  const topPositionsHeaderClick = useCallback((key: keyof TopPositionsRow) => () => {
+    if (key === positionsOrderBy) {
       setPositionsOrderDirection((d: number) => -1 * d);
     } else {
-      setPositionsOrderBy(key as keyof AccountOpenPosition);
+      setPositionsOrderBy(key as keyof TopPositionsRow);
       setPositionsOrderDirection(1);
     }
-  }, [accountsOrderBy]);
+  }, [positionsOrderBy]);
 
   const positionsKey = topPositions.data && topPositions.data
-    .map(a => a.unrealizedPnlAfterFees.toString())
+    .map(a => a[positionsOrderBy]!.toString())
     .sort((a, b) => a < b ? -1 : 1)
     .join("-");
 
@@ -82,6 +82,8 @@ export const LeaderboardContextProvider: FC<PropsWithChildren> = ({ children }) 
       } else {
         return 1;
       }
+    }).map((p, i) => {
+      p.rank = i;
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [positionsKey, positionsOrderBy, positionsOrderDirection]);
@@ -103,6 +105,8 @@ export const LeaderboardContextProvider: FC<PropsWithChildren> = ({ children }) 
       } else {
         return 1;
       }
+    }).forEach((a, i) => {
+      a.rank = i;
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accountsKey, accountsOrderBy, accountsOrderDirection]);

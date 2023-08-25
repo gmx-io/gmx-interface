@@ -13,9 +13,9 @@ import { TableCell, TableHeader } from "components/Table/types";
 import { TopAccountsRow } from "domain/synthetics/leaderboards";
 import AddressView from "components/AddressView";
 
-const parseRow = (start: number) => (s: TopAccountsRow, i: number): Record<string, TableCell> => ({
+const parseRow = (s: TopAccountsRow): Record<string, TableCell> => ({
   id: s.id,
-  rank: start + i + 1,
+  rank: s.rank + 1,
   account: { value: "", render: () => <AddressView address={ s.account } size={ 24 }/> },
   absPnl: {
     value: formatUsd(s.absPnl) || "",
@@ -54,7 +54,7 @@ export default function TopAccounts() {
   const { isLoading, error } = topAccounts;
   const filteredStats = topAccounts.data.filter(a => a.account.indexOf(term.toLowerCase()) >= 0);
   const indexFrom = (page - 1) * perPage;
-  const rows = filteredStats.slice(indexFrom, indexFrom + perPage).map(parseRow(indexFrom));
+  const rows = filteredStats.slice(indexFrom, indexFrom + perPage).map(parseRow);
   const pageCount = Math.ceil(filteredStats.length / perPage);
   const handleSearchInput = ({ target }) => setSearch(target.value);
   const titles: Record<string, TableHeader> = {

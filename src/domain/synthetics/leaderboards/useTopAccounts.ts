@@ -116,6 +116,7 @@ export function useTopAccounts(period: PerfPeriod) {
       const size = sumMaxSize.div(positionsCount);
       const scores = {
         id: perf.account + ":" + period,
+        rank: i,
         account: perf.account,
         absPnl: profit,
         relPnl,

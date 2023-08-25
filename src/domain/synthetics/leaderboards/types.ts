@@ -54,6 +54,7 @@ export type PerfByAccount = { [key: string]: AccountPerf };
 
 export type TopAccountsRow = {
   id: string;
+  rank: number;
   account: string;
   absPnl: BigNumber;
   relPnl: BigNumber;
@@ -100,6 +101,18 @@ export type AccountPositionsSummary = {
 };
 
 export type PositionsSummaryByAccount = Record<string, AccountPositionsSummary>;
+
+export type TopPositionsRow = {
+  key: string;
+  rank: number;
+  account: string;
+  unrealizedPnl: BigNumber;
+  market: MarketInfo;
+  entryPrice: BigNumber;
+  size: BigNumber;
+  liqPrice?: BigNumber;
+  isLong: boolean;
+};
 
 export type AccountOpenPosition = {
   key: string;
@@ -153,14 +166,14 @@ export type RemoteData<T> = {
 
 export type LeaderboardContextType = {
   chainId: number;
-  topPositions: RemoteData<AccountOpenPosition>;
+  topPositions: RemoteData<TopPositionsRow>;
   topAccounts: RemoteData<TopAccountsRow>;
   period: PerfPeriod;
   setPeriod: (_: PerfPeriod) => void;
   setAccountsOrderBy: React.Dispatch<React.SetStateAction<keyof TopAccountsRow>>;
   setAccountsOrderDirection: React.Dispatch<React.SetStateAction<number>>;
-  setPositionsOrderBy: React.Dispatch<React.SetStateAction<keyof AccountOpenPosition>>;
+  setPositionsOrderBy: React.Dispatch<React.SetStateAction<keyof TopPositionsRow>>;
   setPositionsOrderDirection: React.Dispatch<React.SetStateAction<number>>;
   topAccountsHeaderClick: (key: keyof TopAccountsRow) => () => void;
-  topPositionsHeaderClick: (key: keyof AccountOpenPosition) => () => void;
+  topPositionsHeaderClick: (key: keyof TopPositionsRow) => () => void;
 };
