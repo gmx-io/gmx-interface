@@ -82,7 +82,7 @@ export const LeaderboardContextProvider: FC<PropsWithChildren> = ({ children }) 
       } else {
         return 1;
       }
-    }).map((p, i) => {
+    }).forEach((p, i) => {
       p.rank = i;
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps

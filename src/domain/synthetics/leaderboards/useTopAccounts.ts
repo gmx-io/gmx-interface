@@ -77,7 +77,7 @@ export function useTopAccounts(period: PerfPeriod) {
   }
 
   useEffect(() => {
-    if (accountPerf.error || positions.error || accountPerf.isLoading || positions.isLoading) {
+    if (accountPerf.error || positions.error || !accountPerf.data || !positions.data) {
       return;
     }
 
@@ -135,7 +135,7 @@ export function useTopAccounts(period: PerfPeriod) {
 
   if (accountPerf.error || positions.error) {
     return { data: [], isLoading: false, error: accountPerf.error || positions.error };
-  } else if (accountPerf.isLoading || positions.isLoading) {
+  } else if (!accountPerf.data || !positions.data) {
     return { data: [], isLoading: true, error: null };
   }
 
