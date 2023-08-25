@@ -24,7 +24,7 @@ const BATCH_CONFIGS = {
     },
     client: {
       multicall: {
-        batchSize: 1024 * 10, // here batchSize is the number of bytes in a multicall
+        batchSize: 1024 * 1024, // here batchSize is the number of bytes in a multicall
         wait: 0, // zero delay means formation of a batch in the current macro-task, like setTimeout(fn, 0)
       },
     },
@@ -36,7 +36,7 @@ const BATCH_CONFIGS = {
     },
     client: {
       multicall: {
-        batchSize: 1024 * 10,
+        batchSize: 1024 * 1024,
         wait: 0,
       },
     },
@@ -48,7 +48,7 @@ const BATCH_CONFIGS = {
     },
     client: {
       multicall: {
-        batchSize: 1024 * 10,
+        batchSize: 1024 * 1024,
         wait: 0,
       },
     },
@@ -60,7 +60,7 @@ const BATCH_CONFIGS = {
     },
     client: {
       multicall: {
-        batchSize: 1024 * 10,
+        batchSize: 1024 * 1024,
         wait: 0,
       },
     },
@@ -168,7 +168,7 @@ export class Multicall {
 
     const response: any = await Promise.race([
       this.viemClient.multicall({ contracts: encodedPayload as any }),
-      sleep(maxTimeout).then(() => Promise.reject("multicall timeout")),
+      sleep(maxTimeout).then(() => new Error("multicall timeout")),
     ]).catch((_viemError) => {
       const e = new Error(_viemError.message.slice(0, 150));
 

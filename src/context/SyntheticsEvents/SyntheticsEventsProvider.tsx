@@ -6,7 +6,8 @@ import { OrderStatusNotification } from "components/Synthetics/StatusNotificatio
 import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
 import { getToken, getWrappedToken } from "config/tokens";
-import { WS_BLUR_UNSUBSCRIBE_TIMEOUT } from "config/ui";
+import { WS_LOST_FOCUS_TIMEOUT } from "config/ui";
+import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import { useMarketsInfo } from "domain/synthetics/markets";
 import {
   isDecreaseOrderType,
@@ -23,8 +24,7 @@ import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey, setByKey, updateByKey } from "lib/objects";
-import { useWsProvider } from "lib/rpc";
-import { useHasPageLostFocus } from "lib/useHasPageLostFocus";
+import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import { ReactNode, createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   DepositCreatedEventData,
@@ -69,8 +69,14 @@ export function useSyntheticsEvents(): SyntheticsEventsContextType {
 
 export function SyntheticsEventsProvider({ children }: { children: ReactNode }) {
   const { chainId } = useChainId();
-  const { active, account: currentAccount } = useWeb3React();
-  const hasLostFocus = useHasPageLostFocus(WS_BLUR_UNSUBSCRIBE_TIMEOUT, ["/trade", "/v2", "/pools"], "V2 Events");
+  const { wsProvider } = useWebsocketProvider();
+  const { account: currentAccount } = useWeb3React();
+
+  const hasLostFocus = useHasLostFocus({
+    timeout: WS_LOST_FOCUS_TIMEOUT,
+    whiteListedPages: ["/trade", "/v2", "/pools"],
+    debugId: "V2 Events",
+  });
 
   const { tokensData } = useTokensData(chainId);
   const { marketsInfoData } = useMarketsInfo(chainId);
@@ -401,8 +407,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       }
     },
   };
-
-  const wsProvider = useWsProvider(active, chainId);
 
   useEffect(
     function subscribe() {

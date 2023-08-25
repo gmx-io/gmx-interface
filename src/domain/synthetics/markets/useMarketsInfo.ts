@@ -332,6 +332,434 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
               },
             },
           },
+          [`${marketAddress}-dataStore-2`]: {
+            contractAddress: dataStoreAddress,
+            abi: DataStore.abi,
+            calls: {
+              isDisabled: {
+                methodName: "getBool",
+                params: [isMarketDisabledKey(marketAddress)],
+              },
+              longPoolAmount: {
+                methodName: "getUint",
+                params: [poolAmountKey(marketAddress, market.longTokenAddress)],
+              },
+              shortPoolAmount: {
+                methodName: "getUint",
+                params: [poolAmountKey(marketAddress, market.shortTokenAddress)],
+              },
+              maxLongPoolAmount: {
+                methodName: "getUint",
+                params: [maxPoolAmountKey(marketAddress, market.longTokenAddress)],
+              },
+              maxShortPoolAmount: {
+                methodName: "getUint",
+                params: [maxPoolAmountKey(marketAddress, market.shortTokenAddress)],
+              },
+              longPoolAmountAdjustment: {
+                methodName: "getUint",
+                params: [poolAmountAdjustmentKey(marketAddress, market.longTokenAddress)],
+              },
+              shortPoolAmountAdjustment: {
+                methodName: "getUint",
+                params: [poolAmountAdjustmentKey(marketAddress, market.longTokenAddress)],
+              },
+              reserveFactorLong: {
+                methodName: "getUint",
+                params: [reserveFactorKey(marketAddress, true)],
+              },
+              reserveFactorShort: {
+                methodName: "getUint",
+                params: [reserveFactorKey(marketAddress, true)],
+              },
+              openInterestReserveFactorLong: {
+                methodName: "getUint",
+                params: [openInterestReserveFactorKey(marketAddress, true)],
+              },
+              openInterestReserveFactorShort: {
+                methodName: "getUint",
+                params: [openInterestReserveFactorKey(marketAddress, false)],
+              },
+              positionImpactPoolAmount: {
+                methodName: "getUint",
+                params: [positionImpactPoolAmountKey(marketAddress)],
+              },
+              swapImpactPoolAmountLong: {
+                methodName: "getUint",
+                params: [swapImpactPoolAmountKey(marketAddress, market.longTokenAddress)],
+              },
+              swapImpactPoolAmountShort: {
+                methodName: "getUint",
+                params: [swapImpactPoolAmountKey(marketAddress, market.shortTokenAddress)],
+              },
+              borrowingFactorLong: {
+                methodName: "getUint",
+                params: [borrowingFactorKey(marketAddress, true)],
+              },
+              borrowingFactorShort: {
+                methodName: "getUint",
+                params: [borrowingFactorKey(marketAddress, false)],
+              },
+              borrowingExponentFactorLong: {
+                methodName: "getUint",
+                params: [borrowingExponentFactorKey(marketAddress, true)],
+              },
+              borrowingExponentFactorShort: {
+                methodName: "getUint",
+                params: [borrowingExponentFactorKey(marketAddress, false)],
+              },
+              fundingFactor: {
+                methodName: "getUint",
+                params: [fundingFactorKey(marketAddress)],
+              },
+              fundingExponentFactor: {
+                methodName: "getUint",
+                params: [fundingExponentFactorKey(marketAddress)],
+              },
+              maxPnlFactorForTradersLong: {
+                methodName: "getUint",
+                params: [maxPnlFactorKey(MAX_PNL_FACTOR_FOR_TRADERS_KEY, marketAddress, true)],
+              },
+              maxPnlFactorForTradersShort: {
+                methodName: "getUint",
+                params: [maxPnlFactorKey(MAX_PNL_FACTOR_FOR_TRADERS_KEY, marketAddress, false)],
+              },
+              claimableFundingAmountLong: account
+                ? {
+                    methodName: "getUint",
+                    params: [claimableFundingAmountKey(marketAddress, market.longTokenAddress, account)],
+                  }
+                : undefined,
+              claimableFundingAmountShort: account
+                ? {
+                    methodName: "getUint",
+                    params: [claimableFundingAmountKey(marketAddress, market.shortTokenAddress, account)],
+                  }
+                : undefined,
+              positionFeeFactorForPositiveImpact: {
+                methodName: "getUint",
+                params: [positionFeeFactorKey(marketAddress, true)],
+              },
+              positionFeeFactorForNegativeImpact: {
+                methodName: "getUint",
+                params: [positionFeeFactorKey(marketAddress, false)],
+              },
+              positionImpactFactorPositive: {
+                methodName: "getUint",
+                params: [positionImpactFactorKey(marketAddress, true)],
+              },
+              positionImpactFactorNegative: {
+                methodName: "getUint",
+                params: [positionImpactFactorKey(marketAddress, false)],
+              },
+              maxPositionImpactFactorPositive: {
+                methodName: "getUint",
+                params: [maxPositionImpactFactorKey(marketAddress, true)],
+              },
+              maxPositionImpactFactorNegative: {
+                methodName: "getUint",
+                params: [maxPositionImpactFactorKey(marketAddress, false)],
+              },
+              maxPositionImpactFactorForLiquidations: {
+                methodName: "getUint",
+                params: [maxPositionImpactFactorForLiquidationsKey(marketAddress)],
+              },
+              minCollateralFactor: {
+                methodName: "getUint",
+                params: [minCollateralFactorKey(marketAddress)],
+              },
+              minCollateralFactorForOpenInterestLong: {
+                methodName: "getUint",
+                params: [minCollateralFactorForOpenInterest(marketAddress, true)],
+              },
+              minCollateralFactorForOpenInterestShort: {
+                methodName: "getUint",
+                params: [minCollateralFactorForOpenInterest(marketAddress, false)],
+              },
+              positionImpactExponentFactor: {
+                methodName: "getUint",
+                params: [positionImpactExponentFactorKey(marketAddress)],
+              },
+              swapFeeFactorForPositiveImpact: {
+                methodName: "getUint",
+                params: [swapFeeFactorKey(marketAddress, true)],
+              },
+              swapFeeFactorForNegativeImpact: {
+                methodName: "getUint",
+                params: [swapFeeFactorKey(marketAddress, false)],
+              },
+              swapImpactFactorPositive: {
+                methodName: "getUint",
+                params: [swapImpactFactorKey(marketAddress, true)],
+              },
+              swapImpactFactorNegative: {
+                methodName: "getUint",
+                params: [swapImpactFactorKey(marketAddress, false)],
+              },
+              swapImpactExponentFactor: {
+                methodName: "getUint",
+                params: [swapImpactExponentFactorKey(marketAddress)],
+              },
+              longInterestUsingLongToken: {
+                methodName: "getUint",
+                params: [openInterestKey(marketAddress, market.longTokenAddress, true)],
+              },
+              longInterestUsingShortToken: {
+                methodName: "getUint",
+                params: [openInterestKey(marketAddress, market.shortTokenAddress, true)],
+              },
+              shortInterestUsingLongToken: {
+                methodName: "getUint",
+                params: [openInterestKey(marketAddress, market.longTokenAddress, false)],
+              },
+              shortInterestUsingShortToken: {
+                methodName: "getUint",
+                params: [openInterestKey(marketAddress, market.shortTokenAddress, false)],
+              },
+              longInterestInTokensUsingLongToken: {
+                methodName: "getUint",
+                params: [openInterestInTokensKey(marketAddress, market.longTokenAddress, true)],
+              },
+              longInterestInTokensUsingShortToken: {
+                methodName: "getUint",
+                params: [openInterestInTokensKey(marketAddress, market.shortTokenAddress, true)],
+              },
+              shortInterestInTokensUsingLongToken: {
+                methodName: "getUint",
+                params: [openInterestInTokensKey(marketAddress, market.longTokenAddress, false)],
+              },
+              shortInterestInTokensUsingShortToken: {
+                methodName: "getUint",
+                params: [openInterestInTokensKey(marketAddress, market.shortTokenAddress, false)],
+              },
+              virtualMarketId: {
+                methodName: "getBytes32",
+                params: [virtualMarketIdKey(marketAddress)],
+              },
+              virtualLongTokenId: {
+                methodName: "getBytes32",
+                params: [virtualTokenIdKey(market.longTokenAddress)],
+              },
+              virtualShortTokenId: {
+                methodName: "getBytes32",
+                params: [virtualTokenIdKey(market.shortTokenAddress)],
+              },
+            },
+          },
+          [`${marketAddress}-dataStore-3`]: {
+            contractAddress: dataStoreAddress,
+            abi: DataStore.abi,
+            calls: {
+              isDisabled: {
+                methodName: "getBool",
+                params: [isMarketDisabledKey(marketAddress)],
+              },
+              longPoolAmount: {
+                methodName: "getUint",
+                params: [poolAmountKey(marketAddress, market.longTokenAddress)],
+              },
+              shortPoolAmount: {
+                methodName: "getUint",
+                params: [poolAmountKey(marketAddress, market.shortTokenAddress)],
+              },
+              maxLongPoolAmount: {
+                methodName: "getUint",
+                params: [maxPoolAmountKey(marketAddress, market.longTokenAddress)],
+              },
+              maxShortPoolAmount: {
+                methodName: "getUint",
+                params: [maxPoolAmountKey(marketAddress, market.shortTokenAddress)],
+              },
+              longPoolAmountAdjustment: {
+                methodName: "getUint",
+                params: [poolAmountAdjustmentKey(marketAddress, market.longTokenAddress)],
+              },
+              shortPoolAmountAdjustment: {
+                methodName: "getUint",
+                params: [poolAmountAdjustmentKey(marketAddress, market.longTokenAddress)],
+              },
+              reserveFactorLong: {
+                methodName: "getUint",
+                params: [reserveFactorKey(marketAddress, true)],
+              },
+              reserveFactorShort: {
+                methodName: "getUint",
+                params: [reserveFactorKey(marketAddress, true)],
+              },
+              openInterestReserveFactorLong: {
+                methodName: "getUint",
+                params: [openInterestReserveFactorKey(marketAddress, true)],
+              },
+              openInterestReserveFactorShort: {
+                methodName: "getUint",
+                params: [openInterestReserveFactorKey(marketAddress, false)],
+              },
+              positionImpactPoolAmount: {
+                methodName: "getUint",
+                params: [positionImpactPoolAmountKey(marketAddress)],
+              },
+              swapImpactPoolAmountLong: {
+                methodName: "getUint",
+                params: [swapImpactPoolAmountKey(marketAddress, market.longTokenAddress)],
+              },
+              swapImpactPoolAmountShort: {
+                methodName: "getUint",
+                params: [swapImpactPoolAmountKey(marketAddress, market.shortTokenAddress)],
+              },
+              borrowingFactorLong: {
+                methodName: "getUint",
+                params: [borrowingFactorKey(marketAddress, true)],
+              },
+              borrowingFactorShort: {
+                methodName: "getUint",
+                params: [borrowingFactorKey(marketAddress, false)],
+              },
+              borrowingExponentFactorLong: {
+                methodName: "getUint",
+                params: [borrowingExponentFactorKey(marketAddress, true)],
+              },
+              borrowingExponentFactorShort: {
+                methodName: "getUint",
+                params: [borrowingExponentFactorKey(marketAddress, false)],
+              },
+              fundingFactor: {
+                methodName: "getUint",
+                params: [fundingFactorKey(marketAddress)],
+              },
+              fundingExponentFactor: {
+                methodName: "getUint",
+                params: [fundingExponentFactorKey(marketAddress)],
+              },
+              maxPnlFactorForTradersLong: {
+                methodName: "getUint",
+                params: [maxPnlFactorKey(MAX_PNL_FACTOR_FOR_TRADERS_KEY, marketAddress, true)],
+              },
+              maxPnlFactorForTradersShort: {
+                methodName: "getUint",
+                params: [maxPnlFactorKey(MAX_PNL_FACTOR_FOR_TRADERS_KEY, marketAddress, false)],
+              },
+              claimableFundingAmountLong: account
+                ? {
+                    methodName: "getUint",
+                    params: [claimableFundingAmountKey(marketAddress, market.longTokenAddress, account)],
+                  }
+                : undefined,
+              claimableFundingAmountShort: account
+                ? {
+                    methodName: "getUint",
+                    params: [claimableFundingAmountKey(marketAddress, market.shortTokenAddress, account)],
+                  }
+                : undefined,
+              positionFeeFactorForPositiveImpact: {
+                methodName: "getUint",
+                params: [positionFeeFactorKey(marketAddress, true)],
+              },
+              positionFeeFactorForNegativeImpact: {
+                methodName: "getUint",
+                params: [positionFeeFactorKey(marketAddress, false)],
+              },
+              positionImpactFactorPositive: {
+                methodName: "getUint",
+                params: [positionImpactFactorKey(marketAddress, true)],
+              },
+              positionImpactFactorNegative: {
+                methodName: "getUint",
+                params: [positionImpactFactorKey(marketAddress, false)],
+              },
+              maxPositionImpactFactorPositive: {
+                methodName: "getUint",
+                params: [maxPositionImpactFactorKey(marketAddress, true)],
+              },
+              maxPositionImpactFactorNegative: {
+                methodName: "getUint",
+                params: [maxPositionImpactFactorKey(marketAddress, false)],
+              },
+              maxPositionImpactFactorForLiquidations: {
+                methodName: "getUint",
+                params: [maxPositionImpactFactorForLiquidationsKey(marketAddress)],
+              },
+              minCollateralFactor: {
+                methodName: "getUint",
+                params: [minCollateralFactorKey(marketAddress)],
+              },
+              minCollateralFactorForOpenInterestLong: {
+                methodName: "getUint",
+                params: [minCollateralFactorForOpenInterest(marketAddress, true)],
+              },
+              minCollateralFactorForOpenInterestShort: {
+                methodName: "getUint",
+                params: [minCollateralFactorForOpenInterest(marketAddress, false)],
+              },
+              positionImpactExponentFactor: {
+                methodName: "getUint",
+                params: [positionImpactExponentFactorKey(marketAddress)],
+              },
+              swapFeeFactorForPositiveImpact: {
+                methodName: "getUint",
+                params: [swapFeeFactorKey(marketAddress, true)],
+              },
+              swapFeeFactorForNegativeImpact: {
+                methodName: "getUint",
+                params: [swapFeeFactorKey(marketAddress, false)],
+              },
+              swapImpactFactorPositive: {
+                methodName: "getUint",
+                params: [swapImpactFactorKey(marketAddress, true)],
+              },
+              swapImpactFactorNegative: {
+                methodName: "getUint",
+                params: [swapImpactFactorKey(marketAddress, false)],
+              },
+              swapImpactExponentFactor: {
+                methodName: "getUint",
+                params: [swapImpactExponentFactorKey(marketAddress)],
+              },
+              longInterestUsingLongToken: {
+                methodName: "getUint",
+                params: [openInterestKey(marketAddress, market.longTokenAddress, true)],
+              },
+              longInterestUsingShortToken: {
+                methodName: "getUint",
+                params: [openInterestKey(marketAddress, market.shortTokenAddress, true)],
+              },
+              shortInterestUsingLongToken: {
+                methodName: "getUint",
+                params: [openInterestKey(marketAddress, market.longTokenAddress, false)],
+              },
+              shortInterestUsingShortToken: {
+                methodName: "getUint",
+                params: [openInterestKey(marketAddress, market.shortTokenAddress, false)],
+              },
+              longInterestInTokensUsingLongToken: {
+                methodName: "getUint",
+                params: [openInterestInTokensKey(marketAddress, market.longTokenAddress, true)],
+              },
+              longInterestInTokensUsingShortToken: {
+                methodName: "getUint",
+                params: [openInterestInTokensKey(marketAddress, market.shortTokenAddress, true)],
+              },
+              shortInterestInTokensUsingLongToken: {
+                methodName: "getUint",
+                params: [openInterestInTokensKey(marketAddress, market.longTokenAddress, false)],
+              },
+              shortInterestInTokensUsingShortToken: {
+                methodName: "getUint",
+                params: [openInterestInTokensKey(marketAddress, market.shortTokenAddress, false)],
+              },
+              virtualMarketId: {
+                methodName: "getBytes32",
+                params: [virtualMarketIdKey(marketAddress)],
+              },
+              virtualLongTokenId: {
+                methodName: "getBytes32",
+                params: [virtualTokenIdKey(market.longTokenAddress)],
+              },
+              virtualShortTokenId: {
+                methodName: "getBytes32",
+                params: [virtualTokenIdKey(market.shortTokenAddress)],
+              },
+            },
+          },
         });
       }, {}),
     parseResponse: (res) => {

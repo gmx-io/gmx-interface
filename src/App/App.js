@@ -80,15 +80,16 @@ import {
   SHOULD_SHOW_POSITION_LINES_KEY,
   SHOW_PNL_AFTER_FEES_KEY,
 } from "config/localStorage";
-import { TOAST_AUTO_CLOSE_TIME, WS_BLUR_UNSUBSCRIBE_TIMEOUT } from "config/ui";
+import { TOAST_AUTO_CLOSE_TIME, WS_LOST_FOCUS_TIMEOUT } from "config/ui";
 import { SettingsContextProvider, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
+import { useWebsocketProvider, WebsocketContextProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { roundToTwoDecimals } from "lib/numbers";
-import { useWsProvider } from "lib/rpc";
+import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import {
   activateInjectedProvider,
   clearWalletConnectData,
@@ -106,7 +107,6 @@ import SyntheticsActions from "pages/SyntheticsActions/SyntheticsActions";
 import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsFallbackPage";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
-import { useHasPageLostFocus } from "lib/useHasPageLostFocus";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -129,11 +129,16 @@ const Zoom = cssTransition({
 function FullApp() {
   const isHome = isHomeSite();
   const exchangeRef = useRef();
-  const { connector, library, deactivate, activate, active } = useWeb3React();
+  const { connector, library, deactivate, activate } = useWeb3React();
   const { chainId } = useChainId();
   const location = useLocation();
   const history = useHistory();
-  const hasV1LostFocus = useHasPageLostFocus(WS_BLUR_UNSUBSCRIBE_TIMEOUT, ["/trade", "/v2"], "V1 Events");
+
+  const hasV1LostFocus = useHasLostFocus({
+    timeout: WS_LOST_FOCUS_TIMEOUT,
+    whiteListedPages: ["/trade", "/v2"],
+    debugId: "V1 Events",
+  });
 
   useEventToast();
   const [activatingConnector, setActivatingConnector] = useState();
@@ -442,7 +447,7 @@ function FullApp() {
     return () => clearInterval(interval);
   }, [library, pendingTxns, chainId]);
 
-  const wsProvider = useWsProvider(active, chainId);
+  const { wsProvider } = useWebsocketProvider();
 
   const vaultAddress = getContract(chainId, "Vault");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
@@ -825,11 +830,13 @@ function App() {
         <SettingsContextProvider>
           <SEO>
             <Router>
-              <SyntheticsEventsProvider>
-                <I18nProvider i18n={i18n}>
-                  <FullApp />
-                </I18nProvider>
-              </SyntheticsEventsProvider>
+              <WebsocketContextProvider>
+                <SyntheticsEventsProvider>
+                  <I18nProvider i18n={i18n}>
+                    <FullApp />
+                  </I18nProvider>
+                </SyntheticsEventsProvider>
+              </WebsocketContextProvider>
             </Router>
           </SEO>
         </SettingsContextProvider>
