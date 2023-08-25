@@ -8,7 +8,6 @@ import { t } from "@lingui/macro";
 import { formatUsd } from "lib/numbers";
 import classnames from "classnames";
 import { TableCell, TableHeader } from "components/Table/types";
-import { AccountOpenPosition } from "domain/synthetics/leaderboards";
 import { importImage } from "lib/legacy";
 import AddressView from "components/AddressView";
 import { TopPositionsRow } from "domain/synthetics/leaderboards";
