@@ -49,7 +49,7 @@ export default function AddressView({ address, size = 24 }: AddressViewProps) {
         )
       }
       <span className="trader-address">
-        { shortenAddress(address, breakpoint === "S" ? 20 :42) }
+        { shortenAddress(ensName || address, breakpoint === "S" ? 20 :42) }
       </span>
     </Link>
   );

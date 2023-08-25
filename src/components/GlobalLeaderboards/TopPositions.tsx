@@ -18,7 +18,8 @@ const titles: Record<string, TableHeader> = {
   unrealizedPnl: { title: t`PnL ($)`, tooltip: t`Total Unrealized Profit` },
   market: { title: t`Position` },
   entryPrice: { title: t`Entry` },
-  sizeLiqPrice: { title: t`Size (Liq. Price)` },
+  size: { title: t`Size` },
+  liqPrice: { title: t`Liq. Price` },
 };
 
 const parseRow = (start: number) => (p: AccountOpenPosition, i: number): Record<keyof typeof titles, TableCell> => ({
@@ -48,7 +49,8 @@ const parseRow = (start: number) => (p: AccountOpenPosition, i: number): Record<
     }
   },
   entryPrice: { value: formatUsd(p.entryPrice) || "" },
-  sizeLiqPrice: { value: `${formatUsd(p.sizeInUsd)} (${formatUsd(p.liquidationPrice)})` }
+  size: { value: formatUsd(p.sizeInUsd) || "" },
+  liqPrice: { value: formatUsd(p.liquidationPrice) || "" },
 });
 
 export default function TopPositions() {
