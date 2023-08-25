@@ -5,11 +5,12 @@
 }
 
 .VersionSwitch-option {
-  padding: 0.53rem 1.275rem;
+  padding: 1.2rem;
   text-decoration: none;
   font-size: var(--font-sm);
   cursor: pointer;
   color: var(--text-gray);
+  line-height: 1;
 
   &.v1 {
     border-top-left-radius: 3px;

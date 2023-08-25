@@ -274,7 +274,7 @@
   grid-template-columns: auto auto auto auto auto 1fr;
   grid-column-gap: 4.65rem;
   align-items: center;
-  padding-left: 0.3rem;
+  padding-left: 0.6rem;
 }
 
 .ExchangeChart-dollar-sign {
@@ -292,7 +292,7 @@
   border-radius: 0.4rem;
   font-size: var(--font-base);
   padding: 0.9rem 0.31rem;
-  height: 58px;
+  height: 68px;
   display: flex;
   align-items: center;
 }
@@ -302,7 +302,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  top: 6.975rem;
+  top: 8.2rem;
   z-index: 1;
 }
 .ExchangeChart-bottom-controls {
@@ -1008,9 +1008,6 @@ table.Exchange-list-small td {
 }
 
 @media (max-width: 1100px) {
-  .ExchangeChart-info {
-    height: 53px;
-  }
   .Exchange-swap-box {
     width: auto;
   }
