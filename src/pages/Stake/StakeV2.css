@@ -83,6 +83,15 @@
   margin-bottom: 1.8rem;
 }
 
+.Stake-modal-icons {
+  display: inline-flex;
+  line-height: 1;
+}
+
+.Stake-modal-icons .icon {
+  vertical-align: bottom;
+}
+
 @media (max-width: 900px) {
   .StakeV2-cards {
     grid-template-columns: 1fr;

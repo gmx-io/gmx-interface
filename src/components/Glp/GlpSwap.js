@@ -5,13 +5,13 @@ import { getContract } from "config/contracts";
 import { ethers } from "ethers";
 import {
   adjustForDecimals,
+  DUST_BNB,
   getBuyGlpFromAmount,
   getBuyGlpToAmount,
   getSellGlpFromAmount,
   getSellGlpToAmount,
   GLP_COOLDOWN_DURATION,
   GLP_DECIMALS,
-  importImage,
   PLACEHOLDER_ACCOUNT,
   SECONDS_PER_YEAR,
   USD_DECIMALS,
@@ -49,12 +49,24 @@ import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageByChainId } from "lib/localStorage";
-import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "lib/numbers";
+import {
+  bigNumberify,
+  expandDecimals,
+  formatAmount,
+  formatAmountFree,
+  formatKeyAmount,
+  limitDecimals,
+  parseValue,
+} from "lib/numbers";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { IoChevronDownOutline } from "react-icons/io5";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import "./GlpSwap.css";
 import SwapErrorModal from "./SwapErrorModal";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+import PageTitle from "components/PageTitle/PageTitle";
+import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
+import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 
 const { AddressZero } = ethers.constants;
 
@@ -106,6 +118,7 @@ export default function GlpSwap(props) {
     savedShouldDisableValidationForTesting,
   } = props;
   const history = useHistory();
+  const isMetamaskMobile = useIsMetamaskMobile();
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp";
   const tabLabel = isBuying ? t`Buy GLP` : t`Sell GLP`;
   const { active, library, account } = useWeb3React();
@@ -424,12 +437,25 @@ export default function GlpSwap(props) {
   const fillMaxAmount = () => {
     if (isBuying) {
       setAnchorOnSwapAmount(true);
-      setSwapValue(formatAmountFree(swapTokenBalance, swapToken.decimals, swapToken.decimals));
+      const maxAvailableAmount = swapToken.isNative
+        ? swapTokenBalance.sub(bigNumberify(DUST_BNB).mul(2))
+        : swapTokenBalance;
+
+      const formattedAmount = formatAmountFree(
+        maxAvailableAmount.gt(0) ? maxAvailableAmount : 0,
+        swapToken.decimals,
+        swapToken.decimals
+      );
+      const finalAmount = isMetamaskMobile
+        ? limitDecimals(formattedAmount, MAX_METAMASK_MOBILE_DECIMALS)
+        : formattedAmount;
+      setSwapValue(finalAmount);
       return;
     }
 
     setAnchorOnSwapAmount(false);
-    setGlpValue(formatAmountFree(maxSellAmount, GLP_DECIMALS, GLP_DECIMALS));
+    const formattedMaxSellAmount = formatAmountFree(maxSellAmount, GLP_DECIMALS, GLP_DECIMALS);
+    setGlpValue(formattedMaxSellAmount);
   };
 
   const getError = () => {
@@ -853,7 +879,10 @@ export default function GlpSwap(props) {
                 onClickMax={fillMaxAmount}
                 topLeftValue={payBalance}
               >
-                <div className="selected-token">GLP</div>
+                <div className="selected-token inline-items-center">
+                  <img className="mr-xs" width={20} src={glpIcon} alt="GLP" />
+                  GLP
+                </div>
               </BuyInputSection>
             )}
 
@@ -880,7 +909,10 @@ export default function GlpSwap(props) {
                 onInputValueChange={onGlpValueChange}
                 defaultTokenName={"GLP"}
               >
-                <div className="selected-token">GLP</div>
+                <div className="selected-token inline-items-center">
+                  <img className="mr-xs" width={20} src={glpIcon} alt="GLP" />
+                  GLP
+                </div>
               </BuyInputSection>
             )}
 
@@ -965,27 +997,30 @@ export default function GlpSwap(props) {
           </form>
         </div>
       </div>
-      <div className="Tab-title-section">
-        <div className="Page-title">
-          <Trans>Save on Fees</Trans>
-        </div>
-        {isBuying && (
-          <div className="Page-description">
-            <Trans>
-              Fees may vary depending on which asset you use to buy GLP. <br />
-              Enter the amount of GLP you want to purchase in the order form, then check here to compare fees.
-            </Trans>
+
+      <PageTitle
+        title={t`Save on Fees`}
+        subtitle={
+          <div>
+            {isBuying && (
+              <div className="Page-description">
+                <Trans>
+                  Fees may vary depending on which asset you use to buy GLP. <br />
+                  Enter the amount of GLP you want to purchase in the order form, then check here to compare fees.
+                </Trans>
+              </div>
+            )}
+            {!isBuying && (
+              <div className="Page-description">
+                <Trans>
+                  Fees may vary depending on which asset you sell GLP for. <br />
+                  Enter the amount of GLP you want to redeem in the order form, then check here to compare fees.
+                </Trans>
+              </div>
+            )}
           </div>
-        )}
-        {!isBuying && (
-          <div className="Page-description">
-            <Trans>
-              Fees may vary depending on which asset you sell GLP for. <br />
-              Enter the amount of GLP you want to redeem in the order form, then check here to compare fees.
-            </Trans>
-          </div>
-        )}
-      </div>
+        }
+      />
       <div className="GlpSwap-token-list">
         {/* <div className="GlpSwap-token-list-content"> */}
         <table className="token-table">
@@ -1085,7 +1120,6 @@ export default function GlpSwap(props) {
               if (tokenInfo && tokenInfo.minPrice && tokenInfo.balance) {
                 balanceUsd = tokenInfo.balance.mul(tokenInfo.minPrice).div(expandDecimals(1, token.decimals));
               }
-              const tokenImage = importImage("ic_" + token.symbol.toLowerCase() + "_40.svg");
               let isCapReached = tokenInfo.managedAmount?.gt(tokenInfo.maxUsdgAmount);
 
               let amountLeftToDeposit = bigNumberify(0);
@@ -1138,7 +1172,7 @@ export default function GlpSwap(props) {
                   <td>
                     <div className="App-card-title-info">
                       <div className="App-card-title-info-icon">
-                        <img src={tokenImage} alt={token.symbol} width="40" />
+                        <TokenIcon symbol={token.symbol} displaySize={40} importSize={40} />
                       </div>
                       <div className="App-card-title-info-text">
                         <div className="App-card-info-title">{token.name}</div>
@@ -1275,11 +1309,11 @@ export default function GlpSwap(props) {
                   return "";
               }
             }
-            const tokenImage = importImage("ic_" + token.symbol.toLowerCase() + "_24.svg");
+
             return (
               <div className="App-card" key={token.symbol}>
                 <div className="mobile-token-card">
-                  <img src={tokenImage} alt={token.symbol} width="20px" />
+                  <TokenIcon symbol={token.symbol} displaySize={24} importSize={24} />
                   <div className="token-symbol-text">{token.symbol}</div>
                   <div>
                     <AssetDropdown assetSymbol={token.symbol} />

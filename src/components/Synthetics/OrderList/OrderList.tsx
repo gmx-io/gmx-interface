@@ -2,14 +2,15 @@ import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import Checkbox from "components/Checkbox/Checkbox";
 import { MarketsInfoData } from "domain/synthetics/markets";
-import { OrdersInfoData, isLimitOrderType, isTriggerDecreaseOrderType } from "domain/synthetics/orders";
+import { OrdersInfoData, getOrderError, isLimitOrderType, isTriggerDecreaseOrderType } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
-import { PositionsInfoData } from "domain/synthetics/positions";
+import { PositionsInfoData, getPositionKey } from "domain/synthetics/positions";
 import { TokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { Dispatch, SetStateAction, useState } from "react";
 import { OrderEditor } from "../OrderEditor/OrderEditor";
 import { OrderItem } from "../OrderItem/OrderItem";
+import { getByKey } from "lib/objects";
 
 type Props = {
   hideActions?: boolean;
@@ -70,18 +71,27 @@ export function OrderList(p: Props) {
       )}
       <div className="Exchange-list Orders small">
         {!p.isLoading &&
-          orders.map((order) => (
-            <OrderItem
-              key={order.key}
-              order={order}
-              isLarge={false}
-              isSelected={p.selectedOrdersKeys?.[order.key]}
-              onSelectOrder={() => onSelectOrder(order.key)}
-              isCanceling={canellingOrdersKeys.includes(order.key)}
-              onCancelOrder={() => onCancelOrder(order.key)}
-              onEditOrder={() => setEditingOrderKey(order.key)}
-            />
-          ))}
+          orders.map((order) => {
+            const position = getByKey(
+              p.positionsData,
+              getPositionKey(order.account, order.marketAddress, order.initialCollateralTokenAddress, order.isLong)
+            );
+            const errorMsg = getOrderError(order, position);
+            return (
+              <OrderItem
+                key={order.key}
+                order={order}
+                isLarge={false}
+                isSelected={p.selectedOrdersKeys?.[order.key]}
+                onSelectOrder={() => onSelectOrder(order.key)}
+                isCanceling={canellingOrdersKeys.includes(order.key)}
+                onCancelOrder={() => onCancelOrder(order.key)}
+                onEditOrder={() => setEditingOrderKey(order.key)}
+                marketsInfoData={marketsInfoData}
+                error={errorMsg}
+              />
+            );
+          })}
       </div>
 
       <table className="Exchange-list Orders large App-box">
@@ -122,19 +132,28 @@ export function OrderList(p: Props) {
             </tr>
           )}
           {!p.isLoading &&
-            orders.map((order) => (
-              <OrderItem
-                isSelected={p.selectedOrdersKeys?.[order.key]}
-                key={order.key}
-                order={order}
-                isLarge={true}
-                onSelectOrder={() => onSelectOrder(order.key)}
-                isCanceling={canellingOrdersKeys.includes(order.key)}
-                onCancelOrder={() => onCancelOrder(order.key)}
-                onEditOrder={() => setEditingOrderKey(order.key)}
-                hideActions={p.hideActions}
-              />
-            ))}
+            orders.map((order) => {
+              const position = getByKey(
+                p.positionsData,
+                getPositionKey(order.account, order.marketAddress, order.initialCollateralTokenAddress, order.isLong)
+              );
+              const errorMsg = getOrderError(order, position);
+              return (
+                <OrderItem
+                  isSelected={p.selectedOrdersKeys?.[order.key]}
+                  key={order.key}
+                  order={order}
+                  isLarge={true}
+                  onSelectOrder={() => onSelectOrder(order.key)}
+                  isCanceling={canellingOrdersKeys.includes(order.key)}
+                  onCancelOrder={() => onCancelOrder(order.key)}
+                  onEditOrder={() => setEditingOrderKey(order.key)}
+                  hideActions={p.hideActions}
+                  marketsInfoData={marketsInfoData}
+                  error={errorMsg}
+                />
+              );
+            })}
         </tbody>
       </table>
 

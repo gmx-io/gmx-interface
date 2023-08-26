@@ -10,14 +10,7 @@ import { ethers } from "ethers";
 import hexToRgba from "hex-to-rgba";
 
 import { useGmxPrice, useTotalGmxInLiquidity, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
-import {
-  DEFAULT_MAX_USDG_AMOUNT,
-  GLP_DECIMALS,
-  GMX_DECIMALS,
-  USD_DECIMALS,
-  getPageTitle,
-  importImage,
-} from "lib/legacy";
+import { DEFAULT_MAX_USDG_AMOUNT, GLP_DECIMALS, GMX_DECIMALS, USD_DECIMALS, getPageTitle } from "lib/legacy";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 import { getContract } from "config/contracts";
@@ -48,6 +41,8 @@ import { formatDate } from "lib/dates";
 import { arrayURLFetcher } from "lib/fetcher";
 import { bigNumberify, expandDecimals, formatAmount, formatKeyAmount, numberWithCommas } from "lib/numbers";
 import AssetDropdown from "./AssetDropdown";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+import PageTitle from "components/PageTitle/PageTitle";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
@@ -472,24 +467,20 @@ export default function DashboardV2() {
   return (
     <SEO title={getPageTitle(t`Dashboard`)}>
       <div className="default-container DashboardV2 page-layout">
-        <div className="section-title-block">
-          <div className="section-title-icon"></div>
-          <div className="section-title-content">
-            <div className="Page-title">
-              <Trans>Stats</Trans> <img width="24" src={currentIcons.network} alt="Network Icon" />
-            </div>
-            <div className="Page-description">
+        <PageTitle
+          title={t`Stats`}
+          isTop
+          subtitle={
+            <div>
               <Trans>
                 {chainName} Total Stats start from {totalStatsStartDate}.<br /> For detailed stats:
               </Trans>{" "}
-              {chainId === ARBITRUM && <ExternalLink href="https://stats.gmx.io">https://stats.gmx.io</ExternalLink>}
-              {chainId === AVALANCHE && (
-                <ExternalLink href="https://stats.gmx.io/avalanche">https://stats.gmx.io/avalanche</ExternalLink>
-              )}
-              .
+              {chainId === ARBITRUM && <ExternalLink href="https://stats.gmx.io">V1</ExternalLink>}
+              {chainId === AVALANCHE && <ExternalLink href="https://stats.gmx.io/avalanche">V1</ExternalLink>} |{" "}
+              <ExternalLink href="https://dune.com/gmx-io/gmx-analytics">V2</ExternalLink>.
             </div>
-          </div>
-        </div>
+          }
+        />
         <div className="DashboardV2-content">
           <div className="DashboardV2-cards">
             <div className="App-card">
@@ -724,14 +715,7 @@ export default function DashboardV2() {
               </div>
             </div>
           </div>
-          <div className="Tab-title-section">
-            <div className="Page-title">
-              <Trans>Tokens</Trans> <img src={currentIcons.network} width="24" alt="Network Icon" />
-            </div>
-            <div className="Page-description">
-              <Trans>Platform, GLP and GM tokens.</Trans>
-            </div>
-          </div>
+          <PageTitle title={t`Tokens`} subtitle={t`Platform, GLP and GM tokens.`} />
           <div className="DashboardV2-token-cards">
             <div className="stats-wrapper stats-wrapper--gmx">
               <div className="App-card">
@@ -996,7 +980,6 @@ export default function DashboardV2() {
                         if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
                           maxUsdgAmount = tokenInfo.maxUsdgAmount;
                         }
-                        const tokenImage = importImage("ic_" + token.symbol.toLowerCase() + "_40.svg");
 
                         return (
                           <tr key={token.address}>
@@ -1004,7 +987,7 @@ export default function DashboardV2() {
                               <div className="token-symbol-wrapper">
                                 <div className="App-card-title-info">
                                   <div className="App-card-title-info-icon">
-                                    <img src={tokenImage} alt={token.symbol} width="40" />
+                                    <TokenIcon symbol={token.symbol} displaySize={40} importSize={40} />
                                   </div>
                                   <div className="App-card-title-info-text">
                                     <div className="App-card-info-title">{token.name}</div>
@@ -1066,9 +1049,8 @@ export default function DashboardV2() {
                   </table>
                 </div>
 
-                <div className="Page-title Tab-title-section glp-composition-small">
-                  <Trans>GLP Index Composition</Trans>{" "}
-                  <img className="title-icon" src={currentIcons.network} width="24" alt="Network Icon" />
+                <div className="glp-composition-small">
+                  <PageTitle title={t`GLP Index Composition`} />
                 </div>
 
                 <div className="token-grid">
@@ -1083,12 +1065,11 @@ export default function DashboardV2() {
                       maxUsdgAmount = tokenInfo.maxUsdgAmount;
                     }
 
-                    const tokenImage = importImage("ic_" + token.symbol.toLowerCase() + "_24.svg");
                     return (
                       <div className="App-card" key={token.symbol}>
                         <div className="App-card-title">
                           <div className="mobile-token-card">
-                            <img src={tokenImage} alt={token.symbol} width="20px" />
+                            <TokenIcon symbol={token.symbol} importSize={24} displaySize={24} />
                             <div className="token-symbol-text">{token.symbol}</div>
                             <div>
                               <AssetDropdown assetSymbol={token.symbol} />

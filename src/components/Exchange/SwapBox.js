@@ -73,7 +73,7 @@ import { getTokenInfo, getUsd } from "domain/tokens/utils";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
-import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
+import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, limitDecimals, parseValue } from "lib/numbers";
 import { getLeverage } from "lib/positions/getLeverage";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { usePrevious } from "lib/usePrevious";
@@ -82,6 +82,9 @@ import FeesTooltip from "./FeesTooltip";
 import NoLiquidityErrorModal from "./NoLiquidityErrorModal";
 import UsefulLinks from "./UsefulLinks";
 import { ErrorCode, ErrorDisplayType } from "./constants";
+import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
+import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
+import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -124,6 +127,7 @@ export default function SwapBox(props) {
     swapOption,
     setSwapOption,
     positionsMap,
+    positions,
     pendingTxns,
     setPendingTxns,
     tokenSelection,
@@ -155,6 +159,7 @@ export default function SwapBox(props) {
     minExecutionFeeUSD,
     minExecutionFeeErrorMessage,
   } = props;
+  const isMetamaskMobile = useIsMetamaskMobile();
   const [fromValue, setFromValue] = useState("");
   const [toValue, setToValue] = useState("");
   const [anchorOnFromAmount, setAnchorOnFromAmount] = useState(true);
@@ -1178,13 +1183,16 @@ export default function SwapBox(props) {
       setAnchorOnFromAmount(!anchorOnFromAmount);
     }
     setIsWaitingForApproval(false);
+    const shouldSwitch = toTokens.find((token) => token.address === fromTokenAddress);
+    if (shouldSwitch) {
+      const updatedTokenSelection = JSON.parse(JSON.stringify(tokenSelection));
 
-    const updatedTokenSelection = JSON.parse(JSON.stringify(tokenSelection));
-    updatedTokenSelection[swapOption] = {
-      from: toTokenAddress,
-      to: fromTokenAddress,
-    };
-    setTokenSelection(updatedTokenSelection);
+      updatedTokenSelection[swapOption] = {
+        from: toTokenAddress,
+        to: fromTokenAddress,
+      };
+      setTokenSelection(updatedTokenSelection);
+    }
   };
 
   const wrap = async () => {
@@ -1777,7 +1785,11 @@ export default function SwapBox(props) {
     }
 
     const maxAvailableAmount = fromToken.isNative ? fromBalance.sub(bigNumberify(DUST_BNB).mul(2)) : fromBalance;
-    setFromValue(formatAmountFree(maxAvailableAmount, fromToken.decimals, fromToken.decimals));
+    const formattedMaxAvailableAmount = formatAmountFree(maxAvailableAmount, fromToken.decimals, fromToken.decimals);
+    const finalMaxAmount = isMetamaskMobile
+      ? limitDecimals(formattedMaxAvailableAmount, MAX_METAMASK_MOBILE_DECIMALS)
+      : formattedMaxAvailableAmount;
+    setFromValue(finalMaxAmount);
     setAnchorOnFromAmount(true);
   }
 
@@ -1861,6 +1873,17 @@ export default function SwapBox(props) {
   const currentExecutionFee = isMarketOrder ? minExecutionFee : executionFee;
   const currentExecutionFeeUsd = isMarketOrder ? minExecutionFeeUSD : executionFeeUsd;
 
+  const existingCurrentIndexShortPosition =
+    isShort &&
+    positions
+      ?.filter((p) => !p.isLong)
+      ?.find((position) => position?.indexToken?.address.toLowerCase() === toTokenAddress.toLowerCase());
+  const existingCurrentIndexCollateralToken = existingCurrentIndexShortPosition?.collateralToken;
+
+  const isExistingAndCollateralTokenDifferent =
+    existingCurrentIndexCollateralToken &&
+    existingCurrentIndexCollateralToken.address.toLowerCase() !== shortCollateralAddress?.toLowerCase();
+
   function renderPrimaryButton() {
     const [errorMessage, errorType, errorCode] = getError();
     const primaryTextMessage = getPrimaryText();
@@ -1943,6 +1966,7 @@ export default function SwapBox(props) {
                   infoTokens={infoTokens}
                   showMintingCap={false}
                   showTokenImgInDropdown={true}
+                  showSymbolImage
                 />
               </BuyInputSection>
               <div className="Exchange-swap-ball-container">
@@ -1971,6 +1995,7 @@ export default function SwapBox(props) {
                   tokens={toTokens}
                   infoTokens={infoTokens}
                   showTokenImgInDropdown={true}
+                  showSymbolImage
                   showBalances={false}
                 />
               </BuyInputSection>
@@ -2000,7 +2025,9 @@ export default function SwapBox(props) {
                   : [fromTokenInfo, toTokenInfo];
                 return (
                   <div className="PositionEditor-token-symbol">
-                    {tokenA.symbol}&nbsp;per&nbsp;{tokenB.symbol}
+                    <TokenWithIcon className="Swap-limit-icon" symbol={tokenA.symbol} displaySize={20} />
+                    &nbsp;per&nbsp;
+                    <TokenWithIcon className="Swap-limit-icon" symbol={tokenB.symbol} displaySize={20} />
                   </div>
                 );
               })()}
@@ -2055,9 +2082,35 @@ export default function SwapBox(props) {
               )}
               {isShort && (
                 <div className="Exchange-info-row">
-                  <div className="Exchange-info-label">
-                    <Trans>Collateral In</Trans>
-                  </div>
+                  {isExistingAndCollateralTokenDifferent ? (
+                    <Tooltip
+                      className="Collateral-warning"
+                      position="left-bottom"
+                      handle={<Trans>Collateral In</Trans>}
+                      renderContent={() => (
+                        <span>
+                          <Trans>
+                            You have an existing position with {existingCurrentIndexCollateralToken?.symbol} as
+                            collateral.
+                          </Trans>
+                          <br />
+                          <br />
+                          <div
+                            onClick={() => {
+                              setShortCollateralAddress(existingCurrentIndexCollateralToken?.address);
+                            }}
+                            className="text-gray underline cursor-pointer"
+                          >
+                            <Trans>Switch to {existingCurrentIndexCollateralToken?.symbol} collateral.</Trans>
+                          </div>
+                        </span>
+                      )}
+                    />
+                  ) : (
+                    <div className="Exchange-info-label">
+                      <Trans>Collateral In</Trans>
+                    </div>
+                  )}
 
                   <div className="align-right">
                     <TokenSelector
@@ -2251,7 +2304,7 @@ export default function SwapBox(props) {
         {(isLong || isShort) && (
           <div className="Exchange-swap-market-box App-box App-box-border">
             <div className="Exchange-swap-market-box-title">
-              {isLong ? t`Long` : t`Short`}&nbsp;{toToken.symbol}
+              {isLong ? t`Long` : t`Short`} {toToken.symbol}
             </div>
             <div className="App-card-divider" />
             <div className="Exchange-info-row">

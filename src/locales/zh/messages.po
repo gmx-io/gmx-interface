@@ -537,7 +537,7 @@ msgid "Buy GMX from decentralized exchanges"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX on {0}"
+msgid "Buy GMX on {chainName}"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -782,6 +782,7 @@ msgid "Claiming..."
 msgstr "领取中"
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims"
 msgstr ""
 
@@ -838,10 +839,6 @@ msgid "Close {longOrShortText} {0}"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Close: {convertedAmountFormatted} {0}"
-msgstr ""
-
-#: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
 msgstr ""
 
@@ -884,6 +881,7 @@ msgstr "抵押品"
 msgid "Collateral ({0})"
 msgstr "抵押品({0})"
 
+#: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -1060,8 +1058,8 @@ msgid "Could not execute withdrawal from {0} {longOrShortText}"
 msgstr "无法执行提取{0} {longOrShortText}"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Could not increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}"
-msgstr "无法增加 {0} {longOrShortText}, +{1} USD, 能接受的价钱: {2}"
+msgid "Could not increase {0} {longOrShortText}, +{1} USD, Acceptable Price: {2}  USD"
+msgstr ""
 
 #: src/pages/Exchange/Exchange.js
 msgid "Could not increase {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
@@ -1234,6 +1232,7 @@ msgstr "去中心化<0/>永续交易所"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/domain/synthetics/orders/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
@@ -1264,7 +1263,6 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1283,7 +1281,7 @@ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Deposit disabled, pending {0} upgrade"
-msgstr "存取已失效等待 {0} 升级"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Deposit failed!"
@@ -1291,7 +1289,7 @@ msgstr "存取失败"
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Deposit failed."
-msgstr "存取失败"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Deposit not enough to cover fees"
@@ -1303,7 +1301,7 @@ msgstr "送出存取"
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Deposit submitted."
-msgstr "送出存取"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Deposit {0} USD into {1} {longOrShortText}"
@@ -1415,7 +1413,7 @@ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Edit {longOrShortText} {0}"
-msgstr "编辑{longOrShortText} {0}"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -1432,11 +1430,11 @@ msgstr "启用订单"
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Enable deposit failed."
-msgstr "启用存款失败"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Enable deposit sent."
-msgstr "启用存款发送"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -1458,15 +1456,15 @@ msgstr "启用指令发送"
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Enable withdraw failed."
-msgstr "启用提款失败"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Enable withdraw sent."
-msgstr "启用提款发送"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Enabling Leverage"
-msgstr "启用杠杆功能"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -1730,6 +1728,10 @@ msgstr "财务报告和协议分析"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Floor Price Fund"
 msgstr "底价金额"
+
+#: src/components/Referrals/TradersStats.tsx
+msgid "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Forfeit profit"
@@ -2006,6 +2008,7 @@ msgstr "网络错误"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/domain/synthetics/orders/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
@@ -2235,7 +2238,7 @@ msgstr "GMX交易者排行榜"
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Leave at least {0} ETH for gas"
-msgstr "至少保留{0}ETH作为手续费"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -2272,6 +2275,10 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Leverage"
 msgstr "杠杆"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Leverage Trading Terminal"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Leverage disabled, pending {0} upgrade"
@@ -2383,9 +2390,6 @@ msgid ""
 "-{1} USD,\n"
 "{2} Price: {3} USD"
 msgstr ""
-"清偿完毕 {0} {longOrShortText},\n"
-"-{1} USD,\n"
-"{2} 价格Price: {3} USD"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidation Fee"
@@ -2443,6 +2447,7 @@ msgstr "加载中..."
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -2467,6 +2472,10 @@ msgstr "做多"
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "Long Collateral"
+msgstr ""
+
+#: src/components/Exchange/ChartTokenSelector.tsx
+msgid "Long Liquidity"
 msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
@@ -2499,8 +2508,6 @@ msgid "MARKET"
 msgstr ""
 
 #: src/components/BuyInputSection/BuyInputSection.tsx
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
 #: src/components/InputSection/InputSection.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
@@ -2514,6 +2521,7 @@ msgstr "MEV优化器"
 msgid "MINTABLE"
 msgstr ""
 
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -2549,7 +2557,6 @@ msgid "Mark Price:"
 msgstr "标价"
 
 #: src/components/Exchange/OrderEditor.js
-#: src/components/Exchange/PositionSeller.js
 msgid "Mark: {0}"
 msgstr "标识: {0}"
 
@@ -2588,6 +2595,8 @@ msgstr ""
 msgid "Market Swap"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/pages/Stake/StakeV2.js
@@ -2618,8 +2627,16 @@ msgstr ""
 msgid "Max Execution Fee buffer below {0}% may result in failed orders."
 msgstr ""
 
+#: src/components/Exchange/ChartTokenSelector.tsx
+msgid "Max In"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Max Leverage without PnL: 100x"
+msgstr ""
+
+#: src/components/Exchange/ChartTokenSelector.tsx
+msgid "Max Out"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -2730,11 +2747,6 @@ msgstr ""
 #: src/pages/Stake/StakeV1.js
 msgid "Max: {0}"
 msgstr "最高: {0}"
-
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
-msgid "Max: {maxAmountFormatted}"
-msgstr "最高: {maxAmountFormatted}"
 
 #: src/components/Footer/constants.ts
 #: src/components/Footer/constants.ts
@@ -3010,6 +3022,10 @@ msgstr "开仓中"
 msgid "Order"
 msgstr "订单"
 
+#: src/domain/synthetics/orders/utils.ts
+msgid "Order Trigger Price is beyond position's Liquidation Price."
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Order cancelled"
@@ -3090,6 +3106,7 @@ msgstr "订单 ({0})"
 msgid "Orders cancelled."
 msgstr "订单取消"
 
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Orders{0}"
 msgstr ""
@@ -3258,6 +3275,7 @@ msgstr "仓位"
 msgid "Positions ({0})"
 msgstr "仓位({0})"
 
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Positions{0}"
 msgstr ""
@@ -3551,12 +3569,9 @@ msgstr "推荐代码已更新"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Referrals/Referrals.tsx
+#: src/pages/Referrals/Referrals.tsx
 msgid "Referrals"
 msgstr "推荐人"
-
-#: src/pages/Referrals/Referrals.tsx
-msgid "Referrals <0/>"
-msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
@@ -3585,7 +3600,7 @@ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Requested deposit of {0} {1} into {2} {longOrShortText}."
-msgstr "要求存款{0} {1} 进入 {2} {longOrShortText}"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Requested increase of {tokenSymbol} {longOrShortText} by {0} USD."
@@ -3593,7 +3608,7 @@ msgstr "要求增加{tokenSymbol} {longOrShortText} 由 {0} USD"
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Requested withdrawal of {0} USD from {1} {longOrShortText}."
-msgstr "要求提款{0} USD 从 {1} {longOrShortText}"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Reserve Amount"
@@ -3648,7 +3663,7 @@ msgstr ""
 msgid "Search Pool"
 msgstr ""
 
-#: src/components/TokenSelector/TokenSelector.tsx
+#: src/components/SearchInput/SearchInput.tsx
 msgid "Search Token"
 msgstr "搜索代币"
 
@@ -3825,6 +3840,7 @@ msgstr "分享仓位"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -3849,6 +3865,10 @@ msgstr "做空"
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "Short Collateral"
+msgstr ""
+
+#: src/components/Exchange/ChartTokenSelector.tsx
+msgid "Short Liquidity"
 msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
@@ -4116,8 +4136,8 @@ msgid "Swap {0}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Swap {0} USDG for {1} {2}"
-msgstr "交易{0} USDG 成 {1} {2}"
+msgid "Swap {0} USDG for{1} {2}"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Swap {0} on 1inch"
@@ -4136,12 +4156,12 @@ msgid "Swap {0} to {1} on 1inch"
 msgstr "交易{0} 成 {1}在1inch"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Swap {0} {1} for {2} USDG"
-msgstr "交易{0} {1}成 {1}USDG"
+msgid "Swap {0} {1} for {2} {3}"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Swap {0} {1} for {2} {3}"
-msgstr "交易 {0} {1} 成 {2} {3} "
+msgid "Swap {0} {1} for{2} USDG"
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "Swap {fromTokenText} for {toTokenText}"
@@ -4166,6 +4186,10 @@ msgstr "交易中..."
 msgid "Swaps disabled, pending {0} upgrade"
 msgstr "交易取消，等待 {0} 升级"
 
+#: src/components/Exchange/SwapBox.js
+msgid "Switch to {0} collateral."
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.js
@@ -4177,7 +4201,7 @@ msgid "TOTAL SUPPLY"
 msgstr ""
 
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-msgid "Take-Profit and Stop-Loss orders are created in the main Tradebox.<0/><1/><2>Set Trigger Order for this position.</2><3/><4/><5>Read More</5>."
+msgid "Take-Profit and Stop-Loss orders are created in the main Tradebox.<0/><1/><2>Set Trigger Order for this position.</2><3/><4/><5>More Info</5>."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -4278,6 +4302,10 @@ msgstr "该订单只在满足价格条件并有足够的流动性时才会执行
 msgid "The order will only execute if the price conditions are met and there is sufficient liquidity."
 msgstr ""
 
+#: src/components/Referrals/TradersStats.tsx
+msgid "The owner of this Referral Code has set a custom discount of {currentTierDiscount}% instead of the standard {0}% for Tier {1}."
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 msgid "The pending borrow fee will be charged on this transaction."
 msgstr ""
@@ -4359,13 +4387,13 @@ msgstr ""
 msgid "Three tokens create our ecosystem"
 msgstr ""
 
-#: src/components/Referrals/TradersStats.tsx
-msgid "Tier {0} ({1}% discount)"
-msgstr "第{0}级 ({1}% discount)"
-
 #: src/components/Referrals/AffiliatesStats.tsx
-msgid "Tier {0} ({1}% rebate)"
-msgstr "第{0}级 ({1}% discount)"
+msgid "Tier {0} ({currentRebatePercentage}% rebate)"
+msgstr ""
+
+#: src/components/Referrals/TradersStats.tsx
+msgid "Tier {0} ({currentTierDiscount}% discount)"
+msgstr ""
 
 #: src/components/Migration/Migration.js
 msgid "To Receive"
@@ -4516,6 +4544,7 @@ msgid "Traders Referred on Avalanche Fuji"
 msgstr ""
 
 #: src/pages/Exchange/Exchange.js
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trades"
 msgstr "交易"
@@ -4848,10 +4877,6 @@ msgstr ""
 msgid "V2 Claim"
 msgstr ""
 
-#: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
-msgid "V2 Pools"
-msgstr ""
-
 #: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
 msgid "V2 doesn't currently support this network"
 msgstr ""
@@ -5019,7 +5044,6 @@ msgstr "在平仓时，你可以选择你想用哪种代币来接收利润"
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -5028,7 +5052,7 @@ msgstr "提领"
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Withdraw disabled, pending {0} upgrade"
-msgstr "提款无效，等待{0}升级"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Withdraw failed."
@@ -5047,16 +5071,16 @@ msgid "Withdraw submitted."
 msgstr "提领送出"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Withdraw {0} USD from {1} {longOrShortText}"
-msgstr "由{1} {longOrShortText}提领{0} USD"
+msgid "Withdraw {0} USD from {1}{longOrShortText}"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Withdrawal failed."
-msgstr "提领失败"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Withdrawal submitted."
-msgstr "提领送出"
+msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Withdrawing {0} from {positionText}"
@@ -5064,7 +5088,7 @@ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Withdrawing..."
-msgstr "提领中..."
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Withdrawn!"
@@ -5180,6 +5204,10 @@ msgstr ""
 msgid "You have an existing position in the {0} market pool. <0>Switch to {1} market pool.</0>"
 msgstr ""
 
+#: src/components/Exchange/SwapBox.js
+msgid "You have an existing position with {0} as collateral."
+msgstr ""
+
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
 msgid "You have an existing position with {0} as collateral. <0>Switch to {1} collateral.</0>"
 msgstr ""
@@ -5226,8 +5254,8 @@ msgid "You will need to be on this page to accept the transfer, <0>click here</0
 msgstr "你需要在此页面上接受转让，<0>点击这里</0>，若需要，可复制链接至此页面"
 
 #: src/components/Referrals/TradersStats.tsx
-msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday"
-msgstr "你将收到{0}%的开盘费和成交费折扣，此折扣将在每周三空投到你账户"
+msgid "You will receive a {currentTierDiscount}% discount on opening and closing fees."
+msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 msgid "You will receive at least {0} {1} if this order is executed. The exact execution price may vary depending on fees at the time the order is executed."
@@ -5436,20 +5464,11 @@ msgid "{0} {1} not supported"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-msgid ""
-"{0}:\n"
-"{1},\n"
-"Price: {priceDisplay}"
+msgid "{0}: Swap {amountInDisplay}{1} for{minOutDisplay} {2}, Price:{3} USD"
 msgstr ""
-"{0}:\n"
-"{1},\n"
-"价格: {priceDisplay}"
 
 #: src/components/Exchange/TradeHistory.js
-msgid ""
-"{0}: Swap {amountInDisplay}\n"
-"{1} for {minOutDisplay} {2},\n"
-"Price: {3}"
+msgid "{0}: {1}, Price: {priceDisplay}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -5466,9 +5485,6 @@ msgid ""
 "-{1} USD,\n"
 "{2} Price: {3} USD"
 msgstr ""
-"{actionDisplay} {0} {longOrShortText},\n"
-"-{1} USD,\n"
-"{2} 价格: {3} USD"
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "{actionText} Deposit {collateralText} into {positionText},  Market: {0}"

@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getIcon } from "config/icons";
@@ -20,6 +20,7 @@ import AssetDropdown from "pages/Dashboard/AssetDropdown";
 
 import { useMemo } from "react";
 import { useMedia } from "react-use";
+import PageTitle from "components/PageTitle/PageTitle";
 
 function formatFundingRate(fundingRate?: BigNumber) {
   if (!fundingRate) {
@@ -246,11 +247,7 @@ export function MarketsList() {
 
       {isMobile && (
         <>
-          <div className="Page-title Tab-title-section glp-composition-small">
-            <Trans>GM Pools</Trans>
-            <img className="title-icon" src={getIcon(chainId, "network")} width="24" alt="Network Icon" />
-          </div>
-
+          <PageTitle title={t`GM Pools`} />
           <div className="token-grid">
             {indexTokensStats.map((stats) => (
               <div className="App-card" key={stats.token.symbol}>

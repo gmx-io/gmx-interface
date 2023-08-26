@@ -1,4 +1,3 @@
-import { useWeb3React } from "@web3-react/core";
 import DataStore from "abis/DataStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
@@ -31,10 +30,10 @@ export function usePositions(
     marketsInfoData?: MarketsData;
     tokensData?: TokensData;
     pricesUpdatedAt?: number;
+    account: string | null | undefined;
   }
 ): PositionsResult {
-  const { marketsInfoData, tokensData, pricesUpdatedAt } = p;
-  const { account } = useWeb3React();
+  const { marketsInfoData, tokensData, pricesUpdatedAt, account } = p;
 
   // Use ref to cache data from previos key with old prices
   const positionsDataCache = useRef<PositionsData>();

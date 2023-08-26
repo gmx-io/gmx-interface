@@ -312,9 +312,10 @@ export default function ExchangeTVChart(props) {
   }
 
   const onSelectToken = (token) => {
-    const tmp = getTokenInfo(infoTokens, token.address);
+    const toTokenInfo = getTokenInfo(infoTokens, token.address);
+    setToTokenAddress(swapOption, toTokenInfo.address);
+    const tmp = getChartToken(swapOption, fromToken, toTokenInfo, chainId);
     setChartToken(tmp);
-    setToTokenAddress(swapOption, token.address);
   };
 
   const priceDecimal = getPriceDecimals(chainId, chartToken?.symbol);
@@ -323,18 +324,14 @@ export default function ExchangeTVChart(props) {
     <div className="ExchangeChart tv" ref={ref}>
       <div className="TVChart-top-card ExchangeChart-top App-box App-box-border">
         <div className="ExchangeChart-top-inner">
-          <div>
-            <div className="ExchangeChart-title">
-              <ChartTokenSelector
-                chainId={chainId}
-                selectedToken={chartToken}
-                swapOption={swapOption}
-                infoTokens={infoTokens}
-                onSelectToken={onSelectToken}
-                className="chart-token-selector"
-              />
-            </div>
-          </div>
+          <ChartTokenSelector
+            chainId={chainId}
+            selectedToken={chartToken}
+            swapOption={swapOption}
+            infoTokens={infoTokens}
+            onSelectToken={onSelectToken}
+            className="chart-token-selector"
+          />
           {!isSmallMobile && (
             <div>
               <div className="ExchangeChart-main-price">
@@ -354,7 +351,7 @@ export default function ExchangeTVChart(props) {
               </div>
             </div>
           )}
-          <div className="ExchangeChart-additional-info">
+          <div className="ExchnageChart-24h">
             <div className="ExchangeChart-info-label">24h High</div>
             <div>
               {!high && "-"}

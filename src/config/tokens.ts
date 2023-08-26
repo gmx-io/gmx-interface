@@ -969,7 +969,7 @@ export function getNormalizedTokenSymbol(tokenSymbol) {
 }
 
 export function isChartAvailabeForToken(chainId: number, tokenSymbol: string) {
-  let token: Token;
+  let token;
 
   try {
     token = getTokenBySymbol(chainId, tokenSymbol);
