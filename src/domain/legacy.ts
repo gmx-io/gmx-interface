@@ -1,37 +1,36 @@
-import { BigNumber, ethers } from "ethers";
 import { gql } from "@apollo/client";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Token as UniToken } from "@uniswap/sdk-core";
 import { Pool } from "@uniswap/v3-sdk";
+import { BigNumber, ethers } from "ethers";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 
 import OrderBook from "abis/OrderBook.json";
 import PositionManager from "abis/PositionManager.json";
-import Vault from "abis/Vault.json";
+import PositionRouter from "abis/PositionRouter.json";
 import Router from "abis/Router.json";
+import Token from "abis/Token.json";
 import UniPool from "abis/UniPool.json";
 import UniswapV2 from "abis/UniswapV2.json";
-import Token from "abis/Token.json";
-import PositionRouter from "abis/PositionRouter.json";
+import Vault from "abis/Vault.json";
 
-import { getContract } from "config/contracts";
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, getConstant, getHighExecutionFee } from "config/chains";
-import { DECREASE, getOrderKey, INCREASE, SWAP, USD_DECIMALS } from "lib/legacy";
+import { getContract } from "config/contracts";
+import { DECREASE, INCREASE, SWAP, USD_DECIMALS, getOrderKey } from "lib/legacy";
 
-import { groupBy } from "lodash";
-import { UI_VERSION, isDevelopment } from "config/env";
+import { t } from "@lingui/macro";
+import { useWeb3React } from "@web3-react/core";
 import { getServerBaseUrl, getServerUrl } from "config/backend";
-import { getGmxGraphClient, nissohGraphClient } from "lib/subgraph/clients";
+import { UI_VERSION, isDevelopment } from "config/env";
+import { REQUIRED_UI_VERSION_KEY } from "config/localStorage";
+import { getTokenBySymbol } from "config/tokens";
 import { callContract, contractFetcher } from "lib/contracts";
+import { bigNumberify, expandDecimals, parseValue } from "lib/numbers";
+import { getProvider } from "lib/rpc";
+import { getGmxGraphClient, nissohGraphClient } from "lib/subgraph/clients";
+import { groupBy } from "lodash";
 import { replaceNativeTokenAddress } from "./tokens";
 import { getUsd } from "./tokens/utils";
-import { getProvider } from "lib/rpc";
-import { bigNumberify, expandDecimals, parseValue } from "lib/numbers";
-import { getTokenBySymbol } from "config/tokens";
-import { t } from "@lingui/macro";
-import { REQUIRED_UI_VERSION_KEY } from "config/localStorage";
-import { useWeb3React } from "@web3-react/core";
-import { UrlJsonRpcProvider } from "@ethersproject/providers";
 
 export * from "./prices";
 

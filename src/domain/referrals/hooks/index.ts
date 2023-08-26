@@ -294,7 +294,7 @@ export function useReferrerDiscountShare(library, chainId, owner) {
       owner.toLowerCase(),
     ],
     {
-      fetcher: contractFetcher(library, ReferralStorage),
+      fetcher: contractFetcher(library, ReferralStorage) as any,
     }
   );
   return {
