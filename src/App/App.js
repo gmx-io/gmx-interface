@@ -107,6 +107,7 @@ import SyntheticsActions from "pages/SyntheticsActions/SyntheticsActions";
 import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsFallbackPage";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
+import { swrGCMiddleware } from "lib/swrMiddlewares";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -825,7 +826,9 @@ function App() {
   }, []);
 
   return (
-    <SWRConfig value={{ refreshInterval: 5000, refreshWhenHidden: false, refreshWhenOffline: false }}>
+    <SWRConfig
+      value={{ refreshInterval: 5000, refreshWhenHidden: false, refreshWhenOffline: false, use: [swrGCMiddleware] }}
+    >
       <Web3ReactProvider getLibrary={getLibrary}>
         <SettingsContextProvider>
           <SEO>
