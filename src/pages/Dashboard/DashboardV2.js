@@ -552,11 +552,7 @@ export default function DashboardV2() {
                       position="right-bottom"
                       renderContent={() => (
                         <Trans>
-                          <p>GM Pools total liquidity in ({chainName}).</p>
-                          <p>
-                            This value may be higher on other websites due to the collateral of positions being included
-                            in the calculation.
-                          </p>
+                          <p>GM Pools total value ({chainName}).</p>
                         </Trans>
                       )}
                     />
@@ -783,7 +779,12 @@ export default function DashboardV2() {
                     <TooltipComponent
                       position="right-bottom"
                       className="nowrap"
-                      handle={formatAmount(uniqueUsers?.[chainId], 0, 0, true)}
+                      handle={formatAmount(
+                        addTwoNumbers(uniqueUsers?.[chainId], v2MarketsOverview?.[chainId].totalUsers),
+                        0,
+                        0,
+                        true
+                      )}
                       renderContent={() => (
                         <ChainsStatsTooltipRow
                           showDollar={false}
@@ -791,6 +792,8 @@ export default function DashboardV2() {
                           entries={{
                             "V1 Arbitrum": uniqueUsers?.[ARBITRUM],
                             "V1 Avalanche": uniqueUsers?.[AVALANCHE],
+                            "V2 Arbitrum": v2MarketsOverview?.[ARBITRUM].totalUsers,
+                            "V2 Avalanche": v2MarketsOverview?.[AVALANCHE].totalUsers,
                           }}
                         />
                       )}

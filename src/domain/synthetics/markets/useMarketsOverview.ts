@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { BigNumber } from "ethers";
 import useVolumeInfo from "../stats/useVolumeInfo";
 import useFeesInfo from "../stats/useFeesInfo";
+import useUsers from "../stats/useUsers";
 
 type MarketOverview = {
   totalGMLiquidity: BigNumber;
@@ -13,6 +14,7 @@ type MarketOverview = {
   totalVolume: BigNumber;
   weeklyFees: BigNumber;
   totalFees: BigNumber;
+  totalUsers: BigNumber;
 };
 
 export default function useMarketsOverview(chains: number[]) {
@@ -21,7 +23,7 @@ export default function useMarketsOverview(chains: number[]) {
   const feesInfo = useFeesInfo(chains);
   const { marketsInfoData: chainOneMarketsInfo } = useMarketsInfo(chainOne);
   const { marketsInfoData: chainTwoMarketsInfo } = useMarketsInfo(chainTwo);
-
+  const usersInfo = useUsers(chains);
   const chainsMarketInfo = useMemo(() => {
     return {
       [chainOne]: chainOneMarketsInfo,
@@ -34,6 +36,7 @@ export default function useMarketsOverview(chains: number[]) {
       const currentMarketInfo = chainsMarketInfo[chain];
       const currentVolumeInfo = volumeInfo?.[chain];
       const currentFeesInfo = feesInfo?.[chain];
+      const currentUsersInfo = usersInfo?.[chain];
 
       const allMarkets = Object.values(currentMarketInfo || {}).filter((market) => !market.isDisabled);
       const totalLiquidity = allMarkets.reduce((acc, market) => {
@@ -60,10 +63,11 @@ export default function useMarketsOverview(chains: number[]) {
         totalVolume: currentVolumeInfo?.totalVolume || BigNumber.from(0),
         weeklyFees: currentFeesInfo?.weeklyFees || BigNumber.from(0),
         totalFees: currentFeesInfo?.totalFees || BigNumber.from(0),
+        totalUsers: currentUsersInfo?.totalUsers || BigNumber.from(0),
       };
       return acc;
     }, {});
-  }, [chains, chainsMarketInfo, volumeInfo, feesInfo]);
+  }, [chains, chainsMarketInfo, volumeInfo, feesInfo, usersInfo]);
 
   return stats;
 }

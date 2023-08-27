@@ -9,16 +9,29 @@ type FeesInfo = {
   totalFees: BigNumber;
 };
 
-const query = gql`
-  query feesInfo($lastTimestamp: Int!) {
-    dailyFeeInfos: collectedMarketFeesInfos(first: 1000, where: { timestampGroup_gte: $lastTimestamp, period: "1d" }) {
-      feeUsdForPool
-      period
-      timestampGroup
+const totalFeeQuery = gql`
+  query totalFeesInfo {
+    position: positionFeesInfoWithPeriod(id: "total") {
+      totalBorrowingFeeUsd
+      totalPositionFeeUsd
     }
-    totalFeesInfos: collectedMarketFeesInfos(where: { period: "total" }) {
-      feeUsdForPool
-      period
+    swap: swapFeesInfoWithPeriod(id: "total") {
+      totalFeeReceiverUsd
+      totalFeeUsdForPool
+    }
+  }
+`;
+
+const weeklyFeeQuery = gql`
+  query weeklyFeesInfo($lastTimestamp: Int!) {
+    position: positionFeesInfoWithPeriods(where: { id_gte: $lastTimestamp, period: "1d" }) {
+      totalBorrowingFeeUsd
+      totalPositionFeeUsd
+    }
+
+    swap: swapFeesInfoWithPeriods(where: { id_gte: $lastTimestamp, period: "1d" }) {
+      totalFeeReceiverUsd
+      totalFeeUsdForPool
     }
   }
 `;
@@ -30,21 +43,38 @@ export default function useFeesInfo(chains: number[]) {
   async function fetchFeesInfo(chain: number) {
     try {
       const client = getSyntheticsGraphClient(chain);
-      const { data } = await client!.query({
-        query,
+      const { data: weeklyFeesInfo } = await client!.query({
+        query: weeklyFeeQuery,
         variables: {
           lastTimestamp: lastUpdatedAt,
         },
         fetchPolicy: "no-cache",
       });
 
-      const { dailyFeeInfos, totalFeesInfos } = data;
+      const { data: totalFeesInfo } = await client!.query({
+        query: totalFeeQuery,
+        fetchPolicy: "no-cache",
+      });
 
-      const weeklyFees = dailyFeeInfos.reduce((acc, { feeUsdForPool }) => acc.add(feeUsdForPool), BigNumber.from(0));
-      const totalFees = totalFeesInfos.reduce((acc, { feeUsdForPool }) => acc.add(feeUsdForPool), BigNumber.from(0));
+      const totalPositionFees = BigNumber.from(totalFeesInfo.position.totalBorrowingFeeUsd).add(
+        totalFeesInfo.position.totalPositionFeeUsd
+      );
+
+      const totalSwapFees = BigNumber.from(totalFeesInfo.swap.totalFeeReceiverUsd).add(
+        totalFeesInfo.swap.totalFeeUsdForPool
+      );
+
+      const weeklyPositionFees = weeklyFeesInfo.position.reduce((acc, fee) => {
+        return acc.add(fee.totalBorrowingFeeUsd).add(fee.totalPositionFeeUsd);
+      }, BigNumber.from(0));
+
+      const weeklySwapFees = weeklyFeesInfo.swap.reduce((acc, fee) => {
+        return acc.add(fee.totalFeeReceiverUsd).add(fee.totalFeeUsdForPool);
+      }, BigNumber.from(0));
+
       return {
-        weeklyFees,
-        totalFees,
+        weeklyFees: weeklyPositionFees.add(weeklySwapFees),
+        totalFees: totalPositionFees.add(totalSwapFees),
       };
     } catch (error) {
       // eslint-disable-next-line no-console
