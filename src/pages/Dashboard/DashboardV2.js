@@ -46,18 +46,19 @@ import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { formatDate } from "lib/dates";
 import { arrayURLFetcher } from "lib/fetcher";
-import { bigNumberify, expandDecimals, formatAmount, formatKeyAmount, numberWithCommas } from "lib/numbers";
+import {
+  addTwoBigNumbers,
+  bigNumberify,
+  expandDecimals,
+  formatAmount,
+  formatKeyAmount,
+  numberWithCommas,
+} from "lib/numbers";
 import AssetDropdown from "./AssetDropdown";
 import useMarketsOverview from "domain/synthetics/markets/useMarketsOverview";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
-
-function addTwoNumbers(a, b) {
-  if (!a || !b || bigNumberify(a).isZero() || bigNumberify(b).isZero()) return bigNumberify(0);
-
-  return bigNumberify(a).add(bigNumberify(b));
-}
 
 function getPositionStats(positionStats) {
   if (!positionStats || positionStats.length === 0) {
@@ -567,7 +568,7 @@ export default function DashboardV2() {
                       position="right-bottom"
                       className="nowrap"
                       handle={`$${formatAmount(
-                        addTwoNumbers(currentVolumeInfo?.[chainId], v2MarketsOverview?.[chainId]?.dailyVolume),
+                        addTwoBigNumbers(currentVolumeInfo?.[chainId], v2MarketsOverview?.[chainId]?.dailyVolume),
                         USD_DECIMALS,
                         0,
                         true
@@ -594,7 +595,7 @@ export default function DashboardV2() {
                       position="right-bottom"
                       className="nowrap"
                       handle={`$${formatAmount(
-                        addTwoNumbers(
+                        addTwoBigNumbers(
                           positionStatsInfo?.[chainId]?.openInterest,
                           v2MarketsOverview?.[chainId]?.openInterest
                         ),
@@ -624,7 +625,7 @@ export default function DashboardV2() {
                       position="right-bottom"
                       className="nowrap"
                       handle={`$${formatAmount(
-                        addTwoNumbers(
+                        addTwoBigNumbers(
                           positionStatsInfo?.[chainId]?.totalLongPositionSizes,
                           v2MarketsOverview?.[chainId]?.totalLongPositionSizes
                         ),
@@ -654,7 +655,7 @@ export default function DashboardV2() {
                       position="right-bottom"
                       className="nowrap"
                       handle={`$${formatAmount(
-                        addTwoNumbers(
+                        addTwoBigNumbers(
                           positionStatsInfo?.[chainId]?.totalShortPositionSizes,
                           v2MarketsOverview?.[chainId]?.totalShortPositionSizes
                         ),
@@ -685,7 +686,7 @@ export default function DashboardV2() {
                         position="right-bottom"
                         className="nowrap"
                         handle={`$${formatAmount(
-                          addTwoNumbers(currentFees?.[chainId], v2MarketsOverview?.[chainId]?.weeklyFees),
+                          addTwoBigNumbers(currentFees?.[chainId], v2MarketsOverview?.[chainId]?.weeklyFees),
                           USD_DECIMALS,
                           2,
                           true
@@ -721,7 +722,7 @@ export default function DashboardV2() {
                       position="right-bottom"
                       className="nowrap"
                       handle={`$${numberWithCommas(
-                        addTwoNumbers(
+                        addTwoBigNumbers(
                           totalFees?.[chainId],
                           formatAmount(v2MarketsOverview?.[chainId]?.totalFees, USD_DECIMALS, 0)
                         )
@@ -753,7 +754,7 @@ export default function DashboardV2() {
                       position="right-bottom"
                       className="nowrap"
                       handle={`$${formatAmount(
-                        addTwoNumbers(totalVolume?.[chainId], v2MarketsOverview?.[chainId]?.totalVolume),
+                        addTwoBigNumbers(totalVolume?.[chainId], v2MarketsOverview?.[chainId]?.totalVolume),
                         USD_DECIMALS,
                         0,
                         true
@@ -780,7 +781,7 @@ export default function DashboardV2() {
                       position="right-bottom"
                       className="nowrap"
                       handle={formatAmount(
-                        addTwoNumbers(uniqueUsers?.[chainId], v2MarketsOverview?.[chainId].totalUsers),
+                        addTwoBigNumbers(uniqueUsers?.[chainId], v2MarketsOverview?.[chainId].totalUsers),
                         0,
                         0,
                         true

@@ -30,10 +30,6 @@ msgid "24h Volume"
 msgstr "24시간 거래량"
 
 #: src/pages/Dashboard/DashboardV2.js
-#~ msgid "<0>GM Pools total liquidity in ({chainName}).</0><1>This value may be higher on other websites due to the collateral of positions being included in the calculation.</1>"
-#~ msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.js
 msgid "<0>GM Pools total value ({chainName}).</0>"
 msgstr ""
 

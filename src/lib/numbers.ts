@@ -330,3 +330,15 @@ export function basisPointsToFloat(basisPoints: BigNumber) {
 export function roundToTwoDecimals(n) {
   return Math.round(n * 100) / 100;
 }
+
+export function addTwoBigNumbers(a, b) {
+  if (!a) {
+    a = bigNumberify(0);
+  }
+
+  if (!b) {
+    b = bigNumberify(0);
+  }
+
+  return BigNumber.from(a).add(b);
+}
