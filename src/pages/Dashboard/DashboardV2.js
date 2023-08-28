@@ -792,8 +792,8 @@ export default function DashboardV2() {
                           shouldFormat={false}
                           entries={{
                             "V1 Arbitrum": uniqueUsers?.[ARBITRUM],
-                            "V1 Avalanche": uniqueUsers?.[AVALANCHE],
                             "V2 Arbitrum": v2MarketsOverview?.[ARBITRUM].totalUsers,
+                            "V1 Avalanche": uniqueUsers?.[AVALANCHE],
                             "V2 Avalanche": v2MarketsOverview?.[AVALANCHE].totalUsers,
                           }}
                         />
