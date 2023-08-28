@@ -17,7 +17,6 @@ import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatUsd, numberWithCommas } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
-import { useMedia } from "react-use";
 import "./TVChart.scss";
 
 export type Props = {
@@ -48,8 +47,6 @@ export function TVChart({
   setTradePageVersion,
 }: Props) {
   const { chainId } = useChainId();
-  const isMobile = useMedia("(max-width: 768px)");
-  const isSmallMobile = useMedia("(max-width: 470px)");
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
   const [dataProvider, setDataProvider] = useState<SyntheticsTVDataProvider>();
 
@@ -164,19 +161,19 @@ export function TVChart({
 
   return (
     <div className="ExchangeChart tv">
-      <div className="TVChart-top-card ExchangeChart-top App-box App-box-border">
-        <div className="ExchangeChart-top-inner">
-          <div>
-            <Dropdown
-              className="chart-token-selector"
-              options={tokenOptions}
-              selectedOption={selectedTokenOption}
-              onSelect={onSelectTokenOption}
-              disabled={disableSelectToken}
-            />
-          </div>
-          {!isSmallMobile && (
+      <div className="ExchangeChart-header">
+        <div className="ExchangeChart-info">
+          <div className="ExchangeChart-top-inner">
             <div>
+              <Dropdown
+                className="chart-token-selector"
+                options={tokenOptions}
+                selectedOption={selectedTokenOption}
+                onSelect={onSelectTokenOption}
+                disabled={disableSelectToken}
+              />
+            </div>
+            <div className="Chart-min-max-price">
               <div className="ExchangeChart-main-price">
                 {formatUsd(chartToken?.prices?.maxPrice, {
                   displayDecimals: chartToken?.priceDecimals,
@@ -188,9 +185,8 @@ export function TVChart({
                 }) || "..."}
               </div>
             </div>
-          )}
-          {!isSmallMobile && (
-            <div>
+
+            <div className="Chart-24h-change">
               <div className="ExchangeChart-info-label">24h Change</div>
               <div
                 className={cx({
@@ -201,27 +197,25 @@ export function TVChart({
                 {dayPriceDelta?.deltaPercentageStr || "-"}
               </div>
             </div>
-          )}
-          {!isMobile && (
-            <>
-              <div className="ExchangeChart-additional-info">
-                <div className="ExchangeChart-info-label">24h High</div>
-                <div>
-                  {dayPriceDelta?.high
-                    ? numberWithCommas(dayPriceDelta.high.toFixed(chartToken?.priceDecimals || 2))
-                    : "-"}
-                </div>
+            <div className="ExchangeChart-additional-info">
+              <div className="ExchangeChart-info-label">24h High</div>
+              <div>
+                {dayPriceDelta?.high
+                  ? numberWithCommas(dayPriceDelta.high.toFixed(chartToken?.priceDecimals || 2))
+                  : "-"}
               </div>
-              <div className="ExchangeChart-additional-info">
-                <div className="ExchangeChart-info-label">24h Low</div>
-                <div>
-                  {dayPriceDelta?.low
-                    ? numberWithCommas(dayPriceDelta?.low.toFixed(chartToken?.priceDecimals || 2))
-                    : "-"}
-                </div>
+            </div>
+            <div className="ExchangeChart-additional-info Chart-24h-low">
+              <div className="ExchangeChart-info-label">24h Low</div>
+              <div>
+                {dayPriceDelta?.low
+                  ? numberWithCommas(dayPriceDelta?.low.toFixed(chartToken?.priceDecimals || 2))
+                  : "-"}
               </div>
-            </>
-          )}
+            </div>
+          </div>
+        </div>
+        <div className="ExchangeChart-info VersionSwitch-wrapper">
           <VersionSwitch currentVersion={tradePageVersion} setCurrentVersion={setTradePageVersion} />
         </div>
       </div>

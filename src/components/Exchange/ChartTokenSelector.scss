@@ -36,7 +36,7 @@
 
 .chart-token-menu-items.menu-items {
   max-width: 45rem;
-  top: 6rem;
+  top: 7.5rem;
   right: unset;
   left: 0;
   cursor: auto;
@@ -101,8 +101,14 @@
   }
 }
 
-@media screen and (max-width: 450px) {
+@media (max-width: 1100px) {
+  .chart-token-menu-items.menu-items {
+    top: 5.7rem;
+  }
+}
+
+@media (max-width: 380px) {
   .chart-token-selector {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
   }
 }
