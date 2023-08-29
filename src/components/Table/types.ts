@@ -1,9 +1,9 @@
-import { ReactElement } from "react";
+import { ReactElement, ReactNode } from "react";
 
 export type TableHeader = {
   title: string;
   className?: string;
-  tooltip?: string;
+  tooltip?: string | (() => ReactNode);
   onClick?: () => void;
 };
 

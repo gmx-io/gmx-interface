@@ -31,15 +31,17 @@ export default function Table<T extends Record<string, any>>({
                 }
               >
                 {
-                  v!.tooltip ? (
+                  v && v.tooltip ? (
                     <Tooltip
-                      handle={ v!.title }
+                      handle={ v.title }
                       position="center-top"
-                      renderContent={() => (
-                        v!.tooltip!.split("\\n").map(s => <div key={s}>{s}</div>)
-                      )}
+                      renderContent={
+                        typeof v.tooltip === "function"
+                          ? v.tooltip
+                          : () => <p>{ v.tooltip as string }</p>
+                      }
                     />
-                  ) : v!.title
+                  ) : v?.title
                 }
               </th>
             ))

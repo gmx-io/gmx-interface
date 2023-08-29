@@ -62,7 +62,7 @@ export default function TopPositions() {
     account: { title: t`Address` },
     unrealizedPnl: {
       title: t`PnL ($)`,
-      tooltip: t`Total Unrealized Profit`,
+      tooltip: t`Total Unrealized Profit.`,
       onClick: topPositionsHeaderClick("unrealizedPnl"),
     },
     market: { title: t`Position` },

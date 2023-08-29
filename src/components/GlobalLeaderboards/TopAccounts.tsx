@@ -62,31 +62,33 @@ export default function TopAccounts() {
     account: { title: t`Address` },
     absPnl: {
       title: t`PnL ($)`,
-      tooltip: t`Total Realized and Unrealized Profit`,
+      tooltip: t`Total Realized and Unrealized Profit.`,
       onClick: topAccountsHeaderClick("absPnl"),
     },
     relPnl: {
       title: t`PnL (%)`,
-      tooltip: (
-        t`PnL ($) compared to the Max Collateral used by this Address\n` +
-        t`Max Collateral is the highest value of [Sum of Collateral of Open Positions -  RPnL]`
+      tooltip: () => (
+        <div>
+          <p>{ t`PnL ($) compared to the Max Collateral used by this Address.` }</p>
+          <p>{ t`Max Collateral is the highest value of [Sum of Collateral of Open Positions -  RPnL].` }</p>
+        </div>
       ),
       onClick: topAccountsHeaderClick("relPnl"),
     },
     size: {
-      title: t`Size`,
-      tooltip: t`Average Position Size`,
+      title: t`Avg. Size`,
+      tooltip: t`Average Position Size.`,
       onClick: topAccountsHeaderClick("size"),
     },
     leverage: {
-      title: t`Leverage`,
-      tooltip: t`Average Leverage used`,
+      title: t`Avg. Lev.`,
+      tooltip: t`Average Leverage used.`,
       onClick: topAccountsHeaderClick("leverage"),
     },
     perf: {
       title: t`Win/Loss`,
       className: "text-right",
-      tooltip: t`Wins and Losses for fully closed Positions`,
+      tooltip: t`Wins and Losses for fully closed Positions.`,
       onClick: topAccountsHeaderClick("wins"),
     },
   };
