@@ -1,11 +1,11 @@
-import { BigNumber } from "ethers";
+import { BigNumber, utils } from "ethers";
 import {
   createContext,
   FC,
   PropsWithChildren,
   useCallback,
   useContext,
-  useMemo,
+  useEffect,
   useState,
 } from "react";
 
@@ -42,8 +42,12 @@ export const LeaderboardContextProvider: FC<PropsWithChildren> = ({ children }) 
   const [accountsOrderDirection, setAccountsOrderDirection] = useState<number>(1);
   const [positionsOrderBy, setPositionsOrderBy] = useState<keyof TopPositionsRow>("unrealizedPnl");
   const [positionsOrderDirection, setPositionsOrderDirection] = useState<number>(1);
-  const topPositions = useTopPositions();
-  const topAccounts = useTopAccounts(period);
+  const topPositionsUnordered = useTopPositions();
+  const topAccountsUnordered = useTopAccounts(period);
+  const [topPositions, setTopPositions] = useState<Array<TopPositionsRow>>([]);
+  const [topAccounts, setTopAccounts] = useState<Array<TopAccountsRow>>([]);
+  const [positionsHash, setPositionsHash] = useState<string>();
+  const [accountsHash, setAccountHash] = useState<string>();
   const topAccountsHeaderClick = useCallback((key: keyof TopAccountsRow) => () => {
     if (key === "wins") {
       setAccountsOrderBy(accountsOrderBy === "wins" ? "losses" : "wins");
@@ -51,7 +55,7 @@ export const LeaderboardContextProvider: FC<PropsWithChildren> = ({ children }) 
     } else if (key === accountsOrderBy) {
       setAccountsOrderDirection((d: number) => -1 * d);
     } else {
-      setAccountsOrderBy(key as keyof TopAccountsRow);
+      setAccountsOrderBy(key);
       setAccountsOrderDirection(1);
     }
   }, [accountsOrderBy]);
@@ -60,62 +64,85 @@ export const LeaderboardContextProvider: FC<PropsWithChildren> = ({ children }) 
     if (key === positionsOrderBy) {
       setPositionsOrderDirection((d: number) => -1 * d);
     } else {
-      setPositionsOrderBy(key as keyof TopPositionsRow);
+      setPositionsOrderBy(key);
       setPositionsOrderDirection(1);
     }
   }, [positionsOrderBy]);
 
-  const positionsKey = topPositions.data && topPositions.data
-    .map(a => a[positionsOrderBy]!.toString())
-    .sort((a, b) => a < b ? -1 : 1)
-    .join("-");
+  const nextPositionsHash = utils.sha256(topPositionsUnordered.data ? topPositionsUnordered.data.map(a => (
+    a[positionsOrderBy]!.toString().split("").map((c: string) => c.charCodeAt(0))
+  )).flat() : []);
 
-  useMemo(() => {
-    if (!topPositions.data) {
+  if (positionsHash !== nextPositionsHash) {
+    setPositionsHash(nextPositionsHash);
+  }
+
+  useEffect(() => {
+    if (!topPositionsUnordered.data) {
       return;
     }
 
-    topPositions.data.sort((a, b) => {
+    const data = [...topPositionsUnordered.data].sort((a, b) => {
       const key = positionsOrderBy;
       if (a[key] instanceof BigNumber && b[key] instanceof BigNumber) {
         return positionsOrderDirection * ((a[key] as BigNumber).gt(b[key] as BigNumber) ? -1 : 1);
       } else {
+        // TODO: remove log
+        // eslint-disable-next-line no-console
+        console.warn("Not a BigNumber", { key, a, b });
         return 1;
       }
-    }).forEach((p, i) => {
-      p.rank = i;
-    });
+    }).map((p, i) => ({ ...p, rank: i }));
+
+    setTopPositions(data);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [positionsKey, positionsOrderBy, positionsOrderDirection]);
+  }, [positionsHash, positionsOrderBy, positionsOrderDirection]);
 
-  const accountsKey = topAccounts.data && topAccounts.data
-    .map(a => a.absPnl.toString())
-    .sort((a, b) => a < b ? -1 : 1)
-    .join("-");
+  const nextAccountsHash = utils.sha256(topAccountsUnordered.data ? topAccountsUnordered.data.map(a => (
+    a[accountsOrderBy]!.toString().split("").map((c: string) => c.charCodeAt(0))
+  )).flat() : []);
 
-  useMemo(() => {
-    if (!topAccounts.data) {
+  if (accountsHash !== nextAccountsHash) {
+    setAccountHash(nextAccountsHash);
+  }
+
+  useEffect(() => {
+    if (!topAccountsUnordered.data) {
       return;
     }
 
-    topAccounts.data.sort((a, b) => {
+    const data = [...topAccountsUnordered.data];
+    data.sort((a, b) => {
       const key = accountsOrderBy;
       if (a[key] instanceof BigNumber && b[key] instanceof BigNumber) {
         return accountsOrderDirection * ((a[key] as BigNumber).gt(b[key] as BigNumber) ? -1 : 1);
       } else {
+        // TODO: remove log
+        // eslint-disable-next-line no-console
+        console.warn("Not a BigNumber", {key, a, b});
         return 1;
       }
-    }).forEach((a, i) => {
-      a.rank = i;
     });
+
+    data.forEach((a, i) => a.rank = i);
+
+    setTopAccounts(data);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accountsKey, accountsOrderBy, accountsOrderDirection]);
+  }, [accountsHash, accountsOrderBy, accountsOrderDirection]);
 
   const context = {
     chainId,
     period,
-    topAccounts,
-    topPositions,
+    topAccounts: {
+      isLoading: !topAccounts.length,
+      error: topAccountsUnordered.error,
+      data: topAccounts,
+    },
+    topPositions: {
+      isLoading: !topPositions.length,
+      error: topPositionsUnordered.error,
+      data: topPositions,
+    },
     setPeriod,
     setAccountsOrderBy,
     setAccountsOrderDirection,

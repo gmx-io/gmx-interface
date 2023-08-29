@@ -112,7 +112,7 @@ const fetchAccountOpenPositions = async () => {
 export function useAccountOpenPositions() {
   const { chainId } = useChainId();
   const { tokensData, marketsInfoData, pricesUpdatedAt } = useMarketsInfo(chainId);
-  const positions = useSWR('/leaderboards/positions', fetchAccountOpenPositions);
+  const positions = useSWR(['/leaderboards/positions', chainId], fetchAccountOpenPositions);
   const [keys, setKeys] = useState<string[]>([]);
   const [prices, setPrices] = useState<ContractMarketPrices[]>([]);
   const [data, setData] = useState<AccountOpenPosition[]>([]);

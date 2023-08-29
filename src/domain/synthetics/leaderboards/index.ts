@@ -3,6 +3,7 @@ export * from "./useTopAccounts";
 export * from "./useTopPositions";
 export * from "./useAccountPerf";
 export * from "./useAccountOpenPositions";
+export * from "./useStaticMainnetProvider";
 export * from "./usePositionsInfo";
 export * from "./queries";
 export * from "./utils";

@@ -49,7 +49,7 @@ export default function Table<T extends Record<string, any>>({
           isLoading ? <tr><td colSpan={5}>{ t`Loading...` }</td></tr> : (
             error ? <tr><td colSpan={9}>{ t`Error` + ": " + errorMsg }</td></tr> : (
               !content.length ? <tr><td colSpan={9}>{ t`No data yet` }</td></tr> : (
-                content.map(row => (
+                content.map((row, i) => (
                   <tr key={row[rowKey]}>
                     { Object.keys(titles).map(k => <TableCell data={ row[k] } key={ `${row[rowKey]}_${k}` }/>) }
                   </tr>
