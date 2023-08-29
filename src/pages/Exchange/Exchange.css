@@ -4,8 +4,7 @@
   justify-content: space-between;
 }
 
-.Exchange-trigger-order-info,
-.Exchange-trigger-order-info a {
+.Exchange-trigger-order-info {
   color: rgba(255, 255, 255, 0.7);
   border: 1px solid #23263b;
 }
@@ -265,16 +264,6 @@
   font-size: 1.7rem;
 }
 
-.ExchangeChart-title {
-  font-size: 2.15rem;
-  font-weight: bold;
-}
-
-.ExchangeChart-title:hover .chart-token-dropdown,
-.ExchangeChart-title:hover .chart-token-dropdown span {
-  color: #7885ff !important;
-}
-
 .ExchangeChart-info-label {
   font-size: 1.25rem;
   opacity: 0.7;
@@ -282,10 +271,10 @@
 
 .ExchangeChart-top-inner {
   display: grid;
-  grid-template-columns: auto auto auto auto auto 1fr;
+  grid-template-columns: auto auto auto auto auto;
   grid-column-gap: 4.65rem;
   align-items: center;
-  padding-left: 0.3rem;
+  padding-left: 0.9rem;
 }
 
 .ExchangeChart-dollar-sign {
@@ -298,19 +287,14 @@
   display: inline-block;
 }
 
-.ExchangeChart-top {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: auto;
-  z-index: 2;
-}
-
-.ExchangeChart.tv .ExchangeChart-top {
-  position: relative;
+.ExchangeChart-info {
+  background: var(--dark-blue-bg);
+  border-radius: 0.4rem;
+  font-size: var(--font-base);
   padding: 0.9rem 0.31rem;
-  z-index: 2;
+  height: 68px;
+  display: flex;
+  align-items: center;
 }
 
 .ExchangeChart.tv .ExchangeChart-bottom {
@@ -318,7 +302,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  top: 6.975rem;
+  top: 8.2rem;
   z-index: 1;
 }
 .ExchangeChart-bottom-controls {
@@ -418,6 +402,16 @@
   text-align: right;
 }
 
+.Order-editor-tokens .Order-editor-icon {
+  vertical-align: bottom;
+  height: 2.5rem;
+}
+
+.Swap-limit-icon {
+  vertical-align: bottom;
+  height: 2.5rem;
+}
+
 .ExchangeChart-container {
   position: absolute;
   left: 0;
@@ -458,6 +452,10 @@
   white-space: pre-line;
 }
 
+.Order-list-item-text {
+  line-height: 1.4;
+}
+
 .Exchange-list .App-card {
   margin-bottom: 1.5rem;
   display: flex;
@@ -473,6 +471,11 @@
 
 .Exchange-list.small {
   display: none;
+}
+
+.Collateral-warning .Tooltip-handle {
+  color: var(--warning-yellow);
+  text-decoration-color: var(--warning-yellow);
 }
 
 button.Exchange-list-action {
@@ -572,6 +575,7 @@ table.Exchange-list .Exchange-list-item-active {
   grid-template-columns: auto auto;
   font-size: var(--font-sm);
   margin-bottom: 0.465rem;
+  align-items: baseline;
 }
 
 .Exchange-info-row.top-line {
@@ -624,6 +628,7 @@ table.Exchange-list .Exchange-list-item-active {
 .Exchange-swap-market-box-title {
   font-size: var(--font-md);
   margin-bottom: 1.25rem;
+  display: flex;
 }
 
 .Exchange-swap-box-inner {
@@ -671,14 +676,16 @@ table.Exchange-list .Exchange-list-item-active {
   margin-bottom: 1.05rem;
   border-radius: 0.3rem;
   background: linear-gradient(90deg, rgba(30, 34, 61, 0.9) 0%, rgba(38, 43, 71, 0.9) 100%);
-  box-shadow: inset 0px 0px 3rem 0.5rem rgba(255, 255, 255, 0.01);
-  outline: 1px solid transparent;
-  outline-offset: -1px;
+  outline: 0.05rem solid transparent;
+  outline-offset: -0.1rem;
 }
 
-.Exchange-swap-section:hover,
-.Exchange-swap-section:focus-within {
+.Exchange-swap-section:hover {
   outline-color: #3a3f798f;
+}
+
+.Exchange-swap-section:focus-within {
+  outline-color: #3a3f79;
 }
 
 .Exchange-swap-option-tabs.Tab.block .Tab-option {
@@ -728,7 +735,6 @@ table.Exchange-list .Exchange-list-item-active {
   font-size: var(--font-sm);
   background: var(--primary-btn-bg);
   border: none;
-  opacity: 0.8;
 }
 
 .Exchange-swap-max:hover {
@@ -798,7 +804,6 @@ input.Exchange-swap-input.small {
   align-items: center;
   border: none;
   color: white;
-  opacity: 0.8;
 }
 
 .Exchange-swap-ball:hover {
@@ -834,6 +839,14 @@ table.Exchange-list-small td {
 .Exchange-list-title {
   display: inline-block;
   white-space: nowrap;
+}
+
+.PositionList-token-icon {
+  margin-right: 0.5rem;
+}
+
+.remove-top-margin {
+  margin-top: -1.05rem;
 }
 
 .Exchange-list-info-label {
@@ -960,6 +973,16 @@ table.Exchange-list-small td {
   color: #56dba8;
 }
 
+.ExchangeChart-header {
+  display: grid;
+  grid-template-columns: auto 116.32px;
+  grid-column-gap: 1rem;
+}
+
+.VersionSwitch-wrapper {
+  padding: 1.5rem;
+}
+
 @media (max-width: 1500px) {
   .Exchange-swap-box {
     width: 38.75rem;
@@ -984,7 +1007,39 @@ table.Exchange-list-small td {
   }
 }
 
+@media (max-width: 1275px) {
+  .ExchangeChart-top-inner {
+    grid-gap: 2.5rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .Chart-24h-low {
+    display: none;
+  }
+}
+
 @media (max-width: 1100px) {
+  .Chart-24h-low {
+    display: block;
+  }
+
+  .ExchangeChart-header {
+    grid-template-columns: auto 103px;
+  }
+
+  .VersionSwitch-wrapper {
+    padding: 1rem;
+  }
+
+  .ExchangeChart.tv .ExchangeChart-bottom {
+    top: 6rem;
+  }
+
+  .ExchangeChart-info {
+    height: 50px;
+  }
+
   .Exchange-swap-box {
     width: auto;
   }
@@ -1083,20 +1138,9 @@ table.Exchange-list-small td {
   }
 }
 
-@media (max-width: 1200px) {
-  .ExchangeChart-top-inner {
-    grid-column-gap: 3rem;
-  }
-}
-
-@media (max-width: 700px) {
+@media (max-width: 800px) {
   .ExchangeChart-top-inner {
     grid-template-columns: auto auto auto;
-    grid-column-gap: 0.8rem;
-  }
-
-  .ExchangeChart-title {
-    font-size: 1.85rem;
   }
 
   .ExchangeChart-additional-info {
@@ -1125,8 +1169,29 @@ table.Exchange-list-small td {
   }
 }
 
+@media (max-width: 550px) {
+  .ExchangeChart-top-inner {
+    grid-template-columns: auto auto;
+  }
+  .Chart-24h-change {
+    display: none;
+  }
+}
+
 @media (max-width: 450px) {
   .chart-positions {
     display: none;
+  }
+  .Chart-min-max-price {
+    display: none;
+  }
+  .ExchangeChart-top-inner {
+    grid-template-columns: auto;
+  }
+}
+
+@media (max-width: 350px) {
+  .ExchangeChart-header {
+    grid-column-gap: 0.5rem;
   }
 }

@@ -3,7 +3,7 @@ import cx from "classnames";
 import PositionDropdown from "components/Exchange/PositionDropdown";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import { PositionOrderInfo, isIncreaseOrderType } from "domain/synthetics/orders";
+import { PositionOrderInfo, getOrderError, isIncreaseOrderType } from "domain/synthetics/orders";
 import {
   PositionInfo,
   formatEstimatedLiquidationTime,
@@ -23,6 +23,8 @@ import { CHART_PERIODS } from "lib/legacy";
 import "./PositionItem.scss";
 import { useChainId } from "lib/chains";
 import { useMedia } from "react-use";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+import Button from "components/Button/Button";
 
 export type Props = {
   position: PositionInfo;
@@ -288,18 +290,16 @@ export function PositionItem(p: Props) {
   function renderPositionOrders() {
     if (positionOrders.length === 0) return null;
 
+    const ordersErrorList = positionOrders.map((order) => getOrderError(order, p.position)).filter(Boolean);
     return (
       <div onClick={p.onOrdersClick}>
         <Tooltip
           handle={t`Orders (${positionOrders.length})`}
           position="left-bottom"
-          handleClassName={cx([
-            "Exchange-list-info-label",
-            "Exchange-position-list-orders",
-            "plain",
-            "clickable",
-            "muted",
-          ])}
+          handleClassName={cx(
+            ["Exchange-list-info-label", "Exchange-position-list-orders", "plain", "clickable", "text-gray"],
+            { "position-order-error": ordersErrorList.length > 0 }
+          )}
           renderContent={() => {
             return (
               <>
@@ -307,6 +307,7 @@ export function PositionItem(p: Props) {
                   <Trans>Active Orders</Trans>
                 </strong>
                 {positionOrders.map((order) => {
+                  const error = getOrderError(order, p.position);
                   return (
                     <div key={order.key} className="Position-list-order active-order-tooltip">
                       {getTriggerThresholdType(order.orderType, order.isLong)}{" "}
@@ -315,6 +316,8 @@ export function PositionItem(p: Props) {
                       })}
                       : {isIncreaseOrderType(order.orderType) ? "+" : "-"}
                       {formatUsd(order.sizeDeltaUsd)}
+                      <br />
+                      {error && <div className="order-error-text">{error}</div>}
                     </div>
                   );
                 })}
@@ -337,7 +340,17 @@ export function PositionItem(p: Props) {
           {/* title */}
           <div className="Exchange-list-title">
             <Tooltip
-              handle={p.position.marketInfo.indexToken.symbol}
+              handle={
+                <>
+                  <TokenIcon
+                    className="PositionList-token-icon"
+                    symbol={p.position.marketInfo.indexToken.symbol}
+                    displaySize={20}
+                    importSize={24}
+                  />
+                  {p.position.marketInfo.indexToken.symbol}
+                </>
+              }
               position="left-bottom"
               handleClassName="plain"
               renderContent={() => (
@@ -466,7 +479,13 @@ export function PositionItem(p: Props) {
       <div className="App-card">
         <div>
           <div className={cx("App-card-title Position-card-title", { "Position-active-card": isCurrentMarket })}>
-            <span className="Exchange-list-title" onClick={() => p.onSelectPositionClick?.()}>
+            <span className="Exchange-list-title inline-flex" onClick={() => p.onSelectPositionClick?.()}>
+              <TokenIcon
+                className="PositionList-token-icon"
+                symbol={p.position.marketInfo.indexToken?.symbol}
+                displaySize={20}
+                importSize={24}
+              />
               {p.position.marketInfo.indexToken?.symbol}
             </span>
             <div>
@@ -577,23 +596,26 @@ export function PositionItem(p: Props) {
           {!p.hideActions && (
             <>
               <div className="App-card-divider"></div>
-              <div className="App-card-options">
-                <button
-                  className="App-button-option App-card-option"
+              <div className="remove-top-margin">
+                <Button
+                  variant="secondary"
+                  className="mr-md mt-md"
                   disabled={p.position.sizeInUsd.eq(0)}
                   onClick={p.onClosePositionClick}
                 >
                   <Trans>Close</Trans>
-                </button>
-                <button
-                  className="App-button-option App-card-option"
+                </Button>
+                <Button
+                  variant="secondary"
+                  className="mr-md mt-md"
                   disabled={p.position.sizeInUsd.eq(0)}
                   onClick={p.onEditCollateralClick}
                 >
                   <Trans>Edit Collateral</Trans>
-                </button>
-                <button
-                  className="App-button-option App-card-option"
+                </Button>
+                <Button
+                  variant="secondary"
+                  className="mt-md"
                   disabled={p.position.sizeInUsd.eq(0)}
                   onClick={() => {
                     // TODO: remove after adding trigger functionality to Modal
@@ -602,7 +624,7 @@ export function PositionItem(p: Props) {
                   }}
                 >
                   <Trans>Trigger</Trans>
-                </button>
+                </Button>
               </div>
             </>
           )}

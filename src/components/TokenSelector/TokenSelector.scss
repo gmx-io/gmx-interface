@@ -35,6 +35,10 @@
   border-radius: 0.6rem;
   text-align: right;
   white-space: nowrap;
+
+  .Token-symbol-text {
+    line-height: 0.85;
+  }
 }
 
 .TokenSelector-box:hover {
@@ -113,16 +117,6 @@
   opacity: 0.3;
 }
 
-.TokenSelector-token-row.TokenSelector-token-input-row {
-  padding: 0;
-  margin-top: 1.5rem;
-}
-
-.TokenSelector-token-row input {
-  padding: 1rem 1rem 1rem 4rem;
-  width: 100%;
-}
-
 .TokenSelector-token-row .Token-text {
   font-size: var(--font-md);
   color: #ffffff;
@@ -156,17 +150,6 @@
   bottom: 0;
   overflow: auto;
   border: none;
-}
-
-.Tokenselector-search-input {
-  font-size: 1.6rem;
-  background-position: 12px center;
-  background-size: 20px 20px;
-  background-repeat: no-repeat;
-  background-attachment: scroll;
-}
-.Tokenselector-search-input::placeholder {
-  color: var(--dark-blue-accent);
 }
 
 @media (max-width: 1100px) {

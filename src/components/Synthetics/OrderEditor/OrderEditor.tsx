@@ -253,7 +253,7 @@ export function OrderEditor(p: Props) {
     }
 
     if (!sizeDeltaUsd?.gt(0)) {
-      return t`Enter a size`;
+      return t`Enter an amount`;
     }
 
     if (!triggerPrice?.gt(0)) {
@@ -261,7 +261,7 @@ export function OrderEditor(p: Props) {
     }
 
     if (sizeDeltaUsd?.eq(positionOrder.sizeDeltaUsd) && triggerPrice?.eq(positionOrder.triggerPrice!)) {
-      return t`Enter a new size or price`;
+      return t`Enter new amount or price`;
     }
 
     if (isLimitOrderType(p.order.orderType)) {

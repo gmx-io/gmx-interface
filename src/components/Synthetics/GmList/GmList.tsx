@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import { groupBy } from "lodash";
 import Button from "components/Button/Button";
 import {
@@ -22,6 +22,7 @@ import "./GmList.scss";
 import Tooltip from "components/Tooltip/Tooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { getIcons } from "config/icons";
+import PageTitle from "components/PageTitle/PageTitle";
 
 type Props = {
   hideTitle?: boolean;
@@ -189,7 +190,11 @@ export function GmList({
                         </div>
                       </div>
                     </td>
-                    <td>{formatUsd(token.prices?.minPrice)}</td>
+                    <td>
+                      {formatUsd(token.prices?.minPrice, {
+                        displayDecimals: 3,
+                      })}
+                    </td>
 
                     <td className="GmList-last-column">
                       {formatTokenAmount(totalSupply, token.decimals, "GM", {
@@ -253,12 +258,7 @@ export function GmList({
 
       {isMobile && (
         <>
-          {!hideTitle && (
-            <div className="Page-title glp-composition-small title-small">
-              <Trans>GM Pools</Trans>
-              <img className="title-icon" src={currentIcons.network} width="24" alt="Network Icon" />
-            </div>
-          )}
+          {!hideTitle && <PageTitle title={t`GM Pools`} />}
 
           <div className="token-grid">
             {sortedMarketTokens.map((token) => {
@@ -299,7 +299,11 @@ export function GmList({
                       <div className="label">
                         <Trans>Price</Trans>
                       </div>
-                      <div>{formatUsd(token.prices?.minPrice)}</div>
+                      <div>
+                        {formatUsd(token.prices?.minPrice, {
+                          displayDecimals: 3,
+                        })}
+                      </div>
                     </div>
                     <div className="App-card-row">
                       <div className="label">

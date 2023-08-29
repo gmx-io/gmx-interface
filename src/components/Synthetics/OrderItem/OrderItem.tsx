@@ -1,8 +1,11 @@
 import { Trans, t } from "@lingui/macro";
+import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { MarketsInfoData } from "domain/synthetics/markets";
 import {
   OrderInfo,
   OrderType,
@@ -16,6 +19,7 @@ import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/s
 import { getMarkPrice } from "domain/synthetics/trade";
 import { USD_DECIMALS, getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
 import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
+import { getByKey } from "lib/objects";
 
 type Props = {
   order: OrderInfo;
@@ -27,6 +31,7 @@ type Props = {
   hideActions?: boolean;
   error?: string;
   isLarge: boolean;
+  marketsInfoData?: MarketsInfoData;
 };
 
 export function OrderItem(p: Props) {
@@ -91,7 +96,7 @@ export function OrderItem(p: Props) {
       return (
         <Tooltip
           className="order-error"
-          handle={p.order.title}
+          handle={renderTitleWithIcon(p.order)}
           position="right-bottom"
           handleClassName="plain"
           renderContent={() => <span className="negative">{p.error}</span>}
@@ -104,7 +109,7 @@ export function OrderItem(p: Props) {
         if (showDebugValues) {
           return (
             <Tooltip
-              handle={p.order.title}
+              handle={renderTitleWithIcon(p.order)}
               position="left-bottom"
               renderContent={() => (
                 <>
@@ -123,15 +128,16 @@ export function OrderItem(p: Props) {
             />
           );
         }
-        return p.order.title;
+        return renderTitleWithIcon(p.order);
       }
 
       const positionOrder = p.order as PositionOrderInfo;
 
       return (
         <Tooltip
-          handle={positionOrder.title}
+          handle={renderTitleWithIcon(p.order)}
           position="left-bottom"
+          className={p.error ? "order-error-text-msg" : undefined}
           renderContent={() => {
             return (
               <>
@@ -163,13 +169,69 @@ export function OrderItem(p: Props) {
                     />
                   </>
                 )}
+
+                <>
+                  <br />
+                  {p.error && <span className="negative">{p.error}</span>}
+                </>
               </>
             );
           }}
         />
       );
     } else {
-      return p.order.title;
+      return renderTitleWithIcon(p.order);
+    }
+  }
+
+  function renderTitleWithIcon(order: OrderInfo) {
+    if (isSwapOrderType(order.orderType)) {
+      const { initialCollateralToken, targetCollateralToken, minOutputAmount, initialCollateralDeltaAmount } = order;
+
+      const fromTokenText = formatTokenAmount(initialCollateralDeltaAmount, initialCollateralToken.decimals, "");
+
+      const fromTokenWithIcon = (
+        <span className="nobr">
+          <TokenIcon className="mr-xs" symbol={initialCollateralToken.symbol} displaySize={18} importSize={24} />
+          {initialCollateralToken.symbol}
+        </span>
+      );
+
+      const toTokenText = formatTokenAmount(minOutputAmount, targetCollateralToken.decimals, "");
+
+      const toTokenWithIcon = (
+        <span className="nobr">
+          <TokenIcon className="mr-xs" symbol={targetCollateralToken.symbol} displaySize={18} importSize={24} />
+          {targetCollateralToken.symbol}
+        </span>
+      );
+
+      return (
+        <span>
+          Swap {fromTokenText} {fromTokenWithIcon} for {toTokenText} {toTokenWithIcon}
+        </span>
+      );
+    } else {
+      const marketInfo = getByKey(p.marketsInfoData, order.marketAddress);
+      const indexToken = marketInfo?.indexToken;
+      const { orderType, isLong, sizeDeltaUsd } = order;
+
+      const symbolWithIcon = (
+        <span>
+          {indexToken && <TokenIcon className="mr-xs" symbol={indexToken?.symbol} displaySize={18} importSize={24} />}
+          {indexToken?.symbol}
+        </span>
+      );
+
+      const longShortText = isLong ? t`Long` : t`Short`;
+      const sizeText = formatUsd(sizeDeltaUsd);
+      const increaseOrDecreaseText = isIncreaseOrderType(orderType) ? t`Increase` : t`Decrease`;
+
+      return (
+        <span>
+          {increaseOrDecreaseText} {symbolWithIcon} {longShortText} by {sizeText}
+        </span>
+      );
     }
   }
 
@@ -275,7 +337,7 @@ export function OrderItem(p: Props) {
           </td>
         )}
         <td className="Exchange-list-item-type">{isDecreaseOrderType(p.order.orderType) ? t`Trigger` : t`Limit`}</td>
-        <td>{renderTitle()}</td>
+        <td className="Order-list-item-text">{renderTitle()}</td>
         <td>{renderTriggerPrice()}</td>
         <td>{renderMarkPrice()}</td>
         {!p.hideActions && (
@@ -304,7 +366,7 @@ export function OrderItem(p: Props) {
     return (
       <div className="App-card">
         <div>
-          <div className="App-card-title-small">{renderTitle()}</div>
+          <div className="Order-list-card-title">{renderTitle()}</div>
           <div className="App-card-divider" />
           <div className="App-card-content">
             {showDebugValues && (
@@ -356,27 +418,26 @@ export function OrderItem(p: Props) {
                 </div>
               </div>
             )}
-
-            {!p.hideActions && (
-              <>
-                <div className="App-card-divider"></div>
-                <div className="App-card-options">
-                  {p.onEditOrder && (
-                    <button className="App-button-option App-card-option" onClick={p.onEditOrder}>
-                      <Trans>Edit</Trans>
-                    </button>
-                  )}
-
-                  {p.onCancelOrder && (
-                    <button className="App-button-option App-card-option" onClick={p.onCancelOrder}>
-                      <Trans>Cancel</Trans>
-                    </button>
-                  )}
-                </div>
-              </>
-            )}
           </div>
         </div>
+        {!p.hideActions && (
+          <div className="App-card-actions">
+            <div className="App-card-divider"></div>
+            <div className="remove-top-margin">
+              {p.onEditOrder && (
+                <Button variant="secondary" className="mr-md mt-md" onClick={p.onEditOrder}>
+                  <Trans>Edit</Trans>
+                </Button>
+              )}
+
+              {p.onCancelOrder && (
+                <Button variant="secondary" className="mt-md" onClick={p.onCancelOrder}>
+                  <Trans>Cancel</Trans>
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     );
   }

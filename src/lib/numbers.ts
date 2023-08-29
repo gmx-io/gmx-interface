@@ -342,3 +342,9 @@ export function addTwoBigNumbers(a, b) {
 
   return BigNumber.from(a).add(b);
 }
+
+export function removeTrailingZeros(amount: string | number) {
+  const amountWithoutZeros = Number(amount);
+  if (!amountWithoutZeros) return amount;
+  return amountWithoutZeros;
+}

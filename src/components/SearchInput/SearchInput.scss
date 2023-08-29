@@ -1,0 +1,21 @@
+.Search-input {
+  padding: 0;
+  cursor: pointer;
+  border: 1px solid #ffffff29;
+  position: relative;
+  background: transparent;
+  border-radius: var(--border-radius-sm);
+
+  .Tokenselector-search-input {
+    font-size: 1.6rem;
+    background-position: 12px center;
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    padding: 1rem 1rem 1rem 4rem;
+    width: 100%;
+  }
+  .Tokenselector-search-input::placeholder {
+    color: var(--dark-blue-accent);
+  }
+}

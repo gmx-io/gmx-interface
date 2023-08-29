@@ -25,7 +25,7 @@ export function claimAffiliateRewardsTxn(chainId: number, library: Web3Provider,
     "claimAffiliateRewards",
     [rewardsParams.marketAddresses, rewardsParams.tokenAddresses, account],
     {
-      sentMsg: t`Claim request sent`,
+      sentMsg: t`Affiliate Rewards Claimed`,
       successMsg: t`Success claimings`,
       failMsg: t`Claiming failed`,
       hideSuccessMsg: true,

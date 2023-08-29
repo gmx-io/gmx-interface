@@ -424,7 +424,7 @@ export function PositionSeller(p: Props) {
               <br />
               <br />
               <ExternalLink href="https://docs.gmx.io/docs/trading/v2#stop-loss--take-profit-orders">
-                Read More
+                More Info
               </ExternalLink>
               .
             </Trans>
@@ -433,22 +433,29 @@ export function PositionSeller(p: Props) {
 
         {!isTrigger && position && (
           <>
-            <BuyInputSection
-              topLeftLabel={t`Close`}
-              topRightLabel={t`Max`}
-              topRightValue={formatUsd(maxCloseSize)}
-              inputValue={closeUsdInputValue}
-              onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
-              showMaxButton={maxCloseSize?.gt(0) && !closeSizeUsd?.eq(maxCloseSize)}
-              onClickMax={() => setCloseUsdInputValue(formatAmountFree(maxCloseSize, USD_DECIMALS))}
-            >
-              USD
-            </BuyInputSection>
+            <div className="relative">
+              <BuyInputSection
+                topLeftLabel={t`Close`}
+                topRightLabel={t`Max`}
+                topRightValue={formatUsd(maxCloseSize)}
+                inputValue={closeUsdInputValue}
+                onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
+                showMaxButton={maxCloseSize?.gt(0) && !closeSizeUsd?.eq(maxCloseSize)}
+                onClickMax={() => setCloseUsdInputValue(formatAmountFree(maxCloseSize, USD_DECIMALS))}
+                showPercentSelector={true}
+                onPercentChange={(percentage) => {
+                  const formattedAmount = formatAmountFree(maxCloseSize.mul(percentage).div(100), USD_DECIMALS, 2);
+                  setCloseUsdInputValue(formattedAmount);
+                }}
+              >
+                USD
+              </BuyInputSection>
+            </div>
 
             <div className="PositionEditor-info-box">
               <div className="PositionEditor-keep-leverage-settings">
                 <ToggleSwitch isChecked={keepLeverage ?? false} setIsChecked={setKeepLeverage}>
-                  <span className="muted font-sm">
+                  <span className="text-gray font-sm">
                     <Trans>Keep leverage at {position?.leverage ? formatLeverage(position.leverage) : "..."}</Trans>
                   </span>
                 </ToggleSwitch>
@@ -645,7 +652,7 @@ export function PositionSeller(p: Props) {
             {isHighPriceImpact && (
               <div className="PositionSeller-price-impact-warning">
                 <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
-                  <span className="muted font-sm">
+                  <span className="text-gray font-sm">
                     <Trans>Acknowledge high Price Impact</Trans>
                   </span>
                 </Checkbox>

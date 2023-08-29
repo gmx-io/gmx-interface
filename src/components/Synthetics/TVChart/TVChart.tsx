@@ -4,21 +4,20 @@ import { Dropdown, DropdownOption } from "components/Dropdown/Dropdown";
 import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChartContainer";
 import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 import { convertTokenAddress, getPriceDecimals, getToken, isChartAvailabeForToken } from "config/tokens";
+import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { OrdersInfoData, PositionOrderInfo, isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { PositionsInfoData } from "domain/synthetics/positions";
 import { TokensData, getTokenData } from "domain/synthetics/tokens";
 import { use24hPriceDelta } from "domain/synthetics/tokens/use24PriceDelta";
+import { useOracleKeeperFetcher } from "domain/synthetics/tokens/useOracleKeeperFetcher";
 import { SyntheticsTVDataProvider } from "domain/synthetics/tradingview/SyntheticsTVDataProvider";
 import { Token } from "domain/tokens";
-import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatUsd, numberWithCommas } from "lib/numbers";
-import { useEffect, useMemo, useRef } from "react";
-import { useMedia } from "react-use";
+import { useEffect, useMemo, useState } from "react";
 import "./TVChart.scss";
-import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 
 export type Props = {
   ordersInfo?: OrdersInfoData;
@@ -48,8 +47,8 @@ export function TVChart({
   setTradePageVersion,
 }: Props) {
   const { chainId } = useChainId();
-  const isMobile = useMedia("(max-width: 768px)");
-  const isSmallMobile = useMedia("(max-width: 470px)");
+  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
+  const [dataProvider, setDataProvider] = useState<SyntheticsTVDataProvider>();
 
   let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period-v2"], DEFAULT_PERIOD);
 
@@ -57,7 +56,6 @@ export function TVChart({
     period = DEFAULT_PERIOD;
   }
 
-  const dataProvider = useRef<TVDataProvider>();
   const chartToken = getTokenData(tokensData, chartTokenAddress);
 
   const tokenOptions: DropdownOption[] =
@@ -149,8 +147,8 @@ export function TVChart({
   }
 
   useEffect(() => {
-    dataProvider.current = new SyntheticsTVDataProvider({ resolutions: SUPPORTED_RESOLUTIONS_V2 });
-  }, []);
+    setDataProvider(new SyntheticsTVDataProvider({ resolutions: SUPPORTED_RESOLUTIONS_V2, oracleKeeperFetcher }));
+  }, [oracleKeeperFetcher]);
 
   useEffect(
     function updatePeriod() {
@@ -163,19 +161,19 @@ export function TVChart({
 
   return (
     <div className="ExchangeChart tv">
-      <div className="TVChart-top-card ExchangeChart-top App-box App-box-border">
-        <div className="ExchangeChart-top-inner">
-          <div>
-            <Dropdown
-              className="chart-token-selector"
-              options={tokenOptions}
-              selectedOption={selectedTokenOption}
-              onSelect={onSelectTokenOption}
-              disabled={disableSelectToken}
-            />
-          </div>
-          {!isSmallMobile && (
+      <div className="ExchangeChart-header">
+        <div className="ExchangeChart-info">
+          <div className="ExchangeChart-top-inner">
             <div>
+              <Dropdown
+                className="chart-token-selector"
+                options={tokenOptions}
+                selectedOption={selectedTokenOption}
+                onSelect={onSelectTokenOption}
+                disabled={disableSelectToken}
+              />
+            </div>
+            <div className="Chart-min-max-price">
               <div className="ExchangeChart-main-price">
                 {formatUsd(chartToken?.prices?.maxPrice, {
                   displayDecimals: chartToken?.priceDecimals,
@@ -187,9 +185,8 @@ export function TVChart({
                 }) || "..."}
               </div>
             </div>
-          )}
-          {!isSmallMobile && (
-            <div>
+
+            <div className="Chart-24h-change">
               <div className="ExchangeChart-info-label">24h Change</div>
               <div
                 className={cx({
@@ -200,27 +197,25 @@ export function TVChart({
                 {dayPriceDelta?.deltaPercentageStr || "-"}
               </div>
             </div>
-          )}
-          {!isMobile && (
-            <>
-              <div className="ExchangeChart-additional-info">
-                <div className="ExchangeChart-info-label">24h High</div>
-                <div>
-                  {dayPriceDelta?.high
-                    ? numberWithCommas(dayPriceDelta.high.toFixed(chartToken?.priceDecimals || 2))
-                    : "-"}
-                </div>
+            <div className="ExchangeChart-additional-info">
+              <div className="ExchangeChart-info-label">24h High</div>
+              <div>
+                {dayPriceDelta?.high
+                  ? numberWithCommas(dayPriceDelta.high.toFixed(chartToken?.priceDecimals || 2))
+                  : "-"}
               </div>
-              <div className="ExchangeChart-additional-info">
-                <div className="ExchangeChart-info-label">24h Low</div>
-                <div>
-                  {dayPriceDelta?.low
-                    ? numberWithCommas(dayPriceDelta?.low.toFixed(chartToken?.priceDecimals || 2))
-                    : "-"}
-                </div>
+            </div>
+            <div className="ExchangeChart-additional-info Chart-24h-low">
+              <div className="ExchangeChart-info-label">24h Low</div>
+              <div>
+                {dayPriceDelta?.low
+                  ? numberWithCommas(dayPriceDelta?.low.toFixed(chartToken?.priceDecimals || 2))
+                  : "-"}
               </div>
-            </>
-          )}
+            </div>
+          </div>
+        </div>
+        <div className="ExchangeChart-info VersionSwitch-wrapper">
           <VersionSwitch currentVersion={tradePageVersion} setCurrentVersion={setTradePageVersion} />
         </div>
       </div>
@@ -232,7 +227,7 @@ export function TVChart({
             symbol={chartToken.symbol}
             chainId={chainId}
             onSelectToken={onSelectChartToken}
-            dataProvider={dataProvider.current}
+            dataProvider={dataProvider}
             period={period}
             setPeriod={setPeriod}
             chartToken={{

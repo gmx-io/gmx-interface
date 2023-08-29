@@ -24,10 +24,10 @@ import "./SyntheticsStats.scss";
 function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: number) {
   const n = Number(formatAmount(amount, tokenDecimals));
 
-  if (n > 1000000) {
+  if (n >= 1000000) {
     return `${(n / 1000000).toFixed(1)}M`;
   }
-  if (n > 1000) {
+  if (n >= 1000) {
     return `${(n / 1000).toFixed(1)}K`;
   }
   return n.toFixed(1);
@@ -61,14 +61,32 @@ export function SyntheticsStats() {
             <th>Market</th>
             <th>Pool Value</th>
             <th>Pool Balance</th>
-            <th>PnL</th>
-            <th>Borrowing Fees</th>
             <th>
-              <Tooltip handle="Funding APR" renderContent={() => "Per 1h"} />
+              <Tooltip handle="PnL" renderContent={() => "Pending PnL from all open positions"} />
             </th>
+            <th>
+              <Tooltip handle="Borrowing Fees" renderContent={() => "Pending Borrowing Fees from all open positions"} />
+            </th>
+            <th>
+              <Tooltip
+                handle="Funding APR"
+                renderContent={() => (
+                  <div>
+                    Longs / Shorts
+                    <br />
+                    <br />
+                    Per 1h
+                    <br />
+                    <br />
+                    Negative value: traders pay funding
+                    <br /> Positive value: traders receive funding
+                  </div>
+                )}
+              />
+            </th>
+            <th>OI Balance</th>
             <th>Liquidity Long</th>
             <th>Liquidity Short</th>
-            <th>OI Balance</th>
             <th>
               <Tooltip handle="VI Positions" renderContent={() => "Virtual inventory for positons"} />
             </th>
@@ -186,15 +204,37 @@ export function SyntheticsStats() {
                           <StatsTooltipRow label="Pool USD Short" value={formatAmountHuman(shortPoolUsd, 30)} />
 
                           <StatsTooltipRow
-                            label={`Swap Imapct Amount ${market.longToken.symbol}`}
+                            label="Pool Long Amount"
+                            value={formatAmountHuman(market.longPoolAmount, market.longToken.decimals)}
+                            showDollar={false}
+                          />
+                          <StatsTooltipRow
+                            label="Pool Short Amount"
+                            value={formatAmountHuman(market.shortPoolAmount, market.shortToken.decimals)}
+                            showDollar={false}
+                          />
+
+                          <StatsTooltipRow
+                            label="Pool Max Long Amount"
+                            value={formatAmountHuman(market.maxLongPoolAmount, market.longToken.decimals)}
+                            showDollar={false}
+                          />
+                          <StatsTooltipRow
+                            label="Pool Max Short Amount"
+                            value={formatAmountHuman(market.maxShortPoolAmount, market.shortToken.decimals)}
+                            showDollar={false}
+                          />
+
+                          <StatsTooltipRow
+                            label={`Swap Impact Amount ${market.longToken.symbol}`}
                             value={formatAmountHuman(swapImpactUsdLong, 30)}
                           />
                           <StatsTooltipRow
-                            label={`Swap Imapct Amount ${market.shortToken.symbol}`}
+                            label={`Swap Impact Amount ${market.shortToken.symbol}`}
                             value={formatAmountHuman(swapImpactUsdShort, 30)}
                           />
                           <StatsTooltipRow
-                            label={`Position Imapct Amount`}
+                            label={`Position Impact Amount`}
                             value={formatAmountHuman(positionImpactUsd, 30)}
                           />
                         </>
@@ -204,7 +244,7 @@ export function SyntheticsStats() {
                 </td>
                 <td>
                   <div className="cell">
-                    <div style={{ marginBottom: "4px" }}>
+                    <div>
                       ${formatAmountHuman(longPoolUsd, 30)} / ${formatAmountHuman(shortPoolUsd, 30)}
                     </div>
                     <ShareBar className="MarketCard-pool-balance-bar" share={longPoolUsd} total={totalPoolUsd} />
@@ -262,16 +302,35 @@ export function SyntheticsStats() {
                       "..."
                     ) : (
                       <div>
-                        <span>
+                        <span className={cx({ positive: true })}>
                           {market.longsPayShorts ? "-" : "+"}
                           {formatAmount(fundingAprLong.abs(), 30, 4)}%
                         </span>{" "}
                         /{" "}
-                        <span>
+                        <span className={cx({ negative: true })}>
                           {market.longsPayShorts ? "+" : "-"}
                           {formatAmount(fundingAprShort.abs(), 30, 4)}%
                         </span>
                       </div>
+                    )}
+                  </div>
+                </td>
+                <td>
+                  <div className="cell">
+                    {market.isSpotOnly ? (
+                      "..."
+                    ) : (
+                      <>
+                        <div>
+                          ${formatAmountHuman(market.longInterestUsd, 30)} / $
+                          {formatAmountHuman(market.shortInterestUsd, 30)}
+                        </div>
+                        <ShareBar
+                          className="MarketCard-pool-balance-bar"
+                          share={market.longInterestUsd}
+                          total={totalInterestUsd}
+                        />
+                      </>
                     )}
                   </div>
                 </td>
@@ -282,7 +341,7 @@ export function SyntheticsStats() {
                         formatAmountHuman(longCollateralLiquidityUsd, 30)
                       ) : (
                         <div className="cell">
-                          <div style={{ marginBottom: "4px" }}>
+                          <div>
                             ${formatAmountHuman(reservedUsdLong, 30)} / ${formatAmountHuman(maxReservedUsdLong, 30)}
                           </div>
                           <ShareBar share={reservedUsdLong} total={maxReservedUsdLong} />
@@ -304,7 +363,7 @@ export function SyntheticsStats() {
                         formatAmountHuman(shortCollateralLiquidityUsd, 30)
                       ) : (
                         <div className="cell">
-                          <div style={{ marginBottom: "4px" }}>
+                          <div>
                             ${formatAmountHuman(reservedUsdShort, 30)} / ${formatAmountHuman(maxReservedUsdShort, 30)}
                           </div>
                           <ShareBar share={reservedUsdShort} total={maxReservedUsdShort} />
@@ -318,25 +377,6 @@ export function SyntheticsStats() {
                       />
                     )}
                   />
-                </td>
-                <td>
-                  <div className="cell">
-                    {market.isSpotOnly ? (
-                      "..."
-                    ) : (
-                      <>
-                        <div style={{ marginBottom: "4px" }}>
-                          ${formatAmountHuman(market.longInterestUsd, 30)} / $
-                          {formatAmountHuman(market.shortInterestUsd, 30)}
-                        </div>
-                        <ShareBar
-                          className="MarketCard-pool-balance-bar"
-                          share={market.longInterestUsd}
-                          total={totalInterestUsd}
-                        />
-                      </>
-                    )}
-                  </div>
                 </td>
                 <td>
                   <div className="cell">
