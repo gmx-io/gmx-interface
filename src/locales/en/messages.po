@@ -472,6 +472,10 @@ msgstr "Borrow Fee / Day"
 msgid "Borrow Fee Rate"
 msgstr "Borrow Fee Rate"
 
+#: src/domain/synthetics/markets/getBridigingInfo.tsx
+msgid "Bridge {tokenSymbol} to {chainName} using any of the options below:"
+msgstr "Bridge {tokenSymbol} to {chainName} using any of the options below:"
+
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
@@ -2839,6 +2843,7 @@ msgid "Mintable"
 msgstr "Mintable"
 
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Dashboard/DashboardV2.js
 msgid "More Info"
 msgstr "More Info"
