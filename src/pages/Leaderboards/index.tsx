@@ -21,7 +21,7 @@ export default function Leaderboard() {
               <Trans>Leaderboards</Trans> <img alt={t`Chain Icon`} src={getIcon(chainId, "network")} />
             </div>
             <div className="Page-description">
-              <Trans>Addresses trading statistics</Trans>
+              <Trans>Addresses trading statistics.</Trans>
             </div>
             {/* <div style={{ marginTop: "2.5rem" }}>
               <select
