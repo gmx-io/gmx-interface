@@ -218,15 +218,15 @@ function parsePositionsInfo(
 
 export function usePositionsInfo(
   chainId: number,
+  positionsHash: string,
   positionKeys: string[],
   marketPrices: ContractMarketPrices[],
 ): PositionsResult {
-  const keys = [...positionKeys].sort((a, b) => a < b ? -1 : 1).join("-");
   const { minCollateralUsd } = usePositionsConstants(chainId);
   const { marketsInfoData, tokensData, pricesUpdatedAt } = useMarketsInfo(chainId);
   const [positions, setPositions] = useState<PositionsInfoData>();
   const positionsData = useMulticall(chainId, "usePositionsData", {
-    key: [keys, pricesUpdatedAt],
+    key: [positionsHash, pricesUpdatedAt],
     refreshInterval: null, // Refresh on every prices update
     request: () => ({
       reader: {
@@ -248,6 +248,8 @@ export function usePositionsInfo(
     }),
   });
 
+  const hasData = Array.isArray(positionsData?.data?.data?.reader?.positions?.returnValues);
+
   useEffect(() => {
     const positions = positionsData?.data?.data?.reader?.positions?.returnValues;
     if (positions && marketsInfoData && tokensData && minCollateralUsd) {
@@ -263,9 +265,9 @@ export function usePositionsInfo(
   // The dependencies below derive from the values used within the effect callback
   // eslint-disable-next-line
   }, [
-    keys,
+    positionsHash,
     pricesUpdatedAt,
-    positionsData?.data?.data?.reader?.positions?.returnValues,
+    hasData,
   ]);
 
   const isLoading = !(positions && marketsInfoData && tokensData && minCollateralUsd);

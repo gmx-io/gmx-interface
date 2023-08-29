@@ -12,13 +12,28 @@ import { USD_DECIMALS } from "lib/legacy";
 import { TableCell, TableHeader } from "components/Table/types";
 import { TopAccountsRow } from "domain/synthetics/leaderboards";
 import AddressView from "components/AddressView";
+import Tooltip from "components/Tooltip/Tooltip";
 
 const parseRow = (s: TopAccountsRow): Record<string, TableCell> => ({
   id: s.id,
   rank: s.rank + 1,
   account: { value: "", render: () => <AddressView address={ s.account } size={ 24 }/> },
   absPnl: {
-    value: formatUsd(s.absPnl) || "",
+    value: "",
+    render: () => (
+      <Tooltip
+        handle={ formatUsd(s.absPnl) }
+        position="center-top"
+        renderContent={
+          () => (
+            <div>
+              <p>{ `${ t`RPnL` }: ${ formatUsd(s.rPnl) }` }</p>
+              <p>{ `${ t`UPnL` }: ${ formatUsd(s.uPnl) }` }</p>
+            </div>
+          )
+        }
+      />
+    ),
     className: classnames(
       s.absPnl.isNegative() ? "negative" : "positive",
       "leaderboard-pnl-abs"
@@ -26,6 +41,19 @@ const parseRow = (s: TopAccountsRow): Record<string, TableCell> => ({
   },
   relPnl: {
     value: `${ formatAmount(s.relPnl.mul(BigNumber.from(100)), USD_DECIMALS, 2, true) }%`,
+    render: () => (
+      <Tooltip
+        handle={ formatUsd(s.absPnl) }
+        position="center-top"
+        renderContent={
+          () => (
+            <div>
+              <p>{ `${ t`Max Collateral` }: ${ formatUsd(s.maxCollateral) }` }</p>
+            </div>
+          )
+        }
+      />
+    ),
     className: classnames(
       s.relPnl.isNegative() ? "negative" : "positive",
       "leaderboard-pnl-rel"

@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { BigNumber } from "ethers";
+import { BigNumber, utils } from "ethers";
 import { getAddress } from "ethers/lib/utils";
 import { queryAccountOpenPositions } from "./queries"
 import { arbitrumGoerliLeaderboardsClient as graph } from "lib/subgraph/clients";
@@ -113,14 +113,23 @@ export function useAccountOpenPositions() {
   const { chainId } = useChainId();
   const { tokensData, marketsInfoData, pricesUpdatedAt } = useMarketsInfo(chainId);
   const positions = useSWR(['/leaderboards/positions', chainId], fetchAccountOpenPositions);
+  const [positionsHash, setPositionsHash] = useState<string>("");
   const [keys, setKeys] = useState<string[]>([]);
   const [prices, setPrices] = useState<ContractMarketPrices[]>([]);
   const [data, setData] = useState<AccountOpenPosition[]>([]);
 
-  let positionKeys: string = "";
+  let positionKeys: number[] = [];
 
-  for (const {id} of positions.data || []) {
-    positionKeys += id;
+  for (const { id } of positions.data || []) {
+    for (const c of id) {
+      positionKeys.push(c.charCodeAt(0));
+    }
+  }
+
+  const hash: string = utils.sha256(positionKeys);
+
+  if (hash !== positionsHash) {
+    setPositionsHash(hash);
   }
 
   useEffect(() => {
@@ -141,9 +150,9 @@ export function useAccountOpenPositions() {
     setKeys(keys);
     setPrices(prices);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pricesUpdatedAt, chainId, positionKeys]);
+  }, [pricesUpdatedAt, chainId, positionsHash]);
 
-  const positionsInfo = usePositionsInfo(chainId, keys, prices);
+  const positionsInfo = usePositionsInfo(chainId, positionsHash, keys, prices);
   const error = positions.error || positionsInfo.error;
   const isLoading = !error && !(
     tokensData &&

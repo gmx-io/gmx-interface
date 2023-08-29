@@ -58,6 +58,9 @@ export type TopAccountsRow = {
   account: string;
   absPnl: BigNumber;
   relPnl: BigNumber;
+  rPnl: BigNumber;
+  uPnl: BigNumber;
+  maxCollateral: BigNumber;
   size: BigNumber;
   leverage: BigNumber;
   wins: BigNumber;
