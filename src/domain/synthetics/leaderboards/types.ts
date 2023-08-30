@@ -115,13 +115,17 @@ export type TopPositionsRow = {
   size: BigNumber;
   liqPrice?: BigNumber;
   isLong: boolean;
+  markPrice: BigNumber;
+  liqPriceDelta?: BigNumber;
+  liqPriceDeltaRel?: BigNumber;
 };
 
 export type AccountOpenPosition = {
   key: string;
   account: string;
   isLong: boolean;
-  marketInfo: MarketInfo,
+  marketInfo: MarketInfo;
+  markPrice: BigNumber;
   collateralToken: TokenData;
   unrealizedPnl: BigNumber;
   unrealizedPnlAfterFees: BigNumber;
@@ -139,6 +143,8 @@ export type AccountOpenPosition = {
   pendingBorrowingFeesUsd: BigNumber;
   closingFeeUsd: BigNumber;
   liquidationPrice?: BigNumber;
+  liquidationPriceDelta?: BigNumber;
+  liquidationPriceDeltaRel?: BigNumber;
 };
 
 export type DataByPeriod<T> = {

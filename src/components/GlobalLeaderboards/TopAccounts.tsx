@@ -40,10 +40,10 @@ const parseRow = (s: TopAccountsRow): Record<string, TableCell> => ({
     ),
   },
   relPnl: {
-    value: `${ formatAmount(s.relPnl.mul(BigNumber.from(100)), USD_DECIMALS, 2, true) }%`,
+    value: "",
     render: () => (
       <Tooltip
-        handle={ formatUsd(s.absPnl) }
+        handle={ `${ formatAmount(s.relPnl.mul(BigNumber.from(100)), USD_DECIMALS, 2, true) }%` }
         position="center-top"
         renderContent={
           () => (

@@ -10,6 +10,8 @@ import { useChainId } from "lib/chains";
 import { usePositionsInfo } from "./usePositionsInfo";
 import { PositionsInfoData, getPositionKey } from "../positions";
 import { useEffect, useState } from "react";
+import { expandDecimals } from "lib/numbers";
+import { USD_DECIMALS } from "lib/legacy";
 
 const fetchAccountOpenPositionsPage = async (
   first: number,
@@ -64,13 +66,23 @@ const parseAccountOpenPositions = (
       ? currSuzeInUsd.sub(prevSizeInUsd)
       : prevSizeInUsd.sub(currSuzeInUsd);
 
+    const liquidationPrice = positionInfo.liquidationPrice;
+    const markPrice = positionInfo.markPrice;
+    const liquidationPriceDelta = liquidationPrice && liquidationPrice.sub(markPrice);
+    const liquidationPriceDeltaRel = liquidationPrice && liquidationPriceDelta && (
+      liquidationPriceDelta
+        .mul(expandDecimals(1, USD_DECIMALS))
+        .mul(BigNumber.from(100))
+        .div(markPrice)
+    );
+
     positions.push({
       key,
       account: accountAddress,
       isLong: p.isLong,
       marketInfo: positionInfo.marketInfo,
+      markPrice,
       collateralToken: positionInfo.collateralToken,
-      unrealizedPnl,
       entryPrice: positionInfo.entryPrice!, // BigNumber.from(p.entryPrice),
       sizeInUsd: currSuzeInUsd,
       collateralAmount,
@@ -80,7 +92,10 @@ const parseAccountOpenPositions = (
       collectedBorrowingFeesUsd: BigNumber.from(p.borrowingFeeUsd),
       collectedFundingFeesUsd: BigNumber.from(p.fundingFeeUsd),
       collectedPositionFeesUsd: BigNumber.from(p.positionFeeUsd),
-      liquidationPrice: positionInfo.liquidationPrice,
+      liquidationPrice,
+      liquidationPriceDelta,
+      liquidationPriceDeltaRel,
+      unrealizedPnl,
       unrealizedPnlAfterFees: positionInfo.pnlAfterFees,
       closingFeeUsd: positionInfo.closingFeeUsd,
       pendingFundingFeesUsd: positionInfo.pendingFundingFeesUsd,

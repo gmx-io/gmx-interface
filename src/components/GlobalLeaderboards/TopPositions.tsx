@@ -5,12 +5,13 @@ import { useDebounce } from "lib/useDebounce";
 import { useState } from "react";
 import { useLeaderboardContext } from "./Context";
 import { t } from "@lingui/macro";
-import { formatUsd } from "lib/numbers";
+import { formatAmount, formatUsd } from "lib/numbers";
 import classnames from "classnames";
 import { TableCell, TableHeader } from "components/Table/types";
-import { importImage } from "lib/legacy";
+import { USD_DECIMALS, importImage } from "lib/legacy";
 import AddressView from "components/AddressView";
 import { TopPositionsRow } from "domain/synthetics/leaderboards";
+import Tooltip from "components/Tooltip/Tooltip";
 
 const parseRow = (p: TopPositionsRow): { [key in keyof TopPositionsRow]?: TableCell } => ({
   key: p.key,
@@ -41,7 +42,27 @@ const parseRow = (p: TopPositionsRow): { [key in keyof TopPositionsRow]?: TableC
   },
   entryPrice: { value: formatUsd(p.entryPrice) || "" },
   size: { value: formatUsd(p.size) || "" },
-  liqPrice: { value: formatUsd(p.liqPrice) || "" },
+  liqPrice: {
+    value: "",
+    render: () => (
+      <Tooltip
+        handle={ formatUsd(p.liqPrice) || "" }
+        position="center-top"
+        renderContent={
+          () => (
+            <div>
+              <p>{ `${ t`Mark Price` }: ${ formatUsd(p.markPrice) }` }</p>
+              <p>{ p.liqPriceDelta && p.liqPriceDeltaRel ? `${ t`Price change to Liq.` }: ${
+                formatUsd(p.liqPriceDelta)
+              } (${
+                formatAmount(p.liqPriceDeltaRel, USD_DECIMALS, 2, true)
+              }%)` : "" }</p>
+            </div>
+          )
+        }
+      />
+    ),
+  },
 });
 
 export default function TopPositions() {

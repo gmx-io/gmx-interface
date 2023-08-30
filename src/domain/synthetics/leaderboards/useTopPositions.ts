@@ -6,16 +6,21 @@ export function useTopPositions(): RemoteData<TopPositionsRow> {
   return {
     isLoading: !positions.data,
     error: positions.error,
-    data: positions.data.map((p, i) => ({
-      key: p.key,
-      rank: i,
-      account: p.account,
-      unrealizedPnl: p.unrealizedPnlAfterFees,
-      market: p.marketInfo,
-      entryPrice: p.entryPrice,
-      size: p.sizeInUsd,
-      liqPrice: p.liquidationPrice,
-      isLong: p.isLong,
-    })),
+    data: positions.data.map((p, i) => {
+      return {
+        key: p.key,
+        rank: i,
+        account: p.account,
+        unrealizedPnl: p.unrealizedPnlAfterFees,
+        market: p.marketInfo,
+        entryPrice: p.entryPrice,
+        size: p.sizeInUsd,
+        isLong: p.isLong,
+        markPrice: p.markPrice,
+        liqPrice: p.liquidationPrice,
+        liqPriceDelta: p.liquidationPriceDelta,
+        liqPriceDeltaRel: p.liquidationPriceDeltaRel,
+      };
+    }),
   };
 }
