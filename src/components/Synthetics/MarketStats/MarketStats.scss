@@ -63,5 +63,10 @@
 @media (max-width: 450px) {
   .Gm-stats-title {
     flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .Gm-stats-title .subtext {
+    margin-left: 0;
   }
 }

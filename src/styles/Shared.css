@@ -425,12 +425,12 @@ button.btn-link:hover .logout-icon {
 }
 
 .items-center {
-  display: flex;
+  display: inline-flex;
   align-items: center;
 }
 
 .items-top {
-  display: flex;
+  display: inline-flex;
   align-items: flex-start;
 }
 
