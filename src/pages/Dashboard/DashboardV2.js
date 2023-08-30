@@ -159,13 +159,13 @@ export default function DashboardV2() {
       fetcher: () => {
         return Promise.all(
           ACTIVE_CHAIN_IDS.map((chainId) =>
-            contractFetcher(null, ReaderV2, [getWhitelistedTokenAddresses(chainId)])(
+            contractFetcher(null, ReaderV2, [getWhitelistedTokenAddresses(chainId)])([
               `Dashboard:fees:${chainId}`,
               chainId,
               getContract(chainId, "Reader"),
               "getFees",
-              getContract(chainId, "Vault")
-            )
+              getContract(chainId, "Vault"),
+            ])
           )
         ).then((fees) => {
           return fees.reduce(
