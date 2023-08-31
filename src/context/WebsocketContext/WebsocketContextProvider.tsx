@@ -34,10 +34,10 @@ export function WebsocketContextProvider({ children }: { children: React.ReactNo
         return;
       }
 
-      const provider = getWsProvider(chainId);
-      setWsProvider(provider);
+      const newProvider = getWsProvider(chainId);
+      setWsProvider(newProvider);
 
-      if (provider) {
+      if (newProvider) {
         initializedTime.current = Date.now();
         // eslint-disable-next-line no-console
         console.log(`ws provider for chain ${chainId} initialized at ${initializedTime.current}`);
@@ -47,8 +47,8 @@ export function WebsocketContextProvider({ children }: { children: React.ReactNo
         initializedTime.current = undefined;
         clearTimeout(healthCheckTimerId.current);
 
-        if (isWebsocketProvider(provider)) {
-          closeWsConnection(provider);
+        if (isWebsocketProvider(newProvider)) {
+          closeWsConnection(newProvider);
         }
 
         // eslint-disable-next-line no-console
@@ -84,8 +84,8 @@ export function WebsocketContextProvider({ children }: { children: React.ReactNo
 
         if (isProviderInClosedState(wsProvider) && isReconnectingIntervalPassed) {
           closeWsConnection(wsProvider);
-          const provider = getWsProvider(chainId);
-          setWsProvider(provider);
+          const nextProvider = getWsProvider(chainId);
+          setWsProvider(nextProvider);
           initializedTime.current = Date.now();
           // eslint-disable-next-line no-console
           console.log("ws provider health check failed, reconnecting", initializedTime.current);

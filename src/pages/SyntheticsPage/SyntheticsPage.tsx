@@ -29,7 +29,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { bigNumberify, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import Helmat from "react-helmet";
+import Helmet from "react-helmet";
 
 import { useMarketsInfo } from "domain/synthetics/markets";
 import { TradeMode } from "domain/synthetics/trade";
@@ -258,13 +258,13 @@ export function SyntheticsPage(p: Props) {
 
   return (
     <div className="Exchange page-layout">
-      <Helmat>
+      <Helmet>
         <style type="text/css">{`
             :root {
               --main-bg-color: #08091b;                   
              {
          `}</style>
-      </Helmat>
+      </Helmet>
       <div className="Exchange-content">
         <div className="Exchange-left">
           <TVChart

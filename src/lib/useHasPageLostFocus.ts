@@ -31,19 +31,20 @@ export function useHasLostFocus(p: {
   const [hasLostFocus, setHasLostFocus] = useState(!isFocused);
 
   const timerId = useRef<any>();
-  const lastFocusedTime = useRef<number>();
+  const lostFocusTime = useRef<number>();
 
   useEffect(() => {
-    if (!isFocused) {
-      lastFocusedTime.current = Date.now();
+    if (!isFocused && !hasLostFocus) {
+      lostFocusTime.current = Date.now();
       timerId.current = setTimeout(() => {
-        if (!hasLostFocus && lastFocusedTime.current && Date.now() - lastFocusedTime.current >= timeout) {
+        if (lostFocusTime.current && Date.now() - lostFocusTime.current >= timeout) {
           setHasLostFocus(true);
         }
       }, timeout);
     } else {
-      lastFocusedTime.current = Date.now();
+      lostFocusTime.current = undefined;
       clearTimeout(timerId.current);
+
       if (hasLostFocus) {
         setHasLostFocus(false);
       }
