@@ -25,7 +25,7 @@ export type Props = {
   tradePageVersion: number;
   setTradePageVersion: (version: number) => void;
   savedShouldShowPositionLines: boolean;
-  onSelectChartTokenAddress: (tokenAddress: string) => void;
+  onSelectChartTokenAddress: (tokenAddress: string, marketTokenAddress?: string) => void;
   ordersInfo?: OrdersInfoData;
   positionsInfo?: PositionsInfoData;
   tokensData?: TokensData;
@@ -33,7 +33,6 @@ export type Props = {
   availableTokens?: Token[];
   tradeFlags?: TradeFlags;
   avaialbleTokenOptions: AvailableTokenOptions;
-  onSelectMarketAddress: (marketAddress?: string) => void;
 };
 
 const DEFAULT_PERIOD = "5m";
@@ -50,7 +49,6 @@ export function TVChart({
   tradePageVersion,
   setTradePageVersion,
   avaialbleTokenOptions,
-  onSelectMarketAddress,
 }: Props) {
   const { chainId } = useChainId();
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
@@ -140,8 +138,12 @@ export function TVChart({
     return orderLines.concat(positionLines);
   }, [chainId, chartTokenAddress, ordersInfo, positionsInfo, tokensData]);
 
-  function onSelectTokenOption(address: string) {
-    onSelectChartTokenAddress(address);
+  function onSelectTokenOption(address: string, marketTokenAddress?: string) {
+    console.log({
+      address,
+      marketTokenAddress,
+    });
+    onSelectChartTokenAddress(address, marketTokenAddress);
   }
 
   function onSelectChartToken(token: Token) {
@@ -174,7 +176,6 @@ export function TVChart({
               tradeFlags={tradeFlags}
               options={tokenOptions}
               avaialbleTokenOptions={avaialbleTokenOptions}
-              onSelectMarketAddress={onSelectMarketAddress}
             />
             <div className="Chart-min-max-price">
               <div className="ExchangeChart-main-price">

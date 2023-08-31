@@ -29,26 +29,21 @@ type TokenOption = Token & {
 type Props = {
   chainId: number;
   selectedToken: Label | undefined;
-  onSelectToken: (address: string) => void;
+  onSelectToken: (address: string, marketAddress?: string) => void;
   tradeFlags?: TradeFlags;
   options: Token[] | undefined;
   className?: string;
   avaialbleTokenOptions: AvailableTokenOptions;
-  onSelectMarketAddress: (marketAddress?: string) => void;
 };
 
 export default function ChartTokenSelector(props: Props) {
   const { options, selectedToken, onSelectToken, tradeFlags, avaialbleTokenOptions } = props;
   const { sortedAllMarkets } = avaialbleTokenOptions;
-  const { isSwap } = tradeFlags || {};
+  const { isSwap, isLong } = tradeFlags || {};
   const [searchKeyword, setSearchKeyword] = useState("");
 
   const onSelect = (token: { indexTokenAddress: string; marketTokenAddress?: string }) => {
-    onSelectToken(token.indexTokenAddress);
-
-    // if (token.marketTokenAddress) {
-    //   onSelectMarketAddress(token.marketTokenAddress);
-    // }
+    onSelectToken(token.indexTokenAddress, token.marketTokenAddress);
     setSearchKeyword("");
   };
 
@@ -126,20 +121,16 @@ export default function ChartTokenSelector(props: Props) {
                     <tbody>
                       {filteredTokens?.map((option) => {
                         const indexTokenAddress = option.isNative ? option.wrappedAddress : option.address;
-                        const currentMarkets = indexTokenAddress && groupedIndexMarkets[indexTokenAddress];
-                        const maxLongLiquidityPool =
-                          currentMarkets &&
-                          currentMarkets.reduce((prev, current) => {
-                            if (!prev.maxLongLiquidity || !current.maxLongLiquidity) return current;
-                            return prev.maxLongLiquidity.gt(current.maxLongLiquidity) ? prev : current;
-                          });
+                        const currentMarkets = groupedIndexMarkets[indexTokenAddress!];
+                        const maxLongLiquidityPool = currentMarkets.reduce((prev, current) => {
+                          if (!prev.maxLongLiquidity || !current.maxLongLiquidity) return current;
+                          return prev.maxLongLiquidity.gt(current.maxLongLiquidity) ? prev : current;
+                        });
 
-                        const maxShortLiquidityPool =
-                          currentMarkets &&
-                          currentMarkets.reduce((prev, current) => {
-                            if (!prev.maxShortLiquidity || !current.maxShortLiquidity) return current;
-                            return prev.maxShortLiquidity.gt(current.maxShortLiquidity) ? prev : current;
-                          });
+                        const maxShortLiquidityPool = currentMarkets.reduce((prev, current) => {
+                          if (!prev.maxShortLiquidity || !current.maxShortLiquidity) return current;
+                          return prev.maxShortLiquidity.gt(current.maxShortLiquidity) ? prev : current;
+                        });
 
                         return (
                           <Popover.Button
@@ -148,6 +139,9 @@ export default function ChartTokenSelector(props: Props) {
                             onClick={() =>
                               onSelect({
                                 indexTokenAddress: option.address,
+                                marketTokenAddress: isLong
+                                  ? maxLongLiquidityPool?.marketTokenAddress
+                                  : maxShortLiquidityPool?.marketTokenAddress,
                               })
                             }
                           >
