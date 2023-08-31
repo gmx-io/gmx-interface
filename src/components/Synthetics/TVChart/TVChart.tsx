@@ -1,6 +1,5 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
-import { Dropdown, DropdownOption } from "components/Dropdown/Dropdown";
 import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChartContainer";
 import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 import { convertTokenAddress, getPriceDecimals, getToken, isChartAvailabeForToken } from "config/tokens";
@@ -18,18 +17,20 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatUsd, numberWithCommas } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 import "./TVChart.scss";
+import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
+import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
 
 export type Props = {
+  tradePageVersion: number;
+  setTradePageVersion: (version: number) => void;
+  savedShouldShowPositionLines: boolean;
+  onSelectChartTokenAddress: (tokenAddress: string) => void;
   ordersInfo?: OrdersInfoData;
   positionsInfo?: PositionsInfoData;
   tokensData?: TokensData;
-  savedShouldShowPositionLines: boolean;
   chartTokenAddress?: string;
-  onSelectChartTokenAddress: (tokenAddress: string) => void;
   availableTokens?: Token[];
-  disableSelectToken?: boolean;
-  tradePageVersion: number;
-  setTradePageVersion: (version: number) => void;
+  tradeFlags?: TradeFlags;
 };
 
 const DEFAULT_PERIOD = "5m";
@@ -42,7 +43,7 @@ export function TVChart({
   chartTokenAddress,
   onSelectChartTokenAddress,
   availableTokens,
-  disableSelectToken,
+  tradeFlags,
   tradePageVersion,
   setTradePageVersion,
 }: Props) {
@@ -58,13 +59,9 @@ export function TVChart({
 
   const chartToken = getTokenData(tokensData, chartTokenAddress);
 
-  const tokenOptions: DropdownOption[] =
-    availableTokens
-      ?.filter((token) => isChartAvailabeForToken(chainId, token.symbol))
-      .map((token) => ({
-        label: `${token.symbol} / USD`,
-        value: token.address,
-      })) || [];
+  const tokenOptions: Token[] | undefined = availableTokens?.filter((token) =>
+    isChartAvailabeForToken(chainId, token.symbol)
+  );
 
   const selectedTokenOption = chartTokenAddress
     ? {
@@ -138,8 +135,8 @@ export function TVChart({
     return orderLines.concat(positionLines);
   }, [chainId, chartTokenAddress, ordersInfo, positionsInfo, tokensData]);
 
-  function onSelectTokenOption(option: DropdownOption) {
-    onSelectChartTokenAddress(option.value);
+  function onSelectTokenOption(address: string) {
+    onSelectChartTokenAddress(address);
   }
 
   function onSelectChartToken(token: Token) {
@@ -164,15 +161,14 @@ export function TVChart({
       <div className="ExchangeChart-header">
         <div className="ExchangeChart-info">
           <div className="ExchangeChart-top-inner">
-            <div>
-              <Dropdown
-                className="chart-token-selector"
-                options={tokenOptions}
-                selectedOption={selectedTokenOption}
-                onSelect={onSelectTokenOption}
-                disabled={disableSelectToken}
-              />
-            </div>
+            <ChartTokenSelector
+              chainId={chainId}
+              selectedToken={selectedTokenOption}
+              className="chart-token-selector"
+              onSelectToken={onSelectTokenOption}
+              tradeFlags={tradeFlags}
+              options={tokenOptions}
+            />
             <div className="Chart-min-max-price">
               <div className="ExchangeChart-main-price">
                 {formatUsd(chartToken?.prices?.maxPrice, {

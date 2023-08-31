@@ -123,7 +123,7 @@ export function SyntheticsPage(p: Props) {
   );
 
   const { isSwap, isLong } = tradeFlags;
-  const { indexTokens, sortedIndexTokensWithPoolValue } = availableTokensOptions;
+  const { indexTokens, sortedIndexTokensWithPoolValue, swapTokens } = availableTokensOptions;
 
   const { chartToken, availableChartTokens } = useMemo(() => {
     if (!fromTokenAddress || !toTokenAddress) {
@@ -135,7 +135,7 @@ export function SyntheticsPage(p: Props) {
       const toToken = getToken(chainId, toTokenAddress);
 
       const chartToken = isSwap && toToken?.isStable && !fromToken?.isStable ? fromToken : toToken;
-      const availableChartTokens = isSwap ? [chartToken] : indexTokens;
+      const availableChartTokens = isSwap ? swapTokens : indexTokens;
       const sortedAvailableChartTokens = availableChartTokens.sort((a, b) => {
         if (sortedIndexTokensWithPoolValue) {
           return sortedIndexTokensWithPoolValue.indexOf(a.address) - sortedIndexTokensWithPoolValue.indexOf(b.address);
@@ -150,7 +150,7 @@ export function SyntheticsPage(p: Props) {
     } catch (e) {
       return {};
     }
-  }, [chainId, fromTokenAddress, indexTokens, isSwap, toTokenAddress, sortedIndexTokensWithPoolValue]);
+  }, [chainId, fromTokenAddress, indexTokens, isSwap, toTokenAddress, sortedIndexTokensWithPoolValue, swapTokens]);
 
   const [closingPositionKey, setClosingPositionKey] = useState<string>();
   const closingPosition = getByKey(positionsInfoData, closingPositionKey);
@@ -276,7 +276,7 @@ export function SyntheticsPage(p: Props) {
             chartTokenAddress={chartToken?.address}
             availableTokens={availableChartTokens}
             onSelectChartTokenAddress={setToTokenAddress}
-            disableSelectToken={isSwap}
+            tradeFlags={tradeFlags}
             tradePageVersion={tradePageVersion}
             setTradePageVersion={setTradePageVersion}
           />
