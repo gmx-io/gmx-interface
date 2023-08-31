@@ -152,14 +152,12 @@ export function useSelectedTradeOption(
         oldState.tokens.indexTokenAddress = tokenAddress;
       }
 
-      if (!toTokenAddress || !marketTokenAddress) {
-        return;
-      }
-
-      if (tradeFlags.isLong) {
-        oldState.markets[toTokenAddress].long = marketTokenAddress;
-      } else {
-        oldState.markets[toTokenAddress].short = marketTokenAddress;
+      if (toTokenAddress && marketTokenAddress) {
+        if (tradeFlags.isLong) {
+          oldState.markets[toTokenAddress].long = marketTokenAddress;
+        } else {
+          oldState.markets[toTokenAddress].short = marketTokenAddress;
+        }
       }
 
       setStoredOptions(oldState);
