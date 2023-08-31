@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Popover } from "@headlessui/react";
 import cx from "classnames";
+import groupBy from "lodash/groupBy";
 import { FaChevronDown } from "react-icons/fa";
 import "./ChartTokenSelector.scss";
 import { Token } from "domain/tokens";
@@ -8,10 +9,21 @@ import SearchInput from "components/SearchInput/SearchInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { t } from "@lingui/macro";
 import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
+import { AvailableTokenOptions } from "domain/synthetics/trade";
+import { getMaxReservedUsd } from "domain/synthetics/markets";
+import { BigNumber } from "ethers";
+import { formatUsd } from "lib/numbers";
 
 type Label = {
   label: string;
   value: string;
+};
+
+type TokenOption = Token & {
+  maxLongLiquidity: BigNumber;
+  maxShortLiquidity: BigNumber;
+  marketTokenAddress: string;
+  indexTokenAddress: string;
 };
 
 type Props = {
@@ -21,15 +33,22 @@ type Props = {
   tradeFlags?: TradeFlags;
   options: Token[] | undefined;
   className?: string;
+  avaialbleTokenOptions: AvailableTokenOptions;
+  onSelectMarketAddress: (marketAddress?: string) => void;
 };
 
 export default function ChartTokenSelector(props: Props) {
-  const { options, selectedToken, onSelectToken, tradeFlags } = props;
+  const { options, selectedToken, onSelectToken, tradeFlags, avaialbleTokenOptions } = props;
+  const { sortedAllMarkets } = avaialbleTokenOptions;
   const { isSwap } = tradeFlags || {};
   const [searchKeyword, setSearchKeyword] = useState("");
 
-  const onSelect = (token: Token) => {
-    onSelectToken(token.address);
+  const onSelect = (token: { indexTokenAddress: string; marketTokenAddress?: string }) => {
+    onSelectToken(token.indexTokenAddress);
+
+    // if (token.marketTokenAddress) {
+    //   onSelectMarketAddress(token.marketTokenAddress);
+    // }
     setSearchKeyword("");
   };
 
@@ -39,6 +58,26 @@ export default function ChartTokenSelector(props: Props) {
       item.symbol.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1
     );
   });
+
+  const groupedIndexMarkets = useMemo(() => {
+    const marketsWithMaxReservedUsd = sortedAllMarkets.map((marketInfo) => {
+      const maxLongLiquidity = getMaxReservedUsd(marketInfo, true);
+      const maxShortLiquidity = getMaxReservedUsd(marketInfo, false);
+
+      return {
+        maxLongLiquidity,
+        maxShortLiquidity,
+        marketTokenAddress: marketInfo.marketTokenAddress,
+        indexTokenAddress: marketInfo.indexTokenAddress,
+      };
+    });
+    const groupedMarketsWithIndex: { [marketAddress: string]: TokenOption[] } = groupBy(
+      marketsWithMaxReservedUsd,
+      (market) => market.indexTokenAddress
+    );
+
+    return groupedMarketsWithIndex;
+  }, [sortedAllMarkets]);
 
   return (
     <Popover>
@@ -65,7 +104,9 @@ export default function ChartTokenSelector(props: Props) {
                   setValue={({ target }) => setSearchKeyword(target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && filteredTokens && filteredTokens.length > 0) {
-                      onSelect(filteredTokens[0]);
+                      onSelect({
+                        indexTokenAddress: filteredTokens[0].address,
+                      });
                       close();
                     }
                   }}
@@ -83,42 +124,44 @@ export default function ChartTokenSelector(props: Props) {
                       </thead>
                     )}
                     <tbody>
-                      {filteredTokens &&
-                        filteredTokens.map((option) => {
-                          return (
-                            <Popover.Button as="tr" key={option.symbol} onClick={() => onSelect(option)}>
-                              <td className="token-item">
-                                <span className="inline-items-center">
-                                  <TokenIcon
-                                    className="ChartToken-list-icon"
-                                    symbol={option.symbol}
-                                    displaySize={16}
-                                    importSize={24}
-                                  />
-                                  {option.symbol} {!isSwap && "/ USD"}
-                                </span>
-                              </td>
-                              <td>
-                                {/* $
-                                {formatAmount(
-                                  isSwap ? option.maxInUsd : option.maxAvailableLong,
-                                  USD_DECIMALS,
-                                  0,
-                                  true
-                                )} */}
-                              </td>
-                              <td>
-                                {/* $
-                                {formatAmount(
-                                  isSwap ? option.maxOutUsd : option.maxAvailableShort,
-                                  USD_DECIMALS,
-                                  0,
-                                  true
-                                )} */}
-                              </td>
-                            </Popover.Button>
-                          );
-                        })}
+                      {filteredTokens?.map((option) => {
+                        const currentMarkets = groupedIndexMarkets[option.address];
+                        const maxLongLiquidityPool = currentMarkets?.reduce((prev, current) => {
+                          if (!prev.maxLongLiquidity || !current.maxLongLiquidity) return current;
+                          return prev.maxLongLiquidity.gt(current.maxLongLiquidity) ? prev : current;
+                        });
+
+                        const maxShortLiquidityPool = currentMarkets?.reduce((prev, current) => {
+                          if (!prev.maxShortLiquidity || !current.maxShortLiquidity) return current;
+                          return prev.maxShortLiquidity.gt(current.maxShortLiquidity) ? prev : current;
+                        });
+
+                        return (
+                          <Popover.Button
+                            as="tr"
+                            key={option.symbol}
+                            onClick={() =>
+                              onSelect({
+                                indexTokenAddress: option.address,
+                              })
+                            }
+                          >
+                            <td className="token-item">
+                              <span className="inline-items-center">
+                                <TokenIcon
+                                  className="ChartToken-list-icon"
+                                  symbol={option.symbol}
+                                  displaySize={16}
+                                  importSize={24}
+                                />
+                                {option.symbol} {!isSwap && "/ USD"}
+                              </span>
+                            </td>
+                            <td>{!isSwap ? formatUsd(maxLongLiquidityPool?.maxLongLiquidity) : ""}</td>
+                            <td>{!isSwap ? formatUsd(maxShortLiquidityPool?.maxShortLiquidity) : ""}</td>
+                          </Popover.Button>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>

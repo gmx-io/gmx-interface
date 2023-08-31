@@ -19,6 +19,7 @@ import { useEffect, useMemo, useState } from "react";
 import "./TVChart.scss";
 import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
 import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
+import { AvailableTokenOptions } from "domain/synthetics/trade";
 
 export type Props = {
   tradePageVersion: number;
@@ -31,6 +32,8 @@ export type Props = {
   chartTokenAddress?: string;
   availableTokens?: Token[];
   tradeFlags?: TradeFlags;
+  avaialbleTokenOptions: AvailableTokenOptions;
+  onSelectMarketAddress: (marketAddress?: string) => void;
 };
 
 const DEFAULT_PERIOD = "5m";
@@ -46,6 +49,8 @@ export function TVChart({
   tradeFlags,
   tradePageVersion,
   setTradePageVersion,
+  avaialbleTokenOptions,
+  onSelectMarketAddress,
 }: Props) {
   const { chainId } = useChainId();
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
@@ -168,6 +173,8 @@ export function TVChart({
               onSelectToken={onSelectTokenOption}
               tradeFlags={tradeFlags}
               options={tokenOptions}
+              avaialbleTokenOptions={avaialbleTokenOptions}
+              onSelectMarketAddress={onSelectMarketAddress}
             />
             <div className="Chart-min-max-price">
               <div className="ExchangeChart-main-price">

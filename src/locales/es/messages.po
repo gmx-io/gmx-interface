@@ -2475,6 +2475,7 @@ msgid "Long Collateral"
 msgstr ""
 
 #: src/components/Exchange/ChartTokenSelector.tsx
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Long Liquidity"
 msgstr ""
 
@@ -3868,6 +3869,7 @@ msgid "Short Collateral"
 msgstr ""
 
 #: src/components/Exchange/ChartTokenSelector.tsx
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Short Liquidity"
 msgstr ""
 

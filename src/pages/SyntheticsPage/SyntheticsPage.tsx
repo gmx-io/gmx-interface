@@ -279,6 +279,8 @@ export function SyntheticsPage(p: Props) {
             tradeFlags={tradeFlags}
             tradePageVersion={tradePageVersion}
             setTradePageVersion={setTradePageVersion}
+            avaialbleTokenOptions={availableTokensOptions}
+            onSelectMarketAddress={setMarketAddress}
           />
 
           <div className="Exchange-lists large">
