@@ -11,7 +11,7 @@ import {
   fundingFactorKey,
   isMarketDisabledKey,
   maxPnlFactorKey,
-  maxPoolAmountKey,
+  maxPoolAmountForDepositKey,
   maxPositionImpactFactorForLiquidationsKey,
   maxPositionImpactFactorKey,
   minCollateralFactorForOpenInterest,
@@ -136,11 +136,11 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
               },
               maxLongPoolAmount: {
                 methodName: "getUint",
-                params: [maxPoolAmountKey(marketAddress, market.longTokenAddress)],
+                params: [maxPoolAmountForDepositKey(marketAddress, market.longTokenAddress)],
               },
               maxShortPoolAmount: {
                 methodName: "getUint",
-                params: [maxPoolAmountKey(marketAddress, market.shortTokenAddress)],
+                params: [maxPoolAmountForDepositKey(marketAddress, market.shortTokenAddress)],
               },
               longPoolAmountAdjustment: {
                 methodName: "getUint",
