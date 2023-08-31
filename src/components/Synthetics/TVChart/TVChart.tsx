@@ -139,10 +139,6 @@ export function TVChart({
   }, [chainId, chartTokenAddress, ordersInfo, positionsInfo, tokensData]);
 
   function onSelectTokenOption(address: string, marketTokenAddress?: string) {
-    console.log({
-      address,
-      marketTokenAddress,
-    });
     onSelectChartTokenAddress(address, marketTokenAddress);
   }
 
