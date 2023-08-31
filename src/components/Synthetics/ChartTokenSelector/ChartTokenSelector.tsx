@@ -10,7 +10,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import { t } from "@lingui/macro";
 import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
 import { AvailableTokenOptions } from "domain/synthetics/trade";
-import { getMaxReservedUsd } from "domain/synthetics/markets";
+import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
 import { BigNumber } from "ethers";
 import { formatUsd } from "lib/numbers";
 
@@ -61,8 +61,8 @@ export default function ChartTokenSelector(props: Props) {
 
   const groupedIndexMarkets = useMemo(() => {
     const marketsWithMaxReservedUsd = sortedAllMarkets.map((marketInfo) => {
-      const maxLongLiquidity = getMaxReservedUsd(marketInfo, true);
-      const maxShortLiquidity = getMaxReservedUsd(marketInfo, false);
+      const maxLongLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true);
+      const maxShortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false);
 
       return {
         maxLongLiquidity,
@@ -118,23 +118,28 @@ export default function ChartTokenSelector(props: Props) {
                       <thead className="table-head">
                         <tr>
                           <th>Market</th>
-                          <th>{!isSwap && t`Long Liquidity`}</th>
-                          <th>{!isSwap && t`Short Liquidity`}</th>
+                          <th>{!isSwap && t`LONG LIQ.`}</th>
+                          <th>{!isSwap && t`SHORT LIQ.`}</th>
                         </tr>
                       </thead>
                     )}
                     <tbody>
                       {filteredTokens?.map((option) => {
-                        const currentMarkets = groupedIndexMarkets[option.address];
-                        const maxLongLiquidityPool = currentMarkets?.reduce((prev, current) => {
-                          if (!prev.maxLongLiquidity || !current.maxLongLiquidity) return current;
-                          return prev.maxLongLiquidity.gt(current.maxLongLiquidity) ? prev : current;
-                        });
+                        const indexTokenAddress = option.isNative ? option.wrappedAddress : option.address;
+                        const currentMarkets = indexTokenAddress && groupedIndexMarkets[indexTokenAddress];
+                        const maxLongLiquidityPool =
+                          currentMarkets &&
+                          currentMarkets.reduce((prev, current) => {
+                            if (!prev.maxLongLiquidity || !current.maxLongLiquidity) return current;
+                            return prev.maxLongLiquidity.gt(current.maxLongLiquidity) ? prev : current;
+                          });
 
-                        const maxShortLiquidityPool = currentMarkets?.reduce((prev, current) => {
-                          if (!prev.maxShortLiquidity || !current.maxShortLiquidity) return current;
-                          return prev.maxShortLiquidity.gt(current.maxShortLiquidity) ? prev : current;
-                        });
+                        const maxShortLiquidityPool =
+                          currentMarkets &&
+                          currentMarkets.reduce((prev, current) => {
+                            if (!prev.maxShortLiquidity || !current.maxShortLiquidity) return current;
+                            return prev.maxShortLiquidity.gt(current.maxShortLiquidity) ? prev : current;
+                          });
 
                         return (
                           <Popover.Button
@@ -157,8 +162,14 @@ export default function ChartTokenSelector(props: Props) {
                                 {option.symbol} {!isSwap && "/ USD"}
                               </span>
                             </td>
-                            <td>{!isSwap ? formatUsd(maxLongLiquidityPool?.maxLongLiquidity) : ""}</td>
-                            <td>{!isSwap ? formatUsd(maxShortLiquidityPool?.maxShortLiquidity) : ""}</td>
+                            <td>
+                              {!isSwap && maxLongLiquidityPool ? formatUsd(maxLongLiquidityPool?.maxLongLiquidity) : ""}
+                            </td>
+                            <td>
+                              {!isSwap && maxShortLiquidityPool
+                                ? formatUsd(maxShortLiquidityPool?.maxShortLiquidity)
+                                : ""}
+                            </td>
                           </Popover.Button>
                         );
                       })}
