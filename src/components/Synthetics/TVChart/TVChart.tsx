@@ -66,13 +66,7 @@ export function TVChart({
     isChartAvailabeForToken(chainId, token.symbol)
   );
 
-  const selectedTokenOption = chartTokenAddress
-    ? {
-        label: `${getToken(chainId, chartTokenAddress).symbol} / USD`,
-        value: chartTokenAddress,
-      }
-    : undefined;
-
+  const selectedTokenOption = chartTokenAddress ? getToken(chainId, chartTokenAddress) : undefined;
   const dayPriceDelta = use24hPriceDelta(chainId, chartToken?.symbol);
 
   const chartLines = useMemo(() => {

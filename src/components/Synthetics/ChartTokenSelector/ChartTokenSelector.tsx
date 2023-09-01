@@ -14,11 +14,6 @@ import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
 import { BigNumber } from "ethers";
 import { formatUsd } from "lib/numbers";
 
-type Label = {
-  label: string;
-  value: string;
-};
-
 type TokenOption = Token & {
   maxLongLiquidity: BigNumber;
   maxShortLiquidity: BigNumber;
@@ -28,7 +23,7 @@ type TokenOption = Token & {
 
 type Props = {
   chainId: number;
-  selectedToken: Label | undefined;
+  selectedToken: Token | undefined;
   onSelectToken: (address: string, marketAddress?: string) => void;
   tradeFlags?: TradeFlags;
   options: Token[] | undefined;
@@ -84,8 +79,13 @@ export default function ChartTokenSelector(props: Props) {
               <button className={cx("chart-token-selector", { "chart-token-label--active": open })}>
                 {selectedToken && (
                   <span className="chart-token-selector--current inline-items-center">
-                    <TokenIcon className="chart-token-current-icon" symbol={"ETH"} displaySize={20} importSize={24} />
-                    {selectedToken.label}
+                    <TokenIcon
+                      className="chart-token-current-icon"
+                      symbol={selectedToken.symbol}
+                      displaySize={20}
+                      importSize={24}
+                    />
+                    {selectedToken.symbol} {!isSwap && "/ USD"}
                   </span>
                 )}
                 <FaChevronDown fontSize={14} />
@@ -122,12 +122,12 @@ export default function ChartTokenSelector(props: Props) {
                       {filteredTokens?.map((option) => {
                         const indexTokenAddress = option.isNative ? option.wrappedAddress : option.address;
                         const currentMarkets = groupedIndexMarkets[indexTokenAddress!];
-                        const maxLongLiquidityPool = currentMarkets.reduce((prev, current) => {
+                        const maxLongLiquidityPool = currentMarkets?.reduce((prev, current) => {
                           if (!prev.maxLongLiquidity || !current.maxLongLiquidity) return current;
                           return prev.maxLongLiquidity.gt(current.maxLongLiquidity) ? prev : current;
                         });
 
-                        const maxShortLiquidityPool = currentMarkets.reduce((prev, current) => {
+                        const maxShortLiquidityPool = currentMarkets?.reduce((prev, current) => {
                           if (!prev.maxShortLiquidity || !current.maxShortLiquidity) return current;
                           return prev.maxShortLiquidity.gt(current.maxShortLiquidity) ? prev : current;
                         });
