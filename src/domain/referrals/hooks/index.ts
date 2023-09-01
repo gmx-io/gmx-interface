@@ -114,8 +114,11 @@ export function useAffiliateTier(library, chainId, account) {
 
 export function useTiers(library: Web3Provider | undefined, chainId: number, tierLevel?: BigNumberish) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
+
   const { data: [totalRebate, discountShare] = [] } = useSWR<BigNumber[]>(
-    tierLevel ? [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "tiers", tierLevel] : null,
+    tierLevel
+      ? [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "tiers", tierLevel.toString()]
+      : null,
     {
       fetcher: contractFetcher(library, ReferralStorage) as any,
     }

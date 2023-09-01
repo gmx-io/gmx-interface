@@ -1,23 +1,32 @@
 import { useEffect } from "react";
-import { unstable_serialize, useSWRConfig } from "swr";
+import { Cache, Fetcher, Key, unstable_serialize } from "swr";
 
 const counter = {};
 
-export const swrGCMiddleware = (useSWRNext) => (key, fetcher, config) => {
-  const { cache } = useSWRConfig();
-  const serializedKey = unstable_serialize(key);
-
-  useEffect(() => {
-    counter[serializedKey] = (counter[serializedKey] || 0) + 1;
-
-    return () => {
-      counter[serializedKey]--;
-
-      if (!counter[serializedKey]) {
-        cache.delete(serializedKey);
-      }
-    };
-  }, [cache, serializedKey]);
-
-  return useSWRNext(key, fetcher, config);
+export type SWRGCMiddlewareConfig = {
+  clearUnusedKeys?: boolean;
 };
+
+export const swrGCMiddleware =
+  (useSWRNext) => (key: Key, fetcher: Fetcher, config: { clearUnusedKeys?: boolean; cache: Cache }) => {
+    const { clearUnusedKeys, cache } = config;
+    const keyToWatch = clearUnusedKeys ? unstable_serialize(key) : undefined;
+
+    useEffect(() => {
+      if (!keyToWatch) {
+        return;
+      }
+
+      counter[keyToWatch] = (counter[keyToWatch] || 0) + 1;
+
+      return () => {
+        counter[keyToWatch]--;
+
+        if (clearUnusedKeys && !counter[keyToWatch]) {
+          cache.delete(keyToWatch);
+        }
+      };
+    }, [cache, clearUnusedKeys, keyToWatch]);
+
+    return useSWRNext(key, fetcher, config);
+  };
