@@ -118,6 +118,8 @@ export function useTopAccounts(period: PerfPeriod) {
         id: perf.account + ":" + period,
         rank: i,
         account: perf.account,
+        ensName: perf.ensName,
+        avatarUrl: perf.avatarUrl,
         absPnl: profit,
         rPnl: totalPnl,
         uPnl: unrealizedPnl,

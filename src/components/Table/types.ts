@@ -18,11 +18,12 @@ export type TableProps<T extends Record<string, any>> = {
 export type TableCellData = {
   value: string | number;
   className?: string;
-  render?: (value?: string | number) => ReactElement | string | null;
+  render?: (value?: string | number, breakpoint?: string) => ReactElement | string | null;
 };
 
 export type TableCell = string | number | TableCellData;
 
 export type TableCellProps = {
   data: TableCell;
+  breakpoint?: string;
 };

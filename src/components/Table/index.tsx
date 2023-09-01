@@ -5,6 +5,7 @@ import Tooltip from "../Tooltip/Tooltip";
 import { TableCellProps, TableProps } from "./types";
 
 import "./index.css";
+import { createBreakpoint } from "react-use";
 
 export default function Table<T extends Record<string, any>>({
   isLoading,
@@ -17,6 +18,8 @@ export default function Table<T extends Record<string, any>>({
   if (error) {
     errorMsg = error instanceof Error ? error.message : JSON.stringify(error);
   }
+  const useBreakpoint = createBreakpoint({ L: 600, M: 550, S: 400 });
+  const breakpoint = useBreakpoint();
   return (
     <table className="Exchange-list large App-box table">
       <tbody>
@@ -51,9 +54,17 @@ export default function Table<T extends Record<string, any>>({
           isLoading ? <tr><td colSpan={5}>{ t`Loading...` }</td></tr> : (
             error ? <tr><td colSpan={9}>{ t`Error` + ": " + errorMsg }</td></tr> : (
               !content.length ? <tr><td colSpan={9}>{ t`No data yet` }</td></tr> : (
-                content.map((row, i) => (
-                  <tr key={row[rowKey]}>
-                    { Object.keys(titles).map(k => <TableCell data={ row[k] } key={ `${row[rowKey]}_${k}` }/>) }
+                content.map((row: T) => (
+                  <tr key={ row[rowKey] }>
+                    {
+                      Object.keys(titles).map(k => (
+                        <TableCell
+                          key={ `${ row[rowKey] }_${ k }` }
+                          breakpoint={ breakpoint }
+                          data={ row[k] }
+                        />
+                      ))
+                    }
                   </tr>
                 ))
               )
@@ -65,12 +76,12 @@ export default function Table<T extends Record<string, any>>({
   )
 };
 
-const TableCell = ({ data }: TableCellProps) => {
-  const isObject = typeof data === "object";
+const TableCell = ({ data, breakpoint }: TableCellProps) => {
+  const isObject = data && typeof data === "object";
   const cellClassName = classnames(isObject && data.className);
   let content;
   if (isObject) {
-    content = typeof data.render === "function" ? data.render(data.value) : data.value;
+    content = typeof data.render === "function" ? data.render(data.value, breakpoint) : data.value;
   } else {
     content = data;
   }

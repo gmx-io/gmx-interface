@@ -12,6 +12,7 @@ import { PositionsInfoData, getPositionKey } from "../positions";
 import { useEffect, useState } from "react";
 import { expandDecimals } from "lib/numbers";
 import { USD_DECIMALS } from "lib/legacy";
+// import { useEnsBatchLookup } from "./useEnsBatchLookup";
 
 const fetchAccountOpenPositionsPage = async (
   first: number,
@@ -35,11 +36,15 @@ const fetchAccountOpenPositionsPage = async (
 const parseAccountOpenPositions = (
   positionsData: AccountOpenPositionJson[],
   positionsByKey: PositionsInfoData,
+  ensNames: Record<string, string>,
+  avatarUrls: Record<string, string>,
 ): AccountOpenPosition[] => {
   const positions: AccountOpenPosition[] = [];
 
   for (const p of positionsData) {
     const accountAddress = getAddress(p.account);
+    const ensName = ensNames[p.account];
+    const avatarUrl = avatarUrls[p.account];
     const key = getPositionKey(
       accountAddress,
       getAddress(p.market),
@@ -79,6 +84,8 @@ const parseAccountOpenPositions = (
     positions.push({
       key,
       account: accountAddress,
+      ensName,
+      avatarUrl,
       isLong: p.isLong,
       marketInfo: positionInfo.marketInfo,
       markPrice,
@@ -128,6 +135,9 @@ export function useAccountOpenPositions() {
   const { chainId } = useChainId();
   const { tokensData, marketsInfoData, pricesUpdatedAt } = useMarketsInfo(chainId);
   const positions = useSWR(['/leaderboards/positions', chainId], fetchAccountOpenPositions);
+  // const { ensNames, avatarUrls } = useEnsBatchLookup((positions.data || []).map((p) => p.account));
+  const ensNames = {};
+  const avatarUrls = {};
   const [positionsHash, setPositionsHash] = useState<string>("");
   const [keys, setKeys] = useState<string[]>([]);
   const [prices, setPrices] = useState<ContractMarketPrices[]>([]);
@@ -177,12 +187,24 @@ export function useAccountOpenPositions() {
     positions.data.length === Object.keys(positionsInfo.data).length
   );
 
+  const ensNamesLength = Object.keys(ensNames).length;
+  const avatarUrlsLength = Object.keys(avatarUrls).length;
   useEffect(() => {
     if (!isLoading && !error) {
-      setData(parseAccountOpenPositions(positions.data!, positionsInfo.data));
+      setData(
+        parseAccountOpenPositions(positions.data!, positionsInfo.data, ensNames, avatarUrls)
+      );
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, error, pricesUpdatedAt, chainId, positionKeys]);
+  }, [
+    isLoading,
+    error,
+    pricesUpdatedAt,
+    chainId,
+    positionsHash,
+    ensNamesLength,
+    avatarUrlsLength,
+  ]);
 
   return { isLoading, error, data };
 };

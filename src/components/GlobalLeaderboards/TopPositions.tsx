@@ -16,7 +16,20 @@ import Tooltip from "components/Tooltip/Tooltip";
 const parseRow = (p: TopPositionsRow): { [key in keyof TopPositionsRow]?: TableCell } => ({
   key: p.key,
   rank: p.rank + 1,
-  account: { value: "", render: () => <AddressView address={ p.account } size={ 24 }/> },
+  account: {
+    value: "",
+    render: (_, breakpoint) => (
+      p.account && (
+        <AddressView
+          address={ p.account }
+          ensName={ p.ensName }
+          avatarUrl={ p.avatarUrl }
+          breakpoint={ breakpoint }
+          size={ 24 }
+        />
+      )
+    ),
+  },
   unrealizedPnl: {
     // eslint-disable-next-line no-mixed-operators
     value: p.unrealizedPnl && formatUsd(p.unrealizedPnl!) || "",
@@ -40,23 +53,37 @@ const parseRow = (p: TopPositionsRow): { [key in keyof TopPositionsRow]?: TableC
       );
     }
   },
-  entryPrice: { value: formatUsd(p.entryPrice) || "" },
+  entryPrice: {
+    value: formatAmount(p.entryPrice, USD_DECIMALS, p.market.indexToken.priceDecimals, true) || "",
+  },
   size: { value: formatUsd(p.size) || "" },
   liqPrice: {
     value: "",
     render: () => (
       <Tooltip
-        handle={ formatUsd(p.liqPrice) || "" }
+        handle={ formatAmount(p.liqPrice, USD_DECIMALS, p.market.indexToken.priceDecimals, true) || "" }
         position="center-top"
         renderContent={
           () => (
             <div>
-              <p>{ `${ t`Mark Price` }: ${ formatUsd(p.markPrice) }` }</p>
-              <p>{ p.liqPriceDelta && p.liqPriceDeltaRel ? `${ t`Price change to Liq.` }: ${
-                formatUsd(p.liqPriceDelta)
-              } (${
-                formatAmount(p.liqPriceDeltaRel, USD_DECIMALS, 2, true)
-              }%)` : "" }</p>
+              <p>
+                {
+                  `${ t`Mark Price` }: ${
+                    formatAmount(p.markPrice, USD_DECIMALS, p.market.indexToken.priceDecimals, true)
+                  }`
+                }
+              </p>
+              <p>
+                {
+                  !(p.liqPriceDelta && p.liqPriceDeltaRel) ? "" : (
+                    `${ t`Price change to Liq.` }: ${
+                      formatAmount(p.liqPriceDelta, USD_DECIMALS, p.market.indexToken.priceDecimals, true)
+                    } (${
+                      formatAmount(p.liqPriceDeltaRel, USD_DECIMALS, 2, true)
+                    }%)`
+                  )
+                }
+              </p>
             </div>
           )
         }

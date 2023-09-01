@@ -5,6 +5,7 @@ import { queryAccountPerformance } from "./queries";
 import { arbitrumGoerliLeaderboardsClient as graph } from "lib/subgraph/clients";
 import { getAddress } from "ethers/lib/utils";
 import { useEffect, useState } from "react";
+// import { useEnsBatchLookup } from "./useEnsBatchLookup";
 
 const daysAgo = (x: number) => (
   new Date(Date.now() - 1000 * 60 * 60 * 24 * x).setHours(0, 0, 0, 0) / 1000
@@ -36,7 +37,12 @@ const fetchAccountPerfs = async (
   return res.data.accountPerfs;
 };
 
-const sumPerfByAccount = (accountPerfs: AccountPerfJson[], period: PerfPeriod) => {
+const sumPerfByAccount = (
+  accountPerfs: AccountPerfJson[],
+  period: PerfPeriod,
+  ensNames: Record<string, string>,
+  avatarUrls: Record<string, string>,
+): PerfByAccount => {
   const aggregation = {};
 
   for (const perfJson of accountPerfs) {
@@ -87,6 +93,8 @@ const sumPerfByAccount = (accountPerfs: AccountPerfJson[], period: PerfPeriod) =
 
     const perf = aggregation[account];
 
+    perf.ensName = ensNames[perfJson.account];
+    perf.avatarUrl = avatarUrls[perfJson.account];
     perf.wins = perf.wins.add(wins);
     perf.losses = perf.losses.add(losses);
     perf.totalPnl = perf.totalPnl.add(totalPnl);
@@ -106,7 +114,7 @@ const sumPerfByAccount = (accountPerfs: AccountPerfJson[], period: PerfPeriod) =
 };
 
 export function useAccountPerf(period: PerfPeriod) {
-  const [data, setData] = useState<PerfByAccount>({});
+  const [data, setData] = useState<Array<AccountPerf>>([]);
   const accounts = useSWR([
     "leaderboards/accounts",
     period,
@@ -127,17 +135,24 @@ export function useAccountPerf(period: PerfPeriod) {
     return data;
   });
 
+  // const addresses = (accounts.data || []).map((a: AccountPerfJson) => a.account);
+  // const { ensNames, avatarUrls } = useEnsBatchLookup(addresses);
+  const ensNames = {};
+  const avatarUrls = {};
+
   const key = (accounts.data || []).map(p => p.account).join("-");
+  const ensNamesLength = Object.keys(ensNames).length;
+  const avatarUrlsLength = Object.keys(avatarUrls).length;
   useEffect(() => {
     if (accounts.data) {
-      setData(sumPerfByAccount(accounts.data, period));
+      setData(Object.values(sumPerfByAccount(accounts.data, period, ensNames, avatarUrls)));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [key, period]);
+  }, [key, period, ensNamesLength, avatarUrlsLength]);
 
   return {
     isLoading: !data && !accounts.error,
-    data: data ? Object.values(data) : [],
+    data: data,
     error: accounts.error || null,
   } as RemoteData<AccountPerf>;
 };

@@ -17,7 +17,20 @@ import Tooltip from "components/Tooltip/Tooltip";
 const parseRow = (s: TopAccountsRow): Record<string, TableCell> => ({
   id: s.id,
   rank: s.rank + 1,
-  account: { value: "", render: () => <AddressView address={ s.account } size={ 24 }/> },
+  account: {
+    value: "",
+    render: (_, breakpoint) => (
+      s.account && (
+        <AddressView
+          address={ s.account }
+          ensName={ s.ensName }
+          avatarUrl={ s.avatarUrl }
+          breakpoint={ breakpoint }
+          size={ 24 }
+        />
+      )
+    ),
+  },
   absPnl: {
     value: "",
     render: () => (

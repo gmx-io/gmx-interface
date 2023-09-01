@@ -33,6 +33,8 @@ export type AccountPerfJson = {
 export type AccountPerf = {
   id: string;
   account: string;
+  ensName?: string;
+  avatarUrl?: string;
   period: PerfPeriod;
   timestamp: number;
   wins: BigNumber;
@@ -56,6 +58,8 @@ export type TopAccountsRow = {
   id: string;
   rank: number;
   account: string;
+  ensName?: string;
+  avatarUrl?: string;
   absPnl: BigNumber;
   relPnl: BigNumber;
   rPnl: BigNumber;
@@ -109,6 +113,8 @@ export type TopPositionsRow = {
   key: string;
   rank: number;
   account: string;
+  ensName?: string;
+  avatarUrl?: string;
   unrealizedPnl: BigNumber;
   market: MarketInfo;
   entryPrice: BigNumber;
@@ -123,6 +129,8 @@ export type TopPositionsRow = {
 export type AccountOpenPosition = {
   key: string;
   account: string;
+  ensName?: string;
+  avatarUrl?: string;
   isLong: boolean;
   marketInfo: MarketInfo;
   markPrice: BigNumber;
