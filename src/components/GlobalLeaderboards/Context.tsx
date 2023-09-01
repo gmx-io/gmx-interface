@@ -6,6 +6,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 
@@ -17,6 +18,7 @@ import {
   useTopPositions,
   TopAccountsRow,
   TopPositionsRow,
+  Profiler,
 } from "domain/synthetics/leaderboards";
 
 export const LeaderboardContext = createContext<LeaderboardContextType>({
@@ -33,9 +35,23 @@ export const LeaderboardContext = createContext<LeaderboardContextType>({
   topPositionsHeaderClick: () => () => {},
 });
 
+type ProfilerRef = ReturnType<typeof Profiler> & {
+  positions?: boolean;
+  accounts?: boolean;
+  pSorted?: boolean;
+  aSorted?: boolean;
+  pReturned?: boolean;
+  aReturned?: boolean;
+  reported?: boolean;
+}
+
 export const useLeaderboardContext = () => useContext(LeaderboardContext);
 
 export const LeaderboardContextProvider: FC<PropsWithChildren> = ({ children }) => {
+  const p = useRef<ProfilerRef>();
+  if (!p.current) {
+    p.current = Profiler();
+  }
   const { chainId } = useChainId();
   const [period, setPeriod] = useState<PerfPeriod>(PerfPeriod.TOTAL);
   const [accountsOrderBy, setAccountsOrderBy] = useState<keyof TopAccountsRow>("absPnl");
@@ -43,7 +59,25 @@ export const LeaderboardContextProvider: FC<PropsWithChildren> = ({ children }) 
   const [positionsOrderBy, setPositionsOrderBy] = useState<keyof TopPositionsRow>("unrealizedPnl");
   const [positionsOrderDirection, setPositionsOrderDirection] = useState<number>(1);
   const topPositionsUnordered = useTopPositions();
+  if (
+    topPositionsUnordered &&
+    topPositionsUnordered.data &&
+    topPositionsUnordered.data.length &&
+    p.current && !p.current.positions
+  ) {
+    p.current("topPositionsUnordered");
+    p.current.positions = true;
+  }
   const topAccountsUnordered = useTopAccounts(period);
+  if (
+    topAccountsUnordered &&
+    topAccountsUnordered.data &&
+    topAccountsUnordered.data.length &&
+    p.current && !p.current.accounts
+  ) {
+    p.current("topAccountsUnordered");
+    p.current.accounts = true;
+  }
   const [topPositions, setTopPositions] = useState<Array<TopPositionsRow>>([]);
   const [topAccounts, setTopAccounts] = useState<Array<TopAccountsRow>>([]);
   const [positionsHash, setPositionsHash] = useState<string>();
@@ -95,6 +129,10 @@ export const LeaderboardContextProvider: FC<PropsWithChildren> = ({ children }) 
     }).map((p, i) => ({ ...p, rank: i }));
 
     setTopPositions(data);
+    if (p.current && !p.current.pSorted) {
+      p.current("sorted top positions");
+      p.current.pSorted = true;
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [positionsHash, positionsOrderBy, positionsOrderDirection]);
 
@@ -127,9 +165,28 @@ export const LeaderboardContextProvider: FC<PropsWithChildren> = ({ children }) 
     data.forEach((a, i) => a.rank = i);
 
     setTopAccounts(data);
+    if (p.current && !p.current.aSorted) {
+      p.current("sorted top accounts");
+      p.current.aSorted = true;
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accountsHash, accountsOrderBy, accountsOrderDirection]);
 
+  if (topAccounts && topAccounts.length && !p.current.aReturned) {
+    p.current("returning top accounts");
+    p.current.aReturned = true;
+  }
+
+  if (topPositions && topPositions.length && !p.current.pReturned) {
+    p.current("returning top accounts");
+    p.current.pReturned = true;
+  }
+
+  if (topAccounts && topAccounts.length && topPositions && topPositions.length &&!p.current.reported) {
+    p.current("returning all data");
+    p.current.report();
+    p.current.reported = true;
+  }
   const context = {
     chainId,
     period,
