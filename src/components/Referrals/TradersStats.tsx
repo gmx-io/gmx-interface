@@ -5,7 +5,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getNativeToken, getToken } from "config/tokens";
-import { TotalReferralsStats } from "domain/referrals";
+import { TotalReferralsStats, useTiers } from "domain/referrals";
 import { BigNumber } from "ethers";
 import { formatDate } from "lib/dates";
 import { shortenAddress } from "lib/legacy";
@@ -20,8 +20,9 @@ import EmptyMessage from "./EmptyMessage";
 import { ReferralCodeForm } from "./JoinReferralCode";
 import ReferralInfoCard from "./ReferralInfoCard";
 import "./TradersStats.scss";
-import { getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
+import { getSharePercentage, getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
 import usePagination from "./usePagination";
+import { useWeb3React } from "@web3-react/core";
 
 type Props = {
   referralsData?: TotalReferralsStats;
@@ -30,6 +31,7 @@ type Props = {
   userReferralCodeString?: string;
   setPendingTxns: (txns: string[]) => void;
   pendingTxns: string[];
+  discountShare: BigNumber | undefined;
 };
 
 function TradersStats({
@@ -39,7 +41,9 @@ function TradersStats({
   userReferralCodeString,
   setPendingTxns,
   pendingTxns,
+  discountShare,
 }: Props) {
+  const { library } = useWeb3React();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const editModalRef = useRef<HTMLDivElement>(null);
 
@@ -56,6 +60,8 @@ function TradersStats({
   );
 
   const currentDiscountDistributions = getCurrentData();
+  const { totalRebate } = useTiers(library, chainId, traderTier);
+  const currentTierDiscount = getSharePercentage(traderTier, discountShare, totalRebate);
 
   const open = () => setIsEditModalOpen(true);
   const close = () => setIsEditModalOpen(false);
@@ -71,14 +77,28 @@ function TradersStats({
             {traderTier && (
               <div className="tier">
                 <Tooltip
-                  handle={t`Tier ${getTierIdDisplay(traderTier)} (${tierDiscountInfo[traderTier]}% discount)`}
+                  handle={t`Tier ${getTierIdDisplay(traderTier)} (${currentTierDiscount}% discount)`}
                   position="right-bottom"
+                  className={discountShare?.gt(0) ? "tier-discount-warning" : ""}
                   renderContent={() => (
                     <p className="text-white">
+                      <Trans>You will receive a {currentTierDiscount}% discount on opening and closing fees.</Trans>
+                      <br />
+                      <br />
                       <Trans>
-                        You will receive a {tierDiscountInfo[traderTier]}% discount on your opening and closing fees,
-                        this discount will be airdropped to your account every Wednesday
+                        For trades on V1, this discount will be airdropped to your account every Wednesday. On V2,
+                        discounts are applied automatically and will reduce your fees when you make a trade.
                       </Trans>
+                      {discountShare?.gt(0) && (
+                        <>
+                          <br />
+                          <br />
+                          <Trans>
+                            The owner of this Referral Code has set a custom discount of {currentTierDiscount}% instead
+                            of the standard {tierDiscountInfo[traderTier]}% for Tier {getTierIdDisplay(traderTier)}.
+                          </Trans>
+                        </>
+                      )}
                     </p>
                   )}
                 />

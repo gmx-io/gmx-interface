@@ -44,7 +44,14 @@ import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatAmountFree, formatTokenAmount, formatTokenAmountWithUsd, formatUsd, parseValue } from "lib/numbers";
+import {
+  formatAmountFree,
+  formatTokenAmount,
+  formatTokenAmountWithUsd,
+  formatUsd,
+  limitDecimals,
+  parseValue,
+} from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import { useEffect, useMemo, useState } from "react";
@@ -54,6 +61,9 @@ import "./PositionEditor.scss";
 import { useHasOutdatedUi } from "domain/legacy";
 import useWallet from "lib/wallets/useWallet";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { DUST_BNB } from "lib/legacy";
+import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
+import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 
 export type Props = {
   position?: PositionInfo;
@@ -75,6 +85,7 @@ export function PositionEditor(p: Props) {
   const { chainId } = useChainId();
   const { account, signer, active } = useWallet();
   const { openConnectModal } = useConnectModal();
+  const isMetamaskMobile = useIsMetamaskMobile();
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
@@ -452,13 +463,31 @@ export function PositionEditor(p: Props) {
                   ? collateralToken?.balance && !collateralDeltaAmount?.eq(collateralToken?.balance)
                   : maxWithdrawAmount && !collateralDeltaAmount?.eq(maxWithdrawAmount)
               }
-              onClickMax={() =>
-                isDeposit
-                  ? setCollateralInputValue(formatAmountFree(collateralToken!.balance!, collateralToken!.decimals))
-                  : setCollateralInputValue(
-                      formatAmountFree(maxWithdrawAmount!, position?.collateralToken?.decimals || 0)
-                    )
-              }
+              showPercentSelector={!isDeposit}
+              onPercentChange={(percent) => {
+                if (!isDeposit) {
+                  setCollateralInputValue(
+                    formatAmountFree(maxWithdrawAmount!.mul(percent).div(100), position?.collateralToken?.decimals || 0)
+                  );
+                }
+              }}
+              onClickMax={() => {
+                const maxDepositAmount = collateralToken!.isNative
+                  ? collateralToken!.balance!.sub(BigNumber.from(DUST_BNB).mul(2))
+                  : collateralToken!.balance!;
+                const formattedMaxDepositAmount = formatAmountFree(maxDepositAmount!, collateralToken!.decimals);
+                const finalDepositAmount = isMetamaskMobile
+                  ? limitDecimals(formattedMaxDepositAmount, MAX_METAMASK_MOBILE_DECIMALS)
+                  : formattedMaxDepositAmount;
+
+                if (isDeposit) {
+                  setCollateralInputValue(finalDepositAmount);
+                } else {
+                  setCollateralInputValue(
+                    formatAmountFree(maxWithdrawAmount!, position?.collateralToken?.decimals || 0)
+                  );
+                }
+              }}
             >
               {availableSwapTokens ? (
                 <TokenSelector

@@ -65,17 +65,19 @@ export function useUserReferralInfo(
     chainId,
     account
   );
+
   const { codeOwner } = useCodeOwner(signer, chainId, account, userReferralCode);
   const { affiliateTier: tierId } = useAffiliateTier(signer, chainId, codeOwner);
   const { totalRebate, discountShare } = useTiers(signer, chainId, tierId);
-
+  const { discountShare: customDiscountShare } = useReferrerDiscountShare(signer, chainId, codeOwner);
+  const finalDiscountShare = customDiscountShare?.gt(0) ? customDiscountShare : discountShare;
   if (
     !userReferralCode ||
     !userReferralCodeString ||
     !codeOwner ||
     !tierId ||
     !totalRebate ||
-    !discountShare ||
+    !finalDiscountShare ||
     !referralCodeForTxn
   ) {
     return undefined;
@@ -90,8 +92,8 @@ export function useUserReferralInfo(
     tierId,
     totalRebate,
     totalRebateFactor: basisPointsToFloat(totalRebate),
-    discountShare,
-    discountFactor: basisPointsToFloat(discountShare),
+    discountShare: finalDiscountShare,
+    discountFactor: basisPointsToFloat(finalDiscountShare),
   };
 }
 
@@ -117,6 +119,7 @@ export function useTiers(signer: Signer | undefined, chainId: number, tierLevel?
       fetcher: contractFetcher(signer, ReferralStorage),
     }
   );
+
   return {
     totalRebate,
     discountShare,
@@ -276,6 +279,26 @@ export function useCodeOwner(signer, chainId, account, code) {
   return {
     codeOwner,
     mutateCodeOwner,
+  };
+}
+
+export function useReferrerDiscountShare(library, chainId, owner) {
+  const referralStorageAddress = getContract(chainId, "ReferralStorage");
+  const { data: discountShare, mutate: mutateDiscountShare } = useSWR<BigNumber | undefined>(
+    owner && [
+      `ReferralStorage:referrerDiscountShares`,
+      chainId,
+      referralStorageAddress,
+      "referrerDiscountShares",
+      owner.toLowerCase(),
+    ],
+    {
+      fetcher: contractFetcher(library, ReferralStorage),
+    }
+  );
+  return {
+    discountShare,
+    mutateDiscountShare,
   };
 }
 

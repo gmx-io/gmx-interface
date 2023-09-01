@@ -16,7 +16,6 @@ import { ContractMarketPrices, MarketsData, getContractMarketPrices } from "../m
 import { TokensData } from "../tokens";
 import { Position, PositionsData } from "./types";
 import { getPositionKey, parsePositionKey } from "./utils";
-import useWallet from "lib/wallets/useWallet";
 
 const MAX_PENDING_UPDATE_AGE = 600 * 1000; // 10 minutes
 
@@ -31,10 +30,10 @@ export function usePositions(
     marketsInfoData?: MarketsData;
     tokensData?: TokensData;
     pricesUpdatedAt?: number;
+    account: string | null | undefined;
   }
 ): PositionsResult {
-  const { marketsInfoData, tokensData, pricesUpdatedAt } = p;
-  const { account } = useWallet();
+  const { marketsInfoData, tokensData, pricesUpdatedAt, account } = p;
 
   // Use ref to cache data from previos key with old prices
   const positionsDataCache = useRef<PositionsData>();

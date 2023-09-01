@@ -1,29 +1,45 @@
 .VersionSwitch {
   display: inline-flex;
   background: linear-gradient(90deg, rgba(30, 34, 61, 0.9) 0%, rgba(38, 43, 71, 0.9) 100%);
-  position: absolute;
-  right: 1rem;
-  border-radius: 2px;
-  overflow: hidden;
+  border-radius: 3px;
 }
 
 .VersionSwitch-option {
-  padding: 0.76rem 1.2rem;
+  padding: 1.2rem;
   text-decoration: none;
   font-size: var(--font-sm);
-
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.7);
-  opacity: 0.7;
+  color: var(--text-gray);
+  line-height: 1;
+
+  &.v1 {
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+  }
+
+  &.v2 {
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+  }
 
   &:hover {
     color: rgba(255, 255, 255, 1);
     background: #3a3f798f;
   }
 
-  &.active {
-    background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
+  &.v1.active {
+    background: #f3b50c;
+    color: #000000;
+  }
+
+  &.v2.active {
+    background: var(--primary-btn-bg);
     color: rgba(255, 255, 255, 1);
-    opacity: 1;
+  }
+}
+
+@media (max-width: 1100px) {
+  .VersionSwitch-option {
+    padding: 0.75rem 1.2rem;
   }
 }

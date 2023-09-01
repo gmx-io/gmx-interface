@@ -23,11 +23,14 @@ import {
   TRANSFER_EXCHANGES,
 } from "./constants";
 import useWallet from "lib/wallets/useWallet";
+import { getIcons } from "config/icons";
 
 export default function BuyGMX() {
   const { chainId } = useChainId();
   const isArbitrum = chainId === ARBITRUM;
   const { active } = useWallet();
+  const icons = getIcons(chainId);
+  const chainName = getChainName(chainId);
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const externalLinks = EXTERNAL_LINKS[chainId];
 
@@ -47,7 +50,8 @@ export default function BuyGMX() {
         <div className="section-title-block">
           <div className="section-title-content">
             <div className="Page-title">
-              <Trans>Buy GMX on {getChainName(chainId)}</Trans>
+              <Trans>Buy GMX on {chainName}</Trans>
+              <img className="ml-xs Page-title-icon" src={icons.network} alt={chainName} />
             </div>
             <div className="Page-description">
               <Trans>Choose to buy from decentralized or centralized exchanges.</Trans>
@@ -69,6 +73,7 @@ export default function BuyGMX() {
             <div className="section-title-content">
               <div className="Page-title">
                 <Trans>Buy or Transfer ETH to Arbitrum</Trans>
+                <img className="ml-xs Page-title-icon" src={icons.network} alt={chainName} />
               </div>
               <div className="Page-description">
                 <Trans>Buy ETH directly on Arbitrum or transfer it there.</Trans>
@@ -80,6 +85,7 @@ export default function BuyGMX() {
             <div className="section-title-content">
               <div className="Page-title">
                 <Trans>Buy or Transfer AVAX to Avalanche</Trans>
+                <img className="ml-xs Page-title-icon" src={icons.network} alt={chainName} />
               </div>
               <div className="Page-description">
                 <Trans>Buy AVAX directly to Avalanche or transfer it there.</Trans>
@@ -257,7 +263,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
               <Button
                 variant="secondary"
                 textAlign="left"
-                to={"https://app.bondprotocol.finance/#/issuers/GMX"}
+                to="https://app.bondprotocol.finance/#/tokens/42161/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a"
                 imgInfo={{ src: bondProtocolIcon, alt: "Bond Protocol" }}
                 newTab
               >

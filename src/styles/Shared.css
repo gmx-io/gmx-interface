@@ -65,6 +65,7 @@ input {
   --dark-blue-border: #ffffff29;
   --dark-blue-active: #818cef33;
   --text-gray: rgba(255, 255, 255, 0.7);
+  --warning-yellow: rgb(243, 181, 12);
   --avax-red: #e84143;
   --arbitrum-blue: #28a0f0;
   --border-radius-sm: 0.4rem;
@@ -402,7 +403,6 @@ button.btn-link:hover .logout-icon {
 .mt-md {
   margin-top: 1.5rem;
 }
-
 .page-layout {
   min-height: calc(100vh - 62px);
   display: flex;
@@ -442,7 +442,8 @@ button.btn-link:hover .logout-icon {
 .font-base {
   font-size: var(--font-base);
 }
-.mr-base {
+
+.mr-md {
   margin-right: 1.5rem;
 }
 .default-cursor.App-cta {
@@ -468,10 +469,51 @@ button.btn-link:hover .logout-icon {
   color: var(--text-gray);
 }
 
+.inline-flex {
+  display: inline-flex;
+}
+
+.inline-items-center {
+  display: inline-flex;
+  align-items: center;
+}
+
+.mr-xxs {
+  margin-right: 0.25rem;
+}
+.mr-xs {
+  margin-right: 0.5rem;
+}
+
+.ml-xxs {
+  margin-left: 0.25rem;
+}
+.ml-xs {
+  margin-left: 0.5rem;
+}
+
+.mx-xs {
+  margin: 0 0.5rem;
+}
+
+.mx-xxs {
+  margin: 0 0.25rem;
+}
+
+.m-sm {
+  margin-right: 1rem;
+}
+.m-md {
+  margin: 1.5rem;
+}
 .text-warning {
-  color: rgb(243, 181, 12);
+  color: var(--warning-yellow);
 }
 
 .ml-xs {
   margin-left: 0.5rem;
+}
+
+.nobr {
+  white-space: nowrap;
 }

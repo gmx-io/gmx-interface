@@ -1,20 +1,19 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
-import { useLocalStorage, useMedia } from "react-use";
-import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
-import useTVDatafeed from "domain/tradingview/useTVDatafeed";
-import { ChartData, IChartingLibraryWidget, IPositionLineAdapter } from "../../charting_library";
-import { getObjectKeyFromValue } from "domain/tradingview/utils";
-import { SaveLoadAdapter } from "./SaveLoadAdapter";
-import { getPriceDecimals, isChartAvailabeForToken } from "config/tokens";
-import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import Loader from "components/Common/Loader";
-import { Token } from "domain/tokens";
-import { BigNumber } from "ethers";
-import { formatAmount } from "lib/numbers";
-import { getMidPrice } from "domain/tokens";
-import { USD_DECIMALS } from "lib/legacy";
+import { TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
+import { getPriceDecimals, isChartAvailabeForToken } from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V1 } from "config/tradingview";
+import { Token, getMidPrice } from "domain/tokens";
+import { TVDataProvider } from "domain/tradingview/TVDataProvider";
+import useTVDatafeed from "domain/tradingview/useTVDatafeed";
+import { getObjectKeyFromValue } from "domain/tradingview/utils";
+import { BigNumber } from "ethers";
+import { USD_DECIMALS } from "lib/legacy";
+import { formatAmount } from "lib/numbers";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useLocalStorage, useMedia } from "react-use";
+import { ChartData, IChartingLibraryWidget, IPositionLineAdapter } from "../../charting_library";
+import { SaveLoadAdapter } from "./SaveLoadAdapter";
+import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
 
 export type ChartLine = {
   price: number;
@@ -170,6 +169,8 @@ export default function TVChartContainer({
         setChartDataLoading(false);
       });
     });
+
+    dataProvider?.resetCache();
 
     return () => {
       if (tvWidgetRef.current) {

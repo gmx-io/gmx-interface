@@ -20,13 +20,17 @@ import { helperToast } from "lib/helperToast";
 import { getTokenInfo } from "domain/tokens/utils";
 import { approveTokens, shouldRaiseGasError } from "domain/tokens";
 import { usePrevious } from "lib/usePrevious";
-import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
+import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, limitDecimals, parseValue } from "lib/numbers";
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import Button from "components/Button/Button";
 import FeesTooltip from "./FeesTooltip";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { getLeverage } from "lib/positions/getLeverage";
 import { getPriceDecimals } from "config/tokens";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
+import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";
@@ -62,6 +66,7 @@ export default function PositionEditor(props) {
     isContractAccount,
   } = props;
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
+  const isMetamaskMobile = useIsMetamaskMobile();
   const position = positionsMap && positionKey ? positionsMap[positionKey] : undefined;
   const [option, setOption] = useState(DEPOSIT);
   const [fromValue, setFromValue] = useState("");
@@ -522,49 +527,45 @@ export default function PositionEditor(props) {
             />
             {(isDeposit || isWithdrawal) && (
               <div>
-                <div className="Exchange-swap-section">
-                  <div className="Exchange-swap-section-top">
-                    <div className="muted">
-                      {convertedAmountFormatted && (
-                        <div className="Exchange-swap-usd">
-                          {isDeposit ? t`Deposit` : t`Withdraw`}: {convertedAmountFormatted}{" "}
-                          {isDeposit ? "USD" : position.collateralToken.symbol}
-                        </div>
-                      )}
-                      {!convertedAmountFormatted && `${isDeposit ? t`Deposit` : t`Withdraw`}`}
-                    </div>
-                    {maxAmount && (
-                      <div className="muted align-right clickable" onClick={() => setFromValue(maxAmountFormattedFree)}>
-                        <Trans>Max: {maxAmountFormatted}</Trans>
-                      </div>
-                    )}
-                  </div>
-                  <div className="Exchange-swap-section-bottom">
-                    <div className="Exchange-swap-input-container">
-                      <input
-                        type="number"
-                        min="0"
-                        placeholder="0.0"
-                        className="Exchange-swap-input"
-                        value={fromValue}
-                        onChange={(e) => setFromValue(e.target.value)}
+                <BuyInputSection
+                  inputValue={fromValue}
+                  onInputValueChange={(e) => setFromValue(e.target.value)}
+                  topLeftLabel={isDeposit ? t`Deposit` : t`Withdraw`}
+                  topLeftValue={
+                    convertedAmountFormatted
+                      ? `${convertedAmountFormatted} ${isDeposit ? "USD" : position.collateralToken.symbol}`
+                      : ""
+                  }
+                  topRightLabel={t`Max`}
+                  topRightValue={maxAmount && maxAmountFormatted}
+                  onClickTopRightLabel={() => setFromValue(maxAmountFormattedFree)}
+                  onClick={() => {
+                    const finalMaxAmount = isMetamaskMobile
+                      ? limitDecimals(maxAmountFormattedFree, MAX_METAMASK_MOBILE_DECIMALS)
+                      : maxAmountFormattedFree;
+                    setFromValue(finalMaxAmount);
+                  }}
+                  showMaxButton={fromValue !== maxAmountFormattedFree}
+                  onClickMax={() => setFromValue(maxAmountFormattedFree)}
+                  showPercentSelector={!isDeposit}
+                  onPercentChange={(percentage) => {
+                    setFromValue(formatAmountFree(maxAmount.mul(percentage).div(100), USD_DECIMALS, 2));
+                  }}
+                >
+                  {isDeposit ? (
+                    <>
+                      <TokenIcon
+                        className="mr-xs"
+                        symbol={position.collateralToken.symbol}
+                        displaySize={20}
+                        importSize={24}
                       />
-                      {fromValue !== maxAmountFormattedFree && maxAmount?.gt(0) && (
-                        <button
-                          className="Exchange-swap-max"
-                          onClick={() => {
-                            setFromValue(maxAmountFormattedFree);
-                          }}
-                        >
-                          <Trans>MAX</Trans>
-                        </button>
-                      )}
-                    </div>
-                    <div className="PositionEditor-token-symbol">
-                      {isDeposit ? position.collateralToken.symbol : "USD"}
-                    </div>
-                  </div>
-                </div>
+                      {position.collateralToken.symbol}
+                    </>
+                  ) : (
+                    "USD"
+                  )}
+                </BuyInputSection>
                 <div className="PositionEditor-info-box">
                   {minExecutionFeeErrorMessage && (
                     <div className="Confirmation-box-warning">{minExecutionFeeErrorMessage}</div>

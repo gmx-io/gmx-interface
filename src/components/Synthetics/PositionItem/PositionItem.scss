@@ -12,6 +12,19 @@
   }
 }
 
+.Position-list-order {
+  .order-error-text {
+    margin-top: 0.5rem;
+    color: var(--error-red);
+  }
+}
+
+.order-error-text-msg .Tooltip-handle,
+.position-order-error {
+  text-decoration-color: var(--error-red);
+  color: var(--error-red);
+}
+
 @media (max-width: 1300px) {
   .Position-collateral-amount {
     margin-left: 0.8rem;
