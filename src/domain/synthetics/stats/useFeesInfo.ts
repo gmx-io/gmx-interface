@@ -4,11 +4,6 @@ import { BigNumber } from "ethers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import useSWR from "swr";
 
-type FeesInfo = {
-  weeklyFees: BigNumber;
-  totalFees: BigNumber;
-};
-
 const totalFeeQuery = gql`
   query totalFeesInfo {
     position: positionFeesInfoWithPeriod(id: "total") {
@@ -36,13 +31,13 @@ const weeklyFeeQuery = gql`
   }
 `;
 
-export default function useFeesInfo(chains: number[]) {
+export default function useFeesInfo(chainId: number) {
   const { data: feesSummaryByChain } = useFeesSummary();
-  const lastUpdatedAt = feesSummaryByChain[chains[0]]?.lastUpdatedAt;
+  const lastUpdatedAt = feesSummaryByChain[chainId]?.lastUpdatedAt;
 
-  async function fetchFeesInfo(chain: number) {
+  async function fetchFeesInfo(chainId: number) {
     try {
-      const client = getSyntheticsGraphClient(chain);
+      const client = getSyntheticsGraphClient(chainId);
       const { data: weeklyFeesInfo } = await client!.query({
         query: weeklyFeeQuery,
         variables: {
@@ -78,7 +73,7 @@ export default function useFeesInfo(chains: number[]) {
       };
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.error(`Error fetching feesInfo data for chain ${chain}:`, error);
+      console.error(`Error fetching feesInfo data for chain ${chainId}:`, error);
       return {
         weeklyFees: BigNumber.from(0),
         totalFees: BigNumber.from(0),
@@ -89,16 +84,11 @@ export default function useFeesInfo(chains: number[]) {
   async function fetcher(timestamp: number) {
     if (!timestamp) return;
     try {
-      const promises = chains.map(fetchFeesInfo);
-      const results = await Promise.allSettled(promises);
-      const fees = results
-        .filter((result) => result.status === "fulfilled")
-        .reduce((acc, result, index) => {
-          const value = (result as PromiseFulfilledResult<FeesInfo>).value;
-          acc[chains[index]] = value;
-          return acc;
-        }, {});
-      return fees;
+      const { weeklyFees, totalFees } = await fetchFeesInfo(chainId);
+      return {
+        weeklyFees,
+        totalFees,
+      };
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error("Error fetching feesInfo data:", error);

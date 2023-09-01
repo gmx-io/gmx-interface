@@ -3,11 +3,6 @@ import { BigNumber } from "ethers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import useSWR from "swr";
 
-type VolumeInfo = {
-  dailyVolume: BigNumber;
-  totalVolume: BigNumber;
-};
-
 const query = gql`
   query volumeInfo($lastTimestamp: Int!) {
     hourlyVolumeInfos: volumeInfos(where: { id_gte: $lastTimestamp, period: "1h" }) {
@@ -22,16 +17,14 @@ const query = gql`
   }
 `;
 
-export default function useVolumeInfo(chains: number[]) {
-  const lastPeriodFor24Hours = Math.floor(Date.now() / 1000 / 3600) * 3600 - 60 * 60 * 24;
-
-  async function fetchVolumeData(chain: number) {
+export default function useVolumeInfo(chainId: number) {
+  async function fetchVolumeData(chain: number, lastTimestamp: number) {
     try {
       const client = getSyntheticsGraphClient(chain);
       const { data } = await client!.query({
         query,
         variables: {
-          lastTimestamp: lastPeriodFor24Hours,
+          lastTimestamp,
         },
         fetchPolicy: "no-cache",
       });
@@ -52,17 +45,13 @@ export default function useVolumeInfo(chains: number[]) {
   }
 
   async function fetcher() {
+    const lastPeriodFor24Hours = Math.floor(Date.now() / 1000 / 3600) * 3600 - 60 * 60 * 24;
     try {
-      const promises = chains.map(fetchVolumeData);
-      const results = await Promise.allSettled(promises);
-      const volumes = results
-        .filter((result) => result.status === "fulfilled")
-        .reduce((acc, result, index) => {
-          const value = (result as PromiseFulfilledResult<VolumeInfo>).value;
-          acc[chains[index]] = value;
-          return acc;
-        }, {});
-      return volumes;
+      const { dailyVolume, totalVolume } = await fetchVolumeData(chainId, lastPeriodFor24Hours);
+      return {
+        dailyVolume,
+        totalVolume,
+      };
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error("Error fetching volume data:", error);
@@ -70,7 +59,7 @@ export default function useVolumeInfo(chains: number[]) {
     }
   }
 
-  const { data: volumes } = useSWR("v2VolumeInfos", fetcher, {
+  const { data: volumes } = useSWR(`v2VolumeInfos-${chainId}`, fetcher, {
     refreshInterval: 60000,
   });
 

@@ -11,14 +11,10 @@ const query = gql`
   }
 `;
 
-type UsersInfo = {
-  totalUsers: BigNumber;
-};
-
-export default function useUsers(chains: number[]) {
-  async function fetchUsersInfo(chain: number) {
+export default function useUsers(chainId: number) {
+  async function fetchUsersInfo(chainId: number) {
     try {
-      const client = getSyntheticsGraphClient(chain);
+      const client = getSyntheticsGraphClient(chainId);
       const { data } = await client!.query({
         query,
         fetchPolicy: "no-cache",
@@ -29,7 +25,7 @@ export default function useUsers(chains: number[]) {
       };
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.error(`Error fetching usersInfo data for chain ${chain}:`, error);
+      console.error(`Error fetching usersInfo data for chain ${chainId}:`, error);
       return {
         totalUsers: BigNumber.from(0),
       };
@@ -38,26 +34,20 @@ export default function useUsers(chains: number[]) {
 
   async function fetcher() {
     try {
-      const promises = chains.map(fetchUsersInfo);
-      const results = await Promise.allSettled(promises);
-      const fees = results
-        .filter((result) => result.status === "fulfilled")
-        .reduce((acc, result, index) => {
-          const value = (result as PromiseFulfilledResult<UsersInfo>).value;
-          acc[chains[index]] = value;
-          return acc;
-        }, {});
-      return fees;
+      const { totalUsers } = await fetchUsersInfo(chainId);
+      return {
+        totalUsers,
+      };
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.error("Error fetching feesInfo data:", error);
+      console.error("Error fetching usersInfo data:", error);
       return {
         totalUsers: BigNumber.from(0),
       };
     }
   }
 
-  const { data: feesInfo } = useSWR("usersInfo", fetcher, {
+  const { data: feesInfo } = useSWR(`v2UsersInfo-${chainId}`, fetcher, {
     refreshInterval: 60000,
   });
 

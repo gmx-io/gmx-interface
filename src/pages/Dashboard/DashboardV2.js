@@ -48,9 +48,9 @@ import {
   numberWithCommas,
 } from "lib/numbers";
 import AssetDropdown from "./AssetDropdown";
-import useMarketsOverview from "domain/synthetics/markets/useMarketsOverview";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import PageTitle from "components/PageTitle/PageTitle";
+import useDashboardOverview from "domain/synthetics/stats/useDashboardOverview";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
@@ -101,7 +101,12 @@ export default function DashboardV2() {
   const { active, library } = useWeb3React();
   const { chainId } = useChainId();
   const totalVolume = useTotalVolume();
-  const v2MarketsOverview = useMarketsOverview(ACTIVE_CHAIN_IDS);
+  const arbitrumOverview = useDashboardOverview(ARBITRUM);
+  const avalancheOverview = useDashboardOverview(AVALANCHE);
+  const v2MarketsOverview = {
+    [ARBITRUM]: arbitrumOverview,
+    [AVALANCHE]: avalancheOverview,
+  };
   const currentV2MarketOverview = v2MarketsOverview[chainId];
   const uniqueUsers = useUniqueUsers();
   const chainName = getChainName(chainId);
