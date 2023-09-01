@@ -6,12 +6,13 @@ import { arbitrumGoerliLeaderboardsClient as graph } from "lib/subgraph/clients"
 import { AccountOpenPositionJson, AccountOpenPosition } from "./types";
 import { ContractMarketPrices, getContractMarketPrices, useMarketsInfo } from "../markets";
 import { convertToUsd } from "../tokens";
-import { useChainId } from "lib/chains";
+// import { useChainId } from "lib/chains";
 import { usePositionsInfo } from "./usePositionsInfo";
 import { PositionsInfoData, getPositionKey } from "../positions";
 import { useEffect, useState } from "react";
 import { expandDecimals } from "lib/numbers";
 import { USD_DECIMALS } from "lib/legacy";
+import { AVALANCHE } from "config/chains";
 // import { useEnsBatchLookup } from "./useEnsBatchLookup";
 
 const fetchAccountOpenPositionsPage = async (
@@ -132,7 +133,8 @@ const fetchAccountOpenPositions = async () => {
 };
 
 export function useAccountOpenPositions() {
-  const { chainId } = useChainId();
+  // const { chainId } = useChainId();
+  const chainId = AVALANCHE; // FIXME: usechainid as soon as the graph deployed to all networks
   const { tokensData, marketsInfoData, pricesUpdatedAt } = useMarketsInfo(chainId);
   const positions = useSWR(['/leaderboards/positions', chainId], fetchAccountOpenPositions);
   // const { ensNames, avatarUrls } = useEnsBatchLookup((positions.data || []).map((p) => p.account));
