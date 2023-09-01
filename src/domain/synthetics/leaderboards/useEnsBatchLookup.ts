@@ -71,7 +71,7 @@ export function useEnsBatchLookup(addresses: string[]) {
       }
 
       const urls = await Promise.all(urlPromises);
-      console.log('urls', urls);
+      // console.log('urls', urls);
 
       const urlsByAddress = {};
       for (const { address, url } of urls) {

@@ -12,8 +12,18 @@ import { USD_DECIMALS, importImage } from "lib/legacy";
 import AddressView from "components/AddressView";
 import { TopPositionsRow } from "domain/synthetics/leaderboards";
 import Tooltip from "components/Tooltip/Tooltip";
+import { getPriceDecimals } from "config/tokens";
+import { BigNumber } from "ethers";
+import { MarketInfo } from "domain/synthetics/markets";
 
-const parseRow = (p: TopPositionsRow): { [key in keyof TopPositionsRow]?: TableCell } => ({
+const formatPriceDecimals = (x: BigNumber, market: MarketInfo, chainId: number) => formatAmount(
+  x,
+  USD_DECIMALS,
+  getPriceDecimals(chainId, market.indexToken.symbol),
+  true,
+).replace(/^(-?)/, "$1$$") || ""
+
+const parseRow = (chainId: number) => (p: TopPositionsRow): { [key in keyof TopPositionsRow]?: TableCell } => ({
   key: p.key,
   rank: p.rank + 1,
   account: {
@@ -54,30 +64,26 @@ const parseRow = (p: TopPositionsRow): { [key in keyof TopPositionsRow]?: TableC
     }
   },
   entryPrice: {
-    value: formatAmount(p.entryPrice, USD_DECIMALS, p.market.indexToken.priceDecimals, true) || "",
+    value: formatPriceDecimals(p.entryPrice, p.market, chainId),
   },
   size: { value: formatUsd(p.size) || "" },
   liqPrice: {
     value: "",
     render: () => (
       <Tooltip
-        handle={ formatAmount(p.liqPrice, USD_DECIMALS, p.market.indexToken.priceDecimals, true) || "" }
+        handle={ p.liqPrice ? formatPriceDecimals(p.liqPrice, p.market, chainId) : "" }
         position="center-top"
         renderContent={
           () => (
             <div>
               <p>
-                {
-                  `${ t`Mark Price` }: ${
-                    formatAmount(p.markPrice, USD_DECIMALS, p.market.indexToken.priceDecimals, true)
-                  }`
-                }
+                { `${t`Mark Price`}: ${formatPriceDecimals(p.markPrice, p.market, chainId)}` }
               </p>
               <p>
                 {
                   !(p.liqPriceDelta && p.liqPriceDeltaRel) ? "" : (
                     `${ t`Price change to Liq.` }: ${
-                      formatAmount(p.liqPriceDelta, USD_DECIMALS, p.market.indexToken.priceDecimals, true)
+                      formatPriceDecimals(p.liqPriceDelta, p.market, chainId)
                     } (${
                       formatAmount(p.liqPriceDeltaRel, USD_DECIMALS, 2, true)
                     }%)`
@@ -97,11 +103,11 @@ export default function TopPositions() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const term = useDebounce(search, 300);
-  const { topPositions, topPositionsHeaderClick } = useLeaderboardContext();
+  const { chainId, topPositions, topPositionsHeaderClick } = useLeaderboardContext();
   const { isLoading, error } = topPositions;
   const filteredStats = topPositions.data.filter(a => a.account.indexOf(term.toLowerCase()) >= 0);
   const indexFrom = (page - 1) * perPage;
-  const rows = filteredStats.slice(indexFrom, indexFrom + perPage).map(parseRow);
+  const rows = filteredStats.slice(indexFrom, indexFrom + perPage).map(parseRow(chainId));
   const pageCount = Math.ceil(filteredStats.length / perPage);
   const handleSearchInput = ({ target }) => setSearch(target.value);
 
