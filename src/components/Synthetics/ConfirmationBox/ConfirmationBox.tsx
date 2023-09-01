@@ -10,7 +10,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { getContract } from "config/contracts";
-import { HIGH_SPREAD_THRESHOLD } from "config/factors";
+import { BASIS_POINTS_DIVISOR, DEFAULT_SLIPPAGE_AMOUNT, HIGH_SPREAD_THRESHOLD } from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useUserReferralCode } from "domain/referrals/hooks";
 import {
@@ -63,8 +63,11 @@ import { getIsEquivalentTokens, getSpread } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
-import { BASIS_POINTS_DIVISOR, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 
+import SlippageInput from "components/SlippageInput/SlippageInput";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { helperToast } from "lib/helperToast";
 import {
   bigNumberify,
   formatAmount,
@@ -76,13 +79,9 @@ import {
 } from "lib/numbers";
 import { usePrevious } from "lib/usePrevious";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useKey } from "react-use";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./ConfirmationBox.scss";
-import SlippageInput from "components/SlippageInput/SlippageInput";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { helperToast } from "lib/helperToast";
-import { useKey } from "react-use";
 
 export type Props = {
   isVisible: boolean;
@@ -1216,6 +1215,17 @@ export function ConfirmationBox(p: Props) {
                 : "..."
             }
           />
+
+          {existingPosition && (
+            <ExchangeInfoRow
+              label={t`Entry Price`}
+              value={
+                formatUsd(existingPosition?.entryPrice, {
+                  displayDecimals: indexToken?.priceDecimals,
+                }) || "-"
+              }
+            />
+          )}
 
           <ExchangeInfoRow
             className="SwapBox-info-row"
