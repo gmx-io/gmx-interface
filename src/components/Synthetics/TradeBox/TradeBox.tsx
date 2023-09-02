@@ -1,6 +1,5 @@
 import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
-import cx from "classnames";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Checkbox from "components/Checkbox/Checkbox";
@@ -10,11 +9,14 @@ import { MarketSelector } from "components/MarketSelector/MarketSelector";
 import { ConfirmationBox } from "components/Synthetics/ConfirmationBox/ConfirmationBox";
 import Tab from "components/Tab/Tab";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { getKeepLeverageKey, getLeverageEnabledKey, getLeverageKey } from "config/localStorage";
+import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useHasOutdatedUi } from "domain/legacy";
 import { useUserReferralInfo } from "domain/referrals/hooks";
 import {
   estimateExecuteDecreaseOrderGasLimit,
@@ -58,6 +60,7 @@ import {
   useSwapRoutes,
 } from "domain/synthetics/trade";
 import { useAvailableMarketsOptions } from "domain/synthetics/trade/useAvailableMarketsOptions";
+import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
 import {
   getCommonError,
@@ -84,21 +87,19 @@ import {
   parseValue,
 } from "lib/numbers";
 import { useSafeState } from "lib/useSafeState";
+import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AiOutlineEdit } from "react-icons/ai";
 import { IoMdSwap } from "react-icons/io";
 import { usePrevious } from "react-use";
 import { ClaimableCard } from "../ClaimableCard/ClaimableCard";
+import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { MarketCard } from "../MarketCard/MarketCard";
 import { SwapCard } from "../SwapCard/SwapCard";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { CollateralSelectorRow } from "./CollateralSelectorRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import "./TradeBox.scss";
-import { useHasOutdatedUi } from "domain/legacy";
-import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
-import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
-import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 
 export type Props = {
   tradeType: TradeType;
@@ -591,6 +592,11 @@ export function TradeBox(p: Props) {
     tokensData,
   ]);
 
+  const priceImpactWarningState = usePriceImpactWarningState({
+    positionPriceImpact: fees?.positionPriceImpact,
+    swapPriceImpact: fees?.swapPriceImpact,
+  });
+
   const marketsOptions = useAvailableMarketsOptions({
     marketsInfoData,
     isIncrease,
@@ -682,6 +688,7 @@ export function TradeBox(p: Props) {
         isLong,
         markPrice,
         triggerPrice,
+        priceImpactWarning: priceImpactWarningState,
         isLimit,
         nextPositionValues,
       });
@@ -715,7 +722,9 @@ export function TradeBox(p: Props) {
     fromToken,
     toToken,
     fromTokenAmount,
-    swapAmounts,
+    swapAmounts?.usdIn,
+    swapAmounts?.usdOut,
+    swapAmounts?.swapPathStats,
     toTokenAmount,
     swapOutLiquidity,
     isLimit,
@@ -724,7 +733,10 @@ export function TradeBox(p: Props) {
     markRatio,
     fees,
     marketInfo,
-    increaseAmounts,
+    increaseAmounts?.initialCollateralUsd,
+    increaseAmounts?.collateralDeltaUsd,
+    increaseAmounts?.sizeDeltaUsd,
+    increaseAmounts?.swapPathStats,
     collateralToken,
     existingPosition,
     minCollateralUsd,
@@ -733,6 +745,7 @@ export function TradeBox(p: Props) {
     isLong,
     markPrice,
     triggerPrice,
+    priceImpactWarningState,
     nextPositionValues,
     closeSizeUsd,
     decreaseAmounts?.sizeDeltaUsd,
@@ -1236,18 +1249,6 @@ export function TradeBox(p: Props) {
           }
         />
 
-        {isMarket && (
-          <ExchangeInfoRow
-            className="SwapBox-info-row"
-            label={t`Price Impact`}
-            value={
-              <span className={cx({ positive: increaseAmounts?.acceptablePriceDeltaBps?.gt(0) })}>
-                {formatPercentage(increaseAmounts?.acceptablePriceDeltaBps, { signed: true }) || "-"}
-              </span>
-            }
-          />
-        )}
-
         {isLimit && (
           <ExchangeInfoRow
             className="SwapBox-info-row"
@@ -1265,18 +1266,6 @@ export function TradeBox(p: Props) {
             }
           />
         )}
-
-        <ExchangeInfoRow
-          className="SwapBox-info-row"
-          label={t`Acceptable Price`}
-          value={
-            increaseAmounts?.sizeDeltaUsd.gt(0)
-              ? formatAcceptablePrice(increaseAmounts.acceptablePrice, {
-                  displayDecimals: toToken?.priceDecimals,
-                })
-              : "-"
-          }
-        />
 
         <ExchangeInfoRow
           className="SwapBox-info-row"
@@ -1510,6 +1499,16 @@ export function TradeBox(p: Props) {
                     collateralToken?.decimals
                   )}
                 />
+              )}
+
+              {isMarket && priceImpactWarningState.shouldShowWarning && (
+                <>
+                  <div className="App-card-divider" />
+                  <HighPriceImpactWarning
+                    priceImpactWarinigState={priceImpactWarningState}
+                    className="PositionEditor-allow-higher-slippage"
+                  />
+                </>
               )}
             </div>
 

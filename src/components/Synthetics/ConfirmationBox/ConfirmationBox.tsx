@@ -57,6 +57,7 @@ import {
   TradeFees,
   TriggerThresholdType,
   applySlippageToMinOut,
+  applySlippageToPrice,
 } from "domain/synthetics/trade";
 import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
 import { getIsEquivalentTokens, getSpread } from "domain/tokens";
@@ -172,7 +173,6 @@ export function ConfirmationBox(p: Props) {
   const { referralCodeForTxn } = useUserReferralCode(library, chainId, account);
 
   const [isTriggerWarningAccepted, setIsTriggerWarningAccepted] = useState(false);
-  const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
   const [isLimitOrdersVisible, setIsLimitOrdersVisible] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);
@@ -327,10 +327,6 @@ export function ConfirmationBox(p: Props) {
       return { text: t`Pending ${fromToken?.symbol} approval`, disabled: true };
     }
 
-    if (isHighPriceImpact && !isHighPriceImpactAccepted) {
-      return { text: t`Price Impact not yet acknowledged`, disabled: true };
-    }
-
     if (isIncrease && decreaseOrdersThatWillBeExecuted.length > 0 && !isTriggerWarningAccepted) {
       return {
         text: t`Accept confirmation of trigger orders`,
@@ -360,8 +356,6 @@ export function ConfirmationBox(p: Props) {
     decreaseOrdersThatWillBeExecuted.length,
     error,
     fromToken?.symbol,
-    isHighPriceImpact,
-    isHighPriceImpactAccepted,
     isIncrease,
     isLimit,
     isLong,
@@ -549,7 +543,6 @@ export function ConfirmationBox(p: Props) {
     function reset() {
       if (p.isVisible !== prevIsVisible) {
         setIsTriggerWarningAccepted(false);
-        setIsHighPriceImpactAccepted(false);
       }
     },
     [p.isVisible, prevIsVisible]
@@ -871,18 +864,6 @@ export function ConfirmationBox(p: Props) {
     );
   }
 
-  function renderHighPriceImpactWarning() {
-    return (
-      <div className="PositionEditor-allow-higher-slippage">
-        <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
-          <span className="muted font-sm">
-            <Trans>Acknowledge high Price Impact</Trans>
-          </span>
-        </Checkbox>
-      </div>
-    );
-  }
-
   function renderIncreaseOrderSection() {
     if (!marketInfo || !fromToken || !collateralToken || !toToken) {
       return null;
@@ -893,6 +874,11 @@ export function ConfirmationBox(p: Props) {
     const isCollateralSwap = !getIsEquivalentTokens(fromToken, collateralToken);
     const existingPriceDecimals = p.existingPosition?.indexToken?.priceDecimals;
     const toTokenPriceDecimals = toToken?.priceDecimals;
+    const shouldApplySlippage = isMarket;
+    const acceptablePrice =
+      shouldApplySlippage && increaseAmounts?.acceptablePrice
+        ? applySlippageToPrice(allowedSlippage, increaseAmounts.acceptablePrice, true, isLong)
+        : increaseAmounts?.acceptablePrice;
 
     return (
       <>
@@ -903,9 +889,7 @@ export function ConfirmationBox(p: Props) {
           {renderExistingTriggerErrors()}
           {renderExistingTriggerWarning()}
           {renderDifferentTokensWarning()}
-
           {isLimit && renderAvailableLiquidity()}
-
           <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Leverage`}
@@ -916,15 +900,12 @@ export function ConfirmationBox(p: Props) {
               />
             }
           />
-
           {isMarket && renderAllowedSlippage(savedAllowedSlippage, setAllowedSlippage)}
-
           {isMarket && collateralSpreadInfo?.spread && (
             <ExchangeInfoRow label={t`Collateral Spread`} isWarning={swapSpreadInfo.isHigh} isTop={true}>
               {formatAmount(collateralSpreadInfo.spread.mul(100), USD_DECIMALS, 2, true)}%
             </ExchangeInfoRow>
           )}
-
           {isMarket && (
             <ExchangeInfoRow
               className="SwapBox-info-row"
@@ -941,7 +922,6 @@ export function ConfirmationBox(p: Props) {
               }
             />
           )}
-
           {isLimit && (
             <ExchangeInfoRow
               isTop
@@ -954,7 +934,6 @@ export function ConfirmationBox(p: Props) {
               }
             />
           )}
-
           {isLimit && (
             <ExchangeInfoRow
               className="SwapBox-info-row"
@@ -969,26 +948,25 @@ export function ConfirmationBox(p: Props) {
 
           <ExchangeInfoRow
             className="SwapBox-info-row"
-            label={isMarket ? t`Price Impact` : t`Acceptable Price Impact`}
-            value={
-              <span className={cx({ positive: isMarket && increaseAmounts?.acceptablePriceDeltaBps?.gt(0) })}>
-                {formatPercentage(increaseAmounts?.acceptablePriceDeltaBps, {
-                  signed: true,
-                }) || "-"}
-              </span>
-            }
-          />
-
-          <ExchangeInfoRow
-            className="SwapBox-info-row"
             label={t`Acceptable Price`}
             value={
-              formatAcceptablePrice(increaseAmounts?.acceptablePrice, {
+              formatAcceptablePrice(acceptablePrice, {
                 displayDecimals: toTokenPriceDecimals,
               }) || "-"
             }
           />
-
+          {isMarket && (
+            <ExchangeInfoRow
+              isTop
+              className="SwapBox-info-row"
+              label={t`Mark Price`}
+              value={
+                formatUsd(markPrice, {
+                  displayDecimals: toTokenPriceDecimals,
+                }) || "-"
+              }
+            />
+          )}
           <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Liq. Price`}
@@ -1009,7 +987,6 @@ export function ConfirmationBox(p: Props) {
               />
             }
           />
-
           <div className="Exchange-info-row top-line">
             <div>
               {isCollateralSwap ? (
@@ -1079,7 +1056,6 @@ export function ConfirmationBox(p: Props) {
               />
             </div>
           </div>
-
           <TradeFeesRow
             {...fees}
             fundingFeeRateStr={
@@ -1090,9 +1066,7 @@ export function ConfirmationBox(p: Props) {
             feesType="increase"
             warning={p.executionFee?.warning}
           />
-
-          {(decreaseOrdersThatWillBeExecuted?.length > 0 || isHighPriceImpact) && <div className="line-divider" />}
-
+          {decreaseOrdersThatWillBeExecuted?.length > 0 && <div className="line-divider" />}
           {decreaseOrdersThatWillBeExecuted?.length > 0 && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox isChecked={isTriggerWarningAccepted} setIsChecked={setIsTriggerWarningAccepted}>
@@ -1102,8 +1076,6 @@ export function ConfirmationBox(p: Props) {
               </Checkbox>
             </div>
           )}
-
-          {isHighPriceImpact && renderHighPriceImpactWarning()}
         </div>
       </>
     );
@@ -1169,10 +1141,6 @@ export function ConfirmationBox(p: Props) {
                 )
               : formatTokenAmount(swapAmounts?.minOutputAmount, toToken?.decimals, toToken?.symbol)}
           </ExchangeInfoRow>
-
-          {isHighPriceImpact && <div className="line-divider" />}
-
-          {isHighPriceImpact && renderHighPriceImpactWarning()}
         </div>
       </>
     );
@@ -1348,10 +1316,6 @@ export function ConfirmationBox(p: Props) {
               )}
             />
           )}
-
-          {isHighPriceImpact && <div className="line-divider" />}
-
-          {isHighPriceImpact && renderHighPriceImpactWarning()}
         </div>
       </>
     );

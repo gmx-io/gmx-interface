@@ -11,4 +11,6 @@ export const DEFAULT_HIGHER_SLIPPAGE_AMOUNT = 100;
 
 // V2
 export const HIGH_PRICE_IMPACT_BPS = 80; // 0.8%
+export const HIGH_POSITION_IMPACT_BPS = 50; // 0.5%
+export const HIGH_SWAP_IMPACT_BPS = 50; // 0.5%
 export const DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS = 100; // 1%
