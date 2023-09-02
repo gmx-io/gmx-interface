@@ -35,13 +35,13 @@ export default function useFeesInfo(chainId: number) {
   const { data: feesSummaryByChain } = useFeesSummary();
   const lastUpdatedAt = feesSummaryByChain[chainId]?.lastUpdatedAt;
 
-  async function fetchFeesInfo(chainId: number) {
+  async function fetchFeesInfo(chainId: number, lastFeesUpdatedTimestamp: number) {
     try {
       const client = getSyntheticsGraphClient(chainId);
       const { data: weeklyFeesInfo } = await client!.query({
         query: weeklyFeeQuery,
         variables: {
-          lastTimestamp: lastUpdatedAt,
+          lastTimestamp: lastFeesUpdatedTimestamp,
         },
         fetchPolicy: "no-cache",
       });
@@ -81,10 +81,10 @@ export default function useFeesInfo(chainId: number) {
     }
   }
 
-  async function fetcher(timestamp: number) {
-    if (!timestamp) return;
+  async function fetcher(_key, lastFeesUpdatedTimestamp) {
+    if (!lastFeesUpdatedTimestamp) return;
     try {
-      const { weeklyFees, totalFees } = await fetchFeesInfo(chainId);
+      const { weeklyFees, totalFees } = await fetchFeesInfo(chainId, lastFeesUpdatedTimestamp);
       return {
         weeklyFees,
         totalFees,
@@ -96,7 +96,7 @@ export default function useFeesInfo(chainId: number) {
     }
   }
 
-  const { data: feesInfo } = useSWR(lastUpdatedAt, fetcher, {
+  const { data: feesInfo } = useSWR(["useFeesInfo", lastUpdatedAt], fetcher, {
     refreshInterval: 60000,
   });
 
