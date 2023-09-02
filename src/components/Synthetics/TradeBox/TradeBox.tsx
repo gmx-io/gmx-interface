@@ -121,7 +121,6 @@ export type Props = {
   positionsInfo?: PositionsInfoData;
   ordersInfo?: OrdersInfoData;
   allowedSlippage: number;
-  acceptablePriceImpactBpsForLimitOrders: BigNumber;
   savedIsPnlInLeverage: boolean;
   isHigherSlippageAllowed: boolean;
   shouldDisableValidation?: boolean;
@@ -136,7 +135,6 @@ export type Props = {
   onSelectMarketAddress: (marketAddress?: string) => void;
   onSelectCollateralAddress: (collateralAddress?: string) => void;
   onConnectWallet: () => void;
-  setIsEditingAcceptablePriceImpact: (val: boolean) => void;
   setIsClaiming: (val: boolean) => void;
   switchTokenAddresses: () => void;
 };
@@ -170,7 +168,6 @@ export function TradeBox(p: Props) {
     existingOrder,
     ordersInfo,
     shouldDisableValidation,
-    acceptablePriceImpactBpsForLimitOrders,
     allowedSlippage,
     isHigherSlippageAllowed,
     marketsInfoData,
@@ -182,7 +179,6 @@ export function TradeBox(p: Props) {
     onSelectTradeMode,
     onSelectTradeType,
     onConnectWallet,
-    setIsEditingAcceptablePriceImpact,
     setIsClaiming,
     setPendingTxns,
     switchTokenAddresses,
@@ -373,7 +369,7 @@ export function TradeBox(p: Props) {
       leverage,
       triggerPrice: isLimit ? triggerPrice : undefined,
       position: existingPosition,
-      savedAcceptablePriceImpactBps: acceptablePriceImpactBpsForLimitOrders,
+      acceptablePriceImpactBps: acceptablePriceImpactBpsForLimitOrders,
       findSwapPath: swapRoute.findSwapPath,
       userReferralInfo,
       strategy: isLeverageEnabled
@@ -1249,24 +1245,6 @@ export function TradeBox(p: Props) {
           }
         />
 
-        {isLimit && (
-          <ExchangeInfoRow
-            className="SwapBox-info-row"
-            label={t`Acceptable Price Impact`}
-            value={
-              <span
-                className="TradeBox-acceptable-price-impact"
-                onClick={() => setIsEditingAcceptablePriceImpact(true)}
-              >
-                {formatPercentage(acceptablePriceImpactBpsForLimitOrders.mul(-1), { signed: true })}
-                <span className="edit-icon" onClick={() => null}>
-                  <AiOutlineEdit fontSize={16} />
-                </span>
-              </span>
-            }
-          />
-        )}
-
         <ExchangeInfoRow
           className="SwapBox-info-row"
           label={t`Liq. Price`}
@@ -1306,38 +1284,6 @@ export function TradeBox(p: Props) {
               displayDecimals: toToken?.priceDecimals,
             }) || "-"
           }`}
-        />
-
-        <ExchangeInfoRow
-          className="SwapBox-info-row"
-          label={t`Acceptable Price Impact`}
-          value={
-            decreaseAmounts?.triggerOrderType === OrderType.StopLossDecrease ? (
-              "NA"
-            ) : (
-              <span
-                className="TradeBox-acceptable-price-impact"
-                onClick={() => setIsEditingAcceptablePriceImpact(true)}
-              >
-                {formatPercentage(acceptablePriceImpactBpsForLimitOrders.mul(-1))}
-                <span className="edit-icon" onClick={() => null}>
-                  <AiOutlineEdit fontSize={16} />
-                </span>
-              </span>
-            )
-          }
-        />
-
-        <ExchangeInfoRow
-          className="SwapBox-info-row"
-          label={t`Acceptable Price`}
-          value={
-            decreaseAmounts?.sizeDeltaUsd.gt(0)
-              ? formatAcceptablePrice(decreaseAmounts?.acceptablePrice, {
-                  displayDecimals: toToken?.priceDecimals,
-                })
-              : "-"
-          }
         />
 
         {existingPosition && (

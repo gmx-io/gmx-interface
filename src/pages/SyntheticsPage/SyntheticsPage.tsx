@@ -1,10 +1,8 @@
-import Helmat from "react-helmet";
 import { Plural, Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
 import Checkbox from "components/Checkbox/Checkbox";
 import Footer from "components/Footer/Footer";
-import { AcceptbablePriceImpactEditor } from "components/Synthetics/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor";
 import { ClaimHistory } from "components/Synthetics/ClaimHistory/ClaimHistory";
 import { ClaimModal } from "components/Synthetics/ClaimModal/ClaimModal";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
@@ -15,26 +13,25 @@ import { TVChart } from "components/Synthetics/TVChart/TVChart";
 import { TradeBox } from "components/Synthetics/TradeBox/TradeBox";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import Tab from "components/Tab/Tab";
-import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS } from "config/factors";
-import { getAcceptablePriceImpactBpsKey, getSyntheticsListSectionKey } from "config/localStorage";
+import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
+import { getSyntheticsListSectionKey } from "config/localStorage";
 import { getToken } from "config/tokens";
 import { isSwapOrderType } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useOrdersInfo } from "domain/synthetics/orders/useOrdersInfo";
 import { getPositionKey } from "domain/synthetics/positions";
 import { usePositionsInfo } from "domain/synthetics/positions/usePositionsInfo";
-import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
-import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { bigNumberify, formatUsd } from "lib/numbers";
+import { formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import Helmat from "react-helmet";
 
 import { useMarketsInfo } from "domain/synthetics/markets";
-import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTradeOption";
 import { TradeMode } from "domain/synthetics/trade";
+import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTradeOption";
 import { helperToast } from "lib/helperToast";
 
 export type Props = {
@@ -197,17 +194,6 @@ export function SyntheticsPage(p: Props) {
   }, [ordersInfoData, positionsInfoData]);
 
   const [isClaiming, setIsClaiming] = useState(false);
-  const [isAcceptablePriceImpactEditing, setIsAcceptablePriceImpactEditing] = useState(false);
-
-  const [savedAcceptablePriceImpactBps, saveAcceptablePriceImpactBps] = useLocalStorageSerializeKey(
-    getAcceptablePriceImpactBpsKey(chainId),
-    DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS
-  );
-  const acceptablePriceImpactBps =
-    bigNumberify(savedAcceptablePriceImpactBps!) || BigNumber.from(DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS);
-  const onEditAcceptablePriceImpact = useCallback(() => {
-    return setIsAcceptablePriceImpactEditing(true);
-  }, []);
 
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
   let allowedSlippage = savedSlippageAmount!;
@@ -384,7 +370,6 @@ export function SyntheticsPage(p: Props) {
               existingPosition={selectedPosition}
               existingOrder={existingOrder}
               shouldDisableValidation={shouldDisableValidation}
-              acceptablePriceImpactBpsForLimitOrders={acceptablePriceImpactBps}
               allowedSlippage={allowedSlippage!}
               isHigherSlippageAllowed={isHigherSlippageAllowed}
               tokensData={tokensData}
@@ -399,7 +384,6 @@ export function SyntheticsPage(p: Props) {
               onSelectTradeMode={setTradeMode}
               onSelectTradeType={setTradeType}
               onConnectWallet={onConnectWallet}
-              setIsEditingAcceptablePriceImpact={onEditAcceptablePriceImpact}
               setPendingTxns={setPendingTxns}
               setIsClaiming={setIsClaiming}
               switchTokenAddresses={switchTokenAddresses}
@@ -491,13 +475,6 @@ export function SyntheticsPage(p: Props) {
         setPendingTxns={setPendingTxns}
         onConnectWallet={onConnectWallet}
         shouldDisableValidation={shouldDisableValidation}
-      />
-
-      <AcceptbablePriceImpactEditor
-        isVisible={isAcceptablePriceImpactEditing}
-        savedAcceptablePriceImpactBps={savedAcceptablePriceImpactBps!}
-        saveAcceptablePriceImpactBps={saveAcceptablePriceImpactBps}
-        onClose={() => setIsAcceptablePriceImpactEditing(false)}
       />
 
       <ClaimModal

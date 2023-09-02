@@ -28,7 +28,7 @@ export function getIncreasePositionAmounts(p: {
   indexTokenAmount: BigNumber | undefined;
   leverage?: BigNumber;
   triggerPrice?: BigNumber;
-  savedAcceptablePriceImpactBps?: BigNumber;
+  acceptablePriceImpactBps?: BigNumber;
   userReferralInfo: UserReferralInfo | undefined;
   strategy: "leverageBySize" | "leverageByCollateral" | "independent";
   findSwapPath: FindSwapPath;
@@ -44,7 +44,7 @@ export function getIncreasePositionAmounts(p: {
     leverage,
     triggerPrice,
     position,
-    savedAcceptablePriceImpactBps,
+    acceptablePriceImpactBps,
     findSwapPath,
     userReferralInfo,
     strategy,
@@ -297,15 +297,11 @@ export function getIncreasePositionAmounts(p: {
       isLong,
       indexPrice: values.indexPrice,
       sizeDeltaUsd: values.sizeDeltaUsd,
-      maxNegativePriceImpactBps: savedAcceptablePriceImpactBps,
+      maxNegativePriceImpactBps: acceptablePriceImpactBps,
     });
 
     values.acceptablePrice = limitAcceptablePriceInfo.acceptablePrice;
     values.acceptablePriceDeltaBps = limitAcceptablePriceInfo.acceptablePriceDeltaBps;
-
-    if (values.positionPriceImpactDeltaUsd.lt(limitAcceptablePriceInfo.priceImpactDeltaUsd)) {
-      values.positionPriceImpactDeltaUsd = limitAcceptablePriceInfo.priceImpactDeltaUsd;
-    }
   }
 
   let priceImpactAmount = BigNumber.from(0);

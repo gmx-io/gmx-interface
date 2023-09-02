@@ -61,11 +61,11 @@ import { useEffect, useMemo, useState } from "react";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionSeller.scss";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
-import SlippageInput from "components/SlippageInput/SlippageInput";
+import PercentageInput from "components/PercentageInput/PercentageInput";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
+import { DEFAULT_SLIPPAGE_AMOUNT, TOO_HIGH_SLIPPAGE_AMOUNT } from "config/factors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Tab from "components/Tab/Tab";
 import { useMedia } from "react-use";
@@ -485,7 +485,12 @@ export function PositionSeller(p: Props) {
                     />
                   }
                 >
-                  <SlippageInput setAllowedSlippage={setAllowedSlippage} defaultSlippage={savedAllowedSlippage} />
+                  <PercentageInput
+                    onChange={setAllowedSlippage}
+                    defaultValue={savedAllowedSlippage}
+                    highValue={TOO_HIGH_SLIPPAGE_AMOUNT}
+                    highValueWarningText="Slippage is too high"
+                  />
                 </ExchangeInfoRow>
               </div>
 

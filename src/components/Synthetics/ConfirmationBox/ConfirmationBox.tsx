@@ -10,7 +10,12 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { getContract } from "config/contracts";
-import { BASIS_POINTS_DIVISOR, DEFAULT_SLIPPAGE_AMOUNT, HIGH_SPREAD_THRESHOLD } from "config/factors";
+import {
+  BASIS_POINTS_DIVISOR,
+  DEFAULT_SLIPPAGE_AMOUNT,
+  HIGH_SPREAD_THRESHOLD,
+  TOO_HIGH_SLIPPAGE_AMOUNT,
+} from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useUserReferralCode } from "domain/referrals/hooks";
 import {
@@ -65,7 +70,7 @@ import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 
-import SlippageInput from "components/SlippageInput/SlippageInput";
+import PercentageInput from "components/PercentageInput/PercentageInput";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { helperToast } from "lib/helperToast";
@@ -859,7 +864,12 @@ export function ConfirmationBox(p: Props) {
           />
         }
       >
-        <SlippageInput setAllowedSlippage={setSlippage} defaultSlippage={defaultSlippage} />
+        <PercentageInput
+          onChange={setSlippage}
+          defaultValue={defaultSlippage}
+          highValue={TOO_HIGH_SLIPPAGE_AMOUNT}
+          highValueWarningText="Slippage is too high"
+        />
       </ExchangeInfoRow>
     );
   }
@@ -874,6 +884,7 @@ export function ConfirmationBox(p: Props) {
     const isCollateralSwap = !getIsEquivalentTokens(fromToken, collateralToken);
     const existingPriceDecimals = p.existingPosition?.indexToken?.priceDecimals;
     const toTokenPriceDecimals = toToken?.priceDecimals;
+
     const shouldApplySlippage = isMarket;
     const acceptablePrice =
       shouldApplySlippage && increaseAmounts?.acceptablePrice
@@ -906,34 +917,22 @@ export function ConfirmationBox(p: Props) {
               {formatAmount(collateralSpreadInfo.spread.mul(100), USD_DECIMALS, 2, true)}%
             </ExchangeInfoRow>
           )}
-          {isMarket && (
-            <ExchangeInfoRow
-              className="SwapBox-info-row"
-              label={t`Entry Price`}
-              value={
-                <ValueTransition
-                  from={formatUsd(p.existingPosition?.entryPrice, {
-                    displayDecimals: existingPriceDecimals,
-                  })}
-                  to={formatUsd(nextPositionValues?.nextEntryPrice, {
-                    displayDecimals: toTokenPriceDecimals,
-                  })}
-                />
-              }
-            />
-          )}
-          {isLimit && (
-            <ExchangeInfoRow
-              isTop
-              className="SwapBox-info-row"
-              label={t`Mark Price`}
-              value={
-                formatUsd(markPrice, {
+
+          <ExchangeInfoRow
+            className="SwapBox-info-row"
+            label={t`Entry Price`}
+            value={
+              <ValueTransition
+                from={formatUsd(p.existingPosition?.entryPrice, {
+                  displayDecimals: existingPriceDecimals,
+                })}
+                to={formatUsd(nextPositionValues?.nextEntryPrice, {
                   displayDecimals: toTokenPriceDecimals,
-                }) || "-"
-              }
-            />
-          )}
+                })}
+              />
+            }
+          />
+
           {isLimit && (
             <ExchangeInfoRow
               className="SwapBox-info-row"
@@ -955,18 +954,18 @@ export function ConfirmationBox(p: Props) {
               }) || "-"
             }
           />
-          {isMarket && (
-            <ExchangeInfoRow
-              isTop
-              className="SwapBox-info-row"
-              label={t`Mark Price`}
-              value={
-                formatUsd(markPrice, {
-                  displayDecimals: toTokenPriceDecimals,
-                }) || "-"
-              }
-            />
-          )}
+
+          <ExchangeInfoRow
+            isTop
+            className="SwapBox-info-row"
+            label={t`Mark Price`}
+            value={
+              formatUsd(markPrice, {
+                displayDecimals: toTokenPriceDecimals,
+              }) || "-"
+            }
+          />
+
           <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Liq. Price`}

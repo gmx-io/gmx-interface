@@ -1,6 +1,6 @@
-.Slippage-input-wrapper {
+.Percentage-input-wrapper {
   position: relative;
-  .Slippage-list {
+  .Percentage-list {
     position: absolute;
     display: flex;
     list-style: none;
@@ -21,7 +21,7 @@
       }
     }
   }
-  .Slippage-input {
+  .Percentage-input {
     border: 1px solid #212540;
     border-radius: var(--border-radius-sm);
     padding-right: 0.5rem;
