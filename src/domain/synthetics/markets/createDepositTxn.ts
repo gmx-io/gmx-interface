@@ -8,6 +8,7 @@ import { SetPendingDeposit } from "context/SyntheticsEvents";
 import { applySlippageToMinOut } from "../trade";
 import { simulateExecuteOrderTxn } from "../orders/simulateExecuteOrderTxn";
 import { TokensData } from "../tokens";
+import { t } from "@lingui/macro";
 
 type Params = {
   account: string;
@@ -97,6 +98,7 @@ export async function createDepositTxn(chainId: number, library: Web3Provider, p
       tokensData: p.tokensData,
       createOrderMulticallPayload: encodedPayload,
       method: "simulateExecuteDeposit",
+      errorTitle: t`Deposit error.`,
       value: wntAmount,
     });
   }

@@ -11,6 +11,7 @@ import { DecreasePositionSwapType, OrderType } from "./types";
 import { isMarketOrderType } from "./utils";
 import { getPositionKey } from "../positions";
 import { applySlippageToPrice } from "../trade";
+import { t } from "@lingui/macro";
 
 const { AddressZero } = ethers.constants;
 
@@ -121,6 +122,7 @@ export async function createIncreaseOrderTxn(chainId: number, library: Web3Provi
       secondaryPriceOverrides,
       createOrderMulticallPayload: encodedPayload,
       value: totalWntAmount,
+      errorTitle: t`Order error.`,
     });
   }
 

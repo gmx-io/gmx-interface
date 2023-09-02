@@ -9,6 +9,7 @@ import { isAddressZero } from "lib/legacy";
 import { applySlippageToMinOut } from "../trade";
 import { TokensData } from "../tokens";
 import { simulateExecuteOrderTxn } from "../orders/simulateExecuteOrderTxn";
+import { t } from "@lingui/macro";
 
 type Params = {
   account: string;
@@ -80,6 +81,7 @@ export async function createWithdrawalTxn(chainId: number, library: Web3Provider
       tokensData: p.tokensData,
       createOrderMulticallPayload: encodedPayload,
       method: "simulateExecuteWithdrawal",
+      errorTitle: t`Withdrawal error.`,
       value: wntAmount,
     });
   }

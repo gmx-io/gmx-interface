@@ -12,6 +12,7 @@ import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
 import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { isMarketOrderType } from "./utils";
+import { t } from "@lingui/macro";
 
 const { AddressZero } = ethers.constants;
 
@@ -120,6 +121,7 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
       createOrderMulticallPayload: encodedPayload,
       value: totalWntAmount,
       tokensData: p.tokensData,
+      errorTitle: t`Order error.`,
     });
   }
 

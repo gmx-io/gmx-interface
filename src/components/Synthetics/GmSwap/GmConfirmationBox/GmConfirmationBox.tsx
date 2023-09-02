@@ -264,7 +264,7 @@ export function GmConfirmationBox({
       minMarketTokens: marketTokenAmount,
       executionFee: executionFee.feeTokenAmount,
       allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
-      skipSimulation: shouldDisableValidation,
+      // skipSimulation: shouldDisableValidation,
       tokensData,
       setPendingTxns,
       setPendingDeposit,
@@ -289,7 +289,7 @@ export function GmConfirmationBox({
       executionFee: executionFee.feeTokenAmount,
       allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
       tokensData,
-      skipSimulation: shouldDisableValidation,
+      // skipSimulation: shouldDisableValidation,
       setPendingTxns,
       setPendingWithdrawal,
     });

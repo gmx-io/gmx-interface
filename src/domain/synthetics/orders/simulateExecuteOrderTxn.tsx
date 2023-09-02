@@ -1,4 +1,4 @@
-import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
+import { JsonRpcProvider } from "@ethersproject/providers";
 import { Trans, t } from "@lingui/macro";
 import CustomErrors from "abis/CustomErrors.json";
 import DataStore from "abis/DataStore.json";
@@ -27,6 +27,7 @@ type SimulateExecuteOrderParams = {
   tokensData: TokensData;
   value: BigNumber;
   method?: string;
+  errorTitle?: string;
 };
 
 export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecuteOrderParams) {
@@ -62,6 +63,8 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
     ]),
   ];
 
+  const errorTitle = p.errorTitle || t`Execute order simulation failed.`;
+
   try {
     await exchangeRouter.callStatic.multicall(simulationPayload, {
       value: p.value,
@@ -78,8 +81,6 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
       const parsedError = customErrors.interface.parseError(errorData);
       const isSimulationPassed = parsedError.name === "EndOfOracleSimulation";
 
-      console.log("parsedError", parsedError, txnError, errorData);
-
       if (isSimulationPassed) {
         return;
       }
@@ -94,7 +95,7 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
 
       msg = (
         <div>
-          <Trans>Execute order simulation failed.</Trans>
+          {errorTitle}
           <br />
           <ToastifyDebug>
             {parsedError.name} {JSON.stringify(parsedArgs, null, 2)}
@@ -105,7 +106,7 @@ export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecut
       // eslint-disable-next-line no-console
       console.error(parsingError);
 
-      const commonError = getErrorMessage(chainId, txnError, t`Execute order simulation failed.`);
+      const commonError = getErrorMessage(chainId, txnError, errorTitle);
       msg = commonError.failMsg;
     }
 
