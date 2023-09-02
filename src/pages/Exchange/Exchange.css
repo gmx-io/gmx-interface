@@ -428,19 +428,35 @@
   width: 100%;
 }
 
+.Position-list-order {
+  cursor: pointer;
+}
+
 .Position-list-order:not(:first-child) {
   white-space: nowrap;
   margin-top: 8px;
 }
 
+.Position-list-order .Position-list-order-label {
+  display: flex;
+  justify-content: space-between;
+  align-self: center;
+}
+
 .active-order-tooltip {
-  background: var(--dark-blue-hover);
-  padding: 0.75rem;
+  background: rgba(180, 187, 255, 0.1);
+  padding: 1rem;
   border-radius: var(--border-radius-sm);
   white-space: normal;
 }
-.active-order-tooltip > .active-oredr-error {
-  margin-top: 0.5rem;
+
+.active-order-tooltip:hover {
+  background: rgba(108, 121, 173, 0.6);
+}
+
+.active-order-tooltip > .active-order-error {
+  margin-top: 1rem;
+  white-space: normal;
 }
 
 .order-error span {
@@ -847,6 +863,10 @@ table.Exchange-list-small td {
 
 .remove-top-margin {
   margin-top: -1.05rem;
+}
+
+.Position-list-active-orders .Tooltip-popup {
+  max-width: 5rem;
 }
 
 .Exchange-list-info-label {

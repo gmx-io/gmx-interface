@@ -21,6 +21,7 @@ import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { getPriceDecimals } from "config/tokens";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Button from "components/Button/Button";
+import { FaAngleRight } from "react-icons/fa";
 
 const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {
@@ -606,7 +607,10 @@ export default function PositionsList(props) {
                 <td>
                   <div>${formatAmount(position.size, USD_DECIMALS, 2, true)}</div>
                   {positionOrders.length > 0 && (
-                    <div onClick={() => setListSection && setListSection("Orders")}>
+                    <div
+                      className="Position-list-active-orders"
+                      onClick={() => setListSection && setListSection("Orders")}
+                    >
                       <Tooltip
                         handle={t`Orders (${positionOrders.length})`}
                         position="left-bottom"
@@ -622,15 +626,24 @@ export default function PositionsList(props) {
                               </strong>
                               {positionOrders.map((order) => {
                                 const priceDecimal = getPriceDecimals(chainId, order.indexToken.symbol);
+                                const className = order.type === INCREASE ? "text-green" : "text-red";
                                 return (
                                   <div
                                     key={`${order.isLong}-${order.type}-${order.index}`}
                                     className="Position-list-order active-order-tooltip"
                                   >
-                                    {order.triggerAboveThreshold ? ">" : "<"}{" "}
-                                    {formatAmount(order.triggerPrice, 30, priceDecimal, true)}:
-                                    {order.type === INCREASE ? " +" : " -"}${formatAmount(order.sizeDelta, 30, 2, true)}
-                                    {order.error && <div className="negative active-oredr-error">{order.error}</div>}
+                                    <div className="Position-list-order-label">
+                                      <span>
+                                        {order.triggerAboveThreshold ? ">" : "<"}{" "}
+                                        {formatAmount(order.triggerPrice, 30, priceDecimal, true)}:
+                                        <span className={className}>
+                                          {order.type === INCREASE ? " +" : " -"}$
+                                          {formatAmount(order.sizeDelta, 30, 2, true)}
+                                        </span>
+                                      </span>
+                                      <FaAngleRight fontSize={14} />
+                                    </div>
+                                    {order.error && <div className="negative active-order-error">{order.error}</div>}
                                   </div>
                                 );
                               })}

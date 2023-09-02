@@ -4,9 +4,10 @@
   grid-template-columns: 1fr auto;
 }
 
-.Tooltip-row > span.label {
+.Tooltip-row .Tooltip-row-label {
   margin-right: 0.5rem;
 }
+
 .Tooltip-row > .Tooltip-row-value {
   color: white;
   text-align: right;
@@ -32,13 +33,13 @@
     display: block;
     margin-bottom: 1rem;
   }
-  .Tooltip-row > span.label {
+  .Tooltip-row .Tooltip-row-value {
     display: block;
   }
   .Tooltip-row-values li {
     text-align: left;
   }
-  .Tooltip-row > .Tooltip-row-value {
+  .Tooltip-row .Tooltip-row-value {
     text-align: left;
   }
 }

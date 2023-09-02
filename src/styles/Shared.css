@@ -71,6 +71,7 @@ input {
   --arbitrum-blue: #28a0f0;
   --border-radius-sm: 0.4rem;
   --error-red: #fa3c58;
+  --green: #0ecc83;
   --font-sm: 1.4rem;
   --font-base: 1.5rem;
   --font-md: 1.6rem;
@@ -517,4 +518,12 @@ button.btn-link:hover .logout-icon {
 
 .nobr {
   white-space: nowrap;
+}
+
+.text-red {
+  color: var(--error-red);
+}
+
+.text-green {
+  color: var(--green);
 }

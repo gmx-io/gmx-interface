@@ -25,6 +25,7 @@ import { useChainId } from "lib/chains";
 import { useMedia } from "react-use";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Button from "components/Button/Button";
+import { FaAngleRight } from "react-icons/fa";
 
 export type Props = {
   position: PositionInfo;
@@ -308,15 +309,25 @@ export function PositionItem(p: Props) {
                 </strong>
                 {positionOrders.map((order) => {
                   const error = getOrderError(order, p.position);
+                  const triggerThresholdType = getTriggerThresholdType(order.orderType, order.isLong);
+                  const isIncrease = isIncreaseOrderType(order.orderType);
+                  const className = isIncrease ? "text-green" : "text-red";
                   return (
                     <div key={order.key} className="Position-list-order active-order-tooltip">
-                      {getTriggerThresholdType(order.orderType, order.isLong)}{" "}
-                      {formatUsd(order.triggerPrice, {
-                        displayDecimals: order.indexToken?.priceDecimals,
-                      })}
-                      : {isIncreaseOrderType(order.orderType) ? "+" : "-"}
-                      {formatUsd(order.sizeDeltaUsd)}
-                      <br />
+                      <div className="Position-list-order-label">
+                        <span>
+                          {triggerThresholdType}{" "}
+                          {formatUsd(order.triggerPrice, {
+                            displayDecimals: order.indexToken?.priceDecimals,
+                          })}
+                          :{" "}
+                          <span className={className}>
+                            {isIncrease ? "+" : "-"}
+                            {formatUsd(order.sizeDeltaUsd)}
+                          </span>
+                        </span>
+                        <FaAngleRight fontSize={14} />
+                      </div>
                       {error && <div className="order-error-text">{error}</div>}
                     </div>
                   );

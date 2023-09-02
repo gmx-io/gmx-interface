@@ -9,11 +9,19 @@
   border-radius: 4px;
   padding: 1.05rem;
   letter-spacing: 0.4px;
-  min-width: 30rem;
+  min-width: 28rem;
   text-align: left;
   white-space: normal;
-  background: #070914;
+  background: rgb(49, 54, 85);
+  background: linear-gradient(270deg, rgba(49, 54, 85, 0.9) 0%, rgba(37, 40, 65, 0.9) 100%);
+  box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(7px);
   z-index: 10000;
+
+  a {
+    color: var(--text-gray);
+    text-decoration: underline;
+  }
 }
 
 .Tooltip.nowrap .Tooltip-popup {
@@ -104,10 +112,6 @@
 .Tooltip-row > span.label {
   margin-right: 0.5rem;
 }
-.Tooltip-row > .Tooltip-row-value {
-  color: white;
-  text-align: right;
-}
 
 .Tooltip-row-values {
   list-style: none;
@@ -153,9 +157,7 @@
   .Tooltip-popup {
     min-width: 20rem;
   }
-  .Tooltip-row > .Tooltip-row-value {
-    text-align: left;
-  }
+
   .Tooltip-row-values li:not(:first-child) {
     text-align: left;
   }
