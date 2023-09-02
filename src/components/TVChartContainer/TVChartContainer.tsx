@@ -148,7 +148,7 @@ export default function TVChartContainer({
       custom_formatters: defaultChartProps.custom_formatters,
       save_load_adapter: new SaveLoadAdapter(chainId, tvCharts, setTvCharts, onSelectToken),
     };
-    tvWidgetRef.current = new window.TradingView.widget(widgetOptions as any);
+    tvWidgetRef.current = new window.TradingView.widget(widgetOptions);
     tvWidgetRef.current!.onChartReady(function () {
       setChartReady(true);
       tvWidgetRef.current!.applyOverrides({
