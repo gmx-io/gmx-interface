@@ -8,8 +8,7 @@
   margin-right: 0.5rem;
 }
 
-.Tooltip-row > .Tooltip-row-value {
-  color: white;
+.Tooltip-row .Tooltip-row-value {
   text-align: right;
 }
 
