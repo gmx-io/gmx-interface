@@ -170,10 +170,12 @@ export function OrderItem(p: Props) {
                   </>
                 )}
 
-                <>
-                  <br />
-                  {p.error && <span className="negative">{p.error}</span>}
-                </>
+                {p.error && (
+                  <>
+                    <br />
+                    <span className="negative">{p.error}</span>
+                  </>
+                )}
               </>
             );
           }}

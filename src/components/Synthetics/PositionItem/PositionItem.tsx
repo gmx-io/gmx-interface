@@ -158,7 +158,7 @@ export function PositionItem(p: Props) {
                             p.position.collateralToken.decimals,
                             p.position.collateralToken.symbol
                           )}
-                          <br />({formatUsd(p.position.collateralUsd)})
+                          ({formatUsd(p.position.collateralUsd)})
                         </div>
                       </>
                     }
@@ -324,7 +324,6 @@ export function PositionItem(p: Props) {
                   const error = getOrderError(order, p.position);
                   const triggerThresholdType = getTriggerThresholdType(order.orderType, order.isLong);
                   const isIncrease = isIncreaseOrderType(order.orderType);
-                  const className = isIncrease ? "text-green" : "text-red";
                   return (
                     <div key={order.key} className="Position-list-order active-order-tooltip">
                       <div className="Position-list-order-label">
@@ -334,7 +333,7 @@ export function PositionItem(p: Props) {
                             displayDecimals: order.indexToken?.priceDecimals,
                           })}
                           :{" "}
-                          <span className={className}>
+                          <span>
                             {isIncrease ? "+" : "-"}
                             {formatUsd(order.sizeDeltaUsd)}
                           </span>

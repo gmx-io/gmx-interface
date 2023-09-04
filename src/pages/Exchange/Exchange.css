@@ -479,6 +479,11 @@
   justify-content: space-between;
 }
 
+.Exchange-list .Tooltip-popup,
+.Exchange-list .App-card .Tooltip-popup {
+  min-width: 30rem;
+}
+
 .Exchange-list-item-error {
   color: #fa3c58;
   margin-top: 0.465rem;
@@ -945,10 +950,6 @@ table.Exchange-list-small td {
   opacity: 1;
 }
 
-.al-swap .Tooltip-popup {
-  min-width: 25rem;
-}
-
 .position-list-collateral {
   display: flex;
   align-items: flex-end;
@@ -1213,5 +1214,10 @@ table.Exchange-list-small td {
 @media (max-width: 350px) {
   .ExchangeChart-header {
     grid-column-gap: 0.5rem;
+  }
+
+  .Exchange-list .Tooltip-popup,
+  .Exchange-list .App-card .Tooltip-popup {
+    min-width: 24.5rem;
   }
 }

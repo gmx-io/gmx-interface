@@ -161,6 +161,7 @@ export function TradeFeesRow(p: Props) {
           id: "borrowFeeRate",
           label: <div className="text-white">{t`Borrow Fee Rate`}</div>,
           value: p.borrowFeeRateStr,
+          className: p.borrowFeeRateStr?.startsWith("-") ? "text-red" : "text-green",
         }
       : undefined;
 
@@ -169,6 +170,7 @@ export function TradeFeesRow(p: Props) {
           id: "fundingFeeRate",
           label: <div className="text-white">{t`Funding Fee Rate`}</div>,
           value: p.fundingFeeRateStr,
+          className: p.fundingFeeRateStr?.startsWith("-") ? "text-red" : "text-green",
         }
       : undefined;
 

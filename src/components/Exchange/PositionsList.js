@@ -628,7 +628,6 @@ export default function PositionsList(props) {
                               </strong>
                               {positionOrders.map((order) => {
                                 const priceDecimal = getPriceDecimals(chainId, order.indexToken.symbol);
-                                const className = order.type === INCREASE ? "text-green" : "text-red";
                                 return (
                                   <div
                                     key={`${order.isLong}-${order.type}-${order.index}`}
@@ -638,7 +637,7 @@ export default function PositionsList(props) {
                                       <span>
                                         {order.triggerAboveThreshold ? ">" : "<"}{" "}
                                         {formatAmount(order.triggerPrice, 30, priceDecimal, true)}:
-                                        <span className={className}>
+                                        <span>
                                           {order.type === INCREASE ? " +" : " -"}$
                                           {formatAmount(order.sizeDelta, 30, 2, true)}
                                         </span>
