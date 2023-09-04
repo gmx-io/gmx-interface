@@ -13,6 +13,10 @@
   margin-top: 0.8rem;
 }
 
+.DashboardV2-token-cards .Tooltip-popup {
+  min-width: 29rem;
+}
+
 .token-table-wrapper {
   border-radius: 0.4rem;
   background: #17182c;
@@ -179,5 +183,8 @@
     display: flex;
     justify-content: center;
     margin: 0;
+  }
+  .DashboardV2-token-cards .Tooltip-popup {
+    min-width: 20rem;
   }
 }

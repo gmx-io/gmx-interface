@@ -516,6 +516,18 @@ button.btn-link:hover .logout-icon {
   margin-left: 0.5rem;
 }
 
+.mb-xs {
+  margin-bottom: 0.5rem;
+}
+
+.mb-sm {
+  margin-bottom: 1rem;
+}
+
+.mb-base {
+  margin-bottom: 1.5rem;
+}
+
 .nobr {
   white-space: nowrap;
 }
