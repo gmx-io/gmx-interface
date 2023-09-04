@@ -17,12 +17,16 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 4rem;
+    height: 4.5rem;
   }
 
   th {
     text-align: center;
   }
+}
+
+.SyntheticsStats .ShareBar {
+  margin-top: 4px;
 }
 
 .SyntheticsStats td .SyntheticsStats-share-bar {

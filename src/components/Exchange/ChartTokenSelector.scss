@@ -1,0 +1,114 @@
+.chart-token-selector {
+  border: none;
+  background: transparent;
+  color: white;
+  font-size: 2rem;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: var(--border-radius-sm);
+
+  &:hover {
+    color: #7885ff;
+    span {
+      color: #7885ff;
+    }
+  }
+}
+
+.chart-token-label--active {
+  color: #7885ff;
+  span {
+    color: #7885ff;
+  }
+}
+
+.chart-token-selector--current {
+  font-weight: 700;
+  margin-right: 1rem;
+  color: white;
+  vertical-align: bottom;
+
+  .chart-token-current-icon {
+    margin-right: 0.75rem;
+  }
+}
+
+.chart-token-menu-items.menu-items {
+  max-width: 45rem;
+  top: 7.5rem;
+  right: unset;
+  left: 0;
+  cursor: auto;
+}
+
+.chart-token-menu-items .menu-item {
+  font-size: var(--font-sm);
+  height: 3.4rem;
+  color: #a0a3c4;
+}
+
+.chart-token-list {
+  overflow-x: auto;
+  max-height: 20rem;
+  padding-bottom: 1rem;
+
+  table {
+    width: 100%;
+    text-align: left;
+    font-size: var(--font-sm);
+    border-collapse: collapse;
+  }
+  thead {
+    display: table-header-group;
+    position: sticky;
+    top: 0;
+    background: #16182e;
+    tr {
+      th {
+        padding: 0.75rem 1.5rem;
+        font-weight: normal;
+        letter-spacing: 0.25px;
+        color: #a9a9b0;
+        text-transform: uppercase;
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      background-color: var(--dark-blue-bg);
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      &:hover {
+        background-color: var(--dark-blue-hover);
+        border-radius: var(--border-radius-sm);
+      }
+      td {
+        padding: 0.75rem 1.5rem;
+        white-space: nowrap;
+        font-weight: 400;
+
+        &.token-item {
+          color: #a0a3c4;
+
+          .ChartToken-list-icon {
+            margin-right: 0.75rem;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 1100px) {
+  .chart-token-menu-items.menu-items {
+    top: 5.7rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .chart-token-selector {
+    font-size: 1.6rem;
+  }
+}

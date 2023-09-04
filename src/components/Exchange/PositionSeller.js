@@ -59,6 +59,7 @@ import FeesTooltip from "./FeesTooltip";
 import "./PositionSeller.css";
 import { ErrorCode, ErrorDisplayType } from "./constants";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -1039,77 +1040,42 @@ export default function PositionSeller(props) {
               onChange={onOrderOptionChange}
             />
           )}
-          <div className="Exchange-swap-section">
-            <div className="Exchange-swap-section-top">
-              <div className="muted">
-                {convertedAmountFormatted && (
-                  <div className="Exchange-swap-usd">
-                    <Trans>
-                      Close: {convertedAmountFormatted} {position.collateralToken.symbol}
-                    </Trans>
-                  </div>
-                )}
-                {!convertedAmountFormatted && t`Close`}
-              </div>
-              {maxAmount && (
-                <div className="muted align-right clickable" onClick={() => setFromValue(maxAmountFormattedFree)}>
-                  <Trans>Max: {maxAmountFormatted}</Trans>
-                </div>
-              )}
-            </div>
-            <div className="Exchange-swap-section-bottom">
-              <div className="Exchange-swap-input-container">
-                <input
-                  type="number"
-                  min="0"
-                  placeholder="0.0"
-                  className="Exchange-swap-input"
-                  value={fromValue}
-                  onChange={(e) => setFromValue(e.target.value)}
-                />
-                {fromValue !== maxAmountFormattedFree && (
-                  <button
-                    className="Exchange-swap-max"
-                    onClick={() => {
-                      setFromValue(maxAmountFormattedFree);
-                    }}
-                  >
-                    <Trans>MAX</Trans>
-                  </button>
-                )}
-              </div>
-              <div className="PositionEditor-token-symbol">USD</div>
-            </div>
+          <div className="relative">
+            <BuyInputSection
+              inputValue={fromValue}
+              onInputValueChange={(e) => setFromValue(e.target.value)}
+              topLeftLabel={t`Close`}
+              topLeftValue={
+                convertedAmountFormatted ? `${convertedAmountFormatted} ${position.collateralToken.symbol}` : ""
+              }
+              topRightLabel={t`Max`}
+              topRightValue={maxAmount && maxAmountFormatted}
+              onClickTopRightLabel={() => setFromValue(maxAmountFormattedFree)}
+              onClickMax={() => setFromValue(maxAmountFormattedFree)}
+              showMaxButton={fromValue !== maxAmountFormattedFree}
+              showPercentSelector={true}
+              onPercentChange={(percentage) => {
+                setFromValue(formatAmountFree(maxAmount.mul(percentage).div(100), USD_DECIMALS, 2));
+              }}
+            >
+              USD
+            </BuyInputSection>
           </div>
           {orderOption === STOP && (
-            <div className="Exchange-swap-section">
-              <div className="Exchange-swap-section-top">
-                <div className="muted">
-                  <Trans>Price</Trans>
-                </div>
-                <div
-                  className="muted align-right clickable"
-                  onClick={() => {
-                    setTriggerPriceValue(formatAmountFree(position.markPrice, USD_DECIMALS, positionPriceDecimal));
-                  }}
-                >
-                  <Trans>Mark: {formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}</Trans>
-                </div>
-              </div>
-              <div className="Exchange-swap-section-bottom">
-                <div className="Exchange-swap-input-container">
-                  <input
-                    type="number"
-                    min="0"
-                    placeholder="0.0"
-                    className="Exchange-swap-input"
-                    value={triggerPriceValue}
-                    onChange={onTriggerPriceChange}
-                  />
-                </div>
-                <div className="PositionEditor-token-symbol">USD</div>
-              </div>
-            </div>
+            <BuyInputSection
+              inputValue={triggerPriceValue}
+              onInputValueChange={onTriggerPriceChange}
+              topLeftLabel={t`Price`}
+              topRightLabel={t`Mark`}
+              topRightValue={
+                position.markPrice && formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)
+              }
+              onClickTopRightLabel={() => {
+                setTriggerPriceValue(formatAmountFree(position.markPrice, USD_DECIMALS, positionPriceDecimal));
+              }}
+            >
+              USD
+            </BuyInputSection>
           )}
           {renderReceiveSpreadWarning()}
           {shouldShowExistingOrderWarning && renderExistingOrderWarning()}
@@ -1120,13 +1086,13 @@ export default function PositionSeller(props) {
             {hasPendingProfit && orderOption !== STOP && (
               <div className="PositionEditor-accept-profit-warning">
                 <Checkbox isChecked={isProfitWarningAccepted} setIsChecked={setIsProfitWarningAccepted}>
-                  <span className="muted">Forfeit profit</span>
+                  <span className="text-gray">Forfeit profit</span>
                 </Checkbox>
               </div>
             )}
             <div className="PositionEditor-keep-leverage-settings">
               <ToggleSwitch isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
-                <span className="muted font-sm">
+                <span className="text-gray font-sm">
                   <Trans>Keep leverage at {formatAmount(position.leverage, 4, 2)}x</Trans>
                 </span>
               </ToggleSwitch>

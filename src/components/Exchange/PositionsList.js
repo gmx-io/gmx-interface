@@ -19,6 +19,8 @@ import { AiOutlineEdit } from "react-icons/ai";
 import useAccountType, { AccountType } from "lib/wallets/useAccountType";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { getPriceDecimals } from "config/tokens";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+import Button from "components/Button/Button";
 
 const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {
@@ -246,7 +248,15 @@ export default function PositionsList(props) {
                 <div key={position.key} className="App-card">
                   <div>
                     <div className="App-card-title Position-card-title">
-                      <span className="Exchange-list-title">{position.indexToken.symbol}</span>
+                      <TokenIcon
+                        className="PositionList-token-icon"
+                        symbol={position.indexToken.symbol}
+                        displaySize={20}
+                        importSize={24}
+                      />
+                      <span className="Exchange-list-title" onClick={() => onPositionClick(position)}>
+                        {position.indexToken.symbol}
+                      </span>
                       <div>
                         <span className="Position-leverage" onClick={openSettings}>
                           {position.leverageStr}
@@ -277,11 +287,12 @@ export default function PositionsList(props) {
                         </div>
                         <div>
                           <span
-                            className={cx("Exchange-list-info-label", {
+                            className={cx("Exchange-list-info-label Position-pnl", {
                               positive: hasPositionProfit && positionDelta.gt(0),
                               negative: !hasPositionProfit && positionDelta.gt(0),
                               muted: positionDelta.eq(0),
                             })}
+                            onClick={openSettings}
                           >
                             {position.deltaStr} ({position.deltaPercentageStr})
                           </span>
@@ -407,23 +418,26 @@ export default function PositionsList(props) {
                   {!hideActions && (
                     <div>
                       <div className="App-card-divider"></div>
-                      <div className="App-card-options">
-                        <button
-                          className="App-button-option App-card-option"
+                      <div className="remove-top-margin">
+                        <Button
+                          variant="secondary"
+                          className="mr-md mt-md"
                           disabled={position.size.eq(0)}
                           onClick={() => sellPosition(position)}
                         >
                           <Trans>Close</Trans>
-                        </button>
-                        <button
-                          className="App-button-option App-card-option"
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          className="mr-md mt-md"
                           disabled={position.size.eq(0)}
                           onClick={() => editPosition(position)}
                         >
                           <Trans>Edit Collateral</Trans>
-                        </button>
-                        <button
-                          className="Exchange-list-action App-button-option App-card-option"
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          className="mt-md"
                           onClick={() => {
                             setPositionToShare(position);
                             setIsPositionShareModalOpen(true);
@@ -431,7 +445,7 @@ export default function PositionsList(props) {
                           disabled={position.size.eq(0)}
                         >
                           <Trans>Share</Trans>
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   )}
@@ -509,11 +523,21 @@ export default function PositionsList(props) {
 
             return (
               <tr key={position.key}>
-                <td className="clickable" onClick={() => onPositionClick(position)}>
-                  <div className="Exchange-list-title">
+                <td className={!hideActions ? "clickable" : ""} onClick={() => onPositionClick(position)}>
+                  <div className="Exchange-list-title" onClick={() => onPositionClick(position)}>
                     {!hideActions ? (
                       <Tooltip
-                        handle={position.indexToken.symbol}
+                        handle={
+                          <>
+                            <TokenIcon
+                              className="PositionList-token-icon"
+                              symbol={position.indexToken.symbol}
+                              displaySize={20}
+                              importSize={24}
+                            />
+                            {position.indexToken.symbol}
+                          </>
+                        }
                         position="left-bottom"
                         handleClassName="plain clickable"
                         renderContent={() => {
@@ -534,7 +558,15 @@ export default function PositionsList(props) {
                         }}
                       />
                     ) : (
-                      position.indexToken.symbol
+                      <div className="inline-flex">
+                        <TokenIcon
+                          className="PositionList-token-icon"
+                          symbol={position.indexToken.symbol}
+                          displaySize={20}
+                          importSize={24}
+                        />
+                        {position.indexToken.symbol}
+                      </div>
                     )}
                     {position.hasPendingChanges && <ImSpinner2 className="spin position-loading-icon" />}
                   </div>

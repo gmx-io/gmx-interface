@@ -79,6 +79,7 @@ import {
   formatPercentage,
   formatTokenAmount,
   formatUsd,
+  limitDecimals,
   parseValue,
 } from "lib/numbers";
 import { useSafeState } from "lib/useSafeState";
@@ -93,8 +94,10 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { CollateralSelectorRow } from "./CollateralSelectorRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import "./TradeBox.scss";
-import Banner from "components/Banner/Banner";
 import { useHasOutdatedUi } from "domain/legacy";
+import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
+import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
+import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 
 export type Props = {
   tradeType: TradeType;
@@ -207,6 +210,7 @@ export function TradeBox(p: Props) {
   };
 
   const { chainId } = useChainId();
+  const isMetamaskMobile = useIsMetamaskMobile();
   const { library, account } = useWeb3React();
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
@@ -929,7 +933,11 @@ export function TradeBox(p: Props) {
         ? fromToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
         : fromToken.balance;
       setFocusedInput("from");
-      setFromTokenInputValue(formatAmountFree(maxAvailableAmount, fromToken.decimals));
+      const formattedAmount = formatAmountFree(maxAvailableAmount, fromToken.decimals);
+      const finalAmount = isMetamaskMobile
+        ? limitDecimals(formattedAmount, MAX_METAMASK_MOBILE_DECIMALS)
+        : formattedAmount;
+      setFromTokenInputValue(finalAmount);
     }
   }
 
@@ -1056,6 +1064,10 @@ export function TradeBox(p: Props) {
         onClickTopRightLabel={() => setCloseSizeInputValue(formatAmount(existingPosition?.sizeInUsd, USD_DECIMALS, 2))}
         showMaxButton={existingPosition?.sizeInUsd.gt(0) && !closeSizeUsd?.eq(existingPosition.sizeInUsd)}
         onClickMax={() => setCloseSizeInputValue(formatAmount(existingPosition?.sizeInUsd, USD_DECIMALS, 2))}
+        showPercentSelector={existingPosition?.sizeInUsd.gt(0)}
+        onPercentChange={(percent) =>
+          setCloseSizeInputValue(formatAmount(existingPosition?.sizeInUsd.mul(percent).div(100), USD_DECIMALS, 2))
+        }
       >
         USD
       </BuyInputSection>
@@ -1099,8 +1111,9 @@ export function TradeBox(p: Props) {
       >
         {markRatio && (
           <>
-            {markRatio.smallestToken.symbol} per 
-            {markRatio.largestToken.symbol}
+            <TokenWithIcon symbol={markRatio.smallestToken.symbol} displaySize={20} />
+             per 
+            <TokenWithIcon symbol={markRatio.largestToken.symbol} displaySize={20} />
           </>
         )}
       </BuyInputSection>
@@ -1423,7 +1436,6 @@ export function TradeBox(p: Props) {
   return (
     <>
       <div>
-        <Banner className="Banner-gap" />
         <div className={`App-box SwapBox`}>
           <Tab
             icons={tradeTypeIcons}
