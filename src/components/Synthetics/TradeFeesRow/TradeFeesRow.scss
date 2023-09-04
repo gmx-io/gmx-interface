@@ -11,6 +11,10 @@
   .Tooltip-popup {
     min-width: 32rem;
   }
+
+  .Tooltip-row .Tooltip-row-label {
+    margin-bottom: 0.5rem;
+  }
 }
 
 .TradeFeesRow-warning-tooltip {

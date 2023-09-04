@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -34,6 +34,7 @@ type FeeRow = {
   id: string;
   label: ReactNode;
   value: ReactNode;
+  className?: string;
 };
 
 export function TradeFeesRow(p: Props) {
@@ -45,11 +46,12 @@ export function TradeFeesRow(p: Props) {
           id: "positionPriceImpact",
           label: (
             <>
-              <div>{t`Position Price Impact`}:</div>
+              <div className="text-white">{t`Position Price Impact`}:</div>
               <div>({formatPercentage(p.positionPriceImpact.bps.abs())} of position size)</div>
             </>
           ),
           value: formatDeltaUsd(p.positionPriceImpact.deltaUsd),
+          className: p.positionPriceImpact.deltaUsd.gte(0) ? "text-green" : "text-red",
         }
       : undefined;
 
@@ -58,11 +60,12 @@ export function TradeFeesRow(p: Props) {
           id: "swapPriceImpact",
           label: (
             <>
-              <div>{t`Swap Price Impact`}:</div>
+              <div className="text-white">{t`Swap Price Impact`}:</div>
               <div>({formatPercentage(p.swapPriceImpact.bps.abs())} of swap amount)</div>
             </>
           ),
           value: formatDeltaUsd(p.swapPriceImpact.deltaUsd),
+          className: p.swapPriceImpact.deltaUsd.gte(0) ? "text-green" : "text-red",
         }
       : undefined;
 
@@ -71,7 +74,7 @@ export function TradeFeesRow(p: Props) {
         id: `swap-${swap.tokenInAddress}-${swap.tokenOutAddress}`,
         label: (
           <>
-            <div>
+            <div className="text-white">
               {t`Swap ${getToken(chainId, swap.tokenInAddress).symbol} to ${
                 getToken(chainId, swap.tokenOutAddress).symbol
               }`}
@@ -81,6 +84,7 @@ export function TradeFeesRow(p: Props) {
           </>
         ),
         value: formatDeltaUsd(swap.deltaUsd),
+        className: swap.deltaUsd.gte(0) ? "text-green" : "text-red",
       })) || [];
 
     const swapProfitFeeRow = p.swapProfitFee?.deltaUsd.abs().gt(0)
@@ -88,11 +92,12 @@ export function TradeFeesRow(p: Props) {
           id: "swapProfitFee",
           label: (
             <>
-              <div>{t`Swap Profit Fee`}:</div>
+              <div className="text-white">{t`Swap Profit Fee`}:</div>
               <div>({formatPercentage(p.swapProfitFee.bps.abs())} of collateral)</div>
             </>
           ),
           value: formatDeltaUsd(p.swapProfitFee.deltaUsd),
+          className: p.swapProfitFee.deltaUsd.gte(0) ? "text-green" : "text-red",
         }
       : undefined;
 
@@ -101,19 +106,25 @@ export function TradeFeesRow(p: Props) {
           id: "positionFee",
           label: (
             <>
-              <div>{p.feesType === "increase" ? t`Open Fee` : t`Close Fee`}:</div>
+              <div className="text-white">{p.feesType === "increase" ? t`Open Fee` : t`Close Fee`}:</div>
               <div>({formatPercentage(p.positionFee.bps.abs())} of position size)</div>
             </>
           ),
           value: formatDeltaUsd(p.positionFee.deltaUsd),
+          className: p.positionFee.deltaUsd.gte(0) ? "text-green" : "text-red",
         }
       : undefined;
 
     const feeDiscountRow = p.feeDiscountUsd?.gt(0)
       ? {
           id: "feeDiscount",
-          label: t`Referral Discount`,
+          label: (
+            <div className="text-white">
+              <Trans>Referral Discount</Trans>
+            </div>
+          ),
           value: formatDeltaUsd(p.feeDiscountUsd),
+          className: "text-green",
         }
       : undefined;
 
@@ -122,11 +133,12 @@ export function TradeFeesRow(p: Props) {
           id: "borrowFee",
           label: (
             <>
-              <div>{t`Borrow Fee`}:</div>
+              <div className="text-white">{t`Borrow Fee`}:</div>
               <div>({formatPercentage(p.borrowFee.bps.abs())} of collateral)</div>
             </>
           ),
           value: formatDeltaUsd(p.borrowFee.deltaUsd),
+          className: p.borrowFee.deltaUsd.gte(0) ? "text-green" : "text-red",
         }
       : undefined;
 
@@ -135,31 +147,41 @@ export function TradeFeesRow(p: Props) {
           id: "fundingFee",
           label: (
             <>
-              <div>{t`Funding Fee`}:</div>
+              <div className="text-white">{t`Funding Fee`}:</div>
               <div>({formatPercentage(p.fundingFee.bps.abs())} of collateral)</div>
             </>
           ),
           value: formatDeltaUsd(p.fundingFee.deltaUsd),
+          className: p.fundingFee.deltaUsd.gte(0) ? "text-green" : "text-red",
         }
       : undefined;
 
     const borrowFeeRateRow = p.borrowFeeRateStr
-      ? { id: "borrowFeeRate", label: t`Borrow Fee Rate`, value: p.borrowFeeRateStr }
+      ? {
+          id: "borrowFeeRate",
+          label: <div className="text-white">{t`Borrow Fee Rate`}</div>,
+          value: p.borrowFeeRateStr,
+        }
       : undefined;
 
     const fundingFeeRateRow = p.fundingFeeRateStr
-      ? { id: "fundingFeeRate", label: t`Funding Fee Rate`, value: p.fundingFeeRateStr }
+      ? {
+          id: "fundingFeeRate",
+          label: <div className="text-white">{t`Funding Fee Rate`}</div>,
+          value: p.fundingFeeRateStr,
+        }
       : undefined;
 
     const executionFeeRow = p.executionFee?.feeTokenAmount.gt(0)
       ? {
-          label: t`Max Execution Fee`,
+          label: <div className="text-white">{t`Max Execution Fee`}</div>,
           value: formatTokenAmountWithUsd(
             p.executionFee.feeTokenAmount.mul(-1),
             p.executionFee.feeUsd.mul(-1),
             p.executionFee.feeToken.symbol,
             p.executionFee.feeToken.decimals
           ),
+          className: "text-red",
         }
       : undefined;
 
@@ -251,7 +273,13 @@ export function TradeFeesRow(p: Props) {
               renderContent={() => (
                 <div>
                   {feeRows.map((feeRow) => (
-                    <StatsTooltipRow key={feeRow.id} label={feeRow.label} value={feeRow.value} showDollar={false} />
+                    <StatsTooltipRow
+                      key={feeRow.id}
+                      className={feeRow.className}
+                      label={feeRow.label}
+                      value={feeRow.value}
+                      showDollar={false}
+                    />
                   ))}
                 </div>
               )}
