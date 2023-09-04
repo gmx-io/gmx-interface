@@ -104,11 +104,13 @@ export default function TopPositions() {
   const term = useDebounce(search, 300);
   const { chainId, topPositions, topPositionsHeaderClick } = useLeaderboardContext();
   const { isLoading, error } = topPositions;
-  const filteredStats = topPositions.data.filter(a => a.account.indexOf(term.toLowerCase()) >= 0);
+  const filteredStats = topPositions.data.filter(a => (
+    a.account.toLowerCase().indexOf(term.toLowerCase()) >= 0
+  ));
   const indexFrom = (page - 1) * perPage;
   const rows = filteredStats.slice(indexFrom, indexFrom + perPage).map(parseRow(chainId));
   const pageCount = Math.ceil(filteredStats.length / perPage);
-  const handleSearchInput = ({ target }) => setSearch(target.value);
+  const handleSearchInput = (value: string) => setSearch(value.trim());
 
   const titles: { [k in keyof TopPositionsRow]?: TableHeader } = {
     rank: { title: t`Rank` },

@@ -97,7 +97,7 @@ export default function TopAccounts() {
   const indexFrom = (page - 1) * perPage;
   const rows = filteredStats.slice(indexFrom, indexFrom + perPage).map(parseRow);
   const pageCount = Math.ceil(filteredStats.length / perPage);
-  const handleSearchInput = ({ target }) => setSearch(target.value);
+  const handleSearchInput = (value: string) => setSearch(value.trim());
   const titles: Record<string, TableHeader> = {
     rank: { title: t`Rank` },
     account: { title: t`Address` },
