@@ -23,15 +23,11 @@ export default function AddressView({
   lengths,
   maxLength,
 }: AddressViewProps) {
-  // const useBreakpoint = createBreakpoint({ L: 600, M: 550, S: 400 });
-  // const breakpoint = useBreakpoint();
-  // const { ensName, avatarUrl } = useEnsRecord({ address });
-
   const trader = ensName || address;
   const strLength = (breakpoint && lengths && lengths[breakpoint]) || maxLength;
 
   return (
-    <Link className="trader-account-label" to={ `/actions/v2/${address}` } target="_blank">
+    <Link className="trader-account-label" to={ `/actions/v2/${address}` }>
       {
         avatarUrl ? (
           <span
