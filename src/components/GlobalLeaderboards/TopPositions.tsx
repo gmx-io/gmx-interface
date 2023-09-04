@@ -10,7 +10,7 @@ import classnames from "classnames";
 import { TableCell, TableHeader } from "components/Table/types";
 import { USD_DECIMALS, importImage } from "lib/legacy";
 import AddressView from "components/AddressView";
-import { TopPositionsRow } from "domain/synthetics/leaderboards";
+import { TopPositionsRow, formatDelta } from "domain/synthetics/leaderboards";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getPriceDecimals } from "config/tokens";
 import { BigNumber } from "ethers";
@@ -41,8 +41,7 @@ const parseRow = (chainId: number) => (p: TopPositionsRow): { [key in keyof TopP
     ),
   },
   unrealizedPnl: {
-    // eslint-disable-next-line no-mixed-operators
-    value: p.unrealizedPnl && formatUsd(p.unrealizedPnl!) || "",
+    value: (p.unrealizedPnl && formatDelta(p.unrealizedPnl, { signed: true, prefix: "$" })) || "",
     className: classnames(
       p.unrealizedPnl.isNegative() ? "negative" : "positive",
       "leaderboard-pnl-abs"

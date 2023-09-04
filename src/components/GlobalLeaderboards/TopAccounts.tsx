@@ -10,7 +10,7 @@ import Table from "components/Table";
 import { useLeaderboardContext } from "./Context";
 import { USD_DECIMALS } from "lib/legacy";
 import { TableCell, TableHeader } from "components/Table/types";
-import { TopAccountsRow } from "domain/synthetics/leaderboards";
+import { TopAccountsRow, formatDelta } from "domain/synthetics/leaderboards";
 import AddressView from "components/AddressView";
 import Tooltip from "components/Tooltip/Tooltip";
 
@@ -35,7 +35,7 @@ const parseRow = (s: TopAccountsRow): Record<string, TableCell> => ({
     value: "",
     render: () => (
       <Tooltip
-        handle={ formatUsd(s.absPnl) }
+        handle={ formatDelta(s.absPnl, { signed: true, prefix: "$" }) }
         position="center-top"
         renderContent={
           () => (
@@ -56,7 +56,7 @@ const parseRow = (s: TopAccountsRow): Record<string, TableCell> => ({
     value: "",
     render: () => (
       <Tooltip
-        handle={ `${ formatAmount(s.relPnl.mul(BigNumber.from(100)), USD_DECIMALS, 2, true) }%` }
+        handle={ formatDelta(s.relPnl.mul(BigNumber.from(100)), { signed: true, postfix: "%" }) }
         position="center-top"
         renderContent={
           () => (
