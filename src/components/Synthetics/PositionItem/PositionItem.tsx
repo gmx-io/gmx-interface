@@ -157,7 +157,7 @@ export function PositionItem(p: Props) {
                             p.position.collateralAmount,
                             p.position.collateralToken.decimals,
                             p.position.collateralToken.symbol
-                          )}
+                          )}{" "}
                           ({formatUsd(p.position.collateralUsd)})
                         </div>
                       </>

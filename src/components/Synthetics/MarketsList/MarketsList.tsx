@@ -144,7 +144,7 @@ export function MarketsList() {
         {stats.marketsStats.map(({ marketInfo: market, fundingRateLong, fundingRateShort }) => {
           return (
             <div className="mb-base" key={market.marketTokenAddress}>
-              <div className="mb-sm text-gray">[{getMarketPoolName(market)}]</div>
+              <div className="mb-xs text-white">[{getMarketPoolName(market)}]</div>
               <StatsTooltipRow
                 showDollar={false}
                 label={t`Long Funding Payment`}
@@ -161,12 +161,10 @@ export function MarketsList() {
           );
         })}
         <br />
-        <span className="text-gray">
-          Funding Fees help to balance Longs and Shorts and are exchanged between both sides.
-        </span>
+        <span>Funding Fees help to balance Longs and Shorts and are exchanged between both sides.</span>
         <br />
         <br />
-        <span className="text-gray">
+        <span>
           A negative Funding Fee value indicates that percentage needs to be paid, a positive Funding Fee value
           indicates that percentage will be received as funding rewards.
         </span>

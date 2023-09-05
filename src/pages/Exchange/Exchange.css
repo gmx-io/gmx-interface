@@ -481,7 +481,7 @@
 
 .Exchange-list .Tooltip-popup,
 .Exchange-list .App-card .Tooltip-popup {
-  min-width: 30rem;
+  min-width: 32rem;
 }
 
 .Exchange-list-item-error {
