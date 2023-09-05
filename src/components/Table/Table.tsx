@@ -4,7 +4,7 @@ import classnames from "classnames";
 import Tooltip from "../Tooltip/Tooltip";
 import { TableCellProps, TableProps } from "./types";
 
-import "./index.css";
+import "./Table.css";
 import { createBreakpoint } from "react-use";
 
 export default function Table<T extends Record<string, any>>({
@@ -38,6 +38,7 @@ export default function Table<T extends Record<string, any>>({
                     <Tooltip
                       handle={ v.title }
                       position="center-top"
+                      className={ classnames("table-header-tooltip", v.className) }
                       renderContent={
                         typeof v.tooltip === "function"
                           ? v.tooltip

@@ -1,6 +1,6 @@
 import React from "react";
 import classnames from "classnames";
-import "./index.css"
+import "./TableFilterSearch.css"
 
 type Props = {
   value?: string;
@@ -16,9 +16,7 @@ export default function TableFilterSearch({value, onInput = () => {}, label, cla
         type="text"
         placeholder={ label }
         value={ value }
-        onChange={ (e) => onInput(e.target.value) }
-        onPaste={ (e) => onInput((e.target as HTMLInputElement).value) }
-        onKeyDown={ () => undefined }
+        onInput={ (e) => onInput((e.target as HTMLInputElement).value) }
         autoFocus={ false }
         className={ classnames("filter-search-input", className) }
       />

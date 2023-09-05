@@ -5,7 +5,7 @@ import TopPositions from "./TopPositions";
 import { LeaderboardContextProvider } from "./Context";
 import { t } from '@lingui/macro';
 
-import "./index.css";
+import "./GlobalLeaderboards.css";
 
 export default function GeneralLeaderboards() {
   const [activeLeaderboard, setActiveLeaderboard] = useState(0);

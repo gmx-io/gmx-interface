@@ -21,7 +21,7 @@ import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccou
 import Dashboard from "pages/Dashboard/Dashboard";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
 import { Exchange } from "pages/Exchange/Exchange";
-import Leaderboards from "pages/Leaderboards";
+import Leaderboards from "pages/Leaderboards/Leaderboards";
 import Home from "pages/Home/Home";
 import NftWallet from "pages/NftWallet/NftWallet";
 import OrdersOverview from "pages/OrdersOverview/OrdersOverview";

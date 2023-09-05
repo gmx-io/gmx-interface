@@ -3,14 +3,13 @@ import SEO from "components/Common/SEO";
 import { getPageTitle } from "lib/legacy";
 import { t, Trans } from "@lingui/macro";
 import { useChainId } from "lib/chains";
-import GloballLeaderboards from "components/GlobalLeaderboards";
-
-import "./index.css";
+import GloballLeaderboards from "components/GlobalLeaderboards/GlobalLeaderboards";
 import { getIcon } from "config/icons";
+
+import "./Leaderboards.css";
 
 export default function Leaderboard() {
   const { chainId } = useChainId();
-  // const [selectedCompetition, setSelectedCompetition] = useLocalStorage("leaderboard-type", "Global");
 
   return (
     <SEO title={getPageTitle("Leaderboards")}>
@@ -23,15 +22,6 @@ export default function Leaderboard() {
             <div className="Page-description">
               <Trans>Addresses trading statistics.</Trans>
             </div>
-            {/* <div style={{ marginTop: "2.5rem" }}>
-              <select
-                value={selectedCompetition}
-                onChange={(event) => setSelectedCompetition(event.target.value)}
-                className="transparent-btn"
-              >
-                <option value="">{t`Global`}</option>
-              </select>
-            </div> */}
           </div>
         </div>
         <GloballLeaderboards />

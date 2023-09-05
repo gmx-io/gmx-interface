@@ -1,6 +1,6 @@
 import Pagination from "components/Pagination/Pagination";
-import Table from "components/Table";
-import TableFilterSearch from "components/TableFilterSearch";
+import Table from "components/Table/Table";
+import TableFilterSearch from "components/TableFilterSearch/TableFilterSearch";
 import { useDebounce } from "lib/useDebounce";
 import { useState } from "react";
 import { useLeaderboardContext } from "./Context";
@@ -9,7 +9,7 @@ import { formatAmount, formatUsd } from "lib/numbers";
 import classnames from "classnames";
 import { TableCell, TableHeader } from "components/Table/types";
 import { USD_DECIMALS, importImage } from "lib/legacy";
-import AddressView from "components/AddressView";
+import AddressView from "components/AddressView/AddressView";
 import { TopPositionsRow, formatDelta } from "domain/synthetics/leaderboards";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getPriceDecimals } from "config/tokens";

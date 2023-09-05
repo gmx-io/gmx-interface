@@ -2,7 +2,7 @@ import React from "react";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
 import { Link } from "react-router-dom";
 import { shortenAddress } from "lib/legacy";
-import "./index.css";
+import "./AddressView.css";
 
 type AddressViewProps = {
   address: string;

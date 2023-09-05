@@ -1,18 +1,18 @@
 import { useState } from "react";
 import { BigNumber } from "ethers";
-import classnames from "classnames";
 import { t } from "@lingui/macro";
 import { formatAmount, formatUsd } from "lib/numbers";
 import { useDebounce } from "lib/useDebounce";
 import Pagination from "components/Pagination/Pagination";
-import TableFilterSearch from "components/TableFilterSearch";
-import Table from "components/Table";
+import TableFilterSearch from "components/TableFilterSearch/TableFilterSearch";
+import Table from "components/Table/Table";
 import { useLeaderboardContext } from "./Context";
 import { USD_DECIMALS } from "lib/legacy";
 import { TableCell, TableHeader } from "components/Table/types";
 import { TopAccountsRow, formatDelta } from "domain/synthetics/leaderboards";
-import AddressView from "components/AddressView";
+import AddressView from "components/AddressView/AddressView";
 import Tooltip from "components/Tooltip/Tooltip";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
 const parseRow = (s: TopAccountsRow): Record<string, TableCell> => ({
   id: s.id,
@@ -35,21 +35,37 @@ const parseRow = (s: TopAccountsRow): Record<string, TableCell> => ({
     value: "",
     render: () => (
       <Tooltip
-        handle={ formatDelta(s.absPnl, { signed: true, prefix: "$" }) }
+        handle={
+          <span className={ s.absPnl.isNegative() ? "negative" : "positive" }>
+            { formatDelta(s.absPnl, { signed: true, prefix: "$" }) }
+          </span>
+        }
         position="center-top"
         renderContent={
           () => (
             <div>
-              <p>{ `${ t`RPnL` }: ${ formatUsd(s.rPnl) }` }</p>
-              <p>{ `${ t`UPnL` }: ${ formatUsd(s.uPnl) }` }</p>
+              <StatsTooltipRow
+                label={ t`RPnL` }
+                showDollar={ false }
+                value={
+                  <span className={ s.rPnl.isNegative() ? "negative" : "positive" }>
+                    { formatDelta(s.rPnl, { signed: true, prefix: "$" }) }
+                  </span>
+                }
+              />
+              <StatsTooltipRow
+                label={ t`UPnL` }
+                showDollar={ false }
+                value={
+                  <span className={ s.rPnl.isNegative() ? "negative" : "positive" }>
+                    { formatDelta(s.uPnl, { signed: true, prefix: "$" }) }
+                  </span>
+                }
+              />
             </div>
           )
         }
       />
-    ),
-    className: classnames(
-      s.absPnl.isNegative() ? "negative" : "positive",
-      "leaderboard-pnl-abs"
     ),
   },
   relPnl: {
@@ -67,10 +83,6 @@ const parseRow = (s: TopAccountsRow): Record<string, TableCell> => ({
         }
       />
     ),
-    className: classnames(
-      s.relPnl.isNegative() ? "negative" : "positive",
-      "leaderboard-pnl-rel"
-    )
   },
   size: {
     value: formatUsd(s.size) || "",
@@ -93,7 +105,9 @@ export default function TopAccounts() {
   const term = useDebounce(search, 300);
   const { topAccounts, topAccountsHeaderClick } = useLeaderboardContext();
   const { isLoading, error } = topAccounts;
-  const filteredStats = topAccounts.data.filter(a => a.account.indexOf(term.toLowerCase()) >= 0);
+  const filteredStats = topAccounts.data.filter(a => (
+    a.account.toLowerCase().indexOf(term.toLowerCase()) >= 0
+  ));
   const indexFrom = (page - 1) * perPage;
   const rows = filteredStats.slice(indexFrom, indexFrom + perPage).map(parseRow);
   const pageCount = Math.ceil(filteredStats.length / perPage);
@@ -138,14 +152,6 @@ export default function TopAccounts() {
     <div>
       <div className="leaderboard-header">
         <TableFilterSearch label={t`Search Address`} value={search} onInput={handleSearchInput}/>
-        {/* <Tab
-          className="Exchange-swap-order-type-tabs"
-          type="inline"
-          option={ period }
-          onChange={ setPeriod }
-          options={[PerfPeriod.DAY, PerfPeriod.WEEK, PerfPeriod.MONTH, PerfPeriod.TOTAL]}
-          optionLabels={[t`24 hours`, t`7 days`, t`1 month`, t`All time`]}
-        /> */}
       </div>
       <Table isLoading={isLoading} error={error} content={rows} titles={titles} rowKey={"id"}/>
       <Pagination page={page} pageCount={pageCount} onPageChange={setPage}/>
