@@ -20,8 +20,8 @@ const fetchAccountOpenPositionsPage = async (
   skip: number,
   orderBy: string = "sizeInUsd",
   orderDirection: "asc" | "desc" = "desc",
-): Promise<Array<AccountOpenPositionJson>> => {
-  const res = await graph.query<{ accountOpenPositions: Array<AccountOpenPositionJson> }>({
+): Promise<AccountOpenPositionJson[]> => {
+  const res = await graph.query<{ accountOpenPositions: AccountOpenPositionJson[] }>({
     query: queryAccountOpenPositions,
     variables: {
       first,
@@ -117,7 +117,7 @@ const parseAccountOpenPositions = (
 
 const fetchAccountOpenPositions = async () => {
   const pageSize = 1000;
-  let data: Array<AccountOpenPositionJson> = [];
+  let data: AccountOpenPositionJson[] = [];
   let skip = 0;
 
   while (true) {

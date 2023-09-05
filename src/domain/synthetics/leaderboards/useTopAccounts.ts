@@ -29,7 +29,7 @@ const defaultSummary = (account: string): AccountPositionsSummary => ({
   openPositionsCount: 0,
 });
 
-const groupPositionsByAccount = (positions: Array<AccountOpenPosition>): PositionsSummaryByAccount => {
+const groupPositionsByAccount = (positions: AccountOpenPosition[]): PositionsSummaryByAccount => {
   const groupping: PositionsSummaryByAccount = {};
 
   for (const p of positions) {
@@ -63,7 +63,7 @@ const groupPositionsByAccount = (positions: Array<AccountOpenPosition>): Positio
 export function useTopAccounts(period: PerfPeriod) {
   const accountPerf = useAccountPerf(period);
   const positions = useAccountOpenPositions();
-  const [data, setData] = useState<Array<TopAccountsRow>>([]);
+  const [data, setData] = useState<TopAccountsRow[]>([]);
 
   let accounts: string = "";
   let positionKeys: string = "";

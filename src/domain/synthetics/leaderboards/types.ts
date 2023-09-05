@@ -156,7 +156,7 @@ export type AccountOpenPosition = {
 };
 
 export type DataByPeriod<T> = {
-  [key in PerfPeriod]?: Array<T>;
+  [key in PerfPeriod]?: T[];
 };
 
 export type TopAccountParams = {
@@ -177,7 +177,7 @@ export type TopPositionParams = {
 
 export type RemoteData<T> = {
   isLoading: boolean;
-  data: Array<T>;
+  data: T[];
   error: Error | null; 
 };
 

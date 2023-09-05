@@ -10,7 +10,7 @@ type AddressViewProps = {
   ensName?: string;
   avatarUrl?: string;
   breakpoint?: string;
-  lengths?: { [key: string]: number; };
+  lengths?: { [key: string]: number };
   maxLength?: number;
 };
 
@@ -27,24 +27,20 @@ export default function AddressView({
   const strLength = (breakpoint && lengths && lengths[breakpoint]) || maxLength;
 
   return (
-    <Link className="trader-account-label" to={ `/actions/v2/${address}` }>
-      {
-        avatarUrl ? (
-          <span
-            className="trader-account-avatar"
-            style={{
-              width: `${size}px`,
-              height: `${size}px`,
-              backgroundImage: `url(${avatarUrl})`,
-            }}
-          />
-        ) : (
-          <Jazzicon diameter={ size } seed={ jsNumberForAddress(address) }/>
-        )
-      }
-      <span className="trader-address">
-        { strLength ? shortenAddress(trader, strLength) : trader }
-      </span>
+    <Link className="trader-account-label" to={`/actions/v2/${address}`}>
+      {avatarUrl ? (
+        <span
+          className="trader-account-avatar"
+          style={{
+            width: `${size}px`,
+            height: `${size}px`,
+            backgroundImage: `url(${avatarUrl})`,
+          }}
+        />
+      ) : (
+        <Jazzicon diameter={size} seed={jsNumberForAddress(address)} />
+      )}
+      <span className="trader-address">{strLength ? shortenAddress(trader, strLength) : trader}</span>
     </Link>
   );
 }

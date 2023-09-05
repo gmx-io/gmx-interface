@@ -31,7 +31,7 @@ export const formatDelta = (x: BigNumber, {
 
 export const Profiler = () => {
   const start = new Date();
-  const profile: Array<[string, number]> = [];
+  const profile: [string, number][] = [];
   let last = start;
 
   return Object.assign((msg: string) => {

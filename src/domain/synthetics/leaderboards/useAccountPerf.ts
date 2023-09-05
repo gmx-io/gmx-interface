@@ -24,12 +24,12 @@ const fetchAccountPerfs = async (
   skip: number,
   orderBy: string = "totalPnl",
   orderDirection: "asc" | "desc" = "desc",
-): Promise<Array<AccountPerfJson>> => {
+): Promise<AccountPerfJson[]> => {
   if (!(period in filtersByPeriod)) {
     throw new Error(`Invalid period "${period}"`);
   }
 
-  const res = await graph.query<{ accountPerfs: Array<AccountPerfJson> }>({
+  const res = await graph.query<{ accountPerfs: AccountPerfJson[] }>({
     query: queryAccountPerformance,
     variables: { first, skip, orderBy, orderDirection, ...filtersByPeriod[period] }
   });
@@ -114,13 +114,13 @@ const sumPerfByAccount = (
 };
 
 export function useAccountPerf(period: PerfPeriod) {
-  const [data, setData] = useState<Array<AccountPerf>>([]);
+  const [data, setData] = useState<AccountPerf[]>([]);
   const accounts = useSWR([
     "leaderboards/accounts",
     period,
   ], async () => {
     const pageSize = 1000;
-    let data: Array<AccountPerfJson> = [];
+    let data: AccountPerfJson[] = [];
     let skip = 0;
 
     while (true) {

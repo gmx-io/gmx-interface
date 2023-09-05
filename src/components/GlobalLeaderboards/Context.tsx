@@ -1,7 +1,6 @@
 import { BigNumber, utils } from "ethers";
 import {
   createContext,
-  FC,
   PropsWithChildren,
   useCallback,
   useContext,
@@ -47,7 +46,7 @@ type ProfilerRef = ReturnType<typeof Profiler> & {
 
 export const useLeaderboardContext = () => useContext(LeaderboardContext);
 
-export const LeaderboardContextProvider: FC<PropsWithChildren> = ({ children }) => {
+export const LeaderboardContextProvider = ({ children }: PropsWithChildren) => {
   const p = useRef<ProfilerRef>();
   if (!p.current) {
     p.current = Profiler();
@@ -78,8 +77,8 @@ export const LeaderboardContextProvider: FC<PropsWithChildren> = ({ children }) 
     p.current("topAccountsUnordered");
     p.current.accounts = true;
   }
-  const [topPositions, setTopPositions] = useState<Array<TopPositionsRow>>([]);
-  const [topAccounts, setTopAccounts] = useState<Array<TopAccountsRow>>([]);
+  const [topPositions, setTopPositions] = useState<TopPositionsRow[]>([]);
+  const [topAccounts, setTopAccounts] = useState<TopAccountsRow[]>([]);
   const [positionsHash, setPositionsHash] = useState<string>();
   const [accountsHash, setAccountHash] = useState<string>();
   const topAccountsHeaderClick = useCallback((key: keyof TopAccountsRow) => () => {

@@ -13,7 +13,7 @@ export function useEnsBatchLookup(addresses: string[]) {
     }
 
     const addresses = addressesKey.split("-");
-    const namePromises: Array<Promise<{ address: string; error: any; name: string | null; }>> = [];
+    const namePromises: Promise<{ address: string; error: any; name: string | null; }>[] = [];
     for (const address of addresses) {
       namePromises.push(
         provider
@@ -53,7 +53,7 @@ export function useEnsBatchLookup(addresses: string[]) {
         return;
       }
 
-      const urlPromises: Array<Promise<{ address: string, error: any, url: string | null }>> = [];
+      const urlPromises: Promise<{ address: string, error: any, url: string | null }>[] = [];
 
       for (let i = 0; i < names.length; i++) {
         // const name = names[i];

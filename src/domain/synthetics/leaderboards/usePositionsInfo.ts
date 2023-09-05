@@ -255,7 +255,7 @@ export function usePositionsInfo(
     if (positions && marketsInfoData && tokensData && minCollateralUsd) {
       const parsedData = parsePositionsInfo(
         positionKeys,
-        positions as Array<PositionJson>,
+        positions as PositionJson[],
         marketsInfoData,
         tokensData,
         minCollateralUsd
