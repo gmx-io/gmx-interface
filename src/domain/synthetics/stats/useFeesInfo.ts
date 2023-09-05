@@ -81,7 +81,7 @@ export default function useFeesInfo(chainId: number) {
     }
   }
 
-  async function fetcher() {
+  async function fetcher([, lastUpdatedAt]) {
     if (!lastUpdatedAt) return;
     try {
       const { weeklyFees, totalFees } = await fetchFeesInfo(chainId, lastUpdatedAt);
@@ -96,7 +96,7 @@ export default function useFeesInfo(chainId: number) {
     }
   }
 
-  const { data: feesInfo } = useSWR("useFeesInfo", fetcher, {
+  const { data: feesInfo } = useSWR(["useFeesInfo", lastUpdatedAt], fetcher, {
     refreshInterval: 60000,
   });
 

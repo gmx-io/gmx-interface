@@ -40,7 +40,7 @@ import { contractFetcher } from "lib/contracts";
 import { formatDate } from "lib/dates";
 import { arrayURLFetcher } from "lib/fetcher";
 import {
-  addTwoBigNumbers,
+  sumBigNumbers,
   bigNumberify,
   expandDecimals,
   formatAmount,
@@ -564,7 +564,7 @@ export default function DashboardV2() {
                       position="right-bottom"
                       className="nowrap"
                       handle={`$${formatAmount(
-                        addTwoBigNumbers(currentVolumeInfo?.[chainId], v2MarketsOverview?.[chainId]?.dailyVolume),
+                        sumBigNumbers(currentVolumeInfo?.[chainId], v2MarketsOverview?.[chainId]?.dailyVolume),
                         USD_DECIMALS,
                         0,
                         true
@@ -591,7 +591,7 @@ export default function DashboardV2() {
                       position="right-bottom"
                       className="nowrap"
                       handle={`$${formatAmount(
-                        addTwoBigNumbers(
+                        sumBigNumbers(
                           positionStatsInfo?.[chainId]?.openInterest,
                           v2MarketsOverview?.[chainId]?.openInterest
                         ),
@@ -621,7 +621,7 @@ export default function DashboardV2() {
                       position="right-bottom"
                       className="nowrap"
                       handle={`$${formatAmount(
-                        addTwoBigNumbers(
+                        sumBigNumbers(
                           positionStatsInfo?.[chainId]?.totalLongPositionSizes,
                           v2MarketsOverview?.[chainId]?.totalLongPositionSizes
                         ),
@@ -651,7 +651,7 @@ export default function DashboardV2() {
                       position="right-bottom"
                       className="nowrap"
                       handle={`$${formatAmount(
-                        addTwoBigNumbers(
+                        sumBigNumbers(
                           positionStatsInfo?.[chainId]?.totalShortPositionSizes,
                           v2MarketsOverview?.[chainId]?.totalShortPositionSizes
                         ),
@@ -682,7 +682,7 @@ export default function DashboardV2() {
                         position="right-bottom"
                         className="nowrap"
                         handle={`$${formatAmount(
-                          addTwoBigNumbers(currentFees?.[chainId], v2MarketsOverview?.[chainId]?.weeklyFees),
+                          sumBigNumbers(currentFees?.[chainId], v2MarketsOverview?.[chainId]?.weeklyFees),
                           USD_DECIMALS,
                           2,
                           true
@@ -718,7 +718,7 @@ export default function DashboardV2() {
                       position="right-bottom"
                       className="nowrap"
                       handle={`$${numberWithCommas(
-                        addTwoBigNumbers(
+                        sumBigNumbers(
                           totalFees?.[chainId],
                           formatAmount(v2MarketsOverview?.[chainId]?.totalFees, USD_DECIMALS, 0)
                         )
@@ -750,7 +750,7 @@ export default function DashboardV2() {
                       position="right-bottom"
                       className="nowrap"
                       handle={`$${formatAmount(
-                        addTwoBigNumbers(totalVolume?.[chainId], v2MarketsOverview?.[chainId]?.totalVolume),
+                        sumBigNumbers(totalVolume?.[chainId], v2MarketsOverview?.[chainId]?.totalVolume),
                         USD_DECIMALS,
                         0,
                         true
@@ -777,7 +777,7 @@ export default function DashboardV2() {
                       position="right-bottom"
                       className="nowrap"
                       handle={formatAmount(
-                        addTwoBigNumbers(uniqueUsers?.[chainId], v2MarketsOverview?.[chainId].totalUsers),
+                        sumBigNumbers(uniqueUsers?.[chainId], v2MarketsOverview?.[chainId]?.totalUsers),
                         0,
                         0,
                         true
@@ -788,9 +788,9 @@ export default function DashboardV2() {
                           shouldFormat={false}
                           entries={{
                             "V1 Arbitrum": uniqueUsers?.[ARBITRUM],
-                            "V2 Arbitrum": v2MarketsOverview?.[ARBITRUM].totalUsers,
+                            "V2 Arbitrum": v2MarketsOverview?.[ARBITRUM]?.totalUsers,
                             "V1 Avalanche": uniqueUsers?.[AVALANCHE],
-                            "V2 Avalanche": v2MarketsOverview?.[AVALANCHE].totalUsers,
+                            "V2 Avalanche": v2MarketsOverview?.[AVALANCHE]?.totalUsers,
                           }}
                         />
                       )}
