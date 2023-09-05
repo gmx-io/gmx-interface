@@ -1,7 +1,8 @@
 import { useWeb3React } from "@web3-react/core";
-import useSWR from "swr";
+import useSWR, { SWRConfiguration } from "swr";
 import { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./types";
 import { executeMulticall } from "./utils";
+import { SWRGCMiddlewareConfig } from "lib/swrMiddlewares";
 
 /**
  * A hook to fetch data from contracts via multicall.
@@ -19,6 +20,8 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
   params: {
     key: CacheKey | SkipKey;
     refreshInterval?: number | null;
+    clearUnusedKeys?: boolean;
+    keepPreviousData?: boolean;
     request: TConfig | ((chainId: number, key: CacheKey) => TConfig);
     parseResponse?: (result: MulticallResult<TConfig>, chainId: number, key: CacheKey) => TResult;
   }
@@ -27,11 +30,14 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
 
   let swrFullKey = Array.isArray(params.key) && chainId && name ? [chainId, name, ...params.key] : null;
 
-  const swrOpts: any = {};
+  const swrOpts: SWRConfiguration & SWRGCMiddlewareConfig = {
+    clearUnusedKeys: params.clearUnusedKeys,
+    keepPreviousData: params.keepPreviousData,
+  };
 
   // SWR resets global options if pass undefined explicitly
   if (params.refreshInterval !== undefined) {
-    swrOpts.refreshInterval = params.refreshInterval;
+    swrOpts.refreshInterval = params.refreshInterval || undefined;
   }
 
   const { data } = useSWR<TResult | undefined>(swrFullKey, {

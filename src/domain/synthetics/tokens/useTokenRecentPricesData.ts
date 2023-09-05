@@ -15,7 +15,7 @@ export function useTokenRecentPrices(chainId: number): TokenPricesDataResult {
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
 
   const { data } = useSWR([chainId, oracleKeeperFetcher.oracleKeeperUrl, "useTokenRecentPrices"], {
-    fetcher: (chainId) =>
+    fetcher: ([chainId]) =>
       oracleKeeperFetcher.fetchTickers().then((priceItems) => {
         const result: TokenPricesData = {};
 
