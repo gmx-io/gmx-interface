@@ -331,16 +331,8 @@ export function roundToTwoDecimals(n) {
   return Math.round(n * 100) / 100;
 }
 
-export function addTwoBigNumbers(a, b) {
-  if (!a) {
-    a = bigNumberify(0);
-  }
-
-  if (!b) {
-    b = bigNumberify(0);
-  }
-
-  return BigNumber.from(a).add(b);
+export function sumBigNumbers(...args) {
+  return args.filter((value) => !isNaN(Number(value))).reduce((acc, value) => acc.add(value || 0), BigNumber.from(0));
 }
 
 export function removeTrailingZeros(amount: string | number) {

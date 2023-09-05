@@ -5,7 +5,7 @@ import useFeesInfo from "../stats/useFeesInfo";
 import useUsers from "../stats/useUsers";
 import { useMarketsInfo } from "../markets";
 
-type MarketOverview = {
+type DashboardOverview = {
   totalGMLiquidity: BigNumber;
   totalLongPositionSizes: BigNumber;
   totalShortPositionSizes: BigNumber;
@@ -17,7 +17,7 @@ type MarketOverview = {
   totalUsers: BigNumber;
 };
 
-export default function useDashboardOverview(chainId: number): MarketOverview {
+export default function useDashboardOverview(chainId: number): DashboardOverview {
   const volumeInfo = useVolumeInfo(chainId);
   const feesInfo = useFeesInfo(chainId);
   const { marketsInfoData } = useMarketsInfo(chainId);
