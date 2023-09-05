@@ -2474,6 +2474,10 @@ msgstr "Long"
 msgid "Long Collateral"
 msgstr ""
 
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "Long Funding Rewards"
+msgstr ""
+
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Long Liquidity"
 msgstr ""
@@ -3865,6 +3869,10 @@ msgstr "Short"
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "Short Collateral"
+msgstr ""
+
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "Short Funding Rewards"
 msgstr ""
 
 #: src/components/Exchange/ChartTokenSelector.tsx

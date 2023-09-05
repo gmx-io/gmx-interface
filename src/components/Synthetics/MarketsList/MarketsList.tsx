@@ -147,13 +147,13 @@ export function MarketsList() {
               <div className="mb-xs text-white">[{getMarketPoolName(market)}]</div>
               <StatsTooltipRow
                 showDollar={false}
-                label={t`Long Funding Payment`}
+                label={t`Long Funding Rewards`}
                 value={`${formatFundingRate(fundingRateLong)} / 1h`}
                 className={fundingRateLong.gte(0) ? "text-green" : "text-red"}
               />
               <StatsTooltipRow
                 showDollar={false}
-                label={t`Short Funding Payment`}
+                label={t`Short Funding Rewards`}
                 value={`${formatFundingRate(fundingRateShort)} / 1h`}
                 className={fundingRateShort.gte(0) ? "text-green" : "text-red"}
               />
