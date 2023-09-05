@@ -89,10 +89,10 @@ export function isWebsocketProvider(provider: any): provider is WebSocketProvide
 }
 
 export enum WSReadyState {
-  CLOSED = 3,
-  CLOSING = 2,
   CONNECTING = 0,
   OPEN = 1,
+  CLOSING = 2,
+  CLOSED = 3,
 }
 
 export function isProviderInClosedState(wsProvider: WebSocketProvider) {
