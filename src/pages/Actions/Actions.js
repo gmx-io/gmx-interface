@@ -44,8 +44,8 @@ export default function Actions({ savedIsPnlInLeverage, savedShowPnlAfterFees })
     checkSummedAccount = ethers.utils.getAddress(account);
   }
   const pnlUrl = `${getServerBaseUrl(chainId)}/pnl?account=${checkSummedAccount}`;
-  const { data: pnlData } = useSWR([pnlUrl], {
-    fetcher: (...args) => fetch(...args).then((res) => res.json()),
+  const { data: pnlData } = useSWR(pnlUrl, {
+    fetcher: (url) => fetch(url).then((res) => res.json()),
   });
 
   const tokens = getV1Tokens(chainId);
