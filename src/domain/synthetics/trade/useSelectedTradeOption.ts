@@ -150,13 +150,12 @@ export function useSelectedTradeOption(
         oldState.tokens.swapToTokenAddress = tokenAddress;
       } else {
         oldState.tokens.indexTokenAddress = tokenAddress;
-      }
-
-      if (toTokenAddress && marketTokenAddress) {
-        if (tradeFlags.isLong) {
-          oldState.markets[toTokenAddress].long = marketTokenAddress;
-        } else {
-          oldState.markets[toTokenAddress].short = marketTokenAddress;
+        if (toTokenAddress && marketTokenAddress) {
+          if (tradeFlags.isLong) {
+            oldState.markets[toTokenAddress].long = marketTokenAddress;
+          } else {
+            oldState.markets[toTokenAddress].short = marketTokenAddress;
+          }
         }
       }
 
