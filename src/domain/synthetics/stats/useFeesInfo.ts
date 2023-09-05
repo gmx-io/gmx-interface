@@ -97,7 +97,7 @@ export default function useFeesInfo(chainId: number) {
     }
   }
 
-  const { data: feesInfo } = useSWR(["useFeesInfo", lastUpdatedAt], fetcher, {
+  const { data: feesInfo } = useSWR([`useFeesInfo-${chainId}`, lastUpdatedAt], fetcher, {
     refreshInterval: 60000,
   });
 
