@@ -29,7 +29,7 @@ export function WebsocketContextProvider({ children }: { children: React.ReactNo
   const healthCheckTimerId = useRef<any>();
 
   useEffect(
-    function updateProviderEff() {
+    function updateProviderEffect() {
       if (!active || hasLostFocus) {
         return;
       }
