@@ -106,6 +106,7 @@ import SyntheticsActions from "pages/SyntheticsActions/SyntheticsActions";
 import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsFallbackPage";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
+import NumberInput from "components/NumberInput/NumberInput";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -717,12 +718,11 @@ function FullApp() {
             <Trans>Allowed Slippage</Trans>
           </div>
           <div className="App-slippage-tolerance-input-container">
-            <input
-              type="number"
+            <NumberInput
               className="App-slippage-tolerance-input"
-              min="0"
               value={slippageAmount}
-              onChange={(e) => setSlippageAmount(e.target.value)}
+              onValueChange={(e) => setSlippageAmount(e.target.value)}
+              placeholder="0.3"
             />
             <div className="App-slippage-tolerance-input-percent">%</div>
           </div>
@@ -747,12 +747,11 @@ function FullApp() {
               />
             </div>
             <div className="App-slippage-tolerance-input-container">
-              <input
-                type="number"
+              <NumberInput
                 className="App-slippage-tolerance-input"
-                min="0"
                 value={executionFeeBufferBps}
-                onChange={(e) => setExecutionFeeBufferBps(e.target.value)}
+                onValueChange={(e) => setExecutionFeeBufferBps(e.target.value)}
+                placeholder="10"
               />
               <div className="App-slippage-tolerance-input-percent">%</div>
             </div>

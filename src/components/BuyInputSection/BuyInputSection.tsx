@@ -3,12 +3,7 @@ import React, { useRef, ReactNode, ChangeEvent, useState } from "react";
 import cx from "classnames";
 import { Trans } from "@lingui/macro";
 import { INPUT_LABEL_SEPARATOR, PERCENTAGE_SUGGESTIONS } from "config/ui";
-
-function escapeSpecialRegExpChars(string: string): string {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-const inputRegex = RegExp(`^\\d*(?:\\\\[.])?\\d*$`);
+import NumberInput from "components/NumberInput/NumberInput";
 
 type Props = {
   topLeftLabel: string;
@@ -71,16 +66,7 @@ export default function BuyInputSection(props: Props) {
 
   function onUserInput(e) {
     if (onInputValueChange) {
-      // Replace comma with dot
-      let newValue = e.target.value.replace(/,/g, ".");
-      if (newValue === ".") {
-        newValue = "0.";
-      }
-
-      if (newValue === "" || inputRegex.test(escapeSpecialRegExpChars(newValue))) {
-        e.target.value = newValue;
-        onInputValueChange(e);
-      }
+      onInputValueChange(e);
     }
   }
 
@@ -104,21 +90,14 @@ export default function BuyInputSection(props: Props) {
         <div className="Exchange-swap-section-bottom">
           <div className="Exchange-swap-input-container">
             {!staticInput && (
-              <input
-                type="text"
-                inputMode="decimal"
-                placeholder="0.0"
-                className="Exchange-swap-input"
+              <NumberInput
                 value={inputValue}
-                ref={inputRef}
-                onChange={onUserInput}
-                autoComplete="off"
-                autoCorrect="off"
-                minLength={1}
-                maxLength={15}
-                spellCheck="false"
+                className="Exchange-swap-input"
+                inputRef={inputRef}
+                onValueChange={onUserInput}
                 onFocus={handleOnFocus}
                 onBlur={handleOnBlur}
+                placeholder="0.0"
               />
             )}
             {staticInput && <div className="InputSection-static-input">{inputValue}</div>}
