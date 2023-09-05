@@ -81,10 +81,11 @@ export default function useFeesInfo(chainId: number) {
     }
   }
 
-  async function fetcher([, lastUpdatedAt]) {
-    if (!lastUpdatedAt) return;
+  async function fetcher(args) {
+    const [, lastFeesUpdatedTimestamp] = args;
+    if (!lastFeesUpdatedTimestamp) return;
     try {
-      const { weeklyFees, totalFees } = await fetchFeesInfo(chainId, lastUpdatedAt);
+      const { weeklyFees, totalFees } = await fetchFeesInfo(chainId, lastFeesUpdatedTimestamp);
       return {
         weeklyFees,
         totalFees,
