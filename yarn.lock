@@ -7293,6 +7293,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"client-only@npm:^0.0.1":
+  version: 0.0.1
+  resolution: "client-only@npm:0.0.1"
+  checksum: 0c16bf660dadb90610553c1d8946a7fdfb81d624adea073b8440b7d795d5b5b08beb3c950c6a2cf16279365a3265158a236876d92bce16423c485c322d7dfaf8
+  languageName: node
+  linkType: hard
+
 "cliui@npm:^5.0.0":
   version: 5.0.0
   resolution: "cliui@npm:5.0.0"
@@ -8281,13 +8288,6 @@ __metadata:
   version: 1.1.2
   resolution: "depd@npm:1.1.2"
   checksum: 6b406620d269619852885ce15965272b829df6f409724415e0002c8632ab6a8c0a08ec1f0bd2add05dc7bd7507606f7e2cc034fa24224ab829580040b835ecd9
-  languageName: node
-  linkType: hard
-
-"dequal@npm:2.0.2":
-  version: 2.0.2
-  resolution: "dequal@npm:2.0.2"
-  checksum: 86c7a2c59f7b0797ed397c74b5fcdb744e48fc19440b70ad6ac59f57550a96b0faef3f1cfd5760ec5e6d3f7cb101f634f1f80db4e727b1dc8389bf62d977c0a0
   languageName: node
   linkType: hard
 
@@ -10016,7 +10016,7 @@ __metadata:
     react-use: 17.3.1
     recharts: 2.1.8
     sass: 1.55.0
-    swr: 0.4.2
+    swr: 2.2.1
     typescript: 4.7.4
     viem: 1.1.4
     web-vitals: 1.1.2
@@ -17103,14 +17103,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"swr@npm:0.4.2":
-  version: 0.4.2
-  resolution: "swr@npm:0.4.2"
+"swr@npm:2.2.1":
+  version: 2.2.1
+  resolution: "swr@npm:2.2.1"
   dependencies:
-    dequal: 2.0.2
+    client-only: ^0.0.1
+    use-sync-external-store: ^1.2.0
   peerDependencies:
-    react: ^16.11.0 || ^17.0.0
-  checksum: 04ccb0d244dfbb2402d4df72ac99138ee44b4a9fa43e536536cb61fceeec6fb0042dc92d69815f43c983dda1066f91ade9bacfea98992ff944194a1db8bb0572
+    react: ^16.11.0 || ^17.0.0 || ^18.0.0
+  checksum: 62ff1b8132966fc977df192cf4452bab94c73dbea304a1438745f27041917154dad32448d8a65fb40d5e3de0b1751ef3fd57b1d71ba450e031517f009d0fc052
   languageName: node
   linkType: hard
 
@@ -17799,7 +17800,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"use-sync-external-store@npm:1.2.0":
+"use-sync-external-store@npm:1.2.0, use-sync-external-store@npm:^1.2.0":
   version: 1.2.0
   resolution: "use-sync-external-store@npm:1.2.0"
   peerDependencies:

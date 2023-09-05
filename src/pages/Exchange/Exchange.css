@@ -271,10 +271,10 @@
 
 .ExchangeChart-top-inner {
   display: grid;
-  grid-template-columns: auto auto auto auto auto 1fr;
+  grid-template-columns: auto auto auto auto auto;
   grid-column-gap: 4.65rem;
   align-items: center;
-  padding-left: 0.3rem;
+  padding-left: 0.9rem;
 }
 
 .ExchangeChart-dollar-sign {
@@ -287,19 +287,14 @@
   display: inline-block;
 }
 
-.ExchangeChart-top {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: auto;
-  z-index: 2;
-}
-
-.ExchangeChart.tv .ExchangeChart-top {
-  position: relative;
+.ExchangeChart-info {
+  background: var(--dark-blue-bg);
+  border-radius: 0.4rem;
+  font-size: var(--font-base);
   padding: 0.9rem 0.31rem;
-  z-index: 2;
+  height: 68px;
+  display: flex;
+  align-items: center;
 }
 
 .ExchangeChart.tv .ExchangeChart-bottom {
@@ -307,7 +302,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  top: 6.975rem;
+  top: 8.2rem;
   z-index: 1;
 }
 .ExchangeChart-bottom-controls {
@@ -978,6 +973,16 @@ table.Exchange-list-small td {
   color: #56dba8;
 }
 
+.ExchangeChart-header {
+  display: grid;
+  grid-template-columns: auto 116.32px;
+  grid-column-gap: 1rem;
+}
+
+.VersionSwitch-wrapper {
+  padding: 1.5rem;
+}
+
 @media (max-width: 1500px) {
   .Exchange-swap-box {
     width: 38.75rem;
@@ -1002,7 +1007,39 @@ table.Exchange-list-small td {
   }
 }
 
+@media (max-width: 1275px) {
+  .ExchangeChart-top-inner {
+    grid-gap: 2.5rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .Chart-24h-low {
+    display: none;
+  }
+}
+
 @media (max-width: 1100px) {
+  .Chart-24h-low {
+    display: block;
+  }
+
+  .ExchangeChart-header {
+    grid-template-columns: auto 103px;
+  }
+
+  .VersionSwitch-wrapper {
+    padding: 1rem;
+  }
+
+  .ExchangeChart.tv .ExchangeChart-bottom {
+    top: 6rem;
+  }
+
+  .ExchangeChart-info {
+    height: 50px;
+  }
+
   .Exchange-swap-box {
     width: auto;
   }
@@ -1101,16 +1138,9 @@ table.Exchange-list-small td {
   }
 }
 
-@media (max-width: 1200px) {
-  .ExchangeChart-top-inner {
-    grid-column-gap: 3rem;
-  }
-}
-
-@media (max-width: 700px) {
+@media (max-width: 800px) {
   .ExchangeChart-top-inner {
     grid-template-columns: auto auto auto;
-    grid-column-gap: 0.8rem;
   }
 
   .ExchangeChart-additional-info {
@@ -1139,8 +1169,11 @@ table.Exchange-list-small td {
   }
 }
 
-@media (max-width: 350px) {
-  .ExchnageChart-24h {
+@media (max-width: 550px) {
+  .ExchangeChart-top-inner {
+    grid-template-columns: auto auto;
+  }
+  .Chart-24h-change {
     display: none;
   }
 }
@@ -1148,5 +1181,17 @@ table.Exchange-list-small td {
 @media (max-width: 450px) {
   .chart-positions {
     display: none;
+  }
+  .Chart-min-max-price {
+    display: none;
+  }
+  .ExchangeChart-top-inner {
+    grid-template-columns: auto;
+  }
+}
+
+@media (max-width: 350px) {
+  .ExchangeChart-header {
+    grid-column-gap: 0.5rem;
   }
 }

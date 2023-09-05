@@ -37,7 +37,6 @@ import { convertTokenAddress } from "config/tokens";
 import { BigNumber } from "ethers";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
-import { useRef } from "react";
 import { TokensData, useTokensData } from "../tokens";
 import { MarketsInfoData } from "./types";
 import { useMarkets } from "./useMarkets";
@@ -57,15 +56,14 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
 
   const isDepencenciesLoading = !marketsAddresses || !tokensData;
 
-  // Use ref to cache data from previos key with old prices
-  const marketsInfoDataCache = useRef<MarketsInfoData>();
-
   const { data } = useMulticall(chainId, "useMarketsInfo", {
     key: !isDepencenciesLoading &&
       marketsAddresses.length > 0 && [marketsAddresses.join("-"), dataStoreAddress, account, pricesUpdatedAt],
 
     // Refreshed on every prices update
     refreshInterval: null,
+    clearUnusedKeys: true,
+    keepPreviousData: true,
 
     request: () =>
       marketsAddresses!.reduce((request, marketAddress) => {
@@ -501,12 +499,8 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
     },
   });
 
-  if (data) {
-    marketsInfoDataCache.current = data;
-  }
-
   return {
-    marketsInfoData: marketsInfoDataCache.current,
+    marketsInfoData: data,
     tokensData,
     pricesUpdatedAt,
   };

@@ -58,24 +58,24 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
 
   const arbitrumPositionStatsUrl = getServerUrl(ARBITRUM, "/position_stats");
   const { data: arbitrumPositionStats } = useSWR([arbitrumPositionStatsUrl], {
-    fetcher: (...args) => fetch(...args).then((res) => res.json()),
+    fetcher: (args) => fetch(...args).then((res) => res.json()),
   });
 
   const arbitrumTotalVolumeUrl = getServerUrl(ARBITRUM, "/total_volume");
   const { data: arbitrumTotalVolume } = useSWR([arbitrumTotalVolumeUrl], {
-    fetcher: (...args) => fetch(...args).then((res) => res.json()),
+    fetcher: (args) => fetch(...args).then((res) => res.json()),
   });
 
   // AVALANCHE
 
   const avalanchePositionStatsUrl = getServerUrl(AVALANCHE, "/position_stats");
   const { data: avalanchePositionStats } = useSWR([avalanchePositionStatsUrl], {
-    fetcher: (...args) => fetch(...args).then((res) => res.json()),
+    fetcher: (args) => fetch(...args).then((res) => res.json()),
   });
 
   const avalancheTotalVolumeUrl = getServerUrl(AVALANCHE, "/total_volume");
   const { data: avalancheTotalVolume } = useSWR([avalancheTotalVolumeUrl], {
-    fetcher: (...args) => fetch(...args).then((res) => res.json()),
+    fetcher: (args) => fetch(...args).then((res) => res.json()),
   });
 
   // Total Volume

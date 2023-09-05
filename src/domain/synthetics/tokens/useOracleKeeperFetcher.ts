@@ -1,4 +1,5 @@
 import { getOracleKeeperNextIndex, getOracleKeeperUrl } from "config/oracleKeeper";
+import { getNormalizedTokenSymbol } from "config/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { timezoneOffset } from "domain/prices";
 import { Bar } from "domain/tradingview/types";
@@ -107,6 +108,8 @@ export function useOracleKeeperFetcher(chainId: number) {
     }
 
     async function fetchOracleCandles(tokenSymbol: string, period: string, limit: number): Promise<Bar[]> {
+      tokenSymbol = getNormalizedTokenSymbol(tokenSymbol);
+
       return fetch(buildUrl(oracleKeeperUrl!, "/prices/candles", { tokenSymbol, period, limit }))
         .then((res) => res.json())
         .then((res) => {

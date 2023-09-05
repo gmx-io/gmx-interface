@@ -94,7 +94,6 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { CollateralSelectorRow } from "./CollateralSelectorRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import "./TradeBox.scss";
-import Banner from "components/Banner/Banner";
 import { useHasOutdatedUi } from "domain/legacy";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
@@ -1437,7 +1436,6 @@ export function TradeBox(p: Props) {
   return (
     <>
       <div>
-        <Banner className="Banner-gap" />
         <div className={`App-box SwapBox`}>
           <Tab
             icons={tradeTypeIcons}
