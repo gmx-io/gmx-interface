@@ -44,7 +44,7 @@ export default function useVolumeInfo(chainId: number) {
     }
   }
 
-  async function fetcher() {
+  async function fetcher([_, chainId]) {
     const lastPeriodFor24Hours = Math.floor(Date.now() / 1000 / 3600) * 3600 - 60 * 60 * 24;
     try {
       const { dailyVolume, totalVolume } = await fetchVolumeData(chainId, lastPeriodFor24Hours);
@@ -59,7 +59,7 @@ export default function useVolumeInfo(chainId: number) {
     }
   }
 
-  const { data: volumes } = useSWR(`v2VolumeInfos-${chainId}`, fetcher, {
+  const { data: volumes } = useSWR(["v2VolumeInfos", chainId], fetcher, {
     refreshInterval: 60000,
   });
 

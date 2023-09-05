@@ -32,7 +32,7 @@ export default function useUsers(chainId: number) {
     }
   }
 
-  async function fetcher() {
+  async function fetcher([_, chainId]) {
     try {
       const { totalUsers } = await fetchUsersInfo(chainId);
       return {
@@ -47,7 +47,7 @@ export default function useUsers(chainId: number) {
     }
   }
 
-  const { data: feesInfo } = useSWR(`v2UsersInfo-${chainId}`, fetcher, {
+  const { data: feesInfo } = useSWR(["v2UsersInfo", chainId], fetcher, {
     refreshInterval: 60000,
   });
 
