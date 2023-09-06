@@ -1,25 +1,18 @@
+import { useState } from "react";
+import { t } from "@lingui/macro";
+import cx from "classnames";
 import Pagination from "components/Pagination/Pagination";
 import Table from "components/Table/Table";
 import SearchInput from "components/SearchInput/SearchInput";
 import { useDebounce } from "lib/useDebounce";
-import { useState } from "react";
-import { useLeaderboardContext } from "./Context";
-import { t } from "@lingui/macro";
-import { formatAmount, formatUsd } from "lib/numbers";
-import cx from "classnames";
+import { formatAmount, formatUsd, formatPrice } from "lib/numbers";
 import { TableCell, TableHeader } from "components/Table/types";
 import { USD_DECIMALS, importImage } from "lib/legacy";
 import AddressView from "components/AddressView/AddressView";
 import { TopPositionsRow, formatDelta } from "domain/synthetics/leaderboards";
 import Tooltip from "components/Tooltip/Tooltip";
-import { getPriceDecimals } from "config/tokens";
-import { BigNumber } from "ethers";
-import { MarketInfo } from "domain/synthetics/markets";
 import { useChainId } from "lib/chains";
-
-const formatPriceDecimals = (x: BigNumber, market: MarketInfo, chainId: number) =>
-  formatAmount(x, USD_DECIMALS, getPriceDecimals(chainId, market.indexToken.symbol), true).replace(/^(-?)/, "$1$$") ||
-  "";
+import { useLeaderboardContext } from "./Context";
 
 const parseRow =
   (chainId: number) =>
@@ -59,26 +52,27 @@ const parseRow =
       },
     },
     entryPrice: {
-      value: formatPriceDecimals(p.entryPrice, p.market, chainId),
+      value: formatPrice(p.entryPrice, chainId, p.market.indexToken.symbol) || "",
     },
     size: { value: formatUsd(p.size) || "" },
     liqPrice: {
       value: "",
       render: () => (
         <Tooltip
-          handle={p.liqPrice ? formatPriceDecimals(p.liqPrice, p.market, chainId) : ""}
+          handle={p.liqPrice ? formatPrice(p.liqPrice, chainId, p.market.indexToken.symbol) : ""}
           position="center-top"
           renderContent={() => (
             <div>
-              <p>{`${t`Mark Price`}: ${formatPriceDecimals(p.markPrice, p.market, chainId)}`}</p>
+              <p>{`${t`Mark Price`}: ${formatPrice(p.markPrice, chainId, p.market.indexToken.symbol)}`}</p>
               <p>
                 {!p.liqPriceDelta || !p.liqPriceDeltaRel
                   ? ""
-                  : `${t`Price change to Liq.`}: ${formatPriceDecimals(
-                      p.liqPriceDelta,
-                      p.market,
-                      chainId
-                    )} (${formatAmount(p.liqPriceDeltaRel, USD_DECIMALS, 2, true)}%)`}
+                  : `${t`Price change to Liq.`}: ${formatPrice(p.liqPriceDelta, chainId, p.market.indexToken.symbol)} (${formatAmount(
+                      p.liqPriceDeltaRel,
+                      USD_DECIMALS,
+                      2,
+                      true
+                    )}%)`}
               </p>
             </div>
           )}

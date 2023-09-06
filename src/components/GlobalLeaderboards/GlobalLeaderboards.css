@@ -17,11 +17,6 @@
     flex-direction: column-reverse;
     align-items: flex-end;
   }
-
-  .LeaderboardHeader .input-wrapper {
-    margin-top: 1.5rem;
-    width: 100%;
-  }
 }
 
 .TopPositionsItem {

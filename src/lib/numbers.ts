@@ -2,6 +2,7 @@ import { BigNumber, BigNumberish, ethers } from "ethers";
 import { PRECISION, USD_DECIMALS } from "./legacy";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
+import { getPriceDecimals } from "config/tokens";
 
 const MAX_EXCEEDING_THRESHOLD = "1000000000";
 const MIN_EXCEEDING_THRESHOLD = "0.01";
@@ -169,6 +170,10 @@ export function formatUsd(
   const sign = usd.lt(0) ? "-" : "";
   const displayUsd = formatAmount(exceedingInfo.value, USD_DECIMALS, displayDecimals, true);
   return `${exceedingInfo.symbol}${sign}$${displayUsd}`;
+}
+
+export function formatPrice(price: BigNumber, chainId: number, symbol: string) {
+  return formatUsd(price, { displayDecimals: getPriceDecimals(chainId, symbol) });
 }
 
 export function formatDeltaUsd(deltaUsd?: BigNumber, percentage?: BigNumber, opts: { fallbackToZero?: boolean } = {}) {
