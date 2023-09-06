@@ -70,7 +70,7 @@ export default function ChartTokenSelector(props: Props) {
   }, [sortedAllMarkets]);
 
   return (
-    <Popover>
+    <Popover className="Synths-ChartTokenSelector">
       {({ open, close }) => {
         if (!open) setSearchKeyword("");
         return (
