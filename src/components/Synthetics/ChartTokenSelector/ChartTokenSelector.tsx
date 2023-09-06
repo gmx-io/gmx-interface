@@ -97,6 +97,24 @@ export default function ChartTokenSelector(props: Props) {
     });
   }
 
+  function getMaxLongShortLiquidityPool(token: Token) {
+    const indexTokenAddress = token.isNative ? token.wrappedAddress : token.address;
+    const currentMarkets = groupedIndexMarkets[indexTokenAddress!];
+    const maxLongLiquidityPool = currentMarkets?.reduce((prev, current) => {
+      if (!prev.maxLongLiquidity || !current.maxLongLiquidity) return current;
+      return prev.maxLongLiquidity.gt(current.maxLongLiquidity) ? prev : current;
+    });
+
+    const maxShortLiquidityPool = currentMarkets?.reduce((prev, current) => {
+      if (!prev.maxShortLiquidity || !current.maxShortLiquidity) return current;
+      return prev.maxShortLiquidity.gt(current.maxShortLiquidity) ? prev : current;
+    });
+    return {
+      maxLongLiquidityPool,
+      maxShortLiquidityPool,
+    };
+  }
+
   return (
     <Popover className="Synths-ChartTokenSelector">
       {({ open, close }) => {
@@ -127,9 +145,9 @@ export default function ChartTokenSelector(props: Props) {
                   setValue={({ target }) => setSearchKeyword(target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && filteredTokens && filteredTokens.length > 0) {
-                      onSelect({
-                        indexTokenAddress: filteredTokens[0].address,
-                      });
+                      const token = filteredTokens[0];
+                      const { maxLongLiquidityPool, maxShortLiquidityPool } = getMaxLongShortLiquidityPool(token);
+                      handleSelectToken(token, maxLongLiquidityPool, maxShortLiquidityPool);
                       close();
                     }
                   }}
@@ -147,41 +165,30 @@ export default function ChartTokenSelector(props: Props) {
                       </thead>
                     )}
                     <tbody>
-                      {filteredTokens?.map((option) => {
-                        const indexTokenAddress = option.isNative ? option.wrappedAddress : option.address;
-                        const currentMarkets = groupedIndexMarkets[indexTokenAddress!];
-                        const maxLongLiquidityPool = currentMarkets?.reduce((prev, current) => {
-                          if (!prev.maxLongLiquidity || !current.maxLongLiquidity) return current;
-                          return prev.maxLongLiquidity.gt(current.maxLongLiquidity) ? prev : current;
-                        });
-
-                        const maxShortLiquidityPool = currentMarkets?.reduce((prev, current) => {
-                          if (!prev.maxShortLiquidity || !current.maxShortLiquidity) return current;
-                          return prev.maxShortLiquidity.gt(current.maxShortLiquidity) ? prev : current;
-                        });
-
+                      {filteredTokens?.map((token) => {
+                        const { maxLongLiquidityPool, maxShortLiquidityPool } = getMaxLongShortLiquidityPool(token);
                         return (
                           <Popover.Button
                             as="tr"
-                            key={option.symbol}
-                            onClick={() => handleSelectToken(option, maxLongLiquidityPool, maxShortLiquidityPool)}
+                            key={token.symbol}
+                            onClick={() => handleSelectToken(token, maxLongLiquidityPool, maxShortLiquidityPool)}
                           >
                             <td className="token-item">
                               <span className="inline-items-center">
                                 <TokenIcon
                                   className="ChartToken-list-icon"
-                                  symbol={option.symbol}
+                                  symbol={token.symbol}
                                   displaySize={16}
                                   importSize={24}
                                 />
-                                {option.symbol} {!isSwap && "/ USD"}
+                                {token.symbol} {!isSwap && "/ USD"}
                               </span>
                             </td>
 
                             <td
                               onClick={() => {
                                 onSelect({
-                                  indexTokenAddress: option.address,
+                                  indexTokenAddress: token.address,
                                   marketTokenAddress: maxLongLiquidityPool?.marketTokenAddress,
                                   tradeType: TradeType.Long,
                                 });
@@ -192,7 +199,7 @@ export default function ChartTokenSelector(props: Props) {
                             <td
                               onClick={() => {
                                 onSelect({
-                                  indexTokenAddress: option.address,
+                                  indexTokenAddress: token.address,
                                   marketTokenAddress: maxShortLiquidityPool?.marketTokenAddress,
                                   tradeType: TradeType.Short,
                                 });
