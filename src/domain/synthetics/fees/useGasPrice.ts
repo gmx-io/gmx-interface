@@ -17,7 +17,7 @@ export function useGasPrice(chainId: number) {
     ["gasPrice", chainId, executionFeeConfig.shouldUseMaxPriorityFeePerGas, settings.executionFeeBufferBps],
     {
       fetcher: () => {
-        return new Promise(async (resolve, reject) => {
+        return new Promise<BigNumber | undefined>(async (resolve, reject) => {
           const provider = getProvider(signer, chainId);
 
           if (!provider) {

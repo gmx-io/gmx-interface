@@ -29,6 +29,10 @@ msgstr "6 Янв 2022"
 msgid "24h Volume"
 msgstr "24ч Объём"
 
+#: src/pages/Dashboard/DashboardV2.js
+msgid "<0>GM Pools total value ({chainName}).</0>"
+msgstr ""
+
 #: src/components/Exchange/OrdersToa.js
 msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
 msgstr "<0>Недостаточная ликвидность для выполнения заказа</0><1>Цена маркировки, которая представляет собой средневзвешенную биржевую стоимость, не достигла указанной цены</1><2>Указанная цена была достигнута, но недостаточно долго для ее выполнения</2><3>Ни один держатель не взял заказ для исполнения</3>"
@@ -360,8 +364,8 @@ msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol},
 msgstr "Поскольку в GLP недостаточно ликвидности для обмена {0} на {swapTokenSymbol}, вы можете воспользоваться приведенной ниже опцией, чтобы сделать это:"
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})."
-msgstr "Активы под управлением: Ставка GMX (все цепи) + GLP пул ({chainName})."
+msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName}) +  GM Pools ({chainName})."
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -1633,7 +1637,6 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Fees"
 msgstr "Сборы"
 
@@ -1804,6 +1807,7 @@ msgstr "Продажа GLP приостановлена, ожидается {0} 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
+#: src/pages/Dashboard/DashboardV2.js
 msgid "GM Pools"
 msgstr ""
 
@@ -2453,7 +2457,6 @@ msgid "Long Open Interest"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Long Positions"
 msgstr "Лонг позиции"
 
@@ -2930,7 +2933,6 @@ msgstr "Допускаются только буквы, цифры и знаки
 msgid "Open Fee"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
 msgid "Open Interest"
@@ -3838,7 +3840,6 @@ msgid "Short Open Interest"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Short Positions"
 msgstr "Позиция Шорта"
 
@@ -3961,13 +3962,11 @@ msgid "Stake submitted! <0>View status.</0>"
 msgstr "Стакинг принята! <0>Смотреть статус.</0>"
 
 #: src/components/Glp/GlpSwap.js
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -4403,7 +4402,6 @@ msgid "Total Claimable"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Total Fees"
 msgstr "Общая сумма Комиссии"
 
@@ -4448,13 +4446,11 @@ msgid "Total Trading Volume"
 msgstr "Общий Объем Торгов"
 
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
 msgid "Total Users"
 msgstr "Всего Пользователей"
 
 #: src/components/Referrals/AffiliatesStats.tsx
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Total Volume"
 msgstr "Общий Объем"
@@ -4903,10 +4899,6 @@ msgstr "Просмотреть в Проводнике"
 #: src/lib/contracts/callContract.tsx
 msgid "View status."
 msgstr "Посмотреть статус"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Volume"
-msgstr "Объём"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Volume on V1"
@@ -5543,9 +5535,5 @@ msgid "{positionText} {sizeDeltaText}, Price: {0}, Market: {1}"
 msgstr ""
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
-msgid "{title} on Arbitrum:"
-msgstr "{title} на Arbitrum:"
-
-#: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
-msgid "{title} on Avalanche:"
-msgstr "{title} на Avalanche:"
+msgid "{title}"
+msgstr ""

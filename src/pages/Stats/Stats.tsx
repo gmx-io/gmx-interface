@@ -60,7 +60,7 @@ export default function Stats() {
   const { data: totalTokenWeights } = useSWR<BigNumber>(
     [`GlpSwap:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],
     {
-      fetcher: contractFetcher(signer, VaultV2),
+      fetcher: contractFetcher(signer, VaultV2) as any,
     }
   );
 

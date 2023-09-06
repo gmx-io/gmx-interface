@@ -29,6 +29,10 @@ msgstr "06 Jan 2022"
 msgid "24h Volume"
 msgstr "24小时数量"
 
+#: src/pages/Dashboard/DashboardV2.js
+msgid "<0>GM Pools total value ({chainName}).</0>"
+msgstr ""
+
 #: src/components/Exchange/OrdersToa.js
 msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
 msgstr "执行订单的流动性不足</0><1>作为交易所价格总和的标记价格未达到指定价格</1><2>已达到指定价格但时间不足以执行 </2><3>没有守门员领取执行令</3>"
@@ -360,8 +364,8 @@ msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol},
 msgstr "若流动率不足以交换GLP {0} 成 {swapTokenSymbol}, 您可使用下方其他选项："
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})."
-msgstr "管理中资产。 GMX质押（所有链）+GLP池（{链名}）."
+msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName}) +  GM Pools ({chainName})."
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -1633,7 +1637,6 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Fees"
 msgstr "费用"
 
@@ -1804,6 +1807,7 @@ msgstr "GLP售卖已禁止，等待{0}升级"
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
+#: src/pages/Dashboard/DashboardV2.js
 msgid "GM Pools"
 msgstr ""
 
@@ -2453,7 +2457,6 @@ msgid "Long Open Interest"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Long Positions"
 msgstr "开仓做多"
 
@@ -2930,7 +2933,6 @@ msgstr "只允许使用字母、数字和下底线"
 msgid "Open Fee"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
 msgid "Open Interest"
@@ -3838,7 +3840,6 @@ msgid "Short Open Interest"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Short Positions"
 msgstr "做空仓位"
 
@@ -3961,13 +3962,11 @@ msgid "Stake submitted! <0>View status.</0>"
 msgstr "质押送出! <0>查看状况</0>"
 
 #: src/components/Glp/GlpSwap.js
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -4403,7 +4402,6 @@ msgid "Total Claimable"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Total Fees"
 msgstr "费用总额"
 
@@ -4448,13 +4446,11 @@ msgid "Total Trading Volume"
 msgstr "总交易量"
 
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
 msgid "Total Users"
 msgstr "用户总数"
 
 #: src/components/Referrals/AffiliatesStats.tsx
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Total Volume"
 msgstr "总量"
@@ -4903,10 +4899,6 @@ msgstr "在浏览器中查看"
 #: src/lib/contracts/callContract.tsx
 msgid "View status."
 msgstr "查看状况"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Volume"
-msgstr "数量"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Volume on V1"
@@ -5543,9 +5535,5 @@ msgid "{positionText} {sizeDeltaText}, Price: {0}, Market: {1}"
 msgstr ""
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
-msgid "{title} on Arbitrum:"
-msgstr "{title} 在 Arbitrum上:"
-
-#: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
-msgid "{title} on Avalanche:"
-msgstr "{title} 在 Avalanche上:"
+msgid "{title}"
+msgstr ""

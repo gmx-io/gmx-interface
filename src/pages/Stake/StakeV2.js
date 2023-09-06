@@ -1100,7 +1100,7 @@ export default function StakeV2({ setPendingTxns }) {
 
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply");
   const { data: gmxSupply } = useSWR([gmxSupplyUrl], {
-    fetcher: (...args) => fetch(...args).then((res) => res.text()),
+    fetcher: (args) => fetch(...args).then((res) => res.text()),
   });
 
   const isGmxTransferEnabled = true;
@@ -1639,12 +1639,12 @@ export default function StakeV2({ setPendingTxns }) {
                       renderContent={() => (
                         <ChainsStatsTooltipRow
                           showDollar={false}
-                          title={t`Staked`}
-                          avaxValue={avaxGmxStaked}
-                          arbitrumValue={arbitrumGmxStaked}
-                          total={totalGmxStaked}
                           decimalsForConversion={18}
                           symbol="GMX"
+                          entries={{
+                            "Staked on Arbitrum": arbitrumGmxStaked,
+                            "Staked on Avalanche": avaxGmxStaked,
+                          }}
                         />
                       )}
                     />

@@ -126,8 +126,8 @@ export default function APRLabel({ chainId, label }) {
   const { gmxPrice } = useGmxPrice(chainId, {}, active);
 
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply");
-  const { data: gmxSupply } = useSWR([gmxSupplyUrl], {
-    fetcher: (...args) => fetch(...args).then((res) => res.text()),
+  const { data: gmxSupply } = useSWR(gmxSupplyUrl, {
+    fetcher: (url) => fetch(url).then((res) => res.text()),
   });
 
   let aum;

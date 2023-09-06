@@ -3,7 +3,7 @@ import { getFallbackProvider, getProvider } from "../rpc";
 
 export const contractFetcher =
   <T>(signer: Signer | undefined, contractInfo: any, additionalArgs?: any[]) =>
-  (...args: any): Promise<T> => {
+  (args: any): Promise<T> => {
     // eslint-disable-next-line
     const [id, chainId, arg0, arg1, ...params] = args;
     const provider = getProvider(signer, chainId);

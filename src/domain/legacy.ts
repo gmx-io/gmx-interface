@@ -1,35 +1,35 @@
-import { BigNumber, ethers } from "ethers";
 import { gql } from "@apollo/client";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Token as UniToken } from "@uniswap/sdk-core";
 import { Pool } from "@uniswap/v3-sdk";
+import { BigNumber, ethers } from "ethers";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 
 import OrderBook from "abis/OrderBook.json";
 import PositionManager from "abis/PositionManager.json";
-import Vault from "abis/Vault.json";
+import PositionRouter from "abis/PositionRouter.json";
 import Router from "abis/Router.json";
+import Token from "abis/Token.json";
 import UniPool from "abis/UniPool.json";
 import UniswapV2 from "abis/UniswapV2.json";
-import Token from "abis/Token.json";
-import PositionRouter from "abis/PositionRouter.json";
+import Vault from "abis/Vault.json";
 
-import { getContract } from "config/contracts";
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, getConstant, getHighExecutionFee } from "config/chains";
-import { DECREASE, getOrderKey, INCREASE, SWAP, USD_DECIMALS } from "lib/legacy";
+import { getContract } from "config/contracts";
+import { DECREASE, INCREASE, SWAP, USD_DECIMALS, getOrderKey } from "lib/legacy";
 
-import { groupBy } from "lodash";
-import { UI_VERSION, isDevelopment } from "config/env";
+import { t } from "@lingui/macro";
 import { getServerBaseUrl, getServerUrl } from "config/backend";
-import { getGmxGraphClient, nissohGraphClient } from "lib/subgraph/clients";
+import { UI_VERSION, isDevelopment } from "config/env";
+import { REQUIRED_UI_VERSION_KEY } from "config/localStorage";
+import { getTokenBySymbol } from "config/tokens";
 import { callContract, contractFetcher } from "lib/contracts";
+import { bigNumberify, expandDecimals, parseValue } from "lib/numbers";
+import { getProvider } from "lib/rpc";
+import { getGmxGraphClient, nissohGraphClient } from "lib/subgraph/clients";
+import { groupBy } from "lodash";
 import { replaceNativeTokenAddress } from "./tokens";
 import { getUsd } from "./tokens/utils";
-import { getProvider } from "lib/rpc";
-import { bigNumberify, expandDecimals, parseValue } from "lib/numbers";
-import { getTokenBySymbol } from "config/tokens";
-import { t } from "@lingui/macro";
-import { REQUIRED_UI_VERSION_KEY } from "config/localStorage";
 import useWallet from "lib/wallets/useWallet";
 
 export * from "./prices";
@@ -308,7 +308,7 @@ export function useTrades(chainId, account, forSingleAccount, afterId) {
   const { data: trades, mutate: updateTrades } = useSWR(url ? url : null, {
     dedupingInterval: 10000,
     // @ts-ignore
-    fetcher: (...args) => fetch(...args).then((res) => res.json()),
+    fetcher: (url) => fetch(url).then((res) => res.json()),
   });
 
   if (trades) {
@@ -359,12 +359,12 @@ export function useExecutionFee(signer, active, chainId, infoTokens) {
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
 
   const { data: minExecutionFee } = useSWR<BigNumber>([active, chainId, positionRouterAddress, "minExecutionFee"], {
-    fetcher: contractFetcher(signer, PositionRouter),
+    fetcher: contractFetcher(signer, PositionRouter) as any,
   });
 
   const { data: gasPrice } = useSWR<BigNumber | undefined>(["gasPrice", chainId], {
     fetcher: () => {
-      return new Promise(async (resolve, reject) => {
+      return new Promise<BigNumber | undefined>(async (resolve, reject) => {
         const provider = getProvider(signer, chainId);
         if (!provider) {
           resolve(undefined);
@@ -455,7 +455,7 @@ export function useHasOutdatedUi() {
   const url = getServerUrl(ARBITRUM, `/ui_version?client_version=${UI_VERSION}&active=${active}`);
   const { data, mutate } = useSWR([url], {
     // @ts-ignore
-    fetcher: (...args) => fetch(...args).then((res) => res.text()),
+    fetcher: (url) => fetch(url).then((res) => res.text()),
   });
 
   let hasOutdatedUi = false;
@@ -495,9 +495,9 @@ export function useGmxPrice(chainId, libraries, active) {
 export function useTotalGmxSupply() {
   const gmxSupplyUrlArbitrum = getServerUrl(ARBITRUM, "/gmx_supply");
 
-  const { data: gmxSupply, mutate: updateGmxSupply } = useSWR([gmxSupplyUrlArbitrum], {
+  const { data: gmxSupply, mutate: updateGmxSupply } = useSWR(gmxSupplyUrlArbitrum, {
     // @ts-ignore
-    fetcher: (...args) => fetch(...args).then((res) => res.text()),
+    fetcher: (url) => fetch(url).then((res) => res.text()),
   });
 
   return {
@@ -519,7 +519,7 @@ export function useTotalGmxStaked() {
       stakedGmxTrackerAddressArbitrum,
     ],
     {
-      fetcher: contractFetcher(undefined, Token),
+      fetcher: contractFetcher(undefined, Token) as any,
     }
   );
   const { data: stakedGmxSupplyAvax, mutate: updateStakedGmxSupplyAvax } = useSWR<BigNumber>(
@@ -531,7 +531,7 @@ export function useTotalGmxStaked() {
       stakedGmxTrackerAddressAvax,
     ],
     {
-      fetcher: contractFetcher(undefined, Token),
+      fetcher: contractFetcher(undefined, Token) as any,
     }
   );
 
@@ -632,7 +632,7 @@ function useGmxPriceFromArbitrum(signer, active) {
   const { data: ethPrice, mutate: updateEthPrice } = useSWR<BigNumber>(
     [`StakeV2:ethPrice:${active}`, ARBITRUM, vaultAddress, "getMinPrice", ethAddress],
     {
-      fetcher: contractFetcher(signer, Vault),
+      fetcher: contractFetcher(signer, Vault) as any,
     }
   );
 

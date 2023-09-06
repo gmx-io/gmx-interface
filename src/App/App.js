@@ -75,15 +75,16 @@ import {
   SHOULD_SHOW_POSITION_LINES_KEY,
   SHOW_PNL_AFTER_FEES_KEY,
 } from "config/localStorage";
-import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
+import { TOAST_AUTO_CLOSE_TIME, WS_LOST_FOCUS_TIMEOUT } from "config/ui";
 import { SettingsContextProvider, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
+import { useWebsocketProvider, WebsocketContextProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { roundToTwoDecimals } from "lib/numbers";
-import { useWsProvider } from "lib/rpc";
+import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
 import SyntheticsActions from "pages/SyntheticsActions/SyntheticsActions";
 import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsFallbackPage";
@@ -92,6 +93,7 @@ import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import { watchNetwork } from "@wagmi/core";
 import { useDisconnect } from "wagmi";
 import useWallet from "lib/wallets/useWallet";
+import { swrGCMiddleware } from "lib/swrMiddlewares";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -107,13 +109,19 @@ const Zoom = cssTransition({
 });
 
 function FullApp() {
-  const { active, signer } = useWallet();
+  const { signer } = useWallet();
   const { disconnect } = useDisconnect();
   const isHome = isHomeSite();
   const exchangeRef = useRef();
   const { chainId } = useChainId();
   const location = useLocation();
   const history = useHistory();
+
+  const hasV1LostFocus = useHasLostFocus({
+    timeout: WS_LOST_FOCUS_TIMEOUT,
+    whiteListedPages: ["/trade", "/v2"],
+    debugId: "V1 Events",
+  });
 
   useEventToast();
   const query = useRouteQuery();
@@ -338,14 +346,14 @@ function FullApp() {
     return () => clearInterval(interval);
   }, [signer, pendingTxns, chainId]);
 
-  const wsProvider = useWsProvider(active, chainId);
+  const { wsProvider } = useWebsocketProvider();
 
   const vaultAddress = getContract(chainId, "Vault");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
 
   useEffect(() => {
     const wsVaultAbi = chainId === ARBITRUM ? VaultV2.abi : VaultV2b.abi;
-    if (!wsProvider) {
+    if (hasV1LostFocus || !wsProvider) {
       return;
     }
 
@@ -384,7 +392,7 @@ function FullApp() {
       wsPositionRouter.off("CancelIncreasePosition", onCancelIncreasePosition);
       wsPositionRouter.off("CancelDecreasePosition", onCancelDecreasePosition);
     };
-  }, [chainId, vaultAddress, positionRouterAddress, wsProvider]);
+  }, [chainId, vaultAddress, positionRouterAddress, wsProvider, hasV1LostFocus]);
 
   return (
     <>
@@ -695,17 +703,21 @@ function App() {
   }, [disconnect]);
 
   return (
-    <SWRConfig value={{ refreshInterval: 5000 }}>
+    <SWRConfig
+      value={{ refreshInterval: 5000, refreshWhenHidden: false, refreshWhenOffline: false, use: [swrGCMiddleware] }}
+    >
       <SettingsContextProvider>
-        <SyntheticsEventsProvider>
-          <SEO>
-            <Router>
-              <I18nProvider i18n={i18n}>
-                <FullApp />
-              </I18nProvider>
-            </Router>
-          </SEO>
-        </SyntheticsEventsProvider>
+        <SEO>
+          <Router>
+            <WebsocketContextProvider>
+              <SyntheticsEventsProvider>
+                <I18nProvider i18n={i18n}>
+                  <FullApp />
+                </I18nProvider>
+              </SyntheticsEventsProvider>
+            </WebsocketContextProvider>
+          </Router>
+        </SEO>
       </SettingsContextProvider>
     </SWRConfig>
   );

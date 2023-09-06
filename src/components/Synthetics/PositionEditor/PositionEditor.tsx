@@ -107,7 +107,7 @@ export function PositionEditor(p: Props) {
   const { data: tokenAllowance } = useSWR<BigNumber>(
     position ? [active, chainId, position.collateralTokenAddress, "allowance", account, routerAddress] : null,
     {
-      fetcher: contractFetcher(signer, Token),
+      fetcher: contractFetcher(signer, Token) as any,
     }
   );
 
