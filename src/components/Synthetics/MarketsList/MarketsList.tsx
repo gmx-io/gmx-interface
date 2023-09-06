@@ -142,18 +142,20 @@ export function MarketsList() {
     return () => (
       <>
         {stats.marketsStats.map(({ marketInfo: market, fundingRateLong, fundingRateShort }) => {
+          const longFundingMsg = fundingRateLong.gte(0) ? t`Long Funding Rewards` : t`Long Funding Payments`;
+          const shortFundingMsg = fundingRateShort.gte(0) ? t`Short Funding Rewards` : t`Short Funding Payments`;
           return (
             <div className="mb-base" key={market.marketTokenAddress}>
               <div className="mb-xs text-white">[{getMarketPoolName(market)}]</div>
               <StatsTooltipRow
                 showDollar={false}
-                label={t`Long Funding Rewards`}
+                label={longFundingMsg}
                 value={`${formatFundingRate(fundingRateLong)} / 1h`}
                 className={fundingRateLong.gte(0) ? "text-green" : "text-red"}
               />
               <StatsTooltipRow
                 showDollar={false}
-                label={t`Short Funding Rewards`}
+                label={shortFundingMsg}
                 value={`${formatFundingRate(fundingRateShort)} / 1h`}
                 className={fundingRateShort.gte(0) ? "text-green" : "text-red"}
               />

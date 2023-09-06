@@ -2475,6 +2475,10 @@ msgid "Long Collateral"
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "Long Funding Payments"
+msgstr ""
+
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "Long Funding Rewards"
 msgstr ""
 
@@ -3869,6 +3873,10 @@ msgstr "Шорт"
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "Short Collateral"
+msgstr ""
+
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "Short Funding Payments"
 msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx

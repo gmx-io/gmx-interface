@@ -14,7 +14,7 @@
 }
 
 .DashboardV2-token-cards .Tooltip-popup {
-  min-width: 29rem;
+  min-width: 32rem;
 }
 
 .token-table-wrapper {
@@ -172,6 +172,12 @@
   }
 }
 
+@media (max-width: 700px) {
+  .DashboardV2-token-cards .Tooltip-popup {
+    min-width: 22rem;
+  }
+}
+
 @media (max-width: 660px) {
   .stats-wrapper .App-card {
     flex-wrap: wrap;
@@ -183,8 +189,5 @@
     display: flex;
     justify-content: center;
     margin: 0;
-  }
-  .DashboardV2-token-cards .Tooltip-popup {
-    min-width: 20rem;
   }
 }
