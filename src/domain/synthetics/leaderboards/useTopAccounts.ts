@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
 import { useAccountOpenPositions, useAccountPerf } from ".";
 import {
   AccountPositionsSummary,
-  TopAccountsRow,
   PerfPeriod,
   AccountOpenPosition,
-  PositionsSummaryByAccount
+  PositionsSummaryByAccount,
+  TopAccountsRow
 } from "./types";
 
 const defaultSummary = (account: string): AccountPositionsSummary => ({
@@ -63,25 +63,15 @@ const groupPositionsByAccount = (positions: AccountOpenPosition[]): PositionsSum
 export function useTopAccounts(period: PerfPeriod) {
   const accountPerf = useAccountPerf(period);
   const positions = useAccountOpenPositions();
-  const [data, setData] = useState<TopAccountsRow[]>([]);
-
-  let accounts: string = "";
-  let positionKeys: string = "";
-
-  for (const p of accountPerf.data) {
-    accounts += p.account;
-  }
-
-  for (const {key} of positions.data) {
-    positionKeys += key;
-  }
-
-  useEffect(() => {
+  const accounts = (accountPerf.data || []).map(a => a.account).join("-");
+  const positionKeys = (positions.data || []).map(p => p.key).join("-");
+  const data = useMemo(() => {
     if (accountPerf.error || positions.error || accountPerf.isLoading || positions.isLoading) {
       return;
     }
 
     const openPositionsByAccount: Record<string, AccountPositionsSummary> = groupPositionsByAccount(positions.data);
+    const data: TopAccountsRow[] = [];
 
     for (let i = 0; i < accountPerf.data.length; i++) {
       const perf = accountPerf.data[i];
@@ -134,15 +124,9 @@ export function useTopAccounts(period: PerfPeriod) {
       data.push(scores);
     }
 
-    setData(data);
+    return data;
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accounts, positionKeys]);
 
-  if (accountPerf.error || positions.error) {
-    return { data: [], isLoading: false, error: accountPerf.error || positions.error };
-  } else if (!accountPerf.data || !positions.data) {
-    return { data: [], isLoading: true, error: null };
-  }
-
-  return { isLoading: false, error: null, data };
+  return { isLoading: !data, error: accountPerf.error || positions.error, data };
 }

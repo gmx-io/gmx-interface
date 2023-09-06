@@ -4,7 +4,7 @@ import { t } from "@lingui/macro";
 import { formatAmount, formatUsd } from "lib/numbers";
 import { useDebounce } from "lib/useDebounce";
 import Pagination from "components/Pagination/Pagination";
-import TableFilterSearch from "components/TableFilterSearch/TableFilterSearch";
+import SearchInput from "components/SearchInput/SearchInput";
 import Table from "components/Table/Table";
 import { useLeaderboardContext } from "./Context";
 import { USD_DECIMALS } from "lib/legacy";
@@ -111,7 +111,7 @@ export default function TopAccounts() {
   const indexFrom = (page - 1) * perPage;
   const rows = filteredStats.slice(indexFrom, indexFrom + perPage).map(parseRow);
   const pageCount = Math.ceil(filteredStats.length / perPage);
-  const handleSearchInput = (value: string) => setSearch(value.trim());
+  const handleSearchInput = (e) => setSearch(e.target.value.trim());
   const titles: Record<string, TableHeader> = {
     rank: { title: t`Rank` },
     account: { title: t`Address` },
@@ -150,8 +150,16 @@ export default function TopAccounts() {
 
   return (
     <div>
-      <div className="leaderboard-header">
-        <TableFilterSearch label={t`Search Address`} value={search} onInput={handleSearchInput}/>
+      <div className="LeaderboardHeader">
+      <SearchInput
+          placeholder={t`Search Address`}
+          value={search}
+          onInput={handleSearchInput}
+          setValue={() => {}}
+          onKeyDown={() => {}}
+          className="LeaderboardSearch"
+          autoFocus={false}
+        />
       </div>
       <Table isLoading={isLoading} error={error} content={rows} titles={titles} rowKey={"id"}/>
       <Pagination page={page} pageCount={pageCount} onPageChange={setPage}/>

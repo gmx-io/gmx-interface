@@ -10,8 +10,8 @@ export type TableHeader = {
 export type TableProps<T extends Record<string, any>> = {
   isLoading: boolean;
   error: Error | null;
-  content: Array<T>;
-  titles: {[key in keyof T]?: TableHeader};
+  content: T[];
+  titles: { [key in keyof T]?: TableHeader };
   rowKey: keyof T;
 };
 

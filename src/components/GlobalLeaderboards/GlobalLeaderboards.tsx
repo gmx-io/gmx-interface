@@ -7,13 +7,13 @@ import { t } from '@lingui/macro';
 
 import "./GlobalLeaderboards.css";
 
-export default function GeneralLeaderboards() {
+export default function GlobalLeaderboards() {
   const [activeLeaderboard, setActiveLeaderboard] = useState(0);
 
   return (
     <LeaderboardContextProvider>
       <div>
-        <div className="tab-container">
+        <div className="GlobalLeaderboardsTabs">
           <Tab
             option={activeLeaderboard}
             onChange={(val) => setActiveLeaderboard(val)}
@@ -21,8 +21,7 @@ export default function GeneralLeaderboards() {
             optionLabels={[t`Top Addresses`, t`Top Open Positions`]} // TODO: add messages
           />
         </div>
-        {activeLeaderboard === 0 && <TopAccounts/>}
-        {activeLeaderboard === 1 && <TopPositions/>}
+        {activeLeaderboard ? <TopPositions/> : <TopAccounts/>}
       </div>
     </LeaderboardContextProvider>
   );

@@ -1,15 +1,15 @@
-.trader-account-label {
+.AddressView {
   display: flex;
   flex-direction: row;
   align-items: center;
 }
 
-.trader-account-label .trader-address {
+.AddressView-trader-id {
   display: inline-block;
   margin-left: 0.5rem;
 }
 
-.trader-account-avatar {
+.AddressView-ens-avatar {
   display: inline-block;
   border-radius: 50%;
   margin: 0;

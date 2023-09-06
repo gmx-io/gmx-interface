@@ -1,15 +1,14 @@
-import { BigNumber, utils } from "ethers";
+import { BigNumber } from "ethers";
 import {
   createContext,
   PropsWithChildren,
   useCallback,
   useContext,
-  useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
 
-import { useChainId } from "lib/chains";
 import {
   PerfPeriod,
   LeaderboardContextType,
@@ -21,7 +20,6 @@ import {
 } from "domain/synthetics/leaderboards";
 
 export const LeaderboardContext = createContext<LeaderboardContextType>({
-  chainId: 0,
   topPositions: { isLoading: false, data: [], error: null },
   topAccounts: { isLoading: false, data: [], error: null },
   period: PerfPeriod.DAY,
@@ -51,36 +49,26 @@ export const LeaderboardContextProvider = ({ children }: PropsWithChildren) => {
   if (!p.current) {
     p.current = Profiler();
   }
-  const { chainId } = useChainId();
+
   const [period, setPeriod] = useState<PerfPeriod>(PerfPeriod.TOTAL);
   const [accountsOrderBy, setAccountsOrderBy] = useState<keyof TopAccountsRow>("absPnl");
   const [accountsOrderDirection, setAccountsOrderDirection] = useState<number>(1);
   const [positionsOrderBy, setPositionsOrderBy] = useState<keyof TopPositionsRow>("unrealizedPnl");
   const [positionsOrderDirection, setPositionsOrderDirection] = useState<number>(1);
-  const topPositionsUnordered = useTopPositions();
-  if (
-    topPositionsUnordered &&
-    topPositionsUnordered.data &&
-    topPositionsUnordered.data.length &&
-    p.current && !p.current.positions
-  ) {
+  const { data: positions, error: positionsError } = useTopPositions();
+  if (positions.length && p.current && !p.current.positions) {
     p.current("topPositionsUnordered");
     p.current.positions = true;
   }
-  const topAccountsUnordered = useTopAccounts(period);
-  if (
-    topAccountsUnordered &&
-    topAccountsUnordered.data &&
-    topAccountsUnordered.data.length &&
-    p.current && !p.current.accounts
-  ) {
+
+  const { data: accounts, error: accountsError } = useTopAccounts(period);
+  if (accounts?.length && p.current && !p.current.accounts) {
     p.current("topAccountsUnordered");
     p.current.accounts = true;
   }
-  const [topPositions, setTopPositions] = useState<TopPositionsRow[]>([]);
-  const [topAccounts, setTopAccounts] = useState<TopAccountsRow[]>([]);
-  const [positionsHash, setPositionsHash] = useState<string>();
-  const [accountsHash, setAccountHash] = useState<string>();
+
+  // const [topPositions, setTopPositions] = useState<TopPositionsRow[]>([]);
+  // const [topAccounts, setTopAccounts] = useState<TopAccountsRow[]>([]);
   const topAccountsHeaderClick = useCallback((key: keyof TopAccountsRow) => () => {
     if (key === "wins") {
       setAccountsOrderBy(accountsOrderBy === "wins" ? "losses" : "wins");
@@ -91,7 +79,7 @@ export const LeaderboardContextProvider = ({ children }: PropsWithChildren) => {
       setAccountsOrderBy(key);
       setAccountsOrderDirection(1);
     }
-  }, [accountsOrderBy]);
+  }, [accountsOrderBy, setAccountsOrderBy, setAccountsOrderDirection]);
 
   const topPositionsHeaderClick = useCallback((key: keyof TopPositionsRow) => () => {
     if (key === positionsOrderBy) {
@@ -100,24 +88,17 @@ export const LeaderboardContextProvider = ({ children }: PropsWithChildren) => {
       setPositionsOrderBy(key);
       setPositionsOrderDirection(1);
     }
-  }, [positionsOrderBy]);
+  }, [positionsOrderBy, setPositionsOrderBy, setPositionsOrderDirection]);
 
-  const nextPositionsHash = utils.sha256(topPositionsUnordered.data ? topPositionsUnordered.data.map(a => (
-    a[positionsOrderBy]!.toString().split("").map((c: string) => c.charCodeAt(0))
-  )).flat() : []);
-
-  if (positionsHash !== nextPositionsHash) {
-    setPositionsHash(nextPositionsHash);
-  }
-
-  useEffect(() => {
-    if (!topPositionsUnordered.data) {
-      return;
+  const positionsHash = (positions || []).map(p => p[positionsOrderBy]!.toString()).join("-");
+  const topPositions = useMemo(() => {
+    if (!positions) {
+      return [];
     }
 
-    const data = [...topPositionsUnordered.data].sort((a, b) => {
+    return [...positions].sort((a, b) => {
       const key = positionsOrderBy;
-      if (a[key] instanceof BigNumber && b[key] instanceof BigNumber) {
+      if (BigNumber.isBigNumber(a[key]) && BigNumber.isBigNumber(b[key])) {
         return positionsOrderDirection * ((a[key] as BigNumber).gt(b[key] as BigNumber) ? -1 : 1);
       } else {
         // TODO: remove log
@@ -126,32 +107,23 @@ export const LeaderboardContextProvider = ({ children }: PropsWithChildren) => {
         return 1;
       }
     }).map((p, i) => ({ ...p, rank: i }));
-
-    setTopPositions(data);
-    if (p.current && !p.current.pSorted) {
-      p.current("sorted top positions");
-      p.current.pSorted = true;
-    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [positionsHash, positionsOrderBy, positionsOrderDirection]);
 
-  const nextAccountsHash = utils.sha256(topAccountsUnordered.data ? topAccountsUnordered.data.map(a => (
-    a[accountsOrderBy]!.toString().split("").map((c: string) => c.charCodeAt(0))
-  )).flat() : []);
-
-  if (accountsHash !== nextAccountsHash) {
-    setAccountHash(nextAccountsHash);
+  if (topPositions.length && p.current && !p.current.pSorted) {
+    p.current("sorted top positions");
+    p.current.pSorted = true;
   }
 
-  useEffect(() => {
-    if (!topAccountsUnordered.data) {
-      return;
+  const accountsHash = (accounts || []).map(a => a[accountsOrderBy]!.toString()).join(":");
+  const topAccounts = useMemo(() => {
+    if (!accounts) {
+      return [];
     }
 
-    const data = [...topAccountsUnordered.data];
-    data.sort((a, b) => {
+    return [...accounts].sort((a, b) => {
       const key = accountsOrderBy;
-      if (a[key] instanceof BigNumber && b[key] instanceof BigNumber) {
+      if (BigNumber.isBigNumber(a[key]) && BigNumber.isBigNumber(b[key])) {
         return accountsOrderDirection * ((a[key] as BigNumber).gt(b[key] as BigNumber) ? -1 : 1);
       } else {
         // TODO: remove log
@@ -159,17 +131,14 @@ export const LeaderboardContextProvider = ({ children }: PropsWithChildren) => {
         console.warn("Not a BigNumber", {key, a, b});
         return 1;
       }
-    });
-
-    data.forEach((a, i) => a.rank = i);
-
-    setTopAccounts(data);
-    if (p.current && !p.current.aSorted) {
-      p.current("sorted top accounts");
-      p.current.aSorted = true;
-    }
+    }).map((a, i) => ({ ...a, rank: i }));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accountsHash, accountsOrderBy, accountsOrderDirection]);
+
+  if (topAccounts.length && p.current && !p.current.aSorted) {
+    p.current("sorted top accounts");
+    p.current.aSorted = true;
+  }
 
   if (topAccounts && topAccounts.length && !p.current.aReturned) {
     p.current("returning top accounts");
@@ -186,17 +155,17 @@ export const LeaderboardContextProvider = ({ children }: PropsWithChildren) => {
     p.current.report();
     p.current.reported = true;
   }
+
   const context = {
-    chainId,
     period,
     topAccounts: {
       isLoading: !topAccounts.length,
-      error: topAccountsUnordered.error,
+      error: accountsError,
       data: topAccounts,
     },
     topPositions: {
       isLoading: !topPositions.length,
-      error: topPositionsUnordered.error,
+      error: positionsError,
       data: topPositions,
     },
     setPeriod,

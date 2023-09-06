@@ -182,7 +182,6 @@ export type RemoteData<T> = {
 };
 
 export type LeaderboardContextType = {
-  chainId: number;
   topPositions: RemoteData<TopPositionsRow>;
   topAccounts: RemoteData<TopAccountsRow>;
   period: PerfPeriod;

@@ -1,19 +1,17 @@
 import useSWR from "swr";
-import { BigNumber, utils } from "ethers";
+import { BigNumber } from "ethers";
 import { getAddress } from "ethers/lib/utils";
 import { queryAccountOpenPositions } from "./queries"
 import { arbitrumGoerliLeaderboardsClient as graph } from "lib/subgraph/clients";
 import { AccountOpenPositionJson, AccountOpenPosition } from "./types";
 import { ContractMarketPrices, getContractMarketPrices, useMarketsInfo } from "../markets";
 import { convertToUsd } from "../tokens";
-// import { useChainId } from "lib/chains";
 import { usePositionsInfo } from "./usePositionsInfo";
 import { PositionsInfoData, getPositionKey } from "../positions";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { expandDecimals } from "lib/numbers";
 import { USD_DECIMALS } from "lib/legacy";
 import { AVALANCHE } from "config/chains";
-// import { useEnsBatchLookup } from "./useEnsBatchLookup";
 
 const fetchAccountOpenPositionsPage = async (
   first: number,
@@ -133,35 +131,15 @@ const fetchAccountOpenPositions = async () => {
 };
 
 export function useAccountOpenPositions() {
-  // const { chainId } = useChainId();
   const chainId = AVALANCHE; // FIXME: usechainid as soon as the graph deployed to all networks
   const { tokensData, marketsInfoData, pricesUpdatedAt } = useMarketsInfo(chainId);
   const positions = useSWR(['/leaderboards/positions', chainId], fetchAccountOpenPositions);
-  // const { ensNames, avatarUrls } = useEnsBatchLookup((positions.data || []).map((p) => p.account));
-  const ensNames = {};
-  const avatarUrls = {};
-  const [positionsHash, setPositionsHash] = useState<string>("");
-  const [keys, setKeys] = useState<string[]>([]);
-  const [prices, setPrices] = useState<ContractMarketPrices[]>([]);
-  const [data, setData] = useState<AccountOpenPosition[]>([]);
-
-  let positionKeys: number[] = [];
-
-  for (const { id } of positions.data || []) {
-    for (const c of id) {
-      positionKeys.push(c.charCodeAt(0));
-    }
-  }
-
-  const hash: string = utils.sha256(positionKeys);
-
-  if (hash !== positionsHash) {
-    setPositionsHash(hash);
-  }
-
-  useEffect(() => {
+  const ensNames = {}; // FIXME: use useEnsBatchLookup instead
+  const avatarUrls = {}; // FIXME: use useEnsBatchLookup instead
+  const positionsHash = (positions.data || []).map(p => p.id).join("-");
+  const { keys, prices } =  useMemo((): { keys: string[], prices: ContractMarketPrices[] } => {
     if (!marketsInfoData || !tokensData) {
-      return;
+      return { keys: [], prices: [] };
     }
 
     const keys: string[] = [];
@@ -174,28 +152,30 @@ export function useAccountOpenPositions() {
         prices.push(contractMarketPrices);
       }
     }
-    setKeys(keys);
-    setPrices(prices);
+
+    return { keys, prices };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pricesUpdatedAt, chainId, positionsHash]);
 
   const positionsInfo = usePositionsInfo(chainId, positionsHash, keys, prices);
   const error = positions.error || positionsInfo.error;
-  const isLoading = !error && !(
-    tokensData &&
-    positions.data &&
-    marketsInfoData &&
-    positionsInfo.data &&
-    positions.data.length === Object.keys(positionsInfo.data).length
+  const isLoading = !error && (
+    !positions.data ||
+    !positionsInfo.data ||
+    positions.data.length !== Object.keys(positionsInfo.data).length
   );
 
   const ensNamesLength = Object.keys(ensNames).length;
   const avatarUrlsLength = Object.keys(avatarUrls).length;
+  const [data, setData] = useState<AccountOpenPosition[]>();
   useEffect(() => {
-    if (!isLoading && !error) {
-      setData(
-        parseAccountOpenPositions(positions.data!, positionsInfo.data, ensNames, avatarUrls)
-      );
+    if(!isLoading && !error) {
+      setData(parseAccountOpenPositions(
+        positions.data || [],
+        positionsInfo.data,
+        ensNames,
+        avatarUrls
+      ));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -208,5 +188,5 @@ export function useAccountOpenPositions() {
     avatarUrlsLength,
   ]);
 
-  return { isLoading, error, data };
+  return { isLoading: !data, error, data: data || [] };
 };

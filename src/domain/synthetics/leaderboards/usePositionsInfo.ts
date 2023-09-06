@@ -1,7 +1,9 @@
+import { useMemo } from "react";
 import { BigNumber, ethers } from "ethers";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { MAX_ALLOWED_LEVERAGE } from "config/factors";
 import { getContract } from "config/contracts";
+import { useMulticall } from "lib/multicall";
 import { getBasisPoints } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getMarkPrice } from "../trade";
@@ -20,8 +22,6 @@ import {
   getPositionPnlUsd,
   usePositionsConstants
 } from "../positions";
-import { useMulticall } from "lib/multicall";
-import { useEffect, useState } from "react";
 
 type PositionsResult = {
   isLoading: boolean;
@@ -224,8 +224,7 @@ export function usePositionsInfo(
 ): PositionsResult {
   const { minCollateralUsd } = usePositionsConstants(chainId);
   const { marketsInfoData, tokensData, pricesUpdatedAt } = useMarketsInfo(chainId);
-  const [positions, setPositions] = useState<PositionsInfoData>();
-  const positionsData = useMulticall(chainId, "usePositionsData", {
+  const positionsData = useMulticall(chainId, "usePositionsInfo", {
     key: [positionsHash, pricesUpdatedAt],
     refreshInterval: null, // Refresh on every prices update
     request: () => ({
@@ -249,28 +248,21 @@ export function usePositionsInfo(
   });
 
   const hasData = Array.isArray(positionsData?.data?.data?.reader?.positions?.returnValues);
-
-  useEffect(() => {
+  const data = useMemo(() => {
     const positions = positionsData?.data?.data?.reader?.positions?.returnValues;
-    if (positions && marketsInfoData && tokensData && minCollateralUsd) {
-      const parsedData = parsePositionsInfo(
-        positionKeys,
-        positions as PositionJson[],
-        marketsInfoData,
-        tokensData,
-        minCollateralUsd
-      );
-      setPositions(parsedData);
-    }
-  // The dependencies below derive from the values used within the effect callback
-  // eslint-disable-next-line
+    return (positions && marketsInfoData && tokensData && minCollateralUsd) ? parsePositionsInfo(
+      positionKeys,
+      positions as PositionJson[],
+      marketsInfoData,
+      tokensData,
+      minCollateralUsd
+    ) : undefined;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     positionsHash,
     pricesUpdatedAt,
     hasData,
   ]);
 
-  const isLoading = !(positions && marketsInfoData && tokensData && minCollateralUsd);
-
-  return { isLoading, error: null, data: isLoading ? {} : positions };
+  return { isLoading: !data, error: null, data: data || [] };
 }

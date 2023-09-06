@@ -1,6 +1,6 @@
 import React from "react";
 import { t } from "@lingui/macro";
-import classnames from "classnames";
+import cx from "classnames";
 import Tooltip from "../Tooltip/Tooltip";
 import { TableCellProps, TableProps } from "./types";
 
@@ -21,7 +21,7 @@ export default function Table<T extends Record<string, any>>({
   const useBreakpoint = createBreakpoint({ L: 600, M: 550, S: 400 });
   const breakpoint = useBreakpoint();
   return (
-    <table className="Exchange-list large App-box table">
+    <table className="Exchange-list large App-box Table">
       <tbody>
         <tr className="Exchange-list-header">
           {
@@ -30,7 +30,7 @@ export default function Table<T extends Record<string, any>>({
                 key={ `table_header_${k}` }
                 onClick={ v!.onClick || (() => {}) }
                 className={
-                  classnames(v!.className, typeof v!.onClick === "function" && "clickable-header")
+                  cx(v!.className, typeof v!.onClick === "function" && "clickable-header")
                 }
               >
                 {
@@ -38,7 +38,7 @@ export default function Table<T extends Record<string, any>>({
                     <Tooltip
                       handle={ v.title }
                       position="center-top"
-                      className={ classnames("table-header-tooltip", v.className) }
+                      className={ cx("table-header-tooltip", v.className) }
                       renderContent={
                         typeof v.tooltip === "function"
                           ? v.tooltip
@@ -79,7 +79,7 @@ export default function Table<T extends Record<string, any>>({
 
 const TableCell = ({ data, breakpoint }: TableCellProps) => {
   const isObject = data && typeof data === "object";
-  const cellClassName = classnames(isObject && data.className);
+  const cellClassName = cx(isObject && data.className);
   let content;
   if (isObject) {
     content = typeof data.render === "function" ? data.render(data.value, breakpoint) : data.value;
