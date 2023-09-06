@@ -1636,12 +1636,12 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                       renderContent={() => (
                         <ChainsStatsTooltipRow
                           showDollar={false}
-                          title={t`Staked`}
-                          avaxValue={avaxGmxStaked}
-                          arbitrumValue={arbitrumGmxStaked}
-                          total={totalGmxStaked}
                           decimalsForConversion={18}
                           symbol="GMX"
+                          entries={{
+                            "Staked on Arbitrum": arbitrumGmxStaked,
+                            "Staked on Avalanche": avaxGmxStaked,
+                          }}
                         />
                       )}
                     />
