@@ -29,7 +29,7 @@ export type SelectedTradeOption = {
   setTradeType: (tradeType: TradeType) => void;
   setTradeMode: (tradeMode: TradeMode) => void;
   setFromTokenAddress: (tokenAddress?: string) => void;
-  setToTokenAddress: (tokenAddress?: string, marketTokenAddress?: string) => void;
+  setToTokenAddress: (tokenAddress?: string, marketTokenAddress?: string, tradeType?: TradeType) => void;
   setMarketAddress: (marketAddress?: string) => void;
   setCollateralAddress: (tokenAddress?: string) => void;
   switchTokenAddresses: () => void;
@@ -143,7 +143,7 @@ export function useSelectedTradeOption(
   );
 
   const setToTokenAddress = useCallback(
-    (tokenAddress?: string, marketTokenAddress?: string) => {
+    (tokenAddress?: string, marketTokenAddress?: string, tradeType?: TradeType) => {
       const oldState = JSON.parse(JSON.stringify(storedOptions)) as StoredTradeOptions;
 
       if (tradeFlags.isSwap) {
@@ -157,6 +157,10 @@ export function useSelectedTradeOption(
             oldState.markets[toTokenAddress].short = marketTokenAddress;
           }
         }
+      }
+
+      if (tradeType) {
+        oldState.tradeType = tradeType;
       }
 
       setStoredOptions(oldState);

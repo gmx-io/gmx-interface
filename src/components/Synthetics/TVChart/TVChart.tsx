@@ -19,13 +19,13 @@ import { useEffect, useMemo, useState } from "react";
 import "./TVChart.scss";
 import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
 import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
-import { AvailableTokenOptions } from "domain/synthetics/trade";
+import { AvailableTokenOptions, TradeType } from "domain/synthetics/trade";
 
 export type Props = {
   tradePageVersion: number;
   setTradePageVersion: (version: number) => void;
   savedShouldShowPositionLines: boolean;
-  onSelectChartTokenAddress: (tokenAddress: string, marketTokenAddress?: string) => void;
+  onSelectChartTokenAddress: (tokenAddress: string, marketTokenAddress?: string, tradeType?: TradeType) => void;
   ordersInfo?: OrdersInfoData;
   positionsInfo?: PositionsInfoData;
   tokensData?: TokensData;
@@ -53,6 +53,7 @@ export function TVChart({
   const { chainId } = useChainId();
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
   const [dataProvider, setDataProvider] = useState<SyntheticsTVDataProvider>();
+  const { isLong } = tradeFlags || {};
 
   let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period-v2"], DEFAULT_PERIOD);
 
@@ -68,6 +69,17 @@ export function TVChart({
 
   const selectedTokenOption = chartTokenAddress ? getToken(chainId, chartTokenAddress) : undefined;
   const dayPriceDelta = use24hPriceDelta(chainId, chartToken?.symbol);
+
+  const currentExistingPositions = useMemo(() => {
+    return Object.values(positionsInfo || {}).filter((position) => {
+      return (
+        chartTokenAddress &&
+        position.isLong === isLong &&
+        convertTokenAddress(chainId, position.marketInfo.indexTokenAddress, "wrapped") ===
+          convertTokenAddress(chainId, chartTokenAddress, "wrapped")
+      );
+    });
+  }, [chainId, chartTokenAddress, positionsInfo, isLong]);
 
   const chartLines = useMemo(() => {
     if (!chartTokenAddress) {
@@ -132,8 +144,8 @@ export function TVChart({
     return orderLines.concat(positionLines);
   }, [chainId, chartTokenAddress, ordersInfo, positionsInfo, tokensData]);
 
-  function onSelectTokenOption(address: string, marketTokenAddress?: string) {
-    onSelectChartTokenAddress(address, marketTokenAddress);
+  function onSelectTokenOption(address: string, marketTokenAddress?: string, tradeType?: TradeType) {
+    onSelectChartTokenAddress(address, marketTokenAddress, tradeType);
   }
 
   function onSelectChartToken(token: Token) {
@@ -166,6 +178,7 @@ export function TVChart({
               tradeFlags={tradeFlags}
               options={tokenOptions}
               avaialbleTokenOptions={avaialbleTokenOptions}
+              currentExistingPositions={currentExistingPositions}
             />
             <div className="Chart-min-max-price">
               <div className="ExchangeChart-main-price">
