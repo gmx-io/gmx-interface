@@ -2217,6 +2217,10 @@ msgstr ""
 msgid "Keep leverage at {0}x"
 msgstr ""
 
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "LONG LIQ."
+msgstr ""
+
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Language"
 msgstr "语言"
@@ -2475,7 +2479,6 @@ msgid "Long Collateral"
 msgstr ""
 
 #: src/components/Exchange/ChartTokenSelector.tsx
-#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Long Liquidity"
 msgstr ""
 
@@ -3639,6 +3642,10 @@ msgstr "GMX和GLP的收益计算器"
 msgid "Rewards"
 msgstr "奖励"
 
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "SHORT LIQ."
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Same as current active code"
 msgstr "与当前的有效代码相同"
@@ -3869,7 +3876,6 @@ msgid "Short Collateral"
 msgstr ""
 
 #: src/components/Exchange/ChartTokenSelector.tsx
-#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Short Liquidity"
 msgstr ""
 

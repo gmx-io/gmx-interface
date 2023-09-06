@@ -2217,6 +2217,10 @@ msgstr "Keep leverage at {0}"
 msgid "Keep leverage at {0}x"
 msgstr "Keep leverage at {0}x"
 
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "LONG LIQ."
+msgstr "LONG LIQ."
+
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Language"
 msgstr "Language"
@@ -2478,7 +2482,6 @@ msgid "Long Collateral"
 msgstr "Long Collateral"
 
 #: src/components/Exchange/ChartTokenSelector.tsx
-#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Long Liquidity"
 msgstr "Long Liquidity"
 
@@ -3642,6 +3645,10 @@ msgstr "Returns calculator for GMX and GLP"
 msgid "Rewards"
 msgstr "Rewards"
 
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "SHORT LIQ."
+msgstr "SHORT LIQ."
+
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Same as current active code"
 msgstr "Same as current active code"
@@ -3872,7 +3879,6 @@ msgid "Short Collateral"
 msgstr "Short Collateral"
 
 #: src/components/Exchange/ChartTokenSelector.tsx
-#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Short Liquidity"
 msgstr "Short Liquidity"
 
