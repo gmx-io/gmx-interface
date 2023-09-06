@@ -29,6 +29,10 @@ msgstr ""
 msgid "24h Volume"
 msgstr ""
 
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+msgid "<0><1>{indexName}</1><2>{poolName}</2></0> <3>selected in order form</3>"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "<0>GM Pools total value ({chainName}).</0>"
 msgstr ""

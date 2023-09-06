@@ -29,6 +29,10 @@ msgstr "06 Jan 2022"
 msgid "24h Volume"
 msgstr "24h Volume"
 
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+msgid "<0><1>{indexName}</1><2>{poolName}</2></0> <3>selected in order form</3>"
+msgstr "<0><1>{indexName}</1><2>{poolName}</2></0> <3>selected in order form</3>"
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "<0>GM Pools total value ({chainName}).</0>"
 msgstr "<0>GM Pools total value ({chainName}).</0>"

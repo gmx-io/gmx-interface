@@ -29,6 +29,10 @@ msgstr "2022년 1월 6일"
 msgid "24h Volume"
 msgstr "24시간 거래량"
 
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+msgid "<0><1>{indexName}</1><2>{poolName}</2></0> <3>selected in order form</3>"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "<0>GM Pools total value ({chainName}).</0>"
 msgstr ""
