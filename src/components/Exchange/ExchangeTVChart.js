@@ -64,6 +64,7 @@ export default function ExchangeTVChart(props) {
     setToTokenAddress,
     tradePageVersion,
     setTradePageVersion,
+    setSwapOption,
   } = props;
   let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
 
@@ -330,6 +331,7 @@ export default function ExchangeTVChart(props) {
               infoTokens={infoTokens}
               onSelectToken={onSelectToken}
               className="chart-token-selector"
+              setSwapOption={setSwapOption}
             />
             <div className="Chart-min-max-price">
               <div className="ExchangeChart-main-price">

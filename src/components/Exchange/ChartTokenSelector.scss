@@ -76,7 +76,7 @@
   }
 
   tbody {
-    tr {
+    .Swap-token-list {
       background-color: var(--dark-blue-bg);
       border-radius: var(--border-radius-sm);
       cursor: pointer;
@@ -88,6 +88,28 @@
         padding: 0.75rem 1.5rem;
         white-space: nowrap;
         font-weight: 400;
+
+        &.token-item {
+          color: #a0a3c4;
+
+          .ChartToken-list-icon {
+            margin-right: 0.75rem;
+          }
+        }
+      }
+    }
+    .Position-token-list {
+      background-color: var(--dark-blue-bg);
+      border-radius: var(--border-radius-sm);
+      td {
+        padding: 0.75rem 1.5rem;
+        white-space: nowrap;
+        font-weight: 400;
+        cursor: pointer;
+
+        &:hover {
+          background-color: var(--dark-blue-hover);
+        }
 
         &.token-item {
           color: #a0a3c4;
