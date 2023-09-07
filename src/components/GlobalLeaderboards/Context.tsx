@@ -67,8 +67,6 @@ export const LeaderboardContextProvider = ({ children }: PropsWithChildren) => {
     p.current.accounts = true;
   }
 
-  // const [topPositions, setTopPositions] = useState<TopPositionsRow[]>([]);
-  // const [topAccounts, setTopAccounts] = useState<TopAccountsRow[]>([]);
   const topAccountsHeaderClick = useCallback((key: keyof TopAccountsRow) => () => {
     if (key === "wins") {
       setAccountsOrderBy(accountsOrderBy === "wins" ? "losses" : "wins");
@@ -101,9 +99,6 @@ export const LeaderboardContextProvider = ({ children }: PropsWithChildren) => {
       if (BigNumber.isBigNumber(a[key]) && BigNumber.isBigNumber(b[key])) {
         return positionsOrderDirection * ((a[key] as BigNumber).gt(b[key] as BigNumber) ? -1 : 1);
       } else {
-        // TODO: remove log
-        // eslint-disable-next-line no-console
-        console.warn("Not a BigNumber", { key, a, b });
         return 1;
       }
     }).map((p, i) => ({ ...p, rank: i }));
@@ -126,9 +121,6 @@ export const LeaderboardContextProvider = ({ children }: PropsWithChildren) => {
       if (BigNumber.isBigNumber(a[key]) && BigNumber.isBigNumber(b[key])) {
         return accountsOrderDirection * ((a[key] as BigNumber).gt(b[key] as BigNumber) ? -1 : 1);
       } else {
-        // TODO: remove log
-        // eslint-disable-next-line no-console
-        console.warn("Not a BigNumber", {key, a, b});
         return 1;
       }
     }).map((a, i) => ({ ...a, rank: i }));

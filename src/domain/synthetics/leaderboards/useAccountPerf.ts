@@ -7,8 +7,8 @@ import { getAddress } from "ethers/lib/utils";
 import { useEffect, useState } from "react";
 // import { useEnsBatchLookup } from "./useEnsBatchLookup";
 
-const daysAgo = (x: number) => (
-  new Date(Date.now() - 1000 * 60 * 60 * 24 * x).setHours(0, 0, 0, 0) / 1000
+const daysAgo = (days: number) => (
+  new Date(Date.now() - 1000 * 60 * 60 * 24 * days).setHours(0, 0, 0, 0) / 1000
 );
 
 const filtersByPeriod = {

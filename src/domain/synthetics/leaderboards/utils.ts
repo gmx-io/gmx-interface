@@ -2,7 +2,7 @@ import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 
-export const formatDelta = (x: BigNumber, {
+export const formatDelta = (delta: BigNumber, {
   decimals = USD_DECIMALS,
   displayDecimals = 2,
   useCommas = true,
@@ -19,11 +19,11 @@ export const formatDelta = (x: BigNumber, {
   `${
     p.prefixoid ? `${p.prefixoid} ` : ""
   }${
-    p.signed ? (x.eq(0) ? "" : (x.gt(0) ? "+" : "-")) : ""
+    p.signed ? (delta.eq(0) ? "" : (delta.gt(0) ? "+" : "-")) : ""
   }${
     p.prefix || ""
   }${
-    formatAmount(p.signed ? x.abs() : x, decimals, displayDecimals, useCommas)
+    formatAmount(p.signed ? delta.abs() : delta, decimals, displayDecimals, useCommas)
   }${
     p.postfix || ""
   }`
