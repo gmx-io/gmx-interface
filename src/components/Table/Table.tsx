@@ -32,6 +32,7 @@ export default function Table<T extends Record<string, any>>({
                 key={`table_header_${k}`}
                 onClick={v!.onClick || (() => {})}
                 className={cx(v!.className, typeof v!.onClick === "function" && "clickable-header")}
+                style={ v && v.width ? { width: `${v!.width}%` } : undefined }
               >
                 {v && v.tooltip ? (
                   <Tooltip

@@ -112,15 +112,18 @@ export default function TopAccounts() {
   const pageCount = Math.ceil(filteredStats.length / perPage);
   const handleSearchInput = (e) => setSearch(e.target.value.trim());
   const titles: Record<string, TableHeader> = {
-    rank: { title: t`Rank` },
-    account: { title: t`Address` },
+    rank: { title: t`Rank`, width: 7 },
+    account: { title: t`Address`, width: 23 },
     absPnl: {
       title: t`PnL ($)`,
       tooltip: t`Total Realized and Unrealized Profit.`,
       onClick: topAccountsHeaderClick("absPnl"),
+      width: 14,
     },
     relPnl: {
       title: t`PnL (%)`,
+      onClick: topAccountsHeaderClick("relPnl"),
+      width: 14,
       tooltip: () => (
         <div>
           <p>{t`PnL ($) compared to the Max Collateral used by this Address.`}</p>
@@ -132,23 +135,25 @@ export default function TopAccounts() {
           </p>
         </div>
       ),
-      onClick: topAccountsHeaderClick("relPnl"),
     },
     size: {
       title: t`Avg. Size`,
       tooltip: t`Average Position Size.`,
       onClick: topAccountsHeaderClick("size"),
+      width: 14,
     },
     leverage: {
       title: t`Avg. Lev.`,
       tooltip: t`Average Leverage used.`,
       onClick: topAccountsHeaderClick("leverage"),
+      width: 14,
     },
     perf: {
       title: t`Win/Loss`,
       className: "text-right",
       tooltip: t`Wins and Losses for fully closed Positions.`,
       onClick: topAccountsHeaderClick("wins"),
+      width: 14,
     },
   };
 

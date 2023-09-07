@@ -5,6 +5,7 @@ export type TableHeader = {
   className?: string;
   tooltip?: string | (() => ReactNode);
   onClick?: () => void;
+  width?: number;
 };
 
 export type TableProps<T extends Record<string, any>> = {

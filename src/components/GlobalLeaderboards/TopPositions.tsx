@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { t } from "@lingui/macro";
-import cx from "classnames";
 import Pagination from "components/Pagination/Pagination";
 import Table from "components/Table/Table";
 import SearchInput from "components/SearchInput/SearchInput";
@@ -106,20 +105,22 @@ export default function TopPositions() {
   const handleSearchInput = (e) => setSearch(e.target.value.trim());
 
   const titles: { [k in keyof TopPositionsRow]?: TableHeader } = {
-    rank: { title: t`Rank` },
-    account: { title: t`Address` },
+    rank: { title: t`Rank`, width: 7 },
+    account: { title: t`Address`, width: 23 },
     unrealizedPnl: {
       title: t`PnL ($)`,
       tooltip: t`Total Unrealized Profit.`,
       onClick: topPositionsHeaderClick("unrealizedPnl"),
+      width: 14,
     },
-    market: { title: t`Position` },
-    entryPrice: { title: t`Entry` },
+    market: { title: t`Position`, width: 14 },
+    entryPrice: { title: t`Entry`, width: 14 },
     size: {
       title: t`Size`,
       onClick: topPositionsHeaderClick("size"),
+      width: 14
     },
-    liqPrice: { title: t`Liq. Price` },
+    liqPrice: { title: t`Liq. Price`, width: 14 },
   };
 
   return (
