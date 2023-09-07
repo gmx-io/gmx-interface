@@ -43,7 +43,7 @@ const parseRow = (s: TopAccountsRow): Record<string, TableCell> => ({
         renderContent={() => (
           <div>
             <StatsTooltipRow
-              label={t`RPnL`}
+              label={t`Realized PnL`}
               showDollar={false}
               value={
                 <span className={s.rPnl.isNegative() ? "negative" : "positive"}>
@@ -52,7 +52,7 @@ const parseRow = (s: TopAccountsRow): Record<string, TableCell> => ({
               }
             />
             <StatsTooltipRow
-              label={t`UPnL`}
+              label={t`Unrealized PnL`}
               showDollar={false}
               value={
                 <span className={s.rPnl.isNegative() ? "negative" : "positive"}>
