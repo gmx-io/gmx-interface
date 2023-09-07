@@ -124,6 +124,8 @@ export type TopPositionsRow = {
   markPrice: BigNumber;
   liqPriceDelta?: BigNumber;
   liqPriceDeltaRel?: BigNumber;
+  leverage?: BigNumber;
+  collateral: BigNumber;
 };
 
 export type OpenPosition = {
@@ -153,6 +155,7 @@ export type OpenPosition = {
   liquidationPrice?: BigNumber;
   liquidationPriceDelta?: BigNumber;
   liquidationPriceDeltaRel?: BigNumber;
+  leverage?: BigNumber;
 };
 
 export type DataByPeriod<T> = {

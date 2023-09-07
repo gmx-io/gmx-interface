@@ -5,6 +5,7 @@ import Table from "components/Table/Table";
 import SearchInput from "components/SearchInput/SearchInput";
 import { useDebounce } from "lib/useDebounce";
 import { formatAmount, formatUsd, formatPrice } from "lib/numbers";
+import { formatLeverage } from "domain/synthetics/positions";
 import { TableCell, TableHeader } from "components/Table/types";
 import { USD_DECIMALS, importImage } from "lib/legacy";
 import AddressView from "components/AddressView/AddressView";
@@ -58,6 +59,8 @@ const parseRow =
       value: formatPrice(p.entryPrice, chainId, p.market.indexToken.symbol) || "",
     },
     size: { value: formatUsd(p.size) || "" },
+    leverage: { value: formatLeverage(p.leverage) || "" },
+    collateral: { value: formatUsd(p.collateral) || "" },
     liqPrice: {
       value: () => (
         <Tooltip
@@ -110,22 +113,24 @@ export default function TopPositions() {
 
   const titles: { [k in keyof TopPositionsRow]?: TableHeader } = {
     rank: { title: t`Rank`, width: 7 },
-    account: { title: t`Address`, width: 23 },
+    account: { title: t`Address`, width: 20 },
     unrealizedPnl: {
       title: t`PnL ($)`,
       tooltip: t`Total Unrealized Profit.`,
       onClick: topPositionsHeaderClick("unrealizedPnl"),
-      width: 14,
+      width: 12,
     },
-    market: { title: t`Market`, width: 7 },
-    isLong: { title: t`Direction`, width: 7 },
-    entryPrice: { title: t`Entry`, width: 14 },
+    market: { title: t`Market`, width: 8 },
+    isLong: { title: t`Direction`, width: 8 },
+    entryPrice: { title: t`Entry`, width: 9 },
     size: {
       title: t`Size`,
       onClick: topPositionsHeaderClick("size"),
-      width: 14
+      width: 9
     },
-    liqPrice: { title: t`Liq. Price`, width: 14 },
+    liqPrice: { title: t`Liq. Price`, width: 9 },
+    collateral: { title: t`Collateral`, width: 9 },
+    leverage: { title: t`Leverage`, width: 9 }
   };
 
   return (

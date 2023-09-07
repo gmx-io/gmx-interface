@@ -23,6 +23,8 @@ export function useTopPositions(): RemoteData<TopPositionsRow> {
         liqPrice: p.liquidationPrice,
         liqPriceDelta: p.liquidationPriceDelta,
         liqPriceDeltaRel: p.liquidationPriceDeltaRel,
+        leverage: p.leverage,
+        collateral: p.collateralAmountUsd
       };
     }),
   };

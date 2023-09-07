@@ -107,6 +107,7 @@ const parseOpenPositions = (
       pendingFundingFeesUsd: positionInfo.pendingFundingFeesUsd,
       pendingClaimableFundingFeesUsd: positionInfo.pendingClaimableFundingFeesUsd,
       pendingBorrowingFeesUsd: positionInfo.pendingBorrowingFeesUsd,
+      leverage: positionInfo.leverage,
     });
   }
 
