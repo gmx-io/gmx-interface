@@ -19,6 +19,10 @@
   }
 }
 
+.Table .formula {
+  font-style: italic;
+}
+
 .TopPositionsItem {
   display: flex;
   flex-direction: row;

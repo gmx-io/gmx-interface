@@ -123,7 +123,12 @@ export default function TopAccounts() {
       tooltip: () => (
         <div>
           <p>{t`PnL ($) compared to the Max Collateral used by this Address.`}</p>
-          <p>{t`Max Collateral is the highest value of [Sum of Collateral of Open Positions -  RPnL].`}</p>
+          <p>
+            {t`Max Collateral is the highest value of`}
+            {" "}
+            <span className="formula">{t`[Sum of Collateral of Open Positions -  RPnL]`}</span>
+            {"."}
+          </p>
         </div>
       ),
       onClick: topAccountsHeaderClick("relPnl"),
