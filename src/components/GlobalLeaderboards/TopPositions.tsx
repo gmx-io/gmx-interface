@@ -20,8 +20,7 @@ const parseRow =
     key: p.key,
     rank: p.rank + 1,
     account: {
-      value: "",
-      render: (_, breakpoint) =>
+      value: (breakpoint) =>
         p.account && (
           <AddressView
             address={p.account}
@@ -37,8 +36,7 @@ const parseRow =
       className: cx(p.unrealizedPnl.isNegative() ? "negative" : "positive", "leaderboard-pnl-abs"),
     },
     market: {
-      value: "",
-      render: () => {
+      value: () => {
         const { symbol } = p.market.indexToken;
         const { name } = p.market;
 
@@ -56,8 +54,7 @@ const parseRow =
     },
     size: { value: formatUsd(p.size) || "" },
     liqPrice: {
-      value: "",
-      render: () => (
+      value: () => (
         <Tooltip
           handle={p.liqPrice ? formatPrice(p.liqPrice, chainId, p.market.indexToken.symbol) : ""}
           position="center-top"

@@ -18,8 +18,7 @@ const parseRow = (s: TopAccountsRow): Record<string, TableCell> => ({
   id: s.id,
   rank: s.rank + 1,
   account: {
-    value: "",
-    render: (_, breakpoint) => (
+    value: (breakpoint) => (
       s.account && (
         <AddressView
           address={ s.account }
@@ -32,8 +31,7 @@ const parseRow = (s: TopAccountsRow): Record<string, TableCell> => ({
     ),
   },
   absPnl: {
-    value: "",
-    render: () => (
+    value: () => (
       <Tooltip
         handle={
           <span className={ s.absPnl.isNegative() ? "negative" : "positive" }>
@@ -69,8 +67,7 @@ const parseRow = (s: TopAccountsRow): Record<string, TableCell> => ({
     ),
   },
   relPnl: {
-    value: "",
-    render: () => (
+    value: () => (
       <Tooltip
         handle={ formatDelta(s.relPnl.mul(BigNumber.from(100)), { signed: true, postfix: "%" }) }
         position="center-top"

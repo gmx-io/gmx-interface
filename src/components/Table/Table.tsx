@@ -83,8 +83,8 @@ const TableCell = ({ data, breakpoint }: TableCellProps) => {
   const cellClassName = cx(isObj && (data as TableCellData).className);
   let content;
   if (isObj) {
-    const { render, value } = data as TableCellData;
-    content = typeof render === "function" ? render(value, breakpoint) : value;
+    const { value } = data as TableCellData;
+    content = typeof value === "function" ? value(breakpoint) : value;
   } else {
     content = data;
   }

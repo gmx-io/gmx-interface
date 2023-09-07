@@ -16,9 +16,8 @@ export type TableProps<T extends Record<string, any>> = {
 };
 
 export type TableCellData = {
-  value: string | number;
+  value: string | number | ((breakpoint?: string) => ReactElement | string | null);
   className?: string;
-  render?: (value?: string | number, breakpoint?: string) => ReactElement | string | null;
 };
 
 export type TableCell = string | number | TableCellData;
