@@ -18,81 +18,84 @@ const parseRow = (s: TopAccountsRow): Record<string, TableCell> => ({
   id: s.id,
   rank: s.rank + 1,
   account: {
-    value: (breakpoint) => (
+    value: (breakpoint) =>
       s.account && (
         <AddressView
-          address={ s.account }
-          ensName={ s.ensName }
-          avatarUrl={ s.avatarUrl }
-          breakpoint={ breakpoint }
-          size={ 24 }
+          address={s.account}
+          ensName={s.ensName}
+          avatarUrl={s.avatarUrl}
+          breakpoint={breakpoint}
+          size={24}
         />
-      )
-    ),
+      ),
   },
   absPnl: {
     value: () => (
       <Tooltip
         handle={
-          <span className={ s.absPnl.isNegative() ? "negative" : "positive" }>
-            { formatDelta(s.absPnl, { signed: true, prefix: "$" }) }
+          <span className={s.absPnl.isNegative() ? "negative" : "positive"}>
+            {formatDelta(s.absPnl, { signed: true, prefix: "$" })}
           </span>
         }
         position="center-top"
-        renderContent={
-          () => (
-            <div>
-              <StatsTooltipRow
-                label={ t`RPnL` }
-                showDollar={ false }
-                value={
-                  <span className={ s.rPnl.isNegative() ? "negative" : "positive" }>
-                    { formatDelta(s.rPnl, { signed: true, prefix: "$" }) }
-                  </span>
-                }
-              />
-              <StatsTooltipRow
-                label={ t`UPnL` }
-                showDollar={ false }
-                value={
-                  <span className={ s.rPnl.isNegative() ? "negative" : "positive" }>
-                    { formatDelta(s.uPnl, { signed: true, prefix: "$" }) }
-                  </span>
-                }
-              />
-            </div>
-          )
-        }
+        className="nowrap"
+        renderContent={() => (
+          <div>
+            <StatsTooltipRow
+              label={t`RPnL`}
+              showDollar={false}
+              value={
+                <span className={s.rPnl.isNegative() ? "negative" : "positive"}>
+                  {formatDelta(s.rPnl, { signed: true, prefix: "$" })}
+                </span>
+              }
+            />
+            <StatsTooltipRow
+              label={t`UPnL`}
+              showDollar={false}
+              value={
+                <span className={s.rPnl.isNegative() ? "negative" : "positive"}>
+                  {formatDelta(s.uPnl, { signed: true, prefix: "$" })}
+                </span>
+              }
+            />
+          </div>
+        )}
       />
     ),
   },
   relPnl: {
     value: () => (
       <Tooltip
-        handle={ formatDelta(s.relPnl.mul(BigNumber.from(100)), { signed: true, postfix: "%" }) }
-        position="center-top"
-        renderContent={
-          () => (
-            <div>
-              <p>{ `${ t`Max Collateral` }: ${ formatUsd(s.maxCollateral) }` }</p>
-            </div>
-          )
+        handle={
+          <span className={s.relPnl.isNegative() ? "negative" : "positive"}>
+            {formatDelta(s.relPnl.mul(BigNumber.from(100)), { signed: true, postfix: "%" })}
+          </span>
         }
+        position="center-top"
+        className="nowrap"
+        renderContent={() => (
+          <StatsTooltipRow
+            label={t`Max Collateral`}
+            showDollar={false}
+            value={<span>{formatUsd(s.maxCollateral)}</span>}
+          />
+        )}
       />
     ),
   },
   size: {
     value: formatUsd(s.size) || "",
-    className: "leaderboard-size"
+    className: "leaderboard-size",
   },
   leverage: {
     value: `${formatAmount(s.leverage, USD_DECIMALS, 2)}x`,
-    className: "leaderboard-leverage"
+    className: "leaderboard-leverage",
   },
   perf: {
-    value: `${ s.wins.toNumber() }/${ s.losses.toNumber() }`,
+    value: `${s.wins.toNumber()}/${s.losses.toNumber()}`,
     className: "text-right",
-  }
+  },
 });
 
 export default function TopAccounts() {
@@ -102,9 +105,7 @@ export default function TopAccounts() {
   const term = useDebounce(search, 300);
   const { topAccounts, topAccountsHeaderClick } = useLeaderboardContext();
   const { isLoading, error } = topAccounts;
-  const filteredStats = topAccounts.data.filter(a => (
-    a.account.toLowerCase().indexOf(term.toLowerCase()) >= 0
-  ));
+  const filteredStats = topAccounts.data.filter((a) => a.account.toLowerCase().indexOf(term.toLowerCase()) >= 0);
   const indexFrom = (page - 1) * perPage;
   const rows = filteredStats.slice(indexFrom, indexFrom + perPage).map(parseRow);
   const pageCount = Math.ceil(filteredStats.length / perPage);
@@ -121,8 +122,8 @@ export default function TopAccounts() {
       title: t`PnL (%)`,
       tooltip: () => (
         <div>
-          <p>{ t`PnL ($) compared to the Max Collateral used by this Address.` }</p>
-          <p>{ t`Max Collateral is the highest value of [Sum of Collateral of Open Positions -  RPnL].` }</p>
+          <p>{t`PnL ($) compared to the Max Collateral used by this Address.`}</p>
+          <p>{t`Max Collateral is the highest value of [Sum of Collateral of Open Positions -  RPnL].`}</p>
         </div>
       ),
       onClick: topAccountsHeaderClick("relPnl"),
@@ -148,7 +149,7 @@ export default function TopAccounts() {
   return (
     <div>
       <div className="LeaderboardHeader">
-      <SearchInput
+        <SearchInput
           placeholder={t`Search Address`}
           value={search}
           onInput={handleSearchInput}
@@ -158,8 +159,8 @@ export default function TopAccounts() {
           autoFocus={false}
         />
       </div>
-      <Table isLoading={isLoading} error={error} content={rows} titles={titles} rowKey={"id"}/>
-      <Pagination page={page} pageCount={pageCount} onPageChange={setPage}/>
+      <Table isLoading={isLoading} error={error} content={rows} titles={titles} rowKey={"id"} />
+      <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
     </div>
   );
 }

@@ -13,6 +13,7 @@ import { TopPositionsRow, formatDelta } from "domain/synthetics/leaderboards";
 import Tooltip from "components/Tooltip/Tooltip";
 import { useChainId } from "lib/chains";
 import { useLeaderboardContext } from "./Context";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
 const parseRow =
   (chainId: number) =>
@@ -58,20 +59,31 @@ const parseRow =
         <Tooltip
           handle={p.liqPrice ? formatPrice(p.liqPrice, chainId, p.market.indexToken.symbol) : ""}
           position="center-top"
+          className="nowrap"
           renderContent={() => (
-            <div>
-              <p>{`${t`Mark Price`}: ${formatPrice(p.markPrice, chainId, p.market.indexToken.symbol)}`}</p>
-              <p>
-                {!p.liqPriceDelta || !p.liqPriceDeltaRel
-                  ? ""
-                  : `${t`Price change to Liq.`}: ${formatPrice(p.liqPriceDelta, chainId, p.market.indexToken.symbol)} (${formatAmount(
-                      p.liqPriceDeltaRel,
-                      USD_DECIMALS,
-                      2,
-                      true
-                    )}%)`}
-              </p>
-            </div>
+            <>
+              <StatsTooltipRow
+                label={t`Mark Price`}
+                showDollar={false}
+                value={<span>{formatPrice(p.markPrice, chainId, p.market.indexToken.symbol)}</span>}
+              />
+              <StatsTooltipRow
+                label={t`Price change to Liq.`}
+                showDollar={false}
+                value={
+                  <span>
+                    {!p.liqPriceDelta || !p.liqPriceDeltaRel
+                      ? ""
+                      : `${formatPrice(p.liqPriceDelta, chainId, p.market.indexToken.symbol)} (${formatAmount(
+                          p.liqPriceDeltaRel,
+                          USD_DECIMALS,
+                          2,
+                          true
+                        )}%)`}
+                  </span>
+                }
+              />
+            </>
           )}
         />
       ),

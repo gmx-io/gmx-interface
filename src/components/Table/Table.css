@@ -1,4 +1,7 @@
 table.Table.Exchange-list th {
   opacity: unset;
-  /* opacity: 0.7; */
+}
+
+.TableHeader {
+  opacity: 0.7;
 }

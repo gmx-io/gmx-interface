@@ -13,7 +13,7 @@ export default function Table<T extends Record<string, any>>({
   error,
   content,
   titles,
-  rowKey
+  rowKey,
 }: TableProps<T>) {
   let errorMsg: string | null = null;
   if (error) {
@@ -25,58 +25,52 @@ export default function Table<T extends Record<string, any>>({
     <table className="Exchange-list large App-box Table">
       <tbody>
         <tr className="Exchange-list-header">
-          {
-            Object.entries(titles).filter(([_, v]) => v).map(([k, v]) => (
+          {Object.entries(titles)
+            .filter(([, v]) => v)
+            .map(([k, v]) => (
               <th
-                key={ `table_header_${k}` }
-                onClick={ v!.onClick || (() => {}) }
-                className={
-                  cx(v!.className, typeof v!.onClick === "function" && "clickable-header")
-                }
+                key={`table_header_${k}`}
+                onClick={v!.onClick || (() => {})}
+                className={cx(v!.className, typeof v!.onClick === "function" && "clickable-header")}
               >
-                {
-                  v && v.tooltip ? (
-                    <Tooltip
-                      handle={ v.title }
-                      position="center-top"
-                      className={ cx("table-header-tooltip", v.className) }
-                      renderContent={
-                        typeof v.tooltip === "function"
-                          ? v.tooltip
-                          : () => <p>{ v.tooltip as string }</p>
-                      }
-                    />
-                  ) : v?.title
-                }
+                {v && v.tooltip ? (
+                  <Tooltip
+                    handle={<span className="TableHeader">{v.title}</span>}
+                    position="center-top"
+                    className={cx("TableHeaderTooltip", v.className)}
+                    renderContent={typeof v.tooltip === "function" ? v.tooltip : () => <p>{v.tooltip as string}</p>}
+                  />
+                ) : (
+                  <span className="TableHeader">{v?.title}</span>
+                )}
               </th>
-            ))
-          }
+            ))}
         </tr>
-        {
-          isLoading ? <tr><td colSpan={5}>{ t`Loading...` }</td></tr> : (
-            error ? <tr><td colSpan={9}>{ t`Error` + ": " + errorMsg }</td></tr> : (
-              !content.length ? <tr><td colSpan={9}>{ t`No data yet` }</td></tr> : (
-                content.map((row: T) => (
-                  <tr key={ row[rowKey] }>
-                    {
-                      Object.keys(titles).map(k => (
-                        <TableCell
-                          key={ `${ row[rowKey] }_${ k }` }
-                          breakpoint={ breakpoint }
-                          data={ row[k] }
-                        />
-                      ))
-                    }
-                  </tr>
-                ))
-              )
-            )
-          )
-        }
+        {isLoading ? (
+          <tr>
+            <td colSpan={5}>{t`Loading...`}</td>
+          </tr>
+        ) : error ? (
+          <tr>
+            <td colSpan={9}>{t`Error` + ": " + errorMsg}</td>
+          </tr>
+        ) : !content.length ? (
+          <tr>
+            <td colSpan={9}>{t`No data yet`}</td>
+          </tr>
+        ) : (
+          content.map((row: T) => (
+            <tr key={row[rowKey]}>
+              {Object.keys(titles).map((k) => (
+                <TableCell key={`${row[rowKey]}_${k}`} breakpoint={breakpoint} data={row[k]} />
+              ))}
+            </tr>
+          ))
+        )}
       </tbody>
     </table>
-  )
-};
+  );
+}
 
 const TableCell = ({ data, breakpoint }: TableCellProps) => {
   const isObj = isObject(data);
@@ -89,5 +83,5 @@ const TableCell = ({ data, breakpoint }: TableCellProps) => {
     content = data;
   }
 
-  return <td className={ cellClassName }>{ content }</td>;
+  return <td className={cellClassName}>{content}</td>;
 };
