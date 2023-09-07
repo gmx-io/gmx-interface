@@ -36,6 +36,7 @@ export default function Table<T extends Record<string, any>>({
                 {v && v.tooltip ? (
                   <Tooltip
                     handle={<span className="TableHeader">{v.title}</span>}
+                    isPopupClickable={false}
                     position="center-top"
                     className={cx("TableHeaderTooltip", v.className)}
                     renderContent={typeof v.tooltip === "function" ? v.tooltip : () => <p>{v.tooltip as string}</p>}

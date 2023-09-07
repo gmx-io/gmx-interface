@@ -15,6 +15,7 @@ type Props = {
   disableHandleStyle?: boolean;
   handleClassName?: string;
   isHandlerDisabled?: boolean;
+  isPopupClickable?: boolean;
 };
 
 export default function Tooltip(props: Props) {
@@ -74,7 +75,21 @@ export default function Tooltip(props: Props) {
         {/* For onMouseLeave to work on disabled button https://github.com/react-component/tooltip/issues/18#issuecomment-411476678 */}
         {props.isHandlerDisabled ? <div className="Tooltip-disabled-wrapper">{props.handle}</div> : <>{props.handle}</>}
       </span>
-      {visible && <div className={cx(["Tooltip-popup", position])}>{props.renderContent()}</div>}
+      {visible && (
+        <div
+          className={cx(["Tooltip-popup", position])}
+          onClick={
+            typeof props.isPopupClickable === "boolean" && !props.isPopupClickable
+              ? (e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                }
+              : undefined
+          }
+        >
+          {props.renderContent()}
+        </div>
+      )}
     </span>
   );
 }
