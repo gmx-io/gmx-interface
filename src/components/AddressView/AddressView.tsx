@@ -23,8 +23,13 @@ export default function AddressView({
   lengths,
   maxLength,
 }: AddressViewProps) {
-  const trader = ensName || address;
   const strLength = (breakpoint && lengths && lengths[breakpoint]) || maxLength;
+  let trader;
+  if (strLength) {
+    trader = (ensName ? "" : "0x") + shortenAddress(ensName || address.replace(/^0x/, ""), strLength, 0);
+  } else {
+    trader = ensName || address;
+  }
 
   return (
     <Link className="AddressView" to={`/actions/v2/${address}`}>
@@ -40,7 +45,7 @@ export default function AddressView({
       ) : (
         <Jazzicon diameter={size} seed={jsNumberForAddress(address)} />
       )}
-      <span className="AddressView-trader-id">{strLength ? shortenAddress(trader, strLength) : trader}</span>
+      <span className="AddressView-trader-id">{trader}</span>
     </Link>
   );
 }
