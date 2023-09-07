@@ -7,7 +7,7 @@ import { SWRConfig } from "swr";
 
 import { Redirect, Route, HashRouter as Router, Switch, useHistory, useLocation } from "react-router-dom";
 
-import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { BASIS_POINTS_DIVISOR, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { getAppBaseUrl, isHomeSite, isMobileDevice, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 
 import { decodeReferralCode, encodeReferralCode } from "domain/referrals";
@@ -54,7 +54,7 @@ import VaultV2 from "abis/VaultV2.json";
 import VaultV2b from "abis/VaultV2b.json";
 import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
 import { getContract } from "config/contracts";
-import { REDIRECT_POPUP_TIMESTAMP_KEY, TRADE_LINK_KEY } from "config/localStorage";
+import { REDIRECT_POPUP_TIMESTAMP_KEY, SLIPPAGE_BPS_KEY, TRADE_LINK_KEY } from "config/localStorage";
 import Jobs from "pages/Jobs/Jobs";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
 import ReferralTerms from "pages/ReferralTerms/ReferralTerms";
@@ -102,6 +102,7 @@ import {
   useHandleUnsupportedNetwork,
   useInactiveListener,
 } from "lib/wallets";
+import { MAX_SLIPPAGE, VALID_SLIPPAGE_REGEX } from "config/ui";
 import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
 import SyntheticsActions from "pages/SyntheticsActions/SyntheticsActions";
 import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsFallbackPage";
@@ -142,7 +143,10 @@ function FullApp() {
   });
 
   useEventToast();
+
   const [activatingConnector, setActivatingConnector] = useState();
+  const [settingsModalError, setSettingsModalError] = useState();
+
   useEffect(() => {
     if (activatingConnector && activatingConnector === connector) {
       setActivatingConnector(undefined);
@@ -268,7 +272,11 @@ function FullApp() {
 
   const settings = useSettings();
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
-
+  const [savedSlippageAmount, setSavedSlippageAmount] = useLocalStorageSerializeKey(
+    [chainId, SLIPPAGE_BPS_KEY],
+    DEFAULT_SLIPPAGE_AMOUNT
+  );
+  const parsedSavedSlippageAmount = parseInt(savedSlippageAmount);
   const [slippageAmount, setSlippageAmount] = useState(0);
   const [executionFeeBufferBps, setExecutionFeeBufferBps] = useState(0);
   const [isPnlInLeverage, setIsPnlInLeverage] = useState(false);
@@ -315,16 +323,14 @@ function FullApp() {
   };
 
   const saveAndCloseSettings = () => {
-    const slippage = parseFloat(slippageAmount);
-    if (isNaN(slippage)) {
-      helperToast.error(t`Invalid slippage value`);
-      return;
-    }
+    const slippage = isNaN(parseFloat(slippageAmount)) ? parsedSavedSlippageAmount / 100 : parseFloat(slippageAmount);
+
     if (slippage > 5) {
       helperToast.error(t`Slippage should be less than 5%`);
       return;
     }
-    const basisPoints = roundToTwoDecimals((slippage * BASIS_POINTS_DIVISOR) / 100);
+
+    let basisPoints = roundToTwoDecimals((slippage * BASIS_POINTS_DIVISOR) / 100);
     if (parseInt(basisPoints) !== parseFloat(basisPoints)) {
       helperToast.error(t`Max slippage precision is 0.01%`);
       return;
@@ -401,6 +407,19 @@ function FullApp() {
     },
     [chainId, history, location, tradePageVersion, query, setTradePageVersion]
   );
+
+  useEffect(() => {
+    // making sure that the saved slippage amount is a valid number not values like null or NaN
+    if (savedSlippageAmount === null || isNaN(Number(savedSlippageAmount))) {
+      setSavedSlippageAmount(DEFAULT_SLIPPAGE_AMOUNT);
+    } else {
+      if (savedSlippageAmount < DEFAULT_SLIPPAGE_AMOUNT) {
+        setSettingsModalError(t`Allowed Slippage below ${DEFAULT_SLIPPAGE_AMOUNT / 100}% may result in failed orders`);
+      }
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const checkPendingTxns = async () => {
@@ -721,98 +740,139 @@ function FullApp() {
         setIsVisible={setIsSettingsVisible}
         label={t`Settings`}
       >
-        <div className="App-settings-row">
-          <div>
-            <Trans>Allowed Slippage</Trans>
-          </div>
-          <div className="App-slippage-tolerance-input-container">
-            <input
-              type="number"
-              className="App-slippage-tolerance-input"
-              min="0"
-              value={slippageAmount}
-              onChange={(e) => setSlippageAmount(e.target.value)}
-            />
-            <div className="App-slippage-tolerance-input-percent">%</div>
-          </div>
-        </div>
-        {settings.shouldUseExecutionFeeBuffer && (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            saveAndCloseSettings();
+          }}
+        >
           <div className="App-settings-row">
             <div>
-              <Tooltip
-                handle={<Trans>Max Execution Fee Buffer</Trans>}
-                renderContent={() => (
-                  <div>
-                    <Trans>
-                      The Max Execution Fee is set to a higher value to handle potential increases in gas price during
-                      order execution. Any excess execution fee will be refunded to your account when the order is
-                      executed. Only applicable to GMX V2.
-                    </Trans>
-                    <br />
-                    <br />
-                    <ExternalLink href="https://docs.gmx.io/docs/trading/v2#execution-fee">Read more</ExternalLink>
-                  </div>
-                )}
-              />
+              <Trans>Allowed Slippage</Trans>
             </div>
             <div className="App-slippage-tolerance-input-container">
               <input
-                type="number"
+                type="text"
                 className="App-slippage-tolerance-input"
-                min="0"
-                value={executionFeeBufferBps}
-                onChange={(e) => setExecutionFeeBufferBps(e.target.value)}
+                value={slippageAmount}
+                placeholder={parsedSavedSlippageAmount / 100}
+                onChange={(e) => {
+                  const maxSlippagePercentage = MAX_SLIPPAGE / 100;
+                  const defaultSlippagePercentage = DEFAULT_SLIPPAGE_AMOUNT / 100;
+                  let value = e.target.value;
+
+                  if (value === "") {
+                    setSlippageAmount(value);
+                  }
+
+                  if (value === ".") {
+                    value = "0.";
+                  }
+
+                  if (!VALID_SLIPPAGE_REGEX.test(value)) {
+                    return;
+                  }
+
+                  if (value > maxSlippagePercentage) {
+                    value = maxSlippagePercentage;
+                  }
+
+                  if (value < defaultSlippagePercentage) {
+                    setSettingsModalError(
+                      t`Allowed Slippage below ${defaultSlippagePercentage}% may result in failed orders`
+                    );
+                  } else {
+                    setSettingsModalError("");
+                  }
+
+                  setSlippageAmount(value);
+                }}
               />
               <div className="App-slippage-tolerance-input-percent">%</div>
             </div>
-            {parseFloat(executionFeeBufferBps) <
-              (EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps / BASIS_POINTS_DIVISOR) * 100 && (
-              <div className="warning">
-                <Trans>
-                  Max Execution Fee buffer below{" "}
-                  {(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps / BASIS_POINTS_DIVISOR) * 100}% may result in
-                  failed orders.
-                </Trans>
+            {settingsModalError && <p className="App-settings-error">{settingsModalError}</p>}
+          </div>
+          {settings.shouldUseExecutionFeeBuffer && (
+            <div className="App-settings-row">
+              <div>
+                <Tooltip
+                  handle={<Trans>Max Execution Fee Buffer</Trans>}
+                  renderContent={() => (
+                    <div>
+                      <Trans>
+                        The Max Execution Fee is set to a higher value to handle potential increases in gas price during
+                        order execution. Any excess execution fee will be refunded to your account when the order is
+                        executed. Only applicable to GMX V2.
+                      </Trans>
+                      <br />
+                      <br />
+                      <ExternalLink href="https://docs.gmx.io/docs/trading/v2#execution-fee">Read more</ExternalLink>
+                    </div>
+                  )}
+                />
               </div>
-            )}
-          </div>
-        )}
-        <div className="Exchange-settings-row">
-          <Checkbox isChecked={showPnlAfterFees} setIsChecked={setShowPnlAfterFees}>
-            <Trans>Display PnL after fees</Trans>
-          </Checkbox>
-        </div>
-        <div className="Exchange-settings-row">
-          <Checkbox isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>
-            <Trans>Include PnL in leverage display</Trans>
-          </Checkbox>
-        </div>
-        <div className="Exchange-settings-row chart-positions-settings">
-          <Checkbox isChecked={savedShouldShowPositionLines} setIsChecked={setSavedShouldShowPositionLines}>
-            <span>
-              <Trans>Chart positions</Trans>
-            </span>
-          </Checkbox>
-        </div>
-        {isDevelopment() && (
+              <div className="App-slippage-tolerance-input-container">
+                <input
+                  type="number"
+                  className="App-slippage-tolerance-input"
+                  min="0"
+                  value={executionFeeBufferBps}
+                  onChange={(e) => setExecutionFeeBufferBps(e.target.value)}
+                />
+                <div className="App-slippage-tolerance-input-percent">%</div>
+              </div>
+              {parseFloat(executionFeeBufferBps) <
+                (EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps / BASIS_POINTS_DIVISOR) * 100 && (
+                <div className="warning">
+                  <Trans>
+                    Max Execution Fee buffer below{" "}
+                    {(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps / BASIS_POINTS_DIVISOR) * 100}% may result in
+                    failed orders.
+                  </Trans>
+                </div>
+              )}
+            </div>
+          )}
           <div className="Exchange-settings-row">
-            <Checkbox isChecked={shouldDisableValidationForTesting} setIsChecked={setShouldDisableValidationForTesting}>
-              <Trans>Disable order validations</Trans>
+            <Checkbox isChecked={showPnlAfterFees} setIsChecked={setShowPnlAfterFees}>
+              <Trans>Display PnL after fees</Trans>
             </Checkbox>
           </div>
-        )}
-
-        {isDevelopment() && (
           <div className="Exchange-settings-row">
-            <Checkbox isChecked={showDebugValues} setIsChecked={setShowDebugValues}>
-              <Trans>Show debug values</Trans>
+            <Checkbox isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>
+              <Trans>Include PnL in leverage display</Trans>
             </Checkbox>
           </div>
-        )}
+          <div className="Exchange-settings-row chart-positions-settings">
+            <Checkbox isChecked={savedShouldShowPositionLines} setIsChecked={setSavedShouldShowPositionLines}>
+              <span>
+                <Trans>Chart positions</Trans>
+              </span>
+            </Checkbox>
+          </div>
 
-        <Button variant="primary-action" className="w-full mt-md" onClick={saveAndCloseSettings}>
-          <Trans>Save</Trans>
-        </Button>
+          {isDevelopment() && (
+            <div className="Exchange-settings-row">
+              <Checkbox
+                isChecked={shouldDisableValidationForTesting}
+                setIsChecked={setShouldDisableValidationForTesting}
+              >
+                <Trans>Disable order validations</Trans>
+              </Checkbox>
+            </div>
+          )}
+          {isDevelopment() && (
+            <div className="Exchange-settings-row">
+              <Checkbox isChecked={showDebugValues} setIsChecked={setShowDebugValues}>
+                <Trans>Show debug values</Trans>
+              </Checkbox>
+            </div>
+          )}
+
+          <Button variant="primary-action" className="w-full mt-md" onClick={saveAndCloseSettings}>
+            <Trans>Save</Trans>
+          </Button>
+        </form>
       </Modal>
     </>
   );

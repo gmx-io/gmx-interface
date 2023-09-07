@@ -284,6 +284,14 @@ msgstr "Allow {0} to be spent"
 msgid "Allowed Slippage"
 msgstr "Allowed Slippage"
 
+#: src/App/App.js
+msgid "Allowed Slippage below {0}% may result in failed orders"
+msgstr "Allowed Slippage below {0}% may result in failed orders"
+
+#: src/App/App.js
+msgid "Allowed Slippage below {defaultSlippagePercentage}% may result in failed orders"
+msgstr "Allowed Slippage below {defaultSlippagePercentage}% may result in failed orders"
+
 #: src/components/ModalViews/RedirectModal.js
 msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
 msgstr "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
@@ -2184,8 +2192,8 @@ msgid "Invalid price, see warning"
 msgstr "Invalid price, see warning"
 
 #: src/App/App.js
-msgid "Invalid slippage value"
-msgstr "Invalid slippage value"
+#~ msgid "Invalid slippage value"
+#~ msgstr "Invalid slippage value"
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
