@@ -2,11 +2,11 @@ import { useMemo } from "react";
 import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
-import { useAccountOpenPositions, useAccountPerf } from ".";
+import { useOpenPositions, useAccountPerf } from ".";
 import {
   AccountPositionsSummary,
   PerfPeriod,
-  AccountOpenPosition,
+  OpenPosition,
   PositionsSummaryByAccount,
   TopAccountsRow
 } from "./types";
@@ -29,7 +29,7 @@ const defaultSummary = (account: string): AccountPositionsSummary => ({
   openPositionsCount: 0,
 });
 
-const groupPositionsByAccount = (positions: AccountOpenPosition[]): PositionsSummaryByAccount => {
+const groupPositionsByAccount = (positions: OpenPosition[]): PositionsSummaryByAccount => {
   const groupping: PositionsSummaryByAccount = {};
 
   for (const p of positions) {
@@ -62,7 +62,7 @@ const groupPositionsByAccount = (positions: AccountOpenPosition[]): PositionsSum
 
 export function useTopAccounts(period: PerfPeriod) {
   const accountPerf = useAccountPerf(period);
-  const positions = useAccountOpenPositions();
+  const positions = useOpenPositions();
   const accounts = (accountPerf.data || []).map(a => a.account).join("-");
   const positionKeys = (positions.data || []).map(p => p.key).join("-");
   const data = useMemo(() => {

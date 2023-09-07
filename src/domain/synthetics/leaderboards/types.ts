@@ -71,7 +71,7 @@ export type TopAccountsRow = {
   losses: BigNumber;
 };
 
-export type AccountOpenPositionJson = {
+export type OpenPositionJson = {
   id: string;
   account: string;
   market: string;
@@ -126,7 +126,7 @@ export type TopPositionsRow = {
   liqPriceDeltaRel?: BigNumber;
 };
 
-export type AccountOpenPosition = {
+export type OpenPosition = {
   key: string;
   account: string;
   ensName?: string;

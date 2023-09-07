@@ -1,8 +1,9 @@
 import React from "react";
+import isObject from "lodash/isObject";
 import { t } from "@lingui/macro";
 import cx from "classnames";
 import Tooltip from "../Tooltip/Tooltip";
-import { TableCellProps, TableProps } from "./types";
+import { TableCellData, TableCellProps, TableProps } from "./types";
 
 import "./Table.css";
 import { createBreakpoint } from "react-use";
@@ -78,11 +79,12 @@ export default function Table<T extends Record<string, any>>({
 };
 
 const TableCell = ({ data, breakpoint }: TableCellProps) => {
-  const isObject = data && typeof data === "object";
-  const cellClassName = cx(isObject && data.className);
+  const isObj = isObject(data);
+  const cellClassName = cx(isObj && (data as TableCellData).className);
   let content;
-  if (isObject) {
-    content = typeof data.render === "function" ? data.render(data.value, breakpoint) : data.value;
+  if (isObj) {
+    const { render, value } = data as TableCellData;
+    content = typeof render === "function" ? render(value, breakpoint) : value;
   } else {
     content = data;
   }

@@ -1,4 +1,4 @@
-query GetAccountPerformance(
+query QueryAccountPerformance(
   $first: Int = 10,
   $skip: Int = 0,
   $orderBy: AccountPerf_orderBy = totalPnl,

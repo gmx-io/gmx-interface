@@ -1,9 +1,9 @@
 import useSWR from "swr";
 import { BigNumber } from "ethers";
 import { getAddress } from "ethers/lib/utils";
-import { queryAccountOpenPositions } from "./queries"
+import { queryOpenPositions } from "./queries"
 import { arbitrumGoerliLeaderboardsClient as graph } from "lib/subgraph/clients";
-import { AccountOpenPositionJson, AccountOpenPosition } from "./types";
+import { OpenPositionJson, OpenPosition } from "./types";
 import { ContractMarketPrices, getContractMarketPrices, useMarketsInfo } from "../markets";
 import { convertToUsd } from "../tokens";
 import { usePositionsInfo } from "./usePositionsInfo";
@@ -13,14 +13,14 @@ import { expandDecimals } from "lib/numbers";
 import { USD_DECIMALS } from "lib/legacy";
 import { AVALANCHE } from "config/chains";
 
-const fetchAccountOpenPositionsPage = async (
+const fetchOpenPositionsPage = async (
   first: number,
   skip: number,
   orderBy: string = "sizeInUsd",
   orderDirection: "asc" | "desc" = "desc",
-): Promise<AccountOpenPositionJson[]> => {
-  const res = await graph.query<{ accountOpenPositions: AccountOpenPositionJson[] }>({
-    query: queryAccountOpenPositions,
+): Promise<OpenPositionJson[]> => {
+  const res = await graph.query<{ accountOpenPositions: OpenPositionJson[] }>({
+    query: queryOpenPositions,
     variables: {
       first,
       skip,
@@ -32,13 +32,13 @@ const fetchAccountOpenPositionsPage = async (
   return res.data.accountOpenPositions;
 };
 
-const parseAccountOpenPositions = (
-  positionsData: AccountOpenPositionJson[],
+const parseOpenPositions = (
+  positionsData: OpenPositionJson[],
   positionsByKey: PositionsInfoData,
   ensNames: Record<string, string>,
   avatarUrls: Record<string, string>,
-): AccountOpenPosition[] => {
-  const positions: AccountOpenPosition[] = [];
+): OpenPosition[] => {
+  const positions: OpenPosition[] = [];
 
   for (const p of positionsData) {
     const accountAddress = getAddress(p.account);
@@ -89,7 +89,7 @@ const parseAccountOpenPositions = (
       marketInfo: positionInfo.marketInfo,
       markPrice,
       collateralToken: positionInfo.collateralToken,
-      entryPrice: positionInfo.entryPrice!, // BigNumber.from(p.entryPrice),
+      entryPrice: positionInfo.entryPrice!,
       sizeInUsd: currSuzeInUsd,
       collateralAmount,
       collateralAmountUsd,
@@ -113,13 +113,13 @@ const parseAccountOpenPositions = (
   return positions;
 };
 
-const fetchAccountOpenPositions = async () => {
+const fetchOpenPositions = async () => {
   const pageSize = 1000;
-  let data: AccountOpenPositionJson[] = [];
+  let data: OpenPositionJson[] = [];
   let skip = 0;
 
   while (true) {
-    const page = await fetchAccountOpenPositionsPage(pageSize, skip);
+    const page = await fetchOpenPositionsPage(pageSize, skip);
     if (!page || !page.length) {
       break;
     }
@@ -130,12 +130,13 @@ const fetchAccountOpenPositions = async () => {
   return data;
 };
 
-export function useAccountOpenPositions() {
+export function useOpenPositions() {
   const chainId = AVALANCHE; // FIXME: usechainid as soon as the graph deployed to all networks
-  const { tokensData, marketsInfoData, pricesUpdatedAt } = useMarketsInfo(chainId);
-  const positions = useSWR(['/leaderboards/positions', chainId], fetchAccountOpenPositions);
   const ensNames = {}; // FIXME: use useEnsBatchLookup instead
   const avatarUrls = {}; // FIXME: use useEnsBatchLookup instead
+
+  const { tokensData, marketsInfoData, pricesUpdatedAt } = useMarketsInfo(chainId);
+  const positions = useSWR(['/leaderboards/positions', chainId], fetchOpenPositions);
   const positionsHash = (positions.data || []).map(p => p.id).join("-");
   const { keys, prices } =  useMemo((): { keys: string[], prices: ContractMarketPrices[] } => {
     if (!marketsInfoData || !tokensData) {
@@ -167,10 +168,10 @@ export function useAccountOpenPositions() {
 
   const ensNamesLength = Object.keys(ensNames).length;
   const avatarUrlsLength = Object.keys(avatarUrls).length;
-  const [data, setData] = useState<AccountOpenPosition[]>();
+  const [data, setData] = useState<OpenPosition[]>();
   useEffect(() => {
     if(!isLoading && !error) {
-      setData(parseAccountOpenPositions(
+      setData(parseOpenPositions(
         positions.data || [],
         positionsInfo.data,
         ensNames,

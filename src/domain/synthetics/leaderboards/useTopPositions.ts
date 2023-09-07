@@ -1,8 +1,8 @@
 import { RemoteData, TopPositionsRow } from "./types";
-import { useAccountOpenPositions } from ".";
+import { useOpenPositions } from ".";
 
 export function useTopPositions(): RemoteData<TopPositionsRow> {
-  const positions = useAccountOpenPositions();
+  const positions = useOpenPositions();
   return {
     isLoading: !positions.data,
     error: positions.error,

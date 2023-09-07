@@ -1,4 +1,4 @@
-query GetAccountOpenPositions(
+query QueryOpenPositions(
   $first: Int,
   $skip: Int = 0,
   $orderBy: AccountOpenPosition_orderBy = sizeInUsd,

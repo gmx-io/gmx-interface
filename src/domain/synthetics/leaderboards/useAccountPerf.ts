@@ -1,7 +1,7 @@
 import useSWR from "swr";
 import { BigNumber } from "ethers";
 import { PerfPeriod, AccountPerf, AccountPerfJson, PerfByAccount, RemoteData } from "./types";
-import { queryAccountPerformance } from "./queries";
+import { queryAccountPerf } from "./queries";
 import { arbitrumGoerliLeaderboardsClient as graph } from "lib/subgraph/clients";
 import { getAddress } from "ethers/lib/utils";
 import { useEffect, useState } from "react";
@@ -30,7 +30,7 @@ const fetchAccountPerfs = async (
   }
 
   const res = await graph.query<{ accountPerfs: AccountPerfJson[] }>({
-    query: queryAccountPerformance,
+    query: queryAccountPerf,
     variables: { first, skip, orderBy, orderDirection, ...filtersByPeriod[period] }
   });
 
