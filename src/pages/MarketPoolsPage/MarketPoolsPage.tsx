@@ -16,6 +16,7 @@ import { getByKey } from "lib/objects";
 import "./MarketPoolsPage.scss";
 import { GmList } from "components/Synthetics/GmList/GmList";
 import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
+import PageTitle from "components/PageTitle/PageTitle";
 
 type Props = {
   connectWallet: () => void;
@@ -55,21 +56,16 @@ export function MarketPoolsPage(p: Props) {
   return (
     <SEO title={getPageTitle("V2 Pools")}>
       <div className="default-container page-layout">
-        <div className="section-title-block">
-          <div className="section-title-content">
-            <div className="Page-title">
-              <Trans>V2 Pools</Trans>
-            </div>
-            <div className="Page-description">
-              <Trans>
-                Purchase <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v2">GM Tokens</ExternalLink>{" "}
-                to earn fees from swaps and leverage trading.
-              </Trans>
-              <br />
-            </div>
-          </div>
-        </div>
-
+        <PageTitle
+          title="V2 Pools"
+          isTop
+          subtitle={
+            <Trans>
+              Purchase <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v2">GM Tokens</ExternalLink> to
+              earn fees from swaps and leverage trading.
+            </Trans>
+          }
+        />
         <div className="MarketPoolsPage-content">
           <MarketStats marketsTokensAPRData={marketsTokensAPRData} marketInfo={marketInfo} marketToken={marketToken} />
 

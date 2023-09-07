@@ -10,14 +10,7 @@ import { ethers } from "ethers";
 import hexToRgba from "hex-to-rgba";
 
 import { useGmxPrice, useTotalGmxInLiquidity, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
-import {
-  DEFAULT_MAX_USDG_AMOUNT,
-  GLP_DECIMALS,
-  GMX_DECIMALS,
-  USD_DECIMALS,
-  getPageTitle,
-  importImage,
-} from "lib/legacy";
+import { DEFAULT_MAX_USDG_AMOUNT, GLP_DECIMALS, GMX_DECIMALS, USD_DECIMALS, getPageTitle } from "lib/legacy";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 import { getContract } from "config/contracts";
@@ -46,8 +39,18 @@ import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { formatDate } from "lib/dates";
 import { arrayURLFetcher } from "lib/fetcher";
-import { bigNumberify, expandDecimals, formatAmount, formatKeyAmount, numberWithCommas } from "lib/numbers";
+import {
+  sumBigNumbers,
+  bigNumberify,
+  expandDecimals,
+  formatAmount,
+  formatKeyAmount,
+  numberWithCommas,
+} from "lib/numbers";
 import AssetDropdown from "./AssetDropdown";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+import PageTitle from "components/PageTitle/PageTitle";
+import useDashboardOverview from "domain/synthetics/stats/useDashboardOverview";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
@@ -98,7 +101,13 @@ export default function DashboardV2() {
   const { active, library } = useWeb3React();
   const { chainId } = useChainId();
   const totalVolume = useTotalVolume();
-
+  const arbitrumOverview = useDashboardOverview(ARBITRUM);
+  const avalancheOverview = useDashboardOverview(AVALANCHE);
+  const v2MarketsOverview = {
+    [ARBITRUM]: arbitrumOverview,
+    [AVALANCHE]: avalancheOverview,
+  };
+  const currentV2MarketOverview = v2MarketsOverview[chainId];
   const uniqueUsers = useUniqueUsers();
   const chainName = getChainName(chainId);
   const currentIcons = getIcons(chainId);
@@ -164,13 +173,13 @@ export default function DashboardV2() {
       fetcher: () => {
         return Promise.all(
           ACTIVE_CHAIN_IDS.map((chainId) =>
-            contractFetcher(null, ReaderV2, [getWhitelistedTokenAddresses(chainId)])(
+            contractFetcher(null, ReaderV2, [getWhitelistedTokenAddresses(chainId)])([
               `Dashboard:fees:${chainId}`,
               chainId,
               getContract(chainId, "Reader"),
               "getFees",
-              getContract(chainId, "Vault")
-            )
+              getContract(chainId, "Vault"),
+            ])
           )
         ).then((fees) => {
           return fees.reduce(
@@ -254,8 +263,10 @@ export default function DashboardV2() {
   }
 
   let tvl;
-  if (glpMarketCap && gmxPrice && totalStakedGmx) {
-    tvl = glpMarketCap.add(gmxPrice.mul(totalStakedGmx).div(expandDecimals(1, GMX_DECIMALS)));
+  if (glpMarketCap && gmxPrice && totalStakedGmx && currentV2MarketOverview?.totalGMLiquidity) {
+    tvl = glpMarketCap
+      .add(gmxPrice.mul(totalStakedGmx).div(expandDecimals(1, GMX_DECIMALS)))
+      .add(currentV2MarketOverview.totalGMLiquidity);
   }
 
   const ethFloorPriceFund = expandDecimals(350 + 148 + 384, 18);
@@ -472,13 +483,11 @@ export default function DashboardV2() {
   return (
     <SEO title={getPageTitle(t`Dashboard`)}>
       <div className="default-container DashboardV2 page-layout">
-        <div className="section-title-block">
-          <div className="section-title-icon"></div>
-          <div className="section-title-content">
-            <div className="Page-title">
-              <Trans>Stats</Trans> <img width="24" src={currentIcons.network} alt="Network Icon" />
-            </div>
-            <div className="Page-description">
+        <PageTitle
+          title={t`Stats`}
+          isTop
+          subtitle={
+            <div>
               <Trans>
                 {chainName} Total Stats start from {totalStatsStartDate}.<br /> For detailed stats:
               </Trans>{" "}
@@ -486,8 +495,8 @@ export default function DashboardV2() {
               {chainId === AVALANCHE && <ExternalLink href="https://stats.gmx.io/avalanche">V1</ExternalLink>} |{" "}
               <ExternalLink href="https://dune.com/gmx-io/gmx-analytics">V2</ExternalLink>.
             </div>
-          </div>
-        </div>
+          }
+        />
         <div className="DashboardV2-content">
           <div className="DashboardV2-cards">
             <div className="App-card">
@@ -505,7 +514,7 @@ export default function DashboardV2() {
                       handle={`$${formatAmount(tvl, USD_DECIMALS, 0, true)}`}
                       position="right-bottom"
                       renderContent={() => (
-                        <span>{t`Assets Under Management: GMX staked (All chains) + GLP pool (${chainName}).`}</span>
+                        <span>{t`Assets Under Management: GMX staked (All chains) + GLP pool (${chainName}) +  GM Pools (${chainName}).`}</span>
                       )}
                     />
                   </div>
@@ -532,19 +541,42 @@ export default function DashboardV2() {
                 </div>
                 <div className="App-card-row">
                   <div className="label">
+                    <Trans>GM Pools</Trans>
+                  </div>
+                  <div>
+                    <TooltipComponent
+                      handle={`$${formatAmount(currentV2MarketOverview?.totalGMLiquidity, USD_DECIMALS, 0, true)}`}
+                      position="right-bottom"
+                      renderContent={() => (
+                        <Trans>
+                          <p>GM Pools total value ({chainName}).</p>
+                        </Trans>
+                      )}
+                    />
+                  </div>
+                </div>
+                <div className="App-card-row">
+                  <div className="label">
                     <Trans>24h Volume</Trans>
                   </div>
                   <div>
                     <TooltipComponent
                       position="right-bottom"
                       className="nowrap"
-                      handle={`$${formatAmount(currentVolumeInfo?.[chainId], USD_DECIMALS, 0, true)}`}
+                      handle={`$${formatAmount(
+                        sumBigNumbers(currentVolumeInfo?.[chainId], v2MarketsOverview?.[chainId]?.dailyVolume),
+                        USD_DECIMALS,
+                        0,
+                        true
+                      )}`}
                       renderContent={() => (
                         <ChainsStatsTooltipRow
-                          title={t`Volume`}
-                          arbitrumValue={currentVolumeInfo?.[ARBITRUM]}
-                          avaxValue={currentVolumeInfo?.[AVALANCHE]}
-                          total={currentVolumeInfo?.total}
+                          entries={{
+                            "V1 Arbitrum": currentVolumeInfo?.[ARBITRUM],
+                            "V2 Arbitrum": v2MarketsOverview?.[ARBITRUM]?.dailyVolume,
+                            "V1 Avalanche": currentVolumeInfo?.[AVALANCHE],
+                            "V2 Avalanche": v2MarketsOverview?.[AVALANCHE]?.dailyVolume,
+                          }}
                         />
                       )}
                     />
@@ -558,13 +590,23 @@ export default function DashboardV2() {
                     <TooltipComponent
                       position="right-bottom"
                       className="nowrap"
-                      handle={`$${formatAmount(positionStatsInfo?.[chainId]?.openInterest, USD_DECIMALS, 0, true)}`}
+                      handle={`$${formatAmount(
+                        sumBigNumbers(
+                          positionStatsInfo?.[chainId]?.openInterest,
+                          v2MarketsOverview?.[chainId]?.openInterest
+                        ),
+                        USD_DECIMALS,
+                        0,
+                        true
+                      )}`}
                       renderContent={() => (
                         <ChainsStatsTooltipRow
-                          title={t`Open Interest`}
-                          arbitrumValue={positionStatsInfo?.[ARBITRUM].openInterest}
-                          avaxValue={positionStatsInfo?.[AVALANCHE].openInterest}
-                          total={positionStatsInfo?.totalOpenInterest}
+                          entries={{
+                            "V1 Arbitrum": positionStatsInfo?.[ARBITRUM].openInterest,
+                            "V2 Arbitrum": v2MarketsOverview?.[ARBITRUM]?.openInterest,
+                            "V1 Avalanche": positionStatsInfo?.[AVALANCHE].openInterest,
+                            "V2 Avalanche": v2MarketsOverview?.[AVALANCHE]?.openInterest,
+                          }}
                         />
                       )}
                     />
@@ -579,17 +621,22 @@ export default function DashboardV2() {
                       position="right-bottom"
                       className="nowrap"
                       handle={`$${formatAmount(
-                        positionStatsInfo?.[chainId]?.totalLongPositionSizes,
+                        sumBigNumbers(
+                          positionStatsInfo?.[chainId]?.totalLongPositionSizes,
+                          v2MarketsOverview?.[chainId]?.totalLongPositionSizes
+                        ),
                         USD_DECIMALS,
                         0,
                         true
                       )}`}
                       renderContent={() => (
                         <ChainsStatsTooltipRow
-                          title={t`Long Positions`}
-                          arbitrumValue={positionStatsInfo?.[ARBITRUM].totalLongPositionSizes}
-                          avaxValue={positionStatsInfo?.[AVALANCHE].totalLongPositionSizes}
-                          total={positionStatsInfo?.totalLongPositionSizes}
+                          entries={{
+                            "V1 Arbitrum": positionStatsInfo?.[ARBITRUM].totalLongPositionSizes,
+                            "V2 Arbitrum": v2MarketsOverview?.[ARBITRUM]?.totalLongPositionSizes,
+                            "V1 Avalanche": positionStatsInfo?.[AVALANCHE].totalLongPositionSizes,
+                            "V2 Avalanche": v2MarketsOverview?.[AVALANCHE]?.totalLongPositionSizes,
+                          }}
                         />
                       )}
                     />
@@ -604,17 +651,22 @@ export default function DashboardV2() {
                       position="right-bottom"
                       className="nowrap"
                       handle={`$${formatAmount(
-                        positionStatsInfo?.[chainId]?.totalShortPositionSizes,
+                        sumBigNumbers(
+                          positionStatsInfo?.[chainId]?.totalShortPositionSizes,
+                          v2MarketsOverview?.[chainId]?.totalShortPositionSizes
+                        ),
                         USD_DECIMALS,
                         0,
                         true
                       )}`}
                       renderContent={() => (
                         <ChainsStatsTooltipRow
-                          title={t`Short Positions`}
-                          arbitrumValue={positionStatsInfo?.[ARBITRUM].totalShortPositionSizes}
-                          avaxValue={positionStatsInfo?.[AVALANCHE].totalShortPositionSizes}
-                          total={positionStatsInfo?.totalShortPositionSizes}
+                          entries={{
+                            "V1 Arbitrum": positionStatsInfo?.[ARBITRUM].totalShortPositionSizes,
+                            "V2 Arbitrum": v2MarketsOverview?.[ARBITRUM]?.totalShortPositionSizes,
+                            "V1 Avalanche": positionStatsInfo?.[AVALANCHE].totalShortPositionSizes,
+                            "V2 Avalanche": v2MarketsOverview?.[AVALANCHE]?.totalShortPositionSizes,
+                          }}
                         />
                       )}
                     />
@@ -629,13 +681,20 @@ export default function DashboardV2() {
                       <TooltipComponent
                         position="right-bottom"
                         className="nowrap"
-                        handle={`$${formatAmount(currentFees?.[chainId], USD_DECIMALS, 2, true)}`}
+                        handle={`$${formatAmount(
+                          sumBigNumbers(currentFees?.[chainId], v2MarketsOverview?.[chainId]?.weeklyFees),
+                          USD_DECIMALS,
+                          2,
+                          true
+                        )}`}
                         renderContent={() => (
                           <ChainsStatsTooltipRow
-                            title={t`Fees`}
-                            arbitrumValue={currentFees?.[ARBITRUM]}
-                            avaxValue={currentFees?.[AVALANCHE]}
-                            total={currentFees?.total}
+                            entries={{
+                              "V1 Arbitrum": currentFees?.[ARBITRUM],
+                              "V2 Arbitrum": v2MarketsOverview?.[ARBITRUM]?.weeklyFees,
+                              "V1 Avalanche": currentFees?.[AVALANCHE],
+                              "V2 Avalanche": v2MarketsOverview?.[AVALANCHE]?.weeklyFees,
+                            }}
                           />
                         )}
                       />
@@ -658,14 +717,25 @@ export default function DashboardV2() {
                     <TooltipComponent
                       position="right-bottom"
                       className="nowrap"
-                      handle={`$${numberWithCommas(totalFees?.[chainId])}`}
+                      handle={`$${numberWithCommas(
+                        sumBigNumbers(
+                          totalFees?.[chainId],
+                          formatAmount(v2MarketsOverview?.[chainId]?.totalFees, USD_DECIMALS, 0)
+                        )
+                      )}`}
                       renderContent={() => (
                         <ChainsStatsTooltipRow
-                          title={t`Total Fees`}
-                          arbitrumValue={totalFees?.[ARBITRUM]}
-                          avaxValue={totalFees?.[AVALANCHE]}
-                          total={totalFees?.total}
                           decimalsForConversion={0}
+                          entries={{
+                            "V1 Arbitrum": totalFees?.[ARBITRUM] || 0,
+                            "V2 Arbitrum":
+                              v2MarketsOverview &&
+                              formatAmount(v2MarketsOverview?.[ARBITRUM]?.totalFees, USD_DECIMALS, 0),
+                            "V1 Avalanche": totalFees?.[AVALANCHE],
+                            "V2 Avalanche":
+                              v2MarketsOverview &&
+                              formatAmount(v2MarketsOverview?.[AVALANCHE]?.totalFees, USD_DECIMALS, 0),
+                          }}
                         />
                       )}
                     />
@@ -679,13 +749,20 @@ export default function DashboardV2() {
                     <TooltipComponent
                       position="right-bottom"
                       className="nowrap"
-                      handle={`$${formatAmount(totalVolume?.[chainId], USD_DECIMALS, 0, true)}`}
+                      handle={`$${formatAmount(
+                        sumBigNumbers(totalVolume?.[chainId], v2MarketsOverview?.[chainId]?.totalVolume),
+                        USD_DECIMALS,
+                        0,
+                        true
+                      )}`}
                       renderContent={() => (
                         <ChainsStatsTooltipRow
-                          title={t`Total Volume`}
-                          arbitrumValue={totalVolume?.[ARBITRUM]}
-                          avaxValue={totalVolume?.[AVALANCHE]}
-                          total={totalVolume?.total}
+                          entries={{
+                            "V1 Arbitrum": totalVolume?.[ARBITRUM],
+                            "V2 Arbitrum": v2MarketsOverview?.[ARBITRUM]?.totalVolume,
+                            "V1 Avalanche": totalVolume?.[AVALANCHE],
+                            "V2 Avalanche": v2MarketsOverview?.[AVALANCHE]?.totalVolume,
+                          }}
                         />
                       )}
                     />
@@ -699,15 +776,22 @@ export default function DashboardV2() {
                     <TooltipComponent
                       position="right-bottom"
                       className="nowrap"
-                      handle={formatAmount(uniqueUsers?.[chainId], 0, 0, true)}
+                      handle={formatAmount(
+                        sumBigNumbers(uniqueUsers?.[chainId], v2MarketsOverview?.[chainId]?.totalUsers),
+                        0,
+                        0,
+                        true
+                      )}
                       renderContent={() => (
                         <ChainsStatsTooltipRow
-                          title={t`Total Users`}
-                          arbitrumValue={uniqueUsers?.[ARBITRUM]}
-                          avaxValue={uniqueUsers?.[AVALANCHE]}
-                          total={uniqueUsers?.total}
                           showDollar={false}
                           shouldFormat={false}
+                          entries={{
+                            "V1 Arbitrum": uniqueUsers?.[ARBITRUM],
+                            "V2 Arbitrum": v2MarketsOverview?.[ARBITRUM]?.totalUsers,
+                            "V1 Avalanche": uniqueUsers?.[AVALANCHE],
+                            "V2 Avalanche": v2MarketsOverview?.[AVALANCHE]?.totalUsers,
+                          }}
                         />
                       )}
                     />
@@ -722,14 +806,7 @@ export default function DashboardV2() {
               </div>
             </div>
           </div>
-          <div className="Tab-title-section">
-            <div className="Page-title">
-              <Trans>Tokens</Trans> <img src={currentIcons.network} width="24" alt="Network Icon" />
-            </div>
-            <div className="Page-description">
-              <Trans>Platform, GLP and GM tokens.</Trans>
-            </div>
-          </div>
+          <PageTitle title={t`Tokens`} subtitle={t`Platform, GLP and GM tokens.`} />
           <div className="DashboardV2-token-cards">
             <div className="stats-wrapper stats-wrapper--gmx">
               <div className="App-card">
@@ -796,12 +873,12 @@ export default function DashboardV2() {
                           handle={`$${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)}`}
                           renderContent={() => (
                             <ChainsStatsTooltipRow
-                              title={t`Staked`}
-                              arbitrumValue={arbitrumStakedGmx}
-                              avaxValue={avaxStakedGmx}
-                              total={totalStakedGmx}
                               decimalsForConversion={GMX_DECIMALS}
                               showDollar={false}
+                              entries={{
+                                "Staked on Arbitrum": arbitrumStakedGmx,
+                                "Staked on Avalanche": avaxStakedGmx,
+                              }}
                             />
                           )}
                         />
@@ -994,7 +1071,6 @@ export default function DashboardV2() {
                         if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
                           maxUsdgAmount = tokenInfo.maxUsdgAmount;
                         }
-                        const tokenImage = importImage("ic_" + token.symbol.toLowerCase() + "_40.svg");
 
                         return (
                           <tr key={token.address}>
@@ -1002,7 +1078,7 @@ export default function DashboardV2() {
                               <div className="token-symbol-wrapper">
                                 <div className="App-card-title-info">
                                   <div className="App-card-title-info-icon">
-                                    <img src={tokenImage} alt={token.symbol} width="40" />
+                                    <TokenIcon symbol={token.symbol} displaySize={40} importSize={40} />
                                   </div>
                                   <div className="App-card-title-info-text">
                                     <div className="App-card-info-title">{token.name}</div>
@@ -1064,9 +1140,8 @@ export default function DashboardV2() {
                   </table>
                 </div>
 
-                <div className="Page-title Tab-title-section glp-composition-small">
-                  <Trans>GLP Index Composition</Trans>{" "}
-                  <img className="title-icon" src={currentIcons.network} width="24" alt="Network Icon" />
+                <div className="glp-composition-small">
+                  <PageTitle title={t`GLP Index Composition`} />
                 </div>
 
                 <div className="token-grid">
@@ -1081,12 +1156,11 @@ export default function DashboardV2() {
                       maxUsdgAmount = tokenInfo.maxUsdgAmount;
                     }
 
-                    const tokenImage = importImage("ic_" + token.symbol.toLowerCase() + "_24.svg");
                     return (
                       <div className="App-card" key={token.symbol}>
                         <div className="App-card-title">
                           <div className="mobile-token-card">
-                            <img src={tokenImage} alt={token.symbol} width="20px" />
+                            <TokenIcon symbol={token.symbol} importSize={24} displaySize={24} />
                             <div className="token-symbol-text">{token.symbol}</div>
                             <div>
                               <AssetDropdown assetSymbol={token.symbol} />

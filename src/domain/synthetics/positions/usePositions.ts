@@ -11,7 +11,7 @@ import {
 import { BigNumber, ethers } from "ethers";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
-import { useMemo, useRef } from "react";
+import { useMemo } from "react";
 import { ContractMarketPrices, MarketsData, getContractMarketPrices } from "../markets";
 import { TokensData } from "../tokens";
 import { Position, PositionsData } from "./types";
@@ -35,14 +35,13 @@ export function usePositions(
 ): PositionsResult {
   const { marketsInfoData, tokensData, pricesUpdatedAt, account } = p;
 
-  // Use ref to cache data from previos key with old prices
-  const positionsDataCache = useRef<PositionsData>();
-
   const { data: existingPositionsKeysSet } = useMulticall(chainId, "usePositions-keys", {
     key: account ? [account, pricesUpdatedAt] : null,
 
     // Refresh on every prices update
     refreshInterval: null,
+    clearUnusedKeys: true,
+    keepPreviousData: true,
 
     request: () => ({
       dataStore: {
@@ -75,6 +74,8 @@ export function usePositions(
 
     // Refresh on every prices update
     refreshInterval: null,
+    clearUnusedKeys: true,
+    keepPreviousData: true,
 
     request: () => ({
       reader: {
@@ -135,12 +136,8 @@ export function usePositions(
     },
   });
 
-  if (positionsData) {
-    positionsDataCache.current = positionsData;
-  }
-
   const optimisticPositionsData = useOptimisticPositions({
-    positionsData: positionsDataCache.current,
+    positionsData: positionsData,
     allPositionsKeys: keysAndPrices?.allPositionsKeys,
   });
 

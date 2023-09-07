@@ -33,21 +33,25 @@ input {
   font-family: "RelativeNumber";
 }
 
+::-webkit-scrollbar {
+  width: 0.6rem;
+  height: 0.6rem;
+}
+
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #1c1c1c;
+  background: #17182e;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #383838;
+  background: #a0a3c4;
   border-radius: 1.5rem;
-  border: 1px solid #212121;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #4a4a4a;
+  background: #b3b4c2;
 }
 
 :root {
@@ -400,7 +404,6 @@ button.btn-link:hover .logout-icon {
 .mt-md {
   margin-top: 1.5rem;
 }
-
 .page-layout {
   min-height: calc(100vh - 62px);
   display: flex;
@@ -440,7 +443,8 @@ button.btn-link:hover .logout-icon {
 .font-base {
   font-size: var(--font-base);
 }
-.mr-base {
+
+.mr-md {
   margin-right: 1.5rem;
 }
 .default-cursor.App-cta {
@@ -466,10 +470,51 @@ button.btn-link:hover .logout-icon {
   color: var(--text-gray);
 }
 
+.inline-flex {
+  display: inline-flex;
+}
+
+.inline-items-center {
+  display: inline-flex;
+  align-items: center;
+}
+
+.mr-xxs {
+  margin-right: 0.25rem;
+}
+.mr-xs {
+  margin-right: 0.5rem;
+}
+
+.ml-xxs {
+  margin-left: 0.25rem;
+}
+.ml-xs {
+  margin-left: 0.5rem;
+}
+
+.mx-xs {
+  margin: 0 0.5rem;
+}
+
+.mx-xxs {
+  margin: 0 0.25rem;
+}
+
+.m-sm {
+  margin-right: 1rem;
+}
+.m-md {
+  margin: 1.5rem;
+}
 .text-warning {
   color: var(--warning-yellow);
 }
 
 .ml-xs {
   margin-left: 0.5rem;
+}
+
+.nobr {
+  white-space: nowrap;
 }

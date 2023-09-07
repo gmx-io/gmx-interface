@@ -52,6 +52,8 @@ import Checkbox from "components/Checkbox/Checkbox";
 import Tooltip from "components/Tooltip/Tooltip";
 import { DUST_BNB } from "lib/legacy";
 import { useHasOutdatedUi } from "domain/legacy";
+import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
+import { getIcon } from "config/icons";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 
@@ -120,6 +122,7 @@ export function GmSwapBox(p: Props) {
 
   const { gasLimits } = useGasLimits(chainId);
   const { gasPrice } = useGasPrice(chainId);
+  const currentGMIcon = getIcon(chainId, "gm");
 
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
@@ -837,7 +840,9 @@ export function GmSwapBox(p: Props) {
                 showTokenImgInDropdown={true}
               />
             ) : (
-              <div className="selected-token">{firstToken?.symbol}</div>
+              <div className="selected-token">
+                <TokenWithIcon symbol={firstToken?.symbol} displaySize={20} />
+              </div>
             )}
           </BuyInputSection>
 
@@ -883,7 +888,9 @@ export function GmSwapBox(p: Props) {
                 }
               }}
             >
-              <div className="selected-token">{secondToken?.symbol}</div>
+              <div className="selected-token">
+                <TokenWithIcon symbol={secondToken?.symbol} displaySize={20} />
+              </div>
             </BuyInputSection>
           )}
 
@@ -925,7 +932,10 @@ export function GmSwapBox(p: Props) {
               }
             }}
           >
-            <div className="selected-token">GM</div>
+            <div className="selected-token">
+              <img className="mr-xs" width={20} src={currentGMIcon} alt="GM Token" />
+              GM
+            </div>
           </BuyInputSection>
         </div>
 

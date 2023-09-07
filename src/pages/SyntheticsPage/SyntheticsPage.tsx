@@ -1,4 +1,3 @@
-import Helmat from "react-helmet";
 import { Plural, Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
@@ -15,7 +14,7 @@ import { TVChart } from "components/Synthetics/TVChart/TVChart";
 import { TradeBox } from "components/Synthetics/TradeBox/TradeBox";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import Tab from "components/Tab/Tab";
-import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS } from "config/factors";
+import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS, DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
 import { getAcceptablePriceImpactBpsKey, getSyntheticsListSectionKey } from "config/localStorage";
 import { getToken } from "config/tokens";
 import { isSwapOrderType } from "domain/synthetics/orders";
@@ -26,11 +25,11 @@ import { usePositionsInfo } from "domain/synthetics/positions/usePositionsInfo";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
-import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { bigNumberify, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import Helmet from "react-helmet";
 
 import { useMarketsInfo } from "domain/synthetics/markets";
 import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTradeOption";
@@ -280,13 +279,13 @@ export function SyntheticsPage(p: Props) {
 
   return (
     <div className="Exchange page-layout">
-      <Helmat>
+      <Helmet>
         <style type="text/css">{`
             :root {
               --main-bg-color: #08091b;                   
              {
          `}</style>
-      </Helmat>
+      </Helmet>
       <div className="Exchange-content">
         <div className="Exchange-left">
           <TVChart
@@ -432,7 +431,12 @@ export function SyntheticsPage(p: Props) {
           <div className="Exchange-list-tab-container">
             <Tab
               options={Object.keys(ListSection)}
-              optionLabels={ListSection}
+              optionLabels={{
+                [ListSection.Positions]: t`Positions${positionsCount ? ` (${positionsCount})` : ""}`,
+                [ListSection.Orders]: t`Orders${ordersCount ? ` (${ordersCount})` : ""}`,
+                [ListSection.Trades]: t`Trades`,
+                [ListSection.Claims]: t`Claims`,
+              }}
               option={listSection}
               onChange={(section) => setListSection(section)}
               type="inline"

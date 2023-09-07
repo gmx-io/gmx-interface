@@ -25,13 +25,24 @@ import { getTokenInfo, getUsd } from "domain/tokens/utils";
 import { formatAmount } from "lib/numbers";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getPriceDecimals } from "config/tokens";
+import Button from "components/Button/Button";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 
 function getOrderTitle(order, indexTokenSymbol) {
   const orderTypeText = order.type === INCREASE ? t`Increase` : t`Decrease`;
   const longShortText = order.isLong ? t`Long` : t`Short`;
   const sizeDeltaText = formatAmount(order.sizeDelta, USD_DECIMALS, 2, true);
+  const symbolWithIcon = (
+    <>
+      <TokenIcon className="mx-xxs" symbol={indexTokenSymbol} displaySize={18} importSize={24} /> {indexTokenSymbol}
+    </>
+  );
 
-  return `${orderTypeText} ${indexTokenSymbol} ${longShortText} by $${sizeDeltaText}`;
+  return (
+    <span>
+      {orderTypeText} {symbolWithIcon} {longShortText} by ${sizeDeltaText}
+    </span>
+  );
 }
 
 export default function OrdersList(props) {
@@ -166,7 +177,7 @@ export default function OrdersList(props) {
         const markExchangeRate = getExchangeRate(fromTokenInfo, toTokenInfo);
         const orderId = `${order.type}-${order.index}`;
         const titleText = (
-          <>
+          <span>
             <Trans>Swap</Trans>{" "}
             {formatAmount(
               order.amountIn,
@@ -174,10 +185,10 @@ export default function OrdersList(props) {
               fromTokenInfo.isStable || fromTokenInfo.isUsdg ? 2 : 4,
               true
             )}{" "}
-            {fromTokenInfo.symbol} for{" "}
+            <TokenIcon symbol={fromTokenInfo.symbol} displaySize={18} importSize={24} /> {fromTokenInfo.symbol} for{" "}
             {formatAmount(order.minOut, toTokenInfo.decimals, toTokenInfo.isStable || toTokenInfo.isUsdg ? 2 : 4, true)}{" "}
-            {toTokenInfo.symbol}
-          </>
+            <TokenIcon symbol={toTokenInfo.symbol} displaySize={18} importSize={24} /> {toTokenInfo.symbol}
+          </span>
         );
 
         return (
@@ -203,10 +214,11 @@ export default function OrdersList(props) {
             <td className="Exchange-list-item-type">
               <Trans>Limit</Trans>
             </td>
-            <td>
+            <td className="inline-flex">
               <Tooltip
                 handle={titleText}
                 position="right-bottom"
+                className="Order-list-item-text"
                 renderContent={() => {
                   return (
                     <StatsTooltipRow
@@ -302,7 +314,7 @@ export default function OrdersList(props) {
             </td>
           )}
           <td className="Exchange-list-item-type">{order.type === INCREASE ? t`Limit` : t`Trigger`}</td>
-          <td>
+          <td className="inline-flex">
             {order.type === DECREASE ? (
               orderText
             ) : (
@@ -390,14 +402,15 @@ export default function OrdersList(props) {
         const titleText = (
           <>
             Swap {formatAmount(order.amountIn, fromTokenInfo.decimals, fromTokenInfo.isStable ? 2 : 4, true)}{" "}
-            {fromTokenInfo.symbol} for{" "}
-            {formatAmount(order.minOut, toTokenInfo.decimals, toTokenInfo.isStable ? 2 : 4, true)} {toTokenInfo.symbol}
+            <TokenIcon symbol={fromTokenInfo.symbol} displaySize={18} importSize={24} /> {fromTokenInfo.symbol} for{" "}
+            {formatAmount(order.minOut, toTokenInfo.decimals, toTokenInfo.isStable ? 2 : 4, true)}{" "}
+            <TokenIcon symbol={toTokenInfo.symbol} displaySize={18} importSize={24} /> {toTokenInfo.symbol}
           </>
         );
         return (
           <div key={`${order.type}-${order.index}`} className="App-card">
             <div className="App-card-content">
-              <div className="App-card-title-small">{titleText}</div>
+              <div className="Order-list-card-title">{titleText}</div>
               <div className="App-card-divider"></div>
               <div className="App-card-row">
                 <div className="label">
@@ -441,13 +454,13 @@ export default function OrdersList(props) {
               {!hideActions && (
                 <>
                   <div className="App-card-divider"></div>
-                  <div className="App-card-options">
-                    <button className="App-button-option App-card-option" onClick={() => onEditClick(order)}>
+                  <div className="remove-top-margin">
+                    <Button variant="secondary" className="mr-md mt-md" onClick={() => onEditClick(order)}>
                       <Trans>Edit</Trans>
-                    </button>
-                    <button className="App-button-option App-card-option" onClick={() => onCancelClick(order)}>
+                    </Button>
+                    <Button variant="secondary" className="mt-md" onClick={() => onCancelClick(order)}>
                       <Trans>Cancel</Trans>
-                    </button>
+                    </Button>
                   </div>
                 </>
               )}
@@ -471,7 +484,7 @@ export default function OrdersList(props) {
       return (
         <div key={`${order.isLong}-${order.type}-${order.index}`} className="App-card">
           <div className="App-card-content">
-            <div className="App-card-title-small">
+            <div className="Order-list-card-title">
               {error ? (
                 <Tooltip
                   className="order-error"
@@ -529,13 +542,13 @@ export default function OrdersList(props) {
             {!hideActions && (
               <>
                 <div className="App-card-divider"></div>
-                <div className="App-card-options">
-                  <button className="App-button-option App-card-option" onClick={() => onEditClick(order)}>
+                <div className="remove-top-margin">
+                  <Button variant="secondary" className="mr-md mt-md" onClick={() => onEditClick(order)}>
                     <Trans>Edit</Trans>
-                  </button>
-                  <button className="App-button-option App-card-option" onClick={() => onCancelClick(order)}>
+                  </Button>
+                  <Button variant="secondary" className="mt-md" onClick={() => onCancelClick(order)}>
                     <Trans>Cancel</Trans>
-                  </button>
+                  </Button>
                 </div>
               </>
             )}

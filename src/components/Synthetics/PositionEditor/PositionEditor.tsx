@@ -106,7 +106,7 @@ export function PositionEditor(p: Props) {
   const { data: tokenAllowance } = useSWR<BigNumber>(
     position ? [active, chainId, position.collateralTokenAddress, "allowance", account, routerAddress] : null,
     {
-      fetcher: contractFetcher(library, Token),
+      fetcher: contractFetcher(library, Token) as any,
     }
   );
 
@@ -461,6 +461,14 @@ export function PositionEditor(p: Props) {
                   ? collateralToken?.balance && !collateralDeltaAmount?.eq(collateralToken?.balance)
                   : maxWithdrawAmount && !collateralDeltaAmount?.eq(maxWithdrawAmount)
               }
+              showPercentSelector={!isDeposit}
+              onPercentChange={(percent) => {
+                if (!isDeposit) {
+                  setCollateralInputValue(
+                    formatAmountFree(maxWithdrawAmount!.mul(percent).div(100), position?.collateralToken?.decimals || 0)
+                  );
+                }
+              }}
               onClickMax={() => {
                 const maxDepositAmount = collateralToken!.isNative
                   ? collateralToken!.balance!.sub(BigNumber.from(DUST_BNB).mul(2))
