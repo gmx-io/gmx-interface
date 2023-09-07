@@ -155,7 +155,7 @@ export default function TopPositions() {
     isLong: { title: t`Direction`, width: 8 },
     unrealizedPnl: {
       title: t`PnL ($)`,
-      tooltip: t`Total Unrealized Profit.`,
+      tooltip: t`Total Unrealized Profit and Loss.`,
       onClick: topPositionsHeaderClick("unrealizedPnl"),
       width: 9,
       className: getSortableClass("unrealizedPnl"),

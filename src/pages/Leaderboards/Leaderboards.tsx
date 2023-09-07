@@ -20,7 +20,7 @@ export default function Leaderboard() {
               <Trans>Leaderboards</Trans> <img alt={t`Chain Icon`} src={getIcon(chainId, "network")} />
             </div>
             <div className="Page-description">
-              <Trans>Addresses trading statistics.</Trans>
+              <Trans>Addresses V2 trading statistics.</Trans>
             </div>
           </div>
         </div>

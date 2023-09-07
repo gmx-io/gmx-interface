@@ -154,7 +154,7 @@ export default function TopAccounts() {
     account: { title: t`Address`, width: 23 },
     absPnl: {
       title: t`PnL ($)`,
-      tooltip: t`Total Realized and Unrealized Profit.`,
+      tooltip: t`Total Realized and Unrealized Profit and Loss.`,
       onClick: topAccountsHeaderClick("absPnl"),
       width: 14,
       className: getSortableClass("absPnl"),
