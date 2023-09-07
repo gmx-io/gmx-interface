@@ -58,3 +58,32 @@
 .LeaderboardSearch:active {
   background: var(--dark-blue-active);
 }
+
+.LeaderboardRank-1,
+.LeaderboardRank-2,
+.LeaderboardRank-3 {
+  display: inline-flex;
+}
+
+.LeaderboardRank-1::after,
+.LeaderboardRank-2::after,
+.LeaderboardRank-3::after {
+  content: "";
+  width: 2.5rem;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  margin-left: 0.5rem;
+}
+
+.LeaderboardRank-1::after {
+  background-image: url(../../img/ic_trophy_1.svg);
+}
+
+.LeaderboardRank-2::after {
+  background-image: url(../../img/ic_trophy_2.svg);
+}
+
+.LeaderboardRank-3::after {
+  background-image: url(../../img/ic_trophy_3.svg);
+}

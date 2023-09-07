@@ -17,7 +17,11 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
 const parseRow = (s: TopAccountsRow): Record<string, TableCell> => ({
   id: s.id,
-  rank: s.rank + 1,
+  rank: {
+    value: () => (
+      <span className={cx(s.rank < 3 && `LeaderboardRank-${s.rank + 1}`)}>{s.rank + 1}</span>
+    ),
+  },
   account: {
     value: (breakpoint) =>
       s.account && (

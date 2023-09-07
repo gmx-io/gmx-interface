@@ -21,7 +21,11 @@ const parseRow =
   (chainId: number) =>
   (p: TopPositionsRow): { [key in keyof TopPositionsRow]?: TableCell } => ({
     key: p.key,
-    rank: p.rank + 1,
+    rank: {
+      value: () => (
+        <span className={cx(p.rank < 3 && `LeaderboardRank-${p.rank + 1}`)}>{p.rank + 1}</span>
+      ),
+    },
     account: {
       value: (breakpoint) =>
         p.account && (
