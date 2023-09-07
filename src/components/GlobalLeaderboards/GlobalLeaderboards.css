@@ -43,6 +43,10 @@
   margin-bottom: 0.8rem;
 }
 
+.TopPositionsSearch {
+  width: 30rem;
+}
+
 .LeaderboardSearch.disabled {
   cursor: not-allowed;
 }

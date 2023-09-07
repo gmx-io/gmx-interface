@@ -31,19 +31,19 @@ export default function Table<T extends Record<string, any>>({
               <th
                 key={`table_header_${k}`}
                 onClick={v!.onClick || (() => {})}
-                className={cx(v!.className, typeof v!.onClick === "function" && "clickable-header")}
+                className={cx("TableHeader", v!.className)}
                 style={ v && v.width ? { width: `${v!.width}%` } : undefined }
               >
-                {v && v.tooltip ? (
+                {v?.tooltip ? (
                   <Tooltip
-                    handle={<span className="TableHeader">{v.title}</span>}
+                    handle={<span className="TableHeaderTitle">{v?.title}</span>}
                     isPopupClickable={false}
                     position="center-top"
-                    className={cx("TableHeaderTooltip", v.className)}
+                    className="TableHeaderTooltip"
                     renderContent={typeof v.tooltip === "function" ? v.tooltip : () => <p>{v.tooltip as string}</p>}
                   />
                 ) : (
-                  <span className="TableHeader">{v?.title}</span>
+                  <span className="TableHeaderTitle">{v?.title}</span>
                 )}
               </th>
             ))}

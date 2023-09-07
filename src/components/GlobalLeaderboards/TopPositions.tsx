@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
+import cx from "classnames";
 import { t } from "@lingui/macro";
 import Pagination from "components/Pagination/Pagination";
 import Table from "components/Table/Table";
@@ -14,6 +15,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { useChainId } from "lib/chains";
 import { useLeaderboardContext } from "./Context";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { BigNumber } from "ethers";
 
 const parseRow =
   (chainId: number) =>
@@ -103,46 +105,96 @@ export default function TopPositions() {
   const [search, setSearch] = useState("");
   const term = useDebounce(search, 300);
   const { chainId } = useChainId();
-  const { topPositions, topPositionsHeaderClick } = useLeaderboardContext();
-  const { isLoading, error } = topPositions;
-  const filteredStats = topPositions.data.filter((a) => a.account.toLowerCase().indexOf(term.toLowerCase()) >= 0);
+  const { topPositions } = useLeaderboardContext();
+  const { isLoading, error, data } = topPositions;
+  const [positionsOrderBy, setPositionsOrderBy] = useState<keyof TopPositionsRow>("unrealizedPnl");
+  const [positionsOrderDirection, setPositionsOrderDirection] = useState<number>(1);
+  const topPositionsHeaderClick = useCallback((key: keyof TopPositionsRow) => () => {
+    if (key === positionsOrderBy) {
+      setPositionsOrderDirection((d: number) => -1 * d);
+    } else {
+      setPositionsOrderBy(key);
+      setPositionsOrderDirection(1);
+    }
+  }, [positionsOrderBy, setPositionsOrderBy, setPositionsOrderDirection]);
+
+  const positionsHash = (data || []).map(p => p[positionsOrderBy]!.toString()).join("-");
+  const positions = useMemo(() => {
+    if (!topPositions.data) {
+      return [];
+    }
+
+    return [...topPositions.data].sort((a, b) => {
+      const key = positionsOrderBy;
+      if (BigNumber.isBigNumber(a[key]) && BigNumber.isBigNumber(b[key])) {
+        return positionsOrderDirection * ((a[key] as BigNumber).gt(b[key] as BigNumber) ? -1 : 1);
+      } else {
+        return 1;
+      }
+    }).map((p, i) => ({ ...p, rank: i }));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [positionsHash, positionsOrderBy, positionsOrderDirection]);
+
+  const filteredStats = positions.filter((p) => (
+    p.account.toLowerCase().indexOf(term) >= 0 ||
+    p.market.indexToken.symbol.toLowerCase().indexOf(term) >= 0
+  ));
+
   const indexFrom = (page - 1) * perPage;
   const rows = filteredStats.slice(indexFrom, indexFrom + perPage).map(parseRow(chainId));
   const pageCount = Math.ceil(filteredStats.length / perPage);
-  const handleSearchInput = (e) => setSearch(e.target.value.trim());
-
+  const handleSearchInput = (e) => setSearch(e.target.value.trim().toLowerCase());
+  const getSortableClass = (key: keyof TopPositionsRow) => cx(positionsOrderBy === key
+    ? (positionsOrderDirection > 0 ? "sorted-asc" : "sorted-desc")
+    : "sortable"
+  )
   const titles: { [k in keyof TopPositionsRow]?: TableHeader } = {
     rank: { title: t`Rank`, width: 7 },
-    account: { title: t`Address`, width: 20 },
+    account: { title: t`Address`, width: 23 },
+    market: { title: t`Market`, width: 8 },
+    isLong: { title: t`Direction`, width: 8 },
     unrealizedPnl: {
       title: t`PnL ($)`,
       tooltip: t`Total Unrealized Profit.`,
       onClick: topPositionsHeaderClick("unrealizedPnl"),
-      width: 12,
+      width: 9,
+      className: getSortableClass("unrealizedPnl"),
     },
-    market: { title: t`Market`, width: 8 },
-    isLong: { title: t`Direction`, width: 8 },
     entryPrice: { title: t`Entry`, width: 9 },
     size: {
       title: t`Size`,
       onClick: topPositionsHeaderClick("size"),
-      width: 9
+      width: 9,
+      className: getSortableClass("size"),
     },
-    liqPrice: { title: t`Liq. Price`, width: 9 },
-    collateral: { title: t`Collateral`, width: 9 },
-    leverage: { title: t`Leverage`, width: 9 }
+    collateral: {
+      title: t`Collateral`,
+      onClick: topPositionsHeaderClick("collateral"),
+      width: 9,
+      className: getSortableClass("collateral"),
+    },
+    leverage: {
+      title: t`Leverage`,
+      width: 9,
+      onClick: topPositionsHeaderClick("leverage"),
+      className: getSortableClass("leverage"),
+    },
+    liqPrice: {
+      title: t`Liq. Price`,
+      width: 9,
+    },
   };
 
   return (
     <div>
       <div className="LeaderboardHeader">
         <SearchInput
-          placeholder={t`Search Address`}
+          placeholder={t`Search Address or Market`}
           value={search}
           onInput={handleSearchInput}
           setValue={() => {}}
           onKeyDown={() => {}}
-          className="LeaderboardSearch"
+          className="LeaderboardSearch TopPositionsSearch"
           autoFocus={false}
         />
       </div>

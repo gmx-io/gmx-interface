@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { BigNumber } from "ethers";
 import { t } from "@lingui/macro";
+import cx from "classnames";
 import { formatAmount, formatUsd } from "lib/numbers";
 import { useDebounce } from "lib/useDebounce";
 import Pagination from "components/Pagination/Pagination";
@@ -104,13 +105,50 @@ export default function TopAccounts() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const term = useDebounce(search, 300);
-  const { topAccounts, topAccountsHeaderClick } = useLeaderboardContext();
-  const { isLoading, error } = topAccounts;
-  const filteredStats = topAccounts.data.filter((a) => a.account.toLowerCase().indexOf(term.toLowerCase()) >= 0);
+  const { topAccounts } = useLeaderboardContext();
+  const { isLoading, error, data } = topAccounts;
+  const [accountsOrderBy, setAccountsOrderBy] = useState<keyof TopAccountsRow>("absPnl");
+  const [accountsOrderDirection, setAccountsOrderDirection] = useState<number>(1);
+  const topAccountsHeaderClick = useCallback((key: keyof TopAccountsRow) => () => {
+    if (key === "wins") {
+      setAccountsOrderBy(accountsOrderBy === "wins" ? "losses" : "wins");
+      setAccountsOrderDirection(1);
+    } else if (key === accountsOrderBy) {
+      setAccountsOrderDirection((d: number) => -1 * d);
+    } else {
+      setAccountsOrderBy(key);
+      setAccountsOrderDirection(1);
+    }
+  }, [accountsOrderBy, setAccountsOrderBy, setAccountsOrderDirection]);
+
+  const accountsHash = (data || []).map(a => a[accountsOrderBy]!.toString()).join(":");
+  const accounts = useMemo(() => {
+    if (!topAccounts.data) {
+      return [];
+    }
+
+    return [...topAccounts.data].sort((a, b) => {
+      const key = accountsOrderBy;
+      if (BigNumber.isBigNumber(a[key]) && BigNumber.isBigNumber(b[key])) {
+        return accountsOrderDirection * ((a[key] as BigNumber).gt(b[key] as BigNumber) ? -1 : 1);
+      } else {
+        return 1;
+      }
+    }).map((a, i) => ({ ...a, rank: i }));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accountsHash, accountsOrderBy, accountsOrderDirection]);
+
+  const filteredStats = accounts.filter((a) => a.account.toLowerCase().indexOf(term.toLowerCase()) >= 0);
   const indexFrom = (page - 1) * perPage;
   const rows = filteredStats.slice(indexFrom, indexFrom + perPage).map(parseRow);
   const pageCount = Math.ceil(filteredStats.length / perPage);
   const handleSearchInput = (e) => setSearch(e.target.value.trim());
+  const getSortableClass = (key: keyof TopAccountsRow) => cx(
+    (accountsOrderBy === key || (key === "wins" && accountsOrderBy === "losses"))
+    ? (accountsOrderDirection > 0 ? "sorted-asc" : "sorted-desc")
+    : "sortable"
+  )
+
   const titles: Record<string, TableHeader> = {
     rank: { title: t`Rank`, width: 7 },
     account: { title: t`Address`, width: 23 },
@@ -119,11 +157,13 @@ export default function TopAccounts() {
       tooltip: t`Total Realized and Unrealized Profit.`,
       onClick: topAccountsHeaderClick("absPnl"),
       width: 14,
+      className: getSortableClass("absPnl"),
     },
     relPnl: {
       title: t`PnL (%)`,
       onClick: topAccountsHeaderClick("relPnl"),
       width: 14,
+      className: getSortableClass("relPnl"),
       tooltip: () => (
         <div>
           <p>{t`PnL ($) compared to the Max Collateral used by this Address.`}</p>
@@ -141,19 +181,21 @@ export default function TopAccounts() {
       tooltip: t`Average Position Size.`,
       onClick: topAccountsHeaderClick("size"),
       width: 14,
+      className: getSortableClass("size"),
     },
     leverage: {
       title: t`Avg. Lev.`,
       tooltip: t`Average Leverage used.`,
       onClick: topAccountsHeaderClick("leverage"),
       width: 14,
+      className: getSortableClass("leverage"),
     },
     perf: {
       title: t`Win/Loss`,
-      className: "text-right",
       tooltip: t`Wins and Losses for fully closed Positions.`,
       onClick: topAccountsHeaderClick("wins"),
       width: 14,
+      className: cx("text-right", getSortableClass("wins")),
     },
   };
 
