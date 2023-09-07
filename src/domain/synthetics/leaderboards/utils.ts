@@ -2,6 +2,10 @@ import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 
+export const signedValueClassName = (num: BigNumber) => (
+  num.isZero() ? "" : (num.isNegative() ? "negative" : "positive")
+);
+
 export const formatDelta = (delta: BigNumber, {
   decimals = USD_DECIMALS,
   displayDecimals = 2,

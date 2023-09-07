@@ -9,7 +9,7 @@ import { formatAmount, formatUsd, formatPrice } from "lib/numbers";
 import { TableCell, TableHeader } from "components/Table/types";
 import { USD_DECIMALS, importImage } from "lib/legacy";
 import AddressView from "components/AddressView/AddressView";
-import { TopPositionsRow, formatDelta } from "domain/synthetics/leaderboards";
+import { TopPositionsRow, formatDelta, signedValueClassName } from "domain/synthetics/leaderboards";
 import Tooltip from "components/Tooltip/Tooltip";
 import { useChainId } from "lib/chains";
 import { useLeaderboardContext } from "./Context";
@@ -35,7 +35,7 @@ const parseRow =
     },
     unrealizedPnl: {
       value: (p.unrealizedPnl && formatDelta(p.unrealizedPnl, { signed: true, prefix: "$" })) || "",
-      className: cx(p.unrealizedPnl.isNegative() ? "negative" : "positive", "leaderboard-pnl-abs"),
+      className: signedValueClassName(p.unrealizedPnl),
     },
     market: {
       value: () => {

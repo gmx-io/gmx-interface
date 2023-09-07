@@ -9,7 +9,7 @@ import Table from "components/Table/Table";
 import { useLeaderboardContext } from "./Context";
 import { USD_DECIMALS } from "lib/legacy";
 import { TableCell, TableHeader } from "components/Table/types";
-import { TopAccountsRow, formatDelta } from "domain/synthetics/leaderboards";
+import { TopAccountsRow, formatDelta, signedValueClassName } from "domain/synthetics/leaderboards";
 import AddressView from "components/AddressView/AddressView";
 import Tooltip from "components/Tooltip/Tooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -34,7 +34,7 @@ const parseRow = (s: TopAccountsRow): Record<string, TableCell> => ({
     value: () => (
       <Tooltip
         handle={
-          <span className={s.absPnl.isNegative() ? "negative" : "positive"}>
+          <span className={signedValueClassName(s.absPnl)}>
             {formatDelta(s.absPnl, { signed: true, prefix: "$" })}
           </span>
         }
@@ -46,7 +46,7 @@ const parseRow = (s: TopAccountsRow): Record<string, TableCell> => ({
               label={t`Realized PnL`}
               showDollar={false}
               value={
-                <span className={s.rPnl.isNegative() ? "negative" : "positive"}>
+                <span className={signedValueClassName(s.rPnl)}>
                   {formatDelta(s.rPnl, { signed: true, prefix: "$" })}
                 </span>
               }
@@ -55,7 +55,7 @@ const parseRow = (s: TopAccountsRow): Record<string, TableCell> => ({
               label={t`Unrealized PnL`}
               showDollar={false}
               value={
-                <span className={s.rPnl.isNegative() ? "negative" : "positive"}>
+                <span className={signedValueClassName(s.uPnl)}>
                   {formatDelta(s.uPnl, { signed: true, prefix: "$" })}
                 </span>
               }
@@ -69,7 +69,7 @@ const parseRow = (s: TopAccountsRow): Record<string, TableCell> => ({
     value: () => (
       <Tooltip
         handle={
-          <span className={s.relPnl.isNegative() ? "negative" : "positive"}>
+          <span className={signedValueClassName(s.relPnl)}>
             {formatDelta(s.relPnl.mul(BigNumber.from(100)), { signed: true, postfix: "%" })}
           </span>
         }
