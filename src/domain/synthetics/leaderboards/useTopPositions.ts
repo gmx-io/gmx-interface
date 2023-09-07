@@ -15,6 +15,7 @@ export function useTopPositions(): RemoteData<TopPositionsRow> {
         avatarUrl: p.avatarUrl,
         unrealizedPnl: p.unrealizedPnlAfterFees,
         market: p.marketInfo,
+        direction: p.isLong,
         entryPrice: p.entryPrice,
         size: p.sizeInUsd,
         isLong: p.isLong,

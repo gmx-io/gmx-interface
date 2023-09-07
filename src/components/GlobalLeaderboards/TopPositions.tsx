@@ -45,10 +45,14 @@ const parseRow =
           <div className="TopPositionsItem">
             <img src={importImage(`ic_${symbol.toLocaleLowerCase()}_40.svg`)} alt={name} width="24" />
             <span>{symbol}</span>
-            <span className={p.isLong ? "positive" : "negative"}>{p.isLong ? t`Long` : t`Short`}</span>
           </div>
         );
       },
+    },
+    isLong: {
+      value: () => (
+        <span className={p.isLong ? "positive" : "negative"}>{p.isLong ? t`Long` : t`Short`}</span>
+      ),
     },
     entryPrice: {
       value: formatPrice(p.entryPrice, chainId, p.market.indexToken.symbol) || "",
@@ -113,7 +117,8 @@ export default function TopPositions() {
       onClick: topPositionsHeaderClick("unrealizedPnl"),
       width: 14,
     },
-    market: { title: t`Position`, width: 14 },
+    market: { title: t`Market`, width: 7 },
+    isLong: { title: t`Direction`, width: 7 },
     entryPrice: { title: t`Entry`, width: 14 },
     size: {
       title: t`Size`,
