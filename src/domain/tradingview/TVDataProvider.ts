@@ -233,18 +233,20 @@ export class TVDataProvider {
         period,
       };
     } else {
-      const { close } = this.currentBar ? this.currentBar : this.lastBar;
-      const newBar = {
-        time: currentCandleTime,
-        open: close,
-        close: currentPrice,
-        high: getMax(close, currentPrice),
-        low: getMin(close, currentPrice),
-        ticker,
-        period,
-      };
-      this.lastBar = newBar;
-      this.currentBar = newBar;
+      const close = this.currentBar?.close;
+      if (close) {
+        const newBar = {
+          time: currentCandleTime,
+          open: close,
+          close: currentPrice,
+          high: getMax(close, currentPrice),
+          low: getMin(close, currentPrice),
+          ticker,
+          period,
+        };
+        this.lastBar = newBar;
+        this.currentBar = newBar;
+      }
     }
     return this.currentBar;
   }
