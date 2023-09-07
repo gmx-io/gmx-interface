@@ -2017,7 +2017,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ensdomains/ens-avatar@npm:^0.3.3":
+"@ensdomains/ens-avatar@npm:0.3.3":
   version: 0.3.3
   resolution: "@ensdomains/ens-avatar@npm:0.3.3"
   dependencies:
@@ -10046,7 +10046,7 @@ __metadata:
     "@apollo/client": 3.5.6
     "@babel/plugin-proposal-private-property-in-object": 7.21.11
     "@davatar/react": 1.8.1
-    "@ensdomains/ens-avatar": ^0.3.3
+    "@ensdomains/ens-avatar": 0.3.3
     "@ethersproject/providers": 5.5.1
     "@ethersproject/units": 5.5.0
     "@headlessui/react": 1.6.1
@@ -10097,7 +10097,7 @@ __metadata:
     react-helmet: 6.1.0
     react-hot-toast: 2.2.0
     react-icons: 4.3.1
-    react-jazzicon: ^1.0.4
+    react-jazzicon: 1.0.4
     react-remove-scroll: 2.5.5
     react-router-dom: 5.3.0
     react-scripts: 5.0.1
@@ -15343,7 +15343,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-jazzicon@npm:^1.0.4":
+"react-jazzicon@npm:1.0.4":
   version: 1.0.4
   resolution: "react-jazzicon@npm:1.0.4"
   dependencies:
