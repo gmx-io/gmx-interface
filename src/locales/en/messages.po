@@ -265,9 +265,13 @@ msgstr "Address"
 msgid "Address copied to your clipboard"
 msgstr "Address copied to your clipboard"
 
+#: src/pages/Leaderboards/Leaderboards.tsx
+msgid "Addresses V2 trading statistics."
+msgstr "Addresses V2 trading statistics."
+
 #: src/pages/Leaderboards/index.tsx
-msgid "Addresses trading statistics"
-msgstr "Addresses trading statistics"
+#~ msgid "Addresses trading statistics"
+#~ msgstr "Addresses trading statistics"
 
 #: src/pages/Leaderboard/Leaderboard.tsx
 #~ msgid "Addresses trading statistics. Choose between general or competitions leaderboards."
@@ -454,12 +458,28 @@ msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
-msgid "Average Leverage used"
-msgstr "Average Leverage used"
+#~ msgid "Average Leverage used"
+#~ msgstr "Average Leverage used"
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
-msgid "Average Position Size"
-msgstr "Average Position Size"
+msgid "Average Leverage used."
+msgstr "Average Leverage used."
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+#~ msgid "Average Position Size"
+#~ msgstr "Average Position Size"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Average Position Size."
+msgstr "Average Position Size."
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Avg. Lev."
+msgstr "Avg. Lev."
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Avg. Size"
+msgstr "Avg. Size"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -702,7 +722,7 @@ msgstr "Cancel submitted."
 msgid "Canceling {ordersText}"
 msgstr "Canceling {ordersText}"
 
-#: src/pages/Leaderboards/index.tsx
+#: src/pages/Leaderboards/Leaderboards.tsx
 msgid "Chain Icon"
 msgstr "Chain Icon"
 
@@ -906,6 +926,7 @@ msgstr "Coinbase Wallet not detected."
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
@@ -1381,6 +1402,10 @@ msgstr "Depositing..."
 msgid "Diff"
 msgstr "Diff"
 
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Direction"
+msgstr "Direction"
+
 #: src/App/App.js
 msgid "Disable order validations"
 msgstr "Disable order validations"
@@ -1642,7 +1667,7 @@ msgstr "Entry"
 msgid "Entry Price"
 msgstr "Entry Price"
 
-#: src/components/Table/index.tsx
+#: src/components/Table/Table.tsx
 msgid "Error"
 msgstr "Error"
 
@@ -2294,7 +2319,7 @@ msgid "Leaderboard for GMX traders"
 msgstr "Leaderboard for GMX traders"
 
 #: src/components/Header/AppHeaderLinks.tsx
-#: src/pages/Leaderboards/index.tsx
+#: src/pages/Leaderboards/Leaderboards.tsx
 msgid "Leaderboards"
 msgstr "Leaderboards"
 
@@ -2328,7 +2353,7 @@ msgstr "Leftover position below 10 USD"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/GlobalLeaderboards/TopAccounts.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
@@ -2423,6 +2448,7 @@ msgstr "Liq Price"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -2481,7 +2507,7 @@ msgstr "Liquidity data not loaded"
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
-#: src/components/Table/index.tsx
+#: src/components/Table/Table.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Loading..."
@@ -2605,6 +2631,7 @@ msgstr "Mark"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -2629,6 +2656,7 @@ msgstr "Mark: {0}"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
@@ -2681,8 +2709,16 @@ msgid "Max Capacity for {0} Reached"
 msgstr "Max Capacity for {0} Reached"
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
-msgid "Max Collateral is the highest value of [Sum of Collateral of Open Positions -  RPnL]"
-msgstr "Max Collateral is the highest value of [Sum of Collateral of Open Positions -  RPnL]"
+msgid "Max Collateral"
+msgstr "Max Collateral"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Max Collateral is the highest value of"
+msgstr "Max Collateral is the highest value of"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+#~ msgid "Max Collateral is the highest value of [Sum of Collateral of Open Positions -  RPnL]"
+#~ msgstr "Max Collateral is the highest value of [Sum of Collateral of Open Positions -  RPnL]"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -2981,7 +3017,7 @@ msgstr "No PnLs found"
 msgid "No claims yet"
 msgstr "No claims yet"
 
-#: src/components/Table/index.tsx
+#: src/components/Table/Table.tsx
 msgid "No data yet"
 msgstr "No data yet"
 
@@ -3311,8 +3347,12 @@ msgid "PnL ($)"
 msgstr "PnL ($)"
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
-msgid "PnL ($) compared to the Max Collateral used by this Address\\n"
-msgstr "PnL ($) compared to the Max Collateral used by this Address\\n"
+msgid "PnL ($) compared to the Max Collateral used by this Address."
+msgstr "PnL ($) compared to the Max Collateral used by this Address."
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+#~ msgid "PnL ($) compared to the Max Collateral used by this Address\\n"
+#~ msgstr "PnL ($) compared to the Max Collateral used by this Address\\n"
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
 msgid "PnL (%)"
@@ -3344,7 +3384,6 @@ msgid "Pools Value"
 msgstr "Pools Value"
 
 #: src/components/Exchange/PositionsList.js
-#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "Position"
 msgstr "Position"
@@ -3472,6 +3511,10 @@ msgstr "Price below Liq. Price"
 msgid "Price below Mark Price"
 msgstr "Price below Mark Price"
 
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Price change to Liq."
+msgstr "Price change to Liq."
+
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Price conditions are met"
 msgstr "Price conditions are met"
@@ -3545,6 +3588,10 @@ msgstr "Rank"
 #: src/components/TokenCard/TokenCard.js
 msgid "Read more"
 msgstr "Read more"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Realized PnL"
+msgstr "Realized PnL"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Realized PnL insufficient for Fees"
@@ -3757,9 +3804,12 @@ msgid "Save on Fees"
 msgstr "Save on Fees"
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
-#: src/components/GlobalLeaderboards/TopPositions.tsx
 msgid "Search Address"
 msgstr "Search Address"
+
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Search Address or Market"
+msgstr "Search Address or Market"
 
 #: src/components/MarketSelector/MarketSelector.tsx
 msgid "Search Market"
@@ -4022,7 +4072,7 @@ msgstr "Single"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/GlobalLeaderboards/TopAccounts.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
@@ -4042,8 +4092,8 @@ msgstr "Size"
 #~ msgstr "Size (Liq)"
 
 #: src/components/GlobalLeaderboards/TopPositions.tsx
-msgid "Size (Liq. Price)"
-msgstr "Size (Liq. Price)"
+#~ msgid "Size (Liq. Price)"
+#~ msgstr "Size (Liq. Price)"
 
 #: src/App/App.js
 msgid "Slippage should be less than 5%"
@@ -4540,11 +4590,11 @@ msgstr "To reduce fees, select a different asset to receive."
 msgid "Tokens"
 msgstr "Tokens"
 
-#: src/components/GlobalLeaderboards/index.tsx
+#: src/components/GlobalLeaderboards/GlobalLeaderboards.tsx
 msgid "Top Addresses"
 msgstr "Top Addresses"
 
-#: src/components/GlobalLeaderboards/index.tsx
+#: src/components/GlobalLeaderboards/GlobalLeaderboards.tsx
 msgid "Top Open Positions"
 msgstr "Top Open Positions"
 
@@ -4574,8 +4624,12 @@ msgid "Total Fees"
 msgstr "Total Fees"
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
-msgid "Total Realized and Unrealized Profit"
-msgstr "Total Realized and Unrealized Profit"
+#~ msgid "Total Realized and Unrealized Profit"
+#~ msgstr "Total Realized and Unrealized Profit"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Total Realized and Unrealized Profit and Loss."
+msgstr "Total Realized and Unrealized Profit and Loss."
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Rebates"
@@ -4618,8 +4672,12 @@ msgid "Total Trading Volume"
 msgstr "Total Trading Volume"
 
 #: src/components/GlobalLeaderboards/TopPositions.tsx
-msgid "Total Unrealized Profit"
-msgstr "Total Unrealized Profit"
+#~ msgid "Total Unrealized Profit"
+#~ msgstr "Total Unrealized Profit"
+
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Total Unrealized Profit and Loss."
+msgstr "Total Unrealized Profit and Loss."
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
@@ -4839,6 +4897,10 @@ msgstr "Unknown order"
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown sell GM order"
 msgstr "Unknown sell GM order"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Unrealized PnL"
+msgstr "Unrealized PnL"
 
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -5176,8 +5238,12 @@ msgid "Win/Loss"
 msgstr "Win/Loss"
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
-msgid "Wins and Losses for fully closed Positions"
-msgstr "Wins and Losses for fully closed Positions"
+#~ msgid "Wins and Losses for fully closed Positions"
+#~ msgstr "Wins and Losses for fully closed Positions"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Wins and Losses for fully closed Positions."
+msgstr "Wins and Losses for fully closed Positions."
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -5427,6 +5493,10 @@ msgstr "Your transfer has been initiated."
 #: src/components/Migration/Migration.js
 msgid "Your wallet: {0}"
 msgstr "Your wallet: {0}"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "[Sum of Collateral of Open Positions -  RPnL]"
+msgstr "[Sum of Collateral of Open Positions -  RPnL]"
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "account"

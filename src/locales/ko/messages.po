@@ -257,9 +257,13 @@ msgstr ""
 msgid "Address copied to your clipboard"
 msgstr ""
 
-#: src/pages/Leaderboards/index.tsx
-msgid "Addresses trading statistics"
+#: src/pages/Leaderboards/Leaderboards.tsx
+msgid "Addresses V2 trading statistics."
 msgstr ""
+
+#: src/pages/Leaderboards/index.tsx
+#~ msgid "Addresses trading statistics"
+#~ msgstr ""
 
 #: src/pages/Leaderboard/Leaderboard.tsx
 #~ msgid "Addresses trading statistics. Choose between general or competitions leaderboards."
@@ -446,11 +450,27 @@ msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
-msgid "Average Leverage used"
+#~ msgid "Average Leverage used"
+#~ msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Average Leverage used."
 msgstr ""
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
-msgid "Average Position Size"
+#~ msgid "Average Position Size"
+#~ msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Average Position Size."
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Avg. Lev."
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Avg. Size"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -694,7 +714,7 @@ msgstr "취소 제출 완료"
 msgid "Canceling {ordersText}"
 msgstr ""
 
-#: src/pages/Leaderboards/index.tsx
+#: src/pages/Leaderboards/Leaderboards.tsx
 msgid "Chain Icon"
 msgstr ""
 
@@ -898,6 +918,7 @@ msgstr "Coinbase 지갑이 존재하지 않습니다."
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
@@ -1373,6 +1394,10 @@ msgstr "예치중..."
 msgid "Diff"
 msgstr "차이"
 
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Direction"
+msgstr ""
+
 #: src/App/App.js
 msgid "Disable order validations"
 msgstr "주문 밸리데이션 무효화"
@@ -1638,7 +1663,7 @@ msgstr "진입 가격"
 #~ msgid "Entry Price ($)"
 #~ msgstr ""
 
-#: src/components/Table/index.tsx
+#: src/components/Table/Table.tsx
 msgid "Error"
 msgstr ""
 
@@ -2294,7 +2319,7 @@ msgid "Leaderboard for GMX traders"
 msgstr "GMX 트레이더를 위한 리더보드"
 
 #: src/components/Header/AppHeaderLinks.tsx
-#: src/pages/Leaderboards/index.tsx
+#: src/pages/Leaderboards/Leaderboards.tsx
 msgid "Leaderboards"
 msgstr ""
 
@@ -2328,7 +2353,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/GlobalLeaderboards/TopAccounts.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
@@ -2423,6 +2448,7 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -2482,7 +2508,7 @@ msgstr "유동성 데이터를 불러오지 못하였습니다."
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
-#: src/components/Table/index.tsx
+#: src/components/Table/Table.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Loading..."
@@ -2606,6 +2632,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -2630,6 +2657,7 @@ msgstr "시장 평균가: {0}"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
@@ -2682,8 +2710,16 @@ msgid "Max Capacity for {0} Reached"
 msgstr "{0}의 최대치에 도달했습니다."
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
-msgid "Max Collateral is the highest value of [Sum of Collateral of Open Positions -  RPnL]"
+msgid "Max Collateral"
 msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Max Collateral is the highest value of"
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+#~ msgid "Max Collateral is the highest value of [Sum of Collateral of Open Positions -  RPnL]"
+#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -2996,7 +3032,7 @@ msgstr "손익을 찾지 못했습니다."
 msgid "No claims yet"
 msgstr ""
 
-#: src/components/Table/index.tsx
+#: src/components/Table/Table.tsx
 msgid "No data yet"
 msgstr ""
 
@@ -3326,8 +3362,12 @@ msgid "PnL ($)"
 msgstr ""
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
-msgid "PnL ($) compared to the Max Collateral used by this Address\\n"
+msgid "PnL ($) compared to the Max Collateral used by this Address."
 msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+#~ msgid "PnL ($) compared to the Max Collateral used by this Address\\n"
+#~ msgstr ""
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
 msgid "PnL (%)"
@@ -3359,7 +3399,6 @@ msgid "Pools Value"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
-#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "Position"
 msgstr "포지션"
@@ -3487,6 +3526,10 @@ msgstr "청산가 미만 가격"
 msgid "Price below Mark Price"
 msgstr "시장 평균가 미만 가격"
 
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Price change to Liq."
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Price conditions are met"
 msgstr "가격 조건에 충족되었습니다"
@@ -3560,6 +3603,10 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.js
 msgid "Read more"
 msgstr "더 알아보기"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Realized PnL"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Realized PnL insufficient for Fees"
@@ -3772,8 +3819,11 @@ msgid "Save on Fees"
 msgstr "수수료 절약"
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
-#: src/components/GlobalLeaderboards/TopPositions.tsx
 msgid "Search Address"
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Search Address or Market"
 msgstr ""
 
 #: src/components/MarketSelector/MarketSelector.tsx
@@ -4037,7 +4087,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/GlobalLeaderboards/TopAccounts.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
@@ -4057,8 +4107,8 @@ msgstr "사이즈"
 #~ msgstr ""
 
 #: src/components/GlobalLeaderboards/TopPositions.tsx
-msgid "Size (Liq. Price)"
-msgstr ""
+#~ msgid "Size (Liq. Price)"
+#~ msgstr ""
 
 #: src/App/App.js
 msgid "Slippage should be less than 5%"
@@ -4563,11 +4613,11 @@ msgstr "수수료를 줄이기 위해서는 다른 자산으로 수령해주세�
 msgid "Tokens"
 msgstr "토큰"
 
-#: src/components/GlobalLeaderboards/index.tsx
+#: src/components/GlobalLeaderboards/GlobalLeaderboards.tsx
 msgid "Top Addresses"
 msgstr ""
 
-#: src/components/GlobalLeaderboards/index.tsx
+#: src/components/GlobalLeaderboards/GlobalLeaderboards.tsx
 msgid "Top Open Positions"
 msgstr ""
 
@@ -4597,7 +4647,11 @@ msgid "Total Fees"
 msgstr "총 수수료"
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
-msgid "Total Realized and Unrealized Profit"
+#~ msgid "Total Realized and Unrealized Profit"
+#~ msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Total Realized and Unrealized Profit and Loss."
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -4641,7 +4695,11 @@ msgid "Total Trading Volume"
 msgstr "총 트레이딩 거래량"
 
 #: src/components/GlobalLeaderboards/TopPositions.tsx
-msgid "Total Unrealized Profit"
+#~ msgid "Total Unrealized Profit"
+#~ msgstr ""
+
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Total Unrealized Profit and Loss."
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
@@ -4861,6 +4919,10 @@ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown sell GM order"
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Unrealized PnL"
 msgstr ""
 
 #: src/pages/Stake/StakeV1.js
@@ -5203,7 +5265,11 @@ msgid "Win/Loss"
 msgstr ""
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
-msgid "Wins and Losses for fully closed Positions"
+#~ msgid "Wins and Losses for fully closed Positions"
+#~ msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Wins and Losses for fully closed Positions."
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -5454,6 +5520,10 @@ msgstr "이전이 시작되었습니다."
 #: src/components/Migration/Migration.js
 msgid "Your wallet: {0}"
 msgstr "귀하의 지갑: {0}"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "[Sum of Collateral of Open Positions -  RPnL]"
+msgstr ""
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "account"
