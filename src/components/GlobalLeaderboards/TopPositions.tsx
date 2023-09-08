@@ -36,6 +36,7 @@ const parseRow =
             avatarUrl={p.avatarUrl}
             breakpoint={breakpoint}
             size={24}
+            maxLength={breakpoint === "S" ? 9 : undefined}
           />
         ),
     },

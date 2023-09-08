@@ -5,17 +5,24 @@
   margin-bottom: 1.5rem;
 }
 
-.GlobalLeaderboardsTabs {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 3rem;
+.GlobalLeaderboards .Tab {
+  width: 40rem;
+  margin: 0 auto;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
 }
 
 @media screen and (max-width:450px) {
+  .GlobalLeaderboards .Tab {
+    width: unset;
+  }
+
   .LeaderboardHeader {
-    display: flex;
-    flex-direction: column-reverse;
-    align-items: flex-end;
+    display: unset;
+  }
+
+  .LeaderboardSearch.TopPositionsSearch {
+    width: unset;
   }
 }
 
@@ -74,7 +81,7 @@
   margin-right: 0.5rem;
 }
 
-.TopPositionsPositionView .TopPositionsDirection {
+/* .TopPositionsPositionView .TopPositionsDirection {
   font-size: 0;
   display: inline-block;
   width: 2rem;
@@ -91,7 +98,7 @@
 
 .TopPositionsPositionView .TopPositionsDirection.negative {
   background-image: url(../../img/ic_line_chart_down.svg);
-}
+} */
 
 .LeaderboardSearch.disabled {
   cursor: not-allowed;

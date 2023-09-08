@@ -31,6 +31,7 @@ const parseRow = (s: TopAccountsRow): Record<string, TableCell> => ({
           avatarUrl={s.avatarUrl}
           breakpoint={breakpoint}
           size={24}
+          maxLength={breakpoint === "S" ? 9 : undefined}
         />
       ),
   },

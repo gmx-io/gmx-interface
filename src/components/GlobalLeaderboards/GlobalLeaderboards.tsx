@@ -12,15 +12,13 @@ export default function GlobalLeaderboards() {
 
   return (
     <LeaderboardContextProvider>
-      <div>
-        <div className="GlobalLeaderboardsTabs">
-          <Tab
-            option={activeLeaderboard}
-            onChange={(val) => setActiveLeaderboard(val)}
-            options={[0, 1]}
-            optionLabels={[t`Top Addresses`, t`Top Open Positions`]} // TODO: add messages
-          />
-        </div>
+      <div className="GlobalLeaderboards">
+        <Tab
+          option={activeLeaderboard}
+          onChange={(val) => setActiveLeaderboard(val)}
+          options={[0, 1]}
+          optionLabels={[t`Top Addresses`, t`Top Open Positions`]} // TODO: add messages
+        />
         {activeLeaderboard ? <TopPositions/> : <TopAccounts/>}
       </div>
     </LeaderboardContextProvider>

@@ -1,5 +1,6 @@
-.Table {
-  overflow-x: auto;
+.TableBox {
+  width: 100%;
+  overflow-x: scroll;
 }
 
 table.Table.Exchange-list th {
@@ -10,6 +11,7 @@ table.Table.Exchange-list th {
   opacity: 0.7;
   display: flex;
   height: 100%;
+  white-space: nowrap;
 }
 
 .TableHeader.sortable .TableHeaderTitle::after,
