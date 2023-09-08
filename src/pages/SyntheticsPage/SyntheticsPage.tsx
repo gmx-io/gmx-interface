@@ -34,7 +34,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useMarketsInfo } from "domain/synthetics/markets";
 import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTradeOption";
-import { TradeMode } from "domain/synthetics/trade";
+import { TradeMode, TradeType } from "domain/synthetics/trade";
 import { helperToast } from "lib/helperToast";
 
 export type Props = {
@@ -290,6 +290,7 @@ export function SyntheticsPage(p: Props) {
             tradePageVersion={tradePageVersion}
             setTradePageVersion={setTradePageVersion}
             avaialbleTokenOptions={availableTokensOptions}
+            marketsInfoData={marketsInfoData}
           />
 
           <div className="Exchange-lists large">

@@ -42,6 +42,9 @@
     left: 0;
     cursor: auto;
   }
+  .chart-token-menu-items.menu-items.isSwap {
+    max-width: 28rem;
+  }
 
   .chart-token-menu-items .menu-item {
     font-size: var(--font-sm);
@@ -77,10 +80,31 @@
     }
 
     tbody {
-      tr {
+      .Swap-token-list {
         background-color: var(--dark-blue-bg);
         border-radius: var(--border-radius-sm);
+        cursor: pointer;
+        &:hover {
+          background-color: var(--dark-blue-hover);
+          border-radius: var(--border-radius-sm);
+        }
+        td {
+          padding: 0.75rem 1.5rem;
+          white-space: nowrap;
+          font-weight: 400;
 
+          &.token-item {
+            color: #a0a3c4;
+
+            .ChartToken-list-icon {
+              margin-right: 0.75rem;
+            }
+          }
+        }
+      }
+      .Position-token-list {
+        background-color: var(--dark-blue-bg);
+        border-radius: var(--border-radius-sm);
         td {
           padding: 0.75rem 1.5rem;
           white-space: nowrap;
@@ -93,7 +117,6 @@
 
           &.token-item {
             color: #a0a3c4;
-            line-height: 1;
 
             .ChartToken-list-icon {
               margin-right: 0.75rem;

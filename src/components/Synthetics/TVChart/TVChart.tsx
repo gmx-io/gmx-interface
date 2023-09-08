@@ -20,6 +20,9 @@ import "./TVChart.scss";
 import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
 import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
 import { AvailableTokenOptions, TradeType } from "domain/synthetics/trade";
+import { MarketsInfoData } from "domain/synthetics/markets";
+import { getByKey } from "lib/objects";
+import { helperToast } from "lib/helperToast";
 
 export type Props = {
   tradePageVersion: number;
@@ -33,6 +36,7 @@ export type Props = {
   availableTokens?: Token[];
   tradeFlags?: TradeFlags;
   avaialbleTokenOptions: AvailableTokenOptions;
+  marketsInfoData?: MarketsInfoData;
 };
 
 const DEFAULT_PERIOD = "5m";
@@ -49,6 +53,7 @@ export function TVChart({
   tradePageVersion,
   setTradePageVersion,
   avaialbleTokenOptions,
+  marketsInfoData,
 }: Props) {
   const { chainId } = useChainId();
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
@@ -146,6 +151,12 @@ export function TVChart({
 
   function onSelectTokenOption(address: string, marketTokenAddress?: string, tradeType?: TradeType) {
     onSelectChartTokenAddress(address, marketTokenAddress, tradeType);
+
+    if (marketTokenAddress) {
+      const marketInfo = getByKey(marketsInfoData, marketTokenAddress);
+      const message = `${tradeType === TradeType.Long ? t`Long` : t`Short`} ${marketInfo?.name} selected in trade box`;
+      helperToast.success(message);
+    }
   }
 
   function onSelectChartToken(token: Token) {

@@ -36,7 +36,7 @@ type Props = {
 export default function ChartTokenSelector(props: Props) {
   const { options, selectedToken, onSelectToken, tradeFlags, avaialbleTokenOptions } = props;
   const { sortedAllMarkets } = avaialbleTokenOptions;
-  const { isSwap, isLong } = tradeFlags || {};
+  const { isSwap, isLong, isShort } = tradeFlags || {};
   const [searchKeyword, setSearchKeyword] = useState("");
 
   const onSelect = (token: { indexTokenAddress: string; marketTokenAddress?: string; tradeType?: TradeType }) => {
@@ -85,10 +85,12 @@ export default function ChartTokenSelector(props: Props) {
     let marketTokenAddress;
     if (largestExistingPosition) {
       marketTokenAddress = largestExistingPosition?.marketInfo.marketTokenAddress;
-    } else if (isLong) {
-      marketTokenAddress = maxLongLiquidityPool?.marketTokenAddress;
     } else {
-      marketTokenAddress = maxShortLiquidityPool?.marketTokenAddress;
+      if (isLong) {
+        marketTokenAddress = maxLongLiquidityPool?.marketTokenAddress;
+      } else if (isShort) {
+        marketTokenAddress = maxShortLiquidityPool?.marketTokenAddress;
+      }
     }
 
     onSelect({
@@ -138,7 +140,7 @@ export default function ChartTokenSelector(props: Props) {
               </button>
             </Popover.Button>
             <div className="chart-token-menu">
-              <Popover.Panel as="div" className="menu-items chart-token-menu-items">
+              <Popover.Panel as="div" className={cx("menu-items chart-token-menu-items", { isSwap: isSwap })}>
                 <SearchInput
                   className="m-md"
                   value={searchKeyword}
@@ -171,9 +173,12 @@ export default function ChartTokenSelector(props: Props) {
                           <Popover.Button
                             as="tr"
                             key={token.symbol}
-                            onClick={() => handleSelectToken(token, maxLongLiquidityPool, maxShortLiquidityPool)}
+                            className={isSwap ? "Swap-token-list" : "Position-token-list"}
                           >
-                            <td className="token-item">
+                            <td
+                              className="token-item"
+                              onClick={() => handleSelectToken(token, maxLongLiquidityPool, maxShortLiquidityPool)}
+                            >
                               <span className="inline-items-center">
                                 <TokenIcon
                                   className="ChartToken-list-icon"

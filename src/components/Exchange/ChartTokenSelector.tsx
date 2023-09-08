@@ -168,7 +168,7 @@ export default function ChartTokenSelector(props: Props) {
                             <td
                               onClick={() => {
                                 onSelect(option);
-                                if (setSwapOption) {
+                                if (setSwapOption && !isSwap) {
                                   setSwapOption(LONG);
                                 }
                               }}
@@ -178,7 +178,7 @@ export default function ChartTokenSelector(props: Props) {
                             <td
                               onClick={() => {
                                 onSelect(option);
-                                if (setSwapOption) {
+                                if (setSwapOption && !isSwap) {
                                   setSwapOption(SHORT);
                                 }
                               }}
