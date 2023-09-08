@@ -81,6 +81,10 @@
   margin-right: 0.5rem;
 }
 
+.TopPositionsDirection {
+  margin-left: 0.5rem;
+}
+
 /* .TopPositionsPositionView .TopPositionsDirection {
   font-size: 0;
   display: inline-block;
