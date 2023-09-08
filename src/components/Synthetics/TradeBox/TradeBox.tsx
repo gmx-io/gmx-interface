@@ -1517,6 +1517,7 @@ export function TradeBox(p: Props) {
         triggerRatio={triggerRatio}
         marketInfo={marketInfo}
         collateralToken={collateralToken}
+        marketsOptions={marketsOptions}
         swapAmounts={swapAmounts}
         increaseAmounts={increaseAmounts}
         decreaseAmounts={decreaseAmounts}

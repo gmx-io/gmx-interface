@@ -83,6 +83,7 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { helperToast } from "lib/helperToast";
 import { useKey } from "react-use";
+import { AvailableMarketsOptions } from "domain/synthetics/trade/useAvailableMarketsOptions";
 
 export type Props = {
   isVisible: boolean;
@@ -100,6 +101,7 @@ export type Props = {
   marketInfo?: MarketInfo;
   collateralToken?: TokenData;
   swapAmounts?: SwapAmounts;
+  marketsOptions?: AvailableMarketsOptions;
   increaseAmounts?: IncreasePositionAmounts;
   decreaseAmounts?: DecreasePositionAmounts;
   nextPositionValues?: NextPositionValues;
@@ -151,6 +153,7 @@ export function ConfirmationBox(p: Props) {
     error,
     existingPosition,
     shouldDisableValidation,
+    marketsOptions,
     ordersData,
     tokensData,
     setKeepLeverage,
@@ -673,6 +676,26 @@ export function ConfirmationBox(p: Props) {
     }
   }
 
+  function renderDifferentCollateralWarning() {
+    const shouldShowWarning =
+      marketsOptions?.collateralWithPosition &&
+      collateralToken &&
+      !getIsEquivalentTokens(marketsOptions.collateralWithPosition, collateralToken);
+
+    if (!shouldShowWarning) {
+      return null;
+    }
+
+    return (
+      <div className="Confirmation-box-warning">
+        <Trans>
+          You have an existing position with {collateralToken.symbol} as collateral. This Order will not be valid for
+          that Position.
+        </Trans>
+      </div>
+    );
+  }
+
   function renderExistingLimitOrdersWarning() {
     if (!existingLimitOrders?.length || !toToken) {
       return;
@@ -1186,6 +1209,7 @@ export function ConfirmationBox(p: Props) {
       <>
         <div>
           {renderMain()}
+          {renderDifferentCollateralWarning()}
 
           {isTrigger && existingPosition?.leverage && (
             <Checkbox asRow isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
