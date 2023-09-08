@@ -31,7 +31,6 @@ const parseRow = (s: TopAccountsRow): Record<string, TableCell> => ({
           avatarUrl={s.avatarUrl}
           breakpoint={breakpoint}
           size={24}
-          maxLength={11}
         />
       ),
   },
@@ -154,19 +153,19 @@ export default function TopAccounts() {
   )
 
   const titles: Record<string, TableHeader> = {
-    rank: { title: t`Rank`, width: 7 },
-    account: { title: t`Address`, width: 23 },
+    rank: { title: t`Rank`, width: 5 },
+    account: { title: t`Address`, width: 40 },
     absPnl: {
       title: t`PnL ($)`,
       tooltip: t`Total Realized and Unrealized Profit and Loss.`,
       onClick: topAccountsHeaderClick("absPnl"),
-      width: 14,
+      width: 11,
       className: getSortableClass("absPnl"),
     },
     relPnl: {
       title: t`PnL (%)`,
       onClick: topAccountsHeaderClick("relPnl"),
-      width: 14,
+      width: 11,
       className: getSortableClass("relPnl"),
       tooltip: () => (
         <div>
@@ -184,21 +183,21 @@ export default function TopAccounts() {
       title: t`Avg. Size`,
       tooltip: t`Average Position Size.`,
       onClick: topAccountsHeaderClick("size"),
-      width: 14,
+      width: 11,
       className: getSortableClass("size"),
     },
     leverage: {
       title: t`Avg. Lev.`,
       tooltip: t`Average Leverage used.`,
       onClick: topAccountsHeaderClick("leverage"),
-      width: 14,
+      width: 11,
       className: getSortableClass("leverage"),
     },
     perf: {
       title: t`Win/Loss`,
       tooltip: t`Wins and Losses for fully closed Positions.`,
       onClick: topAccountsHeaderClick("wins"),
-      width: 14,
+      width: 11,
       className: cx("text-right", getSortableClass("wins")),
     },
   };

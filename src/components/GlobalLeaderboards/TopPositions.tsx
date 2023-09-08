@@ -36,7 +36,6 @@ const parseRow =
             avatarUrl={p.avatarUrl}
             breakpoint={breakpoint}
             size={24}
-            maxLength={11}
           />
         ),
     },
@@ -80,9 +79,21 @@ const parseRow =
     entryPrice: {
       value: formatPrice(p.entryPrice, chainId, p.market.indexToken.symbol) || "",
     },
-    size: { value: formatUsd(p.size) || "" },
+    size: {
+      value: () => <Tooltip
+        handle={ formatUsd(p.size) || "" }
+        position="center-top"
+        className="nowrap"
+        renderContent={() => (
+          <StatsTooltipRow
+            label={t`Collateral`}
+            showDollar={false}
+            value={<span>{formatUsd(p.collateral) || ""}</span>}
+          />
+        )}
+      />
+    },
     leverage: { value: formatLeverage(p.leverage) || "" },
-    collateral: { value: formatUsd(p.collateral) || "" },
     liqPrice: {
       value: () => (
         <Tooltip
@@ -169,9 +180,8 @@ export default function TopPositions() {
     : "sortable"
   )
   const titles: { [k in keyof TopPositionsRow]?: TableHeader } = {
-    rank: { title: t`Rank`, width: 7 },
-    account: { title: t`Address`, width: 26 },
-    market: { title: t`Position`, width: 7 },
+    rank: { title: t`Rank`, width: 5 },
+    account: { title: t`Address`, width: 40 },
     unrealizedPnl: {
       title: t`PnL ($)`,
       tooltip: t`Total Unrealized Profit and Loss.`,
@@ -179,18 +189,19 @@ export default function TopPositions() {
       width: 10,
       className: getSortableClass("unrealizedPnl"),
     },
-    entryPrice: { title: t`Entry`, width: 10 },
+    market: {
+      title: t`Position`,
+      width: 5,
+    },
+    entryPrice: {
+      title: t`Entry`,
+      width: 10,
+    },
     size: {
       title: t`Size`,
       onClick: topPositionsHeaderClick("size"),
       width: 10,
       className: getSortableClass("size"),
-    },
-    collateral: {
-      title: t`Collateral`,
-      onClick: topPositionsHeaderClick("collateral"),
-      width: 10,
-      className: getSortableClass("collateral"),
     },
     leverage: {
       title: t`Leverage`,
