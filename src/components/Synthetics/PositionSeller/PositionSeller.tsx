@@ -3,20 +3,26 @@ import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import Checkbox from "components/Checkbox/Checkbox";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
+import SlippageInput from "components/SlippageInput/SlippageInput";
+import Tab from "components/Tab/Tab";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
+import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { getKeepLeverageKey } from "config/localStorage";
 import { convertTokenAddress } from "config/tokens";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { useHasOutdatedUi } from "domain/legacy";
 import { useUserReferralInfo } from "domain/referrals/hooks";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   getExecutionFee,
-  getIsHighPriceImpact,
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
@@ -33,6 +39,7 @@ import { TokensData } from "domain/synthetics/tokens";
 import {
   AvailableTokenOptions,
   TradeMode,
+  applySlippageToPrice,
   getDecreasePositionAmounts,
   getMarkPrice,
   getNextPositionValuesForDecreaseTrade,
@@ -40,6 +47,8 @@ import {
   getTradeFees,
   useSwapRoutes,
 } from "domain/synthetics/trade";
+import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
+import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { getCommonError, getDecreaseError } from "domain/synthetics/trade/utils/validation";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber } from "ethers";
@@ -58,18 +67,10 @@ import {
 import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import { useEffect, useMemo, useState } from "react";
+import { useMedia } from "react-use";
+import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionSeller.scss";
-import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
-import SlippageInput from "components/SlippageInput/SlippageInput";
-import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import Tab from "components/Tab/Tab";
-import { useMedia } from "react-use";
-import { useHasOutdatedUi } from "domain/legacy";
 
 export type Props = {
   position?: PositionInfo;
@@ -128,7 +129,6 @@ export function PositionSeller(p: Props) {
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
 
-  const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [closeUsdInputValue, setCloseUsdInputValue] = useState("");
@@ -172,6 +172,11 @@ export function PositionSeller(p: Props) {
       minPositionSizeUsd,
     });
   }, [closeSizeUsd, keepLeverage, minCollateralUsd, minPositionSizeUsd, position, userReferralInfo]);
+
+  const acceptablePrice =
+    position && decreaseAmounts?.acceptablePrice
+      ? applySlippageToPrice(allowedSlippage, decreaseAmounts.acceptablePrice, false, position.isLong)
+      : undefined;
 
   useDebugExecutionPrice(chainId, {
     skip: true,
@@ -252,7 +257,10 @@ export function PositionSeller(p: Props) {
     };
   }, [chainId, decreaseAmounts, gasLimits, gasPrice, position, swapAmounts, tokensData]);
 
-  const isHighPriceImpact = getIsHighPriceImpact(fees?.positionPriceImpact, fees?.swapPriceImpact);
+  const priceImpactWarningState = usePriceImpactWarningState({
+    positionPriceImpact: fees?.positionPriceImpact,
+    swapPriceImpact: fees?.swapPriceImpact,
+  });
 
   const isNotEnoughReceiveTokenLiquidity = shouldSwap ? maxSwapLiquidity?.lt(receiveUsd || 0) : false;
 
@@ -281,15 +289,12 @@ export function PositionSeller(p: Props) {
       isLong: position.isLong,
       isContractAccount: false,
       minCollateralUsd,
+      priceImpactWarning: priceImpactWarningState,
       isNotEnoughReceiveTokenLiquidity,
     });
 
     if (commonError[0] || decreaseError[0]) {
       return commonError[0] || decreaseError[0];
-    }
-
-    if (isHighPriceImpact && !isHighPriceImpactAccepted) {
-      return t`Price Impact not yet acknowledged`;
     }
 
     if (isSubmitting) {
@@ -299,16 +304,15 @@ export function PositionSeller(p: Props) {
     account,
     chainId,
     closeSizeUsd,
-    decreaseAmounts,
+    decreaseAmounts?.sizeDeltaUsd,
     hasOutdatedUi,
-    isHighPriceImpact,
-    isHighPriceImpactAccepted,
     isNotEnoughReceiveTokenLiquidity,
     isSubmitting,
     markPrice,
     minCollateralUsd,
     nextPositionValues,
     position,
+    priceImpactWarningState,
     receiveToken,
   ]);
 
@@ -364,12 +368,13 @@ export function PositionSeller(p: Props) {
     function resetForm() {
       if (!isVisible !== prevIsVisible) {
         setCloseUsdInputValue("");
-        setIsHighPriceImpactAccepted(false);
+        priceImpactWarningState.setIsHighPositionImpactAccepted(false);
+        priceImpactWarningState.setIsHighSwapImpactAccepted(false);
         setReceiveTokenAddress(undefined);
         setOrderOption(OrderOption.Market);
       }
     },
-    [isVisible, prevIsVisible]
+    [isVisible, prevIsVisible, priceImpactWarningState]
   );
 
   useEffect(
@@ -506,16 +511,12 @@ export function PositionSeller(p: Props) {
                   }) || "-"
                 }
               />
-              <ExchangeInfoRow
-                label={t`Price Impact`}
-                value={formatPercentage(decreaseAmounts?.acceptablePriceDeltaBps, { signed: true }) || "-"}
-              />
 
               <ExchangeInfoRow
                 label={t`Acceptable Price`}
                 value={
                   decreaseAmounts?.sizeDeltaUsd.gt(0)
-                    ? formatAcceptablePrice(decreaseAmounts.acceptablePrice, {
+                    ? formatAcceptablePrice(acceptablePrice, {
                         displayDecimals: indexPriceDecimals,
                       })
                     : "-"
@@ -647,16 +648,14 @@ export function PositionSeller(p: Props) {
               />
             </div>
 
-            {isHighPriceImpact && <div className="line-divider" />}
-
-            {isHighPriceImpact && (
-              <div className="PositionSeller-price-impact-warning">
-                <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
-                  <span className="text-gray font-sm">
-                    <Trans>Acknowledge high Price Impact</Trans>
-                  </span>
-                </Checkbox>
-              </div>
+            {priceImpactWarningState.shouldShowWarning && (
+              <>
+                <div className="App-card-divider" />
+                <HighPriceImpactWarning
+                  priceImpactWarinigState={priceImpactWarningState}
+                  className="PositionSeller-price-impact-warning"
+                />
+              </>
             )}
 
             <div className="Exchange-swap-button-container">

@@ -706,6 +706,7 @@ export function TradeBox(p: Props) {
         isLong,
         isTrigger: true,
         minCollateralUsd,
+        priceImpactWarning: priceImpactWarningState,
         isNotEnoughReceiveTokenLiquidity: false,
         fixedTriggerThresholdType: stage === "confirmation" ? fixedTriggerThresholdType : undefined,
       });

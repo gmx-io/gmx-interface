@@ -266,6 +266,7 @@ export function getDecreaseError(p: {
   isLong: boolean;
   isContractAccount: boolean;
   minCollateralUsd: BigNumber | undefined;
+  priceImpactWarning: PriceImpactWarningState;
   isNotEnoughReceiveTokenLiquidity: boolean;
   fixedTriggerThresholdType: TriggerThresholdType | undefined;
 }) {
@@ -283,6 +284,7 @@ export function getDecreaseError(p: {
     isLong,
     minCollateralUsd,
     isNotEnoughReceiveTokenLiquidity,
+    priceImpactWarning,
     fixedTriggerThresholdType,
   } = p;
 
@@ -341,6 +343,10 @@ export function getDecreaseError(p: {
 
   if (isNotEnoughReceiveTokenLiquidity) {
     return [t`Insufficient receive token liquidity`];
+  }
+
+  if (!isTrigger && priceImpactWarning.shouldAcceptPriceImpactWarning) {
+    return [t`Price Impact not yet acknowledged`];
   }
 
   return [undefined];
