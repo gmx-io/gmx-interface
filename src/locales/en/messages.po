@@ -2293,6 +2293,7 @@ msgstr "Leverage slider"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/domain/synthetics/orders/utils.ts
 msgid "Limit"
 msgstr "Limit"
 
@@ -3096,6 +3097,8 @@ msgstr "Order updated!"
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Orders"
 msgstr "Orders"
 
@@ -3111,8 +3114,8 @@ msgstr "Orders cancelled."
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
-msgid "Orders{0}"
-msgstr "Orders{0}"
+#~ msgid "Orders{0}"
+#~ msgstr "Orders{0}"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Overall protocol analytics"
@@ -4203,6 +4206,10 @@ msgstr "TOKEN"
 msgid "TOTAL SUPPLY"
 msgstr "TOTAL SUPPLY"
 
+#: src/domain/synthetics/orders/utils.ts
+msgid "Take-Profit"
+msgstr "Take-Profit"
+
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Take-Profit and Stop-Loss orders are created in the main Tradebox.<0/><1/><2>Set Trigger Order for this position.</2><3/><4/><5>More Info</5>."
 msgstr "Take-Profit and Stop-Loss orders are created in the main Tradebox.<0/><1/><2>Set Trigger Order for this position.</2><3/><4/><5>More Info</5>."
@@ -4268,6 +4275,10 @@ msgstr "The Gambit protocol is in beta, please read the <0>staking details</0>b
 #: src/App/App.js
 msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 msgstr "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
+
+#: src/domain/synthetics/orders/utils.ts
+msgid "The Order may not execute at the desired Trigger Price as the current Price Impact is higher than its Acceptable Price Impact. Consider canceling and creating a new {suggestionType} Order."
+msgstr "The Order may not execute at the desired Trigger Price as the current Price Impact is higher than its Acceptable Price Impact. Consider canceling and creating a new {suggestionType} Order."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
@@ -4349,6 +4360,10 @@ msgstr "There are more longs than shorts, borrow fees for shorting is currently 
 msgid "There are more shorts than longs, borrow fees for longing is currently zero"
 msgstr "There are more shorts than longs, borrow fees for longing is currently zero"
 
+#: src/domain/synthetics/orders/utils.ts
+msgid "There is a high Swap Price Impact for the Order Swap path."
+msgstr "There is a high Swap Price Impact for the Order Swap path."
+
 #: src/domain/tokens/approveTokens.tsx
 #: src/lib/contracts/transactionErrors.tsx
 msgid "There is not enough ETH in your account on Arbitrum to send this transaction.<0/><1/><2>Bridge ETH to Arbitrum</2>"
@@ -4357,6 +4372,18 @@ msgstr "There is not enough ETH in your account on Arbitrum to send this transac
 #: src/components/Glp/SwapErrorModal.tsx
 msgid "There is not enough liquidity in a single token for your size. Please check the Save on Fees section and consider splitting your order into several different ones"
 msgstr "There is not enough liquidity in a single token for your size. Please check the Save on Fees section and consider splitting your order into several different ones"
+
+#: src/domain/synthetics/orders/utils.ts
+msgid "There may not be sufficient liquidity to execute the Pay Token to Collateral Token swap when the Price conditions are met."
+msgstr "There may not be sufficient liquidity to execute the Pay Token to Collateral Token swap when the Price conditions are met."
+
+#: src/domain/synthetics/orders/utils.ts
+msgid "There may not be sufficient liquidity to execute the Swap when the Min. Receive conditions are met."
+msgstr "There may not be sufficient liquidity to execute the Swap when the Min. Receive conditions are met."
+
+#: src/domain/synthetics/orders/utils.ts
+msgid "There may not be sufficient liquidity to execute your Order when the Price conditions are met."
+msgstr "There may not be sufficient liquidity to execute your Order when the Price conditions are met."
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "There may not be sufficient liquidity to execute your order when the Min. Receive are met."
@@ -5207,6 +5234,10 @@ msgstr "You have an existing order with {0} as collateral. <0>Switch to {1} coll
 msgid "You have an existing position in the {0} market pool. <0>Switch to {1} market pool.</0>"
 msgstr "You have an existing position in the {0} market pool. <0>Switch to {1} market pool.</0>"
 
+#: src/domain/synthetics/orders/utils.ts
+msgid "You have an existing position with {0} as Collateral."
+msgstr "You have an existing position with {0} as Collateral."
+
 #: src/components/Exchange/SwapBox.js
 msgid "You have an existing position with {0} as collateral."
 msgstr "You have an existing position with {0} as collateral."
@@ -5214,6 +5245,10 @@ msgstr "You have an existing position with {0} as collateral."
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
 msgid "You have an existing position with {0} as collateral. <0>Switch to {1} collateral.</0>"
 msgstr "You have an existing position with {0} as collateral. <0>Switch to {1} collateral.</0>"
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position."
+msgstr "You have an existing position with {0} as collateral. This Order will not be valid for that Position."
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "You have multiple existing Increase {longOrShortText} {0} limit orders"
