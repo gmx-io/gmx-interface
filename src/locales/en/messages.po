@@ -30,8 +30,9 @@ msgid "24h Volume"
 msgstr "24h Volume"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-msgid "<0><1>{indexName}</1><2>{poolName}</2></0> <3>selected in order form</3>"
-msgstr "<0><1>{indexName}</1><2>{poolName}</2></0> <3>selected in order form</3>"
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+msgid "<0><1>{indexName}</1><2>[{poolName}]</2></0> <3>selected in order form</3>"
+msgstr "<0><1>{indexName}</1><2>[{poolName}]</2></0> <3>selected in order form</3>"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "<0>GM Pools total value ({chainName}).</0>"
@@ -5353,8 +5354,8 @@ msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsT
 msgstr "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
-msgid "{0} <0><1>{indexName}</1><2>{poolName}</2></0> <3>market selected</3>;"
-msgstr "{0} <0><1>{indexName}</1><2>{poolName}</2></0> <3>market selected</3>;"
+msgid "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>;"
+msgstr "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>;"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"
@@ -5442,7 +5443,6 @@ msgid "{0} price"
 msgstr "{0} price"
 
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "{0} selected in order form"
 msgstr "{0} selected in order form"
 

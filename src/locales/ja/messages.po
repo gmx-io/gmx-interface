@@ -30,7 +30,8 @@ msgid "24h Volume"
 msgstr "24時間取引高"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-msgid "<0><1>{indexName}</1><2>{poolName}</2></0> <3>selected in order form</3>"
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+msgid "<0><1>{indexName}</1><2>[{poolName}]</2></0> <3>selected in order form</3>"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
@@ -5350,7 +5351,7 @@ msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsT
 msgstr ""
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
-msgid "{0} <0><1>{indexName}</1><2>{poolName}</2></0> <3>market selected</3>;"
+msgid "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>;"
 msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
@@ -5439,7 +5440,6 @@ msgid "{0} price"
 msgstr "{0} 価格"
 
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "{0} selected in order form"
 msgstr "{0}が注文フォームで選択されました"
 
