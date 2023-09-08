@@ -203,7 +203,6 @@ msgstr ""
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Acknowledge high Price Impact"
 msgstr ""
 
@@ -3327,12 +3326,11 @@ msgid "Price"
 msgstr "価格"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "Price Impact"
 msgstr ""
 
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price Impact not yet acknowledged"
