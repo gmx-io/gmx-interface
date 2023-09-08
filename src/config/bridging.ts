@@ -23,6 +23,11 @@ const BRIDGING_OPTIONS = {
   ],
 };
 
-export default function getBridgingOptionsForToken(tokenSymbol: string): BridgingOptionsReturn {
+export function getBridgingOptionsForToken(tokenSymbol?: string): BridgingOptionsReturn {
+  if (!tokenSymbol) return;
   return BRIDGING_OPTIONS[tokenSymbol];
+}
+
+export function isBridgingInfoAvailableForToken(tokenSymbol?: string): boolean {
+  return !!getBridgingOptionsForToken(tokenSymbol);
 }

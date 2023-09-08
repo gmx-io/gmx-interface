@@ -15,7 +15,8 @@ import { formatAmount, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } 
 import { getByKey } from "lib/objects";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import "./MarketStats.scss";
-import getBridgingInfo from "domain/synthetics/markets/getBridigingInfo";
+import BridgingInfo from "../BridgingInfo/BridgingInfo";
+import { isBridgingInfoAvailableForToken } from "config/bridging";
 
 type Props = {
   marketInfo?: MarketInfo;
@@ -43,7 +44,8 @@ export function MarketStats(p: Props) {
 
   const apr = getByKey(marketsTokensAPRData, marketInfo?.marketTokenAddress);
 
-  const bridgingOptions = getBridgingInfo(chainId, longToken?.symbol);
+  const isBridgingInfoForLongToken = isBridgingInfoAvailableForToken(longToken?.symbol);
+  const shouldShowMoreInfo = isBridgingInfoForLongToken;
 
   return (
     <div className="App-card MarketStats-card">
@@ -197,17 +199,8 @@ export function MarketStats(p: Props) {
           label={t`Pool Amount`}
           value={formatTokenAmountWithUsd(longPoolAmount, longPoolAmountUsd, longToken?.symbol, longToken?.decimals)}
         />
-        {bridgingOptions?.tooltip && (
-          <CardRow
-            label={t`More Info`}
-            value={
-              <Tooltip
-                handle={bridgingOptions?.label}
-                position="right-bottom"
-                renderContent={() => bridgingOptions?.tooltip}
-              />
-            }
-          />
+        {shouldShowMoreInfo && (
+          <CardRow label={t`More Info`} value={<BridgingInfo chainId={chainId} tokenSymbol={longToken?.symbol} />} />
         )}
 
         <div className="App-card-divider" />

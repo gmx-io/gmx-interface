@@ -472,7 +472,7 @@ msgstr "Leihgebühr / Tag"
 msgid "Borrow Fee Rate"
 msgstr ""
 
-#: src/domain/synthetics/markets/getBridigingInfo.tsx
+#: src/components/Synthetics/BridgingInfo/BridgingInfo.tsx
 msgid "Bridge {tokenSymbol} to {chainName} using any of the options below:"
 msgstr ""
 
