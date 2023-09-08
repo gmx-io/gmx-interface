@@ -22,6 +22,7 @@ import { Market, MarketsInfoData } from "domain/synthetics/markets/types";
 import {
   getAvailableUsdLiquidityForCollateral,
   getMarketIndexName,
+  getMarketPoolName,
   getTokenPoolType,
 } from "domain/synthetics/markets/utils";
 import { TokenData, TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
@@ -95,8 +96,18 @@ const getAvailableModes = (operation: Operation, market?: Market) => {
 };
 
 function showMarketToast(market) {
-  if (!market?.name) return;
-  helperToast.success(t`${market?.name} selected in order form`);
+  if (!market) return;
+  const indexName = getMarketIndexName(market);
+  const poolName = getMarketPoolName(market);
+  helperToast.success(
+    <Trans>
+      <div className="inline-flex">
+        <span>{indexName}</span>
+        <span className="subtext gm-toast">[{poolName}]</span>
+      </div>{" "}
+      <span>selected in order form</span>
+    </Trans>
+  );
 }
 
 export function GmSwapBox(p: Props) {
@@ -688,12 +699,13 @@ export function GmSwapBox(p: Props) {
         if (marketInfo) {
           setIndexName(getMarketIndexName(marketInfo));
           onSelectMarket(marketInfo?.marketTokenAddress);
-          const [indexName, poolName] = marketInfo.name.split(" ") || [];
+          const indexName = getMarketIndexName(marketInfo);
+          const poolName = getMarketPoolName(marketInfo);
           helperToast.success(
             <Trans>
               <div className="inline-flex">
                 <span>{indexName}</span>
-                <span className="subtext gm-toast">{poolName}</span>
+                <span className="subtext gm-toast">[{poolName}]</span>
               </div>{" "}
               <span>selected in order form</span>
             </Trans>

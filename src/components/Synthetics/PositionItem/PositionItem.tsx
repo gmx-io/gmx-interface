@@ -25,6 +25,7 @@ import { useChainId } from "lib/chains";
 import { useMedia } from "react-use";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Button from "components/Button/Button";
+import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 
 export type Props = {
   position: PositionInfo;
@@ -330,7 +331,8 @@ export function PositionItem(p: Props) {
   }
 
   function renderLarge() {
-    const [indexName, poolName] = p.position.marketInfo.name.split(" ") || [];
+    const indexName = getMarketIndexName(p.position.marketInfo);
+    const poolName = getMarketPoolName(p.position.marketInfo);
     return (
       <tr
         className={cx("Exchange-list-item", {
@@ -359,9 +361,9 @@ export function PositionItem(p: Props) {
                   <StatsTooltipRow
                     label={t`Market`}
                     value={
-                      <div className="items-top">
+                      <div className="items-center">
                         <span>{indexName && indexName}</span>
-                        <span className="subtext lh-1">{poolName && poolName}</span>
+                        <span className="subtext lh-1">{poolName && `[${poolName}]`}</span>
                       </div>
                     }
                     showDollar={false}
@@ -485,7 +487,8 @@ export function PositionItem(p: Props) {
   }
 
   function renderSmall() {
-    const [indexName, poolName] = p.position.marketInfo.name.split(" ") || [];
+    const indexName = getMarketIndexName(p.position.marketInfo);
+    const poolName = getMarketPoolName(p.position.marketInfo);
     return (
       <div className="App-card">
         <div>
@@ -530,7 +533,7 @@ export function PositionItem(p: Props) {
               <div onClick={() => p.onSelectPositionClick?.()}>
                 <div className="items-top">
                   <span>{indexName && indexName}</span>
-                  <span className="subtext lh-1">{poolName && poolName}</span>
+                  <span className="subtext lh-1">{poolName && `[${poolName}]`}</span>
                 </div>
               </div>
             </div>

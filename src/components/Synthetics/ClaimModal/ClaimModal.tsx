@@ -1,7 +1,13 @@
 import { t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import Modal from "components/Modal/Modal";
-import { MarketInfo, MarketsInfoData, getTotalClaimableFundingUsd } from "domain/synthetics/markets";
+import {
+  MarketInfo,
+  MarketsInfoData,
+  getMarketIndexName,
+  getMarketPoolName,
+  getTotalClaimableFundingUsd,
+} from "domain/synthetics/markets";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
@@ -34,8 +40,8 @@ export function ClaimModal(p: Props) {
   const totalClaimableFundingUsd = getTotalClaimableFundingUsd(markets);
 
   function renderMarketSection(market: MarketInfo) {
-    const marketName = market.name;
-    const [indexName, poolName] = marketName.split(" ") || [];
+    const indexName = getMarketIndexName(market);
+    const poolName = getMarketPoolName(market);
     const longToken = market.longToken;
     const shortToken = market.shortToken;
 
@@ -67,9 +73,9 @@ export function ClaimModal(p: Props) {
           className="ClaimModal-row"
           label={t`Market`}
           value={
-            <div className="items-top">
+            <div className="items-center">
               <span>{indexName && indexName}</span>
-              <span className="subtext">{poolName && poolName}</span>
+              <span className="subtext">{poolName && `[${poolName}]`}</span>
             </div>
           }
         />

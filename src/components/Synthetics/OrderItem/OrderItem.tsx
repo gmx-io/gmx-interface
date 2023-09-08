@@ -5,7 +5,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { MarketsInfoData } from "domain/synthetics/markets";
+import { MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import {
   OrderInfo,
   OrderType,
@@ -132,7 +132,8 @@ export function OrderItem(p: Props) {
       }
 
       const positionOrder = p.order as PositionOrderInfo;
-      const [indexName, poolName] = positionOrder.marketInfo.name.split(" ") || [];
+      const indexName = getMarketIndexName(positionOrder.marketInfo);
+      const poolName = getMarketPoolName(positionOrder.marketInfo);
 
       return (
         <Tooltip
@@ -145,9 +146,9 @@ export function OrderItem(p: Props) {
                 <StatsTooltipRow
                   label={t`Market`}
                   value={
-                    <div className="items-top">
+                    <div className="items-center">
                       <span>{indexName && indexName}</span>
-                      <span className="subtext lh-1">{poolName && poolName}</span>
+                      <span className="subtext lh-1">{poolName && `[${poolName}]`}</span>
                     </div>
                   }
                   showDollar={false}

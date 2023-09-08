@@ -23,6 +23,7 @@ import { getTriggerThresholdType } from "domain/synthetics/trade";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { Link } from "react-router-dom";
 import { formatAcceptablePrice } from "domain/synthetics/positions";
+import { MarketInfo, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 
 type Props = {
   tradeAction: TradeAction;
@@ -56,12 +57,13 @@ function getOrderActionText(tradeAction: TradeAction) {
   return actionText;
 }
 
-function renderMarketName(marketName: string) {
-  const [indexName, poolName] = marketName.split(" ") || [];
+function renderMarketName(market: MarketInfo) {
+  const indexName = getMarketIndexName(market);
+  const poolName = getMarketPoolName(market);
   return (
     <div className="items-top">
       <span>{indexName}</span>
-      <span className="subtext">{poolName}</span>
+      <span className="subtext">[{poolName}]</span>
     </div>
   );
 }
@@ -131,7 +133,7 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
         <Trans>
           Execute Order: {increaseText} {positionText} {sizeDeltaText}, {indexToken.symbol} Price:
           {formatUsd(executionPrice, { displayDecimals: priceDecimals })}, Market:{" "}
-          {renderMarketName(tradeAction.marketInfo.name)}
+          {renderMarketName(tradeAction.marketInfo)}
         </Trans>
       );
     }
@@ -140,7 +142,7 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
       <Trans>
         {actionText} Order: {increaseText} {positionText} {sizeDeltaText}, {indexToken.symbol} Price: {pricePrefix}{" "}
         {formatUsd(triggerPrice, { displayDecimals: priceDecimals })}, Market:{" "}
-        {renderMarketName(tradeAction.marketInfo.name)}
+        {renderMarketName(tradeAction.marketInfo)}
       </Trans>
     );
   }
@@ -167,7 +169,7 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
           {formatAcceptablePrice(price, {
             displayDecimals: priceDecimals,
           })}
-          , Market: {renderMarketName(tradeAction.marketInfo.name)}
+          , Market: {renderMarketName(tradeAction.marketInfo)}
         </Trans>
       );
     } else {
@@ -177,14 +179,14 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
         return (
           <Trans>
             {actionText} Deposit {collateralText} into {positionText}, Market:{" "}
-            {renderMarketName(tradeAction.marketInfo.name)}
+            {renderMarketName(tradeAction.marketInfo)}
           </Trans>
         );
       } else {
         return (
           <Trans>
             {actionText} Withdraw {collateralText} from {positionText}, Market:{" "}
-            {renderMarketName(tradeAction.marketInfo.name)}
+            {renderMarketName(tradeAction.marketInfo)}
           </Trans>
         );
       }
@@ -200,7 +202,7 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
         {" "}
         <Trans>
           {positionText} {sizeDeltaText}, Price: {formatUsd(executionPrice, { displayDecimals: priceDecimals })},
-          Market: {renderMarketName(tradeAction.marketInfo.name)}
+          Market: {renderMarketName(tradeAction.marketInfo)}
         </Trans>
       </>
     );

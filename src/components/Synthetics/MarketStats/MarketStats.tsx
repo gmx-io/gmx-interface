@@ -6,6 +6,8 @@ import { getIcon } from "config/icons";
 import {
   MarketInfo,
   MarketTokensAPRData,
+  getMarketIndexName,
+  getMarketPoolName,
   getMintableMarketTokens,
   getPoolUsdWithoutPnl,
 } from "domain/synthetics/markets";
@@ -41,7 +43,8 @@ export function MarketStats(p: Props) {
   const shortPoolAmountUsd = marketInfo ? getPoolUsdWithoutPnl(marketInfo, false, "midPrice") : undefined;
 
   const apr = getByKey(marketsTokensAPRData, marketInfo?.marketTokenAddress);
-  const [indexName, poolName] = marketInfo?.name.split(" ") || [];
+  const indexName = marketInfo && getMarketIndexName(marketInfo);
+  const poolName = marketInfo && getMarketPoolName(marketInfo);
 
   return (
     <div className="App-card MarketStats-card">
@@ -53,7 +56,7 @@ export function MarketStats(p: Props) {
           <div className="App-card-title-mark-info">
             <div className="App-card-title-mark-title Gm-stats-title items-center">
               <span>GM{indexName && `: ${indexName}`}</span>
-              <span className="subtext">{poolName && poolName}</span>
+              <span className="subtext">{poolName && `[${poolName}]`}</span>
             </div>
             <div className="App-card-title-mark-subtitle">GMX Market Tokens</div>
           </div>
