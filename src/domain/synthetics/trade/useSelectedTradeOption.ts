@@ -174,7 +174,6 @@ export function useSelectedTradeOption(
   const setMarketAddress = useCallback(
     (marketAddress?: string) => {
       const oldState = JSON.parse(JSON.stringify(storedOptions));
-
       if (!toTokenAddress) {
         return;
       }

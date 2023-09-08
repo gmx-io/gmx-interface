@@ -16,7 +16,7 @@ import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import Tab from "components/Tab/Tab";
 import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS, DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
 import { getAcceptablePriceImpactBpsKey, getSyntheticsListSectionKey } from "config/localStorage";
-import { getToken } from "config/tokens";
+import { getToken, getTokenBySymbol } from "config/tokens";
 import { isSwapOrderType } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useOrdersInfo } from "domain/synthetics/orders/useOrdersInfo";
@@ -128,6 +128,9 @@ export function SyntheticsPage(p: Props) {
   useEffect(() => {
     const queryTradeType = queryParams.get("tradeType");
     const queryTradeMode = queryParams.get("tradeMode");
+    const queryfromToken = queryParams.get("fromToken");
+    const querytoToken = queryParams.get("toToken");
+    const queryCollateralToken = queryParams.get("collateralToken");
 
     if (queryTradeType && Object.values(TradeType).includes(queryTradeType as TradeType)) {
       setTradeType(queryTradeType as TradeType);
@@ -137,10 +140,56 @@ export function SyntheticsPage(p: Props) {
       setTradeMode(queryTradeMode as TradeMode);
     }
 
+    if (queryfromToken) {
+      try {
+        const fromToken = getTokenBySymbol(chainId, queryfromToken);
+        if (fromToken) {
+          setFromTokenAddress(fromToken.address);
+        }
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error(`Invalid fromToken: ${queryfromToken}`);
+      }
+    }
+
+    if (querytoToken) {
+      try {
+        const toToken = getTokenBySymbol(chainId, querytoToken);
+        if (toToken) {
+          setToTokenAddress(toToken.address);
+        }
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error(`Invalid toToken: ${querytoToken}`);
+      }
+    }
+
+    if (queryCollateralToken) {
+      try {
+        const collateralToken = getTokenBySymbol(chainId, queryCollateralToken);
+        if (collateralToken) {
+          setCollateralAddress(collateralToken.address);
+        }
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error(`Invalid collateralToken: ${queryCollateralToken}`);
+      }
+    }
+
     if (history.location.search) {
       history.replace({ search: "" });
     }
-  }, [history, queryParams, setTradeMode, setTradeType]);
+  }, [
+    history,
+    queryParams,
+    setTradeMode,
+    setTradeType,
+    setFromTokenAddress,
+    setToTokenAddress,
+    setMarketAddress,
+    chainId,
+    setCollateralAddress,
+  ]);
 
   const { isSwap, isLong } = tradeFlags;
   const { indexTokens, sortedIndexTokensWithPoolValue } = availableTokensOptions;
