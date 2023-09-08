@@ -189,10 +189,13 @@ export function SyntheticsPage(p: Props) {
       });
   }, [ordersInfoData, selectedPositionKey]);
 
-  const { positionsCount, ordersCount } = useMemo(() => {
+  const { positionsCount, ordersCount, ordersErrorsCount, ordersWarningsCount } = useMemo(() => {
     return {
       positionsCount: Object.keys(positionsInfoData || {}).length,
       ordersCount: Object.keys(ordersInfoData || {}).length,
+      ordersErrorsCount: Object.values(ordersInfoData || {}).filter((order) => order.error?.level === "error").length,
+      ordersWarningsCount: Object.values(ordersInfoData || {}).filter((order) => order.error?.level === "warning")
+        .length,
     };
   }, [ordersInfoData, positionsInfoData]);
 
@@ -257,6 +260,22 @@ export function SyntheticsPage(p: Props) {
     helperToast.success(message);
   }
 
+  function renderOrdersTabTitle() {
+    if (!ordersCount) {
+      return (
+        <div>
+          <Trans>Orders</Trans>
+        </div>
+      );
+    }
+
+    return (
+      <div className={cx({ negative: ordersErrorsCount > 0, warning: !ordersErrorsCount && ordersWarningsCount > 0 })}>
+        <Trans>Orders</Trans> (<span>{ordersCount}</span>)
+      </div>
+    );
+  }
+
   return (
     <div className="Exchange page-layout">
       <Helmat>
@@ -287,7 +306,7 @@ export function SyntheticsPage(p: Props) {
                 options={Object.keys(ListSection)}
                 optionLabels={{
                   [ListSection.Positions]: t`Positions${positionsCount ? ` (${positionsCount})` : ""}`,
-                  [ListSection.Orders]: t`Orders${ordersCount ? ` (${ordersCount})` : ""}`,
+                  [ListSection.Orders]: renderOrdersTabTitle(),
                   [ListSection.Trades]: t`Trades`,
                   [ListSection.Claims]: t`Claims`,
                 }}
@@ -413,7 +432,7 @@ export function SyntheticsPage(p: Props) {
               options={Object.keys(ListSection)}
               optionLabels={{
                 [ListSection.Positions]: t`Positions${positionsCount ? ` (${positionsCount})` : ""}`,
-                [ListSection.Orders]: t`Orders${ordersCount ? ` (${ordersCount})` : ""}`,
+                [ListSection.Orders]: renderOrdersTabTitle(),
                 [ListSection.Trades]: t`Trades`,
                 [ListSection.Claims]: t`Claims`,
               }}

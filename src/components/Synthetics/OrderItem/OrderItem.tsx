@@ -11,10 +11,12 @@ import {
   OrderType,
   PositionOrderInfo,
   SwapOrderInfo,
+  getOrderError,
   isDecreaseOrderType,
   isIncreaseOrderType,
   isSwapOrderType,
 } from "domain/synthetics/orders";
+import { PositionsInfoData } from "domain/synthetics/positions";
 import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
 import { USD_DECIMALS, getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
@@ -29,15 +31,18 @@ type Props = {
   isSelected?: boolean;
   isCanceling?: boolean;
   hideActions?: boolean;
-  error?: string;
   isLarge: boolean;
   marketsInfoData?: MarketsInfoData;
+  positionsInfoData?: PositionsInfoData;
 };
 
 export function OrderItem(p: Props) {
+  const { order, positionsInfoData, marketsInfoData } = p;
   const { showDebugValues } = useSettings();
 
   const isCollateralSwap = p.order.initialCollateralToken.address !== p.order.targetCollateralToken.address;
+
+  const error = marketsInfoData ? getOrderError({ order, positionsInfoData, marketsInfoData }) : undefined;
 
   function getCollateralText() {
     const initialCollateralToken = p.order.initialCollateralToken;
@@ -92,18 +97,6 @@ export function OrderItem(p: Props) {
   }
 
   function renderTitle() {
-    if (p.error) {
-      return (
-        <Tooltip
-          className="order-error"
-          handle={renderTitleWithIcon(p.order)}
-          position="right-bottom"
-          handleClassName="plain"
-          renderContent={() => <span className="negative">{p.error}</span>}
-        />
-      );
-    }
-
     if (p.isLarge) {
       if (isSwapOrderType(p.order.orderType)) {
         if (showDebugValues) {
@@ -137,7 +130,7 @@ export function OrderItem(p: Props) {
         <Tooltip
           handle={renderTitleWithIcon(p.order)}
           position="left-bottom"
-          className={p.error ? "order-error-text-msg" : undefined}
+          className={error ? `order-error-text-msg level-${error.level}` : undefined}
           renderContent={() => {
             return (
               <>
@@ -172,7 +165,7 @@ export function OrderItem(p: Props) {
 
                 <>
                   <br />
-                  {p.error && <span className="negative">{p.error}</span>}
+                  {error && <span className={error.level === "error" ? "negative" : "warning"}>{error.msg}</span>}
                 </>
               </>
             );

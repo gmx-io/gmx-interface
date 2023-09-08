@@ -3,7 +3,7 @@ import cx from "classnames";
 import PositionDropdown from "components/Exchange/PositionDropdown";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import { PositionOrderInfo, getOrderError, isIncreaseOrderType } from "domain/synthetics/orders";
+import { PositionOrderInfo, isIncreaseOrderType } from "domain/synthetics/orders";
 import {
   PositionInfo,
   formatEstimatedLiquidationTime,
@@ -16,15 +16,15 @@ import { formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
 import { ImSpinner2 } from "react-icons/im";
 
+import Button from "components/Button/Button";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
 import { TradeMode, TradeType, getTriggerThresholdType } from "domain/synthetics/trade";
-import { CHART_PERIODS } from "lib/legacy";
-import "./PositionItem.scss";
 import { useChainId } from "lib/chains";
+import { CHART_PERIODS } from "lib/legacy";
 import { useMedia } from "react-use";
-import TokenIcon from "components/TokenIcon/TokenIcon";
-import Button from "components/Button/Button";
+import "./PositionItem.scss";
 
 export type Props = {
   position: PositionInfo;
@@ -290,7 +290,10 @@ export function PositionItem(p: Props) {
   function renderPositionOrders() {
     if (positionOrders.length === 0) return null;
 
-    const ordersErrorList = positionOrders.map((order) => getOrderError(order, p.position)).filter(Boolean);
+    const ordersErrorList = positionOrders.filter((order) => order.error?.level === "error");
+    const ordersWarningsList = positionOrders.filter((order) => order.error?.level === "warning");
+    const hasErrors = ordersErrorList.length + ordersWarningsList.length > 0;
+
     return (
       <div onClick={p.onOrdersClick}>
         <Tooltip
@@ -298,7 +301,11 @@ export function PositionItem(p: Props) {
           position="left-bottom"
           handleClassName={cx(
             ["Exchange-list-info-label", "Exchange-position-list-orders", "plain", "clickable", "text-gray"],
-            { "position-order-error": ordersErrorList.length > 0 }
+            {
+              "position-order-error": hasErrors,
+              "level-error": ordersErrorList.length > 0,
+              "level-warning": !ordersErrorList.length && ordersWarningsList.length > 0,
+            }
           )}
           renderContent={() => {
             return (
@@ -307,7 +314,7 @@ export function PositionItem(p: Props) {
                   <Trans>Active Orders</Trans>
                 </strong>
                 {positionOrders.map((order) => {
-                  const error = getOrderError(order, p.position);
+                  const error = order.error;
                   return (
                     <div key={order.key} className="Position-list-order active-order-tooltip">
                       {getTriggerThresholdType(order.orderType, order.isLong)}{" "}
@@ -317,7 +324,7 @@ export function PositionItem(p: Props) {
                       : {isIncreaseOrderType(order.orderType) ? "+" : "-"}
                       {formatUsd(order.sizeDeltaUsd)}
                       <br />
-                      {error && <div className="order-error-text">{error}</div>}
+                      {error && <div className={`order-error-text level-${error.level}`}>{error.msg}</div>}
                     </div>
                   );
                 })}

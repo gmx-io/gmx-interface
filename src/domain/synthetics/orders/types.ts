@@ -30,6 +30,11 @@ export enum DecreasePositionSwapType {
   SwapCollateralTokenToPnlToken = 2,
 }
 
+export type OrderError = {
+  msg: string;
+  level: "error" | "warning";
+};
+
 export type Order = {
   key: string;
   account: string;
@@ -56,6 +61,7 @@ export type Order = {
 
 export type SwapOrderInfo = Order & {
   title: string;
+  error?: OrderError;
   swapPathStats?: SwapPathStats;
   triggerRatio?: TokensRatio;
   initialCollateralToken: TokenData;
@@ -66,6 +72,7 @@ export type PositionOrderInfo = Order & {
   title: string;
   marketInfo: MarketInfo;
   swapPathStats?: SwapPathStats;
+  error?: OrderError;
   indexToken: TokenData;
   initialCollateralToken: TokenData;
   targetCollateralToken: TokenData;
