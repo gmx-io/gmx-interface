@@ -14,6 +14,7 @@ export type TableProps<T extends Record<string, any>> = {
   content: T[];
   titles: { [key in keyof T]?: TableHeader };
   rowKey: keyof T;
+  className?: string;
 };
 
 export type TableCellData = {

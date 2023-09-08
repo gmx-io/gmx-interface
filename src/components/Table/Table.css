@@ -1,3 +1,7 @@
+.Table {
+  overflow-x: auto;
+}
+
 table.Table.Exchange-list th {
   opacity: unset;
 }

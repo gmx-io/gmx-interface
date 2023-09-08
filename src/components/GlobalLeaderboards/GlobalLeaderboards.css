@@ -47,6 +47,52 @@
   width: 30rem;
 }
 
+.TopPositionsPositionCell .Tooltip  {
+  display: inline-block;
+  width: 100%;
+}
+
+.TopPositionsPositionCell .Tooltip-handle {
+  display: inline-block;
+  width: 100%;
+}
+
+.TopPositionsPositionView {
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+  text-decoration: inherit;
+}
+
+.TopPositionsPositionView .TopPositionsSymbol {
+  display: inline-block;
+  flex: 1;
+  text-decoration: inherit;
+}
+
+.TopPositionsMarketName {
+  margin-right: 0.5rem;
+}
+
+.TopPositionsPositionView .TopPositionsDirection {
+  font-size: 0;
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  margin-left: 0.5rem;
+}
+
+.TopPositionsPositionView .TopPositionsDirection.positive {
+  background-image: url(../../img/ic_line_chart_up.svg);
+}
+
+.TopPositionsPositionView .TopPositionsDirection.negative {
+  background-image: url(../../img/ic_line_chart_down.svg);
+}
+
 .LeaderboardSearch.disabled {
   cursor: not-allowed;
 }

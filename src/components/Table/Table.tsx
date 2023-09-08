@@ -14,6 +14,7 @@ export default function Table<T extends Record<string, any>>({
   content,
   titles,
   rowKey,
+  className,
 }: TableProps<T>) {
   let errorMsg: string | null = null;
   if (error) {
@@ -22,7 +23,7 @@ export default function Table<T extends Record<string, any>>({
   const useBreakpoint = createBreakpoint({ L: 600, M: 550, S: 400 });
   const breakpoint = useBreakpoint();
   return (
-    <table className="Exchange-list large App-box Table">
+    <table className={cx("Exchange-list", "large", "App-box", "Table", className)}>
       <tbody>
         <tr className="Exchange-list-header">
           {Object.entries(titles)

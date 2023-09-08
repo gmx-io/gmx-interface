@@ -8,7 +8,7 @@ import { useDebounce } from "lib/useDebounce";
 import { formatAmount, formatUsd, formatPrice } from "lib/numbers";
 import { formatLeverage } from "domain/synthetics/positions";
 import { TableCell, TableHeader } from "components/Table/types";
-import { USD_DECIMALS, importImage } from "lib/legacy";
+import { USD_DECIMALS } from "lib/legacy";
 import AddressView from "components/AddressView/AddressView";
 import { TopPositionsRow, formatDelta, signedValueClassName } from "domain/synthetics/leaderboards";
 import Tooltip from "components/Tooltip/Tooltip";
@@ -16,6 +16,7 @@ import { useChainId } from "lib/chains";
 import { useLeaderboardContext } from "./Context";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { BigNumber } from "ethers";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 
 const parseRow =
   (chainId: number) =>
@@ -44,21 +45,36 @@ const parseRow =
       className: signedValueClassName(p.unrealizedPnl),
     },
     market: {
-      value: () => {
-        const { symbol } = p.market.indexToken;
-        const { name } = p.market;
-
-        return (
-          <div className="TopPositionsItem">
-            <img src={importImage(`ic_${symbol.toLocaleLowerCase()}_40.svg`)} alt={name} width="24" />
-            <span>{symbol}</span>
-          </div>
-        );
-      },
-    },
-    isLong: {
+      className: "TopPositionsPositionCell",
       value: () => (
-        <span className={p.isLong ? "positive" : "negative"}>{p.isLong ? t`Long` : t`Short`}</span>
+        <Tooltip
+          handle={
+            <span className="TopPositionsPositionView">
+              <TokenIcon
+                className="PositionList-token-icon"
+                symbol={p.market.indexToken.symbol}
+                displaySize={20}
+                importSize={24}
+              />
+              <span className="TopPositionsSymbol">
+                {p.market.indexToken.symbol}
+              </span>
+              <span className={cx("TopPositionsDirection", p.isLong ? "positive" : "negative")}>
+                {p.isLong ? t`Long` : t`Short`}
+              </span>
+            </span>
+          }
+          position="center-top"
+          className="nowrap"
+          renderContent={() =>
+            <>
+              <span className="TopPositionsMarketName">{p.market.name}</span>
+              <span className={cx(p.isLong ? "positive" : "negative")}>
+                {p.isLong ? t`Long` : t`Short`}
+              </span>
+            </>
+          }
+        />
       ),
     },
     entryPrice: {
@@ -154,38 +170,37 @@ export default function TopPositions() {
   )
   const titles: { [k in keyof TopPositionsRow]?: TableHeader } = {
     rank: { title: t`Rank`, width: 7 },
-    account: { title: t`Address`, width: 23 },
-    market: { title: t`Market`, width: 8 },
-    isLong: { title: t`Direction`, width: 8 },
+    account: { title: t`Address`, width: 26 },
+    market: { title: t`Position`, width: 7 },
     unrealizedPnl: {
       title: t`PnL ($)`,
       tooltip: t`Total Unrealized Profit and Loss.`,
       onClick: topPositionsHeaderClick("unrealizedPnl"),
-      width: 9,
+      width: 10,
       className: getSortableClass("unrealizedPnl"),
     },
-    entryPrice: { title: t`Entry`, width: 9 },
+    entryPrice: { title: t`Entry`, width: 10 },
     size: {
       title: t`Size`,
       onClick: topPositionsHeaderClick("size"),
-      width: 9,
+      width: 10,
       className: getSortableClass("size"),
     },
     collateral: {
       title: t`Collateral`,
       onClick: topPositionsHeaderClick("collateral"),
-      width: 9,
+      width: 10,
       className: getSortableClass("collateral"),
     },
     leverage: {
       title: t`Leverage`,
-      width: 9,
+      width: 10,
       onClick: topPositionsHeaderClick("leverage"),
       className: getSortableClass("leverage"),
     },
     liqPrice: {
       title: t`Liq. Price`,
-      width: 9,
+      width: 10,
     },
   };
 
@@ -202,7 +217,14 @@ export default function TopPositions() {
           autoFocus={false}
         />
       </div>
-      <Table isLoading={isLoading} error={error} content={rows} titles={titles} rowKey={"key"} />
+      <Table
+        isLoading={isLoading}
+        error={error}
+        content={rows}
+        titles={titles}
+        rowKey={"key"}
+        className="TopPositionsLeaderboard"
+      />
       <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
     </div>
   );
