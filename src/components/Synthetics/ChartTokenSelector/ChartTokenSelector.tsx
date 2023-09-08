@@ -13,7 +13,6 @@ import { AvailableTokenOptions, TradeType } from "domain/synthetics/trade";
 import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
 import { BigNumber } from "ethers";
 import { formatUsd } from "lib/numbers";
-import { PositionInfo } from "domain/synthetics/positions";
 
 type TokenOption = Token & {
   maxLongLiquidity: BigNumber;
@@ -30,7 +29,6 @@ type Props = {
   options: Token[] | undefined;
   className?: string;
   avaialbleTokenOptions: AvailableTokenOptions;
-  currentExistingPositions?: PositionInfo[];
 };
 
 export default function ChartTokenSelector(props: Props) {
@@ -74,23 +72,14 @@ export default function ChartTokenSelector(props: Props) {
   function handleSelectToken(token: Token, maxLongLiquidityPool: TokenOption, maxShortLiquidityPool: TokenOption) {
     if (token.address === selectedToken?.address) return;
 
-    const largestExistingPosition =
-      Array.isArray(props.currentExistingPositions) && props.currentExistingPositions.length
-        ? props.currentExistingPositions.reduce(
-            (max, current) => (max.sizeInUsd.gt(current.sizeInUsd) ? max : current),
-            props.currentExistingPositions[0]
-          )
-        : undefined;
-
     let marketTokenAddress;
-    if (largestExistingPosition) {
-      marketTokenAddress = largestExistingPosition?.marketInfo.marketTokenAddress;
-    } else {
-      if (isLong) {
-        marketTokenAddress = maxLongLiquidityPool?.marketTokenAddress;
-      } else if (isShort) {
-        marketTokenAddress = maxShortLiquidityPool?.marketTokenAddress;
-      }
+
+    if (isLong) {
+      marketTokenAddress = maxLongLiquidityPool?.marketTokenAddress;
+    }
+
+    if (isShort) {
+      marketTokenAddress = maxShortLiquidityPool?.marketTokenAddress;
     }
 
     onSelect({

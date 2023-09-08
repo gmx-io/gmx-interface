@@ -58,7 +58,6 @@ export function TVChart({
   const { chainId } = useChainId();
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
   const [dataProvider, setDataProvider] = useState<SyntheticsTVDataProvider>();
-  const { isLong } = tradeFlags || {};
 
   let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period-v2"], DEFAULT_PERIOD);
 
@@ -74,17 +73,6 @@ export function TVChart({
 
   const selectedTokenOption = chartTokenAddress ? getToken(chainId, chartTokenAddress) : undefined;
   const dayPriceDelta = use24hPriceDelta(chainId, chartToken?.symbol);
-
-  const currentExistingPositions = useMemo(() => {
-    return Object.values(positionsInfo || {}).filter((position) => {
-      return (
-        chartTokenAddress &&
-        position.isLong === isLong &&
-        convertTokenAddress(chainId, position.marketInfo.indexTokenAddress, "wrapped") ===
-          convertTokenAddress(chainId, chartTokenAddress, "wrapped")
-      );
-    });
-  }, [chainId, chartTokenAddress, positionsInfo, isLong]);
 
   const chartLines = useMemo(() => {
     if (!chartTokenAddress) {
@@ -154,7 +142,7 @@ export function TVChart({
 
     if (marketTokenAddress) {
       const marketInfo = getByKey(marketsInfoData, marketTokenAddress);
-      const message = `${tradeType === TradeType.Long ? t`Long` : t`Short`} ${marketInfo?.name} selected in trade box`;
+      const message = `${tradeType === TradeType.Long ? t`Long` : t`Short`} ${marketInfo?.name} market selected`;
       helperToast.success(message);
     }
   }
@@ -189,7 +177,6 @@ export function TVChart({
               tradeFlags={tradeFlags}
               options={tokenOptions}
               avaialbleTokenOptions={avaialbleTokenOptions}
-              currentExistingPositions={currentExistingPositions}
             />
             <div className="Chart-min-max-price">
               <div className="ExchangeChart-main-price">
