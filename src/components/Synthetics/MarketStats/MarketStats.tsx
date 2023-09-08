@@ -16,7 +16,7 @@ import { getByKey } from "lib/objects";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import "./MarketStats.scss";
 import BridgingInfo from "../BridgingInfo/BridgingInfo";
-import { isBridgingInfoAvailableForToken } from "config/bridging";
+import { getBridgingOptionsForToken } from "config/bridging";
 
 type Props = {
   marketInfo?: MarketInfo;
@@ -44,8 +44,8 @@ export function MarketStats(p: Props) {
 
   const apr = getByKey(marketsTokensAPRData, marketInfo?.marketTokenAddress);
 
-  const isBridgingInfoForLongToken = isBridgingInfoAvailableForToken(longToken?.symbol);
-  const shouldShowMoreInfo = isBridgingInfoForLongToken;
+  const bridgingOprionsForToken = getBridgingOptionsForToken(longToken?.symbol);
+  const shouldShowMoreInfo = Boolean(bridgingOprionsForToken);
 
   return (
     <div className="App-card MarketStats-card">

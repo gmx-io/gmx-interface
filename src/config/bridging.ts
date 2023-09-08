@@ -23,7 +23,3 @@ export function getBridgingOptionsForToken(tokenSymbol?: string): BridgingOption
   if (!tokenSymbol) return;
   return BRIDGING_OPTIONS[tokenSymbol];
 }
-
-export function isBridgingInfoAvailableForToken(tokenSymbol?: string): boolean {
-  return !!getBridgingOptionsForToken(tokenSymbol);
-}
