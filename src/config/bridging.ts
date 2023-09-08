@@ -5,16 +5,12 @@ const SOLANA_BRIDGING_IDS = {
   [AVALANCHE]: 6,
 };
 
-type BridgingOptionsReturn =
-  | [
-      {
-        name: string;
-        generateLink: (chainId: number) => string;
-      }
-    ]
-  | undefined;
+type BridgingOption = {
+  name: string;
+  generateLink: (chainId: number) => string;
+};
 
-const BRIDGING_OPTIONS = {
+const BRIDGING_OPTIONS: { [symbol: string]: BridgingOption[] } = {
   SOL: [
     {
       name: "Portalbridge",
@@ -23,7 +19,7 @@ const BRIDGING_OPTIONS = {
   ],
 };
 
-export function getBridgingOptionsForToken(tokenSymbol?: string): BridgingOptionsReturn {
+export function getBridgingOptionsForToken(tokenSymbol?: string): BridgingOption[] | undefined {
   if (!tokenSymbol) return;
   return BRIDGING_OPTIONS[tokenSymbol];
 }
