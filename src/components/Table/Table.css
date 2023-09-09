@@ -1,6 +1,14 @@
 .TableBox {
   width: 100%;
-  overflow-x: scroll;
+  overflow: visible;;
+}
+
+@media screen and (max-width:450px) {
+  .TableBox {
+    width: 100%;
+    overflow-x: scroll;
+    overflow-y: visible;
+  }
 }
 
 table.Table.Exchange-list th {

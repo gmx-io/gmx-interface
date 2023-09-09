@@ -9,9 +9,8 @@ import { convertToUsd } from "../tokens";
 import { usePositionsInfo } from "./usePositionsInfo";
 import { PositionsInfoData, getPositionKey } from "../positions";
 import { useEffect, useMemo, useState } from "react";
-import { expandDecimals } from "lib/numbers";
-import { USD_DECIMALS } from "lib/legacy";
 import { AVALANCHE } from "config/chains";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 const fetchOpenPositionsPage = async (
   first: number,
@@ -59,11 +58,19 @@ const parseOpenPositions = (
       positionInfo.collateralToken.prices.minPrice,
     )!;
 
-    const currSuzeInUsd = convertToUsd(
-      BigNumber.from(p.sizeInTokens),
-      positionInfo.indexToken.decimals,
-      positionInfo.indexToken.prices[p.isLong ? "minPrice" : "maxPrice"],
-    )!;
+    const currSuzeInUsd = positionInfo.sizeInUsd; // convertToUsd(
+    //   BigNumber.from(p.sizeInTokens),
+    //   positionInfo.indexToken.decimals,
+    //   positionInfo.indexToken.prices[p.isLong ? "minPrice" : "maxPrice"],
+    // )!;
+
+    // if (!currSuzeInUsd.eq(positionInfo.sizeInUsd)) {
+    //   console.log({
+    //     diff: formatUsd(currSuzeInUsd.sub(positionInfo.sizeInUsd))
+    //     // "currSuzeInUsd": currSuzeInUsd.toString(),
+    //     // "positionInfo.sizeInUsd": positionInfo.sizeInUsd.toString(),
+    //   });
+    // }
 
     const prevSizeInUsd = BigNumber.from(p.sizeInUsd);
     const unrealizedPnl = p.isLong
@@ -74,10 +81,7 @@ const parseOpenPositions = (
     const markPrice = positionInfo.markPrice;
     const liquidationPriceDelta = liquidationPrice && liquidationPrice.sub(markPrice);
     const liquidationPriceDeltaRel = liquidationPrice && liquidationPriceDelta && (
-      liquidationPriceDelta
-        .mul(expandDecimals(1, USD_DECIMALS))
-        .mul(BigNumber.from(100))
-        .div(markPrice)
+      liquidationPriceDelta.mul(BASIS_POINTS_DIVISOR).div(markPrice)
     );
 
     positions.push({

@@ -5,10 +5,9 @@ import Pagination from "components/Pagination/Pagination";
 import Table from "components/Table/Table";
 import SearchInput from "components/SearchInput/SearchInput";
 import { useDebounce } from "lib/useDebounce";
-import { formatAmount, formatUsd, formatPrice } from "lib/numbers";
+import { formatUsd, formatPrice, formatDeltaUsd } from "lib/numbers";
 import { formatLeverage } from "domain/synthetics/positions";
 import { TableCell, TableHeader } from "components/Table/types";
-import { USD_DECIMALS } from "lib/legacy";
 import AddressView from "components/AddressView/AddressView";
 import { TopPositionsRow, formatDelta, signedValueClassName } from "domain/synthetics/leaderboards";
 import Tooltip from "components/Tooltip/Tooltip";
@@ -113,14 +112,10 @@ const parseRow =
                 showDollar={false}
                 value={
                   <span>
-                    {!p.liqPriceDelta || !p.liqPriceDeltaRel
-                      ? ""
-                      : `${formatPrice(p.liqPriceDelta, chainId, p.market.indexToken.symbol)} (${formatAmount(
-                          p.liqPriceDeltaRel,
-                          USD_DECIMALS,
-                          2,
-                          true
-                        )}%)`}
+                    {p.liqPriceDelta && p.liqPriceDeltaRel
+                      ? formatDeltaUsd(p.liqPriceDelta, p.liqPriceDeltaRel)
+                      : ""
+                    }
                   </span>
                 }
               />
