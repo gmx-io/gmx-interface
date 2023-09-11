@@ -351,7 +351,7 @@ export function PositionSeller(p: Props) {
       allowedSlippage,
       indexToken: position.indexToken,
       tokensData,
-      // skipSimulation: p.shouldDisableValidation,
+      skipSimulation: p.shouldDisableValidation,
       setPendingOrder,
       setPendingTxns,
       setPendingPosition,
