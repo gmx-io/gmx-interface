@@ -385,15 +385,7 @@ export function PositionItem(p: Props) {
             {p.position.pendingUpdate && <ImSpinner2 className="spin position-loading-icon" />}
           </div>
           <div className="Exchange-list-info-label">
-            <span
-              onClick={(e) => {
-                e.stopPropagation();
-                p.openSettings();
-              }}
-              className="muted Position-leverage"
-            >
-              {formatLeverage(p.position.leverage) || "..."}&nbsp;
-            </span>
+            <span className="muted Position-leverage">{formatLeverage(p.position.leverage) || "..."}&nbsp;</span>
             <span className={cx({ positive: p.position.isLong, negative: !p.position.isLong })}>
               {p.position.isLong ? t`Long` : t`Short`}
             </span>
@@ -429,7 +421,7 @@ export function PositionItem(p: Props) {
           {/* collateral */}
           <div>{renderCollateral()}</div>
         </td>
-        <td className="clickable" onClick={() => p.onSelectPositionClick?.()}>
+        <td>
           {/* entryPrice */}
           {p.position.isOpening
             ? t`Opening...`
@@ -437,13 +429,13 @@ export function PositionItem(p: Props) {
                 displayDecimals: indexPriceDecimals,
               })}
         </td>
-        <td className="clickable" onClick={() => p.onSelectPositionClick?.()}>
+        <td>
           {/* markPrice */}
           {formatUsd(p.position.markPrice, {
             displayDecimals: indexPriceDecimals,
           })}
         </td>
-        <td className="clickable" onClick={() => p.onSelectPositionClick?.()}>
+        <td>
           {/* liqPrice */}
           {renderLiquidationPrice()}
         </td>

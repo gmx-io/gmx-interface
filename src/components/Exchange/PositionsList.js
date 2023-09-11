@@ -544,8 +544,8 @@ export default function PositionsList(props) {
                           return (
                             <div>
                               <Trans>
-                                Click on a row to select the position's market, then use the trade box to increase your
-                                position size if needed.
+                                Click on a Position column to select the position's market, then use the trade box to
+                                increase your position size if needed.
                               </Trans>
                               <br />
                               <br />
@@ -571,17 +571,7 @@ export default function PositionsList(props) {
                     {position.hasPendingChanges && <ImSpinner2 className="spin position-loading-icon" />}
                   </div>
                   <div className="Exchange-list-info-label">
-                    {position.leverageStr && (
-                      <span
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openSettings();
-                        }}
-                        className="muted Position-leverage"
-                      >
-                        {position.leverageStr}
-                      </span>
-                    )}
+                    {position.leverageStr && <span className="muted Position-leverage">{position.leverageStr}</span>}
                     <span className={cx({ positive: position.isLong, negative: !position.isLong })}>
                       {position.isLong ? t`Long` : t`Short`}
                     </span>
@@ -692,15 +682,9 @@ export default function PositionsList(props) {
                     )}
                   </div>
                 </td>
-                <td className="clickable" onClick={() => onPositionClick(position)}>
-                  ${formatAmount(position.averagePrice, USD_DECIMALS, positionPriceDecimal, true)}
-                </td>
-                <td className="clickable" onClick={() => onPositionClick(position)}>
-                  ${formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}
-                </td>
-                <td className="clickable" onClick={() => onPositionClick(position)}>
-                  ${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
-                </td>
+                <td>${formatAmount(position.averagePrice, USD_DECIMALS, positionPriceDecimal, true)}</td>
+                <td>${formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}</td>
+                <td>${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}</td>
 
                 <td>
                   <button
