@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { Trans, t } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
 import { setTraderReferralCodeByUser, validateReferralCodeExists } from "domain/referrals/hooks";
 import { REFERRAL_CODE_REGEX } from "./referralsHelper";
 import { useDebounce } from "lib/useDebounce";
 import Button from "components/Button/Button";
+import useWallet from "lib/wallets/useWallet";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 
-function JoinReferralCode({ setPendingTxns, pendingTxns, active, connectWallet }) {
+function JoinReferralCode({ setPendingTxns, pendingTxns, active }) {
+  const { openConnectModal } = useConnectModal();
   return (
     <div className="referral-card section-center mt-medium">
       <h2 className="title">
@@ -19,7 +21,7 @@ function JoinReferralCode({ setPendingTxns, pendingTxns, active, connectWallet }
         {active ? (
           <ReferralCodeForm setPendingTxns={setPendingTxns} pendingTxns={pendingTxns} />
         ) : (
-          <Button variant="primary-action" className="w-full" type="submit" onClick={connectWallet}>
+          <Button variant="primary-action" className="w-full" type="submit" onClick={openConnectModal}>
             <Trans>Connect Wallet</Trans>
           </Button>
         )}
@@ -35,7 +37,7 @@ export function ReferralCodeForm({
   userReferralCodeString = "",
   type = "join",
 }) {
-  const { account, library, chainId } = useWeb3React();
+  const { account, signer, chainId } = useWallet();
   const [referralCode, setReferralCode] = useState("");
   const inputRef = useRef("");
   const [isValidating, setIsValidating] = useState(false);
@@ -86,7 +88,7 @@ export function ReferralCodeForm({
     setIsSubmitting(true);
 
     try {
-      const tx = await setTraderReferralCodeByUser(chainId, referralCode, library, {
+      const tx = await setTraderReferralCodeByUser(chainId, referralCode, signer, {
         account,
         successMsg: isEdit ? t`Referral code updated!` : t`Referral code added!`,
         failMsg: isEdit ? t`Referral code updated failed.` : t`Adding referral code failed.`,

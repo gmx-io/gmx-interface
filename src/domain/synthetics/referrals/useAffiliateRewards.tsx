@@ -1,4 +1,3 @@
-import { useWeb3React } from "@web3-react/core";
 import DataStore from "abis/DataStore.json";
 import { getContract } from "config/contracts";
 import { affiliateRewardKey } from "config/dataStore";
@@ -6,13 +5,14 @@ import { useMarkets } from "domain/synthetics/markets";
 import { useMulticall } from "lib/multicall";
 import { AffiliateRewardsData } from "./types";
 import { BigNumber } from "ethers";
+import useWallet from "lib/wallets/useWallet";
 
 export type AffiliateRewardsResult = {
   affiliateRewardsData?: AffiliateRewardsData;
 };
 
 export function useAffiliateRewards(chainId: number) {
-  const { account } = useWeb3React();
+  const { account } = useWallet();
   const { marketsData, marketsAddresses } = useMarkets(chainId);
 
   const { data } = useMulticall(chainId, "useAffiliateRewards", {

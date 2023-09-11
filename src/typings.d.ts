@@ -1,5 +1,4 @@
-import "@web3-react";
-
+import "ethers";
 declare global {
   interface Window {
     ethereum?: any;

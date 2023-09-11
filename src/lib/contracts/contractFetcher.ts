@@ -1,13 +1,12 @@
-import { ethers } from "ethers";
-import { Web3Provider } from "@ethersproject/providers";
+import { Signer, ethers } from "ethers";
 import { getFallbackProvider, getProvider } from "../rpc";
 
 export const contractFetcher =
-  <T>(library: Web3Provider | undefined, contractInfo: any, additionalArgs?: any[]) =>
+  <T>(signer: Signer | undefined, contractInfo: any, additionalArgs?: any[]) =>
   (args: any): Promise<T> => {
     // eslint-disable-next-line
     const [id, chainId, arg0, arg1, ...params] = args;
-    const provider = getProvider(library, chainId);
+    const provider = getProvider(signer, chainId);
 
     const method = ethers.utils.isAddress(arg0) ? arg1 : arg0;
 

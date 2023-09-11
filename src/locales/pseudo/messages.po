@@ -33,22 +33,6 @@ msgstr ""
 msgid "<0>GM Pools total value ({chainName}).</0>"
 msgstr ""
 
-#: src/App/App.js
-msgid "<0>Install Coinbase Wallet</0> to start using GMX."
-msgstr ""
-
-#: src/App/App.js
-msgid "<0>Install Coinbase Wallet</0>, and use GMX with its built-in browser."
-msgstr ""
-
-#: src/App/App.js
-msgid "<0>Install MetaMask</0> to start using GMX."
-msgstr ""
-
-#: src/App/App.js
-msgid "<0>Install MetaMask</0>, and use GMX with its built-in browser."
-msgstr ""
-
 #: src/components/Exchange/OrdersToa.js
 msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
 msgstr ""
@@ -86,7 +70,6 @@ msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>This value may 
 msgstr ""
 
 #: src/lib/contracts/transactionErrors.tsx
-#: src/lib/wallets/index.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr ""
 
@@ -850,14 +833,6 @@ msgstr ""
 msgid "Code already taken"
 msgstr ""
 
-#: src/App/App.js
-msgid "Coinbase Wallet"
-msgstr ""
-
-#: src/App/App.js
-msgid "Coinbase Wallet not detected."
-msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -994,7 +969,6 @@ msgstr ""
 msgid "Connect"
 msgstr ""
 
-#: src/App/App.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Header/AppHeaderUser.tsx
@@ -1013,10 +987,6 @@ msgstr ""
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Connect Wallet"
-msgstr ""
-
-#: src/lib/wallets/index.tsx
-msgid "Connected to {0}"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
@@ -2754,14 +2724,6 @@ msgstr ""
 #: src/components/Footer/constants.ts
 #: src/components/Footer/constants.ts
 msgid "Media Kit"
-msgstr ""
-
-#: src/App/App.js
-msgid "MetaMask"
-msgstr ""
-
-#: src/App/App.js
-msgid "MetaMask not detected."
 msgstr ""
 
 #: src/components/Migration/Migration.js
@@ -4751,10 +4713,6 @@ msgstr ""
 msgid "Unstaking..."
 msgstr ""
 
-#: src/lib/wallets/index.tsx
-msgid "Unsupported chain. Switch to Arbitrum network on your wallet and try again"
-msgstr ""
-
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/JoinReferralCode.js
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
@@ -5019,10 +4977,6 @@ msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 msgid "Wallet not yet connected"
-msgstr ""
-
-#: src/App/App.js
-msgid "WalletConnect"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js

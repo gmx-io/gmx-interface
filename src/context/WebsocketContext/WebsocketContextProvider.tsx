@@ -1,10 +1,10 @@
 import { JsonRpcProvider, WebSocketProvider } from "@ethersproject/providers";
-import { useWeb3React } from "@web3-react/core";
 import { isDevelopment } from "config/env";
 import { WS_LOST_FOCUS_TIMEOUT } from "config/ui";
 import { useChainId } from "lib/chains";
 import { closeWsConnection, getWsProvider, isProviderInClosedState, isWebsocketProvider } from "lib/rpc";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
+import useWallet from "lib/wallets/useWallet";
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 const WS_HEALTH_CHECK_INTERVAL = 1000 * 30;
@@ -21,7 +21,7 @@ export function useWebsocketProvider() {
 }
 
 export function WebsocketContextProvider({ children }: { children: React.ReactNode }) {
-  const { active } = useWeb3React();
+  const { active } = useWallet();
   const { chainId } = useChainId();
   const [wsProvider, setWsProvider] = useState<WebSocketProvider | JsonRpcProvider>();
   const hasLostFocus = useHasLostFocus({ timeout: WS_LOST_FOCUS_TIMEOUT, checkIsTabFocused: true, debugId: "Tab" });

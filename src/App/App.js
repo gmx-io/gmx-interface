@@ -1,14 +1,12 @@
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React, Web3ReactProvider } from "@web3-react/core";
 import { ethers } from "ethers";
 import useScrollToTop from "lib/useScrollToTop";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SWRConfig } from "swr";
 
 import { Redirect, Route, HashRouter as Router, Switch, useHistory, useLocation } from "react-router-dom";
 
 import { BASIS_POINTS_DIVISOR } from "config/factors";
-import { getAppBaseUrl, isHomeSite, isMobileDevice, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
+import { getAppBaseUrl, isHomeSite, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 
 import { decodeReferralCode, encodeReferralCode } from "domain/referrals";
 import Actions from "pages/Actions/Actions";
@@ -44,9 +42,6 @@ import SEO from "components/Common/SEO";
 import EventToastContainer from "components/EventToast/EventToastContainer";
 import useEventToast from "components/EventToast/useEventToast";
 import Tooltip from "components/Tooltip/Tooltip";
-import coinbaseImg from "img/coinbaseWallet.png";
-import metamaskImg from "img/metamask.png";
-import walletConnectImg from "img/walletconnect-circle-blue.svg";
 import useRouteQuery from "lib/useRouteQuery";
 
 import PositionRouter from "abis/PositionRouter.json";
@@ -90,32 +85,18 @@ import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { roundToTwoDecimals } from "lib/numbers";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
-import {
-  activateInjectedProvider,
-  clearWalletConnectData,
-  clearWalletLinkData,
-  getInjectedHandler,
-  getWalletConnectHandler,
-  hasCoinBaseWalletExtension,
-  hasMetaMaskWalletExtension,
-  useEagerConnect,
-  useHandleUnsupportedNetwork,
-  useInactiveListener,
-} from "lib/wallets";
 import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
 import SyntheticsActions from "pages/SyntheticsActions/SyntheticsActions";
 import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsFallbackPage";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
+import { watchNetwork } from "@wagmi/core";
+import { useDisconnect } from "wagmi";
+import useWallet from "lib/wallets/useWallet";
 import { swrGCMiddleware } from "lib/swrMiddlewares";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
-}
-
-function getLibrary(provider) {
-  const library = new Web3Provider(provider);
-  return library;
 }
 
 const Zoom = cssTransition({
@@ -128,9 +109,10 @@ const Zoom = cssTransition({
 });
 
 function FullApp() {
+  const { signer } = useWallet();
+  const { disconnect } = useDisconnect();
   const isHome = isHomeSite();
   const exchangeRef = useRef();
-  const { connector, library, deactivate, activate } = useWeb3React();
   const { chainId } = useChainId();
   const location = useLocation();
   const history = useHistory();
@@ -142,17 +124,6 @@ function FullApp() {
   });
 
   useEventToast();
-  const [activatingConnector, setActivatingConnector] = useState();
-  useEffect(() => {
-    if (activatingConnector && activatingConnector === connector) {
-      setActivatingConnector(undefined);
-    }
-  }, [activatingConnector, connector, chainId]);
-  const triedEager = useEagerConnect(setActivatingConnector);
-  useInactiveListener(!triedEager || !!activatingConnector);
-
-  useHandleUnsupportedNetwork();
-
   const query = useRouteQuery();
 
   useEffect(() => {
@@ -177,94 +148,21 @@ function FullApp() {
     }
   }, [query, history, location]);
 
-  const disconnectAccount = useCallback(() => {
-    // only works with WalletConnect
-    clearWalletConnectData();
-    // force clear localStorage connection for MM/CB Wallet (Brave legacy)
-    clearWalletLinkData();
-    deactivate();
-  }, [deactivate]);
-
   const disconnectAccountAndCloseSettings = () => {
-    disconnectAccount();
+    disconnect();
     localStorage.removeItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY);
     localStorage.removeItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY);
     setIsSettingsVisible(false);
-  };
-
-  const connectInjectedWallet = getInjectedHandler(activate, deactivate);
-
-  const activateWalletConnect = () => {
-    getWalletConnectHandler(activate, deactivate, setActivatingConnector)();
-  };
-
-  const userOnMobileDevice = "navigator" in window && isMobileDevice(window.navigator);
-
-  const activateMetaMask = () => {
-    if (!hasMetaMaskWalletExtension()) {
-      helperToast.error(
-        <div>
-          <Trans>MetaMask not detected.</Trans>
-          <br />
-          <br />
-          {userOnMobileDevice ? (
-            <Trans>
-              <ExternalLink href="https://metamask.io">Install MetaMask</ExternalLink>, and use GMX with its built-in
-              browser.
-            </Trans>
-          ) : (
-            <Trans>
-              <ExternalLink href="https://metamask.io">Install MetaMask</ExternalLink> to start using GMX.
-            </Trans>
-          )}
-        </div>
-      );
-      return false;
-    }
-    attemptActivateWallet("MetaMask");
-  };
-  const activateCoinBase = () => {
-    if (!hasCoinBaseWalletExtension()) {
-      helperToast.error(
-        <div>
-          <Trans>Coinbase Wallet not detected.</Trans>
-          <br />
-          <br />
-          {userOnMobileDevice ? (
-            <Trans>
-              <ExternalLink href="https://www.coinbase.com/wallet">Install Coinbase Wallet</ExternalLink>, and use GMX
-              with its built-in browser.
-            </Trans>
-          ) : (
-            <Trans>
-              <ExternalLink href="https://www.coinbase.com/wallet">Install Coinbase Wallet</ExternalLink> to start using
-              GMX.
-            </Trans>
-          )}
-        </div>
-      );
-      return false;
-    }
-    attemptActivateWallet("CoinBase");
-  };
-
-  const attemptActivateWallet = (providerName) => {
-    localStorage.setItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY, true);
-    localStorage.setItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY, providerName);
-    activateInjectedProvider(providerName);
-    connectInjectedWallet();
   };
 
   const [tradePageVersion, setTradePageVersion] = useLocalStorageSerializeKey(
     [chainId, TRADE_LINK_KEY],
     getIsV1Supported(chainId) ? 1 : 2
   );
-  const [walletModalVisible, setWalletModalVisible] = useState(false);
   const [redirectModalVisible, setRedirectModalVisible] = useState(false);
   const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
   const [redirectPopupTimestamp, setRedirectPopupTimestamp] = useLocalStorage(REDIRECT_POPUP_TIMESTAMP_KEY);
   const [selectedToPage, setSelectedToPage] = useState("");
-  const connectWallet = () => setWalletModalVisible(true);
 
   const settings = useSettings();
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
@@ -407,7 +305,7 @@ function FullApp() {
       const updatedPendingTxns = [];
       for (let i = 0; i < pendingTxns.length; i++) {
         const pendingTxn = pendingTxns[i];
-        const receipt = await library.getTransactionReceipt(pendingTxn.hash);
+        const receipt = await signer.provider.getTransactionReceipt(pendingTxn.hash);
         if (receipt) {
           if (receipt.status === 0) {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
@@ -446,7 +344,7 @@ function FullApp() {
       checkPendingTxns();
     }, 2 * 1000);
     return () => clearInterval(interval);
-  }, [library, pendingTxns, chainId]);
+  }, [signer, pendingTxns, chainId]);
 
   const { wsProvider } = useWebsocketProvider();
 
@@ -503,7 +401,6 @@ function FullApp() {
           <Header
             disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
             openSettings={openSettings}
-            setWalletModalVisible={setWalletModalVisible}
             redirectPopupTimestamp={redirectPopupTimestamp}
             showRedirectModal={showRedirectModal}
             tradePageVersion={tradePageVersion}
@@ -540,7 +437,6 @@ function FullApp() {
                   pendingTxns={pendingTxns}
                   savedShouldShowPositionLines={savedShouldShowPositionLines}
                   setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
-                  connectWallet={connectWallet}
                   savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
                   tradePageVersion={tradePageVersion}
                   setTradePageVersion={setTradePageVersion}
@@ -557,20 +453,15 @@ function FullApp() {
                 {getIsSyntheticsSupported(chainId) ? <SyntheticsStats /> : <SyntheticsFallbackPage />}
               </Route>
               <Route exact path="/earn">
-                <Stake setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
+                <Stake setPendingTxns={setPendingTxns} />
               </Route>
               <Route exact path="/buy">
-                <Buy
-                  savedSlippageAmount={settings.savedAllowedSlippage}
-                  setPendingTxns={setPendingTxns}
-                  connectWallet={connectWallet}
-                />
+                <Buy savedSlippageAmount={settings.savedAllowedSlippage} setPendingTxns={setPendingTxns} />
               </Route>
               <Route exact path="/pools">
                 {getIsSyntheticsSupported(chainId) ? (
                   <MarketPoolsPage
                     shouldDisableValidation={savedShouldDisableValidationForTesting}
-                    connectWallet={connectWallet}
                     setPendingTxns={setPendingTxns}
                   />
                 ) : (
@@ -581,7 +472,6 @@ function FullApp() {
               <Route exact path="/v2">
                 {getIsSyntheticsSupported(chainId) ? (
                   <SyntheticsPage
-                    onConnectWallet={connectWallet}
                     savedIsPnlInLeverage={savedIsPnlInLeverage}
                     shouldDisableValidation={savedShouldDisableValidationForTesting}
                     savedShouldShowPositionLines={savedShouldShowPositionLines}
@@ -602,7 +492,6 @@ function FullApp() {
                 <BuyGlp
                   savedSlippageAmount={settings.savedAllowedSlippage}
                   setPendingTxns={setPendingTxns}
-                  connectWallet={connectWallet}
                   savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
                 />
               </Route>
@@ -616,10 +505,10 @@ function FullApp() {
                 <Ecosystem />
               </Route>
               <Route exact path="/referrals">
-                <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
+                <Referrals pendingTxns={pendingTxns} setPendingTxns={setPendingTxns} />
               </Route>
               <Route exact path="/referrals/:account">
-                <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
+                <Referrals pendingTxns={pendingTxns} setPendingTxns={setPendingTxns} />
               </Route>
               <Route exact path="/nft_wallet">
                 <NftWallet />
@@ -690,31 +579,6 @@ function FullApp() {
         setShouldHideRedirectModal={setShouldHideRedirectModal}
         shouldHideRedirectModal={shouldHideRedirectModal}
       />
-      <Modal
-        className="Connect-wallet-modal"
-        isVisible={walletModalVisible}
-        setIsVisible={setWalletModalVisible}
-        label={t`Connect Wallet`}
-      >
-        <button className="Wallet-btn MetaMask-btn" onClick={activateMetaMask}>
-          <img src={metamaskImg} alt="MetaMask" />
-          <div>
-            <Trans>MetaMask</Trans>
-          </div>
-        </button>
-        <button className="Wallet-btn CoinbaseWallet-btn" onClick={activateCoinBase}>
-          <img src={coinbaseImg} alt="Coinbase Wallet" />
-          <div>
-            <Trans>Coinbase Wallet</Trans>
-          </div>
-        </button>
-        <button className="Wallet-btn WalletConnect-btn" onClick={activateWalletConnect}>
-          <img src={walletConnectImg} alt="WalletConnect" />
-          <div>
-            <Trans>WalletConnect</Trans>
-          </div>
-        </button>
-      </Modal>
       <Modal
         className="App-settings"
         isVisible={isSettingsVisible}
@@ -819,31 +683,42 @@ function FullApp() {
 }
 
 function App() {
+  const { disconnect } = useDisconnect();
+
   useScrollToTop();
   useEffect(() => {
     const defaultLanguage = localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale;
     dynamicActivate(defaultLanguage);
   }, []);
 
+  useEffect(() => {
+    const unwatch = watchNetwork(({ chain, chains }) => {
+      if (!chain || !chains) return;
+      const isValidChain = chains.some((c) => c.id === chain.id);
+      if (!isValidChain) {
+        disconnect();
+      }
+    });
+    return () => unwatch();
+  }, [disconnect]);
+
   return (
     <SWRConfig
       value={{ refreshInterval: 5000, refreshWhenHidden: false, refreshWhenOffline: false, use: [swrGCMiddleware] }}
     >
-      <Web3ReactProvider getLibrary={getLibrary}>
-        <SettingsContextProvider>
-          <SEO>
-            <Router>
-              <WebsocketContextProvider>
-                <SyntheticsEventsProvider>
-                  <I18nProvider i18n={i18n}>
-                    <FullApp />
-                  </I18nProvider>
-                </SyntheticsEventsProvider>
-              </WebsocketContextProvider>
-            </Router>
-          </SEO>
-        </SettingsContextProvider>
-      </Web3ReactProvider>
+      <SettingsContextProvider>
+        <SEO>
+          <Router>
+            <WebsocketContextProvider>
+              <SyntheticsEventsProvider>
+                <I18nProvider i18n={i18n}>
+                  <FullApp />
+                </I18nProvider>
+              </SyntheticsEventsProvider>
+            </WebsocketContextProvider>
+          </Router>
+        </SEO>
+      </SettingsContextProvider>
     </SWRConfig>
   );
 }

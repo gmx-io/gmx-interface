@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { sleep } from "lib/sleep";
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
 import { switchNetwork } from "lib/wallets";
-import { useWeb3React } from "@web3-react/core";
 import { isDevelopment } from "config/env";
+import useWallet from "lib/wallets/useWallet";
 
 export function SyntheticsFallbackPage() {
-  const { active } = useWeb3React();
+  const { active } = useWallet();
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
