@@ -791,12 +791,20 @@ msgid "Claims"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Click on a row to select the position's market, then use the swap box to increase your position size or to set stop-loss / take-profit orders."
-msgstr ""
+#~ msgid "Click on a row to select the position's market, then use the swap box to increase your position size or to set stop-loss / take-profit orders."
+#~ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
-msgid "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
-msgstr "시장에서 위치를 선택하세요. 그런 다음, 필요한 경우 거래 상자를 통해 크기를 조정하세요."
+#~ msgid "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
+#~ msgstr "시장에서 위치를 선택하세요. 그런 다음, 필요한 경우 거래 상자를 통해 크기를 조정하세요."
+
+#: src/components/Exchange/PositionsList.js
+msgid "Click on the Position to select its market, then use the trade box to increase your Position Size if needed."
+msgstr ""
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take-Profit / Stop-Loss Orders."
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
@@ -4784,12 +4792,20 @@ msgid "Updating..."
 msgstr "업데이트중..."
 
 #: src/components/Exchange/PositionsList.js
-msgid "Use the \"Close\" button to reduce your position size, or to set stop-loss / take-profit orders."
-msgstr "포지션을 감소시키거나 TP/SL을 위해 \"닫기\" 버튼을 사용하세요."
+msgid "Use the \"Close\" button to reduce your Position Size, or to set Take-Profit / Stop-Loss Orders."
+msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Use the \"Close\" button to reduce your position size."
+msgid "Use the \"Close\" button to reduce your Position Size."
 msgstr ""
+
+#: src/components/Exchange/PositionsList.js
+#~ msgid "Use the \"Close\" button to reduce your position size, or to set stop-loss / take-profit orders."
+#~ msgstr "포지션을 감소시키거나 TP/SL을 위해 \"닫기\" 버튼을 사용하세요."
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#~ msgid "Use the \"Close\" button to reduce your position size."
+#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Use the \"Compound\" button to stake your Multiplier Points."
