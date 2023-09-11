@@ -544,8 +544,10 @@ button.App-connect-wallet:hover {
   padding: 0 3.1rem;
 }
 
+$app-card-padding: 1.5rem;
+
 .App-card {
-  padding: 1.5rem;
+  padding: $app-card-padding;
   border-radius: 0.4rem;
   font-size: var(--font-base);
 }
@@ -556,7 +558,7 @@ button.App-connect-wallet:hover {
   font-weight: normal;
   letter-spacing: 0px;
   color: #ffffff;
-  margin-bottom: 1.5rem;
+  margin-bottom: $app-card-padding;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -564,6 +566,15 @@ button.App-connect-wallet:hover {
 
 .Position-card-title {
   justify-content: start;
+}
+
+.Position-card-title::after {
+  content: '';
+  position: absolute;
+  left: -$app-card-padding;
+  top: -$app-card-padding;
+  bottom: -$app-card-padding;
+  right: -$app-card-padding;
 }
 
 .App-card-title-small {

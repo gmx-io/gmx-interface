@@ -470,8 +470,11 @@ export function PositionItem(p: Props) {
     return (
       <div className="App-card">
         <div>
-          <div className={cx("App-card-title Position-card-title", { "Position-active-card": isCurrentMarket })}>
-            <span className="Exchange-list-title inline-flex" onClick={() => p.onSelectPositionClick?.()}>
+          <div
+            className={cx("App-card-title Position-card-title", { "Position-active-card": isCurrentMarket })}
+            onClick={() => p.onSelectPositionClick?.()}
+          >
+            <span className="Exchange-list-title inline-flex">
               <TokenIcon
                 className="PositionList-token-icon"
                 symbol={p.position.marketInfo.indexToken?.symbol}
