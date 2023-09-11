@@ -481,9 +481,7 @@ export function PositionItem(p: Props) {
               {p.position.marketInfo.indexToken?.symbol}
             </span>
             <div>
-              <span onClick={() => p.openSettings()} className="Position-leverage">
-                {formatLeverage(p.position.leverage)}&nbsp;
-              </span>
+              <span className="Position-leverage">{formatLeverage(p.position.leverage)}&nbsp;</span>
               <span
                 className={cx("Exchange-list-side", {
                   positive: p.position.isLong,

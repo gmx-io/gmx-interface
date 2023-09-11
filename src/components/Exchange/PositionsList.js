@@ -258,9 +258,7 @@ export default function PositionsList(props) {
                         {position.indexToken.symbol}
                       </span>
                       <div>
-                        <span className="Position-leverage" onClick={openSettings}>
-                          {position.leverageStr}
-                        </span>
+                        <span className="Position-leverage">{position.leverageStr}</span>
                         <span
                           className={cx("Exchange-list-side", {
                             positive: position.isLong,
