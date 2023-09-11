@@ -1,4 +1,4 @@
-import { ARBITRUM, AVALANCHE, SEPOLIA_TESTNET } from "config/chains";
+import { ARBITRUM, AVALANCHE, SEPOLIA_TESTNET, OPTIMISM_GOERLI_TESTNET } from "config/chains";
 import { formatTVDate, formatTVTime } from "lib/dates";
 
 const RED = "#fa3c58";
@@ -86,4 +86,4 @@ export const defaultChartProps = {
   },
 };
 
-export const availableNetworksForChart = [ARBITRUM, AVALANCHE, SEPOLIA_TESTNET];
+export const availableNetworksForChart = [ARBITRUM, AVALANCHE, OPTIMISM_GOERLI_TESTNET, SEPOLIA_TESTNET];

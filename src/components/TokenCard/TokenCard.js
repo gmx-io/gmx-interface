@@ -102,8 +102,12 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
           </div>
           <div className="Home-token-card-option-action">
             <div className="buy">
-              {chainId === OPTIMISM_GOERLI_TESTNET ? (
+              {chainId === SEPOLIA_TESTNET ? (
                 <BuyLink to="/buy_glp" className="default-btn" network={SEPOLIA_TESTNET}>
+                  <Trans>{`Buy on Optimism-Goerli`}</Trans>
+                </BuyLink>
+              ) : chainId === OPTIMISM_GOERLI_TESTNET ? (
+                <BuyLink to="/buy_glp" className="default-btn" network={OPTIMISM_GOERLI_TESTNET}>
                   <Trans>{`Buy on Optimism-Goerli`}</Trans>
                 </BuyLink>
               ) : (

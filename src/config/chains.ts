@@ -269,8 +269,8 @@ export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
     blockExplorerUrls: [getExplorerUrl(SEPOLIA_TESTNET)],
   },
   [OPTIMISM_GOERLI_TESTNET]: {
-    chainId: "0x" + SEPOLIA_TESTNET.toString(16),
-    chainName: "Sepolia",
+    chainId: "0x" + OPTIMISM_GOERLI_TESTNET.toString(16),
+    chainName: "Optimism Goerli",
     nativeCurrency: {
       name: "ETH",
       symbol: "ETH",
