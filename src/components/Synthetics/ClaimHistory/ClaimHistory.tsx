@@ -5,7 +5,7 @@ import { useClaimCollateralHistory } from "domain/synthetics/claimHistory";
 import { ClaimHistoryRow } from "../ClaimHistoryRow/ClaimHistoryRow";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
-import { useWeb3React } from "@web3-react/core";
+import useWallet from "lib/wallets/useWallet";
 
 const PAGE_SIZE = 100;
 
@@ -18,7 +18,7 @@ type Props = {
 export function ClaimHistory(p: Props) {
   const { shouldShowPaginationButtons, marketsInfoData, tokensData } = p;
   const { chainId } = useChainId();
-  const { account } = useWeb3React();
+  const { account } = useWallet();
   const [pageIndex, setPageIndex] = useState(0);
 
   const { claimActions, isLoading } = useClaimCollateralHistory(chainId, {

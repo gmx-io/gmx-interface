@@ -1,8 +1,7 @@
-import { Web3Provider } from "@ethersproject/providers";
 import { plural, t } from "@lingui/macro";
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
-import { ethers } from "ethers";
+import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 
 export type CancelOrderParams = {
@@ -10,12 +9,8 @@ export type CancelOrderParams = {
   setPendingTxns: (txns: any) => void;
 };
 
-export async function cancelOrdersTxn(chainId: number, library: Web3Provider, p: CancelOrderParams) {
-  const exchangeRouter = new ethers.Contract(
-    getContract(chainId, "ExchangeRouter"),
-    ExchangeRouter.abi,
-    library.getSigner()
-  );
+export async function cancelOrdersTxn(chainId: number, signer: Signer, p: CancelOrderParams) {
+  const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
 
   const multicall = p.orderKeys.map((key) => exchangeRouter.interface.encodeFunctionData("cancelOrder", [key]));
 

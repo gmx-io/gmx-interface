@@ -1,5 +1,4 @@
 import { t } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
 import Modal from "components/Modal/Modal";
 import {
   MarketInfo,
@@ -20,6 +19,7 @@ import { claimCollateralTxn } from "domain/synthetics/markets/claimCollateralTxn
 import Button from "components/Button/Button";
 import { useState } from "react";
 import "./ClaimModal.scss";
+import useWallet from "lib/wallets/useWallet";
 
 type Props = {
   isVisible: boolean;
@@ -30,7 +30,7 @@ type Props = {
 
 export function ClaimModal(p: Props) {
   const { isVisible, onClose, setPendingTxns, marketsInfoData } = p;
-  const { account, library } = useWeb3React();
+  const { account, signer } = useWallet();
   const { chainId } = useChainId();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -104,7 +104,7 @@ export function ClaimModal(p: Props) {
   }
 
   function onSubmit() {
-    if (!account || !library) return;
+    if (!account || !signer) return;
 
     const fundingMarketAddresses: string[] = [];
     const fundingTokenAddresses: string[] = [];
@@ -123,7 +123,7 @@ export function ClaimModal(p: Props) {
 
     setIsSubmitting(true);
 
-    claimCollateralTxn(chainId, library, {
+    claimCollateralTxn(chainId, signer, {
       account,
       fundingFees: {
         marketAddresses: fundingMarketAddresses,

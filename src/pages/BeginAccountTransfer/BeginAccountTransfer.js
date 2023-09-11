@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import useSWR from "swr";
 import { ethers } from "ethers";
-import { useWeb3React } from "@web3-react/core";
 
 import { getContract } from "config/contracts";
 
@@ -23,6 +22,7 @@ import { callContract, contractFetcher } from "lib/contracts";
 import { approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import Button from "components/Button/Button";
+import useWallet from "lib/wallets/useWallet";
 
 function ValidationRow({ isValid, children }) {
   return (
@@ -38,7 +38,7 @@ function ValidationRow({ isValid, children }) {
 
 export default function BeginAccountTransfer(props) {
   const { setPendingTxns } = props;
-  const { active, library, account } = useWeb3React();
+  const { active, signer, account } = useWallet();
   const { chainId } = useChainId();
 
   const [receiver, setReceiver] = useState("");
@@ -57,18 +57,18 @@ export default function BeginAccountTransfer(props) {
   const rewardRouterAddress = getContract(chainId, "RewardRouter");
 
   const { data: gmxVesterBalance } = useSWR(active && [active, chainId, gmxVesterAddress, "balanceOf", account], {
-    fetcher: contractFetcher(library, Token),
+    fetcher: contractFetcher(signer, Token),
   });
 
   const { data: glpVesterBalance } = useSWR(active && [active, chainId, glpVesterAddress, "balanceOf", account], {
-    fetcher: contractFetcher(library, Token),
+    fetcher: contractFetcher(signer, Token),
   });
 
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
   const { data: cumulativeGmxRewards } = useSWR(
     [active, chainId, stakedGmxTrackerAddress, "cumulativeRewards", parsedReceiver],
     {
-      fetcher: contractFetcher(library, RewardTracker),
+      fetcher: contractFetcher(signer, RewardTracker),
     }
   );
 
@@ -76,42 +76,42 @@ export default function BeginAccountTransfer(props) {
   const { data: cumulativeGlpRewards } = useSWR(
     [active, chainId, stakedGlpTrackerAddress, "cumulativeRewards", parsedReceiver],
     {
-      fetcher: contractFetcher(library, RewardTracker),
+      fetcher: contractFetcher(signer, RewardTracker),
     }
   );
 
   const { data: transferredCumulativeGmxRewards } = useSWR(
     [active, chainId, gmxVesterAddress, "transferredCumulativeRewards", parsedReceiver],
     {
-      fetcher: contractFetcher(library, Vester),
+      fetcher: contractFetcher(signer, Vester),
     }
   );
 
   const { data: transferredCumulativeGlpRewards } = useSWR(
     [active, chainId, glpVesterAddress, "transferredCumulativeRewards", parsedReceiver],
     {
-      fetcher: contractFetcher(library, Vester),
+      fetcher: contractFetcher(signer, Vester),
     }
   );
 
   const { data: pendingReceiver } = useSWR(
     active && [active, chainId, rewardRouterAddress, "pendingReceivers", account],
     {
-      fetcher: contractFetcher(library, RewardRouter),
+      fetcher: contractFetcher(signer, RewardRouter),
     }
   );
 
   const { data: gmxAllowance } = useSWR(
     active && [active, chainId, gmxAddress, "allowance", account, stakedGmxTrackerAddress],
     {
-      fetcher: contractFetcher(library, Token),
+      fetcher: contractFetcher(signer, Token),
     }
   );
 
   const { data: gmxStaked } = useSWR(
     active && [active, chainId, stakedGmxTrackerAddress, "depositBalances", account, gmxAddress],
     {
-      fetcher: contractFetcher(library, RewardTracker),
+      fetcher: contractFetcher(signer, RewardTracker),
     }
   );
 
@@ -194,7 +194,7 @@ export default function BeginAccountTransfer(props) {
     if (needApproval) {
       approveTokens({
         setIsApproving,
-        library,
+        signer,
         tokenAddress: gmxAddress,
         spender: stakedGmxTrackerAddress,
         chainId,
@@ -203,7 +203,7 @@ export default function BeginAccountTransfer(props) {
     }
 
     setIsTransferring(true);
-    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, library.getSigner());
+    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, signer);
 
     callContract(chainId, contract, "signalTransfer", [parsedReceiver], {
       sentMsg: t`Transfer submitted!`,

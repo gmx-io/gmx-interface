@@ -39,7 +39,6 @@ import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } f
 import { IoMdSwap } from "react-icons/io";
 import { GmConfirmationBox } from "../GmConfirmationBox/GmConfirmationBox";
 
-import { useWeb3React } from "@web3-react/core";
 import Button from "components/Button/Button";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { MarketSelector } from "components/MarketSelector/MarketSelector";
@@ -53,6 +52,8 @@ import Checkbox from "components/Checkbox/Checkbox";
 import Tooltip from "components/Tooltip/Tooltip";
 import { DUST_BNB } from "lib/legacy";
 import { useHasOutdatedUi } from "domain/legacy";
+import useWallet from "lib/wallets/useWallet";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import { getIcon } from "config/icons";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
@@ -74,7 +75,6 @@ type Props = {
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
   onSelectMarket: (marketAddress: string) => void;
-  onConnectWallet: () => void;
   setPendingTxns: (txns: any) => void;
   operation: Operation;
   shouldDisableValidation?: boolean;
@@ -124,12 +124,13 @@ export function GmSwapBox(p: Props) {
   const { search } = useLocation();
   const isMetamaskMobile = useIsMetamaskMobile();
   const history = useHistory();
+  const { openConnectModal } = useConnectModal();
   const queryParams = useMemo(() => new URLSearchParams(search), [search]);
 
   const marketAddress = p.selectedMarketAddress;
 
   const { chainId } = useChainId();
-  const { account } = useWeb3React();
+  const { account } = useWallet();
 
   const { gasLimits } = useGasLimits(chainId);
   const { gasPrice } = useGasPrice(chainId);
@@ -434,7 +435,7 @@ export function GmSwapBox(p: Props) {
     if (!account) {
       return {
         text: t`Connect Wallet`,
-        onSubmit: p.onConnectWallet,
+        onSubmit: () => openConnectModal?.(),
       };
     }
 
@@ -473,7 +474,7 @@ export function GmSwapBox(p: Props) {
     marketInfo,
     marketToken,
     marketTokenAmount,
-    p.onConnectWallet,
+    openConnectModal,
     shortCollateralLiquidityUsd,
     shortTokenInputState?.token,
     shouldDisableValidation,

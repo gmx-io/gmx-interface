@@ -1,6 +1,5 @@
 import { Menu } from "@headlessui/react";
 import cx from "classnames";
-import { useWeb3React } from "@web3-react/core";
 import coingeckoIcon from "img/ic_coingecko_16.svg";
 import metamaskIcon from "img/ic_metamask_16.svg";
 import nansenPortfolioIcon from "img/nansen_portfolio.svg";
@@ -13,7 +12,7 @@ import { getIcon } from "config/icons";
 import { getTokenBySymbol } from "config/tokens";
 import { Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
-import { addTokenToMetamask } from "lib/wallets";
+import useWallet from "lib/wallets/useWallet";
 
 type Props = {
   assetSymbol: string;
@@ -22,7 +21,7 @@ type Props = {
 };
 
 function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: Props) {
-  const { active } = useWeb3React();
+  const { active, connector } = useWallet();
   const { chainId } = useChainId();
 
   let token: Token;
@@ -87,7 +86,15 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
               {active && !token.isNative && (
                 <div
                   onClick={() => {
-                    addTokenToMetamask(token);
+                    if (connector?.watchAsset && token) {
+                      const { address, decimals, imageUrl, symbol } = token;
+                      connector.watchAsset?.({
+                        address: address,
+                        decimals: decimals,
+                        image: imageUrl,
+                        symbol: symbol,
+                      });
+                    }
                   }}
                   className="asset-item"
                 >

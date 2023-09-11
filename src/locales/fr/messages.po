@@ -38,22 +38,6 @@ msgstr ""
 msgid "<0>GM Pools total value ({chainName}).</0>"
 msgstr ""
 
-#: src/App/App.js
-msgid "<0>Install Coinbase Wallet</0> to start using GMX."
-msgstr ""
-
-#: src/App/App.js
-msgid "<0>Install Coinbase Wallet</0>, and use GMX with its built-in browser."
-msgstr ""
-
-#: src/App/App.js
-msgid "<0>Install MetaMask</0> to start using GMX."
-msgstr ""
-
-#: src/App/App.js
-msgid "<0>Install MetaMask</0>, and use GMX with its built-in browser."
-msgstr ""
-
 #: src/components/Exchange/OrdersToa.js
 msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
 msgstr "<0>Liquidité insuffisante pour exécuter l'ordre</0><1>Le prix de référence, qui est un agrégat de prix d'échanges, n'a pas atteint le prix spécifié</1><2>Le prix spécifié a été atteint mais pas assez longtemps pour qu'il soit exécuté.</2><3>Aucun gardien n'a pris l'ordre d'exécution</3>"
@@ -91,7 +75,6 @@ msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>This value may 
 msgstr ""
 
 #: src/lib/contracts/transactionErrors.tsx
-#: src/lib/wallets/index.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr ""
 
@@ -855,14 +838,6 @@ msgstr ""
 msgid "Code already taken"
 msgstr "Code déjà pris"
 
-#: src/App/App.js
-msgid "Coinbase Wallet"
-msgstr "Portefeuille Coinbase"
-
-#: src/App/App.js
-msgid "Coinbase Wallet not detected."
-msgstr "Portefeuille Coinbase non détecté."
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -999,7 +974,6 @@ msgstr ""
 msgid "Connect"
 msgstr "Connecter"
 
-#: src/App/App.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Header/AppHeaderUser.tsx
@@ -1019,10 +993,6 @@ msgstr "Connecter"
 #: src/pages/Stake/StakeV2.js
 msgid "Connect Wallet"
 msgstr "Connecter Portefeuille"
-
-#: src/lib/wallets/index.tsx
-msgid "Connected to {0}"
-msgstr "Connecté à {0}"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
@@ -2760,14 +2730,6 @@ msgstr "Max: {0}"
 #: src/components/Footer/constants.ts
 msgid "Media Kit"
 msgstr "Kit Média"
-
-#: src/App/App.js
-msgid "MetaMask"
-msgstr "MetaMask"
-
-#: src/App/App.js
-msgid "MetaMask not detected."
-msgstr "MetaMask non détecté."
 
 #: src/components/Migration/Migration.js
 #: src/components/Migration/Migration.js
@@ -4756,10 +4718,6 @@ msgstr ""
 msgid "Unstaking..."
 msgstr "Arrêt du staking..."
 
-#: src/lib/wallets/index.tsx
-msgid "Unsupported chain. Switch to Arbitrum network on your wallet and try again"
-msgstr "Chaîne non supportée. Passez au réseau Arbitrum sur votre portefeuille et réessayez"
-
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/JoinReferralCode.js
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
@@ -5025,10 +4983,6 @@ msgstr "Portefeuille non connecté"
 #: src/pages/Stake/StakeV1.js
 msgid "Wallet not yet connected"
 msgstr "Le portefeuille n'est pas encore connecté"
-
-#: src/App/App.js
-msgid "WalletConnect"
-msgstr "WalletConnect"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Weight"
