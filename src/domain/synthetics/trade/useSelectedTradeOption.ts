@@ -149,22 +149,24 @@ export function useSelectedTradeOption(
       if (tradeType) {
         oldState.tradeType = tradeType;
       }
+
       if (tradeFlags.isSwap) {
         oldState.tokens.swapToTokenAddress = tokenAddress;
       } else {
         oldState.tokens.indexTokenAddress = tokenAddress;
-        if (toTokenAddress && marketTokenAddress) {
+        if (tokenAddress && marketTokenAddress) {
+          oldState.markets[tokenAddress] = oldState.markets[tokenAddress] || {};
           if (oldState.tradeType === TradeType.Long) {
-            oldState.markets[toTokenAddress].long = marketTokenAddress;
+            oldState.markets[tokenAddress].long = marketTokenAddress;
           } else if (oldState.tradeType === TradeType.Short) {
-            oldState.markets[toTokenAddress].short = marketTokenAddress;
+            oldState.markets[tokenAddress].short = marketTokenAddress;
           }
         }
       }
 
       setStoredOptions(oldState);
     },
-    [setStoredOptions, storedOptions, tradeFlags.isSwap, toTokenAddress]
+    [setStoredOptions, storedOptions, tradeFlags.isSwap]
   );
 
   const switchTokenAddresses = useCallback(() => {
