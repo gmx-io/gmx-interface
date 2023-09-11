@@ -361,12 +361,12 @@ export function PositionItem(p: Props) {
 
                   <div>
                     <Trans>
-                      Click on a row to select the position's market, then use the swap box to increase your position
-                      size or to set stop-loss / take-profit orders.
+                      Click on the Position to select its market, then use the trade box to increase your Position Size,
+                      or to set Take-Profit / Stop-Loss Orders.
                     </Trans>
                     <br />
                     <br />
-                    <Trans>Use the "Close" button to reduce your position size.</Trans>
+                    <Trans>Use the "Close" button to reduce your Position Size.</Trans>
                   </div>
 
                   {showDebugValues && (
