@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BigNumber, ethers } from "ethers";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { MAX_ALLOWED_LEVERAGE } from "config/factors";
@@ -20,7 +20,7 @@ import {
   getPositionNetValue,
   getPositionPendingFeesUsd,
   getPositionPnlUsd,
-  usePositionsConstants
+  usePositionsConstants,
 } from "../positions";
 
 type PositionsResult = {
@@ -29,7 +29,7 @@ type PositionsResult = {
   error: Error | null;
 };
 
-type PositionJson = { [key: string]: any, [key: number]: any };
+type PositionJson = { [key: string]: any; [key: number]: any };
 
 function parsePositionsInfo(
   positionKeys: string[] = [],
@@ -37,10 +37,13 @@ function parsePositionsInfo(
   marketsInfoData: MarketsInfoData,
   tokensData: TokensData,
   minCollateralUsd: BigNumber,
-  showPnlInLeverage: boolean = true,
+  showPnlInLeverage: boolean = true
 ) {
   return positions.reduce((positionsMap: PositionsInfoData, positionInfo, i) => {
-    const { position: { addresses, numbers, flags, data }, fees } = positionInfo;
+    const {
+      position: { addresses, numbers, flags, data },
+      fees,
+    } = positionInfo;
     const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;
 
     // Empty position
@@ -104,9 +107,7 @@ function parsePositionsInfo(
       marketInfo.shortToken.prices.minPrice
     )!;
 
-    const pendingClaimableFundingFeesUsd = pendingClaimableFundingFeesLongUsd?.add(
-      pendingClaimableFundingFeesShortUsd
-    );
+    const pendingClaimableFundingFeesUsd = pendingClaimableFundingFeesLongUsd?.add(pendingClaimableFundingFeesShortUsd);
 
     const totalPendingFeesUsd = getPositionPendingFeesUsd({
       pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
@@ -124,7 +125,7 @@ function parsePositionsInfo(
       marketInfo,
       position.sizeInUsd,
       closingPriceImpactDeltaUsd.gt(0),
-      undefined, // userReferralInfo
+      undefined // userReferralInfo
     );
 
     const closingFeeUsd = positionFeeInfo.positionFeeUsd;
@@ -212,57 +213,86 @@ function parsePositionsInfo(
     };
 
     return positionsMap;
-  },
-  {} as PositionsData);
-};
+  }, {} as PositionsData);
+}
 
 export function usePositionsInfo(
   chainId: number,
   positionsHash: string,
   positionKeys: string[],
-  marketPrices: ContractMarketPrices[],
+  marketPrices: ContractMarketPrices[]
 ): PositionsResult {
   const { minCollateralUsd } = usePositionsConstants(chainId);
   const { marketsInfoData, tokensData, pricesUpdatedAt } = useMarketsInfo(chainId);
-  const positionsData = useMulticall(chainId, "usePositionsInfo", {
-    key: [positionsHash, pricesUpdatedAt],
+  const [chunks, setChunks] = useState<PositionJson[][]>([]);
+  const [currentChunk, setCurrentChunk] = useState<number>(0);
+  const chunkSize = 100;
+  const numChunks = Math.ceil(positionKeys.length / chunkSize);
+  const chunk = useMulticall(chainId, "usePositionsInfo", {
+    key: positionKeys?.length ? [positionsHash, pricesUpdatedAt, numChunks, currentChunk] : null,
     refreshInterval: null, // Refresh on every prices update
     request: () => ({
       reader: {
         contractAddress: getContract(chainId, "SyntheticsReader"),
         abi: SyntheticsReader.abi,
-        calls: positionKeys && positionKeys.length ? {
-          positions: {
-            methodName: "getAccountPositionInfoList",
-            params: [
-              getContract(chainId, "DataStore"),
-              getContract(chainId, "ReferralStorage"),
-              positionKeys,
-              marketPrices,
-              ethers.constants.AddressZero, // uiFeeReceiver
-            ],
-          },
-        } : {},
+        calls:
+          positionKeys && positionKeys.length
+            ? {
+                positions: {
+                  methodName: "getAccountPositionInfoList",
+                  params: [
+                    getContract(chainId, "DataStore"),
+                    getContract(chainId, "ReferralStorage"),
+                    positionKeys.slice(chunkSize * currentChunk, chunkSize * (currentChunk + 1)),
+                    marketPrices.slice(chunkSize * currentChunk, chunkSize * (currentChunk + 1)),
+                    ethers.constants.AddressZero, // uiFeeReceiver
+                  ],
+                },
+              }
+            : {},
       },
     }),
   });
 
-  const hasData = Array.isArray(positionsData?.data?.data?.reader?.positions?.returnValues);
-  const data = useMemo(() => {
-    const positions = positionsData?.data?.data?.reader?.positions?.returnValues;
-    return (positions && marketsInfoData && tokensData && minCollateralUsd) ? parsePositionsInfo(
-      positionKeys,
-      positions as PositionJson[],
-      marketsInfoData,
-      tokensData,
-      minCollateralUsd
-    ) : undefined;
+  const chunkData = chunk?.data?.data?.reader?.positions?.returnValues;
+  const nextChunks = chunkData && chunkData.length
+    ? chunks.slice(0, currentChunk).concat([chunkData]).concat(chunks.slice(currentChunk + 1, numChunks))
+    : chunks;
+
+  const chunksKey = nextChunks.reduce((positions: string[], c: PositionJson[]) => positions.concat(
+    c.filter((p) => (
+      p?.position?.addresses?.account &&
+      p?.position?.addresses?.market &&
+      p?.position?.addresses?.collateralToken &&
+      p?.position?.flags?.isLong !== undefined
+    )).map((p) => getPositionKey(
+      p.position.addresses.account,
+      p.position.addresses.market,
+      p.position.addresses.collateralToken,
+      p.position.flags.isLong
+    ))
+  ), []).join("-");
+
+  useEffect(() => {
+    if (!chunkData || !chunkData.length) {
+      return;
+    }
+
+    setChunks(nextChunks);
+    setCurrentChunk((currentChunk) => (currentChunk + 1) % numChunks);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    positionsHash,
-    pricesUpdatedAt,
-    hasData,
-  ]);
+  }, [chunksKey]);
+
+  const data = useMemo(() => {
+    if (chunks.length < numChunks) {
+      return;
+    }
+    const positions = chunks.flat();
+    return positions && positions.length === positionKeys.length && marketsInfoData && tokensData && minCollateralUsd
+      ? parsePositionsInfo(positionKeys, positions as PositionJson[], marketsInfoData, tokensData, minCollateralUsd)
+      : undefined;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [positionsHash, pricesUpdatedAt, chainId]);
 
   return { isLoading: !data, error: null, data: data || [] };
 }

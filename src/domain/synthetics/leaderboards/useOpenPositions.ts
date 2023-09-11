@@ -2,22 +2,27 @@ import useSWR from "swr";
 import { BigNumber } from "ethers";
 import { getAddress } from "ethers/lib/utils";
 import { queryOpenPositions } from "./queries"
-import { arbitrumGoerliLeaderboardsClient as graph } from "lib/subgraph/clients";
+import { getLeaderboardsGraphClient } from "lib/subgraph/clients";
 import { OpenPositionJson, OpenPosition } from "./types";
 import { ContractMarketPrices, getContractMarketPrices, useMarketsInfo } from "../markets";
 import { convertToUsd } from "../tokens";
 import { usePositionsInfo } from "./usePositionsInfo";
 import { PositionsInfoData, getPositionKey } from "../positions";
 import { useEffect, useMemo, useState } from "react";
-import { AVALANCHE } from "config/chains";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { useChainId } from "lib/chains";
 
 const fetchOpenPositionsPage = async (
+  chainId: number,
   first: number,
   skip: number,
   orderBy: string = "sizeInUsd",
   orderDirection: "asc" | "desc" = "desc",
 ): Promise<OpenPositionJson[]> => {
+  const graph = getLeaderboardsGraphClient(chainId);
+  if (!graph) {
+    throw new Error(`Leaderboards Open Positions graph error: Unsupported chain id ${chainId}`);
+  }
   const res = await graph.query<{ accountOpenPositions: OpenPositionJson[] }>({
     query: queryOpenPositions,
     variables: {
@@ -118,13 +123,13 @@ const parseOpenPositions = (
   return positions;
 };
 
-const fetchOpenPositions = async () => {
+const fetchOpenPositions = (chainId) => async () => {
   const pageSize = 1000;
   let data: OpenPositionJson[] = [];
   let skip = 0;
 
   while (true) {
-    const page = await fetchOpenPositionsPage(pageSize, skip);
+    const page = await fetchOpenPositionsPage(chainId, pageSize, skip);
     if (!page || !page.length) {
       break;
     }
@@ -136,12 +141,12 @@ const fetchOpenPositions = async () => {
 };
 
 export function useOpenPositions() {
-  const chainId = AVALANCHE; // FIXME: usechainid as soon as the graph deployed to all networks
+  const { chainId } = useChainId();
   const ensNames = {}; // FIXME: use useEnsBatchLookup instead
   const avatarUrls = {}; // FIXME: use useEnsBatchLookup instead
 
   const { tokensData, marketsInfoData, pricesUpdatedAt } = useMarketsInfo(chainId);
-  const positions = useSWR(['/leaderboards/positions', chainId], fetchOpenPositions);
+  const positions = useSWR(['/leaderboards/positions', chainId], fetchOpenPositions(chainId));
   const positionsHash = (positions.data || []).map(p => p.id).join("-");
   const { keys, prices } =  useMemo((): { keys: string[], prices: ContractMarketPrices[] } => {
     if (!marketsInfoData || !tokensData) {

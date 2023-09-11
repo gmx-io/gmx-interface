@@ -1,5 +1,6 @@
 import { createClient } from "./utils";
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, ETH_MAINNET } from "config/chains";
+import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
 
 export const chainlinkClient = createClient(ETH_MAINNET, "chainLink");
 
@@ -17,7 +18,19 @@ export const avalancheSyntheticsStatsClient = createClient(AVALANCHE, "synthetic
 export const avalancheFujiSyntheticsStatsClient = createClient(AVALANCHE_FUJI, "syntheticsStats");
 export const arbitrumGoerliSyntheticsStatsClient = createClient(ARBITRUM_GOERLI, "syntheticsStats");
 
-export const arbitrumGoerliLeaderboardsClient = createClient(ARBITRUM_GOERLI, "leaderboards");
+export const arbitrumLeaderboardsClient = createClient(ARBITRUM, "leaderboards");
+export const avalancheLeaderboardsClient = createClient(AVALANCHE, "leaderboards");
+export const fujiLeaderboardsClient = createClient(AVALANCHE_FUJI, "leaderboards");
+export const goerliLeaderboardsClient = createClient(ARBITRUM_GOERLI, "leaderboards");
+
+export function getLeaderboardsGraphClient(chainId): ApolloClient<NormalizedCacheObject> | null {
+  return ({
+    [ARBITRUM]: arbitrumLeaderboardsClient,
+    [AVALANCHE]: avalancheLeaderboardsClient,
+    [AVALANCHE_FUJI]: fujiLeaderboardsClient,
+    [ARBITRUM_GOERLI]: goerliLeaderboardsClient,
+  })[chainId] || null;
+}
 
 export function getSyntheticsGraphClient(chainId: number) {
   if (chainId === ARBITRUM) {

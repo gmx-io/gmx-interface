@@ -2,10 +2,10 @@ import useSWR from "swr";
 import { BigNumber } from "ethers";
 import { PerfPeriod, AccountPerf, AccountPerfJson, PerfByAccount, RemoteData } from "./types";
 import { queryAccountPerf } from "./queries";
-import { arbitrumGoerliLeaderboardsClient as graph } from "lib/subgraph/clients";
+import { getLeaderboardsGraphClient } from "lib/subgraph/clients";
 import { getAddress } from "ethers/lib/utils";
 import { useEffect, useState } from "react";
-// import { useEnsBatchLookup } from "./useEnsBatchLookup";
+import { useChainId } from "lib/chains";
 
 const daysAgo = (days: number) => (
   new Date(Date.now() - 1000 * 60 * 60 * 24 * days).setHours(0, 0, 0, 0) / 1000
@@ -19,6 +19,7 @@ const filtersByPeriod = {
 };
 
 const fetchAccountPerfs = async (
+  chainId: number,
   period: PerfPeriod,
   first: number,
   skip: number,
@@ -27,6 +28,11 @@ const fetchAccountPerfs = async (
 ): Promise<AccountPerfJson[]> => {
   if (!(period in filtersByPeriod)) {
     throw new Error(`Invalid period "${period}"`);
+  }
+
+  const graph = getLeaderboardsGraphClient(chainId);
+  if (!graph) {
+    throw new Error(`Leaderboards Account Performance graph error: Unsupported chain id ${chainId}`);
   }
 
   const res = await graph.query<{ accountPerfs: AccountPerfJson[] }>({
@@ -115,16 +121,18 @@ const sumPerfByAccount = (
 
 export function useAccountPerf(period: PerfPeriod) {
   const [data, setData] = useState<AccountPerf[]>([]);
+  const { chainId } = useChainId();
   const accounts = useSWR([
     "leaderboards/accounts",
     period,
+    chainId,
   ], async () => {
     const pageSize = 1000;
     let data: AccountPerfJson[] = [];
     let skip = 0;
 
     while (true) {
-      const pageData = await fetchAccountPerfs(period, pageSize, skip);
+      const pageData = await fetchAccountPerfs(chainId, period, pageSize, skip);
       if (!pageData || !pageData.length) {
         break;
       }
@@ -148,7 +156,7 @@ export function useAccountPerf(period: PerfPeriod) {
       setData(Object.values(sumPerfByAccount(accounts.data, period, ensNames, avatarUrls)));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [key, period, ensNamesLength, avatarUrlsLength]);
+  }, [chainId, key, period, ensNamesLength, avatarUrlsLength]);
 
   return {
     isLoading: !data && !accounts.error,

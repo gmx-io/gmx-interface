@@ -128,5 +128,7 @@ export function useTopAccounts(period: PerfPeriod) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accounts, positionKeys]);
 
+  // console.log("useTopAccounts:", data, accountPerf.data, positions.data, accountPerf.error, positions.error);
+
   return { isLoading: !data, error: accountPerf.error || positions.error, data };
 }
