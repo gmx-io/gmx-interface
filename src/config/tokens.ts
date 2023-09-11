@@ -977,7 +977,7 @@ export function isChartAvailabeForToken(chainId: number, tokenSymbol: string) {
     return false;
   }
 
-  if (!token || token.isChartDisabled || token.isPlatformToken) return false;
+  if (token.isChartDisabled || token.isPlatformToken) return false;
 
   return true;
 }
