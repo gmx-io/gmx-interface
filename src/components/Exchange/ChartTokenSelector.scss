@@ -109,6 +109,7 @@
 
         &:hover {
           background-color: var(--dark-blue-hover);
+          border-radius: var(--border-radius-sm);
         }
 
         &.token-item {
