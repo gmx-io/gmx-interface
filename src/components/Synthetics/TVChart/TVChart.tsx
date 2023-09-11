@@ -177,6 +177,7 @@ export function TVChart({
               tradeFlags={tradeFlags}
               options={tokenOptions}
               avaialbleTokenOptions={avaialbleTokenOptions}
+              positionsInfo={positionsInfo}
             />
             <div className="Chart-min-max-price">
               <div className="ExchangeChart-main-price">

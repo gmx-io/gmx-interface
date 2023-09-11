@@ -13,6 +13,8 @@ import { AvailableTokenOptions, TradeType } from "domain/synthetics/trade";
 import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
 import { BigNumber } from "ethers";
 import { formatUsd } from "lib/numbers";
+import { PositionsInfoData } from "domain/synthetics/positions";
+import { convertTokenAddress } from "config/tokens";
 
 type TokenOption = Token & {
   maxLongLiquidity: BigNumber;
@@ -29,10 +31,11 @@ type Props = {
   options: Token[] | undefined;
   className?: string;
   avaialbleTokenOptions: AvailableTokenOptions;
+  positionsInfo?: PositionsInfoData;
 };
 
 export default function ChartTokenSelector(props: Props) {
-  const { options, selectedToken, onSelectToken, tradeFlags, avaialbleTokenOptions } = props;
+  const { chainId, options, selectedToken, onSelectToken, tradeFlags, avaialbleTokenOptions, positionsInfo } = props;
   const { sortedAllMarkets } = avaialbleTokenOptions;
   const { isSwap, isLong, isShort } = tradeFlags || {};
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -70,16 +73,32 @@ export default function ChartTokenSelector(props: Props) {
   }, [sortedAllMarkets]);
 
   function handleMarketSelect(token: Token, maxLongLiquidityPool: TokenOption, maxShortLiquidityPool: TokenOption) {
-    if (token.address === selectedToken?.address) return;
+    const tokenAddress = convertTokenAddress(chainId, token.address, "wrapped");
+
+    if (tokenAddress === selectedToken?.address) return;
+
+    const currentExistingPositions = Object.values(positionsInfo || {}).filter((position) => {
+      if (position.isLong === isLong) {
+        return convertTokenAddress(chainId, position.marketInfo.indexTokenAddress, "wrapped") === tokenAddress;
+      }
+    });
 
     let marketTokenAddress;
+    const largestExistingPosition =
+      Array.isArray(currentExistingPositions) && currentExistingPositions.length
+        ? currentExistingPositions.reduce((max, current) => (max.sizeInUsd.gt(current.sizeInUsd) ? max : current))
+        : undefined;
 
-    if (isLong) {
-      marketTokenAddress = maxLongLiquidityPool?.marketTokenAddress;
-    }
+    if (largestExistingPosition) {
+      marketTokenAddress = largestExistingPosition?.marketInfo.marketTokenAddress;
+    } else {
+      if (isLong) {
+        marketTokenAddress = maxLongLiquidityPool?.marketTokenAddress;
+      }
 
-    if (isShort) {
-      marketTokenAddress = maxShortLiquidityPool?.marketTokenAddress;
+      if (isShort) {
+        marketTokenAddress = maxShortLiquidityPool?.marketTokenAddress;
+      }
     }
 
     onSelect({
