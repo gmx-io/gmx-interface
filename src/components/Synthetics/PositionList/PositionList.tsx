@@ -1,8 +1,13 @@
 import { Trans, t } from "@lingui/macro";
+import PositionShare from "components/Exchange/PositionShare";
 import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
 import { OrdersInfoData, PositionOrderInfo, isOrderForPosition } from "domain/synthetics/orders";
-import { PositionsInfoData } from "domain/synthetics/positions";
+import { PositionInfo, PositionsInfoData } from "domain/synthetics/positions";
 import { TradeMode, TradeType } from "domain/synthetics/trade";
+import { ethers } from "ethers";
+import { useChainId } from "lib/chains";
+import { useState } from "react";
+import { useParams } from "react-router-dom";
 
 type Props = {
   onSelectPositionClick: (key: string, tradeMode?: TradeMode) => void;
@@ -23,8 +28,18 @@ type Props = {
 };
 
 export function PositionList(p: Props) {
+  const { chainId } = useChainId();
+  const { account: accountFromParams } = useParams<{ account?: string }>();
+  const [isPositionShareModalOpen, setIsPositionShareModalOpen] = useState(false);
+  const [positionToShare, setPositionToShare] = useState<PositionInfo | null>(null);
+
   const positions = Object.values(p.positionsData || {});
   const orders = Object.values(p.ordersData || {});
+
+  let validAccount = "";
+  if (accountFromParams && ethers.utils.isAddress(accountFromParams)) {
+    validAccount = ethers.utils.getAddress(accountFromParams);
+  }
 
   return (
     <div>
@@ -47,6 +62,10 @@ export function PositionList(p: Props) {
               showPnlAfterFees={p.showPnlAfterFees}
               savedShowPnlAfterFees={p.savedShowPnlAfterFees}
               isLarge={false}
+              onShareClick={() => {
+                setPositionToShare(position);
+                setIsPositionShareModalOpen(true);
+              }}
               currentMarketAddress={p.currentMarketAddress}
               currentCollateralAddress={p.currentCollateralAddress}
               currentTradeType={p.currentTradeType}
@@ -109,10 +128,23 @@ export function PositionList(p: Props) {
                 currentTradeType={p.currentTradeType}
                 openSettings={p.openSettings}
                 hideActions={p.hideActions}
+                onShareClick={() => {
+                  setPositionToShare(position);
+                  setIsPositionShareModalOpen(true);
+                }}
               />
             ))}
         </tbody>
       </table>
+      {isPositionShareModalOpen && (
+        <PositionShare
+          setIsPositionShareModalOpen={setIsPositionShareModalOpen}
+          isPositionShareModalOpen={isPositionShareModalOpen}
+          positionToShare={positionToShare}
+          chainId={chainId}
+          account={validAccount}
+        />
+      )}
     </div>
   );
 }
