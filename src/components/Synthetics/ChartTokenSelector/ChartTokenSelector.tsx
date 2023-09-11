@@ -81,6 +81,7 @@ export default function ChartTokenSelector(props: Props) {
       if (position.isLong === isLong) {
         return convertTokenAddress(chainId, position.marketInfo.indexTokenAddress, "wrapped") === tokenAddress;
       }
+      return false;
     });
 
     let marketTokenAddress;
