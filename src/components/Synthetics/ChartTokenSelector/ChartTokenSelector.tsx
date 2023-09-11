@@ -69,7 +69,7 @@ export default function ChartTokenSelector(props: Props) {
     return groupedMarketsWithIndex;
   }, [sortedAllMarkets]);
 
-  function handleSelectToken(token: Token, maxLongLiquidityPool: TokenOption, maxShortLiquidityPool: TokenOption) {
+  function handleMarketSelect(token: Token, maxLongLiquidityPool: TokenOption, maxShortLiquidityPool: TokenOption) {
     if (token.address === selectedToken?.address) return;
 
     let marketTokenAddress;
@@ -138,7 +138,7 @@ export default function ChartTokenSelector(props: Props) {
                     if (e.key === "Enter" && filteredTokens && filteredTokens.length > 0) {
                       const token = filteredTokens[0];
                       const { maxLongLiquidityPool, maxShortLiquidityPool } = getMaxLongShortLiquidityPool(token);
-                      handleSelectToken(token, maxLongLiquidityPool, maxShortLiquidityPool);
+                      handleMarketSelect(token, maxLongLiquidityPool, maxShortLiquidityPool);
                       close();
                     }
                   }}
@@ -166,7 +166,7 @@ export default function ChartTokenSelector(props: Props) {
                           >
                             <td
                               className="token-item"
-                              onClick={() => handleSelectToken(token, maxLongLiquidityPool, maxShortLiquidityPool)}
+                              onClick={() => handleMarketSelect(token, maxLongLiquidityPool, maxShortLiquidityPool)}
                             >
                               <span className="inline-items-center">
                                 <TokenIcon
