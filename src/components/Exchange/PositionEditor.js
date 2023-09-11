@@ -49,7 +49,7 @@ export default function PositionEditor(props) {
     infoTokens,
     active,
     account,
-    library,
+    signer,
     collateralTokenAddress,
     pendingTxns,
     setPendingTxns,
@@ -82,7 +82,7 @@ export default function PositionEditor(props) {
   const { data: tokenAllowance } = useSWR(
     [active, chainId, collateralTokenAddress, "allowance", account, routerAddress],
     {
-      fetcher: contractFetcher(library, Token),
+      fetcher: contractFetcher(signer, Token),
     }
   );
 
@@ -362,7 +362,7 @@ export default function PositionEditor(props) {
       return;
     }
 
-    const contract = new ethers.Contract(positionRouterAddress, PositionRouter.abi, library.getSigner());
+    const contract = new ethers.Contract(positionRouterAddress, PositionRouter.abi, signer);
     callContract(chainId, contract, method, params, {
       value,
       sentMsg: t`Deposit submitted.`,
@@ -420,7 +420,7 @@ export default function PositionEditor(props) {
 
     const method = "createDecreasePosition";
 
-    const contract = new ethers.Contract(positionRouterAddress, PositionRouter.abi, library.getSigner());
+    const contract = new ethers.Contract(positionRouterAddress, PositionRouter.abi, signer);
     callContract(chainId, contract, method, params, {
       value: minExecutionFee,
       sentMsg: t`Withdrawal submitted.`,
@@ -451,7 +451,7 @@ export default function PositionEditor(props) {
     if (needApproval) {
       approveTokens({
         setIsApproving,
-        library,
+        signer,
         tokenAddress: collateralTokenAddress,
         spender: routerAddress,
         chainId: chainId,

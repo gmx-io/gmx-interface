@@ -1,9 +1,9 @@
-import { useWeb3React } from "@web3-react/core";
 import Token from "abis/Token.json";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { useMulticall } from "lib/multicall";
 import { TokensAllowanceData } from "./types";
 import { BigNumber } from "ethers";
+import useWallet from "lib/wallets/useWallet";
 
 type TokenAllowanceResult = {
   tokensAllowanceData?: TokensAllowanceData;
@@ -16,7 +16,7 @@ export function useTokensAllowanceData(
   p: { spenderAddress?: string; tokenAddresses: string[]; skip?: boolean }
 ): TokenAllowanceResult {
   const { spenderAddress, tokenAddresses } = p;
-  const { account } = useWeb3React();
+  const { account } = useWallet();
 
   const isNativeToken = tokenAddresses.length === 1 && tokenAddresses[0] === NATIVE_TOKEN_ADDRESS;
 

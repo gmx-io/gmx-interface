@@ -1,11 +1,10 @@
-import { Web3Provider } from "@ethersproject/providers";
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 import { SetPendingOrder, SetPendingPosition } from "context/SyntheticsEvents";
 import { TokensData, convertToContractPrice } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber, Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { getPositionKey } from "../positions";
 import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
@@ -41,12 +40,8 @@ export type DecreaseOrderParams = {
   setPendingPosition: SetPendingPosition;
 };
 
-export async function createDecreaseOrderTxn(chainId: number, library: Web3Provider, p: DecreaseOrderParams) {
-  const exchangeRouter = new ethers.Contract(
-    getContract(chainId, "ExchangeRouter"),
-    ExchangeRouter.abi,
-    library.getSigner()
-  );
+export async function createDecreaseOrderTxn(chainId: number, signer: Signer, p: DecreaseOrderParams) {
+  const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
 
   const orderVaultAddress = getContract(chainId, "OrderVault");
 
@@ -113,7 +108,7 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
         maxPrice: p.triggerPrice,
       };
     }
-    await simulateExecuteOrderTxn(chainId, library, {
+    await simulateExecuteOrderTxn(chainId, signer, {
       primaryPriceOverrides,
       secondaryPriceOverrides,
       createOrderMulticallPayload: encodedPayload,
@@ -123,7 +118,7 @@ export async function createDecreaseOrderTxn(chainId: number, library: Web3Provi
   }
 
   const txnCreatedAt = Date.now();
-  const txnCreatedAtBlock = await library.getBlockNumber();
+  const txnCreatedAtBlock = await signer.provider?.getBlockNumber();
 
   const txn = await callContract(chainId, exchangeRouter, "multicall", [encodedPayload], {
     value: totalWntAmount,

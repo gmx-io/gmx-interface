@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useWeb3React } from "@web3-react/core";
 import useSWR from "swr";
 import { ethers } from "ethers";
 
@@ -22,11 +21,12 @@ import { CHAIN_ID, getExplorerUrl } from "config/chains";
 import { contractFetcher } from "lib/contracts";
 import { approveTokens } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
-import { getInjectedHandler } from "lib/wallets";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "lib/numbers";
 import { getTokenBySymbol } from "config/tokens";
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import useWallet from "lib/wallets/useWallet";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 const BASIS_POINTS_DIVISOR = 10000;
 const HOURS_PER_YEAR = 8760;
@@ -287,7 +287,7 @@ function StakeModal(props) {
     setValue,
     active,
     account,
-    library,
+    signer,
     stakingTokenSymbol,
     stakingTokenAddress,
     farmAddress,
@@ -299,20 +299,20 @@ function StakeModal(props) {
   const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR(
     [active, chainId, stakingTokenAddress, "allowance", account, farmAddress],
     {
-      fetcher: contractFetcher(library, Token),
+      fetcher: contractFetcher(signer, Token),
     }
   );
 
   useEffect(() => {
     if (active) {
-      library.on("block", () => {
+      signer.on("block", () => {
         updateTokenAllowance(undefined, true);
       });
       return () => {
-        library.removeAllListeners("block");
+        signer.removeAllListeners("block");
       };
     }
-  }, [active, library, updateTokenAllowance]);
+  }, [active, signer, updateTokenAllowance]);
 
   let amount = parseValue(value, 18);
   const needApproval = tokenAllowance && amount && amount.gt(tokenAllowance);
@@ -330,7 +330,7 @@ function StakeModal(props) {
     if (needApproval) {
       approveTokens({
         setIsApproving,
-        library,
+        signer,
         tokenAddress: stakingTokenAddress,
         spender: farmAddress,
         chainId: CHAIN_ID,
@@ -339,7 +339,7 @@ function StakeModal(props) {
     }
 
     setIsStaking(true);
-    const contract = new ethers.Contract(farmAddress, YieldFarm.abi, library.getSigner());
+    const contract = new ethers.Contract(farmAddress, YieldFarm.abi, signer);
     contract
       .stake(amount)
       .then(async (res) => {
@@ -433,8 +433,7 @@ function StakeModal(props) {
 }
 
 function UnstakeModal(props) {
-  const { isVisible, setIsVisible, title, maxAmount, value, setValue, library, stakingTokenSymbol, farmAddress } =
-    props;
+  const { isVisible, setIsVisible, title, maxAmount, value, setValue, signer, stakingTokenSymbol, farmAddress } = props;
   const [isUnstaking, setIsUnstaking] = useState(false);
 
   let amount = parseValue(value, 18);
@@ -450,7 +449,7 @@ function UnstakeModal(props) {
 
   const onClickPrimary = () => {
     setIsUnstaking(true);
-    const contract = new ethers.Contract(farmAddress, YieldFarm.abi, library.getSigner());
+    const contract = new ethers.Contract(farmAddress, YieldFarm.abi, signer);
     contract
       .unstake(amount)
       .then(async (res) => {
@@ -549,8 +548,8 @@ export default function StakeV1() {
   const [unstakeValue, setUnstakeValue] = useState("");
   const [unstakingFarmAddress, setUnstakingFarmAddress] = useState("");
 
-  const { activate, active, account, library, deactivate } = useWeb3React();
-  const connectWallet = getInjectedHandler(activate, deactivate);
+  const { active, account, signer } = useWallet();
+  const { openConnectModal } = useConnectModal();
 
   const readerAddress = getContract(CHAIN_ID, "Reader");
   const ammFactoryAddressV2 = getContract(CHAIN_ID, "AmmFactoryV2");
@@ -616,35 +615,35 @@ export default function StakeV1() {
   const { data: xgmtSupply, mutate: updateXgmtSupply } = useSWR(
     [active, chainId, readerAddress, "getTokenSupply", xgmtAddress],
     {
-      fetcher: contractFetcher(library, Reader, [XGMT_EXCLUDED_ACCOUNTS]),
+      fetcher: contractFetcher(signer, Reader, [XGMT_EXCLUDED_ACCOUNTS]),
     }
   );
 
   const { data: balances, mutate: updateBalances } = useSWR(
     ["Stake:balances", chainId, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero],
     {
-      fetcher: contractFetcher(library, Reader, [tokens]),
+      fetcher: contractFetcher(signer, Reader, [tokens]),
     }
   );
 
   const { data: stakingInfo, mutate: updateStakingInfo } = useSWR(
     [active, chainId, readerAddress, "getStakingInfo", account || AddressZero],
     {
-      fetcher: contractFetcher(library, Reader, [yieldTrackers]),
+      fetcher: contractFetcher(signer, Reader, [yieldTrackers]),
     }
   );
 
   const { data: totalStakedInfo, mutate: updateTotalStakedInfo } = useSWR(
     [active, chainId, readerAddress, "getTotalStaked"],
     {
-      fetcher: contractFetcher(library, Reader, [yieldTokens]),
+      fetcher: contractFetcher(signer, Reader, [yieldTokens]),
     }
   );
 
   const { data: pairInfo, mutate: updatePairInfo } = useSWR(
     [active, chainId, readerAddress, "getPairInfo", ammFactoryAddressV2],
     {
-      fetcher: contractFetcher(library, Reader, [pairTokens]),
+      fetcher: contractFetcher(signer, Reader, [pairTokens]),
     }
   );
 
@@ -666,7 +665,7 @@ export default function StakeV1() {
 
   useEffect(() => {
     if (active) {
-      library.on("block", () => {
+      signer.on("block", () => {
         updateXgmtSupply(undefined, true);
         updateBalances(undefined, true);
         updateStakingInfo(undefined, true);
@@ -674,10 +673,10 @@ export default function StakeV1() {
         updatePairInfo(undefined, true);
       });
       return () => {
-        library.removeAllListeners("block");
+        signer.removeAllListeners("block");
       };
     }
-  }, [active, library, updateXgmtSupply, updateBalances, updateStakingInfo, updateTotalStakedInfo, updatePairInfo]);
+  }, [active, signer, updateXgmtSupply, updateBalances, updateStakingInfo, updateTotalStakedInfo, updatePairInfo]);
 
   const claim = (farmAddress, rewards) => {
     if (!active || !account) {
@@ -693,7 +692,7 @@ export default function StakeV1() {
       return;
     }
 
-    const contract = new ethers.Contract(farmAddress, YieldToken.abi, library.getSigner());
+    const contract = new ethers.Contract(farmAddress, YieldToken.abi, signer);
     contract
       .claim(account)
       .then(async (res) => {
@@ -760,7 +759,7 @@ export default function StakeV1() {
         setValue={setStakeValue}
         active={active}
         account={account}
-        library={library}
+        signer={signer}
         stakingTokenAddress={stakingTokenAddress}
         farmAddress={stakingFarmAddress}
       />
@@ -773,7 +772,7 @@ export default function StakeV1() {
         setValue={setUnstakeValue}
         active={active}
         account={account}
-        library={library}
+        signer={signer}
         farmAddress={unstakingFarmAddress}
       />
       <div className="Stake-title App-hero">
@@ -870,7 +869,7 @@ export default function StakeV1() {
                 </button>
               )}
               {!active && (
-                <button className="App-button-option App-card-option" onClick={connectWallet}>
+                <button className="App-button-option App-card-option" onClick={openConnectModal}>
                   <Trans>Connect Wallet</Trans>
                 </button>
               )}
@@ -948,7 +947,7 @@ export default function StakeV1() {
                 </button>
               )}
               {!active && (
-                <button className="App-button-option App-card-option" onClick={connectWallet}>
+                <button className="App-button-option App-card-option" onClick={openConnectModal}>
                   <Trans>Connect Wallet</Trans>
                 </button>
               )}
@@ -1030,7 +1029,7 @@ export default function StakeV1() {
                 </button>
               )}
               {!active && (
-                <button className="App-button-option App-card-option" onClick={connectWallet}>
+                <button className="App-button-option App-card-option" onClick={openConnectModal}>
                   <Trans>Connect Wallet</Trans>
                 </button>
               )}
@@ -1112,7 +1111,7 @@ export default function StakeV1() {
                 </button>
               )}
               {!active && (
-                <button className="App-button-option App-card-option" onClick={connectWallet}>
+                <button className="App-button-option App-card-option" onClick={openConnectModal}>
                   <Trans>Connect Wallet</Trans>
                 </button>
               )}
@@ -1187,7 +1186,7 @@ export default function StakeV1() {
                 </button>
               )}
               {!active && (
-                <button className="App-button-option App-card-option" onClick={connectWallet}>
+                <button className="App-button-option App-card-option" onClick={openConnectModal}>
                   <Trans>Connect Wallet</Trans>
                 </button>
               )}

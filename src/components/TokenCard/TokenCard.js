@@ -4,8 +4,6 @@ import { Link } from "react-router-dom";
 
 import { isHomeSite } from "lib/legacy";
 
-import { useWeb3React } from "@web3-react/core";
-
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { getIcon } from "config/icons";
@@ -13,6 +11,7 @@ import { useChainId } from "lib/chains";
 import { switchNetwork } from "lib/wallets";
 import APRLabel from "../APRLabel/APRLabel";
 import { HeaderLink } from "../Header/HeaderLink";
+import useWallet from "lib/wallets/useWallet";
 
 const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
@@ -21,7 +20,7 @@ const gmIcon = getIcon("common", "gm");
 export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }) {
   const isHome = isHomeSite();
   const { chainId } = useChainId();
-  const { active } = useWeb3React();
+  const { active } = useWallet();
 
   const changeNetwork = useCallback(
     (network) => {
