@@ -1,8 +1,7 @@
-import { Web3Provider } from "@ethersproject/providers";
 import { NATIVE_TOKEN_ADDRESS, getToken, getWrappedToken } from "config/tokens";
 import { callContract } from "lib/contracts";
 import WETH from "abis/WETH.json";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber, Signer, ethers } from "ethers";
 import { t } from "@lingui/macro";
 import { formatTokenAmount } from "lib/numbers";
 
@@ -12,11 +11,11 @@ type WrapOrUnwrapParams = {
   setPendingTxns: (txns: any) => void;
 };
 
-export function createWrapOrUnwrapTxn(chainId: number, library: Web3Provider, p: WrapOrUnwrapParams) {
+export function createWrapOrUnwrapTxn(chainId: number, signer: Signer, p: WrapOrUnwrapParams) {
   const wrappedToken = getWrappedToken(chainId);
   const nativeToken = getToken(chainId, NATIVE_TOKEN_ADDRESS);
 
-  const contract = new ethers.Contract(wrappedToken.address, WETH.abi, library.getSigner());
+  const contract = new ethers.Contract(wrappedToken.address, WETH.abi, signer);
 
   if (p.isWrap) {
     return callContract(chainId, contract, "deposit", [], {
