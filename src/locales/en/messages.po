@@ -2506,6 +2506,7 @@ msgstr "MEV Optimizer"
 msgid "MINTABLE"
 msgstr "MINTABLE"
 
+#: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -2516,6 +2517,7 @@ msgstr "Mark"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -2536,14 +2538,6 @@ msgstr "Mark"
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark Price"
 msgstr "Mark Price"
-
-#: src/components/Exchange/OrderEditor.js
-msgid "Mark Price:"
-msgstr "Mark Price:"
-
-#: src/components/Exchange/OrderEditor.js
-msgid "Mark: {0}"
-msgstr "Mark: {0}"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js

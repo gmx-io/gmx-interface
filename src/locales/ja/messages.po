@@ -2503,6 +2503,7 @@ msgstr "MEVオプティマイザー"
 msgid "MINTABLE"
 msgstr ""
 
+#: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -2513,6 +2514,7 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -2533,14 +2535,6 @@ msgstr ""
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark Price"
 msgstr "マーク価格"
-
-#: src/components/Exchange/OrderEditor.js
-msgid "Mark Price:"
-msgstr "マーク価格"
-
-#: src/components/Exchange/OrderEditor.js
-msgid "Mark: {0}"
-msgstr "マーク: {0}"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
