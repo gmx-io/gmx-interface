@@ -168,7 +168,7 @@ export function useOpenPositions() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pricesUpdatedAt, chainId, positionsHash]);
 
-  const positionsInfo = usePositionsInfo(chainId, positionsHash, keys, prices);
+  const positionsInfo = usePositionsInfo(positionsHash, keys, prices);
   const error = positions.error || positionsInfo.error;
   const isLoading = !error && (
     !positions.data ||

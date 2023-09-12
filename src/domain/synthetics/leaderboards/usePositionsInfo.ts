@@ -22,6 +22,10 @@ import {
   getPositionPnlUsd,
   usePositionsConstants,
 } from "../positions";
+import useSWR from "swr";
+import { useWeb3React } from "@web3-react/core";
+import { useBatchProvider } from "./useBatchProvider";
+import { useChainId } from "lib/chains";
 
 type PositionsResult = {
   isLoading: boolean;
@@ -217,6 +221,84 @@ function parsePositionsInfo(
 }
 
 export function usePositionsInfo(
+  positionsHash: string,
+  positionKeys: string[],
+  marketPrices: ContractMarketPrices[]
+): PositionsResult {
+  const { chainId } = useChainId();
+  const { library } = useWeb3React()
+  const { minCollateralUsd } = usePositionsConstants(chainId);
+  const { marketsInfoData, tokensData, pricesUpdatedAt } = useMarketsInfo(chainId);
+  const provider = useBatchProvider(chainId);
+  const { data: positionsInfoJson } = useSWR<PositionJson[] | undefined>(
+    ["usePositionsInfo", chainId, provider, positionsHash],
+    async () => {
+      if (!provider) {
+        return;
+      }
+
+      const chunkSize = 100;
+      const numChunks = Math.ceil(positionKeys.length / chunkSize);
+      const requests: Promise<PositionJson[]>[] = [];
+      const contract = new ethers.Contract(
+        getContract(chainId, "SyntheticsReader"),
+        SyntheticsReader.abi,
+        library.getSigner(),
+      );
+
+      const DataStoreContract = getContract(chainId, "DataStore");
+      const ReferralStorageContract = getContract(chainId, "ReferralStorage");
+
+      for (let i = 0; i < numChunks; i++) {
+        requests.push((async () => {
+          const args = [
+            DataStoreContract,
+            ReferralStorageContract,
+            positionKeys.slice(chunkSize * i, chunkSize * (i + 1)),
+            marketPrices.slice(chunkSize * i, chunkSize * (i + 1)),
+            ethers.constants.AddressZero, // uiFeeReceiver
+          ];
+          await new Promise((res) => setTimeout(res, i * 50));
+          return await contract.getAccountPositionInfoList(...args) as PositionJson[];
+        })());
+      }
+
+      try {
+        // console.info(`Executing ${requests.length} requests.`);
+        const chunks = await Promise.all(requests);
+        const data = chunks.flat();
+        // console.info(`Fetched ${chunks.length} chunks of ${data.length} items total.`);
+        return data;
+      } catch (e) {
+        // console.error("SyntheticsReader.getAccountPositionInfoList error:", e);
+        throw e;
+      }
+    },
+    { refreshInterval: 20000 }
+  );
+
+  const positionsInfoHash = (positionsInfoJson || []).map((p) => getPositionKey(
+    p.position.addresses.account,
+    p.position.addresses.market,
+    p.position.addresses.collateralToken,
+    p.position.flags.isLong
+  )).join("-");
+
+  const data = useMemo(() => {
+    // console.info("Trying to parse data", positionsInfoJson);
+    if (!positionsInfoJson || !positionsInfoJson.length) {
+      return;
+    }
+    return positionsInfoJson && positionsInfoJson.length === positionKeys.length && marketsInfoData && tokensData && minCollateralUsd
+      ? parsePositionsInfo(positionKeys, positionsInfoJson as PositionJson[], marketsInfoData, tokensData, minCollateralUsd)
+      : undefined;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [positionsInfoHash, pricesUpdatedAt, chainId]);
+
+  return { isLoading: !data, error: null, data: data || [] };
+}
+
+export function _usePositionsInfo__tmp(
   chainId: number,
   positionsHash: string,
   positionKeys: string[],
