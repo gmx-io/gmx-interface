@@ -1,5 +1,4 @@
 import { gql } from "@apollo/client";
-import { useWeb3React } from "@web3-react/core";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
@@ -10,6 +9,7 @@ import { useMemo } from "react";
 import useSWR from "swr";
 import { useFixedAddreseses } from "../common/useFixedAddresses";
 import { ClaimCollateralAction, ClaimMarketItem, ClaimType } from "./types";
+import useWallet from "lib/wallets/useWallet";
 
 export type ClaimCollateralHistoryResult = {
   claimActions?: ClaimCollateralAction[];
@@ -36,7 +36,7 @@ export function useClaimCollateralHistory(
 ): ClaimCollateralHistoryResult {
   const { pageIndex, pageSize, marketsInfoData, tokensData } = p;
 
-  const { account } = useWeb3React();
+  const { account } = useWallet();
   const fixedAddresses = useFixedAddreseses(marketsInfoData, tokensData);
   const client = getSyntheticsGraphClient(chainId);
 

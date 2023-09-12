@@ -22,7 +22,7 @@ import ReferralInfoCard from "./ReferralInfoCard";
 import "./TradersStats.scss";
 import { getSharePercentage, getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
 import usePagination from "./usePagination";
-import { useWeb3React } from "@web3-react/core";
+import useWallet from "lib/wallets/useWallet";
 
 type Props = {
   referralsData?: TotalReferralsStats;
@@ -43,7 +43,7 @@ function TradersStats({
   pendingTxns,
   discountShare,
 }: Props) {
-  const { library } = useWeb3React();
+  const { signer } = useWallet();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const editModalRef = useRef<HTMLDivElement>(null);
 
@@ -60,7 +60,7 @@ function TradersStats({
   );
 
   const currentDiscountDistributions = getCurrentData();
-  const { totalRebate } = useTiers(library, chainId, traderTier);
+  const { totalRebate } = useTiers(signer, chainId, traderTier);
   const currentTierDiscount = getSharePercentage(traderTier, discountShare, totalRebate);
 
   const open = () => setIsEditModalOpen(true);

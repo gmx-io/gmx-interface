@@ -239,7 +239,7 @@ export function getChainlinkChartPricesFromGraph(tokenSymbol, period) {
 export function useChartPrices(chainId, symbol, isStable, period, currentAveragePrice) {
   const swrKey = !isStable && symbol ? ["getChartCandles", chainId, symbol, period] : null;
   let { data: prices, mutate: updatePrices } = useSWR(swrKey, {
-    fetcher: async (...args) => {
+    fetcher: async () => {
       try {
         return await getChartPricesFromStats(chainId, symbol, period);
       } catch (ex) {

@@ -35,6 +35,7 @@ import FeesTooltip from "./FeesTooltip";
 import { getTokenInfo, getUsd } from "domain/tokens";
 import SlippageInput from "components/SlippageInput/SlippageInput";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import useWallet from "lib/wallets/useWallet";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
@@ -120,7 +121,6 @@ export default function ConfirmationBox(props) {
     feeBps,
     chainId,
     orders,
-    library,
     setPendingTxns,
     pendingTxns,
     minExecutionFee,
@@ -132,7 +132,7 @@ export default function ConfirmationBox(props) {
     infoTokens,
     fundingRate,
   } = props;
-
+  const { signer } = useWallet();
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
   const [isProfitWarningAccepted, setIsProfitWarningAccepted] = useState(false);
   const [isTriggerWarningAccepted, setIsTriggerWarningAccepted] = useState(false);
@@ -152,9 +152,9 @@ export default function ConfirmationBox(props) {
 
   const onCancelOrderClick = useCallback(
     (order) => {
-      handleCancelOrder(chainId, library, order, { pendingTxns, setPendingTxns });
+      handleCancelOrder(chainId, signer, order, { pendingTxns, setPendingTxns });
     },
-    [library, pendingTxns, setPendingTxns, chainId]
+    [signer, pendingTxns, setPendingTxns, chainId]
   );
 
   let minOut;
@@ -472,7 +472,7 @@ export default function ConfirmationBox(props) {
                 </p>
                 <button
                   onClick={() =>
-                    cancelDecreaseOrder(chainId, library, index, {
+                    cancelDecreaseOrder(chainId, signer, index, {
                       successMsg: t`Order cancelled`,
                       failMsg: t`Cancel failed`,
                       sentMsg: t`Cancel submitted`,
@@ -489,7 +489,7 @@ export default function ConfirmationBox(props) {
         </ul>
       </>
     );
-  }, [decreaseOrdersThatWillBeExecuted, isSwap, chainId, library, pendingTxns, setPendingTxns, isLong]);
+  }, [decreaseOrdersThatWillBeExecuted, isSwap, chainId, signer, pendingTxns, setPendingTxns, isLong]);
 
   const renderExistingTriggerWarning = useCallback(() => {
     if (
