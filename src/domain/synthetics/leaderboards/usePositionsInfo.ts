@@ -23,12 +23,9 @@ import {
   usePositionsConstants,
 } from "../positions";
 import useSWR from "swr";
-import { useWeb3React } from "@web3-react/core";
-import { useBatchProvider } from "./useBatchProvider";
 import { useChainId } from "lib/chains";
 import { Profiler } from "./utils";
 import { getProvider } from "lib/rpc";
-import { StaticJsonRpcProvider } from "@ethersproject/providers";
 
 type PositionsResult = {
   isLoading: boolean;
@@ -250,7 +247,6 @@ export function usePositionsInfo(
   const { data: positionsInfoJson } = useSWR<PositionJson[] | undefined>(
     positionKeys.length ? ["usePositionsInfo", chainId, positionsHash] : null,
     async () => {
-      console.info("Fetching it again");
       p.current("first fetcher entry");
       const chunkSize = 150;
       const numChunks = Math.ceil(positionKeys.length / chunkSize);
@@ -282,15 +278,14 @@ export function usePositionsInfo(
 
       try {
         p.current(`${requests.length} requests sent`);
-        console.info(`Executing ${requests.length} requests.`);
         const chunks = await Promise.all(requests);
 
         p.current(`${chunks.length} chunks fetched`);
         const data = chunks.flat();
-        console.info(`Fetched ${chunks.length} chunks of ${data.length} items total.`);
         p.current(`${data.length} items fetched`);
         return data;
       } catch (e) {
+        // eslint-disable-next-line no-console
         console.error("SyntheticsReader.getAccountPositionInfoList error:", e);
         p.current(`batch call error: ${e.message}`);
         throw e;
