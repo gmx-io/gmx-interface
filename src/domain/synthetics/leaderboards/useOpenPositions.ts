@@ -4,7 +4,7 @@ import { getAddress } from "ethers/lib/utils";
 import { queryOpenPositions } from "./queries"
 import { getLeaderboardsGraphClient } from "lib/subgraph/clients";
 import { OpenPositionJson, OpenPosition } from "./types";
-import { ContractMarketPrices, getContractMarketPrices, useMarketsInfo } from "../markets";
+import { ContractMarketPrices, getContractMarketPrices, useMarkets, useMarketsInfo } from "../markets";
 import { convertToUsd } from "../tokens";
 import { usePositionsInfo } from "./usePositionsInfo";
 import { PositionsInfoData, getPositionKey } from "../positions";
@@ -145,19 +145,20 @@ export function useOpenPositions() {
   const ensNames = {}; // FIXME: use useEnsBatchLookup instead
   const avatarUrls = {}; // FIXME: use useEnsBatchLookup instead
 
-  const { tokensData, marketsInfoData, pricesUpdatedAt } = useMarketsInfo(chainId);
+  const { marketsData } = useMarkets(chainId);
+  const { tokensData, pricesUpdatedAt } = useMarketsInfo(chainId);
   const positions = useSWR(['/leaderboards/positions', chainId], fetchOpenPositions(chainId));
   const positionsHash = (positions.data || []).map(p => p.id).join("-");
   const { keys, prices } =  useMemo((): { keys: string[], prices: ContractMarketPrices[] } => {
-    if (!marketsInfoData || !tokensData) {
+    if (!marketsData || !tokensData) {
       return { keys: [], prices: [] };
     }
 
     const keys: string[] = [];
     const prices: ContractMarketPrices[] = [];
     for (const p of positions.data || []) {
-      const marketData = marketsInfoData[getAddress(p.market)];
-      const contractMarketPrices = getContractMarketPrices(tokensData, marketData);
+      const market = marketsData[getAddress(p.market)];
+      const contractMarketPrices = getContractMarketPrices(tokensData, market);
       if (contractMarketPrices) {
         keys.push(p.id);
         prices.push(contractMarketPrices);
