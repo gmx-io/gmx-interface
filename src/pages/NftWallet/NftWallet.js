@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
-import { useWeb3React } from "@web3-react/core";
 
 import ERC721 from "abis/ERC721.json";
 
@@ -8,6 +7,7 @@ import "./NftWallet.css";
 import { t, Trans } from "@lingui/macro";
 import { callContract } from "lib/contracts";
 import { useChainId } from "lib/chains";
+import useWallet from "lib/wallets/useWallet";
 
 export default function NftWallet() {
   const [nftAddress, setNftAddress] = useState("");
@@ -15,7 +15,7 @@ export default function NftWallet() {
   const [receiver, setReceiver] = useState("");
   const [isSubmitting, setIsSubmitting] = useState("");
 
-  const { active, account, library } = useWeb3React();
+  const { active, account, signer } = useWallet();
   const { chainId } = useChainId();
 
   function getTransferError() {
@@ -56,7 +56,7 @@ export default function NftWallet() {
 
   function transferNft() {
     setIsSubmitting(true);
-    const contract = new ethers.Contract(nftAddress, ERC721.abi, library.getSigner());
+    const contract = new ethers.Contract(nftAddress, ERC721.abi, signer);
     callContract(chainId, contract, "transferFrom", [account, receiver, nftId], {
       sentMsg: t`Transfer submitted!`,
       failMsg: t`Transfer failed.`,

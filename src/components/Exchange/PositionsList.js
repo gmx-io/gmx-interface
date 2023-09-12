@@ -64,7 +64,7 @@ export default function PositionsList(props) {
     infoTokens,
     active,
     account,
-    library,
+    signer,
     pendingTxns,
     setPendingTxns,
     setListSection,
@@ -135,7 +135,7 @@ export default function PositionsList(props) {
         infoTokens={infoTokens}
         active={active}
         account={account}
-        library={library}
+        signer={signer}
         collateralTokenAddress={collateralTokenAddress}
         pendingTxns={pendingTxns}
         setPendingTxns={setPendingTxns}
@@ -191,7 +191,7 @@ export default function PositionsList(props) {
           active={active}
           account={account}
           orders={orders}
-          library={library}
+          signer={signer}
           pendingTxns={pendingTxns}
           setPendingTxns={setPendingTxns}
           flagOrdersEnabled={flagOrdersEnabled}

@@ -29,20 +29,13 @@ msgstr "06 Ene 2022"
 msgid "24h Volume"
 msgstr "24h Volumen"
 
-#: src/App/App.js
-msgid "<0>Install Coinbase Wallet</0> to start using GMX."
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+msgid "<0><1>{indexName}</1><2>[{poolName}]</2></0> <3>selected in order form</3>"
 msgstr ""
 
-#: src/App/App.js
-msgid "<0>Install Coinbase Wallet</0>, and use GMX with its built-in browser."
-msgstr ""
-
-#: src/App/App.js
-msgid "<0>Install MetaMask</0> to start using GMX."
-msgstr ""
-
-#: src/App/App.js
-msgid "<0>Install MetaMask</0>, and use GMX with its built-in browser."
+#: src/pages/Dashboard/DashboardV2.js
+msgid "<0>GM Pools total value ({chainName}).</0>"
 msgstr ""
 
 #: src/components/Exchange/OrdersToa.js
@@ -82,7 +75,6 @@ msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>This value may 
 msgstr ""
 
 #: src/lib/contracts/transactionErrors.tsx
-#: src/lib/wallets/index.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr ""
 
@@ -377,8 +369,8 @@ msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol},
 msgstr "Como no hay liquidez suficiente en GLP para intercambiar {0} a {swapTokenSymbol}, puedes usar la opción a continuación para hacerlo:"
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})."
-msgstr "Activos bajo gestión: GMX stakeados (Todas las cadenas) + Reserva GLP ({chainName})."
+msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName}) +  GM Pools ({chainName})."
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -470,6 +462,10 @@ msgstr "Tasa de Préstamo / Día"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Borrow Fee Rate"
+msgstr ""
+
+#: src/components/Synthetics/BridgingInfo/BridgingInfo.tsx
+msgid "Bridge {tokenSymbol} to {chainName} using any of the options below:"
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
@@ -846,14 +842,6 @@ msgstr ""
 msgid "Code already taken"
 msgstr "Código ya cogido"
 
-#: src/App/App.js
-msgid "Coinbase Wallet"
-msgstr "Coinbase Wallet"
-
-#: src/App/App.js
-msgid "Coinbase Wallet not detected."
-msgstr "Coinbase Wallet no detectada."
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -990,7 +978,6 @@ msgstr ""
 msgid "Connect"
 msgstr "Conectar"
 
-#: src/App/App.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Header/AppHeaderUser.tsx
@@ -1010,10 +997,6 @@ msgstr "Conectar"
 #: src/pages/Stake/StakeV2.js
 msgid "Connect Wallet"
 msgstr "Conectar Monedero"
-
-#: src/lib/wallets/index.tsx
-msgid "Connected to {0}"
-msgstr "Conectado a {0}"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
@@ -1584,6 +1567,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -1619,7 +1603,7 @@ msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgstr "Ejecutar Orden: Intercambiar {fromAmountDisplay} {0} por {toAmountDisplay} {1}"
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price: {1}, Market: {2}"
+msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price:{1}, Market: {2}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -1663,7 +1647,6 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Fees"
 msgstr "Comisiones"
 
@@ -1834,6 +1817,7 @@ msgstr "Venta de GLP desactivada, actualización {0} pendiente"
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
+#: src/pages/Dashboard/DashboardV2.js
 msgid "GM Pools"
 msgstr ""
 
@@ -2491,7 +2475,6 @@ msgid "Long Open Interest"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Long Positions"
 msgstr "Posiciones largas"
 
@@ -2529,6 +2512,7 @@ msgstr "Optimizador de MEV"
 msgid "MINTABLE"
 msgstr ""
 
+#: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -2539,6 +2523,7 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -2555,18 +2540,9 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark Price"
 msgstr "Precio de Referencia"
-
-#: src/components/Exchange/OrderEditor.js
-msgid "Mark Price:"
-msgstr "Precio de Referencia:"
-
-#: src/components/Exchange/OrderEditor.js
-msgid "Mark: {0}"
-msgstr "Referencia: {0}"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -2761,14 +2737,6 @@ msgstr "Máx: {0}"
 msgid "Media Kit"
 msgstr "Kit de Medios"
 
-#: src/App/App.js
-msgid "MetaMask"
-msgstr "MetaMask"
-
-#: src/App/App.js
-msgid "MetaMask not detected."
-msgstr "MetaMask no detectado."
-
 #: src/components/Migration/Migration.js
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
@@ -2844,6 +2812,7 @@ msgid "Mintable"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Dashboard/DashboardV2.js
 msgid "More Info"
 msgstr "Más Info"
@@ -2976,7 +2945,6 @@ msgstr "Solo letras, números y guiones bajos están permitidos"
 msgid "Open Fee"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
 msgid "Open Interest"
@@ -3226,6 +3194,7 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 #: src/pages/Actions/Actions.js
 msgid "PnL"
@@ -3504,6 +3473,7 @@ msgstr ""
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Receive"
@@ -3892,7 +3862,6 @@ msgid "Short Open Interest"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Short Positions"
 msgstr "Posiciones en Corto"
 
@@ -4015,13 +3984,11 @@ msgid "Stake submitted! <0>View status.</0>"
 msgstr "Stakeo enviado! <0>Ver estado.</0>"
 
 #: src/components/Glp/GlpSwap.js
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -4457,7 +4424,6 @@ msgid "Total Claimable"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Total Fees"
 msgstr "Comisiones Totales"
 
@@ -4502,13 +4468,11 @@ msgid "Total Trading Volume"
 msgstr "Volumen Total de Operaciones"
 
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
 msgid "Total Users"
 msgstr "Usuarios Totales"
 
 #: src/components/Referrals/AffiliatesStats.tsx
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Total Volume"
 msgstr "Volumen Total"
@@ -4771,10 +4735,6 @@ msgstr ""
 msgid "Unstaking..."
 msgstr "Destakeando..."
 
-#: src/lib/wallets/index.tsx
-msgid "Unsupported chain. Switch to Arbitrum network on your wallet and try again"
-msgstr "Cadena no soportada. Cambia a la red de Arbitrum en tu monedero y vuelve a intentarlo"
-
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/JoinReferralCode.js
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
@@ -4962,10 +4922,6 @@ msgstr "Ver en el Explorador"
 msgid "View status."
 msgstr "Ver estado."
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Volume"
-msgstr "Volumen"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Volume on V1"
 msgstr ""
@@ -5044,10 +5000,6 @@ msgstr "Monedero no conectado"
 #: src/pages/Stake/StakeV1.js
 msgid "Wallet not yet connected"
 msgstr "Monedero no conectado todavía"
-
-#: src/App/App.js
-msgid "WalletConnect"
-msgstr "WalletConnect"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Weight"
@@ -5369,6 +5321,10 @@ msgstr ""
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr ""
 
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
+msgid "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>;"
+msgstr ""
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"
 msgstr "¡{0} Aprobado!"
@@ -5455,8 +5411,6 @@ msgid "{0} price"
 msgstr "{0} precio"
 
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "{0} selected in order form"
 msgstr "{0} seleccionado en el formulario de órden"
 
@@ -5469,10 +5423,6 @@ msgstr "{0} tokens han sido convertidos a GMX desde {1} esGMX depositados para a
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "{0} will be swapped to {1} on order execution."
-msgstr ""
-
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
-msgid "{0} {1} market selected"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -5503,7 +5453,7 @@ msgid ""
 msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "{actionText} Deposit {collateralText} into {positionText},  Market: {0}"
+msgid "{actionText} Deposit {collateralText} into {positionText}, Market: {0}"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
@@ -5519,11 +5469,11 @@ msgid "{actionText} Swap {fromText} for {toText}"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "{actionText} Withdraw {collateralText} from {positionText},  Market: {0}"
+msgid "{actionText} Withdraw {collateralText} from {positionText}, Market: {0}"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "{actionText} {increaseText} {positionText} {sizeDeltaText}, {pricePrefix}: {0},  Market: {1}"
+msgid "{actionText} {increaseText} {positionText} {sizeDeltaText}, {pricePrefix}: {0}, Market: {1}"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
@@ -5605,9 +5555,5 @@ msgid "{positionText} {sizeDeltaText}, Price: {0}, Market: {1}"
 msgstr ""
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
-msgid "{title} on Arbitrum:"
-msgstr "{title} en Arbitrum:"
-
-#: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
-msgid "{title} on Avalanche:"
-msgstr "{title} en Avalanche:"
+msgid "{title}"
+msgstr ""

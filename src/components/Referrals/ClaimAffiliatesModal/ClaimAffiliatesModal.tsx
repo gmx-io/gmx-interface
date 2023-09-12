@@ -1,10 +1,9 @@
 import { t } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
 import Button from "components/Button/Button";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import Modal from "components/Modal/Modal";
 import Tooltip from "components/Tooltip/Tooltip";
-import { useMarketsInfo } from "domain/synthetics/markets";
+import { getMarketIndexName, getMarketPoolName, useMarketsInfo } from "domain/synthetics/markets";
 import { AffiliateReward } from "domain/synthetics/referrals/types";
 import { useAffiliateRewards } from "domain/synthetics/referrals/useAffiliateRewards";
 import { getTotalClaimableAffiliateRewardsUsd } from "domain/synthetics/referrals/utils";
@@ -17,6 +16,7 @@ import { claimAffiliateRewardsTxn } from "domain/synthetics/referrals/claimAffil
 
 import "./ClaimAffiliatesModal.scss";
 import { useState } from "react";
+import useWallet from "lib/wallets/useWallet";
 
 type Props = {
   onClose: () => void;
@@ -25,7 +25,7 @@ type Props = {
 
 export function ClaimAffiliatesModal(p: Props) {
   const { onClose, setPendingTxns = () => null } = p;
-  const { account, library } = useWeb3React();
+  const { account, signer } = useWallet();
   const { chainId } = useChainId();
 
   const { marketsInfoData } = useMarketsInfo(chainId);
@@ -46,6 +46,8 @@ export function ClaimAffiliatesModal(p: Props) {
     }
 
     const { longToken, shortToken } = marketInfo;
+    const indexName = getMarketIndexName(marketInfo);
+    const poolName = getMarketPoolName(marketInfo);
 
     const { longTokenAmount, shortTokenAmount } = reward;
 
@@ -70,7 +72,16 @@ export function ClaimAffiliatesModal(p: Props) {
 
     return (
       <div key={marketInfo.marketTokenAddress} className="App-card-content">
-        <ExchangeInfoRow className="ClaimModal-row" label={t`Market`} value={marketInfo.name} />
+        <ExchangeInfoRow
+          className="ClaimModal-row"
+          label={t`Market`}
+          value={
+            <div className="items-center">
+              <span>{indexName}</span>
+              <span className="subtext">[{poolName}]</span>
+            </div>
+          }
+        />
         <ExchangeInfoRow
           className="ClaimModal-row"
           label={t`Rewards`}
@@ -96,7 +107,7 @@ export function ClaimAffiliatesModal(p: Props) {
   }
 
   function onSubmit() {
-    if (!account || !library || !affiliateRewardsData || !marketsInfoData) return;
+    if (!account || !signer || !affiliateRewardsData || !marketsInfoData) return;
 
     const marketAddresses: string[] = [];
     const tokenAddresses: string[] = [];
@@ -121,7 +132,7 @@ export function ClaimAffiliatesModal(p: Props) {
 
     setIsSubmitting(true);
 
-    claimAffiliateRewardsTxn(chainId, library, {
+    claimAffiliateRewardsTxn(chainId, signer, {
       account,
       rewardsParams: {
         marketAddresses: marketAddresses,

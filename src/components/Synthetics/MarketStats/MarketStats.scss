@@ -52,6 +52,10 @@
   color: #a9a9b0;
 }
 
+.gm-market-name {
+  line-height: 1.457;
+}
+
 @media (max-width: 900px) {
   .MarketStats-card {
     margin: 0;
@@ -65,5 +69,16 @@
     .Tooltip-popup {
       min-width: 22rem;
     }
+  }
+}
+
+@media (max-width: 380px) {
+  .Gm-stats-title {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .Gm-stats-title .subtext {
+    margin-left: 0;
   }
 }

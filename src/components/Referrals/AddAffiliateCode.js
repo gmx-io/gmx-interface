@@ -2,19 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { getCodeError, getReferralCodeTakenStatus, getSampleReferrarStat } from "./referralsHelper";
-import { useWeb3React } from "@web3-react/core";
 import { ARBITRUM } from "config/chains";
 import { helperToast } from "lib/helperToast";
 import { useDebounce } from "lib/useDebounce";
 import Button from "components/Button/Button";
+import useWallet from "lib/wallets/useWallet";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 
-function AddAffiliateCode({
-  handleCreateReferralCode,
-  active,
-  connectWallet,
-  setRecentlyAddedCodes,
-  recentlyAddedCodes,
-}) {
+function AddAffiliateCode({ handleCreateReferralCode, active, setRecentlyAddedCodes, recentlyAddedCodes }) {
+  const { openConnectModal } = useConnectModal();
   return (
     <div className="referral-card section-center mt-medium">
       <h2 className="title">
@@ -33,7 +29,7 @@ function AddAffiliateCode({
             setRecentlyAddedCodes={setRecentlyAddedCodes}
           />
         ) : (
-          <Button variant="primary-action" className="w-full" onClick={connectWallet}>
+          <Button variant="primary-action" className="w-full" onClick={openConnectModal}>
             <Trans>Connect Wallet</Trans>
           </Button>
         )}
@@ -54,7 +50,7 @@ export function AffiliateCodeForm({
   const inputRef = useRef("");
   const [referralCodeCheckStatus, setReferralCodeCheckStatus] = useState("ok");
   const debouncedReferralCode = useDebounce(referralCode, 300);
-  const { account, chainId } = useWeb3React();
+  const { account, chainId } = useWallet();
   useEffect(() => {
     inputRef.current.focus();
   }, []);

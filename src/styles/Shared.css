@@ -53,7 +53,6 @@ input {
 ::-webkit-scrollbar-thumb:hover {
   background: #b3b4c2;
 }
-
 :root {
   --main-bg-color: #101124;
   --dark-blue: #17182c;
@@ -430,8 +429,17 @@ button.btn-link:hover .logout-icon {
 }
 
 .items-center {
-  display: flex;
+  display: inline-flex;
   align-items: center;
+}
+
+.items-top {
+  display: inline-flex;
+  align-items: flex-start;
+}
+
+.inline-flex {
+  display: inline-flex;
 }
 
 .w-full {
@@ -526,6 +534,16 @@ button.btn-link:hover .logout-icon {
 
 .mb-base {
   margin-bottom: 1.5rem;
+}
+
+.subtext {
+  font-size: 1.2rem;
+  color: var(--text-gray);
+  margin-left: 0.25rem;
+}
+
+.lh-1 {
+  line-height: 1;
 }
 
 .nobr {

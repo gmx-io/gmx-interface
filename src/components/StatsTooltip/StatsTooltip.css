@@ -1,6 +1,6 @@
 .Tooltip-row {
   display: grid;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.75rem 0;
   grid-template-columns: 1fr auto;
 }
 

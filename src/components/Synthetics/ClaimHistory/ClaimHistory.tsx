@@ -5,6 +5,7 @@ import { useClaimCollateralHistory } from "domain/synthetics/claimHistory";
 import { ClaimHistoryRow } from "../ClaimHistoryRow/ClaimHistoryRow";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
+import useWallet from "lib/wallets/useWallet";
 
 const PAGE_SIZE = 100;
 
@@ -17,6 +18,7 @@ type Props = {
 export function ClaimHistory(p: Props) {
   const { shouldShowPaginationButtons, marketsInfoData, tokensData } = p;
   const { chainId } = useChainId();
+  const { account } = useWallet();
   const [pageIndex, setPageIndex] = useState(0);
 
   const { claimActions, isLoading } = useClaimCollateralHistory(chainId, {
@@ -26,11 +28,11 @@ export function ClaimHistory(p: Props) {
     pageSize: PAGE_SIZE,
   });
 
-  const isEmpty = claimActions?.length === 0;
+  const isEmpty = !account || claimActions?.length === 0;
 
   return (
     <div className="TradeHistory">
-      {isLoading && (
+      {account && isLoading && (
         <div className="TradeHistoryRow App-box">
           <Trans>Loading...</Trans>
         </div>
