@@ -9,6 +9,7 @@ import { chainlinkClient } from "lib/subgraph/clients";
 import { sleep } from "lib/sleep";
 import { formatAmount } from "lib/numbers";
 import { getNativeToken, getNormalizedTokenSymbol, isChartAvailabeForToken } from "config/tokens";
+import { ARBITRUM } from "config/chains";
 
 const BigNumber = ethers.BigNumber;
 
@@ -76,7 +77,7 @@ export async function getLimitChartPricesFromStats(chainId, symbol, period, limi
     symbol = getNativeToken(chainId).symbol;
   }
 
-  const url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${chainId}&period=${period}&limit=${limit}`;
+  const url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${ARBITRUM}&period=${period}&limit=${limit}`;
 
   try {
     const response = await fetch(url);
@@ -96,7 +97,7 @@ export async function getChartPricesFromStats(chainId, symbol, period) {
 
   const timeDiff = CHART_PERIODS[period] * 3000;
   const from = Math.floor(Date.now() / 1000 - timeDiff);
-  const url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${chainId}&period=${period}&from=${from}&preferableSource=fast`;
+  const url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${ARBITRUM}&period=${period}&from=${from}&preferableSource=fast`;
 
   const TIMEOUT = 5000;
   const res: Response = await new Promise(async (resolve, reject) => {
