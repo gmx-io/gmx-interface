@@ -2478,6 +2478,10 @@ msgstr ""
 msgid "Long Positions"
 msgstr "开仓做多"
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Long positions {0} a Funding Fee of <0>{1}%</0> per hour."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Long {0}"
 msgstr "做多 {0}"
@@ -3864,6 +3868,10 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Short Positions"
 msgstr "做空仓位"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Short positions {0} a Funding Fee of <0>{1}%</0> per hour."
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Short {0}"
@@ -5267,8 +5275,8 @@ msgid "collateral"
 msgstr "抵押品"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "earn"
-msgstr ""
+#~ msgid "earn"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "esGMX OTC Market"
@@ -5292,7 +5300,13 @@ msgid "not staked"
 msgstr "未质押的"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "pay"
+msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "receive"
 msgstr ""
 
 #: src/pages/PositionsOverview/PositionsOverview.js
@@ -5319,6 +5333,11 @@ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
+msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "{0}"
 msgstr ""
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -5503,8 +5522,8 @@ msgid "{longOrShortText} {0} market selected"
 msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "{longShortText} positions {0} a funding fee of {1}% per hour."
-msgstr ""
+#~ msgid "{longShortText} positions {0} a funding fee of {1}% per hour."
+#~ msgstr ""
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "{marketsCount, plural, one {# Market} other {# Markets}}"
