@@ -626,9 +626,21 @@ export function getProfitPrice(closePrice, position) {
 }
 
 export function calculatePositionDelta(
-  price,
-  { size, collateral, isLong, averagePrice, lastIncreasedTime },
-  sizeDelta
+  price: BigNumber,
+  {
+    size,
+    collateral,
+    isLong,
+    averagePrice,
+    lastIncreasedTime,
+  }: {
+    size: BigNumber;
+    collateral: BigNumber;
+    isLong: boolean;
+    averagePrice: BigNumber;
+    lastIncreasedTime: number;
+  },
+  sizeDelta?: BigNumber
 ) {
   if (!sizeDelta) {
     sizeDelta = size;
@@ -640,7 +652,7 @@ export function calculatePositionDelta(
   const minProfitExpired = lastIncreasedTime + MIN_PROFIT_TIME < Date.now() / 1000;
   const hasProfit = isLong ? price.gt(averagePrice) : price.lt(averagePrice);
   if (!minProfitExpired && hasProfit && delta.mul(BASIS_POINTS_DIVISOR).lte(size.mul(MIN_PROFIT_BIPS))) {
-    delta = bigNumberify(0);
+    delta = bigNumberify(0)!;
   }
 
   const deltaPercentage = delta.mul(BASIS_POINTS_DIVISOR).div(collateral);

@@ -33,7 +33,15 @@ const TRADERS = "Traders";
 const AFFILIATES = "Affiliates";
 const TAB_OPTIONS = [TRADERS, AFFILIATES];
 
-function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
+function Referrals({
+  connectWallet,
+  setPendingTxns,
+  pendingTxns,
+}: {
+  connectWallet: () => void;
+  setPendingTxns: (pendingTxns: string[]) => void;
+  pendingTxns: string[];
+}) {
   const { active, account: walletAccount, library } = useWeb3React();
   const { account: queryAccount } = useParams<{ account?: string }>();
   let account;
