@@ -1,25 +1,22 @@
-import { useEffect, useRef, useState } from "react";
-import { t, Trans } from "@lingui/macro";
-import { toJpeg } from "html-to-image";
-import { BiCopy } from "react-icons/bi";
-import { RiFileDownloadLine } from "react-icons/ri";
-import { FiTwitter } from "react-icons/fi";
-import { useCopyToClipboard, useMedia } from "react-use";
-import Modal from "../Modal/Modal";
-import gmxLogo from "img/gmx-logo-with-name.svg";
-import "./PositionShare.css";
-import { QRCodeSVG } from "qrcode.react";
-import { getHomeUrl, getRootShareApiUrl, getTwitterIntentURL, USD_DECIMALS } from "lib/legacy";
-import { useAffiliateCodes } from "domain/referrals/hooks";
-import SpinningLoader from "../Common/SpinningLoader";
-import useLoadImage from "lib/useLoadImage";
-import shareBgImg from "img/position-share-bg.png";
-import { helperToast } from "lib/helperToast";
-import { formatAmount } from "lib/numbers";
-import downloadImage from "lib/downloadImage";
+import { Trans, t } from "@lingui/macro";
 import Button from "components/Button/Button";
-import { getPriceDecimals } from "config/tokens";
-import { useChainId } from "lib/chains";
+import { useAffiliateCodes } from "domain/referrals/hooks";
+import { Token } from "domain/tokens";
+import { BigNumber } from "ethers";
+import { toJpeg } from "html-to-image";
+import shareBgImg from "img/position-share-bg.png";
+import downloadImage from "lib/downloadImage";
+import { helperToast } from "lib/helperToast";
+import { getRootShareApiUrl, getTwitterIntentURL } from "lib/legacy";
+import useLoadImage from "lib/useLoadImage";
+import { useEffect, useRef, useState } from "react";
+import { BiCopy } from "react-icons/bi";
+import { FiTwitter } from "react-icons/fi";
+import { RiFileDownloadLine } from "react-icons/ri";
+import { useCopyToClipboard } from "react-use";
+import Modal from "../Modal/Modal";
+import "./PositionShare.css";
+import { PositionShareCard } from "./PositionShareCard";
 const ROOT_SHARE_URL = getRootShareApiUrl();
 const UPLOAD_URL = ROOT_SHARE_URL + "/api/upload";
 const UPLOAD_SHARE = ROOT_SHARE_URL + "/api/s";
@@ -34,22 +31,44 @@ function getShareURL(imageInfo, ref) {
   return url;
 }
 
-function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, positionToShare, account, chainId }) {
+function PositionShare({
+  entryPrice,
+  indexToken,
+  isLong,
+  leverage,
+  markPrice,
+  pnlAfterFeesPercentage,
+  setIsPositionShareModalOpen,
+  isPositionShareModalOpen,
+  account,
+  chainId,
+}: {
+  entryPrice: BigNumber | undefined;
+  indexToken: Token;
+  isLong: boolean;
+  leverage: BigNumber | undefined;
+  markPrice: BigNumber;
+  pnlAfterFeesPercentage: BigNumber;
+  setIsPositionShareModalOpen: (isOpen: boolean) => void;
+  isPositionShareModalOpen: boolean;
+  account: string;
+  chainId: number;
+}) {
   const userAffiliateCode = useAffiliateCodes(chainId, account);
   const [uploadedImageInfo, setUploadedImageInfo] = useState<any>();
   const [uploadedImageError, setUploadedImageError] = useState<string | null>(null);
   const [, copyToClipboard] = useCopyToClipboard();
   const sharePositionBgImg = useLoadImage(shareBgImg);
-  const positionRef = useRef();
+  const cardRef = useRef<HTMLDivElement>(null);
   const tweetLink = getTwitterIntentURL(
-    `Latest $${positionToShare?.indexToken?.symbol} trade on @GMX_IO`,
+    `Latest $${indexToken?.symbol} trade on @GMX_IO`,
     getShareURL(uploadedImageInfo, userAffiliateCode)
   );
 
   useEffect(() => {
     (async function () {
-      const element = positionRef.current;
-      if (element && userAffiliateCode.success && sharePositionBgImg && positionToShare) {
+      const element = cardRef.current;
+      if (element && userAffiliateCode.success && sharePositionBgImg) {
         // We have to call the toJpeg function multiple times to make sure the canvas renders all the elements like background image
         // @refer https://github.com/tsayen/dom-to-image/issues/343#issuecomment-652831863
         const image = await toJpeg(element, config)
@@ -64,10 +83,10 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
         }
       }
     })();
-  }, [userAffiliateCode, sharePositionBgImg, positionToShare]);
+  }, [userAffiliateCode, sharePositionBgImg, cardRef]);
 
   async function handleDownload() {
-    const element = positionRef.current;
+    const element = cardRef.current;
     if (!element) return;
     const imgBlob = await toJpeg(element, config)
       .then(() => toJpeg(element, config))
@@ -81,6 +100,7 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
     copyToClipboard(url as string);
     helperToast.success(t`Link copied to clipboard.`);
   }
+
   return (
     <Modal
       className="position-share-modal"
@@ -89,11 +109,15 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
       label={t`Share Position`}
     >
       <PositionShareCard
+        entryPrice={entryPrice}
+        indexToken={indexToken}
+        isLong={isLong}
+        leverage={leverage}
+        markPrice={markPrice}
+        pnlAfterFeesPercentage={pnlAfterFeesPercentage}
         userAffiliateCode={userAffiliateCode}
-        positionRef={positionRef}
-        position={positionToShare}
-        uploadedImageInfo={uploadedImageInfo}
-        uploadedImageError={uploadedImageError}
+        ref={cardRef}
+        loading={!uploadedImageInfo && !uploadedImageError}
         sharePositionBgImg={sharePositionBgImg}
       />
       {uploadedImageError && <span className="error">{uploadedImageError}</span>}
@@ -113,71 +137,6 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
         </Button>
       </div>
     </Modal>
-  );
-}
-
-function PositionShareCard({
-  positionRef,
-  position,
-  userAffiliateCode,
-  uploadedImageInfo,
-  uploadedImageError,
-  sharePositionBgImg,
-}) {
-  const { chainId } = useChainId();
-  const isMobile = useMedia("(max-width: 400px)");
-  const { code, success } = userAffiliateCode;
-  const { deltaAfterFeesPercentageStr, isLong, leverage, indexToken, averagePrice, markPrice } = position;
-  const positionPriceDecimal = getPriceDecimals(chainId, indexToken.symbol);
-
-  const homeURL = getHomeUrl();
-  return (
-    <div className="relative">
-      <div ref={positionRef} className="position-share" style={{ backgroundImage: `url(${sharePositionBgImg})` }}>
-        <img className="logo" src={gmxLogo} alt="GMX Logo" />
-        <ul className="info">
-          <li className="side">{isLong ? "LONG" : "SHORT"}</li>
-          <li>{formatAmount(leverage, 4, 2, true)}x&nbsp;</li>
-          <li>{indexToken.symbol} USD</li>
-        </ul>
-        <h3 className="pnl">{deltaAfterFeesPercentageStr}</h3>
-        <div className="prices">
-          <div>
-            <p>Entry Price</p>
-            <p className="price">${formatAmount(averagePrice, USD_DECIMALS, positionPriceDecimal, true)}</p>
-          </div>
-          <div>
-            <p>Index Price</p>
-            <p className="price">${formatAmount(markPrice, USD_DECIMALS, positionPriceDecimal, true)}</p>
-          </div>
-        </div>
-        <div className="referral-code">
-          <div>
-            <QRCodeSVG size={isMobile ? 24 : 32} value={success && code ? `${homeURL}/#/?ref=${code}` : `${homeURL}`} />
-          </div>
-          <div className="referral-code-info">
-            {success && code ? (
-              <>
-                <p className="label">Referral Code:</p>
-                <p className="code">{code}</p>
-              </>
-            ) : (
-              <p className="code">https://gmx.io</p>
-            )}
-          </div>
-        </div>
-      </div>
-      {!uploadedImageInfo && !uploadedImageError && (
-        <div className="image-overlay-wrapper">
-          <div className="image-overlay">
-            <SpinningLoader />
-            <p className="loading-text">
-              <Trans>Generating shareable image...</Trans>
-            </p>
-          </div>
-        </div>
-      )}
-    </div>
   );
 }
 

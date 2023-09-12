@@ -136,11 +136,16 @@ export function PositionList(p: Props) {
             ))}
         </tbody>
       </table>
-      {isPositionShareModalOpen && (
+      {positionToShare && (
         <PositionShare
           setIsPositionShareModalOpen={setIsPositionShareModalOpen}
           isPositionShareModalOpen={isPositionShareModalOpen}
-          positionToShare={positionToShare}
+          entryPrice={positionToShare.entryPrice}
+          indexToken={positionToShare.indexToken}
+          isLong={positionToShare.isLong}
+          leverage={positionToShare.leverage}
+          markPrice={positionToShare.markPrice}
+          pnlAfterFeesPercentage={positionToShare?.pnlAfterFeesPercentage}
           chainId={chainId}
           account={validAccount}
         />
