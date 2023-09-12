@@ -34,23 +34,55 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
 
   const longShortText = isLong ? t`Long` : t`Short`;
 
-  const { liquidity, maxReservedUsd, reservedUsd, borrowingRate, fundingRate, totalInterestUsd, priceDecimals } =
-    useMemo(() => {
-      if (!marketInfo) return {};
+  const {
+    liquidity,
+    maxReservedUsd,
+    reservedUsd,
+    borrowingRate,
+    fundingRateLong,
+    fundingRateShort,
+    totalInterestUsd,
+    priceDecimals,
+  } = useMemo(() => {
+    if (!marketInfo) return {};
 
-      return {
-        liquidity: getAvailableUsdLiquidityForPosition(marketInfo, isLong),
-        maxReservedUsd: getMaxReservedUsd(marketInfo, isLong),
-        reservedUsd: getReservedUsd(marketInfo, isLong),
-        borrowingRate: getBorrowingFactorPerPeriod(marketInfo, isLong, CHART_PERIODS["1h"]).mul(100),
-        fundingRate: getFundingFactorPerPeriod(marketInfo, isLong, CHART_PERIODS["1h"]).mul(100),
-        totalInterestUsd: marketInfo.longInterestUsd.add(marketInfo.shortInterestUsd),
-        priceDecimals: marketInfo.indexToken.priceDecimals,
-      };
-    }, [marketInfo, isLong]);
-
+    return {
+      liquidity: getAvailableUsdLiquidityForPosition(marketInfo, isLong),
+      maxReservedUsd: getMaxReservedUsd(marketInfo, isLong),
+      reservedUsd: getReservedUsd(marketInfo, isLong),
+      borrowingRate: getBorrowingFactorPerPeriod(marketInfo, isLong, CHART_PERIODS["1h"]).mul(100),
+      fundingRateLong: getFundingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]).mul(100),
+      fundingRateShort: getFundingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]).mul(100),
+      totalInterestUsd: marketInfo.longInterestUsd.add(marketInfo.shortInterestUsd),
+      priceDecimals: marketInfo.indexToken.priceDecimals,
+    };
+  }, [marketInfo, isLong]);
+  const fundingRate = isLong ? fundingRateLong : fundingRateShort;
   const indexName = marketInfo && getMarketIndexName(marketInfo);
   const poolName = marketInfo && getMarketPoolName(marketInfo);
+
+  const fundingRateElements = useMemo(() => {
+    if (!fundingRateLong || !fundingRateShort) return [];
+
+    const positiveLong = fundingRateLong?.gt(0);
+    const long = (
+      <Trans>
+        Long positions {positiveLong ? t`receive` : t`pay`} a Funding Fee of{" "}
+        <span className={positiveLong ? "text-green" : "text-red"}>{formatAmount(fundingRateLong.abs(), 30, 4)}%</span>{" "}
+        per hour.
+      </Trans>
+    );
+    const positveShort = fundingRateShort?.gt(0);
+    const short = (
+      <Trans>
+        Short positions {positveShort ? t`receive` : t`pay`} a Funding Fee of{" "}
+        <span className={positveShort ? "text-green" : "text-red"}>{formatAmount(fundingRateShort.abs(), 30, 4)}%</span>{" "}
+        per hour.
+      </Trans>
+    );
+
+    return isLong ? [long, short] : [short, long];
+  }, [fundingRateLong, fundingRateShort, isLong]);
 
   return (
     <div className="Exchange-swap-market-box App-box App-box-border">
@@ -134,10 +166,10 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
               position="right-bottom"
               renderContent={() => (
                 <div>
-                  <Trans>
-                    {longShortText} positions {fundingRate.gt(0) ? t`earn` : t`pay`} a funding fee of{" "}
-                    {formatAmount(fundingRate.abs(), 30, 4)}% per hour.
-                  </Trans>
+                  <Trans>{fundingRateElements[0]}</Trans>
+                  <br />
+                  <br />
+                  <Trans>{fundingRateElements[1]}</Trans>
                 </div>
               )}
             />
