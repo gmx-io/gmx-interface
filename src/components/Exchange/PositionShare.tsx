@@ -36,8 +36,8 @@ function getShareURL(imageInfo, ref) {
 
 function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, positionToShare, account, chainId }) {
   const userAffiliateCode = useAffiliateCodes(chainId, account);
-  const [uploadedImageInfo, setUploadedImageInfo] = useState();
-  const [uploadedImageError, setUploadedImageError] = useState();
+  const [uploadedImageInfo, setUploadedImageInfo] = useState<any>();
+  const [uploadedImageError, setUploadedImageError] = useState<string | null>(null);
   const [, copyToClipboard] = useCopyToClipboard();
   const sharePositionBgImg = useLoadImage(shareBgImg);
   const positionRef = useRef();
@@ -78,7 +78,7 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
   function handleCopy() {
     if (!uploadedImageInfo) return;
     const url = getShareURL(uploadedImageInfo, userAffiliateCode);
-    copyToClipboard(url);
+    copyToClipboard(url as string);
     helperToast.success(t`Link copied to clipboard.`);
   }
   return (
@@ -92,8 +92,6 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
         userAffiliateCode={userAffiliateCode}
         positionRef={positionRef}
         position={positionToShare}
-        chainId={chainId}
-        account={account}
         uploadedImageInfo={uploadedImageInfo}
         uploadedImageError={uploadedImageError}
         sharePositionBgImg={sharePositionBgImg}
