@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { BigNumber, ethers } from "ethers";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { MAX_ALLOWED_LEVERAGE } from "config/factors";
@@ -26,6 +26,9 @@ import useSWR from "swr";
 import { useWeb3React } from "@web3-react/core";
 import { useBatchProvider } from "./useBatchProvider";
 import { useChainId } from "lib/chains";
+import { Profiler } from "./utils";
+import { getProvider } from "lib/rpc";
+import { StaticJsonRpcProvider } from "@ethersproject/providers";
 
 type PositionsResult = {
   isLoading: boolean;
@@ -226,24 +229,36 @@ export function usePositionsInfo(
   marketPrices: ContractMarketPrices[]
 ): PositionsResult {
   const { chainId } = useChainId();
-  const { library } = useWeb3React()
   const { minCollateralUsd } = usePositionsConstants(chainId);
   const { marketsInfoData, tokensData, pricesUpdatedAt } = useMarketsInfo(chainId);
-  const provider = useBatchProvider(chainId);
-  const { data: positionsInfoJson } = useSWR<PositionJson[] | undefined>(
-    ["usePositionsInfo", chainId, provider, positionsHash],
-    async () => {
-      if (!provider) {
-        return;
-      }
+  const provider = useRef(getProvider(undefined, chainId));
+  useEffect(() => {
+    provider.current = getProvider(undefined, chainId);
+  }, [chainId]);
 
-      const chunkSize = 100;
+  const p = useRef(Profiler());
+  if (positionKeys.length) {
+    p.current(`received ${positionKeys.length} position keys to fetch`);
+  }
+  if (marketsInfoData) {
+    p.current(`detected markets info data`);
+  }
+  if (tokensData) {
+    p.current(`detected tokens data`);
+  }
+
+  const { data: positionsInfoJson } = useSWR<PositionJson[] | undefined>(
+    positionKeys.length ? ["usePositionsInfo", chainId, positionsHash] : null,
+    async () => {
+      console.info("Fetching it again");
+      p.current("first fetcher entry");
+      const chunkSize = 150;
       const numChunks = Math.ceil(positionKeys.length / chunkSize);
       const requests: Promise<PositionJson[]>[] = [];
       const contract = new ethers.Contract(
         getContract(chainId, "SyntheticsReader"),
         SyntheticsReader.abi,
-        library.getSigner(),
+        provider.current,
       );
 
       const DataStoreContract = getContract(chainId, "DataStore");
@@ -258,23 +273,29 @@ export function usePositionsInfo(
             marketPrices.slice(chunkSize * i, chunkSize * (i + 1)),
             ethers.constants.AddressZero, // uiFeeReceiver
           ];
-          await new Promise((res) => setTimeout(res, i * 50));
-          return await contract.getAccountPositionInfoList(...args) as PositionJson[];
+          // await new Promise((res) => setTimeout(res, i * 50));
+          const result = await contract.getAccountPositionInfoList(...args) as PositionJson[];
+          p.current(`fetched ${i}th chunk`);
+          return result;
         })());
       }
 
       try {
-        // console.info(`Executing ${requests.length} requests.`);
+        p.current(`${requests.length} requests sent`);
+        console.info(`Executing ${requests.length} requests.`);
         const chunks = await Promise.all(requests);
+
+        p.current(`${chunks.length} chunks fetched`);
         const data = chunks.flat();
-        // console.info(`Fetched ${chunks.length} chunks of ${data.length} items total.`);
+        console.info(`Fetched ${chunks.length} chunks of ${data.length} items total.`);
+        p.current(`${data.length} items fetched`);
         return data;
       } catch (e) {
-        // console.error("SyntheticsReader.getAccountPositionInfoList error:", e);
+        console.error("SyntheticsReader.getAccountPositionInfoList error:", e);
+        p.current(`batch call error: ${e.message}`);
         throw e;
       }
-    },
-    { refreshInterval: 20000 }
+    }
   );
 
   const positionsInfoHash = (positionsInfoJson || []).map((p) => getPositionKey(
@@ -285,15 +306,33 @@ export function usePositionsInfo(
   )).join("-");
 
   const data = useMemo(() => {
-    // console.info("Trying to parse data", positionsInfoJson);
-    if (!positionsInfoJson || !positionsInfoJson.length) {
+    if (
+      !tokensData ||
+      !marketsInfoData ||
+      !minCollateralUsd ||
+      !positionsInfoJson ||
+      !positionsInfoJson.length ||
+      positionsInfoJson.length !== positionKeys.length
+    ) {
       return;
     }
-    return positionsInfoJson && positionsInfoJson.length === positionKeys.length && marketsInfoData && tokensData && minCollateralUsd
-      ? parsePositionsInfo(positionKeys, positionsInfoJson as PositionJson[], marketsInfoData, tokensData, minCollateralUsd)
-      : undefined;
+
+    p.current(`parsing ${positionsInfoJson.length} position info json items`);
+    return parsePositionsInfo(
+      positionKeys,
+      positionsInfoJson as PositionJson[],
+      marketsInfoData,
+      tokensData,
+      minCollateralUsd,
+    );
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [positionsInfoHash, pricesUpdatedAt, chainId]);
+
+  if (data) {
+    p.current(`successfully fetched and parsed ${Object.keys(data).length} positionsInfo items`);
+    p.current.report();
+    p.current = Profiler();
+  }
 
   return { isLoading: !data, error: null, data: data || [] };
 }
@@ -376,5 +415,5 @@ export function _usePositionsInfo__tmp(
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [positionsHash, pricesUpdatedAt, chainId]);
 
-  return { isLoading: !data, error: null, data: data || [] };
+  return { isLoading: !data, error: null, data: data || {} };
 }

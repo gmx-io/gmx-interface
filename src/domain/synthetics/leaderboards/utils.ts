@@ -36,13 +36,18 @@ export const formatDelta = (delta: BigNumber, {
 export const Profiler = () => {
   const start = new Date();
   const profile: [string, number][] = [];
+  const registered = new Set<string>([]);
   let last = start;
 
   return Object.assign((msg: string) => {
+    if (registered.has(msg)) {
+      return;
+    }
     const now = new Date();
     const time = now.getTime() - last.getTime();
     profile.push([msg, time]);
     last = now;
+    registered.add(msg);
     return time;
   }, {
     getTime() {
@@ -50,11 +55,9 @@ export const Profiler = () => {
     },
     report() {
       // eslint-disable-next-line no-console
-      console.groupCollapsed("Profiling report");
+      console.groupCollapsed(`Total profiling time: ${this.getTime()}`);
       // eslint-disable-next-line no-console
       for (const [m, time] of profile) console.info(`  • ${m}: +${time}ms`);
-      // eslint-disable-next-line no-console
-      console.info("Total time:", this.getTime());
       // eslint-disable-next-line no-console
       console.groupEnd();
     }
