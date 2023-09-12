@@ -1947,7 +1947,7 @@ msgstr "GMX | Decentralized Perpetual Exchange"
 msgid "Generate Referral Code"
 msgstr "Generate Referral Code"
 
-#: src/components/Exchange/PositionShare.tsx
+#: src/components/Exchange/PositionShareCard.tsx
 msgid "Generating shareable image..."
 msgstr "Generating shareable image..."
 

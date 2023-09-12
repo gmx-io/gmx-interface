@@ -1947,7 +1947,7 @@ msgstr ""
 msgid "Generate Referral Code"
 msgstr "추천인 코드 생성"
 
-#: src/components/Exchange/PositionShare.tsx
+#: src/components/Exchange/PositionShareCard.tsx
 msgid "Generating shareable image..."
 msgstr "공유가능한 이미지 생성중..."
 

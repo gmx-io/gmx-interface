@@ -1947,7 +1947,7 @@ msgstr ""
 msgid "Generate Referral Code"
 msgstr "Сгенерировать Реферальный Код"
 
-#: src/components/Exchange/PositionShare.tsx
+#: src/components/Exchange/PositionShareCard.tsx
 msgid "Generating shareable image..."
 msgstr "Создание изображения, доступного для совместного использования..."
 

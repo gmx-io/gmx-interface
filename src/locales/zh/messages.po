@@ -1947,7 +1947,7 @@ msgstr ""
 msgid "Generate Referral Code"
 msgstr "生成推荐代码"
 
-#: src/components/Exchange/PositionShare.tsx
+#: src/components/Exchange/PositionShareCard.tsx
 msgid "Generating shareable image..."
 msgstr "生成可分享的图像中..."
 
