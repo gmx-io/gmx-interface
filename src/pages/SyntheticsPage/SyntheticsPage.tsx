@@ -30,7 +30,7 @@ import { getByKey } from "lib/objects";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Helmet from "react-helmet";
 
-import { useMarketsInfo } from "domain/synthetics/markets";
+import { getMarketIndexName, getMarketPoolName, useMarketsInfo } from "domain/synthetics/markets";
 import { TradeMode } from "domain/synthetics/trade";
 import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTradeOption";
 import { helperToast } from "lib/helperToast";
@@ -250,8 +250,19 @@ export function SyntheticsPage(p: Props) {
 
   function onSelectPositionClick(key: string, tradeMode?: TradeMode) {
     const position = getByKey(positionsInfoData, key);
+    const indexName = position?.marketInfo && getMarketIndexName(position?.marketInfo);
+    const poolName = position?.marketInfo && getMarketPoolName(position?.marketInfo);
     setActivePosition(getByKey(positionsInfoData, key), tradeMode);
-    const message = t`${position?.isLong ? "Long" : "Short"} ${position?.marketInfo.name} market selected`;
+    const message = (
+      <Trans>
+        {position?.isLong ? "Long" : "Short"}{" "}
+        <div className="inline-flex">
+          <span>{indexName}</span>
+          <span className="subtext gm-toast">[{poolName}]</span>
+        </div>{" "}
+        <span>market selected</span>;
+      </Trans>
+    );
     helperToast.success(message);
   }
 

@@ -17,10 +17,10 @@ import useWallet from "lib/wallets/useWallet";
 type Props = {
   assetSymbol: string;
   token?: Token;
-  tooltipPosition?: "left" | "right";
+  position?: "left" | "right";
 };
 
-function AssetDropdown({ assetSymbol, token: propsToken, tooltipPosition = "right" }: Props) {
+function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: Props) {
   const { active, connector } = useWallet();
   const { chainId } = useChainId();
 
@@ -44,7 +44,7 @@ function AssetDropdown({ assetSymbol, token: propsToken, tooltipPosition = "righ
         <Menu.Button as="div" className="dropdown-arrow center-both">
           <FiChevronDown size={20} />
         </Menu.Button>
-        <Menu.Items as="div" className={cx("asset-menu-items", { "position-left": tooltipPosition === "left" })}>
+        <Menu.Items as="div" className={cx("asset-menu-items", { "position-left": position === "left" })}>
           <Menu.Item>
             <>
               {token.reservesUrl && (

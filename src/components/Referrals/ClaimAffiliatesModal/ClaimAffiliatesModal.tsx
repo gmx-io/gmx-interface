@@ -3,7 +3,7 @@ import Button from "components/Button/Button";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import Modal from "components/Modal/Modal";
 import Tooltip from "components/Tooltip/Tooltip";
-import { useMarketsInfo } from "domain/synthetics/markets";
+import { getMarketIndexName, getMarketPoolName, useMarketsInfo } from "domain/synthetics/markets";
 import { AffiliateReward } from "domain/synthetics/referrals/types";
 import { useAffiliateRewards } from "domain/synthetics/referrals/useAffiliateRewards";
 import { getTotalClaimableAffiliateRewardsUsd } from "domain/synthetics/referrals/utils";
@@ -46,6 +46,8 @@ export function ClaimAffiliatesModal(p: Props) {
     }
 
     const { longToken, shortToken } = marketInfo;
+    const indexName = getMarketIndexName(marketInfo);
+    const poolName = getMarketPoolName(marketInfo);
 
     const { longTokenAmount, shortTokenAmount } = reward;
 
@@ -70,7 +72,16 @@ export function ClaimAffiliatesModal(p: Props) {
 
     return (
       <div key={marketInfo.marketTokenAddress} className="App-card-content">
-        <ExchangeInfoRow className="ClaimModal-row" label={t`Market`} value={marketInfo.name} />
+        <ExchangeInfoRow
+          className="ClaimModal-row"
+          label={t`Market`}
+          value={
+            <div className="items-center">
+              <span>{indexName}</span>
+              <span className="subtext">[{poolName}]</span>
+            </div>
+          }
+        />
         <ExchangeInfoRow
           className="ClaimModal-row"
           label={t`Rewards`}
