@@ -287,6 +287,14 @@ export function getPositions(
       includeDelta,
     });
 
+    position.leverageWithPnl = getLeverage({
+      size: position.size,
+      collateral: position.collateral,
+      fundingFee: position.fundingFee,
+      hasProfit: position.hasProfit,
+      delta: position.delta,
+      includeDelta: true,
+    });
     position.leverageStr = getLeverageStr(position.leverage);
 
     positionsMap[key] = position;

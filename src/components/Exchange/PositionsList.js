@@ -166,7 +166,7 @@ export default function PositionsList(props) {
           entryPrice={positionToShare.averagePrice}
           indexToken={positionToShare.indexToken}
           isLong={positionToShare.isLong}
-          leverage={positionToShare.leverage}
+          leverage={positionToShare.leverageWithPnl}
           markPrice={positionToShare.markPrice}
           pnlAfterFeesPercentage={pnlAfterFeesPercentageSigned}
           chainId={chainId}

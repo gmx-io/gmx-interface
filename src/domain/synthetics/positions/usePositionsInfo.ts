@@ -155,6 +155,14 @@ export function usePositionsInfo(
         pendingFundingFeesUsd: pendingFundingFeesUsd,
       });
 
+      const leverageWithPnl = getLeverage({
+        sizeInUsd: position.sizeInUsd,
+        collateralUsd: collateralUsd,
+        pnl,
+        pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
+        pendingFundingFeesUsd: pendingFundingFeesUsd,
+      });
+
       const hasLowCollateral = leverage?.gt(MAX_ALLOWED_LEVERAGE) || false;
 
       const liquidationPrice = getLiquidationPrice({
@@ -185,6 +193,7 @@ export function usePositionsInfo(
         remainingCollateralAmount,
         hasLowCollateral,
         leverage,
+        leverageWithPnl,
         pnl,
         pnlPercentage,
         pnlAfterFees,
