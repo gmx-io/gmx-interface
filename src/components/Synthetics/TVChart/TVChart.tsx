@@ -235,6 +235,8 @@ export function TVChart({
               ...chartToken.prices,
             }}
             supportedResolutions={SUPPORTED_RESOLUTIONS_V2}
+            tradePageVersion={tradePageVersion}
+            setTradePageVersion={setTradePageVersion}
           />
         )}
       </div>
