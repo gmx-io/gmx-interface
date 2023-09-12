@@ -1037,7 +1037,7 @@ msgstr "Konvertiere esGMX-Token in GMX-Token.<0/>Bitte lese die <1>Anlagedetails
 msgid "Convert {wrappedTokenSymbol} to {nativeTokenSymbol}"
 msgstr "Umwandlung von {wrappedTokenSymbol} in {nativeTokenSymbol}"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Copy"
 msgstr "Kopieren"
 
@@ -1365,7 +1365,7 @@ msgstr "Dokumente"
 msgid "Don't show this message again for 30 days."
 msgstr "Diese Meldung 30 Tage lang nicht mehr anzeigen."
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Download"
 msgstr "Download"
 
@@ -1947,7 +1947,7 @@ msgstr ""
 msgid "Generate Referral Code"
 msgstr "Empfehlungscode generieren"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Generating shareable image..."
 msgstr "Generierung von teilbaren Bildern..."
 
@@ -1980,7 +1980,7 @@ msgstr ""
 msgid "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
 msgstr "Wenn du eine bestehende Position hast, wird die Position für {0} USD geschlossen.<0/><1/>Dieser Ausstiegskurs ändert sich mit dem Kurs des Assets.<2/><3/><4>Weitere Infos</4>"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Image generation error, please refresh and try again."
 msgstr "Fehler bei der Bilderzeugung, bitte aktualisieren und versuche es erneut."
 
@@ -2348,7 +2348,7 @@ msgstr "Limit-Order übermittelt!"
 msgid "Link"
 msgstr "Link"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Link copied to clipboard."
 msgstr "Link in die Zwischenablage kopiert."
 
@@ -3811,7 +3811,7 @@ msgid "Share"
 msgstr "Teilen"
 
 #: src/components/Exchange/PositionDropdown.js
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Share Position"
 msgstr "Position teilen"
 
@@ -4664,7 +4664,7 @@ msgstr "Versuche, die Einstellung \"Erlaubter Slippage\" im Menü \"Einstellunge
 msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right."
 msgstr "Versuche die Einstellung \"Erlaubter Slippage\" im Menü \"Einstellungen\" oben rechts zu erhöhen."
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Tweet"
 msgstr "Twittere"
 

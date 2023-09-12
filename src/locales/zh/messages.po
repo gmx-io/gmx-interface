@@ -1037,7 +1037,7 @@ msgstr "将esGMX代币转换为GMX代币。<0/>使用金库前请阅读<1>投资
 msgid "Convert {wrappedTokenSymbol} to {nativeTokenSymbol}"
 msgstr "将{wrappedTokenSymbol}转换为{nativeTokenSymbol}"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Copy"
 msgstr "复制"
 
@@ -1365,7 +1365,7 @@ msgstr ""
 msgid "Don't show this message again for 30 days."
 msgstr "30天内不要再显示此信息"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Download"
 msgstr "下载"
 
@@ -1947,7 +1947,7 @@ msgstr ""
 msgid "Generate Referral Code"
 msgstr "生成推荐代码"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Generating shareable image..."
 msgstr "生成可分享的图像中..."
 
@@ -1980,7 +1980,7 @@ msgstr ""
 msgid "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
 msgstr "如果你有一个现有的头寸，它将在{0}美元被关闭。<0/><1/>这个退出价格将随着资产的价格所变化。<2/><3/><4>更多信息</4>"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Image generation error, please refresh and try again."
 msgstr "图片生成错误，请刷新并重试"
 
@@ -2348,7 +2348,7 @@ msgstr "限价订单送出"
 msgid "Link"
 msgstr "链接"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Link copied to clipboard."
 msgstr "链接被复制到剪贴板上"
 
@@ -3811,7 +3811,7 @@ msgid "Share"
 msgstr "分享"
 
 #: src/components/Exchange/PositionDropdown.js
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Share Position"
 msgstr "分享仓位"
 
@@ -4664,7 +4664,7 @@ msgstr "尝试增加 \"Allowed Slippage\", 在右上角设置下方"
 msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right."
 msgstr "尝试增加 \"Allowed Slippage\", 在右上角设置下方"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Tweet"
 msgstr "推特"
 
