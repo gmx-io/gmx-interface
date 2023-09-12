@@ -6,7 +6,7 @@ const ORACLE_KEEPER_URLS = {
 
   [AVALANCHE]: ["https://avalanche.gmx-oracle.io", "https://avalanche-2.gmx-oracle.io"],
 
-  [ARBITRUM_GOERLI]: ["https://oracle-api-arb-goerli-xyguy.ondigitalocean.app"],
+  [ARBITRUM_GOERLI]: ["https://gmx-synthetics-api-arb-goerli-4vgxk.ondigitalocean.app"],
 
   [AVALANCHE_FUJI]: ["https://gmx-oracle-keeper-ro-avax-fuji-d4il9.ondigitalocean.app"],
 };

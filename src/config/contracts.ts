@@ -120,12 +120,12 @@ const CONTRACTS = {
     // Synthetics
     DataStore: "0xbA2314b0f71ebC705aeEBeA672cc3bcEc510D03b",
     EventEmitter: "0x2fbE45fCb58B7106CF0a3Be9225D5Ed5A1004cc4",
-    ExchangeRouter: "0xE177907977C3d38aE68cEA626f34236d5E6D8600",
+    ExchangeRouter: "0x30DBbC9698fc6702dFA903845a6Da965f8C6C892",
     DepositVault: "0x838a9bdf8736eD522A60F5f715e4F3FC2BC91A08",
     WithdrawalVault: "0xaAac001C2a2727Ff2d484C4Ad7d2079C7094e7Ef",
     OrderVault: "0x82aFd2590814a7Ce3d7ea6b63F80481F8b227bA9",
-    SyntheticsReader: "0x2380819bb873D8e4dDB1be7e90eA7c54D7f380AC",
-    SyntheticsRouter: "0xFF67E2fa3d6FC940be71A698A120282bC49e78b8",
+    SyntheticsReader: "0x51077eA4d066917De536E4d949e2362507Eb5f7c",
+    SyntheticsRouter: "0xa960786Bc30F8587279df6116F9E0B15C5b034dE",
     Timelock: AddressZero,
 
     Multicall: "0x6d85594c9BD6b0833bC85AE62B360654A1e52D70",
