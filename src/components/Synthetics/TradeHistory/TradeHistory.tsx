@@ -32,7 +32,7 @@ export function TradeHistory(p: Props) {
     pageSize: PAGE_SIZE,
   });
 
-  const isLoading = !minCollateralUsd || isHistoryLoading;
+  const isLoading = !!p.account && (!minCollateralUsd || isHistoryLoading);
 
   const isEmpty = !isLoading && !tradeActions?.length;
 

@@ -1,6 +1,10 @@
 .TradeHistoryRow {
   padding: 1.5rem;
   margin-bottom: 0.8rem;
+
+  .plain {
+    display: inline-block;
+  }
 }
 
 .TradeHistoryRow-time {

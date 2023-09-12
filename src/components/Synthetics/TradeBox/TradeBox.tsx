@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -96,6 +95,8 @@ import { CollateralSelectorRow } from "./CollateralSelectorRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import "./TradeBox.scss";
 import { useHasOutdatedUi } from "domain/legacy";
+import useWallet from "lib/wallets/useWallet";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
@@ -134,7 +135,6 @@ export type Props = {
   setPendingTxns: (txns: any) => void;
   onSelectMarketAddress: (marketAddress?: string) => void;
   onSelectCollateralAddress: (collateralAddress?: string) => void;
-  onConnectWallet: () => void;
   setIsEditingAcceptablePriceImpact: (val: boolean) => void;
   setIsClaiming: (val: boolean) => void;
   switchTokenAddresses: () => void;
@@ -180,13 +180,13 @@ export function TradeBox(p: Props) {
     onSelectToTokenAddress,
     onSelectTradeMode,
     onSelectTradeType,
-    onConnectWallet,
     setIsEditingAcceptablePriceImpact,
     setIsClaiming,
     setPendingTxns,
     switchTokenAddresses,
   } = p;
   const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket } = tradeFlags;
+  const { openConnectModal } = useConnectModal();
   const {
     swapTokens,
     indexTokens,
@@ -211,11 +211,11 @@ export function TradeBox(p: Props) {
   };
 
   const { chainId } = useChainId();
+  const { signer, account } = useWallet();
   const isMetamaskMobile = useIsMetamaskMobile();
-  const { library, account } = useWeb3React();
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
-  const userReferralInfo = useUserReferralInfo(library, chainId, account);
+  const userReferralInfo = useUserReferralInfo(signer, chainId, account);
   const { showDebugValues } = useSettings();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
 
@@ -769,7 +769,7 @@ export function TradeBox(p: Props) {
 
   function onSubmit() {
     if (!account) {
-      onConnectWallet();
+      openConnectModal?.();
       return;
     }
 
@@ -1576,7 +1576,6 @@ export function TradeBox(p: Props) {
         onClose={onConfirmationClose}
         onSubmitted={onConfirmed}
         setPendingTxns={setPendingTxns}
-        onConnectWallet={onConnectWallet}
       />
     </>
   );

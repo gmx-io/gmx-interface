@@ -6,6 +6,8 @@ import { getIcon } from "config/icons";
 import {
   MarketInfo,
   MarketTokensAPRData,
+  getMarketIndexName,
+  getMarketPoolName,
   getMintableMarketTokens,
   getPoolUsdWithoutPnl,
 } from "domain/synthetics/markets";
@@ -15,6 +17,8 @@ import { formatAmount, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } 
 import { getByKey } from "lib/objects";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import "./MarketStats.scss";
+import BridgingInfo from "../BridgingInfo/BridgingInfo";
+import { getBridgingOptionsForToken } from "config/bridging";
 
 type Props = {
   marketInfo?: MarketInfo;
@@ -41,6 +45,11 @@ export function MarketStats(p: Props) {
   const shortPoolAmountUsd = marketInfo ? getPoolUsdWithoutPnl(marketInfo, false, "midPrice") : undefined;
 
   const apr = getByKey(marketsTokensAPRData, marketInfo?.marketTokenAddress);
+  const indexName = marketInfo && getMarketIndexName(marketInfo);
+  const poolName = marketInfo && getMarketPoolName(marketInfo);
+
+  const bridgingOprionsForToken = getBridgingOptionsForToken(longToken?.symbol);
+  const shouldShowMoreInfo = Boolean(bridgingOprionsForToken);
 
   return (
     <div className="App-card MarketStats-card">
@@ -50,17 +59,32 @@ export function MarketStats(p: Props) {
             <img className="MarketStats-gm-icon" src={getIcon(chainId, "gm")} alt="GM" />
           </div>
           <div className="App-card-title-mark-info">
-            <div className="App-card-title-mark-title">GM{marketInfo && `: ${marketInfo.name}`}</div>
+            <div className="App-card-title-mark-title Gm-stats-title items-center">
+              <span>GM{indexName && `: ${indexName}`}</span>
+              <span className="subtext">{poolName && `[${poolName}]`}</span>
+            </div>
             <div className="App-card-title-mark-subtitle">GMX Market Tokens</div>
           </div>
           <div>
-            <AssetDropdown assetSymbol={"GM"} token={marketToken} />
+            <AssetDropdown assetSymbol={"GM"} token={marketToken} position="left" />
           </div>
         </div>
       </div>
       <div className="App-card-divider" />
       <div className="App-card-content">
-        <CardRow label={t`Market`} value={marketInfo?.name || "..."} />
+        <CardRow
+          label={t`Market`}
+          value={
+            indexName && poolName ? (
+              <div className="items-top">
+                <span>{indexName}</span>
+                <span className="subtext gm-market-name">{poolName}</span>
+              </div>
+            ) : (
+              "..."
+            )
+          }
+        />
         <CardRow
           label={t`Price`}
           value={
@@ -194,6 +218,9 @@ export function MarketStats(p: Props) {
           label={t`Pool Amount`}
           value={formatTokenAmountWithUsd(longPoolAmount, longPoolAmountUsd, longToken?.symbol, longToken?.decimals)}
         />
+        {shouldShowMoreInfo && (
+          <CardRow label={t`More Info`} value={<BridgingInfo chainId={chainId} tokenSymbol={longToken?.symbol} />} />
+        )}
 
         <div className="App-card-divider" />
 
