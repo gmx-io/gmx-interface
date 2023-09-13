@@ -59,19 +59,11 @@ const parseOpenPositions = (
       positionInfo.collateralToken.prices.minPrice,
     )!;
 
-    const currSuzeInUsd = positionInfo.sizeInUsd; // convertToUsd(
-    //   BigNumber.from(p.sizeInTokens),
-    //   positionInfo.indexToken.decimals,
-    //   positionInfo.indexToken.prices[p.isLong ? "minPrice" : "maxPrice"],
-    // )!;
-
-    // if (!currSuzeInUsd.eq(positionInfo.sizeInUsd)) {
-    //   console.log({
-    //     diff: formatUsd(currSuzeInUsd.sub(positionInfo.sizeInUsd))
-    //     // "currSuzeInUsd": currSuzeInUsd.toString(),
-    //     // "positionInfo.sizeInUsd": positionInfo.sizeInUsd.toString(),
-    //   });
-    // }
+    const currSuzeInUsd = convertToUsd(
+      BigNumber.from(p.sizeInTokens),
+      positionInfo.indexToken.decimals,
+      positionInfo.indexToken.prices[p.isLong ? "minPrice" : "maxPrice"],
+    )!;
 
     const prevSizeInUsd = BigNumber.from(p.sizeInUsd);
     const unrealizedPnl = p.isLong
@@ -95,7 +87,7 @@ const parseOpenPositions = (
       markPrice,
       collateralToken: positionInfo.collateralToken,
       entryPrice: positionInfo.entryPrice!,
-      sizeInUsd: currSuzeInUsd,
+      sizeInUsd: positionInfo.sizeInUsd,
       collateralAmount,
       collateralAmountUsd,
       maxSize: BigNumber.from(p.maxSize),

@@ -14,6 +14,7 @@ import {
 const defaultSummary = (account: string): AccountPositionsSummary => ({
   account,
   unrealizedPnl: BigNumber.from(0),
+  unrealizedPnlAfterFees: BigNumber.from(0),
   sumSize: BigNumber.from(0),
   sumCollateral: BigNumber.from(0),
   sumMaxSize: BigNumber.from(0),
@@ -43,6 +44,7 @@ const groupPositionsByAccount = (positions: OpenPosition[]): PositionsSummaryByA
 
     summary.openPositionsCount++;
     summary.unrealizedPnl = summary.unrealizedPnl.add(p.unrealizedPnl);
+    summary.unrealizedPnlAfterFees = summary.unrealizedPnlAfterFees.add(p.unrealizedPnlAfterFees);
     summary.sumSize = summary.sumSize.add(p.sizeInUsd)
     summary.sumCollateral = summary.sumCollateral.add(p.collateralAmountUsd);
     summary.sumMaxSize = summary.sumMaxSize.add(p.maxSize);

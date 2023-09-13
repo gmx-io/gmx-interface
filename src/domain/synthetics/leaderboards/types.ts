@@ -92,6 +92,7 @@ export type OpenPositionJson = {
 export type AccountPositionsSummary = {
   account: string;
   unrealizedPnl: BigNumber;
+  unrealizedPnlAfterFees: BigNumber;
   sumSize: BigNumber;
   sumCollateral: BigNumber;
   sumMaxSize: BigNumber;
