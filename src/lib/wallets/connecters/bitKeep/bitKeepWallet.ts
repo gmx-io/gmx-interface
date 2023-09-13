@@ -50,7 +50,7 @@ export const bitKeepWallet = ({
 
   return {
     id: "bitKeep",
-    name: "BitKeep",
+    name: "Bitget Wallet",
     iconUrl: async () => (await import("./bitKeepWallet.svg")).default,
     iconAccent: "#f6851a",
     iconBackground: "#fff",
