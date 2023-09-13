@@ -8,7 +8,7 @@ import { ContractMarketPrices, getContractMarketPrices, useMarkets, useMarketsIn
 import { convertToUsd } from "../tokens";
 import { usePositionsInfo } from "./usePositionsInfo";
 import { PositionsInfoData, getPositionKey } from "../positions";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { useChainId } from "lib/chains";
 
@@ -39,15 +39,11 @@ const fetchOpenPositionsPage = async (
 const parseOpenPositions = (
   positionsData: OpenPositionJson[],
   positionsByKey: PositionsInfoData,
-  ensNames: Record<string, string>,
-  avatarUrls: Record<string, string>,
 ): OpenPosition[] => {
   const positions: OpenPosition[] = [];
 
   for (const p of positionsData) {
     const accountAddress = getAddress(p.account);
-    const ensName = ensNames[p.account];
-    const avatarUrl = avatarUrls[p.account];
     const key = getPositionKey(
       accountAddress,
       getAddress(p.market),
@@ -92,8 +88,8 @@ const parseOpenPositions = (
     positions.push({
       key,
       account: accountAddress,
-      ensName,
-      avatarUrl,
+      ensName: undefined,
+      avatarUrl: undefined,
       isLong: p.isLong,
       marketInfo: positionInfo.marketInfo,
       markPrice,
@@ -123,37 +119,47 @@ const parseOpenPositions = (
   return positions;
 };
 
-const fetchOpenPositions = (chainId) => async () => {
-  const pageSize = 1000;
+const fetchOpenPositions = (chainId, p = (_) => 0) => async () => {
+  const pageSize = 10000;
   let data: OpenPositionJson[] = [];
   let skip = 0;
 
+  p(`useOpenPositions: start fetching open positions`);
   while (true) {
     const page = await fetchOpenPositionsPage(chainId, pageSize, skip);
     if (!page || !page.length) {
       break;
     }
     data = data.concat(page);
+    if (page.length < pageSize) {
+      break;
+    }
     skip += pageSize;
   }
 
   return data;
 };
 
-export function useOpenPositions() {
+export function useOpenPositions(p = (_) => 0) {
   const { chainId } = useChainId();
-  const ensNames = {}; // FIXME: use useEnsBatchLookup instead
-  const avatarUrls = {}; // FIXME: use useEnsBatchLookup instead
-
   const { marketsData } = useMarkets(chainId);
   const { tokensData, pricesUpdatedAt } = useMarketsInfo(chainId);
-  const positions = useSWR(['/leaderboards/positions', chainId], fetchOpenPositions(chainId));
+  if (tokensData) {
+    p(`useOpenPositions: received tokens data`);
+  }
+  if (marketsData) {
+    p(`useOpenPositions: received markets data`);
+  }
+  const positions = useSWR(['/leaderboards/positions', chainId], fetchOpenPositions(chainId, p));
   const positionsHash = (positions.data || []).map(p => p.id).join("-");
   const { keys, prices } =  useMemo((): { keys: string[], prices: ContractMarketPrices[] } => {
     if (!marketsData || !tokensData) {
       return { keys: [], prices: [] };
     }
 
+    if (positions.data?.length) {
+      p(`useOpenPositions: start parsing ${positions.data.length} open positions`);
+    }
     const keys: string[] = [];
     const prices: ContractMarketPrices[] = [];
     for (const p of positions.data || []) {
@@ -169,36 +175,49 @@ export function useOpenPositions() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pricesUpdatedAt, chainId, positionsHash]);
 
-  const positionsInfo = usePositionsInfo(positionsHash, keys, prices);
+  if (keys && keys.length) {
+    p(`useOpenPositions: prepared ${keys.length} position keys and ${prices?.length} market prices`);
+  }
+
+  const positionsInfo = usePositionsInfo(positionsHash, keys, prices, p);
   const error = positions.error || positionsInfo.error;
   const isLoading = !error && (
     !positions.data ||
+    !positions.data.length ||
     !positionsInfo.data ||
+    !Object.keys(positionsInfo.data).length ||
     positions.data.length !== Object.keys(positionsInfo.data).length
   );
 
-  const ensNamesLength = Object.keys(ensNames).length;
-  const avatarUrlsLength = Object.keys(avatarUrls).length;
-  const [data, setData] = useState<OpenPosition[]>();
-  useEffect(() => {
-    if(!isLoading && !error) {
-      setData(parseOpenPositions(
-        positions.data || [],
-        positionsInfo.data,
-        ensNames,
-        avatarUrls
-      ));
+  const positionsCount = positions.data?.length || 0;
+  const positionsInfoCount = positionsInfo.data ? Object.keys(positionsInfo.data).length : 0;
+  const data = useMemo(() => {
+    if(isLoading || error) {
+      return;
     }
+
+    if (positionsInfo.data && Object.keys(positionsInfo.data).length && positions.data?.length) {
+      p(`useOpenPositions: start parsing ${positions.data?.length} open positions with positions info`);
+    }
+
+    return parseOpenPositions(
+      positions.data || [],
+      positionsInfo.data,
+    );
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isLoading,
     error,
     pricesUpdatedAt,
     chainId,
+    positionsCount,
+    positionsInfoCount,
     positionsHash,
-    ensNamesLength,
-    avatarUrlsLength,
   ]);
+
+  if (data && data.length) {
+    p(`useOpenPositions: successfully fetched and parsed ${data.length} open positions`);
+  }
 
   return { isLoading: !data, error, data: data || [] };
 };

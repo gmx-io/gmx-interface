@@ -24,7 +24,6 @@ import {
 } from "../positions";
 import useSWR from "swr";
 import { useChainId } from "lib/chains";
-import { Profiler } from "./utils";
 import { getProvider } from "lib/rpc";
 
 type PositionsResult = {
@@ -223,7 +222,8 @@ function parsePositionsInfo(
 export function usePositionsInfo(
   positionsHash: string,
   positionKeys: string[],
-  marketPrices: ContractMarketPrices[]
+  marketPrices: ContractMarketPrices[],
+  p = ((_) => 0),
 ): PositionsResult {
   const { chainId } = useChainId();
   const { minCollateralUsd } = usePositionsConstants(chainId);
@@ -233,21 +233,20 @@ export function usePositionsInfo(
     provider.current = getProvider(undefined, chainId);
   }, [chainId]);
 
-  const p = useRef(Profiler());
   if (positionKeys.length) {
-    p.current(`received ${positionKeys.length} position keys to fetch`);
+    p(`usePositionsInfo: accepted ${positionKeys.length} position keys to fetch positions info for`);
   }
   if (marketsInfoData) {
-    p.current(`detected markets info data`);
+    p(`usePositionsInfo: accepted markets info data`);
   }
   if (tokensData) {
-    p.current(`detected tokens data`);
+    p(`usePositionsInfo: accepted tokens data`);
   }
 
   const { data: positionsInfoJson } = useSWR<PositionJson[] | undefined>(
     positionKeys.length ? ["usePositionsInfo", chainId, positionsHash] : null,
     async () => {
-      p.current("first fetcher entry");
+      p(`usePositionsInfo: start fetching info for ${positionKeys.length} position keys`);
       const chunkSize = 150;
       const numChunks = Math.ceil(positionKeys.length / chunkSize);
       const requests: Promise<PositionJson[]>[] = [];
@@ -259,35 +258,37 @@ export function usePositionsInfo(
 
       const DataStoreContract = getContract(chainId, "DataStore");
       const ReferralStorageContract = getContract(chainId, "ReferralStorage");
+      const profileChunk = (i) => (result: PositionJson[]) => {
+        if (p) {
+          p(`usePositionsInfo: fetched ${i}th chunk`);
+        }
+        return result;
+      };
 
       for (let i = 0; i < numChunks; i++) {
-        requests.push((async () => {
-          const args = [
-            DataStoreContract,
-            ReferralStorageContract,
-            positionKeys.slice(chunkSize * i, chunkSize * (i + 1)),
-            marketPrices.slice(chunkSize * i, chunkSize * (i + 1)),
-            ethers.constants.AddressZero, // uiFeeReceiver
-          ];
-          // await new Promise((res) => setTimeout(res, i * 50));
-          const result = await contract.getAccountPositionInfoList(...args) as PositionJson[];
-          p.current(`fetched ${i}th chunk`);
-          return result;
-        })());
+        const args = [
+          DataStoreContract,
+          ReferralStorageContract,
+          positionKeys.slice(chunkSize * i, chunkSize * (i + 1)),
+          marketPrices.slice(chunkSize * i, chunkSize * (i + 1)),
+          ethers.constants.AddressZero, // uiFeeReceiver
+        ];
+        requests.push(
+          // new Promise((res) => setTimeout(res, i * 50)).then(() => {
+          contract.getAccountPositionInfoList(...args).then(profileChunk(i))
+        );
       }
 
       try {
-        p.current(`${requests.length} requests sent`);
+        p(`usePositionsInfo: ${requests.length} SyntheticsReader.getAccountPositionInfoList requests sent`);
         const chunks = await Promise.all(requests);
-
-        p.current(`${chunks.length} chunks fetched`);
         const data = chunks.flat();
-        p.current(`${data.length} items fetched`);
+        p(`usePositionsInfo: ${chunks.length} chunks of ${data.length} total items fetched`);
         return data;
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error("SyntheticsReader.getAccountPositionInfoList error:", e);
-        p.current(`batch call error: ${e.message}`);
+        p(`usePositionsInfo: SyntheticsReader.getAccountPositionInfoList batch call error: ${e.message}`);
         throw e;
       }
     }
@@ -312,7 +313,7 @@ export function usePositionsInfo(
       return;
     }
 
-    p.current(`parsing ${positionsInfoJson.length} position info json items`);
+    p(`usePositionsInfo: start parsing ${positionsInfoJson.length} position info json items`);
     return parsePositionsInfo(
       positionKeys,
       positionsInfoJson as PositionJson[],
@@ -323,13 +324,11 @@ export function usePositionsInfo(
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [positionsInfoHash, pricesUpdatedAt, chainId]);
 
-  if (data) {
-    p.current(`successfully fetched and parsed ${Object.keys(data).length} positionsInfo items`);
-    p.current.report();
-    p.current = Profiler();
+  if (data && Object.keys(data).length) {
+    p(`usePositionsInfo: successfully fetched and parsed ${Object.keys(data).length} positionsInfo items`);
   }
 
-  return { isLoading: !data, error: null, data: data || [] };
+  return { isLoading: !data, error: null, data: data || {} };
 }
 
 export function _usePositionsInfo__tmp(

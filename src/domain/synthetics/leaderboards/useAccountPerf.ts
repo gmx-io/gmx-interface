@@ -4,7 +4,7 @@ import { PerfPeriod, AccountPerf, AccountPerfJson, PerfByAccount, RemoteData } f
 import { queryAccountPerf } from "./queries";
 import { getLeaderboardsGraphClient } from "lib/subgraph/clients";
 import { getAddress } from "ethers/lib/utils";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { useChainId } from "lib/chains";
 
 const daysAgo = (days: number) => (
@@ -119,24 +119,27 @@ const sumPerfByAccount = (
   return aggregation;
 };
 
-export function useAccountPerf(period: PerfPeriod) {
-  const [data, setData] = useState<AccountPerf[]>([]);
+export function useAccountPerf(period: PerfPeriod, p = (_) => 0) {
   const { chainId } = useChainId();
   const accounts = useSWR([
     "leaderboards/accounts",
     period,
     chainId,
   ], async () => {
-    const pageSize = 1000;
+    const pageSize = 10000;
     let data: AccountPerfJson[] = [];
     let skip = 0;
 
+    p(`useAccountPerf: start fetching account perf records`);
     while (true) {
       const pageData = await fetchAccountPerfs(chainId, period, pageSize, skip);
       if (!pageData || !pageData.length) {
         break;
       }
       data = data.concat(pageData);
+      if (pageData.length < pageSize) {
+        break;
+      }
       skip += pageSize;
     }
 
@@ -151,12 +154,17 @@ export function useAccountPerf(period: PerfPeriod) {
   const key = (accounts.data || []).map(p => p.account).join("-");
   const ensNamesLength = Object.keys(ensNames).length;
   const avatarUrlsLength = Object.keys(avatarUrls).length;
-  useEffect(() => {
+  const data = useMemo(() => {
     if (accounts.data) {
-      setData(Object.values(sumPerfByAccount(accounts.data, period, ensNames, avatarUrls)));
+      p(`useAccountPerf: start groupping ${accounts.data.length} account perf records by account`);
+      return Object.values(sumPerfByAccount(accounts.data, period, ensNames, avatarUrls));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, key, period, ensNamesLength, avatarUrlsLength]);
+
+  if (data && data.length) {
+    p(`useAccountPerf: successfully fetched and groupped ${data.length} account perf records`);
+  }
 
   return {
     isLoading: !data && !accounts.error,

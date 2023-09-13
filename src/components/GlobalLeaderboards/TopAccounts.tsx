@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useRef } from "react";
 import { BigNumber } from "ethers";
 import { t } from "@lingui/macro";
 import cx from "classnames";
@@ -10,7 +10,7 @@ import Table from "components/Table/Table";
 import { useLeaderboardContext } from "./Context";
 import { USD_DECIMALS } from "lib/legacy";
 import { TableCell, TableHeader } from "components/Table/types";
-import { TopAccountsRow, formatDelta, signedValueClassName } from "domain/synthetics/leaderboards";
+import { TopAccountsRow, formatDelta, signedValueClassName, createProfiler, Profiler } from "domain/synthetics/leaderboards";
 import AddressView from "components/AddressView/AddressView";
 import Tooltip from "components/Tooltip/Tooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -111,6 +111,8 @@ export default function TopAccounts() {
   const term = useDebounce(search, 300);
   const { topAccounts } = useLeaderboardContext();
   const { isLoading, error, data } = topAccounts;
+  const p = useRef<Profiler>(createProfiler("TopAccounts"));
+  p.current = createProfiler("TopAccounts");
   const [accountsOrderBy, setAccountsOrderBy] = useState<keyof TopAccountsRow>("absPnl");
   const [accountsOrderDirection, setAccountsOrderDirection] = useState<number>(1);
   const topAccountsHeaderClick = useCallback((key: keyof TopAccountsRow) => () => {
@@ -131,7 +133,8 @@ export default function TopAccounts() {
       return [];
     }
 
-    return [...topAccounts.data].sort((a, b) => {
+    p.current(`TopAccounts: start sorting ${topAccounts.data.length} accounts`)
+    const result = [...topAccounts.data].sort((a, b) => {
       const key = accountsOrderBy;
       if (BigNumber.isBigNumber(a[key]) && BigNumber.isBigNumber(b[key])) {
         return accountsOrderDirection * ((a[key] as BigNumber).gt(b[key] as BigNumber) ? -1 : 1);
@@ -139,6 +142,9 @@ export default function TopAccounts() {
         return 1;
       }
     }).map((a, i) => ({ ...a, rank: i }));
+
+    p.current(`TopAccounts: sorted ${topAccounts.data.length} accounts`)
+    return result;
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accountsHash, accountsOrderBy, accountsOrderDirection]);
 
@@ -202,6 +208,9 @@ export default function TopAccounts() {
       className: cx("text-right", getSortableClass("wins")),
     },
   };
+
+  p.current(`TopAccounts: prepared top accounts data`);
+  p.current.report();
 
   return (
     <div>
