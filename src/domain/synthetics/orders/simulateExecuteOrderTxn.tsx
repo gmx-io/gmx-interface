@@ -1,6 +1,5 @@
-import { Web3Provider } from "@ethersproject/providers";
 import { TokenPrices, TokensData } from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
+import { BigNumber, Signer } from "ethers";
 
 export type MulticallRequest = { method: string; params: any[] }[];
 
@@ -20,7 +19,7 @@ type SimulateExecuteOrderParams = {
 // only for debugging empty reverts
 // const RUN_ON_CHAIN = false;
 
-export async function simulateExecuteOrderTxn(chainId: number, library: Web3Provider, p: SimulateExecuteOrderParams) {
+export async function simulateExecuteOrderTxn(chainId: number, signer: Signer, p: SimulateExecuteOrderParams) {
   // TODO: fix Rabby
   return;
   // const dataStoreAddress = getContract(chainId, "DataStore");

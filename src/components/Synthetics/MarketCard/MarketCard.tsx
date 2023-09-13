@@ -5,6 +5,8 @@ import Tooltip from "components/Tooltip/Tooltip";
 import {
   MarketInfo,
   getAvailableUsdLiquidityForPosition,
+  getMarketIndexName,
+  getMarketPoolName,
   getMaxReservedUsd,
   getReservedUsd,
 } from "domain/synthetics/markets";
@@ -47,6 +49,9 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
       };
     }, [marketInfo, isLong]);
 
+  const indexName = marketInfo && getMarketIndexName(marketInfo);
+  const poolName = marketInfo && getMarketPoolName(marketInfo);
+
   return (
     <div className="Exchange-swap-market-box App-box App-box-border">
       <div className="App-card-title">
@@ -54,7 +59,15 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
       </div>
       <div className="App-card-divider" />
       <div>
-        <ExchangeInfoRow label={t`Market`} value={marketInfo?.name || "..."} />
+        <ExchangeInfoRow
+          label={t`Market`}
+          value={
+            <div className="items-top">
+              <span>{indexName && indexName}</span>
+              <span className="subtext">{poolName && `[${poolName}]`}</span>
+            </div>
+          }
+        />
         <ExchangeInfoRow
           label={t`Entry Price`}
           value={

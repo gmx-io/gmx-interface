@@ -1,4 +1,3 @@
-import { useWeb3React } from "@web3-react/core";
 import Multicall from "abis/Multicall.json";
 import Token from "abis/Token.json";
 import { getContract } from "config/contracts";
@@ -6,13 +5,14 @@ import { getV2Tokens, NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { useMulticall } from "lib/multicall";
 import { TokenBalancesData } from "./types";
 import { BigNumber } from "ethers";
+import useWallet from "lib/wallets/useWallet";
 
 type BalancesDataResult = {
   balancesData?: TokenBalancesData;
 };
 
 export function useTokenBalances(chainId: number): BalancesDataResult {
-  const { account } = useWeb3React();
+  const { account } = useWallet();
 
   const { data } = useMulticall(chainId, "useTokenBalances", {
     key: account ? [account] : null,

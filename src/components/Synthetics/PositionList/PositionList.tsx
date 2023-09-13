@@ -1,11 +1,11 @@
 import { Trans, t } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
 import PositionShare from "components/Exchange/PositionShare";
 import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
 import { OrdersInfoData, PositionOrderInfo, isOrderForPosition } from "domain/synthetics/orders";
 import { PositionInfo, PositionsInfoData } from "domain/synthetics/positions";
 import { TradeMode, TradeType } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
+import useWallet from "lib/wallets/useWallet";
 import { useState } from "react";
 
 type Props = {
@@ -28,7 +28,7 @@ type Props = {
 
 export function PositionList(p: Props) {
   const { chainId } = useChainId();
-  const { account } = useWeb3React();
+  const { account } = useWallet();
   const [isPositionShareModalOpen, setIsPositionShareModalOpen] = useState(false);
   const [positionToShare, setPositionToShare] = useState<PositionInfo | null>(null);
 

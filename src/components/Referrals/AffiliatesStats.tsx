@@ -38,7 +38,7 @@ import {
   isRecentReferralCodeNotExpired,
 } from "./referralsHelper";
 import usePagination from "./usePagination";
-import { useWeb3React } from "@web3-react/core";
+import useWallet from "lib/wallets/useWallet";
 
 type Props = {
   chainId: number;
@@ -55,7 +55,7 @@ function AffiliatesStats({
   handleCreateReferralCode,
   setRecentlyAddedCodes,
 }: Props) {
-  const { library } = useWeb3React();
+  const { signer } = useWallet();
   const [isAddReferralCodeModalOpen, setIsAddReferralCodeModalOpen] = useState(false);
   const addNewModalRef = useRef<HTMLDivElement>(null);
 
@@ -109,7 +109,7 @@ function AffiliatesStats({
   const currentAffiliatesData = getCurrentAffiliatesData();
   const tierId = affiliateTierInfo?.tierId;
   const discountShare = affiliateTierInfo?.discountShare;
-  const { totalRebate } = useTiers(library, chainId, tierId);
+  const { totalRebate } = useTiers(signer, chainId, tierId);
   const currentRebatePercentage = getSharePercentage(tierId, BigNumber.from(discountShare || 0), totalRebate, true);
 
   const totalClaimableRewardsUsd = useMemo(() => {

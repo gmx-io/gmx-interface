@@ -1,8 +1,7 @@
-import { Web3Provider } from "@ethersproject/providers";
 import { t } from "@lingui/macro";
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber, Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { convertToContractPrice } from "../tokens";
 import { Token } from "domain/tokens";
@@ -19,7 +18,7 @@ export type UpdateOrderParams = {
   setPendingTxns: (txns: any) => void;
 };
 
-export function updateOrderTxn(chainId: number, library: Web3Provider, p: UpdateOrderParams) {
+export function updateOrderTxn(chainId: number, signer: Signer, p: UpdateOrderParams) {
   const {
     orderKey,
     sizeDeltaUsd,
@@ -31,11 +30,7 @@ export function updateOrderTxn(chainId: number, library: Web3Provider, p: Update
     indexToken,
   } = p;
 
-  const exchangeRouter = new ethers.Contract(
-    getContract(chainId, "ExchangeRouter"),
-    ExchangeRouter.abi,
-    library.getSigner()
-  );
+  const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
 
   const orderVaultAddress = getContract(chainId, "OrderVault");
 

@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
 import { useCallback, useState } from "react";
 
 import Checkbox from "components/Checkbox/Checkbox";
@@ -64,6 +63,8 @@ import {
   parseValue,
 } from "lib/numbers";
 import "./StakeV2.css";
+import useWallet from "lib/wallets/useWallet";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import PageTitle from "components/PageTitle/PageTitle";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
@@ -81,7 +82,7 @@ function StakeModal(props) {
     setValue,
     active,
     account,
-    library,
+    signer,
     stakingTokenSymbol,
     stakingTokenAddress,
     farmAddress,
@@ -96,7 +97,7 @@ function StakeModal(props) {
   const { data: tokenAllowance } = useSWR(
     active && stakingTokenAddress && [active, chainId, stakingTokenAddress, "allowance", account, farmAddress],
     {
-      fetcher: contractFetcher(library, Token),
+      fetcher: contractFetcher(signer, Token),
     }
   );
 
@@ -116,7 +117,7 @@ function StakeModal(props) {
     if (needApproval) {
       approveTokens({
         setIsApproving,
-        library,
+        signer,
         tokenAddress: stakingTokenAddress,
         spender: farmAddress,
         chainId,
@@ -125,7 +126,7 @@ function StakeModal(props) {
     }
 
     setIsStaking(true);
-    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, library.getSigner());
+    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, signer);
 
     callContract(chainId, contract, stakeMethodName, [amount], {
       sentMsg: t`Stake submitted!`,
@@ -219,7 +220,7 @@ function UnstakeModal(props) {
     maxAmount,
     value,
     setValue,
-    library,
+    signer,
     unstakingTokenSymbol,
     rewardRouterAddress,
     unstakeMethodName,
@@ -262,7 +263,7 @@ function UnstakeModal(props) {
 
   const onClickPrimary = () => {
     setIsUnstaking(true);
-    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, library.getSigner());
+    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, signer);
     callContract(chainId, contract, unstakeMethodName, [amount], {
       sentMsg: t`Unstake submitted!`,
       failMsg: t`Unstake failed.`,
@@ -363,7 +364,7 @@ function VesterDepositModal(props) {
     vestedAmount,
     averageStakedAmount,
     maxVestableAmount,
-    library,
+    signer,
     stakeTokenLabel,
     reserveAmount,
     maxReserveAmount,
@@ -404,7 +405,7 @@ function VesterDepositModal(props) {
 
   const onClickPrimary = () => {
     setIsDepositing(true);
-    const contract = new ethers.Contract(vesterAddress, Vester.abi, library.getSigner());
+    const contract = new ethers.Contract(vesterAddress, Vester.abi, signer);
 
     callContract(chainId, contract, "deposit", [amount], {
       sentMsg: t`Deposit submitted!`,
@@ -559,12 +560,12 @@ function VesterDepositModal(props) {
 }
 
 function VesterWithdrawModal(props) {
-  const { isVisible, setIsVisible, chainId, title, library, vesterAddress, setPendingTxns } = props;
+  const { isVisible, setIsVisible, chainId, title, signer, vesterAddress, setPendingTxns } = props;
   const [isWithdrawing, setIsWithdrawing] = useState(false);
 
   const onClickPrimary = () => {
     setIsWithdrawing(true);
-    const contract = new ethers.Contract(vesterAddress, Vester.abi, library.getSigner());
+    const contract = new ethers.Contract(vesterAddress, Vester.abi, signer);
 
     callContract(chainId, contract, "withdraw", [], {
       sentMsg: t`Withdraw submitted.`,
@@ -614,7 +615,7 @@ function CompoundModal(props) {
     rewardRouterAddress,
     active,
     account,
-    library,
+    signer,
     chainId,
     setPendingTxns,
     totalVesterRewards,
@@ -656,7 +657,7 @@ function CompoundModal(props) {
   const { data: tokenAllowance } = useSWR(
     active && [active, chainId, gmxAddress, "allowance", account, stakedGmxTrackerAddress],
     {
-      fetcher: contractFetcher(library, Token),
+      fetcher: contractFetcher(signer, Token),
     }
   );
 
@@ -683,7 +684,7 @@ function CompoundModal(props) {
     if (needApproval) {
       approveTokens({
         setIsApproving,
-        library,
+        signer,
         tokenAddress: gmxAddress,
         spender: stakedGmxTrackerAddress,
         chainId,
@@ -693,7 +694,7 @@ function CompoundModal(props) {
 
     setIsCompounding(true);
 
-    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, library.getSigner());
+    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, signer);
     callContract(
       chainId,
       contract,
@@ -804,7 +805,7 @@ function ClaimModal(props) {
     isVisible,
     setIsVisible,
     rewardRouterAddress,
-    library,
+    signer,
     chainId,
     setPendingTxns,
     nativeTokenSymbol,
@@ -842,7 +843,7 @@ function ClaimModal(props) {
   const onClickPrimary = () => {
     setIsClaiming(true);
 
-    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, library.getSigner());
+    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, signer);
     callContract(
       chainId,
       contract,
@@ -915,9 +916,11 @@ function ClaimModal(props) {
   );
 }
 
-export default function StakeV2({ setPendingTxns, connectWallet }) {
-  const { active, library, account } = useWeb3React();
+export default function StakeV2({ setPendingTxns }) {
+  const { active, signer, account } = useWallet();
   const { chainId } = useChainId();
+  const { openConnectModal } = useConnectModal();
+
   const icons = getIcons(chainId);
   const hasInsurance = true;
   const [isStakeModalVisible, setIsStakeModalVisible] = useState(false);
@@ -1029,7 +1032,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
       account || PLACEHOLDER_ACCOUNT,
     ],
     {
-      fetcher: contractFetcher(library, ReaderV2, [walletTokens]),
+      fetcher: contractFetcher(signer, ReaderV2, [walletTokens]),
     }
   );
 
@@ -1042,52 +1045,52 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
       account || PLACEHOLDER_ACCOUNT,
     ],
     {
-      fetcher: contractFetcher(library, RewardReader, [depositTokens, rewardTrackersForDepositBalances]),
+      fetcher: contractFetcher(signer, RewardReader, [depositTokens, rewardTrackersForDepositBalances]),
     }
   );
 
   const { data: stakingInfo } = useSWR(
     [`StakeV2:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account || PLACEHOLDER_ACCOUNT],
     {
-      fetcher: contractFetcher(library, RewardReader, [rewardTrackersForStakingInfo]),
+      fetcher: contractFetcher(signer, RewardReader, [rewardTrackersForStakingInfo]),
     }
   );
 
   const { data: stakedGmxSupply } = useSWR(
     [`StakeV2:stakedGmxSupply:${active}`, chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress],
     {
-      fetcher: contractFetcher(library, Token),
+      fetcher: contractFetcher(signer, Token),
     }
   );
 
   const { data: aums } = useSWR([`StakeV2:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
-    fetcher: contractFetcher(library, GlpManager),
+    fetcher: contractFetcher(signer, GlpManager),
   });
 
   const { data: nativeTokenPrice } = useSWR(
     [`StakeV2:nativeTokenPrice:${active}`, chainId, vaultAddress, "getMinPrice", nativeTokenAddress],
     {
-      fetcher: contractFetcher(library, Vault),
+      fetcher: contractFetcher(signer, Vault),
     }
   );
 
   const { data: esGmxSupply } = useSWR(
     [`StakeV2:esGmxSupply:${active}`, chainId, readerAddress, "getTokenSupply", esGmxAddress],
     {
-      fetcher: contractFetcher(library, ReaderV2, [excludedEsGmxAccounts]),
+      fetcher: contractFetcher(signer, ReaderV2, [excludedEsGmxAccounts]),
     }
   );
 
   const { data: vestingInfo } = useSWR(
     [`StakeV2:vestingInfo:${active}`, chainId, readerAddress, "getVestingInfo", account || PLACEHOLDER_ACCOUNT],
     {
-      fetcher: contractFetcher(library, ReaderV2, [vesterAddresses]),
+      fetcher: contractFetcher(signer, ReaderV2, [vesterAddresses]),
     }
   );
 
   const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useGmxPrice(
     chainId,
-    { arbitrum: chainId === ARBITRUM ? library : undefined },
+    { arbitrum: chainId === ARBITRUM ? signer : undefined },
     active
   );
 
@@ -1377,7 +1380,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         setValue={setStakeValue}
         active={active}
         account={account}
-        library={library}
+        signer={signer}
         stakingTokenSymbol={stakingTokenSymbol}
         stakingTokenAddress={stakingTokenAddress}
         farmAddress={stakingFarmAddress}
@@ -1398,7 +1401,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         reservedAmount={unstakeModalReservedAmount}
         value={unstakeValue}
         setValue={setUnstakeValue}
-        library={library}
+        signer={signer}
         unstakingTokenSymbol={unstakingTokenSymbol}
         rewardRouterAddress={rewardRouterAddress}
         unstakeMethodName={unstakeMethodName}
@@ -1421,7 +1424,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         maxReserveAmount={vesterDepositMaxReserveAmount}
         value={vesterDepositValue}
         setValue={setVesterDepositValue}
-        library={library}
+        signer={signer}
         vesterAddress={vesterDepositAddress}
         setPendingTxns={setPendingTxns}
       />
@@ -1431,7 +1434,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         vesterAddress={vesterWithdrawAddress}
         chainId={chainId}
         title={vesterWithdrawTitle}
-        library={library}
+        signer={signer}
         setPendingTxns={setPendingTxns}
       />
       <CompoundModal
@@ -1444,7 +1447,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         totalVesterRewards={processedData.totalVesterRewards}
         wrappedTokenSymbol={wrappedTokenSymbol}
         nativeTokenSymbol={nativeTokenSymbol}
-        library={library}
+        signer={signer}
         chainId={chainId}
       />
       <ClaimModal
@@ -1457,7 +1460,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         totalVesterRewards={processedData.totalVesterRewards}
         wrappedTokenSymbol={wrappedTokenSymbol}
         nativeTokenSymbol={nativeTokenSymbol}
-        library={library}
+        signer={signer}
         chainId={chainId}
       />
 
@@ -1746,7 +1749,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     </Button>
                   )}
                   {!active && (
-                    <Button variant="secondary" onClick={() => connectWallet()}>
+                    <Button variant="secondary" onClick={openConnectModal}>
                       <Trans>Connect Wallet</Trans>
                     </Button>
                   )}
@@ -1998,7 +2001,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                   </Button>
                 )}
                 {!active && (
-                  <Button variant="secondary" onClick={() => connectWallet()}>
+                  <Button variant="secondary" onClick={openConnectModal}>
                     <Trans> Connect Wallet</Trans>
                   </Button>
                 )}
@@ -2137,7 +2140,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 <div className="App-card-divider"></div>
                 <div className="App-card-buttons m-0">
                   {!active && (
-                    <Button variant="secondary" onClick={() => connectWallet()}>
+                    <Button variant="secondary" onClick={openConnectModal}>
                       <Trans>Connect Wallet</Trans>
                     </Button>
                   )}
@@ -2227,7 +2230,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 <div className="App-card-divider"></div>
                 <div className="App-card-buttons m-0">
                   {!active && (
-                    <Button variant="secondary" onClick={() => connectWallet()}>
+                    <Button variant="secondary" onClick={openConnectModal}>
                       <Trans>Connect Wallet</Trans>
                     </Button>
                   )}

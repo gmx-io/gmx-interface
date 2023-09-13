@@ -1,4 +1,3 @@
-import { useWeb3React } from "@web3-react/core";
 import DataStore from "abis/DataStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
@@ -41,6 +40,7 @@ import { TokensData, useTokensData } from "../tokens";
 import { MarketsInfoData } from "./types";
 import { useMarkets } from "./useMarkets";
 import { getContractMarketPrices } from "./utils";
+import useWallet from "lib/wallets/useWallet";
 
 export type MarketsInfoResult = {
   marketsInfoData?: MarketsInfoData;
@@ -49,7 +49,7 @@ export type MarketsInfoResult = {
 };
 
 export function useMarketsInfo(chainId: number): MarketsInfoResult {
-  const { account } = useWeb3React();
+  const { account } = useWallet();
   const { marketsData, marketsAddresses } = useMarkets(chainId);
   const { tokensData, pricesUpdatedAt } = useTokensData(chainId);
   const dataStoreAddress = getContract(chainId, "DataStore");
