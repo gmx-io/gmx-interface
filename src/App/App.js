@@ -92,7 +92,7 @@ import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import NumberInput from "components/NumberInput/NumberInput";
 import { watchNetwork } from "@wagmi/core";
-import { useConnect, useDisconnect } from "wagmi";
+import { useDisconnect } from "wagmi";
 import useWallet from "lib/wallets/useWallet";
 import { swrGCMiddleware } from "lib/swrMiddlewares";
 
@@ -680,22 +680,12 @@ function FullApp() {
     </>
   );
 }
-const AUTOCONNECTED_CONNECTOR_IDS = ["safe"];
+
 function App() {
   const { disconnect } = useDisconnect();
-  const { connect, connectors } = useConnect();
-
-  useEffect(() => {
-    AUTOCONNECTED_CONNECTOR_IDS.forEach((connector) => {
-      const connectorInstance = connectors.find((c) => c.id === connector && c.ready);
-
-      if (connectorInstance) {
-        connect({ connector: connectorInstance });
-      }
-    });
-  }, [connect, connectors]);
 
   useScrollToTop();
+
   useEffect(() => {
     const defaultLanguage = localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale;
     dynamicActivate(defaultLanguage);

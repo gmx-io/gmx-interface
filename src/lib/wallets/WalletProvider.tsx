@@ -70,7 +70,7 @@ const othersWalletList: WalletList = [
 const connectors = connectorsForWallets([...recommendedWalletList, ...othersWalletList]);
 
 const wagmiClient = createClient({
-  autoConnect: false,
+  autoConnect: true,
   connectors,
   provider,
 });
