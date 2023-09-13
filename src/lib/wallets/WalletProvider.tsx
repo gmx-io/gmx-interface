@@ -11,7 +11,6 @@ import {
   coinbaseWallet,
   rainbowWallet,
   imTokenWallet,
-  trustWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "wagmi/chains";
@@ -60,11 +59,7 @@ const othersWalletList: WalletList = [
     wallets: [
       coreWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
       coinbaseWallet({ appName: APP_NAME, chains }),
-      trustWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
       ledgerWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
-      safeWallet({
-        chains,
-      }),
       rainbowWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
       bitKeepWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
       imTokenWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
@@ -75,7 +70,7 @@ const othersWalletList: WalletList = [
 const connectors = connectorsForWallets([...recommendedWalletList, ...othersWalletList]);
 
 const wagmiClient = createClient({
-  autoConnect: true,
+  autoConnect: false,
   connectors,
   provider,
 });
