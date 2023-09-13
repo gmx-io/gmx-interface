@@ -1,13 +1,12 @@
 import { Trans, t } from "@lingui/macro";
+import { useWeb3React } from "@web3-react/core";
 import PositionShare from "components/Exchange/PositionShare";
 import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
 import { OrdersInfoData, PositionOrderInfo, isOrderForPosition } from "domain/synthetics/orders";
 import { PositionInfo, PositionsInfoData } from "domain/synthetics/positions";
 import { TradeMode, TradeType } from "domain/synthetics/trade";
-import { ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
 
 type Props = {
   onSelectPositionClick: (key: string, tradeMode?: TradeMode) => void;
@@ -29,17 +28,12 @@ type Props = {
 
 export function PositionList(p: Props) {
   const { chainId } = useChainId();
-  const { account: accountFromParams } = useParams<{ account?: string }>();
+  const { account } = useWeb3React();
   const [isPositionShareModalOpen, setIsPositionShareModalOpen] = useState(false);
   const [positionToShare, setPositionToShare] = useState<PositionInfo | null>(null);
 
   const positions = Object.values(p.positionsData || {});
   const orders = Object.values(p.ordersData || {});
-
-  let validAccount = "";
-  if (accountFromParams && ethers.utils.isAddress(accountFromParams)) {
-    validAccount = ethers.utils.getAddress(accountFromParams);
-  }
 
   return (
     <div>
@@ -147,7 +141,7 @@ export function PositionList(p: Props) {
           markPrice={positionToShare.markPrice}
           pnlAfterFeesPercentage={positionToShare?.pnlAfterFeesPercentage}
           chainId={chainId}
-          account={validAccount}
+          account={account}
         />
       )}
     </div>

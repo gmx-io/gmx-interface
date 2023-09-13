@@ -51,7 +51,7 @@ function PositionShare({
   pnlAfterFeesPercentage: BigNumber;
   setIsPositionShareModalOpen: (isOpen: boolean) => void;
   isPositionShareModalOpen: boolean;
-  account: string;
+  account: string | undefined | null;
   chainId: number;
 }) {
   const userAffiliateCode = useAffiliateCodes(chainId, account);
