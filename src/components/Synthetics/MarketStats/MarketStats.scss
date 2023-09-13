@@ -2,6 +2,10 @@
   flex: 1;
   max-width: 71.2rem;
   margin-right: 1.5rem;
+
+  .Tooltip-popup {
+    min-width: 30rem;
+  }
 }
 
 .MarketStats-card .App-card-row .label {
@@ -57,6 +61,14 @@
     margin: 0;
     margin-bottom: 3.1rem;
     max-width: 100%;
+  }
+}
+
+@media (max-width: 700px) {
+  .MarketStats-card {
+    .Tooltip-popup {
+      min-width: 22rem;
+    }
   }
 }
 

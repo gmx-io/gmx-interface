@@ -70,6 +70,7 @@ input {
   --arbitrum-blue: #28a0f0;
   --border-radius-sm: 0.4rem;
   --error-red: #fa3c58;
+  --green: #0ecc83;
   --font-sm: 1.4rem;
   --font-base: 1.5rem;
   --font-md: 1.6rem;
@@ -523,6 +524,18 @@ button.btn-link:hover .logout-icon {
   margin-left: 0.5rem;
 }
 
+.mb-xs {
+  margin-bottom: 0.5rem;
+}
+
+.mb-sm {
+  margin-bottom: 1rem;
+}
+
+.mb-base {
+  margin-bottom: 1.5rem;
+}
+
 .subtext {
   font-size: 1.2rem;
   color: var(--text-gray);
@@ -535,4 +548,12 @@ button.btn-link:hover .logout-icon {
 
 .nobr {
   white-space: nowrap;
+}
+
+.text-red {
+  color: var(--error-red);
+}
+
+.text-green {
+  color: var(--green);
 }
