@@ -15,7 +15,7 @@ type Props = {
   tokensData?: TokensData;
 };
 
-export function ClaimHistory(p: Props) {
+export function Claims(p: Props) {
   const { shouldShowPaginationButtons, marketsInfoData, tokensData } = p;
   const { chainId } = useChainId();
   const { account } = useWallet();

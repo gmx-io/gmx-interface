@@ -3,7 +3,7 @@ import cx from "classnames";
 import Checkbox from "components/Checkbox/Checkbox";
 import Footer from "components/Footer/Footer";
 import { AcceptbablePriceImpactEditor } from "components/Synthetics/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor";
-import { ClaimHistory } from "components/Synthetics/ClaimHistory/ClaimHistory";
+import { Claims } from "components/Synthetics/Claims/Claims";
 import { ClaimModal } from "components/Synthetics/ClaimModal/ClaimModal";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEditor";
@@ -367,7 +367,7 @@ export function SyntheticsPage(p: Props) {
               />
             )}
             {listSection === ListSection.Claims && (
-              <ClaimHistory marketsInfoData={marketsInfoData} tokensData={tokensData} shouldShowPaginationButtons />
+              <Claims marketsInfoData={marketsInfoData} tokensData={tokensData} shouldShowPaginationButtons />
             )}
           </div>
         </div>
@@ -470,7 +470,7 @@ export function SyntheticsPage(p: Props) {
             />
           )}
           {listSection === ListSection.Claims && (
-            <ClaimHistory marketsInfoData={marketsInfoData} tokensData={tokensData} shouldShowPaginationButtons />
+            <Claims marketsInfoData={marketsInfoData} tokensData={tokensData} shouldShowPaginationButtons />
           )}
         </div>
       </div>
