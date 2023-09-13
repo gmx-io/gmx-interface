@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChartContainer";
 import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
@@ -20,7 +20,7 @@ import "./TVChart.scss";
 import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
 import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
 import { AvailableTokenOptions, TradeType } from "domain/synthetics/trade";
-import { MarketsInfoData } from "domain/synthetics/markets";
+import { MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getByKey } from "lib/objects";
 import { helperToast } from "lib/helperToast";
 
@@ -147,8 +147,18 @@ export function TVChart({
       const nextTradeType = tradeType ?? currentTradeType;
       if (nextTradeType === TradeType.Swap) return;
       if (marketInfo && nextTradeType) {
-        const message = `${nextTradeType === TradeType.Long ? t`Long` : t`Short`} ${marketInfo?.name} market selected`;
-        helperToast.success(message);
+        const indexName = getMarketIndexName(marketInfo);
+        const poolName = getMarketPoolName(marketInfo);
+        helperToast.success(
+          <Trans>
+            <span>{nextTradeType === TradeType.Long ? t`Long` : t`Short`}</span>{" "}
+            <div className="inline-flex">
+              <span>{indexName}</span>
+              <span className="subtext gm-toast">[{poolName}]</span>
+            </div>{" "}
+            <span>market selected</span>
+          </Trans>
+        );
       }
     }
   }
