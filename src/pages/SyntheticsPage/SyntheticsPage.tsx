@@ -414,7 +414,6 @@ export function SyntheticsPage(p: Props) {
               onSelectTradeType={setTradeType}
               setIsEditingAcceptablePriceImpact={onEditAcceptablePriceImpact}
               setPendingTxns={setPendingTxns}
-              setIsClaiming={setIsClaiming}
               switchTokenAddresses={switchTokenAddresses}
             />
           </div>

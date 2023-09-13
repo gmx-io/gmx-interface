@@ -87,7 +87,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { AiOutlineEdit } from "react-icons/ai";
 import { IoMdSwap } from "react-icons/io";
 import { usePrevious } from "react-use";
-import { ClaimableCard } from "../ClaimableCard/ClaimableCard";
 import { MarketCard } from "../MarketCard/MarketCard";
 import { SwapCard } from "../SwapCard/SwapCard";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
@@ -136,7 +135,6 @@ export type Props = {
   onSelectMarketAddress: (marketAddress?: string) => void;
   onSelectCollateralAddress: (collateralAddress?: string) => void;
   setIsEditingAcceptablePriceImpact: (val: boolean) => void;
-  setIsClaiming: (val: boolean) => void;
   switchTokenAddresses: () => void;
 };
 
@@ -181,7 +179,6 @@ export function TradeBox(p: Props) {
     onSelectTradeMode,
     onSelectTradeType,
     setIsEditingAcceptablePriceImpact,
-    setIsClaiming,
     setPendingTxns,
     switchTokenAddresses,
   } = p;
@@ -1540,7 +1537,6 @@ export function TradeBox(p: Props) {
             allowedSlippage={allowedSlippage}
           />
         )}
-        {account && <ClaimableCard marketsInfoData={marketsInfoData} onClaimClick={() => setIsClaiming(true)} />}
       </div>
 
       <ConfirmationBox
