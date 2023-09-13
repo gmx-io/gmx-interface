@@ -60,25 +60,16 @@ const groupPositionsByAccount = (positions: OpenPosition[]): PositionsSummaryByA
   return groupping;
 };
 
-export function useTopAccounts(period: PerfPeriod, p = (_) => 0) {
-  const accountPerf = useAccountPerf(period, p);
-  const positions = useOpenPositions(p);
+export function useTopAccounts(period: PerfPeriod) {
+  const accountPerf = useAccountPerf(period);
+  const positions = useOpenPositions();
   const accounts = (accountPerf.data || []).map(a => a.account).join("-");
   const positionKeys = (positions.data || []).map(p => p.key).join("-");
-
-  if (accountPerf.data && accountPerf.data.length) {
-    p(`useTopAccounts: received ${accountPerf.data.length} account performance records`);
-  }
-  if (positions.data && positions.data.length) {
-    p(`useTopAccounts: received ${positions.data.length} open positions`);
-  }
-
   const data = useMemo(() => {
     if (accountPerf.error || positions.error || accountPerf.isLoading || positions.isLoading) {
       return;
     }
 
-    p(`useTopAccounts: start parsing ${positions.data.length} top accounts rows`);
     const openPositionsByAccount: Record<string, AccountPositionsSummary> = groupPositionsByAccount(positions.data);
     const data: TopAccountsRow[] = [];
 
@@ -136,11 +127,6 @@ export function useTopAccounts(period: PerfPeriod, p = (_) => 0) {
     return data;
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accounts, positionKeys]);
-
-  if (data && data.length) {
-    p(`useTopAccounts: successfully fetched and parsed ${data.length} top accounts rows`);
-  }
-  // console.log("useTopAccounts:", data, accountPerf.data, positions.data, accountPerf.error, positions.error);
 
   return { isLoading: !data, error: accountPerf.error || positions.error, data };
 }

@@ -223,7 +223,6 @@ export function usePositionsInfo(
   positionsHash: string,
   positionKeys: string[],
   marketPrices: ContractMarketPrices[],
-  p = ((_) => 0),
 ): PositionsResult {
   const { chainId } = useChainId();
   const { minCollateralUsd } = usePositionsConstants(chainId);
@@ -233,20 +232,9 @@ export function usePositionsInfo(
     provider.current = getProvider(undefined, chainId);
   }, [chainId]);
 
-  if (positionKeys.length) {
-    p(`usePositionsInfo: accepted ${positionKeys.length} position keys to fetch positions info for`);
-  }
-  if (marketsInfoData) {
-    p(`usePositionsInfo: accepted markets info data`);
-  }
-  if (tokensData) {
-    p(`usePositionsInfo: accepted tokens data`);
-  }
-
   const { data: positionsInfoJson } = useSWR<PositionJson[] | undefined>(
     positionKeys.length ? ["usePositionsInfo", chainId, positionsHash] : null,
     async () => {
-      p(`usePositionsInfo: start fetching info for ${positionKeys.length} position keys`);
       const chunkSize = 150;
       const numChunks = Math.ceil(positionKeys.length / chunkSize);
       const requests: Promise<PositionJson[]>[] = [];
@@ -258,37 +246,24 @@ export function usePositionsInfo(
 
       const DataStoreContract = getContract(chainId, "DataStore");
       const ReferralStorageContract = getContract(chainId, "ReferralStorage");
-      const profileChunk = (i) => (result: PositionJson[]) => {
-        if (p) {
-          p(`usePositionsInfo: fetched ${i}th chunk`);
-        }
-        return result;
-      };
 
       for (let i = 0; i < numChunks; i++) {
-        const args = [
+        requests.push(contract.getAccountPositionInfoList(
           DataStoreContract,
           ReferralStorageContract,
           positionKeys.slice(chunkSize * i, chunkSize * (i + 1)),
           marketPrices.slice(chunkSize * i, chunkSize * (i + 1)),
           ethers.constants.AddressZero, // uiFeeReceiver
-        ];
-        requests.push(
-          // new Promise((res) => setTimeout(res, i * 50)).then(() => {
-          contract.getAccountPositionInfoList(...args).then(profileChunk(i))
-        );
+        ));
       }
 
       try {
-        p(`usePositionsInfo: ${requests.length} SyntheticsReader.getAccountPositionInfoList requests sent`);
         const chunks = await Promise.all(requests);
         const data = chunks.flat();
-        p(`usePositionsInfo: ${chunks.length} chunks of ${data.length} total items fetched`);
         return data;
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error("SyntheticsReader.getAccountPositionInfoList error:", e);
-        p(`usePositionsInfo: SyntheticsReader.getAccountPositionInfoList batch call error: ${e.message}`);
         throw e;
       }
     }
@@ -313,7 +288,6 @@ export function usePositionsInfo(
       return;
     }
 
-    p(`usePositionsInfo: start parsing ${positionsInfoJson.length} position info json items`);
     return parsePositionsInfo(
       positionKeys,
       positionsInfoJson as PositionJson[],
@@ -323,10 +297,6 @@ export function usePositionsInfo(
     );
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [positionsInfoHash, pricesUpdatedAt, chainId]);
-
-  if (data && Object.keys(data).length) {
-    p(`usePositionsInfo: successfully fetched and parsed ${Object.keys(data).length} positionsInfo items`);
-  }
 
   return { isLoading: !data, error: null, data: data || {} };
 }

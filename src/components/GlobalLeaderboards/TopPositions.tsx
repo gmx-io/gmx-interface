@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useRef } from "react";
+import { useState, useCallback, useMemo } from "react";
 import cx from "classnames";
 import { t } from "@lingui/macro";
 import Pagination from "components/Pagination/Pagination";
@@ -9,7 +9,7 @@ import { formatUsd, formatPrice, formatDeltaUsd } from "lib/numbers";
 import { formatLeverage } from "domain/synthetics/positions";
 import { TableCell, TableHeader } from "components/Table/types";
 import AddressView from "components/AddressView/AddressView";
-import { TopPositionsRow, formatDelta, signedValueClassName, createProfiler } from "domain/synthetics/leaderboards";
+import { TopPositionsRow, formatDelta, signedValueClassName } from "domain/synthetics/leaderboards";
 import Tooltip from "components/Tooltip/Tooltip";
 import { useChainId } from "lib/chains";
 import { useLeaderboardContext } from "./Context";
@@ -134,7 +134,6 @@ export default function TopPositions() {
   const { chainId } = useChainId();
   const { topPositions } = useLeaderboardContext();
   const { isLoading, error, data } = topPositions;
-  const p = useRef(createProfiler("TopPositions"));
   const [positionsOrderBy, setPositionsOrderBy] = useState<keyof TopPositionsRow>("unrealizedPnl");
   const [positionsOrderDirection, setPositionsOrderDirection] = useState<number>(1);
   const topPositionsHeaderClick = useCallback((key: keyof TopPositionsRow) => () => {
@@ -152,7 +151,6 @@ export default function TopPositions() {
       return [];
     }
 
-    p.current(`TopPositions: start sorting positions`);
     const result = [...topPositions.data].sort((a, b) => {
       const key = positionsOrderBy;
       if (BigNumber.isBigNumber(a[key]) && BigNumber.isBigNumber(b[key])) {
@@ -162,7 +160,6 @@ export default function TopPositions() {
       }
     }).map((p, i) => ({ ...p, rank: i }));
 
-    p.current(`TopPositions: sorted sorting positions`);
     return result;
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -216,10 +213,6 @@ export default function TopPositions() {
       width: 10,
     },
   };
-
-  p.current(`TopPositions: prepared top positions data`);
-  p.current.report();
-  p.current = createProfiler("TopPositions");
 
   return (
     <div>

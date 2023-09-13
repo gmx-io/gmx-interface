@@ -124,7 +124,6 @@ const fetchOpenPositions = (chainId, p = (_) => 0) => async () => {
   let data: OpenPositionJson[] = [];
   let skip = 0;
 
-  p(`useOpenPositions: start fetching open positions`);
   while (true) {
     const page = await fetchOpenPositionsPage(chainId, pageSize, skip);
     if (!page || !page.length) {
@@ -140,26 +139,17 @@ const fetchOpenPositions = (chainId, p = (_) => 0) => async () => {
   return data;
 };
 
-export function useOpenPositions(p = (_) => 0) {
+export function useOpenPositions() {
   const { chainId } = useChainId();
   const { marketsData } = useMarkets(chainId);
   const { tokensData, pricesUpdatedAt } = useMarketsInfo(chainId);
-  if (tokensData) {
-    p(`useOpenPositions: received tokens data`);
-  }
-  if (marketsData) {
-    p(`useOpenPositions: received markets data`);
-  }
-  const positions = useSWR(['/leaderboards/positions', chainId], fetchOpenPositions(chainId, p));
+  const positions = useSWR(['/leaderboards/positions', chainId], fetchOpenPositions(chainId));
   const positionsHash = (positions.data || []).map(p => p.id).join("-");
   const { keys, prices } =  useMemo((): { keys: string[], prices: ContractMarketPrices[] } => {
     if (!marketsData || !tokensData) {
       return { keys: [], prices: [] };
     }
 
-    if (positions.data?.length) {
-      p(`useOpenPositions: start parsing ${positions.data.length} open positions`);
-    }
     const keys: string[] = [];
     const prices: ContractMarketPrices[] = [];
     for (const p of positions.data || []) {
@@ -175,11 +165,7 @@ export function useOpenPositions(p = (_) => 0) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pricesUpdatedAt, chainId, positionsHash]);
 
-  if (keys && keys.length) {
-    p(`useOpenPositions: prepared ${keys.length} position keys and ${prices?.length} market prices`);
-  }
-
-  const positionsInfo = usePositionsInfo(positionsHash, keys, prices, p);
+  const positionsInfo = usePositionsInfo(positionsHash, keys, prices);
   const error = positions.error || positionsInfo.error;
   const isLoading = !error && (
     !positions.data ||
@@ -196,10 +182,6 @@ export function useOpenPositions(p = (_) => 0) {
       return;
     }
 
-    if (positionsInfo.data && Object.keys(positionsInfo.data).length && positions.data?.length) {
-      p(`useOpenPositions: start parsing ${positions.data?.length} open positions with positions info`);
-    }
-
     return parseOpenPositions(
       positions.data || [],
       positionsInfo.data,
@@ -214,10 +196,6 @@ export function useOpenPositions(p = (_) => 0) {
     positionsInfoCount,
     positionsHash,
   ]);
-
-  if (data && data.length) {
-    p(`useOpenPositions: successfully fetched and parsed ${data.length} open positions`);
-  }
 
   return { isLoading: !data, error, data: data || [] };
 };

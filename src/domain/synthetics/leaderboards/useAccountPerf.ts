@@ -119,7 +119,7 @@ const sumPerfByAccount = (
   return aggregation;
 };
 
-export function useAccountPerf(period: PerfPeriod, p = (_) => 0) {
+export function useAccountPerf(period: PerfPeriod) {
   const { chainId } = useChainId();
   const accounts = useSWR([
     "leaderboards/accounts",
@@ -130,7 +130,6 @@ export function useAccountPerf(period: PerfPeriod, p = (_) => 0) {
     let data: AccountPerfJson[] = [];
     let skip = 0;
 
-    p(`useAccountPerf: start fetching account perf records`);
     while (true) {
       const pageData = await fetchAccountPerfs(chainId, period, pageSize, skip);
       if (!pageData || !pageData.length) {
@@ -156,15 +155,10 @@ export function useAccountPerf(period: PerfPeriod, p = (_) => 0) {
   const avatarUrlsLength = Object.keys(avatarUrls).length;
   const data = useMemo(() => {
     if (accounts.data) {
-      p(`useAccountPerf: start groupping ${accounts.data.length} account perf records by account`);
       return Object.values(sumPerfByAccount(accounts.data, period, ensNames, avatarUrls));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, key, period, ensNamesLength, avatarUrlsLength]);
-
-  if (data && data.length) {
-    p(`useAccountPerf: successfully fetched and groupped ${data.length} account perf records`);
-  }
 
   return {
     isLoading: !data && !accounts.error,

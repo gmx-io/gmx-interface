@@ -2,7 +2,6 @@ import {
   createContext,
   PropsWithChildren,
   useContext,
-  useRef,
   useState,
 } from "react";
 
@@ -11,7 +10,6 @@ import {
   LeaderboardContextType,
   useTopAccounts,
   useTopPositions,
-  createProfiler,
 } from "domain/synthetics/leaderboards";
 
 export const LeaderboardContext = createContext<LeaderboardContextType>({
@@ -25,22 +23,8 @@ export const useLeaderboardContext = () => useContext(LeaderboardContext);
 
 export const LeaderboardContextProvider = ({ children }: PropsWithChildren) => {
   const [period, setPeriod] = useState<PerfPeriod>(PerfPeriod.TOTAL);
-  const p = useRef(createProfiler("LeaderboardContextProvider"));
-  const { data: positions, error: positionsError } = useTopPositions(p.current);
-  const { data: accounts, error: accountsError } = useTopAccounts(period, p.current);
-
-  if (positions && positions.length) {
-    p.current(`LeaderboardContextProvider: received ${positions.length} top positions`);
-  }
-
-  if (accounts && accounts.length) {
-    p.current(`LeaderboardContextProvider: received ${accounts.length} top accounts`);
-  }
-
-  if (positions && positions.length && accounts && accounts.length) {
-    p.current.report();
-    p.current = createProfiler("LeaderboardContextProvider");
-  }
+  const { data: positions, error: positionsError } = useTopPositions();
+  const { data: accounts, error: accountsError } = useTopAccounts(period);
 
   const context = {
     period,
