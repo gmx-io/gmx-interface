@@ -9,16 +9,25 @@ import increaseLimit from "img/ic_increaselimit_16.svg";
 import increaseMarket from "img/ic_increasemarket_16.svg";
 import triggerClose from "img/ic_triggerclose_16.svg";
 
-function PositionDropdown(p) {
-  const {
-    handleEditCollateral,
-    handleShare,
-    handleMarketSelect,
-    handleMarketIncreaseSize,
-    handleLimitIncreaseSize,
-    handleTriggerClose,
-  } = p;
+type Props = {
+  handleEditCollateral?: () => void;
+  handleShare?: () => void;
+  handleMarketSelect?: () => void;
+  handleMarketIncreaseSize?: () => void;
+  handleLimitIncreaseSize?: () => void;
+  handleTriggerClose?: () => void;
+  handleGetPendingFees?: () => void;
+};
 
+export default function PositionDropdown({
+  handleEditCollateral,
+  handleShare,
+  handleMarketSelect,
+  handleMarketIncreaseSize,
+  handleLimitIncreaseSize,
+  handleTriggerClose,
+  handleGetPendingFees,
+}: Props) {
   return (
     <Menu>
       <Menu.Button as="div">
@@ -84,10 +93,18 @@ function PositionDropdown(p) {
               </div>
             </Menu.Item>
           )}
+          {handleGetPendingFees && (
+            <Menu.Item>
+              <div className="menu-item" onClick={handleGetPendingFees}>
+                {/* <img src={triggerClose} alt="Increase Limit" height={16} /> */}?
+                <p>
+                  <Trans>Claim Funding</Trans>
+                </p>
+              </div>
+            </Menu.Item>
+          )}
         </Menu.Items>
       </div>
     </Menu>
   );
 }
-
-export default PositionDropdown;
