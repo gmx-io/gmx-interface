@@ -37,6 +37,7 @@ export type Props = {
   tradeFlags?: TradeFlags;
   avaialbleTokenOptions: AvailableTokenOptions;
   marketsInfoData?: MarketsInfoData;
+  currentTradeType?: TradeType;
 };
 
 const DEFAULT_PERIOD = "5m";
@@ -54,6 +55,7 @@ export function TVChart({
   setTradePageVersion,
   avaialbleTokenOptions,
   marketsInfoData,
+  currentTradeType,
 }: Props) {
   const { chainId } = useChainId();
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
@@ -142,8 +144,12 @@ export function TVChart({
 
     if (marketTokenAddress) {
       const marketInfo = getByKey(marketsInfoData, marketTokenAddress);
-      const message = `${tradeType === TradeType.Long ? t`Long` : t`Short`} ${marketInfo?.name} market selected`;
-      helperToast.success(message);
+      const nextTradeType = tradeType ?? currentTradeType;
+      if (nextTradeType === TradeType.Swap) return;
+      if (marketInfo && nextTradeType) {
+        const message = `${nextTradeType === TradeType.Long ? t`Long` : t`Short`} ${marketInfo?.name} market selected`;
+        helperToast.success(message);
+      }
     }
   }
 

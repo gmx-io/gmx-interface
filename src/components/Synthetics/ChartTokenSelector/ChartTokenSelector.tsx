@@ -77,6 +77,13 @@ export default function ChartTokenSelector(props: Props) {
 
     if (tokenAddress === selectedToken?.address) return;
 
+    if (tradeFlags?.isSwap) {
+      onSelect({
+        indexTokenAddress: token.address,
+      });
+      return;
+    }
+
     const currentExistingPositions = Object.values(positionsInfo || {}).filter((position) => {
       if (position.isLong === isLong) {
         return convertTokenAddress(chainId, position.marketInfo.indexTokenAddress, "wrapped") === tokenAddress;

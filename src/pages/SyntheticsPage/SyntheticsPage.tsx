@@ -296,6 +296,7 @@ export function SyntheticsPage(p: Props) {
             availableTokens={availableChartTokens}
             onSelectChartTokenAddress={setToTokenAddress}
             tradeFlags={tradeFlags}
+            currentTradeType={tradeType}
             tradePageVersion={tradePageVersion}
             setTradePageVersion={setTradePageVersion}
             avaialbleTokenOptions={availableTokensOptions}
