@@ -367,7 +367,12 @@ export function SyntheticsPage(p: Props) {
               />
             )}
             {listSection === ListSection.Claims && (
-              <Claims marketsInfoData={marketsInfoData} tokensData={tokensData} shouldShowPaginationButtons />
+              <Claims
+                marketsInfoData={marketsInfoData}
+                tokensData={tokensData}
+                shouldShowPaginationButtons
+                setIsClaiming={setIsClaiming}
+              />
             )}
           </div>
         </div>
@@ -470,7 +475,12 @@ export function SyntheticsPage(p: Props) {
             />
           )}
           {listSection === ListSection.Claims && (
-            <Claims marketsInfoData={marketsInfoData} tokensData={tokensData} shouldShowPaginationButtons />
+            <Claims
+              marketsInfoData={marketsInfoData}
+              tokensData={tokensData}
+              shouldShowPaginationButtons
+              setIsClaiming={setIsClaiming}
+            />
           )}
         </div>
       </div>

@@ -1,22 +1,25 @@
 import { Trans } from "@lingui/macro";
 import { useChainId } from "lib/chains";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useClaimCollateralHistory } from "domain/synthetics/claimHistory";
 import { ClaimHistoryRow } from "../ClaimHistoryRow/ClaimHistoryRow";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
 import useWallet from "lib/wallets/useWallet";
+import { ClaimableCard } from "./ClaimableCard";
+
+import "./Claims.scss";
 
 const PAGE_SIZE = 100;
 
 type Props = {
   shouldShowPaginationButtons: boolean;
-  marketsInfoData?: MarketsInfoData;
+  marketsInfoData: MarketsInfoData | undefined;
   tokensData?: TokensData;
+  setIsClaiming: (isClaiming: boolean) => void;
 };
 
-export function Claims(p: Props) {
-  const { shouldShowPaginationButtons, marketsInfoData, tokensData } = p;
+export function Claims({ shouldShowPaginationButtons, marketsInfoData, tokensData, setIsClaiming }: Props) {
   const { chainId } = useChainId();
   const { account } = useWallet();
   const [pageIndex, setPageIndex] = useState(0);
@@ -30,6 +33,10 @@ export function Claims(p: Props) {
 
   const isEmpty = !account || claimActions?.length === 0;
 
+  const handleClaimClick = useCallback(() => {
+    setIsClaiming(true);
+  }, [setIsClaiming]);
+
   return (
     <div className="TradeHistory">
       {account && isLoading && (
@@ -37,6 +44,7 @@ export function Claims(p: Props) {
           <Trans>Loading...</Trans>
         </div>
       )}
+      {account && !isLoading && <ClaimableCard marketsInfoData={marketsInfoData} onClaimClick={handleClaimClick} />}
       {isEmpty && (
         <div className="TradeHistoryRow App-box">
           <Trans>No claims yet</Trans>

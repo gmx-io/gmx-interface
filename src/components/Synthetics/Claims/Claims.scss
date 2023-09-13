@@ -1,0 +1,21 @@
+.Claims-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.Claims-col {
+    align-items: center;
+    display: flex;
+}
+
+.Claims-col + .Claims-col {
+    margin-left: 3rem;
+}
+
+.Claims-col span + span {
+    margin-left: 0.8rem;
+}
+
+.Claims-claim-button {
+    margin-left: auto;
+}
