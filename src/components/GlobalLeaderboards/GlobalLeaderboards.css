@@ -83,6 +83,8 @@
 
 .TopPositionsDirection {
   margin-left: 0.5rem;
+  text-align: left;
+  width: 4.4rem;
 }
 
 /* .TopPositionsPositionView .TopPositionsDirection {
