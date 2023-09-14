@@ -97,8 +97,10 @@ const parseRow =
     liqPrice: {
       value: () => (
         <Tooltip
-          handle={p.liqPrice ? formatPrice(p.liqPrice, chainId, p.market.indexToken.symbol) : ""}
-          position="center-top"
+          handle={formatPrice(p.liqPrice!, chainId, p.market.indexToken.symbol, {
+            fallbackToZero: true
+          })}
+          position="right-bottom"
           className="nowrap"
           renderContent={() => (
             <>
@@ -113,7 +115,7 @@ const parseRow =
                 value={
                   <span>
                     {p.liqPriceDelta && p.liqPriceDeltaRel
-                      ? formatDeltaUsd(p.liqPriceDelta, p.liqPriceDeltaRel)
+                      ? formatDeltaUsd(p.liqPriceDelta, p.liqPriceDeltaRel, { maxThreshold: "1000000" })
                       : ""
                     }
                   </span>

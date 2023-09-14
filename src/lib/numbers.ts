@@ -172,11 +172,19 @@ export function formatUsd(
   return `${exceedingInfo.symbol}${sign}$${displayUsd}`;
 }
 
-export function formatPrice(price: BigNumber, chainId: number, symbol: string) {
-  return formatUsd(price, { displayDecimals: getPriceDecimals(chainId, symbol) });
+export function formatPrice(price: BigNumber, chainId: number, symbol: string, opts = {}) {
+  return formatUsd(price, {
+    displayDecimals: getPriceDecimals(chainId, symbol),
+    maxThreshold: "1000000",
+    ...opts
+  });
 }
 
-export function formatDeltaUsd(deltaUsd?: BigNumber, percentage?: BigNumber, opts: { fallbackToZero?: boolean } = {}) {
+export function formatDeltaUsd(
+  deltaUsd?: BigNumber,
+  percentage?: BigNumber,
+  opts: { fallbackToZero?: boolean; displayDecimals?: number; maxThreshold?: string; minThreshold?: string } = {}
+) {
   if (!deltaUsd) {
     if (opts.fallbackToZero) {
       return `${formatUsd(BigNumber.from(0))} (${formatAmount(BigNumber.from(0), 2, 2)}%)`;
@@ -189,7 +197,7 @@ export function formatDeltaUsd(deltaUsd?: BigNumber, percentage?: BigNumber, opt
   if (!deltaUsd.eq(0)) {
     sign = deltaUsd?.gt(0) ? "+" : "-";
   }
-  const exceedingInfo = getLimitedDisplay(deltaUsd, USD_DECIMALS);
+  const exceedingInfo = getLimitedDisplay(deltaUsd, USD_DECIMALS, opts);
   const percentageStr = percentage ? ` (${sign}${formatPercentage(percentage.abs())})` : "";
   const deltaUsdStr = formatAmount(exceedingInfo.value, USD_DECIMALS, 2, true);
 
@@ -213,7 +221,7 @@ export function formatPercentage(percentage?: BigNumber, opts: { fallbackToZero?
     sign = percentage?.gt(0) ? "+" : "-";
   }
 
-  return `${sign}${formatAmount(percentage.abs(), 2, 2)}%`;
+  return `${sign}${formatAmount(percentage.abs(), 2, 2, true)}%`;
 }
 
 export function formatTokenAmount(
