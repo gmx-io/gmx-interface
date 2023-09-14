@@ -79,6 +79,8 @@ const EthereumProviderChild = ({ children }) => {
   const { connect, connectors } = useConnect();
   const { connector } = useAccount();
 
+  console.log("connectors", connectors, connector);
+
   // If the Safe connector is available, connect to it even if other connectors are available
   // (if another connector auto-connects (or user disconnects), we still override it with the Safe connector)
   useEffect(() => {
