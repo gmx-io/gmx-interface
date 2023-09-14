@@ -486,7 +486,6 @@ export function SyntheticsPage(p: Props) {
         isHigherSlippageAllowed={isHigherSlippageAllowed}
         setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
         shouldDisableValidation={shouldDisableValidation}
-        onSelectPositionClick={onSelectPositionClick}
       />
 
       <PositionEditor
