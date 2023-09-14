@@ -97,7 +97,7 @@ export default function PositionDropdown({
           {handleGetPendingFees && (
             <Menu.Item>
               <div className="menu-item" onClick={handleGetPendingFees}>
-                <img className="rotate-90" src={shareIcon} alt="Claim Funding" height={16} />
+                <img className="rotate-90" src={shareIcon} alt="Claim Funding" height={14} />
                 <p>
                   <Trans>Claim Funding</Trans>
                 </p>
