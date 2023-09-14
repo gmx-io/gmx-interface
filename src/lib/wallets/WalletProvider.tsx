@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "@rainbow-me/rainbowkit/styles.css";
 import { connectorsForWallets, darkTheme, RainbowKitProvider, Theme, WalletList } from "@rainbow-me/rainbowkit";
 import {
@@ -12,7 +12,7 @@ import {
   rainbowWallet,
   imTokenWallet,
 } from "@rainbow-me/rainbowkit/wallets";
-import { configureChains, createClient, WagmiConfig } from "wagmi";
+import { configureChains, createClient, useAccount, useConnect, WagmiConfig } from "wagmi";
 import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import merge from "lodash/merge";
@@ -75,11 +75,26 @@ const wagmiClient = createClient({
   provider,
 });
 
+const EthereumProviderChild = ({ children }) => {
+  const { connect, connectors } = useConnect();
+  const { connector } = useAccount();
+
+  // If the Safe connector is available, connect to it even if other connectors are available
+  // (if another connector auto-connects (or user disconnects), we still override it with the Safe connector)
+  useEffect(() => {
+    const safeConnector = connectors?.find((connector) => connector.id === "safe" && connector.ready);
+    if (!safeConnector || connector === safeConnector) return;
+    connect({ connector: safeConnector });
+  }, [connectors, connector, connect]);
+
+  return <>{children}</>;
+};
+
 export default function WalletProvider({ children }) {
   return (
     <WagmiConfig client={wagmiClient}>
       <RainbowKitProvider theme={walletTheme} chains={chains} modalSize="compact">
-        {children}
+        <EthereumProviderChild>{children}</EthereumProviderChild>
       </RainbowKitProvider>
     </WagmiConfig>
   );
