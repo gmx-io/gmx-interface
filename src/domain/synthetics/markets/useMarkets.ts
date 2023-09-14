@@ -4,7 +4,7 @@ import { convertTokenAddress, getToken } from "config/tokens";
 import { ethers } from "ethers";
 import { useMulticall } from "lib/multicall";
 import { MarketsData } from "./types";
-import { getMarketFullName } from "./utils";
+import { getMarketFullName, getMarketPoolName } from "./utils";
 
 type MarketsResult = {
   marketsData?: MarketsData;
@@ -43,6 +43,7 @@ export function useMarkets(chainId: number): MarketsResult {
             const isSpotOnly = marketValues.indexToken === ethers.constants.AddressZero;
 
             const name = getMarketFullName({ indexToken, longToken, shortToken, isSpotOnly });
+            const poolName = getMarketPoolName({ longToken, shortToken });
 
             acc.marketsData[marketValues.marketToken] = {
               marketTokenAddress: marketValues.marketToken,
@@ -52,6 +53,7 @@ export function useMarkets(chainId: number): MarketsResult {
               isSameCollaterals,
               isSpotOnly,
               name,
+              poolName,
               data: "",
             };
 

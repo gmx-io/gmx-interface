@@ -578,7 +578,7 @@ function FullApp() {
                 )}
               </Route>
 
-              <Route exact path="/v2">
+              <Route exact path={["/v2", "/v2/:market", "/v2/:market/:tradeType", "/v2/:market/:tradeType/:tradeMode"]}>
                 {getIsSyntheticsSupported(chainId) ? (
                   <SyntheticsPage
                     onConnectWallet={connectWallet}

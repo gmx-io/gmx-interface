@@ -992,3 +992,14 @@ export function getPriceDecimals(chainId: number, tokenSymbol?: string) {
     return 2;
   }
 }
+
+export function convertToValidSymbol(chainId: number, symbol: string) {
+  if (!TOKENS_BY_SYMBOL_MAP[chainId]) {
+    throw new Error(`Incorrect chainId ${chainId}`);
+  }
+
+  const tokens = Object.keys(TOKENS_BY_SYMBOL_MAP[chainId]);
+  const token = tokens.find((token) => token.toLowerCase() === symbol.toLowerCase());
+
+  return token ?? null;
+}
