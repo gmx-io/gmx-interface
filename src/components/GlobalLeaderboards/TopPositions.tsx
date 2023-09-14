@@ -160,7 +160,13 @@ export default function TopPositions() {
       } else {
         return 1;
       }
-    }).map((p, i) => ({ ...p, rank: i }));
+    });
+
+    if (positionsOrderBy === "unrealizedPnl") {
+      for (let i = 0; i < result.length; i++) {
+        result[i].rank = i;
+      }
+    }
 
     return result;
 

@@ -138,7 +138,13 @@ export default function TopAccounts() {
       } else {
         return 1;
       }
-    }).map((a, i) => ({ ...a, rank: i }));
+    });
+    
+    if (accountsOrderBy === "absPnl") {
+      for (let i = 0; i < result.length; i++) {
+        result[i].rank = i;
+      }
+    }
 
     return result;
   // eslint-disable-next-line react-hooks/exhaustive-deps
