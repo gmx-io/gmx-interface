@@ -19,7 +19,7 @@ import { getToken } from "config/tokens";
 import { isSwapOrderType } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useOrdersInfo } from "domain/synthetics/orders/useOrdersInfo";
-import { getPositionKey } from "domain/synthetics/positions";
+import { PositionInfo, getPositionKey } from "domain/synthetics/positions";
 import { usePositionsInfo } from "domain/synthetics/positions/usePositionsInfo";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
@@ -35,6 +35,7 @@ import { TradeMode } from "domain/synthetics/trade";
 import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTradeOption";
 import { helperToast } from "lib/helperToast";
 import useWallet from "lib/wallets/useWallet";
+import { ClaimFundingFeeModal } from "components/Synthetics/ClaimFundingFeeModal/ClaimFundingFeeModal";
 
 export type Props = {
   savedIsPnlInLeverage: boolean;
@@ -155,6 +156,9 @@ export function SyntheticsPage(p: Props) {
   const [editingPositionKey, setEditingPositionKey] = useState<string>();
   const editingPosition = getByKey(positionsInfoData, editingPositionKey);
 
+  const [gettingPendingFeePositionKey, setGettingPendingFeePositionKey] = useState<string>();
+  const gettingPendingFeePosition = getByKey(positionsInfoData, gettingPendingFeePositionKey);
+
   const selectedPositionKey = useMemo(() => {
     if (!account || !collateralAddress || !marketAddress || !tradeType) {
       return undefined;
@@ -266,6 +270,10 @@ export function SyntheticsPage(p: Props) {
     helperToast.success(message);
   }
 
+  function handleGetPendingFees(positionKey: PositionInfo["key"]) {
+    setGettingPendingFeePositionKey(positionKey);
+  }
+
   return (
     <div className="Exchange page-layout">
       <Helmet>
@@ -335,6 +343,7 @@ export function SyntheticsPage(p: Props) {
                 isLoading={isPositionsLoading}
                 savedIsPnlInLeverage={savedIsPnlInLeverage}
                 onOrdersClick={() => setListSection(ListSection.Orders)}
+                onGetPendingFeesClick={handleGetPendingFees}
                 onSelectPositionClick={onSelectPositionClick}
                 onClosePositionClick={setClosingPositionKey}
                 onEditCollateralClick={setEditingPositionKey}
@@ -445,6 +454,7 @@ export function SyntheticsPage(p: Props) {
               onSelectPositionClick={onSelectPositionClick}
               onClosePositionClick={setClosingPositionKey}
               onEditCollateralClick={setEditingPositionKey}
+              onGetPendingFeesClick={handleGetPendingFees}
               showPnlAfterFees={showPnlAfterFees}
               savedShowPnlAfterFees={savedShowPnlAfterFees}
               currentMarketAddress={marketAddress}
@@ -521,16 +531,11 @@ export function SyntheticsPage(p: Props) {
         onClose={() => setIsClaiming(false)}
         setPendingTxns={setPendingTxns}
       />
-
-      {/* {sharingPosition && (
-        <PositionShare
-          isPositionShareModalOpen={true}
-          setIsPositionShareModalOpen={() => setSharingPositionKey(undefined)}
-          positionToShare={sharingPosition}
-          chainId={chainId}
-          account={account}
-        />
-      )} */}
+      <ClaimFundingFeeModal
+        isVisible={Boolean(gettingPendingFeePosition)}
+        position={gettingPendingFeePosition}
+        onClose={() => setGettingPendingFeePositionKey(undefined)}
+      />
       <Footer />
     </div>
   );

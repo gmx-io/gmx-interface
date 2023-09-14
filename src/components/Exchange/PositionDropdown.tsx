@@ -8,6 +8,7 @@ import { RiShareBoxFill } from "react-icons/ri";
 import increaseLimit from "img/ic_increaselimit_16.svg";
 import increaseMarket from "img/ic_increasemarket_16.svg";
 import triggerClose from "img/ic_triggerclose_16.svg";
+import shareSolid from "img/share-solid.svg";
 
 type Props = {
   handleEditCollateral?: () => void;
@@ -96,7 +97,7 @@ export default function PositionDropdown({
           {handleGetPendingFees && (
             <Menu.Item>
               <div className="menu-item" onClick={handleGetPendingFees}>
-                {/* <img src={triggerClose} alt="Increase Limit" height={16} /> */}?
+                <img className="rotate-90" src={shareSolid} alt="Claim Funding" height={16} />
                 <p>
                   <Trans>Claim Funding</Trans>
                 </p>

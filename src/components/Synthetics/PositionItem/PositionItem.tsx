@@ -44,6 +44,7 @@ export type Props = {
   currentCollateralAddress?: string;
   currentTradeType?: TradeType;
   openSettings: () => void;
+  onGetPendingFeesClick: () => void;
 };
 
 export function PositionItem(p: Props) {
@@ -502,6 +503,7 @@ export function PositionItem(p: Props) {
               handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market)}
               handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit)}
               handleTriggerClose={() => p.onSelectPositionClick?.(TradeMode.Trigger)}
+              handleGetPendingFees={p.onGetPendingFeesClick}
             />
           )}
         </td>

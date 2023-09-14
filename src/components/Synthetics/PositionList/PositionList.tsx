@@ -8,6 +8,7 @@ type Props = {
   onSelectPositionClick: (key: string, tradeMode?: TradeMode) => void;
   onClosePositionClick: (key: string) => void;
   onEditCollateralClick: (key: string) => void;
+  onGetPendingFeesClick: (key: string) => void;
   positionsData?: PositionsInfoData;
   ordersData?: OrdersInfoData;
   savedIsPnlInLeverage: boolean;
@@ -42,6 +43,7 @@ export function PositionList(p: Props) {
               position={position}
               onEditCollateralClick={() => p.onEditCollateralClick(position.key)}
               onClosePositionClick={() => p.onClosePositionClick(position.key)}
+              onGetPendingFeesClick={() => p.onGetPendingFeesClick(position.key)}
               onOrdersClick={p.onOrdersClick}
               onSelectPositionClick={(tradeMode?: TradeMode) => p.onSelectPositionClick(position.key, tradeMode)}
               showPnlAfterFees={p.showPnlAfterFees}
@@ -99,6 +101,7 @@ export function PositionList(p: Props) {
                 position={position}
                 onEditCollateralClick={() => p.onEditCollateralClick(position.key)}
                 onClosePositionClick={() => p.onClosePositionClick(position.key)}
+                onGetPendingFeesClick={() => p.onGetPendingFeesClick(position.key)}
                 onOrdersClick={p.onOrdersClick}
                 onSelectPositionClick={(tradeMode?: TradeMode) => p.onSelectPositionClick(position.key, tradeMode)}
                 showPnlAfterFees={p.showPnlAfterFees}
