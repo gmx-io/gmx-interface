@@ -2479,7 +2479,11 @@ msgid "Long Positions"
 msgstr "ロングポジション"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Long positions {0} a Funding Fee of <0>{1}%</0> per hour."
+#~ msgid "Long positions {0} a Funding Fee of <0>{1}%</0> per hour."
+#~ msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Long positions {0} a Funding Fee of <0>{longSign}{1}%</0> per hour."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -3870,7 +3874,11 @@ msgid "Short Positions"
 msgstr "ショートポジション"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Short positions {0} a Funding Fee of <0>{1}%</0> per hour."
+#~ msgid "Short positions {0} a Funding Fee of <0>{1}%</0> per hour."
+#~ msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Short positions {0} a Funding Fee of <0>{shortSign}{1}%</0> per hour."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js

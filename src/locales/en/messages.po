@@ -2482,8 +2482,12 @@ msgid "Long Positions"
 msgstr "Long Positions"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Long positions {0} a Funding Fee of <0>{1}%</0> per hour."
-msgstr "Long positions {0} a Funding Fee of <0>{1}%</0> per hour."
+#~ msgid "Long positions {0} a Funding Fee of <0>{1}%</0> per hour."
+#~ msgstr "Long positions {0} a Funding Fee of <0>{1}%</0> per hour."
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Long positions {0} a Funding Fee of <0>{longSign}{1}%</0> per hour."
+msgstr "Long positions {0} a Funding Fee of <0>{longSign}{1}%</0> per hour."
 
 #: src/components/Exchange/SwapBox.js
 msgid "Long {0}"
@@ -3873,8 +3877,12 @@ msgid "Short Positions"
 msgstr "Short Positions"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Short positions {0} a Funding Fee of <0>{1}%</0> per hour."
-msgstr "Short positions {0} a Funding Fee of <0>{1}%</0> per hour."
+#~ msgid "Short positions {0} a Funding Fee of <0>{1}%</0> per hour."
+#~ msgstr "Short positions {0} a Funding Fee of <0>{1}%</0> per hour."
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Short positions {0} a Funding Fee of <0>{shortSign}{1}%</0> per hour."
+msgstr "Short positions {0} a Funding Fee of <0>{shortSign}{1}%</0> per hour."
 
 #: src/components/Exchange/SwapBox.js
 msgid "Short {0}"
