@@ -679,21 +679,22 @@ export function ConfirmationBox(p: Props) {
     }
   }
 
-  function renderDifferentCollateralWarning() {
-    const shouldShowWarning =
-      marketsOptions?.collateralWithPosition &&
-      collateralToken &&
-      !getIsEquivalentTokens(marketsOptions.collateralWithPosition, collateralToken);
+  const isOrphanOrder =
+    isTrigger &&
+    marketsOptions?.collateralWithPosition &&
+    collateralToken &&
+    !getIsEquivalentTokens(marketsOptions.collateralWithPosition, collateralToken);
 
-    if (!shouldShowWarning) {
+  function renderDifferentCollateralWarning() {
+    if (!isOrphanOrder) {
       return null;
     }
 
     return (
       <div className="Confirmation-box-warning">
         <Trans>
-          You have an existing position with {collateralToken.symbol} as collateral. This Order will not be valid for
-          that Position.
+          You have an existing position with {marketsOptions?.collateralWithPosition?.symbol} as collateral. This Order
+          will not be valid for that Position.
         </Trans>
       </div>
     );
@@ -1221,6 +1222,7 @@ export function ConfirmationBox(p: Props) {
               </span>
             </Checkbox>
           )}
+
           <ExchangeInfoRow
             label={t`Trigger Price`}
             value={
@@ -1313,6 +1315,8 @@ export function ConfirmationBox(p: Props) {
               )
             }
           />
+
+          {!p.existingPosition && <ExchangeInfoRow label={t`Collateral`} value={collateralToken?.symbol} />}
 
           {p.existingPosition && (
             <ExchangeInfoRow
