@@ -1,10 +1,10 @@
+import { BASIS_POINTS_DIVISOR, DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER } from "config/factors";
 import { getCappedPositionImpactUsd, getPriceImpactByAcceptablePrice } from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
 import { OrderType } from "domain/synthetics/orders";
 import { TokenPrices, convertToTokenAmount } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
-import { applyFactor, bigNumberify, expandDecimals, getBasisPoints, roundUpMagnitudeDivision } from "lib/numbers";
+import { applyFactor, expandDecimals, getBasisPoints, roundUpMagnitudeDivision } from "lib/numbers";
 import { TriggerThresholdType } from "../types";
 
 export function getMarkPrice(p: { prices: TokenPrices; isIncrease: boolean; isLong: boolean }) {
@@ -21,12 +21,17 @@ export function getDefaultAcceptablePriceImpactBps(p: {
   indexPrice: BigNumber;
   sizeDeltaUsd: BigNumber;
   priceImpactDeltaUsd: BigNumber;
-  acceptablePriceImapctBuffer: number;
+  acceptablePriceImapctBuffer?: number;
 }) {
-  const { indexPrice, sizeDeltaUsd, priceImpactDeltaUsd, acceptablePriceImapctBuffer } = p;
+  const {
+    indexPrice,
+    sizeDeltaUsd,
+    priceImpactDeltaUsd,
+    acceptablePriceImapctBuffer = DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER,
+  } = p;
 
   if (priceImpactDeltaUsd.gt(0)) {
-    return bigNumberify(acceptablePriceImapctBuffer);
+    return BigNumber.from(acceptablePriceImapctBuffer);
   }
 
   const baseAcceptablePriceValues = getAcceptablePriceByPriceImpact({
@@ -37,7 +42,11 @@ export function getDefaultAcceptablePriceImpactBps(p: {
     priceImpactDeltaUsd,
   });
 
-  return baseAcceptablePriceValues.acceptablePriceDeltaBps.abs().add(acceptablePriceImapctBuffer);
+  if (baseAcceptablePriceValues.acceptablePriceDeltaBps.lt(0)) {
+    baseAcceptablePriceValues.acceptablePriceDeltaBps.abs().add(acceptablePriceImapctBuffer);
+  }
+
+  return BigNumber.from(acceptablePriceImapctBuffer);
 }
 
 export function getAcceptablePriceByPriceImpact(p: {
@@ -48,6 +57,14 @@ export function getAcceptablePriceByPriceImpact(p: {
   priceImpactDeltaUsd: BigNumber;
 }) {
   const { indexPrice, sizeDeltaUsd, priceImpactDeltaUsd } = p;
+
+  if (!sizeDeltaUsd.gt(0)) {
+    return {
+      acceptablePrice: indexPrice,
+      acceptablePriceDeltaBps: BigNumber.from(0),
+      priceDelta: BigNumber.from(0),
+    };
+  }
 
   const shouldFlipPriceImpact = getShouldUseMaxPrice(p.isIncrease, p.isLong);
 

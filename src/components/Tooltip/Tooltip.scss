@@ -9,11 +9,30 @@
   border-radius: 4px;
   padding: 1.05rem;
   letter-spacing: 0.4px;
-  min-width: 30rem;
+  width: fit-content;
+  min-width: 28rem;
+  max-width: 35rem;
   text-align: left;
   white-space: normal;
-  background: #070914;
+  background: rgb(49, 54, 85);
+  background: linear-gradient(270deg, rgba(49, 54, 85, 0.9) 0%, rgba(37, 40, 65, 0.9) 100%);
+  box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(10px);
   z-index: 10000;
+
+  a {
+    color: var(--text-gray);
+    text-decoration: underline;
+  }
+
+  &::after {
+    content: "";
+    height: 8px;
+    width: 8px;
+    transform: rotate(45deg);
+    position: absolute;
+    display: none;
+  }
 }
 
 .Tooltip.nowrap .Tooltip-popup {
@@ -33,41 +52,88 @@
   left: 0;
   transform: translateY(0.8rem);
   top: 100%;
+
+  &::after {
+    display: block;
+    top: -4px;
+    background: #232741;
+  }
 }
 
 .Tooltip-popup.right-bottom {
   right: 0;
   transform: translateY(0.8rem);
   top: 100%;
+
+  &::after {
+    display: block;
+    top: -4px;
+    right: 8px;
+    background: #2e3351;
+  }
 }
 
 .Tooltip-popup.right-top {
   right: 0;
   transform: translateY(-0.8rem);
   bottom: 100%;
+
+  &::after {
+    display: block;
+    bottom: -4px;
+    right: 8px;
+    background: #2e3351;
+  }
 }
 .Tooltip-popup.right {
   left: 3rem;
   transform: translateY(50%);
   bottom: 100%;
+
+  &::after {
+    display: block;
+    left: -4px;
+    top: 50%;
+    background: #252740;
+  }
 }
 
 .Tooltip-popup.left-top {
   left: 0;
   transform: translateY(-0.8rem);
   bottom: 100%;
+
+  &::after {
+    display: block;
+    bottom: -4px;
+    background: #252740;
+  }
 }
 
 .Tooltip-popup.center-bottom {
   left: 50%;
   transform: translateY(0.8rem) translateX(-50%);
   top: 100%;
+
+  &::after {
+    display: block;
+    background: #292d49;
+    left: 50%;
+    top: -4px;
+  }
 }
 
 .Tooltip-popup.center-top {
   left: 50%;
   transform: translateY(-0.8rem) translateX(-50%);
   bottom: 100%;
+
+  &::after {
+    display: block;
+    background: #292d49;
+    left: 50%;
+    bottom: -4px;
+  }
 }
 
 .Tooltip-handle {
@@ -103,10 +169,6 @@
 
 .Tooltip-row > span.label {
   margin-right: 0.5rem;
-}
-.Tooltip-row > .Tooltip-row-value {
-  color: white;
-  text-align: right;
 }
 
 .Tooltip-row-values {
@@ -153,9 +215,7 @@
   .Tooltip-popup {
     min-width: 20rem;
   }
-  .Tooltip-row > .Tooltip-row-value {
-    text-align: left;
-  }
+
   .Tooltip-row-values li:not(:first-child) {
     text-align: left;
   }

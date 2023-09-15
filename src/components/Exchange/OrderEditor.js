@@ -26,6 +26,7 @@ import Button from "components/Button/Button";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { getPriceDecimals, getToken } from "config/tokens";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 
 export default function OrderEditor(props) {
   const {
@@ -35,7 +36,7 @@ export default function OrderEditor(props) {
     infoTokens,
     pendingTxns,
     setPendingTxns,
-    library,
+    signer,
     totalTokenWeights,
     usdgSupply,
     getPositionForOrder,
@@ -129,12 +130,12 @@ export default function OrderEditor(props) {
 
     if (order.type === SWAP) {
       func = updateSwapOrder;
-      params = [chainId, library, order.index, toAmount, triggerRatio, order.triggerAboveThreshold];
+      params = [chainId, signer, order.index, toAmount, triggerRatio, order.triggerAboveThreshold];
     } else if (order.type === DECREASE) {
       func = updateDecreaseOrder;
       params = [
         chainId,
-        library,
+        signer,
         order.index,
         order.collateralDelta,
         order.sizeDelta,
@@ -143,7 +144,7 @@ export default function OrderEditor(props) {
       ];
     } else if (order.type === INCREASE) {
       func = updateIncreaseOrder;
-      params = [chainId, library, order.index, order.sizeDelta, triggerPrice, order.triggerAboveThreshold];
+      params = [chainId, signer, order.index, order.sizeDelta, triggerPrice, order.triggerAboveThreshold];
     }
 
     params.push({
@@ -249,34 +250,19 @@ export default function OrderEditor(props) {
         setIsVisible={() => setEditingOrder(null)}
         label={t`Edit order`}
       >
-        <div className="Exchange-swap-section">
-          <div className="Exchange-swap-section-top">
-            <div className="muted">
-              <Trans>Price</Trans>
-            </div>
-            <div
-              className="muted align-right clickable"
-              onClick={() => {
-                setTriggerPriceValue(formatAmountFree(indexTokenMarkPrice, USD_DECIMALS, orderPriceDecimal));
-              }}
-            >
-              <Trans>Mark: {formatAmount(indexTokenMarkPrice, USD_DECIMALS, orderPriceDecimal)}</Trans>
-            </div>
-          </div>
-          <div className="Exchange-swap-section-bottom">
-            <div className="Exchange-swap-input-container">
-              <input
-                type="number"
-                min="0"
-                placeholder="0.0"
-                className="Exchange-swap-input"
-                value={triggerPriceValue}
-                onChange={onTriggerPriceChange}
-              />
-            </div>
-            <div className="PositionEditor-token-symbol">USD</div>
-          </div>
-        </div>
+        <BuyInputSection
+          inputValue={triggerPriceValue}
+          onInputValueChange={onTriggerPriceChange}
+          topLeftLabel={t`Price`}
+          topRightLabel={t`Mark`}
+          topRightValue={indexTokenMarkPrice && formatAmount(indexTokenMarkPrice, USD_DECIMALS, orderPriceDecimal)}
+          onClickTopRightLabel={() =>
+            setTriggerPriceValue(formatAmountFree(indexTokenMarkPrice, USD_DECIMALS, orderPriceDecimal))
+          }
+        >
+          USD
+        </BuyInputSection>
+
         <ExchangeInfoRow label={t`Price`}>
           {triggerPrice && !triggerPrice.eq(order.triggerPrice) ? (
             <>
@@ -318,50 +304,31 @@ export default function OrderEditor(props) {
       setIsVisible={() => setEditingOrder(null)}
       label={t`Edit order`}
     >
-      <div className="Exchange-swap-section">
-        <div className="Exchange-swap-section-top">
-          <div className="muted">
-            <Trans>Price</Trans>
-          </div>
-          {fromTokenInfo && toTokenInfo && (
-            <div
-              className="muted align-right clickable"
-              onClick={() => {
-                setTriggerRatioValue(
-                  formatAmountFree(getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted), USD_DECIMALS, 10)
-                );
-              }}
-            >
-              <Trans>Mark Price: </Trans>
-              {formatAmount(getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted), USD_DECIMALS, 2)}
+      <BuyInputSection
+        inputValue={triggerRatioValue}
+        onInputValueChange={onTriggerRatioChange}
+        topLeftLabel={t`Price`}
+        topRightLabel={t`Mark Price`}
+        topRightValue={formatAmount(getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted), USD_DECIMALS, 2)}
+        onClickTopRightLabel={() =>
+          setTriggerRatioValue(
+            formatAmountFree(getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted), USD_DECIMALS, 10)
+          )
+        }
+      >
+        {(() => {
+          if (!toTokenInfo) return;
+          if (!fromTokenInfo) return;
+          const [tokenA, tokenB] = triggerRatioInverted ? [toTokenInfo, fromTokenInfo] : [fromTokenInfo, toTokenInfo];
+          return (
+            <div className="PositionEditor-token-symbol Order-editor-tokens">
+              <TokenWithIcon className="Order-editor-icon" symbol={tokenA.symbol} displaySize={20} />
+              &nbsp;/&nbsp;
+              <TokenWithIcon className="Order-editor-icon" symbol={tokenB.symbol} displaySize={20} />
             </div>
-          )}
-        </div>
-        <div className="Exchange-swap-section-bottom">
-          <div className="Exchange-swap-input-container">
-            <input
-              type="number"
-              min="0"
-              placeholder="0.0"
-              className="Exchange-swap-input"
-              value={triggerRatioValue}
-              onChange={onTriggerRatioChange}
-            />
-          </div>
-          {(() => {
-            if (!toTokenInfo) return;
-            if (!fromTokenInfo) return;
-            const [tokenA, tokenB] = triggerRatioInverted ? [toTokenInfo, fromTokenInfo] : [fromTokenInfo, toTokenInfo];
-            return (
-              <div className="PositionEditor-token-symbol Order-editor-tokens">
-                <TokenWithIcon className="Order-editor-icon" symbol={tokenA.symbol} displaySize={20} />
-                &nbsp;/&nbsp;
-                <TokenWithIcon className="Order-editor-icon" symbol={tokenB.symbol} displaySize={20} />
-              </div>
-            );
-          })()}
-        </div>
-      </div>
+          );
+        })()}
+      </BuyInputSection>
       <ExchangeInfoRow label={t`Minimum received`}>
         {triggerRatio && !triggerRatio.eq(order.triggerRatio) ? (
           <>

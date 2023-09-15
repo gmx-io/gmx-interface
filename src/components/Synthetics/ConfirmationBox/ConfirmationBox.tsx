@@ -1,5 +1,4 @@
 import { Plural, Trans, t } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
@@ -70,6 +69,7 @@ import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import PercentageInput from "components/PercentageInput/PercentageInput";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -84,6 +84,7 @@ import {
   formatUsd,
 } from "lib/numbers";
 import { usePrevious } from "lib/usePrevious";
+import useWallet from "lib/wallets/useWallet";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useKey } from "react-use";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
@@ -100,7 +101,7 @@ export type Props = {
   triggerPrice?: BigNumber;
   fixedTriggerThresholdType?: TriggerThresholdType;
   fixedTriggerOrderType?: OrderType.LimitDecrease | OrderType.StopLossDecrease;
-  fixedTriggerAcceptablePrice?: BigNumber;
+  fixedTriggerAcceptablePriceImpactBps?: BigNumber;
   triggerRatio?: TokensRatio;
   marketInfo?: MarketInfo;
   collateralToken?: TokenData;
@@ -120,12 +121,12 @@ export type Props = {
   isHigherSlippageAllowed?: boolean;
   ordersData?: OrdersInfoData;
   tokensData?: TokensData;
+  setFixedTriggerAcceptablePriceImapctBps: (value: BigNumber) => void;
   setIsHigherSlippageAllowed: (isHigherSlippageAllowed: boolean) => void;
   setKeepLeverage: (keepLeverage: boolean) => void;
   onClose: () => void;
   onSubmitted: () => void;
   setPendingTxns: (txns: any) => void;
-  onConnectWallet: () => void;
 };
 
 export function ConfirmationBox(p: Props) {
@@ -139,7 +140,7 @@ export function ConfirmationBox(p: Props) {
     triggerPrice,
     fixedTriggerThresholdType,
     fixedTriggerOrderType,
-    fixedTriggerAcceptablePrice,
+    fixedTriggerAcceptablePriceImpactBps,
     triggerRatio,
     marketInfo,
     collateralToken,
@@ -158,24 +159,25 @@ export function ConfirmationBox(p: Props) {
     shouldDisableValidation,
     ordersData,
     tokensData,
+    setFixedTriggerAcceptablePriceImapctBps,
     setKeepLeverage,
     onClose,
     onSubmitted,
     setPendingTxns,
-    onConnectWallet,
   } = p;
 
   const { isLong, isShort, isPosition, isSwap, isMarket, isLimit, isTrigger, isIncrease } = tradeFlags;
   const { indexToken } = marketInfo || {};
 
-  const { library, account } = useWeb3React();
+  const { signer, account } = useWallet();
   const { chainId } = useChainId();
+  const { openConnectModal } = useConnectModal();
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const { savedAllowedSlippage } = useSettings();
 
   const prevIsVisible = usePrevious(p.isVisible);
 
-  const { referralCodeForTxn } = useUserReferralCode(library, chainId, account);
+  const { referralCodeForTxn } = useUserReferralCode(signer, chainId, account);
 
   const [isTriggerWarningAccepted, setIsTriggerWarningAccepted] = useState(false);
   const [isLimitOrdersVisible, setIsLimitOrdersVisible] = useState(false);
@@ -384,15 +386,16 @@ export function ConfirmationBox(p: Props) {
   );
 
   function onCancelOrderClick(key: string): void {
-    cancelOrdersTxn(chainId, library, { orderKeys: [key], setPendingTxns: p.setPendingTxns });
+    if (!signer) return;
+    cancelOrdersTxn(chainId, signer, { orderKeys: [key], setPendingTxns: p.setPendingTxns });
   }
 
   function onSubmitWrapOrUnwrap() {
-    if (!account || !swapAmounts || !fromToken) {
+    if (!account || !swapAmounts || !fromToken || !signer) {
       return Promise.resolve();
     }
 
-    return createWrapOrUnwrapTxn(chainId, library, {
+    return createWrapOrUnwrapTxn(chainId, signer, {
       amount: swapAmounts.amountIn,
       isWrap: Boolean(fromToken.isNative),
       setPendingTxns,
@@ -407,13 +410,14 @@ export function ConfirmationBox(p: Props) {
       !fromToken ||
       !toToken ||
       !executionFee ||
+      !signer ||
       typeof allowedSlippage !== "number"
     ) {
       helperToast.error(t`Error submitting order`);
       return Promise.resolve();
     }
 
-    return createSwapOrderTxn(chainId, library, {
+    return createSwapOrderTxn(chainId, signer, {
       account,
       fromTokenAddress: fromToken.address,
       fromTokenAmount: swapAmounts.amountIn,
@@ -439,13 +443,14 @@ export function ConfirmationBox(p: Props) {
       !increaseAmounts?.acceptablePrice ||
       !executionFee ||
       !marketInfo ||
+      !signer ||
       typeof allowedSlippage !== "number"
     ) {
       helperToast.error(t`Error submitting order`);
       return Promise.resolve();
     }
 
-    return createIncreaseOrderTxn(chainId, library, {
+    return createIncreaseOrderTxn(chainId, signer, {
       account,
       marketAddress: marketInfo.marketTokenAddress,
       initialCollateralAddress: fromToken?.address,
@@ -478,17 +483,18 @@ export function ConfirmationBox(p: Props) {
       !collateralToken ||
       fixedTriggerOrderType === undefined ||
       fixedTriggerThresholdType === undefined ||
-      !fixedTriggerAcceptablePrice ||
+      !decreaseAmounts?.acceptablePrice ||
       !decreaseAmounts?.triggerPrice ||
       !executionFee ||
       !tokensData ||
+      !signer ||
       typeof allowedSlippage !== "number"
     ) {
       helperToast.error(t`Error submitting order`);
       return Promise.resolve();
     }
 
-    return createDecreaseOrderTxn(chainId, library, {
+    return createDecreaseOrderTxn(chainId, signer, {
       account,
       marketAddress: marketInfo.marketTokenAddress,
       swapPath: [],
@@ -496,7 +502,7 @@ export function ConfirmationBox(p: Props) {
       initialCollateralAddress: collateralToken.address,
       receiveTokenAddress: collateralToken.address,
       triggerPrice: decreaseAmounts.triggerPrice,
-      acceptablePrice: fixedTriggerAcceptablePrice,
+      acceptablePrice: decreaseAmounts.acceptablePrice,
       sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
       sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
       minOutputUsd: BigNumber.from(0),
@@ -523,7 +529,7 @@ export function ConfirmationBox(p: Props) {
     let txnPromise: Promise<any>;
 
     if (!account) {
-      onConnectWallet();
+      openConnectModal?.();
       return;
     } else if (isWrapOrUnwrap) {
       txnPromise = onSubmitWrapOrUnwrap();
@@ -874,6 +880,27 @@ export function ConfirmationBox(p: Props) {
     );
   }
 
+  function renderAcceptablePriceImpactInput() {
+    if (!fixedTriggerAcceptablePriceImpactBps) {
+      return null;
+    }
+
+    // const value = (parseInt(fixedTriggerAcceptablePriceImpactBps.toString()) / BASIS_POINTS_DIVISOR) * 100;
+    const value = fixedTriggerAcceptablePriceImpactBps.toNumber();
+
+    const setValue = (value) => {
+      const bps = (parseFloat(value) * BASIS_POINTS_DIVISOR) / 100;
+
+      setFixedTriggerAcceptablePriceImapctBps(BigNumber.from(bps));
+    };
+
+    return (
+      <ExchangeInfoRow label={t`Acceptable Price Impact`}>
+        <PercentageInput onChange={setValue} defaultValue={value} />
+      </ExchangeInfoRow>
+    );
+  }
+
   function renderIncreaseOrderSection() {
     if (!marketInfo || !fromToken || !collateralToken || !toToken) {
       return null;
@@ -912,6 +939,7 @@ export function ConfirmationBox(p: Props) {
             }
           />
           {isMarket && renderAllowedSlippage(savedAllowedSlippage, setAllowedSlippage)}
+          {isLimit && renderAcceptablePriceImpactInput()}
           {isMarket && collateralSpreadInfo?.spread && (
             <ExchangeInfoRow label={t`Collateral Spread`} isWarning={swapSpreadInfo.isHigh} isTop={true}>
               {formatAmount(collateralSpreadInfo.spread.mul(100), USD_DECIMALS, 2, true)}%
@@ -1160,6 +1188,9 @@ export function ConfirmationBox(p: Props) {
               </span>
             </Checkbox>
           )}
+
+          {isLimit && renderAcceptablePriceImpactInput()}
+
           <ExchangeInfoRow
             label={t`Trigger Price`}
             value={
@@ -1196,19 +1227,9 @@ export function ConfirmationBox(p: Props) {
 
           <ExchangeInfoRow
             className="SwapBox-info-row"
-            label={t`Acceptable Price Impact`}
-            value={
-              decreaseAmounts?.triggerOrderType === OrderType.StopLossDecrease
-                ? "NA"
-                : formatPercentage(decreaseAmounts?.acceptablePriceDeltaBps) || "-"
-            }
-          />
-
-          <ExchangeInfoRow
-            className="SwapBox-info-row"
             label={t`Acceptable Price`}
             value={
-              formatAcceptablePrice(fixedTriggerAcceptablePrice, {
+              formatAcceptablePrice(decreaseAmounts?.acceptablePrice, {
                 displayDecimals: toTokenPriceDecimals,
               }) || "-"
             }

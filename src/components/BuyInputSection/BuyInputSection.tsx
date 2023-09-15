@@ -2,7 +2,8 @@ import "./BuyInputSection.scss";
 import React, { useRef, ReactNode, ChangeEvent, useState } from "react";
 import cx from "classnames";
 import { Trans } from "@lingui/macro";
-import { PERCENTAGE_SUGGESTIONS } from "config/ui";
+import { INPUT_LABEL_SEPARATOR, PERCENTAGE_SUGGESTIONS } from "config/ui";
+import NumberInput from "components/NumberInput/NumberInput";
 
 type Props = {
   topLeftLabel: string;
@@ -42,7 +43,6 @@ export default function BuyInputSection(props: Props) {
   } = props;
   const [isPercentSelectorVisible, setIsPercentSelectorVisible] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const seperator = ":";
 
   function handleOnFocus() {
     if (showPercentSelector && onPercentChange) {
@@ -64,19 +64,25 @@ export default function BuyInputSection(props: Props) {
     }
   }
 
+  function onUserInput(e) {
+    if (onInputValueChange) {
+      onInputValueChange(e);
+    }
+  }
+
   return (
     <div>
       <div className="Exchange-swap-section buy-input" onClick={handleBoxClick}>
         <div className="buy-input-top-row">
           <div className="text-gray">
             {topLeftLabel}
-            {topLeftValue && `${seperator} ${topLeftValue}`}
+            {topLeftValue && `${INPUT_LABEL_SEPARATOR} ${topLeftValue}`}
           </div>
           <div className={cx("align-right", { clickable: onClickTopRightLabel })} onClick={onClickTopRightLabel}>
             <span className="text-gray">{topRightLabel}</span>
             {topRightValue && (
               <span className="Exchange-swap-label">
-                {topRightLabel ? seperator : ""}&nbsp;{topRightValue}
+                {topRightLabel ? INPUT_LABEL_SEPARATOR : ""}&nbsp;{topRightValue}
               </span>
             )}
           </div>
@@ -84,17 +90,14 @@ export default function BuyInputSection(props: Props) {
         <div className="Exchange-swap-section-bottom">
           <div className="Exchange-swap-input-container">
             {!staticInput && (
-              <input
-                type="number"
-                min="0"
-                placeholder="0.0"
-                step="any"
-                className="Exchange-swap-input"
+              <NumberInput
                 value={inputValue}
-                onChange={onInputValueChange}
-                ref={inputRef}
+                className="Exchange-swap-input"
+                inputRef={inputRef}
+                onValueChange={onUserInput}
                 onFocus={handleOnFocus}
                 onBlur={handleOnBlur}
+                placeholder="0.0"
               />
             )}
             {staticInput && <div className="InputSection-static-input">{inputValue}</div>}

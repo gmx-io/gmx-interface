@@ -15,6 +15,7 @@ type Props = {
   maxValue?: number;
   highValue?: number;
   suggestions?: number[];
+  lowValueWarningText?: string;
   highValueWarningText?: string;
 };
 
@@ -25,6 +26,7 @@ export default function PercentageInput({
   highValue,
   suggestions = [0.3, 0.5, 1, 1.5],
   highValueWarningText,
+  lowValueWarningText,
 }: Props) {
   const defaultValueText = getValueText(defaultValue);
   const [inputValue, setInputvalue] = useState<string>(defaultValueText);
@@ -59,6 +61,10 @@ export default function PercentageInput({
     const parsedValue = Math.round(Number.parseFloat(inputValue) * 100);
     if (highValue && parsedValue >= highValue) {
       return highValueWarningText;
+    }
+
+    if (lowValueWarningText && parsedValue < defaultValue) {
+      return lowValueWarningText;
     }
   }
 

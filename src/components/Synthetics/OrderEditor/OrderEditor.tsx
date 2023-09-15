@@ -33,7 +33,6 @@ import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount, formatAmountFree, formatDeltaUsd, formatTokenAmount, formatUsd, parseValue } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 
-import { useWeb3React } from "@web3-react/core";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { getWrappedToken } from "config/tokens";
 import {
@@ -41,16 +40,22 @@ import {
   estimateExecuteIncreaseOrderGasLimit,
   estimateExecuteSwapOrderGasLimit,
   getExecutionFee,
+  getPriceImpactForPosition,
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
 import { updateOrderTxn } from "domain/synthetics/orders/updateOrderTxn";
-import { getAcceptablePriceInfo, getSwapPathOutputAddresses } from "domain/synthetics/trade";
+import {
+  getAcceptablePriceInfo,
+  getDefaultAcceptablePriceImpactBps,
+  getSwapPathOutputAddresses,
+} from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { getByKey } from "lib/objects";
 
 import Button from "components/Button/Button";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import useWallet from "lib/wallets/useWallet";
 import "./OrderEditor.scss";
 
 type Props = {
@@ -65,7 +70,7 @@ type Props = {
 export function OrderEditor(p: Props) {
   const { marketsInfoData, tokensData } = p;
   const { chainId } = useChainId();
-  const { library } = useWeb3React();
+  const { signer } = useWallet();
 
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
@@ -90,12 +95,26 @@ export function OrderEditor(p: Props) {
       return (p.order as PositionOrderInfo).acceptablePrice;
     }
 
+    const priceImpactDeltaUsd = getPriceImpactForPosition(
+      (p.order as PositionOrderInfo).marketInfo,
+      p.order.sizeDeltaUsd,
+      p.order.isLong,
+      { fallbackToZero: true }
+    );
+
     const acceptablePriceInfo = getAcceptablePriceInfo({
       marketInfo: (p.order as PositionOrderInfo).marketInfo,
       isIncrease: isIncreaseOrderType(p.order.orderType),
       isLong: p.order.isLong,
       indexPrice: triggerPrice,
-      acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
+      maxNegativePriceImpactBps: getDefaultAcceptablePriceImpactBps({
+        isLong: p.order.isLong,
+        isIncrease: isIncreaseOrderType(p.order.orderType),
+        indexPrice: triggerPrice,
+        sizeDeltaUsd: p.order.sizeDeltaUsd,
+        acceptablePriceImapctBuffer: savedAcceptablePriceImpactBuffer,
+        priceImpactDeltaUsd,
+      }),
       sizeDeltaUsd: p.order.sizeDeltaUsd,
     });
 
@@ -328,11 +347,12 @@ export function OrderEditor(p: Props) {
   }
 
   function onSubmit() {
+    if (!signer) return;
     const positionOrder = p.order as PositionOrderInfo;
 
     setIsSubmitting(true);
 
-    updateOrderTxn(chainId, library, {
+    updateOrderTxn(chainId, signer, {
       orderKey: p.order.key,
       sizeDeltaUsd: sizeDeltaUsd || positionOrder.sizeDeltaUsd,
       triggerPrice: triggerPrice || positionOrder.triggerPrice,

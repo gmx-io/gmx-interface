@@ -1,4 +1,3 @@
-import { Web3Provider } from "@ethersproject/providers";
 import CustomErrors from "abis/CustomErrors.json";
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, getFallbackRpcUrl, getRpcUrl } from "config/chains";
 import { PublicClient, createPublicClient, http } from "viem";
@@ -6,8 +5,9 @@ import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "viem/chains"
 import { MulticallRequestConfig, MulticallResult } from "./types";
 
 import { sleep } from "lib/sleep";
+import { Signer } from "ethers";
 
-export const MAX_TIMEOUT = 2000;
+export const MAX_TIMEOUT = 20000;
 
 const CHAIN_BY_CHAIN_ID = {
   [AVALANCHE_FUJI]: avalancheFuji,
@@ -69,7 +69,7 @@ const BATCH_CONFIGS = {
 
 export async function executeMulticall(
   chainId: number,
-  library: Web3Provider | undefined,
+  signer: Signer | undefined,
   request: MulticallRequestConfig<any>
 ) {
   const multicall = await Multicall.getInstance(chainId);
@@ -108,6 +108,7 @@ export class Multicall {
         retryDelay: 10000000,
         batch: BATCH_CONFIGS[chainId].http,
       }),
+      pollingInterval: undefined,
       batch: BATCH_CONFIGS[chainId].client,
       chain: CHAIN_BY_CHAIN_ID[chainId],
     });
@@ -167,32 +168,32 @@ export class Multicall {
 
     const response: any = await Promise.race([
       this.viemClient.multicall({ contracts: encodedPayload as any }),
-      sleep(maxTimeout).then(() => Promise.reject("multicall timeout")),
-    ])
-      .catch((e) => {
-        // eslint-disable-next-line no-console
-        console.groupCollapsed("multicall error:");
-        // eslint-disable-next-line no-console
-        console.error(e);
-        // eslint-disable-next-line no-console
-        console.groupEnd();
+      sleep(maxTimeout).then(() => Promise.reject(new Error("multicall timeout"))),
+    ]).catch((_viemError) => {
+      const e = new Error(_viemError.message.slice(0, 150));
 
-        const rpcUrl = getFallbackRpcUrl(this.chainId);
+      // eslint-disable-next-line no-console
+      console.groupCollapsed("multicall error:");
+      // eslint-disable-next-line no-console
+      console.error(e);
+      // eslint-disable-next-line no-console
+      console.groupEnd();
 
-        if (!rpcUrl) {
-          throw e;
-        }
+      const rpcUrl = getFallbackRpcUrl(this.chainId);
 
-        const fallbackClient = Multicall.getViemClient(this.chainId, rpcUrl);
+      if (!rpcUrl) {
+        throw e;
+      }
 
+      const fallbackClient = Multicall.getViemClient(this.chainId, rpcUrl);
+
+      // eslint-disable-next-line no-console
+      console.log(`using multicall fallback for chain ${this.chainId}`);
+
+      return fallbackClient.multicall({ contracts: encodedPayload as any }).catch((_viemError) => {
+        const e = new Error(_viemError.message.slice(0, 150));
         // eslint-disable-next-line no-console
-        console.log(`using multicall fallback for chain ${this.chainId}`);
-
-        return fallbackClient.multicall({ contracts: encodedPayload as any });
-      })
-      .catch((e) => {
-        // eslint-disable-next-line no-console
-        console.groupCollapsed("multicall error:");
+        console.groupCollapsed("multicall fallback error:");
         // eslint-disable-next-line no-console
         console.error(e);
         // eslint-disable-next-line no-console
@@ -200,6 +201,7 @@ export class Multicall {
 
         throw e;
       });
+    });
 
     const multicallResult: MulticallResult<any> = {
       success: true,

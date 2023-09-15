@@ -1,5 +1,5 @@
 import { Trans, t } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Checkbox from "components/Checkbox/Checkbox";
@@ -36,7 +36,6 @@ import { OrderInfo, OrderType, OrdersInfoData } from "domain/synthetics/orders";
 import {
   PositionInfo,
   PositionsInfoData,
-  formatAcceptablePrice,
   formatLeverage,
   formatLiquidationPrice,
   usePositionsConstants,
@@ -88,8 +87,8 @@ import {
 } from "lib/numbers";
 import { useSafeState } from "lib/useSafeState";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
+import useWallet from "lib/wallets/useWallet";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { AiOutlineEdit } from "react-icons/ai";
 import { IoMdSwap } from "react-icons/io";
 import { usePrevious } from "react-use";
 import { ClaimableCard } from "../ClaimableCard/ClaimableCard";
@@ -134,7 +133,6 @@ export type Props = {
   setPendingTxns: (txns: any) => void;
   onSelectMarketAddress: (marketAddress?: string) => void;
   onSelectCollateralAddress: (collateralAddress?: string) => void;
-  onConnectWallet: () => void;
   setIsClaiming: (val: boolean) => void;
   switchTokenAddresses: () => void;
 };
@@ -171,6 +169,7 @@ export function TradeBox(p: Props) {
     allowedSlippage,
     isHigherSlippageAllowed,
     marketsInfoData,
+    setIsClaiming,
     setIsHigherSlippageAllowed,
     onSelectMarketAddress,
     onSelectCollateralAddress,
@@ -178,12 +177,11 @@ export function TradeBox(p: Props) {
     onSelectToTokenAddress,
     onSelectTradeMode,
     onSelectTradeType,
-    onConnectWallet,
-    setIsClaiming,
     setPendingTxns,
     switchTokenAddresses,
   } = p;
   const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket } = tradeFlags;
+  const { openConnectModal } = useConnectModal();
   const {
     swapTokens,
     indexTokens,
@@ -208,12 +206,12 @@ export function TradeBox(p: Props) {
   };
 
   const { chainId } = useChainId();
+  const { signer, account } = useWallet();
   const isMetamaskMobile = useIsMetamaskMobile();
-  const { library, account } = useWeb3React();
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
-  const userReferralInfo = useUserReferralInfo(library, chainId, account);
-  const { showDebugValues } = useSettings();
+  const userReferralInfo = useUserReferralInfo(signer, chainId, account);
+  const { showDebugValues, savedAcceptablePriceImpactBuffer } = useSettings();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
 
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
@@ -225,7 +223,8 @@ export function TradeBox(p: Props) {
   const [fixedTriggerOrderType, setFixedTriggerOrderType] = useState<
     OrderType.LimitDecrease | OrderType.StopLossDecrease
   >();
-  const [fixedTriggerAcceptablePrice, setFixedTriggerAcceptablePrice] = useState<BigNumber>();
+
+  const [fixedTriggerAcceptablePriceImpactBps, setFixedTriggerAcceptablePriceImapctBps] = useState<BigNumber>();
 
   const [fromTokenInputValue, setFromTokenInputValue] = useSafeState("");
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
@@ -369,7 +368,8 @@ export function TradeBox(p: Props) {
       leverage,
       triggerPrice: isLimit ? triggerPrice : undefined,
       position: existingPosition,
-      acceptablePriceImpactBps: acceptablePriceImpactBpsForLimitOrders,
+      fixedAcceptablePriceImpactBps: fixedTriggerAcceptablePriceImpactBps,
+      acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
       findSwapPath: swapRoute.findSwapPath,
       userReferralInfo,
       strategy: isLeverageEnabled
@@ -379,9 +379,9 @@ export function TradeBox(p: Props) {
         : "independent",
     });
   }, [
-    acceptablePriceImpactBpsForLimitOrders,
     collateralToken,
     existingPosition,
+    fixedTriggerAcceptablePriceImpactBps,
     focusedInput,
     fromToken,
     fromTokenAmount,
@@ -391,6 +391,7 @@ export function TradeBox(p: Props) {
     isLong,
     leverage,
     marketInfo,
+    savedAcceptablePriceImpactBuffer,
     swapRoute.findSwapPath,
     toToken,
     toTokenAmount,
@@ -411,22 +412,24 @@ export function TradeBox(p: Props) {
       closeSizeUsd: closeSizeUsd,
       keepLeverage: keepLeverage!,
       triggerPrice,
-      savedAcceptablePriceImpactBps: acceptablePriceImpactBpsForLimitOrders,
+      fixedAcceptablePriceImpactBps: fixedTriggerAcceptablePriceImpactBps,
+      acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
       userReferralInfo,
       minCollateralUsd,
       minPositionSizeUsd,
     });
   }, [
-    acceptablePriceImpactBpsForLimitOrders,
     closeSizeUsd,
     collateralToken,
     existingPosition,
+    fixedTriggerAcceptablePriceImpactBps,
     isLong,
     isTrigger,
     keepLeverage,
     marketInfo,
     minCollateralUsd,
     minPositionSizeUsd,
+    savedAcceptablePriceImpactBuffer,
     triggerPrice,
     userReferralInfo,
   ]);
@@ -702,6 +705,7 @@ export function TradeBox(p: Props) {
         isLong,
         isTrigger: true,
         minCollateralUsd,
+        priceImpactWarning: priceImpactWarningState,
         isNotEnoughReceiveTokenLiquidity: false,
         fixedTriggerThresholdType: stage === "confirmation" ? fixedTriggerThresholdType : undefined,
       });
@@ -778,7 +782,7 @@ export function TradeBox(p: Props) {
 
   function onSubmit() {
     if (!account) {
-      onConnectWallet();
+      openConnectModal?.();
       return;
     }
 
@@ -790,7 +794,11 @@ export function TradeBox(p: Props) {
     ) {
       setFixedTriggerOrderType(decreaseAmounts.triggerOrderType);
       setFixedTriggerThresholdType(decreaseAmounts.triggerThresholdType);
-      setFixedTriggerAcceptablePrice(decreaseAmounts.acceptablePrice);
+      setFixedTriggerAcceptablePriceImapctBps(decreaseAmounts.acceptablePriceDeltaBps.abs());
+    }
+
+    if (isLimit && increaseAmounts?.acceptablePrice) {
+      setFixedTriggerAcceptablePriceImapctBps(increaseAmounts.acceptablePriceDeltaBps.abs());
     }
 
     setStage("confirmation");
@@ -920,6 +928,9 @@ export function TradeBox(p: Props) {
   }
 
   const onConfirmationClose = useCallback(() => {
+    setFixedTriggerAcceptablePriceImapctBps(undefined);
+    setFixedTriggerOrderType(undefined);
+    setFixedTriggerThresholdType(undefined);
     setStage("trade");
   }, []);
 
@@ -1496,7 +1507,8 @@ export function TradeBox(p: Props) {
         triggerPrice={triggerPrice}
         fixedTriggerThresholdType={fixedTriggerThresholdType}
         fixedTriggerOrderType={fixedTriggerOrderType}
-        fixedTriggerAcceptablePrice={fixedTriggerAcceptablePrice}
+        fixedTriggerAcceptablePriceImpactBps={fixedTriggerAcceptablePriceImpactBps}
+        setFixedTriggerAcceptablePriceImapctBps={setFixedTriggerAcceptablePriceImapctBps}
         triggerRatio={triggerRatio}
         marketInfo={marketInfo}
         collateralToken={collateralToken}
@@ -1521,7 +1533,6 @@ export function TradeBox(p: Props) {
         onClose={onConfirmationClose}
         onSubmitted={onConfirmed}
         setPendingTxns={setPendingTxns}
-        onConnectWallet={onConnectWallet}
       />
     </>
   );

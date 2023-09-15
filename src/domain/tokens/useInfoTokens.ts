@@ -1,9 +1,8 @@
-import { Web3Provider } from "@ethersproject/providers";
 import VaultReader from "abis/VaultReader.json";
 import { getServerUrl } from "config/backend";
 import { getContract } from "config/contracts";
 import { getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
-import { BigNumber } from "ethers";
+import { BigNumber, Signer } from "ethers";
 import { contractFetcher } from "lib/contracts";
 import { DEFAULT_MAX_USDG_AMOUNT, MAX_PRICE_DEVIATION_BASIS_POINTS, USD_DECIMALS, USDG_ADDRESS } from "lib/legacy";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
@@ -13,7 +12,7 @@ import { InfoTokens, Token, TokenInfo } from "./types";
 import { getSpread } from "./utils";
 
 export function useInfoTokens(
-  library: Web3Provider | undefined,
+  signer: Signer | undefined,
   chainId: number,
   active: boolean,
   tokenBalances?: BigNumber[],
@@ -32,21 +31,21 @@ export function useInfoTokens(
   const { data: vaultTokenInfo } = useSWR<BigNumber[], any>(
     [`useInfoTokens:${active}`, chainId, vaultReaderAddress, "getVaultTokenInfoV4"],
     {
-      fetcher: contractFetcher(library, VaultReader, [
+      fetcher: contractFetcher(signer, VaultReader, [
         vaultAddress,
         positionRouterAddress,
         nativeTokenAddress,
         expandDecimals(1, 18),
         whitelistedTokenAddresses,
-      ]),
+      ]) as any,
     }
   );
 
   const indexPricesUrl = getServerUrl(chainId, "/prices");
 
-  const { data: indexPrices } = useSWR([indexPricesUrl], {
+  const { data: indexPrices } = useSWR(indexPricesUrl, {
     // @ts-ignore spread args incorrect type
-    fetcher: (...args) => fetch(...args).then((res) => res.json()),
+    fetcher: (url) => fetch(url).then((res) => res.json()),
     refreshInterval: 500,
     refreshWhenHidden: true,
   });

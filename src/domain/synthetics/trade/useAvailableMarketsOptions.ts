@@ -14,7 +14,7 @@ import { expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useMemo } from "react";
 import { OrdersInfoData, PositionOrderInfo, isIncreaseOrderType } from "../orders";
-import { getAcceptablePrice, getMarkPrice } from "./utils";
+import { getAcceptablePriceByPriceImpact, getMarkPrice } from "./utils";
 
 export type AvailableMarketsOptions = {
   allMarkets?: MarketInfo[];
@@ -133,7 +133,7 @@ export function useAvailableMarketsOptions(p: {
       );
 
       if (bestMarket && bestImpactDeltaUsd) {
-        const { acceptablePriceDeltaBps } = getAcceptablePrice({
+        const { acceptablePriceDeltaBps } = getAcceptablePriceByPriceImpact({
           isIncrease: true,
           isLong,
           indexPrice: getMarkPrice({ prices: indexToken.prices, isLong, isIncrease: true }),

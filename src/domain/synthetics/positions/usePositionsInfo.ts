@@ -1,4 +1,3 @@
-import { useWeb3React } from "@web3-react/core";
 import { useUserReferralInfo } from "domain/referrals";
 import { BigNumber } from "ethers";
 import { MAX_ALLOWED_LEVERAGE } from "config/factors";
@@ -20,6 +19,7 @@ import {
   getPositionPnlUsd,
 } from "./utils";
 import { usePositions } from "./usePositions";
+import useWallet from "lib/wallets/useWallet";
 
 type PositionsInfoResult = {
   positionsInfoData?: PositionsInfoData;
@@ -38,10 +38,10 @@ export function usePositionsInfo(
 ): PositionsInfoResult {
   const { showPnlInLeverage, marketsInfoData, tokensData, account } = p;
 
-  const { library } = useWeb3React();
+  const { signer } = useWallet();
   const { positionsData } = usePositions(chainId, p);
   const { minCollateralUsd } = usePositionsConstants(chainId);
-  const userReferralInfo = useUserReferralInfo(library, chainId, account);
+  const userReferralInfo = useUserReferralInfo(signer, chainId, account);
 
   return useMemo(() => {
     if (!marketsInfoData || !tokensData || !positionsData || !minCollateralUsd) {

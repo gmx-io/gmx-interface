@@ -31,6 +31,7 @@ type Props = {
   marketTokensData?: TokensData;
   marketsTokensAPRData?: MarketTokensAPRData;
   shouldScrollToTop?: boolean;
+  buySellActionHandler?: () => void;
 };
 
 export function GmList({
@@ -40,6 +41,7 @@ export function GmList({
   tokensData,
   marketsTokensAPRData,
   shouldScrollToTop,
+  buySellActionHandler,
 }: Props) {
   const { chainId } = useChainId();
   const currentIcons = getIcons(chainId);
@@ -182,7 +184,7 @@ export function GmList({
                             {getMarketIndexName({ indexToken, isSpotOnly: market?.isSpotOnly })}
                             {!market.isSpotOnly && (
                               <div className="Asset-dropdown-container">
-                                <AssetDropdown assetSymbol={indexToken.symbol} tooltipPosition="left" />
+                                <AssetDropdown assetSymbol={indexToken.symbol} position="left" />
                               </div>
                             )}
                           </div>
@@ -275,6 +277,8 @@ export function GmList({
               if (!indexToken) {
                 return null;
               }
+              const indexName = market && getMarketIndexName(market);
+              const poolName = market && getMarketPoolName(market);
 
               return (
                 <div className="App-card" key={token.address}>
@@ -287,9 +291,14 @@ export function GmList({
                         alt={indexToken.symbol}
                         width="20"
                       />
-                      <div className="token-symbol-text">{market?.name}</div>
+                      <div className="token-symbol-text">
+                        <div className="items-center">
+                          <span>{indexName && indexName}</span>
+                          <span className="subtext">{poolName && `[${poolName}]`}</span>
+                        </div>
+                      </div>
                       <div>
-                        <AssetDropdown assetSymbol={indexToken.symbol} tooltipPosition="left" />
+                        <AssetDropdown assetSymbol={indexToken.symbol} position="left" />
                       </div>
                     </div>
                   </div>
@@ -366,20 +375,16 @@ export function GmList({
                     </div>
 
                     <div className="App-card-divider"></div>
-                    <div className="App-card-buttons m-0">
+                    <div className="App-card-buttons m-0" onClick={buySellActionHandler}>
                       <Button
                         variant="secondary"
-                        to={`/pools?operation=${Operation.Deposit}&market=${token.address}&scroll=${
-                          shouldScrollToTop ? "1" : "0"
-                        }`}
+                        to={`/pools?operation=${Operation.Deposit}&market=${token.address}&scroll=0`}
                       >
                         <Trans>Buy</Trans>
                       </Button>
                       <Button
                         variant="secondary"
-                        to={`/pools?operation=${Operation.Withdrawal}&market=${token.address}&scroll=${
-                          shouldScrollToTop ? "1" : "0"
-                        }`}
+                        to={`/pools?operation=${Operation.Withdrawal}&market=${token.address}&scroll=0`}
                       >
                         <Trans>Sell</Trans>
                       </Button>
