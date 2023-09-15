@@ -17,17 +17,16 @@ import RewardReader from "abis/RewardReader.json";
 import Token from "abis/Token.json";
 import GlpManager from "abis/GlpManager.json";
 
-import { useWeb3React } from "@web3-react/core";
-
 import { useGmxPrice } from "domain/legacy";
 
 import { getContract } from "config/contracts";
 import { getServerUrl } from "config/backend";
 import { contractFetcher } from "lib/contracts";
 import { formatKeyAmount } from "lib/numbers";
+import useWallet from "lib/wallets/useWallet";
 
 export default function APRLabel({ chainId, label }) {
-  let { active } = useWeb3React();
+  let { active } = useWallet();
 
   const rewardReaderAddress = getContract(chainId, "RewardReader");
   const readerAddress = getContract(chainId, "Reader");
@@ -127,8 +126,8 @@ export default function APRLabel({ chainId, label }) {
   const { gmxPrice } = useGmxPrice(chainId, {}, active);
 
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply");
-  const { data: gmxSupply } = useSWR([gmxSupplyUrl], {
-    fetcher: (...args) => fetch(...args).then((res) => res.text()),
+  const { data: gmxSupply } = useSWR(gmxSupplyUrl, {
+    fetcher: (url) => fetch(url).then((res) => res.text()),
   });
 
   let aum;

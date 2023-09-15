@@ -1,5 +1,4 @@
 import { Plural, Trans, t } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
@@ -10,7 +9,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { getContract } from "config/contracts";
-import { HIGH_SPREAD_THRESHOLD } from "config/factors";
+import { BASIS_POINTS_DIVISOR, DEFAULT_SLIPPAGE_AMOUNT, HIGH_SPREAD_THRESHOLD } from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useUserReferralCode } from "domain/referrals/hooks";
 import {
@@ -63,8 +62,13 @@ import { getIsEquivalentTokens, getSpread } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
-import { BASIS_POINTS_DIVISOR, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import SlippageInput from "components/SlippageInput/SlippageInput";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { AvailableMarketsOptions } from "domain/synthetics/trade/useAvailableMarketsOptions";
+import { helperToast } from "lib/helperToast";
 import {
   bigNumberify,
   formatAmount,
@@ -75,15 +79,11 @@ import {
   formatUsd,
 } from "lib/numbers";
 import { usePrevious } from "lib/usePrevious";
+import useWallet from "lib/wallets/useWallet";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useKey } from "react-use";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./ConfirmationBox.scss";
-import SlippageInput from "components/SlippageInput/SlippageInput";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { helperToast } from "lib/helperToast";
-import { useKey } from "react-use";
-import { AvailableMarketsOptions } from "domain/synthetics/trade/useAvailableMarketsOptions";
 
 export type Props = {
   isVisible: boolean;
@@ -122,7 +122,6 @@ export type Props = {
   onClose: () => void;
   onSubmitted: () => void;
   setPendingTxns: (txns: any) => void;
-  onConnectWallet: () => void;
 };
 
 export function ConfirmationBox(p: Props) {
@@ -160,20 +159,20 @@ export function ConfirmationBox(p: Props) {
     onClose,
     onSubmitted,
     setPendingTxns,
-    onConnectWallet,
   } = p;
 
   const { isLong, isShort, isPosition, isSwap, isMarket, isLimit, isTrigger, isIncrease } = tradeFlags;
   const { indexToken } = marketInfo || {};
 
-  const { library, account } = useWeb3React();
+  const { signer, account } = useWallet();
   const { chainId } = useChainId();
+  const { openConnectModal } = useConnectModal();
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const { savedAllowedSlippage } = useSettings();
 
   const prevIsVisible = usePrevious(p.isVisible);
 
-  const { referralCodeForTxn } = useUserReferralCode(library, chainId, account);
+  const { referralCodeForTxn } = useUserReferralCode(signer, chainId, account);
 
   const [isTriggerWarningAccepted, setIsTriggerWarningAccepted] = useState(false);
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
@@ -389,15 +388,16 @@ export function ConfirmationBox(p: Props) {
   );
 
   function onCancelOrderClick(key: string): void {
-    cancelOrdersTxn(chainId, library, { orderKeys: [key], setPendingTxns: p.setPendingTxns });
+    if (!signer) return;
+    cancelOrdersTxn(chainId, signer, { orderKeys: [key], setPendingTxns: p.setPendingTxns });
   }
 
   function onSubmitWrapOrUnwrap() {
-    if (!account || !swapAmounts || !fromToken) {
+    if (!account || !swapAmounts || !fromToken || !signer) {
       return Promise.resolve();
     }
 
-    return createWrapOrUnwrapTxn(chainId, library, {
+    return createWrapOrUnwrapTxn(chainId, signer, {
       amount: swapAmounts.amountIn,
       isWrap: Boolean(fromToken.isNative),
       setPendingTxns,
@@ -412,13 +412,14 @@ export function ConfirmationBox(p: Props) {
       !fromToken ||
       !toToken ||
       !executionFee ||
+      !signer ||
       typeof allowedSlippage !== "number"
     ) {
       helperToast.error(t`Error submitting order`);
       return Promise.resolve();
     }
 
-    return createSwapOrderTxn(chainId, library, {
+    return createSwapOrderTxn(chainId, signer, {
       account,
       fromTokenAddress: fromToken.address,
       fromTokenAmount: swapAmounts.amountIn,
@@ -444,13 +445,14 @@ export function ConfirmationBox(p: Props) {
       !increaseAmounts?.acceptablePrice ||
       !executionFee ||
       !marketInfo ||
+      !signer ||
       typeof allowedSlippage !== "number"
     ) {
       helperToast.error(t`Error submitting order`);
       return Promise.resolve();
     }
 
-    return createIncreaseOrderTxn(chainId, library, {
+    return createIncreaseOrderTxn(chainId, signer, {
       account,
       marketAddress: marketInfo.marketTokenAddress,
       initialCollateralAddress: fromToken?.address,
@@ -487,13 +489,14 @@ export function ConfirmationBox(p: Props) {
       !decreaseAmounts?.triggerPrice ||
       !executionFee ||
       !tokensData ||
+      !signer ||
       typeof allowedSlippage !== "number"
     ) {
       helperToast.error(t`Error submitting order`);
       return Promise.resolve();
     }
 
-    return createDecreaseOrderTxn(chainId, library, {
+    return createDecreaseOrderTxn(chainId, signer, {
       account,
       marketAddress: marketInfo.marketTokenAddress,
       swapPath: [],
@@ -528,7 +531,7 @@ export function ConfirmationBox(p: Props) {
     let txnPromise: Promise<any>;
 
     if (!account) {
-      onConnectWallet();
+      openConnectModal?.();
       return;
     } else if (isWrapOrUnwrap) {
       txnPromise = onSubmitWrapOrUnwrap();
@@ -1240,6 +1243,17 @@ export function ConfirmationBox(p: Props) {
                 : "..."
             }
           />
+
+          {existingPosition && (
+            <ExchangeInfoRow
+              label={t`Entry Price`}
+              value={
+                formatUsd(existingPosition?.entryPrice, {
+                  displayDecimals: indexToken?.priceDecimals,
+                }) || "-"
+              }
+            />
+          )}
 
           <ExchangeInfoRow
             className="SwapBox-info-row"

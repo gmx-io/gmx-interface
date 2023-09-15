@@ -4,11 +4,14 @@ import "regenerator-runtime/runtime";
 import { BrowserRouter as Router } from "react-router-dom";
 import App from "./App/App";
 import reportWebVitals from "./reportWebVitals";
+import WalletProvider from "lib/wallets/WalletProvider";
 
 ReactDOM.render(
   <React.StrictMode>
     <Router>
-      <App />
+      <WalletProvider>
+        <App />
+      </WalletProvider>
     </Router>
   </React.StrictMode>,
   document.getElementById("root")

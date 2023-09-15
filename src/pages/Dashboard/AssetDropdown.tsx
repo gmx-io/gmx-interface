@@ -1,6 +1,5 @@
 import { Menu } from "@headlessui/react";
 import cx from "classnames";
-import { useWeb3React } from "@web3-react/core";
 import coingeckoIcon from "img/ic_coingecko_16.svg";
 import metamaskIcon from "img/ic_metamask_16.svg";
 import nansenPortfolioIcon from "img/nansen_portfolio.svg";
@@ -13,16 +12,16 @@ import { getIcon } from "config/icons";
 import { getTokenBySymbol } from "config/tokens";
 import { Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
-import { addTokenToMetamask } from "lib/wallets";
+import useWallet from "lib/wallets/useWallet";
 
 type Props = {
   assetSymbol: string;
   token?: Token;
-  tooltipPosition?: "left" | "right";
+  position?: "left" | "right";
 };
 
-function AssetDropdown({ assetSymbol, token: propsToken, tooltipPosition = "right" }: Props) {
-  const { active } = useWeb3React();
+function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: Props) {
+  const { active, connector } = useWallet();
   const { chainId } = useChainId();
 
   let token: Token;
@@ -45,7 +44,7 @@ function AssetDropdown({ assetSymbol, token: propsToken, tooltipPosition = "righ
         <Menu.Button as="div" className="dropdown-arrow center-both">
           <FiChevronDown size={20} />
         </Menu.Button>
-        <Menu.Items as="div" className={cx("asset-menu-items", { "position-left": tooltipPosition === "left" })}>
+        <Menu.Items as="div" className={cx("asset-menu-items", { "position-left": position === "left" })}>
           <Menu.Item>
             <>
               {token.reservesUrl && (
@@ -87,7 +86,15 @@ function AssetDropdown({ assetSymbol, token: propsToken, tooltipPosition = "righ
               {active && !token.isNative && (
                 <div
                   onClick={() => {
-                    addTokenToMetamask(token);
+                    if (connector?.watchAsset && token) {
+                      const { address, decimals, imageUrl, symbol } = token;
+                      connector.watchAsset?.({
+                        address: address,
+                        decimals: decimals,
+                        image: imageUrl,
+                        symbol: symbol,
+                      });
+                    }
                   }}
                   className="asset-item"
                 >

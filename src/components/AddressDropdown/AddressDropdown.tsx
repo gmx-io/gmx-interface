@@ -6,12 +6,13 @@ import copy from "img/ic_copy_16.svg";
 import externalLink from "img/ic_new_link_16.svg";
 import disconnect from "img/ic_sign_out_16.svg";
 import { helperToast } from "lib/helperToast";
-import { shortenAddress, useENS } from "lib/legacy";
+import { useENS } from "lib/legacy";
 import { useJsonRpcProvider } from "lib/rpc";
 import { FaChevronDown } from "react-icons/fa";
 import { createBreakpoint, useCopyToClipboard } from "react-use";
 import "./AddressDropdown.scss";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { shortenAddressOrEns } from "lib/wallets";
 
 type Props = {
   account: string;
@@ -25,6 +26,7 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
   const [, copyToClipboard] = useCopyToClipboard();
   const { ensName } = useENS(account);
   const { provider: ethereumProvider } = useJsonRpcProvider(ETH_MAINNET);
+  const displayAddressLength = breakpoint === "S" ? 9 : 13;
 
   return (
     <Menu>
@@ -33,7 +35,7 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
           <div className="user-avatar">
             {ethereumProvider && <Davatar size={20} address={account} provider={ethereumProvider} />}
           </div>
-          <span className="user-address">{ensName || shortenAddress(account, breakpoint === "S" ? 9 : 13)}</span>
+          <span className="user-address">{shortenAddressOrEns(ensName || account, displayAddressLength)}</span>
           <FaChevronDown />
         </button>
       </Menu.Button>

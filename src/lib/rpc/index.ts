@@ -1,4 +1,4 @@
-import { JsonRpcProvider, Web3Provider, WebSocketProvider } from "@ethersproject/providers";
+import { JsonRpcProvider, WebSocketProvider } from "@ethersproject/providers";
 import {
   ARBITRUM,
   ARBITRUM_GOERLI,
@@ -9,14 +9,14 @@ import {
   getFallbackRpcUrl,
   getRpcUrl,
 } from "config/chains";
-import { ethers } from "ethers";
-import { useCallback, useEffect, useState } from "react";
+import { Signer, ethers } from "ethers";
+import { useEffect, useState } from "react";
 
-export function getProvider(library: Web3Provider | undefined, chainId: number) {
+export function getProvider(signer: Signer | undefined, chainId: number) {
   let provider;
 
-  if (library) {
-    return library.getSigner();
+  if (signer) {
+    return signer;
   }
 
   provider = getRpcUrl(chainId);
@@ -28,11 +28,7 @@ export function getProvider(library: Web3Provider | undefined, chainId: number) 
   );
 }
 
-export function getWsProvider(active: boolean, chainId: number) {
-  if (!active) {
-    return;
-  }
-
+export function getWsProvider(chainId: number): WebSocketProvider | JsonRpcProvider | undefined {
   if (chainId === ARBITRUM) {
     return new ethers.providers.WebSocketProvider(getAlchemyWsUrl());
   }
@@ -50,21 +46,6 @@ export function getWsProvider(active: boolean, chainId: number) {
     provider.pollingInterval = 2000;
     return provider;
   }
-}
-
-const POLLING_PROVIDERS_CACHE: { [chainId: number]: JsonRpcProvider | undefined } = {};
-
-export function getPollingProvider(chainId: number) {
-  if (POLLING_PROVIDERS_CACHE[chainId]) {
-    return POLLING_PROVIDERS_CACHE[chainId];
-  }
-
-  const provider = new ethers.providers.JsonRpcProvider(getRpcUrl(chainId));
-  provider.pollingInterval = 10000;
-
-  POLLING_PROVIDERS_CACHE[chainId] = provider;
-
-  return provider;
 }
 
 export function getFallbackProvider(chainId: number) {
@@ -104,82 +85,25 @@ export function useJsonRpcProvider(chainId: number) {
 }
 
 export function isWebsocketProvider(provider: any): provider is WebSocketProvider {
-  return provider._websocket;
+  return Boolean(provider?._websocket);
 }
 
-const WS_PROVIDERS_CACHE: { [chainId: number]: WebSocketProvider | JsonRpcProvider | undefined } = {};
-const WS_LAST_BLOCK_UPDATED_AT: { [chainId: number]: number } = {};
-const WS_KEEP_ALIVE_INTERVAL = 5 * 60_000;
+export enum WSReadyState {
+  CONNECTING = 0,
+  OPEN = 1,
+  CLOSING = 2,
+  CLOSED = 3,
+}
 
-export function useWsProvider(active: boolean, chainId: number) {
-  const [provider, setProvider] = useState<WebSocketProvider | JsonRpcProvider>();
-  const [needToReconnect, setNeedToReconnect] = useState(false);
+export function isProviderInClosedState(wsProvider: WebSocketProvider) {
+  return [WSReadyState.CLOSED, WSReadyState.CLOSING].includes(wsProvider._websocket.readyState);
+}
 
-  const initializeProvider = useCallback(
-    (chainId: number) => {
-      const newProvider = getWsProvider(active, chainId);
-
-      if (!newProvider) {
-        return;
-      }
-
-      if (isWebsocketProvider(newProvider)) {
-        newProvider._websocket.onclose = () => {
-          // eslint-disable-next-line no-console
-          console.log(`ws provider for chain ${chainId} disconnected`);
-
-          newProvider.removeAllListeners();
-          WS_PROVIDERS_CACHE[chainId] = undefined;
-          setNeedToReconnect(true);
-        };
-      }
-
-      function healthCheck() {
-        setTimeout(() => {
-          setNeedToReconnect(true);
-          healthCheck();
-        }, WS_KEEP_ALIVE_INTERVAL);
-      }
-
-      healthCheck();
-
-      return newProvider;
-    },
-    [active]
-  );
-
-  useEffect(
-    function updateProvider() {
-      const cachedProvider = WS_PROVIDERS_CACHE[chainId];
-
-      if (cachedProvider && !needToReconnect) {
-        // eslint-disable-next-line no-console
-        console.log(`using cached ws provider for chain ${chainId}`);
-        setProvider(cachedProvider);
-        return;
-      }
-
-      const newProvider = initializeProvider(chainId);
-
-      if (!newProvider) {
-        return;
-      }
-
-      WS_PROVIDERS_CACHE[chainId] = newProvider;
-      WS_LAST_BLOCK_UPDATED_AT[chainId] = Date.now();
-
-      setNeedToReconnect(false);
-      setProvider(newProvider);
-
-      // eslint-disable-next-line no-console
-      console.log(`ws provider updated for chain ${chainId}`);
-    },
-    [active, chainId, initializeProvider, needToReconnect]
-  );
-
-  if (!active) {
-    return undefined;
+export function closeWsConnection(wsProvider: WebSocketProvider) {
+  if (isProviderInClosedState(wsProvider)) {
+    return;
   }
 
-  return provider;
+  wsProvider.removeAllListeners();
+  wsProvider._websocket.close();
 }

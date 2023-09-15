@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
 import useSWR from "swr";
 import { ethers } from "ethers";
@@ -9,7 +8,6 @@ import Modal from "../Modal/Modal";
 
 import "./Migration.css";
 
-import { getConnectWalletHandler } from "lib/legacy";
 import { getContract } from "config/contracts";
 
 import Reader from "abis/Reader.json";
@@ -18,7 +16,6 @@ import GmxMigrator from "abis/GmxMigrator.json";
 import { CHAIN_ID, getExplorerUrl } from "config/chains";
 import { contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
-import { useEagerConnect, useInactiveListener } from "lib/wallets";
 import { approveTokens } from "domain/tokens";
 import {
   bigNumberify,
@@ -30,6 +27,8 @@ import {
 } from "lib/numbers";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { t, Trans } from "@lingui/macro";
+import useWallet from "lib/wallets/useWallet";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 const { MaxUint256, AddressZero } = ethers.constants;
 
@@ -90,7 +89,7 @@ function MigrationModal(props) {
     balances,
     active,
     account,
-    library,
+    signer,
   } = props;
   const token = tokens[index];
   const [isMigrating, setIsMigrating] = useState(false);
@@ -99,7 +98,7 @@ function MigrationModal(props) {
   const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR(
     [active, CHAIN_ID, token.address, "allowance", account, gmxMigratorAddress],
     {
-      fetcher: contractFetcher(library, Token),
+      fetcher: contractFetcher(signer, Token),
     }
   );
 
@@ -110,14 +109,14 @@ function MigrationModal(props) {
 
   useEffect(() => {
     if (active) {
-      library.on("block", () => {
+      signer.on("block", () => {
         updateTokenAllowance(undefined, true);
       });
       return () => {
-        library.removeAllListeners("block");
+        signer.removeAllListeners("block");
       };
     }
-  }, [active, library, updateTokenAllowance]);
+  }, [active, signer, updateTokenAllowance]);
 
   let amount = parseValue(value, 18);
   const needApproval = tokenAllowance && amount && amount.gt(tokenAllowance);
@@ -153,7 +152,7 @@ function MigrationModal(props) {
     if (needApproval) {
       approveTokens({
         setIsApproving,
-        library,
+        signer,
         tokenAddress: token.address,
         spender: gmxMigratorAddress,
         chainId: CHAIN_ID,
@@ -165,7 +164,7 @@ function MigrationModal(props) {
     }
 
     setIsMigrating(true);
-    const contract = new ethers.Contract(gmxMigratorAddress, GmxMigrator.abi, library.getSigner());
+    const contract = new ethers.Contract(gmxMigratorAddress, GmxMigrator.abi, signer);
     contract
       .migrate(token.address, amount)
       .then(async (res) => {
@@ -315,39 +314,30 @@ export default function Migration() {
   const [isPendingApproval, setIsPendingApproval] = useState(false);
   const [migrationIndex, setMigrationIndex] = useState(0);
   const [migrationValue, setMigrationValue] = useState("");
+  const { openConnectModal } = useConnectModal();
 
-  const { connector, activate, active, account, library } = useWeb3React();
-  const [activatingConnector, setActivatingConnector] = useState();
-  useEffect(() => {
-    if (activatingConnector && activatingConnector === connector) {
-      setActivatingConnector(undefined);
-    }
-  }, [activatingConnector, connector]);
-  const triedEager = useEagerConnect();
-  useInactiveListener(!triedEager || !!activatingConnector);
-  const connectWallet = getConnectWalletHandler(activate);
-
+  const { active, account, signer } = useWallet();
   const tokenAddresses = tokens.map((token) => token.address);
   const iouTokenAddresses = tokens.map((token) => token.iouToken);
 
   const { data: iouBalances, mutate: updateIouBalances } = useSWR(
     ["Migration:iouBalances", CHAIN_ID, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero],
     {
-      fetcher: contractFetcher(library, Reader, [iouTokenAddresses]),
+      fetcher: contractFetcher(signer, Reader, [iouTokenAddresses]),
     }
   );
 
   const { data: balances, mutate: updateBalances } = useSWR(
     ["Migration:balances", CHAIN_ID, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero],
     {
-      fetcher: contractFetcher(library, Reader, [tokenAddresses]),
+      fetcher: contractFetcher(signer, Reader, [tokenAddresses]),
     }
   );
 
   const { data: migratedAmounts, mutate: updateMigratedAmounts } = useSWR(
     ["Migration:migratedAmounts", CHAIN_ID, gmxMigratorAddress, "getTokenAmounts"],
     {
-      fetcher: contractFetcher(library, GmxMigrator, [tokenAddresses]),
+      fetcher: contractFetcher(signer, GmxMigrator, [tokenAddresses]),
     }
   );
 
@@ -369,16 +359,16 @@ export default function Migration() {
 
   useEffect(() => {
     if (active) {
-      library.on("block", () => {
+      signer.on("block", () => {
         updateBalances(undefined, true);
         updateIouBalances(undefined, true);
         updateMigratedAmounts(undefined, true);
       });
       return () => {
-        library.removeAllListeners("block");
+        signer.removeAllListeners("block");
       };
     }
-  }, [active, library, updateBalances, updateIouBalances, updateMigratedAmounts]);
+  }, [active, signer, updateBalances, updateIouBalances, updateMigratedAmounts]);
 
   const showMigrationModal = (index) => {
     setIsPendingApproval(false);
@@ -400,7 +390,7 @@ export default function Migration() {
         balances={balances}
         active={active}
         account={account}
-        library={library}
+        signer={signer}
       />
       <div>
         <div className="Stake-title App-hero">
@@ -454,7 +444,7 @@ export default function Migration() {
                 </div>
                 <div className="App-card-options">
                   {!active && (
-                    <button className="App-button-option App-card-option" onClick={connectWallet}>
+                    <button className="App-button-option App-card-option" onClick={openConnectModal}>
                       <Trans>Connect Wallet</Trans>
                     </button>
                   )}

@@ -2,11 +2,11 @@ import { getWrappedToken } from "config/tokens";
 import { getByKey } from "lib/objects";
 import { useMemo } from "react";
 import { MarketsInfoData } from "../markets";
+import { PositionsInfoData } from "../positions";
 import { TokensData } from "../tokens";
 import { OrdersInfoData } from "./types";
 import { useOrders } from "./useOrders";
 import { getOrderInfo, isVisibleOrder } from "./utils";
-import { PositionsInfoData } from "../positions";
 
 type AggregatedOrdersDataResult = {
   ordersInfoData?: OrdersInfoData;
@@ -28,6 +28,12 @@ export function useOrdersInfo(
   const wrappedToken = getWrappedToken(chainId);
 
   return useMemo(() => {
+    if (!account) {
+      return {
+        isLoading: false,
+      };
+    }
+
     if (!marketsInfoData || !ordersData || !tokensData) {
       return {
         isLoading: true,
@@ -63,5 +69,5 @@ export function useOrdersInfo(
       ordersInfoData,
       isLoading: false,
     };
-  }, [marketsInfoData, ordersData, positionsInfoData, tokensData, wrappedToken]);
+  }, [account, marketsInfoData, ordersData, positionsInfoData, tokensData, wrappedToken]);
 }
