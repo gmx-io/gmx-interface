@@ -1,61 +1,27 @@
-import { useMemo } from "react";
 import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getExplorerUrl } from "config/chains";
-import {
-  isIncreaseOrderType,
-  isLimitOrderType,
-  isLiquidationOrderType,
-  isMarketOrderType,
-  isSwapOrderType,
-  isTriggerDecreaseOrderType,
-} from "domain/synthetics/orders";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { MarketInfo, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import { isLimitOrderType, isLiquidationOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { adaptToV1TokenInfo, getTokensRatioByAmounts } from "domain/synthetics/tokens";
 import { PositionTradeAction, SwapTradeAction, TradeAction, TradeActionType } from "domain/synthetics/tradeHistory";
+import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { formatDateTime } from "lib/dates";
 import { getExchangeRateDisplay } from "lib/legacy";
-import { formatTokenAmount, formatUsd } from "lib/numbers";
-import { BigNumber } from "ethers";
+import { formatTokenAmount } from "lib/numbers";
+import { useMemo } from "react";
+import { Link } from "react-router-dom";
 import { LiquidationTooltip } from "./LiquidationTooltip";
 import "./TradeHistoryRow.scss";
-import { getTriggerThresholdType } from "domain/synthetics/trade";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { Link } from "react-router-dom";
-import { formatAcceptablePrice } from "domain/synthetics/positions";
-import { MarketInfo, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import { formatPositionOrderMessage, getOrderActionText } from "./helpers";
 
 type Props = {
   tradeAction: TradeAction;
   minCollateralUsd: BigNumber;
   shouldDisplayAccount?: boolean;
 };
-
-function getOrderActionText(tradeAction: TradeAction) {
-  let actionText = "";
-
-  if (tradeAction.eventName === TradeActionType.OrderCreated) {
-    actionText = t`Create`;
-  }
-
-  if (tradeAction.eventName === TradeActionType.OrderCancelled) {
-    actionText = t`Cancel`;
-  }
-
-  if (tradeAction.eventName === TradeActionType.OrderExecuted) {
-    actionText = t`Execute`;
-  }
-
-  if (tradeAction.eventName === TradeActionType.OrderUpdated) {
-    actionText = t`Update`;
-  }
-
-  if (tradeAction.eventName === TradeActionType.OrderFrozen) {
-    actionText = t`Freeze`;
-  }
-
-  return actionText;
-}
 
 function renderMarketName(market: MarketInfo) {
   const indexName = getMarketIndexName(market);
@@ -111,104 +77,25 @@ function getSwapOrderMessage(tradeAction: SwapTradeAction) {
 }
 
 function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateralUsd: BigNumber) {
-  const indexToken = tradeAction.indexToken;
-  const priceDecimals = tradeAction.indexToken.priceDecimals;
-  const collateralToken = tradeAction.initialCollateralToken;
-  const sizeDeltaUsd = tradeAction.sizeDeltaUsd;
-  const collateralDeltaAmount = tradeAction.initialCollateralDeltaAmount;
-
-  const increaseText = isIncreaseOrderType(tradeAction.orderType!) ? t`Increase` : t`Decrease`;
-  const longText = tradeAction.isLong ? t`Long` : t`Short`;
-  const positionText = `${longText} ${indexToken.symbol}`;
-  const sizeDeltaText = `${isIncreaseOrderType(tradeAction.orderType!) ? "+" : "-"}${formatUsd(sizeDeltaUsd)}`;
-
-  if (isLimitOrderType(tradeAction.orderType!) || isTriggerDecreaseOrderType(tradeAction.orderType!)) {
-    const triggerPrice = tradeAction.triggerPrice;
-    const executionPrice = tradeAction.executionPrice;
-    const pricePrefix = getTriggerThresholdType(tradeAction.orderType!, tradeAction.isLong!);
-    const actionText = getOrderActionText(tradeAction);
-
-    if (tradeAction.eventName === TradeActionType.OrderExecuted) {
-      return (
-        <Trans>
-          Execute Order: {increaseText} {positionText} {sizeDeltaText}, {indexToken.symbol} Price:
-          {formatUsd(executionPrice, { displayDecimals: priceDecimals })}, Market:{" "}
-          {renderMarketName(tradeAction.marketInfo)}
-        </Trans>
-      );
-    }
-
-    return (
-      <Trans>
-        {actionText} Order: {increaseText} {positionText} {sizeDeltaText}, {indexToken.symbol} Price: {pricePrefix}{" "}
-        {formatUsd(triggerPrice, { displayDecimals: priceDecimals })}, Market:{" "}
-        {renderMarketName(tradeAction.marketInfo)}
-      </Trans>
-    );
-  }
-
-  if (isMarketOrderType(tradeAction.orderType!)) {
-    let actionText = {
-      [TradeActionType.OrderCreated]: t`Request`,
-      [TradeActionType.OrderExecuted]: "",
-      [TradeActionType.OrderCancelled]: t`Cancel`,
-      [TradeActionType.OrderUpdated]: t`Update`,
-      [TradeActionType.OrderFrozen]: t`Freeze`,
-    }[tradeAction.eventName!];
-
-    if (sizeDeltaUsd?.gt(0)) {
-      const pricePrefix = tradeAction.eventName === TradeActionType.OrderExecuted ? t`Price` : t`Acceptable Price`;
-      const price =
-        tradeAction.eventName === TradeActionType.OrderExecuted
-          ? tradeAction.executionPrice
-          : tradeAction.acceptablePrice;
-
-      return (
-        <Trans>
-          {actionText} {increaseText} {positionText} {sizeDeltaText}, {pricePrefix}:{" "}
-          {formatAcceptablePrice(price, {
-            displayDecimals: priceDecimals,
-          })}
-          , Market: {renderMarketName(tradeAction.marketInfo)}
-        </Trans>
-      );
-    } else {
-      const collateralText = formatTokenAmount(collateralDeltaAmount, collateralToken.decimals, collateralToken.symbol);
-
-      if (isIncreaseOrderType(tradeAction.orderType!)) {
-        return (
-          <Trans>
-            {actionText} Deposit {collateralText} into {positionText}, Market:{" "}
-            {renderMarketName(tradeAction.marketInfo)}
-          </Trans>
-        );
-      } else {
-        return (
-          <Trans>
-            {actionText} Withdraw {collateralText} from {positionText}, Market:{" "}
-            {renderMarketName(tradeAction.marketInfo)}
-          </Trans>
-        );
-      }
-    }
-  }
+  const message = formatPositionOrderMessage(tradeAction);
 
   if (isLiquidationOrderType(tradeAction.orderType!) && tradeAction.eventName === TradeActionType.OrderExecuted) {
-    const executionPrice = tradeAction.executionPrice;
-
     return (
       <>
         <LiquidationTooltip tradeAction={tradeAction} minCollateralUsd={minCollateralUsd} />
         {" "}
         <Trans>
-          {positionText} {sizeDeltaText}, Price: {formatUsd(executionPrice, { displayDecimals: priceDecimals })},
-          Market: {renderMarketName(tradeAction.marketInfo)}
+          {message}, Market: {renderMarketName(tradeAction.marketInfo)}
         </Trans>
       </>
     );
+  } else {
+    return (
+      <Trans>
+        {message}, Market: {renderMarketName(tradeAction.marketInfo)}
+      </Trans>
+    );
   }
-
-  return undefined;
 }
 
 export function TradeHistoryRow(p: Props) {
