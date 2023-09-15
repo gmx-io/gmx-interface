@@ -3,6 +3,7 @@ import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { getFeeItem, getIsHighPriceImpact, getPriceImpactByAcceptablePrice } from "../fees";
 import { MarketsInfoData, getAvailableUsdLiquidityForPosition } from "../markets";
 import { PositionInfo, PositionsInfoData, parsePositionKey } from "../positions";
 import { TokensData, convertToTokenAmount, convertToUsd, getTokensRatioByAmounts, parseContractPrice } from "../tokens";
@@ -14,7 +15,6 @@ import {
   getTriggerThresholdType,
 } from "../trade";
 import { Order, OrderError, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo } from "./types";
-import { getFeeItem, getIsHighPriceImpact } from "../fees";
 
 export function isVisibleOrder(orderType: OrderType) {
   return isLimitOrderType(orderType) || isTriggerDecreaseOrderType(orderType) || isLimitSwapOrderType(orderType);
@@ -285,8 +285,6 @@ export function getOrderError(p: {
       initialCollateralAddress: order.initialCollateralTokenAddress,
     });
 
-    console.log("liq", order, formatUsd(swapPathLiquidity));
-
     const minOutputUsd = convertToUsd(
       order.minOutputAmount,
       order.targetCollateralToken.decimals,
@@ -309,8 +307,6 @@ export function getOrderError(p: {
       )
     );
 
-    console.log("swap impact", swapImpactFeeItem?.bps.toString());
-
     if (getIsHighPriceImpact(undefined, swapImpactFeeItem)) {
       return {
         msg: t`There is a high Swap Price Impact for the Order Swap path.`,
@@ -329,21 +325,28 @@ export function getOrderError(p: {
   }
 
   if ([OrderType.LimitDecrease, OrderType.LimitIncrease].includes(_order.orderType)) {
-    const { acceptablePrice: currentAcceptablePrice } = getAcceptablePriceInfo({
+    const { acceptablePriceDeltaBps: currentAcceptablePriceDeltaBps } = getAcceptablePriceInfo({
       marketInfo: _order.marketInfo,
-      isIncrease: false,
+      isIncrease: isIncreaseOrderType(_order.orderType),
       isLong: _order.isLong,
       indexPrice: _order.triggerPrice,
       sizeDeltaUsd: _order.sizeDeltaUsd,
     });
 
-    const orderDiff = _order.triggerPrice.sub(_order.acceptablePrice).abs();
-    const currentDiff = _order.triggerPrice.sub(currentAcceptablePrice).abs();
-    const suggestionType = _order.orderType === OrderType.LimitIncrease ? t`Limit` : t`Take-Profit`;
+    const { acceptablePriceDeltaBps: orderAcceptablePriceDeltaBps } = getPriceImpactByAcceptablePrice({
+      sizeDeltaUsd: _order.sizeDeltaUsd,
+      isIncrease: isIncreaseOrderType(_order.orderType),
+      isLong: _order.isLong,
+      indexPrice: _order.triggerPrice,
+      acceptablePrice: _order.acceptablePrice,
+    });
 
-    if (currentDiff.gt(orderDiff)) {
+    if (currentAcceptablePriceDeltaBps.lt(0) && currentAcceptablePriceDeltaBps.lt(orderAcceptablePriceDeltaBps)) {
+      const priceText = _order.orderType === OrderType.LimitIncrease ? t`Limit Price` : t`Trigger Price`;
+      const suggestionType = _order.orderType === OrderType.LimitIncrease ? t`Limit` : t`Take-Profit`;
+
       return {
-        msg: t`The Order may not execute at the desired Trigger Price as the current Price Impact is higher than its Acceptable Price Impact. Consider canceling and creating a new ${suggestionType} Order.`,
+        msg: t`The Order may not execute at the desired ${priceText} as the current Price Impact is higher than its Acceptable Price Impact. Consider canceling and creating a new ${suggestionType} Order.`,
         level: "warning",
       };
     }
@@ -366,7 +369,13 @@ export function getOrderError(p: {
         initialCollateralAddress: _order.initialCollateralTokenAddress,
       });
 
-      if (swapPathLiquidity.lt(_order.minOutputAmount)) {
+      const minOutputUsd = convertToUsd(
+        order.minOutputAmount,
+        order.targetCollateralToken.decimals,
+        order.targetCollateralToken.prices.maxPrice
+      )!;
+
+      if (swapPathLiquidity.lt(minOutputUsd)) {
         return {
           msg: t`There may not be sufficient liquidity to execute the Pay Token to Collateral Token swap when the Price conditions are met.`,
           level: "error",
@@ -377,7 +386,7 @@ export function getOrderError(p: {
 
   if (!position) {
     const sameMarketPosition = Object.values(positionsInfoData || {}).find(
-      (pos) => pos.marketAddress === order.marketAddress
+      (pos) => pos.marketAddress === order.marketAddress && pos.isLong === order.isLong
     );
 
     if (sameMarketPosition) {
@@ -405,5 +414,28 @@ export function getOrderError(p: {
         return liqPriceError;
       }
     }
+
+    if (order.swapPath.length) {
+      const swapPathLiquidity = getMaxSwapPathLiquidity({
+        marketsInfoData,
+        swapPath: _order.swapPath,
+        initialCollateralAddress: _order.initialCollateralTokenAddress,
+      });
+
+      const minOutputUsd = convertToUsd(
+        order.minOutputAmount,
+        order.targetCollateralToken.decimals,
+        order.targetCollateralToken.prices.maxPrice
+      )!;
+
+      if (swapPathLiquidity.lt(minOutputUsd)) {
+        return {
+          msg: t`There may not be sufficient liquidity to execute swap to Receive Token when the Price conditions are met.`,
+          level: "error",
+        };
+      }
+    }
+
+    return;
   }
 }

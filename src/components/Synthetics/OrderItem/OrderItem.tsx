@@ -121,6 +121,24 @@ export function OrderItem(p: Props) {
             />
           );
         }
+
+        if (p.order.error) {
+          return (
+            <Tooltip
+              handle={renderTitleWithIcon(p.order)}
+              className={`order-error-text-msg level-${p.order.error.level}`}
+              position="left-bottom"
+              renderContent={() => (
+                <>
+                  <span className={p.order.error!.level === "error" ? "negative" : "warning"}>
+                    {p.order.error!.msg}
+                  </span>
+                </>
+              )}
+            />
+          );
+        }
+
         return renderTitleWithIcon(p.order);
       }
 
@@ -175,6 +193,7 @@ export function OrderItem(p: Props) {
                 )}
 
                 <>
+                  <br />
                   <br />
                   {error && <span className={error.level === "error" ? "negative" : "warning"}>{error.msg}</span>}
                 </>
