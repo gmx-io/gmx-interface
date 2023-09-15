@@ -993,15 +993,15 @@ export function getPriceDecimals(chainId: number, tokenSymbol?: string) {
   }
 }
 
-export function getValidTokenBySymbol(chainId: number, symbol: string) {
-  if (!TOKENS_BY_SYMBOL_MAP[chainId]) {
+export function getValidTokenBySymbol(chainId: number, symbol: string, version: "v1" | "v2") {
+  const ACTIVE_TOKENS = version === "v1" ? V1_TOKENS : V2_TOKENS;
+  if (!ACTIVE_TOKENS[chainId]) {
     throw new Error(`Incorrect chainId ${chainId}`);
   }
-
-  const tokens = Object.keys(TOKENS_BY_SYMBOL_MAP[chainId]);
-  const token = tokens.find((token) => token.toLowerCase() === symbol.toLowerCase());
+  const tokens = ACTIVE_TOKENS[chainId];
+  const token = tokens.find((token) => token.symbol.toLowerCase() === symbol.toLowerCase());
 
   if (token) {
-    return getTokenBySymbol(chainId, token);
+    return token;
   }
 }

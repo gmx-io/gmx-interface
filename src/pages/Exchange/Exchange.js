@@ -45,7 +45,14 @@ import Tab from "components/Tab/Tab";
 
 import UsefulLinks from "components/Exchange/UsefulLinks";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { getPriceDecimals, getToken, getTokenBySymbol, getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
+import {
+  getPriceDecimals,
+  getToken,
+  getTokenBySymbol,
+  getV1Tokens,
+  getValidTokenBySymbol,
+  getWhitelistedV1Tokens,
+} from "config/tokens";
 import { useInfoTokens } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
 import { useChainId } from "lib/chains";
@@ -57,7 +64,8 @@ import { getLeverage, getLeverageStr } from "lib/positions/getLeverage";
 import "./Exchange.css";
 import { getIsV1Supported } from "config/features";
 import useRouteQuery from "lib/useRouteQuery";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
+import { getMatchingValueFromObject } from "lib/objects";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
@@ -367,6 +375,7 @@ export const Exchange = forwardRef((props, ref) => {
   const [bannerHidden, setBannerHidden] = useLocalStorageSerializeKey("bannerHidden", null);
   const queryParams = useRouteQuery();
   const history = useHistory();
+  const params = useParams();
 
   const [pendingPositions, setPendingPositions] = useState({});
   const [updatedPositions, setUpdatedPositions] = useState({});
@@ -436,23 +445,6 @@ export const Exchange = forwardRef((props, ref) => {
   const fromTokenAddress = tokenSelection[swapOption].from;
   const toTokenAddress = tokenSelection[swapOption].to;
 
-  useEffect(() => {
-    const queryTradeType = queryParams.get("tradeType");
-    const queryTradeMode = queryParams.get("tradeMode");
-
-    if (queryTradeType && SWAP_OPTIONS.includes(queryTradeType)) {
-      setSwapOption(queryTradeType);
-    }
-
-    if (queryTradeMode && LEVERAGE_ORDER_OPTIONS.includes(queryTradeMode)) {
-      setOrderOption(queryTradeMode);
-    }
-
-    if (history.location.search) {
-      history.replace({ search: "" });
-    }
-  }, [history, queryParams, setOrderOption, setSwapOption]);
-
   const setFromTokenAddress = useCallback(
     (selectedSwapOption, address) => {
       const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection));
@@ -512,6 +504,76 @@ export const Exchange = forwardRef((props, ref) => {
   const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
     fetcher: contractFetcher(library, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
   });
+
+  function updateTradeOptions(options) {
+    if (options.tradeType) {
+      setSwapOption((prev) => {
+        if (prev !== options.tradeType) {
+          return options.tradeType;
+        }
+      });
+    }
+    if (options.tradeMode) {
+      setOrderOption((prev) => {
+        if (prev !== options.tradeMode) {
+          return options.tradeMode;
+        }
+      });
+    }
+    if (options.marketAddress) {
+      setToTokenAddress(options.tradeType, options.marketAddress);
+    }
+
+    if (options.fromAddress) {
+      setFromTokenAddress(options.tradeType, options.fromAddress);
+    }
+  }
+
+  useEffect(() => {
+    const { market, tradeType, tradeMode } = params;
+    const queryCollateralToken = queryParams.get("collateral");
+    const queryPayToken = queryParams.get("pay");
+
+    let options = {};
+    if (market) {
+      const marketTokenInfo = getValidTokenBySymbol(chainId, market, "v1");
+      if (marketTokenInfo) {
+        options = { ...options, marketAddress: marketTokenInfo.address };
+      }
+    }
+
+    if (tradeType) {
+      const validTradeType = getMatchingValueFromObject(SWAP_OPTIONS, tradeType);
+      if (validTradeType) {
+        options = { ...options, tradeType: validTradeType };
+      }
+    }
+
+    if (tradeMode) {
+      const validTradeMode = getMatchingValueFromObject(LEVERAGE_ORDER_OPTIONS, tradeMode);
+      if (validTradeMode) {
+        options = { ...options, tradeMode: validTradeMode };
+      }
+    }
+
+    if (queryCollateralToken) {
+    }
+
+    if (queryPayToken) {
+      const payTokenInfo = getValidTokenBySymbol(chainId, queryPayToken, "v1");
+      if (payTokenInfo) {
+        options = { ...options, fromAddress: payTokenInfo.address };
+      }
+    }
+
+    if (history.location.search) {
+      history.replace({ search: "" });
+    }
+
+    updateTradeOptions(options);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [history, params, setOrderOption, setSwapOption, chainId]);
 
   const { data: totalTokenWeights } = useSWR(
     [`Exchange:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],

@@ -146,28 +146,28 @@ export function SyntheticsPage(p: Props) {
     let options = {};
 
     if (market) {
-      const marketTokenInfo = getValidTokenBySymbol(chainId, market);
+      const marketTokenInfo = getValidTokenBySymbol(chainId, market, "v2");
       if (marketTokenInfo) {
         options = { ...options, toTokenAddress: marketTokenInfo.address };
       }
     }
 
     if (tradeType) {
-      const inputTradeTrye = getMatchingValueFromObject(TradeType, tradeType);
-      if (inputTradeTrye) {
-        options = { ...options, tradeType: inputTradeTrye };
+      const validTradeType = getMatchingValueFromObject(TradeType, tradeType);
+      if (validTradeType) {
+        options = { ...options, tradeType: validTradeType };
       }
     }
 
     if (tradeMode) {
-      const inputTradeMode = getMatchingValueFromObject(TradeMode, tradeMode);
-      if (inputTradeMode) {
-        options = { ...options, tradeMode: inputTradeMode };
+      const validTradeMode = getMatchingValueFromObject(TradeMode, tradeMode);
+      if (validTradeMode) {
+        options = { ...options, tradeMode: validTradeMode };
       }
     }
 
     if (queryPayToken) {
-      const payTokenInfo = getValidTokenBySymbol(chainId, queryPayToken);
+      const payTokenInfo = getValidTokenBySymbol(chainId, queryPayToken, "v2");
       if (payTokenInfo) {
         options = { ...options, fromTokenAddress: payTokenInfo.address };
       }
@@ -181,7 +181,7 @@ export function SyntheticsPage(p: Props) {
     }
 
     if (queryCollateralToken) {
-      const collateralTokenInfo = getValidTokenBySymbol(chainId, queryCollateralToken);
+      const collateralTokenInfo = getValidTokenBySymbol(chainId, queryCollateralToken, "v2");
       if (collateralTokenInfo) {
         options = { ...options, collateralAddress: collateralTokenInfo.address };
       }

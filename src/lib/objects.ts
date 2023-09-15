@@ -16,8 +16,8 @@ export function getByKey<T>(obj?: { [key: string]: T }, key?: string): T | undef
 
 export function getMatchingValueFromObject(obj?: { [key: string]: string }, value?: string): string | null {
   if (!obj || !value) return null;
-  for (const key of Object.keys(obj)) {
-    if (key.toLowerCase() === value.toLowerCase()) {
+  for (const key in obj) {
+    if (obj[key].toLowerCase() === value.toLowerCase()) {
       return obj[key];
     }
   }
