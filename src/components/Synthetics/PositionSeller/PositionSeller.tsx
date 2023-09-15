@@ -69,8 +69,10 @@ import Tab from "components/Tab/Tab";
 import { useHasOutdatedUi } from "domain/legacy";
 import useWallet from "lib/wallets/useWallet";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { AiOutlineEdit } from "react-icons/ai";
 
 export type Props = {
+  acceptablePriceImpactBps: BigNumber;
   position?: PositionInfo;
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
@@ -81,6 +83,7 @@ export type Props = {
   isHigherSlippageAllowed: boolean;
   setIsHigherSlippageAllowed: (isAllowed: boolean) => void;
   shouldDisableValidation: boolean;
+  onEditAcceptablePriceImpact: () => void;
 };
 
 enum OrderOption {
@@ -89,8 +92,17 @@ enum OrderOption {
 }
 
 export function PositionSeller(p: Props) {
-  const { position, marketsInfoData, tokensData, showPnlInLeverage, onClose, setPendingTxns, availableTokensOptions } =
-    p;
+  const {
+    acceptablePriceImpactBps,
+    position,
+    marketsInfoData,
+    tokensData,
+    showPnlInLeverage,
+    onClose,
+    setPendingTxns,
+    availableTokensOptions,
+    onEditAcceptablePriceImpact,
+  } = p;
 
   const { chainId } = useChainId();
   const { savedAllowedSlippage } = useSettings();
@@ -157,12 +169,13 @@ export function PositionSeller(p: Props) {
       closeSizeUsd: closeSizeUsd,
       keepLeverage: keepLeverage!,
       triggerPrice: isTrigger ? triggerPrice : undefined,
-      savedAcceptablePriceImpactBps: undefined,
+      savedAcceptablePriceImpactBps: isTrigger ? acceptablePriceImpactBps : undefined,
       userReferralInfo,
       minCollateralUsd,
       minPositionSizeUsd,
     });
   }, [
+    acceptablePriceImpactBps,
     closeSizeUsd,
     isTrigger,
     keepLeverage,
@@ -392,6 +405,185 @@ export function PositionSeller(p: Props) {
   const indexPriceDecimals = position?.indexToken?.priceDecimals;
   const toToken = position?.indexToken;
 
+  const triggerPriceRow = (
+    <ExchangeInfoRow
+      className="SwapBox-info-row"
+      label={t`Trigger Price`}
+      isTop
+      value={`${decreaseAmounts?.triggerThresholdType || ""} ${
+        formatUsd(decreaseAmounts?.triggerPrice, {
+          displayDecimals: toToken?.priceDecimals,
+        }) || "-"
+      }`}
+    />
+  );
+
+  const allowedSlippageRow = (
+    <div>
+      <ExchangeInfoRow
+        label={
+          <TooltipWithPortal
+            handle={t`Allowed Slippage`}
+            position="left-top"
+            renderContent={() => {
+              return (
+                <div className="text-white">
+                  <Trans>
+                    You can edit the default Allowed Slippage in the settings menu on the top right of the page.
+                    <br />
+                    <br />
+                    Note that a low allowed slippage, e.g. less than{" "}
+                    {formatPercentage(bigNumberify(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}, may result in failed
+                    orders if prices are volatile.
+                  </Trans>
+                </div>
+              );
+            }}
+          />
+        }
+      >
+        <SlippageInput setAllowedSlippage={setAllowedSlippage} defaultSlippage={savedAllowedSlippage} />
+      </ExchangeInfoRow>
+    </div>
+  );
+
+  const markPriceRow = (
+    <ExchangeInfoRow
+      label={t`Mark Price`}
+      isTop
+      value={
+        formatUsd(markPrice, {
+          displayDecimals: indexPriceDecimals,
+        }) || "-"
+      }
+    />
+  );
+
+  const entryPriceRow = (
+    <ExchangeInfoRow
+      label={t`Entry Price`}
+      value={
+        formatUsd(position?.entryPrice, {
+          displayDecimals: indexPriceDecimals,
+        }) || "-"
+      }
+    />
+  );
+
+  const priceImpactRow = (
+    <ExchangeInfoRow
+      label={t`Price Impact`}
+      value={formatPercentage(decreaseAmounts?.acceptablePriceDeltaBps, { signed: true }) || "-"}
+    />
+  );
+
+  const acceptablePriceImpactRow = (
+    <ExchangeInfoRow
+      className="SwapBox-info-row"
+      label={t`Acceptable Price Impact`}
+      value={
+        decreaseAmounts?.triggerOrderType === OrderType.StopLossDecrease ? (
+          "NA"
+        ) : (
+          <span className="TradeBox-acceptable-price-impact" onClick={onEditAcceptablePriceImpact}>
+            {formatPercentage(acceptablePriceImpactBps?.mul(-1))}
+            <span className="edit-icon" onClick={() => null}>
+              <AiOutlineEdit fontSize={16} />
+            </span>
+          </span>
+        )
+      }
+    />
+  );
+
+  const acceptablePriceRow = (
+    <ExchangeInfoRow
+      label={t`Acceptable Price`}
+      value={
+        decreaseAmounts?.sizeDeltaUsd.gt(0)
+          ? formatAcceptablePrice(decreaseAmounts.acceptablePrice, {
+              displayDecimals: indexPriceDecimals,
+            })
+          : "-"
+      }
+    />
+  );
+
+  const liqPriceRow = position && (
+    <ExchangeInfoRow
+      className="SwapBox-info-row"
+      label={t`Liq. Price`}
+      value={
+        decreaseAmounts?.isFullClose ? (
+          "-"
+        ) : (
+          <ValueTransition
+            from={
+              formatLiquidationPrice(position.liquidationPrice, {
+                displayDecimals: indexPriceDecimals,
+              })!
+            }
+            to={
+              decreaseAmounts?.sizeDeltaUsd.gt(0)
+                ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
+                    displayDecimals: indexPriceDecimals,
+                  })
+                : undefined
+            }
+          />
+        )
+      }
+    />
+  );
+
+  const sizeRow = (
+    <ExchangeInfoRow
+      isTop={!isTrigger}
+      label={t`Size`}
+      value={<ValueTransition from={formatUsd(position?.sizeInUsd)!} to={formatUsd(nextPositionValues?.nextSizeUsd)} />}
+    />
+  );
+
+  const pnlRow =
+    position &&
+    (isTrigger ? (
+      <ExchangeInfoRow
+        label={t`PnL`}
+        value={
+          <ValueTransition
+            from={
+              <>
+                {formatDeltaUsd(decreaseAmounts?.estimatedPnl)} (
+                {formatPercentage(decreaseAmounts?.estimatedPnlPercentage, { signed: true })})
+              </>
+            }
+            to={
+              decreaseAmounts?.sizeDeltaUsd.gt(0) ? (
+                <>
+                  {formatDeltaUsd(nextPositionValues?.nextPnl)} (
+                  {formatPercentage(nextPositionValues?.nextPnlPercentage, { signed: true })})
+                </>
+              ) : undefined
+            }
+          />
+        }
+      />
+    ) : (
+      <ExchangeInfoRow
+        label={t`PnL`}
+        value={
+          <ValueTransition
+            from={formatDeltaUsd(position.pnl, position.pnlPercentage)}
+            to={formatDeltaUsd(nextPositionValues?.nextPnl, nextPositionValues?.nextPnlPercentage)}
+          />
+        }
+      />
+    ));
+
+  const rows = isTrigger
+    ? [triggerPriceRow, acceptablePriceImpactRow, acceptablePriceRow, liqPriceRow, sizeRow]
+    : [allowedSlippageRow, markPriceRow, entryPriceRow, priceImpactRow, acceptablePriceRow, liqPriceRow, sizeRow];
+
   return (
     <div className="PositionEditor PositionSeller">
       <Modal
@@ -460,114 +652,7 @@ export function PositionSeller(p: Props) {
                 </ToggleSwitch>
               </div>
 
-              <div>
-                <ExchangeInfoRow
-                  label={
-                    <TooltipWithPortal
-                      handle={t`Allowed Slippage`}
-                      position="left-top"
-                      renderContent={() => {
-                        return (
-                          <div className="text-white">
-                            <Trans>
-                              You can edit the default Allowed Slippage in the settings menu on the top right of the
-                              page.
-                              <br />
-                              <br />
-                              Note that a low allowed slippage, e.g. less than{" "}
-                              {formatPercentage(bigNumberify(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}, may result
-                              in failed orders if prices are volatile.
-                            </Trans>
-                          </div>
-                        );
-                      }}
-                    />
-                  }
-                >
-                  <SlippageInput setAllowedSlippage={setAllowedSlippage} defaultSlippage={savedAllowedSlippage} />
-                </ExchangeInfoRow>
-              </div>
-              {isTrigger && (
-                <ExchangeInfoRow
-                  className="SwapBox-info-row"
-                  label={t`Trigger Price`}
-                  isTop
-                  value={`${decreaseAmounts?.triggerThresholdType || ""} ${
-                    formatUsd(decreaseAmounts?.triggerPrice, {
-                      displayDecimals: toToken?.priceDecimals,
-                    }) || "-"
-                  }`}
-                />
-              )}
-              <ExchangeInfoRow
-                label={t`Mark Price`}
-                isTop={!isTrigger}
-                value={
-                  formatUsd(markPrice, {
-                    displayDecimals: indexPriceDecimals,
-                  }) || "-"
-                }
-              />
-
-              <ExchangeInfoRow
-                label={t`Entry Price`}
-                value={
-                  formatUsd(position?.entryPrice, {
-                    displayDecimals: indexPriceDecimals,
-                  }) || "-"
-                }
-              />
-              <ExchangeInfoRow
-                label={t`Price Impact`}
-                value={formatPercentage(decreaseAmounts?.acceptablePriceDeltaBps, { signed: true }) || "-"}
-              />
-
-              <ExchangeInfoRow
-                label={t`Acceptable Price`}
-                value={
-                  decreaseAmounts?.sizeDeltaUsd.gt(0)
-                    ? formatAcceptablePrice(decreaseAmounts.acceptablePrice, {
-                        displayDecimals: indexPriceDecimals,
-                      })
-                    : "-"
-                }
-              />
-
-              <ExchangeInfoRow
-                className="SwapBox-info-row"
-                label={t`Liq. Price`}
-                value={
-                  decreaseAmounts?.isFullClose ? (
-                    "-"
-                  ) : (
-                    <ValueTransition
-                      from={
-                        formatLiquidationPrice(position.liquidationPrice, {
-                          displayDecimals: indexPriceDecimals,
-                        })!
-                      }
-                      to={
-                        decreaseAmounts?.sizeDeltaUsd.gt(0)
-                          ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
-                              displayDecimals: indexPriceDecimals,
-                            })
-                          : undefined
-                      }
-                    />
-                  )
-                }
-              />
-
-              <ExchangeInfoRow
-                isTop
-                label={t`Size`}
-                value={
-                  <ValueTransition
-                    from={formatUsd(position?.sizeInUsd)!}
-                    to={formatUsd(nextPositionValues?.nextSizeUsd)}
-                  />
-                }
-              />
+              {rows}
 
               <div className="Exchange-info-row">
                 <div>
@@ -607,15 +692,7 @@ export function PositionSeller(p: Props) {
                 />
               )}
 
-              <ExchangeInfoRow
-                label={t`PnL`}
-                value={
-                  <ValueTransition
-                    from={formatDeltaUsd(position.pnl, position.pnlPercentage)}
-                    to={formatDeltaUsd(nextPositionValues?.nextPnl, nextPositionValues?.nextPnlPercentage)}
-                  />
-                }
-              />
+              {pnlRow}
 
               <TradeFeesRow {...fees} executionFee={executionFee} feesType="decrease" warning={executionFee?.warning} />
 

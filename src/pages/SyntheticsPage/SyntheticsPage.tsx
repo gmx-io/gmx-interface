@@ -481,11 +481,13 @@ export function SyntheticsPage(p: Props) {
         tokensData={tokensData}
         showPnlInLeverage={savedIsPnlInLeverage}
         onClose={onPositionSellerClose}
+        acceptablePriceImpactBps={acceptablePriceImpactBps}
         setPendingTxns={setPendingTxns}
         availableTokensOptions={availableTokensOptions}
         isHigherSlippageAllowed={isHigherSlippageAllowed}
         setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
         shouldDisableValidation={shouldDisableValidation}
+        onEditAcceptablePriceImpact={onEditAcceptablePriceImpact}
       />
 
       <PositionEditor
