@@ -439,6 +439,12 @@ export const Exchange = forwardRef((props, ref) => {
     "Exchange-token-selection-v2",
     defaultTokenSelection
   );
+  // TODO hack with useLocalStorageSerializeKey
+  const [shortCollateralAddress, setShortCollateralAddress] = useLocalStorageByChainId(
+    chainId,
+    "Short-Collateral-Address",
+    getTokenBySymbol(chainId, defaultCollateralSymbol).address
+  );
   const [swapOption, setSwapOption] = useLocalStorageByChainId(chainId, "Swap-option-v2", LONG);
   const [orderOption, setOrderOption] = useLocalStorageSerializeKey([chainId, "Order-option"], MARKET);
   const fromTokenAddress = tokenSelection[swapOption].from;
@@ -518,6 +524,10 @@ export const Exchange = forwardRef((props, ref) => {
     if (options.fromAddress) {
       setFromTokenAddress(options.tradeType, options.fromAddress);
     }
+
+    if (options.collateralAddress) {
+      setShortCollateralAddress(options.collateralAddress);
+    }
   }
 
   useEffect(() => {
@@ -552,6 +562,10 @@ export const Exchange = forwardRef((props, ref) => {
     }
 
     if (queryCollateralToken) {
+      const collateralTokenInfo = getValidTokenBySymbol(chainId, queryCollateralToken, "v1");
+      if (collateralTokenInfo) {
+        options = { ...options, collateralAddress: collateralTokenInfo.address };
+      }
     }
 
     if (queryPayToken) {
@@ -561,9 +575,9 @@ export const Exchange = forwardRef((props, ref) => {
       }
     }
 
-    // if (history.location.search) {
-    //   history.replace({ search: "" });
-    // }
+    if (history.location.search) {
+      //   history.replace({ search: "" });
+    }
 
     updateTradeOptions(options);
 
@@ -1077,6 +1091,8 @@ export const Exchange = forwardRef((props, ref) => {
               positions={positions}
               orderOption={orderOption}
               setOrderOption={setOrderOption}
+              setShortCollateralAddress={setShortCollateralAddress}
+              shortCollateralAddress={shortCollateralAddress}
             />
           )}
 

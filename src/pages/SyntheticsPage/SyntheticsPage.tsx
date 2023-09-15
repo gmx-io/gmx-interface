@@ -190,7 +190,7 @@ export function SyntheticsPage(p: Props) {
     setTradeOptions(options);
 
     if (history.location.search) {
-      history.replace({ search: "" });
+      // history.replace({ search: "" });
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
