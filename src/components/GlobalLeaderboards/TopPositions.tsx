@@ -19,7 +19,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 
 const parseRow =
   (chainId: number) =>
-  (p: TopPositionsRow): { [key in keyof TopPositionsRow]?: TableCell } => ({
+  (p: TopPositionsRow, i: number): { [key in keyof TopPositionsRow]?: TableCell } => ({
     key: p.key,
     rank: {
       value: () => (
@@ -63,7 +63,7 @@ const parseRow =
               </span>
             </span>
           }
-          position="center-top"
+          position={ i > 7 ? "right-top" : "right-bottom" }
           className="nowrap"
           renderContent={() =>
             <>
@@ -82,7 +82,7 @@ const parseRow =
     size: {
       value: () => <Tooltip
         handle={ formatUsd(p.size) || "" }
-        position="center-top"
+        position={ i > 7 ? "right-top" : "right-bottom" }
         className="nowrap"
         renderContent={() => (
           <StatsTooltipRow
@@ -97,10 +97,8 @@ const parseRow =
     liqPrice: {
       value: () => (
         <Tooltip
-          handle={formatPrice(p.liqPrice!, chainId, p.market.indexToken.symbol, {
-            fallbackToZero: true
-          })}
-          position="right-bottom"
+          handle={formatPrice(p.liqPrice!, chainId, p.market.indexToken.symbol) || ""}
+          position={ i > 7 ? "right-top" : "right-bottom" }
           className="nowrap"
           renderContent={() => (
             <>
@@ -211,7 +209,8 @@ export default function TopPositions() {
       className: getSortableClass("size"),
     },
     leverage: {
-      title: t`Leverage`,
+      tooltip: t`Position Leverage.`,
+      title: t`Lev.`,
       width: 10,
       onClick: topPositionsHeaderClick("leverage"),
       className: getSortableClass("leverage"),

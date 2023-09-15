@@ -15,7 +15,7 @@ import AddressView from "components/AddressView/AddressView";
 import Tooltip from "components/Tooltip/Tooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
-const parseRow = (s: TopAccountsRow): Record<string, TableCell> => ({
+const parseRow = (s: TopAccountsRow, i: number): Record<string, TableCell> => ({
   id: s.id,
   rank: {
     value: () => (
@@ -43,7 +43,7 @@ const parseRow = (s: TopAccountsRow): Record<string, TableCell> => ({
             {formatDelta(s.absPnl, { signed: true, prefix: "$" })}
           </span>
         }
-        position="center-top"
+        position={ i > 7 ? "right-top" : "right-bottom" }
         className="nowrap"
         renderContent={() => (
           <div>
@@ -78,7 +78,7 @@ const parseRow = (s: TopAccountsRow): Record<string, TableCell> => ({
             {formatDelta(s.relPnl.mul(BigNumber.from(100)), { signed: true, postfix: "%" })}
           </span>
         }
-        position="center-top"
+        position={ i > 7 ? "right-top" : "right-bottom" }
         className="nowrap"
         renderContent={() => (
           <StatsTooltipRow

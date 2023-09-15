@@ -1,9 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { BigNumber, ethers } from "ethers";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { MAX_ALLOWED_LEVERAGE } from "config/factors";
 import { getContract } from "config/contracts";
-import { useMulticall } from "lib/multicall";
 import { getBasisPoints } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getMarkPrice } from "../trade";
@@ -228,43 +227,60 @@ export function usePositionsInfo(
   const { minCollateralUsd } = usePositionsConstants(chainId);
   const { marketsInfoData, tokensData, pricesUpdatedAt } = useMarketsInfo(chainId);
   const provider = useRef(getProvider(undefined, chainId));
+
   useEffect(() => {
     provider.current = getProvider(undefined, chainId);
   }, [chainId]);
 
+  const pricesUpdateDate = pricesUpdatedAt ? new Date(pricesUpdatedAt) : new Date();
+  const pricesUpdateSecs = pricesUpdateDate.getSeconds();
+  const tsRounded = pricesUpdateDate.setSeconds(pricesUpdateSecs < 30 ? 0 : 30);
+
   const { data: positionsInfoJson } = useSWR<PositionJson[] | undefined>(
-    positionKeys.length ? ["usePositionsInfo", chainId, positionsHash] : null,
-    async () => {
-      const chunkSize = 150;
-      const numChunks = Math.ceil(positionKeys.length / chunkSize);
-      const requests: Promise<PositionJson[]>[] = [];
-      const contract = new ethers.Contract(
-        getContract(chainId, "SyntheticsReader"),
-        SyntheticsReader.abi,
-        provider.current,
-      );
+    positionKeys.length ? ["usePositionsInfo", chainId, positionsHash, tsRounded] : null,
+    {
+      keepPreviousData: true,
+      async fetcher() {
+        const chunkSize = 150;
+        const numChunks = Math.ceil(positionKeys.length / chunkSize);
+        const requests: Promise<PositionJson[]>[] = [];
+        const contract = new ethers.Contract(
+          getContract(chainId, "SyntheticsReader"),
+          SyntheticsReader.abi,
+          provider.current,
+        );
 
-      const DataStoreContract = getContract(chainId, "DataStore");
-      const ReferralStorageContract = getContract(chainId, "ReferralStorage");
+        const DataStoreContract = getContract(chainId, "DataStore");
+        const ReferralStorageContract = getContract(chainId, "ReferralStorage");
+        const fetchReaderMethod = async (i: number) => {
+          try {
+            return await contract.getAccountPositionInfoList(
+              DataStoreContract,
+              ReferralStorageContract,
+              positionKeys.slice(chunkSize * i, chunkSize * (i + 1)),
+              marketPrices.slice(chunkSize * i, chunkSize * (i + 1)),
+              ethers.constants.AddressZero, // uiFeeReceiver
+            );
+          } catch (e) {
+            // eslint-disable-next-line no-console
+            console.error(`SyntheticsReader.getAccountPositionInfoList chunk ${i} request error:`, e);
+            throw e;
+          }
+        }
 
-      for (let i = 0; i < numChunks; i++) {
-        requests.push(contract.getAccountPositionInfoList(
-          DataStoreContract,
-          ReferralStorageContract,
-          positionKeys.slice(chunkSize * i, chunkSize * (i + 1)),
-          marketPrices.slice(chunkSize * i, chunkSize * (i + 1)),
-          ethers.constants.AddressZero, // uiFeeReceiver
-        ));
-      }
+        for (let i = 0; i < numChunks; i++) {
+          requests.push(fetchReaderMethod(i));
+        }
 
-      try {
-        const chunks = await Promise.all(requests);
-        const data = chunks.flat();
-        return data;
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error("SyntheticsReader.getAccountPositionInfoList error:", e);
-        throw e;
+        try {
+          const chunks = await Promise.all(requests);
+          const data = chunks.flat();
+          return data;
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.error("SyntheticsReader.getAccountPositionInfoList error:", e);
+          throw e;
+        }
       }
     }
   );
@@ -296,88 +312,7 @@ export function usePositionsInfo(
       minCollateralUsd,
     );
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [positionsInfoHash, pricesUpdatedAt, chainId]);
-
-  return { isLoading: !data, error: null, data: data || {} };
-}
-
-export function _usePositionsInfo__tmp(
-  chainId: number,
-  positionsHash: string,
-  positionKeys: string[],
-  marketPrices: ContractMarketPrices[]
-): PositionsResult {
-  const { minCollateralUsd } = usePositionsConstants(chainId);
-  const { marketsInfoData, tokensData, pricesUpdatedAt } = useMarketsInfo(chainId);
-  const [chunks, setChunks] = useState<PositionJson[][]>([]);
-  const [currentChunk, setCurrentChunk] = useState<number>(0);
-  const chunkSize = 100;
-  const numChunks = Math.ceil(positionKeys.length / chunkSize);
-  const chunk = useMulticall(chainId, "usePositionsInfo", {
-    key: positionKeys?.length ? [positionsHash, pricesUpdatedAt, numChunks, currentChunk] : null,
-    refreshInterval: null, // Refresh on every prices update
-    request: () => ({
-      reader: {
-        contractAddress: getContract(chainId, "SyntheticsReader"),
-        abi: SyntheticsReader.abi,
-        calls:
-          positionKeys && positionKeys.length
-            ? {
-                positions: {
-                  methodName: "getAccountPositionInfoList",
-                  params: [
-                    getContract(chainId, "DataStore"),
-                    getContract(chainId, "ReferralStorage"),
-                    positionKeys.slice(chunkSize * currentChunk, chunkSize * (currentChunk + 1)),
-                    marketPrices.slice(chunkSize * currentChunk, chunkSize * (currentChunk + 1)),
-                    ethers.constants.AddressZero, // uiFeeReceiver
-                  ],
-                },
-              }
-            : {},
-      },
-    }),
-  });
-
-  const chunkData = chunk?.data?.data?.reader?.positions?.returnValues;
-  const nextChunks = chunkData && chunkData.length
-    ? chunks.slice(0, currentChunk).concat([chunkData]).concat(chunks.slice(currentChunk + 1, numChunks))
-    : chunks;
-
-  const chunksKey = nextChunks.reduce((positions: string[], c: PositionJson[]) => positions.concat(
-    c.filter((p) => (
-      p?.position?.addresses?.account &&
-      p?.position?.addresses?.market &&
-      p?.position?.addresses?.collateralToken &&
-      p?.position?.flags?.isLong !== undefined
-    )).map((p) => getPositionKey(
-      p.position.addresses.account,
-      p.position.addresses.market,
-      p.position.addresses.collateralToken,
-      p.position.flags.isLong
-    ))
-  ), []).join("-");
-
-  useEffect(() => {
-    if (!chunkData || !chunkData.length) {
-      return;
-    }
-
-    setChunks(nextChunks);
-    setCurrentChunk((currentChunk) => (currentChunk + 1) % numChunks);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chunksKey]);
-
-  const data = useMemo(() => {
-    if (chunks.length < numChunks) {
-      return;
-    }
-    const positions = chunks.flat();
-    return positions && positions.length === positionKeys.length && marketsInfoData && tokensData && minCollateralUsd
-      ? parsePositionsInfo(positionKeys, positions as PositionJson[], marketsInfoData, tokensData, minCollateralUsd)
-      : undefined;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [positionsHash, pricesUpdatedAt, chainId]);
+  }, [chainId, positionsInfoHash, tsRounded]);
 
   return { isLoading: !data, error: null, data: data || {} };
 }

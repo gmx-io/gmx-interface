@@ -40,7 +40,7 @@ export default function Table<T extends Record<string, any>>({
                     <Tooltip
                       handle={<span className="TableHeaderTitle">{v?.title}</span>}
                       isPopupClickable={false}
-                      position="center-top"
+                      position="right-bottom"
                       className="TableHeaderTooltip"
                       renderContent={typeof v.tooltip === "function" ? v.tooltip : () => <p>{v.tooltip as string}</p>}
                     />
