@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ethers } from "ethers";
-import { useWeb3React } from "@web3-react/core";
 import { useCopyToClipboard } from "react-use";
 
 import { getContract } from "config/contracts";
@@ -18,13 +17,14 @@ import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { useChainId } from "lib/chains";
 import Button from "components/Button/Button";
+import useWallet from "lib/wallets/useWallet";
 
 export default function CompleteAccountTransfer(props) {
   const [, copyToClipboard] = useCopyToClipboard();
   const { sender, receiver } = useParams();
   const isSenderAndReceiverValid = ethers.utils.isAddress(sender) && ethers.utils.isAddress(receiver);
   const { setPendingTxns } = props;
-  const { library, account } = useWeb3React();
+  const { signer, account } = useWallet();
   const [isTransferSubmittedModalVisible, setIsTransferSubmittedModalVisible] = useState(false);
 
   const { chainId } = useChainId();
@@ -65,7 +65,7 @@ export default function CompleteAccountTransfer(props) {
   const onClickPrimary = () => {
     setIsConfirming(true);
 
-    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, library.getSigner());
+    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, signer);
 
     callContract(chainId, contract, "acceptTransfer", [sender], {
       sentMsg: t`Transfer submitted!`,

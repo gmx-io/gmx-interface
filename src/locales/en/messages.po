@@ -29,21 +29,14 @@ msgstr "06 Jan 2022"
 msgid "24h Volume"
 msgstr "24h Volume"
 
-#: src/App/App.js
-msgid "<0>Install Coinbase Wallet</0> to start using GMX."
-msgstr "<0>Install Coinbase Wallet</0> to start using GMX."
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+msgid "<0><1>{indexName}</1><2>[{poolName}]</2></0> <3>selected in order form</3>"
+msgstr "<0><1>{indexName}</1><2>[{poolName}]</2></0> <3>selected in order form</3>"
 
-#: src/App/App.js
-msgid "<0>Install Coinbase Wallet</0>, and use GMX with its built-in browser."
-msgstr "<0>Install Coinbase Wallet</0>, and use GMX with its built-in browser."
-
-#: src/App/App.js
-msgid "<0>Install MetaMask</0> to start using GMX."
-msgstr "<0>Install MetaMask</0> to start using GMX."
-
-#: src/App/App.js
-msgid "<0>Install MetaMask</0>, and use GMX with its built-in browser."
-msgstr "<0>Install MetaMask</0>, and use GMX with its built-in browser."
+#: src/pages/Dashboard/DashboardV2.js
+msgid "<0>GM Pools total value ({chainName}).</0>"
+msgstr "<0>GM Pools total value ({chainName}).</0>"
 
 #: src/components/Exchange/OrdersToa.js
 msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
@@ -82,7 +75,6 @@ msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>This value may 
 msgstr "<0>Total value of tokens in GLP pool ({chainName}).</0><1>This value may be higher on other websites due to the collateral of positions being included in the calculation.</1>"
 
 #: src/lib/contracts/transactionErrors.tsx
-#: src/lib/wallets/index.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 
@@ -378,8 +370,8 @@ msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol},
 msgstr "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})."
-msgstr "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})."
+msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName}) +  GM Pools ({chainName})."
+msgstr "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName}) +  GM Pools ({chainName})."
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -472,6 +464,10 @@ msgstr "Borrow Fee / Day"
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Borrow Fee Rate"
 msgstr "Borrow Fee Rate"
+
+#: src/components/Synthetics/BridgingInfo/BridgingInfo.tsx
+msgid "Bridge {tokenSymbol} to {chainName} using any of the options below:"
+msgstr "Bridge {tokenSymbol} to {chainName} using any of the options below:"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
@@ -847,14 +843,6 @@ msgstr "Closing..."
 msgid "Code already taken"
 msgstr "Code already taken"
 
-#: src/App/App.js
-msgid "Coinbase Wallet"
-msgstr "Coinbase Wallet"
-
-#: src/App/App.js
-msgid "Coinbase Wallet not detected."
-msgstr "Coinbase Wallet not detected."
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -991,7 +979,6 @@ msgstr "Confirm {operationText}"
 msgid "Connect"
 msgstr "Connect"
 
-#: src/App/App.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Header/AppHeaderUser.tsx
@@ -1011,10 +998,6 @@ msgstr "Connect"
 #: src/pages/Stake/StakeV2.js
 msgid "Connect Wallet"
 msgstr "Connect Wallet"
-
-#: src/lib/wallets/index.tsx
-msgid "Connected to {0}"
-msgstr "Connected to {0}"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
@@ -1621,8 +1604,8 @@ msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgstr "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price: {1}, Market: {2}"
-msgstr "Execute Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price: {1}, Market: {2}"
+msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price:{1}, Market: {2}"
+msgstr "Execute Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price:{1}, Market: {2}"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
@@ -1665,7 +1648,6 @@ msgstr "Failed to update order"
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Fees"
 msgstr "Fees"
 
@@ -1836,6 +1818,7 @@ msgstr "GLP sell disabled, pending {0} upgrade"
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
+#: src/pages/Dashboard/DashboardV2.js
 msgid "GM Pools"
 msgstr "GM Pools"
 
@@ -2479,6 +2462,14 @@ msgstr "Long"
 msgid "Long Collateral"
 msgstr "Long Collateral"
 
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "Long Funding Payments"
+msgstr "Long Funding Payments"
+
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "Long Funding Rewards"
+msgstr "Long Funding Rewards"
+
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Long Liquidity"
 msgstr "Long Liquidity"
@@ -2487,7 +2478,6 @@ msgstr "Long Liquidity"
 msgid "Long Open Interest"
 msgstr "Long Open Interest"
 
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Long Positions"
 msgstr "Long Positions"
@@ -2526,6 +2516,7 @@ msgstr "MEV Optimizer"
 msgid "MINTABLE"
 msgstr "MINTABLE"
 
+#: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -2536,6 +2527,7 @@ msgstr "Mark"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -2556,14 +2548,6 @@ msgstr "Mark"
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark Price"
 msgstr "Mark Price"
-
-#: src/components/Exchange/OrderEditor.js
-msgid "Mark Price:"
-msgstr "Mark Price:"
-
-#: src/components/Exchange/OrderEditor.js
-msgid "Mark: {0}"
-msgstr "Mark: {0}"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -2758,14 +2742,6 @@ msgstr "Max: {0}"
 msgid "Media Kit"
 msgstr "Media Kit"
 
-#: src/App/App.js
-msgid "MetaMask"
-msgstr "MetaMask"
-
-#: src/App/App.js
-msgid "MetaMask not detected."
-msgstr "MetaMask not detected."
-
 #: src/components/Migration/Migration.js
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
@@ -2841,6 +2817,7 @@ msgid "Mintable"
 msgstr "Mintable"
 
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Dashboard/DashboardV2.js
 msgid "More Info"
 msgstr "More Info"
@@ -2973,7 +2950,6 @@ msgstr "Only letters, numbers and underscores are allowed."
 msgid "Open Fee"
 msgstr "Open Fee"
 
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
 msgid "Open Interest"
@@ -3871,6 +3847,14 @@ msgstr "Short"
 msgid "Short Collateral"
 msgstr "Short Collateral"
 
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "Short Funding Payments"
+msgstr "Short Funding Payments"
+
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "Short Funding Rewards"
+msgstr "Short Funding Rewards"
+
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Short Liquidity"
 msgstr "Short Liquidity"
@@ -3879,7 +3863,6 @@ msgstr "Short Liquidity"
 msgid "Short Open Interest"
 msgstr "Short Open Interest"
 
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Short Positions"
 msgstr "Short Positions"
@@ -4003,13 +3986,11 @@ msgid "Stake submitted! <0>View status.</0>"
 msgstr "Stake submitted! <0>View status.</0>"
 
 #: src/components/Glp/GlpSwap.js
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
-#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -4445,7 +4426,6 @@ msgid "Total Claimable"
 msgstr "Total Claimable"
 
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Total Fees"
 msgstr "Total Fees"
 
@@ -4490,13 +4470,11 @@ msgid "Total Trading Volume"
 msgstr "Total Trading Volume"
 
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
 msgid "Total Users"
 msgstr "Total Users"
 
 #: src/components/Referrals/AffiliatesStats.tsx
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Total Volume"
 msgstr "Total Volume"
@@ -4759,10 +4737,6 @@ msgstr "Unstaking will burn <0>{0} Multiplier Points</0>. {1}"
 msgid "Unstaking..."
 msgstr "Unstaking..."
 
-#: src/lib/wallets/index.tsx
-msgid "Unsupported chain. Switch to Arbitrum network on your wallet and try again"
-msgstr "Unsupported chain. Switch to Arbitrum network on your wallet and try again"
-
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/JoinReferralCode.js
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
@@ -4950,10 +4924,6 @@ msgstr "View in Explorer"
 msgid "View status."
 msgstr "View status."
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Volume"
-msgstr "Volume"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Volume on V1"
 msgstr "Volume on V1"
@@ -5032,10 +5002,6 @@ msgstr "Wallet not connected"
 #: src/pages/Stake/StakeV1.js
 msgid "Wallet not yet connected"
 msgstr "Wallet not yet connected"
-
-#: src/App/App.js
-msgid "WalletConnect"
-msgstr "WalletConnect"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Weight"
@@ -5357,6 +5323,10 @@ msgstr "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
+msgid "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>;"
+msgstr "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>;"
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"
 msgstr "{0} Approved!"
@@ -5443,8 +5413,6 @@ msgid "{0} price"
 msgstr "{0} price"
 
 #: src/components/Glp/GlpSwap.js
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "{0} selected in order form"
 msgstr "{0} selected in order form"
 
@@ -5458,10 +5426,6 @@ msgstr "{0} tokens have been converted to GMX from the {1} esGMX deposited for v
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "{0} will be swapped to {1} on order execution."
 msgstr "{0} will be swapped to {1} on order execution."
-
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
-msgid "{0} {1} market selected"
-msgstr "{0} {1} market selected"
 
 #: src/components/Exchange/SwapBox.js
 msgid "{0} {1} not supported"
@@ -5494,8 +5458,8 @@ msgstr ""
 "{2} Price: {3} USD"
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "{actionText} Deposit {collateralText} into {positionText},  Market: {0}"
-msgstr "{actionText} Deposit {collateralText} into {positionText},  Market: {0}"
+msgid "{actionText} Deposit {collateralText} into {positionText}, Market: {0}"
+msgstr "{actionText} Deposit {collateralText} into {positionText}, Market: {0}"
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "{actionText} Order: Swap {fromText} for {toText}, Price: {ratioText}"
@@ -5510,12 +5474,12 @@ msgid "{actionText} Swap {fromText} for {toText}"
 msgstr "{actionText} Swap {fromText} for {toText}"
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "{actionText} Withdraw {collateralText} from {positionText},  Market: {0}"
-msgstr "{actionText} Withdraw {collateralText} from {positionText},  Market: {0}"
+msgid "{actionText} Withdraw {collateralText} from {positionText}, Market: {0}"
+msgstr "{actionText} Withdraw {collateralText} from {positionText}, Market: {0}"
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "{actionText} {increaseText} {positionText} {sizeDeltaText}, {pricePrefix}: {0},  Market: {1}"
-msgstr "{actionText} {increaseText} {positionText} {sizeDeltaText}, {pricePrefix}: {0},  Market: {1}"
+msgid "{actionText} {increaseText} {positionText} {sizeDeltaText}, {pricePrefix}: {0}, Market: {1}"
+msgstr "{actionText} {increaseText} {positionText} {sizeDeltaText}, {pricePrefix}: {0}, Market: {1}"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{chainName} Total Stats start from {totalStatsStartDate}.<0/> For detailed stats:"
@@ -5596,9 +5560,5 @@ msgid "{positionText} {sizeDeltaText}, Price: {0}, Market: {1}"
 msgstr "{positionText} {sizeDeltaText}, Price: {0}, Market: {1}"
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
-msgid "{title} on Arbitrum:"
-msgstr "{title} on Arbitrum:"
-
-#: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
-msgid "{title} on Avalanche:"
-msgstr "{title} on Avalanche:"
+msgid "{title}"
+msgstr "{title}"

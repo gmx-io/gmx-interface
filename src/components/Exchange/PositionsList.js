@@ -21,6 +21,7 @@ import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import { getPriceDecimals } from "config/tokens";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Button from "components/Button/Button";
+import { FaAngleRight } from "react-icons/fa";
 
 const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {
@@ -63,7 +64,7 @@ export default function PositionsList(props) {
     infoTokens,
     active,
     account,
-    library,
+    signer,
     pendingTxns,
     setPendingTxns,
     setListSection,
@@ -134,7 +135,7 @@ export default function PositionsList(props) {
         infoTokens={infoTokens}
         active={active}
         account={account}
-        library={library}
+        signer={signer}
         collateralTokenAddress={collateralTokenAddress}
         pendingTxns={pendingTxns}
         setPendingTxns={setPendingTxns}
@@ -190,7 +191,7 @@ export default function PositionsList(props) {
           active={active}
           account={account}
           orders={orders}
-          library={library}
+          signer={signer}
           pendingTxns={pendingTxns}
           setPendingTxns={setPendingTxns}
           flagOrdersEnabled={flagOrdersEnabled}
@@ -333,11 +334,13 @@ export default function PositionsList(props) {
                                   <StatsTooltipRow
                                     label={t`Borrow Fee`}
                                     value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
+                                    className="text-red"
                                   />
                                   <StatsTooltipRow
                                     showDollar={false}
                                     label={t`Borrow Fee / Day`}
                                     value={`-$${borrowFeeUSD}`}
+                                    className="text-red"
                                   />
 
                                   {!hideActions && (
@@ -606,7 +609,10 @@ export default function PositionsList(props) {
                 <td>
                   <div>${formatAmount(position.size, USD_DECIMALS, 2, true)}</div>
                   {positionOrders.length > 0 && (
-                    <div onClick={() => setListSection && setListSection("Orders")}>
+                    <div
+                      className="Position-list-active-orders"
+                      onClick={() => setListSection && setListSection("Orders")}
+                    >
                       <Tooltip
                         handle={t`Orders (${positionOrders.length})`}
                         position="left-bottom"
@@ -627,10 +633,18 @@ export default function PositionsList(props) {
                                     key={`${order.isLong}-${order.type}-${order.index}`}
                                     className="Position-list-order active-order-tooltip"
                                   >
-                                    {order.triggerAboveThreshold ? ">" : "<"}{" "}
-                                    {formatAmount(order.triggerPrice, 30, priceDecimal, true)}:
-                                    {order.type === INCREASE ? " +" : " -"}${formatAmount(order.sizeDelta, 30, 2, true)}
-                                    {order.error && <div className="negative active-oredr-error">{order.error}</div>}
+                                    <div className="Position-list-order-label">
+                                      <span>
+                                        {order.triggerAboveThreshold ? ">" : "<"}{" "}
+                                        {formatAmount(order.triggerPrice, 30, priceDecimal, true)}:
+                                        <span>
+                                          {order.type === INCREASE ? " +" : " -"}$
+                                          {formatAmount(order.sizeDelta, 30, 2, true)}
+                                        </span>
+                                      </span>
+                                      <FaAngleRight fontSize={14} />
+                                    </div>
+                                    {order.error && <div className="negative active-order-error">{order.error}</div>}
                                   </div>
                                 );
                               })}
@@ -669,11 +683,13 @@ export default function PositionsList(props) {
                               label={t`Borrow Fee`}
                               showDollar={false}
                               value={`-$${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}`}
+                              className="text-red"
                             />
                             <StatsTooltipRow
                               showDollar={false}
                               label={t`Borrow Fee / Day`}
                               value={`-$${borrowFeeUSD}`}
+                              className="text-red"
                             />
                             {!hideActions && (
                               <>

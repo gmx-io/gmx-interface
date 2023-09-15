@@ -1,5 +1,4 @@
 import { Trans, plural, t } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Modal from "components/Modal/Modal";
@@ -26,6 +25,7 @@ import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useState } from "react";
 import "./GmConfirmationBox.scss";
 import { useKey } from "react-use";
+import useWallet from "lib/wallets/useWallet";
 
 type Props = {
   isVisible: boolean;
@@ -71,7 +71,7 @@ export function GmConfirmationBox({
   setPendingTxns,
   shouldDisableValidation,
 }: Props) {
-  const { library, account } = useWeb3React();
+  const { signer, account } = useWallet();
   const { chainId } = useChainId();
   const { marketsData } = useMarkets(chainId);
   const { tokensData } = useTokensData(chainId);
@@ -248,11 +248,11 @@ export function GmConfirmationBox({
   );
 
   function onCreateDeposit() {
-    if (!account || !executionFee || !marketToken || !market || !marketTokenAmount || !tokensData) {
+    if (!account || !executionFee || !marketToken || !market || !marketTokenAmount || !tokensData || !signer) {
       return Promise.resolve();
     }
 
-    return createDepositTxn(chainId, library, {
+    return createDepositTxn(chainId, signer, {
       account,
       initialLongTokenAddress: longToken?.address || market.longTokenAddress,
       initialShortTokenAddress: shortToken?.address || market.shortTokenAddress,
@@ -272,11 +272,20 @@ export function GmConfirmationBox({
   }
 
   function onCreateWithdrawal() {
-    if (!account || !market || !marketToken || !executionFee || !longTokenAmount || !shortTokenAmount || !tokensData) {
+    if (
+      !account ||
+      !market ||
+      !marketToken ||
+      !executionFee ||
+      !longTokenAmount ||
+      !shortTokenAmount ||
+      !tokensData ||
+      !signer
+    ) {
       return Promise.resolve();
     }
 
-    return createWithdrawalTxn(chainId, library, {
+    return createWithdrawalTxn(chainId, signer, {
       account,
       initialLongTokenAddress: longToken?.address || market.longTokenAddress,
       initialShortTokenAddress: shortToken?.address || market.shortTokenAddress,

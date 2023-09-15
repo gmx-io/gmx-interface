@@ -1,5 +1,5 @@
 import { Trans, t } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -66,6 +66,7 @@ import {
 } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
+import useWallet from "lib/wallets/useWallet";
 import { useEffect, useMemo, useState } from "react";
 import { useMedia } from "react-use";
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
@@ -82,7 +83,6 @@ export type Props = {
   setPendingTxns: (txns: any) => void;
   isHigherSlippageAllowed: boolean;
   setIsHigherSlippageAllowed: (isAllowed: boolean) => void;
-  onConnectWallet: () => void;
   shouldDisableValidation: boolean;
   onSelectPositionClick: (key: string, tradeMode: TradeMode) => void;
 };
@@ -101,17 +101,17 @@ export function PositionSeller(p: Props) {
     onClose,
     setPendingTxns,
     availableTokensOptions,
-    onConnectWallet,
     onSelectPositionClick,
   } = p;
 
   const { chainId } = useChainId();
   const { savedAllowedSlippage } = useSettings();
-  const { library, account } = useWeb3React();
+  const { signer, account } = useWallet();
+  const { openConnectModal } = useConnectModal();
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
-  const userReferralInfo = useUserReferralInfo(library, chainId, account);
+  const userReferralInfo = useUserReferralInfo(signer, chainId, account);
   const { data: hasOutdatedUi } = useHasOutdatedUi();
 
   const isMobile = useMedia("(max-width: 1100px)");
@@ -318,7 +318,7 @@ export function PositionSeller(p: Props) {
 
   function onSubmit() {
     if (!account) {
-      onConnectWallet();
+      openConnectModal?.();
       return;
     }
 
@@ -328,14 +328,15 @@ export function PositionSeller(p: Props) {
       !executionFee?.feeTokenAmount ||
       !receiveToken?.address ||
       !receiveUsd ||
-      !decreaseAmounts?.acceptablePrice
+      !decreaseAmounts?.acceptablePrice ||
+      !signer
     ) {
       return;
     }
 
     setIsSubmitting(true);
 
-    createDecreaseOrderTxn(chainId, library, {
+    createDecreaseOrderTxn(chainId, signer, {
       account,
       marketAddress: position.marketAddress,
       initialCollateralAddress: position.collateralTokenAddress,

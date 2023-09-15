@@ -138,6 +138,42 @@ export function MarketsList() {
     });
   }, [marketsInfoData]);
 
+  function renderFundingRateTooltip(stats: typeof indexTokensStats[0]) {
+    return () => (
+      <>
+        {stats.marketsStats.map(({ marketInfo: market, fundingRateLong, fundingRateShort }) => {
+          const longFundingMsg = fundingRateLong.gte(0) ? t`Long Funding Rewards` : t`Long Funding Payments`;
+          const shortFundingMsg = fundingRateShort.gte(0) ? t`Short Funding Rewards` : t`Short Funding Payments`;
+          return (
+            <div className="mb-base" key={market.marketTokenAddress}>
+              <div className="mb-xs text-white">[{getMarketPoolName(market)}]</div>
+              <StatsTooltipRow
+                showDollar={false}
+                label={longFundingMsg}
+                value={`${formatFundingRate(fundingRateLong)} / 1h`}
+                className={fundingRateLong.gte(0) ? "text-green" : "text-red"}
+              />
+              <StatsTooltipRow
+                showDollar={false}
+                label={shortFundingMsg}
+                value={`${formatFundingRate(fundingRateShort)} / 1h`}
+                className={fundingRateShort.gte(0) ? "text-green" : "text-red"}
+              />
+            </div>
+          );
+        })}
+        <br />
+        <span>Funding Fees help to balance Longs and Shorts and are exchanged between both sides.</span>
+        <br />
+        <br />
+        <span>
+          A negative Funding Fee value indicates that percentage needs to be paid, a positive Funding Fee value
+          indicates that percentage will be received as funding rewards.
+        </span>
+      </>
+    );
+  }
+
   return (
     <>
       {!isMobile && (
@@ -217,23 +253,7 @@ export function MarketsList() {
                         handle={`${formatFundingRate(largestPool.fundingRateLong)} / ${formatFundingRate(
                           largestPool.fundingRateShort
                         )}`}
-                        renderContent={() => (
-                          <>
-                            <div className="Tooltip-row">
-                              <span className="label">POOL</span>
-                              <span className="label">LONG / SHORT</span>
-                            </div>
-                            <br />
-                            {stats.marketsStats.map(({ marketInfo: market, fundingRateLong, fundingRateShort }) => (
-                              <StatsTooltipRow
-                                key={market.marketTokenAddress}
-                                showDollar={false}
-                                label={`[${getMarketPoolName(market)}]`}
-                                value={`${formatFundingRate(fundingRateLong)} / ${formatFundingRate(fundingRateShort)}`}
-                              />
-                            ))}
-                          </>
-                        )}
+                        renderContent={renderFundingRateTooltip(stats)}
                       />
                     </td>
                     <td>{formatAmount(stats.totalUtilization, 2, 2)}%</td>
@@ -305,23 +325,7 @@ export function MarketsList() {
                           stats.avgFundingRateShort
                         )}`}
                         position="right-bottom"
-                        renderContent={() => (
-                          <>
-                            <div className="Tooltip-row">
-                              <span className="label">POOL</span>
-                              <span className="label">LONG / SHORT</span>
-                            </div>
-                            <br />
-                            {stats.marketsStats.map(({ marketInfo, fundingRateLong, fundingRateShort }) => (
-                              <StatsTooltipRow
-                                key={marketInfo.marketTokenAddress}
-                                showDollar={false}
-                                label={`[${getMarketPoolName(marketInfo)}]`}
-                                value={`${formatFundingRate(fundingRateLong)} / ${formatFundingRate(fundingRateShort)}`}
-                              />
-                            ))}
-                          </>
-                        )}
+                        renderContent={renderFundingRateTooltip(stats)}
                       />
                     </div>
                   </div>

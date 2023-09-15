@@ -35,6 +35,8 @@ type Props = {
     maxPrice: BigNumber;
   };
   supportedResolutions: typeof SUPPORTED_RESOLUTIONS_V1;
+  tradePageVersion: number;
+  setTradePageVersion: (version: number) => void;
 };
 
 export default function TVChartContainer({
@@ -48,6 +50,8 @@ export default function TVChartContainer({
   setPeriod,
   chartToken,
   supportedResolutions,
+  tradePageVersion,
+  setTradePageVersion,
 }: Props) {
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const tvWidgetRef = useRef<IChartingLibraryWidget | null>(null);
@@ -146,7 +150,14 @@ export default function TVChartContainer({
       interval: getObjectKeyFromValue(period, supportedResolutions),
       favorites: { ...defaultChartProps.favorites, intervals: Object.keys(supportedResolutions) },
       custom_formatters: defaultChartProps.custom_formatters,
-      save_load_adapter: new SaveLoadAdapter(chainId, tvCharts, setTvCharts, onSelectToken),
+      save_load_adapter: new SaveLoadAdapter(
+        chainId,
+        tvCharts,
+        setTvCharts,
+        onSelectToken,
+        tradePageVersion,
+        setTradePageVersion
+      ),
     };
     tvWidgetRef.current = new window.TradingView.widget(widgetOptions);
     tvWidgetRef.current!.onChartReady(function () {

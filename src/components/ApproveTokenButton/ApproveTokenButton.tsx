@@ -1,5 +1,4 @@
 import { Trans } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
 import { getWrappedToken } from "config/tokens";
 import { approveTokens } from "domain/tokens";
 import { isAddressZero } from "lib/legacy";
@@ -7,6 +6,7 @@ import { useState } from "react";
 import { ImCheckboxUnchecked, ImSpinner2 } from "react-icons/im";
 
 import "./ApproveTokenButton.scss";
+import useWallet from "lib/wallets/useWallet";
 
 type Props = {
   spenderAddress: string;
@@ -16,7 +16,7 @@ type Props = {
 };
 
 export function ApproveTokenButton(p: Props) {
-  const { library, chainId } = useWeb3React();
+  const { signer, chainId } = useWallet();
   const [isApproving, setIsApproving] = useState(false);
   const [isApproveSubmitted, setIsApproveSubmitted] = useState(false);
 
@@ -28,7 +28,7 @@ export function ApproveTokenButton(p: Props) {
 
     approveTokens({
       setIsApproving,
-      library,
+      signer,
       tokenAddress: tokenAddress,
       spender: p.spenderAddress,
       pendingTxns: [],

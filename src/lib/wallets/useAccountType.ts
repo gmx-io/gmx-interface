@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useWeb3React } from "@web3-react/core";
+import useWallet from "./useWallet";
 
 export enum AccountType {
   CONTRACT = "contract",
@@ -7,17 +7,17 @@ export enum AccountType {
 }
 
 export default function useAccountType() {
-  const { active, account, library } = useWeb3React();
+  const { active, account, signer } = useWallet();
   const [contractType, setContractType] = useState<AccountType | null>(null);
 
   useEffect(() => {
     if (!active) return;
     (async function () {
-      const code = await library.getCode(account);
+      const code = await signer?.provider?.getCode(account as string);
       const type = code === "0x" ? AccountType.EOA : AccountType.CONTRACT;
       setContractType(type);
     })();
-  }, [account, library, active]);
+  }, [account, signer, active]);
 
   return contractType;
 }
