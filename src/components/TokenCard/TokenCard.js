@@ -4,8 +4,6 @@ import { Link } from "react-router-dom";
 
 import { isHomeSite } from "lib/legacy";
 
-import { useWeb3React } from "@web3-react/core";
-
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { getIcon } from "config/icons";
@@ -13,6 +11,7 @@ import { useChainId } from "lib/chains";
 import { switchNetwork } from "lib/wallets";
 import APRLabel from "../APRLabel/APRLabel";
 import { HeaderLink } from "../Header/HeaderLink";
+import useWallet from "lib/wallets/useWallet";
 
 const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
@@ -21,7 +20,7 @@ const gmIcon = getIcon("common", "gm");
 export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }) {
   const isHome = isHomeSite();
   const { chainId } = useChainId();
-  const { active } = useWeb3React();
+  const { active } = useWallet();
 
   const changeNetwork = useCallback(
     (network) => {
@@ -90,6 +89,39 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
         </div>
       </div>
       <div className="Home-token-card-option">
+        <div>
+          <div className="Home-token-card-option-icon">
+            <img src={gmIcon} alt="gmxBigIcon" /> GM
+          </div>
+          <div className="Home-token-card-option-info">
+            <div className="Home-token-card-option-title">
+              <Trans>
+                GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees.
+              </Trans>
+            </div>
+          </div>
+        </div>
+        <div className="Home-token-card-option-action Token-card-buy">
+          <div className="buy">
+            <BuyLink to="/pools" className="default-btn" network={ARBITRUM}>
+              <Trans>Buy on Arbitrum</Trans>
+            </BuyLink>
+
+            <BuyLink to="/pools" className="default-btn" network={AVALANCHE}>
+              <Trans>Buy on Avalanche</Trans>
+            </BuyLink>
+          </div>
+          <a
+            href="https://docs.gmx.io/docs/providing-liquidity/v2"
+            target="_blank"
+            rel="noreferrer"
+            className="default-btn read-more"
+          >
+            <Trans>Read more</Trans>
+          </a>
+        </div>
+      </div>
+      <div className="Home-token-card-option">
         <div className="Home-token-card-option-icon">
           <img src={glpIcon} width="40" alt="GLP Icon" /> GLP
         </div>
@@ -114,39 +146,6 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
             </div>
             <a
               href="https://docs.gmx.io/docs/providing-liquidity/v1"
-              target="_blank"
-              rel="noreferrer"
-              className="default-btn read-more"
-            >
-              <Trans>Read more</Trans>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <div className="Home-token-card-option">
-        <div className="Home-token-card-option-icon">
-          <img src={gmIcon} alt="gmxBigIcon" /> GM
-        </div>
-        <div className="Home-token-card-option-info">
-          <div className="Home-token-card-option-title">
-            <Trans>
-              GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees.
-            </Trans>
-          </div>
-
-          <div className="Home-token-card-option-action Token-card-buy">
-            <div className="buy">
-              <BuyLink to="/pools" className="default-btn" network={ARBITRUM}>
-                <Trans>Buy on Arbitrum</Trans>
-              </BuyLink>
-
-              <BuyLink to="/pools" className="default-btn" network={AVALANCHE}>
-                <Trans>Buy on Avalanche</Trans>
-              </BuyLink>
-            </div>
-            <a
-              href="https://docs.gmx.io/docs/providing-liquidity/v2"
               target="_blank"
               rel="noreferrer"
               className="default-btn read-more"

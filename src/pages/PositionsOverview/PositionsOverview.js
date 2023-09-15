@@ -1,5 +1,4 @@
 import { Trans } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
 
 import { useAllPositions } from "domain/legacy";
@@ -9,12 +8,13 @@ import "./PositionsOverview.css";
 import { formatAmount } from "lib/numbers";
 import { useChainId } from "lib/chains";
 import { getTimeRemaining } from "lib/dates";
+import useWallet from "lib/wallets/useWallet";
 
 export default function PositionsOverview() {
   const { chainId } = useChainId();
-  const { library } = useWeb3React();
+  const { signer } = useWallet();
 
-  const positions = useAllPositions(chainId, library);
+  const positions = useAllPositions(chainId, signer);
 
   return (
     <div className="Positions-overview">

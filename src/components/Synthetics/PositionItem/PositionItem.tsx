@@ -25,6 +25,8 @@ import { useChainId } from "lib/chains";
 import { useMedia } from "react-use";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import Button from "components/Button/Button";
+import { FaAngleRight } from "react-icons/fa";
+import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 
 export type Props = {
   position: PositionInfo;
@@ -76,27 +78,36 @@ export function PositionItem(p: Props) {
               value={formatUsd(p.position.collateralUsd) || "..."}
               showDollar={false}
             />
-            <StatsTooltipRow label={t`PnL`} value={formatDeltaUsd(p.position?.pnl) || "..."} showDollar={false} />
+            <StatsTooltipRow
+              label={t`PnL`}
+              value={formatDeltaUsd(p.position?.pnl) || "..."}
+              showDollar={false}
+              className={p.position?.pnl?.gte(0) ? "text-green" : "text-red"}
+            />
             <StatsTooltipRow
               label={t`Accrued Borrow Fee`}
               value={formatUsd(p.position.pendingBorrowingFeesUsd?.mul(-1)) || "..."}
               showDollar={false}
+              className="text-red"
             />
             <StatsTooltipRow
               label={t`Accrued Negative Funding Fee`}
               value={formatUsd(p.position.pendingFundingFeesUsd.mul(-1)) || "..."}
               showDollar={false}
+              className="text-red"
             />
             <StatsTooltipRow
               label={t`Close Fee`}
               showDollar={false}
               value={formatUsd(p.position.closingFeeUsd?.mul(-1)) || "..."}
+              className="text-red"
             />
             <br />
             <StatsTooltipRow
               label={t`PnL After Fees`}
               value={formatDeltaUsd(p.position.pnlAfterFees, p.position.pnlAfterFeesPercentage)}
               showDollar={false}
+              className={p.position.pnlAfterFees?.gte(0) ? "text-green" : "text-red"}
             />
           </div>
         )}
@@ -114,6 +125,18 @@ export function PositionItem(p: Props) {
             className="PositionItem-collateral-tooltip"
             handleClassName={cx("plain", { negative: p.position.hasLowCollateral })}
             renderContent={() => {
+              const fundingFeeRateUsd = getFundingFeeRateUsd(
+                p.position.marketInfo,
+                p.position.isLong,
+                p.position.sizeInUsd,
+                CHART_PERIODS["1d"]
+              );
+              const borrowingFeeRateUsd = getBorrowingFeeRateUsd(
+                p.position.marketInfo,
+                p.position.isLong,
+                p.position.sizeInUsd,
+                CHART_PERIODS["1d"]
+              );
               return (
                 <>
                   {p.position.hasLowCollateral && (
@@ -135,8 +158,8 @@ export function PositionItem(p: Props) {
                             p.position.collateralAmount,
                             p.position.collateralToken.decimals,
                             p.position.collateralToken.symbol
-                          )}
-                          <br />({formatUsd(p.position.collateralUsd)})
+                          )}{" "}
+                          ({formatUsd(p.position.collateralUsd)})
                         </div>
                       </>
                     }
@@ -147,41 +170,32 @@ export function PositionItem(p: Props) {
                     label={t`Accrued Borrow Fee`}
                     showDollar={false}
                     value={formatUsd(p.position.pendingBorrowingFeesUsd.mul(-1)) || "..."}
+                    className="text-red"
                   />
                   <StatsTooltipRow
                     label={t`Accrued Negative Funding Fee`}
                     showDollar={false}
                     value={formatDeltaUsd(p.position.pendingFundingFeesUsd.mul(-1)) || "..."}
+                    className="text-red"
                   />
                   <StatsTooltipRow
                     label={t`Accrued Positive Funding Fee`}
                     showDollar={false}
                     value={formatDeltaUsd(p.position.pendingClaimableFundingFeesUsd) || "..."}
+                    className="text-green"
                   />
                   <br />
                   <StatsTooltipRow
                     showDollar={false}
                     label={t`Current Borrow Fee / Day`}
-                    value={formatUsd(
-                      getBorrowingFeeRateUsd(
-                        p.position.marketInfo,
-                        p.position.isLong,
-                        p.position.sizeInUsd,
-                        CHART_PERIODS["1d"]
-                      ).mul(-1)
-                    )}
+                    value={formatUsd(borrowingFeeRateUsd.mul(-1))}
+                    className="text-red"
                   />
                   <StatsTooltipRow
                     showDollar={false}
                     label={t`Current Funding Fee / Day`}
-                    value={formatDeltaUsd(
-                      getFundingFeeRateUsd(
-                        p.position.marketInfo,
-                        p.position.isLong,
-                        p.position.sizeInUsd,
-                        CHART_PERIODS["1d"]
-                      )
-                    )}
+                    value={formatDeltaUsd(fundingFeeRateUsd)}
+                    className={fundingFeeRateUsd.gt(0) ? "text-green" : "text-red"}
                   />
                   <br />
                   <Trans>Use the Edit Collateral icon to deposit or withdraw collateral.</Trans>
@@ -294,6 +308,7 @@ export function PositionItem(p: Props) {
     return (
       <div onClick={p.onOrdersClick}>
         <Tooltip
+          className="Position-list-active-orders"
           handle={t`Orders (${positionOrders.length})`}
           position="left-bottom"
           handleClassName={cx(
@@ -308,15 +323,24 @@ export function PositionItem(p: Props) {
                 </strong>
                 {positionOrders.map((order) => {
                   const error = getOrderError(order, p.position);
+                  const triggerThresholdType = getTriggerThresholdType(order.orderType, order.isLong);
+                  const isIncrease = isIncreaseOrderType(order.orderType);
                   return (
                     <div key={order.key} className="Position-list-order active-order-tooltip">
-                      {getTriggerThresholdType(order.orderType, order.isLong)}{" "}
-                      {formatUsd(order.triggerPrice, {
-                        displayDecimals: order.indexToken?.priceDecimals,
-                      })}
-                      : {isIncreaseOrderType(order.orderType) ? "+" : "-"}
-                      {formatUsd(order.sizeDeltaUsd)}
-                      <br />
+                      <div className="Position-list-order-label">
+                        <span>
+                          {triggerThresholdType}{" "}
+                          {formatUsd(order.triggerPrice, {
+                            displayDecimals: order.indexToken?.priceDecimals,
+                          })}
+                          :{" "}
+                          <span>
+                            {isIncrease ? "+" : "-"}
+                            {formatUsd(order.sizeDeltaUsd)}
+                          </span>
+                        </span>
+                        <FaAngleRight fontSize={14} />
+                      </div>
                       {error && <div className="order-error-text">{error}</div>}
                     </div>
                   );
@@ -330,6 +354,8 @@ export function PositionItem(p: Props) {
   }
 
   function renderLarge() {
+    const indexName = getMarketIndexName(p.position.marketInfo);
+    const poolName = getMarketPoolName(p.position.marketInfo);
     return (
       <tr
         className={cx("Exchange-list-item", {
@@ -355,7 +381,16 @@ export function PositionItem(p: Props) {
               handleClassName="plain"
               renderContent={() => (
                 <div>
-                  <StatsTooltipRow label={t`Market`} value={p.position.marketInfo.name} showDollar={false} />
+                  <StatsTooltipRow
+                    label={t`Market`}
+                    value={
+                      <div className="items-center">
+                        <span>{indexName && indexName}</span>
+                        <span className="subtext lh-1">{poolName && `[${poolName}]`}</span>
+                      </div>
+                    }
+                    showDollar={false}
+                  />
 
                   <br />
 
@@ -475,6 +510,8 @@ export function PositionItem(p: Props) {
   }
 
   function renderSmall() {
+    const indexName = getMarketIndexName(p.position.marketInfo);
+    const poolName = getMarketPoolName(p.position.marketInfo);
     return (
       <div className="App-card">
         <div>
@@ -516,7 +553,12 @@ export function PositionItem(p: Props) {
               <div className="label">
                 <Trans>Market</Trans>
               </div>
-              <div onClick={() => p.onSelectPositionClick?.()}>{p.position.marketInfo.name}</div>
+              <div onClick={() => p.onSelectPositionClick?.()}>
+                <div className="items-top">
+                  <span>{indexName && indexName}</span>
+                  <span className="subtext lh-1">{poolName && `[${poolName}]`}</span>
+                </div>
+              </div>
             </div>
             <div className="App-card-row">
               <div className="label">

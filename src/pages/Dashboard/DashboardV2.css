@@ -13,6 +13,10 @@
   margin-top: 0.8rem;
 }
 
+.DashboardV2-token-cards .Tooltip-popup {
+  min-width: 32rem;
+}
+
 .token-table-wrapper {
   border-radius: 0.4rem;
   background: #17182c;
@@ -73,7 +77,7 @@
   letter-spacing: 0.4px;
   text-align: left;
   z-index: 1;
-  background: linear-gradient(90deg, #0b0b0f 0%, rgba(10, 13, 28, 1) 100%);
+  background: linear-gradient(270deg, rgba(49, 54, 85, 1) 0%, rgba(37, 40, 65, 1) 100%);
   cursor: pointer;
 }
 
@@ -165,6 +169,12 @@
 @media (max-width: 900px) {
   .DashboardV2-cards {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .DashboardV2-token-cards .Tooltip-popup {
+    min-width: 22rem;
   }
 }
 

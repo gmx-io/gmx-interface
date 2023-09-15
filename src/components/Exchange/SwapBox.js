@@ -82,6 +82,8 @@ import FeesTooltip from "./FeesTooltip";
 import NoLiquidityErrorModal from "./NoLiquidityErrorModal";
 import UsefulLinks from "./UsefulLinks";
 import { ErrorCode, ErrorDisplayType } from "./constants";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import useWallet from "lib/wallets/useWallet";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
@@ -117,9 +119,6 @@ export default function SwapBox(props) {
     pendingPositions,
     setPendingPositions,
     infoTokens,
-    active,
-    library,
-    account,
     fromTokenAddress,
     setFromTokenAddress,
     toTokenAddress,
@@ -163,6 +162,7 @@ export default function SwapBox(props) {
     setShortCollateralAddress,
     shortCollateralAddress,
   } = props;
+  const { account, active, signer } = useWallet();
   const isMetamaskMobile = useIsMetamaskMobile();
   const [fromValue, setFromValue] = useState("");
   const [toValue, setToValue] = useState("");
@@ -172,7 +172,8 @@ export default function SwapBox(props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [modalError, setModalError] = useState(false);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
-  const { attachedOnChain, userReferralCode } = useUserReferralCode(library, chainId, account);
+  const { attachedOnChain, userReferralCode } = useUserReferralCode(signer, chainId, account);
+  const { openConnectModal } = useConnectModal();
 
   let allowedSlippage = savedSlippageAmount;
   if (isHigherSlippageAllowed) {
@@ -294,7 +295,7 @@ export default function SwapBox(props) {
   const { data: tokenAllowance } = useSWR(
     active && [active, chainId, tokenAllowanceAddress, "allowance", account, routerAddress],
     {
-      fetcher: contractFetcher(library, Token),
+      fetcher: contractFetcher(signer, Token),
     }
   );
 
@@ -1194,7 +1195,7 @@ export default function SwapBox(props) {
   const wrap = async () => {
     setIsSubmitting(true);
 
-    const contract = new ethers.Contract(nativeTokenAddress, WETH.abi, library.getSigner());
+    const contract = new ethers.Contract(nativeTokenAddress, WETH.abi, signer);
     callContract(chainId, contract, "deposit", {
       value: fromAmount,
       sentMsg: t`Swap submitted.`,
@@ -1213,7 +1214,7 @@ export default function SwapBox(props) {
   const unwrap = async () => {
     setIsSubmitting(true);
 
-    const contract = new ethers.Contract(nativeTokenAddress, WETH.abi, library.getSigner());
+    const contract = new ethers.Contract(nativeTokenAddress, WETH.abi, signer);
     callContract(chainId, contract, "withdraw", [fromAmount], {
       sentMsg: t`Swap submitted!`,
       failMsg: t`Swap failed.`,
@@ -1291,7 +1292,7 @@ export default function SwapBox(props) {
 
     if (!isMarketOrder) {
       minOut = toAmount;
-      Api.createSwapOrder(chainId, library, path, fromAmount, minOut, triggerRatio, nativeTokenAddress, {
+      Api.createSwapOrder(chainId, signer, path, fromAmount, minOut, triggerRatio, nativeTokenAddress, {
         sentMsg: t`Swap Order submitted!`,
         successMsg: t`Swap Order created!`,
         failMsg: t`Swap Order creation failed.`,
@@ -1322,7 +1323,7 @@ export default function SwapBox(props) {
       value = fromAmount;
       params = [path, minOut, account];
     }
-    contract = new ethers.Contract(routerAddress, Router.abi, library.getSigner());
+    contract = new ethers.Contract(routerAddress, Router.abi, signer);
 
     callContract(chainId, contract, method, params, {
       value,
@@ -1365,7 +1366,7 @@ export default function SwapBox(props) {
     `;
     return Api.createIncreaseOrder(
       chainId,
-      library,
+      signer,
       nativeTokenAddress,
       path,
       fromAmount,
@@ -1490,7 +1491,7 @@ export default function SwapBox(props) {
     }
 
     const contractAddress = getContract(chainId, "PositionRouter");
-    const contract = new ethers.Contract(contractAddress, PositionRouter.abi, library.getSigner());
+    const contract = new ethers.Contract(contractAddress, PositionRouter.abi, signer);
     const indexToken = getTokenInfo(infoTokens, indexTokenAddress);
     const tokenSymbol = indexToken.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexToken.symbol;
     const longOrShortText = isLong ? t`Long` : t`Short`;
@@ -1558,7 +1559,7 @@ export default function SwapBox(props) {
 
   const onConfirmationClick = () => {
     if (!active) {
-      props.connectWallet();
+      openConnectModal();
       return;
     }
 
@@ -1585,7 +1586,7 @@ export default function SwapBox(props) {
   function approveFromToken() {
     approveTokens({
       setIsApproving,
-      library,
+      signer,
       tokenAddress: fromToken.address,
       spender: routerAddress,
       chainId: chainId,
@@ -1606,7 +1607,7 @@ export default function SwapBox(props) {
     }
 
     if (!active) {
-      props.connectWallet();
+      openConnectModal();
       return;
     }
 
@@ -2448,7 +2449,6 @@ export default function SwapBox(props) {
       {renderOrdersToa()}
       {isConfirming && (
         <ConfirmationBox
-          library={library}
           isHigherSlippageAllowed={isHigherSlippageAllowed}
           setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
           orders={orders}
