@@ -993,7 +993,7 @@ export function getPriceDecimals(chainId: number, tokenSymbol?: string) {
   }
 }
 
-export function convertToValidSymbol(chainId: number, symbol: string) {
+export function getValidTokenBySymbol(chainId: number, symbol: string) {
   if (!TOKENS_BY_SYMBOL_MAP[chainId]) {
     throw new Error(`Incorrect chainId ${chainId}`);
   }
@@ -1001,5 +1001,7 @@ export function convertToValidSymbol(chainId: number, symbol: string) {
   const tokens = Object.keys(TOKENS_BY_SYMBOL_MAP[chainId]);
   const token = tokens.find((token) => token.toLowerCase() === symbol.toLowerCase());
 
-  return token ?? null;
+  if (token) {
+    return getTokenBySymbol(chainId, token);
+  }
 }

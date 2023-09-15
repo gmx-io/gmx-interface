@@ -16,7 +16,7 @@ import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import Tab from "components/Tab/Tab";
 import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS, DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
 import { getAcceptablePriceImpactBpsKey, getSyntheticsListSectionKey } from "config/localStorage";
-import { convertToValidSymbol, getToken, getTokenBySymbol } from "config/tokens";
+import { getToken, getValidTokenBySymbol } from "config/tokens";
 import { isSwapOrderType } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useOrdersInfo } from "domain/synthetics/orders/useOrdersInfo";
@@ -60,6 +60,12 @@ enum ListSection {
   Claims = "Claims",
 }
 
+type TradeParams = {
+  market?: string;
+  tradeType?: string;
+  tradeMode?: string;
+};
+
 export function SyntheticsPage(p: Props) {
   const {
     savedIsPnlInLeverage,
@@ -81,7 +87,7 @@ export function SyntheticsPage(p: Props) {
   const { marketsInfoData, tokensData, pricesUpdatedAt } = useMarketsInfo(chainId);
   const queryParams = useRouteQuery();
   const history = useHistory();
-  const params = useParams();
+  const params = useParams<TradeParams>();
 
   const { positionsInfoData, isLoading: isPositionsLoading } = usePositionsInfo(chainId, {
     marketsInfoData,
@@ -132,80 +138,63 @@ export function SyntheticsPage(p: Props) {
   const { indexTokens, sortedIndexTokensWithPoolValue } = availableTokensOptions;
 
   useEffect(() => {
-    const marketTokenSymbol = params["market"];
-    const tradeType = params["tradeType"];
-    const tradeMode = params["tradeMode"];
+    const { market, tradeType, tradeMode } = params;
     const queryPayToken = queryParams.get("pay");
     const queryPoolToken = queryParams.get("pool");
     const queryCollateralToken = queryParams.get("collateral");
 
-    let finalValue = {};
+    let options = {};
 
-    if (marketTokenSymbol) {
-      const marketToken = convertToValidSymbol(chainId, marketTokenSymbol);
-      if (marketToken) {
-        const marketTokenInfo = getTokenBySymbol(chainId, marketToken);
-        finalValue = { ...finalValue, toTokenAddress: marketTokenInfo.address };
+    if (market) {
+      const marketTokenInfo = getValidTokenBySymbol(chainId, market);
+      if (marketTokenInfo) {
+        options = { ...options, toTokenAddress: marketTokenInfo.address };
       }
     }
 
     if (tradeType) {
       const inputTradeTrye = getMatchingValueFromObject(TradeType, tradeType);
       if (inputTradeTrye) {
-        finalValue = { ...finalValue, tradeType: inputTradeTrye };
+        options = { ...options, tradeType: inputTradeTrye };
       }
     }
 
     if (tradeMode) {
       const inputTradeMode = getMatchingValueFromObject(TradeMode, tradeMode);
       if (inputTradeMode) {
-        finalValue = { ...finalValue, tradeMode: inputTradeMode };
+        options = { ...options, tradeMode: inputTradeMode };
       }
     }
 
     if (queryPayToken) {
-      const payToken = convertToValidSymbol(chainId, queryPayToken);
-      if (payToken) {
-        const payTokenInfo = getTokenBySymbol(chainId, payToken);
-        finalValue = { ...finalValue, fromTokenAddress: payTokenInfo.address };
+      const payTokenInfo = getValidTokenBySymbol(chainId, queryPayToken);
+      if (payTokenInfo) {
+        options = { ...options, fromTokenAddress: payTokenInfo.address };
       }
     }
 
     if (queryPoolToken && marketsData) {
-      try {
-        const marketPool = Object.values(marketsData).find(
-          (market) => market.poolName === queryPoolToken.toUpperCase()
-        );
-        if (marketPool) {
-          finalValue = { ...finalValue, marketAddress: marketPool.marketTokenAddress };
-        }
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error(`Invalid collateralToken: ${queryCollateralToken}`);
+      const marketPool = Object.values(marketsData).find((market) => market.poolName === queryPoolToken.toUpperCase());
+      if (marketPool) {
+        options = { ...options, marketAddress: marketPool.marketTokenAddress };
       }
     }
 
     if (queryCollateralToken) {
-      try {
-        const collateralToken = convertToValidSymbol(chainId, queryCollateralToken);
-        if (collateralToken) {
-          const collateralTokenInfo = getTokenBySymbol(chainId, collateralToken);
-          finalValue = { ...finalValue, collateralAddress: collateralTokenInfo.address };
-        }
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error(`Invalid collateralToken: ${queryCollateralToken}`);
+      const collateralTokenInfo = getValidTokenBySymbol(chainId, queryCollateralToken);
+      if (collateralTokenInfo) {
+        options = { ...options, collateralAddress: collateralTokenInfo.address };
       }
     }
 
-    setTradeOptions(finalValue);
+    setTradeOptions(options);
 
     if (history.location.search) {
       history.replace({ search: "" });
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params, queryParams, marketsData, chainId]);
+  }, [params, queryParams, marketsData, chainId, history]);
 
   const { chartToken, availableChartTokens } = useMemo(() => {
     if (!fromTokenAddress || !toTokenAddress) {
