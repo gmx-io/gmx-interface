@@ -162,7 +162,7 @@ msgstr "Akzeptiere, dass die Ausführung von Orders nicht garantiert ist und Tri
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Acceptable Price"
 msgstr ""
 
@@ -630,8 +630,8 @@ msgstr "Kann wegen eines Fehlers nicht ausgeführt werden"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Cancel"
 msgstr "Abbruch"
 
@@ -1059,7 +1059,7 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/AddAffiliateCode.js
 #: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -1216,7 +1216,7 @@ msgstr "Dezentralisierte<0/>Perpetual Börse"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 #: src/domain/synthetics/orders/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
@@ -1593,7 +1593,7 @@ msgstr "Escrowed GMX"
 msgid "Escrowed GMX APR"
 msgstr "Escrowed GMX APR"
 
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Execute"
 msgstr "Ausführen"
@@ -1602,9 +1602,13 @@ msgstr "Ausführen"
 msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgstr "Order ausführen: Tausche {fromAmountDisplay} {0} gegen {toAmountDisplay} {1}"
 
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price:{1}, Market: {2}"
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price: {1}"
 msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#~ msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price:{1}, Market: {2}"
+#~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
@@ -1732,8 +1736,8 @@ msgstr "Verzicht auf Gewinn und {action}"
 msgid "Forfeit profit not checked"
 msgstr "Verzicht auf Gewinn nicht geprüft"
 
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Freeze"
 msgstr ""
 
@@ -1993,7 +1997,7 @@ msgstr "Falsches Netzwerk"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 #: src/domain/synthetics/orders/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
@@ -2440,7 +2444,7 @@ msgstr "Lädt..."
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/domain/synthetics/orders/utils.ts
@@ -3288,7 +3292,7 @@ msgstr "Prev"
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -3552,7 +3556,7 @@ msgid "Referrals"
 msgstr "Referrals"
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Request"
 msgstr ""
 
@@ -3827,7 +3831,7 @@ msgstr "Position teilen"
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/domain/synthetics/orders/utils.ts
@@ -4737,8 +4741,8 @@ msgstr "Unstaken..."
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/JoinReferralCode.js
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Update"
 msgstr "Updaten"
 
@@ -5452,29 +5456,45 @@ msgid ""
 "{2} Price: {3} USD"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "{actionText} Deposit {collateralText} into {positionText}, Market: {0}"
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "{actionText} Deposit {collateralText} into {positionText}"
 msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#~ msgid "{actionText} Deposit {collateralText} into {positionText}, Market: {0}"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "{actionText} Order: Swap {fromText} for {toText}, Price: {ratioText}"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "{actionText} Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price: {pricePrefix} {1}, Market: {2}"
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "{actionText} Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price: {pricePrefix} {1}"
 msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#~ msgid "{actionText} Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price: {pricePrefix} {1}, Market: {2}"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "{actionText} Swap {fromText} for {toText}"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "{actionText} Withdraw {collateralText} from {positionText}, Market: {0}"
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "{actionText} Withdraw {collateralText} from {positionText}"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "{actionText} {increaseText} {positionText} {sizeDeltaText}, {pricePrefix}: {0}, Market: {1}"
+#~ msgid "{actionText} Withdraw {collateralText} from {positionText}, Market: {0}"
+#~ msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "{actionText} {increaseText} {positionText} {sizeDeltaText}, {pricePrefix}: {0}"
 msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#~ msgid "{actionText} {increaseText} {positionText} {sizeDeltaText}, {pricePrefix}: {0}, Market: {1}"
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{chainName} Total Stats start from {totalStatsStartDate}.<0/> For detailed stats:"
@@ -5508,6 +5528,11 @@ msgstr ""
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "{marketsCount, plural, one {# Market} other {# Markets}}"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "{message}, Market: {0}"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -5550,9 +5575,13 @@ msgstr ""
 msgid "{ordersText} canceled"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "{positionText} {sizeDeltaText}, Price: {0}, Market: {1}"
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "{positionText} {sizeDeltaText}, Price: {0}"
 msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#~ msgid "{positionText} {sizeDeltaText}, Price: {0}, Market: {1}"
+#~ msgstr ""
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"
