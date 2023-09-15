@@ -158,6 +158,8 @@ export default function SwapBox(props) {
     minExecutionFee,
     minExecutionFeeUSD,
     minExecutionFeeErrorMessage,
+    orderOption,
+    setOrderOption,
   } = props;
   const isMetamaskMobile = useIsMetamaskMobile();
   const [fromValue, setFromValue] = useState("");
@@ -211,9 +213,8 @@ export default function SwapBox(props) {
 
   const [ordersToaOpen, setOrdersToaOpen] = useState(false);
 
-  let [orderOption, setOrderOption] = useLocalStorageSerializeKey([chainId, "Order-option"], MARKET);
   if (!flagOrdersEnabled) {
-    orderOption = MARKET;
+    setOrderOption(MARKET);
   }
 
   const onOrderOptionChange = (option) => {

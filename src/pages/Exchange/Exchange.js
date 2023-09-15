@@ -440,8 +440,7 @@ export const Exchange = forwardRef((props, ref) => {
     defaultTokenSelection
   );
   const [swapOption, setSwapOption] = useLocalStorageByChainId(chainId, "Swap-option-v2", LONG);
-  const [, setOrderOption] = useLocalStorageSerializeKey([chainId, "Order-option"], MARKET);
-
+  const [orderOption, setOrderOption] = useLocalStorageSerializeKey([chainId, "Order-option"], MARKET);
   const fromTokenAddress = tokenSelection[swapOption].from;
   const toTokenAddress = tokenSelection[swapOption].to;
 
@@ -507,18 +506,10 @@ export const Exchange = forwardRef((props, ref) => {
 
   function updateTradeOptions(options) {
     if (options.tradeType) {
-      setSwapOption((prev) => {
-        if (prev !== options.tradeType) {
-          return options.tradeType;
-        }
-      });
+      setSwapOption(options.tradeType);
     }
     if (options.tradeMode) {
-      setOrderOption((prev) => {
-        if (prev !== options.tradeMode) {
-          return options.tradeMode;
-        }
-      });
+      setOrderOption(options.tradeMode);
     }
     if (options.marketAddress) {
       setToTokenAddress(options.tradeType, options.marketAddress);
@@ -550,7 +541,11 @@ export const Exchange = forwardRef((props, ref) => {
     }
 
     if (tradeMode) {
-      const validTradeMode = getMatchingValueFromObject(LEVERAGE_ORDER_OPTIONS, tradeMode);
+      let finalTradeMode = tradeMode;
+      if (tradeMode.toLowerCase() === "trigger") {
+        finalTradeMode = "stop";
+      }
+      const validTradeMode = getMatchingValueFromObject(LEVERAGE_ORDER_OPTIONS, finalTradeMode);
       if (validTradeMode) {
         options = { ...options, tradeMode: validTradeMode };
       }
@@ -566,9 +561,9 @@ export const Exchange = forwardRef((props, ref) => {
       }
     }
 
-    if (history.location.search) {
-      history.replace({ search: "" });
-    }
+    // if (history.location.search) {
+    //   history.replace({ search: "" });
+    // }
 
     updateTradeOptions(options);
 
@@ -1080,6 +1075,8 @@ export const Exchange = forwardRef((props, ref) => {
               minExecutionFeeUSD={minExecutionFeeUSD}
               minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}
               positions={positions}
+              orderOption={orderOption}
+              setOrderOption={setOrderOption}
             />
           )}
 
