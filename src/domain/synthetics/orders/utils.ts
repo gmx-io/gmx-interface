@@ -285,7 +285,15 @@ export function getOrderError(p: {
       initialCollateralAddress: order.initialCollateralTokenAddress,
     });
 
-    if (swapPathLiquidity.lt(order.minOutputAmount)) {
+    console.log("liq", order, formatUsd(swapPathLiquidity));
+
+    const minOutputUsd = convertToUsd(
+      order.minOutputAmount,
+      order.targetCollateralToken.decimals,
+      order.targetCollateralToken.prices.maxPrice
+    )!;
+
+    if (swapPathLiquidity.lt(minOutputUsd)) {
       return {
         msg: t`There may not be sufficient liquidity to execute the Swap when the Min. Receive conditions are met.`,
         level: "error",
@@ -300,6 +308,8 @@ export function getOrderError(p: {
         order.initialCollateralToken.prices.maxPrice
       )
     );
+
+    console.log("swap impact", swapImpactFeeItem?.bps.toString());
 
     if (getIsHighPriceImpact(undefined, swapImpactFeeItem)) {
       return {
