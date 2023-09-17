@@ -471,6 +471,17 @@ export const Exchange = forwardRef((props, ref) => {
     [tokenSelection, setTokenSelection]
   );
 
+  function setFromAndToTokenAddress(selectedSwapOption, fromTokenAddress, toTokenAddress) {
+    const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection));
+    newTokenSelection[selectedSwapOption].from = fromTokenAddress;
+    newTokenSelection[selectedSwapOption].to = toTokenAddress;
+    if (selectedSwapOption === LONG || selectedSwapOption === SHORT) {
+      newTokenSelection[LONG].to = toTokenAddress;
+      newTokenSelection[SHORT].to = toTokenAddress;
+    }
+    setTokenSelection(newTokenSelection);
+  }
+
   const setMarket = (selectedSwapOption, toTokenAddress) => {
     setSwapOption(selectedSwapOption);
     const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection));
@@ -516,12 +527,8 @@ export const Exchange = forwardRef((props, ref) => {
     if (options.tradeMode) {
       setOrderOption(options.tradeMode);
     }
-    if (options.marketAddress) {
-      setToTokenAddress(options.tradeType, options.marketAddress);
-    }
-
-    if (options.fromAddress) {
-      setFromTokenAddress(options.tradeType, options.fromAddress);
+    if (options.marketAddress || options.fromAddress) {
+      setFromAndToTokenAddress(options.tradeType, options.fromAddress, options.marketAddress);
     }
 
     if (options.collateralAddress) {
@@ -534,7 +541,14 @@ export const Exchange = forwardRef((props, ref) => {
     const queryCollateralToken = queryParams.get("collateral");
     const queryPayToken = queryParams.get("pay");
 
-    let options = {};
+    let options = {
+      tradeType: swapOption,
+      tradeMode: undefined,
+      fromAddress: undefined,
+      marketAddress: undefined,
+      collateralAddress: undefined,
+    };
+
     if (market) {
       const marketTokenInfo = getValidTokenBySymbol(chainId, market, "v1");
       if (marketTokenInfo) {
@@ -574,11 +588,13 @@ export const Exchange = forwardRef((props, ref) => {
       }
     }
 
-    if (history.location.search) {
-      //   history.replace({ search: "" });
-    }
-
     updateTradeOptions(options);
+
+    if (history.location.search) {
+      setTimeout(() => {
+        history.replace({ search: "", pathname: "/trade" });
+      }, 2000);
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [history, params, setOrderOption, setSwapOption, chainId]);
