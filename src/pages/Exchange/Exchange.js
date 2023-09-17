@@ -555,13 +555,9 @@ export const Exchange = forwardRef((props, ref) => {
       marketAddress: undefined,
       collateralAddress: undefined,
     };
-    console.log({
-      market,
-    });
 
     if (market) {
       const marketTokenInfo = getValidTokenBySymbol(chainId, market, "v1");
-      console.log("marketTokenInfo", marketTokenInfo);
       if (marketTokenInfo) {
         options = { ...options, marketAddress: marketTokenInfo.address };
       }
