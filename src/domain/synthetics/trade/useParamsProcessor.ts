@@ -4,7 +4,7 @@ import { MarketInfo, getMarketPoolName } from "../markets";
 import useRouteQuery from "lib/useRouteQuery";
 import { getValidTokenBySymbol } from "config/tokens";
 import { useChainId } from "lib/chains";
-import { getMatchingValueFromObject } from "lib/objects";
+import { areAllValuesValid, getMatchingValueFromObject } from "lib/objects";
 import { TradeMode, TradeType } from "./types";
 
 type RouteParams = {
@@ -102,7 +102,7 @@ export function useParameterProcessor(
         setTradeOptions(options);
       }
 
-      const isTruthy = validateAllTruthy(options);
+      const isTruthy = areAllValuesValid(options);
 
       if (isTruthy) {
         history.replace({ search: "", pathname: "/v2" });
@@ -112,10 +112,4 @@ export function useParameterProcessor(
     processParameters();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params, searchParams, allMarkets, history, chainId]);
-}
-
-export function validateAllTruthy(object: { [key: string]: string | undefined }): boolean {
-  const areAllTruthy = Object.values(object).every((value) => Boolean(value));
-
-  return areAllTruthy;
 }
