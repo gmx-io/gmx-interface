@@ -527,8 +527,15 @@ export const Exchange = forwardRef((props, ref) => {
     if (options.tradeMode) {
       setOrderOption(options.tradeMode);
     }
-    if (options.marketAddress || options.fromAddress) {
+    if (options.marketAddress && options.fromAddress) {
       setFromAndToTokenAddress(options.tradeType, options.fromAddress, options.marketAddress);
+    } else {
+      if (options.fromAddress) {
+        setFromTokenAddress(options.tradeType, options.fromAddress);
+      }
+      if (options.marketAddress) {
+        setToTokenAddress(options.tradeType, options.marketAddress);
+      }
     }
 
     if (options.collateralAddress) {
@@ -548,9 +555,13 @@ export const Exchange = forwardRef((props, ref) => {
       marketAddress: undefined,
       collateralAddress: undefined,
     };
+    console.log({
+      market,
+    });
 
     if (market) {
       const marketTokenInfo = getValidTokenBySymbol(chainId, market, "v1");
+      console.log("marketTokenInfo", marketTokenInfo);
       if (marketTokenInfo) {
         options = { ...options, marketAddress: marketTokenInfo.address };
       }
