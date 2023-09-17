@@ -15,7 +15,7 @@ import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import Tab from "components/Tab/Tab";
 import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS, DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
 import { getAcceptablePriceImpactBpsKey, getSyntheticsListSectionKey } from "config/localStorage";
-import { getToken, getValidTokenBySymbol } from "config/tokens";
+import { getToken } from "config/tokens";
 import { isSwapOrderType } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useOrdersInfo } from "domain/synthetics/orders/useOrdersInfo";
@@ -26,17 +26,16 @@ import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { bigNumberify, formatUsd } from "lib/numbers";
-import { getByKey, getMatchingValueFromObject } from "lib/objects";
+import { getByKey } from "lib/objects";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Helmet from "react-helmet";
 
-import { getMarketIndexName, getMarketPoolName, useMarketsInfo, useMarkets } from "domain/synthetics/markets";
+import { getMarketIndexName, getMarketPoolName, useMarketsInfo } from "domain/synthetics/markets";
 import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTradeOption";
-import { TradeMode, TradeType } from "domain/synthetics/trade";
+import { TradeMode } from "domain/synthetics/trade";
 import { helperToast } from "lib/helperToast";
-import useRouteQuery from "lib/useRouteQuery";
-import { useHistory, useParams } from "react-router-dom";
 import useWallet from "lib/wallets/useWallet";
+import { useParameterProcessor } from "domain/synthetics/trade/useParamsProcessor";
 
 export type Props = {
   savedIsPnlInLeverage: boolean;
@@ -59,12 +58,6 @@ enum ListSection {
   Claims = "Claims",
 }
 
-type TradeParams = {
-  market?: string;
-  tradeType?: string;
-  tradeMode?: string;
-};
-
 export function SyntheticsPage(p: Props) {
   const {
     savedIsPnlInLeverage,
@@ -80,12 +73,8 @@ export function SyntheticsPage(p: Props) {
     openSettings,
   } = p;
   const { chainId } = useChainId();
-  const { marketsData } = useMarkets(chainId);
   const { signer, account } = useWallet();
   const { marketsInfoData, tokensData, pricesUpdatedAt } = useMarketsInfo(chainId);
-  const queryParams = useRouteQuery();
-  const history = useHistory();
-  const params = useParams<TradeParams>();
 
   const { positionsInfoData, isLoading: isPositionsLoading } = usePositionsInfo(chainId, {
     marketsInfoData,
@@ -133,66 +122,9 @@ export function SyntheticsPage(p: Props) {
   );
 
   const { isSwap, isLong } = tradeFlags;
-  const { indexTokens, sortedIndexTokensWithPoolValue } = availableTokensOptions;
+  const { indexTokens, sortedIndexTokensWithPoolValue, sortedAllMarkets } = availableTokensOptions;
 
-  useEffect(() => {
-    const { market, tradeType, tradeMode } = params;
-    const queryPayToken = queryParams.get("pay");
-    const queryPoolToken = queryParams.get("pool");
-    const queryCollateralToken = queryParams.get("collateral");
-
-    let options = {};
-
-    if (market) {
-      const marketTokenInfo = getValidTokenBySymbol(chainId, market, "v2");
-      if (marketTokenInfo) {
-        options = { ...options, toTokenAddress: marketTokenInfo.address };
-      }
-    }
-
-    if (tradeType) {
-      const validTradeType = getMatchingValueFromObject(TradeType, tradeType);
-      if (validTradeType) {
-        options = { ...options, tradeType: validTradeType };
-      }
-    }
-
-    if (tradeMode) {
-      const validTradeMode = getMatchingValueFromObject(TradeMode, tradeMode);
-      if (validTradeMode) {
-        options = { ...options, tradeMode: validTradeMode };
-      }
-    }
-
-    if (queryPayToken) {
-      const payTokenInfo = getValidTokenBySymbol(chainId, queryPayToken, "v2");
-      if (payTokenInfo) {
-        options = { ...options, fromTokenAddress: payTokenInfo.address };
-      }
-    }
-
-    if (queryPoolToken && marketsData) {
-      const marketPool = Object.values(marketsData).find((market) => market.poolName === queryPoolToken.toUpperCase());
-      if (marketPool) {
-        options = { ...options, marketAddress: marketPool.marketTokenAddress };
-      }
-    }
-
-    if (queryCollateralToken) {
-      const collateralTokenInfo = getValidTokenBySymbol(chainId, queryCollateralToken, "v2");
-      if (collateralTokenInfo) {
-        options = { ...options, collateralAddress: collateralTokenInfo.address };
-      }
-    }
-
-    setTradeOptions(options);
-
-    if (history.location.search) {
-      // history.replace({ search: "" });
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params, queryParams, marketsData, chainId, history]);
+  useParameterProcessor(sortedAllMarkets, setTradeOptions);
 
   const { chartToken, availableChartTokens } = useMemo(() => {
     if (!fromTokenAddress || !toTokenAddress) {

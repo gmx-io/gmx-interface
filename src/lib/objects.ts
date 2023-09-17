@@ -14,12 +14,11 @@ export function getByKey<T>(obj?: { [key: string]: T }, key?: string): T | undef
   return obj[key];
 }
 
-export function getMatchingValueFromObject(obj?: { [key: string]: string }, value?: string): string | null {
-  if (!obj || !value) return null;
+export function getMatchingValueFromObject(obj?: { [key: string]: string }, value?: string): string | undefined {
+  if (!obj || !value) return;
   for (const key in obj) {
     if (obj[key].toLowerCase() === value.toLowerCase()) {
       return obj[key];
     }
   }
-  return null;
 }

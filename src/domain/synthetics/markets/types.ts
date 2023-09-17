@@ -11,7 +11,6 @@ export type Market = {
   isSameCollaterals: boolean;
   isSpotOnly: boolean;
   name: string;
-  poolName?: string;
   data: string;
 };
 
