@@ -71,6 +71,8 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
         const marketPrices = getContractMarketPrices(tokensData!, market)!;
 
         if (!marketPrices) {
+          // eslint-disable-next-line no-console
+          console.warn("missed market prices", market);
           return request;
         }
 
@@ -342,6 +344,8 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
 
         // Skip invalid market
         if (!readerValues || !dataStoreValues || readerErrors || dataStoreErrors) {
+          // eslint-disable-next-line no-console
+          console.log("market info error", marketAddress, readerErrors, dataStoreErrors, dataStoreValues);
           return acc;
         }
 
@@ -498,6 +502,8 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
       }, {} as MarketsInfoData);
     },
   });
+
+  console.log("markets info", data);
 
   return {
     marketsInfoData: data,
