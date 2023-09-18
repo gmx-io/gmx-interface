@@ -65,9 +65,7 @@ export function useParameterProcessor(
     const processParameters = () => {
       if (market) {
         const marketTokenInfo = getValidTokenBySymbol(chainId, market, "v2");
-        if (marketTokenInfo) {
-          options = updateOption(options, "toTokenAddress", marketTokenInfo.address);
-        }
+        options = updateOption(options, "toTokenAddress", marketTokenInfo?.address);
       }
 
       if (params.tradeType) {
@@ -84,11 +82,11 @@ export function useParameterProcessor(
         const payTokenInfo = getValidTokenBySymbol(chainId, queryPayToken, "v2");
         options = updateOption(options, "fromTokenAddress", payTokenInfo?.address);
       }
-
       if (queryPoolName && allMarkets.length > 0) {
         const marketPool = allMarkets.find((market) => {
           const poolName = getMarketPoolName(market);
-          return poolName.toLowerCase() === queryPoolName.toLowerCase();
+          const isSameMarket = market.indexTokenAddress === options.toTokenAddress;
+          return isSameMarket && poolName.toLowerCase() === queryPoolName.toLowerCase();
         });
         options = updateOption(options, "marketAddress", marketPool?.marketTokenAddress);
       }
@@ -102,9 +100,10 @@ export function useParameterProcessor(
         setTradeOptions(options);
       }
 
-      const isTruthy = areAllValuesValid(options);
+      // make sure all the params are valid values or 'invalid' for unsupported values
+      const isAllParamsValid = areAllValuesValid(options);
 
-      if (isTruthy) {
+      if (isAllParamsValid) {
         history.replace({ search: "", pathname: "/v2" });
       }
     };
