@@ -26,6 +26,12 @@ export function useOrdersInfo(
   const wrappedToken = getWrappedToken(chainId);
 
   return useMemo(() => {
+    if (!account) {
+      return {
+        isLoading: false,
+      };
+    }
+
     if (!marketsInfoData || !ordersData || !tokensData) {
       return {
         isLoading: true,
@@ -55,5 +61,5 @@ export function useOrdersInfo(
       ordersInfoData,
       isLoading: false,
     };
-  }, [marketsInfoData, ordersData, tokensData, wrappedToken]);
+  }, [marketsInfoData, ordersData, tokensData, wrappedToken, account]);
 }

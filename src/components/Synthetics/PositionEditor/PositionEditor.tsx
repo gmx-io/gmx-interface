@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
 import Token from "abis/Token.json";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
@@ -60,6 +59,8 @@ import useSWR from "swr";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionEditor.scss";
 import { useHasOutdatedUi } from "domain/legacy";
+import useWallet from "lib/wallets/useWallet";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { DUST_BNB } from "lib/legacy";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
@@ -71,7 +72,6 @@ export type Props = {
   allowedSlippage: number;
   setPendingTxns: (txns: any) => void;
   onClose: () => void;
-  onConnectWallet: () => void;
   shouldDisableValidation: boolean;
 };
 
@@ -81,16 +81,17 @@ enum Operation {
 }
 
 export function PositionEditor(p: Props) {
-  const { position, tokensData, showPnlInLeverage, setPendingTxns, onClose, onConnectWallet, allowedSlippage } = p;
+  const { position, tokensData, showPnlInLeverage, setPendingTxns, onClose, allowedSlippage } = p;
   const { chainId } = useChainId();
+  const { account, signer, active } = useWallet();
+  const { openConnectModal } = useConnectModal();
   const isMetamaskMobile = useIsMetamaskMobile();
-  const { account, library, active } = useWeb3React();
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
   const { minCollateralUsd } = usePositionsConstants(chainId);
   const routerAddress = getContract(chainId, "SyntheticsRouter");
-  const userReferralInfo = useUserReferralInfo(library, chainId, account);
+  const userReferralInfo = useUserReferralInfo(signer, chainId, account);
   const { data: hasOutdatedUi } = useHasOutdatedUi();
 
   const isVisible = Boolean(position);
@@ -106,7 +107,7 @@ export function PositionEditor(p: Props) {
   const { data: tokenAllowance } = useSWR<BigNumber>(
     position ? [active, chainId, position.collateralTokenAddress, "allowance", account, routerAddress] : null,
     {
-      fetcher: contractFetcher(library, Token) as any,
+      fetcher: contractFetcher(signer, Token) as any,
     }
   );
 
@@ -303,7 +304,7 @@ export function PositionEditor(p: Props) {
 
   function onSubmit() {
     if (!account) {
-      onConnectWallet();
+      openConnectModal?.();
       return;
     }
 
@@ -313,7 +314,8 @@ export function PositionEditor(p: Props) {
       !markPrice ||
       !position?.indexToken ||
       !collateralDeltaAmount ||
-      !selectedCollateralAddress
+      !selectedCollateralAddress ||
+      !signer
     ) {
       return;
     }
@@ -321,7 +323,7 @@ export function PositionEditor(p: Props) {
     if (isDeposit) {
       setIsSubmitting(true);
 
-      createIncreaseOrderTxn(chainId, library, {
+      createIncreaseOrderTxn(chainId, signer, {
         account,
         marketAddress: position.marketAddress,
         initialCollateralAddress: selectedCollateralAddress,
@@ -356,7 +358,7 @@ export function PositionEditor(p: Props) {
 
       setIsSubmitting(true);
 
-      createDecreaseOrderTxn(chainId, library, {
+      createDecreaseOrderTxn(chainId, signer, {
         account,
         marketAddress: position.marketAddress,
         initialCollateralAddress: position.collateralTokenAddress,
