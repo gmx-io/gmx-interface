@@ -8,7 +8,7 @@ const ORACLE_KEEPER_URLS = {
 
   [ARBITRUM_GOERLI]: ["https://gmx-synthetics-api-arb-goerli-4vgxk.ondigitalocean.app"],
 
-  [AVALANCHE_FUJI]: ["https://gmx-oracle-keeper-ro-avax-fuji-d4il9.ondigitalocean.app"],
+  [AVALANCHE_FUJI]: ["https://synthetics-api-avax-fuji-upovm.ondigitalocean.app"],
 };
 
 export function getOracleKeeperUrl(chainId: number, index: number) {
