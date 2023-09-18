@@ -37,6 +37,9 @@ export type RawTradeAction = {
   collateralTokenPriceMax?: string;
   collateralTokenPriceMin?: string;
 
+  indexTokenPriceMin?: string;
+  indexTokenPriceMax?: string;
+
   orderType: OrderType;
   orderKey: string;
   isLong?: boolean;
@@ -63,6 +66,8 @@ export type PositionTradeAction = {
   swapPath: string[];
   initialCollateralDeltaAmount: BigNumber;
   sizeDeltaUsd: BigNumber;
+  indexTokenPriceMin: BigNumber;
+  indexTokenPriceMax: BigNumber;
   triggerPrice?: BigNumber;
   acceptablePrice: BigNumber;
   executionPrice?: BigNumber;

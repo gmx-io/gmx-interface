@@ -74,6 +74,9 @@ export function useTradeHistory(
 
             collateralTokenPriceMax
             collateralTokenPriceMin
+
+            indexTokenPriceMin
+            indexTokenPriceMax
             
             orderType
             orderKey
@@ -194,6 +197,9 @@ export function useTradeHistory(
             collateralTokenPriceMin: rawAction.collateralTokenPriceMin
               ? parseContractPrice(bigNumberify(rawAction.collateralTokenPriceMin)!, initialCollateralToken.decimals)
               : undefined,
+
+            indexTokenPriceMin: bigNumberify(rawAction.indexTokenPriceMin)!,
+            indexTokenPriceMax: bigNumberify(rawAction.indexTokenPriceMin)!,
 
             orderType,
             orderKey: rawAction.orderKey,
