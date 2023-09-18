@@ -73,7 +73,6 @@
 
 .TopPositionsPositionView .TopPositionsSymbol {
   display: inline-block;
-  flex: 1;
   text-decoration: inherit;
 }
 
