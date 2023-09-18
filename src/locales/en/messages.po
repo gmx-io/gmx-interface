@@ -1382,8 +1382,8 @@ msgid "Diff"
 msgstr "Diff"
 
 #: src/components/GlobalLeaderboards/TopPositions.tsx
-msgid "Direction"
-msgstr "Direction"
+#~ msgid "Direction"
+#~ msgstr "Direction"
 
 #: src/App/App.js
 msgid "Disable order validations"
@@ -2328,12 +2328,15 @@ msgstr "Leftover collateral below {0} USD"
 msgid "Leftover position below 10 USD"
 msgstr "Leftover position below 10 USD"
 
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Lev."
+msgstr "Lev."
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
@@ -2515,6 +2518,7 @@ msgstr "Loading..."
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/GlobalLeaderboards/TopPositions.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -2637,7 +2641,6 @@ msgstr "Mark Price"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
@@ -3359,6 +3362,7 @@ msgid "Pools Value"
 msgstr "Pools Value"
 
 #: src/components/Exchange/PositionsList.js
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "Position"
 msgstr "Position"
@@ -3366,6 +3370,10 @@ msgstr "Position"
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "Position Fee"
 msgstr "Position Fee"
+
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Position Leverage."
+msgstr "Position Leverage."
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Position Price Impact"
@@ -3966,6 +3974,7 @@ msgstr "Share Position"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -5537,15 +5546,13 @@ msgstr "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 
-<<<<<<< HEAD
 #: src/components/Table/index.tsx
 #~ msgid "{0}"
-#~ msgstr "{0}"
-=======
+#~ msgstr "{0}======="
+
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>;"
 msgstr "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>;"
->>>>>>> 4d826c7f13915756ee7fb2a0802ffce699ce3df3
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"
