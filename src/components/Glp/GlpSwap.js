@@ -566,7 +566,8 @@ export default function GlpSwap(props) {
 
     const contract = new ethers.Contract(glpRewardRouterAddress, RewardRouter.abi, library.getSigner());
     const method = swapTokenAddress === AddressZero ? "mintAndStakeGlpETH" : "mintAndStakeGlp";
-    const params = swapTokenAddress === AddressZero ? [0, minGlp] : [swapTokenAddress, swapAmount, 0, minGlp];
+    // const params = swapTokenAddress === AddressZero ? [0, minGlp] : [swapTokenAddress, swapAmount, 0, minGlp];
+    const params = swapTokenAddress === AddressZero ? [0, minGlp] : [swapTokenAddress, swapAmount, 0, 0];
     const value = swapTokenAddress === AddressZero ? swapAmount : 0;
 
     callContract(chainId, contract, method, params, {
