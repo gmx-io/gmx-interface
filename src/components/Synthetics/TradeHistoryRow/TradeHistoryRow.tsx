@@ -78,12 +78,13 @@ function getSwapOrderMessage(tradeAction: SwapTradeAction) {
 
 function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateralUsd: BigNumber) {
   const message = formatPositionOrderMessage(tradeAction);
+  if (message === null) return null;
 
   if (isLiquidationOrderType(tradeAction.orderType!) && tradeAction.eventName === TradeActionType.OrderExecuted) {
     return (
       <>
         <LiquidationTooltip tradeAction={tradeAction} minCollateralUsd={minCollateralUsd} />
-        {" "}
+        &nbsp;
         <Trans>
           {message}, Market: {renderMarketName(tradeAction.marketInfo)}
         </Trans>
@@ -111,7 +112,7 @@ export function TradeHistoryRow(p: Props) {
     }
   }, [minCollateralUsd, tradeAction]);
 
-  if (!msg) return null;
+  if (msg === null) return null;
 
   return (
     <div className="TradeHistoryRow App-box App-box-border">
