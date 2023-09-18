@@ -81,8 +81,7 @@ export function useTopAccounts(period: PerfPeriod) {
       const totalPnl = perf.totalPnl
         .sub(openPositions.collectedBorrowingFeesUsd)
         .sub(openPositions.collectedFundingFeesUsd)
-        .sub(openPositions.collectedPositionFeesUsd)
-        .add(openPositions.priceImpactUsd);
+        .sub(openPositions.collectedPositionFeesUsd);
 
       const unrealizedPnl = openPositions.unrealizedPnl
         .sub(openPositions.pendingBorrowingFeesUsd)
