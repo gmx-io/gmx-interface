@@ -472,6 +472,11 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           address: getContract(chainId, "EventEmitter"),
           topics: [EVENT_LOG1_TOPIC, [DEPOSIT_CREATED_HASH, WITHDRAWAL_CREATED_HASH], addressHash],
         },
+        // NEW CONTRACTS
+        {
+          address: getContract(chainId, "EventEmitter"),
+          topics: [EVENT_LOG2_TOPIC, [DEPOSIT_CREATED_HASH, WITHDRAWAL_CREATED_HASH], null, addressHash],
+        },
         {
           address: getContract(chainId, "EventEmitter"),
           topics: [
@@ -479,7 +484,22 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             [DEPOSIT_CANCELLED_HASH, DEPOSIT_EXECUTED_HASH, WITHDRAWAL_CANCELLED_HASH, WITHDRAWAL_EXECUTED_HASH],
           ],
         },
+        // NEW CONTRACTS
+        {
+          address: getContract(chainId, "EventEmitter"),
+          topics: [
+            EVENT_LOG2_TOPIC,
+            [DEPOSIT_CANCELLED_HASH, DEPOSIT_EXECUTED_HASH, WITHDRAWAL_CANCELLED_HASH, WITHDRAWAL_EXECUTED_HASH],
+            null,
+            addressHash,
+          ],
+        },
         // ORDERS
+        {
+          address: getContract(chainId, "EventEmitter"),
+          topics: [EVENT_LOG2_TOPIC, ORDER_CREATED_HASH, null, addressHash],
+        },
+        // NEW CONTRACTS
         {
           address: getContract(chainId, "EventEmitter"),
           topics: [EVENT_LOG2_TOPIC, ORDER_CREATED_HASH, null, addressHash],
@@ -487,6 +507,11 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         {
           address: getContract(chainId, "EventEmitter"),
           topics: [EVENT_LOG1_TOPIC, [ORDER_CANCELLED_HASH, ORDER_EXECUTED_HASH]],
+        },
+        // NEW CONTRACTS
+        {
+          address: getContract(chainId, "EventEmitter"),
+          topics: [EVENT_LOG2_TOPIC, [ORDER_CANCELLED_HASH, ORDER_EXECUTED_HASH], null, addressHash],
         },
         // POSITIONS
         {
