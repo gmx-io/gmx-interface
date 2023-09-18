@@ -174,6 +174,10 @@ msgstr ""
 msgid "Acceptable Price Impact"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Acceptable Price: {0}"
+msgstr ""
+
 #: src/pages/Actions/Actions.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
@@ -1603,8 +1607,12 @@ msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgstr "Ejecutar Orden: Intercambiar {fromAmountDisplay} {0} por {toAmountDisplay} {1}"
 
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
-msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price: {1}"
+msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText}"
 msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+#~ msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price: {1}"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #~ msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price:{1}, Market: {2}"
@@ -1616,6 +1624,10 @@ msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "Execution Fee"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Execution Price: {0}"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -4636,12 +4648,20 @@ msgstr ""
 msgid "Trigger Price"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Trigger Price: {pricePrefix} {0}"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Trigger order disabled, pending {0} upgrade"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Trigger order for"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Triggered at: {0}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -5469,8 +5489,8 @@ msgid "{actionText} Order: Swap {fromText} for {toText}, Price: {ratioText}"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
-msgid "{actionText} Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price: {pricePrefix} {1}"
-msgstr ""
+#~ msgid "{actionText} Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price: {pricePrefix} {1}"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #~ msgid "{actionText} Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price: {pricePrefix} {1}, Market: {2}"
@@ -5576,8 +5596,12 @@ msgid "{ordersText} canceled"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
-msgid "{positionText} {sizeDeltaText}, Price: {0}"
+msgid "{positionText} {sizeDeltaText}, Execution Price: {0}"
 msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+#~ msgid "{positionText} {sizeDeltaText}, Price: {0}"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #~ msgid "{positionText} {sizeDeltaText}, Price: {0}, Market: {1}"
