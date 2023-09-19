@@ -13,9 +13,10 @@ import { getExchangeRateDisplay } from "lib/legacy";
 import { formatTokenAmount } from "lib/numbers";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
-import { LiquidationTooltip } from "./LiquidationTooltip";
 import "./TradeHistoryRow.scss";
 import { formatPositionOrderMessage, getOrderActionText } from "./helpers";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import Tooltip from "components/Tooltip/Tooltip";
 
 type Props = {
   tradeAction: TradeAction;
@@ -77,26 +78,42 @@ function getSwapOrderMessage(tradeAction: SwapTradeAction) {
 }
 
 function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateralUsd: BigNumber) {
-  const message = formatPositionOrderMessage(tradeAction);
-  if (message === null) return null;
+  const messages = formatPositionOrderMessage(tradeAction, minCollateralUsd);
+  if (messages === null) return null;
 
-  if (isLiquidationOrderType(tradeAction.orderType!) && tradeAction.eventName === TradeActionType.OrderExecuted) {
-    return (
-      <>
-        <LiquidationTooltip tradeAction={tradeAction} minCollateralUsd={minCollateralUsd} />
-        &nbsp;
-        <Trans>
-          {message}, Market: {renderMarketName(tradeAction.marketInfo)}
-        </Trans>
-      </>
-    );
-  } else {
-    return (
-      <Trans>
-        {message}, Market: {renderMarketName(tradeAction.marketInfo)}
-      </Trans>
-    );
-  }
+  return (
+    <>
+      {messages.map((message, i) => {
+        const textElement = (
+          <>
+            <Trans>{message.text}</Trans>
+          </>
+        );
+
+        const withTooltip = message.tooltipProps ? (
+          <Tooltip
+            position="left-top"
+            handle={textElement}
+            renderContent={() => (
+              <>
+                <Trans>{message.tooltipTitle}</Trans>
+                <br />
+                <br />
+                {message.tooltipProps?.map((props) => (
+                  <StatsTooltipRow {...props} />
+                ))}
+              </>
+            )}
+          />
+        ) : (
+          textElement
+        );
+
+        return i === messages.length - 1 ? withTooltip : <>{withTooltip} </>;
+      })}
+      , Market: {renderMarketName(tradeAction.marketInfo)}
+    </>
+  );
 }
 
 export function TradeHistoryRow(p: Props) {

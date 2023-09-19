@@ -1,9 +1,13 @@
 import { t } from "@lingui/macro";
+import { StatsTooltipRowProps } from "components/StatsTooltip/StatsTooltipRow";
 import { OrderType, isIncreaseOrderType } from "domain/synthetics/orders";
 import { formatAcceptablePrice } from "domain/synthetics/positions";
+import { convertToUsd } from "domain/synthetics/tokens";
 import { getTriggerThresholdType } from "domain/synthetics/trade";
 import { PositionTradeAction, TradeAction, TradeActionType } from "domain/synthetics/tradeHistory";
-import { formatTokenAmount, formatUsd } from "lib/numbers";
+import { BigNumber } from "ethers";
+import { PRECISION } from "lib/legacy";
+import { formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { museNeverExist } from "lib/types";
 
 export function getOrderActionText(tradeAction: TradeAction) {
@@ -32,7 +36,16 @@ export function getOrderActionText(tradeAction: TradeAction) {
   return actionText;
 }
 
-export const formatPositionOrderMessage = (tradeAction: PositionTradeAction) => {
+export const formatPositionOrderMessage = (
+  tradeAction: PositionTradeAction,
+  minCollateralUsd: BigNumber
+):
+  | null
+  | {
+      text: string;
+      tooltipProps?: StatsTooltipRowProps[];
+      tooltipTitle?: string;
+    }[] => {
   const indexToken = tradeAction.indexToken;
   const priceDecimals = tradeAction.indexToken.priceDecimals;
   const collateralToken = tradeAction.initialCollateralToken;
@@ -54,14 +67,45 @@ export const formatPositionOrderMessage = (tradeAction: PositionTradeAction) => 
       const executionPrice = tradeAction.executionPrice;
       const pricePrefix = getTriggerThresholdType(tradeAction.orderType!, tradeAction.isLong!);
       const actionText = getOrderActionText(tradeAction);
+      const tokenPrice = getTokenPriceByTradeAction(tradeAction);
 
       if (tradeAction.eventName === TradeActionType.OrderExecuted) {
         return [
-          t`Execute Order: ${increaseText} ${positionText} ${sizeDeltaText}`,
-          // FIXME is it right price?
-          t`Triggered at: ${formatUsd(triggerPrice, { displayDecimals: priceDecimals })}`,
-          t`Execution Price: ${formatUsd(executionPrice, { displayDecimals: priceDecimals })}`,
-        ].join(", ");
+          {
+            text: t`Execute Order: ${increaseText} ${positionText} ${sizeDeltaText}, `,
+          },
+          {
+            text: [
+              // FIXME is it triggeredAt? or tokenPrice should be used?
+              t`Triggered at: ${formatUsd(triggerPrice, { displayDecimals: priceDecimals })}`,
+              t`Execution Price: ${formatUsd(executionPrice, { displayDecimals: priceDecimals })}`,
+            ].join(", "),
+            tooltipTitle: t`This order was executed at the trigger price.`,
+            tooltipProps: [
+              {
+                label: t`Order trigger price`,
+                showDollar: false,
+                value: formatUsd(triggerPrice, { displayDecimals: priceDecimals }),
+              },
+              tradeAction.orderType === OrderType.StopLossDecrease
+                ? undefined
+                : {
+                    label: t`Acceptable Price`,
+                    showDollar: false,
+                    value: formatAcceptablePrice(tradeAction.acceptablePrice, {
+                      displayDecimals: priceDecimals,
+                    }),
+                  },
+
+              tradeAction.priceImpactDiffUsd && {
+                label: t`Actual Price Impact`,
+                showDollar: false,
+                // FIXME ?
+                value: formatUsd(tradeAction.priceImpactUsd, { displayDecimals: priceDecimals }),
+              },
+            ].filter(Boolean) as StatsTooltipRowProps[],
+          },
+        ];
       }
 
       const prefix = tradeAction.eventName === TradeActionType.OrderFrozen ? "Execution Failed" : `${actionText} Order`;
@@ -79,7 +123,7 @@ export const formatPositionOrderMessage = (tradeAction: PositionTradeAction) => 
         );
       }
 
-      return strs.join(", ");
+      return [{ text: strs.join(", ") }];
     }
 
     case OrderType.MarketDecrease:
@@ -100,12 +144,16 @@ export const formatPositionOrderMessage = (tradeAction: PositionTradeAction) => 
             ? tradeAction.executionPrice
             : tradeAction.acceptablePrice;
 
-        return t`${actionText} ${increaseText} ${positionText} ${sizeDeltaText}, ${pricePrefix}: ${formatAcceptablePrice(
-          price,
+        return [
           {
-            displayDecimals: priceDecimals,
-          }
-        )}`;
+            text: t`${actionText} ${increaseText} ${positionText} ${sizeDeltaText}, ${pricePrefix}: ${formatAcceptablePrice(
+              price,
+              {
+                displayDecimals: priceDecimals,
+              }
+            )}`,
+          },
+        ];
       } else {
         const collateralText = formatTokenAmount(
           collateralDeltaAmount,
@@ -114,9 +162,9 @@ export const formatPositionOrderMessage = (tradeAction: PositionTradeAction) => 
         );
 
         if (isIncrease) {
-          return t`${actionText} Deposit ${collateralText} into ${positionText}`;
+          return [{ text: t`${actionText} Deposit ${collateralText} into ${positionText}` }];
         } else {
-          return t`${actionText} Withdraw ${collateralText} from ${positionText}`;
+          return [{ text: t`${actionText} Withdraw ${collateralText} from ${positionText}` }];
         }
       }
     }
@@ -124,9 +172,20 @@ export const formatPositionOrderMessage = (tradeAction: PositionTradeAction) => 
     case OrderType.Liquidation: {
       if (tradeAction.eventName === TradeActionType.OrderExecuted) {
         const executionPrice = tradeAction.executionPrice;
-        return t`${positionText} ${sizeDeltaText}, Execution Price: ${formatUsd(executionPrice, {
-          displayDecimals: priceDecimals,
-        })}`;
+        const maxLeverage = PRECISION.div(tradeAction.marketInfo.minCollateralFactor);
+        const maxLeverageText = Number(maxLeverage).toFixed(1) + "x";
+        return [
+          {
+            text: "Liquidated",
+            tooltipTitle: t`This position was liquidated as the max leverage of ${maxLeverageText} was exceeded.`,
+            tooltipProps: getLiquidationTooltipProps(tradeAction, minCollateralUsd),
+          },
+          {
+            text: t`${positionText} ${sizeDeltaText}, Execution Price: ${formatUsd(executionPrice, {
+              displayDecimals: priceDecimals,
+            })}`,
+          },
+        ];
       }
 
       return null;
@@ -136,10 +195,68 @@ export const formatPositionOrderMessage = (tradeAction: PositionTradeAction) => 
       museNeverExist(tradeAction.orderType);
     }
   }
+
+  return null;
 };
 
-// FIXME
-export function getTokenPriceByTradeAction(tradeAction: TradeAction) {
-  const positionTradeAction = tradeAction as PositionTradeAction;
-  return positionTradeAction.indexTokenPriceMax;
+function getTokenPriceByTradeAction(tradeAction: PositionTradeAction) {
+  return isIncreaseOrderType(tradeAction.orderType) ? tradeAction.indexTokenPriceMax : tradeAction.indexTokenPriceMin;
+}
+
+function getLiquidationTooltipProps(
+  tradeAction: PositionTradeAction,
+  minCollateralUsd: BigNumber
+): StatsTooltipRowProps[] {
+  const {
+    initialCollateralToken,
+    initialCollateralDeltaAmount,
+    collateralTokenPriceMin,
+    borrowingFeeAmount,
+    fundingFeeAmount,
+    positionFeeAmount,
+    priceImpactDiffUsd,
+    pnlUsd,
+  } = tradeAction;
+
+  const initialCollateralUsd = convertToUsd(
+    initialCollateralDeltaAmount,
+    initialCollateralToken?.decimals,
+    collateralTokenPriceMin
+  );
+
+  const positionFeeUsd = convertToUsd(positionFeeAmount, initialCollateralToken?.decimals, collateralTokenPriceMin);
+  const borrowingFeeUsd = convertToUsd(borrowingFeeAmount, initialCollateralToken?.decimals, collateralTokenPriceMin);
+  const fundingFeeUsd = convertToUsd(fundingFeeAmount, initialCollateralToken?.decimals, collateralTokenPriceMin);
+
+  return [
+    // FIXME is it mark price?
+    {
+      label: t`Mark Price (at liquidation)`,
+      showDollar: false,
+      value: formatUsd(getTokenPriceByTradeAction(tradeAction)),
+    },
+    // FIXME there's already priceImpactDiffUsd
+    {
+      label: t`Actual price impact`,
+      showDollar: false,
+      value: formatUsd(priceImpactDiffUsd),
+    },
+    {
+      label: t`Initial collateral`,
+      showDollar: false,
+      value: formatTokenAmountWithUsd(
+        initialCollateralDeltaAmount,
+        initialCollateralUsd,
+        initialCollateralToken?.symbol,
+        initialCollateralToken?.decimals
+      ),
+    },
+    { label: t`Min required collateral`, showDollar: false, value: formatUsd(minCollateralUsd) },
+    { label: t`Borrow Fee`, showDollar: false, value: formatUsd(borrowingFeeUsd) },
+    { label: t`Funding Fee`, showDollar: false, value: formatUsd(fundingFeeUsd) },
+    { label: t`Position Fee`, showDollar: false, value: formatUsd(positionFeeUsd) },
+    { label: t`Price Impact`, showDollar: false, value: formatUsd(priceImpactDiffUsd) },
+    // FIXME pnl is undefined
+    { label: t`PnL`, showDollar: false, value: formatUsd(pnlUsd) },
+  ];
 }

@@ -29,6 +29,7 @@ export type RawTradeAction = {
   executionAmountOut?: string;
 
   priceImpactDiffUsd?: string;
+  priceImpactUsd?: string;
   positionFeeAmount?: string;
   borrowingFeeAmount?: string;
   fundingFeeAmount?: string;
@@ -74,6 +75,7 @@ export type PositionTradeAction = {
   collateralTokenPriceMin?: BigNumber;
   collateralTokenPriceMax?: BigNumber;
   minOutputAmount: BigNumber;
+  priceImpactUsd?: BigNumber;
   priceImpactDiffUsd?: BigNumber;
   positionFeeAmount?: BigNumber;
   borrowingFeeAmount?: BigNumber;

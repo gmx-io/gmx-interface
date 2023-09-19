@@ -4,26 +4,33 @@ import { getSubgraphUrlKey } from "./localStorage";
 
 const SUBGRAPH_URLS = {
   [ARBITRUM]: {
-    stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-stats/api",
+    stats:
+      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-arbitrum-stats/version/token-prices-230918192328-78f9200/api",
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-referrals/api",
     nissohVault: "https://api.thegraph.com/subgraphs/name/nissoh/gmx-vault",
-    syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-arbitrum-stats/api",
+    syntheticsStats:
+      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-arbitrum-stats/version/token-prices-230918192328-78f9200/api",
   },
 
   [ARBITRUM_GOERLI]: {
-    stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-stats/api",
+    stats:
+      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-goerli-stats/version/token-prices-230918191557-78f9200/api",
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-goerli-referrals/api",
-    syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-goerli-stats/api",
+    syntheticsStats:
+      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-goerli-stats/version/token-prices-230918191557-78f9200/api",
   },
 
   [AVALANCHE]: {
-    stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-stats/api",
+    stats:
+      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-avalanche-stats/version/token-prices-230918193127-78f9200/api",
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-referrals/api",
-    syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-avalanche-stats/api",
+    syntheticsStats:
+      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-avalanche-stats/version/token-prices-230918193127-78f9200/api",
   },
 
   [AVALANCHE_FUJI]: {
-    stats: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-stats",
+    stats:
+      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-fuji-stats/version/token-prices-230918193144-78f9200/api",
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-fuji-referrals/api",
     syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-fuji-stats/api",
   },

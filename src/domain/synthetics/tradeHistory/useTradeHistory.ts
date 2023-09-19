@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import { getWrappedToken } from "config/tokens";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import { TokensData, parseContractPrice } from "domain/synthetics/tokens";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { bigNumberify } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getSyntheticsGraphClient } from "lib/subgraph";
@@ -67,6 +67,7 @@ export function useTradeHistory(
             executionAmountOut
 
             priceImpactDiffUsd
+            priceImpactUsd
             positionFeeAmount
             borrowingFeeAmount
             fundingFeeAmount
@@ -198,17 +199,18 @@ export function useTradeHistory(
               ? parseContractPrice(bigNumberify(rawAction.collateralTokenPriceMin)!, initialCollateralToken.decimals)
               : undefined,
 
-            indexTokenPriceMin: bigNumberify(rawAction.indexTokenPriceMin)!,
-            indexTokenPriceMax: bigNumberify(rawAction.indexTokenPriceMin)!,
+            indexTokenPriceMin: parseContractPrice(bigNumberify(rawAction.indexTokenPriceMin)!, indexToken.decimals),
+            indexTokenPriceMax: parseContractPrice(bigNumberify(rawAction.indexTokenPriceMin)!, indexToken.decimals),
 
             orderType,
             orderKey: rawAction.orderKey,
             isLong: rawAction.isLong!,
 
-            priceImpactDiffUsd: rawAction.priceImpactDiffUsd ? bigNumberify(rawAction.priceImpactDiffUsd) : undefined,
-            positionFeeAmount: rawAction.positionFeeAmount ? bigNumberify(rawAction.positionFeeAmount) : undefined,
-            borrowingFeeAmount: rawAction.borrowingFeeAmount ? bigNumberify(rawAction.borrowingFeeAmount) : undefined,
-            fundingFeeAmount: rawAction.fundingFeeAmount ? bigNumberify(rawAction.fundingFeeAmount) : undefined,
+            priceImpactDiffUsd: rawAction.priceImpactDiffUsd ? BigNumber.from(rawAction.priceImpactDiffUsd) : undefined,
+            priceImpactUsd: rawAction.priceImpactUsd ? BigNumber.from(rawAction.priceImpactUsd) : undefined,
+            positionFeeAmount: rawAction.positionFeeAmount ? BigNumber.from(rawAction.positionFeeAmount) : undefined,
+            borrowingFeeAmount: rawAction.borrowingFeeAmount ? BigNumber.from(rawAction.borrowingFeeAmount) : undefined,
+            fundingFeeAmount: rawAction.fundingFeeAmount ? BigNumber.from(rawAction.fundingFeeAmount) : undefined,
 
             reason: rawAction.reason,
             transaction: rawAction.transaction,
