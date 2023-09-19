@@ -83,8 +83,8 @@ export default function TopPositions() {
             ensName={p.ensName}
             avatarUrl={p.avatarUrl}
             breakpoint={breakpoint}
+            lengths={{ S: 9, M: 13 }}
             size={24}
-            maxLength={breakpoint === "S" ? 9 : undefined}
           />
         ),
     },
@@ -188,7 +188,7 @@ export default function TopPositions() {
   )
   const titles: { [k in keyof TopPositionsRow]?: TableHeader } = {
     rank: { title: t`Rank`, width: 5 },
-    account: { title: t`Address`, width: 40 },
+    account: { title: t`Address`, width: (p = "L") => ({ L: 40, M: 16, S: 10 }[p] || 40) },
     unrealizedPnl: {
       title: t`PnL ($)`,
       tooltip: t`Total Unrealized Profit and Loss.`,

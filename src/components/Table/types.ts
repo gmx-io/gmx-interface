@@ -5,7 +5,7 @@ export type TableHeader = {
   className?: string;
   tooltip?: string | (() => ReactNode);
   onClick?: () => void;
-  width?: number;
+  width?: number | ((breakpoint?: string) => number);
 };
 
 export type TableProps<T extends Record<string, any>> = {
@@ -23,6 +23,11 @@ export type TableCellData = {
 };
 
 export type TableCell = string | number | TableCellData;
+
+export type TableHeaderProps = {
+  data: TableHeader;
+  breakpoint?: string;
+};
 
 export type TableCellProps = {
   data: TableCell;

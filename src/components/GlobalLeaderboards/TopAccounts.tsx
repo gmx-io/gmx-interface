@@ -36,7 +36,7 @@ const parseRow = (s: Ranked<LiveAccountPerformance>, i: number): TopAccountsRow 
           size={24}
           address={s.account}
           breakpoint={breakpoint}
-          maxLength={breakpoint === "S" ? 9 : undefined}
+          lengths={{ S: 9, M: 13 }}
         />
       ),
   },
@@ -161,7 +161,7 @@ export default function TopAccounts() {
 
   const titles: { [key in keyof TopAccountsRow]?: TableHeader } = {
     rank: { title: t`Rank`, width: 5 },
-    account: { title: t`Address`, width: 40 },
+    account: { title: t`Address`, width: (p = "L") => ({ L: 40, M: 16, S: 10 }[p] || 40) },
     absProfit: {
       title: t`PnL ($)`,
       tooltip: t`Total Realized and Unrealized Profit and Loss.`,

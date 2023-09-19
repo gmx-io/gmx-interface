@@ -12,9 +12,15 @@
   grid-auto-flow: column;
 }
 
-@media screen and (max-width:450px) {
+@media screen and (max-width:1000px) {
   .GlobalLeaderboards .Tab {
     width: unset;
+  }
+
+  .GlobalLeaderboards .Tab-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .LeaderboardHeader {
@@ -85,25 +91,6 @@
   text-align: left;
   width: 4.4rem;
 }
-
-/* .TopPositionsPositionView .TopPositionsDirection {
-  font-size: 0;
-  display: inline-block;
-  width: 2rem;
-  height: 2rem;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  margin-left: 0.5rem;
-}
-
-.TopPositionsPositionView .TopPositionsDirection.positive {
-  background-image: url(../../img/ic_line_chart_up.svg);
-}
-
-.TopPositionsPositionView .TopPositionsDirection.negative {
-  background-image: url(../../img/ic_line_chart_down.svg);
-} */
 
 .LeaderboardSearch.disabled {
   cursor: not-allowed;
