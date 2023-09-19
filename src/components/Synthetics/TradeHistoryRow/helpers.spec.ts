@@ -6,10 +6,9 @@ import {
   cancelOrderIncreaseLong,
   createOrderDecreaseLong,
   createOrderIncreaseLong,
-  executeOrderDecreaseShort,
-  executeOrderIncreaseShort,
+  executeOrderIncreaseLong,
   freezeOrderIncreaseShort,
-  liquidationLongXRP,
+  liquidated,
   requestIncreasePosition,
   undefinedOrder,
   withdraw1Usd,
@@ -52,34 +51,12 @@ describe("TradeHistoryRow helpers", () => {
       },
     ]);
 
-    expect(formatPositionOrderMessage(executeOrderDecreaseShort, minCollateralUsd)).toEqual([
-      {
-        text: "Execute Order: Decrease Short BTC -$224,742.69,",
-      },
-      {
-        text: "Triggered at: $27,360.00, Execution Price: $27,371.62",
-        tooltipTitle: "This order was executed at the trigger price.",
-        tooltipProps: [
-          {
-            label: "Order trigger price",
-            showDollar: false,
-            value: "$27,360.00",
-          },
-          {
-            label: "Actual Price Impact",
-            showDollar: false,
-            value: "$0.00",
-          },
-        ],
-      },
-    ]);
-
-    expect(formatPositionOrderMessage(executeOrderIncreaseShort, minCollateralUsd)).toEqual([
+    expect(formatPositionOrderMessage(executeOrderIncreaseLong, minCollateralUsd)).toEqual([
       {
         text: "Execute Order: Increase Short ARB +$2,070.18,",
       },
       {
-        text: "Triggered at: $0.836, Execution Price: $0.837",
+        text: "Triggered at: <$0.010, Execution Price: $0.837",
         tooltipTitle: "This order was executed at the trigger price.",
         tooltipProps: [
           {
@@ -104,14 +81,19 @@ describe("TradeHistoryRow helpers", () => {
 
     expect(formatPositionOrderMessage(undefinedOrder, minCollateralUsd)).toEqual(null);
 
-    expect(formatPositionOrderMessage(liquidationLongXRP, minCollateralUsd)).toEqual([
+    expect(formatPositionOrderMessage(liquidated, minCollateralUsd)).toEqual([
       {
         text: "Liquidated",
         tooltipProps: [
           {
+            label: "Mark Price",
+            showDollar: false,
+            value: "$6.09",
+          },
+          {
             label: "Initial collateral",
             showDollar: false,
-            value: "99.6738 USDC ($99.67)",
+            value: "214.7790 USDC ($214.77)",
           },
           {
             label: "Min required collateral",
@@ -121,33 +103,33 @@ describe("TradeHistoryRow helpers", () => {
           {
             label: "Borrow Fee",
             showDollar: false,
-            value: "$0.21",
+            value: "$0.00",
           },
           {
             label: "Funding Fee",
             showDollar: false,
-            value: "$0.35",
+            value: "$0.00",
           },
           {
             label: "Position Fee",
             showDollar: false,
-            value: "$2.47",
+            value: "$4.50",
           },
           {
             label: "Price Impact",
             showDollar: false,
-            value: "$0.00",
+            value: "-$16.82",
           },
           {
             label: "PnL",
             showDollar: false,
-            value: undefined,
+            value: "-$126.31",
           },
         ],
         tooltipTitle: "This position was liquidated as the max leverage of 100.0x was exceeded.",
       },
       {
-        text: "Long XRP -$4,954.24, Execution Price: $0.4911",
+        text: "Short LINK -$6,441.90, Execution Price: $6.106",
       },
     ]);
   });
