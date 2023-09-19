@@ -163,6 +163,7 @@ msgstr "Accept that orders are not guaranteed to execute and trigger orders may 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Acceptable Price"
 msgstr "Acceptable Price"
 
@@ -218,6 +219,14 @@ msgstr "Active Orders"
 #: src/components/Referrals/TradersStats.tsx
 msgid "Active Referral Code"
 msgstr "Active Referral Code"
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Actual Price Impact"
+msgstr "Actual Price Impact"
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Actual price impact"
+msgstr "Actual price impact"
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
@@ -455,7 +464,7 @@ msgstr "Boost your rewards with Multiplier Points. <0>More info</0>."
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Borrow Fee"
 msgstr "Borrow Fee"
 
@@ -1607,8 +1616,12 @@ msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgstr "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
-msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText}"
-msgstr "Execute Order: {increaseText} {positionText} {sizeDeltaText}"
+#~ msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText}"
+#~ msgstr "Execute Order: {increaseText} {positionText} {sizeDeltaText}"
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText},"
+msgstr "Execute Order: {increaseText} {positionText} {sizeDeltaText},"
 
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
 #~ msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price: {1}"
@@ -1771,7 +1784,7 @@ msgstr "Funding Claimed"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Funding Fee"
 msgstr "Funding Fee"
 
@@ -2065,7 +2078,7 @@ msgid "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
 msgstr "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
 
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Initial collateral"
 msgstr "Initial collateral"
 
@@ -2379,7 +2392,6 @@ msgid "Liq. {longOrShortText} {tokenSymbol}"
 msgstr "Liq. {longOrShortText} {tokenSymbol}"
 
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Liquidated"
 msgstr "Liquidated"
@@ -2562,6 +2574,10 @@ msgstr "Mark"
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark Price"
 msgstr "Mark Price"
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Mark Price (at liquidation)"
+msgstr "Mark Price (at liquidation)"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -2807,7 +2823,7 @@ msgid "Min order: {0}"
 msgstr "Min order: {0}"
 
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Min required collateral"
 msgstr "Min required collateral"
 
@@ -3071,6 +3087,10 @@ msgstr "Order size is bigger than position, will only be executable if position 
 msgid "Order submitted!"
 msgstr "Order submitted!"
 
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Order trigger price"
+msgstr "Order trigger price"
+
 #: src/components/Exchange/OrderEditor.js
 msgid "Order update failed."
 msgstr "Order update failed."
@@ -3214,7 +3234,7 @@ msgstr "Please uncheck \"Keep Leverage\", or close a larger position amount."
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 #: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "PnL"
@@ -3249,7 +3269,7 @@ msgstr "Pools Value"
 msgid "Position"
 msgstr "Position"
 
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Position Fee"
 msgstr "Position Fee"
 
@@ -3322,7 +3342,7 @@ msgstr "Price"
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Price Impact"
 msgstr "Price Impact"
 
@@ -4377,11 +4397,15 @@ msgstr "This code has been taken by someone else on {0}, you will not receive re
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 msgstr "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "This order was executed at the trigger price."
+msgstr "This order was executed at the trigger price."
+
 #: src/components/Exchange/TradeHistory.js
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
 msgstr "This position was liquidated as the max leverage of 100x was exceeded."
 
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded."
 msgstr "This position was liquidated as the max leverage of {maxLeverageText} was exceeded."
 
@@ -5348,6 +5372,11 @@ msgstr "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "{0}"
+msgstr "{0}"
+
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>;"
 msgstr "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>;"
@@ -5558,8 +5587,8 @@ msgstr "{marketsCount, plural, one {# Market} other {# Markets}}"
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "{message}, Market: {0}"
-msgstr "{message}, Market: {0}"
+#~ msgid "{message}, Market: {0}"
+#~ msgstr "{message}, Market: {0}"
 
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"

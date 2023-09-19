@@ -163,6 +163,7 @@ msgstr "주문의 실행이 보장되지 않으며 트리거 주문이 트리거
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Acceptable Price"
 msgstr ""
 
@@ -218,6 +219,14 @@ msgstr "활성화된 주문"
 #: src/components/Referrals/TradersStats.tsx
 msgid "Active Referral Code"
 msgstr "활성화된 추천 코드"
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Actual Price Impact"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Actual price impact"
+msgstr ""
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
@@ -455,7 +464,7 @@ msgstr "멀티플라이어 포인트를 사용해서 보상을 증가시키세�
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Borrow Fee"
 msgstr "차용 수수료"
 
@@ -1607,7 +1616,11 @@ msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgstr "주문 실행: {fromAmountDisplay} {0}을 {toAmountDisplay} {1}로 스왑"
 
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
-msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText}"
+#~ msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText}"
+#~ msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText},"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
@@ -1771,7 +1784,7 @@ msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Funding Fee"
 msgstr ""
 
@@ -2065,7 +2078,7 @@ msgid "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Initial collateral"
 msgstr "최초 담보"
 
@@ -2379,7 +2392,6 @@ msgid "Liq. {longOrShortText} {tokenSymbol}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Liquidated"
 msgstr "청산"
@@ -2559,6 +2571,10 @@ msgstr ""
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark Price"
 msgstr "시장 평균가"
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Mark Price (at liquidation)"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -2804,7 +2820,7 @@ msgid "Min order: {0}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Min required collateral"
 msgstr "최소 필요 담보"
 
@@ -3068,6 +3084,10 @@ msgstr "주문의 사이즈가 포지션을 초과했습니다. 포지션을 증
 msgid "Order submitted!"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Order trigger price"
+msgstr ""
+
 #: src/components/Exchange/OrderEditor.js
 msgid "Order update failed."
 msgstr "주문 업데이트 실패됨."
@@ -3211,7 +3231,7 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 #: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "PnL"
@@ -3246,7 +3266,7 @@ msgstr ""
 msgid "Position"
 msgstr "포지션"
 
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Position Fee"
 msgstr ""
 
@@ -3319,7 +3339,7 @@ msgstr "가격"
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Price Impact"
 msgstr ""
 
@@ -4374,11 +4394,15 @@ msgstr "해당 코드는 {0}에서 다른 사용자에 의해 이미 사용되�
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 msgstr "해당 코드는 {0}에 아직 등록되지 않았기때문에, 소개 보수를 받을 수 없습니다.<0/><1/>네트워크를 변경후 해당 코드를 {1}상에서 생성하세요."
 
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "This order was executed at the trigger price."
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
 msgstr "해당 포지션은 최대 레버리지인 100x를 초과하여 청산되었습니다."
 
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded."
 msgstr ""
 
@@ -5345,6 +5369,11 @@ msgstr ""
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "{0}"
+msgstr ""
+
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>;"
 msgstr ""
@@ -5552,8 +5581,8 @@ msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "{message}, Market: {0}"
-msgstr ""
+#~ msgid "{message}, Market: {0}"
+#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"

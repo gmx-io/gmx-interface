@@ -163,6 +163,7 @@ msgstr "接受订单不保证执行，触发订单可能不按触发价格结算
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Acceptable Price"
 msgstr ""
 
@@ -218,6 +219,14 @@ msgstr "现行的订单"
 #: src/components/Referrals/TradersStats.tsx
 msgid "Active Referral Code"
 msgstr "有效推荐代码"
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Actual Price Impact"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Actual price impact"
+msgstr ""
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
@@ -455,7 +464,7 @@ msgstr "用点数提升你的奖励。 <0>更多信息</0>"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Borrow Fee"
 msgstr "借款费用"
 
@@ -1607,7 +1616,11 @@ msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgstr "执行指令: 交换 {fromAmountDisplay} {0} 为 {toAmountDisplay} {1}"
 
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
-msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText}"
+#~ msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText}"
+#~ msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText},"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
@@ -1771,7 +1784,7 @@ msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Funding Fee"
 msgstr ""
 
@@ -2065,7 +2078,7 @@ msgid "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Initial collateral"
 msgstr "初始抵押品"
 
@@ -2379,7 +2392,6 @@ msgid "Liq. {longOrShortText} {tokenSymbol}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Liquidated"
 msgstr "清偿完毕"
@@ -2559,6 +2571,10 @@ msgstr ""
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark Price"
 msgstr "标价"
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Mark Price (at liquidation)"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -2804,7 +2820,7 @@ msgid "Min order: {0}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Min required collateral"
 msgstr "所需的最低抵押品"
 
@@ -3068,6 +3084,10 @@ msgstr "订单规模大于头寸，只有在头寸增加的情况下才会执行
 msgid "Order submitted!"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Order trigger price"
+msgstr ""
+
 #: src/components/Exchange/OrderEditor.js
 msgid "Order update failed."
 msgstr "指令更新失败"
@@ -3211,7 +3231,7 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 #: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "PnL"
@@ -3246,7 +3266,7 @@ msgstr ""
 msgid "Position"
 msgstr "仓位"
 
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Position Fee"
 msgstr ""
 
@@ -3319,7 +3339,7 @@ msgstr "价钱"
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Price Impact"
 msgstr ""
 
@@ -4374,11 +4394,15 @@ msgstr "这个代码在{0}上已被别人取用，你将不会获得从{1}上使
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 msgstr "此代码尚未在{0}上注册，你将不会收到回扣<0/><1/>切换你的网络，在{1}上创建此代码"
 
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "This order was executed at the trigger price."
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
 msgstr "这个头寸因超过100倍的最大杠杆而被清算了"
 
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded."
 msgstr ""
 
@@ -5345,6 +5369,11 @@ msgstr ""
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "{0}"
+msgstr ""
+
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>;"
 msgstr ""
@@ -5552,8 +5581,8 @@ msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "{message}, Market: {0}"
-msgstr ""
+#~ msgid "{message}, Market: {0}"
+#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
