@@ -221,12 +221,12 @@ msgid "Active Referral Code"
 msgstr "Aktive Referral Codes"
 
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
-msgid "Actual Price Impact"
-msgstr ""
+#~ msgid "Actual Price Impact"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
-msgid "Actual price impact"
-msgstr ""
+#~ msgid "Actual price impact"
+#~ msgstr ""
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
@@ -2568,13 +2568,14 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark Price"
 msgstr "Mark-Preis"
 
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
-msgid "Mark Price (at liquidation)"
-msgstr ""
+#~ msgid "Mark Price (at liquidation)"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -3339,6 +3340,7 @@ msgstr "Preis"
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Price Impact"
 msgstr ""
