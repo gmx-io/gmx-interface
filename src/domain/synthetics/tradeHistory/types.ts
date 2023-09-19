@@ -67,8 +67,8 @@ export type PositionTradeAction = {
   swapPath: string[];
   initialCollateralDeltaAmount: BigNumber;
   sizeDeltaUsd: BigNumber;
-  indexTokenPriceMin: BigNumber;
-  indexTokenPriceMax: BigNumber;
+  indexTokenPriceMin?: BigNumber;
+  indexTokenPriceMax?: BigNumber;
   triggerPrice?: BigNumber;
   acceptablePrice: BigNumber;
   executionPrice?: BigNumber;

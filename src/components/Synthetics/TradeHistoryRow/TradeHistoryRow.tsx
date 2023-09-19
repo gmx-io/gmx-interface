@@ -3,7 +3,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getExplorerUrl } from "config/chains";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { MarketInfo, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
-import { isLimitOrderType, isLiquidationOrderType, isSwapOrderType } from "domain/synthetics/orders";
+import { isLimitOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { adaptToV1TokenInfo, getTokensRatioByAmounts } from "domain/synthetics/tokens";
 import { PositionTradeAction, SwapTradeAction, TradeAction, TradeActionType } from "domain/synthetics/tradeHistory";
 import { BigNumber } from "ethers";

@@ -3,7 +3,7 @@ import { StatsTooltipRowProps } from "components/StatsTooltip/StatsTooltipRow";
 import { OrderType, isIncreaseOrderType } from "domain/synthetics/orders";
 import { formatAcceptablePrice } from "domain/synthetics/positions";
 import { convertToUsd } from "domain/synthetics/tokens";
-import { getTriggerThresholdType } from "domain/synthetics/trade";
+import { getShouldUseMaxPrice, getTriggerThresholdType } from "domain/synthetics/trade";
 import { PositionTradeAction, TradeAction, TradeActionType } from "domain/synthetics/tradeHistory";
 import { BigNumber } from "ethers";
 import { PRECISION } from "lib/legacy";
@@ -76,8 +76,7 @@ export const formatPositionOrderMessage = (
           },
           {
             text: [
-              // FIXME is it triggeredAt? or tokenPrice should be used?
-              t`Triggered at: ${formatUsd(triggerPrice, { displayDecimals: priceDecimals })}`,
+              t`Triggered at: ${formatUsd(tokenPrice, { displayDecimals: priceDecimals })}`,
               t`Execution Price: ${formatUsd(executionPrice, { displayDecimals: priceDecimals })}`,
             ].join(", "),
             tooltipTitle: t`This order was executed at the trigger price.`,
@@ -97,10 +96,9 @@ export const formatPositionOrderMessage = (
                     }),
                   },
 
-              tradeAction.priceImpactDiffUsd && {
-                label: t`Actual Price Impact`,
+              tradeAction.priceImpactUsd && {
+                label: t`Price Impact`,
                 showDollar: false,
-                // FIXME ?
                 value: formatUsd(tradeAction.priceImpactUsd, { displayDecimals: priceDecimals }),
               },
             ].filter(Boolean) as StatsTooltipRowProps[],
@@ -200,7 +198,9 @@ export const formatPositionOrderMessage = (
 };
 
 function getTokenPriceByTradeAction(tradeAction: PositionTradeAction) {
-  return isIncreaseOrderType(tradeAction.orderType) ? tradeAction.indexTokenPriceMax : tradeAction.indexTokenPriceMin;
+  return getShouldUseMaxPrice(isIncreaseOrderType(tradeAction.orderType), tradeAction.isLong)
+    ? tradeAction.indexTokenPriceMax
+    : tradeAction.indexTokenPriceMin;
 }
 
 function getLiquidationTooltipProps(
@@ -214,8 +214,8 @@ function getLiquidationTooltipProps(
     borrowingFeeAmount,
     fundingFeeAmount,
     positionFeeAmount,
-    priceImpactDiffUsd,
     pnlUsd,
+    priceImpactUsd,
   } = tradeAction;
 
   const initialCollateralUsd = convertToUsd(
@@ -229,17 +229,10 @@ function getLiquidationTooltipProps(
   const fundingFeeUsd = convertToUsd(fundingFeeAmount, initialCollateralToken?.decimals, collateralTokenPriceMin);
 
   return [
-    // FIXME is it mark price?
     {
-      label: t`Mark Price (at liquidation)`,
+      label: t`Mark Price`,
       showDollar: false,
       value: formatUsd(getTokenPriceByTradeAction(tradeAction)),
-    },
-    // FIXME there's already priceImpactDiffUsd
-    {
-      label: t`Actual price impact`,
-      showDollar: false,
-      value: formatUsd(priceImpactDiffUsd),
     },
     {
       label: t`Initial collateral`,
@@ -255,8 +248,8 @@ function getLiquidationTooltipProps(
     { label: t`Borrow Fee`, showDollar: false, value: formatUsd(borrowingFeeUsd) },
     { label: t`Funding Fee`, showDollar: false, value: formatUsd(fundingFeeUsd) },
     { label: t`Position Fee`, showDollar: false, value: formatUsd(positionFeeUsd) },
-    { label: t`Price Impact`, showDollar: false, value: formatUsd(priceImpactDiffUsd) },
-    // FIXME pnl is undefined
+    // FIXME do we still want to show priceImpactDiffUsd?
+    { label: t`Price Impact`, showDollar: false, value: formatUsd(priceImpactUsd) },
     { label: t`PnL`, showDollar: false, value: formatUsd(pnlUsd) },
   ];
 }

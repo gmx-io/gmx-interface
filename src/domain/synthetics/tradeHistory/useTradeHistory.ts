@@ -66,8 +66,8 @@ export function useTradeHistory(
             minOutputAmount
             executionAmountOut
 
-            priceImpactDiffUsd
             priceImpactUsd
+            priceImpactDiffUsd
             positionFeeAmount
             borrowingFeeAmount
             fundingFeeAmount
@@ -199,12 +199,17 @@ export function useTradeHistory(
               ? parseContractPrice(bigNumberify(rawAction.collateralTokenPriceMin)!, initialCollateralToken.decimals)
               : undefined,
 
-            indexTokenPriceMin: parseContractPrice(bigNumberify(rawAction.indexTokenPriceMin)!, indexToken.decimals),
-            indexTokenPriceMax: parseContractPrice(bigNumberify(rawAction.indexTokenPriceMin)!, indexToken.decimals),
+            indexTokenPriceMin: rawAction.indexTokenPriceMin
+              ? parseContractPrice(BigNumber.from(rawAction.indexTokenPriceMin), indexToken.decimals)
+              : undefined,
+            indexTokenPriceMax: rawAction.indexTokenPriceMax
+              ? parseContractPrice(BigNumber.from(rawAction.indexTokenPriceMax), indexToken.decimals)
+              : undefined,
 
             orderType,
             orderKey: rawAction.orderKey,
             isLong: rawAction.isLong!,
+            pnlUsd: rawAction.pnlUsd ? BigNumber.from(rawAction.pnlUsd) : undefined,
 
             priceImpactDiffUsd: rawAction.priceImpactDiffUsd ? BigNumber.from(rawAction.priceImpactDiffUsd) : undefined,
             priceImpactUsd: rawAction.priceImpactUsd ? BigNumber.from(rawAction.priceImpactUsd) : undefined,
