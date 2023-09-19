@@ -65,12 +65,11 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
     if (!fundingRateLong || !fundingRateShort) return [];
 
     const positiveLong = fundingRateLong?.gt(0);
-    const longSign = positiveLong ? "+" : "-";
     const long = (
       <Trans>
         Long positions {positiveLong ? t`receive` : t`pay`} a Funding Fee of{" "}
         <span className={positiveLong ? "text-green" : "text-red"}>
-          {longSign}
+          {positiveLong ? "+" : "-"}
           {formatAmount(fundingRateLong.abs(), 30, 4)}%
         </span>{" "}
         per hour.
@@ -78,12 +77,11 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
     );
 
     const positveShort = fundingRateShort?.gt(0);
-    const shortSign = positveShort ? "+" : "-";
     const short = (
       <Trans>
         Short positions {positveShort ? t`receive` : t`pay`} a Funding Fee of{" "}
         <span className={positveShort ? "text-green" : "text-red"}>
-          {shortSign}
+          {positveShort ? "+" : "-"}
           {formatAmount(fundingRateShort.abs(), 30, 4)}%
         </span>{" "}
         per hour.
