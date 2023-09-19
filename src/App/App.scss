@@ -1,3 +1,5 @@
+$app-card-padding: 1.5rem;
+
 .App {
   position: relative;
   overflow: hidden;
@@ -543,8 +545,6 @@ button.App-connect-wallet:hover {
   font-size: var(--font-sm);
   padding: 0 3.1rem;
 }
-
-$app-card-padding: 1.5rem;
 
 .App-card {
   padding: $app-card-padding;
