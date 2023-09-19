@@ -41,8 +41,6 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
     const { chainId } = useChainId();
     const isMobile = useMedia("(max-width: 400px)");
     const { code, success } = userAffiliateCode;
-
-    // const { isLong, leverage, indexToken, markPrice } = position;
     const positionPriceDecimal = getPriceDecimals(chainId, indexToken.symbol);
     const homeURL = getHomeUrl();
 

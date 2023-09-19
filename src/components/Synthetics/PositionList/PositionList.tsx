@@ -2,9 +2,10 @@ import { Trans, t } from "@lingui/macro";
 import PositionShare from "components/Exchange/PositionShare";
 import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
 import { OrdersInfoData, PositionOrderInfo, isOrderForPosition } from "domain/synthetics/orders";
-import { PositionInfo, PositionsInfoData } from "domain/synthetics/positions";
+import { PositionsInfoData } from "domain/synthetics/positions";
 import { TradeMode, TradeType } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
+import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import { useState } from "react";
 
@@ -30,8 +31,8 @@ export function PositionList(p: Props) {
   const { chainId } = useChainId();
   const { account } = useWallet();
   const [isPositionShareModalOpen, setIsPositionShareModalOpen] = useState(false);
-  const [positionToShare, setPositionToShare] = useState<PositionInfo | null>(null);
-
+  const [positionToShareKey, setPositionToShareKey] = useState<string>();
+  const positionToShare = getByKey(p.positionsData, positionToShareKey);
   const positions = Object.values(p.positionsData || {});
   const orders = Object.values(p.ordersData || {});
 
@@ -57,7 +58,7 @@ export function PositionList(p: Props) {
               savedShowPnlAfterFees={p.savedShowPnlAfterFees}
               isLarge={false}
               onShareClick={() => {
-                setPositionToShare(position);
+                setPositionToShareKey(position.key);
                 setIsPositionShareModalOpen(true);
               }}
               currentMarketAddress={p.currentMarketAddress}
@@ -123,7 +124,7 @@ export function PositionList(p: Props) {
                 openSettings={p.openSettings}
                 hideActions={p.hideActions}
                 onShareClick={() => {
-                  setPositionToShare(position);
+                  setPositionToShareKey(position.key);
                   setIsPositionShareModalOpen(true);
                 }}
               />
