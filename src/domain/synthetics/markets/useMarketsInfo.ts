@@ -1,4 +1,3 @@
-import { useWeb3React } from "@web3-react/core";
 import DataStore from "abis/DataStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
@@ -37,11 +36,11 @@ import { convertTokenAddress } from "config/tokens";
 import { BigNumber } from "ethers";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
-import { useRef } from "react";
 import { TokensData, useTokensData } from "../tokens";
 import { MarketsInfoData } from "./types";
 import { useMarkets } from "./useMarkets";
 import { getContractMarketPrices } from "./utils";
+import useWallet from "lib/wallets/useWallet";
 
 export type MarketsInfoResult = {
   marketsInfoData?: MarketsInfoData;
@@ -50,15 +49,12 @@ export type MarketsInfoResult = {
 };
 
 export function useMarketsInfo(chainId: number): MarketsInfoResult {
-  const { account } = useWeb3React();
+  const { account } = useWallet();
   const { marketsData, marketsAddresses } = useMarkets(chainId);
   const { tokensData, pricesUpdatedAt } = useTokensData(chainId);
   const dataStoreAddress = getContract(chainId, "DataStore");
 
   const isDepencenciesLoading = !marketsAddresses || !tokensData;
-
-  // Use ref to cache data from previos key with old prices
-  const marketsInfoDataCache = useRef<MarketsInfoData>();
 
   const { data } = useMulticall(chainId, "useMarketsInfo", {
     key: !isDepencenciesLoading &&
@@ -66,6 +62,8 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
 
     // Refreshed on every prices update
     refreshInterval: null,
+    clearUnusedKeys: true,
+    keepPreviousData: true,
 
     request: () =>
       marketsAddresses!.reduce((request, marketAddress) => {
@@ -501,12 +499,8 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
     },
   });
 
-  if (data) {
-    marketsInfoDataCache.current = data;
-  }
-
   return {
-    marketsInfoData: marketsInfoDataCache.current,
+    marketsInfoData: data,
     tokensData,
     pricesUpdatedAt,
   };

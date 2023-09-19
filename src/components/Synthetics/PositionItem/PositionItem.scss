@@ -14,8 +14,9 @@
 
 .Position-list-order {
   .order-error-text {
-    margin-top: 0.5rem;
+    margin-top: 1rem;
     color: var(--error-red);
+    white-space: normal;
   }
 }
 

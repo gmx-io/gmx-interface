@@ -10,6 +10,10 @@
 .TradeFeesRow-tooltip {
   .Tooltip-popup {
     min-width: 32rem;
+
+    .Tooltip-row:not(:last-child) {
+      margin-bottom: 0.5rem;
+    }
   }
 }
 

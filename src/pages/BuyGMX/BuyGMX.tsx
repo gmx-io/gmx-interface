@@ -1,7 +1,6 @@
 import React, { useCallback } from "react";
 import Footer from "components/Footer/Footer";
 import "./BuyGMX.css";
-import { useWeb3React } from "@web3-react/core";
 import { Trans, t } from "@lingui/macro";
 import Button from "components/Button/Button";
 import { ARBITRUM, AVALANCHE, getChainName, getConstant } from "config/chains";
@@ -23,14 +22,15 @@ import {
   GMX_FROM_ANY_NETWORKS,
   TRANSFER_EXCHANGES,
 } from "./constants";
+import useWallet from "lib/wallets/useWallet";
 import { getIcons } from "config/icons";
 
 export default function BuyGMX() {
   const { chainId } = useChainId();
   const isArbitrum = chainId === ARBITRUM;
+  const { active } = useWallet();
   const icons = getIcons(chainId);
   const chainName = getChainName(chainId);
-  const { active } = useWeb3React();
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const externalLinks = EXTERNAL_LINKS[chainId];
 

@@ -2,26 +2,43 @@ import { ChartData } from "charting_library";
 import { getTokenBySymbol } from "config/tokens";
 import { Token } from "domain/tokens";
 
+type ChartDataInfo = ChartData & {
+  appVersion?: number;
+};
+
 export class SaveLoadAdapter {
-  charts: ChartData[] | undefined;
-  setTvCharts: (a: ChartData[]) => void;
-  onSelectToken: (token: Token) => void;
   chainId: number;
+  charts: ChartDataInfo[] | undefined;
+  setTvCharts: (a: ChartDataInfo[]) => void;
+  onSelectToken: (token: Token) => void;
+  currentAppVersion: number;
+  setTradePageVersion: (version: number) => void;
 
   constructor(
     chainId: number,
-    charts: ChartData[] | undefined,
-    setTvCharts: (a: ChartData[]) => void,
-    onSelectToken: (token: Token) => void
+    charts: ChartDataInfo[] | undefined,
+    setTvCharts: (a: ChartDataInfo[]) => void,
+    onSelectToken: (token: Token) => void,
+    currentAppVersion: number,
+    setTradePageVersion: (version: number) => void
   ) {
     this.charts = charts;
     this.setTvCharts = setTvCharts;
     this.chainId = chainId;
     this.onSelectToken = onSelectToken;
+    this.currentAppVersion = currentAppVersion;
+    this.setTradePageVersion = setTradePageVersion;
   }
 
   getAllCharts() {
-    return Promise.resolve(this.charts);
+    const charts = this.charts || [];
+    const filteredCharts = charts.filter((chart) => {
+      if (!chart.appVersion) {
+        chart.appVersion = 1;
+      }
+      return chart.appVersion === this.currentAppVersion;
+    });
+    return Promise.resolve(filteredCharts);
   }
 
   removeChart(id: string) {
@@ -38,14 +55,19 @@ export class SaveLoadAdapter {
   }
 
   saveChart(chartData) {
-    if (!chartData.id) {
+    if (!chartData.id || !chartData.appVersion) {
       chartData.id = Math.random().toString();
+      chartData.appVersion = this.currentAppVersion;
     } else {
       this.removeChart(chartData.id);
     }
 
-    chartData.timestamp = new Date().valueOf();
+    const currentTimestamp = Math.floor(Date.now() / 1000);
+    const offsetMinutes = new Date().getTimezoneOffset();
+    const offsetSeconds = offsetMinutes * 60;
+    const adjustedTimestamp = currentTimestamp - offsetSeconds;
 
+    chartData.timestamp = adjustedTimestamp;
     if (this.charts) {
       this.charts.push(chartData);
       this.setTvCharts(this.charts);
@@ -58,7 +80,10 @@ export class SaveLoadAdapter {
     if (!this.charts) return Promise.reject();
     for (let i = 0; i < this.charts.length; ++i) {
       if (this.charts[i].id === id) {
-        const { content, symbol } = this.charts[i];
+        const { content, symbol, appVersion = 1 } = this.charts[i];
+        if (this.currentAppVersion !== appVersion) {
+          this.setTradePageVersion(appVersion);
+        }
         const tokenInfo = getTokenBySymbol(this.chainId, symbol);
         this.onSelectToken(tokenInfo);
         return Promise.resolve(content);

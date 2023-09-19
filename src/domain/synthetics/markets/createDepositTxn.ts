@@ -1,6 +1,5 @@
-import { Web3Provider } from "@ethersproject/providers";
 import { getContract } from "config/contracts";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber, Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
@@ -28,8 +27,8 @@ type Params = {
   setPendingDeposit: SetPendingDeposit;
 };
 
-export async function createDepositTxn(chainId: number, library: Web3Provider, p: Params) {
-  const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, library.getSigner());
+export async function createDepositTxn(chainId: number, signer: Signer, p: Params) {
+  const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
   const depositVaultAddress = getContract(chainId, "DepositVault");
 
   const isNativeLongDeposit = p.initialLongTokenAddress === NATIVE_TOKEN_ADDRESS && p.longTokenAmount?.gt(0);

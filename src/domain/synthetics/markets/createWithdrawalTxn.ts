@@ -1,9 +1,8 @@
-import { Web3Provider } from "@ethersproject/providers";
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { convertTokenAddress } from "config/tokens";
 import { SetPendingWithdrawal } from "context/SyntheticsEvents";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber, Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { isAddressZero } from "lib/legacy";
 import { applySlippageToMinOut } from "../trade";
@@ -29,8 +28,8 @@ type Params = {
   setPendingWithdrawal: SetPendingWithdrawal;
 };
 
-export async function createWithdrawalTxn(chainId: number, library: Web3Provider, p: Params) {
-  const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, library.getSigner());
+export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Params) {
+  const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
   const withdrawalVaultAddress = getContract(chainId, "WithdrawalVault");
 
   const isNativeWithdrawal = isAddressZero(p.initialLongTokenAddress) || isAddressZero(p.initialShortTokenAddress);

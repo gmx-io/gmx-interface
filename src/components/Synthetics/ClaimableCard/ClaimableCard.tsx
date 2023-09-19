@@ -1,11 +1,11 @@
 import { Trans, t } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { MarketsInfoData, getTotalClaimableFundingUsd } from "domain/synthetics/markets";
 import { formatUsd } from "lib/numbers";
 
 import Tooltip from "components/Tooltip/Tooltip";
 import "./ClaimableCard.scss";
+import useWallet from "lib/wallets/useWallet";
 
 type Props = {
   marketsInfoData?: MarketsInfoData;
@@ -14,7 +14,7 @@ type Props = {
 
 export function ClaimableCard(p: Props) {
   const { onClaimClick, marketsInfoData } = p;
-  const { account } = useWeb3React();
+  const { account } = useWallet();
 
   const markets = Object.values(marketsInfoData || {});
 

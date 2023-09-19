@@ -1,9 +1,8 @@
-import { Web3Provider } from "@ethersproject/providers";
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
 import { SetPendingOrder } from "context/SyntheticsEvents";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber, Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { TokensData } from "../tokens";
 import { simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
@@ -30,12 +29,8 @@ export type SwapOrderParams = {
   setPendingOrder: SetPendingOrder;
 };
 
-export async function createSwapOrderTxn(chainId: number, library: Web3Provider, p: SwapOrderParams) {
-  const exchangeRouter = new ethers.Contract(
-    getContract(chainId, "ExchangeRouter"),
-    ExchangeRouter.abi,
-    library.getSigner()
-  );
+export async function createSwapOrderTxn(chainId: number, signer: Signer, p: SwapOrderParams) {
+  const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
 
   const orderVaultAddress = getContract(chainId, "OrderVault");
 
