@@ -503,8 +503,6 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
     },
   });
 
-  console.log("markets info", data);
-
   return {
     marketsInfoData: data,
     tokensData,
