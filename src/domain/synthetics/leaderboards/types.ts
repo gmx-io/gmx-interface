@@ -55,21 +55,29 @@ export type AccountPerf = {
 
 export type PerfByAccount = { [key: string]: AccountPerf };
 
-export type TopAccountsRow = {
+export type LiveAccountPerformance = {
   id: string;
-  rank: number;
   account: string;
-  ensName?: string;
-  avatarUrl?: string;
-  absPnl: BigNumber;
-  relPnl: BigNumber;
-  rPnl: BigNumber;
-  uPnl: BigNumber;
+  absProfit: BigNumber;
+  relProfit: BigNumber;
+  realizedPnl: BigNumber;
+  unrealizedPnl: BigNumber;
   maxCollateral: BigNumber;
-  size: BigNumber;
-  leverage: BigNumber;
+  averageSize: BigNumber;
+  averageLeverage: BigNumber;
   wins: BigNumber;
   losses: BigNumber;
+};
+
+export type TopAccountsRow = {
+  key: string;
+  rank: TableCell;
+  account: TableCell;
+  absProfit: TableCell;
+  relProfit: TableCell;
+  averageSize: TableCell;
+  averageLeverage: TableCell;
+  winsLosses: TableCell;
 };
 
 export type OpenPositionJson = {
@@ -112,7 +120,7 @@ export type AccountPositionsSummary = {
 export type PositionsSummaryByAccount = Record<string, AccountPositionsSummary>;
 
 export type TopPositionsRow = {
-  key: TableCell;
+  key: string;
   rank: TableCell;
   account: TableCell;
   unrealizedPnl: TableCell;
@@ -183,7 +191,7 @@ export type RemoteData<T> = {
 
 export type LeaderboardContextType = {
   positions: RemoteData<OpenPosition>;
-  accounts: RemoteData<TopAccountsRow>;
+  accounts: RemoteData<LiveAccountPerformance>;
   period: PerfPeriod;
   setPeriod: (_: PerfPeriod) => void;
 };

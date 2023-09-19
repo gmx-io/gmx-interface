@@ -4,11 +4,11 @@ import { USD_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
 import { useOpenPositions, useAccountPerf } from ".";
 import {
-  AccountPositionsSummary,
   PerfPeriod,
   OpenPosition,
+  LiveAccountPerformance,
+  AccountPositionsSummary,
   PositionsSummaryByAccount,
-  TopAccountsRow
 } from "./types";
 
 const defaultSummary = (account: string): AccountPositionsSummary => ({
@@ -65,20 +65,20 @@ const groupPositionsByAccount = (positions: OpenPosition[]): PositionsSummaryByA
 export function useTopAccounts(period: PerfPeriod) {
   const accountPerf = useAccountPerf(period);
   const positions = useOpenPositions();
-  const accounts = (accountPerf.data || []).map(a => a.account).join("-");
-  const positionKeys = (positions.data || []).map(p => p.key).join("-");
+  const accountsHash = (accountPerf.data || []).map(a => a.account).join("-");
+  const positionsHash = (positions.data || []).map(p => p.key).join("-");
   const data = useMemo(() => {
     if (accountPerf.error || positions.error || accountPerf.isLoading || positions.isLoading) {
       return;
     }
 
     const openPositionsByAccount: Record<string, AccountPositionsSummary> = groupPositionsByAccount(positions.data);
-    const data: TopAccountsRow[] = [];
+    const data: LiveAccountPerformance[] = [];
 
     for (let i = 0; i < accountPerf.data.length; i++) {
       const perf = accountPerf.data[i];
       const openPositions = openPositionsByAccount[perf.account] || defaultSummary(perf.account);
-      const totalPnl = perf.totalPnl
+      const realizedPnl = perf.totalPnl
         .sub(openPositions.collectedBorrowingFeesUsd)
         .sub(openPositions.collectedFundingFeesUsd)
         .sub(openPositions.collectedPositionFeesUsd)
@@ -89,12 +89,12 @@ export function useTopAccounts(period: PerfPeriod) {
         .sub(openPositions.pendingFundingFeesUsd)
         .sub(openPositions.closingFeeUsd);
 
-      const profit = totalPnl.add(unrealizedPnl);
+      const absProfit = realizedPnl.add(unrealizedPnl);
       const maxCollateral = perf.maxCollateral;
       if (maxCollateral.isZero()) {
         throw new Error(`Account ${perf.account} max collateral is 0, please verify data integrity`);
       }
-      const relPnl = profit.mul(expandDecimals(1, USD_DECIMALS)).div(maxCollateral);
+      const relProfit = absProfit.mul(expandDecimals(1, USD_DECIMALS)).div(maxCollateral);
       const cumsumCollateral = perf.cumsumCollateral;
       const cumsumSize = perf.cumsumSize;
 
@@ -104,31 +104,26 @@ export function useTopAccounts(period: PerfPeriod) {
 
       const sumMaxSize = perf.sumMaxSize.add(openPositions.sumMaxSize);
       const positionsCount = perf.closedCount.add(BigNumber.from(openPositions.openPositionsCount));
-      const leverage = cumsumSize.mul(expandDecimals(1, USD_DECIMALS)).div(cumsumCollateral);
-      const size = sumMaxSize.div(positionsCount);
-      const scores = {
+      const performance = {
         id: perf.account + ":" + period,
-        rank: i,
         account: perf.account,
-        ensName: perf.ensName,
-        avatarUrl: perf.avatarUrl,
-        absPnl: profit,
-        rPnl: totalPnl,
-        uPnl: unrealizedPnl,
-        relPnl,
+        absProfit,
+        relProfit,
+        realizedPnl,
+        unrealizedPnl,
         maxCollateral,
-        size,
-        leverage,
+        averageSize: sumMaxSize.div(positionsCount),
+        averageLeverage: cumsumSize.mul(expandDecimals(1, USD_DECIMALS)).div(cumsumCollateral),
         wins: perf.wins,
         losses: perf.losses,
       };
 
-      data.push(scores);
+      data.push(performance);
     }
 
-    return data;
+    return data.sort((a, b) => a.absProfit.gt(b.absProfit) ? -1 : 1);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accounts, positionKeys]);
+  }, [accountsHash, positionsHash]);
 
   return {
     isLoading: !data,

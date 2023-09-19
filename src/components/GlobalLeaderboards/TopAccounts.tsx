@@ -2,21 +2,28 @@ import { useState, useCallback, useMemo } from "react";
 import { BigNumber } from "ethers";
 import { t } from "@lingui/macro";
 import cx from "classnames";
-import { formatAmount, formatUsd } from "lib/numbers";
-import { useDebounce } from "lib/useDebounce";
-import Pagination from "components/Pagination/Pagination";
-import SearchInput from "components/SearchInput/SearchInput";
-import Table from "components/Table/Table";
-import { useLeaderboardContext } from "./Context";
-import { USD_DECIMALS } from "lib/legacy";
-import { TableCell, TableHeader } from "components/Table/types";
-import { TopAccountsRow, formatDelta, signedValueClassName } from "domain/synthetics/leaderboards";
-import AddressView from "components/AddressView/AddressView";
-import Tooltip from "components/Tooltip/Tooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import SearchInput from "components/SearchInput/SearchInput";
+import AddressView from "components/AddressView/AddressView";
+import Pagination from "components/Pagination/Pagination";
+import Tooltip from "components/Tooltip/Tooltip";
+import Table from "components/Table/Table";
+import { TableHeader } from "components/Table/types";
+import { useDebounce } from "lib/useDebounce";
+import { USD_DECIMALS } from "lib/legacy";
+import { formatAmount, formatUsd } from "lib/numbers";
+import {
+  Ranked,
+  formatDelta,
+  TopAccountsRow,
+  signedValueClassName,
+  LiveAccountPerformance,
+} from "domain/synthetics/leaderboards";
 
-const parseRow = (s: TopAccountsRow, i: number): Record<string, TableCell> => ({
-  id: s.id,
+import { useLeaderboardContext } from "./Context";
+
+const parseRow = (s: Ranked<LiveAccountPerformance>, i: number): TopAccountsRow => ({
+  key: s.id,
   rank: {
     value: () => (
       <span className={cx(s.rank < 3 && `LeaderboardRank-${s.rank + 1}`)}>{s.rank + 1}</span>
@@ -26,21 +33,19 @@ const parseRow = (s: TopAccountsRow, i: number): Record<string, TableCell> => ({
     value: (breakpoint) =>
       s.account && (
         <AddressView
-          address={s.account}
-          ensName={s.ensName}
-          avatarUrl={s.avatarUrl}
-          breakpoint={breakpoint}
           size={24}
+          address={s.account}
+          breakpoint={breakpoint}
           maxLength={breakpoint === "S" ? 9 : undefined}
         />
       ),
   },
-  absPnl: {
+  absProfit: {
     value: () => (
       <Tooltip
         handle={
-          <span className={signedValueClassName(s.absPnl)}>
-            {formatDelta(s.absPnl, { signed: true, prefix: "$" })}
+          <span className={signedValueClassName(s.absProfit)}>
+            {formatDelta(s.absProfit, { signed: true, prefix: "$" })}
           </span>
         }
         position={ i > 7 ? "right-top" : "right-bottom" }
@@ -51,8 +56,8 @@ const parseRow = (s: TopAccountsRow, i: number): Record<string, TableCell> => ({
               label={t`Realized PnL`}
               showDollar={false}
               value={
-                <span className={signedValueClassName(s.rPnl)}>
-                  {formatDelta(s.rPnl, { signed: true, prefix: "$" })}
+                <span className={signedValueClassName(s.realizedPnl)}>
+                  {formatDelta(s.realizedPnl, { signed: true, prefix: "$" })}
                 </span>
               }
             />
@@ -60,8 +65,8 @@ const parseRow = (s: TopAccountsRow, i: number): Record<string, TableCell> => ({
               label={t`Unrealized PnL`}
               showDollar={false}
               value={
-                <span className={signedValueClassName(s.uPnl)}>
-                  {formatDelta(s.uPnl, { signed: true, prefix: "$" })}
+                <span className={signedValueClassName(s.unrealizedPnl)}>
+                  {formatDelta(s.unrealizedPnl, { signed: true, prefix: "$" })}
                 </span>
               }
             />
@@ -70,12 +75,12 @@ const parseRow = (s: TopAccountsRow, i: number): Record<string, TableCell> => ({
       />
     ),
   },
-  relPnl: {
+  relProfit: {
     value: () => (
       <Tooltip
         handle={
-          <span className={signedValueClassName(s.relPnl)}>
-            {formatDelta(s.relPnl.mul(BigNumber.from(100)), { signed: true, postfix: "%" })}
+          <span className={signedValueClassName(s.relProfit)}>
+            {formatDelta(s.relProfit.mul(BigNumber.from(100)), { signed: true, postfix: "%" })}
           </span>
         }
         position={ i > 7 ? "right-top" : "right-bottom" }
@@ -90,15 +95,15 @@ const parseRow = (s: TopAccountsRow, i: number): Record<string, TableCell> => ({
       />
     ),
   },
-  size: {
-    value: formatUsd(s.size) || "",
+  averageSize: {
+    value: formatUsd(s.averageSize) || "",
     className: "leaderboard-size",
   },
-  leverage: {
-    value: `${formatAmount(s.leverage, USD_DECIMALS, 2)}x`,
+  averageLeverage: {
+    value: `${formatAmount(s.averageLeverage, USD_DECIMALS, 2)}x`,
     className: "leaderboard-leverage",
   },
-  perf: {
+  winsLosses: {
     value: `${s.wins.toNumber()}/${s.losses.toNumber()}`,
     className: "text-right",
   },
@@ -109,73 +114,66 @@ export default function TopAccounts() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const term = useDebounce(search, 300);
-  const { accounts: topAccounts } = useLeaderboardContext();
-  const { isLoading, error, data } = topAccounts;
-  const [accountsOrderBy, setAccountsOrderBy] = useState<keyof TopAccountsRow>("absPnl");
-  const [accountsOrderDirection, setAccountsOrderDirection] = useState<number>(1);
-  const topAccountsHeaderClick = useCallback((key: keyof TopAccountsRow) => () => {
+  const { accounts: { isLoading, error, data } } = useLeaderboardContext();
+  const [orderBy, setOrderBy] = useState<keyof LiveAccountPerformance>("absProfit");
+  const [direction, setDirection] = useState<number>(1);
+  const topAccountsHeaderClick = useCallback((key: keyof LiveAccountPerformance) => () => {
     if (key === "wins") {
-      setAccountsOrderBy(accountsOrderBy === "wins" ? "losses" : "wins");
-      setAccountsOrderDirection(1);
-    } else if (key === accountsOrderBy) {
-      setAccountsOrderDirection((d: number) => -1 * d);
+      setOrderBy(orderBy === "wins" ? "losses" : "wins");
+      setDirection(1);
+    } else if (key === orderBy) {
+      setDirection((d: number) => -1 * d);
     } else {
-      setAccountsOrderBy(key);
-      setAccountsOrderDirection(1);
+      setOrderBy(key);
+      setDirection(1);
     }
-  }, [accountsOrderBy, setAccountsOrderBy, setAccountsOrderDirection]);
+  }, [orderBy, setOrderBy, setDirection]);
 
-  const accountsHash = (data || []).map(a => a[accountsOrderBy]!.toString()).join(":");
+  const accountsHash = (data || []).map(a => a[orderBy]!.toString()).join(":");
   const accounts = useMemo(() => {
-    if (!topAccounts.data) {
+    if (!data) {
       return [];
     }
 
-    const result = [...topAccounts.data].sort((a, b) => {
-      const key = accountsOrderBy;
+    const result = data.map((p, i) => ({ ...p, rank: i })).sort((a, b) => {
+      const key = orderBy;
       if (BigNumber.isBigNumber(a[key]) && BigNumber.isBigNumber(b[key])) {
-        return accountsOrderDirection * ((a[key] as BigNumber).gt(b[key] as BigNumber) ? -1 : 1);
+        return direction * ((a[key] as BigNumber).gt(b[key] as BigNumber) ? -1 : 1);
       } else {
         return 1;
       }
     });
-    
-    if (accountsOrderBy === "absPnl" && accountsOrderDirection === 1) {
-      for (let i = 0; i < result.length; i++) {
-        result[i].rank = i;
-      }
-    }
 
     return result;
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accountsHash, accountsOrderBy, accountsOrderDirection]);
+  }, [accountsHash, orderBy, direction]);
 
   const filteredStats = accounts.filter((a) => a.account.toLowerCase().indexOf(term.toLowerCase()) >= 0);
   const indexFrom = (page - 1) * perPage;
   const rows = filteredStats.slice(indexFrom, indexFrom + perPage).map(parseRow);
   const pageCount = Math.ceil(filteredStats.length / perPage);
   const handleSearchInput = (e) => setSearch(e.target.value.trim());
-  const getSortableClass = (key: keyof TopAccountsRow) => cx(
-    (accountsOrderBy === key || (key === "wins" && accountsOrderBy === "losses"))
-    ? (accountsOrderDirection > 0 ? "sorted-asc" : "sorted-desc")
+  const getSortableClass = (key: keyof LiveAccountPerformance) => cx(
+    (orderBy === key || (key === "wins" && orderBy === "losses"))
+    ? (direction > 0 ? "sorted-asc" : "sorted-desc")
     : "sortable"
   )
 
-  const titles: Record<string, TableHeader> = {
+  const titles: { [key in keyof TopAccountsRow]?: TableHeader } = {
     rank: { title: t`Rank`, width: 5 },
     account: { title: t`Address`, width: 40 },
-    absPnl: {
+    absProfit: {
       title: t`PnL ($)`,
       tooltip: t`Total Realized and Unrealized Profit and Loss.`,
-      onClick: topAccountsHeaderClick("absPnl"),
+      onClick: topAccountsHeaderClick("absProfit"),
       width: 11,
-      className: getSortableClass("absPnl"),
+      className: getSortableClass("absProfit"),
     },
-    relPnl: {
+    relProfit: {
       title: t`PnL (%)`,
-      onClick: topAccountsHeaderClick("relPnl"),
+      onClick: topAccountsHeaderClick("relProfit"),
       width: 11,
-      className: getSortableClass("relPnl"),
+      className: getSortableClass("relProfit"),
       tooltip: () => (
         <div>
           <p>{t`PnL ($) compared to the Max Collateral used by this Address.`}</p>
@@ -188,21 +186,21 @@ export default function TopAccounts() {
         </div>
       ),
     },
-    size: {
+    averageSize: {
       title: t`Avg. Size`,
       tooltip: t`Average Position Size.`,
-      onClick: topAccountsHeaderClick("size"),
+      onClick: topAccountsHeaderClick("averageSize"),
       width: 11,
-      className: getSortableClass("size"),
+      className: getSortableClass("averageSize"),
     },
-    leverage: {
+    averageLeverage: {
       title: t`Avg. Lev.`,
       tooltip: t`Average Leverage used.`,
-      onClick: topAccountsHeaderClick("leverage"),
+      onClick: topAccountsHeaderClick("averageLeverage"),
       width: 11,
-      className: getSortableClass("leverage"),
+      className: getSortableClass("averageLeverage"),
     },
-    perf: {
+    winsLosses: {
       title: t`Win/Loss`,
       tooltip: t`Wins and Losses for fully closed Positions.`,
       onClick: topAccountsHeaderClick("wins"),
@@ -224,7 +222,7 @@ export default function TopAccounts() {
           autoFocus={false}
         />
       </div>
-      <Table isLoading={isLoading} error={error} content={rows} titles={titles} rowKey={"id"} />
+      <Table isLoading={isLoading} error={error} content={rows} titles={titles} rowKey={"key"} />
       <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
     </div>
   );
