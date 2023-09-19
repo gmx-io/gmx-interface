@@ -109,7 +109,7 @@ export default function TopAccounts() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const term = useDebounce(search, 300);
-  const { topAccounts } = useLeaderboardContext();
+  const { accounts: topAccounts } = useLeaderboardContext();
   const { isLoading, error, data } = topAccounts;
   const [accountsOrderBy, setAccountsOrderBy] = useState<keyof TopAccountsRow>("absPnl");
   const [accountsOrderDirection, setAccountsOrderDirection] = useState<number>(1);
@@ -140,7 +140,7 @@ export default function TopAccounts() {
       }
     });
     
-    if (accountsOrderBy === "absPnl") {
+    if (accountsOrderBy === "absPnl" && accountsOrderDirection === 1) {
       for (let i = 0; i < result.length; i++) {
         result[i].rank = i;
       }

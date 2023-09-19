@@ -1,6 +1,7 @@
 import { BigNumber } from "ethers";
 import { TokenData } from "../tokens";
 import { MarketInfo } from "../markets";
+import { TableCell } from "components/Table/types";
 
 export enum PerfPeriod {
   DAY = "24 hours",
@@ -111,23 +112,18 @@ export type AccountPositionsSummary = {
 export type PositionsSummaryByAccount = Record<string, AccountPositionsSummary>;
 
 export type TopPositionsRow = {
-  key: string;
-  rank: number;
-  account: string;
-  ensName?: string;
-  avatarUrl?: string;
-  unrealizedPnl: BigNumber;
-  market: MarketInfo;
-  entryPrice: BigNumber;
-  size: BigNumber;
-  liqPrice?: BigNumber;
-  isLong: boolean;
-  markPrice: BigNumber;
-  liqPriceDelta?: BigNumber;
-  liqPriceDeltaRel?: BigNumber;
-  leverage?: BigNumber;
-  collateral: BigNumber;
+  key: TableCell;
+  rank: TableCell;
+  account: TableCell;
+  unrealizedPnl: TableCell;
+  position: TableCell;
+  entryPrice: TableCell;
+  size: TableCell;
+  liqPrice: TableCell;
+  leverage: TableCell;
 };
+
+export type Ranked<T> = T & { rank: number };
 
 export type OpenPosition = {
   key: string;
@@ -186,8 +182,8 @@ export type RemoteData<T> = {
 };
 
 export type LeaderboardContextType = {
-  topPositions: RemoteData<TopPositionsRow>;
-  topAccounts: RemoteData<TopAccountsRow>;
+  positions: RemoteData<OpenPosition>;
+  accounts: RemoteData<TopAccountsRow>;
   period: PerfPeriod;
   setPeriod: (_: PerfPeriod) => void;
 };

@@ -81,7 +81,8 @@ export function useTopAccounts(period: PerfPeriod) {
       const totalPnl = perf.totalPnl
         .sub(openPositions.collectedBorrowingFeesUsd)
         .sub(openPositions.collectedFundingFeesUsd)
-        .sub(openPositions.collectedPositionFeesUsd);
+        .sub(openPositions.collectedPositionFeesUsd)
+        .add(openPositions.priceImpactUsd);
 
       const unrealizedPnl = openPositions.unrealizedPnl
         .sub(openPositions.pendingBorrowingFeesUsd)
@@ -129,5 +130,9 @@ export function useTopAccounts(period: PerfPeriod) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accounts, positionKeys]);
 
-  return { isLoading: !data, error: accountPerf.error || positions.error, data };
+  return {
+    isLoading: !data,
+    error: accountPerf.error || positions.error,
+    data: data || []
+  };
 }

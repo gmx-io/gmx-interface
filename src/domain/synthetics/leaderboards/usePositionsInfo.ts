@@ -234,11 +234,12 @@ export function usePositionsInfo(
 
   const pricesUpdateDate = pricesUpdatedAt ? new Date(pricesUpdatedAt) : new Date();
   const pricesUpdateSecs = pricesUpdateDate.getSeconds();
-  const tsRounded = pricesUpdateDate.setSeconds(pricesUpdateSecs < 30 ? 0 : 30);
+  const tsRounded = pricesUpdateDate.setSeconds(pricesUpdateSecs < 30 ? 0 : 30, 0);
 
   const { data: positionsInfoJson } = useSWR<PositionJson[] | undefined>(
     positionKeys.length ? ["usePositionsInfo", chainId, positionsHash, tsRounded] : null,
     {
+      refreshInterval: 30_000,
       keepPreviousData: true,
       async fetcher() {
         const chunkSize = 150;

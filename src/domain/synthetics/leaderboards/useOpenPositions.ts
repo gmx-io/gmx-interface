@@ -177,7 +177,7 @@ export function useOpenPositions() {
     return parseOpenPositions(
       positions.data || [],
       positionsInfo.data,
-    );
+    ).sort((a, b) => a.unrealizedPnlAfterFees.gt(b.unrealizedPnlAfterFees) ? -1 : 1);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isLoading,

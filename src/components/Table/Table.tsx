@@ -63,9 +63,9 @@ export default function Table<T extends Record<string, any>>({
               <td colSpan={9}>{t`No data yet`}</td>
             </tr>
           ) : (
-            content.map((row: T) => (
+            content.map((row: T, i) => (
               <tr key={row[rowKey]}>
-                {Object.keys(titles).map((k) => (
+                {Object.keys(titles).map((k, j) => (
                   <TableCell key={`${row[rowKey]}_${k}`} breakpoint={breakpoint} data={row[k]} />
                 ))}
               </tr>

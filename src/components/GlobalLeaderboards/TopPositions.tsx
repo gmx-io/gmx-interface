@@ -1,25 +1,74 @@
 import { useState, useCallback, useMemo } from "react";
-import cx from "classnames";
+import { BigNumber } from "ethers";
 import { t } from "@lingui/macro";
-import Pagination from "components/Pagination/Pagination";
-import Table from "components/Table/Table";
+import cx from "classnames";
+
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import SearchInput from "components/SearchInput/SearchInput";
+import AddressView from "components/AddressView/AddressView";
+import Pagination from "components/Pagination/Pagination";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+import Tooltip from "components/Tooltip/Tooltip";
+import Table from "components/Table/Table";
+import { TableHeader } from "components/Table/types";
+import { useChainId } from "lib/chains";
 import { useDebounce } from "lib/useDebounce";
 import { formatUsd, formatPrice, formatDeltaUsd } from "lib/numbers";
 import { formatLeverage } from "domain/synthetics/positions";
-import { TableCell, TableHeader } from "components/Table/types";
-import AddressView from "components/AddressView/AddressView";
-import { TopPositionsRow, formatDelta, signedValueClassName } from "domain/synthetics/leaderboards";
-import Tooltip from "components/Tooltip/Tooltip";
-import { useChainId } from "lib/chains";
-import { useLeaderboardContext } from "./Context";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { BigNumber } from "ethers";
-import TokenIcon from "components/TokenIcon/TokenIcon";
+import {
+  TopPositionsRow,
+  formatDelta,
+  signedValueClassName,
+  OpenPosition,
+  Ranked,
+} from "domain/synthetics/leaderboards";
 
-const parseRow =
-  (chainId: number) =>
-  (p: TopPositionsRow, i: number): { [key in keyof TopPositionsRow]?: TableCell } => ({
+import { useLeaderboardContext } from "./Context";
+
+export default function TopPositions() {
+  const perPage = 15;
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const term = useDebounce(search, 300);
+  const { chainId } = useChainId();
+  const { positions: { isLoading, error, data } } = useLeaderboardContext();
+  const [orderBy, setOrderBy] = useState<keyof OpenPosition>("unrealizedPnlAfterFees");
+  const [direction, setDirection] = useState<number>(1);
+  const topPositionsHeaderClick = useCallback((key: keyof OpenPosition) => () => {
+    if (key === orderBy) {
+      setDirection((d: number) => -1 * d);
+    } else {
+      setOrderBy(key);
+      setDirection(1);
+    }
+  }, [orderBy, setOrderBy, setDirection]);
+
+  const positionsHash = (data || []).map(p => p[orderBy]!.toString()).join("-");
+  const positions: Ranked<OpenPosition>[] = useMemo(() => {
+    if (!data) {
+      return [];
+    }
+
+    const result = data.map((p, i) => ({...p, rank: i})).sort((a, b) => {
+      const key = orderBy;
+      if (BigNumber.isBigNumber(a[key]) && BigNumber.isBigNumber(b[key])) {
+        return direction * ((a[key] as BigNumber).gt(b[key] as BigNumber) ? -1 : 1);
+      } else {
+        return 0;
+      }
+    });
+
+    return result;
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chainId, positionsHash, orderBy, direction]);
+
+  const filteredStats = positions.filter((p) => (
+    p.account.toLowerCase().indexOf(term) >= 0 ||
+    p.marketInfo.indexToken.symbol.toLowerCase().indexOf(term) >= 0
+  ));
+
+  const parseRow = useCallback((p: Ranked<OpenPosition>, i: number): TopPositionsRow => ({
     key: p.key,
     rank: {
       value: () => (
@@ -40,10 +89,13 @@ const parseRow =
         ),
     },
     unrealizedPnl: {
-      value: (p.unrealizedPnl && formatDelta(p.unrealizedPnl, { signed: true, prefix: "$" })) || "",
-      className: signedValueClassName(p.unrealizedPnl),
+      className: signedValueClassName(p.unrealizedPnlAfterFees),
+      value: (p.unrealizedPnlAfterFees && formatDelta(
+        p.unrealizedPnlAfterFees,
+        { signed: true, prefix: "$" }
+      )) || "",
     },
-    market: {
+    position: {
       className: "TopPositionsPositionCell",
       value: () => (
         <Tooltip
@@ -51,12 +103,12 @@ const parseRow =
             <span className="TopPositionsPositionView">
               <TokenIcon
                 className="PositionList-token-icon"
-                symbol={p.market.indexToken.symbol}
+                symbol={p.marketInfo.indexToken.symbol}
                 displaySize={20}
                 importSize={24}
               />
               <span className="TopPositionsSymbol">
-                {p.market.indexToken.symbol}
+                {p.marketInfo.indexToken.symbol}
               </span>
               <span className={cx("TopPositionsDirection", p.isLong ? "positive" : "negative")}>
                 {p.isLong ? t`Long` : t`Short`}
@@ -67,7 +119,7 @@ const parseRow =
           className="nowrap"
           renderContent={() =>
             <>
-              <span className="TopPositionsMarketName">{p.market.name}</span>
+              <span className="TopPositionsMarketName">{p.marketInfo.name}</span>
               <span className={cx(p.isLong ? "positive" : "negative")}>
                 {p.isLong ? t`Long` : t`Short`}
               </span>
@@ -77,18 +129,18 @@ const parseRow =
       ),
     },
     entryPrice: {
-      value: formatPrice(p.entryPrice, chainId, p.market.indexToken.symbol) || "",
+      value: formatPrice(p.entryPrice, chainId, p.marketInfo.indexToken.symbol) || "",
     },
     size: {
       value: () => <Tooltip
-        handle={ formatUsd(p.size) || "" }
+        handle={ formatUsd(p.sizeInUsd) || "" }
         position={ i > 7 ? "right-top" : "right-bottom" }
         className="nowrap"
         renderContent={() => (
           <StatsTooltipRow
             label={t`Collateral`}
             showDollar={false}
-            value={<span>{formatUsd(p.collateral) || ""}</span>}
+            value={<span>{formatUsd(p.collateralAmountUsd) || ""}</span>}
           />
         )}
       />
@@ -97,7 +149,7 @@ const parseRow =
     liqPrice: {
       value: () => (
         <Tooltip
-          handle={formatPrice(p.liqPrice!, chainId, p.market.indexToken.symbol) || ""}
+          handle={formatPrice(p.liquidationPrice!, chainId, p.marketInfo.indexToken.symbol) || ""}
           position={ i > 7 ? "right-top" : "right-bottom" }
           className="nowrap"
           renderContent={() => (
@@ -105,15 +157,15 @@ const parseRow =
               <StatsTooltipRow
                 label={t`Mark Price`}
                 showDollar={false}
-                value={<span>{formatPrice(p.markPrice, chainId, p.market.indexToken.symbol)}</span>}
+                value={<span>{formatPrice(p.markPrice, chainId, p.marketInfo.indexToken.symbol)}</span>}
               />
               <StatsTooltipRow
                 label={t`Price change to Liq.`}
                 showDollar={false}
                 value={
                   <span>
-                    {p.liqPriceDelta && p.liqPriceDeltaRel
-                      ? formatDeltaUsd(p.liqPriceDelta, p.liqPriceDeltaRel, { maxThreshold: "1000000" })
+                    {p.liquidationPriceDelta && p.liquidationPriceDeltaRel
+                      ? formatDeltaUsd(p.liquidationPriceDelta, p.liquidationPriceDeltaRel, { maxThreshold: "1000000" })
                       : ""
                     }
                   </span>
@@ -124,64 +176,14 @@ const parseRow =
         />
       ),
     },
-  });
-
-export default function TopPositions() {
-  const perPage = 15;
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
-  const term = useDebounce(search, 300);
-  const { chainId } = useChainId();
-  const { topPositions } = useLeaderboardContext();
-  const { isLoading, error, data } = topPositions;
-  const [positionsOrderBy, setPositionsOrderBy] = useState<keyof TopPositionsRow>("unrealizedPnl");
-  const [positionsOrderDirection, setPositionsOrderDirection] = useState<number>(1);
-  const topPositionsHeaderClick = useCallback((key: keyof TopPositionsRow) => () => {
-    if (key === positionsOrderBy) {
-      setPositionsOrderDirection((d: number) => -1 * d);
-    } else {
-      setPositionsOrderBy(key);
-      setPositionsOrderDirection(1);
-    }
-  }, [positionsOrderBy, setPositionsOrderBy, setPositionsOrderDirection]);
-
-  const positionsHash = (data || []).map(p => p[positionsOrderBy]!.toString()).join("-");
-  const positions = useMemo(() => {
-    if (!topPositions.data) {
-      return [];
-    }
-
-    const result = [...topPositions.data].sort((a, b) => {
-      const key = positionsOrderBy;
-      if (BigNumber.isBigNumber(a[key]) && BigNumber.isBigNumber(b[key])) {
-        return positionsOrderDirection * ((a[key] as BigNumber).gt(b[key] as BigNumber) ? -1 : 1);
-      } else {
-        return 1;
-      }
-    });
-
-    if (positionsOrderBy === "unrealizedPnl") {
-      for (let i = 0; i < result.length; i++) {
-        result[i].rank = i;
-      }
-    }
-
-    return result;
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [positionsHash, positionsOrderBy, positionsOrderDirection]);
-
-  const filteredStats = positions.filter((p) => (
-    p.account.toLowerCase().indexOf(term) >= 0 ||
-    p.market.indexToken.symbol.toLowerCase().indexOf(term) >= 0
-  ));
+  }), [chainId])
 
   const indexFrom = (page - 1) * perPage;
-  const rows = filteredStats.slice(indexFrom, indexFrom + perPage).map(parseRow(chainId));
+  const rows = filteredStats.slice(indexFrom, indexFrom + perPage).map(parseRow);
   const pageCount = Math.ceil(filteredStats.length / perPage);
   const handleSearchInput = (e) => setSearch(e.target.value.trim().toLowerCase());
-  const getSortableClass = (key: keyof TopPositionsRow) => cx(positionsOrderBy === key
-    ? (positionsOrderDirection > 0 ? "sorted-asc" : "sorted-desc")
+  const getSortableClass = (key: keyof OpenPosition) => cx(orderBy === key
+    ? (direction > 0 ? "sorted-asc" : "sorted-desc")
     : "sortable"
   )
   const titles: { [k in keyof TopPositionsRow]?: TableHeader } = {
@@ -190,11 +192,11 @@ export default function TopPositions() {
     unrealizedPnl: {
       title: t`PnL ($)`,
       tooltip: t`Total Unrealized Profit and Loss.`,
-      onClick: topPositionsHeaderClick("unrealizedPnl"),
+      onClick: topPositionsHeaderClick("unrealizedPnlAfterFees"),
       width: 10,
-      className: getSortableClass("unrealizedPnl"),
+      className: getSortableClass("unrealizedPnlAfterFees"),
     },
-    market: {
+    position: {
       title: t`Position`,
       width: 5,
     },
@@ -204,9 +206,9 @@ export default function TopPositions() {
     },
     size: {
       title: t`Size`,
-      onClick: topPositionsHeaderClick("size"),
+      onClick: topPositionsHeaderClick("sizeInUsd"),
       width: 10,
-      className: getSortableClass("size"),
+      className: getSortableClass("sizeInUsd"),
     },
     leverage: {
       tooltip: t`Position Leverage.`,
