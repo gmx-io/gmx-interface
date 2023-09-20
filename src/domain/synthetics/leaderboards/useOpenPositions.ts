@@ -137,7 +137,7 @@ export function useOpenPositions() {
   const { tokensData, pricesUpdatedAt } = useMarketsInfo(chainId);
   const positions = useSWR(['/leaderboards/positions', chainId], fetchOpenPositions(chainId));
   const positionsHash = (positions.data || []).map(p => p.id).join("-");
-  const { keys, prices } =  useMemo((): { keys: string[], prices: ContractMarketPrices[] } => {
+  const { keys, prices } = useMemo((): { keys: string[], prices: ContractMarketPrices[] } => {
     if (!marketsData || !tokensData) {
       return { keys: [], prices: [] };
     }

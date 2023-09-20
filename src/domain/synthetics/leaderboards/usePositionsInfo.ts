@@ -1,3 +1,4 @@
+import useSWR from "swr";
 import { useEffect, useMemo, useRef } from "react";
 import { BigNumber, ethers } from "ethers";
 import SyntheticsReader from "abis/SyntheticsReader.json";
@@ -5,6 +6,10 @@ import { MAX_ALLOWED_LEVERAGE } from "config/factors";
 import { getContract } from "config/contracts";
 import { getBasisPoints } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { useChainId } from "lib/chains";
+import { getProvider } from "lib/rpc";
+import { PRECISION } from "lib/legacy";
+import { UserReferralInfo } from "domain/referrals";
 import { getMarkPrice } from "../trade";
 import { getPositionFee, getPriceImpactForPosition } from "../fees";
 import { TokensData, convertToTokenAmount, convertToUsd } from "../tokens";
@@ -21,9 +26,6 @@ import {
   getPositionPnlUsd,
   usePositionsConstants,
 } from "../positions";
-import useSWR from "swr";
-import { useChainId } from "lib/chains";
-import { getProvider } from "lib/rpc";
 
 type PositionsResult = {
   isLoading: boolean;
@@ -183,11 +185,14 @@ function parsePositionsInfo(
       sizeInTokens: position.sizeInTokens,
       collateralUsd,
       collateralAmount: position.collateralAmount,
-      userReferralInfo: undefined,
       minCollateralUsd,
       pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
       pendingFundingFeesUsd,
       isLong: position.isLong,
+      userReferralInfo: {
+        discountFactor: PRECISION,
+        totalRebateFactor: fees.referral.traderDiscountAmount.mul(PRECISION).div(fees.positionFeeAmount),
+      } as UserReferralInfo,
     });
 
     positionsMap[positionKey] = {
@@ -221,7 +226,7 @@ function parsePositionsInfo(
 export function usePositionsInfo(
   positionsHash: string,
   positionKeys: string[],
-  marketPrices: ContractMarketPrices[],
+  marketPrices: ContractMarketPrices[]
 ): PositionsResult {
   const { chainId } = useChainId();
   const { minCollateralUsd } = usePositionsConstants(chainId);
@@ -248,7 +253,7 @@ export function usePositionsInfo(
         const contract = new ethers.Contract(
           getContract(chainId, "SyntheticsReader"),
           SyntheticsReader.abi,
-          provider.current,
+          provider.current
         );
 
         const DataStoreContract = getContract(chainId, "DataStore");
@@ -260,14 +265,14 @@ export function usePositionsInfo(
               ReferralStorageContract,
               positionKeys.slice(chunkSize * i, chunkSize * (i + 1)),
               marketPrices.slice(chunkSize * i, chunkSize * (i + 1)),
-              ethers.constants.AddressZero, // uiFeeReceiver
+              ethers.constants.AddressZero // uiFeeReceiver
             );
           } catch (e) {
             // eslint-disable-next-line no-console
             console.error(`SyntheticsReader.getAccountPositionInfoList chunk ${i} request error:`, e);
             throw e;
           }
-        }
+        };
 
         for (let i = 0; i < numChunks; i++) {
           requests.push(fetchReaderMethod(i));
@@ -282,16 +287,20 @@ export function usePositionsInfo(
           console.error("SyntheticsReader.getAccountPositionInfoList error:", e);
           throw e;
         }
-      }
+      },
     }
   );
 
-  const positionsInfoHash = (positionsInfoJson || []).map((p) => getPositionKey(
-    p.position.addresses.account,
-    p.position.addresses.market,
-    p.position.addresses.collateralToken,
-    p.position.flags.isLong
-  )).join("-");
+  const positionsInfoHash = (positionsInfoJson || [])
+    .map((p) =>
+      getPositionKey(
+        p.position.addresses.account,
+        p.position.addresses.market,
+        p.position.addresses.collateralToken,
+        p.position.flags.isLong
+      )
+    )
+    .join("-");
 
   const data = useMemo(() => {
     if (
@@ -310,9 +319,9 @@ export function usePositionsInfo(
       positionsInfoJson as PositionJson[],
       marketsInfoData,
       tokensData,
-      minCollateralUsd,
+      minCollateralUsd
     );
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, positionsInfoHash, tsRounded]);
 
   return { isLoading: !data, error: null, data: data || {} };

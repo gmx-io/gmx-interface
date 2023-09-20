@@ -3,7 +3,7 @@
   overflow: visible;;
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 800px) {
   .TableBox {
     width: 100%;
     overflow-x: scroll;
