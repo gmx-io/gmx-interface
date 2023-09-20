@@ -161,6 +161,7 @@ export default function PositionsList(props) {
       )}
       {isPositionShareModalOpen && (
         <PositionShare
+          key={positionToShare?.key}
           setIsPositionShareModalOpen={setIsPositionShareModalOpen}
           isPositionShareModalOpen={isPositionShareModalOpen}
           entryPrice={positionToShare.averagePrice}

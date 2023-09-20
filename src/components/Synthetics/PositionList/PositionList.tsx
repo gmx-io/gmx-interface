@@ -133,6 +133,7 @@ export function PositionList(p: Props) {
       </table>
       {positionToShare && (
         <PositionShare
+          key={positionToShare.key}
           setIsPositionShareModalOpen={setIsPositionShareModalOpen}
           isPositionShareModalOpen={isPositionShareModalOpen}
           entryPrice={positionToShare.entryPrice}
