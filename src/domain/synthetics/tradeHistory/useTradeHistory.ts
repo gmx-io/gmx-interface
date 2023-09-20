@@ -48,7 +48,7 @@ export function useTradeHistory(
             first: ${first},
             orderBy: transaction__timestamp,
             orderDirection: desc,
-            where: { eventName: "OrderFrozen"}
+            ${!forAllAccounts && account ? `where: { account: "${account!.toLowerCase()}" }` : ""}
         ) {
             id
             eventName
