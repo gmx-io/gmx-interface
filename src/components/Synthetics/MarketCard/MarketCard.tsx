@@ -16,7 +16,7 @@ import { formatAmount, formatPercentage, formatUsd, getBasisPoints } from "lib/n
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { ShareBar } from "components/ShareBar/ShareBar";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import "./MarketCard.scss";
 
 export type Props = {
@@ -61,7 +61,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
   const indexName = marketInfo && getMarketIndexName(marketInfo);
   const poolName = marketInfo && getMarketPoolName(marketInfo);
 
-  const fundingRateElements = useMemo(() => {
+  const [currentFeeElement, oppositeFeeElement] = useMemo(() => {
     if (!fundingRateLong || !fundingRateShort) return [];
 
     const positiveLong = fundingRateLong?.gt(0);
@@ -90,6 +90,17 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
 
     return isLong ? [long, short] : [short, long];
   }, [fundingRateLong, fundingRateShort, isLong]);
+
+  const renderFeesTooltipContent = useCallback(() => {
+    return (
+      <div>
+        {currentFeeElement}
+        <br />
+        <br />
+        {oppositeFeeElement}
+      </div>
+    );
+  }, [currentFeeElement, oppositeFeeElement]);
 
   return (
     <div className="Exchange-swap-market-box App-box App-box-border">
@@ -171,14 +182,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
                 fundingRate ? `${fundingRate.gt(0) ? "+" : "-"}${formatAmount(fundingRate.abs(), 30, 4)}% / 1h` : "..."
               }
               position="right-bottom"
-              renderContent={() => (
-                <div>
-                  <Trans>{fundingRateElements[0]}</Trans>
-                  <br />
-                  <br />
-                  <Trans>{fundingRateElements[1]}</Trans>
-                </div>
-              )}
+              renderContent={renderFeesTooltipContent}
             />
           }
         />
