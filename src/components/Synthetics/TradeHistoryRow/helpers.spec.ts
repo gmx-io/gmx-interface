@@ -1,13 +1,13 @@
 import { i18n } from "@lingui/core";
 import catalogEn from "locales/en/messages.js";
 import { en as plurals } from "make-plural/plurals";
-import { formatPositionOrderMessage } from "./helpers";
+import { formatPositionMessage } from "./helpers";
 import {
   cancelOrderIncreaseLong,
   createOrderDecreaseLong,
   createOrderIncreaseLong,
   executeOrderIncreaseLong,
-  freezeOrderIncreaseShort,
+  frozenOrderIncreaseShort,
   liquidated,
   requestIncreasePosition,
   undefinedOrder,
@@ -23,42 +23,42 @@ const minCollateralUsd = bigNumberify(100)!;
 
 describe("TradeHistoryRow helpers", () => {
   it("formatPositionOrderMessage", () => {
-    expect(formatPositionOrderMessage(requestIncreasePosition, minCollateralUsd)).toEqual([
+    expect(formatPositionMessage(requestIncreasePosition, minCollateralUsd)).toEqual([
       {
         text: "Request Increase Long BTC +$3,735.44, Acceptable Price: $25,814.79",
       },
     ]);
 
-    expect(formatPositionOrderMessage(withdraw1Usd, minCollateralUsd)).toEqual([
+    expect(formatPositionMessage(withdraw1Usd, minCollateralUsd)).toEqual([
       { text: "Request Withdraw 1.0000 USDC from Short BTC" },
     ]);
 
-    expect(formatPositionOrderMessage(createOrderDecreaseLong, minCollateralUsd)).toEqual([
+    expect(formatPositionMessage(createOrderDecreaseLong, minCollateralUsd)).toEqual([
       {
         text: "Create Order: Decrease Long BTC -$266.23, Trigger Price: > $30,000.00",
       },
     ]);
 
-    expect(formatPositionOrderMessage(cancelOrderIncreaseLong, minCollateralUsd)).toEqual([
+    expect(formatPositionMessage(cancelOrderIncreaseLong, minCollateralUsd)).toEqual([
       {
         text: "Cancel Order: Increase Long ETH +$4.11, Trigger Price: < $1,629.40, Acceptable Price: $1,645.69",
       },
     ]);
 
-    expect(formatPositionOrderMessage(createOrderIncreaseLong, minCollateralUsd)).toEqual([
+    expect(formatPositionMessage(createOrderIncreaseLong, minCollateralUsd)).toEqual([
       {
         text: "Create Order: Increase Long BTC +$2.64, Trigger Price: < $1.00, Acceptable Price: $1.01",
       },
     ]);
 
-    expect(formatPositionOrderMessage(executeOrderIncreaseLong, minCollateralUsd)).toEqual([
+    expect(formatPositionMessage(executeOrderIncreaseLong, minCollateralUsd)).toEqual([
       {
         text: "Execute Order: Increase Short ARB +$2,070.18,",
       },
       {
         text: "Triggered at: <$0.010, Execution Price: $0.837",
         tooltipTitle: "This order was executed at the trigger price.",
-        tooltipProps: [
+        tooltipRows: [
           {
             label: "Order trigger price",
             showDollar: false,
@@ -73,18 +73,21 @@ describe("TradeHistoryRow helpers", () => {
       },
     ]);
 
-    expect(formatPositionOrderMessage(freezeOrderIncreaseShort, minCollateralUsd)).toEqual([
+    expect(formatPositionMessage(frozenOrderIncreaseShort, minCollateralUsd)).toEqual([
       {
-        text: "Execution Failed: Increase Short BTC +$1,348.82, Trigger Price: > $27,210.00, Acceptable Price: $26,937.90",
+        text: "Execution Failed: Increase Short BTC +$1,348.82",
+      },
+      {
+        text: ", Trigger Price: > $27,210.00, Acceptable Price: $26,937.90",
       },
     ]);
 
-    expect(formatPositionOrderMessage(undefinedOrder, minCollateralUsd)).toEqual(null);
+    expect(formatPositionMessage(undefinedOrder, minCollateralUsd)).toEqual(null);
 
-    expect(formatPositionOrderMessage(liquidated, minCollateralUsd)).toEqual([
+    expect(formatPositionMessage(liquidated, minCollateralUsd)).toEqual([
       {
         text: "Liquidated",
-        tooltipProps: [
+        tooltipRows: [
           {
             label: "Mark Price",
             showDollar: false,

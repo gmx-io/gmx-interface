@@ -3051,7 +3051,7 @@ export const executeOrderIncreaseLong = prepare({
   },
 });
 
-export const freezeOrderIncreaseShort = prepare({
+export const frozenOrderIncreaseShort = prepare({
   id: "0xba090183c17bcc5dbfcb4b19c59aa420df42e72ae8c8bce6be8fe07f3769c3b1:4",
   eventName: "OrderFrozen",
   account: "0x54e761835a59080b4de36fbe0b1396e7b3b7353e",

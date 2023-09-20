@@ -14,7 +14,7 @@ import { formatTokenAmount } from "lib/numbers";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import "./TradeHistoryRow.scss";
-import { formatPositionOrderMessage, getOrderActionText } from "./helpers";
+import { formatPositionMessage, getOrderActionText } from "./helpers";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 
@@ -78,7 +78,7 @@ function getSwapOrderMessage(tradeAction: SwapTradeAction) {
 }
 
 function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateralUsd: BigNumber) {
-  const messages = formatPositionOrderMessage(tradeAction, minCollateralUsd);
+  const messages = formatPositionMessage(tradeAction, minCollateralUsd);
   if (messages === null) return null;
 
   return (
@@ -90,24 +90,39 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
           </>
         );
 
-        const withTooltip = message.tooltipProps ? (
-          <Tooltip
-            position="left-top"
-            handle={textElement}
-            renderContent={() => (
-              <>
-                <Trans>{message.tooltipTitle}</Trans>
-                <br />
-                <br />
-                {message.tooltipProps?.map((props) => (
-                  <StatsTooltipRow {...props} />
-                ))}
-              </>
-            )}
-          />
-        ) : (
-          textElement
-        );
+        const hasSmthAfterTitle = message.tooltipRows?.length || message.tooltipFooter;
+        const hasSmthBeforeFooter = message.tooltipTitle || message.tooltipRows?.length;
+
+        const withTooltip =
+          message.tooltipRows || message.tooltipFooter || message.tooltipTitle ? (
+            <Tooltip
+              position="left-top"
+              handle={textElement}
+              renderContent={() => (
+                <>
+                  {message.tooltipTitle ? (
+                    <span className={message.tooltipTitleRed ? "text-red" : undefined}>
+                      {message.tooltipTitle}
+                      {hasSmthAfterTitle && <br />}
+                      {hasSmthAfterTitle && <br />}
+                    </span>
+                  ) : null}
+                  {message.tooltipRows?.map((props) => (
+                    <StatsTooltipRow {...props} />
+                  ))}
+                  {message.tooltipFooter ? (
+                    <span className={message.tooltipFooterRed ? "text-red" : undefined}>
+                      {hasSmthBeforeFooter && <br />}
+                      {hasSmthBeforeFooter && <br />}
+                      {message.tooltipFooter}
+                    </span>
+                  ) : null}
+                </>
+              )}
+            />
+          ) : (
+            textElement
+          );
 
         return i === messages.length - 1 ? withTooltip : <>{withTooltip} </>;
       })}
