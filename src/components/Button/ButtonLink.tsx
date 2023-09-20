@@ -26,7 +26,7 @@ export default function ButtonLink({
   const classNames = cx(className, { disabled: disabled });
   if (to.startsWith("http") || to.startsWith("https")) {
     const anchorProps = {
-      href: to,
+      href: disabled ? undefined : to,
       className: classNames,
       onClick,
       ...rest,
