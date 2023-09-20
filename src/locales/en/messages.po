@@ -1640,6 +1640,10 @@ msgid "Execution Fee"
 msgstr "Execution Fee"
 
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Execution Price"
+msgstr "Execution Price"
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Execution Price: {0}"
 msgstr "Execution Price: {0}"
 
@@ -3328,7 +3332,6 @@ msgstr "Prev"
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -5374,7 +5377,6 @@ msgstr "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "{0}"
 msgstr "{0}"
