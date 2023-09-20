@@ -355,7 +355,7 @@ export function PositionSeller(p: Props) {
       marketAddress: position.marketAddress,
       initialCollateralAddress: position.collateralTokenAddress,
       initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount || BigNumber.from(0),
-      receiveTokenAddress: receiveToken.address,
+      receiveTokenAddress: isTrigger ? position.collateralToken.address : receiveToken.address,
       swapPath: swapAmounts?.swapPathStats?.swapPath || [],
       sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
       sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
@@ -580,6 +580,57 @@ export function PositionSeller(p: Props) {
       />
     ));
 
+  const receiveTokenRow = isTrigger ? (
+    <ExchangeInfoRow
+      className="SwapBox-info-row"
+      label={t`Receive`}
+      value={formatTokenAmountWithUsd(
+        decreaseAmounts?.receiveTokenAmount,
+        decreaseAmounts?.receiveUsd,
+        position?.collateralToken?.symbol,
+        position?.collateralToken?.decimals
+      )}
+    />
+  ) : (
+    <ExchangeInfoRow
+      isTop
+      label={t`Receive`}
+      className="Exchange-info-row PositionSeller-receive-row "
+      value={
+        receiveToken && (
+          <TokenSelector
+            label={t`Receive`}
+            className={cx("PositionSeller-token-selector", {
+              warning: isNotEnoughReceiveTokenLiquidity,
+            })}
+            chainId={chainId}
+            showBalances={false}
+            disableBodyScrollLock={true}
+            infoTokens={availableTokensOptions?.infoTokens}
+            tokenAddress={receiveToken.address}
+            onSelectToken={(token) => setReceiveTokenAddress(token.address)}
+            tokens={availableTokensOptions?.swapTokens || []}
+            showTokenImgInDropdown={true}
+            selectedTokenLabel={
+              <span className="PositionSelector-selected-receive-token">
+                {formatTokenAmountWithUsd(
+                  receiveTokenAmount,
+                  receiveUsd,
+                  receiveToken?.symbol,
+                  receiveToken?.decimals,
+                  {
+                    fallbackToZero: true,
+                  }
+                )}
+              </span>
+            }
+            extendedSortSequence={availableTokensOptions?.sortedLongAndShortTokens}
+          />
+        )
+      }
+    />
+  );
+
   const rows = isTrigger
     ? [triggerPriceRow, acceptablePriceImpactRow, acceptablePriceRow, liqPriceRow, sizeRow]
     : [allowedSlippageRow, markPriceRow, entryPriceRow, priceImpactRow, acceptablePriceRow, liqPriceRow, sizeRow];
@@ -696,43 +747,7 @@ export function PositionSeller(p: Props) {
 
               <TradeFeesRow {...fees} executionFee={executionFee} feesType="decrease" warning={executionFee?.warning} />
 
-              <ExchangeInfoRow
-                isTop
-                label={t`Receive`}
-                className="Exchange-info-row PositionSeller-receive-row "
-                value={
-                  receiveToken && (
-                    <TokenSelector
-                      label={t`Receive`}
-                      className={cx("PositionSeller-token-selector", {
-                        warning: isNotEnoughReceiveTokenLiquidity,
-                      })}
-                      chainId={chainId}
-                      showBalances={false}
-                      disableBodyScrollLock={true}
-                      infoTokens={availableTokensOptions?.infoTokens}
-                      tokenAddress={receiveToken.address}
-                      onSelectToken={(token) => setReceiveTokenAddress(token.address)}
-                      tokens={availableTokensOptions?.swapTokens || []}
-                      showTokenImgInDropdown={true}
-                      selectedTokenLabel={
-                        <span className="PositionSelector-selected-receive-token">
-                          {formatTokenAmountWithUsd(
-                            receiveTokenAmount,
-                            receiveUsd,
-                            receiveToken?.symbol,
-                            receiveToken?.decimals,
-                            {
-                              fallbackToZero: true,
-                            }
-                          )}
-                        </span>
-                      }
-                      extendedSortSequence={availableTokensOptions?.sortedLongAndShortTokens}
-                    />
-                  )
-                }
-              />
+              {receiveTokenRow}
             </div>
 
             {isHighPriceImpact && <div className="line-divider" />}
