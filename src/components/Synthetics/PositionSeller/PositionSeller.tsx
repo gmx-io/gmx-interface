@@ -140,7 +140,7 @@ export function PositionSeller(p: Props) {
 
   const [receiveTokenAddress, setReceiveTokenAddress] = useState<string>();
   const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);
-  const receiveToken = getByKey(tokensData, receiveTokenAddress);
+  const receiveToken = isTrigger ? position?.collateralToken : getByKey(tokensData, receiveTokenAddress);
 
   useEffect(() => {
     setAllowedSlippage(savedAllowedSlippage);
@@ -263,7 +263,17 @@ export function PositionSeller(p: Props) {
       }),
       executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
     };
-  }, [chainId, decreaseAmounts, gasLimits, gasPrice, position, swapAmounts, tokensData]);
+  }, [
+    chainId,
+    decreaseAmounts,
+    gasLimits,
+    gasPrice,
+    position,
+    swapAmounts?.swapPathStats?.swapPath,
+    swapAmounts?.swapPathStats?.swapSteps,
+    swapAmounts?.swapPathStats?.totalSwapPriceImpactDeltaUsd,
+    tokensData,
+  ]);
 
   const isHighPriceImpact = getIsHighPriceImpact(fees?.positionPriceImpact, fees?.swapPriceImpact);
 
@@ -286,7 +296,7 @@ export function PositionSeller(p: Props) {
       sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
       receiveToken,
       isTrigger,
-      triggerPrice: isTrigger ? triggerPrice : undefined,
+      triggerPrice,
       fixedTriggerThresholdType: undefined,
       existingPosition: position,
       markPrice,
@@ -355,7 +365,7 @@ export function PositionSeller(p: Props) {
       marketAddress: position.marketAddress,
       initialCollateralAddress: position.collateralTokenAddress,
       initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount || BigNumber.from(0),
-      receiveTokenAddress: isTrigger ? position.collateralToken.address : receiveToken.address,
+      receiveTokenAddress: receiveToken.address,
       swapPath: swapAmounts?.swapPathStats?.swapPath || [],
       sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
       sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
