@@ -18,7 +18,7 @@ import {
 } from "lib/legacy";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import useSWR from "swr";
 import Tab from "../Tab/Tab";
 
@@ -41,7 +41,14 @@ import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ARBITRUM, FEES_HIGH_BPS, getChainName, IS_NETWORK_DISABLED } from "config/chains";
 import { getIcon } from "config/icons";
-import { getNativeToken, getToken, getV1Tokens, getWhitelistedV1Tokens, getWrappedToken } from "config/tokens";
+import {
+  getNativeToken,
+  getToken,
+  getV1Tokens,
+  getValidTokenBySymbol,
+  getWhitelistedV1Tokens,
+  getWrappedToken,
+} from "config/tokens";
 import { approveTokens, useInfoTokens } from "domain/tokens";
 import { getTokenInfo, getUsd } from "domain/tokens/utils";
 import { useChainId } from "lib/chains";
@@ -68,6 +75,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import PageTitle from "components/PageTitle/PageTitle";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import useRouteQuery from "lib/useRouteQuery";
 
 const { AddressZero } = ethers.constants;
 
@@ -112,6 +120,8 @@ function getTooltipContent(managedUsd, tokenInfo, token) {
 export default function GlpSwap(props) {
   const { savedSlippageAmount, isBuying, setPendingTxns, setIsBuying, savedShouldDisableValidationForTesting } = props;
   const history = useHistory();
+  const queryParams = useRouteQuery();
+  const params = useParams();
   const isMetamaskMobile = useIsMetamaskMobile();
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp";
   const tabLabel = isBuying ? t`Buy GLP` : t`Sell GLP`;
@@ -422,10 +432,40 @@ export default function GlpSwap(props) {
     totalTokenWeights,
   ]);
 
+  useEffect(() => {
+    const { operation } = params;
+    const pay = queryParams.get("pay");
+    const receive = queryParams.get("receive");
+
+    if (operation) {
+      setIsBuying(operation.toLowerCase() === "buy");
+    }
+
+    if (pay) {
+      const payTokenInfo = getValidTokenBySymbol(chainId, pay, "v1");
+      if (payTokenInfo) {
+        setSwapTokenAddress(payTokenInfo.address);
+      }
+    }
+
+    if (receive) {
+      const receiveTokenInfo = getValidTokenBySymbol(chainId, receive, "v1");
+      if (receiveTokenInfo) {
+        setSwapTokenAddress(receiveTokenInfo.address);
+      }
+    }
+
+    if (pay || receive || operation) {
+      if (history.location.pathname !== "/buy_glp") {
+        history.replace({ search: "", pathname: "/buy_glp" });
+      }
+    }
+  }, [params, queryParams, setIsBuying, chainId, setSwapTokenAddress, history]);
+
   const switchSwapOption = (hash = "") => {
     const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
     history.push(`${history.location.pathname}#${hash}`);
-    props.setIsBuying(hash === "redeem" ? false : true);
+    setIsBuying(hash === "redeem" ? false : true);
     window.scrollTo(0, currentScrollPosition);
   };
 

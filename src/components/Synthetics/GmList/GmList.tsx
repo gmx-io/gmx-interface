@@ -17,7 +17,6 @@ import { getByKey } from "lib/objects";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { useMemo } from "react";
 import { useMedia } from "react-use";
-import { Operation } from "../GmSwap/GmSwapBox/GmSwapBox";
 import "./GmList.scss";
 import Tooltip from "components/Tooltip/Tooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
