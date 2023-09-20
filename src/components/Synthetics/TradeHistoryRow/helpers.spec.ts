@@ -1,5 +1,4 @@
 import { i18n } from "@lingui/core";
-import catalogEn from "locales/en/messages.js";
 import { en as plurals } from "make-plural/plurals";
 import { formatPositionMessage } from "./helpers";
 import {
@@ -16,7 +15,7 @@ import {
 import { bigNumberify } from "lib/numbers";
 
 i18n.loadLocaleData({ en: { plurals } });
-i18n.load({ en: catalogEn.messages });
+i18n.load({ en: {} });
 i18n.activate("en");
 
 const minCollateralUsd = bigNumberify(100)!;
