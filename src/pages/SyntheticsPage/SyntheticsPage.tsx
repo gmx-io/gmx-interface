@@ -35,7 +35,7 @@ import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTrade
 import { TradeMode } from "domain/synthetics/trade";
 import { helperToast } from "lib/helperToast";
 import useWallet from "lib/wallets/useWallet";
-import { useParameterProcessor } from "domain/synthetics/trade/useParamsProcessor";
+import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
 
 export type Props = {
   savedIsPnlInLeverage: boolean;
@@ -124,7 +124,7 @@ export function SyntheticsPage(p: Props) {
   const { isSwap, isLong } = tradeFlags;
   const { indexTokens, sortedIndexTokensWithPoolValue, sortedAllMarkets } = availableTokensOptions;
 
-  useParameterProcessor(sortedAllMarkets, setTradeOptions);
+  useTradeParamsProcessor(sortedAllMarkets, setTradeOptions);
 
   const { chartToken, availableChartTokens } = useMemo(() => {
     if (!fromTokenAddress || !toTokenAddress) {
