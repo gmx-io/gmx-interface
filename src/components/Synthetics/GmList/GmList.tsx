@@ -234,7 +234,7 @@ export function GmList({
                       <Button
                         className="GmList-action"
                         variant="secondary"
-                        to={`/pools?operation=${Operation.Deposit}&market=${token.address}&scroll=${
+                        to={`/pools/${indexToken.symbol}/buy?pool=${token.address}&scroll=${
                           shouldScrollToTop ? "1" : "0"
                         }`}
                       >
@@ -243,7 +243,7 @@ export function GmList({
                       <Button
                         className="GmList-action GmList-last-action"
                         variant="secondary"
-                        to={`/pools?operation=${Operation.Withdrawal}&market=${token.address}&scroll=${
+                        to={`/pools/${indexToken.symbol}/sell?pool=${token.address}&scroll=${
                           shouldScrollToTop ? "1" : "0"
                         }`}
                       >
@@ -376,15 +376,12 @@ export function GmList({
 
                     <div className="App-card-divider"></div>
                     <div className="App-card-buttons m-0" onClick={buySellActionHandler}>
-                      <Button
-                        variant="secondary"
-                        to={`/pools?operation=${Operation.Deposit}&market=${token.address}&scroll=0`}
-                      >
+                      <Button variant="secondary" to={`/pools/${indexToken.symbol}/buy?pool=${token.address}&scroll=0`}>
                         <Trans>Buy</Trans>
                       </Button>
                       <Button
                         variant="secondary"
-                        to={`/pools?operation=${Operation.Withdrawal}&market=${token.address}&scroll=0`}
+                        to={`/pools/${indexToken.symbol}/sell?pool=${token.address}&scroll=0`}
                       >
                         <Trans>Sell</Trans>
                       </Button>

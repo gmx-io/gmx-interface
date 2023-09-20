@@ -6,7 +6,7 @@ import Tab from "components/Tab/Tab";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, getSyntheticsDepositIndexTokenKey } from "config/localStorage";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getValidTokenBySymbol } from "config/tokens";
 import {
   FeeItem,
   estimateExecuteDepositGasLimit,
@@ -34,7 +34,7 @@ import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmountFree, formatTokenAmount, formatUsd, limitDecimals, parseValue } from "lib/numbers";
-import { getByKey } from "lib/objects";
+import { getByKey, getMatchingValueFromObject } from "lib/objects";
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 import { IoMdSwap } from "react-icons/io";
 import { GmConfirmationBox } from "../GmConfirmationBox/GmConfirmationBox";
@@ -46,7 +46,7 @@ import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
 import { helperToast } from "lib/helperToast";
 import { useSafeState } from "lib/useSafeState";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import "./GmSwapBox.scss";
 import Checkbox from "components/Checkbox/Checkbox";
 import Tooltip from "components/Tooltip/Tooltip";
@@ -58,6 +58,14 @@ import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import { getIcon } from "config/icons";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import useRouteQuery from "lib/useRouteQuery";
+import { isAddress } from "ethers/lib/utils.js";
+
+type RouteParams = {
+  market?: string;
+  operation?: string;
+  mode?: string;
+};
 
 export enum Operation {
   Deposit = "Deposit",
@@ -110,6 +118,29 @@ function showMarketToast(market) {
   );
 }
 
+function findMarketInfoByPool(indexTokenAddress, markets, pool) {
+  if (!indexTokenAddress && !markets) {
+    return null;
+  }
+
+  const poolMaketInfo =
+    pool &&
+    markets.find((marketInfo) => {
+      if (isAddress(pool)) {
+        return marketInfo.marketTokenAddress === pool;
+      }
+
+      const poolName = getMarketPoolName(marketInfo);
+      return marketInfo.indexTokenAddress === indexTokenAddress && poolName.toLowerCase() === pool.toLowerCase();
+    });
+
+  if (poolMaketInfo) {
+    return poolMaketInfo;
+  }
+
+  return markets.find((marketInfo) => marketInfo.indexTokenAddress === indexTokenAddress);
+}
+
 export function GmSwapBox(p: Props) {
   const {
     operation,
@@ -121,12 +152,11 @@ export function GmSwapBox(p: Props) {
     tokensData,
     shouldDisableValidation,
   } = p;
-  const { search } = useLocation();
   const isMetamaskMobile = useIsMetamaskMobile();
   const history = useHistory();
   const { openConnectModal } = useConnectModal();
-  const queryParams = useMemo(() => new URLSearchParams(search), [search]);
-
+  const params = useParams<RouteParams>();
+  const queryParams = useRouteQuery();
   const marketAddress = p.selectedMarketAddress;
 
   const { chainId } = useChainId();
@@ -689,40 +719,82 @@ export function GmSwapBox(p: Props) {
 
   useEffect(
     function updateByQueryParams() {
-      if (queryParams.get("operation") === Operation.Withdrawal) {
-        setOperation(Operation.Withdrawal);
-      } else if (queryParams.get("operation") === Operation.Deposit) {
-        setOperation(Operation.Deposit);
-      }
+      const { market, operation, mode } = params;
+      const pay = queryParams.get("pay");
+      const pool = queryParams.get("pool");
+      const scroll = queryParams.get("scroll");
 
-      if (queryParams.get("market")) {
-        const marketInfo = getByKey(marketsInfoData, queryParams.get("market")!);
-        if (marketInfo) {
-          setIndexName(getMarketIndexName(marketInfo));
-          onSelectMarket(marketInfo?.marketTokenAddress);
-          const indexName = getMarketIndexName(marketInfo);
-          const poolName = getMarketPoolName(marketInfo);
-          helperToast.success(
-            <Trans>
-              <div className="inline-flex">
-                <span>{indexName}</span>
-                <span className="subtext gm-toast">[{poolName}]</span>
-              </div>{" "}
-              <span>selected in order form</span>
-            </Trans>
-          );
+      if (operation) {
+        let finalOperation;
+
+        if (operation.toLowerCase() === "buy") {
+          finalOperation = Operation.Deposit;
+        } else if (operation.toLowerCase() === "sell") {
+          finalOperation = Operation.Withdrawal;
         }
 
-        if (queryParams.get("scroll") === "1") {
+        if (finalOperation) {
+          setOperation(finalOperation as Operation);
+        }
+      }
+
+      if (mode) {
+        const validMode = getMatchingValueFromObject(Mode, mode);
+        if (validMode) {
+          setMode(validMode as Mode);
+        }
+      }
+
+      if (pay) {
+        const payTokenInfo = getValidTokenBySymbol(chainId, pay, "v2");
+        if (payTokenInfo) {
+          setFirstTokenAddress(convertTokenAddress(chainId, payTokenInfo.address, "wrapped"));
+        }
+      }
+
+      if (market && markets.length > 0) {
+        const indexTokenInfo = getValidTokenBySymbol(chainId, market, "v2");
+        if (indexTokenInfo) {
+          const indexTokenAddress = convertTokenAddress(chainId, indexTokenInfo.address, "wrapped");
+          const marketInfo = findMarketInfoByPool(indexTokenAddress, markets, pool);
+          if (marketInfo) {
+            setIndexName(getMarketIndexName(marketInfo));
+            onSelectMarket(marketInfo?.marketTokenAddress);
+            const indexName = getMarketIndexName(marketInfo);
+            const poolName = getMarketPoolName(marketInfo);
+            helperToast.success(
+              <Trans>
+                <div className="inline-flex">
+                  <span>{indexName}</span>
+                  <span className="subtext gm-toast">[{poolName}]</span>
+                </div>{" "}
+                <span>selected in order form</span>
+              </Trans>
+            );
+          }
+        }
+
+        if (scroll === "1") {
           window.scrollTo({ top: 0, left: 0 });
         }
-      }
 
-      if (history.location.search) {
-        history.replace({ search: "" });
+        if (history.location.pathname !== "/pools") {
+          history.replace({ search: "", pathname: "/pools" });
+        }
       }
     },
-    [history, marketsInfoData, onSelectMarket, queryParams, setIndexName, setOperation]
+    [
+      history,
+      onSelectMarket,
+      queryParams,
+      params,
+      setIndexName,
+      setOperation,
+      setMode,
+      setFirstTokenAddress,
+      chainId,
+      markets,
+    ]
   );
 
   useEffect(
