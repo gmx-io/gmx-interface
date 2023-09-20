@@ -48,7 +48,7 @@ export function useTradeHistory(
             first: ${first},
             orderBy: transaction__timestamp,
             orderDirection: desc,
-            ${!forAllAccounts && account ? `where: { account: "${account!.toLowerCase()}" }` : ""}
+            where: { eventName: "OrderFrozen"}
         ) {
             id
             eventName
@@ -85,6 +85,7 @@ export function useTradeHistory(
             shouldUnwrapNativeToken
             
             reason
+            reasonBytes
             
             transaction {
                 timestamp
@@ -218,6 +219,8 @@ export function useTradeHistory(
             fundingFeeAmount: rawAction.fundingFeeAmount ? BigNumber.from(rawAction.fundingFeeAmount) : undefined,
 
             reason: rawAction.reason,
+            reasonBytes: rawAction.reasonBytes,
+
             transaction: rawAction.transaction,
           };
 

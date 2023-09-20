@@ -1,14 +1,26 @@
+import CustomErrors from "abis/CustomErrors.json";
 import { t } from "@lingui/macro";
+import words from "lodash/words";
 import { StatsTooltipRowProps } from "components/StatsTooltip/StatsTooltipRow";
 import { OrderType, isIncreaseOrderType } from "domain/synthetics/orders";
 import { formatAcceptablePrice } from "domain/synthetics/positions";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { getShouldUseMaxPrice, getTriggerThresholdType } from "domain/synthetics/trade";
 import { PositionTradeAction, TradeAction, TradeActionType } from "domain/synthetics/tradeHistory";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { PRECISION } from "lib/legacy";
 import { formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { museNeverExist } from "lib/types";
+
+type FormatPositionMessageChunk = {
+  text: string;
+  tooltipRows?: StatsTooltipRowProps[];
+  tooltipTitle?: string;
+  tooltipTitleRed?: boolean;
+  tooltipFooterRed?: boolean;
+  tooltipFooter?: string;
+};
+type FormatPositionMessageResult = FormatPositionMessageChunk[] | null;
 
 export function getOrderActionText(tradeAction: TradeAction) {
   let actionText = "";
@@ -36,16 +48,10 @@ export function getOrderActionText(tradeAction: TradeAction) {
   return actionText;
 }
 
-export const formatPositionOrderMessage = (
+export const formatPositionMessage = (
   tradeAction: PositionTradeAction,
   minCollateralUsd: BigNumber
-):
-  | null
-  | {
-      text: string;
-      tooltipProps?: StatsTooltipRowProps[];
-      tooltipTitle?: string;
-    }[] => {
+): FormatPositionMessageResult => {
   const indexToken = tradeAction.indexToken;
   const priceDecimals = tradeAction.indexToken.priceDecimals;
   const collateralToken = tradeAction.initialCollateralToken;
@@ -80,7 +86,7 @@ export const formatPositionOrderMessage = (
               t`Execution Price: ${formatUsd(executionPrice, { displayDecimals: priceDecimals })}`,
             ].join(", "),
             tooltipTitle: t`This order was executed at the trigger price.`,
-            tooltipProps: [
+            tooltipRows: [
               {
                 label: t`Order trigger price`,
                 showDollar: false,
@@ -106,22 +112,34 @@ export const formatPositionOrderMessage = (
         ];
       }
 
-      const prefix = tradeAction.eventName === TradeActionType.OrderFrozen ? "Execution Failed" : `${actionText} Order`;
+      const isFrozen = tradeAction.eventName === TradeActionType.OrderFrozen;
+      const prefix = isFrozen ? "Execution Failed" : `${actionText} Order`;
 
-      const strs = [
-        `${prefix}: ${increaseText} ${positionText} ${sizeDeltaText}`,
-        t`Trigger Price: ${pricePrefix} ${formatUsd(triggerPrice, { displayDecimals: priceDecimals })}`,
-      ];
+      const mainStr = `${prefix}: ${increaseText} ${positionText} ${sizeDeltaText}`;
+      const triggerPriceStr = t`Trigger Price: ${pricePrefix} ${formatUsd(triggerPrice, {
+        displayDecimals: priceDecimals,
+      })}`;
+      const acceptablePriceStr = t`Acceptable Price: ${formatAcceptablePrice(tradeAction.acceptablePrice, {
+        displayDecimals: priceDecimals,
+      })}`;
 
-      if (isIncrease) {
-        strs.push(
-          t`Acceptable Price: ${formatAcceptablePrice(tradeAction.acceptablePrice, {
-            displayDecimals: priceDecimals,
-          })}`
-        );
+      if (isFrozen) {
+        const strs = [triggerPriceStr];
+
+        if (isIncrease) {
+          strs.push(acceptablePriceStr);
+        }
+
+        return [{ text: `${mainStr}`, ...getFrozenTooltipProps(tradeAction) }, { text: `, ${strs.join(", ")}` }];
+      } else {
+        const strs = [mainStr, triggerPriceStr];
+
+        if (isIncrease) {
+          strs.push(acceptablePriceStr);
+        }
+
+        return [{ text: strs.join(", ") }];
       }
-
-      return [{ text: strs.join(", ") }];
     }
 
     case OrderType.MarketDecrease:
@@ -136,7 +154,8 @@ export const formatPositionOrderMessage = (
       }[tradeAction.eventName!];
 
       if (sizeDeltaUsd?.gt(0)) {
-        const pricePrefix = tradeAction.eventName === TradeActionType.OrderExecuted ? t`Price` : t`Acceptable Price`;
+        const pricePrefix =
+          tradeAction.eventName === TradeActionType.OrderExecuted ? t`Execution Price` : t`Acceptable Price`;
         const price =
           tradeAction.eventName === TradeActionType.OrderExecuted
             ? tradeAction.executionPrice
@@ -176,7 +195,7 @@ export const formatPositionOrderMessage = (
           {
             text: "Liquidated",
             tooltipTitle: t`This position was liquidated as the max leverage of ${maxLeverageText} was exceeded.`,
-            tooltipProps: getLiquidationTooltipProps(tradeAction, minCollateralUsd),
+            tooltipRows: getLiquidationTooltipProps(tradeAction, minCollateralUsd),
           },
           {
             text: t`${positionText} ${sizeDeltaText}, Execution Price: ${formatUsd(executionPrice, {
@@ -252,4 +271,31 @@ function getLiquidationTooltipProps(
     { label: t`Price Impact`, showDollar: false, value: formatUsd(priceImpactUsd) },
     { label: t`PnL`, showDollar: false, value: formatUsd(pnlUsd) },
   ];
+}
+
+function getFrozenTooltipProps(tradeAction: PositionTradeAction): Partial<FormatPositionMessageChunk> {
+  const customErrors = new ethers.Contract(ethers.constants.AddressZero, CustomErrors.abi);
+
+  if (!tradeAction.reasonBytes) return {};
+
+  let error: ReturnType<typeof customErrors.interface.parseError> | null = null;
+  try {
+    error = customErrors.interface.parseError(tradeAction.reasonBytes);
+  } catch (err) {
+    return {};
+  }
+
+  if (!error) return {};
+
+  let tooltipTitle = `Reason: ${words(error.name).join(" ").toLowerCase()}`;
+
+  if (error.name === "OrderNotFulfillableAtAcceptablePrice") {
+    tooltipTitle =
+      "The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met.";
+  }
+
+  return {
+    tooltipTitle,
+    tooltipTitleRed: true,
+  };
 }

@@ -1,6 +1,6 @@
 import { MarketInfo } from "domain/synthetics/markets";
 import { OrderType } from "domain/synthetics/orders";
-import { BigNumber } from "ethers";
+import { BigNumber, Bytes } from "ethers";
 import { TokenData } from "../tokens";
 
 export enum TradeActionType {
@@ -47,6 +47,7 @@ export type RawTradeAction = {
   shouldUnwrapNativeToken?: boolean;
 
   reason?: string;
+  reasonBytes?: Bytes;
 
   transaction: {
     timestamp: number;
@@ -85,6 +86,7 @@ export type PositionTradeAction = {
   orderKey: string;
   isLong: boolean;
   reason?: string;
+  reasonBytes?: Bytes;
 
   transaction: {
     timestamp: number;
