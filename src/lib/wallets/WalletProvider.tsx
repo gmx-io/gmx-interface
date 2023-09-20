@@ -18,7 +18,7 @@ import { publicProvider } from "wagmi/providers/public";
 import merge from "lodash/merge";
 import { isDevelopment } from "config/env";
 import { coreWallet } from "./connecters/core/coreWallet";
-import { bitKeepWallet } from "./connecters/bitKeep/bitKeepWallet";
+import { bitGetWallet } from "./connecters/bitGet/bitGetWallet";
 
 const WALLET_CONNECT_PROJECT_ID = "de24cddbaf2a68f027eae30d9bb5df58";
 const APP_NAME = "GMX";
@@ -61,7 +61,7 @@ const othersWalletList: WalletList = [
       coinbaseWallet({ appName: APP_NAME, chains }),
       ledgerWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
       rainbowWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
-      bitKeepWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
+      bitGetWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
       imTokenWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
     ],
   },

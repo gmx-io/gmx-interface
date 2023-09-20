@@ -30,7 +30,7 @@ export function isAndroid(): boolean {
   );
 }
 
-export const bitKeepWallet = ({
+export const bitGetWallet = ({
   chains,
   projectId,
   walletConnectOptions,
@@ -51,7 +51,7 @@ export const bitKeepWallet = ({
   return {
     id: "bitKeep",
     name: "Bitget Wallet",
-    iconUrl: async () => (await import("./bitKeepWallet.svg")).default,
+    iconUrl: async () => (await import("./bitGetWallet.svg")).default,
     iconAccent: "#f6851a",
     iconBackground: "#fff",
     installed: !shouldUseWalletConnect ? isBitKeepInjected : undefined,
