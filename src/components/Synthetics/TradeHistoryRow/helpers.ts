@@ -2,8 +2,8 @@ import CustomErrors from "abis/CustomErrors.json";
 import { t } from "@lingui/macro";
 import words from "lodash/words";
 import { StatsTooltipRowProps } from "components/StatsTooltip/StatsTooltipRow";
-import { OrderType, isIncreaseOrderType } from "domain/synthetics/orders";
-import { formatAcceptablePrice } from "domain/synthetics/positions";
+import { OrderType, isIncreaseOrderType, isLimitOrderType } from "domain/synthetics/orders";
+import { formatAcceptablePrice, getTriggerNameByOrderType } from "domain/synthetics/positions";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { getShouldUseMaxPrice, getTriggerThresholdType } from "domain/synthetics/trade";
 import { PositionTradeAction, TradeAction, TradeActionType } from "domain/synthetics/tradeHistory";
@@ -76,9 +76,12 @@ export const formatPositionMessage = (
       const pricePrefix = getTriggerThresholdType(tradeAction.orderType!, tradeAction.isLong!);
       const actionText = getOrderActionText(tradeAction);
       const tokenPrice = getTokenPriceByTradeAction(tradeAction);
+      const orderTypeName = isLimitOrderType(tradeAction.orderType)
+        ? "Limit"
+        : getTriggerNameByOrderType(tradeAction.orderType);
 
       if (tradeAction.eventName === TradeActionType.OrderExecuted) {
-        const executeOrderStr = t`Execute Order: ${increaseText} ${positionText} ${sizeDeltaText},`;
+        const executeOrderStr = t`Execute ${orderTypeName} Order: ${increaseText} ${positionText} ${sizeDeltaText},`;
         return [
           {
             text: `${executeOrderStr} `,
@@ -96,7 +99,7 @@ export const formatPositionMessage = (
       }
 
       const isFailed = tradeAction.eventName === TradeActionType.OrderFrozen;
-      const prefix = isFailed ? "Execution Failed" : `${actionText} Order`;
+      const prefix = isFailed ? "Execution Failed" : `${actionText} ${orderTypeName} Order`;
 
       const triggerPriceStr = t`Trigger Price: ${pricePrefix} ${formatUsd(triggerPrice, {
         displayDecimals: priceDecimals,

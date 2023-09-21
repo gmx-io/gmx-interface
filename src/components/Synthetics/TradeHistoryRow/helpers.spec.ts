@@ -38,25 +38,25 @@ describe("TradeHistoryRow helpers", () => {
 
     expect(formatPositionMessage(createOrderDecreaseLong, minCollateralUsd)).toEqual([
       {
-        text: "Create Order: Decrease Long BTC -$266.23, Trigger Price: > $30,000.00, Acceptable Price: $29,700.00",
+        text: "Create Take-Profit Order: Decrease Long BTC -$266.23, Trigger Price: > $30,000.00, Acceptable Price: $29,700.00",
       },
     ]);
 
     expect(formatPositionMessage(cancelOrderIncreaseLong, minCollateralUsd)).toEqual([
       {
-        text: "Cancel Order: Increase Long ETH +$4.11, Trigger Price: < $1,629.40, Acceptable Price: $1,645.69",
+        text: "Cancel Limit Order: Increase Long ETH +$4.11, Trigger Price: < $1,629.40, Acceptable Price: $1,645.69",
       },
     ]);
 
     expect(formatPositionMessage(createOrderIncreaseLong, minCollateralUsd)).toEqual([
       {
-        text: "Create Order: Increase Long BTC +$2.64, Trigger Price: < $1.00, Acceptable Price: $1.01",
+        text: "Create Limit Order: Increase Long BTC +$2.64, Trigger Price: < $1.00, Acceptable Price: $1.01",
       },
     ]);
 
     expect(formatPositionMessage(executeOrderIncreaseLong, minCollateralUsd)).toEqual([
       {
-        text: "Execute Order: Increase Short ARB +$2,070.18, ",
+        text: "Execute Limit Order: Increase Short ARB +$2,070.18, ",
       },
       {
         text: "Triggered at: <$0.010, Execution Price: $0.837",
