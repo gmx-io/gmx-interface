@@ -22,7 +22,3 @@ export function getMatchingValueFromObject(obj?: { [key: string]: string }, valu
     }
   }
 }
-
-export function areAllValuesValid(obj: { [key: string]: string | undefined }): boolean {
-  return Object.values(obj).every((value) => Boolean(value));
-}

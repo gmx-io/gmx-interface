@@ -3,7 +3,7 @@ import useScrollToTop from "lib/useScrollToTop";
 import { useEffect, useRef, useState } from "react";
 import { SWRConfig } from "swr";
 
-import { matchPath, Redirect, Route, HashRouter as Router, Switch, useHistory, useLocation } from "react-router-dom";
+import { Redirect, Route, HashRouter as Router, Switch, useHistory, useLocation } from "react-router-dom";
 
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { getAppBaseUrl, isHomeSite, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
@@ -273,9 +273,7 @@ function FullApp() {
 
   useEffect(
     function redirectTradePage() {
-      const isV2Match = matchPath(location.pathname, { path: "/v2/:market?/:tradeType?/:tradeMode?" });
-      const isV1Match = matchPath(location.pathname, { path: "/trade/:market?/:tradeType?/:tradeMode?" });
-      if (!!isV2Match && query.has("no_redirect")) {
+      if (location.pathname === "/v2" && query.has("no_redirect")) {
         if (tradePageVersion !== 2) {
           setTradePageVersion(2);
         }
@@ -284,11 +282,19 @@ function FullApp() {
         }
         return;
       }
-      if (!!isV1Match && (tradePageVersion === 2 || !getIsV1Supported(chainId)) && getIsSyntheticsSupported(chainId)) {
+      if (
+        location.pathname === "/trade" &&
+        (tradePageVersion === 2 || !getIsV1Supported(chainId)) &&
+        getIsSyntheticsSupported(chainId)
+      ) {
         history.replace("/v2");
       }
 
-      if (isV2Match && (tradePageVersion === 1 || !getIsSyntheticsSupported(chainId)) && getIsV1Supported(chainId)) {
+      if (
+        location.pathname === "/v2" &&
+        (tradePageVersion === 1 || !getIsSyntheticsSupported(chainId)) &&
+        getIsV1Supported(chainId)
+      ) {
         history.replace("/trade");
       }
     },

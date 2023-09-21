@@ -1,10 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { MarketInfo, getMarketPoolName } from "../markets";
 import useRouteQuery from "lib/useRouteQuery";
 import { getValidTokenBySymbol } from "config/tokens";
 import { useChainId } from "lib/chains";
-import { areAllValuesValid, getMatchingValueFromObject } from "lib/objects";
+import { getMatchingValueFromObject } from "lib/objects";
 import { TradeMode, TradeType } from "./types";
 
 type RouteParams = {
@@ -25,13 +25,6 @@ type TradeOptions = {
   collateralAddress?: string;
 };
 
-function updateOption(options: TradeOptions, key: keyof TradeOptions, value: string | undefined): TradeOptions {
-  return {
-    ...options,
-    [key]: value ? value : "invalid",
-  };
-}
-
 export function useTradeParamsProcessor(
   allMarkets: MarketInfo[],
   setTradeOptions: ({
@@ -48,11 +41,12 @@ export function useTradeParamsProcessor(
   const params = useParams<RouteParams>();
   const searchParams = useRouteQuery();
 
-  useEffect(() => {
+  const options = useMemo(() => {
     const { market, tradeType, tradeMode } = params;
     const queryPayToken = searchParams.get("pay");
     const queryPoolName = searchParams.get("pool");
     const queryCollateralToken = searchParams.get("collateral");
+
     let options: TradeOptions = {
       fromTokenAddress: undefined,
       toTokenAddress: undefined,
@@ -62,53 +56,59 @@ export function useTradeParamsProcessor(
       collateralAddress: undefined,
     };
 
-    const processParameters = () => {
-      if (market) {
-        const marketTokenInfo = getValidTokenBySymbol(chainId, market, "v2");
-        options = updateOption(options, "toTokenAddress", marketTokenInfo?.address);
+    if (params.tradeType) {
+      const validTradeType = getMatchingValueFromObject(TradeType, tradeType);
+      if (validTradeType) {
+        options.tradeType = validTradeType as TradeType;
       }
+    }
 
-      if (params.tradeType) {
-        const validTradeType = getMatchingValueFromObject(TradeType, tradeType);
-        options = updateOption(options, "tradeType", validTradeType);
+    if (tradeMode) {
+      const validTradeMode = getMatchingValueFromObject(TradeMode, tradeMode);
+      if (validTradeMode) {
+        options.tradeMode = validTradeMode as TradeMode;
       }
+    }
 
-      if (tradeMode) {
-        const validTradeMode = getMatchingValueFromObject(TradeMode, tradeMode);
-        options = updateOption(options, "tradeMode", validTradeMode);
+    if (queryPayToken) {
+      const payTokenInfo = getValidTokenBySymbol(chainId, queryPayToken, "v2");
+      if (payTokenInfo) {
+        options.fromTokenAddress = payTokenInfo?.address;
       }
+    }
 
-      if (queryPayToken) {
-        const payTokenInfo = getValidTokenBySymbol(chainId, queryPayToken, "v2");
-        options = updateOption(options, "fromTokenAddress", payTokenInfo?.address);
+    if (queryCollateralToken) {
+      const collateralTokenInfo = getValidTokenBySymbol(chainId, queryCollateralToken, "v2");
+      if (collateralTokenInfo) {
+        options.collateralAddress = collateralTokenInfo?.address;
       }
-      if (queryPoolName && allMarkets.length > 0) {
+    }
+
+    if (market && allMarkets.length > 0) {
+      const marketTokenInfo = getValidTokenBySymbol(chainId, market, "v2");
+      if (marketTokenInfo) {
+        options.toTokenAddress = marketTokenInfo?.address;
+      }
+      if (queryPoolName) {
         const marketPool = allMarkets.find((market) => {
           const poolName = getMarketPoolName(market);
           const isSameMarket = market.indexTokenAddress === options.toTokenAddress;
           return isSameMarket && poolName.toLowerCase() === queryPoolName.toLowerCase();
         });
-        options = updateOption(options, "marketAddress", marketPool?.marketTokenAddress);
+        if (marketPool) {
+          options.marketAddress = marketPool?.marketTokenAddress;
+        }
       }
 
-      if (queryCollateralToken) {
-        const collateralTokenInfo = getValidTokenBySymbol(chainId, queryCollateralToken, "v2");
-        options = updateOption(options, "collateralAddress", collateralTokenInfo?.address);
-      }
-
-      if (Object.keys(options).length > 0) {
-        setTradeOptions(options);
-      }
-
-      // make sure all the params are valid values or 'invalid' for unsupported values
-      const isAllParamsValid = areAllValuesValid(options);
-
-      if (isAllParamsValid) {
+      if (history.location.pathname !== "/v2") {
         history.replace({ search: "", pathname: "/v2" });
       }
-    };
+    }
 
-    processParameters();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return options;
   }, [params, searchParams, allMarkets, history, chainId]);
+
+  useEffect(() => {
+    setTradeOptions(options);
+  }, [options, setTradeOptions]);
 }
