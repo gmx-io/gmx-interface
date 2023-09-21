@@ -64,24 +64,24 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
   const renderFundingFeeTooltipContent = useCallback(() => {
     if (!fundingRateLong || !fundingRateShort) return [];
 
-    const positiveLong = fundingRateLong?.gt(0);
+    const isLongPositive = fundingRateLong?.gt(0);
     const long = (
       <Trans>
-        Long positions {positiveLong ? t`receive` : t`pay`} a Funding Fee of{" "}
-        <span className={positiveLong ? "text-green" : "text-red"}>
-          {positiveLong ? "+" : "-"}
+        Long positions {isLongPositive ? t`receive` : t`pay`} a Funding Fee of{" "}
+        <span className={isLongPositive ? "text-green" : "text-red"}>
+          {isLongPositive ? "+" : "-"}
           {formatAmount(fundingRateLong.abs(), 30, 4)}%
         </span>{" "}
         per hour.
       </Trans>
     );
 
-    const positveShort = fundingRateShort?.gt(0);
+    const isShortPositive = fundingRateShort?.gt(0);
     const short = (
       <Trans>
-        Short positions {positveShort ? t`receive` : t`pay`} a Funding Fee of{" "}
-        <span className={positveShort ? "text-green" : "text-red"}>
-          {positveShort ? "+" : "-"}
+        Short positions {isShortPositive ? t`receive` : t`pay`} a Funding Fee of{" "}
+        <span className={isShortPositive ? "text-green" : "text-red"}>
+          {isShortPositive ? "+" : "-"}
           {formatAmount(fundingRateShort.abs(), 30, 4)}%
         </span>{" "}
         per hour.
