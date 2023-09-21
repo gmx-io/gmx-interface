@@ -455,11 +455,21 @@ export default function GlpSwap(props) {
       }
     }
 
+    let timeoutId;
+
     if (pay || receive || operation) {
       if (history.location.pathname !== "/buy_glp") {
-        history.replace({ search: "", pathname: "/buy_glp" });
+        timeoutId = setTimeout(() => {
+          history.replace({ search: "", pathname: "/buy_glp" });
+        }, 2000); // Delays the execution by 2 seconds
       }
     }
+
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, [params, queryParams, setIsBuying, chainId, setSwapTokenAddress, history]);
 
   const switchSwapOption = (hash = "") => {

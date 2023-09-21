@@ -609,7 +609,9 @@ export const Exchange = forwardRef((props, ref) => {
       }
     }
 
-    if (options.marketAddress && history.location.pathname !== "/trade") {
+    const isValidOptionsValues = Object.values(options).filter(Boolean).length > 0;
+
+    if (isValidOptionsValues && history.location.pathname !== "/trade") {
       history.replace({ search: "", pathname: "/trade" });
     }
 
