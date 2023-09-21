@@ -609,10 +609,10 @@ export const Exchange = forwardRef((props, ref) => {
       }
     }
 
-    const isValidOptionsValues = Object.values(options).filter(Boolean).length > 0;
-
-    if (isValidOptionsValues && history.location.pathname !== "/trade") {
-      history.replace({ search: "", pathname: "/trade" });
+    if (history.location.pathname !== "/trade") {
+      setTimeout(() => {
+        history.replace({ search: "", pathname: "/trade" });
+      }, 2000); // Delays the execution by 2 seconds
     }
 
     return options;
