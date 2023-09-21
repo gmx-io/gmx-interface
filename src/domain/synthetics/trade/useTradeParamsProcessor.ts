@@ -25,6 +25,15 @@ type TradeOptions = {
   collateralAddress?: string;
 };
 
+const initialOptions: TradeOptions = {
+  fromTokenAddress: undefined,
+  toTokenAddress: undefined,
+  marketAddress: undefined,
+  tradeType: undefined,
+  tradeMode: undefined,
+  collateralAddress: undefined,
+};
+
 export function useTradeParamsProcessor(
   allMarkets: MarketInfo[],
   setTradeOptions: ({
@@ -46,15 +55,7 @@ export function useTradeParamsProcessor(
     const queryPayToken = searchParams.get("pay");
     const queryPoolName = searchParams.get("pool");
     const queryCollateralToken = searchParams.get("collateral");
-
-    let options: TradeOptions = {
-      fromTokenAddress: undefined,
-      toTokenAddress: undefined,
-      marketAddress: undefined,
-      tradeType: undefined,
-      tradeMode: undefined,
-      collateralAddress: undefined,
-    };
+    const options = initialOptions;
 
     if (params.tradeType) {
       const validTradeType = getMatchingValueFromObject(TradeType, tradeType);
@@ -105,10 +106,14 @@ export function useTradeParamsProcessor(
       }
     }
 
-    return options;
+    if (Object.values(options).filter(Boolean).length > 0) {
+      return options;
+    }
   }, [params, searchParams, allMarkets, history, chainId]);
 
   useEffect(() => {
-    setTradeOptions(options);
+    if (options) {
+      setTradeOptions(options);
+    }
   }, [options, setTradeOptions]);
 }
