@@ -36,6 +36,7 @@ import {
   formatAcceptablePrice,
   formatLeverage,
   formatLiquidationPrice,
+  getTriggerNameByPrice,
   usePositionsConstants,
 } from "domain/synthetics/positions";
 import { TokenData, TokensData, TokensRatio, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
@@ -766,9 +767,21 @@ export function TradeBox(p: Props) {
     } else if (isLimit) {
       return t`Create Limit order`;
     } else {
-      return t`Create Trigger order`;
+      return t`Create ${getTriggerNameByPrice({ markPrice, triggerPrice, isLong })} order`;
     }
-  }, [error, fromToken?.symbol, isLimit, isMarket, isSwap, toToken?.symbol, tradeType, tradeTypeLabels]);
+  }, [
+    error,
+    fromToken?.symbol,
+    isLimit,
+    isLong,
+    isMarket,
+    isSwap,
+    markPrice,
+    toToken?.symbol,
+    tradeType,
+    tradeTypeLabels,
+    triggerPrice,
+  ]);
 
   function onSubmit() {
     if (!account) {
