@@ -641,9 +641,25 @@ export function PositionSeller(p: Props) {
     />
   );
 
-  const rows = isTrigger
-    ? [triggerPriceRow, acceptablePriceImpactRow, acceptablePriceRow, liqPriceRow, sizeRow]
-    : [allowedSlippageRow, markPriceRow, entryPriceRow, priceImpactRow, acceptablePriceRow, liqPriceRow, sizeRow];
+  const rows = isTrigger ? (
+    <>
+      {triggerPriceRow}
+      {acceptablePriceImpactRow}
+      {acceptablePriceRow}
+      {liqPriceRow}
+      {sizeRow}
+    </>
+  ) : (
+    <>
+      {allowedSlippageRow}
+      {markPriceRow}
+      {entryPriceRow}
+      {priceImpactRow}
+      {acceptablePriceRow}
+      {liqPriceRow}
+      {sizeRow}
+    </>
+  );
 
   return (
     <div className="PositionEditor PositionSeller">
