@@ -31,6 +31,19 @@ function getShareURL(imageInfo, ref) {
   return url;
 }
 
+type Props = {
+  entryPrice: BigNumber | undefined;
+  indexToken: Token;
+  isLong: boolean;
+  leverage: BigNumber | undefined;
+  markPrice: BigNumber;
+  pnlAfterFeesPercentage: BigNumber;
+  setIsPositionShareModalOpen: (isOpen: boolean) => void;
+  isPositionShareModalOpen: boolean;
+  account: string | undefined | null;
+  chainId: number;
+};
+
 function PositionShare({
   entryPrice,
   indexToken,
@@ -42,18 +55,7 @@ function PositionShare({
   isPositionShareModalOpen,
   account,
   chainId,
-}: {
-  entryPrice: BigNumber | undefined;
-  indexToken: Token;
-  isLong: boolean;
-  leverage: BigNumber | undefined;
-  markPrice: BigNumber;
-  pnlAfterFeesPercentage: BigNumber;
-  setIsPositionShareModalOpen: (isOpen: boolean) => void;
-  isPositionShareModalOpen: boolean;
-  account: string | undefined | null;
-  chainId: number;
-}) {
+}: Props) {
   const userAffiliateCode = useAffiliateCodes(chainId, account);
   const [uploadedImageInfo, setUploadedImageInfo] = useState<any>();
   const [uploadedImageError, setUploadedImageError] = useState<string | null>(null);

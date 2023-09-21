@@ -35,6 +35,10 @@ export function PositionList(p: Props) {
   const positionToShare = getByKey(p.positionsData, positionToShareKey);
   const positions = Object.values(p.positionsData || {});
   const orders = Object.values(p.ordersData || {});
+  const handleSharePositionClick = (positionKey: string) => {
+    setPositionToShareKey(positionKey);
+    setIsPositionShareModalOpen(true);
+  };
 
   return (
     <div>
@@ -57,10 +61,7 @@ export function PositionList(p: Props) {
               showPnlAfterFees={p.showPnlAfterFees}
               savedShowPnlAfterFees={p.savedShowPnlAfterFees}
               isLarge={false}
-              onShareClick={() => {
-                setPositionToShareKey(position.key);
-                setIsPositionShareModalOpen(true);
-              }}
+              onShareClick={() => handleSharePositionClick(position.key)}
               currentMarketAddress={p.currentMarketAddress}
               currentCollateralAddress={p.currentCollateralAddress}
               currentTradeType={p.currentTradeType}
@@ -123,10 +124,7 @@ export function PositionList(p: Props) {
                 currentTradeType={p.currentTradeType}
                 openSettings={p.openSettings}
                 hideActions={p.hideActions}
-                onShareClick={() => {
-                  setPositionToShareKey(position.key);
-                  setIsPositionShareModalOpen(true);
-                }}
+                onShareClick={() => handleSharePositionClick(position.key)}
               />
             ))}
         </tbody>
