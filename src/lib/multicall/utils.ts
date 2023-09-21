@@ -74,7 +74,7 @@ export async function executeMulticall(
 ) {
   const multicall = await Multicall.getInstance(chainId);
 
-  return multicall?.call(request, 20000); //MAX_TIMEOUT);
+  return multicall?.call(request, MAX_TIMEOUT);
 }
 
 export class Multicall {
