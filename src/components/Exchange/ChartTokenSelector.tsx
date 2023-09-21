@@ -104,7 +104,7 @@ export default function ChartTokenSelector(props: Props) {
   return (
     <Popover>
       {({ open, close }) => {
-        if (!open) setSearchKeyword("");
+        if (!open && searchKeyword.length > 0) setSearchKeyword("");
         return (
           <>
             <Popover.Button as="div">

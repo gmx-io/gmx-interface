@@ -136,7 +136,7 @@ export default function ChartTokenSelector(props: Props) {
   return (
     <Popover className="Synths-ChartTokenSelector">
       {({ open, close }) => {
-        if (!open) setSearchKeyword("");
+        if (!open && searchKeyword.length > 0) setSearchKeyword("");
         return (
           <>
             <Popover.Button as="div">
