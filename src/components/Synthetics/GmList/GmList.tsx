@@ -1,8 +1,6 @@
 import { Trans, t } from "@lingui/macro";
-import { groupBy } from "lodash";
 import Button from "components/Button/Button";
 import {
-  MarketInfo,
   MarketTokensAPRData,
   MarketsInfoData,
   getMarketIndexName,
@@ -12,10 +10,9 @@ import {
 import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { importImage } from "lib/legacy";
-import { bigNumberify, formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
+import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
-import { useMemo } from "react";
 import { useMedia } from "react-use";
 import { Operation } from "../GmSwap/GmSwapBox/GmSwapBox";
 import "./GmList.scss";
@@ -23,6 +20,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { getIcons } from "config/icons";
 import PageTitle from "components/PageTitle/PageTitle";
+import useSortedMarketsWithIndexToken from "domain/synthetics/trade/useSortedMarketsWithIndexToken";
 
 type Props = {
   hideTitle?: boolean;
@@ -45,59 +43,8 @@ export function GmList({
 }: Props) {
   const { chainId } = useChainId();
   const currentIcons = getIcons(chainId);
-  const sortedMarketTokens = useMemo(() => {
-    if (!marketsInfoData) {
-      return [];
-    }
-    // Group markets by index token address
-    const groupedMarketList: { [marketAddress: string]: MarketInfo[] } = groupBy(
-      Object.values(marketsInfoData),
-      (market) => market[market.isSpotOnly ? "marketTokenAddress" : "indexTokenAddress"]
-    );
-
-    const allMarkets = Object.values(groupedMarketList)
-      .map((markets) => {
-        return markets
-          .filter((market) => {
-            const marketInfoData = getByKey(marketsInfoData, market.marketTokenAddress)!;
-            return !marketInfoData.isDisabled;
-          })
-          .map((market) => getByKey(marketTokensData, market.marketTokenAddress)!);
-      })
-      .filter((markets) => markets.length > 0);
-
-    const sortedGroups = allMarkets!.sort((a, b) => {
-      const totalMarketSupplyA = a.reduce((acc, market) => {
-        const totalSupplyUsd = convertToUsd(market?.totalSupply, market?.decimals, market?.prices.minPrice);
-        acc = acc.add(totalSupplyUsd || 0);
-        return acc;
-      }, bigNumberify(0)!);
-
-      const totalMarketSupplyB = b.reduce((acc, market) => {
-        const totalSupplyUsd = convertToUsd(market?.totalSupply, market?.decimals, market?.prices.minPrice);
-        acc = acc.add(totalSupplyUsd || 0);
-        return acc;
-      }, bigNumberify(0)!);
-
-      return totalMarketSupplyA.gt(totalMarketSupplyB) ? -1 : 1;
-    });
-
-    // Sort markets within each group by total supply
-    const sortedMarkets = sortedGroups.map((markets: any) => {
-      return markets.sort((a, b) => {
-        const totalSupplyUsdA = convertToUsd(a.totalSupply, a.decimals, a.prices.minPrice)!;
-        const totalSupplyUsdB = convertToUsd(b.totalSupply, b.decimals, b.prices.minPrice)!;
-        return totalSupplyUsdA.gt(totalSupplyUsdB) ? -1 : 1;
-      });
-    });
-
-    // Flatten the sorted markets array
-    const flattenedMarkets = sortedMarkets.flat(Infinity);
-
-    return flattenedMarkets;
-  }, [marketsInfoData, marketTokensData]);
-
   const isMobile = useMedia("(max-width: 1100px)");
+  const sortedMarketsByIndexToken = useSortedMarketsWithIndexToken(marketsInfoData, marketTokensData);
 
   return (
     <div className="GMList">
@@ -148,7 +95,7 @@ export function GmList({
               </tr>
             </thead>
             <tbody>
-              {sortedMarketTokens.map((token) => {
+              {sortedMarketsByIndexToken.map((token) => {
                 const market = getByKey(marketsInfoData, token?.address)!;
 
                 const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
@@ -263,7 +210,7 @@ export function GmList({
           {!hideTitle && <PageTitle title={t`GM Pools`} />}
 
           <div className="token-grid">
-            {sortedMarketTokens.map((token) => {
+            {sortedMarketsByIndexToken.map((token) => {
               const apr = marketsTokensAPRData?.[token.address];
 
               const totalSupply = token?.totalSupply;

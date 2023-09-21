@@ -2,7 +2,6 @@ import { Trans, t } from "@lingui/macro";
 import { CardRow } from "components/CardRow/CardRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import { getIcon } from "config/icons";
 import {
   MarketInfo,
   MarketTokensAPRData,
@@ -19,6 +18,7 @@ import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import "./MarketStats.scss";
 import BridgingInfo from "../BridgingInfo/BridgingInfo";
 import { getBridgingOptionsForToken } from "config/bridging";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 
 type Props = {
   marketInfo?: MarketInfo;
@@ -39,7 +39,7 @@ export function MarketStats(p: Props) {
 
   const mintableInfo = marketInfo && marketToken ? getMintableMarketTokens(marketInfo, marketToken) : undefined;
 
-  const { longToken, shortToken, longPoolAmount, shortPoolAmount } = marketInfo || {};
+  const { longToken, shortToken, longPoolAmount, shortPoolAmount, indexToken } = marketInfo || {};
 
   const longPoolAmountUsd = marketInfo ? getPoolUsdWithoutPnl(marketInfo, true, "midPrice") : undefined;
   const shortPoolAmountUsd = marketInfo ? getPoolUsdWithoutPnl(marketInfo, false, "midPrice") : undefined;
@@ -56,7 +56,14 @@ export function MarketStats(p: Props) {
       <div className="MarketStats-title">
         <div className="App-card-title-mark">
           <div className="App-card-title-mark-icon">
-            <img className="MarketStats-gm-icon" src={getIcon(chainId, "gm")} alt="GM" />
+            {marketInfo && indexToken && (
+              <TokenIcon
+                className="ChartToken-list-icon"
+                symbol={marketInfo.isSpotOnly ? "swap" : indexToken.symbol}
+                displaySize={40}
+                importSize={40}
+              />
+            )}
           </div>
           <div className="App-card-title-mark-info">
             <div className="App-card-title-mark-title Gm-stats-title items-center">
@@ -78,7 +85,7 @@ export function MarketStats(p: Props) {
             indexName && poolName ? (
               <div className="items-top">
                 <span>{indexName}</span>
-                <span className="subtext gm-market-name">{poolName}</span>
+                <span className="subtext gm-market-name">[{poolName}]</span>
               </div>
             ) : (
               "..."

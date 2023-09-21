@@ -6,18 +6,16 @@
   .Tooltip-popup {
     min-width: 30rem;
   }
+  .MarketStats-title {
+    margin-top: -4px;
+    margin-right: -4px;
+  }
 }
 
 .MarketStats-card .App-card-row .label {
   color: #a9a9b0;
   opacity: 1;
   min-width: max-content;
-}
-
-.MarketStats-gm-icon {
-  height: 45px;
-  margin-top: -4px;
-  margin-left: -4px;
 }
 
 .App-card-title-mark-icon {

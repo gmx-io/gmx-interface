@@ -17,6 +17,7 @@ import "./MarketPoolsPage.scss";
 import { GmList } from "components/Synthetics/GmList/GmList";
 import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
 import PageTitle from "components/PageTitle/PageTitle";
+import MarketTokenSelector from "components/Synthetics/MarketTokenSelector/MarketTokenSelector";
 
 type Props = {
   setPendingTxns: (txns: any) => void;
@@ -70,6 +71,12 @@ export function MarketPoolsPage(p: Props) {
               earn fees from swaps and leverage trading.
             </Trans>
           }
+        />
+        <MarketTokenSelector
+          marketTokensData={depositMarketTokensData}
+          marketsInfoData={marketsInfoData}
+          marketsTokensAPRData={marketsTokensAPRData}
+          currentMarketInfo={marketInfo}
         />
         <div className="MarketPoolsPage-content">
           <MarketStats marketsTokensAPRData={marketsTokensAPRData} marketInfo={marketInfo} marketToken={marketToken} />

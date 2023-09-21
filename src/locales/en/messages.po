@@ -2470,6 +2470,7 @@ msgid "Long Funding Rewards"
 msgstr "Long Funding Rewards"
 
 #: src/components/Exchange/ChartTokenSelector.tsx
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "Long Liquidity"
 msgstr "Long Liquidity"
 
@@ -2615,6 +2616,7 @@ msgid "Max Execution Fee buffer below {0}% may result in failed orders."
 msgstr "Max Execution Fee buffer below {0}% may result in failed orders."
 
 #: src/components/Exchange/ChartTokenSelector.tsx
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "Max In"
 msgstr "Max In"
 
@@ -2623,6 +2625,7 @@ msgid "Max Leverage without PnL: 100x"
 msgstr "Max Leverage without PnL: 100x"
 
 #: src/components/Exchange/ChartTokenSelector.tsx
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "Max Out"
 msgstr "Max Out"
 
@@ -3857,6 +3860,7 @@ msgid "Short Funding Rewards"
 msgstr "Short Funding Rewards"
 
 #: src/components/Exchange/ChartTokenSelector.tsx
+#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "Short Liquidity"
 msgstr "Short Liquidity"
 
