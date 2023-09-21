@@ -10,6 +10,7 @@ import {
   formatLeverage,
   formatLiquidationPrice,
   getEstimatedLiquidationTimeInHours,
+  getTriggerNameByPrice,
   usePositionsConstants,
 } from "domain/synthetics/positions";
 import { formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
@@ -329,7 +330,13 @@ export function PositionItem(p: Props) {
                     <div key={order.key} className="Position-list-order active-order-tooltip">
                       <div className="Position-list-order-label">
                         <span>
-                          {triggerThresholdType}{" "}
+                          {getTriggerNameByPrice({
+                            markPrice: p.position.markPrice,
+                            triggerPrice: order.triggerPrice,
+                            isLong: order.isLong,
+                            abbr: true,
+                          })}
+                          : {triggerThresholdType}
                           {formatUsd(order.triggerPrice, {
                             displayDecimals: order.indexToken?.priceDecimals,
                           })}

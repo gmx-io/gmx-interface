@@ -321,13 +321,19 @@ export function getTriggerNameByPrice({
   markPrice,
   triggerPrice,
   isLong,
+  abbr = false,
 }: {
   markPrice: BigNumber | undefined;
   triggerPrice: BigNumber | undefined;
   isLong: boolean;
+  abbr?: boolean;
 }) {
+  const triggerStr = abbr ? "T" : t`Trigger`;
+  const takeProfitStr = abbr ? "TP" : t`Take-Profit`;
+  const stopLossStr = abbr ? "SL" : t`Stop-Loss`;
+
   if (!triggerPrice || !markPrice) {
-    return t`Trigger`;
+    return triggerStr;
   }
 
   const orderType = getTriggerDecreaseOrderType({
@@ -337,12 +343,12 @@ export function getTriggerNameByPrice({
   });
 
   if (orderType === OrderType.LimitDecrease) {
-    return isLong ? t`Take-Profit` : t`Stop-Loss`;
+    return isLong ? takeProfitStr : stopLossStr;
   }
 
   if (orderType === OrderType.StopLossDecrease) {
-    return isLong ? t`Stop-Loss` : t`Take-Profit`;
+    return isLong ? stopLossStr : takeProfitStr;
   }
 
-  return t`Trigger`;
+  return triggerStr;
 }
