@@ -61,7 +61,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
   const indexName = marketInfo && getMarketIndexName(marketInfo);
   const poolName = marketInfo && getMarketPoolName(marketInfo);
 
-  const renderFeesTooltipContent = useCallback(() => {
+  const renderFundingFeeTooltipContent = useCallback(() => {
     if (!fundingRateLong || !fundingRateShort) return [];
 
     const positiveLong = fundingRateLong?.gt(0);
@@ -180,7 +180,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
                 fundingRate ? `${fundingRate.gt(0) ? "+" : "-"}${formatAmount(fundingRate.abs(), 30, 4)}% / 1h` : "..."
               }
               position="right-bottom"
-              renderContent={renderFeesTooltipContent}
+              renderContent={renderFundingFeeTooltipContent}
             />
           }
         />
