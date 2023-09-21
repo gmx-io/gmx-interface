@@ -61,7 +61,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
   const indexName = marketInfo && getMarketIndexName(marketInfo);
   const poolName = marketInfo && getMarketPoolName(marketInfo);
 
-  const [currentFeeElement, oppositeFeeElement] = useMemo(() => {
+  const renderFeesTooltipContent = useCallback(() => {
     if (!fundingRateLong || !fundingRateShort) return [];
 
     const positiveLong = fundingRateLong?.gt(0);
@@ -88,10 +88,8 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
       </Trans>
     );
 
-    return isLong ? [long, short] : [short, long];
-  }, [fundingRateLong, fundingRateShort, isLong]);
+    const [currentFeeElement, oppositeFeeElement] = isLong ? [long, short] : [short, long];
 
-  const renderFeesTooltipContent = useCallback(() => {
     return (
       <div>
         {currentFeeElement}
@@ -100,7 +98,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
         {oppositeFeeElement}
       </div>
     );
-  }, [currentFeeElement, oppositeFeeElement]);
+  }, [fundingRateLong, fundingRateShort, isLong]);
 
   return (
     <div className="Exchange-swap-market-box App-box App-box-border">
