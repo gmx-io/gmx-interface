@@ -247,16 +247,14 @@ export default function PositionsList(props) {
               return (
                 <div key={position.key} className="App-card">
                   <div>
-                    <div className="App-card-title Position-card-title">
+                    <div className="App-card-title Position-card-title" onClick={() => onPositionClick(position)}>
                       <TokenIcon
                         className="PositionList-token-icon"
                         symbol={position.indexToken.symbol}
                         displaySize={20}
                         importSize={24}
                       />
-                      <span className="Exchange-list-title" onClick={() => onPositionClick(position)}>
-                        {position.indexToken.symbol}
-                      </span>
+                      <span className="Exchange-list-title">{position.indexToken.symbol}</span>
                       <div>
                         <span className="Position-leverage">{position.leverageStr}</span>
                         <span
