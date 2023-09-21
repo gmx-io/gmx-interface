@@ -208,7 +208,7 @@ export function TradeBox(p: Props) {
   const tradeModeLabels = {
     [TradeMode.Market]: t`Market`,
     [TradeMode.Limit]: t`Limit`,
-    [TradeMode.Trigger]: t`Trigger`,
+    [TradeMode.Trigger]: t`TP/SL`,
   };
 
   const { chainId } = useChainId();
