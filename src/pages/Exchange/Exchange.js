@@ -471,16 +471,19 @@ export const Exchange = forwardRef((props, ref) => {
     [tokenSelection, setTokenSelection]
   );
 
-  function setFromAndToTokenAddress(selectedSwapOption, fromTokenAddress, toTokenAddress) {
-    const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection));
-    newTokenSelection[selectedSwapOption].from = fromTokenAddress;
-    newTokenSelection[selectedSwapOption].to = toTokenAddress;
-    if (selectedSwapOption === LONG || selectedSwapOption === SHORT) {
-      newTokenSelection[LONG].to = toTokenAddress;
-      newTokenSelection[SHORT].to = toTokenAddress;
-    }
-    setTokenSelection(newTokenSelection);
-  }
+  const setFromAndToTokenAddress = useCallback(
+    (selectedSwapOption, fromTokenAddress, toTokenAddress) => {
+      const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection));
+      newTokenSelection[selectedSwapOption].from = fromTokenAddress;
+      newTokenSelection[selectedSwapOption].to = toTokenAddress;
+      if (selectedSwapOption === LONG || selectedSwapOption === SHORT) {
+        newTokenSelection[LONG].to = toTokenAddress;
+        newTokenSelection[SHORT].to = toTokenAddress;
+      }
+      setTokenSelection(newTokenSelection);
+    },
+    [setTokenSelection, tokenSelection]
+  );
 
   const setMarket = (selectedSwapOption, toTokenAddress) => {
     setSwapOption(selectedSwapOption);
@@ -520,30 +523,41 @@ export const Exchange = forwardRef((props, ref) => {
     fetcher: contractFetcher(signer, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
   });
 
-  function updateTradeOptions(options) {
-    if (options.tradeType) {
-      setSwapOption(options.tradeType);
-    }
-    if (options.tradeMode) {
-      setOrderOption(options.tradeMode);
-    }
-    if (options.marketAddress && options.fromAddress) {
-      setFromAndToTokenAddress(options.tradeType, options.fromAddress, options.marketAddress);
-    } else {
-      if (options.fromAddress) {
-        setFromTokenAddress(options.tradeType, options.fromAddress);
+  const updateTradeOptions = useCallback(
+    (options) => {
+      if (!options) return;
+      if (options.tradeType) {
+        setSwapOption(options.tradeType);
       }
-      if (options.marketAddress) {
-        setToTokenAddress(options.tradeType, options.marketAddress);
+      if (options.tradeMode) {
+        setOrderOption(options.tradeMode);
       }
-    }
+      if (options.marketAddress && options.fromAddress) {
+        setFromAndToTokenAddress(options.tradeType, options.fromAddress, options.marketAddress);
+      } else {
+        if (options.fromAddress) {
+          setFromTokenAddress(options.tradeType, options.fromAddress);
+        }
+        if (options.marketAddress) {
+          setToTokenAddress(options.tradeType, options.marketAddress);
+        }
+      }
 
-    if (options.collateralAddress) {
-      setShortCollateralAddress(options.collateralAddress);
-    }
-  }
+      if (options.collateralAddress) {
+        setShortCollateralAddress(options.collateralAddress);
+      }
+    },
+    [
+      setSwapOption,
+      setOrderOption,
+      setFromAndToTokenAddress,
+      setFromTokenAddress,
+      setToTokenAddress,
+      setShortCollateralAddress,
+    ]
+  );
 
-  useEffect(() => {
+  const tradeOptions = useMemo(() => {
     const { market, tradeType, tradeMode } = params;
     const queryCollateralToken = queryParams.get("collateral");
     const queryPayToken = queryParams.get("pay");
@@ -595,16 +609,18 @@ export const Exchange = forwardRef((props, ref) => {
       }
     }
 
-    updateTradeOptions(options);
-
-    if (history.location.search) {
-      setTimeout(() => {
-        history.replace({ search: "", pathname: "/trade" });
-      }, 2000);
+    if (options.marketAddress && history.location.pathname !== "/trade") {
+      history.replace({ search: "", pathname: "/trade" });
     }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [history, params, setOrderOption, setSwapOption, chainId]);
+    return options;
+  }, [history, params, chainId, queryParams, swapOption]);
+
+  useEffect(() => {
+    if (tradeOptions) {
+      updateTradeOptions(tradeOptions);
+    }
+  }, [tradeOptions, updateTradeOptions]);
 
   const { data: totalTokenWeights } = useSWR(
     [`Exchange:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],
