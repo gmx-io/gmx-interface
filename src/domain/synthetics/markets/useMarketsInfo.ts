@@ -11,6 +11,7 @@ import {
   isMarketDisabledKey,
   maxPnlFactorKey,
   maxPoolAmountForDepositKey,
+  maxPoolAmountKey,
   maxPositionImpactFactorForLiquidationsKey,
   maxPositionImpactFactorKey,
   minCollateralFactorForOpenInterest,
@@ -136,9 +137,17 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
               },
               maxLongPoolAmount: {
                 methodName: "getUint",
-                params: [maxPoolAmountForDepositKey(marketAddress, market.longTokenAddress)],
+                params: [maxPoolAmountKey(marketAddress, market.longTokenAddress)],
               },
               maxShortPoolAmount: {
+                methodName: "getUint",
+                params: [maxPoolAmountKey(marketAddress, market.shortTokenAddress)],
+              },
+              maxLongPoolAmountForDeposit: {
+                methodName: "getUint",
+                params: [maxPoolAmountForDepositKey(marketAddress, market.longTokenAddress)],
+              },
+              maxShortPoolAmountForDeposit: {
                 methodName: "getUint",
                 params: [maxPoolAmountForDepositKey(marketAddress, market.shortTokenAddress)],
               },
@@ -401,6 +410,8 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
           shortInterestInTokens,
           longPoolAmount: BigNumber.from(dataStoreValues.longPoolAmount.returnValues[0]),
           shortPoolAmount: BigNumber.from(dataStoreValues.shortPoolAmount.returnValues[0]),
+          maxLongPoolAmountForDeposit: BigNumber.from(dataStoreValues.maxLongPoolAmountForDeposit.returnValues[0]),
+          maxShortPoolAmountForDeposit: BigNumber.from(dataStoreValues.maxShortPoolAmountForDeposit.returnValues[0]),
           maxLongPoolAmount: BigNumber.from(dataStoreValues.maxLongPoolAmount.returnValues[0]),
           maxShortPoolAmount: BigNumber.from(dataStoreValues.maxShortPoolAmount.returnValues[0]),
           longPoolAmountAdjustment: BigNumber.from(dataStoreValues.longPoolAmountAdjustment.returnValues[0]),
