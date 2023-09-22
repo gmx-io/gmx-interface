@@ -502,9 +502,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         },
         {
           address: getContract(chainId, "EventEmitter"),
-          topics: [EVENT_LOG2_TOPIC, [ORDER_CANCELLED_HASH, ORDER_EXECUTED_HASH], null, addressHash],
+          topics: [EVENT_LOG1_TOPIC, [ORDER_CANCELLED_HASH, ORDER_EXECUTED_HASH]],
         },
-        // NEW CONTRACTS
         {
           address: getContract(chainId, "EventEmitter"),
           topics: [EVENT_LOG2_TOPIC, [ORDER_CANCELLED_HASH, ORDER_EXECUTED_HASH], null, addressHash],
