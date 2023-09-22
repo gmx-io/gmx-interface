@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
-import { formatTokenAmount, formatUsd } from "lib/numbers";
+import { formatPercentage, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getFeeItem, getIsHighPriceImpact, getPriceImpactByAcceptablePrice } from "../fees";
 import { MarketsInfoData, getAvailableUsdLiquidityForPosition } from "../markets";
@@ -309,7 +309,7 @@ export function getOrderErrors(p: {
 
     if (getIsHighPriceImpact(undefined, swapImpactFeeItem)) {
       errors.push({
-        msg: t`There is a high Swap Price Impact for the Order Swap path.`,
+        msg: t`Currently, There is a high Swap Price Impact for the Order Swap path.`,
         level: "warning",
       });
     }
@@ -341,7 +341,12 @@ export function getOrderErrors(p: {
       const suggestionType = positionOrder.orderType === OrderType.LimitIncrease ? t`Limit` : t`Take-Profit`;
 
       errors.push({
-        msg: t`The Order may not execute at the desired ${priceText} as the current Price Impact is higher than its Acceptable Price Impact. Consider canceling and creating a new ${suggestionType} Order.`,
+        msg: t`The Order may not execute at the desired ${priceText} as the current Price Impact ${formatPercentage(
+          currentAcceptablePriceDeltaBps,
+          { signed: true }
+        )} is higher than its Acceptable Price Impact ${formatPercentage(orderAcceptablePriceDeltaBps, {
+          signed: true,
+        })}. Consider canceling and creating a new ${suggestionType} Order.`,
         level: "warning",
       });
     }
@@ -381,12 +386,14 @@ export function getOrderErrors(p: {
 
   if (!position) {
     const sameMarketPosition = Object.values(positionsInfoData || {}).find(
-      (pos) => pos.marketAddress === order.marketAddress && pos.isLong === order.isLong
+      (pos) => pos.marketAddress === order.marketAddress
     );
+
+    const longText = sameMarketPosition?.isLong ? t`Long` : t`Short`;
 
     if (sameMarketPosition) {
       errors.push({
-        msg: t`You have an existing position with ${sameMarketPosition?.collateralToken.symbol} as Collateral.`,
+        msg: t`You have an existing ${longText} position with ${sameMarketPosition?.collateralToken.symbol} as Collateral.`,
         level: "warning",
       });
     }
