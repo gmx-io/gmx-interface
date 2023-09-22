@@ -34,7 +34,7 @@ describe("TradeHistoryRow helpers", () => {
 
     expect(formatPositionMessage(createOrderDecreaseLong, minCollateralUsd)).toEqual([
       {
-        text: "Create Order: Decrease Long BTC -$266.23, Trigger Price: > $30,000.00",
+        text: "Create Order: Decrease Long BTC -$266.23, Trigger Price: > $30,000.00, Acceptable Price: $29,700.00",
       },
     ]);
 

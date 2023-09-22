@@ -122,10 +122,13 @@ export const formatPositionMessage = (
         displayDecimals: priceDecimals,
       })}`;
 
+      const isTakeProfit = tradeAction.orderType === OrderType.LimitDecrease;
+      const shouldRenderAcceptablePrice = isTakeProfit || isIncrease;
+
       if (isFrozen) {
         const strs = [triggerPriceStr];
 
-        if (isIncrease) {
+        if (shouldRenderAcceptablePrice) {
           strs.push(acceptablePriceStr);
         }
 
@@ -133,7 +136,7 @@ export const formatPositionMessage = (
       } else {
         const strs = [mainStr, triggerPriceStr];
 
-        if (isIncrease) {
+        if (shouldRenderAcceptablePrice) {
           strs.push(acceptablePriceStr);
         }
 
