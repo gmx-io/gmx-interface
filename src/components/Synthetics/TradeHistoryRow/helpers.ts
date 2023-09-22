@@ -85,7 +85,6 @@ export const formatPositionMessage = (
               t`Triggered at: ${formatUsd(tokenPrice, { displayDecimals: priceDecimals })}`,
               t`Execution Price: ${formatUsd(executionPrice, { displayDecimals: priceDecimals })}`,
             ].join(", "),
-            tooltipTitle: t`This order was executed at the trigger price.`,
             tooltipRows: [
               {
                 label: t`Order trigger price`,

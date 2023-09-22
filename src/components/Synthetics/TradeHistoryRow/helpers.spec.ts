@@ -56,7 +56,6 @@ describe("TradeHistoryRow helpers", () => {
       },
       {
         text: "Triggered at: <$0.010, Execution Price: $0.837",
-        tooltipTitle: "This order was executed at the trigger price.",
         tooltipRows: [
           {
             label: "Order trigger price",
