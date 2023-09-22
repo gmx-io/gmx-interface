@@ -101,7 +101,8 @@ export type Props = {
   triggerPrice?: BigNumber;
   fixedTriggerThresholdType?: TriggerThresholdType;
   fixedTriggerOrderType?: OrderType.LimitDecrease | OrderType.StopLossDecrease;
-  fixedTriggerAcceptablePriceImpactBps?: BigNumber;
+  selectedTriggerAcceptablePriceImpactBps?: BigNumber;
+  defaultTriggerAcceptablePriceImpactBps?: BigNumber;
   triggerRatio?: TokensRatio;
   marketInfo?: MarketInfo;
   collateralToken?: TokenData;
@@ -121,7 +122,7 @@ export type Props = {
   isHigherSlippageAllowed?: boolean;
   ordersData?: OrdersInfoData;
   tokensData?: TokensData;
-  setFixedTriggerAcceptablePriceImapctBps: (value: BigNumber) => void;
+  setSelectedTriggerAcceptablePriceImapctBps: (value: BigNumber) => void;
   setIsHigherSlippageAllowed: (isHigherSlippageAllowed: boolean) => void;
   setKeepLeverage: (keepLeverage: boolean) => void;
   onClose: () => void;
@@ -140,7 +141,7 @@ export function ConfirmationBox(p: Props) {
     triggerPrice,
     fixedTriggerThresholdType,
     fixedTriggerOrderType,
-    fixedTriggerAcceptablePriceImpactBps,
+    defaultTriggerAcceptablePriceImpactBps,
     triggerRatio,
     marketInfo,
     collateralToken,
@@ -159,7 +160,7 @@ export function ConfirmationBox(p: Props) {
     shouldDisableValidation,
     ordersData,
     tokensData,
-    setFixedTriggerAcceptablePriceImapctBps,
+    setSelectedTriggerAcceptablePriceImapctBps,
     setKeepLeverage,
     onClose,
     onSubmitted,
@@ -880,23 +881,29 @@ export function ConfirmationBox(p: Props) {
     );
   }
 
-  function renderAcceptablePriceImpactInput() {
-    if (!fixedTriggerAcceptablePriceImpactBps) {
+  function renderAcceptablePriceImpactInput(currentImpactDeltaUsd: BigNumber, currentImpactDeltaBps: BigNumber) {
+    if (!defaultTriggerAcceptablePriceImpactBps || !fees) {
       return null;
     }
 
-    // const value = (parseInt(fixedTriggerAcceptablePriceImpactBps.toString()) / BASIS_POINTS_DIVISOR) * 100;
-    const value = fixedTriggerAcceptablePriceImpactBps.toNumber();
+    const defaultValue = defaultTriggerAcceptablePriceImpactBps.toNumber();
 
     const setValue = (value) => {
-      const bps = (parseFloat(value) * BASIS_POINTS_DIVISOR) / 100;
-
-      setFixedTriggerAcceptablePriceImapctBps(BigNumber.from(bps));
+      setSelectedTriggerAcceptablePriceImapctBps(BigNumber.from(value));
     };
 
     return (
       <ExchangeInfoRow label={t`Acceptable Price Impact`}>
-        <PercentageInput onChange={setValue} defaultValue={value} />
+        <PercentageInput
+          onChange={setValue}
+          defaultValue={defaultValue}
+          highValue={defaultValue + 1}
+          lowValue={defaultValue}
+          highValueWarningText={t`You have set a high Acceptable Price Impact. Please verify Acceptable Price of the order.`}
+          lowValueWarningText={t`The Current Price Impact is ${formatDeltaUsd(
+            currentImpactDeltaUsd
+          )}%. Consider adding a buffer of 0.3% to it so the order is more likely to be processed.`}
+        />
       </ExchangeInfoRow>
     );
   }
@@ -939,7 +946,12 @@ export function ConfirmationBox(p: Props) {
             }
           />
           {isMarket && renderAllowedSlippage(savedAllowedSlippage, setAllowedSlippage)}
-          {isLimit && renderAcceptablePriceImpactInput()}
+          {isLimit &&
+            increaseAmounts &&
+            renderAcceptablePriceImpactInput(
+              increaseAmounts.positionPriceImpactDeltaUsd,
+              increaseAmounts.acceptablePriceDeltaBps
+            )}
           {isMarket && collateralSpreadInfo?.spread && (
             <ExchangeInfoRow label={t`Collateral Spread`} isWarning={swapSpreadInfo.isHigh} isTop={true}>
               {formatAmount(collateralSpreadInfo.spread.mul(100), USD_DECIMALS, 2, true)}%
@@ -1189,7 +1201,11 @@ export function ConfirmationBox(p: Props) {
             </Checkbox>
           )}
 
-          {renderAcceptablePriceImpactInput()}
+          {decreaseAmounts &&
+            renderAcceptablePriceImpactInput(
+              decreaseAmounts.positionPriceImpactDeltaUsd,
+              decreaseAmounts.acceptablePriceDeltaBps
+            )}
 
           <ExchangeInfoRow
             label={t`Trigger Price`}

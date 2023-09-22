@@ -1,7 +1,7 @@
-import "./PercentageInput.scss";
-import { useState } from "react";
 import cx from "classnames";
 import { formatAmount } from "lib/numbers";
+import { useMemo, useState } from "react";
+import "./PercentageInput.scss";
 
 const validDecimalRegex = /^\d+(\.\d{0,2})?$/; // 0.00 ~ 99.99
 
@@ -14,6 +14,7 @@ type Props = {
   defaultValue: number;
   maxValue?: number;
   highValue?: number;
+  lowValue?: number;
   suggestions?: number[];
   lowValueWarningText?: string;
   highValueWarningText?: string;
@@ -24,6 +25,7 @@ export default function PercentageInput({
   defaultValue,
   maxValue = 99 * 100,
   highValue,
+  lowValue,
   suggestions = [0.3, 0.5, 1, 1.5],
   highValueWarningText,
   lowValueWarningText,
@@ -57,20 +59,21 @@ export default function PercentageInput({
     }
   }
 
-  function getPercentageError() {
+  const error = useMemo(() => {
     const parsedValue = Math.round(Number.parseFloat(inputValue) * 100);
+
     if (highValue && parsedValue >= highValue) {
       return highValueWarningText;
     }
 
-    if (lowValueWarningText && parsedValue < defaultValue) {
+    if (lowValueWarningText && lowValue && parsedValue < lowValue) {
       return lowValueWarningText;
     }
-  }
+  }, [inputValue, highValue, lowValueWarningText, lowValue, highValueWarningText]);
 
   return (
     <div className="Percentage-input-wrapper">
-      <div className={cx("Percentage-input", { "input-error": !!getPercentageError() })}>
+      <div className={cx("Percentage-input", { "input-error": Boolean(error) })}>
         <input
           id="slippage-input"
           onFocus={() => setIsPanelVisible(true)}
@@ -83,8 +86,13 @@ export default function PercentageInput({
           <span>%</span>
         </label>
       </div>
+      {error && !isPanelVisible && (
+        <div className={cx("Percentage-input-error", "Tooltip-popup", "z-index-1001", "right-bottom", "warning")}>
+          {error}
+        </div>
+      )}
       {isPanelVisible && (
-        <ul className="Percentage-list">
+        <ul className="Percentage-list  ">
           {suggestions.map((slippage) => (
             <li
               key={slippage}

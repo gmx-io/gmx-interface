@@ -224,7 +224,8 @@ export function TradeBox(p: Props) {
     OrderType.LimitDecrease | OrderType.StopLossDecrease
   >();
 
-  const [fixedTriggerAcceptablePriceImpactBps, setFixedTriggerAcceptablePriceImapctBps] = useState<BigNumber>();
+  const [defaultTriggerAcceptablePriceImpactBps, setDefaultTriggerAcceptablePriceImapctBps] = useState<BigNumber>();
+  const [selectedTriggerAcceptablePriceImpactBps, setSelectedAcceptablePriceImapctBps] = useState<BigNumber>();
 
   const [fromTokenInputValue, setFromTokenInputValue] = useSafeState("");
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
@@ -368,7 +369,7 @@ export function TradeBox(p: Props) {
       leverage,
       triggerPrice: isLimit ? triggerPrice : undefined,
       position: existingPosition,
-      fixedAcceptablePriceImpactBps: fixedTriggerAcceptablePriceImpactBps,
+      fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
       acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
       findSwapPath: swapRoute.findSwapPath,
       userReferralInfo,
@@ -381,7 +382,7 @@ export function TradeBox(p: Props) {
   }, [
     collateralToken,
     existingPosition,
-    fixedTriggerAcceptablePriceImpactBps,
+    selectedTriggerAcceptablePriceImpactBps,
     focusedInput,
     fromToken,
     fromTokenAmount,
@@ -412,7 +413,7 @@ export function TradeBox(p: Props) {
       closeSizeUsd: closeSizeUsd,
       keepLeverage: keepLeverage!,
       triggerPrice,
-      fixedAcceptablePriceImpactBps: fixedTriggerAcceptablePriceImpactBps,
+      fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
       acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
       userReferralInfo,
       minCollateralUsd,
@@ -422,7 +423,7 @@ export function TradeBox(p: Props) {
     closeSizeUsd,
     collateralToken,
     existingPosition,
-    fixedTriggerAcceptablePriceImpactBps,
+    selectedTriggerAcceptablePriceImpactBps,
     isLong,
     isTrigger,
     keepLeverage,
@@ -794,11 +795,13 @@ export function TradeBox(p: Props) {
     ) {
       setFixedTriggerOrderType(decreaseAmounts.triggerOrderType);
       setFixedTriggerThresholdType(decreaseAmounts.triggerThresholdType);
-      setFixedTriggerAcceptablePriceImapctBps(decreaseAmounts.acceptablePriceDeltaBps.abs());
+      setSelectedAcceptablePriceImapctBps(decreaseAmounts.acceptablePriceDeltaBps.abs());
+      setDefaultTriggerAcceptablePriceImapctBps(decreaseAmounts.acceptablePriceDeltaBps.abs());
     }
 
     if (isLimit && increaseAmounts?.acceptablePrice) {
-      setFixedTriggerAcceptablePriceImapctBps(increaseAmounts.acceptablePriceDeltaBps.abs());
+      setSelectedAcceptablePriceImapctBps(increaseAmounts.acceptablePriceDeltaBps.abs());
+      setDefaultTriggerAcceptablePriceImapctBps(increaseAmounts.acceptablePriceDeltaBps.abs());
     }
 
     setStage("confirmation");
@@ -928,7 +931,8 @@ export function TradeBox(p: Props) {
   }
 
   const onConfirmationClose = useCallback(() => {
-    setFixedTriggerAcceptablePriceImapctBps(undefined);
+    setSelectedAcceptablePriceImapctBps(undefined);
+    setDefaultTriggerAcceptablePriceImapctBps(undefined);
     setFixedTriggerOrderType(undefined);
     setFixedTriggerThresholdType(undefined);
     setStage("trade");
@@ -1507,8 +1511,9 @@ export function TradeBox(p: Props) {
         triggerPrice={triggerPrice}
         fixedTriggerThresholdType={fixedTriggerThresholdType}
         fixedTriggerOrderType={fixedTriggerOrderType}
-        fixedTriggerAcceptablePriceImpactBps={fixedTriggerAcceptablePriceImpactBps}
-        setFixedTriggerAcceptablePriceImapctBps={setFixedTriggerAcceptablePriceImapctBps}
+        selectedTriggerAcceptablePriceImpactBps={selectedTriggerAcceptablePriceImpactBps}
+        setSelectedTriggerAcceptablePriceImapctBps={setSelectedAcceptablePriceImapctBps}
+        defaultTriggerAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
         triggerRatio={triggerRatio}
         marketInfo={marketInfo}
         collateralToken={collateralToken}
