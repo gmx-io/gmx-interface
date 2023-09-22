@@ -271,8 +271,8 @@ export function getOrderInfo(p: {
 
 export function getOrderErrors(p: {
   order: OrderInfo;
-  positionsInfoData?: PositionsInfoData;
   marketsInfoData: MarketsInfoData;
+  positionsInfoData: PositionsInfoData | undefined;
 }): { errors: OrderError[]; level: "error" | "warning" | undefined } {
   const { order, positionsInfoData, marketsInfoData } = p;
 

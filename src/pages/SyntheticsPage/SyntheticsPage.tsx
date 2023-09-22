@@ -86,6 +86,7 @@ export function SyntheticsPage(p: Props) {
   const { ordersInfoData, isLoading: isOrdersLoading } = useOrdersInfo(chainId, {
     account,
     marketsInfoData,
+    positionsInfoData,
     tokensData,
   });
 

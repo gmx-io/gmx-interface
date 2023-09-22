@@ -40,6 +40,7 @@ export default function SyntheticsActions({
   const { ordersInfoData, isLoading: isOrdersLoading } = useOrdersInfo(chainId, {
     account: checkSummedAccount,
     marketsInfoData,
+    positionsInfoData,
     tokensData,
   });
 
