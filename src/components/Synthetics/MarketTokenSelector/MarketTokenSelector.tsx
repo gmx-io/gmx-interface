@@ -33,6 +33,13 @@ export default function MarketTokenSelector(props: Props) {
   const history = useHistory();
 
   const filteredTokens = useMemo(() => {
+    if (sortedMarketsByIndexToken.length < 1) {
+      return [];
+    }
+    if (searchKeyword.length < 1) {
+      return sortedMarketsByIndexToken;
+    }
+
     return sortedMarketsByIndexToken.filter((market) => {
       const marketInfo = getByKey(marketsInfoData, market?.address)!;
       return marketInfo.name.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1;
