@@ -1189,7 +1189,7 @@ export function ConfirmationBox(p: Props) {
             </Checkbox>
           )}
 
-          {isLimit && renderAcceptablePriceImpactInput()}
+          {renderAcceptablePriceImpactInput()}
 
           <ExchangeInfoRow
             label={t`Trigger Price`}
