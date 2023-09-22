@@ -369,13 +369,13 @@ export function getOrderErrors(p: {
         initialCollateralAddress: positionOrder.initialCollateralTokenAddress,
       });
 
-      const minOutputUsd = convertToUsd(
-        order.minOutputAmount,
-        order.targetCollateralToken.decimals,
-        order.targetCollateralToken.prices.maxPrice
+      const collateralSwapUsd = convertToUsd(
+        order.initialCollateralDeltaAmount,
+        order.initialCollateralToken.decimals,
+        order.initialCollateralToken.prices.maxPrice
       )!;
 
-      if (swapPathLiquidity.lt(minOutputUsd)) {
+      if (swapPathLiquidity.lt(collateralSwapUsd)) {
         errors.push({
           msg: t`There may not be sufficient liquidity to execute the Pay Token to Collateral Token swap when the Price conditions are met.`,
           level: "error",
