@@ -1149,6 +1149,10 @@ msgstr "Current {0} shorts"
 msgid "Current {0} {longShortText}"
 msgstr "Current {0} {longShortText}"
 
+#: src/domain/synthetics/orders/utils.ts
+msgid "Currently, There is a high Swap Price Impact for the Order Swap path."
+msgstr "Currently, There is a high Swap Price Impact for the Order Swap path."
+
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
@@ -2453,6 +2457,7 @@ msgstr "Loading..."
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
+#: src/domain/synthetics/orders/utils.ts
 #: src/domain/synthetics/orders/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
@@ -3846,6 +3851,7 @@ msgstr "Share Position"
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -4273,8 +4279,12 @@ msgstr "The Max Execution Fee is set to a higher value to handle potential incre
 #~ msgstr "The Order may not execute at the desired Trigger Price as the current Price Impact is higher than its Acceptable Price Impact. Consider canceling and creating a new {suggestionType} Order."
 
 #: src/domain/synthetics/orders/utils.ts
-msgid "The Order may not execute at the desired {priceText} as the current Price Impact is higher than its Acceptable Price Impact. Consider canceling and creating a new {suggestionType} Order."
-msgstr "The Order may not execute at the desired {priceText} as the current Price Impact is higher than its Acceptable Price Impact. Consider canceling and creating a new {suggestionType} Order."
+#~ msgid "The Order may not execute at the desired {priceText} as the current Price Impact is higher than its Acceptable Price Impact. Consider canceling and creating a new {suggestionType} Order."
+#~ msgstr "The Order may not execute at the desired {priceText} as the current Price Impact is higher than its Acceptable Price Impact. Consider canceling and creating a new {suggestionType} Order."
+
+#: src/domain/synthetics/orders/utils.ts
+msgid "The Order may not execute at the desired {priceText} as the current Price Impact {0} is higher than its Acceptable Price Impact {1}. Consider canceling and creating a new {suggestionType} Order."
+msgstr "The Order may not execute at the desired {priceText} as the current Price Impact {0} is higher than its Acceptable Price Impact {1}. Consider canceling and creating a new {suggestionType} Order."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
@@ -4357,8 +4367,8 @@ msgid "There are more shorts than longs, borrow fees for longing is currently ze
 msgstr "There are more shorts than longs, borrow fees for longing is currently zero"
 
 #: src/domain/synthetics/orders/utils.ts
-msgid "There is a high Swap Price Impact for the Order Swap path."
-msgstr "There is a high Swap Price Impact for the Order Swap path."
+#~ msgid "There is a high Swap Price Impact for the Order Swap path."
+#~ msgstr "There is a high Swap Price Impact for the Order Swap path."
 
 #: src/domain/tokens/approveTokens.tsx
 #: src/lib/contracts/transactionErrors.tsx
@@ -5221,8 +5231,8 @@ msgid "You have an existing position in the {0} market pool. <0>Switch to {1} ma
 msgstr "You have an existing position in the {0} market pool. <0>Switch to {1} market pool.</0>"
 
 #: src/domain/synthetics/orders/utils.ts
-msgid "You have an existing position with {0} as Collateral."
-msgstr "You have an existing position with {0} as Collateral."
+#~ msgid "You have an existing position with {0} as Collateral."
+#~ msgstr "You have an existing position with {0} as Collateral."
 
 #: src/components/Exchange/SwapBox.js
 msgid "You have an existing position with {0} as collateral."
@@ -5235,6 +5245,10 @@ msgstr "You have an existing position with {0} as collateral. <0>Switch to {1} c
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position."
 msgstr "You have an existing position with {0} as collateral. This Order will not be valid for that Position."
+
+#: src/domain/synthetics/orders/utils.ts
+msgid "You have an existing {longText} position with {0} as Collateral."
+msgstr "You have an existing {longText} position with {0} as Collateral."
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "You have multiple existing Increase {longOrShortText} {0} limit orders"

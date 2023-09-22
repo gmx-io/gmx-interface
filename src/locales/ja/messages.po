@@ -1149,6 +1149,10 @@ msgstr "現在の{0}のショート"
 msgid "Current {0} {longShortText}"
 msgstr ""
 
+#: src/domain/synthetics/orders/utils.ts
+msgid "Currently, There is a high Swap Price Impact for the Order Swap path."
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
@@ -2450,6 +2454,7 @@ msgstr "ロード中"
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
+#: src/domain/synthetics/orders/utils.ts
 #: src/domain/synthetics/orders/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
@@ -3843,6 +3848,7 @@ msgstr "ポジションをシェアする"
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -4270,7 +4276,11 @@ msgstr ""
 #~ msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
-msgid "The Order may not execute at the desired {priceText} as the current Price Impact is higher than its Acceptable Price Impact. Consider canceling and creating a new {suggestionType} Order."
+#~ msgid "The Order may not execute at the desired {priceText} as the current Price Impact is higher than its Acceptable Price Impact. Consider canceling and creating a new {suggestionType} Order."
+#~ msgstr ""
+
+#: src/domain/synthetics/orders/utils.ts
+msgid "The Order may not execute at the desired {priceText} as the current Price Impact {0} is higher than its Acceptable Price Impact {1}. Consider canceling and creating a new {suggestionType} Order."
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
@@ -4354,8 +4364,8 @@ msgid "There are more shorts than longs, borrow fees for longing is currently ze
 msgstr "ロングよりショートが多いため、ロングの借入手数料は現在ゼロです"
 
 #: src/domain/synthetics/orders/utils.ts
-msgid "There is a high Swap Price Impact for the Order Swap path."
-msgstr ""
+#~ msgid "There is a high Swap Price Impact for the Order Swap path."
+#~ msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
 #: src/lib/contracts/transactionErrors.tsx
@@ -5218,8 +5228,8 @@ msgid "You have an existing position in the {0} market pool. <0>Switch to {1} ma
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
-msgid "You have an existing position with {0} as Collateral."
-msgstr ""
+#~ msgid "You have an existing position with {0} as Collateral."
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "You have an existing position with {0} as collateral."
@@ -5231,6 +5241,10 @@ msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position."
+msgstr ""
+
+#: src/domain/synthetics/orders/utils.ts
+msgid "You have an existing {longText} position with {0} as Collateral."
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
