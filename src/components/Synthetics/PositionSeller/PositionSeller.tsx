@@ -20,7 +20,7 @@ import {
   useGasPrice,
 } from "domain/synthetics/fees";
 import { MarketsInfoData } from "domain/synthetics/markets";
-import { OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
+import { DecreasePositionSwapType, OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
 import {
   PositionInfo,
   formatAcceptablePrice,
@@ -230,8 +230,12 @@ export function PositionSeller(p: Props) {
       return {};
     }
 
+    const swapsCount =
+      (decreaseAmounts.decreaseSwapType === DecreasePositionSwapType.NoSwap ? 0 : 1) +
+      (swapAmounts?.swapPathStats?.swapPath?.length || 0);
+
     const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
-      swapPath: swapAmounts?.swapPathStats?.swapPath || [],
+      swapsCount,
     });
 
     return {
