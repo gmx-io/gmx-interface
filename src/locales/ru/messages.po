@@ -4400,8 +4400,8 @@ msgid "This code is not yet registered on {0}, you will not receive rebates ther
 msgstr "Этот код еще не зарегистрирован на {0}, вы не будете получать рибейты там.<0/><1/>Переключите свою сеть, чтобы создать этот код на {1}."
 
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
-msgid "This order was executed at the trigger price."
-msgstr ""
+#~ msgid "This order was executed at the trigger price."
+#~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "This position was liquidated as the max leverage of 100x was exceeded."

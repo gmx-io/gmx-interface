@@ -4400,8 +4400,8 @@ msgid "This code is not yet registered on {0}, you will not receive rebates ther
 msgstr "해당 코드는 {0}에 아직 등록되지 않았기때문에, 소개 보수를 받을 수 없습니다.<0/><1/>네트워크를 변경후 해당 코드를 {1}상에서 생성하세요."
 
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
-msgid "This order was executed at the trigger price."
-msgstr ""
+#~ msgid "This order was executed at the trigger price."
+#~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
