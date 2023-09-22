@@ -8,28 +8,28 @@ const SUBGRAPH_URLS = {
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-referrals/api",
     nissohVault: "https://api.thegraph.com/subgraphs/name/nissoh/gmx-vault",
     syntheticsStats:
-      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-arbitrum-stats/version/trade-actions-pr-230919160631-e298fb1/api",
+      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx-2/synthetics-arbitrum-stats/version/trade-actions-pr-230922172009-8cb1dc2/api",
   },
 
   [ARBITRUM_GOERLI]: {
     stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-stats/api",
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-goerli-referrals/api",
     syntheticsStats:
-      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-goerli-stats/version/trade-actions-pr-230919172544-405d7d5/api",
+      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx-2/synthetics-goerli-stats/version/trade-actions-pr-230922171946-8cb1dc2/api",
   },
 
   [AVALANCHE]: {
     stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-stats/api",
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-referrals/api",
     syntheticsStats:
-      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-avalanche-stats/version/trade-actions-pr-230919172617-405d7d5/api",
+      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx-2/synthetics-avalanche-stats/version/trade-actions-pr-230922172032-8cb1dc2/api",
   },
 
   [AVALANCHE_FUJI]: {
     stats: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-stats",
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-fuji-referrals/api",
     syntheticsStats:
-      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-fuji-stats/version/trade-actions-pr-230919172455-405d7d5/api",
+      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx-2/synthetics-fuji-stats/version/trade-actions-pr-230922171908-8cb1dc2/api",
   },
 
   common: {
