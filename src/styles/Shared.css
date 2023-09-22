@@ -30,7 +30,7 @@ code {
 }
 
 input {
-  font-family: "RelativeNumber";
+  font-family: "RelativeNumber", sans-serif;
 }
 
 ::-webkit-scrollbar {

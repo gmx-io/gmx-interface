@@ -1,7 +1,7 @@
-import useSWR from "swr";
-import { useEffect, useMemo, useRef } from "react";
+import useSWRInfinite from "swr/infinite";
+import { useMemo } from "react";
 import { BigNumber, ethers } from "ethers";
-import SyntheticsReader from "abis/SyntheticsReader.json";
+import Reader from "abis/SyntheticsReader.json";
 import { MAX_ALLOWED_LEVERAGE } from "config/factors";
 import { getContract } from "config/contracts";
 import { getBasisPoints } from "lib/numbers";
@@ -87,6 +87,7 @@ function parsePositionsInfo(
 
     const markPrice = getMarkPrice({ prices: indexToken.prices, isLong: position.isLong, isIncrease: false });
     const collateralMinPrice = collateralToken.prices.minPrice;
+    const pendingBorrowingFeesUsd = position.pendingBorrowingFeesUsd;
 
     const entryPrice = getEntryPrice({
       sizeInTokens: position.sizeInTokens,
@@ -114,7 +115,7 @@ function parsePositionsInfo(
     const pendingClaimableFundingFeesUsd = pendingClaimableFundingFeesLongUsd?.add(pendingClaimableFundingFeesShortUsd);
 
     const totalPendingFeesUsd = getPositionPendingFeesUsd({
-      pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
+      pendingBorrowingFeesUsd,
       pendingFundingFeesUsd,
     });
 
@@ -145,7 +146,7 @@ function parsePositionsInfo(
     )!;
 
     const pnl = getPositionPnlUsd({
-      marketInfo: marketInfo,
+      marketInfo,
       sizeInUsd: position.sizeInUsd,
       sizeInTokens: position.sizeInTokens,
       markPrice,
@@ -156,10 +157,10 @@ function parsePositionsInfo(
       collateralUsd && !collateralUsd.eq(0) ? getBasisPoints(pnl, collateralUsd) : BigNumber.from(0);
 
     const netValue = getPositionNetValue({
-      collateralUsd: collateralUsd,
       pnl,
-      pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
-      pendingFundingFeesUsd: pendingFundingFeesUsd,
+      collateralUsd,
+      pendingBorrowingFeesUsd,
+      pendingFundingFeesUsd,
       closingFeeUsd,
     });
 
@@ -172,8 +173,8 @@ function parsePositionsInfo(
       sizeInUsd: position.sizeInUsd,
       collateralUsd: collateralUsd,
       pnl: showPnlInLeverage ? pnl : undefined,
-      pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
-      pendingFundingFeesUsd: pendingFundingFeesUsd,
+      pendingBorrowingFeesUsd,
+      pendingFundingFeesUsd,
     });
 
     const hasLowCollateral = leverage?.gt(MAX_ALLOWED_LEVERAGE) || false;
@@ -186,7 +187,7 @@ function parsePositionsInfo(
       collateralUsd,
       collateralAmount: position.collateralAmount,
       minCollateralUsd,
-      pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
+      pendingBorrowingFeesUsd,
       pendingFundingFeesUsd,
       isLong: position.isLong,
       userReferralInfo: {
@@ -231,98 +232,61 @@ export function usePositionsInfo(
   const { chainId } = useChainId();
   const { minCollateralUsd } = usePositionsConstants(chainId);
   const { marketsInfoData, tokensData, pricesUpdatedAt } = useMarketsInfo(chainId);
-  const provider = useRef(getProvider(undefined, chainId));
+  const pricesUpdateDate = pricesUpdatedAt && new Date(pricesUpdatedAt);
+  const pricesUpdateSecs = pricesUpdateDate && pricesUpdateDate.getSeconds();
+  const tsRounded = pricesUpdateSecs ? pricesUpdateDate.setSeconds(pricesUpdateSecs < 30 ? 0 : 30, 0) : 0;
+  const pageSize = 150;
+  const pageNumb = Math.ceil(positionKeys.length / pageSize);
+  const ReaderAddress = getContract(chainId, "SyntheticsReader");
+  const DataStoreAddress = getContract(chainId, "DataStore");
+  const ReferralStorageAddress = getContract(chainId, "ReferralStorage");
+  const contract = useMemo(
+    () => new ethers.Contract(ReaderAddress, Reader.abi, getProvider(undefined, chainId)),
+    [chainId, ReaderAddress]
+  );
 
-  useEffect(() => {
-    provider.current = getProvider(undefined, chainId);
-  }, [chainId]);
+  const getKey = (i) => (
+    pageNumb && i < pageNumb ? ["usePositionsInfo", chainId, positionsHash, tsRounded, i] : null
+  );
 
-  const pricesUpdateDate = pricesUpdatedAt ? new Date(pricesUpdatedAt) : new Date();
-  const pricesUpdateSecs = pricesUpdateDate.getSeconds();
-  const tsRounded = pricesUpdateDate.setSeconds(pricesUpdateSecs < 30 ? 0 : 30, 0);
-
-  const { data: positionsInfoJson } = useSWR<PositionJson[] | undefined>(
-    positionKeys.length ? ["usePositionsInfo", chainId, positionsHash, tsRounded] : null,
-    {
-      refreshInterval: 30_000,
+  const { data: positionsInfoJson } = useSWRInfinite<PositionJson[]>(
+    getKey,
+    ([,,,, i]) => contract.getAccountPositionInfoList(
+      DataStoreAddress,
+      ReferralStorageAddress,
+      positionKeys.slice(pageSize * i, pageSize * (i + 1)),
+      marketPrices.slice(pageSize * i, pageSize * (i + 1)),
+      ethers.constants.AddressZero // uiFeeReceiver
+    ), {
+      parallel: true,
+      refreshInterval: 0,
       keepPreviousData: true,
-      async fetcher() {
-        const chunkSize = 150;
-        const numChunks = Math.ceil(positionKeys.length / chunkSize);
-        const requests: Promise<PositionJson[]>[] = [];
-        const contract = new ethers.Contract(
-          getContract(chainId, "SyntheticsReader"),
-          SyntheticsReader.abi,
-          provider.current
-        );
-
-        const DataStoreContract = getContract(chainId, "DataStore");
-        const ReferralStorageContract = getContract(chainId, "ReferralStorage");
-        const fetchReaderMethod = async (i: number) => {
-          try {
-            return await contract.getAccountPositionInfoList(
-              DataStoreContract,
-              ReferralStorageContract,
-              positionKeys.slice(chunkSize * i, chunkSize * (i + 1)),
-              marketPrices.slice(chunkSize * i, chunkSize * (i + 1)),
-              ethers.constants.AddressZero // uiFeeReceiver
-            );
-          } catch (e) {
-            // eslint-disable-next-line no-console
-            console.error(`SyntheticsReader.getAccountPositionInfoList chunk ${i} request error:`, e);
-            throw e;
-          }
-        };
-
-        for (let i = 0; i < numChunks; i++) {
-          requests.push(fetchReaderMethod(i));
-        }
-
-        try {
-          const chunks = await Promise.all(requests);
-          const data = chunks.flat();
-          return data;
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.error("SyntheticsReader.getAccountPositionInfoList error:", e);
-          throw e;
-        }
-      },
+      initialSize: pageNumb,
+      revalidateAll: true,
     }
   );
 
-  const positionsInfoHash = (positionsInfoJson || [])
-    .map((p) =>
-      getPositionKey(
-        p.position.addresses.account,
-        p.position.addresses.market,
-        p.position.addresses.collateralToken,
-        p.position.flags.isLong
-      )
-    )
-    .join("-");
-
+  const positionsInfo = positionsInfoJson?.flat() || [];
   const data = useMemo(() => {
     if (
       !tokensData ||
       !marketsInfoData ||
       !minCollateralUsd ||
-      !positionsInfoJson ||
-      !positionsInfoJson.length ||
-      positionsInfoJson.length !== positionKeys.length
+      !positionsInfo.length ||
+      positionsInfo.length !== positionKeys.length
     ) {
       return;
     }
 
     return parsePositionsInfo(
       positionKeys,
-      positionsInfoJson as PositionJson[],
+      positionsInfo,
       marketsInfoData,
       tokensData,
       minCollateralUsd
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, positionsInfoHash, tsRounded]);
+  }, [chainId, positionsInfo.length, tsRounded]);
 
   return { isLoading: !data, error: null, data: data || {} };
 }
