@@ -5,29 +5,31 @@ import Tooltip from "components/Tooltip/Tooltip";
 import {
   MarketInfo,
   MarketTokensAPRData,
+  MarketsInfoData,
   getMarketIndexName,
   getMarketPoolName,
   getMintableMarketTokens,
   getPoolUsdWithoutPnl,
 } from "domain/synthetics/markets";
-import { TokenData, convertToUsd } from "domain/synthetics/tokens";
+import { TokenData, TokensData, convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatAmount, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import "./MarketStats.scss";
 import BridgingInfo from "../BridgingInfo/BridgingInfo";
 import { getBridgingOptionsForToken } from "config/bridging";
-import TokenIcon from "components/TokenIcon/TokenIcon";
+import MarketTokenSelector from "../MarketTokenSelector/MarketTokenSelector";
 
 type Props = {
+  marketsInfoData?: MarketsInfoData;
+  marketTokensData?: TokensData;
   marketInfo?: MarketInfo;
   marketToken?: TokenData;
   marketsTokensAPRData?: MarketTokensAPRData;
 };
 
 export function MarketStats(p: Props) {
-  const { marketInfo, marketToken, marketsTokensAPRData } = p;
+  const { marketInfo, marketToken, marketsTokensAPRData, marketsInfoData, marketTokensData } = p;
   const { chainId } = useChainId();
 
   const marketPrice = marketToken?.prices?.maxPrice;
@@ -39,7 +41,7 @@ export function MarketStats(p: Props) {
 
   const mintableInfo = marketInfo && marketToken ? getMintableMarketTokens(marketInfo, marketToken) : undefined;
 
-  const { longToken, shortToken, longPoolAmount, shortPoolAmount, indexToken } = marketInfo || {};
+  const { longToken, shortToken, longPoolAmount, shortPoolAmount } = marketInfo || {};
 
   const longPoolAmountUsd = marketInfo ? getPoolUsdWithoutPnl(marketInfo, true, "midPrice") : undefined;
   const shortPoolAmountUsd = marketInfo ? getPoolUsdWithoutPnl(marketInfo, false, "midPrice") : undefined;
@@ -53,30 +55,12 @@ export function MarketStats(p: Props) {
 
   return (
     <div className="App-card MarketStats-card">
-      <div className="MarketStats-title">
-        <div className="App-card-title-mark">
-          <div className="App-card-title-mark-icon">
-            {marketInfo && indexToken && (
-              <TokenIcon
-                className="ChartToken-list-icon"
-                symbol={marketInfo.isSpotOnly ? "swap" : indexToken.symbol}
-                displaySize={40}
-                importSize={40}
-              />
-            )}
-          </div>
-          <div className="App-card-title-mark-info">
-            <div className="App-card-title-mark-title Gm-stats-title items-center">
-              <span>GM{indexName && `: ${indexName}`}</span>
-              <span className="subtext">{poolName && `[${poolName}]`}</span>
-            </div>
-            <div className="App-card-title-mark-subtitle">GMX Market Tokens</div>
-          </div>
-          <div>
-            <AssetDropdown assetSymbol={"GM"} token={marketToken} position="left" />
-          </div>
-        </div>
-      </div>
+      <MarketTokenSelector
+        marketTokensData={marketTokensData}
+        marketsInfoData={marketsInfoData}
+        marketsTokensAPRData={marketsTokensAPRData}
+        currentMarketInfo={marketInfo}
+      />
       <div className="App-card-divider" />
       <div className="App-card-content">
         <CardRow

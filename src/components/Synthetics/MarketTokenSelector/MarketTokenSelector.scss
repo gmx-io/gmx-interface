@@ -1,10 +1,18 @@
 .MarketTokenSelector {
   position: relative;
-  margin-bottom: 2.5rem;
+  display: flex;
+  margin-left: -4px;
+  margin-top: -4px;
+
+  .Market-tokens-wrapper {
+    &:hover {
+      background: rgba(128, 138, 255, 0.0784313725);
+    }
+  }
 
   .Market-dropdown-btn {
     background: transparent;
-    padding: 0.5rem;
+    padding: 0 0.25rem;
     display: inline-flex;
     align-items: center;
     border: none;
@@ -13,6 +21,22 @@
     cursor: pointer;
     border: 1px solid var(--dark-blue-border);
     border-radius: var(--border-radius-sm);
+  }
+
+  .Market-index-name {
+    color: #fff;
+    font-size: 1.6rem;
+    letter-spacing: 0;
+    line-height: 2.1rem;
+    font-weight: 400;
+  }
+
+  .Market-subtext {
+    color: #a9a9b0;
+    font-size: 1.2rem;
+    letter-spacing: 0;
+    line-height: 1.5rem;
+    text-align: left;
   }
 
   .chart-token-selector {
@@ -27,7 +51,8 @@
 
     &:hover {
       color: #7885ff;
-      span {
+      span,
+      .Market-subtext {
         color: #7885ff;
       }
     }
@@ -53,7 +78,7 @@
 
   .chart-token-menu-items.menu-items {
     max-width: 55rem;
-    top: 5.5rem;
+    top: 6.5rem;
     right: unset;
     left: 0;
     cursor: auto;

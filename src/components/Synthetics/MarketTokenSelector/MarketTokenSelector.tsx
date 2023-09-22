@@ -31,6 +31,8 @@ export default function MarketTokenSelector(props: Props) {
   const sortedMarketsByIndexToken = useSortedMarketsWithIndexToken(marketsInfoData, marketTokensData);
   const [searchKeyword, setSearchKeyword] = useState("");
   const history = useHistory();
+  const indexName = currentMarketInfo && getMarketIndexName(currentMarketInfo);
+  const poolName = currentMarketInfo && getMarketPoolName(currentMarketInfo);
 
   const filteredTokens = useMemo(() => {
     if (sortedMarketsByIndexToken.length < 1) {
@@ -51,19 +53,25 @@ export default function MarketTokenSelector(props: Props) {
       {({ open }) => {
         if (!open && searchKeyword.length > 0) setSearchKeyword("");
         return (
-          <>
+          <div className="Market-tokens-wrapper">
             <Popover.Button as="div" className="Market-dropdown-btn">
-              <button className={cx("chart-token-selector", { "chart-token-label--active": open })}>
+              <button className={cx("chart-token-selector")}>
                 <span className="chart-token-selector--current inline-items-center">
                   {currentMarketInfo && (
                     <>
                       <TokenIcon
                         className="chart-token-current-icon"
                         symbol={currentMarketInfo.isSpotOnly ? "swap" : currentMarketInfo.indexToken.symbol}
-                        displaySize={20}
-                        importSize={24}
+                        displaySize={30}
+                        importSize={40}
                       />
-                      {currentMarketInfo.name}
+                      <div className="Market-index-name">
+                        <div className="items-center">
+                          <span>GM{indexName && `: ${indexName}`}</span>
+                          <span className="subtext">{poolName && `[${poolName}]`}</span>
+                        </div>
+                        <div className="Market-subtext">GMX Market Tokens</div>
+                      </div>
                     </>
                   )}
                 </span>
@@ -147,7 +155,7 @@ export default function MarketTokenSelector(props: Props) {
                 </div>
               </Popover.Panel>
             </div>
-          </>
+          </div>
         );
       }}
     </Popover>
