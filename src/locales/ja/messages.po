@@ -3082,7 +3082,6 @@ msgid "Orders"
 msgstr "注文"
 
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/pages/Exchange/Exchange.js
 msgid "Orders ({0})"
 msgstr "注文 ({0})"
@@ -3095,6 +3094,10 @@ msgstr "注文がキャンセルされました。"
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #~ msgid "Orders{0}"
 #~ msgstr ""
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Orders <0>({0})</0>"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Overall protocol analytics"

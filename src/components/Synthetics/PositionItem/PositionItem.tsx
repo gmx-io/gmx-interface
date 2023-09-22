@@ -304,24 +304,36 @@ export function PositionItem(p: Props) {
   function renderPositionOrders() {
     if (positionOrders.length === 0) return null;
 
-    const ordersErrorList = positionOrders.filter((order) => order.error?.level === "error");
-    const ordersWarningsList = positionOrders.filter((order) => order.error?.level === "warning");
+    const ordersErrorList = positionOrders.filter((order) => order.errorLevel === "error");
+    const ordersWarningsList = positionOrders.filter((order) => order.errorLevel === "warning");
     const hasErrors = ordersErrorList.length + ordersWarningsList.length > 0;
 
     return (
       <div onClick={p.onOrdersClick}>
         <Tooltip
           className="Position-list-active-orders"
-          handle={t`Orders (${positionOrders.length})`}
+          handle={
+            <Trans>
+              Orders{" "}
+              <span
+                className={cx({
+                  "position-order-error": hasErrors,
+                  "level-error": ordersErrorList.length > 0,
+                  "level-warning": !ordersErrorList.length && ordersWarningsList.length > 0,
+                })}
+              >
+                ({positionOrders.length})
+              </span>
+            </Trans>
+          }
           position="left-bottom"
-          handleClassName={cx(
-            ["Exchange-list-info-label", "Exchange-position-list-orders", "plain", "clickable", "text-gray"],
-            {
-              "position-order-error": hasErrors,
-              "level-error": ordersErrorList.length > 0,
-              "level-warning": !ordersErrorList.length && ordersWarningsList.length > 0,
-            }
-          )}
+          handleClassName={cx([
+            "Exchange-list-info-label",
+            "Exchange-position-list-orders",
+            "plain",
+            "clickable",
+            "text-gray",
+          ])}
           renderContent={() => {
             return (
               <>
@@ -329,7 +341,7 @@ export function PositionItem(p: Props) {
                   <Trans>Active Orders</Trans>
                 </strong>
                 {positionOrders.map((order) => {
-                  const error = order.error;
+                  const errors = order.errors;
                   const triggerThresholdType = getTriggerThresholdType(order.orderType, order.isLong);
                   const isIncrease = isIncreaseOrderType(order.orderType);
                   return (
@@ -348,7 +360,14 @@ export function PositionItem(p: Props) {
                         </span>
                         <FaAngleRight fontSize={14} />
                       </div>
-                      {error && <div className={`order-error-text level-${error.level}`}>{error.msg}</div>}
+                      {errors.map((err, i) => (
+                        <>
+                          <div key={err.msg} className={cx("order-error-text", `level-${err.level}`)}>
+                            {err.msg}
+                          </div>
+                          {i < errors.length - 1 && <br />}
+                        </>
+                      ))}
                     </div>
                   );
                 })}

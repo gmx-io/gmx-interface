@@ -5,7 +5,7 @@ import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getFeeItem, getIsHighPriceImpact, getPriceImpactByAcceptablePrice } from "../fees";
 import { MarketsInfoData, getAvailableUsdLiquidityForPosition } from "../markets";
-import { PositionInfo, PositionsInfoData, parsePositionKey } from "../positions";
+import { PositionsInfoData, parsePositionKey } from "../positions";
 import { TokensData, convertToTokenAmount, convertToUsd, getTokensRatioByAmounts, parseContractPrice } from "../tokens";
 import {
   getAcceptablePriceInfo,
@@ -190,18 +190,13 @@ export function getOrderInfo(p: {
 
     const orderInfo: SwapOrderInfo = {
       ...order,
+      errors: [],
       swapPathStats,
       triggerRatio,
       title,
       initialCollateralToken,
       targetCollateralToken,
     };
-
-    orderInfo.error = getOrderError({
-      order: orderInfo,
-      positionsInfoData,
-      marketsInfoData,
-    });
 
     return orderInfo;
   } else {
@@ -250,6 +245,7 @@ export function getOrderInfo(p: {
     const orderInfo: PositionOrderInfo = {
       ...order,
       title,
+      errors: [],
       swapPathStats,
       marketInfo,
       indexToken,
@@ -260,23 +256,27 @@ export function getOrderInfo(p: {
       triggerThresholdType,
     };
 
-    orderInfo.error = getOrderError({
+    const { errors, level } = getOrderErrors({
       order: orderInfo,
       positionsInfoData,
       marketsInfoData,
     });
 
+    orderInfo.errors = errors;
+    orderInfo.errorLevel = level;
+
     return orderInfo;
   }
 }
 
-export function getOrderError(p: {
+export function getOrderErrors(p: {
   order: OrderInfo;
   positionsInfoData?: PositionsInfoData;
   marketsInfoData: MarketsInfoData;
-  positionInfo?: PositionInfo;
-}): OrderError | undefined {
-  const { order, positionsInfoData, positionInfo, marketsInfoData } = p;
+}): { errors: OrderError[]; level: "error" | "warning" | undefined } {
+  const { order, positionsInfoData, marketsInfoData } = p;
+
+  const errors: OrderError[] = [];
 
   if (isSwapOrderType(order.orderType)) {
     const swapPathLiquidity = getMaxSwapPathLiquidity({
@@ -292,10 +292,10 @@ export function getOrderError(p: {
     )!;
 
     if (swapPathLiquidity.lt(minOutputUsd)) {
-      return {
+      errors.push({
         msg: t`There may not be sufficient liquidity to execute the Swap when the Min. Receive conditions are met.`,
         level: "error",
-      };
+      });
     }
 
     const swapImpactFeeItem = getFeeItem(
@@ -308,65 +308,60 @@ export function getOrderError(p: {
     );
 
     if (getIsHighPriceImpact(undefined, swapImpactFeeItem)) {
-      return {
+      errors.push({
         msg: t`There is a high Swap Price Impact for the Order Swap path.`,
         level: "warning",
-      };
+      });
     }
-
-    return;
   }
 
-  const _order = order as PositionOrderInfo;
+  const positionOrder = order as PositionOrderInfo;
 
-  let position = positionInfo;
-  if (!position) {
-    position = Object.values(positionsInfoData || {}).find((pos) => isOrderForPosition(_order, pos.key));
-  }
+  const position = Object.values(positionsInfoData || {}).find((pos) => isOrderForPosition(positionOrder, pos.key));
 
-  if ([OrderType.LimitDecrease, OrderType.LimitIncrease].includes(_order.orderType)) {
+  if ([OrderType.LimitDecrease, OrderType.LimitIncrease].includes(positionOrder.orderType)) {
     const { acceptablePriceDeltaBps: currentAcceptablePriceDeltaBps } = getAcceptablePriceInfo({
-      marketInfo: _order.marketInfo,
-      isIncrease: isIncreaseOrderType(_order.orderType),
-      isLong: _order.isLong,
-      indexPrice: _order.triggerPrice,
-      sizeDeltaUsd: _order.sizeDeltaUsd,
+      marketInfo: positionOrder.marketInfo,
+      isIncrease: isIncreaseOrderType(positionOrder.orderType),
+      isLong: positionOrder.isLong,
+      indexPrice: positionOrder.triggerPrice,
+      sizeDeltaUsd: positionOrder.sizeDeltaUsd,
     });
 
     const { acceptablePriceDeltaBps: orderAcceptablePriceDeltaBps } = getPriceImpactByAcceptablePrice({
-      sizeDeltaUsd: _order.sizeDeltaUsd,
-      isIncrease: isIncreaseOrderType(_order.orderType),
-      isLong: _order.isLong,
-      indexPrice: _order.triggerPrice,
-      acceptablePrice: _order.acceptablePrice,
+      sizeDeltaUsd: positionOrder.sizeDeltaUsd,
+      isIncrease: isIncreaseOrderType(positionOrder.orderType),
+      isLong: positionOrder.isLong,
+      indexPrice: positionOrder.triggerPrice,
+      acceptablePrice: positionOrder.acceptablePrice,
     });
 
     if (currentAcceptablePriceDeltaBps.lt(0) && currentAcceptablePriceDeltaBps.lt(orderAcceptablePriceDeltaBps)) {
-      const priceText = _order.orderType === OrderType.LimitIncrease ? t`Limit Price` : t`Trigger Price`;
-      const suggestionType = _order.orderType === OrderType.LimitIncrease ? t`Limit` : t`Take-Profit`;
+      const priceText = positionOrder.orderType === OrderType.LimitIncrease ? t`Limit Price` : t`Trigger Price`;
+      const suggestionType = positionOrder.orderType === OrderType.LimitIncrease ? t`Limit` : t`Take-Profit`;
 
-      return {
+      errors.push({
         msg: t`The Order may not execute at the desired ${priceText} as the current Price Impact is higher than its Acceptable Price Impact. Consider canceling and creating a new ${suggestionType} Order.`,
         level: "warning",
-      };
+      });
     }
   }
 
-  if (_order.orderType === OrderType.LimitIncrease) {
-    const currentLiquidity = getAvailableUsdLiquidityForPosition(_order.marketInfo, _order.isLong);
+  if (positionOrder.orderType === OrderType.LimitIncrease) {
+    const currentLiquidity = getAvailableUsdLiquidityForPosition(positionOrder.marketInfo, positionOrder.isLong);
 
-    if (currentLiquidity.lt(_order.sizeDeltaUsd)) {
-      return {
+    if (currentLiquidity.lt(positionOrder.sizeDeltaUsd)) {
+      errors.push({
         msg: t`There may not be sufficient liquidity to execute your Order when the Price conditions are met.`,
         level: "error",
-      };
+      });
     }
 
-    if (_order.swapPathStats?.swapPath.length) {
+    if (positionOrder.swapPathStats?.swapPath.length) {
       const swapPathLiquidity = getMaxSwapPathLiquidity({
         marketsInfoData,
-        swapPath: _order.swapPath,
-        initialCollateralAddress: _order.initialCollateralTokenAddress,
+        swapPath: positionOrder.swapPath,
+        initialCollateralAddress: positionOrder.initialCollateralTokenAddress,
       });
 
       const minOutputUsd = convertToUsd(
@@ -376,10 +371,10 @@ export function getOrderError(p: {
       )!;
 
       if (swapPathLiquidity.lt(minOutputUsd)) {
-        return {
+        errors.push({
           msg: t`There may not be sufficient liquidity to execute the Pay Token to Collateral Token swap when the Price conditions are met.`,
           level: "error",
-        };
+        });
       }
     }
   }
@@ -390,36 +385,32 @@ export function getOrderError(p: {
     );
 
     if (sameMarketPosition) {
-      return {
+      errors.push({
         msg: t`You have an existing position with ${sameMarketPosition?.collateralToken.symbol} as Collateral.`,
         level: "warning",
-      };
+      });
     }
   }
 
-  if (isDecreaseOrderType(order.orderType)) {
-    const liqPriceError: OrderError = {
-      msg: t`Order Trigger Price is beyond position's Liquidation Price.`,
-      level: "error",
-    };
-
+  if (isDecreaseOrderType(order.orderType) && position) {
     const triggerPrice = (order as PositionOrderInfo).triggerPrice;
 
-    if (position?.isLong) {
-      if (position.liquidationPrice?.gt(triggerPrice)) {
-        return liqPriceError;
-      }
-    } else {
-      if (position?.liquidationPrice?.lt(triggerPrice)) {
-        return liqPriceError;
-      }
+    const isInvalidTriggerPrice = position.isLong
+      ? position.liquidationPrice?.gt(triggerPrice)
+      : position.liquidationPrice?.lt(triggerPrice);
+
+    if (isInvalidTriggerPrice) {
+      errors.push({
+        msg: t`Order Trigger Price is beyond position's Liquidation Price.`,
+        level: "error",
+      });
     }
 
     if (order.swapPath.length) {
       const swapPathLiquidity = getMaxSwapPathLiquidity({
         marketsInfoData,
-        swapPath: _order.swapPath,
-        initialCollateralAddress: _order.initialCollateralTokenAddress,
+        swapPath: positionOrder.swapPath,
+        initialCollateralAddress: positionOrder.initialCollateralTokenAddress,
       });
 
       const minOutputUsd = convertToUsd(
@@ -429,13 +420,30 @@ export function getOrderError(p: {
       )!;
 
       if (swapPathLiquidity.lt(minOutputUsd)) {
-        return {
+        errors.push({
           msg: t`There may not be sufficient liquidity to execute swap to Receive Token when the Price conditions are met.`,
           level: "error",
-        };
+        });
       }
     }
-
-    return;
   }
+
+  const errorsLevelPriority = {
+    error: 1,
+    warning: 2,
+  };
+
+  let level: "error" | "warning" | undefined = undefined;
+  if (errors.some((err) => err.level === "error")) {
+    level = "error";
+  } else if (errors.some((err) => err.level === "warning")) {
+    level = "warning";
+  }
+
+  return {
+    errors: errors.sort((a, b) => {
+      return errorsLevelPriority[a.level] - errorsLevelPriority[b.level];
+    }),
+    level,
+  };
 }

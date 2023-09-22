@@ -1,4 +1,5 @@
 import { Trans, t } from "@lingui/macro";
+import cx from "classnames";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -11,7 +12,6 @@ import {
   OrderType,
   PositionOrderInfo,
   SwapOrderInfo,
-  getOrderError,
   isDecreaseOrderType,
   isIncreaseOrderType,
   isSwapOrderType,
@@ -37,12 +37,9 @@ type Props = {
 };
 
 export function OrderItem(p: Props) {
-  const { order, positionsInfoData, marketsInfoData } = p;
   const { showDebugValues } = useSettings();
 
   const isCollateralSwap = p.order.initialCollateralToken.address !== p.order.targetCollateralToken.address;
-
-  const error = marketsInfoData ? getOrderError({ order, positionsInfoData, marketsInfoData }) : undefined;
 
   function getCollateralText() {
     const initialCollateralToken = p.order.initialCollateralToken;
@@ -122,17 +119,25 @@ export function OrderItem(p: Props) {
           );
         }
 
-        if (p.order.error) {
+        if (p.order.errors.length) {
           return (
             <Tooltip
               handle={renderTitleWithIcon(p.order)}
-              className={`order-error-text-msg level-${p.order.error.level}`}
+              className={cx(`order-error-text-msg`, `level-${p.order.errorLevel}`)}
               position="left-bottom"
               renderContent={() => (
                 <>
-                  <span className={p.order.error!.level === "error" ? "negative" : "warning"}>
-                    {p.order.error!.msg}
-                  </span>
+                  {p.order.errors.map((error, i) => (
+                    <div key={error.msg}>
+                      <span className={error!.level === "error" ? "negative" : "warning"}>{error.msg}</span>
+                      {i < p.order.errors.length - 1 && (
+                        <>
+                          <br />
+                          <br />
+                        </>
+                      )}
+                    </div>
+                  ))}
                 </>
               )}
             />
@@ -150,7 +155,7 @@ export function OrderItem(p: Props) {
         <Tooltip
           handle={renderTitleWithIcon(p.order)}
           position="left-bottom"
-          className={error ? `order-error-text-msg level-${error.level}` : undefined}
+          className={p.order.errorLevel ? `order-error-text-msg level-${p.order.errorLevel}` : undefined}
           renderContent={() => {
             return (
               <>
@@ -195,7 +200,17 @@ export function OrderItem(p: Props) {
                 <>
                   <br />
                   <br />
-                  {error && <span className={error.level === "error" ? "negative" : "warning"}>{error.msg}</span>}
+                  {p.order.errors.map((error, i) => (
+                    <div key={error.msg}>
+                      <span className={error!.level === "error" ? "negative" : "warning"}>{error.msg}</span>
+                      {i < p.order.errors.length - 1 && (
+                        <>
+                          <br />
+                          <br />
+                        </>
+                      )}
+                    </div>
+                  ))}
                 </>
               </>
             );

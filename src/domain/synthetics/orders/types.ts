@@ -61,7 +61,8 @@ export type Order = {
 
 export type SwapOrderInfo = Order & {
   title: string;
-  error?: OrderError;
+  errors: OrderError[];
+  errorLevel?: "error" | "warning";
   swapPathStats?: SwapPathStats;
   triggerRatio?: TokensRatio;
   initialCollateralToken: TokenData;
@@ -72,7 +73,8 @@ export type PositionOrderInfo = Order & {
   title: string;
   marketInfo: MarketInfo;
   swapPathStats?: SwapPathStats;
-  error?: OrderError;
+  errors: OrderError[];
+  errorLevel?: "error" | "warning";
   indexToken: TokenData;
   initialCollateralToken: TokenData;
   targetCollateralToken: TokenData;

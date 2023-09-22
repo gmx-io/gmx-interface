@@ -187,12 +187,14 @@ export function SyntheticsPage(p: Props) {
   }, [ordersInfoData, selectedPositionKey]);
 
   const { positionsCount, ordersCount, ordersErrorsCount, ordersWarningsCount } = useMemo(() => {
+    const positions = Object.values(positionsInfoData || {});
+    const orders = Object.values(ordersInfoData || {});
+
     return {
-      positionsCount: Object.keys(positionsInfoData || {}).length,
-      ordersCount: Object.keys(ordersInfoData || {}).length,
-      ordersErrorsCount: Object.values(ordersInfoData || {}).filter((order) => order.error?.level === "error").length,
-      ordersWarningsCount: Object.values(ordersInfoData || {}).filter((order) => order.error?.level === "warning")
-        .length,
+      positionsCount: positions.length,
+      ordersCount: orders.length,
+      ordersErrorsCount: orders.filter((order) => order.errorLevel === "error").length,
+      ordersWarningsCount: orders.filter((order) => order.errorLevel === "warning").length,
     };
   }, [ordersInfoData, positionsInfoData]);
 
@@ -279,8 +281,13 @@ export function SyntheticsPage(p: Props) {
     }
 
     return (
-      <div className={cx({ negative: ordersErrorsCount > 0, warning: !ordersErrorsCount && ordersWarningsCount > 0 })}>
-        <Trans>Orders</Trans> (<span>{ordersCount}</span>)
+      <div>
+        <Trans>Orders</Trans>{" "}
+        <span
+          className={cx({ negative: ordersErrorsCount > 0, warning: !ordersErrorsCount && ordersWarningsCount > 0 })}
+        >
+          ({ordersCount})
+        </span>
       </div>
     );
   }

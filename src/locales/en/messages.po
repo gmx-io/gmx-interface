@@ -3085,7 +3085,6 @@ msgid "Orders"
 msgstr "Orders"
 
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/pages/Exchange/Exchange.js
 msgid "Orders ({0})"
 msgstr "Orders ({0})"
@@ -3098,6 +3097,10 @@ msgstr "Orders cancelled."
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #~ msgid "Orders{0}"
 #~ msgstr "Orders{0}"
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Orders <0>({0})</0>"
+msgstr "Orders <0>({0})</0>"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Overall protocol analytics"
