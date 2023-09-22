@@ -3,11 +3,14 @@
   overflow: visible;;
 }
 
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 1200px) {
   .TableBox {
     width: 100%;
     overflow-x: scroll;
     overflow-y: visible;
+  }
+  .Table {
+    width: 1200px;
   }
 }
 

@@ -83,7 +83,7 @@ export default function TopPositions() {
             ensName={p.ensName}
             avatarUrl={p.avatarUrl}
             breakpoint={breakpoint}
-            lengths={{ S: 9, M: 13 }}
+            lengths={{ S: 9, M: 11, L: 24, XL: 32 }}
             size={24}
           />
         ),
@@ -187,18 +187,18 @@ export default function TopPositions() {
     : "sortable"
   )
   const titles: { [k in keyof TopPositionsRow]?: TableHeader } = {
-    rank: { title: t`Rank`, width: 5 },
-    account: { title: t`Address`, width: (p = "L") => ({ L: 40, M: 16, S: 10 }[p] || 40) },
+    rank: { title: t`Rank`, width: 6 },
+    account: { title: t`Address`, width: (p = "XL") => ({ XL: 30, L: 26, M: 16, S: 10 }[p] || 30) },
     unrealizedPnl: {
       title: t`PnL ($)`,
       tooltip: t`Total Unrealized Profit and Loss.`,
       onClick: topPositionsHeaderClick("unrealizedPnlAfterFees"),
-      width: 10,
+      width: 12,
       className: getSortableClass("unrealizedPnlAfterFees"),
     },
     position: {
       title: t`Position`,
-      width: 5,
+      width: 11,
     },
     entryPrice: {
       title: t`Entry`,
@@ -207,13 +207,13 @@ export default function TopPositions() {
     size: {
       title: t`Size`,
       onClick: topPositionsHeaderClick("sizeInUsd"),
-      width: 10,
+      width: 13,
       className: getSortableClass("sizeInUsd"),
     },
     leverage: {
       tooltip: t`Position Leverage.`,
       title: t`Lev.`,
-      width: 10,
+      width: 8,
       onClick: topPositionsHeaderClick("leverage"),
       className: getSortableClass("leverage"),
     },

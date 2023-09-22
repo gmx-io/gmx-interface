@@ -20,7 +20,7 @@ export default function Table<T extends Record<string, any>>({
   if (error) {
     errorMsg = error instanceof Error ? error.message : JSON.stringify(error);
   }
-  const useBreakpoint = createBreakpoint({ L: 1000, M: 800, S: 500 });
+  const useBreakpoint = createBreakpoint({ XL: 1200, L: 1000, M: 800, S: 500 });
   const breakpoint = useBreakpoint();
   return (
     <div className="TableBox">

@@ -36,7 +36,7 @@ const parseRow = (s: Ranked<LiveAccountPerformance>, i: number): TopAccountsRow 
           size={24}
           address={s.account}
           breakpoint={breakpoint}
-          lengths={{ S: 9, M: 13 }}
+          lengths={{ S: 9, M: 13, L: 24, XL: 42 }}
         />
       ),
   },
@@ -160,19 +160,19 @@ export default function TopAccounts() {
   )
 
   const titles: { [key in keyof TopAccountsRow]?: TableHeader } = {
-    rank: { title: t`Rank`, width: 5 },
-    account: { title: t`Address`, width: (p = "L") => ({ L: 40, M: 16, S: 10 }[p] || 40) },
+    rank: { title: t`Rank`, width: 6 },
+    account: { title: t`Address`, width: (p = "XL") => ({ XL: 40, L: 36, M: 16, S: 10 }[p] || 40) },
     absProfit: {
       title: t`PnL ($)`,
       tooltip: t`Total Realized and Unrealized Profit and Loss.`,
       onClick: topAccountsHeaderClick("absProfit"),
-      width: 11,
+      width: 12,
       className: getSortableClass("absProfit"),
     },
     relProfit: {
       title: t`PnL (%)`,
       onClick: topAccountsHeaderClick("relProfit"),
-      width: 11,
+      width: 10,
       className: getSortableClass("relProfit"),
       tooltip: () => (
         <div>
@@ -190,21 +190,21 @@ export default function TopAccounts() {
       title: t`Avg. Size`,
       tooltip: t`Average Position Size.`,
       onClick: topAccountsHeaderClick("averageSize"),
-      width: 11,
+      width: 12,
       className: getSortableClass("averageSize"),
     },
     averageLeverage: {
       title: t`Avg. Lev.`,
       tooltip: t`Average Leverage used.`,
       onClick: topAccountsHeaderClick("averageLeverage"),
-      width: 11,
+      width: 10,
       className: getSortableClass("averageLeverage"),
     },
     winsLosses: {
       title: t`Win/Loss`,
       tooltip: t`Wins and Losses for fully closed Positions.`,
       onClick: topAccountsHeaderClick("wins"),
-      width: 11,
+      width: 10,
       className: cx("text-right", getSortableClass("wins")),
     },
   };
