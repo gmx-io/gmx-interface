@@ -115,6 +115,7 @@ export default function MarketTokenSelector(props: Props) {
                     )}
                     <tbody>
                       {filteredTokens.map((market) => {
+                        if (!market) return null;
                         const marketInfoData = getByKey(marketsInfoData, market?.address)!;
                         const mintableInfo =
                           market && marketInfoData ? getMintableMarketTokens(marketInfoData, market) : undefined;
@@ -123,6 +124,7 @@ export default function MarketTokenSelector(props: Props) {
                         const indexToken = marketInfoData?.indexToken;
                         const indexName = marketInfoData && getMarketIndexName(marketInfoData);
                         const poolName = marketInfoData && getMarketPoolName(marketInfoData);
+
                         return (
                           <Popover.Button
                             as="tr"
@@ -131,16 +133,20 @@ export default function MarketTokenSelector(props: Props) {
                           >
                             <td className="token-item">
                               <span className="inline-items-center">
-                                <TokenIcon
-                                  className="ChartToken-list-icon"
-                                  symbol={marketInfoData.isSpotOnly ? "swap" : indexToken.symbol}
-                                  displaySize={16}
-                                  importSize={24}
-                                />
-                                <div className="items-center">
-                                  <span>{indexName && indexName}</span>
-                                  <span className="subtext lh-1">{poolName && `[${poolName}]`}</span>
-                                </div>
+                                {marketInfoData && (
+                                  <>
+                                    <TokenIcon
+                                      className="ChartToken-list-icon"
+                                      symbol={marketInfoData.isSpotOnly ? "swap" : indexToken.symbol}
+                                      displaySize={16}
+                                      importSize={24}
+                                    />
+                                    <div className="items-center">
+                                      <span>{indexName && indexName}</span>
+                                      <span className="subtext lh-1">{poolName && `[${poolName}]`}</span>
+                                    </div>
+                                  </>
+                                )}
                               </span>
                             </td>
                             <td>
