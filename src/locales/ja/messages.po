@@ -95,6 +95,10 @@ msgstr ""
 msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} available liquidity. Reduce the \"Pay\" size, or change the \"Collateral In\" token.</1>"
 msgstr ""
 
+#: src/components/Synthetics/TVChart/TVChart.tsx
+msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr "{0}の担保のUSドル建の価値は、ポジションがオープンされた時点でスナップショットされ確定します。"
@@ -1266,6 +1270,10 @@ msgstr ""
 msgid "Deposit disabled, pending {0} upgrade"
 msgstr ""
 
+#: src/domain/synthetics/markets/createDepositTxn.ts
+msgid "Deposit error."
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "Deposit failed!"
 msgstr "入金できませんでした!"
@@ -1608,6 +1616,11 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
+msgstr ""
+
+#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
+#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
+msgid "Execute order simulation failed."
 msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
@@ -2201,6 +2214,10 @@ msgstr ""
 msgid "Keep leverage at {0}x"
 msgstr ""
 
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "LONG LIQ."
+msgstr ""
+
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Language"
 msgstr "言語"
@@ -2437,6 +2454,7 @@ msgstr "ロード中"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+#: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -3025,6 +3043,12 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Order creation failed."
+msgstr ""
+
+#: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
+#: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
+#: src/domain/synthetics/orders/createSwapOrderTxn.ts
+msgid "Order error."
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
@@ -3616,6 +3640,10 @@ msgstr "GMXとGLPのリターンの計算機"
 msgid "Rewards"
 msgstr "報酬"
 
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "SHORT LIQ."
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Same as current active code"
 msgstr "現在アクティブなコードと同じです"
@@ -3824,6 +3852,7 @@ msgstr "ポジションをシェアする"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+#: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -5040,6 +5069,10 @@ msgstr "出金申し込み完了。"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Withdraw {0} USD from {1}{longOrShortText}"
+msgstr ""
+
+#: src/domain/synthetics/markets/createWithdrawalTxn.ts
+msgid "Withdrawal error."
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js

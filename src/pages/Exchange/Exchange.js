@@ -931,6 +931,7 @@ export const Exchange = forwardRef((props, ref) => {
         setToTokenAddress={setToTokenAddress}
         tradePageVersion={tradePageVersion}
         setTradePageVersion={setTradePageVersion}
+        setSwapOption={setSwapOption}
       />
     );
   };
