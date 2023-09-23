@@ -41,7 +41,6 @@ import { GmConfirmationBox } from "../GmConfirmationBox/GmConfirmationBox";
 
 import Button from "components/Button/Button";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import { MarketSelector } from "components/MarketSelector/MarketSelector";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
 import { helperToast } from "lib/helperToast";
@@ -962,27 +961,6 @@ export function GmSwapBox(p: Props) {
         </div>
 
         <div className="GmSwapBox-info-section">
-          <ExchangeInfoRow
-            className="SwapBox-info-row"
-            label={t`Market`}
-            value={
-              <MarketSelector
-                label={t`Market`}
-                className="SwapBox-info-dropdown"
-                selectedIndexName={indexName}
-                markets={markets}
-                marketTokensData={marketTokensData}
-                marketsInfoData={marketsInfoData}
-                isSideMenu
-                showBalances
-                onSelectMarket={(marketName, marketInfo) => {
-                  setIndexName(marketName);
-                  showMarketToast(marketInfo);
-                }}
-              />
-            }
-          />
-
           <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Pool`}

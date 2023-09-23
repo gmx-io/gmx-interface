@@ -349,10 +349,16 @@ export function SyntheticsStats() {
                       )
                     }
                     renderContent={() => (
-                      <StatsTooltipRow
-                        label={`Max ${market.longToken.symbol} Out`}
-                        value={formatAmountHuman(longCollateralLiquidityUsd, 30)}
-                      />
+                      <>
+                        <StatsTooltipRow
+                          label={`Max ${market.longToken.symbol} Out`}
+                          value={formatAmount(longCollateralLiquidityUsd, 30)}
+                        />
+                        <StatsTooltipRow
+                          label={`Max ${market.longToken.symbol} Out`}
+                          value={formatAmount(shortCollateralLiquidityUsd, 30)}
+                        />
+                      </>
                     )}
                   />
                 </td>

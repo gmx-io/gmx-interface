@@ -10,6 +10,7 @@ import {
   getMarketPoolName,
   getMintableMarketTokens,
   getPoolUsdWithoutPnl,
+  getSellableMarketToken,
 } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
@@ -40,7 +41,7 @@ export function MarketStats(p: Props) {
   const marketTotalSupplyUsd = convertToUsd(marketTotalSupply, marketToken?.decimals, marketPrice);
 
   const mintableInfo = marketInfo && marketToken ? getMintableMarketTokens(marketInfo, marketToken) : undefined;
-
+  const sellableInfo = marketInfo && getSellableMarketToken(marketInfo);
   const { longToken, shortToken, longPoolAmount, shortPoolAmount } = marketInfo || {};
 
   const longPoolAmountUsd = marketInfo ? getPoolUsdWithoutPnl(marketInfo, true, "midPrice") : undefined;
@@ -199,6 +200,36 @@ export function MarketStats(p: Props) {
             ) : (
               "..."
             )
+          }
+        />
+
+        <CardRow
+          label={t`Sellable`}
+          value={
+            <Tooltip
+              handle={formatUsd(sellableInfo?.total, {
+                fallbackToZero: true,
+              })}
+              position="right-bottom"
+              renderContent={() => (
+                <>
+                  <StatsTooltipRow
+                    label={t`Max ${marketInfo?.longToken.symbol}`}
+                    value={formatUsd(sellableInfo?.maxLongSellableUsd, {
+                      fallbackToZero: true,
+                    })}
+                    showDollar={false}
+                  />
+                  <StatsTooltipRow
+                    label={t`Max ${marketInfo?.shortToken.symbol}`}
+                    value={formatUsd(sellableInfo?.maxShortSellableUsd, {
+                      fallbackToZero: true,
+                    })}
+                    showDollar={false}
+                  />
+                </>
+              )}
+            />
           }
         />
 

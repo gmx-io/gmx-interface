@@ -339,6 +339,51 @@ export function getMintableMarketTokens(marketInfo: MarketInfo, marketToken: Tok
   };
 }
 
+export function getSellableMarketToken(marketInfo: MarketInfo) {
+  const { longToken, shortToken, longPoolAmount, shortPoolAmount } = marketInfo;
+  const longPoolUsd = convertToUsd(longPoolAmount, longToken.decimals, longToken.prices.maxPrice)!;
+  const shortPoolUsd = convertToUsd(shortPoolAmount, shortToken.decimals, shortToken.prices.maxPrice)!;
+  const longCollateralLiquidityUsd = getAvailableUsdLiquidityForCollateral(marketInfo, true);
+  const shortCollateralLiquidityUsd = getAvailableUsdLiquidityForCollateral(marketInfo, false);
+
+  const factor = expandDecimals(1, 8);
+
+  if (
+    longPoolUsd.isZero() ||
+    shortPoolUsd.isZero() ||
+    longCollateralLiquidityUsd.isZero() ||
+    shortCollateralLiquidityUsd.isZero()
+  ) {
+    return {
+      maxLongSellableUsd: BigNumber.from(0),
+      maxShortSellableUsd: BigNumber.from(0),
+      total: BigNumber.from(0),
+    };
+  }
+
+  const ratio = longPoolUsd.mul(factor).div(shortPoolUsd);
+  let maxLongSellableUsd: BigNumber;
+  let maxShortSellableUsd: BigNumber;
+
+  if (shortCollateralLiquidityUsd.mul(ratio).div(factor).lte(longCollateralLiquidityUsd)) {
+    maxLongSellableUsd = shortCollateralLiquidityUsd.mul(ratio).div(factor);
+  } else {
+    maxLongSellableUsd = longCollateralLiquidityUsd;
+  }
+
+  if (longCollateralLiquidityUsd.mul(ratio).div(factor).lte(shortCollateralLiquidityUsd)) {
+    maxShortSellableUsd = longCollateralLiquidityUsd.div(ratio).div(factor);
+  } else {
+    maxShortSellableUsd = shortCollateralLiquidityUsd;
+  }
+
+  return {
+    maxLongSellableUsd,
+    maxShortSellableUsd,
+    total: maxLongSellableUsd.add(maxShortSellableUsd),
+  };
+}
+
 export function usdToMarketTokenAmount(marketInfo: MarketInfo, marketToken: TokenData, usdValue: BigNumber) {
   const supply = marketToken.totalSupply!;
   const poolValue = marketInfo.poolValueMax!;

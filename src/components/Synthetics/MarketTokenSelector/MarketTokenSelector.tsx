@@ -11,11 +11,12 @@ import {
   getMarketIndexName,
   getMarketPoolName,
   getMintableMarketTokens,
+  getSellableMarketToken,
 } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
 import useSortedMarketsWithIndexToken from "domain/synthetics/trade/useSortedMarketsWithIndexToken";
 import { getByKey } from "lib/objects";
-import { formatAmount, formatTokenAmount } from "lib/numbers";
+import { formatAmount, formatUsd } from "lib/numbers";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { useHistory } from "react-router-dom";
 
@@ -48,13 +49,20 @@ export default function MarketTokenSelector(props: Props) {
     });
   }, [marketsInfoData, searchKeyword, sortedMarketsByIndexToken]);
 
+  function handleSelectToken(marketTokenAddress: string) {
+    history.push({
+      pathname: "/pools",
+      search: `?market=${marketTokenAddress}`,
+    });
+  }
+
   return (
     <Popover className="MarketTokenSelector">
-      {({ open }) => {
+      {({ open, close }) => {
         if (!open && searchKeyword.length > 0) setSearchKeyword("");
         return (
-          <div className="Market-tokens-wrapper">
-            <Popover.Button as="div" className="Market-dropdown-btn">
+          <div>
+            <Popover.Button as="div">
               <button className={cx("chart-token-selector")}>
                 <span className="chart-token-selector--current inline-items-center">
                   {currentMarketInfo && (
@@ -84,7 +92,12 @@ export default function MarketTokenSelector(props: Props) {
                   className="m-md"
                   value={searchKeyword}
                   setValue={({ target }) => setSearchKeyword(target.value)}
-                  onKeyDown={(e) => {}}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && filteredTokens.length > 0) {
+                      handleSelectToken(filteredTokens[0].address);
+                      close();
+                    }
+                  }}
                   placeholder="Search Market"
                 />
                 <div className="divider" />
@@ -105,20 +118,16 @@ export default function MarketTokenSelector(props: Props) {
                         const marketInfoData = getByKey(marketsInfoData, market?.address)!;
                         const mintableInfo =
                           market && marketInfoData ? getMintableMarketTokens(marketInfoData, market) : undefined;
+                        const sellableInfo = marketInfoData ? getSellableMarketToken(marketInfoData) : undefined;
                         const apr = getByKey(marketsTokensAPRData, market?.address);
                         const indexToken = marketInfoData?.indexToken;
-                        const indexName = getMarketIndexName(marketInfoData);
-                        const poolName = getMarketPoolName(marketInfoData);
+                        const indexName = marketInfoData && getMarketIndexName(marketInfoData);
+                        const poolName = marketInfoData && getMarketPoolName(marketInfoData);
                         return (
                           <Popover.Button
                             as="tr"
                             key={market.address}
-                            onClick={() => {
-                              history.push({
-                                pathname: "/pools",
-                                search: `?market=${market.address}`,
-                              });
-                            }}
+                            onClick={() => handleSelectToken(market.address)}
                           >
                             <td className="token-item">
                               <span className="inline-items-center">
@@ -135,15 +144,15 @@ export default function MarketTokenSelector(props: Props) {
                               </span>
                             </td>
                             <td>
-                              {formatTokenAmount(mintableInfo?.mintableAmount, market.decimals, "GM", {
-                                useCommas: true,
+                              {formatUsd(mintableInfo?.mintableUsd, {
                                 displayDecimals: 0,
+                                fallbackToZero: true,
                               })}
                             </td>
                             <td>
-                              {formatTokenAmount(mintableInfo?.mintableAmount, market.decimals, "GM", {
-                                useCommas: true,
+                              {formatUsd(sellableInfo?.total, {
                                 displayDecimals: 0,
+                                fallbackToZero: true,
                               })}
                             </td>
                             <td>{apr ? `${formatAmount(apr, 2, 2)}%` : "..."}</td>
