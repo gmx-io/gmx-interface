@@ -8,7 +8,10 @@ import { bigNumberify } from "lib/numbers";
 function useSortedMarketsWithIndexToken(marketsInfoData?: MarketsInfoData, marketTokensData?: TokensData) {
   const sortedMarketsWithIndexToken = useMemo(() => {
     if (!marketsInfoData || !marketTokensData) {
-      return [];
+      return {
+        markets: [],
+        marketsInfo: [],
+      };
     }
     // Group markets by index token address
     const groupedMarketList: { [marketAddress: string]: MarketInfo[] } = groupBy(
@@ -53,11 +56,12 @@ function useSortedMarketsWithIndexToken(marketsInfoData?: MarketsInfoData, marke
     });
 
     // Flatten the sorted markets array
-    const flattenedMarkets = sortedMarkets.flat(Infinity);
-
-    return flattenedMarkets;
+    const flattenedMarkets = sortedMarkets.flat(Infinity).filter(Boolean);
+    return {
+      markets: flattenedMarkets,
+      marketsInfo: flattenedMarkets.map((market) => getByKey(marketsInfoData, market.address)!),
+    };
   }, [marketsInfoData, marketTokensData]);
-
   return sortedMarketsWithIndexToken;
 }
 

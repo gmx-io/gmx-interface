@@ -54,9 +54,10 @@ import { useHasOutdatedUi } from "domain/legacy";
 import useWallet from "lib/wallets/useWallet";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
-import { getIcon } from "config/icons";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { AllPoolSelector } from "components/MarketSelector/AllPoolSelector";
+import useSortedMarketsWithIndexToken from "domain/synthetics/trade/useSortedMarketsWithIndexToken";
 
 export enum Operation {
   Deposit = "Deposit",
@@ -133,7 +134,6 @@ export function GmSwapBox(p: Props) {
 
   const { gasLimits } = useGasLimits(chainId);
   const { gasPrice } = useGasPrice(chainId);
-  const currentGMIcon = getIcon(chainId, "gm");
 
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
@@ -142,6 +142,10 @@ export function GmSwapBox(p: Props) {
   const [focusedInput, setFocusedInput] = useState<"longCollateral" | "shortCollateral" | "market">("market");
   const [stage, setStage] = useState<"swap" | "confirmation" | "processing">();
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
+  const { marketsInfo: sortedMarketsInfoByIndexToken } = useSortedMarketsWithIndexToken(
+    marketsInfoData,
+    depositMarketTokensData
+  );
 
   const operationLabels = {
     [Operation.Deposit]: t`Buy GM`,
@@ -953,10 +957,22 @@ export function GmSwapBox(p: Props) {
               }
             }}
           >
-            <div className="selected-token">
-              <img className="mr-xs" width={20} src={currentGMIcon} alt="GM Token" />
-              GM
-            </div>
+            <AllPoolSelector
+              label={t`Pool`}
+              className="SwapBox-info-dropdown"
+              selectedIndexName={indexName}
+              selectedMarketAddress={marketAddress}
+              markets={sortedMarketsInfoByIndexToken}
+              marketTokensData={marketTokensData}
+              marketsInfoData={marketsInfoData}
+              isSideMenu
+              showBalances
+              onSelectMarket={(marketInfo) => {
+                setIndexName(getMarketIndexName(marketInfo));
+                onMarketChange(marketInfo.marketTokenAddress);
+                showMarketToast(marketInfo);
+              }}
+            />
           </BuyInputSection>
         </div>
 

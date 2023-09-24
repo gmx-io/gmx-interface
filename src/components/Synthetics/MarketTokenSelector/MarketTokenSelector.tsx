@@ -29,7 +29,7 @@ type Props = {
 
 export default function MarketTokenSelector(props: Props) {
   const { marketsTokensAPRData, marketsInfoData, marketTokensData, currentMarketInfo } = props;
-  const sortedMarketsByIndexToken = useSortedMarketsWithIndexToken(marketsInfoData, marketTokensData);
+  const { markets: sortedMarketsByIndexToken } = useSortedMarketsWithIndexToken(marketsInfoData, marketTokensData);
   const [searchKeyword, setSearchKeyword] = useState("");
   const history = useHistory();
   const indexName = currentMarketInfo && getMarketIndexName(currentMarketInfo);

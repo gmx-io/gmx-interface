@@ -44,7 +44,7 @@ export function GmList({
   const { chainId } = useChainId();
   const currentIcons = getIcons(chainId);
   const isMobile = useMedia("(max-width: 1100px)");
-  const sortedMarketsByIndexToken = useSortedMarketsWithIndexToken(marketsInfoData, marketTokensData);
+  const { markets: sortedMarketsByIndexToken } = useSortedMarketsWithIndexToken(marketsInfoData, marketTokensData);
 
   return (
     <div className="GMList">
