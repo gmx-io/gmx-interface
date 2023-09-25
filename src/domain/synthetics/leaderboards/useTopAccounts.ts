@@ -79,10 +79,10 @@ export function useTopAccounts(period: PerfPeriod) {
       const perf = accountPerf.data[i];
       const openPositions = openPositionsByAccount[perf.account] || defaultSummary(perf.account);
       const realizedPnl = perf.totalPnl
-        .sub(openPositions.collectedBorrowingFeesUsd)
-        .sub(openPositions.collectedFundingFeesUsd)
-        .sub(openPositions.collectedPositionFeesUsd)
-        .add(openPositions.priceImpactUsd);
+        .sub(perf.borrowingFeeUsd)
+        .sub(perf.fundingFeeUsd)
+        .sub(perf.positionFeeUsd)
+        .add(perf.priceImpactUsd);
 
       const unrealizedPnl = openPositions.unrealizedPnl
         .sub(openPositions.pendingBorrowingFeesUsd)
