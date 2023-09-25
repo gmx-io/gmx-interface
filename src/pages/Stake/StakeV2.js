@@ -29,7 +29,7 @@ import {
   getPageTitle,
 } from "lib/legacy";
 import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
-import { ARBITRUM, getChainName, getConstant } from "config/chains";
+import { ARBITRUM, getChainName, getConstant, SEPOLIA_TESTNET } from "config/chains";
 
 import useSWR from "swr";
 
@@ -1086,7 +1086,12 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
 
   let { total: totalGmxSupply } = useTotalGmxSupply();
 
-  let { avax: avaxGmxStaked, arbitrum: arbitrumGmxStaked, total: totalGmxStaked } = useTotalGmxStaked();
+  let {
+    avax: avaxGmxStaked,
+    arbitrum: arbitrumGmxStaked,
+    sepolia: sepoliaGmxStaked,
+    total: totalGmxStaked,
+  } = useTotalGmxStaked();
 
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply");
   const { data: gmxSupply } = useSWR([gmxSupplyUrl], {
@@ -1145,11 +1150,18 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
 
   let stakedGmxSupplyUsd;
   if (!totalGmxStaked.isZero() && gmxPrice) {
+    // eslint-disable-next-line no-unused-vars
     stakedGmxSupplyUsd = totalGmxStaked.mul(gmxPrice).div(expandDecimals(1, 18));
+  }
+
+  let sepoliaGmxSupplyUsd;
+  if (sepoliaGmxStaked && !sepoliaGmxStaked.isZero() && gmxPrice) {
+    sepoliaGmxSupplyUsd = sepoliaGmxStaked.mul(gmxPrice).div(expandDecimals(1, 18));
   }
 
   let totalSupplyUsd;
   if (totalGmxSupply && !totalGmxSupply.isZero() && gmxPrice) {
+    // eslint-disable-next-line no-unused-vars
     totalSupplyUsd = totalGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
   }
 
@@ -1610,31 +1622,54 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 </div>
                 <div>
                   {!totalGmxStaked && "..."}
-                  {totalGmxStaked && (
-                    <Tooltip
-                      position="right-bottom"
-                      className="nowrap"
-                      handle={
-                        formatAmount(totalGmxStaked, 18, 0, true) +
-                        " TMX" +
-                        ` ($${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)})`
-                      }
-                      renderContent={() => (
-                        <StatsTooltip
-                          showDollar={false}
-                          title={t`Staked`}
-                          avaxValue={avaxGmxStaked}
-                          arbitrumValue={arbitrumGmxStaked}
-                          total={totalGmxStaked}
-                          decimalsForConversion={18}
-                          symbol="TMX"
+                  {chainId === SEPOLIA_TESTNET
+                    ? sepoliaGmxStaked && (
+                        <Tooltip
+                          position="right-bottom"
+                          className="nowrap"
+                          handle={
+                            formatAmount(sepoliaGmxStaked, 18, 0, true) +
+                            " TMX" +
+                            ` ($${formatAmount(sepoliaGmxSupplyUsd, USD_DECIMALS, 0, true)})`
+                          }
+                          renderContent={() => (
+                            <StatsTooltip
+                              showDollar={false}
+                              title={t`Staked`}
+                              avaxValue={avaxGmxStaked}
+                              arbitrumValue={arbitrumGmxStaked}
+                              total={totalGmxStaked}
+                              decimalsForConversion={18}
+                              symbol="TMX"
+                            />
+                          )}
+                        />
+                      )
+                    : totalGmxStaked && (
+                        <Tooltip
+                          position="right-bottom"
+                          className="nowrap"
+                          handle={
+                            formatAmount(totalGmxStaked, 18, 0, true) +
+                            " TMX" +
+                            ` ($${formatAmount(sepoliaGmxSupplyUsd, USD_DECIMALS, 0, true)})`
+                          }
+                          renderContent={() => (
+                            <StatsTooltip
+                              showDollar={false}
+                              title={t`Staked`}
+                              avaxValue={avaxGmxStaked}
+                              arbitrumValue={arbitrumGmxStaked}
+                              total={totalGmxStaked}
+                              decimalsForConversion={18}
+                              symbol="TMX"
+                            />
+                          )}
                         />
                       )}
-                    />
-                  )}
                 </div>
               </div>
-              <div className="App-card-row">
+              {/* <div className="App-card-row">
                 <div className="label">
                   <Trans>Total Supply</Trans>
                 </div>
@@ -1645,7 +1680,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     {formatAmount(totalSupplyUsd, USD_DECIMALS, 0, true)})
                   </div>
                 )}
-              </div>
+              </div> */}
               <div className="App-card-divider" />
               <div className="App-card-buttons m-0">
                 {/* <Button variant="semi-clear" to="/buy_gmx">

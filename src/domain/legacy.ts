@@ -481,7 +481,11 @@ export function useGmxPrice(chainId, libraries, active) {
   const { data: gmxPriceFromArbitrum, mutate: mutateFromArbitrum } = useGmxPriceFromArbitrum(arbitrumLibrary, active);
   const { data: gmxPriceFromAvalanche, mutate: mutateFromAvalanche } = useGmxPriceFromAvalanche();
 
-  const gmxPrice = chainId === ARBITRUM ? gmxPriceFromArbitrum : gmxPriceFromAvalanche;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const testGmxPrice = chainId === ARBITRUM ? gmxPriceFromArbitrum : gmxPriceFromAvalanche;
+
+  // hard-coded price value
+  const gmxPrice = ethers.BigNumber.from("1167477086949502185821000000000");
   const mutate = useCallback(() => {
     mutateFromAvalanche();
     mutateFromArbitrum();
@@ -513,6 +517,8 @@ export function useTotalGmxSupply() {
 export function useTotalGmxStaked() {
   const stakedGmxTrackerAddressArbitrum = getContract(ARBITRUM, "StakedGmxTracker");
   const stakedGmxTrackerAddressAvax = getContract(AVALANCHE, "StakedGmxTracker");
+  const stakedGmxTrackerAddressSepolia = getContract(SEPOLIA_TESTNET, "StakedGmxTracker");
+
   let totalStakedGmx = useRef(bigNumberify(0));
   const { data: stakedGmxSupplyArbitrum, mutate: updateStakedGmxSupplyArbitrum } = useSWR<BigNumber>(
     [
@@ -526,6 +532,7 @@ export function useTotalGmxStaked() {
       fetcher: contractFetcher(undefined, Token),
     }
   );
+
   const { data: stakedGmxSupplyAvax, mutate: updateStakedGmxSupplyAvax } = useSWR<BigNumber>(
     [
       `StakeV2:stakedGmxSupply:${AVALANCHE}`,
@@ -539,10 +546,24 @@ export function useTotalGmxStaked() {
     }
   );
 
+  const { data: stakedGmxSupplySepolia, mutate: updateStakedGmxSupplySepolia } = useSWR<BigNumber>(
+    [
+      `StakeV2:stakedGmxSupply:${SEPOLIA_TESTNET}`,
+      SEPOLIA_TESTNET,
+      getContract(SEPOLIA_TESTNET, "GMX"),
+      "balanceOf",
+      stakedGmxTrackerAddressSepolia,
+    ],
+    {
+      fetcher: contractFetcher(undefined, Token),
+    }
+  );
+
   const mutate = useCallback(() => {
     updateStakedGmxSupplyArbitrum();
     updateStakedGmxSupplyAvax();
-  }, [updateStakedGmxSupplyArbitrum, updateStakedGmxSupplyAvax]);
+    updateStakedGmxSupplySepolia();
+  }, [updateStakedGmxSupplyArbitrum, updateStakedGmxSupplyAvax, updateStakedGmxSupplySepolia]);
 
   if (stakedGmxSupplyArbitrum && stakedGmxSupplyAvax) {
     let total = bigNumberify(stakedGmxSupplyArbitrum)!.add(stakedGmxSupplyAvax);
@@ -552,6 +573,7 @@ export function useTotalGmxStaked() {
   return {
     avax: stakedGmxSupplyAvax,
     arbitrum: stakedGmxSupplyArbitrum,
+    sepolia: stakedGmxSupplySepolia,
     total: totalStakedGmx.current,
     mutate,
   };
@@ -611,6 +633,7 @@ function useGmxPriceFromAvalanche() {
   const PRECISION = bigNumberify(10)!.pow(18);
   let gmxPrice;
   if (avaxReserve && gmxReserve && avaxPrice) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     gmxPrice = avaxReserve.mul(PRECISION).div(gmxReserve).mul(avaxPrice).div(PRECISION);
   }
 
@@ -623,6 +646,7 @@ function useGmxPriceFromAvalanche() {
 }
 
 function useGmxPriceFromArbitrum(library, active) {
+  // @todo create chain specific price feed for sepolia
   const poolAddress = getContract(ARBITRUM, "UniswapGmxEthPool");
   const { data: uniPoolSlot0, mutate: updateUniPoolSlot0 } = useSWR<any>(
     [`StakeV2:uniPoolSlot0:${active}`, ARBITRUM, poolAddress, "slot0"],
@@ -640,6 +664,7 @@ function useGmxPriceFromArbitrum(library, active) {
     }
   );
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const gmxPrice = useMemo(() => {
     if (uniPoolSlot0 && ethPrice) {
       const tokenA = new UniToken(ARBITRUM, ethAddress, 18, "SYMBOL", "NAME");
