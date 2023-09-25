@@ -74,6 +74,7 @@ describe("TradeHistoryRow helpers", () => {
     expect(formatPositionMessage(frozenOrderIncreaseShort, minCollateralUsd)).toEqual([
       {
         text: "Execution Failed: Increase Short BTC +$1,348.82",
+        textRed: true,
       },
       {
         text: ", Trigger Price: > $27,210.00, Acceptable Price: $26,937.90",

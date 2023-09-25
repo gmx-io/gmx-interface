@@ -84,8 +84,7 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
   return (
     <>
       {messages.map((message, i) => {
-        const textElement = <>{message.text}</>;
-
+        const textElement = <span className={message.textRed ? "text-red" : undefined}>{message.text}</span>;
         const hasSmthAfterTitle = message.tooltipRows?.length || message.tooltipFooter;
         const hasSmthBeforeFooter = message.tooltipTitle || message.tooltipRows?.length;
 
@@ -93,6 +92,7 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
           <Tooltip
             position="left-top"
             handle={textElement}
+            className={message.textRed ? "Tooltip-error" : undefined}
             renderContent={() => (
               <>
                 {message.tooltipTitle ? (

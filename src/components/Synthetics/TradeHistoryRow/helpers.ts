@@ -14,6 +14,7 @@ import { museNeverExist } from "lib/types";
 
 type FormatPositionMessageChunk = {
   text: string;
+  textRed?: boolean;
   tooltipRows?: StatsTooltipRowProps[];
   tooltipTitle?: string;
   tooltipTitleRed?: boolean;
@@ -112,8 +113,8 @@ export const formatPositionMessage = (
         ];
       }
 
-      const isFrozen = tradeAction.eventName === TradeActionType.OrderFrozen;
-      const prefix = isFrozen ? "Execution Failed" : `${actionText} Order`;
+      const isFailed = tradeAction.eventName === TradeActionType.OrderFrozen;
+      const prefix = isFailed ? "Execution Failed" : `${actionText} Order`;
 
       const mainStr = `${prefix}: ${increaseText} ${positionText} ${sizeDeltaText}`;
       const triggerPriceStr = t`Trigger Price: ${pricePrefix} ${formatUsd(triggerPrice, {
@@ -126,14 +127,17 @@ export const formatPositionMessage = (
       const isTakeProfit = tradeAction.orderType === OrderType.LimitDecrease;
       const shouldRenderAcceptablePrice = isTakeProfit || isIncrease;
 
-      if (isFrozen) {
+      if (isFailed) {
         const strs = [triggerPriceStr];
 
         if (shouldRenderAcceptablePrice) {
           strs.push(acceptablePriceStr);
         }
 
-        return [{ text: `${mainStr}`, ...getFrozenTooltipProps(tradeAction) }, { text: `, ${strs.join(", ")}` }];
+        return [
+          { text: `${mainStr}`, ...getFrozenTooltipProps(tradeAction), textRed: true },
+          { text: `, ${strs.join(", ")}` },
+        ];
       } else {
         const strs = [mainStr, triggerPriceStr];
 
