@@ -11,6 +11,7 @@ import { BigNumber, ethers } from "ethers";
 import { PRECISION } from "lib/legacy";
 import { formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { museNeverExist } from "lib/types";
+import { trimStart } from "lodash";
 
 type FormatPositionMessageChunk = {
   text: string;
@@ -87,28 +88,7 @@ export const formatPositionMessage = (
               t`Triggered at: ${formatUsd(tokenPrice, { displayDecimals: priceDecimals })}`,
               t`Execution Price: ${formatUsd(executionPrice, { displayDecimals: priceDecimals })}`,
             ].join(", "),
-            tooltipRows: [
-              {
-                label: t`Order trigger price`,
-                showDollar: false,
-                value: formatUsd(triggerPrice, { displayDecimals: priceDecimals }),
-              },
-              tradeAction.orderType === OrderType.StopLossDecrease
-                ? undefined
-                : {
-                    label: t`Acceptable Price`,
-                    showDollar: false,
-                    value: formatAcceptablePrice(tradeAction.acceptablePrice, {
-                      displayDecimals: priceDecimals,
-                    }),
-                  },
-
-              tradeAction.priceImpactUsd && {
-                label: t`Price Impact`,
-                showDollar: false,
-                value: formatUsd(tradeAction.priceImpactUsd, { displayDecimals: priceDecimals }),
-              },
-            ].filter(Boolean) as StatsTooltipRowProps[],
+            tooltipRows: getExecutionPriceTooltipRows(tradeAction),
           },
         ];
       }
@@ -167,15 +147,18 @@ export const formatPositionMessage = (
           tradeAction.eventName === TradeActionType.OrderExecuted
             ? tradeAction.executionPrice
             : tradeAction.acceptablePrice;
+        const formattedPrice = formatAcceptablePrice(price, {
+          displayDecimals: priceDecimals,
+        });
+        const priceStr = `${pricePrefix}: ${formattedPrice}`;
 
         return [
           {
-            text: `${actionText} ${increaseText} ${positionText} ${sizeDeltaText}, ${pricePrefix}: ${formatAcceptablePrice(
-              price,
-              {
-                displayDecimals: priceDecimals,
-              }
-            )}`,
+            text: trimStart(`${actionText} ${increaseText} ${positionText} ${sizeDeltaText}, `),
+          },
+          {
+            text: priceStr,
+            tooltipRows: getMarketTooltipRows(tradeAction),
           },
         ];
       } else {
@@ -322,4 +305,50 @@ function getFrozenTooltipProps(tradeAction: PositionTradeAction): Partial<Format
     tooltipTitle,
     tooltipTitleRed: true,
   };
+}
+
+function getExecutionPriceTooltipRows(tradeAction: PositionTradeAction): StatsTooltipRowProps[] {
+  const triggerPrice = tradeAction.triggerPrice;
+  const priceDecimals = tradeAction.indexToken.priceDecimals;
+
+  return [
+    {
+      label: t`Order trigger price`,
+      showDollar: false,
+      value: formatUsd(triggerPrice, { displayDecimals: priceDecimals }),
+    },
+    tradeAction.orderType === OrderType.StopLossDecrease
+      ? undefined
+      : {
+          label: t`Acceptable Price`,
+          showDollar: false,
+          value: formatAcceptablePrice(tradeAction.acceptablePrice, {
+            displayDecimals: priceDecimals,
+          }),
+        },
+
+    tradeAction.priceImpactUsd && {
+      label: t`Price Impact`,
+      showDollar: false,
+      value: formatUsd(tradeAction.priceImpactUsd, { displayDecimals: priceDecimals }),
+    },
+  ].filter(Boolean) as StatsTooltipRowProps[];
+}
+
+function getMarketTooltipRows(tradeAction: PositionTradeAction): StatsTooltipRowProps[] | undefined {
+  const priceDecimals = tradeAction.indexToken.priceDecimals;
+  const arr = [
+    tradeAction.executionPrice && {
+      label: "Mark Price",
+      showDollar: false,
+      value: formatUsd(tradeAction.executionPrice),
+    },
+    tradeAction.priceImpactUsd && {
+      label: t`Actual Price Impact`,
+      showDollar: false,
+      value: formatUsd(tradeAction.priceImpactUsd, { displayDecimals: priceDecimals }),
+    },
+  ].filter(Boolean) as StatsTooltipRowProps[];
+
+  return arr.length > 0 ? arr : undefined;
 }

@@ -4385,3 +4385,442 @@ export const liquidated = prepare({
     __typename: "Transaction",
   },
 });
+
+export const increaseLongETH = prepare({
+  id: "0x26e3097fe0acab25b178836cbf3672336eed2d90aa8efa4387a8521ee10e3de6:25",
+  eventName: "OrderExecuted",
+  account: "0x196a492f60696930d6ee0551d3f4ed56b668aa00",
+  marketAddress: "0x1529876A9348D61C6c4a3EEe1fe6CbF1117Ca315",
+  marketInfo: {
+    marketTokenAddress: "0x1529876A9348D61C6c4a3EEe1fe6CbF1117Ca315",
+    indexTokenAddress: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
+    longTokenAddress: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
+    shortTokenAddress: "0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
+    isSameCollaterals: false,
+    isSpotOnly: false,
+    name: "ETH/USD [WETH-USDC]",
+    data: "",
+    isDisabled: false,
+    longToken: {
+      name: "Wrapped Ethereum",
+      symbol: "WETH",
+      decimals: 18,
+      address: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
+      isWrapped: true,
+      baseSymbol: "ETH",
+      imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
+      explorerUrl: "https://goerli.arbiscan.io/address/0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
+      prices: {
+        minPrice: {
+          type: "BigNumber",
+          hex: "0x4da5c2e2539b9feedf47a4000000",
+        },
+        maxPrice: {
+          type: "BigNumber",
+          hex: "0x4da5c2e2539b9feedf47a4000000",
+        },
+      },
+      balance: {
+        type: "BigNumber",
+        hex: "0x00",
+      },
+    },
+    shortToken: {
+      name: "USD Coin",
+      symbol: "USDC",
+      decimals: 6,
+      address: "0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
+      isStable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
+      explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
+      prices: {
+        minPrice: {
+          type: "BigNumber",
+          hex: "0x0c9f2c9cd04674edea40000000",
+        },
+        maxPrice: {
+          type: "BigNumber",
+          hex: "0x0c9f5e3e4ecaecf59bfc000000",
+        },
+      },
+      balance: {
+        type: "BigNumber",
+        hex: "0x032b34fb93",
+      },
+    },
+    indexToken: {
+      name: "Ethereum",
+      symbol: "ETH",
+      decimals: 18,
+      address: "0x0000000000000000000000000000000000000000",
+      isNative: true,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
+      wrappedAddress: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
+      prices: {
+        minPrice: {
+          type: "BigNumber",
+          hex: "0x4da5c2e2539b9feedf47a4000000",
+        },
+        maxPrice: {
+          type: "BigNumber",
+          hex: "0x4da5c2e2539b9feedf47a4000000",
+        },
+      },
+      balance: {
+        type: "BigNumber",
+        hex: "0x0d502d031e418d80",
+      },
+    },
+    longInterestUsd: {
+      type: "BigNumber",
+      hex: "0x022046a8414f9de69d0cf155cf0000",
+    },
+    shortInterestUsd: {
+      type: "BigNumber",
+      hex: "0x4e26dfa7d78123e9626ca58a8000",
+    },
+    longInterestInTokens: {
+      type: "BigNumber",
+      hex: "0x58406568ffa2072f",
+    },
+    shortInterestInTokens: {
+      type: "BigNumber",
+      hex: "0x0c7cdf059ca99f12",
+    },
+    longPoolAmount: {
+      type: "BigNumber",
+      hex: "0x010d0f44067cb75aec",
+    },
+    shortPoolAmount: {
+      type: "BigNumber",
+      hex: "0x0516f73c18",
+    },
+    maxLongPoolAmount: {
+      type: "BigNumber",
+      hex: "0x033b2e3c9fd0803ce8000000",
+    },
+    maxShortPoolAmount: {
+      type: "BigNumber",
+      hex: "0x033b2e3c9fd0803ce8000000",
+    },
+    longPoolAmountAdjustment: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    shortPoolAmountAdjustment: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    poolValueMin: {
+      type: "BigNumber",
+      hex: "0x0a41795af315e559f22c3d8bd5a2df",
+    },
+    poolValueMax: {
+      type: "BigNumber",
+      hex: "0x0a4189e8fc06c2abc639c95e55a2df",
+    },
+    reserveFactorLong: {
+      type: "BigNumber",
+      hex: "0x0b5c0e8d21d902d61fa0000000",
+    },
+    reserveFactorShort: {
+      type: "BigNumber",
+      hex: "0x0b5c0e8d21d902d61fa0000000",
+    },
+    openInterestReserveFactorLong: {
+      type: "BigNumber",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    openInterestReserveFactorShort: {
+      type: "BigNumber",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    totalBorrowingFees: {
+      type: "BigNumber",
+      hex: "0x039938fe034c3882e849df93144f",
+    },
+    positionImpactPoolAmount: {
+      type: "BigNumber",
+      hex: "0x6545e69b0c9527",
+    },
+    swapImpactPoolAmountLong: {
+      type: "BigNumber",
+      hex: "0xc421dbd3e6354c84",
+    },
+    swapImpactPoolAmountShort: {
+      type: "BigNumber",
+      hex: "0x1109d7",
+    },
+    borrowingFactorLong: {
+      type: "BigNumber",
+      hex: "0x0152d02c7e14af680000",
+    },
+    borrowingFactorShort: {
+      type: "BigNumber",
+      hex: "0x0152d02c7e14af680000",
+    },
+    borrowingExponentFactorLong: {
+      type: "BigNumber",
+      hex: "0x0c9f2c9cd04674edea40000000",
+    },
+    borrowingExponentFactorShort: {
+      type: "BigNumber",
+      hex: "0x0c9f2c9cd04674edea40000000",
+    },
+    fundingFactor: {
+      type: "BigNumber",
+      hex: "0x043c33c1937564800000",
+    },
+    fundingExponentFactor: {
+      type: "BigNumber",
+      hex: "0x0c9f2c9cd04674edea40000000",
+    },
+    pnlLongMax: {
+      type: "BigNumber",
+      hex: "-0x32801d13baa4d40ad650dcab6100",
+    },
+    pnlLongMin: {
+      type: "BigNumber",
+      hex: "-0x32801d13baa4d40ad650dcab6100",
+    },
+    pnlShortMax: {
+      type: "BigNumber",
+      hex: "0x084815843f012fa793c3d4754e00",
+    },
+    pnlShortMin: {
+      type: "BigNumber",
+      hex: "0x084815843f012fa793c3d4754e00",
+    },
+    netPnlMax: {
+      type: "BigNumber",
+      hex: "-0x2a38078f7ba3a463428d08361300",
+    },
+    netPnlMin: {
+      type: "BigNumber",
+      hex: "-0x2a38078f7ba3a463428d08361300",
+    },
+    maxPnlFactorForTradersLong: {
+      type: "BigNumber",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForTradersShort: {
+      type: "BigNumber",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    minCollateralFactor: {
+      type: "BigNumber",
+      hex: "0x204fce5e3e25026110000000",
+    },
+    minCollateralFactorForOpenInterestLong: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    minCollateralFactorForOpenInterestShort: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    claimableFundingAmountLong: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    claimableFundingAmountShort: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    positionFeeFactorForPositiveImpact: {
+      type: "BigNumber",
+      hex: "0x019d971e4fe8401e74000000",
+    },
+    positionFeeFactorForNegativeImpact: {
+      type: "BigNumber",
+      hex: "0x024306c4097859c43c000000",
+    },
+    positionImpactFactorPositive: {
+      type: "BigNumber",
+      hex: "0x0a968163f0a57b400000",
+    },
+    positionImpactFactorNegative: {
+      type: "BigNumber",
+      hex: "0x152d02c7e14af6800000",
+    },
+    maxPositionImpactFactorPositive: {
+      type: "BigNumber",
+      hex: "0x204fce5e3e25026110000000",
+    },
+    maxPositionImpactFactorNegative: {
+      type: "BigNumber",
+      hex: "0x204fce5e3e25026110000000",
+    },
+    maxPositionImpactFactorForLiquidations: {
+      type: "BigNumber",
+      hex: "0x204fce5e3e25026110000000",
+    },
+    positionImpactExponentFactor: {
+      type: "BigNumber",
+      hex: "0x193e5939a08ce9dbd480000000",
+    },
+    swapFeeFactorForPositiveImpact: {
+      type: "BigNumber",
+      hex: "0x019d971e4fe8401e74000000",
+    },
+    swapFeeFactorForNegativeImpact: {
+      type: "BigNumber",
+      hex: "0x024306c4097859c43c000000",
+    },
+    swapImpactFactorPositive: {
+      type: "BigNumber",
+      hex: "0x0422ca8b0a00a425000000",
+    },
+    swapImpactFactorNegative: {
+      type: "BigNumber",
+      hex: "0x084595161401484a000000",
+    },
+    swapImpactExponentFactor: {
+      type: "BigNumber",
+      hex: "0x193e5939a08ce9dbd480000000",
+    },
+    borrowingFactorPerSecondForLongs: {
+      type: "BigNumber",
+      hex: "0x6f21761111e36370fb",
+    },
+    borrowingFactorPerSecondForShorts: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    fundingFactorPerSecond: {
+      type: "BigNumber",
+      hex: "0x032bf02010abf18d9165",
+    },
+    longsPayShorts: true,
+    virtualPoolAmountForLongToken: {
+      type: "BigNumber",
+      hex: "0x011ac7d4466b853839",
+    },
+    virtualPoolAmountForShortToken: {
+      type: "BigNumber",
+      hex: "0x011f58e1616e72e2d5",
+    },
+    virtualInventoryForPositions: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    virtualMarketId: "0x04533437e2e8ae1c70c421e7a0dd36e023e0d6217198f889f9eb9c2a6727481d",
+    virtualLongTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
+    virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
+  },
+  indexToken: {
+    name: "Ethereum",
+    symbol: "ETH",
+    decimals: 18,
+    address: "0x0000000000000000000000000000000000000000",
+    isNative: true,
+    isShortable: true,
+    imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
+    wrappedAddress: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
+    prices: {
+      minPrice: {
+        type: "BigNumber",
+        hex: "0x4da5c2e2539b9feedf47a4000000",
+      },
+      maxPrice: {
+        type: "BigNumber",
+        hex: "0x4da5c2e2539b9feedf47a4000000",
+      },
+    },
+    balance: {
+      type: "BigNumber",
+      hex: "0x0d502d031e418d80",
+    },
+  },
+  swapPath: [],
+  initialCollateralTokenAddress: "0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
+  initialCollateralToken: {
+    name: "USD Coin",
+    symbol: "USDC",
+    decimals: 6,
+    address: "0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
+    isStable: true,
+    imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
+    explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
+    prices: {
+      minPrice: {
+        type: "BigNumber",
+        hex: "0x0c9f2c9cd04674edea40000000",
+      },
+      maxPrice: {
+        type: "BigNumber",
+        hex: "0x0c9f5e3e4ecaecf59bfc000000",
+      },
+    },
+    balance: {
+      type: "BigNumber",
+      hex: "0x032b34fb93",
+    },
+  },
+  targetCollateralToken: {
+    name: "USD Coin",
+    symbol: "USDC",
+    decimals: 6,
+    address: "0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
+    isStable: true,
+    imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
+    explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
+    prices: {
+      minPrice: {
+        type: "BigNumber",
+        hex: "0x0c9f2c9cd04674edea40000000",
+      },
+      maxPrice: {
+        type: "BigNumber",
+        hex: "0x0c9f5e3e4ecaecf59bfc000000",
+      },
+    },
+    balance: {
+      type: "BigNumber",
+      hex: "0x032b34fb93",
+    },
+  },
+  initialCollateralDeltaAmount: {
+    type: "BigNumber",
+    hex: "0x56d34e",
+  },
+  sizeDeltaUsd: {
+    type: "BigNumber",
+    hex: "0x0274fd87d9cef9af3032d6000000",
+  },
+  triggerPrice: {
+    type: "BigNumber",
+    hex: "0x00",
+  },
+  acceptablePrice: {
+    type: "BigNumber",
+    hex: "0x4e5def46246d68ec7afe002c0000",
+  },
+  executionPrice: {
+    type: "BigNumber",
+    hex: "0x4e223e3936a0882035b8a9240000",
+  },
+  minOutputAmount: {
+    type: "BigNumber",
+    hex: "0x00",
+  },
+  orderType: 2,
+  orderKey: "0x2f4bdbd274d9b706a05dceaf39fb926f0374e5018c8891ce53063fad64c1a080",
+  isLong: true,
+  priceImpactUsd: {
+    type: "BigNumber",
+    hex: "-0x011b2bb11d33b875a35ffdd2a0",
+  },
+  reason: null,
+  reasonBytes: null,
+  transaction: {
+    timestamp: 1695310360,
+    hash: "0x26e3097fe0acab25b178836cbf3672336eed2d90aa8efa4387a8521ee10e3de6",
+    __typename: "Transaction",
+  },
+});

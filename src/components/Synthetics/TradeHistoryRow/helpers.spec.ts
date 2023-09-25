@@ -7,6 +7,7 @@ import {
   createOrderIncreaseLong,
   executeOrderIncreaseLong,
   frozenOrderIncreaseShort,
+  increaseLongETH,
   liquidated,
   requestIncreasePosition,
   undefinedOrder,
@@ -24,7 +25,10 @@ describe("TradeHistoryRow helpers", () => {
   it("formatPositionOrderMessage", () => {
     expect(formatPositionMessage(requestIncreasePosition, minCollateralUsd)).toEqual([
       {
-        text: "Request Increase Long BTC +$3,735.44, Acceptable Price: $25,814.79",
+        text: "Request Increase Long BTC +$3,735.44, ",
+      },
+      {
+        text: "Acceptable Price: $25,814.79",
       },
     ]);
 
@@ -135,6 +139,26 @@ describe("TradeHistoryRow helpers", () => {
       },
       {
         text: " Short LINK -$6,441.90, Execution Price: $6.106",
+      },
+    ]);
+
+    expect(formatPositionMessage(increaseLongETH, minCollateralUsd)).toEqual([
+      { text: "Increase Long ETH +$49.83, " },
+      {
+        text: "Execution Price: $1,584.74",
+        tooltipRows: [
+          {
+            label: "Mark Price",
+            showDollar: false,
+            value: "$1,584.74",
+          },
+
+          {
+            label: "Actual Price Impact",
+            showDollar: false,
+            value: "-$0.08",
+          },
+        ],
       },
     ]);
   });
