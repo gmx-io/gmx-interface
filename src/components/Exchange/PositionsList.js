@@ -256,20 +256,16 @@ export default function PositionsList(props) {
               return (
                 <div key={position.key} className="App-card">
                   <div>
-                    <div className="App-card-title Position-card-title">
+                    <div className="App-card-title Position-card-title" onClick={() => onPositionClick(position)}>
                       <TokenIcon
                         className="PositionList-token-icon"
                         symbol={position.indexToken.symbol}
                         displaySize={20}
                         importSize={24}
                       />
-                      <span className="Exchange-list-title" onClick={() => onPositionClick(position)}>
-                        {position.indexToken.symbol}
-                      </span>
+                      <span className="Exchange-list-title">{position.indexToken.symbol}</span>
                       <div>
-                        <span className="Position-leverage" onClick={openSettings}>
-                          {position.leverageStr}
-                        </span>
+                        <span className="Position-leverage">{position.leverageStr}</span>
                         <span
                           className={cx("Exchange-list-side", {
                             positive: position.isLong,
@@ -555,14 +551,14 @@ export default function PositionsList(props) {
                           return (
                             <div>
                               <Trans>
-                                Click on a row to select the position's market, then use the trade box to increase your
-                                position size if needed.
+                                Click on the Position to select its market, then use the trade box to increase your
+                                Position Size if needed.
                               </Trans>
                               <br />
                               <br />
                               <Trans>
-                                Use the "Close" button to reduce your position size, or to set stop-loss / take-profit
-                                orders.
+                                Use the "Close" button to reduce your Position Size, or to set Take-Profit / Stop-Loss
+                                Orders.
                               </Trans>
                             </div>
                           );
@@ -582,17 +578,7 @@ export default function PositionsList(props) {
                     {position.hasPendingChanges && <ImSpinner2 className="spin position-loading-icon" />}
                   </div>
                   <div className="Exchange-list-info-label">
-                    {position.leverageStr && (
-                      <span
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openSettings();
-                        }}
-                        className="muted Position-leverage"
-                      >
-                        {position.leverageStr}
-                      </span>
-                    )}
+                    {position.leverageStr && <span className="muted Position-leverage">{position.leverageStr}</span>}
                     <span className={cx({ positive: position.isLong, negative: !position.isLong })}>
                       {position.isLong ? t`Long` : t`Short`}
                     </span>
@@ -716,15 +702,9 @@ export default function PositionsList(props) {
                     )}
                   </div>
                 </td>
-                <td className="clickable" onClick={() => onPositionClick(position)}>
-                  ${formatAmount(position.averagePrice, USD_DECIMALS, positionPriceDecimal, true)}
-                </td>
-                <td className="clickable" onClick={() => onPositionClick(position)}>
-                  ${formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}
-                </td>
-                <td className="clickable" onClick={() => onPositionClick(position)}>
-                  ${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
-                </td>
+                <td>${formatAmount(position.averagePrice, USD_DECIMALS, positionPriceDecimal, true)}</td>
+                <td>${formatAmount(position.markPrice, USD_DECIMALS, positionPriceDecimal, true)}</td>
+                <td>${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}</td>
 
                 <td>
                   <button

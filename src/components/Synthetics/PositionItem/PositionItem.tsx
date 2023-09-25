@@ -396,12 +396,12 @@ export function PositionItem(p: Props) {
 
                   <div>
                     <Trans>
-                      Click on a row to select the position's market, then use the swap box to increase your position
-                      size or to set stop-loss / take-profit orders.
+                      Click on the Position to select its market, then use the trade box to increase your Position Size,
+                      or to set Take-Profit / Stop-Loss Orders.
                     </Trans>
                     <br />
                     <br />
-                    <Trans>Use the "Close" button to reduce your position size.</Trans>
+                    <Trans>Use the "Close" button to reduce your Position Size.</Trans>
                   </div>
 
                   {showDebugValues && (
@@ -420,15 +420,7 @@ export function PositionItem(p: Props) {
             {p.position.pendingUpdate && <ImSpinner2 className="spin position-loading-icon" />}
           </div>
           <div className="Exchange-list-info-label">
-            <span
-              onClick={(e) => {
-                e.stopPropagation();
-                p.openSettings();
-              }}
-              className="muted Position-leverage"
-            >
-              {formatLeverage(p.position.leverage) || "..."}&nbsp;
-            </span>
+            <span className="muted Position-leverage">{formatLeverage(p.position.leverage) || "..."}&nbsp;</span>
             <span className={cx({ positive: p.position.isLong, negative: !p.position.isLong })}>
               {p.position.isLong ? t`Long` : t`Short`}
             </span>
@@ -464,7 +456,7 @@ export function PositionItem(p: Props) {
           {/* collateral */}
           <div>{renderCollateral()}</div>
         </td>
-        <td className="clickable" onClick={() => p.onSelectPositionClick?.()}>
+        <td>
           {/* entryPrice */}
           {p.position.isOpening
             ? t`Opening...`
@@ -472,13 +464,13 @@ export function PositionItem(p: Props) {
                 displayDecimals: indexPriceDecimals,
               })}
         </td>
-        <td className="clickable" onClick={() => p.onSelectPositionClick?.()}>
+        <td>
           {/* markPrice */}
           {formatUsd(p.position.markPrice, {
             displayDecimals: indexPriceDecimals,
           })}
         </td>
-        <td className="clickable" onClick={() => p.onSelectPositionClick?.()}>
+        <td>
           {/* liqPrice */}
           {renderLiquidationPrice()}
         </td>
@@ -516,8 +508,11 @@ export function PositionItem(p: Props) {
     return (
       <div className="App-card">
         <div>
-          <div className={cx("App-card-title Position-card-title", { "Position-active-card": isCurrentMarket })}>
-            <span className="Exchange-list-title inline-flex" onClick={() => p.onSelectPositionClick?.()}>
+          <div
+            className={cx("App-card-title Position-card-title", { "Position-active-card": isCurrentMarket })}
+            onClick={() => p.onSelectPositionClick?.()}
+          >
+            <span className="Exchange-list-title inline-flex">
               <TokenIcon
                 className="PositionList-token-icon"
                 symbol={p.position.marketInfo.indexToken?.symbol}
@@ -527,9 +522,7 @@ export function PositionItem(p: Props) {
               {p.position.marketInfo.indexToken?.symbol}
             </span>
             <div>
-              <span onClick={() => p.openSettings()} className="Position-leverage">
-                {formatLeverage(p.position.leverage)}&nbsp;
-              </span>
+              <span className="Position-leverage">{formatLeverage(p.position.leverage)}&nbsp;</span>
               <span
                 className={cx("Exchange-list-side", {
                   positive: p.position.isLong,

@@ -787,12 +787,20 @@ msgid "Claims"
 msgstr "Claims"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Click on a row to select the position's market, then use the swap box to increase your position size or to set stop-loss / take-profit orders."
-msgstr "Click on a row to select the position's market, then use the swap box to increase your position size or to set stop-loss / take-profit orders."
+#~ msgid "Click on a row to select the position's market, then use the swap box to increase your position size or to set stop-loss / take-profit orders."
+#~ msgstr "Click on a row to select the position's market, then use the swap box to increase your position size or to set stop-loss / take-profit orders."
 
 #: src/components/Exchange/PositionsList.js
-msgid "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
-msgstr "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
+#~ msgid "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
+#~ msgstr "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
+
+#: src/components/Exchange/PositionsList.js
+msgid "Click on the Position to select its market, then use the trade box to increase your Position Size if needed."
+msgstr "Click on the Position to select its market, then use the trade box to increase your Position Size if needed."
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take-Profit / Stop-Loss Orders."
+msgstr "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take-Profit / Stop-Loss Orders."
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
@@ -4820,12 +4828,20 @@ msgid "Updating..."
 msgstr "Updating..."
 
 #: src/components/Exchange/PositionsList.js
-msgid "Use the \"Close\" button to reduce your position size, or to set stop-loss / take-profit orders."
-msgstr "Use the \"Close\" button to reduce your position size, or to set stop-loss / take-profit orders."
+msgid "Use the \"Close\" button to reduce your Position Size, or to set Take-Profit / Stop-Loss Orders."
+msgstr "Use the \"Close\" button to reduce your Position Size, or to set Take-Profit / Stop-Loss Orders."
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Use the \"Close\" button to reduce your position size."
-msgstr "Use the \"Close\" button to reduce your position size."
+msgid "Use the \"Close\" button to reduce your Position Size."
+msgstr "Use the \"Close\" button to reduce your Position Size."
+
+#: src/components/Exchange/PositionsList.js
+#~ msgid "Use the \"Close\" button to reduce your position size, or to set stop-loss / take-profit orders."
+#~ msgstr "Use the \"Close\" button to reduce your position size, or to set stop-loss / take-profit orders."
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#~ msgid "Use the \"Close\" button to reduce your position size."
+#~ msgstr "Use the \"Close\" button to reduce your position size."
 
 #: src/pages/Stake/StakeV2.js
 msgid "Use the \"Compound\" button to stake your Multiplier Points."
