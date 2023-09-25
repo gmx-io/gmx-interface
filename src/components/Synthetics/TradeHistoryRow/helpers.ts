@@ -170,7 +170,7 @@ export const formatPositionMessage = (
 
         return [
           {
-            text: t`${actionText} ${increaseText} ${positionText} ${sizeDeltaText}, ${pricePrefix}: ${formatAcceptablePrice(
+            text: `${actionText} ${increaseText} ${positionText} ${sizeDeltaText}, ${pricePrefix}: ${formatAcceptablePrice(
               price,
               {
                 displayDecimals: priceDecimals,
