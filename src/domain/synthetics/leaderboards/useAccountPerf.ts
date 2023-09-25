@@ -46,8 +46,6 @@ const fetchAccountPerfs = async (
 const sumPerfByAccount = (
   accountPerfs: AccountPerfJson[],
   period: PerfPeriod,
-  ensNames: Record<string, string>,
-  avatarUrls: Record<string, string>,
 ): PerfByAccount => {
   const aggregation = {};
 
@@ -99,8 +97,6 @@ const sumPerfByAccount = (
 
     const perf = aggregation[account];
 
-    perf.ensName = ensNames[perfJson.account];
-    perf.avatarUrl = avatarUrls[perfJson.account];
     perf.wins = perf.wins.add(wins);
     perf.losses = perf.losses.add(losses);
     perf.totalPnl = perf.totalPnl.add(totalPnl);
@@ -145,20 +141,13 @@ export function useAccountPerf(period: PerfPeriod) {
     return data;
   });
 
-  // const addresses = (accounts.data || []).map((a: AccountPerfJson) => a.account);
-  // const { ensNames, avatarUrls } = useEnsBatchLookup(addresses);
-  const ensNames = {};
-  const avatarUrls = {};
-
   const key = (accounts.data || []).map(p => p.account).join("-");
-  const ensNamesLength = Object.keys(ensNames).length;
-  const avatarUrlsLength = Object.keys(avatarUrls).length;
   const data = useMemo(() => {
     if (accounts.data) {
-      return Object.values(sumPerfByAccount(accounts.data, period, ensNames, avatarUrls));
+      return Object.values(sumPerfByAccount(accounts.data, period));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, key, period, ensNamesLength, avatarUrlsLength]);
+  }, [chainId, key, period]);
 
   return {
     isLoading: !data && !accounts.error,

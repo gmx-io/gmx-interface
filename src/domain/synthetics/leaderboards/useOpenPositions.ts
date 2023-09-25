@@ -69,8 +69,6 @@ const parseOpenPositions = (positionsData: OpenPositionJson[], positionsByKey: P
     positions.push({
       key,
       account: accountAddress,
-      ensName: undefined,
-      avatarUrl: undefined,
       isLong: p.isLong,
       marketInfo: positionInfo.marketInfo,
       markPrice,
@@ -161,8 +159,6 @@ export function useOpenPositions() {
       !Object.keys(positionsInfo.data).length ||
       positions.data.length !== Object.keys(positionsInfo.data).length);
 
-  const positionsCount = positions.data?.length || 0;
-  const positionsInfoCount = positionsInfo.data ? Object.keys(positionsInfo.data).length : 0;
   const data = useMemo(() => {
     if (isLoading || error) {
       return;
@@ -172,7 +168,7 @@ export function useOpenPositions() {
       a.unrealizedPnlAfterFees.gt(b.unrealizedPnlAfterFees) ? -1 : 1
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, error, pricesUpdatedAt, chainId, positionsCount, positionsInfoCount, positionsHash]);
+  }, [chainId, isLoading, error, positionsHash]);
 
   return { isLoading: !data, error, data: data || [] };
 }

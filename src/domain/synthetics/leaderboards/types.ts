@@ -34,8 +34,6 @@ export type AccountPerfJson = {
 export type AccountPerf = {
   id: string;
   account: string;
-  ensName?: string;
-  avatarUrl?: string;
   period: PerfPeriod;
   timestamp: number;
   wins: BigNumber;
@@ -136,8 +134,6 @@ export type Ranked<T> = T & { rank: number };
 export type OpenPosition = {
   key: string;
   account: string;
-  ensName?: string;
-  avatarUrl?: string;
   isLong: boolean;
   marketInfo: MarketInfo;
   markPrice: BigNumber;

@@ -59,7 +59,6 @@ export default function TopPositions() {
     });
 
     return result;
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, positionsHash, orderBy, direction]);
 
@@ -80,8 +79,6 @@ export default function TopPositions() {
         p.account && (
           <AddressView
             address={p.account}
-            ensName={p.ensName}
-            avatarUrl={p.avatarUrl}
             breakpoint={breakpoint}
             lengths={{ S: 9, M: 11, L: 24, XL: 32 }}
             size={24}
@@ -176,7 +173,7 @@ export default function TopPositions() {
         />
       ),
     },
-  }), [chainId])
+  }), [chainId]);
 
   const indexFrom = (page - 1) * perPage;
   const rows = filteredStats.slice(indexFrom, indexFrom + perPage).map(parseRow);
