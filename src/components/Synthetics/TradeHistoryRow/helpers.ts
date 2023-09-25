@@ -116,7 +116,6 @@ export const formatPositionMessage = (
       const isFailed = tradeAction.eventName === TradeActionType.OrderFrozen;
       const prefix = isFailed ? "Execution Failed" : `${actionText} Order`;
 
-      const mainStr = `${prefix}: ${increaseText} ${positionText} ${sizeDeltaText}`;
       const triggerPriceStr = t`Trigger Price: ${pricePrefix} ${formatUsd(triggerPrice, {
         displayDecimals: priceDecimals,
       })}`;
@@ -135,11 +134,12 @@ export const formatPositionMessage = (
         }
 
         return [
-          { text: `${mainStr}`, ...getFrozenTooltipProps(tradeAction), textRed: true },
+          { text: "Execution Failed", textRed: true, ...getFrozenTooltipProps(tradeAction) },
+          { text: `: ${increaseText} ${positionText} ${sizeDeltaText}` },
           { text: `, ${strs.join(", ")}` },
         ];
       } else {
-        const strs = [mainStr, triggerPriceStr];
+        const strs = [`${prefix}: ${increaseText} ${positionText} ${sizeDeltaText}`, triggerPriceStr];
 
         if (shouldRenderAcceptablePrice) {
           strs.push(acceptablePriceStr);
