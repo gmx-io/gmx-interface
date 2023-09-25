@@ -292,9 +292,24 @@ function getFrozenTooltipProps(tradeAction: PositionTradeAction): Partial<Format
 
   let tooltipTitle = `Reason: ${words(error.name).join(" ").toLowerCase()}`;
 
-  if (error.name === "OrderNotFulfillableAtAcceptablePrice") {
-    tooltipTitle =
-      "The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met.";
+  switch (error.name) {
+    case "OrderNotFulfillableAtAcceptablePrice": {
+      tooltipTitle =
+        "The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met.";
+      break;
+    }
+
+    case "InsufficientReserveForOpenInterest": {
+      tooltipTitle =
+        "Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity.";
+      break;
+    }
+
+    case "InsufficientSwapOutputAmount": {
+      tooltipTitle =
+        "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity.";
+      break;
+    }
   }
 
   return {
