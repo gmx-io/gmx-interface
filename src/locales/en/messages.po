@@ -2499,6 +2499,18 @@ msgstr "Long Open Interest"
 msgid "Long Positions"
 msgstr "Long Positions"
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#~ msgid "Long positions {0} a Funding Fee of <0>{1}%</0> per hour."
+#~ msgstr "Long positions {0} a Funding Fee of <0>{1}%</0> per hour."
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Long positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
+msgstr "Long positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#~ msgid "Long positions {0} a Funding Fee of <0>{longSign}{1}%</0> per hour."
+#~ msgstr "Long positions {0} a Funding Fee of <0>{longSign}{1}%</0> per hour."
+
 #: src/components/Exchange/SwapBox.js
 msgid "Long {0}"
 msgstr "Long {0}"
@@ -3896,6 +3908,18 @@ msgstr "Short Open Interest"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Short Positions"
 msgstr "Short Positions"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#~ msgid "Short positions {0} a Funding Fee of <0>{1}%</0> per hour."
+#~ msgstr "Short positions {0} a Funding Fee of <0>{1}%</0> per hour."
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Short positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
+msgstr "Short positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#~ msgid "Short positions {0} a Funding Fee of <0>{shortSign}{1}%</0> per hour."
+#~ msgstr "Short positions {0} a Funding Fee of <0>{shortSign}{1}%</0> per hour."
 
 #: src/components/Exchange/SwapBox.js
 msgid "Short {0}"
@@ -5303,8 +5327,8 @@ msgid "collateral"
 msgstr "collateral"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "earn"
-msgstr "earn"
+#~ msgid "earn"
+#~ msgstr "earn"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "esGMX OTC Market"
@@ -5328,8 +5352,14 @@ msgid "not staked"
 msgstr "not staked"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "pay"
 msgstr "pay"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "receive"
+msgstr "receive"
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "size"
@@ -5356,6 +5386,11 @@ msgstr "{0, plural, one {Cancel order} other {Cancel # orders}}"
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#~ msgid "{0}"
+#~ msgstr "{0}"
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>;"
@@ -5542,8 +5577,8 @@ msgid "{longOrShortText} {0} market selected"
 msgstr "{longOrShortText} {0} market selected"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "{longShortText} positions {0} a funding fee of {1}% per hour."
-msgstr "{longShortText} positions {0} a funding fee of {1}% per hour."
+#~ msgid "{longShortText} positions {0} a funding fee of {1}% per hour."
+#~ msgstr "{longShortText} positions {0} a funding fee of {1}% per hour."
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "{marketsCount, plural, one {# Market} other {# Markets}}"
