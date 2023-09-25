@@ -194,6 +194,8 @@ export const formatPositionMessage = (
     }
 
     case OrderType.Liquidation: {
+      const executionPriceStr = t`Execution Price`;
+
       if (tradeAction.eventName === TradeActionType.OrderExecuted) {
         const executionPrice = tradeAction.executionPrice;
         const maxLeverage = PRECISION.div(tradeAction.marketInfo.minCollateralFactor);
@@ -205,7 +207,7 @@ export const formatPositionMessage = (
             tooltipRows: getLiquidationTooltipProps(tradeAction, minCollateralUsd),
           },
           {
-            text: t`${positionText} ${sizeDeltaText}, Execution Price: ${formatUsd(executionPrice, {
+            text: ` ${positionText} ${sizeDeltaText}, ${executionPriceStr}: ${formatUsd(executionPrice, {
               displayDecimals: priceDecimals,
             })}`,
           },

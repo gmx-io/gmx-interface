@@ -134,7 +134,7 @@ describe("TradeHistoryRow helpers", () => {
         tooltipTitle: "This position was liquidated as the max leverage of 100.0x was exceeded.",
       },
       {
-        text: "Short LINK -$6,441.90, Execution Price: $6.106",
+        text: " Short LINK -$6,441.90, Execution Price: $6.106",
       },
     ]);
   });
