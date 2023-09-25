@@ -52,7 +52,7 @@ describe("TradeHistoryRow helpers", () => {
 
     expect(formatPositionMessage(executeOrderIncreaseLong, minCollateralUsd)).toEqual([
       {
-        text: "Execute Order: Increase Short ARB +$2,070.18,",
+        text: "Execute Order: Increase Short ARB +$2,070.18, ",
       },
       {
         text: "Triggered at: <$0.010, Execution Price: $0.837",

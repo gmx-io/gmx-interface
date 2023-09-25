@@ -76,9 +76,10 @@ export const formatPositionMessage = (
       const tokenPrice = getTokenPriceByTradeAction(tradeAction);
 
       if (tradeAction.eventName === TradeActionType.OrderExecuted) {
+        const executeOrderStr = t`Execute Order: ${increaseText} ${positionText} ${sizeDeltaText},`;
         return [
           {
-            text: t`Execute Order: ${increaseText} ${positionText} ${sizeDeltaText}, `,
+            text: `${executeOrderStr} `,
           },
           {
             text: [

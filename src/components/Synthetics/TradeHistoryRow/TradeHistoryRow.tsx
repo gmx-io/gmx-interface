@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getExplorerUrl } from "config/chains";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -84,47 +84,40 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
   return (
     <>
       {messages.map((message, i) => {
-        const textElement = (
-          <>
-            <Trans>{message.text}</Trans>
-          </>
-        );
+        const textElement = <>{message.text}</>;
 
         const hasSmthAfterTitle = message.tooltipRows?.length || message.tooltipFooter;
         const hasSmthBeforeFooter = message.tooltipTitle || message.tooltipRows?.length;
 
-        const withTooltip =
-          message.tooltipRows || message.tooltipFooter || message.tooltipTitle ? (
-            <Tooltip
-              position="left-top"
-              handle={textElement}
-              renderContent={() => (
-                <>
-                  {message.tooltipTitle ? (
-                    <span className={message.tooltipTitleRed ? "text-red" : undefined}>
-                      {message.tooltipTitle}
-                      {hasSmthAfterTitle && <br />}
-                      {hasSmthAfterTitle && <br />}
-                    </span>
-                  ) : null}
-                  {message.tooltipRows?.map((props) => (
-                    <StatsTooltipRow {...props} />
-                  ))}
-                  {message.tooltipFooter ? (
-                    <span className={message.tooltipFooterRed ? "text-red" : undefined}>
-                      {hasSmthBeforeFooter && <br />}
-                      {hasSmthBeforeFooter && <br />}
-                      {message.tooltipFooter}
-                    </span>
-                  ) : null}
-                </>
-              )}
-            />
-          ) : (
-            textElement
-          );
-
-        return i === messages.length - 1 ? withTooltip : <>{withTooltip} </>;
+        return message.tooltipRows || message.tooltipFooter || message.tooltipTitle ? (
+          <Tooltip
+            position="left-top"
+            handle={textElement}
+            renderContent={() => (
+              <>
+                {message.tooltipTitle ? (
+                  <span className={message.tooltipTitleRed ? "text-red" : undefined}>
+                    {message.tooltipTitle}
+                    {hasSmthAfterTitle && <br />}
+                    {hasSmthAfterTitle && <br />}
+                  </span>
+                ) : null}
+                {message.tooltipRows?.map((props) => (
+                  <StatsTooltipRow {...props} />
+                ))}
+                {message.tooltipFooter ? (
+                  <span className={message.tooltipFooterRed ? "text-red" : undefined}>
+                    {hasSmthBeforeFooter && <br />}
+                    {hasSmthBeforeFooter && <br />}
+                    {message.tooltipFooter}
+                  </span>
+                ) : null}
+              </>
+            )}
+          />
+        ) : (
+          textElement
+        );
       })}
       , Market: {renderMarketName(tradeAction.marketInfo)}
     </>
