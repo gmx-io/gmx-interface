@@ -122,6 +122,8 @@ export default function PositionsList(props) {
     helperToast.success(t`${longOrShortText} ${position.indexToken.symbol} market selected`);
     setMarket(position.isLong ? LONG : SHORT, position.indexToken.address);
   };
+  const positivePercentage = positionToShare?.hasProfitAfterFees;
+  const pnlAfterFeesPercentageSigned = positionToShare?.deltaPercentageAfterFees.mul(positivePercentage ? 1 : -1);
 
   return (
     <div className="PositionsList">
@@ -160,9 +162,15 @@ export default function PositionsList(props) {
       )}
       {isPositionShareModalOpen && (
         <PositionShare
+          key={positionToShare?.key}
           setIsPositionShareModalOpen={setIsPositionShareModalOpen}
           isPositionShareModalOpen={isPositionShareModalOpen}
-          positionToShare={positionToShare}
+          entryPrice={positionToShare.averagePrice}
+          indexToken={positionToShare.indexToken}
+          isLong={positionToShare.isLong}
+          leverage={positionToShare.leverageWithPnl}
+          markPrice={positionToShare.markPrice}
+          pnlAfterFeesPercentage={pnlAfterFeesPercentageSigned}
           chainId={chainId}
           account={account}
         />

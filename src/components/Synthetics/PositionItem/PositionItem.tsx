@@ -36,7 +36,7 @@ export type Props = {
   savedShowPnlAfterFees: boolean;
   onClosePositionClick?: () => void;
   onEditCollateralClick?: () => void;
-  onShareClick?: () => void;
+  onShareClick: () => void;
   onSelectPositionClick?: (tradeMode?: TradeMode) => void;
   onOrdersClick?: () => void;
   isLarge: boolean;
@@ -500,6 +500,7 @@ export function PositionItem(p: Props) {
               handleEditCollateral={p.onEditCollateralClick}
               handleMarketSelect={() => p.onSelectPositionClick?.()}
               handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market)}
+              handleShare={p.onShareClick}
               handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit)}
               handleTriggerClose={() => p.onSelectPositionClick?.(TradeMode.Trigger)}
             />

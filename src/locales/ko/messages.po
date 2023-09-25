@@ -1020,7 +1020,7 @@ msgstr "esGMX 토큰을 GMX 토큰으로 변환합니다.<0/>볼트를 사용하
 msgid "Convert {wrappedTokenSymbol} to {nativeTokenSymbol}"
 msgstr "{wrappedTokenSymbol}를 {nativeTokenSymbol}로 변환"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Copy"
 msgstr "복사"
 
@@ -1352,7 +1352,7 @@ msgstr ""
 msgid "Don't show this message again for 30 days."
 msgstr "30일 동안 해당 메시지 다시보지 않기"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Download"
 msgstr "다운로드"
 
@@ -1940,7 +1940,7 @@ msgstr ""
 msgid "Generate Referral Code"
 msgstr "추천인 코드 생성"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShareCard.tsx
 msgid "Generating shareable image..."
 msgstr "공유가능한 이미지 생성중..."
 
@@ -1973,7 +1973,7 @@ msgstr ""
 msgid "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
 msgstr "포지션이 이미 존재한다면, 해당 포지션은 {0} USD에 종료될 것입니다.<0/><1/>이 종료 가격은 자산의 가격 변화에 따라 변경됩니다.<2/><3/><4>더 자세한 정보</4>"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Image generation error, please refresh and try again."
 msgstr "이미지 생성 에러. 새로고침 후 다시 시도해주세요."
 
@@ -2345,7 +2345,7 @@ msgstr "지정가 주문 제출 완료!"
 msgid "Link"
 msgstr "링크"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Link copied to clipboard."
 msgstr "클립보드로 링크가 복사되었습니다."
 
@@ -3815,7 +3815,7 @@ msgid "Share"
 msgstr "공유"
 
 #: src/components/Exchange/PositionDropdown.js
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Share Position"
 msgstr "포지션 공유"
 
@@ -4677,7 +4677,7 @@ msgstr "우측 상단의 세팅을 이용해 \"허용 가능한 슬리피지\"�
 msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right."
 msgstr "우측 상단의 세팅을 이용해 \"허용 가능한 슬리피지\"를 증가시켜보세요"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Tweet"
 msgstr "Tweet"
 

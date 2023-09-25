@@ -1020,7 +1020,7 @@ msgstr "Convertir los tokens esGMX en tokens GMX.<0/>Por favor, lea los <1>detal
 msgid "Convert {wrappedTokenSymbol} to {nativeTokenSymbol}"
 msgstr "Convertir {wrappedTokenSymbol} a {nativeTokenSymbol}"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Copy"
 msgstr "Copiar"
 
@@ -1352,7 +1352,7 @@ msgstr "Documentos"
 msgid "Don't show this message again for 30 days."
 msgstr "No muestres este mensaje de nuevo en los próximos 30 días."
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Download"
 msgstr "Descargar"
 
@@ -1940,7 +1940,7 @@ msgstr ""
 msgid "Generate Referral Code"
 msgstr "Generar Código de Referido"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShareCard.tsx
 msgid "Generating shareable image..."
 msgstr "Generando imagen para compartir..."
 
@@ -1973,7 +1973,7 @@ msgstr ""
 msgid "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
 msgstr "Si tienes una posicion existente, la posicion se cerrará a {0} USD.<0/><1/>Este precio de salida cambiará con el precio del activo.<2/><3/><4>Más Info</4>"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Image generation error, please refresh and try again."
 msgstr "Error de generación de imagen, por favor actualice e intente de nuevo"
 
@@ -2345,7 +2345,7 @@ msgstr "¡Orden limite enviada!"
 msgid "Link"
 msgstr "Enlace"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Link copied to clipboard."
 msgstr "Enlace copiado al portapapeles."
 
@@ -3815,7 +3815,7 @@ msgid "Share"
 msgstr "Compartir"
 
 #: src/components/Exchange/PositionDropdown.js
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Share Position"
 msgstr "Compartir Posición"
 
@@ -4677,7 +4677,7 @@ msgstr "Prueba a incrementar el \"Deslizamiento Permitido\", debajo del menú de
 msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right."
 msgstr "Prueba a incrementar el \"Deslizamiento Permitido\", debajo del menú de Ajustes en la esquina superior derecha"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Tweet"
 msgstr "Tweet"
 
