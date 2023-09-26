@@ -119,7 +119,11 @@ export const formatPositionMessage = (
         }
 
         return [
-          { text: "Execution Failed", textRed: true, ...getExecutionFailedTooltipProps(tradeAction) },
+          {
+            text: t`${orderTypeName} Order Execution Failed`,
+            textRed: true,
+            ...getExecutionFailedTooltipProps(tradeAction),
+          },
           { text: `: ${increaseText} ${positionText} ${sizeDeltaText}` },
           { text: `, ${strs.join(", ")}` },
         ];

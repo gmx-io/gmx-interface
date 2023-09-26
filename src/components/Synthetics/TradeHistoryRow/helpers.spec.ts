@@ -77,7 +77,7 @@ describe("TradeHistoryRow helpers", () => {
 
     expect(formatPositionMessage(frozenOrderIncreaseShort, minCollateralUsd)).toEqual([
       {
-        text: "Execution Failed",
+        text: "Limit Order Execution Failed",
         textRed: true,
       },
       {
