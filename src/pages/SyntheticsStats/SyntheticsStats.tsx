@@ -21,16 +21,19 @@ import { usePositionsConstants } from "domain/synthetics/positions";
 import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import "./SyntheticsStats.scss";
 
-function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: number) {
+function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: number, showDollar: boolean = false) {
   const n = Number(formatAmount(amount, tokenDecimals));
+  const isNegative = n < 0;
+  const absN = Math.abs(n);
+  const sign = showDollar ? "$" : "";
 
-  if (n >= 1000000) {
-    return `${(n / 1000000).toFixed(1)}M`;
+  if (absN >= 1000000) {
+    return `${isNegative ? "-" : ""}${sign}${(absN / 1000000).toFixed(1)}M`;
   }
-  if (n >= 1000) {
-    return `${(n / 1000).toFixed(1)}K`;
+  if (absN >= 1000) {
+    return `${isNegative ? "-" : ""}${sign}${(absN / 1000).toFixed(1)}K`;
   }
-  return n.toFixed(1);
+  return `${isNegative ? "-" : ""}${sign}${absN.toFixed(1)}`;
 }
 
 function formatFactor(factor: BigNumber) {
@@ -78,8 +81,10 @@ export function SyntheticsStats() {
                     Per 1h
                     <br />
                     <br />
-                    Negative value: traders pay funding
-                    <br /> Positive value: traders receive funding
+                    Negative Value: Traders pay funding
+                    <br />
+                    <br />
+                    Positive Value: Traders receive funding
                   </div>
                 )}
               />
@@ -88,10 +93,31 @@ export function SyntheticsStats() {
             <th>Liquidity Long</th>
             <th>Liquidity Short</th>
             <th>
-              <Tooltip handle="VI Positions" renderContent={() => "Virtual inventory for positons"} />
+              <Tooltip
+                handle="VI Positions"
+                renderContent={() => (
+                  <>
+                    <p>Virtual inventory for positons</p>
+                    <p>
+                      Virtual Inventory tracks the imbalance of tokens across similar markets, e.g. ETH/USDC, ETH/USDT.
+                    </p>
+                  </>
+                )}
+              />
             </th>
             <th>
-              <Tooltip handle="VI Swaps" renderContent={() => "Virtual inventory for swaps (Long / Short)"} />
+              <Tooltip
+                handle="VI Swaps"
+                position="right-bottom"
+                renderContent={() => (
+                  <>
+                    <p>Virtual inventory for swaps (Long / Short)</p>
+                    <p>
+                      Virtual Inventory tracks the imbalance of tokens across similar markets, e.g. ETH/USDC, ETH/USDT.
+                    </p>
+                  </>
+                )}
+              />
             </th>
             <th>Config</th>
           </tr>
@@ -145,7 +171,7 @@ export function SyntheticsStats() {
 
             return (
               <tr key={market.marketTokenAddress}>
-                <td>
+                <td className="Market-name">
                   <div className="cell">
                     <div>
                       <Tooltip
@@ -191,7 +217,7 @@ export function SyntheticsStats() {
                         )}
                       />
                     </div>
-                    <div className="muted">[{getMarketPoolName(market)}]</div>
+                    <div className="subtext">[{getMarketPoolName(market)}]</div>
                   </div>
                 </td>
                 <td>
@@ -263,8 +289,16 @@ export function SyntheticsStats() {
                         }
                         renderContent={() => (
                           <>
-                            <StatsTooltipRow label="PnL Long" value={formatAmountHuman(market.pnlLongMax, 30)} />
-                            <StatsTooltipRow label="PnL Short" value={formatAmountHuman(market.pnlShortMax, 30)} />
+                            <StatsTooltipRow
+                              showDollar={false}
+                              label="PnL Long"
+                              value={formatAmountHuman(market.pnlLongMax, 30, true)}
+                            />
+                            <StatsTooltipRow
+                              showDollar={false}
+                              label="PnL Short"
+                              value={formatAmountHuman(market.pnlShortMax, 30, true)}
+                            />
                           </>
                         )}
                       />
@@ -302,12 +336,12 @@ export function SyntheticsStats() {
                       "..."
                     ) : (
                       <div>
-                        <span className={cx({ positive: true })}>
+                        <span className={fundingAprLong.gt(0) ? "positive" : "negative"}>
                           {market.longsPayShorts ? "-" : "+"}
                           {formatAmount(fundingAprLong.abs(), 30, 4)}%
                         </span>{" "}
                         /{" "}
-                        <span className={cx({ negative: true })}>
+                        <span className={fundingAprShort.gt(0) ? "positive" : "negative"}>
                           {market.longsPayShorts ? "+" : "-"}
                           {formatAmount(fundingAprShort.abs(), 30, 4)}%
                         </span>
@@ -408,6 +442,7 @@ export function SyntheticsStats() {
                     <Tooltip
                       position={"right-bottom"}
                       handle="..."
+                      className="MarketCard-config-tooltip"
                       renderContent={() => (
                         <>
                           <div>Position Impact</div>
