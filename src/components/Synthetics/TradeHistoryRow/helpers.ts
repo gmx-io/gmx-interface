@@ -85,9 +85,11 @@ export const formatPositionMessage = (
           },
           {
             text: [
-              t`Triggered at: ${formatUsd(tokenPrice, { displayDecimals: priceDecimals })}`,
+              tokenPrice ? t`Triggered at: ${formatUsd(tokenPrice, { displayDecimals: priceDecimals })}` : undefined,
               t`Execution Price: ${formatUsd(executionPrice, { displayDecimals: priceDecimals })}`,
-            ].join(", "),
+            ]
+              .filter(Boolean)
+              .join(", "),
             tooltipRows: getExecutionPriceTooltipRows(tradeAction),
           },
         ];
@@ -351,11 +353,12 @@ function getExecutionPriceTooltipRows(tradeAction: PositionTradeAction): StatsTo
 
 function getMarketTooltipRows(tradeAction: PositionTradeAction): StatsTooltipRowProps[] | undefined {
   const priceDecimals = tradeAction.indexToken.priceDecimals;
+  const tokenPrice = getTokenPriceByTradeAction(tradeAction);
   const arr = [
-    tradeAction.executionPrice && {
+    tokenPrice && {
       label: "Mark Price",
       showDollar: false,
-      value: formatUsd(tradeAction.executionPrice, { displayDecimals: priceDecimals }),
+      value: formatUsd(tokenPrice, { displayDecimals: priceDecimals }),
     },
     tradeAction.priceImpactUsd && {
       label: t`Actual Price Impact`,

@@ -4391,6 +4391,14 @@ export const increaseLongETH = prepare({
   eventName: "OrderExecuted",
   account: "0x196a492f60696930d6ee0551d3f4ed56b668aa00",
   marketAddress: "0x1529876A9348D61C6c4a3EEe1fe6CbF1117Ca315",
+  indexTokenPriceMin: {
+    type: "BigNumber",
+    hex: "0x3857628d95c4c587fc90000000",
+  },
+  indexTokenPriceMax: {
+    type: "BigNumber",
+    hex: "0x3865679947fa383c96ba400000",
+  },
   marketInfo: {
     marketTokenAddress: "0x1529876A9348D61C6c4a3EEe1fe6CbF1117Ca315",
     indexTokenAddress: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
