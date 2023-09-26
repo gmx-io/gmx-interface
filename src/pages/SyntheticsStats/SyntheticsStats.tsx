@@ -20,6 +20,7 @@ import {
 import { usePositionsConstants } from "domain/synthetics/positions";
 import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import "./SyntheticsStats.scss";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: number, showDollar: boolean = false) {
   const n = Number(formatAmount(amount, tokenDecimals));
@@ -65,13 +66,16 @@ export function SyntheticsStats() {
             <th>Pool Value</th>
             <th>Pool Balance</th>
             <th>
-              <Tooltip handle="PnL" renderContent={() => "Pending PnL from all open positions"} />
+              <TooltipWithPortal handle="PnL" renderContent={() => "Pending PnL from all open positions"} />
             </th>
             <th>
-              <Tooltip handle="Borrowing Fees" renderContent={() => "Pending Borrowing Fees from all open positions"} />
+              <TooltipWithPortal
+                handle="Borrowing Fees"
+                renderContent={() => "Pending Borrowing Fees from all open positions"}
+              />
             </th>
             <th>
-              <Tooltip
+              <TooltipWithPortal
                 handle="Funding APR"
                 renderContent={() => (
                   <div>
@@ -93,7 +97,7 @@ export function SyntheticsStats() {
             <th>Liquidity Long</th>
             <th>Liquidity Short</th>
             <th>
-              <Tooltip
+              <TooltipWithPortal
                 handle="VI Positions"
                 renderContent={() => (
                   <>
@@ -106,7 +110,7 @@ export function SyntheticsStats() {
               />
             </th>
             <th>
-              <Tooltip
+              <TooltipWithPortal
                 handle="VI Swaps"
                 position="right-bottom"
                 renderContent={() => (
