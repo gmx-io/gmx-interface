@@ -114,7 +114,7 @@ export const formatPositionMessage = (
         }
 
         return [
-          { text: "Execution Failed", textRed: true, ...getFrozenTooltipProps(tradeAction) },
+          { text: "Execution Failed", textRed: true, ...getExecutionFailedTooltipProps(tradeAction) },
           { text: `: ${increaseText} ${positionText} ${sizeDeltaText}` },
           { text: `, ${strs.join(", ")}` },
         ];
@@ -267,45 +267,57 @@ function getLiquidationTooltipProps(
   ];
 }
 
-function getFrozenTooltipProps(tradeAction: PositionTradeAction): Partial<FormatPositionMessageChunk> {
+function getExecutionFailedTooltipProps(tradeAction: PositionTradeAction): Partial<FormatPositionMessageChunk> {
   const customErrors = new ethers.Contract(ethers.constants.AddressZero, CustomErrors.abi);
+  const res: Partial<FormatPositionMessageChunk> = {};
 
-  if (!tradeAction.reasonBytes) return {};
+  if (!tradeAction.reasonBytes) return res;
 
   let error: ReturnType<typeof customErrors.interface.parseError> | null = null;
   try {
     error = customErrors.interface.parseError(tradeAction.reasonBytes);
   } catch (err) {
-    return {};
+    return res;
   }
 
-  if (!error) return {};
+  if (!error) return res;
 
-  let tooltipTitle = `Reason: ${words(error.name).join(" ").toLowerCase()}`;
+  res.tooltipTitle = `Reason: ${words(error.name).join(" ").toLowerCase()}`;
 
   switch (error.name) {
     case "OrderNotFulfillableAtAcceptablePrice": {
-      tooltipTitle =
+      res.tooltipTitle =
         "The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met.";
       break;
     }
 
     case "InsufficientReserveForOpenInterest": {
-      tooltipTitle =
+      res.tooltipTitle =
         "Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity.";
       break;
     }
 
     case "InsufficientSwapOutputAmount": {
-      tooltipTitle =
+      res.tooltipTitle =
         "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity.";
       break;
     }
   }
 
+  const tokenPrice = getTokenPriceByTradeAction(tradeAction);
+
   return {
-    tooltipTitle,
+    ...res,
     tooltipTitleRed: true,
+    tooltipRows: [
+      tokenPrice && {
+        label: t`Mark Price`,
+        showDollar: false,
+        value: formatUsd(tokenPrice, {
+          displayDecimals: tradeAction.indexToken.priceDecimals,
+        }),
+      },
+    ].filter(Boolean) as StatsTooltipRowProps[],
   };
 }
 
