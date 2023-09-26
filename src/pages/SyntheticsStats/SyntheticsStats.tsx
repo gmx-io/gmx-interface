@@ -62,7 +62,7 @@ export function SyntheticsStats() {
       <table>
         <thead>
           <tr>
-            <th>Market</th>
+            <th className="sticky-left">Market</th>
             <th>Pool Value</th>
             <th>Pool Balance</th>
             <th>
@@ -175,7 +175,7 @@ export function SyntheticsStats() {
 
             return (
               <tr key={market.marketTokenAddress}>
-                <td className="Market-name">
+                <td className="sticky-left">
                   <div className="cell">
                     <div>
                       <Tooltip

@@ -8,8 +8,12 @@
     max-width: 42rem;
   }
 
-  .Market-name {
-    width: 12rem;
+  .sticky-left {
+    position: sticky;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background: var(--main-bg-color);
   }
 
   .MarketCard-config-tooltip {
@@ -24,6 +28,7 @@
   padding: 10px 10px;
   position: relative;
   vertical-align: top;
+  white-space: nowrap;
 }
 
 .SyntheticsStats {
