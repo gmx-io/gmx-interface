@@ -113,7 +113,7 @@ export function SyntheticsPage(p: Props) {
     setCollateralAddress,
     setActivePosition,
     switchTokenAddresses,
-    setTradeOptions,
+    setTradeConfig,
   } = useSelectedTradeOption(chainId, { marketsInfoData, tokensData });
 
   const [listSection, setListSection] = useLocalStorageSerializeKey(
@@ -124,7 +124,7 @@ export function SyntheticsPage(p: Props) {
   const { isSwap, isLong } = tradeFlags;
   const { indexTokens, sortedIndexTokensWithPoolValue, sortedAllMarkets } = availableTokensOptions;
 
-  useTradeParamsProcessor(sortedAllMarkets, setTradeOptions);
+  useTradeParamsProcessor(sortedAllMarkets, setTradeConfig);
 
   const { chartToken, availableChartTokens } = useMemo(() => {
     if (!fromTokenAddress || !toTokenAddress) {

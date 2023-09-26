@@ -9,6 +9,7 @@ import { TokenData, TokensData } from "../tokens";
 import { TradeMode, TradeType } from "./types";
 import { AvailableTokenOptions, useAvailableTokenOptions } from "./useAvailableTokenOptions";
 import { TradeFlags, useTradeFlags } from "./useTradeFlags";
+import { convertTokenAddress } from "config/tokens";
 
 type TradeOptions = {
   tradeType?: TradeType;
@@ -42,7 +43,7 @@ export type SelectedTradeOption = {
   setMarketAddress: (marketAddress?: string) => void;
   setCollateralAddress: (tokenAddress?: string) => void;
   switchTokenAddresses: () => void;
-  setTradeOptions: ({
+  setTradeConfig: ({
     tradeType,
     tradeMode,
     fromTokenAddress,
@@ -241,7 +242,7 @@ export function useSelectedTradeOption(
     [setStoredOptions, storedOptions]
   );
 
-  const setTradeOptions = useCallback(
+  const setTradeConfig = useCallback(
     (tradeOptions: TradeOptions) => {
       const { tradeType, tradeMode, fromTokenAddress, toTokenAddress, marketAddress, collateralAddress } = tradeOptions;
       const oldState = JSON.parse(JSON.stringify(storedOptions));
@@ -259,19 +260,19 @@ export function useSelectedTradeOption(
       }
 
       if (toTokenAddress) {
-        if (tradeFlags.isSwap) {
+        if (oldState.tradeType === TradeType.Swap) {
           oldState.tokens.swapToTokenAddress = toTokenAddress;
         } else {
-          oldState.tokens.indexTokenAddress = toTokenAddress;
-        }
-      }
-
-      if (marketAddress) {
-        oldState.markets[toTokenAddress!] = oldState.markets[toTokenAddress!] || {};
-        if (tradeFlags.isLong) {
-          oldState.markets[toTokenAddress!].long = marketAddress;
-        } else {
-          oldState.markets[toTokenAddress!].short = marketAddress;
+          const finalToTokenAddress = convertTokenAddress(chainId, toTokenAddress, "synthetic");
+          oldState.tokens.indexTokenAddress = finalToTokenAddress;
+          if (finalToTokenAddress && marketAddress) {
+            oldState.markets[finalToTokenAddress] = oldState.markets[finalToTokenAddress] || {};
+            if (oldState.tradeType === TradeType.Long) {
+              oldState.markets[finalToTokenAddress].long = marketAddress;
+            } else if (oldState.tradeType === TradeType.Short) {
+              oldState.markets[finalToTokenAddress].short = marketAddress;
+            }
+          }
         }
       }
 
@@ -281,7 +282,7 @@ export function useSelectedTradeOption(
 
       setStoredOptions(oldState);
     },
-    [setStoredOptions, storedOptions, tradeFlags.isLong, tradeFlags.isSwap]
+    [setStoredOptions, storedOptions, chainId]
   );
 
   useEffect(
@@ -387,6 +388,6 @@ export function useSelectedTradeOption(
     setTradeType,
     setTradeMode,
     switchTokenAddresses,
-    setTradeOptions,
+    setTradeConfig,
   };
 }

@@ -7,13 +7,11 @@ import useSWR from "swr";
 import { getConstant, getExplorerUrl } from "config/chains";
 import { approvePlugin, cancelMultipleOrders, useExecutionFee } from "domain/legacy";
 import {
-  LEVERAGE_ORDER_OPTIONS,
   LONG,
   MARGIN_FEE_BASIS_POINTS,
   MARKET,
   SHORT,
   SWAP,
-  SWAP_OPTIONS,
   USD_DECIMALS,
   getDeltaStr,
   getFundingFee,
@@ -44,14 +42,7 @@ import Tab from "components/Tab/Tab";
 
 import UsefulLinks from "components/Exchange/UsefulLinks";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import {
-  getPriceDecimals,
-  getToken,
-  getTokenBySymbol,
-  getV1Tokens,
-  getValidTokenBySymbol,
-  getWhitelistedV1Tokens,
-} from "config/tokens";
+import { getPriceDecimals, getToken, getTokenBySymbol, getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
 import { useInfoTokens } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
 import { useChainId } from "lib/chains";
@@ -62,10 +53,8 @@ import { bigNumberify, formatAmount } from "lib/numbers";
 import { getLeverage, getLeverageStr } from "lib/positions/getLeverage";
 import "./Exchange.css";
 import { getIsV1Supported } from "config/features";
-import useRouteQuery from "lib/useRouteQuery";
-import { useHistory, useParams } from "react-router-dom";
-import { getMatchingValueFromObject } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
+import useV1TradeParamsProcessor from "domain/trade/useV1TradeParamsProcessor";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
@@ -372,9 +361,6 @@ export const Exchange = forwardRef((props, ref) => {
   } = props;
   const [showBanner, setShowBanner] = useLocalStorageSerializeKey("showBanner", true);
   const [bannerHidden, setBannerHidden] = useLocalStorageSerializeKey("bannerHidden", null);
-  const queryParams = useRouteQuery();
-  const history = useHistory();
-  const params = useParams();
 
   const [pendingPositions, setPendingPositions] = useState({});
   const [updatedPositions, setUpdatedPositions] = useState({});
@@ -525,26 +511,25 @@ export const Exchange = forwardRef((props, ref) => {
 
   const updateTradeOptions = useCallback(
     (options) => {
-      if (!options) return;
       if (options.tradeType) {
         setSwapOption(options.tradeType);
       }
       if (options.tradeMode) {
         setOrderOption(options.tradeMode);
       }
-      if (options.marketAddress && options.fromAddress) {
-        setFromAndToTokenAddress(options.tradeType, options.fromAddress, options.marketAddress);
+      if (options.toTokenAddress && options.fromTokenAddress) {
+        setFromAndToTokenAddress(options.tradeType, options.fromTokenAddress, options.toTokenAddress);
       } else {
-        if (options.fromAddress) {
-          setFromTokenAddress(options.tradeType, options.fromAddress);
+        if (options.fromTokenAddress) {
+          setFromTokenAddress(options.tradeType, options.fromTokenAddress);
         }
-        if (options.marketAddress) {
-          setToTokenAddress(options.tradeType, options.marketAddress);
+        if (options.toTokenAddress) {
+          setToTokenAddress(options.tradeType, options.toTokenAddress);
         }
       }
 
-      if (options.collateralAddress) {
-        setShortCollateralAddress(options.collateralAddress);
+      if (options.collateralTokenAddress) {
+        setShortCollateralAddress(options.collateralTokenAddress);
       }
     },
     [
@@ -557,72 +542,7 @@ export const Exchange = forwardRef((props, ref) => {
     ]
   );
 
-  const tradeOptions = useMemo(() => {
-    const { market, tradeType, tradeMode } = params;
-    const queryCollateralToken = queryParams.get("collateral");
-    const queryPayToken = queryParams.get("pay");
-
-    let options = {
-      tradeType: swapOption,
-      tradeMode: undefined,
-      fromAddress: undefined,
-      marketAddress: undefined,
-      collateralAddress: undefined,
-    };
-
-    if (market) {
-      const marketTokenInfo = getValidTokenBySymbol(chainId, market, "v1");
-      if (marketTokenInfo) {
-        options = { ...options, marketAddress: marketTokenInfo.address };
-      }
-    }
-
-    if (tradeType) {
-      const validTradeType = getMatchingValueFromObject(SWAP_OPTIONS, tradeType);
-      if (validTradeType) {
-        options = { ...options, tradeType: validTradeType };
-      }
-    }
-
-    if (tradeMode) {
-      let finalTradeMode = tradeMode;
-      if (tradeMode.toLowerCase() === "trigger") {
-        finalTradeMode = "stop";
-      }
-      const validTradeMode = getMatchingValueFromObject(LEVERAGE_ORDER_OPTIONS, finalTradeMode);
-      if (validTradeMode) {
-        options = { ...options, tradeMode: validTradeMode };
-      }
-    }
-
-    if (queryCollateralToken) {
-      const collateralTokenInfo = getValidTokenBySymbol(chainId, queryCollateralToken, "v1");
-      if (collateralTokenInfo) {
-        options = { ...options, collateralAddress: collateralTokenInfo.address };
-      }
-    }
-
-    if (queryPayToken) {
-      const payTokenInfo = getValidTokenBySymbol(chainId, queryPayToken, "v1");
-      if (payTokenInfo) {
-        options = { ...options, fromAddress: payTokenInfo.address };
-      }
-    }
-
-    if (history.location.pathname !== "/trade") {
-      setTimeout(() => {
-        history.replace({ search: "", pathname: "/trade" });
-      }, 2000); // Delays the execution by 2 seconds
-    }
-
-    return options;
-  }, [history, params, chainId, queryParams, swapOption]);
-
-  useEffect(() => {
-    if (tradeOptions) {
-      updateTradeOptions(tradeOptions);
-    }
-  }, [tradeOptions, updateTradeOptions]);
+  useV1TradeParamsProcessor({ updateTradeOptions, swapOption });
 
   const { data: totalTokenWeights } = useSWR(
     [`Exchange:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],

@@ -87,6 +87,7 @@ import useWallet from "lib/wallets/useWallet";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { useHistory } from "react-router-dom";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -174,6 +175,7 @@ export default function SwapBox(props) {
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
   const { attachedOnChain, userReferralCode } = useUserReferralCode(signer, chainId, account);
   const { openConnectModal } = useConnectModal();
+  const history = useHistory();
 
   let allowedSlippage = savedSlippageAmount;
   if (isHigherSlippageAllowed) {
@@ -208,10 +210,6 @@ export default function SwapBox(props) {
   const hasLeverageOption = isLeverageSliderEnabled && !isNaN(parseFloat(leverageOption));
 
   const [ordersToaOpen, setOrdersToaOpen] = useState(false);
-
-  if (!flagOrdersEnabled) {
-    setOrderOption(MARKET);
-  }
 
   const onOrderOptionChange = (option) => {
     setOrderOption(option);
@@ -1554,6 +1552,10 @@ export default function SwapBox(props) {
         const stableToken = getMostAbundantStableToken(chainId, infoTokens);
         setShortCollateralAddress(stableToken.address);
       }
+    }
+
+    if (swapOption !== opt) {
+      history.push(`/trade/${opt.toLowerCase()}`);
     }
   };
 

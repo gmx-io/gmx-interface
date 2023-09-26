@@ -844,6 +844,7 @@ export const GLP_POOL_COLORS = {
 export const TOKENS_MAP: { [chainId: number]: { [address: string]: Token } } = {};
 export const V1_TOKENS: { [chainId: number]: Token[] } = {};
 export const V2_TOKENS: { [chainId: number]: Token[] } = {};
+export const SYNTHETIC_TOKENS: { [chainId: number]: Token[] } = {};
 export const TOKENS_BY_SYMBOL_MAP: { [chainId: number]: { [symbol: string]: Token } } = {};
 export const WRAPPED_TOKENS_MAP: { [chainId: number]: Token } = {};
 export const NATIVE_TOKENS_MAP: { [chainId: number]: Token } = {};
@@ -855,6 +856,7 @@ for (let j = 0; j < CHAIN_IDS.length; j++) {
 
   TOKENS_MAP[chainId] = {};
   TOKENS_BY_SYMBOL_MAP[chainId] = {};
+  SYNTHETIC_TOKENS[chainId] = [];
   V1_TOKENS[chainId] = [];
   V2_TOKENS[chainId] = [];
 
@@ -882,9 +884,17 @@ for (let j = 0; j < CHAIN_IDS.length; j++) {
     if (!token.isPlatformToken && !token.isTempHidden) {
       V2_TOKENS[chainId].push(token);
     }
+
+    if (token.isSynthetic) {
+      SYNTHETIC_TOKENS[chainId].push(token);
+    }
   }
 
   NATIVE_TOKENS_MAP[chainId].wrappedAddress = wrappedTokenAddress;
+}
+
+export function getSyntheticTokens(chainId: number) {
+  return SYNTHETIC_TOKENS[chainId];
 }
 
 export function getWrappedToken(chainId: number) {
@@ -938,14 +948,27 @@ export function getToken(chainId: number, address: string) {
 }
 
 export function getTokenBySymbol(chainId: number, symbol: string) {
-  const token = TOKENS_BY_SYMBOL_MAP[chainId][symbol];
-  if (!token) {
+  const tokens = TOKENS_BY_SYMBOL_MAP[chainId];
+  const token = tokens[symbol];
+
+  if (token) {
+    return token;
+  }
+
+  const matchingSymbol = Object.keys(tokens).find((key) => tokens[key].symbol.toLowerCase() === symbol.toLowerCase());
+
+  if (!matchingSymbol) {
     throw new Error(`Incorrect symbol "${symbol}" for chainId ${chainId}`);
   }
-  return token;
+
+  return tokens[matchingSymbol];
 }
 
-export function convertTokenAddress(chainId: number, address: string, convertTo?: "wrapped" | "native") {
+export function convertTokenAddress(
+  chainId: number,
+  address: string,
+  convertTo?: "wrapped" | "native" | "synthetic"
+): string {
   const wrappedToken = getWrappedToken(chainId);
 
   if (convertTo === "wrapped" && address === NATIVE_TOKEN_ADDRESS) {
@@ -954,6 +977,14 @@ export function convertTokenAddress(chainId: number, address: string, convertTo?
 
   if (convertTo === "native" && address === wrappedToken.address) {
     return NATIVE_TOKEN_ADDRESS;
+  }
+
+  if (convertTo === "synthetic") {
+    const tokenInfo = getToken(chainId, address);
+    const syntheticToken = getSyntheticTokens(chainId).find((token) => token.symbol === tokenInfo.symbol);
+    if (syntheticToken) {
+      return syntheticToken.address;
+    }
   }
 
   return address;
@@ -994,11 +1025,7 @@ export function getPriceDecimals(chainId: number, tokenSymbol?: string) {
 }
 
 export function getValidTokenBySymbol(chainId: number, symbol: string, version: "v1" | "v2") {
-  const ACTIVE_TOKENS = version === "v1" ? V1_TOKENS : V2_TOKENS;
-  if (!ACTIVE_TOKENS[chainId]) {
-    throw new Error(`Incorrect chainId ${chainId}`);
-  }
-  const tokens = ACTIVE_TOKENS[chainId];
+  const tokens = version === "v1" ? getV1Tokens(chainId) : getV2Tokens(chainId);
   const token = tokens.find((token) => token.symbol.toLowerCase() === symbol.toLowerCase());
 
   if (token) {

@@ -3,7 +3,7 @@ import useScrollToTop from "lib/useScrollToTop";
 import { useEffect, useRef, useState } from "react";
 import { SWRConfig } from "swr";
 
-import { Redirect, Route, HashRouter as Router, Switch, useHistory, useLocation } from "react-router-dom";
+import { matchPath, Redirect, Route, HashRouter as Router, Switch, useHistory, useLocation } from "react-router-dom";
 
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { getAppBaseUrl, isHomeSite, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
@@ -273,7 +273,9 @@ function FullApp() {
 
   useEffect(
     function redirectTradePage() {
-      if (location.pathname === "/v2" && query.has("no_redirect")) {
+      const isV1Matched = matchPath(location.pathname, { path: "/trade/:tradeType?" });
+      const isV2Matched = matchPath(location.pathname, { path: "/v2/:tradeType?" });
+      if (isV1Matched && query.has("no_redirect")) {
         if (tradePageVersion !== 2) {
           setTradePageVersion(2);
         }
@@ -282,19 +284,11 @@ function FullApp() {
         }
         return;
       }
-      if (
-        location.pathname === "/trade" &&
-        (tradePageVersion === 2 || !getIsV1Supported(chainId)) &&
-        getIsSyntheticsSupported(chainId)
-      ) {
+      if (isV1Matched && (tradePageVersion === 2 || !getIsV1Supported(chainId)) && getIsSyntheticsSupported(chainId)) {
         history.replace("/v2");
       }
 
-      if (
-        location.pathname === "/v2" &&
-        (tradePageVersion === 1 || !getIsSyntheticsSupported(chainId)) &&
-        getIsV1Supported(chainId)
-      ) {
+      if (isV2Matched && (tradePageVersion === 1 || !getIsSyntheticsSupported(chainId)) && getIsV1Supported(chainId)) {
         history.replace("/trade");
       }
     },
@@ -427,7 +421,7 @@ function FullApp() {
               <Route exact path="/">
                 <Redirect to="/dashboard" />
               </Route>
-              <Route exact path="/trade/:market?/:tradeType?/:tradeMode?">
+              <Route exact path="/trade/:tradeType?">
                 <Exchange
                   ref={exchangeRef}
                   savedShowPnlAfterFees={savedShowPnlAfterFees}
@@ -470,7 +464,7 @@ function FullApp() {
                 )}
               </Route>
 
-              <Route exact path="/v2/:market?/:tradeType?/:tradeMode?">
+              <Route exact path="/v2/:tradeType?">
                 {getIsSyntheticsSupported(chainId) ? (
                   <SyntheticsPage
                     savedIsPnlInLeverage={savedIsPnlInLeverage}

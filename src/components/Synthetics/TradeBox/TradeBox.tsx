@@ -100,6 +100,7 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { useHistory } from "react-router-dom";
 
 export type Props = {
   tradeType: TradeType;
@@ -187,6 +188,7 @@ export function TradeBox(p: Props) {
   } = p;
   const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket } = tradeFlags;
   const { openConnectModal } = useConnectModal();
+  const history = useHistory();
   const {
     swapTokens,
     indexTokens,
@@ -910,6 +912,13 @@ export function TradeBox(p: Props) {
     setToTokenInputValue(fromTokenInputValue || "");
   }
 
+  function onTradeTypeChange(type: TradeType) {
+    onSelectTradeType(type);
+    if (tradeType !== type) {
+      history.push(`/v2/${type.toLowerCase()}`);
+    }
+  }
+
   const onConfirmationClose = useCallback(() => {
     setStage("trade");
   }, []);
@@ -1459,7 +1468,7 @@ export function TradeBox(p: Props) {
             options={Object.values(TradeType)}
             optionLabels={tradeTypeLabels}
             option={tradeType}
-            onChange={onSelectTradeType}
+            onChange={onTradeTypeChange}
             className="SwapBox-option-tabs"
           />
 
