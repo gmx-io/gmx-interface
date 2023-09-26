@@ -8,7 +8,7 @@ export enum PerfPeriod {
   WEEK = "7 days",
   MONTH = "1 month",
   TOTAL = "All time",
-};
+}
 
 export type AccountPerfJson = {
   id: string;
@@ -99,15 +99,7 @@ export type OpenPositionJson = {
 export type AccountPositionsSummary = {
   account: string;
   unrealizedPnl: BigNumber;
-  unrealizedPnlAfterFees: BigNumber;
-  sumSize: BigNumber;
-  sumCollateral: BigNumber;
   sumMaxSize: BigNumber;
-  totalCollateral: BigNumber;
-  priceImpactUsd: BigNumber;
-  collectedFundingFeesUsd: BigNumber;
-  collectedBorrowingFeesUsd: BigNumber;
-  collectedPositionFeesUsd: BigNumber;
   pendingFundingFeesUsd: BigNumber;
   pendingClaimableFundingFeesUsd: BigNumber;
   pendingBorrowingFeesUsd: BigNumber;
@@ -145,10 +137,6 @@ export type OpenPosition = {
   collateralAmount: BigNumber;
   collateralAmountUsd: BigNumber;
   maxSize: BigNumber;
-  priceImpactUsd: BigNumber;
-  collectedBorrowingFeesUsd: BigNumber;
-  collectedFundingFeesUsd: BigNumber;
-  collectedPositionFeesUsd: BigNumber;
   pendingFundingFeesUsd: BigNumber;
   pendingClaimableFundingFeesUsd: BigNumber;
   pendingBorrowingFeesUsd: BigNumber;
@@ -182,7 +170,7 @@ export type TopPositionParams = {
 export type RemoteData<T> = {
   isLoading: boolean;
   data: T[];
-  error: Error | null; 
+  error: Error | null;
 };
 
 export type LeaderboardContextType = {

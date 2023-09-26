@@ -78,10 +78,6 @@ const parseOpenPositions = (positionsData: OpenPositionJson[], positionsByKey: P
       collateralAmount,
       collateralAmountUsd,
       maxSize: BigNumber.from(p.maxSize),
-      priceImpactUsd: BigNumber.from(p.priceImpactUsd),
-      collectedBorrowingFeesUsd: BigNumber.from(p.borrowingFeeUsd),
-      collectedFundingFeesUsd: BigNumber.from(p.fundingFeeUsd),
-      collectedPositionFeesUsd: BigNumber.from(p.positionFeeUsd),
       liquidationPrice,
       liquidationPriceDelta,
       liquidationPriceDeltaRel,
@@ -125,7 +121,7 @@ export function useOpenPositions() {
   const positions = useSWR(["/leaderboards/positions", chainId], {
     fetcher: fetchOpenPositions(chainId),
     keepPreviousData: true,
-    refreshInterval: 10_000
+    refreshInterval: 10_000,
   });
 
   const positionsHash = (positions.data || []).map((p) => p.id).join("-");

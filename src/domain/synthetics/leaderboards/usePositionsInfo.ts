@@ -245,19 +245,19 @@ export function usePositionsInfo(
     [chainId, ReaderAddress]
   );
 
-  const getKey = (i) => (
-    pageNumb && i < pageNumb ? ["usePositionsInfo", chainId, positionsHash, tsRounded, i] : null
-  );
+  const getKey = (i) => (pageNumb && i < pageNumb ? ["usePositionsInfo", chainId, positionsHash, tsRounded, i] : null);
 
   const { data: positionsInfoJson } = useSWRInfinite<PositionJson[]>(
     getKey,
-    ([,,,, i]) => contract.getAccountPositionInfoList(
-      DataStoreAddress,
-      ReferralStorageAddress,
-      positionKeys.slice(pageSize * i, pageSize * (i + 1)),
-      marketPrices.slice(pageSize * i, pageSize * (i + 1)),
-      ethers.constants.AddressZero // uiFeeReceiver
-    ), {
+    ([, , , , i]) =>
+      contract.getAccountPositionInfoList(
+        DataStoreAddress,
+        ReferralStorageAddress,
+        positionKeys.slice(pageSize * i, pageSize * (i + 1)),
+        marketPrices.slice(pageSize * i, pageSize * (i + 1)),
+        ethers.constants.AddressZero // uiFeeReceiver
+      ),
+    {
       parallel: true,
       refreshInterval: 0,
       keepPreviousData: true,
@@ -278,13 +278,7 @@ export function usePositionsInfo(
       return;
     }
 
-    return parsePositionsInfo(
-      positionKeys,
-      positionsInfo,
-      marketsInfoData,
-      tokensData,
-      minCollateralUsd
-    );
+    return parsePositionsInfo(positionKeys, positionsInfo, marketsInfoData, tokensData, minCollateralUsd);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, positionsInfo.length, tsRounded]);
 
