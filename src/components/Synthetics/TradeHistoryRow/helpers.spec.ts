@@ -150,7 +150,7 @@ describe("TradeHistoryRow helpers", () => {
           {
             label: "Mark Price",
             showDollar: false,
-            value: "$1,584.74",
+            value: "$1,584.7409",
           },
 
           {

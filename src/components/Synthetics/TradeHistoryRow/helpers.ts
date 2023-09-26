@@ -336,17 +336,16 @@ function getExecutionPriceTooltipRows(tradeAction: PositionTradeAction): StatsTo
 }
 
 function getMarketTooltipRows(tradeAction: PositionTradeAction): StatsTooltipRowProps[] | undefined {
-  const priceDecimals = tradeAction.indexToken.priceDecimals;
   const arr = [
     tradeAction.executionPrice && {
       label: "Mark Price",
       showDollar: false,
-      value: formatUsd(tradeAction.executionPrice),
+      value: formatUsd(tradeAction.executionPrice, { displayDecimals: 4 }),
     },
     tradeAction.priceImpactUsd && {
       label: t`Actual Price Impact`,
       showDollar: false,
-      value: formatUsd(tradeAction.priceImpactUsd, { displayDecimals: priceDecimals }),
+      value: formatUsd(tradeAction.priceImpactUsd, { displayDecimals: 2 }),
     },
   ].filter(Boolean) as StatsTooltipRowProps[];
 
