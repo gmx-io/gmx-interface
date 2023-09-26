@@ -5,13 +5,14 @@ query QueryAccountPerformance(
   $orderDirection: OrderDirection = desc,
   $period: Period = daily,
   $since: Int = 0,
+  $volumeGte: BigInt = 0,
 ) {
   accountPerfs(
     first: $first,
     skip: $skip,
     orderBy: $orderBy,
     orderDirection: $orderDirection,
-    where: { timestamp_gte: $since, period: $period }
+    where: { timestamp_gte: $since, period: $period, volume_gte: $volumeGte }
   ) {
     id
     account
@@ -30,5 +31,6 @@ query QueryAccountPerformance(
     fundingFeeUsd
     positionFeeUsd
     priceImpactUsd
+    volume
   }
 }

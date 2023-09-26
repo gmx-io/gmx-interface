@@ -6,6 +6,8 @@ import { getLeaderboardsGraphClient } from "lib/subgraph/clients";
 import { getAddress } from "ethers/lib/utils";
 import { useMemo } from "react";
 import { useChainId } from "lib/chains";
+import { expandDecimals } from "lib/numbers";
+import { USD_DECIMALS } from "lib/legacy";
 
 const daysAgo = (days: number) => (
   new Date(Date.now() - 1000 * 60 * 60 * 24 * days).setHours(0, 0, 0, 0) / 1000
@@ -37,7 +39,14 @@ const fetchAccountPerfs = async (
 
   const res = await graph.query<{ accountPerfs: AccountPerfJson[] }>({
     query: queryAccountPerf,
-    variables: { first, skip, orderBy, orderDirection, ...filtersByPeriod[period] }
+    variables: {
+      first,
+      skip,
+      orderBy,
+      orderDirection,
+      volumeGte: expandDecimals(1000, USD_DECIMALS).toString(),
+      ...filtersByPeriod[period]
+    }
   });
 
   return res.data.accountPerfs;
