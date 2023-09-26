@@ -156,10 +156,11 @@ export const formatPositionMessage = (
           displayDecimals: priceDecimals,
         });
         const priceStr = `${pricePrefix}: ${formattedPrice}`;
+        const marketStr = t`Market`;
 
         return [
           {
-            text: trimStart(`${actionText} ${increaseText} ${positionText} ${sizeDeltaText}, `),
+            text: trimStart(`${actionText} ${marketStr} ${increaseText} ${positionText} ${sizeDeltaText}, `),
           },
           {
             text: priceStr,
