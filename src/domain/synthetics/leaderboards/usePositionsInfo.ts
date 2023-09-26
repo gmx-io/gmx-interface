@@ -4,7 +4,6 @@ import { BigNumber, ethers } from "ethers";
 import Reader from "abis/SyntheticsReader.json";
 import { MAX_ALLOWED_LEVERAGE } from "config/factors";
 import { getContract } from "config/contracts";
-import { getBasisPoints } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useChainId } from "lib/chains";
 import { getProvider } from "lib/rpc";
@@ -12,7 +11,7 @@ import { PRECISION } from "lib/legacy";
 import { UserReferralInfo } from "domain/referrals";
 import { getMarkPrice } from "../trade";
 import { getPositionFee, getPriceImpactForPosition } from "../fees";
-import { TokensData, convertToTokenAmount, convertToUsd } from "../tokens";
+import { TokensData, convertToUsd } from "../tokens";
 import { ContractMarketPrices, MarketsInfoData, useMarketsInfo } from "../markets";
 import {
   PositionsData,
@@ -21,7 +20,6 @@ import {
   getLeverage,
   getLiquidationPrice,
   getPositionKey,
-  getPositionNetValue,
   getPositionPendingFeesUsd,
   getPositionPnlUsd,
   usePositionsConstants,
@@ -101,19 +99,6 @@ function parsePositionsInfo(
       collateralToken.prices.minPrice
     )!;
 
-    const pendingClaimableFundingFeesLongUsd = convertToUsd(
-      position.claimableLongTokenAmount,
-      marketInfo.longToken.decimals,
-      marketInfo.longToken.prices.minPrice
-    )!;
-    const pendingClaimableFundingFeesShortUsd = convertToUsd(
-      position.claimableShortTokenAmount,
-      marketInfo.shortToken.decimals,
-      marketInfo.shortToken.prices.minPrice
-    )!;
-
-    const pendingClaimableFundingFeesUsd = pendingClaimableFundingFeesLongUsd?.add(pendingClaimableFundingFeesShortUsd);
-
     const totalPendingFeesUsd = getPositionPendingFeesUsd({
       pendingBorrowingFeesUsd,
       pendingFundingFeesUsd,
@@ -126,25 +111,20 @@ function parsePositionsInfo(
       { fallbackToZero: true }
     );
 
+    const userReferralInfo = {
+      discountFactor: PRECISION,
+      totalRebateFactor: fees.referral.traderDiscountAmount.mul(PRECISION).div(fees.positionFeeAmount),
+    } as UserReferralInfo;
+
     const positionFeeInfo = getPositionFee(
       marketInfo,
       position.sizeInUsd,
       closingPriceImpactDeltaUsd.gt(0),
-      undefined // userReferralInfo
+      userReferralInfo
     );
 
     const closingFeeUsd = positionFeeInfo.positionFeeUsd;
-
     const collateralUsd = convertToUsd(position.collateralAmount, collateralToken.decimals, collateralMinPrice)!;
-
-    const remainingCollateralUsd = collateralUsd.sub(totalPendingFeesUsd);
-
-    const remainingCollateralAmount = convertToTokenAmount(
-      remainingCollateralUsd,
-      collateralToken.decimals,
-      collateralMinPrice
-    )!;
-
     const pnl = getPositionPnlUsd({
       marketInfo,
       sizeInUsd: position.sizeInUsd,
@@ -153,22 +133,7 @@ function parsePositionsInfo(
       isLong: position.isLong,
     });
 
-    const pnlPercentage =
-      collateralUsd && !collateralUsd.eq(0) ? getBasisPoints(pnl, collateralUsd) : BigNumber.from(0);
-
-    const netValue = getPositionNetValue({
-      pnl,
-      collateralUsd,
-      pendingBorrowingFeesUsd,
-      pendingFundingFeesUsd,
-      closingFeeUsd,
-    });
-
     const pnlAfterFees = pnl.sub(totalPendingFeesUsd).sub(closingFeeUsd);
-    const pnlAfterFeesPercentage = !collateralUsd.eq(0)
-      ? getBasisPoints(pnlAfterFees, collateralUsd.add(closingFeeUsd))
-      : BigNumber.from(0);
-
     const leverage = getLeverage({
       sizeInUsd: position.sizeInUsd,
       collateralUsd: collateralUsd,
@@ -178,7 +143,6 @@ function parsePositionsInfo(
     });
 
     const hasLowCollateral = leverage?.gt(MAX_ALLOWED_LEVERAGE) || false;
-
     const liquidationPrice = getLiquidationPrice({
       marketInfo,
       collateralToken,
@@ -190,10 +154,7 @@ function parsePositionsInfo(
       pendingBorrowingFeesUsd,
       pendingFundingFeesUsd,
       isLong: position.isLong,
-      userReferralInfo: {
-        discountFactor: PRECISION,
-        totalRebateFactor: fees.referral.traderDiscountAmount.mul(PRECISION).div(fees.positionFeeAmount),
-      } as UserReferralInfo,
+      userReferralInfo,
     });
 
     positionsMap[positionKey] = {
@@ -206,18 +167,18 @@ function parsePositionsInfo(
       entryPrice,
       liquidationPrice,
       collateralUsd,
-      remainingCollateralUsd,
-      remainingCollateralAmount,
+      remainingCollateralUsd: BigNumber.from(0), // not used,
+      remainingCollateralAmount: BigNumber.from(0), // not used,
       hasLowCollateral,
       leverage,
       pnl,
-      pnlPercentage,
+      pnlPercentage: BigNumber.from(0), // not used,
       pnlAfterFees,
-      pnlAfterFeesPercentage,
-      netValue,
+      pnlAfterFeesPercentage: BigNumber.from(0), // not used,
+      netValue: BigNumber.from(0), // not used
       closingFeeUsd,
       pendingFundingFeesUsd,
-      pendingClaimableFundingFeesUsd,
+      pendingClaimableFundingFeesUsd: BigNumber.from(0), // not used,
     };
 
     return positionsMap;
