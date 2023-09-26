@@ -417,6 +417,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       const addressHash = ethers.utils.defaultAbiCoder.encode(["address"], [currentAccount]);
 
       const eventEmitter = new ethers.Contract(getContract(chainId, "EventEmitter"), EventEmitter.abi, wsProvider);
+      const EVENT_LOG_TOPIC = eventEmitter.interface.getEventTopic("EventLog");
       const EVENT_LOG1_TOPIC = eventEmitter.interface.getEventTopic("EventLog1");
       const EVENT_LOG2_TOPIC = eventEmitter.interface.getEventTopic("EventLog2");
 
@@ -479,10 +480,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         {
           address: getContract(chainId, "EventEmitter"),
           topics: [
-            EVENT_LOG2_TOPIC,
+            EVENT_LOG_TOPIC,
             [DEPOSIT_CANCELLED_HASH, DEPOSIT_EXECUTED_HASH, WITHDRAWAL_CANCELLED_HASH, WITHDRAWAL_EXECUTED_HASH],
-            null,
-            addressHash,
           ],
         },
         // NEW CONTRACTS
@@ -504,6 +503,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           address: getContract(chainId, "EventEmitter"),
           topics: [EVENT_LOG1_TOPIC, [ORDER_CANCELLED_HASH, ORDER_EXECUTED_HASH]],
         },
+        // NEW CONTRACTS
         {
           address: getContract(chainId, "EventEmitter"),
           topics: [EVENT_LOG2_TOPIC, [ORDER_CANCELLED_HASH, ORDER_EXECUTED_HASH], null, addressHash],
