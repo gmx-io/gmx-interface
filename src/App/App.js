@@ -453,7 +453,7 @@ function FullApp() {
               <Route exact path="/buy">
                 <Buy savedSlippageAmount={settings.savedAllowedSlippage} setPendingTxns={setPendingTxns} />
               </Route>
-              <Route exact path="/pools/:market?/:operation?/:mode?">
+              <Route exact path="/pools">
                 {getIsSyntheticsSupported(chainId) ? (
                   <MarketPoolsPage
                     shouldDisableValidation={savedShouldDisableValidationForTesting}

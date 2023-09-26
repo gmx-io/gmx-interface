@@ -6,7 +6,7 @@ import Tab from "components/Tab/Tab";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, getSyntheticsDepositIndexTokenKey } from "config/localStorage";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getValidTokenBySymbol } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getTokenBySymbol } from "config/tokens";
 import {
   FeeItem,
   estimateExecuteDepositGasLimit,
@@ -18,7 +18,7 @@ import {
   useGasPrice,
 } from "domain/synthetics/fees";
 import { useMarketTokensData } from "domain/synthetics/markets";
-import { Market, MarketsInfoData } from "domain/synthetics/markets/types";
+import { Market, MarketInfo, MarketsInfoData } from "domain/synthetics/markets/types";
 import {
   getAvailableUsdLiquidityForCollateral,
   getMarketIndexName,
@@ -46,7 +46,7 @@ import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
 import { helperToast } from "lib/helperToast";
 import { useSafeState } from "lib/useSafeState";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import "./GmSwapBox.scss";
 import Checkbox from "components/Checkbox/Checkbox";
 import Tooltip from "components/Tooltip/Tooltip";
@@ -58,13 +58,16 @@ import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import { getIcon } from "config/icons";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
-import useRouteQuery from "lib/useRouteQuery";
 import { isAddress } from "ethers/lib/utils.js";
+import useSearchParams from "lib/useSearchParams";
 
-type RouteParams = {
+type SearchParams = {
   market?: string;
   operation?: string;
   mode?: string;
+  pay?: string;
+  pool?: string;
+  scroll?: string;
 };
 
 export enum Operation {
@@ -118,20 +121,18 @@ function showMarketToast(market) {
   );
 }
 
-function findMarketInfoByPool(indexTokenAddress, markets, pool) {
-  if (!indexTokenAddress && !markets) {
-    return null;
-  }
-
+function findMarketInfoByPool(markets: MarketInfo[], pool?: string, indexTokenAddress?: string) {
   const poolMaketInfo =
     pool &&
     markets.find((marketInfo) => {
       if (isAddress(pool)) {
         return marketInfo.marketTokenAddress === pool;
       }
-
-      const poolName = getMarketPoolName(marketInfo);
-      return marketInfo.indexTokenAddress === indexTokenAddress && poolName.toLowerCase() === pool.toLowerCase();
+      if (indexTokenAddress) {
+        const poolName = getMarketPoolName(marketInfo);
+        return marketInfo.indexTokenAddress === indexTokenAddress && poolName.toLowerCase() === pool.toLowerCase();
+      }
+      return false;
     });
 
   if (poolMaketInfo) {
@@ -155,8 +156,7 @@ export function GmSwapBox(p: Props) {
   const isMetamaskMobile = useIsMetamaskMobile();
   const history = useHistory();
   const { openConnectModal } = useConnectModal();
-  const params = useParams<RouteParams>();
-  const queryParams = useRouteQuery();
+  const searchParams = useSearchParams<SearchParams>();
   const marketAddress = p.selectedMarketAddress;
 
   const { chainId } = useChainId();
@@ -719,11 +719,7 @@ export function GmSwapBox(p: Props) {
 
   useEffect(
     function updateByQueryParams() {
-      const { market, operation, mode } = params;
-      const pay = queryParams.get("pay");
-      const pool = queryParams.get("pool");
-      const scroll = queryParams.get("scroll");
-
+      const { market, operation, mode, pay, pool, scroll } = searchParams;
       if (operation) {
         let finalOperation;
 
@@ -746,55 +742,49 @@ export function GmSwapBox(p: Props) {
       }
 
       if (pay) {
-        const payTokenInfo = getValidTokenBySymbol(chainId, pay, "v2");
+        const payTokenInfo = getTokenBySymbol(chainId, pay);
         if (payTokenInfo) {
           setFirstTokenAddress(convertTokenAddress(chainId, payTokenInfo.address, "wrapped"));
         }
       }
 
-      if (market && markets.length > 0) {
-        const indexTokenInfo = getValidTokenBySymbol(chainId, market, "v2");
-        if (indexTokenInfo) {
-          const indexTokenAddress = convertTokenAddress(chainId, indexTokenInfo.address, "wrapped");
-          const marketInfo = findMarketInfoByPool(indexTokenAddress, markets, pool);
-          if (marketInfo) {
-            setIndexName(getMarketIndexName(marketInfo));
-            onSelectMarket(marketInfo?.marketTokenAddress);
-            const indexName = getMarketIndexName(marketInfo);
-            const poolName = getMarketPoolName(marketInfo);
-            helperToast.success(
-              <Trans>
-                <div className="inline-flex">
-                  <span>{indexName}</span>
-                  <span className="subtext gm-toast">[{poolName}]</span>
-                </div>{" "}
-                <span>selected in order form</span>
-              </Trans>
-            );
-          }
+      if (scroll === "1") {
+        window.scrollTo({ top: 0, left: 0 });
+      }
+
+      if ((market || pool) && markets.length > 0) {
+        const indexTokenInfo = market && getTokenBySymbol(chainId, market);
+        const indexTokenAddress = indexTokenInfo && convertTokenAddress(chainId, indexTokenInfo.address, "wrapped");
+        const marketInfo = findMarketInfoByPool(markets, pool, indexTokenAddress);
+
+        if (marketInfo) {
+          setIndexName(getMarketIndexName(marketInfo));
+          onSelectMarket(marketInfo.marketTokenAddress);
+          const indexName = getMarketIndexName(marketInfo);
+          const poolName = getMarketPoolName(marketInfo);
+          helperToast.success(
+            <Trans>
+              <div className="inline-flex">
+                <span>{indexName}</span>
+                <span className="subtext gm-toast">[{poolName}]</span>
+              </div>{" "}
+              <span>selected in order form</span>
+            </Trans>
+          );
         }
 
-        if (scroll === "1") {
-          window.scrollTo({ top: 0, left: 0 });
+        if (history.location.search) {
+          history.replace({ search: "" });
         }
+      }
 
-        if (history.location.pathname !== "/pools") {
-          history.replace({ search: "", pathname: "/pools" });
+      if (!market && !pool) {
+        if (history.location.search) {
+          history.replace({ search: "" });
         }
       }
     },
-    [
-      history,
-      onSelectMarket,
-      queryParams,
-      params,
-      setIndexName,
-      setOperation,
-      setMode,
-      setFirstTokenAddress,
-      chainId,
-      markets,
-    ]
+    [history, onSelectMarket, searchParams, setIndexName, setOperation, setMode, setFirstTokenAddress, chainId, markets]
   );
 
   useEffect(
