@@ -243,7 +243,9 @@ function getLiquidationTooltipProps(
     {
       label: t`Mark Price`,
       showDollar: false,
-      value: formatUsd(getTokenPriceByTradeAction(tradeAction)),
+      value: formatUsd(getTokenPriceByTradeAction(tradeAction), {
+        displayDecimals: tradeAction.indexToken.priceDecimals,
+      }),
     },
     {
       label: t`Initial collateral`,
@@ -336,11 +338,12 @@ function getExecutionPriceTooltipRows(tradeAction: PositionTradeAction): StatsTo
 }
 
 function getMarketTooltipRows(tradeAction: PositionTradeAction): StatsTooltipRowProps[] | undefined {
+  const priceDecimals = tradeAction.indexToken.priceDecimals;
   const arr = [
     tradeAction.executionPrice && {
       label: "Mark Price",
       showDollar: false,
-      value: formatUsd(tradeAction.executionPrice, { displayDecimals: 4 }),
+      value: formatUsd(tradeAction.executionPrice, { displayDecimals: priceDecimals }),
     },
     tradeAction.priceImpactUsd && {
       label: t`Actual Price Impact`,

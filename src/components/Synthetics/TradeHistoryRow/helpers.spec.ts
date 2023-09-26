@@ -97,7 +97,7 @@ describe("TradeHistoryRow helpers", () => {
           {
             label: "Mark Price",
             showDollar: false,
-            value: "$6.09",
+            value: "$6.090",
           },
           {
             label: "Initial collateral",
@@ -150,7 +150,7 @@ describe("TradeHistoryRow helpers", () => {
           {
             label: "Mark Price",
             showDollar: false,
-            value: "$1,584.7409",
+            value: "$1,584.74",
           },
 
           {
