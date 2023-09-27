@@ -80,7 +80,6 @@ export const formatPositionMessage = (
         ? "Limit"
         : getTriggerNameByOrderType({
             orderType: tradeAction.orderType,
-            isLong: tradeAction.isLong,
           });
 
       if (tradeAction.eventName === TradeActionType.OrderExecuted) {
