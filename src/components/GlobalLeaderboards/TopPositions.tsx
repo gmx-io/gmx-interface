@@ -79,7 +79,7 @@ export default function TopPositions({ positions }: { positions: RemoteData<Open
           <AddressView
             address={p.account}
             breakpoint={breakpoint}
-            lengths={{ S: 9, M: 11, L: 24, XL: 32 }}
+            lengths={{ S: 9, M: 11, L: 20, XL: 25 }}
             size={24}
           />
         ),
@@ -185,7 +185,7 @@ export default function TopPositions({ positions }: { positions: RemoteData<Open
 
   const titles: { [k in keyof TopPositionsRow]?: TableHeader } = {
     rank: { title: t`Rank`, width: 6 },
-    account: { title: t`Address`, width: (p = "XL") => ({ XL: 30, L: 26, M: 16, S: 10 }[p] || 30) },
+    account: { title: t`Address`, width: (p = "XL") => ({ XL: 26, L: 22, M: 16, S: 10 }[p] || 26) },
     unrealizedPnl: {
       title: t`PnL ($)`,
       tooltip: t`Total Unrealized Profit and Loss.`,
@@ -195,7 +195,7 @@ export default function TopPositions({ positions }: { positions: RemoteData<Open
     },
     position: {
       title: t`Position`,
-      width: 11,
+      width: 12,
     },
     entryPrice: {
       title: t`Entry`,
@@ -216,7 +216,7 @@ export default function TopPositions({ positions }: { positions: RemoteData<Open
     },
     liqPrice: {
       title: t`Liq. Price`,
-      width: 10,
+      width: 13,
     },
   };
 
