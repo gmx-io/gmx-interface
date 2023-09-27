@@ -9,7 +9,6 @@ import { TokenData, TokensData } from "../tokens";
 import { TradeMode, TradeType } from "./types";
 import { AvailableTokenOptions, useAvailableTokenOptions } from "./useAvailableTokenOptions";
 import { TradeFlags, useTradeFlags } from "./useTradeFlags";
-import { convertTokenAddress } from "config/tokens";
 
 type TradeOptions = {
   tradeType?: TradeType;
@@ -263,14 +262,13 @@ export function useSelectedTradeOption(
         if (oldState.tradeType === TradeType.Swap) {
           oldState.tokens.swapToTokenAddress = toTokenAddress;
         } else {
-          const finalToTokenAddress = convertTokenAddress(chainId, toTokenAddress, "synthetic");
-          oldState.tokens.indexTokenAddress = finalToTokenAddress;
-          if (finalToTokenAddress && marketAddress) {
-            oldState.markets[finalToTokenAddress] = oldState.markets[finalToTokenAddress] || {};
+          oldState.tokens.indexTokenAddress = toTokenAddress;
+          if (toTokenAddress && marketAddress) {
+            oldState.markets[toTokenAddress] = oldState.markets[toTokenAddress] || {};
             if (oldState.tradeType === TradeType.Long) {
-              oldState.markets[finalToTokenAddress].long = marketAddress;
+              oldState.markets[toTokenAddress].long = marketAddress;
             } else if (oldState.tradeType === TradeType.Short) {
-              oldState.markets[finalToTokenAddress].short = marketAddress;
+              oldState.markets[toTokenAddress].short = marketAddress;
             }
           }
         }
@@ -282,7 +280,7 @@ export function useSelectedTradeOption(
 
       setStoredOptions(oldState);
     },
-    [setStoredOptions, storedOptions, chainId]
+    [setStoredOptions, storedOptions]
   );
 
   useEffect(

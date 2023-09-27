@@ -964,11 +964,7 @@ export function getTokenBySymbol(chainId: number, symbol: string) {
   return tokens[matchingSymbol];
 }
 
-export function convertTokenAddress(
-  chainId: number,
-  address: string,
-  convertTo?: "wrapped" | "native" | "synthetic"
-): string {
+export function convertTokenAddress(chainId: number, address: string, convertTo?: "wrapped" | "native") {
   const wrappedToken = getWrappedToken(chainId);
 
   if (convertTo === "wrapped" && address === NATIVE_TOKEN_ADDRESS) {
@@ -977,14 +973,6 @@ export function convertTokenAddress(
 
   if (convertTo === "native" && address === wrappedToken.address) {
     return NATIVE_TOKEN_ADDRESS;
-  }
-
-  if (convertTo === "synthetic") {
-    const tokenInfo = getToken(chainId, address);
-    const syntheticToken = getSyntheticTokens(chainId).find((token) => token.symbol === tokenInfo.symbol);
-    if (syntheticToken) {
-      return syntheticToken.address;
-    }
   }
 
   return address;
@@ -1024,17 +1012,16 @@ export function getPriceDecimals(chainId: number, tokenSymbol?: string) {
   }
 }
 
-export function getTokenBySymbolSafe(chainId: number, symbol: string) {
-  try {
-    return getTokenBySymbol(chainId, symbol);
-  } catch (e) {
-    return undefined;
-  }
-}
-
-export function getValidTokenBySymbol(chainId: number, symbol: string, version: "v1" | "v2") {
-  const tokens = version === "v1" ? getV1Tokens(chainId) : getV2Tokens(chainId);
-  const token = tokens.find((token) => token.symbol.toLowerCase() === symbol.toLowerCase());
+export function getTokenBySymbolSafe(
+  chainId: number,
+  symbol: string,
+  { isSynthetic = false }: { isSynthetic?: boolean } = {}
+) {
+  const tokens = TOKENS_MAP[chainId];
+  const token = Object.values(tokens).find((token) => {
+    if (isSynthetic && !token.isSynthetic) return false;
+    return token.symbol.toLowerCase() === symbol.toLowerCase();
+  });
 
   if (token) {
     return token;

@@ -753,7 +753,7 @@ export function GmSwapBox(p: Props) {
       }
 
       if ((market || pool) && markets.length > 0) {
-        const indexTokenInfo = market && getTokenBySymbolSafe(chainId, market);
+        const indexTokenInfo = market && getTokenBySymbolSafe(chainId, market, { isSynthetic: true });
         const indexTokenAddress = indexTokenInfo && convertTokenAddress(chainId, indexTokenInfo.address, "wrapped");
         const marketInfo = findMarketInfoByPool(markets, pool, indexTokenAddress);
 

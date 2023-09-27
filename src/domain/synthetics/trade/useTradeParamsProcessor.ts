@@ -19,7 +19,7 @@ type TradeOptions = {
 
 export function useTradeParamsProcessor(
   markets: MarketInfo[],
-  setTradeOptions: ({
+  setTradeConfig: ({
     tradeType,
     tradeMode,
     fromTokenAddress,
@@ -77,7 +77,9 @@ export function useTradeParamsProcessor(
     }
 
     if (toToken && markets.length > 0) {
-      const toTokenInfo = getTokenBySymbolSafe(chainId, toToken);
+      const toTokenInfo = getTokenBySymbolSafe(chainId, toToken, {
+        isSynthetic: tradeOptions.tradeType !== TradeType.Swap,
+      });
       if (toTokenInfo) {
         tradeOptions.toTokenAddress = toTokenInfo?.address;
       }
@@ -100,7 +102,7 @@ export function useTradeParamsProcessor(
 
     if (!isMatch(prevTradeOptions.current, tradeOptions)) {
       prevTradeOptions.current = tradeOptions;
-      setTradeOptions(tradeOptions);
+      setTradeConfig(tradeOptions);
     }
 
     if (history.location.search && !toToken && !pool) {
@@ -110,5 +112,5 @@ export function useTradeParamsProcessor(
         }
       }, 2000);
     }
-  }, [params, searchParams, markets, chainId, history, setTradeOptions]);
+  }, [params, searchParams, markets, chainId, history, setTradeConfig]);
 }
