@@ -6,7 +6,7 @@ import Tab from "components/Tab/Tab";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, getSyntheticsDepositIndexTokenKey } from "config/localStorage";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getTokenBySymbol } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getTokenBySymbolSafe } from "config/tokens";
 import {
   FeeItem,
   estimateExecuteDepositGasLimit,
@@ -742,7 +742,7 @@ export function GmSwapBox(p: Props) {
       }
 
       if (pay) {
-        const payTokenInfo = getTokenBySymbol(chainId, pay);
+        const payTokenInfo = getTokenBySymbolSafe(chainId, pay);
         if (payTokenInfo) {
           setFirstTokenAddress(convertTokenAddress(chainId, payTokenInfo.address, "wrapped"));
         }
@@ -753,7 +753,7 @@ export function GmSwapBox(p: Props) {
       }
 
       if ((market || pool) && markets.length > 0) {
-        const indexTokenInfo = market && getTokenBySymbol(chainId, market);
+        const indexTokenInfo = market && getTokenBySymbolSafe(chainId, market);
         const indexTokenAddress = indexTokenInfo && convertTokenAddress(chainId, indexTokenInfo.address, "wrapped");
         const marketInfo = findMarketInfoByPool(markets, pool, indexTokenAddress);
 

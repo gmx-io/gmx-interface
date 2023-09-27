@@ -18,7 +18,7 @@ import {
 } from "lib/legacy";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { useEffect, useState } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import useSWR from "swr";
 import Tab from "../Tab/Tab";
 
@@ -45,7 +45,7 @@ import {
   getNativeToken,
   getToken,
   getV1Tokens,
-  getValidTokenBySymbol,
+  getTokenBySymbolSafe,
   getWhitelistedV1Tokens,
   getWrappedToken,
 } from "config/tokens";
@@ -75,7 +75,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import PageTitle from "components/PageTitle/PageTitle";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
-import useRouteQuery from "lib/useRouteQuery";
+import useSearchParams from "lib/useSearchParams";
 
 const { AddressZero } = ethers.constants;
 
@@ -120,8 +120,7 @@ function getTooltipContent(managedUsd, tokenInfo, token) {
 export default function GlpSwap(props) {
   const { savedSlippageAmount, isBuying, setPendingTxns, setIsBuying, savedShouldDisableValidationForTesting } = props;
   const history = useHistory();
-  const queryParams = useRouteQuery();
-  const params = useParams();
+  const searchParams = useSearchParams();
   const isMetamaskMobile = useIsMetamaskMobile();
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp";
   const tabLabel = isBuying ? t`Buy GLP` : t`Sell GLP`;
@@ -433,23 +432,21 @@ export default function GlpSwap(props) {
   ]);
 
   useEffect(() => {
-    const { operation } = params;
-    const pay = queryParams.get("pay");
-    const receive = queryParams.get("receive");
+    const { operation, pay, receive } = searchParams;
 
     if (operation) {
       setIsBuying(operation.toLowerCase() === "buy");
     }
 
     if (pay) {
-      const payTokenInfo = getValidTokenBySymbol(chainId, pay, "v1");
+      const payTokenInfo = getTokenBySymbolSafe(chainId, pay);
       if (payTokenInfo) {
         setSwapTokenAddress(payTokenInfo.address);
       }
     }
 
     if (receive) {
-      const receiveTokenInfo = getValidTokenBySymbol(chainId, receive, "v1");
+      const receiveTokenInfo = getTokenBySymbolSafe(chainId, receive);
       if (receiveTokenInfo) {
         setSwapTokenAddress(receiveTokenInfo.address);
       }
@@ -458,9 +455,9 @@ export default function GlpSwap(props) {
     let timeoutId;
 
     if (pay || receive || operation) {
-      if (history.location.pathname !== "/buy_glp") {
+      if (history.location.search) {
         timeoutId = setTimeout(() => {
-          history.replace({ search: "", pathname: "/buy_glp" });
+          history.replace({ search: "" });
         }, 2000); // Delays the execution by 2 seconds
       }
     }
@@ -470,7 +467,7 @@ export default function GlpSwap(props) {
         clearTimeout(timeoutId);
       }
     };
-  }, [params, queryParams, setIsBuying, chainId, setSwapTokenAddress, history]);
+  }, [searchParams, setIsBuying, chainId, setSwapTokenAddress, history]);
 
   const switchSwapOption = (hash = "") => {
     const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop;

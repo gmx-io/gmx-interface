@@ -1,4 +1,4 @@
-import { getTokenBySymbol } from "config/tokens";
+import { getTokenBySymbolSafe } from "config/tokens";
 import { TradeSearchParams } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
 import { LEVERAGE_ORDER_OPTIONS, SWAP, SWAP_OPTIONS, SWAP_ORDER_OPTIONS } from "lib/legacy";
@@ -53,21 +53,21 @@ export default function useV1TradeParamsProcessor({ updateTradeOptions, swapOpti
     }
 
     if (fromToken) {
-      const fromTokenInfo = getTokenBySymbol(chainId, fromToken);
+      const fromTokenInfo = getTokenBySymbolSafe(chainId, fromToken);
       if (fromTokenInfo) {
         tradeOptions.fromTokenAddress = fromTokenInfo.address;
       }
     }
 
     if (toToken) {
-      const toTokenInfo = getTokenBySymbol(chainId, toToken);
+      const toTokenInfo = getTokenBySymbolSafe(chainId, toToken);
       if (toTokenInfo) {
         tradeOptions.toTokenAddress = toTokenInfo.address;
       }
     }
 
     if (collateralToken) {
-      const collateralTokenInfo = getTokenBySymbol(chainId, collateralToken);
+      const collateralTokenInfo = getTokenBySymbolSafe(chainId, collateralToken);
       if (collateralTokenInfo) {
         tradeOptions.collateralTokenAddress = collateralTokenInfo.address;
       }

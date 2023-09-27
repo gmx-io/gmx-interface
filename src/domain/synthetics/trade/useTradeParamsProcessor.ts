@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { MarketInfo, getMarketPoolName } from "../markets";
-import { getTokenBySymbol } from "config/tokens";
+import { getTokenBySymbolSafe } from "config/tokens";
 import { useChainId } from "lib/chains";
 import { getMatchingValueFromObject } from "lib/objects";
 import { TradeSearchParams, TradeMode, TradeType } from "./types";
@@ -63,21 +63,21 @@ export function useTradeParamsProcessor(
     }
 
     if (fromToken) {
-      const payTokenInfo = getTokenBySymbol(chainId, fromToken);
+      const payTokenInfo = getTokenBySymbolSafe(chainId, fromToken);
       if (payTokenInfo) {
         tradeOptions.fromTokenAddress = payTokenInfo?.address;
       }
     }
 
     if (collateralToken) {
-      const collateralTokenInfo = getTokenBySymbol(chainId, collateralToken);
+      const collateralTokenInfo = getTokenBySymbolSafe(chainId, collateralToken);
       if (collateralTokenInfo) {
         tradeOptions.collateralAddress = collateralTokenInfo?.address;
       }
     }
 
     if (toToken && markets.length > 0) {
-      const toTokenInfo = getTokenBySymbol(chainId, toToken);
+      const toTokenInfo = getTokenBySymbolSafe(chainId, toToken);
       if (toTokenInfo) {
         tradeOptions.toTokenAddress = toTokenInfo?.address;
       }

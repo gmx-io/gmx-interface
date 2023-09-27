@@ -483,7 +483,7 @@ function FullApp() {
                   <SyntheticsFallbackPage />
                 )}
               </Route>
-              <Route exact path="/buy_glp/:operation?">
+              <Route exact path="/buy_glp">
                 <BuyGlp
                   savedSlippageAmount={settings.savedAllowedSlippage}
                   setPendingTxns={setPendingTxns}

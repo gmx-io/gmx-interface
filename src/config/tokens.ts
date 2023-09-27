@@ -1024,6 +1024,14 @@ export function getPriceDecimals(chainId: number, tokenSymbol?: string) {
   }
 }
 
+export function getTokenBySymbolSafe(chainId: number, symbol: string) {
+  try {
+    return getTokenBySymbol(chainId, symbol);
+  } catch (e) {
+    return undefined;
+  }
+}
+
 export function getValidTokenBySymbol(chainId: number, symbol: string, version: "v1" | "v2") {
   const tokens = version === "v1" ? getV1Tokens(chainId) : getV2Tokens(chainId);
   const token = tokens.find((token) => token.symbol.toLowerCase() === symbol.toLowerCase());
