@@ -470,7 +470,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         // DEPOSITS AND WITHDRAWALS
         {
           address: getContract(chainId, "EventEmitter"),
-          topics: [EVENT_LOG1_TOPIC, [DEPOSIT_CREATED_HASH, WITHDRAWAL_CREATED_HASH], addressHash],
+          topics: [EVENT_LOG2_TOPIC, [DEPOSIT_CREATED_HASH, WITHDRAWAL_CREATED_HASH], null, addressHash],
         },
         // NEW CONTRACTS
         {

@@ -1,10 +1,9 @@
-import { getToken, getV2Tokens, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { USD_DECIMALS } from "lib/legacy";
-import { expandDecimals } from "lib/numbers";
+import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { BigNumber } from "ethers";
 import useSWR from "swr";
 import { TokenPricesData } from "./types";
 import { useOracleKeeperFetcher } from "./useOracleKeeperFetcher";
-import { parseOraclePrice } from "./utils";
+import { parseContractPrice } from "./utils";
 
 type TokenPricesDataResult = {
   pricesData?: TokenPricesData;
@@ -31,20 +30,9 @@ export function useTokenRecentPrices(chainId: number): TokenPricesDataResult {
           }
 
           result[tokenConfig.address] = {
-            minPrice: parseOraclePrice(priceItem.minPrice, tokenConfig.decimals, priceItem.oracleDecimals),
-            maxPrice: parseOraclePrice(priceItem.maxPrice, tokenConfig.decimals, priceItem.oracleDecimals),
+            minPrice: parseContractPrice(BigNumber.from(priceItem.minPrice), tokenConfig.decimals),
+            maxPrice: parseContractPrice(BigNumber.from(priceItem.maxPrice), tokenConfig.decimals),
           };
-        });
-
-        const stableTokens = getV2Tokens(chainId).filter((token) => token.isStable);
-
-        stableTokens.forEach((token) => {
-          if (!result[token.address]) {
-            result[token.address] = {
-              minPrice: expandDecimals(1, USD_DECIMALS),
-              maxPrice: expandDecimals(1, USD_DECIMALS),
-            };
-          }
         });
 
         const wrappedToken = getWrappedToken(chainId);
