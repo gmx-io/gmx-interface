@@ -82,13 +82,16 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
   if (messages === null) return null;
 
   return (
-    <>
+    <span className="TradeHistoryRow-message">
       {messages.map((message, i) => {
-        const textElement = <span className={message.textRed ? "text-red" : undefined}>{message.text}</span>;
         const hasSmthAfterTitle = message.tooltipRows?.length || message.tooltipFooter;
         const hasSmthBeforeFooter = message.tooltipTitle || message.tooltipRows?.length;
+        const showTooltip = message.tooltipRows || message.tooltipFooter || message.tooltipTitle;
+        const textElement = (
+          <span className={message.textRed && !showTooltip ? "text-red" : undefined}>{message.text}</span>
+        );
 
-        return message.tooltipRows || message.tooltipFooter || message.tooltipTitle ? (
+        return showTooltip ? (
           <Tooltip
             position="left-top"
             handle={textElement}
@@ -120,7 +123,7 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
         );
       })}
       , Market: {renderMarketName(tradeAction.marketInfo)}
-    </>
+    </span>
   );
 }
 
