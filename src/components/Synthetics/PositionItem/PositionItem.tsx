@@ -10,7 +10,7 @@ import {
   formatLeverage,
   formatLiquidationPrice,
   getEstimatedLiquidationTimeInHours,
-  getTriggerNameByPrice,
+  getTriggerNameByOrderType,
   usePositionsConstants,
 } from "domain/synthetics/positions";
 import { formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
@@ -331,12 +331,7 @@ export function PositionItem(p: Props) {
                       <div className="Position-list-order-label">
                         <span>
                           {isDecreaseOrderType(order.orderType)
-                            ? getTriggerNameByPrice({
-                                markPrice: p.position.markPrice,
-                                triggerPrice: order.triggerPrice,
-                                isLong: order.isLong,
-                                abbr: true,
-                              })
+                            ? getTriggerNameByOrderType(order.orderType, true)
                             : t`Limit`}
                           : {triggerThresholdType}{" "}
                           {formatUsd(order.triggerPrice, {

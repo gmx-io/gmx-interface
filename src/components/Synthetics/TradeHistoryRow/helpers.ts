@@ -78,9 +78,7 @@ export const formatPositionMessage = (
       const tokenPrice = getTokenPriceByTradeAction(tradeAction);
       const orderTypeName = isLimitOrderType(tradeAction.orderType)
         ? "Limit"
-        : getTriggerNameByOrderType({
-            orderType: tradeAction.orderType,
-          });
+        : getTriggerNameByOrderType(tradeAction.orderType);
 
       if (tradeAction.eventName === TradeActionType.OrderExecuted) {
         const executeOrderStr = t`Execute ${orderTypeName} Order: ${increaseText} ${positionText} ${sizeDeltaText},`;

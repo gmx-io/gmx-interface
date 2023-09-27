@@ -9,7 +9,6 @@ import { getBorrowingFeeRateUsd, getFundingFeeRateUsd, getPositionFee, getPriceI
 import { TokenData, convertToUsd } from "../tokens";
 import { PositionInfo } from "./types";
 import { OrderType } from "../orders/types";
-import { getTriggerDecreaseOrderType } from "../trade";
 import { t } from "@lingui/macro";
 
 export function getPositionKey(account: string, marketAddress: string, collateralAddress: string, isLong: boolean) {
@@ -317,33 +316,7 @@ export function formatEstimatedLiquidationTime(hours?: number | undefined) {
   return `${days} days`;
 }
 
-export function getTriggerNameByPrice({
-  markPrice,
-  triggerPrice,
-  isLong,
-  abbr = false,
-}: {
-  markPrice: BigNumber | undefined;
-  triggerPrice: BigNumber | undefined;
-  isLong: boolean;
-  abbr?: boolean;
-}) {
-  const triggerStr = abbr ? t`T` : t`Trigger`;
-
-  if (!triggerPrice || !markPrice) {
-    return triggerStr;
-  }
-
-  const orderType = getTriggerDecreaseOrderType({
-    markPrice,
-    triggerPrice,
-    isLong,
-  });
-
-  return getTriggerNameByOrderType({ orderType, abbr });
-}
-
-export function getTriggerNameByOrderType({ orderType, abbr = false }: { orderType: OrderType; abbr?: boolean }) {
+export function getTriggerNameByOrderType(orderType: OrderType, abbr = false) {
   const triggerStr = abbr ? t`T` : t`Trigger`;
   const takeProfitStr = abbr ? t`TP` : t`Take-Profit`;
   const stopLossStr = abbr ? t`SL` : t`Stop-Loss`;

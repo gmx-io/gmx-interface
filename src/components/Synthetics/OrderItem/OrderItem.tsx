@@ -15,7 +15,7 @@ import {
   isIncreaseOrderType,
   isSwapOrderType,
 } from "domain/synthetics/orders";
-import { getTriggerNameByPrice } from "domain/synthetics/positions";
+import { getTriggerNameByOrderType } from "domain/synthetics/positions";
 import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
 import { USD_DECIMALS, getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
@@ -351,13 +351,7 @@ export function OrderItem(p: Props) {
           </td>
         )}
         <td className="Exchange-list-item-type">
-          {isDecreaseOrderType(p.order.orderType)
-            ? getTriggerNameByPrice({
-                markPrice,
-                triggerPrice: positionOrder.triggerPrice,
-                isLong: positionOrder.isLong,
-              })
-            : t`Limit`}
+          {isDecreaseOrderType(p.order.orderType) ? getTriggerNameByOrderType(positionOrder.orderType) : t`Limit`}
         </td>
         <td className="Order-list-item-text">{renderTitle()}</td>
         <td>{renderTriggerPrice()}</td>
