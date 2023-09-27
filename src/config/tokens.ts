@@ -1018,12 +1018,19 @@ export function getTokenBySymbolSafe(
   { isSynthetic = false }: { isSynthetic?: boolean } = {}
 ) {
   const tokens = TOKENS_MAP[chainId];
+
   const token = Object.values(tokens).find((token) => {
-    if (isSynthetic && !token.isSynthetic) return false;
-    return token.symbol.toLowerCase() === symbol.toLowerCase();
+    if (isSynthetic) {
+      return token.symbol.toLowerCase() === symbol.toLowerCase() && token.isSynthetic === true;
+    }
+    return false;
   });
 
   if (token) {
     return token;
   }
+
+  return Object.values(tokens).find((token) => {
+    return token.symbol.toLowerCase() === symbol.toLowerCase();
+  });
 }
