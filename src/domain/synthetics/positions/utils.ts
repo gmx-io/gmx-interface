@@ -353,17 +353,25 @@ export function getTriggerNameByPrice({
   return triggerStr;
 }
 
-export function getTriggerNameByOrderType(orderType: OrderType, abbr = false) {
+export function getTriggerNameByOrderType({
+  orderType,
+  abbr = false,
+  isLong,
+}: {
+  orderType: OrderType;
+  abbr?: boolean;
+  isLong: boolean;
+}) {
   const triggerStr = abbr ? t`T` : t`Trigger`;
   const takeProfitStr = abbr ? t`TP` : t`Take-Profit`;
   const stopLossStr = abbr ? t`SL` : t`Stop-Loss`;
 
   if (orderType === OrderType.LimitDecrease) {
-    return takeProfitStr;
+    return isLong ? takeProfitStr : stopLossStr;
   }
 
   if (orderType === OrderType.StopLossDecrease) {
-    return stopLossStr;
+    return isLong ? stopLossStr : takeProfitStr;
   }
 
   return triggerStr;
