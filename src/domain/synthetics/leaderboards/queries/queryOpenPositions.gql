@@ -3,12 +3,14 @@ query QueryOpenPositions(
   $skip: Int = 0,
   $orderBy: AccountOpenPosition_orderBy = sizeInUsd,
   $orderDirection: OrderDirection = desc,
+  $sizeInUsdGte: BigInt = 0,
 ) {
   accountOpenPositions(
     first: $first,
     skip: $skip,
     orderBy: $orderBy,
-    orderDirection: $orderDirection
+    orderDirection: $orderDirection,
+    where: { sizeInUsd_gte: $sizeInUsdGte },
   ) {
     id
     account

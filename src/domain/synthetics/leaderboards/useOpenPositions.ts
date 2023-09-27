@@ -11,6 +11,8 @@ import { PositionsInfoData, getPositionKey } from "../positions";
 import { useMemo } from "react";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { useChainId } from "lib/chains";
+import { expandDecimals } from "lib/numbers";
+import { USD_DECIMALS } from "lib/legacy";
 
 const fetchOpenPositionsPage = async (
   chainId: number,
@@ -30,6 +32,7 @@ const fetchOpenPositionsPage = async (
       skip,
       orderBy,
       orderDirection,
+      sizeInUsdGte: expandDecimals(10, USD_DECIMALS).toString()
     },
   });
 
