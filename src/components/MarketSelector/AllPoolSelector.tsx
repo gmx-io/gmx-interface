@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
-import { MarketInfo, MarketsInfoData, getMarketIndexName } from "domain/synthetics/markets";
+import { MarketInfo, MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { TokensData, convertToUsd } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { importImage } from "lib/legacy";
@@ -37,6 +37,8 @@ type MarketState = {
 
 type MarketOption = {
   name: string;
+  poolName: string;
+  indexName: string;
   marketInfo: MarketInfo;
   balance: BigNumber;
   balanceUsd: BigNumber;
@@ -60,22 +62,43 @@ export function AllPoolSelector({
   const [searchKeyword, setSearchKeyword] = useState("");
 
   const marketsOptions: MarketOption[] = useMemo(() => {
-    return markets
+    const allMarketsOption = markets
       .filter((market) => !market.isDisabled)
       .map((marketInfo) => {
         const marketToken = getByKey(marketTokensData, marketInfo.marketTokenAddress);
         const gmBalance = marketToken?.balance;
         const gmBalanceUsd = convertToUsd(marketToken?.balance, marketToken?.decimals, marketToken?.prices.minPrice);
         const state = getMarketState?.(marketInfo);
+        const poolName = getMarketPoolName(marketInfo);
+        const indexName = getMarketIndexName(marketInfo);
 
         return {
           name: marketInfo.name,
+          poolName,
+          indexName,
           marketInfo,
           balance: gmBalance || BigNumber.from(0),
           balanceUsd: gmBalanceUsd || BigNumber.from(0),
           state,
         };
       });
+
+    const marketsWithBalance: MarketOption[] = [];
+    const marketsWithoutBalance: MarketOption[] = [];
+
+    for (let market of allMarketsOption) {
+      if (market.balance.gt(0)) {
+        marketsWithBalance.push(market);
+      } else {
+        marketsWithoutBalance.push(market);
+      }
+    }
+
+    const sortedMartketsWithBalance = marketsWithBalance.sort((a, b) => {
+      return b.balanceUsd?.sub(a.balanceUsd || 0).gt(0) ? 1 : -1;
+    });
+
+    return [...sortedMartketsWithBalance, ...marketsWithoutBalance];
   }, [getMarketState, marketTokensData, markets]);
 
   const marketInfo = marketsOptions.find(
@@ -131,7 +154,7 @@ export function AllPoolSelector({
       >
         <div className="TokenSelector-tokens">
           {filteredOptions.map((option, marketIndex) => {
-            const { marketInfo, balance, balanceUsd, name, state = {} } = option;
+            const { marketInfo, balance, balanceUsd, poolName, indexName, name, state = {} } = option;
 
             const indexTokenImage = importImage(`ic_${marketInfo.indexToken.symbol.toLowerCase()}_40.svg`);
 
@@ -159,7 +182,14 @@ export function AllPoolSelector({
                     <img src={indexTokenImage} alt={name} className="collateral-logo collateral-logo-first" />
                   </div>
                   <div className="Token-symbol">
-                    <div className="Token-text">{name}</div>
+                    <div className="Token-text">
+                      <div className="token-symbol-text">
+                        <div className="items-center">
+                          <span>{indexName && indexName}</span>
+                          <span className="subtext">{poolName && `[${poolName}]`}</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div className="Token-balance">
