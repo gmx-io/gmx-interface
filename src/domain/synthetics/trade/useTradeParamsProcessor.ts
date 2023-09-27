@@ -63,21 +63,21 @@ export function useTradeParamsProcessor(
     }
 
     if (fromToken) {
-      const payTokenInfo = getTokenBySymbolSafe(chainId, fromToken);
+      const payTokenInfo = getTokenBySymbolSafe(chainId, fromToken, "v2");
       if (payTokenInfo) {
         tradeOptions.fromTokenAddress = payTokenInfo?.address;
       }
     }
 
     if (collateralToken) {
-      const collateralTokenInfo = getTokenBySymbolSafe(chainId, collateralToken);
+      const collateralTokenInfo = getTokenBySymbolSafe(chainId, collateralToken, "v2");
       if (collateralTokenInfo) {
         tradeOptions.collateralAddress = collateralTokenInfo?.address;
       }
     }
 
     if (toToken && markets.length > 0) {
-      const toTokenInfo = getTokenBySymbolSafe(chainId, toToken, {
+      const toTokenInfo = getTokenBySymbolSafe(chainId, toToken, "v2", {
         isSynthetic: tradeOptions.tradeType !== TradeType.Swap,
       });
       if (toTokenInfo) {

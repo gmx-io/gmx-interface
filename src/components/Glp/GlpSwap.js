@@ -439,14 +439,14 @@ export default function GlpSwap(props) {
     }
 
     if (pay) {
-      const payTokenInfo = getTokenBySymbolSafe(chainId, pay);
+      const payTokenInfo = getTokenBySymbolSafe(chainId, pay, "v1");
       if (payTokenInfo) {
         setSwapTokenAddress(payTokenInfo.address);
       }
     }
 
     if (receive) {
-      const receiveTokenInfo = getTokenBySymbolSafe(chainId, receive);
+      const receiveTokenInfo = getTokenBySymbolSafe(chainId, receive, "v1");
       if (receiveTokenInfo) {
         setSwapTokenAddress(receiveTokenInfo.address);
       }

@@ -1015,22 +1015,21 @@ export function getPriceDecimals(chainId: number, tokenSymbol?: string) {
 export function getTokenBySymbolSafe(
   chainId: number,
   symbol: string,
+  version: "v1" | "v2",
   { isSynthetic = false }: { isSynthetic?: boolean } = {}
 ) {
-  const tokens = TOKENS_MAP[chainId];
+  const tokens = version === "v1" ? getV1Tokens(chainId) : getV2Tokens(chainId);
 
-  const token = Object.values(tokens).find((token) => {
-    if (isSynthetic) {
-      return token.symbol.toLowerCase() === symbol.toLowerCase() && token.isSynthetic === true;
+  if (isSynthetic) {
+    const syntheticToken = tokens.find((token) => {
+      return token.symbol.toLowerCase() === symbol.toLowerCase() && token.isSynthetic;
+    });
+    if (syntheticToken) {
+      return syntheticToken;
     }
-    return false;
-  });
-
-  if (token) {
-    return token;
   }
 
-  return Object.values(tokens).find((token) => {
+  return tokens.find((token) => {
     return token.symbol.toLowerCase() === symbol.toLowerCase();
   });
 }

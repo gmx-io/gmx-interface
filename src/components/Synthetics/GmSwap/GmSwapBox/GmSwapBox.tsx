@@ -742,7 +742,7 @@ export function GmSwapBox(p: Props) {
       }
 
       if (fromToken) {
-        const fromTokenInfo = getTokenBySymbolSafe(chainId, fromToken);
+        const fromTokenInfo = getTokenBySymbolSafe(chainId, fromToken, "v2");
         if (fromTokenInfo) {
           setFirstTokenAddress(convertTokenAddress(chainId, fromTokenInfo.address, "wrapped"));
         }
@@ -753,10 +753,9 @@ export function GmSwapBox(p: Props) {
       }
 
       if ((market || pool) && markets.length > 0) {
-        const indexTokenInfo = market && getTokenBySymbolSafe(chainId, market, { isSynthetic: true });
+        const indexTokenInfo = market && getTokenBySymbolSafe(chainId, market, "v2", { isSynthetic: true });
         const indexTokenAddress = indexTokenInfo && convertTokenAddress(chainId, indexTokenInfo.address, "wrapped");
         const marketInfo = findMarketInfoByPool(markets, pool, indexTokenAddress);
-
         if (marketInfo) {
           setIndexName(getMarketIndexName(marketInfo));
           onSelectMarket(marketInfo.marketTokenAddress);
