@@ -338,7 +338,7 @@ export function PositionItem(p: Props) {
                                 abbr: true,
                               })
                             : t`Limit`}
-                          : {triggerThresholdType}
+                          : {triggerThresholdType}{" "}
                           {formatUsd(order.triggerPrice, {
                             displayDecimals: order.indexToken?.priceDecimals,
                           })}
