@@ -99,6 +99,7 @@ export function SyntheticsStats() {
             <th>
               <TooltipWithPortal
                 handle="VI Positions"
+                position="right-bottom"
                 renderContent={() => (
                   <>
                     <p>Virtual inventory for positons</p>
@@ -178,7 +179,8 @@ export function SyntheticsStats() {
                 <td className="sticky-left">
                   <div className="cell">
                     <div>
-                      <Tooltip
+                      <TooltipWithPortal
+                        portalClassName="SyntheticsStats-tooltip"
                         handle={getMarketIndexName(market)}
                         renderContent={() => (
                           <>
@@ -226,7 +228,7 @@ export function SyntheticsStats() {
                 </td>
                 <td>
                   <div className="cell">
-                    <Tooltip
+                    <TooltipWithPortal
                       handle={`$${formatAmountHuman(market.poolValueMax, 30)}`}
                       renderContent={() => (
                         <>
@@ -296,11 +298,13 @@ export function SyntheticsStats() {
                             <StatsTooltipRow
                               showDollar={false}
                               label="PnL Long"
+                              className={market.pnlLongMax.gt(0) ? "text-green" : "text-red"}
                               value={formatAmountHuman(market.pnlLongMax, 30, true)}
                             />
                             <StatsTooltipRow
                               showDollar={false}
                               label="PnL Short"
+                              className={market.pnlShortMax.gt(0) ? "text-green" : "text-red"}
                               value={formatAmountHuman(market.pnlShortMax, 30, true)}
                             />
                           </>
@@ -340,12 +344,12 @@ export function SyntheticsStats() {
                       "..."
                     ) : (
                       <div>
-                        <span className={fundingAprLong.gt(0) ? "positive" : "negative"}>
+                        <span className={fundingAprLong.gt(0) ? "text-green" : "text-red"}>
                           {market.longsPayShorts ? "-" : "+"}
                           {formatAmount(fundingAprLong.abs(), 30, 4)}%
                         </span>{" "}
                         /{" "}
-                        <span className={fundingAprShort.gt(0) ? "positive" : "negative"}>
+                        <span className={fundingAprShort.gt(0) ? "text-green" : "text-red"}>
                           {market.longsPayShorts ? "+" : "-"}
                           {formatAmount(fundingAprShort.abs(), 30, 4)}%
                         </span>
@@ -421,24 +425,67 @@ export function SyntheticsStats() {
                     {market.isSpotOnly ? (
                       "..."
                     ) : (
-                      <>
-                        <div>
-                          {virtualInventoryPositions?.gt(0) ? "Short" : "Long"}{" "}
-                          {formatUsd(virtualInventoryPositions?.abs()) || "$0.00"}
-                        </div>
-                      </>
+                      <Tooltip
+                        position="right-bottom"
+                        handle={
+                          <>
+                            <div>
+                              {virtualInventoryPositions?.gt(0) ? "Short" : "Long"}{" "}
+                              {formatAmountHuman(virtualInventoryPositions?.abs(), 30) || "$0.00"}
+                            </div>
+                          </>
+                        }
+                        renderContent={() => {
+                          return (
+                            <StatsTooltipRow
+                              label={virtualInventoryPositions?.gt(0) ? "Short" : "Long"}
+                              value={formatUsd(virtualInventoryPositions?.abs()) || "$0.00"}
+                              showDollar={false}
+                            />
+                          );
+                        }}
+                      />
                     )}
                   </div>
                 </td>
                 <td>
                   <div className="cell">
-                    <div>
-                      {formatUsd(convertToUsd(virtualInventorySwapsLong, market.longToken.decimals, midLongPrice)) ||
-                        "$0.00"}{" "}
-                      /{" "}
-                      {formatUsd(convertToUsd(virtualInventorySwapsShort, market.shortToken.decimals, midShortPrice)) ||
-                        "$0.00"}{" "}
-                    </div>
+                    <Tooltip
+                      position="right-bottom"
+                      handle={
+                        <div>
+                          {formatAmountHuman(
+                            convertToUsd(virtualInventorySwapsLong, market.longToken.decimals, midLongPrice),
+                            30
+                          ) || "$0.00"}{" "}
+                          /{" "}
+                          {formatAmountHuman(
+                            convertToUsd(virtualInventorySwapsShort, market.shortToken.decimals, midShortPrice),
+                            30
+                          ) || "$0.00"}{" "}
+                        </div>
+                      }
+                      renderContent={() => {
+                        return (
+                          <>
+                            <StatsTooltipRow
+                              label="Long"
+                              value={formatUsd(
+                                convertToUsd(virtualInventorySwapsLong, market.longToken.decimals, midLongPrice)
+                              )}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label="Short"
+                              value={formatUsd(
+                                convertToUsd(virtualInventorySwapsShort, market.shortToken.decimals, midShortPrice)
+                              )}
+                              showDollar={false}
+                            />
+                          </>
+                        );
+                      }}
+                    />
                   </div>
                 </td>
                 <td>

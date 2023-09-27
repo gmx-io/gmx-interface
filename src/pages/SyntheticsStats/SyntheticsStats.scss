@@ -4,10 +4,6 @@
   margin-bottom: 1000px;
   overflow-x: auto;
 
-  .Tooltip-popup {
-    max-width: 42rem;
-  }
-
   .sticky-left {
     position: sticky;
     z-index: 1;
@@ -20,6 +16,12 @@
     .Tooltip-popup {
       min-width: 34rem;
     }
+  }
+}
+
+.SyntheticsStats-tooltip {
+  .Tooltip-popup {
+    min-width: 36rem;
   }
 }
 
