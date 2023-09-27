@@ -130,7 +130,7 @@ describe("TradeHistoryRow helpers", () => {
             value: "-$16.82",
           },
           {
-            label: "PnL after fees",
+            label: "PnL After Fees",
             showDollar: false,
             value: "-$126.31",
           },

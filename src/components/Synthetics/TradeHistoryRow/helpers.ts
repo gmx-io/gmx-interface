@@ -265,7 +265,7 @@ function getLiquidationTooltipProps(
     { label: t`Position Fee`, showDollar: false, value: formatUsd(positionFeeUsd) },
     // FIXME do we still want to show priceImpactDiffUsd?
     { label: t`Price Impact`, showDollar: false, value: formatUsd(priceImpactUsd) },
-    { label: t`PnL after fees`, showDollar: false, value: formatUsd(pnlUsd) },
+    { label: t`PnL After Fees`, showDollar: false, value: formatUsd(pnlUsd) },
   ];
 }
 
