@@ -65,7 +65,7 @@ type SearchParams = {
   market?: string;
   operation?: string;
   mode?: string;
-  pay?: string;
+  from?: string;
   pool?: string;
   scroll?: string;
 };
@@ -719,7 +719,7 @@ export function GmSwapBox(p: Props) {
 
   useEffect(
     function updateByQueryParams() {
-      const { market, operation, mode, pay, pool, scroll } = searchParams;
+      const { market, operation, mode, from: fromToken, pool, scroll } = searchParams;
       if (operation) {
         let finalOperation;
 
@@ -741,10 +741,10 @@ export function GmSwapBox(p: Props) {
         }
       }
 
-      if (pay) {
-        const payTokenInfo = getTokenBySymbolSafe(chainId, pay);
-        if (payTokenInfo) {
-          setFirstTokenAddress(convertTokenAddress(chainId, payTokenInfo.address, "wrapped"));
+      if (fromToken) {
+        const fromTokenInfo = getTokenBySymbolSafe(chainId, fromToken);
+        if (fromTokenInfo) {
+          setFirstTokenAddress(convertTokenAddress(chainId, fromTokenInfo.address, "wrapped"));
         }
       }
 
