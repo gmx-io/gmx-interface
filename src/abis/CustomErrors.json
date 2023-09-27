@@ -170,17 +170,6 @@
     {
       "inputs": [
         {
-          "internalType": "address",
-          "name": "token",
-          "type": "address"
-        }
-      ],
-      "name": "DuplicateTokenPrice",
-      "type": "error"
-    },
-    {
-      "inputs": [
-        {
           "internalType": "uint256",
           "name": "index",
           "type": "uint256"
@@ -333,6 +322,28 @@
       "type": "error"
     },
     {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "EmptyRealtimeFeedId",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "EmptyRealtimeFeedMultiplier",
+      "type": "error"
+    },
+    {
       "inputs": [],
       "name": "EmptyReceiver",
       "type": "error"
@@ -377,6 +388,22 @@
     {
       "inputs": [],
       "name": "EndOfOracleSimulation",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "feedId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "HasRealtimeFeedId",
       "type": "error"
     },
     {
@@ -623,6 +650,22 @@
         }
       ],
       "name": "InvalidBlockNumber",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "largestMinBlockNumber",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "smallestMaxBlockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "InvalidBlockRangeSet",
       "type": "error"
     },
     {
@@ -921,6 +964,27 @@
       "inputs": [
         {
           "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "min",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "max",
+          "type": "uint256"
+        }
+      ],
+      "name": "InvalidMinMaxForPrice",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
           "name": "msgSender",
           "type": "address"
         }
@@ -1055,6 +1119,106 @@
         }
       ],
       "name": "InvalidPrimaryPricesForSimulation",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "int192",
+          "name": "bid",
+          "type": "int192"
+        },
+        {
+          "internalType": "int192",
+          "name": "ask",
+          "type": "int192"
+        }
+      ],
+      "name": "InvalidRealtimeBidAsk",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "blockHash",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "expectedBlockHash",
+          "type": "bytes32"
+        }
+      ],
+      "name": "InvalidRealtimeBlockHash",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "feedId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "expectedFeedId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "InvalidRealtimeFeedId",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokensLength",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "dataLength",
+          "type": "uint256"
+        }
+      ],
+      "name": "InvalidRealtimeFeedLengths",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "int192",
+          "name": "bid",
+          "type": "int192"
+        },
+        {
+          "internalType": "int192",
+          "name": "ask",
+          "type": "int192"
+        }
+      ],
+      "name": "InvalidRealtimePrices",
       "type": "error"
     },
     {
@@ -1291,6 +1455,22 @@
         }
       ],
       "name": "MaxPoolAmountExceeded",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "poolAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "maxPoolAmountForDeposit",
+          "type": "uint256"
+        }
+      ],
+      "name": "MaxPoolAmountForDepositExceeded",
       "type": "error"
     },
     {
@@ -1769,6 +1949,27 @@
     {
       "inputs": [
         {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "oracleTimestamp",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "currentTimestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "RealtimeMaxPriceAgeExceeded",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "uint256",
           "name": "requestAge",
           "type": "uint256"
@@ -1979,6 +2180,17 @@
       "type": "error"
     },
     {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "oracleBlockNumberType",
+          "type": "uint256"
+        }
+      ],
+      "name": "UnsupportedOracleBlockNumberType",
+      "type": "error"
+    },
+    {
       "inputs": [],
       "name": "UnsupportedOrderType",
       "type": "error"
@@ -2043,8 +2255,8 @@
       "type": "error"
     }
   ],
-  "bytecode": "0x60566037600b82828239805160001a607314602a57634e487b7160e01b600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220d1757edc5d1f8308aefb387c9807a59afc7704ff6770f17f75680168e4f004c064736f6c63430008120033",
-  "deployedBytecode": "0x73000000000000000000000000000000000000000030146080604052600080fdfea2646970667358221220d1757edc5d1f8308aefb387c9807a59afc7704ff6770f17f75680168e4f004c064736f6c63430008120033",
+  "bytecode": "0x60566037600b82828239805160001a607314602a57634e487b7160e01b600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea264697066735822122095b862bfbddf577743d2ea0f59a8c4407cb12ae4591dca228a60b202678a8c3c64736f6c63430008120033",
+  "deployedBytecode": "0x73000000000000000000000000000000000000000030146080604052600080fdfea264697066735822122095b862bfbddf577743d2ea0f59a8c4407cb12ae4591dca228a60b202678a8c3c64736f6c63430008120033",
   "linkReferences": {},
   "deployedLinkReferences": {}
 }
