@@ -48,14 +48,12 @@ const groupPositionsByAccount = (positions: OpenPosition[]): PositionsSummaryByA
   return groupping;
 };
 
-export function useTopAccounts(period: PerfPeriod) {
+export function useLeaderboardsData(period: PerfPeriod = PerfPeriod.TOTAL) {
   const accountPerf = useAccountPerf(period);
-  const positions = useOpenPositions();
-  const accountsHash = (accountPerf.data || []).map((a) => a.account).join("-");
-  const positionsHash = (positions.data || []).map((p) => p.key).join("-");
-  const data = useMemo(() => {
-    if (accountPerf.error || positions.error || accountPerf.isLoading || positions.isLoading) {
-      return;
+  const positions = useOpenPositions(accountPerf.data?.map(({ account }) => account.toLowerCase()) || []);
+  const { data, updatedAt } = useMemo(() => {
+    if (!accountPerf.data?.length || !positions.data?.length) {
+      return { data: undefined, updatedAt: 0 };
     }
 
     const openPositionsByAccount: Record<string, AccountPositionsSummary> = groupPositionsByAccount(positions.data);
@@ -107,13 +105,20 @@ export function useTopAccounts(period: PerfPeriod) {
       data.push(performance);
     }
 
-    return data.sort((a, b) => (a.absProfit.gt(b.absProfit) ? -1 : 1));
+    return {
+      data: data.sort((a, b) => (a.absProfit.gt(b.absProfit) ? -1 : 1)),
+      updatedAt: Date.now(),
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accountsHash, positionsHash]);
+  }, [accountPerf.updatedAt, positions.updatedAt]);
 
   return {
-    isLoading: !data,
-    error: accountPerf.error || positions.error,
-    data: data || [],
+    positions,
+    accounts: {
+      isLoading: !data,
+      error: accountPerf.error,
+      data: data || [],
+      updatedAt,
+    },
   };
 }

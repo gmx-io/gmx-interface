@@ -171,11 +171,10 @@ export type RemoteData<T> = {
   isLoading: boolean;
   data: T[];
   error: Error | null;
+  updatedAt: number;
 };
 
 export type LeaderboardContextType = {
   positions: RemoteData<OpenPosition>;
   accounts: RemoteData<LiveAccountPerformance>;
-  period: PerfPeriod;
-  setPeriod: (_: PerfPeriod) => void;
 };

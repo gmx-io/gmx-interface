@@ -9,9 +9,7 @@ import { useChainId } from "lib/chains";
 import { expandDecimals } from "lib/numbers";
 import { USD_DECIMALS } from "lib/legacy";
 
-const daysAgo = (days: number) => (
-  new Date(Date.now() - 1000 * 60 * 60 * 24 * days).setHours(0, 0, 0, 0) / 1000
-);
+const daysAgo = (days: number) => new Date(Date.now() - 1000 * 60 * 60 * 24 * days).setHours(0, 0, 0, 0) / 1000;
 
 const filtersByPeriod = {
   [PerfPeriod.DAY]: { period: "hourly", since: daysAgo(1) },
@@ -26,7 +24,7 @@ const fetchAccountPerfs = async (
   first: number,
   skip: number,
   orderBy: string = "totalPnl",
-  orderDirection: "asc" | "desc" = "desc",
+  orderDirection: "asc" | "desc" = "desc"
 ): Promise<AccountPerfJson[]> => {
   if (!(period in filtersByPeriod)) {
     throw new Error(`Invalid period "${period}"`);
@@ -45,17 +43,14 @@ const fetchAccountPerfs = async (
       orderBy,
       orderDirection,
       volumeGte: expandDecimals(1000, USD_DECIMALS).toString(),
-      ...filtersByPeriod[period]
-    }
+      ...filtersByPeriod[period],
+    },
   });
 
   return res.data.accountPerfs;
 };
 
-const sumPerfByAccount = (
-  accountPerfs: AccountPerfJson[],
-  period: PerfPeriod,
-): PerfByAccount => {
+const sumPerfByAccount = (accountPerfs: AccountPerfJson[], period: PerfPeriod): PerfByAccount => {
   const aggregation = {};
 
   for (const perfJson of accountPerfs) {
@@ -126,11 +121,7 @@ const sumPerfByAccount = (
 
 export function useAccountPerf(period: PerfPeriod) {
   const { chainId } = useChainId();
-  const accounts = useSWR([
-    "leaderboards/accounts",
-    period,
-    chainId,
-  ], async () => {
+  const accounts = useSWR(["leaderboards/accounts", period, chainId], async () => {
     const pageSize = 10000;
     let data: AccountPerfJson[] = [];
     let skip = 0;
@@ -150,17 +141,23 @@ export function useAccountPerf(period: PerfPeriod) {
     return data;
   });
 
-  const key = (accounts.data || []).map(p => p.account).join("-");
-  const data = useMemo(() => {
-    if (accounts.data) {
-      return Object.values(sumPerfByAccount(accounts.data, period));
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, key, period]);
+  const key = (accounts.data || []).map((p) => p.account).join("-");
+  const { data, updatedAt } = useMemo(
+    () =>
+      accounts.data
+        ? {
+            data: Object.values(sumPerfByAccount(accounts.data, period)),
+            updatedAt: Date.now(),
+          }
+        : { data: undefined, updatedAt: 0 },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [chainId, period, key]
+  );
 
   return {
+    error: accounts.error,
     isLoading: !data && !accounts.error,
-    data: data,
-    error: accounts.error || null,
+    updatedAt,
+    data,
   } as RemoteData<AccountPerf>;
-};
+}

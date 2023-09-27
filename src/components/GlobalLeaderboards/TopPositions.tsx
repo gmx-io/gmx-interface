@@ -21,20 +21,18 @@ import {
   signedValueClassName,
   OpenPosition,
   Ranked,
+  RemoteData,
 } from "domain/synthetics/leaderboards";
 
-import { useLeaderboardContext } from "./Context";
-
-export default function TopPositions() {
+export default function TopPositions({ positions }: { positions: RemoteData<OpenPosition> }) {
   const perPage = 15;
+  const { chainId } = useChainId();
+  const { isLoading, error, data } = positions;
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
-  const term = useDebounce(search, 300);
-  const { chainId } = useChainId();
-  const { positions: { isLoading, error, data } } = useLeaderboardContext();
   const [orderBy, setOrderBy] = useState<keyof OpenPosition>("unrealizedPnlAfterFees");
   const [direction, setDirection] = useState<number>(1);
-  const topPositionsHeaderClick = useCallback((key: keyof OpenPosition) => () => {
+  const onColumnClick = useCallback((key: keyof OpenPosition) => () => {
     if (key === orderBy) {
       setDirection((d: number) => -1 * d);
     } else {
@@ -44,7 +42,7 @@ export default function TopPositions() {
   }, [orderBy, setOrderBy, setDirection]);
 
   const positionsHash = (data || []).map(p => p[orderBy]!.toString()).join("-");
-  const positions: Ranked<OpenPosition>[] = useMemo(() => {
+  const positionRows: Ranked<OpenPosition>[] = useMemo(() => {
     if (!data) {
       return [];
     }
@@ -62,7 +60,8 @@ export default function TopPositions() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, positionsHash, orderBy, direction]);
 
-  const filteredStats = positions.filter((p) => (
+  const term = useDebounce(search, 300);
+  const filteredStats = positionRows.filter((p) => (
     p.account.toLowerCase().indexOf(term) >= 0 ||
     p.marketInfo.indexToken.symbol.toLowerCase().indexOf(term) >= 0
   ));
@@ -178,18 +177,19 @@ export default function TopPositions() {
   const indexFrom = (page - 1) * perPage;
   const rows = filteredStats.slice(indexFrom, indexFrom + perPage).map(parseRow);
   const pageCount = Math.ceil(filteredStats.length / perPage);
-  const handleSearchInput = (e) => setSearch(e.target.value.trim().toLowerCase());
+  const onSearchInput = (e) => setSearch(e.target.value.trim().toLowerCase());
   const getSortableClass = (key: keyof OpenPosition) => cx(orderBy === key
     ? (direction > 0 ? "sorted-asc" : "sorted-desc")
     : "sortable"
-  )
+  );
+
   const titles: { [k in keyof TopPositionsRow]?: TableHeader } = {
     rank: { title: t`Rank`, width: 6 },
     account: { title: t`Address`, width: (p = "XL") => ({ XL: 30, L: 26, M: 16, S: 10 }[p] || 30) },
     unrealizedPnl: {
       title: t`PnL ($)`,
       tooltip: t`Total Unrealized Profit and Loss.`,
-      onClick: topPositionsHeaderClick("unrealizedPnlAfterFees"),
+      onClick: onColumnClick("unrealizedPnlAfterFees"),
       width: 12,
       className: getSortableClass("unrealizedPnlAfterFees"),
     },
@@ -203,7 +203,7 @@ export default function TopPositions() {
     },
     size: {
       title: t`Size`,
-      onClick: topPositionsHeaderClick("sizeInUsd"),
+      onClick: onColumnClick("sizeInUsd"),
       width: 13,
       className: getSortableClass("sizeInUsd"),
     },
@@ -211,7 +211,7 @@ export default function TopPositions() {
       tooltip: t`Position Leverage.`,
       title: t`Lev.`,
       width: 8,
-      onClick: topPositionsHeaderClick("leverage"),
+      onClick: onColumnClick("leverage"),
       className: getSortableClass("leverage"),
     },
     liqPrice: {
@@ -226,7 +226,7 @@ export default function TopPositions() {
         <SearchInput
           placeholder={t`Search Address or Market`}
           value={search}
-          onInput={handleSearchInput}
+          onInput={onSearchInput}
           setValue={() => {}}
           onKeyDown={() => {}}
           className="LeaderboardSearch TopPositionsSearch"

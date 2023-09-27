@@ -1,5 +1,5 @@
 export * from "./types";
-export * from "./useTopAccounts";
+export * from "./useLeaderboardsData";
 export * from "./useAccountPerf";
 export * from "./useOpenPositions";
 export * from "./usePositionsInfo";

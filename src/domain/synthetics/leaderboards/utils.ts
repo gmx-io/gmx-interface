@@ -2,6 +2,17 @@ import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 
+export const floorTimestamp = (timestamp?: number) => {
+  if (!timestamp) {
+    return 0;
+  }
+
+  const date = new Date(timestamp);
+  const seconds = date.getSeconds();
+
+  return date.setSeconds(seconds < 30 ? 0 : 30, 0);
+}
+
 export const signedValueClassName = (num: BigNumber) => (
   num.isZero() ? "" : (num.isNegative() ? "negative" : "positive")
 );

@@ -18,9 +18,8 @@ import {
   TopAccountsRow,
   signedValueClassName,
   LiveAccountPerformance,
+  RemoteData,
 } from "domain/synthetics/leaderboards";
-
-import { useLeaderboardContext } from "./Context";
 
 const parseRow = (s: Ranked<LiveAccountPerformance>, i: number): TopAccountsRow => ({
   key: s.id,
@@ -109,15 +108,14 @@ const parseRow = (s: Ranked<LiveAccountPerformance>, i: number): TopAccountsRow 
   },
 });
 
-export default function TopAccounts() {
+export default function TopAccounts({ accounts }: { accounts: RemoteData<LiveAccountPerformance>}) {
   const perPage = 15;
+  const { isLoading, error, data } = accounts;
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
-  const term = useDebounce(search, 300);
-  const { accounts: { isLoading, error, data } } = useLeaderboardContext();
   const [orderBy, setOrderBy] = useState<keyof LiveAccountPerformance>("absProfit");
   const [direction, setDirection] = useState<number>(1);
-  const topAccountsHeaderClick = useCallback((key: keyof LiveAccountPerformance) => () => {
+  const onColumnClick = useCallback((key: keyof LiveAccountPerformance) => () => {
     if (key === "wins") {
       setOrderBy(orderBy === "wins" ? "losses" : "wins");
       setDirection(1);
@@ -130,7 +128,7 @@ export default function TopAccounts() {
   }, [orderBy, setOrderBy, setDirection]);
 
   const accountsHash = (data || []).map(a => a[orderBy]!.toString()).join(":");
-  const accounts = useMemo(() => {
+  const rankedAccounts = useMemo(() => {
     if (!data) {
       return [];
     }
@@ -148,11 +146,12 @@ export default function TopAccounts() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accountsHash, orderBy, direction]);
 
-  const filteredStats = accounts.filter((a) => a.account.toLowerCase().indexOf(term.toLowerCase()) >= 0);
+  const term = useDebounce(search, 300);
+  const filteredStats = rankedAccounts.filter((a) => a.account.toLowerCase().indexOf(term.toLowerCase()) >= 0);
   const indexFrom = (page - 1) * perPage;
   const rows = filteredStats.slice(indexFrom, indexFrom + perPage).map(parseRow);
   const pageCount = Math.ceil(filteredStats.length / perPage);
-  const handleSearchInput = (e) => setSearch(e.target.value.trim());
+  const onSearchInput = (e) => setSearch(e.target.value.trim());
   const getSortableClass = (key: keyof LiveAccountPerformance) => cx(
     (orderBy === key || (key === "wins" && orderBy === "losses"))
     ? (direction > 0 ? "sorted-asc" : "sorted-desc")
@@ -165,13 +164,13 @@ export default function TopAccounts() {
     absProfit: {
       title: t`PnL ($)`,
       tooltip: t`Total Realized and Unrealized Profit and Loss.`,
-      onClick: topAccountsHeaderClick("absProfit"),
+      onClick: onColumnClick("absProfit"),
       width: 12,
       className: getSortableClass("absProfit"),
     },
     relProfit: {
       title: t`PnL (%)`,
-      onClick: topAccountsHeaderClick("relProfit"),
+      onClick: onColumnClick("relProfit"),
       width: 10,
       className: getSortableClass("relProfit"),
       tooltip: () => (
@@ -189,21 +188,21 @@ export default function TopAccounts() {
     averageSize: {
       title: t`Avg. Size`,
       tooltip: t`Average Position Size.`,
-      onClick: topAccountsHeaderClick("averageSize"),
+      onClick: onColumnClick("averageSize"),
       width: 12,
       className: getSortableClass("averageSize"),
     },
     averageLeverage: {
       title: t`Avg. Lev.`,
       tooltip: t`Average Leverage used.`,
-      onClick: topAccountsHeaderClick("averageLeverage"),
+      onClick: onColumnClick("averageLeverage"),
       width: 10,
       className: getSortableClass("averageLeverage"),
     },
     winsLosses: {
       title: t`Win/Loss`,
       tooltip: t`Wins and Losses for fully closed Positions.`,
-      onClick: topAccountsHeaderClick("wins"),
+      onClick: onColumnClick("wins"),
       width: 10,
       className: cx("text-right", getSortableClass("wins")),
     },
@@ -215,7 +214,7 @@ export default function TopAccounts() {
         <SearchInput
           placeholder={t`Search Address`}
           value={search}
-          onInput={handleSearchInput}
+          onInput={onSearchInput}
           setValue={() => {}}
           onKeyDown={() => {}}
           className="LeaderboardSearch"

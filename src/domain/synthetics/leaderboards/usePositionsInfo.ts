@@ -14,7 +14,6 @@ import { getPositionFee, getPriceImpactForPosition } from "../fees";
 import { TokensData, convertToUsd } from "../tokens";
 import { ContractMarketPrices, MarketsInfoData, useMarketsInfo } from "../markets";
 import {
-  PositionsData,
   PositionsInfoData,
   getEntryPrice,
   getLeverage,
@@ -25,10 +24,13 @@ import {
   usePositionsConstants,
 } from "../positions";
 
+import { floorTimestamp } from "./utils";
+
 type PositionsResult = {
   isLoading: boolean;
   data: PositionsInfoData;
   error: Error | null;
+  updatedAt: number;
 };
 
 type PositionJson = { [key: string]: any; [key: number]: any };
@@ -41,7 +43,9 @@ function parsePositionsInfo(
   minCollateralUsd: BigNumber,
   showPnlInLeverage: boolean = true
 ) {
-  return positions.reduce((positionsMap: PositionsInfoData, positionInfo, i) => {
+  const positionsMap: PositionsInfoData = {};
+  for (let i = 0; i < positions.length; i++) {
+    const positionInfo = positions[i];
     const {
       position: { addresses, numbers, flags, data },
       fees,
@@ -180,22 +184,19 @@ function parsePositionsInfo(
       pendingFundingFeesUsd,
       pendingClaimableFundingFeesUsd: BigNumber.from(0), // not used,
     };
+  }
 
-    return positionsMap;
-  }, {} as PositionsData);
+  return positionsMap;
 }
 
 export function usePositionsInfo(
-  positionsHash: string,
   positionKeys: string[],
   marketPrices: ContractMarketPrices[]
 ): PositionsResult {
   const { chainId } = useChainId();
   const { minCollateralUsd } = usePositionsConstants(chainId);
   const { marketsInfoData, tokensData, pricesUpdatedAt } = useMarketsInfo(chainId);
-  const pricesUpdateDate = pricesUpdatedAt && new Date(pricesUpdatedAt);
-  const pricesUpdateSecs = pricesUpdateDate && pricesUpdateDate.getSeconds();
-  const tsRounded = pricesUpdateSecs ? pricesUpdateDate.setSeconds(pricesUpdateSecs < 30 ? 0 : 30, 0) : 0;
+  const tsRounded = floorTimestamp(pricesUpdatedAt);
   const pageSize = 150;
   const pageNumb = Math.ceil(positionKeys.length / pageSize);
   const ReaderAddress = getContract(chainId, "SyntheticsReader");
@@ -206,11 +207,10 @@ export function usePositionsInfo(
     [chainId, ReaderAddress]
   );
 
-  const getKey = (i) => (pageNumb && i < pageNumb ? ["usePositionsInfo", chainId, positionsHash, tsRounded, i] : null);
-
+  const getKey = (i: number) => (pageNumb && i < pageNumb ? ["usePositionsInfo", chainId, tsRounded, i] : null);
   const { data: positionsInfoJson } = useSWRInfinite<PositionJson[]>(
     getKey,
-    ([, , , , i]) =>
+    ([, , , i]) =>
       contract.getAccountPositionInfoList(
         DataStoreAddress,
         ReferralStorageAddress,
@@ -228,7 +228,7 @@ export function usePositionsInfo(
   );
 
   const positionsInfo = positionsInfoJson?.flat() || [];
-  const data = useMemo(() => {
+  const { data, updatedAt } = useMemo(() => {
     if (
       !tokensData ||
       !marketsInfoData ||
@@ -236,12 +236,13 @@ export function usePositionsInfo(
       !positionsInfo.length ||
       positionsInfo.length !== positionKeys.length
     ) {
-      return;
+      return { data: undefined, updatedAt: 0 };
     }
 
-    return parsePositionsInfo(positionKeys, positionsInfo, marketsInfoData, tokensData, minCollateralUsd);
+    const data = parsePositionsInfo(positionKeys, positionsInfo, marketsInfoData, tokensData, minCollateralUsd);
+    return { data, updatedAt: Date.now() };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, positionsInfo.length, tsRounded]);
+  }, [chainId, positionsInfo.length ? tsRounded : 0]);
 
-  return { isLoading: !data, error: null, data: data || {} };
+  return { isLoading: !data, error: null, data: data || {}, updatedAt };
 }
