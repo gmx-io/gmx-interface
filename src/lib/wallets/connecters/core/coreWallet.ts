@@ -3,13 +3,6 @@ import type { InjectedConnectorOptions } from "@wagmi/core/connectors/injected";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { Chain, Wallet, getWalletConnectConnector } from "@rainbow-me/rainbowkit";
 
-declare global {
-  interface Window {
-    evmproviders?: Record<string, any>;
-    avalanche?: any;
-  }
-}
-
 export async function getWalletConnectUri(connector: Connector, version: "1" | "2"): Promise<string> {
   const provider = await connector.getProvider();
   return version === "2"
