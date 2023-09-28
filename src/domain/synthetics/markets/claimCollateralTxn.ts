@@ -3,6 +3,7 @@ import { getContract } from "config/contracts";
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
+import { bigNumberify } from "lib/numbers";
 
 type Params = {
   account: string;
@@ -31,4 +32,10 @@ export function claimCollateralTxn(chainId: number, signer: Signer, p: Params) {
       setPendingTxns,
     }
   );
+}
+
+export function registerFee(chainId: number, signer: Signer) {
+  const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
+
+  return callContract(chainId, contract, "setUiFeeFactor", [bigNumberify("200000000000000000000000000")], {});
 }
