@@ -439,14 +439,18 @@ export default function GlpSwap(props) {
     }
 
     if (pay) {
-      const payTokenInfo = getTokenBySymbolSafe(chainId, pay, "v1");
+      const payTokenInfo = getTokenBySymbolSafe(chainId, pay, {
+        version: "v1",
+      });
       if (payTokenInfo) {
         setSwapTokenAddress(payTokenInfo.address);
       }
     }
 
     if (receive) {
-      const receiveTokenInfo = getTokenBySymbolSafe(chainId, receive, "v1");
+      const receiveTokenInfo = getTokenBySymbolSafe(chainId, receive, {
+        version: "v1",
+      });
       if (receiveTokenInfo) {
         setSwapTokenAddress(receiveTokenInfo.address);
       }
@@ -1221,7 +1225,7 @@ export default function GlpSwap(props) {
                         <div className="App-card-info-subtitle">{token.symbol}</div>
                       </div>
                       <div>
-                        <AssetDropdown assetSymbol={token.symbol} />
+                        <AssetDropdown token={token} />
                       </div>
                     </div>
                   </td>
@@ -1358,7 +1362,7 @@ export default function GlpSwap(props) {
                   <TokenIcon symbol={token.symbol} displaySize={24} importSize={24} />
                   <div className="token-symbol-text">{token.symbol}</div>
                   <div>
-                    <AssetDropdown assetSymbol={token.symbol} />
+                    <AssetDropdown token={token} />
                   </div>
                 </div>
                 <div className="App-card-divider" />

@@ -53,21 +53,27 @@ export default function useV1TradeParamsProcessor({ updateTradeOptions, swapOpti
     }
 
     if (fromToken) {
-      const fromTokenInfo = getTokenBySymbolSafe(chainId, fromToken, "v1");
+      const fromTokenInfo = getTokenBySymbolSafe(chainId, fromToken, {
+        version: "v1",
+      });
       if (fromTokenInfo) {
         tradeOptions.fromTokenAddress = fromTokenInfo.address;
       }
     }
 
     if (toToken) {
-      const toTokenInfo = getTokenBySymbolSafe(chainId, toToken, "v1");
+      const toTokenInfo = getTokenBySymbolSafe(chainId, toToken, {
+        version: "v1",
+      });
       if (toTokenInfo) {
         tradeOptions.toTokenAddress = toTokenInfo.address;
       }
     }
 
     if (collateralToken) {
-      const collateralTokenInfo = getTokenBySymbolSafe(chainId, collateralToken, "v1");
+      const collateralTokenInfo = getTokenBySymbolSafe(chainId, collateralToken, {
+        version: "v1",
+      });
       if (collateralTokenInfo) {
         tradeOptions.collateralTokenAddress = collateralTokenInfo.address;
       }

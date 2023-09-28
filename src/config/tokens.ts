@@ -947,21 +947,35 @@ export function getToken(chainId: number, address: string) {
   return TOKENS_MAP[chainId][address];
 }
 
-export function getTokenBySymbol(chainId: number, symbol: string) {
-  const tokens = TOKENS_BY_SYMBOL_MAP[chainId];
-  const token = tokens[symbol];
+export function getTokenBySymbol(
+  chainId: number,
+  symbol: string,
+  { isSynthetic = false, version }: { isSynthetic?: boolean; version?: "v1" | "v2" } = {}
+) {
+  let tokens = Object.values(TOKENS_MAP[chainId]);
 
-  if (token) {
-    return token;
+  if (version) {
+    tokens = version === "v1" ? getV1Tokens(chainId) : getV2Tokens(chainId);
   }
 
-  const matchingSymbol = Object.keys(tokens).find((key) => tokens[key].symbol.toLowerCase() === symbol.toLowerCase());
+  if (isSynthetic) {
+    const syntheticToken = tokens.find((token) => {
+      return token.symbol.toLowerCase() === symbol.toLowerCase() && token.isSynthetic;
+    });
+    if (syntheticToken) {
+      return syntheticToken;
+    }
+  }
 
-  if (!matchingSymbol) {
+  const token = tokens.find((token) => {
+    return token.symbol.toLowerCase() === symbol.toLowerCase();
+  });
+
+  if (!token) {
     throw new Error(`Incorrect symbol "${symbol}" for chainId ${chainId}`);
   }
 
-  return tokens[matchingSymbol];
+  return token;
 }
 
 export function convertTokenAddress(chainId: number, address: string, convertTo?: "wrapped" | "native") {
@@ -1015,21 +1029,11 @@ export function getPriceDecimals(chainId: number, tokenSymbol?: string) {
 export function getTokenBySymbolSafe(
   chainId: number,
   symbol: string,
-  version: "v1" | "v2",
-  { isSynthetic = false }: { isSynthetic?: boolean } = {}
+  { isSynthetic = false, version }: { isSynthetic?: boolean; version?: "v1" | "v2" } = {}
 ) {
-  const tokens = version === "v1" ? getV1Tokens(chainId) : getV2Tokens(chainId);
-
-  if (isSynthetic) {
-    const syntheticToken = tokens.find((token) => {
-      return token.symbol.toLowerCase() === symbol.toLowerCase() && token.isSynthetic;
-    });
-    if (syntheticToken) {
-      return syntheticToken;
-    }
+  try {
+    return getTokenBySymbol(chainId, symbol, { isSynthetic, version });
+  } catch (e) {
+    return;
   }
-
-  return tokens.find((token) => {
-    return token.symbol.toLowerCase() === symbol.toLowerCase();
-  });
 }
