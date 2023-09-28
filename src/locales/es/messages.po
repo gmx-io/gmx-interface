@@ -1283,10 +1283,6 @@ msgstr ""
 msgid "Deposit disabled, pending {0} upgrade"
 msgstr ""
 
-#: src/domain/synthetics/markets/createDepositTxn.ts
-msgid "Deposit error."
-msgstr ""
-
 #: src/pages/Stake/StakeV2.js
 msgid "Deposit failed!"
 msgstr "¡Depósito fallido!"
@@ -1629,11 +1625,6 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
-msgstr ""
-
-#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
-#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
-msgid "Execute order simulation failed."
 msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
@@ -3069,12 +3060,6 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Order creation failed."
-msgstr ""
-
-#: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
-#: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
-#: src/domain/synthetics/orders/createSwapOrderTxn.ts
-msgid "Order error."
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
@@ -5119,10 +5104,6 @@ msgstr "Retiro enviado."
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Withdraw {0} USD from {1}{longOrShortText}"
-msgstr ""
-
-#: src/domain/synthetics/markets/createWithdrawalTxn.ts
-msgid "Withdrawal error."
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js

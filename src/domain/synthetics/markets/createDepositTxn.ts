@@ -7,7 +7,6 @@ import { SetPendingDeposit } from "context/SyntheticsEvents";
 import { applySlippageToMinOut } from "../trade";
 import { simulateExecuteOrderTxn } from "../orders/simulateExecuteOrderTxn";
 import { TokensData } from "../tokens";
-import { t } from "@lingui/macro";
 
 type Params = {
   account: string;
@@ -90,14 +89,12 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Param
     .map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
 
   if (!p.skipSimulation) {
-    await simulateExecuteOrderTxn(chainId, {
-      account: p.account,
+    await simulateExecuteOrderTxn(chainId, signer, {
       primaryPriceOverrides: {},
       secondaryPriceOverrides: {},
       tokensData: p.tokensData,
       createOrderMulticallPayload: encodedPayload,
       method: "simulateExecuteDeposit",
-      errorTitle: t`Deposit error.`,
       value: wntAmount,
     });
   }
