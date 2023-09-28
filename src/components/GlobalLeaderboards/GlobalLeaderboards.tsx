@@ -26,7 +26,7 @@ export default function GlobalLeaderboards() {
       />
       <div className="LeaderboardHeader">
         <SearchInput
-          placeholder={activeLeaderboard ? t`Search Address` : t`Search Address or Market`}
+          placeholder={activeLeaderboard ? t`Search Address or Market` : t`Search Address`}
           onInput={onSearchInput}
           setValue={() => {}}
           onKeyDown={() => {}}
