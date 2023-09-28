@@ -36,6 +36,7 @@ export type Position = {
   deltaAfterFeesPercentageStr: string;
   netValue: BigNumber;
   leverage: BigNumber;
+  leverageWithPnl: BigNumber;
   leverageStr: string;
 };
 

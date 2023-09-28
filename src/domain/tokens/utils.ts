@@ -33,6 +33,10 @@ export function getIsEquivalentTokens(token1: Token, token2: Token) {
     return true;
   }
 
+  if ((token1.isSynthetic || token2.isSynthetic) && token1.symbol === token2.symbol) {
+    return true;
+  }
+
   return false;
 }
 
