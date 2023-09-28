@@ -707,8 +707,8 @@ msgid "Canceling {ordersText}"
 msgstr ""
 
 #: src/pages/Leaderboards/Leaderboards.tsx
-msgid "Chain Icon"
-msgstr ""
+#~ msgid "Chain Icon"
+#~ msgstr ""
 
 #: src/App/App.js
 #: src/pages/Exchange/Exchange.js
@@ -2997,6 +2997,10 @@ msgstr "Netzwerke und Einstellungen"
 msgid "Next"
 msgstr "Weiter"
 
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "No Liquidation Price as the Position's Collateral value will increase to cover any negative PnL."
+msgstr ""
+
 #: src/pages/Actions/Actions.js
 msgid "No PnLs found"
 msgstr "Keine PnLs gefunden"
@@ -3798,11 +3802,11 @@ msgstr "Kosten sparen"
 msgid "Save on Fees"
 msgstr "Gebühren sparen"
 
-#: src/components/GlobalLeaderboards/TopAccounts.tsx
+#: src/components/GlobalLeaderboards/GlobalLeaderboards.tsx
 msgid "Search Address"
 msgstr ""
 
-#: src/components/GlobalLeaderboards/TopPositions.tsx
+#: src/components/GlobalLeaderboards/GlobalLeaderboards.tsx
 msgid "Search Address or Market"
 msgstr ""
 
