@@ -16,6 +16,7 @@ import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { FindSwapPath, IncreasePositionAmounts, NextPositionValues } from "../types";
 import { getAcceptablePriceInfo, getMarkPrice, getTriggerThresholdType } from "./prices";
 import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "./swap";
+import { applyFactor } from "lib/numbers";
 
 export function getIncreasePositionAmounts(p: {
   marketInfo: MarketInfo;
@@ -32,6 +33,7 @@ export function getIncreasePositionAmounts(p: {
   userReferralInfo: UserReferralInfo | undefined;
   strategy: "leverageBySize" | "leverageByCollateral" | "independent";
   findSwapPath: FindSwapPath;
+  uiFeeFactor?: BigNumber;
 }): IncreasePositionAmounts {
   const {
     marketInfo,
@@ -47,6 +49,7 @@ export function getIncreasePositionAmounts(p: {
     savedAcceptablePriceImpactBps,
     findSwapPath,
     userReferralInfo,
+    uiFeeFactor,
     strategy,
   } = p;
 
@@ -74,6 +77,7 @@ export function getIncreasePositionAmounts(p: {
     acceptablePriceDeltaBps: BigNumber.from(0),
 
     positionFeeUsd: BigNumber.from(0),
+    uiFeeUsd: BigNumber.from(0),
     feeDiscountUsd: BigNumber.from(0),
     borrowingFeeUsd: BigNumber.from(0),
     fundingFeeUsd: BigNumber.from(0),
@@ -155,6 +159,7 @@ export function getIncreasePositionAmounts(p: {
     );
     values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
     values.feeDiscountUsd = positionFeeInfo.discountUsd;
+    values.uiFeeUsd = uiFeeFactor?.gt(0) ? applyFactor(values.sizeDeltaUsd, uiFeeFactor) : BigNumber.from(0);
 
     values.collateralDeltaUsd = baseCollateralUsd
       .sub(values.positionFeeUsd)
@@ -182,6 +187,7 @@ export function getIncreasePositionAmounts(p: {
 
     values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
     values.feeDiscountUsd = positionFeeInfo.discountUsd;
+    values.uiFeeUsd = uiFeeFactor?.gt(0) ? applyFactor(values.sizeDeltaUsd, uiFeeFactor) : BigNumber.from(0);
 
     values.collateralDeltaUsd = values.sizeDeltaUsd.mul(BASIS_POINTS_DIVISOR).div(leverage);
     values.collateralDeltaAmount = convertToTokenAmount(
@@ -234,6 +240,7 @@ export function getIncreasePositionAmounts(p: {
 
       values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
       values.feeDiscountUsd = positionFeeInfo.discountUsd;
+      values.uiFeeUsd = uiFeeFactor?.gt(0) ? applyFactor(values.sizeDeltaUsd, uiFeeFactor) : BigNumber.from(0);
     }
 
     if (initialCollateralAmount?.gt(0)) {

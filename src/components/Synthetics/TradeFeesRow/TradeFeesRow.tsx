@@ -28,6 +28,7 @@ type Props = {
   isTop?: boolean;
   feesType: TradeFeesType;
   warning?: string;
+  uiFee?: FeeItem;
 };
 
 type FeeRow = {
@@ -115,6 +116,20 @@ export function TradeFeesRow(p: Props) {
         }
       : undefined;
 
+    const uiFeeRow = p.uiFee?.deltaUsd?.abs().gt(0)
+      ? {
+          id: "uiFee",
+          label: (
+            <>
+              <div className="text-white">UI Fee</div>
+              <div>({formatPercentage(p.uiFee?.bps.abs())} of position size)</div>
+            </>
+          ),
+          value: formatDeltaUsd(p.uiFee?.deltaUsd),
+          className: "text-red",
+        }
+      : undefined;
+
     const feeDiscountRow = p.feeDiscountUsd?.gt(0)
       ? {
           id: "feeDiscount",
@@ -188,7 +203,7 @@ export function TradeFeesRow(p: Props) {
       : undefined;
 
     if (p.feesType === "swap") {
-      return [swapPriceImpactRow, ...swapFeeRows, executionFeeRow].filter(Boolean) as FeeRow[];
+      return [swapPriceImpactRow, ...swapFeeRows, executionFeeRow, uiFeeRow].filter(Boolean) as FeeRow[];
     }
 
     if (p.feesType === "increase") {
@@ -203,6 +218,7 @@ export function TradeFeesRow(p: Props) {
         borrowFeeRateRow,
         fundingFeeRateRow,
         executionFeeRow,
+        uiFeeRow,
       ].filter(Boolean) as FeeRow[];
     }
 
@@ -217,6 +233,7 @@ export function TradeFeesRow(p: Props) {
         swapProfitFeeRow,
         ...swapFeeRows,
         executionFeeRow,
+        uiFeeRow,
       ].filter(Boolean) as FeeRow[];
     }
 
@@ -238,6 +255,7 @@ export function TradeFeesRow(p: Props) {
     p.borrowFeeRateStr,
     p.fundingFeeRateStr,
     p.executionFee,
+    p.uiFee,
     chainId,
   ]);
 

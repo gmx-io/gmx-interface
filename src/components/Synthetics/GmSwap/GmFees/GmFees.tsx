@@ -4,13 +4,14 @@ import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ExecutionFee, FeeItem } from "domain/synthetics/fees";
-import { formatDeltaUsd, formatTokenAmountWithUsd } from "lib/numbers";
+import { formatDeltaUsd, formatPercentage, formatTokenAmountWithUsd } from "lib/numbers";
 import "./GmFees.scss";
 
 type Props = {
   totalFees?: FeeItem;
   swapFee?: FeeItem;
   swapPriceImpact?: FeeItem;
+  uiFee?: FeeItem;
   executionFee?: ExecutionFee;
   isDeposit: boolean;
 };
@@ -60,6 +61,19 @@ export function GmFees(p: Props) {
                         p.executionFee.feeToken.symbol,
                         p.executionFee.feeToken.decimals
                       )}
+                      showDollar={false}
+                      className="text-red"
+                    />
+                  )}
+                  {p.uiFee?.deltaUsd?.gt(0) && (
+                    <StatsTooltipRow
+                      label={
+                        <>
+                          <div>UI Fee</div>
+                          <div>({formatPercentage(p.uiFee?.bps.abs())} of position size)</div>
+                        </>
+                      }
+                      value={formatDeltaUsd(p.uiFee?.deltaUsd)}
                       showDollar={false}
                       className="text-red"
                     />

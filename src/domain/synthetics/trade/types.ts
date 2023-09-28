@@ -29,6 +29,7 @@ export type SwapAmounts = {
   priceOut: BigNumber;
   swapPathStats: SwapPathStats | undefined;
   minOutputAmount: BigNumber;
+  uiFeeUsd?: BigNumber;
 };
 
 export type IncreasePositionAmounts = {
@@ -56,6 +57,7 @@ export type IncreasePositionAmounts = {
   acceptablePriceDeltaBps: BigNumber;
 
   positionFeeUsd: BigNumber;
+  uiFeeUsd: BigNumber;
   feeDiscountUsd: BigNumber;
   borrowingFeeUsd: BigNumber;
   fundingFeeUsd: BigNumber;
@@ -80,6 +82,7 @@ export type DecreasePositionAmounts = {
   realizedPnl: BigNumber;
 
   positionFeeUsd: BigNumber;
+  uiFeeUsd: BigNumber;
   feeDiscountUsd: BigNumber;
   borrowingFeeUsd: BigNumber;
   fundingFeeUsd: BigNumber;
@@ -203,6 +206,7 @@ export type TradeFees = {
   positionFeeFactor?: BigNumber;
   borrowFee?: FeeItem;
   fundingFee?: FeeItem;
+  uiFee?: FeeItem;
   feeDiscountUsd?: BigNumber;
   swapProfitFee?: FeeItem;
 };
@@ -211,4 +215,5 @@ export type GmSwapFees = {
   totalFees?: FeeItem;
   swapFee?: FeeItem;
   swapPriceImpact?: FeeItem;
+  uiFee?: FeeItem;
 };

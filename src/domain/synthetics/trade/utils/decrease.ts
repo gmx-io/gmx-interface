@@ -25,6 +25,7 @@ export function getDecreasePositionAmounts(p: {
   userReferralInfo: UserReferralInfo | undefined;
   minCollateralUsd: BigNumber;
   minPositionSizeUsd: BigNumber;
+  uiFeeFactor?: BigNumber;
 }) {
   const {
     marketInfo,
@@ -38,6 +39,7 @@ export function getDecreasePositionAmounts(p: {
     userReferralInfo,
     minCollateralUsd,
     minPositionSizeUsd,
+    uiFeeFactor,
   } = p;
   const { indexToken } = marketInfo;
 
@@ -62,6 +64,7 @@ export function getDecreasePositionAmounts(p: {
     realizedPnl: BigNumber.from(0),
 
     positionFeeUsd: BigNumber.from(0),
+    uiFeeUsd: BigNumber.from(0),
     borrowingFeeUsd: BigNumber.from(0),
     fundingFeeUsd: BigNumber.from(0),
     feeDiscountUsd: BigNumber.from(0),
@@ -131,6 +134,7 @@ export function getDecreasePositionAmounts(p: {
 
     values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
     values.feeDiscountUsd = positionFeeInfo.discountUsd;
+    values.uiFeeUsd = uiFeeFactor?.gt(0) ? applyFactor(values.sizeDeltaUsd, uiFeeFactor) : BigNumber.from(0);
 
     const totalFeesUsd = BigNumber.from(0)
       .add(values.positionFeeUsd)
@@ -225,6 +229,7 @@ export function getDecreasePositionAmounts(p: {
 
   values.positionFeeUsd = estimatedPositionFeeCost.usd;
   values.feeDiscountUsd = estimatedDiscountCost.usd;
+  values.uiFeeUsd = uiFeeFactor?.gt(0) ? applyFactor(values.sizeDeltaUsd, uiFeeFactor) : BigNumber.from(0);
 
   const borrowFeeCost = estimateCollateralCost(
     position.pendingBorrowingFeesUsd,
