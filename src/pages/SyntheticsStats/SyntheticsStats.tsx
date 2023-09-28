@@ -299,13 +299,21 @@ export function SyntheticsStats() {
                               showDollar={false}
                               label="PnL Long"
                               className={market.pnlLongMax.gt(0) ? "text-green" : "text-red"}
-                              value={formatAmountHuman(market.pnlLongMax, 30, true)}
+                              value={`${market.pnlLongMax.gt(0) ? "+" : "-"}${formatAmountHuman(
+                                market.pnlLongMax.abs(),
+                                30,
+                                true
+                              )}`}
                             />
                             <StatsTooltipRow
                               showDollar={false}
                               label="PnL Short"
                               className={market.pnlShortMax.gt(0) ? "text-green" : "text-red"}
-                              value={formatAmountHuman(market.pnlShortMax, 30, true)}
+                              value={`${market.pnlShortMax.gt(0) ? "+" : "-"}${formatAmountHuman(
+                                market.pnlShortMax.abs(),
+                                30,
+                                true
+                              )}`}
                             />
                           </>
                         )}
