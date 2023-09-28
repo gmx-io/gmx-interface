@@ -16,7 +16,7 @@ import { formatAmount, formatPercentage, formatUsd, getBasisPoints } from "lib/n
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { ShareBar } from "components/ShareBar/ShareBar";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import "./MarketCard.scss";
 
 export type Props = {
@@ -34,23 +34,71 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
 
   const longShortText = isLong ? t`Long` : t`Short`;
 
-  const { liquidity, maxReservedUsd, reservedUsd, borrowingRate, fundingRate, totalInterestUsd, priceDecimals } =
-    useMemo(() => {
-      if (!marketInfo) return {};
+  const {
+    liquidity,
+    maxReservedUsd,
+    reservedUsd,
+    borrowingRate,
+    fundingRateLong,
+    fundingRateShort,
+    totalInterestUsd,
+    priceDecimals,
+  } = useMemo(() => {
+    if (!marketInfo) return {};
 
-      return {
-        liquidity: getAvailableUsdLiquidityForPosition(marketInfo, isLong),
-        maxReservedUsd: getMaxReservedUsd(marketInfo, isLong),
-        reservedUsd: getReservedUsd(marketInfo, isLong),
-        borrowingRate: getBorrowingFactorPerPeriod(marketInfo, isLong, CHART_PERIODS["1h"]).mul(100),
-        fundingRate: getFundingFactorPerPeriod(marketInfo, isLong, CHART_PERIODS["1h"]).mul(100),
-        totalInterestUsd: marketInfo.longInterestUsd.add(marketInfo.shortInterestUsd),
-        priceDecimals: marketInfo.indexToken.priceDecimals,
-      };
-    }, [marketInfo, isLong]);
-
+    return {
+      liquidity: getAvailableUsdLiquidityForPosition(marketInfo, isLong),
+      maxReservedUsd: getMaxReservedUsd(marketInfo, isLong),
+      reservedUsd: getReservedUsd(marketInfo, isLong),
+      borrowingRate: getBorrowingFactorPerPeriod(marketInfo, isLong, CHART_PERIODS["1h"]).mul(100),
+      fundingRateLong: getFundingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]).mul(100),
+      fundingRateShort: getFundingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]).mul(100),
+      totalInterestUsd: marketInfo.longInterestUsd.add(marketInfo.shortInterestUsd),
+      priceDecimals: marketInfo.indexToken.priceDecimals,
+    };
+  }, [marketInfo, isLong]);
+  const fundingRate = isLong ? fundingRateLong : fundingRateShort;
   const indexName = marketInfo && getMarketIndexName(marketInfo);
   const poolName = marketInfo && getMarketPoolName(marketInfo);
+
+  const renderFundingFeeTooltipContent = useCallback(() => {
+    if (!fundingRateLong || !fundingRateShort) return [];
+
+    const isLongPositive = fundingRateLong?.gt(0);
+    const long = (
+      <Trans>
+        Long positions {isLongPositive ? t`receive` : t`pay`} a Funding Fee of{" "}
+        <span className={isLongPositive ? "text-green" : "text-red"}>
+          {isLongPositive ? "+" : "-"}
+          {formatAmount(fundingRateLong.abs(), 30, 4)}%
+        </span>{" "}
+        per hour.
+      </Trans>
+    );
+
+    const isShortPositive = fundingRateShort?.gt(0);
+    const short = (
+      <Trans>
+        Short positions {isShortPositive ? t`receive` : t`pay`} a Funding Fee of{" "}
+        <span className={isShortPositive ? "text-green" : "text-red"}>
+          {isShortPositive ? "+" : "-"}
+          {formatAmount(fundingRateShort.abs(), 30, 4)}%
+        </span>{" "}
+        per hour.
+      </Trans>
+    );
+
+    const [currentFeeElement, oppositeFeeElement] = isLong ? [long, short] : [short, long];
+
+    return (
+      <div>
+        {currentFeeElement}
+        <br />
+        <br />
+        {oppositeFeeElement}
+      </div>
+    );
+  }, [fundingRateLong, fundingRateShort, isLong]);
 
   return (
     <div className="Exchange-swap-market-box App-box App-box-border">
@@ -132,14 +180,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
                 fundingRate ? `${fundingRate.gt(0) ? "+" : "-"}${formatAmount(fundingRate.abs(), 30, 4)}% / 1h` : "..."
               }
               position="right-bottom"
-              renderContent={() => (
-                <div>
-                  <Trans>
-                    {longShortText} positions {fundingRate.gt(0) ? t`earn` : t`pay`} a funding fee of{" "}
-                    {formatAmount(fundingRate.abs(), 30, 4)}% per hour.
-                  </Trans>
-                </div>
-              )}
+              renderContent={renderFundingFeeTooltipContent}
             />
           }
         />

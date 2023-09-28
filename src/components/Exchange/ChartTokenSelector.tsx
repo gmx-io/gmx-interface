@@ -26,6 +26,7 @@ type Props = {
   onSelectToken: (token: Token) => void;
   swapOption: string;
   infoTokens?: InfoTokens;
+  setSwapOption?: (option: string) => void;
 };
 
 function addLiquidityToTokens(tokens: Token[], infoTokens: InfoTokens): ChartToken[] {
@@ -64,7 +65,7 @@ function addMaxInAndOut(tokens: Token[], infoTokens: InfoTokens): ChartToken[] {
 }
 
 export default function ChartTokenSelector(props: Props) {
-  const { chainId, selectedToken, onSelectToken, swapOption, infoTokens } = props;
+  const { chainId, selectedToken, onSelectToken, swapOption, infoTokens, setSwapOption } = props;
   const [searchKeyword, setSearchKeyword] = useState("");
   const isLong = swapOption === LONG;
   const isShort = swapOption === SHORT;
@@ -103,7 +104,7 @@ export default function ChartTokenSelector(props: Props) {
   return (
     <Popover>
       {({ open, close }) => {
-        if (!open) setSearchKeyword("");
+        if (!open && searchKeyword.length > 0) setSearchKeyword("");
         return (
           <>
             <Popover.Button as="div">
@@ -148,8 +149,12 @@ export default function ChartTokenSelector(props: Props) {
                     <tbody>
                       {filteredTokens.map((option) => {
                         return (
-                          <Popover.Button as="tr" key={option.symbol} onClick={() => onSelect(option)}>
-                            <td className="token-item">
+                          <Popover.Button
+                            as="tr"
+                            key={option.symbol}
+                            className={isSwap ? "Swap-token-list" : "Position-token-list"}
+                          >
+                            <td className="token-item" onClick={() => onSelect(option)}>
                               <span className="inline-items-center">
                                 <TokenIcon
                                   className="ChartToken-list-icon"
@@ -160,10 +165,24 @@ export default function ChartTokenSelector(props: Props) {
                                 {option.symbol} {!isSwap && "/ USD"}
                               </span>
                             </td>
-                            <td>
+                            <td
+                              onClick={() => {
+                                onSelect(option);
+                                if (setSwapOption && !isSwap) {
+                                  setSwapOption(LONG);
+                                }
+                              }}
+                            >
                               ${formatAmount(isSwap ? option.maxInUsd : option.maxAvailableLong, USD_DECIMALS, 0, true)}
                             </td>
-                            <td>
+                            <td
+                              onClick={() => {
+                                onSelect(option);
+                                if (setSwapOption && !isSwap) {
+                                  setSwapOption(SHORT);
+                                }
+                              }}
+                            >
                               $
                               {formatAmount(
                                 isSwap ? option.maxOutUsd : option.maxAvailableShort,

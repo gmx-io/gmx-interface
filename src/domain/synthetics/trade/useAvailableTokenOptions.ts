@@ -115,7 +115,7 @@ export function useAvailableTokenOptions(
       indexTokens: Array.from(indexTokens),
       infoTokens: adaptToV1InfoTokens(tokensData || {}),
       sortedIndexTokensWithPoolValue,
-      sortedLongAndShortTokens,
+      sortedLongAndShortTokens: Array.from(new Set(sortedLongAndShortTokens)),
       sortedAllMarkets,
     };
   }, [chainId, marketsInfoData, tokensData]);
