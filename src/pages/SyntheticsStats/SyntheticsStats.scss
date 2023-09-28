@@ -6,16 +6,15 @@
 
   .sticky-left {
     position: sticky;
-    z-index: 1;
+    z-index: 10;
     top: 0;
     left: 0;
     background: var(--main-bg-color);
   }
-
-  .MarketCard-config-tooltip {
-    .Tooltip-popup {
-      min-width: 34rem;
-    }
+}
+.MarketCard-config-tooltip {
+  .Tooltip-popup {
+    min-width: 34rem;
   }
 }
 

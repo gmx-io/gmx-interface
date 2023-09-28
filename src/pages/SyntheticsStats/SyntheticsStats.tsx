@@ -7,7 +7,6 @@ import { formatAmount, formatUsd } from "lib/numbers";
 import cx from "classnames";
 import { ShareBar } from "components/ShareBar/ShareBar";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import Tooltip from "components/Tooltip/Tooltip";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
 import {
   getAvailableUsdLiquidityForCollateral,
@@ -287,7 +286,7 @@ export function SyntheticsStats() {
                     {market.isSpotOnly ? (
                       "..."
                     ) : (
-                      <Tooltip
+                      <TooltipWithPortal
                         handle={
                           <span className={cx({ positive: market.netPnlMax.gt(0), negative: market.netPnlMax.lt(0) })}>
                             {market.netPnlMax.gt(0) ? "+" : "-"}${formatAmountHuman(market.netPnlMax.abs(), 30)}
@@ -326,7 +325,7 @@ export function SyntheticsStats() {
                     {market.isSpotOnly ? (
                       "..."
                     ) : (
-                      <Tooltip
+                      <TooltipWithPortal
                         handle={`$${formatAmountHuman(market.totalBorrowingFees, 30)}`}
                         renderContent={() => (
                           <>
@@ -385,7 +384,7 @@ export function SyntheticsStats() {
                   </div>
                 </td>
                 <td>
-                  <Tooltip
+                  <TooltipWithPortal
                     handle={
                       market.isSpotOnly ? (
                         formatAmountHuman(longCollateralLiquidityUsd, 30)
@@ -400,14 +399,15 @@ export function SyntheticsStats() {
                     }
                     renderContent={() => (
                       <StatsTooltipRow
-                        label={`Max ${market.longToken.symbol} Out`}
+                        label={`Max ${market.longToken.symbol} Out xx`}
                         value={formatAmountHuman(longCollateralLiquidityUsd, 30)}
                       />
                     )}
                   />
                 </td>
                 <td>
-                  <Tooltip
+                  <TooltipWithPortal
+                    position="right-bottom"
                     handle={
                       market.isSpotOnly ? (
                         formatAmountHuman(shortCollateralLiquidityUsd, 30)
@@ -433,7 +433,7 @@ export function SyntheticsStats() {
                     {market.isSpotOnly ? (
                       "..."
                     ) : (
-                      <Tooltip
+                      <TooltipWithPortal
                         position="right-bottom"
                         handle={
                           <>
@@ -458,7 +458,7 @@ export function SyntheticsStats() {
                 </td>
                 <td>
                   <div className="cell">
-                    <Tooltip
+                    <TooltipWithPortal
                       position="right-bottom"
                       handle={
                         <div>
@@ -498,10 +498,10 @@ export function SyntheticsStats() {
                 </td>
                 <td>
                   <div className="cell">
-                    <Tooltip
+                    <TooltipWithPortal
                       position={"right-bottom"}
                       handle="..."
-                      className="MarketCard-config-tooltip"
+                      portalClassName="MarketCard-config-tooltip"
                       renderContent={() => (
                         <>
                           <div>Position Impact</div>

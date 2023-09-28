@@ -138,6 +138,7 @@
 }
 
 .Tooltip-handle {
+  z-index: 1;
   cursor: help;
   position: relative;
   display: inline-flex;
