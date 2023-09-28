@@ -175,6 +175,7 @@ function parsePositionsInfo(
       remainingCollateralAmount: BigNumber.from(0), // not used,
       hasLowCollateral,
       leverage,
+      leverageWithPnl: BigNumber.from(0), // not used,
       pnl,
       pnlPercentage: BigNumber.from(0), // not used,
       pnlAfterFees,
