@@ -3097,8 +3097,11 @@ msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur
 msgstr "注文が必ず執行される保証がないことに注意してください。<0/><1/>これは例えば以下のような状況で起こりえます:"
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
-#: src/components/GlobalLeaderboards/TopPositions.tsx
 msgid "Only Addresses with over $1,000 in traded volume are displayed."
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Only Addresses' Positions with over $1,000 in traded volume are displayed."
 msgstr ""
 
 #: src/components/Referrals/referralsHelper.js

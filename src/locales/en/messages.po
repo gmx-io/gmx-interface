@@ -3086,9 +3086,12 @@ msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur
 msgstr "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
-#: src/components/GlobalLeaderboards/TopPositions.tsx
 msgid "Only Addresses with over $1,000 in traded volume are displayed."
 msgstr "Only Addresses with over $1,000 in traded volume are displayed."
+
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Only Addresses' Positions with over $1,000 in traded volume are displayed."
+msgstr "Only Addresses' Positions with over $1,000 in traded volume are displayed."
 
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
