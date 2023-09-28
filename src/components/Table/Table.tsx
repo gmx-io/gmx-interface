@@ -22,6 +22,7 @@ export default function Table<T extends Record<string, any>>({
   }
   const useBreakpoint = createBreakpoint({ XL: 1200, L: 1000, M: 800, S: 500 });
   const breakpoint = useBreakpoint();
+  const cols = Object.keys(titles).length;
   return (
     <div className="TableBox">
       <table className={cx("Exchange-list", "App-box", "Table", className)}>
@@ -35,15 +36,15 @@ export default function Table<T extends Record<string, any>>({
           </tr>
           {isLoading ? (
             <tr>
-              <td>{t`Loading...`}</td>
+              <td colSpan={cols}>{t`Loading...`}</td>
             </tr>
           ) : error ? (
             <tr>
-              <td>{t`Error` + ": " + errorMsg}</td>
+              <td colSpan={cols}>{t`Error` + ": " + errorMsg}</td>
             </tr>
           ) : !content.length ? (
             <tr>
-              <td>{t`No data yet`}</td>
+              <td colSpan={cols}>{t`No data yet`}</td>
             </tr>
           ) : (
             content.map((row: T) => (
