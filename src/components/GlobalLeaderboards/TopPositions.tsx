@@ -145,10 +145,10 @@ export default function TopPositions({ positions, search }: TopPositionsProps) {
       liqPrice: {
         value: () => (
           <Tooltip
-            handle={formatPrice(p.liquidationPrice!, chainId, p.marketInfo.indexToken.symbol) || ""}
+            handle={p.liquidationPrice ? formatPrice(p.liquidationPrice, chainId, p.marketInfo.indexToken.symbol) : "NA"}
             position={i > 7 ? "right-top" : "right-bottom"}
             className="nowrap"
-            renderContent={() => (
+            renderContent={() => p.liquidationPrice ? (
               <>
                 <StatsTooltipRow
                   label={t`Mark Price`}
@@ -169,6 +169,10 @@ export default function TopPositions({ positions, search }: TopPositionsProps) {
                   }
                 />
               </>
+            ) : (
+              <div className="NoLiqPriceTooltip">
+                {t`No Liquidation Price as the Position's Collateral value will increase to cover any negative PnL.`}
+              </div>
             )}
           />
         ),

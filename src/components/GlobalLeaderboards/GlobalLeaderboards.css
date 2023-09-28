@@ -119,6 +119,11 @@
   margin-left: 0.5rem;
 }
 
+.NoLiqPriceTooltip {
+  min-width: 28rem;
+  white-space: normal;
+}
+
 .LeaderboardRank-1::after {
   background-image: url(../../img/ic_trophy_1.svg);
 }
