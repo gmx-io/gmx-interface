@@ -431,7 +431,7 @@ export const Exchange = forwardRef((props, ref) => {
     getTokenBySymbol(chainId, defaultCollateralSymbol).address
   );
   const [swapOption, setSwapOption] = useLocalStorageByChainId(chainId, "Swap-option-v2", LONG);
-  const [orderOption, setOrderOption] = useLocalStorageSerializeKey([chainId, "Order-option"], MARKET);
+  let [orderOption, setOrderOption] = useLocalStorageSerializeKey([chainId, "Order-option"], MARKET);
   const fromTokenAddress = tokenSelection[swapOption].from;
   const toTokenAddress = tokenSelection[swapOption].to;
 
@@ -773,6 +773,10 @@ export const Exchange = forwardRef((props, ref) => {
   const [isPositionRouterApproving, setIsPositionRouterApproving] = useState(false);
   const [isCancelMultipleOrderProcessing, setIsCancelMultipleOrderProcessing] = useState(false);
   const [cancelOrderIdList, setCancelOrderIdList] = useState([]);
+
+  if (!flagOrdersEnabled) {
+    orderOption = MARKET;
+  }
 
   const onMultipleCancelClick = useCallback(
     async function () {
