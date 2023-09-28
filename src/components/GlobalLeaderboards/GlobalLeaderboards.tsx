@@ -30,7 +30,7 @@ export default function GlobalLeaderboards() {
           onInput={onSearchInput}
           setValue={() => {}}
           onKeyDown={() => {}}
-          className={cx("LeaderboardSearch", activeLeaderboard && "TopPositionsSearch")}
+          className={cx("LeaderboardSearch")}
           autoFocus={false}
         />
       </div>
