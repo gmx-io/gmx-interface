@@ -23,19 +23,12 @@ import {
 const parseRow = (s: Ranked<LiveAccountPerformance>, i: number): TopAccountsRow => ({
   key: s.id,
   rank: {
-    value: () => (
-      <span className={cx(s.rank < 3 && `LeaderboardRank-${s.rank + 1}`)}>{s.rank + 1}</span>
-    ),
+    value: () => <span className={cx(s.rank < 3 && `LeaderboardRank-${s.rank + 1}`)}>{s.rank + 1}</span>,
   },
   account: {
     value: (breakpoint) =>
       s.account && (
-        <AddressView
-          size={24}
-          address={s.account}
-          breakpoint={breakpoint}
-          lengths={{ S: 9, M: 13, L: 24, XL: 42 }}
-        />
+        <AddressView size={24} address={s.account} breakpoint={breakpoint} lengths={{ S: 9, M: 13, L: 24, XL: 42 }} />
       ),
   },
   absProfit: {
@@ -46,7 +39,7 @@ const parseRow = (s: Ranked<LiveAccountPerformance>, i: number): TopAccountsRow 
             {formatDelta(s.absProfit, { signed: true, prefix: "$" })}
           </span>
         }
-        position={ i > 7 ? "right-top" : "right-bottom" }
+        position={i > 7 ? "right-top" : "right-bottom"}
         className="nowrap"
         renderContent={() => (
           <div>
@@ -81,7 +74,7 @@ const parseRow = (s: Ranked<LiveAccountPerformance>, i: number): TopAccountsRow 
             {formatDelta(s.relProfit.mul(BigNumber.from(100)), { signed: true, postfix: "%" })}
           </span>
         }
-        position={ i > 7 ? "right-top" : "right-bottom" }
+        position={i > 7 ? "right-top" : "right-bottom"}
         className="nowrap"
         renderContent={() => (
           <StatsTooltipRow
@@ -118,35 +111,40 @@ export default function TopAccounts({ accounts, search }: TopAccountsProps) {
   const [page, setPage] = useState(1);
   const [orderBy, setOrderBy] = useState<keyof LiveAccountPerformance>("absProfit");
   const [direction, setDirection] = useState<number>(1);
-  const onColumnClick = useCallback((key: keyof LiveAccountPerformance) => () => {
-    if (key === "wins") {
-      setOrderBy(orderBy === "wins" ? "losses" : "wins");
-      setDirection(1);
-    } else if (key === orderBy) {
-      setDirection((d: number) => -1 * d);
-    } else {
-      setOrderBy(key);
-      setDirection(1);
-    }
-  }, [orderBy, setOrderBy, setDirection]);
+  const onColumnClick = useCallback(
+    (key: keyof LiveAccountPerformance) => () => {
+      if (key === "wins") {
+        setOrderBy(orderBy === "wins" ? "losses" : "wins");
+        setDirection(1);
+      } else if (key === orderBy) {
+        setDirection((d: number) => -1 * d);
+      } else {
+        setOrderBy(key);
+        setDirection(1);
+      }
+    },
+    [orderBy, setOrderBy, setDirection]
+  );
 
-  const accountsHash = (data || []).map(a => a[orderBy]!.toString()).join(":");
+  const accountsHash = (data || []).map((a) => a[orderBy]!.toString()).join(":");
   const rankedAccounts = useMemo(() => {
     if (!data) {
       return [];
     }
 
-    const result = data.map((p, i) => ({ ...p, rank: i })).sort((a, b) => {
-      const key = orderBy;
-      if (BigNumber.isBigNumber(a[key]) && BigNumber.isBigNumber(b[key])) {
-        return direction * ((a[key] as BigNumber).gt(b[key] as BigNumber) ? -1 : 1);
-      } else {
-        return 1;
-      }
-    });
+    const result = data
+      .map((p, i) => ({ ...p, rank: i }))
+      .sort((a, b) => {
+        const key = orderBy;
+        if (BigNumber.isBigNumber(a[key]) && BigNumber.isBigNumber(b[key])) {
+          return direction * ((a[key] as BigNumber).gt(b[key] as BigNumber) ? -1 : 1);
+        } else {
+          return 1;
+        }
+      });
 
     return result;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accountsHash, orderBy, direction]);
 
   const term = useDebounce(search, 300);
@@ -154,11 +152,14 @@ export default function TopAccounts({ accounts, search }: TopAccountsProps) {
   const indexFrom = (page - 1) * perPage;
   const rows = filteredStats.slice(indexFrom, indexFrom + perPage).map(parseRow);
   const pageCount = Math.ceil(filteredStats.length / perPage);
-  const getSortableClass = (key: keyof LiveAccountPerformance) => cx(
-    (orderBy === key || (key === "wins" && orderBy === "losses"))
-    ? (direction > 0 ? "sorted-asc" : "sorted-desc")
-    : "sortable"
-  )
+  const getSortableClass = (key: keyof LiveAccountPerformance) =>
+    cx(
+      orderBy === key || (key === "wins" && orderBy === "losses")
+        ? direction > 0
+          ? "sorted-asc"
+          : "sorted-desc"
+        : "sortable"
+    );
 
   const titles: { [key in keyof TopAccountsRow]?: TableHeader } = {
     rank: { title: t`Rank`, width: 6 },
@@ -179,8 +180,7 @@ export default function TopAccounts({ accounts, search }: TopAccountsProps) {
         <div>
           <p>{t`PnL ($) compared to the Max Collateral used by this Address.`}</p>
           <p>
-            {t`Max Collateral is the highest value of`}
-            {" "}
+            {t`Max Collateral is the highest value of`}{" "}
             <span className="formula">{t`[Sum of Collateral of Open Positions -  RPnL]`}</span>
             {"."}
           </p>

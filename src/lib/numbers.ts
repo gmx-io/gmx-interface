@@ -183,7 +183,13 @@ export function formatPrice(price: BigNumber, chainId: number, symbol: string, o
 export function formatDeltaUsd(
   deltaUsd?: BigNumber,
   percentage?: BigNumber,
-  opts: { fallbackToZero?: boolean; displayDecimals?: number; maxThreshold?: string; minThreshold?: string } = {}
+  opts: {
+    fallbackToZero?: boolean;
+    displayDecimals?: number;
+    maxThreshold?: string;
+    minThreshold?: string;
+    hidePercentageAfterThreshold?: boolean;
+  } = {}
 ) {
   if (!deltaUsd) {
     if (opts.fallbackToZero) {
@@ -198,7 +204,8 @@ export function formatDeltaUsd(
     sign = deltaUsd?.gt(0) ? "+" : "-";
   }
   const exceedingInfo = getLimitedDisplay(deltaUsd, USD_DECIMALS, opts);
-  const percentageStr = percentage ? ` (${sign}${formatPercentage(percentage.abs())})` : "";
+  const showPercentage = percentage && (!exceedingInfo.symbol || !opts.hidePercentageAfterThreshold);
+  const percentageStr = showPercentage ? ` (${sign}${formatPercentage(percentage.abs())})` : "";
   const deltaUsdStr = formatAmount(exceedingInfo.value, USD_DECIMALS, 2, true);
 
   return `${exceedingInfo.symbol} ${sign}$${deltaUsdStr}${percentageStr}`;

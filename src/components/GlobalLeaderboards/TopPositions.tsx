@@ -145,35 +145,40 @@ export default function TopPositions({ positions, search }: TopPositionsProps) {
       liqPrice: {
         value: () => (
           <Tooltip
-            handle={p.liquidationPrice ? formatPrice(p.liquidationPrice, chainId, p.marketInfo.indexToken.symbol) : "NA"}
+            handle={
+              p.liquidationPrice ? formatPrice(p.liquidationPrice, chainId, p.marketInfo.indexToken.symbol) : "NA"
+            }
             position={i > 7 ? "right-top" : "right-bottom"}
             className="nowrap"
-            renderContent={() => p.liquidationPrice ? (
-              <>
-                <StatsTooltipRow
-                  label={t`Mark Price`}
-                  showDollar={false}
-                  value={<span>{formatPrice(p.markPrice, chainId, p.marketInfo.indexToken.symbol)}</span>}
-                />
-                <StatsTooltipRow
-                  label={t`Price change to Liq.`}
-                  showDollar={false}
-                  value={
-                    <span>
-                      {p.liquidationPriceDelta && p.liquidationPriceDeltaRel
-                        ? formatDeltaUsd(p.liquidationPriceDelta, p.liquidationPriceDeltaRel, {
-                            maxThreshold: "1000000",
-                          })
-                        : ""}
-                    </span>
-                  }
-                />
-              </>
-            ) : (
-              <div className="NoLiqPriceTooltip">
-                {t`No Liquidation Price as the Position's Collateral value will increase to cover any negative PnL.`}
-              </div>
-            )}
+            renderContent={() =>
+              p.liquidationPrice ? (
+                <>
+                  <StatsTooltipRow
+                    label={t`Mark Price`}
+                    showDollar={false}
+                    value={<span>{formatPrice(p.markPrice, chainId, p.marketInfo.indexToken.symbol)}</span>}
+                  />
+                  <StatsTooltipRow
+                    label={t`Price change to Liq.`}
+                    showDollar={false}
+                    value={
+                      <span>
+                        {p.liquidationPriceDelta && p.liquidationPriceDeltaRel
+                          ? formatDeltaUsd(p.liquidationPriceDelta, p.liquidationPriceDeltaRel, {
+                              maxThreshold: "1000000",
+                              hidePercentageAfterThreshold: true,
+                            })
+                          : ""}
+                      </span>
+                    }
+                  />
+                </>
+              ) : (
+                <div className="NoLiqPriceTooltip">
+                  {t`No Liquidation Price as the Position's Collateral value will increase to cover any negative PnL.`}
+                </div>
+              )
+            }
           />
         ),
       },
