@@ -90,7 +90,7 @@ export default function TopPositions({ positions, search }: TopPositionsProps) {
                 lengths={{ S: 9, M: 11, L: 20, XL: 25 }}
               />
             }
-            renderContent={() => <div>{t`Only Addresses with over $1,000 in traded volume are displayed.`}</div>}
+            renderContent={() => <div>{t`Only Addresses' Positions with over $1,000 in traded volume are displayed.`}</div>}
           />
         ),
       },
