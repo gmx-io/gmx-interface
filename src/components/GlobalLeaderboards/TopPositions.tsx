@@ -4,7 +4,6 @@ import { t } from "@lingui/macro";
 import cx from "classnames";
 
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import SearchInput from "components/SearchInput/SearchInput";
 import AddressView from "components/AddressView/AddressView";
 import Pagination from "components/Pagination/Pagination";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -12,7 +11,6 @@ import Tooltip from "components/Tooltip/Tooltip";
 import Table from "components/Table/Table";
 import { TableHeader } from "components/Table/types";
 import { useChainId } from "lib/chains";
-import { useDebounce } from "lib/useDebounce";
 import { formatUsd, formatPrice, formatDeltaUsd } from "lib/numbers";
 import { formatLeverage } from "domain/synthetics/positions";
 import {
@@ -24,164 +22,166 @@ import {
   RemoteData,
 } from "domain/synthetics/leaderboards";
 
-export default function TopPositions({ positions }: { positions: RemoteData<OpenPosition> }) {
+type TopPositionsProps = {
+  positions: RemoteData<OpenPosition>;
+  search: string;
+};
+
+export default function TopPositions({ positions, search }: TopPositionsProps) {
   const perPage = 15;
   const { chainId } = useChainId();
   const { isLoading, error, data } = positions;
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
   const [orderBy, setOrderBy] = useState<keyof OpenPosition>("unrealizedPnlAfterFees");
   const [direction, setDirection] = useState<number>(1);
-  const onColumnClick = useCallback((key: keyof OpenPosition) => () => {
-    if (key === orderBy) {
-      setDirection((d: number) => -1 * d);
-    } else {
-      setOrderBy(key);
-      setDirection(1);
-    }
-  }, [orderBy, setOrderBy, setDirection]);
+  const onColumnClick = useCallback(
+    (key: keyof OpenPosition) => () => {
+      if (key === orderBy) {
+        setDirection((d: number) => -1 * d);
+      } else {
+        setOrderBy(key);
+        setDirection(1);
+      }
+    },
+    [orderBy, setOrderBy, setDirection]
+  );
 
-  const positionsHash = (data || []).map(p => p[orderBy]!.toString()).join("-");
+  const positionsHash = (data || []).map((p) => p[orderBy]!.toString()).join("-");
   const positionRows: Ranked<OpenPosition>[] = useMemo(() => {
     if (!data) {
       return [];
     }
 
-    const result = data.map((p, i) => ({...p, rank: i})).sort((a, b) => {
-      const key = orderBy;
-      if (BigNumber.isBigNumber(a[key]) && BigNumber.isBigNumber(b[key])) {
-        return direction * ((a[key] as BigNumber).gt(b[key] as BigNumber) ? -1 : 1);
-      } else {
-        return 0;
-      }
-    });
+    const result = data
+      .map((p, i) => ({ ...p, rank: i }))
+      .sort((a, b) => {
+        const key = orderBy;
+        if (BigNumber.isBigNumber(a[key]) && BigNumber.isBigNumber(b[key])) {
+          return direction * ((a[key] as BigNumber).gt(b[key] as BigNumber) ? -1 : 1);
+        } else {
+          return 0;
+        }
+      });
 
     return result;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, positionsHash, orderBy, direction]);
 
-  const term = useDebounce(search, 300);
-  const filteredStats = positionRows.filter((p) => (
-    p.account.toLowerCase().indexOf(term) >= 0 ||
-    p.marketInfo.indexToken.symbol.toLowerCase().indexOf(term) >= 0
-  ));
+  const filteredStats = positionRows.filter(
+    (p) =>
+      p.account.toLowerCase().indexOf(search) >= 0 || p.marketInfo.indexToken.symbol.toLowerCase().indexOf(search) >= 0
+  );
 
-  const parseRow = useCallback((p: Ranked<OpenPosition>, i: number): TopPositionsRow => ({
-    key: p.key,
-    rank: {
-      value: () => (
-        <span className={cx(p.rank < 3 && `LeaderboardRank-${p.rank + 1}`)}>{p.rank + 1}</span>
-      ),
-    },
-    account: {
-      value: (breakpoint) =>
-        p.account && (
-          <AddressView
-            address={p.account}
-            breakpoint={breakpoint}
-            lengths={{ S: 9, M: 11, L: 20, XL: 25 }}
-            size={24}
+  const parseRow = useCallback(
+    (p: Ranked<OpenPosition>, i: number): TopPositionsRow => ({
+      key: p.key,
+      rank: {
+        value: () => <span className={cx(p.rank < 3 && `LeaderboardRank-${p.rank + 1}`)}>{p.rank + 1}</span>,
+      },
+      account: {
+        value: (breakpoint) =>
+          p.account && (
+            <AddressView
+              address={p.account}
+              breakpoint={breakpoint}
+              lengths={{ S: 9, M: 11, L: 20, XL: 25 }}
+              size={24}
+            />
+          ),
+      },
+      unrealizedPnl: {
+        className: signedValueClassName(p.unrealizedPnlAfterFees),
+        value: (p.unrealizedPnlAfterFees && formatDelta(p.unrealizedPnlAfterFees, { signed: true, prefix: "$" })) || "",
+      },
+      position: {
+        className: "TopPositionsPositionCell",
+        value: () => (
+          <Tooltip
+            handle={
+              <span className="TopPositionsPositionView">
+                <TokenIcon
+                  className="PositionList-token-icon"
+                  symbol={p.marketInfo.indexToken.symbol}
+                  displaySize={20}
+                  importSize={24}
+                />
+                <span className="TopPositionsSymbol">{p.marketInfo.indexToken.symbol}</span>
+                <span className={cx("TopPositionsDirection", p.isLong ? "positive" : "negative")}>
+                  {p.isLong ? t`Long` : t`Short`}
+                </span>
+              </span>
+            }
+            position={i > 7 ? "right-top" : "right-bottom"}
+            className="nowrap"
+            renderContent={() => (
+              <>
+                <span className="TopPositionsMarketName">{p.marketInfo.name}</span>
+                <span className={cx(p.isLong ? "positive" : "negative")}>{p.isLong ? t`Long` : t`Short`}</span>
+              </>
+            )}
           />
         ),
-    },
-    unrealizedPnl: {
-      className: signedValueClassName(p.unrealizedPnlAfterFees),
-      value: (p.unrealizedPnlAfterFees && formatDelta(
-        p.unrealizedPnlAfterFees,
-        { signed: true, prefix: "$" }
-      )) || "",
-    },
-    position: {
-      className: "TopPositionsPositionCell",
-      value: () => (
-        <Tooltip
-          handle={
-            <span className="TopPositionsPositionView">
-              <TokenIcon
-                className="PositionList-token-icon"
-                symbol={p.marketInfo.indexToken.symbol}
-                displaySize={20}
-                importSize={24}
+      },
+      entryPrice: {
+        value: formatPrice(p.entryPrice, chainId, p.marketInfo.indexToken.symbol) || "",
+      },
+      size: {
+        value: () => (
+          <Tooltip
+            handle={formatUsd(p.sizeInUsd) || ""}
+            position={i > 7 ? "right-top" : "right-bottom"}
+            className="nowrap"
+            renderContent={() => (
+              <StatsTooltipRow
+                label={t`Collateral`}
+                showDollar={false}
+                value={<span>{formatUsd(p.collateralAmountUsd) || ""}</span>}
               />
-              <span className="TopPositionsSymbol">
-                {p.marketInfo.indexToken.symbol}
-              </span>
-              <span className={cx("TopPositionsDirection", p.isLong ? "positive" : "negative")}>
-                {p.isLong ? t`Long` : t`Short`}
-              </span>
-            </span>
-          }
-          position={ i > 7 ? "right-top" : "right-bottom" }
-          className="nowrap"
-          renderContent={() =>
-            <>
-              <span className="TopPositionsMarketName">{p.marketInfo.name}</span>
-              <span className={cx(p.isLong ? "positive" : "negative")}>
-                {p.isLong ? t`Long` : t`Short`}
-              </span>
-            </>
-          }
-        />
-      ),
-    },
-    entryPrice: {
-      value: formatPrice(p.entryPrice, chainId, p.marketInfo.indexToken.symbol) || "",
-    },
-    size: {
-      value: () => <Tooltip
-        handle={ formatUsd(p.sizeInUsd) || "" }
-        position={ i > 7 ? "right-top" : "right-bottom" }
-        className="nowrap"
-        renderContent={() => (
-          <StatsTooltipRow
-            label={t`Collateral`}
-            showDollar={false}
-            value={<span>{formatUsd(p.collateralAmountUsd) || ""}</span>}
+            )}
           />
-        )}
-      />
-    },
-    leverage: { value: formatLeverage(p.leverage) || "" },
-    liqPrice: {
-      value: () => (
-        <Tooltip
-          handle={formatPrice(p.liquidationPrice!, chainId, p.marketInfo.indexToken.symbol) || ""}
-          position={ i > 7 ? "right-top" : "right-bottom" }
-          className="nowrap"
-          renderContent={() => (
-            <>
-              <StatsTooltipRow
-                label={t`Mark Price`}
-                showDollar={false}
-                value={<span>{formatPrice(p.markPrice, chainId, p.marketInfo.indexToken.symbol)}</span>}
-              />
-              <StatsTooltipRow
-                label={t`Price change to Liq.`}
-                showDollar={false}
-                value={
-                  <span>
-                    {p.liquidationPriceDelta && p.liquidationPriceDeltaRel
-                      ? formatDeltaUsd(p.liquidationPriceDelta, p.liquidationPriceDeltaRel, { maxThreshold: "1000000" })
-                      : ""
-                    }
-                  </span>
-                }
-              />
-            </>
-          )}
-        />
-      ),
-    },
-  }), [chainId]);
+        ),
+      },
+      leverage: { value: formatLeverage(p.leverage) || "" },
+      liqPrice: {
+        value: () => (
+          <Tooltip
+            handle={formatPrice(p.liquidationPrice!, chainId, p.marketInfo.indexToken.symbol) || ""}
+            position={i > 7 ? "right-top" : "right-bottom"}
+            className="nowrap"
+            renderContent={() => (
+              <>
+                <StatsTooltipRow
+                  label={t`Mark Price`}
+                  showDollar={false}
+                  value={<span>{formatPrice(p.markPrice, chainId, p.marketInfo.indexToken.symbol)}</span>}
+                />
+                <StatsTooltipRow
+                  label={t`Price change to Liq.`}
+                  showDollar={false}
+                  value={
+                    <span>
+                      {p.liquidationPriceDelta && p.liquidationPriceDeltaRel
+                        ? formatDeltaUsd(p.liquidationPriceDelta, p.liquidationPriceDeltaRel, {
+                            maxThreshold: "1000000",
+                          })
+                        : ""}
+                    </span>
+                  }
+                />
+              </>
+            )}
+          />
+        ),
+      },
+    }),
+    [chainId]
+  );
 
   const indexFrom = (page - 1) * perPage;
   const rows = filteredStats.slice(indexFrom, indexFrom + perPage).map(parseRow);
   const pageCount = Math.ceil(filteredStats.length / perPage);
-  const onSearchInput = (e) => setSearch(e.target.value.trim().toLowerCase());
-  const getSortableClass = (key: keyof OpenPosition) => cx(orderBy === key
-    ? (direction > 0 ? "sorted-asc" : "sorted-desc")
-    : "sortable"
-  );
+  const getSortableClass = (key: keyof OpenPosition) =>
+    cx(orderBy === key ? (direction > 0 ? "sorted-asc" : "sorted-desc") : "sortable");
 
   const titles: { [k in keyof TopPositionsRow]?: TableHeader } = {
     rank: { title: t`Rank`, width: 6 },
@@ -222,17 +222,6 @@ export default function TopPositions({ positions }: { positions: RemoteData<Open
 
   return (
     <div>
-      <div className="LeaderboardHeader">
-        <SearchInput
-          placeholder={t`Search Address or Market`}
-          value={search}
-          onInput={onSearchInput}
-          setValue={() => {}}
-          onKeyDown={() => {}}
-          className="LeaderboardSearch TopPositionsSearch"
-          autoFocus={false}
-        />
-      </div>
       <Table
         isLoading={isLoading}
         error={error}

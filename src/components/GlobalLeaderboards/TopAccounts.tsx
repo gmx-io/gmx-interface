@@ -3,7 +3,6 @@ import { BigNumber } from "ethers";
 import { t } from "@lingui/macro";
 import cx from "classnames";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import SearchInput from "components/SearchInput/SearchInput";
 import AddressView from "components/AddressView/AddressView";
 import Pagination from "components/Pagination/Pagination";
 import Tooltip from "components/Tooltip/Tooltip";
@@ -108,11 +107,15 @@ const parseRow = (s: Ranked<LiveAccountPerformance>, i: number): TopAccountsRow 
   },
 });
 
-export default function TopAccounts({ accounts }: { accounts: RemoteData<LiveAccountPerformance>}) {
+type TopAccountsProps = {
+  accounts: RemoteData<LiveAccountPerformance>;
+  search: string;
+};
+
+export default function TopAccounts({ accounts, search }: TopAccountsProps) {
   const perPage = 15;
   const { isLoading, error, data } = accounts;
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
   const [orderBy, setOrderBy] = useState<keyof LiveAccountPerformance>("absProfit");
   const [direction, setDirection] = useState<number>(1);
   const onColumnClick = useCallback((key: keyof LiveAccountPerformance) => () => {
@@ -151,7 +154,6 @@ export default function TopAccounts({ accounts }: { accounts: RemoteData<LiveAcc
   const indexFrom = (page - 1) * perPage;
   const rows = filteredStats.slice(indexFrom, indexFrom + perPage).map(parseRow);
   const pageCount = Math.ceil(filteredStats.length / perPage);
-  const onSearchInput = (e) => setSearch(e.target.value.trim());
   const getSortableClass = (key: keyof LiveAccountPerformance) => cx(
     (orderBy === key || (key === "wins" && orderBy === "losses"))
     ? (direction > 0 ? "sorted-asc" : "sorted-desc")
@@ -210,17 +212,6 @@ export default function TopAccounts({ accounts }: { accounts: RemoteData<LiveAcc
 
   return (
     <div>
-      <div className="LeaderboardHeader">
-        <SearchInput
-          placeholder={t`Search Address`}
-          value={search}
-          onInput={onSearchInput}
-          setValue={() => {}}
-          onKeyDown={() => {}}
-          className="LeaderboardSearch"
-          autoFocus={false}
-        />
-      </div>
       <Table isLoading={isLoading} error={error} content={rows} titles={titles} rowKey={"key"} />
       <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
     </div>

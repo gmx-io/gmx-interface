@@ -6,7 +6,7 @@ import { useMedia } from "react-use";
 import cx from "classnames";
 
 type Props = {
-  value: string;
+  value?: string;
   setValue: (e: any) => void;
   onKeyDown: (e: any) => void;
   onInput?: (e: FormEvent<HTMLInputElement>) => void;
