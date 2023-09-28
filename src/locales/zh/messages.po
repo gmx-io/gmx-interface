@@ -3096,6 +3096,11 @@ msgstr "暂时没有交易"
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr "请注意，订单不保证被执行。<0/><1/>可能发生在几种情况下，包括但不限于:"
 
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Only Addresses with over $1,000 in traded volume are displayed."
+msgstr ""
+
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "只允许使用字母、数字和下底线"
