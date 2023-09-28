@@ -301,15 +301,18 @@ export function OrderItem(p: Props) {
   }
 
   const positionOrder = p.order as PositionOrderInfo;
-  const priceDecimals = positionOrder.indexToken.priceDecimals;
+  const priceDecimals = positionOrder?.indexToken?.priceDecimals;
 
   const markPrice = useMemo(() => {
+    if (isSwapOrderType(p.order.orderType)) {
+      return undefined;
+    }
     return getMarkPrice({
       prices: positionOrder.indexToken.prices,
       isIncrease: isIncreaseOrderType(positionOrder.orderType),
       isLong: positionOrder.isLong,
     });
-  }, [positionOrder.indexToken.prices, positionOrder.isLong, positionOrder.orderType]);
+  }, [p.order.orderType, positionOrder?.indexToken?.prices, positionOrder.isLong, positionOrder.orderType]);
 
   function renderMarkPrice() {
     if (isSwapOrderType(p.order.orderType)) {
