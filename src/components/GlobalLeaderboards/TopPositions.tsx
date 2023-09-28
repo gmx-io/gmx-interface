@@ -79,15 +79,20 @@ export default function TopPositions({ positions, search }: TopPositionsProps) {
         value: () => <span className={cx(p.rank < 3 && `LeaderboardRank-${p.rank + 1}`)}>{p.rank + 1}</span>,
       },
       account: {
-        value: (breakpoint) =>
-          p.account && (
-            <AddressView
-              address={p.account}
-              breakpoint={breakpoint}
-              lengths={{ S: 9, M: 11, L: 20, XL: 25 }}
-              size={24}
-            />
-          ),
+        value: (breakpoint) => (
+          <Tooltip
+            position={i > 7 ? "right-top" : "right-bottom"}
+            handle={
+              <AddressView
+                size={24}
+                address={p.account}
+                breakpoint={breakpoint}
+                lengths={{ S: 9, M: 11, L: 20, XL: 25 }}
+              />
+            }
+            renderContent={() => <div>{t`Only Addresses with over $1,000 in traded volume are displayed.`}</div>}
+          />
+        ),
       },
       unrealizedPnl: {
         className: signedValueClassName(p.unrealizedPnlAfterFees),

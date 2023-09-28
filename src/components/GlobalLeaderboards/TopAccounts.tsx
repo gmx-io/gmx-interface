@@ -26,10 +26,15 @@ const parseRow = (s: Ranked<LiveAccountPerformance>, i: number): TopAccountsRow 
     value: () => <span className={cx(s.rank < 3 && `LeaderboardRank-${s.rank + 1}`)}>{s.rank + 1}</span>,
   },
   account: {
-    value: (breakpoint) =>
-      s.account && (
-        <AddressView size={24} address={s.account} breakpoint={breakpoint} lengths={{ S: 9, M: 13, L: 24, XL: 42 }} />
-      ),
+    value: (breakpoint) => (
+      <Tooltip
+        position={i > 7 ? "right-top" : "right-bottom"}
+        handle={
+          <AddressView size={24} address={s.account} breakpoint={breakpoint} lengths={{ S: 9, M: 13, L: 24, XL: 42 }} />
+        }
+        renderContent={() => <div>{t`Only Addresses with over $1,000 in traded volume are displayed.`}</div>}
+      />
+    ),
   },
   absProfit: {
     value: () => (
