@@ -503,7 +503,6 @@ export function PositionItem(p: Props) {
               handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market)}
               handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit)}
               handleTriggerClose={() => p.onSelectPositionClick?.(TradeMode.Trigger)}
-              handleGetPendingFees={p.onGetPendingFeesClick}
             />
           )}
         </td>
