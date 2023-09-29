@@ -1,3 +1,4 @@
+import cx from "classnames";
 import { Trans } from "@lingui/macro";
 import { useChainId } from "lib/chains";
 import { useCallback, useState } from "react";
@@ -9,17 +10,29 @@ import useWallet from "lib/wallets/useWallet";
 import { ClaimableCard } from "./ClaimableCard";
 
 import "./Claims.scss";
+import { useMedia } from "react-use";
+import { SettleAccruedCard } from "./SettleAccruedCard";
+import { PositionsInfoData } from "domain/synthetics/positions";
 
 const PAGE_SIZE = 100;
 
 type Props = {
   shouldShowPaginationButtons: boolean;
   marketsInfoData: MarketsInfoData | undefined;
-  tokensData?: TokensData;
+  tokensData: TokensData | undefined;
   setIsClaiming: (isClaiming: boolean) => void;
+  setIsSettling: (isSettling: boolean) => void;
+  positionsInfoData: PositionsInfoData | undefined;
 };
 
-export function Claims({ shouldShowPaginationButtons, marketsInfoData, tokensData, setIsClaiming }: Props) {
+export function Claims({
+  shouldShowPaginationButtons,
+  marketsInfoData,
+  tokensData,
+  setIsClaiming,
+  setIsSettling,
+  positionsInfoData,
+}: Props) {
   const { chainId } = useChainId();
   const { account } = useWallet();
   const [pageIndex, setPageIndex] = useState(0);
@@ -37,6 +50,12 @@ export function Claims({ shouldShowPaginationButtons, marketsInfoData, tokensDat
     setIsClaiming(true);
   }, [setIsClaiming]);
 
+  const handleSettleClick = useCallback(() => {
+    setIsSettling(true);
+  }, [setIsSettling]);
+
+  const isMobile = useMedia("(max-width: 1100px)");
+
   return (
     <div className="TradeHistory">
       {account && isLoading && (
@@ -44,7 +63,26 @@ export function Claims({ shouldShowPaginationButtons, marketsInfoData, tokensDat
           <Trans>Loading...</Trans>
         </div>
       )}
-      {account && !isLoading && <ClaimableCard marketsInfoData={marketsInfoData} onClaimClick={handleClaimClick} />}
+      <div
+        className={cx("flex", "w-full", {
+          "flex-column": isMobile,
+        })}
+      >
+        {account && !isLoading && (
+          <SettleAccruedCard
+            positionsInfoData={positionsInfoData}
+            onSettleClick={handleSettleClick}
+            style={isMobile ? undefined : { marginRight: 4 }}
+          />
+        )}
+        {account && !isLoading && (
+          <ClaimableCard
+            marketsInfoData={marketsInfoData}
+            onClaimClick={handleClaimClick}
+            style={isMobile ? undefined : { marginLeft: 4 }}
+          />
+        )}
+      </div>
       {isEmpty && (
         <div className="TradeHistoryRow App-box">
           <Trans>No claims yet</Trans>

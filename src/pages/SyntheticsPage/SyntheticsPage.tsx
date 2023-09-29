@@ -35,7 +35,7 @@ import { TradeMode } from "domain/synthetics/trade";
 import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTradeOption";
 import { helperToast } from "lib/helperToast";
 import useWallet from "lib/wallets/useWallet";
-import { ClaimFundingFeeModal } from "components/Synthetics/ClaimFundingFeeModal/ClaimFundingFeeModal";
+import { SettleAccruedFundingFeeModal } from "components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal";
 
 export type Props = {
   savedIsPnlInLeverage: boolean;
@@ -156,8 +156,7 @@ export function SyntheticsPage(p: Props) {
   const [editingPositionKey, setEditingPositionKey] = useState<string>();
   const editingPosition = getByKey(positionsInfoData, editingPositionKey);
 
-  const [gettingPendingFeePositionKey, setGettingPendingFeePositionKey] = useState<string>();
-  const gettingPendingFeePosition = getByKey(positionsInfoData, gettingPendingFeePositionKey);
+  const [gettingPendingFeePositionKeys, setGettingPendingFeePositionKeys] = useState<string[]>([]);
 
   const selectedPositionKey = useMemo(() => {
     if (!account || !collateralAddress || !marketAddress || !tradeType) {
@@ -198,6 +197,7 @@ export function SyntheticsPage(p: Props) {
   }, [ordersInfoData, positionsInfoData]);
 
   const [isClaiming, setIsClaiming] = useState(false);
+  const [isSettling, setIsSettling] = useState(false);
   const [isAcceptablePriceImpactEditing, setIsAcceptablePriceImpactEditing] = useState(false);
 
   const [savedAcceptablePriceImpactBps, saveAcceptablePriceImpactBps] = useLocalStorageSerializeKey(
@@ -270,8 +270,9 @@ export function SyntheticsPage(p: Props) {
     helperToast.success(message);
   }
 
-  function handleGetPendingFees(positionKey: PositionInfo["key"]) {
-    setGettingPendingFeePositionKey(positionKey);
+  function handleSettlePositionFeesClick(positionKey: PositionInfo["key"]) {
+    setGettingPendingFeePositionKeys((keys) => keys.concat(positionKey).filter((x, i, self) => self.indexOf(x) === i));
+    setIsSettling(true);
   }
 
   return (
@@ -343,7 +344,7 @@ export function SyntheticsPage(p: Props) {
                 isLoading={isPositionsLoading}
                 savedIsPnlInLeverage={savedIsPnlInLeverage}
                 onOrdersClick={() => setListSection(ListSection.Orders)}
-                onGetPendingFeesClick={handleGetPendingFees}
+                onSettlePositionFeesClick={handleSettlePositionFeesClick}
                 onSelectPositionClick={onSelectPositionClick}
                 onClosePositionClick={setClosingPositionKey}
                 onEditCollateralClick={setEditingPositionKey}
@@ -378,9 +379,11 @@ export function SyntheticsPage(p: Props) {
             {listSection === ListSection.Claims && (
               <Claims
                 marketsInfoData={marketsInfoData}
+                positionsInfoData={positionsInfoData}
                 tokensData={tokensData}
                 shouldShowPaginationButtons
                 setIsClaiming={setIsClaiming}
+                setIsSettling={setIsSettling}
               />
             )}
           </div>
@@ -454,7 +457,7 @@ export function SyntheticsPage(p: Props) {
               onSelectPositionClick={onSelectPositionClick}
               onClosePositionClick={setClosingPositionKey}
               onEditCollateralClick={setEditingPositionKey}
-              onGetPendingFeesClick={handleGetPendingFees}
+              onSettlePositionFeesClick={handleSettlePositionFeesClick}
               showPnlAfterFees={showPnlAfterFees}
               savedShowPnlAfterFees={savedShowPnlAfterFees}
               currentMarketAddress={marketAddress}
@@ -486,9 +489,11 @@ export function SyntheticsPage(p: Props) {
           {listSection === ListSection.Claims && (
             <Claims
               marketsInfoData={marketsInfoData}
+              positionsInfoData={positionsInfoData}
               tokensData={tokensData}
               shouldShowPaginationButtons
               setIsClaiming={setIsClaiming}
+              setIsSettling={setIsSettling}
             />
           )}
         </div>
@@ -531,10 +536,15 @@ export function SyntheticsPage(p: Props) {
         onClose={() => setIsClaiming(false)}
         setPendingTxns={setPendingTxns}
       />
-      <ClaimFundingFeeModal
-        isVisible={Boolean(gettingPendingFeePosition)}
-        position={gettingPendingFeePosition}
-        onClose={() => setGettingPendingFeePositionKey(undefined)}
+      <SettleAccruedFundingFeeModal
+        isVisible={isSettling}
+        positionKeys={gettingPendingFeePositionKeys}
+        positionsInfoData={positionsInfoData}
+        setPositionKeys={setGettingPendingFeePositionKeys}
+        onClose={useCallback(() => {
+          setGettingPendingFeePositionKeys([]);
+          setIsSettling(false);
+        }, [])}
       />
       <Footer />
     </div>

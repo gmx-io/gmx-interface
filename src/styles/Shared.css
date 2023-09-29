@@ -412,6 +412,7 @@ button.btn-link:hover .logout-icon {
   padding-top: 4.65rem;
 }
 
+.flex,
 .d-flex {
   display: flex;
 }
@@ -560,4 +561,8 @@ button.btn-link:hover .logout-icon {
 
 .rotate-90 {
   transform: rotate(90deg);
+}
+
+.self-center {
+  align-self: center;
 }
