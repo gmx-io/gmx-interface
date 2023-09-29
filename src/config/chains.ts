@@ -27,7 +27,6 @@ if (isDevelopment()) {
 export const IS_NETWORK_DISABLED = {
   [ARBITRUM]: false,
   [AVALANCHE]: false,
-  [ARBITRUM_GOERLI]: !isDevelopment(),
 };
 
 export const CHAIN_NAMES_MAP = {
