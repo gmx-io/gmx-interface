@@ -94,6 +94,7 @@ export function getTradeFees(p: {
     positionFeeAfterDiscount,
     borrowFee,
     fundingFee,
+    uiFee,
     !isIncrease ? positionPriceImpact : undefined,
   ]);
 

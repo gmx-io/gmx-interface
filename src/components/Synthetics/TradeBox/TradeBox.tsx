@@ -503,7 +503,7 @@ export function TradeBox(p: Props) {
   //   isLong,
   // });
 
-  const { fees, feesType, executionFee, uiFee } = useMemo(() => {
+  const { fees, feesType, executionFee } = useMemo(() => {
     if (!gasLimits || !gasPrice || !tokensData) {
       return {};
     }
@@ -526,8 +526,8 @@ export function TradeBox(p: Props) {
           fundingFeeUsd: BigNumber.from(0),
           feeDiscountUsd: BigNumber.from(0),
           swapProfitFeeUsd: BigNumber.from(0),
+          uiFee: getUiFee(swapAmounts.usdIn, uiFeeFactor),
         }),
-        uiFee: getUiFee(swapAmounts.usdIn.mul(-1), uiFeeFactor),
         executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
         feesType: "swap" as TradeFeesType,
       };
@@ -551,8 +551,8 @@ export function TradeBox(p: Props) {
           fundingFeeUsd: existingPosition?.pendingFundingFeesUsd || BigNumber.from(0),
           feeDiscountUsd: increaseAmounts.feeDiscountUsd,
           swapProfitFeeUsd: BigNumber.from(0),
+          uiFee: getUiFee(increaseAmounts.sizeDeltaUsd, uiFeeFactor),
         }),
-        uiFee: getUiFee(increaseAmounts.sizeDeltaUsd.mul(-1), uiFeeFactor),
         executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
         feesType: "increase" as TradeFeesType,
       };
@@ -577,10 +577,10 @@ export function TradeBox(p: Props) {
           fundingFeeUsd: decreaseAmounts.fundingFeeUsd,
           feeDiscountUsd: decreaseAmounts.feeDiscountUsd,
           swapProfitFeeUsd: decreaseAmounts.swapProfitFeeUsd,
+          uiFee: getUiFee(decreaseAmounts.sizeDeltaUsd, uiFeeFactor),
         }),
         executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
         feesType: "decrease" as TradeFeesType,
-        uiFee: getUiFee(decreaseAmounts.sizeDeltaUsd.mul(-1), uiFeeFactor),
       };
     }
 
@@ -1506,7 +1506,7 @@ export function TradeBox(p: Props) {
 
               <div className="App-card-divider" />
 
-              {feesType && <TradeFeesRow {...fees} executionFee={executionFee} feesType={feesType} uiFee={uiFee} />}
+              {feesType && <TradeFeesRow {...fees} executionFee={executionFee} feesType={feesType} />}
 
               {isTrigger && existingPosition && decreaseAmounts?.receiveUsd && (
                 <ExchangeInfoRow

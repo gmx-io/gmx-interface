@@ -9,7 +9,7 @@ export function getUiFee(sizeUsd?: BigNumber, feeFactor?: BigNumber): FeeItem | 
   }
 
   const decimals = 6;
-  const feeUsd = applyFactor(sizeUsd, feeFactor);
+  const feeUsd = applyFactor(sizeUsd.mul(-1), feeFactor);
   const factor = feeFactor.mul(Math.pow(10, decimals)).div(PRECISION);
   return {
     deltaUsd: feeUsd,

@@ -71,6 +71,9 @@ import { useMedia } from "react-use";
 import { useHasOutdatedUi } from "domain/legacy";
 import useWallet from "lib/wallets/useWallet";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { getUiFee } from "domain/synthetics/fees/utils/uiFee";
+import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
+import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 
 export type Props = {
   position?: PositionInfo;
@@ -112,6 +115,7 @@ export function PositionSeller(p: Props) {
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
   const userReferralInfo = useUserReferralInfo(signer, chainId, account);
   const { data: hasOutdatedUi } = useHasOutdatedUi();
+  const uiFeeFactor = useUiFeeFactor(chainId, UI_FEE_RECEIVER_ACCOUNT);
 
   const isMobile = useMedia("(max-width: 1100px)");
   const isVisible = Boolean(position);
@@ -251,10 +255,11 @@ export function PositionSeller(p: Props) {
         fundingFeeUsd: decreaseAmounts.fundingFeeUsd,
         feeDiscountUsd: decreaseAmounts.feeDiscountUsd,
         swapProfitFeeUsd: decreaseAmounts.swapProfitFeeUsd,
+        uiFee: getUiFee(decreaseAmounts.sizeDeltaUsd, uiFeeFactor),
       }),
       executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
     };
-  }, [chainId, decreaseAmounts, gasLimits, gasPrice, position, swapAmounts, tokensData]);
+  }, [chainId, decreaseAmounts, gasLimits, gasPrice, position, swapAmounts, tokensData, uiFeeFactor]);
 
   const isHighPriceImpact = getIsHighPriceImpact(fees?.positionPriceImpact, fees?.swapPriceImpact);
 

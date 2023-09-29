@@ -8,7 +8,13 @@ import { ExecutionFee, FeeItem, SwapFeeItem } from "domain/synthetics/fees";
 import { TradeFeesType } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { formatDeltaUsd, formatPercentage, formatTokenAmountWithUsd } from "lib/numbers";
+import {
+  formatAmount,
+  formatDeltaUsd,
+  formatPercentage,
+  formatTokenAmountWithUsd,
+  removeTrailingZeros,
+} from "lib/numbers";
 import { ReactNode, useMemo } from "react";
 import "./TradeFeesRow.scss";
 
@@ -121,7 +127,7 @@ export function TradeFeesRow(p: Props) {
           label: (
             <>
               <div className="text-white">UI Fee</div>
-              <div>({formatPercentage(p.uiFee?.bps.abs())} of position size)</div>
+              <div>({removeTrailingZeros(formatAmount(p.uiFee?.bps.abs(), 4, 6))}% of position size)</div>
             </>
           ),
           value: formatDeltaUsd(p.uiFee?.deltaUsd),
