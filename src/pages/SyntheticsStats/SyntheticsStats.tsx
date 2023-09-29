@@ -226,6 +226,17 @@ export function SyntheticsStats() {
                           />
 
                           <StatsTooltipRow
+                            label="Pool Max Long Amount For Deposit"
+                            value={formatAmountHuman(market.maxLongPoolAmountForDeposit, market.longToken.decimals)}
+                            showDollar={false}
+                          />
+                          <StatsTooltipRow
+                            label="Pool Max Short Amount For Deposit"
+                            value={formatAmountHuman(market.maxShortPoolAmountForDeposit, market.shortToken.decimals)}
+                            showDollar={false}
+                          />
+
+                          <StatsTooltipRow
                             label={`Swap Impact Amount ${market.longToken.symbol}`}
                             value={formatAmountHuman(swapImpactUsdLong, 30)}
                           />

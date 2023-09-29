@@ -43,15 +43,15 @@ export function getExecutionFee(
 export function estimateExecuteDepositGasLimit(
   gasLimits: GasLimitsConfig,
   deposit: {
-    longTokenSwapPath?: string[];
-    shortTokenSwapPath?: string[];
+    longTokenSwapsCount?: number;
+    shortTokenSwapsCount?: number;
     initialLongTokenAmount?: BigNumber;
     initialShortTokenAmount?: BigNumber;
     callbackGasLimit?: BigNumber;
   }
 ) {
   const gasPerSwap = gasLimits.singleSwap;
-  const swapsCount = (deposit.longTokenSwapPath?.length || 0) + (deposit.shortTokenSwapPath?.length || 0);
+  const swapsCount = (deposit.longTokenSwapsCount || 0) + (deposit.shortTokenSwapsCount || 0);
 
   const gasForSwaps = gasPerSwap.mul(swapsCount);
   const isMultiTokenDeposit = deposit.initialLongTokenAmount?.gt(0) && deposit.initialShortTokenAmount?.gt(0);
@@ -70,27 +70,21 @@ export function estimateExecuteWithdrawalGasLimit(
 
 export function estimateExecuteIncreaseOrderGasLimit(
   gasLimits: GasLimitsConfig,
-  order: { swapPath?: string[]; callbackGasLimit?: BigNumber }
+  order: { swapsCount?: number; callbackGasLimit?: BigNumber }
 ) {
-  const swapsCount = order.swapPath?.length || 0;
-
-  return gasLimits.increaseOrder.add(gasLimits.singleSwap.mul(swapsCount)).add(order.callbackGasLimit || 0);
+  return gasLimits.increaseOrder.add(gasLimits.singleSwap.mul(order.swapsCount || 0)).add(order.callbackGasLimit || 0);
 }
 
 export function estimateExecuteDecreaseOrderGasLimit(
   gasLimits: GasLimitsConfig,
-  order: { swapPath?: string[]; callbackGasLimit?: BigNumber }
+  order: { swapsCount?: number; callbackGasLimit?: BigNumber }
 ) {
-  const swapsCount = order.swapPath?.length || 0;
-
-  return gasLimits.decreaseOrder.add(gasLimits.singleSwap.mul(swapsCount)).add(order.callbackGasLimit || 0);
+  return gasLimits.decreaseOrder.add(gasLimits.singleSwap.mul(order.swapsCount || 0)).add(order.callbackGasLimit || 0);
 }
 
 export function estimateExecuteSwapOrderGasLimit(
   gasLimits: GasLimitsConfig,
-  order: { swapPath?: string[]; callbackGasLimit?: BigNumber }
+  order: { swapsCount?: number; callbackGasLimit?: BigNumber }
 ) {
-  const swapsCount = order.swapPath?.length || 0;
-
-  return gasLimits.swapOrder.add(gasLimits.singleSwap.mul(swapsCount)).add(order.callbackGasLimit || 0);
+  return gasLimits.swapOrder.add(gasLimits.singleSwap.mul(order.swapsCount || 0)).add(order.callbackGasLimit || 0);
 }

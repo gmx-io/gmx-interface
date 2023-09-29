@@ -131,10 +131,6 @@ export function getMidPrice(prices: TokenPrices) {
   return prices.minPrice.add(prices.maxPrice).div(2);
 }
 
-export function parseOraclePrice(price: string, tokenDecimals: number, oracleDecimals: number) {
-  return expandDecimals(price, tokenDecimals + oracleDecimals);
-}
-
 export function convertToContractPrice(price: BigNumber, tokenDecimals: number) {
   return price.div(expandDecimals(1, tokenDecimals));
 }

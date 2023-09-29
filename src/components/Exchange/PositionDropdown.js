@@ -29,14 +29,6 @@ function PositionDropdown(p) {
       <div className="PositionDropdown-extra-options">
         <Menu.Items as="div" className="menu-items">
           <Menu.Item>
-            <div className="menu-item" onClick={handleEditCollateral}>
-              <AiOutlineEdit fontSize={16} />
-              <p>
-                <Trans>Edit Collateral</Trans>
-              </p>
-            </div>
-          </Menu.Item>
-          <Menu.Item>
             <div className="menu-item" onClick={handleMarketSelect}>
               <BiSelectMultiple fontSize={16} />
               <p>
@@ -44,16 +36,14 @@ function PositionDropdown(p) {
               </p>
             </div>
           </Menu.Item>
-          {handleShare && (
-            <Menu.Item>
-              <div className="menu-item" onClick={handleShare}>
-                <RiShareBoxFill fontSize={16} />
-                <p>
-                  <Trans>Share Position</Trans>
-                </p>
-              </div>
-            </Menu.Item>
-          )}
+          <Menu.Item>
+            <div className="menu-item" onClick={handleEditCollateral}>
+              <AiOutlineEdit fontSize={16} />
+              <p>
+                <Trans>Edit Collateral</Trans>
+              </p>
+            </div>
+          </Menu.Item>
           {handleMarketIncreaseSize && (
             <Menu.Item>
               <div className="menu-item" onClick={handleMarketIncreaseSize}>
@@ -80,6 +70,16 @@ function PositionDropdown(p) {
                 <img src={triggerClose} alt="Increase Limit" height={16} />
                 <p>
                   <Trans>Trigger Close</Trans>
+                </p>
+              </div>
+            </Menu.Item>
+          )}
+          {handleShare && (
+            <Menu.Item>
+              <div className="menu-item" onClick={handleShare}>
+                <RiShareBoxFill fontSize={16} />
+                <p>
+                  <Trans>Share Position</Trans>
                 </p>
               </div>
             </Menu.Item>

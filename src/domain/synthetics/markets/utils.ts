@@ -285,34 +285,32 @@ export function getTotalClaimableFundingUsd(markets: MarketInfo[]) {
   }, BigNumber.from(0));
 }
 
-export function getMaxPoolUsd(marketInfo: MarketInfo, isLong: boolean) {
-  if (isLong) {
-    return convertToUsd(
-      marketInfo.maxLongPoolAmount,
-      marketInfo.longToken.decimals,
-      getMidPrice(marketInfo.longToken.prices)
-    )!;
-  } else {
-    return convertToUsd(
-      marketInfo.maxShortPoolAmount,
-      marketInfo.shortToken.decimals,
-      getMidPrice(marketInfo.shortToken.prices)
-    )!;
-  }
+export function getMaxPoolUsdForDeposit(marketInfo: MarketInfo, isLong: boolean) {
+  const token = isLong ? marketInfo.longToken : marketInfo.shortToken;
+  const maxPoolAmount = getMaxPoolAmountForDeposit(marketInfo, isLong);
+
+  return convertToUsd(maxPoolAmount, token.decimals, getMidPrice(token.prices))!;
 }
 
 export function getDepositCollateralCapacityAmount(marketInfo: MarketInfo, isLong: boolean) {
   const poolAmount = isLong ? marketInfo.longPoolAmount : marketInfo.shortPoolAmount;
-  const maxPoolAmount = isLong ? marketInfo.maxLongPoolAmount : marketInfo.maxShortPoolAmount;
+  const maxPoolAmount = getMaxPoolAmountForDeposit(marketInfo, isLong);
 
   const capacityAmount = maxPoolAmount.sub(poolAmount);
 
   return capacityAmount.gt(0) ? capacityAmount : BigNumber.from(0);
 }
 
+export function getMaxPoolAmountForDeposit(marketInfo: MarketInfo, isLong: boolean) {
+  const maxAmountForDeposit = isLong ? marketInfo.maxLongPoolAmountForDeposit : marketInfo.maxShortPoolAmountForDeposit;
+  const maxAmountForSwap = isLong ? marketInfo.maxLongPoolAmount : marketInfo.maxShortPoolAmount;
+
+  return maxAmountForDeposit.lt(maxAmountForSwap) ? maxAmountForDeposit : maxAmountForSwap;
+}
+
 export function getDepositCollateralCapacityUsd(marketInfo: MarketInfo, isLong: boolean) {
   const poolUsd = getPoolUsdWithoutPnl(marketInfo, isLong, "midPrice");
-  const maxPoolUsd = getMaxPoolUsd(marketInfo, isLong);
+  const maxPoolUsd = getMaxPoolUsdForDeposit(marketInfo, isLong);
 
   const capacityUsd = maxPoolUsd.sub(poolUsd);
 

@@ -121,7 +121,7 @@ export function SyntheticsPage(p: Props) {
   );
 
   const { isSwap, isLong } = tradeFlags;
-  const { indexTokens, sortedIndexTokensWithPoolValue } = availableTokensOptions;
+  const { indexTokens, sortedIndexTokensWithPoolValue, swapTokens, sortedLongAndShortTokens } = availableTokensOptions;
 
   const { chartToken, availableChartTokens } = useMemo(() => {
     if (!fromTokenAddress || !toTokenAddress) {
@@ -133,10 +133,11 @@ export function SyntheticsPage(p: Props) {
       const toToken = getToken(chainId, toTokenAddress);
 
       const chartToken = isSwap && toToken?.isStable && !fromToken?.isStable ? fromToken : toToken;
-      const availableChartTokens = isSwap ? [chartToken] : indexTokens;
+      const availableChartTokens = isSwap ? swapTokens : indexTokens;
       const sortedAvailableChartTokens = availableChartTokens.sort((a, b) => {
-        if (sortedIndexTokensWithPoolValue) {
-          return sortedIndexTokensWithPoolValue.indexOf(a.address) - sortedIndexTokensWithPoolValue.indexOf(b.address);
+        if (sortedIndexTokensWithPoolValue || sortedLongAndShortTokens) {
+          const currentSortReferenceList = isSwap ? sortedLongAndShortTokens : sortedIndexTokensWithPoolValue;
+          return currentSortReferenceList.indexOf(a.address) - currentSortReferenceList.indexOf(b.address);
         }
         return 0;
       });
@@ -148,7 +149,16 @@ export function SyntheticsPage(p: Props) {
     } catch (e) {
       return {};
     }
-  }, [chainId, fromTokenAddress, indexTokens, isSwap, toTokenAddress, sortedIndexTokensWithPoolValue]);
+  }, [
+    chainId,
+    fromTokenAddress,
+    indexTokens,
+    isSwap,
+    toTokenAddress,
+    sortedIndexTokensWithPoolValue,
+    swapTokens,
+    sortedLongAndShortTokens,
+  ]);
 
   const [closingPositionKey, setClosingPositionKey] = useState<string>();
   const closingPosition = getByKey(positionsInfoData, closingPositionKey);
@@ -312,9 +322,12 @@ export function SyntheticsPage(p: Props) {
             chartTokenAddress={chartToken?.address}
             availableTokens={availableChartTokens}
             onSelectChartTokenAddress={setToTokenAddress}
-            disableSelectToken={isSwap}
+            tradeFlags={tradeFlags}
+            currentTradeType={tradeType}
             tradePageVersion={tradePageVersion}
             setTradePageVersion={setTradePageVersion}
+            avaialbleTokenOptions={availableTokensOptions}
+            marketsInfoData={marketsInfoData}
           />
 
           <div className="Exchange-lists large">
@@ -508,12 +521,13 @@ export function SyntheticsPage(p: Props) {
         tokensData={tokensData}
         showPnlInLeverage={savedIsPnlInLeverage}
         onClose={onPositionSellerClose}
+        acceptablePriceImpactBps={acceptablePriceImpactBps}
         setPendingTxns={setPendingTxns}
         availableTokensOptions={availableTokensOptions}
         isHigherSlippageAllowed={isHigherSlippageAllowed}
         setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
         shouldDisableValidation={shouldDisableValidation}
-        onSelectPositionClick={onSelectPositionClick}
+        onEditAcceptablePriceImpact={onEditAcceptablePriceImpact}
       />
 
       <PositionEditor

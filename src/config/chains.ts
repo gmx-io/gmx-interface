@@ -84,6 +84,7 @@ export const EXECUTION_FEE_CONFIG_V2: {
   },
   [ARBITRUM_GOERLI]: {
     shouldUseMaxPriorityFeePerGas: false,
+    defaultBufferBps: 1000, // 10%
   },
 };
 
