@@ -2,7 +2,6 @@ import { TokenData, TokensRatio, convertToTokenAmount, convertToUsd, getAmountBy
 import { BigNumber } from "ethers";
 import { FindSwapPath, SwapAmounts } from "../types";
 import { getIsEquivalentTokens } from "domain/tokens";
-import { applyFactor } from "lib/numbers";
 
 export function getSwapAmountsByFromValue(p: {
   tokenIn: TokenData;
@@ -11,15 +10,13 @@ export function getSwapAmountsByFromValue(p: {
   triggerRatio?: TokensRatio;
   isLimit: boolean;
   findSwapPath: FindSwapPath;
-  uiFeeFactor?: BigNumber;
 }): SwapAmounts {
-  const { tokenIn, tokenOut, amountIn, triggerRatio, isLimit, findSwapPath, uiFeeFactor } = p;
+  const { tokenIn, tokenOut, amountIn, triggerRatio, isLimit, findSwapPath } = p;
 
   const priceIn = tokenIn.prices.minPrice;
   const priceOut = tokenOut.prices.maxPrice;
 
   const usdIn = convertToUsd(amountIn, tokenIn.decimals, priceIn)!;
-  const uiFeeUsd = uiFeeFactor?.gt(0) ? applyFactor(usdIn, uiFeeFactor) : undefined;
 
   let amountOut = BigNumber.from(0);
   let usdOut = BigNumber.from(0);
@@ -34,7 +31,6 @@ export function getSwapAmountsByFromValue(p: {
     priceIn,
     priceOut,
     swapPathStats: undefined,
-    uiFeeUsd,
   };
 
   if (amountIn.lte(0)) {
@@ -55,7 +51,6 @@ export function getSwapAmountsByFromValue(p: {
       priceIn,
       priceOut,
       swapPathStats: undefined,
-      uiFeeUsd,
     };
   }
 
@@ -103,7 +98,6 @@ export function getSwapAmountsByFromValue(p: {
     priceOut,
     minOutputAmount,
     swapPathStats,
-    uiFeeUsd,
   };
 }
 
@@ -114,9 +108,8 @@ export function getSwapAmountsByToValue(p: {
   triggerRatio?: TokensRatio;
   isLimit: boolean;
   findSwapPath: FindSwapPath;
-  uiFeeFactor?: BigNumber;
 }): SwapAmounts {
-  const { tokenIn, tokenOut, amountOut, triggerRatio, isLimit, findSwapPath, uiFeeFactor } = p;
+  const { tokenIn, tokenOut, amountOut, triggerRatio, isLimit, findSwapPath } = p;
 
   const priceIn = tokenIn.prices.minPrice;
   const priceOut = tokenOut.prices.maxPrice;
@@ -127,8 +120,6 @@ export function getSwapAmountsByToValue(p: {
   let amountIn = BigNumber.from(0);
   let usdIn = BigNumber.from(0);
 
-  const uiFeeUsd = uiFeeFactor?.gt(0) ? applyFactor(usdIn, uiFeeFactor) : undefined;
-
   const defaultAmounts: SwapAmounts = {
     amountIn,
     usdIn,
@@ -138,7 +129,6 @@ export function getSwapAmountsByToValue(p: {
     priceIn,
     priceOut,
     swapPathStats: undefined,
-    uiFeeUsd,
   };
 
   if (amountOut.lte(0)) {
@@ -158,7 +148,6 @@ export function getSwapAmountsByToValue(p: {
       priceIn,
       priceOut,
       swapPathStats: undefined,
-      uiFeeUsd,
     };
   }
 
@@ -208,6 +197,5 @@ export function getSwapAmountsByToValue(p: {
     priceIn,
     priceOut,
     swapPathStats,
-    uiFeeUsd,
   };
 }

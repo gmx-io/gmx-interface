@@ -40,7 +40,6 @@ type FeeRow = {
 
 export function TradeFeesRow(p: Props) {
   const { chainId } = useChainId();
-
   const feeRows: FeeRow[] = useMemo(() => {
     const positionPriceImpactRow = p.positionPriceImpact?.deltaUsd.abs().gt(0)
       ? {

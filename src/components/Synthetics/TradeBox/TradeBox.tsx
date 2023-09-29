@@ -101,6 +101,7 @@ import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS, UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
+import { getUiFee } from "domain/synthetics/fees/utils/uiFee";
 
 export type Props = {
   tradeType: TradeType;
@@ -331,7 +332,6 @@ export function TradeBox(p: Props) {
         triggerRatio: triggerRatio || markRatio,
         isLimit,
         findSwapPath: swapRoute.findSwapPath,
-        uiFeeFactor,
       });
     } else {
       return getSwapAmountsByToValue({
@@ -341,7 +341,6 @@ export function TradeBox(p: Props) {
         triggerRatio: triggerRatio || markRatio,
         isLimit,
         findSwapPath: swapRoute.findSwapPath,
-        uiFeeFactor,
       });
     }
   }, [
@@ -357,7 +356,6 @@ export function TradeBox(p: Props) {
     toToken,
     toTokenAmount,
     triggerRatio,
-    uiFeeFactor,
   ]);
 
   const increaseAmounts = useMemo(() => {
@@ -379,7 +377,6 @@ export function TradeBox(p: Props) {
       savedAcceptablePriceImpactBps: acceptablePriceImpactBpsForLimitOrders,
       findSwapPath: swapRoute.findSwapPath,
       userReferralInfo,
-      uiFeeFactor,
       strategy: isLeverageEnabled
         ? focusedInput === "from"
           ? "leverageByCollateral"
@@ -404,7 +401,6 @@ export function TradeBox(p: Props) {
     toTokenAmount,
     triggerPrice,
     userReferralInfo,
-    uiFeeFactor,
   ]);
 
   const decreaseAmounts = useMemo(() => {
@@ -424,7 +420,6 @@ export function TradeBox(p: Props) {
       userReferralInfo,
       minCollateralUsd,
       minPositionSizeUsd,
-      uiFeeFactor,
     });
   }, [
     acceptablePriceImpactBpsForLimitOrders,
@@ -439,7 +434,6 @@ export function TradeBox(p: Props) {
     minPositionSizeUsd,
     triggerPrice,
     userReferralInfo,
-    uiFeeFactor,
   ]);
 
   const nextPositionValues = useMemo(() => {
@@ -509,7 +503,7 @@ export function TradeBox(p: Props) {
   //   isLong,
   // });
 
-  const { fees, feesType, executionFee } = useMemo(() => {
+  const { fees, feesType, executionFee, uiFee } = useMemo(() => {
     if (!gasLimits || !gasPrice || !tokensData) {
       return {};
     }
@@ -532,8 +526,8 @@ export function TradeBox(p: Props) {
           fundingFeeUsd: BigNumber.from(0),
           feeDiscountUsd: BigNumber.from(0),
           swapProfitFeeUsd: BigNumber.from(0),
-          uiFeeUsd: swapAmounts.uiFeeUsd,
         }),
+        uiFee: getUiFee(swapAmounts.usdIn.mul(-1), uiFeeFactor),
         executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
         feesType: "swap" as TradeFeesType,
       };
@@ -557,8 +551,8 @@ export function TradeBox(p: Props) {
           fundingFeeUsd: existingPosition?.pendingFundingFeesUsd || BigNumber.from(0),
           feeDiscountUsd: increaseAmounts.feeDiscountUsd,
           swapProfitFeeUsd: BigNumber.from(0),
-          uiFeeUsd: increaseAmounts.uiFeeUsd,
         }),
+        uiFee: getUiFee(increaseAmounts.sizeDeltaUsd.mul(-1), uiFeeFactor),
         executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
         feesType: "increase" as TradeFeesType,
       };
@@ -583,10 +577,10 @@ export function TradeBox(p: Props) {
           fundingFeeUsd: decreaseAmounts.fundingFeeUsd,
           feeDiscountUsd: decreaseAmounts.feeDiscountUsd,
           swapProfitFeeUsd: decreaseAmounts.swapProfitFeeUsd,
-          uiFeeUsd: decreaseAmounts.uiFeeUsd,
         }),
         executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
         feesType: "decrease" as TradeFeesType,
+        uiFee: getUiFee(decreaseAmounts.sizeDeltaUsd.mul(-1), uiFeeFactor),
       };
     }
 
@@ -603,6 +597,7 @@ export function TradeBox(p: Props) {
     isTrigger,
     swapAmounts,
     tokensData,
+    uiFeeFactor,
   ]);
 
   const marketsOptions = useAvailableMarketsOptions({
@@ -1511,7 +1506,7 @@ export function TradeBox(p: Props) {
 
               <div className="App-card-divider" />
 
-              {feesType && <TradeFeesRow {...fees} executionFee={executionFee} feesType={feesType} />}
+              {feesType && <TradeFeesRow {...fees} executionFee={executionFee} feesType={feesType} uiFee={uiFee} />}
 
               {isTrigger && existingPosition && decreaseAmounts?.receiveUsd && (
                 <ExchangeInfoRow
