@@ -8,6 +8,7 @@ import { isAddressZero } from "lib/legacy";
 import { applySlippageToMinOut } from "../trade";
 import { TokensData } from "../tokens";
 import { simulateExecuteOrderTxn } from "../orders/simulateExecuteOrderTxn";
+import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 
 type Params = {
   account: string;
@@ -61,7 +62,7 @@ export async function createWithdrawalTxn(chainId: number, signer: Signer, p: Pa
           shouldUnwrapNativeToken: isNativeWithdrawal,
           executionFee: p.executionFee,
           callbackGasLimit: BigNumber.from(0),
-          uiFeeReceiver: ethers.constants.AddressZero,
+          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.constants.AddressZero,
         },
       ],
     },
