@@ -21,6 +21,7 @@ import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/s
 import { getMarkPrice } from "domain/synthetics/trade";
 import { USD_DECIMALS, getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
 import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
+import "./OrderItem.scss";
 import { getByKey } from "lib/objects";
 
 type Props = {
@@ -128,14 +129,13 @@ export function OrderItem(p: Props) {
               renderContent={() => (
                 <>
                   {p.order.errors.map((error, i) => (
-                    <div key={error.msg}>
+                    <div
+                      className={cx({
+                        "OrderItem-tooltip-row": i > 0,
+                      })}
+                      key={error.msg}
+                    >
                       <span className={error!.level === "error" ? "negative" : "warning"}>{error.msg}</span>
-                      {i < p.order.errors.length - 1 && (
-                        <>
-                          <br />
-                          <br />
-                        </>
-                      )}
                     </div>
                   ))}
                 </>
@@ -172,8 +172,7 @@ export function OrderItem(p: Props) {
                 <StatsTooltipRow label={t`Collateral`} value={getCollateralText()} showDollar={false} />
 
                 {isCollateralSwap && (
-                  <>
-                    <br />
+                  <div className="OrderItem-tooltip-row">
                     <Trans>
                       {formatTokenAmount(
                         p.order.initialCollateralDeltaAmount,
@@ -182,33 +181,24 @@ export function OrderItem(p: Props) {
                       )}{" "}
                       will be swapped to {p.order.targetCollateralToken.symbol} on order execution.
                     </Trans>
-                  </>
+                  </div>
                 )}
 
                 {showDebugValues && (
-                  <>
-                    <br />
-                    <br />
+                  <div className="OrderItem-tooltip-row">
                     <StatsTooltipRow
                       label={"Key"}
                       value={<div className="debug-key muted">{positionOrder.key}</div>}
                       showDollar={false}
                     />
-                  </>
+                  </div>
                 )}
 
                 {p.order.errors.length && (
                   <>
-                    <br />
                     {p.order.errors.map((error, i) => (
-                      <div key={error.msg}>
+                      <div className="OrderItem-tooltip-row" key={error.msg}>
                         <span className={error!.level === "error" ? "negative" : "warning"}>{error.msg}</span>
-                        {i < p.order.errors.length - 1 && (
-                          <>
-                            <br />
-                            <br />
-                          </>
-                        )}
                       </div>
                     ))}
                   </>
