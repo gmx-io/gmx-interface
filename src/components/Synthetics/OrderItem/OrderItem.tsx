@@ -197,21 +197,22 @@ export function OrderItem(p: Props) {
                   </>
                 )}
 
-                <>
-                  <br />
-                  <br />
-                  {p.order.errors.map((error, i) => (
-                    <div key={error.msg}>
-                      <span className={error!.level === "error" ? "negative" : "warning"}>{error.msg}</span>
-                      {i < p.order.errors.length - 1 && (
-                        <>
-                          <br />
-                          <br />
-                        </>
-                      )}
-                    </div>
-                  ))}
-                </>
+                {p.order.errors.length && (
+                  <>
+                    <br />
+                    {p.order.errors.map((error, i) => (
+                      <div key={error.msg}>
+                        <span className={error!.level === "error" ? "negative" : "warning"}>{error.msg}</span>
+                        {i < p.order.errors.length - 1 && (
+                          <>
+                            <br />
+                            <br />
+                          </>
+                        )}
+                      </div>
+                    ))}
+                  </>
+                )}
               </>
             );
           }}

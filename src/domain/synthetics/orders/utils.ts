@@ -198,6 +198,15 @@ export function getOrderInfo(p: {
       targetCollateralToken,
     };
 
+    const { errors, level } = getOrderErrors({
+      order: orderInfo,
+      positionsInfoData,
+      marketsInfoData,
+    });
+
+    orderInfo.errors = errors;
+    orderInfo.errorLevel = level;
+
     return orderInfo;
   } else {
     const marketInfo = getByKey(marketsInfoData, order.marketAddress);
