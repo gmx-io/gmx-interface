@@ -80,18 +80,7 @@ export default function TopPositions({ positions, search }: TopPositionsProps) {
       },
       account: {
         value: (breakpoint) => (
-          <Tooltip
-            position={i > 7 ? "right-top" : "right-bottom"}
-            handle={
-              <AddressView
-                size={24}
-                address={p.account}
-                breakpoint={breakpoint}
-                lengths={{ S: 9, M: 11, L: 20, XL: 25 }}
-              />
-            }
-            renderContent={() => <div>{t`Only Addresses' Positions with over $1,000 in traded volume are displayed.`}</div>}
-          />
+          <AddressView size={24} address={p.account} breakpoint={breakpoint} lengths={{ S: 9, M: 11, L: 20, XL: 25 }}/>
         ),
       },
       unrealizedPnl: {
@@ -199,7 +188,11 @@ export default function TopPositions({ positions, search }: TopPositionsProps) {
 
   const titles: { [k in keyof TopPositionsRow]?: TableHeader } = {
     rank: { title: t`Rank`, width: 6 },
-    account: { title: t`Address`, width: (p = "XL") => ({ XL: 26, L: 22, M: 16, S: 10 }[p] || 26) },
+    account: {
+      title: t`Address`, width: (p = "XL") => ({ XL: 26, L: 22, M: 16, S: 10 }[p] || 26),
+      tooltip: t`Only Addresses' Positions with over $1,000 in traded volume are displayed.`,
+      tooltipPosition: "left-bottom",
+    },
     unrealizedPnl: {
       title: t`PnL ($)`,
       tooltip: t`Total Unrealized Profit and Loss.`,

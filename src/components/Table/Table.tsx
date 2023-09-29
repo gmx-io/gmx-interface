@@ -62,7 +62,7 @@ export default function Table<T extends Record<string, any>>({
 }
 
 const TableHeader = ({ data, breakpoint }: TableHeaderProps) => {
-  const { onClick, className, tooltip, width, title } = data;
+  const { onClick, className, tooltip, tooltipPosition, width, title } = data;
   const style = width
     ? {
         width: `${typeof width === "function" ? width(breakpoint) : width}%`,
@@ -75,7 +75,7 @@ const TableHeader = ({ data, breakpoint }: TableHeaderProps) => {
         <Tooltip
           handle={<span className="TableHeaderTitle">{title}</span>}
           isPopupClickable={false}
-          position="right-bottom"
+          position={tooltipPosition || "right-bottom"}
           className="TableHeaderTooltip"
           renderContent={typeof tooltip === "function" ? tooltip : () => <p>{tooltip}</p>}
         />

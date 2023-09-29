@@ -27,13 +27,7 @@ const parseRow = (s: Ranked<LiveAccountPerformance>, i: number): TopAccountsRow 
   },
   account: {
     value: (breakpoint) => (
-      <Tooltip
-        position={i > 7 ? "right-top" : "right-bottom"}
-        handle={
-          <AddressView size={24} address={s.account} breakpoint={breakpoint} lengths={{ S: 9, M: 13, L: 24, XL: 42 }} />
-        }
-        renderContent={() => <div>{t`Only Addresses with over $1,000 in traded volume are displayed.`}</div>}
-      />
+      <AddressView size={24} address={s.account} breakpoint={breakpoint} lengths={{ S: 9, M: 13, L: 24, XL: 42 }} />
     ),
   },
   absProfit: {
@@ -168,7 +162,11 @@ export default function TopAccounts({ accounts, search }: TopAccountsProps) {
 
   const titles: { [key in keyof TopAccountsRow]?: TableHeader } = {
     rank: { title: t`Rank`, width: 6 },
-    account: { title: t`Address`, width: (p = "XL") => ({ XL: 40, L: 36, M: 16, S: 10 }[p] || 40) },
+    account: {
+      title: t`Address`, width: (p = "XL") => ({ XL: 40, L: 36, M: 16, S: 10 }[p] || 40),
+      tooltip: t`Only Addresses with over $1,000 in traded volume are displayed.`,
+      tooltipPosition: "left-bottom",
+    },
     absProfit: {
       title: t`PnL ($)`,
       tooltip: t`Total Realized and Unrealized Profit and Loss.`,

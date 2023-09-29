@@ -4,6 +4,7 @@ export type TableHeader = {
   title: string;
   className?: string;
   tooltip?: string | (() => ReactNode);
+  tooltipPosition?: string;
   onClick?: () => void;
   width?: number | ((breakpoint?: string) => number);
 };
