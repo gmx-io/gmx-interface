@@ -174,14 +174,14 @@ describe("TradeHistoryRow helpers", () => {
 
   it("formatSwapMessage", () => {
     // MARKET SWAPS
-    expect(formatSwapMessage(requestSwap)).toEqual("Request Market Swap 0.0119 WETH for 39.8800 USDC");
-    expect(formatSwapMessage(executeSwap)).toEqual("Execute Market Swap 1080.6325 USDC for 1.1196 ETH");
+    expect(formatSwapMessage(requestSwap)).toEqual("Request Market Swap: 0.0119 WETH for 39.8800 USDC");
+    expect(formatSwapMessage(executeSwap)).toEqual("Execute Market Swap: 1080.6325 USDC for 1.1196 ETH");
     // LIMIT SWAPS
     expect(formatSwapMessage(executeOrderSwap)).toEqual(
-      "Execute Limit Order: Swap 0.3000 WETH for 0.3698 BTC, Price: 1.2329 WETH / BTC"
+      "Execute Limit Swap: 0.3000 WETH for 0.3698 BTC, Price: 1.2329 WETH / BTC"
     );
     expect(formatSwapMessage(failedSwap)).toEqual(
-      "Limit Swap Execution Failed: Swap 0.3000 WETH for 0.1326 BTC, Price: 0.4422 WETH / BTC"
+      "Limit Swap Execution Failed: 0.3000 WETH for 0.1326 BTC, Price: 0.4422 WETH / BTC"
     );
   });
 });

@@ -253,14 +253,14 @@ export const formatSwapMessage = (tradeAction: SwapTradeAction): string => {
     const ratioText = tokensRatio.ratio.gt(0) ? getExchangeRateDisplay(tokensRatio?.ratio, largest, smallest) : "0";
 
     return tradeAction.eventName === TradeActionType.OrderFrozen
-      ? t`${orderTypeName} Swap Execution Failed: Swap ${fromText} for ${toText}, Price: ${ratioText}`
-      : t`${actionText} ${orderTypeName} Order: Swap ${fromText} for ${toText}, Price: ${ratioText}`;
+      ? t`${orderTypeName} Swap Execution Failed: ${fromText} for ${toText}, Price: ${ratioText}`
+      : t`${actionText} ${orderTypeName} Swap: ${fromText} for ${toText}, Price: ${ratioText}`;
   }
 
   const actionText =
     tradeAction.eventName === TradeActionType.OrderCreated ? t`Request` : getOrderActionText(tradeAction);
 
-  return t`${actionText} ${orderTypeName} Swap ${fromText} for ${toText}`;
+  return t`${actionText} ${orderTypeName} Swap: ${fromText} for ${toText}`;
 };
 
 function getSwapOrderTypeName(tradeAction: SwapTradeAction) {
