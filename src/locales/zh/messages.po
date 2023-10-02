@@ -1093,10 +1093,6 @@ msgstr "创建指令"
 msgid "Create Referral Code"
 msgstr "创建推荐代码"
 
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-msgid "Create Trigger order"
-msgstr ""
-
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Create trigger order"
 msgstr ""
@@ -1104,6 +1100,10 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 msgid "Create {0} Order"
 msgstr "创建 {0} 订单"
+
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "Create {0} order"
+msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Created At"
@@ -1620,12 +1620,12 @@ msgstr "执行"
 msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgstr "执行指令: 交换 {fromAmountDisplay} {0} 为 {toAmountDisplay} {1}"
 
-#: src/components/Synthetics/TradeHistoryRow/helpers.ts
-msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText},"
-msgstr ""
-
 #: src/components/Exchange/TradeHistory.js
 msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Execute {orderTypeName} Order: {increaseText} {positionText} {sizeDeltaText},"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
@@ -2311,6 +2311,7 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Limit"
 msgstr "限制"
@@ -2601,6 +2602,7 @@ msgstr "标价"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Market"
 msgstr "市场"
 
@@ -3669,6 +3671,10 @@ msgstr "奖励"
 msgid "SHORT LIQ."
 msgstr ""
 
+#: src/domain/synthetics/positions/utils.ts
+msgid "SL"
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Same as current active code"
 msgstr "与当前的有效代码相同"
@@ -4075,6 +4081,10 @@ msgstr "统计数据"
 msgid "Stop Loss Decrease"
 msgstr ""
 
+#: src/domain/synthetics/positions/utils.ts
+msgid "Stop-Loss"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Structured Products"
 msgstr "结构化产品"
@@ -4231,6 +4241,10 @@ msgstr "交易取消，等待 {0} 升级"
 msgid "Switch to {0} collateral."
 msgstr ""
 
+#: src/domain/synthetics/positions/utils.ts
+msgid "T"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.js
@@ -4239,6 +4253,18 @@ msgstr "代币"
 
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "TOTAL SUPPLY"
+msgstr ""
+
+#: src/domain/synthetics/positions/utils.ts
+msgid "TP"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "TP/SL"
+msgstr ""
+
+#: src/domain/synthetics/positions/utils.ts
+msgid "Take-Profit"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -4667,10 +4693,9 @@ msgstr "转移中"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/domain/synthetics/positions/utils.ts
 msgid "Trigger"
 msgstr "触发"
 
@@ -5589,6 +5614,10 @@ msgstr ""
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "{orderTypeLabel} {positionText}, -{0}"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "{orderTypeName} Order Execution Failed"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
