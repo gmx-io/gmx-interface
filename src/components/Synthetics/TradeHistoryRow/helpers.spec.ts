@@ -130,7 +130,7 @@ describe("TradeHistoryRow helpers", () => {
           {
             label: "Price Impact",
             showDollar: false,
-            value: "-$16.82",
+            value: " -$16.82",
             className: "text-red",
           },
           {
