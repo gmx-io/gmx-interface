@@ -260,13 +260,18 @@ function getLiquidationTooltipProps(
       ),
     },
     { label: t`Min required collateral`, showDollar: false, value: formatUsd(minCollateralUsd) },
-    { label: t`Borrow Fee`, showDollar: false, value: formatUsd(borrowingFeeUsd) },
-    { label: t`Funding Fee`, showDollar: false, value: formatUsd(fundingFeeUsd) },
-    { label: t`Position Fee`, showDollar: false, value: formatUsd(positionFeeUsd) },
+    { label: t`Borrow Fee`, showDollar: false, value: formatUsd(borrowingFeeUsd?.mul(-1)), className: "text-red" },
+    { label: t`Funding Fee`, showDollar: false, value: formatUsd(fundingFeeUsd?.mul(-1)), className: "text-red" },
+    { label: t`Position Fee`, showDollar: false, value: formatUsd(positionFeeUsd?.mul(-1)), className: "text-red" },
     // FIXME do we still want to show priceImpactDiffUsd?
     { label: t`Price Impact`, showDollar: false, value: formatUsd(priceImpactUsd) },
-    { label: t`PnL After Fees`, showDollar: false, value: formatUsd(pnlUsd) },
-  ];
+    {
+      label: t`PnL After Fees`,
+      showDollar: false,
+      value: formatUsd(pnlUsd),
+      className: pnlUsd?.gt(0) ? "text-green" : "text-red",
+    },
+  ].map((row) => (row.value?.startsWith("-") ? { className: "text-red", ...row } : row));
 }
 
 function getExecutionFailedTooltipProps(tradeAction: PositionTradeAction): Partial<FormatPositionMessageChunk> {
@@ -364,6 +369,7 @@ function getMarketTooltipRows(tradeAction: PositionTradeAction): StatsTooltipRow
       label: t`Actual Price Impact`,
       showDollar: false,
       value: formatUsd(tradeAction.priceImpactUsd, { displayDecimals: 2 }),
+      className: tradeAction.priceImpactUsd.gt(0) ? "text-green" : "text-red",
     },
   ].filter(Boolean) as StatsTooltipRowProps[];
 
