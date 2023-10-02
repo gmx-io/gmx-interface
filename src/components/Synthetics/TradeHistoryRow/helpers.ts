@@ -9,7 +9,7 @@ import { getShouldUseMaxPrice, getTriggerThresholdType } from "domain/synthetics
 import { PositionTradeAction, SwapTradeAction, TradeAction, TradeActionType } from "domain/synthetics/tradeHistory";
 import { BigNumber, ethers } from "ethers";
 import { PRECISION, getExchangeRateDisplay } from "lib/legacy";
-import { formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { formatDeltaUsd, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { museNeverExist } from "lib/types";
 import { trimStart } from "lodash";
 
@@ -317,13 +317,23 @@ function getLiquidationTooltipProps(
       ),
     },
     { label: t`Min required collateral`, showDollar: false, value: formatUsd(minCollateralUsd) },
-    { label: t`Borrow Fee`, showDollar: false, value: formatUsd(borrowingFeeUsd) },
-    { label: t`Funding Fee`, showDollar: false, value: formatUsd(fundingFeeUsd) },
-    { label: t`Position Fee`, showDollar: false, value: formatUsd(positionFeeUsd) },
+    { label: t`Borrow Fee`, showDollar: false, value: formatUsd(borrowingFeeUsd?.mul(-1)), className: "text-red" },
+    { label: t`Funding Fee`, showDollar: false, value: formatUsd(fundingFeeUsd?.mul(-1)), className: "text-red" },
+    { label: t`Position Fee`, showDollar: false, value: formatUsd(positionFeeUsd?.mul(-1)), className: "text-red" },
     // FIXME do we still want to show priceImpactDiffUsd?
-    { label: t`Price Impact`, showDollar: false, value: formatUsd(priceImpactUsd) },
-    { label: t`PnL After Fees`, showDollar: false, value: formatUsd(pnlUsd) },
-  ];
+    {
+      label: t`Price Impact`,
+      showDollar: false,
+      value: formatDeltaUsd(priceImpactUsd),
+      className: priceImpactUsd?.gt(0) ? "text-green" : "text-red",
+    },
+    {
+      label: t`PnL After Fees`,
+      showDollar: false,
+      value: formatUsd(pnlUsd),
+      className: pnlUsd?.gt(0) ? "text-green" : "text-red",
+    },
+  ].map((row) => (row.value?.startsWith("-") ? { className: "text-red", ...row } : row));
 }
 
 function getExecutionFailedTooltipProps(tradeAction: PositionTradeAction): Partial<FormatPositionMessageChunk> {
@@ -403,7 +413,7 @@ function getExecutionPriceTooltipRows(tradeAction: PositionTradeAction): StatsTo
     tradeAction.priceImpactUsd && {
       label: t`Price Impact`,
       showDollar: false,
-      value: formatUsd(tradeAction.priceImpactUsd, { displayDecimals: priceDecimals }),
+      value: formatDeltaUsd(tradeAction.priceImpactUsd),
     },
   ].filter(Boolean) as StatsTooltipRowProps[];
 }
@@ -421,6 +431,7 @@ function getMarketTooltipRows(tradeAction: PositionTradeAction): StatsTooltipRow
       label: t`Actual Price Impact`,
       showDollar: false,
       value: formatUsd(tradeAction.priceImpactUsd, { displayDecimals: 2 }),
+      className: tradeAction.priceImpactUsd.gt(0) ? "text-green" : "text-red",
     },
   ].filter(Boolean) as StatsTooltipRowProps[];
 
