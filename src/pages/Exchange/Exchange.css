@@ -982,10 +982,6 @@ table.Exchange-list-small td {
   margin-right: 0.25rem;
 }
 
-.Position-leverage:hover {
-  opacity: 0.9;
-}
-
 .Position-pnl.negative:hover {
   color: #fb5971;
 }

@@ -95,6 +95,10 @@ msgstr "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exc
 msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} available liquidity. Reduce the \"Pay\" size, or change the \"Collateral In\" token.</1>"
 msgstr "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} available liquidity. Reduce the \"Pay\" size, or change the \"Collateral In\" token.</1>"
 
+#: src/components/Synthetics/TVChart/TVChart.tsx
+msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
+msgstr "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
+
 #: src/components/Exchange/SwapBox.js
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
@@ -160,6 +164,7 @@ msgstr "Accept that orders are not guaranteed to execute and trigger orders may 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "Acceptable Price"
@@ -167,6 +172,7 @@ msgstr "Acceptable Price"
 
 #: src/components/Synthetics/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Acceptable Price Impact"
@@ -784,12 +790,20 @@ msgid "Claims"
 msgstr "Claims"
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Click on a row to select the position's market, then use the swap box to increase your position size or to set stop-loss / take-profit orders."
-msgstr "Click on a row to select the position's market, then use the swap box to increase your position size or to set stop-loss / take-profit orders."
+#~ msgid "Click on a row to select the position's market, then use the swap box to increase your position size or to set stop-loss / take-profit orders."
+#~ msgstr "Click on a row to select the position's market, then use the swap box to increase your position size or to set stop-loss / take-profit orders."
 
 #: src/components/Exchange/PositionsList.js
-msgid "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
-msgstr "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
+#~ msgid "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
+#~ msgstr "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
+
+#: src/components/Exchange/PositionsList.js
+msgid "Click on the Position to select its market, then use the trade box to increase your Position Size if needed."
+msgstr "Click on the Position to select its market, then use the trade box to increase your Position Size if needed."
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take-Profit / Stop-Loss Orders."
+msgstr "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take-Profit / Stop-Loss Orders."
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
@@ -1017,7 +1031,7 @@ msgstr "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting detail
 msgid "Convert {wrappedTokenSymbol} to {nativeTokenSymbol}"
 msgstr "Convert {wrappedTokenSymbol} to {nativeTokenSymbol}"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Copy"
 msgstr "Copy"
 
@@ -1083,6 +1097,10 @@ msgstr "Create Referral Code"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Create Trigger order"
 msgstr "Create Trigger order"
+
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+msgid "Create trigger order"
+msgstr "Create trigger order"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Create {0} Order"
@@ -1345,7 +1363,7 @@ msgstr "Docs"
 msgid "Don't show this message again for 30 days."
 msgstr "Don't show this message again for 30 days."
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Download"
 msgstr "Download"
 
@@ -1573,6 +1591,7 @@ msgstr "Enter new amount or price"
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Entry Price"
@@ -1928,7 +1947,7 @@ msgstr "GMX | Decentralized Perpetual Exchange"
 msgid "Generate Referral Code"
 msgstr "Generate Referral Code"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShareCard.tsx
 msgid "Generating shareable image..."
 msgstr "Generating shareable image..."
 
@@ -1961,7 +1980,7 @@ msgstr "If you have an existing position, the position will be closed at a refer
 msgid "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
 msgstr "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Image generation error, please refresh and try again."
 msgstr "Image generation error, please refresh and try again."
 
@@ -2202,6 +2221,10 @@ msgstr "Keep leverage at {0}"
 msgid "Keep leverage at {0}x"
 msgstr "Keep leverage at {0}x"
 
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "LONG LIQ."
+msgstr "LONG LIQ."
+
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Language"
 msgstr "Language"
@@ -2329,7 +2352,7 @@ msgstr "Limit order submitted!"
 msgid "Link"
 msgstr "Link"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Link copied to clipboard."
 msgstr "Link copied to clipboard."
 
@@ -2349,6 +2372,7 @@ msgstr "Liq Price"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -2443,6 +2467,7 @@ msgstr "Loading..."
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
+#: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -2482,6 +2507,18 @@ msgstr "Long Open Interest"
 msgid "Long Positions"
 msgstr "Long Positions"
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#~ msgid "Long positions {0} a Funding Fee of <0>{1}%</0> per hour."
+#~ msgstr "Long positions {0} a Funding Fee of <0>{1}%</0> per hour."
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Long positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
+msgstr "Long positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#~ msgid "Long positions {0} a Funding Fee of <0>{longSign}{1}%</0> per hour."
+#~ msgstr "Long positions {0} a Funding Fee of <0>{longSign}{1}%</0> per hour."
+
 #: src/components/Exchange/SwapBox.js
 msgid "Long {0}"
 msgstr "Long {0}"
@@ -2520,6 +2557,7 @@ msgstr "MINTABLE"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Mark"
@@ -2544,6 +2582,7 @@ msgstr "Mark"
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark Price"
@@ -3199,6 +3238,7 @@ msgstr "Please uncheck \"Keep Leverage\", or close a larger position amount."
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 #: src/pages/Actions/Actions.js
@@ -3290,6 +3330,7 @@ msgstr "Prev"
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -3305,6 +3346,7 @@ msgid "Price"
 msgstr "Price"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "Price Impact"
 msgstr "Price Impact"
@@ -3475,6 +3517,7 @@ msgstr "Rebates on V2"
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -3617,6 +3660,10 @@ msgstr "Returns calculator for GMX and GLP"
 #: src/pages/Stake/StakeV2.js
 msgid "Rewards"
 msgstr "Rewards"
+
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "SHORT LIQ."
+msgstr "SHORT LIQ."
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Same as current active code"
@@ -3789,7 +3836,7 @@ msgid "Share"
 msgstr "Share"
 
 #: src/components/Exchange/PositionDropdown.js
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Share Position"
 msgstr "Share Position"
 
@@ -3826,6 +3873,7 @@ msgstr "Share Position"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+#: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -3866,6 +3914,18 @@ msgstr "Short Open Interest"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Short Positions"
 msgstr "Short Positions"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#~ msgid "Short positions {0} a Funding Fee of <0>{1}%</0> per hour."
+#~ msgstr "Short positions {0} a Funding Fee of <0>{1}%</0> per hour."
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Short positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
+msgstr "Short positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#~ msgid "Short positions {0} a Funding Fee of <0>{shortSign}{1}%</0> per hour."
+#~ msgstr "Short positions {0} a Funding Fee of <0>{shortSign}{1}%</0> per hour."
 
 #: src/components/Exchange/SwapBox.js
 msgid "Short {0}"
@@ -3908,6 +3968,7 @@ msgstr "Single"
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Size"
@@ -4186,8 +4247,8 @@ msgid "TOTAL SUPPLY"
 msgstr "TOTAL SUPPLY"
 
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-msgid "Take-Profit and Stop-Loss orders are created in the main Tradebox.<0/><1/><2>Set Trigger Order for this position.</2><3/><4/><5>More Info</5>."
-msgstr "Take-Profit and Stop-Loss orders are created in the main Tradebox.<0/><1/><2>Set Trigger Order for this position.</2><3/><4/><5>More Info</5>."
+#~ msgid "Take-Profit and Stop-Loss orders are created in the main Tradebox.<0/><1/><2>Set Trigger Order for this position.</2><3/><4/><5>More Info</5>."
+#~ msgstr "Take-Profit and Stop-Loss orders are created in the main Tradebox.<0/><1/><2>Set Trigger Order for this position.</2><3/><4/><5>More Info</5>."
 
 #: src/components/Exchange/SwapBox.js
 msgid "Take-profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
@@ -4630,6 +4691,7 @@ msgstr "Trigger Close"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Trigger Price"
 msgstr "Trigger Price"
@@ -4650,7 +4712,7 @@ msgstr "Try increasing the \"Allowed Slippage\", under the Settings menu on the 
 msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right."
 msgstr "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right."
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Tweet"
 msgstr "Tweet"
 
@@ -4766,12 +4828,20 @@ msgid "Updating..."
 msgstr "Updating..."
 
 #: src/components/Exchange/PositionsList.js
-msgid "Use the \"Close\" button to reduce your position size, or to set stop-loss / take-profit orders."
-msgstr "Use the \"Close\" button to reduce your position size, or to set stop-loss / take-profit orders."
+msgid "Use the \"Close\" button to reduce your Position Size, or to set Take-Profit / Stop-Loss Orders."
+msgstr "Use the \"Close\" button to reduce your Position Size, or to set Take-Profit / Stop-Loss Orders."
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Use the \"Close\" button to reduce your position size."
-msgstr "Use the \"Close\" button to reduce your position size."
+msgid "Use the \"Close\" button to reduce your Position Size."
+msgstr "Use the \"Close\" button to reduce your Position Size."
+
+#: src/components/Exchange/PositionsList.js
+#~ msgid "Use the \"Close\" button to reduce your position size, or to set stop-loss / take-profit orders."
+#~ msgstr "Use the \"Close\" button to reduce your position size, or to set stop-loss / take-profit orders."
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#~ msgid "Use the \"Close\" button to reduce your position size."
+#~ msgstr "Use the \"Close\" button to reduce your position size."
 
 #: src/pages/Stake/StakeV2.js
 msgid "Use the \"Compound\" button to stake your Multiplier Points."
@@ -5269,8 +5339,8 @@ msgid "collateral"
 msgstr "collateral"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "earn"
-msgstr "earn"
+#~ msgid "earn"
+#~ msgstr "earn"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "esGMX OTC Market"
@@ -5294,8 +5364,14 @@ msgid "not staked"
 msgstr "not staked"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "pay"
 msgstr "pay"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "receive"
+msgstr "receive"
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "size"
@@ -5322,6 +5398,11 @@ msgstr "{0, plural, one {Cancel order} other {Cancel # orders}}"
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#~ msgid "{0}"
+#~ msgstr "{0}"
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>;"
@@ -5508,8 +5589,8 @@ msgid "{longOrShortText} {0} market selected"
 msgstr "{longOrShortText} {0} market selected"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "{longShortText} positions {0} a funding fee of {1}% per hour."
-msgstr "{longShortText} positions {0} a funding fee of {1}% per hour."
+#~ msgid "{longShortText} positions {0} a funding fee of {1}% per hour."
+#~ msgstr "{longShortText} positions {0} a funding fee of {1}% per hour."
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "{marketsCount, plural, one {# Market} other {# Markets}}"

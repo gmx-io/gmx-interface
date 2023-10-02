@@ -148,7 +148,6 @@ export function getIncreaseError(p: {
     fees,
     swapPathStats,
     collateralLiquidity,
-    minCollateralUsd,
     longLiquidity,
     shortLiquidity,
     isLong,
@@ -200,7 +199,8 @@ export function getIncreaseError(p: {
     return [t`Fees exceed amount`];
   }
 
-  const _minCollateralUsd = minCollateralUsd || expandDecimals(10, USD_DECIMALS);
+  // Hardcoded for Odyssey
+  const _minCollateralUsd = expandDecimals(2, USD_DECIMALS);
 
   if (!existingPosition && collateralUsd?.lt(_minCollateralUsd)) {
     return [t`Min order: ${formatUsd(_minCollateralUsd)}`];
