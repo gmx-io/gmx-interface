@@ -1283,6 +1283,10 @@ msgstr "Deposit amount is insufficient to bring leverage below the max allowed l
 msgid "Deposit disabled, pending {0} upgrade"
 msgstr "Deposit disabled, pending {0} upgrade"
 
+#: src/domain/synthetics/markets/createDepositTxn.ts
+msgid "Deposit error."
+msgstr "Deposit error."
+
 #: src/pages/Stake/StakeV2.js
 msgid "Deposit failed!"
 msgstr "Deposit failed!"
@@ -1626,6 +1630,11 @@ msgstr "Execute Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price:
 #: src/components/Exchange/TradeHistory.js
 msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
+
+#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
+#: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
+msgid "Execute order simulation failed."
+msgstr "Execute order simulation failed."
 
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "Execution Fee"
@@ -3064,6 +3073,12 @@ msgstr "Order created!"
 #: src/components/Exchange/PositionSeller.js
 msgid "Order creation failed."
 msgstr "Order creation failed."
+
+#: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
+#: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
+#: src/domain/synthetics/orders/createSwapOrderTxn.ts
+msgid "Order error."
+msgstr "Order error."
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Order executed"
@@ -5108,6 +5123,10 @@ msgstr "Withdraw submitted."
 #: src/components/Exchange/TradeHistory.js
 msgid "Withdraw {0} USD from {1}{longOrShortText}"
 msgstr "Withdraw {0} USD from {1}{longOrShortText}"
+
+#: src/domain/synthetics/markets/createWithdrawalTxn.ts
+msgid "Withdrawal error."
+msgstr "Withdrawal error."
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Withdrawal failed."
