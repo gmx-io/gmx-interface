@@ -25,7 +25,7 @@ describe("TradeHistoryRow helpers", () => {
   it("formatPositionOrderMessage", () => {
     expect(formatPositionMessage(requestIncreasePosition, minCollateralUsd)).toEqual([
       {
-        text: "Request Market Increase Long BTC +$3,735.44, ",
+        text: "Request Market Increase: Long BTC +$3,735.44, ",
       },
       {
         text: "Acceptable Price: $25,814.79",
@@ -143,7 +143,7 @@ describe("TradeHistoryRow helpers", () => {
     ]);
 
     expect(formatPositionMessage(increaseLongETH, minCollateralUsd)).toEqual([
-      { text: "Market Increase Long ETH +$49.83, " },
+      { text: "Market Increase: Long ETH +$49.83, " },
       {
         text: "Execution Price: $1,584.74",
         tooltipRows: [

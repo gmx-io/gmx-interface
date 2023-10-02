@@ -164,7 +164,7 @@ export const formatPositionMessage = (
 
         return [
           {
-            text: trimStart(`${actionText} ${marketStr} ${increaseText} ${positionText} ${sizeDeltaText}, `),
+            text: trimStart(`${actionText} ${marketStr} ${increaseText}: ${positionText} ${sizeDeltaText}, `),
           },
           {
             text: priceStr,
