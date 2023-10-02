@@ -1,4 +1,4 @@
-import { PositionTradeAction } from "domain/synthetics/tradeHistory";
+import { PositionTradeAction, SwapTradeAction } from "domain/synthetics/tradeHistory";
 import { BigNumber } from "ethers";
 import { bigNumberify } from "lib/numbers";
 
@@ -20,6 +20,10 @@ const prepare = (action: any): PositionTradeAction => {
     }
   };
   return prepareHelper(action) as PositionTradeAction;
+};
+
+const prepareSwap = (action: any): SwapTradeAction => {
+  return prepare(action) as unknown as SwapTradeAction;
 };
 
 export const requestIncreasePosition = prepare({
@@ -4829,6 +4833,305 @@ export const increaseLongETH = prepare({
   transaction: {
     timestamp: 1695310360,
     hash: "0x26e3097fe0acab25b178836cbf3672336eed2d90aa8efa4387a8521ee10e3de6",
+    __typename: "Transaction",
+  },
+});
+
+export const requestSwap = prepareSwap({
+  id: "0x3fc3171b610c81a9866092f21dff8746e8f2dcb0e221e59c553a5aedb3d45236:2",
+  eventName: "OrderCreated",
+  account: "0x90c5814240ae5cf09730536e76c117fa00eb7d8e",
+  swapPath: ["0x72349b00768601D9598084220224948CE5b6Ebdd", "0x22B9076BBCD93E491999AA748fDD6623fa019532"],
+  orderType: 0,
+  orderKey: "0x084356b07d4a6e14a9141e42d731bbbae47a9dc05cf41b0e7c35c8b0d5a3f6ff",
+  initialCollateralTokenAddress: "0xe39ab88f8a4777030a534146a9ca3b52bd5d43a3",
+  initialCollateralDeltaAmount: {
+    type: "BigNumber",
+    hex: "0x2a941ee0ca93b6",
+  },
+  minOutputAmount: {
+    type: "BigNumber",
+    hex: "0x02608540",
+  },
+  shouldUnwrapNativeToken: false,
+  targetCollateralToken: {
+    name: "USD Coin",
+    symbol: "USDC",
+    decimals: 6,
+    address: "0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
+    isStable: true,
+    imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
+    explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
+    prices: {
+      minPrice: {
+        type: "BigNumber",
+        hex: "0x0c9ea874333866f92ba3c00000",
+      },
+      maxPrice: {
+        type: "BigNumber",
+        hex: "0x0c9fcb59381ec6bed809800000",
+      },
+    },
+    balance: {
+      type: "BigNumber",
+      hex: "0x02780d5814",
+    },
+  },
+  initialCollateralToken: {
+    name: "Wrapped Ethereum",
+    symbol: "WETH",
+    decimals: 18,
+    address: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
+    isWrapped: true,
+    baseSymbol: "ETH",
+    imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
+    explorerUrl: "https://goerli.arbiscan.io/address/0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
+    prices: {
+      minPrice: {
+        type: "BigNumber",
+        hex: "0x5414f40165fe6a9c296b63c00000",
+      },
+      maxPrice: {
+        type: "BigNumber",
+        hex: "0x5415433252453aeb1638a7400000",
+      },
+    },
+    balance: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+  },
+  transaction: {
+    timestamp: 1696257316,
+    hash: "0x3fc3171b610c81a9866092f21dff8746e8f2dcb0e221e59c553a5aedb3d45236",
+    __typename: "Transaction",
+  },
+});
+
+export const executeSwap = prepareSwap({
+  id: "0xd268078948c6450ab35469254c9e8ece9a5fb30c9e75b61be99e2393a770f91b:16",
+  eventName: "OrderExecuted",
+  account: "0xc21341949e8a9e65525a7275090718fea73db94c",
+  swapPath: ["0x1529876A9348D61C6c4a3EEe1fe6CbF1117Ca315"],
+  orderType: 0,
+  orderKey: "0xd62a7fc4a0387e9c40206327804e4b68e77655d7b30dcc19103f2c1c29c10bd7",
+  initialCollateralTokenAddress: "0x04fc936a15352a1b15b3b9c56ea002051e3db3e5",
+  initialCollateralDeltaAmount: {
+    type: "BigNumber",
+    hex: "0x406924f3",
+  },
+  minOutputAmount: {
+    type: "BigNumber",
+    hex: "0x0f7dea0694ae55f8",
+  },
+  executionAmountOut: {
+    type: "BigNumber",
+    hex: "0x0f89a97544b41524",
+  },
+  shouldUnwrapNativeToken: true,
+  targetCollateralToken: {
+    name: "Ethereum",
+    symbol: "ETH",
+    decimals: 18,
+    address: "0x0000000000000000000000000000000000000000",
+    isNative: true,
+    isShortable: true,
+    imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
+    wrappedAddress: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
+    prices: {
+      minPrice: {
+        type: "BigNumber",
+        hex: "0x5414f40165fe6a9c296b63c00000",
+      },
+      maxPrice: {
+        type: "BigNumber",
+        hex: "0x5415433252453aeb1638a7400000",
+      },
+    },
+    balance: {
+      type: "BigNumber",
+      hex: "0x0d4b4b7a1a4c8c80",
+    },
+  },
+  initialCollateralToken: {
+    name: "USD Coin",
+    symbol: "USDC",
+    decimals: 6,
+    address: "0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
+    isStable: true,
+    imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
+    explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
+    prices: {
+      minPrice: {
+        type: "BigNumber",
+        hex: "0x0c9ea874333866f92ba3c00000",
+      },
+      maxPrice: {
+        type: "BigNumber",
+        hex: "0x0c9fcb59381ec6bed809800000",
+      },
+    },
+    balance: {
+      type: "BigNumber",
+      hex: "0x02780d5814",
+    },
+  },
+  transaction: {
+    timestamp: 1696212520,
+    hash: "0xd268078948c6450ab35469254c9e8ece9a5fb30c9e75b61be99e2393a770f91b",
+    __typename: "Transaction",
+  },
+});
+
+export const executeOrderSwap = prepareSwap({
+  id: "0x7805d7f25e04c62736e6109c13c2906f0a5690c7e6f9360da0d254ed147bb88c:33",
+  eventName: "OrderExecuted",
+  account: "0xd0fa2ebeac5e1b5876ce2754100e9009fc0bd4fc",
+  swapPath: ["0x1529876A9348D61C6c4a3EEe1fe6CbF1117Ca315", "0x339eF6aAcF8F4B2AD15BdcECBEED1842Ec4dBcBf"],
+  orderType: 1,
+  orderKey: "0x0c9cef614c72abac6d78e4bad1310225bca88436b69a6396e54b76d5a3297b5f",
+  initialCollateralTokenAddress: "0xe39ab88f8a4777030a534146a9ca3b52bd5d43a3",
+  initialCollateralDeltaAmount: {
+    type: "BigNumber",
+    hex: "0x0429d069189e0000",
+  },
+  minOutputAmount: {
+    type: "BigNumber",
+    hex: "0xca6ece",
+  },
+  executionAmountOut: {
+    type: "BigNumber",
+    hex: "0x0234614c",
+  },
+  shouldUnwrapNativeToken: false,
+  targetCollateralToken: {
+    name: "Bitcoin",
+    symbol: "BTC",
+    decimals: 8,
+    address: "0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
+    isShortable: true,
+    imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
+    explorerUrl: "https://goerli.arbiscan.io/address/0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
+    prices: {
+      minPrice: {
+        type: "BigNumber",
+        hex: "0x056a5ca059157e7ea7ff60d2c00000",
+      },
+      maxPrice: {
+        type: "BigNumber",
+        hex: "0x056a73fcfb84ba487580064b000000",
+      },
+    },
+    balance: {
+      type: "BigNumber",
+      hex: "0x04b6ac44",
+    },
+  },
+  initialCollateralToken: {
+    name: "Wrapped Ethereum",
+    symbol: "WETH",
+    decimals: 18,
+    address: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
+    isWrapped: true,
+    baseSymbol: "ETH",
+    imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
+    explorerUrl: "https://goerli.arbiscan.io/address/0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
+    prices: {
+      minPrice: {
+        type: "BigNumber",
+        hex: "0x538ed4f5fc330a6a53d645800000",
+      },
+      maxPrice: {
+        type: "BigNumber",
+        hex: "0x5393ab3da897ec3e9716a6c00000",
+      },
+    },
+    balance: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+  },
+  transaction: {
+    timestamp: 1695969999,
+    hash: "0x7805d7f25e04c62736e6109c13c2906f0a5690c7e6f9360da0d254ed147bb88c",
+    __typename: "Transaction",
+  },
+});
+
+export const failedSwap = prepareSwap({
+  id: "0x027f087350d07d205840cf777a1a37913caf2cf4c5492cefe215c9b007aff61a:8",
+  eventName: "OrderFrozen",
+  account: "0xd0fa2ebeac5e1b5876ce2754100e9009fc0bd4fc",
+  swapPath: ["0x1529876A9348D61C6c4a3EEe1fe6CbF1117Ca315", "0x339eF6aAcF8F4B2AD15BdcECBEED1842Ec4dBcBf"],
+  orderType: 1,
+  orderKey: "0x0c9cef614c72abac6d78e4bad1310225bca88436b69a6396e54b76d5a3297b5f",
+  initialCollateralTokenAddress: "0xe39ab88f8a4777030a534146a9ca3b52bd5d43a3",
+  initialCollateralDeltaAmount: {
+    type: "BigNumber",
+    hex: "0x0429d069189e0000",
+  },
+  minOutputAmount: {
+    type: "BigNumber",
+    hex: "0xca6ece",
+  },
+  shouldUnwrapNativeToken: false,
+  targetCollateralToken: {
+    name: "Bitcoin",
+    symbol: "BTC",
+    decimals: 8,
+    address: "0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
+    isShortable: true,
+    imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
+    explorerUrl: "https://goerli.arbiscan.io/address/0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
+    prices: {
+      minPrice: {
+        type: "BigNumber",
+        hex: "0x056a5ca059157e7ea7ff60d2c00000",
+      },
+      maxPrice: {
+        type: "BigNumber",
+        hex: "0x056a73fcfb84ba487580064b000000",
+      },
+    },
+    balance: {
+      type: "BigNumber",
+      hex: "0x04b6ac44",
+    },
+  },
+  initialCollateralToken: {
+    name: "Wrapped Ethereum",
+    symbol: "WETH",
+    decimals: 18,
+    address: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
+    isWrapped: true,
+    baseSymbol: "ETH",
+    imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
+    explorerUrl: "https://goerli.arbiscan.io/address/0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
+    prices: {
+      minPrice: {
+        type: "BigNumber",
+        hex: "0x538ed4f5fc330a6a53d645800000",
+      },
+      maxPrice: {
+        type: "BigNumber",
+        hex: "0x5393ab3da897ec3e9716a6c00000",
+      },
+    },
+    balance: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+  },
+  transaction: {
+    timestamp: 1695969904,
+    hash: "0x027f087350d07d205840cf777a1a37913caf2cf4c5492cefe215c9b007aff61a",
     __typename: "Transaction",
   },
 });

@@ -1,15 +1,19 @@
 import { i18n } from "@lingui/core";
 import { en as plurals } from "make-plural/plurals";
-import { formatPositionMessage } from "./helpers";
+import { formatPositionMessage, formatSwapMessage } from "./helpers";
 import {
   cancelOrderIncreaseLong,
   createOrderDecreaseLong,
   createOrderIncreaseLong,
   executeOrderIncreaseLong,
+  executeOrderSwap,
+  executeSwap,
+  failedSwap,
   frozenOrderIncreaseShort,
   increaseLongETH,
   liquidated,
   requestIncreasePosition,
+  requestSwap,
   undefinedOrder,
   withdraw1Usd,
 } from "./mocks";
@@ -22,7 +26,7 @@ i18n.activate("en");
 const minCollateralUsd = bigNumberify(100)!;
 
 describe("TradeHistoryRow helpers", () => {
-  it("formatPositionOrderMessage", () => {
+  it("formatPositionMessage", () => {
     expect(formatPositionMessage(requestIncreasePosition, minCollateralUsd)).toEqual([
       {
         text: "Request Market Increase: Long BTC +$3,735.44, ",
@@ -160,5 +164,18 @@ describe("TradeHistoryRow helpers", () => {
         ],
       },
     ]);
+  });
+
+  it("formatSwapMessage", () => {
+    // MARKET SWAPS
+    expect(formatSwapMessage(requestSwap)).toEqual("Request Market Swap 0.0119 WETH for 39.8800 USDC");
+    expect(formatSwapMessage(executeSwap)).toEqual("Execute Market Swap 1080.6325 USDC for 1.1196 ETH");
+    // LIMIT SWAPS
+    expect(formatSwapMessage(executeOrderSwap)).toEqual(
+      "Execute Limit Order: Swap 0.3000 WETH for 0.3698 BTC, Price: 1.2329 WETH / BTC"
+    );
+    expect(formatSwapMessage(failedSwap)).toEqual(
+      "Limit Swap Execution Failed: Swap 0.3000 WETH for 0.1326 BTC, Price: 0.4422 WETH / BTC"
+    );
   });
 });

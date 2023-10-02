@@ -4,11 +4,11 @@ import words from "lodash/words";
 import { StatsTooltipRowProps } from "components/StatsTooltip/StatsTooltipRow";
 import { OrderType, isIncreaseOrderType, isLimitOrderType } from "domain/synthetics/orders";
 import { formatAcceptablePrice, getTriggerNameByOrderType } from "domain/synthetics/positions";
-import { convertToUsd } from "domain/synthetics/tokens";
+import { adaptToV1TokenInfo, convertToUsd, getTokensRatioByAmounts } from "domain/synthetics/tokens";
 import { getShouldUseMaxPrice, getTriggerThresholdType } from "domain/synthetics/trade";
-import { PositionTradeAction, TradeAction, TradeActionType } from "domain/synthetics/tradeHistory";
+import { PositionTradeAction, SwapTradeAction, TradeAction, TradeActionType } from "domain/synthetics/tradeHistory";
 import { BigNumber, ethers } from "ethers";
-import { PRECISION } from "lib/legacy";
+import { PRECISION, getExchangeRateDisplay } from "lib/legacy";
 import { formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { museNeverExist } from "lib/types";
 import { trimStart } from "lodash";
@@ -22,7 +22,7 @@ type FormatPositionMessageChunk = {
   tooltipFooterRed?: boolean;
   tooltipFooter?: string;
 };
-type FormatPositionMessageResult = FormatPositionMessageChunk[] | null;
+type FormattedMessageResult = FormatPositionMessageChunk[] | null;
 
 export function getOrderActionText(tradeAction: TradeAction) {
   let actionText = "";
@@ -53,7 +53,7 @@ export function getOrderActionText(tradeAction: TradeAction) {
 export const formatPositionMessage = (
   tradeAction: PositionTradeAction,
   minCollateralUsd: BigNumber
-): FormatPositionMessageResult => {
+): FormattedMessageResult => {
   const indexToken = tradeAction.indexToken;
   const priceDecimals = tradeAction.indexToken.priceDecimals;
   const collateralToken = tradeAction.initialCollateralToken;
@@ -217,6 +217,55 @@ export const formatPositionMessage = (
 
   return null;
 };
+
+export const formatSwapMessage = (tradeAction: SwapTradeAction): string => {
+  const tokenIn = tradeAction.initialCollateralToken!;
+  const tokenOut = tradeAction.targetCollateralToken!;
+  const amountIn = tradeAction.initialCollateralDeltaAmount!;
+
+  const amountOut =
+    tradeAction.eventName === TradeActionType.OrderExecuted
+      ? tradeAction.executionAmountOut!
+      : tradeAction.minOutputAmount!;
+
+  const fromText = formatTokenAmount(amountIn, tokenIn?.decimals, tokenIn?.symbol);
+  const toText = formatTokenAmount(amountOut, tokenOut?.decimals, tokenOut?.symbol);
+  const orderTypeName = getSwapOrderTypeName(tradeAction);
+
+  if (isLimitOrderType(tradeAction.orderType)) {
+    const actionText = getOrderActionText(tradeAction);
+
+    const tokensRatio = getTokensRatioByAmounts({
+      fromToken: tokenIn,
+      toToken: tokenOut,
+      fromTokenAmount: amountIn,
+      toTokenAmount: amountOut,
+    });
+
+    const fromTokenInfo = tokenIn ? adaptToV1TokenInfo(tokenIn) : undefined;
+    const toTokenInfo = tokenOut ? adaptToV1TokenInfo(tokenOut) : undefined;
+
+    const [largest, smallest] =
+      tokensRatio?.largestToken.address === tokenIn?.address
+        ? [fromTokenInfo, toTokenInfo]
+        : [toTokenInfo, fromTokenInfo];
+
+    const ratioText = tokensRatio.ratio.gt(0) ? getExchangeRateDisplay(tokensRatio?.ratio, largest, smallest) : "0";
+
+    return tradeAction.eventName === TradeActionType.OrderFrozen
+      ? t`${orderTypeName} Swap Execution Failed: Swap ${fromText} for ${toText}, Price: ${ratioText}`
+      : t`${actionText} ${orderTypeName} Order: Swap ${fromText} for ${toText}, Price: ${ratioText}`;
+  }
+
+  const actionText =
+    tradeAction.eventName === TradeActionType.OrderCreated ? t`Request` : getOrderActionText(tradeAction);
+
+  return t`${actionText} ${orderTypeName} Swap ${fromText} for ${toText}`;
+};
+
+function getSwapOrderTypeName(tradeAction: SwapTradeAction) {
+  return tradeAction.orderType === OrderType.MarketSwap ? t`Market` : t`Limit`;
+}
 
 function getTokenPriceByTradeAction(tradeAction: PositionTradeAction) {
   return getShouldUseMaxPrice(isIncreaseOrderType(tradeAction.orderType), tradeAction.isLong)
