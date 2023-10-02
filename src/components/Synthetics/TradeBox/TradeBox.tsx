@@ -767,7 +767,7 @@ export function TradeBox(p: Props) {
     } else if (isLimit) {
       return t`Create Limit order`;
     } else {
-      return t`Create ${getTriggerNameByOrderType(decreaseAmounts?.triggerOrderType!)} order`;
+      return t`Create ${getTriggerNameByOrderType(decreaseAmounts?.triggerOrderType!)} Order`;
     }
   }, [
     decreaseAmounts?.triggerOrderType,

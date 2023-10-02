@@ -802,7 +802,7 @@ export function PositionSeller(p: Props) {
               >
                 {error ||
                   (isTrigger
-                    ? t`Create ${getTriggerNameByOrderType(decreaseAmounts?.triggerOrderType!)} order`
+                    ? t`Create ${getTriggerNameByOrderType(decreaseAmounts?.triggerOrderType!)} Order`
                     : t`Close`)}
               </Button>
             </div>
