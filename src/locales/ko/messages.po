@@ -166,7 +166,8 @@ msgstr "주문의 실행이 보장되지 않으며 트리거 주문이 트리거
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Acceptable Price"
 msgstr ""
 
@@ -177,6 +178,10 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Acceptable Price Impact"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Acceptable Price: {0}"
 msgstr ""
 
 #: src/pages/Actions/Actions.js
@@ -219,6 +224,10 @@ msgstr "활성화된 주문"
 #: src/components/Referrals/TradersStats.tsx
 msgid "Active Referral Code"
 msgstr "활성화된 추천 코드"
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Actual Price Impact"
+msgstr ""
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
@@ -456,7 +465,7 @@ msgstr "멀티플라이어 포인트를 사용해서 보상을 증가시키세�
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Borrow Fee"
 msgstr "차용 수수료"
 
@@ -635,8 +644,8 @@ msgstr "에러로 인해 실행되지 못했습니다"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Cancel"
 msgstr "취소"
 
@@ -786,14 +795,6 @@ msgstr "수령중..."
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims"
 msgstr ""
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Click on a row to select the position's market, then use the swap box to increase your position size or to set stop-loss / take-profit orders."
-#~ msgstr ""
-
-#: src/components/Exchange/PositionsList.js
-#~ msgid "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
-#~ msgstr "시장에서 위치를 선택하세요. 그런 다음, 필요한 경우 거래 상자를 통해 크기를 조정하세요."
 
 #: src/components/Exchange/PositionsList.js
 msgid "Click on the Position to select its market, then use the trade box to increase your Position Size if needed."
@@ -1072,7 +1073,7 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/AddAffiliateCode.js
 #: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -1233,7 +1234,7 @@ msgstr "탈중앙화<0/>퍼페추얼 거래소"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 #: src/domain/synthetics/orders/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
@@ -1610,7 +1611,7 @@ msgstr "에스크로 GMX"
 msgid "Escrowed GMX APR"
 msgstr "esGMX APR"
 
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Execute"
 msgstr "실행"
@@ -1619,16 +1620,29 @@ msgstr "실행"
 msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgstr "주문 실행: {fromAmountDisplay} {0}을 {toAmountDisplay} {1}로 스왑"
 
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price:{1}, Market: {2}"
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText},"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "Execution Failed: Swap {fromText} for {toText}, Price: {ratioText}"
+msgstr ""
+
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "Execution Fee"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Execution Price"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Execution Price: {0}"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -1749,8 +1763,8 @@ msgstr "이익 상실 및 {action}"
 msgid "Forfeit profit not checked"
 msgstr "상실 이익이 확인되지 않았습니다."
 
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Freeze"
 msgstr ""
 
@@ -1772,7 +1786,7 @@ msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Funding Fee"
 msgstr ""
 
@@ -2010,7 +2024,7 @@ msgstr "잘못된 네트워크입니다"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 #: src/domain/synthetics/orders/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
@@ -2066,7 +2080,7 @@ msgid "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Initial collateral"
 msgstr "최초 담보"
 
@@ -2384,7 +2398,6 @@ msgid "Liq. {longOrShortText} {tokenSymbol}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Liquidated"
 msgstr "청산"
@@ -2462,7 +2475,7 @@ msgstr "로딩중..."
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/domain/synthetics/orders/utils.ts
@@ -2501,16 +2514,8 @@ msgid "Long Positions"
 msgstr "롱 포지션"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Long positions {0} a Funding Fee of <0>{1}%</0> per hour."
-#~ msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Long positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
 msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Long positions {0} a Funding Fee of <0>{longSign}{1}%</0> per hour."
-#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Long {0}"
@@ -2575,6 +2580,8 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark Price"
 msgstr "시장 평균가"
@@ -2823,7 +2830,7 @@ msgid "Min order: {0}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Min required collateral"
 msgstr "최소 필요 담보"
 
@@ -3087,6 +3094,10 @@ msgstr "주문의 사이즈가 포지션을 초과했습니다. 포지션을 증
 msgid "Order submitted!"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Order trigger price"
+msgstr ""
+
 #: src/components/Exchange/OrderEditor.js
 msgid "Order update failed."
 msgstr "주문 업데이트 실패됨."
@@ -3231,13 +3242,13 @@ msgstr ""
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 #: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "PnL"
 
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "PnL After Fees"
 msgstr "수수료 제외한 PnL"
 
@@ -3266,7 +3277,7 @@ msgstr ""
 msgid "Position"
 msgstr "포지션"
 
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Position Fee"
 msgstr ""
 
@@ -3325,7 +3336,6 @@ msgstr "이전"
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -3340,7 +3350,8 @@ msgstr "가격"
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Price Impact"
 msgstr ""
 
@@ -3590,7 +3601,7 @@ msgid "Referrals"
 msgstr "추천"
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Request"
 msgstr ""
 
@@ -3870,7 +3881,7 @@ msgstr "포지션 공유"
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/domain/synthetics/orders/utils.ts
@@ -3909,16 +3920,8 @@ msgid "Short Positions"
 msgstr "숏 포지션"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Short positions {0} a Funding Fee of <0>{1}%</0> per hour."
-#~ msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Short positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
 msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Short positions {0} a Funding Fee of <0>{shortSign}{1}%</0> per hour."
-#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Short {0}"
@@ -4238,10 +4241,6 @@ msgstr "토큰"
 msgid "TOTAL SUPPLY"
 msgstr ""
 
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#~ msgid "Take-Profit and Stop-Loss orders are created in the main Tradebox.<0/><1/><2>Set Trigger Order for this position.</2><3/><4/><5>More Info</5>."
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 msgid "Take-profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
 msgstr "TP/SL 주문은 포지션을 연 후 가능합니다. <0/><1/>각 행의 \"닫기\" 버튼을 클리하면 트리거 주문 설정 화면을 표시합니다. <2/><3/>더 자세한 스크린샷과 정보는 <4>docs</4>를 참고해주세요."
@@ -4417,7 +4416,7 @@ msgstr "해당 코드는 {0}에 아직 등록되지 않았기때문에, 소개 �
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
 msgstr "해당 포지션은 최대 레버리지인 100x를 초과하여 청산되었습니다."
 
-#: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded."
 msgstr ""
 
@@ -4688,12 +4687,20 @@ msgstr ""
 msgid "Trigger Price"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Trigger Price: {pricePrefix} {0}"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Trigger order disabled, pending {0} upgrade"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Trigger order for"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Triggered at: {0}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -4793,8 +4800,8 @@ msgstr "언스테이킹중..."
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/JoinReferralCode.js
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Update"
 msgstr "업데이트"
 
@@ -4826,14 +4833,6 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Use the \"Close\" button to reduce your Position Size."
 msgstr ""
-
-#: src/components/Exchange/PositionsList.js
-#~ msgid "Use the \"Close\" button to reduce your position size, or to set stop-loss / take-profit orders."
-#~ msgstr "포지션을 감소시키거나 TP/SL을 위해 \"닫기\" 버튼을 사용하세요."
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Use the \"Close\" button to reduce your position size."
-#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Use the \"Compound\" button to stake your Multiplier Points."
@@ -5330,10 +5329,6 @@ msgstr "게정"
 msgid "collateral"
 msgstr "담보"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "earn"
-#~ msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "esGMX OTC Market"
 msgstr ""
@@ -5390,11 +5385,6 @@ msgstr ""
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "{0}"
-#~ msgstr ""
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>;"
@@ -5527,8 +5517,8 @@ msgid ""
 "{2} Price: {3} USD"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "{actionText} Deposit {collateralText} into {positionText}, Market: {0}"
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "{actionText} Deposit {collateralText} into {positionText}"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
@@ -5536,19 +5526,11 @@ msgid "{actionText} Order: Swap {fromText} for {toText}, Price: {ratioText}"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "{actionText} Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price: {pricePrefix} {1}, Market: {2}"
-msgstr ""
-
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "{actionText} Swap {fromText} for {toText}"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "{actionText} Withdraw {collateralText} from {positionText}, Market: {0}"
-msgstr ""
-
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "{actionText} {increaseText} {positionText} {sizeDeltaText}, {pricePrefix}: {0}, Market: {1}"
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "{actionText} Withdraw {collateralText} from {positionText}"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
@@ -5576,10 +5558,6 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 msgid "{longOrShortText} {0} market selected"
 msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "{longShortText} positions {0} a funding fee of {1}% per hour."
-#~ msgstr ""
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "{marketsCount, plural, one {# Market} other {# Markets}}"
@@ -5623,10 +5601,6 @@ msgstr ""
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} canceled"
-msgstr ""
-
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "{positionText} {sizeDeltaText}, Price: {0}, Market: {1}"
 msgstr ""
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
