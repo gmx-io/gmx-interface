@@ -10,6 +10,7 @@ import { SettleAccruedFundingFeeRow } from "./SettleAccruedFundingFeeRow";
 
 import "./SettleAccruedFundingFeeModal.scss";
 import useWallet from "lib/wallets/useWallet";
+import Tooltip from "components/Tooltip/Tooltip";
 
 type Props = {
   isVisible: boolean;
@@ -94,6 +95,8 @@ export function SettleAccruedFundingFeeModal({
     //   .finally(() => setIsSubmitting(false));
   }, [account, signer]);
 
+  const renderTooltipContent = useCallback(() => t`Accrued Funding Fee`, []);
+
   return (
     <Modal
       className="Confirmation-box ClaimableModal"
@@ -118,7 +121,12 @@ export function SettleAccruedFundingFeeModal({
               <Trans>POSITION</Trans>
             </div>
             <div className="SettleAccruedFundingFeeModal-header-right">
-              <Trans>FUNDING FEE</Trans>
+              <Tooltip
+                className="SettleAccruedFundingFeeModal-tooltip"
+                position="right-top"
+                handle={<Trans>FUNDING FEE</Trans>}
+                renderContent={renderTooltipContent}
+              />
             </div>
           </div>
           {positiveFeePositions.map((position) => (

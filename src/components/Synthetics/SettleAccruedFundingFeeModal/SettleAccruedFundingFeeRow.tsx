@@ -1,7 +1,10 @@
 import { t } from "@lingui/macro";
 import Checkbox from "components/Checkbox/Checkbox";
+import Tooltip from "components/Tooltip/Tooltip";
 import { PositionInfo } from "domain/synthetics/positions";
-import { formatUsd } from "lib/numbers";
+import { TokenData } from "domain/synthetics/tokens";
+import { BigNumber } from "ethers";
+import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { useCallback, useMemo } from "react";
 
 type Props = {
@@ -29,6 +32,22 @@ export const SettleAccruedFundingFeeRow = ({ position, isSelected, onCheckboxCha
     [onCheckboxChange, position.key]
   );
 
+  const shortToken = position.marketInfo.shortToken;
+  const longToken = position.marketInfo.longToken;
+
+  const renderTooltipContent = useCallback(
+    () =>
+      (
+        [
+          [position.claimableLongTokenAmount, longToken],
+          [position.claimableShortTokenAmount, shortToken],
+        ] as [BigNumber, TokenData][]
+      )
+        .filter(([amount, token]) => amount.gt(0) && token)
+        .map(([amount, token]) => <div>{formatTokenAmount(amount, token.decimals, token.symbol)}</div>),
+    [longToken, position.claimableLongTokenAmount, position.claimableShortTokenAmount, shortToken]
+  );
+
   return (
     <div className="SettleAccruedFundingFeeModal-info-row">
       <Checkbox
@@ -37,7 +56,14 @@ export const SettleAccruedFundingFeeRow = ({ position, isSelected, onCheckboxCha
         className="flex self-center SettleAccruedFundingFeeModal-checkbox"
       />
       <div className="Exchange-info-label">{label}</div>
-      <div className="SettleAccruedFundingFeeModal-info-label-usd">{formatUsd(position.pendingFundingFeesUsd)}</div>
+      <div className="SettleAccruedFundingFeeModal-info-label-usd">
+        <Tooltip
+          className="SettleAccruedFundingFeeModal-tooltip"
+          position="right-top"
+          handle={formatUsd(position.pendingClaimableFundingFeesUsd)}
+          renderContent={renderTooltipContent}
+        />
+      </div>
     </div>
   );
 };

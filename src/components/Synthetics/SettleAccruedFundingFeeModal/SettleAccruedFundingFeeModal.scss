@@ -43,3 +43,10 @@
 .SettleAccruedFundingFeeModal-checkbox {
     margin-right: 0.5rem;
 }
+
+.SettleAccruedFundingFeeModal-tooltip {
+    .Tooltip-popup {
+        min-width: 0;
+        white-space: nowrap;
+    }
+}
