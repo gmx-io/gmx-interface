@@ -81,7 +81,7 @@ export const formatPositionMessage = (
         : getTriggerNameByOrderType(tradeAction.orderType);
 
       if (tradeAction.eventName === TradeActionType.OrderExecuted) {
-        const executeOrderStr = t`Execute ${orderTypeName} Order: ${increaseText} ${positionText} ${sizeDeltaText},`;
+        const executeOrderStr = t`Execute ${orderTypeName} Order: ${positionText} ${sizeDeltaText},`;
         return [
           {
             text: `${executeOrderStr} `,
@@ -124,11 +124,11 @@ export const formatPositionMessage = (
             textRed: true,
             ...getExecutionFailedTooltipProps(tradeAction),
           },
-          { text: `: ${increaseText} ${positionText} ${sizeDeltaText}` },
+          { text: `: ${positionText} ${sizeDeltaText}` },
           { text: `, ${strs.join(", ")}` },
         ];
       } else {
-        const strs = [`${prefix}: ${increaseText} ${positionText} ${sizeDeltaText}`, triggerPriceStr];
+        const strs = [`${prefix}: ${positionText} ${sizeDeltaText}`, triggerPriceStr];
 
         if (shouldRenderAcceptablePrice) {
           strs.push(acceptablePriceStr);
