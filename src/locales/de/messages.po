@@ -1640,8 +1640,8 @@ msgid "Execute {orderTypeName} Order: {positionText} {sizeDeltaText},"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "Execution Failed: Swap {fromText} for {toText}, Price: {ratioText}"
-msgstr ""
+#~ msgid "Execution Failed: Swap {fromText} for {toText}, Price: {ratioText}"
+#~ msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "Execution Fee"
@@ -2325,6 +2325,7 @@ msgstr ""
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Limit"
 msgstr "Limit"
 
@@ -2614,6 +2615,7 @@ msgstr "Mark-Preis"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Market"
 msgstr "Markt"
@@ -3614,7 +3616,7 @@ msgstr "Referral Code aktualisiert!"
 msgid "Referrals"
 msgstr "Referrals"
 
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Request"
 msgstr ""
@@ -5563,15 +5565,23 @@ msgid "{actionText} Deposit {collateralText} into {positionText}"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "{actionText} Order: Swap {fromText} for {toText}, Price: {ratioText}"
-msgstr ""
+#~ msgid "{actionText} Order: Swap {fromText} for {toText}, Price: {ratioText}"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "{actionText} Swap {fromText} for {toText}"
-msgstr ""
+#~ msgid "{actionText} Swap {fromText} for {toText}"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "{actionText} Withdraw {collateralText} from {positionText}"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "{actionText} {orderTypeName} Order: Swap {fromText} for {toText}, Price: {ratioText}"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "{actionText} {orderTypeName} Swap {fromText} for {toText}"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
@@ -5634,6 +5644,10 @@ msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "{orderTypeName} Order Execution Failed"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "{orderTypeName} Swap Execution Failed: Swap {fromText} for {toText}, Price: {ratioText}"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx

@@ -1640,8 +1640,8 @@ msgid "Execute {orderTypeName} Order: {positionText} {sizeDeltaText},"
 msgstr "Execute {orderTypeName} Order: {positionText} {sizeDeltaText},"
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "Execution Failed: Swap {fromText} for {toText}, Price: {ratioText}"
-msgstr "Execution Failed: Swap {fromText} for {toText}, Price: {ratioText}"
+#~ msgid "Execution Failed: Swap {fromText} for {toText}, Price: {ratioText}"
+#~ msgstr "Execution Failed: Swap {fromText} for {toText}, Price: {ratioText}"
 
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "Execution Fee"
@@ -2325,6 +2325,7 @@ msgstr "Leverage slider"
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Limit"
 msgstr "Limit"
 
@@ -2617,6 +2618,7 @@ msgstr "Mark Price"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Market"
 msgstr "Market"
@@ -3617,7 +3619,7 @@ msgstr "Referral code updated!"
 msgid "Referrals"
 msgstr "Referrals"
 
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "Request"
 msgstr "Request"
@@ -5569,16 +5571,24 @@ msgid "{actionText} Deposit {collateralText} into {positionText}"
 msgstr "{actionText} Deposit {collateralText} into {positionText}"
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "{actionText} Order: Swap {fromText} for {toText}, Price: {ratioText}"
-msgstr "{actionText} Order: Swap {fromText} for {toText}, Price: {ratioText}"
+#~ msgid "{actionText} Order: Swap {fromText} for {toText}, Price: {ratioText}"
+#~ msgstr "{actionText} Order: Swap {fromText} for {toText}, Price: {ratioText}"
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "{actionText} Swap {fromText} for {toText}"
-msgstr "{actionText} Swap {fromText} for {toText}"
+#~ msgid "{actionText} Swap {fromText} for {toText}"
+#~ msgstr "{actionText} Swap {fromText} for {toText}"
 
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "{actionText} Withdraw {collateralText} from {positionText}"
 msgstr "{actionText} Withdraw {collateralText} from {positionText}"
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "{actionText} {orderTypeName} Order: Swap {fromText} for {toText}, Price: {ratioText}"
+msgstr "{actionText} {orderTypeName} Order: Swap {fromText} for {toText}, Price: {ratioText}"
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "{actionText} {orderTypeName} Swap {fromText} for {toText}"
+msgstr "{actionText} {orderTypeName} Swap {fromText} for {toText}"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{chainName} Total Stats start from {totalStatsStartDate}.<0/> For detailed stats:"
@@ -5641,6 +5651,10 @@ msgstr "{orderTypeLabel} {positionText}, -{0}"
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
 msgid "{orderTypeName} Order Execution Failed"
 msgstr "{orderTypeName} Order Execution Failed"
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "{orderTypeName} Swap Execution Failed: Swap {fromText} for {toText}, Price: {ratioText}"
+msgstr "{orderTypeName} Swap Execution Failed: Swap {fromText} for {toText}, Price: {ratioText}"
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "{orderTypeText} {0} for {1}"
