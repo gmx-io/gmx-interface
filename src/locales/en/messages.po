@@ -5583,12 +5583,24 @@ msgid "{actionText} Withdraw {collateralText} from {positionText}"
 msgstr "{actionText} Withdraw {collateralText} from {positionText}"
 
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
-msgid "{actionText} {orderTypeName} Order: Swap {fromText} for {toText}, Price: {ratioText}"
-msgstr "{actionText} {orderTypeName} Order: Swap {fromText} for {toText}, Price: {ratioText}"
+#~ msgid "{actionText} {orderTypeName} Order: Swap {fromText} for {toText}, Price: {ratioText}"
+#~ msgstr "{actionText} {orderTypeName} Order: Swap {fromText} for {toText}, Price: {ratioText}"
 
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
-msgid "{actionText} {orderTypeName} Swap {fromText} for {toText}"
-msgstr "{actionText} {orderTypeName} Swap {fromText} for {toText}"
+#~ msgid "{actionText} {orderTypeName} Swap Order: {fromText} for {toText}, Price: {ratioText}"
+#~ msgstr "{actionText} {orderTypeName} Swap Order: {fromText} for {toText}, Price: {ratioText}"
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+#~ msgid "{actionText} {orderTypeName} Swap {fromText} for {toText}"
+#~ msgstr "{actionText} {orderTypeName} Swap {fromText} for {toText}"
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "{actionText} {orderTypeName} Swap: {fromText} for {toText}"
+msgstr "{actionText} {orderTypeName} Swap: {fromText} for {toText}"
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "{actionText} {orderTypeName} Swap: {fromText} for {toText}, Price: {ratioText}"
+msgstr "{actionText} {orderTypeName} Swap: {fromText} for {toText}, Price: {ratioText}"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{chainName} Total Stats start from {totalStatsStartDate}.<0/> For detailed stats:"
@@ -5653,8 +5665,12 @@ msgid "{orderTypeName} Order Execution Failed"
 msgstr "{orderTypeName} Order Execution Failed"
 
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
-msgid "{orderTypeName} Swap Execution Failed: Swap {fromText} for {toText}, Price: {ratioText}"
-msgstr "{orderTypeName} Swap Execution Failed: Swap {fromText} for {toText}, Price: {ratioText}"
+#~ msgid "{orderTypeName} Swap Execution Failed: Swap {fromText} for {toText}, Price: {ratioText}"
+#~ msgstr "{orderTypeName} Swap Execution Failed: Swap {fromText} for {toText}, Price: {ratioText}"
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "{orderTypeName} Swap Execution Failed: {fromText} for {toText}, Price: {ratioText}"
+msgstr "{orderTypeName} Swap Execution Failed: {fromText} for {toText}, Price: {ratioText}"
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "{orderTypeText} {0} for {1}"
