@@ -980,7 +980,12 @@ msgstr "Confirmer l'échange"
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-msgid "Confirm Trigger Order"
+#~ msgid "Confirm Trigger Order"
+#~ msgstr ""
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "Confirm {0} Order"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
@@ -1094,16 +1099,18 @@ msgid "Create Referral Code"
 msgstr "Créer un code de parrainage"
 
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-msgid "Create trigger order"
-msgstr ""
+#~ msgid "Create trigger order"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Create {0} Order"
 msgstr "Créer un {0} Ordre"
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-msgid "Create {0} order"
-msgstr ""
+#~ msgid "Create {0} order"
+#~ msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Created At"
@@ -1625,7 +1632,11 @@ msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} 
 msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/helpers.ts
-msgid "Execute {orderTypeName} Order: {increaseText} {positionText} {sizeDeltaText},"
+#~ msgid "Execute {orderTypeName} Order: {increaseText} {positionText} {sizeDeltaText},"
+#~ msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/helpers.ts
+msgid "Execute {orderTypeName} Order: {positionText} {sizeDeltaText},"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
@@ -2310,6 +2321,7 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -3834,6 +3846,10 @@ msgstr ""
 msgid "Sending order request"
 msgstr ""
 
+#: src/components/Exchange/PositionDropdown.js
+msgid "Set TP/SL"
+msgstr ""
+
 #: src/App/App.js
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -4259,6 +4275,7 @@ msgstr ""
 msgid "TP"
 msgstr ""
 
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "TP/SL"
 msgstr ""
@@ -4694,14 +4711,13 @@ msgstr "Transfert en cours"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Trigger"
 msgstr "Déclencheur"
 
 #: src/components/Exchange/PositionDropdown.js
-msgid "Trigger Close"
-msgstr ""
+#~ msgid "Trigger Close"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
