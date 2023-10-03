@@ -540,7 +540,10 @@ export function SyntheticsPage(p: Props) {
         isVisible={isSettling}
         positionKeys={gettingPendingFeePositionKeys}
         positionsInfoData={positionsInfoData}
+        tokensData={tokensData}
+        allowedSlippage={allowedSlippage}
         setPositionKeys={setGettingPendingFeePositionKeys}
+        setPendingTxns={setPendingTxns}
         onClose={useCallback(() => {
           setGettingPendingFeePositionKeys([]);
           setIsSettling(false);

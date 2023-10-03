@@ -3,35 +3,58 @@ import Modal from "components/Modal/Modal";
 import { formatDeltaUsd } from "lib/numbers";
 
 import Button from "components/Button/Button";
+import { getTotalAccruedFundingUsd } from "domain/synthetics/markets";
 import { PositionsInfoData } from "domain/synthetics/positions";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { getTotalAccruedFundingUsd } from "domain/synthetics/markets";
 import { SettleAccruedFundingFeeRow } from "./SettleAccruedFundingFeeRow";
 
-import "./SettleAccruedFundingFeeModal.scss";
-import useWallet from "lib/wallets/useWallet";
 import Tooltip from "components/Tooltip/Tooltip";
+import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { useUserReferralInfo } from "domain/referrals";
+import {
+  estimateExecuteDecreaseOrderGasLimit,
+  getExecutionFee,
+  useGasLimits,
+  useGasPrice,
+} from "domain/synthetics/fees";
+import { createDecreaseOrderTxn, DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
+import { TokensData } from "domain/synthetics/tokens";
+import { getMarkPrice } from "domain/synthetics/trade";
+import { BigNumber } from "ethers";
+import { useChainId } from "lib/chains";
+import useWallet from "lib/wallets/useWallet";
+import "./SettleAccruedFundingFeeModal.scss";
 
 type Props = {
+  allowedSlippage: number;
   isVisible: boolean;
   onClose: () => void;
   positionKeys: string[];
   positionsInfoData: PositionsInfoData | undefined;
   setPositionKeys: (keys: string[]) => void;
+  tokensData?: TokensData;
+  setPendingTxns: (txns: any) => void;
 };
 
 export function SettleAccruedFundingFeeModal({
+  allowedSlippage,
+  tokensData,
   isVisible,
   onClose,
   positionKeys,
   setPositionKeys,
   positionsInfoData,
+  setPendingTxns,
 }: Props) {
   const { account, signer } = useWallet();
+  const { chainId } = useChainId();
+  const userReferralInfo = useUserReferralInfo(signer, chainId, account);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { gasLimits } = useGasLimits(chainId);
+  const { gasPrice } = useGasPrice(chainId);
 
   const positiveFeePositions = useMemo(
-    () => Object.values(positionsInfoData || {}).filter((position) => position.pendingFundingFeesUsd.gt(0)),
+    () => Object.values(positionsInfoData || {}).filter((position) => position.pendingClaimableFundingFeesUsd.gt(0)),
     [positionsInfoData]
   );
   const selectedPositions = useMemo(
@@ -62,38 +85,76 @@ export function SettleAccruedFundingFeeModal({
     [positionKeys, setPositionKeys]
   );
 
+  const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
+
   const onSubmit = useCallback(() => {
-    if (!account || !signer) return;
-
-    // const fundingMarketAddresses: string[] = [];
-    // const fundingTokenAddresses: string[] = [];
-
-    // for (const market of ) {
-    //   if (market.claimableFundingAmountLong?.gt(0)) {
-    //     fundingMarketAddresses.push(market.marketTokenAddress);
-    //     fundingTokenAddresses.push(market.longTokenAddress);
-    //   }
-
-    //   if (market.claimableFundingAmountShort?.gt(0)) {
-    //     fundingMarketAddresses.push(market.marketTokenAddress);
-    //     fundingTokenAddresses.push(market.shortTokenAddress);
-    //   }
-    // }
+    if (!account || !signer || !chainId || !gasLimits || !tokensData || !gasPrice) return;
 
     setIsSubmitting(true);
-    setIsSubmitting(false);
 
-    // claimCollateralTxn(chainId, signer, {
-    //   account,
-    //   fundingFees: {
-    //     marketAddresses: fundingMarketAddresses,
-    //     tokenAddresses: fundingTokenAddresses,
-    //   },
-    //   setPendingTxns,
-    // })
-    //   .then(onClose)
-    //   .finally(() => setIsSubmitting(false));
-  }, [account, signer]);
+    const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {});
+    const executionFee = getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice)?.feeTokenAmount;
+
+    createDecreaseOrderTxn(
+      chainId,
+      signer,
+      selectedPositions.map((position) => {
+        const markPrice = position
+          ? getMarkPrice({
+              prices: position.indexToken.prices,
+              isLong: position.isLong,
+              isIncrease: false,
+            })
+          : undefined;
+
+        return {
+          account,
+          marketAddress: position.marketAddress,
+          initialCollateralAddress: position.collateralTokenAddress,
+          initialCollateralDeltaAmount: BigNumber.from(1), // FIXME ?
+          receiveTokenAddress: position.collateralToken.address,
+          swapPath: [],
+          sizeDeltaUsd: BigNumber.from(0),
+          sizeDeltaInTokens: BigNumber.from(0),
+          acceptablePrice: markPrice!,
+          triggerPrice: undefined,
+          decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
+          orderType: OrderType.MarketDecrease,
+          isLong: position.isLong,
+          minOutputUsd: BigNumber.from(0),
+          executionFee: executionFee!,
+          allowedSlippage,
+          referralCode: userReferralInfo?.referralCodeForTxn,
+          indexToken: position.indexToken,
+          tokensData,
+          skipSimulation: true,
+        };
+      }),
+      {
+        setPendingTxns,
+        setPendingOrder,
+        setPendingPosition,
+      }
+    )
+      .then(onClose)
+      .finally(() => {
+        setIsSubmitting(false);
+      });
+  }, [
+    account,
+    allowedSlippage,
+    chainId,
+    gasLimits,
+    gasPrice,
+    onClose,
+    selectedPositions,
+    setPendingOrder,
+    setPendingPosition,
+    setPendingTxns,
+    signer,
+    tokensData,
+    userReferralInfo?.referralCodeForTxn,
+  ]);
 
   const renderTooltipContent = useCallback(() => t`Accrued Funding Fee`, []);
 

@@ -35,87 +35,99 @@ export type DecreaseOrderParams = {
   referralCode?: string;
   indexToken: Token;
   tokensData: TokensData;
+};
+
+export type DecreaseOrderCallbacks = {
   setPendingTxns: (txns: any) => void;
   setPendingOrder: SetPendingOrder;
   setPendingPosition: SetPendingPosition;
 };
 
-export async function createDecreaseOrderTxn(chainId: number, signer: Signer, p: DecreaseOrderParams) {
+export async function createDecreaseOrderTxn(
+  chainId: number,
+  signer: Signer,
+  params: DecreaseOrderParams | DecreaseOrderParams[],
+  callbacks: DecreaseOrderCallbacks
+) {
+  const ps = Array.isArray(params) ? params : [params];
   const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
 
   const orderVaultAddress = getContract(chainId, "OrderVault");
-
-  const isNativeReceive = p.receiveTokenAddress === NATIVE_TOKEN_ADDRESS;
-
-  const totalWntAmount = p.executionFee;
-
-  const initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
-
-  const shouldApplySlippage = isMarketOrderType(p.orderType);
-
-  const acceptablePrice = shouldApplySlippage
-    ? applySlippageToPrice(p.allowedSlippage, p.acceptablePrice, false, p.isLong)
-    : p.acceptablePrice;
-
-  const minOutputAmount = shouldApplySlippage
-    ? applySlippageToMinOut(p.allowedSlippage, p.minOutputUsd)
-    : p.minOutputUsd;
+  const totalWntAmount = ps.reduce((acc, p) => acc.add(p.executionFee), BigNumber.from(0));
 
   const multicall = [
-    { method: "sendWnt", params: [orderVaultAddress, totalWntAmount] },
+    ...ps.flatMap((p) => {
+      const isNativeReceive = p.receiveTokenAddress === NATIVE_TOKEN_ADDRESS;
 
-    {
-      method: "createOrder",
-      params: [
+      const initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
+
+      const shouldApplySlippage = isMarketOrderType(p.orderType);
+
+      const acceptablePrice = shouldApplySlippage
+        ? applySlippageToPrice(p.allowedSlippage, p.acceptablePrice, false, p.isLong)
+        : p.acceptablePrice;
+
+      const minOutputAmount = shouldApplySlippage
+        ? applySlippageToMinOut(p.allowedSlippage, p.minOutputUsd)
+        : p.minOutputUsd;
+      return [
+        { method: "sendWnt", params: [orderVaultAddress, p.executionFee] },
         {
-          addresses: {
-            receiver: p.account,
-            initialCollateralToken: initialCollateralTokenAddress,
-            callbackContract: AddressZero,
-            market: p.marketAddress,
-            swapPath: p.swapPath,
-            uiFeeReceiver: ethers.constants.AddressZero,
-          },
-          numbers: {
-            sizeDeltaUsd: p.sizeDeltaUsd,
-            initialCollateralDeltaAmount: p.initialCollateralDeltaAmount,
-            triggerPrice: convertToContractPrice(p.triggerPrice || BigNumber.from(0), p.indexToken.decimals),
-            acceptablePrice: convertToContractPrice(acceptablePrice, p.indexToken.decimals),
-            executionFee: p.executionFee,
-            callbackGasLimit: BigNumber.from(0),
-            minOutputAmount: minOutputAmount,
-          },
-          orderType: p.orderType,
-          decreasePositionSwapType: p.decreasePositionSwapType,
-          isLong: p.isLong,
-          shouldUnwrapNativeToken: isNativeReceive,
-          referralCode: p.referralCode || ethers.constants.HashZero,
+          method: "createOrder",
+          params: [
+            {
+              addresses: {
+                receiver: p.account,
+                initialCollateralToken: initialCollateralTokenAddress,
+                callbackContract: AddressZero,
+                market: p.marketAddress,
+                swapPath: p.swapPath,
+                uiFeeReceiver: ethers.constants.AddressZero,
+              },
+              numbers: {
+                sizeDeltaUsd: p.sizeDeltaUsd,
+                initialCollateralDeltaAmount: p.initialCollateralDeltaAmount,
+                triggerPrice: convertToContractPrice(p.triggerPrice || BigNumber.from(0), p.indexToken.decimals),
+                acceptablePrice: convertToContractPrice(acceptablePrice, p.indexToken.decimals),
+                executionFee: p.executionFee,
+                callbackGasLimit: BigNumber.from(0),
+                minOutputAmount,
+              },
+              orderType: p.orderType,
+              decreasePositionSwapType: p.decreasePositionSwapType,
+              isLong: p.isLong,
+              shouldUnwrapNativeToken: isNativeReceive,
+              referralCode: p.referralCode || ethers.constants.HashZero,
+            },
+          ],
         },
-      ],
-    },
+      ];
+    }),
   ];
 
   const encodedPayload = multicall
     .filter(Boolean)
     .map((call) => exchangeRouter.interface.encodeFunctionData(call!.method, call!.params));
 
-  if (!p.skipSimulation) {
-    const primaryPriceOverrides: PriceOverrides = {};
-    const secondaryPriceOverrides: PriceOverrides = {};
-    if (p.triggerPrice) {
-      primaryPriceOverrides[p.indexToken.address] = {
-        minPrice: p.triggerPrice,
-        maxPrice: p.triggerPrice,
-      };
+  ps.forEach(async (p) => {
+    if (!p.skipSimulation) {
+      const primaryPriceOverrides: PriceOverrides = {};
+      const secondaryPriceOverrides: PriceOverrides = {};
+      if (p.triggerPrice) {
+        primaryPriceOverrides[p.indexToken.address] = {
+          minPrice: p.triggerPrice,
+          maxPrice: p.triggerPrice,
+        };
+      }
+      await simulateExecuteOrderTxn(chainId, signer, {
+        primaryPriceOverrides,
+        secondaryPriceOverrides,
+        createOrderMulticallPayload: encodedPayload,
+        value: totalWntAmount,
+        tokensData: p.tokensData,
+      });
     }
-    await simulateExecuteOrderTxn(chainId, signer, {
-      primaryPriceOverrides,
-      secondaryPriceOverrides,
-      createOrderMulticallPayload: encodedPayload,
-      value: totalWntAmount,
-      tokensData: p.tokensData,
-    });
-  }
+  });
 
   const txnCreatedAt = Date.now();
   const txnCreatedAtBlock = await signer.provider?.getBlockNumber();
@@ -124,33 +136,42 @@ export async function createDecreaseOrderTxn(chainId: number, signer: Signer, p:
     value: totalWntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
-    setPendingTxns: p.setPendingTxns,
+    setPendingTxns: callbacks.setPendingTxns,
   }).then(() => {
-    if (isMarketOrderType(p.orderType)) {
-      const positionKey = getPositionKey(p.account, p.marketAddress, p.initialCollateralAddress, p.isLong);
+    ps.forEach((p) => {
+      const isNativeReceive = p.receiveTokenAddress === NATIVE_TOKEN_ADDRESS;
+      const initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
+      const shouldApplySlippage = isMarketOrderType(p.orderType);
+      const minOutputAmount = shouldApplySlippage
+        ? applySlippageToMinOut(p.allowedSlippage, p.minOutputUsd)
+        : p.minOutputUsd;
 
-      p.setPendingPosition({
-        isIncrease: false,
-        positionKey,
-        collateralDeltaAmount: p.initialCollateralDeltaAmount,
+      if (isMarketOrderType(p.orderType)) {
+        const positionKey = getPositionKey(p.account, p.marketAddress, p.initialCollateralAddress, p.isLong);
+
+        callbacks?.setPendingPosition({
+          isIncrease: false,
+          positionKey,
+          collateralDeltaAmount: p.initialCollateralDeltaAmount,
+          sizeDeltaUsd: p.sizeDeltaUsd,
+          sizeDeltaInTokens: p.sizeDeltaInTokens,
+          updatedAt: txnCreatedAt,
+          updatedAtBlock: BigNumber.from(txnCreatedAtBlock),
+        });
+      }
+
+      callbacks?.setPendingOrder({
+        account: p.account,
+        marketAddress: p.marketAddress,
+        initialCollateralTokenAddress,
+        initialCollateralDeltaAmount: p.initialCollateralDeltaAmount,
+        swapPath: p.swapPath,
         sizeDeltaUsd: p.sizeDeltaUsd,
-        sizeDeltaInTokens: p.sizeDeltaInTokens,
-        updatedAt: txnCreatedAt,
-        updatedAtBlock: BigNumber.from(txnCreatedAtBlock),
+        minOutputAmount: minOutputAmount,
+        isLong: p.isLong,
+        orderType: p.orderType,
+        shouldUnwrapNativeToken: isNativeReceive,
       });
-    }
-
-    p.setPendingOrder({
-      account: p.account,
-      marketAddress: p.marketAddress,
-      initialCollateralTokenAddress,
-      initialCollateralDeltaAmount: p.initialCollateralDeltaAmount,
-      swapPath: p.swapPath,
-      sizeDeltaUsd: p.sizeDeltaUsd,
-      minOutputAmount: minOutputAmount,
-      isLong: p.isLong,
-      orderType: p.orderType,
-      shouldUnwrapNativeToken: isNativeReceive,
     });
   });
 

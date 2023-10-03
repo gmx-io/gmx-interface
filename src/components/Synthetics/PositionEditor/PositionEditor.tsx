@@ -358,31 +358,37 @@ export function PositionEditor(p: Props) {
 
       setIsSubmitting(true);
 
-      createDecreaseOrderTxn(chainId, signer, {
-        account,
-        marketAddress: position.marketAddress,
-        initialCollateralAddress: position.collateralTokenAddress,
-        initialCollateralDeltaAmount: collateralDeltaAmount,
-        receiveTokenAddress: selectedCollateralAddress,
-        swapPath: [],
-        sizeDeltaUsd: BigNumber.from(0),
-        sizeDeltaInTokens: BigNumber.from(0),
-        acceptablePrice: markPrice,
-        triggerPrice: undefined,
-        decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
-        orderType: OrderType.MarketDecrease,
-        isLong: position.isLong,
-        minOutputUsd: receiveUsd,
-        executionFee: executionFee.feeTokenAmount,
-        allowedSlippage,
-        referralCode: userReferralInfo?.referralCodeForTxn,
-        indexToken: position.indexToken,
-        tokensData,
-        skipSimulation: p.shouldDisableValidation,
-        setPendingTxns,
-        setPendingOrder,
-        setPendingPosition,
-      })
+      createDecreaseOrderTxn(
+        chainId,
+        signer,
+        {
+          account,
+          marketAddress: position.marketAddress,
+          initialCollateralAddress: position.collateralTokenAddress,
+          initialCollateralDeltaAmount: collateralDeltaAmount,
+          receiveTokenAddress: selectedCollateralAddress,
+          swapPath: [],
+          sizeDeltaUsd: BigNumber.from(0),
+          sizeDeltaInTokens: BigNumber.from(0),
+          acceptablePrice: markPrice,
+          triggerPrice: undefined,
+          decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
+          orderType: OrderType.MarketDecrease,
+          isLong: position.isLong,
+          minOutputUsd: receiveUsd,
+          executionFee: executionFee.feeTokenAmount,
+          allowedSlippage,
+          referralCode: userReferralInfo?.referralCodeForTxn,
+          indexToken: position.indexToken,
+          tokensData,
+          skipSimulation: p.shouldDisableValidation,
+        },
+        {
+          setPendingTxns,
+          setPendingOrder,
+          setPendingPosition,
+        }
+      )
         .then(onClose)
         .finally(() => {
           setIsSubmitting(false);
