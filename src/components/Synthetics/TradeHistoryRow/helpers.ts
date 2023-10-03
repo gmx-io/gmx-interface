@@ -320,7 +320,6 @@ function getLiquidationTooltipProps(
     { label: t`Borrow Fee`, showDollar: false, value: formatUsd(borrowingFeeUsd?.mul(-1)), className: "text-red" },
     { label: t`Funding Fee`, showDollar: false, value: formatUsd(fundingFeeUsd?.mul(-1)), className: "text-red" },
     { label: t`Position Fee`, showDollar: false, value: formatUsd(positionFeeUsd?.mul(-1)), className: "text-red" },
-    // FIXME do we still want to show priceImpactDiffUsd?
     {
       label: t`Price Impact`,
       showDollar: false,
@@ -414,6 +413,7 @@ function getExecutionPriceTooltipRows(tradeAction: PositionTradeAction): StatsTo
       label: t`Price Impact`,
       showDollar: false,
       value: formatDeltaUsd(tradeAction.priceImpactUsd),
+      className: tradeAction.priceImpactUsd.gt(0) ? "text-green" : "text-red",
     },
   ].filter(Boolean) as StatsTooltipRowProps[];
 }
@@ -430,7 +430,7 @@ function getMarketTooltipRows(tradeAction: PositionTradeAction): StatsTooltipRow
     tradeAction.priceImpactUsd && {
       label: t`Actual Price Impact`,
       showDollar: false,
-      value: formatUsd(tradeAction.priceImpactUsd, { displayDecimals: 2 }),
+      value: formatDeltaUsd(tradeAction.priceImpactUsd),
       className: tradeAction.priceImpactUsd.gt(0) ? "text-green" : "text-red",
     },
   ].filter(Boolean) as StatsTooltipRowProps[];
