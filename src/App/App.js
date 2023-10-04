@@ -275,7 +275,8 @@ function FullApp() {
     function redirectTradePage() {
       const isV1Matched = matchPath(location.pathname, { path: "/trade/:tradeType?" });
       const isV2Matched = matchPath(location.pathname, { path: "/v2/:tradeType?" });
-      if (isV1Matched && query.has("no_redirect")) {
+
+      if (isV2Matched && query.has("no_redirect")) {
         if (tradePageVersion !== 2) {
           setTradePageVersion(2);
         }
