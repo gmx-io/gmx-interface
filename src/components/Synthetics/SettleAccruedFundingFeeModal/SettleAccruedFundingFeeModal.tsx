@@ -85,7 +85,7 @@ export function SettleAccruedFundingFeeModal({
     [positionKeys, setPositionKeys]
   );
 
-  const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
+  const { setPendingFundingFeeSettlement } = useSyntheticsEvents();
 
   const onSubmit = useCallback(() => {
     if (!account || !signer || !chainId || !gasLimits || !tokensData || !gasPrice) return;
@@ -132,8 +132,7 @@ export function SettleAccruedFundingFeeModal({
       }),
       {
         setPendingTxns,
-        setPendingOrder,
-        setPendingPosition,
+        setPendingFundingFeeSettlement,
       }
     )
       .then(onClose)
@@ -148,8 +147,7 @@ export function SettleAccruedFundingFeeModal({
     gasPrice,
     onClose,
     selectedPositions,
-    setPendingOrder,
-    setPendingPosition,
+    setPendingFundingFeeSettlement,
     setPendingTxns,
     signer,
     tokensData,

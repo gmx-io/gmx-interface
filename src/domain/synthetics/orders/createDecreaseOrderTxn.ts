@@ -1,7 +1,7 @@
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
-import { SetPendingOrder, SetPendingPosition } from "context/SyntheticsEvents";
+import { SetPendingFundingFeeSettlement, SetPendingOrder, SetPendingPosition } from "context/SyntheticsEvents";
 import { TokensData, convertToContractPrice } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
 import { BigNumber, Signer, ethers } from "ethers";
@@ -39,8 +39,9 @@ export type DecreaseOrderParams = {
 
 export type DecreaseOrderCallbacks = {
   setPendingTxns: (txns: any) => void;
-  setPendingOrder: SetPendingOrder;
-  setPendingPosition: SetPendingPosition;
+  setPendingOrder?: SetPendingOrder;
+  setPendingPosition?: SetPendingPosition;
+  setPendingFundingFeeSettlement?: SetPendingFundingFeeSettlement;
 };
 
 export async function createDecreaseOrderTxn(
@@ -139,41 +140,64 @@ export async function createDecreaseOrderTxn(
     setPendingTxns: callbacks.setPendingTxns,
   }).then(() => {
     ps.forEach((p) => {
-      const isNativeReceive = p.receiveTokenAddress === NATIVE_TOKEN_ADDRESS;
-      const initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
-      const shouldApplySlippage = isMarketOrderType(p.orderType);
-      const minOutputAmount = shouldApplySlippage
-        ? applySlippageToMinOut(p.allowedSlippage, p.minOutputUsd)
-        : p.minOutputUsd;
-
       if (isMarketOrderType(p.orderType)) {
-        const positionKey = getPositionKey(p.account, p.marketAddress, p.initialCollateralAddress, p.isLong);
-
-        callbacks?.setPendingPosition({
-          isIncrease: false,
-          positionKey,
-          collateralDeltaAmount: p.initialCollateralDeltaAmount,
-          sizeDeltaUsd: p.sizeDeltaUsd,
-          sizeDeltaInTokens: p.sizeDeltaInTokens,
-          updatedAt: txnCreatedAt,
-          updatedAtBlock: BigNumber.from(txnCreatedAtBlock),
-        });
+        if (callbacks.setPendingPosition) {
+          callbacks.setPendingPosition(getPendingPositionFromParams(txnCreatedAt, txnCreatedAtBlock, p));
+        }
       }
 
-      callbacks?.setPendingOrder({
-        account: p.account,
-        marketAddress: p.marketAddress,
-        initialCollateralTokenAddress,
-        initialCollateralDeltaAmount: p.initialCollateralDeltaAmount,
-        swapPath: p.swapPath,
-        sizeDeltaUsd: p.sizeDeltaUsd,
-        minOutputAmount: minOutputAmount,
-        isLong: p.isLong,
-        orderType: p.orderType,
-        shouldUnwrapNativeToken: isNativeReceive,
-      });
+      if (callbacks.setPendingOrder) {
+        callbacks.setPendingOrder(getPendingOrderFromParams(chainId, p));
+      }
     });
+
+    if (callbacks.setPendingFundingFeeSettlement) {
+      callbacks.setPendingFundingFeeSettlement({
+        orders: ps.map((p) => getPendingOrderFromParams(chainId, p)),
+        positions: ps.map((p) => getPendingPositionFromParams(txnCreatedAt, txnCreatedAtBlock, p)),
+      });
+    }
   });
 
   return txn;
+}
+
+function getPendingOrderFromParams(chainId: number, p: DecreaseOrderParams) {
+  const isNativeReceive = p.receiveTokenAddress === NATIVE_TOKEN_ADDRESS;
+
+  const shouldApplySlippage = isMarketOrderType(p.orderType);
+  const minOutputAmount = shouldApplySlippage
+    ? applySlippageToMinOut(p.allowedSlippage, p.minOutputUsd)
+    : p.minOutputUsd;
+  const initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
+
+  return {
+    account: p.account,
+    marketAddress: p.marketAddress,
+    initialCollateralTokenAddress,
+    initialCollateralDeltaAmount: p.initialCollateralDeltaAmount,
+    swapPath: p.swapPath,
+    sizeDeltaUsd: p.sizeDeltaUsd,
+    minOutputAmount: minOutputAmount,
+    isLong: p.isLong,
+    orderType: p.orderType,
+    shouldUnwrapNativeToken: isNativeReceive,
+  };
+}
+
+function getPendingPositionFromParams(
+  txnCreatedAt: number,
+  txnCreatedAtBlock: number | undefined,
+  p: DecreaseOrderParams
+) {
+  const positionKey = getPositionKey(p.account, p.marketAddress, p.initialCollateralAddress, p.isLong);
+  return {
+    isIncrease: false,
+    positionKey,
+    collateralDeltaAmount: p.initialCollateralDeltaAmount,
+    sizeDeltaUsd: p.sizeDeltaUsd,
+    sizeDeltaInTokens: p.sizeDeltaInTokens,
+    updatedAt: txnCreatedAt,
+    updatedAtBlock: BigNumber.from(txnCreatedAtBlock),
+  };
 }
