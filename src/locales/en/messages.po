@@ -25,14 +25,6 @@ msgstr "01 Sep 2021"
 msgid "06 Jan 2022"
 msgstr "06 Jan 2022"
 
-#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
-#~ msgid "1 month"
-#~ msgstr "1 month"
-
-#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
-#~ msgid "24 hours"
-#~ msgstr "24 hours"
-
 #: src/pages/Dashboard/DashboardV2.js
 msgid "24h Volume"
 msgstr "24h Volume"
@@ -262,18 +254,6 @@ msgstr "Address copied to your clipboard"
 msgid "Addresses V2 trading statistics."
 msgstr "Addresses V2 trading statistics."
 
-#: src/pages/Leaderboards/index.tsx
-#~ msgid "Addresses trading statistics"
-#~ msgstr "Addresses trading statistics"
-
-#: src/pages/Leaderboard/Leaderboard.tsx
-#~ msgid "Addresses trading statistics. Choose between general or competitions leaderboards."
-#~ msgstr "Addresses trading statistics. Choose between general or competitions leaderboards."
-
-#: src/pages/Leaderboards/index.tsx
-#~ msgid "Addresses trading statistics. Choose between global or competitions leaderboards."
-#~ msgstr "Addresses trading statistics. Choose between global or competitions leaderboards."
-
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
 msgstr "Affiliate Rewards Claimed"
@@ -293,10 +273,6 @@ msgstr "After claiming, the esGMX tokens will be airdropped to your account on t
 #: src/components/ModalViews/RedirectModal.js
 msgid "Agree"
 msgstr "Agree"
-
-#: src/components/GlobalLeaderboards/TopAccounts.tsx
-#~ msgid "All time"
-#~ msgstr "All time"
 
 #: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 msgid "Allow {0} to be spent"
@@ -451,16 +427,8 @@ msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
-#~ msgid "Average Leverage used"
-#~ msgstr "Average Leverage used"
-
-#: src/components/GlobalLeaderboards/TopAccounts.tsx
 msgid "Average Leverage used."
 msgstr "Average Leverage used."
-
-#: src/components/GlobalLeaderboards/TopAccounts.tsx
-#~ msgid "Average Position Size"
-#~ msgstr "Average Position Size"
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
 msgid "Average Position Size."
@@ -719,10 +687,6 @@ msgstr "Cancel submitted."
 msgid "Canceling {ordersText}"
 msgstr "Canceling {ordersText}"
 
-#: src/pages/Leaderboards/Leaderboards.tsx
-#~ msgid "Chain Icon"
-#~ msgstr "Chain Icon"
-
 #: src/App/App.js
 #: src/pages/Exchange/Exchange.js
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -847,14 +811,6 @@ msgstr "Claiming..."
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims"
 msgstr "Claims"
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Click on a row to select the position's market, then use the swap box to increase your position size or to set stop-loss / take-profit orders."
-#~ msgstr "Click on a row to select the position's market, then use the swap box to increase your position size or to set stop-loss / take-profit orders."
-
-#: src/components/Exchange/PositionsList.js
-#~ msgid "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
-#~ msgstr "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
 
 #: src/components/Exchange/PositionsList.js
 msgid "Click on the Position to select its market, then use the trade box to increase your Position Size if needed."
@@ -1397,10 +1353,6 @@ msgstr "Depositing..."
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Diff"
 msgstr "Diff"
-
-#: src/components/GlobalLeaderboards/TopPositions.tsx
-#~ msgid "Direction"
-#~ msgstr "Direction"
 
 #: src/App/App.js
 msgid "Disable order validations"
@@ -2026,10 +1978,6 @@ msgstr "Generating shareable image..."
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 msgstr "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 
-#: src/pages/Leaderboards/index.tsx
-#~ msgid "Global"
-#~ msgstr "Global"
-
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
 msgstr "Governance"
@@ -2595,16 +2543,8 @@ msgid "Long Positions"
 msgstr "Long Positions"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Long positions {0} a Funding Fee of <0>{1}%</0> per hour."
-#~ msgstr "Long positions {0} a Funding Fee of <0>{1}%</0> per hour."
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Long positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
 msgstr "Long positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Long positions {0} a Funding Fee of <0>{longSign}{1}%</0> per hour."
-#~ msgstr "Long positions {0} a Funding Fee of <0>{longSign}{1}%</0> per hour."
 
 #: src/components/Exchange/SwapBox.js
 msgid "Long {0}"
@@ -2734,10 +2674,6 @@ msgstr "Max Collateral"
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
 msgid "Max Collateral is the highest value of"
 msgstr "Max Collateral is the highest value of"
-
-#: src/components/GlobalLeaderboards/TopAccounts.tsx
-#~ msgid "Max Collateral is the highest value of [Sum of Collateral of Open Positions -  RPnL]"
-#~ msgstr "Max Collateral is the highest value of [Sum of Collateral of Open Positions -  RPnL]"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -3253,14 +3189,6 @@ msgstr "Overall protocol analytics"
 msgid "Overview"
 msgstr "Overview"
 
-#: src/components/GlobalLeaderboards/TopPositions.tsx
-#~ msgid "P&L ($)"
-#~ msgstr "P&L ($)"
-
-#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
-#~ msgid "P&L (%)"
-#~ msgstr "P&L (%)"
-
 #: src/pages/Dashboard/DashboardV2.js
 msgid "POOL"
 msgstr "POOL"
@@ -3375,10 +3303,6 @@ msgstr "PnL ($)"
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
 msgid "PnL ($) compared to the Max Collateral used by this Address."
 msgstr "PnL ($) compared to the Max Collateral used by this Address."
-
-#: src/components/GlobalLeaderboards/TopAccounts.tsx
-#~ msgid "PnL ($) compared to the Max Collateral used by this Address\\n"
-#~ msgstr "PnL ($) compared to the Max Collateral used by this Address\\n"
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
 msgid "PnL (%)"
@@ -4085,16 +4009,8 @@ msgid "Short Positions"
 msgstr "Short Positions"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Short positions {0} a Funding Fee of <0>{1}%</0> per hour."
-#~ msgstr "Short positions {0} a Funding Fee of <0>{1}%</0> per hour."
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Short positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
 msgstr "Short positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Short positions {0} a Funding Fee of <0>{shortSign}{1}%</0> per hour."
-#~ msgstr "Short positions {0} a Funding Fee of <0>{shortSign}{1}%</0> per hour."
 
 #: src/components/Exchange/SwapBox.js
 msgid "Short {0}"
@@ -4142,18 +4058,6 @@ msgstr "Single"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Size"
 msgstr "Size"
-
-#: src/components/GlobalLeaderboards/AccountsLeaderboard.tsx
-#~ msgid "Size (Lev)"
-#~ msgstr "Size (Lev)"
-
-#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
-#~ msgid "Size (Liq)"
-#~ msgstr "Size (Liq)"
-
-#: src/components/GlobalLeaderboards/TopPositions.tsx
-#~ msgid "Size (Liq. Price)"
-#~ msgstr "Size (Liq. Price)"
 
 #: src/App/App.js
 msgid "Slippage should be less than 5%"
@@ -4427,10 +4331,6 @@ msgstr "TOKEN"
 msgid "TOTAL SUPPLY"
 msgstr "TOTAL SUPPLY"
 
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#~ msgid "Take-Profit and Stop-Loss orders are created in the main Tradebox.<0/><1/><2>Set Trigger Order for this position.</2><3/><4/><5>More Info</5>."
-#~ msgstr "Take-Profit and Stop-Loss orders are created in the main Tradebox.<0/><1/><2>Set Trigger Order for this position.</2><3/><4/><5>More Info</5>."
-
 #: src/components/Exchange/SwapBox.js
 msgid "Take-profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
 msgstr "Take-profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
@@ -4642,10 +4542,6 @@ msgstr "To reduce fees, select a different asset to pay with."
 msgid "To reduce fees, select a different asset to receive."
 msgstr "To reduce fees, select a different asset to receive."
 
-#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
-#~ msgid "Token (L/S)"
-#~ msgstr "Token (L/S)"
-
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Tokens"
 msgstr "Tokens"
@@ -4682,10 +4578,6 @@ msgstr "Total Claimable"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Total Fees"
 msgstr "Total Fees"
-
-#: src/components/GlobalLeaderboards/TopAccounts.tsx
-#~ msgid "Total Realized and Unrealized Profit"
-#~ msgstr "Total Realized and Unrealized Profit"
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
 msgid "Total Realized and Unrealized Profit and Loss."
@@ -4730,10 +4622,6 @@ msgstr "Total Supply"
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "Total Trading Volume"
-
-#: src/components/GlobalLeaderboards/TopPositions.tsx
-#~ msgid "Total Unrealized Profit"
-#~ msgstr "Total Unrealized Profit"
 
 #: src/components/GlobalLeaderboards/TopPositions.tsx
 msgid "Total Unrealized Profit and Loss."
@@ -5048,14 +4936,6 @@ msgstr "Use the \"Close\" button to reduce your Position Size, or to set Take-Pr
 msgid "Use the \"Close\" button to reduce your Position Size."
 msgstr "Use the \"Close\" button to reduce your Position Size."
 
-#: src/components/Exchange/PositionsList.js
-#~ msgid "Use the \"Close\" button to reduce your position size, or to set stop-loss / take-profit orders."
-#~ msgstr "Use the \"Close\" button to reduce your position size, or to set stop-loss / take-profit orders."
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Use the \"Close\" button to reduce your position size."
-#~ msgstr "Use the \"Close\" button to reduce your position size."
-
 #: src/pages/Stake/StakeV2.js
 msgid "Use the \"Compound\" button to stake your Multiplier Points."
 msgstr "Use the \"Compound\" button to stake your Multiplier Points."
@@ -5297,10 +5177,6 @@ msgstr "When closing the position, you can select which token you would like to 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
 msgid "Win/Loss"
 msgstr "Win/Loss"
-
-#: src/components/GlobalLeaderboards/TopAccounts.tsx
-#~ msgid "Wins and Losses for fully closed Positions"
-#~ msgstr "Wins and Losses for fully closed Positions"
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
 msgid "Wins and Losses for fully closed Positions."
@@ -5567,10 +5443,6 @@ msgstr "account"
 msgid "collateral"
 msgstr "collateral"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "earn"
-#~ msgstr "earn"
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "esGMX OTC Market"
 msgstr "esGMX OTC Market"
@@ -5627,11 +5499,6 @@ msgstr "{0, plural, one {Cancel order} other {Cancel # orders}}"
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "{0}"
-#~ msgstr "{0}"
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>;"
@@ -5816,10 +5683,6 @@ msgstr "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 #: src/components/Exchange/PositionsList.js
 msgid "{longOrShortText} {0} market selected"
 msgstr "{longOrShortText} {0} market selected"
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "{longShortText} positions {0} a funding fee of {1}% per hour."
-#~ msgstr "{longShortText} positions {0} a funding fee of {1}% per hour."
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "{marketsCount, plural, one {# Market} other {# Markets}}"

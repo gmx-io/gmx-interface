@@ -254,18 +254,6 @@ msgstr ""
 msgid "Addresses V2 trading statistics."
 msgstr ""
 
-#: src/pages/Leaderboards/index.tsx
-#~ msgid "Addresses trading statistics"
-#~ msgstr ""
-
-#: src/pages/Leaderboard/Leaderboard.tsx
-#~ msgid "Addresses trading statistics. Choose between general or competitions leaderboards."
-#~ msgstr ""
-
-#: src/pages/Leaderboards/index.tsx
-#~ msgid "Addresses trading statistics. Choose between global or competitions leaderboards."
-#~ msgstr ""
-
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
 msgstr ""
@@ -285,10 +273,6 @@ msgstr "申领后，esGMX代币将在7天内空投到您所选网络的账户中
 #: src/components/ModalViews/RedirectModal.js
 msgid "Agree"
 msgstr "同意"
-
-#: src/components/GlobalLeaderboards/TopAccounts.tsx
-#~ msgid "All time"
-#~ msgstr ""
 
 #: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 msgid "Allow {0} to be spent"
@@ -443,16 +427,8 @@ msgid "Avalanche APR:"
 msgstr "Avalanche年利率"
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
-#~ msgid "Average Leverage used"
-#~ msgstr ""
-
-#: src/components/GlobalLeaderboards/TopAccounts.tsx
 msgid "Average Leverage used."
 msgstr ""
-
-#: src/components/GlobalLeaderboards/TopAccounts.tsx
-#~ msgid "Average Position Size"
-#~ msgstr ""
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
 msgid "Average Position Size."
@@ -711,10 +687,6 @@ msgstr "送出取消"
 msgid "Canceling {ordersText}"
 msgstr ""
 
-#: src/pages/Leaderboards/Leaderboards.tsx
-#~ msgid "Chain Icon"
-#~ msgstr ""
-
 #: src/App/App.js
 #: src/pages/Exchange/Exchange.js
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -839,14 +811,6 @@ msgstr "领取中"
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims"
 msgstr ""
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Click on a row to select the position's market, then use the swap box to increase your position size or to set stop-loss / take-profit orders."
-#~ msgstr ""
-
-#: src/components/Exchange/PositionsList.js
-#~ msgid "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
-#~ msgstr "点取一排以选择仓位市场,若需要可接着点选交换栏来增加幅度"
 
 #: src/components/Exchange/PositionsList.js
 msgid "Click on the Position to select its market, then use the trade box to increase your Position Size if needed."
@@ -1390,10 +1354,6 @@ msgstr "存款中..."
 msgid "Diff"
 msgstr "差异"
 
-#: src/components/GlobalLeaderboards/TopPositions.tsx
-#~ msgid "Direction"
-#~ msgstr ""
-
 #: src/App/App.js
 msgid "Disable order validations"
 msgstr "关闭订单验证"
@@ -1655,10 +1615,6 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Entry Price"
 msgstr "入场价格"
-
-#: src/components/Leaderboard/GeneralOpenLeaderboard.tsx
-#~ msgid "Entry Price ($)"
-#~ msgstr ""
 
 #: src/components/Table/Table.tsx
 msgid "Error"
@@ -2010,10 +1966,6 @@ msgstr "尚未启用GMX转账功能"
 msgid "GMX | Decentralized Perpetual Exchange"
 msgstr ""
 
-#: src/pages/Leaderboard/Leaderboard.tsx
-#~ msgid "General"
-#~ msgstr ""
-
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Generate Referral Code"
 msgstr "生成推荐代码"
@@ -2025,10 +1977,6 @@ msgstr "生成可分享的图像中..."
 #: src/pages/Referrals/Referrals.tsx
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 msgstr ""
-
-#: src/pages/Leaderboards/index.tsx
-#~ msgid "Global"
-#~ msgstr ""
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
@@ -2463,10 +2411,6 @@ msgstr ""
 msgid "Liq. Price"
 msgstr "流动资金价格"
 
-#: src/components/Leaderboard/GeneralOpenLeaderboard.tsx
-#~ msgid "Liq. Price ($)"
-#~ msgstr ""
-
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Liq. {0} {longOrShortText}"
 msgstr ""
@@ -2596,16 +2540,8 @@ msgid "Long Positions"
 msgstr "开仓做多"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Long positions {0} a Funding Fee of <0>{1}%</0> per hour."
-#~ msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Long positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
 msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Long positions {0} a Funding Fee of <0>{longSign}{1}%</0> per hour."
-#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Long {0}"
@@ -2735,10 +2671,6 @@ msgstr ""
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
 msgid "Max Collateral is the highest value of"
 msgstr ""
-
-#: src/components/GlobalLeaderboards/TopAccounts.tsx
-#~ msgid "Max Collateral is the highest value of [Sum of Collateral of Open Positions -  RPnL]"
-#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -2984,16 +2916,6 @@ msgstr "NFT ID"
 msgid "NFT Wallet"
 msgstr "NFT钱包"
 
-#: src/components/Leaderboard/IndividualLeaderboard.tsx
-#: src/components/Leaderboard/TeamLeaderboard.tsx
-#~ msgid "Name"
-#~ msgstr ""
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#~ msgid "Need to accept Price Impact"
-#~ msgstr ""
-
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Negative Funding Fees are settled against the collateral automatically and will influence the liquidation price. Positive Funding Fees can be claimed under Claimable Funding after realizing any action on the position."
 msgstr ""
@@ -3122,10 +3044,6 @@ msgstr "开启利息"
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Open Interest Balance"
 msgstr ""
-
-#: src/components/Leaderboard/TeamLeaderboard.tsx
-#~ msgid "Open Positions"
-#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Open a position"
@@ -3268,10 +3186,6 @@ msgstr ""
 msgid "Overview"
 msgstr "总览"
 
-#: src/components/GlobalLeaderboards/TopPositions.tsx
-#~ msgid "P&L ($)"
-#~ msgstr ""
-
 #: src/pages/Dashboard/DashboardV2.js
 msgid "POOL"
 msgstr "池子"
@@ -3386,10 +3300,6 @@ msgstr ""
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
 msgid "PnL ($) compared to the Max Collateral used by this Address."
 msgstr ""
-
-#: src/components/GlobalLeaderboards/TopAccounts.tsx
-#~ msgid "PnL ($) compared to the Max Collateral used by this Address\\n"
-#~ msgstr ""
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
 msgid "PnL (%)"
@@ -4096,16 +4006,8 @@ msgid "Short Positions"
 msgstr "做空仓位"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Short positions {0} a Funding Fee of <0>{1}%</0> per hour."
-#~ msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Short positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
 msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Short positions {0} a Funding Fee of <0>{shortSign}{1}%</0> per hour."
-#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Short {0}"
@@ -4153,18 +4055,6 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Size"
 msgstr "规模"
-
-#: src/components/Leaderboard/GeneralOpenLeaderboard.tsx
-#~ msgid "Size ($)"
-#~ msgstr ""
-
-#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
-#~ msgid "Size (Liq)"
-#~ msgstr ""
-
-#: src/components/GlobalLeaderboards/TopPositions.tsx
-#~ msgid "Size (Liq. Price)"
-#~ msgstr ""
 
 #: src/App/App.js
 msgid "Slippage should be less than 5%"
@@ -4438,10 +4328,6 @@ msgstr "代币"
 msgid "TOTAL SUPPLY"
 msgstr ""
 
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#~ msgid "Take-Profit and Stop-Loss orders are created in the main Tradebox.<0/><1/><2>Set Trigger Order for this position.</2><3/><4/><5>More Info</5>."
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 msgid "Take-profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
 msgstr "获利和止损订单可以在开仓后设置 <0/><1/>每一行仓位上都会有一个 \"Close/\"按钮, 点击它将会显示设置触发订单的选项 <2/><3/>屏幕截图和更多信息，请参见<4>文档</4>"
@@ -4454,10 +4340,6 @@ msgstr "目标最低金额"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Target Weight"
 msgstr "目标重量"
-
-#: src/components/Leaderboard/TeamLeaderboard.tsx
-#~ msgid "Team Name"
-#~ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram Group"
@@ -4657,14 +4539,6 @@ msgstr "为了减少费用，请选择不同的资产来支付"
 msgid "To reduce fees, select a different asset to receive."
 msgstr "为了减少费用，请选择不同的资产来接收"
 
-#: src/components/Leaderboard/GeneralOpenLeaderboard.tsx
-#~ msgid "Token"
-#~ msgstr ""
-
-#: src/components/GlobalLeaderboards/PositionsLeaderboard.tsx
-#~ msgid "Token (L/S)"
-#~ msgstr ""
-
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Tokens"
 msgstr "代币"
@@ -4701,10 +4575,6 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Total Fees"
 msgstr "费用总额"
-
-#: src/components/GlobalLeaderboards/TopAccounts.tsx
-#~ msgid "Total Realized and Unrealized Profit"
-#~ msgstr ""
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
 msgid "Total Realized and Unrealized Profit and Loss."
@@ -4749,10 +4619,6 @@ msgstr "总供应量"
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "总交易量"
-
-#: src/components/GlobalLeaderboards/TopPositions.tsx
-#~ msgid "Total Unrealized Profit"
-#~ msgstr ""
 
 #: src/components/GlobalLeaderboards/TopPositions.tsx
 msgid "Total Unrealized Profit and Loss."
@@ -5067,14 +4933,6 @@ msgstr ""
 msgid "Use the \"Close\" button to reduce your Position Size."
 msgstr ""
 
-#: src/components/Exchange/PositionsList.js
-#~ msgid "Use the \"Close\" button to reduce your position size, or to set stop-loss / take-profit orders."
-#~ msgstr "使用 \"Close\" 按钮来减少你的头寸大小，或设置止损/止盈订单"
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Use the \"Close\" button to reduce your position size."
-#~ msgstr ""
-
 #: src/pages/Stake/StakeV2.js
 msgid "Use the \"Compound\" button to stake your Multiplier Points."
 msgstr "使用 \"Compound\" 按钮来质押你的积分点"
@@ -5313,17 +5171,9 @@ msgstr "重量"
 msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr "在平仓时，你可以选择你想用哪种代币来接收利润"
 
-#: src/components/Leaderboard/GeneralSettledLeaderboard.tsx
-#~ msgid "Win / Loss"
-#~ msgstr ""
-
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
 msgid "Win/Loss"
 msgstr ""
-
-#: src/components/GlobalLeaderboards/TopAccounts.tsx
-#~ msgid "Wins and Losses for fully closed Positions"
-#~ msgstr ""
 
 #: src/components/GlobalLeaderboards/TopAccounts.tsx
 msgid "Wins and Losses for fully closed Positions."
@@ -5590,10 +5440,6 @@ msgstr "帐户"
 msgid "collateral"
 msgstr "抵押品"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "earn"
-#~ msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "esGMX OTC Market"
 msgstr ""
@@ -5650,11 +5496,6 @@ msgstr ""
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "{0}"
-#~ msgstr ""
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>;"
@@ -5836,10 +5677,6 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 msgid "{longOrShortText} {0} market selected"
 msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "{longShortText} positions {0} a funding fee of {1}% per hour."
-#~ msgstr ""
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "{marketsCount, plural, one {# Market} other {# Markets}}"

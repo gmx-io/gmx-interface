@@ -169,14 +169,14 @@ export function formatUsd(
   const exceedingInfo = getLimitedDisplay(usd, USD_DECIMALS, opts);
   const sign = usd.lt(0) ? "-" : "";
   const displayUsd = formatAmount(exceedingInfo.value, USD_DECIMALS, displayDecimals, true);
-  return `${exceedingInfo.symbol} ${sign}$${displayUsd}`;
+  return `${exceedingInfo.symbol}${sign}$${displayUsd}`;
 }
 
 export function formatPrice(price: BigNumber, chainId: number, symbol: string, opts = {}) {
   return formatUsd(price, {
     displayDecimals: getPriceDecimals(chainId, symbol),
     maxThreshold: "1000000",
-    ...opts
+    ...opts,
   });
 }
 
