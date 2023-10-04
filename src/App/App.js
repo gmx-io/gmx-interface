@@ -273,8 +273,8 @@ function FullApp() {
 
   useEffect(
     function redirectTradePage() {
-      const isV1Matched = matchPath(location.pathname, { path: "/trade/:tradeType" });
-      const isV2Matched = matchPath(location.pathname, { path: "/v2/:tradeType" });
+      const isV1Matched = matchPath(location.pathname, { path: "/trade/:tradeType?" });
+      const isV2Matched = matchPath(location.pathname, { path: "/v2/:tradeType?" });
       if (isV1Matched && query.has("no_redirect")) {
         if (tradePageVersion !== 2) {
           setTradePageVersion(2);
@@ -421,7 +421,7 @@ function FullApp() {
               <Route exact path="/">
                 <Redirect to="/dashboard" />
               </Route>
-              <Route exact path="/trade/:tradeType">
+              <Route exact path="/trade/:tradeType?">
                 <Exchange
                   ref={exchangeRef}
                   savedShowPnlAfterFees={savedShowPnlAfterFees}
@@ -464,7 +464,7 @@ function FullApp() {
                 )}
               </Route>
 
-              <Route exact path="/v2/:tradeType">
+              <Route exact path="/v2/:tradeType?">
                 {getIsSyntheticsSupported(chainId) ? (
                   <SyntheticsPage
                     savedIsPnlInLeverage={savedIsPnlInLeverage}
