@@ -13,27 +13,6 @@ export type EventData = {
   }[];
 };
 
-export const homeEventsData: EventData[] = [
-  {
-    id: "v2-live",
-    title: "GMX V2 beta is live",
-    isActive: true,
-    validTill: "9 Sep 2023, 12:00",
-    bodyText: "GMX V2 beta is now available for public use.",
-    buttons: [
-      {
-        text: "Read More",
-        link: "https://gmxio.substack.com/p/gmx-v2-beta-is-now-live",
-        newTab: true,
-      },
-      {
-        text: "Use V2",
-        link: "https://app.gmx.io/#/v2?no_redirect",
-      },
-    ],
-  },
-];
-
 export const appEventsData: EventData[] = [
   {
     id: "v2-live",
