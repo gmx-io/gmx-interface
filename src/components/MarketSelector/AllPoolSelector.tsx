@@ -156,7 +156,9 @@ export function AllPoolSelector({
           {filteredOptions.map((option, marketIndex) => {
             const { marketInfo, balance, balanceUsd, poolName, indexName, name, state = {} } = option;
 
-            const indexTokenImage = importImage(`ic_${marketInfo.indexToken.symbol.toLowerCase()}_40.svg`);
+            const indexTokenImage = importImage(
+              `ic_${marketInfo.isSpotOnly ? "swap" : marketInfo.indexToken.symbol.toLowerCase()}_40.svg`
+            );
 
             const marketToken = getByKey(marketTokensData, marketInfo.marketTokenAddress);
 
