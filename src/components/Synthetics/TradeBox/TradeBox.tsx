@@ -29,7 +29,7 @@ import {
   getAvailableUsdLiquidityForPosition,
   getMarketIndexName,
 } from "domain/synthetics/markets";
-import { OrderInfo, OrderType, OrdersInfoData } from "domain/synthetics/orders";
+import { DecreasePositionSwapType, OrderInfo, OrderType, OrdersInfoData } from "domain/synthetics/orders";
 import {
   PositionInfo,
   PositionsInfoData,
@@ -510,7 +510,7 @@ export function TradeBox(p: Props) {
 
     if (isSwap && swapAmounts?.swapPathStats) {
       const estimatedGas = estimateExecuteSwapOrderGasLimit(gasLimits, {
-        swapPath: swapAmounts.swapPathStats.swapPath,
+        swapsCount: swapAmounts.swapPathStats.swapPath.length,
       });
 
       return {
@@ -534,7 +534,7 @@ export function TradeBox(p: Props) {
 
     if (isIncrease && increaseAmounts) {
       const estimatedGas = estimateExecuteIncreaseOrderGasLimit(gasLimits, {
-        swapPath: increaseAmounts.swapPathStats?.swapPath || [],
+        swapsCount: increaseAmounts.swapPathStats?.swapPath.length,
       });
 
       return {
@@ -557,7 +557,10 @@ export function TradeBox(p: Props) {
     }
 
     if (isTrigger && decreaseAmounts) {
-      const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {});
+      const swapsCount = decreaseAmounts.decreaseSwapType === DecreasePositionSwapType.NoSwap ? 0 : 1;
+      const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
+        swapsCount,
+      });
 
       return {
         fees: getTradeFees({

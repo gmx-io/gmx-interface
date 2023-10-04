@@ -1,14 +1,27 @@
 import React from "react";
 import "@rainbow-me/rainbowkit/styles.css";
-import { connectorsForWallets, darkTheme, getDefaultWallets, RainbowKitProvider, Theme } from "@rainbow-me/rainbowkit";
-import { ledgerWallet, argentWallet, zerionWallet, safeWallet, rabbyWallet } from "@rainbow-me/rainbowkit/wallets";
+import { connectorsForWallets, darkTheme, RainbowKitProvider, Theme, WalletList } from "@rainbow-me/rainbowkit";
+import {
+  ledgerWallet,
+  safeWallet,
+  rabbyWallet,
+  injectedWallet,
+  metaMaskWallet,
+  walletConnectWallet,
+  coinbaseWallet,
+  rainbowWallet,
+  imTokenWallet,
+} from "@rainbow-me/rainbowkit/wallets";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import merge from "lodash/merge";
 import { isDevelopment } from "config/env";
+import { coreWallet } from "./connecters/core/coreWallet";
+import { bitGetWallet } from "./connecters/bitGet/bitGetWallet";
 
 const WALLET_CONNECT_PROJECT_ID = "de24cddbaf2a68f027eae30d9bb5df58";
+const APP_NAME = "GMX";
 
 const walletTheme = merge(darkTheme(), {
   colors: {
@@ -27,27 +40,34 @@ const { chains, provider } = configureChains(
   [publicProvider()]
 );
 
-const { wallets } = getDefaultWallets({
-  appName: "GMX",
-  projectId: WALLET_CONNECT_PROJECT_ID,
-  chains,
-});
-
-const connectors = connectorsForWallets([
-  ...wallets,
+const recommendedWalletList: WalletList = [
   {
-    groupName: "More",
+    groupName: "Recommended",
     wallets: [
+      injectedWallet({ chains }),
+      safeWallet({ chains }),
       rabbyWallet({ chains }),
-      ledgerWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
-      zerionWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
-      argentWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
-      safeWallet({
-        chains,
-      }),
+      metaMaskWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
+      walletConnectWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
     ],
   },
-]);
+];
+
+const othersWalletList: WalletList = [
+  {
+    groupName: "Others",
+    wallets: [
+      coreWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
+      coinbaseWallet({ appName: APP_NAME, chains }),
+      ledgerWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
+      rainbowWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
+      bitGetWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
+      imTokenWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
+    ],
+  },
+];
+
+const connectors = connectorsForWallets([...recommendedWalletList, ...othersWalletList]);
 
 const wagmiClient = createClient({
   autoConnect: true,

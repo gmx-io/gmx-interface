@@ -679,6 +679,7 @@ function App() {
   const { disconnect } = useDisconnect();
 
   useScrollToTop();
+
   useEffect(() => {
     const defaultLanguage = localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale;
     dynamicActivate(defaultLanguage);
