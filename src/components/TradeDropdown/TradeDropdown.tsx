@@ -1,19 +1,15 @@
 import { Menu } from "@headlessui/react";
-import { HeaderLink } from "components/Header/HeaderLink";
 import { ReactNode } from "react";
 
 import { getIcon } from "config/icons";
 import "./TradeDropdown.scss";
+import { Link } from "react-router-dom";
 
 type Props = {
-  redirectPopupTimestamp: number;
-  showRedirectModal: (to: string) => void;
   buttonLabel: ReactNode;
 };
 
-export function TradeDropdown(p: Props) {
-  const { redirectPopupTimestamp, showRedirectModal, buttonLabel } = p;
-
+export function TradeDropdown({ buttonLabel }: Props) {
   return (
     <div className="TradeDropdown-root">
       <Menu>
@@ -25,27 +21,17 @@ export function TradeDropdown(p: Props) {
 
         <Menu.Items as="div" className="TradeDropdown-options  menu-items">
           <Menu.Item>
-            <HeaderLink
-              className="TradeDropdown-option"
-              to="/trade"
-              redirectPopupTimestamp={redirectPopupTimestamp}
-              showRedirectModal={showRedirectModal}
-            >
+            <Link className="TradeDropdown-option" to="/trade">
               <img src={getIcon("common", "gmxOutline")} alt="GMX V1" className="TradeDropdown-option-icon" />
               <div className="TradeDropdown-option-label">GMX V1</div>
-            </HeaderLink>
+            </Link>
           </Menu.Item>
 
           <Menu.Item>
-            <HeaderLink
-              className="TradeDropdown-option"
-              to="/v2"
-              redirectPopupTimestamp={redirectPopupTimestamp}
-              showRedirectModal={showRedirectModal}
-            >
+            <Link className="TradeDropdown-option" to="/v2">
               <img src={getIcon("common", "gmxOutline")} alt="GMX V2" className="TradeDropdown-option-icon" />
               <div className="TradeDropdown-option-label">GMX V2</div>
-            </HeaderLink>
+            </Link>
           </Menu.Item>
         </Menu.Items>
       </Menu>

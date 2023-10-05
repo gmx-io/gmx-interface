@@ -12,8 +12,6 @@ import { AnimatePresence as FramerAnimatePresence, motion } from "framer-motion"
 
 import "./Header.css";
 import { Link } from "react-router-dom";
-import { isHomeSite } from "lib/legacy";
-import { HomeHeaderLinks } from "./HomeHeaderLinks";
 
 // Fix framer-motion old React FC type (solved in react 18)
 const AnimatePresence = (props: React.ComponentProps<typeof FramerAnimatePresence> & { children: ReactNode }) => (
@@ -33,18 +31,10 @@ const slideVariants = {
 type Props = {
   disconnectAccountAndCloseSettings: () => void;
   openSettings: () => void;
-  redirectPopupTimestamp: number;
   tradePageVersion: number;
-  showRedirectModal: (to: string) => void;
 };
 
-export function Header({
-  disconnectAccountAndCloseSettings,
-  openSettings,
-  redirectPopupTimestamp,
-  showRedirectModal,
-  tradePageVersion,
-}: Props) {
+export function Header({ disconnectAccountAndCloseSettings, openSettings, tradePageVersion }: Props) {
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [isNativeSelectorModalVisible, setIsNativeSelectorModalVisible] = useState(false);
 
@@ -99,18 +89,12 @@ export function Header({
               <img src={logoImg} className="big" alt="GMX Logo" />
               <img src={logoSmallImg} className="small" alt="GMX Logo" />
             </Link>
-            {isHomeSite() ? (
-              <HomeHeaderLinks redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal} />
-            ) : (
-              <AppHeaderLinks redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal} />
-            )}
+            <AppHeaderLinks />
           </div>
           <div className="App-header-container-right">
             <AppHeaderUser
               disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
               openSettings={openSettings}
-              redirectPopupTimestamp={redirectPopupTimestamp}
-              showRedirectModal={showRedirectModal}
               tradePageVersion={tradePageVersion}
             />
           </div>
@@ -136,8 +120,6 @@ export function Header({
                 disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
                 openSettings={openSettings}
                 small
-                redirectPopupTimestamp={redirectPopupTimestamp}
-                showRedirectModal={showRedirectModal}
                 tradePageVersion={tradePageVersion}
               />
             </div>
@@ -155,22 +137,7 @@ export function Header({
             variants={slideVariants}
             transition={{ duration: 0.2 }}
           >
-            {isHomeSite() ? (
-              <HomeHeaderLinks
-                small
-                clickCloseIcon={() => setIsDrawerVisible(false)}
-                redirectPopupTimestamp={redirectPopupTimestamp}
-                showRedirectModal={showRedirectModal}
-              />
-            ) : (
-              <AppHeaderLinks
-                small
-                openSettings={openSettings}
-                clickCloseIcon={() => setIsDrawerVisible(false)}
-                redirectPopupTimestamp={redirectPopupTimestamp}
-                showRedirectModal={showRedirectModal}
-              />
-            )}
+            <AppHeaderLinks small openSettings={openSettings} clickCloseIcon={() => setIsDrawerVisible(false)} />
           </motion.div>
         )}
       </AnimatePresence>

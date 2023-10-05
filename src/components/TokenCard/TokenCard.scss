@@ -1,0 +1,64 @@
+.Token-card-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 1.5rem;
+  grid-row-gap: 1.5rem;
+}
+
+.Token-card-option {
+  position: relative;
+  padding: 2.325rem;
+  max-width: 59.2rem;
+  background: #16182e;
+  box-shadow: 0px 0.5rem 1.3rem #00000085;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.Token-card-option-icon {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  font-size: var(--font-lg);
+  line-height: 1.2;
+  letter-spacing: 0px;
+  color: #ffffff;
+  height: 3.1rem;
+}
+
+.Token-card-option-icon img {
+  margin-right: 0.8rem;
+}
+
+.Token-card-option-title {
+  font-size: 1.8rem;
+  line-height: 2.3rem;
+  letter-spacing: 0px;
+  color: #fff;
+  margin-top: 2.325rem;
+}
+
+.Token-card-option-apr {
+  font-size: var(--font-base);
+  line-height: 2.3rem;
+  letter-spacing: 0px;
+  color: #a0a3c4;
+  margin-top: 1.9375rem;
+}
+
+.Token-card-option-action {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.Token-card-buy {
+  margin-top: 3rem;
+}
+
+.Token-card-option-action > .buy a:first-child,
+.Token-card-option-action > .buy .a:first-child {
+  margin-right: 1.5rem;
+}

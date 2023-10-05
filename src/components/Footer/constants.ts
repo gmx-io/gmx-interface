@@ -19,20 +19,11 @@ type SocialLink = {
   icon: string;
 };
 
-export function getFooterLinks(isHome) {
-  const FOOTER_LINKS: { home: Link[]; app: Link[] } = {
-    home: [
-      { label: t`Terms and Conditions`, link: "/terms-and-conditions" },
-      { label: t`Referral Terms`, link: "/referral-terms" },
-      { label: t`Media Kit`, link: "https://docs.gmx.io/docs/community/media-kit", external: true },
-      // { label: "Jobs", link: "/jobs", isAppLink: true },
-    ],
-    app: [
-      { label: t`Media Kit`, link: "https://docs.gmx.io/docs/community/media-kit", external: true },
-      // { label: "Jobs", link: "/jobs" },
-    ],
-  };
-  return FOOTER_LINKS[isHome ? "home" : "app"];
+export function getFooterLinks(): Link[] {
+  return [
+    { label: t`Media Kit`, link: "https://docs.gmx.io/docs/community/media-kit", external: true },
+    // { label: "Jobs", link: "/jobs" },
+  ];
 }
 
 export const SOCIAL_LINKS: SocialLink[] = [

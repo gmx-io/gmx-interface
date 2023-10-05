@@ -303,14 +303,6 @@ msgstr ""
 msgid "Amount to claim"
 msgstr "Cantidad a reclamar"
 
-#: src/pages/Home/Home.js
-msgid "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
-msgstr "Un conjunto de fuentes de precios de alta calidad determinan cuando se producen las liquidaciones. Esto mantiene las posiciones a salvo de altibajos temporales."
-
-#: src/components/Header/HomeHeaderLinks.tsx
-msgid "App"
-msgstr "Aplicación"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "App disabled, pending {0} upgrade"
 msgstr ""
@@ -407,10 +399,6 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 msgstr "Cantidad disponible para retirar de GLP. Fondos no utilizados por posiciones activas abiertas"
-
-#: src/pages/Home/Home.js
-msgid "Available on your preferred network"
-msgstr "Disponible en su red preferida"
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
@@ -786,14 +774,6 @@ msgstr "Reclamando..."
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims"
 msgstr ""
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Click on a row to select the position's market, then use the swap box to increase your position size or to set stop-loss / take-profit orders."
-#~ msgstr ""
-
-#: src/components/Exchange/PositionsList.js
-#~ msgid "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
-#~ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "Click on the Position to select its market, then use the trade box to increase your Position Size if needed."
@@ -1221,10 +1201,6 @@ msgstr ""
 msgid "Decentralized Trading Protocol"
 msgstr "Protocolo de Trading Descentralizado"
 
-#: src/pages/Home/Home.js
-msgid "Decentralized<0/>Perpetual Exchange"
-msgstr "Exchange<0/>Perpetuo Decentralizado"
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
@@ -1353,7 +1329,6 @@ msgid "Distribution"
 msgstr "Distribución"
 
 #: src/components/Header/AppHeaderLinks.tsx
-#: src/components/Header/HomeHeaderLinks.tsx
 msgid "Docs"
 msgstr "Documentos"
 
@@ -1562,10 +1537,6 @@ msgstr ""
 #: src/pages/Stake/StakeV2.js
 msgid "Enter an amount"
 msgstr "Introduzca una cantidad"
-
-#: src/pages/Home/Home.js
-msgid "Enter and exit positions with minimal spread and low price impact. Get the optimal price without incurring additional costs."
-msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrderEditor.js
@@ -1907,10 +1878,6 @@ msgstr "Explorador de GMX para estadísticas y traders"
 msgid "GMX fundamentals"
 msgstr "Fundamentales de GMX"
 
-#: src/pages/Home/Home.js
-msgid "GMX is currently live on Arbitrum and Avalanche."
-msgstr "GMX esta actualmente en vivo en Arbitrum y Avalanche."
-
 #: src/pages/Jobs/Jobs.js
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr "GMX no se encuentra contratando en este momento. Sin embargo, si crees que puedes contribuir al proyecto, manda un email por favor <0>jobs@gmx.io</0>."
@@ -1951,10 +1918,6 @@ msgstr "Generando imagen para compartir..."
 #: src/pages/Referrals/Referrals.tsx
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 msgstr ""
-
-#: src/components/Header/HomeHeaderLinks.tsx
-msgid "Governance"
-msgstr "Gobernanza"
 
 #: src/components/Exchange/SwapBox.js
 msgid "High Slippage, Swap Anyway"
@@ -2226,10 +2189,7 @@ msgstr ""
 msgid "Language"
 msgstr "Idioma"
 
-#: src/components/Header/AppHeaderUser.tsx
-#: src/components/Header/AppHeaderUser.tsx
 #: src/components/ModalViews/RedirectModal.js
-#: src/pages/Home/Home.js
 msgid "Launch App"
 msgstr "Abrir App"
 
@@ -2501,16 +2461,8 @@ msgid "Long Positions"
 msgstr "Posiciones largas"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Long positions {0} a Funding Fee of <0>{1}%</0> per hour."
-#~ msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Long positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
 msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Long positions {0} a Funding Fee of <0>{longSign}{1}%</0> per hour."
-#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Long {0}"
@@ -2768,7 +2720,6 @@ msgid "Max: {0}"
 msgstr "Máx: {0}"
 
 #: src/components/Footer/constants.ts
-#: src/components/Footer/constants.ts
 msgid "Media Kit"
 msgstr "Kit de Medios"
 
@@ -2981,7 +2932,6 @@ msgid "Open Fee"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "Interés Abierto"
 
@@ -3000,10 +2950,6 @@ msgstr "Abrir en Coingecko"
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open in Explorer"
 msgstr "Abrir en el Explorador"
-
-#: src/pages/Home/Home.js
-msgid "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
-msgstr "Abre posiciones a través de una simple interfaz de intercambio. Intercambie desde cualquier activo soportado a la posición de su elección."
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "Open positions: {0}<0/>Under risk: {1}"
@@ -3428,10 +3374,6 @@ msgstr "Proyectos integrados con GMX."
 msgid "Proof of Reserves"
 msgstr "Prueba de reservas"
 
-#: src/components/Header/HomeHeaderLinks.tsx
-msgid "Protocol"
-msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Protocol analytics"
@@ -3534,10 +3476,6 @@ msgstr "El receptor no ha stakeado tokens GMX antes"
 msgid "Redemption time not yet reached"
 msgstr "Tiempo de redención aún no alcanzado"
 
-#: src/pages/Home/Home.js
-msgid "Reduce Liquidation Risks"
-msgstr "Reducir Riesgos de Liquidación"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Code"
 msgstr "Código de Referido"
@@ -3553,11 +3491,6 @@ msgstr "Códigos de referido"
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Referral Discount"
 msgstr ""
-
-#: src/components/Footer/constants.ts
-#: src/pages/ReferralTerms/ReferralTerms.js
-msgid "Referral Terms"
-msgstr "Términos de Referido"
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Referral code added!"
@@ -3666,10 +3599,6 @@ msgstr "Igual que el código activo actual"
 #: src/components/Synthetics/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
 msgid "Save"
 msgstr "Guardar"
-
-#: src/pages/Home/Home.js
-msgid "Save on Costs"
-msgstr "Ahorrar en Costes"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Save on Fees"
@@ -3909,16 +3838,8 @@ msgid "Short Positions"
 msgstr "Posiciones en Corto"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Short positions {0} a Funding Fee of <0>{1}%</0> per hour."
-#~ msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Short positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
 msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Short positions {0} a Funding Fee of <0>{shortSign}{1}%</0> per hour."
-#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Short {0}"
@@ -3931,10 +3852,6 @@ msgstr "Entrando a corto..."
 #: src/App/App.js
 msgid "Show debug values"
 msgstr ""
-
-#: src/pages/Home/Home.js
-msgid "Simple Swaps"
-msgstr "Intercambios Simples"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Simulate your hedge strategy"
@@ -4238,10 +4155,6 @@ msgstr "TOKEN"
 msgid "TOTAL SUPPLY"
 msgstr ""
 
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#~ msgid "Take-Profit and Stop-Loss orders are created in the main Tradebox.<0/><1/><2>Set Trigger Order for this position.</2><3/><4/><5>More Info</5>."
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 msgid "Take-profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
 msgstr "Las órdenes de take-profit y stop-loss se pueden poner después de abrir una posición. <0/><1/>Habrá un botón de \"Cerrar\" en cada fila de posiciones, hacer clic mostrará la opción para establecer las órdenes de activación. <2/><3/>Para capturas de pantalla y más información, por favor mira los <4>docs</4>."
@@ -4282,11 +4195,6 @@ msgstr "Bot de Telegram para actualización de posiciones GMX"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram bot for Open Interest on GMX"
 msgstr "Bot de Telegram para Interés Abierto en GMX "
-
-#: src/components/Footer/constants.ts
-#: src/pages/TermsAndConditions/TermsAndConditions.js
-msgid "Terms and Conditions"
-msgstr "Términos y Condiciones"
 
 #: src/pages/Stake/StakeV1.js
 msgid "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
@@ -4421,10 +4329,6 @@ msgstr "Esta posición fue liquidada debido a que el apalancamiento máximo de 1
 msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded."
 msgstr ""
 
-#: src/pages/Home/Home.js
-msgid "Three tokens create our ecosystem"
-msgstr ""
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Tier {0} ({currentRebatePercentage}% rebate)"
 msgstr ""
@@ -4518,12 +4422,7 @@ msgstr "Estadísticas Totales"
 msgid "Total Supply"
 msgstr "Suministro Total"
 
-#: src/pages/Home/Home.js
-msgid "Total Trading Volume"
-msgstr "Volumen Total de Operaciones"
-
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Home/Home.js
 msgid "Total Users"
 msgstr "Usuarios Totales"
 
@@ -4544,10 +4443,6 @@ msgstr "Total:"
 #: src/components/Header/AppHeaderUser.tsx
 msgid "Trade"
 msgstr "Comercio"
-
-#: src/pages/Home/Home.js
-msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
-msgstr ""
 
 #: src/components/Exchange/ExchangeBanner.js
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
@@ -4827,14 +4722,6 @@ msgstr ""
 msgid "Use the \"Close\" button to reduce your Position Size."
 msgstr ""
 
-#: src/components/Exchange/PositionsList.js
-#~ msgid "Use the \"Close\" button to reduce your position size, or to set stop-loss / take-profit orders."
-#~ msgstr "Usa el botón de \"Cerrar\" para reducir el tamaño de tu posición, o para situar órdenes de stop-loss / take-profit."
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Use the \"Close\" button to reduce your position size."
-#~ msgstr ""
-
 #: src/pages/Stake/StakeV2.js
 msgid "Use the \"Compound\" button to stake your Multiplier Points."
 msgstr "Usa el botón de \"Componer\" para stakear tus Puntos Multiplicadores"
@@ -5001,10 +4888,6 @@ msgstr "Volumen negociado por esta cuenta con un código de referido activo."
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Volume traded by your referred traders."
 msgstr "Volumen negociado por sus traders referidos."
-
-#: src/components/Header/HomeHeaderLinks.tsx
-msgid "Voting"
-msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/GmList/GmList.tsx
@@ -5330,10 +5213,6 @@ msgstr "cuenta"
 msgid "collateral"
 msgstr "garantía"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "earn"
-#~ msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "esGMX OTC Market"
 msgstr ""
@@ -5390,11 +5269,6 @@ msgstr ""
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "{0}"
-#~ msgstr ""
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>;"
@@ -5576,10 +5450,6 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 msgid "{longOrShortText} {0} market selected"
 msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "{longShortText} positions {0} a funding fee of {1}% per hour."
-#~ msgstr ""
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "{marketsCount, plural, one {# Market} other {# Markets}}"

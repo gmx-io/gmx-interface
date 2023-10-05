@@ -83,10 +83,6 @@ export function deserialize(data) {
   return data;
 }
 
-export function isHomeSite() {
-  return process.env.REACT_APP_IS_HOME_SITE === "true";
-}
-
 export function getMarginFee(sizeDelta) {
   if (!sizeDelta) {
     return bigNumberify(0);

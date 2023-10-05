@@ -8,20 +8,17 @@ import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, getChainName } fr
 import { isDevelopment } from "config/env";
 import { getIcon } from "config/icons";
 import { useChainId } from "lib/chains";
-import { getAccountUrl, isHomeSite } from "lib/legacy";
-import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
+import { getAccountUrl } from "lib/legacy";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
 import "./Header.css";
-import { HeaderLink } from "./HeaderLink";
 import useWallet from "lib/wallets/useWallet";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { Link } from "react-router-dom";
 
 type Props = {
   openSettings: () => void;
   small?: boolean;
   disconnectAccountAndCloseSettings: () => void;
-  redirectPopupTimestamp: number;
-  showRedirectModal: (to: string) => void;
   tradePageVersion: number;
 };
 
@@ -55,18 +52,10 @@ if (isDevelopment()) {
   });
 }
 
-export function AppHeaderUser({
-  openSettings,
-  small,
-  disconnectAccountAndCloseSettings,
-  redirectPopupTimestamp,
-  showRedirectModal,
-  tradePageVersion,
-}: Props) {
+export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSettings, tradePageVersion }: Props) {
   const { chainId } = useChainId();
   const { active, account } = useWallet();
   const { openConnectModal } = useConnectModal();
-  const showConnectionOptions = !isHomeSite();
 
   const tradeLink = tradePageVersion === 1 ? "/trade" : "/v2";
 
@@ -75,18 +64,13 @@ export function AppHeaderUser({
   if (!active || !account) {
     return (
       <div className="App-header-user">
-        <div className={cx("App-header-trade-link", { "homepage-header": isHomeSite() })}>
-          <HeaderLink
-            className="default-btn"
-            to={tradeLink!}
-            redirectPopupTimestamp={redirectPopupTimestamp}
-            showRedirectModal={showRedirectModal}
-          >
-            {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
-          </HeaderLink>
+        <div className="App-header-trade-link">
+          <Link className="default-btn" to={tradeLink!}>
+            <Trans>Trade</Trans>
+          </Link>
         </div>
 
-        {showConnectionOptions && openConnectModal ? (
+        {openConnectModal && (
           <>
             <ConnectWalletButton onClick={openConnectModal} imgSrc={connectWalletImg}>
               {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
@@ -98,8 +82,6 @@ export function AppHeaderUser({
               openSettings={openSettings}
             />
           </>
-        ) : (
-          <LanguagePopupHome />
         )}
       </div>
     );
@@ -110,35 +92,24 @@ export function AppHeaderUser({
   return (
     <div className="App-header-user">
       <div className={cx("App-header-trade-link")}>
-        <HeaderLink
-          className="default-btn"
-          to={tradeLink!}
-          redirectPopupTimestamp={redirectPopupTimestamp}
-          showRedirectModal={showRedirectModal}
-        >
-          {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
-        </HeaderLink>
+        <Link className="default-btn" to={tradeLink!}>
+          <Trans>Trade</Trans>
+        </Link>
       </div>
 
-      {showConnectionOptions ? (
-        <>
-          <div className="App-header-user-address">
-            <AddressDropdown
-              account={account}
-              accountUrl={accountUrl}
-              disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-            />
-          </div>
-          <NetworkDropdown
-            small={small}
-            networkOptions={NETWORK_OPTIONS}
-            selectorLabel={selectorLabel}
-            openSettings={openSettings}
-          />
-        </>
-      ) : (
-        <LanguagePopupHome />
-      )}
+      <div className="App-header-user-address">
+        <AddressDropdown
+          account={account}
+          accountUrl={accountUrl}
+          disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
+        />
+      </div>
+      <NetworkDropdown
+        small={small}
+        networkOptions={NETWORK_OPTIONS}
+        selectorLabel={selectorLabel}
+        openSettings={openSettings}
+      />
     </div>
   );
 }
