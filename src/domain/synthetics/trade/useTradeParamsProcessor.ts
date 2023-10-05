@@ -114,6 +114,7 @@ export function useTradeParamsProcessor(
       setTimeout(() => {
         if (history.location.search) {
           history.replace({ search: "" });
+          prevTradeOptions.current = {};
         }
       }, 2000);
     }

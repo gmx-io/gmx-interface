@@ -285,6 +285,7 @@ function FullApp() {
         }
         return;
       }
+
       if (isV1Matched && (tradePageVersion === 2 || !getIsV1Supported(chainId)) && getIsSyntheticsSupported(chainId)) {
         history.replace("/v2");
       }

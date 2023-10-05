@@ -82,7 +82,8 @@ export default function useV1TradeParamsProcessor({ updateTradeOptions, swapOpti
     if (history.location.search) {
       setTimeout(() => {
         history.replace({ search: "" });
-      }, 2000); // Delays the execution by 2 seconds
+        prevTradeOptions.current = {};
+      }, 2000); // Delays the execution by 1 seconds
     }
 
     return pickBy(tradeOptions, Boolean) as TradeOptions;
