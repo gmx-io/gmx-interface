@@ -26,6 +26,7 @@ import { getToken, getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 import PageTitle from "components/PageTitle/PageTitle";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 const USD_DECIMALS = 30;
 
@@ -91,7 +92,19 @@ export default function Actions({ savedIsPnlInLeverage, savedShowPnlAfterFees })
     <div className="default-container Actions">
       {checkSummedAccount.length > 0 && (
         <div className="Actions-section">
-          <PageTitle title="Account" subtitle={t`Information for account: ${checkSummedAccount}`} />
+          <PageTitle
+            title="Account"
+            subtitle={
+              <>
+                <Trans>GMX V1 information for account: {checkSummedAccount}</Trans>
+                <div className="mt-md">
+                  <ExternalLink newTab={false} href={`/#/actions/v2/${checkSummedAccount}`}>
+                    Check on GMX V2
+                  </ExternalLink>
+                </div>
+              </>
+            }
+          />
         </div>
       )}
       {shouldShowPnl && (

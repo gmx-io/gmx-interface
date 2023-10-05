@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 
 import "./Actions.scss";
 
-import { Trans, t } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
@@ -12,6 +12,7 @@ import { useOrdersInfo } from "domain/synthetics/orders/useOrdersInfo";
 import { usePositionsInfo } from "domain/synthetics/positions";
 import { useChainId } from "lib/chains";
 import PageTitle from "components/PageTitle/PageTitle";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 export default function SyntheticsActions({
   savedIsPnlInLeverage,
@@ -48,7 +49,19 @@ export default function SyntheticsActions({
     <div className="default-container Actions">
       {checkSummedAccount && (
         <div className="Actions-section">
-          <PageTitle title="Account" subtitle={t`Information for account: ${checkSummedAccount}`} />
+          <PageTitle
+            title="Account"
+            subtitle={
+              <>
+                <Trans>GMX V2 information for account: {checkSummedAccount}</Trans>
+                <div className="mt-md">
+                  <ExternalLink newTab={false} href={`/#/actions/${checkSummedAccount}`}>
+                    Check on GMX V1
+                  </ExternalLink>
+                </div>
+              </>
+            }
+          />
         </div>
       )}
 
