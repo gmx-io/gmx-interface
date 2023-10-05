@@ -179,9 +179,7 @@ msgstr ""
 msgid "Acceptable Price Impact"
 msgstr ""
 
-#: src/pages/Actions/Actions.js
 #: src/pages/OrdersOverview/OrdersOverview.js
-#: src/pages/SyntheticsActions/SyntheticsActions.tsx
 msgid "Account"
 msgstr "アカウント"
 
@@ -2039,6 +2037,11 @@ msgstr ""
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Index"
 msgstr "インデックス"
+
+#: src/pages/Actions/Actions.js
+#: src/pages/SyntheticsActions/SyntheticsActions.tsx
+msgid "Information for account: {checkSummedAccount}"
+msgstr ""
 
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionsList.js
