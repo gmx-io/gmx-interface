@@ -941,6 +941,8 @@ export function getNormalizedTokenSymbol(tokenSymbol) {
 const AVAILABLE_CHART_TOKENS = {
   [ARBITRUM]: ["ETH", "BTC", "LINK", "UNI"],
   [AVALANCHE]: ["AVAX", "ETH", "BTC"],
+  [SEPOLIA_TESTNET]: ["ETH", "BTC", "LINK"],
+  [OPTIMISM_GOERLI_TESTNET] : ["ETH", "LINK"]
 };
 
 export function isChartAvailabeForToken(chainId: number, tokenSymbol: string) {
