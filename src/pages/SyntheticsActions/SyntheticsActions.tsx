@@ -54,9 +54,9 @@ export default function SyntheticsActions({
             subtitle={
               <>
                 <Trans>GMX V2 information for account: {checkSummedAccount}</Trans>
-                <div className="mt-md">
+                <div className="mt-sm">
                   <ExternalLink newTab={false} href={`/#/actions/${checkSummedAccount}`}>
-                    Check on GMX V1
+                    Check on GMX V1.
                   </ExternalLink>
                 </div>
               </>

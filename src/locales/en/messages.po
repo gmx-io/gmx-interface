@@ -1864,6 +1864,14 @@ msgstr "GMX Proposals Voting page"
 msgid "GMX Stats Page"
 msgstr "GMX Stats Page"
 
+#: src/pages/Actions/Actions.js
+msgid "GMX V1 information for account: {checkSummedAccount}"
+msgstr "GMX V1 information for account: {checkSummedAccount}"
+
+#: src/pages/SyntheticsActions/SyntheticsActions.tsx
+msgid "GMX V2 information for account: {checkSummedAccount}"
+msgstr "GMX V2 information for account: {checkSummedAccount}"
+
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "GMX Vault"
@@ -2037,11 +2045,6 @@ msgstr "Increasing"
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Index"
 msgstr "Index"
-
-#: src/pages/Actions/Actions.js
-#: src/pages/SyntheticsActions/SyntheticsActions.tsx
-msgid "Information for account: {checkSummedAccount}"
-msgstr "Information for account: {checkSummedAccount}"
 
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionsList.js
