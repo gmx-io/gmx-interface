@@ -25,6 +25,7 @@ import { formatAmount } from "lib/numbers";
 import { getToken, getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
+import PageTitle from "components/PageTitle/PageTitle";
 
 const USD_DECIMALS = 30;
 
@@ -87,10 +88,10 @@ export default function Actions({ savedIsPnlInLeverage, savedShowPnlAfterFees })
   const [orders, updateOrders] = useAccountOrders(flagOrdersEnabled, checkSummedAccount);
 
   return (
-    <div className="Actions">
+    <div className="default-container Actions">
       {checkSummedAccount.length > 0 && (
         <div className="Actions-section">
-          <Trans>Account</Trans>: {checkSummedAccount}
+          <PageTitle title="Account" subtitle={t`Information for account: ${checkSummedAccount}`} />
         </div>
       )}
       {shouldShowPnl && (

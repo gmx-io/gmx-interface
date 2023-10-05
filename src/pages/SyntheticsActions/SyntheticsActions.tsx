@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 
 import "./Actions.scss";
 
-import { Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
@@ -11,6 +11,7 @@ import { useMarketsInfo } from "domain/synthetics/markets";
 import { useOrdersInfo } from "domain/synthetics/orders/useOrdersInfo";
 import { usePositionsInfo } from "domain/synthetics/positions";
 import { useChainId } from "lib/chains";
+import PageTitle from "components/PageTitle/PageTitle";
 
 export default function SyntheticsActions({
   savedIsPnlInLeverage,
@@ -44,10 +45,10 @@ export default function SyntheticsActions({
   });
 
   return (
-    <div className="Actions">
+    <div className="default-container Actions">
       {checkSummedAccount && (
         <div className="Actions-section">
-          <Trans>Account</Trans>: {checkSummedAccount}
+          <PageTitle title="Account" subtitle={t`Information for account: ${checkSummedAccount}`} />
         </div>
       )}
 
