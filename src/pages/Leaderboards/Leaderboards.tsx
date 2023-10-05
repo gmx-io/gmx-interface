@@ -11,7 +11,7 @@ export default function Leaderboard() {
   return (
     <SEO title={getPageTitle("Leaderboards")}>
       <div className="default-container page-layout Leaderboard">
-        <PageTitle isTop title={t`Leaderboards`} subtitle={<Trans>Addresses V2 trading statistics.</Trans>} />
+        <PageTitle isTop title={t`Leaderboards`} subtitle={<Trans>Leaderboard for traders on GMX V2.</Trans>} />
         <GloballLeaderboards />
       </div>
     </SEO>
