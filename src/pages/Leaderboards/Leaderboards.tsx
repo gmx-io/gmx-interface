@@ -9,9 +9,9 @@ import "./Leaderboards.css";
 
 export default function Leaderboard() {
   return (
-    <SEO title={getPageTitle("Leaderboards")}>
+    <SEO title={getPageTitle("Leaderboard")}>
       <div className="default-container page-layout Leaderboard">
-        <PageTitle isTop title={t`Leaderboards`} subtitle={<Trans>Leaderboard for traders on GMX V2.</Trans>} />
+        <PageTitle isTop title={t`Leaderboard`} subtitle={<Trans>Leaderboard for traders on GMX V2.</Trans>} />
         <GloballLeaderboards />
       </div>
     </SEO>
