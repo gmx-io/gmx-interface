@@ -69,11 +69,11 @@ export function AppHeaderLinks({
       </div>
       <div className="App-header-link-container">
         <HeaderLink
-          to="/leaderboards"
+          to="/leaderboard"
           redirectPopupTimestamp={redirectPopupTimestamp}
           showRedirectModal={showRedirectModal}
         >
-          <Trans>Leaderboards</Trans>
+          <Trans>Leaderboard</Trans>
         </HeaderLink>
       </div>
       <div className="App-header-link-container">

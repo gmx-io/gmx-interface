@@ -5,7 +5,7 @@ import { t, Trans } from "@lingui/macro";
 import GloballLeaderboards from "components/GlobalLeaderboards/GlobalLeaderboards";
 import PageTitle from "components/PageTitle/PageTitle";
 
-import "./Leaderboards.css";
+import "./Leaderboard.css";
 
 export default function Leaderboard() {
   return (

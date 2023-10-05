@@ -19,7 +19,7 @@ import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccou
 import Dashboard from "pages/Dashboard/Dashboard";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
 import { Exchange } from "pages/Exchange/Exchange";
-import Leaderboards from "pages/Leaderboards/Leaderboards";
+import Leaderboard from "pages/Leaderboard/Leaderboard";
 import Home from "pages/Home/Home";
 import NftWallet from "pages/NftWallet/NftWallet";
 import OrdersOverview from "pages/OrdersOverview/OrdersOverview";
@@ -510,8 +510,8 @@ function FullApp() {
               <Route exact path="/referrals">
                 <Referrals pendingTxns={pendingTxns} setPendingTxns={setPendingTxns} />
               </Route>
-              <Route exact path="/leaderboards">
-                <Leaderboards />
+              <Route exact path="/leaderboard">
+                <Leaderboard />
               </Route>
               <Route exact path="/referrals/:account">
                 <Referrals pendingTxns={pendingTxns} setPendingTxns={setPendingTxns} />
