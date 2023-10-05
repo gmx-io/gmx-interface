@@ -1142,7 +1142,6 @@ msgstr "手数料込損益の表示"
 msgid "Distribution"
 msgstr "分配"
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Docs"
 msgstr ""

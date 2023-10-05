@@ -1142,7 +1142,6 @@ msgstr "Afficher PnL après les frais"
 msgid "Distribution"
 msgstr "Distribution"
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Docs"
 msgstr ""

@@ -1142,7 +1142,6 @@ msgstr "Mostrar GyP después de comisiones"
 msgid "Distribution"
 msgstr "Distribución"
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Docs"
 msgstr ""

@@ -1142,7 +1142,6 @@ msgstr "Отображение PnL после комиссии"
 msgid "Distribution"
 msgstr "Распределение"
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Docs"
 msgstr "Документация"
