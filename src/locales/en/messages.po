@@ -2470,7 +2470,6 @@ msgid "Long Funding Rewards"
 msgstr "Long Funding Rewards"
 
 #: src/components/Exchange/ChartTokenSelector.tsx
-#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "Long Liquidity"
 msgstr "Long Liquidity"
 
@@ -2552,8 +2551,6 @@ msgstr "Mark Price"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
@@ -2616,7 +2613,6 @@ msgid "Max Execution Fee buffer below {0}% may result in failed orders."
 msgstr "Max Execution Fee buffer below {0}% may result in failed orders."
 
 #: src/components/Exchange/ChartTokenSelector.tsx
-#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "Max In"
 msgstr "Max In"
 
@@ -2625,7 +2621,6 @@ msgid "Max Leverage without PnL: 100x"
 msgstr "Max Leverage without PnL: 100x"
 
 #: src/components/Exchange/ChartTokenSelector.tsx
-#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "Max Out"
 msgstr "Max Out"
 
@@ -2684,6 +2679,8 @@ msgstr "Max pool capacity reached for {0}<0/><1/>Please mint GLP using another t
 msgid "Max slippage precision is 0.01%"
 msgstr "Max slippage precision is 0.01%"
 
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "Max {0}"
@@ -3213,6 +3210,7 @@ msgstr "PnL After Fees"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
@@ -3643,6 +3641,7 @@ msgstr "Save on Fees"
 msgid "Search Market"
 msgstr "Search Market"
 
+#: src/components/MarketSelector/AllPoolSelector.tsx
 #: src/components/MarketSelector/PoolSelector.tsx
 msgid "Search Pool"
 msgstr "Search Pool"
@@ -3748,6 +3747,10 @@ msgstr "Sell request sent"
 #: src/components/Glp/GlpSwap.js
 msgid "Sell submitted!"
 msgstr "Sell submitted!"
+
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "Sellable"
+msgstr "Sellable"
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Selling GM ({indexName})"
@@ -3860,7 +3863,6 @@ msgid "Short Funding Rewards"
 msgstr "Short Funding Rewards"
 
 #: src/components/Exchange/ChartTokenSelector.tsx
-#: src/components/Synthetics/MarketTokenSelector/MarketTokenSelector.tsx
 msgid "Short Liquidity"
 msgstr "Short Liquidity"
 

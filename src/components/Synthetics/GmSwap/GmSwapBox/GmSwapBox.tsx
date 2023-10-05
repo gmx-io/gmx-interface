@@ -56,7 +56,6 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
-import { AllPoolSelector } from "components/MarketSelector/AllPoolSelector";
 import useSortedMarketsWithIndexToken from "domain/synthetics/trade/useSortedMarketsWithIndexToken";
 
 export enum Operation {
@@ -957,7 +956,7 @@ export function GmSwapBox(p: Props) {
               }
             }}
           >
-            <AllPoolSelector
+            <PoolSelector
               label={t`Pool`}
               className="SwapBox-info-dropdown"
               selectedIndexName={indexName}
@@ -967,6 +966,8 @@ export function GmSwapBox(p: Props) {
               marketsInfoData={marketsInfoData}
               isSideMenu
               showBalances
+              showAllPools
+              showIndexIcon
               onSelectMarket={(marketInfo) => {
                 setIndexName(getMarketIndexName(marketInfo));
                 onMarketChange(marketInfo.marketTokenAddress);
