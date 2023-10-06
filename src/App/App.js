@@ -446,10 +446,10 @@ function FullApp() {
               <Route exact path="/dashboard">
                 <Dashboard />
               </Route>
-              <Route exact path="/stats">
+              <Route exact path="/stats/v1">
                 <Stats />
               </Route>
-              <Route exact path="/stats/v2">
+              <Route exact path="/stats">
                 {getIsSyntheticsSupported(chainId) ? <SyntheticsStats /> : <SyntheticsFallbackPage />}
               </Route>
               <Route exact path="/earn">
@@ -516,24 +516,25 @@ function FullApp() {
               <Route exact path="/claim_es_gmx">
                 <ClaimEsGmx setPendingTxns={setPendingTxns} />
               </Route>
-              <Route exact path="/actions/v2">
-                <SyntheticsActions
-                  savedIsPnlInLeverage={savedIsPnlInLeverage}
-                  savedShowPnlAfterFees={savedShowPnlAfterFees}
-                />
-              </Route>
-              <Route exact path="/actions/v2/:account">
-                <SyntheticsActions
-                  savedIsPnlInLeverage={savedIsPnlInLeverage}
-                  savedShowPnlAfterFees={savedShowPnlAfterFees}
-                />
-              </Route>
-              <Route exact path="/actions">
+              <Route exact path="/actions/v1">
                 <Actions />
               </Route>
-              <Route exact path="/actions/:account">
+              <Route exact path="/actions/v1/:account">
                 <Actions savedIsPnlInLeverage={savedIsPnlInLeverage} savedShowPnlAfterFees={savedShowPnlAfterFees} />
               </Route>
+              <Route exact path="/actions">
+                <SyntheticsActions
+                  savedIsPnlInLeverage={savedIsPnlInLeverage}
+                  savedShowPnlAfterFees={savedShowPnlAfterFees}
+                />
+              </Route>
+              <Route exact path="/actions/:account">
+                <SyntheticsActions
+                  savedIsPnlInLeverage={savedIsPnlInLeverage}
+                  savedShowPnlAfterFees={savedShowPnlAfterFees}
+                />
+              </Route>
+
               <Route exact path="/referrals-tier">
                 <ReferralsTier />
               </Route>
