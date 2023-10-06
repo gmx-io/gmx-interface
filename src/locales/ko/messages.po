@@ -3638,7 +3638,6 @@ msgstr "수수료 절약"
 msgid "Search Market"
 msgstr ""
 
-#: src/components/MarketSelector/AllPoolSelector.tsx
 #: src/components/MarketSelector/PoolSelector.tsx
 msgid "Search Pool"
 msgstr ""

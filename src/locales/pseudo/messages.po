@@ -3638,7 +3638,6 @@ msgstr ""
 msgid "Search Market"
 msgstr ""
 
-#: src/components/MarketSelector/AllPoolSelector.tsx
 #: src/components/MarketSelector/PoolSelector.tsx
 msgid "Search Pool"
 msgstr ""

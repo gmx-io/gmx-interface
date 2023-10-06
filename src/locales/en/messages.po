@@ -3641,7 +3641,6 @@ msgstr "Save on Fees"
 msgid "Search Market"
 msgstr "Search Market"
 
-#: src/components/MarketSelector/AllPoolSelector.tsx
 #: src/components/MarketSelector/PoolSelector.tsx
 msgid "Search Pool"
 msgstr "Search Pool"

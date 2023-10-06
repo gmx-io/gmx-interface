@@ -371,8 +371,8 @@ export function getSellableMarketToken(marketInfo: MarketInfo) {
     maxLongSellableUsd = longCollateralLiquidityUsd;
   }
 
-  if (longCollateralLiquidityUsd.mul(ratio).div(factor).lte(shortCollateralLiquidityUsd)) {
-    maxShortSellableUsd = longCollateralLiquidityUsd.div(ratio).div(factor);
+  if (longCollateralLiquidityUsd.div(ratio).mul(factor).lte(shortCollateralLiquidityUsd)) {
+    maxShortSellableUsd = longCollateralLiquidityUsd.div(ratio).mul(factor);
   } else {
     maxShortSellableUsd = shortCollateralLiquidityUsd;
   }
