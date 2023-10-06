@@ -194,7 +194,7 @@ export function OrderItem(p: Props) {
                   </div>
                 )}
 
-                {p.order.errors.length && (
+                {p.order.errors.length ? (
                   <>
                     {p.order.errors.map((error, i) => (
                       <div className="OrderItem-tooltip-row" key={error.msg}>
@@ -202,7 +202,7 @@ export function OrderItem(p: Props) {
                       </div>
                     ))}
                   </>
-                )}
+                ) : null}
               </>
             );
           }}
