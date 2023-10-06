@@ -553,6 +553,7 @@ function FullApp() {
               <Route exact path="/complete_account_transfer/:sender/:receiver">
                 <CompleteAccountTransfer setPendingTxns={setPendingTxns} />
               </Route>
+              <Redirect from="/v2" to="/trade" />
               <Route path="*">
                 <PageNotFound />
               </Route>
