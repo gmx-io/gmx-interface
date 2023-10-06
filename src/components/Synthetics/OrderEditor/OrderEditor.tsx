@@ -214,19 +214,19 @@ export function OrderEditor(p: Props) {
 
     if (isSwapOrderType(p.order.orderType)) {
       estimatedGas = estimateExecuteSwapOrderGasLimit(gasLimits, {
-        swapPath: p.order.swapPath,
+        swapsCount: p.order.swapPath.length,
       });
     }
 
     if (isIncreaseOrderType(p.order.orderType)) {
       estimatedGas = estimateExecuteIncreaseOrderGasLimit(gasLimits, {
-        swapPath: p.order.swapPath,
+        swapsCount: p.order.swapPath.length,
       });
     }
 
     if (isDecreaseOrderType(p.order.orderType)) {
       estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
-        swapPath: p.order.swapPath,
+        swapsCount: p.order.swapPath.length,
       });
     }
 

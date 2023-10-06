@@ -95,6 +95,10 @@ msgstr ""
 msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} available liquidity. Reduce the \"Pay\" size, or change the \"Collateral In\" token.</1>"
 msgstr ""
 
+#: src/components/Synthetics/TVChart/TVChart.tsx
+msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr "您的{0}抵押品快照在您开启头寸时已以USD价值被存取"
@@ -780,12 +784,20 @@ msgid "Claims"
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Click on a row to select the position's market, then use the swap box to increase your position size or to set stop-loss / take-profit orders."
-msgstr ""
+#~ msgid "Click on a row to select the position's market, then use the swap box to increase your position size or to set stop-loss / take-profit orders."
+#~ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
-msgid "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
-msgstr "点取一排以选择仓位市场,若需要可接着点选交换栏来增加幅度"
+#~ msgid "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
+#~ msgstr "点取一排以选择仓位市场,若需要可接着点选交换栏来增加幅度"
+
+#: src/components/Exchange/PositionsList.js
+msgid "Click on the Position to select its market, then use the trade box to increase your Position Size if needed."
+msgstr ""
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Click on the Position to select its market, then use the trade box to increase your Position Size, or to set Take-Profit / Stop-Loss Orders."
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
@@ -1013,7 +1025,7 @@ msgstr "将esGMX代币转换为GMX代币。<0/>使用金库前请阅读<1>投资
 msgid "Convert {wrappedTokenSymbol} to {nativeTokenSymbol}"
 msgstr "将{wrappedTokenSymbol}转换为{nativeTokenSymbol}"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Copy"
 msgstr "复制"
 
@@ -1078,6 +1090,10 @@ msgstr "创建推荐代码"
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Create Trigger order"
+msgstr ""
+
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+msgid "Create trigger order"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -1341,7 +1357,7 @@ msgstr ""
 msgid "Don't show this message again for 30 days."
 msgstr "30天内不要再显示此信息"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Download"
 msgstr "下载"
 
@@ -1568,6 +1584,7 @@ msgstr ""
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Entry Price"
@@ -1923,7 +1940,7 @@ msgstr ""
 msgid "Generate Referral Code"
 msgstr "生成推荐代码"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShareCard.tsx
 msgid "Generating shareable image..."
 msgstr "生成可分享的图像中..."
 
@@ -1956,7 +1973,7 @@ msgstr ""
 msgid "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
 msgstr "如果你有一个现有的头寸，它将在{0}美元被关闭。<0/><1/>这个退出价格将随着资产的价格所变化。<2/><3/><4>更多信息</4>"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Image generation error, please refresh and try again."
 msgstr "图片生成错误，请刷新并重试"
 
@@ -2197,6 +2214,10 @@ msgstr ""
 msgid "Keep leverage at {0}x"
 msgstr ""
 
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "LONG LIQ."
+msgstr ""
+
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Language"
 msgstr "语言"
@@ -2324,7 +2345,7 @@ msgstr "限价订单送出"
 msgid "Link"
 msgstr "链接"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Link copied to clipboard."
 msgstr "链接被复制到剪贴板上"
 
@@ -2344,6 +2365,7 @@ msgstr ""
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -2435,6 +2457,7 @@ msgstr "加载中..."
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
+#: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -2474,6 +2497,18 @@ msgstr ""
 msgid "Long Positions"
 msgstr "开仓做多"
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#~ msgid "Long positions {0} a Funding Fee of <0>{1}%</0> per hour."
+#~ msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Long positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
+msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#~ msgid "Long positions {0} a Funding Fee of <0>{longSign}{1}%</0> per hour."
+#~ msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Long {0}"
 msgstr "做多 {0}"
@@ -2512,6 +2547,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Mark"
@@ -2535,6 +2571,7 @@ msgstr ""
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark Price"
@@ -3190,6 +3227,7 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 #: src/pages/Actions/Actions.js
@@ -3281,6 +3319,7 @@ msgstr "上一页"
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -3296,6 +3335,7 @@ msgid "Price"
 msgstr "价钱"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeHistoryRow/LiquidationTooltip.tsx
 msgid "Price Impact"
 msgstr ""
@@ -3466,6 +3506,7 @@ msgstr ""
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -3608,6 +3649,10 @@ msgstr "GMX和GLP的收益计算器"
 #: src/pages/Stake/StakeV2.js
 msgid "Rewards"
 msgstr "奖励"
+
+#: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "SHORT LIQ."
+msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Same as current active code"
@@ -3779,7 +3824,7 @@ msgid "Share"
 msgstr "分享"
 
 #: src/components/Exchange/PositionDropdown.js
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Share Position"
 msgstr "分享仓位"
 
@@ -3816,6 +3861,7 @@ msgstr "分享仓位"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+#: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -3856,6 +3902,18 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Short Positions"
 msgstr "做空仓位"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#~ msgid "Short positions {0} a Funding Fee of <0>{1}%</0> per hour."
+#~ msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Short positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
+msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#~ msgid "Short positions {0} a Funding Fee of <0>{shortSign}{1}%</0> per hour."
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Short {0}"
@@ -3898,6 +3956,7 @@ msgstr ""
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Size"
@@ -4176,8 +4235,8 @@ msgid "TOTAL SUPPLY"
 msgstr ""
 
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-msgid "Take-Profit and Stop-Loss orders are created in the main Tradebox.<0/><1/><2>Set Trigger Order for this position.</2><3/><4/><5>More Info</5>."
-msgstr ""
+#~ msgid "Take-Profit and Stop-Loss orders are created in the main Tradebox.<0/><1/><2>Set Trigger Order for this position.</2><3/><4/><5>More Info</5>."
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Take-profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
@@ -4620,6 +4679,7 @@ msgstr ""
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Trigger Price"
 msgstr ""
@@ -4640,7 +4700,7 @@ msgstr "尝试增加 \"Allowed Slippage\", 在右上角设置下方"
 msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right."
 msgstr "尝试增加 \"Allowed Slippage\", 在右上角设置下方"
 
-#: src/components/Exchange/PositionShare.js
+#: src/components/Exchange/PositionShare.tsx
 msgid "Tweet"
 msgstr "推特"
 
@@ -4756,12 +4816,20 @@ msgid "Updating..."
 msgstr "更新中..."
 
 #: src/components/Exchange/PositionsList.js
-msgid "Use the \"Close\" button to reduce your position size, or to set stop-loss / take-profit orders."
-msgstr "使用 \"Close\" 按钮来减少你的头寸大小，或设置止损/止盈订单"
+msgid "Use the \"Close\" button to reduce your Position Size, or to set Take-Profit / Stop-Loss Orders."
+msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-msgid "Use the \"Close\" button to reduce your position size."
+msgid "Use the \"Close\" button to reduce your Position Size."
 msgstr ""
+
+#: src/components/Exchange/PositionsList.js
+#~ msgid "Use the \"Close\" button to reduce your position size, or to set stop-loss / take-profit orders."
+#~ msgstr "使用 \"Close\" 按钮来减少你的头寸大小，或设置止损/止盈订单"
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#~ msgid "Use the \"Close\" button to reduce your position size."
+#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Use the \"Compound\" button to stake your Multiplier Points."
@@ -5259,8 +5327,8 @@ msgid "collateral"
 msgstr "抵押品"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "earn"
-msgstr ""
+#~ msgid "earn"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "esGMX OTC Market"
@@ -5284,7 +5352,13 @@ msgid "not staked"
 msgstr "未质押的"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "pay"
+msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "receive"
 msgstr ""
 
 #: src/pages/PositionsOverview/PositionsOverview.js
@@ -5312,6 +5386,11 @@ msgstr ""
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#~ msgid "{0}"
+#~ msgstr ""
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>;"
@@ -5495,8 +5574,8 @@ msgid "{longOrShortText} {0} market selected"
 msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "{longShortText} positions {0} a funding fee of {1}% per hour."
-msgstr ""
+#~ msgid "{longShortText} positions {0} a funding fee of {1}% per hour."
+#~ msgstr ""
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "{marketsCount, plural, one {# Market} other {# Markets}}"

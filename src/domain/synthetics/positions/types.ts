@@ -41,6 +41,7 @@ export type PositionInfo = Position & {
   pnlAfterFees: BigNumber;
   pnlAfterFeesPercentage: BigNumber;
   leverage: BigNumber | undefined;
+  leverageWithPnl: BigNumber | undefined;
   netValue: BigNumber;
   closingFeeUsd: BigNumber;
   pendingFundingFeesUsd: BigNumber;

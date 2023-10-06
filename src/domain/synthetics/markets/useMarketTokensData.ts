@@ -108,7 +108,7 @@ export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }):
         const pricesData = res.data[`${marketAddress}-prices`];
         const tokenData = res.data[`${marketAddress}-tokenData`];
 
-        if (pricesErrors || tokenDataErrors) {
+        if (pricesErrors || tokenDataErrors || !pricesData || !tokenData) {
           return marketTokensMap;
         }
 
