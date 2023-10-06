@@ -16,7 +16,7 @@ import {
 import { TokensData } from "domain/synthetics/tokens";
 import useSortedMarketsWithIndexToken from "domain/synthetics/trade/useSortedMarketsWithIndexToken";
 import { getByKey } from "lib/objects";
-import { formatAmount, formatUsd } from "lib/numbers";
+import { formatAmount, formatTokenAmount } from "lib/numbers";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { useHistory } from "react-router-dom";
 
@@ -119,7 +119,8 @@ export default function MarketTokenSelector(props: Props) {
                         const marketInfoData = getByKey(marketsInfoData, market?.address)!;
                         const mintableInfo =
                           market && marketInfoData ? getMintableMarketTokens(marketInfoData, market) : undefined;
-                        const sellableInfo = marketInfoData ? getSellableMarketToken(marketInfoData) : undefined;
+                        const sellableInfo =
+                          marketInfoData && market ? getSellableMarketToken(marketInfoData, market) : undefined;
                         const apr = getByKey(marketsTokensAPRData, market?.address);
                         const indexToken = marketInfoData?.indexToken;
                         const indexName = marketInfoData && getMarketIndexName(marketInfoData);
@@ -150,15 +151,15 @@ export default function MarketTokenSelector(props: Props) {
                               </span>
                             </td>
                             <td>
-                              {formatUsd(mintableInfo?.mintableUsd, {
+                              {formatTokenAmount(mintableInfo?.mintableAmount, market.decimals, market.symbol, {
                                 displayDecimals: 0,
-                                fallbackToZero: true,
+                                useCommas: true,
                               })}
                             </td>
                             <td>
-                              {formatUsd(sellableInfo?.total, {
+                              {formatTokenAmount(sellableInfo?.totalAmount, market.decimals, market.symbol, {
                                 displayDecimals: 0,
-                                fallbackToZero: true,
+                                useCommas: true,
                               })}
                             </td>
                             <td>{apr ? `${formatAmount(apr, 2, 2)}%` : "..."}</td>

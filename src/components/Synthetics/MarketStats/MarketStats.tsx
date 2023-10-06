@@ -12,7 +12,7 @@ import {
   getPoolUsdWithoutPnl,
   getSellableMarketToken,
 } from "domain/synthetics/markets";
-import { TokenData, TokensData, convertToUsd } from "domain/synthetics/tokens";
+import { TokenData, TokensData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatAmount, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -40,9 +40,22 @@ export function MarketStats(p: Props) {
   const marketTotalSupply = marketToken?.totalSupply;
   const marketTotalSupplyUsd = convertToUsd(marketTotalSupply, marketToken?.decimals, marketPrice);
 
-  const mintableInfo = marketInfo && marketToken ? getMintableMarketTokens(marketInfo, marketToken) : undefined;
-  const sellableInfo = marketInfo && getSellableMarketToken(marketInfo);
   const { longToken, shortToken, longPoolAmount, shortPoolAmount } = marketInfo || {};
+
+  const mintableInfo = marketInfo && marketToken ? getMintableMarketTokens(marketInfo, marketToken) : undefined;
+  const sellableInfo = marketInfo && marketToken ? getSellableMarketToken(marketInfo, marketToken) : undefined;
+
+  const maxLongSellableTokenAmount = convertToTokenAmount(
+    sellableInfo?.maxLongSellableUsd,
+    longToken?.decimals,
+    longToken?.prices.minPrice
+  );
+
+  const maxShortSellableTokenAmount = convertToTokenAmount(
+    sellableInfo?.maxShortSellableUsd,
+    shortToken?.decimals,
+    shortToken?.prices.minPrice
+  );
 
   const longPoolAmountUsd = marketInfo ? getPoolUsdWithoutPnl(marketInfo, true, "midPrice") : undefined;
   const shortPoolAmountUsd = marketInfo ? getPoolUsdWithoutPnl(marketInfo, false, "midPrice") : undefined;
@@ -112,7 +125,9 @@ export function MarketStats(p: Props) {
           label={t`Total Supply`}
           value={
             marketTotalSupply && marketTotalSupplyUsd
-              ? formatTokenAmountWithUsd(marketTotalSupply, marketTotalSupplyUsd, "GM", marketToken.decimals)
+              ? formatTokenAmountWithUsd(marketTotalSupply, marketTotalSupplyUsd, "GM", marketToken.decimals, {
+                  displayDecimals: 0,
+                })
               : "..."
           }
         />
@@ -126,7 +141,10 @@ export function MarketStats(p: Props) {
                   mintableInfo.mintableAmount,
                   mintableInfo.mintableUsd,
                   "GM",
-                  marketToken.decimals
+                  marketToken.decimals,
+                  {
+                    displayDecimals: 0,
+                  }
                 )}
                 position="right-bottom"
                 renderContent={() => {
@@ -207,27 +225,51 @@ export function MarketStats(p: Props) {
           label={t`Sellable`}
           value={
             <Tooltip
-              handle={formatUsd(sellableInfo?.total, {
-                fallbackToZero: true,
-              })}
+              handle={formatTokenAmountWithUsd(
+                sellableInfo?.totalAmount,
+                sellableInfo?.totalUsd,
+                "GM",
+                marketToken?.decimals,
+                {
+                  displayDecimals: 0,
+                }
+              )}
               position="right-bottom"
               renderContent={() => (
-                <>
+                <div>
+                  <Trans>
+                    GM can be sold for {longToken?.symbol} and {shortToken?.symbol} for this market up to the specified
+                    selling caps. The remaining tokens in the pool are reserved for currently open Positions.
+                  </Trans>
+                  <br />
+                  <br />
                   <StatsTooltipRow
                     label={t`Max ${marketInfo?.longToken.symbol}`}
-                    value={formatUsd(sellableInfo?.maxLongSellableUsd, {
-                      fallbackToZero: true,
-                    })}
+                    value={formatTokenAmountWithUsd(
+                      maxLongSellableTokenAmount,
+                      sellableInfo?.maxLongSellableUsd,
+                      longToken?.symbol,
+                      longToken?.decimals,
+                      {
+                        displayDecimals: 0,
+                      }
+                    )}
                     showDollar={false}
                   />
                   <StatsTooltipRow
                     label={t`Max ${marketInfo?.shortToken.symbol}`}
-                    value={formatUsd(sellableInfo?.maxShortSellableUsd, {
-                      fallbackToZero: true,
-                    })}
+                    value={formatTokenAmountWithUsd(
+                      maxShortSellableTokenAmount,
+                      sellableInfo?.maxShortSellableUsd,
+                      shortToken?.symbol,
+                      shortToken?.decimals,
+                      {
+                        displayDecimals: 0,
+                      }
+                    )}
                     showDollar={false}
                   />
-                </>
+                </div>
               )}
             />
           }

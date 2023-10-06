@@ -339,7 +339,7 @@ export function getMintableMarketTokens(marketInfo: MarketInfo, marketToken: Tok
   };
 }
 
-export function getSellableMarketToken(marketInfo: MarketInfo) {
+export function getSellableMarketToken(marketInfo: MarketInfo, marketToken: TokenData) {
   const { longToken, shortToken, longPoolAmount, shortPoolAmount } = marketInfo;
   const longPoolUsd = convertToUsd(longPoolAmount, longToken.decimals, longToken.prices.maxPrice)!;
   const shortPoolUsd = convertToUsd(shortPoolAmount, shortToken.decimals, shortToken.prices.maxPrice)!;
@@ -367,20 +367,22 @@ export function getSellableMarketToken(marketInfo: MarketInfo) {
 
   if (shortCollateralLiquidityUsd.mul(ratio).div(factor).lte(longCollateralLiquidityUsd)) {
     maxLongSellableUsd = shortCollateralLiquidityUsd.mul(ratio).div(factor);
+    maxShortSellableUsd = shortCollateralLiquidityUsd;
   } else {
     maxLongSellableUsd = longCollateralLiquidityUsd;
+    maxShortSellableUsd = longCollateralLiquidityUsd.div(ratio).mul(factor);
   }
 
-  if (longCollateralLiquidityUsd.div(ratio).mul(factor).lte(shortCollateralLiquidityUsd)) {
-    maxShortSellableUsd = longCollateralLiquidityUsd.div(ratio).mul(factor);
-  } else {
-    maxShortSellableUsd = shortCollateralLiquidityUsd;
-  }
+  const maxLongSellableAmount = usdToMarketTokenAmount(marketInfo, marketToken, maxLongSellableUsd);
+  const maxShortSellableAmount = usdToMarketTokenAmount(marketInfo, marketToken, maxShortSellableUsd);
 
   return {
     maxLongSellableUsd,
     maxShortSellableUsd,
-    total: maxLongSellableUsd.add(maxShortSellableUsd),
+    maxLongSellableAmount,
+    maxShortSellableAmount,
+    totalUsd: maxLongSellableUsd.add(maxShortSellableUsd),
+    totalAmount: maxLongSellableAmount.add(maxShortSellableAmount),
   };
 }
 
