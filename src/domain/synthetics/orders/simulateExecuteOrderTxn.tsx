@@ -150,12 +150,11 @@ function getSimulationPrices(
 
   for (const address of tokenAddresses) {
     const token = getTokenData(tokensData, address);
+    const convertedAddress = convertTokenAddress(chainId, address, "wrapped");
 
-    if (!token?.prices) {
+    if (!token?.prices || primaryTokens.includes(convertedAddress)) {
       continue;
     }
-
-    const convertedAddress = convertTokenAddress(chainId, address, "wrapped");
 
     primaryTokens.push(convertedAddress);
 
