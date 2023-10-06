@@ -566,3 +566,13 @@ button.btn-link:hover .logout-icon {
 .self-center {
   align-self: center;
 }
+
+.Toastify__toast-container {
+  width: 420px;
+}
+
+@media screen and (max-width: 500px) {
+  .Toastify__toast-container {
+    width: 320px;
+  }
+}

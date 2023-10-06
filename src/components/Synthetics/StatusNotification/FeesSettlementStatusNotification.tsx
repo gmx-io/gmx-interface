@@ -49,9 +49,7 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
   const isCompleted = useMemo(() => {
     return orders.every((order) => {
       const orderStatus = orderStatusByOrder.get(order);
-      return isMarketOrderType(order.orderType)
-        ? Boolean(orderStatus?.executedTxnHash)
-        : Boolean(orderStatus?.createdTxnHash);
+      return orderStatus?.executedTxnHash ?? orderStatus?.cancelledTxnHash;
     });
   }, [orderStatusByOrder, orders]);
 
@@ -130,18 +128,16 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
           if (!key) throw new Error("key not found");
           const marketInfo = marketInfoByKey?.[key];
 
+          if (!marketInfo) throw new Error("marketInfo not found");
+
           if (orderStatus?.executedTxnHash) {
-            if (marketInfo) {
-              text = t`${order.isLong ? "Long" : "Short"} ${marketInfo.name} Fees settled`;
-            } else {
-              text = t`Order executed`;
-            }
+            text = t`${order.isLong ? "Long" : "Short"} ${marketInfo.name} Fees settled`;
             status = "success";
             txnHash = orderStatus?.executedTxnHash;
           }
 
           if (orderStatus?.cancelledTxnHash) {
-            text = t`Order cancelled`;
+            text = t`${order.isLong ? "Long" : "Short"} ${marketInfo.name} Failed to settle`;
             status = "error";
             txnHash = orderStatus?.cancelledTxnHash;
           }
