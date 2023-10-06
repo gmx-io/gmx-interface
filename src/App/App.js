@@ -158,7 +158,7 @@ function FullApp() {
 
   const [tradePageVersion, setTradePageVersion] = useLocalStorageSerializeKey(
     [chainId, TRADE_LINK_KEY],
-    getIsV1Supported(chainId) ? 1 : 2
+    getIsSyntheticsSupported(chainId) ? 2 : 1
   );
   const [redirectModalVisible, setRedirectModalVisible] = useState(false);
   const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
@@ -273,28 +273,27 @@ function FullApp() {
 
   useEffect(
     function redirectTradePage() {
-      const isV1Matched = matchPath(location.pathname, { path: "/trade" });
-      const isV2Matched = matchPath(location.pathname, { path: "/v2" });
+      const isV1Matched = matchPath(location.pathname, { path: "/v1" });
+      const isV2Matched = matchPath(location.pathname, { path: "/trade" });
 
-      if (isV2Matched && query.has("no_redirect")) {
-        if (tradePageVersion !== 2) {
-          setTradePageVersion(2);
-        }
-        if (history.location.search) {
-          history.replace({ search: "" });
-        }
-        return;
-      }
-      if (isV1Matched && (tradePageVersion === 2 || !getIsV1Supported(chainId)) && getIsSyntheticsSupported(chainId)) {
-        history.replace("/v2");
+      if (isV1Matched && getIsV1Supported(chainId)) {
+        setTradePageVersion(1);
       }
 
-      if (isV2Matched && (tradePageVersion === 1 || !getIsSyntheticsSupported(chainId)) && getIsV1Supported(chainId)) {
-        history.replace("/trade");
+      if (isV2Matched && getIsSyntheticsSupported(chainId)) {
+        setTradePageVersion(2);
       }
     },
-    [chainId, history, location, tradePageVersion, query, setTradePageVersion]
+    [chainId, history, location, query, setTradePageVersion]
   );
+
+  useEffect(() => {
+    if (tradePageVersion === 1) {
+      history.replace("/v1");
+    } else if (tradePageVersion === 2) {
+      history.replace("/trade");
+    }
+  }, [history, tradePageVersion]);
 
   useEffect(() => {
     const checkPendingTxns = async () => {
@@ -422,7 +421,7 @@ function FullApp() {
               <Route exact path="/">
                 <Redirect to="/dashboard" />
               </Route>
-              <Route exact path="/trade">
+              <Route exact path="/v1">
                 <Exchange
                   ref={exchangeRef}
                   savedShowPnlAfterFees={savedShowPnlAfterFees}
@@ -465,7 +464,7 @@ function FullApp() {
                 )}
               </Route>
 
-              <Route exact path="/v2">
+              <Route exact path="/trade">
                 {getIsSyntheticsSupported(chainId) ? (
                   <SyntheticsPage
                     savedIsPnlInLeverage={savedIsPnlInLeverage}
