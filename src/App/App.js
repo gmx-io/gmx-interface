@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import useScrollToTop from "lib/useScrollToTop";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { SWRConfig } from "swr";
 
 import { matchPath, Redirect, Route, HashRouter as Router, Switch, useHistory, useLocation } from "react-router-dom";
@@ -271,6 +271,10 @@ function FullApp() {
     setSelectedToPage(to);
   };
 
+  const isActiveOnTradePage = useMemo(() => {
+    return !!matchPath(location.pathname, { path: ["/v1", "/trade"] });
+  }, [location.pathname]);
+
   useEffect(
     function redirectTradePage() {
       const isV1Matched = matchPath(location.pathname, { path: "/v1" });
@@ -288,12 +292,13 @@ function FullApp() {
   );
 
   useEffect(() => {
+    if (!isActiveOnTradePage) return;
     if (tradePageVersion === 1) {
       history.replace("/v1");
     } else if (tradePageVersion === 2) {
       history.replace("/trade");
     }
-  }, [history, tradePageVersion]);
+  }, [history, tradePageVersion, isActiveOnTradePage]);
 
   useEffect(() => {
     const checkPendingTxns = async () => {
