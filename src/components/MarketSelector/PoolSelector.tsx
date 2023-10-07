@@ -222,7 +222,7 @@ export function PoolSelector({
                   {showBalances && balance && (
                     <div className="Token-text">
                       {balance.gt(0) &&
-                        formatTokenAmount(balance, marketToken?.decimals, "", {
+                        formatTokenAmount(balance, marketToken?.decimals, "GM", {
                           useCommas: true,
                         })}
                       {balance.eq(0) && "-"}
