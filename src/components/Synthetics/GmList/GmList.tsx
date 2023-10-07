@@ -5,6 +5,7 @@ import {
   MarketsInfoData,
   getMarketIndexName,
   getMarketPoolName,
+  getMaxPoolAmountForDeposit,
   getMintableMarketTokens,
 } from "domain/synthetics/markets";
 import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
@@ -384,10 +385,15 @@ function renderMintableAmount({ mintableInfo, market, token, longToken, shortTok
               `(${formatTokenAmount(market.longPoolAmount, longToken.decimals, "", {
                 useCommas: true,
                 displayDecimals: 0,
-              })} / ${formatTokenAmount(market.maxLongPoolAmount, longToken.decimals, longToken.symbol, {
-                useCommas: true,
-                displayDecimals: 0,
-              })})`,
+              })} / ${formatTokenAmount(
+                getMaxPoolAmountForDeposit(market, true),
+                longToken.decimals,
+                longToken.symbol,
+                {
+                  useCommas: true,
+                  displayDecimals: 0,
+                }
+              )})`,
             ]}
           />
           <StatsTooltipRow
@@ -400,10 +406,15 @@ function renderMintableAmount({ mintableInfo, market, token, longToken, shortTok
               `(${formatTokenAmount(market.shortPoolAmount, shortToken.decimals, "", {
                 useCommas: true,
                 displayDecimals: 0,
-              })} / ${formatTokenAmount(market.maxShortPoolAmount, shortToken.decimals, shortToken.symbol, {
-                useCommas: true,
-                displayDecimals: 0,
-              })})`,
+              })} / ${formatTokenAmount(
+                getMaxPoolAmountForDeposit(market, false),
+                shortToken.decimals,
+                shortToken.symbol,
+                {
+                  useCommas: true,
+                  displayDecimals: 0,
+                }
+              )})`,
             ]}
           />
         </>
