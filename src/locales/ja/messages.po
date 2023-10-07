@@ -4664,6 +4664,10 @@ msgstr "取引が失敗しました。<0>詳細</0>"
 msgid "Type"
 msgstr "タイプ"
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "UI Fee"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "USD Value may not be accurate since the data does not contain prices for {0}"

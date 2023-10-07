@@ -4664,6 +4664,10 @@ msgstr "트랜잭션 실패됨. <0>보기</0>"
 msgid "Type"
 msgstr "타입"
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "UI Fee"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "USD Value may not be accurate since the data does not contain prices for {0}"

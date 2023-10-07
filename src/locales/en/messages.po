@@ -4667,6 +4667,10 @@ msgstr "Txn failed. <0>View</0>"
 msgid "Type"
 msgstr "Type"
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "UI Fee"
+msgstr "UI Fee"
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "USD Value may not be accurate since the data does not contain prices for {0}"

@@ -4664,6 +4664,10 @@ msgstr "转移失败 <0>查看</0>"
 msgid "Type"
 msgstr "种类"
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "UI Fee"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "USD Value may not be accurate since the data does not contain prices for {0}"

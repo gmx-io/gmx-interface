@@ -4664,6 +4664,10 @@ msgstr "Transacción fallida. <0>Ver</0>"
 msgid "Type"
 msgstr "Tipo"
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "UI Fee"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "USD Value may not be accurate since the data does not contain prices for {0}"

@@ -126,7 +126,9 @@ export function TradeFeesRow(p: Props) {
           id: "uiFee",
           label: (
             <>
-              <div className="text-white">UI Fee</div>
+              <div className="text-white">
+                <Trans>UI Fee</Trans>:
+              </div>
               <div>({removeTrailingZeros(formatAmount(p.uiFee?.bps.abs(), 4, 6))}% of position size)</div>
             </>
           ),
@@ -140,7 +142,7 @@ export function TradeFeesRow(p: Props) {
           id: "feeDiscount",
           label: (
             <div className="text-white">
-              <Trans>Referral Discount</Trans>
+              <Trans>Referral Discount</Trans>:
             </div>
           ),
           value: formatDeltaUsd(p.feeDiscountUsd),
@@ -179,7 +181,7 @@ export function TradeFeesRow(p: Props) {
     const borrowFeeRateRow = p.borrowFeeRateStr
       ? {
           id: "borrowFeeRate",
-          label: <div className="text-white">{t`Borrow Fee Rate`}</div>,
+          label: <div className="text-white">{t`Borrow Fee Rate`}:</div>,
           value: p.borrowFeeRateStr,
           className: p.borrowFeeRateStr?.startsWith("-") ? "text-red" : "text-green",
         }
@@ -188,7 +190,7 @@ export function TradeFeesRow(p: Props) {
     const fundingFeeRateRow = p.fundingFeeRateStr
       ? {
           id: "fundingFeeRate",
-          label: <div className="text-white">{t`Funding Fee Rate`}</div>,
+          label: <div className="text-white">{t`Funding Fee Rate`}:</div>,
           value: p.fundingFeeRateStr,
           className: p.fundingFeeRateStr?.startsWith("-") ? "text-red" : "text-green",
         }
@@ -196,7 +198,7 @@ export function TradeFeesRow(p: Props) {
 
     const executionFeeRow = p.executionFee?.feeTokenAmount.gt(0)
       ? {
-          label: <div className="text-white">{t`Max Execution Fee`}</div>,
+          label: <div className="text-white">{t`Max Execution Fee`}:</div>,
           value: formatTokenAmountWithUsd(
             p.executionFee.feeTokenAmount.mul(-1),
             p.executionFee.feeUsd.mul(-1),
@@ -208,7 +210,7 @@ export function TradeFeesRow(p: Props) {
       : undefined;
 
     if (p.feesType === "swap") {
-      return [swapPriceImpactRow, ...swapFeeRows, executionFeeRow, uiFeeRow].filter(Boolean) as FeeRow[];
+      return [swapPriceImpactRow, ...swapFeeRows, uiFeeRow, executionFeeRow].filter(Boolean) as FeeRow[];
     }
 
     if (p.feesType === "increase") {
@@ -222,8 +224,8 @@ export function TradeFeesRow(p: Props) {
         fundingFeeRow,
         borrowFeeRateRow,
         fundingFeeRateRow,
-        executionFeeRow,
         uiFeeRow,
+        executionFeeRow,
       ].filter(Boolean) as FeeRow[];
     }
 
@@ -237,8 +239,8 @@ export function TradeFeesRow(p: Props) {
         feeDiscountRow,
         swapProfitFeeRow,
         ...swapFeeRows,
-        executionFeeRow,
         uiFeeRow,
+        executionFeeRow,
       ].filter(Boolean) as FeeRow[];
     }
 
