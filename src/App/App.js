@@ -449,6 +449,7 @@ function FullApp() {
               <Route exact path="/stats/v1">
                 <Stats />
               </Route>
+              <Redirect exact from="/stats/v2" to="/stats" />
               <Route exact path="/stats">
                 {getIsSyntheticsSupported(chainId) ? <SyntheticsStats /> : <SyntheticsFallbackPage />}
               </Route>
@@ -488,6 +489,7 @@ function FullApp() {
                   <SyntheticsFallbackPage />
                 )}
               </Route>
+              <Redirect from="/v2" to="/trade" />
               <Route exact path="/buy_glp">
                 <BuyGlp
                   savedSlippageAmount={settings.savedAllowedSlippage}
@@ -516,6 +518,7 @@ function FullApp() {
               <Route exact path="/claim_es_gmx">
                 <ClaimEsGmx setPendingTxns={setPendingTxns} />
               </Route>
+
               <Route exact path="/actions/v1">
                 <Actions />
               </Route>
@@ -528,13 +531,16 @@ function FullApp() {
                   savedShowPnlAfterFees={savedShowPnlAfterFees}
                 />
               </Route>
+              <Redirect exact from="/actions/v2" to="/actions" />
               <Route exact path="/actions/:account">
                 <SyntheticsActions
                   savedIsPnlInLeverage={savedIsPnlInLeverage}
                   savedShowPnlAfterFees={savedShowPnlAfterFees}
                 />
               </Route>
-
+              <Route path="/actions/v2/:account">
+                {({ match }) => <Redirect to={`/actions/${match.params.account}`} />}
+              </Route>
               <Route exact path="/referrals-tier">
                 <ReferralsTier />
               </Route>
@@ -553,7 +559,7 @@ function FullApp() {
               <Route exact path="/complete_account_transfer/:sender/:receiver">
                 <CompleteAccountTransfer setPendingTxns={setPendingTxns} />
               </Route>
-              <Redirect from="/v2" to="/trade" />
+
               <Route path="*">
                 <PageNotFound />
               </Route>
