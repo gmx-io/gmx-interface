@@ -114,7 +114,7 @@ export function MarketStats(p: Props) {
           label={t`Wallet`}
           value={
             marketBalance && marketBalanceUsd
-              ? formatTokenAmountWithUsd(marketBalance, marketBalanceUsd, "GM", marketToken.decimals)
+              ? formatTokenAmountWithUsd(marketBalance, marketBalanceUsd, "GM", marketToken?.decimals)
               : "..."
           }
         />
@@ -125,7 +125,7 @@ export function MarketStats(p: Props) {
           label={t`Total Supply`}
           value={
             marketTotalSupply && marketTotalSupplyUsd
-              ? formatTokenAmountWithUsd(marketTotalSupply, marketTotalSupplyUsd, "GM", marketToken.decimals, {
+              ? formatTokenAmountWithUsd(marketTotalSupply, marketTotalSupplyUsd, "GM", marketToken?.decimals, {
                   displayDecimals: 0,
                 })
               : "..."
@@ -141,7 +141,7 @@ export function MarketStats(p: Props) {
                   mintableInfo.mintableAmount,
                   mintableInfo.mintableUsd,
                   "GM",
-                  marketToken.decimals,
+                  marketToken?.decimals,
                   {
                     displayDecimals: 0,
                   }
@@ -249,10 +249,7 @@ export function MarketStats(p: Props) {
                       maxLongSellableTokenAmount,
                       sellableInfo?.maxLongSellableUsd,
                       longToken?.symbol,
-                      longToken?.decimals,
-                      {
-                        displayDecimals: 0,
-                      }
+                      longToken?.decimals
                     )}
                     showDollar={false}
                   />
@@ -262,10 +259,7 @@ export function MarketStats(p: Props) {
                       maxShortSellableTokenAmount,
                       sellableInfo?.maxShortSellableUsd,
                       shortToken?.symbol,
-                      shortToken?.decimals,
-                      {
-                        displayDecimals: 0,
-                      }
+                      shortToken?.decimals
                     )}
                     showDollar={false}
                   />

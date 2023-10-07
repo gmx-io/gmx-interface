@@ -16,7 +16,7 @@ import {
 import { TokensData } from "domain/synthetics/tokens";
 import useSortedMarketsWithIndexToken from "domain/synthetics/trade/useSortedMarketsWithIndexToken";
 import { getByKey } from "lib/objects";
-import { formatAmount, formatTokenAmount } from "lib/numbers";
+import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { useHistory } from "react-router-dom";
 
@@ -151,13 +151,13 @@ export default function MarketTokenSelector(props: Props) {
                               </span>
                             </td>
                             <td>
-                              {formatTokenAmount(mintableInfo?.mintableAmount, market.decimals, market.symbol, {
+                              {formatUsd(mintableInfo?.mintableUsd, {
                                 displayDecimals: 0,
-                                useCommas: true,
+                                fallbackToZero: true,
                               })}
                             </td>
                             <td>
-                              {formatTokenAmount(sellableInfo?.totalAmount, market.decimals, market.symbol, {
+                              {formatTokenAmount(sellableInfo?.totalAmount, market?.decimals, market?.symbol, {
                                 displayDecimals: 0,
                                 useCommas: true,
                               })}
