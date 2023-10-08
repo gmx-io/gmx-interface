@@ -380,7 +380,6 @@ function renderMintableAmount({ mintableInfo, market, token, longToken, shortTok
             value={[
               formatTokenAmount(mintableInfo?.longDepositCapacityAmount, longToken.decimals, longToken.symbol, {
                 useCommas: true,
-                displayDecimals: 0,
               }),
               `(${formatTokenAmount(market.longPoolAmount, longToken.decimals, "", {
                 useCommas: true,
@@ -401,7 +400,6 @@ function renderMintableAmount({ mintableInfo, market, token, longToken, shortTok
             value={[
               formatTokenAmount(mintableInfo?.shortDepositCapacityAmount, shortToken.decimals, shortToken.symbol, {
                 useCommas: true,
-                displayDecimals: 0,
               }),
               `(${formatTokenAmount(market.shortPoolAmount, shortToken.decimals, "", {
                 useCommas: true,

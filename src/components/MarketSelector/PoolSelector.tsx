@@ -125,7 +125,7 @@ export function PoolSelector({
 
   function displayPoolLabel(marketInfo: MarketInfo | undefined) {
     if (!marketInfo) return "...";
-    const name = showAllPools ? `GM ${getMarketIndexName(marketInfo)}` : getMarketPoolName(marketInfo);
+    const name = showAllPools ? `GM: ${getMarketIndexName(marketInfo)}` : getMarketPoolName(marketInfo);
 
     if (filteredOptions?.length > 1) {
       return (

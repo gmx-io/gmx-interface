@@ -101,7 +101,7 @@ function showMarketToast(market) {
   helperToast.success(
     <Trans>
       <div className="inline-flex">
-        <span>{indexName}</span>
+        GM:&nbsp;<span>{indexName}</span>
         <span className="subtext gm-toast">[{poolName}]</span>
       </div>{" "}
       <span>selected in order form</span>
@@ -707,7 +707,7 @@ export function GmSwapBox(p: Props) {
           helperToast.success(
             <Trans>
               <div className="inline-flex">
-                <span>{indexName}</span>
+                GM:&nbsp;<span>{indexName}</span>
                 <span className="subtext gm-toast">[{poolName}]</span>
               </div>{" "}
               <span>selected in order form</span>
