@@ -164,7 +164,8 @@ export function getIncreasePositionAmounts(p: {
     values.collateralDeltaUsd = baseCollateralUsd
       .sub(values.positionFeeUsd)
       .sub(values.borrowingFeeUsd)
-      .sub(values.fundingFeeUsd);
+      .sub(values.fundingFeeUsd)
+      .sub(values.uiFeeUsd);
 
     values.collateralDeltaAmount = convertToTokenAmount(
       values.collateralDeltaUsd,
@@ -267,7 +268,8 @@ export function getIncreasePositionAmounts(p: {
       values.collateralDeltaUsd = baseCollateralUsd
         .sub(values.positionFeeUsd)
         .sub(values.borrowingFeeUsd)
-        .sub(values.fundingFeeUsd);
+        .sub(values.fundingFeeUsd)
+        .sub(values.uiFeeUsd);
 
       values.collateralDeltaAmount = convertToTokenAmount(
         values.collateralDeltaUsd,

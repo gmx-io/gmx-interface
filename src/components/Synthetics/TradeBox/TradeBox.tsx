@@ -377,6 +377,7 @@ export function TradeBox(p: Props) {
       savedAcceptablePriceImpactBps: acceptablePriceImpactBpsForLimitOrders,
       findSwapPath: swapRoute.findSwapPath,
       userReferralInfo,
+      uiFeeFactor,
       strategy: isLeverageEnabled
         ? focusedInput === "from"
           ? "leverageByCollateral"
@@ -401,6 +402,7 @@ export function TradeBox(p: Props) {
     toTokenAmount,
     triggerPrice,
     userReferralInfo,
+    uiFeeFactor,
   ]);
 
   const decreaseAmounts = useMemo(() => {
