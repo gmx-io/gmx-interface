@@ -38,6 +38,7 @@ import {
   formatLeverage,
   formatLiquidationPrice,
   getPositionKey,
+  getTriggerNameByOrderType,
 } from "domain/synthetics/positions";
 import {
   TokenData,
@@ -308,8 +309,8 @@ export function ConfirmationBox(p: Props) {
       return t`Confirm Limit Order`;
     }
 
-    return t`Confirm Trigger Order`;
-  }, [isLimit, isLong, isMarket, isSwap]);
+    return t`Confirm ${getTriggerNameByOrderType(fixedTriggerOrderType)} Order`;
+  }, [fixedTriggerOrderType, isLimit, isLong, isMarket, isSwap]);
 
   const submitButtonState = useMemo(() => {
     if (isSubmitting) {
@@ -352,7 +353,7 @@ export function ConfirmationBox(p: Props) {
     } else if (isLimit) {
       text = t`Confirm Limit Order`;
     } else {
-      text = t`Confirm Trigger Order`;
+      text = t`Confirm ${getTriggerNameByOrderType(fixedTriggerOrderType)} Order`;
     }
 
     return {
@@ -362,6 +363,7 @@ export function ConfirmationBox(p: Props) {
   }, [
     decreaseOrdersThatWillBeExecuted.length,
     error,
+    fixedTriggerOrderType,
     fromToken?.symbol,
     isHighPriceImpact,
     isHighPriceImpactAccepted,
