@@ -95,8 +95,8 @@ export const formatPositionMessage = (
         ];
       }
 
-      const isFailed = tradeAction.eventName === TradeActionType.OrderFrozen;
-      const prefix = isFailed ? "Execution Failed" : `${actionText} Order`;
+      const isFrozen = tradeAction.eventName === TradeActionType.OrderFrozen;
+      const prefix = isFrozen ? "Execution Failed" : `${actionText} Order`;
 
       const triggerPriceStr = t`Trigger Price: ${pricePrefix} ${formatUsd(triggerPrice, {
         displayDecimals: priceDecimals,
@@ -108,26 +108,26 @@ export const formatPositionMessage = (
       const isTakeProfit = tradeAction.orderType === OrderType.LimitDecrease;
       const shouldRenderAcceptablePrice = isTakeProfit || isIncrease;
 
-      if (isFailed) {
-        const strs = [triggerPriceStr];
+      if (isFrozen) {
+        const arr = [triggerPriceStr];
 
         if (shouldRenderAcceptablePrice) {
-          strs.push(acceptablePriceStr);
+          arr.push(acceptablePriceStr);
         }
 
         return [
           { text: "Execution Failed", isError: true, ...getExecutionFailedTooltipProps(tradeAction) },
           { text: `: ${increaseText} ${positionText} ${sizeDeltaText}` },
-          { text: `, ${strs.join(", ")}` },
+          { text: `, ${arr.join(", ")}` },
         ];
       } else {
-        const strs = [`${prefix}: ${increaseText} ${positionText} ${sizeDeltaText}`, triggerPriceStr];
+        const arr = [`${prefix}: ${increaseText} ${positionText} ${sizeDeltaText}`, triggerPriceStr];
 
         if (shouldRenderAcceptablePrice) {
-          strs.push(acceptablePriceStr);
+          arr.push(acceptablePriceStr);
         }
 
-        return [{ text: strs.join(", ") }];
+        return [{ text: arr.join(", ") }];
       }
     }
 

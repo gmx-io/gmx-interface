@@ -103,8 +103,12 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
                 {message.tooltipTitle ? (
                   <span className={message.tooltipTitleRed ? "text-red" : undefined}>
                     {message.tooltipTitle}
-                    {hasSmthAfterTitle && <br />}
-                    {hasSmthAfterTitle && <br />}
+                    {hasSmthAfterTitle && (
+                      <>
+                        <br />
+                        <br />
+                      </>
+                    )}
                   </span>
                 ) : null}
                 {message.tooltipRows?.map((props) => (
@@ -112,8 +116,12 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
                 ))}
                 {message.tooltipFooter ? (
                   <span className={message.tooltipFooterRed ? "text-red" : undefined}>
-                    {hasSmthBeforeFooter && <br />}
-                    {hasSmthBeforeFooter && <br />}
+                    {hasSmthBeforeFooter && (
+                      <>
+                        <br />
+                        <br />
+                      </>
+                    )}
                     {message.tooltipFooter}
                   </span>
                 ) : null}
