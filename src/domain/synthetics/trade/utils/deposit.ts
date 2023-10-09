@@ -1,4 +1,4 @@
-import { applySwapImpactWithCap, getPriceImpactForSwap, getSwapFee } from "domain/synthetics/fees";
+import { applySwapImpactWithCap, getPriceImpactForSwap, getSwapFee, getUiFee } from "domain/synthetics/fees";
 import { MarketInfo, marketTokenAmountToUsd, usdToMarketTokenAmount } from "domain/synthetics/markets";
 import { TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
@@ -15,6 +15,7 @@ export function getDepositAmounts(p: {
   strategy: "byCollaterals" | "byMarketToken";
   includeLongToken: boolean;
   includeShortToken: boolean;
+  uiFeeFactor?: BigNumber;
 }): DepositAmounts {
   const {
     marketInfo,
@@ -27,6 +28,7 @@ export function getDepositAmounts(p: {
     strategy,
     includeLongToken,
     includeShortToken,
+    uiFeeFactor,
   } = p;
 
   const longTokenPrice = getMidPrice(longToken.prices);
@@ -40,6 +42,7 @@ export function getDepositAmounts(p: {
     marketTokenAmount: BigNumber.from(0),
     marketTokenUsd: BigNumber.from(0),
     swapFeeUsd: BigNumber.from(0),
+    uiFeeUsd: BigNumber.from(0),
     swapPriceImpactDeltaUsd: BigNumber.from(0),
   };
 
@@ -67,6 +70,9 @@ export function getDepositAmounts(p: {
       const swapFeeUsd = getSwapFee(marketInfo, values.longTokenUsd, values.swapPriceImpactDeltaUsd.gt(0));
       values.swapFeeUsd = values.swapFeeUsd.add(swapFeeUsd);
 
+      const uiFeeUsd = getUiFee(values.longTokenUsd, uiFeeFactor)?.deltaUsd.abs() ?? BigNumber.from(0);
+      values.uiFeeUsd = values.uiFeeUsd.add(uiFeeUsd);
+
       values.marketTokenAmount = values.marketTokenAmount.add(
         getMarketTokenAmountByCollateral({
           marketInfo,
@@ -76,6 +82,7 @@ export function getDepositAmounts(p: {
           amount: values.longTokenAmount,
           priceImpactDeltaUsd: values.swapPriceImpactDeltaUsd.mul(values.longTokenUsd).div(totalDepositUsd),
           swapFeeUsd,
+          uiFeeUsd,
         })
       );
     }
@@ -83,6 +90,9 @@ export function getDepositAmounts(p: {
     if (values.shortTokenUsd.gt(0)) {
       const swapFeeUsd = getSwapFee(marketInfo, values.shortTokenUsd, values.swapPriceImpactDeltaUsd.gt(0));
       values.swapFeeUsd = values.swapFeeUsd.add(swapFeeUsd);
+
+      const uiFeeUsd = getUiFee(values.shortTokenUsd, uiFeeFactor)?.deltaUsd.abs() ?? BigNumber.from(0);
+      values.uiFeeUsd = values.uiFeeUsd.add(uiFeeUsd);
 
       values.marketTokenAmount = values.marketTokenAmount.add(
         getMarketTokenAmountByCollateral({
@@ -93,6 +103,7 @@ export function getDepositAmounts(p: {
           amount: values.shortTokenAmount,
           priceImpactDeltaUsd: values.swapPriceImpactDeltaUsd.mul(values.shortTokenUsd).div(totalDepositUsd),
           swapFeeUsd,
+          uiFeeUsd,
         })
       );
     }
@@ -130,12 +141,16 @@ export function getDepositAmounts(p: {
     const swapFeeUsd = getSwapFee(marketInfo, values.marketTokenUsd, values.swapPriceImpactDeltaUsd.gt(0));
     values.swapFeeUsd = values.swapFeeUsd.add(swapFeeUsd);
 
+    const uiFeeUsd = getUiFee(values.marketTokenUsd, uiFeeFactor)?.deltaUsd.abs() ?? BigNumber.from(0);
+    values.uiFeeUsd = values.uiFeeUsd.add(uiFeeUsd);
+
+    const totalFee = values.swapFeeUsd.add(values.uiFeeUsd);
     let totalDepositUsd = values.longTokenUsd.add(values.shortTokenUsd);
 
-    // Adjust long and short token amounts to account for swap fee and price impact
+    // Adjust long and short token amounts to account for swap fee, ui fee and price impact
     if (totalDepositUsd.gt(0)) {
-      values.longTokenUsd = values.longTokenUsd.add(swapFeeUsd.mul(values.longTokenUsd).div(totalDepositUsd));
-      values.shortTokenUsd = values.shortTokenUsd.add(swapFeeUsd.mul(values.shortTokenUsd).div(totalDepositUsd));
+      values.longTokenUsd = values.longTokenUsd.add(totalFee.mul(values.longTokenUsd).div(totalDepositUsd));
+      values.shortTokenUsd = values.shortTokenUsd.add(totalFee.mul(values.shortTokenUsd).div(totalDepositUsd));
 
       totalDepositUsd = values.longTokenUsd.add(values.shortTokenUsd);
 
@@ -166,12 +181,14 @@ function getMarketTokenAmountByCollateral(p: {
   amount: BigNumber;
   priceImpactDeltaUsd: BigNumber;
   swapFeeUsd: BigNumber;
+  uiFeeUsd: BigNumber;
 }): BigNumber {
-  const { marketInfo, marketToken, tokenIn, tokenOut, amount, priceImpactDeltaUsd, swapFeeUsd } = p;
+  const { marketInfo, marketToken, tokenIn, tokenOut, amount, priceImpactDeltaUsd, swapFeeUsd, uiFeeUsd } = p;
 
   const swapFeeAmount = convertToTokenAmount(swapFeeUsd, tokenIn.decimals, tokenIn.prices.minPrice)!;
+  const uiFeeAmount = convertToTokenAmount(uiFeeUsd, tokenIn.decimals, tokenIn.prices.minPrice)!;
 
-  let amountInAfterFees = amount.sub(swapFeeAmount);
+  let amountInAfterFees = amount.sub(swapFeeAmount).sub(uiFeeAmount);
   let mintAmount = BigNumber.from(0);
 
   if (priceImpactDeltaUsd.gt(0)) {

@@ -321,6 +321,7 @@ export function GmSwapBox(p: Props) {
       marketTokenAmount,
       includeLongToken: Boolean(longTokenInputState?.address),
       includeShortToken: Boolean(shortTokenInputState?.address),
+      uiFeeFactor,
       strategy: focusedInput === "market" ? "byMarketToken" : "byCollaterals",
     });
   }, [
@@ -333,6 +334,7 @@ export function GmSwapBox(p: Props) {
     marketTokenAmount,
     shortTokenInputState?.address,
     shortTokenInputState?.amount,
+    uiFeeFactor,
   ]);
 
   const withdrawalAmounts = useMemo(() => {
@@ -356,6 +358,7 @@ export function GmSwapBox(p: Props) {
       longTokenAmount: longTokenInputState?.amount || BigNumber.from(0),
       shortTokenAmount: shortTokenInputState?.amount || BigNumber.from(0),
       strategy,
+      uiFeeFactor,
     });
   }, [
     focusedInput,
@@ -365,6 +368,7 @@ export function GmSwapBox(p: Props) {
     marketToken,
     marketTokenAmount,
     shortTokenInputState?.amount,
+    uiFeeFactor,
   ]);
 
   const amounts = isDeposit ? depositAmounts : withdrawalAmounts;

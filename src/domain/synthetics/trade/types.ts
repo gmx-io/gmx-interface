@@ -110,6 +110,7 @@ export type DepositAmounts = {
   shortTokenAmount: BigNumber;
   shortTokenUsd: BigNumber;
   swapFeeUsd: BigNumber;
+  uiFeeUsd: BigNumber;
   swapPriceImpactDeltaUsd: BigNumber;
 };
 
@@ -121,6 +122,7 @@ export type WitdhrawalAmounts = {
   longTokenUsd: BigNumber;
   shortTokenUsd: BigNumber;
   swapFeeUsd: BigNumber;
+  uiFeeUsd: BigNumber;
   swapPriceImpactDeltaUsd: BigNumber;
 };
 
