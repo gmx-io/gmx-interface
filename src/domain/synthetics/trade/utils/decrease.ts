@@ -1,6 +1,6 @@
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { UserReferralInfo } from "domain/referrals";
-import { getPositionFee } from "domain/synthetics/fees";
+import { getPositionFee, getUiFee } from "domain/synthetics/fees";
 import { Market, MarketInfo } from "domain/synthetics/markets";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { PositionInfo, getLeverage, getLiquidationPrice, getPositionPnlUsd } from "domain/synthetics/positions";
@@ -134,10 +134,11 @@ export function getDecreasePositionAmounts(p: {
 
     values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
     values.feeDiscountUsd = positionFeeInfo.discountUsd;
-    values.uiFeeUsd = uiFeeFactor?.gt(0) ? applyFactor(values.sizeDeltaUsd, uiFeeFactor) : BigNumber.from(0);
+    values.uiFeeUsd = getUiFee(values.sizeDeltaUsd, uiFeeFactor)?.deltaUsd ?? BigNumber.from(0);
 
     const totalFeesUsd = BigNumber.from(0)
       .add(values.positionFeeUsd)
+      .add(values.uiFeeUsd)
       .add(values.positionPriceImpactDeltaUsd.lt(0) ? values.positionPriceImpactDeltaUsd : 0);
 
     values.payedOutputUsd = totalFeesUsd;
@@ -229,7 +230,7 @@ export function getDecreasePositionAmounts(p: {
 
   values.positionFeeUsd = estimatedPositionFeeCost.usd;
   values.feeDiscountUsd = estimatedDiscountCost.usd;
-  values.uiFeeUsd = uiFeeFactor?.gt(0) ? applyFactor(values.sizeDeltaUsd, uiFeeFactor) : BigNumber.from(0);
+  values.uiFeeUsd = getUiFee(values.sizeDeltaUsd, uiFeeFactor)?.deltaUsd ?? BigNumber.from(0);
 
   const borrowFeeCost = estimateCollateralCost(
     position.pendingBorrowingFeesUsd,
@@ -271,6 +272,7 @@ export function getDecreasePositionAmounts(p: {
     .add(values.borrowingFeeUsd)
     .add(values.fundingFeeUsd)
     .add(values.swapProfitFeeUsd)
+    .add(values.uiFeeUsd.abs())
     .add(negativePnlUsd)
     .add(negativePriceImpactUsd)
     .add(priceImpactDiffUsd);

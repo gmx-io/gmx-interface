@@ -20,6 +20,7 @@ import {
   estimateExecuteIncreaseOrderGasLimit,
   estimateExecuteSwapOrderGasLimit,
   getExecutionFee,
+  getUiFee,
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
@@ -101,7 +102,6 @@ import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS, UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
-import { getUiFee } from "domain/synthetics/fees/utils/uiFee";
 
 export type Props = {
   tradeType: TradeType;

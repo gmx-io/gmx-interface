@@ -16,6 +16,7 @@ import {
   estimateExecuteDecreaseOrderGasLimit,
   getExecutionFee,
   getIsHighPriceImpact,
+  getUiFee,
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
@@ -71,7 +72,6 @@ import { useMedia } from "react-use";
 import { useHasOutdatedUi } from "domain/legacy";
 import useWallet from "lib/wallets/useWallet";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { getUiFee } from "domain/synthetics/fees/utils/uiFee";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 
@@ -174,8 +174,9 @@ export function PositionSeller(p: Props) {
       userReferralInfo,
       minCollateralUsd,
       minPositionSizeUsd,
+      uiFeeFactor,
     });
-  }, [closeSizeUsd, keepLeverage, minCollateralUsd, minPositionSizeUsd, position, userReferralInfo]);
+  }, [closeSizeUsd, keepLeverage, minCollateralUsd, minPositionSizeUsd, position, userReferralInfo, uiFeeFactor]);
 
   useDebugExecutionPrice(chainId, {
     skip: true,

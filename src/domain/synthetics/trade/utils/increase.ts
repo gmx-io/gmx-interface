@@ -1,5 +1,5 @@
 import { UserReferralInfo } from "domain/referrals";
-import { getPositionFee, getPriceImpactForPosition } from "domain/synthetics/fees";
+import { getPositionFee, getPriceImpactForPosition, getUiFee } from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
 import { OrderType } from "domain/synthetics/orders";
 import {
@@ -143,9 +143,11 @@ export function getIncreasePositionAmounts(p: {
       basePriceImpactDeltaUsd.gt(0),
       userReferralInfo
     );
+    const baseUiFeeUsd = getUiFee(baseSizeDeltaUsd, uiFeeFactor)?.deltaUsd ?? BigNumber.from(0);
 
     values.sizeDeltaUsd = baseCollateralUsd
       .sub(basePositionFeeInfo.positionFeeUsd)
+      .sub(baseUiFeeUsd)
       .mul(leverage)
       .div(BASIS_POINTS_DIVISOR);
 
@@ -159,7 +161,7 @@ export function getIncreasePositionAmounts(p: {
     );
     values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
     values.feeDiscountUsd = positionFeeInfo.discountUsd;
-    values.uiFeeUsd = uiFeeFactor?.gt(0) ? applyFactor(values.sizeDeltaUsd, uiFeeFactor) : BigNumber.from(0);
+    values.uiFeeUsd = getUiFee(values.sizeDeltaUsd, uiFeeFactor)?.deltaUsd ?? BigNumber.from(0);
 
     values.collateralDeltaUsd = baseCollateralUsd
       .sub(values.positionFeeUsd)
@@ -188,7 +190,7 @@ export function getIncreasePositionAmounts(p: {
 
     values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
     values.feeDiscountUsd = positionFeeInfo.discountUsd;
-    values.uiFeeUsd = uiFeeFactor?.gt(0) ? applyFactor(values.sizeDeltaUsd, uiFeeFactor) : BigNumber.from(0);
+    values.uiFeeUsd = getUiFee(values.sizeDeltaUsd, uiFeeFactor)?.deltaUsd ?? BigNumber.from(0);
 
     values.collateralDeltaUsd = values.sizeDeltaUsd.mul(BASIS_POINTS_DIVISOR).div(leverage);
     values.collateralDeltaAmount = convertToTokenAmount(
@@ -200,7 +202,8 @@ export function getIncreasePositionAmounts(p: {
     const baseCollateralUsd = values.collateralDeltaUsd
       .add(values.positionFeeUsd)
       .add(values.borrowingFeeUsd)
-      .add(values.fundingFeeUsd);
+      .add(values.fundingFeeUsd)
+      .add(values.uiFeeUsd);
 
     const baseCollateralAmount = convertToTokenAmount(
       baseCollateralUsd,
