@@ -13,10 +13,12 @@ import { formatDeltaUsd, formatTokenAmount, formatTokenAmountWithUsd, formatUsd 
 import { museNeverExist } from "lib/types";
 import { trimStart } from "lodash";
 
+type TooltipProps = StatsTooltipRowProps & { key: string };
+
 type FormatPositionMessageChunk = {
   text: string;
   isError?: boolean;
-  tooltipRows?: StatsTooltipRowProps[];
+  tooltipRows?: TooltipProps[];
   tooltipTitle?: string;
   tooltipTitleRed?: boolean;
   tooltipFooterRed?: boolean;
@@ -216,10 +218,7 @@ function getTokenPriceByTradeAction(tradeAction: PositionTradeAction) {
     : tradeAction.indexTokenPriceMin;
 }
 
-function getLiquidationTooltipProps(
-  tradeAction: PositionTradeAction,
-  minCollateralUsd: BigNumber
-): StatsTooltipRowProps[] {
+function getLiquidationTooltipProps(tradeAction: PositionTradeAction, minCollateralUsd: BigNumber): TooltipProps[] {
   const {
     initialCollateralToken,
     initialCollateralDeltaAmount,
@@ -248,6 +247,7 @@ function getLiquidationTooltipProps(
       value: formatUsd(getTokenPriceByTradeAction(tradeAction), {
         displayDecimals: tradeAction.indexToken.priceDecimals,
       }),
+      key: "mark-price",
     },
     {
       label: t`Initial collateral`,
@@ -258,22 +258,43 @@ function getLiquidationTooltipProps(
         initialCollateralToken?.symbol,
         initialCollateralToken?.decimals
       ),
+      key: "initial-collateral",
     },
-    { label: t`Min required collateral`, showDollar: false, value: formatUsd(minCollateralUsd) },
-    { label: t`Borrow Fee`, showDollar: false, value: formatUsd(borrowingFeeUsd?.mul(-1)), className: "text-red" },
-    { label: t`Funding Fee`, showDollar: false, value: formatUsd(fundingFeeUsd?.mul(-1)), className: "text-red" },
-    { label: t`Position Fee`, showDollar: false, value: formatUsd(positionFeeUsd?.mul(-1)), className: "text-red" },
+    { label: t`Min required collateral`, showDollar: false, value: formatUsd(minCollateralUsd), key: "min-collateral" },
+    {
+      label: t`Borrow Fee`,
+      showDollar: false,
+      value: formatUsd(borrowingFeeUsd?.mul(-1)),
+      className: "text-red",
+      key: "borrow-fee",
+    },
+    {
+      label: t`Funding Fee`,
+      showDollar: false,
+      value: formatUsd(fundingFeeUsd?.mul(-1)),
+      className: "text-red",
+      key: "funding-fee",
+    },
+    {
+      label: t`Position Fee`,
+      showDollar: false,
+      value: formatUsd(positionFeeUsd?.mul(-1)),
+      className: "text-red",
+      key: "position-fee",
+    },
     {
       label: t`Price Impact`,
       showDollar: false,
       value: formatDeltaUsd(priceImpactUsd),
       className: priceImpactUsd?.gt(0) ? "text-green" : "text-red",
+      key: "price-impact",
     },
     {
       label: t`PnL After Fees`,
       showDollar: false,
       value: formatUsd(pnlUsd),
       className: pnlUsd?.gt(0) ? "text-green" : "text-red",
+      key: "pnl-after-fees",
     },
   ].map((row) => (row.value?.startsWith("-") ? { className: "text-red", ...row } : row));
 }
@@ -293,32 +314,10 @@ function getExecutionFailedTooltipProps(tradeAction: PositionTradeAction): Parti
 
   if (!error) return res;
 
-  res.tooltipTitle = `Reason: ${words(error.name).join(" ").toLowerCase()}`;
-
-  switch (error.name) {
-    case "OrderNotFulfillableAtAcceptablePrice": {
-      res.tooltipTitle =
-        "The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met.";
-      break;
-    }
-
-    case "InsufficientReserveForOpenInterest": {
-      res.tooltipTitle =
-        "Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity.";
-      break;
-    }
-
-    case "InsufficientSwapOutputAmount": {
-      res.tooltipTitle =
-        "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity.";
-      break;
-    }
-  }
-
   const tokenPrice = getTokenPriceByTradeAction(tradeAction);
 
   return {
-    ...res,
+    tooltipTitle: getErrorTooltipTitle(error.name),
     tooltipTitleRed: true,
     tooltipRows: [
       tokenPrice && {
@@ -327,12 +326,13 @@ function getExecutionFailedTooltipProps(tradeAction: PositionTradeAction): Parti
         value: formatUsd(tokenPrice, {
           displayDecimals: tradeAction.indexToken.priceDecimals,
         }),
+        key: "mark-price",
       },
-    ].filter(Boolean) as StatsTooltipRowProps[],
+    ].filter(Boolean) as TooltipProps[],
   };
 }
 
-function getExecutionPriceTooltipRows(tradeAction: PositionTradeAction): StatsTooltipRowProps[] {
+function getExecutionPriceTooltipRows(tradeAction: PositionTradeAction): TooltipProps[] {
   const triggerPrice = tradeAction.triggerPrice;
   const priceDecimals = tradeAction.indexToken.priceDecimals;
 
@@ -341,6 +341,7 @@ function getExecutionPriceTooltipRows(tradeAction: PositionTradeAction): StatsTo
       label: t`Order trigger price`,
       showDollar: false,
       value: formatUsd(triggerPrice, { displayDecimals: priceDecimals }),
+      key: "trigger-price",
     },
     tradeAction.orderType === OrderType.StopLossDecrease
       ? undefined
@@ -350,6 +351,7 @@ function getExecutionPriceTooltipRows(tradeAction: PositionTradeAction): StatsTo
           value: formatAcceptablePrice(tradeAction.acceptablePrice, {
             displayDecimals: priceDecimals,
           }),
+          key: "acceptable-price",
         },
 
     tradeAction.priceImpactUsd && {
@@ -357,11 +359,12 @@ function getExecutionPriceTooltipRows(tradeAction: PositionTradeAction): StatsTo
       showDollar: false,
       value: formatDeltaUsd(tradeAction.priceImpactUsd),
       className: tradeAction.priceImpactUsd.gt(0) ? "text-green" : "text-red",
+      key: "price-impact",
     },
-  ].filter(Boolean) as StatsTooltipRowProps[];
+  ].filter(Boolean) as TooltipProps[];
 }
 
-function getMarketTooltipRows(tradeAction: PositionTradeAction): StatsTooltipRowProps[] | undefined {
+function getMarketTooltipRows(tradeAction: PositionTradeAction): TooltipProps[] | undefined {
   const priceDecimals = tradeAction.indexToken.priceDecimals;
   const tokenPrice = getTokenPriceByTradeAction(tradeAction);
   const arr = [
@@ -369,14 +372,35 @@ function getMarketTooltipRows(tradeAction: PositionTradeAction): StatsTooltipRow
       label: "Mark Price",
       showDollar: false,
       value: formatUsd(tokenPrice, { displayDecimals: priceDecimals }),
+      key: "mark-price",
     },
     tradeAction.priceImpactUsd && {
       label: t`Actual Price Impact`,
       showDollar: false,
       value: formatDeltaUsd(tradeAction.priceImpactUsd),
       className: tradeAction.priceImpactUsd.gt(0) ? "text-green" : "text-red",
+      key: "price-impact",
     },
-  ].filter(Boolean) as StatsTooltipRowProps[];
+  ].filter(Boolean) as TooltipProps[];
 
   return arr.length > 0 ? arr : undefined;
+}
+
+function getErrorTooltipTitle(errorName: string) {
+  switch (errorName) {
+    case "OrderNotFulfillableAtAcceptablePrice": {
+      return t`The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met.`;
+    }
+
+    case "InsufficientReserveForOpenInterest": {
+      return t`Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity.`;
+    }
+
+    case "InsufficientSwapOutputAmount": {
+      return t`Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity.`;
+    }
+
+    default:
+      return t`Reason: ${words(errorName).join(" ").toLowerCase()}`;
+  }
 }
