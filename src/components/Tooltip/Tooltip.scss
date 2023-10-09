@@ -153,6 +153,15 @@
   border-bottom: none;
 }
 
+
+.Tooltip-error {
+  .Tooltip-handle {
+    color: var(--error-red);
+    text-decoration-color: var(--error-red);
+  }
+}
+
+
 .Tooltip.no-underline .Tooltip-handle::after {
   content: unset;
 }

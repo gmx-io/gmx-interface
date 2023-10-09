@@ -839,7 +839,7 @@ export function handleCancelOrder(chainId, signer, order, opts) {
   });
 }
 
-export async function cancelMultipleOrders(chainId, signer, allIndexes = [], opts) {
+export async function cancelMultipleOrders(chainId, signer, allIndexes: any[] = [], opts) {
   const ordersWithTypes = groupBy(allIndexes, (v) => v.split("-")[0]);
   function getIndexes(key) {
     if (!ordersWithTypes[key]) return;

@@ -3,13 +3,14 @@ import cx from "classnames";
 import PositionDropdown from "components/Exchange/PositionDropdown";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import { PositionOrderInfo, getOrderError, isIncreaseOrderType } from "domain/synthetics/orders";
+import { PositionOrderInfo, getOrderError, isDecreaseOrderType, isIncreaseOrderType } from "domain/synthetics/orders";
 import {
   PositionInfo,
   formatEstimatedLiquidationTime,
   formatLeverage,
   formatLiquidationPrice,
   getEstimatedLiquidationTimeInHours,
+  getTriggerNameByOrderType,
   usePositionsConstants,
 } from "domain/synthetics/positions";
 import { formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
@@ -329,7 +330,10 @@ export function PositionItem(p: Props) {
                     <div key={order.key} className="Position-list-order active-order-tooltip">
                       <div className="Position-list-order-label">
                         <span>
-                          {triggerThresholdType}{" "}
+                          {isDecreaseOrderType(order.orderType)
+                            ? getTriggerNameByOrderType(order.orderType, true)
+                            : t`Limit`}
+                          : {triggerThresholdType}{" "}
                           {formatUsd(order.triggerPrice, {
                             displayDecimals: order.indexToken?.priceDecimals,
                           })}

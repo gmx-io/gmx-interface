@@ -19,6 +19,7 @@ import {
   formatAcceptablePrice,
   formatLiquidationPrice,
   getPositionKey,
+  getTriggerNameByOrderType,
 } from "domain/synthetics/positions";
 import {
   TokensData,
@@ -325,8 +326,11 @@ export function OrderEditor(p: Props) {
       };
     }
 
+    const orderTypeName =
+      p.order.orderType === OrderType.LimitIncrease ? t`Limit` : getTriggerNameByOrderType(p.order.orderType);
+
     return {
-      text: "Update Order",
+      text: `Update ${orderTypeName} Order`,
       disabled: false,
       onClick: onSubmit,
     };

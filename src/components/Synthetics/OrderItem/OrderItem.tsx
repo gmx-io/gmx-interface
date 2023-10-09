@@ -15,11 +15,13 @@ import {
   isIncreaseOrderType,
   isSwapOrderType,
 } from "domain/synthetics/orders";
+import { getTriggerNameByOrderType } from "domain/synthetics/positions";
 import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
 import { USD_DECIMALS, getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
 import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { useMemo } from "react";
 
 type Props = {
   order: OrderInfo;
@@ -272,9 +274,6 @@ export function OrderItem(p: Props) {
         </>
       );
     } else {
-      const positionOrder = p.order as PositionOrderInfo;
-      const priceDecimals = positionOrder.indexToken.priceDecimals;
-
       return (
         <Tooltip
           handle={`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.triggerPrice, {
@@ -301,21 +300,26 @@ export function OrderItem(p: Props) {
     }
   }
 
+  const positionOrder = p.order as PositionOrderInfo;
+  const priceDecimals = positionOrder?.indexToken?.priceDecimals;
+
+  const markPrice = useMemo(() => {
+    if (isSwapOrderType(p.order.orderType)) {
+      return undefined;
+    }
+    return getMarkPrice({
+      prices: positionOrder.indexToken.prices,
+      isIncrease: isIncreaseOrderType(positionOrder.orderType),
+      isLong: positionOrder.isLong,
+    });
+  }, [p.order.orderType, positionOrder?.indexToken?.prices, positionOrder.isLong, positionOrder.orderType]);
+
   function renderMarkPrice() {
     if (isSwapOrderType(p.order.orderType)) {
       const { markSwapRatioText } = getSwapRatioText();
 
       return markSwapRatioText;
     } else {
-      const positionOrder = p.order as PositionOrderInfo;
-      const priceDecimals = positionOrder.indexToken.priceDecimals;
-
-      const markPrice = getMarkPrice({
-        prices: positionOrder.indexToken.prices,
-        isIncrease: isIncreaseOrderType(positionOrder.orderType),
-        isLong: positionOrder.isLong,
-      });
-
       return (
         <Tooltip
           handle={formatUsd(markPrice, { displayDecimals: priceDecimals })}
@@ -349,7 +353,9 @@ export function OrderItem(p: Props) {
             </div>
           </td>
         )}
-        <td className="Exchange-list-item-type">{isDecreaseOrderType(p.order.orderType) ? t`Trigger` : t`Limit`}</td>
+        <td className="Exchange-list-item-type">
+          {isDecreaseOrderType(p.order.orderType) ? getTriggerNameByOrderType(positionOrder.orderType) : t`Limit`}
+        </td>
         <td className="Order-list-item-text">{renderTitle()}</td>
         <td>{renderTriggerPrice()}</td>
         <td>{renderMarkPrice()}</td>

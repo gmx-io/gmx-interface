@@ -69,7 +69,7 @@ function PositionDropdown(p) {
               <div className="menu-item" onClick={handleTriggerClose}>
                 <img src={triggerClose} alt="Increase Limit" height={16} />
                 <p>
-                  <Trans>Trigger Close</Trans>
+                  <Trans>Set TP/SL</Trans>
                 </p>
               </div>
             </Menu.Item>
