@@ -1198,6 +1198,7 @@ export function TradeBox(p: Props) {
           hasExistingOrder={Boolean(existingOrder)}
           hasExistingPosition={Boolean(existingPosition)}
           onSelectCollateralAddress={onSelectCollateralAddress}
+          isTrigger={isTrigger}
         />
 
         {isTrigger && existingPosition?.leverage && (
@@ -1569,6 +1570,7 @@ export function TradeBox(p: Props) {
         triggerRatio={triggerRatio}
         marketInfo={marketInfo}
         collateralToken={collateralToken}
+        marketsOptions={marketsOptions}
         swapAmounts={swapAmounts}
         increaseAmounts={increaseAmounts}
         decreaseAmounts={decreaseAmounts}
