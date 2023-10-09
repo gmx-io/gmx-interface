@@ -332,6 +332,7 @@ export function TradeBox(p: Props) {
         triggerRatio: triggerRatio || markRatio,
         isLimit,
         findSwapPath: swapRoute.findSwapPath,
+        uiFeeFactor,
       });
     } else {
       return getSwapAmountsByToValue({
@@ -341,6 +342,7 @@ export function TradeBox(p: Props) {
         triggerRatio: triggerRatio || markRatio,
         isLimit,
         findSwapPath: swapRoute.findSwapPath,
+        uiFeeFactor,
       });
     }
   }, [
@@ -356,6 +358,7 @@ export function TradeBox(p: Props) {
     toToken,
     toTokenAmount,
     triggerRatio,
+    uiFeeFactor,
   ]);
 
   const increaseAmounts = useMemo(() => {
