@@ -1,6 +1,6 @@
 import { i18n } from "@lingui/core";
 import { en as plurals } from "make-plural/plurals";
-import { formatPositionMessage } from "./helpers";
+import { formatPositionMessage } from "./utils";
 import {
   cancelOrderIncreaseLong,
   createOrderDecreaseLong,
@@ -78,7 +78,7 @@ describe("TradeHistoryRow helpers", () => {
     expect(formatPositionMessage(frozenOrderIncreaseShort, minCollateralUsd)).toEqual([
       {
         text: "Execution Failed",
-        textRed: true,
+        isError: true,
       },
       {
         text: ": Increase Short BTC +$1,348.82",

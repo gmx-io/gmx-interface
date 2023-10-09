@@ -14,7 +14,7 @@ import { formatTokenAmount } from "lib/numbers";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import "./TradeHistoryRow.scss";
-import { formatPositionMessage, getOrderActionText } from "./helpers";
+import { formatPositionMessage, getOrderActionText } from "./utils";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 
@@ -90,14 +90,14 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
         const hasSmthBeforeFooter = message.tooltipTitle || message.tooltipRows?.length;
         const showTooltip = message.tooltipRows || message.tooltipFooter || message.tooltipTitle;
         const textElement = (
-          <span className={message.textRed && !showTooltip ? "text-red" : undefined}>{message.text}</span>
+          <span className={message.isError && !showTooltip ? "text-red" : undefined}>{message.text}</span>
         );
 
         return showTooltip ? (
           <Tooltip
             position="left-top"
             handle={textElement}
-            className={message.textRed ? "Tooltip-error" : undefined}
+            className={message.isError ? "Tooltip-error" : undefined}
             renderContent={() => (
               <>
                 {message.tooltipTitle ? (

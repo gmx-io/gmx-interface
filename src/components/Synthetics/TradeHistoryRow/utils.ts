@@ -15,7 +15,7 @@ import { trimStart } from "lodash";
 
 type FormatPositionMessageChunk = {
   text: string;
-  textRed?: boolean;
+  isError?: boolean;
   tooltipRows?: StatsTooltipRowProps[];
   tooltipTitle?: string;
   tooltipTitleRed?: boolean;
@@ -116,7 +116,7 @@ export const formatPositionMessage = (
         }
 
         return [
-          { text: "Execution Failed", textRed: true, ...getExecutionFailedTooltipProps(tradeAction) },
+          { text: "Execution Failed", isError: true, ...getExecutionFailedTooltipProps(tradeAction) },
           { text: `: ${increaseText} ${positionText} ${sizeDeltaText}` },
           { text: `, ${strs.join(", ")}` },
         ];
