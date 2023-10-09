@@ -38,3 +38,9 @@
     margin-right: -0.3rem !important;
   }
 }
+
+.StatusNotification-small,
+.StatusNotification-small .TransactionStatus-title,
+.StatusNotification-small .TransactionStatus-status {
+  font-size: 1.2rem;
+}
