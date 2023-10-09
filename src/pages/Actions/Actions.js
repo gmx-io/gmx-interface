@@ -98,7 +98,7 @@ export default function Actions({ savedIsPnlInLeverage, savedShowPnlAfterFees })
               <>
                 <Trans>GMX V1 information for account: {checkSummedAccount}</Trans>
                 <div>
-                  <ExternalLink newTab={false} href={`/#/actions/v2/${checkSummedAccount}`}>
+                  <ExternalLink newTab={false} href={`/#/actions/${checkSummedAccount}`}>
                     Check on GMX V2
                   </ExternalLink>
                   .

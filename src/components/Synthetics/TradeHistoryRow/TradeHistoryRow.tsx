@@ -115,7 +115,7 @@ export function TradeHistoryRow(p: Props) {
         {shouldDisplayAccount && (
           <span>
             {" "}
-            (<Link to={`/actions/v2/${tradeAction.account}`}>{tradeAction.account}</Link>)
+            (<Link to={`/actions/${tradeAction.account}`}>{tradeAction.account}</Link>)
           </span>
         )}
       </div>
