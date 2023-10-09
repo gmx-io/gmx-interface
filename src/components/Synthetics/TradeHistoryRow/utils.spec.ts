@@ -1,6 +1,6 @@
 import { i18n } from "@lingui/core";
 import { en as plurals } from "make-plural/plurals";
-import { formatPositionMessage, formatSwapMessage } from "./helpers";
+import { formatPositionMessage, formatSwapMessage } from "./utils";
 import {
   cancelOrderIncreaseLong,
   createOrderDecreaseLong,
@@ -69,11 +69,13 @@ describe("TradeHistoryRow helpers", () => {
             label: "Order trigger price",
             showDollar: false,
             value: "$0.836",
+            key: "trigger-price",
           },
           {
             label: "Acceptable Price",
             showDollar: false,
             value: "$0.827",
+            key: "acceptable-price",
           },
         ],
       },
@@ -82,7 +84,7 @@ describe("TradeHistoryRow helpers", () => {
     expect(formatPositionMessage(frozenOrderIncreaseShort, minCollateralUsd)).toEqual([
       {
         text: "Limit Order Execution Failed",
-        textRed: true,
+        isError: true,
       },
       {
         text: ": Short BTC +$1,348.82",
@@ -102,46 +104,54 @@ describe("TradeHistoryRow helpers", () => {
             label: "Mark Price",
             showDollar: false,
             value: "$6.090",
+            key: "mark-price",
           },
           {
             label: "Initial collateral",
             showDollar: false,
             value: "214.7790 USDC ($214.77)",
+            key: "initial-collateral",
           },
           {
             label: "Min required collateral",
             showDollar: false,
             value: "<$0.01",
+            key: "min-collateral",
           },
           {
             label: "Borrow Fee",
             showDollar: false,
             value: "$0.00",
             className: "text-red",
+            key: "borrow-fee",
           },
           {
             label: "Funding Fee",
             showDollar: false,
             value: "$0.00",
             className: "text-red",
+            key: "funding-fee",
           },
           {
             label: "Position Fee",
             showDollar: false,
             value: "-$4.50",
             className: "text-red",
+            key: "position-fee",
           },
           {
             label: "Price Impact",
             showDollar: false,
             value: " -$16.82",
             className: "text-red",
+            key: "price-impact",
           },
           {
             label: "PnL After Fees",
             showDollar: false,
             value: "-$126.31",
             className: "text-red",
+            key: "pnl-after-fees",
           },
         ],
         tooltipTitle: "This position was liquidated as the max leverage of 100.0x was exceeded.",
@@ -160,12 +170,14 @@ describe("TradeHistoryRow helpers", () => {
             label: "Mark Price",
             showDollar: false,
             value: "$4.46",
+            key: "mark-price",
           },
           {
             label: "Actual Price Impact",
             showDollar: false,
             value: " -$0.08",
             className: "text-red",
+            key: "price-impact",
           },
         ],
       },

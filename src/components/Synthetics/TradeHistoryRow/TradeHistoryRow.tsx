@@ -12,7 +12,7 @@ import { formatDateTime } from "lib/dates";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import "./TradeHistoryRow.scss";
-import { formatPositionMessage, formatSwapMessage } from "./helpers";
+import { formatPositionMessage, formatSwapMessage } from "./utils";
 
 type Props = {
   tradeAction: TradeAction;
@@ -46,21 +46,25 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
         const hasSmthBeforeFooter = message.tooltipTitle || message.tooltipRows?.length;
         const showTooltip = message.tooltipRows || message.tooltipFooter || message.tooltipTitle;
         const textElement = (
-          <span className={message.textRed && !showTooltip ? "text-red" : undefined}>{message.text}</span>
+          <span className={message.isError && !showTooltip ? "text-red" : undefined}>{message.text}</span>
         );
 
         return showTooltip ? (
           <Tooltip
             position="left-top"
             handle={textElement}
-            className={message.textRed ? "Tooltip-error" : undefined}
+            className={message.isError ? "Tooltip-error" : undefined}
             renderContent={() => (
               <>
                 {message.tooltipTitle ? (
                   <span className={message.tooltipTitleRed ? "text-red" : undefined}>
                     {message.tooltipTitle}
-                    {hasSmthAfterTitle && <br />}
-                    {hasSmthAfterTitle && <br />}
+                    {hasSmthAfterTitle && (
+                      <>
+                        <br />
+                        <br />
+                      </>
+                    )}
                   </span>
                 ) : null}
                 {message.tooltipRows?.map((props) => (
@@ -68,8 +72,12 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
                 ))}
                 {message.tooltipFooter ? (
                   <span className={message.tooltipFooterRed ? "text-red" : undefined}>
-                    {hasSmthBeforeFooter && <br />}
-                    {hasSmthBeforeFooter && <br />}
+                    {hasSmthBeforeFooter && (
+                      <>
+                        <br />
+                        <br />
+                      </>
+                    )}
                     {message.tooltipFooter}
                   </span>
                 ) : null}
