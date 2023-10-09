@@ -4,28 +4,47 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getExplorerUrl } from "config/chains";
 import { getToken } from "config/tokens";
-import { ClaimCollateralAction, ClaimType } from "domain/synthetics/claimHistory";
+import { ClaimAction, ClaimCollateralAction, ClaimFundingFeeAction, ClaimType } from "domain/synthetics/claimHistory";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { formatDateTime } from "lib/dates";
 import { formatTokenAmount } from "lib/numbers";
+import { groupBy } from "lodash";
 import { useMemo } from "react";
+import "./ClaimHistoryRow.scss";
 
-type Props = {
+type ClaimHistoryRowProps = {
+  claimAction: ClaimAction;
+};
+type ClaimCollateralHistoryRowProps = {
   claimAction: ClaimCollateralAction;
 };
 
-export function ClaimHistoryRow(p: Props) {
+type ClaimFundingFeesHistoryRowProps = {
+  claimAction: ClaimFundingFeeAction;
+};
+
+const claimCollateralEventTitles: Record<ClaimCollateralAction["eventName"], string> = {
+  [ClaimType.ClaimFunding]: t`Claim Funding Fees`,
+  [ClaimType.ClaimPriceImpact]: t`Claim Price Impact`,
+};
+
+export function ClaimHistoryRow({ claimAction }: ClaimHistoryRowProps) {
+  return claimAction.type === "collateral" ? (
+    <ClaimCollateralHistoryRow claimAction={claimAction} />
+  ) : (
+    <ClaimFundingFeesHistoryRow claimAction={claimAction} />
+  );
+}
+
+function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
   const { chainId } = useChainId();
   const { claimAction } = p;
 
   const marketsCount = claimAction.claimItems.length;
 
-  const eventTitle = {
-    [ClaimType.ClaimFunding]: t`Claim Funding Fees`,
-    [ClaimType.ClaimPriceImpact]: t`Claim Price Impact`,
-  }[claimAction.eventName];
+  const eventTitle = claimCollateralEventTitles[claimAction.eventName];
 
   const tokensMsg = useMemo(() => {
     const amountByToken = claimAction.claimItems.reduce((acc, { marketInfo, longTokenAmount, shortTokenAmount }) => {
@@ -104,6 +123,99 @@ export function ClaimHistoryRow(p: Props) {
           )}
         />
       </ExternalLink>
+    </div>
+  );
+}
+
+const claimFundingFeeEventTitles: Record<ClaimFundingFeeAction["eventName"], string> = {
+  [ClaimType.SettleFundingFeeCancelled]: t`Failed Settlement of Funding Fees for`,
+  [ClaimType.SettleFundingFeeCreated]: t`Request Settlement of Funding Fees for`,
+  [ClaimType.SettleFundingFeeExecuted]: t`Settled Funding Fees`,
+};
+
+// Settled Funding Fees: 0.0008 UNI, 2.0003 USDC from Long ETH[ETH-USDC] Position
+function ClaimFundingFeesHistoryRow(p: ClaimFundingFeesHistoryRowProps) {
+  const { chainId } = useChainId();
+  const { claimAction } = p;
+
+  const eventTitle = claimFundingFeeEventTitles[claimAction.eventName];
+
+  const groups = useMemo(() => {
+    const claimActionItems = claimAction.markets.map((market, i) => ({
+      market,
+      amount: claimAction.amounts[i],
+      token: claimAction.tokens[i],
+      // FIXME
+      transactionHash: claimAction.transactionHash,
+      isLong: claimAction.isLongOrders[i],
+    }));
+    return groupBy(claimActionItems, (item) => `${item.market.marketTokenAddress}/${item.isLong}`) as Record<
+      string,
+      typeof claimActionItems
+    >;
+  }, [
+    claimAction.amounts,
+    claimAction.isLongOrders,
+    claimAction.markets,
+    claimAction.tokens,
+    claimAction.transactionHash,
+  ]);
+
+  const content = useMemo(() => {
+    if (
+      claimAction.eventName === ClaimType.SettleFundingFeeCancelled ||
+      claimAction.eventName === ClaimType.SettleFundingFeeCreated
+    ) {
+      const groupsEntries = Object.entries(groups);
+      const markets = groupsEntries.map(([key, items], index) => {
+        return (
+          <ExternalLink
+            href={`${getExplorerUrl(chainId)}tx/${claimAction.transactionHash}`}
+            key={key}
+            className="ClaimHistoryRow__token-amount plain"
+          >
+            from {items[0].isLong ? "Long" : "Short"} {getMarketIndexName(items[0].market)} Position
+            {groupsEntries.length - 1 === index ? "" : ";"}
+          </ExternalLink>
+        );
+      });
+
+      return (
+        <span className="plain" key={claimAction.transactionHash}>
+          {eventTitle}: {markets}
+        </span>
+      );
+    }
+
+    if (claimAction.eventName === ClaimType.SettleFundingFeeExecuted) {
+      const amounts = Object.entries(groups).map(([key, items]) => {
+        return (
+          <span key={key} className="ClaimHistoryRow__token-amount">
+            {items.map((item) => (
+              <ExternalLink
+                className="plain"
+                href={`${getExplorerUrl(chainId)}tx/${claimAction.transactionHash}`}
+                key={`${item.token.address}/${item.market.marketTokenAddress}`}
+              >
+                {formatTokenAmount(item.amount, item.token.decimals, item.token.symbol)}
+              </ExternalLink>
+            ))}{" "}
+            from {items[0].isLong ? "Long" : "Short"} {getMarketIndexName(items[0].market)} Position
+          </span>
+        );
+      });
+      return (
+        <>
+          {eventTitle}: {amounts}
+        </>
+      );
+    }
+  }, [chainId, claimAction.eventName, claimAction.transactionHash, eventTitle, groups]);
+
+  return (
+    <div className="TradeHistoryRow App-box App-box-border">
+      <div className="muted TradeHistoryRow-time">{formatDateTime(claimAction.timestamp)}</div>
+      {content}
     </div>
   );
 }
