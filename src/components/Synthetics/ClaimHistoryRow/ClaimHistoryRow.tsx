@@ -128,12 +128,11 @@ function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
 }
 
 const claimFundingFeeEventTitles: Record<ClaimFundingFeeAction["eventName"], string> = {
-  [ClaimType.SettleFundingFeeCancelled]: t`Failed Settlement of Funding Fees for`,
-  [ClaimType.SettleFundingFeeCreated]: t`Request Settlement of Funding Fees for`,
+  [ClaimType.SettleFundingFeeCancelled]: t`Failed Settlement of Funding Fees`,
+  [ClaimType.SettleFundingFeeCreated]: t`Request Settlement of Funding Fees`,
   [ClaimType.SettleFundingFeeExecuted]: t`Settled Funding Fees`,
 };
 
-// Settled Funding Fees: 0.0008 UNI, 2.0003 USDC from Long ETH[ETH-USDC] Position
 function ClaimFundingFeesHistoryRow(p: ClaimFundingFeesHistoryRowProps) {
   const { chainId } = useChainId();
   const { claimAction } = p;
@@ -145,8 +144,7 @@ function ClaimFundingFeesHistoryRow(p: ClaimFundingFeesHistoryRowProps) {
       market,
       amount: claimAction.amounts[i],
       token: claimAction.tokens[i],
-      // FIXME
-      transactionHash: claimAction.transactionHash,
+      transactionHash: claimAction.transactionHashes[i],
       isLong: claimAction.isLongOrders[i],
     }));
     return groupBy(claimActionItems, (item) => `${item.market.marketTokenAddress}/${item.isLong}`) as Record<
@@ -158,7 +156,7 @@ function ClaimFundingFeesHistoryRow(p: ClaimFundingFeesHistoryRowProps) {
     claimAction.isLongOrders,
     claimAction.markets,
     claimAction.tokens,
-    claimAction.transactionHash,
+    claimAction.transactionHashes,
   ]);
 
   const content = useMemo(() => {
@@ -167,16 +165,18 @@ function ClaimFundingFeesHistoryRow(p: ClaimFundingFeesHistoryRowProps) {
       claimAction.eventName === ClaimType.SettleFundingFeeCreated
     ) {
       const groupsEntries = Object.entries(groups);
-      const markets = groupsEntries.map(([key, items], index) => {
+      const markets = groupsEntries.map(([key, items], marketIndex) => {
         return (
-          <ExternalLink
-            href={`${getExplorerUrl(chainId)}tx/${claimAction.transactionHash}`}
-            key={key}
-            className="ClaimHistoryRow__token-amount plain"
-          >
-            from {items[0].isLong ? "Long" : "Short"} {getMarketIndexName(items[0].market)} Position
-            {groupsEntries.length - 1 === index ? "" : ";"}
-          </ExternalLink>
+          <span key={key} className="ClaimHistoryRow__token-amount">
+            {items.map((item, index) => {
+              return (
+                <ExternalLink href={`${getExplorerUrl(chainId)}tx/${item.transactionHash}`} key={key} className="plain">
+                  from {item.isLong ? "Long" : "Short"} {getMarketIndexName(item.market)} Position
+                </ExternalLink>
+              );
+            })}
+            {groupsEntries.length - 1 === marketIndex ? "" : ";"}
+          </span>
         );
       });
 
@@ -188,19 +188,21 @@ function ClaimFundingFeesHistoryRow(p: ClaimFundingFeesHistoryRowProps) {
     }
 
     if (claimAction.eventName === ClaimType.SettleFundingFeeExecuted) {
-      const amounts = Object.entries(groups).map(([key, items]) => {
+      const groupsEntries = Object.entries(groups);
+      const amounts = groupsEntries.map(([key, items], index) => {
         return (
           <span key={key} className="ClaimHistoryRow__token-amount">
             {items.map((item) => (
               <ExternalLink
                 className="plain"
-                href={`${getExplorerUrl(chainId)}tx/${claimAction.transactionHash}`}
+                href={`${getExplorerUrl(chainId)}tx/${item.transactionHash}`}
                 key={`${item.token.address}/${item.market.marketTokenAddress}`}
               >
                 {formatTokenAmount(item.amount, item.token.decimals, item.token.symbol)}
               </ExternalLink>
             ))}{" "}
             from {items[0].isLong ? "Long" : "Short"} {getMarketIndexName(items[0].market)} Position
+            {groupsEntries.length - 1 === index ? "" : ";"}
           </span>
         );
       });

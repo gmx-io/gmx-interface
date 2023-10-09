@@ -91,7 +91,7 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
 
           if (orderStatus?.createdTxnHash) {
             if (marketInfo) {
-              text = t`${order.isLong ? "Long" : "Short"} ${marketInfo.name} request sent`;
+              text = t`${order.isLong ? "Long" : "Short"} ${marketInfo.name} Request sent`;
             } else {
               text = t`Settle request sent`;
             }

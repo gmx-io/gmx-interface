@@ -30,6 +30,7 @@ type RawClaimAction = {
     timestamp: number;
     hash: string;
   };
+  transactionIds?: string[];
 };
 
 export function useClaimCollateralHistory(
@@ -62,6 +63,8 @@ export function useClaimCollateralHistory(
             marketAddresses
             tokenAddresses
             amounts
+            transactionIds
+            isLongOrders
             transaction {
                 timestamp
                 hash
@@ -175,6 +178,7 @@ function createClaimFundingFeeAction(
     }),
     timestamp: rawAction.transaction.timestamp,
     tokens: rawAction.tokenAddresses.map((address) => getToken(chainId, getAddress(address))),
+    transactionHashes: rawAction.transactionIds ?? [],
     transactionHash: rawAction.transaction.hash,
   };
 }
