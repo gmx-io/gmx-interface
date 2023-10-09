@@ -978,7 +978,12 @@ msgstr "Confirmer l'échange"
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-msgid "Confirm Trigger Order"
+#~ msgid "Confirm Trigger Order"
+#~ msgstr ""
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "Confirm {0} Order"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
@@ -1092,14 +1097,16 @@ msgid "Create Referral Code"
 msgstr "Créer un code de parrainage"
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-msgid "Create Trigger order"
-msgstr ""
+#~ msgid "Create Trigger order"
+#~ msgstr ""
 
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-msgid "Create trigger order"
-msgstr ""
+#~ msgid "Create trigger order"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Create {0} Order"
 msgstr "Créer un {0} Ordre"
 
@@ -1623,8 +1630,8 @@ msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgstr "Exécuter l'ordre: Échanger {fromAmountDisplay} {0} pour {toAmountDisplay} {1}"
 
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
-msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText},"
-msgstr ""
+#~ msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText},"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #~ msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price:{1}, Market: {2}"
@@ -1639,9 +1646,13 @@ msgstr ""
 msgid "Execute order simulation failed."
 msgstr ""
 
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "Execution Failed: Swap {fromText} for {toText}, Price: {ratioText}"
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
+msgid "Execute {orderTypeName} Order: {positionText} {sizeDeltaText},"
 msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#~ msgid "Execution Failed: Swap {fromText} for {toText}, Price: {ratioText}"
+#~ msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "Execution Fee"
@@ -2329,8 +2340,11 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Limit"
 msgstr "Limite"
 
@@ -2620,6 +2634,8 @@ msgstr "Prix de marque"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Market"
 msgstr "Bourse"
 
@@ -3637,7 +3653,7 @@ msgstr "Code de parrainage actualisé !"
 msgid "Referrals"
 msgstr "Affiliés"
 
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Request"
 msgstr ">>>>>>> master"
@@ -3704,6 +3720,10 @@ msgstr "Récompenses"
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "SHORT LIQ."
+msgstr ""
+
+#: src/domain/synthetics/positions/utils.ts
+msgid "SL"
 msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
@@ -3863,6 +3883,10 @@ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Sending order request"
+msgstr ""
+
+#: src/components/Exchange/PositionDropdown.js
+msgid "Set TP/SL"
 msgstr ""
 
 #: src/App/App.js
@@ -4112,6 +4136,10 @@ msgstr "Stats"
 msgid "Stop Loss Decrease"
 msgstr ""
 
+#: src/domain/synthetics/positions/utils.ts
+msgid "Stop-Loss"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Structured Products"
 msgstr "Produits structurés"
@@ -4268,6 +4296,10 @@ msgstr "Échanges désactivés, en attente de {0} actualisations"
 msgid "Switch to {0} collateral."
 msgstr ""
 
+#: src/domain/synthetics/positions/utils.ts
+msgid "T"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.js
@@ -4276,6 +4308,19 @@ msgstr "TOKEN"
 
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "TOTAL SUPPLY"
+msgstr ""
+
+#: src/domain/synthetics/positions/utils.ts
+msgid "TP"
+msgstr ""
+
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "TP/SL"
+msgstr ""
+
+#: src/domain/synthetics/positions/utils.ts
+msgid "Take-Profit"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -4708,16 +4753,14 @@ msgstr "Transfert en cours"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/domain/synthetics/positions/utils.ts
 msgid "Trigger"
 msgstr "Déclencheur"
 
 #: src/components/Exchange/PositionDropdown.js
-msgid "Trigger Close"
-msgstr ""
+#~ msgid "Trigger Close"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -5571,16 +5614,16 @@ msgstr ""
 #~ msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "{actionText} Order: Swap {fromText} for {toText}, Price: {ratioText}"
-msgstr ""
+#~ msgid "{actionText} Order: Swap {fromText} for {toText}, Price: {ratioText}"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #~ msgid "{actionText} Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price: {pricePrefix} {1}, Market: {2}"
 #~ msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-msgid "{actionText} Swap {fromText} for {toText}"
-msgstr ""
+#~ msgid "{actionText} Swap {fromText} for {toText}"
+#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "{actionText} Withdraw {collateralText} from {positionText}"
@@ -5593,6 +5636,14 @@ msgstr ""
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #~ msgid "{actionText} {increaseText} {positionText} {sizeDeltaText}, {pricePrefix}: {0}, Market: {1}"
 #~ msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
+msgid "{actionText} {orderTypeName} Swap: {fromText} for {toText}"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
+msgid "{actionText} {orderTypeName} Swap: {fromText} for {toText}, Price: {ratioText}"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{chainName} Total Stats start from {totalStatsStartDate}.<0/> For detailed stats:"
@@ -5650,6 +5701,14 @@ msgstr ""
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "{orderTypeLabel} {positionText}, -{0}"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
+msgid "{orderTypeName} Order Execution Failed"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
+msgid "{orderTypeName} Swap Execution Failed: {fromText} for {toText}, Price: {ratioText}"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
