@@ -35,8 +35,8 @@
 
 .order-error-text-msg.level-warning .Tooltip-handle,
 .position-order-error.level-warning {
-  text-decoration-color: rgb(243, 181, 12);
-  color: rgb(243, 181, 12);
+  text-decoration-color: var(--warning-yellow);
+  color: var(--warning-yellow);
 }
 
 @media (max-width: 1300px) {
