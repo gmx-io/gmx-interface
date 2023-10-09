@@ -2354,6 +2354,7 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
+#: src/domain/synthetics/orders/utils.ts
 msgid "Limit"
 msgstr "지정가"
 
@@ -4336,6 +4337,7 @@ msgstr ""
 msgid "TP/SL"
 msgstr ""
 
+#: src/domain/synthetics/orders/utils.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take-Profit"
 msgstr ""
