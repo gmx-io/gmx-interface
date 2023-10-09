@@ -134,7 +134,7 @@ export function getDecreasePositionAmounts(p: {
 
     values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
     values.feeDiscountUsd = positionFeeInfo.discountUsd;
-    values.uiFeeUsd = getUiFee(values.sizeDeltaUsd, uiFeeFactor)?.deltaUsd ?? BigNumber.from(0);
+    values.uiFeeUsd = getUiFee(values.sizeDeltaUsd, uiFeeFactor);
 
     const totalFeesUsd = BigNumber.from(0)
       .add(values.positionFeeUsd)
@@ -230,7 +230,7 @@ export function getDecreasePositionAmounts(p: {
 
   values.positionFeeUsd = estimatedPositionFeeCost.usd;
   values.feeDiscountUsd = estimatedDiscountCost.usd;
-  values.uiFeeUsd = getUiFee(values.sizeDeltaUsd, uiFeeFactor)?.deltaUsd ?? BigNumber.from(0);
+  values.uiFeeUsd = getUiFee(values.sizeDeltaUsd, uiFeeFactor);
 
   const borrowFeeCost = estimateCollateralCost(
     position.pendingBorrowingFeesUsd,

@@ -14,7 +14,7 @@ import {
   getExecutionFee,
   getFeeItem,
   getTotalFeeItem,
-  getUiFee,
+  getUiFeeItem,
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
@@ -386,7 +386,7 @@ export function GmSwapBox(p: Props) {
 
     const swapFee = getFeeItem(amounts.swapFeeUsd?.mul(-1), basisUsd);
     const swapPriceImpact = getFeeItem(amounts.swapPriceImpactDeltaUsd, basisUsd);
-    const uiFee = getUiFee(basisUsd, uiFeeFactor);
+    const uiFee = getUiFeeItem(basisUsd, uiFeeFactor);
     const totalFees = getTotalFeeItem([swapPriceImpact, swapFee, uiFee].filter(Boolean) as FeeItem[]);
     const fees: GmSwapFees = {
       swapFee,

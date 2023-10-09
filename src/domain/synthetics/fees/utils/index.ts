@@ -125,7 +125,15 @@ export function getTotalFeeItem(feeItems: (FeeItem | undefined)[]): FeeItem {
   return totalFeeItem;
 }
 
-export function getUiFee(sizeUsd?: BigNumber, feeFactor?: BigNumber): FeeItem | undefined {
+export function getUiFee(sizeUsd?: BigNumber, feeFactor?: BigNumber): BigNumber {
+  if (!sizeUsd || !feeFactor || sizeUsd?.eq(0) || feeFactor?.eq(0)) {
+    return BigNumber.from(0);
+  }
+
+  return applyFactor(sizeUsd, feeFactor);
+}
+
+export function getUiFeeItem(sizeUsd?: BigNumber, feeFactor?: BigNumber): FeeItem | undefined {
   if (!sizeUsd || !feeFactor || sizeUsd?.eq(0) || feeFactor?.eq(0)) {
     return;
   }

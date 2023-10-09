@@ -16,7 +16,6 @@ import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { FindSwapPath, IncreasePositionAmounts, NextPositionValues } from "../types";
 import { getAcceptablePriceInfo, getMarkPrice, getTriggerThresholdType } from "./prices";
 import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "./swap";
-import { applyFactor } from "lib/numbers";
 
 export function getIncreasePositionAmounts(p: {
   marketInfo: MarketInfo;
@@ -143,7 +142,7 @@ export function getIncreasePositionAmounts(p: {
       basePriceImpactDeltaUsd.gt(0),
       userReferralInfo
     );
-    const baseUiFeeUsd = getUiFee(baseSizeDeltaUsd, uiFeeFactor)?.deltaUsd ?? BigNumber.from(0);
+    const baseUiFeeUsd = getUiFee(baseSizeDeltaUsd, uiFeeFactor);
 
     values.sizeDeltaUsd = baseCollateralUsd
       .sub(basePositionFeeInfo.positionFeeUsd)
@@ -161,7 +160,7 @@ export function getIncreasePositionAmounts(p: {
     );
     values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
     values.feeDiscountUsd = positionFeeInfo.discountUsd;
-    values.uiFeeUsd = getUiFee(values.sizeDeltaUsd, uiFeeFactor)?.deltaUsd ?? BigNumber.from(0);
+    values.uiFeeUsd = getUiFee(values.sizeDeltaUsd, uiFeeFactor);
 
     values.collateralDeltaUsd = baseCollateralUsd
       .sub(values.positionFeeUsd)
@@ -190,7 +189,7 @@ export function getIncreasePositionAmounts(p: {
 
     values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
     values.feeDiscountUsd = positionFeeInfo.discountUsd;
-    values.uiFeeUsd = getUiFee(values.sizeDeltaUsd, uiFeeFactor)?.deltaUsd ?? BigNumber.from(0);
+    values.uiFeeUsd = getUiFee(values.sizeDeltaUsd, uiFeeFactor);
 
     values.collateralDeltaUsd = values.sizeDeltaUsd.mul(BASIS_POINTS_DIVISOR).div(leverage);
     values.collateralDeltaAmount = convertToTokenAmount(
@@ -244,7 +243,7 @@ export function getIncreasePositionAmounts(p: {
 
       values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
       values.feeDiscountUsd = positionFeeInfo.discountUsd;
-      values.uiFeeUsd = uiFeeFactor?.gt(0) ? applyFactor(values.sizeDeltaUsd, uiFeeFactor) : BigNumber.from(0);
+      values.uiFeeUsd = getUiFee(values.sizeDeltaUsd, uiFeeFactor);
     }
 
     if (initialCollateralAmount?.gt(0)) {

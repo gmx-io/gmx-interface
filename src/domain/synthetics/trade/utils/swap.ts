@@ -19,7 +19,7 @@ export function getSwapAmountsByFromValue(p: {
   const priceOut = tokenOut.prices.maxPrice;
 
   const usdIn = convertToUsd(amountIn, tokenIn.decimals, priceIn)!;
-  const uiFeeUsd = getUiFee(usdIn, p.uiFeeFactor)?.deltaUsd.abs() ?? BigNumber.from(0);
+  const uiFeeUsd = getUiFee(usdIn, p.uiFeeFactor);
   const uiFeeAmount = convertToTokenAmount(uiFeeUsd, tokenOut.decimals, priceOut)!;
 
   let amountOut = BigNumber.from(0);
@@ -120,7 +120,7 @@ export function getSwapAmountsByToValue(p: {
   const priceOut = tokenOut.prices.maxPrice;
 
   const usdOut = convertToUsd(amountOut, tokenOut.decimals, priceOut)!;
-  const uiFeeUsd = getUiFee(usdOut, p.uiFeeFactor)?.deltaUsd.abs() ?? BigNumber.from(0);
+  const uiFeeUsd = getUiFee(usdOut, p.uiFeeFactor);
 
   const minOutputAmount = amountOut;
 

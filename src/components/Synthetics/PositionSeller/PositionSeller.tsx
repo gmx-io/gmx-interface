@@ -16,7 +16,7 @@ import {
   estimateExecuteDecreaseOrderGasLimit,
   getExecutionFee,
   getIsHighPriceImpact,
-  getUiFee,
+  getUiFeeItem,
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
@@ -256,7 +256,7 @@ export function PositionSeller(p: Props) {
         fundingFeeUsd: decreaseAmounts.fundingFeeUsd,
         feeDiscountUsd: decreaseAmounts.feeDiscountUsd,
         swapProfitFeeUsd: decreaseAmounts.swapProfitFeeUsd,
-        uiFee: getUiFee(decreaseAmounts.sizeDeltaUsd, uiFeeFactor),
+        uiFee: getUiFeeItem(decreaseAmounts.sizeDeltaUsd, uiFeeFactor),
       }),
       executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
     };
