@@ -211,6 +211,31 @@ export function OrderItem(p: Props) {
         />
       );
     } else {
+      // Mobile
+      if (p.order.errors.length) {
+        return (
+          <Tooltip
+            handle={renderTitleWithIcon(p.order)}
+            className={cx(`order-error-text-msg`, `level-${p.order.errorLevel}`)}
+            position="left-bottom"
+            renderContent={() => (
+              <>
+                {p.order.errors.map((error, i) => (
+                  <div
+                    className={cx({
+                      "OrderItem-tooltip-row": i > 0,
+                    })}
+                    key={error.msg}
+                  >
+                    <span className={error!.level === "error" ? "negative" : "warning"}>{error.msg}</span>
+                  </div>
+                ))}
+              </>
+            )}
+          />
+        );
+      }
+
       return renderTitleWithIcon(p.order);
     }
   }
