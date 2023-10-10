@@ -272,7 +272,7 @@ export function getDecreasePositionAmounts(p: {
     .add(values.borrowingFeeUsd)
     .add(values.fundingFeeUsd)
     .add(values.swapProfitFeeUsd)
-    .add(values.uiFeeUsd.abs())
+    .add(values.uiFeeUsd)
     .add(negativePnlUsd)
     .add(negativePriceImpactUsd)
     .add(priceImpactDiffUsd);

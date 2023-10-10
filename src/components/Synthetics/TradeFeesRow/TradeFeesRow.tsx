@@ -220,11 +220,11 @@ export function TradeFeesRow(p: Props) {
         ...swapFeeRows,
         positionFeeRow,
         feeDiscountRow,
+        uiFeeRow,
         borrowFeeRow,
         fundingFeeRow,
         borrowFeeRateRow,
         fundingFeeRateRow,
-        uiFeeRow,
         executionFeeRow,
       ].filter(Boolean) as FeeRow[];
     }
@@ -237,9 +237,9 @@ export function TradeFeesRow(p: Props) {
         fundingFeeRow,
         positionFeeRow,
         feeDiscountRow,
+        uiFeeRow,
         swapProfitFeeRow,
         ...swapFeeRows,
-        uiFeeRow,
         executionFeeRow,
       ].filter(Boolean) as FeeRow[];
     }

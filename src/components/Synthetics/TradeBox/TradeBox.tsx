@@ -425,6 +425,7 @@ export function TradeBox(p: Props) {
       userReferralInfo,
       minCollateralUsd,
       minPositionSizeUsd,
+      uiFeeFactor,
     });
   }, [
     acceptablePriceImpactBpsForLimitOrders,
@@ -439,6 +440,7 @@ export function TradeBox(p: Props) {
     minPositionSizeUsd,
     triggerPrice,
     userReferralInfo,
+    uiFeeFactor,
   ]);
 
   const nextPositionValues = useMemo(() => {
