@@ -595,7 +595,7 @@ function FullApp() {
             <div className="App-slippage-tolerance-input-percent">%</div>
           </div>
           {parseFloat(slippageAmount) < (DEFAULT_ALLOWED_SLIPPAGE_BPS / BASIS_POINTS_DIVISOR) * 100 && (
-            <div className="warning">
+            <div className="warning settings-modal-error">
               <Trans>
                 Allowed Slippage below {(DEFAULT_ALLOWED_SLIPPAGE_BPS / BASIS_POINTS_DIVISOR) * 100}% may result in
                 failed orders.
@@ -633,7 +633,7 @@ function FullApp() {
             </div>
             {parseFloat(executionFeeBufferBps) <
               (EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps / BASIS_POINTS_DIVISOR) * 100 && (
-              <div className="warning">
+              <div className="warning settings-modal-error">
                 <Trans>
                   Max Execution Fee buffer below{" "}
                   {(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps / BASIS_POINTS_DIVISOR) * 100}% may result in

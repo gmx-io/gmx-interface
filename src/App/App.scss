@@ -458,6 +458,10 @@ button.App-connect-wallet:hover {
   justify-content: flex-end;
 }
 
+.settings-modal-error {
+  padding-bottom: 0.7rem;
+}
+
 .section-title-content .section-title-content__title {
   font-size: var(--font-lg);
   line-height: 3.1rem;
@@ -569,7 +573,7 @@ button.App-connect-wallet:hover {
 }
 
 .Position-card-title::after {
-  content: '';
+  content: "";
   position: absolute;
   left: -$app-card-padding;
   top: -$app-card-padding;
