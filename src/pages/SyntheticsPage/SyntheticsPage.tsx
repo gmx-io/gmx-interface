@@ -30,7 +30,12 @@ import { getByKey } from "lib/objects";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Helmet from "react-helmet";
 
-import { getMarketIndexName, getMarketPoolName, useMarketsInfo } from "domain/synthetics/markets";
+import {
+  getMarketIndexName,
+  getMarketPoolName,
+  getTotalClaimableFundingUsd,
+  useMarketsInfo,
+} from "domain/synthetics/markets";
 import { TradeMode } from "domain/synthetics/trade";
 import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTradeOption";
 import { helperToast } from "lib/helperToast";
@@ -195,6 +200,11 @@ export function SyntheticsPage(p: Props) {
       ordersCount: Object.keys(ordersInfoData || {}).length,
     };
   }, [ordersInfoData, positionsInfoData]);
+  const hasClaimables = useMemo(() => {
+    const markets = Object.values(marketsInfoData ?? {});
+    const totalClaimableFundingUsd = getTotalClaimableFundingUsd(markets);
+    return totalClaimableFundingUsd.gt(0);
+  }, [marketsInfoData]);
 
   const [isClaiming, setIsClaiming] = useState(false);
   const [isSettling, setIsSettling] = useState(false);
@@ -307,7 +317,7 @@ export function SyntheticsPage(p: Props) {
                   [ListSection.Positions]: t`Positions${positionsCount ? ` (${positionsCount})` : ""}`,
                   [ListSection.Orders]: t`Orders${ordersCount ? ` (${ordersCount})` : ""}`,
                   [ListSection.Trades]: t`Trades`,
-                  [ListSection.Claims]: t`Claims`,
+                  [ListSection.Claims]: hasClaimables ? t`Claims (1)` : t`Claims`,
                 }}
                 option={listSection}
                 onChange={(section) => setListSection(section)}
@@ -439,7 +449,7 @@ export function SyntheticsPage(p: Props) {
                 [ListSection.Positions]: t`Positions${positionsCount ? ` (${positionsCount})` : ""}`,
                 [ListSection.Orders]: t`Orders${ordersCount ? ` (${ordersCount})` : ""}`,
                 [ListSection.Trades]: t`Trades`,
-                [ListSection.Claims]: t`Claims`,
+                [ListSection.Claims]: hasClaimables ? t`Claims (1)` : t`Claims`,
               }}
               option={listSection}
               onChange={(section) => setListSection(section)}
