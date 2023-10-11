@@ -485,7 +485,7 @@ export function useGmxPrice(chainId, libraries, active) {
   const testGmxPrice = chainId === ARBITRUM ? gmxPriceFromArbitrum : gmxPriceFromAvalanche;
 
   // hard-coded price value
-  const gmxPrice = ethers.BigNumber.from("1167477086949502185821000000000");
+  const gmxPrice = ethers.BigNumber.from("32114770869495021858210000000000");
   const mutate = useCallback(() => {
     mutateFromAvalanche();
     mutateFromArbitrum();
