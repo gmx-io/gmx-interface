@@ -302,6 +302,7 @@ function FullApp() {
   const [shouldDisableValidationForTesting, setShouldDisableValidationForTesting] = useState(false);
   const [showPnlAfterFees, setShowPnlAfterFees] = useState(true);
   const [emailText, setEmailText] = useState("");
+  const [checkedTos, setCheckedTos] = useState(false);
 
   const [savedIsPnlInLeverage, setSavedIsPnlInLeverage] = useLocalStorageSerializeKey(
     [chainId, IS_PNL_IN_LEVERAGE_KEY],
@@ -562,6 +563,10 @@ function FullApp() {
     };
   }, [active, chainId, vaultAddress, positionRouterAddress]);
 
+  const handleTosChange = () => {
+    setCheckedTos(!checkedTos);
+  };
+
   return (
     <>
       <div className="App">
@@ -716,8 +721,20 @@ function FullApp() {
         setIsVisible={setWalletModalVisible}
         label={`Get Started`}
       >
-        <div className="Page-description">
-          <Trans>{`Connect your wallet and agree to terms.`}</Trans>
+        <div className="Wallet-modal-description">
+          <input id="tos" type="checkbox" />
+          <label for="tos">
+            I certify that I have read and accept the
+            <br />
+            <a href="#">
+              <span>Terms of Services</span>
+            </a>{" "}
+            and{" "}
+            <a href="#">
+              <span>Privacy Policy</span>
+            </a>
+            .
+          </label>
         </div>
         <div className="Modal-content-wrapper">
           <UserOnboardSection
@@ -727,6 +744,7 @@ function FullApp() {
             disabled={false}
             showArrow={true}
             isActive={activeStep === 2}
+            showSkip={false}
           />
 
           <AnimatePresence>
@@ -739,10 +757,10 @@ function FullApp() {
                 variants={optionalSectionVisibilityVariants}
                 style={{ originY: 0 }}
               >
-                <button className="Wallet-btn MetaMask-btn" onClick={activateMetaMask}>
+                <button className="Wallet-btn" onClick={activateMetaMask}>
                   <img src={metamaskImg} alt="MetaMask" />
                   <div>
-                    <Trans>MetaMask</Trans>
+                    <Trans>Connect Metamask</Trans>
                   </div>
                 </button>
                 <button className="Wallet-btn CoinbaseWallet-btn" onClick={activateCoinBase}>
@@ -751,10 +769,10 @@ function FullApp() {
                     <Trans>Coinbase Wallet</Trans>
                   </div>
                 </button>
-                <button className="Wallet-btn WalletConnect-btn" onClick={activateWalletConnect}>
+                <button className="Wallet-btn" onClick={activateWalletConnect}>
                   <img src={walletConnectImg} alt="WalletConnect" />
                   <div>
-                    <Trans>WalletConnect</Trans>
+                    <Trans>Wallet Connect</Trans>
                   </div>
                 </button>
               </motion.div>
@@ -768,6 +786,7 @@ function FullApp() {
             disabled={!(active && hasTokens)}
             showArrow={true}
             isActive={activeStep === 3}
+            showSkip={true}
           />
 
           {!doesUserHaveEmail && (
@@ -778,6 +797,7 @@ function FullApp() {
               disabled={!active}
               showArrow={true}
               isActive={activeStep === 4}
+              showSkip={true}
             />
           )}
 
@@ -792,18 +812,16 @@ function FullApp() {
                 style={{ originY: 0 }}
               >
                 <div className="Email-input-section">
+                  <label>Your email</label>
                   <img src={emailIcn} alt="Email icon" />
                   <input
                     type="text"
-                    placeholder="Enter email here"
+                    placeholder="name@example.com"
                     value={emailText}
                     onChange={(e) => setEmailText(e.target.value)}
                   />
+                  <Button onClick={() => handleEmailSubmit(emailText)}>{`Verify`}</Button>
                 </div>
-
-                <Button variant="approve-done" className="w-20 h-full" onClick={() => handleEmailSubmit(emailText)}>
-                  {`Done`}
-                </Button>
                 {showOtp && (
                   <motion.div
                     className="Wallets-container"

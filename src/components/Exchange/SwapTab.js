@@ -1628,6 +1628,7 @@ export default function SwapTab(props) {
   };
 
   function approveFromToken() {
+    // @todo approve
     approveTokens({
       setIsApproving,
       library,

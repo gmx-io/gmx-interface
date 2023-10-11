@@ -81,7 +81,9 @@
 
 .Modal-title {
   text-align: left;
-  font-size: var(--font-md);
+  font-size: 26px; /* var(--font-md); */
+  font-family: tektur;
+  font-weight: 600;
   line-height: 1;
 }
 

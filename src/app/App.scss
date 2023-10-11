@@ -319,29 +319,32 @@
 
 .Wallets-container {
   display:flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  padding: 2px;
-  width: 90%;
+  justify-content: start;
+  margin-bottom: 1.05rem;
+  width: 100%;
 }
 
 
 .Wallet-btn {
-  display: block;
-  box-shadow: inset 0px 0px 1rem 0.5rem rgba(27, 30, 46, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   background: rgba(45, 45, 45, 0.50);
-  height: 5.1rem;
-  width: 90%;
-  border: 1px solid var(--dark-blue-border);
+  height: 122px;
+  width: 125px;
   border-radius: 8px;
-  position: relative;
+  padding: 0rem 1rem;
+  border: 0px;
   color: white;
-  font-size: 2rem;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  text-align: left;
-  padding-left: 1.85rem;
-  padding-top: 1.05rem;
+  font-size: 14px;
+}
+.Wallet-btn img {
+  width: 44px;
+  height: 44px;
+  margin-bottom: 10px;
 }
 .Wallet-btn:hover {
   background: var(--dark-blue-hover);
@@ -350,29 +353,15 @@
 .Wallet-btn:active {
   background: var(--dark-blue-active);
 }
-
-.Wallet-btn:not(:last-child) {
-  margin-bottom: 1.05rem;
+.Wallet-btn div {
+  font-family: tektur;
 }
 
-.MetaMask-btn img {
-  display: inline-block;
-  height: 2.325rem;
-  margin-right: 1.7rem;
-  margin-left: 0.15rem;
+.CoinbaseWallet-btn {
+  margin-left: 16px;
+  margin-right: 16px;
 }
 
-.CoinbaseWallet-btn img {
-  display: inline-block;
-  height: 2.8rem;
-  margin-right: 1.7rem;
-}
-
-.WalletConnect-btn img {
-  display: inline-block;
-  height: 2.8rem;
-  margin-right: 1.8rem;
-}
 
 button.App-connect-wallet {
   cursor: pointer;
@@ -508,14 +497,54 @@ button.App-connect-wallet:hover {
   padding-bottom: 8px;
 }
 
+.Wallet-modal-description {
+  color: #b7b7bd;
+  line-height: 2.15rem;
+  color: rgba(255, 255, 255, 0.71);
+  font-size: 17px;
+  font-style: normal;
+  font-weight: 500;
+  margin: 0px 14px;
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+}
+.Wallet-modal-description input[type=checkbox] {
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  appearance: none;
+  background: no-repeat url('/img/unchecked.svg');
+  background-size: 20px;
+}
+.Wallet-modal-description input:checked {
+  background: no-repeat url('/img/checked.svg');
+  background-size: 20px;
+}
+
+.Wallet-modal-description span {
+  color: #3274D7;
+  font-family: tektur;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.Wallet-modal-description a, .Wallet-modal-description a:hover {
+  text-decoration: none;
+}
+.Wallet-modal-description label {
+  font-family: tektur;
+}
+
 .Modal-content-wrapper {
-  padding: 8px 8px;
+  padding: 20px 18px;
+  margin: 20px 14px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: #1a1a1a;
+  background: #0D0F19;
   border-radius: 8px;
 }
 
@@ -1477,24 +1506,53 @@ button.App-button {
 
 .Email-input-section {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  width: 365px;
-  height: 47px;
-  padding: 12px;
-  flex-shrink: 0;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  background: #232323;
+  position: relative;
+  width: 100%;
+}
+
+.Email-input-section label {
+  color: #FFF;
+  font-family: tektur;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 150%; /* 24px */
+  width: 100%;
+  margin: 5px 0px;
 }
 
 .Email-input-section img {
+  position: absolute;
+  top: 48px;
+  left: 14px;
   margin-right: 5px; /* Add spacing after the image */
 }
 
 .Email-input-section input {
-  flex-grow: 1; /* Allow the input to take up the remaining space */
+  height: 47px;
+  padding: 12px 42px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: #232323;
+  width: 100%;
+  font-family: tektur;
+  font-size: 16px;
+  font-weight: 400;
 }
+.Email-input-section button {
+  width: 100%;
+  height: 47px;
+  margin-top: 20px;
+  border-radius: 8px;
+  background: #FF7028;
+  font-family: tektur;
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
 
+}
 
 .Email-input-container {
     padding-bottom: 5px;
