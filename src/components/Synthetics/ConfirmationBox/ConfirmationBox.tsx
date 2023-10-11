@@ -324,7 +324,7 @@ export function ConfirmationBox(p: Props) {
     }
 
     if (needPayTokenApproval) {
-      return { text: t`Pending ${fromToken?.symbol} approval`, disabled: true };
+      return { text: t`Pending ${fromToken?.assetSymbol ?? fromToken?.symbol} approval`, disabled: true };
     }
 
     if (isHighPriceImpact && !isHighPriceImpactAccepted) {
@@ -360,6 +360,7 @@ export function ConfirmationBox(p: Props) {
     decreaseOrdersThatWillBeExecuted.length,
     error,
     fromToken?.symbol,
+    fromToken?.assetSymbol,
     isHighPriceImpact,
     isHighPriceImpactAccepted,
     isIncrease,
@@ -1374,7 +1375,7 @@ export function ConfirmationBox(p: Props) {
 
             <ApproveTokenButton
               tokenAddress={fromToken.address}
-              tokenSymbol={fromToken.symbol}
+              tokenSymbol={fromToken.assetSymbol ?? fromToken.symbol}
               spenderAddress={getContract(chainId, "SyntheticsRouter")}
             />
           </>
