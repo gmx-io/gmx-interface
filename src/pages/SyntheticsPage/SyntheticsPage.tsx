@@ -86,6 +86,7 @@ export function SyntheticsPage(p: Props) {
   const { ordersInfoData, isLoading: isOrdersLoading } = useOrdersInfo(chainId, {
     account,
     marketsInfoData,
+    positionsInfoData,
     tokensData,
   });
 
@@ -196,10 +197,15 @@ export function SyntheticsPage(p: Props) {
       });
   }, [ordersInfoData, selectedPositionKey]);
 
-  const { positionsCount, ordersCount } = useMemo(() => {
+  const { positionsCount, ordersCount, ordersErrorsCount, ordersWarningsCount } = useMemo(() => {
+    const positions = Object.values(positionsInfoData || {});
+    const orders = Object.values(ordersInfoData || {});
+
     return {
-      positionsCount: Object.keys(positionsInfoData || {}).length,
-      ordersCount: Object.keys(ordersInfoData || {}).length,
+      positionsCount: positions.length,
+      ordersCount: orders.length,
+      ordersErrorsCount: orders.filter((order) => order.errorLevel === "error").length,
+      ordersWarningsCount: orders.filter((order) => order.errorLevel === "warning").length,
     };
   }, [ordersInfoData, positionsInfoData]);
 
@@ -276,6 +282,27 @@ export function SyntheticsPage(p: Props) {
     helperToast.success(message);
   }
 
+  function renderOrdersTabTitle() {
+    if (!ordersCount) {
+      return (
+        <div>
+          <Trans>Orders</Trans>
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        <Trans>Orders</Trans>{" "}
+        <span
+          className={cx({ negative: ordersErrorsCount > 0, warning: !ordersErrorsCount && ordersWarningsCount > 0 })}
+        >
+          ({ordersCount})
+        </span>
+      </div>
+    );
+  }
+
   return (
     <div className="Exchange page-layout">
       <Helmet>
@@ -309,7 +336,7 @@ export function SyntheticsPage(p: Props) {
                 options={Object.keys(ListSection)}
                 optionLabels={{
                   [ListSection.Positions]: t`Positions${positionsCount ? ` (${positionsCount})` : ""}`,
-                  [ListSection.Orders]: t`Orders${ordersCount ? ` (${ordersCount})` : ""}`,
+                  [ListSection.Orders]: renderOrdersTabTitle(),
                   [ListSection.Trades]: t`Trades`,
                   [ListSection.Claims]: t`Claims`,
                 }}
@@ -434,7 +461,7 @@ export function SyntheticsPage(p: Props) {
               options={Object.keys(ListSection)}
               optionLabels={{
                 [ListSection.Positions]: t`Positions${positionsCount ? ` (${positionsCount})` : ""}`,
-                [ListSection.Orders]: t`Orders${ordersCount ? ` (${ordersCount})` : ""}`,
+                [ListSection.Orders]: renderOrdersTabTitle(),
                 [ListSection.Trades]: t`Trades`,
                 [ListSection.Claims]: t`Claims`,
               }}

@@ -65,7 +65,7 @@ export default function ChartTokenSelector(props: Props) {
       };
     });
     const groupedMarketsWithIndex: { [marketAddress: string]: TokenOption[] } = groupBy(
-      marketsWithMaxReservedUsd,
+      marketsWithMaxReservedUsd as any,
       (market) => market.indexTokenAddress
     );
 

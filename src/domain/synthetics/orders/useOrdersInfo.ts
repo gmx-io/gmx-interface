@@ -2,6 +2,7 @@ import { getWrappedToken } from "config/tokens";
 import { getByKey } from "lib/objects";
 import { useMemo } from "react";
 import { MarketsInfoData } from "../markets";
+import { PositionsInfoData } from "../positions";
 import { TokensData } from "../tokens";
 import { OrdersInfoData } from "./types";
 import { useOrders } from "./useOrders";
@@ -17,10 +18,11 @@ export function useOrdersInfo(
   p: {
     marketsInfoData?: MarketsInfoData;
     tokensData?: TokensData;
+    positionsInfoData?: PositionsInfoData;
     account: string | null | undefined;
   }
 ): AggregatedOrdersDataResult {
-  const { marketsInfoData, tokensData, account } = p;
+  const { marketsInfoData, tokensData, account, positionsInfoData } = p;
   const { ordersData } = useOrders(chainId, { account });
 
   const wrappedToken = getWrappedToken(chainId);
@@ -43,7 +45,13 @@ export function useOrdersInfo(
       .reduce((acc: OrdersInfoData, orderKey: string) => {
         const order = getByKey(ordersData, orderKey)!;
 
-        const orderInfo = getOrderInfo(marketsInfoData, tokensData, wrappedToken, order);
+        const orderInfo = getOrderInfo({
+          marketsInfoData,
+          tokensData,
+          wrappedNativeToken: wrappedToken,
+          order,
+          positionsInfoData,
+        });
 
         if (!orderInfo) {
           // eslint-disable-next-line no-console
@@ -61,5 +69,5 @@ export function useOrdersInfo(
       ordersInfoData,
       isLoading: false,
     };
-  }, [marketsInfoData, ordersData, tokensData, wrappedToken, account]);
+  }, [account, marketsInfoData, ordersData, positionsInfoData, tokensData, wrappedToken]);
 }
