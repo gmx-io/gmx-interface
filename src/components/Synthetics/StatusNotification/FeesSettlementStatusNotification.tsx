@@ -40,9 +40,10 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
     Object.values(orderStatuses).forEach((orderStatus) => {
       const key = getPendingOrderKey(orderStatus.data);
       const order = orderByKey.get(key);
-      if (!order) throw new Error("order not found");
-      res.set(order, orderStatus);
-    }, {} as Map<string, OrderStatus>);
+      if (order) {
+        res.set(order, orderStatus);
+      }
+    });
     return res;
   }, [orderByKey, orderStatuses]);
 
