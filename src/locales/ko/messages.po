@@ -983,11 +983,6 @@ msgstr "스왑 확인"
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "Confirm Trigger Order"
-#~ msgstr ""
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Confirm {0} Order"
 msgstr ""
 
@@ -1100,14 +1095,6 @@ msgstr "주문 생성"
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Create Referral Code"
 msgstr "추천 코드 생성"
-
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#~ msgid "Create Trigger order"
-#~ msgstr ""
-
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#~ msgid "Create trigger order"
-#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -1638,14 +1625,6 @@ msgstr "실행"
 msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgstr "주문 실행: {fromAmountDisplay} {0}을 {toAmountDisplay} {1}로 스왑"
 
-#: src/components/Synthetics/TradeHistoryRow/utils.ts
-#~ msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText},"
-#~ msgstr ""
-
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#~ msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price:{1}, Market: {2}"
-#~ msgstr ""
-
 #: src/components/Exchange/TradeHistory.js
 msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr ""
@@ -1658,10 +1637,6 @@ msgstr ""
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Execute {orderTypeName} Order: {positionText} {sizeDeltaText},"
 msgstr ""
-
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#~ msgid "Execution Failed: Swap {fromText} for {toText}, Price: {ratioText}"
-#~ msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "Execution Fee"
@@ -3190,11 +3165,6 @@ msgstr "주문 ({0})"
 msgid "Orders cancelled."
 msgstr "주문 취소"
 
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
-#~ msgid "Orders{0}"
-#~ msgstr ""
-
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Orders <0>({0})</0>"
 msgstr ""
@@ -4409,14 +4379,6 @@ msgid "The Max Execution Fee is set to a higher value to handle potential increa
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
-#~ msgid "The Order may not execute at the desired Trigger Price as the current Price Impact is higher than its Acceptable Price Impact. Consider canceling and creating a new {suggestionType} Order."
-#~ msgstr ""
-
-#: src/domain/synthetics/orders/utils.ts
-#~ msgid "The Order may not execute at the desired {priceText} as the current Price Impact is higher than its Acceptable Price Impact. Consider canceling and creating a new {suggestionType} Order."
-#~ msgstr ""
-
-#: src/domain/synthetics/orders/utils.ts
 msgid "The Order may not execute at the desired {priceText} as the current Price Impact {0} is higher than its Acceptable Price Impact {1}. Consider canceling and creating a new {suggestionType} Order."
 msgstr ""
 
@@ -4499,10 +4461,6 @@ msgstr "숏 포지션보다 롱 포지션이 더 많이 열려있기 때문에, 
 #: src/components/Exchange/SwapBox.js
 msgid "There are more shorts than longs, borrow fees for longing is currently zero"
 msgstr "롱 포지션보다 숏 포지션이 더 많이 열려있기 때문에, 현재 롱 포지션에 적용되는 차용수수료는 0입니다"
-
-#: src/domain/synthetics/orders/utils.ts
-#~ msgid "There is a high Swap Price Impact for the Order Swap path."
-#~ msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
 #: src/lib/contracts/transactionErrors.tsx
@@ -4808,10 +4766,6 @@ msgstr "이전중"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Trigger"
 msgstr "트리거"
-
-#: src/components/Exchange/PositionDropdown.js
-#~ msgid "Trigger Close"
-#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -5375,10 +5329,6 @@ msgstr ""
 msgid "You have an existing position in the {0} market pool. <0>Switch to {1} market pool.</0>"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
-#~ msgid "You have an existing position with {0} as Collateral."
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 msgid "You have an existing position with {0} as collateral."
 msgstr ""
@@ -5673,33 +5623,9 @@ msgstr ""
 msgid "{actionText} Deposit {collateralText} into {positionText}"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#~ msgid "{actionText} Deposit {collateralText} into {positionText}, Market: {0}"
-#~ msgstr ""
-
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#~ msgid "{actionText} Order: Swap {fromText} for {toText}, Price: {ratioText}"
-#~ msgstr ""
-
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#~ msgid "{actionText} Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price: {pricePrefix} {1}, Market: {2}"
-#~ msgstr ""
-
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#~ msgid "{actionText} Swap {fromText} for {toText}"
-#~ msgstr ""
-
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "{actionText} Withdraw {collateralText} from {positionText}"
 msgstr ""
-
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#~ msgid "{actionText} Withdraw {collateralText} from {positionText}, Market: {0}"
-#~ msgstr ""
-
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#~ msgid "{actionText} {increaseText} {positionText} {sizeDeltaText}, {pricePrefix}: {0}, Market: {1}"
-#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "{actionText} {orderTypeName} Swap: {fromText} for {toText}"
@@ -5786,10 +5712,6 @@ msgstr ""
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} canceled"
 msgstr ""
-
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#~ msgid "{positionText} {sizeDeltaText}, Price: {0}, Market: {1}"
-#~ msgstr ""
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"
