@@ -10,6 +10,7 @@
 
 .Tooltip-row .Tooltip-row-value {
   text-align: right;
+  word-break: break-all;
 }
 
 .Tooltip-row-values {

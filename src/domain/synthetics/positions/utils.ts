@@ -8,6 +8,8 @@ import { applyFactor, expandDecimals, formatAmount, formatUsd } from "lib/number
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd, getPositionFee, getPriceImpactForPosition } from "../fees";
 import { TokenData, convertToUsd } from "../tokens";
 import { PositionInfo } from "./types";
+import { OrderType } from "../orders/types";
+import { t } from "@lingui/macro";
 
 export function getPositionKey(account: string, marketAddress: string, collateralAddress: string, isLong: boolean) {
   return `${account}:${marketAddress}:${collateralAddress}:${isLong}`;
@@ -312,4 +314,20 @@ export function formatEstimatedLiquidationTime(hours?: number | undefined) {
   }
 
   return `${days} days`;
+}
+
+export function getTriggerNameByOrderType(orderType: OrderType | undefined, abbr = false) {
+  const triggerStr = abbr ? t`T` : t`Trigger`;
+  const takeProfitStr = abbr ? t`TP` : t`Take-Profit`;
+  const stopLossStr = abbr ? t`SL` : t`Stop-Loss`;
+
+  if (orderType === OrderType.LimitDecrease) {
+    return takeProfitStr;
+  }
+
+  if (orderType === OrderType.StopLossDecrease) {
+    return stopLossStr;
+  }
+
+  return triggerStr;
 }

@@ -104,6 +104,13 @@
     text-decoration-color: rgb(243, 181, 12);
   }
 
+  &.error {
+    .Tooltip-handle {
+      color: var(--error-red);
+      text-decoration-color: var(--error-red);
+    }
+  }
+
   .MarketSelector-tooltip-content {
     color: white;
   }

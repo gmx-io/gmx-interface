@@ -36,6 +36,7 @@ import {
   formatAcceptablePrice,
   formatLeverage,
   formatLiquidationPrice,
+  getTriggerNameByOrderType,
   usePositionsConstants,
 } from "domain/synthetics/positions";
 import { TokenData, TokensData, TokensRatio, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
@@ -209,7 +210,7 @@ export function TradeBox(p: Props) {
   const tradeModeLabels = {
     [TradeMode.Market]: t`Market`,
     [TradeMode.Limit]: t`Limit`,
-    [TradeMode.Trigger]: t`Trigger`,
+    [TradeMode.Trigger]: t`TP/SL`,
   };
 
   const { chainId } = useChainId();
@@ -768,9 +769,19 @@ export function TradeBox(p: Props) {
     } else if (isLimit) {
       return t`Create Limit order`;
     } else {
-      return t`Create Trigger order`;
+      return t`Create ${getTriggerNameByOrderType(decreaseAmounts?.triggerOrderType!)} Order`;
     }
-  }, [error, fromToken?.symbol, isLimit, isMarket, isSwap, toToken?.symbol, tradeType, tradeTypeLabels]);
+  }, [
+    decreaseAmounts?.triggerOrderType,
+    error,
+    fromToken?.symbol,
+    isLimit,
+    isMarket,
+    isSwap,
+    toToken?.symbol,
+    tradeType,
+    tradeTypeLabels,
+  ]);
 
   function onSubmit() {
     if (!account) {
@@ -1196,6 +1207,7 @@ export function TradeBox(p: Props) {
           hasExistingOrder={Boolean(existingOrder)}
           hasExistingPosition={Boolean(existingPosition)}
           onSelectCollateralAddress={onSelectCollateralAddress}
+          isTrigger={isTrigger}
         />
 
         {isTrigger && existingPosition?.leverage && (
@@ -1567,6 +1579,7 @@ export function TradeBox(p: Props) {
         triggerRatio={triggerRatio}
         marketInfo={marketInfo}
         collateralToken={collateralToken}
+        marketsOptions={marketsOptions}
         swapAmounts={swapAmounts}
         increaseAmounts={increaseAmounts}
         decreaseAmounts={decreaseAmounts}

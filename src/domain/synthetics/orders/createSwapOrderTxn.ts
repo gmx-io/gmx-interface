@@ -9,6 +9,7 @@ import { simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { applySlippageToMinOut } from "../trade";
 import { isMarketOrderType } from "./utils";
+import { t } from "@lingui/macro";
 
 const { AddressZero } = ethers.constants;
 
@@ -90,12 +91,14 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, p: Swa
     .map((call) => exchangeRouter.interface.encodeFunctionData(call!.method, call!.params));
 
   if (p.orderType !== OrderType.LimitSwap) {
-    await simulateExecuteOrderTxn(chainId, signer, {
+    await simulateExecuteOrderTxn(chainId, {
+      account: p.account,
       primaryPriceOverrides: {},
       secondaryPriceOverrides: {},
       createOrderMulticallPayload: encodedPayload,
       value: totalWntAmount,
       tokensData: p.tokensData,
+      errorTitle: t`Order error.`,
     });
   }
 
