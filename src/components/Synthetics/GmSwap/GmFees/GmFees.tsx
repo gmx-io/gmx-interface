@@ -52,6 +52,20 @@ export function GmFees(p: Props) {
                     </>
                   )}
 
+                  {p.uiFee?.deltaUsd.abs()?.gt(0) && (
+                    <StatsTooltipRow
+                      label={
+                        <>
+                          <Trans>UI Fee</Trans>:
+                        </>
+                      }
+                      value={`${formatDeltaUsd(p.uiFee?.deltaUsd)}(${removeTrailingZeros(
+                        formatAmount(p.uiFee.bps, 4, 6)
+                      )}%)`}
+                      showDollar={false}
+                      className="text-red"
+                    />
+                  )}
                   {p.executionFee && (
                     <StatsTooltipRow
                       label={t`Max Execution Fee`}
@@ -61,19 +75,6 @@ export function GmFees(p: Props) {
                         p.executionFee.feeToken.symbol,
                         p.executionFee.feeToken.decimals
                       )}
-                      showDollar={false}
-                      className="text-red"
-                    />
-                  )}
-                  {p.uiFee?.deltaUsd.abs()?.gt(0) && (
-                    <StatsTooltipRow
-                      label={
-                        <>
-                          <div>UI Fee</div>
-                          <div>({removeTrailingZeros(formatAmount(p.uiFee.bps.abs(), 4, 6))}% of position size)</div>
-                        </>
-                      }
-                      value={formatDeltaUsd(p.uiFee?.deltaUsd)}
                       showDollar={false}
                       className="text-red"
                     />

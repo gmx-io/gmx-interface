@@ -140,7 +140,7 @@ export function getUiFeeItem(sizeUsd?: BigNumber, feeFactor?: BigNumber): FeeIte
 
   const decimals = 6;
   const feeUsd = applyFactor(sizeUsd.mul(-1), feeFactor);
-  const factor = feeFactor.mul(Math.pow(10, decimals)).div(PRECISION);
+  const factor = feeFactor.mul(Math.pow(10, decimals)).mul(-1).div(PRECISION);
   return {
     deltaUsd: feeUsd,
     bps: factor,

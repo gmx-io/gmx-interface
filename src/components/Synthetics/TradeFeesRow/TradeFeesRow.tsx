@@ -17,6 +17,7 @@ import {
 } from "lib/numbers";
 import { ReactNode, useMemo } from "react";
 import "./TradeFeesRow.scss";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 type Props = {
   totalFees?: FeeItem;
@@ -129,10 +130,9 @@ export function TradeFeesRow(p: Props) {
               <div className="text-white">
                 <Trans>UI Fee</Trans>:
               </div>
-              <div>({removeTrailingZeros(formatAmount(p.uiFee?.bps.abs(), 4, 6))}% of position size)</div>
             </>
           ),
-          value: formatDeltaUsd(p.uiFee?.deltaUsd),
+          value: `${formatDeltaUsd(p.uiFee?.deltaUsd)}(${removeTrailingZeros(formatAmount(p.uiFee.bps, 4, 6))}%)`,
           className: "text-red",
         }
       : undefined;
@@ -293,8 +293,8 @@ export function TradeFeesRow(p: Props) {
           {!totalFeeUsd || totalFeeUsd.eq(0) ? (
             "-"
           ) : (
-            <Tooltip
-              className="TradeFeesRow-tooltip"
+            <TooltipWithPortal
+              portalClassName="TradeFeesRow-tooltip"
               handle={<span className={cx({ positive: totalFeeUsd.gt(0) })}>{formatDeltaUsd(totalFeeUsd)}</span>}
               position="right-top"
               renderContent={() => (
