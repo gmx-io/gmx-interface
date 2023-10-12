@@ -271,8 +271,14 @@ function FullApp() {
     setSelectedToPage(to);
   };
 
+  const isFirstRender = useRef(false);
+
   const isActiveOnTradePage = useMemo(() => {
-    return !!matchPath(location.pathname, { path: ["/v1", "/trade"] });
+    const isMatch = !!matchPath(location.pathname, { path: ["/v1", "/trade"] });
+    if (!isMatch) {
+      isFirstRender.current = false;
+    }
+    return isMatch;
   }, [location.pathname]);
 
   useEffect(
@@ -288,17 +294,21 @@ function FullApp() {
         setTradePageVersion(2);
       }
     },
-    [chainId, history, location, query, setTradePageVersion]
+    [chainId, location.pathname, setTradePageVersion]
   );
 
   useEffect(() => {
     if (!isActiveOnTradePage) return;
+    if (!isFirstRender.current) {
+      isFirstRender.current = true;
+      return;
+    }
     if (tradePageVersion === 1) {
       history.replace("/v1");
     } else if (tradePageVersion === 2) {
       history.replace("/trade");
     }
-  }, [history, tradePageVersion, isActiveOnTradePage]);
+  }, [tradePageVersion, isActiveOnTradePage, history]);
 
   useEffect(() => {
     const checkPendingTxns = async () => {
