@@ -209,6 +209,7 @@ export type TradeFees = {
   borrowFee?: FeeItem;
   fundingFee?: FeeItem;
   uiFee?: FeeItem;
+  uiSwapFee?: FeeItem;
   feeDiscountUsd?: BigNumber;
   swapProfitFee?: FeeItem;
 };

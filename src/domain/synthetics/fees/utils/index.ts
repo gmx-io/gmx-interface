@@ -4,6 +4,7 @@ import { BigNumber } from "ethers";
 import { PRECISION } from "lib/legacy";
 import { applyFactor, getBasisPoints } from "lib/numbers";
 import { FeeItem } from "../types";
+import { SwapStats } from "domain/synthetics/trade";
 
 export * from "./executionFee";
 export * from "./priceImpact";
@@ -125,24 +126,32 @@ export function getTotalFeeItem(feeItems: (FeeItem | undefined)[]): FeeItem {
   return totalFeeItem;
 }
 
-export function getUiFee(sizeUsd?: BigNumber, feeFactor?: BigNumber): BigNumber {
-  if (!sizeUsd || !feeFactor || sizeUsd?.eq(0) || feeFactor?.eq(0)) {
+export function getUiFee(size?: BigNumber, feeFactor?: BigNumber): BigNumber {
+  if (!size || !feeFactor || size?.eq(0) || feeFactor?.eq(0)) {
     return BigNumber.from(0);
   }
 
-  return applyFactor(sizeUsd, feeFactor);
+  return applyFactor(size, feeFactor);
 }
 
-export function getUiFeeItem(sizeUsd?: BigNumber, feeFactor?: BigNumber): FeeItem | undefined {
-  if (!sizeUsd || !feeFactor || sizeUsd?.eq(0) || feeFactor?.eq(0)) {
+export function getUiFeeItem(size?: BigNumber, feeFactor?: BigNumber): FeeItem | undefined {
+  if (!size || !feeFactor || size?.eq(0) || feeFactor?.eq(0)) {
     return;
   }
 
   const decimals = 6;
-  const feeUsd = applyFactor(sizeUsd.mul(-1), feeFactor);
+  const feeUsd = applyFactor(size.mul(-1), feeFactor);
   const factor = feeFactor.mul(Math.pow(10, decimals)).mul(-1).div(PRECISION);
   return {
     deltaUsd: feeUsd,
     bps: factor,
   };
+}
+
+export function getUiFeeFromSwapPaths(swapPaths?: SwapStats[], feeFactor?: BigNumber): BigNumber {
+  if (!swapPaths || !feeFactor || swapPaths.length === 0 || feeFactor?.eq(0)) {
+    return BigNumber.from(0);
+  }
+
+  return swapPaths.reduce((acc, curr) => acc.add(getUiFee(curr.usdIn, feeFactor)), BigNumber.from(0));
 }
