@@ -7,7 +7,6 @@ import { formatAmount, formatUsd } from "lib/numbers";
 import cx from "classnames";
 import { ShareBar } from "components/ShareBar/ShareBar";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import Tooltip from "components/Tooltip/Tooltip";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
 import {
   getAvailableUsdLiquidityForCollateral,
@@ -20,17 +19,21 @@ import {
 import { usePositionsConstants } from "domain/synthetics/positions";
 import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import "./SyntheticsStats.scss";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: number) {
+function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: number, showDollar: boolean = false) {
   const n = Number(formatAmount(amount, tokenDecimals));
+  const isNegative = n < 0;
+  const absN = Math.abs(n);
+  const sign = showDollar ? "$" : "";
 
-  if (n >= 1000000) {
-    return `${(n / 1000000).toFixed(1)}M`;
+  if (absN >= 1000000) {
+    return `${isNegative ? "-" : ""}${sign}${(absN / 1000000).toFixed(1)}M`;
   }
-  if (n >= 1000) {
-    return `${(n / 1000).toFixed(1)}K`;
+  if (absN >= 1000) {
+    return `${isNegative ? "-" : ""}${sign}${(absN / 1000).toFixed(1)}K`;
   }
-  return n.toFixed(1);
+  return `${isNegative ? "-" : ""}${sign}${absN.toFixed(1)}`;
 }
 
 function formatFactor(factor: BigNumber) {
@@ -58,17 +61,20 @@ export function SyntheticsStats() {
       <table>
         <thead>
           <tr>
-            <th>Market</th>
+            <th className="sticky-left">Market</th>
             <th>Pool Value</th>
             <th>Pool Balance</th>
             <th>
-              <Tooltip handle="PnL" renderContent={() => "Pending PnL from all open positions"} />
+              <TooltipWithPortal handle="PnL" renderContent={() => "Pending PnL from all open positions"} />
             </th>
             <th>
-              <Tooltip handle="Borrowing Fees" renderContent={() => "Pending Borrowing Fees from all open positions"} />
+              <TooltipWithPortal
+                handle="Borrowing Fees"
+                renderContent={() => "Pending Borrowing Fees from all open positions"}
+              />
             </th>
             <th>
-              <Tooltip
+              <TooltipWithPortal
                 handle="Funding APR"
                 renderContent={() => (
                   <div>
@@ -78,8 +84,10 @@ export function SyntheticsStats() {
                     Per 1h
                     <br />
                     <br />
-                    Negative value: traders pay funding
-                    <br /> Positive value: traders receive funding
+                    Negative Value: Traders pay funding
+                    <br />
+                    <br />
+                    Positive Value: Traders receive funding
                   </div>
                 )}
               />
@@ -88,10 +96,32 @@ export function SyntheticsStats() {
             <th>Liquidity Long</th>
             <th>Liquidity Short</th>
             <th>
-              <Tooltip handle="VI Positions" renderContent={() => "Virtual inventory for positons"} />
+              <TooltipWithPortal
+                handle="VI Positions"
+                position="right-bottom"
+                renderContent={() => (
+                  <>
+                    <p>Virtual inventory for positons</p>
+                    <p>
+                      Virtual Inventory tracks the imbalance of tokens across similar markets, e.g. ETH/USDC, ETH/USDT.
+                    </p>
+                  </>
+                )}
+              />
             </th>
             <th>
-              <Tooltip handle="VI Swaps" renderContent={() => "Virtual inventory for swaps (Long / Short)"} />
+              <TooltipWithPortal
+                handle="VI Swaps"
+                position="right-bottom"
+                renderContent={() => (
+                  <>
+                    <p>Virtual inventory for swaps (Long / Short)</p>
+                    <p>
+                      Virtual Inventory tracks the imbalance of tokens across similar markets, e.g. ETH/USDC, ETH/USDT.
+                    </p>
+                  </>
+                )}
+              />
             </th>
             <th>Config</th>
           </tr>
@@ -145,10 +175,11 @@ export function SyntheticsStats() {
 
             return (
               <tr key={market.marketTokenAddress}>
-                <td>
+                <td className="sticky-left">
                   <div className="cell">
                     <div>
-                      <Tooltip
+                      <TooltipWithPortal
+                        portalClassName="SyntheticsStats-tooltip"
                         handle={getMarketIndexName(market)}
                         renderContent={() => (
                           <>
@@ -191,12 +222,12 @@ export function SyntheticsStats() {
                         )}
                       />
                     </div>
-                    <div className="muted">[{getMarketPoolName(market)}]</div>
+                    <div className="subtext">[{getMarketPoolName(market)}]</div>
                   </div>
                 </td>
                 <td>
                   <div className="cell">
-                    <Tooltip
+                    <TooltipWithPortal
                       handle={`$${formatAmountHuman(market.poolValueMax, 30)}`}
                       renderContent={() => (
                         <>
@@ -266,7 +297,7 @@ export function SyntheticsStats() {
                     {market.isSpotOnly ? (
                       "..."
                     ) : (
-                      <Tooltip
+                      <TooltipWithPortal
                         handle={
                           <span className={cx({ positive: market.netPnlMax.gt(0), negative: market.netPnlMax.lt(0) })}>
                             {market.netPnlMax.gt(0) ? "+" : "-"}${formatAmountHuman(market.netPnlMax.abs(), 30)}
@@ -274,8 +305,26 @@ export function SyntheticsStats() {
                         }
                         renderContent={() => (
                           <>
-                            <StatsTooltipRow label="PnL Long" value={formatAmountHuman(market.pnlLongMax, 30)} />
-                            <StatsTooltipRow label="PnL Short" value={formatAmountHuman(market.pnlShortMax, 30)} />
+                            <StatsTooltipRow
+                              showDollar={false}
+                              label="PnL Long"
+                              className={market.pnlLongMax.gt(0) ? "text-green" : "text-red"}
+                              value={`${market.pnlLongMax.gt(0) ? "+" : "-"}${formatAmountHuman(
+                                market.pnlLongMax.abs(),
+                                30,
+                                true
+                              )}`}
+                            />
+                            <StatsTooltipRow
+                              showDollar={false}
+                              label="PnL Short"
+                              className={market.pnlShortMax.gt(0) ? "text-green" : "text-red"}
+                              value={`${market.pnlShortMax.gt(0) ? "+" : "-"}${formatAmountHuman(
+                                market.pnlShortMax.abs(),
+                                30,
+                                true
+                              )}`}
+                            />
                           </>
                         )}
                       />
@@ -287,7 +336,7 @@ export function SyntheticsStats() {
                     {market.isSpotOnly ? (
                       "..."
                     ) : (
-                      <Tooltip
+                      <TooltipWithPortal
                         handle={`$${formatAmountHuman(market.totalBorrowingFees, 30)}`}
                         renderContent={() => (
                           <>
@@ -313,12 +362,12 @@ export function SyntheticsStats() {
                       "..."
                     ) : (
                       <div>
-                        <span className={cx({ positive: true })}>
+                        <span className={fundingAprLong.gt(0) ? "text-green" : "text-red"}>
                           {market.longsPayShorts ? "-" : "+"}
                           {formatAmount(fundingAprLong.abs(), 30, 4)}%
                         </span>{" "}
                         /{" "}
-                        <span className={cx({ negative: true })}>
+                        <span className={fundingAprShort.gt(0) ? "text-green" : "text-red"}>
                           {market.longsPayShorts ? "+" : "-"}
                           {formatAmount(fundingAprShort.abs(), 30, 4)}%
                         </span>
@@ -346,7 +395,7 @@ export function SyntheticsStats() {
                   </div>
                 </td>
                 <td>
-                  <Tooltip
+                  <TooltipWithPortal
                     handle={
                       market.isSpotOnly ? (
                         formatAmountHuman(longCollateralLiquidityUsd, 30)
@@ -361,14 +410,15 @@ export function SyntheticsStats() {
                     }
                     renderContent={() => (
                       <StatsTooltipRow
-                        label={`Max ${market.longToken.symbol} Out`}
+                        label={`Max ${market.longToken.symbol} Out xx`}
                         value={formatAmountHuman(longCollateralLiquidityUsd, 30)}
                       />
                     )}
                   />
                 </td>
                 <td>
-                  <Tooltip
+                  <TooltipWithPortal
+                    position="right-bottom"
                     handle={
                       market.isSpotOnly ? (
                         formatAmountHuman(shortCollateralLiquidityUsd, 30)
@@ -394,31 +444,75 @@ export function SyntheticsStats() {
                     {market.isSpotOnly ? (
                       "..."
                     ) : (
-                      <>
-                        <div>
-                          {virtualInventoryPositions?.gt(0) ? "Short" : "Long"}{" "}
-                          {formatUsd(virtualInventoryPositions?.abs()) || "$0.00"}
-                        </div>
-                      </>
+                      <TooltipWithPortal
+                        position="right-bottom"
+                        handle={
+                          <>
+                            <div>
+                              {virtualInventoryPositions?.gt(0) ? "Short" : "Long"}{" "}
+                              {formatAmountHuman(virtualInventoryPositions?.abs(), 30) || "$0.00"}
+                            </div>
+                          </>
+                        }
+                        renderContent={() => {
+                          return (
+                            <StatsTooltipRow
+                              label={virtualInventoryPositions?.gt(0) ? "Short" : "Long"}
+                              value={formatUsd(virtualInventoryPositions?.abs()) || "$0.00"}
+                              showDollar={false}
+                            />
+                          );
+                        }}
+                      />
                     )}
                   </div>
                 </td>
                 <td>
                   <div className="cell">
-                    <div>
-                      {formatUsd(convertToUsd(virtualInventorySwapsLong, market.longToken.decimals, midLongPrice)) ||
-                        "$0.00"}{" "}
-                      /{" "}
-                      {formatUsd(convertToUsd(virtualInventorySwapsShort, market.shortToken.decimals, midShortPrice)) ||
-                        "$0.00"}{" "}
-                    </div>
+                    <TooltipWithPortal
+                      position="right-bottom"
+                      handle={
+                        <div>
+                          {formatAmountHuman(
+                            convertToUsd(virtualInventorySwapsLong, market.longToken.decimals, midLongPrice),
+                            30
+                          ) || "$0.00"}{" "}
+                          /{" "}
+                          {formatAmountHuman(
+                            convertToUsd(virtualInventorySwapsShort, market.shortToken.decimals, midShortPrice),
+                            30
+                          ) || "$0.00"}{" "}
+                        </div>
+                      }
+                      renderContent={() => {
+                        return (
+                          <>
+                            <StatsTooltipRow
+                              label="Long"
+                              value={formatUsd(
+                                convertToUsd(virtualInventorySwapsLong, market.longToken.decimals, midLongPrice)
+                              )}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label="Short"
+                              value={formatUsd(
+                                convertToUsd(virtualInventorySwapsShort, market.shortToken.decimals, midShortPrice)
+                              )}
+                              showDollar={false}
+                            />
+                          </>
+                        );
+                      }}
+                    />
                   </div>
                 </td>
                 <td>
                   <div className="cell">
-                    <Tooltip
+                    <TooltipWithPortal
                       position={"right-bottom"}
                       handle="..."
+                      portalClassName="MarketCard-config-tooltip"
                       renderContent={() => (
                         <>
                           <div>Position Impact</div>

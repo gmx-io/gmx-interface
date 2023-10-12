@@ -27,6 +27,7 @@ import {
   formatAcceptablePrice,
   formatLeverage,
   formatLiquidationPrice,
+  getTriggerNameByOrderType,
   usePositionsConstants,
 } from "domain/synthetics/positions";
 import { TokensData } from "domain/synthetics/tokens";
@@ -123,7 +124,7 @@ export function PositionSeller(p: Props) {
 
   const ORDER_OPTION_LABELS = {
     [OrderOption.Market]: t`Market`,
-    [OrderOption.Trigger]: t`Trigger`,
+    [OrderOption.Trigger]: t`TP/SL`,
   };
 
   const [orderOption, setOrderOption] = useState<OrderOption>(OrderOption.Market);
@@ -807,7 +808,10 @@ export function PositionSeller(p: Props) {
                 disabled={Boolean(error) && !p.shouldDisableValidation}
                 onClick={onSubmit}
               >
-                {error || (isTrigger ? t`Create trigger order` : t`Close`)}
+                {error ||
+                  (isTrigger
+                    ? t`Create ${getTriggerNameByOrderType(decreaseAmounts?.triggerOrderType!)} Order`
+                    : t`Close`)}
               </Button>
             </div>
           </>
