@@ -127,12 +127,14 @@ export function TradeFeesRow(p: Props) {
           id: "uiFee",
           label: (
             <>
-              <div className="text-white">
-                <Trans>UI Fee</Trans>:
+              <div className="text-white">{t`UI Fee`}:</div>
+              <div>
+                ({removeTrailingZeros(formatAmount(p.uiFee.bps.abs(), 4, 6))}% of{" "}
+                {p.feesType === "swap" ? "swap amount" : "position size"})
               </div>
             </>
           ),
-          value: `${formatDeltaUsd(p.uiFee?.deltaUsd)}(${removeTrailingZeros(formatAmount(p.uiFee.bps, 4, 6))}%)`,
+          value: `${formatDeltaUsd(p.uiFee?.deltaUsd)}`,
           className: "text-red",
         }
       : undefined;

@@ -4817,6 +4817,7 @@ msgstr "Txn не удался. <0> Просмотр</0>"
 msgid "Type"
 msgstr "Вид"
 
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "UI Fee"
 msgstr ""

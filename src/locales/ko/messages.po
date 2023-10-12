@@ -4817,6 +4817,7 @@ msgstr "트랜잭션 실패됨. <0>보기</0>"
 msgid "Type"
 msgstr "타입"
 
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "UI Fee"
 msgstr ""

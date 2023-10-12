@@ -4817,6 +4817,7 @@ msgstr "转移失败 <0>查看</0>"
 msgid "Type"
 msgstr "种类"
 
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "UI Fee"
 msgstr ""

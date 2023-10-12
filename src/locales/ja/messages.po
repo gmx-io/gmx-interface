@@ -4817,6 +4817,7 @@ msgstr "取引が失敗しました。<0>詳細</0>"
 msgid "Type"
 msgstr "タイプ"
 
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "UI Fee"
 msgstr ""
