@@ -967,9 +967,9 @@ export function getTokenBySymbol(
     }
   }
 
-  const token = tokens.find((token) => {
-    return token.symbol.toLowerCase() === symbol.toLowerCase();
-  });
+  const token =
+    tokens.find((token) => token.symbol.toLowerCase() === symbol.toLowerCase()) ||
+    TOKENS_BY_SYMBOL_MAP[chainId][symbol];
 
   if (!token) {
     throw new Error(`Incorrect symbol "${symbol}" for chainId ${chainId}`);

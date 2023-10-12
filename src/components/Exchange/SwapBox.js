@@ -1555,7 +1555,7 @@ export default function SwapBox(props) {
     }
 
     if (swapOption !== opt) {
-      history.push(`/trade/${opt.toLowerCase()}`);
+      history.push(`/v1/${opt.toLowerCase()}`);
     }
   };
 

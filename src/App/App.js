@@ -272,13 +272,13 @@ function FullApp() {
   };
 
   const isActiveOnTradePage = useMemo(() => {
-    return !!matchPath(location.pathname, { path: ["/v1", "/trade"] });
+    return !!matchPath(location.pathname, { path: ["/v1/:tradeType?", "/trade/:tradeType?"] });
   }, [location.pathname]);
 
   useEffect(
     function redirectTradePage() {
-      const isV1Matched = matchPath(location.pathname, { path: "/v1/tradeType?" });
-      const isV2Matched = matchPath(location.pathname, { path: "/trade/tradeType?" });
+      const isV1Matched = matchPath(location.pathname, { path: "/v1/:tradeType?" });
+      const isV2Matched = matchPath(location.pathname, { path: "/trade/:tradeType?" });
 
       if (isV1Matched && getIsV1Supported(chainId)) {
         setTradePageVersion(1);
@@ -426,7 +426,7 @@ function FullApp() {
               <Route exact path="/">
                 <Redirect to="/dashboard" />
               </Route>
-              <Route exact path="/v1">
+              <Route exact path="/v1/:tradeType?">
                 <Exchange
                   ref={exchangeRef}
                   savedShowPnlAfterFees={savedShowPnlAfterFees}
@@ -470,7 +470,7 @@ function FullApp() {
                 )}
               </Route>
 
-              <Route exact path="/trade">
+              <Route exact path="/trade/:tradeType?">
                 {getIsSyntheticsSupported(chainId) ? (
                   <SyntheticsPage
                     savedIsPnlInLeverage={savedIsPnlInLeverage}

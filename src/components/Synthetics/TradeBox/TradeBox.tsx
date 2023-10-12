@@ -929,7 +929,7 @@ export function TradeBox(p: Props) {
   function onTradeTypeChange(type: TradeType) {
     onSelectTradeType(type);
     if (tradeType !== type) {
-      history.push(`/v2/${type.toLowerCase()}`);
+      history.push(`/trade/${type.toLowerCase()}`);
     }
   }
 
