@@ -11,6 +11,7 @@ import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
 import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { isMarketOrderType } from "./utils";
+import { t } from "@lingui/macro";
 
 const { AddressZero } = ethers.constants;
 
@@ -120,12 +121,14 @@ export async function createDecreaseOrderTxn(
           maxPrice: p.triggerPrice,
         };
       }
-      await simulateExecuteOrderTxn(chainId, signer, {
+      await simulateExecuteOrderTxn(chainId, {
+        account: p.account,
         primaryPriceOverrides,
         secondaryPriceOverrides,
         createOrderMulticallPayload: encodedPayload,
         value: totalWntAmount,
         tokensData: p.tokensData,
+        errorTitle: t`Order error.`,
       });
     }
   });

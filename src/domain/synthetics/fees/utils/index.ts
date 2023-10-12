@@ -49,7 +49,7 @@ export function getFundingFactorPerPeriod(marketInfo: MarketInfo, isLong: boolea
 
   const isLargerSide = isLong ? longsPayShorts : !longsPayShorts;
 
-  let factorPerSecond;
+  let factorPerSecond: BigNumber;
 
   if (isLargerSide) {
     factorPerSecond = fundingFactorPerSecond.mul(-1);

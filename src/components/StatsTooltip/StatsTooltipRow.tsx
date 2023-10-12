@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import cx from "classnames";
 import "./StatsTooltip.css";
 
-type Props = {
+export type StatsTooltipRowProps = {
   className?: string;
   label: string | ReactNode;
   value: number | string | string[] | number[] | ReactNode;
@@ -10,7 +10,7 @@ type Props = {
   showColon?: boolean;
 };
 
-export default function StatsTooltipRow({ label, value, className, showDollar = true }: Props) {
+export default function StatsTooltipRow({ label, value, className, showDollar = true }: StatsTooltipRowProps) {
   function renderValue() {
     if (Array.isArray(value)) {
       return (

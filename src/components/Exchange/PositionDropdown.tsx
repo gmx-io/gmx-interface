@@ -36,14 +36,6 @@ export default function PositionDropdown({
       <div className="PositionDropdown-extra-options">
         <Menu.Items as="div" className="menu-items">
           <Menu.Item>
-            <div className="menu-item" onClick={handleEditCollateral}>
-              <AiOutlineEdit fontSize={16} />
-              <p>
-                <Trans>Edit Collateral</Trans>
-              </p>
-            </div>
-          </Menu.Item>
-          <Menu.Item>
             <div className="menu-item" onClick={handleMarketSelect}>
               <BiSelectMultiple fontSize={16} />
               <p>
@@ -51,16 +43,14 @@ export default function PositionDropdown({
               </p>
             </div>
           </Menu.Item>
-          {handleShare && (
-            <Menu.Item>
-              <div className="menu-item" onClick={handleShare}>
-                <RiShareBoxFill fontSize={16} />
-                <p>
-                  <Trans>Share Position</Trans>
-                </p>
-              </div>
-            </Menu.Item>
-          )}
+          <Menu.Item>
+            <div className="menu-item" onClick={handleEditCollateral}>
+              <AiOutlineEdit fontSize={16} />
+              <p>
+                <Trans>Edit Collateral</Trans>
+              </p>
+            </div>
+          </Menu.Item>
           {handleMarketIncreaseSize && (
             <Menu.Item>
               <div className="menu-item" onClick={handleMarketIncreaseSize}>
@@ -86,7 +76,17 @@ export default function PositionDropdown({
               <div className="menu-item" onClick={handleTriggerClose}>
                 <img src={triggerClose} alt="Increase Limit" height={16} />
                 <p>
-                  <Trans>Trigger Close</Trans>
+                  <Trans>Set TP/SL</Trans>
+                </p>
+              </div>
+            </Menu.Item>
+          )}
+          {handleShare && (
+            <Menu.Item>
+              <div className="menu-item" onClick={handleShare}>
+                <RiShareBoxFill fontSize={16} />
+                <p>
+                  <Trans>Share Position</Trans>
                 </p>
               </div>
             </Menu.Item>

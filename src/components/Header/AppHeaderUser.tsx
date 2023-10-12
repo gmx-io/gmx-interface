@@ -68,7 +68,7 @@ export function AppHeaderUser({
   const { openConnectModal } = useConnectModal();
   const showConnectionOptions = !isHomeSite();
 
-  const tradeLink = tradePageVersion === 1 ? "/trade" : "/v2";
+  const tradeLink = tradePageVersion === 2 ? "/trade" : "/v1";
 
   const selectorLabel = getChainName(chainId);
 

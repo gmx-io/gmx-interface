@@ -33,7 +33,13 @@ const TRADERS = "Traders";
 const AFFILIATES = "Affiliates";
 const TAB_OPTIONS = [TRADERS, AFFILIATES];
 
-function Referrals({ setPendingTxns, pendingTxns }) {
+function Referrals({
+  setPendingTxns,
+  pendingTxns,
+}: {
+  setPendingTxns: (pendingTxns: string[]) => void;
+  pendingTxns: string[];
+}) {
   const { active, account: walletAccount, signer } = useWallet();
   const { account: queryAccount } = useParams<{ account?: string }>();
   let account;

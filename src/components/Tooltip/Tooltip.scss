@@ -4,6 +4,7 @@
 
 .Tooltip-popup {
   font-size: var(--font-sm);
+  font-weight: normal;
   line-height: 1.6rem;
   position: absolute;
   border-radius: 4px;
@@ -137,6 +138,7 @@
 }
 
 .Tooltip-handle {
+  z-index: 1;
   cursor: help;
   position: relative;
   display: inline-flex;
@@ -150,6 +152,15 @@
 .Tooltip-handle.plain:after {
   border-bottom: none;
 }
+
+
+.Tooltip-error {
+  .Tooltip-handle {
+    color: var(--error-red);
+    text-decoration-color: var(--error-red);
+  }
+}
+
 
 .Tooltip.no-underline .Tooltip-handle::after {
   content: unset;
