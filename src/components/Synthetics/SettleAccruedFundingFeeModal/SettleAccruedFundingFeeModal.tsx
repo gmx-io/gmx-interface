@@ -1,7 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import Modal from "components/Modal/Modal";
-import { formatDeltaUsd } from "lib/numbers";
-
+import { formatDeltaUsd, formatUsd } from "lib/numbers";
 import Button from "components/Button/Button";
 import { getTotalAccruedFundingUsd } from "domain/synthetics/markets";
 import { PositionsInfoData } from "domain/synthetics/positions";
@@ -68,6 +67,16 @@ export function SettleAccruedFundingFeeModal({
     if (!isVisible) setIsSubmitting(false);
   }, [isVisible]);
 
+  const { executionFee, feeUsd } = useMemo(() => {
+    if (!gasLimits || !tokensData || !gasPrice) return {};
+    const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {});
+    const fees = getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice);
+    return {
+      executionFee: fees?.feeTokenAmount,
+      feeUsd: fees?.feeUsd,
+    };
+  }, [chainId, gasLimits, gasPrice, tokensData]);
+
   const [buttonText, buttonDisabled] = useMemo(() => {
     if (isSubmitting) return [t`Settling...`, true];
     if (positionKeys.length === 0) return [t`Select Positions`, true];
@@ -88,12 +97,9 @@ export function SettleAccruedFundingFeeModal({
   const { setPendingFundingFeeSettlement } = useSyntheticsEvents();
 
   const onSubmit = useCallback(() => {
-    if (!account || !signer || !chainId || !gasLimits || !tokensData || !gasPrice) return;
+    if (!account || !signer || !chainId || !executionFee || !tokensData) return;
 
     setIsSubmitting(true);
-
-    const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {});
-    const executionFee = getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice)?.feeTokenAmount;
 
     createDecreaseOrderTxn(
       chainId,
@@ -122,7 +128,7 @@ export function SettleAccruedFundingFeeModal({
           orderType: OrderType.MarketDecrease,
           isLong: position.isLong,
           minOutputUsd: BigNumber.from(0),
-          executionFee: executionFee!,
+          executionFee,
           allowedSlippage,
           referralCode: userReferralInfo?.referralCodeForTxn,
           indexToken: position.indexToken,
@@ -143,8 +149,7 @@ export function SettleAccruedFundingFeeModal({
     account,
     allowedSlippage,
     chainId,
-    gasLimits,
-    gasPrice,
+    executionFee,
     onClose,
     selectedPositions,
     setPendingFundingFeeSettlement,
@@ -169,8 +174,8 @@ export function SettleAccruedFundingFeeModal({
         <div className="App-card-content">
           <div className="SettleAccruedFundingFeeModal-alert">
             <Trans>
-              Consider not selecting position's with less accrued Funding Fees than the gas spent to Settle, which is
-              around FIXME.
+              Consider selecting only Positions where the accrued Funding Fees exceed the gas spent to Settle, which is
+              around {formatUsd(feeUsd)} per each selected Position.
             </Trans>
           </div>
 
