@@ -1021,12 +1021,16 @@ msgid "Connect Wallet"
 msgstr "Connect Wallet"
 
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
-msgid "Consider not selecting position's with less accrued Funding Fees than the gas spent to Settle, which is around FIXME."
-msgstr "Consider not selecting position's with less accrued Funding Fees than the gas spent to Settle, which is around FIXME."
+#~ msgid "Consider not selecting position's with less accrued Funding Fees than the gas spent to Settle, which is around FIXME."
+#~ msgstr "Consider not selecting position's with less accrued Funding Fees than the gas spent to Settle, which is around FIXME."
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
 msgstr "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
+
+#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+msgid "Consider selecting only Positions where the accrued Funding Fees exceed the gas spent to Settle, which is around {0} per each selected Position."
+msgstr "Consider selecting only Positions where the accrued Funding Fees exceed the gas spent to Settle, which is around {0} per each selected Position."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
