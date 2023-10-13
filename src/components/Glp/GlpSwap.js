@@ -435,7 +435,9 @@ export default function GlpSwap(props) {
     const { operation, pay, receive } = searchParams;
 
     if (operation) {
-      setIsBuying(operation.toLowerCase() === "buy");
+      setTimeout(() => {
+        setIsBuying(operation.toLowerCase() === "buy");
+      });
     }
 
     if (pay) {
@@ -471,7 +473,7 @@ export default function GlpSwap(props) {
         clearTimeout(timeoutId);
       }
     };
-  }, [searchParams, setIsBuying, chainId, setSwapTokenAddress, history]);
+  }, [searchParams, setIsBuying, isBuying, chainId, setSwapTokenAddress, history]);
 
   const switchSwapOption = (hash = "") => {
     const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
