@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { Trans, plural, t } from "@lingui/macro";
 import cx from "classnames";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 import {
@@ -77,33 +77,22 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
     }, {} as Record<string, MarketInfo | undefined>);
   }, [keyByOrder, marketsInfoData, orders]);
 
-  const creationStatuses = useMemo(() => {
-    return (
-      <>
-        {orders.map((order) => {
-          const key = keyByOrder.get(order);
-          if (!key) throw new Error("key not found");
+  const creationStatus = useMemo(() => {
+    const order = orders[0];
+    const key = keyByOrder.get(order);
+    if (!key) throw new Error("key not found");
 
-          const orderStatus = orderStatusByOrder.get(order);
-          const marketInfo = marketInfoByKey?.[key];
+    const orderStatus = orderStatusByOrder.get(order);
 
-          let text = t`Sending order request`;
-          let status: TransactionStatusType = "loading";
+    let text = t`Sending order request`;
+    let status: TransactionStatusType = "loading";
 
-          if (orderStatus?.createdTxnHash) {
-            if (marketInfo) {
-              text = t`${order.isLong ? "Long" : "Short"} ${marketInfo.name} Request sent`;
-            } else {
-              text = t`Settle request sent`;
-            }
-            status = "success";
-          }
-
-          return <TransactionStatus key={key} status={status} txnHash={orderStatus?.createdTxnHash} text={text} />;
-        })}
-      </>
-    );
-  }, [keyByOrder, marketInfoByKey, orderStatusByOrder, orders]);
+    if (orderStatus?.createdTxnHash) {
+      text = t`Settling Fees for ${plural(orders.length, { one: "# position", other: "# positions" })}`;
+      status = "success";
+    }
+    return <TransactionStatus status={status} txnHash={orderStatus?.createdTxnHash} text={text} />;
+  }, [keyByOrder, orderStatusByOrder, orders]);
 
   const executionStatuses = useMemo(() => {
     return (
@@ -117,7 +106,15 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
 
           if (!orderStatus) return null;
 
-          let text = t`Fulfilling order request`;
+          const key = keyByOrder.get(order);
+          if (!key) throw new Error("key not found");
+          const marketInfo = marketInfoByKey?.[key];
+
+          if (!marketInfo) throw new Error("marketInfo not found");
+
+          const positionName = `${order.isLong ? t`Long` : t`Short`} ${marketInfo.name}`;
+
+          let text = t`${positionName} Fees settling`;
           let status: TransactionStatusType = "muted";
           let txnHash: string | undefined;
 
@@ -125,20 +122,14 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
             status = "loading";
           }
 
-          const key = keyByOrder.get(order);
-          if (!key) throw new Error("key not found");
-          const marketInfo = marketInfoByKey?.[key];
-
-          if (!marketInfo) throw new Error("marketInfo not found");
-
           if (orderStatus?.executedTxnHash) {
-            text = t`${order.isLong ? "Long" : "Short"} ${marketInfo.name} Fees settled`;
+            text = t`${positionName} Fees settled`;
             status = "success";
             txnHash = orderStatus?.executedTxnHash;
           }
 
           if (orderStatus?.cancelledTxnHash) {
-            text = t`${order.isLong ? "Long" : "Short"} ${marketInfo.name} Failed to settle`;
+            text = t`${positionName} Failed to settle`;
             status = "error";
             txnHash = orderStatus?.cancelledTxnHash;
           }
@@ -167,7 +158,7 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
         </div>
 
         <div className="StatusNotification-items">
-          {creationStatuses}
+          {creationStatus}
           {executionStatuses}
         </div>
       </div>
