@@ -3,7 +3,7 @@ import useScrollToTop from "lib/useScrollToTop";
 import { useEffect, useRef, useState } from "react";
 import { SWRConfig } from "swr";
 
-import { matchPath, Redirect, Route, HashRouter as Router, Switch, useHistory, useLocation } from "react-router-dom";
+import { Redirect, Route, HashRouter as Router, Switch, useHistory, useLocation } from "react-router-dom";
 
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { getAppBaseUrl, isHomeSite, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
@@ -64,7 +64,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Header } from "components/Header/Header";
 import { ARBITRUM, DEFAULT_ALLOWED_SLIPPAGE_BPS, EXECUTION_FEE_CONFIG_V2, getExplorerUrl } from "config/chains";
 import { isDevelopment } from "config/env";
-import { getIsSyntheticsSupported, getIsV1Supported } from "config/features";
+import { getIsSyntheticsSupported } from "config/features";
 import {
   CURRENT_PROVIDER_LOCALSTORAGE_KEY,
   DISABLE_ORDER_VALIDATION_KEY,
@@ -95,6 +95,7 @@ import { watchNetwork } from "@wagmi/core";
 import { useDisconnect } from "wagmi";
 import useWallet from "lib/wallets/useWallet";
 import { swrGCMiddleware } from "lib/swrMiddlewares";
+import useTradeRedirect from "lib/useTradeRedirect";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -158,7 +159,7 @@ function FullApp() {
 
   const [tradePageVersion, setTradePageVersion] = useLocalStorageSerializeKey(
     [chainId, TRADE_LINK_KEY],
-    getIsV1Supported(chainId) ? 1 : 2
+    getIsSyntheticsSupported(chainId) ? 2 : 1
   );
   const [redirectModalVisible, setRedirectModalVisible] = useState(false);
   const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
@@ -271,30 +272,7 @@ function FullApp() {
     setSelectedToPage(to);
   };
 
-  useEffect(
-    function redirectTradePage() {
-      const isV1Matched = matchPath(location.pathname, { path: "/trade" });
-      const isV2Matched = matchPath(location.pathname, { path: "/v2" });
-
-      if (isV2Matched && query.has("no_redirect")) {
-        if (tradePageVersion !== 2) {
-          setTradePageVersion(2);
-        }
-        if (history.location.search) {
-          history.replace({ search: "" });
-        }
-        return;
-      }
-      if (isV1Matched && (tradePageVersion === 2 || !getIsV1Supported(chainId)) && getIsSyntheticsSupported(chainId)) {
-        history.replace("/v2");
-      }
-
-      if (isV2Matched && (tradePageVersion === 1 || !getIsSyntheticsSupported(chainId)) && getIsV1Supported(chainId)) {
-        history.replace("/trade");
-      }
-    },
-    [chainId, history, location, tradePageVersion, query, setTradePageVersion]
-  );
+  useTradeRedirect({ chainId, tradePageVersion, setTradePageVersion });
 
   useEffect(() => {
     const checkPendingTxns = async () => {
@@ -422,7 +400,7 @@ function FullApp() {
               <Route exact path="/">
                 <Redirect to="/dashboard" />
               </Route>
-              <Route exact path="/trade">
+              <Route exact path="/v1">
                 <Exchange
                   ref={exchangeRef}
                   savedShowPnlAfterFees={savedShowPnlAfterFees}
@@ -442,10 +420,11 @@ function FullApp() {
               <Route exact path="/dashboard">
                 <Dashboard />
               </Route>
-              <Route exact path="/stats">
+              <Route exact path="/stats/v1">
                 <Stats />
               </Route>
-              <Route exact path="/stats/v2">
+              <Redirect exact from="/stats/v2" to="/stats" />
+              <Route exact path="/stats">
                 {getIsSyntheticsSupported(chainId) ? <SyntheticsStats /> : <SyntheticsFallbackPage />}
               </Route>
               <Route exact path="/earn">
@@ -465,7 +444,7 @@ function FullApp() {
                 )}
               </Route>
 
-              <Route exact path="/v2">
+              <Route exact path="/trade">
                 {getIsSyntheticsSupported(chainId) ? (
                   <SyntheticsPage
                     savedIsPnlInLeverage={savedIsPnlInLeverage}
@@ -484,6 +463,7 @@ function FullApp() {
                   <SyntheticsFallbackPage />
                 )}
               </Route>
+              <Redirect from="/v2" to="/trade" />
               <Route exact path="/buy_glp">
                 <BuyGlp
                   savedSlippageAmount={settings.savedAllowedSlippage}
@@ -512,23 +492,28 @@ function FullApp() {
               <Route exact path="/claim_es_gmx">
                 <ClaimEsGmx setPendingTxns={setPendingTxns} />
               </Route>
-              <Route exact path="/actions/v2">
-                <SyntheticsActions
-                  savedIsPnlInLeverage={savedIsPnlInLeverage}
-                  savedShowPnlAfterFees={savedShowPnlAfterFees}
-                />
-              </Route>
-              <Route exact path="/actions/v2/:account">
-                <SyntheticsActions
-                  savedIsPnlInLeverage={savedIsPnlInLeverage}
-                  savedShowPnlAfterFees={savedShowPnlAfterFees}
-                />
-              </Route>
-              <Route exact path="/actions">
+
+              <Route exact path="/actions/v1">
                 <Actions />
               </Route>
-              <Route exact path="/actions/:account">
+              <Route exact path="/actions/v1/:account">
                 <Actions savedIsPnlInLeverage={savedIsPnlInLeverage} savedShowPnlAfterFees={savedShowPnlAfterFees} />
+              </Route>
+              <Route exact path="/actions">
+                <SyntheticsActions
+                  savedIsPnlInLeverage={savedIsPnlInLeverage}
+                  savedShowPnlAfterFees={savedShowPnlAfterFees}
+                />
+              </Route>
+              <Redirect exact from="/actions/v2" to="/actions" />
+              <Route exact path="/actions/:account">
+                <SyntheticsActions
+                  savedIsPnlInLeverage={savedIsPnlInLeverage}
+                  savedShowPnlAfterFees={savedShowPnlAfterFees}
+                />
+              </Route>
+              <Route path="/actions/v2/:account">
+                {({ match }) => <Redirect to={`/actions/${match.params.account}`} />}
               </Route>
               <Route exact path="/referrals-tier">
                 <ReferralsTier />
@@ -548,6 +533,7 @@ function FullApp() {
               <Route exact path="/complete_account_transfer/:sender/:receiver">
                 <CompleteAccountTransfer setPendingTxns={setPendingTxns} />
               </Route>
+
               <Route path="*">
                 <PageNotFound />
               </Route>
