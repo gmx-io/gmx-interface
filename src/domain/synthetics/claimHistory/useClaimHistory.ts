@@ -182,8 +182,6 @@ function createSettleFundingFeeAction(
 
   const tokens = rawAction.tokenAddresses.map((address) => getToken(chainId, getAddress(address))).filter(Boolean);
 
-  if (!tokens.length) return null;
-
   return {
     id: rawAction.id,
     type: "fundingFee",

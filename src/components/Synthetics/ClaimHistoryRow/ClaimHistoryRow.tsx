@@ -1,4 +1,4 @@
-import { plural, t } from "@lingui/macro";
+import { Trans, plural, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
@@ -143,7 +143,7 @@ function ClaimFundingFeesHistoryRow(p: ClaimFundingFeesHistoryRowProps) {
       return (
         <ExternalLink href={claimAction.transactionHash} className="plain" key={claimAction.transactionHash}>
           <div>
-            {eventTitle} from{" "}
+            <Trans>{eventTitle} from</Trans>{" "}
             <Tooltip
               handle={plural(claimAction.markets.length, { one: "# Position", other: "# Positions" })}
               renderContent={() => {
@@ -169,12 +169,14 @@ function ClaimFundingFeesHistoryRow(p: ClaimFundingFeesHistoryRowProps) {
           className="plain"
           key={claimAction.transactionHash}
         >
-          <div>
-            <span className="text-red">{eventTitle}</span> from{" "}
-            <span>
-              {claimAction.isLongOrders[0] ? "Long" : "Short"} {getMarketIndexName(claimAction.markets[0])} Position
-            </span>
-          </div>
+          <Trans>
+            <div>
+              <span className="text-red">{eventTitle}</span> from{" "}
+              <span>
+                {claimAction.isLongOrders[0] ? "Long" : "Short"} {getMarketIndexName(claimAction.markets[0])} Position
+              </span>
+            </div>
+          </Trans>
         </ExternalLink>
       );
     }
@@ -190,13 +192,16 @@ function ClaimFundingFeesHistoryRow(p: ClaimFundingFeesHistoryRowProps) {
           </Fragment>
         );
       });
+      const positionName = `${claimAction.isLongOrders[0] ? t`Long` : t`Short`} ${getMarketIndexName(
+        claimAction.markets[0]
+      )}`;
       return (
         <ExternalLink
           key={claimAction.id}
           className="plain ClaimHistoryRow__token-amount"
           href={`${getExplorerUrl(chainId)}tx/${claimAction.transactionHash}`}
         >
-          {eventTitle}: {amounts}
+          {eventTitle}: {amounts} <Trans>from {positionName} Position</Trans>
         </ExternalLink>
       );
     }
