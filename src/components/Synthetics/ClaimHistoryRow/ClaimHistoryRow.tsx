@@ -10,7 +10,6 @@ import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { formatDateTime } from "lib/dates";
 import { formatTokenAmount } from "lib/numbers";
-import { groupBy } from "lodash";
 import { Fragment, useMemo } from "react";
 import "./ClaimHistoryRow.scss";
 
@@ -139,46 +138,20 @@ function ClaimFundingFeesHistoryRow(p: ClaimFundingFeesHistoryRowProps) {
 
   const eventTitle = claimFundingFeeEventTitles[claimAction.eventName];
 
-  const groups = useMemo(() => {
-    const claimActionItems = claimAction.markets.map((market, i) => ({
-      market,
-      amount: claimAction.amounts[i],
-      token: claimAction.tokens[i],
-      transactionHash: claimAction.transactionHashes[i],
-      isLong: claimAction.isLongOrders[i],
-    }));
-    return groupBy(claimActionItems, (item) => `${item.market.marketTokenAddress}/${item.isLong}`) as Record<
-      string,
-      typeof claimActionItems
-    >;
-  }, [
-    claimAction.amounts,
-    claimAction.isLongOrders,
-    claimAction.markets,
-    claimAction.tokens,
-    claimAction.transactionHashes,
-  ]);
-
   const content = useMemo(() => {
     if (claimAction.eventName === ClaimType.SettleFundingFeeCreated) {
-      const groupsEntries = Object.entries(groups);
       return (
         <ExternalLink href={claimAction.transactionHash} className="plain" key={claimAction.transactionHash}>
           <div>
             {eventTitle} from{" "}
             <Tooltip
-              handle={plural(groupsEntries.length, { one: "# Position", other: "# Positions" })}
+              handle={plural(claimAction.markets.length, { one: "# Position", other: "# Positions" })}
               renderContent={() => {
-                return groupsEntries.map(([key, items]) => {
+                return claimAction.markets.map((market, index) => {
+                  const isLong = claimAction.isLongOrders[index];
                   return (
-                    <div key={key} className="ClaimHistoryRow__token-amount">
-                      {items.map((item, index) => {
-                        return (
-                          <span key={key}>
-                            {item.isLong ? "Long" : "Short"} {getMarketIndexName(item.market)} Position
-                          </span>
-                        );
-                      })}
+                    <div className="ClaimHistoryRow-tooltip-row" key={`${market.name}/${isLong}`}>
+                      {isLong ? t`Long` : t`Short`} {market.name}
                     </div>
                   );
                 });
@@ -190,67 +163,56 @@ function ClaimFundingFeesHistoryRow(p: ClaimFundingFeesHistoryRowProps) {
     }
 
     if (claimAction.eventName === ClaimType.SettleFundingFeeCancelled) {
-      const groupsEntries = Object.entries(groups);
       return (
-        <span className="plain" key={claimAction.transactionHash}>
+        <ExternalLink
+          href={`${getExplorerUrl(chainId)}tx/${claimAction.transactionHash}`}
+          className="plain"
+          key={claimAction.transactionHash}
+        >
           <div>
             <span className="text-red">{eventTitle}</span> from{" "}
-            <Tooltip
-              handle={plural(groupsEntries.length, { one: "# Position", other: "# Positions" })}
-              renderContent={() => {
-                return groupsEntries.map(([key, items]) => {
-                  return (
-                    <div key={key} className="ClaimHistoryRow__token-amount">
-                      {items.map((item) => {
-                        return (
-                          <div key={key}>
-                            <ExternalLink href={item.transactionHash}>
-                              {item.isLong ? "Long" : "Short"} {getMarketIndexName(item.market)} Position
-                            </ExternalLink>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  );
-                });
-              }}
-            />
+            <span>
+              {claimAction.isLongOrders[0] ? "Long" : "Short"} {getMarketIndexName(claimAction.markets[0])} Position
+            </span>
           </div>
-        </span>
+        </ExternalLink>
       );
     }
 
     if (claimAction.eventName === ClaimType.SettleFundingFeeExecuted) {
-      const groupsEntries = Object.entries(groups);
-      const amounts = groupsEntries.map(([key, items], index) => {
+      const amounts = claimAction.markets.map((market, index) => {
+        const token = claimAction.tokens[index];
+        const amount = claimAction.amounts[index];
         return (
-          <div key={key}>
-            <ExternalLink
-              className="plain ClaimHistoryRow__token-amount"
-              href={`${getExplorerUrl(chainId)}tx/${items[0].transactionHash}`}
-            >
-              {items.map((item, itemIndex) => (
-                <Fragment key={`${item.token.address}/${item.market.marketTokenAddress}`}>
-                  {formatTokenAmount(item.amount, item.token.decimals, item.token.symbol)}
-                  {itemIndex === items.length - 1 ? "" : ", "}
-                </Fragment>
-              ))}{" "}
-              from {items[0].isLong ? "Long" : "Short"} {getMarketIndexName(items[0].market)} Position
-              {groupsEntries.length - 1 === index ? "" : <br />}
-            </ExternalLink>
-          </div>
+          <Fragment key={`${token.address}/${market.marketTokenAddress}`}>
+            {formatTokenAmount(amount, token.decimals, token.symbol)}
+            {index === claimAction.markets.length - 1 ? "" : ", "}
+          </Fragment>
         );
       });
       return (
-        <>
-          <div>{eventTitle}</div>
-          <div>{amounts}</div>
-        </>
+        <ExternalLink
+          key={claimAction.id}
+          className="plain ClaimHistoryRow__token-amount"
+          href={`${getExplorerUrl(chainId)}tx/${claimAction.transactionHash}`}
+        >
+          {eventTitle}: {amounts}
+        </ExternalLink>
       );
     }
 
     return null;
-  }, [chainId, claimAction.eventName, claimAction.transactionHash, eventTitle, groups]);
+  }, [
+    chainId,
+    claimAction.amounts,
+    claimAction.eventName,
+    claimAction.id,
+    claimAction.isLongOrders,
+    claimAction.markets,
+    claimAction.tokens,
+    claimAction.transactionHash,
+    eventTitle,
+  ]);
 
   return (
     <div className="TradeHistoryRow App-box App-box-border">

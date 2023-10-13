@@ -40,7 +40,6 @@ export type ClaimFundingFeeAction = {
   isLongOrders: boolean[];
   timestamp: number;
   transactionHash: string;
-  transactionHashes: string[];
 };
 
 export type ClaimAction = ClaimCollateralAction | ClaimFundingFeeAction;
