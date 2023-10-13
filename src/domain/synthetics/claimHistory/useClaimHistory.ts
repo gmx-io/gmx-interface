@@ -174,13 +174,23 @@ function createSettleFundingFeeAction(
 ): ClaimFundingFeeAction | null {
   if (!marketsInfoData) return null;
 
+  const markets = rawAction.marketAddresses
+    .map((address) => getByKey(marketsInfoData, getAddress(address))!)
+    .filter(Boolean);
+
+  if (!markets.length) return null;
+
+  const tokens = rawAction.tokenAddresses.map((address) => getToken(chainId, getAddress(address))).filter(Boolean);
+
+  if (!tokens.length) return null;
+
   return {
     id: rawAction.id,
     type: "fundingFee",
     account: rawAction.account,
     amounts: rawAction.amounts.map((amount) => bigNumberify(amount)!),
-    markets: rawAction.marketAddresses.map((address) => getByKey(marketsInfoData, getAddress(address))!),
-    tokens: rawAction.tokenAddresses.map((address) => getToken(chainId, getAddress(address))),
+    markets,
+    tokens,
     isLongOrders: rawAction.isLongOrders ?? [],
     transactionHash: rawAction.transaction.hash,
     eventName,
