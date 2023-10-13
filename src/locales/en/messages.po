@@ -1841,7 +1841,6 @@ msgstr "Fulfilling Buy request"
 msgid "Fulfilling Sell request"
 msgstr "Fulfilling Sell request"
 
-#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Fulfilling order request"
 msgstr "Fulfilling order request"
@@ -2558,6 +2557,7 @@ msgstr "Loading..."
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
@@ -3980,12 +3980,16 @@ msgid "Settle"
 msgstr "Settle"
 
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
-msgid "Settle request sent"
-msgstr "Settle request sent"
+#~ msgid "Settle request sent"
+#~ msgstr "Settle request sent"
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "Settled Funding Fees"
 msgstr "Settled Funding Fees"
+
+#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
+msgid "Settling Fees for {0, plural, one {# position} other {# positions}}"
+msgstr "Settling Fees for {0, plural, one {# position} other {# positions}}"
 
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settling Positions' Fees"
@@ -4038,6 +4042,7 @@ msgstr "Share Position"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
@@ -5731,16 +5736,16 @@ msgid "{0} will be swapped to {1} on order execution."
 msgstr "{0} will be swapped to {1} on order execution."
 
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
-msgid "{0} {1} Failed to settle"
-msgstr "{0} {1} Failed to settle"
+#~ msgid "{0} {1} Failed to settle"
+#~ msgstr "{0} {1} Failed to settle"
 
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
-msgid "{0} {1} Fees settled"
-msgstr "{0} {1} Fees settled"
+#~ msgid "{0} {1} Fees settled"
+#~ msgstr "{0} {1} Fees settled"
 
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
-msgid "{0} {1} Request sent"
-msgstr "{0} {1} Request sent"
+#~ msgid "{0} {1} Request sent"
+#~ msgstr "{0} {1} Request sent"
 
 #: src/components/Exchange/SwapBox.js
 msgid "{0} {1} not supported"
@@ -5889,6 +5894,18 @@ msgstr "{orderTypeText} {0} {longShortText}: {sign}{1}"
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} canceled"
 msgstr "{ordersText} canceled"
+
+#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
+msgid "{positionName} Failed to settle"
+msgstr "{positionName} Failed to settle"
+
+#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
+msgid "{positionName} Fees settled"
+msgstr "{positionName} Fees settled"
+
+#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
+msgid "{positionName} Fees settling"
+msgstr "{positionName} Fees settling"
 
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #~ msgid "{positionText} {sizeDeltaText}, Price: {0}, Market: {1}"
