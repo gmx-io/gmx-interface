@@ -7,13 +7,15 @@ const SUBGRAPH_URLS = {
     stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-stats/api",
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-referrals/api",
     nissohVault: "https://api.thegraph.com/subgraphs/name/nissoh/gmx-vault",
-    syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-arbitrum-stats/api",
+    syntheticsStats:
+      "https://subgraph.satsuma-prod.com/713b540e7060/gmx-2/synthetics-arbitrum-stats/version/apr2-231012185335-7148e37/api",
   },
 
   [ARBITRUM_GOERLI]: {
     stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-stats/api",
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-goerli-referrals/api",
-    syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-goerli-stats/api",
+    syntheticsStats:
+      "https://subgraph.satsuma-prod.com/713b540e7060/gmx-2/synthetics-goerli-stats/version/apr2-231011154235-1af3973/api",
   },
 
   [AVALANCHE]: {
