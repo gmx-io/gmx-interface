@@ -8,28 +8,28 @@ const SUBGRAPH_URLS = {
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-referrals/api",
     nissohVault: "https://api.thegraph.com/subgraphs/name/nissoh/gmx-vault",
     syntheticsStats:
-      "https://subgraph.satsuma-prod.com/713b540e7060/gmx-2/synthetics-arbitrum-stats/version/settle-funding-fees-231012190149-daffdc4/api",
+      "https://subgraph.satsuma-prod.com/713b540e7060/gmx-2/synthetics-arbitrum-stats/version/settle-funding-fees-231013153607-daffdc4/api",
   },
 
   [ARBITRUM_GOERLI]: {
     stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-stats/api",
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-goerli-referrals/api",
     syntheticsStats:
-      "https://subgraph.satsuma-prod.com/713b540e7060/gmx-2/synthetics-goerli-stats/version/settle-funding-fees-231009140243-daffdc4/api",
+      "https://subgraph.satsuma-prod.com/713b540e7060/gmx-2/synthetics-goerli-stats/version/settle-funding-fees-231013153552-daffdc4/api",
   },
 
   [AVALANCHE]: {
     stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-stats/api",
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-referrals/api",
     syntheticsStats:
-      "https://subgraph.satsuma-prod.com/713b540e7060/gmx-2/synthetics-avalanche-stats/version/settle-funding-fees-231009140532-daffdc4/api",
+      "https://subgraph.satsuma-prod.com/713b540e7060/gmx-2/synthetics-avalanche-stats/version/settle-funding-fees-231013153657-daffdc4/api",
   },
 
   [AVALANCHE_FUJI]: {
     stats: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-stats",
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-fuji-referrals/api",
     syntheticsStats:
-      "https://subgraph.satsuma-prod.com/713b540e7060/gmx-2/synthetics-fuji-stats/version/settle-funding-fees-231009140439-daffdc4/api",
+      "https://subgraph.satsuma-prod.com/713b540e7060/gmx-2/synthetics-fuji-stats/version/settle-funding-fees-231013153720-daffdc4/api",
   },
 
   common: {

@@ -12,8 +12,6 @@ import { ClaimAction, ClaimCollateralAction, ClaimFundingFeeAction, ClaimMarketI
 import useWallet from "lib/wallets/useWallet";
 import { getAddress } from "ethers/lib/utils.js";
 import { getToken } from "config/tokens";
-import { groupBy } from "lodash";
-import { Token } from "domain/tokens/types";
 
 export type ClaimCollateralHistoryResult = {
   claimActions?: ClaimAction[];
@@ -105,8 +103,10 @@ export function useClaimCollateralHistory(
 
         case ClaimType.SettleFundingFeeCreated:
         case ClaimType.SettleFundingFeeExecuted:
-        case ClaimType.SettleFundingFeeCancelled:
-          return [...acc, ...createSettleFundingFeeAction(chainId, eventName, rawAction, marketsInfoData)];
+        case ClaimType.SettleFundingFeeCancelled: {
+          const settleAction = createSettleFundingFeeAction(chainId, eventName, rawAction, marketsInfoData);
+          return settleAction ? [...acc, settleAction] : acc;
+        }
         default:
           return acc;
       }
@@ -171,42 +171,19 @@ function createSettleFundingFeeAction(
   eventName: ClaimFundingFeeAction["eventName"],
   rawAction: RawClaimAction,
   marketsInfoData: MarketsInfoData | null
-): ClaimFundingFeeAction[] {
-  if (!marketsInfoData) return [];
+): ClaimFundingFeeAction | null {
+  if (!marketsInfoData) return null;
 
-  const items = (rawAction.marketAddresses ?? [])
-    .map((address) => {
-      return getByKey(marketsInfoData, getAddress(address))!;
-    })
-    .map((market, i) => {
-      const tokenAddress = rawAction.tokenAddresses[i];
-      const token = tokenAddress ? getToken(chainId, getAddress(tokenAddress)) : null;
-      return {
-        id: rawAction.transactionIds?.[i]!,
-        type: "fundingFee",
-        account: rawAction.account,
-        amount: bigNumberify(rawAction.amounts[i])!,
-        market,
-        token,
-        isLong: rawAction.isLongOrders?.[i] ?? false,
-        transactionHash: rawAction.transactionIds?.[i]!,
-        timestamp: rawAction.transaction.timestamp,
-      };
-    });
-  const groups = groupBy(items, (item) => item.id);
-
-  return Object.entries(groups).map(([id, group]) => {
-    return {
-      id,
-      type: "fundingFee",
-      eventName,
-      account: rawAction.account,
-      amounts: group.map((item) => item.amount),
-      markets: group.map((item) => item.market),
-      tokens: group.map((item) => item.token).filter(Boolean) as Token[],
-      isLongOrders: group.map((item) => item.isLong),
-      transactionHash: group[0].transactionHash,
-      timestamp: group[0].timestamp,
-    };
-  });
+  return {
+    id: rawAction.id,
+    type: "fundingFee",
+    account: rawAction.account,
+    amounts: rawAction.amounts.map((amount) => bigNumberify(amount)!),
+    markets: rawAction.marketAddresses.map((address) => getByKey(marketsInfoData, getAddress(address))!),
+    tokens: rawAction.tokenAddresses.map((address) => getToken(chainId, getAddress(address))),
+    isLongOrders: rawAction.isLongOrders ?? [],
+    transactionHash: rawAction.transaction.hash,
+    eventName,
+    timestamp: rawAction.transaction.timestamp,
+  };
 }
