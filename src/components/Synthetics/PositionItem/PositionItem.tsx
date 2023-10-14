@@ -3,30 +3,31 @@ import cx from "classnames";
 import PositionDropdown from "components/Exchange/PositionDropdown";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import { PositionOrderInfo, getOrderError, isIncreaseOrderType } from "domain/synthetics/orders";
+import { PositionOrderInfo, isDecreaseOrderType, isIncreaseOrderType } from "domain/synthetics/orders";
 import {
   PositionInfo,
   formatEstimatedLiquidationTime,
   formatLeverage,
   formatLiquidationPrice,
   getEstimatedLiquidationTimeInHours,
+  getTriggerNameByOrderType,
   usePositionsConstants,
 } from "domain/synthetics/positions";
 import { formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
 import { ImSpinner2 } from "react-icons/im";
 
+import Button from "components/Button/Button";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
-import { TradeMode, TradeType, getTriggerThresholdType } from "domain/synthetics/trade";
-import { CHART_PERIODS } from "lib/legacy";
-import "./PositionItem.scss";
-import { useChainId } from "lib/chains";
-import { useMedia } from "react-use";
-import TokenIcon from "components/TokenIcon/TokenIcon";
-import Button from "components/Button/Button";
-import { FaAngleRight } from "react-icons/fa";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import { TradeMode, TradeType, getTriggerThresholdType } from "domain/synthetics/trade";
+import { useChainId } from "lib/chains";
+import { CHART_PERIODS } from "lib/legacy";
+import { FaAngleRight } from "react-icons/fa";
+import { useMedia } from "react-use";
+import "./PositionItem.scss";
 
 export type Props = {
   position: PositionInfo;
@@ -304,17 +305,36 @@ export function PositionItem(p: Props) {
   function renderPositionOrders() {
     if (positionOrders.length === 0) return null;
 
-    const ordersErrorList = positionOrders.map((order) => getOrderError(order, p.position)).filter(Boolean);
+    const ordersErrorList = positionOrders.filter((order) => order.errorLevel === "error");
+    const ordersWarningsList = positionOrders.filter((order) => order.errorLevel === "warning");
+    const hasErrors = ordersErrorList.length + ordersWarningsList.length > 0;
+
     return (
       <div onClick={p.onOrdersClick}>
         <Tooltip
           className="Position-list-active-orders"
-          handle={t`Orders (${positionOrders.length})`}
+          handle={
+            <Trans>
+              Orders{" "}
+              <span
+                className={cx({
+                  "position-order-error": hasErrors,
+                  "level-error": ordersErrorList.length > 0,
+                  "level-warning": !ordersErrorList.length && ordersWarningsList.length > 0,
+                })}
+              >
+                ({positionOrders.length})
+              </span>
+            </Trans>
+          }
           position="left-bottom"
-          handleClassName={cx(
-            ["Exchange-list-info-label", "Exchange-position-list-orders", "plain", "clickable", "text-gray"],
-            { "position-order-error": ordersErrorList.length > 0 }
-          )}
+          handleClassName={cx([
+            "Exchange-list-info-label",
+            "Exchange-position-list-orders",
+            "plain",
+            "clickable",
+            "text-gray",
+          ])}
           renderContent={() => {
             return (
               <>
@@ -322,14 +342,17 @@ export function PositionItem(p: Props) {
                   <Trans>Active Orders</Trans>
                 </strong>
                 {positionOrders.map((order) => {
-                  const error = getOrderError(order, p.position);
+                  const errors = order.errors;
                   const triggerThresholdType = getTriggerThresholdType(order.orderType, order.isLong);
                   const isIncrease = isIncreaseOrderType(order.orderType);
                   return (
                     <div key={order.key} className="Position-list-order active-order-tooltip">
                       <div className="Position-list-order-label">
                         <span>
-                          {triggerThresholdType}{" "}
+                          {isDecreaseOrderType(order.orderType)
+                            ? getTriggerNameByOrderType(order.orderType, true)
+                            : t`Limit`}
+                          : {triggerThresholdType}{" "}
                           {formatUsd(order.triggerPrice, {
                             displayDecimals: order.indexToken?.priceDecimals,
                           })}
@@ -341,7 +364,14 @@ export function PositionItem(p: Props) {
                         </span>
                         <FaAngleRight fontSize={14} />
                       </div>
-                      {error && <div className="order-error-text">{error}</div>}
+                      {errors.map((err, i) => (
+                        <>
+                          <div key={err.msg} className={cx("order-error-text", `level-${err.level}`)}>
+                            {err.msg}
+                          </div>
+                          {i < errors.length - 1 && <br />}
+                        </>
+                      ))}
                     </div>
                   );
                 })}

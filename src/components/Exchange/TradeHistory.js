@@ -550,7 +550,7 @@ export default function TradeHistory(props) {
                   {(!account || account.length === 0) && (
                     <span>
                       {" "}
-                      (<Link to={`/actions/${tradeData.account}`}>{tradeData.account}</Link>)
+                      (<Link to={`/actions/v1/${tradeData.account}`}>{tradeData.account}</Link>)
                     </span>
                   )}
                 </div>

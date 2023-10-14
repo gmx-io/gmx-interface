@@ -5,8 +5,8 @@ type SelectProps = {
   onChange: (evt: ChangeEvent<HTMLSelectElement>) => void;
   value: string | number;
   options: {
-    value: string;
-    label: string;
+    value: string | number;
+    label: string | number;
   }[];
 };
 

@@ -38,6 +38,7 @@ import {
   formatLeverage,
   formatLiquidationPrice,
   getPositionKey,
+  getTriggerNameByOrderType,
 } from "domain/synthetics/positions";
 import {
   TokenData,
@@ -67,6 +68,7 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import SlippageInput from "components/SlippageInput/SlippageInput";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { AvailableMarketsOptions } from "domain/synthetics/trade/useAvailableMarketsOptions";
 import { helperToast } from "lib/helperToast";
 import {
   bigNumberify,
@@ -100,6 +102,7 @@ export type Props = {
   marketInfo?: MarketInfo;
   collateralToken?: TokenData;
   swapAmounts?: SwapAmounts;
+  marketsOptions?: AvailableMarketsOptions;
   increaseAmounts?: IncreasePositionAmounts;
   decreaseAmounts?: DecreasePositionAmounts;
   nextPositionValues?: NextPositionValues;
@@ -150,6 +153,7 @@ export function ConfirmationBox(p: Props) {
     error,
     existingPosition,
     shouldDisableValidation,
+    marketsOptions,
     ordersData,
     tokensData,
     setKeepLeverage,
@@ -305,8 +309,8 @@ export function ConfirmationBox(p: Props) {
       return t`Confirm Limit Order`;
     }
 
-    return t`Confirm Trigger Order`;
-  }, [isLimit, isLong, isMarket, isSwap]);
+    return t`Confirm ${getTriggerNameByOrderType(fixedTriggerOrderType)} Order`;
+  }, [fixedTriggerOrderType, isLimit, isLong, isMarket, isSwap]);
 
   const submitButtonState = useMemo(() => {
     if (isSubmitting) {
@@ -349,7 +353,7 @@ export function ConfirmationBox(p: Props) {
     } else if (isLimit) {
       text = t`Confirm Limit Order`;
     } else {
-      text = t`Confirm Trigger Order`;
+      text = t`Confirm ${getTriggerNameByOrderType(fixedTriggerOrderType)} Order`;
     }
 
     return {
@@ -359,6 +363,7 @@ export function ConfirmationBox(p: Props) {
   }, [
     decreaseOrdersThatWillBeExecuted.length,
     error,
+    fixedTriggerOrderType,
     fromToken?.symbol,
     fromToken?.assetSymbol,
     isHighPriceImpact,
@@ -675,6 +680,27 @@ export function ConfirmationBox(p: Props) {
         </div>
       );
     }
+  }
+
+  const isOrphanOrder =
+    isTrigger &&
+    marketsOptions?.collateralWithPosition &&
+    collateralToken &&
+    !getIsEquivalentTokens(marketsOptions.collateralWithPosition, collateralToken);
+
+  function renderDifferentCollateralWarning() {
+    if (!isOrphanOrder) {
+      return null;
+    }
+
+    return (
+      <div className="Confirmation-box-warning">
+        <Trans>
+          You have an existing position with {marketsOptions?.collateralWithPosition?.symbol} as collateral. This Order
+          will not be valid for that Position.
+        </Trans>
+      </div>
+    );
   }
 
   function renderExistingLimitOrdersWarning() {
@@ -1190,6 +1216,7 @@ export function ConfirmationBox(p: Props) {
       <>
         <div>
           {renderMain()}
+          {renderDifferentCollateralWarning()}
 
           {isTrigger && existingPosition?.leverage && (
             <Checkbox asRow isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
@@ -1198,6 +1225,7 @@ export function ConfirmationBox(p: Props) {
               </span>
             </Checkbox>
           )}
+
           <ExchangeInfoRow
             label={t`Trigger Price`}
             value={
@@ -1290,6 +1318,8 @@ export function ConfirmationBox(p: Props) {
               )
             }
           />
+
+          {!p.existingPosition && <ExchangeInfoRow label={t`Collateral`} value={collateralToken?.symbol} />}
 
           {p.existingPosition && (
             <ExchangeInfoRow
