@@ -8,7 +8,7 @@ import {
   getPendingOrderKey,
   useSyntheticsEvents,
 } from "context/SyntheticsEvents";
-import { MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
+import { MarketInfo, MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { isMarketOrderType } from "domain/synthetics/orders";
 import { getByKey } from "lib/objects";
 import { useEffect, useMemo, useState } from "react";
@@ -132,9 +132,19 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
 
           if (!marketInfo) throw new Error("marketInfo not found");
 
-          const positionName = `${order.isLong ? t`Long` : t`Short`} ${marketInfo.name}`;
+          const indexName = getMarketIndexName(marketInfo);
+          const poolName = getMarketPoolName(marketInfo);
+          const positionName = (
+            <Trans>
+              <span>{order.isLong ? t`Long` : t`Short`}</span>{" "}
+              <div className="inline-flex">
+                <span>{indexName}</span>
+                <span className="subtext gm-toast">[{poolName}]</span>
+              </div>
+            </Trans>
+          );
 
-          let text = t`${positionName} Fees settling`;
+          let text = <Trans>{positionName} Fees settling</Trans>;
           let status: TransactionStatusType = "muted";
           let txnHash: string | undefined;
 
@@ -143,13 +153,13 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
           }
 
           if (orderStatus?.executedTxnHash) {
-            text = t`${positionName} Fees settled`;
+            text = <Trans>{positionName} Fees settled</Trans>;
             status = "success";
             txnHash = orderStatus?.executedTxnHash;
           }
 
           if (orderStatus?.cancelledTxnHash) {
-            text = t`${positionName} Failed to settle`;
+            text = <Trans>{positionName} Failed to settle</Trans>;
             status = "error";
             txnHash = orderStatus?.cancelledTxnHash;
           }

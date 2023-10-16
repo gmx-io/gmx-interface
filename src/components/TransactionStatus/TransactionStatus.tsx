@@ -4,12 +4,13 @@ import cx from "classnames";
 import { useChainId } from "lib/chains";
 import { ImSpinner2 } from "react-icons/im";
 import "./TransactionStatus.scss";
+import { ReactNode } from "react";
 
 export type TransactionStatusType = "muted" | "loading" | "success" | "error";
 
 type Props = {
   status: TransactionStatusType;
-  text: string;
+  text: ReactNode;
   txnHash?: string;
 };
 
