@@ -259,6 +259,7 @@ export function getDecreasePositionAmounts(p: {
     });
 
     values.swapProfitFeeUsd = swapProfitStats.swapFeeUsd.add(swapProfitStats.priceImpactDeltaUsd.mul(-1));
+    values.swapUiFeeUsd = getUiFee(swapProfitStats.usdIn, uiFeeFactor);
   } else {
     values.swapProfitFeeUsd = BigNumber.from(0);
   }
@@ -273,6 +274,7 @@ export function getDecreasePositionAmounts(p: {
     .add(values.borrowingFeeUsd)
     .add(values.fundingFeeUsd)
     .add(values.swapProfitFeeUsd)
+    .add(values.swapUiFeeUsd)
     .add(values.uiFeeUsd)
     .add(negativePnlUsd)
     .add(negativePriceImpactUsd)
