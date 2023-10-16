@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
-import { differenceInDays, differenceInHours, startOfDay, sub } from "date-fns";
+import { differenceInHours, startOfDay, sub } from "date-fns";
 import { BigNumber } from "ethers";
 import { bigNumberify } from "lib/numbers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
@@ -9,6 +9,7 @@ import useSWR from "swr";
 import { useMarketsInfo } from ".";
 import { MarketTokensAPRData } from "./types";
 import { useMarketTokensData } from "./useMarketTokensData";
+import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 
 type TimeIntervalQuery = {
   period: "1d" | "1h";
@@ -42,9 +43,10 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
 
   const key = marketAddresses.length && marketTokensData && client ? marketAddresses.join(",") : null;
 
+  const daysConsidered = useDaysConsideredInMarketsApr();
+
   const { data } = useSWR(key, {
     fetcher: async () => {
-      const daysConsidered = getDaysConsidered();
       const intervals = getIntervalsByTime(new Date(), daysConsidered);
 
       const marketFeesQuery = (
@@ -173,12 +175,4 @@ export function getIntervalsByTime(origin: Date, daysNumber = 30): TimeIntervalQ
       timestampGroup_gte: Math.floor(sub(origin, { days: daysNumber }).valueOf() / 1000),
     },
   ];
-}
-
-function getDaysConsidered() {
-  const dayEstimationStarts = new Date("2023-10-01T00:00:00");
-  const daysPased = differenceInDays(new Date(), dayEstimationStarts);
-  const maxDaysConsidered = 30;
-
-  return Math.min(daysPased, maxDaysConsidered);
 }

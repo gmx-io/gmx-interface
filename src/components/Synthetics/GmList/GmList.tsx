@@ -24,6 +24,8 @@ import Tooltip from "components/Tooltip/Tooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { getIcons } from "config/icons";
 import PageTitle from "components/PageTitle/PageTitle";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 
 type Props = {
   hideTitle?: boolean;
@@ -97,6 +99,7 @@ export function GmList({
 
     return flattenedMarkets;
   }, [marketsInfoData, marketTokensData]);
+  const daysConsidered = useDaysConsideredInMarketsApr();
 
   const isMobile = useMedia("(max-width: 1100px)");
 
@@ -142,7 +145,28 @@ export function GmList({
                   <Trans>WALLET</Trans>
                 </th>
                 <th>
-                  <Trans>APR</Trans>
+                  <Tooltip
+                    handle={<Trans>APR</Trans>}
+                    className="text-none"
+                    position="right-bottom"
+                    renderContent={() => (
+                      <p className="text-white">
+                        <Trans>
+                          <p>
+                            APR is based on the Fees collected for the past {daysConsidered} days. It is an estimate as
+                            actual Fees are auto-compounded into the pool in real-time.
+                          </p>
+                          <p>
+                            Check Pools performance against other LP Positions in{" "}
+                            <ExternalLink newTab href="https://dune.com/gmx-io/gmx-analytics">
+                              GMX Dune Dashboard
+                            </ExternalLink>
+                            .
+                          </p>
+                        </Trans>
+                      </p>
+                    )}
+                  />
                 </th>
 
                 <th></th>
