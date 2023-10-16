@@ -11,7 +11,7 @@ import {
 import { MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
 import { isMarketOrderType } from "domain/synthetics/orders";
 import { getByKey } from "lib/objects";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./StatusNotification.scss";
 import { useToastAutoClose } from "./useToastAutoClose";
 
@@ -22,7 +22,13 @@ type Props = {
 };
 
 export function FeesSettlementStatusNotification({ orders, toastTimestamp, marketsInfoData }: Props) {
-  const { orderStatuses, setOrderStatusViewed } = useSyntheticsEvents();
+  const { orderStatuses: allOrderStatuses, setOrderStatusViewed } = useSyntheticsEvents();
+
+  const [matchedOrderStatusKeys, setMatchedOrderStatusKeys] = useState<string[]>([]);
+  const matchedOrderStatuses = useMemo(
+    () => matchedOrderStatusKeys.map((key) => allOrderStatuses[key]),
+    [allOrderStatuses, matchedOrderStatusKeys]
+  );
 
   const [keyByOrder, orderByKey] = useMemo(() => {
     const map1 = new Map<PendingOrderData, string>();
@@ -35,9 +41,23 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
     return [map1, map2];
   }, [orders]);
 
+  useEffect(() => {
+    Object.values(allOrderStatuses).forEach((orderStatus) => {
+      const key = getPendingOrderKey(orderStatus.data);
+      if (orderStatus.isViewed) return;
+      const order = orderByKey.get(key);
+      if (order) {
+        if (getPendingOrderKey(order) === getPendingOrderKey(orderStatus.data)) {
+          setMatchedOrderStatusKeys((prev) => [...prev, orderStatus.key]);
+          setOrderStatusViewed(orderStatus.key);
+        }
+      }
+    });
+  }, [allOrderStatuses, orderByKey, setOrderStatusViewed]);
+
   const orderStatusByOrder = useMemo(() => {
     const res = new Map<PendingOrderData, OrderStatus>();
-    Object.values(orderStatuses).forEach((orderStatus) => {
+    matchedOrderStatuses.forEach((orderStatus) => {
       const key = getPendingOrderKey(orderStatus.data);
       const order = orderByKey.get(key);
       if (order) {
@@ -45,7 +65,7 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
       }
     });
     return res;
-  }, [orderByKey, orderStatuses]);
+  }, [matchedOrderStatuses, orderByKey]);
 
   const isCompleted = useMemo(() => {
     return orders.every((order) => {
@@ -139,14 +159,6 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
       </>
     );
   }, [keyByOrder, marketInfoByKey, orderStatusByOrder, orders]);
-
-  useEffect(() => {
-    orderStatusByOrder.forEach((orderStatus) => {
-      if (!orderStatus.isViewed) {
-        setOrderStatusViewed(orderStatus.key);
-      }
-    });
-  }, [orderStatusByOrder, setOrderStatusViewed]);
 
   useToastAutoClose(isCompleted, toastTimestamp);
 
