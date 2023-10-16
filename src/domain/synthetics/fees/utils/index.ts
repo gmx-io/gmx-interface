@@ -4,7 +4,7 @@ import { BigNumber } from "ethers";
 import { PRECISION } from "lib/legacy";
 import { applyFactor, getBasisPoints } from "lib/numbers";
 import { FeeItem } from "../types";
-import { SwapPathStats, SwapStats } from "domain/synthetics/trade";
+import { SwapStats } from "domain/synthetics/trade";
 
 export * from "./executionFee";
 export * from "./priceImpact";

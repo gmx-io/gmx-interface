@@ -145,7 +145,7 @@ export function TradeFeesRow(p: Props) {
           id: "swapUiFee",
           label: (
             <>
-              <div className="text-white">{t`Swap UI Fee`}:</div>
+              <div className="text-white">{p.feesType === "swap" ? t`UI Fee` : t`Swap UI Fee`}:</div>
               <div>({removeTrailingZeros(formatAmount(p.uiSwapFee.bps.abs(), 4, 6))}% of swap amount)</div>
             </>
           ),
