@@ -139,6 +139,7 @@ export function TradeFeesRow(p: Props) {
           className: "text-red",
         }
       : undefined;
+
     const uiSwapFeeRow = p.uiSwapFee?.deltaUsd?.abs().gt(0)
       ? {
           id: "swapUiFee",

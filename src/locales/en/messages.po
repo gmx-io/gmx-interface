@@ -4190,6 +4190,10 @@ msgstr "Swap Price Impact"
 msgid "Swap Profit Fee"
 msgstr "Swap Profit Fee"
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Swap UI Fee"
+msgstr "Swap UI Fee"
+
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
 msgstr "Swap active: {0}, executed: {1}, cancelled: {2}"

@@ -1,5 +1,10 @@
 import { UserReferralInfo } from "domain/referrals";
-import { getPositionFee, getPriceImpactForPosition, getUiFee } from "domain/synthetics/fees";
+import {
+  getPositionFee,
+  getPriceImpactForPosition,
+  getTotalSwapVolumeFromSwapStats,
+  getUiFee,
+} from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
 import { OrderType } from "domain/synthetics/orders";
 import {
@@ -77,6 +82,7 @@ export function getIncreasePositionAmounts(p: {
 
     positionFeeUsd: BigNumber.from(0),
     uiFeeUsd: BigNumber.from(0),
+    swapUiFeeUsd: BigNumber.from(0),
     feeDiscountUsd: BigNumber.from(0),
     borrowingFeeUsd: BigNumber.from(0),
     fundingFeeUsd: BigNumber.from(0),
@@ -143,10 +149,13 @@ export function getIncreasePositionAmounts(p: {
       userReferralInfo
     );
     const baseUiFeeUsd = getUiFee(baseSizeDeltaUsd, uiFeeFactor);
+    const totalSwapVolumeUsd = getTotalSwapVolumeFromSwapStats(values.swapPathStats?.swapSteps);
+    values.swapUiFeeUsd = getUiFee(totalSwapVolumeUsd, uiFeeFactor);
 
     values.sizeDeltaUsd = baseCollateralUsd
       .sub(basePositionFeeInfo.positionFeeUsd)
       .sub(baseUiFeeUsd)
+      .sub(values.swapUiFeeUsd)
       .mul(leverage)
       .div(BASIS_POINTS_DIVISOR);
 
@@ -166,7 +175,8 @@ export function getIncreasePositionAmounts(p: {
       .sub(values.positionFeeUsd)
       .sub(values.borrowingFeeUsd)
       .sub(values.fundingFeeUsd)
-      .sub(values.uiFeeUsd);
+      .sub(values.uiFeeUsd)
+      .sub(values.swapUiFeeUsd);
 
     values.collateralDeltaAmount = convertToTokenAmount(
       values.collateralDeltaUsd,
@@ -202,7 +212,8 @@ export function getIncreasePositionAmounts(p: {
       .add(values.positionFeeUsd)
       .add(values.borrowingFeeUsd)
       .add(values.fundingFeeUsd)
-      .add(values.uiFeeUsd);
+      .add(values.uiFeeUsd)
+      .add(values.swapUiFeeUsd);
 
     const baseCollateralAmount = convertToTokenAmount(
       baseCollateralUsd,
@@ -264,6 +275,7 @@ export function getIncreasePositionAmounts(p: {
       });
 
       values.swapPathStats = swapAmounts.swapPathStats;
+      values.swapUiFeeUsd = getUiFee(getTotalSwapVolumeFromSwapStats(values.swapPathStats?.swapSteps), uiFeeFactor);
 
       const baseCollateralUsd = convertToUsd(swapAmounts.amountOut, collateralToken.decimals, values.collateralPrice)!;
 
@@ -271,7 +283,8 @@ export function getIncreasePositionAmounts(p: {
         .sub(values.positionFeeUsd)
         .sub(values.borrowingFeeUsd)
         .sub(values.fundingFeeUsd)
-        .sub(values.uiFeeUsd);
+        .sub(values.uiFeeUsd)
+        .sub(values.swapUiFeeUsd);
 
       values.collateralDeltaAmount = convertToTokenAmount(
         values.collateralDeltaUsd,

@@ -215,8 +215,9 @@ export function PositionSeller(p: Props) {
       amountIn: decreaseAmounts.receiveTokenAmount,
       isLimit: false,
       findSwapPath,
+      uiFeeFactor,
     });
-  }, [decreaseAmounts, findSwapPath, position, receiveToken, shouldSwap]);
+  }, [decreaseAmounts, findSwapPath, position, receiveToken, shouldSwap, uiFeeFactor]);
 
   const receiveUsd = swapAmounts?.usdOut || decreaseAmounts?.receiveUsd;
   const receiveTokenAmount = swapAmounts?.amountOut || decreaseAmounts?.receiveTokenAmount;
@@ -271,7 +272,8 @@ export function PositionSeller(p: Props) {
         fundingFeeUsd: decreaseAmounts.fundingFeeUsd,
         feeDiscountUsd: decreaseAmounts.feeDiscountUsd,
         swapProfitFeeUsd: decreaseAmounts.swapProfitFeeUsd,
-        uiFee: getUiFeeItem(decreaseAmounts.sizeDeltaUsd, uiFeeFactor),
+        uiFee: getUiFeeItem(decreaseAmounts.sizeDeltaUsd.mul(-1), uiFeeFactor),
+        uiFeeFactor,
       }),
       executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
     };

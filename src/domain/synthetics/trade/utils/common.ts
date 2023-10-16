@@ -1,6 +1,13 @@
-import { FeeItem, SwapFeeItem, getFeeItem, getTotalFeeItem, getUiFeeItem } from "domain/synthetics/fees";
+import {
+  FeeItem,
+  SwapFeeItem,
+  getFeeItem,
+  getTotalFeeItem,
+  getTotalSwapVolumeFromSwapStats,
+  getUiFeeItem,
+} from "domain/synthetics/fees";
 import { BigNumber } from "ethers";
-import { applyFactor, getBasisPoints } from "lib/numbers";
+import { getBasisPoints } from "lib/numbers";
 import { SwapStats, TradeFees, TradeMode, TradeType } from "../types";
 
 export function getTradeFlags(tradeType: TradeType, tradeMode: TradeMode) {
@@ -66,20 +73,9 @@ export function getTradeFees(p: {
       }))
     : undefined;
 
-  const totalUiSwapFees =
-    initialCollateralUsd.gt(0) && uiFeeFactor
-      ? swapSteps.reduce(
-          (acc, curr) => {
-            return {
-              uiFeeUsd: acc.uiFeeUsd.add(applyFactor(curr.usdIn, uiFeeFactor)),
-              usdIn: acc.usdIn.add(curr.usdIn),
-            };
-          },
-          { uiFeeUsd: BigNumber.from(0), usdIn: BigNumber.from(0) }
-        )
-      : undefined;
+  const totalSwapVolumeUsd = getTotalSwapVolumeFromSwapStats(swapSteps);
+  const uiSwapFee = getUiFeeItem(totalSwapVolumeUsd.mul(-1), uiFeeFactor);
 
-  const uiSwapFee = getUiFeeItem(totalUiSwapFees?.usdIn, uiFeeFactor);
   const swapProfitFee = getFeeItem(swapProfitFeeUsd.mul(-1), initialCollateralUsd);
 
   const swapPriceImpact = getFeeItem(swapPriceImpactDeltaUsd, initialCollateralUsd);

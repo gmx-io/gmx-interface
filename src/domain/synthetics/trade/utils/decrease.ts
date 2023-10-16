@@ -65,6 +65,7 @@ export function getDecreasePositionAmounts(p: {
 
     positionFeeUsd: BigNumber.from(0),
     uiFeeUsd: BigNumber.from(0),
+    swapUiFeeUsd: BigNumber.from(0),
     borrowingFeeUsd: BigNumber.from(0),
     fundingFeeUsd: BigNumber.from(0),
     feeDiscountUsd: BigNumber.from(0),

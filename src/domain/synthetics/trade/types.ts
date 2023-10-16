@@ -58,6 +58,7 @@ export type IncreasePositionAmounts = {
 
   positionFeeUsd: BigNumber;
   uiFeeUsd: BigNumber;
+  swapUiFeeUsd: BigNumber;
   feeDiscountUsd: BigNumber;
   borrowingFeeUsd: BigNumber;
   fundingFeeUsd: BigNumber;
@@ -83,6 +84,7 @@ export type DecreasePositionAmounts = {
 
   positionFeeUsd: BigNumber;
   uiFeeUsd: BigNumber;
+  swapUiFeeUsd: BigNumber;
   feeDiscountUsd: BigNumber;
   borrowingFeeUsd: BigNumber;
   fundingFeeUsd: BigNumber;
