@@ -84,11 +84,11 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
 
     const orderStatus = orderStatusByOrder.get(order);
 
-    let text = t`Sending order request`;
+    let text = t`Sending settle request`;
     let status: TransactionStatusType = "loading";
 
     if (orderStatus?.createdTxnHash) {
-      text = t`Settling Fees for ${plural(orders.length, { one: "# position", other: "# positions" })}`;
+      text = t`Settle request for ${plural(orders.length, { one: "# position", other: "# positions" })} sent`;
       status = "success";
     }
     return <TransactionStatus status={status} txnHash={orderStatus?.createdTxnHash} text={text} />;
