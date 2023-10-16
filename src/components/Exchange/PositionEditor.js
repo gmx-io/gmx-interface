@@ -268,7 +268,7 @@ export default function PositionEditor(props) {
 
   const getPrimaryText = () => {
     const [error] = getError();
-    const collateralTokenSymbol = position?.collateralToken?.assetSymbol ?? position?.collateralToken?.symbol;
+    const collateralToken = position?.collateralToken;
     if (error) {
       return error;
     }
@@ -280,10 +280,10 @@ export default function PositionEditor(props) {
     }
 
     if (isApproving) {
-      return t`Approving ${collateralTokenSymbol}...`;
+      return t`Approving ${collateralToken.assetSymbol ?? collateralToken.symbol}...`;
     }
     if (needApproval) {
-      return t`Approve ${collateralTokenSymbol}`;
+      return t`Approve ${collateralToken.assetSymbol ?? collateralToken.symbol}`;
     }
 
     if (needPositionRouterApproval && isWaitingForPositionRouterApproval) {
