@@ -3960,9 +3960,12 @@ msgstr ""
 msgid "Sending Sell request"
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Sending order request"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
+msgid "Sending settle request"
 msgstr ""
 
 #: src/components/Exchange/PositionDropdown.tsx
@@ -3982,6 +3985,10 @@ msgid "Settle"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
+msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 #~ msgid "Settle request sent"
 #~ msgstr ""
 
@@ -3990,8 +3997,8 @@ msgid "Settled Funding Fees"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
-msgid "Settling Fees for {0, plural, one {# position} other {# positions}}"
-msgstr ""
+#~ msgid "Settling Fees for {0, plural, one {# position} other {# positions}}"
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settling Positions' Fees"

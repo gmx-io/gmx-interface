@@ -3963,10 +3963,13 @@ msgstr "Sending Buy request"
 msgid "Sending Sell request"
 msgstr "Sending Sell request"
 
-#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Sending order request"
 msgstr "Sending order request"
+
+#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
+msgid "Sending settle request"
+msgstr "Sending settle request"
 
 #: src/components/Exchange/PositionDropdown.tsx
 msgid "Set TP/SL"
@@ -3985,6 +3988,10 @@ msgid "Settle"
 msgstr "Settle"
 
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
+msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
+msgstr "Settle request for {0, plural, one {# position} other {# positions}} sent"
+
+#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 #~ msgid "Settle request sent"
 #~ msgstr "Settle request sent"
 
@@ -3993,8 +4000,8 @@ msgid "Settled Funding Fees"
 msgstr "Settled Funding Fees"
 
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
-msgid "Settling Fees for {0, plural, one {# position} other {# positions}}"
-msgstr "Settling Fees for {0, plural, one {# position} other {# positions}}"
+#~ msgid "Settling Fees for {0, plural, one {# position} other {# positions}}"
+#~ msgstr "Settling Fees for {0, plural, one {# position} other {# positions}}"
 
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settling Positions' Fees"
