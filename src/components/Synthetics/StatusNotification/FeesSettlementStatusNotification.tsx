@@ -151,7 +151,7 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
   useToastAutoClose(isCompleted, toastTimestamp);
 
   return (
-    <div className={"StatusNotification StatusNotification-small"}>
+    <div className={"StatusNotification"}>
       <div className="StatusNotification-content">
         <div className="StatusNotification-title">
           <Trans>Settling Positions' Fees</Trans>
