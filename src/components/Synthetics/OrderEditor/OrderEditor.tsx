@@ -82,7 +82,7 @@ export function OrderEditor(p: Props) {
 
   if (!isSwapOrderType(p.order.orderType)) {
     const orderInfo = p.order as PositionOrderInfo;
-    const deltaPriceImpactUsd = orderInfo.triggerPrice?.sub(orderInfo.acceptablePrice || 0);
+    const deltaPriceImpactUsd = orderInfo.triggerPrice.sub(orderInfo.acceptablePrice);
     acceptablePriceImpactBps = getBasisPoints(deltaPriceImpactUsd, orderInfo.triggerPrice);
   }
 
