@@ -2,7 +2,6 @@ import React, { useRef, useState } from "react";
 import { Menu, Switch } from "@headlessui/react";
 import ModalWithPortal from "../Modal/ModalWithPortal";
 import { t, Trans } from "@lingui/macro";
-import cx from "classnames";
 import { HiDotsVertical } from "react-icons/hi";
 import "./SettingDropdown.css";
 import docsIcon from "img/ic_docs.svg";
@@ -14,13 +13,9 @@ import settingsIcon from "img/ic_setting.svg";
 import languageIcon from "img/ic_language.svg";
 import informationIcon from "img/ic_information.svg";
 import darkModeIcon from "img/ic_dark_mode.svg";
-// import clickTradingIcon from "img/icn_1clicktrading.svg";
-// import emailIcon from "img/icn_email.svg";
 import { defaultLocale } from "lib/i18n";
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import LanguageModalContent from "components/NetworkDropdown/LanguageModalContent";
-import Button from "components/Button/Button";
-import { number } from "@lingui/core/cjs/formats";
 
 const LANGUAGE_MODAL_KEY: string = "LANGUAGE";
 const NETWORK_MODAL_KEY: string = "NETWORK";
@@ -93,7 +88,7 @@ export default function SettingDropdown(props) {
 }
 function NavIcons() {
   return (
-    <button className="transparent">
+    <button className="transparent third-step">
       <HiDotsVertical color="white" size={20} />
     </button>
   );
@@ -136,7 +131,7 @@ function DesktopDropdown({ setActiveModal, openSettings }) {
             </div>
           </Menu.Item>
           <Menu.Item>
-            <div className="setting-dropdown-menu-item menu-item">
+            <div className="setting-dropdown-menu-item menu-item fourth-step">
               <div className="menu-item-group">
                 <div className="menu-item-icon">
                   <img className="setting-dropdown-icon" src={chartIcon} alt="" />
@@ -157,7 +152,7 @@ function DesktopDropdown({ setActiveModal, openSettings }) {
           </Menu.Item>
           <Menu.Item>
             <div
-              className="setting-dropdown-menu-item menu-item"
+              className="setting-dropdown-menu-item menu-item fourth-step"
               onClick={() => setActiveModal(EMAIL_NOTIFICATION_MODAL_KEY)}
             >
               <div className="menu-item-group">

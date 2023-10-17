@@ -40,12 +40,12 @@ export function AppHeaderLinks({
         </div>
       )}
       <div className="App-header-link-container"></div>
-      <div className="App-header-link-container">
+      <div className="App-header-link-container" data-tour="step-1">
         <HeaderLink to="/trade" redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal}>
           <Trans>Trade</Trans>
         </HeaderLink>
       </div>
-      <div className="App-header-link-container">
+      <div className="App-header-link-container" data-tour="step-2">
         <HeaderLink to="/earn" redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal}>
           <Trans>Earn</Trans>
         </HeaderLink>

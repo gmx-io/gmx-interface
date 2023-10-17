@@ -1559,3 +1559,38 @@ button.App-button {
     width: 80%;
 
 }
+
+.tour-title {
+  color: #FFF;
+  font-family: Tektur;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+.tour-content {
+  color: rgba(255, 255, 255, 0.62);
+  font-family: Tektur;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 140.523%; /* 21.078px */
+}
+.tour-control {
+  width: 100%;
+  text-align: end;
+  font-family: Tektur;
+}
+.tour-control a, a:link, a:visited, a:hover {
+  text-decoration: none;
+  color: #FFF;
+  font-family: Tektur;
+}
+.tour-control button {
+  margin-left: 14px;
+  padding: 10px 26px;
+  border-radius: 3px;
+  border: 0px;
+  background: #FFF;
+  font-family: Tektur;
+}
