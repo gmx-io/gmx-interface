@@ -1,6 +1,7 @@
 import { t } from "@lingui/macro";
 import Checkbox from "components/Checkbox/Checkbox";
 import Tooltip from "components/Tooltip/Tooltip";
+import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { PositionInfo } from "domain/synthetics/positions";
 import { TokenData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
@@ -14,17 +15,16 @@ type Props = {
 };
 
 export const SettleAccruedFundingFeeRow = ({ position, isSelected, onCheckboxChange }: Props) => {
-  const [name1, name2] = useMemo(() => {
-    const name = position.marketInfo.name;
-    const split = name.split(" ");
-    return split.length === 2 ? split : [name, ""];
-  }, [position.marketInfo.name]);
+  const [indexName, poolName] = useMemo(
+    () => [getMarketIndexName(position.marketInfo), getMarketPoolName(position.marketInfo)],
+    [position.marketInfo]
+  );
   const label = (
     <div key={position.key}>
       <span className="SettleAccruedFundingFeeModal-row-text">
-        {position.isLong ? t`Long` : t`Short`} {name1}
+        {position.isLong ? t`Long` : t`Short`} {indexName}
       </span>{" "}
-      <span>{name2}</span>
+      <span className="subtext">[{poolName}]</span>
     </div>
   );
   const handleCheckboxChange = useCallback(
@@ -54,8 +54,9 @@ export const SettleAccruedFundingFeeRow = ({ position, isSelected, onCheckboxCha
         isChecked={isSelected}
         setIsChecked={handleCheckboxChange}
         className="flex self-center SettleAccruedFundingFeeModal-checkbox"
-      />
-      <div className="Exchange-info-label">{label}</div>
+      >
+        <div className="Exchange-info-label SettleAccruedFundingFeeModal-checkbox-label">{label}</div>
+      </Checkbox>
       <div className="SettleAccruedFundingFeeModal-info-label-usd">
         <Tooltip
           className="SettleAccruedFundingFeeModal-tooltip"
