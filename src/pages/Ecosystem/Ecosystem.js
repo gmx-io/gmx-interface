@@ -177,8 +177,8 @@ export default function Ecosystem() {
       link: "https://app.copin.io",
       linkLabel: "copin.io",
       about: t`Explore, analyze, and copy on-chain traders`,
-      creatorLabel: ["@0xanol", "@tungle_eth", "@Ry0_Tran"],
-      creatorLink: ["https://twitter.com/0xanol", "https://twitter.com/tungle_eth", "https://twitter.com/Ry0_Tran"],
+      creatorLabel: ["@0xanol", "@tungle_eth"],
+      creatorLink: ["https://twitter.com/0xanol", "https://twitter.com/tungle_eth"],
       chainIds: [ARBITRUM],
     },
   ];
