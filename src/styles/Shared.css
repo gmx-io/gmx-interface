@@ -557,3 +557,7 @@ button.btn-link:hover .logout-icon {
 .text-green {
   color: var(--green);
 }
+
+.gap-right-xs > *:not(:last-child) {
+  margin-right: 0.5rem;
+}
