@@ -74,7 +74,7 @@ function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
     <div className="TradeHistoryRow App-box App-box-border">
       <div className="muted TradeHistoryRow-time">{formatDateTime(claimAction.timestamp)}</div>
       <ExternalLink className="plain" href={`${getExplorerUrl(chainId)}tx/${claimAction.transactionHash}`}>
-        {eventTitle}: {tokensMsg} from&nbsp;{" "}
+        {eventTitle}: {tokensMsg} from&nbsp;
         <Tooltip
           handle={plural(marketsCount, { one: "# Market", other: "# Markets" })}
           renderContent={() => (
