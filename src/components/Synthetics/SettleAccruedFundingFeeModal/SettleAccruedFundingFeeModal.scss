@@ -1,56 +1,56 @@
-.SettleAccruedFundingFeeModal-divider {
+.ClaimSettleModal-divider {
     margin-top: 1.5rem;
 }
 
-.SettleAccruedFundingFeeModal-alert {
+.ClaimSettleModal-alert {
     color: rgba(255, 255, 255, 0.70);
     padding-bottom: 1rem;
 }
 
-.SettleAccruedFundingFeeModal-modal-content {
+.ClaimSettleModal-modal-content {
     margin-top: 1.8rem;
 }
 
-.SettleAccruedFundingFeeModal-row-text {
+.ClaimSettleModal-row-text {
     color: white;
 }
 
-.SettleAccruedFundingFeeModal-info-row {
+.ClaimSettleModal-info-row {
     display: flex;
     font-size: var(--font-sm);
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
     align-items: baseline;
 
 }
 
-.SettleAccruedFundingFeeModal-info-label-usd {
+.ClaimSettleModal-info-label-usd {
     margin-left: auto;
 }
 
-.SettleAccruedFundingFeeModal-header {
+.ClaimSettleModal-header {
     margin-bottom: 1.5rem;
     display: flex;
     color: rgba(255, 255, 255, 0.70);
 }
 
-.SettleAccruedFundingFeeModal-header-left {
+.ClaimSettleModal-header-left {
     margin-left: 2.3rem;
 }
-.SettleAccruedFundingFeeModal-header-right {
+.ClaimSettleModal-header-right {
     margin-left: auto;
 }
 
-.SettleAccruedFundingFeeModal-checkbox {
+.ClaimSettleModal-checkbox {
     margin-right: 0.5rem;
 }
 
-.SettleAccruedFundingFeeModal-tooltip {
+.ClaimSettleModal-tooltip {
     .Tooltip-popup {
         min-width: 0;
         white-space: nowrap;
     }
 }
 
-.SettleAccruedFundingFeeModal-checkbox-label {
+.ClaimSettleModal-checkbox-label {
     margin-left: 0.4rem;
 }

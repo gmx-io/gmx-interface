@@ -159,7 +159,7 @@ export function SettleAccruedFundingFeeModal({
     userReferralInfo?.referralCodeForTxn,
   ]);
 
-  const renderTooltipContent = useCallback(() => t`Accrued Funding Fee`, []);
+  const renderTooltipContent = useCallback(() => t`Accrued Funding Fee.`, []);
 
   return (
     <Modal
@@ -169,24 +169,24 @@ export function SettleAccruedFundingFeeModal({
       label={t`Confirm Settle`}
     >
       <div className="ConfirmationBox-main text-center">Settle {totalStr}</div>
-      <div className="App-card-divider ClaimModal-divider FeeModal-divider SettleAccruedFundingFeeModal-divider" />
-      <div className="ClaimModal-content SettleAccruedFundingFeeModal-modal-content">
+      <div className="App-card-divider ClaimModal-divider FeeModal-divider ClaimSettleModal-divider" />
+      <div className="ClaimModal-content ClaimSettleModal-modal-content">
         <div className="App-card-content">
-          <div className="SettleAccruedFundingFeeModal-alert">
+          <div className="ClaimSettleModal-alert">
             <Trans>
               Consider selecting only Positions where the accrued Funding Fees exceed the gas spent to Settle, which is
               around {formatUsd(feeUsd)} per each selected Position.
             </Trans>
           </div>
 
-          <div className="App-card-divider ClaimModal-divider" />
-          <div className="SettleAccruedFundingFeeModal-header">
-            <div className="SettleAccruedFundingFeeModal-header-left">
+          <div className="App-card-divider" />
+          <div className="ClaimSettleModal-header">
+            <div className="ClaimSettleModal-header-left">
               <Trans>POSITION</Trans>
             </div>
-            <div className="SettleAccruedFundingFeeModal-header-right">
+            <div className="ClaimSettleModal-header-right">
               <Tooltip
-                className="SettleAccruedFundingFeeModal-tooltip"
+                className="ClaimSettleModal-tooltip"
                 position="right-top"
                 handle={<Trans>FUNDING FEE</Trans>}
                 renderContent={renderTooltipContent}

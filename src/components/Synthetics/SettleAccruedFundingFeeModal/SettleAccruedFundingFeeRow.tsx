@@ -21,7 +21,7 @@ export const SettleAccruedFundingFeeRow = ({ position, isSelected, onCheckboxCha
   );
   const label = (
     <div key={position.key}>
-      <span className="SettleAccruedFundingFeeModal-row-text">
+      <span className="ClaimSettleModal-row-text">
         {position.isLong ? t`Long` : t`Short`} {indexName}
       </span>{" "}
       <span className="subtext">[{poolName}]</span>
@@ -49,17 +49,17 @@ export const SettleAccruedFundingFeeRow = ({ position, isSelected, onCheckboxCha
   );
 
   return (
-    <div className="SettleAccruedFundingFeeModal-info-row">
+    <div className="ClaimSettleModal-info-row">
       <Checkbox
         isChecked={isSelected}
         setIsChecked={handleCheckboxChange}
-        className="flex self-center SettleAccruedFundingFeeModal-checkbox"
+        className="flex self-center ClaimSettleModal-checkbox"
       >
-        <div className="Exchange-info-label SettleAccruedFundingFeeModal-checkbox-label">{label}</div>
+        <div className="Exchange-info-label ClaimSettleModal-checkbox-label">{label}</div>
       </Checkbox>
-      <div className="SettleAccruedFundingFeeModal-info-label-usd">
+      <div className="ClaimSettleModal-info-label-usd">
         <Tooltip
-          className="SettleAccruedFundingFeeModal-tooltip"
+          className="ClaimSettleModal-tooltip"
           position="right-top"
           handle={formatUsd(position.pendingClaimableFundingFeesUsd)}
           renderContent={renderTooltipContent}
