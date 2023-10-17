@@ -148,10 +148,12 @@ function ClaimFundingFeesHistoryRow(p: ClaimFundingFeesHistoryRowProps) {
               handle={plural(claimAction.markets.length, { one: "# Position", other: "# Positions" })}
               renderContent={() => {
                 return claimAction.markets.map((market, index) => {
+                  const indexName = getMarketIndexName(market);
+                  const poolName = getMarketPoolName(market);
                   const isLong = claimAction.isLongOrders[index];
                   return (
-                    <div className="ClaimHistoryRow-tooltip-row" key={`${market.name}/${isLong}`}>
-                      {isLong ? t`Long` : t`Short`} {market.name}
+                    <div className="ClaimHistoryRow-tooltip-row text-gray" key={`${market.name}/${isLong}`}>
+                      {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext lh-1">[{poolName}]</span>
                     </div>
                   );
                 });
