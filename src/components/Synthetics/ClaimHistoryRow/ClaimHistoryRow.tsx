@@ -152,7 +152,7 @@ function ClaimFundingFeesHistoryRow(p: ClaimFundingFeesHistoryRowProps) {
                   const poolName = getMarketPoolName(market);
                   const isLong = claimAction.isLongOrders[index];
                   return (
-                    <div className="ClaimHistoryRow-tooltip-row text-gray" key={`${market.name}/${isLong}`}>
+                    <div className="ClaimHistoryRow-tooltip-row text-gray items-top" key={`${market.name}/${isLong}`}>
                       {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext lh-1">[{poolName}]</span>
                     </div>
                   );
@@ -165,6 +165,8 @@ function ClaimFundingFeesHistoryRow(p: ClaimFundingFeesHistoryRowProps) {
     }
 
     if (claimAction.eventName === ClaimType.SettleFundingFeeCancelled) {
+      const indexName = getMarketIndexName(claimAction.markets[0]);
+      const poolName = getMarketPoolName(claimAction.markets[0]);
       return (
         <ExternalLink
           href={`${getExplorerUrl(chainId)}tx/${claimAction.transactionHash}`}
@@ -174,8 +176,9 @@ function ClaimFundingFeesHistoryRow(p: ClaimFundingFeesHistoryRowProps) {
           <Trans>
             <div>
               <span className="text-red">{eventTitle}</span> from{" "}
-              <span>
-                {claimAction.isLongOrders[0] ? "Long" : "Short"} {getMarketIndexName(claimAction.markets[0])} Position
+              <span className="items-top">
+                {claimAction.isLongOrders[0] ? "Long" : "Short"} {indexName}{" "}
+                <span className="subtext">[{poolName}]</span>&nbsp;Position
               </span>
             </div>
           </Trans>
@@ -184,9 +187,12 @@ function ClaimFundingFeesHistoryRow(p: ClaimFundingFeesHistoryRowProps) {
     }
 
     if (claimAction.eventName === ClaimType.SettleFundingFeeExecuted) {
+      const indexName = getMarketIndexName(claimAction.markets[0]);
+      const poolName = getMarketPoolName(claimAction.markets[0]);
       const amounts = claimAction.markets.map((market, index) => {
         const token = claimAction.tokens[index];
         const amount = claimAction.amounts[index];
+
         return (
           <Fragment key={`${token.address}/${market.marketTokenAddress}`}>
             {formatTokenAmount(amount, token.decimals, token.symbol)}
@@ -194,9 +200,12 @@ function ClaimFundingFeesHistoryRow(p: ClaimFundingFeesHistoryRowProps) {
           </Fragment>
         );
       });
-      const positionName = `${claimAction.isLongOrders[0] ? t`Long` : t`Short`} ${getMarketIndexName(
-        claimAction.markets[0]
-      )}`;
+      const positionName = (
+        <span className="items-top">
+          {claimAction.isLongOrders[0] ? t`Long` : t`Short`} {indexName}
+          <span className="subtext">[{poolName}]</span>
+        </span>
+      );
       return (
         <ExternalLink
           key={claimAction.id}
