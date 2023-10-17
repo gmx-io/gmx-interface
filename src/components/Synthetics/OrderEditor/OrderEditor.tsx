@@ -32,19 +32,17 @@ import {
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
 import {
-  bigNumberify,
   formatAmount,
   formatAmountFree,
   formatDeltaUsd,
   formatTokenAmount,
   formatUsd,
+  getBasisPoints,
   parseValue,
 } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS } from "config/factors";
-import { SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BPS_KEY } from "config/localStorage";
 import { getWrappedToken } from "config/tokens";
 import {
   estimateExecuteDecreaseOrderGasLimit,
@@ -57,7 +55,6 @@ import {
 import { updateOrderTxn } from "domain/synthetics/orders/updateOrderTxn";
 import { getAcceptablePrice, getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
 
 import Button from "components/Button/Button";
@@ -80,11 +77,14 @@ export function OrderEditor(p: Props) {
 
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
-  const [savedAcceptablePriceImpactBps] = useLocalStorageSerializeKey(
-    [chainId, SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BPS_KEY],
-    DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS
-  );
-  const acceptablePriceImpactBps = bigNumberify(savedAcceptablePriceImpactBps!);
+
+  let acceptablePriceImpactBps = BigNumber.from(0);
+
+  if (!isSwapOrderType(p.order.orderType)) {
+    const orderInfo = p.order as PositionOrderInfo;
+    const deltaPriceImpactUsd = orderInfo.triggerPrice?.sub(orderInfo.acceptablePrice || 0);
+    acceptablePriceImpactBps = getBasisPoints(deltaPriceImpactUsd, orderInfo.triggerPrice);
+  }
 
   const [isInited, setIsInited] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
