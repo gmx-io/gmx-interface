@@ -58,7 +58,7 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import { getIcon } from "config/icons";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
-import { MAX_METAMASK_MOBILE_DECIMALS, UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
+import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 
 export enum Operation {
@@ -134,7 +134,7 @@ export function GmSwapBox(p: Props) {
   const { chainId } = useChainId();
   const { account } = useWallet();
 
-  const uiFeeFactor = useUiFeeFactor(chainId, UI_FEE_RECEIVER_ACCOUNT);
+  const uiFeeFactor = useUiFeeFactor(chainId);
 
   const { gasLimits } = useGasLimits(chainId);
   const { gasPrice } = useGasPrice(chainId);

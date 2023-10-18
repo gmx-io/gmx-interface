@@ -72,7 +72,6 @@ import { useHasOutdatedUi } from "domain/legacy";
 import useWallet from "lib/wallets/useWallet";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
-import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { AiOutlineEdit } from "react-icons/ai";
 
 export type Props = {
@@ -117,7 +116,7 @@ export function PositionSeller(p: Props) {
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
   const userReferralInfo = useUserReferralInfo(signer, chainId, account);
   const { data: hasOutdatedUi } = useHasOutdatedUi();
-  const uiFeeFactor = useUiFeeFactor(chainId, UI_FEE_RECEIVER_ACCOUNT);
+  const uiFeeFactor = useUiFeeFactor(chainId);
 
   const isVisible = Boolean(position);
   const prevIsVisible = usePrevious(isVisible);
