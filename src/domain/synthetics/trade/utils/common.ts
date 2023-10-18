@@ -1,5 +1,4 @@
 import {
-  FeeItem,
   SwapFeeItem,
   getFeeItem,
   getTotalFeeItem,
@@ -44,7 +43,6 @@ export function getTradeFees(p: {
   fundingFeeUsd: BigNumber;
   feeDiscountUsd: BigNumber;
   swapProfitFeeUsd: BigNumber;
-  uiFee?: FeeItem;
   uiFeeFactor?: BigNumber;
 }): TradeFees {
   const {
@@ -59,7 +57,6 @@ export function getTradeFees(p: {
     fundingFeeUsd,
     feeDiscountUsd,
     swapProfitFeeUsd,
-    uiFee,
     uiFeeFactor,
   } = p;
 
@@ -75,6 +72,7 @@ export function getTradeFees(p: {
 
   const totalSwapVolumeUsd = getTotalSwapVolumeFromSwapStats(swapSteps);
   const uiSwapFee = getUiFeeItem(totalSwapVolumeUsd.mul(-1), uiFeeFactor);
+  const uiFee = getUiFeeItem(sizeDeltaUsd.mul(-1), uiFeeFactor);
 
   const swapProfitFee = getFeeItem(swapProfitFeeUsd.mul(-1), initialCollateralUsd);
 

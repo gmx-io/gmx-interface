@@ -20,7 +20,6 @@ import {
   estimateExecuteIncreaseOrderGasLimit,
   estimateExecuteSwapOrderGasLimit,
   getExecutionFee,
-  getUiFeeItem,
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
@@ -559,7 +558,6 @@ export function TradeBox(p: Props) {
           fundingFeeUsd: existingPosition?.pendingFundingFeesUsd || BigNumber.from(0),
           feeDiscountUsd: increaseAmounts.feeDiscountUsd,
           swapProfitFeeUsd: BigNumber.from(0),
-          uiFee: getUiFeeItem(increaseAmounts.sizeDeltaUsd.mul(-1), uiFeeFactor),
           uiFeeFactor,
         }),
         executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
@@ -586,7 +584,6 @@ export function TradeBox(p: Props) {
           fundingFeeUsd: decreaseAmounts.fundingFeeUsd,
           feeDiscountUsd: decreaseAmounts.feeDiscountUsd,
           swapProfitFeeUsd: decreaseAmounts.swapProfitFeeUsd,
-          uiFee: getUiFeeItem(decreaseAmounts.sizeDeltaUsd.mul(-1), uiFeeFactor),
           uiFeeFactor,
         }),
         executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),

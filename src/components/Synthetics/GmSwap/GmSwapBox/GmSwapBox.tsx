@@ -386,7 +386,7 @@ export function GmSwapBox(p: Props) {
 
     const swapFee = getFeeItem(amounts.swapFeeUsd?.mul(-1), basisUsd);
     const swapPriceImpact = getFeeItem(amounts.swapPriceImpactDeltaUsd, basisUsd);
-    const uiFee = getUiFeeItem(basisUsd, uiFeeFactor);
+    const uiFee = getUiFeeItem(basisUsd.mul(-1), uiFeeFactor);
     const totalFees = getTotalFeeItem([swapPriceImpact, swapFee, uiFee].filter(Boolean) as FeeItem[]);
     const fees: GmSwapFees = {
       swapFee,
