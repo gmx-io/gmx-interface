@@ -31,15 +31,7 @@ import {
 } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
-import {
-  formatAmount,
-  formatAmountFree,
-  formatDeltaUsd,
-  formatTokenAmount,
-  formatUsd,
-  getBasisPoints,
-  parseValue,
-} from "lib/numbers";
+import { formatAmount, formatAmountFree, formatDeltaUsd, formatTokenAmount, formatUsd, parseValue } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
@@ -49,6 +41,7 @@ import {
   estimateExecuteIncreaseOrderGasLimit,
   estimateExecuteSwapOrderGasLimit,
   getExecutionFee,
+  getPriceImpactByAcceptablePrice,
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
@@ -82,8 +75,18 @@ export function OrderEditor(p: Props) {
 
   if (!isSwapOrderType(p.order.orderType)) {
     const orderInfo = p.order as PositionOrderInfo;
-    const deltaPriceImpactUsd = orderInfo.triggerPrice.sub(orderInfo.acceptablePrice);
-    acceptablePriceImpactBps = getBasisPoints(deltaPriceImpactUsd, orderInfo.triggerPrice);
+
+    // const deltaPriceImpactUsd = orderInfo.triggerPrice.sub(orderInfo.acceptablePrice).abs();
+    // acceptablePriceImpactBps = getBasisPoints(deltaPriceImpactUsd, orderInfo.triggerPrice);
+
+    const { acceptablePriceDeltaBps } = getPriceImpactByAcceptablePrice({
+      sizeDeltaUsd: orderInfo.sizeDeltaUsd,
+      acceptablePrice: orderInfo.acceptablePrice,
+      isLong: orderInfo.isLong,
+      indexPrice: orderInfo.triggerPrice,
+      isIncrease: isIncreaseOrderType(orderInfo.orderType),
+    });
+    acceptablePriceImpactBps = acceptablePriceDeltaBps;
   }
 
   const [isInited, setIsInited] = useState(false);
