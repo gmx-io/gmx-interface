@@ -20,7 +20,7 @@ import { ImSpinner2 } from "react-icons/im";
 import Button from "components/Button/Button";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { getBorrowingFeeRateUsd, getFundingFeeRateUsd, getUiFee } from "domain/synthetics/fees";
+import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { TradeMode, TradeType, getTriggerThresholdType } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
@@ -28,7 +28,6 @@ import { CHART_PERIODS } from "lib/legacy";
 import { FaAngleRight } from "react-icons/fa";
 import { useMedia } from "react-use";
 import "./PositionItem.scss";
-import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 
 export type Props = {
   position: PositionInfo;
@@ -54,7 +53,6 @@ export function PositionItem(p: Props) {
   const displayedPnl = p.savedShowPnlAfterFees ? p.position.pnlAfterFees : p.position.pnl;
   const displayedPnlPercentage = p.savedShowPnlAfterFees ? p.position.pnlAfterFeesPercentage : p.position.pnlPercentage;
   const { chainId } = useChainId();
-  const uiFeeFactor = useUiFeeFactor(chainId);
   const isMobile = useMedia("(max-width: 1100px)");
   const indexPriceDecimals = p.position?.indexToken?.priceDecimals;
   const { minCollateralUsd } = usePositionsConstants(chainId);
@@ -66,7 +64,6 @@ export function PositionItem(p: Props) {
     isCurrentTradeTypeLong === p.position.isLong;
 
   function renderNetValue() {
-    const uiFeeUsd = getUiFee(p.position.sizeInUsd, uiFeeFactor);
     return (
       <Tooltip
         handle={formatUsd(p.position.netValue)}
@@ -74,7 +71,7 @@ export function PositionItem(p: Props) {
         handleClassName="plain"
         renderContent={() => (
           <div>
-            {uiFeeUsd.gt(0)
+            {p.position.uiFeeUsd.gt(0)
               ? t`Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee`
               : t`Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee`}
             <br />
@@ -108,11 +105,11 @@ export function PositionItem(p: Props) {
               value={formatUsd(p.position.closingFeeUsd?.mul(-1)) || "..."}
               className="text-red"
             />
-            {uiFeeUsd.gt(0) && (
+            {p.position.uiFeeUsd.gt(0) && (
               <StatsTooltipRow
                 label={t`UI Fee`}
                 showDollar={false}
-                value={formatUsd(uiFeeUsd.mul(-1))}
+                value={formatUsd(p.position.uiFeeUsd.mul(-1))}
                 className="text-red"
               />
             )}

@@ -21,13 +21,15 @@ export function getPositionFee(
   marketInfo: MarketInfo,
   sizeDeltaUsd: BigNumber,
   forPositiveImpact: boolean,
-  referralInfo: { totalRebateFactor: BigNumber; discountFactor: BigNumber } | undefined
+  referralInfo: { totalRebateFactor: BigNumber; discountFactor: BigNumber } | undefined,
+  uiFeeFactor?: BigNumber | undefined
 ) {
   const factor = forPositiveImpact
     ? marketInfo.positionFeeFactorForPositiveImpact
     : marketInfo.positionFeeFactorForNegativeImpact;
 
   let positionFeeUsd = applyFactor(sizeDeltaUsd, factor);
+  const uiFeeUsd = getUiFee(sizeDeltaUsd, uiFeeFactor);
 
   if (!referralInfo) {
     return { positionFeeUsd, discountUsd: BigNumber.from(0), totalRebateUsd: BigNumber.from(0) };
@@ -42,6 +44,7 @@ export function getPositionFee(
     positionFeeUsd,
     discountUsd,
     totalRebateUsd,
+    uiFeeUsd,
   };
 }
 
