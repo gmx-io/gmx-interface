@@ -1,6 +1,6 @@
 import { MarketInfo } from "domain/synthetics/markets";
 import { OrderType } from "domain/synthetics/orders";
-import { BigNumber } from "ethers";
+import { BigNumber, Bytes } from "ethers";
 import { TokenData } from "../tokens";
 
 export enum TradeActionType {
@@ -29,6 +29,7 @@ export type RawTradeAction = {
   executionAmountOut?: string;
 
   priceImpactDiffUsd?: string;
+  priceImpactUsd?: string;
   positionFeeAmount?: string;
   borrowingFeeAmount?: string;
   fundingFeeAmount?: string;
@@ -37,12 +38,16 @@ export type RawTradeAction = {
   collateralTokenPriceMax?: string;
   collateralTokenPriceMin?: string;
 
+  indexTokenPriceMin?: string;
+  indexTokenPriceMax?: string;
+
   orderType: OrderType;
   orderKey: string;
   isLong?: boolean;
   shouldUnwrapNativeToken?: boolean;
 
   reason?: string;
+  reasonBytes?: Bytes;
 
   transaction: {
     timestamp: number;
@@ -63,12 +68,15 @@ export type PositionTradeAction = {
   swapPath: string[];
   initialCollateralDeltaAmount: BigNumber;
   sizeDeltaUsd: BigNumber;
+  indexTokenPriceMin?: BigNumber;
+  indexTokenPriceMax?: BigNumber;
   triggerPrice?: BigNumber;
   acceptablePrice: BigNumber;
   executionPrice?: BigNumber;
   collateralTokenPriceMin?: BigNumber;
   collateralTokenPriceMax?: BigNumber;
   minOutputAmount: BigNumber;
+  priceImpactUsd?: BigNumber;
   priceImpactDiffUsd?: BigNumber;
   positionFeeAmount?: BigNumber;
   borrowingFeeAmount?: BigNumber;
@@ -78,6 +86,7 @@ export type PositionTradeAction = {
   orderKey: string;
   isLong: boolean;
   reason?: string;
+  reasonBytes?: Bytes;
 
   transaction: {
     timestamp: number;

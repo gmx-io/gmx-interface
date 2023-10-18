@@ -19,6 +19,7 @@ import {
   formatAcceptablePrice,
   formatLiquidationPrice,
   getPositionKey,
+  getTriggerNameByOrderType,
 } from "domain/synthetics/positions";
 import {
   TokensData,
@@ -142,7 +143,7 @@ export function OrderEditor(p: Props) {
   const isRatioInverted = markRatio?.largestToken.address === fromToken?.address;
 
   const triggerRatio = useMemo(() => {
-    if (!markRatio) return undefined;
+    if (!markRatio || !isSwapOrderType(p.order.orderType)) return undefined;
 
     const ratio = parseValue(triggerRatioInputValue, USD_DECIMALS);
 
@@ -151,7 +152,7 @@ export function OrderEditor(p: Props) {
       largestToken: markRatio.largestToken,
       smallestToken: markRatio.smallestToken,
     } as TokensRatio;
-  }, [markRatio, triggerRatioInputValue]);
+  }, [markRatio, p.order.orderType, triggerRatioInputValue]);
 
   let minOutputAmount = p.order.minOutputAmount;
 
@@ -325,8 +326,11 @@ export function OrderEditor(p: Props) {
       };
     }
 
+    const orderTypeName =
+      p.order.orderType === OrderType.LimitIncrease ? t`Limit` : getTriggerNameByOrderType(p.order.orderType);
+
     return {
-      text: "Update Order",
+      text: `Update ${orderTypeName} Order`,
       disabled: false,
       onClick: onSubmit,
     };

@@ -4,6 +4,7 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
 import { AvailableMarketsOptions } from "domain/synthetics/trade/useAvailableMarketsOptions";
 import { Token } from "domain/tokens";
+import cx from "classnames";
 import { useChainId } from "lib/chains";
 import { useMemo } from "react";
 
@@ -15,6 +16,7 @@ export type Props = {
   hasExistingPosition?: boolean;
   hasExistingOrder?: boolean;
   onSelectCollateralAddress: (address?: string) => void;
+  isTrigger: boolean;
 };
 
 export function CollateralSelectorRow(p: Props) {
@@ -26,34 +28,63 @@ export function CollateralSelectorRow(p: Props) {
     hasExistingPosition,
     availableCollaterals,
     onSelectCollateralAddress,
+    isTrigger,
   } = p;
 
   const { collateralWithOrder, marketWithOrder, marketWithPosition, collateralWithPosition } = marketsOptions || {};
 
   const { chainId } = useChainId();
 
-  const message = useMemo(() => {
+  const { message, level } = useMemo(() => {
     if (
       !hasExistingPosition &&
       collateralWithPosition &&
       selectedMarketAddress === marketWithPosition?.marketTokenAddress &&
       collateralWithPosition?.address !== selectedCollateralAddress
     ) {
-      return (
-        <div className="MarketSelector-tooltip-row">
-          <Trans>
-            You have an existing position with {collateralWithPosition.symbol} as collateral.{" "}
-            <div
-              className="MarketSelector-tooltip-row-action clickable underline muted"
-              onClick={() => {
-                onSelectCollateralAddress(collateralWithPosition.address);
-              }}
-            >
-              Switch to {collateralWithPosition.symbol} collateral.
-            </div>{" "}
-          </Trans>
-        </div>
-      );
+      if (isTrigger) {
+        return {
+          message: (
+            <div className="MarketSelector-tooltip-row">
+              <Trans>
+                <span className="negative">
+                  {" "}
+                  You have an existing position with {collateralWithPosition.symbol} as collateral. This Order will not
+                  be valid for that Position.
+                </span>
+                <div
+                  className="MarketSelector-tooltip-row-action clickable underline muted"
+                  onClick={() => {
+                    onSelectCollateralAddress(collateralWithPosition.address);
+                  }}
+                >
+                  Switch to {collateralWithPosition.symbol} collateral.
+                </div>{" "}
+              </Trans>
+            </div>
+          ),
+          level: "error",
+        };
+      }
+
+      return {
+        message: (
+          <div className="MarketSelector-tooltip-row">
+            <Trans>
+              You have an existing position with {collateralWithPosition.symbol} as collateral.{" "}
+              <div
+                className="MarketSelector-tooltip-row-action clickable underline muted"
+                onClick={() => {
+                  onSelectCollateralAddress(collateralWithPosition.address);
+                }}
+              >
+                Switch to {collateralWithPosition.symbol} collateral.
+              </div>{" "}
+            </Trans>
+          </div>
+        ),
+        level: "warning",
+      };
     }
 
     if (
@@ -65,24 +96,27 @@ export function CollateralSelectorRow(p: Props) {
       collateralWithOrder &&
       collateralWithOrder.address !== selectedCollateralAddress
     ) {
-      return (
-        <div className="MarketSelector-tooltip-row">
-          <Trans>
-            You have an existing order with {collateralWithOrder.symbol} as collateral.{" "}
-            <div
-              className="MarketSelector-tooltip-row-action clickable underline muted"
-              onClick={() => {
-                onSelectCollateralAddress(collateralWithOrder.address);
-              }}
-            >
-              Switch to {collateralWithOrder.symbol} collateral.
-            </div>{" "}
-          </Trans>
-        </div>
-      );
+      return {
+        message: (
+          <div className="MarketSelector-tooltip-row">
+            <Trans>
+              You have an existing order with {collateralWithOrder.symbol} as collateral.{" "}
+              <div
+                className="MarketSelector-tooltip-row-action clickable underline muted"
+                onClick={() => {
+                  onSelectCollateralAddress(collateralWithOrder.address);
+                }}
+              >
+                Switch to {collateralWithOrder.symbol} collateral.
+              </div>{" "}
+            </Trans>
+          </div>
+        ),
+        level: "warning",
+      };
     }
 
-    return null;
+    return { message: null };
   }, [
     hasExistingPosition,
     collateralWithPosition,
@@ -92,6 +126,7 @@ export function CollateralSelectorRow(p: Props) {
     hasExistingOrder,
     marketWithOrder,
     collateralWithOrder,
+    isTrigger,
     onSelectCollateralAddress,
   ]);
 
@@ -102,7 +137,7 @@ export function CollateralSelectorRow(p: Props) {
           <Tooltip
             handle={t`Collateral In`}
             position="left-bottom"
-            className="MarketSelector-tooltip"
+            className={cx("MarketSelector-tooltip", { error: level === "error" })}
             renderContent={() => <div className="MarketSelector-tooltip-content">{message}</div>}
           />
         ) : (
