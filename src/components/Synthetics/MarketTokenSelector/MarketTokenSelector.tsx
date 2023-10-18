@@ -49,6 +49,26 @@ export default function MarketTokenSelector(props: Props) {
     });
   }, [marketsInfoData, searchKeyword, sortedMarketsByIndexToken]);
 
+  const filteredTokensInfo = useMemo(() => {
+    return filteredTokens.map((market) => {
+      const marketInfo = getByKey(marketsInfoData, market?.address)!;
+      const mintableInfo = getMintableMarketTokens(marketInfo, market);
+      const sellableInfo = getSellableMarketToken(marketInfo, market);
+      const apr = getByKey(marketsTokensAPRData, market?.address);
+      const indexName = getMarketIndexName(marketInfo);
+      const poolName = getMarketPoolName(marketInfo);
+      return {
+        market,
+        mintableInfo,
+        sellableInfo,
+        marketInfo,
+        indexName,
+        poolName,
+        apr,
+      };
+    });
+  }, [filteredTokens, marketsInfoData, marketsTokensAPRData]);
+
   function handleSelectToken(marketTokenAddress: string) {
     history.push({
       pathname: "/pools",
@@ -114,58 +134,49 @@ export default function MarketTokenSelector(props: Props) {
                       </thead>
                     )}
                     <tbody>
-                      {filteredTokens.map((market) => {
-                        if (!market) return null;
-                        const marketInfoData = getByKey(marketsInfoData, market?.address)!;
-                        const mintableInfo =
-                          market && marketInfoData ? getMintableMarketTokens(marketInfoData, market) : undefined;
-                        const sellableInfo =
-                          marketInfoData && market ? getSellableMarketToken(marketInfoData, market) : undefined;
-                        const apr = getByKey(marketsTokensAPRData, market?.address);
-                        const indexToken = marketInfoData?.indexToken;
-                        const indexName = marketInfoData && getMarketIndexName(marketInfoData);
-                        const poolName = marketInfoData && getMarketPoolName(marketInfoData);
-
-                        return (
-                          <Popover.Button
-                            as="tr"
-                            key={market.address}
-                            onClick={() => handleSelectToken(market.address)}
-                          >
-                            <td className="token-item">
-                              <span className="inline-items-center">
-                                {marketInfoData && (
-                                  <>
-                                    <TokenIcon
-                                      className="ChartToken-list-icon"
-                                      symbol={marketInfoData.isSpotOnly ? "swap" : indexToken.symbol}
-                                      displaySize={16}
-                                      importSize={24}
-                                    />
-                                    <div className="items-center">
-                                      <span>{indexName && indexName}</span>
-                                      <span className="subtext lh-1">{poolName && `[${poolName}]`}</span>
-                                    </div>
-                                  </>
-                                )}
-                              </span>
-                            </td>
-                            <td>
-                              {formatUsd(mintableInfo?.mintableUsd, {
-                                displayDecimals: 0,
-                                fallbackToZero: true,
-                              })}
-                            </td>
-                            <td>
-                              {formatTokenAmount(sellableInfo?.totalAmount, market?.decimals, market?.symbol, {
-                                displayDecimals: 0,
-                                useCommas: true,
-                              })}
-                            </td>
-                            <td>{apr ? `${formatAmount(apr, 2, 2)}%` : "..."}</td>
-                          </Popover.Button>
-                        );
-                      })}
+                      {filteredTokensInfo.map(
+                        ({ market, mintableInfo, sellableInfo, apr, marketInfo, poolName, indexName }) => {
+                          return (
+                            <Popover.Button
+                              as="tr"
+                              key={market.address}
+                              onClick={() => handleSelectToken(market.address)}
+                            >
+                              <td className="token-item">
+                                <span className="inline-items-center">
+                                  {marketInfo && (
+                                    <>
+                                      <TokenIcon
+                                        className="ChartToken-list-icon"
+                                        symbol={marketInfo.isSpotOnly ? "swap" : marketInfo.indexToken.symbol}
+                                        displaySize={16}
+                                        importSize={24}
+                                      />
+                                      <div className="items-center">
+                                        <span>{indexName && indexName}</span>
+                                        <span className="subtext lh-1">{poolName && `[${poolName}]`}</span>
+                                      </div>
+                                    </>
+                                  )}
+                                </span>
+                              </td>
+                              <td>
+                                {formatUsd(mintableInfo?.mintableUsd, {
+                                  displayDecimals: 0,
+                                  fallbackToZero: true,
+                                })}
+                              </td>
+                              <td>
+                                {formatTokenAmount(sellableInfo?.totalAmount, market?.decimals, market?.symbol, {
+                                  displayDecimals: 0,
+                                  useCommas: true,
+                                })}
+                              </td>
+                              <td>{apr ? `${formatAmount(apr, 2, 2)}%` : "..."}</td>
+                            </Popover.Button>
+                          );
+                        }
+                      )}
                     </tbody>
                   </table>
                 </div>
