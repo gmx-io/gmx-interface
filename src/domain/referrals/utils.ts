@@ -2,6 +2,7 @@ import { ethers } from "ethers";
 import { MAX_REFERRAL_CODE_LENGTH } from "lib/legacy";
 
 export function decodeReferralCode(hexCode) {
+  if (!hexCode || hexCode === ethers.constants.HashZero) return "";
   try {
     return ethers.utils.parseBytes32String(hexCode);
   } catch (ex) {
