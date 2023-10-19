@@ -702,6 +702,24 @@ export function ConfirmationBox(p: Props) {
     );
   }
 
+  function renderDifferentCollateralWarningForMarketOrders() {
+    if (
+      isMarket &&
+      marketsOptions?.collateralWithPosition &&
+      collateralToken &&
+      !getIsEquivalentTokens(marketsOptions.collateralWithPosition, collateralToken)
+    ) {
+      return (
+        <div className="Confirmation-box-warning">
+          <Trans>
+            You have an existing position with {marketsOptions?.collateralWithPosition?.symbol} as collateral. This
+            action will not apply for that position.
+          </Trans>
+        </div>
+      );
+    }
+  }
+
   function renderExistingLimitOrdersWarning() {
     if (!existingLimitOrders?.length || !toToken) {
       return;
@@ -928,6 +946,7 @@ export function ConfirmationBox(p: Props) {
       <>
         <div>
           {renderMain()}
+          {renderDifferentCollateralWarningForMarketOrders()}
           {renderCollateralSpreadWarning()}
           {renderExistingLimitOrdersWarning()}
           {renderExistingTriggerErrors()}

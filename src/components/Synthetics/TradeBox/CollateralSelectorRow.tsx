@@ -71,7 +71,9 @@ export function CollateralSelectorRow(p: Props) {
         message: (
           <div className="MarketSelector-tooltip-row">
             <Trans>
-              You have an existing position with {collateralWithPosition.symbol} as collateral.{" "}
+              <span className="negative">
+                You have an existing position with {collateralWithPosition.symbol} as collateral.{" "}
+              </span>
               <div
                 className="MarketSelector-tooltip-row-action clickable underline muted"
                 onClick={() => {
@@ -83,7 +85,7 @@ export function CollateralSelectorRow(p: Props) {
             </Trans>
           </div>
         ),
-        level: "warning",
+        level: "error",
       };
     }
 

@@ -393,7 +393,7 @@ export function getOrderErrors(p: {
     }
   }
 
-  if (!position) {
+  if (!position && !isLimitOrderType(order.orderType)) {
     const sameMarketPosition = Object.values(positionsInfoData || {}).find(
       (pos) => pos.marketAddress === order.marketAddress
     );

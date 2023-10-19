@@ -892,9 +892,12 @@ msgstr "Kollateral ({0})"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
-#: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
 msgid "Collateral In"
 msgstr "Kollateral in"
+
+#: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
+msgid "Collateral In zenxoxo"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
