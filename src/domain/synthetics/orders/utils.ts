@@ -393,16 +393,17 @@ export function getOrderErrors(p: {
     }
   }
 
-  if (!position && !isLimitOrderType(order.orderType)) {
+  if (!position) {
     const sameMarketPosition = Object.values(positionsInfoData || {}).find(
-      (pos) => pos.marketAddress === order.marketAddress
+      (pos) => pos.marketAddress === order.marketAddress && pos.isLong === order.isLong
     );
 
     const longText = sameMarketPosition?.isLong ? t`Long` : t`Short`;
 
     if (sameMarketPosition) {
       errors.push({
-        msg: t`You have an existing ${longText} position with ${sameMarketPosition?.collateralToken.symbol} as Collateral.`,
+        msg: t`You have an existing ${longText} position with ${sameMarketPosition?.collateralToken.symbol} as Collateral. This Order will not
+        be valid for that Position.`,
         level: "warning",
       });
     }

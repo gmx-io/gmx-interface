@@ -16,7 +16,7 @@ export type Props = {
   hasExistingPosition?: boolean;
   hasExistingOrder?: boolean;
   onSelectCollateralAddress: (address?: string) => void;
-  isTrigger: boolean;
+  isMarket: boolean;
 };
 
 export function CollateralSelectorRow(p: Props) {
@@ -28,7 +28,7 @@ export function CollateralSelectorRow(p: Props) {
     hasExistingPosition,
     availableCollaterals,
     onSelectCollateralAddress,
-    isTrigger,
+    isMarket,
   } = p;
 
   const { collateralWithOrder, marketWithOrder, marketWithPosition, collateralWithPosition } = marketsOptions || {};
@@ -42,15 +42,14 @@ export function CollateralSelectorRow(p: Props) {
       selectedMarketAddress === marketWithPosition?.marketTokenAddress &&
       collateralWithPosition?.address !== selectedCollateralAddress
     ) {
-      if (isTrigger) {
+      if (isMarket) {
         return {
           message: (
             <div className="MarketSelector-tooltip-row">
               <Trans>
                 <span className="negative">
-                  {" "}
-                  You have an existing position with {collateralWithPosition.symbol} as collateral. This Order will not
-                  be valid for that Position.
+                  You have an existing position with {collateralWithPosition.symbol} as collateral. This action will not
+                  apply for that position..
                 </span>
                 <div
                   className="MarketSelector-tooltip-row-action clickable underline muted"
@@ -72,7 +71,8 @@ export function CollateralSelectorRow(p: Props) {
           <div className="MarketSelector-tooltip-row">
             <Trans>
               <span className="negative">
-                You have an existing position with {collateralWithPosition.symbol} as collateral.{" "}
+                You have an existing position with {collateralWithPosition.symbol} as collateral. This Order will not be
+                valid for that Position.
               </span>
               <div
                 className="MarketSelector-tooltip-row-action clickable underline muted"
@@ -128,8 +128,8 @@ export function CollateralSelectorRow(p: Props) {
     hasExistingOrder,
     marketWithOrder,
     collateralWithOrder,
-    isTrigger,
     onSelectCollateralAddress,
+    isMarket,
   ]);
 
   return (
