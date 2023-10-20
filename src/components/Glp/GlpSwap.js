@@ -553,10 +553,10 @@ export default function GlpSwap(props) {
       return t`Waiting for Approval`;
     }
     if (isApproving) {
-      return t`Approving ${swapToken.symbol}...`;
+      return t`Approving ${swapToken.assetSymbol ?? swapToken.symbol}...`;
     }
     if (needApproval) {
-      return t`Approve ${swapToken.symbol}`;
+      return t`Approve ${swapToken.assetSymbol ?? swapToken.symbol}`;
     }
 
     if (isSubmitting) {

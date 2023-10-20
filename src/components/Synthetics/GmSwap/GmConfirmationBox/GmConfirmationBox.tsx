@@ -213,7 +213,8 @@ export function GmConfirmationBox({
 
     if (tokensToApprove.length > 0 && marketToken) {
       const symbols = tokensToApprove.map((address) => {
-        return address === marketToken.address ? "GM" : getTokenData(tokensData, address)!.symbol;
+        const token = getTokenData(tokensData, address)!;
+        return address === marketToken.address ? "GM" : token?.assetSymbol ?? token?.symbol;
       });
 
       const symbolsText = symbols.join(", ");
@@ -349,16 +350,19 @@ export function GmConfirmationBox({
 
             {tokensToApprove && tokensToApprove.length > 0 && (
               <div>
-                {tokensToApprove.map((address) => (
-                  <div key={address}>
-                    <ApproveTokenButton
-                      key={address}
-                      tokenAddress={address}
-                      tokenSymbol={address === marketToken?.address ? "GM" : getToken(chainId, address).symbol}
-                      spenderAddress={routerAddress}
-                    />
-                  </div>
-                ))}
+                {tokensToApprove.map((address) => {
+                  const token = getToken(chainId, address);
+                  return (
+                    <div key={address}>
+                      <ApproveTokenButton
+                        key={address}
+                        tokenAddress={address}
+                        tokenSymbol={address === marketToken?.address ? "GM" : token.assetSymbol ?? token.symbol}
+                        spenderAddress={routerAddress}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             )}
 
