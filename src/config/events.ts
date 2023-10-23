@@ -61,7 +61,7 @@ export const appEventsData: EventData[] = [
     bodyText: "Adaptive Funding has been enabled for the AVAX/USD market on Avalanche.",
     buttons: [
       {
-        text: "Read More",
+        text: "Read More.",
         link: "https://docs.gmx.io/docs/trading/v2/#adaptive-funding",
         newTab: true,
       },
