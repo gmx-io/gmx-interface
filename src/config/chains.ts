@@ -13,6 +13,7 @@ export const AVALANCHE_FUJI = 43113;
 export const ARBITRUM = 42161;
 export const ARBITRUM_GOERLI = 421613;
 export const FEES_HIGH_BPS = 50;
+export const DEFAULT_ALLOWED_SLIPPAGE_BPS = 30;
 
 // TODO take it from web3
 export const DEFAULT_CHAIN_ID = ARBITRUM;

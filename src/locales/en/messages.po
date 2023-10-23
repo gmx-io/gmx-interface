@@ -288,6 +288,10 @@ msgstr "Allow {0} to be spent"
 msgid "Allowed Slippage"
 msgstr "Allowed Slippage"
 
+#: src/App/App.js
+msgid "Allowed Slippage below {0}% may result in failed orders."
+msgstr "Allowed Slippage below {0}% may result in failed orders."
+
 #: src/components/ModalViews/RedirectModal.js
 msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
 msgstr "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"

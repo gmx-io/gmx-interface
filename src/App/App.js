@@ -62,7 +62,7 @@ import { I18nProvider } from "@lingui/react";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Header } from "components/Header/Header";
-import { ARBITRUM, EXECUTION_FEE_CONFIG_V2, getExplorerUrl } from "config/chains";
+import { ARBITRUM, DEFAULT_ALLOWED_SLIPPAGE_BPS, EXECUTION_FEE_CONFIG_V2, getExplorerUrl } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getIsSyntheticsSupported } from "config/features";
 import {
@@ -580,6 +580,14 @@ function FullApp() {
             />
             <div className="App-slippage-tolerance-input-percent">%</div>
           </div>
+          {parseFloat(slippageAmount) < (DEFAULT_ALLOWED_SLIPPAGE_BPS / BASIS_POINTS_DIVISOR) * 100 && (
+            <div className="warning settings-modal-error">
+              <Trans>
+                Allowed Slippage below {(DEFAULT_ALLOWED_SLIPPAGE_BPS / BASIS_POINTS_DIVISOR) * 100}% may result in
+                failed orders.
+              </Trans>
+            </div>
+          )}
         </div>
         {settings.shouldUseExecutionFeeBuffer && (
           <div className="App-settings-row">
@@ -611,7 +619,7 @@ function FullApp() {
             </div>
             {parseFloat(executionFeeBufferBps) <
               (EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps / BASIS_POINTS_DIVISOR) * 100 && (
-              <div className="warning">
+              <div className="warning settings-modal-error">
                 <Trans>
                   Max Execution Fee buffer below{" "}
                   {(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps / BASIS_POINTS_DIVISOR) * 100}% may result in
