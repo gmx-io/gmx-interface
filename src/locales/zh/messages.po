@@ -4507,6 +4507,10 @@ msgstr "这个代码在{0}上已被别人取用，你将不会获得从{1}上使
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 msgstr "此代码尚未在{0}上注册，你将不会收到回扣<0/><1/>切换你的网络，在{1}上创建此代码"
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "This market uses an Adaptive Funding Rate. The Funding Rate will adjust over time depending on the ratio of longs and shorts.<0/><1/><2>Read more</2>."
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
 msgstr "这个头寸因超过100倍的最大杠杆而被清算了"
