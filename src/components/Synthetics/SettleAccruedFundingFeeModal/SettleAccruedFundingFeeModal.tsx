@@ -159,7 +159,14 @@ export function SettleAccruedFundingFeeModal({
     userReferralInfo?.referralCodeForTxn,
   ]);
 
-  const renderTooltipContent = useCallback(() => t`Accrued Funding Fee.`, []);
+  const renderTooltipContent = useCallback(
+    () => (
+      <span className="text-white">
+        <Trans>Claimable Funding Fee.</Trans>
+      </span>
+    ),
+    []
+  );
 
   return (
     <Modal

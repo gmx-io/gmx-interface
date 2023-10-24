@@ -10,7 +10,7 @@ import {
 import { convertToUsd } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { formatTokenAmount, formatUsd } from "lib/numbers";
+import { formatDeltaUsd, formatTokenAmount } from "lib/numbers";
 
 import Tooltip from "components/Tooltip/Tooltip";
 import { claimCollateralTxn } from "domain/synthetics/markets/claimCollateralTxn";
@@ -80,7 +80,7 @@ export function ClaimModal(p: Props) {
           <Tooltip
             className="ClaimSettleModal-tooltip"
             position="right-top"
-            handle={formatUsd(totalFundingUsd)}
+            handle={formatDeltaUsd(totalFundingUsd)}
             renderContent={() => (
               <>
                 {claimableAmountsItems.map((item, index) => (
@@ -134,7 +134,7 @@ export function ClaimModal(p: Props) {
       label={t`Confirm Claim`}
     >
       <div className="ConfirmationBox-main text-center">
-        <Trans>Claim {formatUsd(totalClaimableFundingUsd)}</Trans>
+        <Trans>Claim {formatDeltaUsd(totalClaimableFundingUsd)}</Trans>
       </div>
       <div className="App-card-divider ClaimModal-divider" />
       <div className="ClaimSettleModal-info-row">

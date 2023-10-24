@@ -573,11 +573,11 @@ a:hover .text-red {
 }
 
 .Toastify__toast-container {
-  width: 370px;
+  width: 37rem;
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 480px) {
   .Toastify__toast-container {
-    width: 320px;
+    width: 100vw;
   }
 }

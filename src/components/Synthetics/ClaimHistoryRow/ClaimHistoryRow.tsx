@@ -88,7 +88,7 @@ function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
                       className="ClaimHistoryRow-tooltip-row"
                       key={market.marketTokenAddress}
                       label={
-                        <div className="items-center">
+                        <div className="items-top">
                           <span>{indexName}</span>
                           <span className="subtext lh-1">[{poolName}]</span>
                         </div>
@@ -141,7 +141,11 @@ function ClaimFundingFeesHistoryRow(p: ClaimFundingFeesHistoryRowProps) {
   const content = useMemo(() => {
     if (claimAction.eventName === ClaimType.SettleFundingFeeCreated) {
       return (
-        <ExternalLink href={claimAction.transactionHash} className="plain" key={claimAction.transactionHash}>
+        <ExternalLink
+          href={`${getExplorerUrl(chainId)}tx/${claimAction.transactionHash}`}
+          className="plain"
+          key={claimAction.transactionHash}
+        >
           <div>
             <Trans>{eventTitle} from</Trans>{" "}
             <Tooltip

@@ -5,7 +5,7 @@ import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets
 import { PositionInfo } from "domain/synthetics/positions";
 import { TokenData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
-import { formatTokenAmount, formatUsd } from "lib/numbers";
+import { formatDeltaUsd, formatTokenAmount } from "lib/numbers";
 import { useCallback, useMemo } from "react";
 
 type Props = {
@@ -20,7 +20,7 @@ export const SettleAccruedFundingFeeRow = ({ position, isSelected, onCheckboxCha
     [position.marketInfo]
   );
   const label = (
-    <div key={position.key}>
+    <div key={position.key} className="items-top">
       <span className="ClaimSettleModal-row-text">
         {position.isLong ? t`Long` : t`Short`} {indexName}
       </span>{" "}
@@ -61,7 +61,7 @@ export const SettleAccruedFundingFeeRow = ({ position, isSelected, onCheckboxCha
         <Tooltip
           className="ClaimSettleModal-tooltip"
           position="right-top"
-          handle={formatUsd(position.pendingClaimableFundingFeesUsd)}
+          handle={formatDeltaUsd(position.pendingClaimableFundingFeesUsd)}
           renderContent={renderTooltipContent}
         />
       </div>

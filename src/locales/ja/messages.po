@@ -218,7 +218,6 @@ msgstr ""
 #~ msgstr ""
 
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
-#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Accrued Funding Fee."
 msgstr ""
 
@@ -810,6 +809,10 @@ msgstr "請求可能"
 #: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
 #~ msgid "Claimable Funding"
 #~ msgstr ""
+
+#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+msgid "Claimable Funding Fee."
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Claimable Rebates"
