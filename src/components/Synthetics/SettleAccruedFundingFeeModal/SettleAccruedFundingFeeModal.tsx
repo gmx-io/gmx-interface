@@ -18,7 +18,6 @@ import {
 } from "domain/synthetics/fees";
 import { createDecreaseOrderTxn, DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { TokensData } from "domain/synthetics/tokens";
-import { getMarkPrice } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
@@ -105,14 +104,6 @@ export function SettleAccruedFundingFeeModal({
       chainId,
       signer,
       selectedPositions.map((position) => {
-        const markPrice = position
-          ? getMarkPrice({
-              prices: position.indexToken.prices,
-              isLong: position.isLong,
-              isIncrease: false,
-            })
-          : undefined;
-
         return {
           account,
           marketAddress: position.marketAddress,
@@ -122,7 +113,7 @@ export function SettleAccruedFundingFeeModal({
           swapPath: [],
           sizeDeltaUsd: BigNumber.from(0),
           sizeDeltaInTokens: BigNumber.from(0),
-          acceptablePrice: markPrice!,
+          acceptablePrice: position.isLong ? BigNumber.from(10).pow(95) : BigNumber.from(0),
           triggerPrice: undefined,
           decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
           orderType: OrderType.MarketDecrease,
