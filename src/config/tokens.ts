@@ -464,6 +464,17 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       explorerUrl: "https://goerli.arbiscan.io/address/0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
     },
     {
+      name: "Bitcoin",
+      symbol: "BTC",
+      address: "0x407ed50D812b922A33088Ce6D64d20519fEF3749",
+      isSynthetic: true,
+      decimals: 8,
+      imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
+      //TODO: remove explorerUrl in future
+      explorerUrl: "https://arbiscan.io/address/0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
+    },
+    {
       name: "USD Coin",
       symbol: "USDC",
       decimals: 6,
