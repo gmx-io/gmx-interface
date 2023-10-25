@@ -314,7 +314,7 @@ export function PositionItem(p: Props) {
         const triggerThresholdType = getTriggerThresholdType(order.orderType, order.isLong);
         const isIncrease = isIncreaseOrderType(order.orderType);
         const orderText = () => (
-          <div className="mb-xs">
+          <div key={order.key} className="mb-xs">
             {triggerThresholdType}{" "}
             {formatUsd(order.triggerPrice, {
               displayDecimals: order.indexToken?.priceDecimals,
@@ -335,7 +335,13 @@ export function PositionItem(p: Props) {
                 handle={orderText()}
                 position="right-bottom"
                 handleClassName="plain"
-                renderContent={() => order.errors.map((error) => <span className="negative mb-xs">{error.msg}</span>)}
+                renderContent={() =>
+                  order.errors.map((error) => (
+                    <span key={error.msg} className="negative mb-xs">
+                      {error.msg}
+                    </span>
+                  ))
+                }
               />
             </div>
           );

@@ -52,6 +52,11 @@ export default function GMXAprTooltip({ processedData, nativeTokenSymbol }: Prop
             showDollar={false}
             value={`${formatKeyAmount(processedData, "gmxAprForNativeTokenWithBoost", 2, 2, true)}%`}
           />
+          <StatsTooltipRow
+            label={t`${nativeTokenSymbol} Total APR`}
+            showDollar={false}
+            value={`${formatKeyAmount(processedData, "gmxAprForNativeTokenWithBoost", 2, 2, true)}%`}
+          />
           {renderEscrowedGMXApr(processedData) && (
             <>
               <br /> {renderEscrowedGMXApr(processedData)}
@@ -66,6 +71,14 @@ export default function GMXAprTooltip({ processedData, nativeTokenSymbol }: Prop
       <div>
         <br />
         <Trans>APRs are updated weekly on Wednesday and will depend on the fees collected for the week.</Trans>
+        <br />
+        <br />
+        <i>
+          <Trans>
+            Maximum ETH APR with 200% Boost Percentage for the week is:{" "}
+            {formatKeyAmount(processedData, "gmxAprMaxAprForNativeToken", 2, 2, true)}%
+          </Trans>
+        </i>
       </div>
     </>
   );
