@@ -2787,15 +2787,15 @@ msgstr "Superados cortos Máx. de {0}"
 msgid "Max {0} {longShortText} capacity"
 msgstr ""
 
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "Max. {nativeTokenSymbol} APR with 200% Boost for this week: {0}%."
+msgstr ""
+
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 msgid "Max: {0}"
 msgstr "Máx: {0}"
-
-#: src/components/Stake/GMXAprTooltip.tsx
-msgid "Maximum {nativeTokenSymbol} APR with 200% Boost Percentage for the week is: {0}%"
-msgstr ""
 
 #: src/components/Footer/constants.ts
 #: src/components/Footer/constants.ts

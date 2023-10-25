@@ -70,8 +70,8 @@ export default function GMXAprTooltip({ processedData, nativeTokenSymbol }: Prop
         <br />
 
         <Trans>
-          Maximum {nativeTokenSymbol} APR with 200% Boost Percentage for the week is:{" "}
-          {formatKeyAmount(processedData, "maxGmxAprForNativeToken", 2, 2, true)}%
+          Max. {nativeTokenSymbol} APR with 200% Boost for this week:{" "}
+          {formatKeyAmount(processedData, "maxGmxAprForNativeToken", 2, 2, true)}%.
         </Trans>
       </div>
     </>
