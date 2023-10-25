@@ -266,6 +266,9 @@ export function SyntheticsPage(p: Props) {
 
   function onSelectPositionClick(key: string, tradeMode?: TradeMode) {
     const position = getByKey(positionsInfoData, key);
+
+    if (!position) return;
+
     const indexName = position?.marketInfo && getMarketIndexName(position?.marketInfo);
     const poolName = position?.marketInfo && getMarketPoolName(position?.marketInfo);
     setActivePosition(getByKey(positionsInfoData, key), tradeMode);
