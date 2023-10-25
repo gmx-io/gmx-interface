@@ -15,7 +15,7 @@ const SUBGRAPH_URLS = {
     stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-stats/api",
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-goerli-referrals/api",
     syntheticsStats:
-      "https://subgraph.satsuma-prod.com/713b540e7060/gmx-2/synthetics-goerli-stats/version/apr2-231025092233-92c1449/api",
+      "https://subgraph.satsuma-prod.com/713b540e7060/gmx-2/synthetics-goerli-stats/version/apr2-231025180036-92c1449/api",
   },
 
   [AVALANCHE]: {
