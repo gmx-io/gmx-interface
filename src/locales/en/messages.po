@@ -2386,11 +2386,6 @@ msgstr "Link"
 msgid "Link copied to clipboard."
 msgstr "Link copied to clipboard."
 
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#: src/components/Synthetics/PositionList/PositionList.tsx
-#~ msgid "Liq Price"
-#~ msgstr "Liq Price"
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -2801,6 +2796,10 @@ msgstr "Max {0} {longShortText} capacity"
 msgid "Max: {0}"
 msgstr "Max: {0}"
 
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "Maximum ETH APR with 200% Boost Percentage for the week is: {0}%"
+msgstr "Maximum ETH APR with 200% Boost Percentage for the week is: {0}%"
+
 #: src/components/Footer/constants.ts
 #: src/components/Footer/constants.ts
 msgid "Media Kit"
@@ -3190,10 +3189,6 @@ msgstr "POOL"
 msgid "POOLS"
 msgstr "POOLS"
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-#~ msgid "POOLS VALUE"
-#~ msgstr "POOLS VALUE"
-
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
@@ -3316,10 +3311,6 @@ msgstr "Pool Amount"
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "Pools"
 msgstr "Pools"
-
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-#~ msgid "Pools Value"
-#~ msgstr "Pools Value"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionList/PositionList.tsx
@@ -5697,6 +5688,7 @@ msgstr "{nativeTokenSymbol} Base APR"
 msgid "{nativeTokenSymbol} Boosted APR"
 msgstr "{nativeTokenSymbol} Boosted APR"
 
+#: src/components/Stake/GMXAprTooltip.tsx
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} Total APR"
 msgstr "{nativeTokenSymbol} Total APR"

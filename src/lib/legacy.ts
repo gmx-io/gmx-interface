@@ -1168,7 +1168,8 @@ export function getProcessedData(
   data.gmxAprTotal = data.gmxAprForNativeToken.add(data.gmxAprForEsGmx);
   data.gmxAprTotalWithBoost = data.gmxAprForNativeToken.add(data.gmxBoostAprForNativeToken).add(data.gmxAprForEsGmx);
   data.gmxAprForNativeTokenWithBoost = data.gmxAprForNativeToken.add(data.gmxBoostAprForNativeToken);
-  data.gmxAprMaxAprForNativeToken = data.gmxAprForNativeToken.add(data.gmxAprForNativeToken.mul(maxBoostMultiplier));
+
+  data.maxGmxAprForNativeToken = data.gmxAprForNativeToken.add(data.gmxAprForNativeToken.mul(maxBoostMultiplier));
 
   data.totalGmxRewardsUsd = data.stakedGmxTrackerRewardsUsd.add(data.feeGmxTrackerRewardsUsd);
 
