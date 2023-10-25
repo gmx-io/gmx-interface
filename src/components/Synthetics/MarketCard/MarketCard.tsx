@@ -18,6 +18,7 @@ import { ShareBar } from "components/ShareBar/ShareBar";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
 import { useCallback, useMemo } from "react";
 import "./MarketCard.scss";
+import { BigNumber } from "ethers";
 
 export type Props = {
   marketInfo?: MarketInfo;
@@ -47,7 +48,9 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
     if (!marketInfo) return {};
 
     return {
-      liquidity: getAvailableUsdLiquidityForPosition(marketInfo, isLong),
+      liquidity: getAvailableUsdLiquidityForPosition(marketInfo, isLong).gt(0)
+        ? getAvailableUsdLiquidityForPosition(marketInfo, isLong)
+        : BigNumber.from(0),
       maxReservedUsd: getMaxReservedUsd(marketInfo, isLong),
       reservedUsd: getReservedUsd(marketInfo, isLong),
       borrowingRate: getBorrowingFactorPerPeriod(marketInfo, isLong, CHART_PERIODS["1h"]).mul(100),
