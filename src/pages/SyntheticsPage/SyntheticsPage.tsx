@@ -276,7 +276,7 @@ export function SyntheticsPage(p: Props) {
           <span>{indexName}</span>
           <span className="subtext gm-toast">[{poolName}]</span>
         </div>{" "}
-        <span>market selected</span>;
+        <span>market selected</span>.
       </Trans>
     );
     helperToast.success(message);
