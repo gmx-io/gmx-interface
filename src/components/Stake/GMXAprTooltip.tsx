@@ -68,12 +68,11 @@ export default function GMXAprTooltip({ processedData, nativeTokenSymbol }: Prop
         <Trans>APRs are updated weekly on Wednesday and will depend on the fees collected for the week.</Trans>
         <br />
         <br />
-        <i>
-          <Trans>
-            Maximum {nativeTokenSymbol} APR with 200% Boost Percentage for the week is:{" "}
-            {formatKeyAmount(processedData, "maxGmxAprForNativeToken", 2, 2, true)}%
-          </Trans>
-        </i>
+
+        <Trans>
+          Maximum {nativeTokenSymbol} APR with 200% Boost Percentage for the week is:{" "}
+          {formatKeyAmount(processedData, "maxGmxAprForNativeToken", 2, 2, true)}%
+        </Trans>
       </div>
     </>
   );
