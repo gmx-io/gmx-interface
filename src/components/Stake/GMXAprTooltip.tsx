@@ -75,7 +75,7 @@ export default function GMXAprTooltip({ processedData, nativeTokenSymbol }: Prop
         <br />
         <i>
           <Trans>
-            Maximum ETH APR with 200% Boost Percentage for the week is:{" "}
+            Maximum {nativeTokenSymbol} APR with 200% Boost Percentage for the week is:{" "}
             {formatKeyAmount(processedData, "maxGmxAprForNativeToken", 2, 2, true)}%
           </Trans>
         </i>

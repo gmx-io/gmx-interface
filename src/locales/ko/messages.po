@@ -2794,7 +2794,7 @@ msgid "Max: {0}"
 msgstr "최대: {0}"
 
 #: src/components/Stake/GMXAprTooltip.tsx
-msgid "Maximum ETH APR with 200% Boost Percentage for the week is: {0}%"
+msgid "Maximum {nativeTokenSymbol} APR with 200% Boost Percentage for the week is: {0}%"
 msgstr ""
 
 #: src/components/Footer/constants.ts
