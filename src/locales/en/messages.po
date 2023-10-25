@@ -5689,7 +5689,6 @@ msgid "{nativeTokenSymbol} Boosted APR"
 msgstr "{nativeTokenSymbol} Boosted APR"
 
 #: src/components/Stake/GMXAprTooltip.tsx
-#: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} Total APR"
 msgstr "{nativeTokenSymbol} Total APR"
 
