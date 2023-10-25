@@ -42,6 +42,10 @@ msgstr "<0><1>{eventTitle}</1> from <2>{0} {indexName} <3>[{poolName}]</3> Posi
 msgid "<0><1>{indexName}</1><2>[{poolName}]</2></0> <3>selected in order form</3>"
 msgstr "<0><1>{indexName}</1><2>[{poolName}]</2></0> <3>selected in order form</3>"
 
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+msgid "<0>Claimable Funding Fee.</0>"
+msgstr "<0>Claimable Funding Fee.</0>"
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "<0>GM Pools total value ({chainName}).</0>"
 msgstr "<0>GM Pools total value ({chainName}).</0>"
@@ -217,7 +221,7 @@ msgstr "Accrued Borrow Fee"
 #~ msgid "Accrued Funding Fee"
 #~ msgstr "Accrued Funding Fee"
 
-#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Accrued Funding Fee."
 msgstr "Accrued Funding Fee."
 
@@ -811,8 +815,8 @@ msgstr "Claimable"
 #~ msgstr "Claimable Funding"
 
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
-msgid "Claimable Funding Fee."
-msgstr "Claimable Funding Fee."
+#~ msgid "Claimable Funding Fee."
+#~ msgstr "Claimable Funding Fee."
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Claimable Rebates"
@@ -2705,6 +2709,7 @@ msgstr "Mark Price"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
@@ -3413,6 +3418,7 @@ msgid "Pools Value"
 msgstr "Pools Value"
 
 #: src/components/Exchange/PositionsList.js
+#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "Position"
 msgstr "Position"
@@ -5613,8 +5619,12 @@ msgid "fee"
 msgstr "fee"
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
-msgid "from {positionName} Position"
-msgstr "from {positionName} Position"
+msgid "from {positionName}"
+msgstr "from {positionName}"
+
+#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
+#~ msgid "from {positionName} Position"
+#~ msgstr "from {positionName} Position"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
