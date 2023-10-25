@@ -153,7 +153,7 @@ export function SettleAccruedFundingFeeModal({
   const renderTooltipContent = useCallback(
     () => (
       <span className="text-white">
-        <Trans>Claimable Funding Fee.</Trans>
+        <Trans>Accrued Funding Fee.</Trans>
       </span>
     ),
     []

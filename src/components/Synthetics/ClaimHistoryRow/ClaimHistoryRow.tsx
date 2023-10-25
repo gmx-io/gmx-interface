@@ -83,7 +83,7 @@ function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
                 const indexName = getMarketIndexName(market);
                 const poolName = getMarketPoolName(market);
                 return (
-                  <>
+                  <Fragment key={market.indexTokenAddress}>
                     <StatsTooltipRow
                       className="ClaimHistoryRow-tooltip-row"
                       key={market.marketTokenAddress}
@@ -115,7 +115,7 @@ function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
                       }
                     />
                     {index < marketsCount - 1 && <br />}
-                  </>
+                  </Fragment>
                 );
               })}
             </>
@@ -207,7 +207,6 @@ function ClaimFundingFeesHistoryRow(p: ClaimFundingFeesHistoryRowProps) {
       const positionName = (
         <span className="items-top">
           {claimAction.isLongOrders[0] ? t`Long` : t`Short`} {indexName}
-          <span className="subtext">[{poolName}]</span>
         </span>
       );
       return (
@@ -216,7 +215,22 @@ function ClaimFundingFeesHistoryRow(p: ClaimFundingFeesHistoryRowProps) {
           className="plain ClaimHistoryRow__token-amount"
           href={`${getExplorerUrl(chainId)}tx/${claimAction.transactionHash}`}
         >
-          {eventTitle}: {amounts} <Trans>from {positionName} Position</Trans>
+          {eventTitle}: {amounts} <Trans>from {positionName}</Trans>{" "}
+          <Tooltip
+            handle={<Trans>Position</Trans>}
+            renderContent={() => (
+              <StatsTooltipRow
+                label={t`Market`}
+                value={
+                  <div className="items-center">
+                    <span>{indexName && indexName}</span>
+                    <span className="subtext lh-1">{poolName && `[${poolName}]`}</span>
+                  </div>
+                }
+                showDollar={false}
+              />
+            )}
+          />
         </ExternalLink>
       );
     }

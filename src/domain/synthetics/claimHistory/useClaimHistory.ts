@@ -58,6 +58,7 @@ export function useClaimCollateralHistory(
             orderDirection: desc,
             where: { account: "${account!.toLowerCase()}" }
         ) {
+            id
             account
             eventName
             marketAddresses

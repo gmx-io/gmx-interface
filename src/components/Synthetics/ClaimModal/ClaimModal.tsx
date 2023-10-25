@@ -150,7 +150,11 @@ export function ClaimModal(p: Props) {
             className="ClaimSettleModal-tooltip-text-grey"
             position="right-top"
             handle={t`FUNDING FEE`}
-            renderContent={() => t`Accrued Funding Fee.`}
+            renderContent={() => (
+              <Trans>
+                <span className="text-white">Claimable Funding Fee.</span>
+              </Trans>
+            )}
           />
         </div>
       </div>

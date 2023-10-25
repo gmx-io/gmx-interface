@@ -44,7 +44,9 @@ export const SettleAccruedFundingFeeRow = ({ position, isSelected, onCheckboxCha
         ] as [BigNumber, TokenData][]
       )
         .filter(([amount, token]) => amount.gt(0) && token)
-        .map(([amount, token]) => <div>{formatTokenAmount(amount, token.decimals, token.symbol)}</div>),
+        .map(([amount, token]) => (
+          <div key={token.address}>{formatTokenAmount(amount, token.decimals, token.symbol)}</div>
+        )),
     [longToken, position.claimableLongTokenAmount, position.claimableShortTokenAmount, shortToken]
   );
 
