@@ -302,12 +302,48 @@ export function PositionItem(p: Props) {
     return formatLiquidationPrice(p.position.liquidationPrice, { displayDecimals: indexPriceDecimals }) || "...";
   }
 
-  function renderPositionOrders() {
+  function renderPositionOrders(isSmall = false) {
     if (positionOrders.length === 0) return null;
 
     const ordersErrorList = positionOrders.filter((order) => order.errorLevel === "error");
     const ordersWarningsList = positionOrders.filter((order) => order.errorLevel === "warning");
     const hasErrors = ordersErrorList.length + ordersWarningsList.length > 0;
+
+    if (isSmall) {
+      return positionOrders.map((order) => {
+        const triggerThresholdType = getTriggerThresholdType(order.orderType, order.isLong);
+        const isIncrease = isIncreaseOrderType(order.orderType);
+        const orderText = () => (
+          <div className="mb-xs">
+            {triggerThresholdType}{" "}
+            {formatUsd(order.triggerPrice, {
+              displayDecimals: order.indexToken?.priceDecimals,
+            })}
+            :{" "}
+            <span>
+              {isIncrease ? "+" : "-"}
+              {formatUsd(order.sizeDeltaUsd)}
+            </span>
+          </div>
+        );
+
+        if (hasErrors) {
+          return (
+            <div className="Position-list-order">
+              <Tooltip
+                className="order-error"
+                handle={orderText()}
+                position="right-bottom"
+                handleClassName="plain"
+                renderContent={() => order.errors.map((error) => <span className="negative mb-xs">{error.msg}</span>)}
+              />
+            </div>
+          );
+        } else {
+          return <div className="Position-list-order">{orderText()}</div>;
+        }
+      });
+    }
 
     return (
       <div onClick={p.onOrdersClick}>
@@ -656,7 +692,7 @@ export function PositionItem(p: Props) {
             </div>
             <div>
               {!p.positionOrders?.length && "None"}
-              {renderPositionOrders()}
+              {renderPositionOrders(true)}
             </div>
           </div>
           {!p.hideActions && (
