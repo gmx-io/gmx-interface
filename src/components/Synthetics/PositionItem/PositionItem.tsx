@@ -28,6 +28,7 @@ import { CHART_PERIODS } from "lib/legacy";
 import { FaAngleRight } from "react-icons/fa";
 import { useMedia } from "react-use";
 import "./PositionItem.scss";
+import { Fragment } from "react";
 
 export type Props = {
   position: PositionInfo;
@@ -309,30 +310,33 @@ export function PositionItem(p: Props) {
     const ordersWarningsList = positionOrders.filter((order) => order.errorLevel === "warning");
     const hasErrors = ordersErrorList.length + ordersWarningsList.length > 0;
 
-    if (isSmall) {
-      return positionOrders.map((order) => {
-        const triggerThresholdType = getTriggerThresholdType(order.orderType, order.isLong);
-        const isIncrease = isIncreaseOrderType(order.orderType);
-        const orderText = () => (
-          <div key={order.key} className="mb-xs">
-            {triggerThresholdType}{" "}
-            {formatUsd(order.triggerPrice, {
-              displayDecimals: order.indexToken?.priceDecimals,
-            })}
-            :{" "}
-            <span>
-              {isIncrease ? "+" : "-"}
-              {formatUsd(order.sizeDeltaUsd)}
-            </span>
-          </div>
-        );
+    function renderOrderText(order) {
+      const triggerThresholdType = getTriggerThresholdType(order.orderType, order.isLong);
+      const isIncrease = isIncreaseOrderType(order.orderType);
+      return (
+        <div key={order.key}>
+          {isDecreaseOrderType(order.orderType) ? getTriggerNameByOrderType(order.orderType, true) : t`Limit`}:{" "}
+          {triggerThresholdType}{" "}
+          {formatUsd(order.triggerPrice, {
+            displayDecimals: order.indexToken?.priceDecimals,
+          })}
+          :{" "}
+          <span>
+            {isIncrease ? "+" : "-"}
+            {formatUsd(order.sizeDeltaUsd)}
+          </span>
+        </div>
+      );
+    }
 
+    const renderMobileVersion = () => {
+      return positionOrders.map((order) => {
         if (hasErrors) {
           return (
             <div className="Position-list-order">
               <Tooltip
                 className="order-error"
-                handle={orderText()}
+                handle={renderOrderText(order)}
                 position="right-bottom"
                 handleClassName="plain"
                 renderContent={() =>
@@ -345,13 +349,12 @@ export function PositionItem(p: Props) {
               />
             </div>
           );
-        } else {
-          return <div className="Position-list-order">{orderText()}</div>;
         }
+        return <div className="Position-list-order">{renderOrderText(order)}</div>;
       });
-    }
+    };
 
-    return (
+    const renderDesktopVersion = () => (
       <div onClick={p.onOrdersClick}>
         <Tooltip
           className="Position-list-active-orders"
@@ -377,52 +380,36 @@ export function PositionItem(p: Props) {
             "clickable",
             "text-gray",
           ])}
-          renderContent={() => {
-            return (
-              <>
-                <strong>
-                  <Trans>Active Orders</Trans>
-                </strong>
-                {positionOrders.map((order) => {
-                  const errors = order.errors;
-                  const triggerThresholdType = getTriggerThresholdType(order.orderType, order.isLong);
-                  const isIncrease = isIncreaseOrderType(order.orderType);
-                  return (
-                    <div key={order.key} className="Position-list-order active-order-tooltip">
-                      <div className="Position-list-order-label">
-                        <span>
-                          {isDecreaseOrderType(order.orderType)
-                            ? getTriggerNameByOrderType(order.orderType, true)
-                            : t`Limit`}
-                          : {triggerThresholdType}{" "}
-                          {formatUsd(order.triggerPrice, {
-                            displayDecimals: order.indexToken?.priceDecimals,
-                          })}
-                          :{" "}
-                          <span>
-                            {isIncrease ? "+" : "-"}
-                            {formatUsd(order.sizeDeltaUsd)}
-                          </span>
-                        </span>
-                        <FaAngleRight fontSize={14} />
-                      </div>
-                      {errors.map((err, i) => (
-                        <>
-                          <div key={err.msg} className={cx("order-error-text", `level-${err.level}`)}>
-                            {err.msg}
-                          </div>
-                          {i < errors.length - 1 && <br />}
-                        </>
-                      ))}
+          renderContent={() => (
+            <>
+              <strong>
+                <Trans>Active Orders</Trans>
+              </strong>
+              {positionOrders.map((order) => {
+                const errors = order.errors;
+                return (
+                  <div key={order.key} className="Position-list-order active-order-tooltip">
+                    <div className="Position-list-order-label">
+                      {renderOrderText(order)}
+                      <FaAngleRight fontSize={14} />
                     </div>
-                  );
-                })}
-              </>
-            );
-          }}
+
+                    {errors.map((err, i) => (
+                      <Fragment key={err.msg}>
+                        <div className={cx("order-error-text", `level-${err.level}`)}>{err.msg}</div>
+                        {i < errors.length - 1 && <br />}
+                      </Fragment>
+                    ))}
+                  </div>
+                );
+              })}
+            </>
+          )}
         />
       </div>
     );
+
+    return isSmall ? renderMobileVersion() : renderDesktopVersion();
   }
 
   function renderLarge() {
