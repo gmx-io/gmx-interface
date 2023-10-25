@@ -52,8 +52,11 @@ export default function GMXAprTooltip({ processedData, nativeTokenSymbol }: Prop
             showDollar={false}
             value={`${formatKeyAmount(processedData, "gmxAprForNativeTokenWithBoost", 2, 2, true)}%`}
           />
-          <br />
-          {renderEscrowedGMXApr(processedData)}
+          {renderEscrowedGMXApr(processedData) && (
+            <>
+              <br /> {renderEscrowedGMXApr(processedData)}
+            </>
+          )}
           <br />
           <Trans>The Boosted APR is from your staked Multiplier Points.</Trans>
         </div>

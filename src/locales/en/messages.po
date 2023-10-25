@@ -3185,8 +3185,12 @@ msgid "POOL"
 msgstr "POOL"
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "POOLS VALUE"
-msgstr "POOLS VALUE"
+msgid "POOLS"
+msgstr "POOLS"
+
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+#~ msgid "POOLS VALUE"
+#~ msgstr "POOLS VALUE"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/GmList/GmList.tsx
@@ -3308,8 +3312,12 @@ msgid "Pool Amount"
 msgstr "Pool Amount"
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Pools Value"
-msgstr "Pools Value"
+msgid "Pools"
+msgstr "Pools"
+
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+#~ msgid "Pools Value"
+#~ msgstr "Pools Value"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionList/PositionList.tsx
