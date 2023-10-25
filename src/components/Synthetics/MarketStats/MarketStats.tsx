@@ -19,7 +19,6 @@ import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import "./MarketStats.scss";
 import BridgingInfo from "../BridgingInfo/BridgingInfo";
 import { getBridgingOptionsForToken } from "config/bridging";
-import useWallet from "lib/wallets/useWallet";
 
 type Props = {
   marketInfo?: MarketInfo;
@@ -30,7 +29,6 @@ type Props = {
 export function MarketStats(p: Props) {
   const { marketInfo, marketToken, marketsTokensAPRData } = p;
   const { chainId } = useChainId();
-  const { active } = useWallet();
 
   const marketPrice = marketToken?.prices?.maxPrice;
   const marketBalance = marketToken?.balance;
@@ -107,16 +105,15 @@ export function MarketStats(p: Props) {
             />
           }
         />
-        {active && (
-          <CardRow
-            label={t`Wallet`}
-            value={
-              marketBalance && marketBalanceUsd
-                ? formatTokenAmountWithUsd(marketBalance, marketBalanceUsd, "GM", marketToken.decimals)
-                : "..."
-            }
-          />
-        )}
+
+        <CardRow
+          label={t`Wallet`}
+          value={
+            marketBalance && marketBalanceUsd
+              ? formatTokenAmountWithUsd(marketBalance, marketBalanceUsd, "GM", marketToken.decimals)
+              : "0.000 GM ($0.00)"
+          }
+        />
 
         <CardRow label={t`APR`} value={apr ? `${formatAmount(apr, 2, 2)}%` : "..."} />
 

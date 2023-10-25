@@ -52,11 +52,6 @@ export default function GMXAprTooltip({ processedData, nativeTokenSymbol }: Prop
             showDollar={false}
             value={`${formatKeyAmount(processedData, "gmxAprForNativeTokenWithBoost", 2, 2, true)}%`}
           />
-          <StatsTooltipRow
-            label={t`${nativeTokenSymbol} Total APR`}
-            showDollar={false}
-            value={`${formatKeyAmount(processedData, "gmxAprForNativeTokenWithBoost", 2, 2, true)}%`}
-          />
           {renderEscrowedGMXApr(processedData) && (
             <>
               <br /> {renderEscrowedGMXApr(processedData)}
