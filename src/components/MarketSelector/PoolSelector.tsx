@@ -87,7 +87,7 @@ export function PoolSelector({
     const marketsWithBalance: MarketOption[] = [];
     const marketsWithoutBalance: MarketOption[] = [];
 
-    for (let market of allMarkets) {
+    for (const market of allMarkets) {
       if (market.balance.gt(0)) {
         marketsWithBalance.push(market);
       } else {
@@ -96,7 +96,7 @@ export function PoolSelector({
     }
 
     const sortedMartketsWithBalance = marketsWithBalance.sort((a, b) => {
-      return b.balanceUsd?.sub(a.balanceUsd || 0).gt(0) ? 1 : -1;
+      return b.balanceUsd?.gt(a.balanceUsd || 0) ? 1 : -1;
     });
 
     return [...sortedMartketsWithBalance, ...marketsWithoutBalance];
@@ -106,10 +106,10 @@ export function PoolSelector({
     (option) => option.marketInfo.marketTokenAddress === selectedMarketAddress
   )?.marketInfo;
 
+  const lowercaseSearchKeyword = searchKeyword.toLowerCase();
   const filteredOptions = marketsOptions.filter((option) => {
     const name = option.name.toLowerCase();
-    const search = searchKeyword.toLowerCase();
-    return name.indexOf(search) > -1;
+    return name.includes(lowercaseSearchKeyword);
   });
 
   function onSelectOption(option: MarketOption) {
