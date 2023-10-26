@@ -682,7 +682,6 @@ export function ConfirmationBox(p: Props) {
   }
 
   const isOrphanOrder =
-    isTrigger &&
     marketsOptions?.collateralWithPosition &&
     collateralToken &&
     !getIsEquivalentTokens(marketsOptions.collateralWithPosition, collateralToken);
@@ -690,6 +689,17 @@ export function ConfirmationBox(p: Props) {
   function renderDifferentCollateralWarning() {
     if (!isOrphanOrder) {
       return null;
+    }
+
+    if (isMarket) {
+      return (
+        <div className="Confirmation-box-warning">
+          <Trans>
+            You have an existing position with {marketsOptions?.collateralWithPosition?.symbol} as collateral. This
+            action will not apply for that position.
+          </Trans>
+        </div>
+      );
     }
 
     return (
@@ -928,6 +938,7 @@ export function ConfirmationBox(p: Props) {
       <>
         <div>
           {renderMain()}
+          {renderDifferentCollateralWarning()}
           {renderCollateralSpreadWarning()}
           {renderExistingLimitOrdersWarning()}
           {renderExistingTriggerErrors()}
