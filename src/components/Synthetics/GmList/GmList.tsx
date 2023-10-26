@@ -14,7 +14,7 @@ import {
 import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { importImage } from "lib/legacy";
-import { bigNumberify, formatAmount, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { bigNumberify, formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { useMemo } from "react";
@@ -156,15 +156,13 @@ export function GmList({
                       renderContent={() => (
                         <StatsTooltipRow
                           label={t`Total in Wallet`}
-                          value={formatTokenAmountWithUsd(
-                            userTotalGmInfo?.balance,
-                            userTotalGmInfo?.balanceUsd,
-                            "GM",
-                            18,
-                            {
-                              displayDecimals: 2,
-                            }
-                          )}
+                          value={[
+                            formatTokenAmount(userTotalGmInfo?.balance, 18, "GM", {
+                              useCommas: true,
+                              fallbackToZero: true,
+                            }),
+                            `(${formatUsd(userTotalGmInfo?.balanceUsd)})`,
+                          ]}
                           showDollar={false}
                         />
                       )}
