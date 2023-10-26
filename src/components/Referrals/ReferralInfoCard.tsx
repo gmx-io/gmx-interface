@@ -18,7 +18,7 @@ function ReferralInfoCard({
   labelTooltipText,
   children,
   tooltipContent,
-  tooltipPosition = "left-bottom",
+  tooltipPosition = "center-bottom",
   className,
 }: Props) {
   return (
