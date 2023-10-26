@@ -278,7 +278,7 @@ export function GmList({
                     <div className="App-card-row">
                       <div className="label">
                         <Tooltip
-                          handle={<Trans>Mintable</Trans>}
+                          handle={<Trans>Buyable</Trans>}
                           className="text-none"
                           position="left-bottom"
                           renderContent={() => (
@@ -370,8 +370,8 @@ function renderMintableAmount({ mintableInfo, market, token, longToken, shortTok
         <>
           <p className="text-white">
             <Trans>
-              {longToken.symbol} and {shortToken.symbol} can be used to mint GM tokens for this market up to the
-              specified minting caps.
+              {longToken.symbol} and {shortToken.symbol} can be used to buy GM tokens for this market up to the
+              specified buying caps.
             </Trans>
           </p>
           <br />

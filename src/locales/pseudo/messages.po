@@ -633,6 +633,7 @@ msgstr ""
 msgid "Buy {swapTokenSymbol} on 1inch"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "Buyable"
 msgstr ""
@@ -2880,10 +2881,6 @@ msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
 msgid "Minimum received"
-msgstr ""
-
-#: src/components/Synthetics/GmList/GmList.tsx
-msgid "Mintable"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -5557,7 +5554,7 @@ msgid "{0} and {1} can be used to buy GM for this market up to the specified buy
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
-msgid "{0} and {1} can be used to mint GM tokens for this market up to the specified minting caps."
+msgid "{0} and {1} can be used to buy GM tokens for this market up to the specified buying caps."
 msgstr ""
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
