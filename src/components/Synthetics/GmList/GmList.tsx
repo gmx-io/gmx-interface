@@ -166,19 +166,38 @@ export function GmList({
                 const totalSupply = token?.totalSupply;
                 const totalSupplyUsd = convertToUsd(totalSupply, token?.decimals, token?.prices?.minPrice);
 
+                function renderMarketIcon() {
+                  if (!indexToken || !longToken || !shortToken) return;
+                  if (market.isSpotOnly) {
+                    return (
+                      <div className="collaterals-logo">
+                        <img
+                          src={importImage("ic_" + longToken.symbol.toLocaleLowerCase() + "_40.svg")}
+                          alt={longToken.symbol}
+                          className="collateral-logo collateral-logo-first"
+                        />
+                        <img
+                          src={importImage("ic_" + shortToken.symbol.toLocaleLowerCase() + "_40.svg")}
+                          alt={shortToken.symbol}
+                          className="collateral-logo collateral-logo-second"
+                        />
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <img
+                      src={importImage("ic_" + indexToken.symbol.toLocaleLowerCase() + "_40.svg")}
+                      alt={indexToken.symbol}
+                      width="40"
+                    />
+                  );
+                }
                 return (
                   <tr key={token.address}>
                     <td>
                       <div className="App-card-title-info">
-                        <div className="App-card-title-info-icon">
-                          <img
-                            src={importImage(
-                              "ic_" + (market.isSpotOnly ? "swap" : indexToken.symbol.toLocaleLowerCase()) + "_40.svg"
-                            )}
-                            alt={indexToken.symbol}
-                            width="40"
-                          />
-                        </div>
+                        <div className="App-card-title-info-icon">{renderMarketIcon()}</div>
 
                         <div className="App-card-title-info-text">
                           <div className="App-card-info-title">
