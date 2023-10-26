@@ -2572,6 +2572,7 @@ msgstr "로딩중..."
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
+#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -3415,7 +3416,6 @@ msgid "Pools Value"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "Position"
 msgstr "포지션"
@@ -4065,6 +4065,7 @@ msgstr "포지션 공유"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -5616,8 +5617,12 @@ msgid "fee"
 msgstr "수수료"
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
-msgid "from {positionName}"
+msgid "from"
 msgstr ""
+
+#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
+#~ msgid "from {positionName}"
+#~ msgstr ""
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #~ msgid "from {positionName} Position"

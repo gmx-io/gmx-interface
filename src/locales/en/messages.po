@@ -2575,6 +2575,7 @@ msgstr "Loading..."
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
+#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -3418,7 +3419,6 @@ msgid "Pools Value"
 msgstr "Pools Value"
 
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "Position"
 msgstr "Position"
@@ -4068,6 +4068,7 @@ msgstr "Share Position"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -5619,8 +5620,12 @@ msgid "fee"
 msgstr "fee"
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
-msgid "from {positionName}"
-msgstr "from {positionName}"
+msgid "from"
+msgstr "from"
+
+#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
+#~ msgid "from {positionName}"
+#~ msgstr "from {positionName}"
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #~ msgid "from {positionName} Position"
