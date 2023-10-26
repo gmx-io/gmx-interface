@@ -58,12 +58,14 @@ async function getCodeOwnersData(network, account, codes = []) {
 export function useUserReferralInfo(
   signer: Signer | undefined,
   chainId: number,
-  account?: string | null
+  account?: string | null,
+  skipLocalReferralCode = false
 ): UserReferralInfo | undefined {
   const { userReferralCode, userReferralCodeString, attachedOnChain, referralCodeForTxn } = useUserReferralCode(
     signer,
     chainId,
-    account
+    account,
+    skipLocalReferralCode
   );
 
   const { codeOwner } = useCodeOwner(signer, chainId, account, userReferralCode);
@@ -208,7 +210,7 @@ export async function getReferralCodeOwner(chainId, referralCode) {
   return codeOwner;
 }
 
-export function useUserReferralCode(signer, chainId, account) {
+export function useUserReferralCode(signer, chainId, account, skipLocalReferralCode = false) {
   const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const { data: onChainCode } = useSWR<string>(
@@ -229,7 +231,7 @@ export function useUserReferralCode(signer, chainId, account) {
     let userReferralCodeString: string | undefined = undefined;
     let referralCodeForTxn = ethers.constants.HashZero;
 
-    if (onChainCode && !isHashZero(onChainCode)) {
+    if (skipLocalReferralCode || (onChainCode && !isHashZero(onChainCode))) {
       attachedOnChain = true;
       userReferralCode = onChainCode;
       userReferralCodeString = decodeReferralCode(onChainCode);
@@ -246,7 +248,7 @@ export function useUserReferralCode(signer, chainId, account) {
       userReferralCodeString,
       referralCodeForTxn,
     };
-  }, [localStorageCode, localStorageCodeOwner, onChainCode]);
+  }, [localStorageCode, localStorageCodeOwner, onChainCode, skipLocalReferralCode]);
 
   return {
     userReferralCode,

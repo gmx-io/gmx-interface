@@ -1,7 +1,8 @@
 import "./SlippageInput.scss";
 import { useState } from "react";
 import cx from "classnames";
-import { formatAmount } from "lib/numbers";
+import { roundToTwoDecimals } from "lib/numbers";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 const MAX_SLIPPAGE = 99 * 100;
 const HIGH_SLIPPAGE = 2 * 100;
@@ -9,7 +10,7 @@ const SLIPPAGE_SUGGESTION_LISTS = [0.3, 0.5, 1, 1.5];
 const validDecimalRegex = /^\d+(\.\d{0,2})?$/; // 0.00 ~ 99.99
 
 function getSlippageText(value: number) {
-  return formatAmount(value, 2, 2).replace(/0+$/, "");
+  return roundToTwoDecimals((value / BASIS_POINTS_DIVISOR) * 100).toString();
 }
 
 type Props = {
@@ -21,7 +22,6 @@ export default function SlippageInput({ setAllowedSlippage, defaultSlippage }: P
   const defaultSlippageText = getSlippageText(defaultSlippage);
   const [slippageText, setSlippageText] = useState<string>(defaultSlippageText);
   const [isPanelVisible, setIsPanelVisible] = useState<boolean>(false);
-
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { value } = event.target;
     if (value === "") {
@@ -37,7 +37,7 @@ export default function SlippageInput({ setAllowedSlippage, defaultSlippage }: P
 
     if (parsedValue >= MAX_SLIPPAGE) {
       setAllowedSlippage(MAX_SLIPPAGE);
-      setSlippageText(String(MAX_SLIPPAGE / 100));
+      setSlippageText(getSlippageText(MAX_SLIPPAGE));
       return;
     }
 

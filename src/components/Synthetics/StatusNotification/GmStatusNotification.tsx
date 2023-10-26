@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 import { convertTokenAddress } from "config/tokens";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
@@ -10,7 +10,7 @@ import {
   getPendingWithdrawalKey,
   useSyntheticsEvents,
 } from "context/SyntheticsEvents";
-import { MarketsInfoData, getMarketIndexName } from "domain/synthetics/markets";
+import { MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
@@ -98,7 +98,17 @@ export function GmStatusNotification({
 
       const marketInfo = getByKey(marketsInfoData, pendingDepositData.marketAddress);
       const indexName = marketInfo ? getMarketIndexName(marketInfo) : "";
-      return t`Buying GM (${indexName}) with ${tokensText}`;
+      const poolName = marketInfo ? getMarketPoolName(marketInfo) : "";
+
+      return (
+        <Trans>
+          <div className="inline-flex">
+            Buying GM:&nbsp;<span>{indexName}</span>
+            <span className="subtext gm-toast">[{poolName}]</span>
+          </div>{" "}
+          <span>with {tokensText}</span>
+        </Trans>
+      );
     } else {
       if (!pendingWithdrawalData) {
         return t`Unknown sell GM order`;
@@ -106,8 +116,16 @@ export function GmStatusNotification({
 
       const marketInfo = getByKey(marketsInfoData, pendingWithdrawalData.marketAddress);
       const indexName = marketInfo ? getMarketIndexName(marketInfo) : "";
+      const poolName = marketInfo ? getMarketPoolName(marketInfo) : "";
 
-      return t`Selling GM (${indexName})`;
+      return (
+        <Trans>
+          <div className="inline-flex">
+            Selling GM:&nbsp;<span>{indexName}</span>
+            <span className="subtext gm-toast">[{poolName}]</span>
+          </div>
+        </Trans>
+      );
     }
   }, [chainId, isDeposit, marketsInfoData, pendingDepositData, pendingWithdrawalData, tokensData]);
 

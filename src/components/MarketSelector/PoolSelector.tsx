@@ -6,12 +6,13 @@ import { BigNumber } from "ethers";
 import { importImage } from "lib/legacy";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { ReactNode, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { BiChevronDown } from "react-icons/bi";
 import Modal from "../Modal/Modal";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 import "./MarketSelector.scss";
 import SearchInput from "components/SearchInput/SearchInput";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 
 type Props = {
   label?: string;
@@ -23,10 +24,11 @@ type Props = {
   marketTokensData?: TokensData;
   disabled?: boolean;
   showBalances?: boolean;
-  selectedMarketLabel?: ReactNode | string;
   isSideMenu?: boolean;
   getMarketState?: (market: MarketInfo) => MarketState | undefined;
   onSelectMarket: (market: MarketInfo) => void;
+  showAllPools?: boolean;
+  showIndexIcon?: boolean;
 };
 
 type MarketState = {
@@ -35,7 +37,9 @@ type MarketState = {
 };
 
 type MarketOption = {
+  indexName: string;
   poolName: string;
+  name: string;
   marketInfo: MarketInfo;
   balance: BigNumber;
   balanceUsd: BigNumber;
@@ -45,7 +49,6 @@ type MarketOption = {
 export function PoolSelector({
   selectedMarketAddress,
   className,
-  selectedMarketLabel,
   selectedIndexName,
   label,
   markets,
@@ -54,14 +57,17 @@ export function PoolSelector({
   showBalances,
   onSelectMarket,
   getMarketState,
+  showAllPools = false,
+  showIndexIcon = false,
 }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
 
   const marketsOptions: MarketOption[] = useMemo(() => {
-    return markets
-      .filter((market) => !market.isDisabled && getMarketIndexName(market) === selectedIndexName)
+    const allMarkets = markets
+      .filter((market) => !market.isDisabled && (showAllPools || getMarketIndexName(market) === selectedIndexName))
       .map((marketInfo) => {
+        const indexName = getMarketIndexName(marketInfo);
         const poolName = getMarketPoolName(marketInfo);
         const marketToken = getByKey(marketTokensData, marketInfo.marketTokenAddress);
         const gmBalance = marketToken?.balance;
@@ -69,21 +75,41 @@ export function PoolSelector({
         const state = getMarketState?.(marketInfo);
 
         return {
+          indexName,
           poolName,
+          name: marketInfo.name,
           marketInfo,
           balance: gmBalance || BigNumber.from(0),
           balanceUsd: gmBalanceUsd || BigNumber.from(0),
           state,
         };
       });
-  }, [getMarketState, marketTokensData, markets, selectedIndexName]);
+    const marketsWithBalance: MarketOption[] = [];
+    const marketsWithoutBalance: MarketOption[] = [];
+
+    for (const market of allMarkets) {
+      if (market.balance.gt(0)) {
+        marketsWithBalance.push(market);
+      } else {
+        marketsWithoutBalance.push(market);
+      }
+    }
+
+    const sortedMartketsWithBalance = marketsWithBalance.sort((a, b) => {
+      return b.balanceUsd?.gt(a.balanceUsd || 0) ? 1 : -1;
+    });
+
+    return [...sortedMartketsWithBalance, ...marketsWithoutBalance];
+  }, [getMarketState, marketTokensData, markets, selectedIndexName, showAllPools]);
 
   const marketInfo = marketsOptions.find(
     (option) => option.marketInfo.marketTokenAddress === selectedMarketAddress
   )?.marketInfo;
 
+  const lowercaseSearchKeyword = searchKeyword.toLowerCase();
   const filteredOptions = marketsOptions.filter((option) => {
-    return option.poolName.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1;
+    const name = option.name.toLowerCase();
+    return name.includes(lowercaseSearchKeyword);
   });
 
   function onSelectOption(option: MarketOption) {
@@ -99,18 +125,18 @@ export function PoolSelector({
 
   function displayPoolLabel(marketInfo: MarketInfo | undefined) {
     if (!marketInfo) return "...";
-    const marketPoolName = getMarketPoolName(marketInfo);
+    const name = showAllPools ? `GM: ${getMarketIndexName(marketInfo)}` : getMarketPoolName(marketInfo);
 
     if (filteredOptions?.length > 1) {
       return (
         <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
-          {marketPoolName ? marketPoolName : "..."}
+          {name ? name : "..."}
           <BiChevronDown className="TokenSelector-caret" />
         </div>
       );
     }
 
-    return <div>{marketPoolName ? marketPoolName : "..."}</div>;
+    return <div>{name ? name : "..."}</div>;
   }
 
   return (
@@ -131,16 +157,19 @@ export function PoolSelector({
       >
         <div className="TokenSelector-tokens">
           {filteredOptions.map((option, marketIndex) => {
-            const { marketInfo, balance, balanceUsd, poolName, state = {} } = option;
+            const { marketInfo, balance, balanceUsd, indexName, poolName, name, state = {} } = option;
 
             const longCollateralImage = importImage(`ic_${marketInfo.longToken.symbol.toLowerCase()}_40.svg`);
             const shortCollateralImage = importImage(`ic_${marketInfo.shortToken.symbol.toLowerCase()}_40.svg`);
+            const indexTokenImage = importImage(
+              `ic_${marketInfo.isSpotOnly ? "swap" : marketInfo.indexToken.symbol.toLowerCase()}_40.svg`
+            );
 
             const marketToken = getByKey(marketTokensData, marketInfo.marketTokenAddress);
 
             return (
               <div
-                key={poolName}
+                key={name}
                 className={cx("TokenSelector-token-row", { disabled: state.disabled })}
                 onClick={() => !state.disabled && onSelectOption(option)}
               >
@@ -157,24 +186,43 @@ export function PoolSelector({
                 )}
                 <div className="Token-info">
                   <div className="collaterals-logo">
-                    <img src={longCollateralImage} alt={poolName} className="collateral-logo collateral-logo-first" />
-                    {shortCollateralImage && (
-                      <img
-                        src={shortCollateralImage}
-                        alt={poolName}
-                        className="collateral-logo collateral-logo-second"
-                      />
+                    {showAllPools ? (
+                      <img src={indexTokenImage} alt={indexName} className="collateral-logo collateral-logo-first" />
+                    ) : (
+                      <>
+                        <img
+                          src={longCollateralImage}
+                          alt={poolName}
+                          className="collateral-logo collateral-logo-first"
+                        />
+                        {shortCollateralImage && (
+                          <img
+                            src={shortCollateralImage}
+                            alt={poolName}
+                            className="collateral-logo collateral-logo-second"
+                          />
+                        )}
+                      </>
                     )}
                   </div>
                   <div className="Token-symbol">
-                    <div className="Token-text">{poolName}</div>
+                    <div className="Token-text">
+                      {showAllPools ? (
+                        <div className="lh-1 items-center">
+                          <span>{indexName && indexName}</span>
+                          <span className="subtext">{poolName && `[${poolName}]`}</span>
+                        </div>
+                      ) : (
+                        <div className="Token-text">{poolName}</div>
+                      )}
+                    </div>
                   </div>
                 </div>
                 <div className="Token-balance">
                   {showBalances && balance && (
                     <div className="Token-text">
                       {balance.gt(0) &&
-                        formatTokenAmount(balance, marketToken?.decimals, "", {
+                        formatTokenAmount(balance, marketToken?.decimals, "GM", {
                           useCommas: true,
                         })}
                       {balance.eq(0) && "-"}
@@ -189,13 +237,19 @@ export function PoolSelector({
           })}
         </div>
       </Modal>
-      {selectedMarketLabel ? (
-        <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
-          {selectedMarketLabel}
-          <BiChevronDown className="TokenSelector-caret" />
+
+      {marketInfo && (
+        <div className="inline-items-center">
+          {showIndexIcon && (
+            <TokenIcon
+              className="mr-xs"
+              symbol={marketInfo.isSpotOnly ? "swap" : marketInfo?.indexToken.symbol}
+              importSize={24}
+              displaySize={20}
+            />
+          )}
+          {displayPoolLabel(marketInfo)}
         </div>
-      ) : (
-        displayPoolLabel(marketInfo)
       )}
     </div>
   );
