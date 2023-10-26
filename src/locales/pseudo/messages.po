@@ -436,6 +436,10 @@ msgstr ""
 msgid "Avalanche APR:"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "BUYABLE"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
@@ -627,6 +631,10 @@ msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "Buy {swapTokenSymbol} on 1inch"
+msgstr ""
+
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "Buyable"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
@@ -2575,10 +2583,6 @@ msgstr ""
 msgid "MEV Optimizer"
 msgstr ""
 
-#: src/components/Synthetics/GmList/GmList.tsx
-msgid "MINTABLE"
-msgstr ""
-
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -2879,7 +2883,6 @@ msgid "Minimum received"
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "Mintable"
 msgstr ""
 
@@ -5550,7 +5553,7 @@ msgid "{0} Required"
 msgstr ""
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
-msgid "{0} and {1} can be used to mint GM for this market up to the specified minting caps."
+msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
@@ -5558,7 +5561,7 @@ msgid "{0} and {1} can be used to mint GM tokens for this market up to the speci
 msgstr ""
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
-msgid "{0} can be used to mint GM for this market up to the specified minting caps."
+msgid "{0} can be used to buy GM for this market up to the specified buying caps."
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts

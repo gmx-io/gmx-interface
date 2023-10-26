@@ -75,7 +75,7 @@ export function GmList({
                 </th>
                 <th>
                   <Tooltip
-                    handle={<Trans>MINTABLE</Trans>}
+                    handle={<Trans>BUYABLE</Trans>}
                     className="text-none"
                     position="right-bottom"
                     renderContent={() => (

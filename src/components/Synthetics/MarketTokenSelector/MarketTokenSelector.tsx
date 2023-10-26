@@ -127,7 +127,7 @@ export default function MarketTokenSelector(props: Props) {
                       <thead className="table-head">
                         <tr>
                           <th>MARKET</th>
-                          <th>MINTABLE</th>
+                          <th>BUYABLE</th>
                           <th>SELLABLE</th>
                           <th>APR</th>
                         </tr>

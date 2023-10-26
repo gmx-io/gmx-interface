@@ -436,6 +436,10 @@ msgstr "Available on your preferred network"
 msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
 
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "BUYABLE"
+msgstr "BUYABLE"
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
@@ -628,6 +632,10 @@ msgstr "Buy {nativeTokenSymbol}"
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "Buy {swapTokenSymbol} on 1inch"
 msgstr "Buy {swapTokenSymbol} on 1inch"
+
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "Buyable"
+msgstr "Buyable"
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Buying GM..."
@@ -2578,10 +2586,6 @@ msgstr "MAX"
 msgid "MEV Optimizer"
 msgstr "MEV Optimizer"
 
-#: src/components/Synthetics/GmList/GmList.tsx
-msgid "MINTABLE"
-msgstr "MINTABLE"
-
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -2882,7 +2886,6 @@ msgid "Minimum received"
 msgstr "Minimum received"
 
 #: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "Mintable"
 msgstr "Mintable"
 
@@ -5553,16 +5556,16 @@ msgid "{0} Required"
 msgstr "{0} Required"
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
-msgid "{0} and {1} can be used to mint GM for this market up to the specified minting caps."
-msgstr "{0} and {1} can be used to mint GM for this market up to the specified minting caps."
+msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
+msgstr "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
 
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "{0} and {1} can be used to mint GM tokens for this market up to the specified minting caps."
 msgstr "{0} and {1} can be used to mint GM tokens for this market up to the specified minting caps."
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
-msgid "{0} can be used to mint GM for this market up to the specified minting caps."
-msgstr "{0} can be used to mint GM for this market up to the specified minting caps."
+msgid "{0} can be used to buy GM for this market up to the specified buying caps."
+msgstr "{0} can be used to buy GM for this market up to the specified buying caps."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "{0} can not be sent to smart contract addresses. Select another token."

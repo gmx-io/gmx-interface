@@ -133,7 +133,7 @@ export function MarketStats(p: Props) {
         />
 
         <CardRow
-          label={t`Mintable`}
+          label={t`Buyable`}
           value={
             mintableInfo && marketTotalSupplyUsd && marketToken ? (
               <Tooltip
@@ -152,13 +152,13 @@ export function MarketStats(p: Props) {
                     <div>
                       {marketInfo?.isSameCollaterals ? (
                         <Trans>
-                          {marketInfo?.longToken.symbol} can be used to mint GM for this market up to the specified
-                          minting caps.
+                          {marketInfo?.longToken.symbol} can be used to buy GM for this market up to the specified
+                          buying caps.
                         </Trans>
                       ) : (
                         <Trans>
-                          {marketInfo?.longToken.symbol} and {marketInfo?.shortToken.symbol} can be used to mint GM for
-                          this market up to the specified minting caps.
+                          {marketInfo?.longToken.symbol} and {marketInfo?.shortToken.symbol} can be used to buy GM for
+                          this market up to the specified buying caps.
                         </Trans>
                       )}
 
