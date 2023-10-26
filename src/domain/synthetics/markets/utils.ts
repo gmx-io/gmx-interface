@@ -399,9 +399,9 @@ export function getTotalGmInfo(tokensData?: TokensData) {
   const tokens = Object.values(tokensData).filter((token) => token.symbol === "GM");
 
   return tokens.reduce((acc, token) => {
-    const balanceUsd = convertToUsd(token.balance, token.decimals, token.prices.minPrice)!;
-    acc.balance = acc.balance.add(token.balance!);
-    acc.balanceUsd = acc.balanceUsd.add(balanceUsd);
+    const balanceUsd = convertToUsd(token.balance, token.decimals, token.prices.minPrice);
+    acc.balance = acc.balance.add(token.balance || 0);
+    acc.balanceUsd = acc.balanceUsd.add(balanceUsd || 0);
     return acc;
   }, defaultResult);
 }

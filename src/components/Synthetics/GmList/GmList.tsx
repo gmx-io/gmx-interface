@@ -25,6 +25,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { getIcons } from "config/icons";
 import PageTitle from "components/PageTitle/PageTitle";
+import useWallet from "lib/wallets/useWallet";
 
 type Props = {
   hideTitle?: boolean;
@@ -46,11 +47,13 @@ export function GmList({
   buySellActionHandler,
 }: Props) {
   const { chainId } = useChainId();
+  const { active } = useWallet();
   const currentIcons = getIcons(chainId);
 
-  const { balance: totalGmBalance, balanceUsd: totalGmBalanceUsd } = useMemo(() => {
+  const userTotalGmInfo = useMemo(() => {
+    if (!active) return;
     return getTotalGmInfo(marketTokensData);
-  }, [marketTokensData]);
+  }, [marketTokensData, active]);
 
   const sortedMarketTokens = useMemo(() => {
     if (!marketsInfoData) {
@@ -145,20 +148,30 @@ export function GmList({
                   />
                 </th>
                 <th>
-                  <Tooltip
-                    handle={<Trans>WALLET</Trans>}
-                    className="text-none"
-                    position="right-bottom"
-                    renderContent={() => (
-                      <StatsTooltipRow
-                        label={t`Total in Wallet`}
-                        value={formatTokenAmountWithUsd(totalGmBalance, totalGmBalanceUsd, "GM", 18, {
-                          displayDecimals: 2,
-                        })}
-                        showDollar={false}
-                      />
-                    )}
-                  />
+                  {userTotalGmInfo ? (
+                    <Tooltip
+                      handle={<Trans>WALLET</Trans>}
+                      className="text-none"
+                      position="right-bottom"
+                      renderContent={() => (
+                        <StatsTooltipRow
+                          label={t`Total in Wallet`}
+                          value={formatTokenAmountWithUsd(
+                            userTotalGmInfo?.balance,
+                            userTotalGmInfo?.balanceUsd,
+                            "GM",
+                            18,
+                            {
+                              displayDecimals: 2,
+                            }
+                          )}
+                          showDollar={false}
+                        />
+                      )}
+                    />
+                  ) : (
+                    <Trans>WALLET</Trans>
+                  )}
                 </th>
                 <th>
                   <Trans>APR</Trans>
