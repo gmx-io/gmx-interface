@@ -79,8 +79,8 @@ msgid "<0>You have an existing position with {0} as collateral. This Order will 
 msgstr "<0>You have an existing position with {0} as collateral. This Order will not be valid for that Position.</0><1>Switch to {1} collateral.</1>"
 
 #: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
-msgid "<0>You have an existing position with {0} as collateral. This action will not apply for that position..</0><1>Switch to {1} collateral.</1>"
-msgstr "<0>You have an existing position with {0} as collateral. This action will not apply for that position..</0><1>Switch to {1} collateral.</1>"
+msgid "<0>You have an existing position with {0} as collateral. This action will not apply for that position.</0><1>Switch to {1} collateral.</1>"
+msgstr "<0>You have an existing position with {0} as collateral. This action will not apply for that position.</0><1>Switch to {1} collateral.</1>"
 
 #: src/lib/contracts/transactionErrors.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"

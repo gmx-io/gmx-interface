@@ -49,7 +49,7 @@ export function CollateralSelectorRow(p: Props) {
               <Trans>
                 <span className="negative">
                   You have an existing position with {collateralWithPosition.symbol} as collateral. This action will not
-                  apply for that position..
+                  apply for that position.
                 </span>
                 <div
                   className="MarketSelector-tooltip-row-action clickable underline muted"
