@@ -224,11 +224,11 @@ export function PositionItem(p: Props) {
         </div>
 
         <div className="Exchange-list-info-label Position-collateral-amount  muted">
-          {formatTokenAmount(
+          {`(${formatTokenAmount(
             p.position.remainingCollateralAmount,
             p.position.collateralToken?.decimals,
             p.position.collateralToken?.symbol
-          )}
+          )})`}
         </div>
 
         {!p.isLarge && (
@@ -609,7 +609,7 @@ export function PositionItem(p: Props) {
               <div onClick={() => p.onSelectPositionClick?.()}>
                 <div className="items-top">
                   <span>{indexName && indexName}</span>
-                  <span className="subtext lh-1">{poolName && `[${poolName}]`}</span>
+                  <span className="subtext">{poolName && `[${poolName}]`}</span>
                 </div>
               </div>
             </div>
