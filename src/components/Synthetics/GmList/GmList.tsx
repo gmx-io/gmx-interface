@@ -9,11 +9,12 @@ import {
   getMarketPoolName,
   getMaxPoolAmountForDeposit,
   getMintableMarketTokens,
+  getTotalGmInfo,
 } from "domain/synthetics/markets";
 import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { importImage } from "lib/legacy";
-import { bigNumberify, formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
+import { bigNumberify, formatAmount, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { useMemo } from "react";
@@ -46,6 +47,11 @@ export function GmList({
 }: Props) {
   const { chainId } = useChainId();
   const currentIcons = getIcons(chainId);
+
+  const { balance: totalGmBalance, balanceUsd: totalGmBalanceUsd } = useMemo(() => {
+    return getTotalGmInfo(marketTokensData);
+  }, [marketTokensData]);
+
   const sortedMarketTokens = useMemo(() => {
     if (!marketsInfoData) {
       return [];
@@ -139,7 +145,20 @@ export function GmList({
                   />
                 </th>
                 <th>
-                  <Trans>WALLET</Trans>
+                  <Tooltip
+                    handle={<Trans>WALLET</Trans>}
+                    className="text-none"
+                    position="right-bottom"
+                    renderContent={() => (
+                      <StatsTooltipRow
+                        label={t`Total in Wallet`}
+                        value={formatTokenAmountWithUsd(totalGmBalance, totalGmBalanceUsd, "GM", 18, {
+                          displayDecimals: 2,
+                        })}
+                        showDollar={false}
+                      />
+                    )}
+                  />
                 </th>
                 <th>
                   <Trans>APR</Trans>
@@ -353,7 +372,16 @@ export function GmList({
                     </div>
                     <div className="App-card-row">
                       <div className="label">
-                        <Trans>Wallet</Trans>
+                        <Tooltip
+                          handle={<Trans>Wallet</Trans>}
+                          className="text-none"
+                          position="right-bottom"
+                          renderContent={() => (
+                            <p className="text-white">
+                              <Trans>Available amount to deposit into the specific GM pool.</Trans>
+                            </p>
+                          )}
+                        />
                       </div>
                       <div>
                         {formatTokenAmount(token.balance, token.decimals, "GM", {
