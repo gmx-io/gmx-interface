@@ -5102,6 +5102,7 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
 msgid "WALLET"
 msgstr "钱包"
 
