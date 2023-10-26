@@ -144,7 +144,7 @@ export default function TradeHistory(props) {
   const getMsg = useCallback(
     (trade) => {
       const tradeData = trade.data;
-      const params = JSON.parse(tradeData.params);
+      const params = JSON.parse(JSON.stringify(tradeData.params));
       const longOrShortText = params?.isLong ? t`Long` : t`Short`;
       const defaultMsg = "";
 

@@ -302,7 +302,7 @@ function invariant(condition, errorMsg) {
 export function useTrades(chainId, account, forSingleAccount, afterId) {
   let url =
     account && account.length > 0
-      ? `${getServerBaseUrl(chainId)}/actions?account=${account}`
+      ? `${getServerBaseUrl(chainId)}/actions/${account}`
       : !forSingleAccount && `${getServerBaseUrl(chainId)}/actions`;
 
   if (afterId && afterId.length > 0) {
