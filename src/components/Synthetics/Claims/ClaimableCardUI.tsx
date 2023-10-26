@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import Tooltip from "components/Tooltip/Tooltip";
 import { BigNumber } from "ethers";
-import { formatUsd } from "lib/numbers";
+import { formatDeltaUsd } from "lib/numbers";
 import { CSSProperties, useCallback, useMemo } from "react";
 
 type Props = {
@@ -14,7 +14,7 @@ type Props = {
 };
 
 export function ClaimableCardUI({ buttonText, fundingFees, onButtonClick, title, tooltipText, style }: Props) {
-  const totalUsd = useMemo(() => formatUsd(fundingFees), [fundingFees]);
+  const totalUsd = useMemo(() => formatDeltaUsd(fundingFees), [fundingFees]);
 
   const renderTooltipContent = useCallback(() => tooltipText, [tooltipText]);
 

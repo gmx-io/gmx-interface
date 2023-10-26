@@ -156,7 +156,7 @@ function ClaimFundingFeesHistoryRow(p: ClaimFundingFeesHistoryRowProps) {
                   const poolName = getMarketPoolName(market);
                   const isLong = claimAction.isLongOrders[index];
                   return (
-                    <div className="ClaimHistoryRow-tooltip-row text-gray items-top" key={`${market.name}/${isLong}`}>
+                    <div className="ClaimHistoryRow-tooltip-row text-white items-top" key={`${market.name}/${isLong}`}>
                       {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext lh-1">[{poolName}]</span>
                     </div>
                   );
@@ -209,21 +209,23 @@ function ClaimFundingFeesHistoryRow(p: ClaimFundingFeesHistoryRowProps) {
           {claimAction.isLongOrders[0] ? t`Long` : t`Short`} {indexName}
         </span>
       );
+      const isLong = claimAction.isLongOrders[0];
+
       return (
         <ExternalLink
           key={claimAction.id}
           className="plain ClaimHistoryRow__token-amount"
           href={`${getExplorerUrl(chainId)}tx/${claimAction.transactionHash}`}
         >
-          {eventTitle}: {amounts} <Trans>from {positionName}</Trans>{" "}
+          {eventTitle}: {amounts} <Trans>from</Trans>{" "}
           <Tooltip
-            handle={<Trans>Position</Trans>}
+            handle={positionName}
             renderContent={() => (
               <StatsTooltipRow
                 label={t`Market`}
                 value={
                   <div className="items-center">
-                    <span>{indexName && indexName}</span>
+                    <span>{isLong ? t`Long` : t`Short`}</span>&nbsp;<span>{indexName && indexName}</span>
                     <span className="subtext lh-1">{poolName && `[${poolName}]`}</span>
                   </div>
                 }
