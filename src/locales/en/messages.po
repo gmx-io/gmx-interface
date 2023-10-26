@@ -931,10 +931,6 @@ msgid "Community Projects"
 msgstr "Community Projects"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Community curated tweet collection"
-msgstr "Community curated tweet collection"
-
-#: src/pages/Ecosystem/Ecosystem.js
 msgid "Community-led Telegram groups."
 msgstr "Community-led Telegram groups."
 
@@ -1180,6 +1176,8 @@ msgstr "Current {0} {longShortText}"
 msgid "Currently, There is a high Swap Price Impact for the Order Swap path."
 msgstr "Currently, There is a high Swap Price Impact for the Order Swap path."
 
+#: src/pages/Ecosystem/Ecosystem.js
+#: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
@@ -1672,6 +1670,10 @@ msgstr "Execution Price: {0}"
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Exit Price"
 msgstr "Exit Price"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Explore, analyze, and copy on-chain traders"
+msgstr "Explore, analyze, and copy on-chain traders"
 
 #: src/components/Glp/GlpSwap.js
 msgid "FEES"
@@ -2586,10 +2588,6 @@ msgstr "MARKET"
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
 msgstr "MAX"
-
-#: src/pages/Ecosystem/Ecosystem.js
-msgid "MEV Optimizer"
-msgstr "MEV Optimizer"
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
