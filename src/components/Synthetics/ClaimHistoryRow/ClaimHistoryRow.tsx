@@ -221,18 +221,13 @@ function ClaimFundingFeesHistoryRow(p: ClaimFundingFeesHistoryRowProps) {
           <Tooltip
             handle={positionName}
             renderContent={() => (
-              <StatsTooltipRow
-                label={t`Market`}
-                value={
-                  <div className="items-center">
-                    <span>{isLong ? t`Long` : t`Short`}</span>&nbsp;<span>{indexName && indexName}</span>
-                    <span className="subtext lh-1">{poolName && `[${poolName}]`}</span>
-                  </div>
-                }
-                showDollar={false}
-              />
+              <div className="items-center">
+                <span>{isLong ? t`Long` : t`Short`}</span>&nbsp;<span>{indexName && indexName}</span>
+                <span className="subtext lh-1">{poolName && `[${poolName}]`}</span>
+              </div>
             )}
-          />
+          />{" "}
+          <Trans>Position</Trans>
         </ExternalLink>
       );
     }
