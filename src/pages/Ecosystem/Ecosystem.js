@@ -461,6 +461,13 @@ export default function Ecosystem() {
       about: t`DEX Aggregator`,
       chainIds: [ARBITRUM, AVALANCHE],
     },
+    {
+      title: "0x",
+      link: "https://explorer.0xprotocol.org/liquiditySources",
+      linkLabel: "0xprotocol.org",
+      about: t`DEX Aggregator`,
+      chainIds: [ARBITRUM, AVALANCHE],
+    },
   ];
 
   const telegramGroups = [
