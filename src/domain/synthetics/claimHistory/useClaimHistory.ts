@@ -30,7 +30,6 @@ type RawClaimAction = {
     timestamp: number;
     hash: string;
   };
-  transactionIds?: string[];
 };
 
 export function useClaimCollateralHistory(
@@ -64,7 +63,6 @@ export function useClaimCollateralHistory(
             marketAddresses
             tokenAddresses
             amounts
-            transactionIds
             isLongOrders
             transaction {
                 timestamp
