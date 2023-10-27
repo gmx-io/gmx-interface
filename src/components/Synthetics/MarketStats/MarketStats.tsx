@@ -19,6 +19,7 @@ import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import "./MarketStats.scss";
 import BridgingInfo from "../BridgingInfo/BridgingInfo";
 import { getBridgingOptionsForToken } from "config/bridging";
+import { BigNumber } from "ethers";
 
 type Props = {
   marketInfo?: MarketInfo;
@@ -108,11 +109,12 @@ export function MarketStats(p: Props) {
 
         <CardRow
           label={t`Wallet`}
-          value={
-            marketBalance && marketBalanceUsd
-              ? formatTokenAmountWithUsd(marketBalance, marketBalanceUsd, "GM", marketToken.decimals)
-              : "0.000 GM ($0.00)"
-          }
+          value={formatTokenAmountWithUsd(
+            marketBalance || BigNumber.from(0),
+            marketBalanceUsd || BigNumber.from(0),
+            "GM",
+            marketToken?.decimals || 18
+          )}
         />
 
         <CardRow label={t`APR`} value={apr ? `${formatAmount(apr, 2, 2)}%` : "..."} />
