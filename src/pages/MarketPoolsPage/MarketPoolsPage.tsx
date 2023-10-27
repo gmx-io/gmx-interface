@@ -71,8 +71,15 @@ export function MarketPoolsPage(p: Props) {
             </Trans>
           }
         />
+
         <div className="MarketPoolsPage-content">
-          <MarketStats marketsTokensAPRData={marketsTokensAPRData} marketInfo={marketInfo} marketToken={marketToken} />
+          <MarketStats
+            marketsTokensAPRData={marketsTokensAPRData}
+            marketTokensData={depositMarketTokensData}
+            marketsInfoData={marketsInfoData}
+            marketInfo={marketInfo}
+            marketToken={marketToken}
+          />
 
           <div className="MarketPoolsPage-swap-box" ref={gmSwapBoxRef}>
             <GmSwapBox

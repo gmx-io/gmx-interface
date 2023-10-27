@@ -581,3 +581,7 @@ a:hover .text-red {
     width: 100vw;
   }
 }
+
+.gap-right-xs > *:not(:last-child) {
+  margin-right: 0.5rem;
+}

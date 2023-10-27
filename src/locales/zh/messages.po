@@ -29,25 +29,17 @@ msgstr "06 Jan 2022"
 msgid "24h Volume"
 msgstr "24小时数量"
 
-#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
-#~ msgid "<0><1>{eventTitle}</1> from <2>{0} {1} Position</2></0>"
-#~ msgstr ""
-
-#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
-msgid "<0><1>{eventTitle}</1> from <2>{0} {indexName} <3>[{poolName}]</3> Position</2></0>"
-msgstr ""
-
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-msgid "<0><1>{indexName}</1><2>[{poolName}]</2></0> <3>selected in order form</3>"
-msgstr ""
-
-#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
-msgid "<0>Claimable Funding Fee.</0>"
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "<0>Buying GM: <1>{indexName}</1><2>[{poolName}]</2></0> <3>with {tokensText}</3>"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "<0>GM Pools total value ({chainName}).</0>"
+msgstr ""
+
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+msgid "<0>GM: <1>{indexName}</1><2>[{poolName}]</2></0> <3>selected in order form</3>"
 msgstr ""
 
 #: src/components/Exchange/OrdersToa.js
@@ -61,6 +53,10 @@ msgstr "<0>更多资讯</0> 关于手续费用"
 #: src/pages/PageNotFound/PageNotFound.js
 msgid "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
 msgstr "<0>返回 </0><1>主页</1> <2>or </2> <3>交易</3>"
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "<0>Selling GM: <1>{indexName}</1><2>[{poolName}]</2></0>"
+msgstr ""
 
 #: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
 msgid "<0>Switch to:</0>"
@@ -109,10 +105,6 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} available liquidity. Reduce the \"Pay\" size, or change the \"Collateral In\" token.</1>"
-msgstr ""
-
-#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
-msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1>"
 msgstr ""
 
 #: src/components/Synthetics/TVChart/TVChart.tsx
@@ -208,21 +200,9 @@ msgstr ""
 msgid "Account"
 msgstr "帐户"
 
-#: src/components/Synthetics/Claims/SettleAccruedCard.tsx
-msgid "Accrued"
-msgstr ""
-
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Borrow Fee"
-msgstr ""
-
-#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
-#~ msgid "Accrued Funding Fee"
-#~ msgstr ""
-
-#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
-msgid "Accrued Funding Fee."
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -232,10 +212,6 @@ msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Positive Funding Fee"
-msgstr ""
-
-#: src/components/Synthetics/Claims/SettleAccruedCard.tsx
-msgid "Accrued Positive Funding Fees for Positions not yet claimable. They will become available to claim by using the \"Settle\" button, or after the Position is increased, decreased or closed."
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -319,6 +295,10 @@ msgstr ""
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Allowed Slippage"
 msgstr "允许的滑点"
+
+#: src/App/App.js
+msgid "Allowed Slippage below {0}% may result in failed orders."
+msgstr ""
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
@@ -459,6 +439,10 @@ msgstr "可在您的首选网络上使用"
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
 msgstr "Avalanche年利率"
+
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "BUYABLE"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -653,8 +637,9 @@ msgstr ""
 msgid "Buy {swapTokenSymbol} on 1inch"
 msgstr "在1inch {swapTokenSymbol}上购买 "
 
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Buying GM ({indexName}) with {tokensText}"
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "Buyable"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
@@ -727,7 +712,7 @@ msgstr ""
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
-#: src/components/Synthetics/Claims/ClaimableCard.tsx
+#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -795,28 +780,19 @@ msgstr "送出领取！<0>查看状态</0>"
 msgid "Claim submitted."
 msgstr "送出领取"
 
-#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
-msgid "Claim {0}"
-msgstr ""
-
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claim {wrappedTokenSymbol} Rewards"
 msgstr "领取{wrappedTokenSymbol}奖励"
 
-#: src/components/Synthetics/Claims/ClaimableCard.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claimable"
 msgstr "可领取"
 
 #: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
-#~ msgid "Claimable Funding"
-#~ msgstr ""
-
-#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
-#~ msgid "Claimable Funding Fee."
-#~ msgstr ""
+msgid "Claimable Funding"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Claimable Rebates"
@@ -837,11 +813,6 @@ msgstr "领取中"
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims"
-msgstr ""
-
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
-msgid "Claims (1)"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
@@ -960,10 +931,6 @@ msgid "Community Projects"
 msgstr "社区项目"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Community curated tweet collection"
-msgstr "社区策划的推文集合"
-
-#: src/pages/Ecosystem/Ecosystem.js
 msgid "Community-led Telegram groups."
 msgstr "社区主导的Telegram群组"
 
@@ -1017,10 +984,6 @@ msgstr ""
 msgid "Confirm Long"
 msgstr "确认做多"
 
-#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
-msgid "Confirm Settle"
-msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Confirm Short"
@@ -1030,11 +993,6 @@ msgstr "确认做空"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Confirm Swap"
 msgstr "确认交换"
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "Confirm Trigger Order"
-#~ msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -1072,10 +1030,6 @@ msgstr "连接钱包"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
-msgstr ""
-
-#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
-msgid "Consider selecting only Positions where the accrued Funding Fees exceed the gas spent to Settle, which is around {0} per each selected Position."
 msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
@@ -1155,14 +1109,6 @@ msgstr "创建指令"
 msgid "Create Referral Code"
 msgstr "创建推荐代码"
 
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#~ msgid "Create Trigger order"
-#~ msgstr ""
-
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#~ msgid "Create trigger order"
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -1230,6 +1176,8 @@ msgstr ""
 msgid "Currently, There is a high Swap Price Impact for the Order Swap path."
 msgstr ""
 
+#: src/pages/Ecosystem/Ecosystem.js
+#: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
@@ -1461,7 +1409,7 @@ msgstr ""
 msgid "Edit"
 msgstr "編輯"
 
-#: src/components/Exchange/PositionDropdown.tsx
+#: src/components/Exchange/PositionDropdown.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Edit Collateral"
@@ -1692,14 +1640,6 @@ msgstr "执行"
 msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgstr "执行指令: 交换 {fromAmountDisplay} {0} 为 {toAmountDisplay} {1}"
 
-#: src/components/Synthetics/TradeHistoryRow/utils.ts
-#~ msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText},"
-#~ msgstr ""
-
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#~ msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price:{1}, Market: {2}"
-#~ msgstr ""
-
 #: src/components/Exchange/TradeHistory.js
 msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr ""
@@ -1712,10 +1652,6 @@ msgstr ""
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Execute {orderTypeName} Order: {positionText} {sizeDeltaText},"
 msgstr ""
-
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#~ msgid "Execution Failed: Swap {fromText} for {toText}, Price: {ratioText}"
-#~ msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "Execution Fee"
@@ -1735,21 +1671,16 @@ msgstr ""
 msgid "Exit Price"
 msgstr "退出价格"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Explore, analyze, and copy on-chain traders"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "FEES"
 msgstr "费用"
 
-#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
-#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
-msgid "FUNDING FEE"
-msgstr ""
-
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "FUNDING RATE / 1h"
-msgstr ""
-
-#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
-msgid "Failed Settlement of Funding Fees"
 msgstr ""
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
@@ -1889,19 +1820,15 @@ msgid "Funding Fee Rate"
 msgstr ""
 
 #: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
-#~ msgid "Funding Fees"
-#~ msgstr ""
+msgid "Funding Fees"
+msgstr ""
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "Funding Rate / 1h"
 msgstr ""
 
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
-#~ msgid "Funding fee"
-#~ msgstr ""
-
-#: src/components/Synthetics/Claims/ClaimableCardUI.tsx
-msgid "Funding fees"
+msgid "Funding fee"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -1952,6 +1879,10 @@ msgstr ""
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "GM Token pricing includes positions' Pending PnL, Impact Pool Amount and Borrow Fees."
+msgstr ""
+
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "GM can be sold for {0} and {1} for this market up to the specified selling caps. The remaining tokens in the pool are reserved for currently open Positions."
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
@@ -2136,11 +2067,11 @@ msgstr "网络错误"
 msgid "Increase"
 msgstr "增加"
 
-#: src/components/Exchange/PositionDropdown.tsx
+#: src/components/Exchange/PositionDropdown.js
 msgid "Increase Size (Limit)"
 msgstr ""
 
-#: src/components/Exchange/PositionDropdown.tsx
+#: src/components/Exchange/PositionDropdown.js
 msgid "Increase Size (Market)"
 msgstr ""
 
@@ -2535,7 +2466,7 @@ msgstr "未加载流动资金数据"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/Claims/Claims.tsx
+#: src/components/Synthetics/ClaimHistory/ClaimHistory.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -2570,9 +2501,6 @@ msgstr "加载中..."
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
-#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
-#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -2584,8 +2512,6 @@ msgstr "加载中..."
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
-#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
@@ -2650,7 +2576,6 @@ msgstr "看来你没有推荐代码可以分享。<0/> 创建一个，开始赚�
 msgid "Loss"
 msgstr "亏损"
 
-#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "MARKET"
 msgstr ""
@@ -2660,14 +2585,6 @@ msgstr ""
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
 msgstr "最大值"
-
-#: src/pages/Ecosystem/Ecosystem.js
-msgid "MEV Optimizer"
-msgstr "MEV优化器"
-
-#: src/components/Synthetics/GmList/GmList.tsx
-msgid "MINTABLE"
-msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2707,8 +2624,7 @@ msgstr "标价"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
@@ -2841,6 +2757,8 @@ msgstr "最大滑点精准度为0.01%"
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "Max {0}"
 msgstr ""
 
@@ -2967,11 +2885,6 @@ msgstr "最低接收"
 msgid "Minimum received"
 msgstr "最低已接收"
 
-#: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/MarketStats/MarketStats.tsx
-msgid "Mintable"
-msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Dashboard/DashboardV2.js
@@ -3035,7 +2948,7 @@ msgid "Networks and Settings"
 msgstr "网络和设定"
 
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/Claims/Claims.tsx
+#: src/components/Synthetics/ClaimHistory/ClaimHistory.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Next"
 msgstr "下一步"
@@ -3044,7 +2957,7 @@ msgstr "下一步"
 msgid "No PnLs found"
 msgstr "未发现PnLs"
 
-#: src/components/Synthetics/Claims/Claims.tsx
+#: src/components/Synthetics/ClaimHistory/ClaimHistory.tsx
 msgid "No claims yet"
 msgstr ""
 
@@ -3262,11 +3175,6 @@ msgstr "订单 ({0})"
 msgid "Orders cancelled."
 msgstr "订单取消"
 
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
-#~ msgid "Orders{0}"
-#~ msgstr ""
-
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Orders <0>({0})</0>"
 msgstr ""
@@ -3285,10 +3193,6 @@ msgstr "池子"
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "POOLS VALUE"
-msgstr ""
-
-#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
-msgid "POSITION"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -3396,6 +3300,7 @@ msgstr "扣除费用后的PnL"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
@@ -3415,7 +3320,6 @@ msgid "Pools Value"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "Position"
 msgstr "仓位"
@@ -3447,16 +3351,12 @@ msgstr "仓位({0})"
 msgid "Positions{0}"
 msgstr ""
 
-#: src/components/Synthetics/Claims/ClaimableCard.tsx
-msgid "Positive Funding Fees for a Position become claimable after the Position is increased, decreased or closed; or settled its fees with the option under \"Accrued\"."
+#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
+msgid "Positive Funding Fees for a position become claimable after the position is increased, decreased or closed."
 msgstr ""
 
-#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
-#~ msgid "Positive Funding Fees for a position become claimable after the position is increased, decreased or closed."
-#~ msgstr ""
-
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/Claims/Claims.tsx
+#: src/components/Synthetics/ClaimHistory/ClaimHistory.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Prev"
 msgstr "上一页"
@@ -3756,10 +3656,6 @@ msgstr "推荐人"
 msgid "Request"
 msgstr ""
 
-#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
-msgid "Request Settlement of Funding Fees"
-msgstr ""
-
 #: src/components/Exchange/TradeHistory.js
 msgid "Request decrease {0} {longOrShortText}, -{1} USD, Acceptable Price: {2} {3} USD"
 msgstr "要求减少 {0} {longOrShortText}, -{1} USD, 可接受的价格: {2} {3} USD"
@@ -3862,13 +3758,9 @@ msgstr "搜索代币"
 msgid "Select Language"
 msgstr "选择语言"
 
-#: src/components/Exchange/PositionDropdown.tsx
+#: src/components/Exchange/PositionDropdown.js
 msgid "Select Market"
 msgstr "选择市场"
-
-#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
-msgid "Select Positions"
-msgstr ""
 
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
 msgid "Select a Market"
@@ -3959,8 +3851,8 @@ msgstr ""
 msgid "Sell submitted!"
 msgstr "出售提交"
 
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Selling GM ({indexName})"
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "Sellable"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
@@ -3991,11 +3883,7 @@ msgstr ""
 msgid "Sending order request"
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
-msgid "Sending settle request"
-msgstr ""
-
-#: src/components/Exchange/PositionDropdown.tsx
+#: src/components/Exchange/PositionDropdown.js
 msgid "Set TP/SL"
 msgstr ""
 
@@ -4006,40 +3894,11 @@ msgstr ""
 msgid "Settings"
 msgstr "设置"
 
-#: src/components/Synthetics/Claims/SettleAccruedCard.tsx
-#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
-msgid "Settle"
-msgstr ""
-
-#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
-msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
-msgstr ""
-
-#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
-#~ msgid "Settle request sent"
-#~ msgstr ""
-
-#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
-msgid "Settled Funding Fees"
-msgstr ""
-
-#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
-#~ msgid "Settling Fees for {0, plural, one {# position} other {# positions}}"
-#~ msgstr ""
-
-#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
-msgid "Settling Positions' Fees"
-msgstr ""
-
-#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
-msgid "Settling..."
-msgstr ""
-
 #: src/components/Exchange/PositionsList.js
 msgid "Share"
 msgstr "分享"
 
-#: src/components/Exchange/PositionDropdown.tsx
+#: src/components/Exchange/PositionDropdown.js
 #: src/components/Exchange/PositionShare.tsx
 msgid "Share Position"
 msgstr "分享仓位"
@@ -4065,9 +3924,6 @@ msgstr "分享仓位"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
-#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
-#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -4079,8 +3935,6 @@ msgstr "分享仓位"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
-#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
@@ -4536,14 +4390,6 @@ msgid "The Max Execution Fee is set to a higher value to handle potential increa
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
-#~ msgid "The Order may not execute at the desired Trigger Price as the current Price Impact is higher than its Acceptable Price Impact. Consider canceling and creating a new {suggestionType} Order."
-#~ msgstr ""
-
-#: src/domain/synthetics/orders/utils.ts
-#~ msgid "The Order may not execute at the desired {priceText} as the current Price Impact is higher than its Acceptable Price Impact. Consider canceling and creating a new {suggestionType} Order."
-#~ msgstr ""
-
-#: src/domain/synthetics/orders/utils.ts
 msgid "The Order may not execute at the desired {priceText} as the current Price Impact {0} is higher than its Acceptable Price Impact {1}. Consider canceling and creating a new {suggestionType} Order."
 msgstr ""
 
@@ -4627,10 +4473,6 @@ msgstr "多头比空头多，做空的借贷费用目前为零"
 msgid "There are more shorts than longs, borrow fees for longing is currently zero"
 msgstr "空头多于多头，做多的借贷费用目前为零"
 
-#: src/domain/synthetics/orders/utils.ts
-#~ msgid "There is a high Swap Price Impact for the Order Swap path."
-#~ msgstr ""
-
 #: src/domain/tokens/approveTokens.tsx
 #: src/lib/contracts/transactionErrors.tsx
 msgid "There is not enough ETH in your account on Arbitrum to send this transaction.<0/><1/><2>Bridge ETH to Arbitrum</2>"
@@ -4675,6 +4517,10 @@ msgstr "这个代码在{0}上已被别人取用，你将不会获得从{1}上使
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 msgstr "此代码尚未在{0}上注册，你将不会收到回扣<0/><1/>切换你的网络，在{1}上创建此代码"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "This market uses an Adaptive Funding Rate. The Funding Rate will adjust over time depending on the ratio of longs and shorts.<0/><1/><2>Read more</2>."
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
@@ -4738,8 +4584,8 @@ msgid "Total Assets Staked"
 msgstr "质押的资产总额"
 
 #: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
-#~ msgid "Total Claimable"
-#~ msgstr ""
+msgid "Total Claimable"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Total Fees"
@@ -4935,10 +4781,6 @@ msgstr "转移中"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Trigger"
 msgstr "触发"
-
-#: src/components/Exchange/PositionDropdown.js
-#~ msgid "Trigger Close"
-#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -5502,10 +5344,6 @@ msgstr ""
 msgid "You have an existing position in the {0} market pool. <0>Switch to {1} market pool.</0>"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
-#~ msgid "You have an existing position with {0} as Collateral."
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 msgid "You have an existing position with {0} as collateral."
 msgstr ""
@@ -5616,18 +5454,6 @@ msgstr ""
 msgid "fee"
 msgstr "费用"
 
-#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
-msgid "from"
-msgstr ""
-
-#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
-#~ msgid "from {positionName}"
-#~ msgstr ""
-
-#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
-#~ msgid "from {positionName} Position"
-#~ msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "hide"
@@ -5667,10 +5493,6 @@ msgstr "流动性时间将至"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "view"
 msgstr "查看"
-
-#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
-msgid "{0, plural, one {# Position} other {# Positions}}"
-msgstr ""
 
 #: src/pages/Exchange/Exchange.js
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -5734,15 +5556,15 @@ msgid "{0} Required"
 msgstr "{0} 需要的"
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
-msgid "{0} and {1} can be used to mint GM for this market up to the specified minting caps."
+msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
-msgid "{0} and {1} can be used to mint GM tokens for this market up to the specified minting caps."
+msgid "{0} and {1} can be used to buy GM tokens for this market up to the specified buying caps."
 msgstr ""
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
-msgid "{0} can be used to mint GM for this market up to the specified minting caps."
+msgid "{0} can be used to buy GM for this market up to the specified buying caps."
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5785,18 +5607,6 @@ msgstr "{0}代币已经从存入的{1}esGMX中转换为GMX，以便归属。"
 msgid "{0} will be swapped to {1} on order execution."
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
-#~ msgid "{0} {1} Failed to settle"
-#~ msgstr ""
-
-#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
-#~ msgid "{0} {1} Fees settled"
-#~ msgstr ""
-
-#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
-#~ msgid "{0} {1} Request sent"
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 msgid "{0} {1} not supported"
 msgstr ""
@@ -5828,33 +5638,9 @@ msgstr ""
 msgid "{actionText} Deposit {collateralText} into {positionText}"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#~ msgid "{actionText} Deposit {collateralText} into {positionText}, Market: {0}"
-#~ msgstr ""
-
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#~ msgid "{actionText} Order: Swap {fromText} for {toText}, Price: {ratioText}"
-#~ msgstr ""
-
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#~ msgid "{actionText} Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price: {pricePrefix} {1}, Market: {2}"
-#~ msgstr ""
-
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#~ msgid "{actionText} Swap {fromText} for {toText}"
-#~ msgstr ""
-
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "{actionText} Withdraw {collateralText} from {positionText}"
 msgstr ""
-
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#~ msgid "{actionText} Withdraw {collateralText} from {positionText}, Market: {0}"
-#~ msgstr ""
-
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#~ msgid "{actionText} {increaseText} {positionText} {sizeDeltaText}, {pricePrefix}: {0}, Market: {1}"
-#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "{actionText} {orderTypeName} Swap: {fromText} for {toText}"
@@ -5870,10 +5656,6 @@ msgstr "{chainName}总统计数据从{totalStatsStartDate}开始。<0/>详细统
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{count, plural, one {Order} other {# Orders}}"
-msgstr ""
-
-#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
-msgid "{eventTitle} from"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -5945,22 +5727,6 @@ msgstr ""
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} canceled"
 msgstr ""
-
-#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
-msgid "{positionName} Failed to settle"
-msgstr ""
-
-#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
-msgid "{positionName} Fees settled"
-msgstr ""
-
-#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
-msgid "{positionName} Fees settling"
-msgstr ""
-
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#~ msgid "{positionText} {sizeDeltaText}, Price: {0}, Market: {1}"
-#~ msgstr ""
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"

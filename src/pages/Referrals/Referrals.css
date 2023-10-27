@@ -251,6 +251,7 @@
 .referral-table td {
   padding: 0.625em;
   text-align: left;
+  white-space: nowrap;
 }
 
 .table-referral-code p {

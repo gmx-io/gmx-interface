@@ -279,7 +279,7 @@ export function PositionEditor(p: Props) {
     }
 
     if (needCollateralApproval) {
-      return t`Pending ${collateralToken?.symbol} approval`;
+      return t`Pending ${collateralToken?.assetSymbol ?? collateralToken?.symbol} approval`;
     }
 
     if (isSubmitting) {
@@ -589,7 +589,7 @@ export function PositionEditor(p: Props) {
 
                 <ApproveTokenButton
                   tokenAddress={collateralToken.address}
-                  tokenSymbol={collateralToken.symbol}
+                  tokenSymbol={collateralToken.assetSymbol ?? collateralToken.symbol}
                   spenderAddress={routerAddress}
                 />
               </>

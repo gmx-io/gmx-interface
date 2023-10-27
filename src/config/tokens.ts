@@ -32,6 +32,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "Bitcoin (WBTC)",
       symbol: "BTC",
+      assetSymbol: "WBTC",
       decimals: 8,
       address: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       isShortable: true,
@@ -252,6 +253,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "Ethereum (WETH.e)",
       symbol: "ETH",
+      assetSymbol: "WETH.e",
       address: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
       decimals: 18,
       isShortable: true,
@@ -263,6 +265,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "Bitcoin (BTC.b)",
       symbol: "BTC",
+      assetSymbol: "BTC.b",
       address: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
       decimals: 8,
       isShortable: true,
@@ -274,6 +277,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "Bitcoin (WBTC.e)",
       symbol: "WBTC",
+      assetSymbol: "WBTC.e",
       address: "0x50b7545627a5162F82A992c33b87aDc75187B218",
       decimals: 8,
       isShortable: true,
@@ -647,6 +651,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "Ethereum (WETH.e)",
       symbol: "ETH",
+      assetSymbol: "WETH.e",
       address: "0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
       decimals: 18,
       isShortable: true,
