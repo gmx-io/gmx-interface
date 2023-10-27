@@ -1,7 +1,7 @@
 import { useLocalStorage } from "react-use";
 import toast from "react-hot-toast";
 import { homeEventsData, appEventsData } from "config/events";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo } from "react";
 import EventToast from "./EventToast";
 import { isFuture, parse } from "date-fns";
 import { isHomeSite } from "lib/legacy";
@@ -13,7 +13,6 @@ function useEventToast() {
   const [visited, setVisited] = useLocalStorage("visited-announcements", []);
   const { chainId } = useChainId();
   const { marketsInfoData } = useMarketsInfo(chainId);
-  const toastShownRef = useRef({});
 
   const isAdaptiveFundingActive = useMemo(() => {
     if (!marketsInfoData) return;
@@ -32,8 +31,7 @@ function useEventToast() {
         const hasNotVisited = Array.isArray(visited) && !visited.includes(event.id);
         const isNetworkValid = !event.networks || event.chains.includes(chainId);
         const isValidated = !(event.id in validationParams) || validationParams[event.id];
-        const hasNotShownToast = !toastShownRef.current[event.id];
-        return isValid && hasNotVisited && isNetworkValid && isValidated && hasNotShownToast;
+        return isValid && hasNotVisited && isNetworkValid && isValidated;
       })
       .forEach((event) => {
         toast.custom(
@@ -46,7 +44,6 @@ function useEventToast() {
                 toast.dismiss(event.id);
                 visited.push(event.id);
                 setVisited(visited);
-                toastShownRef.current[event.id] = true;
               }}
             />
           ),
