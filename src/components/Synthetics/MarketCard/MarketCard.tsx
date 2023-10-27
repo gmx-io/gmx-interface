@@ -63,6 +63,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
 
   const renderFundingFeeTooltipContent = useCallback(() => {
     if (!fundingRateLong || !fundingRateShort) return [];
+    const isMarketWithAdaptiveFundingRate = marketInfo?.fundingIncreaseFactorPerSecond.gt(0);
 
     const isLongPositive = fundingRateLong?.gt(0);
     const long = (
@@ -96,9 +97,22 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
         <br />
         <br />
         {oppositeFeeElement}
+        {isMarketWithAdaptiveFundingRate && (
+          <>
+            <br />
+            <br />
+            <Trans>
+              This market uses an Adaptive Funding Rate. The Funding Rate will adjust over time depending on the ratio
+              of longs and shorts.
+              <br />
+              <br />
+              <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#adaptive-funding">Read more</ExternalLink>.
+            </Trans>
+          </>
+        )}
       </div>
     );
-  }, [fundingRateLong, fundingRateShort, isLong]);
+  }, [fundingRateLong, fundingRateShort, isLong, marketInfo]);
 
   return (
     <div className="Exchange-swap-market-box App-box App-box-border">

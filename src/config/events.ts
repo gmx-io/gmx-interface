@@ -53,6 +53,20 @@ export const appEventsData: EventData[] = [
       },
     ],
   },
+  {
+    id: "v2-adaptive-funding",
+    title: "Adaptive Funding is live",
+    isActive: true,
+    validTill: "30 Oct 2023, 12:00",
+    bodyText: "Adaptive Funding has been enabled for the AVAX/USD market on Avalanche.",
+    buttons: [
+      {
+        text: "Read More.",
+        link: "https://docs.gmx.io/docs/trading/v2/#adaptive-funding",
+        newTab: true,
+      },
+    ],
+  },
   // {
   //   id: "usdc-to-usdce",
   //   title: "USDC renamed to USDC.e",
