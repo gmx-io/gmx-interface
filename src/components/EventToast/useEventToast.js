@@ -34,7 +34,7 @@ function useEventToast() {
       .filter((event) => {
         const isValid = event.isActive && isFuture(parse(event.validTill + ", +00", "d MMM yyyy, H:mm, x", new Date()));
         const hasNotVisited = Array.isArray(visited) && !visited.includes(event.id);
-        const isNetworkValid = !event.networks || event.networks.includes(chainId);
+        const isNetworkValid = !event.networks || event.chains.includes(chainId);
         const isValidated = !event.validateCondition || validationParams[event.id];
         const hasNotShownToast = !toastShownRef.current[event.id];
         return isValid && hasNotVisited && isNetworkValid && isValidated && hasNotShownToast;
