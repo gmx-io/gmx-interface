@@ -120,7 +120,7 @@ export function PositionItem(p: Props) {
   function renderCollateral() {
     return (
       <>
-        <div className="position-list-collateral">
+        <div>
           <Tooltip
             handle={`${formatUsd(p.position.remainingCollateralUsd)}`}
             position={p.isLarge ? "left-bottom" : "center-bottom"}
@@ -223,7 +223,7 @@ export function PositionItem(p: Props) {
           )}
         </div>
 
-        <div className="Exchange-list-info-label Position-collateral-amount  muted">
+        <div className="Exchange-list-info-label Position-collateral-amount muted">
           {`(${formatTokenAmount(
             p.position.remainingCollateralAmount,
             p.position.collateralToken?.decimals,
@@ -646,7 +646,7 @@ export function PositionItem(p: Props) {
               <div className="label">
                 <Trans>Collateral</Trans>
               </div>
-              <div className="position-list-collateral">{renderCollateral()}</div>
+              <div className="position-list-collateral items-center">{renderCollateral()}</div>
             </div>
           </div>
           <div className="App-card-divider" />
