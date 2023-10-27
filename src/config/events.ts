@@ -9,7 +9,6 @@ export type EventData = {
   validTill: string;
   bodyText: string | string[];
   chains?: number[];
-  validateCondition?: boolean;
   buttons?: {
     text: string;
     link: string;
@@ -61,7 +60,6 @@ export const appEventsData: EventData[] = [
     id: "v2-adaptive-funding",
     title: "Adaptive Funding is live",
     isActive: true,
-    validateCondition: true,
     validTill: "7 Nov 2023, 12:00",
     bodyText: "Adaptive Funding has been enabled for the AVAX/USD market on Avalanche.",
     chains: [AVALANCHE, ARBITRUM_GOERLI, AVALANCHE_FUJI, ARBITRUM],

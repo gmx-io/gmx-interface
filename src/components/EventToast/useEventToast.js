@@ -20,14 +20,10 @@ function useEventToast() {
     return Object.values(marketsInfoData).some((market) => market.fundingIncreaseFactorPerSecond.gt(0));
   }, [marketsInfoData]);
 
-  const validationParams = useMemo(
-    () => ({
-      "v2-adaptive-funding": isAdaptiveFundingActive,
-    }),
-    [isAdaptiveFundingActive]
-  );
-
   useEffect(() => {
+    const validationParams = {
+      "v2-adaptive-funding": isAdaptiveFundingActive,
+    };
     const eventsData = isHome ? homeEventsData : appEventsData;
 
     eventsData
@@ -35,7 +31,7 @@ function useEventToast() {
         const isValid = event.isActive && isFuture(parse(event.validTill + ", +00", "d MMM yyyy, H:mm, x", new Date()));
         const hasNotVisited = Array.isArray(visited) && !visited.includes(event.id);
         const isNetworkValid = !event.networks || event.chains.includes(chainId);
-        const isValidated = !event.validateCondition || validationParams[event.id];
+        const isValidated = !(event.id in validationParams) || validationParams[event.id];
         const hasNotShownToast = !toastShownRef.current[event.id];
         return isValid && hasNotVisited && isNetworkValid && isValidated && hasNotShownToast;
       })
@@ -60,7 +56,7 @@ function useEventToast() {
           }
         );
       });
-  }, [visited, setVisited, isHome, chainId, validationParams]);
+  }, [visited, setVisited, isHome, chainId, isAdaptiveFundingActive]);
 }
 
 export default useEventToast;
