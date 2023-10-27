@@ -120,7 +120,7 @@ export function PositionItem(p: Props) {
   function renderCollateral() {
     return (
       <>
-        <div>
+        <div className="position-list-collateral">
           <Tooltip
             handle={`${formatUsd(p.position.remainingCollateralUsd)}`}
             position={p.isLarge ? "left-bottom" : "center-bottom"}
