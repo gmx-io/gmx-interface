@@ -169,17 +169,17 @@ export function GmList({
                 function renderMarketIcon() {
                   if (!indexToken || !longToken || !shortToken) return;
                   if (market.isSpotOnly) {
+                    const iconName =
+                      longToken.symbol.toLocaleLowerCase().split(".")[0] +
+                      shortToken.symbol.toLocaleLowerCase().split(".")[0];
+
                     return (
                       <div className="collaterals-logo">
                         <img
-                          src={importImage("ic_" + longToken.symbol.toLocaleLowerCase() + "_40.svg")}
-                          alt={longToken.symbol}
+                          src={importImage(iconName + ".svg")}
+                          alt={iconName}
                           className="collateral-logo collateral-logo-first"
-                        />
-                        <img
-                          src={importImage("ic_" + shortToken.symbol.toLocaleLowerCase() + "_40.svg")}
-                          alt={shortToken.symbol}
-                          className="collateral-logo collateral-logo-second"
+                          width="40"
                         />
                       </div>
                     );
