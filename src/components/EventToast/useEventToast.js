@@ -5,10 +5,12 @@ import { useEffect } from "react";
 import EventToast from "./EventToast";
 import { isFuture, parse } from "date-fns";
 import { isHomeSite } from "lib/legacy";
+import { useChainId } from "lib/chains";
 
 function useEventToast() {
   const isHome = isHomeSite();
   const [visited, setVisited] = useLocalStorage("visited-announcements", []);
+  const { chainId } = useChainId();
 
   useEffect(() => {
     const eventsData = isHome ? homeEventsData : appEventsData;
@@ -17,6 +19,7 @@ function useEventToast() {
       .filter((event) => event.isActive)
       .filter((event) => isFuture(parse(event.validTill + ", +00", "d MMM yyyy, H:mm, x", new Date())))
       .filter((event) => Array.isArray(visited) && !visited.includes(event.id))
+      .filter((event) => !event.networks || event.networks.includes(chainId))
       .forEach((event) => {
         toast.custom(
           (t) => (
@@ -37,7 +40,7 @@ function useEventToast() {
           }
         );
       });
-  }, [visited, setVisited, isHome]);
+  }, [visited, setVisited, isHome, chainId]);
 }
 
 export default useEventToast;

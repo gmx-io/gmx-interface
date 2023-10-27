@@ -1,11 +1,14 @@
 // date format: d MMM yyyy, H:mm, time should be specifed based on UTC time
 
+import { AVALANCHE } from "./chains";
+
 export type EventData = {
   id: string;
   title: string;
   isActive?: boolean;
   validTill: string;
   bodyText: string | string[];
+  networks?: number[];
   buttons?: {
     text: string;
     link: string;
@@ -59,6 +62,7 @@ export const appEventsData: EventData[] = [
     isActive: true,
     validTill: "30 Oct 2023, 12:00",
     bodyText: "Adaptive Funding has been enabled for the AVAX/USD market on Avalanche.",
+    networks: [AVALANCHE],
     buttons: [
       {
         text: "Read More.",
