@@ -26,13 +26,11 @@ function useEventToast() {
     const eventsData = isHome ? homeEventsData : appEventsData;
 
     eventsData
-      .filter((event) => {
-        const isValid = event.isActive && isFuture(parse(event.validTill + ", +00", "d MMM yyyy, H:mm, x", new Date()));
-        const hasNotVisited = Array.isArray(visited) && !visited.includes(event.id);
-        const isNetworkValid = !event.networks || event.chains.includes(chainId);
-        const isValidated = !(event.id in validationParams) || validationParams[event.id];
-        return isValid && hasNotVisited && isNetworkValid && isValidated;
-      })
+      .filter((event) => event.isActive)
+      .filter((event) => isFuture(parse(event.validTill + ", +00", "d MMM yyyy, H:mm, x", new Date())))
+      .filter((event) => Array.isArray(visited) && !visited.includes(event.id))
+      .filter((event) => !event.networks || event.chains.includes(chainId))
+      .filter((event) => !(event.id in validationParams) || validationParams[event.id])
       .forEach((event) => {
         toast.custom(
           (t) => (

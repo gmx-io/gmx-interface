@@ -1,6 +1,6 @@
 // date format: d MMM yyyy, H:mm, time should be specifed based on UTC time
 
-import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI } from "./chains";
+import { ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 
 export type EventData = {
   id: string;
@@ -62,7 +62,7 @@ export const appEventsData: EventData[] = [
     isActive: true,
     validTill: "7 Nov 2023, 12:00",
     bodyText: "Adaptive Funding has been enabled for the AVAX/USD market on Avalanche.",
-    chains: [AVALANCHE, ARBITRUM_GOERLI, AVALANCHE_FUJI, ARBITRUM],
+    chains: [AVALANCHE, ARBITRUM_GOERLI, AVALANCHE_FUJI],
     buttons: [
       {
         text: "Read More.",
@@ -71,19 +71,4 @@ export const appEventsData: EventData[] = [
       },
     ],
   },
-  // {
-  //   id: "usdc-to-usdce",
-  //   title: "USDC renamed to USDC.e",
-  //   isActive: true,
-  //   validTill: "9 Jun 2023, 12:00",
-  //   bodyText:
-  //     "Due to the coming native USDC to Arbitrum, the Ethereum-bridged version of USDC is being renamed to USDC.e.",
-  //   buttons: [
-  //     {
-  //       text: "Read More",
-  //       link: "https://medium.com/@gmx.io/gmx-deployment-updates-nov-2022-16572314874d",
-  //       newTab: true,
-  //     },
-  //   ],
-  // },
 ];
