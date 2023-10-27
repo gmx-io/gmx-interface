@@ -1,6 +1,6 @@
 // date format: d MMM yyyy, H:mm, time should be specifed based on UTC time
 
-import { AVALANCHE } from "./chains";
+import { ARBITRUM_GOERLI, AVALANCHE } from "./chains";
 
 export type EventData = {
   id: string;
@@ -9,6 +9,7 @@ export type EventData = {
   validTill: string;
   bodyText: string | string[];
   networks?: number[];
+  validateCondition?: boolean;
   buttons?: {
     text: string;
     link: string;
@@ -60,9 +61,10 @@ export const appEventsData: EventData[] = [
     id: "v2-adaptive-funding",
     title: "Adaptive Funding is live",
     isActive: true,
+    validateCondition: true,
     validTill: "30 Oct 2023, 12:00",
     bodyText: "Adaptive Funding has been enabled for the AVAX/USD market on Avalanche.",
-    networks: [AVALANCHE],
+    networks: [AVALANCHE, ARBITRUM_GOERLI],
     buttons: [
       {
         text: "Read More.",
