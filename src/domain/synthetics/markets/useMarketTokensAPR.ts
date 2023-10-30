@@ -111,10 +111,8 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
         const yearMultiplier = Math.floor(365 / daysConsidered);
 
         if (marketToken.totalSupply?.gt(0)) {
-          const apr = feeUsdPerPoolValueForPeriod
-            .mul(BASIS_POINTS_DIVISOR)
-            .mul(yearMultiplier)
-            .div(marketToken.prices.minPrice);
+          let e30 = BigNumber.from(10).pow(30);
+          const apr = feeUsdPerPoolValueForPeriod.mul(BASIS_POINTS_DIVISOR).mul(yearMultiplier).div(e30);
 
           acc[marketAddress] = apr;
         } else {
