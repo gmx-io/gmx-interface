@@ -10,6 +10,7 @@ import {
   fundingFactorKey,
   fundingIncreaseFactorPerSecondKey,
   isMarketDisabledKey,
+  fundingIncreaseFactorPerSecondKey,
   maxPnlFactorKey,
   maxPoolAmountForDepositKey,
   maxPoolAmountKey,
