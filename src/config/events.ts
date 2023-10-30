@@ -6,6 +6,7 @@ export type EventData = {
   isActive?: boolean;
   validTill: string;
   bodyText: string | string[];
+  chains?: number[];
   buttons?: {
     text: string;
     link: string;
@@ -57,29 +58,30 @@ export const appEventsData: EventData[] = [
     id: "v2-adaptive-funding",
     title: "Adaptive Funding is live",
     isActive: true,
-    validTill: "30 Oct 2023, 12:00",
-    bodyText: "Adaptive Funding has been enabled for the AVAX/USD market on Avalanche.",
+    validTill: "7 Nov 2023, 12:00",
+    bodyText:
+      "Adaptive Funding Rates are enabled for the ARB/USD market on Arbitrum and AVAX/USD market on Avalanche. This is a trial to improve the open interest balance and reduce price impact for markets.",
     buttons: [
       {
-        text: "Read More.",
+        text: "More Info.",
         link: "https://docs.gmx.io/docs/trading/v2/#adaptive-funding",
         newTab: true,
       },
     ],
   },
-  // {
-  //   id: "usdc-to-usdce",
-  //   title: "USDC renamed to USDC.e",
-  //   isActive: true,
-  //   validTill: "9 Jun 2023, 12:00",
-  //   bodyText:
-  //     "Due to the coming native USDC to Arbitrum, the Ethereum-bridged version of USDC is being renamed to USDC.e.",
-  //   buttons: [
-  //     {
-  //       text: "Read More",
-  //       link: "https://medium.com/@gmx.io/gmx-deployment-updates-nov-2022-16572314874d",
-  //       newTab: true,
-  //     },
-  //   ],
-  // },
+  {
+    id: "v2-adaptive-funding-coming-soon",
+    title: "Adaptive Funding",
+    isActive: true,
+    validTill: "7 Nov 2023, 12:00",
+    bodyText:
+      "Adaptive Funding Rates will be enabled for the ARB/USD market on Arbitrum and AVAX/USD market on Avalanche this week. This is a trial to improve the open interest balance and reduce price impact for markets.",
+    buttons: [
+      {
+        text: "More Info.",
+        link: "https://docs.gmx.io/docs/trading/v2/#adaptive-funding",
+        newTab: true,
+      },
+    ],
+  },
 ];
