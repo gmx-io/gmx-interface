@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 import { convertTokenAddress } from "config/tokens";
-import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import cx from "classnames";
 import {
   PendingDepositData,
@@ -15,7 +14,7 @@ import { TokenData, TokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import { useEffect, useMemo, useState } from "react";
-import { toast } from "react-toastify";
+import { useToastAutoClose } from "./useToastAutoClose";
 
 export type Props = {
   toastTimestamp: number;
@@ -245,22 +244,7 @@ export function GmStatusNotification({
     ]
   );
 
-  useEffect(
-    function autoClose() {
-      let timerId;
-
-      if (isCompleted) {
-        timerId = setTimeout(() => {
-          toast.dismiss(toastTimestamp);
-        }, TOAST_AUTO_CLOSE_TIME);
-      }
-
-      return () => {
-        clearTimeout(timerId);
-      };
-    },
-    [isCompleted, toastTimestamp]
-  );
+  useToastAutoClose(isCompleted, toastTimestamp);
 
   return (
     <div className="StatusNotification">

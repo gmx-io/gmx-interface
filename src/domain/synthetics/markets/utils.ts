@@ -8,6 +8,7 @@ import { getCappedPositionImpactUsd } from "../fees";
 import { convertToContractTokenPrices, convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens";
 import { TokenData, TokensData } from "../tokens/types";
 import { ContractMarketPrices, Market, MarketInfo } from "./types";
+import { PositionInfo } from "../positions";
 
 export function getMarketFullName(p: { longToken: Token; shortToken: Token; indexToken: Token; isSpotOnly: boolean }) {
   const { indexToken, longToken, shortToken, isSpotOnly } = p;
@@ -282,6 +283,14 @@ export function getTotalClaimableFundingUsd(markets: MarketInfo[]) {
     const usdShort = convertToUsd(amountShort, shortToken.decimals, shortToken.prices.minPrice);
 
     return acc.add(usdLong || 0).add(usdShort || 0);
+  }, BigNumber.from(0));
+}
+
+export function getTotalAccruedFundingUsd(positions: PositionInfo[]) {
+  return positions.reduce((acc, position) => {
+    if (position.pendingClaimableFundingFeesUsd) return acc.add(position.pendingClaimableFundingFeesUsd);
+
+    return acc;
   }, BigNumber.from(0));
 }
 

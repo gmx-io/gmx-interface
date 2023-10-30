@@ -82,6 +82,7 @@ export default function SyntheticsActions({
             onSelectPositionClick={() => null}
             onClosePositionClick={() => null}
             onEditCollateralClick={() => null}
+            onSettlePositionFeesClick={() => null}
             showPnlAfterFees={savedShowPnlAfterFees}
             savedShowPnlAfterFees={savedShowPnlAfterFees}
             openSettings={() => null}

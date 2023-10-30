@@ -168,7 +168,7 @@ export function formatUsd(
   const exceedingInfo = getLimitedDisplay(usd, USD_DECIMALS, opts);
   const sign = usd.lt(0) ? "-" : "";
   const displayUsd = formatAmount(exceedingInfo.value, USD_DECIMALS, displayDecimals, true);
-  return `${exceedingInfo.symbol}${sign}$${displayUsd}`;
+  return `${exceedingInfo.symbol}${exceedingInfo.symbol ? " " : ""}${sign}$${displayUsd}`;
 }
 
 export function formatDeltaUsd(deltaUsd?: BigNumber, percentage?: BigNumber, opts: { fallbackToZero?: boolean } = {}) {

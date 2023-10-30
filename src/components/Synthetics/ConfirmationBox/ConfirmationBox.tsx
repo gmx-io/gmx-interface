@@ -499,33 +499,39 @@ export function ConfirmationBox(p: Props) {
       return Promise.resolve();
     }
 
-    return createDecreaseOrderTxn(chainId, signer, {
-      account,
-      marketAddress: marketInfo.marketTokenAddress,
-      swapPath: [],
-      initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount,
-      initialCollateralAddress: collateralToken.address,
-      receiveTokenAddress: collateralToken.address,
-      triggerPrice: decreaseAmounts.triggerPrice,
-      acceptablePrice: fixedTriggerAcceptablePrice,
-      sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
-      sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
-      minOutputUsd: BigNumber.from(0),
-      isLong,
-      decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
-      orderType: fixedTriggerOrderType,
-      executionFee: executionFee.feeTokenAmount,
-      allowedSlippage,
-      referralCode: referralCodeForTxn,
-      // Skip simulation to avoid EmptyPosition error
-      // skipSimulation: !existingPosition || shouldDisableValidation,
-      skipSimulation: true,
-      indexToken: marketInfo.indexToken,
-      tokensData,
-      setPendingTxns,
-      setPendingOrder,
-      setPendingPosition,
-    });
+    return createDecreaseOrderTxn(
+      chainId,
+      signer,
+      {
+        account,
+        marketAddress: marketInfo.marketTokenAddress,
+        swapPath: [],
+        initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount,
+        initialCollateralAddress: collateralToken.address,
+        receiveTokenAddress: collateralToken.address,
+        triggerPrice: decreaseAmounts.triggerPrice,
+        acceptablePrice: fixedTriggerAcceptablePrice,
+        sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
+        sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
+        minOutputUsd: BigNumber.from(0),
+        isLong,
+        decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
+        orderType: fixedTriggerOrderType,
+        executionFee: executionFee.feeTokenAmount,
+        allowedSlippage,
+        referralCode: referralCodeForTxn,
+        // Skip simulation to avoid EmptyPosition error
+        // skipSimulation: !existingPosition || shouldDisableValidation,
+        skipSimulation: true,
+        indexToken: marketInfo.indexToken,
+        tokensData,
+      },
+      {
+        setPendingTxns,
+        setPendingOrder,
+        setPendingPosition,
+      }
+    );
   }
 
   function onSubmit() {
