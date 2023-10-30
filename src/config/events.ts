@@ -62,7 +62,7 @@ export const appEventsData: EventData[] = [
     isActive: true,
     validTill: "7 Nov 2023, 12:00",
     bodyText:
-      "Adaptive Funding Rates will be enabled for the ARB/USD market on Arbitrum and AVAX/USD market on Avalanche this week. This is a trial to improve the open interest balance and reduce price impact for markets.",
+      "Adaptive Funding Rates are enabled for the ARB/USD market on Arbitrum and AVAX/USD market on Avalanche. This is a trial to improve the open interest balance and reduce price impact for markets.",
     chains: [AVALANCHE, AVALANCHE_FUJI, ARBITRUM, ARBITRUM_GOERLI],
     buttons: [
       {
