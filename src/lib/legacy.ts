@@ -1300,9 +1300,11 @@ export function getProcessedData(
   data.gmxBalance = balanceData.gmx;
   data.gmxBalanceUsd = balanceData.gmx.mul(gmxPrice).div(expandDecimals(1, 18));
 
-  data.gmxSupply = bigNumberify(gmxSupply);
+  // hard-code the value of gmx supply since currently using GMX arbitrum data feed which isn't reliable
+  data.gmxSupply = ethers.BigNumber.from("1000000000000000000000000");
 
   data.gmxSupplyUsd = data.gmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
+
   data.stakedGmxSupply = stakedGmxSupply;
   data.stakedGmxSupplyUsd = stakedGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
   data.gmxInStakedGmx = depositBalanceData.gmxInStakedGmx;
