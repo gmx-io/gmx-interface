@@ -1195,7 +1195,7 @@ export function TradeBox(p: Props) {
           hasExistingOrder={Boolean(existingOrder)}
           hasExistingPosition={Boolean(existingPosition)}
           onSelectCollateralAddress={onSelectCollateralAddress}
-          isTrigger={isTrigger}
+          isMarket={isMarket}
         />
 
         {isTrigger && existingPosition?.leverage && (

@@ -164,7 +164,7 @@ export function AffiliateCodeForm({
           setError(getCodeError(value));
         }}
       />
-      {error && <p className="error">{error}</p>}
+      {error && <p className="AffiliateCode-error">{error}</p>}
       <Button variant="primary-action" className="w-full" type="submit" disabled={!isPrimaryEnabled()}>
         {getPrimaryText()}
       </Button>

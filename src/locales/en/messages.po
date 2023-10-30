@@ -94,6 +94,10 @@ msgstr "<0>Total value of tokens in GLP pool ({chainName}).</0><1>This value may
 msgid "<0>You have an existing position with {0} as collateral. This Order will not be valid for that Position.</0><1>Switch to {1} collateral.</1>"
 msgstr "<0>You have an existing position with {0} as collateral. This Order will not be valid for that Position.</0><1>Switch to {1} collateral.</1>"
 
+#: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
+msgid "<0>You have an existing position with {0} as collateral. This action will not apply for that position.</0><1>Switch to {1} collateral.</1>"
+msgstr "<0>You have an existing position with {0} as collateral. This action will not apply for that position.</0><1>Switch to {1} collateral.</1>"
+
 #: src/lib/contracts/transactionErrors.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
@@ -5458,17 +5462,21 @@ msgstr "You have an existing position in the {0} market pool. <0>Switch to {1} m
 msgid "You have an existing position with {0} as collateral."
 msgstr "You have an existing position with {0} as collateral."
 
-#: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
-msgid "You have an existing position with {0} as collateral. <0>Switch to {1} collateral.</0>"
-msgstr "You have an existing position with {0} as collateral. <0>Switch to {1} collateral.</0>"
-
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position."
 msgstr "You have an existing position with {0} as collateral. This Order will not be valid for that Position."
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "You have an existing position with {0} as collateral. This action will not apply for that position."
+msgstr "You have an existing position with {0} as collateral. This action will not apply for that position."
+
 #: src/domain/synthetics/orders/utils.ts
-msgid "You have an existing {longText} position with {0} as Collateral."
-msgstr "You have an existing {longText} position with {0} as Collateral."
+msgid ""
+"You have an existing {longText} position with {0} as Collateral. This Order will not\n"
+"be valid for that Position."
+msgstr ""
+"You have an existing {longText} position with {0} as Collateral. This Order will not\n"
+"be valid for that Position."
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "You have multiple existing Increase {longOrShortText} {0} limit orders"
