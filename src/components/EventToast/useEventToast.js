@@ -21,8 +21,7 @@ function useEventToast() {
 
   useEffect(() => {
     const validationParams = {
-      "v2-adaptive-funding-arb": isAdaptiveFundingActive,
-      "v2-adaptive-funding-avax": isAdaptiveFundingActive,
+      "v2-adaptive-funding": isAdaptiveFundingActive,
     };
     const eventsData = isHome ? homeEventsData : appEventsData;
 
