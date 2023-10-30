@@ -49,17 +49,11 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
     fetcher: async () => {
       const intervals = getIntervalsByTime(new Date(), daysConsidered);
 
-      const marketFeesQuery = (
-        marketAddress: string,
-        tokenAddress: string,
-        interval: TimeIntervalQuery,
-        intervalIndex: number
-      ) => {
+      const marketFeesQuery = (marketAddress: string, interval: TimeIntervalQuery, intervalIndex: number) => {
         return `
-            _${marketAddress}_${tokenAddress}_${intervalIndex}_${interval.period}: collectedMarketFeesInfos(
+            _${marketAddress}_${intervalIndex}_${interval.period}: collectedMarketFeesInfos(
                where: {
                 marketAddress: "${marketAddress.toLowerCase()}"
-                tokenAddress: "${tokenAddress.toLowerCase()}"
                 period: "${interval.period}"
                 ${interval.timestampGroup_lt ? `timestampGroup_lt: ${interval.timestampGroup_lt}` : ""}
                 ${interval.timestampGroup_gte ? `timestampGroup_gte: ${interval.timestampGroup_gte}` : ""}
@@ -71,7 +65,6 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
                 id
                 period
                 marketAddress
-                tokenAddress
                 feeUsdPerPoolValue
                 timestampGroup
             }
@@ -79,11 +72,8 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
       };
 
       const queryBody = marketAddresses.reduce((acc, marketAddress) => {
-        const { longTokenAddress, shortTokenAddress } = marketsInfoData![marketAddress];
-
         intervals.forEach((interval, intervalIndex) => {
-          acc += marketFeesQuery(marketAddress, longTokenAddress, interval, intervalIndex);
-          acc += marketFeesQuery(marketAddress, shortTokenAddress, interval, intervalIndex);
+          acc += marketFeesQuery(marketAddress, interval, intervalIndex);
         });
 
         return acc;
