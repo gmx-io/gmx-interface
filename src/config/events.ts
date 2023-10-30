@@ -1,6 +1,6 @@
 // date format: d MMM yyyy, H:mm, time should be specifed based on UTC time
 
-import { ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI } from "./chains";
+import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 
 export type EventData = {
   id: string;
@@ -57,15 +57,32 @@ export const appEventsData: EventData[] = [
     ],
   },
   {
-    id: "v2-adaptive-funding",
+    id: "v2-adaptive-funding-avax",
     title: "Adaptive Funding is live",
     isActive: true,
     validTill: "7 Nov 2023, 12:00",
-    bodyText: "Adaptive Funding has been enabled for the AVAX/USD market on Avalanche.",
-    chains: [AVALANCHE, ARBITRUM_GOERLI, AVALANCHE_FUJI],
+    bodyText:
+      "Adaptive Funding Rates will be enabled for the AVAX/USD market on Avalanche this week. This is a trial to improve the open interest balance and reduce price impact for markets.",
+    chains: [AVALANCHE, AVALANCHE_FUJI],
     buttons: [
       {
-        text: "Read More.",
+        text: "More Info.",
+        link: "https://docs.gmx.io/docs/trading/v2/#adaptive-funding",
+        newTab: true,
+      },
+    ],
+  },
+  {
+    id: "v2-adaptive-funding-arb",
+    title: "Adaptive Funding is live",
+    isActive: true,
+    validTill: "7 Nov 2023, 12:00",
+    bodyText:
+      "Adaptive Funding Rates will be enabled for the ARB/USD market on Arbitrum this week. This is a trial to improve the open interest balance and reduce price impact for markets.",
+    chains: [ARBITRUM, ARBITRUM_GOERLI],
+    buttons: [
+      {
+        text: "More Info.",
         link: "https://docs.gmx.io/docs/trading/v2/#adaptive-funding",
         newTab: true,
       },

@@ -21,7 +21,8 @@ function useEventToast() {
 
   useEffect(() => {
     const validationParams = {
-      "v2-adaptive-funding": isAdaptiveFundingActive,
+      "v2-adaptive-funding-arb": isAdaptiveFundingActive,
+      "v2-adaptive-funding-avax": isAdaptiveFundingActive,
     };
     const eventsData = isHome ? homeEventsData : appEventsData;
 
@@ -30,7 +31,9 @@ function useEventToast() {
       .filter((event) => isFuture(parse(event.validTill + ", +00", "d MMM yyyy, H:mm, x", new Date())))
       .filter((event) => Array.isArray(visited) && !visited.includes(event.id))
       .filter((event) => !event.networks || event.chains.includes(chainId))
-      .filter((event) => !(event.id in validationParams) || validationParams[event.id])
+      .filter(
+        (event) => !(event.id in validationParams) || (validationParams[event.id] && event.chains.includes(chainId))
+      )
       .forEach((event) => {
         toast.custom(
           (t) => (
