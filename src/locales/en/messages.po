@@ -823,10 +823,6 @@ msgstr "Claim {wrappedTokenSymbol} Rewards"
 msgid "Claimable"
 msgstr "Claimable"
 
-#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
-#~ msgid "Claimable Funding"
-#~ msgstr "Claimable Funding"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Claimable Rebates"
 msgstr "Claimable Rebates"
@@ -1874,17 +1870,9 @@ msgstr "Funding Fee"
 msgid "Funding Fee Rate"
 msgstr "Funding Fee Rate"
 
-#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
-#~ msgid "Funding Fees"
-#~ msgstr "Funding Fees"
-
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "Funding Rate / 1h"
 msgstr "Funding Rate / 1h"
-
-#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
-#~ msgid "Funding fee"
-#~ msgstr "Funding fee"
 
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 msgid "Funding fees"
@@ -3427,10 +3415,6 @@ msgstr "Positions{0}"
 msgid "Positive Funding Fees for a Position become claimable after the Position is increased, decreased or closed; or settled its fees with the option under \"Accrued\"."
 msgstr "Positive Funding Fees for a Position become claimable after the Position is increased, decreased or closed; or settled its fees with the option under \"Accrued\"."
 
-#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
-#~ msgid "Positive Funding Fees for a position become claimable after the position is increased, decreased or closed."
-#~ msgstr "Positive Funding Fees for a position become claimable after the position is increased, decreased or closed."
-
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/Claims/Claims.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
@@ -4696,10 +4680,6 @@ msgstr "Total Assets Migrated"
 #: src/pages/Stake/StakeV1.js
 msgid "Total Assets Staked"
 msgstr "Total Assets Staked"
-
-#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
-#~ msgid "Total Claimable"
-#~ msgstr "Total Claimable"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Total Fees"
