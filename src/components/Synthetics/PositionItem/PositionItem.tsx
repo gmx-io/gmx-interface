@@ -45,6 +45,7 @@ export type Props = {
   currentCollateralAddress?: string;
   currentTradeType?: TradeType;
   openSettings: () => void;
+  onGetPendingFeesClick: () => void;
 };
 
 export function PositionItem(p: Props) {

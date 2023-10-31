@@ -44,6 +44,7 @@ export function useReferralsData(account?: string | null) {
           amountsInUsd
           transactionHash
           timestamp
+          id
         }
         affiliateStats: affiliateStats(
           first: 1000
@@ -121,6 +122,7 @@ export function useReferralsData(account?: string | null) {
               amountsInUsd: d.amountsInUsd.map((a) => bigNumberify(a)!),
               timestamp: parseInt(d.timestamp),
               transactionHash: d.transactionHash,
+              id: d.id,
             };
             if (d.typeId === RebateDistributionType.Rebate || d.typeId === RebateDistributionType.Claim) {
               affiliateDistributions.push(item);

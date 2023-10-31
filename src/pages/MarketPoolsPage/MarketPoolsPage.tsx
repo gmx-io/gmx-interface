@@ -71,10 +71,13 @@ export function MarketPoolsPage(p: Props) {
             </Trans>
           }
         />
+
         <div className="MarketPoolsPage-content">
           <MarketStats
             marketsTokensAPRData={marketsTokensAPRData}
             marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
+            marketTokensData={depositMarketTokensData}
+            marketsInfoData={marketsInfoData}
             marketInfo={marketInfo}
             marketToken={marketToken}
           />
