@@ -13,21 +13,23 @@ import {
 } from "domain/synthetics/markets";
 import { TokenData, convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { formatAmount, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import "./MarketStats.scss";
 import BridgingInfo from "../BridgingInfo/BridgingInfo";
 import { getBridgingOptionsForToken } from "config/bridging";
+import { AprInfo } from "components/AprInfo/AprInfo";
 
 type Props = {
   marketInfo?: MarketInfo;
   marketToken?: TokenData;
-  marketsTokensAPRData?: MarketTokensAPRData;
+  marketsTokensAPRData: MarketTokensAPRData | undefined;
+  marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
 };
 
 export function MarketStats(p: Props) {
-  const { marketInfo, marketToken, marketsTokensAPRData } = p;
+  const { marketInfo, marketToken, marketsTokensAPRData, marketsTokensIncentiveAprData } = p;
   const { chainId } = useChainId();
 
   const marketPrice = marketToken?.prices?.maxPrice;
@@ -45,6 +47,7 @@ export function MarketStats(p: Props) {
   const shortPoolAmountUsd = marketInfo ? getPoolUsdWithoutPnl(marketInfo, false, "midPrice") : undefined;
 
   const apr = getByKey(marketsTokensAPRData, marketInfo?.marketTokenAddress);
+  const incentiveApr = getByKey(marketsTokensIncentiveAprData, marketInfo?.marketTokenAddress);
   const indexName = marketInfo && getMarketIndexName(marketInfo);
   const poolName = marketInfo && getMarketPoolName(marketInfo);
 
@@ -114,7 +117,7 @@ export function MarketStats(p: Props) {
           }
         />
 
-        <CardRow label={t`APR`} value={apr ? `${formatAmount(apr, 2, 2)}%` : "..."} />
+        <CardRow label={t`APR`} value={<AprInfo apr={apr} incentiveApr={incentiveApr} />} />
 
         <CardRow
           label={t`Total Supply`}

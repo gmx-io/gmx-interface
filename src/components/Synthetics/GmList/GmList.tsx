@@ -13,7 +13,7 @@ import {
 import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { importImage } from "lib/legacy";
-import { bigNumberify, formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
+import { bigNumberify, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { useMemo } from "react";
@@ -24,13 +24,15 @@ import Tooltip from "components/Tooltip/Tooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { getIcons } from "config/icons";
 import PageTitle from "components/PageTitle/PageTitle";
+import { AprInfo } from "components/AprInfo/AprInfo";
 
 type Props = {
   hideTitle?: boolean;
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
   marketTokensData?: TokensData;
-  marketsTokensAPRData?: MarketTokensAPRData;
+  marketsTokensAPRData: MarketTokensAPRData | undefined;
+  marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   shouldScrollToTop?: boolean;
   buySellActionHandler?: () => void;
 };
@@ -41,6 +43,7 @@ export function GmList({
   marketsInfoData,
   tokensData,
   marketsTokensAPRData,
+  marketsTokensIncentiveAprData,
   shouldScrollToTop,
   buySellActionHandler,
 }: Props) {
@@ -158,6 +161,7 @@ export function GmList({
                 const mintableInfo = market && token ? getMintableMarketTokens(market, token) : undefined;
 
                 const apr = getByKey(marketsTokensAPRData, token?.address);
+                const incentiveApr = getByKey(marketsTokensIncentiveAprData, token?.address);
 
                 if (!token || !indexToken || !longToken || !shortToken) {
                   return null;
@@ -229,7 +233,9 @@ export function GmList({
                       )
                     </td>
 
-                    <td>{apr ? `${formatAmount(apr, 2, 2)}%` : "..."}</td>
+                    <td>
+                      <AprInfo apr={apr} incentiveApr={incentiveApr} />
+                    </td>
 
                     <td className="GmList-actions">
                       <Button
@@ -266,6 +272,7 @@ export function GmList({
           <div className="token-grid">
             {sortedMarketTokens.map((token) => {
               const apr = marketsTokensAPRData?.[token.address];
+              const incentiveApr = marketsTokensIncentiveAprData?.[token.address];
 
               const totalSupply = token?.totalSupply;
               const totalSupplyUsd = convertToUsd(totalSupply, token?.decimals, token?.prices?.minPrice);
@@ -372,7 +379,9 @@ export function GmList({
                       <div className="label">
                         <Trans>APR</Trans>
                       </div>
-                      <div>{apr ? `${formatAmount(apr, 2, 2)}%` : "..."}</div>
+                      <div>
+                        <AprInfo apr={apr} incentiveApr={incentiveApr} />
+                      </div>
                     </div>
 
                     <div className="App-card-divider"></div>
