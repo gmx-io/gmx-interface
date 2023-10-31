@@ -15,7 +15,7 @@ import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { formatTokenAmountWithUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import uniq from "lodash/uniq";
+import { uniq } from "lodash";
 import { GmFees } from "../GmFees/GmFees";
 
 import Button from "components/Button/Button";
