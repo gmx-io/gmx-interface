@@ -1,4 +1,4 @@
-import { ARBITRUM, AVALANCHE } from "config/chains";
+import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
 import { getContract } from "config/contracts";
 
 const ARBITRUM_GMX = getContract(ARBITRUM, "GMX").toLowerCase();
@@ -17,7 +17,19 @@ export const EXTERNAL_LINKS = {
       uniswap: `https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=${ARBITRUM_GMX}`,
     },
   },
+  [ARBITRUM_GOERLI]: {
+    networkWebsite: "https://arbitrum.io/",
+    buyGmx: {
+      uniswap: `https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=${ARBITRUM_GMX}`,
+    },
+  },
   [AVALANCHE]: {
+    networkWebsite: "https://www.avax.network/",
+    buyGmx: {
+      traderjoe: `https://traderjoexyz.com/trade?outputCurrency=${AVALANCHE_GMX}`,
+    },
+  },
+  [AVALANCHE_FUJI]: {
     networkWebsite: "https://www.avax.network/",
     buyGmx: {
       traderjoe: `https://traderjoexyz.com/trade?outputCurrency=${AVALANCHE_GMX}`,
