@@ -4466,14 +4466,17 @@ msgstr "숏 포지션보다 롱 포지션이 더 많이 열려있기 때문에, 
 msgid "There are more shorts than longs, borrow fees for longing is currently zero"
 msgstr "롱 포지션보다 숏 포지션이 더 많이 열려있기 때문에, 현재 롱 포지션에 적용되는 차용수수료는 0입니다"
 
-#: src/domain/tokens/approveTokens.tsx
-#: src/lib/contracts/transactionErrors.tsx
-msgid "There is not enough ETH in your account on Arbitrum to send this transaction.<0/><1/><2>Bridge ETH to Arbitrum</2>"
-msgstr "해당 트랜잭션을 처리하기위한 충분한 ETH가 귀하의 Abritrum 계정에 존재하지 않습니다.<0/><1/><2>Abritrum으로 ETH를 브릿징하세요</2>"
-
 #: src/components/Glp/SwapErrorModal.tsx
 msgid "There is not enough liquidity in a single token for your size. Please check the Save on Fees section and consider splitting your order into several different ones"
 msgstr "한 종류의 토큰에서 해당 스왑을 실현할 수 있는 충분한 유동성이 존재하지 않습니다. \" 수수료 절약 섹션을 확인 후 주문을 복수로 분할하는 것을 검토해주세요"
+
+#: src/lib/contracts/transactionErrors.tsx
+msgid "There is not enough {0} in your account on {1} to send this transaction.<0/><1/><2>Bridge {2} to {3}</2>"
+msgstr ""
+
+#: src/domain/tokens/approveTokens.tsx
+msgid "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Bridge {1} to {networkName}</2>"
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "There may not be sufficient liquidity to execute swap to Receive Token when the Price conditions are met."
