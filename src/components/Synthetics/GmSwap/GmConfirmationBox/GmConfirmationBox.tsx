@@ -3,7 +3,6 @@ import cx from "classnames";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Modal from "components/Modal/Modal";
 import { getContract } from "config/contracts";
-import { getToken } from "config/tokens";
 import { ExecutionFee } from "domain/synthetics/fees";
 import { useMarkets } from "domain/synthetics/markets";
 import { createDepositTxn } from "domain/synthetics/markets/createDepositTxn";
@@ -16,7 +15,7 @@ import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { formatTokenAmountWithUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { uniq } from "lodash";
+import uniq from "lodash/uniq";
 import { GmFees } from "../GmFees/GmFees";
 
 import Button from "components/Button/Button";
@@ -351,7 +350,7 @@ export function GmConfirmationBox({
             {tokensToApprove && tokensToApprove.length > 0 && (
               <div>
                 {tokensToApprove.map((address) => {
-                  const token = getToken(chainId, address);
+                  const token = getTokenData(tokensData, address)!;
                   return (
                     <div key={address}>
                       <ApproveTokenButton
