@@ -21,7 +21,7 @@ export function AprInfo({ apr, incentiveApr }: { apr: BigNumber | undefined; inc
         <div>Base APR: {formatAmount(apr, 2, 2)}%</div>
         <div>Bonus APR: {formatAmount(incentiveApr, 2, 2)}%</div>
         <p>
-          Bonus APR is estimated as airdropped ARB tokens. <ExternalLink href="#">Read more</ExternalLink>.
+          Bonus APR is estimated as airdropped ARB tokens. <ExternalLink href="#FIXME">Read more</ExternalLink>.
         </p>
       </>
     );

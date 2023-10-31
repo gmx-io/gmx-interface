@@ -1,5 +1,7 @@
 // date format: d MMM yyyy, H:mm, time should be specifed based on UTC time
 
+import { ARBITRUM, ARBITRUM_GOERLI } from "./chains";
+
 export type EventData = {
   id: string;
   title: string;
@@ -80,6 +82,21 @@ export const appEventsData: EventData[] = [
       {
         text: "More Info.",
         link: "https://docs.gmx.io/docs/trading/v2/#adaptive-funding",
+        newTab: true,
+      },
+    ],
+  },
+  {
+    id: "incentives-launch",
+    title: "Incentives are live now!",
+    isActive: true,
+    validTill: "31 Oct 2024, 12:00",
+    bodyText: "Arbitrum STIP incentives are live for Arbitrum GM pools.",
+    chains: [ARBITRUM, ARBITRUM_GOERLI],
+    buttons: [
+      {
+        text: "More Info.",
+        link: "#FIXME",
         newTab: true,
       },
     ],
