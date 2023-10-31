@@ -328,9 +328,10 @@ function SettingModalContent({ setActiveModal, openSettings }) {
 }
 
 function EmailNotificationModalContent({ setActiveModal, openSettings }) {
-  const [enabledDarkMode, setEnabledDarkMode] = useState(false);
-  const [enabledEmailNotification, setEnabledEmailNotification] = useState(false);
-  const [enabledOneTrading, setEnabledOneTrading] = useState(false);
+  // @todo replicate styles for dark mode
+  // const [enabledDarkMode, setEnabledDarkMode] = useState(false);
+  // const [enabledEmailNotification, setEnabledEmailNotification] = useState(false);
+  // const [enabledOneTrading, setEnabledOneTrading] = useState(false);
 
   return (
     <div className="setting-dropdown-items email-notification">

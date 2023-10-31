@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import useSWR, { SWRConfig } from "swr";
 import { ethers } from "ethers";
@@ -303,7 +304,7 @@ function FullApp() {
   const [shouldDisableValidationForTesting, setShouldDisableValidationForTesting] = useState(false);
   const [showPnlAfterFees, setShowPnlAfterFees] = useState(true);
   const [emailText, setEmailText] = useState("");
-  const [checkedTos, setCheckedTos] = useState(false);
+  // const [checkedTos, setCheckedTos] = useState(false); // @todo
 
   const [savedIsPnlInLeverage, setSavedIsPnlInLeverage] = useLocalStorageSerializeKey(
     [chainId, IS_PNL_IN_LEVERAGE_KEY],
@@ -564,9 +565,9 @@ function FullApp() {
     };
   }, [active, chainId, vaultAddress, positionRouterAddress]);
 
-  const handleTosChange = () => {
-    setCheckedTos(!checkedTos);
-  };
+  // const handleTosChange = () => {
+  //   setCheckedTos(!checkedTos);
+  // }; // @todo
 
   return (
     <>
@@ -1005,6 +1006,7 @@ function App() {
       selector: ".fourth-step",
       title: "Email Notifications",
       content: "Lorem Ipsum is simply dummy text of the printing and typesetting.",
+      // eslint-disable-next-line no-dupe-keys
       content: ({ goTo, inDOM }) => (
         <div>
           <div class="tour-title">Email Notifications</div>
