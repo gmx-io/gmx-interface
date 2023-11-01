@@ -1,4 +1,6 @@
+import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { BigNumber } from "ethers";
 import { formatAmount } from "lib/numbers";
@@ -10,11 +12,12 @@ export function AprInfo({ apr, incentiveApr }: { apr: BigNumber | undefined; inc
   const renderTooltipContent = useCallback(() => {
     return (
       <>
-        <div>Base APR: {formatAmount(apr, 2, 2)}%</div>
-        <div>Bonus APR: {formatAmount(incentiveApr, 2, 2)}%</div>
-        <p>
-          Bonus APR is estimated as airdropped ARB tokens. <ExternalLink href="#FIXME">Read more</ExternalLink>.
-        </p>
+        <StatsTooltipRow showDollar={false} label={t`Base APR`} value={`${formatAmount(apr, 2, 2)}%`} />
+        <StatsTooltipRow showDollar={false} label={t`Bonus APR`} value={`${formatAmount(incentiveApr, 2, 2)}%`} />
+        <br />
+        <Trans>
+          The Bonus APR is estimated to be airdropped ARB tokens. <ExternalLink href="#FIXME">Read more.</ExternalLink>
+        </Trans>
       </>
     );
   }, [apr, incentiveApr]);
