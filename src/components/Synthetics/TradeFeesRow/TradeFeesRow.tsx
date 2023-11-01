@@ -223,6 +223,7 @@ export function TradeFeesRow(p: Props) {
             p.executionFee.feeToken.decimals
           ),
           className: "text-red",
+          id: "executionFee",
         }
       : undefined;
 

@@ -1,8 +1,6 @@
 import { Trans, t } from "@lingui/macro";
-import { groupBy } from "lodash";
 import Button from "components/Button/Button";
 import {
-  MarketInfo,
   MarketTokensAPRData,
   MarketsInfoData,
   getMarketIndexName,
@@ -13,10 +11,9 @@ import {
 import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { importImage } from "lib/legacy";
-import { bigNumberify, formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
+import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
-import { useMemo } from "react";
 import { useMedia } from "react-use";
 import { Operation } from "../GmSwap/GmSwapBox/GmSwapBox";
 import "./GmList.scss";
@@ -24,6 +21,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { getIcons } from "config/icons";
 import PageTitle from "components/PageTitle/PageTitle";
+import useSortedMarketsWithIndexToken from "domain/synthetics/trade/useSortedMarketsWithIndexToken";
 
 type Props = {
   hideTitle?: boolean;
@@ -46,59 +44,8 @@ export function GmList({
 }: Props) {
   const { chainId } = useChainId();
   const currentIcons = getIcons(chainId);
-  const sortedMarketTokens = useMemo(() => {
-    if (!marketsInfoData) {
-      return [];
-    }
-    // Group markets by index token address
-    const groupedMarketList: { [marketAddress: string]: MarketInfo[] } = groupBy(
-      Object.values(marketsInfoData),
-      (market) => market[market.isSpotOnly ? "marketTokenAddress" : "indexTokenAddress"]
-    );
-
-    const allMarkets = Object.values(groupedMarketList)
-      .map((markets) => {
-        return markets
-          .filter((market) => {
-            const marketInfoData = getByKey(marketsInfoData, market.marketTokenAddress)!;
-            return !marketInfoData.isDisabled;
-          })
-          .map((market) => getByKey(marketTokensData, market.marketTokenAddress)!);
-      })
-      .filter((markets) => markets.length > 0);
-
-    const sortedGroups = allMarkets!.sort((a, b) => {
-      const totalMarketSupplyA = a.reduce((acc, market) => {
-        const totalSupplyUsd = convertToUsd(market?.totalSupply, market?.decimals, market?.prices.minPrice);
-        acc = acc.add(totalSupplyUsd || 0);
-        return acc;
-      }, bigNumberify(0)!);
-
-      const totalMarketSupplyB = b.reduce((acc, market) => {
-        const totalSupplyUsd = convertToUsd(market?.totalSupply, market?.decimals, market?.prices.minPrice);
-        acc = acc.add(totalSupplyUsd || 0);
-        return acc;
-      }, bigNumberify(0)!);
-
-      return totalMarketSupplyA.gt(totalMarketSupplyB) ? -1 : 1;
-    });
-
-    // Sort markets within each group by total supply
-    const sortedMarkets = sortedGroups.map((markets: any) => {
-      return markets.sort((a, b) => {
-        const totalSupplyUsdA = convertToUsd(a.totalSupply, a.decimals, a.prices.minPrice)!;
-        const totalSupplyUsdB = convertToUsd(b.totalSupply, b.decimals, b.prices.minPrice)!;
-        return totalSupplyUsdA.gt(totalSupplyUsdB) ? -1 : 1;
-      });
-    });
-
-    // Flatten the sorted markets array
-    const flattenedMarkets = sortedMarkets.flat(Infinity);
-
-    return flattenedMarkets;
-  }, [marketsInfoData, marketTokensData]);
-
   const isMobile = useMedia("(max-width: 1100px)");
+  const { markets: sortedMarketsByIndexToken } = useSortedMarketsWithIndexToken(marketsInfoData, marketTokensData);
 
   return (
     <div className="GMList">
@@ -128,7 +75,7 @@ export function GmList({
                 </th>
                 <th>
                   <Tooltip
-                    handle={<Trans>MINTABLE</Trans>}
+                    handle={<Trans>BUYABLE</Trans>}
                     className="text-none"
                     position="right-bottom"
                     renderContent={() => (
@@ -149,7 +96,7 @@ export function GmList({
               </tr>
             </thead>
             <tbody>
-              {sortedMarketTokens.map((token) => {
+              {sortedMarketsByIndexToken.map((token) => {
                 const market = getByKey(marketsInfoData, token?.address)!;
 
                 const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
@@ -264,7 +211,7 @@ export function GmList({
           {!hideTitle && <PageTitle title={t`GM Pools`} />}
 
           <div className="token-grid">
-            {sortedMarketTokens.map((token) => {
+            {sortedMarketsByIndexToken.map((token) => {
               const apr = marketsTokensAPRData?.[token.address];
 
               const totalSupply = token?.totalSupply;
@@ -331,7 +278,7 @@ export function GmList({
                     <div className="App-card-row">
                       <div className="label">
                         <Tooltip
-                          handle={<Trans>Mintable</Trans>}
+                          handle={<Trans>Buyable</Trans>}
                           className="text-none"
                           position="left-bottom"
                           renderContent={() => (
@@ -423,8 +370,8 @@ function renderMintableAmount({ mintableInfo, market, token, longToken, shortTok
         <>
           <p className="text-white">
             <Trans>
-              {longToken.symbol} and {shortToken.symbol} can be used to mint GM tokens for this market up to the
-              specified minting caps.
+              {longToken.symbol} and {shortToken.symbol} can be used to buy GM tokens for this market up to the
+              specified buying caps.
             </Trans>
           </p>
           <br />
@@ -433,7 +380,6 @@ function renderMintableAmount({ mintableInfo, market, token, longToken, shortTok
             value={[
               formatTokenAmount(mintableInfo?.longDepositCapacityAmount, longToken.decimals, longToken.symbol, {
                 useCommas: true,
-                displayDecimals: 0,
               }),
               `(${formatTokenAmount(market.longPoolAmount, longToken.decimals, "", {
                 useCommas: true,
@@ -454,7 +400,6 @@ function renderMintableAmount({ mintableInfo, market, token, longToken, shortTok
             value={[
               formatTokenAmount(mintableInfo?.shortDepositCapacityAmount, shortToken.decimals, shortToken.symbol, {
                 useCommas: true,
-                displayDecimals: 0,
               }),
               `(${formatTokenAmount(market.shortPoolAmount, shortToken.decimals, "", {
                 useCommas: true,

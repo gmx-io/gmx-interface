@@ -1,9 +1,9 @@
 import { ethers } from "ethers";
 import useScrollToTop from "lib/useScrollToTop";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SWRConfig } from "swr";
 
-import { matchPath, Redirect, Route, HashRouter as Router, Switch, useHistory, useLocation } from "react-router-dom";
+import { Redirect, Route, HashRouter as Router, Switch, useHistory, useLocation } from "react-router-dom";
 
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { getAppBaseUrl, isHomeSite, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
@@ -62,9 +62,9 @@ import { I18nProvider } from "@lingui/react";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Header } from "components/Header/Header";
-import { ARBITRUM, EXECUTION_FEE_CONFIG_V2, getExplorerUrl } from "config/chains";
+import { ARBITRUM, DEFAULT_ALLOWED_SLIPPAGE_BPS, EXECUTION_FEE_CONFIG_V2, getExplorerUrl } from "config/chains";
 import { isDevelopment } from "config/env";
-import { getIsSyntheticsSupported, getIsV1Supported } from "config/features";
+import { getIsSyntheticsSupported } from "config/features";
 import {
   CURRENT_PROVIDER_LOCALSTORAGE_KEY,
   DISABLE_ORDER_VALIDATION_KEY,
@@ -95,6 +95,7 @@ import { watchNetwork } from "@wagmi/core";
 import { useDisconnect } from "wagmi";
 import useWallet from "lib/wallets/useWallet";
 import { swrGCMiddleware } from "lib/swrMiddlewares";
+import useTradeRedirect from "lib/useTradeRedirect";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -271,34 +272,7 @@ function FullApp() {
     setSelectedToPage(to);
   };
 
-  const isActiveOnTradePage = useMemo(() => {
-    return !!matchPath(location.pathname, { path: ["/v1", "/trade"] });
-  }, [location.pathname]);
-
-  useEffect(
-    function redirectTradePage() {
-      const isV1Matched = matchPath(location.pathname, { path: "/v1" });
-      const isV2Matched = matchPath(location.pathname, { path: "/trade" });
-
-      if (isV1Matched && getIsV1Supported(chainId)) {
-        setTradePageVersion(1);
-      }
-
-      if (isV2Matched && getIsSyntheticsSupported(chainId)) {
-        setTradePageVersion(2);
-      }
-    },
-    [chainId, history, location, query, setTradePageVersion]
-  );
-
-  useEffect(() => {
-    if (!isActiveOnTradePage) return;
-    if (tradePageVersion === 1) {
-      history.replace("/v1");
-    } else if (tradePageVersion === 2) {
-      history.replace("/trade");
-    }
-  }, [history, tradePageVersion, isActiveOnTradePage]);
+  useTradeRedirect({ chainId, tradePageVersion, setTradePageVersion });
 
   useEffect(() => {
     const checkPendingTxns = async () => {
@@ -606,6 +580,14 @@ function FullApp() {
             />
             <div className="App-slippage-tolerance-input-percent">%</div>
           </div>
+          {parseFloat(slippageAmount) < (DEFAULT_ALLOWED_SLIPPAGE_BPS / BASIS_POINTS_DIVISOR) * 100 && (
+            <div className="warning settings-modal-error">
+              <Trans>
+                Allowed Slippage below {(DEFAULT_ALLOWED_SLIPPAGE_BPS / BASIS_POINTS_DIVISOR) * 100}% may result in
+                failed orders.
+              </Trans>
+            </div>
+          )}
         </div>
         {settings.shouldUseExecutionFeeBuffer && (
           <div className="App-settings-row">
@@ -637,7 +619,7 @@ function FullApp() {
             </div>
             {parseFloat(executionFeeBufferBps) <
               (EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps / BASIS_POINTS_DIVISOR) * 100 && (
-              <div className="warning">
+              <div className="warning settings-modal-error">
                 <Trans>
                   Max Execution Fee buffer below{" "}
                   {(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps / BASIS_POINTS_DIVISOR) * 100}% may result in

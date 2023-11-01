@@ -92,15 +92,6 @@ export default function Ecosystem() {
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
-      title: "DegenClip",
-      link: "https://degenclip.com/gmx",
-      linkLabel: "degenclip.com",
-      about: t`Community curated tweet collection`,
-      creatorLabel: "@ox21l",
-      creatorLink: "https://t.me/ox21l",
-      chainIds: [ARBITRUM, AVALANCHE],
-    },
-    {
       title: "GMX Yield Simulator",
       link: "https://gmx.defisims.com/",
       linkLabel: "defisims.com",
@@ -180,6 +171,15 @@ export default function Ecosystem() {
       creatorLabel: "@sntlai",
       creatorLink: "https://twitter.com/sntlai",
       chainIds: [ARBITRUM, AVALANCHE],
+    },
+    {
+      title: "Copin",
+      link: "https://app.copin.io",
+      linkLabel: "copin.io",
+      about: t`Explore, analyze, and copy on-chain traders`,
+      creatorLabel: ["@0xanol", "@tungle_eth"],
+      creatorLink: ["https://twitter.com/0xanol", "https://twitter.com/tungle_eth"],
+      chainIds: [ARBITRUM],
     },
   ];
 
@@ -325,15 +325,6 @@ export default function Ecosystem() {
       link: "https://dopex.io",
       linkLabel: "dopex.io",
       about: t`Decentralized Options Protocol`,
-
-      chainIds: [ARBITRUM, AVALANCHE],
-    },
-    {
-      title: "Rook",
-      link: "https://www.rook.fi/",
-      linkLabel: "rook.fi",
-      about: t`MEV Optimizer`,
-
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
@@ -461,7 +452,20 @@ export default function Ecosystem() {
       link: "https://leverage.unidex.exchange/",
       linkLabel: "unidex.exchange",
       about: t`Leverage Trading Terminal`,
-
+      chainIds: [ARBITRUM, AVALANCHE],
+    },
+    {
+      title: "Symbiosis",
+      link: "https://app.symbiosis.finance/",
+      linkLabel: "symbiosis.finance",
+      about: t`DEX Aggregator`,
+      chainIds: [ARBITRUM, AVALANCHE],
+    },
+    {
+      title: "0x",
+      link: "https://explorer.0xprotocol.org/liquiditySources",
+      linkLabel: "0xprotocol.org",
+      about: t`DEX Aggregator`,
       chainIds: [ARBITRUM, AVALANCHE],
     },
   ];
@@ -578,7 +582,17 @@ export default function Ecosystem() {
                         <Trans>Creator</Trans>
                       </div>
                       <div>
-                        <ExternalLink href={item.creatorLink}>{item.creatorLabel}</ExternalLink>
+                        {Array.isArray(item.creatorLabel) ? (
+                          <div className="gap-right-xs">
+                            {item.creatorLabel.map((label, index) => (
+                              <ExternalLink key={label} href={item.creatorLink[index]}>
+                                {label}
+                              </ExternalLink>
+                            ))}
+                          </div>
+                        ) : (
+                          <ExternalLink href={item.creatorLink}>{item.creatorLabel}</ExternalLink>
+                        )}
                       </div>
                     </div>
                   </div>

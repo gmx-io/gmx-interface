@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import Modal from "components/Modal/Modal";
 import {
   MarketInfo,
@@ -10,9 +10,8 @@ import {
 import { convertToUsd } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { formatTokenAmount, formatUsd } from "lib/numbers";
+import { formatDeltaUsd, formatTokenAmount } from "lib/numbers";
 
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { claimCollateralTxn } from "domain/synthetics/markets/claimCollateralTxn";
 
@@ -68,37 +67,29 @@ export function ClaimModal(p: Props) {
     }
 
     return (
-      <div key={market.marketTokenAddress} className="App-card-content">
-        <ExchangeInfoRow
-          className="ClaimModal-row"
-          label={t`Market`}
-          value={
-            <div className="items-center">
-              <span>{indexName && indexName}</span>
-              <span className="subtext">{poolName && `[${poolName}]`}</span>
+      <div key={market.marketTokenAddress} className="ClaimSettleModal-info-row">
+        <div className="flex">
+          <div className="Exchange-info-label ClaimSettleModal-checkbox-label">
+            <div className="items-top ClaimSettleModal-row-text">
+              <span>{indexName}</span>
+              {poolName ? <span className="subtext">[{poolName}]</span> : null}
             </div>
-          }
-        />
-        <ExchangeInfoRow
-          className="ClaimModal-row"
-          label={t`Funding fee`}
-          value={
-            <Tooltip
-              className="ClaimModal-row-tooltip"
-              handle={formatUsd(totalFundingUsd)}
-              position="right-top"
-              renderContent={() => (
-                <>
-                  {claimableAmountsItems.map((item, index) => (
-                    <div key={item}>{item}</div>
-                  ))}
-                </>
-              )}
-            />
-          }
-        />
-
-        <div className="App-card-divider ClaimModal-divider" />
+          </div>
+        </div>
+        <div className="ClaimSettleModal-info-label-usd">
+          <Tooltip
+            className="ClaimSettleModal-tooltip"
+            position="right-top"
+            handle={formatDeltaUsd(totalFundingUsd)}
+            renderContent={() => (
+              <>
+                {claimableAmountsItems.map((item, index) => (
+                  <div key={item}>{item}</div>
+                ))}
+              </>
+            )}
+          />
+        </div>
       </div>
     );
   }
@@ -142,7 +133,31 @@ export function ClaimModal(p: Props) {
       setIsVisible={onClose}
       label={t`Confirm Claim`}
     >
-      <div className="ConfirmationBox-main text-center">Claim {formatUsd(totalClaimableFundingUsd)}</div>
+      <div className="ConfirmationBox-main text-center">
+        <Trans>Claim {formatDeltaUsd(totalClaimableFundingUsd)}</Trans>
+      </div>
+      <div className="App-card-divider ClaimModal-divider" />
+      <div className="ClaimSettleModal-info-row">
+        <div className="flex">
+          <div className="Exchange-info-label ClaimSettleModal-checkbox-label">
+            <div className="items-top">
+              <Trans>MARKET</Trans>
+            </div>
+          </div>
+        </div>
+        <div className="ClaimSettleModal-info-label-usd">
+          <Tooltip
+            className="ClaimSettleModal-tooltip-text-grey"
+            position="right-top"
+            handle={t`FUNDING FEE`}
+            renderContent={() => (
+              <Trans>
+                <span className="text-white">Claimable Funding Fee.</span>
+              </Trans>
+            )}
+          />
+        </div>
+      </div>
       <div className="ClaimModal-content">{markets.map(renderMarketSection)}</div>
       <Button className="w-full" variant="primary-action" onClick={onSubmit} disabled={isSubmitting}>
         {isSubmitting ? t`Claiming...` : t`Claim`}

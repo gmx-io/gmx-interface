@@ -1,0 +1,29 @@
+.Claims-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.Claims-col {
+    justify-content: center;
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+}
+
+.Claims-col + .Claims-col {
+    margin-left: 3rem;
+}
+
+.Claims-col .muted {
+    margin-bottom: 0.2rem;
+}
+
+.Claims-claim-button {
+    margin-left: auto;
+}
+
+.Claims-col-title {
+    white-space: nowrap;
+    margin-bottom: 1.8rem;
+    width: 7rem;
+}

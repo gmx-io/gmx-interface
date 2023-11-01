@@ -54,6 +54,7 @@ export type MarketInfo = Market & {
 
   fundingFactor: BigNumber;
   fundingExponentFactor: BigNumber;
+  fundingIncreaseFactorPerSecond: BigNumber;
 
   totalBorrowingFees: BigNumber;
 

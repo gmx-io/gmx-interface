@@ -372,31 +372,37 @@ export function PositionSeller(p: Props) {
 
     setIsSubmitting(true);
 
-    createDecreaseOrderTxn(chainId, signer, {
-      account,
-      marketAddress: position.marketAddress,
-      initialCollateralAddress: position.collateralTokenAddress,
-      initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount || BigNumber.from(0),
-      receiveTokenAddress: receiveToken.address,
-      swapPath: swapAmounts?.swapPathStats?.swapPath || [],
-      sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
-      sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
-      isLong: position.isLong,
-      acceptablePrice: decreaseAmounts.acceptablePrice,
-      triggerPrice: isTrigger ? triggerPrice : undefined,
-      minOutputUsd: BigNumber.from(0),
-      decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
-      orderType,
-      referralCode: userReferralInfo?.referralCodeForTxn,
-      executionFee: executionFee.feeTokenAmount,
-      allowedSlippage,
-      indexToken: position.indexToken,
-      tokensData,
-      skipSimulation: p.shouldDisableValidation,
-      setPendingOrder,
-      setPendingTxns,
-      setPendingPosition,
-    })
+    createDecreaseOrderTxn(
+      chainId,
+      signer,
+      {
+        account,
+        marketAddress: position.marketAddress,
+        initialCollateralAddress: position.collateralTokenAddress,
+        initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount || BigNumber.from(0),
+        receiveTokenAddress: receiveToken.address,
+        swapPath: swapAmounts?.swapPathStats?.swapPath || [],
+        sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
+        sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
+        isLong: position.isLong,
+        acceptablePrice: decreaseAmounts.acceptablePrice,
+        triggerPrice: isTrigger ? triggerPrice : undefined,
+        minOutputUsd: BigNumber.from(0),
+        decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
+        orderType,
+        referralCode: userReferralInfo?.referralCodeForTxn,
+        executionFee: executionFee.feeTokenAmount,
+        allowedSlippage,
+        indexToken: position.indexToken,
+        tokensData,
+        skipSimulation: p.shouldDisableValidation,
+      },
+      {
+        setPendingOrder,
+        setPendingTxns,
+        setPendingPosition,
+      }
+    )
       .then(onClose)
       .finally(() => setIsSubmitting(false));
   }

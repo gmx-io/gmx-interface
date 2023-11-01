@@ -143,7 +143,7 @@ export function OrderEditor(p: Props) {
   const isRatioInverted = markRatio?.largestToken.address === fromToken?.address;
 
   const triggerRatio = useMemo(() => {
-    if (!markRatio) return undefined;
+    if (!markRatio || !isSwapOrderType(p.order.orderType)) return undefined;
 
     const ratio = parseValue(triggerRatioInputValue, USD_DECIMALS);
 
@@ -152,7 +152,7 @@ export function OrderEditor(p: Props) {
       largestToken: markRatio.largestToken,
       smallestToken: markRatio.smallestToken,
     } as TokensRatio;
-  }, [markRatio, triggerRatioInputValue]);
+  }, [markRatio, p.order.orderType, triggerRatioInputValue]);
 
   let minOutputAmount = p.order.minOutputAmount;
 
