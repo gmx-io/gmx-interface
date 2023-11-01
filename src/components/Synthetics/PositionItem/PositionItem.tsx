@@ -160,7 +160,10 @@ export function PositionItem(p: Props) {
                           {formatTokenAmount(
                             p.position.collateralAmount,
                             p.position.collateralToken.decimals,
-                            p.position.collateralToken.symbol
+                            p.position.collateralToken.symbol,
+                            {
+                              useCommas: true,
+                            }
                           )}{" "}
                           ({formatUsd(p.position.collateralUsd)})
                         </div>
