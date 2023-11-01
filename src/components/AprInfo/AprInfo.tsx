@@ -16,7 +16,7 @@ export function AprInfo({ apr, incentiveApr }: { apr: BigNumber | undefined; inc
         <StatsTooltipRow showDollar={false} label={t`Bonus APR`} value={`${formatAmount(incentiveApr, 2, 2)}%`} />
         <br />
         <Trans>
-          The Bonus APR is estimated to be airdropped ARB tokens. <ExternalLink href="#FIXME">Read more.</ExternalLink>
+          The Bonus APR is estimated to be airdropped ARB tokens. <ExternalLink href="#FIXME">Read more</ExternalLink>.
         </Trans>
       </>
     );
