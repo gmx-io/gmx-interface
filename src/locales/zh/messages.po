@@ -4477,7 +4477,11 @@ msgid "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, G
 msgstr "<0>GMX迁移</0>正在进行中,请迁移您的GMT, xGMT, GMT-USDG 和 xGMT-USDG 代币<1/>USDG 代币将继续像以前一样发挥作用，不需要迁移"
 
 #: src/components/AprInfo/AprInfo.tsx
-msgid "The Bonus APR is estimated to be airdropped ARB tokens. <0>Read more.</0>"
+#~ msgid "The Bonus APR is estimated to be airdropped ARB tokens. <0>Read more.</0>"
+#~ msgstr ""
+
+#: src/components/AprInfo/AprInfo.tsx
+msgid "The Bonus APR is estimated to be airdropped ARB tokens. <0>Read more</0>."
 msgstr ""
 
 #: src/components/Stake/GMXAprTooltip.tsx
