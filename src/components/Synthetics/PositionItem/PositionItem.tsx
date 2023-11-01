@@ -231,7 +231,10 @@ export function PositionItem(p: Props) {
           {`(${formatTokenAmount(
             p.position.remainingCollateralAmount,
             p.position.collateralToken?.decimals,
-            p.position.collateralToken?.symbol
+            p.position.collateralToken?.symbol,
+            {
+              useCommas: true,
+            }
           )})`}
         </div>
 
