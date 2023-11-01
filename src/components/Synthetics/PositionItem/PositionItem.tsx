@@ -93,11 +93,7 @@ export function PositionItem(p: Props) {
             />
             <StatsTooltipRow
               label={t`Accrued Negative Funding Fee`}
-              value={
-                `${p.position.pendingFundingFeesUsd.isZero() ? "-" : ""}${formatUsd(
-                  p.position.pendingFundingFeesUsd.mul(-1)
-                )}` || "..."
-              }
+              value={`-${formatUsd(p.position.pendingFundingFeesUsd)}` || "..."}
               showDollar={false}
               className="text-red"
             />
@@ -180,17 +176,13 @@ export function PositionItem(p: Props) {
                   <StatsTooltipRow
                     label={t`Accrued Negative Funding Fee`}
                     showDollar={false}
-                    value={
-                      `${p.position.pendingFundingFeesUsd.isZero() ? "-" : ""}${formatUsd(
-                        p.position.pendingFundingFeesUsd.mul(-1)
-                      )}` || "..."
-                    }
+                    value={`-${formatUsd(p.position.pendingFundingFeesUsd)}` || "..."}
                     className="text-red"
                   />
                   <StatsTooltipRow
                     label={t`Accrued Positive Funding Fee`}
                     showDollar={false}
-                    value={formatDeltaUsd(p.position.pendingClaimableFundingFeesUsd) || "..."}
+                    value={`+${formatDeltaUsd(p.position.pendingClaimableFundingFeesUsd)}` || "..."}
                     className="text-green"
                   />
                   <br />
