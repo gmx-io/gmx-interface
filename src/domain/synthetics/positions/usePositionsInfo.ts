@@ -34,14 +34,15 @@ export function usePositionsInfo(
     tokensData?: TokensData;
     pricesUpdatedAt?: number;
     showPnlInLeverage: boolean;
+    skipLocalReferralCode?: boolean;
   }
 ): PositionsInfoResult {
-  const { showPnlInLeverage, marketsInfoData, tokensData, account } = p;
+  const { showPnlInLeverage, marketsInfoData, tokensData, account, skipLocalReferralCode = false } = p;
 
   const { signer } = useWallet();
   const { positionsData } = usePositions(chainId, p);
   const { minCollateralUsd } = usePositionsConstants(chainId);
-  const userReferralInfo = useUserReferralInfo(signer, chainId, account);
+  const userReferralInfo = useUserReferralInfo(signer, chainId, account, skipLocalReferralCode);
 
   return useMemo(() => {
     if (!marketsInfoData || !tokensData || !positionsData || !minCollateralUsd) {

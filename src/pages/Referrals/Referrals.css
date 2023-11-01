@@ -251,6 +251,7 @@
 .referral-table td {
   padding: 0.625em;
   text-align: left;
+  white-space: nowrap;
 }
 
 .table-referral-code p {
@@ -258,7 +259,8 @@
   margin-left: 0.775rem;
   padding: 0;
 }
-.error {
+
+.AffiliateCode-error {
   margin: 0;
   padding: 0.775rem 0 1.5rem;
   color: #fa3c58;

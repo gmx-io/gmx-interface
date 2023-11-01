@@ -63,7 +63,7 @@ describe("TradeHistoryRow helpers", () => {
         text: "Execute Limit Order: Short ARB +$2,070.18, ",
       },
       {
-        text: "Triggered at: <$0.010, Execution Price: $0.837",
+        text: "Triggered at: < $0.010, Execution Price: $0.837",
         tooltipRows: [
           {
             label: "Order trigger price",
@@ -115,7 +115,7 @@ describe("TradeHistoryRow helpers", () => {
           {
             label: "Min required collateral",
             showDollar: false,
-            value: "<$0.01",
+            value: "< $0.01",
             key: "min-collateral",
           },
           {

@@ -8,6 +8,7 @@ import {
   claimableFundingAmountKey,
   fundingExponentFactorKey,
   fundingFactorKey,
+  fundingIncreaseFactorPerSecondKey,
   isMarketDisabledKey,
   maxPnlFactorKey,
   maxPoolAmountForDepositKey,
@@ -210,6 +211,10 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
               fundingExponentFactor: {
                 methodName: "getUint",
                 params: [fundingExponentFactorKey(marketAddress)],
+              },
+              fundingIncreaseFactorPerSecond: {
+                methodName: "getUint",
+                params: [fundingIncreaseFactorPerSecondKey(marketAddress)],
               },
               maxPnlFactorForTradersLong: {
                 methodName: "getUint",
@@ -434,6 +439,9 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
           borrowingExponentFactorShort: BigNumber.from(dataStoreValues.borrowingExponentFactorShort.returnValues[0]),
           fundingFactor: BigNumber.from(dataStoreValues.fundingFactor.returnValues[0]),
           fundingExponentFactor: BigNumber.from(dataStoreValues.fundingExponentFactor.returnValues[0]),
+          fundingIncreaseFactorPerSecond: BigNumber.from(
+            dataStoreValues.fundingIncreaseFactorPerSecond.returnValues[0]
+          ),
           pnlLongMax: BigNumber.from(poolValueInfoMax.longPnl),
           pnlLongMin: BigNumber.from(poolValueInfoMin.longPnl),
           pnlShortMax: BigNumber.from(poolValueInfoMax.shortPnl),

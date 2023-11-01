@@ -27,6 +27,7 @@ export const CUMULATIVE_BORROWING_FACTOR_KEY = hashString("CUMULATIVE_BORROWING_
 export const TOTAL_BORROWING_KEY = hashString("TOTAL_BORROWING");
 export const FUNDING_FACTOR_KEY = hashString("FUNDING_FACTOR");
 export const FUNDING_EXPONENT_FACTOR_KEY = hashString("FUNDING_EXPONENT_FACTOR");
+export const FUNDING_INCREASE_FACTOR_PER_SECOND = hashString("FUNDING_INCREASE_FACTOR_PER_SECOND");
 export const MAX_PNL_FACTOR_KEY = hashString("MAX_PNL_FACTOR");
 export const MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY = hashString("MAX_PNL_FACTOR_FOR_WITHDRAWALS");
 export const MAX_PNL_FACTOR_FOR_DEPOSITS_KEY = hashString("MAX_PNL_FACTOR_FOR_DEPOSITS");
@@ -140,6 +141,10 @@ export function fundingFactorKey(market: string) {
 
 export function fundingExponentFactorKey(market: string) {
   return hashData(["bytes32", "address"], [FUNDING_EXPONENT_FACTOR_KEY, market]);
+}
+
+export function fundingIncreaseFactorPerSecondKey(market: string) {
+  return hashData(["bytes32", "address"], [FUNDING_INCREASE_FACTOR_PER_SECOND, market]);
 }
 
 export function maxPnlFactorKey(pnlFactorType: string, market: string, isLong: boolean) {

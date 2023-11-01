@@ -29,13 +29,25 @@ msgstr "06 Jan 2022"
 msgid "24h Volume"
 msgstr "24h Volumen"
 
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-msgid "<0><1>{indexName}</1><2>[{poolName}]</2></0> <3>selected in order form</3>"
+#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
+msgid "<0><1>{eventTitle}</1> from <2>{0} {indexName} <3>[{poolName}]</3> Position</2></0>"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "<0>Buying GM: <1>{indexName}</1><2>[{poolName}]</2></0> <3>with {tokensText}</3>"
+msgstr ""
+
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+msgid "<0>Claimable Funding Fee.</0>"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "<0>GM Pools total value ({chainName}).</0>"
+msgstr ""
+
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+msgid "<0>GM: <1>{indexName}</1><2>[{poolName}]</2></0> <3>selected in order form</3>"
 msgstr ""
 
 #: src/components/Exchange/OrdersToa.js
@@ -49,6 +61,10 @@ msgstr "<0>Mehr Infos</0> über Gebühren."
 #: src/pages/PageNotFound/PageNotFound.js
 msgid "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
 msgstr "<0>Zurück zu </0><1>Homepage</1> <2>oder </2> <3>Traden</3>"
+
+#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
+msgid "<0>Selling GM: <1>{indexName}</1><2>[{poolName}]</2></0>"
+msgstr ""
 
 #: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
 msgid "<0>Switch to:</0>"
@@ -78,6 +94,10 @@ msgstr ""
 msgid "<0>You have an existing position with {0} as collateral. This Order will not be valid for that Position.</0><1>Switch to {1} collateral.</1>"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
+msgid "<0>You have an existing position with {0} as collateral. This action will not apply for that position.</0><1>Switch to {1} collateral.</1>"
+msgstr ""
+
 #: src/lib/contracts/transactionErrors.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr "<0>Dein Wallet ist nicht mit {0} verbunden.</0><1/><2>Wechsle zu {1}</2>"
@@ -97,6 +117,10 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "<0>{0} is required for collateral.</0><1>Swap amount from {1} to {2} exceeds {3} available liquidity. Reduce the \"Pay\" size, or change the \"Collateral In\" token.</1>"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
+msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1>"
 msgstr ""
 
 #: src/components/Synthetics/TVChart/TVChart.tsx
@@ -192,9 +216,17 @@ msgstr ""
 msgid "Account"
 msgstr "Konto"
 
+#: src/components/Synthetics/Claims/SettleAccruedCard.tsx
+msgid "Accrued"
+msgstr ""
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Borrow Fee"
+msgstr ""
+
+#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+msgid "Accrued Funding Fee."
 msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -204,6 +236,10 @@ msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Accrued Positive Funding Fee"
+msgstr ""
+
+#: src/components/Synthetics/Claims/SettleAccruedCard.tsx
+msgid "Accrued Positive Funding Fees for Positions not yet claimable. They will become available to claim by using the \"Settle\" button, or after the Position is increased, decreased or closed."
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -287,6 +323,10 @@ msgstr ""
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "Allowed Slippage"
 msgstr "Erlaubter Slippage"
+
+#: src/App/App.js
+msgid "Allowed Slippage below {0}% may result in failed orders."
+msgstr ""
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
@@ -427,6 +467,10 @@ msgstr "Verfügbar in deinem bevorzugten Netzwerk"
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
+
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "BUYABLE"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -621,8 +665,9 @@ msgstr ""
 msgid "Buy {swapTokenSymbol} on 1inch"
 msgstr "Kaufe {swapTokenSymbol} auf 1inch"
 
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Buying GM ({indexName}) with {tokensText}"
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "Buyable"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
@@ -695,7 +740,7 @@ msgstr ""
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
-#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
+#: src/components/Synthetics/Claims/ClaimableCard.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -763,19 +808,20 @@ msgstr "Anspruch übermittelt! <0>Status anzeigen.</0>"
 msgid "Claim submitted."
 msgstr "Anspruch übermittelt."
 
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+msgid "Claim {0}"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claim {wrappedTokenSymbol} Rewards"
 msgstr "Beanspruche {wrappedTokenSymbol} Belohnungen"
 
+#: src/components/Synthetics/Claims/ClaimableCard.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claimable"
 msgstr "Beanspruchbar"
-
-#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
-msgid "Claimable Funding"
-msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Claimable Rebates"
@@ -796,6 +842,11 @@ msgstr "Beanspruchen..."
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims"
+msgstr ""
+
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
+msgid "Claims (1)"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
@@ -914,10 +965,6 @@ msgid "Community Projects"
 msgstr "Community Projekte"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Community curated tweet collection"
-msgstr "Von der Community erstellte Tweet-Sammlung"
-
-#: src/pages/Ecosystem/Ecosystem.js
 msgid "Community-led Telegram groups."
 msgstr "Von der Gemeinschaft geführte Telegram-Gruppen."
 
@@ -971,6 +1018,10 @@ msgstr ""
 msgid "Confirm Long"
 msgstr "Bestätige Long"
 
+#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+msgid "Confirm Settle"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Confirm Short"
@@ -1017,6 +1068,10 @@ msgstr "Wallet verbinden"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
+msgstr ""
+
+#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+msgid "Consider selecting only Positions where the accrued Funding Fees exceed the gas spent to Settle, which is around {0} per each selected Position."
 msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
@@ -1163,6 +1218,8 @@ msgstr ""
 msgid "Currently, There is a high Swap Price Impact for the Order Swap path."
 msgstr ""
 
+#: src/pages/Ecosystem/Ecosystem.js
+#: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
@@ -1394,7 +1451,7 @@ msgstr ""
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: src/components/Exchange/PositionDropdown.js
+#: src/components/Exchange/PositionDropdown.tsx
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Edit Collateral"
@@ -1656,12 +1713,25 @@ msgstr ""
 msgid "Exit Price"
 msgstr "Exit-Preis"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Explore, analyze, and copy on-chain traders"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "FEES"
 msgstr "GEBÜHREN"
 
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+msgid "FUNDING FEE"
+msgstr ""
+
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "FUNDING RATE / 1h"
+msgstr ""
+
+#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
+msgid "Failed Settlement of Funding Fees"
 msgstr ""
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
@@ -1800,16 +1870,12 @@ msgstr ""
 msgid "Funding Fee Rate"
 msgstr ""
 
-#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
-msgid "Funding Fees"
-msgstr ""
-
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "Funding Rate / 1h"
 msgstr ""
 
-#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
-msgid "Funding fee"
+#: src/components/Synthetics/Claims/ClaimableCardUI.tsx
+msgid "Funding fees"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -1860,6 +1926,10 @@ msgstr ""
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "GM Token pricing includes positions' Pending PnL, Impact Pool Amount and Borrow Fees."
+msgstr ""
+
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "GM can be sold for {0} and {1} for this market up to the specified selling caps. The remaining tokens in the pool are reserved for currently open Positions."
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
@@ -2044,11 +2114,11 @@ msgstr "Falsches Netzwerk"
 msgid "Increase"
 msgstr "Erhöhen"
 
-#: src/components/Exchange/PositionDropdown.js
+#: src/components/Exchange/PositionDropdown.tsx
 msgid "Increase Size (Limit)"
 msgstr ""
 
-#: src/components/Exchange/PositionDropdown.js
+#: src/components/Exchange/PositionDropdown.tsx
 msgid "Increase Size (Market)"
 msgstr ""
 
@@ -2440,7 +2510,7 @@ msgstr "Liquiditätsdaten nicht geladen"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Synthetics/ClaimHistory/ClaimHistory.tsx
+#: src/components/Synthetics/Claims/Claims.tsx
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -2475,6 +2545,9 @@ msgstr "Lädt..."
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
+#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
+#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -2486,6 +2559,8 @@ msgstr "Lädt..."
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
@@ -2550,6 +2625,7 @@ msgstr "Sieht so aus, als hättest du keinen Empfehlungscode, den du weitergeben
 msgid "Loss"
 msgstr "Verlust"
 
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "MARKET"
 msgstr ""
@@ -2559,14 +2635,6 @@ msgstr ""
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
 msgstr "MAX"
-
-#: src/pages/Ecosystem/Ecosystem.js
-msgid "MEV Optimizer"
-msgstr "MEV-Optimierer"
-
-#: src/components/Synthetics/GmList/GmList.tsx
-msgid "MINTABLE"
-msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2606,9 +2674,6 @@ msgstr "Mark-Preis"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
-#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
@@ -2741,6 +2806,8 @@ msgstr "Die max. Slippagegenauigkeit beträgt 0,01 %."
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "Max {0}"
 msgstr ""
 
@@ -2871,11 +2938,6 @@ msgstr "Min. Empfangen"
 msgid "Minimum received"
 msgstr "Min. Empfangen"
 
-#: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/MarketStats/MarketStats.tsx
-msgid "Mintable"
-msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Dashboard/DashboardV2.js
@@ -2939,7 +3001,7 @@ msgid "Networks and Settings"
 msgstr "Netzwerke und Einstellungen"
 
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/ClaimHistory/ClaimHistory.tsx
+#: src/components/Synthetics/Claims/Claims.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Next"
 msgstr "Weiter"
@@ -2948,7 +3010,7 @@ msgstr "Weiter"
 msgid "No PnLs found"
 msgstr "Keine PnLs gefunden"
 
-#: src/components/Synthetics/ClaimHistory/ClaimHistory.tsx
+#: src/components/Synthetics/Claims/Claims.tsx
 msgid "No claims yet"
 msgstr ""
 
@@ -3186,6 +3248,10 @@ msgstr "POOL"
 msgid "POOLS"
 msgstr ""
 
+#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+msgid "POSITION"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
@@ -3291,6 +3357,7 @@ msgstr "PnL nach Gebühren"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
 #: src/components/Synthetics/TradeBox/MarketPoolSelectorRow.tsx
@@ -3310,6 +3377,7 @@ msgid "Pools"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
+#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "Position"
 msgstr "Position"
@@ -3341,12 +3409,12 @@ msgstr "Positionen ({0})"
 msgid "Positions{0}"
 msgstr ""
 
-#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
-msgid "Positive Funding Fees for a position become claimable after the position is increased, decreased or closed."
+#: src/components/Synthetics/Claims/ClaimableCard.tsx
+msgid "Positive Funding Fees for a Position become claimable after the Position is increased, decreased or closed; or settled its fees with the option under \"Accrued\"."
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/ClaimHistory/ClaimHistory.tsx
+#: src/components/Synthetics/Claims/Claims.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Prev"
 msgstr "Prev"
@@ -3646,6 +3714,10 @@ msgstr "Referrals"
 msgid "Request"
 msgstr ""
 
+#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
+msgid "Request Settlement of Funding Fees"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid "Request decrease {0} {longOrShortText}, -{1} USD, Acceptable Price: {2} {3} USD"
 msgstr "Reduzierungsanfrage {0} {longOrShortText}, -{1} USD, Akzeptabler Preis: {2} {3} USD"
@@ -3748,9 +3820,13 @@ msgstr "Token suchen"
 msgid "Select Language"
 msgstr "Sprache auswählen"
 
-#: src/components/Exchange/PositionDropdown.js
+#: src/components/Exchange/PositionDropdown.tsx
 msgid "Select Market"
 msgstr "Markt wählen"
+
+#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+msgid "Select Positions"
+msgstr ""
 
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
 msgid "Select a Market"
@@ -3841,8 +3917,8 @@ msgstr ""
 msgid "Sell submitted!"
 msgstr "Verkauf übermittelt!"
 
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-msgid "Selling GM ({indexName})"
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
+msgid "Sellable"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
@@ -3873,7 +3949,11 @@ msgstr ""
 msgid "Sending order request"
 msgstr ""
 
-#: src/components/Exchange/PositionDropdown.js
+#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
+msgid "Sending settle request"
+msgstr ""
+
+#: src/components/Exchange/PositionDropdown.tsx
 msgid "Set TP/SL"
 msgstr ""
 
@@ -3884,11 +3964,32 @@ msgstr ""
 msgid "Settings"
 msgstr "Einstellungen"
 
+#: src/components/Synthetics/Claims/SettleAccruedCard.tsx
+#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+msgid "Settle"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
+msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
+msgstr ""
+
+#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
+msgid "Settled Funding Fees"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
+msgid "Settling Positions' Fees"
+msgstr ""
+
+#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+msgid "Settling..."
+msgstr ""
+
 #: src/components/Exchange/PositionsList.js
 msgid "Share"
 msgstr "Teilen"
 
-#: src/components/Exchange/PositionDropdown.js
+#: src/components/Exchange/PositionDropdown.tsx
 #: src/components/Exchange/PositionShare.tsx
 msgid "Share Position"
 msgstr "Position teilen"
@@ -3914,6 +4015,9 @@ msgstr "Position teilen"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
+#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
+#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -3925,6 +4029,8 @@ msgstr "Position teilen"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
@@ -4508,6 +4614,10 @@ msgstr "Dieser Code wurde von jemand anderem auf {0} genommen, du wirst keine Ra
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 msgstr "Dieser Code ist noch nicht auf {0} registriert, du wirst dort keine Rabatte erhalten.<0/><1/>Schalte dein Netzwerk um, um diesen Code auf {1} zu erstellen."
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "This market uses an Adaptive Funding Rate. The Funding Rate will adjust over time depending on the ratio of longs and shorts.<0/><1/><2>Read more</2>."
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
 msgstr "Diese Position wurde liquidiert, da die maximale Hebelwirkung von 100x überschritten wurde."
@@ -4568,10 +4678,6 @@ msgstr "Insgesamt migrierte Assets"
 #: src/pages/Stake/StakeV1.js
 msgid "Total Assets Staked"
 msgstr "Insgesamt gestakete Assets"
-
-#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
-msgid "Total Claimable"
-msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Total Fees"
@@ -5334,16 +5440,18 @@ msgstr ""
 msgid "You have an existing position with {0} as collateral."
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
-msgid "You have an existing position with {0} as collateral. <0>Switch to {1} collateral.</0>"
-msgstr ""
-
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position."
 msgstr ""
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "You have an existing position with {0} as collateral. This action will not apply for that position."
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.ts
-msgid "You have an existing {longText} position with {0} as Collateral."
+msgid ""
+"You have an existing {longText} position with {0} as Collateral. This Order will not\n"
+"be valid for that Position."
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -5440,6 +5548,10 @@ msgstr ""
 msgid "fee"
 msgstr "Gebühren"
 
+#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
+msgid "from"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "hide"
@@ -5479,6 +5591,10 @@ msgstr "Zeit zur Liq"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "view"
 msgstr "Ansicht"
+
+#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
+msgid "{0, plural, one {# Position} other {# Positions}}"
+msgstr ""
 
 #: src/pages/Exchange/Exchange.js
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -5542,15 +5658,15 @@ msgid "{0} Required"
 msgstr "{0} Erforderlich"
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
-msgid "{0} and {1} can be used to mint GM for this market up to the specified minting caps."
+msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
-msgid "{0} and {1} can be used to mint GM tokens for this market up to the specified minting caps."
+msgid "{0} and {1} can be used to buy GM tokens for this market up to the specified buying caps."
 msgstr ""
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
-msgid "{0} can be used to mint GM for this market up to the specified minting caps."
+msgid "{0} can be used to buy GM for this market up to the specified buying caps."
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5644,6 +5760,10 @@ msgstr "{chainName} Gesamt-Statistiken beginnen ab {totalStatsStartDate}.<0/> F�
 msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr ""
 
+#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
+msgid "{eventTitle} from"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
@@ -5712,6 +5832,18 @@ msgstr ""
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} canceled"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
+msgid "{positionName} Failed to settle"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
+msgid "{positionName} Fees settled"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
+msgid "{positionName} Fees settling"
 msgstr ""
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
