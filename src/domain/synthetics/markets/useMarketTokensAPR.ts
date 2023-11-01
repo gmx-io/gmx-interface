@@ -17,7 +17,7 @@ type TimeIntervalQuery = {
 };
 
 type RawCollectedFees = {
-  cummulativeFeeUsdPerPoolValue: string;
+  cumulativeFeeUsdPerPoolValue: string;
 };
 
 type MarketTokensAPRResult = {
@@ -53,7 +53,7 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
                 },
                 first: 1
             ) {
-                cummulativeFeeUsdPerPoolValue
+                cumulativeFeeUsdPerPoolValue
             }
 
             _${marketAddress}_recent: collectedMarketFeesInfos(
@@ -65,7 +65,7 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
               },
               first: 1
           ) {
-              cummulativeFeeUsdPerPoolValue
+              cumulativeFeeUsdPerPoolValue
           }
         `;
       };
@@ -78,16 +78,17 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
         const recentFees = response[`_${marketAddress}_recent`] as RawCollectedFees[];
 
         const lteStartOfPeriodFeePerPoolValue =
-          bigNumberify(lteStartOfPeriodFees[0]!.cummulativeFeeUsdPerPoolValue) ?? BigNumber.from(0);
-        const recentFeePerPoolValue = bigNumberify(recentFees[0]!.cummulativeFeeUsdPerPoolValue);
+          bigNumberify(lteStartOfPeriodFees[0]!.cumulativeFeeUsdPerPoolValue) ?? BigNumber.from(0);
+        const recentFeePerPoolValue = bigNumberify(recentFees[0]!.cumulativeFeeUsdPerPoolValue);
 
         if (!recentFeePerPoolValue) {
           acc[marketAddress] = BigNumber.from(0);
           return acc;
         }
 
-        const monthlyIncomePercentage = recentFeePerPoolValue.sub(lteStartOfPeriodFeePerPoolValue);
-        const apr = monthlyIncomePercentage.mul(12).div(expandDecimals(1, 26));
+        const incomePercentageForPeriod = recentFeePerPoolValue.sub(lteStartOfPeriodFeePerPoolValue);
+        const yearMultiplier = Math.floor(365 / daysConsidered);
+        const apr = incomePercentageForPeriod.mul(yearMultiplier).div(expandDecimals(1, 26));
 
         acc[marketAddress] = apr;
 
