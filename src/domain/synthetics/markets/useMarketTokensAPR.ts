@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { differenceInHours, startOfDay, sub } from "date-fns";
+import { sub } from "date-fns";
 import { BigNumber } from "ethers";
 import { bigNumberify, expandDecimals } from "lib/numbers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
@@ -9,12 +9,6 @@ import { useMarketsInfo } from ".";
 import { MarketTokensAPRData } from "./types";
 import { useMarketTokensData } from "./useMarketTokensData";
 import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
-
-type TimeIntervalQuery = {
-  period: "1d" | "1h";
-  timestampGroup_lt?: number;
-  timestampGroup_gte?: number;
-};
 
 type RawCollectedFees = {
   cumulativeFeeUsdPerPoolValue: string;
@@ -112,38 +106,4 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
     marketsTokensAPRData: data?.marketsTokensAPRData,
     avgMarketsAPR: data?.avgMarketsAPR,
   };
-}
-
-export function getIntervalsByTime(origin: Date, daysNumber = 30): TimeIntervalQuery[] {
-  const dayStart = startOfDay(origin);
-  const dayStartInSeconds = Math.floor(dayStart.valueOf() / 1000);
-  const hoursPassed = differenceInHours(origin, dayStart);
-  const secondsInDayBeforeFullPeriod = 60 * 60 * 24 * (daysNumber - 1);
-  const secondsInFullPeriod = 60 * 60 * 24 * daysNumber;
-
-  if (hoursPassed === 0) {
-    return [
-      {
-        period: "1d",
-        timestampGroup_gte: dayStartInSeconds - secondsInFullPeriod,
-      },
-    ];
-  }
-
-  return [
-    {
-      period: "1h",
-      timestampGroup_gte: dayStartInSeconds,
-    },
-    {
-      period: "1d",
-      timestampGroup_lt: dayStartInSeconds,
-      timestampGroup_gte: dayStartInSeconds - secondsInDayBeforeFullPeriod,
-    },
-    {
-      period: "1h",
-      timestampGroup_lt: dayStartInSeconds - secondsInDayBeforeFullPeriod,
-      timestampGroup_gte: Math.floor(sub(origin, { days: daysNumber }).valueOf() / 1000),
-    },
-  ];
 }
