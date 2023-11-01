@@ -88,7 +88,7 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "incentives-launch",
-    title: "Incentives are live now!",
+    title: "Incentives are live",
     isActive: true,
     validTill: "31 Oct 2024, 12:00",
     bodyText: "Arbitrum STIP incentives are live for Arbitrum GM pools.",
