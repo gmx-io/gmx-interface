@@ -48,10 +48,18 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
     fetcher: async () => {
       const nowInSecods = Math.floor(Date.now() / 1000);
 
-      const arbTokenAddress = getTokenBySymbol(chainId, "ARB").address;
-      const arbTokenPrice = tokensData
-        ? tokensData[arbTokenAddress]?.prices?.minPrice ?? BigNumber.from(0)
-        : BigNumber.from(0);
+      let arbTokenAddress: null | string = null;
+      try {
+        arbTokenAddress = getTokenBySymbol(chainId, "ARB").address;
+      } catch (err) {}
+      let arbTokenPrice = BigNumber.from(0);
+
+      if (arbTokenAddress) {
+        arbTokenPrice = tokensData
+          ? tokensData[arbTokenAddress]?.prices?.minPrice ?? BigNumber.from(0)
+          : BigNumber.from(0);
+      }
+
       let shouldCalcBonusApr = arbTokenPrice.gt(0) && (chainId === ARBITRUM || chainId === ARBITRUM_GOERLI);
 
       const marketFeesQuery = (marketAddress: string, tokenAddress: string) => `
