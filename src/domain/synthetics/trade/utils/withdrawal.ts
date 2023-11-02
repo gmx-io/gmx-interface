@@ -50,10 +50,10 @@ export function getWithdrawalAmounts(p: {
 
     const longSwapFeeUsd = applyFactor(values.longTokenUsd, p.marketInfo.swapFeeFactorForNegativeImpact);
     const shortSwapFeeUsd = applyFactor(values.shortTokenUsd, p.marketInfo.swapFeeFactorForNegativeImpact);
-    const longUiFeeUsd = applyFactor(values.longTokenUsd, uiFeeFactor);
+    const longUiFeeUsd = applyFactor(values.marketTokenUsd, uiFeeFactor);
     const shortUiFeeUsd = applyFactor(values.shortTokenUsd, uiFeeFactor);
 
-    values.uiFeeUsd = longUiFeeUsd.add(shortUiFeeUsd);
+    values.uiFeeUsd = applyFactor(values.marketTokenUsd, uiFeeFactor);
     values.swapFeeUsd = longSwapFeeUsd.add(shortSwapFeeUsd);
 
     values.longTokenUsd = values.longTokenUsd.sub(longSwapFeeUsd).sub(longUiFeeUsd);
