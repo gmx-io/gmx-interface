@@ -4481,7 +4481,11 @@ msgstr "Die <0>GMX-Migration</0> ist im Gange, bitte migriere deine GMT-, xGMT-,
 #~ msgstr ""
 
 #: src/components/AprInfo/AprInfo.tsx
-msgid "The Bonus APR is estimated to be airdropped ARB tokens. <0>Read more</0>."
+#~ msgid "The Bonus APR is estimated to be airdropped ARB tokens. <0>Read more</0>."
+#~ msgstr ""
+
+#: src/components/AprInfo/AprInfo.tsx
+msgid "The Bonus APR is to be airdropped as ARB tokens. <0>Read more</0>."
 msgstr ""
 
 #: src/components/Stake/GMXAprTooltip.tsx
