@@ -59,9 +59,9 @@ export function GmFees(p: Props) {
                           <Trans>UI Fee</Trans>:
                         </>
                       }
-                      value={`${formatDeltaUsd(p.uiFee?.deltaUsd)} (${removeTrailingZeros(
-                        formatAmount(p.uiFee.bps, 4, 6)
-                      )}%)`}
+                      value={`${formatDeltaUsd(p.uiFee?.deltaUsd)} (${
+                        p.uiFee?.deltaUsd.lt(0) ? "-" : "+"
+                      }${removeTrailingZeros(formatAmount(p.uiFee.bps, 4, 6))}%)`}
                       showDollar={false}
                       className="text-red"
                     />
