@@ -96,7 +96,7 @@ export const appEventsData: EventData[] = [
     buttons: [
       {
         text: "More Info.",
-        link: "#FIXME",
+        link: "https://www.notion.so/gmxio/Arbitrum-S-T-I-P-Grant-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3",
         newTab: true,
       },
     ],
