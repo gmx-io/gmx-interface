@@ -4,7 +4,7 @@ import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ExecutionFee, FeeItem } from "domain/synthetics/fees";
-import { formatAmount, formatDeltaUsd, formatTokenAmountWithUsd, removeTrailingZeros } from "lib/numbers";
+import { formatDeltaUsd, formatTokenAmountWithUsd } from "lib/numbers";
 import "./GmFees.scss";
 
 type Props = {
@@ -59,9 +59,7 @@ export function GmFees(p: Props) {
                           <Trans>UI Fee</Trans>:
                         </>
                       }
-                      value={`${formatDeltaUsd(p.uiFee?.deltaUsd)} (${
-                        p.uiFee?.deltaUsd.lt(0) ? "-" : "+"
-                      }${removeTrailingZeros(formatAmount(p.uiFee.bps, 4, 6))}%)`}
+                      value={formatDeltaUsd(p.uiFee.deltaUsd, p.uiFee.bps)!}
                       showDollar={false}
                       className="text-red"
                     />

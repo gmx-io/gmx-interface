@@ -2,7 +2,8 @@ import { TokenData, TokensRatio, convertToTokenAmount, convertToUsd, getAmountBy
 import { BigNumber } from "ethers";
 import { FindSwapPath, SwapAmounts } from "../types";
 import { getIsEquivalentTokens } from "domain/tokens";
-import { getTotalSwapVolumeFromSwapStats, getUiFee } from "domain/synthetics/fees";
+import { getTotalSwapVolumeFromSwapStats } from "domain/synthetics/fees";
+import { applyFactor } from "lib/numbers";
 
 export function getSwapAmountsByFromValue(p: {
   tokenIn: TokenData;
@@ -11,7 +12,7 @@ export function getSwapAmountsByFromValue(p: {
   triggerRatio?: TokensRatio;
   isLimit: boolean;
   findSwapPath: FindSwapPath;
-  uiFeeFactor?: BigNumber;
+  uiFeeFactor: BigNumber;
 }): SwapAmounts {
   const { tokenIn, tokenOut, amountIn, triggerRatio, isLimit, findSwapPath, uiFeeFactor } = p;
 
@@ -59,7 +60,7 @@ export function getSwapAmountsByFromValue(p: {
   const swapPathStats = findSwapPath(defaultAmounts.usdIn, { byLiquidity: isLimit });
 
   const totalSwapVolume = getTotalSwapVolumeFromSwapStats(swapPathStats?.swapSteps);
-  const swapUiFeeUsd = getUiFee(totalSwapVolume, uiFeeFactor);
+  const swapUiFeeUsd = applyFactor(totalSwapVolume, uiFeeFactor);
   const swapUiFeeAmount = convertToTokenAmount(swapUiFeeUsd, tokenOut.decimals, priceOut)!;
 
   if (!swapPathStats) {
@@ -117,15 +118,15 @@ export function getSwapAmountsByToValue(p: {
   triggerRatio?: TokensRatio;
   isLimit: boolean;
   findSwapPath: FindSwapPath;
-  uiFeeFactor?: BigNumber;
+  uiFeeFactor: BigNumber;
 }): SwapAmounts {
-  const { tokenIn, tokenOut, amountOut, triggerRatio, isLimit, findSwapPath } = p;
+  const { tokenIn, tokenOut, amountOut, triggerRatio, isLimit, findSwapPath, uiFeeFactor } = p;
 
   const priceIn = tokenIn.prices.minPrice;
   const priceOut = tokenOut.prices.maxPrice;
 
   const usdOut = convertToUsd(amountOut, tokenOut.decimals, priceOut)!;
-  const uiFeeUsd = getUiFee(usdOut, p.uiFeeFactor);
+  const uiFeeUsd = applyFactor(usdOut, uiFeeFactor);
 
   const minOutputAmount = amountOut;
 

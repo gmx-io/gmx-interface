@@ -3,7 +3,6 @@ import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics
 import { BigNumber } from "ethers";
 import { applyFactor } from "lib/numbers";
 import { WitdhrawalAmounts } from "../types";
-import { getUiFee } from "domain/synthetics/fees";
 
 export function getWithdrawalAmounts(p: {
   marketInfo: MarketInfo;
@@ -11,7 +10,7 @@ export function getWithdrawalAmounts(p: {
   marketTokenAmount: BigNumber;
   longTokenAmount: BigNumber;
   shortTokenAmount: BigNumber;
-  uiFeeFactor?: BigNumber;
+  uiFeeFactor: BigNumber;
   strategy: "byMarketToken" | "byLongCollateral" | "byShortCollateral";
 }) {
   const { marketInfo, marketToken, marketTokenAmount, longTokenAmount, shortTokenAmount, uiFeeFactor, strategy } = p;
@@ -51,8 +50,8 @@ export function getWithdrawalAmounts(p: {
 
     const longSwapFeeUsd = applyFactor(values.longTokenUsd, p.marketInfo.swapFeeFactorForNegativeImpact);
     const shortSwapFeeUsd = applyFactor(values.shortTokenUsd, p.marketInfo.swapFeeFactorForNegativeImpact);
-    const longUiFeeUsd = getUiFee(values.longTokenUsd, uiFeeFactor);
-    const shortUiFeeUsd = getUiFee(values.shortTokenUsd, uiFeeFactor);
+    const longUiFeeUsd = applyFactor(values.longTokenUsd, uiFeeFactor);
+    const shortUiFeeUsd = applyFactor(values.shortTokenUsd, uiFeeFactor);
 
     values.uiFeeUsd = longUiFeeUsd.add(shortUiFeeUsd);
     values.swapFeeUsd = longSwapFeeUsd.add(shortSwapFeeUsd);

@@ -1,6 +1,6 @@
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { UserReferralInfo } from "domain/referrals";
-import { getPositionFee, getUiFee } from "domain/synthetics/fees";
+import { getPositionFee } from "domain/synthetics/fees";
 import { Market, MarketInfo } from "domain/synthetics/markets";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { PositionInfo, getLeverage, getLiquidationPrice, getPositionPnlUsd } from "domain/synthetics/positions";
@@ -25,7 +25,7 @@ export function getDecreasePositionAmounts(p: {
   userReferralInfo: UserReferralInfo | undefined;
   minCollateralUsd: BigNumber;
   minPositionSizeUsd: BigNumber;
-  uiFeeFactor?: BigNumber;
+  uiFeeFactor: BigNumber;
 }) {
   const {
     marketInfo,
@@ -135,7 +135,7 @@ export function getDecreasePositionAmounts(p: {
 
     values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
     values.feeDiscountUsd = positionFeeInfo.discountUsd;
-    values.uiFeeUsd = getUiFee(values.sizeDeltaUsd, uiFeeFactor);
+    values.uiFeeUsd = applyFactor(values.sizeDeltaUsd, uiFeeFactor);
 
     const totalFeesUsd = BigNumber.from(0)
       .add(values.positionFeeUsd)
@@ -231,7 +231,7 @@ export function getDecreasePositionAmounts(p: {
 
   values.positionFeeUsd = estimatedPositionFeeCost.usd;
   values.feeDiscountUsd = estimatedDiscountCost.usd;
-  values.uiFeeUsd = getUiFee(values.sizeDeltaUsd, uiFeeFactor);
+  values.uiFeeUsd = applyFactor(values.sizeDeltaUsd, uiFeeFactor);
 
   const borrowFeeCost = estimateCollateralCost(
     position.pendingBorrowingFeesUsd,
@@ -259,7 +259,7 @@ export function getDecreasePositionAmounts(p: {
     });
 
     values.swapProfitFeeUsd = swapProfitStats.swapFeeUsd.add(swapProfitStats.priceImpactDeltaUsd.mul(-1));
-    values.swapUiFeeUsd = getUiFee(swapProfitStats.usdIn, uiFeeFactor);
+    values.swapUiFeeUsd = applyFactor(swapProfitStats.usdIn, uiFeeFactor);
   } else {
     values.swapProfitFeeUsd = BigNumber.from(0);
   }

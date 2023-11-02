@@ -8,13 +8,7 @@ import { ExecutionFee, FeeItem, SwapFeeItem } from "domain/synthetics/fees";
 import { TradeFeesType } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import {
-  formatAmount,
-  formatDeltaUsd,
-  formatPercentage,
-  formatTokenAmountWithUsd,
-  removeTrailingZeros,
-} from "lib/numbers";
+import { formatDeltaUsd, formatPercentage, formatTokenAmountWithUsd } from "lib/numbers";
 import { ReactNode, useMemo } from "react";
 import "./TradeFeesRow.scss";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -130,12 +124,11 @@ export function TradeFeesRow(p: Props) {
             <>
               <div className="text-white">{t`UI Fee`}:</div>
               <div>
-                ({removeTrailingZeros(formatAmount(p.uiFee.bps.abs(), 4, 6))}% of{" "}
-                {p.feesType === "swap" ? "swap amount" : "position size"})
+                ({formatPercentage(p.uiFee.bps.abs())} of {p.feesType === "swap" ? "swap amount" : "position size"})
               </div>
             </>
           ),
-          value: `${formatDeltaUsd(p.uiFee?.deltaUsd)}`,
+          value: formatDeltaUsd(p.uiFee.deltaUsd),
           className: "text-red",
         }
       : undefined;
@@ -146,10 +139,10 @@ export function TradeFeesRow(p: Props) {
           label: (
             <>
               <div className="text-white">{p.feesType === "swap" ? t`UI Fee` : t`Swap UI Fee`}:</div>
-              <div>({removeTrailingZeros(formatAmount(p.uiSwapFee.bps.abs(), 4, 6))}% of swap amount)</div>
+              <div>({formatPercentage(p.uiSwapFee.bps.abs())} of swap amount)</div>
             </>
           ),
-          value: `${formatDeltaUsd(p.uiSwapFee?.deltaUsd)}`,
+          value: formatDeltaUsd(p.uiSwapFee.deltaUsd),
           className: "text-red",
         }
       : undefined;

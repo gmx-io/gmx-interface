@@ -22,14 +22,14 @@ export function getPositionFee(
   sizeDeltaUsd: BigNumber,
   forPositiveImpact: boolean,
   referralInfo: { totalRebateFactor: BigNumber; discountFactor: BigNumber } | undefined,
-  uiFeeFactor?: BigNumber | undefined
+  uiFeeFactor?: BigNumber
 ) {
   const factor = forPositiveImpact
     ? marketInfo.positionFeeFactorForPositiveImpact
     : marketInfo.positionFeeFactorForNegativeImpact;
 
   let positionFeeUsd = applyFactor(sizeDeltaUsd, factor);
-  const uiFeeUsd = getUiFee(sizeDeltaUsd, uiFeeFactor);
+  const uiFeeUsd = applyFactor(sizeDeltaUsd, uiFeeFactor || BigNumber.from(0));
 
   if (!referralInfo) {
     return { positionFeeUsd, discountUsd: BigNumber.from(0), totalRebateUsd: BigNumber.from(0) };
@@ -127,28 +127,6 @@ export function getTotalFeeItem(feeItems: (FeeItem | undefined)[]): FeeItem {
   });
 
   return totalFeeItem;
-}
-
-export function getUiFee(size?: BigNumber, feeFactor?: BigNumber): BigNumber {
-  if (!size || !feeFactor || size?.eq(0) || feeFactor?.eq(0)) {
-    return BigNumber.from(0);
-  }
-
-  return applyFactor(size, feeFactor);
-}
-
-export function getUiFeeItem(size?: BigNumber, feeFactor?: BigNumber): FeeItem | undefined {
-  if (!size || !feeFactor || size?.eq(0) || feeFactor?.eq(0)) {
-    return;
-  }
-
-  const decimals = 6;
-  const feeUsd = applyFactor(size, feeFactor);
-  const factor = feeFactor.mul(Math.pow(10, decimals)).div(PRECISION);
-  return {
-    deltaUsd: feeUsd,
-    bps: factor,
-  };
 }
 
 export function getTotalSwapVolumeFromSwapStats(swapSteps?: SwapStats[]) {

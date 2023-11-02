@@ -1,8 +1,9 @@
-import { applySwapImpactWithCap, getPriceImpactForSwap, getSwapFee, getUiFee } from "domain/synthetics/fees";
+import { applySwapImpactWithCap, getPriceImpactForSwap, getSwapFee } from "domain/synthetics/fees";
 import { MarketInfo, marketTokenAmountToUsd, usdToMarketTokenAmount } from "domain/synthetics/markets";
 import { TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { DepositAmounts } from "../types";
+import { applyFactor } from "lib/numbers";
 
 export function getDepositAmounts(p: {
   marketInfo: MarketInfo;
@@ -15,7 +16,7 @@ export function getDepositAmounts(p: {
   strategy: "byCollaterals" | "byMarketToken";
   includeLongToken: boolean;
   includeShortToken: boolean;
-  uiFeeFactor?: BigNumber;
+  uiFeeFactor: BigNumber;
 }): DepositAmounts {
   const {
     marketInfo,
@@ -70,7 +71,7 @@ export function getDepositAmounts(p: {
       const swapFeeUsd = getSwapFee(marketInfo, values.longTokenUsd, values.swapPriceImpactDeltaUsd.gt(0));
       values.swapFeeUsd = values.swapFeeUsd.add(swapFeeUsd);
 
-      const uiFeeUsd = getUiFee(values.longTokenUsd, uiFeeFactor);
+      const uiFeeUsd = applyFactor(values.longTokenUsd, uiFeeFactor);
       values.uiFeeUsd = values.uiFeeUsd.add(uiFeeUsd);
 
       values.marketTokenAmount = values.marketTokenAmount.add(
@@ -91,7 +92,7 @@ export function getDepositAmounts(p: {
       const swapFeeUsd = getSwapFee(marketInfo, values.shortTokenUsd, values.swapPriceImpactDeltaUsd.gt(0));
       values.swapFeeUsd = values.swapFeeUsd.add(swapFeeUsd);
 
-      const uiFeeUsd = getUiFee(values.shortTokenUsd, uiFeeFactor);
+      const uiFeeUsd = applyFactor(values.shortTokenUsd, uiFeeFactor);
       values.uiFeeUsd = values.uiFeeUsd.add(uiFeeUsd);
 
       values.marketTokenAmount = values.marketTokenAmount.add(
@@ -141,7 +142,7 @@ export function getDepositAmounts(p: {
     const swapFeeUsd = getSwapFee(marketInfo, values.marketTokenUsd, values.swapPriceImpactDeltaUsd.gt(0));
     values.swapFeeUsd = values.swapFeeUsd.add(swapFeeUsd);
 
-    const uiFeeUsd = getUiFee(values.marketTokenUsd, uiFeeFactor);
+    const uiFeeUsd = applyFactor(values.marketTokenUsd, uiFeeFactor);
     values.uiFeeUsd = values.uiFeeUsd.add(uiFeeUsd);
 
     const totalFee = values.swapFeeUsd.add(values.uiFeeUsd);

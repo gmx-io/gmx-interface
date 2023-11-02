@@ -1,10 +1,5 @@
 import { UserReferralInfo } from "domain/referrals";
-import {
-  getPositionFee,
-  getPriceImpactForPosition,
-  getTotalSwapVolumeFromSwapStats,
-  getUiFee,
-} from "domain/synthetics/fees";
+import { getPositionFee, getPriceImpactForPosition, getTotalSwapVolumeFromSwapStats } from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
 import { OrderType } from "domain/synthetics/orders";
 import {
@@ -21,6 +16,7 @@ import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { FindSwapPath, IncreasePositionAmounts, NextPositionValues } from "../types";
 import { getAcceptablePriceInfo, getMarkPrice, getTriggerThresholdType } from "./prices";
 import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "./swap";
+import { applyFactor } from "lib/numbers";
 
 export function getIncreasePositionAmounts(p: {
   marketInfo: MarketInfo;
@@ -37,7 +33,7 @@ export function getIncreasePositionAmounts(p: {
   userReferralInfo: UserReferralInfo | undefined;
   strategy: "leverageBySize" | "leverageByCollateral" | "independent";
   findSwapPath: FindSwapPath;
-  uiFeeFactor?: BigNumber;
+  uiFeeFactor: BigNumber;
 }): IncreasePositionAmounts {
   const {
     marketInfo,
@@ -135,6 +131,7 @@ export function getIncreasePositionAmounts(p: {
       amountIn: initialCollateralAmount,
       isLimit: false,
       findSwapPath,
+      uiFeeFactor,
     });
 
     values.swapPathStats = swapAmounts.swapPathStats;
@@ -148,9 +145,9 @@ export function getIncreasePositionAmounts(p: {
       basePriceImpactDeltaUsd.gt(0),
       userReferralInfo
     );
-    const baseUiFeeUsd = getUiFee(baseSizeDeltaUsd, uiFeeFactor);
+    const baseUiFeeUsd = applyFactor(baseSizeDeltaUsd, uiFeeFactor);
     const totalSwapVolumeUsd = getTotalSwapVolumeFromSwapStats(values.swapPathStats?.swapSteps);
-    values.swapUiFeeUsd = getUiFee(totalSwapVolumeUsd, uiFeeFactor);
+    values.swapUiFeeUsd = applyFactor(totalSwapVolumeUsd, uiFeeFactor);
 
     values.sizeDeltaUsd = baseCollateralUsd
       .sub(basePositionFeeInfo.positionFeeUsd)
@@ -169,7 +166,7 @@ export function getIncreasePositionAmounts(p: {
     );
     values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
     values.feeDiscountUsd = positionFeeInfo.discountUsd;
-    values.uiFeeUsd = getUiFee(values.sizeDeltaUsd, uiFeeFactor);
+    values.uiFeeUsd = applyFactor(values.sizeDeltaUsd, uiFeeFactor);
 
     values.collateralDeltaUsd = baseCollateralUsd
       .sub(values.positionFeeUsd)
@@ -199,7 +196,7 @@ export function getIncreasePositionAmounts(p: {
 
     values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
     values.feeDiscountUsd = positionFeeInfo.discountUsd;
-    values.uiFeeUsd = getUiFee(values.sizeDeltaUsd, uiFeeFactor);
+    values.uiFeeUsd = applyFactor(values.sizeDeltaUsd, uiFeeFactor);
 
     values.collateralDeltaUsd = values.sizeDeltaUsd.mul(BASIS_POINTS_DIVISOR).div(leverage);
     values.collateralDeltaAmount = convertToTokenAmount(
@@ -228,6 +225,7 @@ export function getIncreasePositionAmounts(p: {
       amountOut: baseCollateralAmount,
       isLimit: false,
       findSwapPath,
+      uiFeeFactor,
     });
 
     values.swapPathStats = swapAmounts.swapPathStats;
@@ -254,7 +252,7 @@ export function getIncreasePositionAmounts(p: {
 
       values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
       values.feeDiscountUsd = positionFeeInfo.discountUsd;
-      values.uiFeeUsd = getUiFee(values.sizeDeltaUsd, uiFeeFactor);
+      values.uiFeeUsd = applyFactor(values.sizeDeltaUsd, uiFeeFactor);
     }
 
     if (initialCollateralAmount?.gt(0)) {
@@ -272,10 +270,11 @@ export function getIncreasePositionAmounts(p: {
         amountIn: initialCollateralAmount,
         isLimit: false,
         findSwapPath,
+        uiFeeFactor,
       });
 
       values.swapPathStats = swapAmounts.swapPathStats;
-      values.swapUiFeeUsd = getUiFee(getTotalSwapVolumeFromSwapStats(values.swapPathStats?.swapSteps), uiFeeFactor);
+      values.swapUiFeeUsd = applyFactor(getTotalSwapVolumeFromSwapStats(values.swapPathStats?.swapSteps), uiFeeFactor);
 
       const baseCollateralUsd = convertToUsd(swapAmounts.amountOut, collateralToken.decimals, values.collateralPrice)!;
 

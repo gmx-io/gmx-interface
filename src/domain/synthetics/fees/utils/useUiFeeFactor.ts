@@ -26,5 +26,5 @@ export default function useUiFeeFactor(chainId: number, account: string = UI_FEE
     },
   });
 
-  return uiFeeFactorForAccount;
+  return uiFeeFactorForAccount || BigNumber.from(0);
 }
