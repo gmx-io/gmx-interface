@@ -33,6 +33,7 @@ export default function useReferralsData(account) {
           tokens
           transactionHash
           timestamp
+          id
         }
         affiliateTotalStats: affiliateStats(
           first: 1000

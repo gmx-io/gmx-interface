@@ -9,6 +9,7 @@ export type SyntheticsEventsContextType = {
   positionIncreaseEvents: PositionIncreaseEvent[];
   positionDecreaseEvents: PositionDecreaseEvent[];
   setPendingOrder: SetPendingOrder;
+  setPendingFundingFeeSettlement: SetPendingFundingFeeSettlement;
   setPendingPosition: SetPendingPosition;
   setPendingDeposit: SetPendingDeposit;
   setPendingWithdrawal: SetPendingWithdrawal;
@@ -21,6 +22,12 @@ export type SetPendingOrder = (data: PendingOrderData) => void;
 export type SetPendingPosition = (update: PendingPositionUpdate) => void;
 export type SetPendingDeposit = (data: PendingDepositData) => void;
 export type SetPendingWithdrawal = (data: PendingWithdrawalData) => void;
+export type SetPendingFundingFeeSettlement = (data: PendingFundingFeeSettlementData) => void;
+
+export type PendingFundingFeeSettlementData = {
+  orders: PendingOrderData[];
+  positions: PendingPositionUpdate[];
+};
 
 export type OrderCreatedEventData = {
   key: string;
