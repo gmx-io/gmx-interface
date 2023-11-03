@@ -76,6 +76,8 @@ import { getFeeItem } from "domain/synthetics/fees";
 
 const { AddressZero } = ethers.constants;
 
+const MAX_REBATE_BPS = 25;
+
 function getStakingData(stakingInfo) {
   if (!stakingInfo || stakingInfo.length === 0) {
     return;
@@ -971,8 +973,12 @@ export default function GlpSwap(props) {
                       position="right-bottom"
                       renderContent={() => {
                         const feeFactor = basisPointsToFloat(BigNumber.from(feeBasisPoints));
-                        const feeUsd = applyFactor(swapUsdMin, feeFactor).mul(-1);
+                        const feeUsd = applyFactor(swapUsdMin.mul(-1), feeFactor);
                         const feeItem = getFeeItem(feeUsd, swapUsdMin);
+                        const maxRebateUsd = applyFactor(
+                          swapUsdMin,
+                          basisPointsToFloat(BigNumber.from(Math.min(feeBasisPoints, MAX_REBATE_BPS)))
+                        );
                         if (!feeBasisPoints) {
                           return (
                             <div className="text-white">
@@ -990,7 +996,7 @@ export default function GlpSwap(props) {
                             />
                             <StatsTooltipRow
                               label="Max Bonus Rebate"
-                              value={`+${formatUsd(feeItem.deltaUsd.abs())}`}
+                              value={`+${formatUsd(maxRebateUsd.abs())}`}
                               showDollar={false}
                               className="text-green"
                             />
