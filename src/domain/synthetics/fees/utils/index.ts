@@ -1,6 +1,6 @@
 import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 import { MarketInfo } from "domain/synthetics/markets";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "ethers";
 import { PRECISION } from "lib/legacy";
 import { applyFactor, getBasisPoints } from "lib/numbers";
 import { FeeItem } from "../types";
@@ -112,17 +112,6 @@ export function getFeeItem(feeDeltaUsd?: BigNumber, basis?: BigNumber): FeeItem 
   return {
     deltaUsd: feeDeltaUsd,
     bps: basis?.gt(0) ? getBasisPoints(feeDeltaUsd, basis) : BigNumber.from(0),
-  };
-}
-export function getUiFeeItem(feeDeltaUsd?: BigNumber, basis?: BigNumber): FeeItem | undefined {
-  if (!feeDeltaUsd) return undefined;
-
-  const decimals = 6;
-  const bps = basis?.gt(0) ? feeDeltaUsd.abs().mul(Math.pow(10, decimals)).div(basis) : BigNumber.from(0);
-  const roundUpBps = BigNumber.from(Math.ceil(Number(ethers.utils.formatUnits(bps, 2))));
-  return {
-    deltaUsd: feeDeltaUsd,
-    bps: roundUpBps,
   };
 }
 
