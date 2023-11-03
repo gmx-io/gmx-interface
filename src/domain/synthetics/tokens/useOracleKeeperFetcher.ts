@@ -24,7 +24,7 @@ export type DayPriceCandle = {
   close: number;
 };
 
-type RawIncentivesStats = {
+export type RawIncentivesStats = {
   isActive: boolean;
   totalRewards: string;
   period: number;
@@ -143,7 +143,12 @@ export function useOracleKeeperFetcher(chainId: number) {
         })
       )
         .then((res) => res.json())
-        .catch(() => null);
+        .catch((e) => {
+          // eslint-disable-next-line no-console
+          console.error(e);
+          switchOracleKeeper();
+          return null;
+        });
     }
 
     return {

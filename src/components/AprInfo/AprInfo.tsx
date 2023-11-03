@@ -8,7 +8,7 @@ import { useCallback } from "react";
 
 export function AprInfo({ apr, incentiveApr }: { apr: BigNumber | undefined; incentiveApr: BigNumber | undefined }) {
   const totalApr = apr?.add(incentiveApr ?? 0) ?? BigNumber.from(0);
-  const aprNode = <>{formatAmount(totalApr, 2, 2)}%</>;
+  const aprNode = <>{apr ? `${formatAmount(totalApr, 2, 2)}%` : "..."}</>;
   const renderTooltipContent = useCallback(() => {
     return (
       <>
