@@ -2,22 +2,21 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: inset 0px 0px 1rem 0.5rem rgba(27, 30, 46, 0.2);
-  background: rgba(45, 45, 45, 0.5);
-  height: 5.1rem;
-  width: 80%;
-  border: 1px solid var(--dark-blue-border);
+  height: 72px;
+  width: 100%;
+  border: 0px;
   border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: #141620;
   position: relative;
   color: white;
-  font-size: 2rem;
-  padding-left: 1.85rem;
-  padding-right: 1.85rem;
+  font-size: 1.7rem;
+  padding-left: 1.6rem;
+  padding-right: 1.6rem;
 }
 
 .Wallet-btn-approve:hover {
   background: var(--dark-blue-hover);
-  border-color: var(--dark-blue-border);
 }
 
 .Wallet-btn-approve:active {
@@ -30,4 +29,19 @@
 
 .Wallet-btn-approve:disabled {
   opacity: 0.4;
+}
+
+.Wallet-btn-end {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.Wallet-btn-end button {
+  margin-right: 6px;
+  padding: 5px 10px;
+  background-color: transparent;
+  font-family: tektur;
+  color: white;
+  border: 1px solid white;
+  border-radius: 6px;
 }

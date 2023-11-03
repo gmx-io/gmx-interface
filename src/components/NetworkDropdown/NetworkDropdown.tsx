@@ -1,12 +1,9 @@
 import React, { useRef, useState } from "react";
 import { Menu } from "@headlessui/react";
 import ModalWithPortal from "../Modal/ModalWithPortal";
-import { t, Trans } from "@lingui/macro";
+import { t } from "@lingui/macro";
 import cx from "classnames";
-import { HiDotsVertical } from "react-icons/hi";
 import "./NetworkDropdown.css";
-import language24Icon from "img/ic_language24.svg";
-import settingsIcon from "img/ic_settings_16.svg";
 // import clickTradingIcon from "img/icn_1clicktrading.svg";
 // import emailIcon from "img/icn_email.svg";
 import { defaultLocale } from "lib/i18n";
@@ -14,6 +11,7 @@ import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import LanguageModalContent from "./LanguageModalContent";
 import { useChainId } from "lib/chains";
 import { getIcon } from "config/icons";
+import { FaChevronDown } from "react-icons/fa";
 
 const LANGUAGE_MODAL_KEY: string = "LANGUAGE";
 const NETWORK_MODAL_KEY: string = "NETWORK";
@@ -57,7 +55,7 @@ export default function NetworkDropdown(props) {
           className: "network-popup",
           isVisible: activeModal === NETWORK_MODAL_KEY,
           setIsVisible: () => setActiveModal(null),
-          label: t`Networks and Settings`,
+          label: t`Networks`,
         };
       default:
         return {};
@@ -87,27 +85,16 @@ export default function NetworkDropdown(props) {
 function NavIcons({ selectorLabel }) {
   const { chainId } = useChainId();
   const icon = getIcon(chainId, "network");
-
   return (
-    <>
-      <button className="transparent">
-        <img className="network-dropdown-icon" src={icon} alt={selectorLabel} />
-      </button>
-      <div className="network-dropdown-seperator" />
-      <button className="transparent">
-        <HiDotsVertical color="white" size={20} />
-      </button>
-    </>
+    <button className="App-cta small transparent address-btn">
+      <img className="network-dropdown-icon" src={icon} alt={selectorLabel} />
+      <span className="user-address">{selectorLabel}</span>
+      <FaChevronDown />
+    </button>
   );
 }
 
-function DesktopDropdown({
-  setActiveModal,
-  selectorLabel,
-  networkOptions,
-  onNetworkSelect,
-  openSettings,
-}) {
+function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, onNetworkSelect, openSettings }) {
   return (
     <div className="App-header-network">
       <Menu>
@@ -115,9 +102,6 @@ function DesktopDropdown({
           <NavIcons selectorLabel={selectorLabel} />
         </Menu.Button>
         <Menu.Items as="div" className="menu-items network-dropdown-items">
-          <div className="dropdown-label">
-            <Trans>Networks</Trans>
-          </div>
           <div className="network-dropdown-list">
             <NetworkMenuItems
               networkOptions={networkOptions}
@@ -125,62 +109,6 @@ function DesktopDropdown({
               onNetworkSelect={onNetworkSelect}
             />
           </div>
-          <div className="network-dropdown-divider" />
-          {/* <Menu.Item>
-            <div className="network-dropdown-menu-item menu-item" onClick={setApprovalsModalVisible}>
-              <div className="menu-item-group">
-                <div className="menu-item-icon">
-                  <img className="network-dropdown-icon" src={clickTradingIcon} alt="" />
-                </div>
-                <span className="network-dropdown-item-label">
-                  <Trans>{`Enable One-Click Trading`}</Trans>
-                </span>
-              </div>
-            </div>
-          </Menu.Item> */}
-          {/* <Menu.Item>
-            <div
-              className="network-dropdown-menu-item menu-item last-dropdown-menu"
-              onClick={() => setActiveModal(LANGUAGE_MODAL_KEY)}
-            >
-              <div className="menu-item-group">
-                <div className="menu-item-icon">
-                  <img className="network-dropdown-icon" src={emailIcon} alt="" />
-                </div>
-                <span className="network-dropdown-item-label">
-                  <Trans>{`Enable Email Notifications`}</Trans>
-                </span>
-              </div>
-            </div>
-          </Menu.Item>
-          <div className="network-dropdown-divider" /> */}
-          <Menu.Item>
-            <div className="network-dropdown-menu-item menu-item" onClick={openSettings}>
-              <div className="menu-item-group">
-                <div className="menu-item-icon">
-                  <img className="network-dropdown-icon" src={settingsIcon} alt="" />
-                </div>
-                <span className="network-dropdown-item-label">
-                  <Trans>Settings</Trans>
-                </span>
-              </div>
-            </div>
-          </Menu.Item>
-          <Menu.Item>
-            <div
-              className="network-dropdown-menu-item menu-item last-dropdown-menu"
-              onClick={() => setActiveModal(LANGUAGE_MODAL_KEY)}
-            >
-              <div className="menu-item-group">
-                <div className="menu-item-icon">
-                  <img className="network-dropdown-icon" src={language24Icon} alt="" />
-                </div>
-                <span className="network-dropdown-item-label">
-                  <Trans>Language</Trans>
-                </span>
-              </div>
-            </div>
-          </Menu.Item>
         </Menu.Items>
       </Menu>
     </div>
@@ -220,10 +148,6 @@ function NetworkModalContent({ networkOptions, onNetworkSelect, selectorLabel, s
   return (
     <div className="network-dropdown-items">
       <div className="network-dropdown-list">
-        <span className="network-dropdown-label">
-          <Trans>Networks</Trans>
-        </span>
-
         {networkOptions.map((network) => {
           return (
             <div
@@ -239,34 +163,6 @@ function NetworkModalContent({ networkOptions, onNetworkSelect, selectorLabel, s
             </div>
           );
         })}
-        <span className="network-dropdown-label more-options">
-          <Trans>More Options</Trans>
-        </span>
-        <div
-          className="network-option"
-          onClick={() => {
-            setActiveModal(LANGUAGE_MODAL_KEY);
-          }}
-        >
-          <div className="menu-item-group">
-            <img className="network-option-img" src={language24Icon} alt="Select Language" />
-            <span className="network-option-img-label">Language</span>
-          </div>
-        </div>
-        <div
-          className="network-option"
-          onClick={() => {
-            openSettings();
-            setActiveModal(null);
-          }}
-        >
-          <div className="menu-item-group">
-            <img className="network-option-img" src={settingsIcon} alt="" />
-            <span className="network-option-img-label">
-              <Trans>Settings</Trans>
-            </span>
-          </div>
-        </div>
       </div>
     </div>
   );

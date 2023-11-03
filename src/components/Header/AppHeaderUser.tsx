@@ -18,6 +18,7 @@ import { isDevelopment } from "config/env";
 import { getIcon } from "config/icons";
 import FaucetDropdown from "../FaucetDropdown/FaucetDropdown";
 import { addUser, getUserByWalletAddress } from "external/supabase/supabaseFns";
+import SettingDropdown from "components/SettingDropdown/SettingDropdown";
 
 type Props = {
   openSettings: () => void;
@@ -44,12 +45,6 @@ if (isDevelopment()) {
     label: getChainName(OPTIMISM_GOERLI_TESTNET),
     value: OPTIMISM_GOERLI_TESTNET,
     icon: getIcon(OPTIMISM_GOERLI_TESTNET, "network"),
-    color: "#264f79",
-  });
-  NETWORK_OPTIONS.push({
-    label: getChainName(SEPOLIA_TESTNET),
-    value: SEPOLIA_TESTNET,
-    icon: getIcon(SEPOLIA_TESTNET, "network"),
     color: "#264f79",
   });
 }
@@ -149,6 +144,13 @@ export function AppHeaderUser({
 
       {showConnectionOptions ? (
         <>
+          <NetworkDropdown
+            small={small}
+            networkOptions={NETWORK_OPTIONS}
+            selectorLabel={selectorLabel}
+            onNetworkSelect={onNetworkSelect}
+            openSettings={openSettings}
+          />
           <div className="App-header-user-address">
             <AddressDropdown
               account={account}
@@ -156,7 +158,7 @@ export function AppHeaderUser({
               disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
             />
           </div>
-          <NetworkDropdown
+          <SettingDropdown
             small={small}
             networkOptions={NETWORK_OPTIONS}
             selectorLabel={selectorLabel}

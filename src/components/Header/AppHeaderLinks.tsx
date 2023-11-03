@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { HeaderLink } from "./HeaderLink";
 import "./Header.css";
 import { isHomeSite } from "lib/legacy";
-// import ExternalLink from "components/ExternalLink/ExternalLink";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import logoImg from "img/logo_t3.svg";
 
 type Props = {
@@ -40,12 +40,12 @@ export function AppHeaderLinks({
         </div>
       )}
       <div className="App-header-link-container"></div>
-      <div className="App-header-link-container">
+      <div className="App-header-link-container" data-tour="step-1">
         <HeaderLink to="/trade" redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal}>
           <Trans>Trade</Trans>
         </HeaderLink>
       </div>
-      <div className="App-header-link-container">
+      <div className="App-header-link-container" data-tour="step-2">
         <HeaderLink to="/earn" redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal}>
           <Trans>Earn</Trans>
         </HeaderLink>
@@ -55,11 +55,11 @@ export function AppHeaderLinks({
           <Trans>Swap</Trans>
         </HeaderLink>
       </div>
-      {/* <div className="App-header-link-container">
+      <div className="App-header-link-container">
         <ExternalLink href="https://docs.moleculeprotocol.io/t3-finance/">
           <Trans>Docs</Trans>
         </ExternalLink>
-      </div> */}
+      </div>
       <div className="App-header-link-container">
         <HeaderLink
           to="/dashboard"
