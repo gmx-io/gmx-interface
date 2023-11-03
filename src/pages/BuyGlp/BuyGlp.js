@@ -30,6 +30,14 @@ export default function BuyGlp(props) {
         isTop
         subtitle={
           <div>
+            <p className="text-warning migration-info">
+              <Trans>
+                GLP to GM migration has reduced Fees due to STIP incentives.{" "}
+                <ExternalLink className="text-warning" href="">
+                  Read more.
+                </ExternalLink>
+              </Trans>
+            </p>
             <Trans>
               Purchase <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v1">GLP tokens</ExternalLink> to
               earn {nativeTokenSymbol} fees from swaps and leverage trading.

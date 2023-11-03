@@ -1,7 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { getContract } from "config/contracts";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import {
   adjustForDecimals,
   DUST_BNB,
@@ -49,11 +49,15 @@ import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageByChainId } from "lib/localStorage";
 import {
+  applyFactor,
+  basisPointsToFloat,
   bigNumberify,
   expandDecimals,
   formatAmount,
   formatAmountFree,
+  formatDeltaUsd,
   formatKeyAmount,
+  formatUsd,
   limitDecimals,
   parseValue,
 } from "lib/numbers";
@@ -68,6 +72,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import PageTitle from "components/PageTitle/PageTitle";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { getFeeItem } from "domain/synthetics/fees";
 
 const { AddressZero } = ethers.constants;
 
@@ -965,6 +970,9 @@ export default function GlpSwap(props) {
                       handle={feePercentageText}
                       position="right-bottom"
                       renderContent={() => {
+                        const feeFactor = basisPointsToFloat(BigNumber.from(feeBasisPoints));
+                        const feeUsd = applyFactor(swapUsdMin, feeFactor).mul(-1);
+                        const feeItem = getFeeItem(feeUsd, swapUsdMin);
                         if (!feeBasisPoints) {
                           return (
                             <div className="text-white">
@@ -973,10 +981,43 @@ export default function GlpSwap(props) {
                           );
                         }
                         return (
-                          <div className="text-white">
-                            {isFeesHigh && <Trans>To reduce fees, select a different asset to receive.</Trans>}
-                            <Trans>Check the "Save on Fees" section below to get the lowest fee percentages.</Trans>
-                          </div>
+                          <>
+                            <StatsTooltipRow
+                              label="Base Fee"
+                              value={formatDeltaUsd(feeItem.deltaUsd, feeItem.bps)}
+                              showDollar={false}
+                              className="text-red"
+                            />
+                            <StatsTooltipRow
+                              label="Max Bonus Rebate"
+                              value={`+${formatUsd(feeItem.deltaUsd.abs())}`}
+                              showDollar={false}
+                              className="text-green"
+                            />
+                            <br />
+                            <div className="text-white">
+                              <Trans>
+                                The Bonus Rebate is an estimate and is to be airdropped as ARB tokens when migrating
+                                this liquidity to GM pools within the same epoch.{" "}
+                                <ExternalLink href="https://gmxio.substack.com/" newTab>
+                                  Read more.
+                                </ExternalLink>
+                                .
+                              </Trans>
+                            </div>
+                            <br />
+                            <div className="text-white">
+                              <Trans>
+                                Buy any GM token before epoch resets on 1d 10h 53m to be eligible for the Bonus Rebate
+                                after redeeming GLP. Alternatively, wait for the epoch to reset.
+                              </Trans>
+                            </div>
+                            <br />
+                            <div className="text-white">
+                              {isFeesHigh && <Trans>To reduce fees, select a different asset to receive.</Trans>}
+                              <Trans>Check the "Save on Fees" section below to get the lowest fee percentages.</Trans>
+                            </div>
+                          </>
                         );
                       }}
                     />

@@ -130,6 +130,12 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
             <Trans>
               GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of the V1 markets generated fees.
             </Trans>
+            <br />
+            <br />
+            <Trans>
+              GLP to GM migration has reduced Fees due to STIP incentives.{" "}
+              <ExternalLink href="">Read more.</ExternalLink>
+            </Trans>
           </div>
           <div className="Home-token-card-option-apr">
             <Trans>Arbitrum APR:</Trans> <APRLabel chainId={ARBITRUM} label="glpAprTotal" key="ARBITRUM" />,{" "}
