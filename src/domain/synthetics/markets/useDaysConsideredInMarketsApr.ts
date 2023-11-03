@@ -1,10 +1,10 @@
 import { differenceInDays } from "date-fns";
 
-function getDaysConsideredInMarketsApr(date: Date) {
-  const dayEstimationStarts = new Date("2023-11-01T00:00:00");
-  const daysPased = differenceInDays(date, dayEstimationStarts);
+function getDaysConsideredInMarketsApr(now: Date) {
+  const dayEstimationStarts = new Date(localStorage.getItem("aprStartDate") ?? "2023-11-01T00:00:00.000Z");
+  const daysPassed = differenceInDays(now, dayEstimationStarts);
 
-  return Math.max(7, Math.min(30, daysPased));
+  return Math.max(7, Math.min(30, daysPassed));
 }
 
 let date: null | Date = null;
