@@ -57,7 +57,6 @@ import {
   formatAmountFree,
   formatDeltaUsd,
   formatKeyAmount,
-  formatUsd,
   limitDecimals,
   parseValue,
 } from "lib/numbers";
@@ -996,26 +995,25 @@ export default function GlpSwap(props) {
                         }
 
                         const feeFactor = basisPointsToFloat(BigNumber.from(feeBasisPoints));
-                        const feeUsd = swapUsdMin && applyFactor(swapUsdMin?.mul(-1), feeFactor);
-                        const feeItem = swapUsdMin && getFeeItem(feeUsd, swapUsdMin?.mul(-1));
-                        const maxRebateUsd =
-                          swapUsdMin &&
-                          applyFactor(
-                            swapUsdMin?.abs(),
-                            basisPointsToFloat(BigNumber.from(Math.min(feeBasisPoints, MAX_REBATE_BPS)))
-                          );
+                        const glpUsdMaxNegative = glpUsdMax?.mul(-1);
+                        const feeItem = glpUsdMax && getFeeItem(applyFactor(glpUsdMaxNegative, feeFactor), glpUsdMax);
+                        const rebateBasisPoints = basisPointsToFloat(
+                          BigNumber.from(Math.min(feeBasisPoints, MAX_REBATE_BPS))
+                        );
+                        const maxRebateUsd = glpUsdMax && applyFactor(glpUsdMax?.abs(), rebateBasisPoints);
+                        const rebateFeeItem = glpUsdMax && getFeeItem(maxRebateUsd, glpUsdMax);
 
                         return (
                           <>
                             <StatsTooltipRow
                               label="Base Fee"
-                              value={formatDeltaUsd(feeItem.deltaUsd, feeItem.bps)}
+                              value={formatDeltaUsd(feeItem?.deltaUsd, feeItem?.bps)}
                               showDollar={false}
                               className="text-red"
                             />
                             <StatsTooltipRow
                               label="Max Bonus Rebate"
-                              value={`+${formatUsd(maxRebateUsd)}`}
+                              value={formatDeltaUsd(rebateFeeItem?.deltaUsd, rebateFeeItem?.bps)}
                               showDollar={false}
                               className="text-green"
                             />
