@@ -1005,8 +1005,11 @@ export default function GlpSwap(props) {
                               <Trans>
                                 The Bonus Rebate is an estimate and is to be airdropped as ARB tokens when migrating
                                 this liquidity to GM pools within the same epoch.{" "}
-                                <ExternalLink href="https://gmxio.substack.com/" newTab>
-                                  Read more.
+                                <ExternalLink
+                                  href="https://www.notion.so/gmxio/GMX-Grants-Distribution-Arbitrum-S-T-I-P-Incentives-1a5ab9ca432b4f1798ff8810ce51fec3#32ca3a0d2fd340e5946731fd5fb8b0cf"
+                                  newTab
+                                >
+                                  Read more
                                 </ExternalLink>
                                 .
                               </Trans>
@@ -1014,8 +1017,9 @@ export default function GlpSwap(props) {
                             <br />
                             <div className="text-white">
                               <Trans>
-                                Buy any GM token before epoch resets on 1d 10h 53m to be eligible for the Bonus Rebate
-                                after redeeming GLP. Alternatively, wait for the epoch to reset.
+                                Buy GM tokens before the epoch resets in 1d 10h 53m to be eligible for the Bonus Rebate.
+                                Alternatively, wait for the epoch to reset to redeem GLP and buy GM within the same
+                                epoch.
                               </Trans>
                             </div>
                             <br />

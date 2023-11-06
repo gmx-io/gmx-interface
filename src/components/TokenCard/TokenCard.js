@@ -132,10 +132,18 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
             </Trans>
             <br />
             <br />
-            <Trans>
-              GLP to GM migration has reduced Fees due to STIP incentives.{" "}
-              <ExternalLink href="">Read more.</ExternalLink>
-            </Trans>
+            <div className="text-warning">
+              <Trans>
+                GLP to GM migration has reduced Fees due to STIP incentives.{" "}
+                <ExternalLink
+                  className="text-warning"
+                  href="https://www.notion.so/gmxio/GMX-Grants-Distribution-Arbitrum-S-T-I-P-Incentives-1a5ab9ca432b4f1798ff8810ce51fec3#32ca3a0d2fd340e5946731fd5fb8b0cf"
+                >
+                  Read more
+                </ExternalLink>
+                .
+              </Trans>
+            </div>
           </div>
           <div className="Home-token-card-option-apr">
             <Trans>Arbitrum APR:</Trans> <APRLabel chainId={ARBITRUM} label="glpAprTotal" key="ARBITRUM" />,{" "}

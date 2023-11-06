@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import GlpSwap from "components/Glp/GlpSwap";
 import Footer from "components/Footer/Footer";
@@ -30,25 +30,21 @@ export default function BuyGlp(props) {
         isTop
         subtitle={
           <div>
-            <p className="text-warning migration-info">
+            <div className="text-warning">
               <Trans>
                 GLP to GM migration has reduced Fees due to STIP incentives.{" "}
-                <ExternalLink className="text-warning" href="">
-                  Read more.
+                <ExternalLink
+                  className="text-warning"
+                  href="https://www.notion.so/gmxio/GMX-Grants-Distribution-Arbitrum-S-T-I-P-Incentives-1a5ab9ca432b4f1798ff8810ce51fec3#32ca3a0d2fd340e5946731fd5fb8b0cf"
+                >
+                  Read more
                 </ExternalLink>
+                .
               </Trans>
-            </p>
+            </div>
             <Trans>
               Purchase <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v1">GLP tokens</ExternalLink> to
               earn {nativeTokenSymbol} fees from swaps and leverage trading.
-            </Trans>
-            <br />
-            <Trans>
-              View{" "}
-              <Link className="link-underline" to="/earn">
-                staking
-              </Link>{" "}
-              page.
             </Trans>
           </div>
         }
