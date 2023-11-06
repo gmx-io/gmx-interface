@@ -181,10 +181,8 @@ export function formatDeltaUsd(deltaUsd?: BigNumber, percentage?: BigNumber, opt
     return undefined;
   }
 
-  let sign = "";
-  if (!deltaUsd.eq(0)) {
-    sign = deltaUsd?.gt(0) ? "+" : "-";
-  }
+  let sign = deltaUsd?.gte(0) ? "+" : "-";
+
   const exceedingInfo = getLimitedDisplay(deltaUsd, USD_DECIMALS);
   const percentageStr = percentage ? ` (${sign}${formatPercentage(percentage.abs())})` : "";
   const deltaUsdStr = formatAmount(exceedingInfo.value, USD_DECIMALS, 2, true);
