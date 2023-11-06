@@ -181,7 +181,7 @@ export const RPC_PROVIDERS = {
   [ARBITRUM_TESTNET]: ["https://rinkeby.arbitrum.io/rpc"],
   [AVALANCHE]: ["https://api.avax.network/ext/bc/C/rpc"],
   [AVALANCHE_FUJI]: ["https://api.avax-test.network/ext/bc/C/rpc"],
-  [SEPOLIA_TESTNET]: ["https://sepolia.infura.io/v3/88088bd69e9f45cd9e1842a20addb42d"],
+  [SEPOLIA_TESTNET]: ["https://sepolia.infura.io/v3/88088bd69e9f45cd9e1842a20addb42d"], // @todo replace with paid json rpc url (?)
   [OPTIMISM_GOERLI_TESTNET]: ["https://opt-goerli.g.alchemy.com/v2/4AflwA8Mr5qf9nxuS90eSGlsLHPHMCHK"],
 };
 
