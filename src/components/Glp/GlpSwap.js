@@ -974,9 +974,9 @@ export default function GlpSwap(props) {
                       renderContent={() => {
                         const feeFactor = basisPointsToFloat(BigNumber.from(feeBasisPoints));
                         const feeUsd = applyFactor(swapUsdMin.mul(-1), feeFactor);
-                        const feeItem = getFeeItem(feeUsd, swapUsdMin);
+                        const feeItem = getFeeItem(feeUsd, swapUsdMin.mul(-1));
                         const maxRebateUsd = applyFactor(
-                          swapUsdMin,
+                          swapUsdMin.abs(),
                           basisPointsToFloat(BigNumber.from(Math.min(feeBasisPoints, MAX_REBATE_BPS)))
                         );
                         if (!feeBasisPoints) {
@@ -996,7 +996,7 @@ export default function GlpSwap(props) {
                             />
                             <StatsTooltipRow
                               label="Max Bonus Rebate"
-                              value={`+${formatUsd(maxRebateUsd.abs())}`}
+                              value={`+${formatUsd(maxRebateUsd)}`}
                               showDollar={false}
                               className="text-green"
                             />

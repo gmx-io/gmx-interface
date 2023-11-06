@@ -568,6 +568,10 @@ msgstr "Buy GLP or GMX"
 msgid "Buy GM"
 msgstr "Buy GM"
 
+#: src/components/Glp/GlpSwap.js
+msgid "Buy GM tokens before the epoch resets in 1d 10h 53m to be eligible for the Bonus Rebate. Alternatively, wait for the epoch to reset to redeem GLP and buy GM within the same epoch."
+msgstr "Buy GM tokens before the epoch resets in 1d 10h 53m to be eligible for the Bonus Rebate. Alternatively, wait for the epoch to reset to redeem GLP and buy GM within the same epoch."
+
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GMX"
 msgstr "Buy GMX"
@@ -613,8 +617,8 @@ msgid "Buy Protocol Tokens"
 msgstr "Buy Protocol Tokens"
 
 #: src/components/Glp/GlpSwap.js
-msgid "Buy any GM token before epoch resets on 1d 10h 53m to be eligible for the Bonus Rebate after redeeming GLP. Alternatively, wait for the epoch to reset."
-msgstr "Buy any GM token before epoch resets on 1d 10h 53m to be eligible for the Bonus Rebate after redeeming GLP. Alternatively, wait for the epoch to reset."
+#~ msgid "Buy any GM token before epoch resets on 1d 10h 53m to be eligible for the Bonus Rebate after redeeming GLP. Alternatively, wait for the epoch to reset."
+#~ msgstr "Buy any GM token before epoch resets on 1d 10h 53m to be eligible for the Bonus Rebate after redeeming GLP. Alternatively, wait for the epoch to reset."
 
 #: src/components/Glp/GlpSwap.js
 msgid "Buy failed."
@@ -1922,8 +1926,13 @@ msgstr "GLP sell disabled, pending {0} upgrade"
 
 #: src/components/TokenCard/TokenCard.js
 #: src/pages/BuyGlp/BuyGlp.js
-msgid "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more.</0>"
-msgstr "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more.</0>"
+#~ msgid "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more.</0>"
+#~ msgstr "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more.</0>"
+
+#: src/components/TokenCard/TokenCard.js
+#: src/pages/BuyGlp/BuyGlp.js
+msgid "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more</0>."
+msgstr "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more</0>."
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
@@ -4481,8 +4490,12 @@ msgid "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, G
 msgstr "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
 
 #: src/components/Glp/GlpSwap.js
-msgid "The Bonus Rebate is an estimate and is to be airdropped as ARB tokens when migrating this liquidity to GM pools within the same epoch. <0>Read more.</0>."
-msgstr "The Bonus Rebate is an estimate and is to be airdropped as ARB tokens when migrating this liquidity to GM pools within the same epoch. <0>Read more.</0>."
+#~ msgid "The Bonus Rebate is an estimate and is to be airdropped as ARB tokens when migrating this liquidity to GM pools within the same epoch. <0>Read more.</0>."
+#~ msgstr "The Bonus Rebate is an estimate and is to be airdropped as ARB tokens when migrating this liquidity to GM pools within the same epoch. <0>Read more.</0>."
+
+#: src/components/Glp/GlpSwap.js
+msgid "The Bonus Rebate is an estimate and is to be airdropped as ARB tokens when migrating this liquidity to GM pools within the same epoch. <0>Read more</0>."
+msgstr "The Bonus Rebate is an estimate and is to be airdropped as ARB tokens when migrating this liquidity to GM pools within the same epoch. <0>Read more</0>."
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "The Boosted APR is from your staked Multiplier Points."
@@ -5186,8 +5199,8 @@ msgid "View"
 msgstr "View"
 
 #: src/pages/BuyGlp/BuyGlp.js
-msgid "View <0>staking</0> page."
-msgstr "View <0>staking</0> page."
+#~ msgid "View <0>staking</0> page."
+#~ msgstr "View <0>staking</0> page."
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "View in Explorer"
