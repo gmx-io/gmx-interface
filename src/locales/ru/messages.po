@@ -33,6 +33,10 @@ msgstr "24ч Объём"
 msgid "<0><1>{eventTitle}</1> from <2>{0} {indexName} <3>[{poolName}]</3> Position</2></0>"
 msgstr ""
 
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "<0>APR is based on the Fees collected for the past {daysConsidered} days. It is an estimate as actual Fees are auto-compounded into the pool in real-time.</0><1>Check Pools performance against other LP Positions in <2>GMX Dune Dashboard</2>.</1>"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Buying GM: <1>{indexName}</1><2>[{poolName}]</2></0> <3>with {tokensText}</3>"
 msgstr ""
