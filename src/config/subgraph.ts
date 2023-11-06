@@ -8,28 +8,28 @@ const SUBGRAPH_URLS = {
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-referrals/api",
     nissohVault: "https://api.thegraph.com/subgraphs/name/nissoh/gmx-vault",
     syntheticsStats:
-      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-arbitrum-stats/version/apr2-231103130526-9d0dc9b/api",
+      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-arbitrum-stats/version/master-231106145707-5129d85/api",
   },
 
   [ARBITRUM_GOERLI]: {
     stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-stats/api",
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-goerli-referrals/api",
     syntheticsStats:
-      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-goerli-stats/version/apr2-231103132456-9d0dc9b/api",
+      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-goerli-stats/version/master-231106145658-5129d85/api",
   },
 
   [AVALANCHE]: {
     stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-stats/api",
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-referrals/api",
     syntheticsStats:
-      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-avalanche-stats/version/apr2-231103134110-9d0dc9b/api",
+      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-avalanche-stats/version/master-231106145716-5129d85/api",
   },
 
   [AVALANCHE_FUJI]: {
     stats: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-stats",
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-fuji-referrals/api",
     syntheticsStats:
-      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-fuji-stats/version/apr2-231103131525-9d0dc9b/api",
+      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-fuji-stats/version/master-231106145649-5129d85/api",
   },
 
   common: {
