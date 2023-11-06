@@ -83,6 +83,7 @@ export function MarketStats(p: Props) {
         marketTokensData={marketTokensData}
         marketsInfoData={marketsInfoData}
         marketsTokensAPRData={marketsTokensAPRData}
+        marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
         currentMarketInfo={marketInfo}
       />
       <div className="App-card-divider" />
