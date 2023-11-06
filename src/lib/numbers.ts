@@ -246,12 +246,14 @@ export function formatTokenAmount(
 
   let amountStr: string;
 
+  const sign = amount.lt(0) ? "-" : "";
+
   if (showAllSignificant) {
     amountStr = formatAmountFree(amount, tokenDecimals, tokenDecimals);
   } else {
     const exceedingInfo = getLimitedDisplay(amount, tokenDecimals, { maxThreshold, minThreshold });
     const symbol = exceedingInfo.symbol ? `${exceedingInfo.symbol} ` : "";
-    amountStr = `${symbol}${formatAmount(exceedingInfo.value, tokenDecimals, displayDecimals, useCommas)}`;
+    amountStr = `${symbol}${sign}${formatAmount(exceedingInfo.value, tokenDecimals, displayDecimals, useCommas)}`;
   }
 
   return `${amountStr}${symbolStr}`;
