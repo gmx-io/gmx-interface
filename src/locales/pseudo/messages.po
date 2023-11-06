@@ -569,7 +569,11 @@ msgid "Buy GM"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
-msgid "Buy GM tokens before the epoch resets in 1d 10h 53m to be eligible for the Bonus Rebate. Alternatively, wait for the epoch to reset to redeem GLP and buy GM within the same epoch."
+#~ msgid "Buy GM tokens before the epoch resets in 1d 10h 53m to be eligible for the Bonus Rebate. Alternatively, wait for the epoch to reset to redeem GLP and buy GM within the same epoch."
+#~ msgstr ""
+
+#: src/components/Glp/GlpSwap.js
+msgid "Buy GM tokens before the epoch resets in {0} to be eligible for the Bonus Rebate. Alternatively, wait for the epoch to reset to redeem GLP and buy GM within the same epoch."
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
@@ -615,10 +619,6 @@ msgstr ""
 #: src/pages/Buy/Buy.js
 msgid "Buy Protocol Tokens"
 msgstr ""
-
-#: src/components/Glp/GlpSwap.js
-#~ msgid "Buy any GM token before epoch resets on 1d 10h 53m to be eligible for the Bonus Rebate after redeeming GLP. Alternatively, wait for the epoch to reset."
-#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Buy failed."
@@ -1923,11 +1923,6 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 msgid "GLP sell disabled, pending {0} upgrade"
 msgstr ""
-
-#: src/components/TokenCard/TokenCard.js
-#: src/pages/BuyGlp/BuyGlp.js
-#~ msgid "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more.</0>"
-#~ msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
 #: src/pages/BuyGlp/BuyGlp.js
@@ -4487,10 +4482,6 @@ msgid "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, G
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
-#~ msgid "The Bonus Rebate is an estimate and is to be airdropped as ARB tokens when migrating this liquidity to GM pools within the same epoch. <0>Read more.</0>."
-#~ msgstr ""
-
-#: src/components/Glp/GlpSwap.js
 msgid "The Bonus Rebate is an estimate and is to be airdropped as ARB tokens when migrating this liquidity to GM pools within the same epoch. <0>Read more</0>."
 msgstr ""
 
@@ -5194,10 +5185,6 @@ msgstr ""
 #: src/pages/Exchange/Exchange.js
 msgid "View"
 msgstr ""
-
-#: src/pages/BuyGlp/BuyGlp.js
-#~ msgid "View <0>staking</0> page."
-#~ msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "View in Explorer"

@@ -73,10 +73,25 @@ import PageTitle from "components/PageTitle/PageTitle";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { getFeeItem } from "domain/synthetics/fees";
+import { intervalToDuration, nextWednesday } from "date-fns";
 
 const { AddressZero } = ethers.constants;
 
 const MAX_REBATE_BPS = 25;
+
+function getTimeLeftToNextWednesday() {
+  const now = new Date();
+  const nextWed = nextWednesday(now);
+
+  const duration = intervalToDuration({
+    start: now,
+    end: Date.UTC(nextWed.getUTCFullYear(), nextWed.getUTCMonth(), nextWed.getUTCDate()),
+  });
+  const days = duration.days ? `${duration.days}d ` : "";
+  const hours = duration.hours ? `${duration.hours}h ` : "";
+  const minutes = duration.minutes ? `${duration.minutes}m` : "";
+  return `${days}${hours}${minutes}`.trim();
+}
 
 function getStakingData(stakingInfo) {
   if (!stakingInfo || stakingInfo.length === 0) {
@@ -972,13 +987,6 @@ export default function GlpSwap(props) {
                       handle={feePercentageText}
                       position="right-bottom"
                       renderContent={() => {
-                        const feeFactor = basisPointsToFloat(BigNumber.from(feeBasisPoints));
-                        const feeUsd = applyFactor(swapUsdMin.mul(-1), feeFactor);
-                        const feeItem = getFeeItem(feeUsd, swapUsdMin.mul(-1));
-                        const maxRebateUsd = applyFactor(
-                          swapUsdMin.abs(),
-                          basisPointsToFloat(BigNumber.from(Math.min(feeBasisPoints, MAX_REBATE_BPS)))
-                        );
                         if (!feeBasisPoints) {
                           return (
                             <div className="text-white">
@@ -986,6 +994,17 @@ export default function GlpSwap(props) {
                             </div>
                           );
                         }
+
+                        const feeFactor = basisPointsToFloat(BigNumber.from(feeBasisPoints));
+                        const feeUsd = swapUsdMin && applyFactor(swapUsdMin?.mul(-1), feeFactor);
+                        const feeItem = swapUsdMin && getFeeItem(feeUsd, swapUsdMin?.mul(-1));
+                        const maxRebateUsd =
+                          swapUsdMin &&
+                          applyFactor(
+                            swapUsdMin?.abs(),
+                            basisPointsToFloat(BigNumber.from(Math.min(feeBasisPoints, MAX_REBATE_BPS)))
+                          );
+
                         return (
                           <>
                             <StatsTooltipRow
@@ -1017,9 +1036,9 @@ export default function GlpSwap(props) {
                             <br />
                             <div className="text-white">
                               <Trans>
-                                Buy GM tokens before the epoch resets in 1d 10h 53m to be eligible for the Bonus Rebate.
-                                Alternatively, wait for the epoch to reset to redeem GLP and buy GM within the same
-                                epoch.
+                                Buy GM tokens before the epoch resets in {getTimeLeftToNextWednesday()} to be eligible
+                                for the Bonus Rebate. Alternatively, wait for the epoch to reset to redeem GLP and buy
+                                GM within the same epoch.
                               </Trans>
                             </div>
                             <br />
