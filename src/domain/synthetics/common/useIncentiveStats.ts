@@ -18,7 +18,7 @@ export default function useIncentiveStats() {
       }
     }
     load();
-  });
+  }, [oracleKeeperFetcher]);
 
   return incentiveStats;
 }
