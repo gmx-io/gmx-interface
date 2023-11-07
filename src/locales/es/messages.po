@@ -4679,12 +4679,9 @@ msgid "To purchase GMX on the {0} blockchain, please <0>change your network</0>.
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "To reduce fees, select a different asset to pay with."
 msgstr "Para reducir las comisiones, seleccione un activo diferente con el que pagar."
-
-#: src/components/Glp/GlpSwap.js
-msgid "To reduce fees, select a different asset to receive."
-msgstr "Para reducir las comisiones, seleccione un activo diferente para recibir."
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Tokens"
