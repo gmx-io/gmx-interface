@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useLocalStorage } from "react-use";
 import toast from "react-hot-toast";
 import { homeEventsData, appEventsData } from "config/events";
@@ -7,22 +8,39 @@ import { isFuture, parse } from "date-fns";
 import { isHomeSite } from "lib/legacy";
 import { useChainId } from "lib/chains";
 import { useMarketsInfo } from "domain/synthetics/markets";
+import { useOracleKeeperFetcher } from "domain/synthetics/tokens";
+import { ARBITRUM } from "config/chains";
 
 function useEventToast() {
   const isHome = isHomeSite();
   const [visited, setVisited] = useLocalStorage("visited-announcements", []);
   const { chainId } = useChainId();
   const { marketsInfoData } = useMarketsInfo(chainId);
+  const [isIncentivesActive, setIsIncentivesActive] = useState(false);
 
   const isAdaptiveFundingActive = useMemo(() => {
     if (!marketsInfoData) return;
     return Object.values(marketsInfoData).some((market) => market.fundingIncreaseFactorPerSecond.gt(0));
   }, [marketsInfoData]);
 
+  const arbitrumOracleKeeperFetcher = useOracleKeeperFetcher(ARBITRUM);
+
+  useEffect(() => {
+    async function load() {
+      const res = await arbitrumOracleKeeperFetcher.fetchIncentivesRewards();
+      if (res && res.lp && res.lp.isActive) {
+        setIsIncentivesActive(true);
+      }
+    }
+
+    load();
+  }, [arbitrumOracleKeeperFetcher]);
+
   useEffect(() => {
     const validationParams = {
       "v2-adaptive-funding": isAdaptiveFundingActive,
       "v2-adaptive-funding-coming-soon": isAdaptiveFundingActive !== undefined && !isAdaptiveFundingActive,
+      "incentives-launch": isIncentivesActive,
     };
     const eventsData = isHome ? homeEventsData : appEventsData;
 
@@ -52,7 +70,7 @@ function useEventToast() {
           }
         );
       });
-  }, [visited, setVisited, isHome, chainId, isAdaptiveFundingActive]);
+  }, [visited, setVisited, isHome, chainId, isAdaptiveFundingActive, isIncentivesActive]);
 }
 
 export default useEventToast;
