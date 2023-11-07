@@ -88,7 +88,9 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
       try {
         fetchingResult = await Promise.all([
           client!.query({ query: gql(`{${queryBody}}`), fetchPolicy: "no-cache" }),
-          shouldCalcBonusApr ? (await oracleKeeperFetcher.fetchIncentivesRewards())?.lp ?? null : Promise.resolve(null),
+          shouldCalcBonusApr
+            ? oracleKeeperFetcher.fetchIncentivesRewards().then((res) => res?.lp ?? null)
+            : Promise.resolve(null),
         ]);
       } catch (err) {
         return {
