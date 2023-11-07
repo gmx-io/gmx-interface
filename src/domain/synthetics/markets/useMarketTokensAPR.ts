@@ -84,11 +84,11 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
       };
 
       const queryBody = marketAddresses.reduce((acc, marketAddress) => acc + marketFeesQuery(marketAddress), "");
-      let fetchingResult: null | [any, RawIncentivesStats] = null;
+      let fetchingResult: null | [any, RawIncentivesStats["lp"] | null] = null;
       try {
         fetchingResult = await Promise.all([
           client!.query({ query: gql(`{${queryBody}}`), fetchPolicy: "no-cache" }),
-          shouldCalcBonusApr ? oracleKeeperFetcher.fetchIncentivesRewards() : Promise.resolve(null),
+          shouldCalcBonusApr ? (await oracleKeeperFetcher.fetchIncentivesRewards())?.lp ?? null : Promise.resolve(null),
         ]);
       } catch (err) {
         return {

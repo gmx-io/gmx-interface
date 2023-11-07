@@ -25,11 +25,13 @@ export type DayPriceCandle = {
 };
 
 export type RawIncentivesStats = {
-  isActive: boolean;
-  totalRewards: string;
-  period: number;
-  rewardsPerMarket: Record<string, string>;
-} | null;
+  lp: {
+    isActive: boolean;
+    totalRewards: string;
+    period: number;
+    rewardsPerMarket: Record<string, string>;
+  };
+};
 
 export type OracleKeeperFetcher = ReturnType<typeof useOracleKeeperFetcher>;
 
@@ -136,9 +138,9 @@ export function useOracleKeeperFetcher(chainId: number) {
         });
     }
 
-    async function fetchIncentivesRewards(): Promise<RawIncentivesStats> {
+    async function fetchIncentivesRewards(): Promise<RawIncentivesStats | null> {
       return fetch(
-        buildUrl(oracleKeeperUrl!, "/incentives/stip/lp", {
+        buildUrl(oracleKeeperUrl!, "/incentives/stip", {
           ignoreStartDate: forceIncentivesActive ? "1" : undefined,
         })
       )
