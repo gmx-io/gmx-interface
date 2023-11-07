@@ -1,7 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { getContract } from "config/contracts";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import {
   adjustForDecimals,
   DUST_BNB,
@@ -49,10 +49,13 @@ import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageByChainId } from "lib/localStorage";
 import {
+  applyFactor,
+  basisPointsToFloat,
   bigNumberify,
   expandDecimals,
   formatAmount,
   formatAmountFree,
+  formatDeltaUsd,
   formatKeyAmount,
   limitDecimals,
   parseValue,
@@ -68,8 +71,25 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import PageTitle from "components/PageTitle/PageTitle";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { getFeeItem } from "domain/synthetics/fees";
+import { intervalToDuration, nextWednesday } from "date-fns";
+import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 
 const { AddressZero } = ethers.constants;
+
+function getTimeLeftToNextWednesday() {
+  const now = new Date();
+  const nextWed = nextWednesday(now);
+
+  const duration = intervalToDuration({
+    start: now,
+    end: Date.UTC(nextWed.getUTCFullYear(), nextWed.getUTCMonth(), nextWed.getUTCDate()),
+  });
+  const days = duration.days ? `${duration.days}d ` : "";
+  const hours = duration.hours ? `${duration.hours}h ` : "";
+  const minutes = duration.minutes ? `${duration.minutes}m` : "";
+  return `${days}${hours}${minutes}`.trim();
+}
 
 function getStakingData(stakingInfo) {
   if (!stakingInfo || stakingInfo.length === 0) {
@@ -122,6 +142,7 @@ export default function GlpSwap(props) {
   const whitelistedTokens = getWhitelistedV1Tokens(chainId);
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
   const visibleTokens = tokenList.filter((t) => !t.isTempHidden);
+
   const [swapValue, setSwapValue] = useState("");
   const [glpValue, setGlpValue] = useState("");
   const [swapTokenAddress, setSwapTokenAddress] = useLocalStorageByChainId(
@@ -158,6 +179,8 @@ export default function GlpSwap(props) {
       fetcher: contractFetcher(signer, ReaderV2, [tokenAddresses]),
     }
   );
+
+  const incentiveStats = useIncentiveStats(chainId);
 
   const { data: balancesAndSupplies } = useSWR(
     [
@@ -703,6 +726,62 @@ export default function GlpSwap(props) {
     }
   };
 
+  function renderMigrationIncentive() {
+    if (!incentiveStats?.migration?.isActive) return;
+
+    const feeFactor = basisPointsToFloat(BigNumber.from(feeBasisPoints));
+    const glpUsdMaxNegative = glpUsdMax?.mul(-1);
+    const feeItem =
+      glpUsdMax &&
+      getFeeItem(applyFactor(glpUsdMaxNegative, feeFactor), glpUsdMax, {
+        shouldRoundUp: true,
+      });
+    const rebateBasisPoints = basisPointsToFloat(
+      BigNumber.from(Math.min(feeBasisPoints, incentiveStats?.migration?.maxRebateBps || 25))
+    );
+    const maxRebateUsd = glpUsdMax && applyFactor(glpUsdMax?.abs(), rebateBasisPoints);
+    const rebateFeeItem = glpUsdMax && getFeeItem(maxRebateUsd, glpUsdMax, { shouldRoundUp: true });
+
+    return (
+      <>
+        <StatsTooltipRow
+          label="Base Fee"
+          value={formatDeltaUsd(feeItem?.deltaUsd, feeItem?.bps)}
+          showDollar={false}
+          className="text-red"
+        />
+        <StatsTooltipRow
+          label="Max Bonus Rebate"
+          value={formatDeltaUsd(rebateFeeItem?.deltaUsd, rebateFeeItem?.bps)}
+          showDollar={false}
+          className="text-green"
+        />
+        <br />
+        <div className="text-white">
+          <Trans>
+            The Bonus Rebate is an estimate and is to be airdropped as ARB tokens when migrating this liquidity to GM
+            pools within the same epoch.{" "}
+            <ExternalLink
+              href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#a2d1ea61dd1147b195b7e3bd769348d3"
+              newTab
+            >
+              Read more
+            </ExternalLink>
+            .
+          </Trans>
+        </div>
+        <br />
+        <div className="text-white">
+          <Trans>
+            Buy GM tokens before the epoch resets in {getTimeLeftToNextWednesday()} to be eligible for the Bonus Rebate.
+            Alternatively, wait for the epoch to reset to redeem GLP and buy GM within the same epoch.
+          </Trans>
+        </div>
+        <br />
+      </>
+    );
+  }
+
   return (
     <div className="GlpSwap">
       <SwapErrorModal
@@ -974,7 +1053,14 @@ export default function GlpSwap(props) {
                         }
                         return (
                           <div className="text-white">
-                            {isFeesHigh && <Trans>To reduce fees, select a different asset to receive.</Trans>}
+                            {renderMigrationIncentive()}
+                            {isFeesHigh && (
+                              <>
+                                <Trans>To reduce fees, select a different asset to pay with.</Trans>
+                                <br />
+                                <br />
+                              </>
+                            )}
                             <Trans>Check the "Save on Fees" section below to get the lowest fee percentages.</Trans>
                           </div>
                         );

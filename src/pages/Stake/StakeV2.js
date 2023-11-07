@@ -1021,7 +1021,10 @@ export default function StakeV2({ setPendingTxns }) {
 
   const { marketsInfoData, tokensData } = useMarketsInfo(chainId);
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
-  const { marketsTokensAPRData } = useMarketTokensAPR(chainId, { marketsInfoData, marketTokensData });
+  const { marketsTokensAPRData, marketsTokensIncentiveAprData } = useMarketTokensAPR(chainId, {
+    marketsInfoData,
+    marketTokensData,
+  });
 
   const { data: walletBalances } = useSWR(
     [
@@ -2015,6 +2018,7 @@ export default function StakeV2({ setPendingTxns }) {
         <div className="StakeV2-section">
           <GmList
             marketsTokensAPRData={marketsTokensAPRData}
+            marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
             marketTokensData={marketTokensData}
             marketsInfoData={marketsInfoData}
             tokensData={tokensData}

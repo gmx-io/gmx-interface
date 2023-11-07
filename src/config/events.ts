@@ -84,4 +84,18 @@ export const appEventsData: EventData[] = [
       },
     ],
   },
+  {
+    id: "incentives-launch",
+    title: "Incentives are live",
+    isActive: true,
+    validTill: "31 Oct 2024, 12:00",
+    bodyText: "Arbitrum STIP incentives are live for Arbitrum GM pools and GLP to GM migrations.",
+    buttons: [
+      {
+        text: "More Info.",
+        link: "https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3",
+        newTab: true,
+      },
+    ],
+  },
 ];

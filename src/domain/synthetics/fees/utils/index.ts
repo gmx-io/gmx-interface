@@ -102,12 +102,17 @@ export function getIsHighPriceImpact(positionPriceImpact?: FeeItem, swapPriceImp
   return totalPriceImpact.deltaUsd.lt(0) && totalPriceImpact.bps.abs().gte(HIGH_PRICE_IMPACT_BPS);
 }
 
-export function getFeeItem(feeDeltaUsd?: BigNumber, basis?: BigNumber): FeeItem | undefined {
+export function getFeeItem(
+  feeDeltaUsd?: BigNumber,
+  basis?: BigNumber,
+  opts: { shouldRoundUp?: boolean } = {}
+): FeeItem | undefined {
+  const { shouldRoundUp = false } = opts;
   if (!feeDeltaUsd) return undefined;
 
   return {
     deltaUsd: feeDeltaUsd,
-    bps: basis?.gt(0) ? getBasisPoints(feeDeltaUsd, basis) : BigNumber.from(0),
+    bps: basis?.gt(0) ? getBasisPoints(feeDeltaUsd, basis, shouldRoundUp) : BigNumber.from(0),
   };
 }
 

@@ -33,6 +33,10 @@ msgstr "24h Volume"
 msgid "<0><1>{eventTitle}</1> from <2>{0} {indexName} <3>[{poolName}]</3> Position</2></0>"
 msgstr "<0><1>{eventTitle}</1> from <2>{0} {indexName} <3>[{poolName}]</3> Position</2></0>"
 
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "<0>APR is based on the Fees collected for the past {daysConsidered} days. It is an estimate as actual Fees are auto-compounded into the pool in real-time.</0><1>Check Pools performance against other LP Positions in <2>GMX Dune Dashboard</2>.</1>"
+msgstr "<0>APR is based on the Fees collected for the past {daysConsidered} days. It is an estimate as actual Fees are auto-compounded into the pool in real-time.</0><1>Check Pools performance against other LP Positions in <2>GMX Dune Dashboard</2>.</1>"
+
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Buying GM: <1>{indexName}</1><2>[{poolName}]</2></0> <3>with {tokensText}</3>"
 msgstr "<0>Buying GM: <1>{indexName}</1><2>[{poolName}]</2></0> <3>with {tokensText}</3>"
@@ -485,9 +489,17 @@ msgstr "BUYABLE"
 msgid "Balance"
 msgstr "Balance"
 
+#: src/components/AprInfo/AprInfo.tsx
+msgid "Base APR"
+msgstr "Base APR"
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
 msgstr "Begin Transfer"
+
+#: src/components/AprInfo/AprInfo.tsx
+msgid "Bonus APR"
+msgstr "Bonus APR"
 
 #: src/components/Migration/Migration.js
 #: src/components/Migration/Migration.js
@@ -567,6 +579,10 @@ msgstr "Buy GLP or GMX"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Buy GM"
 msgstr "Buy GM"
+
+#: src/components/Glp/GlpSwap.js
+msgid "Buy GM tokens before the epoch resets in {0} to be eligible for the Bonus Rebate. Alternatively, wait for the epoch to reset to redeem GLP and buy GM within the same epoch."
+msgstr "Buy GM tokens before the epoch resets in {0} to be eligible for the Bonus Rebate. Alternatively, wait for the epoch to reset to redeem GLP and buy GM within the same epoch."
 
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GMX"
@@ -1915,6 +1931,11 @@ msgstr "GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of t
 #: src/components/Glp/GlpSwap.js
 msgid "GLP sell disabled, pending {0} upgrade"
 msgstr "GLP sell disabled, pending {0} upgrade"
+
+#: src/components/TokenCard/TokenCard.js
+#: src/pages/BuyGlp/BuyGlp.js
+msgid "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more</0>."
+msgstr "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more</0>."
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
@@ -4471,6 +4492,14 @@ msgstr "Terms and Conditions"
 msgid "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
 msgstr "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
 
+#: src/components/AprInfo/AprInfo.tsx
+msgid "The Bonus APR is to be airdropped as ARB tokens. <0>Read more</0>."
+msgstr "The Bonus APR is to be airdropped as ARB tokens. <0>Read more</0>."
+
+#: src/components/Glp/GlpSwap.js
+msgid "The Bonus Rebate is an estimate and is to be airdropped as ARB tokens when migrating this liquidity to GM pools within the same epoch. <0>Read more</0>."
+msgstr "The Bonus Rebate is an estimate and is to be airdropped as ARB tokens when migrating this liquidity to GM pools within the same epoch. <0>Read more</0>."
+
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "The Boosted APR is from your staked Multiplier Points."
 msgstr "The Boosted APR is from your staked Multiplier Points."
@@ -4653,12 +4682,9 @@ msgid "To purchase GMX on the {0} blockchain, please <0>change your network</0>.
 msgstr "To purchase GMX on the {0} blockchain, please <0>change your network</0>."
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "To reduce fees, select a different asset to pay with."
 msgstr "To reduce fees, select a different asset to pay with."
-
-#: src/components/Glp/GlpSwap.js
-msgid "To reduce fees, select a different asset to receive."
-msgstr "To reduce fees, select a different asset to receive."
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Tokens"
@@ -5171,10 +5197,6 @@ msgstr "Vesting Status"
 #: src/pages/Exchange/Exchange.js
 msgid "View"
 msgstr "View"
-
-#: src/pages/BuyGlp/BuyGlp.js
-msgid "View <0>staking</0> page."
-msgstr "View <0>staking</0> page."
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "View in Explorer"
