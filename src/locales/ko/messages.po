@@ -569,10 +569,6 @@ msgid "Buy GM"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
-#~ msgid "Buy GM tokens before the epoch resets in 1d 10h 53m to be eligible for the Bonus Rebate. Alternatively, wait for the epoch to reset to redeem GLP and buy GM within the same epoch."
-#~ msgstr ""
-
-#: src/components/Glp/GlpSwap.js
 msgid "Buy GM tokens before the epoch resets in {0} to be eligible for the Bonus Rebate. Alternatively, wait for the epoch to reset to redeem GLP and buy GM within the same epoch."
 msgstr ""
 

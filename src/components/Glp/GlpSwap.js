@@ -996,12 +996,16 @@ export default function GlpSwap(props) {
 
                         const feeFactor = basisPointsToFloat(BigNumber.from(feeBasisPoints));
                         const glpUsdMaxNegative = glpUsdMax?.mul(-1);
-                        const feeItem = glpUsdMax && getFeeItem(applyFactor(glpUsdMaxNegative, feeFactor), glpUsdMax);
+                        const feeItem =
+                          glpUsdMax &&
+                          getFeeItem(applyFactor(glpUsdMaxNegative, feeFactor), glpUsdMax, {
+                            shouldRoundUp: true,
+                          });
                         const rebateBasisPoints = basisPointsToFloat(
                           BigNumber.from(Math.min(feeBasisPoints, MAX_REBATE_BPS))
                         );
                         const maxRebateUsd = glpUsdMax && applyFactor(glpUsdMax?.abs(), rebateBasisPoints);
-                        const rebateFeeItem = glpUsdMax && getFeeItem(maxRebateUsd, glpUsdMax);
+                        const rebateFeeItem = glpUsdMax && getFeeItem(maxRebateUsd, glpUsdMax, { shouldRoundUp: true });
 
                         return (
                           <>
