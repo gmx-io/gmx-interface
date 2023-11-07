@@ -12,6 +12,7 @@ import { switchNetwork } from "lib/wallets";
 import APRLabel from "../APRLabel/APRLabel";
 import { HeaderLink } from "../Header/HeaderLink";
 import useWallet from "lib/wallets/useWallet";
+import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 
 const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
@@ -21,6 +22,7 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
   const isHome = isHomeSite();
   const { chainId } = useChainId();
   const { active } = useWallet();
+  const incentiveState = useIncentiveStats();
 
   const changeNetwork = useCallback(
     (network) => {
@@ -130,7 +132,7 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
             <Trans>
               GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of the V1 markets generated fees.
             </Trans>
-            {chainId === ARBITRUM && (
+            {incentiveState?.migration?.isActive && (
               <>
                 <br />
                 <br />

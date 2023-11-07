@@ -10,13 +10,14 @@ import { getNativeToken } from "config/tokens";
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import PageTitle from "components/PageTitle/PageTitle";
-import { ARBITRUM } from "config/chains";
+import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 
 export default function BuyGlp(props) {
   const { chainId } = useChainId();
   const history = useHistory();
   const [isBuying, setIsBuying] = useState(true);
   const nativeTokenSymbol = getNativeToken(chainId).symbol;
+  const incentiveState = useIncentiveStats();
 
   useEffect(() => {
     const hash = history.location.hash.replace("#", "");
@@ -31,7 +32,7 @@ export default function BuyGlp(props) {
         isTop
         subtitle={
           <div>
-            {chainId === ARBITRUM && (
+            {incentiveState?.migration?.isActive && (
               <div className="text-warning">
                 <Trans>
                   GLP to GM migration has reduced Fees due to STIP incentives.{" "}

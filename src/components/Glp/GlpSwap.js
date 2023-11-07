@@ -73,7 +73,7 @@ import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { getFeeItem } from "domain/synthetics/fees";
 import { intervalToDuration, nextWednesday } from "date-fns";
-import { useOracleKeeperFetcher } from "domain/synthetics/tokens";
+import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 
 const { AddressZero } = ethers.constants;
 
@@ -142,7 +142,6 @@ export default function GlpSwap(props) {
   const whitelistedTokens = getWhitelistedV1Tokens(chainId);
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
   const visibleTokens = tokenList.filter((t) => !t.isTempHidden);
-  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
 
   const [swapValue, setSwapValue] = useState("");
   const [glpValue, setGlpValue] = useState("");
@@ -157,7 +156,6 @@ export default function GlpSwap(props) {
   const [anchorOnSwapAmount, setAnchorOnSwapAmount] = useState(true);
   const [feeBasisPoints, setFeeBasisPoints] = useState("");
   const [modalError, setModalError] = useState(false);
-  const [migrationIncentivesStats, setMigrationIncentivesStats] = useState(null);
 
   const readerAddress = getContract(chainId, "Reader");
   const rewardReaderAddress = getContract(chainId, "RewardReader");
@@ -182,15 +180,7 @@ export default function GlpSwap(props) {
     }
   );
 
-  useEffect(() => {
-    async function load() {
-      const res = await oracleKeeperFetcher.fetchIncentivesRewards();
-      if (res?.migration?.isActive) {
-        setMigrationIncentivesStats(res.migration);
-      }
-    }
-    load();
-  }, [oracleKeeperFetcher]);
+  const incentiveStats = useIncentiveStats();
 
   const { data: balancesAndSupplies } = useSWR(
     [
@@ -737,7 +727,7 @@ export default function GlpSwap(props) {
   };
 
   function renderMigrationIncentive() {
-    if (!migrationIncentivesStats?.isActive) return;
+    if (!incentiveStats?.migration?.isActive) return;
 
     const feeFactor = basisPointsToFloat(BigNumber.from(feeBasisPoints));
     const glpUsdMaxNegative = glpUsdMax?.mul(-1);
@@ -747,7 +737,7 @@ export default function GlpSwap(props) {
         shouldRoundUp: true,
       });
     const rebateBasisPoints = basisPointsToFloat(
-      BigNumber.from(Math.min(feeBasisPoints, migrationIncentivesStats?.maxRebateBps || 25))
+      BigNumber.from(Math.min(feeBasisPoints, incentiveStats?.migration?.maxRebateBps || 25))
     );
     const maxRebateUsd = glpUsdMax && applyFactor(glpUsdMax?.abs(), rebateBasisPoints);
     const rebateFeeItem = glpUsdMax && getFeeItem(maxRebateUsd, glpUsdMax, { shouldRoundUp: true });
