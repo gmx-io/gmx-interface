@@ -6,7 +6,15 @@ import { BigNumber } from "ethers";
 import { formatAmount } from "lib/numbers";
 import { useCallback } from "react";
 
-export function AprInfo({ apr, incentiveApr }: { apr: BigNumber | undefined; incentiveApr: BigNumber | undefined }) {
+export function AprInfo({
+  apr,
+  incentiveApr,
+  showTooltip = true,
+}: {
+  apr: BigNumber | undefined;
+  incentiveApr: BigNumber | undefined;
+  showTooltip?: boolean;
+}) {
   const totalApr = apr?.add(incentiveApr ?? 0) ?? BigNumber.from(0);
   const aprNode = <>{apr ? `${formatAmount(totalApr, 2, 2)}%` : "..."}</>;
   const renderTooltipContent = useCallback(() => {
@@ -25,7 +33,7 @@ export function AprInfo({ apr, incentiveApr }: { apr: BigNumber | undefined; inc
       </>
     );
   }, [apr, incentiveApr]);
-  return incentiveApr && incentiveApr.gt(0) ? (
+  return showTooltip && incentiveApr && incentiveApr.gt(0) ? (
     <Tooltip handle={aprNode} position="right-bottom" renderContent={renderTooltipContent} />
   ) : (
     aprNode
