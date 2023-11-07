@@ -4,6 +4,7 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { timezoneOffset } from "domain/prices";
 import { Bar } from "domain/tradingview/types";
 import { buildUrl } from "lib/buildUrl";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMemo } from "react";
 
 export type TickersResponse = {
@@ -22,6 +23,13 @@ export type DayPriceCandle = {
   open: number;
   close: number;
 };
+
+export type RawIncentivesStats = {
+  isActive: boolean;
+  totalRewards: string;
+  period: number;
+  rewardsPerMarket: Record<string, string>;
+} | null;
 
 export type OracleKeeperFetcher = ReturnType<typeof useOracleKeeperFetcher>;
 
@@ -43,6 +51,7 @@ export function useOracleKeeperFetcher(chainId: number) {
   const { oracleKeeperInstancesConfig, setOracleKeeperInstancesConfig } = useSettings();
   const oracleKeeperIndex = oracleKeeperInstancesConfig[chainId];
   const oracleKeeperUrl = getOracleKeeperUrl(chainId, oracleKeeperIndex);
+  const [forceIncentivesActive] = useLocalStorageSerializeKey("forceIncentivesActive", false);
 
   return useMemo(() => {
     const switchOracleKeeper = () => {
@@ -127,11 +136,27 @@ export function useOracleKeeperFetcher(chainId: number) {
         });
     }
 
+    async function fetchIncentivesRewards(): Promise<RawIncentivesStats> {
+      return fetch(
+        buildUrl(oracleKeeperUrl!, "/incentives/stip/lp", {
+          ignoreStartDate: forceIncentivesActive ? "1" : undefined,
+        })
+      )
+        .then((res) => res.json())
+        .catch((e) => {
+          // eslint-disable-next-line no-console
+          console.error(e);
+          switchOracleKeeper();
+          return null;
+        });
+    }
+
     return {
       oracleKeeperUrl,
       fetchTickers,
       fetch24hPrices,
       fetchOracleCandles,
+      fetchIncentivesRewards,
     };
-  }, [chainId, oracleKeeperIndex, oracleKeeperUrl, setOracleKeeperInstancesConfig]);
+  }, [chainId, forceIncentivesActive, oracleKeeperIndex, oracleKeeperUrl, setOracleKeeperInstancesConfig]);
 }

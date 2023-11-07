@@ -1,4 +1,6 @@
 import { gql } from "@apollo/client";
+import { ARBITRUM, ARBITRUM_GOERLI } from "config/chains";
+import { getTokenBySymbol } from "config/tokens";
 import { sub } from "date-fns";
 import { BigNumber } from "ethers";
 import { bigNumberify, expandDecimals } from "lib/numbers";
@@ -6,8 +8,10 @@ import { getSyntheticsGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
 import useSWR from "swr";
 import { useMarketsInfo } from ".";
+import { RawIncentivesStats, useOracleKeeperFetcher, useTokensData } from "../tokens";
 import { MarketTokensAPRData } from "./types";
 import { useMarketTokensData } from "./useMarketTokensData";
+import { getByKey } from "lib/objects";
 import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 
 type RawCollectedFees = {
@@ -15,6 +19,7 @@ type RawCollectedFees = {
 };
 
 type MarketTokensAPRResult = {
+  marketsTokensIncentiveAprData?: MarketTokensAPRData;
   marketsTokensAPRData?: MarketTokensAPRData;
   avgMarketsAPR?: BigNumber;
 };
@@ -23,11 +28,14 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
   const { marketsInfoData } = useMarketsInfo(chainId);
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
 
+  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
   const client = getSyntheticsGraphClient(chainId);
   const marketAddresses = useMemo(
     () => Object.keys(marketsInfoData || {}).filter((address) => !marketsInfoData![address].isDisabled),
     [marketsInfoData]
   );
+
+  const { tokensData } = useTokensData(chainId);
 
   const key = marketAddresses.length && marketTokensData && client ? marketAddresses.join(",") : null;
 
@@ -35,6 +43,17 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
 
   const { data } = useSWR(key, {
     fetcher: async () => {
+      let arbTokenAddress: null | string = null;
+      try {
+        arbTokenAddress = getTokenBySymbol(chainId, "ARB").address;
+      } catch (err) {}
+      let arbTokenPrice = BigNumber.from(0);
+
+      if (arbTokenAddress && tokensData) {
+        arbTokenPrice = tokensData[arbTokenAddress]?.prices?.minPrice ?? BigNumber.from(0);
+      }
+
+      let shouldCalcBonusApr = arbTokenPrice.gt(0) && (chainId === ARBITRUM || chainId === ARBITRUM_GOERLI);
       const marketFeesQuery = (marketAddress: string) => {
         return `
             _${marketAddress}_lte_start_of_period_: collectedMarketFeesInfos(
@@ -65,22 +84,37 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
       };
 
       const queryBody = marketAddresses.reduce((acc, marketAddress) => acc + marketFeesQuery(marketAddress), "");
-      const { data: response } = await client!.query({ query: gql(`{${queryBody}}`), fetchPolicy: "no-cache" });
+      let fetchingResult: null | [any, RawIncentivesStats] = null;
+      try {
+        fetchingResult = await Promise.all([
+          client!.query({ query: gql(`{${queryBody}}`), fetchPolicy: "no-cache" }),
+          shouldCalcBonusApr ? oracleKeeperFetcher.fetchIncentivesRewards() : Promise.resolve(null),
+        ]);
+      } catch (err) {
+        return {
+          marketsTokensAPRData: {},
+          avgMarketsAPR: BigNumber.from(0),
+          marketsTokensIncentiveAprData: {},
+        };
+      }
+      const response = fetchingResult![0].data;
+      const rawIncentivesStats = fetchingResult![1];
 
-      const marketTokensAPRData: MarketTokensAPRData = marketAddresses.reduce((acc, marketAddress) => {
+      shouldCalcBonusApr = Boolean(shouldCalcBonusApr && rawIncentivesStats && rawIncentivesStats!.isActive);
+
+      const marketsTokensAPRData: MarketTokensAPRData = marketAddresses.reduce((acc, marketAddress) => {
         const lteStartOfPeriodFees = response[`_${marketAddress}_lte_start_of_period_`] as RawCollectedFees[];
         const recentFees = response[`_${marketAddress}_recent`] as RawCollectedFees[];
 
-        const lteStartOfPeriodFeePerPoolValue =
-          bigNumberify(lteStartOfPeriodFees[0]!.cumulativeFeeUsdPerPoolValue) ?? BigNumber.from(0);
-        const recentFeePerPoolValue = bigNumberify(recentFees[0]!.cumulativeFeeUsdPerPoolValue);
+        const poolValue1 = bigNumberify(lteStartOfPeriodFees[0]!.cumulativeFeeUsdPerPoolValue) ?? BigNumber.from(0);
+        const poolValue2 = bigNumberify(recentFees[0]!.cumulativeFeeUsdPerPoolValue);
 
-        if (!recentFeePerPoolValue) {
+        if (!poolValue2) {
           acc[marketAddress] = BigNumber.from(0);
           return acc;
         }
 
-        const incomePercentageForPeriod = recentFeePerPoolValue.sub(lteStartOfPeriodFeePerPoolValue);
+        const incomePercentageForPeriod = poolValue2.sub(poolValue1);
         const yearMultiplier = Math.floor(365 / daysConsidered);
         const apr = incomePercentageForPeriod.mul(yearMultiplier).div(expandDecimals(1, 26));
 
@@ -89,20 +123,45 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
         return acc;
       }, {} as MarketTokensAPRData);
 
-      const avgMarketsAPR = Object.values(marketTokensAPRData)
+      const marketsTokensIncentiveAprData: MarketTokensAPRData =
+        !shouldCalcBonusApr || !rawIncentivesStats
+          ? {}
+          : marketAddresses.reduce((acc, marketAddress) => {
+              const arbTokensAmount = BigNumber.from(rawIncentivesStats.rewardsPerMarket[marketAddress] ?? 0);
+              const yearMultiplier = Math.floor((365 * 24 * 60 * 60) / rawIncentivesStats.period);
+              const poolValue = getByKey(marketsInfoData, marketAddress)?.poolValueMin;
+              let incentivesApr = BigNumber.from(0);
+
+              if (poolValue?.gt(0)) {
+                incentivesApr = arbTokensAmount
+                  .mul(arbTokenPrice)
+                  .div(poolValue)
+                  .mul(yearMultiplier)
+                  .div(expandDecimals(1, 14));
+              }
+
+              return {
+                ...acc,
+                [marketAddress]: incentivesApr,
+              };
+            }, {} as MarketTokensAPRData);
+
+      const avgMarketsAPR = Object.values(marketsTokensAPRData)
         .reduce((acc, apr) => {
           return acc.add(apr);
         }, BigNumber.from(0))
         .div(marketAddresses.length);
 
       return {
-        marketsTokensAPRData: marketTokensAPRData,
-        avgMarketsAPR: avgMarketsAPR,
+        marketsTokensAPRData,
+        avgMarketsAPR,
+        marketsTokensIncentiveAprData,
       };
     },
   });
 
   return {
+    marketsTokensIncentiveAprData: data?.marketsTokensIncentiveAprData,
     marketsTokensAPRData: data?.marketsTokensAPRData,
     avgMarketsAPR: data?.avgMarketsAPR,
   };
