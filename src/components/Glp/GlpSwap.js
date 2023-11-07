@@ -184,7 +184,7 @@ export default function GlpSwap(props) {
   useEffect(() => {
     async function load() {
       const res = await arbitrumOracleKeeperFetcher.fetchIncentivesRewards();
-      if (res && res.migration && res.migration.isActive) {
+      if (res?.migration?.isActive) {
         setMigrationIncentivesStats(res.migration);
       }
     }
