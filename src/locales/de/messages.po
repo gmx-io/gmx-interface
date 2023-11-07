@@ -4490,15 +4490,11 @@ msgid "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, G
 msgstr "Die <0>GMX-Migration</0> ist im Gange, bitte migriere deine GMT-, xGMT-, GMT-USDG- und xGMT-USDG-Tokens.<1/>USDG-Tokens funktionieren weiterhin wie bisher und müssen nicht migriert werden."
 
 #: src/components/AprInfo/AprInfo.tsx
-#~ msgid "The Bonus APR is estimated to be airdropped ARB tokens. <0>Read more.</0>"
-#~ msgstr ""
-
-#: src/components/AprInfo/AprInfo.tsx
-#~ msgid "The Bonus APR is estimated to be airdropped ARB tokens. <0>Read more</0>."
-#~ msgstr ""
-
-#: src/components/AprInfo/AprInfo.tsx
 msgid "The Bonus APR is to be airdropped as ARB tokens. <0>Read more</0>."
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js
+msgid "The Bonus Rebate is an estimate and is to be airdropped as ARB tokens when migrating this liquidity to GM pools within the same epoch. <0>Read more</0>."
 msgstr ""
 
 #: src/components/Stake/GMXAprTooltip.tsx
