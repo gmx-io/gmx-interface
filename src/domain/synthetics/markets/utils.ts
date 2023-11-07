@@ -125,9 +125,9 @@ export function getMaxReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
     reserveFactor = openInterestReserveFactor;
   }
 
-  const reservedUsd = poolUsd.mul(reserveFactor).div(PRECISION);
+  const maxReservedUsd = poolUsd.mul(reserveFactor).div(PRECISION);
 
-  return reservedUsd.lt(maxOpenInterest) ? reservedUsd : maxOpenInterest;
+  return maxReservedUsd.lt(maxOpenInterest) ? maxReservedUsd : maxOpenInterest;
 }
 
 export function getAvailableUsdLiquidityForPosition(marketInfo: MarketInfo, isLong: boolean) {
