@@ -25,7 +25,7 @@ export function AprInfo({
         <br />
         <Trans>
           The Bonus APR is to be airdropped as ARB tokens.{" "}
-          <ExternalLink href="https://www.notion.so/gmxio/Arbitrum-S-T-I-P-Grant-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3">
+          <ExternalLink href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#5c07d62e5676466db25f30807ef0a647">
             Read more
           </ExternalLink>
           .

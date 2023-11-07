@@ -31,6 +31,11 @@ export type RawIncentivesStats = {
     period: number;
     rewardsPerMarket: Record<string, string>;
   };
+  migration: {
+    isActive: boolean;
+    maxRebateBps: number;
+    period: number;
+  };
 };
 
 export type OracleKeeperFetcher = ReturnType<typeof useOracleKeeperFetcher>;

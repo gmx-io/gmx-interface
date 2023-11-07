@@ -580,6 +580,10 @@ msgstr "Buy GLP or GMX"
 msgid "Buy GM"
 msgstr "Buy GM"
 
+#: src/components/Glp/GlpSwap.js
+msgid "Buy GM tokens before the epoch resets in {0} to be eligible for the Bonus Rebate. Alternatively, wait for the epoch to reset to redeem GLP and buy GM within the same epoch."
+msgstr "Buy GM tokens before the epoch resets in {0} to be eligible for the Bonus Rebate. Alternatively, wait for the epoch to reset to redeem GLP and buy GM within the same epoch."
+
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GMX"
 msgstr "Buy GMX"
@@ -1927,6 +1931,11 @@ msgstr "GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of t
 #: src/components/Glp/GlpSwap.js
 msgid "GLP sell disabled, pending {0} upgrade"
 msgstr "GLP sell disabled, pending {0} upgrade"
+
+#: src/components/TokenCard/TokenCard.js
+#: src/pages/BuyGlp/BuyGlp.js
+msgid "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more</0>."
+msgstr "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more</0>."
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
@@ -4484,16 +4493,12 @@ msgid "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, G
 msgstr "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
 
 #: src/components/AprInfo/AprInfo.tsx
-#~ msgid "The Bonus APR is estimated to be airdropped ARB tokens. <0>Read more.</0>"
-#~ msgstr "The Bonus APR is estimated to be airdropped ARB tokens. <0>Read more.</0>"
-
-#: src/components/AprInfo/AprInfo.tsx
-#~ msgid "The Bonus APR is estimated to be airdropped ARB tokens. <0>Read more</0>."
-#~ msgstr "The Bonus APR is estimated to be airdropped ARB tokens. <0>Read more</0>."
-
-#: src/components/AprInfo/AprInfo.tsx
 msgid "The Bonus APR is to be airdropped as ARB tokens. <0>Read more</0>."
 msgstr "The Bonus APR is to be airdropped as ARB tokens. <0>Read more</0>."
+
+#: src/components/Glp/GlpSwap.js
+msgid "The Bonus Rebate is an estimate and is to be airdropped as ARB tokens when migrating this liquidity to GM pools within the same epoch. <0>Read more</0>."
+msgstr "The Bonus Rebate is an estimate and is to be airdropped as ARB tokens when migrating this liquidity to GM pools within the same epoch. <0>Read more</0>."
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "The Boosted APR is from your staked Multiplier Points."
@@ -4677,12 +4682,9 @@ msgid "To purchase GMX on the {0} blockchain, please <0>change your network</0>.
 msgstr "To purchase GMX on the {0} blockchain, please <0>change your network</0>."
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "To reduce fees, select a different asset to pay with."
 msgstr "To reduce fees, select a different asset to pay with."
-
-#: src/components/Glp/GlpSwap.js
-msgid "To reduce fees, select a different asset to receive."
-msgstr "To reduce fees, select a different asset to receive."
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Tokens"
@@ -5195,10 +5197,6 @@ msgstr "Vesting Status"
 #: src/pages/Exchange/Exchange.js
 msgid "View"
 msgstr "View"
-
-#: src/pages/BuyGlp/BuyGlp.js
-msgid "View <0>staking</0> page."
-msgstr "View <0>staking</0> page."
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "View in Explorer"
