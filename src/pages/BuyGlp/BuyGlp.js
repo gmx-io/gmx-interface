@@ -17,7 +17,7 @@ export default function BuyGlp(props) {
   const history = useHistory();
   const [isBuying, setIsBuying] = useState(true);
   const nativeTokenSymbol = getNativeToken(chainId).symbol;
-  const incentiveState = useIncentiveStats();
+  const incentiveState = useIncentiveStats(chainId);
 
   useEffect(() => {
     const hash = history.location.hash.replace("#", "");

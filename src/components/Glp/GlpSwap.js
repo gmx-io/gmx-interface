@@ -180,7 +180,7 @@ export default function GlpSwap(props) {
     }
   );
 
-  const incentiveStats = useIncentiveStats();
+  const incentiveStats = useIncentiveStats(chainId);
 
   const { data: balancesAndSupplies } = useSWR(
     [
