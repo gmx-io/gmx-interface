@@ -9,6 +9,7 @@ import { isHomeSite } from "lib/legacy";
 import { useChainId } from "lib/chains";
 import { useMarketsInfo } from "domain/synthetics/markets";
 import { useOracleKeeperFetcher } from "domain/synthetics/tokens";
+import { ARBITRUM } from "config/chains";
 
 function useEventToast() {
   const isHome = isHomeSite();
@@ -22,18 +23,18 @@ function useEventToast() {
     return Object.values(marketsInfoData).some((market) => market.fundingIncreaseFactorPerSecond.gt(0));
   }, [marketsInfoData]);
 
-  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
+  const arbitrumOracleKeeperFetcher = useOracleKeeperFetcher(ARBITRUM);
 
   useEffect(() => {
     async function load() {
-      const res = await oracleKeeperFetcher.fetchIncentivesRewards();
+      const res = await arbitrumOracleKeeperFetcher.fetchIncentivesRewards();
       if (res && res.lp && res.lp.isActive) {
         setIsIncentivesActive(true);
       }
     }
 
     load();
-  }, [oracleKeeperFetcher]);
+  }, [arbitrumOracleKeeperFetcher]);
 
   useEffect(() => {
     const validationParams = {
