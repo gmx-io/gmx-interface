@@ -73,10 +73,9 @@ import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { getFeeItem } from "domain/synthetics/fees";
 import { intervalToDuration, nextWednesday } from "date-fns";
+import { useOracleKeeperFetcher } from "domain/synthetics/tokens";
 
 const { AddressZero } = ethers.constants;
-
-const MAX_REBATE_BPS = 25;
 
 function getTimeLeftToNextWednesday() {
   const now = new Date();
@@ -134,6 +133,7 @@ export default function GlpSwap(props) {
   const { savedSlippageAmount, isBuying, setPendingTxns, setIsBuying, savedShouldDisableValidationForTesting } = props;
   const history = useHistory();
   const isMetamaskMobile = useIsMetamaskMobile();
+  const arbitrumOracleKeeperFetcher = useOracleKeeperFetcher(ARBITRUM);
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp";
   const tabLabel = isBuying ? t`Buy GLP` : t`Sell GLP`;
   const { active, signer, account } = useWallet();
@@ -156,6 +156,7 @@ export default function GlpSwap(props) {
   const [anchorOnSwapAmount, setAnchorOnSwapAmount] = useState(true);
   const [feeBasisPoints, setFeeBasisPoints] = useState("");
   const [modalError, setModalError] = useState(false);
+  const [migrationIncentivesStats, setMigrationIncentivesStats] = useState(null);
 
   const readerAddress = getContract(chainId, "Reader");
   const rewardReaderAddress = getContract(chainId, "RewardReader");
@@ -179,6 +180,16 @@ export default function GlpSwap(props) {
       fetcher: contractFetcher(signer, ReaderV2, [tokenAddresses]),
     }
   );
+
+  useEffect(() => {
+    async function load() {
+      const res = await arbitrumOracleKeeperFetcher.fetchIncentivesRewards();
+      if (res && res.migration && res.migration.isActive) {
+        setMigrationIncentivesStats(res.migration);
+      }
+    }
+    load();
+  }, [arbitrumOracleKeeperFetcher]);
 
   const { data: balancesAndSupplies } = useSWR(
     [
@@ -724,6 +735,62 @@ export default function GlpSwap(props) {
     }
   };
 
+  function renderMigrationIncentive() {
+    if (!migrationIncentivesStats?.isActive) return;
+
+    const feeFactor = basisPointsToFloat(BigNumber.from(feeBasisPoints));
+    const glpUsdMaxNegative = glpUsdMax?.mul(-1);
+    const feeItem =
+      glpUsdMax &&
+      getFeeItem(applyFactor(glpUsdMaxNegative, feeFactor), glpUsdMax, {
+        shouldRoundUp: true,
+      });
+    const rebateBasisPoints = basisPointsToFloat(
+      BigNumber.from(Math.min(feeBasisPoints, migrationIncentivesStats?.maxRebateBps || 25))
+    );
+    const maxRebateUsd = glpUsdMax && applyFactor(glpUsdMax?.abs(), rebateBasisPoints);
+    const rebateFeeItem = glpUsdMax && getFeeItem(maxRebateUsd, glpUsdMax, { shouldRoundUp: true });
+
+    return (
+      <>
+        <StatsTooltipRow
+          label="Base Fee"
+          value={formatDeltaUsd(feeItem?.deltaUsd, feeItem?.bps)}
+          showDollar={false}
+          className="text-red"
+        />
+        <StatsTooltipRow
+          label="Max Bonus Rebate"
+          value={formatDeltaUsd(rebateFeeItem?.deltaUsd, rebateFeeItem?.bps)}
+          showDollar={false}
+          className="text-green"
+        />
+        <br />
+        <div className="text-white">
+          <Trans>
+            The Bonus Rebate is an estimate and is to be airdropped as ARB tokens when migrating this liquidity to GM
+            pools within the same epoch.{" "}
+            <ExternalLink
+              href="https://www.notion.so/gmxio/GMX-Grants-Distribution-Arbitrum-S-T-I-P-Incentives-1a5ab9ca432b4f1798ff8810ce51fec3#32ca3a0d2fd340e5946731fd5fb8b0cf"
+              newTab
+            >
+              Read more
+            </ExternalLink>
+            .
+          </Trans>
+        </div>
+        <br />
+        <div className="text-white">
+          <Trans>
+            Buy GM tokens before the epoch resets in {getTimeLeftToNextWednesday()} to be eligible for the Bonus Rebate.
+            Alternatively, wait for the epoch to reset to redeem GLP and buy GM within the same epoch.
+          </Trans>
+        </div>
+        <br />
+      </>
+    );
+  }
+
   return (
     <div className="GlpSwap">
       <SwapErrorModal
@@ -993,62 +1060,18 @@ export default function GlpSwap(props) {
                             </div>
                           );
                         }
-
-                        const feeFactor = basisPointsToFloat(BigNumber.from(feeBasisPoints));
-                        const glpUsdMaxNegative = glpUsdMax?.mul(-1);
-                        const feeItem =
-                          glpUsdMax &&
-                          getFeeItem(applyFactor(glpUsdMaxNegative, feeFactor), glpUsdMax, {
-                            shouldRoundUp: true,
-                          });
-                        const rebateBasisPoints = basisPointsToFloat(
-                          BigNumber.from(Math.min(feeBasisPoints, MAX_REBATE_BPS))
-                        );
-                        const maxRebateUsd = glpUsdMax && applyFactor(glpUsdMax?.abs(), rebateBasisPoints);
-                        const rebateFeeItem = glpUsdMax && getFeeItem(maxRebateUsd, glpUsdMax, { shouldRoundUp: true });
-
                         return (
-                          <>
-                            <StatsTooltipRow
-                              label="Base Fee"
-                              value={formatDeltaUsd(feeItem?.deltaUsd, feeItem?.bps)}
-                              showDollar={false}
-                              className="text-red"
-                            />
-                            <StatsTooltipRow
-                              label="Max Bonus Rebate"
-                              value={formatDeltaUsd(rebateFeeItem?.deltaUsd, rebateFeeItem?.bps)}
-                              showDollar={false}
-                              className="text-green"
-                            />
-                            <br />
-                            <div className="text-white">
-                              <Trans>
-                                The Bonus Rebate is an estimate and is to be airdropped as ARB tokens when migrating
-                                this liquidity to GM pools within the same epoch.{" "}
-                                <ExternalLink
-                                  href="https://www.notion.so/gmxio/GMX-Grants-Distribution-Arbitrum-S-T-I-P-Incentives-1a5ab9ca432b4f1798ff8810ce51fec3#32ca3a0d2fd340e5946731fd5fb8b0cf"
-                                  newTab
-                                >
-                                  Read more
-                                </ExternalLink>
-                                .
-                              </Trans>
-                            </div>
-                            <br />
-                            <div className="text-white">
-                              <Trans>
-                                Buy GM tokens before the epoch resets in {getTimeLeftToNextWednesday()} to be eligible
-                                for the Bonus Rebate. Alternatively, wait for the epoch to reset to redeem GLP and buy
-                                GM within the same epoch.
-                              </Trans>
-                            </div>
-                            <br />
-                            <div className="text-white">
-                              {isFeesHigh && <Trans>To reduce fees, select a different asset to receive.</Trans>}
-                              <Trans>Check the "Save on Fees" section below to get the lowest fee percentages.</Trans>
-                            </div>
-                          </>
+                          <div className="text-white">
+                            {renderMigrationIncentive()}
+                            {isFeesHigh && (
+                              <>
+                                <Trans>To reduce fees, select a different asset to pay with.</Trans>
+                                <br />
+                                <br />
+                              </>
+                            )}
+                            <Trans>Check the "Save on Fees" section below to get the lowest fee percentages.</Trans>
+                          </div>
                         );
                       }}
                     />
