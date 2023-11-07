@@ -35,7 +35,7 @@ export default function BuyGlp(props) {
                 GLP to GM migration has reduced Fees due to STIP incentives.{" "}
                 <ExternalLink
                   className="text-warning"
-                  href="https://www.notion.so/gmxio/GMX-Grants-Distribution-Arbitrum-S-T-I-P-Incentives-1a5ab9ca432b4f1798ff8810ce51fec3#32ca3a0d2fd340e5946731fd5fb8b0cf"
+                  href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#a2d1ea61dd1147b195b7e3bd769348d3"
                 >
                   Read more
                 </ExternalLink>

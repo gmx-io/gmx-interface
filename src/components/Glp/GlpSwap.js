@@ -133,7 +133,6 @@ export default function GlpSwap(props) {
   const { savedSlippageAmount, isBuying, setPendingTxns, setIsBuying, savedShouldDisableValidationForTesting } = props;
   const history = useHistory();
   const isMetamaskMobile = useIsMetamaskMobile();
-  const arbitrumOracleKeeperFetcher = useOracleKeeperFetcher(ARBITRUM);
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp";
   const tabLabel = isBuying ? t`Buy GLP` : t`Sell GLP`;
   const { active, signer, account } = useWallet();
@@ -143,6 +142,8 @@ export default function GlpSwap(props) {
   const whitelistedTokens = getWhitelistedV1Tokens(chainId);
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
   const visibleTokens = tokenList.filter((t) => !t.isTempHidden);
+  const arbitrumOracleKeeperFetcher = useOracleKeeperFetcher(chainId);
+
   const [swapValue, setSwapValue] = useState("");
   const [glpValue, setGlpValue] = useState("");
   const [swapTokenAddress, setSwapTokenAddress] = useLocalStorageByChainId(
@@ -771,7 +772,7 @@ export default function GlpSwap(props) {
             The Bonus Rebate is an estimate and is to be airdropped as ARB tokens when migrating this liquidity to GM
             pools within the same epoch.{" "}
             <ExternalLink
-              href="https://www.notion.so/gmxio/GMX-Grants-Distribution-Arbitrum-S-T-I-P-Incentives-1a5ab9ca432b4f1798ff8810ce51fec3#32ca3a0d2fd340e5946731fd5fb8b0cf"
+              href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#a2d1ea61dd1147b195b7e3bd769348d3"
               newTab
             >
               Read more
