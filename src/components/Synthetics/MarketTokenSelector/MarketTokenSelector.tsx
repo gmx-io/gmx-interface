@@ -16,19 +16,22 @@ import {
 import { TokensData } from "domain/synthetics/tokens";
 import useSortedMarketsWithIndexToken from "domain/synthetics/trade/useSortedMarketsWithIndexToken";
 import { getByKey } from "lib/objects";
-import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
+import { formatTokenAmount, formatUsd } from "lib/numbers";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { useHistory } from "react-router-dom";
+import { AprInfo } from "components/AprInfo/AprInfo";
 
 type Props = {
   marketsInfoData?: MarketsInfoData;
   marketTokensData?: TokensData;
   marketsTokensAPRData?: MarketTokensAPRData;
+  marketsTokensIncentiveAprData?: MarketTokensAPRData;
   currentMarketInfo?: MarketInfo;
 };
 
 export default function MarketTokenSelector(props: Props) {
-  const { marketsTokensAPRData, marketsInfoData, marketTokensData, currentMarketInfo } = props;
+  const { marketsTokensIncentiveAprData, marketsTokensAPRData, marketsInfoData, marketTokensData, currentMarketInfo } =
+    props;
   const { markets: sortedMarketsByIndexToken } = useSortedMarketsWithIndexToken(marketsInfoData, marketTokensData);
   const [searchKeyword, setSearchKeyword] = useState("");
   const history = useHistory();
@@ -55,6 +58,7 @@ export default function MarketTokenSelector(props: Props) {
       const mintableInfo = getMintableMarketTokens(marketInfo, market);
       const sellableInfo = getSellableMarketToken(marketInfo, market);
       const apr = getByKey(marketsTokensAPRData, market?.address);
+      const incentiveApr = getByKey(marketsTokensIncentiveAprData, marketInfo?.marketTokenAddress);
       const indexName = getMarketIndexName(marketInfo);
       const poolName = getMarketPoolName(marketInfo);
       return {
@@ -65,9 +69,10 @@ export default function MarketTokenSelector(props: Props) {
         indexName,
         poolName,
         apr,
+        incentiveApr,
       };
     });
-  }, [filteredTokens, marketsInfoData, marketsTokensAPRData]);
+  }, [filteredTokens, marketsInfoData, marketsTokensAPRData, marketsTokensIncentiveAprData]);
 
   function handleSelectToken(marketTokenAddress: string) {
     history.push({
@@ -135,7 +140,16 @@ export default function MarketTokenSelector(props: Props) {
                     )}
                     <tbody>
                       {filteredTokensInfo.map(
-                        ({ market, mintableInfo, sellableInfo, apr, marketInfo, poolName, indexName }) => {
+                        ({
+                          market,
+                          mintableInfo,
+                          sellableInfo,
+                          apr,
+                          incentiveApr,
+                          marketInfo,
+                          poolName,
+                          indexName,
+                        }) => {
                           return (
                             <Popover.Button
                               as="tr"
@@ -172,7 +186,9 @@ export default function MarketTokenSelector(props: Props) {
                                   useCommas: true,
                                 })}
                               </td>
-                              <td>{apr ? `${formatAmount(apr, 2, 2)}%` : "..."}</td>
+                              <td>
+                                <AprInfo apr={apr} incentiveApr={incentiveApr} showTooltip={false} />
+                              </td>
                             </Popover.Button>
                           );
                         }
