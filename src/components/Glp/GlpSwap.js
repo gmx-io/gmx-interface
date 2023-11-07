@@ -142,7 +142,7 @@ export default function GlpSwap(props) {
   const whitelistedTokens = getWhitelistedV1Tokens(chainId);
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
   const visibleTokens = tokenList.filter((t) => !t.isTempHidden);
-  const arbitrumOracleKeeperFetcher = useOracleKeeperFetcher(chainId);
+  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
 
   const [swapValue, setSwapValue] = useState("");
   const [glpValue, setGlpValue] = useState("");
@@ -184,13 +184,13 @@ export default function GlpSwap(props) {
 
   useEffect(() => {
     async function load() {
-      const res = await arbitrumOracleKeeperFetcher.fetchIncentivesRewards();
+      const res = await oracleKeeperFetcher.fetchIncentivesRewards();
       if (res?.migration?.isActive) {
         setMigrationIncentivesStats(res.migration);
       }
     }
     load();
-  }, [arbitrumOracleKeeperFetcher]);
+  }, [oracleKeeperFetcher]);
 
   const { data: balancesAndSupplies } = useSWR(
     [
