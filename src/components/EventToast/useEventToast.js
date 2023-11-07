@@ -27,7 +27,7 @@ function useEventToast() {
   useEffect(() => {
     async function load() {
       const res = await oracleKeeperFetcher.fetchIncentivesRewards();
-      if (res.lp && res.lp.isActive) {
+      if (res && res.lp && res.lp.isActive) {
         setIsIncentivesActive(true);
       }
     }
