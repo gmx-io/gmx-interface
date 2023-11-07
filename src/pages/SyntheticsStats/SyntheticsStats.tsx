@@ -12,7 +12,7 @@ import {
   getAvailableUsdLiquidityForCollateral,
   getMarketIndexName,
   getMarketPoolName,
-  getMaxReservedUsd,
+  getMaxOpenInterest,
   getReservedUsd,
   useMarketsInfo,
 } from "domain/synthetics/markets";
@@ -162,10 +162,10 @@ export function SyntheticsStats() {
             const virtualInventorySwapsShort = market.virtualPoolAmountForShortToken;
 
             const reservedUsdLong = getReservedUsd(market, true);
-            const maxReservedUsdLong = getMaxReservedUsd(market, true);
+            const maxReservedUsdLong = getMaxOpenInterest(market, true);
 
             const reservedUsdShort = getReservedUsd(market, false);
-            const maxReservedUsdShort = getMaxReservedUsd(market, false);
+            const maxReservedUsdShort = getMaxOpenInterest(market, false);
 
             const borrowingRateLong = getBorrowingFactorPerPeriod(market, true, 60 * 60);
             const borrowingRateShort = getBorrowingFactorPerPeriod(market, false, 60 * 60);
