@@ -105,13 +105,14 @@ export function getIsHighPriceImpact(positionPriceImpact?: FeeItem, swapPriceImp
 export function getFeeItem(
   feeDeltaUsd?: BigNumber,
   basis?: BigNumber,
-  opts?: { shouldRoundUp: false }
+  opts: { shouldRoundUp?: boolean } = {}
 ): FeeItem | undefined {
+  const { shouldRoundUp = false } = opts;
   if (!feeDeltaUsd) return undefined;
 
   return {
     deltaUsd: feeDeltaUsd,
-    bps: basis?.gt(0) ? getBasisPoints(feeDeltaUsd, basis, opts?.shouldRoundUp) : BigNumber.from(0),
+    bps: basis?.gt(0) ? getBasisPoints(feeDeltaUsd, basis, shouldRoundUp) : BigNumber.from(0),
   };
 }
 
