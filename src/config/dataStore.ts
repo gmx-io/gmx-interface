@@ -42,6 +42,8 @@ export const MAX_POSITION_IMPACT_FACTOR_FOR_LIQUIDATIONS_KEY = hashString(
   "MAX_POSITION_IMPACT_FACTOR_FOR_LIQUIDATIONS"
 );
 export const POSITION_IMPACT_POOL_AMOUNT_KEY = hashString("POSITION_IMPACT_POOL_AMOUNT");
+export const MIN_POSITION_IMPACT_POOL_AMOUNT_KEY = hashString("MIN_POSITION_IMPACT_POOL_AMOUNT");
+export const POSITION_IMPACT_POOL_DISTRIBUTION_RATE_KEY = hashString("POSITION_IMPACT_POOL_DISTRIBUTION_RATE");
 export const SWAP_IMPACT_POOL_AMOUNT_KEY = hashString("SWAP_IMPACT_POOL_AMOUNT");
 export const MIN_COLLATERAL_USD_KEY = hashString("MIN_COLLATERAL_USD");
 export const MIN_COLLATERAL_FACTOR_KEY = hashString("MIN_COLLATERAL_FACTOR");
@@ -183,6 +185,14 @@ export function maxPnlFactorKey(pnlFactorType: string, market: string, isLong: b
 
 export function positionImpactPoolAmountKey(market: string) {
   return hashData(["bytes32", "address"], [POSITION_IMPACT_POOL_AMOUNT_KEY, market]);
+}
+
+export function minPositionImpactPoolAmountKey(market: string) {
+  return hashData(["bytes32", "address"], [MIN_POSITION_IMPACT_POOL_AMOUNT_KEY, market]);
+}
+
+export function positionImpactPoolDistributionRateKey(market: string) {
+  return hashData(["bytes32", "address"], [POSITION_IMPACT_POOL_DISTRIBUTION_RATE_KEY, market]);
 }
 
 export function maxPositionImpactFactorForLiquidationsKey(market: string) {

@@ -39,6 +39,8 @@ import {
   swapImpactPoolAmountKey,
   virtualMarketIdKey,
   virtualTokenIdKey,
+  minPositionImpactPoolAmountKey,
+  positionImpactPoolDistributionRateKey,
 } from "config/dataStore";
 import { convertTokenAddress } from "config/tokens";
 import { BigNumber } from "ethers";
@@ -193,6 +195,14 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
               positionImpactPoolAmount: {
                 methodName: "getUint",
                 params: [positionImpactPoolAmountKey(marketAddress)],
+              },
+              minPositionImpactPoolAmount: {
+                methodName: "getUint",
+                params: [minPositionImpactPoolAmountKey(marketAddress)],
+              },
+              positionImpactPoolDistributionRate: {
+                methodName: "getUint",
+                params: [positionImpactPoolDistributionRateKey(marketAddress)],
               },
               swapImpactPoolAmountLong: {
                 methodName: "getUint",
@@ -467,6 +477,10 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
           maxOpenInterestShort: BigNumber.from(dataStoreValues.maxOpenInterestShort.returnValues[0]),
           totalBorrowingFees: BigNumber.from(poolValueInfoMax.totalBorrowingFees),
           positionImpactPoolAmount: BigNumber.from(dataStoreValues.positionImpactPoolAmount.returnValues[0]),
+          minPositionImpactPoolAmount: BigNumber.from(dataStoreValues.minPositionImpactPoolAmount.returnValues[0]),
+          positionImpactPoolDistributionRate: BigNumber.from(
+            dataStoreValues.positionImpactPoolDistributionRate.returnValues[0]
+          ),
           swapImpactPoolAmountLong: BigNumber.from(dataStoreValues.swapImpactPoolAmountLong.returnValues[0]),
           swapImpactPoolAmountShort: BigNumber.from(dataStoreValues.swapImpactPoolAmountShort.returnValues[0]),
           borrowingFactorLong: BigNumber.from(dataStoreValues.borrowingFactorLong.returnValues[0]),

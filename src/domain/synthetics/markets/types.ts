@@ -67,6 +67,8 @@ export type MarketInfo = Market & {
   totalBorrowingFees: BigNumber;
 
   positionImpactPoolAmount: BigNumber;
+  minPositionImpactPoolAmount: BigNumber;
+  positionImpactPoolDistributionRate: BigNumber;
 
   minCollateralFactor: BigNumber;
   minCollateralFactorForOpenInterestLong: BigNumber;

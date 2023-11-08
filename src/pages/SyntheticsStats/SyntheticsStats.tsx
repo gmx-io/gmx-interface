@@ -123,6 +123,7 @@ export function SyntheticsStats() {
                 )}
               />
             </th>
+            <th>Position Impact Pool</th>
             <th>Config</th>
           </tr>
         </thead>
@@ -344,22 +345,22 @@ export function SyntheticsStats() {
                         market.fundingIncreaseFactorPerSecond?.gt(0) ? (
                           <>
                             <StatsTooltipRow
-                              label="Funding increase factor per second"
+                              label="Funding increase factor"
                               value={formatAmount(market.fundingIncreaseFactorPerSecond, 30, 14)}
                               showDollar={false}
                             />
                             <StatsTooltipRow
-                              label="Funding decrease factor per second"
+                              label="Funding decrease factor"
                               value={formatAmount(market.fundingDecreaseFactorPerSecond, 30, 14)}
                               showDollar={false}
                             />
                             <StatsTooltipRow
-                              label="Max funding factor per second"
+                              label="Max funding factor"
                               value={formatAmount(market.maxFundingFactorPerSecond, 30, 14)}
                               showDollar={false}
                             />
                             <StatsTooltipRow
-                              label="Min funding factor per second"
+                              label="Min funding factor"
                               value={formatAmount(market.minFundingFactorPerSecond, 30, 14)}
                               showDollar={false}
                             />
@@ -625,6 +626,48 @@ export function SyntheticsStats() {
                           </>
                         );
                       }}
+                    />
+                  </div>
+                </td>
+                <td>
+                  <div className="cell">
+                    <TooltipWithPortal
+                      handle={`$${formatAmount(positionImpactUsd, 30, 2, true)}`}
+                      position="right-bottom"
+                      renderContent={() => (
+                        <>
+                          <StatsTooltipRow
+                            label="Impact Pool Amount"
+                            value={formatAmount(market.positionImpactPoolAmount, market.indexToken.decimals, 2, true)}
+                            showDollar={false}
+                          />
+                          <StatsTooltipRow
+                            label="Min Impact Pool Amount"
+                            value={formatAmount(market.minPositionImpactPoolAmount, market.indexToken.decimals, 4)}
+                            showDollar={false}
+                          />
+                          <StatsTooltipRow
+                            label="Distribution Rate"
+                            value={formatAmount(
+                              market.positionImpactPoolDistributionRate,
+                              market.indexToken.decimals + 30,
+                              10
+                            )}
+                            showDollar={false}
+                          />
+                          <StatsTooltipRow
+                            label="Distribution Rate per Day, USD"
+                            value={formatAmount(
+                              market.positionImpactPoolDistributionRate
+                                .mul(86400)
+                                .mul(market.indexToken.prices.minPrice),
+                              market.indexToken.decimals + 60,
+                              2,
+                              true
+                            )}
+                          />
+                        </>
+                      )}
                     />
                   </div>
                 </td>

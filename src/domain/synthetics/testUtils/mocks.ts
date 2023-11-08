@@ -2,7 +2,7 @@ import { MarketsData, MarketsInfoData, getMarketFullName } from "domain/syntheti
 import { TokenData, TokensData, convertToTokenAmount, getTokenData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
-import { expandDecimals } from "lib/numbers";
+import { bigNumberify, expandDecimals } from "lib/numbers";
 
 export function usdToToken(usd: number, token: TokenData) {
   return convertToTokenAmount(expandDecimals(usd, 30), token.decimals, token.prices?.minPrice)!;
@@ -171,6 +171,8 @@ export function mockMarketsInfoData(
       maxOpenInterestShort: expandDecimals(5, 29),
 
       positionImpactPoolAmount: usdToToken(1000, indexToken),
+      positionImpactPoolDistributionRate: bigNumberify(0)!,
+      minPositionImpactPoolAmount: bigNumberify(0)!,
 
       swapImpactPoolAmountLong: usdToToken(1000, longToken),
       swapImpactPoolAmountShort: usdToToken(1000, shortToken),
