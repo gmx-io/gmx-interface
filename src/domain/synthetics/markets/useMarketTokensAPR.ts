@@ -123,7 +123,6 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
       };
 
       const queryBody = marketAddresses.reduce((acc, marketAddress) => acc + marketFeesQuery(marketAddress), "");
-      // FIXME any
       let responseOrNull: Record<string, [RawCollectedFee]> | null = null;
       try {
         responseOrNull = (await client!.query({ query: gql(`{${queryBody}}`), fetchPolicy: "no-cache" })).data;
