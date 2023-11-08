@@ -20,6 +20,7 @@ import {
   openInterestInTokensKey,
   openInterestKey,
   openInterestReserveFactorKey,
+  maxOpenInterestKey,
   poolAmountAdjustmentKey,
   poolAmountKey,
   positionFeeFactorKey,
@@ -175,6 +176,14 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
               openInterestReserveFactorShort: {
                 methodName: "getUint",
                 params: [openInterestReserveFactorKey(marketAddress, false)],
+              },
+              maxOpenInterestLong: {
+                methodName: "getUint",
+                params: [maxOpenInterestKey(marketAddress, true)],
+              },
+              maxOpenInterestShort: {
+                methodName: "getUint",
+                params: [maxOpenInterestKey(marketAddress, false)],
               },
               positionImpactPoolAmount: {
                 methodName: "getUint",
@@ -429,6 +438,8 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
           openInterestReserveFactorShort: BigNumber.from(
             dataStoreValues.openInterestReserveFactorShort.returnValues[0]
           ),
+          maxOpenInterestLong: BigNumber.from(dataStoreValues.maxOpenInterestLong.returnValues[0]),
+          maxOpenInterestShort: BigNumber.from(dataStoreValues.maxOpenInterestShort.returnValues[0]),
           totalBorrowingFees: BigNumber.from(poolValueInfoMax.totalBorrowingFees),
           positionImpactPoolAmount: BigNumber.from(dataStoreValues.positionImpactPoolAmount.returnValues[0]),
           swapImpactPoolAmountLong: BigNumber.from(dataStoreValues.swapImpactPoolAmountLong.returnValues[0]),

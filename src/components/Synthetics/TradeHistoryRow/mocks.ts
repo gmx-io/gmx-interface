@@ -177,6 +177,14 @@ export const requestIncreasePosition = prepare({
       type: "BigNumber",
       hex: "0x0a18f07d736b90be5500000000",
     },
+    maxOpenInterestLong: {
+      type: "BigNumber",
+      hex: "0x02f050fe938943acc45f65568000000000",
+    },
+    maxOpenInterestShort: {
+      type: "BigNumber",
+      hex: "0x02f050fe938943acc45f65568000000000",
+    },
     totalBorrowingFees: {
       type: "BigNumber",
       hex: "0x2adc767eea32cd45c3bd39ca32",
@@ -605,6 +613,14 @@ export const withdraw1Usd = prepare({
     openInterestReserveFactorShort: {
       type: "BigNumber",
       hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxOpenInterestLong: {
+      type: "BigNumber",
+      hex: "0x02f050fe938943acc45f65568000000000",
+    },
+    maxOpenInterestShort: {
+      type: "BigNumber",
+      hex: "0x02f050fe938943acc45f65568000000000",
     },
     totalBorrowingFees: {
       type: "BigNumber",
@@ -1035,6 +1051,14 @@ export const createOrderDecreaseLong = prepare({
       type: "BigNumber",
       hex: "0x0a18f07d736b90be5500000000",
     },
+    maxOpenInterestLong: {
+      type: "BigNumber",
+      hex: "0x02f050fe938943acc45f65568000000000",
+    },
+    maxOpenInterestShort: {
+      type: "BigNumber",
+      hex: "0x02f050fe938943acc45f65568000000000",
+    },
     totalBorrowingFees: {
       type: "BigNumber",
       hex: "0x2ae01a651ad1a71f94202c9027",
@@ -1452,6 +1476,14 @@ export const cancelOrderIncreaseLong = prepare({
     openInterestReserveFactorShort: {
       type: "BigNumber",
       hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxOpenInterestLong: {
+      type: "BigNumber",
+      hex: "0x02f050fe938943acc45f65568000000000",
+    },
+    maxOpenInterestShort: {
+      type: "BigNumber",
+      hex: "0x02f050fe938943acc45f65568000000000",
     },
     totalBorrowingFees: {
       type: "BigNumber",
@@ -1878,6 +1910,14 @@ export const createOrderIncreaseLong = prepare({
     openInterestReserveFactorShort: {
       type: "BigNumber",
       hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxOpenInterestLong: {
+      type: "BigNumber",
+      hex: "0x02f050fe938943acc45f65568000000000",
+    },
+    maxOpenInterestShort: {
+      type: "BigNumber",
+      hex: "0x02f050fe938943acc45f65568000000000",
     },
     totalBorrowingFees: {
       type: "BigNumber",
@@ -2315,6 +2355,14 @@ export const executeOrderDecreaseShort = prepare({
     openInterestReserveFactorShort: {
       type: "BigNumber",
       hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxOpenInterestLong: {
+      type: "BigNumber",
+      hex: "0x02f050fe938943acc45f65568000000000",
+    },
+    maxOpenInterestShort: {
+      type: "BigNumber",
+      hex: "0x02f050fe938943acc45f65568000000000",
     },
     totalBorrowingFees: {
       type: "BigNumber",
@@ -2763,6 +2811,14 @@ export const executeOrderIncreaseLong = prepare({
       type: "BigNumber",
       hex: "0x0a18f07d736b90be5500000000",
     },
+    maxOpenInterestLong: {
+      type: "BigNumber",
+      hex: "0x02f050fe938943acc45f65568000000000",
+    },
+    maxOpenInterestShort: {
+      type: "BigNumber",
+      hex: "0x02f050fe938943acc45f65568000000000",
+    },
     totalBorrowingFees: {
       type: "BigNumber",
       hex: "0x289e543927407e0ac1af2da10586",
@@ -3203,6 +3259,14 @@ export const frozenOrderIncreaseShort = prepare({
     openInterestReserveFactorShort: {
       type: "BigNumber",
       hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxOpenInterestLong: {
+      type: "BigNumber",
+      hex: "0x02f050fe938943acc45f65568000000000",
+    },
+    maxOpenInterestShort: {
+      type: "BigNumber",
+      hex: "0x02f050fe938943acc45f65568000000000",
     },
     totalBorrowingFees: {
       type: "BigNumber",
@@ -4063,6 +4127,14 @@ export const liquidated = prepare({
       type: "BigNumber",
       hex: "0x0a18f07d736b90be5500000000",
     },
+    maxOpenInterestLong: {
+      type: "BigNumber",
+      hex: "0x02f050fe938943acc45f65568000000000",
+    },
+    maxOpenInterestShort: {
+      type: "BigNumber",
+      hex: "0x02f050fe938943acc45f65568000000000",
+    },
     totalBorrowingFees: {
       type: "BigNumber",
       hex: "0x4959b5647baa949d1f4102e6db02",
@@ -4549,6 +4621,14 @@ export const increaseLongETH = prepare({
     openInterestReserveFactorShort: {
       type: "BigNumber",
       hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxOpenInterestLong: {
+      type: "BigNumber",
+      hex: "0x02f050fe938943acc45f65568000000000",
+    },
+    maxOpenInterestShort: {
+      type: "BigNumber",
+      hex: "0x02f050fe938943acc45f65568000000000",
     },
     totalBorrowingFees: {
       type: "BigNumber",

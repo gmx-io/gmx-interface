@@ -6,7 +6,7 @@ import { getFundingFactorPerPeriod } from "domain/synthetics/fees";
 import {
   MarketInfo,
   getMarketPoolName,
-  getMaxReservedUsd,
+  getMaxOpenInterest,
   getReservedUsd,
   useMarketsInfo,
 } from "domain/synthetics/markets";
@@ -95,10 +95,10 @@ export function MarketsList() {
       const fundingRateShort = getFundingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]);
 
       const longReservedUsd = getReservedUsd(marketInfo, true);
-      const maxLongReservedUsd = getMaxReservedUsd(marketInfo, true);
+      const maxLongReservedUsd = getMaxOpenInterest(marketInfo, true);
 
       const shortReservedUsd = getReservedUsd(marketInfo, false);
-      const maxShortReservedUsd = getMaxReservedUsd(marketInfo, false);
+      const maxShortReservedUsd = getMaxOpenInterest(marketInfo, false);
 
       const totalReservedUsd = longReservedUsd.add(shortReservedUsd);
       const maxTotalReservedUsd = maxLongReservedUsd.add(maxShortReservedUsd);
