@@ -29,6 +29,11 @@ export const TOTAL_BORROWING_KEY = hashString("TOTAL_BORROWING");
 export const FUNDING_FACTOR_KEY = hashString("FUNDING_FACTOR");
 export const FUNDING_EXPONENT_FACTOR_KEY = hashString("FUNDING_EXPONENT_FACTOR");
 export const FUNDING_INCREASE_FACTOR_PER_SECOND = hashString("FUNDING_INCREASE_FACTOR_PER_SECOND");
+export const FUNDING_DECREASE_FACTOR_PER_SECOND = hashString("FUNDING_DECREASE_FACTOR_PER_SECOND");
+export const MIN_FUNDING_FACTOR_PER_SECOND = hashString("MIN_FUNDING_FACTOR_PER_SECOND");
+export const MAX_FUNDING_FACTOR_PER_SECOND = hashString("MAX_FUNDING_FACTOR_PER_SECOND");
+export const THRESHOLD_FOR_STABLE_FUNDING = hashString("THRESHOLD_FOR_STABLE_FUNDING");
+export const THRESHOLD_FOR_DECREASE_FUNDING = hashString("THRESHOLD_FOR_DECREASE_FUNDING");
 export const MAX_PNL_FACTOR_KEY = hashString("MAX_PNL_FACTOR");
 export const MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY = hashString("MAX_PNL_FACTOR_FOR_WITHDRAWALS");
 export const MAX_PNL_FACTOR_FOR_DEPOSITS_KEY = hashString("MAX_PNL_FACTOR_FOR_DEPOSITS");
@@ -150,6 +155,26 @@ export function fundingExponentFactorKey(market: string) {
 
 export function fundingIncreaseFactorPerSecondKey(market: string) {
   return hashData(["bytes32", "address"], [FUNDING_INCREASE_FACTOR_PER_SECOND, market]);
+}
+
+export function fundingDecreaseFactorPerSecondKey(market: string) {
+  return hashData(["bytes32", "address"], [FUNDING_DECREASE_FACTOR_PER_SECOND, market]);
+}
+
+export function minFundingFactorPerSecondKey(market: string) {
+  return hashData(["bytes32", "address"], [MIN_FUNDING_FACTOR_PER_SECOND, market]);
+}
+
+export function maxFundingFactorPerSecondKey(market: string) {
+  return hashData(["bytes32", "address"], [MAX_FUNDING_FACTOR_PER_SECOND, market]);
+}
+
+export function thresholdForStableFundingKey(market: string) {
+  return hashData(["bytes32", "address"], [THRESHOLD_FOR_STABLE_FUNDING, market]);
+}
+
+export function thresholdForDecreaseFundingKey(market: string) {
+  return hashData(["bytes32", "address"], [THRESHOLD_FOR_DECREASE_FUNDING, market]);
 }
 
 export function maxPnlFactorKey(pnlFactorType: string, market: string, isLong: boolean) {

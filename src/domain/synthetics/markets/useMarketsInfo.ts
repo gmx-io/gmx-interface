@@ -9,6 +9,11 @@ import {
   fundingExponentFactorKey,
   fundingFactorKey,
   fundingIncreaseFactorPerSecondKey,
+  fundingDecreaseFactorPerSecondKey,
+  thresholdForStableFundingKey,
+  thresholdForDecreaseFundingKey,
+  minFundingFactorPerSecondKey,
+  maxFundingFactorPerSecondKey,
   isMarketDisabledKey,
   maxPnlFactorKey,
   maxPoolAmountForDepositKey,
@@ -224,6 +229,26 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
               fundingIncreaseFactorPerSecond: {
                 methodName: "getUint",
                 params: [fundingIncreaseFactorPerSecondKey(marketAddress)],
+              },
+              fundingDecreaseFactorPerSecond: {
+                methodName: "getUint",
+                params: [fundingDecreaseFactorPerSecondKey(marketAddress)],
+              },
+              thresholdForStableFunding: {
+                methodName: "getUint",
+                params: [thresholdForStableFundingKey(marketAddress)],
+              },
+              thresholdForDecreaseFunding: {
+                methodName: "getUint",
+                params: [thresholdForDecreaseFundingKey(marketAddress)],
+              },
+              minFundingFactorPerSecond: {
+                methodName: "getUint",
+                params: [minFundingFactorPerSecondKey(marketAddress)],
+              },
+              maxFundingFactorPerSecond: {
+                methodName: "getUint",
+                params: [maxFundingFactorPerSecondKey(marketAddress)],
               },
               maxPnlFactorForTradersLong: {
                 methodName: "getUint",
@@ -453,6 +478,13 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
           fundingIncreaseFactorPerSecond: BigNumber.from(
             dataStoreValues.fundingIncreaseFactorPerSecond.returnValues[0]
           ),
+          fundingDecreaseFactorPerSecond: BigNumber.from(
+            dataStoreValues.fundingDecreaseFactorPerSecond.returnValues[0]
+          ),
+          thresholdForDecreaseFunding: BigNumber.from(dataStoreValues.thresholdForDecreaseFunding.returnValues[0]),
+          thresholdForStableFunding: BigNumber.from(dataStoreValues.thresholdForStableFunding.returnValues[0]),
+          minFundingFactorPerSecond: BigNumber.from(dataStoreValues.minFundingFactorPerSecond.returnValues[0]),
+          maxFundingFactorPerSecond: BigNumber.from(dataStoreValues.maxFundingFactorPerSecond.returnValues[0]),
           pnlLongMax: BigNumber.from(poolValueInfoMax.longPnl),
           pnlLongMin: BigNumber.from(poolValueInfoMin.longPnl),
           pnlShortMax: BigNumber.from(poolValueInfoMax.shortPnl),
