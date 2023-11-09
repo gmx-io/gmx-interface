@@ -41,7 +41,6 @@ import { GmConfirmationBox } from "../GmConfirmationBox/GmConfirmationBox";
 
 import Button from "components/Button/Button";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import { MarketSelector } from "components/MarketSelector/MarketSelector";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
 import { helperToast } from "lib/helperToast";
@@ -55,9 +54,9 @@ import { useHasOutdatedUi } from "domain/legacy";
 import useWallet from "lib/wallets/useWallet";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
-import { getIcon } from "config/icons";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import useSortedMarketsWithIndexToken from "domain/synthetics/trade/useSortedMarketsWithIndexToken";
 
 export enum Operation {
   Deposit = "Deposit",
@@ -102,7 +101,7 @@ function showMarketToast(market) {
   helperToast.success(
     <Trans>
       <div className="inline-flex">
-        <span>{indexName}</span>
+        GM:&nbsp;<span>{indexName}</span>
         <span className="subtext gm-toast">[{poolName}]</span>
       </div>{" "}
       <span>selected in order form</span>
@@ -134,7 +133,6 @@ export function GmSwapBox(p: Props) {
 
   const { gasLimits } = useGasLimits(chainId);
   const { gasPrice } = useGasPrice(chainId);
-  const currentGMIcon = getIcon(chainId, "gm");
 
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
@@ -143,6 +141,10 @@ export function GmSwapBox(p: Props) {
   const [focusedInput, setFocusedInput] = useState<"longCollateral" | "shortCollateral" | "market">("market");
   const [stage, setStage] = useState<"swap" | "confirmation" | "processing">();
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
+  const { marketsInfo: sortedMarketsInfoByIndexToken } = useSortedMarketsWithIndexToken(
+    marketsInfoData,
+    depositMarketTokensData
+  );
 
   const operationLabels = {
     [Operation.Deposit]: t`Buy GM`,
@@ -705,7 +707,7 @@ export function GmSwapBox(p: Props) {
           helperToast.success(
             <Trans>
               <div className="inline-flex">
-                <span>{indexName}</span>
+                GM:&nbsp;<span>{indexName}</span>
                 <span className="subtext gm-toast">[{poolName}]</span>
               </div>{" "}
               <span>selected in order form</span>
@@ -954,35 +956,28 @@ export function GmSwapBox(p: Props) {
               }
             }}
           >
-            <div className="selected-token">
-              <img className="mr-xs" width={20} src={currentGMIcon} alt="GM Token" />
-              GM
-            </div>
+            <PoolSelector
+              label={t`Pool`}
+              className="SwapBox-info-dropdown"
+              selectedIndexName={indexName}
+              selectedMarketAddress={marketAddress}
+              markets={sortedMarketsInfoByIndexToken}
+              marketTokensData={marketTokensData}
+              marketsInfoData={marketsInfoData}
+              isSideMenu
+              showBalances
+              showAllPools
+              showIndexIcon
+              onSelectMarket={(marketInfo) => {
+                setIndexName(getMarketIndexName(marketInfo));
+                onMarketChange(marketInfo.marketTokenAddress);
+                showMarketToast(marketInfo);
+              }}
+            />
           </BuyInputSection>
         </div>
 
         <div className="GmSwapBox-info-section">
-          <ExchangeInfoRow
-            className="SwapBox-info-row"
-            label={t`Market`}
-            value={
-              <MarketSelector
-                label={t`Market`}
-                className="SwapBox-info-dropdown"
-                selectedIndexName={indexName}
-                markets={markets}
-                marketTokensData={marketTokensData}
-                marketsInfoData={marketsInfoData}
-                isSideMenu
-                showBalances
-                onSelectMarket={(marketName, marketInfo) => {
-                  setIndexName(marketName);
-                  showMarketToast(marketInfo);
-                }}
-              />
-            }
-          />
-
           <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Pool`}

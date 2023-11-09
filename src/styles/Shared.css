@@ -70,6 +70,7 @@ input {
   --arbitrum-blue: #28a0f0;
   --border-radius-sm: 0.4rem;
   --error-red: #fa3c58;
+  --error-red-hover: #ff687e;
   --green: #0ecc83;
   --font-sm: 1.4rem;
   --font-base: 1.5rem;
@@ -412,6 +413,7 @@ button.btn-link:hover .logout-icon {
   padding-top: 4.65rem;
 }
 
+.flex,
 .d-flex {
   display: flex;
 }
@@ -554,6 +556,32 @@ button.btn-link:hover .logout-icon {
   color: var(--error-red);
 }
 
+a:hover .text-red {
+  color: var(--error-red-hover)
+}
+
 .text-green {
   color: var(--green);
+}
+
+.rotate-90 {
+  transform: rotate(90deg);
+}
+
+.self-center {
+  align-self: center;
+}
+
+.Toastify__toast-container {
+  width: 37rem;
+}
+
+@media screen and (max-width: 480px) {
+  .Toastify__toast-container {
+    width: 100vw;
+  }
+}
+
+.gap-right-xs > *:not(:last-child) {
+  margin-right: 0.5rem;
 }

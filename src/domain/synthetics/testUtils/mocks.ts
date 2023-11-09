@@ -167,6 +167,9 @@ export function mockMarketsInfoData(
       openInterestReserveFactorLong: expandDecimals(5, 29),
       openInterestReserveFactorShort: expandDecimals(5, 29),
 
+      maxOpenInterestLong: expandDecimals(5, 29),
+      maxOpenInterestShort: expandDecimals(5, 29),
+
       positionImpactPoolAmount: usdToToken(1000, indexToken),
 
       swapImpactPoolAmountLong: usdToToken(1000, longToken),
@@ -204,6 +207,7 @@ export function mockMarketsInfoData(
       borrowingExponentFactorShort: BigNumber.from(0),
       fundingFactor: BigNumber.from(0),
       fundingExponentFactor: BigNumber.from(0),
+      fundingIncreaseFactorPerSecond: BigNumber.from(0),
 
       totalBorrowingFees: BigNumber.from(0),
       minCollateralFactor: BigNumber.from(0),

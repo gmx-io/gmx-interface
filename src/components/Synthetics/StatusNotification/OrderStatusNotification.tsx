@@ -17,9 +17,8 @@ import { useChainId } from "lib/chains";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useEffect, useMemo, useState } from "react";
-import { toast } from "react-toastify";
-import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import "./StatusNotification.scss";
+import { useToastAutoClose } from "./useToastAutoClose";
 
 type Props = {
   toastTimestamp: number;
@@ -185,22 +184,7 @@ export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tok
     [orderStatus, orderStatusKey, orderStatuses, pendingOrderKey, setOrderStatusViewed, toastTimestamp]
   );
 
-  useEffect(
-    function autoClose() {
-      let timerId;
-
-      if (isCompleted) {
-        timerId = setTimeout(() => {
-          toast.dismiss(toastTimestamp);
-        }, TOAST_AUTO_CLOSE_TIME);
-      }
-
-      return () => {
-        clearTimeout(timerId);
-      };
-    },
-    [isCompleted, toastTimestamp]
-  );
+  useToastAutoClose(isCompleted, toastTimestamp);
 
   return (
     <div className={"StatusNotification"}>

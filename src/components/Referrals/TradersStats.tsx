@@ -78,7 +78,7 @@ function TradersStats({
               <div className="tier">
                 <Tooltip
                   handle={t`Tier ${getTierIdDisplay(traderTier)} (${currentTierDiscount}% discount)`}
-                  position="right-bottom"
+                  position="center-bottom"
                   className={discountShare?.gt(0) ? "tier-discount-warning" : ""}
                   renderContent={() => (
                     <p className="text-white">
@@ -227,7 +227,7 @@ function TradersStats({
                   </tr>
                 </thead>
                 <tbody>
-                  {currentDiscountDistributions.map((rebate, index) => {
+                  {currentDiscountDistributions.map((rebate) => {
                     const amountsByTokens = rebate.tokens.reduce((acc, tokenAddress, i) => {
                       let token;
                       try {
@@ -251,11 +251,12 @@ function TradersStats({
 
                     const explorerURL = getExplorerUrl(chainId);
                     return (
-                      <tr key={index}>
+                      <tr key={rebate.id}>
                         <td data-label="Date">{formatDate(rebate.timestamp)}</td>
                         <td data-label="Type">V1 Airdrop</td>
-                        <td data-label="Amount">
+                        <td data-label="Amount" className="Rebate-amount">
                           <Tooltip
+                            position="center-bottom"
                             handle={
                               <div className="Rebate-amount-value">
                                 {tokensWithoutPrices.length > 0 && (
@@ -285,19 +286,17 @@ function TradersStats({
                                   const token = getToken(chainId, tokenAddress);
 
                                   return (
-                                    <>
-                                      <StatsTooltipRow
-                                        key={tokenAddress}
-                                        showDollar={false}
-                                        label={token.symbol}
-                                        value={formatTokenAmount(
-                                          amountsByTokens[tokenAddress],
-                                          token.decimals,
-                                          undefined,
-                                          { displayDecimals: 6 }
-                                        )}
-                                      />
-                                    </>
+                                    <StatsTooltipRow
+                                      key={tokenAddress}
+                                      showDollar={false}
+                                      label={token.symbol}
+                                      value={formatTokenAmount(
+                                        amountsByTokens[tokenAddress],
+                                        token.decimals,
+                                        undefined,
+                                        { displayDecimals: 6 }
+                                      )}
+                                    />
                                   );
                                 })}
                               </>

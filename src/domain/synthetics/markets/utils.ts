@@ -8,6 +8,7 @@ import { getCappedPositionImpactUsd } from "../fees";
 import { convertToContractTokenPrices, convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens";
 import { TokenData, TokensData } from "../tokens/types";
 import { ContractMarketPrices, Market, MarketInfo } from "./types";
+import { PositionInfo } from "../positions";
 
 export function getMarketFullName(p: { longToken: Token; shortToken: Token; indexToken: Token; isSpotOnly: boolean }) {
   const { indexToken, longToken, shortToken, isSpotOnly } = p;
@@ -109,7 +110,7 @@ export function getReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
   }
 }
 
-export function getMaxReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
+export function getMaxOpenInterest(marketInfo: MarketInfo, isLong: boolean) {
   const poolUsd = getPoolUsdWithoutPnl(marketInfo, isLong, "minPrice");
 
   let reserveFactor = isLong ? marketInfo.reserveFactorLong : marketInfo.reserveFactorShort;
@@ -118,11 +119,15 @@ export function getMaxReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
     ? marketInfo.openInterestReserveFactorLong
     : marketInfo.openInterestReserveFactorShort;
 
+  const maxOpenInterest = isLong ? marketInfo.maxOpenInterestLong : marketInfo.maxOpenInterestShort;
+
   if (openInterestReserveFactor.lt(reserveFactor)) {
     reserveFactor = openInterestReserveFactor;
   }
 
-  return poolUsd.mul(reserveFactor).div(PRECISION);
+  const maxReservedUsd = poolUsd.mul(reserveFactor).div(PRECISION);
+
+  return maxReservedUsd.lt(maxOpenInterest) ? maxReservedUsd : maxOpenInterest;
 }
 
 export function getAvailableUsdLiquidityForPosition(marketInfo: MarketInfo, isLong: boolean) {
@@ -130,10 +135,10 @@ export function getAvailableUsdLiquidityForPosition(marketInfo: MarketInfo, isLo
     return BigNumber.from(0);
   }
 
-  const maxReservedUsd = getMaxReservedUsd(marketInfo, isLong);
+  const maxOpenInterest = getMaxOpenInterest(marketInfo, isLong);
   const reservedUsd = getReservedUsd(marketInfo, isLong);
 
-  return maxReservedUsd.sub(reservedUsd);
+  return maxOpenInterest.sub(reservedUsd);
 }
 
 export function getAvailableUsdLiquidityForCollateral(marketInfo: MarketInfo, isLong: boolean) {
@@ -285,6 +290,14 @@ export function getTotalClaimableFundingUsd(markets: MarketInfo[]) {
   }, BigNumber.from(0));
 }
 
+export function getTotalAccruedFundingUsd(positions: PositionInfo[]) {
+  return positions.reduce((acc, position) => {
+    if (position.pendingClaimableFundingFeesUsd) return acc.add(position.pendingClaimableFundingFeesUsd);
+
+    return acc;
+  }, BigNumber.from(0));
+}
+
 export function getMaxPoolUsdForDeposit(marketInfo: MarketInfo, isLong: boolean) {
   const token = isLong ? marketInfo.longToken : marketInfo.shortToken;
   const maxPoolAmount = getMaxPoolAmountForDeposit(marketInfo, isLong);
@@ -334,6 +347,53 @@ export function getMintableMarketTokens(marketInfo: MarketInfo, marketToken: Tok
     shortDepositCapacityUsd,
     longDepositCapacityAmount,
     shortDepositCapacityAmount,
+  };
+}
+
+export function getSellableMarketToken(marketInfo: MarketInfo, marketToken: TokenData) {
+  const { longToken, shortToken, longPoolAmount, shortPoolAmount } = marketInfo;
+  const longPoolUsd = convertToUsd(longPoolAmount, longToken.decimals, longToken.prices.maxPrice)!;
+  const shortPoolUsd = convertToUsd(shortPoolAmount, shortToken.decimals, shortToken.prices.maxPrice)!;
+  const longCollateralLiquidityUsd = getAvailableUsdLiquidityForCollateral(marketInfo, true);
+  const shortCollateralLiquidityUsd = getAvailableUsdLiquidityForCollateral(marketInfo, false);
+
+  const factor = expandDecimals(1, 8);
+
+  if (
+    longPoolUsd.isZero() ||
+    shortPoolUsd.isZero() ||
+    longCollateralLiquidityUsd.isZero() ||
+    shortCollateralLiquidityUsd.isZero()
+  ) {
+    return {
+      maxLongSellableUsd: BigNumber.from(0),
+      maxShortSellableUsd: BigNumber.from(0),
+      total: BigNumber.from(0),
+    };
+  }
+
+  const ratio = longPoolUsd.mul(factor).div(shortPoolUsd);
+  let maxLongSellableUsd: BigNumber;
+  let maxShortSellableUsd: BigNumber;
+
+  if (shortCollateralLiquidityUsd.mul(ratio).div(factor).lte(longCollateralLiquidityUsd)) {
+    maxLongSellableUsd = shortCollateralLiquidityUsd.mul(ratio).div(factor);
+    maxShortSellableUsd = shortCollateralLiquidityUsd;
+  } else {
+    maxLongSellableUsd = longCollateralLiquidityUsd;
+    maxShortSellableUsd = longCollateralLiquidityUsd.div(ratio).mul(factor);
+  }
+
+  const maxLongSellableAmount = usdToMarketTokenAmount(marketInfo, marketToken, maxLongSellableUsd);
+  const maxShortSellableAmount = usdToMarketTokenAmount(marketInfo, marketToken, maxShortSellableUsd);
+
+  return {
+    maxLongSellableUsd,
+    maxShortSellableUsd,
+    maxLongSellableAmount,
+    maxShortSellableAmount,
+    totalUsd: maxLongSellableUsd.add(maxShortSellableUsd),
+    totalAmount: maxLongSellableAmount.add(maxShortSellableAmount),
   };
 }
 

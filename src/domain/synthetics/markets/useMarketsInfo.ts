@@ -8,6 +8,7 @@ import {
   claimableFundingAmountKey,
   fundingExponentFactorKey,
   fundingFactorKey,
+  fundingIncreaseFactorPerSecondKey,
   isMarketDisabledKey,
   maxPnlFactorKey,
   maxPoolAmountForDepositKey,
@@ -19,6 +20,7 @@ import {
   openInterestInTokensKey,
   openInterestKey,
   openInterestReserveFactorKey,
+  maxOpenInterestKey,
   poolAmountAdjustmentKey,
   poolAmountKey,
   positionFeeFactorKey,
@@ -175,6 +177,14 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
                 methodName: "getUint",
                 params: [openInterestReserveFactorKey(marketAddress, false)],
               },
+              maxOpenInterestLong: {
+                methodName: "getUint",
+                params: [maxOpenInterestKey(marketAddress, true)],
+              },
+              maxOpenInterestShort: {
+                methodName: "getUint",
+                params: [maxOpenInterestKey(marketAddress, false)],
+              },
               positionImpactPoolAmount: {
                 methodName: "getUint",
                 params: [positionImpactPoolAmountKey(marketAddress)],
@@ -210,6 +220,10 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
               fundingExponentFactor: {
                 methodName: "getUint",
                 params: [fundingExponentFactorKey(marketAddress)],
+              },
+              fundingIncreaseFactorPerSecond: {
+                methodName: "getUint",
+                params: [fundingIncreaseFactorPerSecondKey(marketAddress)],
               },
               maxPnlFactorForTradersLong: {
                 methodName: "getUint",
@@ -424,6 +438,8 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
           openInterestReserveFactorShort: BigNumber.from(
             dataStoreValues.openInterestReserveFactorShort.returnValues[0]
           ),
+          maxOpenInterestLong: BigNumber.from(dataStoreValues.maxOpenInterestLong.returnValues[0]),
+          maxOpenInterestShort: BigNumber.from(dataStoreValues.maxOpenInterestShort.returnValues[0]),
           totalBorrowingFees: BigNumber.from(poolValueInfoMax.totalBorrowingFees),
           positionImpactPoolAmount: BigNumber.from(dataStoreValues.positionImpactPoolAmount.returnValues[0]),
           swapImpactPoolAmountLong: BigNumber.from(dataStoreValues.swapImpactPoolAmountLong.returnValues[0]),
@@ -434,6 +450,9 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
           borrowingExponentFactorShort: BigNumber.from(dataStoreValues.borrowingExponentFactorShort.returnValues[0]),
           fundingFactor: BigNumber.from(dataStoreValues.fundingFactor.returnValues[0]),
           fundingExponentFactor: BigNumber.from(dataStoreValues.fundingExponentFactor.returnValues[0]),
+          fundingIncreaseFactorPerSecond: BigNumber.from(
+            dataStoreValues.fundingIncreaseFactorPerSecond.returnValues[0]
+          ),
           pnlLongMax: BigNumber.from(poolValueInfoMax.longPnl),
           pnlLongMin: BigNumber.from(poolValueInfoMin.longPnl),
           pnlShortMax: BigNumber.from(poolValueInfoMax.shortPnl),

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import GlpSwap from "components/Glp/GlpSwap";
 import Footer from "components/Footer/Footer";
@@ -10,12 +10,14 @@ import { getNativeToken } from "config/tokens";
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import PageTitle from "components/PageTitle/PageTitle";
+import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 
 export default function BuyGlp(props) {
   const { chainId } = useChainId();
   const history = useHistory();
   const [isBuying, setIsBuying] = useState(true);
   const nativeTokenSymbol = getNativeToken(chainId).symbol;
+  const incentiveState = useIncentiveStats(chainId);
 
   useEffect(() => {
     const hash = history.location.hash.replace("#", "");
@@ -30,17 +32,23 @@ export default function BuyGlp(props) {
         isTop
         subtitle={
           <div>
+            {incentiveState?.migration?.isActive && (
+              <div className="text-warning">
+                <Trans>
+                  GLP to GM migration has reduced Fees due to STIP incentives.{" "}
+                  <ExternalLink
+                    className="text-warning"
+                    href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#a2d1ea61dd1147b195b7e3bd769348d3"
+                  >
+                    Read more
+                  </ExternalLink>
+                  .
+                </Trans>
+              </div>
+            )}
             <Trans>
               Purchase <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v1">GLP tokens</ExternalLink> to
               earn {nativeTokenSymbol} fees from swaps and leverage trading.
-            </Trans>
-            <br />
-            <Trans>
-              View{" "}
-              <Link className="link-underline" to="/earn">
-                staking
-              </Link>{" "}
-              page.
             </Trans>
           </div>
         }
