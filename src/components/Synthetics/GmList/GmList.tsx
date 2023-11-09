@@ -246,6 +246,7 @@ export function GmList({
             {sortedMarketsByIndexToken.map((token) => {
               const apr = marketsTokensAPRData?.[token.address];
               const incentiveApr = marketsTokensIncentiveAprData?.[token.address];
+              const userEarnings = getByKey(userEarningsByMarketAddress, token?.address);
 
               const totalSupply = token?.totalSupply;
               const totalSupplyUsd = convertToUsd(totalSupply, token?.decimals, token?.prices?.minPrice);
@@ -336,7 +337,14 @@ export function GmList({
                         <Trans>Wallet</Trans>
                       </div>
                       <div>
-                        <GmTokensBalanceInfo token={token} daysConsidered={daysConsidered} oneLine />
+                        <GmTokensBalanceInfo
+                          token={token}
+                          daysConsidered={daysConsidered}
+                          oneLine
+                          comment={userEarnings?.comment}
+                          earnedRecently={userEarnings?.recent}
+                          earnedTotal={userEarnings?.total}
+                        />
                       </div>
                     </div>
                     <div className="App-card-row">
