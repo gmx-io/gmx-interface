@@ -25,6 +25,7 @@ function renderEscrowedGMXApr(processedData) {
 }
 
 export default function GMXAprTooltip({ processedData, nativeTokenSymbol }: Props) {
+  const escrowedGMXApr = renderEscrowedGMXApr(processedData);
   return (
     <>
       {(!processedData.gmxBoostAprForNativeToken || processedData.gmxBoostAprForNativeToken.eq(0)) && (
@@ -52,16 +53,16 @@ export default function GMXAprTooltip({ processedData, nativeTokenSymbol }: Prop
             showDollar={false}
             value={`${formatKeyAmount(processedData, "gmxAprForNativeTokenWithBoost", 2, 2, true)}%`}
           />
-          {renderEscrowedGMXApr(processedData) && (
+          {escrowedGMXApr && (
             <>
-              <br /> {renderEscrowedGMXApr(processedData)}
+              <br /> {escrowedGMXApr}
             </>
           )}
           <br />
           <Trans>The Boosted APR is from your staked Multiplier Points.</Trans>
         </div>
       ) : (
-        renderEscrowedGMXApr(processedData)
+        escrowedGMXApr
       )}
       <div>
         <br />

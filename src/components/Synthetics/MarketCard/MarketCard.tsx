@@ -46,11 +46,10 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
     priceDecimals,
   } = useMemo(() => {
     if (!marketInfo) return {};
+    const availableUsdLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, isLong);
 
     return {
-      liquidity: getAvailableUsdLiquidityForPosition(marketInfo, isLong).gt(0)
-        ? getAvailableUsdLiquidityForPosition(marketInfo, isLong)
-        : BigNumber.from(0),
+      liquidity: availableUsdLiquidity?.gt(0) ? availableUsdLiquidity : BigNumber.from(0),
       maxReservedUsd: getMaxReservedUsd(marketInfo, isLong),
       reservedUsd: getReservedUsd(marketInfo, isLong),
       borrowingRate: getBorrowingFactorPerPeriod(marketInfo, isLong, CHART_PERIODS["1h"]).mul(100),

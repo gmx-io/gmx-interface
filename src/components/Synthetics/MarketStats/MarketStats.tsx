@@ -118,7 +118,7 @@ export function MarketStats(p: Props) {
             marketBalance || BigNumber.from(0),
             marketBalanceUsd || BigNumber.from(0),
             "GM",
-            marketToken?.decimals || 18
+            marketToken?.decimals ?? 18
           )}
         />
 
