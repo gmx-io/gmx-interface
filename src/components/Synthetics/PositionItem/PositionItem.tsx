@@ -310,6 +310,25 @@ export function PositionItem(p: Props) {
     return formatLiquidationPrice(p.position.liquidationPrice, { displayDecimals: indexPriceDecimals }) || "...";
   }
 
+  function renderOrderText(order: PositionOrderInfo) {
+    const triggerThresholdType = getTriggerThresholdType(order.orderType, order.isLong);
+    const isIncrease = isIncreaseOrderType(order.orderType);
+    return (
+      <div key={order.key}>
+        {isDecreaseOrderType(order.orderType) ? getTriggerNameByOrderType(order.orderType, true) : t`Limit`}:{" "}
+        {triggerThresholdType}{" "}
+        {formatUsd(order.triggerPrice, {
+          displayDecimals: order.indexToken?.priceDecimals,
+        })}
+        :{" "}
+        <span>
+          {isIncrease ? "+" : "-"}
+          {formatUsd(order.sizeDeltaUsd)}
+        </span>
+      </div>
+    );
+  }
+
   function renderPositionOrders(isSmall = false) {
     if (positionOrders.length === 0) return null;
 
@@ -317,30 +336,11 @@ export function PositionItem(p: Props) {
     const ordersWarningsList = positionOrders.filter((order) => order.errorLevel === "warning");
     const hasErrors = ordersErrorList.length + ordersWarningsList.length > 0;
 
-    function renderOrderText(order) {
-      const triggerThresholdType = getTriggerThresholdType(order.orderType, order.isLong);
-      const isIncrease = isIncreaseOrderType(order.orderType);
-      return (
-        <div key={order.key}>
-          {isDecreaseOrderType(order.orderType) ? getTriggerNameByOrderType(order.orderType, true) : t`Limit`}:{" "}
-          {triggerThresholdType}{" "}
-          {formatUsd(order.triggerPrice, {
-            displayDecimals: order.indexToken?.priceDecimals,
-          })}
-          :{" "}
-          <span>
-            {isIncrease ? "+" : "-"}
-            {formatUsd(order.sizeDeltaUsd)}
-          </span>
-        </div>
-      );
-    }
-
-    const renderMobileVersion = () => {
+    if (isSmall) {
       return positionOrders.map((order) => {
         if (hasErrors) {
           return (
-            <div className="Position-list-order">
+            <div key={order.key} className="Position-list-order">
               <Tooltip
                 className="order-error"
                 handle={renderOrderText(order)}
@@ -359,9 +359,9 @@ export function PositionItem(p: Props) {
         }
         return <div className="Position-list-order">{renderOrderText(order)}</div>;
       });
-    };
+    }
 
-    const renderDesktopVersion = () => (
+    return (
       <div onClick={p.onOrdersClick}>
         <Tooltip
           className="Position-list-active-orders"
@@ -415,8 +415,6 @@ export function PositionItem(p: Props) {
         />
       </div>
     );
-
-    return isSmall ? renderMobileVersion() : renderDesktopVersion();
   }
 
   function renderLarge() {
