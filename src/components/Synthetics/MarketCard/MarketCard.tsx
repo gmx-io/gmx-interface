@@ -7,7 +7,7 @@ import {
   getAvailableUsdLiquidityForPosition,
   getMarketIndexName,
   getMarketPoolName,
-  getMaxReservedUsd,
+  getMaxOpenInterest,
   getReservedUsd,
 } from "domain/synthetics/markets";
 import { CHART_PERIODS } from "lib/legacy";
@@ -36,7 +36,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
 
   const {
     liquidity,
-    maxReservedUsd,
+    maxOpenInterest,
     reservedUsd,
     borrowingRate,
     fundingRateLong,
@@ -48,7 +48,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
 
     return {
       liquidity: getAvailableUsdLiquidityForPosition(marketInfo, isLong),
-      maxReservedUsd: getMaxReservedUsd(marketInfo, isLong),
+      maxOpenInterest: getMaxOpenInterest(marketInfo, isLong),
       reservedUsd: getReservedUsd(marketInfo, isLong),
       borrowingRate: getBorrowingFactorPerPeriod(marketInfo, isLong, CHART_PERIODS["1h"]).mul(100),
       fundingRateLong: getFundingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]).mul(100),
@@ -210,7 +210,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
                 <div>
                   <StatsTooltipRow
                     label={t`Max ${indexToken?.symbol} ${longShortText} capacity`}
-                    value={formatUsd(maxReservedUsd, { displayDecimals: 0 }) || "..."}
+                    value={formatUsd(maxOpenInterest, { displayDecimals: 0 }) || "..."}
                     showDollar={false}
                   />
 
