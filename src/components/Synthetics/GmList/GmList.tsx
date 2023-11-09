@@ -25,6 +25,8 @@ import { AprInfo } from "components/AprInfo/AprInfo";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import useSortedMarketsWithIndexToken from "domain/synthetics/trade/useSortedMarketsWithIndexToken";
+import { GmTokensBalanceInfo } from "components/GmTokensBalanceInfo/GmTokensBalanceInfo";
+import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 
 type Props = {
   hideTitle?: boolean;
@@ -49,6 +51,7 @@ export function GmList({
 }: Props) {
   const { chainId } = useChainId();
   const currentIcons = getIcons(chainId);
+  const userEarningsByMarketAddress = useUserEarnings(chainId);
   const isMobile = useMedia("(max-width: 1100px)");
   const daysConsidered = useDaysConsideredInMarketsApr();
   const { markets: sortedMarketsByIndexToken } = useSortedMarketsWithIndexToken(marketsInfoData, marketTokensData);
@@ -133,6 +136,7 @@ export function GmList({
 
                 const apr = getByKey(marketsTokensAPRData, token?.address);
                 const incentiveApr = getByKey(marketsTokensIncentiveAprData, token?.address);
+                const userEarnings = getByKey(userEarningsByMarketAddress, token?.address);
 
                 if (!token || !indexToken || !longToken || !shortToken) {
                   return null;
@@ -192,16 +196,14 @@ export function GmList({
                     </td>
 
                     <td>
-                      {formatTokenAmount(token.balance, token.decimals, "GM", {
-                        useCommas: true,
-                        displayDecimals: 2,
-                        fallbackToZero: true,
-                      })}
-                      <br />(
-                      {formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice), {
-                        fallbackToZero: true,
-                      }) || "..."}
-                      )
+                      <GmTokensBalanceInfo
+                        token={token}
+                        daysConsidered={daysConsidered}
+                        oneLine={false}
+                        earnedRecently={userEarnings?.recent}
+                        earnedTotal={userEarnings?.total}
+                        comment={userEarnings?.comment}
+                      />
                     </td>
 
                     <td>
@@ -334,16 +336,7 @@ export function GmList({
                         <Trans>Wallet</Trans>
                       </div>
                       <div>
-                        {formatTokenAmount(token.balance, token.decimals, "GM", {
-                          useCommas: true,
-                          displayDecimals: 2,
-                          fallbackToZero: true,
-                        })}{" "}
-                        (
-                        {formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice), {
-                          fallbackToZero: true,
-                        })}
-                        )
+                        <GmTokensBalanceInfo token={token} daysConsidered={daysConsidered} oneLine />
                       </div>
                     </div>
                     <div className="App-card-row">

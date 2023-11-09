@@ -128,6 +128,14 @@ export type MarketTokensAPRData = {
   [marketTokenAddress: string]: BigNumber;
 };
 
+export type UserEarningsData = {
+  [marketTokenAddress: string]: {
+    total: BigNumber;
+    recent: BigNumber;
+    comment?: string;
+  };
+};
+
 export type ContractMarketPrices = {
   indexTokenPrice: {
     min: BigNumber;
