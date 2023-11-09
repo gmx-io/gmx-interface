@@ -319,8 +319,17 @@ export function applyFactor(value: BigNumber, factor: BigNumber) {
   return value.mul(factor).div(PRECISION);
 }
 
-export function getBasisPoints(numerator: BigNumber, denominator: BigNumber) {
-  return numerator.mul(BASIS_POINTS_DIVISOR).div(denominator);
+export function getBasisPoints(numerator: BigNumber, denominator: BigNumber, shouldRoundUp = false) {
+  const result = numerator.mul(BASIS_POINTS_DIVISOR).div(denominator);
+
+  if (shouldRoundUp) {
+    const remainder = numerator.mul(BASIS_POINTS_DIVISOR).mod(denominator);
+    if (!remainder.isZero()) {
+      return result.isNegative() ? result.sub(1) : result.add(1);
+    }
+  }
+
+  return result;
 }
 
 export function basisPointsToFloat(basisPoints: BigNumber) {

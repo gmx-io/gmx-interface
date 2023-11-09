@@ -20,6 +20,7 @@ export const MAX_POOL_AMOUNT_FOR_DEPOSIT_KEY = hashString("MAX_POOL_AMOUNT_FOR_D
 export const MAX_POOL_AMOUNT_KEY = hashString("MAX_POOL_AMOUNT");
 export const RESERVE_FACTOR_KEY = hashString("RESERVE_FACTOR");
 export const OPEN_INTEREST_RESERVE_FACTOR_KEY = hashString("OPEN_INTEREST_RESERVE_FACTOR");
+export const MAX_OPEN_INTEREST_KEY = hashString("MAX_OPEN_INTEREST");
 export const NONCE_KEY = hashString("NONCE");
 export const BORROWING_FACTOR_KEY = hashString("BORROWING_FACTOR");
 export const BORROWING_EXPONENT_FACTOR_KEY = hashString("BORROWING_EXPONENT_FACTOR");
@@ -117,6 +118,10 @@ export function reserveFactorKey(market: string, isLong: boolean) {
 
 export function openInterestReserveFactorKey(market: string, isLong: boolean) {
   return hashData(["bytes32", "address", "bool"], [OPEN_INTEREST_RESERVE_FACTOR_KEY, market, isLong]);
+}
+
+export function maxOpenInterestKey(market: string, isLong: boolean) {
+  return hashData(["bytes32", "address", "bool"], [MAX_OPEN_INTEREST_KEY, market, isLong]);
 }
 
 export function borrowingFactorKey(market: string, isLong: boolean) {

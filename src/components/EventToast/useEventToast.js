@@ -7,12 +7,15 @@ import { isFuture, parse } from "date-fns";
 import { isHomeSite } from "lib/legacy";
 import { useChainId } from "lib/chains";
 import { useMarketsInfo } from "domain/synthetics/markets";
+import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
+import { ARBITRUM } from "config/chains";
 
 function useEventToast() {
   const isHome = isHomeSite();
   const [visited, setVisited] = useLocalStorage("visited-announcements", []);
   const { chainId } = useChainId();
   const { marketsInfoData } = useMarketsInfo(chainId);
+  const incentiveStats = useIncentiveStats(ARBITRUM);
 
   const isAdaptiveFundingActive = useMemo(() => {
     if (!marketsInfoData) return;
@@ -23,6 +26,7 @@ function useEventToast() {
     const validationParams = {
       "v2-adaptive-funding": isAdaptiveFundingActive,
       "v2-adaptive-funding-coming-soon": isAdaptiveFundingActive !== undefined && !isAdaptiveFundingActive,
+      "incentives-launch": incentiveStats?.lp?.isActive,
     };
     const eventsData = isHome ? homeEventsData : appEventsData;
 
@@ -52,7 +56,7 @@ function useEventToast() {
           }
         );
       });
-  }, [visited, setVisited, isHome, chainId, isAdaptiveFundingActive]);
+  }, [visited, setVisited, isHome, chainId, isAdaptiveFundingActive, incentiveStats]);
 }
 
 export default useEventToast;
