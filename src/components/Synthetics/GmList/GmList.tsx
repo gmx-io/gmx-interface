@@ -25,6 +25,7 @@ import { AprInfo } from "components/AprInfo/AprInfo";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import useSortedMarketsWithIndexToken from "domain/synthetics/trade/useSortedMarketsWithIndexToken";
+import TokenListSkeleton from "components/Skeleton/TokenListSkeleton";
 
 type Props = {
   hideTitle?: boolean;
@@ -123,114 +124,120 @@ export function GmList({
               </tr>
             </thead>
             <tbody>
-              {sortedMarketsByIndexToken.map((token) => {
-                const market = getByKey(marketsInfoData, token?.address)!;
+              {sortedMarketsByIndexToken.length ? (
+                sortedMarketsByIndexToken.map((token) => {
+                  const market = getByKey(marketsInfoData, token?.address)!;
 
-                const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
-                const longToken = getTokenData(tokensData, market?.longTokenAddress);
-                const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
-                const mintableInfo = market && token ? getMintableMarketTokens(market, token) : undefined;
+                  const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
+                  const longToken = getTokenData(tokensData, market?.longTokenAddress);
+                  const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
+                  const mintableInfo = market && token ? getMintableMarketTokens(market, token) : undefined;
 
-                const apr = getByKey(marketsTokensAPRData, token?.address);
-                const incentiveApr = getByKey(marketsTokensIncentiveAprData, token?.address);
+                  const apr = getByKey(marketsTokensAPRData, token?.address);
+                  const incentiveApr = getByKey(marketsTokensIncentiveAprData, token?.address);
 
-                if (!token || !indexToken || !longToken || !shortToken) {
-                  return null;
-                }
+                  if (!token || !indexToken || !longToken || !shortToken) {
+                    return null;
+                  }
 
-                const totalSupply = token?.totalSupply;
-                const totalSupplyUsd = convertToUsd(totalSupply, token?.decimals, token?.prices?.minPrice);
+                  const totalSupply = token?.totalSupply;
+                  const totalSupplyUsd = convertToUsd(totalSupply, token?.decimals, token?.prices?.minPrice);
 
-                return (
-                  <tr key={token.address}>
-                    <td>
-                      <div className="App-card-title-info">
-                        <div className="App-card-title-info-icon">
-                          <img
-                            src={importImage(
-                              "ic_" + (market.isSpotOnly ? "swap" : indexToken.symbol.toLocaleLowerCase()) + "_40.svg"
-                            )}
-                            alt={indexToken.symbol}
-                            width="40"
-                          />
-                        </div>
-
-                        <div className="App-card-title-info-text">
-                          <div className="App-card-info-title">
-                            {getMarketIndexName({ indexToken, isSpotOnly: market?.isSpotOnly })}
-                            {!market.isSpotOnly && (
-                              <div className="Asset-dropdown-container">
-                                <AssetDropdown assetSymbol={indexToken.symbol} position="left" />
-                              </div>
-                            )}
+                  return (
+                    <tr key={token.address}>
+                      <td>
+                        <div className="App-card-title-info">
+                          <div className="App-card-title-info-icon">
+                            <img
+                              src={importImage(
+                                "ic_" + (market.isSpotOnly ? "swap" : indexToken.symbol.toLocaleLowerCase()) + "_40.svg"
+                              )}
+                              alt={indexToken.symbol}
+                              width="40"
+                            />
                           </div>
-                          <div className="App-card-info-subtitle">[{getMarketPoolName({ longToken, shortToken })}]</div>
+
+                          <div className="App-card-title-info-text">
+                            <div className="App-card-info-title">
+                              {getMarketIndexName({ indexToken, isSpotOnly: market?.isSpotOnly })}
+                              {!market.isSpotOnly && (
+                                <div className="Asset-dropdown-container">
+                                  <AssetDropdown assetSymbol={indexToken.symbol} position="left" />
+                                </div>
+                              )}
+                            </div>
+                            <div className="App-card-info-subtitle">
+                              [{getMarketPoolName({ longToken, shortToken })}]
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    <td>
-                      {formatUsd(token.prices?.minPrice, {
-                        displayDecimals: 3,
-                      })}
-                    </td>
+                      </td>
+                      <td>
+                        {formatUsd(token.prices?.minPrice, {
+                          displayDecimals: 3,
+                        })}
+                      </td>
 
-                    <td className="GmList-last-column">
-                      {formatTokenAmount(totalSupply, token.decimals, "GM", {
-                        useCommas: true,
-                        displayDecimals: 2,
-                      })}
-                      <br />({formatUsd(totalSupplyUsd)})
-                    </td>
-                    <td className="GmList-last-column">
-                      {renderMintableAmount({
-                        mintableInfo,
-                        market,
-                        token,
-                        longToken,
-                        shortToken,
-                      })}
-                    </td>
+                      <td className="GmList-last-column">
+                        {formatTokenAmount(totalSupply, token.decimals, "GM", {
+                          useCommas: true,
+                          displayDecimals: 2,
+                        })}
+                        <br />({formatUsd(totalSupplyUsd)})
+                      </td>
+                      <td className="GmList-last-column">
+                        {renderMintableAmount({
+                          mintableInfo,
+                          market,
+                          token,
+                          longToken,
+                          shortToken,
+                        })}
+                      </td>
 
-                    <td>
-                      {formatTokenAmount(token.balance, token.decimals, "GM", {
-                        useCommas: true,
-                        displayDecimals: 2,
-                        fallbackToZero: true,
-                      })}
-                      <br />(
-                      {formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice), {
-                        fallbackToZero: true,
-                      }) || "..."}
-                      )
-                    </td>
+                      <td>
+                        {formatTokenAmount(token.balance, token.decimals, "GM", {
+                          useCommas: true,
+                          displayDecimals: 2,
+                          fallbackToZero: true,
+                        })}
+                        <br />(
+                        {formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice), {
+                          fallbackToZero: true,
+                        }) || "..."}
+                        )
+                      </td>
 
-                    <td>
-                      <AprInfo apr={apr} incentiveApr={incentiveApr} />
-                    </td>
+                      <td>
+                        <AprInfo apr={apr} incentiveApr={incentiveApr} />
+                      </td>
 
-                    <td className="GmList-actions">
-                      <Button
-                        className="GmList-action"
-                        variant="secondary"
-                        to={`/pools?operation=${Operation.Deposit}&market=${token.address}&scroll=${
-                          shouldScrollToTop ? "1" : "0"
-                        }`}
-                      >
-                        <Trans>Buy</Trans>
-                      </Button>
-                      <Button
-                        className="GmList-action GmList-last-action"
-                        variant="secondary"
-                        to={`/pools?operation=${Operation.Withdrawal}&market=${token.address}&scroll=${
-                          shouldScrollToTop ? "1" : "0"
-                        }`}
-                      >
-                        <Trans>Sell</Trans>
-                      </Button>
-                    </td>
-                  </tr>
-                );
-              })}
+                      <td className="GmList-actions">
+                        <Button
+                          className="GmList-action"
+                          variant="secondary"
+                          to={`/pools?operation=${Operation.Deposit}&market=${token.address}&scroll=${
+                            shouldScrollToTop ? "1" : "0"
+                          }`}
+                        >
+                          <Trans>Buy</Trans>
+                        </Button>
+                        <Button
+                          className="GmList-action GmList-last-action"
+                          variant="secondary"
+                          to={`/pools?operation=${Operation.Withdrawal}&market=${token.address}&scroll=${
+                            shouldScrollToTop ? "1" : "0"
+                          }`}
+                        >
+                          <Trans>Sell</Trans>
+                        </Button>
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <TokenListSkeleton />
+              )}
             </tbody>
           </table>
         </div>

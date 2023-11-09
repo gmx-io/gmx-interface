@@ -21,6 +21,7 @@ import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { useMemo } from "react";
 import { useMedia } from "react-use";
 import PageTitle from "components/PageTitle/PageTitle";
+import TokenListSkeleton from "components/Skeleton/TokenListSkeleton";
 
 function formatFundingRate(fundingRate?: BigNumber) {
   if (!fundingRate) {
@@ -203,63 +204,67 @@ export function MarketsList() {
               </tr>
             </thead>
             <tbody>
-              {indexTokensStats.map((stats) => {
-                const largestPool = stats.marketsStats.sort((a, b) => {
-                  return b.poolValueUsd.gt(a.poolValueUsd) ? 1 : -1;
-                })[0];
+              {indexTokensStats.length ? (
+                indexTokensStats.map((stats) => {
+                  const largestPool = stats.marketsStats.sort((a, b) => {
+                    return b.poolValueUsd.gt(a.poolValueUsd) ? 1 : -1;
+                  })[0];
 
-                return (
-                  <tr key={stats.token.symbol}>
-                    <td>
-                      <div className="token-symbol-wrapper">
-                        <div className="App-card-title-info">
-                          <div className="App-card-title-info-icon">
-                            <img
-                              src={importImage("ic_" + stats.token.symbol.toLocaleLowerCase() + "_40.svg")}
-                              alt={stats.token.symbol}
-                              width="40"
-                            />
-                          </div>
-                          <div className="App-card-title-info-text">
-                            <div className="App-card-info-title">{stats.token.name}</div>
-                            <div className="App-card-info-subtitle">{stats.token.symbol}</div>
-                          </div>
-                          <div>
-                            <AssetDropdown assetSymbol={stats.token.symbol} />
+                  return (
+                    <tr key={stats.token.symbol}>
+                      <td>
+                        <div className="token-symbol-wrapper">
+                          <div className="App-card-title-info">
+                            <div className="App-card-title-info-icon">
+                              <img
+                                src={importImage("ic_" + stats.token.symbol.toLocaleLowerCase() + "_40.svg")}
+                                alt={stats.token.symbol}
+                                width="40"
+                              />
+                            </div>
+                            <div className="App-card-title-info-text">
+                              <div className="App-card-info-title">{stats.token.name}</div>
+                              <div className="App-card-info-subtitle">{stats.token.symbol}</div>
+                            </div>
+                            <div>
+                              <AssetDropdown assetSymbol={stats.token.symbol} />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </td>
-                    <td>{formatUsd(stats.token.prices?.minPrice)}</td>
-                    <td>
-                      <Tooltip
-                        handle={formatUsd(stats.totalPoolValue)}
-                        renderContent={() => (
-                          <>
-                            {stats.marketsStats.map(({ marketInfo, poolValueUsd }) => (
-                              <StatsTooltipRow
-                                key={marketInfo.marketTokenAddress}
-                                showDollar={false}
-                                label={`[${getMarketPoolName(marketInfo)}]`}
-                                value={formatUsd(poolValueUsd)}
-                              />
-                            ))}
-                          </>
-                        )}
-                      />
-                    </td>
-                    <td>
-                      <Tooltip
-                        handle={`${formatFundingRate(largestPool.fundingRateLong)} / ${formatFundingRate(
-                          largestPool.fundingRateShort
-                        )}`}
-                        renderContent={renderFundingRateTooltip(stats)}
-                      />
-                    </td>
-                    <td>{formatAmount(stats.totalUtilization, 2, 2)}%</td>
-                  </tr>
-                );
-              })}
+                      </td>
+                      <td>{formatUsd(stats.token.prices?.minPrice)}</td>
+                      <td>
+                        <Tooltip
+                          handle={formatUsd(stats.totalPoolValue)}
+                          renderContent={() => (
+                            <>
+                              {stats.marketsStats.map(({ marketInfo, poolValueUsd }) => (
+                                <StatsTooltipRow
+                                  key={marketInfo.marketTokenAddress}
+                                  showDollar={false}
+                                  label={`[${getMarketPoolName(marketInfo)}]`}
+                                  value={formatUsd(poolValueUsd)}
+                                />
+                              ))}
+                            </>
+                          )}
+                        />
+                      </td>
+                      <td>
+                        <Tooltip
+                          handle={`${formatFundingRate(largestPool.fundingRateLong)} / ${formatFundingRate(
+                            largestPool.fundingRateShort
+                          )}`}
+                          renderContent={renderFundingRateTooltip(stats)}
+                        />
+                      </td>
+                      <td>{formatAmount(stats.totalUtilization, 2, 2)}%</td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <TokenListSkeleton />
+              )}
             </tbody>
           </table>
         </div>
