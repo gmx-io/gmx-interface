@@ -86,6 +86,13 @@ export default function MarketTokenSelector(props: Props) {
     <Popover className="MarketTokenSelector">
       {({ open, close }) => {
         if (!open && searchKeyword.length > 0) setSearchKeyword("");
+        if (!currentMarketInfo) return <></>;
+
+        const { indexToken, longToken, shortToken } = currentMarketInfo;
+        const iconName = currentMarketInfo?.isSpotOnly
+          ? getNormalizedTokenSymbol(longToken.symbol) + getNormalizedTokenSymbol(shortToken.symbol)
+          : indexToken.symbol;
+
         return (
           <div>
             <Popover.Button as="div">
@@ -95,7 +102,7 @@ export default function MarketTokenSelector(props: Props) {
                     <>
                       <TokenIcon
                         className="chart-token-current-icon"
-                        symbol={currentMarketInfo.isSpotOnly ? "swap" : currentMarketInfo.indexToken.symbol}
+                        symbol={iconName}
                         displaySize={30}
                         importSize={40}
                       />

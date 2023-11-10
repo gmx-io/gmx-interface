@@ -244,8 +244,13 @@ export function PoolSelector({
           {showIndexIcon && (
             <TokenIcon
               className="mr-xs"
-              symbol={marketInfo.isSpotOnly ? "swap" : marketInfo?.indexToken.symbol}
-              importSize={24}
+              symbol={
+                marketInfo.isSpotOnly
+                  ? getNormalizedTokenSymbol(marketInfo.longToken.symbol) +
+                    getNormalizedTokenSymbol(marketInfo.shortToken.symbol)
+                  : marketInfo?.indexToken.symbol
+              }
+              importSize={40}
               displaySize={20}
             />
           )}
