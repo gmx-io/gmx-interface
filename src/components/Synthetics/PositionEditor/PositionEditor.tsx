@@ -530,7 +530,7 @@ export function PositionEditor(p: Props) {
               />
 
               <ExchangeInfoRow
-                label={t`Liq Price`}
+                label={t`Liq. Price`}
                 value={
                   <ValueTransition
                     from={formatLiquidationPrice(position.liquidationPrice, { displayDecimals: indexPriceDecimals })}
