@@ -22,7 +22,7 @@ import { Operation } from "../GmSwap/GmSwapBox/GmSwapBox";
 import "./GmList.scss";
 import Tooltip from "components/Tooltip/Tooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { getIcons } from "config/icons";
+import { getIcons, getNormalisedIconName } from "config/icons";
 import PageTitle from "components/PageTitle/PageTitle";
 
 type Props = {
@@ -165,39 +165,18 @@ export function GmList({
 
                 const totalSupply = token?.totalSupply;
                 const totalSupplyUsd = convertToUsd(totalSupply, token?.decimals, token?.prices?.minPrice);
+                const tokenIcon = market.isSpotOnly
+                  ? getNormalisedIconName(longToken) + getNormalisedIconName(shortToken)
+                  : getNormalisedIconName(indexToken);
 
-                function renderMarketIcon() {
-                  if (!indexToken || !longToken || !shortToken) return;
-                  if (market.isSpotOnly) {
-                    const iconName =
-                      longToken.symbol.toLocaleLowerCase().split(".")[0] +
-                      shortToken.symbol.toLocaleLowerCase().split(".")[0];
-
-                    return (
-                      <div className="collaterals-logo">
-                        <img
-                          src={importImage(iconName + ".svg")}
-                          alt={iconName}
-                          className="collateral-logo collateral-logo-first"
-                          width="40"
-                        />
-                      </div>
-                    );
-                  }
-
-                  return (
-                    <img
-                      src={importImage("ic_" + indexToken.symbol.toLocaleLowerCase() + "_40.svg")}
-                      alt={indexToken.symbol}
-                      width="40"
-                    />
-                  );
-                }
                 return (
                   <tr key={token.address}>
                     <td>
                       <div className="App-card-title-info">
-                        <div className="App-card-title-info-icon">{renderMarketIcon()}</div>
+                        <div className="App-card-title-info-icon">
+                          {" "}
+                          <img src={importImage("ic_" + tokenIcon + "_40.svg")} alt={indexToken.symbol} width="40" />
+                        </div>
 
                         <div className="App-card-title-info-text">
                           <div className="App-card-info-title">
@@ -294,23 +273,20 @@ export function GmList({
               const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
               const mintableInfo = market && token ? getMintableMarketTokens(market, token) : undefined;
 
-              if (!indexToken) {
+              if (!indexToken || !longToken || !shortToken || !market) {
                 return null;
               }
               const indexName = market && getMarketIndexName(market);
               const poolName = market && getMarketPoolName(market);
+              const tokenIcon = market.isSpotOnly
+                ? getNormalisedIconName(longToken) + getNormalisedIconName(shortToken)
+                : getNormalisedIconName(indexToken);
 
               return (
                 <div className="App-card" key={token.address}>
                   <div className="App-card-title">
                     <div className="mobile-token-card">
-                      <img
-                        src={importImage(
-                          "ic_" + (market?.isSpotOnly ? "swap" : indexToken?.symbol.toLocaleLowerCase()) + "_24.svg"
-                        )}
-                        alt={indexToken.symbol}
-                        width="20"
-                      />
+                      <img src={importImage("ic_" + tokenIcon + "_40.svg")} alt={indexToken.symbol} width="20" />
                       <div className="token-symbol-text">
                         <div className="items-center">
                           <span>{indexName && indexName}</span>
