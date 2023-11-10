@@ -455,9 +455,14 @@ button.btn-link:hover .logout-icon {
   font-size: var(--font-base);
 }
 
+.mr-sm {
+  margin-right: 1rem;
+}
+
 .mr-md {
   margin-right: 1.5rem;
 }
+
 .default-cursor.App-cta {
   cursor: default;
 }
@@ -557,7 +562,7 @@ button.btn-link:hover .logout-icon {
 }
 
 a:hover .text-red {
-  color: var(--error-red-hover)
+  color: var(--error-red-hover);
 }
 
 .text-green {
