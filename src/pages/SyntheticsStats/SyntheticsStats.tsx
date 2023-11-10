@@ -92,7 +92,7 @@ export function SyntheticsStats() {
                 )}
               />
             </th>
-            <th>OI Balance</th>
+            <th>Open Interest</th>
             <th>Liquidity Long</th>
             <th>Liquidity Short</th>
             <th>
@@ -411,12 +411,32 @@ export function SyntheticsStats() {
                       renderContent={() => (
                         <>
                           <StatsTooltipRow
-                            label="Open Interest Long"
-                            value={formatAmount(market.longInterestUsd, 30, 0, true)}
+                            label="Total"
+                            value={formatAmount(market.shortInterestUsd.add(market.longInterestUsd), 30, 0, true)}
                           />
+                          <StatsTooltipRow label="Long" value={formatAmount(market.longInterestUsd, 30, 0, true)} />
+                          <StatsTooltipRow label="Short" value={formatAmount(market.shortInterestUsd, 30, 0, true)} />
                           <StatsTooltipRow
-                            label="Open Interest Short"
-                            value={formatAmount(market.shortInterestUsd, 30, 0, true)}
+                            label="Percentage"
+                            value={(() => {
+                              const totalInterestUsd = market.shortInterestUsd.add(market.longInterestUsd);
+                              const longInterestPercent = formatAmount(
+                                market.longInterestUsd.mul(10000).div(totalInterestUsd),
+                                2,
+                                2
+                              );
+                              const shortInterestPercent = formatAmount(
+                                market.shortInterestUsd.mul(10000).div(totalInterestUsd),
+                                2,
+                                2
+                              );
+
+                              return (
+                                <>
+                                  {longInterestPercent}% / {shortInterestPercent}%
+                                </>
+                              );
+                            })()}
                           />
                         </>
                       )}
