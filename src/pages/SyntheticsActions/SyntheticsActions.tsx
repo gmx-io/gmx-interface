@@ -38,6 +38,7 @@ export default function SyntheticsActions({
     pricesUpdatedAt,
     showPnlInLeverage: savedIsPnlInLeverage,
     account: checkSummedAccount,
+    skipLocalReferralCode: true,
   });
   const { ordersInfoData, isLoading: isOrdersLoading } = useOrdersInfo(chainId, {
     account: checkSummedAccount,
@@ -81,6 +82,7 @@ export default function SyntheticsActions({
             onSelectPositionClick={() => null}
             onClosePositionClick={() => null}
             onEditCollateralClick={() => null}
+            onSettlePositionFeesClick={() => null}
             showPnlAfterFees={savedShowPnlAfterFees}
             savedShowPnlAfterFees={savedShowPnlAfterFees}
             openSettings={() => null}

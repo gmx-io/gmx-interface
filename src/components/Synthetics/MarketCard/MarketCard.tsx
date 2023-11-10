@@ -7,7 +7,7 @@ import {
   getAvailableUsdLiquidityForPosition,
   getMarketIndexName,
   getMarketPoolName,
-  getMaxReservedUsd,
+  getMaxOpenInterest,
   getReservedUsd,
 } from "domain/synthetics/markets";
 import { CHART_PERIODS } from "lib/legacy";
@@ -36,7 +36,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
 
   const {
     liquidity,
-    maxReservedUsd,
+    maxOpenInterest,
     reservedUsd,
     borrowingRate,
     fundingRateLong,
@@ -48,7 +48,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
 
     return {
       liquidity: getAvailableUsdLiquidityForPosition(marketInfo, isLong),
-      maxReservedUsd: getMaxReservedUsd(marketInfo, isLong),
+      maxOpenInterest: getMaxOpenInterest(marketInfo, isLong),
       reservedUsd: getReservedUsd(marketInfo, isLong),
       borrowingRate: getBorrowingFactorPerPeriod(marketInfo, isLong, CHART_PERIODS["1h"]).mul(100),
       fundingRateLong: getFundingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]).mul(100),
@@ -63,6 +63,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
 
   const renderFundingFeeTooltipContent = useCallback(() => {
     if (!fundingRateLong || !fundingRateShort) return [];
+    const isMarketWithAdaptiveFundingRate = marketInfo?.fundingIncreaseFactorPerSecond.gt(0);
 
     const isLongPositive = fundingRateLong?.gt(0);
     const long = (
@@ -96,9 +97,22 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
         <br />
         <br />
         {oppositeFeeElement}
+        {isMarketWithAdaptiveFundingRate && (
+          <>
+            <br />
+            <br />
+            <Trans>
+              This market uses an Adaptive Funding Rate. The Funding Rate will adjust over time depending on the ratio
+              of longs and shorts.
+              <br />
+              <br />
+              <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#adaptive-funding">Read more</ExternalLink>.
+            </Trans>
+          </>
+        )}
       </div>
     );
-  }, [fundingRateLong, fundingRateShort, isLong]);
+  }, [fundingRateLong, fundingRateShort, isLong, marketInfo]);
 
   return (
     <div className="Exchange-swap-market-box App-box App-box-border">
@@ -196,7 +210,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
                 <div>
                   <StatsTooltipRow
                     label={t`Max ${indexToken?.symbol} ${longShortText} capacity`}
-                    value={formatUsd(maxReservedUsd, { displayDecimals: 0 }) || "..."}
+                    value={formatUsd(maxOpenInterest, { displayDecimals: 0 }) || "..."}
                     showDollar={false}
                   />
 

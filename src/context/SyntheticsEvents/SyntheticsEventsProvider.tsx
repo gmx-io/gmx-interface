@@ -33,6 +33,7 @@ import {
   OrderCreatedEventData,
   OrderStatuses,
   PendingDepositData,
+  PendingFundingFeeSettlementData,
   PendingOrderData,
   PendingPositionUpdate,
   PendingPositionsUpdates,
@@ -45,6 +46,7 @@ import {
 } from "./types";
 import { parseEventLogData } from "./utils";
 import useWallet from "lib/wallets/useWallet";
+import { FeesSettlementStatusNotification } from "components/Synthetics/StatusNotification/FeesSettlementStatusNotification";
 
 export const DEPOSIT_CREATED_HASH = ethers.utils.id("DepositCreated");
 export const DEPOSIT_EXECUTED_HASH = ethers.utils.id("DepositExecuted");
@@ -557,6 +559,21 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             marketsInfoData={marketsInfoData}
             tokensData={tokensData}
             toastTimestamp={toastId}
+          />,
+          {
+            autoClose: false,
+            toastId,
+          }
+        );
+      },
+      setPendingFundingFeeSettlement: (data: PendingFundingFeeSettlementData) => {
+        const toastId = Date.now();
+
+        helperToast.success(
+          <FeesSettlementStatusNotification
+            orders={data.orders}
+            toastTimestamp={toastId}
+            marketsInfoData={marketsInfoData}
           />,
           {
             autoClose: false,
