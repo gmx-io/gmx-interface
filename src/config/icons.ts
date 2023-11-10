@@ -17,7 +17,6 @@ import gmxArbitrum from "img/ic_gmx_arbitrum.svg";
 import gmxAvax from "img/ic_gmx_avax.svg";
 import glpArbitrum from "img/ic_glp_arbitrum.svg";
 import glpAvax from "img/ic_glp_avalanche.svg";
-import { Token } from "domain/tokens";
 
 const ICONS = {
   [ARBITRUM]: {
@@ -67,8 +66,4 @@ export function getIcons(chainId: number | "common") {
   if (chainId in ICONS) {
     return ICONS[chainId];
   }
-}
-
-export function getNormalisedIconName(token: Token) {
-  return token.symbol.toLowerCase().split(".")[0];
 }

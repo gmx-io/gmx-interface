@@ -3,7 +3,6 @@ import cx from "classnames";
 import { MarketInfo, MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { TokensData, convertToUsd } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
-import { importImage } from "lib/legacy";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useMemo, useState } from "react";
@@ -13,6 +12,7 @@ import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 import "./MarketSelector.scss";
 import SearchInput from "components/SearchInput/SearchInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import { getNormalizedTokenSymbol } from "config/tokens";
 
 type Props = {
   label?: string;
@@ -158,12 +158,11 @@ export function PoolSelector({
         <div className="TokenSelector-tokens">
           {filteredOptions.map((option, marketIndex) => {
             const { marketInfo, balance, balanceUsd, indexName, poolName, name, state = {} } = option;
+            const { longToken, shortToken, indexToken } = marketInfo;
 
-            const longCollateralImage = importImage(`ic_${marketInfo.longToken.symbol.toLowerCase()}_40.svg`);
-            const shortCollateralImage = importImage(`ic_${marketInfo.shortToken.symbol.toLowerCase()}_40.svg`);
-            const indexTokenImage = importImage(
-              `ic_${marketInfo.isSpotOnly ? "swap" : marketInfo.indexToken.symbol.toLowerCase()}_40.svg`
-            );
+            const indexTokenImage = marketInfo.isSpotOnly
+              ? getNormalizedTokenSymbol(longToken.symbol) + getNormalizedTokenSymbol(shortToken.symbol)
+              : getNormalizedTokenSymbol(indexToken.symbol);
 
             const marketToken = getByKey(marketTokensData, marketInfo.marketTokenAddress);
 
@@ -187,18 +186,20 @@ export function PoolSelector({
                 <div className="Token-info">
                   <div className="collaterals-logo">
                     {showAllPools ? (
-                      <img src={indexTokenImage} alt={indexName} className="collateral-logo collateral-logo-first" />
+                      <TokenIcon symbol={indexTokenImage} displaySize={40} importSize={40} />
                     ) : (
                       <>
-                        <img
-                          src={longCollateralImage}
-                          alt={poolName}
+                        <TokenIcon
+                          symbol={longToken.symbol}
+                          displaySize={40}
+                          importSize={40}
                           className="collateral-logo collateral-logo-first"
                         />
-                        {shortCollateralImage && (
-                          <img
-                            src={shortCollateralImage}
-                            alt={poolName}
+                        {shortToken && (
+                          <TokenIcon
+                            symbol={shortToken.symbol}
+                            displaySize={40}
+                            importSize={40}
                             className="collateral-logo collateral-logo-second"
                           />
                         )}

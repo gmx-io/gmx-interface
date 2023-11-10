@@ -10,7 +10,6 @@ import {
 } from "domain/synthetics/markets";
 import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { importImage } from "lib/legacy";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
@@ -19,12 +18,14 @@ import { Operation } from "../GmSwap/GmSwapBox/GmSwapBox";
 import "./GmList.scss";
 import Tooltip from "components/Tooltip/Tooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { getIcons, getNormalisedIconName } from "config/icons";
+import { getIcons } from "config/icons";
 import PageTitle from "components/PageTitle/PageTitle";
 import { AprInfo } from "components/AprInfo/AprInfo";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import useSortedMarketsWithIndexToken from "domain/synthetics/trade/useSortedMarketsWithIndexToken";
+import { getNormalizedTokenSymbol } from "config/tokens";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 
 type Props = {
   hideTitle?: boolean;
@@ -140,17 +141,16 @@ export function GmList({
 
                 const totalSupply = token?.totalSupply;
                 const totalSupplyUsd = convertToUsd(totalSupply, token?.decimals, token?.prices?.minPrice);
-                const tokenIcon = market.isSpotOnly
-                  ? getNormalisedIconName(longToken) + getNormalisedIconName(shortToken)
-                  : getNormalisedIconName(indexToken);
+                const tokenIconName = market.isSpotOnly
+                  ? getNormalizedTokenSymbol(longToken.symbol) + getNormalizedTokenSymbol(shortToken.symbol)
+                  : getNormalizedTokenSymbol(indexToken.symbol);
 
                 return (
                   <tr key={token.address}>
                     <td>
                       <div className="App-card-title-info">
                         <div className="App-card-title-info-icon">
-                          {" "}
-                          <img src={importImage("ic_" + tokenIcon + "_40.svg")} alt={indexToken.symbol} width="40" />
+                          <TokenIcon symbol={tokenIconName} displaySize={40} importSize={40} />
                         </div>
 
                         <div className="App-card-title-info-text">
@@ -256,15 +256,15 @@ export function GmList({
               }
               const indexName = market && getMarketIndexName(market);
               const poolName = market && getMarketPoolName(market);
-              const tokenIcon = market.isSpotOnly
-                ? getNormalisedIconName(longToken) + getNormalisedIconName(shortToken)
-                : getNormalisedIconName(indexToken);
+              const tokenIconName = market.isSpotOnly
+                ? getNormalizedTokenSymbol(longToken.symbol) + getNormalizedTokenSymbol(shortToken.symbol)
+                : getNormalizedTokenSymbol(indexToken.symbol);
 
               return (
                 <div className="App-card" key={token.address}>
                   <div className="App-card-title">
                     <div className="mobile-token-card">
-                      <img src={importImage("ic_" + tokenIcon + "_40.svg")} alt={indexToken.symbol} width="20" />
+                      <TokenIcon symbol={tokenIconName} displaySize={20} importSize={40} />
                       <div className="token-symbol-text">
                         <div className="items-center">
                           <span>{indexName && indexName}</span>
