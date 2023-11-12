@@ -16,6 +16,11 @@
   z-index: 1000;
 }
 
+#light .Tooltip-popup {
+  background: #ffffff;
+  border: #000000 solid 1px;
+}
+
 .Tooltip.nowrap .Tooltip-popup {
   min-width: auto;
   white-space: nowrap;
@@ -71,6 +76,7 @@
 }
 
 .Tooltip-handle {
+  
   cursor: help;
   position: relative;
   display: inline-flex;
@@ -79,6 +85,10 @@
   text-decoration-thickness: 1px;
   text-underline-offset: 2px;
   text-decoration-color: rgba(255, 255, 255, 0.6);
+}
+
+#light .Tooltip-handle {
+  text-decoration-color: #000000;
 }
 
 .Tooltip-handle.plain:after {
@@ -107,6 +117,10 @@
 .Tooltip-row > .Tooltip-row-value {
   color: white;
   text-align: right;
+}
+
+#light .Tooltip-row > .Tooltip-row-value {
+  color : #000000;
 }
 
 .Tooltip-row-values {

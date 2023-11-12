@@ -10,18 +10,18 @@
   border: none;
 
   &.primary {
-    background: var(--primary-btn-bg);
+    background: #ff7028;
     color: #fff;
     border-radius: 0.3rem;
     padding: 1.65rem 1.6rem;
     line-height: 1;
 
     &:not([disabled]):hover {
-      background: var(--primary-btn-hover);
+      background: #ff7028;
     }
 
     &:not([disabled]):active {
-      background-color: var(--primary-btn-active);
+      background: #ff7028;
     }
   }
 
@@ -34,7 +34,7 @@
     align-items: center;
     flex-shrink: 0;
     border-radius: 4px;
-    background: #13F287;
+    background: #13f287;
     margin-top: 10px;
 
     &:not([disabled]):hover {
@@ -56,11 +56,11 @@
     align-items: center;
     flex-shrink: 0;
     border-radius: 4px;
-    background: rgba(19, 242, 135, 0.10); 
-    padding-left: 10px;        
+    background: rgba(19, 242, 135, 0.1);
+    padding-left: 10px;
 
     &:not([disabled]):hover {
-      background: #68aa49; 
+      background: #68aa49;
     }
 
     &:not([disabled]):active {
@@ -72,51 +72,60 @@
     display: flex;
     width: 109px;
     height: 34px;
-    padding: 7.5px 22px;  
+    padding: 7.5px 22px;
     justify-content: center;
-    background: #1E1E1E;
+    background: #1e1e1e;
     align-items: center;
     flex-shrink: 0;
     border-radius: 4px;
-    border: 1px solid #13F287;  
-    color:#13F287;
+    border: 1px solid #13f287;
+    color: #13f287;
   }
 
   &.await:hover {
-    background: rgba(19, 242, 135, 0.10);
+    background: rgba(19, 242, 135, 0.1);
+  }
+
+  #light &.primary-action {
+    background: #ff7028;
   }
 
   &.primary-action {
-    background: linear-gradient(90deg, #2d42fc, #2e3dcd);
+    background: #ff7028;
     color: #fff;
     border-radius: 0.3rem;
     padding: 1.65rem 1.6rem;
     line-height: 1;
 
     &:not([disabled]):hover {
-      background: var(--primary-btn-hover);
+      background: #ff7028;
       box-shadow: 0 0 0.4rem 0.5rem rgb(45 66 252 / 20%);
     }
 
     &:not([disabled]):active {
-      background-color: var(--primary-btn-active);
+      background: #ff7028;
       box-shadow: 0 0 0.4rem 0.6rem rgb(45 66 252 / 20%);
     }
   }
 
+  #light &.semi-clear {
+    background: #ff7028;
+    color: #ffffff;
+  }
+
   &.semi-clear {
-    background: rgb(43, 55, 94);
+    background: #ff7028;
     color: #fff;
     border-radius: var(--border-radius-sm);
     line-height: 1;
     letter-spacing: 0;
 
     &:not([disabled]):hover {
-      background: rgb(54, 69, 117);
+      background: #ff7028;
     }
 
     &:not([disabled]):active {
-      background: rgb(64, 82, 141);
+      background: #ff7028;
     }
   }
 

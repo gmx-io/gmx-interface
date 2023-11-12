@@ -10,6 +10,13 @@
   color: white;
 }
 
+#light .App-header-network {
+  color : #000000 !important;
+  /* border : #D7D8D9 2px solid; */
+  border-radius: 10px !important;
+}
+
+
 .App-header-language {
   margin-left: 0;
 }

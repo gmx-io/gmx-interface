@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import React, { useState, useEffect, useCallback, useRef, useMemo, useContext } from "react";
 import useSWR, { SWRConfig } from "swr";
 import { ethers } from "ethers";
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
@@ -114,6 +114,8 @@ import OtpInput from "components/OtpInput/OtpInput";
 import { createOtp } from "config/tool";
 import sendOtp from "external/sendOtp";
 import { updateUserEmail } from "external/supabase/supabaseFns";
+import ReactSwitch from "react-switch";
+import ThemeProvider, { ThemeContext } from "store/Themeprovider";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -564,14 +566,10 @@ function FullApp() {
       wsPositionRouter.off("CancelDecreasePosition", onCancelDecreasePosition);
     };
   }, [active, chainId, vaultAddress, positionRouterAddress]);
-
-  // const handleTosChange = () => {
-  //   setCheckedTos(!checkedTos);
-  // }; // @todo
-
+  const themeContext = useContext(ThemeContext);
   return (
-    <>
-      <div className="App">
+    <div id={themeContext.theme}>
+      <div className="App" >
         <div className="App-content">
           <Header
             disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
@@ -721,7 +719,7 @@ function FullApp() {
         className="Connect-wallet-modal"
         isVisible={walletModalVisible}
         setIsVisible={setWalletModalVisible}
-        label={`Get Started`}
+        label={`Connect Wallet`}
       >
         <div className="Wallet-modal-description">
           <input id="tos" type="checkbox" />
@@ -914,7 +912,7 @@ function FullApp() {
           <Trans>Save</Trans>
         </Button>
       </Modal>
-    </>
+    </div>
   );
 }
 
@@ -1038,7 +1036,8 @@ function App() {
         <SEO>
           <Router>
             <I18nProvider i18n={i18n}>
-              <FullApp />
+              <ThemeProvider>
+                <FullApp />
               <Tour
                 steps={steps}
                 isOpen={isTourOpen}
@@ -1048,6 +1047,7 @@ function App() {
                 showNavigationNumber={false}
                 showButtons={false}
               />
+              </ThemeProvider>
             </I18nProvider>
           </Router>
         </SEO>

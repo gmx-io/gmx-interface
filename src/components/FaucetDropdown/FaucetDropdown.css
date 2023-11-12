@@ -5,7 +5,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #14f187 !important;
+  color: #FF7028 !important;
 }
 
 .faucet {
@@ -28,6 +28,11 @@
   outline: none;
   z-index: 1000;
 }
+
+#light .menu {
+  background: #ffffff;
+}
+
 .menu-item {
   display: flex !important;
   align-items: center;

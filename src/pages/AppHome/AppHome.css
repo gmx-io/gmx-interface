@@ -5,6 +5,11 @@
 img {
   max-width: 100%;
 }
+
+#light .hero {
+  background-image: url(img/tf-t3-landing-bg.svg);
+}
+
 .hero {
   /* Sizing */
   width: 100vw;
@@ -21,7 +26,7 @@ img {
 
   /* Background styles */
 
-  background-image: url(img/Artwork_t3.svg);
+  background-image: url(img/t3-bg-dark.svg);
   background-size: cover;
   background-position: right;
   background-repeat: no-repeat;
@@ -39,8 +44,12 @@ img {
   margin-left: 2em;
 }
 
+#light .hero-title {
+  color: #000000;
+}
+
 .Home-title-subtext {
-  color: #14f187;
+  color: #FF7028;
 }
 .arrow {
   height: 2.8rem;
@@ -49,14 +58,17 @@ img {
   align-items: center;
   margin-top: 0.5rem;
 }
+
+
+
 .hero .btn {
-  background: #14f187;
+  background: #FF7028;
   border-radius: 16px;
   font-size: 2.4rem;
   line-height: 6.8rem;
   font-weight: bold;
   letter-spacing: 0;
-  color: #000000 !important;
+  color: #ffff !important;
   padding-left: 2.5rem;
   padding-right: 1.6rem;
   /* padding: 9px 16px!important; */
@@ -104,10 +116,10 @@ img {
   }
 
   .mobile .subtext {
-    color: #14f187;
+    color: #FF7028;
   }
   .mobile .btn {
-    background: #14f187;
+    background: #FF7028;
     border-radius: 16px;
     font-size: 2.4rem;
     line-height: 6.8rem;

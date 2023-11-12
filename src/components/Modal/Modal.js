@@ -1,9 +1,10 @@
 import "./Modal.css";
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useContext } from "react";
 import cx from "classnames";
 import { motion, AnimatePresence } from "framer-motion";
 import { RemoveScroll } from "react-remove-scroll";
 import { MdClose } from "react-icons/md";
+import { ThemeContext } from "store/Themeprovider";
 
 export default function Modal(props) {
   const { isVisible, setIsVisible, className, zIndex, onAfterOpen } = props;
@@ -29,11 +30,16 @@ export default function Modal(props) {
     visible: { opacity: 1 },
   };
 
+  const themeContext = useContext(ThemeContext);
+
+ // console.log("modal ", themeContext.theme);
+
   return (
     <AnimatePresence>
       {isVisible && (
         <motion.div
           className={cx("Modal", className)}
+          id={themeContext.theme}
           style={{ zIndex }}
           initial="hidden"
           animate="visible"
@@ -49,7 +55,7 @@ export default function Modal(props) {
             }}
             onClick={() => setIsVisible(false)}
           ></div>
-          <div className="Modal-content">
+          <div className={`Modal-content`}>
             <div className="Modal-header-wrapper">
               <div className="Modal-title-bar">
                 <div className="Modal-title">{props.label}</div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { useWeb3React } from "@web3-react/core";
 import { Trans, t } from "@lingui/macro";
@@ -45,6 +45,7 @@ import { bigNumberify, expandDecimals, formatAmount, formatKeyAmount, numberWith
 import { useChainId } from "lib/chains";
 import { formatDate } from "lib/dates";
 import { getIcons } from "config/icons";
+import { ThemeContext } from "store/Themeprovider";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
@@ -462,6 +463,8 @@ export default function DashboardV2() {
     return null;
   };
 
+  const themeContext = useContext(ThemeContext);
+
   return (
     <SEO title={getPageTitle("Dashboard")}>
       <div className="default-container DashboardV2 page-layout">
@@ -801,7 +804,7 @@ export default function DashboardV2() {
                           />
                         ))}
                       </Pie>
-                      <text x={"50%"} y={"50%"} fill="white" textAnchor="middle" dominantBaseline="middle">
+                      <text x={"50%"} y={"50%"} fill={themeContext.theme === 'light'? '#000000' : "white"} textAnchor="middle" dominantBaseline="middle">
                         <Trans>Distribution</Trans>
                       </text>
                       <Tooltip content={<CustomTooltip />} />
@@ -893,7 +896,7 @@ export default function DashboardV2() {
                           />
                         ))}
                       </Pie>
-                      <text x={"50%"} y={"50%"} fill="white" textAnchor="middle" dominantBaseline="middle">
+                      <text x={"50%"} y={"50%"} fill={themeContext.theme === 'light'? '#000000' : "white"} textAnchor="middle" dominantBaseline="middle">
                         GLP Pool
                       </text>
                       <Tooltip content={<CustomTooltip />} />

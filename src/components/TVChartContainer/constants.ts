@@ -60,7 +60,7 @@ const enabledFeatures = [
 ];
 
 export const defaultChartProps = {
-  theme: "Dark",
+  theme: "Light",
   locale: "en",
   library_path: "/charting_library/",
   clientId: "tradingview.com",

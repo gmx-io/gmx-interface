@@ -10,6 +10,10 @@
   color: white;
 }
 
+#light .chart-token-selector--current {
+  color : #000000;
+}
+
 .chart-token-menu-items.menu-items {
   width: 15.8rem;
   top: 6rem;

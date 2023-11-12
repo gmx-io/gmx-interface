@@ -3,7 +3,13 @@
   overflow: hidden;
   min-height: 100%;
   font-size: var(--font-base);
+  background-color: #060817;
 }
+
+#light .App{
+  background-color: #f7f7fa;
+}
+
 
 .App-header-backdrop {
   position: fixed;
@@ -35,7 +41,7 @@
   height: 1.3rem;
   width: 100%;
   content: " ";
-  background: transparent linear-gradient(180deg, #00000030 0%, #00000000 100%) 0% 0% no-repeat padding-box;
+ // background: transparent linear-gradient(180deg, #00000030 0%, #00000000 100%) 0% 0% no-repeat padding-box;
   position: absolute;
   bottom: -1.3rem;
   left: 0;
@@ -155,10 +161,28 @@
 .App-box-highlight,
 .App-box-solid {
   position: relative;
-  border: 1px solid #1e2136;
+  // border: 1px solid #1e2136;
   border-radius: 0.4rem;
-  background: #16182e;
+  color : #ffffff;
+  background: #0E1020;
   font-size: var(--font-base);
+}
+
+#light
+.App-box-highlight{
+  border : none;
+  background: #ffffff;
+  color: #000000;
+}
+
+#light .App-box {
+  background: #ffffff;
+  color : #000000;
+}
+
+#light .App-card {
+  background: #ffffff;
+  color : #000000;
 }
 
 .App-card-bottom-placeholder {
@@ -294,6 +318,10 @@
   color: #ffffff;
 }
 
+#light .App-card-info-title {
+  color : #000000;
+}
+
 .App-card-info-subtitle {
   font-size: 1.2rem;
   line-height: 1.5rem;
@@ -326,7 +354,6 @@
   width: 100%;
 }
 
-
 .Wallet-btn {
   display: flex;
   flex-direction: column;
@@ -346,6 +373,14 @@
   height: 44px;
   margin-bottom: 10px;
 }
+
+#light .Wallet-btn {
+  background: #ffffff;
+  color: #000000;
+}
+
+
+
 .Wallet-btn:hover {
   background: var(--dark-blue-hover);
   border-color: var(--dark-blue-border);
@@ -484,6 +519,11 @@ button.App-connect-wallet:hover {
   font-weight: 500;
   margin-bottom: 0.8rem;
   font-weight: bold;
+  color : #ffffff;
+}
+
+#light .Page-title {
+  color : #000000;
 }
 
 .Page-description {
@@ -523,6 +563,11 @@ button.App-connect-wallet:hover {
   background-size: 20px;
 }
 
+
+#light .Wallet-modal-description label {
+  color : #000000;
+}
+
 .Wallet-modal-description span {
   color: #3274D7;
   font-family: tektur;
@@ -548,6 +593,10 @@ button.App-connect-wallet:hover {
   border-radius: 8px;
 }
 
+#light .Modal-content-wrapper {
+  background-color: #f7f7fa;
+}
+
 .Page-description span,
 .Page-description a {
   text-decoration: underline;
@@ -556,10 +605,14 @@ button.App-connect-wallet:hover {
   color: inherit;
 }
 
-.Page-description span:hover {
-  color: #fff;
-  opacity: 0.9;
+#light .Page-description {
+  color: #000000;
 }
+
+// .Page-description span:hover {
+//   color: #fff;
+//   opacity: 0.9;
+// }
 
 .Page-description span img,
 .Page-description a img {
@@ -588,7 +641,7 @@ button.App-connect-wallet:hover {
 
 .App-card {
   padding: 1.5rem 1.5rem 1.86rem;
-  border: 1px solid #1e2136;
+ // border: 1px solid #1e2136;
   border-radius: 0.4rem;
   font-size: var(--font-base);
 }
@@ -603,6 +656,10 @@ button.App-connect-wallet:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+#light .App-card-title{
+  color : #000000;
 }
 
 .App-card-title-small {
@@ -683,6 +740,10 @@ button.App-connect-wallet:hover {
 .App-header a:hover {
   opacity: 1;
   color: #eee;
+}
+
+#light a {
+  color: #000000;
 }
 
 .App-header-container-left .a,
@@ -1135,7 +1196,7 @@ button.App-button {
 }
 
 .positive {
-  color: #0ecc83;
+  color: #ff7028;
 }
 
 .positive-background {
@@ -1163,6 +1224,14 @@ button.App-button {
   background: linear-gradient(90deg, rgba(30, 34, 61, 1) 0%, rgba(40, 45, 74, 1) 100%);
 }
 
+#light .rc-slider-rail {
+  background: #DCDCDC;
+}
+
+#light .rc-slider-track {
+  background: #ff7028;
+}
+
 .App-slider .rc-slider-track {
   background: linear-gradient(90deg, rgba(46, 61, 205, 1) 0%, rgba(45, 66, 252, 1) 100%);
 }
@@ -1175,13 +1244,22 @@ button.App-button {
   background: rgba(40, 45, 74, 1);
 }
 
+#light .rc-slider-dot{
+  background: #DCDCDC;
+}
+
 .App-slider .rc-slider-dot-active {
   background: #3d51ff;
 }
 
 .App-slider .rc-slider-handle {
   background: #303652;
-  border: solid 2px rgba(45, 66, 252, 1);
+  border : solid 3px #ff7028;
+}
+
+#light .rc-slider-handle {
+  background: #ffffff;
+  
 }
 
 .App-slider .rc-slider-handle:active {
@@ -1500,7 +1578,7 @@ button.App-button {
 }
 
 .Email-input-prompt-text {
-  text-align:left;
+  text-align: left;
   font-size: 15px;
 }
 
@@ -1555,9 +1633,43 @@ button.App-button {
 }
 
 .Email-input-container {
-    padding-bottom: 5px;
-    width: 80%;
+  padding-bottom: 5px;
+  width: 80%;
+}
 
+.tour-title {
+  color: #FFF;
+  font-family: Tektur;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+.tour-content {
+  color: rgba(255, 255, 255, 0.62);
+  font-family: Tektur;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 140.523%; /* 21.078px */
+}
+.tour-control {
+  width: 100%;
+  text-align: end;
+  font-family: Tektur;
+}
+.tour-control a, a:link, a:visited, a:hover {
+  text-decoration: none;
+  color: #FFF;
+  font-family: Tektur;
+}
+.tour-control button {
+  margin-left: 14px;
+  padding: 10px 26px;
+  border-radius: 3px;
+  border: 0px;
+  background: #FFF;
+  font-family: Tektur;
 }
 
 .tour-title {

@@ -927,7 +927,7 @@ export const Exchange = forwardRef((props, ref) => {
       <div className="Exchange-content">
         <div className="Exchange-left">
           {renderChart()}
-          <div className="Exchange-lists large">{getListSection()}</div>
+          <div className="Exchange-lists text-white large">{getListSection()}</div>
         </div>
         <div className="Exchange-right">
           <SwapBox

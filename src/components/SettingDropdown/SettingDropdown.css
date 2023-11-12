@@ -14,6 +14,12 @@
   margin-left: 0;
 }
 
+#light .setting-dropdown {
+  color: #000000 !important;
+  border: #d7d8d9 2px solid;
+  border-radius: 10px !important;
+}
+
 .setting-dropdown {
   display: inline-flex;
 }
@@ -54,6 +60,11 @@
   height: 20px;
   border-radius: 50%;
 }
+
+#light .setting-dropdown-icon{
+  fill : #000000;
+}
+
 .setting-dropdown-info-icon {
   width: 16px;
   height: 16px;
@@ -205,10 +216,10 @@
   cursor: pointer;
 }
 .toggle-on {
-  background-color: #FF7028;
+  background-color: #ff7028;
 }
 .toggle-off {
-  background-color: #2E313D;
+  background-color: #2e313d;
 }
 .sr-only {
   position: absolute;
@@ -226,7 +237,7 @@
   height: 16px;
   width: 16px;
   border-radius: 9999px;
-  background: #FFF;
+  background: #fff;
   --tw-translate-x: 0;
   --tw-translate-y: 0;
   --tw-rotate: 0;
@@ -234,8 +245,10 @@
   --tw-skew-y: 0;
   --tw-scale-x: 1;
   --tw-scale-y: 1;
-  transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate))
+    skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
+    transform, filter, backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
@@ -245,7 +258,8 @@
 .translate-x-1 {
   transform: translateX(0.3rem);
 }
-.switch-button img, .dark-mode {
+.switch-button img,
+.dark-mode {
   position: absolute;
   right: 6px;
   width: 10px;
@@ -257,11 +271,16 @@
 }
 .email-notification {
   margin: 0 20px;
-  color: rgba(255, 255, 255, 0.70);
+  color: rgba(255, 255, 255, 0.7);
   font-size: 16px;
   font-style: normal;
   font-weight: 400;
 }
+
+#light .email-notification {
+  color : #000000;
+}
+
 .email-notification-title {
   margin-bottom: 24px;
   font-size: 16px;
@@ -270,8 +289,13 @@
   line-height: 146.523%;
 }
 .email-notification-label {
-  color: #FFF;
+  color: #fff;
 }
+
+#light .email-notification-label{
+  color : #000000;
+}
+
 .email-input-container {
   position: relative;
 }
@@ -287,11 +311,11 @@
   margin-bottom: 47px;
 }
 .email-verify-button {
-  background: linear-gradient(90deg, #FF7028, #f06018);
+  background: linear-gradient(90deg, #ff7028, #f06018);
   color: #fff;
   height: 47px;
   padding: 0px;
-  border:none;
+  border: none;
   border-radius: 4px;
   text-align: center;
   font-size: 18px;
@@ -306,7 +330,7 @@
   justify-content: center;
 }
 .enter-code-title {
-  color: #FFF;
+  color: #fff;
   font-size: 22px;
   font-style: normal;
   font-weight: 600;
@@ -326,7 +350,7 @@
   font-weight: 500;
   line-height: normal;
   text-decoration-line: underline;
-  color: #FF7028;
+  color: #ff7028;
 }
 .otp-code-container {
   display: flex;
@@ -334,7 +358,6 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 35px;
-
 }
 .otp-code-input {
   margin: 0px 8px;
@@ -342,9 +365,9 @@
   height: 52px;
   border-radius: 8.984px;
   border: 1px solid rgba(250, 36, 36, 0.82);
-  background: rgba(250, 36, 36, 0.10);
+  background: rgba(250, 36, 36, 0.1);
   text-align: center;
-  color: #FA2424;
+  color: #fa2424;
   font-size: 22px;
   font-style: normal;
   font-weight: 600;
@@ -367,7 +390,7 @@
   margin-left: 70px;
   margin-right: 70px;
   margin-bottom: 72px;
-  color: #FFF;
+  color: #fff;
   text-align: center;
   font-size: 26px;
   font-style: normal;
@@ -376,7 +399,7 @@
 }
 .back-button {
   display: flex;
-  color: #FF7028;
+  color: #ff7028;
   text-align: center;
   font-size: 18px;
   font-style: normal;
@@ -389,7 +412,7 @@
   background: #111320;
   flex-shrink: 0;
   border-radius: 4px;
-  border: 1px solid #FF7028;
+  border: 1px solid #ff7028;
 }
 
 .hidden {

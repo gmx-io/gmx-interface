@@ -1,10 +1,10 @@
 import { useWeb3React } from "@web3-react/core";
 import AddressDropdown from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../Common/ConnectWalletButton";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { HeaderLink } from "./HeaderLink";
-import connectWalletImg from "img/ic_wallet_24.svg";
-
+import connectWalletImgDrk from "img/ic_wallet_24-dark.svg";
+import connectWalletImglight from "img/ic_wallet_24-light.svg";
 import "./Header.css";
 import { isHomeSite, getAccountUrl } from "lib/legacy";
 import cx from "classnames";
@@ -19,6 +19,7 @@ import { getIcon } from "config/icons";
 import FaucetDropdown from "../FaucetDropdown/FaucetDropdown";
 import { addUser, getUserByWalletAddress } from "external/supabase/supabaseFns";
 import SettingDropdown from "components/SettingDropdown/SettingDropdown";
+import { ThemeContext } from "store/Themeprovider";
 
 type Props = {
   openSettings: () => void;
@@ -103,6 +104,9 @@ export function AppHeaderUser({
 
   const selectorLabel = getChainName(chainId);
 
+  const themeContext = useContext(ThemeContext);
+
+  
   if (!active || !account) {
     return (
       <div className="App-header-user">
@@ -119,7 +123,7 @@ export function AppHeaderUser({
 
         {showConnectionOptions ? (
           <>
-            <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={connectWalletImg}>
+            <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={themeContext.theme === 'light' ? connectWalletImgDrk : connectWalletImglight }>
               {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
             </ConnectWalletButton>
             <NetworkDropdown

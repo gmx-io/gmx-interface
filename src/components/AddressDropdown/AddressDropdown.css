@@ -8,6 +8,12 @@
   color: white !important;
 }
 
+#light .address-btn {
+  color : #000000 !important;
+  border : #D7D8D9 2px solid;
+  border-radius: 10px !important;
+}
+
 .user-address {
   margin-left: 1rem;
   margin-right: 1rem;
@@ -18,6 +24,14 @@
 }
 .App-header-user-address:active {
   background: var(--dark-blue-active);
+}
+
+#light .menu-items {
+  background: #ffffff;  
+}
+
+#light .menu-item {
+  color:#000000;
 }
 
 .menu-items {
@@ -51,6 +65,12 @@
   opacity: 1;
   color: #eee;
 }
+
+#light .menu-item:hover{
+  background: #808aff14 !important;
+  color: #000000;
+}
+
 .menu-item > p {
   margin: 0px;
   padding-left: 1rem;

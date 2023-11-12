@@ -36,7 +36,7 @@ export default function ChartTokenSelector(props) {
       <Menu.Button as="div" disabled={isSwap}>
         <button className={cx("App-cta small transparent chart-token-selector", { "default-cursor": isSwap })}>
           <span className="chart-token-selector--current">{value.symbol} / USD</span>
-          {!isSwap && <FaChevronDown />}
+          {!isSwap && <FaChevronDown className="chart-token-selector--current" />}
         </button>
       </Menu.Button>
       <div className="chart-token-menu">

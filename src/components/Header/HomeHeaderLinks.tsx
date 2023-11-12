@@ -1,5 +1,5 @@
 import { FiX } from "react-icons/fi";
-import logoImg from "img/logo_t3.svg";
+import logoImg from "img/tf_t3.png";
 import { t } from "@lingui/macro";
 
 import "./Header.css";

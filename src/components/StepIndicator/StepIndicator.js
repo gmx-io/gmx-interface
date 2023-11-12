@@ -3,7 +3,7 @@ import "./StepIndicator.css";
 
 export default function StepIndicator({ digit }) {
   return (
-    <motion.div className="Circular-digit" style={{ backgroundColor: "#21232A", fontFamily: "tektur" }}>
+    <motion.div className="Circular-digit" style={{ backgroundColor: "#ff7028", fontFamily: "tektur" }}>
       {digit}
     </motion.div>
   );

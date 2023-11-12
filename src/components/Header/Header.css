@@ -23,7 +23,7 @@
   height: 1.3rem;
   width: 100%;
   content: " ";
-  background: transparent linear-gradient(180deg, #00000030 0%, #00000000 100%) 0% 0% no-repeat padding-box;
+  /* background: transparent linear-gradient(180deg, #00000030 0%, #00000000 100%) 0% 0% no-repeat padding-box; */
   position: absolute;
   bottom: -1.3rem;
   left: 0;
@@ -221,6 +221,12 @@
   align-items: center;
   color: white;
   position: relative;
+}
+
+#light .App-header-faucet {
+  color : #000000 !important;
+  border : #D7D8D9 2px solid;
+  border-radius: 10px !important;
 }
 
 .App-header-faucet {
