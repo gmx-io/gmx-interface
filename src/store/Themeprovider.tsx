@@ -1,4 +1,3 @@
-import { th } from "date-fns/locale";
 import React, { useState } from "react";
 
 export type Theme = {

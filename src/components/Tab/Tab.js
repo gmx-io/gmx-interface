@@ -15,8 +15,6 @@ export default function Tab(props) {
     }
   };
 
-  console.log("opt ", icons);
-
   return (
     <div className={cx("Tab", type, className)}>
       {options.map((opt) => {
