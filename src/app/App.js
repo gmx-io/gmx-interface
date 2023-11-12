@@ -114,7 +114,6 @@ import OtpInput from "components/OtpInput/OtpInput";
 import { createOtp } from "config/tool";
 import sendOtp from "external/sendOtp";
 import { updateUserEmail } from "external/supabase/supabaseFns";
-import ReactSwitch from "react-switch";
 import ThemeProvider, { ThemeContext } from "store/Themeprovider";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
