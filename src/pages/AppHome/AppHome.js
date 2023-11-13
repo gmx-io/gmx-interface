@@ -8,7 +8,7 @@ import { HeaderLink } from "components/Header/HeaderLink";
 import arrow from "img/arrow-narrow-right.svg";
 import mobilet3light from "img/t3-mobile-light-bg.svg";
 import mobilet3dark from "img/t3-mobile-dark-bg.svg";
-import { ThemeContext } from "store/Themeprovider";
+import { ThemeContext } from "store/theme-provider";
 import AppHomeContent from "./AppHomeContent";
 
 export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
@@ -16,7 +16,7 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
   const TradeNowButton = () => {
     return (
       <HeaderLink
-        className="btn"
+        className="btn text-white"
         to="/trade"
         redirectPopupTimestamp={redirectPopupTimestamp}
         showRedirectModal={showRedirectModal}
@@ -56,8 +56,8 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
           <TradeNowButton />
         </div>
       </div>
-      <AppHomeContent/>
-      <Footer/>
+      <AppHomeContent />
+      <Footer />
     </div>
   );
 }

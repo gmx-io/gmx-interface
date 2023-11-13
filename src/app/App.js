@@ -114,7 +114,7 @@ import OtpInput from "components/OtpInput/OtpInput";
 import { createOtp } from "config/tool";
 import sendOtp from "external/sendOtp";
 import { updateUserEmail } from "external/supabase/supabaseFns";
-import ThemeProvider, { ThemeContext } from "store/Themeprovider";
+import ThemeProvider, { ThemeContext } from "store/theme-provider";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;

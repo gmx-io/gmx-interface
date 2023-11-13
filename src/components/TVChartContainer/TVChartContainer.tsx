@@ -12,7 +12,7 @@ import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import Loader from "components/Common/Loader";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { CHART_PERIODS } from "lib/legacy";
-import { ThemeContext } from "store/Themeprovider";
+import { ThemeContext } from "store/theme-provider";
 
 type ChartLine = {
   price: number;

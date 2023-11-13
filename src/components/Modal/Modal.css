@@ -40,6 +40,12 @@
   color: #ffffff;
 }
 
+@media screen and (max-width: 600px) {
+  .Modal-content {
+    min-width: calc(100% - 40px);
+  }
+}
+
 .Modal-content-light {
   z-index: 20;
   position: relative;
@@ -103,7 +109,7 @@
   background-color: #949393;
   border-radius: 155rem;
 }
-/* 
+/*
 border : 2px solid #9CA3AF;
 border-radius: 10px; */
 

@@ -4,7 +4,7 @@ import cx from "classnames";
 import { motion, AnimatePresence } from "framer-motion";
 import { RemoveScroll } from "react-remove-scroll";
 import { MdClose } from "react-icons/md";
-import { ThemeContext } from "store/Themeprovider";
+import { ThemeContext } from "store/theme-provider";
 
 export default function Modal(props) {
   const { isVisible, setIsVisible, className, zIndex, onAfterOpen } = props;
