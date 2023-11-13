@@ -1,7 +1,6 @@
 .App-header-setting {
   position: relative;
   margin-left: 2.4rem;
-  margin-right: 2.4rem;
   border: 1px solid var(--dark-blue-border);
   border-radius: var(--border-radius-sm);
   height: 3.6rem;
@@ -14,14 +13,13 @@
   margin-left: 0;
 }
 
+.setting-dropdown {
+  display: inline-flex;
+}
 #light .setting-dropdown {
   color: #000000 !important;
   border: #d7d8d9 2px solid;
   border-radius: 10px !important;
-}
-
-.setting-dropdown {
-  display: inline-flex;
 }
 .setting-dropdown-items {
   min-width: 29rem;
@@ -116,12 +114,12 @@
 
 #light .setting-option{
   background: #FFFFFF;
-  
+
 }
 
 #light .setting-option span{
   color: #000000;
-  
+
 }
 
 .setting-option:last-child {
