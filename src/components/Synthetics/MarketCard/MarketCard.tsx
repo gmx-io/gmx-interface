@@ -5,11 +5,11 @@ import Tooltip from "components/Tooltip/Tooltip";
 import {
   MarketInfo,
   getAvailableUsdLiquidityForPosition,
-  getCurrentOpenInterestUsd,
   getMarketIndexName,
   getMarketPoolName,
-  getMaxAllowedReservedUsd,
   getMaxOpenInterestUsd,
+  getMaxReservedUsd,
+  getOpenInterestUsd,
   getReservedUsd,
 } from "domain/synthetics/markets";
 import { CHART_PERIODS } from "lib/legacy";
@@ -38,7 +38,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
 
   const {
     liquidity,
-    maxAllowedReservedUsd,
+    maxReservedUsd,
     reservedUsd,
     borrowingRate,
     fundingRateLong,
@@ -52,12 +52,12 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
 
     return {
       liquidity: getAvailableUsdLiquidityForPosition(marketInfo, isLong),
-      maxAllowedReservedUsd: getMaxAllowedReservedUsd(marketInfo, isLong),
+      maxReservedUsd: getMaxReservedUsd(marketInfo, isLong),
       reservedUsd: getReservedUsd(marketInfo, isLong),
       borrowingRate: getBorrowingFactorPerPeriod(marketInfo, isLong, CHART_PERIODS["1h"]).mul(100),
       fundingRateLong: getFundingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]).mul(100),
       fundingRateShort: getFundingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]).mul(100),
-      currentOpenInterest: getCurrentOpenInterestUsd(marketInfo, isLong),
+      currentOpenInterest: getOpenInterestUsd(marketInfo, isLong),
       totalInterestUsd: marketInfo.longInterestUsd.add(marketInfo.shortInterestUsd),
       priceDecimals: marketInfo.indexToken.priceDecimals,
       maxOpenInterest: getMaxOpenInterestUsd(marketInfo, isLong),
@@ -216,7 +216,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
                 <div>
                   <StatsTooltipRow
                     label={t`${longShortText} ${indexToken?.symbol} Reserve`}
-                    value={`${formatUsd(reservedUsd, { displayDecimals: 0 })} / ${formatUsd(maxAllowedReservedUsd, {
+                    value={`${formatUsd(reservedUsd, { displayDecimals: 0 })} / ${formatUsd(maxReservedUsd, {
                       displayDecimals: 0,
                     })}`}
                     showDollar={false}

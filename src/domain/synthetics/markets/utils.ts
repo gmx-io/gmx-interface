@@ -104,7 +104,7 @@ export function getMaxOpenInterestUsd(marketInfo: MarketInfo, isLong: boolean) {
   return isLong ? marketInfo.maxOpenInterestLong : marketInfo.maxOpenInterestShort;
 }
 
-export function getCurrentOpenInterestUsd(marketInfo: MarketInfo, isLong: boolean) {
+export function getOpenInterestUsd(marketInfo: MarketInfo, isLong: boolean) {
   return isLong ? marketInfo.longInterestUsd : marketInfo.shortInterestUsd;
 }
 
@@ -134,13 +134,6 @@ export function getMaxReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
   return poolUsd.mul(reserveFactor).div(PRECISION);
 }
 
-export function getMaxAllowedReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
-  const maxReservedUsd = getMaxReservedUsd(marketInfo, isLong);
-  const maxOpenInterest = getMaxOpenInterestUsd(marketInfo, isLong);
-
-  return maxReservedUsd.lt(maxOpenInterest) ? maxReservedUsd : maxOpenInterest;
-}
-
 export function getAvailableUsdLiquidityForPosition(marketInfo: MarketInfo, isLong: boolean) {
   if (marketInfo.isSpotOnly) {
     return BigNumber.from(0);
@@ -150,7 +143,7 @@ export function getAvailableUsdLiquidityForPosition(marketInfo: MarketInfo, isLo
   const reservedUsd = getReservedUsd(marketInfo, isLong);
 
   const maxOpenInterest = getMaxOpenInterestUsd(marketInfo, isLong);
-  const currentOpenInterest = getCurrentOpenInterestUsd(marketInfo, isLong);
+  const currentOpenInterest = getOpenInterestUsd(marketInfo, isLong);
 
   const availableLiquidityBasedOnMaxReserve = maxReservedUsd.sub(reservedUsd);
   const availableLiquidityBasedOnMaxOpenInterest = maxOpenInterest.sub(currentOpenInterest);
