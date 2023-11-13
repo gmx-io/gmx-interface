@@ -16,7 +16,7 @@ import darkModeIcon from "img/ic_dark_mode.svg";
 import { defaultLocale } from "lib/i18n";
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import LanguageModalContent from "components/NetworkDropdown/LanguageModalContent";
-import { ThemeContext } from "store/Themeprovider";
+import { ThemeContext } from "store/theme-provider";
 
 const LANGUAGE_MODAL_KEY: string = "LANGUAGE";
 const NETWORK_MODAL_KEY: string = "NETWORK";

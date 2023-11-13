@@ -2689,6 +2689,7 @@ msgstr "수취인은 지금까지 GMX 토큰을 스테이킹한 적이 없습니
 msgid "Redemption time not yet reached"
 msgstr "아직 판매할 수 있는 시간이 아닙니다"
 
+#: src/pages/AppHome/AppHomeContent.js
 #: src/pages/Home/Home.js
 msgid "Reduce Liquidation Risks"
 msgstr "청산 위험 감소하기"
@@ -2821,6 +2822,7 @@ msgstr "현재 유효한 코드와 같음"
 msgid "Save"
 msgstr "저장"
 
+#: src/pages/AppHome/AppHomeContent.js
 #: src/pages/Home/Home.js
 msgid "Save on Costs"
 msgstr "비용 절감"
@@ -2969,6 +2971,7 @@ msgstr "{0} 숏"
 msgid "Shorting..."
 msgstr "숏 실행중..."
 
+#: src/pages/AppHome/AppHomeContent.js
 #: src/pages/Home/Home.js
 msgid "Simple Swaps"
 msgstr "간단한 스왑"

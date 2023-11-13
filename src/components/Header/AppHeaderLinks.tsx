@@ -1,5 +1,5 @@
 import React from "react";
-import { FiX } from "react-icons/fi";
+import { FiArrowLeft } from "react-icons/fi";
 import { Trans } from "@lingui/macro";
 import { Link } from "react-router-dom";
 
@@ -9,7 +9,7 @@ import { isHomeSite } from "lib/legacy";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import logoImgLight from "img/logo_t3-light.svg";
 import logoImgDark from "img/logo_t3-dark.svg";
-import { ThemeContext } from "store/Themeprovider";
+import { ThemeContext } from "store/theme-provider";
 
 type Props = {
   small?: boolean;
@@ -38,7 +38,7 @@ export function AppHeaderLinks({
             className="App-header-menu-icon-block mobile-cross-menu"
             onClick={() => clickCloseIcon && clickCloseIcon()}
           >
-            <FiX className="App-header-menu-icon" />
+            <FiArrowLeft className="App-header-menu-icon" />
           </div>
         </div>
       )}

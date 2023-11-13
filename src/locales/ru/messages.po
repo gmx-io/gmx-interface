@@ -2689,6 +2689,7 @@ msgstr "Получатель не размещал токены GLP ранее"
 msgid "Redemption time not yet reached"
 msgstr "Срок выкупа еще не наступил"
 
+#: src/pages/AppHome/AppHomeContent.js
 #: src/pages/Home/Home.js
 msgid "Reduce Liquidation Risks"
 msgstr "Снизить Риски Ликвидации"
@@ -2821,6 +2822,7 @@ msgstr "Такой же, как и текущий действующий код"
 msgid "Save"
 msgstr "Сохранить"
 
+#: src/pages/AppHome/AppHomeContent.js
 #: src/pages/Home/Home.js
 msgid "Save on Costs"
 msgstr "Сэкономь на Расходах"
@@ -2969,6 +2971,7 @@ msgstr "Шорт {0}"
 msgid "Shorting..."
 msgstr "Шортинг..."
 
+#: src/pages/AppHome/AppHomeContent.js
 #: src/pages/Home/Home.js
 msgid "Simple Swaps"
 msgstr "Простые Обмены"

@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import "./Header.css";
 import logoImgLight from "img/logo_t3-light.svg";
 import logoImgDark from "img/logo_t3-dark.svg";
-import { ThemeContext } from "store/Themeprovider";
+import { ThemeContext } from "store/theme-provider";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { HeaderLink } from "./HeaderLink";
 
@@ -55,7 +55,7 @@ export function HomeHeaderLinks({ small, clickCloseIcon, redirectPopupTimestamp,
             className="App-header-menu-icon-block mobile-cross-menu"
             onClick={() => clickCloseIcon && clickCloseIcon()}
           >
-            <FiX color={"black"} style={{ color: "blue" }} />
+            <FiX color={"black"} />
           </div>
         </div>
       )}

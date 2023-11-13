@@ -14,8 +14,7 @@ import Vester from "abis/Vester.json";
 import RewardTracker from "abis/RewardTracker.json";
 import RewardRouter from "abis/RewardRouter.json";
 
-import { FaCheck, FaTimes } from "react-icons/fa";
-
+import { FiX, FiCheck } from "react-icons/fi";
 import { Trans, t } from "@lingui/macro";
 
 import "./BeginAccountTransfer.css";
@@ -28,8 +27,8 @@ function ValidationRow({ isValid, children }) {
   return (
     <div className="ValidationRow">
       <div className="ValidationRow-icon-container">
-        {isValid && <FaCheck className="ValidationRow-icon" />}
-        {!isValid && <FaTimes className="ValidationRow-icon" />}
+        {isValid && <FiCheck className="ValidationRow-icon" />}
+        {!isValid && <FiX className="ValidationRow-icon" />}
       </div>
       <div>{children}</div>
     </div>

@@ -2689,6 +2689,7 @@ msgstr "El receptor no ha stakeado tokens GMX antes"
 msgid "Redemption time not yet reached"
 msgstr "Tiempo de redención aún no alcanzado"
 
+#: src/pages/AppHome/AppHomeContent.js
 #: src/pages/Home/Home.js
 msgid "Reduce Liquidation Risks"
 msgstr "Reducir Riesgos de Liquidación"
@@ -2821,6 +2822,7 @@ msgstr "Igual que el código activo actual"
 msgid "Save"
 msgstr "Guardar"
 
+#: src/pages/AppHome/AppHomeContent.js
 #: src/pages/Home/Home.js
 msgid "Save on Costs"
 msgstr "Ahorrar en Costes"
@@ -2969,6 +2971,7 @@ msgstr "Corto {0}"
 msgid "Shorting..."
 msgstr "Entrando a corto..."
 
+#: src/pages/AppHome/AppHomeContent.js
 #: src/pages/Home/Home.js
 msgid "Simple Swaps"
 msgstr "Intercambios Simples"

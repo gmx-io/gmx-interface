@@ -1,14 +1,14 @@
 import { useContext } from "react";
 import Footer from "components/Footer/Footer";
 import "./AppHome.css";
-import { MdArrowForward } from "react-icons/md";
+import { BsArrowRight } from "react-icons/bs";
 
 import { Trans } from "@lingui/macro";
 import { HeaderLink } from "components/Header/HeaderLink";
 import arrow from "img/arrow-narrow-right.svg";
 import mobilet3light from "img/t3-mobile-light-bg.svg";
 import mobilet3dark from "img/t3-mobile-dark-bg.svg";
-import { ThemeContext } from "store/Themeprovider";
+import { ThemeContext } from "store/theme-provider";
 import AppHomeContent from "./AppHomeContent";
 
 export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
@@ -16,19 +16,19 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
   const TradeNowButton = () => {
     return (
       <HeaderLink
-        className="btn"
+        className="btn text-white"
         to="/trade"
         redirectPopupTimestamp={redirectPopupTimestamp}
         showRedirectModal={showRedirectModal}
       >
         <Trans>Trade Now</Trans>
-        <MdArrowForward className="arrow" style={{ marginLeft: "0.5rem" }} src={arrow} alt="arrow" color={"white"} />
+        <BsArrowRight className="arrow" style={{ marginLeft: "1rem" }} src={arrow} alt="arrow" color={"white"} />
       </HeaderLink>
     );
   };
 
   return (
-    <div class="main">
+    <div className="main">
       <div className="hero">
         <div className="hero-inner">
           <div className="hero-title">
@@ -36,16 +36,18 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
             <br />
             <span className="Home-title-subtext">Compliant</span>
             <br />
-            Digital asset exchange
+            Digital asset
+            <br />
+            exchange
           </div>
           <TradeNowButton />
         </div>
       </div>
-      <div class="mobile">
-        <div class="image">
+      <div className="mobile">
+        <div className="image">
           <img src={theme.isDark ? mobilet3dark : mobilet3light} alt="" />
         </div>
-        <div class="text">
+        <div className="text">
           <p>
             <Trans>User-friendly</Trans>
             <br />
@@ -56,8 +58,8 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
           <TradeNowButton />
         </div>
       </div>
-      <AppHomeContent/>
-      <Footer/>
+      <AppHomeContent />
+      <Footer />
     </div>
   );
 }
