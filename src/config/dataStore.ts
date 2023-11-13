@@ -29,6 +29,11 @@ export const TOTAL_BORROWING_KEY = hashString("TOTAL_BORROWING");
 export const FUNDING_FACTOR_KEY = hashString("FUNDING_FACTOR");
 export const FUNDING_EXPONENT_FACTOR_KEY = hashString("FUNDING_EXPONENT_FACTOR");
 export const FUNDING_INCREASE_FACTOR_PER_SECOND = hashString("FUNDING_INCREASE_FACTOR_PER_SECOND");
+export const FUNDING_DECREASE_FACTOR_PER_SECOND = hashString("FUNDING_DECREASE_FACTOR_PER_SECOND");
+export const MIN_FUNDING_FACTOR_PER_SECOND = hashString("MIN_FUNDING_FACTOR_PER_SECOND");
+export const MAX_FUNDING_FACTOR_PER_SECOND = hashString("MAX_FUNDING_FACTOR_PER_SECOND");
+export const THRESHOLD_FOR_STABLE_FUNDING = hashString("THRESHOLD_FOR_STABLE_FUNDING");
+export const THRESHOLD_FOR_DECREASE_FUNDING = hashString("THRESHOLD_FOR_DECREASE_FUNDING");
 export const MAX_PNL_FACTOR_KEY = hashString("MAX_PNL_FACTOR");
 export const MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY = hashString("MAX_PNL_FACTOR_FOR_WITHDRAWALS");
 export const MAX_PNL_FACTOR_FOR_DEPOSITS_KEY = hashString("MAX_PNL_FACTOR_FOR_DEPOSITS");
@@ -37,6 +42,8 @@ export const MAX_POSITION_IMPACT_FACTOR_FOR_LIQUIDATIONS_KEY = hashString(
   "MAX_POSITION_IMPACT_FACTOR_FOR_LIQUIDATIONS"
 );
 export const POSITION_IMPACT_POOL_AMOUNT_KEY = hashString("POSITION_IMPACT_POOL_AMOUNT");
+export const MIN_POSITION_IMPACT_POOL_AMOUNT_KEY = hashString("MIN_POSITION_IMPACT_POOL_AMOUNT");
+export const POSITION_IMPACT_POOL_DISTRIBUTION_RATE_KEY = hashString("POSITION_IMPACT_POOL_DISTRIBUTION_RATE");
 export const SWAP_IMPACT_POOL_AMOUNT_KEY = hashString("SWAP_IMPACT_POOL_AMOUNT");
 export const MIN_COLLATERAL_USD_KEY = hashString("MIN_COLLATERAL_USD");
 export const MIN_COLLATERAL_FACTOR_KEY = hashString("MIN_COLLATERAL_FACTOR");
@@ -152,12 +159,40 @@ export function fundingIncreaseFactorPerSecondKey(market: string) {
   return hashData(["bytes32", "address"], [FUNDING_INCREASE_FACTOR_PER_SECOND, market]);
 }
 
+export function fundingDecreaseFactorPerSecondKey(market: string) {
+  return hashData(["bytes32", "address"], [FUNDING_DECREASE_FACTOR_PER_SECOND, market]);
+}
+
+export function minFundingFactorPerSecondKey(market: string) {
+  return hashData(["bytes32", "address"], [MIN_FUNDING_FACTOR_PER_SECOND, market]);
+}
+
+export function maxFundingFactorPerSecondKey(market: string) {
+  return hashData(["bytes32", "address"], [MAX_FUNDING_FACTOR_PER_SECOND, market]);
+}
+
+export function thresholdForStableFundingKey(market: string) {
+  return hashData(["bytes32", "address"], [THRESHOLD_FOR_STABLE_FUNDING, market]);
+}
+
+export function thresholdForDecreaseFundingKey(market: string) {
+  return hashData(["bytes32", "address"], [THRESHOLD_FOR_DECREASE_FUNDING, market]);
+}
+
 export function maxPnlFactorKey(pnlFactorType: string, market: string, isLong: boolean) {
   return hashData(["bytes32", "bytes32", "address", "bool"], [MAX_PNL_FACTOR_KEY, pnlFactorType, market, isLong]);
 }
 
 export function positionImpactPoolAmountKey(market: string) {
   return hashData(["bytes32", "address"], [POSITION_IMPACT_POOL_AMOUNT_KEY, market]);
+}
+
+export function minPositionImpactPoolAmountKey(market: string) {
+  return hashData(["bytes32", "address"], [MIN_POSITION_IMPACT_POOL_AMOUNT_KEY, market]);
+}
+
+export function positionImpactPoolDistributionRateKey(market: string) {
+  return hashData(["bytes32", "address"], [POSITION_IMPACT_POOL_DISTRIBUTION_RATE_KEY, market]);
 }
 
 export function maxPositionImpactFactorForLiquidationsKey(market: string) {
