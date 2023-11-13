@@ -54,9 +54,9 @@
   justify-content: center;
 }
 
-.Footer-social-link-block .App-social-link:hover img {
+/* .Footer-social-link-block .App-social-link:hover img {
   filter: brightness(0) invert(1);
-}
+} */
 
 .Footer-copyright {
   padding: 1.6rem;

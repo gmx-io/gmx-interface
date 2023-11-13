@@ -178,7 +178,8 @@
 }
 
 .menu-item:hover .menu-item-label {
-  color: #eee;
+  /* color: #eee; */
+  background: #808aff14;
 }
 
 .active-dot {

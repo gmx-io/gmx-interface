@@ -127,7 +127,7 @@ export default function TVChartContainer({
       debug: false,
       symbol: symbolRef.current, // Using ref to avoid unnecessary re-renders on symbol change and still have access to the latest symbol
       datafeed: datafeed,
-      theme: themeContext.theme === "light" ? "Light" : "Dark",
+      theme: themeContext.isLight ? "Light" : "Dark",
       container: chartContainerRef.current,
       library_path: defaultChartProps.library_path,
       locale: defaultChartProps.locale,
@@ -151,9 +151,9 @@ export default function TVChartContainer({
     tvWidgetRef.current!.onChartReady(function () {
       setChartReady(true);
       tvWidgetRef.current!.applyOverrides({
-        "paneProperties.background": themeContext.theme === "light" ? "#FFFFFF" : "#0E1020",
+        "paneProperties.background": themeContext.isLight ? "#FFFFFF" : "#0E1020",
         "paneProperties.backgroundType": "solid",
-        "scalesProperties.textColor": themeContext.theme === "light" ? "#000000" : "#FFFFFF",
+        "scalesProperties.textColor": themeContext.isLight ? "#000000" : "#FFFFFF",
         "paneProperties.vertGridProperties.style": "1",
         "paneProperties.horzGridProperties.style": "1",
       });
