@@ -12,7 +12,7 @@ import {
   getAvailableUsdLiquidityForCollateral,
   getMarketIndexName,
   getMarketPoolName,
-  getMaxOpenInterest,
+  getMaxReservedUsd,
   getReservedUsd,
   useMarketsInfo,
 } from "domain/synthetics/markets";
@@ -162,10 +162,10 @@ export function SyntheticsStats() {
             const virtualInventorySwapsShort = market.virtualPoolAmountForShortToken;
 
             const reservedUsdLong = getReservedUsd(market, true);
-            const maxOpenInterestLong = getMaxOpenInterest(market, true);
+            const maxReservedUsdLong = getMaxReservedUsd(market, true);
 
             const reservedUsdShort = getReservedUsd(market, false);
-            const maxOpenInterestShort = getMaxOpenInterest(market, false);
+            const maxReservedUsdShort = getMaxReservedUsd(market, false);
 
             const borrowingRateLong = getBorrowingFactorPerPeriod(market, true, 60 * 60);
             const borrowingRateShort = getBorrowingFactorPerPeriod(market, false, 60 * 60);
@@ -402,9 +402,9 @@ export function SyntheticsStats() {
                       ) : (
                         <div className="cell">
                           <div>
-                            ${formatAmountHuman(reservedUsdLong, 30)} / ${formatAmountHuman(maxOpenInterestLong, 30)}
+                            ${formatAmountHuman(reservedUsdLong, 30)} / ${formatAmountHuman(maxReservedUsdLong, 30)}
                           </div>
-                          <ShareBar share={reservedUsdLong} total={maxOpenInterestLong} />
+                          <ShareBar share={reservedUsdLong} total={maxReservedUsdLong} />
                         </div>
                       )
                     }
@@ -427,9 +427,9 @@ export function SyntheticsStats() {
                       ) : (
                         <div className="cell">
                           <div>
-                            ${formatAmountHuman(reservedUsdShort, 30)} / ${formatAmountHuman(maxOpenInterestShort, 30)}
+                            ${formatAmountHuman(reservedUsdShort, 30)} / ${formatAmountHuman(maxReservedUsdShort, 30)}
                           </div>
-                          <ShareBar share={reservedUsdShort} total={maxOpenInterestShort} />
+                          <ShareBar share={reservedUsdShort} total={maxReservedUsdShort} />
                         </div>
                       )
                     }

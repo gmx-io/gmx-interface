@@ -110,7 +110,7 @@ export function getReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
   }
 }
 
-export function getMaxOpenInterest(marketInfo: MarketInfo, isLong: boolean) {
+export function getMaxReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
   const poolUsd = getPoolUsdWithoutPnl(marketInfo, isLong, "minPrice");
 
   let reserveFactor = isLong ? marketInfo.reserveFactorLong : marketInfo.reserveFactorShort;
@@ -119,15 +119,11 @@ export function getMaxOpenInterest(marketInfo: MarketInfo, isLong: boolean) {
     ? marketInfo.openInterestReserveFactorLong
     : marketInfo.openInterestReserveFactorShort;
 
-  const maxOpenInterest = isLong ? marketInfo.maxOpenInterestLong : marketInfo.maxOpenInterestShort;
-
   if (openInterestReserveFactor.lt(reserveFactor)) {
     reserveFactor = openInterestReserveFactor;
   }
 
-  const maxReservedUsd = poolUsd.mul(reserveFactor).div(PRECISION);
-
-  return maxReservedUsd.lt(maxOpenInterest) ? maxReservedUsd : maxOpenInterest;
+  return poolUsd.mul(reserveFactor).div(PRECISION);
 }
 
 export function getAvailableUsdLiquidityForPosition(marketInfo: MarketInfo, isLong: boolean) {
@@ -135,10 +131,16 @@ export function getAvailableUsdLiquidityForPosition(marketInfo: MarketInfo, isLo
     return BigNumber.from(0);
   }
 
-  const maxOpenInterest = getMaxOpenInterest(marketInfo, isLong);
+  const maxReservedUsd = getMaxReservedUsd(marketInfo, isLong);
   const reservedUsd = getReservedUsd(marketInfo, isLong);
 
-  return maxOpenInterest.sub(reservedUsd);
+  const maxOpenInterest = isLong ? marketInfo.maxOpenInterestLong : marketInfo.maxOpenInterestShort;
+  const currentOpenInterest = isLong ? marketInfo.longInterestUsd : marketInfo.shortInterestUsd;
+
+  const availableReserveUsd = maxReservedUsd.sub(reservedUsd);
+  const availableOpenInterestUsd = maxOpenInterest.sub(currentOpenInterest);
+
+  return availableReserveUsd.lt(availableOpenInterestUsd) ? availableReserveUsd : availableOpenInterestUsd;
 }
 
 export function getAvailableUsdLiquidityForCollateral(marketInfo: MarketInfo, isLong: boolean) {
