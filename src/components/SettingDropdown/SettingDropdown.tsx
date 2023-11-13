@@ -16,7 +16,7 @@ import darkModeIcon from "img/ic_dark_mode.svg";
 import { defaultLocale } from "lib/i18n";
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import LanguageModalContent from "components/NetworkDropdown/LanguageModalContent";
-import { ThemeContext } from "store/Themeprovider";
+import { ThemeContext } from "store/ThemeProvider";
 
 const LANGUAGE_MODAL_KEY: string = "LANGUAGE";
 const NETWORK_MODAL_KEY: string = "NETWORK";
@@ -88,15 +88,15 @@ export default function SettingDropdown(props) {
   );
 }
 function NavIcons() {
+  const theme = useContext(ThemeContext);
   return (
     <button className="transparent third-step">
-      <HiDotsVertical className="text-white" size={20} />
+      <HiDotsVertical className={theme.isDark ? "text-white" : "text-black"} size={20} />
     </button>
   );
 }
 
 function DesktopDropdown({ setActiveModal, openSettings }) {
-
   const themeToggle = useContext(ThemeContext);
   // const [enabledDarkMode, setEnabledDarkMode] = useState(false);
   const [enabledEmailNotification, setEnabledEmailNotification] = useState(false);
@@ -213,13 +213,13 @@ function DesktopDropdown({ setActiveModal, openSettings }) {
                 </span>
               </div>
               <Switch
-                checked={themeToggle.theme === 'dark'}
+                checked={themeToggle.isDark}
                 onChange={themeToggle.changeTheme}
-                className={`${themeToggle.theme === 'dark' ? "toggle-on" : "toggle-off"} switch-button`}
+                className={`${themeToggle.isDark ? "toggle-on" : "toggle-off"} switch-button`}
               >
-                {!(themeToggle.theme === 'dark') && <img src={darkModeIcon} className="dark-mode" alt="dark_mode" />}
+                {!themeToggle.isDark && <img src={darkModeIcon} className="dark-mode" alt="dark_mode" />}
                 <span className="sr-only">Enable Dark Mode</span>
-                <span className={`${themeToggle.theme === 'dark' ? "translate-x-6" : "translate-x-1"} toggle-transform`} />
+                <span className={`${themeToggle.isDark ? "translate-x-6" : "translate-x-1"} toggle-transform`} />
               </Switch>
             </div>
           </Menu.Item>

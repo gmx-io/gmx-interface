@@ -19,7 +19,7 @@ import { getIcon } from "config/icons";
 import FaucetDropdown from "../FaucetDropdown/FaucetDropdown";
 import { addUser, getUserByWalletAddress } from "external/supabase/supabaseFns";
 import SettingDropdown from "components/SettingDropdown/SettingDropdown";
-import { ThemeContext } from "store/Themeprovider";
+import { ThemeContext } from "store/ThemeProvider";
 
 type Props = {
   openSettings: () => void;
@@ -106,7 +106,6 @@ export function AppHeaderUser({
 
   const themeContext = useContext(ThemeContext);
 
-  
   if (!active || !account) {
     return (
       <div className="App-header-user">
@@ -123,7 +122,10 @@ export function AppHeaderUser({
 
         {showConnectionOptions ? (
           <>
-            <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={themeContext.theme === 'light' ? connectWalletImgDrk : connectWalletImglight }>
+            <ConnectWalletButton
+              onClick={() => setWalletModalVisible(true)}
+              imgSrc={themeContext.theme === "light" ? connectWalletImgDrk : connectWalletImglight}
+            >
               {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
             </ConnectWalletButton>
             <NetworkDropdown

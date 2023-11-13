@@ -45,7 +45,7 @@ import { bigNumberify, expandDecimals, formatAmount, formatKeyAmount, numberWith
 import { useChainId } from "lib/chains";
 import { formatDate } from "lib/dates";
 import { getIcons } from "config/icons";
-import { ThemeContext } from "store/Themeprovider";
+import { ThemeContext } from "store/ThemeProvider";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
@@ -804,7 +804,13 @@ export default function DashboardV2() {
                           />
                         ))}
                       </Pie>
-                      <text x={"50%"} y={"50%"} fill={themeContext.theme === 'light'? '#000000' : "white"} textAnchor="middle" dominantBaseline="middle">
+                      <text
+                        x={"50%"}
+                        y={"50%"}
+                        fill={themeContext.theme === "light" ? "#000000" : "white"}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                      >
                         <Trans>Distribution</Trans>
                       </text>
                       <Tooltip content={<CustomTooltip />} />
@@ -896,7 +902,13 @@ export default function DashboardV2() {
                           />
                         ))}
                       </Pie>
-                      <text x={"50%"} y={"50%"} fill={themeContext.theme === 'light'? '#000000' : "white"} textAnchor="middle" dominantBaseline="middle">
+                      <text
+                        x={"50%"}
+                        y={"50%"}
+                        fill={themeContext.theme === "light" ? "#000000" : "white"}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                      >
                         GLP Pool
                       </text>
                       <Tooltip content={<CustomTooltip />} />

@@ -114,7 +114,7 @@ import OtpInput from "components/OtpInput/OtpInput";
 import { createOtp } from "config/tool";
 import sendOtp from "external/sendOtp";
 import { updateUserEmail } from "external/supabase/supabaseFns";
-import ThemeProvider, { ThemeContext } from "store/Themeprovider";
+import ThemeProvider, { ThemeContext } from "store/ThemeProvider";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -568,7 +568,7 @@ function FullApp() {
   const themeContext = useContext(ThemeContext);
   return (
     <div id={themeContext.theme}>
-      <div className="App" >
+      <div className="App">
         <div className="App-content">
           <Header
             disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
@@ -1037,15 +1037,15 @@ function App() {
             <I18nProvider i18n={i18n}>
               <ThemeProvider>
                 <FullApp />
-              <Tour
-                steps={steps}
-                isOpen={isTourOpen}
-                showCloseButton={false}
-                showNumber={false}
-                showNavigation={false}
-                showNavigationNumber={false}
-                showButtons={false}
-              />
+                <Tour
+                  steps={steps}
+                  isOpen={isTourOpen}
+                  showCloseButton={false}
+                  showNumber={false}
+                  showNavigation={false}
+                  showNavigationNumber={false}
+                  showButtons={false}
+                />
               </ThemeProvider>
             </I18nProvider>
           </Router>

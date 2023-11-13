@@ -5,7 +5,7 @@ import { AppHeaderUser } from "./AppHeaderUser";
 import { AppHeaderLinks } from "./AppHeaderLinks";
 
 import logoImg from "img/tf_t3_logo.svg";
-import logoImgDark from 'img/t3-logo-dark.svg';
+import logoImgDark from "img/t3-logo-dark.svg";
 import logoSmallImg from "img/t3_logo_small.svg";
 import { RiMenuLine } from "react-icons/ri";
 import { FaTimes } from "react-icons/fa";
@@ -15,7 +15,7 @@ import "./Header.css";
 import { Link } from "react-router-dom";
 import { isHomeSite } from "lib/legacy";
 import { HomeHeaderLinks } from "./HomeHeaderLinks";
-import { ThemeContext } from "store/Themeprovider";
+import { ThemeContext } from "store/ThemeProvider";
 
 // Fix framer-motion old React FC type (solved in react 18)
 const AnimatePresence = (props: React.ComponentProps<typeof FramerAnimatePresence> & { children: ReactNode }) => (
@@ -68,8 +68,6 @@ export function Header({
 
   const themeContext = useContext(ThemeContext);
 
-
-
   return (
     <>
       {isDrawerVisible && (
@@ -106,7 +104,7 @@ export function Header({
         <div className="App-header large">
           <div className="App-header-container-left">
             <Link className="App-header-link-main" to="/">
-              <img src={themeContext.theme === 'light' ? logoImg : logoImgDark} className="big" alt="t3 Logo" />
+              <img src={themeContext.theme === "light" ? logoImg : logoImgDark} className="big" alt="t3 Logo" />
               <img src={logoSmallImg} className="small" alt="t3 Logo" />
             </Link>
             {isHomeSite() ? (
@@ -135,7 +133,7 @@ export function Header({
           >
             <div className="App-header-container-left">
               <div className="App-header-link-main clickable" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
-                <img src={themeContext.theme === 'light' ? logoImg : logoImgDark} className="big" alt="t3 Logo" />
+                <img src={themeContext.theme === "light" ? logoImg : logoImgDark} className="big" alt="t3 Logo" />
                 <img src={logoSmallImg} className="small" alt="t3 Logo" />
               </div>
             </div>

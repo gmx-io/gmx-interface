@@ -12,7 +12,7 @@ import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import Loader from "components/Common/Loader";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { CHART_PERIODS } from "lib/legacy";
-import { ThemeContext } from "store/Themeprovider";
+import { ThemeContext } from "store/ThemeProvider";
 
 type ChartLine = {
   price: number;
@@ -121,14 +121,13 @@ export default function TVChartContainer({
   }, [symbol, chartReady, period, chainId]);
 
   const themeContext = useContext(ThemeContext);
-  
 
   useEffect(() => {
     const widgetOptions = {
       debug: false,
       symbol: symbolRef.current, // Using ref to avoid unnecessary re-renders on symbol change and still have access to the latest symbol
       datafeed: datafeed,
-      theme: themeContext.theme === 'light' ? 'Light' : 'Dark',
+      theme: themeContext.theme === "light" ? "Light" : "Dark",
       container: chartContainerRef.current,
       library_path: defaultChartProps.library_path,
       locale: defaultChartProps.locale,
@@ -152,11 +151,11 @@ export default function TVChartContainer({
     tvWidgetRef.current!.onChartReady(function () {
       setChartReady(true);
       tvWidgetRef.current!.applyOverrides({
-        "paneProperties.background": themeContext.theme === 'light' ? "#FFFFFF" : "#0E1020",
+        "paneProperties.background": themeContext.theme === "light" ? "#FFFFFF" : "#0E1020",
         "paneProperties.backgroundType": "solid",
-        "scalesProperties.textColor" : themeContext.theme === 'light' ? "#000000" : "#FFFFFF",
-        "paneProperties.vertGridProperties.style" : "1",
-        "paneProperties.horzGridProperties.style" : "1",
+        "scalesProperties.textColor": themeContext.theme === "light" ? "#000000" : "#FFFFFF",
+        "paneProperties.vertGridProperties.style": "1",
+        "paneProperties.horzGridProperties.style": "1",
       });
       tvWidgetRef.current
         ?.activeChart()

@@ -7,7 +7,9 @@ import { HeaderLink } from "./HeaderLink";
 import "./Header.css";
 import { isHomeSite } from "lib/legacy";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import logoImg from "img/logo_t3.svg";
+import logoImgLight from "img/logo_t3-light.svg";
+import logoImgDark from "img/logo_t3-dark.svg";
+import { ThemeContext } from "store/ThemeProvider";
 
 type Props = {
   small?: boolean;
@@ -24,12 +26,13 @@ export function AppHeaderLinks({
   redirectPopupTimestamp,
   showRedirectModal,
 }: Props) {
+  const themeContext = React.useContext(ThemeContext);
   return (
     <div className="App-header-links">
       {small && (
         <div className="App-header-links-header">
           <Link className="App-header-link-main" to="/">
-            <img src={logoImg} alt="t3 Logo" />
+            <img src={themeContext.theme === "light" ? logoImgLight : logoImgDark} alt="t3 Logo" />
           </Link>
           <div
             className="App-header-menu-icon-block mobile-cross-menu"
