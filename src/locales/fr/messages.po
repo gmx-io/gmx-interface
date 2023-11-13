@@ -17,6 +17,10 @@ msgstr ""
 msgid "\"Current {0} Long\" takes into account PnL of open positions."
 msgstr ""
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "({0}% of Open Fee)"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "01 Sep 2021"
 msgstr "01 Sep 2021"
@@ -499,6 +503,10 @@ msgstr "Commencer le transfert"
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "Bonus APR"
+msgstr ""
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Bonus Rebate"
 msgstr ""
 
 #: src/components/Migration/Migration.js
@@ -1772,6 +1780,14 @@ msgstr ""
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees"
 msgstr "FRAIS"
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Fees (Rebated)"
+msgstr ""
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Fees (Rebated) and Price Impact"
+msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
@@ -4497,6 +4513,10 @@ msgstr ""
 msgid "The Bonus Rebate is an estimate and is to be airdropped as ARB tokens when migrating this liquidity to GM pools within the same epoch. <0>Read more</0>."
 msgstr ""
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "The Bonus Rebate will be airdropped as ARB tokens. <0>Read more</0>."
+msgstr ""
+
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "The Boosted APR is from your staked Multiplier Points."
 msgstr "Le Taux de Rendement Annuel boosté provient de vos points multiplicateurs misés."
@@ -4583,6 +4603,10 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "The spread is > 1%, please ensure the trade details are acceptable before confirming"
+msgstr ""
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "The trading incentives have reached their cap for this epoch. They will be reset in {timeLeftStr}."
 msgstr ""
 
 #: src/components/ModalViews/RedirectModal.js
