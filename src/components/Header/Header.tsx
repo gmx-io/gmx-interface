@@ -8,7 +8,7 @@ import logoImgLight from "img/logo_t3-light.svg";
 import logoImgDark from "img/logo_t3-dark.svg";
 import logoSmallImg from "img/t3_logo_small.svg";
 import { RiMenuLine } from "react-icons/ri";
-import { FaTimes } from "react-icons/fa";
+import { FiX } from "react-icons/fi";
 import { AnimatePresence as FramerAnimatePresence, motion } from "framer-motion";
 
 import "./Header.css";
@@ -153,7 +153,7 @@ export function Header({
                   <RiMenuLine className={"App-header-menu-icon"} color={theme.isLight ? "black" : "white"} />
                 )}
                 {isDrawerVisible && (
-                  <FaTimes className={"App-header-menu-icon"} color={theme.isLight ? "black" : "white"} />
+                  <FiX className={"App-header-menu-icon"} color={theme.isLight ? "black" : "white"} />
                 )}
               </div>
             </div>

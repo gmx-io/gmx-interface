@@ -14,6 +14,10 @@ img {
   color: black;
 }
 
+#dark .text {
+  color: white;
+}
+
 .hero {
   /* Sizing */
   width: 100vw;
