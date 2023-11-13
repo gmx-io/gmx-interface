@@ -22,7 +22,7 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp }: Pr
             );
           })}
         </div>
-        <p className="text">{i18n._("Copyright © Finance Limited. All rights reserved")}</p>
+        <p className="text">Copyright © T3 Finance Limited. All rights reserved.</p>
       </div>
     </div>
   );
