@@ -305,7 +305,6 @@ function FullApp() {
   const [shouldDisableValidationForTesting, setShouldDisableValidationForTesting] = useState(false);
   const [showPnlAfterFees, setShowPnlAfterFees] = useState(true);
   const [emailText, setEmailText] = useState("");
-  // const [checkedTos, setCheckedTos] = useState(false); // @todo
 
   const [savedIsPnlInLeverage, setSavedIsPnlInLeverage] = useLocalStorageSerializeKey(
     [chainId, IS_PNL_IN_LEVERAGE_KEY],
