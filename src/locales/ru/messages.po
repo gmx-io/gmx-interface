@@ -13,10 +13,6 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "\"Current {0} Long\" takes into account PnL of open positions."
-#~ msgstr ""
-
 #: src/pages/Dashboard/DashboardV2.js
 msgid "01 Sep 2021"
 msgstr "01 Сен 2021"
@@ -1225,10 +1221,6 @@ msgstr "Текущий {0} лонгшезам"
 #: src/components/Exchange/SwapBox.js
 msgid "Current {0} shorts"
 msgstr "Текущий {0} Шорт"
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Current {0} {longShortText}"
-#~ msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "Currently, There is a high Swap Price Impact for the Order Swap path."
@@ -2874,10 +2866,6 @@ msgstr "Максимальная {0} вместимость шорта"
 msgid "Max {0} short exceeded"
 msgstr "Максимальное {0} превышение шорта"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Max {0} {longShortText} capacity"
-#~ msgstr ""
-
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -3775,7 +3763,7 @@ msgid "Reserve Amount"
 msgstr "Сумма Резерва"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Reserve considers the PnL of Open Positions, while Open Interest does not. The Available Liquidity will be the lesser of the difference between the maximum value and the current value for the Reserve and Open Interest."
+msgid "Reserve considers the PnL of Open Positions, while Open Interest does not."
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -4492,6 +4480,10 @@ msgstr "Правила и Условия"
 #: src/pages/Stake/StakeV1.js
 msgid "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
 msgstr "Идет <0>GMX перенос</0>, пожалуйста, перенесите ваши токены GMT, xGMT, GMT-USDG и xGMT-USDG.<1/>Токены USDG будут продолжать функционировать как прежде и не нуждаются в переносе."
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "The Available Liquidity will be the lesser of the difference between the maximum value and the current value for the Reserve and Open Interest."
+msgstr ""
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "The Bonus APR is to be airdropped as ARB tokens. <0>Read more</0>."
