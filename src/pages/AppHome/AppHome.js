@@ -1,12 +1,16 @@
+import { useContext } from "react";
 import Footer from "components/Footer/Footer";
 import "./AppHome.css";
+import { MdArrowForward } from "react-icons/md";
 
 import { Trans } from "@lingui/macro";
 import { HeaderLink } from "components/Header/HeaderLink";
 import arrow from "img/arrow-narrow-right.svg";
 import mobilet3 from "img/mobile-t3.png";
+import { ThemeContext } from "store/ThemeProvider";
 
 export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
+  const theme = useContext(ThemeContext);
   const TradeNowButton = () => {
     return (
       <HeaderLink
@@ -16,7 +20,13 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
         showRedirectModal={showRedirectModal}
       >
         <Trans>Trade Now</Trans>
-        <img className="arrow" src={arrow} alt="arrow" />
+        <MdArrowForward
+          className="arrow"
+          style={{ marginLeft: "0.5rem" }}
+          src={arrow}
+          alt="arrow"
+          color={theme.isLight ? "black" : "white"}
+        />
       </HeaderLink>
     );
   };

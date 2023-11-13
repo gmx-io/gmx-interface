@@ -10,6 +10,10 @@ img {
   background-image: url(img/tf-t3-landing-bg.svg);
 }
 
+#light .text {
+  color: black;
+}
+
 .hero {
   /* Sizing */
   width: 100vw;
@@ -54,9 +58,7 @@ img {
 .arrow {
   height: 2.8rem;
   width: 2.8rem;
-  margin-left: 0.5rem;
   align-items: center;
-  margin-top: 0.5rem;
 }
 
 
