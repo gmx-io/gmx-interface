@@ -67,29 +67,24 @@ img {
 }
 
 
-
+/* Desktop "Trade Now" Button styles */
 .hero .btn {
   background: #FF7028;
   border-radius: 16px;
   font-size: 2.4rem;
-  line-height: 6.8rem;
   font-weight: bold;
   letter-spacing: 0;
   color: #ffff !important;
-  padding-left: 2.5rem;
-  padding-right: 1.6rem;
-  /* padding: 9px 16px!important; */
-  text-decoration: none;
-  box-sizing: border-box;
-  height: 6.1rem;
-  width: 20rem;
-  display: inline-flex !important;
   align-items: center;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  padding: 2rem 3rem;
+  width: fit-content;
   cursor: pointer;
   border: none;
   appearance: none;
   margin-left: 5em;
+  max-width: 250px;
 }
 
 .mobile {
@@ -148,19 +143,17 @@ img {
     line-height: 6.8rem;
     font-weight: bold;
     letter-spacing: 0;
-    /* color: #000000 !important; */
-    padding-left: 2.5rem;
-    padding-right: 1.6rem;
-    /* padding: 9px 16px!important; */
+    display: flex;
+    justify-content: space-between;
+    padding: 0 2rem;
     text-decoration: none;
     box-sizing: border-box;
-    height: 6.1rem;
-    width: 20rem;
-    display: inline-flex !important;
     align-items: center;
     text-align: center;
     cursor: pointer;
     border: none;
     appearance: none;
+    width: fit-content;
+    margin: 0 auto;
   }
 }

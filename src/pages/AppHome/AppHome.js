@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import Footer from "components/Footer/Footer";
 import "./AppHome.css";
-import { MdArrowForward } from "react-icons/md";
+import { BsArrowRight } from "react-icons/bs";
 
 import { Trans } from "@lingui/macro";
 import { HeaderLink } from "components/Header/HeaderLink";
@@ -22,13 +22,13 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
         showRedirectModal={showRedirectModal}
       >
         <Trans>Trade Now</Trans>
-        <MdArrowForward className="arrow" style={{ marginLeft: "0.5rem" }} src={arrow} alt="arrow" color={"white"} />
+        <BsArrowRight className="arrow" style={{ marginLeft: "1rem" }} src={arrow} alt="arrow" color={"white"} />
       </HeaderLink>
     );
   };
 
   return (
-    <div class="main">
+    <div className="main">
       <div className="hero">
         <div className="hero-inner">
           <div className="hero-title">
@@ -43,11 +43,11 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
           <TradeNowButton />
         </div>
       </div>
-      <div class="mobile">
-        <div class="image">
+      <div className="mobile">
+        <div className="image">
           <img src={theme.isDark ? mobilet3dark : mobilet3light} alt="" />
         </div>
-        <div class="text">
+        <div className="text">
           <p>
             <Trans>User-friendly</Trans>
             <br />
