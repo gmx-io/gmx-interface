@@ -37,6 +37,20 @@ function useEventToast() {
       .filter((event) => !event.networks || event.chains.includes(chainId))
       .filter((event) => !(event.id in validationParams) || validationParams[event.id])
       .forEach((event) => {
+        if (
+          event.id === "incentives-launch" &&
+          incentiveStats?.lp?.isActive &&
+          incentiveStats?.migration?.isActive &&
+          incentiveStats?.trading?.isActive
+        ) {
+          event.bodyText = [
+            `Arbitrum STIP incentives are live for:`,
+            "· Arbitrum GM Pools.",
+            "· Arbitrum GLP Pools.",
+            "· Arbitrum Trading.",
+          ];
+        }
+
         toast.custom(
           (t) => (
             <EventToast

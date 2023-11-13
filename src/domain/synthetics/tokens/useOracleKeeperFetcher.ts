@@ -36,6 +36,16 @@ export type RawIncentivesStats = {
     maxRebateBps: number;
     period: number;
   };
+  trading:
+    | {
+        isActive: true;
+        rebatePercent: number;
+        allocation: string;
+        period: number;
+      }
+    | {
+        isActive: false;
+      };
 };
 
 export type OracleKeeperFetcher = ReturnType<typeof useOracleKeeperFetcher>;
