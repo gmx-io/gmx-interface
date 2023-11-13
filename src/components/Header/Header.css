@@ -110,6 +110,10 @@
   align-items: center;
 }
 
+#light .App-header-menu-icon{
+  color : #000000;
+}
+
 .App-header-menu-icon {
   font-size: 2rem;
   cursor: pointer;
@@ -261,6 +265,10 @@
 
   .App-header-user {
     padding-bottom: 0;
+  }
+
+  #App-header-trade {
+    display: none;
   }
 
   .App-header-container-right {

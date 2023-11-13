@@ -113,6 +113,17 @@
   justify-content: space-between;
   margin-bottom: 0.8rem;
 }
+
+#light .setting-option{
+  background: #FFFFFF;
+  
+}
+
+#light .setting-option span{
+  color: #000000;
+  
+}
+
 .setting-option:last-child {
   margin-bottom: 0;
 }

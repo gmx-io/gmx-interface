@@ -6,8 +6,10 @@ import { MdArrowForward } from "react-icons/md";
 import { Trans } from "@lingui/macro";
 import { HeaderLink } from "components/Header/HeaderLink";
 import arrow from "img/arrow-narrow-right.svg";
-import mobilet3 from "img/mobile-t3.png";
-import { ThemeContext } from "store/ThemeProvider";
+import mobilet3light from "img/t3-mobile-light-bg.svg";
+import mobilet3dark from "img/t3-mobile-dark-bg.svg";
+import { ThemeContext } from "store/Themeprovider";
+import AppHomeContent from "./AppHomeContent";
 
 export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
   const theme = useContext(ThemeContext);
@@ -40,6 +42,9 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
         </div>
       </div>
       <div class="mobile">
+        <div class="image">
+          <img src={theme.isDark ? mobilet3dark : mobilet3light} alt="" />
+        </div>
         <div class="text">
           <p>
             <Trans>User-friendly</Trans>
@@ -48,13 +53,11 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
             <br />
             Digital asset exchange
           </p>
-        </div>
-        <TradeNowButton />
-        <div class="image">
-          <img src={mobilet3} alt="" />
+          <TradeNowButton />
         </div>
       </div>
-      <Footer />
+      <AppHomeContent/>
+      <Footer/>
     </div>
   );
 }

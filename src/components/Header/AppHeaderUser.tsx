@@ -19,7 +19,7 @@ import { getIcon } from "config/icons";
 import FaucetDropdown from "../FaucetDropdown/FaucetDropdown";
 import { addUser, getUserByWalletAddress } from "external/supabase/supabaseFns";
 import SettingDropdown from "components/SettingDropdown/SettingDropdown";
-import { ThemeContext } from "store/ThemeProvider";
+import { ThemeContext } from "store/Themeprovider";
 
 type Props = {
   openSettings: () => void;
@@ -109,7 +109,7 @@ export function AppHeaderUser({
   if (!active || !account) {
     return (
       <div className="App-header-user">
-        <div className={cx("App-header-trade-link", { "homepage-header": isHomeSite() })}>
+        <div id="App-header-trade" className={cx("App-header-trade-link", { "homepage-header": isHomeSite() })}>
           <HeaderLink
             className="default-btn"
             to="/trade"

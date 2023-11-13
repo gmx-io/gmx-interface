@@ -9,7 +9,7 @@ import { isHomeSite } from "lib/legacy";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import logoImgLight from "img/logo_t3-light.svg";
 import logoImgDark from "img/logo_t3-dark.svg";
-import { ThemeContext } from "store/ThemeProvider";
+import { ThemeContext } from "store/Themeprovider";
 
 type Props = {
   small?: boolean;

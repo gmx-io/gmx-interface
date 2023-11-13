@@ -103,6 +103,11 @@
   justify-content: space-between;
   margin-bottom: 0.8rem;
 }
+
+#light .network-option {
+  background: #FFFFFF;
+}
+
 .network-option:last-child {
   margin-bottom: 0;
 }
@@ -116,6 +121,10 @@
   font-size: var(--font-base);
   letter-spacing: 0.29px;
   color: #fff;
+}
+
+#light .network-option span{
+  color : #000000;
 }
 
 .network-option-img-label {

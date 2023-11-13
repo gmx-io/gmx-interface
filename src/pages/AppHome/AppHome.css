@@ -106,28 +106,44 @@ img {
 
   .mobile .text {
     /* Text styles */
-    font-size: 5.7rem;
+    color : #FFFFFF;
+    top : 2%;
+    font-size: 5.2rem;
+    padding: 2%;
     line-height: 6.8rem;
     font-weight: bold;
     letter-spacing: 0;
-
+    position: absolute;
     flex-grow: 1;
-    display: flex;
+    display: flexbox;
     justify-content: center;
     align-items: center;
+  }
+
+  #light .mobile .text {
+    color : #000000;
   }
 
   .mobile .subtext {
     color: #FF7028;
   }
+
+  .mobile .trade-btn {
+    position : absolute;
+    top : 40%;
+    color : #FFFFFF;
+  }
+
+
   .mobile .btn {
     background: #FF7028;
+    color : #ffffff !important;
     border-radius: 16px;
-    font-size: 2.4rem;
+    font-size: 2rem;
     line-height: 6.8rem;
     font-weight: bold;
     letter-spacing: 0;
-    color: #000000 !important;
+    /* color: #000000 !important; */
     padding-left: 2.5rem;
     padding-right: 1.6rem;
     /* padding: 9px 16px!important; */

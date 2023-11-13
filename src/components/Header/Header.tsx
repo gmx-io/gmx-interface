@@ -15,7 +15,7 @@ import "./Header.css";
 import { Link } from "react-router-dom";
 import { isHomeSite } from "lib/legacy";
 import { HomeHeaderLinks } from "./HomeHeaderLinks";
-import { ThemeContext } from "store/ThemeProvider";
+import { ThemeContext } from "store/Themeprovider";
 
 // Fix framer-motion old React FC type (solved in react 18)
 const AnimatePresence = (props: React.ComponentProps<typeof FramerAnimatePresence> & { children: ReactNode }) => (

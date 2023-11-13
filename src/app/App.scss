@@ -137,6 +137,10 @@
   align-items: center;
 }
 
+#light .App-header-menu-icon{
+  color : #000000;
+}
+
 .App-header-menu-icon {
   font-size: 2rem;
   cursor: pointer;
@@ -1020,7 +1024,8 @@ button.App-button-option:disabled {
 }
 
 .App-slippage-tolerance-input {
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 2px solid #9ca3af;
+  border-radius: 10px;
   margin-top: 0.8rem;
   margin-bottom: 0.8rem;
   width: 100%;

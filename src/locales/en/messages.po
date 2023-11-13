@@ -3517,6 +3517,10 @@ msgstr "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x lever
 msgid "Trade Now"
 msgstr "Trade Now"
 
+#: src/pages/AppHome/AppHomeContent.js
+msgid "Reduce Liquidation Risks"
+msgstr "Reduce Liquidation Risks"
+
 #: src/components/Exchange/ExchangeBanner.js
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 msgstr "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."

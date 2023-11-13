@@ -16,7 +16,7 @@ import darkModeIcon from "img/ic_dark_mode.svg";
 import { defaultLocale } from "lib/i18n";
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import LanguageModalContent from "components/NetworkDropdown/LanguageModalContent";
-import { ThemeContext } from "store/ThemeProvider";
+import { ThemeContext } from "store/Themeprovider";
 
 const LANGUAGE_MODAL_KEY: string = "LANGUAGE";
 const NETWORK_MODAL_KEY: string = "NETWORK";
@@ -102,6 +102,11 @@ function DesktopDropdown({ setActiveModal, openSettings }) {
   const [enabledEmailNotification, setEnabledEmailNotification] = useState(false);
   const [enabledOneTrading, setEnabledOneTrading] = useState(false);
 
+  const enableNotificationhandler = (status) => {
+    setEnabledEmailNotification(status);
+    if (status) setActiveModal(EMAIL_NOTIFICATION_MODAL_KEY);
+  };
+
   return (
     <div className="App-header-setting">
       <Menu>
@@ -169,7 +174,7 @@ function DesktopDropdown({ setActiveModal, openSettings }) {
               </div>
               <Switch
                 checked={enabledEmailNotification}
-                onChange={setEnabledEmailNotification}
+                onChange={enableNotificationhandler}
                 className={`${enabledEmailNotification ? "toggle-on" : "toggle-off"} switch-button`}
               >
                 <span className="sr-only">Enable Email Notification</span>
@@ -230,7 +235,8 @@ function DesktopDropdown({ setActiveModal, openSettings }) {
 }
 
 function SettingModalContent({ setActiveModal, openSettings }) {
-  const [enabledDarkMode, setEnabledDarkMode] = useState(false);
+  const themeToggle = useContext(ThemeContext);
+  // const [enabledDarkMode, setEnabledDarkMode] = useState(false);
   const [enabledEmailNotification, setEnabledEmailNotification] = useState(false);
   const [enabledOneTrading, setEnabledOneTrading] = useState(false);
 
@@ -316,13 +322,13 @@ function SettingModalContent({ setActiveModal, openSettings }) {
             </span>
           </div>
           <Switch
-            checked={enabledDarkMode}
-            onChange={setEnabledDarkMode}
-            className={`${enabledDarkMode ? "toggle-on" : "toggle-off"} switch-button`}
+            checked={themeToggle.isDark}
+            onChange={themeToggle.changeTheme}
+            className={`${themeToggle.isDark ? "toggle-on" : "toggle-off"} switch-button`}
           >
-            {!enabledDarkMode && <img src={darkModeIcon} className="dark-mode" alt="dark_mode" />}
+            {!themeToggle.isDark && <img src={darkModeIcon} className="dark-mode" alt="dark_mode" />}
             <span className="sr-only">Enable Dark Mode</span>
-            <span className={`${enabledDarkMode ? "translate-x-6" : "translate-x-1"} toggle-transform`} />
+            <span className={`${themeToggle.isDark ? "translate-x-6" : "translate-x-1"} toggle-transform`} />
           </Switch>
         </div>
       </div>
