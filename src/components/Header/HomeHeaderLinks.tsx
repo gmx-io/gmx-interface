@@ -55,7 +55,7 @@ export function HomeHeaderLinks({ small, clickCloseIcon, redirectPopupTimestamp,
             className="App-header-menu-icon-block mobile-cross-menu"
             onClick={() => clickCloseIcon && clickCloseIcon()}
           >
-            <FiX color={"black"} style={{ color: "blue" }} />
+            <FiX color={"black"} />
           </div>
         </div>
       )}

@@ -1,5 +1,5 @@
 import React from "react";
-import { FiX } from "react-icons/fi";
+import { FiArrowLeft } from "react-icons/fi";
 import { Trans } from "@lingui/macro";
 import { Link } from "react-router-dom";
 
@@ -38,7 +38,7 @@ export function AppHeaderLinks({
             className="App-header-menu-icon-block mobile-cross-menu"
             onClick={() => clickCloseIcon && clickCloseIcon()}
           >
-            <FiX className="App-header-menu-icon" />
+            <FiArrowLeft className="App-header-menu-icon" />
           </div>
         </div>
       )}
