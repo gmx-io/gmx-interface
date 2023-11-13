@@ -46,6 +46,7 @@ img {
   margin-top: 0;
   margin-bottom: 1em;
   margin-left: 2em;
+  backdrop-filter: blur(3px);
 }
 
 #light .hero-title {

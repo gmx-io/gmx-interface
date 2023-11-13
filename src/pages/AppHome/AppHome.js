@@ -36,7 +36,9 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
             <br />
             <span className="Home-title-subtext">Compliant</span>
             <br />
-            Digital asset exchange
+            Digital asset
+            <br />
+            exchange
           </div>
           <TradeNowButton />
         </div>

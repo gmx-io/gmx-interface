@@ -2689,6 +2689,7 @@ msgstr "收款人未质押过GMX代币"
 msgid "Redemption time not yet reached"
 msgstr "赎回时间尚未到达"
 
+#: src/pages/AppHome/AppHomeContent.js
 #: src/pages/Home/Home.js
 msgid "Reduce Liquidation Risks"
 msgstr "降低清算风险"
@@ -2821,6 +2822,7 @@ msgstr "与当前的有效代码相同"
 msgid "Save"
 msgstr "储存"
 
+#: src/pages/AppHome/AppHomeContent.js
 #: src/pages/Home/Home.js
 msgid "Save on Costs"
 msgstr "节省成本"
@@ -2969,6 +2971,7 @@ msgstr "做空{0}"
 msgid "Shorting..."
 msgstr "做空中..."
 
+#: src/pages/AppHome/AppHomeContent.js
 #: src/pages/Home/Home.js
 msgid "Simple Swaps"
 msgstr "简易交易"

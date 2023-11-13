@@ -2686,6 +2686,7 @@ msgstr ""
 msgid "Redemption time not yet reached"
 msgstr ""
 
+#: src/pages/AppHome/AppHomeContent.js
 #: src/pages/Home/Home.js
 msgid "Reduce Liquidation Risks"
 msgstr ""
@@ -2818,6 +2819,7 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
+#: src/pages/AppHome/AppHomeContent.js
 #: src/pages/Home/Home.js
 msgid "Save on Costs"
 msgstr ""
@@ -2966,6 +2968,7 @@ msgstr ""
 msgid "Shorting..."
 msgstr ""
 
+#: src/pages/AppHome/AppHomeContent.js
 #: src/pages/Home/Home.js
 msgid "Simple Swaps"
 msgstr ""

@@ -2689,6 +2689,7 @@ msgstr "Receiver has not staked GMX tokens before"
 msgid "Redemption time not yet reached"
 msgstr "Redemption time not yet reached"
 
+#: src/pages/AppHome/AppHomeContent.js
 #: src/pages/Home/Home.js
 msgid "Reduce Liquidation Risks"
 msgstr "Reduce Liquidation Risks"
@@ -2821,6 +2822,7 @@ msgstr "Same as current active code"
 msgid "Save"
 msgstr "Save"
 
+#: src/pages/AppHome/AppHomeContent.js
 #: src/pages/Home/Home.js
 msgid "Save on Costs"
 msgstr "Save on Costs"
@@ -2969,6 +2971,7 @@ msgstr "Short {0}"
 msgid "Shorting..."
 msgstr "Shorting..."
 
+#: src/pages/AppHome/AppHomeContent.js
 #: src/pages/Home/Home.js
 msgid "Simple Swaps"
 msgstr "Simple Swaps"
@@ -3516,10 +3519,6 @@ msgstr "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x lever
 #: src/pages/AppHome/AppHome.js
 msgid "Trade Now"
 msgstr "Trade Now"
-
-#: src/pages/AppHome/AppHomeContent.js
-msgid "Reduce Liquidation Risks"
-msgstr "Reduce Liquidation Risks"
 
 #: src/components/Exchange/ExchangeBanner.js
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."

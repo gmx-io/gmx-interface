@@ -2689,6 +2689,7 @@ msgstr "受け取り側でこれまでGMXトークンをステークしたこと
 msgid "Redemption time not yet reached"
 msgstr "売却までの規定時間に達していません"
 
+#: src/pages/AppHome/AppHomeContent.js
 #: src/pages/Home/Home.js
 msgid "Reduce Liquidation Risks"
 msgstr "清算リスクを減らす"
@@ -2821,6 +2822,7 @@ msgstr "現在アクティブなコードと同じです"
 msgid "Save"
 msgstr "保存"
 
+#: src/pages/AppHome/AppHomeContent.js
 #: src/pages/Home/Home.js
 msgid "Save on Costs"
 msgstr "コスト削減"
@@ -2969,6 +2971,7 @@ msgstr "{0}をショート"
 msgid "Shorting..."
 msgstr "ショート中..."
 
+#: src/pages/AppHome/AppHomeContent.js
 #: src/pages/Home/Home.js
 msgid "Simple Swaps"
 msgstr "シンプルなスワップ"

@@ -2689,6 +2689,7 @@ msgstr "Le destinataire n'a jamais staké de tokens GLP auparavant"
 msgid "Redemption time not yet reached"
 msgstr "Le délai de rachat n'a pas encore été atteint"
 
+#: src/pages/AppHome/AppHomeContent.js
 #: src/pages/Home/Home.js
 msgid "Reduce Liquidation Risks"
 msgstr "Réduire les risques de liquidation"
@@ -2821,6 +2822,7 @@ msgstr "Même que le code actif actuel"
 msgid "Save"
 msgstr "Sauver"
 
+#: src/pages/AppHome/AppHomeContent.js
 #: src/pages/Home/Home.js
 msgid "Save on Costs"
 msgstr "Économiser sur les coûts"
@@ -2969,6 +2971,7 @@ msgstr "Short {0}"
 msgid "Shorting..."
 msgstr "Short en cours..."
 
+#: src/pages/AppHome/AppHomeContent.js
 #: src/pages/Home/Home.js
 msgid "Simple Swaps"
 msgstr "Échanges simples"
