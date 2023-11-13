@@ -3,7 +3,6 @@ import "./Footer.css";
 import { isHomeSite } from "lib/legacy";
 import { SOCIAL_LINKS } from "./constants";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { i18n } from "@lingui/core";
 
 type Props = { showRedirectModal?: (to: string) => void; redirectPopupTimestamp?: () => void };
 
@@ -22,7 +21,7 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp }: Pr
             );
           })}
         </div>
-        <p className="text">{i18n._("Copyright © Finance Limited. All rights reserved")}</p>
+        <p className="text">Copyright © T3 Finance Limited. All rights reserved.</p>
       </div>
     </div>
   );
