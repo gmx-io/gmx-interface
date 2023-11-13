@@ -155,9 +155,11 @@ export function getAvailableUsdLiquidityForPosition(marketInfo: MarketInfo, isLo
   const availableLiquidityBasedOnMaxReserve = maxReservedUsd.sub(reservedUsd);
   const availableLiquidityBasedOnMaxOpenInterest = maxOpenInterest.sub(currentOpenInterest);
 
-  return availableLiquidityBasedOnMaxReserve.lt(availableLiquidityBasedOnMaxOpenInterest)
+  const result = availableLiquidityBasedOnMaxReserve.lt(availableLiquidityBasedOnMaxOpenInterest)
     ? availableLiquidityBasedOnMaxReserve
     : availableLiquidityBasedOnMaxOpenInterest;
+
+  return result.lt(0) ? BigNumber.from(0) : result;
 }
 
 export function getAvailableUsdLiquidityForCollateral(marketInfo: MarketInfo, isLong: boolean) {
