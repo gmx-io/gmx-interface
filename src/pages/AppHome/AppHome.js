@@ -20,13 +20,7 @@ export default function AppHome({ showRedirectModal, redirectPopupTimestamp }) {
         showRedirectModal={showRedirectModal}
       >
         <Trans>Trade Now</Trans>
-        <MdArrowForward
-          className="arrow"
-          style={{ marginLeft: "0.5rem" }}
-          src={arrow}
-          alt="arrow"
-          color={theme.isLight ? "black" : "white"}
-        />
+        <MdArrowForward className="arrow" style={{ marginLeft: "0.5rem" }} src={arrow} alt="arrow" color={"white"} />
       </HeaderLink>
     );
   };
