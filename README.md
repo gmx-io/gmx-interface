@@ -13,6 +13,8 @@ Installs dependencies
 At first installation, you might have to run `yarn husky install`,
 to setup pre-commit hooks
 
+> TODO: https://stackoverflow.com/questions/69962209/what-is-openssl-legacy-provider-in-node-js-v17
+
 ### `yarn start`
 
 Runs the app in the development mode.\
