@@ -14,8 +14,8 @@ msgstr ""
 "Plural-Forms: \n"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "\"Current {0} Long\" takes into account PnL of open positions."
-msgstr "\"Current {0} Long\" takes into account PnL of open positions."
+#~ msgid "\"Current {0} Long\" takes into account PnL of open positions."
+#~ msgstr "\"Current {0} Long\" takes into account PnL of open positions."
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "01 Sep 2021"
@@ -1227,8 +1227,8 @@ msgid "Current {0} shorts"
 msgstr "Current {0} shorts"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Current {0} {longShortText}"
-msgstr "Current {0} {longShortText}"
+#~ msgid "Current {0} {longShortText}"
+#~ msgstr "Current {0} {longShortText}"
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "Currently, There is a high Swap Price Impact for the Order Swap path."
@@ -2878,8 +2878,8 @@ msgid "Max {0} short exceeded"
 msgstr "Max {0} short exceeded"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Max {0} {longShortText} capacity"
-msgstr "Max {0} {longShortText} capacity"
+#~ msgid "Max {0} {longShortText} capacity"
+#~ msgstr "Max {0} {longShortText} capacity"
 
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
@@ -3776,6 +3776,10 @@ msgstr "Requested withdrawal of {0} USD from {1} {longOrShortText}."
 #: src/pages/Stake/StakeV2.js
 msgid "Reserve Amount"
 msgstr "Reserve Amount"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Reserve considers the PnL of Open Positions, while Open Interest does not. The Available Liquidity will be the lesser of the difference between the maximum value and the current value for the Reserve and Open Interest."
+msgstr "Reserve considers the PnL of Open Positions, while Open Interest does not. The Available Liquidity will be the lesser of the difference between the maximum value and the current value for the Reserve and Open Interest."
 
 #: src/components/Glp/GlpSwap.js
 msgid "Reserved"
@@ -5810,6 +5814,14 @@ msgstr "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 #: src/components/Exchange/PositionsList.js
 msgid "{longOrShortText} {0} market selected"
 msgstr "{longOrShortText} {0} market selected"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "{longShortText} {0} Open Interest"
+msgstr "{longShortText} {0} Open Interest"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "{longShortText} {0} Reserve"
+msgstr "{longShortText} {0} Reserve"
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "{marketsCount, plural, one {# Market} other {# Markets}}"
