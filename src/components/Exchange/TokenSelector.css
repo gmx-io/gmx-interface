@@ -130,6 +130,10 @@
   letter-spacing: 0px;
 }
 
+#light .Token-text{
+  color : #000000
+}
+
 .TokenSelector-token-row:hover {
   background: var(--dark-blue-hover);
 }

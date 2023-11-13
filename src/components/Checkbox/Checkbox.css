@@ -17,10 +17,15 @@
 
 .Checkbox .Checkbox-icon {
   font-size: 1.25rem;
-  color: rgba(61, 81, 255, 1);
+  color:  #ff7028;
   margin-right: 0.62rem;
   margin-bottom: 0;
 }
+
+/* #light .Checkbox-icon{
+  color : #ff7028; 
+} */
+
 
 .Checkbox.disabled .Checkbox-icon {
   color: #47509e;
@@ -30,8 +35,16 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
+#light .Checkbox-icon.inactive{
+  color : #D9D9D9;
+}
+
 .Checkbox-label {
   display: inline-block;
   vertical-align: middle;
   font-size: var(--font-sm);
+}
+
+#light .Checkbox-label{
+  color: #000000;
 }

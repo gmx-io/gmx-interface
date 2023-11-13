@@ -5,7 +5,6 @@ body,
   width: 100%;
   margin: 0;
   padding: 0;
-  color: white;
   font-size: 10px;
   background-color: #000000;
 }
@@ -25,8 +24,13 @@ code {
 
 * {
   box-sizing: border-box;
-  font-family: "Relative", sans-serif;
+  font-family: tektur;
   letter-spacing: 0.05rem;
+}
+
+#light input {
+  color : #000000;
+ 
 }
 
 input {
@@ -54,7 +58,7 @@ input {
   --dark-blue: #17182c;
   --dark-blue-bg: #16182e;
   --dark-blue-accent: #a0a3c4;
-  --primary-btn-bg: #2d42fc;
+  --primary-btn-bg: #FF7028;
   --primary-btn-hover: #4f60fc;
   --primary-btn-active: #5f6ffd;
   --dark-blue-hover: #808aff14;
@@ -185,9 +189,19 @@ td {
   color: white;
 }
 
+
+#light .text-white {
+  color : #000000;
+}
+
 .label,
 .label a {
   color: rgba(255, 255, 255, 0.7);
+}
+
+#light .label,
+.label a {
+  color : #000000;
 }
 
 ul {
@@ -208,13 +222,13 @@ a.plain {
 }
 
 .default-btn {
-  background: #14f187;
+  background: #FF7028;
   border-radius: 4px;
   font-size: var(--font-sm);
   line-height: 2rem;
   font-weight: normal;
   letter-spacing: 0px;
-  color: #000000 !important;
+  color: #ffff !important;
   padding-left: 1.6rem;
   padding-right: 1.6rem;
   /* padding: 9px 16px!important; */
@@ -230,9 +244,9 @@ a.plain {
   appearance: none;
 }
 
-.default-btn:hover {
+/* .default-btn:hover {
   background: var(--primary-btn-hover);
-}
+} */
 
 /* .default-btn:focus {
   background: #515ed8;
@@ -243,7 +257,6 @@ a.plain {
 } */
 
 .default-btn:active {
-  background: var(--primary-btn-active);
   border: none;
   padding-left: 1.6rem;
   padding-right: 1.6rem;

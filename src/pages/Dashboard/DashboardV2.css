@@ -77,6 +77,11 @@
   cursor: pointer;
 }
 
+#light .stats-label {
+  border: #000000 solid 1px;
+  background: #ffffff;
+}
+
 .stats-label-color {
   width: 0.4rem;
   height: 100%;

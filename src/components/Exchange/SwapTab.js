@@ -2313,7 +2313,7 @@ export default function SwapTab(props) {
         </div>
       </form>
       {isSwap && (
-        <div className="Exchange-swap-market-box App-box App-box-border">
+        <div className="Exchange-swap-market-box text-white App-box App-box-border">
           <div className="Exchange-swap-market-box-title">
             <Trans>Swap</Trans>
           </div>
@@ -2374,7 +2374,7 @@ export default function SwapTab(props) {
         </div>
       )}
       {(isLong || isShort) && (
-        <div className="Exchange-swap-market-box App-box App-box-border">
+        <div className="Exchange-swap-market-box text-white App-box App-box-border">
           <div className="Exchange-swap-market-box-title">
             {isLong ? t`Long` : t`Short`}&nbsp;{toToken.symbol}
           </div>

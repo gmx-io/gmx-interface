@@ -1,19 +1,21 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useContext, useEffect, useState } from "react";
 import cx from "classnames";
 
 import { AppHeaderUser } from "./AppHeaderUser";
 import { AppHeaderLinks } from "./AppHeaderLinks";
 
-import logoImg from "img/logo_t3.svg";
-import logoSmallImg from "img/logo_t3_small.svg";
+import logoImgLight from "img/logo_t3-light.svg";
+import logoImgDark from "img/logo_t3-dark.svg";
+import logoSmallImg from "img/t3_logo_small.svg";
 import { RiMenuLine } from "react-icons/ri";
-import { FaTimes } from "react-icons/fa";
+import { FiX } from "react-icons/fi";
 import { AnimatePresence as FramerAnimatePresence, motion } from "framer-motion";
 
 import "./Header.css";
 import { Link } from "react-router-dom";
 import { isHomeSite } from "lib/legacy";
 import { HomeHeaderLinks } from "./HomeHeaderLinks";
+import { ThemeContext } from "store/theme-provider";
 
 // Fix framer-motion old React FC type (solved in react 18)
 const AnimatePresence = (props: React.ComponentProps<typeof FramerAnimatePresence> & { children: ReactNode }) => (
@@ -64,6 +66,8 @@ export function Header({
     };
   }, [isDrawerVisible]);
 
+  const theme = useContext(ThemeContext);
+
   return (
     <>
       {isDrawerVisible && (
@@ -100,7 +104,7 @@ export function Header({
         <div className="App-header large">
           <div className="App-header-container-left">
             <Link className="App-header-link-main" to="/">
-              <img src={logoImg} className="big" alt="t3 Logo" />
+              <img src={theme.isLight ? logoImgLight : logoImgDark} className="big" alt="t3 Logo" />
               <img src={logoSmallImg} className="small" alt="t3 Logo" />
             </Link>
             {isHomeSite() ? (
@@ -129,7 +133,7 @@ export function Header({
           >
             <div className="App-header-container-left">
               <div className="App-header-link-main clickable" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
-                <img src={logoImg} className="big" alt="t3 Logo" />
+                <img src={theme.isLight ? logoImgLight : logoImgDark} className="big" alt="t3 Logo" />
                 <img src={logoSmallImg} className="small" alt="t3 Logo" />
               </div>
             </div>
@@ -145,8 +149,12 @@ export function Header({
                 showRedirectModal={showRedirectModal}
               />
               <div className="App-header-menu-icon-block" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
-                {!isDrawerVisible && <RiMenuLine className="App-header-menu-icon" />}
-                {isDrawerVisible && <FaTimes className="App-header-menu-icon" />}
+                {!isDrawerVisible && (
+                  <RiMenuLine className={"App-header-menu-icon"} color={theme.isLight ? "black" : "white"} />
+                )}
+                {isDrawerVisible && (
+                  <FiX className={"App-header-menu-icon"} color={theme.isLight ? "black" : "white"} />
+                )}
               </div>
             </div>
           </div>

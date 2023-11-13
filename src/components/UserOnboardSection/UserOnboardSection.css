@@ -15,13 +15,18 @@
   padding-right: 1.6rem;
 }
 
-.Wallet-btn-approve:hover {
-  background: var(--dark-blue-hover);
+#light .Wallet-btn-approve{
+  background: #FFFFFF;
+  color: #000000;
 }
 
-.Wallet-btn-approve:active {
+/* .Wallet-btn-approve:hover {
+  background: var(--dark-blue-hover);
+} */
+
+/* .Wallet-btn-approve:active {
   background: var(--dark-blue-active);
-}
+} */
 
 .Wallet-btn-approve:not(:last-child) {
   margin-bottom: 1.05rem;

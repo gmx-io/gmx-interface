@@ -640,6 +640,13 @@ table.Exchange-list th {
   box-shadow: inset 0px 0px 3rem 0.5rem rgba(255, 255, 255, 0.01);
 }
 
+#light .Exchange-swap-section{
+  background: none;
+  border :#E9E9E9 solid;
+  color : #000000;
+  border-radius: 6px;
+}
+
 .Exchange-swap-option-tabs.Tab.block .Tab-option {
   padding: 1.05rem;
 }
@@ -685,12 +692,12 @@ table.Exchange-list th {
   top: 0;
   padding: 0.465rem 0.8rem;
   color: #fff;
-  outline: 1rem solid rgba(33, 37, 64, 1);
+  /* outline: 1rem solid rgba(33, 37, 64, 1); */
   border-radius: 3px;
   z-index: 1;
   cursor: pointer;
   font-size: var(--font-sm);
-  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
+  background: #ff7028;
 }
 
 .Exchange-swap-max:hover {
@@ -750,7 +757,7 @@ input.Exchange-swap-input.small {
   border-radius: 3.1rem;
   cursor: pointer;
   user-select: none;
-  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
+  background: #FF7028;
   display: flex;
   justify-content: center;
   align-items: center;

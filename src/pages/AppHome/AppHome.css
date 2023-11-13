@@ -5,6 +5,19 @@
 img {
   max-width: 100%;
 }
+
+#light .hero {
+  background-image: url(img/tf-t3-landing-bg.svg);
+}
+
+#light .text {
+  color: black;
+}
+
+#dark .text {
+  color: white;
+}
+
 .hero {
   /* Sizing */
   width: 100vw;
@@ -21,7 +34,7 @@ img {
 
   /* Background styles */
 
-  background-image: url(img/Artwork_t3.svg);
+  background-image: url(img/t3-bg-dark.svg);
   background-size: cover;
   background-position: right;
   background-repeat: no-repeat;
@@ -37,40 +50,41 @@ img {
   margin-top: 0;
   margin-bottom: 1em;
   margin-left: 2em;
+  backdrop-filter: blur(3px);
+}
+
+#light .hero-title {
+  color: #000000;
 }
 
 .Home-title-subtext {
-  color: #14f187;
+  color: #FF7028;
 }
 .arrow {
   height: 2.8rem;
   width: 2.8rem;
-  margin-left: 0.5rem;
   align-items: center;
-  margin-top: 0.5rem;
 }
+
+
+/* Desktop "Trade Now" Button styles */
 .hero .btn {
-  background: #14f187;
+  background: #FF7028;
   border-radius: 16px;
   font-size: 2.4rem;
-  line-height: 6.8rem;
   font-weight: bold;
   letter-spacing: 0;
-  color: #000000 !important;
-  padding-left: 2.5rem;
-  padding-right: 1.6rem;
-  /* padding: 9px 16px!important; */
-  text-decoration: none;
-  box-sizing: border-box;
-  height: 6.1rem;
-  width: 20rem;
-  display: inline-flex !important;
+  color: #ffff !important;
   align-items: center;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  padding: 2rem 3rem;
+  width: fit-content;
   cursor: pointer;
   border: none;
   appearance: none;
   margin-left: 5em;
+  max-width: 250px;
 }
 
 .mobile {
@@ -92,40 +106,54 @@ img {
 
   .mobile .text {
     /* Text styles */
-    font-size: 5.7rem;
+    color : #FFFFFF;
+    top : 2%;
+    font-size: 5.2rem;
+    padding: 2%;
     line-height: 6.8rem;
     font-weight: bold;
     letter-spacing: 0;
-
+    position: absolute;
     flex-grow: 1;
-    display: flex;
+    display: flexbox;
     justify-content: center;
     align-items: center;
   }
 
-  .mobile .subtext {
-    color: #14f187;
+  #light .mobile .text {
+    color : #000000;
   }
+
+  .mobile .subtext {
+    color: #FF7028;
+  }
+
+  .mobile .trade-btn {
+    position : absolute;
+    top : 40%;
+    color : #FFFFFF;
+  }
+
+
   .mobile .btn {
-    background: #14f187;
+    background: #FF7028;
+    color : #ffffff !important;
     border-radius: 16px;
-    font-size: 2.4rem;
+    font-size: 2rem;
     line-height: 6.8rem;
     font-weight: bold;
     letter-spacing: 0;
-    color: #000000 !important;
-    padding-left: 2.5rem;
-    padding-right: 1.6rem;
-    /* padding: 9px 16px!important; */
+    display: flex;
+    justify-content: space-between;
+    padding: 0 2rem;
     text-decoration: none;
     box-sizing: border-box;
-    height: 6.1rem;
-    width: 20rem;
-    display: inline-flex !important;
     align-items: center;
     text-align: center;
     cursor: pointer;
     border: none;
     appearance: none;
+    width: fit-content;
+    margin: 0 auto;
   }
 }

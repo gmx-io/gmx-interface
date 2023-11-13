@@ -10,6 +10,11 @@
   border: 1px solid #23263b;
 }
 
+#light .Exchange-trigger-order-info,
+.Exchange-trigger-order-info a {
+  border: none;
+}
+
 .Exchange-list-tab-container {
   display: grid;
   grid-template-columns: auto auto;
@@ -17,6 +22,11 @@
   padding-right: 0.8rem;
   margin-top: 1.5rem;
   margin-bottom: 1.05rem;
+  color : #ffffff;
+}
+
+#light .Exchange-list-tab-container {
+  color : #000000;
 }
 
 .Exchange-should-show-position-lines {
@@ -256,6 +266,8 @@
   position: relative;
   height: 49.6rem;
 }
+
+
 
 .ExchangeChart-main-price {
   font-size: 1.7rem;
@@ -507,6 +519,10 @@ table.Exchange-list tr:hover {
   box-shadow: inset 0px 0px 3rem 0.5rem rgba(255, 255, 255, 0.01);
 }
 
+#light table.Exchange-list tr:hover {
+  background: #808aff14;
+}
+
 table.Exchange-list tr.Exchange-list-header {
   background: none;
   font-size: var(--font-md);
@@ -681,12 +697,17 @@ table.Exchange-list th {
   top: 0;
   padding: 0.465rem 0.8rem;
   color: #fff;
-  outline: 1rem solid rgba(33, 37, 64, 1);
+  /* outline: 1rem solid rgba(33, 37, 64, 1); */
   border-radius: 3px;
   z-index: 1;
   cursor: pointer;
   font-size: var(--font-sm);
-  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
+  background: #ff7028;
+}
+
+#light .Exchange-swap-max {
+  outline : none;
+  background: #ff7028;
 }
 
 .Exchange-swap-max:hover {
@@ -728,12 +749,18 @@ input.Exchange-swap-input.small {
   z-index: 1;
 }
 
+
+
 .Exchange-swap-ball-icon {
   text-align: center;
   display: block;
   transform: rotate(90deg);
   font-size: 2rem;
   opacity: 0.7;
+}
+
+#light .Exchange-swap-ball-icon{
+  fill : #FFFFFF;
 }
 
 .Exchange-swap-ball {
@@ -746,10 +773,14 @@ input.Exchange-swap-input.small {
   border-radius: 3.1rem;
   cursor: pointer;
   user-select: none;
-  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
+  background: #FF7028;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+#light .Exchange-swap-ball {
+  background: #FF7028;
 }
 
 .Exchange-swap-ball:hover {

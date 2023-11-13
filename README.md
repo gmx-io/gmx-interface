@@ -13,6 +13,8 @@ Installs dependencies
 At first installation, you might have to run `yarn husky install`,
 to setup pre-commit hooks
 
+> TODO: https://stackoverflow.com/questions/69962209/what-is-openssl-legacy-provider-in-node-js-v17
+
 ### `yarn start`
 
 Runs the app in the development mode.\
@@ -221,6 +223,13 @@ function Button(props) {...}
 
 - The language code should be a valid [BCP-47](https://unicode-org.github.io/cldr-staging/charts/latest/supplemental/language_plural_rules.html) code like `es` for `Spanish`.
 - The formatting used in `.po` files for each language is know as ICU MessageFormat. To understand it please refer to this [GUIDE](https://lingui.js.org/ref/message-format.html)
+
+```bash
+yarn lingui:prepare
+yarn lingui:generate
+```
+
+> Commit these files to persist
 
 ### SCSS
 

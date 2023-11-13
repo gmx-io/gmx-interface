@@ -1,9 +1,11 @@
+import { useContext } from "react";
 import { FiX } from "react-icons/fi";
-import logoImg from "img/logo_t3.svg";
 import { t } from "@lingui/macro";
-
-import "./Header.css";
 import { Link } from "react-router-dom";
+import "./Header.css";
+import logoImgLight from "img/logo_t3-light.svg";
+import logoImgDark from "img/logo_t3-dark.svg";
+import { ThemeContext } from "store/theme-provider";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { HeaderLink } from "./HeaderLink";
 
@@ -41,18 +43,19 @@ const HOME_MENUS: HomeLink[] = [
 ];
 
 export function HomeHeaderLinks({ small, clickCloseIcon, redirectPopupTimestamp, showRedirectModal }: Props) {
+  const theme = useContext(ThemeContext);
   return (
     <div className="App-header-links">
       {small && (
         <div className="App-header-links-header">
           <Link className="App-header-link-main" to="/">
-            <img src={logoImg} alt="t3 Logo" />
+            <img src={theme.isLight ? logoImgLight : logoImgDark} alt="t3 Logo" />
           </Link>
           <div
             className="App-header-menu-icon-block mobile-cross-menu"
             onClick={() => clickCloseIcon && clickCloseIcon()}
           >
-            <FiX className="App-header-menu-icon" />
+            <FiX color={"black"} style={{ color: "blue" }} />
           </div>
         </div>
       )}

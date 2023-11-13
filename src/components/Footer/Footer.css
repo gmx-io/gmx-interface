@@ -1,15 +1,19 @@
 .Footer-wrapper {
   text-align: center;
   padding-top: 1rem;
-  background: #000000;
+  background: #10122D;
   width: 100vw;
   position: absolute;
   transform: translateX(-50%);
   left: 50%;
-  height: 4.5rem;
   bottom: 0;
   margin-bottom: 0em;
   border-top: 1px solid #282b4c;
+}
+
+#light .Footer-wrapper {
+  background : #F2F3F5;
+  border-top: none;
 }
 
 .Footer-logo {
@@ -50,9 +54,9 @@
   justify-content: center;
 }
 
-.Footer-social-link-block .App-social-link:hover img {
+/* .Footer-social-link-block .App-social-link:hover img {
   filter: brightness(0) invert(1);
-}
+} */
 
 .Footer-copyright {
   padding: 1.6rem;

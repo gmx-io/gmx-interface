@@ -7,6 +7,11 @@
   z-index: 100;
 }
 
+#light .asset-menu-items {
+  background: #ffffff;
+}
+
+
 .center-both {
   display: flex;
   justify-content: center;
@@ -19,6 +24,12 @@
   color: white;
   opacity: 0.8;
 }
+
+#light .dropdown-arrow {
+  color : #000000;
+}
+
+
 .dropdown-arrow:hover {
   opacity: 1;
 }

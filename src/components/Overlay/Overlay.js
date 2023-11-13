@@ -1,6 +1,4 @@
-import React from "react";
-
-import { FaTimes } from "react-icons/fa";
+import { FiX } from "react-icons/fi";
 
 import "./Overlay.css";
 
@@ -12,7 +10,7 @@ export default function Overlay(props) {
         <div className="Overlay-top-bar">
           <div className="Overlay-title">{props.title}</div>
           <div className="Overlay-close-button" onClick={() => props.setIsVisible(false)}>
-            <FaTimes />
+            <FiX />
           </div>
         </div>
         <div className="Overlay-content">{props.children}</div>

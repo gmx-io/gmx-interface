@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { TV_CHART_RELOAD_TIMESTAMP_KEY, TV_SAVE_LOAD_CHARTS_KEY } from "config/localStorage";
 import { useLocalStorage, useMedia } from "react-use";
 import { defaultChartProps, DEFAULT_PERIOD, disabledFeaturesOnMobile } from "./constants";
@@ -12,6 +12,7 @@ import { TVDataProvider } from "domain/tradingview/TVDataProvider";
 import Loader from "components/Common/Loader";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { CHART_PERIODS } from "lib/legacy";
+import { ThemeContext } from "store/theme-provider";
 
 type ChartLine = {
   price: number;
@@ -119,12 +120,14 @@ export default function TVChartContainer({
     }
   }, [symbol, chartReady, period, chainId]);
 
+  const themeContext = useContext(ThemeContext);
+
   useEffect(() => {
     const widgetOptions = {
       debug: false,
       symbol: symbolRef.current, // Using ref to avoid unnecessary re-renders on symbol change and still have access to the latest symbol
       datafeed: datafeed,
-      theme: defaultChartProps.theme,
+      theme: themeContext.isLight ? "Light" : "Dark",
       container: chartContainerRef.current,
       library_path: defaultChartProps.library_path,
       locale: defaultChartProps.locale,
@@ -148,8 +151,11 @@ export default function TVChartContainer({
     tvWidgetRef.current!.onChartReady(function () {
       setChartReady(true);
       tvWidgetRef.current!.applyOverrides({
-        "paneProperties.background": "#16182e",
+        "paneProperties.background": themeContext.isLight ? "#FFFFFF" : "#0E1020",
         "paneProperties.backgroundType": "solid",
+        "scalesProperties.textColor": themeContext.isLight ? "#000000" : "#FFFFFF",
+        "paneProperties.vertGridProperties.style": "1",
+        "paneProperties.horzGridProperties.style": "1",
       });
       tvWidgetRef.current
         ?.activeChart()
@@ -176,7 +182,7 @@ export default function TVChartContainer({
     };
     // We don't want to re-initialize the chart when the symbol changes. This will make the chart flicker.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId]);
+  }, [chainId, themeContext.theme]);
 
   return (
     <div className="ExchangeChart-error">
