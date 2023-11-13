@@ -22,7 +22,7 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
   const isHome = isHomeSite();
   const { chainId } = useChainId();
   const { active } = useWallet();
-  const incentiveState = useIncentiveStats(chainId);
+  const incentiveState = useIncentiveStats();
 
   const changeNetwork = useCallback(
     (network) => {
