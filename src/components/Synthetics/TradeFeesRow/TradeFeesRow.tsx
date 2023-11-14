@@ -221,12 +221,12 @@ export function TradeFeesRow(p: Props) {
         swapPriceImpactRow,
         ...swapFeeRows,
         positionFeeRow,
+        rebateRow,
         feeDiscountRow,
         borrowFeeRow,
         fundingFeeRow,
         borrowFeeRateRow,
         fundingFeeRateRow,
-        rebateRow,
         executionFeeRow,
       ].filter(Boolean) as FeeRow[];
     }
@@ -238,10 +238,10 @@ export function TradeFeesRow(p: Props) {
         borrowFeeRow,
         fundingFeeRow,
         positionFeeRow,
+        rebateRow,
         feeDiscountRow,
         swapProfitFeeRow,
         ...swapFeeRows,
-        rebateRow,
         executionFeeRow,
       ].filter(Boolean) as FeeRow[];
     }
@@ -310,7 +310,7 @@ export function TradeFeesRow(p: Props) {
       <Trans>
         The Bonus Rebate will be airdropped as ARB tokens.{" "}
         <ExternalLink
-          href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3"
+          href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#9a915e16d33942bdb713f3fe28c3435f"
           newTab
         >
           Read more
