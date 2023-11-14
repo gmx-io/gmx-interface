@@ -271,10 +271,12 @@ export function TradeFeesRow(p: Props) {
 
   const totalFeeUsd = useMemo(() => {
     const totalBeforeRebate = p.totalFees?.deltaUsd.sub(p.executionFee?.feeUsd || 0);
-    if (p.feesType === "swap") return totalBeforeRebate;
-    if (!p.positionFee || p.positionFee.deltaUsd.gte(0) || !tradingIncentives || tradingIncentives.state !== "live")
+    if (p.feesType === "swap") {
       return totalBeforeRebate;
-
+    }
+    if (!p.positionFee || p.positionFee.deltaUsd.gte(0) || !tradingIncentives || tradingIncentives.state !== "live") {
+      return totalBeforeRebate;
+    }
     const rebate = p.positionFee.deltaUsd.mul(tradingIncentives.rebatePercent).div(BASIS_POINTS_DIVISOR).mul(-1);
 
     return totalBeforeRebate?.add(rebate);
@@ -289,7 +291,10 @@ export function TradeFeesRow(p: Props) {
   }, [p.feesType, tradingIncentives]);
 
   const incentivesBottomText = useMemo(() => {
-    if (!tradingIncentives) return null;
+    if (!tradingIncentives) {
+      return null;
+    }
+
     if (tradingIncentives.state === "limitReached") {
       const periodStart = tradingIncentives.nextPeriodStart;
       const timeLeftStr = formatDuration(intervalToDuration({ start: new Date(), end: periodStart }), {

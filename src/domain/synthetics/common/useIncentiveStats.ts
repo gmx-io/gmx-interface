@@ -27,8 +27,10 @@ export default function useIncentiveStats(chainId: number) {
   return incentiveStats;
 }
 
-type RawTradingIncentivesStat = {
-  eligibleFeesInArb: string;
+type RawResponse = {
+  tradingIncentivesStat: {
+    eligibleFeesInArb: string;
+  };
 };
 
 export type TradingIncentives = ReturnType<typeof useTradingIncentives>;
@@ -57,7 +59,6 @@ export const useTradingIncentives = () => {
         if (!incentiveStats?.trading.isActive) return BigNumber.from(0);
 
         const client = getSyntheticsGraphClient(chainId);
-
         const res = (
           await client!.query({
             query: gql(`{
@@ -69,13 +70,13 @@ export const useTradingIncentives = () => {
             }`),
             fetchPolicy: "no-cache",
           })
-        ).data;
+        ).data as RawResponse;
 
-        if (!res || !res.eligibleFeesInArb) return BigNumber.from(0);
+        if (!res || !res.tradingIncentivesStat || !res.tradingIncentivesStat.eligibleFeesInArb) {
+          return BigNumber.from(0);
+        }
 
-        const tradingIncentivesStat = res.eligibleFeesInArb as RawTradingIncentivesStat;
-
-        return BigNumber.from(tradingIncentivesStat.eligibleFeesInArb);
+        return BigNumber.from(res.tradingIncentivesStat.eligibleFeesInArb);
       },
     }
   );
