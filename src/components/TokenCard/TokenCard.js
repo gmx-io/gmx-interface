@@ -22,7 +22,7 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
   const isHome = isHomeSite();
   const { chainId } = useChainId();
   const { active } = useWallet();
-  const incentiveState = useIncentiveStats(chainId);
+  const incentiveState = useIncentiveStats();
 
   const changeNetwork = useCallback(
     (network) => {
@@ -69,7 +69,10 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
         </div>
         <div className="Home-token-card-option-info">
           <div className="Home-token-card-option-title">
-            <Trans>GMX is the utility and governance token. Accrues 30% of the platform's generated fees.</Trans>
+            <Trans>
+              GMX is the utility and governance token. Accrues 30% and 27% of V1 and V2 markets generated fees,
+              respectively.
+            </Trans>
           </div>
           <div className="Home-token-card-option-apr">
             <Trans>Arbitrum APR:</Trans> <APRLabel chainId={ARBITRUM} label="gmxAprTotal" />,{" "}

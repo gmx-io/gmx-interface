@@ -445,3 +445,23 @@ export function getContractMarketPrices(tokensData: TokensData, market: Market):
     shortTokenPrice: convertToContractTokenPrices(shortToken.prices, shortToken.decimals),
   };
 }
+
+export function getTotalGmInfo(tokensData?: TokensData) {
+  const defaultResult = {
+    balance: BigNumber.from(0),
+    balanceUsd: BigNumber.from(0),
+  };
+
+  if (!tokensData) {
+    return defaultResult;
+  }
+
+  const tokens = Object.values(tokensData).filter((token) => token.symbol === "GM");
+
+  return tokens.reduce((acc, token) => {
+    const balanceUsd = convertToUsd(token.balance, token.decimals, token.prices.minPrice);
+    acc.balance = acc.balance.add(token.balance || 0);
+    acc.balanceUsd = acc.balanceUsd.add(balanceUsd || 0);
+    return acc;
+  }, defaultResult);
+}

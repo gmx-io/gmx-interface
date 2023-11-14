@@ -192,7 +192,7 @@ export function MarketsList() {
                   <Trans>PRICE</Trans>
                 </th>
                 <th>
-                  <Trans>POOLS VALUE</Trans>
+                  <Trans>POOLS</Trans>
                 </th>
                 <th>
                   <Trans>FUNDING RATE / 1h</Trans>
@@ -294,7 +294,7 @@ export function MarketsList() {
                   </div>
                   <div className="App-card-row">
                     <div className="label">
-                      <Trans>Pools Value</Trans>
+                      <Trans>Pools</Trans>
                     </div>
                     <div>
                       <Tooltip

@@ -60,8 +60,8 @@ export default function Ecosystem() {
       link: "https://www.blueberry.club/",
       linkLabel: "blueberry.club",
       about: t`GMX Blueberry NFTs`,
-      creatorLabel: "@xm92boi",
-      creatorLink: "https://t.me/xm92boi",
+      creatorLabel: "@xm_gbc",
+      creatorLink: "https://t.me/xm_gbc",
       chainIds: [ARBITRUM],
     },
     {
