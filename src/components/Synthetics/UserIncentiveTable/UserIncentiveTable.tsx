@@ -36,7 +36,7 @@ export default function UserIncentiveTable() {
   }
 
   return (
-    <div className="reward-history">
+    <div>
       <Card title={t`Incentives Distribution History`}>
         <div className="table-wrapper">
           <table className="referral-table">

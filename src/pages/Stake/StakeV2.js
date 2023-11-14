@@ -2255,15 +2255,17 @@ export default function StakeV2({ setPendingTxns }) {
           </div>
         </div>
       </div>
-      <PageTitle
-        title={t`Incentives`}
-        subtitle={
-          <Trans>
-            Earn $ARB tokens by providing liquidity in GM, trading, or participating in trading competitions. Only for
-            GMX V2.
-          </Trans>
-        }
-      />
+      <div className="mt-sm">
+        <PageTitle
+          title={t`Incentives`}
+          subtitle={
+            <Trans>
+              Earn $ARB tokens by providing liquidity in GM, trading, or participating in trading competitions. Only for
+              GMX V2.
+            </Trans>
+          }
+        />
+      </div>
       <UserIncentiveTable />
       <Footer />
     </div>
