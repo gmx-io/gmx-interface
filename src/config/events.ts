@@ -114,6 +114,7 @@ export const appEventsData: EventData[] = [
       {
         text: "More Info.",
         link: "https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3",
+        newTab: true,
       },
     ],
   },
