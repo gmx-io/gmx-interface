@@ -105,9 +105,10 @@ export const appEventsData: EventData[] = [
     validTill: "31 Oct 2024, 12:00",
     bodyText: [
       `Arbitrum STIP incentives are live for:`,
-      "· Arbitrum GM Pools.",
-      "· Arbitrum GLP Pools.",
-      "· Arbitrum Trading.",
+      "",
+      "• Arbitrum GM Pools.",
+      "• Arbitrum GLP Pools.",
+      "• Arbitrum Trading.",
     ],
     buttons: [
       {

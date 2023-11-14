@@ -184,7 +184,7 @@ export function TradeFeesRow(p: Props) {
         ? {
             label: (
               <>
-                <div className="text-white">{t`Bonus Rebate`}</div>
+                <div className="text-white">{t`Bonus Rebate`}:</div>
                 <div>
                   <Trans>({formatAmount(tradingIncentives.rebatePercent, 2, 0)}% of Open Fee)</Trans>
                 </div>
@@ -290,7 +290,7 @@ export function TradeFeesRow(p: Props) {
   }, [p.feesType, tradingIncentives]);
 
   const incentivesBottomText = useMemo(() => {
-    if (!tradingIncentives) {
+    if (!tradingIncentives || p.positionFee?.deltaUsd.gte(0)) {
       return null;
     }
 
@@ -318,7 +318,7 @@ export function TradeFeesRow(p: Props) {
         .
       </Trans>
     );
-  }, [tradingIncentives]);
+  }, [p.positionFee, tradingIncentives]);
 
   return (
     <ExchangeInfoRow
