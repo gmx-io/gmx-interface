@@ -15,8 +15,8 @@ type UserIncentiveData = {
 };
 
 const USER_INCENTIVE_QUERY = gql`
-  query userIncentiveData($account: String!) {
-    distributions(orderBy: timestamp, orderDirection: desc, where: { receiver: $account }) {
+  query userIncentiveData {
+    distributions(orderBy: timestamp, orderDirection: desc) {
       typeId
       amounts
       amountsInUsd
@@ -36,14 +36,13 @@ export default function useUserIncentiveData(chainId: number, account?: string) 
     chainId && graphClient && account ? [chainId, "useUserIncentiveData", account] : null;
 
   async function fetchUserIncentiveData(): Promise<UserIncentiveData[]> {
-    if (!account) {
-      return [];
-    }
+    // if (!account) {
+    //   return [];
+    // }
 
     const response = await graphClient!.query({
       query: USER_INCENTIVE_QUERY,
-      variables: { account: account.toLowerCase() },
-      fetchPolicy: "no-cache",
+      // variables: { account: account.toLowerCase() },
     });
 
     return response.data?.distributions as UserIncentiveData[];
