@@ -451,6 +451,7 @@ msgstr "Available amount to deposit into GLP."
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
 msgid "Available amount to deposit into the specific GM pool."
 msgstr "Available amount to deposit into the specific GM pool."
 
@@ -2027,8 +2028,8 @@ msgid "GMX is not actively looking for new hires at the moment. However, if you 
 msgstr "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 
 #: src/components/TokenCard/TokenCard.js
-msgid "GMX is the utility and governance token. Accrues 30% of the platform's generated fees."
-msgstr "GMX is the utility and governance token. Accrues 30% of the platform's generated fees."
+msgid "GMX is the utility and governance token. Accrues 30% and 27% of V1 and V2 markets generated fees, respectively."
+msgstr "GMX is the utility and governance token. Accrues 30% and 27% of V1 and V2 markets generated fees, respectively."
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX staking calculator"
@@ -2469,11 +2470,6 @@ msgstr "Link"
 msgid "Link copied to clipboard."
 msgstr "Link copied to clipboard."
 
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#: src/components/Synthetics/PositionList/PositionList.tsx
-msgid "Liq Price"
-msgstr "Liq Price"
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -2484,7 +2480,9 @@ msgstr "Liq Price"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -2868,6 +2866,10 @@ msgstr "Max {0} short capacity"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} short exceeded"
 msgstr "Max {0} short exceeded"
+
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "Max. {nativeTokenSymbol} APR with 200% Boost for this week: {0}%."
+msgstr "Max. {nativeTokenSymbol} APR with 200% Boost for this week: {0}%."
 
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
@@ -3256,8 +3258,8 @@ msgid "POOL"
 msgstr "POOL"
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "POOLS VALUE"
-msgstr "POOLS VALUE"
+msgid "POOLS"
+msgstr "POOLS"
 
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "POSITION"
@@ -3384,8 +3386,8 @@ msgid "Pool Amount"
 msgstr "Pool Amount"
 
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Pools Value"
-msgstr "Pools Value"
+msgid "Pools"
+msgstr "Pools"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
@@ -4761,6 +4763,10 @@ msgstr "Total Volume"
 msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 msgstr "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "Total in Wallet"
+msgstr "Total in Wallet"
+
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
 msgstr "Total:"
@@ -5224,6 +5230,7 @@ msgstr "Voting"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
 msgid "WALLET"
 msgstr "WALLET"
 
@@ -5628,8 +5635,8 @@ msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsT
 msgstr "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
-msgid "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>;"
-msgstr "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>;"
+msgid "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>."
+msgstr "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>."
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"

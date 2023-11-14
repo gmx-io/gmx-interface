@@ -32,7 +32,7 @@ export default function LanguageModalContent({ currentLanguage }: Props) {
               <div className="menu-item-icon">
                 {isTestLanguage(item) ? "🫐" : <img className="network-dropdown-icon" src={image} alt={locales[item]} />}
               </div>
-              <span className="network-dropdown-item-label menu-item-label">{locales[item]}</span>
+              <span className="language-item">{locales[item]}</span>
             </div>
             <div className="network-dropdown-menu-item-img">
               {currentLanguage.current === item && <img src={checkedIcon} alt={locales[item]} />}

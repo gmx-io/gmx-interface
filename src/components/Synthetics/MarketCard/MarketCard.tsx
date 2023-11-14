@@ -49,7 +49,6 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
     maxOpenInterest,
   } = useMemo(() => {
     if (!marketInfo) return {};
-
     return {
       liquidity: getAvailableUsdLiquidityForPosition(marketInfo, isLong),
       maxReservedUsd: getMaxReservedUsd(marketInfo, isLong),

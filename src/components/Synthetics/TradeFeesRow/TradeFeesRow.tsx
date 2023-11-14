@@ -120,7 +120,7 @@ export function TradeFeesRow(p: Props) {
           id: "feeDiscount",
           label: (
             <div className="text-white">
-              <Trans>Referral Discount</Trans>
+              <Trans>Referral Discount</Trans>:
             </div>
           ),
           value: formatDeltaUsd(p.feeDiscountUsd),
@@ -159,7 +159,7 @@ export function TradeFeesRow(p: Props) {
     const borrowFeeRateRow = p.borrowFeeRateStr
       ? {
           id: "borrowFeeRate",
-          label: <div className="text-white">{t`Borrow Fee Rate`}</div>,
+          label: <div className="text-white">{t`Borrow Fee Rate`}:</div>,
           value: p.borrowFeeRateStr,
           className: p.borrowFeeRateStr?.startsWith("-") ? "text-red" : "text-green",
         }
@@ -168,7 +168,7 @@ export function TradeFeesRow(p: Props) {
     const fundingFeeRateRow = p.fundingFeeRateStr
       ? {
           id: "fundingFeeRate",
-          label: <div className="text-white">{t`Funding Fee Rate`}</div>,
+          label: <div className="text-white">{t`Funding Fee Rate`}:</div>,
           value: p.fundingFeeRateStr,
           className: p.fundingFeeRateStr?.startsWith("-") ? "text-red" : "text-green",
         }
@@ -176,14 +176,13 @@ export function TradeFeesRow(p: Props) {
 
     const executionFeeRow = p.executionFee?.feeTokenAmount.gt(0)
       ? {
-          label: <div className="text-white">{t`Max Execution Fee`}</div>,
+          label: <div className="text-white">{t`Max Execution Fee`}:</div>,
           value: formatTokenAmountWithUsd(
             p.executionFee.feeTokenAmount.mul(-1),
             p.executionFee.feeUsd.mul(-1),
             p.executionFee.feeToken.symbol,
             p.executionFee.feeToken.decimals
           ),
-          className: "text-red",
           id: "executionFee",
         }
       : undefined;

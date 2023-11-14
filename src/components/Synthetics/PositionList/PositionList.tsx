@@ -94,7 +94,7 @@ export function PositionList(p: Props) {
               <Trans>Mark Price</Trans>
             </th>
             <th>
-              <Trans>Liq Price</Trans>
+              <Trans>Liq. Price</Trans>
             </th>
           </tr>
           {positions.length === 0 && (
