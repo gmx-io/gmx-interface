@@ -197,8 +197,8 @@ export function getMarketReservesAccountingInterest(marketInfo: MarketInfo, isLo
     : [openInterestUsd, maxOpenInterestUsd];
 
   return {
-    reserveOrInterest: reserveOrInterest,
-    maxReserveOrInterest: maxReserveOrInterest,
+    reserveOrInterest,
+    maxReserveOrInterest,
   };
 }
 
