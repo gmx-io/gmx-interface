@@ -2,7 +2,7 @@ import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { PRECISION, USD_DECIMALS } from "lib/legacy";
-import { applyFactor, expandDecimals } from "lib/numbers";
+import { applyFactor, expandDecimals, getArrayWithSmallerDifference } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getCappedPositionImpactUsd } from "../fees";
 import { convertToContractTokenPrices, convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens";
@@ -174,6 +174,31 @@ export function getAvailableUsdLiquidityForCollateral(marketInfo: MarketInfo, is
   const liqudiity = poolUsd.sub(minPoolUsd);
 
   return liqudiity;
+}
+
+export function getMarketReservesAccountingInterest(marketInfo: MarketInfo, isLong: boolean) {
+  if (marketInfo.isSpotOnly) {
+    return {
+      reserveUsd: BigNumber.from(0),
+      maxReserveUsd: BigNumber.from(0),
+    };
+  }
+
+  const reservedUsd = getReservedUsd(marketInfo, isLong);
+  const maxReservedUsd = getMaxReservedUsd(marketInfo, isLong);
+
+  const openInterestUsd = getOpenInterestUsd(marketInfo, isLong);
+  const maxOpenInterestUsd = getMaxOpenInterestUsd(marketInfo, isLong);
+
+  const [currentReserve, currentMaxReserve] = getArrayWithSmallerDifference(
+    [reservedUsd, maxReservedUsd],
+    [openInterestUsd, maxOpenInterestUsd]
+  );
+
+  return {
+    reserveUsd: currentReserve,
+    maxReserveUsd: currentMaxReserve,
+  };
 }
 
 export function getCappedPoolPnl(p: {
