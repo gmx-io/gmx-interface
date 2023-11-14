@@ -349,13 +349,3 @@ export function removeTrailingZeros(amount: string | number) {
   if (!amountWithoutZeros) return amount;
   return amountWithoutZeros;
 }
-
-export function getArrayWithSmallerDifference(
-  arr1: [BigNumber, BigNumber],
-  arr2: [BigNumber, BigNumber]
-): [BigNumber, BigNumber] {
-  const diff1 = arr1[0].sub(arr1[1]);
-  const diff2 = arr2[0].sub(arr2[1]);
-
-  return diff1.lt(diff2) ? arr1 : arr2;
-}
