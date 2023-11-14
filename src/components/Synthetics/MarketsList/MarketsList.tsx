@@ -6,8 +6,7 @@ import { getFundingFactorPerPeriod } from "domain/synthetics/fees";
 import {
   MarketInfo,
   getMarketPoolName,
-  getMaxReservedUsd,
-  getReservedUsd,
+  getMarketReservesAccountingInterest,
   useMarketsInfo,
 } from "domain/synthetics/markets";
 import { TokenData, getMidPrice } from "domain/synthetics/tokens";
@@ -52,8 +51,8 @@ export function MarketsList() {
         avgFundingRateLong: BigNumber;
         avgFundingRateShort: BigNumber;
         totalUtilization: BigNumber;
-        totalReservedUsd: BigNumber;
-        totalMaxReservedUsd: BigNumber;
+        totalReserveOrInterest: BigNumber;
+        totalMaxReserveOrInterest: BigNumber;
         marketsStats: {
           marketInfo: MarketInfo;
           poolValueUsd: BigNumber;
@@ -81,8 +80,8 @@ export function MarketsList() {
           avgFundingRateLong: BigNumber.from(0),
           avgFundingRateShort: BigNumber.from(0),
           totalUtilization: BigNumber.from(0),
-          totalReservedUsd: BigNumber.from(0),
-          totalMaxReservedUsd: BigNumber.from(0),
+          totalReserveOrInterest: BigNumber.from(0),
+          totalMaxReserveOrInterest: BigNumber.from(0),
           marketsStats: [],
         };
       }
@@ -94,22 +93,23 @@ export function MarketsList() {
       const fundingRateLong = getFundingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]);
       const fundingRateShort = getFundingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]);
 
-      const longReservedUsd = getReservedUsd(marketInfo, true);
-      const maxLongReservedUsd = getMaxReservedUsd(marketInfo, true);
+      const { reserveOrInterest: longReserveOrInterestUsd, maxReserveOrInterest: maxLongReserveOrInterestUsd } =
+        getMarketReservesAccountingInterest(marketInfo, true);
 
-      const shortReservedUsd = getReservedUsd(marketInfo, false);
-      const maxShortReservedUsd = getMaxReservedUsd(marketInfo, false);
+      const { reserveOrInterest: shortReserveOrInterestUsd, maxReserveOrInterest: maxShortReserveOrInterestUsd } =
+        getMarketReservesAccountingInterest(marketInfo, false);
 
-      const totalReservedUsd = longReservedUsd.add(shortReservedUsd);
-      const maxTotalReservedUsd = maxLongReservedUsd.add(maxShortReservedUsd);
+      const totalReserveOrInterest = longReserveOrInterestUsd.add(shortReserveOrInterestUsd);
+      const totalMaxReserveOrInterest = maxLongReserveOrInterestUsd.add(maxShortReserveOrInterestUsd);
 
-      const utilization = maxTotalReservedUsd.gt(0)
-        ? totalReservedUsd.mul(BASIS_POINTS_DIVISOR).div(maxTotalReservedUsd)
+      const utilization = totalMaxReserveOrInterest.gt(0)
+        ? totalReserveOrInterest.mul(BASIS_POINTS_DIVISOR).div(totalMaxReserveOrInterest)
         : BigNumber.from(0);
 
       indexTokenStats.totalPoolValue = indexTokenStats.totalPoolValue.add(poolValueUsd);
-      indexTokenStats.totalReservedUsd = indexTokenStats.totalReservedUsd.add(totalReservedUsd);
-      indexTokenStats.totalMaxReservedUsd = indexTokenStats.totalMaxReservedUsd.add(maxTotalReservedUsd);
+      indexTokenStats.totalReserveOrInterest = indexTokenStats.totalReserveOrInterest.add(totalReserveOrInterest);
+      indexTokenStats.totalMaxReserveOrInterest =
+        indexTokenStats.totalMaxReserveOrInterest.add(totalMaxReserveOrInterest);
       indexTokenStats.marketsStats.push({
         marketInfo: marketInfo,
         utilization,
@@ -120,8 +120,10 @@ export function MarketsList() {
     }
 
     for (const indexTokenStats of Object.values(indexMap)) {
-      indexTokenStats.totalUtilization = indexTokenStats.totalMaxReservedUsd.gt(0)
-        ? indexTokenStats.totalReservedUsd.mul(BASIS_POINTS_DIVISOR).div(indexTokenStats.totalMaxReservedUsd)
+      indexTokenStats.totalUtilization = indexTokenStats.totalMaxReserveOrInterest.gt(0)
+        ? indexTokenStats.totalReserveOrInterest
+            .mul(BASIS_POINTS_DIVISOR)
+            .div(indexTokenStats.totalMaxReserveOrInterest)
         : BigNumber.from(0);
 
       indexTokenStats.avgFundingRateLong = indexTokenStats.marketsStats.reduce((acc, stat) => {

@@ -176,6 +176,32 @@ export function getAvailableUsdLiquidityForCollateral(marketInfo: MarketInfo, is
   return liqudiity;
 }
 
+export function getMarketReservesAccountingInterest(marketInfo: MarketInfo, isLong: boolean) {
+  if (marketInfo.isSpotOnly) {
+    return {
+      reserveOrInterest: BigNumber.from(0),
+      maxReserveOrInterest: BigNumber.from(0),
+    };
+  }
+
+  const reservedUsd = getReservedUsd(marketInfo, isLong);
+  const maxReservedUsd = getMaxReservedUsd(marketInfo, isLong);
+
+  const openInterestUsd = getOpenInterestUsd(marketInfo, isLong);
+  const maxOpenInterestUsd = getMaxOpenInterestUsd(marketInfo, isLong);
+
+  const isReserveSmaller = maxReservedUsd.sub(reservedUsd).lt(maxOpenInterestUsd.sub(openInterestUsd));
+
+  const [reserveOrInterest, maxReserveOrInterest] = isReserveSmaller
+    ? [reservedUsd, maxReservedUsd]
+    : [openInterestUsd, maxOpenInterestUsd];
+
+  return {
+    reserveOrInterest: reserveOrInterest,
+    maxReserveOrInterest: maxReserveOrInterest,
+  };
+}
+
 export function getCappedPoolPnl(p: {
   marketInfo: MarketInfo;
   poolUsd: BigNumber;
