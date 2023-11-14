@@ -18,6 +18,7 @@ import "./TradeFeesRow.scss";
 
 type Props = {
   totalFees?: FeeItem;
+  shouldShowRebate?: boolean;
   swapFees?: SwapFeeItem[];
   swapProfitFee?: FeeItem;
   swapPriceImpact?: FeeItem;
@@ -44,6 +45,8 @@ type FeeRow = {
 export function TradeFeesRow(p: Props) {
   const { chainId } = useChainId();
   const tradingIncentives = useTradingIncentives();
+  const shouldShowRebate = p.shouldShowRebate ?? true;
+  const rebateIsApplicable = shouldShowRebate && p.positionFee?.deltaUsd.lt(0) && p.feesType !== "swap";
 
   const feeRows: FeeRow[] = useMemo(() => {
     const positionPriceImpactRow = p.positionPriceImpact?.deltaUsd.abs().gt(0)
@@ -106,12 +109,13 @@ export function TradeFeesRow(p: Props) {
         }
       : undefined;
 
+    const feesTypeName = p.feesType === "increase" ? t`Open Fee` : t`Close Fee`;
     const positionFeeRow = p.positionFee?.deltaUsd.abs().gt(0)
       ? {
           id: "positionFee",
           label: (
             <>
-              <div className="text-white">{p.feesType === "increase" ? t`Open Fee` : t`Close Fee`}:</div>
+              <div className="text-white">{feesTypeName}:</div>
               <div>({formatPercentage(p.positionFee.bps.abs())} of position size)</div>
             </>
           ),
@@ -180,18 +184,20 @@ export function TradeFeesRow(p: Props) {
       : undefined;
 
     const rebateRow =
-      tradingIncentives && tradingIncentives.state === "live" && p.positionFee?.deltaUsd.lt(0)
+      tradingIncentives && tradingIncentives.state === "live" && rebateIsApplicable
         ? {
             label: (
               <>
                 <div className="text-white">{t`Bonus Rebate`}:</div>
                 <div>
-                  <Trans>({formatAmount(tradingIncentives.rebatePercent, 2, 0)}% of Open Fee)</Trans>
+                  <Trans>
+                    ({formatAmount(tradingIncentives.rebatePercent, 2, 0)}% of {feesTypeName})
+                  </Trans>
                 </div>
               </>
             ),
             value: formatDeltaUsd(
-              p.positionFee.deltaUsd.mul(tradingIncentives.rebatePercent).div(BASIS_POINTS_DIVISOR).mul(-1)
+              p.positionFee?.deltaUsd.mul(tradingIncentives.rebatePercent).div(BASIS_POINTS_DIVISOR).mul(-1)
             ),
             className: "text-green",
             id: "executionFee",
@@ -265,32 +271,31 @@ export function TradeFeesRow(p: Props) {
     p.fundingFeeRateStr,
     p.executionFee,
     tradingIncentives,
+    rebateIsApplicable,
     chainId,
   ]);
 
   const totalFeeUsd = useMemo(() => {
     const totalBeforeRebate = p.totalFees?.deltaUsd.sub(p.executionFee?.feeUsd || 0);
-    if (p.feesType === "swap") {
-      return totalBeforeRebate;
-    }
-    if (!p.positionFee || p.positionFee.deltaUsd.gte(0) || !tradingIncentives || tradingIncentives.state !== "live") {
+
+    if (!rebateIsApplicable || !p.positionFee || !tradingIncentives || tradingIncentives.state !== "live") {
       return totalBeforeRebate;
     }
     const rebate = p.positionFee.deltaUsd.mul(tradingIncentives.rebatePercent).div(BASIS_POINTS_DIVISOR).mul(-1);
 
     return totalBeforeRebate?.add(rebate);
-  }, [p.executionFee?.feeUsd, p.feesType, p.positionFee, p.totalFees?.deltaUsd, tradingIncentives]);
+  }, [p.executionFee?.feeUsd, p.positionFee, p.totalFees?.deltaUsd, rebateIsApplicable, tradingIncentives]);
 
   const title = useMemo(() => {
-    if (tradingIncentives && tradingIncentives.state === "live" && p.feesType !== "swap") {
+    if (tradingIncentives?.state === "live" && shouldShowRebate) {
       return p.feesType === "edit" ? t`Fees (Rebated)` : t`Fees (Rebated) and Price Impact`;
     } else {
       return p.feesType === "edit" ? t`Fees` : t`Fees and Price Impact`;
     }
-  }, [p.feesType, tradingIncentives]);
+  }, [p.feesType, shouldShowRebate, tradingIncentives]);
 
   const incentivesBottomText = useMemo(() => {
-    if (!tradingIncentives || p.positionFee?.deltaUsd.gte(0)) {
+    if (!tradingIncentives || !rebateIsApplicable) {
       return null;
     }
 
@@ -318,7 +323,7 @@ export function TradeFeesRow(p: Props) {
         .
       </Trans>
     );
-  }, [p.positionFee, tradingIncentives]);
+  }, [rebateIsApplicable, tradingIncentives]);
 
   return (
     <ExchangeInfoRow

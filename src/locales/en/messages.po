@@ -14,8 +14,12 @@ msgstr ""
 "Plural-Forms: \n"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "({0}% of Open Fee)"
-msgstr "({0}% of Open Fee)"
+#~ msgid "({0}% of Open Fee)"
+#~ msgstr "({0}% of Open Fee)"
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "({0}% of {feesTypeName})"
+msgstr "({0}% of {feesTypeName})"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "01 Sep 2021"
