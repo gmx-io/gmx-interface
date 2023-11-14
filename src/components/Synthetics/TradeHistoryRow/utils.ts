@@ -230,8 +230,12 @@ export const formatSwapMessage = (tradeAction: SwapTradeAction): string => {
       ? tradeAction.executionAmountOut!
       : tradeAction.minOutputAmount!;
 
-  const fromText = formatTokenAmount(amountIn, tokenIn?.decimals, tokenIn?.symbol);
-  const toText = formatTokenAmount(amountOut, tokenOut?.decimals, tokenOut?.symbol);
+  const fromText = formatTokenAmount(amountIn, tokenIn?.decimals, tokenIn?.symbol, {
+    useCommas: true,
+  });
+  const toText = formatTokenAmount(amountOut, tokenOut?.decimals, tokenOut?.symbol, {
+    useCommas: true,
+  });
   const orderTypeName = getSwapOrderTypeName(tradeAction);
 
   if (isLimitOrderType(tradeAction.orderType)) {

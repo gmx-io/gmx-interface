@@ -166,6 +166,9 @@ export default function Stats() {
             />
           </th>
           <th>
+            <Tooltip handle="Min buffer" renderContent={() => "Floor, in tokens"} />
+          </th>
+          <th>
             <Tooltip
               handle="Long OI"
               renderContent={() =>
@@ -234,6 +237,10 @@ export default function Stats() {
                 <td className={maxPoolClassName}>
                   ${formatAmountHuman(tokenInfo.usdgAmount, 18)} / ${formatAmountHuman(tokenInfo.maxUsdgAmount, 18)}
                   {shareBar(tokenInfo.usdgAmount, tokenInfo.maxUsdgAmount)}
+                </td>
+                <td>
+                  {formatAmountHuman(tokenInfo.bufferAmount, tokenInfo.decimals)} /{" "}
+                  {formatAmountHuman(tokenInfo.poolAmount, tokenInfo.decimals)}
                 </td>
                 <td>{renderOiCell(tokenInfo, true)}</td>
                 <td>{renderOiCell(tokenInfo, false)}</td>

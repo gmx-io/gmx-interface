@@ -23,10 +23,17 @@ function useEventToast() {
   }, [marketsInfoData]);
 
   useEffect(() => {
+    const allIncentivesOn = Boolean(
+      incentiveStats?.lp?.isActive && incentiveStats?.migration?.isActive && incentiveStats?.trading?.isActive
+    );
+    const someIncentivesOn =
+      !allIncentivesOn &&
+      Boolean(incentiveStats?.lp?.isActive || incentiveStats?.migration?.isActive || incentiveStats?.trading?.isActive);
     const validationParams = {
       "v2-adaptive-funding": isAdaptiveFundingActive,
       "v2-adaptive-funding-coming-soon": isAdaptiveFundingActive !== undefined && !isAdaptiveFundingActive,
-      "incentives-launch": incentiveStats?.lp?.isActive,
+      "incentives-launch": someIncentivesOn,
+      "all-incentives-launch": allIncentivesOn,
     };
     const eventsData = isHome ? homeEventsData : appEventsData;
 
