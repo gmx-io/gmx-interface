@@ -42,7 +42,7 @@ export default function useUserIncentiveData(chainId: number, account?: string) 
 
     const response = await graphClient!.query({
       query: USER_INCENTIVE_QUERY,
-      variables: { account },
+      variables: { account: account.toLowerCase() },
       fetchPolicy: "no-cache",
     });
 

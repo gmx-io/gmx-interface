@@ -68,6 +68,7 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import PageTitle from "components/PageTitle/PageTitle";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import UserIncentiveTable from "components/Synthetics/UserIncentiveTable/UserIncentiveTable";
 
 const { AddressZero } = ethers.constants;
 
@@ -2254,6 +2255,16 @@ export default function StakeV2({ setPendingTxns }) {
           </div>
         </div>
       </div>
+      <PageTitle
+        title={t`Incentives`}
+        subtitle={
+          <Trans>
+            Earn $ARB tokens by providing liquidity in GM, trading, or participating in trading competitions. Only for
+            GMX V2.
+          </Trans>
+        }
+      />
+      <UserIncentiveTable />
       <Footer />
     </div>
   );
