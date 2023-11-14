@@ -41,13 +41,17 @@ export const GmTokensBalanceInfo = ({
     return (
       <>
         {earnedTotal && (
-          <StatsTooltipRow showDollar={false} label={t`Total accrued Fees`} value={`${formatDeltaUsd(earnedTotal)}`} />
+          <StatsTooltipRow
+            showDollar={false}
+            label={t`Total accrued Fees`}
+            value={`${formatDeltaUsd(earnedTotal, undefined, { showPlusForZero: true })}`}
+          />
         )}
         {earnedRecently && (
           <StatsTooltipRow
             showDollar={false}
             label={t`${daysConsidered}d accrued Fees`}
-            value={`${formatDeltaUsd(earnedRecently)}`}
+            value={`${formatDeltaUsd(earnedRecently, undefined, { showPlusForZero: true })}`}
           />
         )}
         <br />
