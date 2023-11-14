@@ -5,7 +5,7 @@ import { ethers } from "ethers";
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 import useScrollToTop from "lib/useScrollToTop";
-// import Tour from "reactour";
+import Tour from "reactour";
 
 import { Switch, Route, HashRouter as Router, useLocation, useHistory } from "react-router-dom";
 
@@ -565,352 +565,479 @@ function FullApp() {
     };
   }, [active, chainId, vaultAddress, positionRouterAddress]);
   const themeContext = useContext(ThemeContext);
-  return (
-    <div id={themeContext.theme}>
-      <div className="App">
-        <div className="App-content">
-          <Header
-            disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-            openSettings={openSettings}
-            setWalletModalVisible={setWalletModalVisible}
-            setApprovalsModalVisible={setApprovalsModalVisible}
-            setDoesUserHaveEmail={setDoesUserHaveEmail}
-            redirectPopupTimestamp={redirectPopupTimestamp}
-            showRedirectModal={showRedirectModal}
-          />
-          {isHome && (
-            <Switch>
-              <Route exact path="/">
-                <Home showRedirectModal={showRedirectModal} redirectPopupTimestamp={redirectPopupTimestamp} />
-              </Route>
-              <Route exact path="/referral-terms">
-                <ReferralTerms />
-              </Route>
-              <Route exact path="/terms-and-conditions">
-                <TermsAndConditions />
-              </Route>
-              <Route path="*">
-                <PageNotFound />
-              </Route>
-            </Switch>
-          )}
-          {!isHome && (
-            <Switch>
-              <Route exact path="/">
-                <AppHome showRedirectModal={showRedirectModal} redirectPopupTimestamp={redirectPopupTimestamp} />
-              </Route>
-              <Route exact path="/trade">
-                <Exchange
-                  ref={exchangeRef}
-                  savedShowPnlAfterFees={savedShowPnlAfterFees}
-                  savedIsPnlInLeverage={savedIsPnlInLeverage}
-                  setSavedIsPnlInLeverage={setSavedIsPnlInLeverage}
-                  savedSlippageAmount={savedSlippageAmount}
-                  setPendingTxns={setPendingTxns}
-                  pendingTxns={pendingTxns}
-                  savedShouldShowPositionLines={savedShouldShowPositionLines}
-                  setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
-                  connectWallet={connectWallet}
-                  savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
-                />
-              </Route>
-              <Route exact path="/dashboard">
-                <Dashboard />
-              </Route>
-              <Route exact path="/stats">
-                <Stats />
-              </Route>
-              <Route exact path="/earn">
-                <Stake setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
-              </Route>
-              <Route exact path="/swap">
-                <SwapBox
-                  ref={exchangeRef}
-                  savedShowPnlAfterFees={savedShowPnlAfterFees}
-                  savedIsPnlInLeverage={savedIsPnlInLeverage}
-                  setSavedIsPnlInLeverage={setSavedIsPnlInLeverage}
-                  savedSlippageAmount={savedSlippageAmount}
-                  setPendingTxns={setPendingTxns}
-                  pendingTxns={pendingTxns}
-                  savedShouldShowPositionLines={savedShouldShowPositionLines}
-                  setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
-                  connectWallet={connectWallet}
-                  savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
-                />
-              </Route>
-              <Route exact path="/buy">
-                <Buy
-                  savedSlippageAmount={savedSlippageAmount}
-                  setPendingTxns={setPendingTxns}
-                  connectWallet={connectWallet}
-                />
-              </Route>
-              <Route exact path="/buy_glp">
-                <BuyGlp
-                  savedSlippageAmount={savedSlippageAmount}
-                  setPendingTxns={setPendingTxns}
-                  connectWallet={connectWallet}
-                  savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
-                />
-              </Route>
-              <Route exact path="/buy_gmx">
-                <BuyGMX />
-              </Route>
-              <Route exact path="/referrals">
-                <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
-              </Route>
-              <Route exact path="/referrals/:account">
-                <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
-              </Route>
-              <Route exact path="/nft_wallet">
-                <NftWallet />
-              </Route>
-              <Route exact path="/claim_es_gmx">
-                <ClaimEsGmx setPendingTxns={setPendingTxns} />
-              </Route>
-              <Route exact path="/actions">
-                <Actions />
-              </Route>
-              <Route exact path="/actions/:account">
-                <Actions savedIsPnlInLeverage={savedIsPnlInLeverage} savedShowPnlAfterFees={savedShowPnlAfterFees} />
-              </Route>
-              <Route exact path="/orders_overview">
-                <OrdersOverview />
-              </Route>
-              <Route exact path="/positions_overview">
-                <PositionsOverview />
-              </Route>
-              <Route exact path="/begin_account_transfer">
-                <BeginAccountTransfer setPendingTxns={setPendingTxns} />
-              </Route>
-              <Route exact path="/complete_account_transfer/:sender/:receiver">
-                <CompleteAccountTransfer setPendingTxns={setPendingTxns} />
-              </Route>
-              <Route path="*">
-                <PageNotFound />
-              </Route>
-            </Switch>
-          )}
-        </div>
-      </div>
-      <ToastContainer
-        limit={1}
-        transition={Zoom}
-        position="bottom-right"
-        autoClose={7000}
-        hideProgressBar={true}
-        newestOnTop={false}
-        closeOnClick={false}
-        draggable={false}
-        pauseOnHover
-      />
-      <EventToastContainer />
-      <RedirectPopupModal
-        redirectModalVisible={redirectModalVisible}
-        setRedirectModalVisible={setRedirectModalVisible}
-        appRedirectUrl={appRedirectUrl}
-        setRedirectPopupTimestamp={setRedirectPopupTimestamp}
-        setShouldHideRedirectModal={setShouldHideRedirectModal}
-        shouldHideRedirectModal={shouldHideRedirectModal}
-      />
-      <Modal
-        className="Connect-wallet-modal"
-        isVisible={walletModalVisible}
-        setIsVisible={setWalletModalVisible}
-        label={`Connect Wallet`}
-      >
-        <div className="Wallet-modal-description">
-          <input id="tos" type="checkbox" />
-          <label for="tos">
-            I certify that I have read and accept the
-            <br />
-            <a href="#">
-              <span>Terms of Services</span>
-            </a>{" "}
-            and{" "}
-            <a href="#">
-              <span>Privacy Policy</span>
+
+  const [isTourOpen, setIsTourOpen] = useState(true);
+
+  const steps = [
+    {
+      selector: '[data-tour="step-1"]',
+      content: ({ goTo, inDOM }) => (
+        <div>
+          <div class="tour-title">Trade (Step 1/4)</div>
+          <br />
+          <div class="tour-content">Trade and exchange currencies optionally with leverage.</div>
+          <br />
+          <div class="tour-control">
+            <a href="#" onClick={() => setIsTourOpen(false)}>
+              Close
             </a>
-            .
-          </label>
+            <button onClick={() => goTo(1)}>Next</button>
+          </div>
         </div>
-        <div className="Modal-content-wrapper">
-          <UserOnboardSection
-            step={1}
-            text={`Connect Wallet`}
-            handleClick={handleConnectWallet}
-            disabled={false}
-            showArrow={true}
-            isActive={activeStep === 2}
-            showSkip={false}
-          />
+      ),
+      position: "bottom",
+      style: {
+        backgroundColor: "#242424",
+        width: "312px",
+        height: "172px",
+        padding: "16px",
+        fontSize: "18px",
+      },
+    },
+    {
+      selector: '[data-tour="step-2"]',
+      content: ({ goTo, inDOM }) => (
+        <div>
+          <div class="tour-title">Earn (Step 2/4)</div>
+          <br />
+          <div class="tour-content">Stake TMX and TLP to earn rewards.</div>
+          <br />
+          <div class="tour-control">
+            <a href="#" onClick={() => setIsTourOpen(false)}>
+              Close
+            </a>
+            <button onClick={() => goTo(2)}>Next</button>
+          </div>
+        </div>
+      ),
+      position: "bottom",
+      style: {
+        backgroundColor: "#242424",
+        width: "312px",
+        height: "180px",
+        padding: "16px",
+        fontSize: "18px",
+      },
+    },
+    {
+      selector: ".third-step",
+      content: ({ goTo, inDOM }) => (
+        <div>
+          <div class="tour-title">Settings (Step 3/4)</div>
+          <br />
+          <div class="tour-content">Manage Trade settings here.</div>
+          <br />
+          <div class="tour-control">
+            <a href="#" onClick={() => setIsTourOpen(false)}>
+              Close
+            </a>
+            <button onClick={() => goTo(3)}>Next</button>
+          </div>
+        </div>
+      ),
+      position: "bottom",
+      style: {
+        backgroundColor: "#242424",
+        width: "312px",
+        height: "172px",
+        padding: "16px",
+        fontSize: "18px",
+      },
+    },
+    {
+      selector: ".fourth-step",
+      title: "Email Notifications",
+      content: "Lorem Ipsum is simply dummy text of the printing and typesetting.",
+      // eslint-disable-next-line no-dupe-keys
+      content: ({ goTo, inDOM }) => (
+        <div>
+          <div class="tour-title">Email Notifications</div>
+          <br />
+          <div class="tour-content">
+            Enable email notifications to stay up-to-date, and configure 1-click trading, slippage, and light/dark mode
+            here.
+          </div>
+          <br />
+          <div class="tour-control">
+            <a href="#" onClick={() => setIsTourOpen(false)}>
+              Close
+            </a>
+            <button onClick={() => setIsTourOpen(false)}>Got it</button>
+          </div>
+        </div>
+      ),
+      position: "bottom",
+      style: {
+        backgroundColor: "#242424",
+        width: "312px",
+        height: "220px",
+        padding: "16px",
+        fontSize: "18px",
+      },
+    },
+    // ...
+  ];
 
-          <AnimatePresence>
-            {showConnectOptions && (
-              <motion.div
-                className="Wallets-container"
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                variants={optionalSectionVisibilityVariants}
-                style={{ originY: 0 }}
-              >
-                <button className="Wallet-btn" onClick={activateMetaMask}>
-                  <img src={metamaskImg} alt="MetaMask" />
-                  <div>
-                    <Trans>Connect Metamask</Trans>
-                  </div>
-                </button>
-                <button className="Wallet-btn CoinbaseWallet-btn" onClick={activateCoinBase}>
-                  <img src={coinbaseImg} alt="Coinbase Wallet" />
-                  <div>
-                    <Trans>Coinbase Wallet</Trans>
-                  </div>
-                </button>
-                <button className="Wallet-btn" onClick={activateWalletConnect}>
-                  <img src={walletConnectImg} alt="WalletConnect" />
-                  <div>
-                    <Trans>Wallet Connect</Trans>
-                  </div>
-                </button>
-              </motion.div>
+  return (
+    <>
+      <div id={themeContext.theme}>
+        <div className="App">
+          <div className="App-content">
+            <Header
+              disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
+              openSettings={openSettings}
+              setWalletModalVisible={setWalletModalVisible}
+              setApprovalsModalVisible={setApprovalsModalVisible}
+              setDoesUserHaveEmail={setDoesUserHaveEmail}
+              redirectPopupTimestamp={redirectPopupTimestamp}
+              showRedirectModal={showRedirectModal}
+            />
+            {isHome && (
+              <Switch>
+                <Route exact path="/">
+                  <Home showRedirectModal={showRedirectModal} redirectPopupTimestamp={redirectPopupTimestamp} />
+                </Route>
+                <Route exact path="/referral-terms">
+                  <ReferralTerms />
+                </Route>
+                <Route exact path="/terms-and-conditions">
+                  <TermsAndConditions />
+                </Route>
+                <Route path="*">
+                  <PageNotFound />
+                </Route>
+              </Switch>
             )}
-          </AnimatePresence>
-
-          <UserOnboardSection
-            step={2}
-            text={`Enable One-Click Trading`}
-            handleClick={handleApproveTokens}
-            disabled={!(active && hasTokens)}
-            showArrow={true}
-            isActive={activeStep === 3}
-            showSkip={true}
-          />
-
-          {!doesUserHaveEmail && (
+            {!isHome && (
+              <Switch>
+                <Route exact path="/">
+                  <AppHome showRedirectModal={showRedirectModal} redirectPopupTimestamp={redirectPopupTimestamp} />
+                </Route>
+                <Route exact path="/trade">
+                  <Exchange
+                    ref={exchangeRef}
+                    savedShowPnlAfterFees={savedShowPnlAfterFees}
+                    savedIsPnlInLeverage={savedIsPnlInLeverage}
+                    setSavedIsPnlInLeverage={setSavedIsPnlInLeverage}
+                    savedSlippageAmount={savedSlippageAmount}
+                    setPendingTxns={setPendingTxns}
+                    pendingTxns={pendingTxns}
+                    savedShouldShowPositionLines={savedShouldShowPositionLines}
+                    setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
+                    connectWallet={connectWallet}
+                    savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
+                  />
+                </Route>
+                <Route exact path="/dashboard">
+                  <Dashboard />
+                </Route>
+                <Route exact path="/stats">
+                  <Stats />
+                </Route>
+                <Route exact path="/earn">
+                  <Stake setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
+                </Route>
+                <Route exact path="/swap">
+                  <SwapBox
+                    ref={exchangeRef}
+                    savedShowPnlAfterFees={savedShowPnlAfterFees}
+                    savedIsPnlInLeverage={savedIsPnlInLeverage}
+                    setSavedIsPnlInLeverage={setSavedIsPnlInLeverage}
+                    savedSlippageAmount={savedSlippageAmount}
+                    setPendingTxns={setPendingTxns}
+                    pendingTxns={pendingTxns}
+                    savedShouldShowPositionLines={savedShouldShowPositionLines}
+                    setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
+                    connectWallet={connectWallet}
+                    savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
+                  />
+                </Route>
+                <Route exact path="/buy">
+                  <Buy
+                    savedSlippageAmount={savedSlippageAmount}
+                    setPendingTxns={setPendingTxns}
+                    connectWallet={connectWallet}
+                  />
+                </Route>
+                <Route exact path="/buy_glp">
+                  <BuyGlp
+                    savedSlippageAmount={savedSlippageAmount}
+                    setPendingTxns={setPendingTxns}
+                    connectWallet={connectWallet}
+                    savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
+                  />
+                </Route>
+                <Route exact path="/buy_gmx">
+                  <BuyGMX />
+                </Route>
+                <Route exact path="/referrals">
+                  <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
+                </Route>
+                <Route exact path="/referrals/:account">
+                  <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
+                </Route>
+                <Route exact path="/nft_wallet">
+                  <NftWallet />
+                </Route>
+                <Route exact path="/claim_es_gmx">
+                  <ClaimEsGmx setPendingTxns={setPendingTxns} />
+                </Route>
+                <Route exact path="/actions">
+                  <Actions />
+                </Route>
+                <Route exact path="/actions/:account">
+                  <Actions savedIsPnlInLeverage={savedIsPnlInLeverage} savedShowPnlAfterFees={savedShowPnlAfterFees} />
+                </Route>
+                <Route exact path="/orders_overview">
+                  <OrdersOverview />
+                </Route>
+                <Route exact path="/positions_overview">
+                  <PositionsOverview />
+                </Route>
+                <Route exact path="/begin_account_transfer">
+                  <BeginAccountTransfer setPendingTxns={setPendingTxns} />
+                </Route>
+                <Route exact path="/complete_account_transfer/:sender/:receiver">
+                  <CompleteAccountTransfer setPendingTxns={setPendingTxns} />
+                </Route>
+                <Route path="*">
+                  <PageNotFound />
+                </Route>
+              </Switch>
+            )}
+          </div>
+        </div>
+        <ToastContainer
+          limit={1}
+          transition={Zoom}
+          position="bottom-right"
+          autoClose={7000}
+          hideProgressBar={true}
+          newestOnTop={false}
+          closeOnClick={false}
+          draggable={false}
+          pauseOnHover
+        />
+        <EventToastContainer />
+        <RedirectPopupModal
+          redirectModalVisible={redirectModalVisible}
+          setRedirectModalVisible={setRedirectModalVisible}
+          appRedirectUrl={appRedirectUrl}
+          setRedirectPopupTimestamp={setRedirectPopupTimestamp}
+          setShouldHideRedirectModal={setShouldHideRedirectModal}
+          shouldHideRedirectModal={shouldHideRedirectModal}
+        />
+        <Modal
+          className="Connect-wallet-modal"
+          isVisible={walletModalVisible}
+          setIsVisible={setWalletModalVisible}
+          label={`Connect Wallet`}
+        >
+          <div className="Wallet-modal-description">
+            <input id="tos" type="checkbox" />
+            <label for="tos">
+              I certify that I have read and accept the
+              <br />
+              <a href="#">
+                <span>Terms of Services</span>
+              </a>{" "}
+              and{" "}
+              <a href="#">
+                <span>Privacy Policy</span>
+              </a>
+              .
+            </label>
+          </div>
+          <div className="Modal-content-wrapper">
             <UserOnboardSection
-              step={3}
-              text={`Enable Email Notifications`}
-              handleClick={handleEmailVerifyClick}
-              disabled={!active}
+              step={1}
+              text={`Connect Wallet`}
+              handleClick={handleConnectWallet}
+              disabled={false}
               showArrow={true}
-              isActive={activeStep === 4}
+              isActive={activeStep === 2}
+              showSkip={false}
+            />
+
+            <AnimatePresence>
+              {showConnectOptions && (
+                <motion.div
+                  className="Wallets-container"
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={optionalSectionVisibilityVariants}
+                  style={{ originY: 0 }}
+                >
+                  <button className="Wallet-btn" onClick={activateMetaMask}>
+                    <img src={metamaskImg} alt="MetaMask" />
+                    <div>
+                      <Trans>Connect Metamask</Trans>
+                    </div>
+                  </button>
+                  <button className="Wallet-btn CoinbaseWallet-btn" onClick={activateCoinBase}>
+                    <img src={coinbaseImg} alt="Coinbase Wallet" />
+                    <div>
+                      <Trans>Coinbase Wallet</Trans>
+                    </div>
+                  </button>
+                  <button className="Wallet-btn" onClick={activateWalletConnect}>
+                    <img src={walletConnectImg} alt="WalletConnect" />
+                    <div>
+                      <Trans>Wallet Connect</Trans>
+                    </div>
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <UserOnboardSection
+              step={2}
+              text={`Enable One-Click Trading`}
+              handleClick={handleApproveTokens}
+              disabled={!(active && hasTokens)}
+              showArrow={true}
+              isActive={activeStep === 3}
               showSkip={true}
             />
-          )}
 
-          <AnimatePresence>
-            {showEmailVerification && (
-              <motion.div
-                className="Wallets-container"
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                variants={optionalSectionVisibilityVariants}
-                style={{ originY: 0 }}
-              >
-                <div className="Email-input-section">
-                  <label>Your email</label>
-                  <img src={emailIcn} alt="Email icon" />
-                  <input
-                    type="text"
-                    placeholder="name@example.com"
-                    value={emailText}
-                    onChange={(e) => setEmailText(e.target.value)}
-                  />
-                  <Button onClick={() => handleEmailSubmit(emailText)}>{`Verify`}</Button>
-                </div>
-                {showOtp && (
-                  <motion.div
-                    className="Wallets-container"
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                    variants={optionalSectionVisibilityVariants}
-                    style={{ originY: 0 }}
-                  >
-                    <OtpInput
-                      onOtpEntered={handleOtpEntered}
-                      generatedOtp={generatedOtp}
-                      resendHandler={() => handleEmailSubmit(emailText)}
-                    />
-                  </motion.div>
-                )}
-              </motion.div>
+            {!doesUserHaveEmail && (
+              <UserOnboardSection
+                step={3}
+                text={`Enable Email Notifications`}
+                handleClick={handleEmailVerifyClick}
+                disabled={!active}
+                showArrow={true}
+                isActive={activeStep === 4}
+                showSkip={true}
+              />
             )}
-          </AnimatePresence>
-        </div>
-      </Modal>
 
-      <Modal
-        className="Approve-tokens-modal"
-        isVisible={approvalsModalVisible}
-        setIsVisible={setApprovalsModalVisible}
-        label={`Enable 1-Click Trading`}
-      >
-        <ApproveTokens
-          chainId={chainId}
-          pendingTxns={pendingTxns}
-          setPendingTxns={setPendingTxns}
-          nonZeroBalanceTokens={nonZeroBalanceTokens}
-          closeApprovalsModal={() => {
-            setApprovalsModalVisible(false);
-            setWalletModalVisible(true);
-            setActiveStep(3);
-          }}
-        />
-      </Modal>
-      <Modal
-        className="App-settings"
-        isVisible={isSettingsVisible}
-        setIsVisible={setIsSettingsVisible}
-        label={t`Settings`}
-      >
-        <div className="App-settings-row">
-          <div>
-            <Trans>Allowed Slippage</Trans>
+            <AnimatePresence>
+              {showEmailVerification && (
+                <motion.div
+                  className="Wallets-container"
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={optionalSectionVisibilityVariants}
+                  style={{ originY: 0 }}
+                >
+                  <div className="Email-input-section">
+                    <label>Your email</label>
+                    <img src={emailIcn} alt="Email icon" />
+                    <input
+                      type="text"
+                      placeholder="name@example.com"
+                      value={emailText}
+                      onChange={(e) => setEmailText(e.target.value)}
+                    />
+                    <Button onClick={() => handleEmailSubmit(emailText)}>{`Verify`}</Button>
+                  </div>
+                  {showOtp && (
+                    <motion.div
+                      className="Wallets-container"
+                      initial="hidden"
+                      animate="visible"
+                      exit="exit"
+                      variants={optionalSectionVisibilityVariants}
+                      style={{ originY: 0 }}
+                    >
+                      <OtpInput
+                        onOtpEntered={handleOtpEntered}
+                        generatedOtp={generatedOtp}
+                        resendHandler={() => handleEmailSubmit(emailText)}
+                      />
+                    </motion.div>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
-          <div className="App-slippage-tolerance-input-container">
-            <input
-              type="number"
-              className="App-slippage-tolerance-input"
-              min="0"
-              value={slippageAmount}
-              onChange={(e) => setSlippageAmount(e.target.value)}
-            />
-            <div className="App-slippage-tolerance-input-percent">%</div>
+        </Modal>
+
+        <Modal
+          className="Approve-tokens-modal"
+          isVisible={approvalsModalVisible}
+          setIsVisible={setApprovalsModalVisible}
+          label={`Enable 1-Click Trading`}
+        >
+          <ApproveTokens
+            chainId={chainId}
+            pendingTxns={pendingTxns}
+            setPendingTxns={setPendingTxns}
+            nonZeroBalanceTokens={nonZeroBalanceTokens}
+            closeApprovalsModal={() => {
+              setApprovalsModalVisible(false);
+              setWalletModalVisible(true);
+              setActiveStep(3);
+            }}
+          />
+        </Modal>
+        <Modal
+          className="App-settings"
+          isVisible={isSettingsVisible}
+          setIsVisible={setIsSettingsVisible}
+          label={t`Settings`}
+        >
+          <div className="App-settings-row">
+            <div>
+              <Trans>Allowed Slippage</Trans>
+            </div>
+            <div className="App-slippage-tolerance-input-container">
+              <input
+                type="number"
+                className="App-slippage-tolerance-input"
+                min="0"
+                value={slippageAmount}
+                onChange={(e) => setSlippageAmount(e.target.value)}
+              />
+              <div className="App-slippage-tolerance-input-percent">%</div>
+            </div>
           </div>
-        </div>
-        <div className="Exchange-settings-row">
-          <Checkbox isChecked={showPnlAfterFees} setIsChecked={setShowPnlAfterFees}>
-            <Trans>Display PnL after fees</Trans>
-          </Checkbox>
-        </div>
-        <div className="Exchange-settings-row">
-          <Checkbox isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>
-            <Trans>Include PnL in leverage display</Trans>
-          </Checkbox>
-        </div>
-        <div className="Exchange-settings-row chart-positions-settings">
-          <Checkbox isChecked={savedShouldShowPositionLines} setIsChecked={setSavedShouldShowPositionLines}>
-            <span>
-              <Trans>Chart positions</Trans>
-            </span>
-          </Checkbox>
-        </div>
-        {isDevelopment() && (
           <div className="Exchange-settings-row">
-            <Checkbox isChecked={shouldDisableValidationForTesting} setIsChecked={setShouldDisableValidationForTesting}>
-              <Trans>Disable order validations</Trans>
+            <Checkbox isChecked={showPnlAfterFees} setIsChecked={setShowPnlAfterFees}>
+              <Trans>Display PnL after fees</Trans>
             </Checkbox>
           </div>
-        )}
+          <div className="Exchange-settings-row">
+            <Checkbox isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>
+              <Trans>Include PnL in leverage display</Trans>
+            </Checkbox>
+          </div>
+          <div className="Exchange-settings-row chart-positions-settings">
+            <Checkbox isChecked={savedShouldShowPositionLines} setIsChecked={setSavedShouldShowPositionLines}>
+              <span>
+                <Trans>Chart positions</Trans>
+              </span>
+            </Checkbox>
+          </div>
+          {isDevelopment() && (
+            <div className="Exchange-settings-row">
+              <Checkbox
+                isChecked={shouldDisableValidationForTesting}
+                setIsChecked={setShouldDisableValidationForTesting}
+              >
+                <Trans>Disable order validations</Trans>
+              </Checkbox>
+            </div>
+          )}
 
-        <Button variant="primary-action" className="w-100 mt-md" onClick={saveAndCloseSettings}>
-          <Trans>Save</Trans>
-        </Button>
-      </Modal>
-    </div>
+          <Button variant="primary-action" className="w-100 mt-md" onClick={saveAndCloseSettings}>
+            <Trans>Save</Trans>
+          </Button>
+        </Modal>
+      </div>
+      <Tour
+        steps={steps}
+        isOpen={isTourOpen && active && account && !walletModalVisible}
+        showCloseButton={false}
+        showNumber={false}
+        showNavigation={false}
+        showNavigationNumber={false}
+        showButtons={false}
+      />
+    </>
   );
 }
 
@@ -920,114 +1047,7 @@ function App() {
     const defaultLanguage = localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale;
     dynamicActivate(defaultLanguage);
   }, []);
-  // const [isTourOpen, setIsTourOpen] = useState(true);
 
-  // const steps = [
-  //   {
-  //     selector: '[data-tour="step-1"]',
-  //     content: ({ goTo, inDOM }) => (
-  //       <div>
-  //         <div class="tour-title">Trade (Step 1/4)</div>
-  //         <br />
-  //         <div class="tour-content">Lorem Ipsum is simply dummy text of the printing and typesetting.</div>
-  //         <br />
-  //         <div class="tour-control">
-  //           <a href="#" onClick={() => setIsTourOpen(false)}>
-  //             Close
-  //           </a>
-  //           <button onClick={() => goTo(1)}>Next</button>
-  //         </div>
-  //       </div>
-  //     ),
-  //     position: "bottom",
-  //     style: {
-  //       backgroundColor: "#242424",
-  //       width: "312px",
-  //       height: "172px",
-  //       padding: "16px",
-  //       fontSize: "18px",
-  //     },
-  //   },
-  //   {
-  //     selector: '[data-tour="step-2"]',
-  //     content: ({ goTo, inDOM }) => (
-  //       <div>
-  //         <div class="tour-title">Earn (Step 2/4)</div>
-  //         <br />
-  //         <div class="tour-content">Lorem Ipsum is simply dummy text of the printing and typesetting.</div>
-  //         <br />
-  //         <div class="tour-control">
-  //           <a href="#" onClick={() => setIsTourOpen(false)}>
-  //             Close
-  //           </a>
-  //           <button onClick={() => goTo(2)}>Next</button>
-  //         </div>
-  //       </div>
-  //     ),
-  //     position: "bottom",
-  //     style: {
-  //       backgroundColor: "#242424",
-  //       width: "312px",
-  //       height: "172px",
-  //       padding: "16px",
-  //       fontSize: "18px",
-  //     },
-  //   },
-  //   {
-  //     selector: ".third-step",
-  //     content: ({ goTo, inDOM }) => (
-  //       <div>
-  //         <div class="tour-title">Settings (Step 3/4)</div>
-  //         <br />
-  //         <div class="tour-content">Lorem Ipsum is simply dummy text of the printing and typesetting.</div>
-  //         <br />
-  //         <div class="tour-control">
-  //           <a href="#" onClick={() => setIsTourOpen(false)}>
-  //             Close
-  //           </a>
-  //           <button onClick={() => goTo(3)}>Next</button>
-  //         </div>
-  //       </div>
-  //     ),
-  //     position: "bottom",
-  //     style: {
-  //       backgroundColor: "#242424",
-  //       width: "312px",
-  //       height: "172px",
-  //       padding: "16px",
-  //       fontSize: "18px",
-  //     },
-  //   },
-  //   {
-  //     selector: ".fourth-step",
-  //     title: "Email Notifications",
-  //     content: "Lorem Ipsum is simply dummy text of the printing and typesetting.",
-  //     // eslint-disable-next-line no-dupe-keys
-  //     content: ({ goTo, inDOM }) => (
-  //       <div>
-  //         <div class="tour-title">Email Notifications</div>
-  //         <br />
-  //         <div class="tour-content">Lorem Ipsum is simply dummy text of the printing and typesetting.</div>
-  //         <br />
-  //         <div class="tour-control">
-  //           <a href="#" onClick={() => setIsTourOpen(false)}>
-  //             Close
-  //           </a>
-  //           <button onClick={() => setIsTourOpen(false)}>Got it</button>
-  //         </div>
-  //       </div>
-  //     ),
-  //     position: "bottom",
-  //     style: {
-  //       backgroundColor: "#242424",
-  //       width: "312px",
-  //       height: "172px",
-  //       padding: "16px",
-  //       fontSize: "18px",
-  //     },
-  //   },
-  //   // ...
-  // ];
   return (
     <SWRConfig value={{ refreshInterval: 5000 }}>
       <Web3ReactProvider getLibrary={getLibrary}>
@@ -1036,15 +1056,6 @@ function App() {
             <I18nProvider i18n={i18n}>
               <ThemeProvider>
                 <FullApp />
-                {/* <Tour
-                  steps={steps}
-                  isOpen={isTourOpen}
-                  showCloseButton={false}
-                  showNumber={false}
-                  showNavigation={false}
-                  showNavigationNumber={false}
-                  showButtons={false}
-                /> */}
               </ThemeProvider>
             </I18nProvider>
           </Router>
