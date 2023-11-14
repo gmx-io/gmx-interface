@@ -14,33 +14,42 @@ type UserIncentiveData = {
   transactionHash: string;
 };
 
-export default function useUserIncentiveData(chainId: number, account: string) {
+const USER_INCENTIVE_QUERY = gql`
+  query userIncentiveData($account: String!) {
+    distributions(orderBy: timestamp, orderDirection: desc, where: { receiver: $account }) {
+      typeId
+      amounts
+      amountsInUsd
+      blockNumber
+      id
+      receiver
+      timestamp
+      tokens
+      transactionHash
+    }
+  }
+`;
+
+export default function useUserIncentiveData(chainId: number, account?: string) {
   const graphClient = getSyntheticsGraphClient(chainId);
-  const cacheKey = chainId && graphClient && account ? [chainId, "useUserIncentiveData", account] : null;
+  const userIncentiveDataCacheKey =
+    chainId && graphClient && account ? [chainId, "useUserIncentiveData", account] : null;
 
-  async function fetchIncentiveData() {
-    const USER_INCENTIVE_QUERY = gql`
-      query userIncentiveData($account: String!) {
-        distributions(orderBy: timestamp, orderDirection: desc, where: { receiver: $account }) {
-          typeId
-          amounts
-          amountsInUsd
-          blockNumber
-          id
-          receiver
-          timestamp
-          tokens
-          transactionHash
-        }
-      }
-    `;
+  async function fetchUserIncentiveData(): Promise<UserIncentiveData[]> {
+    if (!account) {
+      return [];
+    }
 
-    const response = await graphClient!.query({ query: USER_INCENTIVE_QUERY, fetchPolicy: "no-cache" });
+    const response = await graphClient!.query({
+      query: USER_INCENTIVE_QUERY,
+      variables: { account },
+      fetchPolicy: "no-cache",
+    });
 
     return response.data?.distributions as UserIncentiveData[];
   }
 
-  const { data, error } = useSWR<UserIncentiveData[]>(cacheKey, { fetcher: fetchIncentiveData });
+  const { data, error } = useSWR<UserIncentiveData[]>(userIncentiveDataCacheKey, { fetcher: fetchUserIncentiveData });
 
   return { data, error };
 }
