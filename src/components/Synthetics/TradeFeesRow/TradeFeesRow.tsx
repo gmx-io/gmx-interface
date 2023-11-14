@@ -1,14 +1,18 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { getToken } from "config/tokens";
+import { formatDuration, intervalToDuration } from "date-fns";
+import { useTradingIncentives } from "domain/synthetics/common/useIncentiveStats";
 import { ExecutionFee, FeeItem, SwapFeeItem } from "domain/synthetics/fees";
 import { TradeFeesType } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { formatDeltaUsd, formatPercentage, formatTokenAmountWithUsd } from "lib/numbers";
+import { formatAmount, formatDeltaUsd, formatPercentage, formatTokenAmountWithUsd } from "lib/numbers";
 import { ReactNode, useMemo } from "react";
 import "./TradeFeesRow.scss";
 
@@ -39,6 +43,7 @@ type FeeRow = {
 
 export function TradeFeesRow(p: Props) {
   const { chainId } = useChainId();
+  const tradingIncentives = useTradingIncentives();
 
   const feeRows: FeeRow[] = useMemo(() => {
     const positionPriceImpactRow = p.positionPriceImpact?.deltaUsd.abs().gt(0)
@@ -174,6 +179,25 @@ export function TradeFeesRow(p: Props) {
         }
       : undefined;
 
+    const rebateRow =
+      tradingIncentives && tradingIncentives.state === "live" && p.positionFee?.deltaUsd.lt(0)
+        ? {
+            label: (
+              <>
+                <div className="text-white">{t`Bonus Rebate`}:</div>
+                <div>
+                  <Trans>({formatAmount(tradingIncentives.rebatePercent, 2, 0)}% of Open Fee)</Trans>
+                </div>
+              </>
+            ),
+            value: formatDeltaUsd(
+              p.positionFee.deltaUsd.mul(tradingIncentives.rebatePercent).div(BASIS_POINTS_DIVISOR).mul(-1)
+            ),
+            className: "text-green",
+            id: "executionFee",
+          }
+        : undefined;
+
     const executionFeeRow = p.executionFee?.feeTokenAmount.gt(0)
       ? {
           label: <div className="text-white">{t`Max Execution Fee`}:</div>,
@@ -197,6 +221,7 @@ export function TradeFeesRow(p: Props) {
         swapPriceImpactRow,
         ...swapFeeRows,
         positionFeeRow,
+        rebateRow,
         feeDiscountRow,
         borrowFeeRow,
         fundingFeeRow,
@@ -213,6 +238,7 @@ export function TradeFeesRow(p: Props) {
         borrowFeeRow,
         fundingFeeRow,
         positionFeeRow,
+        rebateRow,
         feeDiscountRow,
         swapProfitFeeRow,
         ...swapFeeRows,
@@ -238,14 +264,61 @@ export function TradeFeesRow(p: Props) {
     p.borrowFeeRateStr,
     p.fundingFeeRateStr,
     p.executionFee,
+    tradingIncentives,
     chainId,
   ]);
 
   const totalFeeUsd = useMemo(() => {
-    return p.totalFees?.deltaUsd.sub(p.executionFee?.feeUsd || 0);
-  }, [p.executionFee, p.totalFees]);
+    const totalBeforeRebate = p.totalFees?.deltaUsd.sub(p.executionFee?.feeUsd || 0);
+    if (p.feesType === "swap") {
+      return totalBeforeRebate;
+    }
+    if (!p.positionFee || p.positionFee.deltaUsd.gte(0) || !tradingIncentives || tradingIncentives.state !== "live") {
+      return totalBeforeRebate;
+    }
+    const rebate = p.positionFee.deltaUsd.mul(tradingIncentives.rebatePercent).div(BASIS_POINTS_DIVISOR).mul(-1);
 
-  const title = p.feesType === "edit" ? t`Fees` : t`Fees and Price Impact`;
+    return totalBeforeRebate?.add(rebate);
+  }, [p.executionFee?.feeUsd, p.feesType, p.positionFee, p.totalFees?.deltaUsd, tradingIncentives]);
+
+  const title = useMemo(() => {
+    if (tradingIncentives && tradingIncentives.state === "live" && p.feesType !== "swap") {
+      return p.feesType === "edit" ? t`Fees (Rebated)` : t`Fees (Rebated) and Price Impact`;
+    } else {
+      return p.feesType === "edit" ? t`Fees` : t`Fees and Price Impact`;
+    }
+  }, [p.feesType, tradingIncentives]);
+
+  const incentivesBottomText = useMemo(() => {
+    if (!tradingIncentives || p.positionFee?.deltaUsd.gte(0)) {
+      return null;
+    }
+
+    if (tradingIncentives.state === "limitReached") {
+      const periodStart = tradingIncentives.nextPeriodStart;
+      const timeLeftStr = formatDuration(intervalToDuration({ start: new Date(), end: periodStart }), {
+        format: ["days", "hours", "minutes"],
+      });
+      return (
+        <Trans>
+          The trading incentives have reached their cap for this epoch. They will be reset in {timeLeftStr}.
+        </Trans>
+      );
+    }
+
+    return (
+      <Trans>
+        The Bonus Rebate will be airdropped as ARB tokens.{" "}
+        <ExternalLink
+          href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#9a915e16d33942bdb713f3fe28c3435f"
+          newTab
+        >
+          Read more
+        </ExternalLink>
+        .
+      </Trans>
+    );
+  }, [p.positionFee, tradingIncentives]);
 
   return (
     <ExchangeInfoRow
@@ -283,6 +356,8 @@ export function TradeFeesRow(p: Props) {
                       showDollar={false}
                     />
                   ))}
+                  {incentivesBottomText && <br />}
+                  {incentivesBottomText}
                 </div>
               )}
             />
