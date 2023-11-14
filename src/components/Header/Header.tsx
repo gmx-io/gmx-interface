@@ -40,6 +40,8 @@ type Props = {
   setDoesUserHaveEmail: (visible: boolean) => void;
   redirectPopupTimestamp: number;
   showRedirectModal: (to: string) => void;
+  activeModal: string | null;
+  setActiveModal: (modal: string | null) => void;
 };
 
 export function Header({
@@ -50,6 +52,8 @@ export function Header({
   setDoesUserHaveEmail,
   redirectPopupTimestamp,
   showRedirectModal,
+  activeModal,
+  setActiveModal,
 }: Props) {
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [isNativeSelectorModalVisible, setIsNativeSelectorModalVisible] = useState(false);
@@ -122,6 +126,8 @@ export function Header({
               setDoesUserHaveEmail={setDoesUserHaveEmail}
               redirectPopupTimestamp={redirectPopupTimestamp}
               showRedirectModal={showRedirectModal}
+              activeModal={activeModal}
+              setActiveModal={setActiveModal}
             />
           </div>
         </div>
@@ -147,6 +153,8 @@ export function Header({
                 setDoesUserHaveEmail={setDoesUserHaveEmail}
                 redirectPopupTimestamp={redirectPopupTimestamp}
                 showRedirectModal={showRedirectModal}
+                activeModal={activeModal}
+                setActiveModal={setActiveModal}
               />
               <div className="App-header-menu-icon-block" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
                 {!isDrawerVisible && (
