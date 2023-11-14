@@ -30,6 +30,8 @@ type Props = {
   disconnectAccountAndCloseSettings: () => void;
   redirectPopupTimestamp: number;
   showRedirectModal: (to: string) => void;
+  activeModal: string | null;
+  setActiveModal: (modal: string | null) => void;
 };
 
 const NETWORK_OPTIONS = [
@@ -65,6 +67,8 @@ export function AppHeaderUser({
   disconnectAccountAndCloseSettings,
   redirectPopupTimestamp,
   showRedirectModal,
+  activeModal,
+  setActiveModal,
 }: Props) {
   const { chainId } = useChainId();
   const { active, account } = useWeb3React();
@@ -176,6 +180,8 @@ export function AppHeaderUser({
             selectorLabel={selectorLabel}
             onNetworkSelect={onNetworkSelect}
             openSettings={openSettings}
+            activeModal={activeModal}
+            setActiveModal={setActiveModal}
           />
         </>
       ) : (

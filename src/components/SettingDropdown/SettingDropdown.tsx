@@ -19,21 +19,21 @@ import LanguageModalContent from "components/NetworkDropdown/LanguageModalConten
 import { ThemeContext } from "store/theme-provider";
 
 const LANGUAGE_MODAL_KEY: string = "LANGUAGE";
-const NETWORK_MODAL_KEY: string = "NETWORK";
+const SETTINGS_MODAL_KEY: string = "SETTINGS";
 const EMAIL_NOTIFICATION_MODAL_KEY: string = "EMAIL_NOTIFICATION";
 
 export default function SettingDropdown(props) {
   const currentLanguage = useRef(localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale);
-  const [activeModal, setActiveModal] = useState<string | null>(null);
-
   function getModalContent(modalName) {
     switch (modalName) {
       case LANGUAGE_MODAL_KEY:
         return <LanguageModalContent currentLanguage={currentLanguage} />;
-      case NETWORK_MODAL_KEY:
-        return <SettingModalContent setActiveModal={setActiveModal} openSettings={props.openSettings} />;
+      case SETTINGS_MODAL_KEY:
+        return <SettingModalContent setActiveModal={props.setActiveModal} openSettings={props.openSettings} />;
       case EMAIL_NOTIFICATION_MODAL_KEY:
-        return <EmailNotificationModalContent setActiveModal={setActiveModal} openSettings={props.openSettings} />;
+        return (
+          <EmailNotificationModalContent setActiveModal={props.setActiveModal} openSettings={props.openSettings} />
+        );
       default:
         return;
     }
@@ -44,22 +44,22 @@ export default function SettingDropdown(props) {
       case LANGUAGE_MODAL_KEY:
         return {
           className: "language-popup",
-          isVisible: activeModal === LANGUAGE_MODAL_KEY,
-          setIsVisible: () => setActiveModal(null),
+          isVisible: props.activeModal === LANGUAGE_MODAL_KEY,
+          setIsVisible: () => props.setActiveModal(null),
           label: t`Select Language`,
         };
-      case NETWORK_MODAL_KEY:
+      case SETTINGS_MODAL_KEY:
         return {
           className: "network-popup",
-          isVisible: activeModal === NETWORK_MODAL_KEY,
-          setIsVisible: () => setActiveModal(null),
+          isVisible: props.activeModal === SETTINGS_MODAL_KEY,
+          setIsVisible: () => props.setActiveModal(null),
           label: t`Settings`,
         };
       case EMAIL_NOTIFICATION_MODAL_KEY:
         return {
           className: "notification-popup",
-          isVisible: activeModal === EMAIL_NOTIFICATION_MODAL_KEY,
-          setIsVisible: () => setActiveModal(null),
+          isVisible: props.activeModal === EMAIL_NOTIFICATION_MODAL_KEY,
+          setIsVisible: () => props.setActiveModal(null),
           label: t`Enable email notification`,
         };
       default:
@@ -70,7 +70,7 @@ export default function SettingDropdown(props) {
   return (
     <>
       {props.small ? (
-        <div className="App-header-network" onClick={() => setActiveModal(NETWORK_MODAL_KEY)}>
+        <div className="App-header-network" onClick={() => props.setActiveModal(SETTINGS_MODAL_KEY)}>
           <div className="network-dropdown">
             <NavIcons />
           </div>
@@ -78,12 +78,12 @@ export default function SettingDropdown(props) {
       ) : (
         <DesktopDropdown
           currentLanguage={currentLanguage}
-          activeModal={activeModal}
-          setActiveModal={setActiveModal}
+          activeModal={props.activeModal}
+          setActiveModal={props.setActiveModal}
           {...props}
         />
       )}
-      <ModalWithPortal {...getModalProps(activeModal)}>{getModalContent(activeModal)}</ModalWithPortal>
+      <ModalWithPortal {...getModalProps(props.activeModal)}>{getModalContent(props.activeModal)}</ModalWithPortal>
     </>
   );
 }
@@ -113,7 +113,7 @@ function DesktopDropdown({ setActiveModal, openSettings }) {
         <Menu.Button as="div" className="setting-dropdown">
           <NavIcons />
         </Menu.Button>
-        <Menu.Items as="div" className="menu-items setting-dropdown-items">
+        <Menu.Items as="div" className="menu-items setting-dropdown-items fourth-step">
           <Menu.Item>
             <div className="setting-dropdown-menu-item menu-item">
               <div className="menu-item-group">
@@ -139,7 +139,7 @@ function DesktopDropdown({ setActiveModal, openSettings }) {
             </div>
           </Menu.Item>
           <Menu.Item>
-            <div className="setting-dropdown-menu-item menu-item fourth-step">
+            <div className="setting-dropdown-menu-item menu-item">
               <div className="menu-item-group">
                 <div className="menu-item-icon">
                   <img className="setting-dropdown-icon" src={chartIcon} alt="" />
@@ -160,7 +160,7 @@ function DesktopDropdown({ setActiveModal, openSettings }) {
           </Menu.Item>
           <Menu.Item>
             <div
-              className="setting-dropdown-menu-item menu-item fourth-step"
+              className="setting-dropdown-menu-item menu-item"
               onClick={() => setActiveModal(EMAIL_NOTIFICATION_MODAL_KEY)}
             >
               <div className="menu-item-group">
@@ -236,12 +236,11 @@ function DesktopDropdown({ setActiveModal, openSettings }) {
 
 function SettingModalContent({ setActiveModal, openSettings }) {
   const themeToggle = useContext(ThemeContext);
-  // const [enabledDarkMode, setEnabledDarkMode] = useState(false);
   const [enabledEmailNotification, setEnabledEmailNotification] = useState(false);
   const [enabledOneTrading, setEnabledOneTrading] = useState(false);
 
   return (
-    <div className="setting-dropdown-items">
+    <div className="setting-dropdown-items fourth-step">
       <div className="setting-dropdown-list">
         <div className="setting-option">
           <div className="menu-item-group">

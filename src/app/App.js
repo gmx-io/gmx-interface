@@ -293,6 +293,8 @@ function FullApp() {
   const [userEnteredOtp, setUserEnteredOtp] = useState("");
   const [doesUserHaveEmail, setDoesUserHaveEmail] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
+  const [activeModal, setActiveModal] = useState(null);
+
   const connectWallet = () => setWalletModalVisible(true);
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
@@ -647,26 +649,41 @@ function FullApp() {
     {
       selector: ".fourth-step",
       title: "Email Notifications",
-      content: "Lorem Ipsum is simply dummy text of the printing and typesetting.",
       // eslint-disable-next-line no-dupe-keys
+      action: (node) => {
+        setActiveModal("SETTINGS");
+      },
       content: ({ goTo, inDOM }) => (
         <div>
           <div class="tour-title">Email Notifications</div>
           <br />
           <div class="tour-content">
-            Enable email notifications to stay up-to-date, and configure 1-click trading, slippage, and light/dark mode
-            here.
+            Enable email notifications to stay up-to-date, and configure 1-click trading, language of choice, slippage,
+            and light/dark mode here.
           </div>
           <br />
           <div class="tour-control">
-            <a href="#" onClick={() => setIsTourOpen(false)}>
+            <a
+              href="#"
+              onClick={() => {
+                setIsTourOpen(false);
+                setActiveModal(null);
+              }}
+            >
               Close
             </a>
-            <button onClick={() => setIsTourOpen(false)}>Got it</button>
+            <button
+              onClick={() => {
+                setIsTourOpen(false);
+                setActiveModal(null);
+              }}
+            >
+              Got it
+            </button>
           </div>
         </div>
       ),
-      position: "bottom",
+      position: "left",
       style: {
         backgroundColor: "#242424",
         width: "312px",
@@ -691,6 +708,8 @@ function FullApp() {
               setDoesUserHaveEmail={setDoesUserHaveEmail}
               redirectPopupTimestamp={redirectPopupTimestamp}
               showRedirectModal={showRedirectModal}
+              activeModal={activeModal}
+              setActiveModal={setActiveModal}
             />
             {isHome && (
               <Switch>
