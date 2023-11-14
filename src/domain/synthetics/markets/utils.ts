@@ -190,9 +190,9 @@ export function getMarketReservesAccountingInterest(marketInfo: MarketInfo, isLo
   const openInterestUsd = getOpenInterestUsd(marketInfo, isLong);
   const maxOpenInterestUsd = getMaxOpenInterestUsd(marketInfo, isLong);
 
-  const [currentReserve, currentMaxReserve] = getArrayWithSmallerDifference(
-    [reservedUsd, maxReservedUsd],
-    [openInterestUsd, maxOpenInterestUsd]
+  const [currentMaxReserve, currentReserve] = getArrayWithSmallerDifference(
+    [maxReservedUsd, reservedUsd],
+    [maxOpenInterestUsd, openInterestUsd]
   );
 
   return {
