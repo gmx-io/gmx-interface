@@ -13,6 +13,10 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "({0}% of Open Fee)"
+msgstr "({0}% of Open Fee)"
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "01 Sep 2021"
 msgstr "01 Sep 2021"
@@ -497,6 +501,10 @@ msgstr "Begin Transfer"
 #: src/components/AprInfo/AprInfo.tsx
 msgid "Bonus APR"
 msgstr "Bonus APR"
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Bonus Rebate"
+msgstr "Bonus Rebate"
 
 #: src/components/Migration/Migration.js
 #: src/components/Migration/Migration.js
@@ -1765,6 +1773,14 @@ msgstr "Failed to update order"
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees"
 msgstr "Fees"
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Fees (Rebated)"
+msgstr "Fees (Rebated)"
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Fees (Rebated) and Price Impact"
+msgstr "Fees (Rebated) and Price Impact"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
@@ -4498,6 +4514,10 @@ msgstr "The Bonus APR is to be airdropped as ARB tokens. <0>Read more</0>."
 msgid "The Bonus Rebate is an estimate and is to be airdropped as ARB tokens when migrating this liquidity to GM pools within the same epoch. <0>Read more</0>."
 msgstr "The Bonus Rebate is an estimate and is to be airdropped as ARB tokens when migrating this liquidity to GM pools within the same epoch. <0>Read more</0>."
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "The Bonus Rebate will be airdropped as ARB tokens. <0>Read more</0>."
+msgstr "The Bonus Rebate will be airdropped as ARB tokens. <0>Read more</0>."
+
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "The Boosted APR is from your staked Multiplier Points."
 msgstr "The Boosted APR is from your staked Multiplier Points."
@@ -4585,6 +4605,10 @@ msgstr "The spread is > 1%, please ensure the trade details are acceptable befor
 #: src/components/Exchange/ConfirmationBox.js
 msgid "The spread is > 1%, please ensure the trade details are acceptable before confirming"
 msgstr "The spread is > 1%, please ensure the trade details are acceptable before confirming"
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "The trading incentives have reached their cap for this epoch. They will be reset in {timeLeftStr}."
+msgstr "The trading incentives have reached their cap for this epoch. They will be reset in {timeLeftStr}."
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
