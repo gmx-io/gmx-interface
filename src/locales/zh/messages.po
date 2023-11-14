@@ -342,6 +342,7 @@ msgstr "或者,您可选择\"Collateral In\" 代币"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
+#: src/components/Synthetics/UserIncentiveTable/UserIncentiveTable.tsx
 msgid "Amount"
 msgstr "数量"
 
@@ -1260,6 +1261,7 @@ msgstr "仪表板"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
+#: src/components/Synthetics/UserIncentiveTable/UserIncentiveTable.tsx
 msgid "Date"
 msgstr "日期"
 
@@ -1449,6 +1451,10 @@ msgstr "下载"
 #: src/pages/Stake/StakeV2.js
 msgid "Earn"
 msgstr "赚取"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Earn $ARB tokens by providing liquidity in GM, trading, or participating in trading competitions. Only for GMX V2."
+msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Ecosystem"
@@ -2104,6 +2110,18 @@ msgstr "图片生成错误，请刷新并重试"
 #: src/components/Synthetics/TVChart/TVChart.tsx
 msgid "Inc."
 msgstr "公司"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Incentives"
+msgstr ""
+
+#: src/components/Synthetics/UserIncentiveTable/UserIncentiveTable.tsx
+msgid "Incentives Distribution History"
+msgstr ""
+
+#: src/components/Synthetics/UserIncentiveTable/UserIncentiveTable.tsx
+msgid "Incentives are airdropped weekly."
+msgstr ""
 
 #: src/App/App.js
 msgid "Include PnL in leverage display"
@@ -3037,6 +3055,10 @@ msgstr ""
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "No esGMX to claim"
 msgstr "没有esGMX可供索取"
+
+#: src/components/Synthetics/UserIncentiveTable/UserIncentiveTable.tsx
+msgid "No incentives distribution history yet."
+msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -4831,6 +4853,7 @@ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
+#: src/components/Synthetics/UserIncentiveTable/UserIncentiveTable.tsx
 msgid "Transaction"
 msgstr "交易"
 
@@ -4945,6 +4968,7 @@ msgstr "转移失败 <0>查看</0>"
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/components/Synthetics/UserIncentiveTable/UserIncentiveTable.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Type"
 msgstr "种类"
