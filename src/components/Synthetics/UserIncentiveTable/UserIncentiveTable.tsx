@@ -31,6 +31,7 @@ export default function UserIncentiveTable() {
       <EmptyMessage
         tooltipText={t`Incentives are airdropped weekly.`}
         message={t`No incentives distribution history yet.`}
+        className="mt-sm"
       />
     );
   }
