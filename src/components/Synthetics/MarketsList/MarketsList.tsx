@@ -93,14 +93,14 @@ export function MarketsList() {
       const fundingRateLong = getFundingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]);
       const fundingRateShort = getFundingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]);
 
-      const { currentReserveOrInterest: longReservedUsd, maxReserveOrInterest: maxLongReservedUsd } =
+      const { reserveOrInterest: longReserveOrInterestUsd, maxReserveOrInterest: maxLongReserveOrInterestUsd } =
         getMarketReservesAccountingInterest(marketInfo, true);
 
-      const { currentReserveOrInterest: shortReservedUsd, maxReserveOrInterest: maxShortReservedUsd } =
+      const { reserveOrInterest: shortReserveOrInterestUsd, maxReserveOrInterest: maxShortReserveOrInterestUsd } =
         getMarketReservesAccountingInterest(marketInfo, false);
 
-      const totalReserveOrInterest = longReservedUsd.add(shortReservedUsd);
-      const totalMaxReserveOrInterest = maxLongReservedUsd.add(maxShortReservedUsd);
+      const totalReserveOrInterest = longReserveOrInterestUsd.add(shortReserveOrInterestUsd);
+      const totalMaxReserveOrInterest = maxLongReserveOrInterestUsd.add(maxShortReserveOrInterestUsd);
 
       const utilization = totalMaxReserveOrInterest.gt(0)
         ? totalReserveOrInterest.mul(BASIS_POINTS_DIVISOR).div(totalMaxReserveOrInterest)

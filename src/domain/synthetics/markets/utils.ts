@@ -179,7 +179,7 @@ export function getAvailableUsdLiquidityForCollateral(marketInfo: MarketInfo, is
 export function getMarketReservesAccountingInterest(marketInfo: MarketInfo, isLong: boolean) {
   if (marketInfo.isSpotOnly) {
     return {
-      currentReserveOrInterest: BigNumber.from(0),
+      reserveOrInterest: BigNumber.from(0),
       maxReserveOrInterest: BigNumber.from(0),
     };
   }
@@ -196,7 +196,7 @@ export function getMarketReservesAccountingInterest(marketInfo: MarketInfo, isLo
   );
 
   return {
-    currentReserveOrInterest: currentReserve,
+    reserveOrInterest: currentReserve,
     maxReserveOrInterest: maxCurrentReserve,
   };
 }
