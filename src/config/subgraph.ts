@@ -2,6 +2,7 @@ import { ARBITRUM, AVALANCHE, ETH_MAINNET, SEPOLIA_TESTNET } from "./chains";
 import { isDevelopment } from "./env";
 import { getSubgraphUrlKey } from "./localStorage";
 
+// TODO subgraphs are not ready yet
 const SUBGRAPH_URLS = {
   [ARBITRUM]: {
     // stats: "https://api.thegraph.com/subgraphs/name/gdev8317/gmx-arbitrum-stats

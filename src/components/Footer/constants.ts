@@ -23,7 +23,7 @@ export const FOOTER_LINKS: { home: Link[]; app: Link[] } = {
   home: [
     { text: defineMessage({ message: "Terms and Conditions" }), link: "/terms-and-conditions" },
     { text: defineMessage({ message: "Referral Terms" }), link: "/referral-terms" },
-    { text: defineMessage({ message: "Media Kit" }), link: "https://gmxio.gitbook.io/gmx/media-kit", external: true },
+    { text: defineMessage({ message: "Media Kit" }), link: "https://gmxio.gitbook.io/gmx/media-kit", external: true }, // TODO media kit
   ],
   app: [],
 };
@@ -32,9 +32,10 @@ export function getFooterLinks(isHome) {
   return FOOTER_LINKS[isHome ? "home" : "app"];
 }
 
+// TODO socials
 export const SOCIAL_LINKS: SocialLink[] = [
-  { link: "https://twitter.com/GMX_IO", name: "Twitter", icon: twitterIcon },
-  { link: "https://github.com/gmx-io", name: "Github", icon: githubIcon },
-  { link: "https://t.me/GMX_IO", name: "Telegram", icon: telegramIcon },
+  { link: "https://twitter.com/t3_money", name: "Twitter", icon: twitterIcon },
+  { link: "https://github.com/t3-money", name: "Github", icon: githubIcon },
+  { link: "https://t.me/t3_money", name: "Telegram", icon: telegramIcon },
   { link: "https://discord.com/invite/ymN38YefH9", name: "Discord", icon: discordIcon },
 ];

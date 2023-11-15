@@ -1,6 +1,6 @@
 import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, MAINNET, SEPOLIA_TESTNET } from "./chains";
 
-export const GMX_STATS_API_URL = "https://stats.gmx.io/api";
+export const GMX_STATS_API_URL = "https://t3.finance/#/dashboard"; // TODO - launch stats api
 export const TF_TV_DATAFEED_API = "https://tv-datafeed.titans.finance";
 
 const BACKEND_URLS = {
