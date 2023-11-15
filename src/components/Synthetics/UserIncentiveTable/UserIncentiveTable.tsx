@@ -6,14 +6,16 @@ import EmptyMessage from "components/Referrals/EmptyMessage";
 import usePagination from "components/Referrals/usePagination";
 import { getExplorerUrl } from "config/chains";
 import useUserIncentiveData from "domain/synthetics/common/useUserIncentiveData";
+import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { formatDate } from "lib/dates";
+import { formatUsd } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 
 const INCENTIVE_DISTRIBUTION_TYPES = {
-  1: "GM Airdrop",
-  2: "GLP to GM Airdrop",
+  1001: "GM Airdrop",
+  1002: "GLP to GM Airdrop",
   1003: "TRADING Airdrop",
 };
 
@@ -65,7 +67,7 @@ export default function UserIncentiveTable() {
                   <tr key={incentive.id}>
                     <td data-label="Date">{formatDate(incentive.timestamp)}</td>
                     <td data-label="Type">{INCENTIVE_DISTRIBUTION_TYPES[incentive.typeId]}</td>
-                    <td data-label="Amount">$12.56</td>
+                    <td data-label="Amount">{formatUsd(BigNumber.from(incentive?.amountsInUsd))}</td>
                     <td data-label="Transaction">
                       <ExternalLink href={explorerURL + `tx/${incentive.transactionHash}`}>
                         {shortenAddressOrEns(incentive.transactionHash, 13)}
