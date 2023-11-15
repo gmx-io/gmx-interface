@@ -67,7 +67,7 @@ export default function UserIncentiveTable() {
                   <tr key={incentive.id}>
                     <td data-label="Date">{formatDate(incentive.timestamp)}</td>
                     <td data-label="Type">{INCENTIVE_DISTRIBUTION_TYPES[incentive.typeId]}</td>
-                    <td data-label="Amount">{formatUsd(BigNumber.from(incentive?.amountsInUsd))}</td>
+                    <td data-label="Amount">{formatUsd(BigNumber.from(incentive?.amountsInUsd[0]))}</td>
                     <td data-label="Transaction">
                       <ExternalLink href={explorerURL + `tx/${incentive.transactionHash}`}>
                         {shortenAddressOrEns(incentive.transactionHash, 13)}
