@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Trans, t } from "@lingui/macro";
 import Button from "components/Button/Button";
 import {
@@ -7,6 +8,7 @@ import {
   getMarketPoolName,
   getMaxPoolAmountForDeposit,
   getMintableMarketTokens,
+  getTotalGmInfo,
 } from "domain/synthetics/markets";
 import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
@@ -21,6 +23,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { getIcons } from "config/icons";
 import PageTitle from "components/PageTitle/PageTitle";
+import useWallet from "lib/wallets/useWallet";
 import { AprInfo } from "components/AprInfo/AprInfo";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
@@ -48,10 +51,16 @@ export function GmList({
   buySellActionHandler,
 }: Props) {
   const { chainId } = useChainId();
+  const { active } = useWallet();
   const currentIcons = getIcons(chainId);
   const isMobile = useMedia("(max-width: 1100px)");
   const daysConsidered = useDaysConsideredInMarketsApr();
   const { markets: sortedMarketsByIndexToken } = useSortedMarketsWithIndexToken(marketsInfoData, marketTokensData);
+
+  const userTotalGmInfo = useMemo(() => {
+    if (!active) return;
+    return getTotalGmInfo(marketTokensData);
+  }, [marketTokensData, active]);
 
   return (
     <div className="GMList">
@@ -92,7 +101,28 @@ export function GmList({
                   />
                 </th>
                 <th>
-                  <Trans>WALLET</Trans>
+                  {userTotalGmInfo ? (
+                    <Tooltip
+                      handle={<Trans>WALLET</Trans>}
+                      className="text-none"
+                      position="right-bottom"
+                      renderContent={() => (
+                        <StatsTooltipRow
+                          label={t`Total in Wallet`}
+                          value={[
+                            formatTokenAmount(userTotalGmInfo?.balance, 18, "GM", {
+                              useCommas: true,
+                              fallbackToZero: true,
+                            }),
+                            `(${formatUsd(userTotalGmInfo?.balanceUsd)})`,
+                          ]}
+                          showDollar={false}
+                        />
+                      )}
+                    />
+                  ) : (
+                    <Trans>WALLET</Trans>
+                  )}
                 </th>
                 <th>
                   <Tooltip
@@ -331,7 +361,16 @@ export function GmList({
                     </div>
                     <div className="App-card-row">
                       <div className="label">
-                        <Trans>Wallet</Trans>
+                        <Tooltip
+                          handle={<Trans>Wallet</Trans>}
+                          className="text-none"
+                          position="right-bottom"
+                          renderContent={() => (
+                            <p className="text-white">
+                              <Trans>Available amount to deposit into the specific GM pool.</Trans>
+                            </p>
+                          )}
+                        />
                       </div>
                       <div>
                         {formatTokenAmount(token.balance, token.decimals, "GM", {

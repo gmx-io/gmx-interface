@@ -490,15 +490,6 @@ export function TradeBox(p: Props) {
     userReferralInfo,
   ]);
 
-  // useDebugExecutionPrice(chainId, {
-  //   skip: false,
-  //   marketInfo,
-  //   sizeInUsd: existingPosition?.sizeInUsd || BigNumber.from(0),
-  //   sizeInTokens: existingPosition?.sizeInTokens || BigNumber.from(0),
-  //   sizeDeltaUsd: increaseAmounts?.sizeDeltaUsd,
-  //   isLong,
-  // });
-
   const { fees, feesType, executionFee } = useMemo(() => {
     if (!gasLimits || !gasPrice || !tokensData) {
       return {};

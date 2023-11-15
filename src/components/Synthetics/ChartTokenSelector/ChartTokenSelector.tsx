@@ -58,8 +58,8 @@ export default function ChartTokenSelector(props: Props) {
       const maxShortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false);
 
       return {
-        maxLongLiquidity,
-        maxShortLiquidity,
+        maxLongLiquidity: maxLongLiquidity.gt(0) ? maxLongLiquidity : BigNumber.from(0),
+        maxShortLiquidity: maxShortLiquidity.gt(0) ? maxShortLiquidity : BigNumber.from(0),
         marketTokenAddress: marketInfo.marketTokenAddress,
         indexTokenAddress: marketInfo.indexTokenAddress,
       };
