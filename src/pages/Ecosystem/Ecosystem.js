@@ -24,59 +24,59 @@ const NETWORK_ICON_ALTS = {
 export default function Ecosystem() {
   const gmxPages = [
     {
-      title: "GMX Governance",
+      title: "TMX Governance",
       link: "https://gov.gmx.io/",
       linkLabel: "gov.gmx.io",
-      about: t`GMX Governance Page`,
+      about: t`TMX Governance Page`,
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
-      title: "GMX Stats",
+      title: "TMX Stats",
       link: "https://stats.gmx.io/",
       linkLabel: "stats.gmx.io",
-      about: t`GMX Stats Page`,
+      about: t`TMX Stats Page`,
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
-      title: "GMX Proposals",
+      title: "TMX Proposals",
       link: "https://snapshot.org/#/gmx.eth",
       linkLabel: "snapshot.org",
-      about: t`GMX Proposals Voting page`,
+      about: t`TMX Proposals Voting page`,
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
-      title: "GMX Announcements",
+      title: "TMX Announcements",
       link: "https://t.me/GMX_Announcements",
       linkLabel: "t.me",
-      about: t`GMX Announcements and Updates`,
+      about: t`TMX Announcements and Updates`,
       chainIds: [ARBITRUM, AVALANCHE],
     },
   ];
 
   const communityProjects = [
     {
-      title: "GMX Blueberry Club",
+      title: "TMX Blueberry Club",
       link: "https://www.blueberry.club/",
       linkLabel: "blueberry.club",
-      about: t`GMX Blueberry NFTs`,
+      about: t`TMX Blueberry NFTs`,
       creatorLabel: "@xm92boi",
       creatorLink: "https://t.me/xm92boi",
       chainIds: [ARBITRUM],
     },
     {
-      title: "GMX Leaderboard",
+      title: "TMX Leaderboard",
       link: "https://www.gmx.house/",
       linkLabel: "gmx.house",
-      about: t`Leaderboard for GMX traders`,
+      about: t`Leaderboard for TMX traders`,
       creatorLabel: "@Itburnz",
       creatorLink: "https://t.me/Itburnz",
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
-      title: "GMX Positions Bot",
+      title: "TMX Positions Bot",
       link: "https://t.me/GMXPositions",
       linkLabel: "t.me",
-      about: t`Telegram bot for GMX position updates`,
+      about: t`Telegram bot for TMX position updates`,
       creatorLabel: "@zhongfu",
       creatorLink: "https://t.me/zhongfu",
       chainIds: [ARBITRUM, AVALANCHE],
@@ -85,7 +85,7 @@ export default function Ecosystem() {
       title: "Blueberry Pulse",
       link: "https://blueberrypulse.substack.com/",
       linkLabel: "substack.com",
-      about: t`GMX Weekly Updates`,
+      about: t`TMX Weekly Updates`,
       creatorLabel: "@puroscohiba",
       creatorLink: "https://t.me/puroscohiba",
       chainIds: [ARBITRUM, AVALANCHE],
@@ -100,52 +100,52 @@ export default function Ecosystem() {
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
-      title: "GMX Yield Simulator",
+      title: "TMX Yield Simulator",
       link: "https://gmx.defisims.com/",
       linkLabel: "defisims.com",
-      about: t`Yield simulator for GMX`,
+      about: t`Yield simulator for TMX`,
       creatorLabel: "@kyzoeth",
       creatorLink: "https://twitter.com/kyzoeth",
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
-      title: "GMX Returns Calculator",
+      title: "TMX Returns Calculator",
       link: "https://docs.google.com/spreadsheets/u/4/d/1mQZlztz_NpTg5qQiYIzc_Ls1OTLfMOUtmEQN-WW8jj4/copy",
       linkLabel: "docs.google.com",
-      about: t`Returns calculator for GMX and GLP`,
+      about: t`Returns calculator for TMX and TLP`,
       creatorLabel: "@AStoicTrader1",
       creatorLink: "https://twitter.com/AStoicTrader1",
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
-      title: "GMX Trading Stats",
+      title: "TMX Trading Stats",
       link: "https://t.me/GMXTradingStats",
       linkLabel: "t.me",
-      about: t`Telegram bot for Open Interest on GMX`,
+      about: t`Telegram bot for Open Interest on TMX`,
       creatorLabel: "@SniperMonke01",
       creatorLink: "https://twitter.com/SniperMonke01",
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
-      title: "GMX Staking Bot",
+      title: "TMX Staking Bot",
       link: "https://t.me/GMX_Staking_bot",
       linkLabel: "t.me",
-      about: t`GMX staking rewards updates and insights`,
+      about: t`TMX staking rewards updates and insights`,
       creatorLabel: "@GMX_Staking_bot",
       creatorLink: "https://twitter.com/GMX_Staking_bot",
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
-      title: "GMX Staking Calculator",
+      title: "TMX Staking Calculator",
       link: "https://gmxstaking.com",
       linkLabel: "gmxstaking.com",
-      about: t`GMX staking calculator`,
+      about: t`TMX staking calculator`,
       creatorLabel: "@n1njawtf",
       creatorLink: "https://t.me/n1njawtf",
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
-      title: "GMX Hedging Simulator",
+      title: "TMX Hedging Simulator",
       link: "https://www.gmxhedge.com/",
       linkLabel: "gmxhedge.com",
       about: t`Simulate your hedge strategy`,
@@ -154,16 +154,16 @@ export default function Ecosystem() {
       chainIds: [ARBITRUM],
     },
     {
-      title: "GMX Swaps",
+      title: "TMX Swaps",
       link: "https://t.me/GMXSwaps",
       linkLabel: "t.me",
-      about: t`Telegram bot for GMX Swaps monitoring`,
+      about: t`Telegram bot for TMX Swaps monitoring`,
       creatorLabel: "@snipermonke01",
       creatorLink: "https://twitter.com/snipermonke01",
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
-      title: "GMX Position Calculator",
+      title: "TMX Position Calculator",
       link: "https://docs.google.com/spreadsheets/d/1OKCeRGU7l-xGx33-siBw_l8x7vP97y4KKKjA2x5LqhQ/edit#gid=0",
       linkLabel: "docs.google.com",
       about: t`Spreadsheet for position calculations`,
@@ -175,25 +175,25 @@ export default function Ecosystem() {
 
   const dashboardProjects = [
     {
-      title: "GMX Referrals Dashboard",
+      title: "TMX Referrals Dashboard",
       link: "https://www.gmxreferrals.com/",
       linkLabel: "gmxreferrals.com",
-      about: t`Dashboard for GMX referral stats`,
+      about: t`Dashboard for TMX referral stats`,
       creatorLabel: "@kyzoeth",
       creatorLink: "https://twitter.com/kyzoeth",
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
-      title: "GMX Terminal",
+      title: "TMX Terminal",
       link: "https://gmxterminal.com",
       linkLabel: "gmxterminal.com",
-      about: t`GMX explorer for stats and traders`,
+      about: t`TMX explorer for stats and traders`,
       creatorLabel: "@vipineth",
       creatorLink: "https://t.me/vipineth",
       chainIds: [ARBITRUM],
     },
     {
-      title: "GMX Analytics",
+      title: "TMX Analytics",
       link: "https://gmxstats.com/",
       linkLabel: "gmxstats.com",
       about: t`Financial reports and protocol analytics`,
@@ -205,7 +205,7 @@ export default function Ecosystem() {
       title: "TokenTerminal",
       link: "https://tokenterminal.com/terminal/projects/gmx",
       linkLabel: "tokenterminal.com",
-      about: t`GMX fundamentals`,
+      about: t`TMX fundamentals`,
       creatorLabel: "@tokenterminal",
       creatorLink: "https://twitter.com/tokenterminal",
       chainIds: [ARBITRUM, AVALANCHE],
@@ -214,7 +214,7 @@ export default function Ecosystem() {
       title: "CryptoFees",
       link: "https://cryptofees.info",
       linkLabel: "cryptofees.info",
-      about: t`Fees generated by GMX`,
+      about: t`Fees generated by TMX`,
       creatorLabel: "@CryptoFeesInfo",
       creatorLink: "https://twitter.com/CryptoFeesInfo",
       chainIds: [ARBITRUM, AVALANCHE],
@@ -238,16 +238,16 @@ export default function Ecosystem() {
       chainIds: [AVALANCHE],
     },
     {
-      title: "GMX Perpetuals Data",
+      title: "TMX Perpetuals Data",
       link: "https://app.laevitas.ch/altsderivs/GMX/perpetualswaps",
       linkLabel: "laevitas.ch",
-      about: t`GMX Perpetuals Data`,
+      about: t`TMX Perpetuals Data`,
       creatorLabel: "@laevitas1",
       creatorLink: "https://twitter.com/laevitas1",
       chainIds: [ARBITRUM],
     },
     {
-      title: "GMX Blueberry Leaderboard",
+      title: "TMX Blueberry Leaderboard",
       link: "https://www.blueberryboard.com",
       linkLabel: "blueberryboard.com",
       about: t`GBC NFTs APR tracker and rewards`,
@@ -256,7 +256,7 @@ export default function Ecosystem() {
       chainIds: [ARBITRUM],
     },
     {
-      title: "GMX Open Trades Ranking and Stats",
+      title: "TMX Open Trades Ranking and Stats",
       link: "https://dune.com/HanSolar/gmx-open-trade-ranking-and-stats",
       linkLabel: "dune.com",
       about: t`Open trades ranking and stats`,
@@ -265,7 +265,7 @@ export default function Ecosystem() {
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
-      title: "GMX Everything Dashboard",
+      title: "TMX Everything Dashboard",
       link: "https://dune.com/gmxtrader/gmx-dashboard-insights",
       linkLabel: "dune.com",
       about: t`Overall protocol analytics`,
@@ -406,7 +406,7 @@ export default function Ecosystem() {
       title: "Plutus",
       link: "https://plutusdao.io/vaults",
       linkLabel: "plutusdao.io",
-      about: t`GLP autocompounding vaults`,
+      about: t`TLP autocompounding vaults`,
       announcementLabel: "medium.com",
       announcementLink: "https://medium.com/@plutusdao.io/product-release-plutus-vaults-d0b0252cdf03",
       chainIds: [ARBITRUM],
@@ -415,7 +415,7 @@ export default function Ecosystem() {
       title: "Beefy.com",
       link: "https://app.beefy.com/",
       linkLabel: "beefy.com",
-      about: t`GLP and GMX autocompounding vaults`,
+      about: t`TLP and TMX autocompounding vaults`,
       announcementLabel: "beefy.com",
       announcementLink: "https://beefy.com/articles/earn-glp-with-beefy-s-new-glp-strategy-and-vaults/",
       chainIds: [ARBITRUM, AVALANCHE],
@@ -424,28 +424,28 @@ export default function Ecosystem() {
 
   const telegramGroups = [
     {
-      title: "GMX",
+      title: "TMX",
       link: "https://t.me/GMX_IO",
       linkLabel: "t.me",
       about: t`Telegram Group`,
     },
     {
-      title: "GMX (Chinese)",
+      title: "TMX (Chinese)",
       link: "https://t.me/gmxch",
       linkLabel: "t.me",
       about: t`Telegram Group (Chinese)`,
     },
     {
-      title: "GMX (Portuguese)",
+      title: "TMX (Portuguese)",
       link: "https://t.me/GMX_Portuguese",
       linkLabel: "t.me",
       about: t`Telegram Group (Portuguese)`,
     },
     {
-      title: "GMX Trading Chat",
+      title: "TMX Trading Chat",
       link: "https://t.me/gambittradingchat",
       linkLabel: "t.me",
-      about: t`GMX community discussion`,
+      about: t`TMX community discussion`,
     },
   ];
 
@@ -457,10 +457,10 @@ export default function Ecosystem() {
             <div className="section-title-icon" />
             <div className="section-title-content">
               <div className="Page-title">
-                <Trans>GMX Pages</Trans>
+                <Trans>TMX Pages</Trans>
               </div>
               <div className="Page-description">
-                <Trans>GMX ecosystem pages.</Trans>
+                <Trans>TMX ecosystem pages.</Trans>
               </div>
             </div>
           </div>
@@ -504,7 +504,7 @@ export default function Ecosystem() {
             </div>
             <div className="Page-description">
               <Trans>
-                Projects developed by the GMX community. <br />
+                Projects developed by the TMX community. <br />
                 Please exercise caution when interacting with any app, apps are fully maintained by community
                 developers.
               </Trans>
@@ -557,7 +557,7 @@ export default function Ecosystem() {
               <Trans>Dashboards</Trans>
             </div>
             <div className="Page-description">
-              <Trans>GMX dashboards and analytics.</Trans>
+              <Trans>TMX dashboards and analytics.</Trans>
             </div>
           </div>
           <div className="DashboardV2-projects">
@@ -608,7 +608,7 @@ export default function Ecosystem() {
               <Trans>Partnerships and Integrations</Trans>
             </div>
             <div className="Page-description">
-              <Trans>Projects integrated with GMX.</Trans>
+              <Trans>Projects integrated with TMX.</Trans>
             </div>
           </div>
           <div className="DashboardV2-projects">
