@@ -20,17 +20,20 @@ import gmxAvax from "img/ic_gmx_avax.svg";
 import glpArbitrum from "img/ic_glp_arbitrum.svg";
 import glpAvax from "img/ic_glp_avax.svg";
 import optimismIcn from "img/icn_opt_24.svg"
+import tmxImg from 'img/ic_tmx.svg';
+import tlpImg from 'img/ic_tlp.svg';
+
 
 const ICONS = {
   [ARBITRUM]: {
     network: arbitrum,
-    gmx: gmxArbitrum,
-    glp: glpArbitrum,
+    gmx: tmxImg,
+    glp: tlpImg,
   },
   [AVALANCHE]: {
     network: avalanche,
-    gmx: gmxAvax,
-    glp: glpAvax,
+    gmx: tmxImg,
+    glp: tlpImg,
   },
   [ARBITRUM_TESTNET]: {
     network: arbitrum,
@@ -40,15 +43,15 @@ const ICONS = {
   },
   [SEPOLIA_TESTNET]: {
     network: sepoliaTesnet,
-    glp: tlpIcon,
+    glp: tlpImg,
   },
   [OPTIMISM_GOERLI_TESTNET]: {
     network: optimismIcn,
-    glp: tlpIcon,
+    glp: tlpImg,
   },
   common: {
-    gmx: gmxIcon,
-    glp: glpIcon,
+    gmx: tmxImg,
+    glp: tlpImg,
   },
 };
 

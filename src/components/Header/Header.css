@@ -314,6 +314,14 @@
     left: 0;
   }
 
+  .mobile-logo {
+    margin-left: 43px !important;
+    min-height: 42px !important;
+    position: relative;
+    right: 38px;
+  }
+
+ 
   a.App-header-user-account {
     margin-right: 0;
   }

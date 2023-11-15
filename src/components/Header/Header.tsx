@@ -109,7 +109,7 @@ export function Header({
           <div className="App-header-container-left">
             <Link className="App-header-link-main" to="/">
               <img src={theme.isLight ? logoImgLight : logoImgDark} className="big" alt="t3 Logo" />
-              <img src={logoSmallImg} className="small" alt="t3 Logo" style={{ marginLeft: "16px" }} />
+              <img src={logoSmallImg} className="small mobile-logo" alt="t3 Logo" style={{ marginLeft: "16px" }} />
             </Link>
             {isHomeSite() ? (
               <HomeHeaderLinks redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal} />
@@ -140,7 +140,7 @@ export function Header({
             <div className="App-header-container-left">
               <div className="App-header-link-main clickable" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
                 <img src={theme.isLight ? logoImgLight : logoImgDark} className="big" alt="t3 Logo" />
-                <img src={logoSmallImg} className="small" alt="t3 Logo" style={{ marginLeft: "9px" }} />
+                <img src={logoSmallImg} className="small mobile-logo" alt="t3 Logo" style={{ marginLeft: "9px" }} />
               </div>
             </div>
             <div className="App-header-container-right">
