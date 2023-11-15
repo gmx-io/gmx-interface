@@ -24,6 +24,12 @@
 
 @media (max-width: 1000px) {
   .landing-content {
-    display: none;
+    display: block;
+    text-align: center;
+    margin-bottom: 10rem;
+  }
+
+  .content-title  img {
+    margin: 0 auto;
   }
 }
