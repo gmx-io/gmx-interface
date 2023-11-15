@@ -26,7 +26,7 @@ const HOME_MENUS: HomeLink[] = [
   },
   {
     label: t`Protocol`,
-    link: "https://github.com/gmx-io",
+    link: "https://github.com/t3-money",
   },
   {
     label: t`Governance`,

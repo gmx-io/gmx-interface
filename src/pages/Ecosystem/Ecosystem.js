@@ -32,7 +32,7 @@ export default function Ecosystem() {
     },
     {
       title: "TMX Stats",
-      link: "https://stats.gmx.io/",
+      link: "https://t3.finance/#/dashboard",
       linkLabel: "stats.gmx.io",
       about: t`TMX Stats Page`,
       chainIds: [ARBITRUM, AVALANCHE],
