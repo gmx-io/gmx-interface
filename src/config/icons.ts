@@ -12,25 +12,28 @@ import avalanche from "img/ic_avalanche_24.svg";
 import avalancheTestnet from "img/ic_avalanche_testnet_24.svg";
 import sepoliaTesnet from "img/ic_sepolia_testnet_24.svg";
 
-import gmxIcon from "img/ic_gmx_40.svg";
-import glpIcon from "img/ic_glp_40.svg";
-import tlpIcon from "img/ic_glp_sepolia.svg";
-import gmxArbitrum from "img/ic_gmx_arbitrum.svg";
-import gmxAvax from "img/ic_gmx_avax.svg";
-import glpArbitrum from "img/ic_glp_arbitrum.svg";
-import glpAvax from "img/ic_glp_avax.svg";
+// import gmxIcon from "img/ic_gmx_40.svg";
+// import glpIcon from "img/ic_glp_40.svg";
+// import tlpIcon from "img/ic_glp_sepolia.svg";
+// import gmxArbitrum from "img/ic_gmx_arbitrum.svg";
+// import gmxAvax from "img/ic_gmx_avax.svg";
+// import glpArbitrum from "img/ic_glp_arbitrum.svg";
+// import glpAvax from "img/ic_glp_avax.svg";
 import optimismIcn from "img/icn_opt_24.svg"
+import tmxImg from 'img/ic_tmx.svg';
+import tlpImg from 'img/ic_tlp.svg';
+
 
 const ICONS = {
   [ARBITRUM]: {
     network: arbitrum,
-    gmx: gmxArbitrum,
-    glp: glpArbitrum,
+    gmx: tmxImg,
+    glp: tlpImg,
   },
   [AVALANCHE]: {
     network: avalanche,
-    gmx: gmxAvax,
-    glp: glpAvax,
+    gmx: tmxImg,
+    glp: tlpImg,
   },
   [ARBITRUM_TESTNET]: {
     network: arbitrum,
@@ -40,15 +43,15 @@ const ICONS = {
   },
   [SEPOLIA_TESTNET]: {
     network: sepoliaTesnet,
-    glp: tlpIcon,
+    glp: tlpImg,
   },
   [OPTIMISM_GOERLI_TESTNET]: {
     network: optimismIcn,
-    glp: tlpIcon,
+    glp: tlpImg,
   },
   common: {
-    gmx: gmxIcon,
-    glp: glpIcon,
+    gmx: tmxImg,
+    glp: tlpImg,
   },
 };
 

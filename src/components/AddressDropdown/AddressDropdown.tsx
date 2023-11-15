@@ -28,8 +28,8 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
 
   return (
     <Menu>
-      <Menu.Button as="div">
-        <button className="App-cta small transparent address-btn">
+      <Menu.Button as="div" className='header-address'>
+        <button className="App-cta small transparent address-btn menu-bar-address">
           <div className="user-avatar">
             {ethereumProvider && <Davatar size={20} address={account} provider={ethereumProvider} />}
           </div>
@@ -39,6 +39,13 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
       </Menu.Button>
       <div>
         <Menu.Items as="div" className="menu-items">
+          <Menu.Item>
+            <div className="mobile-address-item">
+              <div className="menu-item">
+                <span className="user-address">{ensName || shortenAddress(account, breakpoint === "S" ? 13 : 13)}</span>
+              </div>
+            </div>
+          </Menu.Item>
           <Menu.Item>
             <div
               className="menu-item"
