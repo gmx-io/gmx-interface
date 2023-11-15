@@ -83,7 +83,7 @@ export function ClaimModal(p: Props) {
             handle={formatDeltaUsd(totalFundingUsd)}
             renderContent={() => (
               <>
-                {claimableAmountsItems.map((item, index) => (
+                {claimableAmountsItems.map((item) => (
                   <div key={item}>{item}</div>
                 ))}
               </>

@@ -321,11 +321,9 @@ export default function ClaimEsGmx({ setPendingTxns }) {
       failMsg: t`Claim failed.`,
       successMsg: t`Claim completed!`,
       setPendingTxns,
-    })
-      .then(async (res) => {})
-      .finally(() => {
-        setIsClaiming(false);
-      });
+    }).finally(() => {
+      setIsClaiming(false);
+    });
   };
 
   return (

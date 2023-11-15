@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { useCallback, useState, useRef } from "react";
+import { useCallback, useState, useRef, ReactNode } from "react";
 import { IS_TOUCH } from "config/env";
 import "./Tooltip.scss";
 
@@ -7,8 +7,8 @@ const OPEN_DELAY = 0;
 const CLOSE_DELAY = 100;
 
 type Props = {
-  handle: React.ReactNode;
-  renderContent: () => React.ReactNode;
+  handle: ReactNode;
+  renderContent: () => ReactNode;
   position?: string;
   trigger?: string;
   className?: string;

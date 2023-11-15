@@ -578,7 +578,7 @@ export const Exchange = forwardRef((props, ref) => {
         }
       }
     },
-    onClosePosition(key, size, collateral, averagePrice, entryFundingRate, reserveAmount, realisedPnl, e) {
+    onClosePosition(key, size, collateral, averagePrice, entryFundingRate, reserveAmount, realisedPnl) {
       for (let i = 0; i < positions.length; i++) {
         const position = positions[i];
         if (position.contractKey === key) {

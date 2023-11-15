@@ -23,10 +23,9 @@ export type Props = {
   marketInfo?: MarketInfo;
   allowedSlippage?: number;
   isLong: boolean;
-  isIncrease: boolean;
 };
 
-export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: Props) {
+export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
   const { indexToken } = marketInfo || {};
 
   const entryPrice = isLong ? indexToken?.prices?.maxPrice : indexToken?.prices?.minPrice;

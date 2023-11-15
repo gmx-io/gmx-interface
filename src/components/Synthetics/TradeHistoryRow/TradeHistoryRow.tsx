@@ -41,7 +41,7 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
 
   return (
     <span className="TradeHistoryRow-message">
-      {messages.map((message, i) => {
+      {messages.map((message) => {
         const hasSmthAfterTitle = message.tooltipRows?.length || message.tooltipFooter;
         const hasSmthBeforeFooter = message.tooltipTitle || message.tooltipRows?.length;
         const showTooltip = message.tooltipRows || message.tooltipFooter || message.tooltipTitle;

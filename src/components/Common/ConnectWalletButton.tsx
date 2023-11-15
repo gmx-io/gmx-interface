@@ -5,10 +5,9 @@ type Props = {
   imgSrc: string;
   children: ReactNode;
   onClick: () => void;
-  className?: string;
 };
 
-export default function ConnectWalletButton({ imgSrc, children, onClick, className }: Props) {
+export default function ConnectWalletButton({ imgSrc, children, onClick }: Props) {
   return (
     <button className="connect-wallet-btn" onClick={onClick}>
       {imgSrc && <img className="btn-icon" src={imgSrc} alt="Connect Wallet" />}

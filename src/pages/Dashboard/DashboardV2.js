@@ -453,7 +453,7 @@ export default function DashboardV2() {
     setGMXActiveIndex(index);
   };
 
-  const onGMXDistributionChartLeave = (_, index) => {
+  const onGMXDistributionChartLeave = () => {
     setGMXActiveIndex(null);
   };
 
@@ -463,7 +463,7 @@ export default function DashboardV2() {
     setGLPActiveIndex(index);
   };
 
-  const onGLPPoolChartLeave = (_, index) => {
+  const onGLPPoolChartLeave = () => {
     setGLPActiveIndex(null);
   };
 

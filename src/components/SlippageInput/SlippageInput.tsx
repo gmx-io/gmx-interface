@@ -1,5 +1,5 @@
 import "./SlippageInput.scss";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import cx from "classnames";
 import { roundToTwoDecimals } from "lib/numbers";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
@@ -22,7 +22,7 @@ export default function SlippageInput({ setAllowedSlippage, defaultSlippage }: P
   const defaultSlippageText = getSlippageText(defaultSlippage);
   const [slippageText, setSlippageText] = useState<string>(defaultSlippageText);
   const [isPanelVisible, setIsPanelVisible] = useState<boolean>(false);
-  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+  function handleChange(event: ChangeEvent<HTMLInputElement>) {
     const { value } = event.target;
     if (value === "") {
       setSlippageText(value);
@@ -61,7 +61,7 @@ export default function SlippageInput({ setAllowedSlippage, defaultSlippage }: P
           id="slippage-input"
           onFocus={() => setIsPanelVisible(true)}
           onBlur={() => setIsPanelVisible(false)}
-          value={!!slippageText ? slippageText : ""}
+          value={slippageText ? slippageText : ""}
           placeholder={slippageText || defaultSlippageText}
           onChange={handleChange}
         />

@@ -21,7 +21,7 @@ import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import "./SyntheticsStats.scss";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: number, showDollar: boolean = false) {
+function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: number, showDollar = false) {
   const n = Number(formatAmount(amount, tokenDecimals));
   const isNegative = n < 0;
   const absN = Math.abs(n);

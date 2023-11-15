@@ -133,7 +133,7 @@ function StakeModal(props) {
       failMsg: t`Stake failed.`,
       setPendingTxns,
     })
-      .then(async (res) => {
+      .then(() => {
         setIsVisible(false);
       })
       .finally(() => {
@@ -270,7 +270,7 @@ function UnstakeModal(props) {
       successMsg: t`Unstake completed!`,
       setPendingTxns,
     })
-      .then(async (res) => {
+      .then(() => {
         setIsVisible(false);
       })
       .finally(() => {
@@ -413,7 +413,7 @@ function VesterDepositModal(props) {
       successMsg: t`Deposited!`,
       setPendingTxns,
     })
-      .then(async (res) => {
+      .then(() => {
         setIsVisible(false);
       })
       .finally(() => {
@@ -573,7 +573,7 @@ function VesterWithdrawModal(props) {
       successMsg: t`Withdrawn!`,
       setPendingTxns,
     })
-      .then(async (res) => {
+      .then(() => {
         setIsVisible(false);
       })
       .finally(() => {
@@ -715,7 +715,7 @@ function CompoundModal(props) {
         setPendingTxns,
       }
     )
-      .then(async (res) => {
+      .then(() => {
         setIsVisible(false);
       })
       .finally(() => {
@@ -864,7 +864,7 @@ function ClaimModal(props) {
         setPendingTxns,
       }
     )
-      .then(async (res) => {
+      .then(() => {
         setIsVisible(false);
       })
       .finally(() => {

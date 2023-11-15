@@ -98,7 +98,7 @@ export function getErrorMessage(chainId: number, ex: TxError, txnMessage?: strin
     case SLIPPAGE:
       failMsg = t`The mark price has changed, consider increasing your Allowed Slippage by clicking on the "..." icon next to your address.`;
       break;
-    case RPC_ERROR:
+    case RPC_ERROR: {
       autoCloseToast = false;
 
       const originalError = errorData?.error?.message || errorData?.message || message;
@@ -117,6 +117,7 @@ export function getErrorMessage(chainId: number, ex: TxError, txnMessage?: strin
         </div>
       );
       break;
+    }
     default:
       autoCloseToast = false;
 

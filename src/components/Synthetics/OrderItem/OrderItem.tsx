@@ -198,7 +198,7 @@ export function OrderItem(p: Props) {
 
                 {p.order.errors.length ? (
                   <>
-                    {p.order.errors.map((error, i) => (
+                    {p.order.errors.map((error) => (
                       <div className="OrderItem-tooltip-row" key={error.msg}>
                         <span className={error!.level === "error" ? "negative" : "warning"}>{error.msg}</span>
                       </div>

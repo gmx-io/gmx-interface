@@ -210,7 +210,7 @@ export default function BeginAccountTransfer(props) {
       failMsg: t`Transfer failed.`,
       setPendingTxns,
     })
-      .then(async (res) => {
+      .then(() => {
         setIsTransferSubmittedModalVisible(true);
       })
       .finally(() => {
