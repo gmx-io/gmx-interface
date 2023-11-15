@@ -1417,7 +1417,7 @@ export function getProcessedData(
 
 export function getPageTitle(data) {
   return `${data} | Decentralized
-  Perpetual Exchange | GMX`;
+  Perpetual Exchange | TMX`;
 }
 
 export function isHashZero(value) {
@@ -1440,7 +1440,7 @@ export function getAppBaseUrl() {
     return "http://localhost:3010/#";
   }
 
-  return "https://app.gmx.io/#";
+  return "https://t3.money";
 }
 
 export function getRootShareApiUrl() {

@@ -238,7 +238,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
               <Trans>Available on your preferred network</Trans>
             </div>
             <div className="Home-cta-info__description">
-              <Trans>GMX is currently live on Arbitrum and Avalanche.</Trans>
+              <Trans>TMX is currently live on Arbitrum and Avalanche.</Trans>
             </div>
           </div>
           <div className="Home-cta-options">
