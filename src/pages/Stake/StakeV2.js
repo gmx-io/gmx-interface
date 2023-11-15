@@ -69,6 +69,7 @@ import PageTitle from "components/PageTitle/PageTitle";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import UserIncentiveTable from "components/Synthetics/UserIncentiveTable/UserIncentiveTable";
+import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 
 const { AddressZero } = ethers.constants;
 
@@ -91,6 +92,7 @@ function StakeModal(props) {
     stakeMethodName,
     setPendingTxns,
   } = props;
+
   const [isStaking, setIsStaking] = useState(false);
   const isMetamaskMobile = useIsMetamaskMobile();
   const [isApproving, setIsApproving] = useState(false);
@@ -921,6 +923,7 @@ export default function StakeV2({ setPendingTxns }) {
   const { active, signer, account } = useWallet();
   const { chainId } = useChainId();
   const { openConnectModal } = useConnectModal();
+  const incentiveStats = useIncentiveStats(chainId);
 
   const icons = getIcons(chainId);
   const hasInsurance = true;
@@ -2255,18 +2258,22 @@ export default function StakeV2({ setPendingTxns }) {
           </div>
         </div>
       </div>
-      <div className="mt-sm">
-        <PageTitle
-          title={t`Incentives`}
-          subtitle={
-            <Trans>
-              Earn $ARB tokens by providing liquidity in GM, trading, or participating in trading competitions. Only for
-              GMX V2.
-            </Trans>
-          }
-        />
-      </div>
-      <UserIncentiveTable />
+      {Object.values(incentiveStats || {}).some((incentiveType) => incentiveType?.isActive) && (
+        <>
+          <div className="mt-sm">
+            <PageTitle
+              title={t`Incentives`}
+              subtitle={
+                <Trans>
+                  Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX
+                  V2.
+                </Trans>
+              }
+            />
+          </div>
+          <UserIncentiveTable />
+        </>
+      )}
       <Footer />
     </div>
   );

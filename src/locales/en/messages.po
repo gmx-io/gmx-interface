@@ -1453,8 +1453,8 @@ msgid "Earn"
 msgstr "Earn"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Earn $ARB tokens by providing liquidity in GM, trading, or participating in trading competitions. Only for GMX V2."
-msgstr "Earn $ARB tokens by providing liquidity in GM, trading, or participating in trading competitions. Only for GMX V2."
+msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2."
+msgstr "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2."
 
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Ecosystem"
