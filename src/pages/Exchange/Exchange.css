@@ -481,13 +481,13 @@ button.Exchange-list-action {
   border-radius: 3px;
   background: none;
   border: none;
-  color: rgba(255, 255, 255, 0.7);
+  color: #ff7028;
   margin: 0 0.3rem;
 }
 
-button.Exchange-list-action:hover {
+/* button.Exchange-list-action:hover {
   color: rgba(255, 255, 255, 1);
-}
+} */
 
 table.Exchange-list {
   border-collapse: collapse;
