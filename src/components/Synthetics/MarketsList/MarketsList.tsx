@@ -8,6 +8,7 @@ import {
   getMarketPoolName,
   getMaxReservedUsd,
   getReservedUsd,
+  isMarketAdaptiveFundingActive,
   useMarketsInfo,
 } from "domain/synthetics/markets";
 import { TokenData, getMidPrice } from "domain/synthetics/tokens";
@@ -21,6 +22,7 @@ import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { useMemo } from "react";
 import { useMedia } from "react-use";
 import PageTitle from "components/PageTitle/PageTitle";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 function formatFundingRate(fundingRate?: BigNumber) {
   if (!fundingRate) {
@@ -139,6 +141,10 @@ export function MarketsList() {
   }, [marketsInfoData]);
 
   function renderFundingRateTooltip(stats: typeof indexTokensStats[0]) {
+    const isAdaptiveFundingActive = stats.marketsStats.some(({ marketInfo }) =>
+      isMarketAdaptiveFundingActive(marketInfo)
+    );
+
     return () => (
       <>
         {stats.marketsStats.map(({ marketInfo: market, fundingRateLong, fundingRateShort }) => {
@@ -162,7 +168,6 @@ export function MarketsList() {
             </div>
           );
         })}
-        <br />
         <span>Funding Fees help to balance Longs and Shorts and are exchanged between both sides.</span>
         <br />
         <br />
@@ -170,6 +175,17 @@ export function MarketsList() {
           A negative Funding Fee value indicates that percentage needs to be paid, a positive Funding Fee value
           indicates that percentage will be received as funding rewards.
         </span>
+        {isAdaptiveFundingActive && (
+          <span>
+            <br />
+            <br />
+            <Trans>
+              This market uses an Adaptive Funding Rate. The Funding Rate will adjust over time depending on the ratio
+              of longs and shorts.{" "}
+              <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#adaptive-funding">Read more</ExternalLink>.
+            </Trans>
+          </span>
+        )}
       </>
     );
   }
