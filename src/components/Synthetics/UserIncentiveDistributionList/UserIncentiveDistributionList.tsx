@@ -12,7 +12,7 @@ import useUserIncentiveData from "domain/synthetics/common/useUserIncentiveData"
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { formatDate } from "lib/dates";
-import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 
@@ -53,7 +53,7 @@ export default function UserIncentiveDistributionList() {
 
   return (
     <div>
-      <Card title={t`Incentives Distribution History`}>
+      <Card title={t`Incentives Distribution History`} tooltipText={t`Incentives are airdropped weekly.`}>
         <div className="table-wrapper">
           <table className="referral-table">
             <thead>
@@ -94,11 +94,10 @@ export default function UserIncentiveDistributionList() {
                             <StatsTooltipRow
                               showDollar={false}
                               label={tokenInfo.tokenInfo?.symbol}
-                              value={formatTokenAmountWithUsd(
+                              value={formatTokenAmount(
                                 tokenInfo.tokenAmount,
-                                tokenInfo.tokenUsd,
-                                tokenInfo.tokenInfo?.symbol,
-                                tokenInfo.tokenInfo?.decimals
+                                tokenInfo.tokenInfo?.decimals,
+                                tokenInfo.tokenInfo?.symbol
                               )}
                             />
                           ));
