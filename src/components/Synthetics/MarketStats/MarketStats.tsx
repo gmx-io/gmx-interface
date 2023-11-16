@@ -185,15 +185,19 @@ export function MarketStats(p: Props) {
                           formatTokenAmount(
                             mintableInfo?.longDepositCapacityAmount,
                             marketInfo?.longToken.decimals,
-                            marketInfo?.longToken.symbol
+                            marketInfo?.longToken.symbol,
+                            {
+                              useCommas: true,
+                            }
                           ),
                           `(${formatTokenAmount(marketInfo?.longPoolAmount, marketInfo?.longToken.decimals, undefined, {
                             displayDecimals: 0,
+                            useCommas: true,
                           })} / ${formatTokenAmount(
                             marketInfo?.maxLongPoolAmount,
                             marketInfo?.longToken.decimals,
                             marketInfo?.longToken.symbol,
-                            { displayDecimals: 0 }
+                            { displayDecimals: 0, useCommas: true }
                           )})`,
                         ]}
                         showDollar={false}
@@ -208,18 +212,21 @@ export function MarketStats(p: Props) {
                             formatTokenAmount(
                               mintableInfo?.shortDepositCapacityAmount,
                               marketInfo?.shortToken.decimals,
-                              marketInfo?.shortToken.symbol
+                              marketInfo?.shortToken.symbol,
+                              {
+                                useCommas: true,
+                              }
                             ),
                             `(${formatTokenAmount(
                               marketInfo?.shortPoolAmount,
                               marketInfo?.shortToken.decimals,
                               undefined,
-                              { displayDecimals: 0 }
+                              { displayDecimals: 0, useCommas: true }
                             )} / ${formatTokenAmount(
                               marketInfo?.maxShortPoolAmount,
                               marketInfo?.shortToken.decimals,
                               marketInfo?.shortToken.symbol,
-                              { displayDecimals: 0 }
+                              { displayDecimals: 0, useCommas: true }
                             )})`,
                           ]}
                           showDollar={false}
