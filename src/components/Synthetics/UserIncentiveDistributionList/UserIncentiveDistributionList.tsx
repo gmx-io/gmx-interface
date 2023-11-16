@@ -12,7 +12,7 @@ import useUserIncentiveData from "domain/synthetics/common/useUserIncentiveData"
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { formatDate } from "lib/dates";
-import { formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 
@@ -94,11 +94,9 @@ export default function UserIncentiveDistributionList() {
                             <StatsTooltipRow
                               showDollar={false}
                               label={tokenInfo.tokenInfo?.symbol}
-                              value={formatTokenAmount(
-                                tokenInfo.tokenAmount,
-                                tokenInfo.tokenInfo?.decimals,
-                                tokenInfo.tokenInfo?.symbol
-                              )}
+                              value={formatTokenAmount(tokenInfo.tokenAmount, tokenInfo.tokenInfo?.decimals, "", {
+                                useCommas: true,
+                              })}
                             />
                           ));
                         }}
