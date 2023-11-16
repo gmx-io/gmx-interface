@@ -1030,7 +1030,7 @@ export function GmSwapBox(p: Props) {
                   )}
                 />
               ) : (
-                <span className="muted font-sm">
+                <span className="muted font-sm text-warning">
                   <Trans>Acknowledge high Price Impact</Trans>
                 </span>
               )}
