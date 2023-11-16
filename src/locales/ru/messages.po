@@ -342,7 +342,7 @@ msgstr "В качестве альтернативы вы можете выбр�
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-#: src/components/Synthetics/UserIncentiveTable/UserIncentiveTable.tsx
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Amount"
 msgstr "Сумма"
 
@@ -1261,7 +1261,7 @@ msgstr "Панели"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-#: src/components/Synthetics/UserIncentiveTable/UserIncentiveTable.tsx
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Date"
 msgstr "Дата"
 
@@ -2115,11 +2115,11 @@ msgstr "Инк."
 msgid "Incentives"
 msgstr ""
 
-#: src/components/Synthetics/UserIncentiveTable/UserIncentiveTable.tsx
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Incentives Distribution History"
 msgstr ""
 
-#: src/components/Synthetics/UserIncentiveTable/UserIncentiveTable.tsx
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Incentives are airdropped weekly."
 msgstr ""
 
@@ -3056,7 +3056,7 @@ msgstr ""
 msgid "No esGMX to claim"
 msgstr "Нет esGMX для получения компенсации"
 
-#: src/components/Synthetics/UserIncentiveTable/UserIncentiveTable.tsx
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "No incentives distribution history yet."
 msgstr ""
 
@@ -4853,7 +4853,7 @@ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-#: src/components/Synthetics/UserIncentiveTable/UserIncentiveTable.tsx
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Transaction"
 msgstr "Транзакция"
 
@@ -4968,7 +4968,7 @@ msgstr "Txn не удался. <0> Просмотр</0>"
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
-#: src/components/Synthetics/UserIncentiveTable/UserIncentiveTable.tsx
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Type"
 msgstr "Вид"

@@ -68,7 +68,7 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import PageTitle from "components/PageTitle/PageTitle";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
-import UserIncentiveTable from "components/Synthetics/UserIncentiveTable/UserIncentiveTable";
+import UserIncentiveDistributionList from "components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 
 const { AddressZero } = ethers.constants;
@@ -2271,7 +2271,7 @@ export default function StakeV2({ setPendingTxns }) {
               }
             />
           </div>
-          <UserIncentiveTable />
+          <UserIncentiveDistributionList />
         </>
       )}
       <Footer />

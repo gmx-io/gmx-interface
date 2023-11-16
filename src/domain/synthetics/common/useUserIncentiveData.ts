@@ -5,12 +5,12 @@ import useSWR from "swr";
 type UserIncentiveData = {
   id: string;
   typeId: string;
-  amounts: string;
-  amountsInUsd: string;
+  amounts: string[];
+  amountsInUsd: string[];
   blockNumber: string;
   receiver: string;
   timestamp: number;
-  tokens: string;
+  tokens: string[];
   transactionHash: string;
 };
 
@@ -20,6 +20,7 @@ const USER_INCENTIVE_QUERY = gql`
       orderBy: timestamp
       orderDirection: desc
       where: { receiver: $account, typeId_in: [1001, 1002, 1003] }
+      first: 1000
     ) {
       typeId
       amounts
