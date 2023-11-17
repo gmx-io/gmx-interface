@@ -72,12 +72,6 @@ export const GmTokensBalanceInfo = ({
   return <Tooltip renderContent={renderTooltipContent} handle={content} position="right-bottom" />;
 };
 
-function getColorByValue(value: BigNumber) {
-  if (!value || value.eq(0)) return undefined;
-
-  return value.gt(0) ? "text-green" : "text-red";
-}
-
 export const GmTokensTotalBalanceInfo = ({
   balance,
   balanceUsd,
@@ -110,19 +104,25 @@ export const GmTokensTotalBalanceInfo = ({
             <>
               <StatsTooltipRow
                 label={t`Total Wallet accrued Fees`}
-                value={formatUsd(userEarnings.total)}
+                className={getColorByValue(userEarnings.total)}
+                value={formatDeltaUsd(userEarnings.total, undefined, { showPlusForZero: true })}
                 showDollar={false}
               />
-              <StatsTooltipRow
-                label={t`Expected 365d Fees`}
-                value={formatUsd(userEarnings.expected365d)}
-                showDollar={false}
-              />
-              <br />
-              <Trans>
-                Expected 365d Fees are based on past ${daysConsidered}d Fees. Fees USD value is calculated at the time
-                they are accrued.
-              </Trans>
+              {userEarnings.expected365d && userEarnings.expected365d.gt(0) && (
+                <>
+                  <StatsTooltipRow
+                    label={t`Expected 365d Fees`}
+                    className={getColorByValue(userEarnings.expected365d)}
+                    value={formatDeltaUsd(userEarnings.expected365d, undefined, { showPlusForZero: true })}
+                    showDollar={false}
+                  />
+                  <br />
+                  <Trans>
+                    Expected 365d Fees are based on past ${daysConsidered}d Fees. Fees USD value is calculated at the
+                    time they are accrued.
+                  </Trans>
+                </>
+              )}
             </>
           )}
         </>
@@ -132,3 +132,9 @@ export const GmTokensTotalBalanceInfo = ({
     <Trans>WALLET</Trans>
   );
 };
+
+function getColorByValue(value: BigNumber) {
+  if (!value || value.eq(0)) return undefined;
+
+  return value.gt(0) ? "text-green" : "text-red";
+}

@@ -10,6 +10,7 @@ import { UserEarningsData } from "./types";
 import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import { useMarketTokensData } from "./useMarketTokensData";
 import { useMarketsInfo } from "./useMarketsInfo";
+import { useMarketTokensAPR } from "./useMarketTokensAPR";
 
 type RawBalanceChange = {
   cumulativeIncome: string;
@@ -31,7 +32,7 @@ type RawCollectedMarketFeesInfo = {
 
 export const useUserEarnings = (chainId: number) => {
   const { marketsInfoData } = useMarketsInfo(chainId);
-  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
+  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
 
   const client = getSyntheticsGraphClient(chainId);
   const marketAddresses = useMemo(
@@ -39,10 +40,12 @@ export const useUserEarnings = (chainId: number) => {
     [marketsInfoData]
   );
 
-  const key = marketAddresses.length && marketTokensData && client ? marketAddresses.join(",") : null;
+  const key =
+    marketAddresses.length && marketTokensData && client ? marketAddresses.concat("userEarnings").join(",") : null;
 
   const daysConsidered = useDaysConsideredInMarketsApr();
   const { account } = useWallet();
+  const marketsTokensAPRData = useMarketTokensAPR(chainId).marketsTokensAPRData;
 
   const { data } = useSWR<UserEarningsData | null>(key, {
     fetcher: async (): Promise<UserEarningsData | null> => {
@@ -192,10 +195,18 @@ export const useUserEarnings = (chainId: number) => {
           ),
         };
 
-        const yearMultiplier = Math.floor(365 / daysConsidered);
-
         result.total = result.total.add(recentPseudoChange.cumulativeIncome);
-        result.expected365d = result.expected365d.add(recentIncome.mul(yearMultiplier));
+        if (marketsTokensAPRData && marketTokensData) {
+          const apr = marketsTokensAPRData[marketAddress];
+          const token = marketTokensData[marketAddress];
+          const balance = token.balance;
+
+          if (!balance || balance.eq(0)) return;
+
+          const price = token.prices.maxPrice;
+          const expected365d = apr.mul(balance).mul(price).div(expandDecimals(1, 22));
+          result.expected365d = result.expected365d.add(expected365d);
+        }
       });
 
       return result;
