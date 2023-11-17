@@ -44,12 +44,14 @@ export const GmTokensBalanceInfo = ({
           <StatsTooltipRow
             showDollar={false}
             label={t`Total accrued Fees`}
+            className={getColorByValue(earnedTotal)}
             value={`${formatDeltaUsd(earnedTotal, undefined, { showPlusForZero: true })}`}
           />
         )}
         {earnedRecently && (
           <StatsTooltipRow
             showDollar={false}
+            className={getColorByValue(earnedRecently)}
             label={t`${daysConsidered}d accrued Fees`}
             value={`${formatDeltaUsd(earnedRecently, undefined, { showPlusForZero: true })}`}
           />
@@ -67,3 +69,9 @@ export const GmTokensBalanceInfo = ({
 
   return <Tooltip renderContent={renderTooltipContent} handle={content} position="right-bottom" />;
 };
+
+function getColorByValue(value: BigNumber) {
+  if (!value || value.eq(0)) return undefined;
+
+  return value.gt(0) ? "text-green" : "text-red";
+}
