@@ -61,7 +61,6 @@ export function GmFees(p: Props) {
                         p.executionFee.feeToken.decimals
                       )}
                       showDollar={false}
-                      className="text-red"
                     />
                   )}
                 </div>

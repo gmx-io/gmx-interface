@@ -100,6 +100,14 @@ export function getPoolUsdWithoutPnl(
   return convertToUsd(poolAmount, token.decimals, price)!;
 }
 
+export function getMaxOpenInterestUsd(marketInfo: MarketInfo, isLong: boolean) {
+  return isLong ? marketInfo.maxOpenInterestLong : marketInfo.maxOpenInterestShort;
+}
+
+export function getOpenInterestUsd(marketInfo: MarketInfo, isLong: boolean) {
+  return isLong ? marketInfo.longInterestUsd : marketInfo.shortInterestUsd;
+}
+
 export function getReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
   const { indexToken } = marketInfo;
 
@@ -134,7 +142,17 @@ export function getAvailableUsdLiquidityForPosition(marketInfo: MarketInfo, isLo
   const maxReservedUsd = getMaxReservedUsd(marketInfo, isLong);
   const reservedUsd = getReservedUsd(marketInfo, isLong);
 
-  return maxReservedUsd.sub(reservedUsd);
+  const maxOpenInterest = getMaxOpenInterestUsd(marketInfo, isLong);
+  const currentOpenInterest = getOpenInterestUsd(marketInfo, isLong);
+
+  const availableLiquidityBasedOnMaxReserve = maxReservedUsd.sub(reservedUsd);
+  const availableLiquidityBasedOnMaxOpenInterest = maxOpenInterest.sub(currentOpenInterest);
+
+  const result = availableLiquidityBasedOnMaxReserve.lt(availableLiquidityBasedOnMaxOpenInterest)
+    ? availableLiquidityBasedOnMaxReserve
+    : availableLiquidityBasedOnMaxOpenInterest;
+
+  return result.lt(0) ? BigNumber.from(0) : result;
 }
 
 export function getAvailableUsdLiquidityForCollateral(marketInfo: MarketInfo, isLong: boolean) {
@@ -440,4 +458,24 @@ export function getContractMarketPrices(tokensData: TokensData, market: Market):
     longTokenPrice: convertToContractTokenPrices(longToken.prices, longToken.decimals),
     shortTokenPrice: convertToContractTokenPrices(shortToken.prices, shortToken.decimals),
   };
+}
+
+export function getTotalGmInfo(tokensData?: TokensData) {
+  const defaultResult = {
+    balance: BigNumber.from(0),
+    balanceUsd: BigNumber.from(0),
+  };
+
+  if (!tokensData) {
+    return defaultResult;
+  }
+
+  const tokens = Object.values(tokensData).filter((token) => token.symbol === "GM");
+
+  return tokens.reduce((acc, token) => {
+    const balanceUsd = convertToUsd(token.balance, token.decimals, token.prices.minPrice);
+    acc.balance = acc.balance.add(token.balance || 0);
+    acc.balanceUsd = acc.balanceUsd.add(balanceUsd || 0);
+    return acc;
+  }, defaultResult);
 }
