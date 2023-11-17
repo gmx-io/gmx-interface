@@ -44,10 +44,10 @@ export const useUserEarnings = (chainId: number) => {
   const daysConsidered = useDaysConsideredInMarketsApr();
   const { account } = useWallet();
 
-  const { data } = useSWR<UserEarningsData>(key, {
-    fetcher: async (): Promise<UserEarningsData> => {
+  const { data } = useSWR<UserEarningsData | null>(key, {
+    fetcher: async (): Promise<UserEarningsData | null> => {
       if (!account) {
-        return {};
+        return null;
       }
 
       const startOfPeriod = Math.floor(Date.now() / 1000) - daysConsidered * 24 * 60 * 60;
@@ -128,12 +128,16 @@ export const useUserEarnings = (chainId: number) => {
       }
 
       if (!responseOrNull) {
-        return {};
+        return null;
       }
 
       const response = responseOrNull;
 
-      const result: UserEarningsData = {};
+      const result: UserEarningsData = {
+        total: BigNumber.from(0),
+        byMarketAddress: {},
+        expected365d: BigNumber.from(0),
+      };
 
       marketAddresses.forEach((marketAddress) => {
         const rawBalanceChanges = response[`_${marketAddress}_balanceChanges`] as RawBalanceChange[];
@@ -175,9 +179,10 @@ export const useUserEarnings = (chainId: number) => {
 
         balanceChanges.push(recentPseudoChange);
 
-        result[marketAddress] = {
+        const recentIncome = calcRecentIncome(balanceChanges);
+        result.byMarketAddress[marketAddress] = {
           total: recentPseudoChange.cumulativeIncome,
-          recent: calcRecentIncome(balanceChanges),
+          recent: recentIncome,
           comment: buildComment(
             balanceChanges,
             startOfPeriod,
@@ -186,12 +191,17 @@ export const useUserEarnings = (chainId: number) => {
             Boolean(prevRawBalanceChange)
           ),
         };
+
+        const yearMultiplier = Math.floor(365 / daysConsidered);
+
+        result.total = result.total.add(recentPseudoChange.cumulativeIncome);
+        result.expected365d = result.expected365d.add(recentIncome.mul(yearMultiplier));
       });
 
       return result;
     },
   });
-  return data;
+  return data ?? null;
 };
 
 function calcEndOfPeriodIncome(prevBalanceChange: BalanceChange, balanceChange: BalanceChange): BigNumber {

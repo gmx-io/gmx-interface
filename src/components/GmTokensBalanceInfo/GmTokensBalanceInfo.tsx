@@ -1,6 +1,8 @@
 import { Trans, t } from "@lingui/macro";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
+import { UserEarningsData } from "domain/synthetics/markets";
+import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { TokenData, convertToUsd } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
@@ -75,3 +77,58 @@ function getColorByValue(value: BigNumber) {
 
   return value.gt(0) ? "text-green" : "text-red";
 }
+
+export const GmTokensTotalBalanceInfo = ({
+  balance,
+  balanceUsd,
+  userEarnings,
+}: {
+  balance?: BigNumber;
+  balanceUsd?: BigNumber;
+  userEarnings: UserEarningsData | null;
+}) => {
+  const daysConsidered = useDaysConsideredInMarketsApr();
+  return balance && balanceUsd ? (
+    <Tooltip
+      handle={<Trans>WALLET</Trans>}
+      className="text-none"
+      position="right-bottom"
+      renderContent={() => (
+        <>
+          <StatsTooltipRow
+            label={t`Total in Wallet`}
+            value={[
+              formatTokenAmount(balance, 18, "GM", {
+                useCommas: true,
+                fallbackToZero: true,
+              }),
+              `(${formatUsd(balanceUsd)})`,
+            ]}
+            showDollar={false}
+          />
+          {userEarnings && (
+            <>
+              <StatsTooltipRow
+                label={t`Total Wallet accrued Fees`}
+                value={formatUsd(userEarnings.total)}
+                showDollar={false}
+              />
+              <StatsTooltipRow
+                label={t`Expected 365d Fees`}
+                value={formatUsd(userEarnings.expected365d)}
+                showDollar={false}
+              />
+              <br />
+              <Trans>
+                Expected 365d Fees are based on past ${daysConsidered}d Fees. Fees USD value is calculated at the time
+                they are accrued.
+              </Trans>
+            </>
+          )}
+        </>
+      )}
+    />
+  ) : (
+    <Trans>WALLET</Trans>
+  );
+};

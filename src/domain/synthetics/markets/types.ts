@@ -139,11 +139,15 @@ export type MarketTokensAPRData = {
 };
 
 export type UserEarningsData = {
-  [marketTokenAddress: string]: {
-    total: BigNumber;
-    recent: BigNumber;
-    comment?: string;
+  byMarketAddress: {
+    [marketTokenAddress: string]: {
+      total: BigNumber;
+      recent: BigNumber;
+      comment?: string;
+    };
   };
+  total: BigNumber;
+  expected365d: BigNumber;
 };
 
 export type ContractMarketPrices = {
