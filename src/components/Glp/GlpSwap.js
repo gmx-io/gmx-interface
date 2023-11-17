@@ -78,14 +78,20 @@ import Checkbox from "components/Checkbox/Checkbox";
 
 const { AddressZero } = ethers.constants;
 
-function getTimeLeftToNextWednesday() {
+function getNextWednesdayUTC() {
   const now = new Date();
   const nextWed = nextWednesday(now);
+  return Date.UTC(nextWed.getUTCFullYear(), nextWed.getUTCMonth(), nextWed.getUTCDate());
+}
 
+function getTimeLeftToNextWednesday() {
+  const now = new Date();
+  const nextWedUtc = getNextWednesdayUTC();
   const duration = intervalToDuration({
     start: now,
-    end: Date.UTC(nextWed.getUTCFullYear(), nextWed.getUTCMonth(), nextWed.getUTCDate()),
+    end: nextWedUtc,
   });
+
   const days = duration.days ? `${duration.days}d ` : "";
   const hours = duration.hours ? `${duration.hours}h ` : "";
   const minutes = duration.minutes ? `${duration.minutes}m` : "";
@@ -94,8 +100,7 @@ function getTimeLeftToNextWednesday() {
 
 function getMinutesToNextEpochIfLessThanHour() {
   const now = new Date();
-  const nextWed = nextWednesday(new Date(now));
-  const nextWedUtc = Date.UTC(nextWed.getUTCFullYear(), nextWed.getUTCMonth(), nextWed.getUTCDate());
+  const nextWedUtc = getNextWednesdayUTC();
   const totalMinutes = differenceInMinutes(nextWedUtc, now);
 
   if (totalMinutes < 60) {
