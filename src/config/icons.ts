@@ -5,6 +5,7 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   OPTIMISM_GOERLI_TESTNET,
+  OPTIMISM_MAINNET,
   SEPOLIA_TESTNET,
 } from "config/chains";
 import arbitrum from "img/ic_arbitrum_24.svg";
@@ -19,10 +20,9 @@ import sepoliaTesnet from "img/ic_sepolia_testnet_24.svg";
 // import gmxAvax from "img/ic_gmx_avax.svg";
 // import glpArbitrum from "img/ic_glp_arbitrum.svg";
 // import glpAvax from "img/ic_glp_avax.svg";
-import optimismIcn from "img/icn_opt_24.svg"
-import tmxImg from 'img/ic_tmx.svg';
-import tlpImg from 'img/ic_tlp.svg';
-
+import optimismIcn from "img/icn_opt_24.svg";
+import tmxImg from "img/ic_tmx.svg";
+import tlpImg from "img/ic_tlp.svg";
 
 const ICONS = {
   [ARBITRUM]: {
@@ -49,6 +49,7 @@ const ICONS = {
     network: optimismIcn,
     glp: tlpImg,
   },
+  [OPTIMISM_MAINNET]: { network: optimismIcn, glp: tlpImg },
   common: {
     gmx: tmxImg,
     glp: tlpImg,
