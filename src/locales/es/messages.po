@@ -14,10 +14,6 @@ msgstr ""
 "Plural-Forms: \n"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "({0}% of Open Fee)"
-#~ msgstr ""
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "({0}% of {feesTypeName})"
 msgstr ""
 
@@ -943,7 +939,6 @@ msgstr "Código ya cogido"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
@@ -2430,6 +2425,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
@@ -3165,6 +3161,10 @@ msgstr "Orden"
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "Order Trigger Price is beyond position's Liquidation Price."
+msgstr ""
+
+#: src/components/Synthetics/OrderItem/OrderItem.tsx
+msgid "Order Type"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -4669,7 +4669,8 @@ msgid "This code is not yet registered on {0}, you will not receive rebates ther
 msgstr "Este código no está registrado en {0}, por lo que no recibirás reembolsos ahí.<0/><1/>Cambia de red para crear este código en {1}."
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "This market uses an Adaptive Funding Rate. The Funding Rate will adjust over time depending on the ratio of longs and shorts.<0/><1/><2>Read more</2>."
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "This market uses an Adaptive Funding Rate. The Funding Rate will adjust over time depending on the ratio of longs and shorts. <0>Read more</0>."
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -5756,7 +5757,6 @@ msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for ve
 msgstr "{0} tokens han sido convertidos a GMX desde {1} esGMX depositados para adquisición."
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "{0} will be swapped to {1} on order execution."
 msgstr ""
