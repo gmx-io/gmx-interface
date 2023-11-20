@@ -37,16 +37,22 @@ const ICONS = {
   },
   [ARBITRUM_TESTNET]: {
     network: arbitrum,
+    gmx: tmxImg,
+    glp: tlpImg,
   },
   [AVALANCHE_FUJI]: {
     network: avalancheTestnet,
+    gmx: tmxImg,
+    glp: tlpImg,
   },
   [SEPOLIA_TESTNET]: {
     network: sepoliaTesnet,
+    gmx: tmxImg,
     glp: tlpImg,
   },
   [OPTIMISM_GOERLI_TESTNET]: {
     network: optimismIcn,
+    gmx: tmxImg,
     glp: tlpImg,
   },
   [OPTIMISM_MAINNET]: { network: optimismIcn, glp: tlpImg },
