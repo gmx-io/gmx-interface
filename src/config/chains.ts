@@ -14,12 +14,13 @@ export const ARBITRUM = 42161;
 export const ARBITRUM_TESTNET = 421611;
 export const SEPOLIA_TESTNET = 11155111;
 export const OPTIMISM_GOERLI_TESTNET = 420;
+export const OPTIMISM_MAINNET = 10;
 
 // TODO take it from web3
-export const DEFAULT_CHAIN_ID = ARBITRUM;
+export const DEFAULT_CHAIN_ID = OPTIMISM_MAINNET;
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
-export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE];
+export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE, OPTIMISM_MAINNET];
 
 if (isDevelopment()) {
   SUPPORTED_CHAIN_IDS.push(ARBITRUM_TESTNET, AVALANCHE_FUJI, SEPOLIA_TESTNET, OPTIMISM_GOERLI_TESTNET);
@@ -30,6 +31,7 @@ export const IS_NETWORK_DISABLED = {
   [SEPOLIA_TESTNET]: false,
   [OPTIMISM_GOERLI_TESTNET]: false,
   [AVALANCHE]: false,
+  [OPTIMISM_MAINNET]: false,
 };
 
 export const CHAIN_NAMES_MAP = {
@@ -41,6 +43,7 @@ export const CHAIN_NAMES_MAP = {
   [AVALANCHE_FUJI]: "Avalanche Fuji",
   [SEPOLIA_TESTNET]: "Sepolia",
   [OPTIMISM_GOERLI_TESTNET]: "Optimism Goerli",
+  [OPTIMISM_MAINNET]: "Optimism Mainnet",
 };
 
 export const GAS_PRICE_ADJUSTMENT_MAP = {
@@ -142,7 +145,22 @@ const constants = {
     // contract requires that execution fee be strictly greater than instead of gte
     DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0100001"),
   },
+
   [OPTIMISM_GOERLI_TESTNET]: {
+    nativeTokenSymbol: "ETH",
+    wrappedTokenSymbol: "WETH",
+    defaultCollateralSymbol: "USDT",
+    defaultFlagOrdersEnabled: true,
+    positionReaderPropsLength: 9,
+    v2: true,
+
+    SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.01"),
+    INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.01"),
+    // contract requires that execution fee be strictly greater than instead of gte
+    DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0100001"),
+  },
+
+  [OPTIMISM_MAINNET]: {
     nativeTokenSymbol: "ETH",
     wrappedTokenSymbol: "WETH",
     defaultCollateralSymbol: "USDT",
@@ -181,8 +199,9 @@ export const RPC_PROVIDERS = {
   [ARBITRUM_TESTNET]: ["https://rinkeby.arbitrum.io/rpc"],
   [AVALANCHE]: ["https://api.avax.network/ext/bc/C/rpc"],
   [AVALANCHE_FUJI]: ["https://api.avax-test.network/ext/bc/C/rpc"],
-  [SEPOLIA_TESTNET]: ["https://sepolia.infura.io/v3/88088bd69e9f45cd9e1842a20addb42d"], // @todo replace with paid json rpc url (?)
+  [SEPOLIA_TESTNET]: ["https://sepolia.infura.io/v3/88088bd69e9f45cd9e1842a20addb42d"],
   [OPTIMISM_GOERLI_TESTNET]: ["https://opt-goerli.g.alchemy.com/v2/4AflwA8Mr5qf9nxuS90eSGlsLHPHMCHK"],
+  [OPTIMISM_MAINNET]: ["https://mainnet.optimism.io"], // @todo replace with paid json rpc url (?)
 };
 
 export const FALLBACK_PROVIDERS = {
@@ -279,6 +298,17 @@ export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
     rpcUrls: RPC_PROVIDERS[OPTIMISM_GOERLI_TESTNET],
     blockExplorerUrls: [getExplorerUrl(OPTIMISM_GOERLI_TESTNET)],
   },
+  [OPTIMISM_MAINNET]: {
+    chainId: "0x" + OPTIMISM_MAINNET.toString(16),
+    chainName: "Optimism",
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    rpcUrls: RPC_PROVIDERS[OPTIMISM_MAINNET],
+    blockExplorerUrls: [getExplorerUrl(OPTIMISM_MAINNET)],
+  },
 };
 
 export const getConstant = (chainId: number, key: string) => {
@@ -344,6 +374,8 @@ export function getExplorerUrl(chainId) {
     return "https://sepolia.etherscan.io/";
   } else if (chainId === OPTIMISM_GOERLI_TESTNET) {
     return "https://goerli-optimism.etherscan.io/";
+  } else if (chainId === OPTIMISM_MAINNET) {
+    return "https://optimistic.etherscan.io/";
   }
   return "https://etherscan.io/";
 }

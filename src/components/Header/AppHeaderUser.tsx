@@ -11,7 +11,7 @@ import cx from "classnames";
 import { Trans } from "@lingui/macro";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
-import { ARBITRUM, OPTIMISM_GOERLI_TESTNET, SEPOLIA_TESTNET, getChainName } from "config/chains";
+import { OPTIMISM_GOERLI_TESTNET, OPTIMISM_MAINNET, SEPOLIA_TESTNET, getChainName } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import { useChainId } from "lib/chains";
 import { isDevelopment } from "config/env";
@@ -36,20 +36,14 @@ type Props = {
 
 const NETWORK_OPTIONS = [
   {
-    label: getChainName(ARBITRUM),
-    value: ARBITRUM,
-    icon: getIcon(ARBITRUM, "network"),
+    label: getChainName(OPTIMISM_MAINNET),
+    value: OPTIMISM_MAINNET,
+    icon: getIcon(OPTIMISM_MAINNET, "network"),
     color: "#264f79",
   },
 ];
 
 if (isDevelopment()) {
-  NETWORK_OPTIONS.push({
-    label: getChainName(OPTIMISM_GOERLI_TESTNET),
-    value: OPTIMISM_GOERLI_TESTNET,
-    icon: getIcon(OPTIMISM_GOERLI_TESTNET, "network"),
-    color: "#264f79",
-  });
   NETWORK_OPTIONS.push({
     label: getChainName(SEPOLIA_TESTNET),
     value: SEPOLIA_TESTNET,
