@@ -1,7 +1,7 @@
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { SkeletonTheme } from "react-loading-skeleton";
-import "./a.css";
+import "./Skeleton.scss";
 
 function TableRowSkeleton() {
   return (
@@ -31,7 +31,7 @@ function TableRowSkeleton() {
         <Skeleton width={80} height={12} />
       </td>
       <td>
-        <Skeleton count={1} />
+        <Skeleton width={60} count={1} />
       </td>
       <td></td>
     </tr>
@@ -40,14 +40,11 @@ function TableRowSkeleton() {
 
 function TokenListSkeleton({ count = 8 }) {
   return (
-    <>
-      <div className="tr-wave" />
-      <SkeletonTheme baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" enableAnimation={false}>
-        {Array.from({ length: count }).map((_, index) => (
-          <TableRowSkeleton key={index} />
-        ))}
-      </SkeletonTheme>
-    </>
+    <SkeletonTheme baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A">
+      {Array.from({ length: count }).map((_, index) => (
+        <TableRowSkeleton key={index} />
+      ))}
+    </SkeletonTheme>
   );
 }
 export default TokenListSkeleton;
