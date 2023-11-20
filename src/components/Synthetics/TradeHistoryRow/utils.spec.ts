@@ -63,7 +63,7 @@ describe("TradeHistoryRow helpers", () => {
         text: "Execute Limit Order: Short ARB +$2,070.18, ",
       },
       {
-        text: "Triggered at: <$0.010, Execution Price: $0.837",
+        text: "Triggered at: < $0.010, Execution Price: $0.837",
         tooltipRows: [
           {
             label: "Order trigger price",
@@ -115,7 +115,7 @@ describe("TradeHistoryRow helpers", () => {
           {
             label: "Min required collateral",
             showDollar: false,
-            value: "<$0.01",
+            value: "< $0.01",
             key: "min-collateral",
           },
           {
@@ -187,7 +187,7 @@ describe("TradeHistoryRow helpers", () => {
   it("formatSwapMessage", () => {
     // MARKET SWAPS
     expect(formatSwapMessage(requestSwap)).toEqual("Request Market Swap: 0.0119 WETH for 39.8800 USDC");
-    expect(formatSwapMessage(executeSwap)).toEqual("Execute Market Swap: 1080.6325 USDC for 1.1196 ETH");
+    expect(formatSwapMessage(executeSwap)).toEqual("Execute Market Swap: 1,080.6325 USDC for 1.1196 ETH");
     // LIMIT SWAPS
     expect(formatSwapMessage(executeOrderSwap)).toEqual(
       "Execute Limit Swap: 0.3000 WETH for 0.3698 BTC, Price: 1.2329 WETH / BTC"

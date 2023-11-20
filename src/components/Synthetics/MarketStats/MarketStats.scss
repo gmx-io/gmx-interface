@@ -14,12 +14,6 @@
   min-width: max-content;
 }
 
-.MarketStats-gm-icon {
-  height: 45px;
-  margin-top: -4px;
-  margin-left: -4px;
-}
-
 .App-card-title-mark-icon {
   position: relative;
   margin-right: 0.8rem;
@@ -67,7 +61,7 @@
 @media (max-width: 700px) {
   .MarketStats-card {
     .Tooltip-popup {
-      min-width: 22rem;
+      min-width: 28rem;
     }
   }
 }
