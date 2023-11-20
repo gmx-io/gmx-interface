@@ -1,9 +1,10 @@
 import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
-import { getChainName, getNetworkBridgeTutorial } from "config/chains";
+import { getChainName } from "config/chains";
 import { getNativeToken } from "config/tokens";
 import { switchNetwork } from "lib/wallets";
+import { Link } from "react-router-dom";
 
 export const NOT_ENOUGH_FUNDS = "NOT_ENOUGH_FUNDS";
 export const USER_DENIED = "USER_DENIED";
@@ -94,9 +95,9 @@ export function getErrorMessage(chainId: number, ex: TxError, txnMessage?: strin
           There is not enough {nativeToken.symbol} in your account on {getChainName(chainId)} to send this transaction.
           <br />
           <br />
-          <ExternalLink href={getNetworkBridgeTutorial(chainId)}>
-            Bridge {nativeToken.symbol} to {getChainName(chainId)}
-          </ExternalLink>
+          <Link to="/buy_gmx#bridge">
+            Buy or Transfer {nativeToken.symbol} to {getChainName(chainId)}
+          </Link>
         </Trans>
       );
       break;
