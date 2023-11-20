@@ -1950,8 +1950,8 @@ msgid "GLP sell disabled, pending {0} upgrade"
 msgstr "GLP-Verkauf deaktiviert, {0} Aktualisierung steht noch aus"
 
 #: src/pages/BuyGlp/BuyGlp.js
-msgid "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more</0>."
-msgstr ""
+#~ msgid "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more</0>."
+#~ msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
