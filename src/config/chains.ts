@@ -336,17 +336,6 @@ export function getExplorerUrl(chainId) {
   return "https://etherscan.io/";
 }
 
-const networkBridgeTutorials = {
-  [ARBITRUM]: "https://arbitrum.io/bridge-tutorial/",
-  [ARBITRUM_GOERLI]: "https://arbitrum.io/bridge-tutorial/",
-  [AVALANCHE]: "https://support.avax.network/en/articles/6657391-how-to-use-the-avalanche-bridge-core-app-bridge",
-  [AVALANCHE_FUJI]: "https://support.avax.network/en/articles/6657391-how-to-use-the-avalanche-bridge-core-app-bridge",
-};
-
-export function getNetworkBridgeTutorial(chainId: number) {
-  return networkBridgeTutorials[chainId];
-}
-
 export function getHighExecutionFee(chainId) {
   return HIGH_EXECUTION_FEES_MAP[chainId] || 3;
 }

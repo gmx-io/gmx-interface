@@ -1,11 +1,12 @@
 import { Signer, ethers } from "ethers";
 import Token from "abis/Token.json";
-import { getChainName, getExplorerUrl, getNetworkBridgeTutorial } from "config/chains";
+import { getChainName, getExplorerUrl } from "config/chains";
 import { helperToast } from "lib/helperToast";
 import { InfoTokens, TokenInfo } from "./types";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { t, Trans } from "@lingui/macro";
 import { getNativeToken } from "config/tokens";
+import { Link } from "react-router-dom";
 
 type Params = {
   setIsApproving: (val: boolean) => void;
@@ -77,9 +78,9 @@ export function approveTokens({
               There is not enough {nativeToken.symbol} in your account on {networkName} to send this transaction.
               <br />
               <br />
-              <ExternalLink href={getNetworkBridgeTutorial(chainId)}>
-                Bridge {nativeToken.symbol} to {networkName}
-              </ExternalLink>
+              <Link to="/buy_gmx#bridge">
+                Buy or Transfer {nativeToken.symbol} to {networkName}
+              </Link>
             </Trans>
           </div>
         );
