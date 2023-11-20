@@ -4471,7 +4471,7 @@ msgid "There is not enough liquidity in a single token for your size. Please che
 msgstr "한 종류의 토큰에서 해당 스왑을 실현할 수 있는 충분한 유동성이 존재하지 않습니다. \" 수수료 절약 섹션을 확인 후 주문을 복수로 분할하는 것을 검토해주세요"
 
 #: src/lib/contracts/transactionErrors.tsx
-msgid "There is not enough {0} in your account on {1} to send this transaction.<0/><1/><2>Bridge {2} to {3}</2>"
+msgid "There is not enough {0} in your account on {1} to send this transaction.<0/><1/><2>Buy or Transfer {2} to {3}</2>"
 msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx

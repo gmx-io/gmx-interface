@@ -4471,7 +4471,7 @@ msgid "There is not enough liquidity in a single token for your size. Please che
 msgstr ""
 
 #: src/lib/contracts/transactionErrors.tsx
-msgid "There is not enough {0} in your account on {1} to send this transaction.<0/><1/><2>Bridge {2} to {3}</2>"
+msgid "There is not enough {0} in your account on {1} to send this transaction.<0/><1/><2>Buy or Transfer {2} to {3}</2>"
 msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
