@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { ethers } from "ethers";
 import { Link } from "react-router-dom";
 import Tooltip from "components/Tooltip/Tooltip";
@@ -112,7 +112,7 @@ export default function TradeHistory(props) {
     return pageIds[pageIndex];
   };
 
-  const { trades, updateTrades } = useTrades(chainId, account, props.forSingleAccount, getAfterId());
+  const { trades } = useTrades(chainId, account, props.forSingleAccount, getAfterId());
 
   const liquidationsData = useLiquidationsData(chainId, account);
   const liquidationsDataMap = useMemo(() => {
@@ -125,13 +125,6 @@ export default function TradeHistory(props) {
       return memo;
     }, {});
   }, [liquidationsData]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      updateTrades(undefined, true);
-    }, 10 * 1000);
-    return () => clearInterval(interval);
-  }, [updateTrades]);
 
   const loadNextPage = () => {
     if (!trades || trades.length === 0) {
