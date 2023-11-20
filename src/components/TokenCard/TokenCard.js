@@ -13,6 +13,7 @@ import APRLabel from "../APRLabel/APRLabel";
 import { HeaderLink } from "../Header/HeaderLink";
 import useWallet from "lib/wallets/useWallet";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
+import BannerButton from "components/Banner/BannerButton";
 
 const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
@@ -136,22 +137,11 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
               GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of the V1 markets generated fees.
             </Trans>
             {incentiveState?.migration?.isActive && (
-              <>
-                <br />
-                <br />
-                <div className="text-warning">
-                  <Trans>
-                    GLP to GM migration has reduced Fees due to STIP incentives.{" "}
-                    <ExternalLink
-                      className="text-warning"
-                      href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#a2d1ea61dd1147b195b7e3bd769348d3"
-                    >
-                      Read more
-                    </ExternalLink>
-                    .
-                  </Trans>
-                </div>
-              </>
+              <BannerButton
+                className="mt-md"
+                label="GM Pools APR and migrating from GLP to GM are incentivized."
+                link="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#a2d1ea61dd1147b195b7e3bd769348d3"
+              />
             )}
           </div>
           <div className="Home-token-card-option-apr">
