@@ -24,7 +24,9 @@ function useEventToast() {
 
   const isAdaptiveFundingActiveAllMarkets = useMemo(() => {
     if (!marketsInfoData) return;
-    return Object.values(marketsInfoData).every((market) => market.fundingIncreaseFactorPerSecond.gt(0));
+    return Object.values(marketsInfoData)
+      .filter((market) => !market.isSpotOnly)
+      .every((market) => market.fundingIncreaseFactorPerSecond.gt(0));
   }, [marketsInfoData]);
 
   useEffect(() => {
