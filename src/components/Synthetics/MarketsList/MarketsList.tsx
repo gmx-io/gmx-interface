@@ -3,12 +3,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getIcon } from "config/icons";
 import { getFundingFactorPerPeriod } from "domain/synthetics/fees";
-import {
-  MarketInfo,
-  getMarketPoolName,
-  getMarketReservesAccountingInterest,
-  useMarketsInfo,
-} from "domain/synthetics/markets";
+import { MarketInfo, getMarketPoolName, getAvailableLiquidity, useMarketsInfo } from "domain/synthetics/markets";
 import { TokenData, getMidPrice } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
@@ -51,8 +46,8 @@ export function MarketsList() {
         avgFundingRateLong: BigNumber;
         avgFundingRateShort: BigNumber;
         totalUtilization: BigNumber;
-        totalReserveOrInterest: BigNumber;
-        totalMaxReserveOrInterest: BigNumber;
+        totalAvailableLiquidity: BigNumber;
+        totalMaxLiquidity: BigNumber;
         marketsStats: {
           marketInfo: MarketInfo;
           poolValueUsd: BigNumber;
@@ -80,8 +75,8 @@ export function MarketsList() {
           avgFundingRateLong: BigNumber.from(0),
           avgFundingRateShort: BigNumber.from(0),
           totalUtilization: BigNumber.from(0),
-          totalReserveOrInterest: BigNumber.from(0),
-          totalMaxReserveOrInterest: BigNumber.from(0),
+          totalAvailableLiquidity: BigNumber.from(0),
+          totalMaxLiquidity: BigNumber.from(0),
           marketsStats: [],
         };
       }
@@ -93,23 +88,26 @@ export function MarketsList() {
       const fundingRateLong = getFundingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]);
       const fundingRateShort = getFundingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]);
 
-      const { reserveOrInterest: longReserveOrInterestUsd, maxReserveOrInterest: maxLongReserveOrInterestUsd } =
-        getMarketReservesAccountingInterest(marketInfo, true);
+      const { availableLiquidity: longAvailableLiquidity, maxLiquidity: longMaxLiquidity } = getAvailableLiquidity(
+        marketInfo,
+        true
+      );
 
-      const { reserveOrInterest: shortReserveOrInterestUsd, maxReserveOrInterest: maxShortReserveOrInterestUsd } =
-        getMarketReservesAccountingInterest(marketInfo, false);
+      const { availableLiquidity: shortAvailableLiquidity, maxLiquidity: shortMaxLiquidity } = getAvailableLiquidity(
+        marketInfo,
+        false
+      );
 
-      const totalReserveOrInterest = longReserveOrInterestUsd.add(shortReserveOrInterestUsd);
-      const totalMaxReserveOrInterest = maxLongReserveOrInterestUsd.add(maxShortReserveOrInterestUsd);
+      const availableLiquidity = longAvailableLiquidity.add(shortAvailableLiquidity);
+      const maxLiquidity = longMaxLiquidity.add(shortMaxLiquidity);
 
-      const utilization = totalMaxReserveOrInterest.gt(0)
-        ? totalReserveOrInterest.mul(BASIS_POINTS_DIVISOR).div(totalMaxReserveOrInterest)
+      const utilization = maxLiquidity.gt(0)
+        ? availableLiquidity.mul(BASIS_POINTS_DIVISOR).div(maxLiquidity)
         : BigNumber.from(0);
 
       indexTokenStats.totalPoolValue = indexTokenStats.totalPoolValue.add(poolValueUsd);
-      indexTokenStats.totalReserveOrInterest = indexTokenStats.totalReserveOrInterest.add(totalReserveOrInterest);
-      indexTokenStats.totalMaxReserveOrInterest =
-        indexTokenStats.totalMaxReserveOrInterest.add(totalMaxReserveOrInterest);
+      indexTokenStats.totalAvailableLiquidity = indexTokenStats.totalAvailableLiquidity.add(availableLiquidity);
+      indexTokenStats.totalMaxLiquidity = indexTokenStats.totalMaxLiquidity.add(maxLiquidity);
       indexTokenStats.marketsStats.push({
         marketInfo: marketInfo,
         utilization,
@@ -120,10 +118,8 @@ export function MarketsList() {
     }
 
     for (const indexTokenStats of Object.values(indexMap)) {
-      indexTokenStats.totalUtilization = indexTokenStats.totalMaxReserveOrInterest.gt(0)
-        ? indexTokenStats.totalReserveOrInterest
-            .mul(BASIS_POINTS_DIVISOR)
-            .div(indexTokenStats.totalMaxReserveOrInterest)
+      indexTokenStats.totalUtilization = indexTokenStats.totalMaxLiquidity.gt(0)
+        ? indexTokenStats.totalAvailableLiquidity.mul(BASIS_POINTS_DIVISOR).div(indexTokenStats.totalMaxLiquidity)
         : BigNumber.from(0);
 
       indexTokenStats.avgFundingRateLong = indexTokenStats.marketsStats.reduce((acc, stat) => {

@@ -176,11 +176,11 @@ export function getAvailableUsdLiquidityForCollateral(marketInfo: MarketInfo, is
   return liqudiity;
 }
 
-export function getMarketReservesAccountingInterest(marketInfo: MarketInfo, isLong: boolean) {
+export function getAvailableLiquidity(marketInfo: MarketInfo, isLong: boolean) {
   if (marketInfo.isSpotOnly) {
     return {
-      reserveOrInterest: BigNumber.from(0),
-      maxReserveOrInterest: BigNumber.from(0),
+      availableLiquidity: BigNumber.from(0),
+      maxLiquidity: BigNumber.from(0),
     };
   }
 
@@ -192,13 +192,13 @@ export function getMarketReservesAccountingInterest(marketInfo: MarketInfo, isLo
 
   const isReserveSmaller = maxReservedUsd.sub(reservedUsd).lt(maxOpenInterestUsd.sub(openInterestUsd));
 
-  const [reserveOrInterest, maxReserveOrInterest] = isReserveSmaller
+  const [availableLiquidity, maxLiquidity] = isReserveSmaller
     ? [reservedUsd, maxReservedUsd]
     : [openInterestUsd, maxOpenInterestUsd];
 
   return {
-    reserveOrInterest,
-    maxReserveOrInterest,
+    availableLiquidity,
+    maxLiquidity,
   };
 }
 
