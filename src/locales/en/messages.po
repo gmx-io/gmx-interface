@@ -5870,6 +5870,10 @@ msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr "{count, plural, one {Order} other {# Orders}}"
 
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
+msgid "{daysConsidered}d Wallet accrued Fees"
+msgstr "{daysConsidered}d Wallet accrued Fees"
+
+#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
 msgid "{daysConsidered}d accrued Fees"
 msgstr "{daysConsidered}d accrued Fees"
 
