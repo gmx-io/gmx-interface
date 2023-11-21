@@ -146,8 +146,12 @@ export type UserEarningsData = {
       comment?: string;
     };
   };
-  total: BigNumber;
-  expected365d: BigNumber;
+
+  allMarkets: {
+    total: BigNumber;
+    recent: BigNumber;
+    expected365d: BigNumber;
+  };
 };
 
 export type ContractMarketPrices = {

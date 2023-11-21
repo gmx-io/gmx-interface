@@ -104,16 +104,22 @@ export const GmTokensTotalBalanceInfo = ({
             <>
               <StatsTooltipRow
                 label={t`Total Wallet accrued Fees`}
-                className={getColorByValue(userEarnings.total)}
-                value={formatDeltaUsd(userEarnings.total, undefined, { showPlusForZero: true })}
+                className={getColorByValue(userEarnings.allMarkets.total)}
+                value={formatDeltaUsd(userEarnings.allMarkets.total, undefined, { showPlusForZero: true })}
                 showDollar={false}
               />
-              {userEarnings.expected365d && userEarnings.expected365d.gt(0) && (
+              <StatsTooltipRow
+                label={t`${daysConsidered}d Wallet accrued Fees `}
+                className={getColorByValue(userEarnings.allMarkets.recent)}
+                value={formatDeltaUsd(userEarnings.allMarkets.recent, undefined, { showPlusForZero: true })}
+                showDollar={false}
+              />
+              {userEarnings.allMarkets.expected365d.gt(0) && (
                 <>
                   <StatsTooltipRow
                     label={t`Expected 365d Fees`}
-                    className={getColorByValue(userEarnings.expected365d)}
-                    value={formatDeltaUsd(userEarnings.expected365d, undefined, { showPlusForZero: true })}
+                    className={getColorByValue(userEarnings.allMarkets.expected365d)}
+                    value={formatDeltaUsd(userEarnings.allMarkets.expected365d, undefined, { showPlusForZero: true })}
                     showDollar={false}
                   />
                   <br />
