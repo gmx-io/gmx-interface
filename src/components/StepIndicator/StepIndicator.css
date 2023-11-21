@@ -1,4 +1,5 @@
 .Circular-digit {
+  color : #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -7,4 +8,5 @@
   border: 0px;
   border-radius: 50%; 
   margin-right: 10px; 
+  aspect-ratio: 1/1;
 }
