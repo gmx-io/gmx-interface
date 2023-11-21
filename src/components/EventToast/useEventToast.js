@@ -17,9 +17,14 @@ function useEventToast() {
   const { marketsInfoData } = useMarketsInfo(chainId);
   const incentiveStats = useIncentiveStats(ARBITRUM);
 
-  const isAdaptiveFundingActive = useMemo(() => {
+  const isAdaptiveFundingActiveSomeMarkets = useMemo(() => {
     if (!marketsInfoData) return;
     return Object.values(marketsInfoData).some((market) => market.fundingIncreaseFactorPerSecond.gt(0));
+  }, [marketsInfoData]);
+
+  const isAdaptiveFundingActiveAllMarkets = useMemo(() => {
+    if (!marketsInfoData) return;
+    return Object.values(marketsInfoData).every((market) => market.fundingIncreaseFactorPerSecond.gt(0));
   }, [marketsInfoData]);
 
   useEffect(() => {
@@ -30,8 +35,10 @@ function useEventToast() {
       !allIncentivesOn &&
       Boolean(incentiveStats?.lp?.isActive || incentiveStats?.migration?.isActive || incentiveStats?.trading?.isActive);
     const validationParams = {
-      "v2-adaptive-funding": isAdaptiveFundingActive,
-      "v2-adaptive-funding-coming-soon": isAdaptiveFundingActive !== undefined && !isAdaptiveFundingActive,
+      "v2-adaptive-funding": isAdaptiveFundingActiveSomeMarkets,
+      "v2-adaptive-funding-coming-soon":
+        isAdaptiveFundingActiveSomeMarkets !== undefined && !isAdaptiveFundingActiveSomeMarkets,
+      "v2-adaptive-funding-all-markets": isAdaptiveFundingActiveAllMarkets,
       "incentives-launch": someIncentivesOn,
       "all-incentives-launch": allIncentivesOn,
     };
@@ -63,7 +70,15 @@ function useEventToast() {
           }
         );
       });
-  }, [visited, setVisited, isHome, chainId, isAdaptiveFundingActive, incentiveStats]);
+  }, [
+    visited,
+    setVisited,
+    isHome,
+    chainId,
+    isAdaptiveFundingActiveSomeMarkets,
+    isAdaptiveFundingActiveAllMarkets,
+    incentiveStats,
+  ]);
 }
 
 export default useEventToast;
