@@ -14,10 +14,6 @@ msgstr ""
 "Plural-Forms: \n"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "({0}% of Open Fee)"
-#~ msgstr "({0}% of Open Fee)"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "({0}% of {feesTypeName})"
 msgstr "({0}% of {feesTypeName})"
 
@@ -3035,7 +3031,6 @@ msgstr "Networks and Settings"
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/Claims/Claims.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Next"
 msgstr "Next"
 
@@ -3448,7 +3443,6 @@ msgstr "Positive Funding Fees for a Position become claimable after the Position
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/Claims/Claims.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Prev"
 msgstr "Prev"
 

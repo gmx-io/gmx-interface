@@ -14,10 +14,6 @@ msgstr ""
 "Plural-Forms: \n"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "({0}% of Open Fee)"
-#~ msgstr ""
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "({0}% of {feesTypeName})"
 msgstr ""
 
@@ -3032,7 +3028,6 @@ msgstr "ネットワークと設定"
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/Claims/Claims.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Next"
 msgstr "次へ"
 
@@ -3445,7 +3440,6 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/Claims/Claims.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Prev"
 msgstr "前へ"
 

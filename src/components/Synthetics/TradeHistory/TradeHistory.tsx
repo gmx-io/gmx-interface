@@ -2,12 +2,15 @@ import { Trans } from "@lingui/macro";
 import { useTradeHistory } from "domain/synthetics/tradeHistory";
 import { useChainId } from "lib/chains";
 import { TradeHistoryRow } from "../TradeHistoryRow/TradeHistoryRow";
-import { useState } from "react";
+import { useEffect } from "react";
 import { usePositionsConstants } from "domain/synthetics/positions/usePositionsConstants";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
+import usePagination from "components/Referrals/usePagination";
+import Pagination from "components/Pagination/Pagination";
 
 const PAGE_SIZE = 100;
+const ENTITIES_PER_PAGE = 25;
 
 type Props = {
   shouldShowPaginationButtons: boolean;
@@ -18,23 +21,42 @@ type Props = {
 };
 
 export function TradeHistory(p: Props) {
-  const { shouldShowPaginationButtons, marketsInfoData, tokensData, forAllAccounts } = p;
+  const { shouldShowPaginationButtons, marketsInfoData, tokensData, forAllAccounts, account } = p;
   const { chainId } = useChainId();
-  const [pageIndex, setPageIndex] = useState(0);
 
   const { minCollateralUsd } = usePositionsConstants(chainId);
-  const { tradeActions, isLoading: isHistoryLoading } = useTradeHistory(chainId, {
-    account: p.account,
+  const {
+    tradeActions,
+    isLoading: isHistoryLoading,
+    pageIndex: tradeActionsPageIndex,
+    setPageIndex: setTradeActionsPageIndex,
+  } = useTradeHistory(chainId, {
+    account,
     forAllAccounts,
     marketsInfoData,
     tokensData,
-    pageIndex,
     pageSize: PAGE_SIZE,
   });
 
-  const isLoading = !!p.account && (!minCollateralUsd || isHistoryLoading);
+  const isLoading = !!account && (!minCollateralUsd || isHistoryLoading);
 
   const isEmpty = !isLoading && !tradeActions?.length;
+  const { currentPage, setCurrentPage, getCurrentData, pageCount } = usePagination(
+    tradeActions,
+    ENTITIES_PER_PAGE,
+    [account, forAllAccounts].toString()
+  );
+  const currentPageData = getCurrentData();
+
+  useEffect(() => {
+    if (!pageCount || !currentPage || !tradeActions) return;
+    const doesMoreDataExist = tradeActions.length >= PAGE_SIZE * tradeActionsPageIndex;
+    const isCloseToEnd = pageCount && pageCount < currentPage + 2;
+
+    if (doesMoreDataExist && isCloseToEnd) {
+      setTradeActionsPageIndex((prevIndex) => prevIndex + 1);
+    }
+  }, [currentPage, pageCount, tradeActions, tradeActionsPageIndex, setTradeActionsPageIndex]);
 
   return (
     <div className="TradeHistory">
@@ -49,7 +71,7 @@ export function TradeHistory(p: Props) {
         </div>
       )}
       {!isLoading &&
-        tradeActions?.map((tradeAction) => (
+        currentPageData?.map((tradeAction) => (
           <TradeHistoryRow
             shouldDisplayAccount={forAllAccounts}
             key={tradeAction.id}
@@ -58,18 +80,7 @@ export function TradeHistory(p: Props) {
           />
         ))}
       {shouldShowPaginationButtons && (
-        <div>
-          {pageIndex > 0 && (
-            <button className="App-button-option App-card-option" onClick={() => setPageIndex((old) => old - 1)}>
-              <Trans>Prev</Trans>
-            </button>
-          )}
-          {tradeActions && tradeActions.length >= PAGE_SIZE && (
-            <button className="App-button-option App-card-option" onClick={() => setPageIndex((old) => old + 1)}>
-              <Trans>Next</Trans>
-            </button>
-          )}
-        </div>
+        <Pagination page={currentPage} pageCount={pageCount} onPageChange={(page) => setCurrentPage(page)} />
       )}
     </div>
   );

@@ -1,15 +1,23 @@
-import { useEffect, useState } from "react";
+import { usePrevious } from "lib/usePrevious";
+import { useCallback, useEffect, useState } from "react";
 
-export const paginate = ({ total, current, size }) => {
+type PaginateParams = {
+  total: number;
+  current: number;
+  size: number;
+};
+
+export const paginate = ({ total, current, size }: PaginateParams) => {
   const pages = Math.ceil(total / size);
+  let currentPage = current;
 
-  if (current < 1) {
-    current = 1;
-  } else if (current > pages) {
-    current = pages;
+  if (currentPage < 1) {
+    currentPage = 1;
+  } else if (currentPage > pages) {
+    currentPage = pages;
   }
 
-  const start = (current - 1) * size;
+  const start = (currentPage - 1) * size;
   const end = Math.min(start + size - 1, total - 1);
   return {
     start,
@@ -17,18 +25,25 @@ export const paginate = ({ total, current, size }) => {
   };
 };
 
-export default function usePagination<T>(items: T[] = [], size = 10) {
+export default function usePagination<T>(items: T[] = [], size = 10, paginationKey?: string) {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(Math.ceil(items.length / size));
+  const prevPaginationKey = usePrevious(paginationKey);
 
   useEffect(() => {
     setTotalPages(Math.ceil(items.length / size));
   }, [items, size]);
 
-  function getCurrentData(): T[] {
+  useEffect(() => {
+    if (paginationKey !== prevPaginationKey) {
+      setCurrentPage(1);
+    }
+  }, [paginationKey, prevPaginationKey]);
+
+  const getCurrentData = useCallback((): T[] => {
     const { start, end } = paginate({ total: items.length, current: currentPage, size });
     return items.slice(start, end + 1);
-  }
+  }, [items, currentPage, size]);
 
   return {
     currentPage,
