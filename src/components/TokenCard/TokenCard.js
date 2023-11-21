@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 
 import { isHomeSite } from "lib/legacy";
@@ -13,16 +13,52 @@ import APRLabel from "../APRLabel/APRLabel";
 import { HeaderLink } from "../Header/HeaderLink";
 import useWallet from "lib/wallets/useWallet";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
+import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
+import { mergeWith } from "lodash";
+import { formatAmount } from "lib/numbers";
 
 const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
 const gmIcon = getIcon("common", "gm");
+
+function calculateMinMaxApr(apr, incentiveApr) {
+  const totalApr = mergeWith({}, apr, incentiveApr, (aprValue, incentiveAprValue) => aprValue?.add(incentiveAprValue));
+  const aprValues = Object.values(totalApr || {});
+  let minApr = aprValues[0];
+  let maxApr = aprValues[0];
+
+  aprValues.forEach((value) => {
+    if (value.lt(minApr)) {
+      minApr = value;
+    }
+    if (value.gt(maxApr)) {
+      maxApr = value;
+    }
+  });
+
+  return { min: minApr, max: maxApr };
+}
 
 export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }) {
   const isHome = isHomeSite();
   const { chainId } = useChainId();
   const { active } = useWallet();
   const incentiveState = useIncentiveStats();
+  const { marketsTokensAPRData: arbApr, marketsTokensIncentiveAprData: arbIncentiveApr } = useMarketTokensAPR(ARBITRUM);
+  const { marketsTokensAPRData: avaxApr, marketsTokensIncentiveAprData: avaxIncentiveApr } =
+    useMarketTokensAPR(AVALANCHE);
+
+  const aprRangeText = useMemo(() => {
+    if (!arbApr || !arbIncentiveApr || !avaxApr || !avaxIncentiveApr) return;
+
+    const calculatedArbApr = calculateMinMaxApr(arbApr, arbIncentiveApr);
+    const calculatedAvaxApr = calculateMinMaxApr(avaxApr, avaxIncentiveApr);
+
+    return {
+      [ARBITRUM]: `${formatAmount(calculatedArbApr.min, 2, 2)}% - ${formatAmount(calculatedArbApr.max, 2, 2)}%`,
+      [AVALANCHE]: `${formatAmount(calculatedAvaxApr.min, 2, 2)}% - ${formatAmount(calculatedAvaxApr.max, 2, 2)}%`,
+    };
+  }, [arbApr, arbIncentiveApr, avaxApr, avaxIncentiveApr]);
 
   const changeNetwork = useCallback(
     (network) => {
@@ -105,6 +141,10 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
               </Trans>
             </div>
           </div>
+        </div>
+        <div className="Home-token-card-option-apr">
+          <Trans>Arbitrum APR:</Trans> {aprRangeText?.[ARBITRUM] ?? "..."},{" "}
+          <Trans>Avalanche APR: {aprRangeText?.[AVALANCHE] ?? "..."}</Trans>{" "}
         </div>
         <div className="Home-token-card-option-action Token-card-buy">
           <div className="buy">

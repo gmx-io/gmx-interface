@@ -127,7 +127,6 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
   return (
     <div className="Home">
       <div className="Home-top">
-        {/* <div className="Home-top-image"></div> */}
         <div className="Home-title-section-container default-container">
           <div className="Home-title-section">
             <div className="Home-title">
