@@ -4,7 +4,8 @@ import useSWR from "swr";
 import { ethers } from "ethers";
 
 import { USD_DECIMALS, CHART_PERIODS } from "lib/legacy";
-import { GMX_STATS_API_URL } from "config/backend";
+//import { GMX_STATS_API_URL } from "config/backend";
+import { TF_TV_DATAFEED_API } from "config/backend";
 import { chainlinkClient } from "lib/subgraph/clients";
 import { sleep } from "lib/sleep";
 import { formatAmount } from "lib/numbers";
@@ -27,16 +28,16 @@ const FEED_ID_MAP = {
 };
 export const timezoneOffset = -new Date().getTimezoneOffset() * 60;
 
-function formatBarInfo(bar) {
-  const { t, o: open, c: close, h: high, l: low } = bar;
-  return {
-    time: t + timezoneOffset,
-    open,
-    close,
-    high,
-    low,
-  };
-}
+// function formatBarInfo(bar) {
+//   const { t, o: open, c: close, h: high, l: low } = bar;
+//   return {
+//     time: t + timezoneOffset,
+//     open,
+//     close,
+//     high,
+//     low,
+//   };
+// }
 
 export function fillGaps(prices, periodSeconds) {
   if (prices.length < 2) {
@@ -76,29 +77,49 @@ export async function getLimitChartPricesFromStats(chainId, symbol, period, limi
     symbol = getNativeToken(chainId).symbol;
   }
 
-  const url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${chainId}&period=${period}&limit=${limit}`;
+  // const url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${chainId}&period=${period}&limit=${limit}`;
+  const url = `${TF_TV_DATAFEED_API}/t3history?symbol=${symbol}%2FUSD&resolution=${period.toUpperCase()}&limit=${limit}`
 
   try {
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    const prices = await response.json().then(({ prices }) => prices);
-    return prices.map(formatBarInfo);
+    // const prices = await response.json().then(({ prices }) => prices);
+    // return prices.map(formatBarInfo);
+    const data = await response.json();
+    const lastData = data.map(formatCustomBarData);
+    lastData.shift();
+    return lastData;
   } catch (error) {
     // eslint-disable-next-line no-console
     console.log(`Error fetching data: ${error}`);
   }
 }
 
+function formatCustomBarData(bar) {
+  const { time : t, open, close, high, low } = bar;
+  return {
+    time: t + timezoneOffset,
+    open,
+    close,
+    high,
+    low,
+  };
+}
+
+
 export async function getChartPricesFromStats(chainId, symbol, period) {
   symbol = getNormalizedTokenSymbol(symbol);
 
   const timeDiff = CHART_PERIODS[period] * 3000;
   const from = Math.floor(Date.now() / 1000 - timeDiff);
-  const url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${chainId}&period=${period}&from=${from}&preferableSource=fast`;
+ // const url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${chainId}&period=${period}&from=${from}&preferableSource=fast`;
 
-  const TIMEOUT = 5000;
+ const url = `${TF_TV_DATAFEED_API}/t3history?symbol=${symbol}%2FUSD&resolution=${period.toUpperCase()}&from=${from}`
+
+
+  const TIMEOUT = 60000;
   const res: Response = await new Promise(async (resolve, reject) => {
     let done = false;
     setTimeout(() => {
@@ -124,24 +145,26 @@ export async function getChartPricesFromStats(chainId, symbol, period) {
     throw new Error(`request failed ${res.status} ${res.statusText}`);
   }
   const json = await res.json();
-  let prices = json?.prices;
-  if (!prices || prices.length < 1) {
-    throw new Error(`not enough prices data: ${prices?.length}`);
-  }
+  // let prices = json?.prices;
+  // if (!prices || prices.length < 1) {
+  //   throw new Error(`not enough prices data: ${prices?.length}`);
+  // }
 
-  const OBSOLETE_THRESHOLD = Date.now() / 1000 - 60 * 30; // 30 min ago
-  const updatedAt = json?.updatedAt || 0;
-  if (updatedAt < OBSOLETE_THRESHOLD) {
-    throw new Error(
-      "chart data is obsolete, last price record at " +
-        new Date(updatedAt * 1000).toISOString() +
-        " now: " +
-        new Date().toISOString()
-    );
-  }
+  // const OBSOLETE_THRESHOLD = Date.now() / 1000 - 60 * 30; // 30 min ago
+  // const updatedAt = json?.updatedAt || 0;
+  // if (updatedAt < OBSOLETE_THRESHOLD) {
+  //   throw new Error(
+  //     "chart data is obsolete, last price record at " +
+  //       new Date(updatedAt * 1000).toISOString() +
+  //       " now: " +
+  //       new Date().toISOString()
+  //   );
+  // }
 
-  prices = prices.map(formatBarInfo);
-  return prices;
+  // prices = prices.map(formatBarInfo);
+  // return prices;
+  const bardata = json.map(formatCustomBarData);
+  return bardata;
 }
 
 function getCandlesFromPrices(prices, period) {
