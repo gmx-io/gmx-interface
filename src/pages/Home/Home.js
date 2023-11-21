@@ -25,34 +25,11 @@ import { HeaderLink } from "components/Header/HeaderLink";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { getServerUrl } from "config/backend";
 import { bigNumberify, formatAmount, numberWithCommas } from "lib/numbers";
+import useV2Stats from "domain/synthetics/stats/useV2Stats";
 
 export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
-  // const [openedFAQIndex, setOpenedFAQIndex] = useState(null)
-  // const faqContent = [{
-  //   id: 1,
-  //   question: "What is GMX?",
-  //   answer: "GMX is a decentralized spot and perpetual exchange that supports low swap fees and zero price impact trades.<br><br>Trading is supported by a unique multi-asset pool that earns liquidity providers fees from market making, swap fees, leverage trading (spreads, funding fees & liquidations), and asset rebalancing.<br><br>Dynamic pricing is supported by Chainlink Oracles along with TWAP pricing from leading volume DEXs."
-  // }, {
-  //   id: 2,
-  //   question: "What is the GMX Governance Token? ",
-  //   answer: "The GMX token is the governance token of the GMX ecosystem, it provides the token owner voting rights on the direction of the GMX platform.<br><br>Additionally, when GMX is staked you will earn 30% of the platform-generated fees, you will also earn Escrowed GMX tokens and Multiplier Points."
-  // }, {
-  //   id: 3,
-  //   question: "What is the GLP Token? ",
-  //   answer: "The GLP token represents the liquidity users provide to the GMX platform for Swaps and Margin Trading.<br><br>To provide liquidity to GLP you <a href='https://gmx.io/buy_glp' target='_blank'>trade</a> your crypto asset BTC, ETH, LINK, UNI, USDC, USDT, MIM, or FRAX to the liquidity pool, in exchange, you gain exposure to a diversified index of tokens while earning 50% of the platform trading fees and esGMX."
-  // }, {
-  //   id: 4,
-  //   question: "What can I trade on GMX? ",
-  //   answer: "On GMX you can swap or margin trade any of the following assets: ETH, BTC, LINK, UNI, USDC, USDT, MIM, FRAX, with others to be added. "
-  // }]
-
-  // const toggleFAQContent = function(index) {
-  //   if (openedFAQIndex === index) {
-  //     setOpenedFAQIndex(null)
-  //   } else {
-  //     setOpenedFAQIndex(index)
-  //   }
-  // }
+  const arbV2Stats = useV2Stats(ARBITRUM);
+  const avaxV2Stats = useV2Stats(AVALANCHE);
 
   // ARBITRUM
 
@@ -84,9 +61,11 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
   const avalancheTotalVolumeSum = getTotalVolumeSum(avalancheTotalVolume);
 
   let totalVolumeSum = bigNumberify(0);
-  if (arbitrumTotalVolumeSum && avalancheTotalVolumeSum) {
+  if (arbitrumTotalVolumeSum && avalancheTotalVolumeSum && arbV2Stats && avaxV2Stats) {
     totalVolumeSum = totalVolumeSum.add(arbitrumTotalVolumeSum);
     totalVolumeSum = totalVolumeSum.add(avalancheTotalVolumeSum);
+    totalVolumeSum = totalVolumeSum.add(arbV2Stats.totalVolume);
+    totalVolumeSum = totalVolumeSum.add(avaxV2Stats.totalVolume);
   }
 
   // Open Interest
@@ -110,6 +89,11 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
     openInterest = openInterest.add(avalanchePositionStats.totalShortPositionSizes);
   }
 
+  if (arbV2Stats && avaxV2Stats) {
+    openInterest = openInterest.add(arbV2Stats.openInterest);
+    openInterest = openInterest.add(avaxV2Stats.openInterest);
+  }
+
   // user stat
   const arbitrumUserStats = useUserStat(ARBITRUM);
   const avalancheUserStats = useUserStat(AVALANCHE);
@@ -121,6 +105,10 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
 
   if (avalancheUserStats && avalancheUserStats.uniqueCount) {
     totalUsers += avalancheUserStats.uniqueCount;
+  }
+
+  if (arbV2Stats && avaxV2Stats) {
+    totalUsers = bigNumberify(totalUsers).add(arbV2Stats.totalUsers).add(avaxV2Stats.totalUsers).toNumber();
   }
 
   const LaunchExchangeButton = () => {
