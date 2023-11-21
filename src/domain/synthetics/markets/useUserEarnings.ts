@@ -59,9 +59,9 @@ export const useUserEarnings = (chainId: number) => {
       const createQuery = (marketAddress: string) =>
         `
         _${marketAddress}_balanceChanges: userGmTokensBalanceChanges(
-            orderBy: timestamp
+            orderBy: index
             orderDirection: asc
-            where:{
+            where: {
                 account: "${account.toLowerCase()}"
                 marketAddress: "${marketAddress.toLowerCase()}"
                 timestamp_gte: ${startOfPeriod}
@@ -75,7 +75,7 @@ export const useUserEarnings = (chainId: number) => {
         }
         _${marketAddress}_balanceChange_before: userGmTokensBalanceChanges(
             first: 1
-            orderBy: timestamp
+            orderBy: index
             orderDirection: desc
             where: {
               account: "${account.toLowerCase()}"
