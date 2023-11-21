@@ -421,6 +421,7 @@ msgstr "承認中"
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
+#: src/components/TokenCard/TokenCard.js
 msgid "Arbitrum APR:"
 msgstr "ArbitrumのAPR(実質年利)"
 
@@ -472,6 +473,10 @@ msgstr "選択されたネットワークにて利用可能"
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
 msgstr "AvalancheでのAPR(実質年利)"
+
+#: src/components/TokenCard/TokenCard.js
+msgid "Avalanche APR: {0}"
+msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "BUYABLE"

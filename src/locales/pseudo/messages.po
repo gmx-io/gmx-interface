@@ -421,6 +421,7 @@ msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
+#: src/components/TokenCard/TokenCard.js
 msgid "Arbitrum APR:"
 msgstr ""
 
@@ -471,6 +472,10 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.js
+msgid "Avalanche APR: {0}"
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx

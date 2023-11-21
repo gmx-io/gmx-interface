@@ -421,6 +421,7 @@ msgstr "核准中"
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
+#: src/components/TokenCard/TokenCard.js
 msgid "Arbitrum APR:"
 msgstr "Arbitrum年利率"
 
@@ -472,6 +473,10 @@ msgstr "可在您的首选网络上使用"
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
 msgstr "Avalanche年利率"
+
+#: src/components/TokenCard/TokenCard.js
+msgid "Avalanche APR: {0}"
+msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "BUYABLE"

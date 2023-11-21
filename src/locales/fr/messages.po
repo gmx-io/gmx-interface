@@ -421,6 +421,7 @@ msgstr "Approbation..."
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
+#: src/components/TokenCard/TokenCard.js
 msgid "Arbitrum APR:"
 msgstr "Taux de rendement annuels Arbitrum:"
 
@@ -472,6 +473,10 @@ msgstr "Disponible sur le réseau de votre choix"
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
 msgstr "Taux de Rendement Annuels Avalanche:"
+
+#: src/components/TokenCard/TokenCard.js
+msgid "Avalanche APR: {0}"
+msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "BUYABLE"
