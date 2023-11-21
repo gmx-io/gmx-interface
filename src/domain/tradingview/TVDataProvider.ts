@@ -4,7 +4,7 @@ import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 import { Bar } from "./types";
 import { formatTimeInBarToMs, getCurrentCandleTime } from "./utils";
-import { fillBarGaps, getCurrentPriceOfToken, getStableCoinPrice, getTokenChartPrice } from "./requests";
+import { getCurrentPriceOfToken, getStableCoinPrice, getTokenChartPrice } from "./requests";
 import { BigNumberish } from "ethers";
 import { PeriodParams } from "charting_library";
 
@@ -54,8 +54,9 @@ export class TVDataProvider {
     const barsInfo = this.barsInfo;
     if (!barsInfo.data.length || barsInfo.ticker !== ticker || barsInfo.period !== period || shouldRefetchBars) {
       try {
-        const bars = await this.getTokenChartPrice(chainId, ticker, period);
-        const filledBars = fillBarGaps(bars, CHART_PERIODS[period]);
+        // const bars = await this.getTokenChartPrice(chainId, ticker, period);
+        // const filledBars = fillBarGaps(bars, CHART_PERIODS[period]);
+        const filledBars = await this.getTokenChartPrice(chainId, ticker, period);
         const currentCandleTime = getCurrentCandleTime(period);
         const lastCandleTime = currentCandleTime - CHART_PERIODS[period];
         const lastBar = filledBars[filledBars.length - 1];
