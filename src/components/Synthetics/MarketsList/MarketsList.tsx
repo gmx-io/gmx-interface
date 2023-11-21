@@ -3,13 +3,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getIcon } from "config/icons";
 import { getFundingFactorPerPeriod } from "domain/synthetics/fees";
-import {
-  MarketInfo,
-  getMarketPoolName,
-  getMaxReservedUsd,
-  getReservedUsd,
-  useMarketsInfo,
-} from "domain/synthetics/markets";
+import { MarketInfo, getMarketPoolName, getAvailableLiquidity, useMarketsInfo } from "domain/synthetics/markets";
 import { TokenData, getMidPrice } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
@@ -52,8 +46,8 @@ export function MarketsList() {
         avgFundingRateLong: BigNumber;
         avgFundingRateShort: BigNumber;
         totalUtilization: BigNumber;
-        totalReservedUsd: BigNumber;
-        totalMaxReservedUsd: BigNumber;
+        totalAvailableLiquidity: BigNumber;
+        totalMaxLiquidity: BigNumber;
         marketsStats: {
           marketInfo: MarketInfo;
           poolValueUsd: BigNumber;
@@ -81,8 +75,8 @@ export function MarketsList() {
           avgFundingRateLong: BigNumber.from(0),
           avgFundingRateShort: BigNumber.from(0),
           totalUtilization: BigNumber.from(0),
-          totalReservedUsd: BigNumber.from(0),
-          totalMaxReservedUsd: BigNumber.from(0),
+          totalAvailableLiquidity: BigNumber.from(0),
+          totalMaxLiquidity: BigNumber.from(0),
           marketsStats: [],
         };
       }
@@ -94,22 +88,26 @@ export function MarketsList() {
       const fundingRateLong = getFundingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]);
       const fundingRateShort = getFundingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]);
 
-      const longReservedUsd = getReservedUsd(marketInfo, true);
-      const maxLongReservedUsd = getMaxReservedUsd(marketInfo, true);
+      const { availableLiquidity: longAvailableLiquidity, maxLiquidity: longMaxLiquidity } = getAvailableLiquidity(
+        marketInfo,
+        true
+      );
 
-      const shortReservedUsd = getReservedUsd(marketInfo, false);
-      const maxShortReservedUsd = getMaxReservedUsd(marketInfo, false);
+      const { availableLiquidity: shortAvailableLiquidity, maxLiquidity: shortMaxLiquidity } = getAvailableLiquidity(
+        marketInfo,
+        false
+      );
 
-      const totalReservedUsd = longReservedUsd.add(shortReservedUsd);
-      const maxTotalReservedUsd = maxLongReservedUsd.add(maxShortReservedUsd);
+      const availableLiquidity = longAvailableLiquidity.add(shortAvailableLiquidity);
+      const maxLiquidity = longMaxLiquidity.add(shortMaxLiquidity);
 
-      const utilization = maxTotalReservedUsd.gt(0)
-        ? totalReservedUsd.mul(BASIS_POINTS_DIVISOR).div(maxTotalReservedUsd)
+      const utilization = maxLiquidity.gt(0)
+        ? availableLiquidity.mul(BASIS_POINTS_DIVISOR).div(maxLiquidity)
         : BigNumber.from(0);
 
       indexTokenStats.totalPoolValue = indexTokenStats.totalPoolValue.add(poolValueUsd);
-      indexTokenStats.totalReservedUsd = indexTokenStats.totalReservedUsd.add(totalReservedUsd);
-      indexTokenStats.totalMaxReservedUsd = indexTokenStats.totalMaxReservedUsd.add(maxTotalReservedUsd);
+      indexTokenStats.totalAvailableLiquidity = indexTokenStats.totalAvailableLiquidity.add(availableLiquidity);
+      indexTokenStats.totalMaxLiquidity = indexTokenStats.totalMaxLiquidity.add(maxLiquidity);
       indexTokenStats.marketsStats.push({
         marketInfo: marketInfo,
         utilization,
@@ -120,8 +118,8 @@ export function MarketsList() {
     }
 
     for (const indexTokenStats of Object.values(indexMap)) {
-      indexTokenStats.totalUtilization = indexTokenStats.totalMaxReservedUsd.gt(0)
-        ? indexTokenStats.totalReservedUsd.mul(BASIS_POINTS_DIVISOR).div(indexTokenStats.totalMaxReservedUsd)
+      indexTokenStats.totalUtilization = indexTokenStats.totalMaxLiquidity.gt(0)
+        ? indexTokenStats.totalAvailableLiquidity.mul(BASIS_POINTS_DIVISOR).div(indexTokenStats.totalMaxLiquidity)
         : BigNumber.from(0);
 
       indexTokenStats.avgFundingRateLong = indexTokenStats.marketsStats.reduce((acc, stat) => {
