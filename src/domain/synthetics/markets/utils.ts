@@ -178,10 +178,7 @@ export function getAvailableUsdLiquidityForCollateral(marketInfo: MarketInfo, is
 
 export function getAvailableLiquidity(marketInfo: MarketInfo, isLong: boolean) {
   if (marketInfo.isSpotOnly) {
-    return {
-      availableLiquidity: BigNumber.from(0),
-      maxLiquidity: BigNumber.from(0),
-    };
+    return [BigNumber.from(0), BigNumber.from(0)];
   }
 
   const reservedUsd = getReservedUsd(marketInfo, isLong);
@@ -192,14 +189,7 @@ export function getAvailableLiquidity(marketInfo: MarketInfo, isLong: boolean) {
 
   const isReserveSmaller = maxReservedUsd.sub(reservedUsd).lt(maxOpenInterestUsd.sub(openInterestUsd));
 
-  const [availableLiquidity, maxLiquidity] = isReserveSmaller
-    ? [reservedUsd, maxReservedUsd]
-    : [openInterestUsd, maxOpenInterestUsd];
-
-  return {
-    availableLiquidity,
-    maxLiquidity,
-  };
+  return isReserveSmaller ? [reservedUsd, maxReservedUsd] : [openInterestUsd, maxOpenInterestUsd];
 }
 
 export function getCappedPoolPnl(p: {
