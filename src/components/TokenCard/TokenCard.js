@@ -142,10 +142,12 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
             </div>
           </div>
         </div>
-        <div className="Home-token-card-option-apr">
-          <Trans>Arbitrum APR:</Trans> {aprRangeText?.[ARBITRUM] ?? "..."},{" "}
-          <Trans>Avalanche APR: {aprRangeText?.[AVALANCHE] ?? "..."}</Trans>{" "}
-        </div>
+        {aprRangeText && (
+          <div className="Home-token-card-option-apr">
+            <Trans>Arbitrum APR:</Trans> {aprRangeText?.[ARBITRUM] ?? "..."},{" "}
+            <Trans>Avalanche APR: {aprRangeText?.[AVALANCHE] ?? "..."}</Trans>{" "}
+          </div>
+        )}
         <div className="Home-token-card-option-action Token-card-buy">
           <div className="buy">
             <BuyLink to="/pools" className="default-btn" network={ARBITRUM}>
