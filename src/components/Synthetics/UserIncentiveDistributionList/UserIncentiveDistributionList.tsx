@@ -8,13 +8,15 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getExplorerUrl } from "config/chains";
 import { getTokens } from "config/tokens";
-import useUserIncentiveData from "domain/synthetics/common/useUserIncentiveData";
+import useUserIncentiveData, { UserIncentiveData } from "domain/synthetics/common/useUserIncentiveData";
+import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { formatDate } from "lib/dates";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
+import { useMemo } from "react";
 
 const INCENTIVE_DISTRIBUTION_TYPEID_MAP = {
   1001: "GM Airdrop",
@@ -22,15 +24,23 @@ const INCENTIVE_DISTRIBUTION_TYPEID_MAP = {
   1003: "TRADING Airdrop",
 };
 
-function getNormalizedIncentive(incentive, tokens) {
-  return incentive.tokens.map((tokenAddress, index) => {
+function getNormalizedIncentive(incentive: UserIncentiveData, tokens: Token[]) {
+  const tokenIncentiveDetails = incentive.tokens.map((tokenAddress, index) => {
     const tokenInfo = tokens.find((token) => token.address.toLowerCase() === tokenAddress);
     return {
       tokenInfo,
       tokenAmount: BigNumber.from(incentive.amounts[index]),
       tokenUsd: BigNumber.from(incentive.amountsInUsd[index]),
+      id: `${incentive.id}-${tokenAddress}`,
     };
   });
+
+  const totalUsd = tokenIncentiveDetails.reduce((total, tokenInfo) => total.add(tokenInfo.tokenUsd), BigNumber.from(0));
+
+  return {
+    tokenIncentiveDetails,
+    totalUsd,
+  };
 }
 
 export default function UserIncentiveDistributionList() {
@@ -38,7 +48,17 @@ export default function UserIncentiveDistributionList() {
   const { chainId } = useChainId();
   const tokens = getTokens(chainId);
   const userIncentiveData = useUserIncentiveData(chainId, account);
-  const { currentPage, getCurrentData, setCurrentPage, pageCount } = usePagination(userIncentiveData.data);
+
+  const normalizedIncentiveData = useMemo(() => {
+    return userIncentiveData?.data?.map((incentive) => {
+      return {
+        ...incentive,
+        ...getNormalizedIncentive(incentive, tokens),
+      };
+    });
+  }, [userIncentiveData, tokens]);
+
+  const { currentPage, getCurrentData, setCurrentPage, pageCount } = usePagination(normalizedIncentiveData);
   const currentIncentiveData = getCurrentData();
 
   if (!userIncentiveData?.data?.length) {
@@ -74,24 +94,19 @@ export default function UserIncentiveDistributionList() {
             </thead>
             <tbody>
               {currentIncentiveData?.map((incentive) => {
+                const { tokenIncentiveDetails, totalUsd, id, timestamp, typeId, transactionHash } = incentive;
                 const explorerURL = getExplorerUrl(chainId);
-
-                const incentiveInfo = getNormalizedIncentive(incentive, tokens);
-                const totalUsd = incentiveInfo.reduce(
-                  (total, tokenInfo) => total.add(tokenInfo.tokenUsd),
-                  BigNumber.from(0)
-                );
-
                 return (
-                  <tr key={incentive.id}>
-                    <td data-label="Date">{formatDate(incentive.timestamp)}</td>
-                    <td data-label="Type">{INCENTIVE_DISTRIBUTION_TYPEID_MAP[incentive.typeId]}</td>
+                  <tr key={id}>
+                    <td data-label="Date">{formatDate(timestamp)}</td>
+                    <td data-label="Type">{INCENTIVE_DISTRIBUTION_TYPEID_MAP[typeId]}</td>
                     <td data-label="Amount">
                       <Tooltip
                         handle={formatUsd(totalUsd)}
                         renderContent={() => {
-                          return incentiveInfo.map((tokenInfo) => (
+                          return tokenIncentiveDetails.map((tokenInfo) => (
                             <StatsTooltipRow
+                              key={tokenInfo.id}
                               showDollar={false}
                               label={tokenInfo.tokenInfo?.symbol}
                               value={formatTokenAmount(tokenInfo.tokenAmount, tokenInfo.tokenInfo?.decimals, "", {
@@ -103,8 +118,8 @@ export default function UserIncentiveDistributionList() {
                       />
                     </td>
                     <td data-label="Transaction">
-                      <ExternalLink href={`${explorerURL}tx/${incentive.transactionHash}`}>
-                        {shortenAddressOrEns(incentive.transactionHash, 13)}
+                      <ExternalLink href={`${explorerURL}tx/${transactionHash}`}>
+                        {shortenAddressOrEns(transactionHash, 13)}
                       </ExternalLink>
                     </td>
                   </tr>

@@ -2,13 +2,11 @@ import { gql } from "@apollo/client";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import useSWR from "swr";
 
-type UserIncentiveData = {
+export type UserIncentiveData = {
   id: string;
   typeId: string;
   amounts: string[];
   amountsInUsd: string[];
-  blockNumber: string;
-  receiver: string;
   timestamp: number;
   tokens: string[];
   transactionHash: string;
@@ -25,9 +23,7 @@ const USER_INCENTIVE_QUERY = gql`
       typeId
       amounts
       amountsInUsd
-      blockNumber
       id
-      receiver
       timestamp
       tokens
       transactionHash
