@@ -1743,8 +1743,12 @@ msgid "Expected 365d Fees"
 msgstr "Expected 365d Fees"
 
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-msgid "Expected 365d Fees are based on past ${daysConsidered}d Fees. Fees USD value is calculated at the time they are accrued."
-msgstr "Expected 365d Fees are based on past ${daysConsidered}d Fees. Fees USD value is calculated at the time they are accrued."
+#~ msgid "Expected 365d Fees are based on past ${daysConsidered}d Fees. Fees USD value is calculated at the time they are accrued."
+#~ msgstr "Expected 365d Fees are based on past ${daysConsidered}d Fees. Fees USD value is calculated at the time they are accrued."
+
+#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
+msgid "Expected 365d Fees are projected based on past {daysConsidered} base APR"
+msgstr "Expected 365d Fees are projected based on past {daysConsidered} base APR"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Explore, analyze, and copy on-chain traders"
