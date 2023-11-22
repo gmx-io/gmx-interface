@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 import { BigNumber } from "ethers";
-import { expandDecimals } from "lib/numbers";
+import { expandDecimals, formatUsd } from "lib/numbers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import useWallet from "lib/wallets/useWallet";
 import { useMemo } from "react";
@@ -66,6 +66,9 @@ export const useUserEarnings = (chainId: number) => {
                 marketAddress: "${marketAddress.toLowerCase()}"
                 timestamp_gte: ${startOfPeriod}
             }
+            #block: {
+            #  number: 27976334
+            #}
         ) {
             cumulativeIncome
             tokensBalance
@@ -82,6 +85,9 @@ export const useUserEarnings = (chainId: number) => {
               marketAddress: "${marketAddress.toLowerCase()}"
               timestamp_lt: ${startOfPeriod}
             }
+            #block: {
+            #  number: 27976334
+            #}
           ) {
             cumulativeIncome
             tokensBalance
@@ -98,6 +104,9 @@ export const useUserEarnings = (chainId: number) => {
                 period: "1h"
                 timestampGroup_lte: ${startOfPeriod}
             }
+            #block: {
+            #  number: 27976334
+            #}
         ) {
             cumulativeFeeUsdPerGmToken
             prevCumulativeFeeUsdPerGmToken
@@ -111,6 +120,9 @@ export const useUserEarnings = (chainId: number) => {
                 marketAddress: "${marketAddress.toLowerCase()}"
                 period: "1h"
             }
+            #block: {
+            #  number: 27976334
+            #}
         ) {
             cumulativeFeeUsdPerGmToken
             prevCumulativeFeeUsdPerGmToken
@@ -181,6 +193,15 @@ export const useUserEarnings = (chainId: number) => {
 
         if (!latestChange) throw new Error("latestChange is undefined");
 
+        console.log(
+          formatUsd(
+            BigNumber.from(feesRecent.cumulativeFeeUsdPerGmToken)
+              .sub(BigNumber.from(latestChange.cumulativeFeeUsdPerGmToken))
+              .mul(latestChange.tokensBalance)
+              .div(expandDecimals(1, 18))
+          ),
+          "<- fees since last balance change"
+        );
         const recentPseudoChange: BalanceChange = {
           prevCumulativeFeeUsdPerGmToken: BigNumber.from(feesRecent.prevCumulativeFeeUsdPerGmToken),
           cumulativeFeeUsdPerGmToken: BigNumber.from(feesRecent.cumulativeFeeUsdPerGmToken),
@@ -192,6 +213,14 @@ export const useUserEarnings = (chainId: number) => {
         recentPseudoChange.cumulativeIncome = latestChange.cumulativeIncome.add(
           calcEndOfPeriodIncome(latestChange, recentPseudoChange)
         );
+
+        console.table({
+          cumulativeFees: formatUsd(
+            recentPseudoChange.cumulativeIncome.sub(calcEndOfPeriodIncome(latestChange, recentPseudoChange))
+          ),
+          cumulativeFeesInclEndOfPeriod: formatUsd(recentPseudoChange.cumulativeIncome),
+          diff: formatUsd(calcEndOfPeriodIncome(latestChange, recentPseudoChange)),
+        });
 
         balanceChanges.push(recentPseudoChange);
 
@@ -228,7 +257,7 @@ function calcEndOfPeriodIncome(prevBalanceChange: BalanceChange, balanceChange: 
   if (prevBalanceChange.tokensBalance.eq(0)) return BigNumber.from(0);
 
   const feeUsdPerGmTokenDelta = balanceChange.cumulativeFeeUsdPerGmToken.sub(
-    prevBalanceChange.prevCumulativeFeeUsdPerGmToken
+    prevBalanceChange.cumulativeFeeUsdPerGmToken
   );
 
   return feeUsdPerGmTokenDelta.mul(prevBalanceChange.tokensBalance).div(expandDecimals(1, 18));
@@ -242,7 +271,11 @@ function calcRecentIncome(balanceChanges: BalanceChange[]): BigNumber {
     const change = balanceChanges[i];
 
     const income = change.cumulativeFeeUsdPerGmToken
-      .sub(prevChange.prevCumulativeFeeUsdPerGmToken)
+      .sub(
+        i === balanceChanges.length - 1
+          ? prevChange.cumulativeFeeUsdPerGmToken
+          : prevChange.prevCumulativeFeeUsdPerGmToken
+      )
       .mul(prevChange.tokensBalance)
       .div(expandDecimals(1, 18));
     cumulativeIncome = cumulativeIncome.add(income);
