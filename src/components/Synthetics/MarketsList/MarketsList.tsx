@@ -88,15 +88,9 @@ export function MarketsList() {
       const fundingRateLong = getFundingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]);
       const fundingRateShort = getFundingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]);
 
-      const { availableLiquidity: longAvailableLiquidity, maxLiquidity: longMaxLiquidity } = getAvailableLiquidity(
-        marketInfo,
-        true
-      );
+      const [longAvailableLiquidity, longMaxLiquidity] = getAvailableLiquidity(marketInfo, true);
 
-      const { availableLiquidity: shortAvailableLiquidity, maxLiquidity: shortMaxLiquidity } = getAvailableLiquidity(
-        marketInfo,
-        false
-      );
+      const [shortAvailableLiquidity, shortMaxLiquidity] = getAvailableLiquidity(marketInfo, false);
 
       const availableLiquidity = longAvailableLiquidity.add(shortAvailableLiquidity);
       const maxLiquidity = longMaxLiquidity.add(shortMaxLiquidity);
