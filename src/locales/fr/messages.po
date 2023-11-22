@@ -2628,7 +2628,7 @@ msgstr "Chargement..."
 #: src/pages/Exchange/Exchange.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Long"
-msgstr "Long<<<<<<< HEAD"
+msgstr "Long"
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "Long Collateral"
@@ -2770,7 +2770,7 @@ msgstr "Capacité max"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Max Capacity for {0} Reached"
-msgstr "Capacité max pour {0} Atteinte<<<<<<< HEAD"
+msgstr "Capacité max pour {0} Atteinte"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -3854,7 +3854,7 @@ msgstr "Économiser sur les coûts"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Save on Fees"
-msgstr "Économisez sur les frais<<<<<<< HEAD"
+msgstr "Économisez sur les frais"
 
 #: src/components/MarketSelector/MarketSelector.tsx
 msgid "Search Market"
@@ -4102,7 +4102,7 @@ msgstr "Partager la Position"
 #: src/pages/Exchange/Exchange.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Short"
-msgstr "Short<<<<<<< HEAD"
+msgstr "Short"
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "Short Collateral"
