@@ -1150,16 +1150,17 @@ export default function StakeV2({ setPendingTxns }) {
     }
   }
   let totalRewardTokens;
+
   if (processedData && processedData.bnGmxInFeeGmx && processedData.bonusGmxInFeeGmx) {
     totalRewardTokens = processedData.bnGmxInFeeGmx.add(processedData.bonusGmxInFeeGmx);
   }
 
-  let totalRewardAndLiquidityTokens;
-  if (totalRewardTokens && processedData && processedData.glpBalance) {
-    totalRewardAndLiquidityTokens = totalRewardTokens.add(processedData.glpBalance);
+  let totalRewardAndLpTokens = totalRewardTokens ?? bigNumberify(0);
+  if (processedData?.glpBalance) {
+    totalRewardAndLpTokens = totalRewardAndLpTokens.add(processedData.glpBalance);
   }
-  if (totalRewardTokens && userTotalGmInfo?.balance?.gt(0)) {
-    totalRewardAndLiquidityTokens = totalRewardTokens.add(userTotalGmInfo.balance);
+  if (userTotalGmInfo?.balance?.gt(0)) {
+    totalRewardAndLpTokens = totalRewardAndLpTokens.add(userTotalGmInfo.balance);
   }
 
   const bonusGmxInFeeGmx = processedData ? processedData.bonusGmxInFeeGmx : undefined;
@@ -1350,7 +1351,7 @@ export default function StakeV2({ setPendingTxns }) {
   }, []);
 
   let earnMsg;
-  if (totalRewardAndLiquidityTokens && totalRewardAndLiquidityTokens.gt(0)) {
+  if (totalRewardAndLpTokens && totalRewardAndLpTokens.gt(0)) {
     let gmxAmountStr;
     if (processedData.gmxInStakedGmx && processedData.gmxInStakedGmx.gt(0)) {
       gmxAmountStr = formatAmount(processedData.gmxInStakedGmx, 18, 2, true) + " GMX";
@@ -1375,7 +1376,7 @@ export default function StakeV2({ setPendingTxns }) {
     earnMsg = (
       <div>
         <Trans>
-          You are earning rewards with {formatAmount(totalRewardAndLiquidityTokens, 18, 2, true)} tokens.
+          You are earning rewards with {formatAmount(totalRewardAndLpTokens, 18, 2, true)} tokens.
           <br />
           Tokens: {amountStr}.
         </Trans>
