@@ -216,7 +216,9 @@ function calcEndOfPeriodIncome(
 ): BigNumber {
   if (latestBalanceChange.tokensBalance.eq(0)) return BigNumber.from(0);
 
-  const feeUsdPerGmTokenDelta = latestCumulativeFeeUsdPerGmToken.sub(latestBalanceChange.cumulativeFeeUsdPerGmToken);
+  const feeUsdPerGmTokenDelta = latestCumulativeFeeUsdPerGmToken.sub(
+    latestBalanceChange.prevCumulativeFeeUsdPerGmToken
+  );
 
   return feeUsdPerGmTokenDelta.mul(latestBalanceChange.tokensBalance).div(expandDecimals(1, 18));
 }
