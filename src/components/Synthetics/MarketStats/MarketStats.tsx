@@ -19,6 +19,7 @@ import { getByKey } from "lib/objects";
 import "./MarketStats.scss";
 import BridgingInfo from "../BridgingInfo/BridgingInfo";
 import { getBridgingOptionsForToken } from "config/bridging";
+import { BigNumber } from "ethers";
 import { AprInfo } from "components/AprInfo/AprInfo";
 import MarketTokenSelector from "../MarketTokenSelector/MarketTokenSelector";
 
@@ -121,13 +122,15 @@ export function MarketStats(p: Props) {
             />
           }
         />
+
         <CardRow
           label={t`Wallet`}
-          value={
-            marketBalance && marketBalanceUsd
-              ? formatTokenAmountWithUsd(marketBalance, marketBalanceUsd, "GM", marketToken?.decimals)
-              : "..."
-          }
+          value={formatTokenAmountWithUsd(
+            marketBalance || BigNumber.from(0),
+            marketBalanceUsd || BigNumber.from(0),
+            "GM",
+            marketToken?.decimals ?? 18
+          )}
         />
 
         <CardRow label={t`APR`} value={<AprInfo apr={apr} incentiveApr={incentiveApr} />} />

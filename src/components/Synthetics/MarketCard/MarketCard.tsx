@@ -7,7 +7,9 @@ import {
   getAvailableUsdLiquidityForPosition,
   getMarketIndexName,
   getMarketPoolName,
-  getMaxOpenInterest,
+  getMaxOpenInterestUsd,
+  getMaxReservedUsd,
+  getOpenInterestUsd,
   getReservedUsd,
 } from "domain/synthetics/markets";
 import { CHART_PERIODS } from "lib/legacy";
@@ -36,25 +38,28 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
 
   const {
     liquidity,
-    maxOpenInterest,
+    maxReservedUsd,
     reservedUsd,
     borrowingRate,
     fundingRateLong,
     fundingRateShort,
     totalInterestUsd,
     priceDecimals,
+    currentOpenInterest,
+    maxOpenInterest,
   } = useMemo(() => {
     if (!marketInfo) return {};
-
     return {
       liquidity: getAvailableUsdLiquidityForPosition(marketInfo, isLong),
-      maxOpenInterest: getMaxOpenInterest(marketInfo, isLong),
+      maxReservedUsd: getMaxReservedUsd(marketInfo, isLong),
       reservedUsd: getReservedUsd(marketInfo, isLong),
       borrowingRate: getBorrowingFactorPerPeriod(marketInfo, isLong, CHART_PERIODS["1h"]).mul(100),
       fundingRateLong: getFundingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]).mul(100),
       fundingRateShort: getFundingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]).mul(100),
+      currentOpenInterest: getOpenInterestUsd(marketInfo, isLong),
       totalInterestUsd: marketInfo.longInterestUsd.add(marketInfo.shortInterestUsd),
       priceDecimals: marketInfo.indexToken.priceDecimals,
+      maxOpenInterest: getMaxOpenInterestUsd(marketInfo, isLong),
     };
   }, [marketInfo, isLong]);
   const fundingRate = isLong ? fundingRateLong : fundingRateShort;
@@ -115,7 +120,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
   }, [fundingRateLong, fundingRateShort, isLong, marketInfo]);
 
   return (
-    <div className="Exchange-swap-market-box App-box App-box-border">
+    <div className="Exchange-swap-market-box App-box App-box-border MarketCard">
       <div className="App-card-title">
         {longShortText}&nbsp;{indexToken?.symbol}
       </div>
@@ -209,23 +214,26 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
               renderContent={() => (
                 <div>
                   <StatsTooltipRow
-                    label={t`Max ${indexToken?.symbol} ${longShortText} capacity`}
-                    value={formatUsd(maxOpenInterest, { displayDecimals: 0 }) || "..."}
+                    label={t`${longShortText} ${indexToken?.symbol} Reserve`}
+                    value={`${formatUsd(reservedUsd, { displayDecimals: 0 })} / ${formatUsd(maxReservedUsd, {
+                      displayDecimals: 0,
+                    })}`}
                     showDollar={false}
                   />
-
                   <StatsTooltipRow
-                    label={t`Current ${indexToken?.symbol} ${longShortText}`}
-                    value={formatUsd(reservedUsd, { displayDecimals: 0 }) || "..."}
+                    label={t`${longShortText} ${indexToken?.symbol} Open Interest`}
+                    value={`${formatUsd(currentOpenInterest, { displayDecimals: 0 })} / ${formatUsd(maxOpenInterest, {
+                      displayDecimals: 0,
+                    })}`}
                     showDollar={false}
                   />
 
-                  {isLong && (
-                    <>
-                      <br />
-                      <Trans>"Current {indexToken?.symbol} Long" takes into account PnL of open positions.</Trans>
-                    </>
-                  )}
+                  <br />
+                  {isLong && <Trans>Reserve considers the PnL of Open Positions, while Open Interest does not.</Trans>}
+                  <Trans>
+                    The Available Liquidity will be the lesser of the difference between the maximum value and the
+                    current value for the Reserve and Open Interest.
+                  </Trans>
                 </div>
               )}
             />
