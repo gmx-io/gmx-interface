@@ -1747,7 +1747,11 @@ msgstr ""
 #~ msgstr ""
 
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-msgid "Expected 365d Fees are projected based on past {daysConsidered} base APR"
+#~ msgid "Expected 365d Fees are projected based on past {daysConsidered} base APR"
+#~ msgstr ""
+
+#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
+msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APR"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
