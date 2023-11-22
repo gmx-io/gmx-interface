@@ -1122,6 +1122,7 @@ export default function StakeV2({ setPendingTxns }) {
   const depositBalanceData = getDepositBalanceData(depositBalances);
   const stakingData = getStakingData(stakingInfo);
   const vestingData = getVestingData(vestingInfo);
+
   const userTotalGmInfo = useMemo(() => {
     if (!active) return;
     return getTotalGmInfo(marketTokensData);
@@ -1157,7 +1158,7 @@ export default function StakeV2({ setPendingTxns }) {
   if (totalRewardTokens && processedData && processedData.glpBalance) {
     totalRewardAndLiquidityTokens = totalRewardTokens.add(processedData.glpBalance);
   }
-  if (userTotalGmInfo?.balance?.gt(0)) {
+  if (totalRewardTokens && userTotalGmInfo?.balance?.gt(0)) {
     totalRewardAndLiquidityTokens = totalRewardTokens.add(userTotalGmInfo.balance);
   }
 
@@ -1368,7 +1369,7 @@ export default function StakeV2({ setPendingTxns }) {
     }
     let gmStr;
     if (userTotalGmInfo.balance && userTotalGmInfo.balance.gt(0)) {
-      glpStr = formatAmount(userTotalGmInfo.balance, 18, 2, true) + " GM";
+      gmStr = formatAmount(userTotalGmInfo.balance, 18, 2, true) + " GM";
     }
     const amountStr = [gmxAmountStr, esGmxAmountStr, mpAmountStr, gmStr, glpStr].filter((s) => s).join(", ");
     earnMsg = (
