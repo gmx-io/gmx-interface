@@ -16,7 +16,6 @@ type RawBalanceChange = {
   prevCumulativeFeeUsdPerGmToken: string;
   cumulativeFeeUsdPerGmToken: string;
   tokensBalance: string;
-  timestamp: number;
 };
 
 type BalanceChange = {
@@ -24,12 +23,10 @@ type BalanceChange = {
   cumulativeIncome: BigNumber;
   prevCumulativeFeeUsdPerGmToken: BigNumber;
   cumulativeFeeUsdPerGmToken: BigNumber;
-  timestamp: number;
 };
 
 type RawCollectedMarketFeesInfo = {
   cumulativeFeeUsdPerGmToken: string;
-  prevCumulativeFeeUsdPerGmToken: string;
 };
 
 export const useUserEarnings = (chainId: number) => {
@@ -71,7 +68,6 @@ export const useUserEarnings = (chainId: number) => {
             tokensBalance
             prevCumulativeFeeUsdPerGmToken
             cumulativeFeeUsdPerGmToken
-            timestamp
         }
         _${marketAddress}_balanceChange_before: userGmTokensBalanceChanges(
             first: 1
@@ -87,7 +83,6 @@ export const useUserEarnings = (chainId: number) => {
             tokensBalance
             prevCumulativeFeeUsdPerGmToken
             cumulativeFeeUsdPerGmToken
-            timestamp
           }
         _${marketAddress}_fees_start: collectedMarketFeesInfos(
             first: 1
@@ -100,7 +95,6 @@ export const useUserEarnings = (chainId: number) => {
             }
         ) {
             cumulativeFeeUsdPerGmToken
-            prevCumulativeFeeUsdPerGmToken
         }
 
         _${marketAddress}_fees_recent: collectedMarketFeesInfos(
@@ -113,7 +107,6 @@ export const useUserEarnings = (chainId: number) => {
             }
         ) {
             cumulativeFeeUsdPerGmToken
-            prevCumulativeFeeUsdPerGmToken
         }
       `;
 
@@ -157,52 +150,45 @@ export const useUserEarnings = (chainId: number) => {
         const feesStart = response[`_${marketAddress}_fees_start`][0] as RawCollectedMarketFeesInfo;
         const feesRecent = response[`_${marketAddress}_fees_recent`][0] as RawCollectedMarketFeesInfo;
 
-        if (prevRawBalanceChange) {
-          rawBalanceChanges.unshift({
-            prevCumulativeFeeUsdPerGmToken: feesStart.prevCumulativeFeeUsdPerGmToken,
-            cumulativeFeeUsdPerGmToken: feesStart.cumulativeFeeUsdPerGmToken,
-            cumulativeIncome: prevRawBalanceChange.cumulativeIncome,
-            tokensBalance: prevRawBalanceChange.tokensBalance,
-            timestamp: startOfPeriod,
-          });
-        }
+        const balanceChanges = rawBalanceChanges.map(rawBalanceChangeToBalanceChange);
+        const balanceChangesTotal = prevRawBalanceChange
+          ? [rawBalanceChangeToBalanceChange(prevRawBalanceChange), ...balanceChanges]
+          : [...balanceChanges];
 
-        if (rawBalanceChanges.length === 0) return;
+        const balanceChangesRecent = prevRawBalanceChange
+          ? [
+              rawBalanceChangeToBalanceChange({
+                ...prevRawBalanceChange,
+                prevCumulativeFeeUsdPerGmToken: feesStart.cumulativeFeeUsdPerGmToken,
+                cumulativeFeeUsdPerGmToken: feesStart.cumulativeFeeUsdPerGmToken,
+              }),
+              ...balanceChanges,
+            ]
+          : [...balanceChanges];
 
-        const balanceChanges: BalanceChange[] = rawBalanceChanges.map((rawBalanceChange) => ({
-          prevCumulativeFeeUsdPerGmToken: BigNumber.from(rawBalanceChange.prevCumulativeFeeUsdPerGmToken),
-          cumulativeFeeUsdPerGmToken: BigNumber.from(rawBalanceChange.cumulativeFeeUsdPerGmToken),
-          cumulativeIncome: BigNumber.from(rawBalanceChange.cumulativeIncome),
-          timestamp: rawBalanceChange.timestamp,
-          tokensBalance: BigNumber.from(rawBalanceChange.tokensBalance),
-        }));
+        if (balanceChangesRecent.length === 0 || balanceChangesTotal.length === 0) return;
 
-        const latestChange = balanceChanges[balanceChanges.length - 1];
+        const lastChangeTotal = balanceChangesTotal[balanceChangesTotal.length - 1];
+        const lastChangeRecent = balanceChangesRecent[balanceChangesRecent.length - 1];
 
-        if (!latestChange) throw new Error("latestChange is undefined");
+        if (!lastChangeTotal) throw new Error("balanceChangesTotal is undefined");
+        if (!lastChangeRecent) throw new Error("balanceChangesRecent is undefined");
 
-        const recentPseudoChange: BalanceChange = {
-          prevCumulativeFeeUsdPerGmToken: BigNumber.from(feesRecent.prevCumulativeFeeUsdPerGmToken),
-          cumulativeFeeUsdPerGmToken: BigNumber.from(feesRecent.cumulativeFeeUsdPerGmToken),
-          cumulativeIncome: BigNumber.from(0),
-          tokensBalance: latestChange.tokensBalance,
-          timestamp: Math.floor(Date.now() / 1000),
-        };
+        const latestFeeUsdPerGmToken = BigNumber.from(feesRecent.cumulativeFeeUsdPerGmToken);
 
-        recentPseudoChange.cumulativeIncome = latestChange.cumulativeIncome.add(
-          calcEndOfPeriodIncome(latestChange, recentPseudoChange)
+        const recentIncome = calcRecentIncome(balanceChangesRecent).add(
+          calcEndOfPeriodIncome(lastChangeRecent, latestFeeUsdPerGmToken)
+        );
+        const totalIncome = lastChangeTotal.cumulativeIncome.add(
+          calcEndOfPeriodIncome(lastChangeTotal, latestFeeUsdPerGmToken)
         );
 
-        balanceChanges.push(recentPseudoChange);
-
-        const recentIncome = calcRecentIncome(balanceChanges);
-
         result.byMarketAddress[marketAddress] = {
-          total: recentPseudoChange.cumulativeIncome,
+          total: totalIncome,
           recent: recentIncome,
         };
 
-        result.allMarkets.total = result.allMarkets.total.add(recentPseudoChange.cumulativeIncome);
+        result.allMarkets.total = result.allMarkets.total.add(totalIncome);
         result.allMarkets.recent = result.allMarkets.recent.add(recentIncome);
 
         if (marketsTokensAPRData && marketTokensData) {
@@ -224,14 +210,15 @@ export const useUserEarnings = (chainId: number) => {
   return data ?? null;
 };
 
-function calcEndOfPeriodIncome(prevBalanceChange: BalanceChange, balanceChange: BalanceChange): BigNumber {
-  if (prevBalanceChange.tokensBalance.eq(0)) return BigNumber.from(0);
+function calcEndOfPeriodIncome(
+  latestBalanceChange: BalanceChange,
+  latestCumulativeFeeUsdPerGmToken: BigNumber
+): BigNumber {
+  if (latestBalanceChange.tokensBalance.eq(0)) return BigNumber.from(0);
 
-  const feeUsdPerGmTokenDelta = balanceChange.cumulativeFeeUsdPerGmToken.sub(
-    prevBalanceChange.cumulativeFeeUsdPerGmToken
-  );
+  const feeUsdPerGmTokenDelta = latestCumulativeFeeUsdPerGmToken.sub(latestBalanceChange.cumulativeFeeUsdPerGmToken);
 
-  return feeUsdPerGmTokenDelta.mul(prevBalanceChange.tokensBalance).div(expandDecimals(1, 18));
+  return feeUsdPerGmTokenDelta.mul(latestBalanceChange.tokensBalance).div(expandDecimals(1, 18));
 }
 
 function calcRecentIncome(balanceChanges: BalanceChange[]): BigNumber {
@@ -242,15 +229,20 @@ function calcRecentIncome(balanceChanges: BalanceChange[]): BigNumber {
     const change = balanceChanges[i];
 
     const income = change.cumulativeFeeUsdPerGmToken
-      .sub(
-        i === balanceChanges.length - 1
-          ? prevChange.cumulativeFeeUsdPerGmToken
-          : prevChange.prevCumulativeFeeUsdPerGmToken
-      )
+      .sub(prevChange.prevCumulativeFeeUsdPerGmToken)
       .mul(prevChange.tokensBalance)
       .div(expandDecimals(1, 18));
     cumulativeIncome = cumulativeIncome.add(income);
   }
 
   return cumulativeIncome;
+}
+
+function rawBalanceChangeToBalanceChange(rawBalanceChange: RawBalanceChange): BalanceChange {
+  return {
+    prevCumulativeFeeUsdPerGmToken: BigNumber.from(rawBalanceChange.prevCumulativeFeeUsdPerGmToken),
+    cumulativeFeeUsdPerGmToken: BigNumber.from(rawBalanceChange.cumulativeFeeUsdPerGmToken),
+    cumulativeIncome: BigNumber.from(rawBalanceChange.cumulativeIncome),
+    tokensBalance: BigNumber.from(rawBalanceChange.tokensBalance),
+  };
 }
