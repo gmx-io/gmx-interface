@@ -123,10 +123,7 @@ export const GmTokensTotalBalanceInfo = ({
                     showDollar={false}
                   />
                   <br />
-                  <Trans>
-                    Expected 365d Fees are based on past ${daysConsidered}d Fees. Fees USD value is calculated at the
-                    time they are accrued.
-                  </Trans>
+                  <Trans>Expected 365d Fees are projected based on past {daysConsidered} base APR</Trans>
                 </>
               )}
             </>
