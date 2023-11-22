@@ -1,3 +1,3 @@
 export const useDaysConsideredInMarketsApr = () => {
-  return 7;
+  return 1;
 };
