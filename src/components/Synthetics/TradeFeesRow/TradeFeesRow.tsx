@@ -15,6 +15,7 @@ import { useChainId } from "lib/chains";
 import { formatAmount, formatDeltaUsd, formatPercentage, formatTokenAmountWithUsd } from "lib/numbers";
 import { ReactNode, useMemo } from "react";
 import "./TradeFeesRow.scss";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 type Props = {
   totalFees?: FeeItem;
@@ -33,6 +34,8 @@ type Props = {
   isTop?: boolean;
   feesType: TradeFeesType;
   warning?: string;
+  uiFee?: FeeItem;
+  uiSwapFee?: FeeItem;
 };
 
 type FeeRow = {
@@ -121,6 +124,36 @@ export function TradeFeesRow(p: Props) {
           ),
           value: formatDeltaUsd(p.positionFee.deltaUsd),
           className: p.positionFee.deltaUsd.gte(0) ? "text-green" : "text-red",
+        }
+      : undefined;
+
+    const uiFeeRow = p.uiFee?.deltaUsd?.abs().gt(0)
+      ? {
+          id: "uiFee",
+          label: (
+            <>
+              <div className="text-white">{t`UI Fee`}:</div>
+              <div>
+                ({formatPercentage(p.uiFee.bps.abs())} of {p.feesType === "swap" ? "swap amount" : "position size"})
+              </div>
+            </>
+          ),
+          value: formatDeltaUsd(p.uiFee.deltaUsd),
+          className: "text-red",
+        }
+      : undefined;
+
+    const uiSwapFeeRow = p.uiSwapFee?.deltaUsd?.abs().gt(0)
+      ? {
+          id: "swapUiFee",
+          label: (
+            <>
+              <div className="text-white">{p.feesType === "swap" ? t`UI Fee` : t`Swap UI Fee`}:</div>
+              <div>({formatPercentage(p.uiSwapFee.bps.abs())} of swap amount)</div>
+            </>
+          ),
+          value: formatDeltaUsd(p.uiSwapFee.deltaUsd),
+          className: "text-red",
         }
       : undefined;
 
@@ -218,7 +251,7 @@ export function TradeFeesRow(p: Props) {
       : undefined;
 
     if (p.feesType === "swap") {
-      return [swapPriceImpactRow, ...swapFeeRows, executionFeeRow].filter(Boolean) as FeeRow[];
+      return [swapPriceImpactRow, ...swapFeeRows, uiSwapFeeRow, executionFeeRow].filter(Boolean) as FeeRow[];
     }
 
     if (p.feesType === "increase") {
@@ -229,6 +262,8 @@ export function TradeFeesRow(p: Props) {
         positionFeeRow,
         rebateRow,
         feeDiscountRow,
+        uiFeeRow,
+        uiSwapFeeRow,
         borrowFeeRow,
         fundingFeeRow,
         borrowFeeRateRow,
@@ -246,6 +281,8 @@ export function TradeFeesRow(p: Props) {
         positionFeeRow,
         rebateRow,
         feeDiscountRow,
+        uiFeeRow,
+        uiSwapFeeRow,
         swapProfitFeeRow,
         ...swapFeeRows,
         executionFeeRow,
@@ -270,6 +307,8 @@ export function TradeFeesRow(p: Props) {
     p.borrowFeeRateStr,
     p.fundingFeeRateStr,
     p.executionFee,
+    p.uiFee,
+    p.uiSwapFee,
     tradingIncentives,
     rebateIsApplicable,
     chainId,
@@ -346,8 +385,8 @@ export function TradeFeesRow(p: Props) {
           {!totalFeeUsd || totalFeeUsd.eq(0) ? (
             "-"
           ) : (
-            <Tooltip
-              className="TradeFeesRow-tooltip"
+            <TooltipWithPortal
+              portalClassName="TradeFeesRow-tooltip"
               handle={<span className={cx({ positive: totalFeeUsd.gt(0) })}>{formatDeltaUsd(totalFeeUsd)}</span>}
               position="right-top"
               renderContent={() => (
