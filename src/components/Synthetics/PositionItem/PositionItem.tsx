@@ -713,7 +713,7 @@ export function PositionItem(p: Props) {
                       p.onSelectPositionClick?.(TradeMode.Trigger);
                     }}
                   >
-                    <Trans>Trigger</Trans>
+                    <Trans>TP/SL</Trans>
                   </Button>
                 </div>
                 <div>
