@@ -3,7 +3,7 @@ import React, { useRef, useEffect } from "react";
 import cx from "classnames";
 import { motion, AnimatePresence } from "framer-motion";
 import { RemoveScroll } from "react-remove-scroll";
-import { MdClose } from "react-icons/md";
+import { IoClose } from "react-icons/io5";
 
 export default function Modal(props) {
   const { isVisible, setIsVisible, className, zIndex, onAfterOpen } = props;
@@ -54,7 +54,7 @@ export default function Modal(props) {
               <div className="Modal-title-bar">
                 <div className="Modal-title">{props.label}</div>
                 <div className="Modal-close-button" onClick={() => setIsVisible(false)}>
-                  <MdClose fontSize={20} className="Modal-close-icon" />
+                  <IoClose fontSize={20} className="Modal-close-icon" />
                 </div>
               </div>
               {props.headerContent && props.headerContent()}

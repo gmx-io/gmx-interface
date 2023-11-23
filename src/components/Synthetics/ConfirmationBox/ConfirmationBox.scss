@@ -3,6 +3,39 @@
   flex-direction: column;
 }
 
+.Confirmation-box-main {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0.5rem 0 1.5rem;
+
+  .arrow-icon {
+    margin-top: 0.5rem;
+  }
+
+  .trade-token-amount {
+    color: white;
+    font-size: 1.8rem;
+  }
+
+  .trade-amount-usd {
+    font-size: 1.6rem;
+    color: var(--text-gray);
+  }
+}
+
+.Existing-limit-order {
+  font-size: 1.4rem;
+
+  .Existing-orders-title {
+    color: var(--text-gray);
+    span {
+      margin-left: 0.5rem;
+    }
+  }
+}
+
 .Confirmation-box {
   .Modal-body {
     overflow-x: hidden;

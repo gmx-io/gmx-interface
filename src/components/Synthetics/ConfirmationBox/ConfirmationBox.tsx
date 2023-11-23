@@ -1,4 +1,5 @@
 import { Plural, Trans, t } from "@lingui/macro";
+import warningIcon from "img/ic_warning.svg";
 import cx from "classnames";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
@@ -85,6 +86,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useKey } from "react-use";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./ConfirmationBox.scss";
+import { FaArrowRight } from "react-icons/fa";
 
 export type Props = {
   isVisible: boolean;
@@ -177,7 +179,6 @@ export function ConfirmationBox(p: Props) {
 
   const [isTriggerWarningAccepted, setIsTriggerWarningAccepted] = useState(false);
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
-  const [isLimitOrdersVisible, setIsLimitOrdersVisible] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);
   const submitButtonRef = useRef<null | HTMLDivElement>(null);
@@ -596,24 +597,22 @@ export function ConfirmationBox(p: Props) {
     if (isIncrease) {
       return (
         <div className="Confirmation-box-main">
-          <span>
-            <Trans>Pay</Trans>{" "}
-            {formatTokenAmountWithUsd(
-              increaseAmounts?.initialCollateralAmount,
-              increaseAmounts?.initialCollateralUsd,
-              fromToken?.symbol,
-              fromToken?.decimals
-            )}
-          </span>
-          <div className="Confirmation-box-main-icon"></div>
-          <div>
-            {isLong ? t`Long` : t`Short`}{" "}
-            {formatTokenAmountWithUsd(
-              increaseAmounts?.sizeDeltaInTokens,
-              increaseAmounts?.sizeDeltaUsd,
-              toToken?.symbol,
-              toToken?.decimals
-            )}
+          <div className="trade-token-info">
+            <div className="trade-token-amount">
+              <Trans>Pay</Trans>{" "}
+              <span>
+                {formatTokenAmount(increaseAmounts?.initialCollateralAmount, fromToken?.decimals, fromToken?.symbol)}
+              </span>
+            </div>
+            <div className="trade-amount-usd">{formatUsd(increaseAmounts?.initialCollateralUsd)}</div>
+          </div>
+          <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
+          <div className="trade-token-info">
+            <div className="trade-token-amount">
+              {isLong ? t`Long` : t`Short`}{" "}
+              <span>{formatTokenAmount(increaseAmounts?.sizeDeltaInTokens, toToken?.decimals, toToken?.symbol)}</span>
+            </div>
+            <div className="trade-amount-usd">{formatUsd(increaseAmounts?.sizeDeltaUsd)}</div>
           </div>
         </div>
       );
@@ -630,8 +629,8 @@ export function ConfirmationBox(p: Props) {
     return (
       <li key={order.key} className="font-sm">
         <p>
-          {isLimitOrderType(order.orderType) ? t`Increase` : t`Decrease`} {order.indexToken?.symbol}{" "}
-          {formatUsd(order.sizeDeltaUsd)} {order.isLong ? t`Long` : t`Short`} &nbsp;
+          {order.isLong ? t`Long` : t`Short`} {order.indexToken?.symbol} ({order.targetCollateralToken.symbol}):{" "}
+          {formatUsd(order.sizeDeltaUsd)} at price &nbsp;
           {order.triggerThresholdType}
           {formatUsd(order.triggerPrice, {
             displayDecimals: toToken?.priceDecimals,
@@ -643,8 +642,6 @@ export function ConfirmationBox(p: Props) {
       </li>
     );
   }
-
-  const longShortText = isLong ? t`Long` : t`Short`;
 
   function renderDifferentTokensWarning() {
     if (!isPosition || !fromToken || !toToken) {
@@ -723,40 +720,21 @@ export function ConfirmationBox(p: Props) {
     if (!existingLimitOrders?.length || !toToken) {
       return;
     }
-
-    if (existingLimitOrders.length === 1) {
-      const order = existingLimitOrders[0];
-
-      const sizeText = formatUsd(order.sizeDeltaUsd);
-
-      return (
-        <div className="Confirmation-box-info">
-          <Trans>
-            You have an active Limit Order to Increase {longShortText} {order.indexToken?.symbol} {sizeText} at price{" "}
-            {formatUsd(order.triggerPrice, {
-              displayDecimals: toToken.priceDecimals,
-            })}
-            .
-          </Trans>
+    return (
+      <div className="Existing-limit-order">
+        <div className="Existing-orders-title">
+          <img src={warningIcon} alt="" />
+          <span>
+            <Plural
+              value={existingLimitOrders.length}
+              one="You have an active Limit Order to Increase"
+              other="You have multiple active Limit Orders to Increase"
+            />
+          </span>
         </div>
-      );
-    } else {
-      return (
-        <div>
-          <div className="Confirmation-box-info">
-            <span>
-              <Trans>
-                You have multiple existing Increase {longShortText} {toToken.symbol} limit orders{" "}
-              </Trans>
-            </span>
-            <span onClick={() => setIsLimitOrdersVisible((p) => !p)} className="view-orders">
-              ({isLimitOrdersVisible ? t`hide` : t`view`})
-            </span>
-          </div>
-          {isLimitOrdersVisible && <ul className="order-list">{existingLimitOrders.map(renderOrderItem)}</ul>}
-        </div>
-      );
-    }
+        <ul className="order-list">{existingLimitOrders.map(renderOrderItem)}</ul>
+      </div>
+    );
   }
 
   function renderExistingTriggerErrors() {
@@ -945,9 +923,9 @@ export function ConfirmationBox(p: Props) {
       <>
         <div>
           {renderMain()}
+          {renderExistingLimitOrdersWarning()}
           {renderDifferentCollateralWarning()}
           {renderCollateralSpreadWarning()}
-          {renderExistingLimitOrdersWarning()}
           {renderExistingTriggerErrors()}
           {renderExistingTriggerWarning()}
           {renderDifferentTokensWarning()}
