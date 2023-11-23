@@ -6,7 +6,6 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { getToken } from "config/tokens";
-import { formatDuration, intervalToDuration } from "date-fns";
 import { useTradingIncentives } from "domain/synthetics/common/useIncentiveStats";
 import { ExecutionFee, FeeItem, SwapFeeItem } from "domain/synthetics/fees";
 import { TradeFeesType } from "domain/synthetics/trade";
@@ -217,14 +216,14 @@ export function TradeFeesRow(p: Props) {
       : undefined;
 
     const rebateRow =
-      tradingIncentives && tradingIncentives.state === "live" && rebateIsApplicable
+      tradingIncentives && rebateIsApplicable
         ? {
             label: (
               <>
-                <div className="text-white">{t`Bonus Rebate`}:</div>
+                <div className="text-white">{t`Max Bonus Rebate`}:</div>
                 <div>
                   <Trans>
-                    ({formatAmount(tradingIncentives.rebatePercent, 2, 0)}% of {feesTypeName})
+                    (up to {formatAmount(tradingIncentives.rebatePercent, 2, 0)}% of {feesTypeName})
                   </Trans>
                 </div>
               </>
@@ -317,7 +316,7 @@ export function TradeFeesRow(p: Props) {
   const totalFeeUsd = useMemo(() => {
     const totalBeforeRebate = p.totalFees?.deltaUsd.sub(p.executionFee?.feeUsd || 0);
 
-    if (!rebateIsApplicable || !p.positionFee || !tradingIncentives || tradingIncentives.state !== "live") {
+    if (!rebateIsApplicable || !p.positionFee || !tradingIncentives) {
       return totalBeforeRebate;
     }
     const rebate = p.positionFee.deltaUsd.mul(tradingIncentives.rebatePercent).div(BASIS_POINTS_DIVISOR).mul(-1);
@@ -326,40 +325,27 @@ export function TradeFeesRow(p: Props) {
   }, [p.executionFee?.feeUsd, p.positionFee, p.totalFees?.deltaUsd, rebateIsApplicable, tradingIncentives]);
 
   const title = useMemo(() => {
-    if (p.feesType !== "swap" && tradingIncentives?.state === "live" && shouldShowRebate) {
+    if (p.feesType !== "swap" && shouldShowRebate) {
       return p.feesType === "edit" ? t`Fees (Rebated)` : t`Fees (Rebated) and Price Impact`;
     } else {
       return p.feesType === "edit" ? t`Fees` : t`Fees and Price Impact`;
     }
-  }, [p.feesType, shouldShowRebate, tradingIncentives]);
+  }, [p.feesType, shouldShowRebate]);
 
   const incentivesBottomText = useMemo(() => {
     if (!tradingIncentives || !rebateIsApplicable) {
       return null;
     }
 
-    if (tradingIncentives.state === "limitReached") {
-      const periodStart = tradingIncentives.nextPeriodStart;
-      const timeLeftStr = formatDuration(intervalToDuration({ start: new Date(), end: periodStart }), {
-        format: ["days", "hours", "minutes"],
-      });
-      return (
-        <Trans>
-          The trading incentives have reached their cap for this epoch. They will be reset in {timeLeftStr}.
-        </Trans>
-      );
-    }
-
     return (
       <Trans>
-        The Bonus Rebate will be airdropped as ARB tokens.{" "}
+        The Bonus Rebate will be airdropped as ARB tokens on a pro-rata basis.{" "}
         <ExternalLink
           href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#9a915e16d33942bdb713f3fe28c3435f"
           newTab
         >
           Read more
         </ExternalLink>
-        .
       </Trans>
     );
   }, [rebateIsApplicable, tradingIncentives]);
