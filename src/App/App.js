@@ -398,7 +398,7 @@ function FullApp() {
           {!isHome && (
             <Switch>
               <Route exact path="/">
-                <Redirect to="/dashboard" />
+                <Redirect to="/trade" />
               </Route>
               <Route exact path="/v1">
                 <Exchange
