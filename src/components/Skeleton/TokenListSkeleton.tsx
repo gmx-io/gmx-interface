@@ -33,12 +33,14 @@ function TableRowSkeleton() {
       <td>
         <Skeleton width={60} count={1} />
       </td>
-      <td></td>
+      <td>
+        <Skeleton width={100} inline count={2} style={{ marginRight: "5px" }} />
+      </td>
     </tr>
   );
 }
 
-function TokenListSkeleton({ count = 8 }) {
+function TokenListSkeleton({ count = 10 }) {
   return (
     <SkeletonTheme baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A">
       {Array.from({ length: count }).map((_, index) => (
