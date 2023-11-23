@@ -139,7 +139,14 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
             {incentiveState?.migration?.isActive && (
               <BannerButton
                 className="mt-md"
-                label="GM Pools APR and migrating from GLP to GM are incentivized."
+                label="Migrating from GLP to GM is incentivized in Arbitrum."
+                link="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#a2d1ea61dd1147b195b7e3bd769348d3"
+              />
+            )}
+            {incentiveState?.lp?.isActive && (
+              <BannerButton
+                className="mt-md"
+                label="Arbitrum GM Pools are incenvitized."
                 link="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#a2d1ea61dd1147b195b7e3bd769348d3"
               />
             )}

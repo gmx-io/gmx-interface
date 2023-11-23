@@ -32,6 +32,8 @@
     align-items: center;
     cursor: pointer;
     text-decoration: none;
+    justify-content: space-between;
+    font-size: 1.5rem;
 
     &:hover {
       background: rgba(80, 87, 126, 0.6);
