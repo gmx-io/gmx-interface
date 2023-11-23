@@ -13,7 +13,6 @@ import { useMarketsInfo } from "./useMarketsInfo";
 
 type RawBalanceChange = {
   cumulativeIncome: string;
-  prevCumulativeFeeUsdPerGmToken: string;
   cumulativeFeeUsdPerGmToken: string;
   tokensBalance: string;
 };
@@ -21,7 +20,6 @@ type RawBalanceChange = {
 type BalanceChange = {
   tokensBalance: BigNumber;
   cumulativeIncome: BigNumber;
-  prevCumulativeFeeUsdPerGmToken: BigNumber;
   cumulativeFeeUsdPerGmToken: BigNumber;
 };
 
@@ -66,7 +64,6 @@ export const useUserEarnings = (chainId: number) => {
         ) {
             cumulativeIncome
             tokensBalance
-            prevCumulativeFeeUsdPerGmToken
             cumulativeFeeUsdPerGmToken
         }
         _${marketAddress}_balanceChange_before: userGmTokensBalanceChanges(
@@ -81,7 +78,6 @@ export const useUserEarnings = (chainId: number) => {
           ) {
             cumulativeIncome
             tokensBalance
-            prevCumulativeFeeUsdPerGmToken
             cumulativeFeeUsdPerGmToken
           }
         _${marketAddress}_fees_start: collectedMarketFeesInfos(
@@ -159,7 +155,6 @@ export const useUserEarnings = (chainId: number) => {
           ? [
               rawBalanceChangeToBalanceChange({
                 ...prevRawBalanceChange,
-                prevCumulativeFeeUsdPerGmToken: feesStart.cumulativeFeeUsdPerGmToken,
                 cumulativeFeeUsdPerGmToken: feesStart.cumulativeFeeUsdPerGmToken,
               }),
               ...balanceChanges,
@@ -216,9 +211,7 @@ function calcEndOfPeriodIncome(
 ): BigNumber {
   if (latestBalanceChange.tokensBalance.eq(0)) return BigNumber.from(0);
 
-  const feeUsdPerGmTokenDelta = latestCumulativeFeeUsdPerGmToken.sub(
-    latestBalanceChange.prevCumulativeFeeUsdPerGmToken
-  );
+  const feeUsdPerGmTokenDelta = latestCumulativeFeeUsdPerGmToken.sub(latestBalanceChange.cumulativeFeeUsdPerGmToken);
 
   return feeUsdPerGmTokenDelta.mul(latestBalanceChange.tokensBalance).div(expandDecimals(1, 18));
 }
@@ -231,7 +224,7 @@ function calcRecentIncome(balanceChanges: BalanceChange[]): BigNumber {
     const change = balanceChanges[i];
 
     const income = change.cumulativeFeeUsdPerGmToken
-      .sub(prevChange.prevCumulativeFeeUsdPerGmToken)
+      .sub(prevChange.cumulativeFeeUsdPerGmToken)
       .mul(prevChange.tokensBalance)
       .div(expandDecimals(1, 18));
     cumulativeIncome = cumulativeIncome.add(income);
@@ -242,7 +235,6 @@ function calcRecentIncome(balanceChanges: BalanceChange[]): BigNumber {
 
 function rawBalanceChangeToBalanceChange(rawBalanceChange: RawBalanceChange): BalanceChange {
   return {
-    prevCumulativeFeeUsdPerGmToken: BigNumber.from(rawBalanceChange.prevCumulativeFeeUsdPerGmToken),
     cumulativeFeeUsdPerGmToken: BigNumber.from(rawBalanceChange.cumulativeFeeUsdPerGmToken),
     cumulativeIncome: BigNumber.from(rawBalanceChange.cumulativeIncome),
     tokensBalance: BigNumber.from(rawBalanceChange.tokensBalance),
