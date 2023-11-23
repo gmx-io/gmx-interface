@@ -4443,6 +4443,7 @@ msgstr ""
 msgid "TP"
 msgstr ""
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "TP/SL"
@@ -4925,7 +4926,6 @@ msgstr "移転中..."
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Trigger"
 msgstr "トリガー"
