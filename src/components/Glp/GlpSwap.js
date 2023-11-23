@@ -103,7 +103,7 @@ function getMinutesToNextEpochIfLessThanHour() {
   const nextWedUtc = getNextWednesdayUTC();
   const totalMinutes = differenceInMinutes(nextWedUtc, now);
 
-  if (totalMinutes < 60) {
+  if (totalMinutes < 8000) {
     return totalMinutes;
   }
   return null;
@@ -201,6 +201,18 @@ export default function GlpSwap(props) {
   );
 
   const incentiveStats = useIncentiveStats();
+
+  function getFeesLabel() {
+    if (isFeesHigh) {
+      return t`WARNING: High Fees`;
+    }
+
+    if (!isBuying && incentiveStats?.migration?.isActive) {
+      return t`Fees (Rebated)`;
+    }
+
+    return t`Fees`;
+  }
 
   const { data: balancesAndSupplies } = useSWR(
     [
@@ -1056,7 +1068,7 @@ export default function GlpSwap(props) {
 
             <div>
               <div className="Exchange-info-row">
-                <div className="Exchange-info-label">{isFeesHigh ? t`WARNING: High Fees` : t`Fees (Rebated)`}</div>
+                <div className="Exchange-info-label">{getFeesLabel()}</div>
                 <div className="align-right fee-block">
                   {isBuying && (
                     <Tooltip
