@@ -15,28 +15,19 @@ import useWallet from "lib/wallets/useWallet";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
 import { mergeWith } from "lodash";
-import { formatAmount } from "lib/numbers";
+import { formatPercentage } from "lib/numbers";
 
 const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
 const gmIcon = getIcon("common", "gm");
 
-function calculateMinMaxApr(apr, incentiveApr) {
+function calculateMaxApr(apr, incentiveApr) {
   const totalApr = mergeWith({}, apr, incentiveApr, (aprValue, incentiveAprValue) => aprValue?.add(incentiveAprValue));
   const aprValues = Object.values(totalApr || {});
-  let minApr = aprValues[0];
-  let maxApr = aprValues[0];
 
-  aprValues.forEach((value) => {
-    if (value.lt(minApr)) {
-      minApr = value;
-    }
-    if (value.gt(maxApr)) {
-      maxApr = value;
-    }
-  });
+  const maxApr = aprValues.reduce((max, value) => (value.gt(max) ? value : max), aprValues[0]);
 
-  return { min: minApr, max: maxApr };
+  return maxApr;
 }
 
 export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }) {
@@ -51,12 +42,12 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
   const aprRangeText = useMemo(() => {
     if (!arbApr || !arbIncentiveApr || !avaxApr || !avaxIncentiveApr) return;
 
-    const calculatedArbApr = calculateMinMaxApr(arbApr, arbIncentiveApr);
-    const calculatedAvaxApr = calculateMinMaxApr(avaxApr, avaxIncentiveApr);
+    const maxArbApr = calculateMaxApr(arbApr, arbIncentiveApr);
+    const maxAvaxApr = calculateMaxApr(avaxApr, avaxIncentiveApr);
 
     return {
-      [ARBITRUM]: `${formatAmount(calculatedArbApr.min, 2, 2)}% - ${formatAmount(calculatedArbApr.max, 2, 2)}%`,
-      [AVALANCHE]: `${formatAmount(calculatedAvaxApr.min, 2, 2)}% - ${formatAmount(calculatedAvaxApr.max, 2, 2)}%`,
+      [ARBITRUM]: formatPercentage(maxArbApr),
+      [AVALANCHE]: formatPercentage(maxAvaxApr),
     };
   }, [arbApr, arbIncentiveApr, avaxApr, avaxIncentiveApr]);
 
@@ -144,8 +135,8 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
         </div>
         {aprRangeText && (
           <div className="Home-token-card-option-apr">
-            <Trans>Arbitrum APR:</Trans> {aprRangeText?.[ARBITRUM] ?? "..."},{" "}
-            <Trans>Avalanche APR: {aprRangeText?.[AVALANCHE] ?? "..."}</Trans>{" "}
+            <Trans>Max Arbitrum APR:</Trans> {aprRangeText?.[ARBITRUM] ?? "..."},{" "}
+            <Trans>Max Avalanche APR: {aprRangeText?.[AVALANCHE] ?? "..."}</Trans>{" "}
           </div>
         )}
         <div className="Home-token-card-option-action Token-card-buy">
