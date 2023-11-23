@@ -39,8 +39,12 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
   const { marketsTokensAPRData: avaxApr, marketsTokensIncentiveAprData: avaxIncentiveApr } =
     useMarketTokensAPR(AVALANCHE);
 
-  const aprRangeText = useMemo(() => {
-    if (!arbApr || !arbIncentiveApr || !avaxApr || !avaxIncentiveApr) return;
+  const maxAprText = useMemo(() => {
+    if (!arbApr || !arbIncentiveApr || !avaxApr || !avaxIncentiveApr)
+      return {
+        [ARBITRUM]: "...%",
+        [AVALANCHE]: "...%",
+      };
 
     const maxArbApr = calculateMaxApr(arbApr, arbIncentiveApr);
     const maxAvaxApr = calculateMaxApr(avaxApr, avaxIncentiveApr);
@@ -133,12 +137,11 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
             </div>
           </div>
         </div>
-        {aprRangeText && (
-          <div className="Home-token-card-option-apr">
-            <Trans>Max Arbitrum APR:</Trans> {aprRangeText?.[ARBITRUM] ?? "..."},{" "}
-            <Trans>Max Avalanche APR: {aprRangeText?.[AVALANCHE] ?? "..."}</Trans>{" "}
-          </div>
-        )}
+        <div className="Home-token-card-option-apr">
+          <Trans>Max. Arbitrum APR:</Trans> {maxAprText?.[ARBITRUM]},{" "}
+          <Trans>Max. Avalanche APR: {maxAprText?.[AVALANCHE]}</Trans>{" "}
+        </div>
+
         <div className="Home-token-card-option-action Token-card-buy">
           <div className="buy">
             <BuyLink to="/pools" className="default-btn" network={ARBITRUM}>

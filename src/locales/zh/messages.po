@@ -473,10 +473,6 @@ msgstr "可在您的首选网络上使用"
 msgid "Avalanche APR:"
 msgstr "Avalanche年利率"
 
-#: src/components/TokenCard/TokenCard.js
-#~ msgid "Avalanche APR: {0}"
-#~ msgstr ""
-
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "BUYABLE"
 msgstr ""
@@ -2749,14 +2745,6 @@ msgstr ""
 msgid "Max"
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.js
-msgid "Max Arbitrum APR:"
-msgstr ""
-
-#: src/components/TokenCard/TokenCard.js
-msgid "Max Avalanche APR: {0}"
-msgstr ""
-
 #: src/pages/Stake/StakeV2.js
 msgid "Max Capacity"
 msgstr "最高上限"
@@ -2891,6 +2879,14 @@ msgstr "最大{0}做空范围"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} short exceeded"
 msgstr "超过了最大{0}做空范围"
+
+#: src/components/TokenCard/TokenCard.js
+msgid "Max. Arbitrum APR:"
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.js
+msgid "Max. Avalanche APR: {0}"
+msgstr ""
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "Max. {nativeTokenSymbol} APR with 200% Boost for this week: {0}%."
