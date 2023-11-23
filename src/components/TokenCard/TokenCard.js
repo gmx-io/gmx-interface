@@ -106,6 +106,13 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
               </Trans>
             </div>
           </div>
+          {incentiveState?.lp?.isActive && (
+            <BannerButton
+              className="mt-md"
+              label="Arbitrum GM Pools are incenvitized."
+              link="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#dc108b8a0a114c609ead534d1908d2fa"
+            />
+          )}
         </div>
         <div className="Home-token-card-option-action Token-card-buy">
           <div className="buy">
@@ -140,13 +147,6 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
               <BannerButton
                 className="mt-md"
                 label="Migrating from GLP to GM is incentivized in Arbitrum."
-                link="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#a2d1ea61dd1147b195b7e3bd769348d3"
-              />
-            )}
-            {incentiveState?.lp?.isActive && (
-              <BannerButton
-                className="mt-md"
-                label="Arbitrum GM Pools are incenvitized."
                 link="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#a2d1ea61dd1147b195b7e3bd769348d3"
               />
             )}
