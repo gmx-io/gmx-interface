@@ -34,7 +34,7 @@ function TableRowSkeleton() {
         <Skeleton width={60} count={1} />
       </td>
       <td>
-        <Skeleton width={100} inline count={2} style={{ marginRight: "5px" }} />
+        <Skeleton width={150} inline count={2} style={{ marginRight: "5px" }} />
       </td>
     </tr>
   );
