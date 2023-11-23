@@ -421,7 +421,6 @@ msgstr "Approving..."
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
-#: src/components/TokenCard/TokenCard.js
 msgid "Arbitrum APR:"
 msgstr "Arbitrum APR:"
 
@@ -475,8 +474,8 @@ msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
 
 #: src/components/TokenCard/TokenCard.js
-msgid "Avalanche APR: {0}"
-msgstr "Avalanche APR: {0}"
+#~ msgid "Avalanche APR: {0}"
+#~ msgstr "Avalanche APR: {0}"
 
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "BUYABLE"
@@ -2752,6 +2751,14 @@ msgstr "Market Swap"
 #: src/pages/Stake/StakeV2.js
 msgid "Max"
 msgstr "Max"
+
+#: src/components/TokenCard/TokenCard.js
+msgid "Max Arbitrum APR:"
+msgstr "Max Arbitrum APR:"
+
+#: src/components/TokenCard/TokenCard.js
+msgid "Max Avalanche APR: {0}"
+msgstr "Max Avalanche APR: {0}"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Max Capacity"
