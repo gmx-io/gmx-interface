@@ -326,7 +326,7 @@ export function TradeFeesRow(p: Props) {
   }, [p.executionFee?.feeUsd, p.positionFee, p.totalFees?.deltaUsd, rebateIsApplicable, tradingIncentives]);
 
   const title = useMemo(() => {
-    if (tradingIncentives?.state === "live" && shouldShowRebate) {
+    if (p.feesType !== "swap" && tradingIncentives?.state === "live" && shouldShowRebate) {
       return p.feesType === "edit" ? t`Fees (Rebated)` : t`Fees (Rebated) and Price Impact`;
     } else {
       return p.feesType === "edit" ? t`Fees` : t`Fees and Price Impact`;

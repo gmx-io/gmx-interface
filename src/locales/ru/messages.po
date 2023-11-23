@@ -2899,6 +2899,14 @@ msgstr "Максимальная {0} вместимость шорта"
 msgid "Max {0} short exceeded"
 msgstr "Максимальное {0} превышение шорта"
 
+#: src/components/TokenCard/TokenCard.js
+msgid "Max. Arbitrum APR:"
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.js
+msgid "Max. Avalanche APR: {0}"
+msgstr ""
+
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "Max. {nativeTokenSymbol} APR with 200% Boost for this week: {0}%."
 msgstr ""

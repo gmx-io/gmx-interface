@@ -2902,6 +2902,14 @@ msgstr "Max {0} short capacity"
 msgid "Max {0} short exceeded"
 msgstr "Max {0} short exceeded"
 
+#: src/components/TokenCard/TokenCard.js
+msgid "Max. Arbitrum APR:"
+msgstr "Max. Arbitrum APR:"
+
+#: src/components/TokenCard/TokenCard.js
+msgid "Max. Avalanche APR: {0}"
+msgstr "Max. Avalanche APR: {0}"
+
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "Max. {nativeTokenSymbol} APR with 200% Boost for this week: {0}%."
 msgstr "Max. {nativeTokenSymbol} APR with 200% Boost for this week: {0}%."
