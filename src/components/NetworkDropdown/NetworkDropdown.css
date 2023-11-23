@@ -168,6 +168,11 @@
   color: #eee;
 }
 
+.language-item {
+  margin-left: 0.8rem;
+  font-size: 1.5rem;
+}
+
 .active-dot {
   width: 0.8rem;
   height: 0.8rem;

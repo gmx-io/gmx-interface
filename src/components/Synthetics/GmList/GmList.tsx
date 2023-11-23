@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Trans, t } from "@lingui/macro";
 import Button from "components/Button/Button";
 import {
@@ -7,10 +8,10 @@ import {
   getMarketPoolName,
   getMaxPoolAmountForDeposit,
   getMintableMarketTokens,
+  getTotalGmInfo,
 } from "domain/synthetics/markets";
 import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { importImage } from "lib/legacy";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
@@ -21,11 +22,14 @@ import Tooltip from "components/Tooltip/Tooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { getIcons } from "config/icons";
 import PageTitle from "components/PageTitle/PageTitle";
+import useWallet from "lib/wallets/useWallet";
 import { AprInfo } from "components/AprInfo/AprInfo";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import useSortedMarketsWithIndexToken from "domain/synthetics/trade/useSortedMarketsWithIndexToken";
 import TokenListSkeleton from "components/Skeleton/TokenListSkeleton";
+import { getNormalizedTokenSymbol } from "config/tokens";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 
 type Props = {
   hideTitle?: boolean;
@@ -49,10 +53,16 @@ export function GmList({
   buySellActionHandler,
 }: Props) {
   const { chainId } = useChainId();
+  const { active } = useWallet();
   const currentIcons = getIcons(chainId);
   const isMobile = useMedia("(max-width: 1100px)");
   const daysConsidered = useDaysConsideredInMarketsApr();
   const { markets: sortedMarketsByIndexToken } = useSortedMarketsWithIndexToken(marketsInfoData, marketTokensData);
+
+  const userTotalGmInfo = useMemo(() => {
+    if (!active) return;
+    return getTotalGmInfo(marketTokensData);
+  }, [marketTokensData, active]);
 
   return (
     <div className="GMList">
@@ -93,7 +103,28 @@ export function GmList({
                   />
                 </th>
                 <th>
-                  <Trans>WALLET</Trans>
+                  {userTotalGmInfo ? (
+                    <Tooltip
+                      handle={<Trans>WALLET</Trans>}
+                      className="text-none"
+                      position="right-bottom"
+                      renderContent={() => (
+                        <StatsTooltipRow
+                          label={t`Total in Wallet`}
+                          value={[
+                            formatTokenAmount(userTotalGmInfo?.balance, 18, "GM", {
+                              useCommas: true,
+                              fallbackToZero: true,
+                            }),
+                            `(${formatUsd(userTotalGmInfo?.balanceUsd)})`,
+                          ]}
+                          showDollar={false}
+                        />
+                      )}
+                    />
+                  ) : (
+                    <Trans>WALLET</Trans>
+                  )}
                 </th>
                 <th>
                   <Tooltip
@@ -142,19 +173,16 @@ export function GmList({
 
                   const totalSupply = token?.totalSupply;
                   const totalSupplyUsd = convertToUsd(totalSupply, token?.decimals, token?.prices?.minPrice);
+                  const tokenIconName = market.isSpotOnly
+                    ? getNormalizedTokenSymbol(longToken.symbol) + getNormalizedTokenSymbol(shortToken.symbol)
+                    : getNormalizedTokenSymbol(indexToken.symbol);
 
                   return (
                     <tr key={token.address}>
                       <td>
                         <div className="App-card-title-info">
                           <div className="App-card-title-info-icon">
-                            <img
-                              src={importImage(
-                                "ic_" + (market.isSpotOnly ? "swap" : indexToken.symbol.toLocaleLowerCase()) + "_40.svg"
-                              )}
-                              alt={indexToken.symbol}
-                              width="40"
-                            />
+                            <TokenIcon symbol={tokenIconName} displaySize={40} importSize={40} />
                           </div>
 
                           <div className="App-card-title-info-text">
@@ -260,23 +288,20 @@ export function GmList({
               const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
               const mintableInfo = market && token ? getMintableMarketTokens(market, token) : undefined;
 
-              if (!indexToken) {
+              if (!indexToken || !longToken || !shortToken || !market) {
                 return null;
               }
               const indexName = market && getMarketIndexName(market);
               const poolName = market && getMarketPoolName(market);
+              const tokenIconName = market.isSpotOnly
+                ? getNormalizedTokenSymbol(longToken.symbol) + getNormalizedTokenSymbol(shortToken.symbol)
+                : getNormalizedTokenSymbol(indexToken.symbol);
 
               return (
                 <div className="App-card" key={token.address}>
                   <div className="App-card-title">
                     <div className="mobile-token-card">
-                      <img
-                        src={importImage(
-                          "ic_" + (market?.isSpotOnly ? "swap" : indexToken?.symbol.toLocaleLowerCase()) + "_24.svg"
-                        )}
-                        alt={indexToken.symbol}
-                        width="20"
-                      />
+                      <TokenIcon symbol={tokenIconName} displaySize={20} importSize={40} />
                       <div className="token-symbol-text">
                         <div className="items-center">
                           <span>{indexName && indexName}</span>
@@ -338,7 +363,16 @@ export function GmList({
                     </div>
                     <div className="App-card-row">
                       <div className="label">
-                        <Trans>Wallet</Trans>
+                        <Tooltip
+                          handle={<Trans>Wallet</Trans>}
+                          className="text-none"
+                          position="right-bottom"
+                          renderContent={() => (
+                            <p className="text-white">
+                              <Trans>Available amount to deposit into the specific GM pool.</Trans>
+                            </p>
+                          )}
+                        />
                       </div>
                       <div>
                         {formatTokenAmount(token.balance, token.decimals, "GM", {

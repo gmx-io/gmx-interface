@@ -703,7 +703,7 @@ table.Exchange-list .Exchange-list-item-active {
 }
 
 .Exchange-swap-section:hover {
-  outline-color: #3a3f798f;
+  outline-color: rgba(58, 63, 121, 0.4);
 }
 
 .Exchange-swap-section:focus-within {

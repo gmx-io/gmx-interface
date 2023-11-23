@@ -58,10 +58,17 @@ export type MarketInfo = Market & {
   fundingFactor: BigNumber;
   fundingExponentFactor: BigNumber;
   fundingIncreaseFactorPerSecond: BigNumber;
+  fundingDecreaseFactorPerSecond: BigNumber;
+  thresholdForStableFunding: BigNumber;
+  thresholdForDecreaseFunding: BigNumber;
+  minFundingFactorPerSecond: BigNumber;
+  maxFundingFactorPerSecond: BigNumber;
 
   totalBorrowingFees: BigNumber;
 
   positionImpactPoolAmount: BigNumber;
+  minPositionImpactPoolAmount: BigNumber;
+  positionImpactPoolDistributionRate: BigNumber;
 
   minCollateralFactor: BigNumber;
   minCollateralFactorForOpenInterestLong: BigNumber;

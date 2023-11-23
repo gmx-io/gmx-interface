@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 
 import { isHomeSite } from "lib/legacy";
@@ -13,16 +13,47 @@ import APRLabel from "../APRLabel/APRLabel";
 import { HeaderLink } from "../Header/HeaderLink";
 import useWallet from "lib/wallets/useWallet";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
+import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
+import { mergeWith } from "lodash";
+import { formatPercentage } from "lib/numbers";
 
 const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
 const gmIcon = getIcon("common", "gm");
 
+function calculateMaxApr(apr, incentiveApr) {
+  const totalApr = mergeWith({}, apr, incentiveApr, (aprValue, incentiveAprValue) => aprValue?.add(incentiveAprValue));
+  const aprValues = Object.values(totalApr || {});
+
+  const maxApr = aprValues.reduce((max, value) => (value.gt(max) ? value : max), aprValues[0]);
+
+  return maxApr;
+}
+
 export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }) {
   const isHome = isHomeSite();
   const { chainId } = useChainId();
   const { active } = useWallet();
-  const incentiveState = useIncentiveStats(chainId);
+  const incentiveState = useIncentiveStats();
+  const { marketsTokensAPRData: arbApr, marketsTokensIncentiveAprData: arbIncentiveApr } = useMarketTokensAPR(ARBITRUM);
+  const { marketsTokensAPRData: avaxApr, marketsTokensIncentiveAprData: avaxIncentiveApr } =
+    useMarketTokensAPR(AVALANCHE);
+
+  const maxAprText = useMemo(() => {
+    if (!arbApr || !arbIncentiveApr || !avaxApr || !avaxIncentiveApr)
+      return {
+        [ARBITRUM]: "...%",
+        [AVALANCHE]: "...%",
+      };
+
+    const maxArbApr = calculateMaxApr(arbApr, arbIncentiveApr);
+    const maxAvaxApr = calculateMaxApr(avaxApr, avaxIncentiveApr);
+
+    return {
+      [ARBITRUM]: formatPercentage(maxArbApr),
+      [AVALANCHE]: formatPercentage(maxAvaxApr),
+    };
+  }, [arbApr, arbIncentiveApr, avaxApr, avaxIncentiveApr]);
 
   const changeNetwork = useCallback(
     (network) => {
@@ -69,7 +100,10 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
         </div>
         <div className="Home-token-card-option-info">
           <div className="Home-token-card-option-title">
-            <Trans>GMX is the utility and governance token. Accrues 30% of the platform's generated fees.</Trans>
+            <Trans>
+              GMX is the utility and governance token. Accrues 30% and 27% of V1 and V2 markets generated fees,
+              respectively.
+            </Trans>
           </div>
           <div className="Home-token-card-option-apr">
             <Trans>Arbitrum APR:</Trans> <APRLabel chainId={ARBITRUM} label="gmxAprTotal" />,{" "}
@@ -103,6 +137,11 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
             </div>
           </div>
         </div>
+        <div className="Home-token-card-option-apr">
+          <Trans>Max. Arbitrum APR:</Trans> {maxAprText?.[ARBITRUM]},{" "}
+          <Trans>Max. Avalanche APR: {maxAprText?.[AVALANCHE]}</Trans>{" "}
+        </div>
+
         <div className="Home-token-card-option-action Token-card-buy">
           <div className="buy">
             <BuyLink to="/pools" className="default-btn" network={ARBITRUM}>
