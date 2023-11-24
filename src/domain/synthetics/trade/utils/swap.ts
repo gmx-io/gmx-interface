@@ -2,6 +2,8 @@ import { TokenData, TokensRatio, convertToTokenAmount, convertToUsd, getAmountBy
 import { BigNumber } from "ethers";
 import { FindSwapPath, SwapAmounts } from "../types";
 import { getIsEquivalentTokens } from "domain/tokens";
+import { getTotalSwapVolumeFromSwapStats } from "domain/synthetics/fees";
+import { applyFactor } from "lib/numbers";
 
 export function getSwapAmountsByFromValue(p: {
   tokenIn: TokenData;
@@ -10,8 +12,9 @@ export function getSwapAmountsByFromValue(p: {
   triggerRatio?: TokensRatio;
   isLimit: boolean;
   findSwapPath: FindSwapPath;
+  uiFeeFactor: BigNumber;
 }): SwapAmounts {
-  const { tokenIn, tokenOut, amountIn, triggerRatio, isLimit, findSwapPath } = p;
+  const { tokenIn, tokenOut, amountIn, triggerRatio, isLimit, findSwapPath, uiFeeFactor } = p;
 
   const priceIn = tokenIn.prices.minPrice;
   const priceOut = tokenOut.prices.maxPrice;
@@ -56,6 +59,10 @@ export function getSwapAmountsByFromValue(p: {
 
   const swapPathStats = findSwapPath(defaultAmounts.usdIn, { byLiquidity: isLimit });
 
+  const totalSwapVolume = getTotalSwapVolumeFromSwapStats(swapPathStats?.swapSteps);
+  const swapUiFeeUsd = applyFactor(totalSwapVolume, uiFeeFactor);
+  const swapUiFeeAmount = convertToTokenAmount(swapUiFeeUsd, tokenOut.decimals, priceOut)!;
+
   if (!swapPathStats) {
     return defaultAmounts;
   }
@@ -74,12 +81,15 @@ export function getSwapAmountsByFromValue(p: {
     });
 
     usdOut = convertToUsd(amountOut, tokenOut.decimals, priceOut)!;
-    usdOut = usdOut.sub(swapPathStats.totalSwapFeeUsd).add(swapPathStats.totalSwapPriceImpactDeltaUsd);
+    usdOut = usdOut
+      .sub(swapPathStats.totalSwapFeeUsd)
+      .sub(swapUiFeeUsd)
+      .add(swapPathStats.totalSwapPriceImpactDeltaUsd);
     amountOut = convertToTokenAmount(usdOut, tokenOut.decimals, priceOut)!;
     minOutputAmount = amountOut;
   } else {
-    usdOut = swapPathStats.usdOut;
-    amountOut = swapPathStats.amountOut;
+    usdOut = swapPathStats.usdOut.sub(swapUiFeeUsd);
+    amountOut = swapPathStats.amountOut.sub(swapUiFeeAmount);
     minOutputAmount = amountOut;
   }
 
@@ -108,13 +118,16 @@ export function getSwapAmountsByToValue(p: {
   triggerRatio?: TokensRatio;
   isLimit: boolean;
   findSwapPath: FindSwapPath;
+  uiFeeFactor: BigNumber;
 }): SwapAmounts {
-  const { tokenIn, tokenOut, amountOut, triggerRatio, isLimit, findSwapPath } = p;
+  const { tokenIn, tokenOut, amountOut, triggerRatio, isLimit, findSwapPath, uiFeeFactor } = p;
 
   const priceIn = tokenIn.prices.minPrice;
   const priceOut = tokenOut.prices.maxPrice;
 
   const usdOut = convertToUsd(amountOut, tokenOut.decimals, priceOut)!;
+  const uiFeeUsd = applyFactor(usdOut, uiFeeFactor);
+
   const minOutputAmount = amountOut;
 
   let amountIn = BigNumber.from(0);
@@ -172,14 +185,14 @@ export function getSwapAmountsByToValue(p: {
     });
 
     usdIn = convertToUsd(amountIn, tokenIn.decimals, priceIn)!;
-    usdIn = usdIn.add(swapPathStats.totalSwapFeeUsd).sub(swapPathStats.totalSwapPriceImpactDeltaUsd);
+    usdIn = usdIn.add(swapPathStats.totalSwapFeeUsd).add(uiFeeUsd).sub(swapPathStats.totalSwapPriceImpactDeltaUsd);
     amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, priceIn)!;
   } else {
     const adjustedUsdIn = swapPathStats.usdOut.gt(0)
       ? baseUsdIn.mul(usdOut).div(swapPathStats.usdOut)
       : BigNumber.from(0);
 
-    usdIn = adjustedUsdIn;
+    usdIn = adjustedUsdIn.add(uiFeeUsd);
     amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, priceIn)!;
   }
 

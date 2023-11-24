@@ -119,12 +119,12 @@ export const appEventsData: EventData[] = [
     ],
   },
   {
-    id: "v2-adaptive-funding-all-markets-coming-soon",
+    id: "v2-adaptive-funding-all-markets",
     title: "Adaptive Funding",
     isActive: true,
-    validTill: "20 Nov 2023, 12:00",
+    validTill: "21 Dec 2023, 12:00",
     bodyText:
-      "Adaptive Funding Rates will be enabled for all markets over the next two weeks. This is to improve the open interest balance and reduce price impact for markets.",
+      "Adaptive Funding Rates are enabled for all markets. This is to improve the open interest balance and reduce price impact for markets.",
     buttons: [
       {
         text: "More Info.",

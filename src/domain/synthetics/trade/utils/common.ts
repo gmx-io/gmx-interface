@@ -1,6 +1,6 @@
-import { SwapFeeItem, getFeeItem, getTotalFeeItem } from "domain/synthetics/fees";
+import { SwapFeeItem, getFeeItem, getTotalFeeItem, getTotalSwapVolumeFromSwapStats } from "domain/synthetics/fees";
 import { BigNumber } from "ethers";
-import { getBasisPoints } from "lib/numbers";
+import { applyFactor, getBasisPoints } from "lib/numbers";
 import { SwapStats, TradeFees, TradeMode, TradeType } from "../types";
 
 export function getTradeFlags(tradeType: TradeType, tradeMode: TradeMode) {
@@ -37,6 +37,7 @@ export function getTradeFees(p: {
   fundingFeeUsd: BigNumber;
   feeDiscountUsd: BigNumber;
   swapProfitFeeUsd: BigNumber;
+  uiFeeFactor: BigNumber;
 }): TradeFees {
   const {
     isIncrease,
@@ -50,6 +51,7 @@ export function getTradeFees(p: {
     fundingFeeUsd,
     feeDiscountUsd,
     swapProfitFeeUsd,
+    uiFeeFactor,
   } = p;
 
   const swapFees: SwapFeeItem[] | undefined = initialCollateralUsd.gt(0)
@@ -62,6 +64,15 @@ export function getTradeFees(p: {
       }))
     : undefined;
 
+  const totalSwapVolumeUsd = getTotalSwapVolumeFromSwapStats(swapSteps);
+  const uiFeeUsd = applyFactor(sizeDeltaUsd, uiFeeFactor);
+  const uiSwapFeeUsd = applyFactor(totalSwapVolumeUsd, uiFeeFactor);
+
+  const uiSwapFee = getFeeItem(uiSwapFeeUsd.mul(-1), totalSwapVolumeUsd, {
+    shouldRoundUp: true,
+  });
+  const uiFee = getFeeItem(uiFeeUsd.mul(-1), sizeDeltaUsd, { shouldRoundUp: true });
+
   const swapProfitFee = getFeeItem(swapProfitFeeUsd.mul(-1), initialCollateralUsd);
 
   const swapPriceImpact = getFeeItem(swapPriceImpactDeltaUsd, initialCollateralUsd);
@@ -72,7 +83,6 @@ export function getTradeFees(p: {
   const borrowFee = getFeeItem(borrowingFeeUsd.mul(-1), initialCollateralUsd);
 
   const fundingFee = getFeeItem(fundingFeeUsd.mul(-1), initialCollateralUsd);
-
   const positionPriceImpact = getFeeItem(positionPriceImpactDeltaUsd, sizeDeltaUsd);
 
   const totalFees = getTotalFeeItem([
@@ -83,6 +93,8 @@ export function getTradeFees(p: {
     positionPriceImpact,
     borrowFee,
     fundingFee,
+    uiFee,
+    uiSwapFee,
   ]);
 
   const payTotalFees = getTotalFeeItem([
@@ -92,6 +104,8 @@ export function getTradeFees(p: {
     positionFeeAfterDiscount,
     borrowFee,
     fundingFee,
+    uiFee,
+    uiSwapFee,
     !isIncrease ? positionPriceImpact : undefined,
   ]);
 
@@ -106,5 +120,7 @@ export function getTradeFees(p: {
     borrowFee,
     fundingFee,
     feeDiscountUsd,
+    uiFee,
+    uiSwapFee,
   };
 }

@@ -70,6 +70,7 @@ import Tab from "components/Tab/Tab";
 import { useHasOutdatedUi } from "domain/legacy";
 import useWallet from "lib/wallets/useWallet";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { AiOutlineEdit } from "react-icons/ai";
 
 export type Props = {
@@ -114,6 +115,7 @@ export function PositionSeller(p: Props) {
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
   const userReferralInfo = useUserReferralInfo(signer, chainId, account);
   const { data: hasOutdatedUi } = useHasOutdatedUi();
+  const uiFeeFactor = useUiFeeFactor(chainId);
 
   const isVisible = Boolean(position);
   const prevIsVisible = usePrevious(isVisible);
@@ -174,6 +176,7 @@ export function PositionSeller(p: Props) {
       userReferralInfo,
       minCollateralUsd,
       minPositionSizeUsd,
+      uiFeeFactor,
     });
   }, [
     acceptablePriceImpactBps,
@@ -185,6 +188,7 @@ export function PositionSeller(p: Props) {
     position,
     triggerPrice,
     userReferralInfo,
+    uiFeeFactor,
   ]);
 
   useDebugExecutionPrice(chainId, {
@@ -209,8 +213,9 @@ export function PositionSeller(p: Props) {
       amountIn: decreaseAmounts.receiveTokenAmount,
       isLimit: false,
       findSwapPath,
+      uiFeeFactor,
     });
-  }, [decreaseAmounts, findSwapPath, position, receiveToken, shouldSwap]);
+  }, [decreaseAmounts, findSwapPath, position, receiveToken, shouldSwap, uiFeeFactor]);
 
   const receiveUsd = swapAmounts?.usdOut || decreaseAmounts?.receiveUsd;
   const receiveTokenAmount = swapAmounts?.amountOut || decreaseAmounts?.receiveTokenAmount;
@@ -265,6 +270,7 @@ export function PositionSeller(p: Props) {
         fundingFeeUsd: decreaseAmounts.fundingFeeUsd,
         feeDiscountUsd: decreaseAmounts.feeDiscountUsd,
         swapProfitFeeUsd: decreaseAmounts.swapProfitFeeUsd,
+        uiFeeFactor,
       }),
       executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
     };
@@ -278,6 +284,7 @@ export function PositionSeller(p: Props) {
     swapAmounts?.swapPathStats?.swapSteps,
     swapAmounts?.swapPathStats?.totalSwapPriceImpactDeltaUsd,
     tokensData,
+    uiFeeFactor,
   ]);
 
   const isHighPriceImpact = getIsHighPriceImpact(fees?.positionPriceImpact, fees?.swapPriceImpact);
