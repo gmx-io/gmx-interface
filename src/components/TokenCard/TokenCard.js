@@ -109,7 +109,7 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
           {incentiveState?.lp?.isActive && (
             <BannerButton
               className="mt-md"
-              label="Arbitrum GM Pools are incenvitized."
+              label="Arbitrum GM Pools are incentivized."
               link="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#dc108b8a0a114c609ead534d1908d2fa"
             />
           )}
