@@ -514,7 +514,7 @@ export default function GlpSwap(props) {
       return [t`GLP sell disabled, pending ${getChainName(chainId)} upgrade`];
     }
 
-    if (!isBuying && minutesToNextEpoch && !isEpochAcknowledgeSelected) {
+    if (!isBuying && feeBasisPoints && minutesToNextEpoch && !isEpochAcknowledgeSelected) {
       return [t`Epoch ending is not acknowledged`];
     }
 
@@ -577,7 +577,7 @@ export default function GlpSwap(props) {
       return true;
     }
 
-    if (!isBuying && minutesToNextEpoch && !isEpochAcknowledgeSelected) {
+    if (!isBuying && feeBasisPoints && minutesToNextEpoch && !isEpochAcknowledgeSelected) {
       return false;
     }
 
