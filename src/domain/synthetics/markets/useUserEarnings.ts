@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 import { BigNumber } from "ethers";
-import { expandDecimals } from "lib/numbers";
+import { expandDecimals, formatUsd } from "lib/numbers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import useWallet from "lib/wallets/useWallet";
 import { useMemo } from "react";
@@ -175,10 +175,24 @@ export const useUserEarnings = (chainId: number) => {
 
         const latestFeeUsdPerGmToken = BigNumber.from(feesRecent.cumulativeFeeUsdPerGmToken);
 
+        const debug = marketAddress.toLocaleLowerCase() === "0xedf9be35be84cd1e39bda59bd7ae8a704c12e06f".toLowerCase();
         const endOfPeriodIncomeRecent = calcEndOfPeriodIncome(lastChangeRecent, latestFeeUsdPerGmToken);
-        const endOfPeriodIncomeTotal = calcEndOfPeriodIncome(lastChangeTotal, latestFeeUsdPerGmToken);
+        const endOfPeriodIncomeTotal = calcEndOfPeriodIncome(lastChangeTotal, latestFeeUsdPerGmToken, debug);
         const recentIncome = calcRecentIncome(balanceChangesRecent).add(endOfPeriodIncomeRecent);
         const totalIncome = lastChangeTotal.cumulativeIncome.add(endOfPeriodIncomeTotal);
+
+        if (debug) {
+          console.log({ prevRawBalanceChange, balanceChangesRecent }, "<<<<<<<");
+
+          console.table({
+            "7d": formatUsd(calcRecentIncome(balanceChangesRecent, true)),
+            total: formatUsd(lastChangeTotal.cumulativeIncome),
+            since_last_change_7d: formatUsd(endOfPeriodIncomeRecent),
+            since_last_change_total: formatUsd(endOfPeriodIncomeTotal),
+            "7d+since_last_change_7d": formatUsd(recentIncome),
+            "total+since_last_change_total": formatUsd(totalIncome),
+          });
+        }
 
         result.byMarketAddress[marketAddress] = {
           total: totalIncome,
@@ -209,16 +223,30 @@ export const useUserEarnings = (chainId: number) => {
 
 function calcEndOfPeriodIncome(
   latestBalanceChange: BalanceChange,
-  latestCumulativeFeeUsdPerGmToken: BigNumber
+  latestCumulativeFeeUsdPerGmToken: BigNumber,
+  debug = false
 ): BigNumber {
   if (latestBalanceChange.tokensBalance.eq(0)) return BigNumber.from(0);
 
   const feeUsdPerGmTokenDelta = latestCumulativeFeeUsdPerGmToken.sub(latestBalanceChange.cumulativeFeeUsdPerGmToken);
 
+  if (debug)
+    console.log(
+      latestCumulativeFeeUsdPerGmToken.toString(),
+      "-",
+      latestBalanceChange.cumulativeFeeUsdPerGmToken.toString(),
+      "=",
+      feeUsdPerGmTokenDelta.toString(),
+      "*",
+      latestBalanceChange.tokensBalance.toString(),
+      "=",
+      feeUsdPerGmTokenDelta.mul(latestBalanceChange.tokensBalance).div(expandDecimals(1, 18)).toString()
+    );
+
   return feeUsdPerGmTokenDelta.mul(latestBalanceChange.tokensBalance).div(expandDecimals(1, 18));
 }
 
-function calcRecentIncome(balanceChanges: BalanceChange[]): BigNumber {
+function calcRecentIncome(balanceChanges: BalanceChange[], debug = false): BigNumber {
   let cumulativeIncome = BigNumber.from(0);
 
   for (let i = 1; i < balanceChanges.length; i++) {
@@ -232,6 +260,7 @@ function calcRecentIncome(balanceChanges: BalanceChange[]): BigNumber {
 
     cumulativeIncome = cumulativeIncome.add(income);
   }
+  if (debug) console.log("cumulativeIncome", formatUsd(cumulativeIncome));
 
   return cumulativeIncome;
 }
