@@ -173,9 +173,11 @@ export const useUserEarnings = (chainId: number) => {
         if (!lastChangeTotal) throw new Error("balanceChangesTotal is undefined");
         if (!lastChangeRecent) throw new Error("balanceChangesRecent is undefined");
 
+        console.log({ balanceChangesTotal, prevRawBalanceChange });
+
         const latestFeeUsdPerGmToken = BigNumber.from(feesRecent.cumulativeFeeUsdPerGmToken);
 
-        const debug = marketAddress.toLocaleLowerCase() === "0xedf9be35be84cd1e39bda59bd7ae8a704c12e06f".toLowerCase();
+        const debug = marketAddress.toLocaleLowerCase() === "0x017de90b0fa830c592805c6148c089191716f04c".toLowerCase();
         const endOfPeriodIncomeRecent = calcEndOfPeriodIncome(lastChangeRecent, latestFeeUsdPerGmToken);
         const endOfPeriodIncomeTotal = calcEndOfPeriodIncome(lastChangeTotal, latestFeeUsdPerGmToken, debug);
         const recentIncome = calcRecentIncome(balanceChangesRecent).add(endOfPeriodIncomeRecent);
@@ -185,6 +187,16 @@ export const useUserEarnings = (chainId: number) => {
           console.log({ prevRawBalanceChange, balanceChangesRecent }, "<<<<<<<");
 
           console.table({
+            recentFee: latestFeeUsdPerGmToken.toString(),
+            cumulativeTotal: lastChangeTotal.cumulativeFeeUsdPerGmToken.toString(),
+            diff: latestFeeUsdPerGmToken.sub(lastChangeRecent.cumulativeFeeUsdPerGmToken).toString(),
+            diffXbalance: formatUsd(
+              latestFeeUsdPerGmToken
+                .sub(lastChangeRecent.cumulativeFeeUsdPerGmToken)
+                .mul(lastChangeRecent.tokensBalance)
+                .div(expandDecimals(1, 18))
+            ),
+
             "7d": formatUsd(calcRecentIncome(balanceChangesRecent, true)),
             total: formatUsd(lastChangeTotal.cumulativeIncome),
             since_last_change_7d: formatUsd(endOfPeriodIncomeRecent),
@@ -253,7 +265,7 @@ function calcRecentIncome(balanceChanges: BalanceChange[], debug = false): BigNu
     const prevChange = balanceChanges[i - 1];
     const change = balanceChanges[i];
 
-    const income = change.actualCumulativeFeeUsdPerGmToken
+    const income = change.cumulativeFeeUsdPerGmToken
       .sub(prevChange.cumulativeFeeUsdPerGmToken)
       .mul(prevChange.tokensBalance)
       .div(expandDecimals(1, 18));
