@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 import { BigNumber } from "ethers";
-import { expandDecimals, formatUsd } from "lib/numbers";
+import { expandDecimals } from "lib/numbers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import useWallet from "lib/wallets/useWallet";
 import { useMemo } from "react";
@@ -14,7 +14,6 @@ import { useMarketsInfo } from "./useMarketsInfo";
 type RawBalanceChange = {
   cumulativeIncome: string;
   cumulativeFeeUsdPerGmToken: string;
-  actualCumulativeFeeUsdPerGmToken: string;
   tokensBalance: string;
 };
 
@@ -22,7 +21,6 @@ type BalanceChange = {
   tokensBalance: BigNumber;
   cumulativeIncome: BigNumber;
   cumulativeFeeUsdPerGmToken: BigNumber;
-  actualCumulativeFeeUsdPerGmToken: BigNumber;
 };
 
 type RawCollectedMarketFeesInfo = {
@@ -67,7 +65,6 @@ export const useUserEarnings = (chainId: number) => {
             cumulativeIncome
             tokensBalance
             cumulativeFeeUsdPerGmToken
-            actualCumulativeFeeUsdPerGmToken
         }
         _${marketAddress}_balanceChange_before: userGmTokensBalanceChanges(
             first: 1
@@ -82,7 +79,6 @@ export const useUserEarnings = (chainId: number) => {
             cumulativeIncome
             tokensBalance
             cumulativeFeeUsdPerGmToken
-            actualCumulativeFeeUsdPerGmToken
           }
         _${marketAddress}_fees_start: collectedMarketFeesInfos(
             first: 1
@@ -173,38 +169,12 @@ export const useUserEarnings = (chainId: number) => {
         if (!lastChangeTotal) throw new Error("balanceChangesTotal is undefined");
         if (!lastChangeRecent) throw new Error("balanceChangesRecent is undefined");
 
-        console.log({ balanceChangesTotal, prevRawBalanceChange });
-
         const latestFeeUsdPerGmToken = BigNumber.from(feesRecent.cumulativeFeeUsdPerGmToken);
 
-        const debug = marketAddress.toLocaleLowerCase() === "0x017de90b0fa830c592805c6148c089191716f04c".toLowerCase();
         const endOfPeriodIncomeRecent = calcEndOfPeriodIncome(lastChangeRecent, latestFeeUsdPerGmToken);
-        const endOfPeriodIncomeTotal = calcEndOfPeriodIncome(lastChangeTotal, latestFeeUsdPerGmToken, debug);
+        const endOfPeriodIncomeTotal = calcEndOfPeriodIncome(lastChangeTotal, latestFeeUsdPerGmToken);
         const recentIncome = calcRecentIncome(balanceChangesRecent).add(endOfPeriodIncomeRecent);
         const totalIncome = lastChangeTotal.cumulativeIncome.add(endOfPeriodIncomeTotal);
-
-        if (debug) {
-          console.log({ prevRawBalanceChange, balanceChangesRecent }, "<<<<<<<");
-
-          console.table({
-            recentFee: latestFeeUsdPerGmToken.toString(),
-            cumulativeTotal: lastChangeTotal.cumulativeFeeUsdPerGmToken.toString(),
-            diff: latestFeeUsdPerGmToken.sub(lastChangeRecent.cumulativeFeeUsdPerGmToken).toString(),
-            diffXbalance: formatUsd(
-              latestFeeUsdPerGmToken
-                .sub(lastChangeRecent.cumulativeFeeUsdPerGmToken)
-                .mul(lastChangeRecent.tokensBalance)
-                .div(expandDecimals(1, 18))
-            ),
-
-            "7d": formatUsd(calcRecentIncome(balanceChangesRecent, true)),
-            total: formatUsd(lastChangeTotal.cumulativeIncome),
-            since_last_change_7d: formatUsd(endOfPeriodIncomeRecent),
-            since_last_change_total: formatUsd(endOfPeriodIncomeTotal),
-            "7d+since_last_change_7d": formatUsd(recentIncome),
-            "total+since_last_change_total": formatUsd(totalIncome),
-          });
-        }
 
         result.byMarketAddress[marketAddress] = {
           total: totalIncome,
@@ -235,25 +205,11 @@ export const useUserEarnings = (chainId: number) => {
 
 function calcEndOfPeriodIncome(
   latestBalanceChange: BalanceChange,
-  latestCumulativeFeeUsdPerGmToken: BigNumber,
-  debug = false
+  latestCumulativeFeeUsdPerGmToken: BigNumber
 ): BigNumber {
   if (latestBalanceChange.tokensBalance.eq(0)) return BigNumber.from(0);
 
   const feeUsdPerGmTokenDelta = latestCumulativeFeeUsdPerGmToken.sub(latestBalanceChange.cumulativeFeeUsdPerGmToken);
-
-  if (debug)
-    console.log(
-      latestCumulativeFeeUsdPerGmToken.toString(),
-      "-",
-      latestBalanceChange.cumulativeFeeUsdPerGmToken.toString(),
-      "=",
-      feeUsdPerGmTokenDelta.toString(),
-      "*",
-      latestBalanceChange.tokensBalance.toString(),
-      "=",
-      feeUsdPerGmTokenDelta.mul(latestBalanceChange.tokensBalance).div(expandDecimals(1, 18)).toString()
-    );
 
   return feeUsdPerGmTokenDelta.mul(latestBalanceChange.tokensBalance).div(expandDecimals(1, 18));
 }
@@ -272,14 +228,12 @@ function calcRecentIncome(balanceChanges: BalanceChange[], debug = false): BigNu
 
     cumulativeIncome = cumulativeIncome.add(income);
   }
-  if (debug) console.log("cumulativeIncome", formatUsd(cumulativeIncome));
 
   return cumulativeIncome;
 }
 
 function rawBalanceChangeToBalanceChange(rawBalanceChange: RawBalanceChange): BalanceChange {
   return {
-    actualCumulativeFeeUsdPerGmToken: BigNumber.from(rawBalanceChange.actualCumulativeFeeUsdPerGmToken),
     cumulativeFeeUsdPerGmToken: BigNumber.from(rawBalanceChange.cumulativeFeeUsdPerGmToken),
     cumulativeIncome: BigNumber.from(rawBalanceChange.cumulativeIncome),
     tokensBalance: BigNumber.from(rawBalanceChange.tokensBalance),

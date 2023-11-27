@@ -175,13 +175,11 @@ export function GmList({
                         <div className="App-card-title-info-text">
                           <div className="App-card-info-title">
                             {getMarketIndexName({ indexToken, isSpotOnly: market?.isSpotOnly })}
-                            <br />
-                            {market.marketTokenAddress.toLocaleLowerCase()}
-                            {/* {!market.isSpotOnly && (
+                            {!market.isSpotOnly && (
                               <div className="Asset-dropdown-container">
                                 <AssetDropdown assetSymbol={indexToken.symbol} position="left" />
                               </div>
-                            )} */}
+                            )}
                           </div>
                           <div className="App-card-info-subtitle">[{getMarketPoolName({ longToken, shortToken })}]</div>
                         </div>
