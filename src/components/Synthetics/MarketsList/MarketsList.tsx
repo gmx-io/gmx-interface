@@ -255,7 +255,7 @@ export function MarketsList() {
                   );
                 })
               ) : (
-                <TokenListSkeleton />
+                <TokenListSkeleton showAction={false} />
               )}
             </tbody>
           </table>
