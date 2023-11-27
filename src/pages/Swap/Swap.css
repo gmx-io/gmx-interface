@@ -763,13 +763,13 @@ input.Exchange-swap-input.small {
   align-items: center;
 }
 
-.Exchange-swap-ball:hover {
+/* .Exchange-swap-ball:hover {
   background: linear-gradient(90deg, rgba(58, 78, 252, 1) 0%, rgba(51, 68, 222, 1) 100%);
-}
+} */
 
-.Exchange-swap-ball:hover .Exchange-swap-ball-icon {
+/* .Exchange-swap-ball:hover .Exchange-swap-ball-icon {
   opacity: 1;
-}
+} */
 
 table.Exchange-list-small {
   width: 100%;

@@ -18,3 +18,7 @@
   width: 100%;
   box-sizing: border-box;
 }
+
+#light .text-input {
+  border: 2px solid #E9E9E9;
+}
