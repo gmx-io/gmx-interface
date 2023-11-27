@@ -514,7 +514,13 @@ export default function GlpSwap(props) {
       return [t`GLP sell disabled, pending ${getChainName(chainId)} upgrade`];
     }
 
-    if (!isBuying && feeBasisPoints && minutesToNextEpoch && !isEpochAcknowledgeSelected) {
+    if (
+      !isBuying &&
+      feeBasisPoints &&
+      minutesToNextEpoch &&
+      !isEpochAcknowledgeSelected &&
+      incentiveStats?.migration?.isActive
+    ) {
       return [t`Epoch ending is not acknowledged`];
     }
 
@@ -577,7 +583,13 @@ export default function GlpSwap(props) {
       return true;
     }
 
-    if (!isBuying && feeBasisPoints && minutesToNextEpoch && !isEpochAcknowledgeSelected) {
+    if (
+      !isBuying &&
+      feeBasisPoints &&
+      minutesToNextEpoch &&
+      !isEpochAcknowledgeSelected &&
+      incentiveStats?.migration?.isActive
+    ) {
       return false;
     }
 
@@ -824,6 +836,7 @@ export default function GlpSwap(props) {
   }
 
   function renderEpochEndingCheckbox(minutes) {
+    if (isBuying || !feeBasisPoints || !incentiveStats?.migration?.isActive) return;
     return (
       <div className="PositionSeller-price-impact-warning">
         <Checkbox asRow isChecked={isEpochAcknowledgeSelected} setIsChecked={setIsEpochAcknowledgeSelected}>
@@ -1122,7 +1135,7 @@ export default function GlpSwap(props) {
                 </div>
               </div>
             </div>
-            {!isBuying && feeBasisPoints && minutesToNextEpoch && renderEpochEndingCheckbox(minutesToNextEpoch)}
+            {minutesToNextEpoch && renderEpochEndingCheckbox(minutesToNextEpoch)}
             <div className="GlpSwap-cta Exchange-swap-button-container">
               <Button type="submit" variant="primary-action" className="w-full" disabled={!isPrimaryEnabled()}>
                 {getPrimaryText()}
