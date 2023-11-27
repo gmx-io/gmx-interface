@@ -103,7 +103,7 @@ function getMinutesToNextEpochIfLessThanHour() {
   const nextWedUtc = getNextWednesdayUTC();
   const totalMinutes = differenceInMinutes(nextWedUtc, now);
 
-  if (totalMinutes < 8000) {
+  if (totalMinutes < 60) {
     return totalMinutes;
   }
   return null;

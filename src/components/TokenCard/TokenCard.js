@@ -96,33 +96,35 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
   return (
     <div className="Home-token-card-options">
       <div className="Home-token-card-option">
-        <div className="Home-token-card-option-icon">
-          <img src={gmxIcon} width="40" alt="GMX Icons" /> GMX
-        </div>
-        <div className="Home-token-card-option-info">
-          <div className="Home-token-card-option-title">
-            <Trans>
-              GMX is the utility and governance token. Accrues 30% and 27% of V1 and V2 markets generated fees,
-              respectively.
-            </Trans>
+        <div>
+          <div className="Home-token-card-option-icon">
+            <img src={gmxIcon} width="40" alt="GMX Icons" /> GMX
           </div>
-          <div className="Home-token-card-option-apr">
-            <Trans>Arbitrum APR:</Trans> <APRLabel chainId={ARBITRUM} label="gmxAprTotal" />,{" "}
-            <Trans>Avalanche APR:</Trans> <APRLabel chainId={AVALANCHE} label="gmxAprTotal" key="AVALANCHE" />
-          </div>
-          <div className="Home-token-card-option-action">
-            <div className="buy">
-              <BuyLink to="/buy_gmx" className="default-btn" network={ARBITRUM}>
-                <Trans>Buy on Arbitrum</Trans>
-              </BuyLink>
-              <BuyLink to="/buy_gmx" className="default-btn" network={AVALANCHE}>
-                <Trans>Buy on Avalanche</Trans>
-              </BuyLink>
+          <div className="Home-token-card-option-info">
+            <div className="Home-token-card-option-title">
+              <Trans>
+                GMX is the utility and governance token. Accrues 30% and 27% of V1 and V2 markets generated fees,
+                respectively.
+              </Trans>
             </div>
-            <ExternalLink href="https://docs.gmx.io/docs/category/tokenomics" className="default-btn read-more">
-              <Trans>Read more</Trans>
-            </ExternalLink>
+            <div className="Home-token-card-option-apr">
+              <Trans>Arbitrum APR:</Trans> <APRLabel chainId={ARBITRUM} label="gmxAprTotal" />,{" "}
+              <Trans>Avalanche APR:</Trans> <APRLabel chainId={AVALANCHE} label="gmxAprTotal" key="AVALANCHE" />
+            </div>
           </div>
+        </div>
+        <div className="Home-token-card-option-action">
+          <div className="buy">
+            <BuyLink to="/buy_gmx" className="default-btn" network={ARBITRUM}>
+              <Trans>Buy on Arbitrum</Trans>
+            </BuyLink>
+            <BuyLink to="/buy_gmx" className="default-btn" network={AVALANCHE}>
+              <Trans>Buy on Avalanche</Trans>
+            </BuyLink>
+          </div>
+          <ExternalLink href="https://docs.gmx.io/docs/category/tokenomics" className="default-btn read-more">
+            <Trans>Read more</Trans>
+          </ExternalLink>
         </div>
       </div>
       <div className="Home-token-card-option">
@@ -144,10 +146,10 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
               link="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#dc108b8a0a114c609ead534d1908d2fa"
             />
           )}
-        </div>
-        <div className="Home-token-card-option-apr">
-          <Trans>Max. Arbitrum APR:</Trans> {maxAprText?.[ARBITRUM]},{" "}
-          <Trans>Max. Avalanche APR: {maxAprText?.[AVALANCHE]}</Trans>{" "}
+          <div className="Home-token-card-option-apr">
+            <Trans>Max. Arbitrum APR:</Trans> {maxAprText?.[ARBITRUM]},{" "}
+            <Trans>Max. Avalanche APR: {maxAprText?.[AVALANCHE]}</Trans>{" "}
+          </div>
         </div>
 
         <div className="Home-token-card-option-action Token-card-buy">
@@ -171,44 +173,46 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
         </div>
       </div>
       <div className="Home-token-card-option">
-        <div className="Home-token-card-option-icon">
-          <img src={glpIcon} width="40" alt="GLP Icon" /> GLP
-        </div>
-        <div className="Home-token-card-option-info">
-          <div className="Home-token-card-option-title">
-            <Trans>
-              GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of the V1 markets generated fees.
-            </Trans>
-            {incentiveState?.migration?.isActive && (
-              <BannerButton
-                className="mt-md"
-                label="Migrating from GLP to GM is incentivized in Arbitrum."
-                link="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#a2d1ea61dd1147b195b7e3bd769348d3"
-              />
-            )}
+        <div>
+          <div className="Home-token-card-option-icon">
+            <img src={glpIcon} width="40" alt="GLP Icon" /> GLP
           </div>
-          <div className="Home-token-card-option-apr">
-            <Trans>Arbitrum APR:</Trans> <APRLabel chainId={ARBITRUM} label="glpAprTotal" key="ARBITRUM" />,{" "}
-            <Trans>Avalanche APR:</Trans> <APRLabel chainId={AVALANCHE} label="glpAprTotal" key="AVALANCHE" />
-          </div>
-          <div className="Home-token-card-option-action">
-            <div className="buy">
-              <BuyLink to="/buy_glp" className="default-btn" network={ARBITRUM}>
-                <Trans>Buy on Arbitrum</Trans>
-              </BuyLink>
-              <BuyLink to="/buy_glp" className="default-btn" network={AVALANCHE}>
-                <Trans>Buy on Avalanche</Trans>
-              </BuyLink>
+          <div className="Home-token-card-option-info">
+            <div className="Home-token-card-option-title">
+              <Trans>
+                GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of the V1 markets generated fees.
+              </Trans>
+              {incentiveState?.migration?.isActive && (
+                <BannerButton
+                  className="mt-md"
+                  label="Migrating from GLP to GM is incentivized in Arbitrum."
+                  link="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#a2d1ea61dd1147b195b7e3bd769348d3"
+                />
+              )}
             </div>
-            <a
-              href="https://docs.gmx.io/docs/providing-liquidity/v1"
-              target="_blank"
-              rel="noreferrer"
-              className="default-btn read-more"
-            >
-              <Trans>Read more</Trans>
-            </a>
+            <div className="Home-token-card-option-apr">
+              <Trans>Arbitrum APR:</Trans> <APRLabel chainId={ARBITRUM} label="glpAprTotal" key="ARBITRUM" />,{" "}
+              <Trans>Avalanche APR:</Trans> <APRLabel chainId={AVALANCHE} label="glpAprTotal" key="AVALANCHE" />
+            </div>
           </div>
+        </div>
+        <div className="Home-token-card-option-action">
+          <div className="buy">
+            <BuyLink to="/buy_glp" className="default-btn" network={ARBITRUM}>
+              <Trans>Buy on Arbitrum</Trans>
+            </BuyLink>
+            <BuyLink to="/buy_glp" className="default-btn" network={AVALANCHE}>
+              <Trans>Buy on Avalanche</Trans>
+            </BuyLink>
+          </div>
+          <a
+            href="https://docs.gmx.io/docs/providing-liquidity/v1"
+            target="_blank"
+            rel="noreferrer"
+            className="default-btn read-more"
+          >
+            <Trans>Read more</Trans>
+          </a>
         </div>
       </div>
     </div>
