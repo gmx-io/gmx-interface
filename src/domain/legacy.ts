@@ -31,6 +31,7 @@ import { groupBy } from "lodash";
 import { replaceNativeTokenAddress } from "./tokens";
 import { getUsd } from "./tokens/utils";
 import useWallet from "lib/wallets/useWallet";
+import useSWRInfinite from "swr/infinite";
 
 export * from "./prices";
 
@@ -293,23 +294,40 @@ function invariant(condition, errorMsg) {
   }
 }
 
-export function useTrades(chainId, account, forSingleAccount, afterId) {
-  let url =
-    account && account.length > 0
-      ? `${getServerBaseUrl(chainId)}/actions?account=${account}`
-      : !forSingleAccount && `${getServerBaseUrl(chainId)}/actions`;
+export function useTrades(chainId, account) {
+  function getFetchUrl(chainId: number, account: string, afterId: string): string {
+    const baseUrl = `${getServerBaseUrl(chainId)}/actions`;
+    const urlItem = new URL(baseUrl);
 
-  if (afterId && afterId.length > 0) {
-    const urlItem = new URL(url as string);
-    urlItem.searchParams.append("after", afterId);
-    url = urlItem.toString();
+    if (account) {
+      urlItem.searchParams.append("account", account);
+    }
+
+    if (afterId) {
+      urlItem.searchParams.append("after", afterId);
+    }
+
+    return urlItem.toString();
   }
 
-  const { data: trades, mutate: updateTrades } = useSWR(url ? url : null, {
+  function getKey(pageIndex: number, previousPageData) {
+    if (previousPageData && !previousPageData.length) return null;
+    const afterId = previousPageData && previousPageData[previousPageData.length - 1].id;
+    return [getFetchUrl(chainId, account, afterId), pageIndex];
+  }
+
+  const {
+    data,
+    mutate: updateTrades,
+    size,
+    setSize,
+  } = useSWRInfinite(getKey, {
     dedupingInterval: 10000,
     // @ts-ignore
-    fetcher: (url) => fetch(url).then((res) => res.json()),
+    fetcher: ([url, pageIndex]) => fetch(url).then((res) => res.json()),
   });
+
+  const trades = data ? data.flat() : undefined;
 
   if (trades) {
     trades.sort((item0, item1) => {
@@ -351,7 +369,7 @@ export function useTrades(chainId, account, forSingleAccount, afterId) {
     });
   }
 
-  return { trades, updateTrades };
+  return { trades, updateTrades, size, setSize };
 }
 
 export function useExecutionFee(signer, active, chainId, infoTokens) {

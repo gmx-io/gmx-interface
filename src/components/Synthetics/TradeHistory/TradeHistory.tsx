@@ -8,6 +8,7 @@ import { MarketsInfoData } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
 import usePagination from "components/Referrals/usePagination";
 import Pagination from "components/Pagination/Pagination";
+import { TRADE_HISTORY_PER_PAGE } from "config/ui";
 
 const PAGE_SIZE = 100;
 const ENTITIES_PER_PAGE = 25;
@@ -49,14 +50,15 @@ export function TradeHistory(p: Props) {
   const currentPageData = getCurrentData();
 
   useEffect(() => {
-    if (!pageCount || !currentPage || !tradeActions) return;
-    const doesMoreDataExist = tradeActions.length >= PAGE_SIZE * tradeActionsPageIndex;
+    if (!pageCount || !currentPage) return;
+    const totalPossiblePages = (PAGE_SIZE * tradeActionsPageIndex) / TRADE_HISTORY_PER_PAGE;
+    const doesMoreDataExist = pageCount >= totalPossiblePages;
     const isCloseToEnd = pageCount && pageCount < currentPage + 2;
 
     if (doesMoreDataExist && isCloseToEnd) {
       setTradeActionsPageIndex((prevIndex) => prevIndex + 1);
     }
-  }, [currentPage, pageCount, tradeActions, tradeActionsPageIndex, setTradeActionsPageIndex]);
+  }, [currentPage, pageCount, tradeActionsPageIndex, setTradeActionsPageIndex]);
 
   return (
     <div className="TradeHistory">

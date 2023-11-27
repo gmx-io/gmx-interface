@@ -3026,7 +3026,6 @@ msgstr "网络"
 msgid "Networks and Settings"
 msgstr "网络和设定"
 
-#: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/Claims/Claims.tsx
 msgid "Next"
 msgstr "下一步"
@@ -3438,7 +3437,6 @@ msgstr ""
 msgid "Positive Funding Fees for a Position become claimable after the Position is increased, decreased or closed; or settled its fees with the option under \"Accrued\"."
 msgstr ""
 
-#: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/Claims/Claims.tsx
 msgid "Prev"
 msgstr "上一页"

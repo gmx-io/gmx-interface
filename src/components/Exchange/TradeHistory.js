@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useCallback, useMemo, useEffect } from "react";
 import { ethers } from "ethers";
 import { Link } from "react-router-dom";
 import Tooltip from "components/Tooltip/Tooltip";
@@ -22,8 +22,10 @@ import { formatDateTime } from "lib/dates";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import Button from "components/Button/Button";
 import { getPriceDecimals } from "config/tokens";
+import Pagination from "components/Pagination/Pagination";
+import usePagination from "components/Referrals/usePagination";
+import { TRADE_HISTORY_PER_PAGE } from "config/ui";
 
 const { AddressZero } = ethers.constants;
 
@@ -104,15 +106,34 @@ function getLiquidationData(liquidationsDataMap, key, timestamp) {
 }
 
 export default function TradeHistory(props) {
-  const { account, infoTokens, getTokenInfo, chainId, nativeTokenAddress, shouldShowPaginationButtons } = props;
-  const [pageIds, setPageIds] = useState({});
-  const [pageIndex, setPageIndex] = useState(0);
+  const {
+    account,
+    infoTokens,
+    getTokenInfo,
+    chainId,
+    nativeTokenAddress,
+    shouldShowPaginationButtons,
+    forSingleAccount,
+  } = props;
 
-  const getAfterId = () => {
-    return pageIds[pageIndex];
-  };
+  const { trades, setSize, size } = useTrades(chainId, account, forSingleAccount);
 
-  const { trades } = useTrades(chainId, account, props.forSingleAccount, getAfterId());
+  const { currentPage, setCurrentPage, getCurrentData, pageCount } = usePagination(
+    trades,
+    TRADE_HISTORY_PER_PAGE,
+    [account, forSingleAccount].toString()
+  );
+  const currentPageData = getCurrentData();
+
+  useEffect(() => {
+    if (!pageCount || !currentPage) return;
+    const totalPossiblePages = (TRADES_PAGE_SIZE * size) / TRADE_HISTORY_PER_PAGE;
+    const doesMoreDataExist = pageCount >= totalPossiblePages;
+    const isCloseToEnd = pageCount && pageCount < currentPage + 2;
+    if (doesMoreDataExist && isCloseToEnd) {
+      setSize((prevIndex) => prevIndex + 1);
+    }
+  }, [currentPage, pageCount, size, setSize]);
 
   const liquidationsData = useLiquidationsData(chainId, account);
   const liquidationsDataMap = useMemo(() => {
@@ -125,21 +146,6 @@ export default function TradeHistory(props) {
       return memo;
     }, {});
   }, [liquidationsData]);
-
-  const loadNextPage = () => {
-    if (!trades || trades.length === 0) {
-      return;
-    }
-
-    const lastTrade = trades[trades.length - 1];
-    pageIds[pageIndex + 1] = lastTrade.id;
-    setPageIds(pageIds);
-    setPageIndex(pageIndex + 1);
-  };
-
-  const loadPrevPage = () => {
-    setPageIndex(pageIndex - 1);
-  };
 
   const getMsg = useCallback(
     (trade) => {
@@ -505,17 +511,17 @@ export default function TradeHistory(props) {
   );
 
   const tradesWithMessages = useMemo(() => {
-    if (!trades) {
+    if (!currentPageData) {
       return [];
     }
 
-    return trades
+    return currentPageData
       .map((trade) => ({
         msg: getMsg(trade),
         ...trade,
       }))
       .filter((trade) => trade.msg);
-  }, [trades, getMsg]);
+  }, [currentPageData, getMsg]);
 
   return (
     <div className="TradeHistory">
@@ -555,18 +561,7 @@ export default function TradeHistory(props) {
           );
         })}
       {shouldShowPaginationButtons && (
-        <div className="gap-right">
-          {pageIndex > 0 && (
-            <Button variant="secondary" onClick={loadPrevPage}>
-              <Trans>Prev</Trans>
-            </Button>
-          )}
-          {trades && trades.length >= TRADES_PAGE_SIZE && (
-            <Button variant="secondary" onClick={loadNextPage}>
-              <Trans>Next</Trans>
-            </Button>
-          )}
-        </div>
+        <Pagination page={currentPage} pageCount={pageCount} onPageChange={(page) => setCurrentPage(page)} />
       )}
     </div>
   );

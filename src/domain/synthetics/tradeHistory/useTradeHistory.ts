@@ -33,7 +33,7 @@ export function useTradeHistory(
 
   const client = getSyntheticsGraphClient(chainId);
 
-  const getKey = (index: number) => {
+  const getKey = (index: number, prev) => {
     if (chainId && client && (account || forAllAccounts)) {
       return [chainId, "useTradeHistory", account, forAllAccounts, index, pageSize];
     }
