@@ -55,7 +55,7 @@ const ICONS = {
     gmx: tmxImg,
     glp: tlpImg,
   },
-  [OPTIMISM_MAINNET]: { network: optimismIcn, glp: tlpImg },
+  [OPTIMISM_MAINNET]: { network: optimismIcn, gmx: tmxImg,  glp: tlpImg },
   common: {
     gmx: tmxImg,
     glp: tlpImg,

@@ -18,6 +18,11 @@
 .Tab-option-icon {
   margin-right: 0.465rem;
   opacity: 0.7;
+  filter: invert(1);
+}
+
+#light .Tab-option-icon{
+  filter: invert(0);
 }
 
 .Tab.block .Tab-option {
