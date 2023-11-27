@@ -1751,8 +1751,8 @@ msgstr "Expected 365d Fees"
 #~ msgstr "Expected 365d Fees are projected based on past {daysConsidered} base APR"
 
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APR"
-msgstr "Expected 365d Fees are projected based on past {daysConsidered}d base APR"
+#~ msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APR"
+#~ msgstr "Expected 365d Fees are projected based on past {daysConsidered}d base APR"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Explore, analyze, and copy on-chain traders"
@@ -4707,6 +4707,10 @@ msgstr "There may not be sufficient liquidity to execute your order when the pri
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr "There may not be sufficient liquidity to execute your order when the price conditions are met."
+
+#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
+msgid "These Fee values do not include incentives. Expected 365d Fees are projected based on past {daysConsidered}d base APR"
+msgstr "These Fee values do not include incentives. Expected 365d Fees are projected based on past {daysConsidered}d base APR"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code has been taken by someone else on {0}, you will not receive rebates from traders using this code on {1}."
