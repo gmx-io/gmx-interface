@@ -246,6 +246,10 @@ msgstr ""
 msgid "Accrued Positive Funding Fees for Positions not yet claimable. They will become available to claim by using the \"Settle\" button, or after the Position is increased, decreased or closed."
 msgstr ""
 
+#: src/components/Glp/GlpSwap.js
+msgid "Acknowledge epoch is ending in {minutes} minutes"
+msgstr ""
+
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
@@ -1679,6 +1683,10 @@ msgstr ""
 msgid "Entry Price"
 msgstr "入场价格"
 
+#: src/components/Glp/GlpSwap.js
+msgid "Epoch ending is not acknowledged"
+msgstr ""
+
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -1788,6 +1796,7 @@ msgstr ""
 msgid "Fees"
 msgstr "费用"
 
+#: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees (Rebated)"
 msgstr ""
@@ -1959,7 +1968,6 @@ msgstr ""
 msgid "GLP sell disabled, pending {0} upgrade"
 msgstr "GLP售卖已禁止，等待{0}升级"
 
-#: src/components/TokenCard/TokenCard.js
 #: src/pages/BuyGlp/BuyGlp.js
 msgid "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more</0>."
 msgstr ""
@@ -2569,6 +2577,10 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 msgid "Liquidity data not loaded"
 msgstr "未加载流动资金数据"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Liquidity incentives program is live. <0>Read more</0>."
+msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -4240,8 +4252,8 @@ msgid "Stake"
 msgstr "质押"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Stake <0>GMX</0> and <1>GLP</1> to earn rewards."
-msgstr "质押<0>GMX</0>和<1>GLP</1>以获得奖励"
+msgid "Stake <0>GMX</0> and buy <1>GM</1> or <2>GLP</2> to earn rewards."
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Stake GMX"
@@ -4569,7 +4581,7 @@ msgid "The Bonus APR will be airdropped as ARB tokens. <0>Read more</0>."
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
-msgid "The Bonus Rebate is an estimate and is to be airdropped as ARB tokens when migrating this liquidity to GM pools within the same epoch. <0>Read more</0>."
+msgid "The Bonus Rebate is an estimate and will be airdropped as ARB tokens when migrating this liquidity to GM pools within the same epoch. <0>Read more</0>."
 msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
@@ -4680,14 +4692,17 @@ msgstr "多头比空头多，做空的借贷费用目前为零"
 msgid "There are more shorts than longs, borrow fees for longing is currently zero"
 msgstr "空头多于多头，做多的借贷费用目前为零"
 
-#: src/domain/tokens/approveTokens.tsx
-#: src/lib/contracts/transactionErrors.tsx
-msgid "There is not enough ETH in your account on Arbitrum to send this transaction.<0/><1/><2>Bridge ETH to Arbitrum</2>"
-msgstr "您在Arbitrum的账户中没有足够的ETH来发送这笔交易<0/><1/><2>转接ETH到Arbitrum</2>"
-
 #: src/components/Glp/SwapErrorModal.tsx
 msgid "There is not enough liquidity in a single token for your size. Please check the Save on Fees section and consider splitting your order into several different ones"
 msgstr "没有足够的单一代币流动资金。请检查节省费用，并考虑将您的订单分成几个不同的订单"
+
+#: src/lib/contracts/transactionErrors.tsx
+msgid "There is not enough {0} in your account on {1} to send this transaction.<0/><1/><2>Buy or Transfer {2} to {3}</2>"
+msgstr ""
+
+#: src/domain/tokens/approveTokens.tsx
+msgid "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "There may not be sufficient liquidity to execute swap to Receive Token when the Price conditions are met."
@@ -5489,12 +5504,12 @@ msgid "Yield simulator for GMX"
 msgstr "GMX的产量模拟器"
 
 #: src/pages/Stake/StakeV2.js
-msgid "You are earning {0}% more {nativeTokenSymbol} rewards using {1} Staked Multiplier Points."
-msgstr "你正使用{1}质押积分点赚取{0}%以上的{nativeTokenSymbol}奖励"
+msgid "You are earning rewards with {0} tokens.<0/>Tokens: {amountStr}."
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
-msgid "You are earning {nativeTokenSymbol} rewards with {0} tokens.<0/>Tokens: {amountStr}."
-msgstr "你正在用{0}代币赚取{nativeTokenSymbol}奖励。<0/>代币：{amountStr}"
+msgid "You are earning {0}% more {nativeTokenSymbol} rewards using {1} Staked Multiplier Points."
+msgstr "你正使用{1}质押积分点赚取{0}%以上的{nativeTokenSymbol}奖励"
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."

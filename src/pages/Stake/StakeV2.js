@@ -1,5 +1,5 @@
 import { Trans, t } from "@lingui/macro";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import Checkbox from "components/Checkbox/Checkbox";
 import Footer from "components/Footer/Footer";
@@ -46,7 +46,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { getIcons } from "config/icons";
 import { getServerUrl } from "config/backend";
 import { getIsSyntheticsSupported } from "config/features";
-import { useMarketTokensData, useMarketsInfo } from "domain/synthetics/markets";
+import { getTotalGmInfo, useMarketTokensData, useMarketsInfo } from "domain/synthetics/markets";
 import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
 import { approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -1127,6 +1127,11 @@ export default function StakeV2({ setPendingTxns }) {
   const stakingData = getStakingData(stakingInfo);
   const vestingData = getVestingData(vestingInfo);
 
+  const userTotalGmInfo = useMemo(() => {
+    if (!active) return;
+    return getTotalGmInfo(marketTokensData);
+  }, [marketTokensData, active]);
+
   const processedData = getProcessedData(
     balanceData,
     supplyData,
@@ -1149,13 +1154,17 @@ export default function StakeV2({ setPendingTxns }) {
     }
   }
   let totalRewardTokens;
+
   if (processedData && processedData.bnGmxInFeeGmx && processedData.bonusGmxInFeeGmx) {
     totalRewardTokens = processedData.bnGmxInFeeGmx.add(processedData.bonusGmxInFeeGmx);
   }
 
-  let totalRewardTokensAndGlp;
-  if (totalRewardTokens && processedData && processedData.glpBalance) {
-    totalRewardTokensAndGlp = totalRewardTokens.add(processedData.glpBalance);
+  let totalRewardAndLpTokens = totalRewardTokens ?? bigNumberify(0);
+  if (processedData?.glpBalance) {
+    totalRewardAndLpTokens = totalRewardAndLpTokens.add(processedData.glpBalance);
+  }
+  if (userTotalGmInfo?.balance?.gt(0)) {
+    totalRewardAndLpTokens = totalRewardAndLpTokens.add(userTotalGmInfo.balance);
   }
 
   const bonusGmxInFeeGmx = processedData ? processedData.bonusGmxInFeeGmx : undefined;
@@ -1346,7 +1355,7 @@ export default function StakeV2({ setPendingTxns }) {
   }, []);
 
   let earnMsg;
-  if (totalRewardTokensAndGlp && totalRewardTokensAndGlp.gt(0)) {
+  if (totalRewardAndLpTokens && totalRewardAndLpTokens.gt(0)) {
     let gmxAmountStr;
     if (processedData.gmxInStakedGmx && processedData.gmxInStakedGmx.gt(0)) {
       gmxAmountStr = formatAmount(processedData.gmxInStakedGmx, 18, 2, true) + " GMX";
@@ -1363,11 +1372,15 @@ export default function StakeV2({ setPendingTxns }) {
     if (processedData.glpBalance && processedData.glpBalance.gt(0)) {
       glpStr = formatAmount(processedData.glpBalance, 18, 2, true) + " GLP";
     }
-    const amountStr = [gmxAmountStr, esGmxAmountStr, mpAmountStr, glpStr].filter((s) => s).join(", ");
+    let gmStr;
+    if (userTotalGmInfo.balance && userTotalGmInfo.balance.gt(0)) {
+      gmStr = formatAmount(userTotalGmInfo.balance, 18, 2, true) + " GM";
+    }
+    const amountStr = [gmxAmountStr, esGmxAmountStr, mpAmountStr, gmStr, glpStr].filter((s) => s).join(", ");
     earnMsg = (
       <div>
         <Trans>
-          You are earning {nativeTokenSymbol} rewards with {formatAmount(totalRewardTokensAndGlp, 18, 2, true)} tokens.
+          You are earning rewards with {formatAmount(totalRewardAndLpTokens, 18, 2, true)} tokens.
           <br />
           Tokens: {amountStr}.
         </Trans>
@@ -1477,10 +1490,23 @@ export default function StakeV2({ setPendingTxns }) {
         subtitle={
           <div>
             <Trans>
-              Stake <ExternalLink href="https://docs.gmx.io/docs/tokenomics/gmx-token">GMX</ExternalLink> and{" "}
+              Stake <ExternalLink href="https://docs.gmx.io/docs/tokenomics/gmx-token">GMX</ExternalLink> and buy{" "}
+              <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v2">GM</ExternalLink> or{" "}
               <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v1">GLP</ExternalLink> to earn rewards.
             </Trans>
             {earnMsg && <div className="Page-description">{earnMsg}</div>}
+            <div>
+              <Trans>
+                Liquidity incentives program is live.{" "}
+                <ExternalLink
+                  newTab
+                  href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3"
+                >
+                  Read more
+                </ExternalLink>
+                .
+              </Trans>
+            </div>
           </div>
         }
       />

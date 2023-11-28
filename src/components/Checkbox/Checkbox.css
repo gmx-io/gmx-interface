@@ -38,6 +38,7 @@
   display: inline-block;
   vertical-align: middle;
   font-size: var(--font-sm);
+  text-align: left;
 }
 
 .Checkbox.fullRow {
