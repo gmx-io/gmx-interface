@@ -14,8 +14,12 @@ msgstr ""
 "Plural-Forms: \n"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "({0}% of {feesTypeName})"
-msgstr "({0}% of {feesTypeName})"
+msgid "(up to {0}% of {feesTypeName})"
+msgstr "(up to {0}% of {feesTypeName})"
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+#~ msgid "({0}% of {feesTypeName})"
+#~ msgstr "({0}% of {feesTypeName})"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "01 Sep 2021"
@@ -508,8 +512,8 @@ msgid "Bonus APR"
 msgstr "Bonus APR"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "Bonus Rebate"
-msgstr "Bonus Rebate"
+#~ msgid "Bonus Rebate"
+#~ msgstr "Bonus Rebate"
 
 #: src/components/Migration/Migration.js
 #: src/components/Migration/Migration.js
@@ -2792,6 +2796,10 @@ msgstr "Market Swap"
 msgid "Max"
 msgstr "Max"
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Max Bonus Rebate"
+msgstr "Max Bonus Rebate"
+
 #: src/pages/Stake/StakeV2.js
 msgid "Max Capacity"
 msgstr "Max Capacity"
@@ -4680,8 +4688,8 @@ msgid "The spread is > 1%, please ensure the trade details are acceptable before
 msgstr "The spread is > 1%, please ensure the trade details are acceptable before confirming"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "The trading incentives have reached their cap for this epoch. They will be reset in {timeLeftStr}."
-msgstr "The trading incentives have reached their cap for this epoch. They will be reset in {timeLeftStr}."
+#~ msgid "The trading incentives have reached their cap for this epoch. They will be reset in {timeLeftStr}."
+#~ msgstr "The trading incentives have reached their cap for this epoch. They will be reset in {timeLeftStr}."
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
