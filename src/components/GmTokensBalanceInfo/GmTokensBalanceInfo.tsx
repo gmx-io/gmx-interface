@@ -62,7 +62,7 @@ export const GmTokensBalanceInfo = ({
         </div>
         <br />
         <div className="text-white">
-          <Trans>These Fee values do not include incentives.</Trans>
+          <Trans>Fee values do not include incentives.</Trans>
         </div>
       </>
     );
@@ -126,11 +126,11 @@ export const GmTokensTotalBalanceInfo = ({
                   />
                   <br />
                   <div className="text-white">
-                    <Trans>These Fee values do not include incentives.</Trans>
+                    <Trans>Expected 365d Fees are projected based on past {daysConsidered}d base APR</Trans>
                   </div>
                   <br />
                   <div className="text-white">
-                    <Trans>Expected 365d Fees are projected based on past {daysConsidered}d base APR</Trans>
+                    <Trans>Fee values do not include incentives.</Trans>
                   </div>
                 </>
               )}
