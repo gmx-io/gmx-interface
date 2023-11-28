@@ -1807,8 +1807,8 @@ msgid "Fees (Rebated) and Price Impact"
 msgstr "Fees (Rebated) and Price Impact"
 
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-msgid "Fees USD value is calculated at the time they are accrued."
-msgstr "Fees USD value is calculated at the time they are accrued."
+#~ msgid "Fees USD value is calculated at the time they are accrued."
+#~ msgstr "Fees USD value is calculated at the time they are accrued."
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
@@ -4711,6 +4711,10 @@ msgstr "There may not be sufficient liquidity to execute your order when the pri
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
 msgid "These Fee values do not include incentives. Expected 365d Fees are projected based on past {daysConsidered}d base APR"
 msgstr "These Fee values do not include incentives. Expected 365d Fees are projected based on past {daysConsidered}d base APR"
+
+#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
+msgid "These Fee values do not include incentives. Fees USD value is calculated at the time they are accrued."
+msgstr "These Fee values do not include incentives. Fees USD value is calculated at the time they are accrued."
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code has been taken by someone else on {0}, you will not receive rebates from traders using this code on {1}."

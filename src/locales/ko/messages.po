@@ -1807,8 +1807,8 @@ msgid "Fees (Rebated) and Price Impact"
 msgstr ""
 
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-msgid "Fees USD value is calculated at the time they are accrued."
-msgstr ""
+#~ msgid "Fees USD value is calculated at the time they are accrued."
+#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
@@ -4707,6 +4707,10 @@ msgstr ""
 
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
 msgid "These Fee values do not include incentives. Expected 365d Fees are projected based on past {daysConsidered}d base APR"
+msgstr ""
+
+#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
+msgid "These Fee values do not include incentives. Fees USD value is calculated at the time they are accrued."
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
