@@ -508,6 +508,10 @@ button.btn-link:hover .logout-icon {
   margin: 0 0.5rem;
 }
 
+.my-sm {
+  margin: 1rem 0;
+}
+
 .mx-xxs {
   margin: 0 0.25rem;
 }
@@ -557,7 +561,7 @@ button.btn-link:hover .logout-icon {
 }
 
 a:hover .text-red {
-  color: var(--error-red-hover)
+  color: var(--error-red-hover);
 }
 
 .text-green {

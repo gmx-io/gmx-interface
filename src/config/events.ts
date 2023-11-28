@@ -107,7 +107,7 @@ export const appEventsData: EventData[] = [
       `Arbitrum STIP incentives are live for:`,
       "",
       "• Arbitrum GM Pools.",
-      "• Arbitrum GLP Pools.",
+      "• Arbitrum GLP to GM migration.",
       "• Arbitrum Trading.",
     ],
     buttons: [
