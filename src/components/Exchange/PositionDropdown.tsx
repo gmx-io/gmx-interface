@@ -35,22 +35,26 @@ export default function PositionDropdown({
       </Menu.Button>
       <div className="PositionDropdown-extra-options">
         <Menu.Items as="div" className="menu-items">
-          <Menu.Item>
-            <div className="menu-item" onClick={handleMarketSelect}>
-              <BiSelectMultiple fontSize={16} />
-              <p>
-                <Trans>Select Market</Trans>
-              </p>
-            </div>
-          </Menu.Item>
-          <Menu.Item>
-            <div className="menu-item" onClick={handleEditCollateral}>
-              <AiOutlineEdit fontSize={16} />
-              <p>
-                <Trans>Edit Collateral</Trans>
-              </p>
-            </div>
-          </Menu.Item>
+          {handleMarketSelect && (
+            <Menu.Item>
+              <div className="menu-item" onClick={handleMarketSelect}>
+                <BiSelectMultiple fontSize={16} />
+                <p>
+                  <Trans>Select Market</Trans>
+                </p>
+              </div>
+            </Menu.Item>
+          )}
+          {handleEditCollateral && (
+            <Menu.Item>
+              <div className="menu-item" onClick={handleEditCollateral}>
+                <AiOutlineEdit fontSize={16} />
+                <p>
+                  <Trans>Edit Collateral</Trans>
+                </p>
+              </div>
+            </Menu.Item>
+          )}
           {handleMarketIncreaseSize && (
             <Menu.Item>
               <div className="menu-item" onClick={handleMarketIncreaseSize}>

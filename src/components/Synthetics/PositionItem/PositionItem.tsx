@@ -705,36 +705,37 @@ export function PositionItem(p: Props) {
           </div>
           {!p.hideActions && (
             <>
-              <div className="App-card-divider"></div>
-              <div className="remove-top-margin">
-                <Button
-                  variant="secondary"
-                  className="mr-md mt-md"
-                  disabled={p.position.sizeInUsd.eq(0)}
-                  onClick={p.onClosePositionClick}
-                >
-                  <Trans>Close</Trans>
-                </Button>
-                <Button
-                  variant="secondary"
-                  className="mr-md mt-md"
-                  disabled={p.position.sizeInUsd.eq(0)}
-                  onClick={p.onEditCollateralClick}
-                >
-                  <Trans>Edit Collateral</Trans>
-                </Button>
-                <Button
-                  variant="secondary"
-                  className="mt-md"
-                  disabled={p.position.sizeInUsd.eq(0)}
-                  onClick={() => {
-                    // TODO: remove after adding trigger functionality to Modal
-                    window.scrollTo({ top: isMobile ? 500 : 0 });
-                    p.onSelectPositionClick?.(TradeMode.Trigger);
-                  }}
-                >
-                  <Trans>Trigger</Trans>
-                </Button>
+              <div className="App-card-divider" />
+              <div className="Position-item-action">
+                <div className="Position-item-buttons">
+                  <Button variant="secondary" disabled={p.position.sizeInUsd.eq(0)} onClick={p.onClosePositionClick}>
+                    <Trans>Close</Trans>
+                  </Button>
+                  <Button variant="secondary" disabled={p.position.sizeInUsd.eq(0)} onClick={p.onEditCollateralClick}>
+                    <Trans>Edit Collateral</Trans>
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    disabled={p.position.sizeInUsd.eq(0)}
+                    onClick={() => {
+                      // TODO: remove after adding trigger functionality to Modal
+                      window.scrollTo({ top: isMobile ? 500 : 0 });
+                      p.onSelectPositionClick?.(TradeMode.Trigger);
+                    }}
+                  >
+                    <Trans>TP/SL</Trans>
+                  </Button>
+                </div>
+                <div>
+                  {!p.position.isOpening && !p.hideActions && (
+                    <PositionDropdown
+                      handleMarketSelect={() => p.onSelectPositionClick?.()}
+                      handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market)}
+                      handleShare={p.onShareClick}
+                      handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit)}
+                    />
+                  )}
+                </div>
               </div>
             </>
           )}

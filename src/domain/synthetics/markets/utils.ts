@@ -68,6 +68,10 @@ export function isMarketCollateral(marketInfo: MarketInfo, tokenAddress: string)
   return getTokenPoolType(marketInfo, tokenAddress) !== undefined;
 }
 
+export function isMarketAdaptiveFundingActive(marketInfo: MarketInfo) {
+  return marketInfo.fundingIncreaseFactorPerSecond.gt(0);
+}
+
 export function isMarketIndexToken(marketInfo: MarketInfo, tokenAddress: string) {
   return (
     tokenAddress === marketInfo.indexToken.address ||

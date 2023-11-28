@@ -922,7 +922,7 @@ export function ConfirmationBox(p: Props) {
     return (
       <div className="PositionEditor-allow-higher-slippage">
         <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
-          <span className="muted font-sm">
+          <span className="font-sm text-warning">
             <Trans>Acknowledge high Price Impact</Trans>
           </span>
         </Checkbox>

@@ -11,6 +11,7 @@ import {
   getMaxReservedUsd,
   getOpenInterestUsd,
   getReservedUsd,
+  isMarketAdaptiveFundingActive,
 } from "domain/synthetics/markets";
 import { CHART_PERIODS } from "lib/legacy";
 import { formatAmount, formatPercentage, formatUsd, getBasisPoints } from "lib/numbers";
@@ -68,7 +69,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
 
   const renderFundingFeeTooltipContent = useCallback(() => {
     if (!fundingRateLong || !fundingRateShort) return [];
-    const isMarketWithAdaptiveFundingRate = marketInfo?.fundingIncreaseFactorPerSecond.gt(0);
+    const isAdaptiveFundingForMarketActive = marketInfo && isMarketAdaptiveFundingActive(marketInfo);
 
     const isLongPositive = fundingRateLong?.gt(0);
     const long = (
@@ -102,18 +103,16 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
         <br />
         <br />
         {oppositeFeeElement}
-        {isMarketWithAdaptiveFundingRate && (
-          <>
+        {isAdaptiveFundingForMarketActive && (
+          <span>
             <br />
             <br />
             <Trans>
               This market uses an Adaptive Funding Rate. The Funding Rate will adjust over time depending on the ratio
-              of longs and shorts.
-              <br />
-              <br />
+              of longs and shorts.{" "}
               <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#adaptive-funding">Read more</ExternalLink>.
             </Trans>
-          </>
+          </span>
         )}
       </div>
     );
