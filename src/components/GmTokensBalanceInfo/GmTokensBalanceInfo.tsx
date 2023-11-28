@@ -14,14 +14,12 @@ export const GmTokensBalanceInfo = ({
   earnedRecently,
   daysConsidered,
   oneLine = false,
-  comment,
 }: {
   token: TokenData;
   earnedTotal?: BigNumber;
   earnedRecently?: BigNumber;
   daysConsidered: number;
   oneLine?: boolean;
-  comment?: string;
 }) => {
   const content = (
     <>
@@ -59,14 +57,16 @@ export const GmTokensBalanceInfo = ({
           />
         )}
         <br />
-        <div title={comment}>
-          <Trans>
-            These Fee values do not include incentives. Fees USD value is calculated at the time they are accrued.
-          </Trans>
+        <div className="text-white">
+          <Trans>Fees USD value is calculated at the time they are accrued.</Trans>
+        </div>
+        <br />
+        <div className="text-white">
+          <Trans>These Fee values do not include incentives.</Trans>
         </div>
       </>
     );
-  }, [daysConsidered, earnedRecently, earnedTotal, comment]);
+  }, [daysConsidered, earnedRecently, earnedTotal]);
   if (!earnedTotal && !earnedRecently) {
     return content;
   }
@@ -92,7 +92,7 @@ export const GmTokensTotalBalanceInfo = ({
       renderContent={() => (
         <>
           <StatsTooltipRow
-            label={t`Total in Wallet`}
+            label={t`Wallet total`}
             value={[
               formatTokenAmount(balance, 18, "GM", {
                 useCommas: true,
@@ -105,13 +105,13 @@ export const GmTokensTotalBalanceInfo = ({
           {userEarnings && (
             <>
               <StatsTooltipRow
-                label={t`Total Wallet accrued Fees`}
+                label={t`Wallet total accrued Fees`}
                 className={getColorByValue(userEarnings.allMarkets.total)}
                 value={formatDeltaUsd(userEarnings.allMarkets.total, undefined, { showPlusForZero: true })}
                 showDollar={false}
               />
               <StatsTooltipRow
-                label={t`${daysConsidered}d Wallet accrued Fees `}
+                label={t`Wallet ${daysConsidered}d accrued Fees `}
                 className={getColorByValue(userEarnings.allMarkets.recent)}
                 value={formatDeltaUsd(userEarnings.allMarkets.recent, undefined, { showPlusForZero: true })}
                 showDollar={false}
@@ -119,16 +119,19 @@ export const GmTokensTotalBalanceInfo = ({
               {userEarnings.allMarkets.expected365d.gt(0) && (
                 <>
                   <StatsTooltipRow
-                    label={t`Expected 365d Fees`}
+                    label={t`Wallet 365d expected Fees`}
                     className={getColorByValue(userEarnings.allMarkets.expected365d)}
                     value={formatDeltaUsd(userEarnings.allMarkets.expected365d, undefined, { showPlusForZero: true })}
                     showDollar={false}
                   />
                   <br />
-                  <Trans>
-                    These Fee values do not include incentives. Expected 365d Fees are projected based on past{" "}
-                    {daysConsidered}d base APR
-                  </Trans>
+                  <div className="text-white">
+                    <Trans>These Fee values do not include incentives.</Trans>
+                  </div>
+                  <br />
+                  <div className="text-white">
+                    <Trans>Expected 365d Fees are projected based on past {daysConsidered}d base APR</Trans>
+                  </div>
                 </>
               )}
             </>

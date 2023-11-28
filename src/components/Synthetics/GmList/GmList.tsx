@@ -215,7 +215,6 @@ export function GmList({
                         oneLine={false}
                         earnedRecently={marketEarnings?.recent}
                         earnedTotal={marketEarnings?.total}
-                        comment={marketEarnings?.comment}
                       />
                     </td>
 
@@ -363,7 +362,6 @@ export function GmList({
                           token={token}
                           daysConsidered={daysConsidered}
                           oneLine
-                          comment={marketEarnings?.comment}
                           earnedRecently={marketEarnings?.recent}
                           earnedTotal={marketEarnings?.total}
                         />

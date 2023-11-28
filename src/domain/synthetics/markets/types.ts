@@ -143,7 +143,6 @@ export type UserEarningsData = {
     [marketTokenAddress: string]: {
       total: BigNumber;
       recent: BigNumber;
-      comment?: string;
     };
   };
 
