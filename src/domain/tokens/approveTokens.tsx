@@ -1,10 +1,12 @@
 import { Signer, ethers } from "ethers";
 import Token from "abis/Token.json";
-import { getExplorerUrl } from "config/chains";
+import { getChainName, getExplorerUrl } from "config/chains";
 import { helperToast } from "lib/helperToast";
 import { InfoTokens, TokenInfo } from "./types";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { t, Trans } from "@lingui/macro";
+import { getNativeToken } from "config/tokens";
+import { Link } from "react-router-dom";
 
 type Params = {
   setIsApproving: (val: boolean) => void;
@@ -35,6 +37,8 @@ export function approveTokens({
 }: Params) {
   setIsApproving(true);
   const contract = new ethers.Contract(tokenAddress, Token.abi, signer);
+  const nativeToken = getNativeToken(chainId);
+  const networkName = getChainName(chainId);
   contract
     .approve(spender, ethers.constants.MaxUint256)
     .then(async (res) => {
@@ -71,10 +75,12 @@ export function approveTokens({
         failMsg = (
           <div>
             <Trans>
-              There is not enough ETH in your account on Arbitrum to send this transaction.
+              There is not enough {nativeToken.symbol} in your account on {networkName} to send this transaction.
               <br />
               <br />
-              <ExternalLink href="https://arbitrum.io/bridge-tutorial/">Bridge ETH to Arbitrum</ExternalLink>
+              <Link to="/buy_gmx#bridge">
+                Buy or Transfer {nativeToken.symbol} to {networkName}
+              </Link>
             </Trans>
           </div>
         );
