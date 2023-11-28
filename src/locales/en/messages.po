@@ -13,10 +13,6 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "\"Current {0} Long\" takes into account PnL of open positions."
-#~ msgstr "\"Current {0} Long\" takes into account PnL of open positions."
-
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "({0}% of {feesTypeName})"
 msgstr "({0}% of {feesTypeName})"
@@ -346,6 +342,7 @@ msgstr "Alternatively, you can select a different \"Collateral In\" token."
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Amount"
 msgstr "Amount"
 
@@ -1235,10 +1232,6 @@ msgstr "Current {0} long"
 msgid "Current {0} shorts"
 msgstr "Current {0} shorts"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Current {0} {longShortText}"
-#~ msgstr "Current {0} {longShortText}"
-
 #: src/domain/synthetics/orders/utils.ts
 msgid "Currently, There is a high Swap Price Impact for the Order Swap path."
 msgstr "Currently, There is a high Swap Price Impact for the Order Swap path."
@@ -1269,6 +1262,7 @@ msgstr "Dashboards"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Date"
 msgstr "Date"
 
@@ -1458,6 +1452,10 @@ msgstr "Download"
 #: src/pages/Stake/StakeV2.js
 msgid "Earn"
 msgstr "Earn"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2."
+msgstr "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2."
 
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Ecosystem"
@@ -1738,22 +1736,6 @@ msgstr "Execution Price: {0}"
 msgid "Exit Price"
 msgstr "Exit Price"
 
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-#~ msgid "Expected 365d Fees"
-#~ msgstr "Expected 365d Fees"
-
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-#~ msgid "Expected 365d Fees are based on past ${daysConsidered}d Fees. Fees USD value is calculated at the time they are accrued."
-#~ msgstr "Expected 365d Fees are based on past ${daysConsidered}d Fees. Fees USD value is calculated at the time they are accrued."
-
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-#~ msgid "Expected 365d Fees are projected based on past {daysConsidered} base APR"
-#~ msgstr "Expected 365d Fees are projected based on past {daysConsidered} base APR"
-
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APR"
-msgstr "Expected 365d Fees are projected based on past {daysConsidered}d base APR"
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Explore, analyze, and copy on-chain traders"
 msgstr "Explore, analyze, and copy on-chain traders"
@@ -1783,11 +1765,6 @@ msgstr "Failed to cancel {ordersText}"
 msgid "Failed to update order"
 msgstr "Failed to update order"
 
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-msgid "Fee values do not include incentives."
-msgstr "Fee values do not include incentives."
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -1810,10 +1787,6 @@ msgstr "Fees (Rebated)"
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees (Rebated) and Price Impact"
 msgstr "Fees (Rebated) and Price Impact"
-
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-msgid "Fees USD value is calculated at the time they are accrued."
-msgstr "Fees USD value is calculated at the time they are accrued."
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
@@ -2080,10 +2053,6 @@ msgstr "GMX is not actively looking for new hires at the moment. However, if you
 msgid "GMX is the utility and governance token. Accrues 30% and 27% of V1 and V2 markets generated fees, respectively."
 msgstr "GMX is the utility and governance token. Accrues 30% and 27% of V1 and V2 markets generated fees, respectively."
 
-#: src/components/TokenCard/TokenCard.js
-#~ msgid "GMX is the utility and governance token. Accrues 30% of the platform's generated fees."
-#~ msgstr "GMX is the utility and governance token. Accrues 30% of the platform's generated fees."
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX staking calculator"
 msgstr "GMX staking calculator"
@@ -2150,6 +2119,19 @@ msgstr "Image generation error, please refresh and try again."
 #: src/components/Synthetics/TVChart/TVChart.tsx
 msgid "Inc."
 msgstr "Inc."
+
+#: src/pages/Stake/StakeV2.js
+msgid "Incentives"
+msgstr "Incentives"
+
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "Incentives Distribution History"
+msgstr "Incentives Distribution History"
+
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "Incentives are airdropped weekly."
+msgstr "Incentives are airdropped weekly."
 
 #: src/App/App.js
 msgid "Include PnL in leverage display"
@@ -2522,11 +2504,6 @@ msgstr "Link"
 #: src/components/Exchange/PositionShare.tsx
 msgid "Link copied to clipboard."
 msgstr "Link copied to clipboard."
-
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#: src/components/Synthetics/PositionList/PositionList.tsx
-#~ msgid "Liq Price"
-#~ msgstr "Liq Price"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrderEditor.js
@@ -2925,9 +2902,13 @@ msgstr "Max {0} short capacity"
 msgid "Max {0} short exceeded"
 msgstr "Max {0} short exceeded"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Max {0} {longShortText} capacity"
-#~ msgstr "Max {0} {longShortText} capacity"
+#: src/components/TokenCard/TokenCard.js
+msgid "Max. Arbitrum APR:"
+msgstr "Max. Arbitrum APR:"
+
+#: src/components/TokenCard/TokenCard.js
+msgid "Max. Avalanche APR: {0}"
+msgstr "Max. Avalanche APR: {0}"
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "Max. {nativeTokenSymbol} APR with 200% Boost for this week: {0}%."
@@ -3066,6 +3047,10 @@ msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Close Fee"
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee"
 msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee"
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee"
+msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee"
+
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks"
@@ -3092,6 +3077,10 @@ msgstr "No claims yet"
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "No esGMX to claim"
 msgstr "No esGMX to claim"
+
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "No incentives distribution history yet."
+msgstr "No incentives distribution history yet."
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -3323,10 +3312,6 @@ msgstr "POOL"
 msgid "POOLS"
 msgstr "POOLS"
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-#~ msgid "POOLS VALUE"
-#~ msgstr "POOLS VALUE"
-
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "POSITION"
 msgstr "POSITION"
@@ -3454,10 +3439,6 @@ msgstr "Pool Amount"
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "Pools"
 msgstr "Pools"
-
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-#~ msgid "Pools Value"
-#~ msgstr "Pools Value"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
@@ -4381,6 +4362,10 @@ msgstr "Swap Price Impact"
 msgid "Swap Profit Fee"
 msgstr "Swap Profit Fee"
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Swap UI Fee"
+msgstr "Swap UI Fee"
+
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
 msgstr "Swap active: {0}, executed: {1}, cancelled: {2}"
@@ -4561,12 +4546,8 @@ msgid "The Available Liquidity will be the lesser of the difference between the 
 msgstr "The Available Liquidity will be the lesser of the difference between the maximum value and the current value for the Reserve and Open Interest."
 
 #: src/components/AprInfo/AprInfo.tsx
-#~ msgid "The Bonus APR is to be airdropped as ARB tokens. <0>Read more</0>."
-#~ msgstr "The Bonus APR is to be airdropped as ARB tokens. <0>Read more</0>."
-
-#: src/components/AprInfo/AprInfo.tsx
-msgid "The Bonus APR will be airdropped as ARB tokens. <0>Read more</0>."
-msgstr "The Bonus APR will be airdropped as ARB tokens. <0>Read more</0>."
+msgid "The Bonus APR is to be airdropped as ARB tokens. <0>Read more</0>."
+msgstr "The Bonus APR is to be airdropped as ARB tokens. <0>Read more</0>."
 
 #: src/components/Glp/GlpSwap.js
 msgid "The Bonus Rebate is an estimate and is to be airdropped as ARB tokens when migrating this liquidity to GM pools within the same epoch. <0>Read more</0>."
@@ -4717,19 +4698,6 @@ msgstr "There may not be sufficient liquidity to execute your order when the pri
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr "There may not be sufficient liquidity to execute your order when the price conditions are met."
 
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-#~ msgid "These Fee values do not include incentives."
-#~ msgstr "These Fee values do not include incentives."
-
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-#~ msgid "These Fee values do not include incentives. Expected 365d Fees are projected based on past {daysConsidered}d base APR"
-#~ msgstr "These Fee values do not include incentives. Expected 365d Fees are projected based on past {daysConsidered}d base APR"
-
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-#~ msgid "These Fee values do not include incentives. Fees USD value is calculated at the time they are accrued."
-#~ msgstr "These Fee values do not include incentives. Fees USD value is calculated at the time they are accrued."
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code has been taken by someone else on {0}, you will not receive rebates from traders using this code on {1}."
 msgstr "This code has been taken by someone else on {0}, you will not receive rebates from traders using this code on {1}."
@@ -4854,21 +4822,13 @@ msgstr "Total Users"
 msgid "Total Volume"
 msgstr "Total Volume"
 
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-#~ msgid "Total Wallet accrued Fees"
-#~ msgstr "Total Wallet accrued Fees"
-
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-msgid "Total accrued Fees"
-msgstr "Total accrued Fees"
-
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 msgstr "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-#~ msgid "Total in Wallet"
-#~ msgstr "Total in Wallet"
+#: src/components/Synthetics/GmList/GmList.tsx
+msgid "Total in Wallet"
+msgstr "Total in Wallet"
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
@@ -4939,6 +4899,7 @@ msgstr "Transacting with a depegged stable coin is subject to spreads reflecting
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Transaction"
 msgstr "Transaction"
 
@@ -5053,9 +5014,17 @@ msgstr "Txn failed. <0>View</0>"
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/Synthetics/OrderList/OrderList.tsx
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Type"
 msgstr "Type"
+
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "UI Fee"
+msgstr "UI Fee"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -5332,8 +5301,8 @@ msgid "Voting"
 msgstr "Voting"
 
 #: src/components/Glp/GlpSwap.js
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
 msgid "WALLET"
 msgstr "WALLET"
 
@@ -5377,10 +5346,6 @@ msgstr "Waiting for Approval"
 msgid "Wallet"
 msgstr "Wallet"
 
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-msgid "Wallet 365d expected Fees"
-msgstr "Wallet 365d expected Fees"
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Wallet is not connected"
@@ -5394,18 +5359,6 @@ msgstr "Wallet not connected"
 #: src/pages/Stake/StakeV1.js
 msgid "Wallet not yet connected"
 msgstr "Wallet not yet connected"
-
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-msgid "Wallet total"
-msgstr "Wallet total"
-
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-msgid "Wallet total accrued Fees"
-msgstr "Wallet total accrued Fees"
-
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-msgid "Wallet {daysConsidered}d accrued Fees"
-msgstr "Wallet {daysConsidered}d accrued Fees"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Weight"
@@ -5757,10 +5710,6 @@ msgstr "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbols
 msgid "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>."
 msgstr "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>."
 
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
-#~ msgid "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>;"
-#~ msgstr "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>;"
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"
 msgstr "{0} Approved!"
@@ -5914,14 +5863,6 @@ msgstr "{chainName} Total Stats start from {totalStatsStartDate}.<0/> For detail
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr "{count, plural, one {Order} other {# Orders}}"
-
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-#~ msgid "{daysConsidered}d Wallet accrued Fees"
-#~ msgstr "{daysConsidered}d Wallet accrued Fees"
-
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-msgid "{daysConsidered}d accrued Fees"
-msgstr "{daysConsidered}d accrued Fees"
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "{eventTitle} from"

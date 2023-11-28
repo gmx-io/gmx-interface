@@ -9,6 +9,7 @@ import { simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { applySlippageToMinOut } from "../trade";
 import { isMarketOrderType } from "./utils";
+import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { t } from "@lingui/macro";
 
 const { AddressZero } = ethers.constants;
@@ -65,7 +66,7 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, p: Swa
             callbackContract: AddressZero,
             market: AddressZero,
             swapPath: p.swapPath,
-            uiFeeReceiver: ethers.constants.AddressZero,
+            uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.constants.AddressZero,
           },
           numbers: {
             sizeDeltaUsd: BigNumber.from(0),
