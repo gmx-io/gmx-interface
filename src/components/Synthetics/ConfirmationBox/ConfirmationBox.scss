@@ -7,7 +7,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
   margin: 0.5rem 0 1.5rem;
 
   .arrow-icon {
@@ -25,15 +25,21 @@
   }
 }
 
+.Warning-title-container {
+  color: var(--text-gray);
+  display: flex;
+  align-items: flex-start;
+  font-size: 1.4rem;
+  span {
+    margin-left: 0.5rem;
+  }
+  .Warning-icon {
+    margin-top: 0.2rem;
+  }
+}
+
 .Existing-limit-order {
   font-size: 1.4rem;
-
-  .Existing-orders-title {
-    color: var(--text-gray);
-    span {
-      margin-left: 0.5rem;
-    }
-  }
 }
 
 .Confirmation-box {

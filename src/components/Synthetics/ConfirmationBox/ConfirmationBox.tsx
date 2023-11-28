@@ -1,5 +1,6 @@
 import { Plural, Trans, t } from "@lingui/macro";
 import warningIcon from "img/ic_warning.svg";
+import infoIcon from "img/ic_info_circle.svg";
 import cx from "classnames";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
@@ -87,6 +88,7 @@ import { useKey } from "react-use";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./ConfirmationBox.scss";
 import { FaArrowRight } from "react-icons/fa";
+import { IoClose } from "react-icons/io5";
 
 export type Props = {
   isVisible: boolean;
@@ -637,9 +639,20 @@ export function ConfirmationBox(p: Props) {
           })}{" "}
         </p>
         <button type="button" onClick={() => onCancelOrderClick(order.key)}>
-          <Trans>Cancel</Trans>
+          <IoClose fontSize={20} className="Modal-close-icon" />
         </button>
       </li>
+    );
+  }
+
+  function renderWarningContainer(message: string) {
+    return (
+      <div className="Warning-title-container">
+        <img className="Warning-icon" src={infoIcon} alt="Warning-icon" />
+        <span>
+          <Trans>{message}</Trans>
+        </span>
+      </div>
     );
   }
 
@@ -647,40 +660,26 @@ export function ConfirmationBox(p: Props) {
     if (!isPosition || !fromToken || !toToken) {
       return null;
     }
+
     const isCollateralTokenNonStable = !collateralToken?.isStable;
     const collateralTokenSymbol = collateralToken?.[collateralToken?.isWrapped ? "baseSymbol" : "symbol"];
     const indexTokenSymbol = indexToken?.[indexToken?.isWrapped ? "baseSymbol" : "symbol"];
 
     if (isCollateralTokenNonStable && collateralTokenSymbol !== indexTokenSymbol) {
-      return (
-        <div className="Confirmation-box-info">
-          <Trans>
-            You have selected {collateralTokenSymbol} as Collateral, the Liquidation Price will vary based on the price
-            of {collateralTokenSymbol}.
-          </Trans>
-        </div>
+      return renderWarningContainer(
+        `You have selected ${collateralTokenSymbol} as Collateral, the Liquidation Price will vary based on the price of ${collateralTokenSymbol}.`
       );
     }
 
     if (isLong && isCollateralTokenNonStable && collateralTokenSymbol === indexTokenSymbol) {
-      return (
-        <div className="Confirmation-box-info">
-          <Trans>
-            You have selected {collateralTokenSymbol} as collateral, the Liquidation Price is higher compared to using a
-            stablecoin as collateral since the worth of the collateral will change with its price. If required, you can
-            change the collateral type using the Collateral In option in the trade box.
-          </Trans>
-        </div>
+      return renderWarningContainer(
+        `You have selected ${collateralTokenSymbol} as collateral, the Liquidation Price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price. If required, you can change the collateral type using the Collateral In option in the trade box.`
       );
     }
 
     if (isShort && isCollateralTokenNonStable && collateralTokenSymbol === indexTokenSymbol) {
-      return (
-        <div className="Confirmation-box-info">
-          <Trans>
-            You have selected {collateralTokenSymbol} as collateral to short {indexTokenSymbol}.
-          </Trans>
-        </div>
+      return renderWarningContainer(
+        `You have selected ${collateralTokenSymbol} as collateral to short ${indexTokenSymbol}.`
       );
     }
   }
@@ -722,8 +721,8 @@ export function ConfirmationBox(p: Props) {
     }
     return (
       <div className="Existing-limit-order">
-        <div className="Existing-orders-title">
-          <img src={warningIcon} alt="" />
+        <div className="Warning-title-container">
+          <img className="Warning-icon" src={warningIcon} alt="" />
           <span>
             <Plural
               value={existingLimitOrders.length}
@@ -817,7 +816,7 @@ export function ConfirmationBox(p: Props) {
     }
 
     return (
-      <ExchangeInfoRow label={t`Available Liquidity`}>
+      <ExchangeInfoRow isTop label={t`Available Liquidity`}>
         <Tooltip
           position="right-bottom"
           handleClassName={isLiquidityRisk ? "negative" : ""}
@@ -908,6 +907,14 @@ export function ConfirmationBox(p: Props) {
     );
   }
 
+  function renderStopLoss() {
+    return (
+      <div>
+        <ExchangeInfoRow className="SwapBox-info-row" label={t`Stop-Loss`} isTop={true} value={<></>} />
+      </div>
+    );
+  }
+
   function renderIncreaseOrderSection() {
     if (!marketInfo || !fromToken || !collateralToken || !toToken) {
       return null;
@@ -924,17 +931,20 @@ export function ConfirmationBox(p: Props) {
         <div>
           {renderMain()}
           {renderExistingLimitOrdersWarning()}
-          {renderDifferentCollateralWarning()}
+          {/* {renderDifferentCollateralWarning()} */}
           {renderCollateralSpreadWarning()}
           {renderExistingTriggerErrors()}
           {renderExistingTriggerWarning()}
           {renderDifferentTokensWarning()}
+
+          {renderStopLoss()}
 
           {isLimit && renderAvailableLiquidity()}
 
           <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Leverage`}
+            isTop={true}
             value={
               <ValueTransition
                 from={formatLeverage(existingPosition?.leverage)}
