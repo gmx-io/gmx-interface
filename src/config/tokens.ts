@@ -967,8 +967,8 @@ export function convertTokenAddress(chainId: number, address: string, convertTo?
 export function getNormalizedTokenSymbol(tokenSymbol) {
   if (["WBTC", "WETH", "WAVAX"].includes(tokenSymbol)) {
     return tokenSymbol.substr(1);
-  } else if (tokenSymbol === "BTC.b") {
-    return "BTC";
+  } else if (tokenSymbol.includes(".")) {
+    return tokenSymbol.split(".")[0];
   }
   return tokenSymbol;
 }

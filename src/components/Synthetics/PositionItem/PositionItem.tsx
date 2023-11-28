@@ -73,7 +73,9 @@ export function PositionItem(p: Props) {
         handleClassName="plain"
         renderContent={() => (
           <div>
-            {t`Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee`}
+            {p.position.uiFeeUsd.gt(0)
+              ? t`Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee`
+              : t`Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee`}
             <br />
             <br />
             <StatsTooltipRow
@@ -105,6 +107,14 @@ export function PositionItem(p: Props) {
               value={formatUsd(p.position.closingFeeUsd?.mul(-1)) || "..."}
               className="text-red"
             />
+            {p.position.uiFeeUsd.gt(0) && (
+              <StatsTooltipRow
+                label={t`UI Fee`}
+                showDollar={false}
+                value={formatUsd(p.position.uiFeeUsd.mul(-1))}
+                className="text-red"
+              />
+            )}
             <br />
             <StatsTooltipRow
               label={t`PnL After Fees`}
