@@ -15,7 +15,7 @@ import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { useMemo } from "react";
 import { useMedia } from "react-use";
 import PageTitle from "components/PageTitle/PageTitle";
-import TokenListSkeleton from "components/Skeleton/TokenListSkeleton";
+import { MarketListSkeleton } from "components/Skeleton/Skeleton";
 
 function formatFundingRate(fundingRate?: BigNumber) {
   if (!fundingRate) {
@@ -255,7 +255,7 @@ export function MarketsList() {
                   );
                 })
               ) : (
-                <TokenListSkeleton showAction={false} />
+                <MarketListSkeleton />
               )}
             </tbody>
           </table>

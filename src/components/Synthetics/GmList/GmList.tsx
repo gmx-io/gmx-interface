@@ -27,9 +27,9 @@ import { AprInfo } from "components/AprInfo/AprInfo";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import useSortedMarketsWithIndexToken from "domain/synthetics/trade/useSortedMarketsWithIndexToken";
-import TokenListSkeleton from "components/Skeleton/TokenListSkeleton";
 import { getNormalizedTokenSymbol } from "config/tokens";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import { GMListSkeleton } from "components/Skeleton/Skeleton";
 
 type Props = {
   hideTitle?: boolean;
@@ -264,7 +264,7 @@ export function GmList({
                   );
                 })
               ) : (
-                <TokenListSkeleton />
+                <GMListSkeleton />
               )}
             </tbody>
           </table>
