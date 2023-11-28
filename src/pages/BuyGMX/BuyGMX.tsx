@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import Footer from "components/Footer/Footer";
 import "./BuyGMX.css";
 import { Trans, t } from "@lingui/macro";
@@ -24,6 +24,7 @@ import {
 } from "./constants";
 import useWallet from "lib/wallets/useWallet";
 import { getIcons } from "config/icons";
+import { useLocation } from "react-router-dom";
 
 export default function BuyGMX() {
   const { chainId } = useChainId();
@@ -33,6 +34,7 @@ export default function BuyGMX() {
   const chainName = getChainName(chainId);
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const externalLinks = EXTERNAL_LINKS[chainId];
+  const location = useLocation();
 
   const onNetworkSelect = useCallback(
     (value) => {
@@ -43,6 +45,15 @@ export default function BuyGMX() {
     },
     [chainId, active]
   );
+
+  useEffect(() => {
+    if (location.hash === "#bridge") {
+      const element = document.getElementById("bridge");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [location]);
 
   return (
     <div className="BuyGMXGLP default-container page-layout">
@@ -69,7 +80,7 @@ export default function BuyGMX() {
         </div>
 
         {isArbitrum ? (
-          <div className="section-title-block mt-top">
+          <div className="section-title-block mt-top" id="bridge">
             <div className="section-title-content">
               <div className="Page-title">
                 <Trans>Buy or Transfer ETH to Arbitrum</Trans>
@@ -81,7 +92,7 @@ export default function BuyGMX() {
             </div>
           </div>
         ) : (
-          <div className="section-title-block mt-top">
+          <div className="section-title-block mt-top" id="bridge">
             <div className="section-title-content">
               <div className="Page-title">
                 <Trans>Buy or Transfer AVAX to Avalanche</Trans>

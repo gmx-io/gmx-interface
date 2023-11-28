@@ -4675,14 +4675,17 @@ msgstr "Лонгов больше, чем шортов, комиссия за ш
 msgid "There are more shorts than longs, borrow fees for longing is currently zero"
 msgstr "Шортов больше, чем лонгов, комиссия за лонг в настоящее время равна нулю."
 
-#: src/domain/tokens/approveTokens.tsx
-#: src/lib/contracts/transactionErrors.tsx
-msgid "There is not enough ETH in your account on Arbitrum to send this transaction.<0/><1/><2>Bridge ETH to Arbitrum</2>"
-msgstr "На вашем счету на Arbitrum недостаточно ETH для отправки этой транзакции.<0/><1/><2>Перевести ETH на Arbitrum</2>"
-
 #: src/components/Glp/SwapErrorModal.tsx
 msgid "There is not enough liquidity in a single token for your size. Please check the Save on Fees section and consider splitting your order into several different ones"
 msgstr "В одном токене недостаточно ликвидности для вашего размера. Пожалуйста, проверьте раздел Экономия на Комиссиях и рассмотрите возможность разделения вашего ордера на несколько разных ордеров"
+
+#: src/lib/contracts/transactionErrors.tsx
+msgid "There is not enough {0} in your account on {1} to send this transaction.<0/><1/><2>Buy or Transfer {2} to {3}</2>"
+msgstr ""
+
+#: src/domain/tokens/approveTokens.tsx
+msgid "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "There may not be sufficient liquidity to execute swap to Receive Token when the Price conditions are met."
