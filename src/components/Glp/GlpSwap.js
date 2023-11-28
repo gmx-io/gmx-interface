@@ -72,7 +72,7 @@ import PageTitle from "components/PageTitle/PageTitle";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { getFeeItem } from "domain/synthetics/fees";
-import { differenceInMinutes, intervalToDuration, nextWednesday } from "date-fns";
+import { differenceInSeconds, intervalToDuration, nextWednesday } from "date-fns";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import Checkbox from "components/Checkbox/Checkbox";
 
@@ -101,7 +101,8 @@ function getTimeLeftToNextWednesday() {
 function getMinutesToNextEpochIfLessThanHour() {
   const now = new Date();
   const nextWedUtc = getNextWednesdayUTC();
-  const totalMinutes = differenceInMinutes(nextWedUtc, now);
+  const totalSeconds = differenceInSeconds(nextWedUtc, now);
+  const totalMinutes = Math.ceil(totalSeconds / 60);
 
   if (totalMinutes < 60) {
     return totalMinutes;
