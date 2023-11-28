@@ -27,6 +27,8 @@ import { AprInfo } from "components/AprInfo/AprInfo";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import useSortedMarketsWithIndexToken from "domain/synthetics/trade/useSortedMarketsWithIndexToken";
+import { GmTokensBalanceInfo, GmTokensTotalBalanceInfo } from "components/GmTokensBalanceInfo/GmTokensBalanceInfo";
+import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { getNormalizedTokenSymbol } from "config/tokens";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { GMListSkeleton } from "components/Skeleton/Skeleton";
@@ -55,6 +57,7 @@ export function GmList({
   const { chainId } = useChainId();
   const { active } = useWallet();
   const currentIcons = getIcons(chainId);
+  const userEarnings = useUserEarnings(chainId);
   const isMobile = useMedia("(max-width: 1100px)");
   const daysConsidered = useDaysConsideredInMarketsApr();
   const { markets: sortedMarketsByIndexToken } = useSortedMarketsWithIndexToken(marketsInfoData, marketTokensData);
@@ -103,28 +106,11 @@ export function GmList({
                   />
                 </th>
                 <th>
-                  {userTotalGmInfo ? (
-                    <Tooltip
-                      handle={<Trans>WALLET</Trans>}
-                      className="text-none"
-                      position="right-bottom"
-                      renderContent={() => (
-                        <StatsTooltipRow
-                          label={t`Total in Wallet`}
-                          value={[
-                            formatTokenAmount(userTotalGmInfo?.balance, 18, "GM", {
-                              useCommas: true,
-                              fallbackToZero: true,
-                            }),
-                            `(${formatUsd(userTotalGmInfo?.balanceUsd)})`,
-                          ]}
-                          showDollar={false}
-                        />
-                      )}
-                    />
-                  ) : (
-                    <Trans>WALLET</Trans>
-                  )}
+                  <GmTokensTotalBalanceInfo
+                    balance={userTotalGmInfo?.balance}
+                    balanceUsd={userTotalGmInfo?.balanceUsd}
+                    userEarnings={userEarnings}
+                  />
                 </th>
                 <th>
                   <Tooltip
@@ -166,6 +152,7 @@ export function GmList({
 
                   const apr = getByKey(marketsTokensAPRData, token?.address);
                   const incentiveApr = getByKey(marketsTokensIncentiveAprData, token?.address);
+                  const marketEarnings = getByKey(userEarnings?.byMarketAddress, token?.address);
 
                   if (!token || !indexToken || !longToken || !shortToken) {
                     return null;
@@ -224,16 +211,13 @@ export function GmList({
                       </td>
 
                       <td>
-                        {formatTokenAmount(token.balance, token.decimals, "GM", {
-                          useCommas: true,
-                          displayDecimals: 2,
-                          fallbackToZero: true,
-                        })}
-                        <br />(
-                        {formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice), {
-                          fallbackToZero: true,
-                        }) || "..."}
-                        )
+                        <GmTokensBalanceInfo
+                          token={token}
+                          daysConsidered={daysConsidered}
+                          oneLine={false}
+                          earnedRecently={marketEarnings?.recent}
+                          earnedTotal={marketEarnings?.total}
+                        />
                       </td>
 
                       <td>
@@ -279,6 +263,7 @@ export function GmList({
             {sortedMarketsByIndexToken.map((token) => {
               const apr = marketsTokensAPRData?.[token.address];
               const incentiveApr = marketsTokensIncentiveAprData?.[token.address];
+              const marketEarnings = getByKey(userEarnings?.byMarketAddress, token?.address);
 
               const totalSupply = token?.totalSupply;
               const totalSupplyUsd = convertToUsd(totalSupply, token?.decimals, token?.prices?.minPrice);
@@ -375,16 +360,13 @@ export function GmList({
                         />
                       </div>
                       <div>
-                        {formatTokenAmount(token.balance, token.decimals, "GM", {
-                          useCommas: true,
-                          displayDecimals: 2,
-                          fallbackToZero: true,
-                        })}{" "}
-                        (
-                        {formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice), {
-                          fallbackToZero: true,
-                        })}
-                        )
+                        <GmTokensBalanceInfo
+                          token={token}
+                          daysConsidered={daysConsidered}
+                          oneLine
+                          earnedRecently={marketEarnings?.recent}
+                          earnedTotal={marketEarnings?.total}
+                        />
                       </div>
                     </div>
                     <div className="App-card-row">

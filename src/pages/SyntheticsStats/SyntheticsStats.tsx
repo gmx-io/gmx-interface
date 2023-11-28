@@ -50,8 +50,12 @@ function formatFactor(factor: BigNumber) {
     return factor.div(PRECISION).toString();
   }
 
-  const factorDecimals = 30 - factor.abs().toString().replace(/[^0]/g, "").length;
-
+  const trailingZeroes =
+    factor
+      .abs()
+      .toString()
+      .match(/^(.+?)(?<zeroes>0*)$/)?.groups?.zeroes?.length || 0;
+  const factorDecimals = 30 - trailingZeroes;
   return formatAmount(factor, 30, factorDecimals);
 }
 
@@ -106,6 +110,18 @@ export function SyntheticsStats() {
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
 
   const markets = Object.values(marketsInfoData || {});
+  markets.sort((a, b) => {
+    if (a.indexTokenAddress === b.indexTokenAddress) {
+      return 0;
+    }
+    if (a.indexTokenAddress === ethers.constants.AddressZero) {
+      return 1;
+    }
+    if (b.indexTokenAddress === ethers.constants.AddressZero) {
+      return -1;
+    }
+    return 0;
+  });
 
   return (
     <div className="SyntheticsStats">
