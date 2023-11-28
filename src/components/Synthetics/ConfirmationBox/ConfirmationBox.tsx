@@ -89,6 +89,7 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./ConfirmationBox.scss";
 import { FaArrowRight } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
+import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 
 export type Props = {
   isVisible: boolean;
@@ -910,7 +911,16 @@ export function ConfirmationBox(p: Props) {
   function renderStopLoss() {
     return (
       <div>
-        <ExchangeInfoRow className="SwapBox-info-row" label={t`Stop-Loss`} isTop={true} value={<></>} />
+        <ExchangeInfoRow
+          className="SwapBox-info-row"
+          label={t`Stop-Loss`}
+          isTop={true}
+          value={
+            <>
+              <SuggestionInput placeholder="Price" setValue={() => {}} symbol="$" />
+            </>
+          }
+        />
       </div>
     );
   }
