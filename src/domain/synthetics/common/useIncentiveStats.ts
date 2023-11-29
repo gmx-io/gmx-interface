@@ -87,7 +87,6 @@ export const useTradingIncentives = () => {
     if (rebatePercent.eq(0)) return null;
 
     const allocation = BigNumber.from(raw.allocation);
-    const hasAvailableTokens = burnedTokens.lt(allocation);
     const nextPeriodStart = addDays(new Date(startOfPeriod * 1000), 7);
 
     return {
@@ -95,7 +94,6 @@ export const useTradingIncentives = () => {
       period: raw.period,
       nextPeriodStart,
       rebatePercent,
-      hasAvailableTokens,
     };
   }, [burnedTokens, incentiveStats?.trading, startOfPeriod]);
 };
