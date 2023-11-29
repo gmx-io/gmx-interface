@@ -325,12 +325,12 @@ export function TradeFeesRow(p: Props) {
   }, [p.executionFee?.feeUsd, p.positionFee, p.totalFees?.deltaUsd, rebateIsApplicable, tradingIncentives]);
 
   const title = useMemo(() => {
-    if (p.feesType !== "swap" && shouldShowRebate && tradingIncentives?.hasAvailableTokens) {
+    if (p.feesType !== "swap" && shouldShowRebate && tradingIncentives) {
       return p.feesType === "edit" ? t`Fees (Rebated)` : t`Fees (Rebated) and Price Impact`;
     } else {
       return p.feesType === "edit" ? t`Fees` : t`Fees and Price Impact`;
     }
-  }, [p.feesType, shouldShowRebate, tradingIncentives?.hasAvailableTokens]);
+  }, [p.feesType, shouldShowRebate, tradingIncentives]);
 
   const incentivesBottomText = useMemo(() => {
     if (!tradingIncentives || !rebateIsApplicable) {
