@@ -73,7 +73,9 @@ export function PositionItem(p: Props) {
         handleClassName="plain"
         renderContent={() => (
           <div>
-            {t`Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee`}
+            {p.position.uiFeeUsd.gt(0)
+              ? t`Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee`
+              : t`Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee`}
             <br />
             <br />
             <StatsTooltipRow
@@ -105,6 +107,14 @@ export function PositionItem(p: Props) {
               value={formatUsd(p.position.closingFeeUsd?.mul(-1)) || "..."}
               className="text-red"
             />
+            {p.position.uiFeeUsd.gt(0) && (
+              <StatsTooltipRow
+                label={t`UI Fee`}
+                showDollar={false}
+                value={formatUsd(p.position.uiFeeUsd.mul(-1))}
+                className="text-red"
+              />
+            )}
             <br />
             <StatsTooltipRow
               label={t`PnL After Fees`}
@@ -695,36 +705,37 @@ export function PositionItem(p: Props) {
           </div>
           {!p.hideActions && (
             <>
-              <div className="App-card-divider"></div>
-              <div className="remove-top-margin">
-                <Button
-                  variant="secondary"
-                  className="mr-md mt-md"
-                  disabled={p.position.sizeInUsd.eq(0)}
-                  onClick={p.onClosePositionClick}
-                >
-                  <Trans>Close</Trans>
-                </Button>
-                <Button
-                  variant="secondary"
-                  className="mr-md mt-md"
-                  disabled={p.position.sizeInUsd.eq(0)}
-                  onClick={p.onEditCollateralClick}
-                >
-                  <Trans>Edit Collateral</Trans>
-                </Button>
-                <Button
-                  variant="secondary"
-                  className="mt-md"
-                  disabled={p.position.sizeInUsd.eq(0)}
-                  onClick={() => {
-                    // TODO: remove after adding trigger functionality to Modal
-                    window.scrollTo({ top: isMobile ? 500 : 0 });
-                    p.onSelectPositionClick?.(TradeMode.Trigger);
-                  }}
-                >
-                  <Trans>Trigger</Trans>
-                </Button>
+              <div className="App-card-divider" />
+              <div className="Position-item-action">
+                <div className="Position-item-buttons">
+                  <Button variant="secondary" disabled={p.position.sizeInUsd.eq(0)} onClick={p.onClosePositionClick}>
+                    <Trans>Close</Trans>
+                  </Button>
+                  <Button variant="secondary" disabled={p.position.sizeInUsd.eq(0)} onClick={p.onEditCollateralClick}>
+                    <Trans>Edit Collateral</Trans>
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    disabled={p.position.sizeInUsd.eq(0)}
+                    onClick={() => {
+                      // TODO: remove after adding trigger functionality to Modal
+                      window.scrollTo({ top: isMobile ? 500 : 0 });
+                      p.onSelectPositionClick?.(TradeMode.Trigger);
+                    }}
+                  >
+                    <Trans>TP/SL</Trans>
+                  </Button>
+                </div>
+                <div>
+                  {!p.position.isOpening && !p.hideActions && (
+                    <PositionDropdown
+                      handleMarketSelect={() => p.onSelectPositionClick?.()}
+                      handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market)}
+                      handleShare={p.onShareClick}
+                      handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit)}
+                    />
+                  )}
+                </div>
               </div>
             </>
           )}

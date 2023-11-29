@@ -6,6 +6,19 @@
   margin-left: 0;
 }
 
+.Position-item-action {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+
+  .Position-item-buttons {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-gap: 1rem;
+  }
+}
+
 .PositionItem-collateral-tooltip {
   .Tooltip-popup {
     min-width: 32rem;

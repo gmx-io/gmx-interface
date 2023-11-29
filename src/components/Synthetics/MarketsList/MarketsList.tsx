@@ -6,9 +6,9 @@ import { getFundingFactorPerPeriod } from "domain/synthetics/fees";
 import {
   MarketInfo,
   getMarketPoolName,
-  getMaxReservedUsd,
-  getReservedUsd,
+  getAvailableLiquidity,
   useMarketsInfo,
+  isMarketAdaptiveFundingActive,
 } from "domain/synthetics/markets";
 import { TokenData, getMidPrice } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
@@ -21,6 +21,8 @@ import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { useMemo } from "react";
 import { useMedia } from "react-use";
 import PageTitle from "components/PageTitle/PageTitle";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { MarketListSkeleton } from "components/Skeleton/Skeleton";
 
 function formatFundingRate(fundingRate?: BigNumber) {
   if (!fundingRate) {
@@ -52,8 +54,8 @@ export function MarketsList() {
         avgFundingRateLong: BigNumber;
         avgFundingRateShort: BigNumber;
         totalUtilization: BigNumber;
-        totalReservedUsd: BigNumber;
-        totalMaxReservedUsd: BigNumber;
+        totalAvailableLiquidity: BigNumber;
+        totalMaxLiquidity: BigNumber;
         marketsStats: {
           marketInfo: MarketInfo;
           poolValueUsd: BigNumber;
@@ -81,8 +83,8 @@ export function MarketsList() {
           avgFundingRateLong: BigNumber.from(0),
           avgFundingRateShort: BigNumber.from(0),
           totalUtilization: BigNumber.from(0),
-          totalReservedUsd: BigNumber.from(0),
-          totalMaxReservedUsd: BigNumber.from(0),
+          totalAvailableLiquidity: BigNumber.from(0),
+          totalMaxLiquidity: BigNumber.from(0),
           marketsStats: [],
         };
       }
@@ -94,22 +96,20 @@ export function MarketsList() {
       const fundingRateLong = getFundingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]);
       const fundingRateShort = getFundingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]);
 
-      const longReservedUsd = getReservedUsd(marketInfo, true);
-      const maxLongReservedUsd = getMaxReservedUsd(marketInfo, true);
+      const [longAvailableLiquidity, longMaxLiquidity] = getAvailableLiquidity(marketInfo, true);
 
-      const shortReservedUsd = getReservedUsd(marketInfo, false);
-      const maxShortReservedUsd = getMaxReservedUsd(marketInfo, false);
+      const [shortAvailableLiquidity, shortMaxLiquidity] = getAvailableLiquidity(marketInfo, false);
 
-      const totalReservedUsd = longReservedUsd.add(shortReservedUsd);
-      const maxTotalReservedUsd = maxLongReservedUsd.add(maxShortReservedUsd);
+      const availableLiquidity = longAvailableLiquidity.add(shortAvailableLiquidity);
+      const maxLiquidity = longMaxLiquidity.add(shortMaxLiquidity);
 
-      const utilization = maxTotalReservedUsd.gt(0)
-        ? totalReservedUsd.mul(BASIS_POINTS_DIVISOR).div(maxTotalReservedUsd)
+      const utilization = maxLiquidity.gt(0)
+        ? availableLiquidity.mul(BASIS_POINTS_DIVISOR).div(maxLiquidity)
         : BigNumber.from(0);
 
       indexTokenStats.totalPoolValue = indexTokenStats.totalPoolValue.add(poolValueUsd);
-      indexTokenStats.totalReservedUsd = indexTokenStats.totalReservedUsd.add(totalReservedUsd);
-      indexTokenStats.totalMaxReservedUsd = indexTokenStats.totalMaxReservedUsd.add(maxTotalReservedUsd);
+      indexTokenStats.totalAvailableLiquidity = indexTokenStats.totalAvailableLiquidity.add(availableLiquidity);
+      indexTokenStats.totalMaxLiquidity = indexTokenStats.totalMaxLiquidity.add(maxLiquidity);
       indexTokenStats.marketsStats.push({
         marketInfo: marketInfo,
         utilization,
@@ -120,8 +120,8 @@ export function MarketsList() {
     }
 
     for (const indexTokenStats of Object.values(indexMap)) {
-      indexTokenStats.totalUtilization = indexTokenStats.totalMaxReservedUsd.gt(0)
-        ? indexTokenStats.totalReservedUsd.mul(BASIS_POINTS_DIVISOR).div(indexTokenStats.totalMaxReservedUsd)
+      indexTokenStats.totalUtilization = indexTokenStats.totalMaxLiquidity.gt(0)
+        ? indexTokenStats.totalAvailableLiquidity.mul(BASIS_POINTS_DIVISOR).div(indexTokenStats.totalMaxLiquidity)
         : BigNumber.from(0);
 
       indexTokenStats.avgFundingRateLong = indexTokenStats.marketsStats.reduce((acc, stat) => {
@@ -139,6 +139,10 @@ export function MarketsList() {
   }, [marketsInfoData]);
 
   function renderFundingRateTooltip(stats: typeof indexTokensStats[0]) {
+    const isAdaptiveFundingActive = stats.marketsStats.some(({ marketInfo }) =>
+      isMarketAdaptiveFundingActive(marketInfo)
+    );
+
     return () => (
       <>
         {stats.marketsStats.map(({ marketInfo: market, fundingRateLong, fundingRateShort }) => {
@@ -162,7 +166,6 @@ export function MarketsList() {
             </div>
           );
         })}
-        <br />
         <span>Funding Fees help to balance Longs and Shorts and are exchanged between both sides.</span>
         <br />
         <br />
@@ -170,6 +173,17 @@ export function MarketsList() {
           A negative Funding Fee value indicates that percentage needs to be paid, a positive Funding Fee value
           indicates that percentage will be received as funding rewards.
         </span>
+        {isAdaptiveFundingActive && (
+          <span>
+            <br />
+            <br />
+            <Trans>
+              This market uses an Adaptive Funding Rate. The Funding Rate will adjust over time depending on the ratio
+              of longs and shorts.{" "}
+              <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#adaptive-funding">Read more</ExternalLink>.
+            </Trans>
+          </span>
+        )}
       </>
     );
   }
@@ -203,63 +217,67 @@ export function MarketsList() {
               </tr>
             </thead>
             <tbody>
-              {indexTokensStats.map((stats) => {
-                const largestPool = stats.marketsStats.sort((a, b) => {
-                  return b.poolValueUsd.gt(a.poolValueUsd) ? 1 : -1;
-                })[0];
+              {indexTokensStats.length ? (
+                indexTokensStats.map((stats) => {
+                  const largestPool = stats.marketsStats.sort((a, b) => {
+                    return b.poolValueUsd.gt(a.poolValueUsd) ? 1 : -1;
+                  })[0];
 
-                return (
-                  <tr key={stats.token.symbol}>
-                    <td>
-                      <div className="token-symbol-wrapper">
-                        <div className="App-card-title-info">
-                          <div className="App-card-title-info-icon">
-                            <img
-                              src={importImage("ic_" + stats.token.symbol.toLocaleLowerCase() + "_40.svg")}
-                              alt={stats.token.symbol}
-                              width="40"
-                            />
-                          </div>
-                          <div className="App-card-title-info-text">
-                            <div className="App-card-info-title">{stats.token.name}</div>
-                            <div className="App-card-info-subtitle">{stats.token.symbol}</div>
-                          </div>
-                          <div>
-                            <AssetDropdown assetSymbol={stats.token.symbol} />
+                  return (
+                    <tr key={stats.token.symbol}>
+                      <td>
+                        <div className="token-symbol-wrapper">
+                          <div className="App-card-title-info">
+                            <div className="App-card-title-info-icon">
+                              <img
+                                src={importImage("ic_" + stats.token.symbol.toLocaleLowerCase() + "_40.svg")}
+                                alt={stats.token.symbol}
+                                width="40"
+                              />
+                            </div>
+                            <div className="App-card-title-info-text">
+                              <div className="App-card-info-title">{stats.token.name}</div>
+                              <div className="App-card-info-subtitle">{stats.token.symbol}</div>
+                            </div>
+                            <div>
+                              <AssetDropdown assetSymbol={stats.token.symbol} />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </td>
-                    <td>{formatUsd(stats.token.prices?.minPrice)}</td>
-                    <td>
-                      <Tooltip
-                        handle={formatUsd(stats.totalPoolValue)}
-                        renderContent={() => (
-                          <>
-                            {stats.marketsStats.map(({ marketInfo, poolValueUsd }) => (
-                              <StatsTooltipRow
-                                key={marketInfo.marketTokenAddress}
-                                showDollar={false}
-                                label={`[${getMarketPoolName(marketInfo)}]`}
-                                value={formatUsd(poolValueUsd)}
-                              />
-                            ))}
-                          </>
-                        )}
-                      />
-                    </td>
-                    <td>
-                      <Tooltip
-                        handle={`${formatFundingRate(largestPool.fundingRateLong)} / ${formatFundingRate(
-                          largestPool.fundingRateShort
-                        )}`}
-                        renderContent={renderFundingRateTooltip(stats)}
-                      />
-                    </td>
-                    <td>{formatAmount(stats.totalUtilization, 2, 2)}%</td>
-                  </tr>
-                );
-              })}
+                      </td>
+                      <td>{formatUsd(stats.token.prices?.minPrice)}</td>
+                      <td>
+                        <Tooltip
+                          handle={formatUsd(stats.totalPoolValue)}
+                          renderContent={() => (
+                            <>
+                              {stats.marketsStats.map(({ marketInfo, poolValueUsd }) => (
+                                <StatsTooltipRow
+                                  key={marketInfo.marketTokenAddress}
+                                  showDollar={false}
+                                  label={`[${getMarketPoolName(marketInfo)}]`}
+                                  value={formatUsd(poolValueUsd)}
+                                />
+                              ))}
+                            </>
+                          )}
+                        />
+                      </td>
+                      <td>
+                        <Tooltip
+                          handle={`${formatFundingRate(largestPool.fundingRateLong)} / ${formatFundingRate(
+                            largestPool.fundingRateShort
+                          )}`}
+                          renderContent={renderFundingRateTooltip(stats)}
+                        />
+                      </td>
+                      <td>{formatAmount(stats.totalUtilization, 2, 2)}%</td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <MarketListSkeleton />
+              )}
             </tbody>
           </table>
         </div>

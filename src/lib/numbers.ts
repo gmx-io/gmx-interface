@@ -171,7 +171,11 @@ export function formatUsd(
   return `${exceedingInfo.symbol}${exceedingInfo.symbol ? " " : ""}${sign}$${displayUsd}`;
 }
 
-export function formatDeltaUsd(deltaUsd?: BigNumber, percentage?: BigNumber, opts: { fallbackToZero?: boolean } = {}) {
+export function formatDeltaUsd(
+  deltaUsd?: BigNumber,
+  percentage?: BigNumber,
+  opts: { fallbackToZero?: boolean; showPlusForZero?: boolean } = {}
+) {
   if (!deltaUsd) {
     if (opts.fallbackToZero) {
       return `${formatUsd(BigNumber.from(0))} (${formatAmount(BigNumber.from(0), 2, 2)}%)`;
@@ -183,6 +187,8 @@ export function formatDeltaUsd(deltaUsd?: BigNumber, percentage?: BigNumber, opt
   let sign = "";
   if (!deltaUsd.eq(0)) {
     sign = deltaUsd?.gt(0) ? "+" : "-";
+  } else if (opts.showPlusForZero) {
+    sign = "+";
   }
   const exceedingInfo = getLimitedDisplay(deltaUsd, USD_DECIMALS);
   const percentageStr = percentage ? ` (${sign}${formatPercentage(percentage.abs())})` : "";

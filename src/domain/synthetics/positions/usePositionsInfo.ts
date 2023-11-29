@@ -20,6 +20,7 @@ import {
 } from "./utils";
 import { usePositions } from "./usePositions";
 import useWallet from "lib/wallets/useWallet";
+import useUiFeeFactor from "../fees/utils/useUiFeeFactor";
 
 type PositionsInfoResult = {
   positionsInfoData?: PositionsInfoData;
@@ -42,6 +43,7 @@ export function usePositionsInfo(
   const { signer } = useWallet();
   const { positionsData } = usePositions(chainId, p);
   const { minCollateralUsd } = usePositionsConstants(chainId);
+  const uiFeeFactor = useUiFeeFactor(chainId);
   const userReferralInfo = useUserReferralInfo(signer, chainId, account, skipLocalReferralCode);
 
   return useMemo(() => {
@@ -109,10 +111,12 @@ export function usePositionsInfo(
         marketInfo,
         position.sizeInUsd,
         closingPriceImpactDeltaUsd.gt(0),
-        userReferralInfo
+        userReferralInfo,
+        uiFeeFactor
       );
 
       const closingFeeUsd = positionFeeInfo.positionFeeUsd;
+      const uiFeeUsd = positionFeeInfo.uiFeeUsd || BigNumber.from(0);
 
       const collateralUsd = convertToUsd(position.collateralAmount, collateralToken.decimals, collateralMinPrice)!;
 
@@ -141,9 +145,10 @@ export function usePositionsInfo(
         pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
         pendingFundingFeesUsd: pendingFundingFeesUsd,
         closingFeeUsd,
+        uiFeeUsd,
       });
 
-      const pnlAfterFees = pnl.sub(totalPendingFeesUsd).sub(closingFeeUsd);
+      const pnlAfterFees = pnl.sub(totalPendingFeesUsd).sub(closingFeeUsd).sub(uiFeeUsd);
       const pnlAfterFeesPercentage = !collateralUsd.eq(0)
         ? getBasisPoints(pnlAfterFees, collateralUsd.add(closingFeeUsd))
         : BigNumber.from(0);
@@ -201,6 +206,7 @@ export function usePositionsInfo(
         pnlAfterFeesPercentage,
         netValue,
         closingFeeUsd,
+        uiFeeUsd,
         pendingFundingFeesUsd,
         pendingClaimableFundingFeesUsd,
       };
@@ -212,5 +218,5 @@ export function usePositionsInfo(
       positionsInfoData,
       isLoading: false,
     };
-  }, [marketsInfoData, minCollateralUsd, positionsData, showPnlInLeverage, tokensData, userReferralInfo]);
+  }, [marketsInfoData, minCollateralUsd, positionsData, showPnlInLeverage, tokensData, userReferralInfo, uiFeeFactor]);
 }

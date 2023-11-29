@@ -6,7 +6,6 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { getToken } from "config/tokens";
-import { formatDuration, intervalToDuration } from "date-fns";
 import { useTradingIncentives } from "domain/synthetics/common/useIncentiveStats";
 import { ExecutionFee, FeeItem, SwapFeeItem } from "domain/synthetics/fees";
 import { TradeFeesType } from "domain/synthetics/trade";
@@ -15,6 +14,7 @@ import { useChainId } from "lib/chains";
 import { formatAmount, formatDeltaUsd, formatPercentage, formatTokenAmountWithUsd } from "lib/numbers";
 import { ReactNode, useMemo } from "react";
 import "./TradeFeesRow.scss";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 type Props = {
   totalFees?: FeeItem;
@@ -33,6 +33,8 @@ type Props = {
   isTop?: boolean;
   feesType: TradeFeesType;
   warning?: string;
+  uiFee?: FeeItem;
+  uiSwapFee?: FeeItem;
 };
 
 type FeeRow = {
@@ -124,6 +126,36 @@ export function TradeFeesRow(p: Props) {
         }
       : undefined;
 
+    const uiFeeRow = p.uiFee?.deltaUsd?.abs().gt(0)
+      ? {
+          id: "uiFee",
+          label: (
+            <>
+              <div className="text-white">{t`UI Fee`}:</div>
+              <div>
+                ({formatPercentage(p.uiFee.bps.abs())} of {p.feesType === "swap" ? "swap amount" : "position size"})
+              </div>
+            </>
+          ),
+          value: formatDeltaUsd(p.uiFee.deltaUsd),
+          className: "text-red",
+        }
+      : undefined;
+
+    const uiSwapFeeRow = p.uiSwapFee?.deltaUsd?.abs().gt(0)
+      ? {
+          id: "swapUiFee",
+          label: (
+            <>
+              <div className="text-white">{p.feesType === "swap" ? t`UI Fee` : t`Swap UI Fee`}:</div>
+              <div>({formatPercentage(p.uiSwapFee.bps.abs())} of swap amount)</div>
+            </>
+          ),
+          value: formatDeltaUsd(p.uiSwapFee.deltaUsd),
+          className: "text-red",
+        }
+      : undefined;
+
     const feeDiscountRow = p.feeDiscountUsd?.gt(0)
       ? {
           id: "feeDiscount",
@@ -184,14 +216,14 @@ export function TradeFeesRow(p: Props) {
       : undefined;
 
     const rebateRow =
-      tradingIncentives && tradingIncentives.state === "live" && rebateIsApplicable
+      tradingIncentives && rebateIsApplicable
         ? {
             label: (
               <>
-                <div className="text-white">{t`Bonus Rebate`}:</div>
+                <div className="text-white">{t`Max Bonus Rebate`}:</div>
                 <div>
                   <Trans>
-                    ({formatAmount(tradingIncentives.rebatePercent, 2, 0)}% of {feesTypeName})
+                    (up to {formatAmount(tradingIncentives.rebatePercent, 2, 0)}% of {feesTypeName})
                   </Trans>
                 </div>
               </>
@@ -218,7 +250,7 @@ export function TradeFeesRow(p: Props) {
       : undefined;
 
     if (p.feesType === "swap") {
-      return [swapPriceImpactRow, ...swapFeeRows, executionFeeRow].filter(Boolean) as FeeRow[];
+      return [swapPriceImpactRow, ...swapFeeRows, uiSwapFeeRow, executionFeeRow].filter(Boolean) as FeeRow[];
     }
 
     if (p.feesType === "increase") {
@@ -229,6 +261,8 @@ export function TradeFeesRow(p: Props) {
         positionFeeRow,
         rebateRow,
         feeDiscountRow,
+        uiFeeRow,
+        uiSwapFeeRow,
         borrowFeeRow,
         fundingFeeRow,
         borrowFeeRateRow,
@@ -246,6 +280,8 @@ export function TradeFeesRow(p: Props) {
         positionFeeRow,
         rebateRow,
         feeDiscountRow,
+        uiFeeRow,
+        uiSwapFeeRow,
         swapProfitFeeRow,
         ...swapFeeRows,
         executionFeeRow,
@@ -270,6 +306,8 @@ export function TradeFeesRow(p: Props) {
     p.borrowFeeRateStr,
     p.fundingFeeRateStr,
     p.executionFee,
+    p.uiFee,
+    p.uiSwapFee,
     tradingIncentives,
     rebateIsApplicable,
     chainId,
@@ -278,7 +316,7 @@ export function TradeFeesRow(p: Props) {
   const totalFeeUsd = useMemo(() => {
     const totalBeforeRebate = p.totalFees?.deltaUsd.sub(p.executionFee?.feeUsd || 0);
 
-    if (!rebateIsApplicable || !p.positionFee || !tradingIncentives || tradingIncentives.state !== "live") {
+    if (!rebateIsApplicable || !p.positionFee || !tradingIncentives) {
       return totalBeforeRebate;
     }
     const rebate = p.positionFee.deltaUsd.mul(tradingIncentives.rebatePercent).div(BASIS_POINTS_DIVISOR).mul(-1);
@@ -287,7 +325,7 @@ export function TradeFeesRow(p: Props) {
   }, [p.executionFee?.feeUsd, p.positionFee, p.totalFees?.deltaUsd, rebateIsApplicable, tradingIncentives]);
 
   const title = useMemo(() => {
-    if (tradingIncentives?.state === "live" && shouldShowRebate) {
+    if (p.feesType !== "swap" && shouldShowRebate && tradingIncentives) {
       return p.feesType === "edit" ? t`Fees (Rebated)` : t`Fees (Rebated) and Price Impact`;
     } else {
       return p.feesType === "edit" ? t`Fees` : t`Fees and Price Impact`;
@@ -299,28 +337,15 @@ export function TradeFeesRow(p: Props) {
       return null;
     }
 
-    if (tradingIncentives.state === "limitReached") {
-      const periodStart = tradingIncentives.nextPeriodStart;
-      const timeLeftStr = formatDuration(intervalToDuration({ start: new Date(), end: periodStart }), {
-        format: ["days", "hours", "minutes"],
-      });
-      return (
-        <Trans>
-          The trading incentives have reached their cap for this epoch. They will be reset in {timeLeftStr}.
-        </Trans>
-      );
-    }
-
     return (
       <Trans>
-        The Bonus Rebate will be airdropped as ARB tokens.{" "}
+        The Bonus Rebate will be airdropped as ARB tokens on a pro-rata basis.{" "}
         <ExternalLink
           href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#9a915e16d33942bdb713f3fe28c3435f"
           newTab
         >
           Read more
         </ExternalLink>
-        .
       </Trans>
     );
   }, [rebateIsApplicable, tradingIncentives]);
@@ -346,8 +371,8 @@ export function TradeFeesRow(p: Props) {
           {!totalFeeUsd || totalFeeUsd.eq(0) ? (
             "-"
           ) : (
-            <Tooltip
-              className="TradeFeesRow-tooltip"
+            <TooltipWithPortal
+              portalClassName="TradeFeesRow-tooltip"
               handle={<span className={cx({ positive: totalFeeUsd.gt(0) })}>{formatDeltaUsd(totalFeeUsd)}</span>}
               position="right-top"
               renderContent={() => (

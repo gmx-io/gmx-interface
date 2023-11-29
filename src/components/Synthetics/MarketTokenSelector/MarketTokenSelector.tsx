@@ -20,6 +20,7 @@ import { formatTokenAmount, formatUsd } from "lib/numbers";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { useHistory } from "react-router-dom";
 import { AprInfo } from "components/AprInfo/AprInfo";
+import { getNormalizedTokenSymbol } from "config/tokens";
 
 type Props = {
   marketsInfoData?: MarketsInfoData;
@@ -85,6 +86,13 @@ export default function MarketTokenSelector(props: Props) {
     <Popover className="MarketTokenSelector">
       {({ open, close }) => {
         if (!open && searchKeyword.length > 0) setSearchKeyword("");
+        if (!currentMarketInfo) return <></>;
+
+        const { indexToken, longToken, shortToken } = currentMarketInfo;
+        const iconName = currentMarketInfo?.isSpotOnly
+          ? getNormalizedTokenSymbol(longToken.symbol) + getNormalizedTokenSymbol(shortToken.symbol)
+          : indexToken.symbol;
+
         return (
           <div>
             <Popover.Button as="div">
@@ -94,7 +102,7 @@ export default function MarketTokenSelector(props: Props) {
                     <>
                       <TokenIcon
                         className="chart-token-current-icon"
-                        symbol={currentMarketInfo.isSpotOnly ? "swap" : currentMarketInfo.indexToken.symbol}
+                        symbol={iconName}
                         displaySize={30}
                         importSize={40}
                       />
@@ -150,6 +158,10 @@ export default function MarketTokenSelector(props: Props) {
                           poolName,
                           indexName,
                         }) => {
+                          const { indexToken, longToken, shortToken } = marketInfo;
+                          const iconName = marketInfo.isSpotOnly
+                            ? getNormalizedTokenSymbol(longToken.symbol) + getNormalizedTokenSymbol(shortToken.symbol)
+                            : getNormalizedTokenSymbol(indexToken.symbol);
                           return (
                             <Popover.Button
                               as="tr"
@@ -162,9 +174,9 @@ export default function MarketTokenSelector(props: Props) {
                                     <>
                                       <TokenIcon
                                         className="ChartToken-list-icon"
-                                        symbol={marketInfo.isSpotOnly ? "swap" : marketInfo.indexToken.symbol}
+                                        symbol={iconName}
                                         displaySize={16}
-                                        importSize={24}
+                                        importSize={40}
                                       />
                                       <div className="items-center">
                                         <span>{indexName && indexName}</span>

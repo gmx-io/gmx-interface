@@ -49,12 +49,13 @@ export function getPositionNetValue(p: {
   pendingBorrowingFeesUsd: BigNumber;
   pnl: BigNumber;
   closingFeeUsd: BigNumber;
+  uiFeeUsd: BigNumber;
 }) {
-  const { pnl, closingFeeUsd, collateralUsd } = p;
+  const { pnl, closingFeeUsd, collateralUsd, uiFeeUsd } = p;
 
   const pendingFeesUsd = getPositionPendingFeesUsd(p);
 
-  return collateralUsd.sub(pendingFeesUsd).sub(closingFeeUsd).add(pnl);
+  return collateralUsd.sub(pendingFeesUsd).sub(closingFeeUsd).sub(uiFeeUsd).add(pnl);
 }
 
 export function getPositionPnlUsd(p: {

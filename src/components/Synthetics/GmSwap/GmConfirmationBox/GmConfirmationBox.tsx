@@ -341,6 +341,7 @@ export function GmConfirmationBox({
             <GmFees
               isDeposit={isDeposit}
               totalFees={fees?.totalFees}
+              uiFee={fees?.uiFee}
               swapFee={fees?.swapFee}
               swapPriceImpact={fees?.swapPriceImpact}
               executionFee={executionFee}
