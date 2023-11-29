@@ -1,6 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
+import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { UserEarningsData } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { TokenData, convertToUsd } from "domain/synthetics/tokens";
@@ -21,6 +22,7 @@ export const GmTokensBalanceInfo = ({
   daysConsidered: number;
   oneLine?: boolean;
 }) => {
+  const shouldShowIncentivesNote = useLpIncentivesIsActive();
   const content = (
     <>
       {formatTokenAmount(token.balance, token.decimals, "GM", {
@@ -60,13 +62,17 @@ export const GmTokensBalanceInfo = ({
         <div className="text-white">
           <Trans>Fees USD value is calculated at the time they are accrued.</Trans>
         </div>
-        <br />
-        <div className="text-white">
-          <Trans>Fee values do not include incentives.</Trans>
-        </div>
+        {shouldShowIncentivesNote && (
+          <>
+            <br />
+            <div className="text-white">
+              <Trans>Fee values do not include incentives.</Trans>
+            </div>
+          </>
+        )}
       </>
     );
-  }, [daysConsidered, earnedRecently, earnedTotal]);
+  }, [daysConsidered, earnedRecently, earnedTotal, shouldShowIncentivesNote]);
   if (!earnedTotal && !earnedRecently) {
     return content;
   }
@@ -83,6 +89,7 @@ export const GmTokensTotalBalanceInfo = ({
   balanceUsd?: BigNumber;
   userEarnings: UserEarningsData | null;
 }) => {
+  const shouldShowIncentivesNote = useLpIncentivesIsActive();
   const daysConsidered = useDaysConsideredInMarketsApr();
   return balance && balanceUsd ? (
     <Tooltip
@@ -128,10 +135,14 @@ export const GmTokensTotalBalanceInfo = ({
                   <div className="text-white">
                     <Trans>Expected 365d Fees are projected based on past {daysConsidered}d base APR</Trans>
                   </div>
-                  <br />
-                  <div className="text-white">
-                    <Trans>Fee values do not include incentives.</Trans>
-                  </div>
+                  {shouldShowIncentivesNote && (
+                    <>
+                      <br />
+                      <div className="text-white">
+                        <Trans>Fee values do not include incentives.</Trans>
+                      </div>
+                    </>
+                  )}
                 </>
               )}
             </>
@@ -148,4 +159,8 @@ function getColorByValue(value: BigNumber) {
   if (!value || value.eq(0)) return undefined;
 
   return value.gt(0) ? "text-green" : "text-red";
+}
+
+function useLpIncentivesIsActive() {
+  return useIncentiveStats()?.lp?.isActive ?? false;
 }

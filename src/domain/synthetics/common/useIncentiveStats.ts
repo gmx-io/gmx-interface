@@ -7,7 +7,7 @@ import { useMemo } from "react";
 import useSWR from "swr";
 import { RawIncentivesStats, useOracleKeeperFetcher } from "../tokens";
 
-export default function useIncentiveStats(overrideChainId: number) {
+export default function useIncentiveStats(overrideChainId?: number) {
   const { chainId: defaultChainId } = useChainId();
   const chainId = overrideChainId ?? defaultChainId;
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
