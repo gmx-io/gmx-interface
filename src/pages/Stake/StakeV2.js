@@ -1497,7 +1497,7 @@ export default function StakeV2({ setPendingTxns }) {
             {earnMsg && <div className="Page-description">{earnMsg}</div>}
             <div>
               <Trans>
-                Liquidity incentives program is live.{" "}
+                Liquidity and trading incentives program is live on Arbitrum.{" "}
                 <ExternalLink
                   newTab
                   href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3"
