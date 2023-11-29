@@ -35,7 +35,7 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
   const isHome = isHomeSite();
   const { chainId } = useChainId();
   const { active } = useWallet();
-  const incentiveState = useIncentiveStats();
+  const arbitrumIncentiveState = useIncentiveStats(ARBITRUM);
   const { marketsTokensAPRData: arbApr, marketsTokensIncentiveAprData: arbIncentiveApr } = useMarketTokensAPR(ARBITRUM);
   const { marketsTokensAPRData: avaxApr, marketsTokensIncentiveAprData: avaxIncentiveApr } =
     useMarketTokensAPR(AVALANCHE);
@@ -139,7 +139,7 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
               </Trans>
             </div>
           </div>
-          {incentiveState?.lp?.isActive && (
+          {arbitrumIncentiveState?.lp?.isActive && (
             <BannerButton
               className="mt-md"
               label="Arbitrum GM Pools are incentivized."
@@ -182,7 +182,7 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
               <Trans>
                 GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of the V1 markets generated fees.
               </Trans>
-              {incentiveState?.migration?.isActive && (
+              {arbitrumIncentiveState?.migration?.isActive && (
                 <BannerButton
                   className="mt-md"
                   label="Migrating from GLP to GM is incentivized in Arbitrum."
