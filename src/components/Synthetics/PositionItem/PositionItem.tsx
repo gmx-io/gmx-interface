@@ -234,16 +234,6 @@ export function PositionItem(p: Props) {
             }
           )})`}
         </div>
-
-        {/* {!p.isLarge && (
-          <>
-            {!p.position.isOpening && !p.hideActions && p.onEditCollateralClick && (
-              <span className="edit-icon" onClick={p.onEditCollateralClick}>
-                <AiOutlineEdit fontSize={16} />
-              </span>
-            )}
-          </>
-        )} */}
       </>
     );
   }

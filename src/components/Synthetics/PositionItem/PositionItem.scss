@@ -48,13 +48,6 @@
   justify-content: flex-end;
 }
 
-@media (max-width: 1300px) {
-  .Position-collateral-amount {
-    margin-left: 0.5rem;
-    margin-top: 0;
-  }
-}
-
 @media (max-width: 800px) {
   .PositionItem-collateral-tooltip {
     .Tooltip-popup {
