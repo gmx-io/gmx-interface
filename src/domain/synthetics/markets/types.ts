@@ -47,6 +47,9 @@ export type MarketInfo = Market & {
   openInterestReserveFactorLong: BigNumber;
   openInterestReserveFactorShort: BigNumber;
 
+  maxOpenInterestLong: BigNumber;
+  maxOpenInterestShort: BigNumber;
+
   borrowingFactorLong: BigNumber;
   borrowingFactorShort: BigNumber;
   borrowingExponentFactorLong: BigNumber;
@@ -54,10 +57,18 @@ export type MarketInfo = Market & {
 
   fundingFactor: BigNumber;
   fundingExponentFactor: BigNumber;
+  fundingIncreaseFactorPerSecond: BigNumber;
+  fundingDecreaseFactorPerSecond: BigNumber;
+  thresholdForStableFunding: BigNumber;
+  thresholdForDecreaseFunding: BigNumber;
+  minFundingFactorPerSecond: BigNumber;
+  maxFundingFactorPerSecond: BigNumber;
 
   totalBorrowingFees: BigNumber;
 
   positionImpactPoolAmount: BigNumber;
+  minPositionImpactPoolAmount: BigNumber;
+  positionImpactPoolDistributionRate: BigNumber;
 
   minCollateralFactor: BigNumber;
   minCollateralFactorForOpenInterestLong: BigNumber;
@@ -125,6 +136,21 @@ export type MarketsInfoData = {
 
 export type MarketTokensAPRData = {
   [marketTokenAddress: string]: BigNumber;
+};
+
+export type UserEarningsData = {
+  byMarketAddress: {
+    [marketTokenAddress: string]: {
+      total: BigNumber;
+      recent: BigNumber;
+    };
+  };
+
+  allMarkets: {
+    total: BigNumber;
+    recent: BigNumber;
+    expected365d: BigNumber;
+  };
 };
 
 export type ContractMarketPrices = {

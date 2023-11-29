@@ -32,6 +32,7 @@ import {
   formatAcceptablePrice,
   formatLeverage,
   formatLiquidationPrice,
+  getTriggerNameByOrderType,
   usePositionsConstants,
 } from "domain/synthetics/positions";
 import { TokensData } from "domain/synthetics/tokens";
@@ -71,6 +72,7 @@ import { AiOutlineEdit } from "react-icons/ai";
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionSeller.scss";
+import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 
 export type Props = {
   acceptablePriceImpactBps: BigNumber;
@@ -114,13 +116,14 @@ export function PositionSeller(p: Props) {
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
   const userReferralInfo = useUserReferralInfo(signer, chainId, account);
   const { data: hasOutdatedUi } = useHasOutdatedUi();
+  const uiFeeFactor = useUiFeeFactor(chainId);
 
   const isVisible = Boolean(position);
   const prevIsVisible = usePrevious(isVisible);
 
   const ORDER_OPTION_LABELS = {
     [OrderOption.Market]: t`Market`,
-    [OrderOption.Trigger]: t`Trigger`,
+    [OrderOption.Trigger]: t`TP/SL`,
   };
 
   const [orderOption, setOrderOption] = useState<OrderOption>(OrderOption.Market);
@@ -173,6 +176,7 @@ export function PositionSeller(p: Props) {
       userReferralInfo,
       minCollateralUsd,
       minPositionSizeUsd,
+      uiFeeFactor,
     });
   }, [
     acceptablePriceImpactBps,
@@ -184,6 +188,7 @@ export function PositionSeller(p: Props) {
     position,
     triggerPrice,
     userReferralInfo,
+    uiFeeFactor,
   ]);
 
   const acceptablePrice =
@@ -213,8 +218,9 @@ export function PositionSeller(p: Props) {
       amountIn: decreaseAmounts.receiveTokenAmount,
       isLimit: false,
       findSwapPath,
+      uiFeeFactor,
     });
-  }, [decreaseAmounts, findSwapPath, position, receiveToken, shouldSwap]);
+  }, [decreaseAmounts, findSwapPath, position, receiveToken, shouldSwap, uiFeeFactor]);
 
   const receiveUsd = swapAmounts?.usdOut || decreaseAmounts?.receiveUsd;
   const receiveTokenAmount = swapAmounts?.amountOut || decreaseAmounts?.receiveTokenAmount;
@@ -269,6 +275,7 @@ export function PositionSeller(p: Props) {
         fundingFeeUsd: decreaseAmounts.fundingFeeUsd,
         feeDiscountUsd: decreaseAmounts.feeDiscountUsd,
         swapProfitFeeUsd: decreaseAmounts.swapProfitFeeUsd,
+        uiFeeFactor,
       }),
       executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
     };
@@ -282,6 +289,7 @@ export function PositionSeller(p: Props) {
     swapAmounts?.swapPathStats?.swapSteps,
     swapAmounts?.swapPathStats?.totalSwapPriceImpactDeltaUsd,
     tokensData,
+    uiFeeFactor,
   ]);
 
   const priceImpactWarningState = usePriceImpactWarningState({
@@ -368,31 +376,37 @@ export function PositionSeller(p: Props) {
 
     setIsSubmitting(true);
 
-    createDecreaseOrderTxn(chainId, signer, {
-      account,
-      marketAddress: position.marketAddress,
-      initialCollateralAddress: position.collateralTokenAddress,
-      initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount || BigNumber.from(0),
-      receiveTokenAddress: receiveToken.address,
-      swapPath: swapAmounts?.swapPathStats?.swapPath || [],
-      sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
-      sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
-      isLong: position.isLong,
-      acceptablePrice: decreaseAmounts.acceptablePrice,
-      triggerPrice: isTrigger ? triggerPrice : undefined,
-      minOutputUsd: BigNumber.from(0),
-      decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
-      orderType,
-      referralCode: userReferralInfo?.referralCodeForTxn,
-      executionFee: executionFee.feeTokenAmount,
-      allowedSlippage,
-      indexToken: position.indexToken,
-      tokensData,
-      skipSimulation: p.shouldDisableValidation,
-      setPendingOrder,
-      setPendingTxns,
-      setPendingPosition,
-    })
+    createDecreaseOrderTxn(
+      chainId,
+      signer,
+      {
+        account,
+        marketAddress: position.marketAddress,
+        initialCollateralAddress: position.collateralTokenAddress,
+        initialCollateralDeltaAmount: decreaseAmounts.collateralDeltaAmount || BigNumber.from(0),
+        receiveTokenAddress: receiveToken.address,
+        swapPath: swapAmounts?.swapPathStats?.swapPath || [],
+        sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
+        sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
+        isLong: position.isLong,
+        acceptablePrice: decreaseAmounts.acceptablePrice,
+        triggerPrice: isTrigger ? triggerPrice : undefined,
+        minOutputUsd: BigNumber.from(0),
+        decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
+        orderType,
+        referralCode: userReferralInfo?.referralCodeForTxn,
+        executionFee: executionFee.feeTokenAmount,
+        allowedSlippage,
+        indexToken: position.indexToken,
+        tokensData,
+        skipSimulation: p.shouldDisableValidation,
+      },
+      {
+        setPendingOrder,
+        setPendingTxns,
+        setPendingPosition,
+      }
+    )
       .then(onClose)
       .finally(() => setIsSubmitting(false));
   }
@@ -866,7 +880,10 @@ export function PositionSeller(p: Props) {
                 disabled={Boolean(error) && !p.shouldDisableValidation}
                 onClick={onSubmit}
               >
-                {error || (isTrigger ? t`Create trigger order` : t`Close`)}
+                {error ||
+                  (isTrigger
+                    ? t`Create ${getTriggerNameByOrderType(decreaseAmounts?.triggerOrderType!)} Order`
+                    : t`Close`)}
               </Button>
             </div>
           </>

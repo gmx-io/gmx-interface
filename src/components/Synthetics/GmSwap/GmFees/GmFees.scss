@@ -3,3 +3,11 @@
     min-width: 32rem;
   }
 }
+
+@media (max-width: 700px) {
+  .GmFees-tooltip {
+    .Tooltip-popup {
+      min-width: 28rem;
+    }
+  }
+}

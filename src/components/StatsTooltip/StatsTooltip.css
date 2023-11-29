@@ -10,6 +10,7 @@
 
 .Tooltip-row .Tooltip-row-value {
   text-align: right;
+  word-break: break-all;
 }
 
 .Tooltip-row-values {
@@ -25,20 +26,4 @@
 
 .Tooltip-number {
   color: white;
-}
-
-@media (max-width: 700px) {
-  .Tooltip-row {
-    display: block;
-    margin-bottom: 1rem;
-  }
-  .Tooltip-row .Tooltip-row-value {
-    display: block;
-  }
-  .Tooltip-row-values li {
-    text-align: left;
-  }
-  .Tooltip-row .Tooltip-row-value {
-    text-align: left;
-  }
 }

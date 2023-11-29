@@ -11,6 +11,8 @@ import { useMarketsInfo } from "domain/synthetics/markets";
 import { useOrdersInfo } from "domain/synthetics/orders/useOrdersInfo";
 import { usePositionsInfo } from "domain/synthetics/positions";
 import { useChainId } from "lib/chains";
+import PageTitle from "components/PageTitle/PageTitle";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 export default function SyntheticsActions({
   savedIsPnlInLeverage,
@@ -36,18 +38,33 @@ export default function SyntheticsActions({
     pricesUpdatedAt,
     showPnlInLeverage: savedIsPnlInLeverage,
     account: checkSummedAccount,
+    skipLocalReferralCode: true,
   });
   const { ordersInfoData, isLoading: isOrdersLoading } = useOrdersInfo(chainId, {
     account: checkSummedAccount,
     marketsInfoData,
+    positionsInfoData,
     tokensData,
   });
 
   return (
-    <div className="Actions">
+    <div className="default-container Actions">
       {checkSummedAccount && (
         <div className="Actions-section">
-          <Trans>Account</Trans>: {checkSummedAccount}
+          <PageTitle
+            title="Account"
+            subtitle={
+              <>
+                <Trans>GMX V2 information for account: {checkSummedAccount}</Trans>
+                <div>
+                  <ExternalLink newTab={false} href={`/#/actions/v1/${checkSummedAccount}`}>
+                    Check on GMX V1
+                  </ExternalLink>
+                  .
+                </div>
+              </>
+            }
+          />
         </div>
       )}
 
@@ -65,6 +82,7 @@ export default function SyntheticsActions({
             onSelectPositionClick={() => null}
             onClosePositionClick={() => null}
             onEditCollateralClick={() => null}
+            onSettlePositionFeesClick={() => null}
             showPnlAfterFees={savedShowPnlAfterFees}
             savedShowPnlAfterFees={savedShowPnlAfterFees}
             openSettings={() => null}

@@ -7,7 +7,7 @@ import { MulticallRequestConfig, MulticallResult } from "./types";
 import { sleep } from "lib/sleep";
 import { Signer } from "ethers";
 
-export const MAX_TIMEOUT = 2000;
+export const MAX_TIMEOUT = 20000;
 
 const CHAIN_BY_CHAIN_ID = {
   [AVALANCHE_FUJI]: avalancheFuji,

@@ -3,6 +3,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 export type Token = {
   name: string;
   symbol: string;
+  assetSymbol?: string;
   baseSymbol?: string;
   decimals: number;
   address: string;

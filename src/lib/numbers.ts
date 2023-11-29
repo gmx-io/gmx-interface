@@ -168,10 +168,14 @@ export function formatUsd(
   const exceedingInfo = getLimitedDisplay(usd, USD_DECIMALS, opts);
   const sign = usd.lt(0) ? "-" : "";
   const displayUsd = formatAmount(exceedingInfo.value, USD_DECIMALS, displayDecimals, true);
-  return `${exceedingInfo.symbol}${sign}$${displayUsd}`;
+  return `${exceedingInfo.symbol}${exceedingInfo.symbol ? " " : ""}${sign}$${displayUsd}`;
 }
 
-export function formatDeltaUsd(deltaUsd?: BigNumber, percentage?: BigNumber, opts: { fallbackToZero?: boolean } = {}) {
+export function formatDeltaUsd(
+  deltaUsd?: BigNumber,
+  percentage?: BigNumber,
+  opts: { fallbackToZero?: boolean; showPlusForZero?: boolean } = {}
+) {
   if (!deltaUsd) {
     if (opts.fallbackToZero) {
       return `${formatUsd(BigNumber.from(0))} (${formatAmount(BigNumber.from(0), 2, 2)}%)`;
@@ -183,6 +187,8 @@ export function formatDeltaUsd(deltaUsd?: BigNumber, percentage?: BigNumber, opt
   let sign = "";
   if (!deltaUsd.eq(0)) {
     sign = deltaUsd?.gt(0) ? "+" : "-";
+  } else if (opts.showPlusForZero) {
+    sign = "+";
   }
   const exceedingInfo = getLimitedDisplay(deltaUsd, USD_DECIMALS);
   const percentageStr = percentage ? ` (${sign}${formatPercentage(percentage.abs())})` : "";
@@ -319,8 +325,17 @@ export function applyFactor(value: BigNumber, factor: BigNumber) {
   return value.mul(factor).div(PRECISION);
 }
 
-export function getBasisPoints(numerator: BigNumber, denominator: BigNumber) {
-  return numerator.mul(BASIS_POINTS_DIVISOR).div(denominator);
+export function getBasisPoints(numerator: BigNumber, denominator: BigNumber, shouldRoundUp = false) {
+  const result = numerator.mul(BASIS_POINTS_DIVISOR).div(denominator);
+
+  if (shouldRoundUp) {
+    const remainder = numerator.mul(BASIS_POINTS_DIVISOR).mod(denominator);
+    if (!remainder.isZero()) {
+      return result.isNegative() ? result.sub(1) : result.add(1);
+    }
+  }
+
+  return result;
 }
 
 export function basisPointsToFloat(basisPoints: BigNumber) {

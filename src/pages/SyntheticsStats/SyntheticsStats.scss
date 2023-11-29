@@ -1,14 +1,43 @@
 .SyntheticsStats {
   margin: 20px;
   text-align: left;
-  margin-bottom: 1000px;
+  margin-bottom: 850px;
+}
+
+.SyntheticsStats-table-wrap {
+  overflow-x: auto;
+
+  .sticky-left {
+    position: sticky;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    background: var(--main-bg-color);
+  }
+}
+
+.MarketCard-config-tooltip {
+  .Tooltip-popup {
+    min-width: 34rem;
+  }
+}
+
+.SyntheticsStats .csv-link {
+  margin-top: 20px;
+}
+
+.SyntheticsStats-tooltip {
+  .Tooltip-popup {
+    min-width: 36rem;
+  }
 }
 
 .SyntheticsStats td,
 .SyntheticsStats th {
-  padding: 10px 10px;
+  padding: 7px 10px;
   position: relative;
   vertical-align: top;
+  white-space: nowrap;
 }
 
 .SyntheticsStats {

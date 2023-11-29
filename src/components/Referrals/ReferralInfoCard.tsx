@@ -1,4 +1,4 @@
-import Tooltip from "../Tooltip/Tooltip";
+import Tooltip, { TooltipPosition } from "../Tooltip/Tooltip";
 import cx from "classnames";
 import { ReactNode } from "react";
 
@@ -6,7 +6,7 @@ type Props = {
   label: string;
   value?: string;
   labelTooltipText?: string;
-  tooltipPosition?: string;
+  tooltipPosition?: TooltipPosition;
   tooltipContent?: ReactNode;
   className?: string;
   children?: ReactNode;
@@ -18,7 +18,7 @@ function ReferralInfoCard({
   labelTooltipText,
   children,
   tooltipContent,
-  tooltipPosition = "left-bottom",
+  tooltipPosition = "center-bottom",
   className,
 }: Props) {
   return (

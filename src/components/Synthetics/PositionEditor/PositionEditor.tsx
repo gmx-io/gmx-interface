@@ -279,7 +279,7 @@ export function PositionEditor(p: Props) {
     }
 
     if (needCollateralApproval) {
-      return t`Pending ${collateralToken?.symbol} approval`;
+      return t`Pending ${collateralToken?.assetSymbol ?? collateralToken?.symbol} approval`;
     }
 
     if (isSubmitting) {
@@ -358,31 +358,37 @@ export function PositionEditor(p: Props) {
 
       setIsSubmitting(true);
 
-      createDecreaseOrderTxn(chainId, signer, {
-        account,
-        marketAddress: position.marketAddress,
-        initialCollateralAddress: position.collateralTokenAddress,
-        initialCollateralDeltaAmount: collateralDeltaAmount,
-        receiveTokenAddress: selectedCollateralAddress,
-        swapPath: [],
-        sizeDeltaUsd: BigNumber.from(0),
-        sizeDeltaInTokens: BigNumber.from(0),
-        acceptablePrice: markPrice,
-        triggerPrice: undefined,
-        decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
-        orderType: OrderType.MarketDecrease,
-        isLong: position.isLong,
-        minOutputUsd: receiveUsd,
-        executionFee: executionFee.feeTokenAmount,
-        allowedSlippage,
-        referralCode: userReferralInfo?.referralCodeForTxn,
-        indexToken: position.indexToken,
-        tokensData,
-        skipSimulation: p.shouldDisableValidation,
-        setPendingTxns,
-        setPendingOrder,
-        setPendingPosition,
-      })
+      createDecreaseOrderTxn(
+        chainId,
+        signer,
+        {
+          account,
+          marketAddress: position.marketAddress,
+          initialCollateralAddress: position.collateralTokenAddress,
+          initialCollateralDeltaAmount: collateralDeltaAmount,
+          receiveTokenAddress: selectedCollateralAddress,
+          swapPath: [],
+          sizeDeltaUsd: BigNumber.from(0),
+          sizeDeltaInTokens: BigNumber.from(0),
+          acceptablePrice: markPrice,
+          triggerPrice: undefined,
+          decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
+          orderType: OrderType.MarketDecrease,
+          isLong: position.isLong,
+          minOutputUsd: receiveUsd,
+          executionFee: executionFee.feeTokenAmount,
+          allowedSlippage,
+          referralCode: userReferralInfo?.referralCodeForTxn,
+          indexToken: position.indexToken,
+          tokensData,
+          skipSimulation: p.shouldDisableValidation,
+        },
+        {
+          setPendingTxns,
+          setPendingOrder,
+          setPendingPosition,
+        }
+      )
         .then(onClose)
         .finally(() => {
           setIsSubmitting(false);
@@ -524,7 +530,7 @@ export function PositionEditor(p: Props) {
               />
 
               <ExchangeInfoRow
-                label={t`Liq Price`}
+                label={t`Liq. Price`}
                 value={
                   <ValueTransition
                     from={formatLiquidationPrice(position.liquidationPrice, { displayDecimals: indexPriceDecimals })}
@@ -561,7 +567,13 @@ export function PositionEditor(p: Props) {
                 </div>
               </div>
 
-              <TradeFeesRow {...fees} executionFee={executionFee} feesType={"edit"} warning={executionFee?.warning} />
+              <TradeFeesRow
+                {...fees}
+                executionFee={executionFee}
+                feesType={"edit"}
+                warning={executionFee?.warning}
+                shouldShowRebate={false}
+              />
 
               {!isDeposit && (
                 <ExchangeInfoRow
@@ -583,7 +595,7 @@ export function PositionEditor(p: Props) {
 
                 <ApproveTokenButton
                   tokenAddress={collateralToken.address}
-                  tokenSymbol={collateralToken.symbol}
+                  tokenSymbol={collateralToken.assetSymbol ?? collateralToken.symbol}
                   spenderAddress={routerAddress}
                 />
               </>

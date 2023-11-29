@@ -5,9 +5,19 @@
   .plain {
     display: inline-block;
   }
+
 }
 
 .TradeHistoryRow-time {
   font-size: 1.25rem;
   margin-bottom: 0.155rem;
+}
+
+.TradeHistoryRow-message:hover {
+  .Tooltip-error {
+    .Tooltip-handle {
+      color: #fb5971;
+      text-decoration-color: #fb5971;
+    }
+  }
 }
