@@ -3,7 +3,7 @@ import { Menu } from "@headlessui/react";
 import { t, Trans } from "@lingui/macro";
 import { ETH_MAINNET } from "config/chains";
 import copy from "img/ic_copy_16.svg";
-import externalLink from "img/ic_new_link_16.svg";
+import externalLinkIcon from "img/ic_new_link_16.svg";
 import disconnect from "img/ic_sign_out_16.svg";
 import { helperToast } from "lib/helperToast";
 import { useENS } from "lib/legacy";
@@ -57,7 +57,7 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
           </Menu.Item>
           <Menu.Item>
             <ExternalLink href={accountUrl} className="menu-item">
-              <img src={externalLink} alt="Open address in explorer" />
+              <img src={externalLinkIcon} alt="Open address in explorer" />
               <p>
                 <Trans>View in Explorer</Trans>
               </p>

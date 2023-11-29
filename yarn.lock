@@ -1703,6 +1703,119 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@binance/w3w-core@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@binance/w3w-core@npm:1.0.0"
+  dependencies:
+    "@binance/w3w-qrcode-modal": ^1.0.0
+    "@binance/w3w-socket-transport": ^1.0.0
+    "@binance/w3w-types": ^1.0.0
+    "@binance/w3w-utils": ^1.0.0
+    "@ethersproject/abi": ^5.7.0
+    axios: ^1.3.5
+    js-base64: ^3.7.5
+  checksum: 047dfb689d5d3b1026b89e3c99f0639212a95b30b11d38471f8afce5241b65a4585bcb53a7ac4d3ca825fdc19ad41386f12456b80ef3e81faa4f7355c4c5c771
+  languageName: node
+  linkType: hard
+
+"@binance/w3w-ethereum-provider@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@binance/w3w-ethereum-provider@npm:1.0.0"
+  dependencies:
+    "@binance/w3w-http-client": ^1.0.0
+    "@binance/w3w-sign-client": ^1.0.0
+    "@binance/w3w-types": ^1.0.0
+    "@binance/w3w-utils": ^1.0.0
+    eip1193-provider: ^1.0.1
+    eventemitter3: ^5.0.0
+  checksum: 6430e6622c08de16f132e1705976ca3a5ab187ba54bed10250583566956127292fea67f817b4b524733cd213328ddc3c76023baa5945eb536566e50d59b31c5a
+  languageName: node
+  linkType: hard
+
+"@binance/w3w-http-client@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@binance/w3w-http-client@npm:1.0.0"
+  dependencies:
+    "@binance/w3w-types": ^1.0.0
+    "@binance/w3w-utils": ^1.0.0
+    cross-fetch: ^3.1.5
+    eventemitter3: ^5.0.0
+  checksum: f14940e79eca60b964fbfdbb9b12602d747eb6cd5f044fcec670639f91a0e98e0f842887665f9add02cc1800afda905750fcd0cb56455d909b62a25e30b3afd3
+  languageName: node
+  linkType: hard
+
+"@binance/w3w-qrcode-modal@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@binance/w3w-qrcode-modal@npm:1.0.0"
+  dependencies:
+    "@binance/w3w-types": ^1.0.0
+    "@binance/w3w-utils": ^1.0.0
+    qrcode: ^1.5.1
+    qrcode.react: ^3.1.0
+    tailwindcss: ^3.3.1
+  peerDependencies:
+    react: ">=17"
+    react-dom: ">=17"
+  checksum: d2a299fd0f630f5640f0f4573befa8507f865f46509c095ad08ff38a490528d8ec0a3d43f3eb0162d5df531435d66720861b0601abe2fceda11a9eb2a6ce0913
+  languageName: node
+  linkType: hard
+
+"@binance/w3w-sign-client@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@binance/w3w-sign-client@npm:1.0.0"
+  dependencies:
+    "@binance/w3w-core": ^1.0.0
+    "@binance/w3w-types": ^1.0.0
+    "@binance/w3w-utils": ^1.0.0
+  checksum: 19d8991757889930dcc120e28508915a6e74bc7e0f122fc4f8653d962d1dfb519c50c42d3c91eff014d6a3c99abe5956093dbfea5098cbde090bb6dde5212918
+  languageName: node
+  linkType: hard
+
+"@binance/w3w-socket-transport@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@binance/w3w-socket-transport@npm:1.0.0"
+  dependencies:
+    "@binance/w3w-types": ^1.0.0
+    "@binance/w3w-utils": ^1.0.0
+    ws: ^8.13.0
+  checksum: 0dae15d40c674ffb28c1d5943d362218b27131880e4edfbb74abb22d7aee75cdcec4be19805b81984b9e70dcf8385c82d7a23e062bdb5bd018c9f503b49f74be
+  languageName: node
+  linkType: hard
+
+"@binance/w3w-types@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@binance/w3w-types@npm:1.0.0"
+  dependencies:
+    eventemitter3: ^5.0.0
+  checksum: f5392b2bdf01413e5156690a8d2b39ae4819e689fabee55daeda3991c5e097efe165b54315b603840f2b54c46d3a3e2d05a714db017902cb14c6231ece6a782f
+  languageName: node
+  linkType: hard
+
+"@binance/w3w-utils@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@binance/w3w-utils@npm:1.0.0"
+  dependencies:
+    "@binance/w3w-types": ^1.0.0
+    eventemitter3: ^5.0.0
+    hash.js: ^1.1.7
+    js-base64: ^3.7.5
+  checksum: 657b352e67ed66831238dd5fc4f5ba2304c1e412401d68d6f2e17723258cf6999dce038972a619aa793185044e2c26365d5572b73cb8f929da8da3b3719b9699
+  languageName: node
+  linkType: hard
+
+"@binance/w3w-wagmi-connector@npm:1.0.0":
+  version: 1.0.0
+  resolution: "@binance/w3w-wagmi-connector@npm:1.0.0"
+  dependencies:
+    "@binance/w3w-ethereum-provider": ^1.0.0
+    "@binance/w3w-utils": ^1.0.0
+  peerDependencies:
+    "@wagmi/core": ^1.4.7
+    viem: ^1.19.3
+  checksum: da41982780a2fa312fa409b9b137857384cb92a85a3c9b1ae8c5a542eb6c5995d9502d2aede408a23ddeea135be3273a4f86eee536583911de1aff7e3db8961e
+  languageName: node
+  linkType: hard
+
 "@coinbase/wallet-sdk@npm:^3.6.6":
   version: 3.7.1
   resolution: "@coinbase/wallet-sdk@npm:3.7.1"
@@ -3373,6 +3486,37 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@json-rpc-tools/provider@npm:^1.5.5":
+  version: 1.7.6
+  resolution: "@json-rpc-tools/provider@npm:1.7.6"
+  dependencies:
+    "@json-rpc-tools/utils": ^1.7.6
+    axios: ^0.21.0
+    safe-json-utils: ^1.1.1
+    ws: ^7.4.0
+  checksum: c60d73511db7f743c3844d499df6a7e243d5f5493127c00fbf9aec74c95d2e80a3033eb22369c428c2deec263a47cd1b334cd76c84859e30355a6dace893a589
+  languageName: node
+  linkType: hard
+
+"@json-rpc-tools/types@npm:^1.7.6":
+  version: 1.7.6
+  resolution: "@json-rpc-tools/types@npm:1.7.6"
+  dependencies:
+    keyvaluestorage-interface: ^1.0.0
+  checksum: f23ec7d79a78aa4e896d1dff506108bd3da38015028afd997034e6498c1f3c7bedee70618b0d1a73adf13b4d2a6a91146c2e9505487280b3c376e74f5790e77c
+  languageName: node
+  linkType: hard
+
+"@json-rpc-tools/utils@npm:^1.7.6":
+  version: 1.7.6
+  resolution: "@json-rpc-tools/utils@npm:1.7.6"
+  dependencies:
+    "@json-rpc-tools/types": ^1.7.6
+    "@pedrouid/environment": ^1.0.1
+  checksum: 32cac2e8cbf8a15d95415de8ded483c6206e6df392e129ad51acd90a4842511e931156c59cb26036fb9fae8054e8f20b719a35282304f39cd18683a5293cb67d
+  languageName: node
+  linkType: hard
+
 "@ledgerhq/connect-kit-loader@npm:^1.0.1":
   version: 1.1.2
   resolution: "@ledgerhq/connect-kit-loader@npm:1.1.2"
@@ -3802,6 +3946,13 @@ __metadata:
   version: 3.4.2-solc-0.7
   resolution: "@openzeppelin/contracts@npm:3.4.2-solc-0.7"
   checksum: 1a6048f31ed560c34429a05e534102c51124ecaf113aca7ebeb7897cfaaf61007cdd7952374c282adaeb79b04ee86ee80b16eed28b62fc6d60e3ffcd7a696895
+  languageName: node
+  linkType: hard
+
+"@pedrouid/environment@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@pedrouid/environment@npm:1.0.1"
+  checksum: fd88340ad760f26340a2816c3677f0ca913976e315880891c3de3f028fe64abc9704fb904234dce77a1ff15c22d0b6cbf1d4199a76de6695c2aed8353ce20590
   languageName: node
   linkType: hard
 
@@ -6726,6 +6877,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"axios@npm:^0.21.0":
+  version: 0.21.4
+  resolution: "axios@npm:0.21.4"
+  dependencies:
+    follow-redirects: ^1.14.0
+  checksum: 44245f24ac971e7458f3120c92f9d66d1fc695e8b97019139de5b0cc65d9b8104647db01e5f46917728edfc0cfd88eb30fc4c55e6053eef4ace76768ce95ff3c
+  languageName: node
+  linkType: hard
+
+"axios@npm:^1.3.5":
+  version: 1.6.2
+  resolution: "axios@npm:1.6.2"
+  dependencies:
+    follow-redirects: ^1.15.0
+    form-data: ^4.0.0
+    proxy-from-env: ^1.1.0
+  checksum: 4a7429e2b784be0f2902ca2680964391eae7236faa3967715f30ea45464b98ae3f1c6f631303b13dfe721b17126b01f486c7644b9ef276bfc63112db9fd379f8
+  languageName: node
+  linkType: hard
+
 "axobject-query@npm:^3.1.1":
   version: 3.2.1
   resolution: "axobject-query@npm:3.2.1"
@@ -8873,6 +9044,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eip1193-provider@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "eip1193-provider@npm:1.0.1"
+  dependencies:
+    "@json-rpc-tools/provider": ^1.5.5
+  checksum: a56d6a874786b788c1f09f96d329b118ca6b3d381055865bb1ec1bde17da8d433a4141200baa2922108d67ac0d83813841940d2813814e56ea923fc9fafb369a
+  languageName: node
+  linkType: hard
+
 "ejs@npm:^3.1.6":
   version: 3.1.9
   resolution: "ejs@npm:3.1.9"
@@ -9686,6 +9866,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eventemitter3@npm:^5.0.0":
+  version: 5.0.1
+  resolution: "eventemitter3@npm:5.0.1"
+  checksum: 543d6c858ab699303c3c32e0f0f47fc64d360bf73c3daf0ac0b5079710e340d6fe9f15487f94e66c629f5f82cd1a8678d692f3dbb6f6fcd1190e1b97fcad36f8
+  languageName: node
+  linkType: hard
+
 "events@npm:^3.2.0, events@npm:^3.3.0":
   version: 3.3.0
   resolution: "events@npm:3.3.0"
@@ -9831,6 +10018,19 @@ __metadata:
     merge2: ^1.3.0
     micromatch: ^4.0.4
   checksum: 20df62be28eb5426fe8e40e0d05601a63b1daceb7c3d87534afcad91bdcf1e4b1743cf2d5247d6e225b120b46df0b9053a032b2691ba34ee121e033acd81f547
+  languageName: node
+  linkType: hard
+
+"fast-glob@npm:^3.3.0":
+  version: 3.3.2
+  resolution: "fast-glob@npm:3.3.2"
+  dependencies:
+    "@nodelib/fs.stat": ^2.0.2
+    "@nodelib/fs.walk": ^1.2.3
+    glob-parent: ^5.1.2
+    merge2: ^1.3.0
+    micromatch: ^4.0.4
+  checksum: 900e4979f4dbc3313840078419245621259f349950411ca2fa445a2f9a1a6d98c3b5e7e0660c5ccd563aa61abe133a21765c6c0dec8e57da1ba71d8000b05ec1
   languageName: node
   linkType: hard
 
@@ -10075,6 +10275,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"follow-redirects@npm:^1.14.0, follow-redirects@npm:^1.15.0":
+  version: 1.15.3
+  resolution: "follow-redirects@npm:1.15.3"
+  peerDependenciesMeta:
+    debug:
+      optional: true
+  checksum: 584da22ec5420c837bd096559ebfb8fe69d82512d5585004e36a3b4a6ef6d5905780e0c74508c7b72f907d1fa2b7bd339e613859e9c304d0dc96af2027fd0231
+  languageName: node
+  linkType: hard
+
 "for-each@npm:^0.3.3":
   version: 0.3.3
   resolution: "for-each@npm:0.3.3"
@@ -10133,6 +10343,17 @@ __metadata:
     combined-stream: ^1.0.8
     mime-types: ^2.1.12
   checksum: b019e8d35c8afc14a2bd8a7a92fa4f525a4726b6d5a9740e8d2623c30e308fbb58dc8469f90415a856698933c8479b01646a9dff33c87cc4e76d72aedbbf860d
+  languageName: node
+  linkType: hard
+
+"form-data@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "form-data@npm:4.0.0"
+  dependencies:
+    asynckit: ^0.4.0
+    combined-stream: ^1.0.8
+    mime-types: ^2.1.12
+  checksum: 01135bf8675f9d5c61ff18e2e2932f719ca4de964e3be90ef4c36aacfc7b9cb2fceb5eca0b7e0190e3383fe51c5b37f4cb80b62ca06a99aaabfcfd6ac7c9328c
   languageName: node
   linkType: hard
 
@@ -10299,6 +10520,7 @@ __metadata:
   dependencies:
     "@apollo/client": 3.5.6
     "@babel/plugin-proposal-private-property-in-object": 7.21.11
+    "@binance/w3w-wagmi-connector": 1.0.0
     "@davatar/react": 1.8.1
     "@ethersproject/providers": 5.5.1
     "@ethersproject/units": 5.5.0
@@ -12394,6 +12616,22 @@ __metadata:
   bin:
     jiti: bin/jiti.js
   checksum: fdf55e315f9e81c04ae902416642062851d92c6cdcc17a59d5d1d35e1a0842e4e79be38da86613c5776fa18c579954542a441b93d1c347a50137dee2e558cbd0
+  languageName: node
+  linkType: hard
+
+"jiti@npm:^1.19.1":
+  version: 1.21.0
+  resolution: "jiti@npm:1.21.0"
+  bin:
+    jiti: bin/jiti.js
+  checksum: a7bd5d63921c170eaec91eecd686388181c7828e1fa0657ab374b9372bfc1f383cf4b039e6b272383d5cb25607509880af814a39abdff967322459cca41f2961
+  languageName: node
+  linkType: hard
+
+"js-base64@npm:^3.7.5":
+  version: 3.7.5
+  resolution: "js-base64@npm:3.7.5"
+  checksum: 67a78c8b1c47b73f1c6fba1957e9fe6fd9dc78ac93ac46cc2e43472dcb9cf150d126fb0e593192e88e0497354fa634d17d255add7cc6ee3c7b4d29870faa8e18
   languageName: node
   linkType: hard
 
@@ -15244,6 +15482,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"proxy-from-env@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "proxy-from-env@npm:1.1.0"
+  checksum: ed7fcc2ba0a33404958e34d95d18638249a68c430e30fcb6c478497d72739ba64ce9810a24f53a7d921d0c065e5b78e3822759800698167256b04659366ca4d4
+  languageName: node
+  linkType: hard
+
 "pseudolocale@npm:^1.1.0":
   version: 1.4.0
   resolution: "pseudolocale@npm:1.4.0"
@@ -17698,6 +17943,39 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tailwindcss@npm:^3.3.1":
+  version: 3.3.5
+  resolution: "tailwindcss@npm:3.3.5"
+  dependencies:
+    "@alloc/quick-lru": ^5.2.0
+    arg: ^5.0.2
+    chokidar: ^3.5.3
+    didyoumean: ^1.2.2
+    dlv: ^1.1.3
+    fast-glob: ^3.3.0
+    glob-parent: ^6.0.2
+    is-glob: ^4.0.3
+    jiti: ^1.19.1
+    lilconfig: ^2.1.0
+    micromatch: ^4.0.5
+    normalize-path: ^3.0.0
+    object-hash: ^3.0.0
+    picocolors: ^1.0.0
+    postcss: ^8.4.23
+    postcss-import: ^15.1.0
+    postcss-js: ^4.0.1
+    postcss-load-config: ^4.0.1
+    postcss-nested: ^6.0.1
+    postcss-selector-parser: ^6.0.11
+    resolve: ^1.22.2
+    sucrase: ^3.32.0
+  bin:
+    tailwind: lib/cli.js
+    tailwindcss: lib/cli.js
+  checksum: e04bb3bb7f9f17e9b6db0c7ace755ef0d6d05bff36ebeb9e5006e13c018ed5566f09db30a1a34380e38fa93ebbb4ae0e28fe726879d5e9ddd8c5b52bffd26f14
+  languageName: node
+  linkType: hard
+
 "tapable@npm:^1.0.0":
   version: 1.1.3
   resolution: "tapable@npm:1.1.3"
@@ -19149,7 +19427,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:^7.4.5, ws@npm:^7.4.6, ws@npm:^7.5.1":
+"ws@npm:^7.4.0, ws@npm:^7.4.5, ws@npm:^7.4.6, ws@npm:^7.5.1":
   version: 7.5.9
   resolution: "ws@npm:7.5.9"
   peerDependencies:

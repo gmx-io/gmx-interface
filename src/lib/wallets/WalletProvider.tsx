@@ -19,6 +19,7 @@ import merge from "lodash/merge";
 import { isDevelopment } from "config/env";
 import { coreWallet } from "./connecters/core/coreWallet";
 import { bitGetWallet } from "./connecters/bitGet/bitGetWallet";
+import binanceW3W from "./connecters/binanceW3W/binanceW3W";
 
 const WALLET_CONNECT_PROJECT_ID = "de24cddbaf2a68f027eae30d9bb5df58";
 const APP_NAME = "GMX";
@@ -63,6 +64,7 @@ const othersWalletList: WalletList = [
       rainbowWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
       bitGetWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
       imTokenWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
+      binanceW3W({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
     ],
   },
 ];
