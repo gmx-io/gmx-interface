@@ -17,10 +17,6 @@ msgstr ""
 msgid "(up to {0}% of {feesTypeName})"
 msgstr "(up to {0}% of {feesTypeName})"
 
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "({0}% of {feesTypeName})"
-#~ msgstr "({0}% of {feesTypeName})"
-
 #: src/pages/Dashboard/DashboardV2.js
 msgid "01 Sep 2021"
 msgstr "01 Sep 2021"
@@ -510,10 +506,6 @@ msgstr "Begin Transfer"
 #: src/components/AprInfo/AprInfo.tsx
 msgid "Bonus APR"
 msgstr "Bonus APR"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "Bonus Rebate"
-#~ msgstr "Bonus Rebate"
 
 #: src/components/Migration/Migration.js
 #: src/components/Migration/Migration.js
@@ -4584,10 +4576,6 @@ msgid "The Available Liquidity will be the lesser of the difference between the 
 msgstr "The Available Liquidity will be the lesser of the difference between the maximum value and the current value for the Reserve and Open Interest."
 
 #: src/components/AprInfo/AprInfo.tsx
-#~ msgid "The Bonus APR is to be airdropped as ARB tokens. <0>Read more</0>."
-#~ msgstr "The Bonus APR is to be airdropped as ARB tokens. <0>Read more</0>."
-
-#: src/components/AprInfo/AprInfo.tsx
 msgid "The Bonus APR will be airdropped as ARB tokens. <0>Read more</0>."
 msgstr "The Bonus APR will be airdropped as ARB tokens. <0>Read more</0>."
 
@@ -4596,8 +4584,8 @@ msgid "The Bonus Rebate is an estimate and will be airdropped as ARB tokens when
 msgstr "The Bonus Rebate is an estimate and will be airdropped as ARB tokens when migrating this liquidity to GM pools within the same epoch. <0>Read more</0>."
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "The Bonus Rebate will be airdropped as ARB tokens. <0>Read more</0>."
-msgstr "The Bonus Rebate will be airdropped as ARB tokens. <0>Read more</0>."
+msgid "The Bonus Rebate will be airdropped as ARB tokens on a pro-rata basis. <0>Read more</0>"
+msgstr "The Bonus Rebate will be airdropped as ARB tokens on a pro-rata basis. <0>Read more</0>"
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "The Boosted APR is from your staked Multiplier Points."
@@ -4686,10 +4674,6 @@ msgstr "The spread is > 1%, please ensure the trade details are acceptable befor
 #: src/components/Exchange/ConfirmationBox.js
 msgid "The spread is > 1%, please ensure the trade details are acceptable before confirming"
 msgstr "The spread is > 1%, please ensure the trade details are acceptable before confirming"
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "The trading incentives have reached their cap for this epoch. They will be reset in {timeLeftStr}."
-#~ msgstr "The trading incentives have reached their cap for this epoch. They will be reset in {timeLeftStr}."
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
@@ -4875,10 +4859,6 @@ msgstr "Total accrued Fees"
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 msgstr "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
-
-#: src/components/Synthetics/GmList/GmList.tsx
-#~ msgid "Total in Wallet"
-#~ msgstr "Total in Wallet"
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
