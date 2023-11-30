@@ -18,7 +18,7 @@ export interface BinanceW3WOptions {
   walletConnectOptions?: any;
 }
 
-export default function binanceW3W({
+export default function binanceWallet({
   chains,
   projectId,
   walletConnectOptions,
@@ -28,9 +28,9 @@ export default function binanceW3W({
   const shouldUseWalletConnect = !isInBinance();
   const provider = typeof window !== "undefined" && isInBinance() ? window.ethereum : undefined;
   return {
-    id: "binanceW3w",
-    name: "BinanceW3W",
-    iconUrl: async () => (await import("./binanceW3W.svg")).default,
+    id: "binance",
+    name: "Binance Wallet",
+    iconUrl: async () => (await import("./binanceWallet.svg")).default,
     iconAccent: "#1E1E1E",
     iconBackground: "#1E1E1E",
     installed: isInBinance() || undefined,
@@ -48,11 +48,13 @@ export default function binanceW3W({
             options: walletConnectOptions,
             projectId,
             version: walletConnectVersion,
+            ...options,
           })
         : new InjectedConnector({
             chains,
             options: {
               getProvider: () => provider,
+              ...options,
             },
           });
 
