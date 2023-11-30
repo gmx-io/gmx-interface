@@ -23,9 +23,9 @@ import { PositionInfo, getPositionKey } from "domain/synthetics/positions";
 import { usePositionsInfo } from "domain/synthetics/positions/usePositionsInfo";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { getPageTitle } from "lib/legacy";
+import { USD_DECIMALS, getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { bigNumberify, formatUsd } from "lib/numbers";
+import { bigNumberify, formatAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Helmet from "react-helmet";
@@ -41,6 +41,7 @@ import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTrade
 import { helperToast } from "lib/helperToast";
 import useWallet from "lib/wallets/useWallet";
 import { SettleAccruedFundingFeeModal } from "components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal";
+import { getMidPrice } from "domain/tokens";
 
 export type Props = {
   savedIsPnlInLeverage: boolean;
@@ -270,11 +271,15 @@ export function SyntheticsPage(p: Props) {
 
   useEffect(() => {
     const chartTokenData = getByKey(tokensData, chartToken?.address);
-    let currentTokenPriceStr =
-      formatUsd(chartTokenData?.prices.maxPrice, {
-        displayDecimals: chartTokenData?.priceDecimals,
+    if (!chartTokenData) return;
+
+    const averagePrice = getMidPrice(chartTokenData.prices);
+    const currentTokenPriceStr =
+      formatUsd(averagePrice, {
+        displayDecimals: chartTokenData.priceDecimals,
       }) || "...";
-    let title = getPageTitle(currentTokenPriceStr + ` | ${chartToken?.symbol}${chartToken?.isStable ? "" : "USD"}`);
+
+    const title = getPageTitle(currentTokenPriceStr + ` | ${chartToken?.symbol}${chartToken?.isStable ? "" : "USD"}`);
     document.title = title;
   }, [chartToken?.address, chartToken?.isStable, chartToken?.symbol, tokensData]);
 
