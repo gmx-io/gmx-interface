@@ -24,7 +24,7 @@ export function AprInfo({
         <StatsTooltipRow showDollar={false} label={t`Bonus APR`} value={`${formatAmount(incentiveApr, 2, 2)}%`} />
         <br />
         <Trans>
-          The Bonus APR is to be airdropped as ARB tokens.{" "}
+          The Bonus APR will be airdropped as ARB tokens.{" "}
           <ExternalLink href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#5c07d62e5676466db25f30807ef0a647">
             Read more
           </ExternalLink>

@@ -97,121 +97,30 @@ export function OrderItem(p: Props) {
   }
 
   function renderTitle() {
-    if (p.isLarge) {
-      if (isSwapOrderType(p.order.orderType)) {
-        if (showDebugValues) {
-          return (
-            <Tooltip
-              handle={renderTitleWithIcon(p.order)}
-              position="left-bottom"
-              renderContent={() => (
-                <>
-                  <StatsTooltipRow
-                    label={"Key"}
-                    value={<div className="debug-key muted">{p.order.key}</div>}
-                    showDollar={false}
-                  />
-                  <StatsTooltipRow
-                    label={"Amount"}
-                    value={<div className="debug-key muted">{p.order.minOutputAmount.toString()}</div>}
-                    showDollar={false}
-                  />
-                </>
-              )}
-            />
-          );
-        }
-
-        if (p.order.errors.length) {
-          return (
-            <Tooltip
-              handle={renderTitleWithIcon(p.order)}
-              className={cx(`order-error-text-msg`, `level-${p.order.errorLevel}`)}
-              position="left-bottom"
-              renderContent={() => (
-                <>
-                  {p.order.errors.map((error, i) => (
-                    <div
-                      className={cx({
-                        "OrderItem-tooltip-row": i > 0,
-                      })}
-                      key={error.msg}
-                    >
-                      <span className={error!.level === "error" ? "negative" : "warning"}>{error.msg}</span>
-                    </div>
-                  ))}
-                </>
-              )}
-            />
-          );
-        }
-
-        return renderTitleWithIcon(p.order);
-      }
-
-      const positionOrder = p.order as PositionOrderInfo;
-      const indexName = getMarketIndexName(positionOrder.marketInfo);
-      const poolName = getMarketPoolName(positionOrder.marketInfo);
-
-      return (
-        <Tooltip
-          handle={renderTitleWithIcon(p.order)}
-          position="left-bottom"
-          className={p.order.errorLevel ? `order-error-text-msg level-${p.order.errorLevel}` : undefined}
-          renderContent={() => {
-            return (
+    if (isSwapOrderType(p.order.orderType)) {
+      if (showDebugValues) {
+        return (
+          <Tooltip
+            handle={renderTitleWithIcon(p.order)}
+            position="left-bottom"
+            renderContent={() => (
               <>
                 <StatsTooltipRow
-                  label={t`Market`}
-                  value={
-                    <div className="items-center">
-                      <span>{indexName && indexName}</span>
-                      <span className="subtext lh-1">{poolName && `[${poolName}]`}</span>
-                    </div>
-                  }
+                  label={"Key"}
+                  value={<div className="debug-key muted">{p.order.key}</div>}
                   showDollar={false}
                 />
-                <StatsTooltipRow label={t`Collateral`} value={getCollateralText()} showDollar={false} />
-
-                {isCollateralSwap && (
-                  <div className="OrderItem-tooltip-row">
-                    <Trans>
-                      {formatTokenAmount(
-                        p.order.initialCollateralDeltaAmount,
-                        p.order.initialCollateralToken.decimals,
-                        p.order.initialCollateralToken.symbol
-                      )}{" "}
-                      will be swapped to {p.order.targetCollateralToken.symbol} on order execution.
-                    </Trans>
-                  </div>
-                )}
-
-                {showDebugValues && (
-                  <div className="OrderItem-tooltip-row">
-                    <StatsTooltipRow
-                      label={"Key"}
-                      value={<div className="debug-key muted">{positionOrder.key}</div>}
-                      showDollar={false}
-                    />
-                  </div>
-                )}
-
-                {p.order.errors.length ? (
-                  <>
-                    {p.order.errors.map((error, i) => (
-                      <div className="OrderItem-tooltip-row" key={error.msg}>
-                        <span className={error!.level === "error" ? "negative" : "warning"}>{error.msg}</span>
-                      </div>
-                    ))}
-                  </>
-                ) : null}
+                <StatsTooltipRow
+                  label={"Amount"}
+                  value={<div className="debug-key muted">{p.order.minOutputAmount.toString()}</div>}
+                  showDollar={false}
+                />
               </>
-            );
-          }}
-        />
-      );
-    } else {
-      // Mobile
+            )}
+          />
+        );
+      }
+
       if (p.order.errors.length) {
         return (
           <Tooltip
@@ -238,6 +147,68 @@ export function OrderItem(p: Props) {
 
       return renderTitleWithIcon(p.order);
     }
+
+    const positionOrder = p.order as PositionOrderInfo;
+    const indexName = getMarketIndexName(positionOrder.marketInfo);
+    const poolName = getMarketPoolName(positionOrder.marketInfo);
+
+    return (
+      <Tooltip
+        handle={renderTitleWithIcon(p.order)}
+        position="left-bottom"
+        className={p.order.errorLevel ? `order-error-text-msg level-${p.order.errorLevel}` : undefined}
+        renderContent={() => {
+          return (
+            <>
+              <StatsTooltipRow
+                label={t`Market`}
+                value={
+                  <div className="items-center">
+                    <span>{indexName && indexName}</span>
+                    <span className="subtext lh-1">{poolName && `[${poolName}]`}</span>
+                  </div>
+                }
+                showDollar={false}
+              />
+              <StatsTooltipRow label={t`Collateral`} value={getCollateralText()} showDollar={false} />
+
+              {isCollateralSwap && (
+                <div className="OrderItem-tooltip-row">
+                  <Trans>
+                    {formatTokenAmount(
+                      p.order.initialCollateralDeltaAmount,
+                      p.order.initialCollateralToken.decimals,
+                      p.order.initialCollateralToken.symbol
+                    )}{" "}
+                    will be swapped to {p.order.targetCollateralToken.symbol} on order execution.
+                  </Trans>
+                </div>
+              )}
+
+              {showDebugValues && (
+                <div className="OrderItem-tooltip-row">
+                  <StatsTooltipRow
+                    label={"Key"}
+                    value={<div className="debug-key muted">{positionOrder.key}</div>}
+                    showDollar={false}
+                  />
+                </div>
+              )}
+
+              {p.order.errors.length ? (
+                <>
+                  {p.order.errors.map((error, i) => (
+                    <div className="OrderItem-tooltip-row" key={error.msg}>
+                      <span className={error!.level === "error" ? "negative" : "warning"}>{error.msg}</span>
+                    </div>
+                  ))}
+                </>
+              ) : null}
+            </>
+          );
+        }}
+      />
+    );
   }
 
   function renderTitleWithIcon(order: OrderInfo) {
@@ -437,6 +408,14 @@ export function OrderItem(p: Props) {
             )}
             <div className="App-card-row">
               <div className="label">
+                <Trans>Order Type</Trans>
+              </div>
+              <div>
+                {isDecreaseOrderType(p.order.orderType) ? getTriggerNameByOrderType(positionOrder.orderType) : t`Limit`}
+              </div>
+            </div>
+            <div className="App-card-row">
+              <div className="label">
                 <Trans>Trigger Price</Trans>
               </div>
               <div>{renderTriggerPrice()}</div>
@@ -448,36 +427,6 @@ export function OrderItem(p: Props) {
               </div>
               <div>{renderMarkPrice()}</div>
             </div>
-
-            {isIncreaseOrderType(p.order.orderType) && (
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Collateral</Trans>
-                </div>
-                <div>
-                  {isCollateralSwap ? (
-                    <Tooltip
-                      handle={getCollateralText()}
-                      position="right-bottom"
-                      renderContent={() => {
-                        return (
-                          <Trans>
-                            {formatTokenAmount(
-                              p.order.initialCollateralDeltaAmount,
-                              p.order.initialCollateralToken.decimals,
-                              p.order.initialCollateralToken.symbol
-                            )}{" "}
-                            will be swapped to {p.order.targetCollateralToken.symbol} on order execution.
-                          </Trans>
-                        );
-                      }}
-                    />
-                  ) : (
-                    getCollateralText()
-                  )}
-                </div>
-              </div>
-            )}
           </div>
         </div>
         {!p.hideActions && (

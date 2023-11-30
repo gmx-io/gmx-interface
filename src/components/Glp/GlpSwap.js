@@ -72,23 +72,42 @@ import PageTitle from "components/PageTitle/PageTitle";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { getFeeItem } from "domain/synthetics/fees";
-import { intervalToDuration, nextWednesday } from "date-fns";
+import { differenceInSeconds, intervalToDuration, nextWednesday } from "date-fns";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
+import Checkbox from "components/Checkbox/Checkbox";
 
 const { AddressZero } = ethers.constants;
 
-function getTimeLeftToNextWednesday() {
+function getNextWednesdayUTC() {
   const now = new Date();
   const nextWed = nextWednesday(now);
+  return Date.UTC(nextWed.getUTCFullYear(), nextWed.getUTCMonth(), nextWed.getUTCDate());
+}
 
+function getTimeLeftToNextWednesday() {
+  const now = new Date();
+  const nextWedUtc = getNextWednesdayUTC();
   const duration = intervalToDuration({
     start: now,
-    end: Date.UTC(nextWed.getUTCFullYear(), nextWed.getUTCMonth(), nextWed.getUTCDate()),
+    end: nextWedUtc,
   });
+
   const days = duration.days ? `${duration.days}d ` : "";
   const hours = duration.hours ? `${duration.hours}h ` : "";
   const minutes = duration.minutes ? `${duration.minutes}m` : "";
   return `${days}${hours}${minutes}`.trim();
+}
+
+function getMinutesToNextEpochIfLessThanHour() {
+  const now = new Date();
+  const nextWedUtc = getNextWednesdayUTC();
+  const totalSeconds = differenceInSeconds(nextWedUtc, now);
+  const totalMinutes = Math.ceil(totalSeconds / 60);
+
+  if (totalMinutes < 60) {
+    return totalMinutes;
+  }
+  return null;
 }
 
 function getStakingData(stakingInfo) {
@@ -142,6 +161,7 @@ export default function GlpSwap(props) {
   const whitelistedTokens = getWhitelistedV1Tokens(chainId);
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
   const visibleTokens = tokenList.filter((t) => !t.isTempHidden);
+  const minutesToNextEpoch = getMinutesToNextEpochIfLessThanHour();
 
   const [swapValue, setSwapValue] = useState("");
   const [glpValue, setGlpValue] = useState("");
@@ -156,6 +176,7 @@ export default function GlpSwap(props) {
   const [anchorOnSwapAmount, setAnchorOnSwapAmount] = useState(true);
   const [feeBasisPoints, setFeeBasisPoints] = useState("");
   const [modalError, setModalError] = useState(false);
+  const [isEpochAcknowledgeSelected, setIsEpochAcknowledgeSelected] = useState(false);
 
   const readerAddress = getContract(chainId, "Reader");
   const rewardReaderAddress = getContract(chainId, "RewardReader");
@@ -181,6 +202,18 @@ export default function GlpSwap(props) {
   );
 
   const incentiveStats = useIncentiveStats();
+
+  function getFeesLabel() {
+    if (isFeesHigh) {
+      return t`WARNING: High Fees`;
+    }
+
+    if (!isBuying && incentiveStats?.migration?.isActive) {
+      return t`Fees (Rebated)`;
+    }
+
+    return t`Fees`;
+  }
 
   const { data: balancesAndSupplies } = useSWR(
     [
@@ -482,6 +515,16 @@ export default function GlpSwap(props) {
       return [t`GLP sell disabled, pending ${getChainName(chainId)} upgrade`];
     }
 
+    if (
+      !isBuying &&
+      feeBasisPoints &&
+      minutesToNextEpoch &&
+      !isEpochAcknowledgeSelected &&
+      incentiveStats?.migration?.isActive
+    ) {
+      return [t`Epoch ending is not acknowledged`];
+    }
+
     if (!isBuying && inCooldownWindow) {
       return [t`Redemption time not yet reached`];
     }
@@ -540,6 +583,17 @@ export default function GlpSwap(props) {
     if (!active) {
       return true;
     }
+
+    if (
+      !isBuying &&
+      feeBasisPoints &&
+      minutesToNextEpoch &&
+      !isEpochAcknowledgeSelected &&
+      incentiveStats?.migration?.isActive
+    ) {
+      return false;
+    }
+
     const [error, modal] = getError();
     if (error && !modal) {
       return false;
@@ -759,7 +813,7 @@ export default function GlpSwap(props) {
         <br />
         <div className="text-white">
           <Trans>
-            The Bonus Rebate is an estimate and is to be airdropped as ARB tokens when migrating this liquidity to GM
+            The Bonus Rebate is an estimate and will be airdropped as ARB tokens when migrating this liquidity to GM
             pools within the same epoch.{" "}
             <ExternalLink
               href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#a2d1ea61dd1147b195b7e3bd769348d3"
@@ -782,6 +836,18 @@ export default function GlpSwap(props) {
     );
   }
 
+  function renderEpochEndingCheckbox(minutes) {
+    if (isBuying || !feeBasisPoints || !incentiveStats?.migration?.isActive) return;
+    return (
+      <div className="PositionSeller-price-impact-warning">
+        <Checkbox asRow isChecked={isEpochAcknowledgeSelected} setIsChecked={setIsEpochAcknowledgeSelected}>
+          <span className="text-warning font-sm">
+            <Trans>Acknowledge epoch is ending in {minutes} minutes</Trans>
+          </span>
+        </Checkbox>
+      </div>
+    );
+  }
   return (
     <div className="GlpSwap">
       <SwapErrorModal
@@ -1016,7 +1082,7 @@ export default function GlpSwap(props) {
 
             <div>
               <div className="Exchange-info-row">
-                <div className="Exchange-info-label">{isFeesHigh ? t`WARNING: High Fees` : t`Fees`}</div>
+                <div className="Exchange-info-label">{getFeesLabel()}</div>
                 <div className="align-right fee-block">
                   {isBuying && (
                     <Tooltip
@@ -1070,6 +1136,7 @@ export default function GlpSwap(props) {
                 </div>
               </div>
             </div>
+            {minutesToNextEpoch && renderEpochEndingCheckbox(minutesToNextEpoch)}
             <div className="GlpSwap-cta Exchange-swap-button-container">
               <Button type="submit" variant="primary-action" className="w-full" disabled={!isPrimaryEnabled()}>
                 {getPrimaryText()}

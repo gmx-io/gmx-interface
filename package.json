@@ -41,6 +41,7 @@
     "react-helmet": "6.1.0",
     "react-hot-toast": "2.2.0",
     "react-icons": "4.3.1",
+    "react-loading-skeleton": "3.3.1",
     "react-remove-scroll": "2.5.5",
     "react-router-dom": "5.3.0",
     "react-scripts": "5.0.1",

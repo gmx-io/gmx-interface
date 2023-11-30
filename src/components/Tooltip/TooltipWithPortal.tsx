@@ -4,6 +4,7 @@ import cx from "classnames";
 import "./Tooltip.scss";
 import { IS_TOUCH } from "config/env";
 import Portal from "../Common/Portal";
+import { TooltipPosition } from "./Tooltip";
 
 const OPEN_DELAY = 0;
 const CLOSE_DELAY = 100;
@@ -11,7 +12,7 @@ const CLOSE_DELAY = 100;
 type Props = {
   handle: React.ReactNode;
   renderContent: () => React.ReactNode;
-  position?: string;
+  position?: TooltipPosition;
   trigger?: string;
   className?: string;
   portalClassName?: string;
