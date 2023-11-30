@@ -246,7 +246,7 @@ export function getIncreaseError(p: {
     return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
   }
 
-  if (!isLimit && priceImpactWarning.shouldAcceptPriceImpactWarning) {
+  if (!isLimit && priceImpactWarning.shouldAcceptPriceImpactWarningInTradeBox) {
     return [t`Price Impact not yet acknowledged`];
   }
 
@@ -345,7 +345,7 @@ export function getDecreaseError(p: {
     return [t`Insufficient receive token liquidity`];
   }
 
-  if (!isTrigger && priceImpactWarning.shouldAcceptPriceImpactWarning) {
+  if (!isTrigger && priceImpactWarning.shouldAcceptPriceImpactWarningInTradeBox) {
     return [t`Price Impact not yet acknowledged`];
   }
 

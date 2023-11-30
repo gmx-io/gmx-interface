@@ -1,12 +1,19 @@
 import { HIGH_POSITION_IMPACT_BPS } from "config/factors";
 import { useEffect, useMemo, useState } from "react";
 import { FeeItem } from "../fees";
+import { TradeFlags } from "./useTradeFlags";
 
 export type PriceImpactWarningState = ReturnType<typeof usePriceImpactWarningState>;
 
-export function usePriceImpactWarningState(p: { positionPriceImpact?: FeeItem; swapPriceImpact?: FeeItem }) {
-  const { positionPriceImpact, swapPriceImpact } = p;
-
+export function usePriceImpactWarningState({
+  positionPriceImpact,
+  swapPriceImpact,
+  tradeFlags,
+}: {
+  positionPriceImpact?: FeeItem;
+  swapPriceImpact?: FeeItem;
+  tradeFlags: TradeFlags;
+}) {
   const [isHighPositionImpactAccepted, setIsHighPositionImpactAccepted] = useState(false);
   const [isHighSwapImpactAccepted, setIsHighSwapImpactAccepted] = useState(false);
 
@@ -34,8 +41,11 @@ export function usePriceImpactWarningState(p: { positionPriceImpact?: FeeItem; s
   );
 
   return useMemo(() => {
-    const shouldAcceptPriceImpactWarning =
-      (isHighPositionImpact && !isHighPositionImpactAccepted) || (isHighSwapImpact && !isHighSwapImpactAccepted);
+    const shouldAcceptPriceImpactWarningInTradeBox =
+      isHighSwapImpact && !isHighSwapImpactAccepted && !tradeFlags.isSwap;
+    const shouldAcceptPriceImpactWarningInModal =
+      (isHighPositionImpact && !isHighPositionImpactAccepted && !tradeFlags.isSwap) ||
+      (isHighSwapImpact && !isHighSwapImpactAccepted && tradeFlags.isSwap);
 
     const shouldShowWarning = isHighPositionImpact || isHighSwapImpact;
 
@@ -44,10 +54,17 @@ export function usePriceImpactWarningState(p: { positionPriceImpact?: FeeItem; s
       isHighSwapImpact,
       isHighPositionImpactAccepted,
       isHighSwapImpactAccepted,
-      shouldAcceptPriceImpactWarning,
+      shouldAcceptPriceImpactWarningInTradeBox,
+      shouldAcceptPriceImpactWarningInModal,
       setIsHighSwapImpactAccepted,
       setIsHighPositionImpactAccepted,
       shouldShowWarning,
     };
-  }, [isHighPositionImpact, isHighPositionImpactAccepted, isHighSwapImpact, isHighSwapImpactAccepted]);
+  }, [
+    isHighPositionImpact,
+    isHighPositionImpactAccepted,
+    isHighSwapImpact,
+    isHighSwapImpactAccepted,
+    tradeFlags.isSwap,
+  ]);
 }

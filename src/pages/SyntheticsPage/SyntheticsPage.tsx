@@ -565,6 +565,7 @@ export function SyntheticsPage(p: Props) {
         setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
         shouldDisableValidation={shouldDisableValidation}
         onEditAcceptablePriceImpact={onEditAcceptablePriceImpact}
+        tradeFlags={tradeFlags}
       />
 
       <PositionEditor

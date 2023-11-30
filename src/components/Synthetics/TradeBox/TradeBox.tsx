@@ -599,6 +599,7 @@ export function TradeBox(p: Props) {
   const priceImpactWarningState = usePriceImpactWarningState({
     positionPriceImpact: fees?.positionPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
+    tradeFlags,
   });
 
   const marketsOptions = useAvailableMarketsOptions({
@@ -1517,12 +1518,14 @@ export function TradeBox(p: Props) {
                 />
               )}
 
-              {isMarket && priceImpactWarningState.shouldShowWarning && (
+              {(isMarket || isLimit) && priceImpactWarningState.shouldShowWarning && (
                 <>
                   <div className="App-card-divider" />
                   <HighPriceImpactWarning
                     priceImpactWarinigState={priceImpactWarningState}
                     className="PositionEditor-allow-higher-slippage"
+                    tradeFlags={tradeFlags}
+                    place="tradebox"
                   />
                 </>
               )}
@@ -1581,6 +1584,7 @@ export function TradeBox(p: Props) {
         fees={fees}
         executionFee={executionFee}
         error={error}
+        priceImpactWarningState={priceImpactWarningState}
         existingPosition={existingPosition}
         shouldDisableValidation={shouldDisableValidation!}
         isHigherSlippageAllowed={isHigherSlippageAllowed}

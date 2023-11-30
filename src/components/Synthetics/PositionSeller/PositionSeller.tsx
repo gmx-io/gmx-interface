@@ -73,6 +73,7 @@ import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpac
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionSeller.scss";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
+import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
 
 export type Props = {
   acceptablePriceImpactBps: BigNumber;
@@ -87,6 +88,7 @@ export type Props = {
   setIsHigherSlippageAllowed: (isAllowed: boolean) => void;
   shouldDisableValidation: boolean;
   onEditAcceptablePriceImpact: () => void;
+  tradeFlags: TradeFlags;
 };
 
 enum OrderOption {
@@ -105,6 +107,7 @@ export function PositionSeller(p: Props) {
     setPendingTxns,
     availableTokensOptions,
     onEditAcceptablePriceImpact,
+    tradeFlags,
   } = p;
 
   const { chainId } = useChainId();
@@ -295,6 +298,7 @@ export function PositionSeller(p: Props) {
   const priceImpactWarningState = usePriceImpactWarningState({
     positionPriceImpact: fees?.positionPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
+    tradeFlags,
   });
 
   const isNotEnoughReceiveTokenLiquidity = shouldSwap ? maxSwapLiquidity?.lt(receiveUsd || 0) : false;
@@ -869,6 +873,8 @@ export function PositionSeller(p: Props) {
                 <HighPriceImpactWarning
                   priceImpactWarinigState={priceImpactWarningState}
                   className="PositionSeller-price-impact-warning"
+                  tradeFlags={tradeFlags}
+                  place="modal"
                 />
               </>
             )}

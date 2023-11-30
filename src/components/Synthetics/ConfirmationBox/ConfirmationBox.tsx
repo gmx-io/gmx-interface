@@ -86,6 +86,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useKey } from "react-use";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./ConfirmationBox.scss";
+import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
+import { PriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 
 export type Props = {
   isVisible: boolean;
@@ -119,6 +121,7 @@ export type Props = {
   isHigherSlippageAllowed?: boolean;
   ordersData?: OrdersInfoData;
   tokensData?: TokensData;
+  priceImpactWarningState: PriceImpactWarningState;
   setIsHigherSlippageAllowed: (isHigherSlippageAllowed: boolean) => void;
   setKeepLeverage: (keepLeverage: boolean) => void;
   onClose: () => void;
@@ -157,6 +160,7 @@ export function ConfirmationBox(p: Props) {
     marketsOptions,
     ordersData,
     tokensData,
+    priceImpactWarningState,
     setKeepLeverage,
     onClose,
     onSubmitted,
@@ -313,6 +317,13 @@ export function ConfirmationBox(p: Props) {
   }, [fixedTriggerOrderType, isLimit, isLong, isMarket, isSwap]);
 
   const submitButtonState = useMemo(() => {
+    if (priceImpactWarningState.shouldAcceptPriceImpactWarningInModal) {
+      return {
+        text: "Price Impact not yet acknowledged",
+        disabled: true,
+      };
+    }
+
     if (isSubmitting) {
       return {
         text: t`Creating Order...`,
@@ -357,19 +368,20 @@ export function ConfirmationBox(p: Props) {
       disabled: false,
     };
   }, [
-    decreaseOrdersThatWillBeExecuted.length,
-    error,
-    fixedTriggerOrderType,
-    fromToken?.symbol,
-    fromToken?.assetSymbol,
-    isIncrease,
-    isLimit,
-    isLong,
-    isMarket,
+    priceImpactWarningState.shouldAcceptPriceImpactWarningInModal,
     isSubmitting,
-    isSwap,
-    isTriggerWarningAccepted,
+    error,
     needPayTokenApproval,
+    isIncrease,
+    decreaseOrdersThatWillBeExecuted.length,
+    isTriggerWarningAccepted,
+    isMarket,
+    isLimit,
+    fromToken?.assetSymbol,
+    fromToken?.symbol,
+    isSwap,
+    isLong,
+    fixedTriggerOrderType,
   ]);
 
   useKey(
@@ -911,6 +923,20 @@ export function ConfirmationBox(p: Props) {
     );
   }
 
+  function renderHighPriceImpactWarning() {
+    if (!priceImpactWarningState.shouldShowWarning) return null;
+    return (
+      <>
+        <div className="line-divider" />
+        <HighPriceImpactWarning
+          priceImpactWarinigState={priceImpactWarningState}
+          tradeFlags={tradeFlags}
+          place="modal"
+        />
+      </>
+    );
+  }
+
   function renderIncreaseOrderSection() {
     if (!marketInfo || !fromToken || !collateralToken || !toToken) {
       return null;
@@ -1124,6 +1150,7 @@ export function ConfirmationBox(p: Props) {
               </Checkbox>
             </div>
           )}
+          {renderHighPriceImpactWarning()}
         </div>
       </>
     );
@@ -1189,6 +1216,7 @@ export function ConfirmationBox(p: Props) {
                 )
               : formatTokenAmount(swapAmounts?.minOutputAmount, toToken?.decimals, toToken?.symbol)}
           </ExchangeInfoRow>
+          {renderHighPriceImpactWarning()}
         </div>
       </>
     );
