@@ -58,12 +58,11 @@ export default function binanceW3W({
 
       const getUriMobile = async () => {
         const uri = await getWalletConnectUri(connector, walletConnectVersion);
-
         return isAndroid() ? uri : `bnc://wc?uri=${encodeURIComponent(uri)}`;
       };
+
       const getUriQR = async () => {
         const uri = await getWalletConnectUri(connector, walletConnectVersion);
-
         return uri;
       };
 
