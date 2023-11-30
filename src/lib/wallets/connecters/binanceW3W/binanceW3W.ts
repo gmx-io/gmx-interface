@@ -56,20 +56,25 @@ export default function binanceW3W({
             },
           });
 
-      const getUri = async () => {
+      const getUriMobile = async () => {
         const uri = await getWalletConnectUri(connector, walletConnectVersion);
 
-        return isAndroid() ? uri : `bnc://app.binance.com/mp/app?wc=${encodeURIComponent(uri)}`;
+        return isAndroid() ? uri : `bnc://wc?uri=${encodeURIComponent(uri)}`;
+      };
+      const getUriQR = async () => {
+        const uri = await getWalletConnectUri(connector, walletConnectVersion);
+
+        return uri;
       };
 
       return {
         connector,
         mobile: {
-          getUri: shouldUseWalletConnect ? getUri : undefined,
+          getUri: shouldUseWalletConnect ? getUriMobile : undefined,
         },
         qrCode: shouldUseWalletConnect
           ? {
-              getUri: async () => getWalletConnectUri(connector, walletConnectVersion),
+              getUri: getUriQR,
               instructions: {
                 learnMoreUrl:
                   "https://www.binance.com/en/blog/markets/introducing-binance-web3-wallet-5931309459106555347",
