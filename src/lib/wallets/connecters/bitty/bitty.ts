@@ -38,7 +38,7 @@ export const bitgetWallet = ({
   return {
     id: "bitget",
     name: "Bitget Wallet",
-    iconUrl: async () => (await import("./bitgetWallet.svg")).default,
+    iconUrl: async () => (await import("./bitty.svg")).default,
     iconAccent: "#f6851a",
     iconBackground: "#fff",
     installed: !shouldUseWalletConnect ? isBitKeepInjected : undefined,

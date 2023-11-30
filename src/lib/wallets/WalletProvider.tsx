@@ -19,7 +19,7 @@ import merge from "lodash/merge";
 import { isDevelopment } from "config/env";
 import { coreWallet } from "./connecters/core/coreWallet";
 import binanceW3W from "./connecters/binanceW3W/binanceW3W";
-import { bitgetWallet } from "./connecters/bitget/bitgetWallet";
+import { bitgetWallet } from "./connecters/bitty/bitty";
 
 const WALLET_CONNECT_PROJECT_ID = "de24cddbaf2a68f027eae30d9bb5df58";
 const APP_NAME = "GMX";
