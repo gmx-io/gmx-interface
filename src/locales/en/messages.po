@@ -256,8 +256,12 @@ msgid "Acknowledge high Price Impact"
 msgstr "Acknowledge high Price Impact"
 
 #: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
-msgid "Acknowledge high Swap Impact"
-msgstr "Acknowledge high Swap Impact"
+#~ msgid "Acknowledge high Swap Impact"
+#~ msgstr "Acknowledge high Swap Impact"
+
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+msgid "Acknowledge high Swap Price Impact"
+msgstr "Acknowledge high Swap Price Impact"
 
 #: src/pages/Actions/Actions.js
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
