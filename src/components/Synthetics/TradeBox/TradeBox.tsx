@@ -36,7 +36,6 @@ import { DecreasePositionSwapType, OrderInfo, OrderType, OrdersInfoData } from "
 import {
   PositionInfo,
   PositionsInfoData,
-  formatAcceptablePrice,
   formatLeverage,
   formatLiquidationPrice,
   getTriggerNameByOrderType,
@@ -91,7 +90,6 @@ import { useSafeState } from "lib/useSafeState";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { AiOutlineEdit } from "react-icons/ai";
 import { IoMdSwap } from "react-icons/io";
 import { usePrevious } from "react-use";
 import { MarketCard } from "../MarketCard/MarketCard";
@@ -123,7 +121,6 @@ export type Props = {
   positionsInfo?: PositionsInfoData;
   ordersInfo?: OrdersInfoData;
   allowedSlippage: number;
-  acceptablePriceImpactBpsForLimitOrders: BigNumber;
   savedIsPnlInLeverage: boolean;
   isHigherSlippageAllowed: boolean;
   shouldDisableValidation?: boolean;
@@ -137,7 +134,6 @@ export type Props = {
   setPendingTxns: (txns: any) => void;
   onSelectMarketAddress: (marketAddress?: string) => void;
   onSelectCollateralAddress: (collateralAddress?: string) => void;
-  setIsEditingAcceptablePriceImpact: (val: boolean) => void;
   switchTokenAddresses: () => void;
 };
 
@@ -170,7 +166,6 @@ export function TradeBox(p: Props) {
     existingOrder,
     ordersInfo,
     shouldDisableValidation,
-    acceptablePriceImpactBpsForLimitOrders,
     allowedSlippage,
     isHigherSlippageAllowed,
     marketsInfoData,
@@ -181,7 +176,6 @@ export function TradeBox(p: Props) {
     onSelectToTokenAddress,
     onSelectTradeMode,
     onSelectTradeType,
-    setIsEditingAcceptablePriceImpact,
     setPendingTxns,
     switchTokenAddresses,
   } = p;
@@ -216,7 +210,7 @@ export function TradeBox(p: Props) {
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
   const userReferralInfo = useUserReferralInfo(signer, chainId, account);
-  const { showDebugValues } = useSettings();
+  const { showDebugValues, savedAcceptablePriceImpactBuffer } = useSettings();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
 
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
@@ -228,7 +222,9 @@ export function TradeBox(p: Props) {
   const [fixedTriggerOrderType, setFixedTriggerOrderType] = useState<
     OrderType.LimitDecrease | OrderType.StopLossDecrease
   >();
-  const [fixedTriggerAcceptablePrice, setFixedTriggerAcceptablePrice] = useState<BigNumber>();
+
+  const [defaultTriggerAcceptablePriceImpactBps, setDefaultTriggerAcceptablePriceImapctBps] = useState<BigNumber>();
+  const [selectedTriggerAcceptablePriceImpactBps, setSelectedAcceptablePriceImapctBps] = useState<BigNumber>();
 
   const [fromTokenInputValue, setFromTokenInputValue] = useSafeState("");
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
@@ -375,7 +371,8 @@ export function TradeBox(p: Props) {
       leverage,
       triggerPrice: isLimit ? triggerPrice : undefined,
       position: existingPosition,
-      savedAcceptablePriceImpactBps: acceptablePriceImpactBpsForLimitOrders,
+      fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
+      acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
       findSwapPath: swapRoute.findSwapPath,
       userReferralInfo,
       uiFeeFactor,
@@ -386,9 +383,9 @@ export function TradeBox(p: Props) {
         : "independent",
     });
   }, [
-    acceptablePriceImpactBpsForLimitOrders,
     collateralToken,
     existingPosition,
+    selectedTriggerAcceptablePriceImpactBps,
     focusedInput,
     fromToken,
     fromTokenAmount,
@@ -398,6 +395,7 @@ export function TradeBox(p: Props) {
     isLong,
     leverage,
     marketInfo,
+    savedAcceptablePriceImpactBuffer,
     swapRoute.findSwapPath,
     toToken,
     toTokenAmount,
@@ -419,23 +417,25 @@ export function TradeBox(p: Props) {
       closeSizeUsd: closeSizeUsd,
       keepLeverage: keepLeverage!,
       triggerPrice,
-      savedAcceptablePriceImpactBps: acceptablePriceImpactBpsForLimitOrders,
+      fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
+      acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
       userReferralInfo,
       minCollateralUsd,
       minPositionSizeUsd,
       uiFeeFactor,
     });
   }, [
-    acceptablePriceImpactBpsForLimitOrders,
     closeSizeUsd,
     collateralToken,
     existingPosition,
+    selectedTriggerAcceptablePriceImpactBps,
     isLong,
     isTrigger,
     keepLeverage,
     marketInfo,
     minCollateralUsd,
     minPositionSizeUsd,
+    savedAcceptablePriceImpactBuffer,
     triggerPrice,
     userReferralInfo,
     uiFeeFactor,
@@ -810,7 +810,13 @@ export function TradeBox(p: Props) {
     ) {
       setFixedTriggerOrderType(decreaseAmounts.triggerOrderType);
       setFixedTriggerThresholdType(decreaseAmounts.triggerThresholdType);
-      setFixedTriggerAcceptablePrice(decreaseAmounts.acceptablePrice);
+      setSelectedAcceptablePriceImapctBps(decreaseAmounts.acceptablePriceDeltaBps.abs());
+      setDefaultTriggerAcceptablePriceImapctBps(decreaseAmounts.acceptablePriceDeltaBps.abs());
+    }
+
+    if (isLimit && increaseAmounts?.acceptablePrice) {
+      setSelectedAcceptablePriceImapctBps(increaseAmounts.acceptablePriceDeltaBps.abs());
+      setDefaultTriggerAcceptablePriceImapctBps(increaseAmounts.acceptablePriceDeltaBps.abs());
     }
 
     setStage("confirmation");
@@ -940,6 +946,10 @@ export function TradeBox(p: Props) {
   }
 
   const onConfirmationClose = useCallback(() => {
+    setSelectedAcceptablePriceImapctBps(undefined);
+    setDefaultTriggerAcceptablePriceImapctBps(undefined);
+    setFixedTriggerOrderType(undefined);
+    setFixedTriggerThresholdType(undefined);
     setStage("trade");
   }, []);
 
@@ -1266,24 +1276,6 @@ export function TradeBox(p: Props) {
           }
         />
 
-        {isLimit && (
-          <ExchangeInfoRow
-            className="SwapBox-info-row"
-            label={t`Acceptable Price Impact`}
-            value={
-              <span
-                className="TradeBox-acceptable-price-impact"
-                onClick={() => setIsEditingAcceptablePriceImpact(true)}
-              >
-                {formatPercentage(acceptablePriceImpactBpsForLimitOrders.mul(-1), { signed: true })}
-                <span className="edit-icon" onClick={() => null}>
-                  <AiOutlineEdit fontSize={16} />
-                </span>
-              </span>
-            }
-          />
-        )}
-
         <ExchangeInfoRow
           className="SwapBox-info-row"
           label={t`Liq. Price`}
@@ -1323,38 +1315,6 @@ export function TradeBox(p: Props) {
               displayDecimals: toToken?.priceDecimals,
             }) || "-"
           }`}
-        />
-
-        <ExchangeInfoRow
-          className="SwapBox-info-row"
-          label={t`Acceptable Price Impact`}
-          value={
-            decreaseAmounts?.triggerOrderType === OrderType.StopLossDecrease ? (
-              "NA"
-            ) : (
-              <span
-                className="TradeBox-acceptable-price-impact"
-                onClick={() => setIsEditingAcceptablePriceImpact(true)}
-              >
-                {formatPercentage(acceptablePriceImpactBpsForLimitOrders.mul(-1))}
-                <span className="edit-icon" onClick={() => null}>
-                  <AiOutlineEdit fontSize={16} />
-                </span>
-              </span>
-            )
-          }
-        />
-
-        <ExchangeInfoRow
-          className="SwapBox-info-row"
-          label={t`Acceptable Price`}
-          value={
-            decreaseAmounts?.sizeDeltaUsd.gt(0)
-              ? formatAcceptablePrice(decreaseAmounts?.acceptablePrice, {
-                  displayDecimals: toToken?.priceDecimals,
-                })
-              : "-"
-          }
         />
 
         {existingPosition && (
@@ -1568,7 +1528,9 @@ export function TradeBox(p: Props) {
         triggerPrice={triggerPrice}
         fixedTriggerThresholdType={fixedTriggerThresholdType}
         fixedTriggerOrderType={fixedTriggerOrderType}
-        fixedTriggerAcceptablePrice={fixedTriggerAcceptablePrice}
+        selectedTriggerAcceptablePriceImpactBps={selectedTriggerAcceptablePriceImpactBps}
+        setSelectedTriggerAcceptablePriceImapctBps={setSelectedAcceptablePriceImapctBps}
+        defaultTriggerAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
         triggerRatio={triggerRatio}
         marketInfo={marketInfo}
         collateralToken={collateralToken}

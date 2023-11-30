@@ -1,6 +1,6 @@
-.Slippage-input-wrapper {
+.Percentage-input-wrapper {
   position: relative;
-  .Slippage-list {
+  .Percentage-list {
     position: absolute;
     display: flex;
     list-style: none;
@@ -8,6 +8,7 @@
     right: 0;
     padding: 0;
     top: 1.25rem;
+    z-index: 1;
     background: #212540;
 
     li {
@@ -21,7 +22,7 @@
       }
     }
   }
-  .Slippage-input {
+  .Percentage-input {
     border: 1px solid #212540;
     border-radius: var(--border-radius-sm);
     padding-right: 0.5rem;
@@ -54,5 +55,13 @@
     span {
       opacity: 0.7;
     }
+  }
+
+  .Percentage-input-error {
+    display: none;
+  }
+
+  &:hover .Percentage-input-error {
+    display: block;
   }
 }

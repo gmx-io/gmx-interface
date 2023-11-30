@@ -12,7 +12,7 @@ import {
   calculatePositionDelta,
   DECREASE,
 } from "lib/legacy";
-import { DEFAULT_SLIPPAGE_AMOUNT, DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
+import { DEFAULT_SLIPPAGE_AMOUNT, DEFAULT_HIGHER_SLIPPAGE_AMOUNT, TOO_HIGH_SLIPPAGE_AMOUNT } from "config/factors";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { getConstant } from "config/chains";
 import { getContract } from "config/contracts";
@@ -33,7 +33,7 @@ import { Plural, t, Trans } from "@lingui/macro";
 import Button from "components/Button/Button";
 import FeesTooltip from "./FeesTooltip";
 import { getTokenInfo, getUsd } from "domain/tokens";
-import SlippageInput from "components/SlippageInput/SlippageInput";
+import PercentageInput from "components/PercentageInput/PercentageInput";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import useWallet from "lib/wallets/useWallet";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
@@ -82,7 +82,12 @@ function renderAllowedSlippage(setAllowedSlippage, defaultSlippage) {
         />
       }
     >
-      <SlippageInput setAllowedSlippage={setAllowedSlippage} defaultSlippage={defaultSlippage} />
+      <PercentageInput
+        onChange={setAllowedSlippage}
+        defaultValue={defaultSlippage}
+        highValue={TOO_HIGH_SLIPPAGE_AMOUNT}
+        highValueWarningText="Slippage is too high"
+      />
     </ExchangeInfoRow>
   );
 }

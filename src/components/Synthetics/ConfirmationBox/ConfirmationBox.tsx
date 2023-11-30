@@ -9,7 +9,12 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { getContract } from "config/contracts";
-import { BASIS_POINTS_DIVISOR, DEFAULT_SLIPPAGE_AMOUNT, HIGH_SPREAD_THRESHOLD } from "config/factors";
+import {
+  BASIS_POINTS_DIVISOR,
+  DEFAULT_SLIPPAGE_AMOUNT,
+  HIGH_SPREAD_THRESHOLD,
+  TOO_HIGH_SLIPPAGE_AMOUNT,
+} from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useUserReferralCode } from "domain/referrals/hooks";
 import {
@@ -66,7 +71,7 @@ import { useChainId } from "lib/chains";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import SlippageInput from "components/SlippageInput/SlippageInput";
+import PercentageInput from "components/PercentageInput/PercentageInput";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { AvailableMarketsOptions } from "domain/synthetics/trade/useAvailableMarketsOptions";
@@ -100,7 +105,8 @@ export type Props = {
   triggerPrice?: BigNumber;
   fixedTriggerThresholdType?: TriggerThresholdType;
   fixedTriggerOrderType?: OrderType.LimitDecrease | OrderType.StopLossDecrease;
-  fixedTriggerAcceptablePrice?: BigNumber;
+  selectedTriggerAcceptablePriceImpactBps?: BigNumber;
+  defaultTriggerAcceptablePriceImpactBps?: BigNumber;
   triggerRatio?: TokensRatio;
   marketInfo?: MarketInfo;
   collateralToken?: TokenData;
@@ -122,6 +128,7 @@ export type Props = {
   ordersData?: OrdersInfoData;
   tokensData?: TokensData;
   priceImpactWarningState: PriceImpactWarningState;
+  setSelectedTriggerAcceptablePriceImapctBps: (value: BigNumber) => void;
   setIsHigherSlippageAllowed: (isHigherSlippageAllowed: boolean) => void;
   setKeepLeverage: (keepLeverage: boolean) => void;
   onClose: () => void;
@@ -140,7 +147,7 @@ export function ConfirmationBox(p: Props) {
     triggerPrice,
     fixedTriggerThresholdType,
     fixedTriggerOrderType,
-    fixedTriggerAcceptablePrice,
+    defaultTriggerAcceptablePriceImpactBps,
     triggerRatio,
     marketInfo,
     collateralToken,
@@ -161,6 +168,7 @@ export function ConfirmationBox(p: Props) {
     ordersData,
     tokensData,
     priceImpactWarningState,
+    setSelectedTriggerAcceptablePriceImapctBps,
     setKeepLeverage,
     onClose,
     onSubmitted,
@@ -494,7 +502,7 @@ export function ConfirmationBox(p: Props) {
       !collateralToken ||
       fixedTriggerOrderType === undefined ||
       fixedTriggerThresholdType === undefined ||
-      !fixedTriggerAcceptablePrice ||
+      !decreaseAmounts?.acceptablePrice ||
       !decreaseAmounts?.triggerPrice ||
       !executionFee ||
       !tokensData ||
@@ -516,7 +524,7 @@ export function ConfirmationBox(p: Props) {
         initialCollateralAddress: collateralToken.address,
         receiveTokenAddress: collateralToken.address,
         triggerPrice: decreaseAmounts.triggerPrice,
-        acceptablePrice: fixedTriggerAcceptablePrice,
+        acceptablePrice: decreaseAmounts.acceptablePrice,
         sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
         sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
         minOutputUsd: BigNumber.from(0),
@@ -918,7 +926,39 @@ export function ConfirmationBox(p: Props) {
           />
         }
       >
-        <SlippageInput setAllowedSlippage={setSlippage} defaultSlippage={defaultSlippage} />
+        <PercentageInput
+          onChange={setSlippage}
+          defaultValue={defaultSlippage}
+          highValue={TOO_HIGH_SLIPPAGE_AMOUNT}
+          highValueWarningText="Slippage is too high"
+        />
+      </ExchangeInfoRow>
+    );
+  }
+
+  function renderAcceptablePriceImpactInput(currentImpactDeltaUsd: BigNumber, currentImpactDeltaBps: BigNumber) {
+    if (!defaultTriggerAcceptablePriceImpactBps || !fees) {
+      return null;
+    }
+
+    const defaultValue = defaultTriggerAcceptablePriceImpactBps.toNumber();
+
+    const setValue = (value) => {
+      setSelectedTriggerAcceptablePriceImapctBps(BigNumber.from(value));
+    };
+
+    return (
+      <ExchangeInfoRow label={t`Acceptable Price Impact`}>
+        <PercentageInput
+          onChange={setValue}
+          defaultValue={defaultValue}
+          highValue={defaultValue + 1}
+          lowValue={defaultValue}
+          highValueWarningText={t`You have set a high Acceptable Price Impact. Please verify Acceptable Price of the order.`}
+          lowValueWarningText={t`The Current Price Impact is ${formatDeltaUsd(
+            currentImpactDeltaUsd
+          )}%. Consider adding a buffer of 0.3% to it so the order is more likely to be processed.`}
+        />
       </ExchangeInfoRow>
     );
   }
@@ -947,6 +987,7 @@ export function ConfirmationBox(p: Props) {
     const isCollateralSwap = !getIsEquivalentTokens(fromToken, collateralToken);
     const existingPriceDecimals = p.existingPosition?.indexToken?.priceDecimals;
     const toTokenPriceDecimals = toToken?.priceDecimals;
+
     const shouldApplySlippage = isMarket;
     const acceptablePrice =
       shouldApplySlippage && increaseAmounts?.acceptablePrice
@@ -975,39 +1016,33 @@ export function ConfirmationBox(p: Props) {
             }
           />
           {isMarket && renderAllowedSlippage(savedAllowedSlippage, setAllowedSlippage)}
+          {isLimit &&
+            increaseAmounts &&
+            renderAcceptablePriceImpactInput(
+              increaseAmounts.positionPriceImpactDeltaUsd,
+              increaseAmounts.acceptablePriceDeltaBps
+            )}
           {isMarket && collateralSpreadInfo?.spread && (
             <ExchangeInfoRow label={t`Collateral Spread`} isWarning={swapSpreadInfo.isHigh} isTop={true}>
               {formatAmount(collateralSpreadInfo.spread.mul(100), USD_DECIMALS, 2, true)}%
             </ExchangeInfoRow>
           )}
-          {isMarket && (
-            <ExchangeInfoRow
-              className="SwapBox-info-row"
-              label={t`Entry Price`}
-              value={
-                <ValueTransition
-                  from={formatUsd(p.existingPosition?.entryPrice, {
-                    displayDecimals: existingPriceDecimals,
-                  })}
-                  to={formatUsd(nextPositionValues?.nextEntryPrice, {
-                    displayDecimals: toTokenPriceDecimals,
-                  })}
-                />
-              }
-            />
-          )}
-          {isLimit && (
-            <ExchangeInfoRow
-              isTop
-              className="SwapBox-info-row"
-              label={t`Mark Price`}
-              value={
-                formatUsd(markPrice, {
+
+          <ExchangeInfoRow
+            className="SwapBox-info-row"
+            label={t`Entry Price`}
+            value={
+              <ValueTransition
+                from={formatUsd(p.existingPosition?.entryPrice, {
+                  displayDecimals: existingPriceDecimals,
+                })}
+                to={formatUsd(nextPositionValues?.nextEntryPrice, {
                   displayDecimals: toTokenPriceDecimals,
-                }) || "-"
-              }
-            />
-          )}
+                })}
+              />
+            }
+          />
+
           {isLimit && (
             <ExchangeInfoRow
               className="SwapBox-info-row"
@@ -1029,18 +1064,18 @@ export function ConfirmationBox(p: Props) {
               }) || "-"
             }
           />
-          {isMarket && (
-            <ExchangeInfoRow
-              isTop
-              className="SwapBox-info-row"
-              label={t`Mark Price`}
-              value={
-                formatUsd(markPrice, {
-                  displayDecimals: toTokenPriceDecimals,
-                }) || "-"
-              }
-            />
-          )}
+
+          <ExchangeInfoRow
+            isTop
+            className="SwapBox-info-row"
+            label={t`Mark Price`}
+            value={
+              formatUsd(markPrice, {
+                displayDecimals: toTokenPriceDecimals,
+              }) || "-"
+            }
+          />
+
           <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Liq. Price`}
@@ -1239,6 +1274,12 @@ export function ConfirmationBox(p: Props) {
             </Checkbox>
           )}
 
+          {decreaseAmounts &&
+            renderAcceptablePriceImpactInput(
+              decreaseAmounts.positionPriceImpactDeltaUsd,
+              decreaseAmounts.acceptablePriceDeltaBps
+            )}
+
           <ExchangeInfoRow
             label={t`Trigger Price`}
             value={
@@ -1275,19 +1316,9 @@ export function ConfirmationBox(p: Props) {
 
           <ExchangeInfoRow
             className="SwapBox-info-row"
-            label={t`Acceptable Price Impact`}
-            value={
-              decreaseAmounts?.triggerOrderType === OrderType.StopLossDecrease
-                ? "NA"
-                : formatPercentage(decreaseAmounts?.acceptablePriceDeltaBps) || "-"
-            }
-          />
-
-          <ExchangeInfoRow
-            className="SwapBox-info-row"
             label={t`Acceptable Price`}
             value={
-              formatAcceptablePrice(fixedTriggerAcceptablePrice, {
+              formatAcceptablePrice(decreaseAmounts?.acceptablePrice, {
                 displayDecimals: toTokenPriceDecimals,
               }) || "-"
             }

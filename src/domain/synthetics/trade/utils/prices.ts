@@ -1,9 +1,9 @@
+import { BASIS_POINTS_DIVISOR, DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER } from "config/factors";
 import { getCappedPositionImpactUsd, getPriceImpactByAcceptablePrice } from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
 import { OrderType } from "domain/synthetics/orders";
 import { TokenPrices, convertToTokenAmount } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { applyFactor, expandDecimals, getBasisPoints, roundUpMagnitudeDivision } from "lib/numbers";
 import { TriggerThresholdType } from "../types";
 
@@ -13,6 +13,71 @@ export function getMarkPrice(p: { prices: TokenPrices; isIncrease: boolean; isLo
   const shouldUseMaxPrice = getShouldUseMaxPrice(isIncrease, isLong);
 
   return shouldUseMaxPrice ? prices.maxPrice : prices.minPrice;
+}
+
+export function getDefaultAcceptablePriceImpactBps(p: {
+  isIncrease: boolean;
+  isLong: boolean;
+  indexPrice: BigNumber;
+  sizeDeltaUsd: BigNumber;
+  priceImpactDeltaUsd: BigNumber;
+  acceptablePriceImapctBuffer?: number;
+}) {
+  const {
+    indexPrice,
+    sizeDeltaUsd,
+    priceImpactDeltaUsd,
+    acceptablePriceImapctBuffer = DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER,
+  } = p;
+
+  if (priceImpactDeltaUsd.gt(0)) {
+    return BigNumber.from(acceptablePriceImapctBuffer);
+  }
+
+  const baseAcceptablePriceValues = getAcceptablePriceByPriceImpact({
+    isIncrease: p.isIncrease,
+    isLong: p.isLong,
+    indexPrice,
+    sizeDeltaUsd,
+    priceImpactDeltaUsd,
+  });
+
+  if (baseAcceptablePriceValues.acceptablePriceDeltaBps.lt(0)) {
+    baseAcceptablePriceValues.acceptablePriceDeltaBps.abs().add(acceptablePriceImapctBuffer);
+  }
+
+  return BigNumber.from(acceptablePriceImapctBuffer);
+}
+
+export function getAcceptablePriceByPriceImpact(p: {
+  isIncrease: boolean;
+  isLong: boolean;
+  indexPrice: BigNumber;
+  sizeDeltaUsd: BigNumber;
+  priceImpactDeltaUsd: BigNumber;
+}) {
+  const { indexPrice, sizeDeltaUsd, priceImpactDeltaUsd } = p;
+
+  if (!sizeDeltaUsd.gt(0)) {
+    return {
+      acceptablePrice: indexPrice,
+      acceptablePriceDeltaBps: BigNumber.from(0),
+      priceDelta: BigNumber.from(0),
+    };
+  }
+
+  const shouldFlipPriceImpact = getShouldUseMaxPrice(p.isIncrease, p.isLong);
+
+  const priceImpactForPriceAdjustment = shouldFlipPriceImpact ? priceImpactDeltaUsd.mul(-1) : priceImpactDeltaUsd;
+  const acceptablePrice = indexPrice.mul(sizeDeltaUsd.add(priceImpactForPriceAdjustment)).div(sizeDeltaUsd);
+  const priceDelta = indexPrice.sub(acceptablePrice).mul(shouldFlipPriceImpact ? 1 : -1);
+  const acceptablePriceDeltaBps = getBasisPoints(priceDelta, p.indexPrice);
+
+  return {
+    acceptablePrice,
+    acceptablePriceDeltaBps,
+    priceDelta,
+  };
 }
 
 export function getAcceptablePriceInfo(p: {
@@ -93,60 +158,18 @@ export function getAcceptablePriceInfo(p: {
     );
   }
 
-  const priceImpactForPriceAdjustment = shouldFlipPriceImpact
-    ? values.priceImpactDeltaUsd.mul(-1)
-    : values.priceImpactDeltaUsd;
+  const acceptablePriceValues = getAcceptablePriceByPriceImpact({
+    isIncrease,
+    isLong,
+    indexPrice,
+    sizeDeltaUsd,
+    priceImpactDeltaUsd: values.priceImpactDeltaUsd,
+  });
 
-  values.acceptablePrice = indexPrice.mul(sizeDeltaUsd.add(priceImpactForPriceAdjustment)).div(sizeDeltaUsd);
-
-  const priceDelta = indexPrice.sub(values.acceptablePrice).mul(shouldFlipPriceImpact ? 1 : -1);
-
-  values.acceptablePriceDeltaBps = getBasisPoints(priceDelta, p.indexPrice);
+  values.acceptablePrice = acceptablePriceValues.acceptablePrice;
+  values.acceptablePriceDeltaBps = acceptablePriceValues.acceptablePriceDeltaBps;
 
   return values;
-}
-
-export function getAcceptablePrice(p: {
-  isIncrease: boolean;
-  isLong: boolean;
-  indexPrice: BigNumber;
-  priceImpactDeltaUsd?: BigNumber;
-  sizeDeltaUsd: BigNumber;
-  acceptablePriceImpactBps?: BigNumber;
-}) {
-  if (!p.sizeDeltaUsd?.gt(0)) {
-    return {
-      acceptablePrice: p.indexPrice,
-      priceDiffBps: BigNumber.from(0),
-    };
-  }
-
-  let acceptablePrice = p.indexPrice;
-  let priceDiffBps = p.acceptablePriceImpactBps || BigNumber.from(0);
-
-  const shouldFlipPriceImpact = getShouldUseMaxPrice(p.isIncrease, p.isLong);
-
-  if (priceDiffBps.abs().gt(0)) {
-    let priceDelta = p.indexPrice.mul(priceDiffBps).div(BASIS_POINTS_DIVISOR);
-    priceDelta = shouldFlipPriceImpact ? priceDelta?.mul(-1) : priceDelta;
-
-    acceptablePrice = p.indexPrice.sub(priceDelta);
-  } else if (p.priceImpactDeltaUsd?.abs().gt(0)) {
-    const priceImpactForPriceAdjustment = shouldFlipPriceImpact ? p.priceImpactDeltaUsd.mul(-1) : p.priceImpactDeltaUsd;
-    acceptablePrice = p.indexPrice.mul(p.sizeDeltaUsd.add(priceImpactForPriceAdjustment)).div(p.sizeDeltaUsd);
-
-    const priceDelta = p.indexPrice
-      .sub(acceptablePrice)
-      .abs()
-      .mul(p.priceImpactDeltaUsd.isNegative() ? -1 : 1);
-
-    priceDiffBps = getBasisPoints(priceDelta, p.indexPrice);
-  }
-
-  return {
-    acceptablePrice,
-    priceDiffBps,
-  };
 }
 
 export function applySlippageToPrice(allowedSlippage: number, price: BigNumber, isIncrease: boolean, isLong: boolean) {

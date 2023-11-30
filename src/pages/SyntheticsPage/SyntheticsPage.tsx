@@ -2,9 +2,8 @@ import { Plural, Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import Checkbox from "components/Checkbox/Checkbox";
 import Footer from "components/Footer/Footer";
-import { AcceptbablePriceImpactEditor } from "components/Synthetics/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor";
-import { Claims } from "components/Synthetics/Claims/Claims";
 import { ClaimModal } from "components/Synthetics/ClaimModal/ClaimModal";
+import { Claims } from "components/Synthetics/Claims/Claims";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEditor";
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
@@ -13,34 +12,30 @@ import { TVChart } from "components/Synthetics/TVChart/TVChart";
 import { TradeBox } from "components/Synthetics/TradeBox/TradeBox";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import Tab from "components/Tab/Tab";
-import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS, DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
-import { getAcceptablePriceImpactBpsKey, getSyntheticsListSectionKey } from "config/localStorage";
+import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
+import { getSyntheticsListSectionKey } from "config/localStorage";
 import { getToken } from "config/tokens";
 import { isSwapOrderType } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useOrdersInfo } from "domain/synthetics/orders/useOrdersInfo";
 import { PositionInfo, getPositionKey } from "domain/synthetics/positions";
 import { usePositionsInfo } from "domain/synthetics/positions/usePositionsInfo";
-import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { bigNumberify, formatUsd } from "lib/numbers";
+import { formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useCallback, useEffect, useMemo, useState } from "react";
+
+import { useMarketsInfo } from "domain/synthetics/markets";
 import Helmet from "react-helmet";
 
-import {
-  getMarketIndexName,
-  getMarketPoolName,
-  getTotalClaimableFundingUsd,
-  useMarketsInfo,
-} from "domain/synthetics/markets";
+import { SettleAccruedFundingFeeModal } from "components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal";
+import { getMarketIndexName, getMarketPoolName, getTotalClaimableFundingUsd } from "domain/synthetics/markets";
 import { TradeMode } from "domain/synthetics/trade";
 import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTradeOption";
 import { helperToast } from "lib/helperToast";
 import useWallet from "lib/wallets/useWallet";
-import { SettleAccruedFundingFeeModal } from "components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal";
 
 export type Props = {
   savedIsPnlInLeverage: boolean;
@@ -95,6 +90,7 @@ export function SyntheticsPage(p: Props) {
     positionsInfoData,
     tokensData,
   });
+  const [isSettling, setIsSettling] = useState(false);
 
   const {
     tradeType,
@@ -223,18 +219,6 @@ export function SyntheticsPage(p: Props) {
   }, [marketsInfoData]);
 
   const [isClaiming, setIsClaiming] = useState(false);
-  const [isSettling, setIsSettling] = useState(false);
-  const [isAcceptablePriceImpactEditing, setIsAcceptablePriceImpactEditing] = useState(false);
-
-  const [savedAcceptablePriceImpactBps, saveAcceptablePriceImpactBps] = useLocalStorageSerializeKey(
-    getAcceptablePriceImpactBpsKey(chainId),
-    DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS
-  );
-  const acceptablePriceImpactBps =
-    bigNumberify(savedAcceptablePriceImpactBps!) || BigNumber.from(DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS);
-  const onEditAcceptablePriceImpact = useCallback(() => {
-    return setIsAcceptablePriceImpactEditing(true);
-  }, []);
 
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
   let allowedSlippage = savedSlippageAmount!;
@@ -463,7 +447,6 @@ export function SyntheticsPage(p: Props) {
               existingPosition={selectedPosition}
               existingOrder={existingOrder}
               shouldDisableValidation={shouldDisableValidation}
-              acceptablePriceImpactBpsForLimitOrders={acceptablePriceImpactBps}
               allowedSlippage={allowedSlippage!}
               isHigherSlippageAllowed={isHigherSlippageAllowed}
               tokensData={tokensData}
@@ -477,7 +460,6 @@ export function SyntheticsPage(p: Props) {
               onSelectToTokenAddress={setToTokenAddress}
               onSelectTradeMode={setTradeMode}
               onSelectTradeType={setTradeType}
-              setIsEditingAcceptablePriceImpact={onEditAcceptablePriceImpact}
               setPendingTxns={setPendingTxns}
               switchTokenAddresses={switchTokenAddresses}
             />
@@ -558,13 +540,11 @@ export function SyntheticsPage(p: Props) {
         tokensData={tokensData}
         showPnlInLeverage={savedIsPnlInLeverage}
         onClose={onPositionSellerClose}
-        acceptablePriceImpactBps={acceptablePriceImpactBps}
         setPendingTxns={setPendingTxns}
         availableTokensOptions={availableTokensOptions}
         isHigherSlippageAllowed={isHigherSlippageAllowed}
         setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
         shouldDisableValidation={shouldDisableValidation}
-        onEditAcceptablePriceImpact={onEditAcceptablePriceImpact}
         tradeFlags={tradeFlags}
       />
 
@@ -576,13 +556,6 @@ export function SyntheticsPage(p: Props) {
         onClose={onPositionEditorClose}
         setPendingTxns={setPendingTxns}
         shouldDisableValidation={shouldDisableValidation}
-      />
-
-      <AcceptbablePriceImpactEditor
-        isVisible={isAcceptablePriceImpactEditing}
-        savedAcceptablePriceImpactBps={savedAcceptablePriceImpactBps!}
-        saveAcceptablePriceImpactBps={saveAcceptablePriceImpactBps}
-        onClose={() => setIsAcceptablePriceImpactEditing(false)}
       />
 
       <ClaimModal
