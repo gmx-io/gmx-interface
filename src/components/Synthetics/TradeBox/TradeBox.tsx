@@ -1478,7 +1478,7 @@ export function TradeBox(p: Props) {
                 />
               )}
 
-              {(isMarket || isLimit) && priceImpactWarningState.shouldShowWarning && (
+              {isMarket && priceImpactWarningState.shouldShowWarning && (
                 <>
                   <div className="App-card-divider" />
                   <HighPriceImpactWarning
