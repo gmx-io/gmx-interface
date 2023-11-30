@@ -17,7 +17,7 @@ export interface BitKeepWalletOptions {
   walletConnectOptions?: any;
 }
 
-export const bitGetWallet = ({
+export const bitgetWallet = ({
   chains,
   projectId,
   walletConnectOptions,
@@ -36,19 +36,19 @@ export const bitGetWallet = ({
   const shouldUseWalletConnect = !isBitKeepInjected;
 
   return {
-    id: "bitKeep",
+    id: "bitget",
     name: "Bitget Wallet",
-    iconUrl: async () => (await import("./bitGetWallet.svg")).default,
+    iconUrl: async () => (await import("./bitgetWallet.svg")).default,
     iconAccent: "#f6851a",
     iconBackground: "#fff",
     installed: !shouldUseWalletConnect ? isBitKeepInjected : undefined,
     downloadUrls: {
-      android: "https://bitkeep.com/en/download?type=2",
+      android: "https://web3.bitget.com/en/wallet-download?type=0",
       ios: "https://apps.apple.com/app/bitkeep/id1395301115",
-      mobile: "https://bitkeep.com/en/download?type=2",
-      qrCode: "https://bitkeep.com/en/download",
+      mobile: "https://web3.bitget.com/en/wallet-download?type=2",
+      qrCode: "https://web3.bitget.com/en/wallet-download",
       chrome: "https://chrome.google.com/webstore/detail/bitkeep-crypto-nft-wallet/jiidiaalihmmhddjgbnbgdfflelocpak",
-      browserExtension: "https://bitkeep.com/en/download",
+      browserExtension: "https://web3.bitget.com/en/wallet-download",
     },
 
     createConnector: () => {
@@ -78,12 +78,12 @@ export const bitGetWallet = ({
         connector,
         extension: {
           instructions: {
-            learnMoreUrl: "https://study.bitkeep.com",
+            learnMoreUrl: "https://web3.bitget.com/en/academy",
             steps: [
               {
-                description: "We recommend pinning BitKeep to your taskbar for quicker access to your wallet.",
+                description: "We recommend pinning Bitget Wallet to your taskbar for quicker access to your wallet.",
                 step: "install",
-                title: "Install the BitKeep extension",
+                title: "Install the Bitget Wallet extension",
               },
               {
                 description:
@@ -107,12 +107,12 @@ export const bitGetWallet = ({
           ? {
               getUri: async () => getWalletConnectUri(connector, walletConnectVersion),
               instructions: {
-                learnMoreUrl: "https://study.bitkeep.com",
+                learnMoreUrl: "https://web3.bitget.com/en/academy",
                 steps: [
                   {
-                    description: "We recommend putting BitKeep on your home screen for quicker access.",
+                    description: "We recommend putting Bitget Wallet on your home screen for quicker access.",
                     step: "install",
-                    title: "Open the BitKeep app",
+                    title: "Open the Bitget Wallet app",
                   },
                   {
                     description:

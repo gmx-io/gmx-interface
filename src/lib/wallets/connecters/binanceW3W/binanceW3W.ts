@@ -26,7 +26,7 @@ export default function binanceW3W({
   ...options
 }: BinanceW3WOptions & InjectedConnectorOptions): Wallet {
   const shouldUseWalletConnect = !isInBinance();
-
+  const provider = typeof window !== "undefined" && isInBinance() ? window.ethereum : undefined;
   return {
     id: "binanceW3w",
     name: "BinanceW3W",
@@ -51,7 +51,9 @@ export default function binanceW3W({
           })
         : new InjectedConnector({
             chains,
-            options,
+            options: {
+              getProvider: () => provider,
+            },
           });
 
       const getUri = async () => {
