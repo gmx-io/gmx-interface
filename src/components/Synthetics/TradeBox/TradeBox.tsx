@@ -425,18 +425,18 @@ export function TradeBox(p: Props) {
       uiFeeFactor,
     });
   }, [
-    closeSizeUsd,
-    collateralToken,
-    existingPosition,
-    selectedTriggerAcceptablePriceImpactBps,
-    isLong,
     isTrigger,
-    keepLeverage,
+    closeSizeUsd,
     marketInfo,
+    collateralToken,
     minCollateralUsd,
     minPositionSizeUsd,
-    savedAcceptablePriceImpactBuffer,
+    isLong,
+    existingPosition,
+    keepLeverage,
     triggerPrice,
+    selectedTriggerAcceptablePriceImpactBps,
+    savedAcceptablePriceImpactBuffer,
     userReferralInfo,
     uiFeeFactor,
   ]);
@@ -815,8 +815,13 @@ export function TradeBox(p: Props) {
     }
 
     if (isLimit && increaseAmounts?.acceptablePrice) {
+      const positionPriceImpactBps = fees?.positionPriceImpact?.bps;
+      const priceImpactBps = positionPriceImpactBps?.lt(0)
+        ? increaseAmounts.acceptablePriceDeltaBps.abs().add(positionPriceImpactBps.abs())
+        : increaseAmounts.acceptablePriceDeltaBps.abs();
+
       setSelectedAcceptablePriceImapctBps(increaseAmounts.acceptablePriceDeltaBps.abs());
-      setDefaultTriggerAcceptablePriceImapctBps(increaseAmounts.acceptablePriceDeltaBps.abs());
+      setDefaultTriggerAcceptablePriceImapctBps(priceImpactBps);
     }
 
     setStage("confirmation");

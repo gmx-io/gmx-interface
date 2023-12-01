@@ -955,9 +955,9 @@ export function ConfirmationBox(p: Props) {
           highValue={defaultValue + 1}
           lowValue={defaultValue}
           highValueWarningText={t`You have set a high Acceptable Price Impact. Please verify Acceptable Price of the order.`}
-          lowValueWarningText={t`The Current Price Impact is ${formatDeltaUsd(
-            currentImpactDeltaUsd
-          )}%. Consider adding a buffer of 0.3% to it so the order is more likely to be processed.`}
+          lowValueWarningText={t`The Current Price Impact is ${formatPercentage(
+            fees.positionPriceImpact?.bps
+          )}. Consider adding a buffer of 0.3% to it so the order is more likely to be processed.`}
         />
       </ExchangeInfoRow>
     );
