@@ -3654,7 +3654,6 @@ msgid "Price"
 msgstr "Price"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Price Impact"
@@ -4717,10 +4716,13 @@ msgstr "The Bonus Rebate will be airdropped as ARB tokens on a pro-rata basis. <
 msgid "The Boosted APR is from your staked Multiplier Points."
 msgstr "The Boosted APR is from your staked Multiplier Points."
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "The Current Price Impact is {0}%. Consider adding a buffer of 0.3% to it so the order is more likely to be processed."
 msgstr "The Current Price Impact is {0}%. Consider adding a buffer of 0.3% to it so the order is more likely to be processed."
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.3% to it so the order is more likely to be processed."
+msgstr "The Current Price Impact is {0}. Consider adding a buffer of 0.3% to it so the order is more likely to be processed."
 
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met."

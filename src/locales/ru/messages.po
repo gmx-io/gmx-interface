@@ -3651,7 +3651,6 @@ msgid "Price"
 msgstr "Цена"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Price Impact"
@@ -4714,9 +4713,12 @@ msgstr ""
 msgid "The Boosted APR is from your staked Multiplier Points."
 msgstr "Повышенный APR рассчитывается из поставленных вами Баллов Множителя."
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "The Current Price Impact is {0}%. Consider adding a buffer of 0.3% to it so the order is more likely to be processed."
+msgstr ""
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.3% to it so the order is more likely to be processed."
 msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
