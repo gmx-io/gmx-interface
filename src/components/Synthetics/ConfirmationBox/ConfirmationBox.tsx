@@ -947,7 +947,7 @@ export function ConfirmationBox(p: Props) {
       setSelectedTriggerAcceptablePriceImapctBps(BigNumber.from(value));
     };
     const lowValueWarningText = fees.positionPriceImpact?.bps.gte(0)
-      ? t`Recommended Acceptable Price impact is 0.3% so the order is more likely to be processed.`
+      ? t`Recommended Acceptable Price Impact is 0.3% so the order is more likely to be processed.`
       : t`The Current Price Impact is ${formatPercentage(
           fees.positionPriceImpact?.bps
         )}. Consider adding a buffer of 0.3% to it so the order is more likely to be processed.`;
@@ -980,6 +980,15 @@ export function ConfirmationBox(p: Props) {
     );
   }
 
+  function renderLeverage(from: BigNumber | undefined, to: BigNumber | undefined, emptyValue = false) {
+    return (
+      <ExchangeInfoRow
+        label={t`Leverage`}
+        value={emptyValue ? "-" : <ValueTransition from={formatLeverage(from)} to={formatLeverage(to) ?? "-"} />}
+      />
+    );
+  }
+
   function renderIncreaseOrderSection() {
     if (!marketInfo || !fromToken || !collateralToken || !toToken) {
       return null;
@@ -1008,16 +1017,7 @@ export function ConfirmationBox(p: Props) {
           {renderExistingTriggerWarning()}
           {renderDifferentTokensWarning()}
           {isLimit && renderAvailableLiquidity()}
-          <ExchangeInfoRow
-            className="SwapBox-info-row"
-            label={t`Leverage`}
-            value={
-              <ValueTransition
-                from={formatLeverage(existingPosition?.leverage)}
-                to={formatLeverage(nextPositionValues?.nextLeverage) || "-"}
-              />
-            }
-          />
+          {renderLeverage(existingPosition?.leverage, nextPositionValues?.nextLeverage)}
           <div className="line-divider" />
           {isMarket && renderAllowedSlippage(savedAllowedSlippage, setAllowedSlippage)}
           {isMarket && collateralSpreadInfo?.spread && (
@@ -1381,21 +1381,13 @@ export function ConfirmationBox(p: Props) {
             />
           )}
 
-          {!p.keepLeverage && p.existingPosition?.leverage && (
-            <ExchangeInfoRow
-              label={t`Leverage`}
-              value={
-                nextPositionValues?.nextSizeUsd?.gt(0) ? (
-                  <ValueTransition
-                    from={formatLeverage(p.existingPosition?.leverage)}
-                    to={formatLeverage(nextPositionValues.nextLeverage) || "-"}
-                  />
-                ) : (
-                  "-"
-                )
-              }
-            />
-          )}
+          {!p.keepLeverage &&
+            p.existingPosition?.leverage &&
+            renderLeverage(
+              existingPosition?.leverage,
+              nextPositionValues?.nextLeverage,
+              nextPositionValues?.nextSizeUsd?.lte(0)
+            )}
           {existingPosition && (
             <ExchangeInfoRow
               label={t`PnL`}
