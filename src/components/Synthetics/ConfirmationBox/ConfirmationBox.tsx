@@ -325,7 +325,7 @@ export function ConfirmationBox(p: Props) {
   }, [fixedTriggerOrderType, isLimit, isLong, isMarket, isSwap]);
 
   const submitButtonState = useMemo(() => {
-    if (!isLimit && priceImpactWarningState.shouldAcceptPriceImpactWarningInModal) {
+    if (priceImpactWarningState.shouldAcceptPriceImpactWarningInModal) {
       return {
         text: "Price Impact not yet acknowledged",
         disabled: true,
@@ -376,6 +376,7 @@ export function ConfirmationBox(p: Props) {
       disabled: false,
     };
   }, [
+    isLimit,
     priceImpactWarningState.shouldAcceptPriceImpactWarningInModal,
     isSubmitting,
     error,
@@ -384,7 +385,6 @@ export function ConfirmationBox(p: Props) {
     decreaseOrdersThatWillBeExecuted.length,
     isTriggerWarningAccepted,
     isMarket,
-    isLimit,
     fromToken?.assetSymbol,
     fromToken?.symbol,
     isSwap,
