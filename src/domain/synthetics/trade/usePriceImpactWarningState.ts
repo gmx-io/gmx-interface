@@ -47,7 +47,7 @@ export function usePriceImpactWarningState({
       (isHighPositionImpact && !isHighPositionImpactAccepted && !tradeFlags.isSwap) ||
       (isHighSwapImpact && !isHighSwapImpactAccepted && tradeFlags.isSwap);
 
-    const shouldShowWarning = !tradeFlags.isLimit && (isHighPositionImpact || isHighSwapImpact);
+    const shouldShowWarning = isHighPositionImpact || isHighSwapImpact;
 
     return {
       isHighPositionImpact,
@@ -65,7 +65,6 @@ export function usePriceImpactWarningState({
     isHighPositionImpactAccepted,
     isHighSwapImpact,
     isHighSwapImpactAccepted,
-    tradeFlags.isLimit,
     tradeFlags.isSwap,
   ]);
 }

@@ -246,7 +246,7 @@ export function getIncreaseError(p: {
     return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
   }
 
-  if (!isLimit && priceImpactWarning.shouldAcceptPriceImpactWarningInTradeBox) {
+  if (priceImpactWarning.shouldAcceptPriceImpactWarningInTradeBox) {
     return [t`Price Impact not yet acknowledged`];
   }
 
