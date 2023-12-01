@@ -2497,7 +2497,6 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -3845,6 +3844,14 @@ msgstr "受け取り側でこれまでGLPトークンをステークしたこと
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Receiver has not staked GMX tokens before"
 msgstr "受け取り側でこれまでGMXトークンをステークしたことはありません"
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "Recommended Acceptable Price Impact is 0.3% so the order is more likely to be processed."
+msgstr ""
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#~ msgid "Recommended Acceptable Price impact is 0.3% so the order is more likely to be processed."
+#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Redemption time not yet reached"
