@@ -73,6 +73,7 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionSeller.scss";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
+import { useLatestValueRef } from "lib/useLatestValueRef";
 
 export type Props = {
   position?: PositionInfo;
@@ -415,18 +416,23 @@ export function PositionSeller(p: Props) {
       .finally(() => setIsSubmitting(false));
   }
 
+  const setIsHighPositionImpactAcceptedLatestRef = useLatestValueRef(
+    priceImpactWarningState.setIsHighPositionImpactAccepted
+  );
+  const setIsHighSwapImpactAcceptedLatestRef = useLatestValueRef(priceImpactWarningState.setIsHighSwapImpactAccepted);
+
   useEffect(
     function resetForm() {
       if (!isVisible !== prevIsVisible) {
         setCloseUsdInputValue("");
-        priceImpactWarningState.setIsHighPositionImpactAccepted(false);
-        priceImpactWarningState.setIsHighSwapImpactAccepted(false);
+        setIsHighPositionImpactAcceptedLatestRef.current(false);
+        setIsHighSwapImpactAcceptedLatestRef.current(false);
         setTriggerPriceInputValue("");
         setReceiveTokenAddress(undefined);
         setOrderOption(OrderOption.Market);
       }
     },
-    [isVisible, prevIsVisible, priceImpactWarningState]
+    [isVisible, prevIsVisible, setIsHighPositionImpactAcceptedLatestRef, setIsHighSwapImpactAcceptedLatestRef]
   );
 
   useEffect(
