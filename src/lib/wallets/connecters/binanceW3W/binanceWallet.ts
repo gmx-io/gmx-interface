@@ -38,8 +38,8 @@ export default function binanceWallet({
     downloadUrls: {
       android: "https://play.google.com/store/apps/details?id=com.binance.dev",
       ios: "https://apps.apple.com/us/app/binance-buy-bitcoin-crypto/id1436799971",
-      mobile: "https://www.binance.com/en-DB/download",
-      qrCode: "https://www.binance.com/en-DB/download",
+      mobile: "https://www.binance.com/en/download",
+      qrCode: "https://www.binance.com/en/download",
     },
 
     createConnector: () => {
