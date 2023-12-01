@@ -512,13 +512,6 @@ export function PositionSeller(p: Props) {
     />
   );
 
-  const priceImpactRow = (
-    <ExchangeInfoRow
-      label={t`Price Impact`}
-      value={formatPercentage(decreaseAmounts?.acceptablePriceDeltaBps, { signed: true }) || "-"}
-    />
-  );
-
   const acceptablePriceImpactRow = (() => {
     if (!decreaseAmounts) {
       return;
@@ -770,7 +763,6 @@ export function PositionSeller(p: Props) {
                   {allowedSlippageRow}
                   {markPriceRow}
                   {entryPriceRow}
-                  {priceImpactRow}
                   {acceptablePriceRow}
                   {liqPriceRow}
                   {sizeRow}
