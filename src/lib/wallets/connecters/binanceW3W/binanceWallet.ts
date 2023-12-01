@@ -1,7 +1,7 @@
 import type { InjectedConnectorOptions } from "@wagmi/core/connectors/injected";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { Chain, Wallet, getWalletConnectConnector } from "@rainbow-me/rainbowkit";
-import { getWalletConnectUri, isAndroid } from "../helper";
+import { getWalletConnectUri } from "../helper";
 import { getHref } from "@binance/w3w-utils";
 
 const isInBinance = () => {
@@ -61,8 +61,7 @@ export default function binanceWallet({
 
       const getUriMobile = async () => {
         const uri = await getWalletConnectUri(connector, walletConnectVersion);
-        // return isAndroid() ? uri : `bnc://wc?uri=${encodeURIComponent(uri)}`;
-        return getHref(isAndroid(), uri);
+        return getHref(true, uri);
       };
 
       const getUriQR = async () => {
