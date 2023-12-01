@@ -61,6 +61,7 @@ export function getDecreasePositionAmounts(p: {
     indexPrice: BigNumber.from(0),
     collateralPrice: BigNumber.from(0),
     triggerPrice: BigNumber.from(0),
+    executionPrice: BigNumber.from(0),
     acceptablePrice: BigNumber.from(0),
 
     positionPriceImpactDeltaUsd: BigNumber.from(0),
@@ -349,6 +350,10 @@ export function getDecreasePositionAmounts(p: {
   }
 
   values.receiveUsd = convertToUsd(values.receiveTokenAmount, collateralToken.decimals, values.collateralPrice)!;
+
+  if (isTrigger) {
+    values.executionPrice = values.triggerPrice?.add(values.positionPriceImpactDeltaUsd);
+  }
 
   return values;
 }

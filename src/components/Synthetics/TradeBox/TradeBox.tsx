@@ -1314,6 +1314,15 @@ export function TradeBox(p: Props) {
       <>
         <ExchangeInfoRow
           className="SwapBox-info-row"
+          label={t`Execution Price`}
+          value={`${decreaseAmounts?.triggerThresholdType || ""} ${
+            formatUsd(decreaseAmounts?.executionPrice, {
+              displayDecimals: toToken?.priceDecimals,
+            }) || "-"
+          }`}
+        />
+        <ExchangeInfoRow
+          className="SwapBox-info-row"
           label={t`Trigger Price`}
           value={`${decreaseAmounts?.triggerThresholdType || ""} ${
             formatUsd(decreaseAmounts?.triggerPrice, {

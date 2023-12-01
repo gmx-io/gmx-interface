@@ -1319,6 +1319,17 @@ export function ConfirmationBox(p: Props) {
             />
           )}
 
+          {decreaseAmounts && (
+            <ExchangeInfoRow
+              label={t`Execution Price`}
+              value={
+                formatUsd(decreaseAmounts.executionPrice, {
+                  displayDecimals: indexToken?.priceDecimals,
+                }) || "-"
+              }
+            />
+          )}
+
           <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Acceptable Price`}

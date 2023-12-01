@@ -75,6 +75,7 @@ export type DecreasePositionAmounts = {
   indexPrice: BigNumber;
   collateralPrice: BigNumber;
   triggerPrice?: BigNumber;
+  executionPrice?: BigNumber;
   acceptablePrice: BigNumber;
   acceptablePriceDeltaBps: BigNumber;
 
