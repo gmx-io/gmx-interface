@@ -1279,12 +1279,6 @@ export function ConfirmationBox(p: Props) {
             </Checkbox>
           )}
 
-          {decreaseAmounts &&
-            renderAcceptablePriceImpactInput(
-              decreaseAmounts.positionPriceImpactDeltaUsd,
-              decreaseAmounts.acceptablePriceDeltaBps
-            )}
-
           <ExchangeInfoRow
             label={t`Trigger Price`}
             value={
@@ -1329,6 +1323,13 @@ export function ConfirmationBox(p: Props) {
               }
             />
           )}
+
+          {decreaseAmounts &&
+            decreaseAmounts.triggerOrderType !== OrderType.StopLossDecrease &&
+            renderAcceptablePriceImpactInput(
+              decreaseAmounts.positionPriceImpactDeltaUsd,
+              decreaseAmounts.acceptablePriceDeltaBps
+            )}
 
           <ExchangeInfoRow
             className="SwapBox-info-row"
