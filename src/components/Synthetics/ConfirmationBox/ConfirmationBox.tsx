@@ -1018,13 +1018,8 @@ export function ConfirmationBox(p: Props) {
               />
             }
           />
+          <div className="line-divider" />
           {isMarket && renderAllowedSlippage(savedAllowedSlippage, setAllowedSlippage)}
-          {isLimit &&
-            increaseAmounts &&
-            renderAcceptablePriceImpactInput(
-              increaseAmounts.positionPriceImpactDeltaUsd,
-              increaseAmounts.acceptablePriceDeltaBps
-            )}
           {isMarket && collateralSpreadInfo?.spread && (
             <ExchangeInfoRow label={t`Collateral Spread`} isWarning={swapSpreadInfo.isHigh} isTop={true}>
               {formatAmount(collateralSpreadInfo.spread.mul(100), USD_DECIMALS, 2, true)}%
@@ -1067,6 +1062,12 @@ export function ConfirmationBox(p: Props) {
               }) || "-"
             }
           />
+          {isLimit &&
+            increaseAmounts &&
+            renderAcceptablePriceImpactInput(
+              increaseAmounts.positionPriceImpactDeltaUsd,
+              increaseAmounts.acceptablePriceDeltaBps
+            )}
 
           <ExchangeInfoRow
             isTop
