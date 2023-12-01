@@ -1775,6 +1775,8 @@ msgstr "Execute {orderTypeName} Order: {positionText} {sizeDeltaText},"
 msgid "Execution Fee"
 msgstr "Execution Fee"
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Execution Price"
