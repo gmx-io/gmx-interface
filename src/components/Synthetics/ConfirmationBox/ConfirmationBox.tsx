@@ -946,6 +946,11 @@ export function ConfirmationBox(p: Props) {
     const setValue = (value) => {
       setSelectedTriggerAcceptablePriceImapctBps(BigNumber.from(value));
     };
+    const lowValueWarningText = fees.positionPriceImpact?.bps.gte(0)
+      ? t`Recommended Acceptable Price impact is 0.3% so the order is more likely to be processed.`
+      : t`The Current Price Impact is ${formatPercentage(
+          fees.positionPriceImpact?.bps
+        )}. Consider adding a buffer of 0.3% to it so the order is more likely to be processed.`;
 
     return (
       <ExchangeInfoRow label={t`Acceptable Price Impact`}>
@@ -955,9 +960,7 @@ export function ConfirmationBox(p: Props) {
           highValue={defaultValue + 1}
           lowValue={defaultValue}
           highValueWarningText={t`You have set a high Acceptable Price Impact. Please verify Acceptable Price of the order.`}
-          lowValueWarningText={t`The Current Price Impact is ${formatPercentage(
-            fees.positionPriceImpact?.bps
-          )}. Consider adding a buffer of 0.3% to it so the order is more likely to be processed.`}
+          lowValueWarningText={lowValueWarningText}
         />
       </ExchangeInfoRow>
     );
