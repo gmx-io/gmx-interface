@@ -81,6 +81,7 @@ export default function PercentageInput({
           onBlur={() => setIsPanelVisible(false)}
           value={!!inputValue ? inputValue : ""}
           placeholder={inputValue || defaultValueText}
+          autoComplete="off"
           onChange={handleChange}
         />
         <label htmlFor="slippage-input">
