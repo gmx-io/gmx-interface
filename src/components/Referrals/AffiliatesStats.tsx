@@ -470,13 +470,9 @@ function AffiliatesStats({
                     const explorerURL = getExplorerUrl(chainId);
                     return (
                       <tr key={index}>
-                        <td className="table-head" data-label="Date">
-                          {formatDate(rebate.timestamp)}
-                        </td>
-                        <td className="table-head" data-label="Type">
-                          {rebateType}
-                        </td>
-                        <td className="table-head" data-label="Amount">
+                        <td data-label="Date">{formatDate(rebate.timestamp)}</td>
+                        <td data-label="Type">{rebateType}</td>
+                        <td data-label="Amount">
                           <Tooltip
                             handle={
                               <div className="Rebate-amount-value">
@@ -526,7 +522,7 @@ function AffiliatesStats({
                             )}
                           />
                         </td>
-                        <td className="table-head" data-label="Transaction">
+                        <td data-label="Transaction">
                           <ExternalLink href={explorerURL + `tx/${rebate.transactionHash}`}>
                             {shortenAddress(rebate.transactionHash, 13)}
                           </ExternalLink>

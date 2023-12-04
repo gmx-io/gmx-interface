@@ -5,6 +5,9 @@ import { isDevelopment } from "./env";
 
 const { parseEther } = ethers.utils;
 
+export const ENV_ARBITRUM_RPC_URLS = process.env.REACT_APP_ARBITRUM_RPC_URLS;
+export const ENV_AVALANCHE_RPC_URLS = process.env.REACT_APP_AVALANCHE_RPC_URLS;
+
 export const BCS_MAINNET = 56;
 export const BCS_TESTNET = 97;
 export const ETH_MAINNET = 1;
@@ -13,6 +16,7 @@ export const AVALANCHE_FUJI = 43113;
 export const ARBITRUM = 42161;
 export const ARBITRUM_GOERLI = 421613;
 export const FEES_HIGH_BPS = 50;
+export const DEFAULT_ALLOWED_SLIPPAGE_BPS = 30;
 
 // TODO take it from web3
 export const DEFAULT_CHAIN_ID = ARBITRUM;
@@ -198,8 +202,10 @@ export const RPC_PROVIDERS = {
 };
 
 export const FALLBACK_PROVIDERS = {
-  [ARBITRUM]: [getAlchemyHttpUrl()],
-  [AVALANCHE]: ["https://avax-mainnet.gateway.pokt.network/v1/lb/626f37766c499d003aada23b"],
+  [ARBITRUM]: ENV_ARBITRUM_RPC_URLS ? JSON.parse(ENV_ARBITRUM_RPC_URLS) : [getAlchemyHttpUrl()],
+  [AVALANCHE]: ENV_AVALANCHE_RPC_URLS
+    ? JSON.parse(ENV_AVALANCHE_RPC_URLS)
+    : ["https://avax-mainnet.gateway.pokt.network/v1/lb/626f37766c499d003aada23b"],
   [AVALANCHE_FUJI]: [
     "https://endpoints.omniatech.io/v1/avax/fuji/public",
     "https://api.avax-test.network/ext/bc/C/rpc",

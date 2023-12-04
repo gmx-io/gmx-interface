@@ -6,10 +6,19 @@ import "./Tooltip.scss";
 const OPEN_DELAY = 0;
 const CLOSE_DELAY = 100;
 
+export type TooltipPosition =
+  | "left-bottom"
+  | "right-bottom"
+  | "left-top"
+  | "right-top"
+  | "right"
+  | "center-bottom"
+  | "center-top";
+
 type Props = {
   handle: React.ReactNode;
   renderContent: () => React.ReactNode;
-  position?: string;
+  position?: TooltipPosition;
   trigger?: string;
   className?: string;
   disableHandleStyle?: boolean;

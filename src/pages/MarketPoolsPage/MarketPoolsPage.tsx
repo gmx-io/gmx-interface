@@ -38,7 +38,7 @@ export function MarketPoolsPage(p: Props) {
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
   const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
 
-  const { marketsTokensAPRData } = useMarketTokensAPR(chainId);
+  const { marketsTokensAPRData, marketsTokensIncentiveAprData } = useMarketTokensAPR(chainId);
 
   const [operation, setOperation] = useState<Operation>(Operation.Deposit);
   let [mode, setMode] = useState<Mode>(Mode.Single);
@@ -71,8 +71,16 @@ export function MarketPoolsPage(p: Props) {
             </Trans>
           }
         />
+
         <div className="MarketPoolsPage-content">
-          <MarketStats marketsTokensAPRData={marketsTokensAPRData} marketInfo={marketInfo} marketToken={marketToken} />
+          <MarketStats
+            marketsTokensAPRData={marketsTokensAPRData}
+            marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
+            marketTokensData={depositMarketTokensData}
+            marketsInfoData={marketsInfoData}
+            marketInfo={marketInfo}
+            marketToken={marketToken}
+          />
 
           <div className="MarketPoolsPage-swap-box" ref={gmSwapBoxRef}>
             <GmSwapBox
@@ -98,6 +106,7 @@ export function MarketPoolsPage(p: Props) {
         </div>
         <GmList
           marketsTokensAPRData={marketsTokensAPRData}
+          marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
           marketTokensData={depositMarketTokensData}
           marketsInfoData={marketsInfoData}
           tokensData={tokensData}

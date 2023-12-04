@@ -1,10 +1,11 @@
+import { TooltipPosition } from "components/Tooltip/Tooltip";
 import { ReactElement, ReactNode } from "react";
 
 export type TableHeader = {
   title: string;
   className?: string;
   tooltip?: string | (() => ReactNode);
-  tooltipPosition?: string;
+  tooltipPosition?: TooltipPosition;
   onClick?: () => void;
   width?: number | ((breakpoint?: string) => number);
 };

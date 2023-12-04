@@ -184,16 +184,14 @@ function parsePositionsInfo(
       closingFeeUsd,
       pendingFundingFeesUsd,
       pendingClaimableFundingFeesUsd: BigNumber.from(0), // not used,
+      uiFeeUsd: BigNumber.from(0), // not used,
     };
   }
 
   return positionsMap;
 }
 
-export function usePositionsInfo(
-  positionKeys: string[],
-  marketPrices: ContractMarketPrices[]
-): PositionsResult {
+export function usePositionsInfo(positionKeys: string[], marketPrices: ContractMarketPrices[]): PositionsResult {
   const { chainId } = useChainId();
   const { minCollateralUsd } = usePositionsConstants(chainId);
   const { marketsInfoData, tokensData, pricesUpdatedAt } = useMarketsInfo(chainId);

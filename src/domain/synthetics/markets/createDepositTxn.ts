@@ -7,6 +7,8 @@ import { SetPendingDeposit } from "context/SyntheticsEvents";
 import { applySlippageToMinOut } from "../trade";
 import { simulateExecuteOrderTxn } from "../orders/simulateExecuteOrderTxn";
 import { TokensData } from "../tokens";
+import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
+import { t } from "@lingui/macro";
 
 type Params = {
   account: string;
@@ -78,7 +80,7 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Param
           shouldUnwrapNativeToken: shouldUnwrapNativeToken,
           executionFee: p.executionFee,
           callbackGasLimit: BigNumber.from(0),
-          uiFeeReceiver: ethers.constants.AddressZero,
+          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.constants.AddressZero,
         },
       ],
     },
@@ -89,12 +91,14 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Param
     .map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
 
   if (!p.skipSimulation) {
-    await simulateExecuteOrderTxn(chainId, signer, {
+    await simulateExecuteOrderTxn(chainId, {
+      account: p.account,
       primaryPriceOverrides: {},
       secondaryPriceOverrides: {},
       tokensData: p.tokensData,
       createOrderMulticallPayload: encodedPayload,
       method: "simulateExecuteDeposit",
+      errorTitle: t`Deposit error.`,
       value: wntAmount,
     });
   }
