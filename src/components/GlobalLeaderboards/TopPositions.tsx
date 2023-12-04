@@ -22,6 +22,7 @@ import {
   RemoteData,
 } from "domain/synthetics/leaderboards";
 import { TopPositionsSkeleton } from "components/Skeleton/Skeleton";
+import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 
 type TopPositionsProps = {
   positions: RemoteData<OpenPosition>;
@@ -74,110 +75,123 @@ export default function TopPositions({ positions, search }: TopPositionsProps) {
   );
 
   const parseRow = useCallback(
-    (p: Ranked<OpenPosition>, i: number): TopPositionsRow => ({
-      key: p.key,
-      rank: {
-        value: () => <span className={cx(p.rank < 3 && `LeaderboardRank-${p.rank + 1}`)}>{p.rank + 1}</span>,
-      },
-      account: {
-        value: (breakpoint) => (
-          <AddressView size={24} address={p.account} breakpoint={breakpoint} lengths={{ S: 9, M: 11, L: 20, XL: 25 }} />
-        ),
-      },
-      unrealizedPnl: {
-        className: signedValueClassName(p.unrealizedPnlAfterFees),
-        value: (p.unrealizedPnlAfterFees && formatDelta(p.unrealizedPnlAfterFees, { signed: true, prefix: "$" })) || "",
-      },
-      position: {
-        className: "TopPositionsPositionCell",
-        value: () => (
-          <Tooltip
-            handle={
-              <span className="TopPositionsPositionView">
-                <TokenIcon
-                  className="PositionList-token-icon"
-                  symbol={p.marketInfo.indexToken.symbol}
-                  displaySize={20}
-                  importSize={24}
-                />
-                <span className="TopPositionsSymbol">{p.marketInfo.indexToken.symbol}</span>
-                <span className={cx("TopPositionsDirection", p.isLong ? "positive" : "negative")}>
-                  {p.isLong ? t`Long` : t`Short`}
+    (p: Ranked<OpenPosition>, i: number): TopPositionsRow => {
+      const indexName = getMarketIndexName(p.marketInfo);
+      const poolName = getMarketPoolName(p.marketInfo);
+      return {
+        key: p.key,
+        rank: {
+          value: () => <span className={cx(p.rank < 3 && `LeaderboardRank-${p.rank + 1}`)}>{p.rank + 1}</span>,
+        },
+        account: {
+          value: (breakpoint) => (
+            <AddressView
+              size={24}
+              address={p.account}
+              breakpoint={breakpoint}
+              lengths={{ S: 9, M: 11, L: 20, XL: 25 }}
+            />
+          ),
+        },
+        unrealizedPnl: {
+          className: signedValueClassName(p.unrealizedPnlAfterFees),
+          value:
+            (p.unrealizedPnlAfterFees && formatDelta(p.unrealizedPnlAfterFees, { signed: true, prefix: "$" })) || "",
+        },
+        position: {
+          className: "TopPositionsPositionCell",
+          value: () => (
+            <Tooltip
+              handle={
+                <span className="TopPositionsPositionView">
+                  <TokenIcon
+                    className="PositionList-token-icon"
+                    symbol={p.marketInfo.indexToken.symbol}
+                    displaySize={20}
+                    importSize={24}
+                  />
+                  <span className="TopPositionsSymbol">{p.marketInfo.indexToken.symbol}</span>
+                  <span className={cx("TopPositionsDirection", p.isLong ? "positive" : "negative")}>
+                    {p.isLong ? t`Long` : t`Short`}
+                  </span>
                 </span>
-              </span>
-            }
-            position={i > 7 ? "right-top" : "right-bottom"}
-            className="nowrap"
-            renderContent={() => (
-              <>
-                <span className="TopPositionsMarketName">{p.marketInfo.name}</span>
-                <span className={cx(p.isLong ? "positive" : "negative")}>{p.isLong ? t`Long` : t`Short`}</span>
-              </>
-            )}
-          />
-        ),
-      },
-      entryPrice: {
-        value: formatPrice(p.entryPrice, chainId, p.marketInfo.indexToken.symbol) || "",
-      },
-      size: {
-        value: () => (
-          <Tooltip
-            handle={formatUsd(p.sizeInUsd) || ""}
-            position={i > 7 ? "right-top" : "right-bottom"}
-            className="nowrap"
-            renderContent={() => (
-              <StatsTooltipRow
-                label={t`Collateral`}
-                showDollar={false}
-                value={<span>{formatUsd(p.collateralAmountUsd) || ""}</span>}
-              />
-            )}
-          />
-        ),
-      },
-      leverage: { value: formatLeverage(p.leverage) || "" },
-      liqPrice: {
-        value: () => (
-          <Tooltip
-            handle={
-              p.liquidationPrice ? formatPrice(p.liquidationPrice, chainId, p.marketInfo.indexToken.symbol) : "NA"
-            }
-            position={i > 7 ? "right-top" : "right-bottom"}
-            className="nowrap"
-            renderContent={() =>
-              p.liquidationPrice ? (
+              }
+              position={i > 7 ? "right-top" : "right-bottom"}
+              className="nowrap"
+              renderContent={() => (
                 <>
-                  <StatsTooltipRow
-                    label={t`Mark Price`}
-                    showDollar={false}
-                    value={<span>{formatPrice(p.markPrice, chainId, p.marketInfo.indexToken.symbol)}</span>}
-                  />
-                  <StatsTooltipRow
-                    label={t`Price change to Liq.`}
-                    showDollar={false}
-                    value={
-                      <span>
-                        {p.liquidationPriceDelta && p.liquidationPriceDeltaRel
-                          ? formatDeltaUsd(p.liquidationPriceDelta, p.liquidationPriceDeltaRel, {
-                              maxThreshold: "1000000",
-                              hidePercentageAfterThreshold: true,
-                            })
-                          : ""}
-                      </span>
-                    }
-                  />
+                  <div className="items-top mr-xs lh-1">
+                    <span>{indexName}</span>
+                    <span className="subtext">[{poolName}]</span>
+                  </div>
+                  <span className={cx(p.isLong ? "positive" : "negative")}>{p.isLong ? t`Long` : t`Short`}</span>
                 </>
-              ) : (
-                <div className="NoLiqPriceTooltip">
-                  {t`No Liquidation Price as the Position's Collateral value will increase to cover any negative PnL.`}
-                </div>
-              )
-            }
-          />
-        ),
-      },
-    }),
+              )}
+            />
+          ),
+        },
+        entryPrice: {
+          value: formatPrice(p.entryPrice, chainId, p.marketInfo.indexToken.symbol) || "",
+        },
+        size: {
+          value: () => (
+            <Tooltip
+              handle={formatUsd(p.sizeInUsd) || ""}
+              position={i > 7 ? "right-top" : "right-bottom"}
+              className="nowrap"
+              renderContent={() => (
+                <StatsTooltipRow
+                  label={t`Collateral`}
+                  showDollar={false}
+                  value={<span>{formatUsd(p.collateralAmountUsd) || ""}</span>}
+                />
+              )}
+            />
+          ),
+        },
+        leverage: { value: formatLeverage(p.leverage) || "" },
+        liqPrice: {
+          value: () => (
+            <Tooltip
+              handle={
+                p.liquidationPrice ? formatPrice(p.liquidationPrice, chainId, p.marketInfo.indexToken.symbol) : "NA"
+              }
+              position={i > 7 ? "right-top" : "right-bottom"}
+              className="nowrap"
+              renderContent={() =>
+                p.liquidationPrice ? (
+                  <>
+                    <StatsTooltipRow
+                      label={t`Mark Price`}
+                      showDollar={false}
+                      value={<span>{formatPrice(p.markPrice, chainId, p.marketInfo.indexToken.symbol)}</span>}
+                    />
+                    <StatsTooltipRow
+                      label={t`Price change to Liq.`}
+                      showDollar={false}
+                      value={
+                        <span>
+                          {p.liquidationPriceDelta && p.liquidationPriceDeltaRel
+                            ? formatDeltaUsd(p.liquidationPriceDelta, p.liquidationPriceDeltaRel, {
+                                maxThreshold: "1000000",
+                                hidePercentageAfterThreshold: true,
+                              })
+                            : ""}
+                        </span>
+                      }
+                    />
+                  </>
+                ) : (
+                  <div className="NoLiqPriceTooltip">
+                    {t`No Liquidation Price as the Position's Collateral value will increase to cover any negative PnL.`}
+                  </div>
+                )
+              }
+            />
+          ),
+        },
+      };
+    },
     [chainId]
   );
 

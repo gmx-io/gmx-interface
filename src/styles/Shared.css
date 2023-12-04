@@ -455,6 +455,10 @@ button.btn-link:hover .logout-icon {
   font-size: var(--font-base);
 }
 
+.mr-xs {
+  margin-right: 0.5rem;
+}
+
 .mr-sm {
   margin-right: 1rem;
 }
