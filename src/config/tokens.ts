@@ -9,7 +9,7 @@ import {
   SEPOLIA_TESTNET,
   TESTNET,
   OPTIMISM_GOERLI_TESTNET,
-  OPTIMISM_MAINNET
+  OPTIMISM_MAINNET,
 } from "./chains";
 import { Token } from "domain/tokens";
 
@@ -383,17 +383,17 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
     },
-    {
-      name: "USD Gambit",
-      symbol: "USDG",
-      decimals: 18,
-      address: "0x8a070eF00F054a217501574cAb37c77C2F5A4bb9",
-      isUsdg: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/15886/small/usdg-02.png",
-    },
+    // {
+    //   name: "USD Gambit",
+    //   symbol: "USDG",
+    //   decimals: 18,
+    //   address: "0x8a070eF00F054a217501574cAb37c77C2F5A4bb9",
+    //   isUsdg: true,
+    //   imageUrl: "https://assets.coingecko.com/coins/images/15886/small/usdg-02.png",
+    // },
     {
       name: "Wrapped Ethereum (WETH)",
-      symbol: "ETH",
+      symbol: "WETH",
       address: "0xCe46c87Df4E73952358f6a46590147Ac5f262787",
       isWrapped: true,
       decimals: 18,
@@ -989,7 +989,7 @@ const CHAIN_IDS = [
   AVALANCHE_FUJI,
   SEPOLIA_TESTNET,
   OPTIMISM_GOERLI_TESTNET,
-  OPTIMISM_MAINNET
+  OPTIMISM_MAINNET,
 ];
 
 for (let j = 0; j < CHAIN_IDS.length; j++) {
@@ -1076,8 +1076,8 @@ const AVAILABLE_CHART_TOKENS = {
   [ARBITRUM]: ["ETH", "BTC", "LINK", "UNI"],
   [AVALANCHE]: ["AVAX", "ETH", "BTC"],
   [SEPOLIA_TESTNET]: ["ETH", "BTC", "LINK"],
-  [OPTIMISM_GOERLI_TESTNET] : ["ETH", "LINK"],
-  [OPTIMISM_MAINNET] : ["ETH", "BTC", "LINK"]
+  [OPTIMISM_GOERLI_TESTNET]: ["ETH", "LINK"],
+  [OPTIMISM_MAINNET]: ["ETH", "BTC", "LINK"],
 };
 
 export function isChartAvailabeForToken(chainId: number, tokenSymbol: string) {
