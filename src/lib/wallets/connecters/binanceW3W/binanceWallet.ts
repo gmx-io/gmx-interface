@@ -2,15 +2,7 @@ import type { InjectedConnectorOptions } from "@wagmi/core/connectors/injected";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { Chain, Wallet, getWalletConnectConnector } from "@rainbow-me/rainbowkit";
 import { getWalletConnectUri } from "../helper";
-import { getHref } from "@binance/w3w-utils";
-
-const isInBinance = () => {
-  try {
-    return (window as any)?.ethereum?.isBinance === true;
-  } catch (error) {
-    return false;
-  }
-};
+import { getHref, isInBinance } from "@binance/w3w-utils";
 
 export interface BinanceW3WOptions {
   projectId: string;
