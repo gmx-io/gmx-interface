@@ -7,7 +7,6 @@ import { getHref, isInBinance } from "@binance/w3w-utils";
 export interface BinanceW3WOptions {
   projectId: string;
   chains: Chain[];
-  walletConnectVersion?: "2";
   walletConnectOptions?: any;
 }
 
@@ -15,7 +14,6 @@ export default function binanceWallet({
   chains,
   projectId,
   walletConnectOptions,
-  walletConnectVersion = "2",
   ...options
 }: BinanceW3WOptions & InjectedConnectorOptions): Wallet {
   const shouldUseWalletConnect = !isInBinance();
@@ -40,7 +38,7 @@ export default function binanceWallet({
             chains,
             options: walletConnectOptions,
             projectId,
-            version: walletConnectVersion,
+            version: "2",
             ...options,
           })
         : new InjectedConnector({
@@ -52,12 +50,12 @@ export default function binanceWallet({
           });
 
       const getUriMobile = async () => {
-        const uri = await getWalletConnectUri(connector, walletConnectVersion);
+        const uri = await getWalletConnectUri(connector, "2");
         return getHref(true, uri);
       };
 
       const getUriQR = async () => {
-        const uri = await getWalletConnectUri(connector, walletConnectVersion);
+        const uri = await getWalletConnectUri(connector, "2");
         return uri;
       };
 
