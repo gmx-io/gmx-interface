@@ -1499,7 +1499,7 @@ export function TradeBox(p: Props) {
                     priceImpactWarinigState={priceImpactWarningState}
                     className="PositionEditor-allow-higher-slippage"
                     tradeFlags={tradeFlags}
-                    place="tradebox"
+                    place="tradeBox"
                   />
                 </>
               )}

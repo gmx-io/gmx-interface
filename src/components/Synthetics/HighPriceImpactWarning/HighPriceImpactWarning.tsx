@@ -7,7 +7,7 @@ export type Props = {
   priceImpactWarinigState: PriceImpactWarningState;
   className?: string;
   tradeFlags: TradeFlags;
-  place: "tradebox" | "modal";
+  place: "tradeBox" | "positionSeller" | "confimationBox";
 };
 
 export function HighPriceImpactWarning({ priceImpactWarinigState, className, tradeFlags, place }: Props) {
@@ -17,8 +17,11 @@ export function HighPriceImpactWarning({ priceImpactWarinigState, className, tra
 
   const shouldShowSwapImpact =
     priceImpactWarinigState.isHighSwapImpact &&
-    ((place === "tradebox" && !tradeFlags.isSwap) || (place === "modal" && tradeFlags.isSwap));
-  const shouldShowPriceImpact = priceImpactWarinigState.isHighPositionImpact && place === "modal" && !tradeFlags.isSwap;
+    ((place === "tradeBox" && !tradeFlags.isSwap) ||
+      (place === "confimationBox" && tradeFlags.isSwap) ||
+      place === "positionSeller");
+  const shouldShowPriceImpact =
+    priceImpactWarinigState.isHighPositionImpact && place === "confimationBox" && !tradeFlags.isSwap;
 
   return (
     <div className={className}>

@@ -975,7 +975,7 @@ export function ConfirmationBox(p: Props) {
         <HighPriceImpactWarning
           priceImpactWarinigState={priceImpactWarningState}
           tradeFlags={tradeFlags}
-          place="modal"
+          place="confimationBox"
         />
       </>
     );

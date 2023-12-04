@@ -823,7 +823,7 @@ export function PositionSeller(p: Props) {
                   priceImpactWarinigState={priceImpactWarningState}
                   className="PositionSeller-price-impact-warning"
                   tradeFlags={tradeFlags}
-                  place="modal"
+                  place="positionSeller"
                 />
               </>
             )}
