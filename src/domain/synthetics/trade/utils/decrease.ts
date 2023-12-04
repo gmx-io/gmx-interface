@@ -25,6 +25,7 @@ export function getDecreasePositionAmounts(p: {
   userReferralInfo: UserReferralInfo | undefined;
   minCollateralUsd: BigNumber;
   minPositionSizeUsd: BigNumber;
+  uiFeeFactor: BigNumber;
 }) {
   const {
     marketInfo,
@@ -38,6 +39,7 @@ export function getDecreasePositionAmounts(p: {
     userReferralInfo,
     minCollateralUsd,
     minPositionSizeUsd,
+    uiFeeFactor,
   } = p;
   const { indexToken } = marketInfo;
 
@@ -62,6 +64,8 @@ export function getDecreasePositionAmounts(p: {
     realizedPnl: BigNumber.from(0),
 
     positionFeeUsd: BigNumber.from(0),
+    uiFeeUsd: BigNumber.from(0),
+    swapUiFeeUsd: BigNumber.from(0),
     borrowingFeeUsd: BigNumber.from(0),
     fundingFeeUsd: BigNumber.from(0),
     feeDiscountUsd: BigNumber.from(0),
@@ -131,9 +135,11 @@ export function getDecreasePositionAmounts(p: {
 
     values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
     values.feeDiscountUsd = positionFeeInfo.discountUsd;
+    values.uiFeeUsd = applyFactor(values.sizeDeltaUsd, uiFeeFactor);
 
     const totalFeesUsd = BigNumber.from(0)
       .add(values.positionFeeUsd)
+      .add(values.uiFeeUsd)
       .add(values.positionPriceImpactDeltaUsd.lt(0) ? values.positionPriceImpactDeltaUsd : 0);
 
     values.payedOutputUsd = totalFeesUsd;
@@ -225,6 +231,7 @@ export function getDecreasePositionAmounts(p: {
 
   values.positionFeeUsd = estimatedPositionFeeCost.usd;
   values.feeDiscountUsd = estimatedDiscountCost.usd;
+  values.uiFeeUsd = applyFactor(values.sizeDeltaUsd, uiFeeFactor);
 
   const borrowFeeCost = estimateCollateralCost(
     position.pendingBorrowingFeesUsd,
@@ -252,6 +259,7 @@ export function getDecreasePositionAmounts(p: {
     });
 
     values.swapProfitFeeUsd = swapProfitStats.swapFeeUsd.add(swapProfitStats.priceImpactDeltaUsd.mul(-1));
+    values.swapUiFeeUsd = applyFactor(swapProfitStats.usdIn, uiFeeFactor);
   } else {
     values.swapProfitFeeUsd = BigNumber.from(0);
   }
@@ -266,6 +274,8 @@ export function getDecreasePositionAmounts(p: {
     .add(values.borrowingFeeUsd)
     .add(values.fundingFeeUsd)
     .add(values.swapProfitFeeUsd)
+    .add(values.swapUiFeeUsd)
+    .add(values.uiFeeUsd)
     .add(negativePnlUsd)
     .add(negativePriceImpactUsd)
     .add(priceImpactDiffUsd);

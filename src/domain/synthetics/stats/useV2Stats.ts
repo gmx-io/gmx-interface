@@ -17,7 +17,7 @@ type DashboardOverview = {
   totalUsers: BigNumber;
 };
 
-export default function useDashboardOverview(chainId: number): DashboardOverview {
+export default function useV2Stats(chainId: number): DashboardOverview {
   const volumeInfo = useVolumeInfo(chainId);
   const feesInfo = useFeesInfo(chainId);
   const { marketsInfoData } = useMarketsInfo(chainId);

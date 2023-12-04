@@ -28,6 +28,7 @@ import { CHART_PERIODS } from "lib/legacy";
 import { FaAngleRight } from "react-icons/fa";
 import { useMedia } from "react-use";
 import "./PositionItem.scss";
+import { Fragment } from "react";
 
 export type Props = {
   position: PositionInfo;
@@ -45,6 +46,7 @@ export type Props = {
   currentCollateralAddress?: string;
   currentTradeType?: TradeType;
   openSettings: () => void;
+  onGetPendingFeesClick: () => void;
 };
 
 export function PositionItem(p: Props) {
@@ -71,7 +73,9 @@ export function PositionItem(p: Props) {
         handleClassName="plain"
         renderContent={() => (
           <div>
-            {t`Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee`}
+            {p.position.uiFeeUsd.gt(0)
+              ? t`Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee`
+              : t`Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee`}
             <br />
             <br />
             <StatsTooltipRow
@@ -107,6 +111,14 @@ export function PositionItem(p: Props) {
               value={formatUsd(p.position.closingFeeUsd?.mul(-1)) || "..."}
               className="text-red"
             />
+            {p.position.uiFeeUsd.gt(0) && (
+              <StatsTooltipRow
+                label={t`UI Fee`}
+                showDollar={false}
+                value={formatUsd(p.position.uiFeeUsd.mul(-1))}
+                className="text-red"
+              />
+            )}
             <br />
             <StatsTooltipRow
               label={t`PnL After Fees`}
@@ -162,7 +174,10 @@ export function PositionItem(p: Props) {
                           {formatTokenAmount(
                             p.position.collateralAmount,
                             p.position.collateralToken.decimals,
-                            p.position.collateralToken.symbol
+                            p.position.collateralToken.symbol,
+                            {
+                              useCommas: true,
+                            }
                           )}{" "}
                           ({formatUsd(p.position.collateralUsd)})
                         </div>
@@ -230,12 +245,15 @@ export function PositionItem(p: Props) {
           )}
         </div>
 
-        <div className="Exchange-list-info-label Position-collateral-amount  muted">
-          {formatTokenAmount(
+        <div className="Exchange-list-info-label Position-collateral-amount muted">
+          {`(${formatTokenAmount(
             p.position.remainingCollateralAmount,
             p.position.collateralToken?.decimals,
-            p.position.collateralToken?.symbol
-          )}
+            p.position.collateralToken?.symbol,
+            {
+              useCommas: true,
+            }
+          )})`}
         </div>
 
         {!p.isLarge && (
@@ -310,12 +328,56 @@ export function PositionItem(p: Props) {
     return formatLiquidationPrice(p.position.liquidationPrice, { displayDecimals: indexPriceDecimals }) || "...";
   }
 
-  function renderPositionOrders() {
+  function renderOrderText(order: PositionOrderInfo) {
+    const triggerThresholdType = getTriggerThresholdType(order.orderType, order.isLong);
+    const isIncrease = isIncreaseOrderType(order.orderType);
+    return (
+      <div key={order.key}>
+        {isDecreaseOrderType(order.orderType) ? getTriggerNameByOrderType(order.orderType, true) : t`Limit`}:{" "}
+        {triggerThresholdType}{" "}
+        {formatUsd(order.triggerPrice, {
+          displayDecimals: order.indexToken?.priceDecimals,
+        })}
+        :{" "}
+        <span>
+          {isIncrease ? "+" : "-"}
+          {formatUsd(order.sizeDeltaUsd)}
+        </span>
+      </div>
+    );
+  }
+
+  function renderPositionOrders(isSmall = false) {
     if (positionOrders.length === 0) return null;
 
     const ordersErrorList = positionOrders.filter((order) => order.errorLevel === "error");
     const ordersWarningsList = positionOrders.filter((order) => order.errorLevel === "warning");
     const hasErrors = ordersErrorList.length + ordersWarningsList.length > 0;
+
+    if (isSmall) {
+      return positionOrders.map((order) => {
+        if (hasErrors) {
+          return (
+            <div key={order.key} className="Position-list-order">
+              <Tooltip
+                className="order-error"
+                handle={renderOrderText(order)}
+                position="right-bottom"
+                handleClassName="plain"
+                renderContent={() =>
+                  order.errors.map((error) => (
+                    <span key={error.msg} className="negative mb-xs">
+                      {error.msg}
+                    </span>
+                  ))
+                }
+              />
+            </div>
+          );
+        }
+        return <div className="Position-list-order">{renderOrderText(order)}</div>;
+      });
+    }
 
     return (
       <div onClick={p.onOrdersClick}>
@@ -343,49 +405,31 @@ export function PositionItem(p: Props) {
             "clickable",
             "text-gray",
           ])}
-          renderContent={() => {
-            return (
-              <>
-                <strong>
-                  <Trans>Active Orders</Trans>
-                </strong>
-                {positionOrders.map((order) => {
-                  const errors = order.errors;
-                  const triggerThresholdType = getTriggerThresholdType(order.orderType, order.isLong);
-                  const isIncrease = isIncreaseOrderType(order.orderType);
-                  return (
-                    <div key={order.key} className="Position-list-order active-order-tooltip">
-                      <div className="Position-list-order-label">
-                        <span>
-                          {isDecreaseOrderType(order.orderType)
-                            ? getTriggerNameByOrderType(order.orderType, true)
-                            : t`Limit`}
-                          : {triggerThresholdType}{" "}
-                          {formatUsd(order.triggerPrice, {
-                            displayDecimals: order.indexToken?.priceDecimals,
-                          })}
-                          :{" "}
-                          <span>
-                            {isIncrease ? "+" : "-"}
-                            {formatUsd(order.sizeDeltaUsd)}
-                          </span>
-                        </span>
-                        <FaAngleRight fontSize={14} />
-                      </div>
-                      {errors.map((err, i) => (
-                        <>
-                          <div key={err.msg} className={cx("order-error-text", `level-${err.level}`)}>
-                            {err.msg}
-                          </div>
-                          {i < errors.length - 1 && <br />}
-                        </>
-                      ))}
+          renderContent={() => (
+            <>
+              <strong>
+                <Trans>Active Orders</Trans>
+              </strong>
+              {positionOrders.map((order) => {
+                const errors = order.errors;
+                return (
+                  <div key={order.key} className="Position-list-order active-order-tooltip">
+                    <div className="Position-list-order-label">
+                      {renderOrderText(order)}
+                      <FaAngleRight fontSize={14} />
                     </div>
-                  );
-                })}
-              </>
-            );
-          }}
+
+                    {errors.map((err, i) => (
+                      <Fragment key={err.msg}>
+                        <div className={cx("order-error-text", `level-${err.level}`)}>{err.msg}</div>
+                        {i < errors.length - 1 && <br />}
+                      </Fragment>
+                    ))}
+                  </div>
+                );
+              })}
+            </>
+          )}
         />
       </div>
     );
@@ -588,7 +632,7 @@ export function PositionItem(p: Props) {
               <div onClick={() => p.onSelectPositionClick?.()}>
                 <div className="items-top">
                   <span>{indexName && indexName}</span>
-                  <span className="subtext lh-1">{poolName && `[${poolName}]`}</span>
+                  <span className="subtext">{poolName && `[${poolName}]`}</span>
                 </div>
               </div>
             </div>
@@ -625,7 +669,7 @@ export function PositionItem(p: Props) {
               <div className="label">
                 <Trans>Collateral</Trans>
               </div>
-              <div className="position-list-collateral">{renderCollateral()}</div>
+              <div className="position-list-collateral items-center">{renderCollateral()}</div>
             </div>
           </div>
           <div className="App-card-divider" />
@@ -664,41 +708,42 @@ export function PositionItem(p: Props) {
             </div>
             <div>
               {!p.positionOrders?.length && "None"}
-              {renderPositionOrders()}
+              {renderPositionOrders(true)}
             </div>
           </div>
           {!p.hideActions && (
             <>
-              <div className="App-card-divider"></div>
-              <div className="remove-top-margin">
-                <Button
-                  variant="secondary"
-                  className="mr-md mt-md"
-                  disabled={p.position.sizeInUsd.eq(0)}
-                  onClick={p.onClosePositionClick}
-                >
-                  <Trans>Close</Trans>
-                </Button>
-                <Button
-                  variant="secondary"
-                  className="mr-md mt-md"
-                  disabled={p.position.sizeInUsd.eq(0)}
-                  onClick={p.onEditCollateralClick}
-                >
-                  <Trans>Edit Collateral</Trans>
-                </Button>
-                <Button
-                  variant="secondary"
-                  className="mt-md"
-                  disabled={p.position.sizeInUsd.eq(0)}
-                  onClick={() => {
-                    // TODO: remove after adding trigger functionality to Modal
-                    window.scrollTo({ top: isMobile ? 500 : 0 });
-                    p.onSelectPositionClick?.(TradeMode.Trigger);
-                  }}
-                >
-                  <Trans>Trigger</Trans>
-                </Button>
+              <div className="App-card-divider" />
+              <div className="Position-item-action">
+                <div className="Position-item-buttons">
+                  <Button variant="secondary" disabled={p.position.sizeInUsd.eq(0)} onClick={p.onClosePositionClick}>
+                    <Trans>Close</Trans>
+                  </Button>
+                  <Button variant="secondary" disabled={p.position.sizeInUsd.eq(0)} onClick={p.onEditCollateralClick}>
+                    <Trans>Edit Collateral</Trans>
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    disabled={p.position.sizeInUsd.eq(0)}
+                    onClick={() => {
+                      // TODO: remove after adding trigger functionality to Modal
+                      window.scrollTo({ top: isMobile ? 500 : 0 });
+                      p.onSelectPositionClick?.(TradeMode.Trigger);
+                    }}
+                  >
+                    <Trans>TP/SL</Trans>
+                  </Button>
+                </div>
+                <div>
+                  {!p.position.isOpening && !p.hideActions && (
+                    <PositionDropdown
+                      handleMarketSelect={() => p.onSelectPositionClick?.()}
+                      handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market)}
+                      handleShare={p.onShareClick}
+                      handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit)}
+                    />
+                  )}
+                </div>
               </div>
             </>
           )}
