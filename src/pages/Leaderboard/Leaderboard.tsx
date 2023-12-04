@@ -6,6 +6,7 @@ import GloballLeaderboards from "components/GlobalLeaderboards/GlobalLeaderboard
 import PageTitle from "components/PageTitle/PageTitle";
 
 import "./Leaderboard.css";
+import Footer from "components/Footer/Footer";
 
 export default function Leaderboard() {
   return (
@@ -14,6 +15,7 @@ export default function Leaderboard() {
         <PageTitle isTop title={t`Leaderboard`} subtitle={<Trans>Leaderboard for traders on GMX V2.</Trans>} />
         <GloballLeaderboards />
       </div>
+      <Footer />
     </SEO>
   );
 }
