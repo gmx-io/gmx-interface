@@ -513,6 +513,10 @@ button.btn-link:hover .logout-icon {
   margin: 0 0.5rem;
 }
 
+.my-xs {
+  margin: 0.5rem 0;
+}
+
 .my-sm {
   margin: 1rem 0;
 }

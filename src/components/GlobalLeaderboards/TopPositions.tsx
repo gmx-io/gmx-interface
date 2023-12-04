@@ -21,6 +21,7 @@ import {
   Ranked,
   RemoteData,
 } from "domain/synthetics/leaderboards";
+import { TopPositionsSkeleton } from "components/Skeleton/Skeleton";
 
 type TopPositionsProps = {
   positions: RemoteData<OpenPosition>;
@@ -80,7 +81,7 @@ export default function TopPositions({ positions, search }: TopPositionsProps) {
       },
       account: {
         value: (breakpoint) => (
-          <AddressView size={24} address={p.account} breakpoint={breakpoint} lengths={{ S: 9, M: 11, L: 20, XL: 25 }}/>
+          <AddressView size={24} address={p.account} breakpoint={breakpoint} lengths={{ S: 9, M: 11, L: 20, XL: 25 }} />
         ),
       },
       unrealizedPnl: {
@@ -189,7 +190,8 @@ export default function TopPositions({ positions, search }: TopPositionsProps) {
   const titles: { [k in keyof TopPositionsRow]?: TableHeader } = {
     rank: { title: t`Rank`, width: 6 },
     account: {
-      title: t`Address`, width: (p = "XL") => ({ XL: 26, L: 22, M: 16, S: 10 }[p] || 26),
+      title: t`Address`,
+      width: (p = "XL") => ({ XL: 26, L: 22, M: 16, S: 10 }[p] || 26),
       tooltip: t`Only Addresses' Positions with over $1,000 in traded volume are displayed.`,
       tooltipPosition: "left-bottom",
     },
@@ -236,6 +238,7 @@ export default function TopPositions({ positions, search }: TopPositionsProps) {
         titles={titles}
         rowKey={"key"}
         className="TopPositionsLeaderboard"
+        Loader={() => <TopPositionsSkeleton count={15} />}
       />
       <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
     </div>

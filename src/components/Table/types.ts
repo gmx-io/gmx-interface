@@ -17,6 +17,7 @@ export type TableProps<T extends Record<string, any>> = {
   titles: { [key in keyof T]?: TableHeader };
   rowKey: keyof T;
   className?: string;
+  Loader?: () => ReactElement;
 };
 
 export type TableCellData = {

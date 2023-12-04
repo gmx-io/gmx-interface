@@ -19,6 +19,7 @@ import {
   LiveAccountPerformance,
   RemoteData,
 } from "domain/synthetics/leaderboards";
+import { TopAccountsSkeleton } from "components/Skeleton/Skeleton";
 
 const parseRow = (s: Ranked<LiveAccountPerformance>, i: number): TopAccountsRow => ({
   key: s.id,
@@ -163,7 +164,8 @@ export default function TopAccounts({ accounts, search }: TopAccountsProps) {
   const titles: { [key in keyof TopAccountsRow]?: TableHeader } = {
     rank: { title: t`Rank`, width: 6 },
     account: {
-      title: t`Address`, width: (p = "XL") => ({ XL: 40, L: 36, M: 16, S: 10 }[p] || 40),
+      title: t`Address`,
+      width: (p = "XL") => ({ XL: 40, L: 36, M: 16, S: 10 }[p] || 40),
       tooltip: t`Only Addresses with over $1,000 in traded volume are displayed.`,
       tooltipPosition: "left-bottom",
     },
@@ -215,7 +217,14 @@ export default function TopAccounts({ accounts, search }: TopAccountsProps) {
 
   return (
     <div>
-      <Table isLoading={isLoading} error={error} content={rows} titles={titles} rowKey={"key"} />
+      <Table
+        isLoading={isLoading}
+        error={error}
+        content={rows}
+        titles={titles}
+        rowKey={"key"}
+        Loader={() => <TopAccountsSkeleton count={15} />}
+      />
       <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
     </div>
   );

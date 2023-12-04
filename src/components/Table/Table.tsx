@@ -8,6 +8,14 @@ import { TableCellData, TableCellProps, TableHeaderProps, TableProps } from "./t
 import "./Table.css";
 import { createBreakpoint } from "react-use";
 
+function DefaultLoaderComponent({ cols }: { cols: number }) {
+  return (
+    <tr>
+      <td colSpan={cols}>{t`Loading...`}</td>
+    </tr>
+  );
+}
+
 export default function Table<T extends Record<string, any>>({
   isLoading,
   error,
@@ -15,6 +23,7 @@ export default function Table<T extends Record<string, any>>({
   titles,
   rowKey,
   className,
+  Loader,
 }: TableProps<T>) {
   let errorMsg: string | null = null;
   if (error) {
@@ -23,6 +32,37 @@ export default function Table<T extends Record<string, any>>({
   const useBreakpoint = createBreakpoint({ XL: 1200, L: 1000, M: 800, S: 500 });
   const breakpoint = useBreakpoint();
   const cols = Object.keys(titles).length;
+
+  function renderContent() {
+    if (isLoading) {
+      return Loader ? <Loader /> : <DefaultLoaderComponent cols={cols} />;
+    }
+
+    if (error) {
+      return (
+        <tr>
+          <td colSpan={cols}>{t`Error` + ": " + errorMsg}</td>
+        </tr>
+      );
+    }
+
+    if (!content.length) {
+      return (
+        <tr>
+          <td colSpan={cols}>{t`No data yet`}</td>
+        </tr>
+      );
+    }
+
+    return content.map((row: T) => (
+      <tr key={row[rowKey]}>
+        {Object.keys(titles).map((k) => (
+          <TableCell key={`${row[rowKey]}_${k}`} breakpoint={breakpoint} data={row[k]} />
+        ))}
+      </tr>
+    ));
+  }
+
   return (
     <div className="TableBox">
       <table className={cx("Exchange-list", "App-box", "Table", className)}>
@@ -34,27 +74,7 @@ export default function Table<T extends Record<string, any>>({
                 <TableHeader key={`table_header_${k}`} breakpoint={breakpoint} data={v!} />
               ))}
           </tr>
-          {isLoading ? (
-            <tr>
-              <td colSpan={cols}>{t`Loading...`}</td>
-            </tr>
-          ) : error ? (
-            <tr>
-              <td colSpan={cols}>{t`Error` + ": " + errorMsg}</td>
-            </tr>
-          ) : !content.length ? (
-            <tr>
-              <td colSpan={cols}>{t`No data yet`}</td>
-            </tr>
-          ) : (
-            content.map((row: T) => (
-              <tr key={row[rowKey]}>
-                {Object.keys(titles).map((k) => (
-                  <TableCell key={`${row[rowKey]}_${k}`} breakpoint={breakpoint} data={row[k]} />
-                ))}
-              </tr>
-            ))
-          )}
+          {renderContent()}
         </tbody>
       </table>
     </div>
