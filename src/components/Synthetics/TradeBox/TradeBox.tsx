@@ -714,6 +714,7 @@ export function TradeBox(p: Props) {
         priceImpactWarning: priceImpactWarningState,
         isNotEnoughReceiveTokenLiquidity: false,
         fixedTriggerThresholdType: stage === "confirmation" ? fixedTriggerThresholdType : undefined,
+        place: "tradeBox",
       });
     }
 

@@ -269,6 +269,7 @@ export function getDecreaseError(p: {
   priceImpactWarning: PriceImpactWarningState;
   isNotEnoughReceiveTokenLiquidity: boolean;
   fixedTriggerThresholdType: TriggerThresholdType | undefined;
+  place: "tradeBox" | "positionSeller";
 }) {
   const {
     marketInfo,
@@ -286,6 +287,7 @@ export function getDecreaseError(p: {
     isNotEnoughReceiveTokenLiquidity,
     priceImpactWarning,
     fixedTriggerThresholdType,
+    place,
   } = p;
 
   if (isContractAccount && isAddressZero(receiveToken?.address)) {
@@ -345,7 +347,11 @@ export function getDecreaseError(p: {
     return [t`Insufficient receive token liquidity`];
   }
 
-  if (!isTrigger && priceImpactWarning.shouldAcceptPriceImpactWarningInTradeBox) {
+  if (place === "tradeBox" && !isTrigger && priceImpactWarning.shouldAcceptPriceImpactWarningInTradeBox) {
+    return [t`Price Impact not yet acknowledged`];
+  }
+
+  if (place === "positionSeller" && !isTrigger && priceImpactWarning.shouldAcceptPriceImpactWarningInModal) {
     return [t`Price Impact not yet acknowledged`];
   }
 

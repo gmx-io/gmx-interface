@@ -21,7 +21,8 @@ export function HighPriceImpactWarning({ priceImpactWarinigState, className, tra
       (place === "confimationBox" && tradeFlags.isSwap) ||
       place === "positionSeller");
   const shouldShowPriceImpact =
-    priceImpactWarinigState.isHighPositionImpact && place === "confimationBox" && !tradeFlags.isSwap;
+    priceImpactWarinigState.isHighPositionImpact &&
+    ((place === "confimationBox" && !tradeFlags.isSwap) || place === "positionSeller");
 
   return (
     <div className={className}>

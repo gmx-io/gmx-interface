@@ -331,6 +331,7 @@ export function PositionSeller(p: Props) {
       minCollateralUsd,
       priceImpactWarning: priceImpactWarningState,
       isNotEnoughReceiveTokenLiquidity,
+      place: "positionSeller",
     });
 
     if (commonError[0] || decreaseError[0]) {
