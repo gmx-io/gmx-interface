@@ -29,7 +29,7 @@ function formatFundingRate(fundingRate?: BigNumber) {
     return "-";
   }
 
-  const sign = fundingRate.isNegative() ? "-" : "+";
+  const sign = fundingRate.isZero() ? "" : fundingRate.isNegative() ? "-" : "+";
 
   return `${sign}${formatAmount(fundingRate.mul(100).abs(), 30, 4)}%`;
 }

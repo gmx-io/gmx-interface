@@ -185,7 +185,12 @@ export function formatDeltaUsd(
     return undefined;
   }
 
-  let sign = deltaUsd?.gte(0) ? "+" : "-";
+  let sign = "";
+  if (!deltaUsd.eq(0)) {
+    sign = deltaUsd?.gt(0) ? "+" : "-";
+  } else if (opts.showPlusForZero) {
+    sign = "+";
+  }
 
   const exceedingInfo = getLimitedDisplay(deltaUsd, USD_DECIMALS);
   const percentageStr = percentage ? ` (${sign}${formatPercentage(percentage.abs())})` : "";
