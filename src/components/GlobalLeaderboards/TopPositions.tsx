@@ -217,6 +217,7 @@ export default function TopPositions({ positions, search }: TopPositionsProps) {
         Account: item.account,
         "Unrealized PnL": formatDelta(item.unrealizedPnlAfterFees, { signed: true, prefix: "$" }),
         "Index Token": item.marketInfo.indexToken.symbol,
+        Side: item.isLong ? "Long" : "Short",
         "Entry Price": formatPrice(item.entryPrice, chainId, item.marketInfo.indexToken.symbol),
         Size: formatUsd(item.sizeInUsd),
         Leverage: formatLeverage(item.leverage),
