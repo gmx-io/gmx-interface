@@ -195,6 +195,49 @@ export default function TopPositions({ positions, search }: TopPositionsProps) {
     [chainId]
   );
 
+  function convertToCSV(objArray) {
+    const array = typeof objArray !== "object" ? JSON.parse(objArray) : objArray;
+    let str = `${Object.keys(array[0])
+      .map((value) => `"${value}"`)
+      .join(",")}\r\n`;
+
+    return array.reduce((str, next) => {
+      str += `${Object.values(next)
+        .map((value) => `"${value}"`)
+        .join(",")}\r\n`;
+      return str;
+    }, str);
+  }
+
+  function getFilteredStats(data) {
+    if (!data) return [];
+    return data.map((item) => {
+      return {
+        Rank: item.rank,
+        Account: item.account,
+        "Unrealized PnL": formatDelta(item.unrealizedPnlAfterFees, { signed: true, prefix: "$" }),
+        "Index Token": item.marketInfo.indexToken.symbol,
+        "Entry Price": formatPrice(item.entryPrice, chainId, item.marketInfo.indexToken.symbol),
+        Size: formatUsd(item.sizeInUsd),
+        Leverage: formatLeverage(item.leverage),
+        "Liq. Price": item.liquidationPrice
+          ? formatPrice(item.liquidationPrice, chainId, item.marketInfo.indexToken.symbol)
+          : "NA",
+      };
+    });
+  }
+  function downloadCSV() {
+    const csv = convertToCSV(getFilteredStats(filteredStats));
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "filteredStats.csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
   const indexFrom = (page - 1) * perPage;
   const rows = filteredStats.slice(indexFrom, indexFrom + perPage).map(parseRow);
   const pageCount = Math.ceil(filteredStats.length / perPage);
@@ -245,6 +288,7 @@ export default function TopPositions({ positions, search }: TopPositionsProps) {
 
   return (
     <div>
+      {filteredStats.length > 0 && <button onClick={downloadCSV}>Download as CSV</button>}
       <Table
         isLoading={isLoading}
         error={error}
