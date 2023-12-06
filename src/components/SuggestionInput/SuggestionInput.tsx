@@ -1,10 +1,10 @@
 import "./SuggestionInput.scss";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import cx from "classnames";
 
 type Props = {
   value?: string;
-  setValue?: () => void;
+  setValue?: (value: string) => void;
   placeholder?: string;
   suggestionList?: number[];
   symbol?: string;
@@ -13,7 +13,11 @@ type Props = {
 export default function SuggestionInput({ placeholder, value, setValue, suggestionList, symbol }: Props) {
   const [isPanelVisible, setIsPanelVisible] = useState(false);
 
-  function handleChange() {}
+  function handleChange(event: ChangeEvent<HTMLInputElement>) {
+    if (setValue) {
+      setValue(event.target.value);
+    }
+  }
 
   return (
     <div className="Suggestion-input-wrapper">

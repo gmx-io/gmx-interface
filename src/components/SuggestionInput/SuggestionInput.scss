@@ -9,6 +9,7 @@
     padding: 0;
     top: 1.25rem;
     background: #212540;
+    z-index: 1002;
 
     li {
       padding: 0.5rem 0.75rem;
@@ -47,7 +48,7 @@
       padding: 0.2rem 0.5rem 0.35rem;
       font-size: 1.4rem;
       border-radius: 4px;
-      text-align: right;
+      max-width: 7rem;
     }
     span {
       opacity: 0.7;

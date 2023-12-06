@@ -597,6 +597,7 @@ table.Exchange-list .Exchange-list-item-active {
   font-size: var(--font-sm);
   margin-bottom: 0.465rem;
   align-items: baseline;
+  justify-content: space-between;
 }
 
 .Exchange-info-row.top-line {

@@ -89,7 +89,8 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./ConfirmationBox.scss";
 import { FaArrowRight } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
-import SuggestionInput from "components/SuggestionInput/SuggestionInput";
+import { uniqueId } from "lodash";
+import ProfitLossEntry from "./ProfitLossEntry";
 
 export type Props = {
   isVisible: boolean;
@@ -182,6 +183,8 @@ export function ConfirmationBox(p: Props) {
 
   const [isTriggerWarningAccepted, setIsTriggerWarningAccepted] = useState(false);
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
+  const [stopLossEntries, setStopLossEntries] = useState([{ price: "", amount: "", id: uniqueId() }]);
+  const [takeProfitEntries, setTakeProfitEntries] = useState([{ price: "", amount: "", id: uniqueId() }]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);
   const submitButtonRef = useRef<null | HTMLDivElement>(null);
@@ -570,6 +573,8 @@ export function ConfirmationBox(p: Props) {
       if (p.isVisible !== prevIsVisible) {
         setIsTriggerWarningAccepted(false);
         setIsHighPriceImpactAccepted(false);
+        setStopLossEntries([{ price: "", amount: "", id: uniqueId() }]);
+        setTakeProfitEntries([{ price: "", amount: "", id: uniqueId() }]);
       }
     },
     [p.isVisible, prevIsVisible]
@@ -912,15 +917,34 @@ export function ConfirmationBox(p: Props) {
     return (
       <div>
         <ExchangeInfoRow
-          className="SwapBox-info-row"
+          className="swap-box-info-row"
           label={t`Stop-Loss`}
           isTop={true}
           value={
-            <>
-              <SuggestionInput placeholder="Price" setValue={() => {}} symbol="$" />
-            </>
+            <div className="profit-loss-wrapper">
+              <ProfitLossEntry entries={stopLossEntries} setEntries={setStopLossEntries} symbol="%" />
+            </div>
           }
         />
+        <ExchangeInfoRow className="swap-box-info-row" label={t`Stop-Loss PnL`} value={"--"} />
+      </div>
+    );
+  }
+
+  function renderTakeProfit() {
+    return (
+      <div>
+        <ExchangeInfoRow
+          className="swap-box-info-row"
+          label={t`Take-Profit`}
+          isTop={true}
+          value={
+            <div className="profit-loss-wrapper">
+              <ProfitLossEntry entries={takeProfitEntries} setEntries={setTakeProfitEntries} symbol="%" />
+            </div>
+          }
+        />
+        <ExchangeInfoRow className="swap-box-info-row" label={t`Take-Profit PnL`} value={"--"} />
       </div>
     );
   }
@@ -948,6 +972,7 @@ export function ConfirmationBox(p: Props) {
           {renderDifferentTokensWarning()}
 
           {renderStopLoss()}
+          {renderTakeProfit()}
 
           {isLimit && renderAvailableLiquidity()}
 
