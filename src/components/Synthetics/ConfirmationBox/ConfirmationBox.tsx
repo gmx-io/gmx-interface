@@ -1112,6 +1112,10 @@ export function ConfirmationBox(p: Props) {
                             : "0.00$"
                         }
                         showDollar={false}
+                        className={cx({
+                          "text-red": fees?.payTotalFees?.deltaUsd.lt(0),
+                          "text-green": fees?.payTotalFees?.deltaUsd.gt(0),
+                        })}
                       />
                       <div className="Tooltip-divider" />
                       <StatsTooltipRow

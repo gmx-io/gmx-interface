@@ -1,4 +1,5 @@
 import { Trans, t } from "@lingui/macro";
+import cx from "classnames";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getIcon } from "config/icons";
@@ -155,13 +156,19 @@ export function MarketsList() {
                 showDollar={false}
                 label={longFundingMsg}
                 value={`${formatFundingRate(fundingRateLong)} / 1h`}
-                className={fundingRateLong.gte(0) ? "text-green" : "text-red"}
+                className={cx({
+                  "text-red": fundingRateLong.lt(0),
+                  "text-green": fundingRateLong.gt(0),
+                })}
               />
               <StatsTooltipRow
                 showDollar={false}
                 label={shortFundingMsg}
                 value={`${formatFundingRate(fundingRateShort)} / 1h`}
-                className={fundingRateShort.gte(0) ? "text-green" : "text-red"}
+                className={cx({
+                  "text-red": fundingRateShort.lt(0),
+                  "text-green": fundingRateShort.gt(0),
+                })}
               />
             </div>
           );
