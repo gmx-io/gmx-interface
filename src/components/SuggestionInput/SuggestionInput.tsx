@@ -18,6 +18,12 @@ export default function SuggestionInput({ placeholder, value, setValue, suggesti
       setValue(event.target.value);
     }
   }
+  function handleSuggestionClick(suggestion: number) {
+    if (setValue) {
+      setValue(suggestion.toString());
+      setIsPanelVisible(false);
+    }
+  }
 
   return (
     <div className="Suggestion-input-wrapper">
@@ -36,14 +42,9 @@ export default function SuggestionInput({ placeholder, value, setValue, suggesti
       </div>
       {suggestionList && isPanelVisible && (
         <ul className="Suggestion-list">
-          {suggestionList.map((slippage) => (
-            <li
-              key={slippage}
-              onMouseDown={() => {
-                setIsPanelVisible(false);
-              }}
-            >
-              {slippage}%
+          {suggestionList.map((suggestion) => (
+            <li key={suggestion} onMouseDown={() => handleSuggestionClick(suggestion)}>
+              {suggestion}%
             </li>
           ))}
         </ul>

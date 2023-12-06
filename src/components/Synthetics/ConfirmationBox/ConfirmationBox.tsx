@@ -183,8 +183,8 @@ export function ConfirmationBox(p: Props) {
 
   const [isTriggerWarningAccepted, setIsTriggerWarningAccepted] = useState(false);
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
-  const [stopLossEntries, setStopLossEntries] = useState([{ price: "", amount: "", id: uniqueId() }]);
-  const [takeProfitEntries, setTakeProfitEntries] = useState([{ price: "", amount: "", id: uniqueId() }]);
+  const [stopLossEntries, setStopLossEntries] = useState([{ price: "", percentage: "", id: uniqueId() }]);
+  const [takeProfitEntries, setTakeProfitEntries] = useState([{ price: "", percentage: "", id: uniqueId() }]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);
   const submitButtonRef = useRef<null | HTMLDivElement>(null);
@@ -573,8 +573,8 @@ export function ConfirmationBox(p: Props) {
       if (p.isVisible !== prevIsVisible) {
         setIsTriggerWarningAccepted(false);
         setIsHighPriceImpactAccepted(false);
-        setStopLossEntries([{ price: "", amount: "", id: uniqueId() }]);
-        setTakeProfitEntries([{ price: "", amount: "", id: uniqueId() }]);
+        setStopLossEntries([{ price: "", percentage: "", id: uniqueId() }]);
+        setTakeProfitEntries([{ price: "", percentage: "", id: uniqueId() }]);
       }
     },
     [p.isVisible, prevIsVisible]

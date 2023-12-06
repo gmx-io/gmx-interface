@@ -1,4 +1,5 @@
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
+import Tooltip from "components/Tooltip/Tooltip";
 import { uniqueId } from "lodash";
 import { FaPlus } from "react-icons/fa";
 
@@ -20,8 +21,8 @@ function ProfitLossEntry({ entries, setEntries, symbol }) {
         />
         <SuggestionInput
           placeholder="Size"
-          value={entryData.amount}
-          setValue={(value) => setEntries(updateEntry(entries, entryData.id, "amount", value))}
+          value={entryData.percentage}
+          setValue={(value) => setEntries(updateEntry(entries, entryData.id, "percentage", value))}
           symbol={symbol}
           suggestionList={SUGGESTION_PERCENTAGE_LIST}
         />
@@ -40,7 +41,7 @@ function ProfitLossEntry({ entries, setEntries, symbol }) {
           <button
             className="profit-loss-add"
             onClick={() => {
-              setEntries((prev) => prev.concat({ id: uniqueId(), price: "", amount: "" }));
+              setEntries((prev) => prev.concat({ id: uniqueId(), price: "", percentage: "" }));
             }}
           >
             <FaPlus color="#5EC989" />
