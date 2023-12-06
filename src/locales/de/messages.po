@@ -1740,7 +1740,7 @@ msgid "Exit Price"
 msgstr "Exit-Preis"
 
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APR"
+msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APR."
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
