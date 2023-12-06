@@ -100,6 +100,7 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 
 export type Props = {
   tradeType: TradeType;
@@ -218,7 +219,7 @@ export function TradeBox(p: Props) {
   const { data: hasOutdatedUi } = useHasOutdatedUi();
 
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
-
+  const uiFeeFactor = useUiFeeFactor(chainId);
   const [stage, setStage] = useState<"trade" | "confirmation" | "processing">("trade");
   const [focusedInput, setFocusedInput] = useState<"from" | "to">();
 
@@ -328,6 +329,7 @@ export function TradeBox(p: Props) {
         triggerRatio: triggerRatio || markRatio,
         isLimit,
         findSwapPath: swapRoute.findSwapPath,
+        uiFeeFactor,
       });
     } else {
       return getSwapAmountsByToValue({
@@ -337,6 +339,7 @@ export function TradeBox(p: Props) {
         triggerRatio: triggerRatio || markRatio,
         isLimit,
         findSwapPath: swapRoute.findSwapPath,
+        uiFeeFactor,
       });
     }
   }, [
@@ -352,6 +355,7 @@ export function TradeBox(p: Props) {
     toToken,
     toTokenAmount,
     triggerRatio,
+    uiFeeFactor,
   ]);
 
   const increaseAmounts = useMemo(() => {
@@ -373,6 +377,7 @@ export function TradeBox(p: Props) {
       savedAcceptablePriceImpactBps: acceptablePriceImpactBpsForLimitOrders,
       findSwapPath: swapRoute.findSwapPath,
       userReferralInfo,
+      uiFeeFactor,
       strategy: isLeverageEnabled
         ? focusedInput === "from"
           ? "leverageByCollateral"
@@ -397,6 +402,7 @@ export function TradeBox(p: Props) {
     toTokenAmount,
     triggerPrice,
     userReferralInfo,
+    uiFeeFactor,
   ]);
 
   const decreaseAmounts = useMemo(() => {
@@ -416,6 +422,7 @@ export function TradeBox(p: Props) {
       userReferralInfo,
       minCollateralUsd,
       minPositionSizeUsd,
+      uiFeeFactor,
     });
   }, [
     acceptablePriceImpactBpsForLimitOrders,
@@ -430,6 +437,7 @@ export function TradeBox(p: Props) {
     minPositionSizeUsd,
     triggerPrice,
     userReferralInfo,
+    uiFeeFactor,
   ]);
 
   const nextPositionValues = useMemo(() => {
@@ -490,15 +498,6 @@ export function TradeBox(p: Props) {
     userReferralInfo,
   ]);
 
-  // useDebugExecutionPrice(chainId, {
-  //   skip: false,
-  //   marketInfo,
-  //   sizeInUsd: existingPosition?.sizeInUsd || BigNumber.from(0),
-  //   sizeInTokens: existingPosition?.sizeInTokens || BigNumber.from(0),
-  //   sizeDeltaUsd: increaseAmounts?.sizeDeltaUsd,
-  //   isLong,
-  // });
-
   const { fees, feesType, executionFee } = useMemo(() => {
     if (!gasLimits || !gasPrice || !tokensData) {
       return {};
@@ -522,6 +521,7 @@ export function TradeBox(p: Props) {
           fundingFeeUsd: BigNumber.from(0),
           feeDiscountUsd: BigNumber.from(0),
           swapProfitFeeUsd: BigNumber.from(0),
+          uiFeeFactor,
         }),
         executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
         feesType: "swap" as TradeFeesType,
@@ -546,6 +546,7 @@ export function TradeBox(p: Props) {
           fundingFeeUsd: existingPosition?.pendingFundingFeesUsd || BigNumber.from(0),
           feeDiscountUsd: increaseAmounts.feeDiscountUsd,
           swapProfitFeeUsd: BigNumber.from(0),
+          uiFeeFactor,
         }),
         executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
         feesType: "increase" as TradeFeesType,
@@ -571,6 +572,7 @@ export function TradeBox(p: Props) {
           fundingFeeUsd: decreaseAmounts.fundingFeeUsd,
           feeDiscountUsd: decreaseAmounts.feeDiscountUsd,
           swapProfitFeeUsd: decreaseAmounts.swapProfitFeeUsd,
+          uiFeeFactor,
         }),
         executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
         feesType: "decrease" as TradeFeesType,
@@ -590,6 +592,7 @@ export function TradeBox(p: Props) {
     isTrigger,
     swapAmounts,
     tokensData,
+    uiFeeFactor,
   ]);
 
   const marketsOptions = useAvailableMarketsOptions({

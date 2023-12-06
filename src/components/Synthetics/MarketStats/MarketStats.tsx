@@ -19,6 +19,7 @@ import { getByKey } from "lib/objects";
 import "./MarketStats.scss";
 import BridgingInfo from "../BridgingInfo/BridgingInfo";
 import { getBridgingOptionsForToken } from "config/bridging";
+import { BigNumber } from "ethers";
 import { AprInfo } from "components/AprInfo/AprInfo";
 import MarketTokenSelector from "../MarketTokenSelector/MarketTokenSelector";
 
@@ -121,13 +122,15 @@ export function MarketStats(p: Props) {
             />
           }
         />
+
         <CardRow
           label={t`Wallet`}
-          value={
-            marketBalance && marketBalanceUsd
-              ? formatTokenAmountWithUsd(marketBalance, marketBalanceUsd, "GM", marketToken?.decimals)
-              : "..."
-          }
+          value={formatTokenAmountWithUsd(
+            marketBalance || BigNumber.from(0),
+            marketBalanceUsd || BigNumber.from(0),
+            "GM",
+            marketToken?.decimals ?? 18
+          )}
         />
 
         <CardRow label={t`APR`} value={<AprInfo apr={apr} incentiveApr={incentiveApr} />} />
@@ -182,15 +185,19 @@ export function MarketStats(p: Props) {
                           formatTokenAmount(
                             mintableInfo?.longDepositCapacityAmount,
                             marketInfo?.longToken.decimals,
-                            marketInfo?.longToken.symbol
+                            marketInfo?.longToken.symbol,
+                            {
+                              useCommas: true,
+                            }
                           ),
                           `(${formatTokenAmount(marketInfo?.longPoolAmount, marketInfo?.longToken.decimals, undefined, {
                             displayDecimals: 0,
+                            useCommas: true,
                           })} / ${formatTokenAmount(
                             marketInfo?.maxLongPoolAmount,
                             marketInfo?.longToken.decimals,
                             marketInfo?.longToken.symbol,
-                            { displayDecimals: 0 }
+                            { displayDecimals: 0, useCommas: true }
                           )})`,
                         ]}
                         showDollar={false}
@@ -205,18 +212,21 @@ export function MarketStats(p: Props) {
                             formatTokenAmount(
                               mintableInfo?.shortDepositCapacityAmount,
                               marketInfo?.shortToken.decimals,
-                              marketInfo?.shortToken.symbol
+                              marketInfo?.shortToken.symbol,
+                              {
+                                useCommas: true,
+                              }
                             ),
                             `(${formatTokenAmount(
                               marketInfo?.shortPoolAmount,
                               marketInfo?.shortToken.decimals,
                               undefined,
-                              { displayDecimals: 0 }
+                              { displayDecimals: 0, useCommas: true }
                             )} / ${formatTokenAmount(
                               marketInfo?.maxShortPoolAmount,
                               marketInfo?.shortToken.decimals,
                               marketInfo?.shortToken.symbol,
-                              { displayDecimals: 0 }
+                              { displayDecimals: 0, useCommas: true }
                             )})`,
                           ]}
                           showDollar={false}

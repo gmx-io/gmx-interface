@@ -11,6 +11,7 @@ import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
 import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { isMarketOrderType } from "./utils";
+import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { t } from "@lingui/macro";
 
 const { AddressZero } = ethers.constants;
@@ -84,7 +85,7 @@ export async function createDecreaseOrderTxn(
                 callbackContract: AddressZero,
                 market: p.marketAddress,
                 swapPath: p.swapPath,
-                uiFeeReceiver: ethers.constants.AddressZero,
+                uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.constants.AddressZero,
               },
               numbers: {
                 sizeDeltaUsd: p.sizeDeltaUsd,

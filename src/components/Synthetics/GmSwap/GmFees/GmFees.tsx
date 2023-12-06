@@ -11,6 +11,7 @@ type Props = {
   totalFees?: FeeItem;
   swapFee?: FeeItem;
   swapPriceImpact?: FeeItem;
+  uiFee?: FeeItem;
   executionFee?: ExecutionFee;
   isDeposit: boolean;
 };
@@ -51,6 +52,18 @@ export function GmFees(p: Props) {
                     </>
                   )}
 
+                  {p.uiFee?.deltaUsd.abs()?.gt(0) && (
+                    <StatsTooltipRow
+                      label={
+                        <>
+                          <Trans>UI Fee</Trans>:
+                        </>
+                      }
+                      value={formatDeltaUsd(p.uiFee.deltaUsd, p.uiFee.bps)!}
+                      showDollar={false}
+                      className="text-red"
+                    />
+                  )}
                   {p.executionFee && (
                     <StatsTooltipRow
                       label={t`Max Execution Fee`}
@@ -61,7 +74,6 @@ export function GmFees(p: Props) {
                         p.executionFee.feeToken.decimals
                       )}
                       showDollar={false}
-                      className="text-red"
                     />
                   )}
                 </div>

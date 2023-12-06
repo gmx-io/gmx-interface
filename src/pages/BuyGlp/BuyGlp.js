@@ -17,7 +17,7 @@ export default function BuyGlp(props) {
   const history = useHistory();
   const [isBuying, setIsBuying] = useState(true);
   const nativeTokenSymbol = getNativeToken(chainId).symbol;
-  const incentiveState = useIncentiveStats(chainId);
+  const incentiveState = useIncentiveStats();
 
   useEffect(() => {
     const hash = history.location.hash.replace("#", "");
@@ -33,13 +33,10 @@ export default function BuyGlp(props) {
         subtitle={
           <div>
             {incentiveState?.migration?.isActive && (
-              <div className="text-warning">
+              <div>
                 <Trans>
                   GLP to GM migration has reduced Fees due to STIP incentives.{" "}
-                  <ExternalLink
-                    className="text-warning"
-                    href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#a2d1ea61dd1147b195b7e3bd769348d3"
-                  >
+                  <ExternalLink href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3#a2d1ea61dd1147b195b7e3bd769348d3">
                     Read more
                   </ExternalLink>
                   .

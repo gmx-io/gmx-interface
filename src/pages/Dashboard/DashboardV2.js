@@ -50,7 +50,7 @@ import AssetDropdown from "./AssetDropdown";
 import useWallet from "lib/wallets/useWallet";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import PageTitle from "components/PageTitle/PageTitle";
-import useDashboardOverview from "domain/synthetics/stats/useDashboardOverview";
+import useV2Stats from "domain/synthetics/stats/useV2Stats";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
@@ -101,8 +101,8 @@ export default function DashboardV2() {
   const { active, signer } = useWallet();
   const { chainId } = useChainId();
   const totalVolume = useTotalVolume();
-  const arbitrumOverview = useDashboardOverview(ARBITRUM);
-  const avalancheOverview = useDashboardOverview(AVALANCHE);
+  const arbitrumOverview = useV2Stats(ARBITRUM);
+  const avalancheOverview = useV2Stats(AVALANCHE);
   const v2MarketsOverview = {
     [ARBITRUM]: arbitrumOverview,
     [AVALANCHE]: avalancheOverview,

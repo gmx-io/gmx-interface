@@ -530,7 +530,7 @@ export function PositionEditor(p: Props) {
               />
 
               <ExchangeInfoRow
-                label={t`Liq Price`}
+                label={t`Liq. Price`}
                 value={
                   <ValueTransition
                     from={formatLiquidationPrice(position.liquidationPrice, { displayDecimals: indexPriceDecimals })}
@@ -567,7 +567,13 @@ export function PositionEditor(p: Props) {
                 </div>
               </div>
 
-              <TradeFeesRow {...fees} executionFee={executionFee} feesType={"edit"} warning={executionFee?.warning} />
+              <TradeFeesRow
+                {...fees}
+                executionFee={executionFee}
+                feesType={"edit"}
+                warning={executionFee?.warning}
+                shouldShowRebate={false}
+              />
 
               {!isDeposit && (
                 <ExchangeInfoRow

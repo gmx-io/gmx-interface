@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Trans, t } from "@lingui/macro";
 import Button from "components/Button/Button";
 import {
@@ -7,10 +8,10 @@ import {
   getMarketPoolName,
   getMaxPoolAmountForDeposit,
   getMintableMarketTokens,
+  getTotalGmInfo,
 } from "domain/synthetics/markets";
 import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { importImage } from "lib/legacy";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
@@ -21,10 +22,16 @@ import Tooltip from "components/Tooltip/Tooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { getIcons } from "config/icons";
 import PageTitle from "components/PageTitle/PageTitle";
+import useWallet from "lib/wallets/useWallet";
 import { AprInfo } from "components/AprInfo/AprInfo";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import useSortedMarketsWithIndexToken from "domain/synthetics/trade/useSortedMarketsWithIndexToken";
+import { GmTokensBalanceInfo, GmTokensTotalBalanceInfo } from "components/GmTokensBalanceInfo/GmTokensBalanceInfo";
+import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
+import { getNormalizedTokenSymbol } from "config/tokens";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+import { GMListSkeleton } from "components/Skeleton/Skeleton";
 
 type Props = {
   hideTitle?: boolean;
@@ -48,10 +55,17 @@ export function GmList({
   buySellActionHandler,
 }: Props) {
   const { chainId } = useChainId();
+  const { active } = useWallet();
   const currentIcons = getIcons(chainId);
+  const userEarnings = useUserEarnings(chainId);
   const isMobile = useMedia("(max-width: 1100px)");
   const daysConsidered = useDaysConsideredInMarketsApr();
   const { markets: sortedMarketsByIndexToken } = useSortedMarketsWithIndexToken(marketsInfoData, marketTokensData);
+
+  const userTotalGmInfo = useMemo(() => {
+    if (!active) return;
+    return getTotalGmInfo(marketTokensData);
+  }, [marketTokensData, active]);
 
   return (
     <div className="GMList">
@@ -92,7 +106,11 @@ export function GmList({
                   />
                 </th>
                 <th>
-                  <Trans>WALLET</Trans>
+                  <GmTokensTotalBalanceInfo
+                    balance={userTotalGmInfo?.balance}
+                    balanceUsd={userTotalGmInfo?.balanceUsd}
+                    userEarnings={userEarnings}
+                  />
                 </th>
                 <th>
                   <Tooltip
@@ -123,114 +141,115 @@ export function GmList({
               </tr>
             </thead>
             <tbody>
-              {sortedMarketsByIndexToken.map((token) => {
-                const market = getByKey(marketsInfoData, token?.address)!;
+              {sortedMarketsByIndexToken.length ? (
+                sortedMarketsByIndexToken.map((token) => {
+                  const market = getByKey(marketsInfoData, token?.address)!;
 
-                const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
-                const longToken = getTokenData(tokensData, market?.longTokenAddress);
-                const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
-                const mintableInfo = market && token ? getMintableMarketTokens(market, token) : undefined;
+                  const indexToken = getTokenData(tokensData, market?.indexTokenAddress, "native");
+                  const longToken = getTokenData(tokensData, market?.longTokenAddress);
+                  const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
+                  const mintableInfo = market && token ? getMintableMarketTokens(market, token) : undefined;
 
-                const apr = getByKey(marketsTokensAPRData, token?.address);
-                const incentiveApr = getByKey(marketsTokensIncentiveAprData, token?.address);
+                  const apr = getByKey(marketsTokensAPRData, token?.address);
+                  const incentiveApr = getByKey(marketsTokensIncentiveAprData, token?.address);
+                  const marketEarnings = getByKey(userEarnings?.byMarketAddress, token?.address);
 
-                if (!token || !indexToken || !longToken || !shortToken) {
-                  return null;
-                }
+                  if (!token || !indexToken || !longToken || !shortToken) {
+                    return null;
+                  }
 
-                const totalSupply = token?.totalSupply;
-                const totalSupplyUsd = convertToUsd(totalSupply, token?.decimals, token?.prices?.minPrice);
+                  const totalSupply = token?.totalSupply;
+                  const totalSupplyUsd = convertToUsd(totalSupply, token?.decimals, token?.prices?.minPrice);
+                  const tokenIconName = market.isSpotOnly
+                    ? getNormalizedTokenSymbol(longToken.symbol) + getNormalizedTokenSymbol(shortToken.symbol)
+                    : getNormalizedTokenSymbol(indexToken.symbol);
 
-                return (
-                  <tr key={token.address}>
-                    <td>
-                      <div className="App-card-title-info">
-                        <div className="App-card-title-info-icon">
-                          <img
-                            src={importImage(
-                              "ic_" + (market.isSpotOnly ? "swap" : indexToken.symbol.toLocaleLowerCase()) + "_40.svg"
-                            )}
-                            alt={indexToken.symbol}
-                            width="40"
-                          />
-                        </div>
-
-                        <div className="App-card-title-info-text">
-                          <div className="App-card-info-title">
-                            {getMarketIndexName({ indexToken, isSpotOnly: market?.isSpotOnly })}
-                            {!market.isSpotOnly && (
-                              <div className="Asset-dropdown-container">
-                                <AssetDropdown assetSymbol={indexToken.symbol} position="left" />
-                              </div>
-                            )}
+                  return (
+                    <tr key={token.address}>
+                      <td>
+                        <div className="App-card-title-info">
+                          <div className="App-card-title-info-icon">
+                            <TokenIcon symbol={tokenIconName} displaySize={40} importSize={40} />
                           </div>
-                          <div className="App-card-info-subtitle">[{getMarketPoolName({ longToken, shortToken })}]</div>
+
+                          <div className="App-card-title-info-text">
+                            <div className="App-card-info-title">
+                              {getMarketIndexName({ indexToken, isSpotOnly: market?.isSpotOnly })}
+                              {!market.isSpotOnly && (
+                                <div className="Asset-dropdown-container">
+                                  <AssetDropdown assetSymbol={indexToken.symbol} position="left" />
+                                </div>
+                              )}
+                            </div>
+                            <div className="App-card-info-subtitle">
+                              [{getMarketPoolName({ longToken, shortToken })}]
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    <td>
-                      {formatUsd(token.prices?.minPrice, {
-                        displayDecimals: 3,
-                      })}
-                    </td>
+                      </td>
+                      <td>
+                        {formatUsd(token.prices?.minPrice, {
+                          displayDecimals: 3,
+                        })}
+                      </td>
 
-                    <td className="GmList-last-column">
-                      {formatTokenAmount(totalSupply, token.decimals, "GM", {
-                        useCommas: true,
-                        displayDecimals: 2,
-                      })}
-                      <br />({formatUsd(totalSupplyUsd)})
-                    </td>
-                    <td className="GmList-last-column">
-                      {renderMintableAmount({
-                        mintableInfo,
-                        market,
-                        token,
-                        longToken,
-                        shortToken,
-                      })}
-                    </td>
+                      <td className="GmList-last-column">
+                        {formatTokenAmount(totalSupply, token.decimals, "GM", {
+                          useCommas: true,
+                          displayDecimals: 2,
+                        })}
+                        <br />({formatUsd(totalSupplyUsd)})
+                      </td>
+                      <td className="GmList-last-column">
+                        {renderMintableAmount({
+                          mintableInfo,
+                          market,
+                          token,
+                          longToken,
+                          shortToken,
+                        })}
+                      </td>
 
-                    <td>
-                      {formatTokenAmount(token.balance, token.decimals, "GM", {
-                        useCommas: true,
-                        displayDecimals: 2,
-                        fallbackToZero: true,
-                      })}
-                      <br />(
-                      {formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice), {
-                        fallbackToZero: true,
-                      }) || "..."}
-                      )
-                    </td>
+                      <td>
+                        <GmTokensBalanceInfo
+                          token={token}
+                          daysConsidered={daysConsidered}
+                          oneLine={false}
+                          earnedRecently={marketEarnings?.recent}
+                          earnedTotal={marketEarnings?.total}
+                        />
+                      </td>
 
-                    <td>
-                      <AprInfo apr={apr} incentiveApr={incentiveApr} />
-                    </td>
+                      <td>
+                        <AprInfo apr={apr} incentiveApr={incentiveApr} />
+                      </td>
 
-                    <td className="GmList-actions">
-                      <Button
-                        className="GmList-action"
-                        variant="secondary"
-                        to={`/pools?operation=${Operation.Deposit}&market=${token.address}&scroll=${
-                          shouldScrollToTop ? "1" : "0"
-                        }`}
-                      >
-                        <Trans>Buy</Trans>
-                      </Button>
-                      <Button
-                        className="GmList-action GmList-last-action"
-                        variant="secondary"
-                        to={`/pools?operation=${Operation.Withdrawal}&market=${token.address}&scroll=${
-                          shouldScrollToTop ? "1" : "0"
-                        }`}
-                      >
-                        <Trans>Sell</Trans>
-                      </Button>
-                    </td>
-                  </tr>
-                );
-              })}
+                      <td className="GmList-actions">
+                        <Button
+                          className="GmList-action"
+                          variant="secondary"
+                          to={`/pools?operation=${Operation.Deposit}&market=${token.address}&scroll=${
+                            shouldScrollToTop ? "1" : "0"
+                          }`}
+                        >
+                          <Trans>Buy</Trans>
+                        </Button>
+                        <Button
+                          className="GmList-action GmList-last-action"
+                          variant="secondary"
+                          to={`/pools?operation=${Operation.Withdrawal}&market=${token.address}&scroll=${
+                            shouldScrollToTop ? "1" : "0"
+                          }`}
+                        >
+                          <Trans>Sell</Trans>
+                        </Button>
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <GMListSkeleton />
+              )}
             </tbody>
           </table>
         </div>
@@ -244,6 +263,7 @@ export function GmList({
             {sortedMarketsByIndexToken.map((token) => {
               const apr = marketsTokensAPRData?.[token.address];
               const incentiveApr = marketsTokensIncentiveAprData?.[token.address];
+              const marketEarnings = getByKey(userEarnings?.byMarketAddress, token?.address);
 
               const totalSupply = token?.totalSupply;
               const totalSupplyUsd = convertToUsd(totalSupply, token?.decimals, token?.prices?.minPrice);
@@ -253,23 +273,20 @@ export function GmList({
               const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
               const mintableInfo = market && token ? getMintableMarketTokens(market, token) : undefined;
 
-              if (!indexToken) {
+              if (!indexToken || !longToken || !shortToken || !market) {
                 return null;
               }
               const indexName = market && getMarketIndexName(market);
               const poolName = market && getMarketPoolName(market);
+              const tokenIconName = market.isSpotOnly
+                ? getNormalizedTokenSymbol(longToken.symbol) + getNormalizedTokenSymbol(shortToken.symbol)
+                : getNormalizedTokenSymbol(indexToken.symbol);
 
               return (
                 <div className="App-card" key={token.address}>
                   <div className="App-card-title">
                     <div className="mobile-token-card">
-                      <img
-                        src={importImage(
-                          "ic_" + (market?.isSpotOnly ? "swap" : indexToken?.symbol.toLocaleLowerCase()) + "_24.svg"
-                        )}
-                        alt={indexToken.symbol}
-                        width="20"
-                      />
+                      <TokenIcon symbol={tokenIconName} displaySize={20} importSize={40} />
                       <div className="token-symbol-text">
                         <div className="items-center">
                           <span>{indexName && indexName}</span>
@@ -331,19 +348,25 @@ export function GmList({
                     </div>
                     <div className="App-card-row">
                       <div className="label">
-                        <Trans>Wallet</Trans>
+                        <Tooltip
+                          handle={<Trans>Wallet</Trans>}
+                          className="text-none"
+                          position="right-bottom"
+                          renderContent={() => (
+                            <p className="text-white">
+                              <Trans>Available amount to deposit into the specific GM pool.</Trans>
+                            </p>
+                          )}
+                        />
                       </div>
                       <div>
-                        {formatTokenAmount(token.balance, token.decimals, "GM", {
-                          useCommas: true,
-                          displayDecimals: 2,
-                          fallbackToZero: true,
-                        })}{" "}
-                        (
-                        {formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice), {
-                          fallbackToZero: true,
-                        })}
-                        )
+                        <GmTokensBalanceInfo
+                          token={token}
+                          daysConsidered={daysConsidered}
+                          oneLine
+                          earnedRecently={marketEarnings?.recent}
+                          earnedTotal={marketEarnings?.total}
+                        />
                       </div>
                     </div>
                     <div className="App-card-row">
