@@ -11,6 +11,8 @@ import {
   coinbaseWallet,
   rainbowWallet,
   imTokenWallet,
+  zerionWallet,
+  okxWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "wagmi/chains";
@@ -61,9 +63,11 @@ const othersWalletList: WalletList = [
       coreWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
       coinbaseWallet({ appName: APP_NAME, chains }),
       binanceWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
+      okxWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
       ledgerWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
       rainbowWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
       bitgetWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
+      zerionWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
       imTokenWallet({ chains, projectId: WALLET_CONNECT_PROJECT_ID }),
     ],
   },
