@@ -2,9 +2,10 @@ import Davatar from "@davatar/react";
 import { Menu } from "@headlessui/react";
 import { t, Trans } from "@lingui/macro";
 import { ETH_MAINNET } from "config/chains";
-import copy from "img/ic_copy_16.svg";
-import externalLink from "img/ic_new_link_16.svg";
-import disconnect from "img/ic_sign_out_16.svg";
+import copy from "img/ic_copy_20.svg";
+import externalLink from "img/ic_new_link_20.svg";
+import oneClickTradingIcon from "img/one_click_trading_20.svg";
+import disconnect from "img/ic_sign_out_20.svg";
 import { helperToast } from "lib/helperToast";
 import { useENS } from "lib/legacy";
 import { useJsonRpcProvider } from "lib/rpc";
@@ -49,7 +50,7 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
                 helperToast.success(t`Address copied to your clipboard`);
               }}
             >
-              <img src={copy} alt="Copy user address" />
+              <img width={20} src={copy} alt="Copy user address" />
               <p>
                 <Trans>Copy Address</Trans>
               </p>
@@ -57,15 +58,23 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
           </Menu.Item>
           <Menu.Item>
             <ExternalLink href={accountUrl} className="menu-item">
-              <img src={externalLink} alt="Open address in explorer" />
+              <img width={20} src={externalLink} alt="Open address in explorer" />
               <p>
                 <Trans>View in Explorer</Trans>
               </p>
             </ExternalLink>
           </Menu.Item>
           <Menu.Item>
+            <ExternalLink href={accountUrl} className="menu-item">
+              <img width={20} src={oneClickTradingIcon} alt="Open address in explorer" />
+              <p>
+                <Trans>One-Click Trading</Trans>
+              </p>
+            </ExternalLink>
+          </Menu.Item>
+          <Menu.Item>
             <div className="menu-item" onClick={disconnectAccountAndCloseSettings}>
-              <img src={disconnect} alt="Disconnect the wallet" />
+              <img width={20} src={disconnect} alt="Disconnect the wallet" />
               <p>
                 <Trans>Disconnect</Trans>
               </p>
