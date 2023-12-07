@@ -1,7 +1,7 @@
 import cx from "classnames";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { roundToTwoDecimals } from "lib/numbers";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./PercentageInput.scss";
 
 const validDecimalRegex = /^\d+(\.\d{0,2})?$/; // 0.00 ~ 99.99
@@ -31,9 +31,12 @@ export default function PercentageInput({
   highValueWarningText,
   lowValueWarningText,
 }: Props) {
-  const defaultValueText = getValueText(defaultValue);
-  const [inputValue, setInputvalue] = useState<string>(defaultValueText);
+  const [inputValue, setInputvalue] = useState<string>(() => getValueText(defaultValue));
   const [isPanelVisible, setIsPanelVisible] = useState<boolean>(false);
+
+  useEffect(() => {
+    setInputvalue(getValueText(defaultValue));
+  }, [defaultValue]);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { value } = event.target;
@@ -80,7 +83,7 @@ export default function PercentageInput({
           onFocus={() => setIsPanelVisible(true)}
           onBlur={() => setIsPanelVisible(false)}
           value={!!inputValue ? inputValue : ""}
-          placeholder={inputValue || defaultValueText}
+          placeholder={inputValue || getValueText(defaultValue)}
           autoComplete="off"
           onChange={handleChange}
         />

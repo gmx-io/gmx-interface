@@ -43,7 +43,7 @@ export function getDefaultAcceptablePriceImpactBps(p: {
   });
 
   if (baseAcceptablePriceValues.acceptablePriceDeltaBps.lt(0)) {
-    baseAcceptablePriceValues.acceptablePriceDeltaBps.abs().add(acceptablePriceImapctBuffer);
+    return baseAcceptablePriceValues.acceptablePriceDeltaBps.abs().add(acceptablePriceImapctBuffer);
   }
 
   return BigNumber.from(acceptablePriceImapctBuffer);

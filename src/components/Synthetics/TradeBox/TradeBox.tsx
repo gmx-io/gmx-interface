@@ -50,6 +50,7 @@ import {
   TradeType,
   TriggerThresholdType,
   getDecreasePositionAmounts,
+  getExecutionPriceForDecrease,
   getIncreasePositionAmounts,
   getMarkPrice,
   getNextPositionValuesForDecreaseTrade,
@@ -811,18 +812,13 @@ export function TradeBox(p: Props) {
     ) {
       setFixedTriggerOrderType(decreaseAmounts.triggerOrderType);
       setFixedTriggerThresholdType(decreaseAmounts.triggerThresholdType);
-      setSelectedAcceptablePriceImapctBps(decreaseAmounts.acceptablePriceDeltaBps.abs());
-      setDefaultTriggerAcceptablePriceImapctBps(decreaseAmounts.acceptablePriceDeltaBps.abs());
+      setSelectedAcceptablePriceImapctBps(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs());
+      setDefaultTriggerAcceptablePriceImapctBps(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs());
     }
 
     if (isLimit && increaseAmounts?.acceptablePrice) {
-      const positionPriceImpactBps = fees?.positionPriceImpact?.bps;
-      const priceImpactBps = positionPriceImpactBps?.lt(0)
-        ? increaseAmounts.acceptablePriceDeltaBps.abs().add(positionPriceImpactBps.abs())
-        : increaseAmounts.acceptablePriceDeltaBps.abs();
-
       setSelectedAcceptablePriceImapctBps(increaseAmounts.acceptablePriceDeltaBps.abs());
-      setDefaultTriggerAcceptablePriceImapctBps(priceImpactBps);
+      setDefaultTriggerAcceptablePriceImapctBps(increaseAmounts.acceptablePriceDeltaBps.abs());
     }
 
     setStage("confirmation");
@@ -1310,18 +1306,32 @@ export function TradeBox(p: Props) {
     );
   }
 
+  const executionPriceUsd = useMemo(() => {
+    if (!marketInfo) return null;
+    if (!fees?.positionPriceImpact?.deltaUsd) return null;
+    if (!decreaseAmounts) return null;
+    if (!triggerPrice) return null;
+
+    return getExecutionPriceForDecrease(
+      triggerPrice,
+      fees.positionPriceImpact.deltaUsd,
+      decreaseAmounts.sizeDeltaUsd,
+      isLong
+    );
+  }, [decreaseAmounts, fees?.positionPriceImpact?.deltaUsd, isLong, marketInfo, triggerPrice]);
+
   function renderTriggerOrderInfo() {
     return (
       <>
-        <ExchangeInfoRow
-          className="SwapBox-info-row"
-          label={t`Execution Price`}
-          value={`${decreaseAmounts?.triggerThresholdType || ""} ${
-            formatUsd(decreaseAmounts?.executionPrice, {
+        {executionPriceUsd && (
+          <ExchangeInfoRow
+            className="SwapBox-info-row"
+            label={t`Execution Price`}
+            value={formatUsd(executionPriceUsd, {
               displayDecimals: toToken?.priceDecimals,
-            }) || "-"
-          }`}
-        />
+            })}
+          />
+        )}
         <ExchangeInfoRow
           className="SwapBox-info-row"
           label={t`Trigger Price`}

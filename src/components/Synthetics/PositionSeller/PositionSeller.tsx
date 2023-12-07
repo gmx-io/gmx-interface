@@ -74,6 +74,7 @@ import "./PositionSeller.scss";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
 import { useLatestValueRef } from "lib/useLatestValueRef";
+import { TriggerAcceptablePriceImpactInputRow } from "../TriggerAcceptablePriceImpactInputRow/TriggerAcceptablePriceImpactInputRow";
 
 export type Props = {
   position?: PositionInfo;
@@ -135,6 +136,7 @@ export function PositionSeller(p: Props) {
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
 
+  const [defaultTriggerAcceptablePriceImpactBps, setDefaultTriggerAcceptablePriceImpactBps] = useState<BigNumber>();
   const [selectedTriggerAcceptablePriceImpactBps, setSelectedAcceptablePriceImapctBps] = useState<BigNumber>();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -446,6 +448,17 @@ export function PositionSeller(p: Props) {
     [chainId, position?.collateralToken, receiveTokenAddress]
   );
 
+  useEffect(() => {
+    if (isTrigger && decreaseAmounts) {
+      if (
+        !defaultTriggerAcceptablePriceImpactBps ||
+        !defaultTriggerAcceptablePriceImpactBps.eq(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs())
+      ) {
+        setDefaultTriggerAcceptablePriceImpactBps(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs());
+      }
+    }
+  }, [decreaseAmounts, defaultTriggerAcceptablePriceImpactBps, isTrigger]);
+
   const indexPriceDecimals = position?.indexToken?.priceDecimals;
   const toToken = position?.indexToken;
 
@@ -524,32 +537,12 @@ export function PositionSeller(p: Props) {
       return;
     }
 
-    const defaultValue = decreaseAmounts?.acceptablePriceDeltaBps.toNumber();
-
-    const setValue = (value) => {
-      setSelectedAcceptablePriceImapctBps(BigNumber.from(value));
-    };
-
     return (
-      <ExchangeInfoRow
-        className="SwapBox-info-row"
-        label={t`Acceptable Price Impact`}
-        value={
-          decreaseAmounts?.triggerOrderType === OrderType.StopLossDecrease ? (
-            "NA"
-          ) : (
-            <PercentageInput
-              onChange={setValue}
-              defaultValue={defaultValue}
-              highValue={defaultValue + 1}
-              lowValue={defaultValue}
-              highValueWarningText={t`You have set a high Acceptable Price Impact. Please verify Acceptable Price of the order.`}
-              lowValueWarningText={t`The Current Price Impact is ${formatDeltaUsd(
-                decreaseAmounts?.positionPriceImpactDeltaUsd
-              )}%. Consider adding a buffer of 0.3% to it so the order is more likely to be processed.`}
-            />
-          )
-        }
+      <TriggerAcceptablePriceImpactInputRow
+        notAvailable={!triggerPriceInputValue || decreaseAmounts.triggerOrderType === OrderType.StopLossDecrease}
+        defaultAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
+        fees={fees}
+        setSelectedAcceptablePriceImpactBps={setSelectedAcceptablePriceImapctBps}
       />
     );
   })();

@@ -61,12 +61,12 @@ export function getDecreasePositionAmounts(p: {
     indexPrice: BigNumber.from(0),
     collateralPrice: BigNumber.from(0),
     triggerPrice: BigNumber.from(0),
-    executionPrice: BigNumber.from(0),
     acceptablePrice: BigNumber.from(0),
 
     positionPriceImpactDeltaUsd: BigNumber.from(0),
     priceImpactDiffUsd: BigNumber.from(0),
     acceptablePriceDeltaBps: BigNumber.from(0),
+    recommendedAcceptablePriceDeltaBps: BigNumber.from(0),
 
     estimatedPnl: BigNumber.from(0),
     estimatedPnlPercentage: BigNumber.from(0),
@@ -351,10 +351,6 @@ export function getDecreasePositionAmounts(p: {
 
   values.receiveUsd = convertToUsd(values.receiveTokenAmount, collateralToken.decimals, values.collateralPrice)!;
 
-  if (isTrigger) {
-    values.executionPrice = values.triggerPrice?.add(values.positionPriceImpactDeltaUsd);
-  }
-
   return values;
 }
 
@@ -539,15 +535,17 @@ function applyAcceptablePrice(p: {
       }
     } else {
       let maxNegativePriceImpactBps = fixedAcceptablePriceImpactBps;
+      values.recommendedAcceptablePriceDeltaBps = getDefaultAcceptablePriceImpactBps({
+        isIncrease: false,
+        isLong,
+        indexPrice: values.indexPrice,
+        sizeDeltaUsd: values.sizeDeltaUsd,
+        priceImpactDeltaUsd: values.positionPriceImpactDeltaUsd,
+        acceptablePriceImapctBuffer: acceptablePriceImpactBuffer || DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER,
+      });
+
       if (!maxNegativePriceImpactBps) {
-        maxNegativePriceImpactBps = getDefaultAcceptablePriceImpactBps({
-          isIncrease: false,
-          isLong,
-          indexPrice: values.indexPrice,
-          sizeDeltaUsd: values.sizeDeltaUsd,
-          priceImpactDeltaUsd: values.positionPriceImpactDeltaUsd,
-          acceptablePriceImapctBuffer: acceptablePriceImpactBuffer || DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER,
-        });
+        maxNegativePriceImpactBps = values.recommendedAcceptablePriceDeltaBps;
       }
 
       const triggerAcceptablePriceInfo = getAcceptablePriceInfo({
@@ -678,4 +676,15 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     nextPnlPercentage,
     nextLeverage,
   };
+}
+
+export function getExecutionPriceForDecrease(
+  triggerPrice: BigNumber,
+  priceImpactUsd: BigNumber,
+  sizeDeltaUsd: BigNumber,
+  isLong: boolean
+) {
+  const adjustedPriceImpactUsd = isLong ? priceImpactUsd : priceImpactUsd.mul(-1);
+  const adjustment = triggerPrice.mul(adjustedPriceImpactUsd).div(sizeDeltaUsd);
+  return triggerPrice.add(adjustment);
 }
