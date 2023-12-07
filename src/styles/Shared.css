@@ -30,7 +30,7 @@ code {
 }
 
 input {
-  font-family: "RelativeNumber";
+  font-family: "RelativeNumber", sans-serif;
 }
 
 ::-webkit-scrollbar {
@@ -455,6 +455,10 @@ button.btn-link:hover .logout-icon {
   font-size: var(--font-base);
 }
 
+.mr-xs {
+  margin-right: 0.5rem;
+}
+
 .mr-sm {
   margin-right: 1rem;
 }
@@ -511,6 +515,10 @@ button.btn-link:hover .logout-icon {
 
 .mx-xs {
   margin: 0 0.5rem;
+}
+
+.my-xs {
+  margin: 0.5rem 0;
 }
 
 .my-sm {

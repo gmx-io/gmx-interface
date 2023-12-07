@@ -4,6 +4,8 @@ import { SkeletonTheme } from "react-loading-skeleton";
 import { ComponentType } from "react";
 import MarketListSkeletonStructure from "./MarketListSkeletonStructure";
 import GMListSkeletonStructure from "./GMListSkeletonStructure";
+import LeaderboardTopAccounts from "./LeaderboardTopAccounts";
+import LeaderBoardTopPositions from "./LeaderBoardTopPositions";
 
 type Props = {
   count: number;
@@ -26,4 +28,12 @@ export function MarketListSkeleton(props) {
 
 export function GMListSkeleton(props) {
   return <TableListSkeleton {...props} Structure={GMListSkeletonStructure} />;
+}
+
+export function TopAccountsSkeleton(props) {
+  return <TableListSkeleton {...props} Structure={LeaderboardTopAccounts} />;
+}
+
+export function TopPositionsSkeleton(props) {
+  return <TableListSkeleton {...props} Structure={LeaderBoardTopPositions} />;
 }

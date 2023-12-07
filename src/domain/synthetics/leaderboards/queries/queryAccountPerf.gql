@@ -1,0 +1,36 @@
+query QueryAccountPerformance(
+  $first: Int = 10,
+  $skip: Int = 0,
+  $orderBy: AccountPerf_orderBy = totalPnl,
+  $orderDirection: OrderDirection = desc,
+  $period: Period = daily,
+  $since: Int = 0,
+  $volumeGte: BigInt = 0,
+) {
+  accountPerfs(
+    first: $first,
+    skip: $skip,
+    orderBy: $orderBy,
+    orderDirection: $orderDirection,
+    where: { timestamp_gte: $since, period: $period, volume_gte: $volumeGte }
+  ) {
+    id
+    account
+    period
+    timestamp
+    wins
+    losses
+    totalPnl
+    totalCollateral
+    maxCollateral
+    cumsumSize
+    cumsumCollateral
+    sumMaxSize
+    closedCount
+    borrowingFeeUsd
+    fundingFeeUsd
+    positionFeeUsd
+    priceImpactUsd
+    volume
+  }
+}

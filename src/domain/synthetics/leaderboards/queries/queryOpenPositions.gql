@@ -1,0 +1,31 @@
+query QueryOpenPositions(
+  $first: Int,
+  $skip: Int = 0,
+  $orderBy: AccountOpenPosition_orderBy = sizeInUsd,
+  $orderDirection: OrderDirection = desc,
+  $sizeInUsdGte: BigInt = 0,
+) {
+  accountOpenPositions(
+    first: $first,
+    skip: $skip,
+    orderBy: $orderBy,
+    orderDirection: $orderDirection,
+    where: { sizeInUsd_gte: $sizeInUsdGte },
+  ) {
+    id
+    account
+    market
+    collateralToken
+    collateralAmount
+    isLong
+    realizedPnl
+    sizeInTokens
+    sizeInUsd
+    entryPrice
+    maxSize
+    borrowingFeeUsd
+    fundingFeeUsd
+    positionFeeUsd
+    priceImpactUsd
+  }
+}

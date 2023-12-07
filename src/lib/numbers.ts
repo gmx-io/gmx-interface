@@ -2,6 +2,7 @@ import { BigNumber, BigNumberish, ethers } from "ethers";
 import { PRECISION, USD_DECIMALS } from "./legacy";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
+import { getPriceDecimals } from "config/tokens";
 
 const MAX_EXCEEDING_THRESHOLD = "1000000000";
 const MIN_EXCEEDING_THRESHOLD = "0.01";
@@ -171,10 +172,25 @@ export function formatUsd(
   return `${exceedingInfo.symbol}${exceedingInfo.symbol ? " " : ""}${sign}$${displayUsd}`;
 }
 
+export function formatPrice(price: BigNumber, chainId: number, symbol: string, opts = {}) {
+  return formatUsd(price, {
+    displayDecimals: getPriceDecimals(chainId, symbol),
+    maxThreshold: "1000000",
+    ...opts,
+  });
+}
+
 export function formatDeltaUsd(
   deltaUsd?: BigNumber,
   percentage?: BigNumber,
-  opts: { fallbackToZero?: boolean; showPlusForZero?: boolean } = {}
+  opts: {
+    fallbackToZero?: boolean;
+    displayDecimals?: number;
+    maxThreshold?: string;
+    minThreshold?: string;
+    hidePercentageAfterThreshold?: boolean;
+    showPlusForZero?: boolean;
+  } = {}
 ) {
   if (!deltaUsd) {
     if (opts.fallbackToZero) {
@@ -190,8 +206,9 @@ export function formatDeltaUsd(
   } else if (opts.showPlusForZero) {
     sign = "+";
   }
-  const exceedingInfo = getLimitedDisplay(deltaUsd, USD_DECIMALS);
-  const percentageStr = percentage ? ` (${sign}${formatPercentage(percentage.abs())})` : "";
+  const exceedingInfo = getLimitedDisplay(deltaUsd, USD_DECIMALS, opts);
+  const showPercentage = percentage && (!exceedingInfo.symbol || !opts.hidePercentageAfterThreshold);
+  const percentageStr = showPercentage ? ` (${sign}${formatPercentage(percentage.abs())})` : "";
   const deltaUsdStr = formatAmount(exceedingInfo.value, USD_DECIMALS, 2, true);
 
   return `${exceedingInfo.symbol} ${sign}$${deltaUsdStr}${percentageStr}`;
@@ -214,7 +231,7 @@ export function formatPercentage(percentage?: BigNumber, opts: { fallbackToZero?
     sign = percentage?.gt(0) ? "+" : "-";
   }
 
-  return `${sign}${formatAmount(percentage.abs(), 2, 2)}%`;
+  return `${sign}${formatAmount(percentage.abs(), 2, 2, true)}%`;
 }
 
 export function formatTokenAmount(

@@ -296,6 +296,11 @@ msgstr "必要な追加リザーブ額"
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr "それに加え、トリガー注文はマーケット注文であり、トリガー価格での決済は保証されていません。"
 
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Address"
+msgstr ""
+
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "Address copied to your clipboard"
 msgstr ""
@@ -477,6 +482,22 @@ msgstr "選択されたネットワークにて利用可能"
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
 msgstr "AvalancheでのAPR(実質年利)"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Average Leverage used."
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Average Position Size."
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Avg. Lev."
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Avg. Size"
+msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "BUYABLE"
@@ -938,6 +959,7 @@ msgstr "そのコードは既に使用されています"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
@@ -1661,6 +1683,10 @@ msgstr "新しい価格を入力"
 msgid "Enter new amount or price"
 msgstr ""
 
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Entry"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -1681,6 +1707,10 @@ msgstr "エントリー価格"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Epoch ending is not acknowledged"
+msgstr ""
+
+#: src/components/Table/Table.tsx
+msgid "Error"
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -2397,12 +2427,18 @@ msgid "Launch App"
 msgstr "アプリ起動"
 
 #: src/components/Exchange/UsefulLinks.tsx
+#: src/components/Header/AppHeaderLinks.tsx
+#: src/pages/Leaderboard/Leaderboard.tsx
 msgid "Leaderboard"
 msgstr "順位表"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Leaderboard for GMX traders"
 msgstr "GMXトレーダー順位表"
+
+#: src/pages/Leaderboard/Leaderboard.tsx
+msgid "Leaderboard for traders on GMX V2."
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Leave at least {0} ETH for gas"
@@ -2427,6 +2463,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Leftover position below 10 USD"
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Lev."
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -2529,6 +2569,7 @@ msgstr "リンクがクリップボードにコピーされました"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -2589,6 +2630,7 @@ msgstr "流動性データがロードされていません"
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+#: src/components/Table/Table.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Loading..."
@@ -2615,6 +2657,8 @@ msgstr "ロード中"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
@@ -2726,6 +2770,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -2796,6 +2841,14 @@ msgstr "最大キャパシティ"
 #: src/components/Glp/GlpSwap.js
 msgid "Max Capacity for {0} Reached"
 msgstr "{0}の最大キャパシティに到達しています"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Max Collateral"
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Max Collateral is the highest value of"
+msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -3088,12 +3141,20 @@ msgstr "ネットワークと設定"
 msgid "Next"
 msgstr "次へ"
 
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "No Liquidation Price as the Position's Collateral value will increase to cover any negative PnL."
+msgstr ""
+
 #: src/pages/Actions/Actions.js
 msgid "No PnLs found"
 msgstr "損益が見つかりません"
 
 #: src/components/Synthetics/Claims/Claims.tsx
 msgid "No claims yet"
+msgstr ""
+
+#: src/components/Table/Table.tsx
+msgid "No data yet"
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
@@ -3155,6 +3216,14 @@ msgstr ""
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr "注文が必ず執行される保証がないことに注意してください。<0/><1/>これは例えば以下のような状況で起こりえます:"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Only Addresses with over $1,000 in traded volume are displayed."
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Only Addresses' Positions with over $1,000 in traded volume are displayed."
+msgstr ""
 
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
@@ -3439,6 +3508,19 @@ msgstr ""
 msgid "PnL"
 msgstr "損益"
 
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "PnL ($)"
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "PnL ($) compared to the Max Collateral used by this Address."
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "PnL (%)"
+msgstr ""
+
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
@@ -3467,6 +3549,7 @@ msgid "Pools"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "Position"
@@ -3474,6 +3557,10 @@ msgstr "ポジション"
 
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Position Fee"
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Position Leverage."
 msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
@@ -3596,6 +3683,10 @@ msgstr "清算価格を下回る価格"
 msgid "Price below Mark Price"
 msgstr "マーク価格を下回る価格"
 
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Price change to Liq."
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Price conditions are met"
 msgstr "価格の条件が満たされていません"
@@ -3659,11 +3750,20 @@ msgstr ""
 msgid "Purchase Insurance"
 msgstr "保険購入"
 
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Rank"
+msgstr ""
+
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Read more"
 msgstr "詳細について読む"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Realized PnL"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Realized PnL insufficient for Fees"
@@ -3897,6 +3997,14 @@ msgstr "コスト削減"
 msgid "Save on Fees"
 msgstr "手数料削減"
 
+#: src/components/GlobalLeaderboards/GlobalLeaderboards.tsx
+msgid "Search Address"
+msgstr ""
+
+#: src/components/GlobalLeaderboards/GlobalLeaderboards.tsx
+msgid "Search Address or Market"
+msgstr ""
+
 #: src/components/MarketSelector/MarketSelector.tsx
 msgid "Search Market"
 msgstr ""
@@ -4109,6 +4217,8 @@ msgstr "ポジションをシェアする"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
@@ -4209,6 +4319,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
@@ -4778,6 +4889,14 @@ msgstr "手数料を削減するには別のアセットを支払いに使用し
 msgid "Tokens"
 msgstr "トークン"
 
+#: src/components/GlobalLeaderboards/GlobalLeaderboards.tsx
+msgid "Top Addresses"
+msgstr ""
+
+#: src/components/GlobalLeaderboards/GlobalLeaderboards.tsx
+msgid "Top Open Positions"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -4798,6 +4917,10 @@ msgstr "ステークされた全アセット"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Total Fees"
 msgstr "手数料総額"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Total Realized and Unrealized Profit and Loss."
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Rebates"
@@ -4838,6 +4961,10 @@ msgstr "総供給量"
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "トレード総額"
+
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Total Unrealized Profit and Loss."
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
@@ -5072,6 +5199,10 @@ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown sell GM order"
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Unrealized PnL"
 msgstr ""
 
 #: src/pages/Stake/StakeV1.js
@@ -5410,6 +5541,14 @@ msgstr "ウェイト"
 msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr "ポジションをクローズする際、利益をどのトークンで受け取るかを選択できます。"
 
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Win/Loss"
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Wins and Losses for fully closed Positions."
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -5672,6 +5811,10 @@ msgstr "移転が開始されました。"
 #: src/components/Migration/Migration.js
 msgid "Your wallet: {0}"
 msgstr "あなたのウォレット: {0}"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "[Sum of Collateral of Open Positions -  RPnL]"
+msgstr ""
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "account"

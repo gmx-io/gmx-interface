@@ -19,6 +19,7 @@ import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccou
 import Dashboard from "pages/Dashboard/Dashboard";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
 import { Exchange } from "pages/Exchange/Exchange";
+import Leaderboard from "pages/Leaderboard/Leaderboard";
 import Home from "pages/Home/Home";
 import NftWallet from "pages/NftWallet/NftWallet";
 import OrdersOverview from "pages/OrdersOverview/OrdersOverview";
@@ -33,6 +34,7 @@ import Modal from "components/Modal/Modal";
 import { cssTransition, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import "./App.scss";
 import "styles/Font.css";
 import "styles/Input.css";
 import "styles/Shared.css";
@@ -482,6 +484,9 @@ function FullApp() {
               </Route>
               <Route exact path="/referrals">
                 <Referrals pendingTxns={pendingTxns} setPendingTxns={setPendingTxns} />
+              </Route>
+              <Route exact path="/leaderboard">
+                <Leaderboard />
               </Route>
               <Route exact path="/referrals/:account">
                 <Referrals pendingTxns={pendingTxns} setPendingTxns={setPendingTxns} />

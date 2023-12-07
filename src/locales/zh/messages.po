@@ -296,6 +296,11 @@ msgstr "额外保留需求"
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr "此外，触发订单為市场订单，不保证以触发价格结算"
 
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Address"
+msgstr ""
+
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "Address copied to your clipboard"
 msgstr ""
@@ -477,6 +482,22 @@ msgstr "可在您的首选网络上使用"
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
 msgstr "Avalanche年利率"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Average Leverage used."
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Average Position Size."
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Avg. Lev."
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Avg. Size"
+msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "BUYABLE"
@@ -938,6 +959,7 @@ msgstr "已采取的代码"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
@@ -1661,6 +1683,10 @@ msgstr "输入新价钱"
 msgid "Enter new amount or price"
 msgstr ""
 
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Entry"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -1681,6 +1707,10 @@ msgstr "入场价格"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Epoch ending is not acknowledged"
+msgstr ""
+
+#: src/components/Table/Table.tsx
+msgid "Error"
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -2397,12 +2427,18 @@ msgid "Launch App"
 msgstr "启动应用程序"
 
 #: src/components/Exchange/UsefulLinks.tsx
+#: src/components/Header/AppHeaderLinks.tsx
+#: src/pages/Leaderboard/Leaderboard.tsx
 msgid "Leaderboard"
 msgstr "排行榜"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Leaderboard for GMX traders"
 msgstr "GMX交易者排行榜"
+
+#: src/pages/Leaderboard/Leaderboard.tsx
+msgid "Leaderboard for traders on GMX V2."
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Leave at least {0} ETH for gas"
@@ -2427,6 +2463,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Leftover position below 10 USD"
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Lev."
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -2529,6 +2569,7 @@ msgstr "链接被复制到剪贴板上"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -2589,6 +2630,7 @@ msgstr "未加载流动资金数据"
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+#: src/components/Table/Table.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Loading..."
@@ -2615,6 +2657,8 @@ msgstr "加载中..."
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
@@ -2726,6 +2770,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -2796,6 +2841,14 @@ msgstr "最高上限"
 #: src/components/Glp/GlpSwap.js
 msgid "Max Capacity for {0} Reached"
 msgstr "达到{0}的最高上限"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Max Collateral"
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Max Collateral is the highest value of"
+msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -3088,12 +3141,20 @@ msgstr "网络和设定"
 msgid "Next"
 msgstr "下一步"
 
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "No Liquidation Price as the Position's Collateral value will increase to cover any negative PnL."
+msgstr ""
+
 #: src/pages/Actions/Actions.js
 msgid "No PnLs found"
 msgstr "未发现PnLs"
 
 #: src/components/Synthetics/Claims/Claims.tsx
 msgid "No claims yet"
+msgstr ""
+
+#: src/components/Table/Table.tsx
+msgid "No data yet"
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
@@ -3155,6 +3216,14 @@ msgstr ""
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr "请注意，订单不保证被执行。<0/><1/>可能发生在几种情况下，包括但不限于:"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Only Addresses with over $1,000 in traded volume are displayed."
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Only Addresses' Positions with over $1,000 in traded volume are displayed."
+msgstr ""
 
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
@@ -3439,6 +3508,19 @@ msgstr ""
 msgid "PnL"
 msgstr "PnL"
 
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "PnL ($)"
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "PnL ($) compared to the Max Collateral used by this Address."
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "PnL (%)"
+msgstr ""
+
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
@@ -3467,6 +3549,7 @@ msgid "Pools"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 msgid "Position"
@@ -3474,6 +3557,10 @@ msgstr "仓位"
 
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Position Fee"
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Position Leverage."
 msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
@@ -3596,6 +3683,10 @@ msgstr "价格低于流动资金价格"
 msgid "Price below Mark Price"
 msgstr "价格低于标价"
 
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Price change to Liq."
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Price conditions are met"
 msgstr "符合价格条件"
@@ -3659,11 +3750,20 @@ msgstr ""
 msgid "Purchase Insurance"
 msgstr "购买保险"
 
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Rank"
+msgstr ""
+
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Read more"
 msgstr "了解更多"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Realized PnL"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Realized PnL insufficient for Fees"
@@ -3897,6 +3997,14 @@ msgstr "节省成本"
 msgid "Save on Fees"
 msgstr "节省费用"
 
+#: src/components/GlobalLeaderboards/GlobalLeaderboards.tsx
+msgid "Search Address"
+msgstr ""
+
+#: src/components/GlobalLeaderboards/GlobalLeaderboards.tsx
+msgid "Search Address or Market"
+msgstr ""
+
 #: src/components/MarketSelector/MarketSelector.tsx
 msgid "Search Market"
 msgstr ""
@@ -4109,6 +4217,8 @@ msgstr "分享仓位"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
@@ -4209,6 +4319,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/GlobalLeaderboards/TopPositions.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
@@ -4778,6 +4889,14 @@ msgstr "为了减少费用，请选择不同的资产来支付"
 msgid "Tokens"
 msgstr "代币"
 
+#: src/components/GlobalLeaderboards/GlobalLeaderboards.tsx
+msgid "Top Addresses"
+msgstr ""
+
+#: src/components/GlobalLeaderboards/GlobalLeaderboards.tsx
+msgid "Top Open Positions"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -4798,6 +4917,10 @@ msgstr "质押的资产总额"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Total Fees"
 msgstr "费用总额"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Total Realized and Unrealized Profit and Loss."
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Rebates"
@@ -4838,6 +4961,10 @@ msgstr "总供应量"
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "总交易量"
+
+#: src/components/GlobalLeaderboards/TopPositions.tsx
+msgid "Total Unrealized Profit and Loss."
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Home/Home.js
@@ -5072,6 +5199,10 @@ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown sell GM order"
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Unrealized PnL"
 msgstr ""
 
 #: src/pages/Stake/StakeV1.js
@@ -5410,6 +5541,14 @@ msgstr "重量"
 msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr "在平仓时，你可以选择你想用哪种代币来接收利润"
 
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Win/Loss"
+msgstr ""
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "Wins and Losses for fully closed Positions."
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -5672,6 +5811,10 @@ msgstr "你的转汇已启动"
 #: src/components/Migration/Migration.js
 msgid "Your wallet: {0}"
 msgstr "你的钱包: {0}"
+
+#: src/components/GlobalLeaderboards/TopAccounts.tsx
+msgid "[Sum of Collateral of Open Positions -  RPnL]"
+msgstr ""
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "account"

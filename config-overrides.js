@@ -11,6 +11,12 @@ module.exports = function override(config) {
         loader: "@lingui/loader",
       },
     ],
+  }, {
+    test: /\.(graphql|gql)$/,
+    exclude: /node_modules/,
+    use: [{
+      loader: 'graphql-tag/loader',
+    }]
   });
 
   config.resolve.fallback = {
