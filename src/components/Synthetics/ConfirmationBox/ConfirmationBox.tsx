@@ -196,7 +196,7 @@ export function ConfirmationBox(p: Props) {
 
   useEffect(() => {
     setAllowedSlippage(savedAllowedSlippage);
-  }, [savedAllowedSlippage]);
+  }, [savedAllowedSlippage, p.isVisible]);
 
   const payAmount = useMemo(() => {
     if (isSwap && !isWrapOrUnwrap) {
