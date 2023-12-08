@@ -3160,6 +3160,10 @@ msgstr ""
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr "注文が必ず執行される保証がないことに注意してください。<0/><1/>これは例えば以下のような状況で起こりえます:"
 
+#: src/components/AddressDropdown/AddressDropdown.tsx
+msgid "One-Click Trading"
+msgstr ""
+
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "英数字とアンダースコア記号のみ使用できます。"

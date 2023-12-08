@@ -41,6 +41,7 @@ import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTrade
 import { helperToast } from "lib/helperToast";
 import useWallet from "lib/wallets/useWallet";
 import { SettleAccruedFundingFeeModal } from "components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal";
+import { OneClickTradingModal } from "components/Synthetics/OneClickTrading/OneClickTradingModal";
 
 export type Props = {
   savedIsPnlInLeverage: boolean;
@@ -590,6 +591,7 @@ export function SyntheticsPage(p: Props) {
         onClose={() => setIsClaiming(false)}
         setPendingTxns={setPendingTxns}
       />
+      <OneClickTradingModal />
       <SettleAccruedFundingFeeModal
         isVisible={isSettling}
         positionKeys={gettingPendingFeePositionKeys}

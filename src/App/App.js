@@ -96,6 +96,7 @@ import { useDisconnect } from "wagmi";
 import useWallet from "lib/wallets/useWallet";
 import { swrGCMiddleware } from "lib/swrMiddlewares";
 import useTradeRedirect from "lib/useTradeRedirect";
+import { OneClickTradingContextProvider } from "context/OneClickTradingContext/OneClickTradingContext.tsx";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -691,25 +692,23 @@ function App() {
     return () => unwatch();
   }, [disconnect]);
 
-  return (
+  let app = <FullApp />;
+  app = <OneClickTradingContextProvider>{app}</OneClickTradingContextProvider>;
+  app = <I18nProvider i18n={i18n}>{app}</I18nProvider>;
+  app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;
+  app = <WebsocketContextProvider>{app}</WebsocketContextProvider>;
+  app = <Router>{app}</Router>;
+  app = <SEO>{app}</SEO>;
+  app = <SettingsContextProvider>{app}</SettingsContextProvider>;
+  app = (
     <SWRConfig
       value={{ refreshInterval: 5000, refreshWhenHidden: false, refreshWhenOffline: false, use: [swrGCMiddleware] }}
     >
-      <SettingsContextProvider>
-        <SEO>
-          <Router>
-            <WebsocketContextProvider>
-              <SyntheticsEventsProvider>
-                <I18nProvider i18n={i18n}>
-                  <FullApp />
-                </I18nProvider>
-              </SyntheticsEventsProvider>
-            </WebsocketContextProvider>
-          </Router>
-        </SEO>
-      </SettingsContextProvider>
+      {app}
     </SWRConfig>
   );
+
+  return app;
 }
 
 export default App;
