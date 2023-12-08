@@ -49,31 +49,37 @@ export function usePriceImpactWarningState({
   return useMemo(() => {
     let validationError = false;
     let shouldShowWarning = false;
+    let shouldShowWarningForSwap = false;
+    let shouldShowWarningForPosition = false;
 
     if (place === "tradeBox") {
       validationError = isHighSwapImpact && !isHighSwapImpactAccepted;
       shouldShowWarning = isHighSwapImpact;
+      shouldShowWarningForSwap = isHighSwapImpact;
     } else if (place === "confirmationBox") {
       if (!tradeFlags.isSwap) {
         validationError = isHighPositionImpact && !isHighPositionImpactAccepted;
         shouldShowWarning = isHighPositionImpact;
+        shouldShowWarningForPosition = isHighPositionImpact;
       }
     } else if (place === "positionSeller") {
       validationError =
         (isHighPositionImpact && !isHighPositionImpactAccepted) || (isHighSwapImpact && !isHighSwapImpactAccepted);
       shouldShowWarning = isHighPositionImpact || isHighSwapImpact;
+      shouldShowWarningForPosition = isHighPositionImpact;
+      shouldShowWarningForSwap = isHighSwapImpact;
     } else {
       throw museNeverExist(place);
     }
 
     return {
-      isHighPositionImpact,
-      isHighSwapImpact,
       isHighPositionImpactAccepted,
       isHighSwapImpactAccepted,
       validationError,
       setIsHighSwapImpactAccepted,
       setIsHighPositionImpactAccepted,
+      shouldShowWarningForSwap,
+      shouldShowWarningForPosition,
       shouldShowWarning,
     };
   }, [

@@ -8,12 +8,12 @@ export type Props = {
 };
 
 export function HighPriceImpactWarning({ priceImpactWarinigState, className }: Props) {
-  if (!priceImpactWarinigState.isHighPositionImpact && !priceImpactWarinigState.isHighSwapImpact) {
+  if (!priceImpactWarinigState.shouldShowWarning) {
     return null;
   }
 
-  const shouldShowSwapImpact = priceImpactWarinigState.isHighSwapImpact;
-  const shouldShowPriceImpact = priceImpactWarinigState.isHighPositionImpact;
+  const shouldShowSwapImpact = priceImpactWarinigState.shouldShowWarningForSwap;
+  const shouldShowPriceImpact = priceImpactWarinigState.shouldShowWarningForPosition;
 
   return (
     <div className={className}>
