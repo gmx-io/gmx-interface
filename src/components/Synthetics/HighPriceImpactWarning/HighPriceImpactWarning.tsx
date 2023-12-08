@@ -1,28 +1,19 @@
 import { Trans } from "@lingui/macro";
 import Checkbox from "components/Checkbox/Checkbox";
 import { PriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
-import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
 
 export type Props = {
   priceImpactWarinigState: PriceImpactWarningState;
   className?: string;
-  tradeFlags: TradeFlags;
-  place: "tradeBox" | "positionSeller" | "confimationBox";
 };
 
-export function HighPriceImpactWarning({ priceImpactWarinigState, className, tradeFlags, place }: Props) {
+export function HighPriceImpactWarning({ priceImpactWarinigState, className }: Props) {
   if (!priceImpactWarinigState.isHighPositionImpact && !priceImpactWarinigState.isHighSwapImpact) {
     return null;
   }
 
-  const shouldShowSwapImpact =
-    priceImpactWarinigState.isHighSwapImpact &&
-    ((place === "tradeBox" && !tradeFlags.isSwap) ||
-      (place === "confimationBox" && tradeFlags.isSwap) ||
-      place === "positionSeller");
-  const shouldShowPriceImpact =
-    priceImpactWarinigState.isHighPositionImpact &&
-    ((place === "confimationBox" && !tradeFlags.isSwap) || place === "positionSeller");
+  const shouldShowSwapImpact = priceImpactWarinigState.isHighSwapImpact;
+  const shouldShowPriceImpact = priceImpactWarinigState.isHighPositionImpact;
 
   return (
     <div className={className}>

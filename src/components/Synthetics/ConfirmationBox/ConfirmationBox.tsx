@@ -968,16 +968,11 @@ export function ConfirmationBox(p: Props) {
   }
 
   function renderHighPriceImpactWarning() {
-    if (isLimit) return null;
     if (!priceImpactWarningState.shouldShowWarning) return null;
     return (
       <>
         <div className="line-divider" />
-        <HighPriceImpactWarning
-          priceImpactWarinigState={priceImpactWarningState}
-          tradeFlags={tradeFlags}
-          place="confimationBox"
-        />
+        <HighPriceImpactWarning priceImpactWarinigState={priceImpactWarningState} />
       </>
     );
   }
@@ -1184,7 +1179,6 @@ export function ConfirmationBox(p: Props) {
               </Checkbox>
             </div>
           )}
-          {renderHighPriceImpactWarning()}
         </div>
       </>
     );
@@ -1250,7 +1244,6 @@ export function ConfirmationBox(p: Props) {
                 )
               : formatTokenAmount(swapAmounts?.minOutputAmount, toToken?.decimals, toToken?.symbol)}
           </ExchangeInfoRow>
-          {renderHighPriceImpactWarning()}
         </div>
       </>
     );
@@ -1436,6 +1429,7 @@ export function ConfirmationBox(p: Props) {
         {isSwap && renderSwapSection()}
         {isIncrease && renderIncreaseOrderSection()}
         {isTrigger && renderTriggerDecreaseSection()}
+        {renderHighPriceImpactWarning()}
 
         {needPayTokenApproval && fromToken && (
           <>

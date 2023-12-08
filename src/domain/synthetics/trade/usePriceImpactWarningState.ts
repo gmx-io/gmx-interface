@@ -20,10 +20,13 @@ export function usePriceImpactWarningState({
   const [isHighPositionImpactAccepted, setIsHighPositionImpactAccepted] = useState(false);
   const [isHighSwapImpactAccepted, setIsHighSwapImpactAccepted] = useState(false);
 
-  const isHighPositionImpact =
-    positionPriceImpact?.deltaUsd.lt(0) && positionPriceImpact?.bps.abs().gte(HIGH_POSITION_IMPACT_BPS);
+  const isHighPositionImpact = Boolean(
+    positionPriceImpact?.deltaUsd.lt(0) && positionPriceImpact?.bps.abs().gte(HIGH_POSITION_IMPACT_BPS)
+  );
 
-  const isHighSwapImpact = swapPriceImpact?.deltaUsd.lt(0) && swapPriceImpact?.bps.abs().gte(HIGH_SWAP_IMPACT_BPS);
+  const isHighSwapImpact = Boolean(
+    swapPriceImpact?.deltaUsd.lt(0) && swapPriceImpact?.bps.abs().gte(HIGH_SWAP_IMPACT_BPS)
+  );
 
   useEffect(
     function resetPositionImactWarning() {
@@ -45,20 +48,23 @@ export function usePriceImpactWarningState({
 
   return useMemo(() => {
     let validationError = false;
+    let shouldShowWarning = false;
 
-    if (place === "tradeBox" || place === "confirmationBox") {
-      validationError = Boolean(
-        !tradeFlags.isLimit && isHighSwapImpact && !isHighSwapImpactAccepted && !tradeFlags.isSwap
-      );
+    if (place === "tradeBox") {
+      validationError = isHighSwapImpact && !isHighSwapImpactAccepted;
+      shouldShowWarning = isHighSwapImpact;
+    } else if (place === "confirmationBox") {
+      if (!tradeFlags.isSwap) {
+        validationError = isHighPositionImpact && !isHighPositionImpactAccepted;
+        shouldShowWarning = isHighPositionImpact;
+      }
     } else if (place === "positionSeller") {
       validationError =
-        Boolean(!tradeFlags.isTrigger && isHighPositionImpact && !isHighPositionImpactAccepted) ||
-        Boolean(tradeFlags.isPosition && isHighSwapImpact && !isHighSwapImpactAccepted);
+        (isHighPositionImpact && !isHighPositionImpactAccepted) || (isHighSwapImpact && !isHighSwapImpactAccepted);
+      shouldShowWarning = isHighPositionImpact || isHighSwapImpact;
     } else {
       throw museNeverExist(place);
     }
-
-    const shouldShowWarning = isHighPositionImpact || isHighSwapImpact;
 
     return {
       isHighPositionImpact,
@@ -76,9 +82,6 @@ export function usePriceImpactWarningState({
     isHighSwapImpact,
     isHighSwapImpactAccepted,
     place,
-    tradeFlags.isLimit,
-    tradeFlags.isPosition,
     tradeFlags.isSwap,
-    tradeFlags.isTrigger,
   ]);
 }

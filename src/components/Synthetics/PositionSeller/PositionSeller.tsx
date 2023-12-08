@@ -816,8 +816,6 @@ export function PositionSeller(p: Props) {
                 <HighPriceImpactWarning
                   priceImpactWarinigState={priceImpactWarningState}
                   className="PositionSeller-price-impact-warning"
-                  tradeFlags={tradeFlags}
-                  place="positionSeller"
                 />
               </>
             )}
