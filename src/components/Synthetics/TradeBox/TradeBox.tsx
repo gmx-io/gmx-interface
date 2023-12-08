@@ -601,6 +601,7 @@ export function TradeBox(p: Props) {
     positionPriceImpact: fees?.positionPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
     tradeFlags,
+    place: "tradeBox",
   });
 
   const marketsOptions = useAvailableMarketsOptions({
@@ -715,7 +716,6 @@ export function TradeBox(p: Props) {
         priceImpactWarning: priceImpactWarningState,
         isNotEnoughReceiveTokenLiquidity: false,
         fixedTriggerThresholdType: stage === "confirmation" ? fixedTriggerThresholdType : undefined,
-        place: "tradeBox",
       });
     }
 
@@ -1571,7 +1571,6 @@ export function TradeBox(p: Props) {
         fees={fees}
         executionFee={executionFee}
         error={error}
-        priceImpactWarningState={priceImpactWarningState}
         existingPosition={existingPosition}
         shouldDisableValidation={shouldDisableValidation!}
         isHigherSlippageAllowed={isHigherSlippageAllowed}

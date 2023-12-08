@@ -93,7 +93,7 @@ import { useKey } from "react-use";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./ConfirmationBox.scss";
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
-import { PriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
+import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { TriggerAcceptablePriceImpactInputRow } from "../TriggerAcceptablePriceImpactInputRow/TriggerAcceptablePriceImpactInputRow";
 
 export type Props = {
@@ -129,7 +129,6 @@ export type Props = {
   isHigherSlippageAllowed?: boolean;
   ordersData?: OrdersInfoData;
   tokensData?: TokensData;
-  priceImpactWarningState: PriceImpactWarningState;
   setSelectedTriggerAcceptablePriceImapctBps: (value: BigNumber) => void;
   setIsHigherSlippageAllowed: (isHigherSlippageAllowed: boolean) => void;
   setKeepLeverage: (keepLeverage: boolean) => void;
@@ -169,7 +168,6 @@ export function ConfirmationBox(p: Props) {
     marketsOptions,
     ordersData,
     tokensData,
-    priceImpactWarningState,
     setSelectedTriggerAcceptablePriceImapctBps,
     setKeepLeverage,
     onClose,
@@ -326,8 +324,15 @@ export function ConfirmationBox(p: Props) {
     return t`Confirm ${getTriggerNameByOrderType(fixedTriggerOrderType)} Order`;
   }, [fixedTriggerOrderType, isLimit, isLong, isMarket, isSwap]);
 
+  const priceImpactWarningState = usePriceImpactWarningState({
+    positionPriceImpact: fees?.positionPriceImpact,
+    swapPriceImpact: fees?.swapPriceImpact,
+    tradeFlags,
+    place: "confirmationBox",
+  });
+
   const submitButtonState = useMemo(() => {
-    if (priceImpactWarningState.shouldAcceptPriceImpactWarningInModal) {
+    if (priceImpactWarningState.validationError) {
       return {
         text: "Price Impact not yet acknowledged",
         disabled: true,
@@ -379,7 +384,7 @@ export function ConfirmationBox(p: Props) {
     };
   }, [
     isLimit,
-    priceImpactWarningState.shouldAcceptPriceImpactWarningInModal,
+    priceImpactWarningState.validationError,
     isSubmitting,
     error,
     needPayTokenApproval,

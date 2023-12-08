@@ -302,6 +302,7 @@ export function PositionSeller(p: Props) {
     positionPriceImpact: fees?.positionPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
     tradeFlags,
+    place: "positionSeller",
   });
 
   const isNotEnoughReceiveTokenLiquidity = shouldSwap ? maxSwapLiquidity?.lt(receiveUsd || 0) : false;
@@ -333,7 +334,6 @@ export function PositionSeller(p: Props) {
       minCollateralUsd,
       priceImpactWarning: priceImpactWarningState,
       isNotEnoughReceiveTokenLiquidity,
-      place: "positionSeller",
     });
 
     if (commonError[0] || decreaseError[0]) {
