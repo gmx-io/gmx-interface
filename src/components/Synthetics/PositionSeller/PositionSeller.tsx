@@ -151,7 +151,7 @@ export function PositionSeller(p: Props) {
 
   useEffect(() => {
     setAllowedSlippage(savedAllowedSlippage);
-  }, [savedAllowedSlippage]);
+  }, [savedAllowedSlippage, isVisible]);
 
   const markPrice = position
     ? getMarkPrice({ prices: position.indexToken.prices, isLong: position.isLong, isIncrease: false })
@@ -532,7 +532,7 @@ export function PositionSeller(p: Props) {
     />
   );
 
-  const acceptablePriceImpactRow = (() => {
+  const acceptablePriceImpactInputRow = (() => {
     if (!decreaseAmounts) {
       return;
     }
@@ -686,7 +686,7 @@ export function PositionSeller(p: Props) {
     <div className="PositionEditor PositionSeller">
       <Modal
         className="PositionSeller-modal"
-        isVisible={position}
+        isVisible={isVisible}
         setIsVisible={p.onClose}
         label={
           <Trans>
@@ -753,7 +753,7 @@ export function PositionSeller(p: Props) {
               {isTrigger ? (
                 <>
                   {triggerPriceRow}
-                  {acceptablePriceImpactRow}
+                  {acceptablePriceImpactInputRow}
                   {acceptablePriceRow}
                   {liqPriceRow}
                   {sizeRow}
