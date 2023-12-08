@@ -1,0 +1,105 @@
+.OneClickTrading-alert {
+    font-size: 1.2rem;
+    color: var(--text-gray);
+    display: flex;
+    margin-bottom: 1.6rem;
+
+    img {
+        margin: 0.4rem;
+    }
+}
+
+.OneClickTrading-modal-content {
+    width: 30.4rem;
+}
+
+.OneClickTrading-subaccount {
+    align-items: center;
+    background-color: rgba(38, 43, 71, 0.9);   
+    border-radius: 4px;
+    justify-content: space-between;
+    display: flex;
+    font-size: var(--font-sm);
+    height: 4rem;
+    margin-bottom: 0.4rem;
+    padding: 0 0.6rem 0 1rem;
+}
+
+.OneClickTrading-subaccount-label {
+    color: #FFFFFFB2;
+    margin-right: 6px;
+}
+
+.OneClickTrading-button-icon {
+    align-items: center;
+    background-color: rgb(52, 55, 86);
+    border-radius: 4px;
+    display: inline-flex;
+    height: 2.2rem;
+    justify-content: center;
+    padding: 0.5rem 0.8rem;
+    width: 2.2rem;
+    margin-left: 0.4rem;
+    cursor: pointer;
+    &:hover {
+        background-color: rgb(52, 55, 86, 0.8);
+    }
+}
+
+.OneClickTrading-buttons {
+    display: flex;
+    margin-bottom: 0.8rem;
+}
+
+.OneClickTrading-mini-button {
+    background: rgba(38, 43, 71, 0.9);
+    border-radius: 0.4rem;
+    font-size: 1.2rem;
+    color: white;
+    padding: 0.5rem 0.8rem;
+    flex: 1; 
+    text-decoration: none; 
+    border: none; 
+    cursor: pointer; 
+
+    &:hover {
+        background: rgba(38, 43, 71, 1);
+    }
+
+    &:active {
+       background: rgba(38, 43, 71, 0.8);
+    }
+
+    &:first-child {
+        margin-right: 0.2rem;
+    }
+
+    &:last-child {
+        margin-left: 0.2rem;
+    }
+
+    &.warning {
+        background: #E74E5D26;
+        color: #E74E5D;
+        &:hover {
+            background: #ef697626;
+        }
+        &:active {
+            background: #E74E5D26;
+        }
+    }
+    
+}
+
+.OneClickTrading-subaccount-details {
+    line-height: 2rem;
+}
+
+.OneClickTrading-stats {
+    font-size: 1.4rem;
+}
+
+.OneClickTrading-section {
+    border-bottom: 1px solid #ffffff29;
+    margin-bottom: 1.2rem;
+  }

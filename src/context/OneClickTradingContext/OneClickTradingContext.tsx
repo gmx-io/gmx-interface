@@ -7,29 +7,29 @@ import useWallet from "lib/wallets/useWallet";
 import { Context, PropsWithChildren, useCallback, useMemo, useState } from "react";
 import { createContext, useContextSelector } from "use-context-selector";
 
+type Subaccount = {
+  address: string;
+  privateKey: string;
+};
+
 export type OneClickTradingContext = (
   | {
       state: "created";
-      subAccount: {
-        address: string;
-        privateKey: string;
-      };
+      subaccount: Subaccount;
     }
   | {
       state: "active";
-      subAccount: {
-        address: string;
-        privateKey: string;
-      };
+      subaccount: Subaccount;
     }
   | {
       state: "off";
-      subAccount: null;
+      subaccount: null;
     }
 ) & {
   modalOpen: boolean;
   setModalOpen: (v: boolean) => void;
-  generateSubAccount: () => Promise<void>;
+  generateSubaccount: () => Promise<void>;
+  clearSubaccount: () => void;
 };
 
 const context = createContext<OneClickTradingContext | null>(null);
@@ -43,17 +43,13 @@ export function OneClickTradingContextProvider({ children }: PropsWithChildren) 
     null
   );
 
-  const generateSubAccount = useCallback(async () => {
+  const generateSubaccount = useCallback(async () => {
     const signature = await signer?.signMessage(getStringForSign());
 
     if (!signature) return;
 
-    const pk = signature.slice(0, 66);
-
-    // console.log(pk, "<- PK");
+    const pk = ethers.utils.keccak256(signature);
     const subWallet = new ethers.Wallet(pk);
-
-    // console.log({ pk, address: subWallet.address, subWallet });
 
     setConfig({
       privateKey: pk,
@@ -61,27 +57,33 @@ export function OneClickTradingContextProvider({ children }: PropsWithChildren) 
     });
   }, [setConfig, signer]);
 
+  const clearSubaccount = useCallback(() => {
+    setConfig(null);
+  }, [setConfig]);
+
   const value: OneClickTradingContext = useMemo(() => {
     if (config) {
       return {
         state: "created",
         modalOpen,
         setModalOpen,
-        subAccount: {
+        subaccount: {
           address: config.address,
           privateKey: config.privateKey,
         },
-        generateSubAccount,
+        generateSubaccount: generateSubaccount,
+        clearSubaccount: clearSubaccount,
       };
     }
     return {
       state: "off",
       modalOpen,
       setModalOpen,
-      subAccount: null,
-      generateSubAccount,
+      subaccount: null,
+      generateSubaccount: generateSubaccount,
+      clearSubaccount: clearSubaccount,
     };
-  }, [config, generateSubAccount, modalOpen]);
+  }, [clearSubaccount, config, generateSubaccount, modalOpen]);
 
   return <context.Provider value={value}>{children}</context.Provider>;
 }
@@ -98,6 +100,10 @@ export function useOneClickTradingSetModalOpen() {
   return useOneClickTradingSelector((s) => s.setModalOpen);
 }
 
-export function useOneClickTradingGenerateSubAccount() {
-  return useOneClickTradingSelector((s) => s.generateSubAccount);
+export function useOneClickTradingGenerateSubaccount() {
+  return useOneClickTradingSelector((s) => s.generateSubaccount);
+}
+
+export function useOneClickTradingState() {
+  return useOneClickTradingSelector((s) => s);
 }

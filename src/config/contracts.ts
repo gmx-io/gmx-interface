@@ -80,6 +80,7 @@ const CONTRACTS = {
     // arbitrum testnet
     Vault: AddressZero,
     Router: AddressZero,
+    SubaccountRouter: "0x4Ae6ecDD55ee1066477Ee4B5Fc9f4D04C4CE66E9",
     VaultReader: AddressZero,
     Reader: AddressZero,
     GlpManager: AddressZero,
@@ -241,6 +242,7 @@ const CONTRACTS = {
   [AVALANCHE_FUJI]: {
     Vault: AddressZero,
     Router: AddressZero,
+    SubaccountRouter: "0x66dC758319FD5DF937ec129Bd39cAe1fB8843170",
     VaultReader: AddressZero,
     Reader: AddressZero,
     GlpManager: AddressZero,

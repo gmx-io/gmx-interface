@@ -262,6 +262,10 @@ msgstr "Acknowledge high Price Impact"
 msgid "Actions"
 msgstr "Actions"
 
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+msgid "Activate"
+msgstr "Activate"
+
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Active Orders"
@@ -1416,6 +1420,10 @@ msgstr "Depositing..."
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Diff"
 msgstr "Diff"
+
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+msgid "Disable"
+msgstr "Disable"
 
 #: src/App/App.js
 msgid "Disable order validations"
@@ -2712,6 +2720,12 @@ msgstr "MARKET"
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
 msgstr "MAX"
+
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+msgid "Main Account Balance"
+msgstr "Main Account Balance"
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -4344,6 +4358,16 @@ msgstr "Stop-Loss"
 msgid "Structured Products"
 msgstr "Structured Products"
 
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+msgid "Subaccount Balance"
+msgstr "Subaccount Balance"
+
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+msgid "Subaccount:"
+msgstr "Subaccount:"
+
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Submit"
 msgstr "Submit"
@@ -5424,6 +5448,7 @@ msgstr "When closing the position, you can select which token you would like to 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js

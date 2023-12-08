@@ -262,6 +262,10 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+msgid "Activate"
+msgstr ""
+
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Active Orders"
@@ -1415,6 +1419,10 @@ msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Diff"
+msgstr ""
+
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+msgid "Disable"
 msgstr ""
 
 #: src/App/App.js
@@ -2708,6 +2716,12 @@ msgstr ""
 #: src/components/InputSection/InputSection.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
+msgstr ""
+
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+msgid "Main Account Balance"
 msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
@@ -4341,6 +4355,16 @@ msgstr ""
 msgid "Structured Products"
 msgstr ""
 
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+msgid "Subaccount Balance"
+msgstr ""
+
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+msgid "Subaccount:"
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Submit"
 msgstr ""
@@ -5421,6 +5445,7 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
