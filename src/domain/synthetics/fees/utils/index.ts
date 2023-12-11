@@ -4,6 +4,7 @@ import { BigNumber } from "ethers";
 import { PRECISION } from "lib/legacy";
 import { applyFactor, getBasisPoints } from "lib/numbers";
 import { FeeItem } from "../types";
+import { SwapStats } from "domain/synthetics/trade";
 
 export * from "./executionFee";
 export * from "./priceImpact";
@@ -20,13 +21,15 @@ export function getPositionFee(
   marketInfo: MarketInfo,
   sizeDeltaUsd: BigNumber,
   forPositiveImpact: boolean,
-  referralInfo: { totalRebateFactor: BigNumber; discountFactor: BigNumber } | undefined
+  referralInfo: { totalRebateFactor: BigNumber; discountFactor: BigNumber } | undefined,
+  uiFeeFactor?: BigNumber
 ) {
   const factor = forPositiveImpact
     ? marketInfo.positionFeeFactorForPositiveImpact
     : marketInfo.positionFeeFactorForNegativeImpact;
 
   let positionFeeUsd = applyFactor(sizeDeltaUsd, factor);
+  const uiFeeUsd = applyFactor(sizeDeltaUsd, uiFeeFactor || BigNumber.from(0));
 
   if (!referralInfo) {
     return { positionFeeUsd, discountUsd: BigNumber.from(0), totalRebateUsd: BigNumber.from(0) };
@@ -41,6 +44,7 @@ export function getPositionFee(
     positionFeeUsd,
     discountUsd,
     totalRebateUsd,
+    uiFeeUsd,
   };
 }
 
@@ -128,4 +132,12 @@ export function getTotalFeeItem(feeItems: (FeeItem | undefined)[]): FeeItem {
   });
 
   return totalFeeItem;
+}
+
+export function getTotalSwapVolumeFromSwapStats(swapSteps?: SwapStats[]) {
+  if (!swapSteps) return BigNumber.from(0);
+
+  return swapSteps.reduce((acc, curr) => {
+    return acc.add(curr.usdIn);
+  }, BigNumber.from(0));
 }

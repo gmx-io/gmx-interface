@@ -56,6 +56,7 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 import useSortedMarketsWithIndexToken from "domain/synthetics/trade/useSortedMarketsWithIndexToken";
 
 export enum Operation {
@@ -130,6 +131,8 @@ export function GmSwapBox(p: Props) {
 
   const { chainId } = useChainId();
   const { account } = useWallet();
+
+  const uiFeeFactor = useUiFeeFactor(chainId);
 
   const { gasLimits } = useGasLimits(chainId);
   const { gasPrice } = useGasPrice(chainId);
@@ -319,6 +322,7 @@ export function GmSwapBox(p: Props) {
       marketTokenAmount,
       includeLongToken: Boolean(longTokenInputState?.address),
       includeShortToken: Boolean(shortTokenInputState?.address),
+      uiFeeFactor,
       strategy: focusedInput === "market" ? "byMarketToken" : "byCollaterals",
     });
   }, [
@@ -331,6 +335,7 @@ export function GmSwapBox(p: Props) {
     marketTokenAmount,
     shortTokenInputState?.address,
     shortTokenInputState?.amount,
+    uiFeeFactor,
   ]);
 
   const withdrawalAmounts = useMemo(() => {
@@ -354,6 +359,7 @@ export function GmSwapBox(p: Props) {
       longTokenAmount: longTokenInputState?.amount || BigNumber.from(0),
       shortTokenAmount: shortTokenInputState?.amount || BigNumber.from(0),
       strategy,
+      uiFeeFactor,
     });
   }, [
     focusedInput,
@@ -363,6 +369,7 @@ export function GmSwapBox(p: Props) {
     marketToken,
     marketTokenAmount,
     shortTokenInputState?.amount,
+    uiFeeFactor,
   ]);
 
   const amounts = isDeposit ? depositAmounts : withdrawalAmounts;
@@ -380,12 +387,16 @@ export function GmSwapBox(p: Props) {
 
     const swapFee = getFeeItem(amounts.swapFeeUsd?.mul(-1), basisUsd);
     const swapPriceImpact = getFeeItem(amounts.swapPriceImpactDeltaUsd, basisUsd);
-    const totalFees = getTotalFeeItem([swapPriceImpact, swapFee].filter(Boolean) as FeeItem[]);
+    const uiFee = getFeeItem(amounts.uiFeeUsd.mul(-1), basisUsd, {
+      shouldRoundUp: true,
+    });
 
+    const totalFees = getTotalFeeItem([swapPriceImpact, swapFee, uiFee].filter(Boolean) as FeeItem[]);
     const fees: GmSwapFees = {
       swapFee,
       swapPriceImpact,
       totalFees,
+      uiFee,
     };
 
     const gasLimit = isDeposit
@@ -1008,6 +1019,7 @@ export function GmSwapBox(p: Props) {
             swapFee={fees?.swapFee}
             swapPriceImpact={fees?.swapPriceImpact}
             executionFee={executionFee}
+            uiFee={fees?.uiFee}
           />
         </div>
 
@@ -1030,7 +1042,7 @@ export function GmSwapBox(p: Props) {
                   )}
                 />
               ) : (
-                <span className="muted font-sm">
+                <span className="muted font-sm text-warning">
                   <Trans>Acknowledge high Price Impact</Trans>
                 </span>
               )}

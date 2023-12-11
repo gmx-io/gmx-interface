@@ -68,6 +68,10 @@ export function isMarketCollateral(marketInfo: MarketInfo, tokenAddress: string)
   return getTokenPoolType(marketInfo, tokenAddress) !== undefined;
 }
 
+export function isMarketAdaptiveFundingActive(marketInfo: MarketInfo) {
+  return marketInfo.fundingIncreaseFactorPerSecond.gt(0);
+}
+
 export function isMarketIndexToken(marketInfo: MarketInfo, tokenAddress: string) {
   return (
     tokenAddress === marketInfo.indexToken.address ||
@@ -174,6 +178,22 @@ export function getAvailableUsdLiquidityForCollateral(marketInfo: MarketInfo, is
   const liqudiity = poolUsd.sub(minPoolUsd);
 
   return liqudiity;
+}
+
+export function getAvailableLiquidity(marketInfo: MarketInfo, isLong: boolean) {
+  if (marketInfo.isSpotOnly) {
+    return [BigNumber.from(0), BigNumber.from(0)];
+  }
+
+  const reservedUsd = getReservedUsd(marketInfo, isLong);
+  const maxReservedUsd = getMaxReservedUsd(marketInfo, isLong);
+
+  const openInterestUsd = getOpenInterestUsd(marketInfo, isLong);
+  const maxOpenInterestUsd = getMaxOpenInterestUsd(marketInfo, isLong);
+
+  const isReserveSmaller = maxReservedUsd.sub(reservedUsd).lt(maxOpenInterestUsd.sub(openInterestUsd));
+
+  return isReserveSmaller ? [reservedUsd, maxReservedUsd] : [openInterestUsd, maxOpenInterestUsd];
 }
 
 export function getCappedPoolPnl(p: {
