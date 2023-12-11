@@ -126,7 +126,7 @@ function FeesTooltip({
           <br />
           <div className="PositionSeller-fee-item">
             <Trans>
-              <ExternalLink href="https://t3-money.gitbook.io/tmx/trading#fees">More Info</ExternalLink> about fees.
+              <ExternalLink href="https://docs.t3.money/tmx/trading#fees">More Info</ExternalLink> about fees.
             </Trans>
           </div>
         </div>

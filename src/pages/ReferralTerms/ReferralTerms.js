@@ -90,8 +90,8 @@ export default function ReferralTerms() {
               <p className="body-text">
                 The Rebates and Discounts percentages for the default tier Tier 1, and instructions to upgrade to Tier 2
                 and Tier 3, are contained in{" "}
-                <ExternalLink href="https://t3-money.gitbook.io/tmx/referrals">
-                  https://t3-money.gitbook.io/tmx/referrals.
+                <ExternalLink href="https://docs.t3.money/tmx/referrals">
+                  https://docs.t3.money/tmx/referrals.
                 </ExternalLink>
               </p>
             </div>

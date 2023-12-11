@@ -31,7 +31,7 @@ export default function BuyGlp(props) {
           </div>
           <div className="Page-description">
             <Trans>
-              Purchase <ExternalLink href="https://t3-money.gitbook.io/tmx/glp">TLP tokens</ExternalLink> to earn{" "}
+              Purchase <ExternalLink href="https://docs.t3.money/tmx/glp">TLP tokens</ExternalLink> to earn{" "}
               {nativeTokenSymbol} fees from swaps and leverages trading.
             </Trans>
             <br />

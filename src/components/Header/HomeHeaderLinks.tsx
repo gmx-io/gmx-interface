@@ -38,7 +38,7 @@ const HOME_MENUS: HomeLink[] = [
   },
   {
     label: t`Docs`,
-    link: "https://t3-money.gitbook.io/tmx/",
+    link: "https://docs.t3.money/tmx/",
   },
 ];
 

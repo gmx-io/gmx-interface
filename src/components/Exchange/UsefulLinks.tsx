@@ -16,7 +16,7 @@ export default function UsefulLinks({ className }) {
       <div className="App-card-divider"></div>
       <div className="Exchange-info-row">
         <div className="Exchange-info-label-button">
-          <ExternalLink href="https://t3-money.gitbook.io/tmx/trading">
+          <ExternalLink href="https://docs.t3.money/tmx/trading">
             <Trans>Trading guide</Trans>
           </ExternalLink>
         </div>
@@ -30,7 +30,7 @@ export default function UsefulLinks({ className }) {
       </div>
       <div className="Exchange-info-row">
         <div className="Exchange-info-label-button">
-          <ExternalLink href="https://t3-money.gitbook.io/tmx/trading#backup-rpc-urls">
+          <ExternalLink href="https://docs.t3.money/tmx/trading#backup-rpc-urls">
             <Trans>Speed up page loading</Trans>
           </ExternalLink>
         </div>

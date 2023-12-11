@@ -325,7 +325,7 @@ export default function OrdersList(props) {
                     </p>
                     <p>
                       This can also cause limit/triggers to not be executed if the price is not reached for long enough.{" "}
-                      <ExternalLink href="https://t3-money.gitbook.io/tmx/trading#stop-loss-take-profit-orders">
+                      <ExternalLink href="https://docs.t3.money/tmx/trading#stop-loss-take-profit-orders">
                         Read more
                       </ExternalLink>
                       .

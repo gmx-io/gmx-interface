@@ -128,7 +128,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
                 Get fee discounts and earn rebates through the TMX referral program.
                 <br />
                 For more information, please read the{" "}
-                <ExternalLink href="https://t3-money.gitbook.io/tmx/referrals">referral program details</ExternalLink>.
+                <ExternalLink href="https://docs.t3.money/tmx/referrals">referral program details</ExternalLink>.
               </Trans>
             </div>
           </div>

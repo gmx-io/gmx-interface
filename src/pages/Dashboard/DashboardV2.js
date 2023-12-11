@@ -349,7 +349,7 @@ export default function DashboardV2() {
               )}
               <br />
               <div>
-                <ExternalLink href="https://t3-money.gitbook.io/tmx/glp">
+                <ExternalLink href="https://docs.t3.money/tmx/glp">
                   <Trans>More Info</Trans>
                 </ExternalLink>
               </div>
