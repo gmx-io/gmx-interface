@@ -91,6 +91,7 @@ import { FaArrowRight } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { uniqueId } from "lodash";
 import ProfitLossEntry from "./ProfitLossEntry";
+import useStopLossEntries from "domain/synthetics/trade/useStopLossEntries";
 
 export type Props = {
   isVisible: boolean;
@@ -184,6 +185,12 @@ export function ConfirmationBox(p: Props) {
   const [isTriggerWarningAccepted, setIsTriggerWarningAccepted] = useState(false);
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
   const [stopLossEntries, setStopLossEntries] = useState([{ price: "", percentage: "", id: uniqueId() }]);
+  // const {
+  //   entries: stopLossEntries,
+  //   addEntry: addStopLossEntry,
+  //   deleteEntry: deleteStopLossEntry,
+  //   updateEntry: updateStopLossEntry,
+  // } = useStopLossEntries();
   const [takeProfitEntries, setTakeProfitEntries] = useState([{ price: "", percentage: "", id: uniqueId() }]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);

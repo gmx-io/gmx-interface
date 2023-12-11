@@ -1,5 +1,4 @@
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
-import Tooltip from "components/Tooltip/Tooltip";
 import { uniqueId } from "lodash";
 import { FaPlus } from "react-icons/fa";
 
