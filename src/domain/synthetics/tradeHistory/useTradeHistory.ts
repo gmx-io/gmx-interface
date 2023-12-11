@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { gql } from "@apollo/client";
 import { getWrappedToken } from "config/tokens";
 import { MarketsInfoData } from "domain/synthetics/markets";
@@ -6,8 +7,7 @@ import { BigNumber, ethers } from "ethers";
 import { bigNumberify } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getSyntheticsGraphClient } from "lib/subgraph";
-import { useMemo } from "react";
-import useSWR from "swr";
+import useInfinateSwr from "swr/infinite";
 import { isSwapOrderType } from "../orders";
 import { getSwapPathOutputAddresses } from "../trade/utils";
 import { PositionTradeAction, RawTradeAction, SwapTradeAction, TradeAction } from "./types";
@@ -15,6 +15,8 @@ import { PositionTradeAction, RawTradeAction, SwapTradeAction, TradeAction } fro
 export type TradeHistoryResult = {
   tradeActions?: TradeAction[];
   isLoading: boolean;
+  pageIndex: number;
+  setPageIndex: (index: number) => Promise<RawTradeAction[] | undefined>;
 };
 
 export function useTradeHistory(
@@ -24,21 +26,28 @@ export function useTradeHistory(
     forAllAccounts?: boolean;
     marketsInfoData?: MarketsInfoData;
     tokensData?: TokensData;
-    pageIndex: number;
     pageSize: number;
   }
 ) {
-  const { pageIndex, pageSize, marketsInfoData, tokensData, account, forAllAccounts } = p;
+  const { pageSize, marketsInfoData, tokensData, account, forAllAccounts } = p;
 
   const client = getSyntheticsGraphClient(chainId);
 
-  const key =
-    chainId && client && (account || forAllAccounts)
-      ? [chainId, "useTradeHistory", account, forAllAccounts, pageIndex, pageSize]
-      : null;
+  const getKey = (index: number, prev) => {
+    if (chainId && client && (account || forAllAccounts)) {
+      return [chainId, "useTradeHistory", account, forAllAccounts, index, pageSize];
+    }
+    return null;
+  };
 
-  const { data, error } = useSWR<RawTradeAction[]>(key, {
-    fetcher: async () => {
+  const {
+    data,
+    error,
+    size: pageIndex,
+    setSize: setPageIndex,
+  } = useInfinateSwr<RawTradeAction[]>(getKey, {
+    fetcher: async (key) => {
+      const [, , , , pageIndex] = key;
       const skip = pageIndex * pageSize;
       const first = pageSize;
 
@@ -108,8 +117,9 @@ export function useTradeHistory(
     }
 
     const wrappedToken = getWrappedToken(chainId);
+    const allData = data.flat();
 
-    return data
+    return allData
       .map((rawAction) => {
         const orderType = Number(rawAction.orderType);
 
@@ -233,5 +243,7 @@ export function useTradeHistory(
   return {
     tradeActions,
     isLoading,
+    pageIndex,
+    setPageIndex,
   };
 }

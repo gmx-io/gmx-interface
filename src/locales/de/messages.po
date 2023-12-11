@@ -3082,9 +3082,7 @@ msgstr "Netzwerke"
 msgid "Networks and Settings"
 msgstr "Netzwerke und Einstellungen"
 
-#: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/Claims/Claims.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Next"
 msgstr "Weiter"
 
@@ -3503,9 +3501,7 @@ msgstr ""
 msgid "Positive Funding Fees for a Position become claimable after the Position is increased, decreased or closed; or settled its fees with the option under \"Accrued\"."
 msgstr ""
 
-#: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/Claims/Claims.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Prev"
 msgstr "Prev"
 

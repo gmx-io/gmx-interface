@@ -84,6 +84,7 @@ export function OrderList(p: Props) {
                 onEditOrder={() => setEditingOrderKey(order.key)}
                 marketsInfoData={marketsInfoData}
                 positionsInfoData={positionsData}
+                hideActions={p.hideActions}
               />
             );
           })}

@@ -177,7 +177,10 @@ export const formatPositionMessage = (
         const collateralText = formatTokenAmount(
           collateralDeltaAmount,
           collateralToken.decimals,
-          collateralToken.symbol
+          collateralToken.symbol,
+          {
+            useCommas: true,
+          }
         );
 
         if (isIncrease) {
