@@ -349,7 +349,7 @@ export default function DashboardV2() {
               )}
               <br />
               <div>
-                <ExternalLink href="https://gmxio.gitbook.io/gmx/glp">
+                <ExternalLink href="https://t3-money.gitbook.io/gmx/glp">
                   <Trans>More Info</Trans>
                 </ExternalLink>
               </div>
@@ -478,9 +478,13 @@ export default function DashboardV2() {
               <Trans>
                 {chainName} Total Stats start from {totalStatsStartDate}.<br /> For detailed stats:
               </Trans>{" "}
-              {chainId === ARBITRUM && <ExternalLink href="https://t3.finance/#/dashboard">https://t3.finance/#/dashboard</ExternalLink>}
+              {chainId === ARBITRUM && (
+                <ExternalLink href="https://t3.finance/#/dashboard">https://t3.finance/#/dashboard</ExternalLink>
+              )}
               {chainId === AVALANCHE && (
-                <ExternalLink href="https://t3.finance/#/dashboard/avalanche">https://t3.finance/#/dashboard/avalanche</ExternalLink>
+                <ExternalLink href="https://t3.finance/#/dashboard/avalanche">
+                  https://t3.finance/#/dashboard/avalanche
+                </ExternalLink>
               )}
               .
             </div>
