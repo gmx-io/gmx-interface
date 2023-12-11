@@ -46,7 +46,7 @@ function formatFactor(factor: BigNumber) {
     return "0";
   }
 
-  if (factor.abs().gt(PRECISION)) {
+  if (factor.abs().gt(PRECISION.mul(1000))) {
     return factor.div(PRECISION).toString();
   }
 
