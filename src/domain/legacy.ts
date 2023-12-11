@@ -326,7 +326,6 @@ export function useTrades(chainId, account) {
     // @ts-ignore
     fetcher: ([url]) => fetch(url).then((res) => res.json()),
   });
-  console.log({ data });
   const trades = data ? data.flat() : undefined;
 
   if (trades) {
