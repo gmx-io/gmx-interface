@@ -38,7 +38,7 @@ export function RedirectPopupModal({
       <br />
       <Trans>
         Alternative links can be found in the{" "}
-        <ExternalLink href="https://t3-money.gitbook.io/gmx/app-links">docs</ExternalLink>.
+        <ExternalLink href="https://t3-money.gitbook.io/tmx/app-links">docs</ExternalLink>.
         <br />
         <br />
         By clicking Agree you accept the <ExternalLink href="https://gmx.io/#/terms-and-conditions">

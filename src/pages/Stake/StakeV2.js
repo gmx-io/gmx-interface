@@ -313,7 +313,7 @@ function UnstakeModal(props) {
           <div className="Modal-note">
             <Trans>
               Unstaking will burn&nbsp;
-              <ExternalLink className="display-inline" href="https://t3-money.gitbook.io/gmx/rewards">
+              <ExternalLink className="display-inline" href="https://t3-money.gitbook.io/tmx/rewards">
                 {formatAmount(burnAmount, 18, 4, true)} Multiplier Points
               </ExternalLink>
               .&nbsp;
@@ -1317,7 +1317,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
           return (
             <Trans>
               Boost your rewards with Multiplier Points.&nbsp;
-              <ExternalLink href="https://t3-money.gitbook.io/gmx/rewards#multiplier-points">More info</ExternalLink>.
+              <ExternalLink href="https://t3-money.gitbook.io/tmx/rewards#multiplier-points">More info</ExternalLink>.
             </Trans>
           );
         }}
@@ -1458,8 +1458,8 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
           </div>
           <div className="Page-description">
             <Trans>
-              Stake <ExternalLink href="https://t3-money.gitbook.io/gmx/tokenomics">TMX</ExternalLink> and{" "}
-              <ExternalLink href="https://t3-money.gitbook.io/gmx/glp">TLP</ExternalLink> to earn rewards.
+              Stake <ExternalLink href="https://t3-money.gitbook.io/tmx/tokenomics">TMX</ExternalLink> and{" "}
+              <ExternalLink href="https://t3-money.gitbook.io/tmx/glp">TLP</ExternalLink> to earn rewards.
             </Trans>
           </div>
           {earnMsg && <div className="Page-description">{earnMsg}</div>}
@@ -1994,7 +1994,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               Convert esTMX tokens to TMX tokens.
               <br />
               Please read the{" "}
-              <ExternalLink href="https://t3-money.gitbook.io/gmx/rewards#vesting">vesting details</ExternalLink> before
+              <ExternalLink href="https://t3-money.gitbook.io/tmx/rewards#vesting">vesting details</ExternalLink> before
               using the vaults.
             </Trans>
           </div>

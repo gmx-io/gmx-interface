@@ -25,7 +25,7 @@ export const FOOTER_LINKS: { home: Link[]; app: Link[] } = {
     { text: defineMessage({ message: "Referral Terms" }), link: "/referral-terms" },
     {
       text: defineMessage({ message: "Media Kit" }),
-      link: "https://t3-money.gitbook.io/gmx/media-kit",
+      link: "https://t3-money.gitbook.io/tmx/media-kit",
       external: true,
     }, // TODO media kit
   ],
