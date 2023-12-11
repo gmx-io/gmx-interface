@@ -106,22 +106,14 @@ function getLiquidationData(liquidationsDataMap, key, timestamp) {
 }
 
 export default function TradeHistory(props) {
-  const {
-    account,
-    infoTokens,
-    getTokenInfo,
-    chainId,
-    nativeTokenAddress,
-    shouldShowPaginationButtons,
-    forSingleAccount,
-  } = props;
+  const { account, infoTokens, getTokenInfo, chainId, nativeTokenAddress, shouldShowPaginationButtons } = props;
 
-  const { trades, setSize, size } = useTrades(chainId, account, forSingleAccount);
+  const { trades, setSize, size } = useTrades(chainId, account);
 
   const { currentPage, setCurrentPage, getCurrentData, pageCount } = usePagination(
+    account,
     trades,
-    TRADE_HISTORY_PER_PAGE,
-    [account, forSingleAccount].toString()
+    TRADE_HISTORY_PER_PAGE
   );
   const currentPageData = getCurrentData();
 

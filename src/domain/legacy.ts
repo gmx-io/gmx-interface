@@ -324,9 +324,9 @@ export function useTrades(chainId, account) {
   } = useSWRInfinite(getKey, {
     dedupingInterval: 10000,
     // @ts-ignore
-    fetcher: ([url, pageIndex]) => fetch(url).then((res) => res.json()),
+    fetcher: ([url]) => fetch(url).then((res) => res.json()),
   });
-
+  console.log({ data });
   const trades = data ? data.flat() : undefined;
 
   if (trades) {

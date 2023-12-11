@@ -43,9 +43,9 @@ export function TradeHistory(p: Props) {
 
   const isEmpty = !isLoading && !tradeActions?.length;
   const { currentPage, setCurrentPage, getCurrentData, pageCount } = usePagination(
+    [account, forAllAccounts].toString(),
     tradeActions,
-    ENTITIES_PER_PAGE,
-    [account, forAllAccounts].toString()
+    ENTITIES_PER_PAGE
   );
   const currentPageData = getCurrentData();
 
