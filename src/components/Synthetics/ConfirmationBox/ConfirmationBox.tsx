@@ -89,7 +89,7 @@ import {
 import { usePrevious } from "lib/usePrevious";
 import useWallet from "lib/wallets/useWallet";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useKey } from "react-use";
+import { useKey, useLatest } from "react-use";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./ConfirmationBox.scss";
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
@@ -330,6 +330,14 @@ export function ConfirmationBox(p: Props) {
     tradeFlags,
     place: "confirmationBox",
   });
+
+  const setIsHighPositionImpactAcceptedRef = useLatest(priceImpactWarningState.setIsHighPositionImpactAccepted);
+  const setIsHighSwapImpactAcceptedRef = useLatest(priceImpactWarningState.setIsHighSwapImpactAccepted);
+
+  useEffect(() => {
+    setIsHighPositionImpactAcceptedRef.current(false);
+    setIsHighSwapImpactAcceptedRef.current(false);
+  }, [p.isVisible, setIsHighPositionImpactAcceptedRef, setIsHighSwapImpactAcceptedRef]);
 
   const submitButtonState = useMemo(() => {
     if (priceImpactWarningState.validationError) {

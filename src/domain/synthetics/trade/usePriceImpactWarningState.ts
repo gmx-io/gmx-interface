@@ -1,8 +1,10 @@
 import { HIGH_POSITION_IMPACT_BPS, HIGH_SWAP_IMPACT_BPS } from "config/factors";
 import { useEffect, useMemo, useState } from "react";
+import shallowEqual from "shallowequal";
 import { FeeItem } from "../fees";
 import { TradeFlags } from "./useTradeFlags";
 import { museNeverExist } from "lib/types";
+import { usePrevious } from "lib/usePrevious";
 
 export type PriceImpactWarningState = ReturnType<typeof usePriceImpactWarningState>;
 
@@ -19,6 +21,16 @@ export function usePriceImpactWarningState({
 }) {
   const [isHighPositionImpactAccepted, setIsHighPositionImpactAccepted] = useState(false);
   const [isHighSwapImpactAccepted, setIsHighSwapImpactAccepted] = useState(false);
+
+  const prevFlags = usePrevious(tradeFlags);
+
+  useEffect(() => {
+    if (!shallowEqual(prevFlags, tradeFlags)) {
+      setIsHighPositionImpactAccepted(false);
+      setIsHighSwapImpactAccepted(false);
+      return;
+    }
+  }, [prevFlags, tradeFlags]);
 
   const isHighPositionImpact = Boolean(
     positionPriceImpact?.deltaUsd.lt(0) && positionPriceImpact?.bps.abs().gte(HIGH_POSITION_IMPACT_BPS)

@@ -25,6 +25,7 @@ import {
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
+import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import { DecreasePositionSwapType, OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
 import {
@@ -48,6 +49,7 @@ import {
 } from "domain/synthetics/trade";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
+import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
 import { getCommonError, getDecreaseError } from "domain/synthetics/trade/utils/validation";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber } from "ethers";
@@ -68,13 +70,11 @@ import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import useWallet from "lib/wallets/useWallet";
 import { useEffect, useMemo, useState } from "react";
+import { useLatest } from "react-use";
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
-import "./PositionSeller.scss";
-import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
-import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
-import { useLatestValueRef } from "lib/useLatestValueRef";
 import { TriggerAcceptablePriceImpactInputRow } from "../TriggerAcceptablePriceImpactInputRow/TriggerAcceptablePriceImpactInputRow";
+import "./PositionSeller.scss";
 
 export type Props = {
   position?: PositionInfo;
@@ -307,6 +307,16 @@ export function PositionSeller(p: Props) {
 
   const isNotEnoughReceiveTokenLiquidity = shouldSwap ? maxSwapLiquidity?.lt(receiveUsd || 0) : false;
 
+  const setIsHighPositionImpactAcceptedLatestRef = useLatest(priceImpactWarningState.setIsHighPositionImpactAccepted);
+  const setIsHighSwapImpactAcceptedLatestRef = useLatest(priceImpactWarningState.setIsHighSwapImpactAccepted);
+
+  useEffect(() => {
+    if (isVisible) {
+      setIsHighPositionImpactAcceptedLatestRef.current(false);
+      setIsHighSwapImpactAcceptedLatestRef.current(false);
+    }
+  }, [setIsHighPositionImpactAcceptedLatestRef, setIsHighSwapImpactAcceptedLatestRef, isVisible, orderOption]);
+
   const error = useMemo(() => {
     if (!position) {
       return undefined;
@@ -418,12 +428,6 @@ export function PositionSeller(p: Props) {
       .then(onClose)
       .finally(() => setIsSubmitting(false));
   }
-
-  const setIsHighPositionImpactAcceptedLatestRef = useLatestValueRef(
-    priceImpactWarningState.setIsHighPositionImpactAccepted
-  );
-  const setIsHighSwapImpactAcceptedLatestRef = useLatestValueRef(priceImpactWarningState.setIsHighSwapImpactAccepted);
-
   useEffect(
     function resetForm() {
       if (!isVisible !== prevIsVisible) {

@@ -92,7 +92,7 @@ import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { IoMdSwap } from "react-icons/io";
-import { usePrevious } from "react-use";
+import { useLatest, usePrevious } from "react-use";
 import { MarketCard } from "../MarketCard/MarketCard";
 import { SwapCard } from "../SwapCard/SwapCard";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
@@ -227,13 +227,14 @@ export function TradeBox(p: Props) {
   const [defaultTriggerAcceptablePriceImpactBps, setDefaultTriggerAcceptablePriceImapctBps] = useState<BigNumber>();
   const [selectedTriggerAcceptablePriceImpactBps, setSelectedAcceptablePriceImapctBps] = useState<BigNumber>();
 
-  const [fromTokenInputValue, setFromTokenInputValue] = useSafeState("");
+  const [fromTokenInputValue, setFromTokenInputValueRaw] = useSafeState("");
+  const [toTokenInputValue, setToTokenInputValueRaw] = useSafeState("");
+
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
   const fromTokenPrice = fromToken?.prices.minPrice;
   const fromUsd = convertToUsd(fromTokenAmount, fromToken?.decimals, fromTokenPrice);
   const isNotMatchAvailableBalance = fromToken?.balance?.gt(0) && !fromToken.balance.eq(fromTokenAmount);
 
-  const [toTokenInputValue, setToTokenInputValue] = useSafeState("");
   const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigNumber.from(0);
 
   const markPrice = useMemo(() => {
@@ -604,6 +605,30 @@ export function TradeBox(p: Props) {
     place: "tradeBox",
   });
 
+  const setIsHighPositionImpactAcceptedRef = useLatest(priceImpactWarningState.setIsHighPositionImpactAccepted);
+  const setIsHighSwapImpactAcceptedRef = useLatest(priceImpactWarningState.setIsHighSwapImpactAccepted);
+
+  const setFromTokenInputValue = useCallback(
+    (value: string, shouldResetPriceImpactWarning: boolean) => {
+      setFromTokenInputValueRaw(value);
+      if (shouldResetPriceImpactWarning) {
+        setIsHighPositionImpactAcceptedRef.current(false);
+        setIsHighSwapImpactAcceptedRef.current(false);
+      }
+    },
+    [setFromTokenInputValueRaw, setIsHighPositionImpactAcceptedRef, setIsHighSwapImpactAcceptedRef]
+  );
+  const setToTokenInputValue = useCallback(
+    (value: string, shouldResetPriceImpactWarning: boolean) => {
+      setToTokenInputValueRaw(value);
+      if (shouldResetPriceImpactWarning) {
+        setIsHighPositionImpactAcceptedRef.current(false);
+        setIsHighSwapImpactAcceptedRef.current(false);
+      }
+    },
+    [setToTokenInputValueRaw, setIsHighPositionImpactAcceptedRef, setIsHighSwapImpactAcceptedRef]
+  );
+
   const marketsOptions = useAvailableMarketsOptions({
     marketsInfoData,
     isIncrease,
@@ -835,18 +860,20 @@ export function TradeBox(p: Props) {
       // reset input values when switching between swap and position tabs
       if (isSwap !== prevIsISwap) {
         setFocusedInput("from");
-        setFromTokenInputValue("");
+        setFromTokenInputValue("", true);
         return;
       }
 
       if (isSwap && swapAmounts) {
         if (focusedInput === "from") {
           setToTokenInputValue(
-            swapAmounts.amountOut.gt(0) ? formatAmountFree(swapAmounts.amountOut, toToken.decimals) : ""
+            swapAmounts.amountOut.gt(0) ? formatAmountFree(swapAmounts.amountOut, toToken.decimals) : "",
+            false
           );
         } else {
           setFromTokenInputValue(
-            swapAmounts.amountIn.gt(0) ? formatAmountFree(swapAmounts.amountIn, fromToken.decimals) : ""
+            swapAmounts.amountIn.gt(0) ? formatAmountFree(swapAmounts.amountIn, fromToken.decimals) : "",
+            false
           );
         }
       }
@@ -856,13 +883,15 @@ export function TradeBox(p: Props) {
           setToTokenInputValue(
             increaseAmounts.indexTokenAmount?.gt(0)
               ? formatAmountFree(increaseAmounts.indexTokenAmount, toToken.decimals)
-              : ""
+              : "",
+            false
           );
         } else {
           setFromTokenInputValue(
             increaseAmounts.initialCollateralAmount.gt(0)
               ? formatAmountFree(increaseAmounts.initialCollateralAmount, fromToken.decimals)
-              : ""
+              : "",
+            false
           );
         }
       }
@@ -943,8 +972,8 @@ export function TradeBox(p: Props) {
   function onSwitchTokens() {
     setFocusedInput((old) => (old === "from" ? "to" : "from"));
     switchTokenAddresses();
-    setFromTokenInputValue(toTokenInputValue || "");
-    setToTokenInputValue(fromTokenInputValue || "");
+    setFromTokenInputValue(toTokenInputValue || "", true);
+    setToTokenInputValue(fromTokenInputValue || "", true);
   }
 
   const onConfirmationClose = useCallback(() => {
@@ -986,7 +1015,7 @@ export function TradeBox(p: Props) {
       const finalAmount = isMetamaskMobile
         ? limitDecimals(formattedAmount, MAX_METAMASK_MOBILE_DECIMALS)
         : formattedAmount;
-      setFromTokenInputValue(finalAmount);
+      setFromTokenInputValue(finalAmount, true);
     }
   }
 
@@ -1004,7 +1033,7 @@ export function TradeBox(p: Props) {
           inputValue={fromTokenInputValue}
           onInputValueChange={(e) => {
             setFocusedInput("from");
-            setFromTokenInputValue(e.target.value);
+            setFromTokenInputValue(e.target.value, true);
           }}
           showMaxButton={isNotMatchAvailableBalance}
           onClickMax={onMaxClick}
@@ -1042,7 +1071,7 @@ export function TradeBox(p: Props) {
             inputValue={toTokenInputValue}
             onInputValueChange={(e) => {
               setFocusedInput("to");
-              setToTokenInputValue(e.target.value);
+              setToTokenInputValue(e.target.value, true);
             }}
             showMaxButton={false}
           >
@@ -1077,7 +1106,7 @@ export function TradeBox(p: Props) {
             inputValue={toTokenInputValue}
             onInputValueChange={(e) => {
               setFocusedInput("to");
-              setToTokenInputValue(e.target.value);
+              setToTokenInputValue(e.target.value, true);
             }}
             showMaxButton={false}
           >
