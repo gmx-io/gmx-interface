@@ -103,3 +103,48 @@
     border-bottom: 1px solid #ffffff29;
     margin-bottom: 1.2rem;
   }
+
+  .OneClickTrading-approve-token-btn {
+    margin-bottom: 1.2rem;
+  }
+
+
+  .OneClickTrading-input-wrapper {
+    position: relative;
+   
+    .OneClickTrading-input {
+      border: 1px solid #212540;
+      border-radius: var(--border-radius-sm);
+      padding-right: 0.5rem;
+      line-height: 1;
+      background: #212540;
+  
+      label {
+        cursor: pointer;
+      }
+  
+      &:hover,
+      &:focus {
+        border-color: #3a3f798f;
+      }
+      &:focus-within {
+        border-color: #3a3f79;
+      }
+  
+      &.input-error {
+        border-color: #f3b50e;
+      }
+  
+      input {
+        width: 9rem;
+        padding: 0.2rem 0.5rem 0.35rem;
+        font-size: 1.4rem;
+        border-radius: 4px;
+        text-align: right;
+      }
+      span {
+        opacity: 0.7;
+      }
+    }
+  }
+  
