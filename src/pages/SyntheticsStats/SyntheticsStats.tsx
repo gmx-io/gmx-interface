@@ -689,6 +689,26 @@ export function SyntheticsStats() {
                                 value={`-${formatAmount(borrowingRateShort, 30, 4)}% / 1h`}
                                 showDollar={false}
                               />
+                              <StatsTooltipRow
+                                label="Borrowing Factor Long"
+                                value={formatFactor(market.borrowingFactorLong)}
+                                showDollar={false}
+                              />
+                              <StatsTooltipRow
+                                label="Borrowing Factor Short"
+                                value={formatFactor(market.borrowingFactorShort)}
+                                showDollar={false}
+                              />
+                              <StatsTooltipRow
+                                label="Borrowing Exponent Long"
+                                value={formatFactor(market.borrowingExponentFactorLong)}
+                                showDollar={false}
+                              />
+                              <StatsTooltipRow
+                                label="Borrowing Exponent Short"
+                                value={formatFactor(market.borrowingExponentFactorShort)}
+                                showDollar={false}
+                              />
                             </>
                           )}
                         />
@@ -785,7 +805,7 @@ export function SyntheticsStats() {
                               showDollar={false}
                             />
                             <StatsTooltipRow
-                              label="Distribution Rate"
+                              label={`Distribution Rate, ${market.indexToken.symbol}`}
                               value={formatAmount(
                                 market.positionImpactPoolDistributionRate,
                                 market.indexToken.decimals + 30,
@@ -803,6 +823,22 @@ export function SyntheticsStats() {
                                 2,
                                 true
                               )}
+                            />
+                            <StatsTooltipRow
+                              label="Bonus APR"
+                              value={formatAmount(
+                                market.positionImpactPoolDistributionRate
+                                  .mul(86400)
+                                  .mul(365)
+                                  .mul(market.indexToken.prices.minPrice)
+                                  .div(longPoolUsd?.add(shortPoolUsd || 0) || 0)
+                                  .mul(100),
+                                market.indexToken.decimals + 30,
+                                2,
+                                true
+                              )}
+                              showDollar={false}
+                              unit="%"
                             />
                           </>
                         )}
