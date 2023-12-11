@@ -2241,6 +2241,11 @@ msgstr ""
 msgid "Initial collateral"
 msgstr "最初の担保"
 
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+msgid "Initial top up"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Insufficient Available Liquidity to swap to {0}:"
 msgstr ""
@@ -2718,8 +2723,6 @@ msgstr ""
 msgid "MAX"
 msgstr "最大"
 
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
 #: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
 msgid "Main Account Balance"
 msgstr ""
@@ -4355,8 +4358,6 @@ msgstr ""
 msgid "Structured Products"
 msgstr "ストラクチャードプロダクト"
 
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
 #: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
 msgid "Subaccount Balance"
 msgstr ""
