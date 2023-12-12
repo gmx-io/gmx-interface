@@ -354,7 +354,30 @@ export function TradeFeesRow(p: Props) {
     <ExchangeInfoRow
       className="TradeFeesRow"
       isTop={p.isTop}
-      label={p.warning ? <Tooltip position="left-top" handle={title} renderContent={() => p.warning} /> : title}
+      label={
+        <Tooltip
+          position="left-top"
+          handle={title}
+          renderContent={() => (
+            <>
+              {p.warning && (
+                <span>
+                  {p.warning} <br />
+                  <br />
+                </span>
+              )}
+
+              <div>
+                <Trans>
+                  The Max Execution Fee is overestimated by 10%. Upon execution, the excess Execution Fee is sent back
+                  to your account.
+                </Trans>
+                <ExternalLink href="https://docs.gmx.io/docs/trading/v2#execution-fee">Read more</ExternalLink>.
+              </div>
+            </>
+          )}
+        />
+      }
       value={
         <>
           {!totalFeeUsd || totalFeeUsd.eq(0) ? (

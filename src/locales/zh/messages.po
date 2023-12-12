@@ -257,6 +257,11 @@ msgstr ""
 msgid "Acknowledge high Price Impact"
 msgstr ""
 
+#: src/pages/Actions/Actions.js
+#: src/pages/SyntheticsActions/SyntheticsActions.tsx
+msgid "Actions"
+msgstr ""
+
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Active Orders"
@@ -453,7 +458,6 @@ msgstr "可用的流动资金"
 msgid "Available amount to deposit into GLP."
 msgstr "可供存入GLP的金额"
 
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "Available amount to deposit into the specific GM pool."
@@ -4601,6 +4605,10 @@ msgstr ""
 msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
 msgstr "Gambit协议处于测试阶段，请在参与之前阅读<0>质押细节</0>"
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "The Max Execution Fee is overestimated by 10%. Upon execution, the excess Execution Fee is sent back to your account."
+msgstr ""
+
 #: src/App/App.js
 msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 msgstr ""
@@ -5380,7 +5388,6 @@ msgstr "等待核准"
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js

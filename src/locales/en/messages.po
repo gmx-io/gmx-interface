@@ -257,6 +257,11 @@ msgstr "Acknowledge epoch is ending in {minutes} minutes"
 msgid "Acknowledge high Price Impact"
 msgstr "Acknowledge high Price Impact"
 
+#: src/pages/Actions/Actions.js
+#: src/pages/SyntheticsActions/SyntheticsActions.tsx
+msgid "Actions"
+msgstr "Actions"
+
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Active Orders"
@@ -453,7 +458,6 @@ msgstr "Available Liquidity"
 msgid "Available amount to deposit into GLP."
 msgstr "Available amount to deposit into GLP."
 
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "Available amount to deposit into the specific GM pool."
@@ -4604,6 +4608,10 @@ msgstr "The Execution Price didn't meet the Acceptable Price condition. The Orde
 msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
 msgstr "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "The Max Execution Fee is overestimated by 10%. Upon execution, the excess Execution Fee is sent back to your account."
+msgstr "The Max Execution Fee is overestimated by 10%. Upon execution, the excess Execution Fee is sent back to your account."
+
 #: src/App/App.js
 msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 msgstr "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
@@ -5383,7 +5391,6 @@ msgstr "Waiting for Approval"
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
