@@ -210,7 +210,7 @@ msgstr "주문의 실행이 보장되지 않으며 트리거 주문이 트리거
 msgid "Acceptable Price"
 msgstr ""
 
-#: src/components/Synthetics/TriggerAcceptablePriceImpactInputRow/TriggerAcceptablePriceImpactInputRow.tsx
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "Acceptable Price Impact"
 msgstr ""
 
@@ -3126,7 +3126,7 @@ msgstr "멀티플라이어 포인트"
 msgid "Multiplier Points APR"
 msgstr "멀티플라이어 포인트 APR"
 
-#: src/components/Synthetics/TriggerAcceptablePriceImpactInputRow/TriggerAcceptablePriceImpactInputRow.tsx
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "NA"
 msgstr ""
 
@@ -3850,13 +3850,17 @@ msgstr "수취인은 지금까지 GLP 토큰을 스테이킹한 적이 없습니
 msgid "Receiver has not staked GMX tokens before"
 msgstr "수취인은 지금까지 GMX 토큰을 스테이킹한 적이 없습니다."
 
-#: src/components/Synthetics/TriggerAcceptablePriceImpactInputRow/TriggerAcceptablePriceImpactInputRow.tsx
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "Recommended Acceptable Price Impact is 0.3% so the order is more likely to be processed."
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #~ msgid "Recommended Acceptable Price impact is 0.3% so the order is more likely to be processed."
 #~ msgstr ""
+
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+msgid "Recommended Impact: {0}."
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Redemption time not yet reached"
@@ -4729,7 +4733,7 @@ msgstr "\"APR 부스트는 스테이킹된 멀티플라이어 포인트로부터
 #~ msgid "The Current Price Impact is {0}%. Consider adding a buffer of 0.3% to it so the order is more likely to be processed."
 #~ msgstr ""
 
-#: src/components/Synthetics/TriggerAcceptablePriceImpactInputRow/TriggerAcceptablePriceImpactInputRow.tsx
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.3% to it so the order is more likely to be processed."
 msgstr ""
 
@@ -5803,7 +5807,11 @@ msgid "You have selected {collateralTokenSymbol} as collateral, the Liquidation 
 msgstr ""
 
 #: src/components/Synthetics/TriggerAcceptablePriceImpactInputRow/TriggerAcceptablePriceImpactInputRow.tsx
-msgid "You have set a high Acceptable Price Impact. Please verify Acceptable Price of the order."
+#~ msgid "You have set a high Acceptable Price Impact. Please verify Acceptable Price of the order."
+#~ msgstr ""
+
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+msgid "You have set a high Acceptable Price Impact. The current Price Impact is {0}."
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js

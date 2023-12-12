@@ -210,7 +210,7 @@ msgstr "Accept that orders are not guaranteed to execute and trigger orders may 
 msgid "Acceptable Price"
 msgstr "Acceptable Price"
 
-#: src/components/Synthetics/TriggerAcceptablePriceImpactInputRow/TriggerAcceptablePriceImpactInputRow.tsx
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "Acceptable Price Impact"
 msgstr "Acceptable Price Impact"
 
@@ -3129,7 +3129,7 @@ msgstr "Multiplier Points"
 msgid "Multiplier Points APR"
 msgstr "Multiplier Points APR"
 
-#: src/components/Synthetics/TriggerAcceptablePriceImpactInputRow/TriggerAcceptablePriceImpactInputRow.tsx
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "NA"
 msgstr "NA"
 
@@ -3853,13 +3853,17 @@ msgstr "Receiver has not staked GLP tokens before"
 msgid "Receiver has not staked GMX tokens before"
 msgstr "Receiver has not staked GMX tokens before"
 
-#: src/components/Synthetics/TriggerAcceptablePriceImpactInputRow/TriggerAcceptablePriceImpactInputRow.tsx
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "Recommended Acceptable Price Impact is 0.3% so the order is more likely to be processed."
 msgstr "Recommended Acceptable Price Impact is 0.3% so the order is more likely to be processed."
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #~ msgid "Recommended Acceptable Price impact is 0.3% so the order is more likely to be processed."
 #~ msgstr "Recommended Acceptable Price impact is 0.3% so the order is more likely to be processed."
+
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+msgid "Recommended Impact: {0}."
+msgstr "Recommended Impact: {0}."
 
 #: src/components/Glp/GlpSwap.js
 msgid "Redemption time not yet reached"
@@ -4732,7 +4736,7 @@ msgstr "The Boosted APR is from your staked Multiplier Points."
 #~ msgid "The Current Price Impact is {0}%. Consider adding a buffer of 0.3% to it so the order is more likely to be processed."
 #~ msgstr "The Current Price Impact is {0}%. Consider adding a buffer of 0.3% to it so the order is more likely to be processed."
 
-#: src/components/Synthetics/TriggerAcceptablePriceImpactInputRow/TriggerAcceptablePriceImpactInputRow.tsx
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.3% to it so the order is more likely to be processed."
 msgstr "The Current Price Impact is {0}. Consider adding a buffer of 0.3% to it so the order is more likely to be processed."
 
@@ -5808,8 +5812,12 @@ msgid "You have selected {collateralTokenSymbol} as collateral, the Liquidation 
 msgstr "You have selected {collateralTokenSymbol} as collateral, the Liquidation Price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price. If required, you can change the collateral type using the Collateral In option in the trade box."
 
 #: src/components/Synthetics/TriggerAcceptablePriceImpactInputRow/TriggerAcceptablePriceImpactInputRow.tsx
-msgid "You have set a high Acceptable Price Impact. Please verify Acceptable Price of the order."
-msgstr "You have set a high Acceptable Price Impact. Please verify Acceptable Price of the order."
+#~ msgid "You have set a high Acceptable Price Impact. Please verify Acceptable Price of the order."
+#~ msgstr "You have set a high Acceptable Price Impact. Please verify Acceptable Price of the order."
+
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+msgid "You have set a high Acceptable Price Impact. The current Price Impact is {0}."
+msgstr "You have set a high Acceptable Price Impact. The current Price Impact is {0}."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You have {0} esGMX (IOU) tokens."
