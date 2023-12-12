@@ -75,6 +75,7 @@ import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpac
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { TriggerAcceptablePriceImpactInputRow } from "../TriggerAcceptablePriceImpactInputRow/TriggerAcceptablePriceImpactInputRow";
 import "./PositionSeller.scss";
+import { museNeverExist } from "lib/types";
 
 export type Props = {
   position?: PositionInfo;
@@ -197,10 +198,19 @@ export function PositionSeller(p: Props) {
     uiFeeFactor,
   ]);
 
-  const acceptablePrice =
-    position && decreaseAmounts?.acceptablePrice
-      ? applySlippageToPrice(allowedSlippage, decreaseAmounts.acceptablePrice, false, position.isLong)
-      : undefined;
+  const acceptablePrice = useMemo(() => {
+    if (!position || !decreaseAmounts?.acceptablePrice) {
+      return undefined;
+    }
+
+    if (orderOption === OrderOption.Market) {
+      return applySlippageToPrice(allowedSlippage, decreaseAmounts.acceptablePrice, false, position.isLong);
+    } else if (orderOption === OrderOption.Trigger) {
+      return decreaseAmounts.acceptablePrice;
+    } else {
+      museNeverExist(orderOption);
+    }
+  }, [allowedSlippage, decreaseAmounts?.acceptablePrice, orderOption, position]);
 
   useDebugExecutionPrice(chainId, {
     skip: true,
