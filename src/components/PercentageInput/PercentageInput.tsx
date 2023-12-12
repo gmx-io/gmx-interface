@@ -1,7 +1,7 @@
 import cx from "classnames";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { roundToTwoDecimals } from "lib/numbers";
-import { useEffect, useMemo, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import "./PercentageInput.scss";
 
 const validDecimalRegex = /^\d+(\.\d{0,2})?$/; // 0.00 ~ 99.99
@@ -17,9 +17,11 @@ type Props = {
   highValue?: number;
   lowValue?: number;
   suggestions?: number[];
-  lowValueWarningText?: string;
-  highValueWarningText?: string;
+  lowValueWarningText?: ReactNode;
+  highValueWarningText?: ReactNode;
 };
+
+const DEFAULT_SUGGESTIONS = [0.3, 0.5, 1, 1.5];
 
 export default function PercentageInput({
   onChange,
@@ -27,7 +29,7 @@ export default function PercentageInput({
   maxValue = 99 * 100,
   highValue,
   lowValue,
-  suggestions = [0.3, 0.5, 1, 1.5],
+  suggestions = DEFAULT_SUGGESTIONS,
   highValueWarningText,
   lowValueWarningText,
 }: Props) {
@@ -75,11 +77,15 @@ export default function PercentageInput({
     }
   }, [inputValue, highValue, lowValueWarningText, lowValue, highValueWarningText]);
 
+  const id = useMemo(() => Math.random().toString(36), []);
+
+  const shouldShowPanel = isPanelVisible && Boolean(suggestions.length);
+
   return (
     <div className="Percentage-input-wrapper">
       <div className={cx("Percentage-input", { "input-error": Boolean(error) })}>
         <input
-          id="slippage-input"
+          id={id}
           onFocus={() => setIsPanelVisible(true)}
           onBlur={() => setIsPanelVisible(false)}
           value={!!inputValue ? inputValue : ""}
@@ -87,16 +93,16 @@ export default function PercentageInput({
           autoComplete="off"
           onChange={handleChange}
         />
-        <label htmlFor="slippage-input">
+        <label htmlFor={id}>
           <span>%</span>
         </label>
       </div>
-      {error && !isPanelVisible && (
+      {error && !shouldShowPanel && (
         <div className={cx("Percentage-input-error", "Tooltip-popup", "z-index-1001", "right-bottom", "warning")}>
           {error}
         </div>
       )}
-      {isPanelVisible && (
+      {shouldShowPanel && (
         <ul className="Percentage-list  ">
           {suggestions.map((slippage) => (
             <li

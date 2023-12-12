@@ -1,0 +1,13 @@
+
+.AcceptablePriceImpactInputRow-handle {
+    z-index: 1;
+    cursor: pointer;
+    position: relative;
+    display: inline-flex;
+    text-decoration: underline;
+    text-decoration-style: dashed;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+    text-decoration-color: var(--warning-yellow);
+    user-select: none;
+}

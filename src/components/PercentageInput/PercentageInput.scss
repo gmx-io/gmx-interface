@@ -64,4 +64,14 @@
   &:hover .Percentage-input-error {
     display: block;
   }
+
+  &:hover .Percentage-input-error::before {
+    content: "";
+    position: absolute;
+    top: -1rem;
+    left: 0;
+    width: 100%;
+    height: 1rem;
+    background: transparent;
+  }
 }

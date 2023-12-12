@@ -73,7 +73,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useLatest } from "react-use";
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
-import { TriggerAcceptablePriceImpactInputRow } from "../TriggerAcceptablePriceImpactInputRow/TriggerAcceptablePriceImpactInputRow";
+import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import "./PositionSeller.scss";
 import { museNeverExist } from "lib/types";
 
@@ -552,7 +552,7 @@ export function PositionSeller(p: Props) {
     }
 
     return (
-      <TriggerAcceptablePriceImpactInputRow
+      <AcceptablePriceImpactInputRow
         notAvailable={!triggerPriceInputValue || decreaseAmounts.triggerOrderType === OrderType.StopLossDecrease}
         defaultAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
         fees={fees}

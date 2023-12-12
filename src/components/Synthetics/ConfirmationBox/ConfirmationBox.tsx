@@ -94,7 +94,7 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./ConfirmationBox.scss";
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
-import { TriggerAcceptablePriceImpactInputRow } from "../TriggerAcceptablePriceImpactInputRow/TriggerAcceptablePriceImpactInputRow";
+import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 
 export type Props = {
   isVisible: boolean;
@@ -967,7 +967,7 @@ export function ConfirmationBox(p: Props) {
 
   function renderAcceptablePriceImpactInput() {
     return (
-      <TriggerAcceptablePriceImpactInputRow
+      <AcceptablePriceImpactInputRow
         defaultAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
         fees={fees}
         setSelectedAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImapctBps}
