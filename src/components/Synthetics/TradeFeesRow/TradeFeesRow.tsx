@@ -11,10 +11,17 @@ import { ExecutionFee, FeeItem, SwapFeeItem } from "domain/synthetics/fees";
 import { TradeFeesType } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { formatAmount, formatDeltaUsd, formatPercentage, formatTokenAmountWithUsd } from "lib/numbers";
+import {
+  formatAmount,
+  formatDeltaUsd,
+  formatPercentage,
+  formatTokenAmountWithUsd,
+  roundToTwoDecimals,
+} from "lib/numbers";
 import { ReactNode, useMemo } from "react";
 import "./TradeFeesRow.scss";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 type Props = {
   totalFees?: FeeItem;
@@ -45,6 +52,7 @@ type FeeRow = {
 };
 
 export function TradeFeesRow(p: Props) {
+  const settings = useSettings();
   const { chainId } = useChainId();
   const tradingIncentives = useTradingIncentives();
   const shouldShowRebate = p.shouldShowRebate ?? true;
@@ -350,6 +358,13 @@ export function TradeFeesRow(p: Props) {
     );
   }, [rebateIsApplicable, tradingIncentives]);
 
+  const maxExecutionFeeText = useMemo(() => {
+    if (settings.executionFeeBufferBps !== undefined) {
+      const bps = settings.executionFeeBufferBps;
+      return roundToTwoDecimals((bps / BASIS_POINTS_DIVISOR) * 100);
+    }
+  }, [settings.executionFeeBufferBps]);
+
   return (
     <ExchangeInfoRow
       className="TradeFeesRow"
@@ -361,16 +376,15 @@ export function TradeFeesRow(p: Props) {
           renderContent={() => (
             <>
               {p.warning && (
-                <span>
+                <span className="text-white">
                   {p.warning} <br />
                   <br />
                 </span>
               )}
-
-              <div>
+              <div className="text-white">
                 <Trans>
-                  The Max Execution Fee is overestimated by 10%. Upon execution, the excess Execution Fee is sent back
-                  to your account.
+                  The Max Execution Fee is overestimated by {maxExecutionFeeText}%. Upon execution, the excess Execution
+                  Fee is sent back to your account.
                 </Trans>
                 <ExternalLink href="https://docs.gmx.io/docs/trading/v2#execution-fee">Read more</ExternalLink>.
               </div>

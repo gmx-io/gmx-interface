@@ -1513,7 +1513,14 @@ export function TradeBox(p: Props) {
 
               <div className="App-card-divider" />
 
-              {feesType && <TradeFeesRow {...fees} executionFee={executionFee} feesType={feesType} />}
+              {feesType && (
+                <TradeFeesRow
+                  {...fees}
+                  executionFee={executionFee}
+                  feesType={feesType}
+                  warning={executionFee?.warning}
+                />
+              )}
 
               {isTrigger && existingPosition && decreaseAmounts?.receiveUsd && (
                 <ExchangeInfoRow
