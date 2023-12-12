@@ -223,7 +223,7 @@ const CONTRACTS = {
     TraderJoeGmxAvaxPool: "0x0c91a070f862666bbcce281346be45766d874d98",
     ReferralStorage: "0x827ed045002ecdabeb6e2b0d1604cf5fc3d322f8",
     ReferralReader: "0x505Ce16D3017be7D76a7C2631C0590E71A975083",
-    Timelock: "0x8Ea12810271a0fD70bBEB8614B8735621abC3718",
+    Timelock: "0x8A68a039D555599Fd745f9343e8dE20C9eaFca75",
 
     // Synthetics
     DataStore: "0x2F0b22339414ADeD7D5F06f9D604c7fF5b2fe3f6",
