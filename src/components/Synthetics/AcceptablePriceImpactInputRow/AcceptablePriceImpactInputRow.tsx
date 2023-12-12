@@ -57,13 +57,16 @@ function AcceptablePriceImpactInputRowImpl({
 
   const recommendedHandle = (
     <span className="AcceptablePriceImpactInputRow-handle" onClick={handleRecommendedValueClick}>
-      <Trans>Recommended Impact: {formatPercentage(BigNumber.from(defaultValue))}.</Trans>
+      <Trans>Recommended Impact: {formatPercentage(BigNumber.from(defaultValue).mul(-1), { signed: true })}.</Trans>
     </span>
   );
 
   const lowValueWarningText = fees.positionPriceImpact?.bps.gte(0) ? (
     <p>
-      <Trans>Recommended Acceptable Price Impact is 0.3% so the order is more likely to be processed.</Trans>
+      <Trans>
+        The current Price Impact is {formatPercentage(fees.positionPriceImpact?.bps, { signed: true })}. Consider using
+        -0.30% Acceptable Price Impact so the order is more likely to be processed.
+      </Trans>
       <br />
       <br />
       {recommendedHandle}
@@ -71,8 +74,8 @@ function AcceptablePriceImpactInputRowImpl({
   ) : (
     <p>
       <Trans>
-        The Current Price Impact is {formatPercentage(fees.positionPriceImpact?.bps.abs())}. Consider adding a buffer of
-        0.3% to it so the order is more likely to be processed.
+        The Current Price Impact is {formatPercentage(fees.positionPriceImpact?.bps, { signed: true })}. Consider adding
+        a buffer of 0.30% to it so the order is more likely to be processed.
       </Trans>
       <br />
       <br />
@@ -84,7 +87,7 @@ function AcceptablePriceImpactInputRowImpl({
     <p>
       <Trans>
         You have set a high Acceptable Price Impact. The current Price Impact is{" "}
-        {formatPercentage(fees.positionPriceImpact?.bps.abs())}.
+        {formatPercentage(fees.positionPriceImpact?.bps, { signed: true })}.
       </Trans>
       <br />
       <br />
