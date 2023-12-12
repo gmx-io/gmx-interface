@@ -6,7 +6,7 @@ function numberToString(value: BigNumber, decimals: number, displayDecimals: num
   return formatAmount(value, decimals, displayDecimals);
 }
 
-function stringToNumber(value: string, decimals: number) {
+function stringToNumber(value: string, decimals: number, displayDecimals: number) {
   value = value.replace(/,/g, "").trim();
 
   if (value.startsWith("0")) {
@@ -25,11 +25,15 @@ function stringToNumber(value: string, decimals: number) {
     value = value.slice(0, -1);
   }
 
-  const [wholePart, fraction] = value.split(".");
-  const fractionLength = fraction?.length || 0;
+  const split = value.split(".");
+  const [int] = split;
+  let [, fraction] = split;
+  fraction = (fraction ?? "").slice(0, displayDecimals);
+
+  const fractionLength = fraction.length;
   const multiplier = BigNumber.from(10).pow(fractionLength);
   try {
-    return BigNumber.from(wholePart || 0)
+    return BigNumber.from(int || 0)
       .mul(multiplier)
       .add(BigNumber.from(fraction || 0))
       .mul(BigNumber.from(10).pow(decimals - fractionLength));
@@ -38,7 +42,12 @@ function stringToNumber(value: string, decimals: number) {
   }
 }
 
-export function useBigNumberState(initialValue: BigNumber, decimals: number, displayDecimals: number) {
+export function useBigNumberState(
+  initialValue: BigNumber,
+  decimals: number,
+  displayDecimals: number,
+  shouldCutDecimals = false
+) {
   const [value, setRawValue] = useState(initialValue);
   const [displayValue, setRawDisplayValue] = useState(() => numberToString(initialValue, decimals, displayDecimals));
 
@@ -52,13 +61,13 @@ export function useBigNumberState(initialValue: BigNumber, decimals: number, dis
 
   const setDisplayValue = useCallback(
     (newValue: string) => {
-      const number = stringToNumber(newValue, decimals);
+      const number = stringToNumber(newValue, decimals, displayDecimals);
       if (number === null) return;
 
-      setRawDisplayValue(newValue);
+      setRawDisplayValue(shouldCutDecimals ? cutDecimals(newValue, displayDecimals) : newValue);
       setRawValue(number);
     },
-    [decimals]
+    [decimals, displayDecimals, shouldCutDecimals]
   );
 
   return {
@@ -66,5 +75,17 @@ export function useBigNumberState(initialValue: BigNumber, decimals: number, dis
     setValue,
     displayValue,
     setDisplayValue,
+    isEmpty: !displayValue.trim(),
   };
+}
+
+function cutDecimals(value: string, displayDecimals: number) {
+  if (!value.includes(".")) return value;
+  if (value.endsWith(".")) return value;
+
+  const split = value.split(".");
+  const [int] = split;
+  let [, fraction] = split;
+  fraction = (fraction ?? "").slice(0, displayDecimals);
+  return fraction ? `${int}.${fraction}` : int;
 }

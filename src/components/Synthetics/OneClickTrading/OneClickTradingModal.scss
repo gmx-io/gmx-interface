@@ -111,8 +111,10 @@
 
   .OneClickTrading-input-wrapper {
     position: relative;
+    width: 13rem;
    
     .OneClickTrading-input {
+      display: flex;
       border: 1px solid #212540;
       border-radius: var(--border-radius-sm);
       padding-right: 0.5rem;
@@ -121,6 +123,9 @@
   
       label {
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        user-select: none;
       }
   
       &:hover,
@@ -136,12 +141,14 @@
       }
   
       input {
-        width: 9rem;
+        flex: 1;
         padding: 0.2rem 0.5rem 0.35rem;
         font-size: 1.4rem;
         border-radius: 4px;
         text-align: right;
+        text-align: left;
       }
+
       span {
         opacity: 0.7;
       }

@@ -35,7 +35,7 @@ export type OneClickTradingContext = (
 const context = createContext<OneClickTradingContext | null>(null);
 
 export function OneClickTradingContextProvider({ children }: PropsWithChildren) {
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(true);
 
   const { signer, account, chainId } = useWallet();
   const [config, setConfig] = useLocalStorageSerializeKey<OneClickTradingSerializedConfig>(

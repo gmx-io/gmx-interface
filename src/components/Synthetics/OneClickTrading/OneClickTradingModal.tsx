@@ -29,6 +29,7 @@ import useWallet from "lib/wallets/useWallet";
 import { ReactNode, memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useCopyToClipboard } from "react-use";
 import "./OneClickTradingModal.scss";
+import { getValidationError } from "./utils";
 
 const defaults = {
   initialTopUp: BigNumber.from(1000000000000000),
@@ -132,19 +133,42 @@ const MainView = memo(() => {
   const wrappedToken = useMemo(() => getWrappedToken(chainId), [chainId]);
   const nativeToken = useMemo(() => getNativeToken(chainId), [chainId]);
 
-  const { displayValue: initialTopUpString, setDisplayValue: setInitialTopUpString } = useBigNumberState(
-    defaults.initialTopUp,
-    nativeToken.decimals,
-    4
-  );
+  const {
+    displayValue: initialTopUpString,
+    setDisplayValue: setInitialTopUpString,
+    isEmpty: initialTopUpIsEmpty,
+  } = useBigNumberState(defaults.initialTopUp, nativeToken.decimals, 4);
+  const {
+    displayValue: maxAutoTopUpAmountString,
+    setDisplayValue: setMaxAutoTopUpAmountString,
+    isEmpty: maxAutoTopUpAmountIsEmpty,
+  } = useBigNumberState(defaults.maxAutoTopUpAmount, nativeToken.decimals, 4);
+  const {
+    displayValue: wethForAutoTopUpsString,
+    setDisplayValue: setWethForAutoTopUpsString,
+    isEmpty: wethForAutoTopUpsIsEmpty,
+  } = useBigNumberState(defaults.wethForAutoTopUps, wrappedToken.decimals, 4);
+  const {
+    displayValue: maxAllowedActionsString,
+    setDisplayValue: setMaxAllowedActionsString,
+    isEmpty: maxAllowedActionsIsEmpty,
+  } = useBigNumberState(defaults.maxAllowedActions, 0, 0);
 
   if (oneClickTradingState.state === "off") {
     return null;
   }
+
   const { subaccount } = oneClickTradingState;
 
   const mainWethBalance = getByKey(mainBalances.balancesData, wrappedToken.address);
   const subEthBalance = getByKey(subBalances.balancesData, nativeToken.address);
+
+  const validationError = getValidationError({
+    initialTopUpIsEmpty,
+    maxAutoTopUpAmountIsEmpty,
+    wethForAutoTopUpsIsEmpty,
+    maxAllowedActionsIsEmpty,
+  });
 
   return (
     <div className="OneClickTrading-controls">
@@ -201,14 +225,33 @@ const MainView = memo(() => {
             setValue={setInitialTopUpString}
             label={t`Initial top up`}
             symbol={nativeToken.symbol}
-            decimals={nativeToken.decimals}
-            showDecimals={4}
             tooltipText={t`Initial top up`}
+          />
+          <InputRow
+            value={maxAutoTopUpAmountString}
+            setValue={setMaxAutoTopUpAmountString}
+            label={t`Max auto top up amount`}
+            symbol={nativeToken.symbol}
+            tooltipText={t`Max auto top up amount`}
+          />
+          <InputRow
+            value={wethForAutoTopUpsString}
+            setValue={setWethForAutoTopUpsString}
+            label={t`WETH for auto top ups`}
+            symbol={wrappedToken.symbol}
+            tooltipText={t`WETH for auto top ups`}
+          />
+          <InputRow
+            value={maxAllowedActionsString}
+            setValue={setMaxAllowedActionsString}
+            label={t`Max allowed actions`}
+            symbol={wrappedToken.symbol}
+            tooltipText={t`Max allowed actions`}
           />
         </div>
         <TokenApproval />
-        <Button variant="primary-action" disabled className="w-full">
-          <Trans>Activate</Trans>
+        <Button disabled={!!validationError} variant="primary-action" className="w-full">
+          {validationError || <Trans>Activate</Trans>}
         </Button>
       </div>
     </div>
@@ -236,7 +279,6 @@ const TokenApproval = memo(() => {
     skip: !oneClickTradingState.modalOpen,
   });
 
-  // FIXME
   const payAmount = BigNumber.from(1);
 
   const needPayTokenApproval = useMemo(
@@ -263,16 +305,12 @@ const InputRow = memo(
     setValue,
     label,
     symbol,
-    decimals,
-    showDecimals,
     tooltipText,
   }: {
     value: string;
     setValue: (value: string) => void;
     label: string;
     symbol: string;
-    decimals: number;
-    showDecimals: number;
     tooltipText: string;
   }) => {
     const renderTooltipContent = useCallback(() => {
@@ -283,9 +321,7 @@ const InputRow = memo(
       <StatsTooltipRow
         showColon={false}
         label={<TooltipWithPortal handle={label} renderContent={renderTooltipContent} position="right-bottom" />}
-        value={
-          <Input value={value} setValue={setValue} symbol={symbol} decimals={decimals} showDecimals={showDecimals} />
-        }
+        value={<Input value={value} setValue={setValue} symbol={symbol} />}
         showDollar={false}
       />
     );
@@ -293,19 +329,7 @@ const InputRow = memo(
 );
 
 const Input = memo(
-  ({
-    value,
-    setValue,
-    symbol,
-    decimals,
-    showDecimals,
-  }: {
-    value: string;
-    setValue: (value: string) => void;
-    symbol: string;
-    decimals: number;
-    showDecimals: number;
-  }) => {
+  ({ value, setValue, symbol }: { value: string; setValue: (value: string) => void; symbol: string }) => {
     const onChange = useCallback(
       (e: React.ChangeEvent<HTMLInputElement>) => {
         setValue(e.target.value);
@@ -317,7 +341,7 @@ const Input = memo(
     return (
       <div className="OneClickTrading-input-wrapper">
         <div className={cx("OneClickTrading-input")}>
-          <input onChange={onChange} id={id} value={value} />
+          <input type="number" pattern="{0-9}.{0-9}" onChange={onChange} id={id} value={value} />
           <label htmlFor={id}>
             <span>{symbol}</span>
           </label>
