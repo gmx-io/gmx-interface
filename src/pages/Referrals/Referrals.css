@@ -278,12 +278,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 1.5rem;
+  padding: 3rem 1.5rem;
   border: 1px solid #1e2136;
   border-radius: 0.4rem;
   background: #16182e;
   font-size: var(--font-base);
+  flex-direction: column;
 }
+
 .confirm-checkbox .Checkbox {
   width: 100%;
   display: grid;

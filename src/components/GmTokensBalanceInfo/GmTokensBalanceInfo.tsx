@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import Tooltip from "components/Tooltip/Tooltip";
+import Tooltip, { TooltipPosition } from "components/Tooltip/Tooltip";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { UserEarningsData } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
@@ -84,10 +84,12 @@ export const GmTokensTotalBalanceInfo = ({
   balance,
   balanceUsd,
   userEarnings,
+  tooltipPosition,
 }: {
   balance?: BigNumber;
   balanceUsd?: BigNumber;
   userEarnings: UserEarningsData | null;
+  tooltipPosition?: TooltipPosition;
 }) => {
   const shouldShowIncentivesNote = useLpIncentivesIsActive();
   const daysConsidered = useDaysConsideredInMarketsApr();
@@ -95,7 +97,7 @@ export const GmTokensTotalBalanceInfo = ({
     <Tooltip
       handle={<Trans>WALLET</Trans>}
       className="text-none"
-      position="right-bottom"
+      position={tooltipPosition ?? "right-bottom"}
       renderContent={() => (
         <>
           <StatsTooltipRow

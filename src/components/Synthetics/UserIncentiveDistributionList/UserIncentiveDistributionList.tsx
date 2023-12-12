@@ -64,23 +64,21 @@ export default function UserIncentiveDistributionList() {
   const { currentPage, getCurrentData, setCurrentPage, pageCount } = usePagination(normalizedIncentiveData);
   const currentIncentiveData = getCurrentData();
 
-  if (!active) {
-    return (
-      <div>
-        <Button variant="secondary" onClick={openConnectModal}>
-          <Trans>Connect Wallet</Trans>
-        </Button>
-      </div>
-    );
-  }
-
   if (!userIncentiveData?.data?.length) {
     return (
       <EmptyMessage
         tooltipText={t`Incentives are airdropped weekly.`}
         message={t`No incentives distribution history yet.`}
         className="mt-sm"
-      />
+      >
+        {!active && (
+          <div className="mt-md">
+            <Button variant="secondary" onClick={openConnectModal}>
+              <Trans>Connect Wallet</Trans>
+            </Button>
+          </div>
+        )}
+      </EmptyMessage>
     );
   }
 
