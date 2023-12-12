@@ -169,6 +169,7 @@ const CONTRACTS = {
     UniswapGmxEthPool: "0x80A9ae39310abf666A87C743d6ebBD0E8C42158E",
     ReferralStorage: "0xe6fab3f0c7199b0d34d7fbe83394fc0e0d06e99d",
     ReferralReader: "0x8Aa382760BCdCe8644C33e6C2D52f6304A76F5c8",
+    Timelock: "0xaa50bD556CE0Fe61D4A57718BA43177a3aB6A597",
 
     // Synthetics
     DataStore: "0xFD70de6b91282D8017aA4E741e9Ae325CAb992d8",
@@ -179,7 +180,6 @@ const CONTRACTS = {
     OrderVault: "0x31eF83a530Fde1B38EE9A18093A333D8Bbbc40D5",
     SyntheticsReader: "0xf60becbba223EEA9495Da3f606753867eC10d139",
     SyntheticsRouter: "0x7452c558d45f8afC8c83dAe62C3f8A5BE19c71f6",
-    Timelock: "0xaa50bD556CE0Fe61D4A57718BA43177a3aB6A597",
 
     Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
   },
@@ -223,6 +223,7 @@ const CONTRACTS = {
     TraderJoeGmxAvaxPool: "0x0c91a070f862666bbcce281346be45766d874d98",
     ReferralStorage: "0x827ed045002ecdabeb6e2b0d1604cf5fc3d322f8",
     ReferralReader: "0x505Ce16D3017be7D76a7C2631C0590E71A975083",
+    Timelock: "0x8Ea12810271a0fD70bBEB8614B8735621abC3718",
 
     // Synthetics
     DataStore: "0x2F0b22339414ADeD7D5F06f9D604c7fF5b2fe3f6",
@@ -233,7 +234,6 @@ const CONTRACTS = {
     OrderVault: "0xD3D60D22d415aD43b7e64b510D86A30f19B1B12C",
     SyntheticsReader: "0x73BA021ACF4Bb6741E82690DdB821e7936050f8C",
     SyntheticsRouter: "0x820F5FfC5b525cD4d88Cd91aCf2c28F16530Cc68",
-    Timelock: "0x4Db91a1Fa4ba3c75510B2885d7d7da48E0209F38",
 
     Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
   },
