@@ -827,6 +827,7 @@ export function GmSwapBox(p: Props) {
             topRightValue={formatTokenAmount(firstToken?.balance, firstToken?.decimals, "", {
               useCommas: true,
             })}
+            preventFocusOnLabelClick="right"
             {...(isDeposit && {
               onClickTopRightLabel: () => {
                 if (firstToken?.balance) {
@@ -889,6 +890,7 @@ export function GmSwapBox(p: Props) {
               topRightValue={formatTokenAmount(secondToken?.balance, secondToken?.decimals, "", {
                 useCommas: true,
               })}
+              preventFocusOnLabelClick="right"
               inputValue={secondTokenInputValue}
               showMaxButton={isDeposit && secondToken?.balance?.gt(0) && !secondTokenAmount?.eq(secondToken.balance)}
               onInputValueChange={(e) => {
@@ -942,6 +944,7 @@ export function GmSwapBox(p: Props) {
             topRightValue={formatTokenAmount(marketToken?.balance, marketToken?.decimals, "", {
               useCommas: true,
             })}
+            preventFocusOnLabelClick="right"
             showMaxButton={isWithdrawal && marketToken?.balance?.gt(0) && !marketTokenAmount?.eq(marketToken.balance)}
             inputValue={marketTokenInputValue}
             onInputValueChange={(e) => {
