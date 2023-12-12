@@ -505,7 +505,7 @@ export function PositionSeller(p: Props) {
       >
         <PercentageInput
           onChange={setAllowedSlippage}
-          defaultValue={savedAllowedSlippage}
+          defaultValue={allowedSlippage}
           highValue={TOO_HIGH_SLIPPAGE_AMOUNT}
           highValueWarningText="Slippage is too high"
         />
