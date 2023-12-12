@@ -354,18 +354,7 @@ export function TradeFeesRow(p: Props) {
     <ExchangeInfoRow
       className="TradeFeesRow"
       isTop={p.isTop}
-      label={
-        p.warning ? (
-          <Tooltip
-            position="left-top"
-            className="TradeFeesRow-warning-tooltip"
-            handle={title}
-            renderContent={() => p.warning}
-          />
-        ) : (
-          title
-        )
-      }
+      label={p.warning ? <Tooltip position="left-top" handle={title} renderContent={() => p.warning} /> : title}
       value={
         <>
           {!totalFeeUsd || totalFeeUsd.eq(0) ? (
