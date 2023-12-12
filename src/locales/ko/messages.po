@@ -13,10 +13,6 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "\"Current {0} Long\" takes into account PnL of open positions."
-#~ msgstr ""
-
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "(up to {0}% of {feesTypeName})"
 msgstr ""
@@ -36,11 +32,6 @@ msgstr "24시간 거래량"
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "<0><1>{eventTitle}</1> from <2>{0} {indexName} <3>[{poolName}]</3> Position</2></0>"
 msgstr ""
-
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#~ msgid "<0><1>{indexName}</1><2>[{poolName}]</2></0> <3>selected in order form</3>"
-#~ msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "<0>APR is based on the Fees collected for the past {daysConsidered} days. It is an estimate as actual Fees are auto-compounded into the pool in real-time.</0><1>Check Pools performance against other LP Positions in <2>GMX Dune Dashboard</2>.</1>"
@@ -257,10 +248,6 @@ msgstr ""
 #: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
 msgid "Acknowledge high Price Impact"
 msgstr ""
-
-#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
-#~ msgid "Acknowledge high Swap Impact"
-#~ msgstr ""
 
 #: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
 msgid "Acknowledge high Swap Price Impact"
@@ -701,10 +688,6 @@ msgstr "{swapTokenSymbol}을 1inch에서 구매하기"
 msgid "Buyable"
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-#~ msgid "Buying GM ({indexName}) with {tokensText}"
-#~ msgstr ""
-
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Buying GM..."
 msgstr ""
@@ -858,10 +841,6 @@ msgstr "{wrappedTokenSymbol} 보상 수령하기"
 msgid "Claimable"
 msgstr "수령가능"
 
-#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
-#~ msgid "Claimable Funding"
-#~ msgstr ""
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Claimable Rebates"
 msgstr ""
@@ -887,14 +866,6 @@ msgstr ""
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims (1)"
 msgstr ""
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Click on a row to select the position's market, then use the swap box to increase your position size or to set stop-loss / take-profit orders."
-#~ msgstr ""
-
-#: src/components/Exchange/PositionsList.js
-#~ msgid "Click on a row to select the position's market, then use the trade box to increase your position size if needed."
-#~ msgstr "시장에서 위치를 선택하세요. 그런 다음, 필요한 경우 거래 상자를 통해 크기를 조정하세요."
 
 #: src/components/Exchange/PositionsList.js
 msgid "Click on the Position to select its market, then use the trade box to increase your Position Size if needed."
@@ -1011,10 +982,6 @@ msgid "Community Projects"
 msgstr "커뮤니티 프로젝트"
 
 #: src/pages/Ecosystem/Ecosystem.js
-#~ msgid "Community curated tweet collection"
-#~ msgstr "커뮤니티가 큐레이트한 트윗 컬렉션"
-
-#: src/pages/Ecosystem/Ecosystem.js
 msgid "Community-led Telegram groups."
 msgstr "커뮤니티 주도 텔레그램 그룹"
 
@@ -1081,11 +1048,6 @@ msgstr "숏 포지션 확인"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Confirm Swap"
 msgstr "스왑 확인"
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "Confirm Trigger Order"
-#~ msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -1206,14 +1168,6 @@ msgstr "주문 생성"
 msgid "Create Referral Code"
 msgstr "추천 코드 생성"
 
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#~ msgid "Create Trigger order"
-#~ msgstr ""
-
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#~ msgid "Create trigger order"
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -1272,10 +1226,6 @@ msgstr "현재 {0} 롱"
 #: src/components/Exchange/SwapBox.js
 msgid "Current {0} shorts"
 msgstr "현재 {0} 숏"
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Current {0} {longShortText}"
-#~ msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "Currently, There is a high Swap Price Impact for the Order Swap path."
@@ -1753,10 +1703,6 @@ msgstr "실행"
 msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgstr "주문 실행: {fromAmountDisplay} {0}을 {toAmountDisplay} {1}로 스왑"
 
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#~ msgid "Execute Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price:{1}, Market: {2}"
-#~ msgstr ""
-
 #: src/components/Exchange/TradeHistory.js
 msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr ""
@@ -1969,17 +1915,9 @@ msgstr ""
 msgid "Funding Fee Rate"
 msgstr ""
 
-#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
-#~ msgid "Funding Fees"
-#~ msgstr ""
-
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "Funding Rate / 1h"
 msgstr ""
-
-#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
-#~ msgid "Funding fee"
-#~ msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 msgid "Funding fees"
@@ -2127,10 +2065,6 @@ msgstr "GMX는 현재 구인하고 있지 않습니다. 하지만 해당 프로�
 #: src/components/TokenCard/TokenCard.js
 msgid "GMX is the utility and governance token. Accrues 30% and 27% of V1 and V2 markets generated fees, respectively."
 msgstr ""
-
-#: src/components/TokenCard/TokenCard.js
-#~ msgid "GMX is the utility and governance token. Accrues 30% of the platform's generated fees."
-#~ msgstr "GMX는 유틸리티 및 거버넌스 토큰입니다. 플랫폼에서 생성되는 수수료의 30%를 축적하세요."
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX staking calculator"
@@ -2584,11 +2518,6 @@ msgstr "링크"
 msgid "Link copied to clipboard."
 msgstr "클립보드로 링크가 복사되었습니다."
 
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#: src/components/Synthetics/PositionList/PositionList.tsx
-#~ msgid "Liq Price"
-#~ msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -2743,16 +2672,8 @@ msgid "Long Positions"
 msgstr "롱 포지션"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Long positions {0} a Funding Fee of <0>{1}%</0> per hour."
-#~ msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Long positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
 msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Long positions {0} a Funding Fee of <0>{longSign}{1}%</0> per hour."
-#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Long {0}"
@@ -2780,14 +2701,6 @@ msgstr ""
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
 msgstr "최대"
-
-#: src/pages/Ecosystem/Ecosystem.js
-#~ msgid "MEV Optimizer"
-#~ msgstr "MEV 옵티마이저"
-
-#: src/components/Synthetics/GmList/GmList.tsx
-#~ msgid "MINTABLE"
-#~ msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -3007,10 +2920,6 @@ msgstr "최대 {0} 숏 수용량"
 msgid "Max {0} short exceeded"
 msgstr "{0} 숏 최대치를 초과했습니다."
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Max {0} {longShortText} capacity"
-#~ msgstr ""
-
 #: src/components/TokenCard/TokenCard.js
 msgid "Max. Arbitrum APR:"
 msgstr ""
@@ -3103,11 +3012,6 @@ msgstr "최소 수취량"
 msgid "Minimum received"
 msgstr "최소량 수치 완료"
 
-#: src/components/Synthetics/GmList/GmList.tsx
-#: src/components/Synthetics/MarketStats/MarketStats.tsx
-#~ msgid "Mintable"
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Dashboard/DashboardV2.js
@@ -3178,9 +3082,7 @@ msgstr "네트워크"
 msgid "Networks and Settings"
 msgstr "네트워크 및 설정"
 
-#: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/Claims/Claims.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Next"
 msgstr "다음"
 
@@ -3414,11 +3316,6 @@ msgstr "주문 ({0})"
 msgid "Orders cancelled."
 msgstr "주문 취소"
 
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
-#~ msgid "Orders{0}"
-#~ msgstr ""
-
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Orders <0>({0})</0>"
 msgstr ""
@@ -3438,10 +3335,6 @@ msgstr "풀"
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "POOLS"
 msgstr ""
-
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-#~ msgid "POOLS VALUE"
-#~ msgstr ""
 
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "POSITION"
@@ -3571,10 +3464,6 @@ msgstr "풀 수량"
 msgid "Pools"
 msgstr ""
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-#~ msgid "Pools Value"
-#~ msgstr ""
-
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
@@ -3612,13 +3501,7 @@ msgstr ""
 msgid "Positive Funding Fees for a Position become claimable after the Position is increased, decreased or closed; or settled its fees with the option under \"Accrued\"."
 msgstr ""
 
-#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
-#~ msgid "Positive Funding Fees for a position become claimable after the position is increased, decreased or closed."
-#~ msgstr ""
-
-#: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/Claims/Claims.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Prev"
 msgstr "이전"
 
@@ -3849,14 +3732,6 @@ msgstr "수취인은 지금까지 GLP 토큰을 스테이킹한 적이 없습니
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Receiver has not staked GMX tokens before"
 msgstr "수취인은 지금까지 GMX 토큰을 스테이킹한 적이 없습니다."
-
-#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
-#~ msgid "Recommended Acceptable Price Impact is 0.3% so the order is more likely to be processed."
-#~ msgstr ""
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "Recommended Acceptable Price impact is 0.3% so the order is more likely to be processed."
-#~ msgstr ""
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "Recommended Impact: {0}."
@@ -4136,10 +4011,6 @@ msgstr "판매 제출 완료!"
 msgid "Sellable"
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
-#~ msgid "Selling GM ({indexName})"
-#~ msgstr ""
-
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "Selling GM..."
 msgstr ""
@@ -4295,16 +4166,8 @@ msgid "Short Positions"
 msgstr "숏 포지션"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Short positions {0} a Funding Fee of <0>{1}%</0> per hour."
-#~ msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Short positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
 msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "Short positions {0} a Funding Fee of <0>{shortSign}{1}%</0> per hour."
-#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Short {0}"
@@ -4383,10 +4246,6 @@ msgstr "스테이블코인 비율"
 #: src/pages/Stake/StakeV2.js
 msgid "Stake"
 msgstr "스테이킹"
-
-#: src/pages/Stake/StakeV2.js
-#~ msgid "Stake <0>GMX</0> and <1>GLP</1> to earn rewards."
-#~ msgstr "<0>GMX</0>과 <1>GLP</1>를 스테이킹하여 보상을 획득하세요."
 
 #: src/pages/Stake/StakeV2.js
 msgid "Stake <0>GMX</0> and buy <1>GM</1> or <2>GLP</2> to earn rewards."
@@ -4655,10 +4514,6 @@ msgstr ""
 msgid "Take-Profit"
 msgstr ""
 
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#~ msgid "Take-Profit and Stop-Loss orders are created in the main Tradebox.<0/><1/><2>Set Trigger Order for this position.</2><3/><4/><5>More Info</5>."
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 msgid "Take-profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
 msgstr "TP/SL 주문은 포지션을 연 후 가능합니다. <0/><1/>각 행의 \"닫기\" 버튼을 클리하면 트리거 주문 설정 화면을 표시합니다. <2/><3/>더 자세한 스크린샷과 정보는 <4>docs</4>를 참고해주세요."
@@ -4722,20 +4577,12 @@ msgid "The Bonus Rebate is an estimate and will be airdropped as ARB tokens when
 msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "The Bonus Rebate will be airdropped as ARB tokens on a pro-rata basis. <0>Read more</0>"
+msgid "The Bonus Rebate will be airdropped as ARB tokens on a pro-rata basis. <0>Read more</0>."
 msgstr ""
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "The Boosted APR is from your staked Multiplier Points."
 msgstr "\"APR 부스트는 스테이킹된 멀티플라이어 포인트로부터 적용됩니다."
-
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#~ msgid "The Current Price Impact is {0}%. Consider adding a buffer of 0.3% to it so the order is more likely to be processed."
-#~ msgstr ""
-
-#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
-#~ msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.3% to it so the order is more likely to be processed."
-#~ msgstr ""
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
@@ -4841,11 +4688,6 @@ msgstr "숏 포지션보다 롱 포지션이 더 많이 열려있기 때문에, 
 msgid "There are more shorts than longs, borrow fees for longing is currently zero"
 msgstr "롱 포지션보다 숏 포지션이 더 많이 열려있기 때문에, 현재 롱 포지션에 적용되는 차용수수료는 0입니다"
 
-#: src/domain/tokens/approveTokens.tsx
-#: src/lib/contracts/transactionErrors.tsx
-#~ msgid "There is not enough ETH in your account on Arbitrum to send this transaction.<0/><1/><2>Bridge ETH to Arbitrum</2>"
-#~ msgstr "해당 트랜잭션을 처리하기위한 충분한 ETH가 귀하의 Abritrum 계정에 존재하지 않습니다.<0/><1/><2>Abritrum으로 ETH를 브릿징하세요</2>"
-
 #: src/components/Glp/SwapErrorModal.tsx
 msgid "There is not enough liquidity in a single token for your size. Please check the Save on Fees section and consider splitting your order into several different ones"
 msgstr "한 종류의 토큰에서 해당 스왑을 실현할 수 있는 충분한 유동성이 존재하지 않습니다. \" 수수료 절약 섹션을 확인 후 주문을 복수로 분할하는 것을 검토해주세요"
@@ -4936,10 +4778,6 @@ msgstr ""
 msgid "To reduce fees, select a different asset to pay with."
 msgstr "수수료를 줄이기 위해서는 다른 자산으로 지불해주세요."
 
-#: src/components/Glp/GlpSwap.js
-#~ msgid "To reduce fees, select a different asset to receive."
-#~ msgstr "수수료를 줄이기 위해서는 다른 자산으로 수령해주세요."
-
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Tokens"
 msgstr "토큰"
@@ -4960,10 +4798,6 @@ msgstr "총 이전된 자산"
 #: src/pages/Stake/StakeV1.js
 msgid "Total Assets Staked"
 msgstr "총 스테이킹된 자산"
-
-#: src/components/Synthetics/ClaimableCard/ClaimableCard.tsx
-#~ msgid "Total Claimable"
-#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Total Fees"
@@ -5164,10 +4998,6 @@ msgstr "이전중"
 msgid "Trigger"
 msgstr "트리거"
 
-#: src/components/Exchange/PositionDropdown.js
-#~ msgid "Trigger Close"
-#~ msgstr ""
-
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
@@ -5333,14 +5163,6 @@ msgstr ""
 msgid "Use the \"Close\" button to reduce your Position Size."
 msgstr ""
 
-#: src/components/Exchange/PositionsList.js
-#~ msgid "Use the \"Close\" button to reduce your position size, or to set stop-loss / take-profit orders."
-#~ msgstr "포지션을 감소시키거나 TP/SL을 위해 \"닫기\" 버튼을 사용하세요."
-
-#: src/components/Synthetics/PositionItem/PositionItem.tsx
-#~ msgid "Use the \"Close\" button to reduce your position size."
-#~ msgstr ""
-
 #: src/pages/Stake/StakeV2.js
 msgid "Use the \"Compound\" button to stake your Multiplier Points."
 msgstr "멀티플라이어 포인트를 스테이킹하기 위해 \"수령 후 스테이킹\" 버튼을 사용하세요."
@@ -5479,10 +5301,6 @@ msgstr "베스팅 상황"
 #: src/pages/Exchange/Exchange.js
 msgid "View"
 msgstr "보기"
-
-#: src/pages/BuyGlp/BuyGlp.js
-#~ msgid "View <0>staking</0> page."
-#~ msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "View in Explorer"
@@ -5685,10 +5503,6 @@ msgstr ""
 msgid "You are earning {0}% more {nativeTokenSymbol} rewards using {1} Staked Multiplier Points."
 msgstr "스테이킹된 {1} 멀티플라이어 포인트을 통해 보상의 {nativeTokenSymbol} {0}% 더 획득하고 있습니다."
 
-#: src/pages/Stake/StakeV2.js
-#~ msgid "You are earning {nativeTokenSymbol} rewards with {0} tokens.<0/>Tokens: {amountStr}."
-#~ msgstr "귀하는 {nativeTokenSymbol} 보상을 {0} 토큰으로 얻고 있습니다.<0/> 토큰: {amountStr}"
-
 #: src/components/ModalViews/RedirectModal.js
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
 msgstr "귀하는 GMX.io 페이지를 벗어나, 써드파티 웹사이트로 리다이렉트되고 있습니다."
@@ -5771,10 +5585,6 @@ msgstr ""
 msgid "You have an existing position with {0} as collateral."
 msgstr ""
 
-#: src/components/Synthetics/TradeBox/CollateralSelectorRow.tsx
-#~ msgid "You have an existing position with {0} as collateral. <0>Switch to {1} collateral.</0>"
-#~ msgstr ""
-
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position."
 msgstr ""
@@ -5813,10 +5623,6 @@ msgstr ""
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "You have selected {collateralTokenSymbol} as collateral, the Liquidation Price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price. If required, you can change the collateral type using the Collateral In option in the trade box."
 msgstr ""
-
-#: src/components/Synthetics/TriggerAcceptablePriceImpactInputRow/TriggerAcceptablePriceImpactInputRow.tsx
-#~ msgid "You have set a high Acceptable Price Impact. Please verify Acceptable Price of the order."
-#~ msgstr ""
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "You have set a high Acceptable Price Impact. The current Price Impact is {0}."
@@ -5883,10 +5689,6 @@ msgstr "게정"
 msgid "collateral"
 msgstr "담보"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "earn"
-#~ msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "esGMX OTC Market"
 msgstr ""
@@ -5952,18 +5754,9 @@ msgstr ""
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr ""
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "{0}"
-#~ msgstr ""
-
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>."
 msgstr ""
-
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
-#~ msgid "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>;"
-#~ msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"
@@ -6022,20 +5815,8 @@ msgid "{0} and {1} can be used to buy GM tokens for this market up to the specif
 msgstr ""
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
-#~ msgid "{0} and {1} can be used to mint GM for this market up to the specified minting caps."
-#~ msgstr ""
-
-#: src/components/Synthetics/GmList/GmList.tsx
-#~ msgid "{0} and {1} can be used to mint GM tokens for this market up to the specified minting caps."
-#~ msgstr ""
-
-#: src/components/Synthetics/MarketStats/MarketStats.tsx
 msgid "{0} can be used to buy GM for this market up to the specified buying caps."
 msgstr ""
-
-#: src/components/Synthetics/MarketStats/MarketStats.tsx
-#~ msgid "{0} can be used to mint GM for this market up to the specified minting caps."
-#~ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "{0} can not be sent to smart contract addresses. Select another token."
@@ -6107,33 +5888,9 @@ msgstr ""
 msgid "{actionText} Deposit {collateralText} into {positionText}"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#~ msgid "{actionText} Deposit {collateralText} into {positionText}, Market: {0}"
-#~ msgstr ""
-
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#~ msgid "{actionText} Order: Swap {fromText} for {toText}, Price: {ratioText}"
-#~ msgstr ""
-
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#~ msgid "{actionText} Order: {increaseText} {positionText} {sizeDeltaText}, {0} Price: {pricePrefix} {1}, Market: {2}"
-#~ msgstr ""
-
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#~ msgid "{actionText} Swap {fromText} for {toText}"
-#~ msgstr ""
-
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "{actionText} Withdraw {collateralText} from {positionText}"
 msgstr ""
-
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#~ msgid "{actionText} Withdraw {collateralText} from {positionText}, Market: {0}"
-#~ msgstr ""
-
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#~ msgid "{actionText} {increaseText} {positionText} {sizeDeltaText}, {pricePrefix}: {0}, Market: {1}"
-#~ msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "{actionText} {orderTypeName} Swap: {fromText} for {toText}"
@@ -6176,10 +5933,6 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 msgid "{longOrShortText} {0} market selected"
 msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#~ msgid "{longShortText} positions {0} a funding fee of {1}% per hour."
-#~ msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "{longShortText} {0} Open Interest"
@@ -6252,10 +6005,6 @@ msgstr ""
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} Fees settling"
 msgstr ""
-
-#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#~ msgid "{positionText} {sizeDeltaText}, Price: {0}, Market: {1}"
-#~ msgstr ""
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"

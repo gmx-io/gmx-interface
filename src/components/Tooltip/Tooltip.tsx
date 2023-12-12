@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { useCallback, useState, useRef } from "react";
+import { useCallback, useState, useRef, MouseEvent } from "react";
 import { IS_TOUCH } from "config/env";
 import "./Tooltip.scss";
 
@@ -48,19 +48,23 @@ export default function Tooltip(props: Props) {
     }
   }, [setVisible, intervalCloseRef, intervalOpenRef, trigger]);
 
-  const onMouseClick = useCallback(() => {
-    if (trigger !== "click" && !IS_TOUCH) return;
-    if (intervalCloseRef.current) {
-      clearInterval(intervalCloseRef.current);
-      intervalCloseRef.current = null;
-    }
-    if (intervalOpenRef.current) {
-      clearInterval(intervalOpenRef.current);
-      intervalOpenRef.current = null;
-    }
+  const onMouseClick = useCallback(
+    (event: MouseEvent) => {
+      event.preventDefault();
+      if (trigger !== "click" && !IS_TOUCH) return;
+      if (intervalCloseRef.current) {
+        clearInterval(intervalCloseRef.current);
+        intervalCloseRef.current = null;
+      }
+      if (intervalOpenRef.current) {
+        clearInterval(intervalOpenRef.current);
+        intervalOpenRef.current = null;
+      }
 
-    setVisible(true);
-  }, [setVisible, intervalCloseRef, trigger]);
+      setVisible(true);
+    },
+    [setVisible, intervalCloseRef, trigger]
+  );
 
   const onMouseLeave = useCallback(() => {
     intervalCloseRef.current = setTimeout(() => {

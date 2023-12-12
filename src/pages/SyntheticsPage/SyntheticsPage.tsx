@@ -36,6 +36,7 @@ import { TradeMode } from "domain/synthetics/trade";
 import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTradeOption";
 import { helperToast } from "lib/helperToast";
 import useWallet from "lib/wallets/useWallet";
+import { getMidPrice } from "domain/tokens";
 
 export type Props = {
   savedIsPnlInLeverage: boolean;
@@ -254,11 +255,15 @@ export function SyntheticsPage(p: Props) {
 
   useEffect(() => {
     const chartTokenData = getByKey(tokensData, chartToken?.address);
-    let currentTokenPriceStr =
-      formatUsd(chartTokenData?.prices.maxPrice, {
-        displayDecimals: chartTokenData?.priceDecimals,
+    if (!chartTokenData) return;
+
+    const averagePrice = getMidPrice(chartTokenData.prices);
+    const currentTokenPriceStr =
+      formatUsd(averagePrice, {
+        displayDecimals: chartTokenData.priceDecimals,
       }) || "...";
-    let title = getPageTitle(currentTokenPriceStr + ` | ${chartToken?.symbol}${chartToken?.isStable ? "" : "USD"}`);
+
+    const title = getPageTitle(currentTokenPriceStr + ` | ${chartToken?.symbol}${chartToken?.isStable ? "" : "USD"}`);
     document.title = title;
   }, [chartToken?.address, chartToken?.isStable, chartToken?.symbol, tokensData]);
 

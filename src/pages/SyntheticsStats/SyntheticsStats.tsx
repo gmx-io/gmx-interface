@@ -132,6 +132,8 @@ export function SyntheticsStats() {
               <th className="sticky-left">Market</th>
               <th>Pool Value</th>
               <th>Pool Balance</th>
+              <th>Pool Cap Long</th>
+              <th>Pool Cap Short</th>
               <th>
                 <TooltipWithPortal handle="PnL" renderContent={() => "Pending PnL from all open positions"} />
               </th>
@@ -401,6 +403,22 @@ export function SyntheticsStats() {
                 );
               }
 
+              function renderPoolCapCell(isLong: boolean) {
+                const poolAmount = isLong ? market.longPoolAmount : market.shortPoolAmount;
+                const maxPoolAmountForDeposit = isLong
+                  ? market.maxLongPoolAmountForDeposit
+                  : market.maxShortPoolAmountForDeposit;
+                const token = isLong ? market.longToken : market.shortToken;
+
+                return (
+                  <div className="cell">
+                    {formatAmountHuman(poolAmount, token.decimals)} /{" "}
+                    {formatAmountHuman(maxPoolAmountForDeposit, token.decimals)} {token.symbol}
+                    <ShareBar share={poolAmount} total={maxPoolAmountForDeposit} warningThreshold={90} />
+                  </div>
+                );
+              }
+
               function renderFundingCell() {
                 return (
                   <div className="cell">
@@ -531,11 +549,86 @@ export function SyntheticsStats() {
                 );
               }
 
+              function renderLiquidityCell(isLong: boolean) {
+                const [
+                  collateralLiquidityUsd,
+                  liquidity,
+                  maxLiquidity,
+                  reservedUsd,
+                  maxReservedUsd,
+                  interestUsd,
+                  maxOpenInterest,
+                  token,
+                ] = isLong
+                  ? [
+                      longCollateralLiquidityUsd,
+                      liquidityLong,
+                      maxLiquidityLong,
+                      reservedUsdLong,
+                      maxReservedUsdLong,
+                      market.longInterestUsd,
+                      maxOpenInterestLong,
+                      market.longToken,
+                    ]
+                  : [
+                      shortCollateralLiquidityUsd,
+                      liquidityShort,
+                      maxLiquidityShort,
+                      reservedUsdShort,
+                      maxReservedUsdShort,
+                      market.shortInterestUsd,
+                      maxOpenInterestShort,
+                      market.shortToken,
+                    ];
+
+                return (
+                  <div className="cell">
+                    <div>
+                      <TooltipWithPortal
+                        handle={
+                          market.isSpotOnly ? (
+                            formatAmountHuman(collateralLiquidityUsd, 30)
+                          ) : (
+                            <span>
+                              ${formatAmountHuman(liquidity, 30)} / ${formatAmountHuman(maxLiquidity, 30)}
+                            </span>
+                          )
+                        }
+                        renderContent={() => (
+                          <>
+                            <StatsTooltipRow label={`Reserved Long`} value={formatAmount(reservedUsd, 30, 0, true)} />
+                            <StatsTooltipRow
+                              label={`Max Reserved Long`}
+                              value={formatAmount(maxReservedUsd, 30, 0, true)}
+                            />
+                            <StatsTooltipRow
+                              label={`Open Interest Long`}
+                              value={formatAmount(interestUsd, 30, 0, true)}
+                            />
+                            <StatsTooltipRow
+                              label={`Max Open Interest Long`}
+                              value={formatAmount(maxOpenInterest, 30, 0, true)}
+                            />
+                            <StatsTooltipRow
+                              label={`Max ${token.symbol} Out`}
+                              value={formatAmount(collateralLiquidityUsd, 30, 0, true)}
+                            />
+                          </>
+                        )}
+                      />
+                    </div>
+                    <ShareBar share={liquidity} total={maxLiquidity} warningThreshold={90} />
+                  </div>
+                );
+              }
+
               return (
                 <tr key={market.marketTokenAddress}>
                   <td className="sticky-left">{renderMarketCell()}</td>
                   <td>{renderPoolCell()}</td>
                   <td>{renderPoolBalanceCell()}</td>
+                  <td>{renderPoolCapCell(true)}</td>
+                  <td>{renderPoolCapCell(false)}</td>
                   <td>
                     <div className="cell">
                       {market.isSpotOnly ? (
@@ -604,84 +697,8 @@ export function SyntheticsStats() {
                   </td>
                   <td>{renderFundingCell()}</td>
                   <td>{renderOIBalanceCell()}</td>
-                  <td>
-                    <TooltipWithPortal
-                      handle={
-                        market.isSpotOnly ? (
-                          formatAmountHuman(longCollateralLiquidityUsd, 30)
-                        ) : (
-                          <div className="cell">
-                            <div>
-                              ${formatAmountHuman(liquidityLong, 30)} / ${formatAmountHuman(maxLiquidityLong, 30)}
-                            </div>
-                            <ShareBar share={liquidityLong} total={maxLiquidityLong} />
-                          </div>
-                        )
-                      }
-                      renderContent={() => (
-                        <>
-                          <StatsTooltipRow label={`Reserved Long`} value={formatAmount(reservedUsdLong, 30, 0, true)} />
-                          <StatsTooltipRow
-                            label={`Max Reserved Long`}
-                            value={formatAmount(maxReservedUsdLong, 30, 0, true)}
-                          />
-                          <StatsTooltipRow
-                            label={`Open Interest Long`}
-                            value={formatAmount(market.longInterestUsd, 30, 0, true)}
-                          />
-                          <StatsTooltipRow
-                            label={`Max Open Interest Long`}
-                            value={formatAmount(maxOpenInterestLong, 30, 0, true)}
-                          />
-                          <StatsTooltipRow
-                            label={`Max ${market.longToken.symbol} Out`}
-                            value={formatAmount(longCollateralLiquidityUsd, 30, 0, true)}
-                          />
-                        </>
-                      )}
-                    />
-                  </td>
-                  <td>
-                    <TooltipWithPortal
-                      position="right-bottom"
-                      handle={
-                        market.isSpotOnly ? (
-                          formatAmountHuman(shortCollateralLiquidityUsd, 30)
-                        ) : (
-                          <div className="cell">
-                            <div>
-                              ${formatAmountHuman(liquidityShort, 30)} / ${formatAmountHuman(maxLiquidityShort, 30)}
-                            </div>
-                            <ShareBar share={liquidityShort} total={maxLiquidityShort} />
-                          </div>
-                        )
-                      }
-                      renderContent={() => (
-                        <>
-                          <StatsTooltipRow
-                            label={`Reserved Short`}
-                            value={formatAmount(reservedUsdShort, 30, 0, true)}
-                          />
-                          <StatsTooltipRow
-                            label={`Max Reserved Short`}
-                            value={formatAmount(maxReservedUsdShort, 30, 0, true)}
-                          />
-                          <StatsTooltipRow
-                            label={`Open Interest Short`}
-                            value={formatAmount(market.shortInterestUsd, 30, 0, true)}
-                          />
-                          <StatsTooltipRow
-                            label={`Max Open Interest Short`}
-                            value={formatAmount(maxOpenInterestShort, 30, 0, true)}
-                          />
-                          <StatsTooltipRow
-                            label={`Max ${market.shortToken.symbol} Out`}
-                            value={formatAmount(shortCollateralLiquidityUsd, 30, 0, true)}
-                          />
-                        </>
-                      )}
-                    />
-                  </td>
+                  <td>{renderLiquidityCell(true)}</td>
+                  <td>{renderLiquidityCell(false)}</td>
                   <td>
                     <div className="cell">
                       {market.isSpotOnly ? (
