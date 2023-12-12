@@ -263,7 +263,7 @@
 .AffiliateCode-error {
   margin: 0;
   padding: 0.775rem 0 1.5rem;
-  color: #fa3c58;
+  color: var(--error-red);
   font-size: var(--font-sm);
 }
 

@@ -2756,6 +2756,7 @@ msgstr "Mark Price"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Market"
@@ -4627,9 +4628,14 @@ msgstr "The esGMX tokens can be staked or vested at any time."
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 
+#: src/domain/legacy.ts
 #: src/domain/synthetics/fees/utils/executionFee.ts
-msgid "The network cost to send transactions is high at the moment, please check the \"Max Execution Fee\" value before proceeding."
-msgstr "The network cost to send transactions is high at the moment, please check the \"Max Execution Fee\" value before proceeding."
+msgid "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
+msgstr "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
+
+#: src/domain/synthetics/fees/utils/executionFee.ts
+#~ msgid "The network cost to send transactions is high at the moment, please check the \"Max Execution Fee\" value before proceeding."
+#~ msgstr "The network cost to send transactions is high at the moment, please check the \"Max Execution Fee\" value before proceeding."
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "The order will only execute if the Min. Receive is met and there is sufficient liquidity."

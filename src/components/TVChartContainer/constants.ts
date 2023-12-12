@@ -1,8 +1,8 @@
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { formatTVDate, formatTVTime } from "lib/dates";
 
-const RED = "#fa3c58";
-const GREEN = "#0ecc83";
+const RED = "#ff6666";
+const GREEN = "#5ec989";
 export const DEFAULT_PERIOD = "4h";
 
 const chartStyleOverrides = ["candleStyle", "hollowCandleStyle", "haStyle"].reduce((acc, cv) => {

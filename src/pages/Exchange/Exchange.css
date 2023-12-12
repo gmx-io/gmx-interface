@@ -485,7 +485,7 @@
 }
 
 .Exchange-list-item-error {
-  color: #fa3c58;
+  color: var(--error-red);
   margin-top: 0.465rem;
   font-size: var(--font-sm);
 }
@@ -610,7 +610,7 @@ table.Exchange-list .Exchange-list-item-active {
   margin-right: 0.8rem;
 }
 .Exchange-info-value-warning {
-  color: #fa3c58;
+  color: var(--error-red);
 }
 
 .Confirmation-box-info,
@@ -633,7 +633,7 @@ table.Exchange-list .Exchange-list-item-active {
 
 .Confirmation-box-warning,
 .Confirmation-box-warning a {
-  color: #fa3c58;
+  color: var(--error-red);
 }
 
 .Exchange-swap-usd {

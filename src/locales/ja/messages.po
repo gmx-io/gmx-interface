@@ -2753,6 +2753,7 @@ msgstr "マーク価格"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Market"
@@ -4624,9 +4625,14 @@ msgstr "esGMXトークンはいつでもステークまたはべスティング�
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr "マーク価格が変化したため、アドレスの横に表示されている\"...\"アイコンをクリックして最大許容スリッページを増やすことを検討してください。"
 
+#: src/domain/legacy.ts
 #: src/domain/synthetics/fees/utils/executionFee.ts
-msgid "The network cost to send transactions is high at the moment, please check the \"Max Execution Fee\" value before proceeding."
+msgid "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
 msgstr ""
+
+#: src/domain/synthetics/fees/utils/executionFee.ts
+#~ msgid "The network cost to send transactions is high at the moment, please check the \"Max Execution Fee\" value before proceeding."
+#~ msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "The order will only execute if the Min. Receive is met and there is sufficient liquidity."

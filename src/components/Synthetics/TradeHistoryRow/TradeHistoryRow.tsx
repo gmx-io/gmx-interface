@@ -13,7 +13,7 @@ import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import "./TradeHistoryRow.scss";
 import { formatPositionMessage, formatSwapMessage } from "./utils";
-import { Trans, t } from "@lingui/macro";
+import { t } from "@lingui/macro";
 
 type Props = {
   tradeAction: TradeAction;
@@ -26,7 +26,7 @@ function renderMarketName(market: MarketInfo) {
   const poolName = getMarketPoolName(market);
   return (
     <div className="items-top lh-1">
-      <span>{indexName}</span>
+      <span className="text-white">{indexName}</span>
       <span className="subtext">[{poolName}]</span>
     </div>
   );

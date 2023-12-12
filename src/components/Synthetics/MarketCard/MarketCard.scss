@@ -11,12 +11,12 @@
 }
 
 .MarketCard-pool-balance-bar.ShareBar {
-  background: #fa3c58;
+  background: var(--error-red);
   width: 100%;
   min-width: 10rem;
 
   .ShareBar-fill {
-    background: #0ecc83;
+    background: var(--green);
   }
 }
 
