@@ -257,11 +257,6 @@ msgstr "Acknowledge epoch is ending in {minutes} minutes"
 msgid "Acknowledge high Price Impact"
 msgstr "Acknowledge high Price Impact"
 
-#: src/pages/Actions/Actions.js
-#: src/pages/SyntheticsActions/SyntheticsActions.tsx
-#~ msgid "Actions"
-#~ msgstr "Actions"
-
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Active Orders"
@@ -1739,10 +1734,6 @@ msgstr "Execution Price: {0}"
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Exit Price"
 msgstr "Exit Price"
-
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-#~ msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APR"
-#~ msgstr "Expected 365d Fees are projected based on past {daysConsidered}d base APR"
 
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
 msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APR."
@@ -4645,10 +4636,6 @@ msgstr "The mark price has changed, consider increasing your Allowed Slippage by
 #: src/domain/synthetics/fees/utils/executionFee.ts
 msgid "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
 msgstr "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
-
-#: src/domain/synthetics/fees/utils/executionFee.ts
-#~ msgid "The network cost to send transactions is high at the moment, please check the \"Max Execution Fee\" value before proceeding."
-#~ msgstr "The network cost to send transactions is high at the moment, please check the \"Max Execution Fee\" value before proceeding."
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "The order will only execute if the Min. Receive is met and there is sufficient liquidity."

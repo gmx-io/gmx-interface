@@ -257,11 +257,6 @@ msgstr ""
 msgid "Acknowledge high Price Impact"
 msgstr ""
 
-#: src/pages/Actions/Actions.js
-#: src/pages/SyntheticsActions/SyntheticsActions.tsx
-#~ msgid "Actions"
-#~ msgstr "액션"
-
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Active Orders"
@@ -1739,10 +1734,6 @@ msgstr ""
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Exit Price"
 msgstr "매도 가격"
-
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-#~ msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APR"
-#~ msgstr ""
 
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
 msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APR."
@@ -4642,10 +4633,6 @@ msgstr "시장 평균가가 변화되었습니다. 귀하의 주소 옆에 \"...
 #: src/domain/synthetics/fees/utils/executionFee.ts
 msgid "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
 msgstr ""
-
-#: src/domain/synthetics/fees/utils/executionFee.ts
-#~ msgid "The network cost to send transactions is high at the moment, please check the \"Max Execution Fee\" value before proceeding."
-#~ msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "The order will only execute if the Min. Receive is met and there is sufficient liquidity."
