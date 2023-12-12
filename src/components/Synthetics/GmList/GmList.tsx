@@ -349,9 +349,8 @@ export function GmList({
                     <div className="App-card-row">
                       <div className="label">
                         <Tooltip
-                          handle={<Trans>Wallet</Trans>}
+                          handle={t`Wallet`}
                           className="text-none"
-                          position="right-bottom"
                           renderContent={() => (
                             <p className="text-white">
                               <Trans>Available amount to deposit into the specific GM pool.</Trans>
