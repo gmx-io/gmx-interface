@@ -259,8 +259,8 @@ msgstr "Acknowledge high Price Impact"
 
 #: src/pages/Actions/Actions.js
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
-msgid "Actions"
-msgstr "Actions"
+#~ msgid "Actions"
+#~ msgstr "Actions"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -1074,6 +1074,7 @@ msgstr "Connect"
 #: src/components/Referrals/AddAffiliateCode.js
 #: src/components/Referrals/JoinReferralCode.js
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -2021,8 +2022,16 @@ msgid "GMX Stats Page"
 msgstr "GMX Stats Page"
 
 #: src/pages/Actions/Actions.js
+msgid "GMX V1 actions for all accounts."
+msgstr "GMX V1 actions for all accounts."
+
+#: src/pages/Actions/Actions.js
 msgid "GMX V1 information for account: {checkSummedAccount}"
 msgstr "GMX V1 information for account: {checkSummedAccount}"
+
+#: src/pages/SyntheticsActions/SyntheticsActions.tsx
+msgid "GMX V2 actions for all accounts."
+msgstr "GMX V2 actions for all accounts."
 
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
 msgid "GMX V2 information for account: {checkSummedAccount}"
@@ -5191,6 +5200,14 @@ msgstr "Useful Links"
 msgid "Utilization"
 msgstr "Utilization"
 
+#: src/pages/Actions/Actions.js
+msgid "V1 Account"
+msgstr "V1 Account"
+
+#: src/pages/Actions/Actions.js
+msgid "V1 Actions"
+msgstr "V1 Actions"
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V1 Airdrop"
 msgstr "V1 Airdrop"
@@ -5228,6 +5245,14 @@ msgstr "V1 esGMX"
 #: src/components/Referrals/TradersStats.tsx
 msgid "V1 rebates are airdropped weekly. V2 rebates are automatically applied as fee discounts on each trade and do not show on this table."
 msgstr "V1 rebates are airdropped weekly. V2 rebates are automatically applied as fee discounts on each trade and do not show on this table."
+
+#: src/pages/SyntheticsActions/SyntheticsActions.tsx
+msgid "V2 Account"
+msgstr "V2 Account"
+
+#: src/pages/SyntheticsActions/SyntheticsActions.tsx
+msgid "V2 Actions"
+msgstr "V2 Actions"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx

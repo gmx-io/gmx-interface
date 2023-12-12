@@ -93,7 +93,7 @@ export default function Actions({ savedIsPnlInLeverage, savedShowPnlAfterFees })
       {checkSummedAccount.length > 0 && (
         <div className="Actions-section">
           <PageTitle
-            title="Account"
+            title={t`V1 Account`}
             subtitle={
               <>
                 <Trans>GMX V1 information for account: {checkSummedAccount}</Trans>
@@ -177,7 +177,7 @@ export default function Actions({ savedIsPnlInLeverage, savedShowPnlAfterFees })
       )}
       <div className="Actions-section">
         <div className="Actions-title">
-          <Trans>Actions</Trans>
+          <PageTitle isTop title={t`V1 Actions`} subtitle={t`GMX V1 actions for all accounts.`} />
         </div>
         <TradeHistory
           account={checkSummedAccount}

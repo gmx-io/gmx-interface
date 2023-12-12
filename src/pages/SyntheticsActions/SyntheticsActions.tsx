@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 
 import "./Actions.scss";
 
-import { Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
@@ -52,7 +52,7 @@ export default function SyntheticsActions({
       {checkSummedAccount && (
         <div className="Actions-section">
           <PageTitle
-            title="Account"
+            title={t`V2 Account`}
             subtitle={
               <>
                 <Trans>GMX V2 information for account: {checkSummedAccount}</Trans>
@@ -109,7 +109,7 @@ export default function SyntheticsActions({
       )}
       <div className="Actions-section">
         <div className="Actions-title">
-          <Trans>Actions</Trans>
+          <PageTitle isTop title={t`V2 Actions`} subtitle={t`GMX V2 actions for all accounts.`} />
         </div>
         <TradeHistory
           account={checkSummedAccount}
