@@ -109,7 +109,25 @@ export default function SyntheticsActions({
       )}
       <div className="Actions-section">
         <div className="Actions-title">
-          <PageTitle isTop title={t`V2 Actions`} subtitle={t`GMX V2 actions for all accounts.`} />
+          {checkSummedAccount ? (
+            <Trans>Actions</Trans>
+          ) : (
+            <PageTitle
+              isTop
+              title={t`V2 Actions`}
+              subtitle={
+                <>
+                  {<Trans>GMX V2 actions for all accounts.</Trans>}
+                  <div>
+                    <ExternalLink newTab={false} href={`/#/actions/v1`}>
+                      Check on GMX V1
+                    </ExternalLink>
+                    .
+                  </div>
+                </>
+              }
+            />
+          )}
         </div>
         <TradeHistory
           account={checkSummedAccount}

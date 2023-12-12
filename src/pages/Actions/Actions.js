@@ -177,8 +177,27 @@ export default function Actions({ savedIsPnlInLeverage, savedShowPnlAfterFees })
       )}
       <div className="Actions-section">
         <div className="Actions-title">
-          <PageTitle isTop title={t`V1 Actions`} subtitle={t`GMX V1 actions for all accounts.`} />
+          {checkSummedAccount ? (
+            <Trans>Actions</Trans>
+          ) : (
+            <PageTitle
+              isTop
+              title={t`V1 Actions`}
+              subtitle={
+                <>
+                  {<Trans>GMX V1 actions for all accounts.</Trans>}
+                  <div>
+                    <ExternalLink newTab={false} href={`/#/actions/`}>
+                      Check on GMX V2
+                    </ExternalLink>
+                    .
+                  </div>
+                </>
+              }
+            />
+          )}
         </div>
+
         <TradeHistory
           account={checkSummedAccount}
           infoTokens={infoTokens}
