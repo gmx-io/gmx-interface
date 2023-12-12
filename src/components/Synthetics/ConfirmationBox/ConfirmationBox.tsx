@@ -17,12 +17,7 @@ import {
 } from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useUserReferralCode } from "domain/referrals/hooks";
-import {
-  ExecutionFee,
-  getBorrowingFactorPerPeriod,
-  getFundingFactorPerPeriod,
-  getIsHighPriceImpact,
-} from "domain/synthetics/fees";
+import { ExecutionFee, getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
 import {
   OrderType,
@@ -219,8 +214,6 @@ export function ConfirmationBox(p: Props) {
     fromToken &&
     payAmount &&
     getNeedTokenApprove(tokensAllowanceData, fromToken.address, payAmount);
-
-  const isHighPriceImpact = getIsHighPriceImpact(fees?.positionPriceImpact, fees?.swapPriceImpact);
 
   const positionKey = useMemo(() => {
     if (!account || !marketInfo || !collateralToken) {
@@ -977,12 +970,7 @@ export function ConfirmationBox(p: Props) {
 
   function renderHighPriceImpactWarning() {
     if (!priceImpactWarningState.shouldShowWarning) return null;
-    return (
-      <>
-        <div className="line-divider" />
-        <HighPriceImpactWarning priceImpactWarinigState={priceImpactWarningState} />
-      </>
-    );
+    return <HighPriceImpactWarning priceImpactWarinigState={priceImpactWarningState} />;
   }
 
   function renderLeverage(from: BigNumber | undefined, to: BigNumber | undefined, emptyValue = false) {
@@ -1431,18 +1419,21 @@ export function ConfirmationBox(p: Props) {
     );
   }
 
+  const hasCheckboxesSection = Boolean(
+    priceImpactWarningState.shouldShowWarning || (needPayTokenApproval && fromToken)
+  );
+
   return (
     <div className="Confirmation-box">
       <Modal isVisible={p.isVisible} setIsVisible={onClose} label={title} allowContentTouchMove>
         {isSwap && renderSwapSection()}
         {isIncrease && renderIncreaseOrderSection()}
         {isTrigger && renderTriggerDecreaseSection()}
+        {hasCheckboxesSection && <div className="line-divider" />}
         {renderHighPriceImpactWarning()}
 
         {needPayTokenApproval && fromToken && (
           <>
-            {!isHighPriceImpact && <div className="line-divider" />}
-
             <ApproveTokenButton
               tokenAddress={fromToken.address}
               tokenSymbol={fromToken.assetSymbol ?? fromToken.symbol}
