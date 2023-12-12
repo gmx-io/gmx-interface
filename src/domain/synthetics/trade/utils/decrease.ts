@@ -684,6 +684,10 @@ export function getExecutionPriceForDecrease(
   sizeDeltaUsd: BigNumber,
   isLong: boolean
 ) {
+  if (sizeDeltaUsd.eq(0)) {
+    return null;
+  }
+
   const adjustedPriceImpactUsd = isLong ? priceImpactUsd : priceImpactUsd.mul(-1);
   const adjustment = triggerPrice.mul(adjustedPriceImpactUsd).div(sizeDeltaUsd);
   return triggerPrice.add(adjustment);
