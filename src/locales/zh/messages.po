@@ -3851,8 +3851,8 @@ msgid "Receiver has not staked GMX tokens before"
 msgstr "收款人未质押过GMX代币"
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
-msgid "Recommended Acceptable Price Impact is 0.3% so the order is more likely to be processed."
-msgstr ""
+#~ msgid "Recommended Acceptable Price Impact is 0.3% so the order is more likely to be processed."
+#~ msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #~ msgid "Recommended Acceptable Price impact is 0.3% so the order is more likely to be processed."
@@ -4734,7 +4734,11 @@ msgstr "提升的年利率来自于你所投注的乘数点"
 #~ msgstr ""
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
-msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.3% to it so the order is more likely to be processed."
+#~ msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.3% to it so the order is more likely to be processed."
+#~ msgstr ""
+
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
 msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
@@ -4760,6 +4764,10 @@ msgstr "esGMX（IOU）代币的地址是{esGmxIouAddress}"
 #: src/components/Exchange/SwapBox.js
 msgid "The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour."
 msgstr "借款费用的计算方法是 (已借资产) / (池中总资产) * 0.01%/小时"
+
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+msgid "The current Price Impact is {0}. Consider using -0.30% Acceptable Price Impact so the order is more likely to be processed."
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."

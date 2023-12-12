@@ -3851,8 +3851,8 @@ msgid "Receiver has not staked GMX tokens before"
 msgstr "수취인은 지금까지 GMX 토큰을 스테이킹한 적이 없습니다."
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
-msgid "Recommended Acceptable Price Impact is 0.3% so the order is more likely to be processed."
-msgstr ""
+#~ msgid "Recommended Acceptable Price Impact is 0.3% so the order is more likely to be processed."
+#~ msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #~ msgid "Recommended Acceptable Price impact is 0.3% so the order is more likely to be processed."
@@ -4734,7 +4734,11 @@ msgstr "\"APR 부스트는 스테이킹된 멀티플라이어 포인트로부터
 #~ msgstr ""
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
-msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.3% to it so the order is more likely to be processed."
+#~ msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.3% to it so the order is more likely to be processed."
+#~ msgstr ""
+
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
 msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
@@ -4760,6 +4764,10 @@ msgstr "esGMX (IOU) 토큰의 주소는 {esGmxIouAddress}입니다."
 #: src/components/Exchange/SwapBox.js
 msgid "The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour."
 msgstr "차용 수수료는 시간당 (차용된 자산) / (풀 안의 총 자산) * 0.01%로 계산됩니다."
+
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+msgid "The current Price Impact is {0}. Consider using -0.30% Acceptable Price Impact so the order is more likely to be processed."
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."

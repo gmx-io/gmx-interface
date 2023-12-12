@@ -3854,8 +3854,8 @@ msgid "Receiver has not staked GMX tokens before"
 msgstr "Receiver has not staked GMX tokens before"
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
-msgid "Recommended Acceptable Price Impact is 0.3% so the order is more likely to be processed."
-msgstr "Recommended Acceptable Price Impact is 0.3% so the order is more likely to be processed."
+#~ msgid "Recommended Acceptable Price Impact is 0.3% so the order is more likely to be processed."
+#~ msgstr "Recommended Acceptable Price Impact is 0.3% so the order is more likely to be processed."
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #~ msgid "Recommended Acceptable Price impact is 0.3% so the order is more likely to be processed."
@@ -4737,8 +4737,12 @@ msgstr "The Boosted APR is from your staked Multiplier Points."
 #~ msgstr "The Current Price Impact is {0}%. Consider adding a buffer of 0.3% to it so the order is more likely to be processed."
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
-msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.3% to it so the order is more likely to be processed."
-msgstr "The Current Price Impact is {0}. Consider adding a buffer of 0.3% to it so the order is more likely to be processed."
+#~ msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.3% to it so the order is more likely to be processed."
+#~ msgstr "The Current Price Impact is {0}. Consider adding a buffer of 0.3% to it so the order is more likely to be processed."
+
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
+msgstr "The Current Price Impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
 
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met."
@@ -4763,6 +4767,10 @@ msgstr "The address of the esGMX (IOU) token is {esGmxIouAddress}."
 #: src/components/Exchange/SwapBox.js
 msgid "The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour."
 msgstr "The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour."
+
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+msgid "The current Price Impact is {0}. Consider using -0.30% Acceptable Price Impact so the order is more likely to be processed."
+msgstr "The current Price Impact is {0}. Consider using -0.30% Acceptable Price Impact so the order is more likely to be processed."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."

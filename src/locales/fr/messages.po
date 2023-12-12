@@ -3851,8 +3851,8 @@ msgid "Receiver has not staked GMX tokens before"
 msgstr "Le destinataire n'a jamais staké de tokens GLP auparavant"
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
-msgid "Recommended Acceptable Price Impact is 0.3% so the order is more likely to be processed."
-msgstr ""
+#~ msgid "Recommended Acceptable Price Impact is 0.3% so the order is more likely to be processed."
+#~ msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #~ msgid "Recommended Acceptable Price impact is 0.3% so the order is more likely to be processed."
@@ -4734,7 +4734,11 @@ msgstr "Le Taux de Rendement Annuel boosté provient de vos points multiplicateu
 #~ msgstr ""
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
-msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.3% to it so the order is more likely to be processed."
+#~ msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.3% to it so the order is more likely to be processed."
+#~ msgstr ""
+
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
 msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
@@ -4760,6 +4764,10 @@ msgstr "L'adresse du token esGMX (IOU - reconnaissance de dette) est {esGmxIouAd
 #: src/components/Exchange/SwapBox.js
 msgid "The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour."
 msgstr "La commission d'emprunt est calculée comme (actifs empruntés) / (actifs totaux dans le pool) * 0,01% par heure."
+
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+msgid "The current Price Impact is {0}. Consider using -0.30% Acceptable Price Impact so the order is more likely to be processed."
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
