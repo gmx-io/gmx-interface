@@ -975,10 +975,13 @@ export function ConfirmationBox(p: Props) {
 
   function renderLeverage(from: BigNumber | undefined, to: BigNumber | undefined, emptyValue = false) {
     return (
-      <ExchangeInfoRow
-        label={t`Leverage`}
-        value={emptyValue ? "-" : <ValueTransition from={formatLeverage(from)} to={formatLeverage(to) ?? "-"} />}
-      />
+      <>
+        <ExchangeInfoRow
+          label={t`Leverage`}
+          value={emptyValue ? "-" : <ValueTransition from={formatLeverage(from)} to={formatLeverage(to) ?? "-"} />}
+        />
+        <div className="line-divider" />
+      </>
     );
   }
 
