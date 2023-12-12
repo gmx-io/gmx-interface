@@ -2246,6 +2246,10 @@ msgstr "Collatéral initial"
 msgid "Initial top up"
 msgstr ""
 
+#: src/components/Synthetics/OneClickTrading/utils.ts
+msgid "Initial top-up amount is required"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Insufficient Available Liquidity to swap to {0}:"
 msgstr ""
@@ -2852,6 +2856,11 @@ msgstr "Capacité maximale du pool"
 msgid "Max acceptable Price Impact precision is 0.01%"
 msgstr ""
 
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+msgid "Max allowed actions"
+msgstr ""
+
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -2860,6 +2869,11 @@ msgstr ""
 #: src/pages/Stake/StakeV2.js
 msgid "Max amount exceeded"
 msgstr "Montant max. dépassé"
+
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+msgid "Max auto top up amount"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2962,6 +2976,14 @@ msgstr ""
 #: src/pages/Stake/StakeV1.js
 msgid "Max: {0}"
 msgstr "Max: {0}"
+
+#: src/components/Synthetics/OneClickTrading/utils.ts
+msgid "Maximum allowed actions is required"
+msgstr ""
+
+#: src/components/Synthetics/OneClickTrading/utils.ts
+msgid "Maximum auto top-up amount is required"
+msgstr ""
 
 #: src/components/Footer/constants.ts
 #: src/components/Footer/constants.ts
@@ -5381,6 +5403,15 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.js
 msgid "WEIGHT"
 msgstr "POIDS"
+
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+msgid "WETH for auto top ups"
+msgstr ""
+
+#: src/components/Synthetics/OneClickTrading/utils.ts
+msgid "WETH for auto top-ups is required"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js

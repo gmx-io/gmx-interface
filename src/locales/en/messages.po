@@ -2246,6 +2246,10 @@ msgstr "Initial collateral"
 msgid "Initial top up"
 msgstr "Initial top up"
 
+#: src/components/Synthetics/OneClickTrading/utils.ts
+msgid "Initial top-up amount is required"
+msgstr "Initial top-up amount is required"
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Insufficient Available Liquidity to swap to {0}:"
 msgstr "Insufficient Available Liquidity to swap to {0}:"
@@ -2855,6 +2859,11 @@ msgstr "Max Pool Capacity"
 msgid "Max acceptable Price Impact precision is 0.01%"
 msgstr "Max acceptable Price Impact precision is 0.01%"
 
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+msgid "Max allowed actions"
+msgstr "Max allowed actions"
+
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -2863,6 +2872,11 @@ msgstr "Max acceptable Price Impact precision is 0.01%"
 #: src/pages/Stake/StakeV2.js
 msgid "Max amount exceeded"
 msgstr "Max amount exceeded"
+
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+msgid "Max auto top up amount"
+msgstr "Max auto top up amount"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2965,6 +2979,14 @@ msgstr "Max. {nativeTokenSymbol} APR with 200% Boost for this week: {0}%."
 #: src/pages/Stake/StakeV1.js
 msgid "Max: {0}"
 msgstr "Max: {0}"
+
+#: src/components/Synthetics/OneClickTrading/utils.ts
+msgid "Maximum allowed actions is required"
+msgstr "Maximum allowed actions is required"
+
+#: src/components/Synthetics/OneClickTrading/utils.ts
+msgid "Maximum auto top-up amount is required"
+msgstr "Maximum auto top-up amount is required"
 
 #: src/components/Footer/constants.ts
 #: src/components/Footer/constants.ts
@@ -5384,6 +5406,15 @@ msgstr "WARNING: This position has a low amount of collateral after deducting fe
 #: src/pages/Dashboard/DashboardV2.js
 msgid "WEIGHT"
 msgstr "WEIGHT"
+
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+msgid "WETH for auto top ups"
+msgstr "WETH for auto top ups"
+
+#: src/components/Synthetics/OneClickTrading/utils.ts
+msgid "WETH for auto top-ups is required"
+msgstr "WETH for auto top-ups is required"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
