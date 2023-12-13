@@ -110,6 +110,7 @@ export function GmList({
                     balance={userTotalGmInfo?.balance}
                     balanceUsd={userTotalGmInfo?.balanceUsd}
                     userEarnings={userEarnings}
+                    label={t`WALLET`}
                   />
                 </th>
                 <th>
@@ -353,6 +354,7 @@ export function GmList({
                           balanceUsd={userTotalGmInfo?.balanceUsd}
                           userEarnings={userEarnings}
                           tooltipPosition="left-bottom"
+                          label={t`Wallet`}
                         />
                       </div>
                       <div>

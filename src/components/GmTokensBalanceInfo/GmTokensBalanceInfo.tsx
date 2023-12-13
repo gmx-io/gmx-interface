@@ -85,17 +85,19 @@ export const GmTokensTotalBalanceInfo = ({
   balanceUsd,
   userEarnings,
   tooltipPosition,
+  label,
 }: {
   balance?: BigNumber;
   balanceUsd?: BigNumber;
   userEarnings: UserEarningsData | null;
   tooltipPosition?: TooltipPosition;
+  label: string;
 }) => {
   const shouldShowIncentivesNote = useLpIncentivesIsActive();
   const daysConsidered = useDaysConsideredInMarketsApr();
   return balance && balanceUsd ? (
     <Tooltip
-      handle={<Trans>WALLET</Trans>}
+      handle={label}
       className="text-none"
       position={tooltipPosition ?? "right-bottom"}
       renderContent={() => (
@@ -153,7 +155,7 @@ export const GmTokensTotalBalanceInfo = ({
       )}
     />
   ) : (
-    <Trans>WALLET</Trans>
+    <>{label}</>
   );
 };
 
