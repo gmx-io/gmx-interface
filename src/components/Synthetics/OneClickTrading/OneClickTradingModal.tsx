@@ -2,6 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
+import SpinningLoader from "components/Common/SpinningLoader";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -14,6 +15,10 @@ import {
   useOneClickTradingState,
 } from "context/OneClickTradingContext/OneClickTradingContext";
 import { useBigNumberState } from "domain/synthetics/common/useBigNumberInput";
+import { addSubaccount } from "domain/synthetics/oneClickTrading/addSubaccount";
+import { removeSubaccount } from "domain/synthetics/oneClickTrading/removeSubaccount";
+import { OneClickTradingParams } from "domain/synthetics/oneClickTrading/types";
+import { withdrawFromSubaccount } from "domain/synthetics/oneClickTrading/withdrawFromSubaccount";
 import { getNeedTokenApprove, useTokenBalances, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import copyIcon from "img/ic_copy_20.svg";
@@ -23,40 +28,24 @@ import { useChainId } from "lib/chains";
 import { getAccountUrl } from "lib/legacy";
 import { formatTokenAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { museNeverExist } from "lib/types";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
-import { ReactNode, memo, useCallback, useEffect, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useCopyToClipboard } from "react-use";
 import "./OneClickTradingModal.scss";
 import { getValidationError } from "./utils";
 
-const defaults = {
+const defaults: Readonly<OneClickTradingParams> = {
   initialTopUp: BigNumber.from(1000000000000000),
   maxAutoTopUpAmount: BigNumber.from(1000000000000000),
   wethForAutoTopUps: BigNumber.from(1000000000000000),
   maxAllowedActions: BigNumber.from(20),
-} as const;
+};
 
 export function OneClickTradingModal() {
   const [isVisible, setIsVisible] = useOneClickTradingModalOpen();
   const oneClickTradingState = useOneClickTradingState();
-  const state = oneClickTradingState.state;
-
-  let content: ReactNode = null;
-
-  switch (state) {
-    case "off":
-      content = <OffStateView />;
-      break;
-    case "created":
-    case "active":
-      content = <MainView />;
-      break;
-
-    default:
-      throw museNeverExist(state);
-  }
+  const content = oneClickTradingState.subaccount ? <MainView /> : <OffStateView />;
 
   return (
     <Modal label="One-Click Trading" isVisible={isVisible} setIsVisible={setIsVisible}>
@@ -89,9 +78,12 @@ const OffStateView = memo(() => {
 const MainView = memo(() => {
   const oneClickTradingState = useOneClickTradingState();
   const { chainId } = useChainId();
+  const { signer } = useWallet();
   const [state, copyToClipboard] = useCopyToClipboard();
   const [copyStatus, setCopyStatus] = useState<null | string>(null);
   const [copyCounter, setCopyCounter] = useState(0);
+  const [withdrawalLoading, setWithdrawalLoading] = useState(false);
+  const [disablingLoading, setDisablingLoading] = useState(false);
   const { account } = useWallet();
 
   const subaccountUrl = useMemo(
@@ -119,13 +111,26 @@ const MainView = memo(() => {
     return () => clearTimeout(timeoutId);
   }, [state.error, state.value, copyCounter]);
 
-  const renderSubaccountBalance = useCallback(() => {
+  const renderSubaccountBalanceTooltipContent = useCallback(() => {
     return "123";
   }, []);
 
-  const onDisableClick = useCallback(() => {
+  const handleDisableClick = useCallback(async () => {
+    const subaccountAddress = oneClickTradingState.subaccount?.address;
+
+    if (!subaccountAddress) throw new Error("Subaccount address is not set");
+    if (!signer) throw new Error("Signer is not set");
+
+    setDisablingLoading(true);
+
+    try {
+      await removeSubaccount(chainId, signer, subaccountAddress);
+    } finally {
+      setDisablingLoading(false);
+    }
+
     oneClickTradingState.clearSubaccount();
-  }, [oneClickTradingState]);
+  }, [chainId, oneClickTradingState, signer]);
 
   const mainBalances = useTokenBalances(chainId, account);
   const subBalances = useTokenBalances(chainId, oneClickTradingState.subaccount?.address);
@@ -137,24 +142,81 @@ const MainView = memo(() => {
     displayValue: initialTopUpString,
     setDisplayValue: setInitialTopUpString,
     isEmpty: initialTopUpIsEmpty,
+    value: initialTopUp,
   } = useBigNumberState(defaults.initialTopUp, nativeToken.decimals, 4);
   const {
     displayValue: maxAutoTopUpAmountString,
     setDisplayValue: setMaxAutoTopUpAmountString,
     isEmpty: maxAutoTopUpAmountIsEmpty,
+    value: maxAutoTopUpAmount,
   } = useBigNumberState(defaults.maxAutoTopUpAmount, nativeToken.decimals, 4);
   const {
     displayValue: wethForAutoTopUpsString,
     setDisplayValue: setWethForAutoTopUpsString,
     isEmpty: wethForAutoTopUpsIsEmpty,
+    value: wethForAutoTopUps,
   } = useBigNumberState(defaults.wethForAutoTopUps, wrappedToken.decimals, 4);
   const {
     displayValue: maxAllowedActionsString,
     setDisplayValue: setMaxAllowedActionsString,
     isEmpty: maxAllowedActionsIsEmpty,
+    value: maxAllowedActions,
   } = useBigNumberState(defaults.maxAllowedActions, 0, 0);
 
-  if (oneClickTradingState.state === "off") {
+  const handleActiveClick = useCallback(() => {
+    const subaccountAddress = oneClickTradingState.subaccount?.address;
+
+    if (!subaccountAddress) throw new Error("Subaccount address is not set");
+    if (!signer) throw new Error("Signer is not set");
+
+    addSubaccount(chainId, signer, subaccountAddress, {
+      initialTopUp,
+      maxAutoTopUpAmount,
+      wethForAutoTopUps,
+      maxAllowedActions,
+    });
+  }, [
+    chainId,
+    initialTopUp,
+    maxAllowedActions,
+    maxAutoTopUpAmount,
+    oneClickTradingState.subaccount?.address,
+    signer,
+    wethForAutoTopUps,
+  ]);
+
+  const validationError = useMemo(
+    () =>
+      getValidationError({
+        initialTopUpIsEmpty,
+        maxAutoTopUpAmountIsEmpty,
+        wethForAutoTopUpsIsEmpty,
+        maxAllowedActionsIsEmpty,
+      }),
+    [initialTopUpIsEmpty, maxAllowedActionsIsEmpty, maxAutoTopUpAmountIsEmpty, wethForAutoTopUpsIsEmpty]
+  );
+
+  const handleWithdrawClick = useCallback(async () => {
+    const privateKey = oneClickTradingState.subaccount?.privateKey;
+
+    if (!privateKey) throw new Error("Subaccount private key is not set");
+    if (!account) throw new Error("Account is not set");
+
+    setWithdrawalLoading(true);
+    try {
+      await withdrawFromSubaccount({
+        chainId,
+        // FIXME
+        amount: BigNumber.from(123),
+        mainAccountAddress: account,
+        privateKey,
+      });
+    } finally {
+      setWithdrawalLoading(false);
+    }
+  }, [account, chainId, oneClickTradingState.subaccount?.privateKey]);
+
+  if (!oneClickTradingState.subaccount) {
     return null;
   }
 
@@ -162,13 +224,6 @@ const MainView = memo(() => {
 
   const mainWethBalance = getByKey(mainBalances.balancesData, wrappedToken.address);
   const subEthBalance = getByKey(subBalances.balancesData, nativeToken.address);
-
-  const validationError = getValidationError({
-    initialTopUpIsEmpty,
-    maxAutoTopUpAmountIsEmpty,
-    wethForAutoTopUpsIsEmpty,
-    maxAllowedActionsIsEmpty,
-  });
 
   return (
     <div className="OneClickTrading-controls">
@@ -187,11 +242,11 @@ const MainView = memo(() => {
         </div>
       </div>
       <div className="OneClickTrading-buttons">
-        <button className="OneClickTrading-mini-button">
-          <Trans>Withdraw</Trans>
+        <button onClick={handleWithdrawClick} className="OneClickTrading-mini-button">
+          {withdrawalLoading ? <SpinningLoader /> : <Trans>Withdraw</Trans>}
         </button>
-        <button onClick={onDisableClick} className="OneClickTrading-mini-button warning">
-          <Trans>Disable</Trans>
+        <button onClick={handleDisableClick} className="OneClickTrading-mini-button warning">
+          {disablingLoading ? <SpinningLoader /> : <Trans>Disable</Trans>}
         </button>
       </div>
       <div className="OneClickTrading-stats">
@@ -204,7 +259,7 @@ const MainView = memo(() => {
                 handle={formatTokenAmount(subEthBalance, nativeToken.decimals, nativeToken.symbol, {
                   displayDecimals: 4,
                 })}
-                renderContent={renderSubaccountBalance}
+                renderContent={renderSubaccountBalanceTooltipContent}
                 position="right-bottom"
               />
             }
@@ -250,7 +305,7 @@ const MainView = memo(() => {
           />
         </div>
         <TokenApproval />
-        <Button disabled={!!validationError} variant="primary-action" className="w-full">
+        <Button onClick={handleActiveClick} disabled={!!validationError} variant="primary-action" className="w-full">
           {validationError || <Trans>Activate</Trans>}
         </Button>
       </div>
@@ -269,14 +324,14 @@ const ButtonIcon = memo(({ icon, title, onClick }: { icon: string; title: string
 const TokenApproval = memo(() => {
   const { chainId } = useChainId();
   const wrappedToken = useMemo(() => getWrappedToken(chainId), [chainId]);
-  const oneClickTradingState = useOneClickTradingState();
+  const [modalOpen] = useOneClickTradingModalOpen();
 
   const { account } = useWallet();
 
   const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokenAddresses: [wrappedToken.address],
-    skip: !oneClickTradingState.modalOpen,
+    skip: !modalOpen,
   });
 
   const payAmount = BigNumber.from(1);
@@ -341,7 +396,7 @@ const Input = memo(
     return (
       <div className="OneClickTrading-input-wrapper">
         <div className={cx("OneClickTrading-input")}>
-          <input type="number" pattern="{0-9}.{0-9}" onChange={onChange} id={id} value={value} />
+          <input onChange={onChange} id={id} value={value} />
           <label htmlFor={id}>
             <span>{symbol}</span>
           </label>

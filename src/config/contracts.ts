@@ -80,7 +80,6 @@ const CONTRACTS = {
     // arbitrum testnet
     Vault: AddressZero,
     Router: AddressZero,
-    SubaccountRouter: "0x4Ae6ecDD55ee1066477Ee4B5Fc9f4D04C4CE66E9",
     VaultReader: AddressZero,
     Reader: AddressZero,
     GlpManager: AddressZero,
@@ -122,6 +121,7 @@ const CONTRACTS = {
     DataStore: "0xbA2314b0f71ebC705aeEBeA672cc3bcEc510D03b",
     EventEmitter: "0x2fbE45fCb58B7106CF0a3Be9225D5Ed5A1004cc4",
     ExchangeRouter: "0xFE98518C9c8F1c5a216E999816c2dE3199f295D2",
+    SubaccountRouter: "0x4Ae6ecDD55ee1066477Ee4B5Fc9f4D04C4CE66E9",
     DepositVault: "0x838a9bdf8736eD522A60F5f715e4F3FC2BC91A08",
     WithdrawalVault: "0xaAac001C2a2727Ff2d484C4Ad7d2079C7094e7Ef",
     OrderVault: "0x82aFd2590814a7Ce3d7ea6b63F80481F8b227bA9",
@@ -242,7 +242,6 @@ const CONTRACTS = {
   [AVALANCHE_FUJI]: {
     Vault: AddressZero,
     Router: AddressZero,
-    SubaccountRouter: "0x66dC758319FD5DF937ec129Bd39cAe1fB8843170",
     VaultReader: AddressZero,
     Reader: AddressZero,
     GlpManager: AddressZero,
@@ -284,6 +283,7 @@ const CONTRACTS = {
     DataStore: "0xEA1BFb4Ea9A412dCCd63454AbC127431eBB0F0d4",
     EventEmitter: "0xc67D98AC5803aFD776958622CeEE332A0B2CabB9",
     ExchangeRouter: "0xCD5B8Ea4a848b1c576125f20F9aDe5F58FDf4D4f",
+    SubaccountRouter: "0x66dC758319FD5DF937ec129Bd39cAe1fB8843170",
     DepositVault: "0x2964d242233036C8BDC1ADC795bB4DeA6fb929f2",
     WithdrawalVault: "0x74d49B6A630Bf519bDb6E4efc4354C420418A6A2",
     OrderVault: "0x25D23e8E655727F2687CC808BB9589525A6F599B",

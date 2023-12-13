@@ -76,6 +76,7 @@ export const POOL_AMOUNT_ADJUSTMENT_KEY = hashString("POOL_AMOUNT_ADJUSTMENT");
 export const AFFILIATE_REWARD_KEY = hashString("AFFILIATE_REWARD");
 export const IS_MARKET_DISABLED_KEY = hashString("IS_MARKET_DISABLED");
 export const UI_FEE_FACTOR = hashString("UI_FEE_FACTOR");
+export const SUBACCOUNT_LIST_KEY = hashString("SUBACCOUNT_LIST");
 
 export function positionImpactFactorKey(market: string, isPositive: boolean) {
   return hashData(["bytes32", "address", "bool"], [POSITION_IMPACT_FACTOR_KEY, market, isPositive]);
@@ -296,4 +297,8 @@ export function maxPoolAmountKey(market: string, token: string) {
 
 export function uiFeeFactorKey(address: string) {
   return hashData(["bytes32", "address"], [UI_FEE_FACTOR, address]);
+}
+
+export function subaccountListKey(account: string) {
+  return hashData(["bytes32", "address"], [SUBACCOUNT_LIST_KEY, account]);
 }

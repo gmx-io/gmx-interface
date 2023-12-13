@@ -1,8 +1,13 @@
+import DataStore from "abis/DataStore.json";
+import { getContract } from "config/contracts";
+import { subaccountListKey } from "config/dataStore";
 import { getOneClickTradingConfigKey } from "config/localStorage";
 import { getStringForSign } from "domain/synthetics/oneClickTrading/onClickTradingUtils";
 import { OneClickTradingSerializedConfig } from "domain/synthetics/oneClickTrading/types";
 import { ethers } from "ethers";
+import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { useMulticall } from "lib/multicall";
 import useWallet from "lib/wallets/useWallet";
 import { Context, PropsWithChildren, useCallback, useMemo, useState } from "react";
 import { createContext, useContextSelector } from "use-context-selector";
@@ -10,22 +15,11 @@ import { createContext, useContextSelector } from "use-context-selector";
 type Subaccount = {
   address: string;
   privateKey: string;
+  active: boolean;
 };
 
-export type OneClickTradingContext = (
-  | {
-      state: "created";
-      subaccount: Subaccount;
-    }
-  | {
-      state: "active";
-      subaccount: Subaccount;
-    }
-  | {
-      state: "off";
-      subaccount: null;
-    }
-) & {
+export type OneClickTradingContext = {
+  subaccount: Subaccount | null;
   modalOpen: boolean;
   setModalOpen: (v: boolean) => void;
   generateSubaccount: () => Promise<void>;
@@ -37,7 +31,8 @@ const context = createContext<OneClickTradingContext | null>(null);
 export function OneClickTradingContextProvider({ children }: PropsWithChildren) {
   const [modalOpen, setModalOpen] = useState(true);
 
-  const { signer, account, chainId } = useWallet();
+  const { signer, account } = useWallet();
+  const { chainId } = useChainId();
   const [config, setConfig] = useLocalStorageSerializeKey<OneClickTradingSerializedConfig>(
     getOneClickTradingConfigKey(chainId, account),
     null
@@ -61,29 +56,41 @@ export function OneClickTradingContextProvider({ children }: PropsWithChildren) 
     setConfig(null);
   }, [setConfig]);
 
-  const value: OneClickTradingContext = useMemo(() => {
-    if (config) {
-      return {
-        state: "created",
-        modalOpen,
-        setModalOpen,
-        subaccount: {
-          address: config.address,
-          privateKey: config.privateKey,
+  const { data: contractData } = useMulticall(chainId, "useSubaccountsFromContracts", {
+    key: account && config?.address ? [account, config.address] : null,
+    request: () => ({
+      dataStore: {
+        contractAddress: getContract(chainId, "DataStore"),
+        abi: DataStore.abi,
+        calls: {
+          subaccounts: {
+            methodName: "containsAddress",
+            params: [subaccountListKey(account!), config!.address],
+          },
         },
-        generateSubaccount: generateSubaccount,
-        clearSubaccount: clearSubaccount,
-      };
-    }
+      },
+    }),
+    parseResponse: (res) => {
+      const isActiveSubaccount = Boolean(res.data.dataStore.subaccounts.returnValues[0]);
+      return { isActiveSubaccount };
+    },
+  });
+
+  const value: OneClickTradingContext = useMemo(() => {
     return {
-      state: "off",
       modalOpen,
       setModalOpen,
-      subaccount: null,
-      generateSubaccount: generateSubaccount,
-      clearSubaccount: clearSubaccount,
+      subaccount: config
+        ? {
+            address: config.address,
+            privateKey: config.privateKey,
+            active: contractData?.isActiveSubaccount ?? false,
+          }
+        : null,
+      generateSubaccount,
+      clearSubaccount,
     };
-  }, [clearSubaccount, config, generateSubaccount, modalOpen]);
+  }, [clearSubaccount, config, contractData?.isActiveSubaccount, generateSubaccount, modalOpen]);
 
   return <context.Provider value={value}>{children}</context.Provider>;
 }
@@ -106,4 +113,8 @@ export function useOneClickTradingGenerateSubaccount() {
 
 export function useOneClickTradingState() {
   return useOneClickTradingSelector((s) => s);
+}
+
+export function useSubaccountAddress() {
+  return useOneClickTradingSelector((s) => s.subaccount?.address ?? null);
 }
