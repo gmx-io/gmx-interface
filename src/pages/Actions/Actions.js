@@ -27,6 +27,7 @@ import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 import PageTitle from "components/PageTitle/PageTitle";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import Footer from "components/Footer/Footer";
 
 const USD_DECIMALS = 30;
 
@@ -89,7 +90,7 @@ export default function Actions({ savedIsPnlInLeverage, savedShowPnlAfterFees })
   const [orders, updateOrders] = useAccountOrders(flagOrdersEnabled, checkSummedAccount);
 
   return (
-    <div className="default-container Actions">
+    <div className="default-container page-layout">
       {checkSummedAccount.length > 0 && (
         <div className="Actions-section">
           <PageTitle
@@ -207,6 +208,7 @@ export default function Actions({ savedIsPnlInLeverage, savedShowPnlAfterFees })
           shouldShowPaginationButtons={true}
         />
       </div>
+      <Footer />
     </div>
   );
 }

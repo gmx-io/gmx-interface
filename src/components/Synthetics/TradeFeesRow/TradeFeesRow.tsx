@@ -354,6 +354,7 @@ export function TradeFeesRow(p: Props) {
         >
           Read more
         </ExternalLink>
+        .
       </Trans>
     );
   }, [rebateIsApplicable, tradingIncentives]);
