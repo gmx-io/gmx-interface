@@ -5,7 +5,7 @@ import { HIGH_POSITION_IMPACT_BPS } from "config/factors";
 import { TradeFees } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { formatPercentage } from "lib/numbers";
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import "./AcceptablePriceImpactInputRow.scss";
 
 type Props = {
@@ -31,6 +31,14 @@ function AcceptablePriceImpactInputRowImpl({
   );
 
   const defaultValue = defaultAcceptablePriceImpactBps?.toNumber();
+
+  // https://app.asana.com/0/0/1205148618694229/1206149277852565/f
+  useEffect(() => {
+    if (defaultValue) {
+      setValue(defaultValue);
+    }
+  }, [defaultValue, setValue]);
+
   const [key, setKey] = useState(0);
 
   // https://app.asana.com/0/0/1205148618694228/1206136113111552/f
