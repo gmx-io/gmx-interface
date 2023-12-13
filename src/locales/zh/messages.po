@@ -4606,7 +4606,11 @@ msgid "The Gambit protocol is in beta, please read the <0>staking details</0>be
 msgstr "Gambit协议处于测试阶段，请在参与之前阅读<0>质押细节</0>"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "The Max Execution Fee is overestimated by 10%. Upon execution, the excess Execution Fee is sent back to your account."
+#~ msgid "The Max Execution Fee is overestimated by 10%. Upon execution, the excess Execution Fee is sent back to your account."
+#~ msgstr ""
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "The Max Execution Fee is overestimated by {maxExecutionFeeText}%. Upon execution, the excess Execution Fee is sent back to your account."
 msgstr ""
 
 #: src/App/App.js
@@ -5357,8 +5361,7 @@ msgid "Voting"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
 msgid "WALLET"
 msgstr "钱包"
 
@@ -5388,6 +5391,7 @@ msgstr "等待核准"
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
+#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
