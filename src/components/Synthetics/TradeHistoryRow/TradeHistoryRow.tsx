@@ -1,6 +1,5 @@
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import Tooltip from "components/Tooltip/Tooltip";
 import { getExplorerUrl } from "config/chains";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { MarketInfo, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
@@ -14,6 +13,7 @@ import { Link } from "react-router-dom";
 import "./TradeHistoryRow.scss";
 import { formatPositionMessage, formatSwapMessage } from "./utils";
 import { t } from "@lingui/macro";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 type Props = {
   tradeAction: TradeAction;
@@ -51,7 +51,7 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
         );
 
         return showTooltip ? (
-          <Tooltip
+          <TooltipWithPortal
             position="left-top"
             handle={textElement}
             className={message.isError ? "Tooltip-error" : undefined}
@@ -90,7 +90,7 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
         );
       })}
       , Market:{" "}
-      <Tooltip
+      <TooltipWithPortal
         position="right-bottom"
         handle={getMarketIndexName(tradeAction.marketInfo)}
         renderContent={() => (
