@@ -52,11 +52,13 @@
   color: var(--warning-yellow);
 }
 
-@media (max-width: 1300px) {
-  .Position-collateral-amount {
-    margin-left: 0.5rem;
-    margin-top: 0;
-  }
+.position-list-collateral {
+  display: flex;
+  align-items: flex-end;
+}
+
+.position-list-collateral.isSmall {
+  justify-content: flex-end;
 }
 
 @media (max-width: 800px) {
