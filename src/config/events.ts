@@ -135,7 +135,7 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "ledger-issue",
-    title: "GMX is Unaffected",
+    title: "GMX is unaffected",
     isActive: true,
     validTill: "15 Dec 2023, 16:00",
     bodyText: ["The recent issue with Ledger Connect kit did not affect GMX."],
