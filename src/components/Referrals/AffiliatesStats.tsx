@@ -84,7 +84,7 @@ function AffiliatesStats({
     getCurrentData: getCurrentRebateData,
     setCurrentPage: setCurrentRebatePage,
     pageCount: rebatePageCount,
-  } = usePagination(affiliateDistributions);
+  } = usePagination("Rebates", affiliateDistributions);
 
   const currentRebateData = getCurrentRebateData();
   const allReferralCodes = affiliateReferralCodesStats?.map((c) => c.referralCode.trim());
@@ -104,7 +104,7 @@ function AffiliatesStats({
     getCurrentData: getCurrentAffiliatesData,
     setCurrentPage: setCurrentAffiliatesPage,
     pageCount: affiliatesPageCount,
-  } = usePagination(finalAffiliatesTotalStats);
+  } = usePagination("Affiliates", finalAffiliatesTotalStats);
 
   const currentAffiliatesData = getCurrentAffiliatesData();
   const tierId = affiliateTierInfo?.tierId;

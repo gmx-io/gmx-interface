@@ -58,7 +58,10 @@ export default function UserIncentiveDistributionList() {
     });
   }, [userIncentiveData, tokens]);
 
-  const { currentPage, getCurrentData, setCurrentPage, pageCount } = usePagination(normalizedIncentiveData);
+  const { currentPage, getCurrentData, setCurrentPage, pageCount } = usePagination(
+    "UserIncentiveDistributionList",
+    normalizedIncentiveData
+  );
   const currentIncentiveData = getCurrentData();
 
   if (!userIncentiveData?.data?.length) {

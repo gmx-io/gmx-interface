@@ -13,6 +13,7 @@ import { usePositionsInfo } from "domain/synthetics/positions";
 import { useChainId } from "lib/chains";
 import PageTitle from "components/PageTitle/PageTitle";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import Footer from "components/Footer/Footer";
 
 export default function SyntheticsActions({
   savedIsPnlInLeverage,
@@ -48,7 +49,7 @@ export default function SyntheticsActions({
   });
 
   return (
-    <div className="default-container Actions">
+    <div className="default-container page-layout">
       {checkSummedAccount && (
         <div className="Actions-section">
           <PageTitle
@@ -119,6 +120,7 @@ export default function SyntheticsActions({
           shouldShowPaginationButtons
         />
       </div>
+      <Footer />
     </div>
   );
 }

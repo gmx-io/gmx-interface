@@ -68,6 +68,7 @@ export function PositionList(p: Props) {
               currentCollateralAddress={p.currentCollateralAddress}
               currentTradeType={p.currentTradeType}
               openSettings={p.openSettings}
+              hideActions={p.hideActions}
             />
           ))}
       </div>

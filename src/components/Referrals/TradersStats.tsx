@@ -56,6 +56,7 @@ function TradersStats({
   } = chains || {};
 
   const { getCurrentData, currentPage, setCurrentPage, pageCount } = usePagination(
+    "TradersStats",
     currentReferralsData?.traderDistributions
   );
 

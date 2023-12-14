@@ -94,6 +94,7 @@ export function OrderList(p: Props) {
                 marketsInfoData={marketsInfoData}
                 positionsInfoData={positionsData}
                 selectedOrderKey={p.selectedOrderKey}
+                hideActions={p.hideActions}
               />
             );
           })}
