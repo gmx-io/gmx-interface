@@ -42,6 +42,7 @@ export function getSwapError(p: {
   markRatio: TokensRatio | undefined;
   fees: TradeFees | undefined;
   swapPathStats: SwapPathStats | undefined;
+  priceImpactWarning: PriceImpactWarningState;
   isWrapOrUnwrap: boolean;
   swapLiquidity: BigNumber | undefined;
 }) {
@@ -56,6 +57,7 @@ export function getSwapError(p: {
     markRatio,
     fees,
     isWrapOrUnwrap,
+    priceImpactWarning,
     swapLiquidity,
     swapPathStats,
   } = p;
@@ -106,6 +108,10 @@ export function getSwapError(p: {
     if (triggerRatio && isRatioInverted && markRatio?.ratio.gt(triggerRatio.ratio)) {
       return [t`Price below Mark Price`];
     }
+  }
+
+  if (priceImpactWarning.validationError) {
+    return [t`Price Impact not yet acknowledged`];
   }
 
   return [undefined];

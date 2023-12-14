@@ -694,6 +694,7 @@ export function TradeBox(p: Props) {
         toUsd: swapAmounts?.usdOut,
         swapPathStats: swapAmounts?.swapPathStats,
         swapLiquidity: swapOutLiquidity,
+        priceImpactWarning: priceImpactWarningState,
         isLimit,
         isWrapOrUnwrap,
         triggerRatio,
