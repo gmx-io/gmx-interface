@@ -335,7 +335,8 @@ export function PositionItem(p: Props) {
 
     if (isSmall) {
       return positionOrders.map((order) => {
-        if (hasErrors) {
+        const isErrorInOrder = order.errorLevel === "error" || order.errorLevel === "warning";
+        if (isErrorInOrder) {
           return (
             <div key={order.key} className="Position-list-order">
               <Tooltip
