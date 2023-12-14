@@ -50,7 +50,7 @@ export default function Tooltip(props: Props) {
 
   const onMouseClick = useCallback(
     (event: MouseEvent) => {
-      event.preventDefault();
+      event.stopPropagation();
       if (trigger !== "click" && !IS_TOUCH) return;
       if (intervalCloseRef.current) {
         clearInterval(intervalCloseRef.current);
