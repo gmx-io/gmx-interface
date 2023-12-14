@@ -42,8 +42,17 @@ export function OrderList(p: Props) {
   const orderRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   useEffect(() => {
-    if (p.selectedOrderKey && orderRefs.current[p.selectedOrderKey]) {
-      orderRefs.current[p.selectedOrderKey]?.scrollIntoView({ behavior: "smooth" });
+    if (p.selectedOrderKey) {
+      const orderElement = orderRefs.current[p.selectedOrderKey];
+      if (orderElement) {
+        const rect = orderElement.getBoundingClientRect();
+        const isInViewPort =
+          rect.top >= 0 && rect.left >= 0 && rect.bottom <= window.innerHeight && rect.right <= window.innerWidth;
+
+        if (!isInViewPort) {
+          orderElement.scrollIntoView({ behavior: "smooth" });
+        }
+      }
     }
   }, [p.selectedOrderKey]);
 
