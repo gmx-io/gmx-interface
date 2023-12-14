@@ -135,13 +135,9 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "ledger-issue",
-    title: "GMX DApp Unaffected",
+    title: "GMX is Unaffected",
     isActive: true,
     validTill: "16 Dec 2023, 12:00",
-    bodyText: [
-      "The recent issue with Ledger Connect kit did not affect the GMX DApp.",
-      "",
-      "Please exercise caution while interacting with DApps and use wallets that simulate transactions before signing, such as Rabby.",
-    ],
+    bodyText: ["The recent issue with Ledger Connect kit did not affect the GMX."],
   },
 ];
