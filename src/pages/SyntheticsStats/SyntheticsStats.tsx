@@ -7,7 +7,7 @@ import { bigNumberify, expandDecimals, formatAmount, formatUsd } from "lib/numbe
 import cx from "classnames";
 import { ShareBar } from "components/ShareBar/ShareBar";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
+import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod, getPriceImpactUsd } from "domain/synthetics/fees";
 import {
   MarketInfo,
   getAvailableLiquidity,
@@ -611,6 +611,15 @@ export function SyntheticsStats() {
                                 );
                               })()}
                             />
+                            <StatsTooltipRow
+                              label="Difference"
+                              value={formatAmount(
+                                market.shortInterestUsd.sub(market.longInterestUsd).abs(),
+                                30,
+                                0,
+                                true
+                              )}
+                            />
                           </>
                         )}
                       />
@@ -703,6 +712,108 @@ export function SyntheticsStats() {
                       />
                     </div>
                     <ShareBar share={liquidity} total={maxLiquidity} warningThreshold={90} />
+                  </div>
+                );
+              }
+
+              function renderPositionImpactCell() {
+                const bonusApr = market.positionImpactPoolDistributionRate
+                  .mul(86400)
+                  .mul(365)
+                  .mul(market.indexToken.prices.minPrice)
+                  .div(longPoolUsd?.add(shortPoolUsd || 0) || 0)
+                  .mul(100);
+
+                const reservedPositivePriceImpactUsd = getPriceImpactUsd({
+                  currentLongUsd: market.longInterestUsd.sub(market.shortInterestUsd),
+                  currentShortUsd: bigNumberify(0)!,
+                  nextLongUsd: bigNumberify(0)!,
+                  nextShortUsd: bigNumberify(0)!,
+                  factorNegative: market.positionImpactFactorNegative,
+                  factorPositive: market.positionImpactFactorPositive,
+                  exponentFactor: market.positionImpactExponentFactor,
+                });
+
+                const reservedPositivePriceImpact = reservedPositivePriceImpactUsd
+                  .mul(expandDecimals(1, market.indexToken.decimals))
+                  .div(market.indexToken.prices.maxPrice);
+
+                return (
+                  <div className="cell">
+                    <TooltipWithPortal
+                      handle={`$${formatAmount(positionImpactUsd, 30, 2, true)}`}
+                      position="right-bottom"
+                      renderContent={() => (
+                        <>
+                          <StatsTooltipRow
+                            label="Impact Pool Amount"
+                            value={formatAmount(market.positionImpactPoolAmount, market.indexToken.decimals, 2, true)}
+                            showDollar={false}
+                          />
+                          <StatsTooltipRow
+                            label="Min Impact Pool Amount"
+                            value={formatAmount(market.minPositionImpactPoolAmount, market.indexToken.decimals, 4)}
+                            showDollar={false}
+                          />
+                          <StatsTooltipRow
+                            label="Impact Pool After Reserved Positive Impact"
+                            value={formatAmount(
+                              market.positionImpactPoolAmount.sub(reservedPositivePriceImpact),
+                              market.indexToken.decimals,
+                              2,
+                              true
+                            )}
+                            showDollar={false}
+                          />
+                          <StatsTooltipRow
+                            label={`Distribution Rate, ${market.indexToken.symbol}`}
+                            value={formatAmount(
+                              market.positionImpactPoolDistributionRate,
+                              market.indexToken.decimals + 30,
+                              10
+                            )}
+                            showDollar={false}
+                          />
+                          <StatsTooltipRow
+                            label="Distribution Rate per Day, USD"
+                            value={formatAmount(
+                              market.positionImpactPoolDistributionRate
+                                .mul(86400)
+                                .mul(market.indexToken.prices.minPrice),
+                              market.indexToken.decimals + 60,
+                              2,
+                              true
+                            )}
+                          />
+                          <StatsTooltipRow
+                            label="Bonus APR"
+                            value={formatAmount(bonusApr, market.indexToken.decimals + 30, 2, true)}
+                            showDollar={false}
+                            unit="%"
+                          />
+                          <StatsTooltipRow
+                            label="Negative Impact Factor"
+                            value={formatFactor(market.positionImpactFactorNegative)}
+                            showDollar={false}
+                          />
+                          <StatsTooltipRow
+                            label="Positive Impact Factor"
+                            value={formatFactor(market.positionImpactFactorPositive)}
+                            showDollar={false}
+                          />
+                          <StatsTooltipRow
+                            label="Impact Exponent"
+                            value={formatFactor(market.positionImpactExponentFactor)}
+                            showDollar={false}
+                          />
+                          <StatsTooltipRow
+                            label="Reserved Positive Impact"
+                            value={formatAmount(reservedPositivePriceImpact, market.indexToken.decimals, 4, true)}
+                            showDollar={false}
+                          />
+                        </>
+                      )}
+                    />
                   </div>
                 );
               }
@@ -828,64 +939,7 @@ export function SyntheticsStats() {
                       />
                     </div>
                   </td>
-                  <td>
-                    <div className="cell">
-                      <TooltipWithPortal
-                        handle={`$${formatAmount(positionImpactUsd, 30, 2, true)}`}
-                        position="right-bottom"
-                        renderContent={() => (
-                          <>
-                            <StatsTooltipRow
-                              label="Impact Pool Amount"
-                              value={formatAmount(market.positionImpactPoolAmount, market.indexToken.decimals, 2, true)}
-                              showDollar={false}
-                            />
-                            <StatsTooltipRow
-                              label="Min Impact Pool Amount"
-                              value={formatAmount(market.minPositionImpactPoolAmount, market.indexToken.decimals, 4)}
-                              showDollar={false}
-                            />
-                            <StatsTooltipRow
-                              label={`Distribution Rate, ${market.indexToken.symbol}`}
-                              value={formatAmount(
-                                market.positionImpactPoolDistributionRate,
-                                market.indexToken.decimals + 30,
-                                10
-                              )}
-                              showDollar={false}
-                            />
-                            <StatsTooltipRow
-                              label="Distribution Rate per Day, USD"
-                              value={formatAmount(
-                                market.positionImpactPoolDistributionRate
-                                  .mul(86400)
-                                  .mul(market.indexToken.prices.minPrice),
-                                market.indexToken.decimals + 60,
-                                2,
-                                true
-                              )}
-                            />
-                            <StatsTooltipRow
-                              label="Bonus APR"
-                              value={formatAmount(
-                                market.positionImpactPoolDistributionRate
-                                  .mul(86400)
-                                  .mul(365)
-                                  .mul(market.indexToken.prices.minPrice)
-                                  .div(longPoolUsd?.add(shortPoolUsd || 0) || 0)
-                                  .mul(100),
-                                market.indexToken.decimals + 30,
-                                2,
-                                true
-                              )}
-                              showDollar={false}
-                              unit="%"
-                            />
-                          </>
-                        )}
-                      />
-                    </div>
-                  </td>
+                  <td>{renderPositionImpactCell()}</td>
                   <td>
                     <div className="cell">
                       <TooltipWithPortal
