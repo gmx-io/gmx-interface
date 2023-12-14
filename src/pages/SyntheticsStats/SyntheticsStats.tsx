@@ -2,7 +2,7 @@ import { useChainId } from "lib/chains";
 import { CHART_PERIODS, PRECISION } from "lib/legacy";
 
 import { BigNumber, BigNumberish, ethers } from "ethers";
-import { formatAmount, formatUsd } from "lib/numbers";
+import { bigNumberify, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 
 import cx from "classnames";
 import { ShareBar } from "components/ShareBar/ShareBar";
@@ -25,6 +25,14 @@ import "./SyntheticsStats.scss";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { useCallback } from "react";
 import Button from "components/Button/Button";
+
+function pow(bn: BigNumber, exponent: BigNumber) {
+  // this is just aproximation
+  const n = Number(bn.toString()) / 1e30;
+  const e = Number(exponent.toString()) / 1e30;
+  const afterExponent = Math.pow(n, e);
+  return expandDecimals((afterExponent * 1e10).toFixed(0), 20);
+}
 
 function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: number, showDollar: boolean = false) {
   const n = Number(formatAmount(amount, tokenDecimals));
@@ -419,6 +427,73 @@ export function SyntheticsStats() {
                 );
               }
 
+              function renderBorrowingRateCell() {
+                const maxBorrowingRateLong = pow(maxLiquidityLong, market.borrowingExponentFactorLong)
+                  .mul(market.borrowingFactorLong)
+                  .div(longPoolUsd!)
+                  .mul(3600 * 100);
+                const maxBorrowingRateShort = pow(maxLiquidityShort, market.borrowingExponentFactorShort)
+                  .mul(market.borrowingFactorShort)
+                  .div(shortPoolUsd!)
+                  .mul(3600 * 100);
+
+                return (
+                  <div className="cell">
+                    {market.isSpotOnly ? (
+                      "..."
+                    ) : (
+                      <TooltipWithPortal
+                        handle={`$${formatAmountHuman(market.totalBorrowingFees, 30)}`}
+                        renderContent={() => (
+                          <>
+                            <StatsTooltipRow
+                              label="Rate Long"
+                              value={`-${formatAmount(borrowingRateLong, 30, 4)}% / 1h`}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label="Rate Short"
+                              value={`-${formatAmount(borrowingRateShort, 30, 4)}% / 1h`}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label="Borrowing Factor Long"
+                              value={formatFactor(market.borrowingFactorLong)}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label="Borrowing Factor Short"
+                              value={formatFactor(market.borrowingFactorShort)}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label="Borrowing Exponent Long"
+                              value={formatFactor(market.borrowingExponentFactorLong)}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label="Borrowing Exponent Short"
+                              value={formatFactor(market.borrowingExponentFactorShort)}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label="Max Rate Long"
+                              value={`-${formatAmount(maxBorrowingRateLong, 30, 4)}% / 1h`}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label="Max Rate Short"
+                              value={`-${formatAmount(maxBorrowingRateShort, 30, 4)}% / 1h`}
+                              showDollar={false}
+                            />
+                          </>
+                        )}
+                      />
+                    )}
+                  </div>
+                );
+              }
+
               function renderFundingCell() {
                 return (
                   <div className="cell">
@@ -581,6 +656,12 @@ export function SyntheticsStats() {
                       market.shortToken,
                     ];
 
+                const isLongLabel = isLong ? "Long" : "Short";
+                let availableLiquidity = maxLiquidity.sub(liquidity);
+                if (availableLiquidity.lt(0)) {
+                  availableLiquidity = bigNumberify(0)!;
+                }
+
                 return (
                   <div className="cell">
                     <div>
@@ -598,20 +679,24 @@ export function SyntheticsStats() {
                           <>
                             <StatsTooltipRow label={`Reserved Long`} value={formatAmount(reservedUsd, 30, 0, true)} />
                             <StatsTooltipRow
-                              label={`Max Reserved Long`}
+                              label={`Max Reserved ${isLongLabel}`}
                               value={formatAmount(maxReservedUsd, 30, 0, true)}
                             />
                             <StatsTooltipRow
-                              label={`Open Interest Long`}
+                              label={`Open Interest ${isLongLabel}`}
                               value={formatAmount(interestUsd, 30, 0, true)}
                             />
                             <StatsTooltipRow
-                              label={`Max Open Interest Long`}
+                              label={`Max Open Interest ${isLongLabel}`}
                               value={formatAmount(maxOpenInterest, 30, 0, true)}
                             />
                             <StatsTooltipRow
                               label={`Max ${token.symbol} Out`}
                               value={formatAmount(collateralLiquidityUsd, 30, 0, true)}
+                            />
+                            <StatsTooltipRow
+                              label={`Available Liquidity ${isLongLabel}`}
+                              value={formatAmount(availableLiquidity, 30, 0, true)}
                             />
                           </>
                         )}
@@ -670,51 +755,7 @@ export function SyntheticsStats() {
                       )}
                     </div>
                   </td>
-                  <td>
-                    <div className="cell">
-                      {market.isSpotOnly ? (
-                        "..."
-                      ) : (
-                        <TooltipWithPortal
-                          handle={`$${formatAmountHuman(market.totalBorrowingFees, 30)}`}
-                          renderContent={() => (
-                            <>
-                              <StatsTooltipRow
-                                label="Rate Long"
-                                value={`-${formatAmount(borrowingRateLong, 30, 4)}% / 1h`}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label="Rate Short"
-                                value={`-${formatAmount(borrowingRateShort, 30, 4)}% / 1h`}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label="Borrowing Factor Long"
-                                value={formatFactor(market.borrowingFactorLong)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label="Borrowing Factor Short"
-                                value={formatFactor(market.borrowingFactorShort)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label="Borrowing Exponent Long"
-                                value={formatFactor(market.borrowingExponentFactorLong)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label="Borrowing Exponent Short"
-                                value={formatFactor(market.borrowingExponentFactorShort)}
-                                showDollar={false}
-                              />
-                            </>
-                          )}
-                        />
-                      )}
-                    </div>
-                  </td>
+                  <td>{renderBorrowingRateCell()}</td>
                   <td>{renderFundingCell()}</td>
                   <td>{renderOIBalanceCell()}</td>
                   <td>{renderLiquidityCell(true)}</td>
