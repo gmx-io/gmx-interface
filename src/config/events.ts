@@ -134,18 +134,10 @@ export const appEventsData: EventData[] = [
     ],
   },
   {
-    id: "ledger-connect-kit",
-    title: "Alert: Ledger Connect Kit",
+    id: "ledger-issue",
+    title: "GMX is Unaffected",
     isActive: true,
-    validTill: "21 Dec 2023, 12:00",
-    bodyText:
-      "There is an ongoing attack happening with Ledger Connect kit. Please avoid signing any transaction in any DApp, including GMX, while we investigate.",
-    buttons: [
-      {
-        text: "More Info.",
-        link: "https://twitter.com/Ledger/status/1735291427100455293",
-        newTab: true,
-      },
-    ],
+    validTill: "16 Dec 2023, 12:00",
+    bodyText: ["The recent issue with Ledger Connect kit did not affect the GMX."],
   },
 ];
