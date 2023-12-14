@@ -169,6 +169,8 @@ export function SyntheticsPage(p: Props) {
   const [closingPositionKey, setClosingPositionKey] = useState<string>();
   const closingPosition = getByKey(positionsInfoData, closingPositionKey);
 
+  const [selectedOrderKey, setSelectedOrderKey] = useState<string>();
+
   const [editingPositionKey, setEditingPositionKey] = useState<string>();
   const editingPosition = getByKey(positionsInfoData, editingPositionKey);
 
@@ -396,7 +398,10 @@ export function SyntheticsPage(p: Props) {
                 ordersData={ordersInfoData}
                 isLoading={isPositionsLoading}
                 savedIsPnlInLeverage={savedIsPnlInLeverage}
-                onOrdersClick={() => setListSection(ListSection.Orders)}
+                onOrdersClick={(key) => {
+                  setListSection(ListSection.Orders);
+                  setSelectedOrderKey(key);
+                }}
                 onSettlePositionFeesClick={handleSettlePositionFeesClick}
                 onSelectPositionClick={onSelectPositionClick}
                 onClosePositionClick={setClosingPositionKey}
@@ -419,6 +424,7 @@ export function SyntheticsPage(p: Props) {
                 setSelectedOrdersKeys={setSelectedOrdersKeys}
                 isLoading={isOrdersLoading}
                 setPendingTxns={setPendingTxns}
+                selectedOrderKey={selectedOrderKey}
               />
             )}
             {listSection === ListSection.Trades && (
@@ -506,7 +512,10 @@ export function SyntheticsPage(p: Props) {
               ordersData={ordersInfoData}
               savedIsPnlInLeverage={savedIsPnlInLeverage}
               isLoading={isPositionsLoading}
-              onOrdersClick={() => setListSection(ListSection.Orders)}
+              onOrdersClick={(key) => {
+                setListSection(ListSection.Orders);
+                setSelectedOrderKey(key);
+              }}
               onSelectPositionClick={onSelectPositionClick}
               onClosePositionClick={setClosingPositionKey}
               onEditCollateralClick={setEditingPositionKey}
@@ -529,6 +538,7 @@ export function SyntheticsPage(p: Props) {
               selectedOrdersKeys={selectedOrdersKeys}
               setSelectedOrdersKeys={setSelectedOrdersKeys}
               setPendingTxns={setPendingTxns}
+              selectedOrderKey={selectedOrderKey}
             />
           )}
           {listSection === ListSection.Trades && (

@@ -24,7 +24,7 @@ import { USD_DECIMALS, getExchangeRate, getExchangeRateDisplay } from "lib/legac
 import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import "./OrderItem.scss";
 import { getByKey } from "lib/objects";
-import { useMemo } from "react";
+import { forwardRef, useMemo } from "react";
 
 type Props = {
   order: OrderInfo;
@@ -37,11 +37,11 @@ type Props = {
   isLarge: boolean;
   marketsInfoData?: MarketsInfoData;
   positionsInfoData?: PositionsInfoData;
+  selectedOrderKey?: string;
 };
 
-export function OrderItem(p: Props) {
+export const OrderItem = forwardRef<HTMLTableRowElement, Props>((p, ref) => {
   const { showDebugValues } = useSettings();
-
   const isCollateralSwap = p.order.initialCollateralToken.address !== p.order.targetCollateralToken.address;
 
   function getCollateralText() {
@@ -357,7 +357,12 @@ export function OrderItem(p: Props) {
 
   function renderLarge() {
     return (
-      <tr className="Exchange-list-item">
+      <tr
+        ref={ref}
+        className={cx("Exchange-list-item", {
+          "active-order": p.selectedOrderKey === p.order.key,
+        })}
+      >
         {!p.hideActions && p.onSelectOrder && (
           <td className="Exchange-list-item-type">
             <div>
@@ -452,4 +457,4 @@ export function OrderItem(p: Props) {
   }
 
   return p.isLarge ? renderLarge() : renderSmall();
-}
+});

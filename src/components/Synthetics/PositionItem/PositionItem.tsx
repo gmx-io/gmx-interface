@@ -40,7 +40,7 @@ export type Props = {
   onEditCollateralClick?: () => void;
   onShareClick: () => void;
   onSelectPositionClick?: (tradeMode?: TradeMode) => void;
-  onOrdersClick?: () => void;
+  onOrdersClick?: (key: string) => void;
   isLarge: boolean;
   currentMarketAddress?: string;
   currentCollateralAddress?: string;
@@ -372,7 +372,7 @@ export function PositionItem(p: Props) {
     }
 
     return (
-      <div onClick={p.onOrdersClick}>
+      <div>
         <Tooltip
           className="Position-list-active-orders"
           handle={
@@ -405,7 +405,11 @@ export function PositionItem(p: Props) {
               {positionOrders.map((order) => {
                 const errors = order.errors;
                 return (
-                  <div key={order.key} className="Position-list-order active-order-tooltip">
+                  <div
+                    key={order.key}
+                    className="Position-list-order active-order-tooltip"
+                    onClick={() => p.onOrdersClick?.(order.key)}
+                  >
                     <div className="Position-list-order-label">
                       {renderOrderText(order)}
                       <FaAngleRight fontSize={14} />

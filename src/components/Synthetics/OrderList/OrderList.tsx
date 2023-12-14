@@ -7,7 +7,7 @@ import { PositionsInfoData } from "domain/synthetics/positions";
 import { TokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { OrderEditor } from "../OrderEditor/OrderEditor";
 import { OrderItem } from "../OrderItem/OrderItem";
 
@@ -21,6 +21,7 @@ type Props = {
   selectedOrdersKeys?: { [key: string]: boolean };
   isLoading: boolean;
   setPendingTxns: (txns: any) => void;
+  selectedOrderKey?: string;
 };
 
 export function OrderList(p: Props) {
@@ -37,6 +38,14 @@ export function OrderList(p: Props) {
 
   const isAllOrdersSelected = orders.length > 0 && orders.every((o) => p.selectedOrdersKeys?.[o.key]);
   const editingOrder = orders.find((o) => o.key === editingOrderKey);
+
+  const orderRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+
+  useEffect(() => {
+    if (p.selectedOrderKey && orderRefs.current[p.selectedOrderKey]) {
+      orderRefs.current[p.selectedOrderKey]?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [p.selectedOrderKey]);
 
   function onSelectOrder(key: string) {
     p.setSelectedOrdersKeys?.((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -84,6 +93,7 @@ export function OrderList(p: Props) {
                 onEditOrder={() => setEditingOrderKey(order.key)}
                 marketsInfoData={marketsInfoData}
                 positionsInfoData={positionsData}
+                selectedOrderKey={p.selectedOrderKey}
               />
             );
           })}
@@ -141,6 +151,8 @@ export function OrderList(p: Props) {
                   hideActions={p.hideActions}
                   marketsInfoData={marketsInfoData}
                   positionsInfoData={positionsData}
+                  selectedOrderKey={p.selectedOrderKey}
+                  ref={(el) => (orderRefs.current[order.key] = el)}
                 />
               );
             })}
