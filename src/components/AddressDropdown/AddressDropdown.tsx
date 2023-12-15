@@ -3,7 +3,7 @@ import { Menu } from "@headlessui/react";
 import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ETH_MAINNET } from "config/chains";
-import { useOneClickTradingModalOpen } from "context/OneClickTradingContext/OneClickTradingContext";
+import { useOneClickTradingModalOpen } from "context/SubaccountContext/SubaccountContext";
 import copy from "img/ic_copy_20.svg";
 import externalLink from "img/ic_new_link_20.svg";
 import disconnect from "img/ic_sign_out_20.svg";

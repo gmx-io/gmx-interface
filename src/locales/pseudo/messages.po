@@ -262,8 +262,12 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/components/Synthetics/SubaccountModal/utils.ts
 msgid "Activate"
+msgstr ""
+
+#: src/domain/synthetics/subaccount/initSubaccount.ts
+msgid "Activating subaccount"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
@@ -1227,6 +1231,10 @@ msgstr ""
 msgid "Current Weight"
 msgstr ""
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Current actions count"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Current {0} long"
 msgstr ""
@@ -1421,7 +1429,7 @@ msgstr ""
 msgid "Diff"
 msgstr ""
 
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Disable"
 msgstr ""
 
@@ -1452,6 +1460,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionShare.tsx
 msgid "Download"
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/utils.ts
+msgid "ETH is not available"
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
@@ -1512,6 +1524,10 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enable Leverage"
+msgstr ""
+
+#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
+msgid "Enable One-Click Trading to reduce <0>wallet<1/></0> signing popups. This option is also accessible through the Wallet menu in the top right."
 msgstr ""
 
 #: src/components/Exchange/OrdersToa.js
@@ -1751,6 +1767,14 @@ msgstr ""
 msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APR"
 msgstr ""
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Expected Actions are based on the current Network Fee."
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Expected Available Actions"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Explore, analyze, and copy on-chain traders"
 msgstr ""
@@ -1873,6 +1897,10 @@ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Floor Price Fund"
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "For additional safety, subaccounts are only allowed to perform a specified number of actions before re-authorization from your main account is required."
 msgstr ""
 
 #: src/components/Referrals/TradersStats.tsx
@@ -2241,17 +2269,20 @@ msgstr ""
 msgid "Initial collateral"
 msgstr ""
 
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Initial top up"
 msgstr ""
 
 #: src/components/Synthetics/OneClickTrading/utils.ts
-msgid "Initial top-up amount is required"
-msgstr ""
+#~ msgid "Initial top-up amount is required"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Insufficient Available Liquidity to swap to {0}:"
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/utils.ts
+msgid "Insufficient ETH balance"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -2727,7 +2758,7 @@ msgstr ""
 msgid "MAX"
 msgstr ""
 
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Main Account Balance"
 msgstr ""
 
@@ -2856,8 +2887,7 @@ msgstr ""
 msgid "Max acceptable Price Impact precision is 0.01%"
 msgstr ""
 
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Max allowed actions"
 msgstr ""
 
@@ -2870,8 +2900,7 @@ msgstr ""
 msgid "Max amount exceeded"
 msgstr ""
 
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Max auto top up amount"
 msgstr ""
 
@@ -2977,11 +3006,11 @@ msgstr ""
 msgid "Max: {0}"
 msgstr ""
 
-#: src/components/Synthetics/OneClickTrading/utils.ts
+#: src/components/Synthetics/SubaccountModal/utils.ts
 msgid "Maximum allowed actions is required"
 msgstr ""
 
-#: src/components/Synthetics/OneClickTrading/utils.ts
+#: src/components/Synthetics/SubaccountModal/utils.ts
 msgid "Maximum auto top-up amount is required"
 msgstr ""
 
@@ -3197,6 +3226,10 @@ msgstr ""
 
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/utils.ts
+msgid "Nothing to Update"
 msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
@@ -3704,6 +3737,10 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Purchase Insurance"
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/utils.ts
+msgid "Re-authorize"
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
@@ -4380,11 +4417,19 @@ msgstr ""
 msgid "Structured Products"
 msgstr ""
 
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/domain/synthetics/subaccount/initSubaccount.ts
+msgid "Subacccount is activated"
+msgstr ""
+
+#: src/domain/synthetics/subaccount/initSubaccount.ts
+msgid "Subacccount is updated"
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Subaccount Balance"
 msgstr ""
 
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Subaccount:"
 msgstr ""
 
@@ -4711,6 +4756,14 @@ msgstr ""
 msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
 msgstr ""
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "The previously authorized maximum number of Actions have been reached for One‑Click Trading. Set Max allowed Actions and re-authorize."
+msgstr ""
+
+#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
+msgid "The previously authorized maximum number of Actions have been reached for One-Click Trwading. Click here to re-authorize."
+msgstr ""
+
 #: src/components/Exchange/OrdersList.js
 msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
 msgstr ""
@@ -4729,6 +4782,14 @@ msgstr ""
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
+msgstr ""
+
+#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
+msgid "There are insufficient funds in your Subaccount for One-Click Trading. Click here to top-up."
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "There are insufficient funds in your Subaccount for One-Click Trading. Please top-up your Balance."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -4779,12 +4840,20 @@ msgstr ""
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr ""
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "This amount of {0} will be sent to your subaccount to pay for transaction fees."
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code has been taken by someone else on {0}, you will not receive rebates from traders using this code on {1}."
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "This is the maximum top up amount that will be sent to your subaccount after each transaction, the actual amount sent will depend on the actual transaction fee."
 msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
@@ -4831,6 +4900,14 @@ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Tokens"
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Top up"
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/utils.ts
+msgid "Top-up balance"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -5117,6 +5194,10 @@ msgstr ""
 msgid "UTILIZATION"
 msgstr ""
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Unknown"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown buy GM order"
 msgstr ""
@@ -5180,6 +5261,7 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/JoinReferralCode.js
+#: src/components/Synthetics/SubaccountModal/utils.ts
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Update"
@@ -5200,6 +5282,10 @@ msgstr ""
 
 #: src/domain/synthetics/orders/updateOrderTxn.ts
 msgid "Updating order"
+msgstr ""
+
+#: src/domain/synthetics/subaccount/initSubaccount.ts
+msgid "Updating subaccount"
 msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
@@ -5406,10 +5492,10 @@ msgstr ""
 
 #: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
 #: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
-msgid "WETH for auto top ups"
-msgstr ""
+#~ msgid "WETH for auto top ups"
+#~ msgstr ""
 
-#: src/components/Synthetics/OneClickTrading/utils.ts
+#: src/components/Synthetics/SubaccountModal/utils.ts
 msgid "WETH for auto top-ups is required"
 msgstr ""
 
@@ -5477,8 +5563,8 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Withdraw"
@@ -5877,6 +5963,14 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "{0} can not be sent to smart contract addresses. Select another token."
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "{0} cannot be automatically transferred to your Subaccount, so only {1} can be used for auto top ups. Keep an amount of {2} as {3} in your Main Account to allow for auto top ups."
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "{0} for auto top ups"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js

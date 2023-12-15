@@ -262,8 +262,12 @@ msgstr ""
 msgid "Actions"
 msgstr "액션"
 
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/components/Synthetics/SubaccountModal/utils.ts
 msgid "Activate"
+msgstr ""
+
+#: src/domain/synthetics/subaccount/initSubaccount.ts
+msgid "Activating subaccount"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
@@ -1227,6 +1231,10 @@ msgstr "현재 리저브"
 msgid "Current Weight"
 msgstr "현재 가중치"
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Current actions count"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Current {0} long"
 msgstr "현재 {0} 롱"
@@ -1421,7 +1429,7 @@ msgstr "예치중..."
 msgid "Diff"
 msgstr "차이"
 
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Disable"
 msgstr ""
 
@@ -1453,6 +1461,10 @@ msgstr "30일 동안 해당 메시지 다시보지 않기"
 #: src/components/Exchange/PositionShare.tsx
 msgid "Download"
 msgstr "다운로드"
+
+#: src/components/Synthetics/SubaccountModal/utils.ts
+msgid "ETH is not available"
+msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/StakeV2.js
@@ -1513,6 +1525,10 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 msgid "Enable Leverage"
 msgstr "레버리지 유효화"
+
+#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
+msgid "Enable One-Click Trading to reduce <0>wallet<1/></0> signing popups. This option is also accessible through the Wallet menu in the top right."
+msgstr ""
 
 #: src/components/Exchange/OrdersToa.js
 #: src/components/Exchange/OrdersToa.js
@@ -1751,6 +1767,14 @@ msgstr "매도 가격"
 msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APR"
 msgstr ""
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Expected Actions are based on the current Network Fee."
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Expected Available Actions"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Explore, analyze, and copy on-chain traders"
 msgstr ""
@@ -1874,6 +1898,10 @@ msgstr "금융 보고서 및 프로토콜 분석"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Floor Price Fund"
 msgstr "하한 가격 펀드"
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "For additional safety, subaccounts are only allowed to perform a specified number of actions before re-authorization from your main account is required."
+msgstr ""
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
@@ -2241,17 +2269,20 @@ msgstr ""
 msgid "Initial collateral"
 msgstr "최초 담보"
 
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Initial top up"
 msgstr ""
 
 #: src/components/Synthetics/OneClickTrading/utils.ts
-msgid "Initial top-up amount is required"
-msgstr ""
+#~ msgid "Initial top-up amount is required"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Insufficient Available Liquidity to swap to {0}:"
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/utils.ts
+msgid "Insufficient ETH balance"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -2727,7 +2758,7 @@ msgstr ""
 msgid "MAX"
 msgstr "최대"
 
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Main Account Balance"
 msgstr ""
 
@@ -2856,8 +2887,7 @@ msgstr "풀 최대 수용량"
 msgid "Max acceptable Price Impact precision is 0.01%"
 msgstr ""
 
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Max allowed actions"
 msgstr ""
 
@@ -2870,8 +2900,7 @@ msgstr ""
 msgid "Max amount exceeded"
 msgstr "최대 수량을 초과했습니다"
 
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Max auto top up amount"
 msgstr ""
 
@@ -2977,11 +3006,11 @@ msgstr ""
 msgid "Max: {0}"
 msgstr "최대: {0}"
 
-#: src/components/Synthetics/OneClickTrading/utils.ts
+#: src/components/Synthetics/SubaccountModal/utils.ts
 msgid "Maximum allowed actions is required"
 msgstr ""
 
-#: src/components/Synthetics/OneClickTrading/utils.ts
+#: src/components/Synthetics/SubaccountModal/utils.ts
 msgid "Maximum auto top-up amount is required"
 msgstr ""
 
@@ -3198,6 +3227,10 @@ msgstr ""
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr "주문 실행은 보장되지 않습니다.<0/><1/>이것은 다음과 같은 상황에 일어날 수 있습니다:"
+
+#: src/components/Synthetics/SubaccountModal/utils.ts
+msgid "Nothing to Update"
+msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "One-Click Trading"
@@ -3705,6 +3738,10 @@ msgstr ""
 #: src/pages/Stake/StakeV2.js
 msgid "Purchase Insurance"
 msgstr "보험 구입"
+
+#: src/components/Synthetics/SubaccountModal/utils.ts
+msgid "Re-authorize"
+msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
@@ -4380,11 +4417,19 @@ msgstr ""
 msgid "Structured Products"
 msgstr "구조화금융 프로덕트"
 
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/domain/synthetics/subaccount/initSubaccount.ts
+msgid "Subacccount is activated"
+msgstr ""
+
+#: src/domain/synthetics/subaccount/initSubaccount.ts
+msgid "Subacccount is updated"
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Subaccount Balance"
 msgstr ""
 
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Subaccount:"
 msgstr ""
 
@@ -4711,6 +4756,14 @@ msgstr ""
 msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
 msgstr "해당 포지션은 최대 슬리피지 {1}%의 {0} USD에서 열리게 됩니다.<0/><1/>슬리피지 설정은 지갑 연동 후 최상단 우측, 귀하의 지갑주소 우측의 세팅을 통해서 설정할 수 있습니다.<2/><3/><4>더 자세한 정보<4/>"
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "The previously authorized maximum number of Actions have been reached for One‑Click Trading. Set Max allowed Actions and re-authorize."
+msgstr ""
+
+#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
+msgid "The previously authorized maximum number of Actions have been reached for One-Click Trwading. Click here to re-authorize."
+msgstr ""
+
 #: src/components/Exchange/OrdersList.js
 msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
 msgstr "주문이 실행될 수 있는 가격은 차트에 표시된 가격과 조금 다를 수 있습니다. 그 이유는 시장가 주문이 가격을 바꿀 수 있는 반면 지정가 주문이나 트리거 주문이 가격을 바꾸지는 않기 때문입니다."
@@ -4730,6 +4783,14 @@ msgstr ""
 #: src/components/ModalViews/RedirectModal.js
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
 msgstr "웹사이트는 오픈소스인 <0>GMX front end</0>를 이용하고 커뮤니티에의해 배포되며, P2P <1>IPFS network<1/>에 의해 서빙및 호스팅됩니다."
+
+#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
+msgid "There are insufficient funds in your Subaccount for One-Click Trading. Click here to top-up."
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "There are insufficient funds in your Subaccount for One-Click Trading. Please top-up your Balance."
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "There are more longs than shorts, borrow fees for shorting is currently zero"
@@ -4779,6 +4840,10 @@ msgstr "가격 조건이 충족되었을 때 귀하의 주문을 실행할 수 �
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr ""
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "This amount of {0} will be sent to your subaccount to pay for transaction fees."
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code has been taken by someone else on {0}, you will not receive rebates from traders using this code on {1}."
 msgstr "해당 코드는 {0}에서 다른 사용자에 의해 이미 사용되었습니다. {1}에서는 해당 코드를 통해 트레이더로부터의 소개 보수는 받을 수 없습니다."
@@ -4786,6 +4851,10 @@ msgstr "해당 코드는 {0}에서 다른 사용자에 의해 이미 사용되�
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 msgstr "해당 코드는 {0}에 아직 등록되지 않았기때문에, 소개 보수를 받을 수 없습니다.<0/><1/>네트워크를 변경후 해당 코드를 {1}상에서 생성하세요."
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "This is the maximum top up amount that will be sent to your subaccount after each transaction, the actual amount sent will depend on the actual transaction fee."
+msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
@@ -4832,6 +4901,14 @@ msgstr "수수료를 줄이기 위해서는 다른 자산으로 지불해주세�
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Tokens"
 msgstr "토큰"
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Top up"
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/utils.ts
+msgid "Top-up balance"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -5117,6 +5194,10 @@ msgstr ""
 msgid "UTILIZATION"
 msgstr "이용률"
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Unknown"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown buy GM order"
 msgstr ""
@@ -5180,6 +5261,7 @@ msgstr "언스테이킹중..."
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/JoinReferralCode.js
+#: src/components/Synthetics/SubaccountModal/utils.ts
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Update"
@@ -5200,6 +5282,10 @@ msgstr "주문 업데이트중..."
 
 #: src/domain/synthetics/orders/updateOrderTxn.ts
 msgid "Updating order"
+msgstr ""
+
+#: src/domain/synthetics/subaccount/initSubaccount.ts
+msgid "Updating subaccount"
 msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
@@ -5406,10 +5492,10 @@ msgstr "비중"
 
 #: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
 #: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
-msgid "WETH for auto top ups"
-msgstr ""
+#~ msgid "WETH for auto top ups"
+#~ msgstr ""
 
-#: src/components/Synthetics/OneClickTrading/utils.ts
+#: src/components/Synthetics/SubaccountModal/utils.ts
 msgid "WETH for auto top-ups is required"
 msgstr ""
 
@@ -5477,8 +5563,8 @@ msgstr "포지션을 닫을 때, 어떤 토큰으로 이익을 수취할 지 선
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Withdraw"
@@ -5877,6 +5963,14 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "{0} can not be sent to smart contract addresses. Select another token."
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "{0} cannot be automatically transferred to your Subaccount, so only {1} can be used for auto top ups. Keep an amount of {2} as {3} in your Main Account to allow for auto top ups."
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "{0} for auto top ups"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js

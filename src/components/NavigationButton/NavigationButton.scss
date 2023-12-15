@@ -1,0 +1,54 @@
+.NavigationButton {
+  display: flex;
+  overflow: hidden;
+  border-radius: 0.4rem;
+  background-color: rgba(33 37 64);
+  min-height: 30px;
+  user-select: none;
+
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(33 37 64 / 85%);
+  }
+
+  &:active {
+    background-color: rgba(33 37 64 / 93%);
+  }
+
+  &-button {
+    display: flex;
+    align-items: center;
+    flex: 1;
+  }
+
+  &-button-text {
+    flex: 1;
+    color: white;
+    font-size: 1.2rem;
+    padding: 0.8rem 1rem;
+  }
+
+  &-button-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.8rem;
+  }
+
+  &-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(63, 68, 103);
+    padding: 0 0.7rem;
+
+    &:hover {
+      background-color: rgb(68, 73, 107);
+    }
+
+    &:active {
+      background-color: #212540;
+    }
+  }
+}

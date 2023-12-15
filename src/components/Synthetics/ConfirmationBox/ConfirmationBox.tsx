@@ -66,7 +66,9 @@ import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import SlippageInput from "components/SlippageInput/SlippageInput";
+import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { useIsLastSubaccountAction, useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { AvailableMarketsOptions } from "domain/synthetics/trade/useAvailableMarketsOptions";
 import { helperToast } from "lib/helperToast";
@@ -390,9 +392,17 @@ export function ConfirmationBox(p: Props) {
     [p.isVisible, submitButtonState.disabled]
   );
 
+  const subaccount = useSubaccount(p.executionFee?.feeTokenAmount ?? null);
+  const isLastSubaccountAction = useIsLastSubaccountAction();
+
   function onCancelOrderClick(key: string): void {
     if (!signer) return;
-    cancelOrdersTxn(chainId, signer, { orderKeys: [key], setPendingTxns: p.setPendingTxns });
+    cancelOrdersTxn(chainId, signer, {
+      orderKeys: [key],
+      setPendingTxns: p.setPendingTxns,
+      subaccount,
+      isLastSubaccountAction,
+    });
   }
 
   function onSubmitWrapOrUnwrap() {
@@ -433,6 +443,7 @@ export function ConfirmationBox(p: Props) {
       referralCode: referralCodeForTxn,
       executionFee: executionFee.feeTokenAmount,
       allowedSlippage,
+      subaccount,
       tokensData,
       setPendingTxns,
       setPendingOrder,
@@ -475,6 +486,7 @@ export function ConfirmationBox(p: Props) {
       indexToken: marketInfo.indexToken,
       tokensData,
       skipSimulation: isLimit || shouldDisableValidation,
+      subaccount,
       setPendingTxns: p.setPendingTxns,
       setPendingOrder,
       setPendingPosition,
@@ -502,6 +514,7 @@ export function ConfirmationBox(p: Props) {
     return createDecreaseOrderTxn(
       chainId,
       signer,
+      subaccount,
       {
         account,
         marketAddress: marketInfo.marketTokenAddress,
@@ -571,58 +584,76 @@ export function ConfirmationBox(p: Props) {
     [p.isVisible, prevIsVisible]
   );
 
+  function renderSubaccountNavigationButton() {
+    return <SubaccountNavigationButton executionFee={p.executionFee?.feeTokenAmount} closeConfirmationBox={onClose} />;
+  }
+
   function renderMain() {
     if (isSwap) {
       return (
-        <div className="Confirmation-box-main">
-          <div>
-            <Trans>Pay</Trans>{" "}
-            {formatTokenAmountWithUsd(
-              swapAmounts?.amountIn,
-              swapAmounts?.usdIn,
-              fromToken?.symbol,
-              fromToken?.decimals
-            )}
+        <>
+          <div className="Confirmation-box-main">
+            <div>
+              <Trans>Pay</Trans>{" "}
+              {formatTokenAmountWithUsd(
+                swapAmounts?.amountIn,
+                swapAmounts?.usdIn,
+                fromToken?.symbol,
+                fromToken?.decimals
+              )}
+            </div>
+            <div className="Confirmation-box-main-icon"></div>
+            <div>
+              <Trans>Receive</Trans>{" "}
+              {formatTokenAmountWithUsd(
+                swapAmounts?.amountOut,
+                swapAmounts?.usdOut,
+                toToken?.symbol,
+                toToken?.decimals
+              )}
+            </div>
           </div>
-          <div className="Confirmation-box-main-icon"></div>
-          <div>
-            <Trans>Receive</Trans>{" "}
-            {formatTokenAmountWithUsd(swapAmounts?.amountOut, swapAmounts?.usdOut, toToken?.symbol, toToken?.decimals)}
-          </div>
-        </div>
+          {renderSubaccountNavigationButton()}
+        </>
       );
     }
 
     if (isIncrease) {
       return (
-        <div className="Confirmation-box-main">
-          <span>
-            <Trans>Pay</Trans>{" "}
-            {formatTokenAmountWithUsd(
-              increaseAmounts?.initialCollateralAmount,
-              increaseAmounts?.initialCollateralUsd,
-              fromToken?.symbol,
-              fromToken?.decimals
-            )}
-          </span>
-          <div className="Confirmation-box-main-icon"></div>
-          <div>
-            {isLong ? t`Long` : t`Short`}{" "}
-            {formatTokenAmountWithUsd(
-              increaseAmounts?.sizeDeltaInTokens,
-              increaseAmounts?.sizeDeltaUsd,
-              toToken?.symbol,
-              toToken?.decimals
-            )}
+        <>
+          <div className="Confirmation-box-main">
+            <span>
+              <Trans>Pay</Trans>{" "}
+              {formatTokenAmountWithUsd(
+                increaseAmounts?.initialCollateralAmount,
+                increaseAmounts?.initialCollateralUsd,
+                fromToken?.symbol,
+                fromToken?.decimals
+              )}
+            </span>
+            <div className="Confirmation-box-main-icon"></div>
+            <div>
+              {isLong ? t`Long` : t`Short`}{" "}
+              {formatTokenAmountWithUsd(
+                increaseAmounts?.sizeDeltaInTokens,
+                increaseAmounts?.sizeDeltaUsd,
+                toToken?.symbol,
+                toToken?.decimals
+              )}
+            </div>
           </div>
-        </div>
+          {renderSubaccountNavigationButton()}
+        </>
       );
     }
 
     return (
-      <div className={cx("Confirmation-box-main ConfirmationBox-main")}>
-        <Trans>Decrease</Trans>&nbsp;{indexToken?.symbol} {isLong ? t`Long` : t`Short`}
-      </div>
+      <>
+        <div className={cx("Confirmation-box-main ConfirmationBox-main")}>
+          <Trans>Decrease</Trans>&nbsp;{indexToken?.symbol} {isLong ? t`Long` : t`Short`}
+        </div>
+        {renderSubaccountNavigationButton()}
+      </>
     );
   }
 

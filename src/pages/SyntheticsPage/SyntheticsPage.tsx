@@ -41,7 +41,7 @@ import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTrade
 import { helperToast } from "lib/helperToast";
 import useWallet from "lib/wallets/useWallet";
 import { SettleAccruedFundingFeeModal } from "components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal";
-import { OneClickTradingModal } from "components/Synthetics/OneClickTrading/OneClickTradingModal";
+import { useIsLastSubaccountAction, useSubaccount } from "context/SubaccountContext/SubaccountContext";
 
 export type Props = {
   savedIsPnlInLeverage: boolean;
@@ -237,6 +237,9 @@ export function SyntheticsPage(p: Props) {
     return setIsAcceptablePriceImpactEditing(true);
   }, []);
 
+  const subaccount = useSubaccount(null);
+  const isLastSubaccountAction = useIsLastSubaccountAction();
+
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
   let allowedSlippage = savedSlippageAmount!;
   if (isHigherSlippageAllowed) {
@@ -257,6 +260,8 @@ export function SyntheticsPage(p: Props) {
     cancelOrdersTxn(chainId, signer, {
       orderKeys: selectedOrdersKeysArr,
       setPendingTxns: setPendingTxns,
+      subaccount,
+      isLastSubaccountAction,
     })
       .then(async (tx) => {
         const receipt = await tx.wait();
@@ -591,7 +596,6 @@ export function SyntheticsPage(p: Props) {
         onClose={() => setIsClaiming(false)}
         setPendingTxns={setPendingTxns}
       />
-      <OneClickTradingModal />
       <SettleAccruedFundingFeeModal
         isVisible={isSettling}
         positionKeys={gettingPendingFeePositionKeys}

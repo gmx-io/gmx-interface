@@ -10,6 +10,7 @@ import useWallet from "lib/wallets/useWallet";
 import { Dispatch, SetStateAction, useState } from "react";
 import { OrderEditor } from "../OrderEditor/OrderEditor";
 import { OrderItem } from "../OrderItem/OrderItem";
+import { useIsLastSubaccountAction, useSubaccount } from "context/SubaccountContext/SubaccountContext";
 
 type Props = {
   hideActions?: boolean;
@@ -31,12 +32,15 @@ export function OrderList(p: Props) {
   const [canellingOrdersKeys, setCanellingOrdersKeys] = useState<string[]>([]);
   const [editingOrderKey, setEditingOrderKey] = useState<string>();
 
+  const subaccount = useSubaccount(null);
+
   const orders = Object.values(p.ordersData || {}).filter(
     (order) => isLimitOrderType(order.orderType) || isTriggerDecreaseOrderType(order.orderType)
   );
 
   const isAllOrdersSelected = orders.length > 0 && orders.every((o) => p.selectedOrdersKeys?.[o.key]);
   const editingOrder = orders.find((o) => o.key === editingOrderKey);
+  const isLastSubaccountAction = useIsLastSubaccountAction();
 
   function onSelectOrder(key: string) {
     p.setSelectedOrdersKeys?.((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -57,9 +61,12 @@ export function OrderList(p: Props) {
     if (!signer) return;
     setCanellingOrdersKeys((prev) => [...prev, key]);
 
-    cancelOrdersTxn(chainId, signer, { orderKeys: [key], setPendingTxns: p.setPendingTxns }).finally(() =>
-      setCanellingOrdersKeys((prev) => prev.filter((k) => k !== key))
-    );
+    cancelOrdersTxn(chainId, signer, {
+      orderKeys: [key],
+      setPendingTxns: p.setPendingTxns,
+      subaccount,
+      isLastSubaccountAction,
+    }).finally(() => setCanellingOrdersKeys((prev) => prev.filter((k) => k !== key)));
   }
 
   return (

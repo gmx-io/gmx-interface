@@ -2,6 +2,7 @@ import { ethers } from "ethers";
 import useScrollToTop from "lib/useScrollToTop";
 import { useEffect, useRef, useState } from "react";
 import { SWRConfig } from "swr";
+import "@wagmi/connectors";
 
 import { Redirect, Route, HashRouter as Router, Switch, useHistory, useLocation } from "react-router-dom";
 
@@ -96,7 +97,8 @@ import { useDisconnect } from "wagmi";
 import useWallet from "lib/wallets/useWallet";
 import { swrGCMiddleware } from "lib/swrMiddlewares";
 import useTradeRedirect from "lib/useTradeRedirect";
-import { OneClickTradingContextProvider } from "context/OneClickTradingContext/OneClickTradingContext.tsx";
+import { OneClickTradingContextProvider } from "context/SubaccountContext/SubaccountContext";
+import { OneClickTradingModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -293,6 +295,7 @@ function FullApp() {
               </div>
             );
           }
+
           if (receipt.status === 1 && pendingTxn.message) {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
             helperToast.success(
@@ -667,6 +670,7 @@ function FullApp() {
           <Trans>Save</Trans>
         </Button>
       </Modal>
+      <OneClickTradingModal setPendingTxns={setPendingTxns} />
     </>
   );
 }

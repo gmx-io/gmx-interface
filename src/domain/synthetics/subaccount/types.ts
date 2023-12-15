@@ -6,8 +6,8 @@ export type OneClickTradingSerializedConfig = {
 } | null;
 
 export type OneClickTradingParams = {
-  initialTopUp: BigNumber;
-  maxAutoTopUpAmount: BigNumber;
-  wethForAutoTopUps: BigNumber;
-  maxAllowedActions: BigNumber;
+  topUp: BigNumber | null;
+  maxAutoTopUpAmount: BigNumber | null;
+  wntForAutoTopUps: BigNumber | null;
+  maxAllowedActions: BigNumber | null;
 };

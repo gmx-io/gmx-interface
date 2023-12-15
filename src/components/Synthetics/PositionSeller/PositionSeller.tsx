@@ -72,6 +72,8 @@ import useWallet from "lib/wallets/useWallet";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { AiOutlineEdit } from "react-icons/ai";
+import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
+import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 
 export type Props = {
   acceptablePriceImpactBps: BigNumber;
@@ -349,6 +351,8 @@ export function PositionSeller(p: Props) {
     triggerPrice,
   ]);
 
+  const subaccount = useSubaccount(executionFee?.feeTokenAmount ?? null);
+
   function onSubmit() {
     if (!account) {
       openConnectModal?.();
@@ -375,6 +379,7 @@ export function PositionSeller(p: Props) {
     createDecreaseOrderTxn(
       chainId,
       signer,
+      subaccount,
       {
         account,
         marketAddress: position.marketAddress,
@@ -698,6 +703,7 @@ export function PositionSeller(p: Props) {
           optionLabels={ORDER_OPTION_LABELS}
           onChange={setOrderOption}
         />
+        <SubaccountNavigationButton executionFee={executionFee?.feeTokenAmount} closeConfirmationBox={onClose} />
 
         {position && (
           <>

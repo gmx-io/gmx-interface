@@ -2,22 +2,19 @@ import { BigNumber } from "ethers";
 import { formatAmount } from "lib/numbers";
 import { useCallback, useState } from "react";
 
-function numberToString(value: BigNumber, decimals: number, displayDecimals: number) {
+function numberToString(value: BigNumber | null, decimals: number, displayDecimals: number) {
+  if (value === null) return "";
   return formatAmount(value, decimals, displayDecimals);
 }
 
 function stringToNumber(value: string, decimals: number, displayDecimals: number) {
   value = value.replace(/,/g, "").trim();
 
-  if (value.startsWith("0")) {
-    value = value.replace(/^0+/, "");
-  }
-
   if (value.trim() === "") {
-    value = "0";
+    return null;
   }
 
-  if (value === ".") {
+  if (value === "." || value.trim() === "0") {
     value = "0";
   }
 
@@ -28,7 +25,8 @@ function stringToNumber(value: string, decimals: number, displayDecimals: number
   const split = value.split(".");
   const [int] = split;
   let [, fraction] = split;
-  fraction = (fraction ?? "").slice(0, displayDecimals);
+
+  fraction = (fraction ?? "").slice(0, decimals);
 
   const fractionLength = fraction.length;
   const multiplier = BigNumber.from(10).pow(fractionLength);
@@ -42,17 +40,12 @@ function stringToNumber(value: string, decimals: number, displayDecimals: number
   }
 }
 
-export function useBigNumberState(
-  initialValue: BigNumber,
-  decimals: number,
-  displayDecimals: number,
-  shouldCutDecimals = false
-) {
+export function useBigNumberInput(initialValue: BigNumber | null, decimals: number, displayDecimals: number) {
   const [value, setRawValue] = useState(initialValue);
   const [displayValue, setRawDisplayValue] = useState(() => numberToString(initialValue, decimals, displayDecimals));
 
   const setValue = useCallback(
-    (newValue: BigNumber) => {
+    (newValue: BigNumber | null) => {
       setRawValue(newValue);
       setRawDisplayValue(numberToString(newValue, decimals, displayDecimals));
     },
@@ -62,12 +55,11 @@ export function useBigNumberState(
   const setDisplayValue = useCallback(
     (newValue: string) => {
       const number = stringToNumber(newValue, decimals, displayDecimals);
-      if (number === null) return;
 
-      setRawDisplayValue(shouldCutDecimals ? cutDecimals(newValue, displayDecimals) : newValue);
+      setRawDisplayValue(newValue);
       setRawValue(number);
     },
-    [decimals, displayDecimals, shouldCutDecimals]
+    [decimals, displayDecimals]
   );
 
   return {
@@ -77,15 +69,4 @@ export function useBigNumberState(
     setDisplayValue,
     isEmpty: !displayValue.trim(),
   };
-}
-
-function cutDecimals(value: string, displayDecimals: number) {
-  if (!value.includes(".")) return value;
-  if (value.endsWith(".")) return value;
-
-  const split = value.split(".");
-  const [int] = split;
-  let [, fraction] = split;
-  fraction = (fraction ?? "").slice(0, displayDecimals);
-  return fraction ? `${int}.${fraction}` : int;
 }

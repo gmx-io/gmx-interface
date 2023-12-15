@@ -11,6 +11,8 @@ import { applySlippageToMinOut } from "../trade";
 import { isMarketOrderType } from "./utils";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { t } from "@lingui/macro";
+import { Subaccount } from "context/SubaccountContext/SubaccountContext";
+import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 
 const { AddressZero } = ethers.constants;
 
@@ -26,84 +28,42 @@ export type SwapOrderParams = {
   orderType: OrderType.MarketSwap | OrderType.LimitSwap;
   executionFee: BigNumber;
   allowedSlippage: number;
+  subaccount: Subaccount;
   setPendingTxns: (txns: any) => void;
   setPendingOrder: SetPendingOrder;
 };
 
 export async function createSwapOrderTxn(chainId: number, signer: Signer, p: SwapOrderParams) {
   const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
-
-  const orderVaultAddress = getContract(chainId, "OrderVault");
-
   const isNativePayment = p.fromTokenAddress === NATIVE_TOKEN_ADDRESS;
   const isNativeReceive = p.toTokenAddress === NATIVE_TOKEN_ADDRESS;
+  const subaccount = isNativePayment ? null : p.subaccount;
+  const router = subaccount ? getSubaccountRouterContract(chainId, subaccount.signer) : exchangeRouter;
 
-  const wntSwapAmount = isNativePayment ? p.fromTokenAmount : BigNumber.from(0);
-  const totalWntAmount = wntSwapAmount.add(p.executionFee);
+  const { encodedPayload, totalWntAmount, minOutputAmount } = await getParams(router, signer, subaccount, chainId, p);
+  const { encodedPayload: simulationEncodedPayload, totalWntAmount: sumaltionTotalWntAmount } = await getParams(
+    exchangeRouter,
+    signer,
+    null,
+    chainId,
+    p
+  );
 
   const initialCollateralTokenAddress = convertTokenAddress(chainId, p.fromTokenAddress, "wrapped");
-
-  const shouldApplySlippage = isMarketOrderType(p.orderType);
-
-  const minOutputAmount = shouldApplySlippage
-    ? applySlippageToMinOut(p.allowedSlippage, p.minOutputAmount)
-    : p.minOutputAmount;
-
-  const multicall = [
-    { method: "sendWnt", params: [orderVaultAddress, totalWntAmount] },
-
-    !isNativePayment
-      ? { method: "sendTokens", params: [p.fromTokenAddress, orderVaultAddress, p.fromTokenAmount] }
-      : undefined,
-
-    {
-      method: "createOrder",
-      params: [
-        {
-          addresses: {
-            receiver: p.account,
-            initialCollateralToken: initialCollateralTokenAddress,
-            callbackContract: AddressZero,
-            market: AddressZero,
-            swapPath: p.swapPath,
-            uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.constants.AddressZero,
-          },
-          numbers: {
-            sizeDeltaUsd: BigNumber.from(0),
-            initialCollateralDeltaAmount: BigNumber.from(0),
-            triggerPrice: BigNumber.from(0),
-            acceptablePrice: BigNumber.from(0),
-            executionFee: p.executionFee,
-            callbackGasLimit: BigNumber.from(0),
-            minOutputAmount,
-          },
-          orderType: p.orderType,
-          decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
-          isLong: false,
-          shouldUnwrapNativeToken: isNativeReceive,
-          referralCode: p.referralCode || ethers.constants.HashZero,
-        },
-      ],
-    },
-  ];
-
-  const encodedPayload = multicall
-    .filter(Boolean)
-    .map((call) => exchangeRouter.interface.encodeFunctionData(call!.method, call!.params));
 
   if (p.orderType !== OrderType.LimitSwap) {
     await simulateExecuteOrderTxn(chainId, {
       account: p.account,
       primaryPriceOverrides: {},
       secondaryPriceOverrides: {},
-      createOrderMulticallPayload: encodedPayload,
-      value: totalWntAmount,
+      createOrderMulticallPayload: simulationEncodedPayload,
+      value: sumaltionTotalWntAmount,
       tokensData: p.tokensData,
       errorTitle: t`Order error.`,
     });
   }
 
-  return callContract(chainId, exchangeRouter, "multicall", [encodedPayload], {
+  return callContract(chainId, router, "multicall", [encodedPayload], {
     value: totalWntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
@@ -122,4 +82,74 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, p: Swa
       shouldUnwrapNativeToken: isNativeReceive,
     });
   });
+}
+
+async function getParams(
+  router: ethers.Contract,
+  signer: Signer,
+  subaccount: Subaccount,
+  chainId: number,
+  p: SwapOrderParams
+) {
+  const isNativePayment = p.fromTokenAddress === NATIVE_TOKEN_ADDRESS;
+  const isNativeReceive = p.toTokenAddress === NATIVE_TOKEN_ADDRESS;
+  const orderVaultAddress = getContract(chainId, "OrderVault");
+  const wntSwapAmount = isNativePayment ? p.fromTokenAmount : BigNumber.from(0);
+  const totalWntAmount = wntSwapAmount.add(p.executionFee);
+
+  const initialCollateralTokenAddress = convertTokenAddress(chainId, p.fromTokenAddress, "wrapped");
+
+  const shouldApplySlippage = isMarketOrderType(p.orderType);
+
+  const minOutputAmount = shouldApplySlippage
+    ? applySlippageToMinOut(p.allowedSlippage, p.minOutputAmount)
+    : p.minOutputAmount;
+
+  const initialCollateralDeltaAmount = subaccount ? p.fromTokenAmount : BigNumber.from(0);
+
+  const createOrderParams = {
+    addresses: {
+      receiver: p.account,
+      initialCollateralToken: initialCollateralTokenAddress,
+      callbackContract: AddressZero,
+      market: AddressZero,
+      swapPath: p.swapPath,
+      uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.constants.AddressZero,
+    },
+    numbers: {
+      sizeDeltaUsd: BigNumber.from(0),
+      initialCollateralDeltaAmount,
+      triggerPrice: BigNumber.from(0),
+      acceptablePrice: BigNumber.from(0),
+      executionFee: p.executionFee,
+      callbackGasLimit: BigNumber.from(0),
+      minOutputAmount,
+    },
+    orderType: p.orderType,
+    decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
+    isLong: false,
+    shouldUnwrapNativeToken: isNativeReceive,
+    referralCode: p.referralCode || ethers.constants.HashZero,
+  };
+
+  const multicall = [
+    { method: "sendWnt", params: [orderVaultAddress, totalWntAmount] },
+
+    !isNativePayment && !subaccount
+      ? { method: "sendTokens", params: [p.fromTokenAddress, orderVaultAddress, p.fromTokenAmount] }
+      : undefined,
+
+    {
+      method: "createOrder",
+      params: subaccount ? [await signer.getAddress(), createOrderParams] : [createOrderParams],
+    },
+  ];
+
+  return {
+    minOutputAmount,
+    totalWntAmount,
+    encodedPayload: multicall
+      .filter(Boolean)
+      .map((call) => router.interface.encodeFunctionData(call!.method, call!.params)),
+  };
 }

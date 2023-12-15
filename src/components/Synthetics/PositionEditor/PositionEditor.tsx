@@ -1,4 +1,5 @@
 import { Trans, t } from "@lingui/macro";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import Token from "abis/Token.json";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
@@ -12,7 +13,10 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { getContract } from "config/contracts";
 import { getSyntheticsCollateralEditAddressKey } from "config/localStorage";
 import { NATIVE_TOKEN_ADDRESS, getToken } from "config/tokens";
+import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { useHasOutdatedUi } from "domain/legacy";
 import { useUserReferralInfo } from "domain/referrals/hooks";
 import {
   estimateExecuteDecreaseOrderGasLimit,
@@ -43,6 +47,7 @@ import { getCommonError, getEditCollateralError } from "domain/synthetics/trade/
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
+import { DUST_BNB } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   formatAmountFree,
@@ -54,16 +59,13 @@ import {
 } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
+import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
+import useWallet from "lib/wallets/useWallet";
 import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionEditor.scss";
-import { useHasOutdatedUi } from "domain/legacy";
-import useWallet from "lib/wallets/useWallet";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { DUST_BNB } from "lib/legacy";
-import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
-import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 
 export type Props = {
   position?: PositionInfo;
@@ -302,6 +304,8 @@ export function PositionEditor(p: Props) {
     position,
   ]);
 
+  const subaccount = useSubaccount(executionFee?.feeTokenAmount ?? null);
+
   function onSubmit() {
     if (!account) {
       openConnectModal?.();
@@ -343,6 +347,7 @@ export function PositionEditor(p: Props) {
         indexToken: position.indexToken,
         tokensData,
         skipSimulation: p.shouldDisableValidation,
+        subaccount,
         setPendingTxns,
         setPendingOrder,
         setPendingPosition,
@@ -361,6 +366,7 @@ export function PositionEditor(p: Props) {
       createDecreaseOrderTxn(
         chainId,
         signer,
+        subaccount,
         {
           account,
           marketAddress: position.marketAddress,
@@ -448,6 +454,7 @@ export function PositionEditor(p: Props) {
               optionLabels={operationLabels}
               className="PositionEditor-tabs SwapBox-option-tabs"
             />
+            <SubaccountNavigationButton executionFee={executionFee?.feeTokenAmount} closeConfirmationBox={onClose} />
 
             <BuyInputSection
               topLeftLabel={operationLabels[operation]}

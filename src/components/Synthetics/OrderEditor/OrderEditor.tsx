@@ -63,6 +63,7 @@ import { getByKey } from "lib/objects";
 import Button from "components/Button/Button";
 import "./OrderEditor.scss";
 import useWallet from "lib/wallets/useWallet";
+import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 
 type Props = {
   positionsData?: PositionsInfoData;
@@ -222,6 +223,8 @@ export function OrderEditor(p: Props) {
     return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice);
   }, [chainId, gasLimits, gasPrice, p.order.isFrozen, p.order.orderType, p.order.swapPath, tokensData]);
 
+  const subaccount = useSubaccount(executionFee?.feeTokenAmount ?? null);
+
   function getError() {
     if (isSubmitting) {
       return t`Updating Order...`;
@@ -350,6 +353,7 @@ export function OrderEditor(p: Props) {
       minOutputAmount: minOutputAmount || p.order.minOutputAmount,
       executionFee: executionFee?.feeTokenAmount,
       indexToken: indexToken,
+      subaccount,
       setPendingTxns: p.setPendingTxns,
     })
       .then(() => p.onClose())
