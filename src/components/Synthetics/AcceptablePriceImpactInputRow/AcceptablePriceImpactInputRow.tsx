@@ -64,9 +64,14 @@ function AcceptablePriceImpactInputRowImpl({
   }
 
   const recommendedHandle = (
-    <span className="AcceptablePriceImpactInputRow-handle" onClick={handleRecommendedValueClick}>
-      <Trans>Recommended Impact: {formatPercentage(BigNumber.from(defaultValue).mul(-1), { signed: true })}.</Trans>
-    </span>
+    <>
+      <Trans>
+        <span className="AcceptablePriceImpactInputRow-handle" onClick={handleRecommendedValueClick}>
+          Set Recommended Impact: {formatPercentage(BigNumber.from(defaultValue).mul(-1), { signed: true })}
+        </span>
+        .
+      </Trans>
+    </>
   );
 
   const lowValueWarningText = fees.positionPriceImpact?.bps.gte(0) ? (
@@ -111,10 +116,12 @@ function AcceptablePriceImpactInputRowImpl({
       onChange={setValue}
       defaultValue={defaultValue}
       highValue={highValue}
+      highValueCheckStrategy="gt"
       lowValue={defaultValue}
       suggestions={EMPTY_SUGGESTIONS}
       highValueWarningText={highValueWarningText}
       lowValueWarningText={lowValueWarningText}
+      negativeSign
     />
   );
 

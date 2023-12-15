@@ -19,6 +19,8 @@ type Props = {
   suggestions?: number[];
   lowValueWarningText?: ReactNode;
   highValueWarningText?: ReactNode;
+  negativeSign?: boolean;
+  highValueCheckStrategy?: "gte" | "gt";
 };
 
 const DEFAULT_SUGGESTIONS = [0.3, 0.5, 1, 1.5];
@@ -32,6 +34,8 @@ export default function PercentageInput({
   suggestions = DEFAULT_SUGGESTIONS,
   highValueWarningText,
   lowValueWarningText,
+  negativeSign,
+  highValueCheckStrategy: checkStrategy = "gte",
 }: Props) {
   const [inputValue, setInputvalue] = useState<string>(() => getValueText(defaultValue));
   const [isPanelVisible, setIsPanelVisible] = useState<boolean>(false);
@@ -68,14 +72,17 @@ export default function PercentageInput({
   const error = useMemo(() => {
     const parsedValue = Math.round(Number.parseFloat(inputValue) * 100);
 
-    if (highValue && parsedValue >= highValue) {
+    if (
+      highValue &&
+      ((checkStrategy === "gte" && parsedValue >= highValue) || (checkStrategy === "gt" && parsedValue > highValue))
+    ) {
       return highValueWarningText;
     }
 
     if (lowValueWarningText && lowValue && parsedValue < lowValue) {
       return lowValueWarningText;
     }
-  }, [inputValue, highValue, lowValueWarningText, lowValue, highValueWarningText]);
+  }, [inputValue, highValue, checkStrategy, lowValueWarningText, lowValue, highValueWarningText]);
 
   const id = useMemo(() => Math.random().toString(36), []);
 
@@ -83,24 +90,25 @@ export default function PercentageInput({
 
   return (
     <div className="Percentage-input-wrapper">
-      <div className={cx("Percentage-input", { "input-error": Boolean(error) })}>
-        <input
-          id={id}
-          onFocus={() => setIsPanelVisible(true)}
-          onBlur={() => setIsPanelVisible(false)}
-          value={!!inputValue ? inputValue : ""}
-          placeholder={inputValue || getValueText(defaultValue)}
-          autoComplete="off"
-          onChange={handleChange}
-        />
-        <label htmlFor={id}>
-          <span>%</span>
-        </label>
+      <div className="Percentage-input-sign-input-container">
+        {negativeSign && <span className="Percentage-input-negative-sign">-</span>}
+        <div className={cx("Percentage-input", { "input-error": Boolean(error) })}>
+          <input
+            id={id}
+            onFocus={() => setIsPanelVisible(true)}
+            onBlur={() => setIsPanelVisible(false)}
+            value={!!inputValue ? inputValue : ""}
+            placeholder={inputValue || getValueText(defaultValue)}
+            autoComplete="off"
+            onChange={handleChange}
+          />
+          <label htmlFor={id}>
+            <span>%</span>
+          </label>
+        </div>
       </div>
       {error && !shouldShowPanel && (
-        <div className={cx("Percentage-input-error", "Tooltip-popup", "z-index-1001", "right-bottom", "warning")}>
-          {error}
-        </div>
+        <div className={cx("Percentage-input-error", "Tooltip-popup", "z-index-1001", "right-bottom")}>{error}</div>
       )}
       {shouldShowPanel && (
         <ul className="Percentage-list  ">
