@@ -134,7 +134,7 @@ export function PositionItem(p: Props) {
         <div className={cx("position-list-collateral", { isSmall: !p.isLarge })}>
           <Tooltip
             handle={`${formatUsd(p.position.remainingCollateralUsd)}`}
-            position={p.isLarge ? "left-bottom" : "center-bottom"}
+            position={p.isLarge ? "left-bottom" : "right-bottom"}
             className="PositionItem-collateral-tooltip"
             handleClassName={cx("plain", { negative: p.position.hasLowCollateral })}
             renderContent={() => {
