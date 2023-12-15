@@ -48,23 +48,19 @@ export default function Tooltip(props: Props) {
     }
   }, [setVisible, intervalCloseRef, intervalOpenRef, trigger]);
 
-  const onMouseClick = useCallback(
-    (event: MouseEvent) => {
-      event.preventDefault();
-      if (trigger !== "click" && !IS_TOUCH) return;
-      if (intervalCloseRef.current) {
-        clearInterval(intervalCloseRef.current);
-        intervalCloseRef.current = null;
-      }
-      if (intervalOpenRef.current) {
-        clearInterval(intervalOpenRef.current);
-        intervalOpenRef.current = null;
-      }
+  const onMouseClick = useCallback(() => {
+    if (trigger !== "click" && !IS_TOUCH) return;
+    if (intervalCloseRef.current) {
+      clearInterval(intervalCloseRef.current);
+      intervalCloseRef.current = null;
+    }
+    if (intervalOpenRef.current) {
+      clearInterval(intervalOpenRef.current);
+      intervalOpenRef.current = null;
+    }
 
-      setVisible(true);
-    },
-    [setVisible, intervalCloseRef, trigger]
-  );
+    setVisible(true);
+  }, [setVisible, intervalCloseRef, trigger]);
 
   const onMouseLeave = useCallback(() => {
     intervalCloseRef.current = setTimeout(() => {
@@ -77,11 +73,16 @@ export default function Tooltip(props: Props) {
     }
   }, [setVisible, intervalCloseRef]);
 
+  const onHandleClick = useCallback((event: MouseEvent) => {
+    event.preventDefault();
+  }, []);
+
   const className = cx("Tooltip", props.className);
 
   return (
     <span className={className} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onMouseClick}>
       <span
+        onClick={onHandleClick}
         className={cx({ "Tooltip-handle": !props.disableHandleStyle }, [props.handleClassName], { active: visible })}
       >
         {/* For onMouseLeave to work on disabled button https://github.com/react-component/tooltip/issues/18#issuecomment-411476678 */}
