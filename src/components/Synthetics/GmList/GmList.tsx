@@ -14,7 +14,6 @@ import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens
 import { useChainId } from "lib/chains";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { useMedia } from "react-use";
 import { Operation } from "../GmSwap/GmSwapBox/GmSwapBox";
 import "./GmList.scss";
@@ -32,6 +31,7 @@ import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { getNormalizedTokenSymbol } from "config/tokens";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { GMListSkeleton } from "components/Skeleton/Skeleton";
+import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
 
 type Props = {
   hideTitle?: boolean;
@@ -177,7 +177,12 @@ export function GmList({
                               {getMarketIndexName({ indexToken, isSpotOnly: market?.isSpotOnly })}
                               {!market.isSpotOnly && (
                                 <div className="Asset-dropdown-container">
-                                  <AssetDropdown assetSymbol={indexToken.symbol} position="left" />
+                                  <GmAssetDropdown
+                                    token={token}
+                                    marketsInfoData={marketsInfoData}
+                                    tokensData={tokensData}
+                                    position="left"
+                                  />
                                 </div>
                               )}
                             </div>
@@ -294,7 +299,12 @@ export function GmList({
                         </div>
                       </div>
                       <div>
-                        <AssetDropdown assetSymbol={indexToken.symbol} position="left" />
+                        <GmAssetDropdown
+                          token={token}
+                          tokensData={tokensData}
+                          marketsInfoData={marketsInfoData}
+                          position="left"
+                        />
                       </div>
                     </div>
                   </div>
