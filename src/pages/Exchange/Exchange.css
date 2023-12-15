@@ -1208,13 +1208,13 @@ table.Exchange-list-small td {
   }
 }
 
-@media (max-width: 350px) {
+@media (max-width: 375px) {
   .ExchangeChart-header {
     grid-column-gap: 0.5rem;
   }
 
   .Exchange-list .Tooltip-popup,
   .Exchange-list .App-card .Tooltip-popup {
-    min-width: 24.5rem;
+    min-width: 27rem;
   }
 }
