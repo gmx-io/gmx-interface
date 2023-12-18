@@ -76,11 +76,8 @@
   }
 }
 
-.Percentage-input-sign-input-container {
-  display: flex;
-  align-items: center;
-}
-
 .Percentage-input-negative-sign {
-  margin-right: 0.4rem;
+  padding-left: 0.4rem;
+  cursor: text;
+  user-select: none;
 }

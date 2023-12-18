@@ -1,7 +1,7 @@
 import cx from "classnames";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { roundToTwoDecimals } from "lib/numbers";
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./PercentageInput.scss";
 
 const validDecimalRegex = /^\d+(\.\d{0,2})?$/; // 0.00 ~ 99.99
@@ -88,24 +88,32 @@ export default function PercentageInput({
 
   const shouldShowPanel = isPanelVisible && Boolean(suggestions.length);
 
+  const inputRef = useRef<HTMLInputElement>(null);
+  const handleSignClick = useCallback(() => {
+    inputRef.current?.focus();
+  }, []);
+
   return (
     <div className="Percentage-input-wrapper">
-      <div className="Percentage-input-sign-input-container">
-        {negativeSign && <span className="Percentage-input-negative-sign">-</span>}
-        <div className={cx("Percentage-input", { "input-error": Boolean(error) })}>
-          <input
-            id={id}
-            onFocus={() => setIsPanelVisible(true)}
-            onBlur={() => setIsPanelVisible(false)}
-            value={!!inputValue ? inputValue : ""}
-            placeholder={inputValue || getValueText(defaultValue)}
-            autoComplete="off"
-            onChange={handleChange}
-          />
-          <label htmlFor={id}>
-            <span>%</span>
-          </label>
-        </div>
+      <div className={cx("Percentage-input", { "input-error": Boolean(error) })}>
+        {negativeSign && (
+          <span className="Percentage-input-negative-sign" onClick={handleSignClick}>
+            -
+          </span>
+        )}
+        <input
+          id={id}
+          ref={inputRef}
+          onFocus={() => setIsPanelVisible(true)}
+          onBlur={() => setIsPanelVisible(false)}
+          value={!!inputValue ? inputValue : ""}
+          placeholder={inputValue || getValueText(defaultValue)}
+          autoComplete="off"
+          onChange={handleChange}
+        />
+        <label htmlFor={id}>
+          <span>%</span>
+        </label>
       </div>
       {error && !shouldShowPanel && (
         <div className={cx("Percentage-input-error", "Tooltip-popup", "z-index-1001", "right-bottom")}>{error}</div>
