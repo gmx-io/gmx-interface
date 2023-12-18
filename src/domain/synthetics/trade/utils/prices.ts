@@ -58,7 +58,7 @@ export function getAcceptablePriceByPriceImpact(p: {
 }) {
   const { indexPrice, sizeDeltaUsd, priceImpactDeltaUsd } = p;
 
-  if (!sizeDeltaUsd.gt(0)) {
+  if (!sizeDeltaUsd.gt(0) || indexPrice.eq(0)) {
     return {
       acceptablePrice: indexPrice,
       acceptablePriceDeltaBps: BigNumber.from(0),
