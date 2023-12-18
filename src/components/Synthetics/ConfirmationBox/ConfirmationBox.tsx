@@ -89,9 +89,8 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./ConfirmationBox.scss";
 import { FaArrowRight } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
-import { uniqueId } from "lodash";
-import ProfitLossEntry from "./ProfitLossEntry";
-import useStopLossEntries from "domain/synthetics/trade/useStopLossEntries";
+import ProfitLossEntries from "./ProfitLossEntries";
+import useSLTPEntries from "domain/synthetics/trade/useSLTPEntries";
 
 export type Props = {
   isVisible: boolean;
@@ -184,14 +183,19 @@ export function ConfirmationBox(p: Props) {
 
   const [isTriggerWarningAccepted, setIsTriggerWarningAccepted] = useState(false);
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
-  const [stopLossEntries, setStopLossEntries] = useState([{ price: "", percentage: "", id: uniqueId() }]);
-  // const {
-  //   entries: stopLossEntries,
-  //   addEntry: addStopLossEntry,
-  //   deleteEntry: deleteStopLossEntry,
-  //   updateEntry: updateStopLossEntry,
-  // } = useStopLossEntries();
-  const [takeProfitEntries, setTakeProfitEntries] = useState([{ price: "", percentage: "", id: uniqueId() }]);
+  const {
+    entries: stopLossEntries,
+    addEntry: addStopLossEntry,
+    deleteEntry: deleteStopLossEntry,
+    updateEntry: updateStopLossEntry,
+  } = useSLTPEntries();
+  const {
+    entries: takeProfitEntries,
+    addEntry: addTakeProfitEntry,
+    deleteEntry: deleteTakeProfitEntry,
+    updateEntry: updateTakeProfitEntry,
+  } = useSLTPEntries();
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);
   const submitButtonRef = useRef<null | HTMLDivElement>(null);
@@ -580,8 +584,6 @@ export function ConfirmationBox(p: Props) {
       if (p.isVisible !== prevIsVisible) {
         setIsTriggerWarningAccepted(false);
         setIsHighPriceImpactAccepted(false);
-        setStopLossEntries([{ price: "", percentage: "", id: uniqueId() }]);
-        setTakeProfitEntries([{ price: "", percentage: "", id: uniqueId() }]);
       }
     },
     [p.isVisible, prevIsVisible]
@@ -929,7 +931,13 @@ export function ConfirmationBox(p: Props) {
           isTop={true}
           value={
             <div className="profit-loss-wrapper">
-              <ProfitLossEntry entries={stopLossEntries} setEntries={setStopLossEntries} symbol="%" />
+              <ProfitLossEntries
+                entries={stopLossEntries}
+                updateEntry={updateStopLossEntry}
+                addEntry={addStopLossEntry}
+                deleteEntry={deleteStopLossEntry}
+                symbol="%"
+              />
             </div>
           }
         />
@@ -947,7 +955,13 @@ export function ConfirmationBox(p: Props) {
           isTop={true}
           value={
             <div className="profit-loss-wrapper">
-              <ProfitLossEntry entries={takeProfitEntries} setEntries={setTakeProfitEntries} symbol="%" />
+              <ProfitLossEntries
+                entries={takeProfitEntries}
+                updateEntry={updateTakeProfitEntry}
+                addEntry={addTakeProfitEntry}
+                deleteEntry={deleteTakeProfitEntry}
+                symbol="%"
+              />
             </div>
           }
         />

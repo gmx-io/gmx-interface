@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { uniqueId } from "lodash";
 
-type StopLossEntry = {
+export type Entry = {
   id: string;
   price: string;
   percentage: string;
@@ -9,13 +9,13 @@ type StopLossEntry = {
   pnl?: string;
 };
 
-export default function useStopLossEntries() {
-  const [stopLossEntries, setStopLossEntries] = useState<StopLossEntry[]>([
+export default function useSLTPEntries() {
+  const [stopLossEntries, setStopLossEntries] = useState<Entry[]>([
     { id: uniqueId(), price: "", percentage: "", error: "", pnl: "" },
   ]);
 
-  const addEntry = () => {
-    const newEntry: StopLossEntry = {
+  function addEntry() {
+    const newEntry: Entry = {
       id: uniqueId(),
       price: "",
       percentage: "",
@@ -23,9 +23,9 @@ export default function useStopLossEntries() {
       pnl: "",
     };
     setStopLossEntries([...stopLossEntries, newEntry]);
-  };
+  }
 
-  const updateEntry = (id: string, updatedEntry: Partial<StopLossEntry>) => {
+  const updateEntry = (id: string, updatedEntry: Partial<Entry>) => {
     setStopLossEntries(stopLossEntries.map((entry) => (entry.id === id ? { ...entry, ...updatedEntry } : entry)));
   };
 
