@@ -45,7 +45,7 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
           <FiChevronDown size={20} />
         </Menu.Button>
         <Menu.Items as="div" className={cx("asset-menu-items", { "position-left": position === "left" })}>
-          <Menu.Item>
+          <Menu.Item as="div">
             {token.reservesUrl && (
               <ExternalLink href={token.reservesUrl} className="asset-item">
                 <img className="asset-item-icon" src={nansenPortfolioIcon} alt="Proof of Reserves" />
@@ -55,7 +55,7 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
               </ExternalLink>
             )}
           </Menu.Item>
-          <Menu.Item>
+          <Menu.Item as="div">
             {token.coingeckoUrl && (
               <ExternalLink href={token.coingeckoUrl} className="asset-item">
                 <img className="asset-item-icon" src={coingeckoIcon} alt="Open in Coingecko" />
@@ -65,7 +65,7 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
               </ExternalLink>
             )}
           </Menu.Item>
-          <Menu.Item>
+          <Menu.Item as="div">
             {token.explorerUrl && (
               <ExternalLink href={token.explorerUrl} className="asset-item">
                 <img className="asset-item-icon" src={chainIcon} alt="Open in explorer" />
@@ -75,7 +75,7 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
               </ExternalLink>
             )}
           </Menu.Item>
-          <Menu.Item>
+          <Menu.Item as="div">
             {active && !token.isNative && (
               <div
                 onClick={() => {
