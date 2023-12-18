@@ -1308,19 +1308,20 @@ export function ConfirmationBox(p: Props) {
             />
           )}
 
-          {decreaseAmounts &&
-            decreaseAmounts.triggerOrderType !== OrderType.StopLossDecrease &&
-            renderAcceptablePriceImpactInput()}
-
-          <ExchangeInfoRow
-            className="SwapBox-info-row"
-            label={t`Acceptable Price`}
-            value={
-              formatAcceptablePrice(decreaseAmounts?.acceptablePrice, {
-                displayDecimals: toTokenPriceDecimals,
-              }) || "-"
-            }
-          />
+          {decreaseAmounts && decreaseAmounts.triggerOrderType !== OrderType.StopLossDecrease && (
+            <>
+              {renderAcceptablePriceImpactInput()}
+              <ExchangeInfoRow
+                className="SwapBox-info-row"
+                label={t`Acceptable Price`}
+                value={
+                  formatAcceptablePrice(decreaseAmounts?.acceptablePrice, {
+                    displayDecimals: toTokenPriceDecimals,
+                  }) || "-"
+                }
+              />
+            </>
+          )}
 
           {p.existingPosition && (
             <ExchangeInfoRow

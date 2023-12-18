@@ -696,6 +696,8 @@ export function PositionSeller(p: Props) {
     />
   );
 
+  const isStopLoss = decreaseAmounts?.triggerOrderType === OrderType.StopLossDecrease;
+
   return (
     <div className="PositionEditor PositionSeller">
       <Modal
@@ -767,8 +769,8 @@ export function PositionSeller(p: Props) {
               {isTrigger ? (
                 <>
                   {triggerPriceRow}
-                  {acceptablePriceImpactInputRow}
-                  {acceptablePriceRow}
+                  {!isStopLoss && acceptablePriceImpactInputRow}
+                  {!isStopLoss && acceptablePriceRow}
                   {liqPriceRow}
                   {sizeRow}
                 </>
