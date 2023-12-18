@@ -553,7 +553,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "Wrapped Bitcoin",
       symbol: "WBTC",
-      address: "0x0BF70614A500B8B21269116eB5b2BC638F8554fC",
+      address: "0x68f180fcCe6836688e9084f035309E29Bf0A2095",
       decimals: 8,
       isStable: false,
       isShortable: true,
