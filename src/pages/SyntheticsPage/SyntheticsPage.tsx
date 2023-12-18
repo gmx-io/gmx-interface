@@ -430,6 +430,7 @@ export function SyntheticsPage(p: Props) {
                 isLoading={isOrdersLoading}
                 setPendingTxns={setPendingTxns}
                 selectedOrderKey={selectedOrderKey}
+                setSelectedOrderKey={setSelectedOrderKey}
               />
             )}
             {listSection === ListSection.Trades && (
@@ -544,6 +545,7 @@ export function SyntheticsPage(p: Props) {
               setSelectedOrdersKeys={setSelectedOrdersKeys}
               setPendingTxns={setPendingTxns}
               selectedOrderKey={selectedOrderKey}
+              setSelectedOrderKey={setSelectedOrderKey}
             />
           )}
           {listSection === ListSection.Trades && (

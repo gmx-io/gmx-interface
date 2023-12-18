@@ -21,11 +21,12 @@ type Props = {
   selectedOrdersKeys?: { [key: string]: boolean };
   isLoading: boolean;
   setPendingTxns: (txns: any) => void;
+  setSelectedOrderKey?: Dispatch<SetStateAction<string | undefined>>;
   selectedOrderKey?: string;
 };
 
 export function OrderList(p: Props) {
-  const { marketsInfoData, tokensData, positionsData } = p;
+  const { marketsInfoData, tokensData, positionsData, selectedOrderKey, setSelectedOrderKey } = p;
   const { chainId } = useChainId();
   const { signer } = useWallet();
 
@@ -42,8 +43,8 @@ export function OrderList(p: Props) {
   const orderRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   useEffect(() => {
-    if (p.selectedOrderKey) {
-      const orderElement = orderRefs.current[p.selectedOrderKey];
+    if (selectedOrderKey) {
+      const orderElement = orderRefs.current[selectedOrderKey];
       if (orderElement) {
         const rect = orderElement.getBoundingClientRect();
         const isInViewPort =
@@ -54,7 +55,13 @@ export function OrderList(p: Props) {
         }
       }
     }
-  }, [p.selectedOrderKey]);
+  }, [selectedOrderKey]);
+
+  useEffect(() => {
+    return () => {
+      setSelectedOrderKey?.(undefined);
+    };
+  }, [setSelectedOrderKey]);
 
   function onSelectOrder(key: string) {
     p.setSelectedOrdersKeys?.((prev) => ({ ...prev, [key]: !prev[key] }));
