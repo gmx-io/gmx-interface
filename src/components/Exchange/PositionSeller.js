@@ -872,7 +872,7 @@ export default function PositionSeller(props) {
           <div className="Confirmation-box-warning">
             <Trans>
               Reducing the position at the current price will forfeit a&nbsp;
-              <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change">
+              <ExternalLink href="https://docs.t3.money/tmx/trading#minimum-price-change">
                 pending profit
               </ExternalLink>{" "}
               of {deltaStr}. <br />
@@ -889,7 +889,7 @@ export default function PositionSeller(props) {
         <div className="Confirmation-box-warning">
           <Trans>
             This order will forfeit a&nbsp;
-            <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change">profit</ExternalLink> of{" "}
+            <ExternalLink href="https://docs.t3.money/tmx/trading#minimum-price-change">profit</ExternalLink> of{" "}
             {deltaStr}. <br />
           </Trans>
           <Trans>

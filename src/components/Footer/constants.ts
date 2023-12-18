@@ -23,7 +23,11 @@ export const FOOTER_LINKS: { home: Link[]; app: Link[] } = {
   home: [
     { text: defineMessage({ message: "Terms and Conditions" }), link: "/terms-and-conditions" },
     { text: defineMessage({ message: "Referral Terms" }), link: "/referral-terms" },
-    { text: defineMessage({ message: "Media Kit" }), link: "https://gmxio.gitbook.io/gmx/media-kit", external: true }, // TODO media kit
+    {
+      text: defineMessage({ message: "Media Kit" }),
+      link: "https://docs.t3.money/tmx/media-kit",
+      external: true,
+    }, // TODO media kit
   ],
   app: [],
 };

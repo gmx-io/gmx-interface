@@ -2302,10 +2302,7 @@ export default function SwapTab(props) {
                 trigger orders. <br />
                 <br />
                 For screenshots and more information, please see the{" "}
-                <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#stop-loss-take-profit-orders">
-                  docs
-                </ExternalLink>
-                .
+                <ExternalLink href="https://docs.t3.money/tmx/trading#stop-loss-take-profit-orders">docs</ExternalLink>.
               </Trans>
             </div>
           )}
@@ -2399,7 +2396,7 @@ export default function SwapTab(props) {
                         top right of the page after connecting your wallet.
                         <br />
                         <br />
-                        <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#opening-a-position">
+                        <ExternalLink href="https://docs.t3.money/tmx/trading#opening-a-position">
                           More Info
                         </ExternalLink>
                       </Trans>
@@ -2428,7 +2425,7 @@ export default function SwapTab(props) {
                         This exit price will change with the price of the asset.
                         <br />
                         <br />
-                        <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#opening-a-position">
+                        <ExternalLink href="https://docs.t3.money/tmx/trading#opening-a-position">
                           More Info
                         </ExternalLink>
                       </Trans>
@@ -2466,7 +2463,7 @@ export default function SwapTab(props) {
                         </div>
                       )}
                       <br />
-                      <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#opening-a-position">
+                      <ExternalLink href="https://docs.t3.money/tmx/trading#opening-a-position">
                         <Trans>More Info</Trans>
                       </ExternalLink>
                     </div>

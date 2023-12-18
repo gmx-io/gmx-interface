@@ -18,7 +18,8 @@ export default function ReferralTerms() {
           <div className="content">
             <div className="section">
               <p className="body-text">
-                Welcome to t3.money ("we," "us," or "our"), the informational resource for TMX Protocol, as defined below.
+                Welcome to t3.money ("we," "us," or "our"), the informational resource for TMX Protocol, as defined
+                below.
               </p>
               <p className="body-text">
                 t3.money provides information and resources about the fundamentals of the decentralized non-custodial
@@ -83,14 +84,14 @@ export default function ReferralTerms() {
                 will never be retroactive.
               </p>
               <p className="body-text">
-                t3.money is under no obligation for Rebates or Discounts to any Referrer or Trader. Rebates and Discounts
-                are handled following the directives of the TMX tokenholders.
+                t3.money is under no obligation for Rebates or Discounts to any Referrer or Trader. Rebates and
+                Discounts are handled following the directives of the TMX tokenholders.
               </p>
               <p className="body-text">
                 The Rebates and Discounts percentages for the default tier Tier 1, and instructions to upgrade to Tier 2
                 and Tier 3, are contained in{" "}
-                <ExternalLink href="https://gmxio.gitbook.io/gmx/referrals">
-                  https://gmxio.gitbook.io/gmx/referrals.
+                <ExternalLink href="https://docs.t3.money/tmx/referrals">
+                  https://docs.t3.money/tmx/referrals.
                 </ExternalLink>
               </p>
             </div>
@@ -107,8 +108,8 @@ export default function ReferralTerms() {
                 damages were reasonably foreseeable.
               </p>
               <p className="body-text">
-                In no event shall t3.money's aggregate liability arising out of or in connection with the Site exceed five
-                hundred Singapore Dollars (500 SGD).
+                In no event shall t3.money's aggregate liability arising out of or in connection with the Site exceed
+                five hundred Singapore Dollars (500 SGD).
               </p>
             </div>
             <div className="section">
@@ -138,9 +139,9 @@ export default function ReferralTerms() {
                 to modifications, suspensions, or disabilities, in whole or in part, for any reason whatsoever.
               </p>
               <p className="body-text">
-                t3.money will not be liable for any losses suffered by you resulting from any modification to the Referral
-                Program or from any modification, suspension, or termination, for any reason, of your access to all or
-                any portion of the Interface or the Protocol.
+                t3.money will not be liable for any losses suffered by you resulting from any modification to the
+                Referral Program or from any modification, suspension, or termination, for any reason, of your access to
+                all or any portion of the Interface or the Protocol.
               </p>
               <p className="body-text">
                 t3.money may revise these Terms from time to time. We will notify you by updating the date at the top of
@@ -179,8 +180,8 @@ export default function ReferralTerms() {
               <p className="body-text">
                 8.4 If any provision of these Terms shall be unenforceable or invalid under any applicable law or be
                 held by any applicable court decision, such unenforceability or invalidity shall not render these Terms
-                unenforceable or invalid as a whole. t3.money will amend or replace such provision with one that is valid
-                and enforceable and which achieves, to the extent possible, our original objectives and intent as
+                unenforceable or invalid as a whole. t3.money will amend or replace such provision with one that is
+                valid and enforceable and which achieves, to the extent possible, our original objectives and intent as
                 reflected in the original provision.
               </p>
               <p className="body-text">
@@ -190,18 +191,19 @@ export default function ReferralTerms() {
                 obligations under these Terms, in whole or part, without notice or obtaining your consent or approval.
               </p>
               <p className="body-text">
-                8.6 t3.money will have no responsibility or liability for any failure or delay in performance of the Site,
-                or any loss or damage that you may incur, due to any circumstance or event beyond our control, including
-                without limitation any flood, extraordinary weather conditions, earthquake, or other act of God, fire,
-                war, insurrection, riot, labor dispute, accident, any law, order regulation, direction, action or
-                request of the government, communications, power failure, or equipment or software malfunction.
+                8.6 t3.money will have no responsibility or liability for any failure or delay in performance of the
+                Site, or any loss or damage that you may incur, due to any circumstance or event beyond our control,
+                including without limitation any flood, extraordinary weather conditions, earthquake, or other act of
+                God, fire, war, insurrection, riot, labor dispute, accident, any law, order regulation, direction,
+                action or request of the government, communications, power failure, or equipment or software
+                malfunction.
               </p>
             </div>
             <div className="section">
               <h3 className="body-title">9. CONTACT INFORMATION</h3>
               <p className="body-text">
-                If you have any questions about these Terms, the Site, or the Interface, please get in touch with t3.money
-                on any of our official channels.
+                If you have any questions about these Terms, the Site, or the Interface, please get in touch with
+                t3.money on any of our official channels.
               </p>
             </div>
           </div>
