@@ -140,4 +140,11 @@ export const appEventsData: EventData[] = [
     validTill: "15 Dec 2023, 16:00",
     bodyText: ["The recent issue with Ledger Connect kit did not affect GMX."],
   },
+  {
+    id: "arbitrum-issue",
+    title: "The Arbitrum Network is currently down",
+    isActive: true,
+    validTill: "16 Dec 2023, 12:00",
+    bodyText: ["They are currently working to resolve the issue."],
+  },
 ];
