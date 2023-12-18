@@ -1987,6 +1987,7 @@ export default function SwapBox(props) {
                 showMaxButton={false}
                 inputValue={toValue}
                 onInputValueChange={onToValueChange}
+                preventFocusOnLabelClick="right"
               >
                 <TokenSelector
                   label={getTokenLabel()}
