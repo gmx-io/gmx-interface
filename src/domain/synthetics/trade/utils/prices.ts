@@ -99,7 +99,7 @@ export function getAcceptablePriceInfo(p: {
     priceImpactDiffUsd: BigNumber.from(0),
   };
 
-  if (!sizeDeltaUsd.gt(0)) {
+  if (!sizeDeltaUsd.gt(0) || indexPrice.eq(0)) {
     return values;
   }
 
