@@ -280,6 +280,12 @@ msgstr ""
 msgid "Add to Metamask"
 msgstr "メタマスクに追加"
 
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+msgid "Add {0} to Wallet"
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Adding referral code failed."
 msgstr "紹介コードが追加できませんでした"
@@ -3195,6 +3201,10 @@ msgstr "オープンのポジション: {0}<0/>リスクあり: {1}"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Open trades ranking and stats"
+msgstr ""
+
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+msgid "Open {0} in Explorer"
 msgstr ""
 
 #: src/components/Exchange/ExchangeTVChart.js

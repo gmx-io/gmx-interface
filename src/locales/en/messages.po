@@ -280,6 +280,12 @@ msgstr "Actual Price Impact"
 msgid "Add to Metamask"
 msgstr "Add to Metamask"
 
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+msgid "Add {0} to Wallet"
+msgstr "Add {0} to Wallet"
+
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Adding referral code failed."
 msgstr "Adding referral code failed."
@@ -3199,6 +3205,10 @@ msgstr "Open positions: {0}<0/>Under risk: {1}"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Open trades ranking and stats"
 msgstr "Open trades ranking and stats"
+
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+msgid "Open {0} in Explorer"
+msgstr "Open {0} in Explorer"
 
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"

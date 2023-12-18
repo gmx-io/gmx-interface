@@ -280,6 +280,12 @@ msgstr ""
 msgid "Add to Metamask"
 msgstr "메타마스크에 추가해주세요"
 
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+msgid "Add {0} to Wallet"
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Adding referral code failed."
 msgstr "추천 코드 추가 실패"
@@ -3195,6 +3201,10 @@ msgstr "열린 포지션: {0}<0>리스크: {1}"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Open trades ranking and stats"
+msgstr ""
+
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+msgid "Open {0} in Explorer"
 msgstr ""
 
 #: src/components/Exchange/ExchangeTVChart.js
