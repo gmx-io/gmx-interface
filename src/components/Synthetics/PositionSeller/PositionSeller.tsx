@@ -789,7 +789,7 @@ export function PositionSeller(p: Props) {
 
               {pnlRow}
 
-              <TradeFeesRow {...fees} executionFee={executionFee} feesType="decrease" warning={executionFee?.warning} />
+              <TradeFeesRow {...fees} executionFee={executionFee} feesType="decrease" />
 
               {receiveTokenRow}
             </div>

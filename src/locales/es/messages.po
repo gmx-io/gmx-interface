@@ -4602,10 +4602,6 @@ msgid "The Gambit protocol is in beta, please read the <0>staking details</0>be
 msgstr "El protocolo Gambit se encuentra en beta, por favor lea los <0>detalles de staking</0>antes de participar."
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#~ msgid "The Max Execution Fee is overestimated by 10%. Upon execution, the excess Execution Fee is sent back to your account."
-#~ msgstr ""
-
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "The Max Execution Fee is overestimated by {maxExecutionFeeText}%. Upon execution, the excess Execution Fee is sent back to your account."
 msgstr ""
 

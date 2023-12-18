@@ -39,7 +39,6 @@ type Props = {
   feeDiscountUsd?: BigNumber;
   isTop?: boolean;
   feesType: TradeFeesType;
-  warning?: string;
   uiFee?: FeeItem;
   uiSwapFee?: FeeItem;
 };
@@ -376,9 +375,9 @@ export function TradeFeesRow(p: Props) {
           handle={title}
           renderContent={() => (
             <>
-              {p.warning && (
+              {p.executionFee?.warning && (
                 <span className="text-white">
-                  {p.warning} <br />
+                  {p.executionFee?.warning} <br />
                   <br />
                 </span>
               )}
