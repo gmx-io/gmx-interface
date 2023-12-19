@@ -239,7 +239,7 @@ export function TradeFeesRow(p: Props) {
               p.positionFee?.deltaUsd.mul(tradingIncentives.rebatePercent).div(BASIS_POINTS_DIVISOR).mul(-1)
             ),
             className: "text-green",
-            id: "executionFee",
+            id: "rebate",
           }
         : undefined;
 

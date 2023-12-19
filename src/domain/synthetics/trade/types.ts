@@ -77,6 +77,7 @@ export type DecreasePositionAmounts = {
   triggerPrice?: BigNumber;
   acceptablePrice: BigNumber;
   acceptablePriceDeltaBps: BigNumber;
+  recommendedAcceptablePriceDeltaBps: BigNumber;
 
   estimatedPnl: BigNumber;
   estimatedPnlPercentage: BigNumber;

@@ -70,6 +70,10 @@ msgstr "<0>返回 </0><1>主页</1> <2>or </2> <3>交易</3>"
 msgid "<0>Selling GM: <1>{indexName}</1><2>[{poolName}]</2></0>"
 msgstr ""
 
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+msgid "<0>Set Recommended Impact: {0}</0>."
+msgstr ""
+
 #: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
 msgid "<0>Switch to:</0>"
 msgstr ""
@@ -196,19 +200,12 @@ msgstr "接受订单不保证执行，触发订单可能不按触发价格结算
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Acceptable Price"
 msgstr ""
 
-#: src/components/Synthetics/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "Acceptable Price Impact"
 msgstr ""
 
@@ -250,11 +247,14 @@ msgstr ""
 msgid "Acknowledge epoch is ending in {minutes} minutes"
 msgstr ""
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
 msgid "Acknowledge high Price Impact"
+msgstr ""
+
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+msgid "Acknowledge high Swap Price Impact"
 msgstr ""
 
 #: src/pages/Actions/Actions.js
@@ -1467,7 +1467,6 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
-#: src/components/Synthetics/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Edit"
@@ -1725,6 +1724,8 @@ msgstr ""
 msgid "Execution Fee"
 msgstr ""
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Execution Price"
@@ -2330,8 +2331,8 @@ msgid "Invalid Transfer Addresses: Please check the url."
 msgstr ""
 
 #: src/components/Synthetics/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
-msgid "Invalid acceptable Price Impact value"
-msgstr ""
+#~ msgid "Invalid acceptable Price Impact value"
+#~ msgstr ""
 
 #: src/App/App.js
 msgid "Invalid execution fee buffer value"
@@ -2442,7 +2443,6 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -2837,8 +2837,8 @@ msgid "Max Pool Capacity"
 msgstr "池子高上限"
 
 #: src/components/Synthetics/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
-msgid "Max acceptable Price Impact precision is 0.01%"
-msgstr ""
+#~ msgid "Max acceptable Price Impact precision is 0.01%"
+#~ msgstr ""
 
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
@@ -3042,6 +3042,10 @@ msgstr "积分"
 #: src/pages/Stake/StakeV2.js
 msgid "Multiplier Points APR"
 msgstr "积分点数年利率"
+
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+msgid "NA"
+msgstr ""
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "NFT Address"
@@ -3546,17 +3550,15 @@ msgstr "上一页"
 msgid "Price"
 msgstr "价钱"
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Price Impact"
 msgstr ""
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price Impact not yet acknowledged"
 msgstr ""
@@ -3745,6 +3747,10 @@ msgstr "收款人未质押过GLP代币"
 msgid "Receiver has not staked GMX tokens before"
 msgstr "收款人未质押过GMX代币"
 
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+#~ msgid "Recommended Impact: {0}."
+#~ msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "Redemption time not yet reached"
 msgstr "赎回时间尚未到达"
@@ -3890,7 +3896,6 @@ msgid "Same as current active code"
 msgstr "与当前的有效代码相同"
 
 #: src/App/App.js
-#: src/components/Synthetics/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
 msgid "Save"
 msgstr "储存"
 
@@ -4223,6 +4228,13 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Size"
 msgstr "规模"
+
+#: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+msgid "Slippage is too high"
+msgstr ""
 
 #: src/App/App.js
 msgid "Slippage should be less than 5%"
@@ -4593,6 +4605,10 @@ msgstr ""
 msgid "The Boosted APR is from your staked Multiplier Points."
 msgstr "提升的年利率来自于你所投注的乘数点"
 
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
+msgstr ""
+
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met."
 msgstr ""
@@ -4620,6 +4636,10 @@ msgstr "esGMX（IOU）代币的地址是{esGmxIouAddress}"
 #: src/components/Exchange/SwapBox.js
 msgid "The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour."
 msgstr "借款费用的计算方法是 (已借资产) / (池中总资产) * 0.01%/小时"
+
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+msgid "The current Price Impact is {0}. Consider using -0.30% Acceptable Price Impact so the order is more likely to be processed."
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
@@ -5643,6 +5663,10 @@ msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "You have selected {collateralTokenSymbol} as collateral, the Liquidation Price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price. If required, you can change the collateral type using the Collateral In option in the trade box."
+msgstr ""
+
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+msgid "You have set a high Acceptable Price Impact. The current Price Impact is {0}."
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
