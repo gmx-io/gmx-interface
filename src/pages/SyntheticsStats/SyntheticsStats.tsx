@@ -1,6 +1,5 @@
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS, PRECISION } from "lib/legacy";
-
 import { BigNumber, BigNumberish, ethers } from "ethers";
 import { formatAmount, formatUsd } from "lib/numbers";
 

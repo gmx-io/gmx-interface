@@ -1,11 +1,14 @@
-import React, { useCallback } from "react";
+import { ReactNode, useCallback } from "react";
 import Button from "components/Button/Button";
+import { Trans } from "@lingui/macro";
+import { FiDownload } from "react-icons/fi";
 
 type Props<T> = {
   data: T[];
   excludedFields: string[];
   fileName: string;
   className?: string;
+  children?: ReactNode;
 };
 
 function filterFields<T>(data: T, excludedFields: string[]): Partial<T> {
@@ -21,7 +24,18 @@ function convertToCSV<T>(data: Partial<T>[]): string {
   return `${header}\n${values}`;
 }
 
-export function DownloadAsCsv<T>({ data, excludedFields, fileName, className }: Props<T>) {
+function DefaultButtonContent() {
+  return (
+    <>
+      <FiDownload />
+      <span className="ml-xs">
+        <Trans>Download CSV</Trans>
+      </span>
+    </>
+  );
+}
+
+export function DownloadAsCsv<T>({ data, excludedFields, fileName, className, children }: Props<T>) {
   const getCsvUrl = useCallback(
     (data: T[]) => {
       const filteredData = data.map((item) => filterFields(item, excludedFields));
@@ -47,7 +61,7 @@ export function DownloadAsCsv<T>({ data, excludedFields, fileName, className }: 
 
   return (
     <Button variant="secondary" title="Download CSV" className={className} onClick={onClick}>
-      Download CSV
+      {children ?? <DefaultButtonContent />}
     </Button>
   );
 }
