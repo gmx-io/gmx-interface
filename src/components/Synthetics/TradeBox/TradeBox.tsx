@@ -1075,6 +1075,7 @@ export function TradeBox(p: Props) {
               setToTokenInputValue(e.target.value, true);
             }}
             showMaxButton={false}
+            preventFocusOnLabelClick="right"
           >
             {toTokenAddress && (
               <TokenSelector

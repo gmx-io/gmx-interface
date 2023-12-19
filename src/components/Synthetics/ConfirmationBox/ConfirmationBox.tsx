@@ -1166,7 +1166,6 @@ export function ConfirmationBox(p: Props) {
             borrowFeeRateStr={borrowingRate && `-${formatAmount(borrowingRate, 30, 4)}% / 1h`}
             executionFee={p.executionFee}
             feesType="increase"
-            warning={p.executionFee?.warning}
           />
           {decreaseOrdersThatWillBeExecuted?.length > 0 && <div className="line-divider" />}
           {decreaseOrdersThatWillBeExecuted?.length > 0 && (
@@ -1224,15 +1223,7 @@ export function ConfirmationBox(p: Props) {
             })}
           </ExchangeInfoRow>
 
-          {!p.isWrapOrUnwrap && (
-            <TradeFeesRow
-              {...fees}
-              isTop
-              executionFee={p.executionFee}
-              feesType="swap"
-              warning={p.executionFee?.warning}
-            />
-          )}
+          {!p.isWrapOrUnwrap && <TradeFeesRow {...fees} isTop executionFee={p.executionFee} feesType="swap" />}
 
           <ExchangeInfoRow label={t`Min. Receive`} isTop>
             {isMarket && swapAmounts?.minOutputAmount
@@ -1405,7 +1396,7 @@ export function ConfirmationBox(p: Props) {
             />
           )}
 
-          <TradeFeesRow {...fees} executionFee={p.executionFee} feesType="decrease" warning={p.executionFee?.warning} />
+          <TradeFeesRow {...fees} executionFee={p.executionFee} feesType="decrease" />
 
           {existingPosition && decreaseAmounts?.receiveUsd && (
             <ExchangeInfoRow

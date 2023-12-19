@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import "./Footer.css";
-import twitterIcon from "img/ic_twitter.svg";
+import xIcon from "img/ic_x.svg";
 import discordIcon from "img/ic_discord.svg";
 import telegramIcon from "img/ic_telegram.svg";
 import githubIcon from "img/ic_github.svg";
@@ -36,7 +36,7 @@ export function getFooterLinks(isHome) {
 }
 
 export const SOCIAL_LINKS: SocialLink[] = [
-  { link: "https://twitter.com/GMX_IO", name: "Twitter", icon: twitterIcon },
+  { link: "https://twitter.com/GMX_IO", name: "Twitter", icon: xIcon },
   { link: "https://gmxio.substack.com/", name: "Substack", icon: substackIcon },
   { link: "https://github.com/gmx-io", name: "Github", icon: githubIcon },
   { link: "https://t.me/GMX_IO", name: "Telegram", icon: telegramIcon },
