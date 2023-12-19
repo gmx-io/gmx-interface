@@ -9,7 +9,6 @@ import { ShareBar } from "components/ShareBar/ShareBar";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
 import {
-  MarketInfo,
   getAvailableLiquidity,
   getAvailableUsdLiquidityForCollateral,
   getMarketIndexName,
@@ -23,8 +22,8 @@ import { usePositionsConstants } from "domain/synthetics/positions";
 import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import "./SyntheticsStats.scss";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { useCallback } from "react";
-import Button from "components/Button/Button";
+import { DownloadAsCsv } from "components/DownloadAsCsv/DownloadAsCsv";
+import { format } from "date-fns";
 
 function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: number, showDollar: boolean = false) {
   const n = Number(formatAmount(amount, tokenDecimals));
@@ -57,50 +56,6 @@ function formatFactor(factor: BigNumber) {
       .match(/^(.+?)(?<zeroes>0*)$/)?.groups?.zeroes?.length || 0;
   const factorDecimals = 30 - trailingZeroes;
   return formatAmount(factor, 30, factorDecimals);
-}
-
-function getCsvUrl(data: any[]) {
-  const excludedFields = new Set([
-    "longToken",
-    "shortToken",
-    "indexToken",
-    "longPoolAmountAdjustment",
-    "shortPoolAmountAdjustment",
-  ]);
-  const fields = Object.keys(data[0]).filter((field) => !excludedFields.has(field));
-  const csvHeader = "Date," + fields.join(",");
-  const date = new Date().toISOString().substring(0, 10);
-  const csvBody = data
-    .map((item) => {
-      return date + "," + fields.map((field) => item[field].toString()).join(",");
-    })
-    .join("\n");
-  const csv = csvHeader + "\n" + csvBody;
-  return `data:application/octet-stream,${encodeURIComponent(csv)}`;
-}
-
-function CsvLink(p: { markets: MarketInfo[] }) {
-  const onClick = useCallback(() => {
-    const csvUrl = getCsvUrl(p.markets);
-    const fileName = `gmx_v2_markets.csv`;
-
-    const aElement = document.createElement("a");
-    aElement.href = csvUrl;
-    aElement.download = fileName;
-    document.body.appendChild(aElement);
-    aElement.click();
-    document.body.removeChild(aElement);
-  }, [p.markets]);
-
-  if (!p.markets || p.markets.length === 0) {
-    return null;
-  }
-
-  return (
-    <Button variant="secondary" title="Download CSV" className="csv-link" onClick={onClick}>
-      Download CSV
-    </Button>
-  );
 }
 
 export function SyntheticsStats() {
@@ -1011,7 +966,18 @@ export function SyntheticsStats() {
           </tbody>
         </table>
       </div>
-      <CsvLink markets={markets} />
+      <DownloadAsCsv
+        excludedFields={[
+          "longToken",
+          "shortToken",
+          "indexToken",
+          "longPoolAmountAdjustment",
+          "shortPoolAmountAdjustment",
+        ]}
+        data={markets}
+        fileName={`gmx_v2_markets_${format(new Date(), "yyyy-MM-dd")}`}
+        className="mt-md"
+      />
     </div>
   );
 }
