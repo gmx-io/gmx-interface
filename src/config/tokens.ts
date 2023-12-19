@@ -54,6 +54,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "Wrapped SOL (Wormhole)",
       symbol: "SOL",
+      assetSymbol: "WSOL (Wormhole)",
       decimals: 9,
       address: "0x2bcC6D6CdBbDC0a4071e48bb3B969b06B3330c07",
       imageUrl: "https://assets.coingecko.com/coins/images/4128/small/solana.png?1640133422",

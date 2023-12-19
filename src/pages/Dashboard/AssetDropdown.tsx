@@ -14,6 +14,8 @@ import { Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 
+const SHOW_ASSET_NAME_LIST = { ETH: "Ethereum", BTC: "Bitcoin", WBTC: "Bitcoin" };
+
 type Props = {
   assetSymbol: string;
   token?: Token;
@@ -60,7 +62,11 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
               <ExternalLink href={token.coingeckoUrl} className="asset-item">
                 <img className="asset-item-icon" src={coingeckoIcon} alt="Open in Coingecko" />
                 <p>
-                  <Trans>Open in Coingecko</Trans>
+                  {SHOW_ASSET_NAME_LIST[token.symbol] ? (
+                    <Trans>Open {SHOW_ASSET_NAME_LIST[token.symbol]} in Coingecko</Trans>
+                  ) : (
+                    <Trans>Open in Coingecko</Trans>
+                  )}
                 </p>
               </ExternalLink>
             )}
