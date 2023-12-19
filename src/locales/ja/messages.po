@@ -4220,6 +4220,13 @@ msgstr ""
 msgid "Size"
 msgstr "サイズ"
 
+#: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+msgid "Slippage is too high"
+msgstr ""
+
 #: src/App/App.js
 msgid "Slippage should be less than 5%"
 msgstr "スリッページは5%未満であること"
