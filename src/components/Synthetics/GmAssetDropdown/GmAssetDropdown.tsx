@@ -12,6 +12,7 @@ import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 import { getExplorerUrl } from "config/chains";
 import { IoWalletOutline } from "react-icons/io5";
+import { createBreakpoint } from "react-use";
 
 type Props = {
   token?: TokenData;
@@ -29,6 +30,8 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
   const longToken = getTokenData(tokensData, market?.longTokenAddress);
   const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
   const explorerUrl = getExplorerUrl(chainId);
+  const useBreakpoint = createBreakpoint({ S: 500 });
+  const breakpoint = useBreakpoint();
 
   return (
     <div className="AssetDropdown-wrapper GmAssetDropdown">
@@ -36,13 +39,13 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
         <Menu.Button as="div" className="dropdown-arrow center-both">
           <FiChevronDown size={20} />
         </Menu.Button>
-        <Menu.Items as="div" className={cx("asset-menu-items", { "position-left": position === "left" })}>
+        <Menu.Items as="div" className={cx("asset-menu-items", { center: breakpoint === "S" })}>
           <Menu.Item as="div">
             {market?.name && (
               <ExternalLink href={`${explorerUrl}address/${token?.address}`} className="asset-item">
                 <img className="asset-item-icon" src={chainIcon} alt="Open in explorer" />
                 <p>
-                  <Trans>Open {market?.name} in Explorer</Trans>
+                  <Trans>Open GM {market?.name} in Explorer</Trans>
                 </p>
               </ExternalLink>
             )}
@@ -63,7 +66,7 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
                 }}
                 className="asset-item"
               >
-                <IoWalletOutline fontSize={16} />
+                <IoWalletOutline fontSize={16} width={16} />
                 <p>
                   <Trans>Add {market?.name} to Wallet</Trans>
                 </p>

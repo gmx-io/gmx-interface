@@ -36,6 +36,7 @@
   padding: 0.85rem 0.8rem;
   font-size: var(--font-sm);
   width: 17rem;
+  text-align: left;
 }
 
 .asset-item:hover {
@@ -52,7 +53,10 @@
 }
 
 @media (max-width: 1100px) {
-  .asset-menu-items.position-left {
+  .asset-menu-items.left {
     right: 0;
+  }
+  .asset-menu-items.center {
+    transform: translate(-50%, 0);
   }
 }
