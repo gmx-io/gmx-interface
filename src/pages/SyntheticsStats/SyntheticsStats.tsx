@@ -470,20 +470,24 @@ export function SyntheticsStats() {
                             <StatsTooltipRow label="Long" value={formatAmount(market.longInterestUsd, 30, 0, true)} />
                             <StatsTooltipRow label="Short" value={formatAmount(market.shortInterestUsd, 30, 0, true)} />
                             <StatsTooltipRow
+                              showDollar={false}
                               label="Percentage"
                               value={(() => {
                                 const totalInterestUsd = market.shortInterestUsd.add(market.longInterestUsd);
-                                const longInterestPercent = formatAmount(
-                                  market.longInterestUsd.mul(10000).div(totalInterestUsd),
-                                  2,
-                                  2
-                                );
-                                const shortInterestPercent = formatAmount(
-                                  market.shortInterestUsd.mul(10000).div(totalInterestUsd),
-                                  2,
-                                  2
-                                );
-
+                                let longInterestPercent = "0";
+                                let shortInterestPercent = "0";
+                                if (!totalInterestUsd.isZero()) {
+                                  longInterestPercent = formatAmount(
+                                    market.longInterestUsd.mul(10000).div(totalInterestUsd),
+                                    2,
+                                    2
+                                  );
+                                  shortInterestPercent = formatAmount(
+                                    market.shortInterestUsd.mul(10000).div(totalInterestUsd),
+                                    2,
+                                    2
+                                  );
+                                }
                                 return (
                                   <>
                                     {longInterestPercent}% / {shortInterestPercent}%
