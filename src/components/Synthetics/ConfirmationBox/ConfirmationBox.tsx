@@ -13,7 +13,7 @@ import {
   BASIS_POINTS_DIVISOR,
   DEFAULT_SLIPPAGE_AMOUNT,
   HIGH_SPREAD_THRESHOLD,
-  TOO_HIGH_SLIPPAGE_AMOUNT,
+  EXCESSIVE_SLIPPAGE_AMOUNT,
 } from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useUserReferralCode } from "domain/referrals/hooks";
@@ -951,8 +951,8 @@ export function ConfirmationBox(p: Props) {
         <PercentageInput
           onChange={setSlippage}
           defaultValue={defaultSlippage}
-          highValue={TOO_HIGH_SLIPPAGE_AMOUNT}
-          highValueWarningText="Slippage is too high"
+          highValue={EXCESSIVE_SLIPPAGE_AMOUNT}
+          highValueWarningText={t`Slippage is too high`}
         />
       </ExchangeInfoRow>
     );

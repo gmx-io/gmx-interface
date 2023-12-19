@@ -8,7 +8,7 @@ export const HIGH_SPREAD_THRESHOLD = expandDecimals(1, 30).div(100); // 1%
 
 export const DEFAULT_SLIPPAGE_AMOUNT = 30; // 0.3%
 export const DEFAULT_HIGHER_SLIPPAGE_AMOUNT = 100; // 1%
-export const TOO_HIGH_SLIPPAGE_AMOUNT = 2 * 100; // 2%
+export const EXCESSIVE_SLIPPAGE_AMOUNT = 2 * 100; // 2%
 
 // V2
 export const HIGH_PRICE_IMPACT_BPS = 80; // 0.8%

@@ -32,7 +32,8 @@ function AcceptablePriceImpactInputRowImpl({
 
   const defaultValue = defaultAcceptablePriceImpactBps?.toNumber();
 
-  // https://app.asana.com/0/0/1205148618694229/1206149277852565/f
+  // calculated Acceptable Price value is not refreshing to the new percentage
+  // when size field is changed.
   useEffect(() => {
     if (defaultValue) {
       setValue(defaultValue);
@@ -41,7 +42,8 @@ function AcceptablePriceImpactInputRowImpl({
 
   const [key, setKey] = useState(0);
 
-  // https://app.asana.com/0/0/1205148618694228/1206136113111552/f
+  // if current price impact is 0.01%, the message will be shown
+  // only if acceptable price impact is set to more than 0.51%
   const highValue = useMemo(() => {
     if (!fees) {
       return undefined;
@@ -64,14 +66,12 @@ function AcceptablePriceImpactInputRowImpl({
   }
 
   const recommendedHandle = (
-    <>
-      <Trans>
-        <span className="AcceptablePriceImpactInputRow-handle" onClick={handleRecommendedValueClick}>
-          Set Recommended Impact: {formatPercentage(BigNumber.from(defaultValue).mul(-1), { signed: true })}
-        </span>
-        .
-      </Trans>
-    </>
+    <Trans>
+      <span className="AcceptablePriceImpactInputRow-handle" onClick={handleRecommendedValueClick}>
+        Set Recommended Impact: {formatPercentage(BigNumber.from(defaultValue).mul(-1), { signed: true })}
+      </span>
+      .
+    </Trans>
   );
 
   const lowValueWarningText = fees.positionPriceImpact?.bps.gte(0) ? (

@@ -12,7 +12,7 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import { DEFAULT_SLIPPAGE_AMOUNT, TOO_HIGH_SLIPPAGE_AMOUNT } from "config/factors";
+import { DEFAULT_SLIPPAGE_AMOUNT, EXCESSIVE_SLIPPAGE_AMOUNT } from "config/factors";
 import { getKeepLeverageKey } from "config/localStorage";
 import { convertTokenAddress } from "config/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -516,8 +516,8 @@ export function PositionSeller(p: Props) {
         <PercentageInput
           onChange={setAllowedSlippage}
           defaultValue={allowedSlippage}
-          highValue={TOO_HIGH_SLIPPAGE_AMOUNT}
-          highValueWarningText="Slippage is too high"
+          highValue={EXCESSIVE_SLIPPAGE_AMOUNT}
+          highValueWarningText={t`Slippage is too high`}
         />
       </ExchangeInfoRow>
     </div>

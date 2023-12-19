@@ -12,7 +12,7 @@ import {
   calculatePositionDelta,
   DECREASE,
 } from "lib/legacy";
-import { DEFAULT_SLIPPAGE_AMOUNT, DEFAULT_HIGHER_SLIPPAGE_AMOUNT, TOO_HIGH_SLIPPAGE_AMOUNT } from "config/factors";
+import { DEFAULT_SLIPPAGE_AMOUNT, DEFAULT_HIGHER_SLIPPAGE_AMOUNT, EXCESSIVE_SLIPPAGE_AMOUNT } from "config/factors";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { getConstant } from "config/chains";
 import { getContract } from "config/contracts";
@@ -85,8 +85,8 @@ function renderAllowedSlippage(setAllowedSlippage, defaultSlippage) {
       <PercentageInput
         onChange={setAllowedSlippage}
         defaultValue={defaultSlippage}
-        highValue={TOO_HIGH_SLIPPAGE_AMOUNT}
-        highValueWarningText="Slippage is too high"
+        highValue={EXCESSIVE_SLIPPAGE_AMOUNT}
+        highValueWarningText={t`Slippage is too high`}
       />
     </ExchangeInfoRow>
   );
