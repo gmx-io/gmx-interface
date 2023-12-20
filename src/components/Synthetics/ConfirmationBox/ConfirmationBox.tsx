@@ -1290,14 +1290,16 @@ export function ConfirmationBox(p: Props) {
             />
           )}
 
-          {executionPriceUsd && (
-            <ExchangeInfoRow
-              label={t`Execution Price`}
-              value={formatUsd(executionPriceUsd, {
-                displayDecimals: indexToken?.priceDecimals,
-              })}
-            />
-          )}
+          <ExchangeInfoRow
+            label={t`Execution Price`}
+            value={
+              executionPriceUsd
+                ? formatUsd(executionPriceUsd, {
+                    displayDecimals: indexToken?.priceDecimals,
+                  })
+                : "-"
+            }
+          />
 
           {decreaseAmounts && decreaseAmounts.triggerOrderType !== OrderType.StopLossDecrease && (
             <>
