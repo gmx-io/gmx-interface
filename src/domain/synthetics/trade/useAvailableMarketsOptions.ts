@@ -14,7 +14,7 @@ import { expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useMemo } from "react";
 import { OrdersInfoData, PositionOrderInfo, isIncreaseOrderType } from "../orders";
-import { getAcceptablePrice, getMarkPrice } from "./utils";
+import { getAcceptablePriceByPriceImpact, getMarkPrice } from "./utils";
 
 export type AvailableMarketsOptions = {
   allMarkets?: MarketInfo[];
@@ -132,16 +132,18 @@ export function useAvailableMarketsOptions(p: {
         increaseSizeUsd.gt(0) ? increaseSizeUsd : expandDecimals(1000, USD_DECIMALS)
       );
 
-      const { priceDiffBps: acceptablePriceImpactBps } = getAcceptablePrice({
-        isIncrease: true,
-        isLong,
-        indexPrice: getMarkPrice({ prices: indexToken.prices, isLong, isIncrease: true }),
-        priceImpactDeltaUsd: bestImpactDeltaUsd,
-        sizeDeltaUsd: increaseSizeUsd,
-      });
+      if (bestMarket && bestImpactDeltaUsd) {
+        const { acceptablePriceDeltaBps } = getAcceptablePriceByPriceImpact({
+          isIncrease: true,
+          isLong,
+          indexPrice: getMarkPrice({ prices: indexToken.prices, isLong, isIncrease: true }),
+          priceImpactDeltaUsd: bestImpactDeltaUsd,
+          sizeDeltaUsd: increaseSizeUsd,
+        });
 
-      result.minPriceImpactMarket = bestMarket;
-      result.minPriceImpactBps = acceptablePriceImpactBps;
+        result.minPriceImpactMarket = bestMarket;
+        result.minPriceImpactBps = acceptablePriceDeltaBps;
+      }
     }
 
     return result;

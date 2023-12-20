@@ -70,6 +70,10 @@ msgstr "<0>Retourner à </0><1>la page d'accueil</1> <2>ou </2> <3>échanger</3>
 msgid "<0>Selling GM: <1>{indexName}</1><2>[{poolName}]</2></0>"
 msgstr ""
 
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+msgid "<0>Set Recommended Impact: {0}</0>."
+msgstr ""
+
 #: src/pages/SyntheticsFallbackPage/SyntheticsFallbackPage.tsx
 msgid "<0>Switch to:</0>"
 msgstr ""
@@ -196,19 +200,12 @@ msgstr "Accepter que les ordres ne sont pas garantis de s'exécuter et que les o
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Acceptable Price"
 msgstr ""
 
-#: src/components/Synthetics/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "Acceptable Price Impact"
 msgstr ""
 
@@ -250,17 +247,20 @@ msgstr ""
 msgid "Acknowledge epoch is ending in {minutes} minutes"
 msgstr ""
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
 msgid "Acknowledge high Price Impact"
+msgstr ""
+
+#: src/components/Synthetics/HighPriceImpactWarning/HighPriceImpactWarning.tsx
+msgid "Acknowledge high Swap Price Impact"
 msgstr ""
 
 #: src/pages/Actions/Actions.js
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
 msgid "Actions"
-msgstr "Actions"
+msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -458,7 +458,6 @@ msgstr "Liquidité Disponible"
 msgid "Available amount to deposit into GLP."
 msgstr "Somme disponible à déposer dans GLP."
 
-#: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "Available amount to deposit into the specific GM pool."
@@ -1074,6 +1073,7 @@ msgstr "Connecter"
 #: src/components/Referrals/AddAffiliateCode.js
 #: src/components/Referrals/JoinReferralCode.js
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -1467,7 +1467,6 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
-#: src/components/Synthetics/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Edit"
@@ -1725,6 +1724,8 @@ msgstr ""
 msgid "Execution Fee"
 msgstr ""
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Execution Price"
@@ -1740,7 +1741,7 @@ msgid "Exit Price"
 msgstr "Prix de sortie"
 
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APR"
+msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APR."
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -2017,7 +2018,15 @@ msgid "GMX Stats Page"
 msgstr "Page des statistiques GMX"
 
 #: src/pages/Actions/Actions.js
+msgid "GMX V1 actions for all accounts."
+msgstr ""
+
+#: src/pages/Actions/Actions.js
 msgid "GMX V1 information for account: {checkSummedAccount}"
+msgstr ""
+
+#: src/pages/SyntheticsActions/SyntheticsActions.tsx
+msgid "GMX V2 actions for all accounts."
 msgstr ""
 
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
@@ -2322,8 +2331,8 @@ msgid "Invalid Transfer Addresses: Please check the url."
 msgstr ""
 
 #: src/components/Synthetics/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
-msgid "Invalid acceptable Price Impact value"
-msgstr ""
+#~ msgid "Invalid acceptable Price Impact value"
+#~ msgstr ""
 
 #: src/App/App.js
 msgid "Invalid execution fee buffer value"
@@ -2434,7 +2443,6 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -2753,6 +2761,7 @@ msgstr "Prix de marque"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Market"
@@ -2828,8 +2837,8 @@ msgid "Max Pool Capacity"
 msgstr "Capacité maximale du pool"
 
 #: src/components/Synthetics/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
-msgid "Max acceptable Price Impact precision is 0.01%"
-msgstr ""
+#~ msgid "Max acceptable Price Impact precision is 0.01%"
+#~ msgstr ""
 
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
@@ -3033,6 +3042,10 @@ msgstr "Points multiplicateurs"
 #: src/pages/Stake/StakeV2.js
 msgid "Multiplier Points APR"
 msgstr "Points multiplicateurs APR"
+
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+msgid "NA"
+msgstr ""
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "NFT Address"
@@ -3537,17 +3550,15 @@ msgstr "Préc"
 msgid "Price"
 msgstr "Prix"
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Price Impact"
 msgstr ""
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price Impact not yet acknowledged"
 msgstr ""
@@ -3736,6 +3747,10 @@ msgstr "Le destinataire n'a jamais staké de tokens GLP auparavant"
 msgid "Receiver has not staked GMX tokens before"
 msgstr "Le destinataire n'a jamais staké de tokens GLP auparavant"
 
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+#~ msgid "Recommended Impact: {0}."
+#~ msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "Redemption time not yet reached"
 msgstr "Le délai de rachat n'a pas encore été atteint"
@@ -3881,7 +3896,6 @@ msgid "Same as current active code"
 msgstr "Même que le code actif actuel"
 
 #: src/App/App.js
-#: src/components/Synthetics/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
 msgid "Save"
 msgstr "Sauver"
 
@@ -4214,6 +4228,13 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Size"
 msgstr "Montant"
+
+#: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionSeller.js
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+msgid "Slippage is too high"
+msgstr ""
 
 #: src/App/App.js
 msgid "Slippage should be less than 5%"
@@ -4584,12 +4605,20 @@ msgstr ""
 msgid "The Boosted APR is from your staked Multiplier Points."
 msgstr "Le Taux de Rendement Annuel boosté provient de vos points multiplicateurs misés."
 
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
+msgstr ""
+
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met."
 msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
+msgstr ""
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "The Max Execution Fee is overestimated by {maxExecutionFeeText}%. Upon execution, the excess Execution Fee is sent back to your account."
 msgstr ""
 
 #: src/App/App.js
@@ -4608,6 +4637,10 @@ msgstr "L'adresse du token esGMX (IOU - reconnaissance de dette) est {esGmxIouAd
 msgid "The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour."
 msgstr "La commission d'emprunt est calculée comme (actifs empruntés) / (actifs totaux dans le pool) * 0,01% par heure."
 
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+msgid "The current Price Impact is {0}. Consider using -0.30% Acceptable Price Impact so the order is more likely to be processed."
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
 msgstr "Le jeton esGMX (IOU - reconnaissance de dette) est transférable.  Vous pouvez ajouter le token à votre portefeuille et l'envoyer à une autre adresse pour le réclamer si vous le souhaitez."
@@ -4620,8 +4653,9 @@ msgstr "Les tokens esGMX peuvent être échangés ou acquis à tout moment."
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr "Le prix du marché a changé, envisagez d'augmenter votre marge autorisée en cliquant sur l'icône \"...\" à côté de votre adresse."
 
+#: src/domain/legacy.ts
 #: src/domain/synthetics/fees/utils/executionFee.ts
-msgid "The network cost to send transactions is high at the moment, please check the \"Max Execution Fee\" value before proceeding."
+msgid "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -5174,6 +5208,14 @@ msgstr "Liens utiles"
 msgid "Utilization"
 msgstr "Utilisation"
 
+#: src/pages/Actions/Actions.js
+msgid "V1 Account"
+msgstr ""
+
+#: src/pages/Actions/Actions.js
+msgid "V1 Actions"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V1 Airdrop"
 msgstr ""
@@ -5210,6 +5252,14 @@ msgstr ""
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "V1 rebates are airdropped weekly. V2 rebates are automatically applied as fee discounts on each trade and do not show on this table."
+msgstr ""
+
+#: src/pages/SyntheticsActions/SyntheticsActions.tsx
+msgid "V2 Account"
+msgstr ""
+
+#: src/pages/SyntheticsActions/SyntheticsActions.tsx
+msgid "V2 Actions"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -5323,8 +5373,7 @@ msgid "Voting"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
+#: src/components/Synthetics/GmList/GmList.tsx
 msgid "WALLET"
 msgstr "PORTEFEUILLE"
 
@@ -5614,6 +5663,10 @@ msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "You have selected {collateralTokenSymbol} as collateral, the Liquidation Price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price. If required, you can change the collateral type using the Collateral In option in the trade box."
+msgstr ""
+
+#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+msgid "You have set a high Acceptable Price Impact. The current Price Impact is {0}."
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js

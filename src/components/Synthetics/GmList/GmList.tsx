@@ -110,6 +110,7 @@ export function GmList({
                     balance={userTotalGmInfo?.balance}
                     balanceUsd={userTotalGmInfo?.balanceUsd}
                     userEarnings={userEarnings}
+                    label={t`WALLET`}
                   />
                 </th>
                 <th>
@@ -348,15 +349,12 @@ export function GmList({
                     </div>
                     <div className="App-card-row">
                       <div className="label">
-                        <Tooltip
-                          handle={<Trans>Wallet</Trans>}
-                          className="text-none"
-                          position="right-bottom"
-                          renderContent={() => (
-                            <p className="text-white">
-                              <Trans>Available amount to deposit into the specific GM pool.</Trans>
-                            </p>
-                          )}
+                        <GmTokensTotalBalanceInfo
+                          balance={userTotalGmInfo?.balance}
+                          balanceUsd={userTotalGmInfo?.balanceUsd}
+                          userEarnings={userEarnings}
+                          tooltipPosition="left-bottom"
+                          label={t`Wallet`}
                         />
                       </div>
                       <div>

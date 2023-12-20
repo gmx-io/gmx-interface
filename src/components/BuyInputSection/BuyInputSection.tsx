@@ -21,6 +21,7 @@ type Props = {
   children?: ReactNode;
   showPercentSelector?: boolean;
   onPercentChange?: (percentage: number) => void;
+  preventFocusOnLabelClick?: "left" | "right" | "both";
 };
 
 export default function BuyInputSection(props: Props) {
@@ -40,6 +41,7 @@ export default function BuyInputSection(props: Props) {
     children,
     showPercentSelector,
     onPercentChange,
+    preventFocusOnLabelClick,
   } = props;
   const [isPercentSelectorVisible, setIsPercentSelectorVisible] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -58,8 +60,12 @@ export default function BuyInputSection(props: Props) {
     onBlur?.();
   }
 
-  function handleBoxClick() {
-    if (inputRef.current) {
+  function handleBoxClick(event: React.MouseEvent<HTMLDivElement>) {
+    const target = event.target as HTMLElement;
+    const labelElement = target.closest("[data-label]");
+    const labelClicked = labelElement ? labelElement.getAttribute("data-label") : null;
+
+    if (!(preventFocusOnLabelClick === labelClicked || preventFocusOnLabelClick === "both") && inputRef.current) {
       inputRef.current.focus();
     }
   }
@@ -74,11 +80,15 @@ export default function BuyInputSection(props: Props) {
     <div>
       <div className="Exchange-swap-section buy-input" onClick={handleBoxClick}>
         <div className="buy-input-top-row">
-          <div className="text-gray">
+          <div data-label="left" className="text-gray">
             {topLeftLabel}
             {topLeftValue && `${INPUT_LABEL_SEPARATOR} ${topLeftValue}`}
           </div>
-          <div className={cx("align-right", { clickable: onClickTopRightLabel })} onClick={onClickTopRightLabel}>
+          <div
+            data-label="right"
+            className={cx("align-right", { clickable: onClickTopRightLabel })}
+            onClick={onClickTopRightLabel}
+          >
             <span className="text-gray">{topRightLabel}</span>
             {topRightValue && (
               <span className="Exchange-swap-label">

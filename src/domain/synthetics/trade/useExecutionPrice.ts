@@ -13,11 +13,12 @@ export function useDebugExecutionPrice(
     sizeInUsd?: BigNumber;
     sizeInTokens?: BigNumber;
     sizeDeltaUsd?: BigNumber;
+    overrideIndexTokenPrice?: BigNumber;
     skip?: boolean;
     isLong?: boolean;
   }
 ) {
-  const { marketInfo, sizeInUsd, sizeInTokens, sizeDeltaUsd, skip, isLong } = p;
+  const { marketInfo, sizeInUsd, sizeInTokens, sizeDeltaUsd, skip, isLong, overrideIndexTokenPrice } = p;
 
   const key =
     !skip && marketInfo && sizeInUsd && sizeInTokens && sizeDeltaUsd && isLong !== undefined
@@ -28,8 +29,14 @@ export function useDebugExecutionPrice(
     key,
     request: () => {
       const indexPrice = {
-        min: convertToContractPrice(marketInfo!.indexToken.prices.minPrice, marketInfo!.indexToken.decimals),
-        max: convertToContractPrice(marketInfo!.indexToken.prices.maxPrice, marketInfo!.indexToken.decimals),
+        min: convertToContractPrice(
+          overrideIndexTokenPrice ?? marketInfo!.indexToken.prices.minPrice,
+          marketInfo!.indexToken.decimals
+        ),
+        max: convertToContractPrice(
+          overrideIndexTokenPrice ?? marketInfo!.indexToken.prices.maxPrice,
+          marketInfo!.indexToken.decimals
+        ),
       };
 
       return {
@@ -54,7 +61,7 @@ export function useDebugExecutionPrice(
       };
     },
     parseResponse: (res) => {
-      const returnValues = res.data.reader.executionPrice.returnValues[0];
+      const returnValues = res.data.reader.executionPrice.returnValues;
 
       // eslint-disable-next-line no-console
       console.log("useExecutionPrice", {

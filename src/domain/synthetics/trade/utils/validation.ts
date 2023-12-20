@@ -10,6 +10,7 @@ import { DUST_USD, USD_DECIMALS, isAddressZero } from "lib/legacy";
 import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { GmSwapFees, NextPositionValues, SwapPathStats, TradeFees, TriggerThresholdType } from "../types";
 import { getMinCollateralUsdForLeverage } from "./decrease";
+import { PriceImpactWarningState } from "../usePriceImpactWarningState";
 
 export function getCommonError(p: { chainId: number; isConnected: boolean; hasOutdatedUi: boolean }) {
   const { chainId, isConnected, hasOutdatedUi } = p;
@@ -41,6 +42,7 @@ export function getSwapError(p: {
   markRatio: TokensRatio | undefined;
   fees: TradeFees | undefined;
   swapPathStats: SwapPathStats | undefined;
+  priceImpactWarning: PriceImpactWarningState;
   isWrapOrUnwrap: boolean;
   swapLiquidity: BigNumber | undefined;
 }) {
@@ -55,6 +57,7 @@ export function getSwapError(p: {
     markRatio,
     fees,
     isWrapOrUnwrap,
+    priceImpactWarning,
     swapLiquidity,
     swapPathStats,
   } = p;
@@ -107,6 +110,10 @@ export function getSwapError(p: {
     }
   }
 
+  if (priceImpactWarning.validationError) {
+    return [t`Price Impact not yet acknowledged`];
+  }
+
   return [undefined];
 }
 
@@ -123,6 +130,7 @@ export function getIncreaseError(p: {
   existingPosition: PositionInfo | undefined;
   fees: TradeFees | undefined;
   markPrice: BigNumber | undefined;
+  priceImpactWarning: PriceImpactWarningState;
   triggerPrice: BigNumber | undefined;
   swapPathStats: SwapPathStats | undefined;
   collateralLiquidity: BigNumber | undefined;
@@ -139,6 +147,7 @@ export function getIncreaseError(p: {
     initialCollateralAmount,
     initialCollateralUsd,
     targetCollateralToken,
+    priceImpactWarning,
     collateralUsd,
     sizeDeltaUsd,
     existingPosition,
@@ -243,6 +252,10 @@ export function getIncreaseError(p: {
     return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
   }
 
+  if (priceImpactWarning.validationError) {
+    return [t`Price Impact not yet acknowledged`];
+  }
+
   return [undefined];
 }
 
@@ -259,6 +272,7 @@ export function getDecreaseError(p: {
   isLong: boolean;
   isContractAccount: boolean;
   minCollateralUsd: BigNumber | undefined;
+  priceImpactWarning: PriceImpactWarningState;
   isNotEnoughReceiveTokenLiquidity: boolean;
   fixedTriggerThresholdType: TriggerThresholdType | undefined;
 }) {
@@ -276,6 +290,7 @@ export function getDecreaseError(p: {
     isLong,
     minCollateralUsd,
     isNotEnoughReceiveTokenLiquidity,
+    priceImpactWarning,
     fixedTriggerThresholdType,
   } = p;
 
@@ -334,6 +349,10 @@ export function getDecreaseError(p: {
 
   if (isNotEnoughReceiveTokenLiquidity) {
     return [t`Insufficient receive token liquidity`];
+  }
+
+  if (priceImpactWarning.validationError) {
+    return [t`Price Impact not yet acknowledged`];
   }
 
   return [undefined];
