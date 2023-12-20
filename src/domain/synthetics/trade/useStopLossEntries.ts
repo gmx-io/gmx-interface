@@ -9,7 +9,7 @@ export type Entry = {
   pnl?: string;
 };
 
-export default function useSLTPEntries() {
+export default function useStopLossEntries() {
   const [stopLossEntries, setStopLossEntries] = useState<Entry[]>([
     { id: uniqueId(), price: "", percentage: "", error: "", pnl: "" },
   ]);

@@ -90,7 +90,8 @@ import "./ConfirmationBox.scss";
 import { FaArrowRight } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import ProfitLossEntries from "./ProfitLossEntries";
-import useSLTPEntries from "domain/synthetics/trade/useSLTPEntries";
+import useStopLossEntries from "domain/synthetics/trade/useStopLossEntries";
+import useTakeProfitEntries from "domain/synthetics/trade/useTakeProfitEntries";
 
 export type Props = {
   isVisible: boolean;
@@ -188,13 +189,13 @@ export function ConfirmationBox(p: Props) {
     addEntry: addStopLossEntry,
     deleteEntry: deleteStopLossEntry,
     updateEntry: updateStopLossEntry,
-  } = useSLTPEntries();
+  } = useStopLossEntries();
   const {
     entries: takeProfitEntries,
     addEntry: addTakeProfitEntry,
     deleteEntry: deleteTakeProfitEntry,
     updateEntry: updateTakeProfitEntry,
-  } = useSLTPEntries();
+  } = useTakeProfitEntries();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);
