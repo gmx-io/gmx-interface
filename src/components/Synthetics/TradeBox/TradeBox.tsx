@@ -1363,15 +1363,18 @@ export function TradeBox(p: Props) {
             }) || "-"
           }`}
         />
-        {executionPriceUsd && (
-          <ExchangeInfoRow
-            className="SwapBox-info-row"
-            label={t`Execution Price`}
-            value={formatUsd(executionPriceUsd, {
-              displayDecimals: toToken?.priceDecimals,
-            })}
-          />
-        )}
+
+        <ExchangeInfoRow
+          className="SwapBox-info-row"
+          label={t`Execution Price`}
+          value={
+            executionPriceUsd
+              ? formatUsd(executionPriceUsd, {
+                  displayDecimals: toToken?.priceDecimals,
+                })
+              : "-"
+          }
+        />
 
         {existingPosition && (
           <ExchangeInfoRow
