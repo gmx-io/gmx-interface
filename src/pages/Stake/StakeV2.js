@@ -37,7 +37,6 @@ import { getContract } from "config/contracts";
 
 import "./StakeV2.css";
 import SEO from "components/Common/SEO";
-import StatsTooltip from "components/StatsTooltip/StatsTooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { getServerUrl } from "config/backend";
 import { callContract, contractFetcher } from "lib/contracts";
@@ -1078,7 +1077,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     }
   );
 
-  const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useGmxPrice(
+  const { gmxPrice } = useGmxPrice(
     chainId,
     { arbitrum: chainId === ARBITRUM ? library : undefined },
     active
@@ -1086,7 +1085,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
 
   let { total: totalGmxSupply } = useTotalGmxSupply();
 
-  let { avax: avaxGmxStaked, arbitrum: arbitrumGmxStaked, total: totalGmxStaked } = useTotalGmxStaked();
+  let { total: totalGmxStaked } = useTotalGmxStaked();
 
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply");
   const { data: gmxSupply } = useSWR([gmxSupplyUrl], {
