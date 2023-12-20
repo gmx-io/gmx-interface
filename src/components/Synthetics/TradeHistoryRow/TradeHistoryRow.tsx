@@ -92,6 +92,7 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
       , Market:{" "}
       <TooltipWithPortal
         position="right-bottom"
+        portalClassName="Market-name-tooltip"
         handle={getMarketIndexName(tradeAction.marketInfo)}
         renderContent={() => (
           <StatsTooltipRow showDollar={false} label={t`Market`} value={renderMarketName(tradeAction.marketInfo)} />

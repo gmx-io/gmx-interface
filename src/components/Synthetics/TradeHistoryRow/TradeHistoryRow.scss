@@ -5,7 +5,6 @@
   .plain {
     display: inline-block;
   }
-
 }
 
 .TradeHistoryRow-time {
@@ -19,5 +18,11 @@
       color: #fb5971;
       text-decoration-color: #fb5971;
     }
+  }
+}
+
+.Market-name-tooltip {
+  .Tooltip-popup {
+    min-width: 24rem;
   }
 }
