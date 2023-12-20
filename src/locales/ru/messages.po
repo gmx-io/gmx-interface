@@ -1450,10 +1450,6 @@ msgstr "Не показывайте это сообщение снова в те
 msgid "Download"
 msgstr "Загрузить"
 
-#: src/components/DownloadAsCsv/DownloadAsCsv.tsx
-msgid "Download CSV"
-msgstr ""
-
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
