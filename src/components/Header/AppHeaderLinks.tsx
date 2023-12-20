@@ -59,7 +59,7 @@ export function AppHeaderLinks({
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <ExternalLink href="https://docs.moleculeprotocol.io/t3-finance/">
+        <ExternalLink href="https://docs.t3.money/dex/">
           <Trans>Docs</Trans>
         </ExternalLink>
       </div>
