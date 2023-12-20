@@ -394,7 +394,6 @@ export function useExecutionFee(library, active, chainId, infoTokens) {
   if (
     chainId === ARBITRUM ||
     chainId === ARBITRUM_TESTNET ||
-    chainId === SEPOLIA_TESTNET ||
     chainId === OPTIMISM_GOERLI_TESTNET ||
     chainId === OPTIMISM_MAINNET
   ) {
@@ -404,7 +403,10 @@ export function useExecutionFee(library, active, chainId, infoTokens) {
   // multiplier for Avalanche is just the average gas usage
   if (chainId === AVALANCHE) {
     multiplier = 700000;
+  } else if (chainId === SEPOLIA_TESTNET) {
+    multiplier = 700000;
   }
+  // add a multiplier with lesser value for sepolia testnet. it can be between avalance and arbitrum multiplier.
 
   let finalExecutionFee = minExecutionFee;
 
