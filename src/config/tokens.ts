@@ -525,14 +525,14 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
     },
-    {
-      name: "USD Gambit",
-      symbol: "USDG",
-      decimals: 18,
-      address: "0xD9c58e82Fc71ed7Cf8593fC94403161072458E43",
-      isUsdg: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/15886/small/usdg-02.png",
-    },
+    // {
+    //   name: "USD Gambit",
+    //   symbol: "USDG",
+    //   decimals: 18,
+    //   address: "0xD9c58e82Fc71ed7Cf8593fC94403161072458E43",
+    //   isUsdg: true,
+    //   imageUrl: "https://assets.coingecko.com/coins/images/15886/small/usdg-02.png",
+    // },
     {
       name: "Wrapped Ethereum (WETH)",
       symbol: "ETH",
