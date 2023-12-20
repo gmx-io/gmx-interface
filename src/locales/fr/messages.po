@@ -1450,6 +1450,10 @@ msgstr "Ne montrez plus ce message pendant 30 jours."
 msgid "Download"
 msgstr "Télécharger"
 
+#: src/components/DownloadAsCsv/DownloadAsCsv.tsx
+msgid "Download CSV"
+msgstr ""
+
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
