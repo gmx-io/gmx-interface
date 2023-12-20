@@ -23,6 +23,8 @@
     }
   }
   .Percentage-input {
+    display: flex;
+    align-items: center;
     border: 1px solid #212540;
     border-radius: var(--border-radius-sm);
     padding-right: 0.5rem;
@@ -47,7 +49,7 @@
 
     input {
       width: 4rem;
-      padding: 0.2rem 0.5rem 0.35rem;
+      padding: 0.2rem 0.35rem;
       font-size: 1.4rem;
       border-radius: 4px;
       text-align: right;
