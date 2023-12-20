@@ -1482,18 +1482,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                       position="right-bottom"
                       className="nowrap"
                       handle={"$" + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
-                      renderContent={() => (
-                        <>
-                          <StatsTooltipRow
-                            label={t`Price on Avalanche`}
-                            value={formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
-                          />
-                          <StatsTooltipRow
-                            label={t`Price on Arbitrum`}
-                            value={formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}
-                          />
-                        </>
-                      )}
+                      renderContent={() => <></>}
                     />
                   )}
                 </div>
@@ -1620,15 +1609,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                         ` ($${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)})`
                       }
                       renderContent={() => (
-                        <StatsTooltip
-                          showDollar={false}
-                          title={t`Staked`}
-                          avaxValue={avaxGmxStaked}
-                          arbitrumValue={arbitrumGmxStaked}
-                          total={totalGmxStaked}
-                          decimalsForConversion={18}
-                          symbol="TMX"
-                        />
+                        <></>
                       )}
                     />
                   )}
