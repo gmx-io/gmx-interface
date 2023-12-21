@@ -2944,6 +2944,10 @@ msgstr "Max. Arbitrum APR:"
 msgid "Max. Avalanche APR: {0}"
 msgstr "Max. Avalanche APR: {0}"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max. Leverage exceeded"
+msgstr "Max. Leverage exceeded"
+
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "Max. {nativeTokenSymbol} APR with 200% Boost for this week: {0}%."
 msgstr "Max. {nativeTokenSymbol} APR with 200% Boost for this week: {0}%."

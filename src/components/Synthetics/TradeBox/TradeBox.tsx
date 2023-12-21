@@ -64,6 +64,7 @@ import { useAvailableMarketsOptions } from "domain/synthetics/trade/useAvailable
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
 import {
+  ValidationResult,
   getCommonError,
   getDecreaseError,
   getIncreaseError,
@@ -90,7 +91,7 @@ import {
 import { useSafeState } from "lib/useSafeState";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { IoMdSwap } from "react-icons/io";
 import { useLatest, usePrevious } from "react-use";
 import { MarketCard } from "../MarketCard/MarketCard";
@@ -101,6 +102,9 @@ import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import "./TradeBox.scss";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import Tooltip from "components/Tooltip/Tooltip";
+import { museNeverExist } from "lib/types";
 
 export type Props = {
   tradeType: TradeType;
@@ -675,14 +679,14 @@ export function TradeBox(p: Props) {
     };
   }, [increaseAmounts, isIncrease, isLong, marketInfo]);
 
-  const error = useMemo(() => {
+  const { buttonErrorText, tooltipContent } = useMemo(() => {
     const commonError = getCommonError({
       chainId,
       isConnected: Boolean(account),
       hasOutdatedUi,
     });
 
-    let tradeError: string[] | undefined[] = [undefined];
+    let tradeError: ValidationResult = [undefined];
 
     if (isSwap) {
       tradeError = getSwapError({
@@ -745,7 +749,32 @@ export function TradeBox(p: Props) {
       });
     }
 
-    return commonError[0] || tradeError[0];
+    const buttonErrorText = commonError[0] || tradeError[0];
+    const tooltipName = commonError[1] || tradeError[1];
+
+    let tooltipContent: ReactNode = null;
+    if (tooltipName) {
+      switch (tooltipName) {
+        case "maxLeverage":
+          tooltipContent = (
+            <>
+              <Trans>
+                Decrease the Leverage by using the slider. If the Leverage slider is disabled, you can increase the Pay
+                amount or reduce the Order size.
+              </Trans>
+              <br />
+              <br />
+              <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">More Info</ExternalLink>.
+            </>
+          );
+          break;
+
+        default:
+          museNeverExist(tooltipName);
+      }
+    }
+
+    return { buttonErrorText, tooltipContent };
   }, [
     chainId,
     account,
@@ -791,14 +820,14 @@ export function TradeBox(p: Props) {
     if (!account) {
       return false;
     }
-    if (error) {
+    if (buttonErrorText) {
       return true;
     }
-  }, [error, account]);
+  }, [buttonErrorText, account]);
 
   const submitButtonText = useMemo(() => {
-    if (error) {
-      return error;
+    if (buttonErrorText) {
+      return buttonErrorText;
     }
 
     if (isMarket) {
@@ -814,7 +843,7 @@ export function TradeBox(p: Props) {
     }
   }, [
     decreaseAmounts?.triggerOrderType,
-    error,
+    buttonErrorText,
     fromToken?.symbol,
     isLimit,
     isMarket,
@@ -1475,6 +1504,28 @@ export function TradeBox(p: Props) {
     );
   }
 
+  const buttonContent = (
+    <Button
+      variant="primary-action"
+      className="w-full"
+      onClick={onSubmit}
+      disabled={isSubmitButtonDisabled && !shouldDisableValidation}
+    >
+      {buttonErrorText || submitButtonText}
+    </Button>
+  );
+  const button = tooltipContent ? (
+    <Tooltip
+      className="w-full"
+      renderContent={() => tooltipContent}
+      handle={buttonContent}
+      handleClassName="w-full"
+      position="center-bottom"
+    />
+  ) : (
+    buttonContent
+  );
+
   return (
     <>
       <div>
@@ -1548,16 +1599,7 @@ export function TradeBox(p: Props) {
               )}
             </div>
 
-            <div className="Exchange-swap-button-container">
-              <Button
-                variant="primary-action"
-                className="w-full"
-                onClick={onSubmit}
-                disabled={isSubmitButtonDisabled && !shouldDisableValidation}
-              >
-                {error || submitButtonText}
-              </Button>
-            </div>
+            <div className="Exchange-swap-button-container">{button}</div>
           </form>
         </div>
       </div>
@@ -1602,7 +1644,7 @@ export function TradeBox(p: Props) {
         keepLeverage={keepLeverage}
         fees={fees}
         executionFee={executionFee}
-        error={error}
+        error={buttonErrorText}
         existingPosition={existingPosition}
         shouldDisableValidation={shouldDisableValidation!}
         isHigherSlippageAllowed={isHigherSlippageAllowed}

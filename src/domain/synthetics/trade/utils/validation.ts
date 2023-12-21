@@ -1,18 +1,24 @@
 import { t } from "@lingui/macro";
 import { IS_NETWORK_DISABLED, getChainName } from "config/chains";
 import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
-import { MarketInfo, getMintableMarketTokens } from "domain/synthetics/markets";
+import { MarketInfo, getMintableMarketTokens, getOpenInterestUsd } from "domain/synthetics/markets";
 import { PositionInfo } from "domain/synthetics/positions";
 import { TokenData, TokensRatio } from "domain/synthetics/tokens";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber, ethers } from "ethers";
-import { DUST_USD, USD_DECIMALS, isAddressZero } from "lib/legacy";
+import { DUST_USD, PRECISION, USD_DECIMALS, isAddressZero } from "lib/legacy";
 import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { GmSwapFees, NextPositionValues, SwapPathStats, TradeFees, TriggerThresholdType } from "../types";
 import { getMinCollateralUsdForLeverage } from "./decrease";
 import { PriceImpactWarningState } from "../usePriceImpactWarningState";
 
-export function getCommonError(p: { chainId: number; isConnected: boolean; hasOutdatedUi: boolean }) {
+export type ValidationTooltipName = "maxLeverage";
+export type ValidationResult =
+  | [errorMessage: undefined]
+  | [errorMessage: string]
+  | [errorMessage: string, tooltipName: ValidationTooltipName];
+
+export function getCommonError(p: { chainId: number; isConnected: boolean; hasOutdatedUi: boolean }): ValidationResult {
   const { chainId, isConnected, hasOutdatedUi } = p;
 
   if (IS_NETWORK_DISABLED[chainId]) {
@@ -45,7 +51,7 @@ export function getSwapError(p: {
   priceImpactWarning: PriceImpactWarningState;
   isWrapOrUnwrap: boolean;
   swapLiquidity: BigNumber | undefined;
-}) {
+}): ValidationResult {
   const {
     fromToken,
     toToken,
@@ -139,7 +145,7 @@ export function getIncreaseError(p: {
   minCollateralUsd: BigNumber | undefined;
   isLong: boolean;
   isLimit: boolean;
-}) {
+}): ValidationResult {
   const {
     marketInfo,
     indexToken,
@@ -256,6 +262,25 @@ export function getIncreaseError(p: {
     return [t`Price Impact not yet acknowledged`];
   }
 
+  if (nextPositionValues?.nextLeverage) {
+    const openInterest = getOpenInterestUsd(marketInfo, isLong);
+    const minCollateralFactorMultiplier = isLong
+      ? marketInfo.minCollateralFactorForOpenInterestLong
+      : marketInfo.minCollateralFactorForOpenInterestShort;
+    let minCollateralFactor = openInterest.add(sizeDeltaUsd).mul(minCollateralFactorMultiplier).div(PRECISION);
+    const minCollateralFactorForMarket = marketInfo.minCollateralFactor.mul(10);
+
+    if (minCollateralFactorForMarket.gt(minCollateralFactor)) {
+      minCollateralFactor = minCollateralFactorForMarket;
+    }
+
+    const maxLeverage = PRECISION.mul(BASIS_POINTS_DIVISOR).div(minCollateralFactor);
+
+    if (nextPositionValues.nextLeverage.gt(maxLeverage)) {
+      return [t`Max. Leverage exceeded`, "maxLeverage"];
+    }
+  }
+
   return [undefined];
 }
 
@@ -275,7 +300,7 @@ export function getDecreaseError(p: {
   priceImpactWarning: PriceImpactWarningState;
   isNotEnoughReceiveTokenLiquidity: boolean;
   fixedTriggerThresholdType: TriggerThresholdType | undefined;
-}) {
+}): ValidationResult {
   const {
     marketInfo,
     sizeDeltaUsd,
