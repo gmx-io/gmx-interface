@@ -11,6 +11,7 @@ import { isMarketOrderType } from "./utils";
 import { getPositionKey } from "../positions";
 import { applySlippageToPrice } from "../trade";
 import { t } from "@lingui/macro";
+import { DecreaseOrderParams, createDecreaseMulticall } from "./createDecreaseOrderTxn";
 
 const { AddressZero } = ethers.constants;
 
@@ -39,7 +40,13 @@ type IncreaseOrderParams = {
   setPendingPosition: SetPendingPosition;
 };
 
-export async function createIncreaseOrderTxn(chainId: number, signer: Signer, p: IncreaseOrderParams) {
+export async function createIncreaseOrderTxn(
+  chainId: number,
+  signer: Signer,
+  p: IncreaseOrderParams,
+  decreaseOrderParams?: DecreaseOrderParams[]
+) {
+  const decreaseOrderParamsFinal = decreaseOrderParams?.filter(Boolean) || [];
   const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
 
   const orderVaultAddress = getContract(chainId, "OrderVault");
@@ -48,6 +55,12 @@ export async function createIncreaseOrderTxn(chainId: number, signer: Signer, p:
 
   const wntCollateralAmount = isNativePayment ? p.initialCollateralAmount : BigNumber.from(0);
   const totalWntAmount = wntCollateralAmount.add(p.executionFee);
+
+  let decreaseMulticallParams: any[] = [];
+
+  if (decreaseOrderParamsFinal && decreaseOrderParamsFinal.length > 0) {
+    decreaseMulticallParams = createDecreaseMulticall(chainId, decreaseOrderParamsFinal);
+  }
 
   const initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
 
@@ -93,6 +106,7 @@ export async function createIncreaseOrderTxn(chainId: number, signer: Signer, p:
         },
       ],
     },
+    ...decreaseMulticallParams,
   ];
 
   const encodedPayload = multicall
@@ -128,6 +142,7 @@ export async function createIncreaseOrderTxn(chainId: number, signer: Signer, p:
     hideSentMsg: true,
     hideSuccessMsg: true,
     setPendingTxns: p.setPendingTxns,
+    gasLimit: 5000000,
   }).then(() => {
     if (isMarketOrderType(p.orderType)) {
       const positionKey = getPositionKey(p.account, p.marketAddress, p.targetCollateralAddress, p.isLong);

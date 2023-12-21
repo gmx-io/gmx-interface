@@ -99,7 +99,6 @@ export function SettleAccruedFundingFeeModal({
     if (!account || !signer || !chainId || !executionFee || !tokensData) return;
 
     setIsSubmitting(true);
-
     createDecreaseOrderTxn(
       chainId,
       signer,

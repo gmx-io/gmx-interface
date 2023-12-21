@@ -45,19 +45,10 @@ export type DecreaseOrderCallbacks = {
   setPendingFundingFeeSettlement?: SetPendingFundingFeeSettlement;
 };
 
-export async function createDecreaseOrderTxn(
-  chainId: number,
-  signer: Signer,
-  params: DecreaseOrderParams | DecreaseOrderParams[],
-  callbacks: DecreaseOrderCallbacks
-) {
+export function createDecreaseMulticall(chainId: number, params: DecreaseOrderParams[]) {
   const ps = Array.isArray(params) ? params : [params];
-  const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
-
   const orderVaultAddress = getContract(chainId, "OrderVault");
-  const totalWntAmount = ps.reduce((acc, p) => acc.add(p.executionFee), BigNumber.from(0));
-
-  const multicall = [
+  return [
     ...ps.flatMap((p) => {
       const isNativeReceive = p.receiveTokenAddress === NATIVE_TOKEN_ADDRESS;
 
@@ -106,6 +97,20 @@ export async function createDecreaseOrderTxn(
       ];
     }),
   ];
+}
+
+export async function createDecreaseOrderTxn(
+  chainId: number,
+  signer: Signer,
+  params: DecreaseOrderParams | DecreaseOrderParams[],
+  callbacks: DecreaseOrderCallbacks
+) {
+  const ps = Array.isArray(params) ? params : [params];
+  const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
+
+  const totalWntAmount = ps.reduce((acc, p) => acc.add(p.executionFee), BigNumber.from(0));
+
+  const multicall = createDecreaseMulticall(chainId, ps);
 
   const encodedPayload = multicall
     .filter(Boolean)

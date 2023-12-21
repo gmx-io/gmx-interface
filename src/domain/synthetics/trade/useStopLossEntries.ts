@@ -6,12 +6,11 @@ export type Entry = {
   price: string;
   percentage: string;
   error?: string;
-  pnl?: string;
 };
 
 export default function useStopLossEntries() {
   const [stopLossEntries, setStopLossEntries] = useState<Entry[]>([
-    { id: uniqueId(), price: "", percentage: "", error: "", pnl: "" },
+    { id: uniqueId(), price: "", percentage: "", error: "" },
   ]);
 
   function addEntry() {
@@ -20,7 +19,6 @@ export default function useStopLossEntries() {
       price: "",
       percentage: "",
       error: "",
-      pnl: "",
     };
     setStopLossEntries([...stopLossEntries, newEntry]);
   }
