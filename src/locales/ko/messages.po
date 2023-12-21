@@ -1324,6 +1324,10 @@ msgstr "감소 액티브: {0}, 실행 완료: {1} 취소 완료: {2}"
 msgid "Decrease size"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "Decrease the Leverage by using the slider. If the Leverage slider is disabled, you can increase the Pay amount or reduce the Order size."
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Decreased"
