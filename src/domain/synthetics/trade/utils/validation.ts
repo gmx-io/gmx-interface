@@ -268,7 +268,7 @@ export function getIncreaseError(p: {
       ? marketInfo.minCollateralFactorForOpenInterestLong
       : marketInfo.minCollateralFactorForOpenInterestShort;
     let minCollateralFactor = openInterest.add(sizeDeltaUsd).mul(minCollateralFactorMultiplier).div(PRECISION);
-    const minCollateralFactorForMarket = marketInfo.minCollateralFactor.mul(10);
+    const minCollateralFactorForMarket = marketInfo.minCollateralFactor;
 
     if (minCollateralFactorForMarket.gt(minCollateralFactor)) {
       minCollateralFactor = minCollateralFactorForMarket;
