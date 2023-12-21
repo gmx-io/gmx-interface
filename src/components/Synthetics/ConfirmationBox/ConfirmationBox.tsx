@@ -216,6 +216,7 @@ export function ConfirmationBox(p: Props) {
     if (!gasLimits || !tokensData || !gasPrice) return {};
     const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {});
     const fees = getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice);
+
     return {
       executionFee: fees?.feeTokenAmount,
       feeUsd: fees?.feeUsd,

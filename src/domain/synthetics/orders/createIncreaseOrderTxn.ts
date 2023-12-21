@@ -46,7 +46,6 @@ export async function createIncreaseOrderTxn(
   p: IncreaseOrderParams,
   decreaseOrderParams?: DecreaseOrderParams[]
 ) {
-  const decreaseOrderParamsFinal = decreaseOrderParams?.filter(Boolean) || [];
   const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
 
   const orderVaultAddress = getContract(chainId, "OrderVault");
@@ -54,12 +53,14 @@ export async function createIncreaseOrderTxn(
   const isNativePayment = p.initialCollateralAddress === NATIVE_TOKEN_ADDRESS;
 
   const wntCollateralAmount = isNativePayment ? p.initialCollateralAmount : BigNumber.from(0);
-  const totalWntAmount = wntCollateralAmount.add(p.executionFee);
+  const totalWntAmountToIncrease = wntCollateralAmount.add(p.executionFee);
+  let totalWntAmount = totalWntAmountToIncrease;
 
   let decreaseMulticallParams: any[] = [];
 
-  if (decreaseOrderParamsFinal && decreaseOrderParamsFinal.length > 0) {
-    decreaseMulticallParams = createDecreaseMulticall(chainId, decreaseOrderParamsFinal);
+  if (decreaseOrderParams && decreaseOrderParams.length > 0) {
+    totalWntAmount = decreaseOrderParams.reduce((acc, p) => acc.add(p.executionFee), totalWntAmount);
+    decreaseMulticallParams = createDecreaseMulticall(chainId, decreaseOrderParams);
   }
 
   const initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
@@ -71,7 +72,7 @@ export async function createIncreaseOrderTxn(
     : p.acceptablePrice;
 
   const multicall = [
-    { method: "sendWnt", params: [orderVaultAddress, totalWntAmount] },
+    { method: "sendWnt", params: [orderVaultAddress, totalWntAmountToIncrease] },
 
     !isNativePayment
       ? { method: "sendTokens", params: [p.initialCollateralAddress, orderVaultAddress, p.initialCollateralAmount] }
@@ -142,7 +143,6 @@ export async function createIncreaseOrderTxn(
     hideSentMsg: true,
     hideSuccessMsg: true,
     setPendingTxns: p.setPendingTxns,
-    gasLimit: 5000000,
   }).then(() => {
     if (isMarketOrderType(p.orderType)) {
       const positionKey = getPositionKey(p.account, p.marketAddress, p.targetCollateralAddress, p.isLong);
