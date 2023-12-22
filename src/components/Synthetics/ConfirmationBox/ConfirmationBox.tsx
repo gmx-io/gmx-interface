@@ -16,13 +16,9 @@ import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useUserReferralCode } from "domain/referrals/hooks";
 import {
   ExecutionFee,
-  estimateExecuteDecreaseOrderGasLimit,
   getBorrowingFactorPerPeriod,
-  getExecutionFee,
   getFundingFactorPerPeriod,
   getIsHighPriceImpact,
-  useGasLimits,
-  useGasPrice,
 } from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
 import {
@@ -186,9 +182,6 @@ export function ConfirmationBox(p: Props) {
   const { savedAllowedSlippage } = useSettings();
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
 
-  const { gasLimits } = useGasLimits(chainId);
-  const { gasPrice } = useGasPrice(chainId);
-
   const prevIsVisible = usePrevious(p.isVisible);
 
   const { referralCodeForTxn } = useUserReferralCode(signer, chainId, account);
@@ -211,17 +204,6 @@ export function ConfirmationBox(p: Props) {
     deleteEntry: deleteTakeProfitEntry,
     updateEntry: updateTakeProfitEntry,
   } = useTakeProfitEntries();
-
-  const { executionFee: decreaseExecutionFee } = useMemo(() => {
-    if (!gasLimits || !tokensData || !gasPrice) return {};
-    const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {});
-    const fees = getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice);
-
-    return {
-      executionFee: fees?.feeTokenAmount,
-      feeUsd: fees?.feeUsd,
-    };
-  }, [chainId, gasLimits, gasPrice, tokensData]);
 
   const stopLossData = useMemo(() => {
     if (!account || !marketInfo || !collateralToken || !minPositionSizeUsd || !minCollateralUsd || !executionFee)
@@ -262,7 +244,7 @@ export function ConfirmationBox(p: Props) {
           isLong,
           decreasePositionSwapType: entry.decreaseSwapType,
           orderType: entry?.triggerOrderType,
-          executionFee: decreaseExecutionFee,
+          executionFee: executionFee.feeTokenAmount,
           allowedSlippage,
           referralCode: referralCodeForTxn,
           // Skip simulation to avoid EmptyPosition error
@@ -288,7 +270,6 @@ export function ConfirmationBox(p: Props) {
     allowedSlippage,
     referralCodeForTxn,
     tokensData,
-    decreaseExecutionFee,
   ]);
 
   useEffect(() => {
