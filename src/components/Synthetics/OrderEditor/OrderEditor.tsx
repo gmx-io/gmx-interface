@@ -31,39 +31,34 @@ import {
 } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
-import {
-  bigNumberify,
-  formatAmount,
-  formatAmountFree,
-  formatDeltaUsd,
-  formatTokenAmount,
-  formatUsd,
-  parseValue,
-} from "lib/numbers";
+import { formatAmount, formatAmountFree, formatDeltaUsd, formatTokenAmount, formatUsd, parseValue } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS } from "config/factors";
-import { SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BPS_KEY } from "config/localStorage";
 import { getWrappedToken } from "config/tokens";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
   estimateExecuteSwapOrderGasLimit,
   getExecutionFee,
+  getPriceImpactForPosition,
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
 import { updateOrderTxn } from "domain/synthetics/orders/updateOrderTxn";
-import { getAcceptablePrice, getSwapPathOutputAddresses } from "domain/synthetics/trade";
+import {
+  getAcceptablePriceInfo,
+  getDefaultAcceptablePriceImpactBps,
+  getSwapPathOutputAddresses,
+} from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
 
 import Button from "components/Button/Button";
-import "./OrderEditor.scss";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import useWallet from "lib/wallets/useWallet";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
+import "./OrderEditor.scss";
 
 type Props = {
   positionsData?: PositionsInfoData;
@@ -81,11 +76,7 @@ export function OrderEditor(p: Props) {
 
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
-  const [savedAcceptablePriceImpactBps] = useLocalStorageSerializeKey(
-    [chainId, SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BPS_KEY],
-    DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS
-  );
-  const acceptablePriceImpactBps = bigNumberify(savedAcceptablePriceImpactBps!);
+  const { savedAcceptablePriceImpactBuffer } = useSettings();
 
   const [isInited, setIsInited] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -96,18 +87,41 @@ export function OrderEditor(p: Props) {
   const [triggerPirceInputValue, setTriggerPriceInputValue] = useState("");
   const triggerPrice = parseValue(triggerPirceInputValue || "0", USD_DECIMALS)!;
 
-  let { acceptablePrice } = getAcceptablePrice({
-    isIncrease: isIncreaseOrderType(p.order.orderType),
-    isLong: p.order.isLong,
-    indexPrice: triggerPrice,
-    acceptablePriceImpactBps: acceptablePriceImpactBps,
-    sizeDeltaUsd: p.order.sizeDeltaUsd,
-  });
+  const acceptablePrice = useMemo(() => {
+    if (isSwapOrderType(p.order.orderType)) {
+      return undefined;
+    }
 
-  // For SL orders Acceptable Price is not applicable and set to 0 or MaxUnit256
-  if (p.order.orderType === OrderType.StopLossDecrease) {
-    acceptablePrice = (p.order as PositionOrderInfo).acceptablePrice;
-  }
+    // For SL orders Acceptable Price is not applicable and set to 0 or MaxUnit256
+    if (p.order.orderType === OrderType.StopLossDecrease) {
+      return (p.order as PositionOrderInfo).acceptablePrice;
+    }
+
+    const priceImpactDeltaUsd = getPriceImpactForPosition(
+      (p.order as PositionOrderInfo).marketInfo,
+      p.order.sizeDeltaUsd,
+      p.order.isLong,
+      { fallbackToZero: true }
+    );
+
+    const acceptablePriceInfo = getAcceptablePriceInfo({
+      marketInfo: (p.order as PositionOrderInfo).marketInfo,
+      isIncrease: isIncreaseOrderType(p.order.orderType),
+      isLong: p.order.isLong,
+      indexPrice: triggerPrice,
+      maxNegativePriceImpactBps: getDefaultAcceptablePriceImpactBps({
+        isLong: p.order.isLong,
+        isIncrease: isIncreaseOrderType(p.order.orderType),
+        indexPrice: triggerPrice,
+        sizeDeltaUsd: p.order.sizeDeltaUsd,
+        acceptablePriceImapctBuffer: savedAcceptablePriceImpactBuffer,
+        priceImpactDeltaUsd,
+      }),
+      sizeDeltaUsd: p.order.sizeDeltaUsd,
+    });
+
+    return acceptablePriceInfo.acceptablePrice;
+  }, [p.order, savedAcceptablePriceImpactBuffer, triggerPrice]);
 
   // Swaps
   const fromToken = getTokenData(tokensData, p.order.initialCollateralTokenAddress);

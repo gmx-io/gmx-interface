@@ -131,10 +131,10 @@ export function PositionItem(p: Props) {
   function renderCollateral() {
     return (
       <>
-        <div className="position-list-collateral">
+        <div className={cx("position-list-collateral", { isSmall: !p.isLarge })}>
           <Tooltip
             handle={`${formatUsd(p.position.remainingCollateralUsd)}`}
-            position={p.isLarge ? "left-bottom" : "center-bottom"}
+            position={p.isLarge ? "left-bottom" : "right-bottom"}
             className="PositionItem-collateral-tooltip"
             handleClassName={cx("plain", { negative: p.position.hasLowCollateral })}
             renderContent={() => {
@@ -226,14 +226,11 @@ export function PositionItem(p: Props) {
               );
             }}
           />
-          {p.isLarge && (
-            <>
-              {!p.position.isOpening && !p.hideActions && p.onEditCollateralClick && (
-                <span className="edit-icon" onClick={p.onEditCollateralClick}>
-                  <AiOutlineEdit fontSize={16} />
-                </span>
-              )}
-            </>
+
+          {!p.position.isOpening && !p.hideActions && p.onEditCollateralClick && (
+            <span className="edit-icon" onClick={p.onEditCollateralClick}>
+              <AiOutlineEdit fontSize={16} />
+            </span>
           )}
         </div>
 
@@ -247,16 +244,6 @@ export function PositionItem(p: Props) {
             }
           )})`}
         </div>
-
-        {!p.isLarge && (
-          <>
-            {!p.position.isOpening && !p.hideActions && p.onEditCollateralClick && (
-              <span className="edit-icon" onClick={p.onEditCollateralClick}>
-                <AiOutlineEdit fontSize={16} />
-              </span>
-            )}
-          </>
-        )}
       </>
     );
   }
@@ -661,7 +648,7 @@ export function PositionItem(p: Props) {
               <div className="label">
                 <Trans>Collateral</Trans>
               </div>
-              <div className="position-list-collateral items-center">{renderCollateral()}</div>
+              <div>{renderCollateral()}</div>
             </div>
           </div>
           <div className="App-card-divider" />

@@ -574,13 +574,7 @@ export function PositionEditor(p: Props) {
                 </div>
               </div>
 
-              <TradeFeesRow
-                {...fees}
-                executionFee={executionFee}
-                feesType={"edit"}
-                warning={executionFee?.warning}
-                shouldShowRebate={false}
-              />
+              <TradeFeesRow {...fees} executionFee={executionFee} feesType="edit" shouldShowRebate={false} />
 
               {!isDeposit && (
                 <ExchangeInfoRow

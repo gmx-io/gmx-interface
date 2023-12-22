@@ -25,7 +25,7 @@ export const SHOW_DEBUG_VALUES_KEY = "show-debug-values";
 export const ORACLE_KEEPER_INSTANCES_CONFIG_KEY = "oracle-keeper-instances-config";
 
 export const SYNTHETICS_TRADE_OPTIONS = "synthetics-trade-options";
-export const SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BPS_KEY = "synthetics-acceptable-price-impact-bps";
+export const SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BUFFER_KEY = "synthetics-acceptable-price-impact-buffer";
 export const SYNTHETICS_DEPOSIT_INDEX_TOKEN_KEY = "synthetics-deposit-index-token";
 export const SYNTHETICS_DEPOSIT_MARKET_KEY = "synthetics-market-deposit-market";
 
@@ -50,6 +50,10 @@ export function getSyntheticsListSectionKey(chainId: number) {
   return [chainId, SYNTHETICS_LIST_SECTION_KEY];
 }
 
+export function getSyntheticsAcceptablePriceImpactBufferKey(chainId: number) {
+  return [chainId, SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BUFFER_KEY];
+}
+
 export function getSyntheticsTradeOptionsKey(chainId: number) {
   return [chainId, SYNTHETICS_TRADE_OPTIONS];
 }
@@ -68,10 +72,6 @@ export function getKeepLeverageKey(chainId: number) {
 
 export function getLeverageEnabledKey(chainId: number) {
   return [chainId, LEVERAGE_ENABLED_KEY];
-}
-
-export function getAcceptablePriceImpactBpsKey(chainId: number) {
-  return [chainId, SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BPS_KEY];
 }
 
 export function getAllowedSlippageKey(chainId: number) {

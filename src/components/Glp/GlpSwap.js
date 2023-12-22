@@ -1047,7 +1047,8 @@ export default function GlpSwap(props) {
                 topRightValue={`${formatAmount(glpBalance, GLP_DECIMALS, 4, true)}`}
                 inputValue={glpValue}
                 onInputValueChange={onGlpValueChange}
-                defaultTokenName={"GLP"}
+                defaultTokenName="GLP"
+                preventFocusOnLabelClick="right"
               >
                 <div className="selected-token inline-items-center">
                   <img className="mr-xs" width={20} src={glpIcon} alt="GLP" />
@@ -1065,6 +1066,7 @@ export default function GlpSwap(props) {
                 inputValue={swapValue}
                 onInputValueChange={onSwapValueChange}
                 selectedToken={swapToken}
+                preventFocusOnLabelClick="right"
               >
                 <TokenSelector
                   label={t`Receive`}

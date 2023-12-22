@@ -1,14 +1,7 @@
-import type { Connector } from "wagmi/connectors";
 import type { InjectedConnectorOptions } from "@wagmi/core/connectors/injected";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { Chain, Wallet, getWalletConnectConnector } from "@rainbow-me/rainbowkit";
-
-export async function getWalletConnectUri(connector: Connector, version: "1" | "2"): Promise<string> {
-  const provider = await connector.getProvider();
-  return version === "2"
-    ? new Promise<string>((resolve) => provider.once("display_uri", resolve))
-    : provider.connector.uri;
-}
+import { getWalletConnectUri } from "../helper";
 
 export interface CoreWalletLegacyOptions {
   projectId?: string;

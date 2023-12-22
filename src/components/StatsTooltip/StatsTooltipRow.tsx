@@ -7,6 +7,7 @@ export type StatsTooltipRowProps = {
   label: string | ReactNode;
   value: number | string | string[] | number[] | ReactNode;
   showDollar?: boolean;
+  unit?: string;
   showColon?: boolean;
 };
 
@@ -15,6 +16,7 @@ export default function StatsTooltipRow({
   value,
   className,
   showDollar = true,
+  unit,
   showColon = true,
 }: StatsTooltipRowProps) {
   function renderValue() {
@@ -33,6 +35,7 @@ export default function StatsTooltipRow({
       <span className={cx("Tooltip-row-value text-white", className)}>
         {showDollar && "$"}
         {value}
+        {unit || ""}
       </span>
     );
   }

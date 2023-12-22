@@ -14,7 +14,7 @@ import UniPool from "abis/UniPool.json";
 import UniswapV2 from "abis/UniswapV2.json";
 import Vault from "abis/Vault.json";
 
-import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, getConstant, getHighExecutionFee } from "config/chains";
+import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, getChainName, getConstant, getHighExecutionFee } from "config/chains";
 import { getContract } from "config/contracts";
 import { DECREASE, INCREASE, SWAP, USD_DECIMALS, getOrderKey } from "lib/legacy";
 
@@ -31,6 +31,7 @@ import { groupBy } from "lodash";
 import { replaceNativeTokenAddress } from "./tokens";
 import { getUsd } from "./tokens/utils";
 import useWallet from "lib/wallets/useWallet";
+import useSWRInfinite from "swr/infinite";
 
 export * from "./prices";
 
@@ -293,23 +294,39 @@ function invariant(condition, errorMsg) {
   }
 }
 
-export function useTrades(chainId, account, forSingleAccount, afterId) {
-  let url =
-    account && account.length > 0
-      ? `${getServerBaseUrl(chainId)}/actions?account=${account}`
-      : !forSingleAccount && `${getServerBaseUrl(chainId)}/actions`;
+export function useTrades(chainId, account) {
+  function getFetchUrl(chainId: number, account: string, afterId: string): string {
+    const baseUrl = `${getServerBaseUrl(chainId)}/actions`;
+    const urlItem = new URL(baseUrl);
 
-  if (afterId && afterId.length > 0) {
-    const urlItem = new URL(url as string);
-    urlItem.searchParams.append("after", afterId);
-    url = urlItem.toString();
+    if (account) {
+      urlItem.searchParams.append("account", account);
+    }
+
+    if (afterId) {
+      urlItem.searchParams.append("after", afterId);
+    }
+
+    return urlItem.toString();
   }
 
-  const { data: trades, mutate: updateTrades } = useSWR(url ? url : null, {
+  function getKey(pageIndex: number, previousPageData) {
+    if (previousPageData && !previousPageData.length) return null;
+    const afterId = previousPageData && previousPageData[previousPageData.length - 1].id;
+    return [getFetchUrl(chainId, account, afterId), pageIndex];
+  }
+
+  const {
+    data,
+    mutate: updateTrades,
+    size,
+    setSize,
+  } = useSWRInfinite(getKey, {
     dedupingInterval: 10000,
     // @ts-ignore
-    fetcher: (url) => fetch(url).then((res) => res.json()),
+    fetcher: ([url]) => fetch(url).then((res) => res.json()),
   });
+  const trades = data ? data.flat() : undefined;
 
   if (trades) {
     trades.sort((item0, item1) => {
@@ -351,7 +368,7 @@ export function useTrades(chainId, account, forSingleAccount, afterId) {
     });
   }
 
-  return { trades, updateTrades };
+  return { trades, updateTrades, size, setSize };
 }
 
 export function useExecutionFee(signer, active, chainId, infoTokens) {
@@ -406,7 +423,9 @@ export function useExecutionFee(signer, active, chainId, infoTokens) {
   const isFeeHigh = finalExecutionFeeUSD?.gt(expandDecimals(getHighExecutionFee(chainId), USD_DECIMALS));
   const errorMessage =
     isFeeHigh &&
-    `The network cost to send transactions is high at the moment, please check the "Max Execution Fee" value before proceeding.`;
+    t`The network Fees are very high currently, which may be due to a temporary increase in transactions on the ${getChainName(
+      chainId
+    )} network.`;
 
   return {
     minExecutionFee: finalExecutionFee,
