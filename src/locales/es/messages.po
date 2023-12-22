@@ -336,6 +336,10 @@ msgstr "Aceptar"
 msgid "Allow {0} to be spent"
 msgstr ""
 
+#: src/components/Synthetics/SubaccountModal/utils.ts
+msgid "Allow {wrappedTokenSymbol} to be spent"
+msgstr ""
+
 #: src/App/App.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
@@ -1471,8 +1475,8 @@ msgid "Download"
 msgstr "Descargar"
 
 #: src/components/Synthetics/SubaccountModal/utils.ts
-msgid "ETH is not available"
-msgstr ""
+#~ msgid "ETH is not available"
+#~ msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/StakeV2.js
@@ -2294,8 +2298,8 @@ msgid "Insufficient Available Liquidity to swap to {0}:"
 msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/utils.ts
-msgid "Insufficient ETH balance"
-msgstr ""
+#~ msgid "Insufficient ETH balance"
+#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Insufficient GLP balance"
@@ -2357,6 +2361,10 @@ msgstr "Balance {0} insuficiente"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} liquidity"
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/utils.ts
+msgid "Insufficient {nativeTokenSymbol} balance"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
@@ -5508,8 +5516,8 @@ msgstr "PESO"
 #~ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/utils.ts
-msgid "WETH for auto top-ups is required"
-msgstr ""
+#~ msgid "WETH for auto top-ups is required"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
@@ -6131,6 +6139,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "{nativeTokenSymbol} can not be sent to smart contract addresses. Select another token."
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/utils.ts
+msgid "{nativeTokenSymbol} is not available"
 msgstr ""
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx

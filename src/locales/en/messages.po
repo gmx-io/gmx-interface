@@ -336,6 +336,10 @@ msgstr "Agree"
 msgid "Allow {0} to be spent"
 msgstr "Allow {0} to be spent"
 
+#: src/components/Synthetics/SubaccountModal/utils.ts
+msgid "Allow {wrappedTokenSymbol} to be spent"
+msgstr "Allow {wrappedTokenSymbol} to be spent"
+
 #: src/App/App.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
@@ -1471,8 +1475,8 @@ msgid "Download"
 msgstr "Download"
 
 #: src/components/Synthetics/SubaccountModal/utils.ts
-msgid "ETH is not available"
-msgstr "ETH is not available"
+#~ msgid "ETH is not available"
+#~ msgstr "ETH is not available"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/StakeV2.js
@@ -2294,8 +2298,8 @@ msgid "Insufficient Available Liquidity to swap to {0}:"
 msgstr "Insufficient Available Liquidity to swap to {0}:"
 
 #: src/components/Synthetics/SubaccountModal/utils.ts
-msgid "Insufficient ETH balance"
-msgstr "Insufficient ETH balance"
+#~ msgid "Insufficient ETH balance"
+#~ msgstr "Insufficient ETH balance"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Insufficient GLP balance"
@@ -2358,6 +2362,10 @@ msgstr "Insufficient {0} balance"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} liquidity"
 msgstr "Insufficient {0} liquidity"
+
+#: src/components/Synthetics/SubaccountModal/utils.ts
+msgid "Insufficient {nativeTokenSymbol} balance"
+msgstr "Insufficient {nativeTokenSymbol} balance"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
@@ -5511,8 +5519,8 @@ msgstr "WEIGHT"
 #~ msgstr "WETH for auto top ups"
 
 #: src/components/Synthetics/SubaccountModal/utils.ts
-msgid "WETH for auto top-ups is required"
-msgstr "WETH for auto top-ups is required"
+#~ msgid "WETH for auto top-ups is required"
+#~ msgstr "WETH for auto top-ups is required"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
@@ -6140,6 +6148,10 @@ msgstr "{nativeTokenSymbol} Total APR"
 #: src/components/Exchange/PositionSeller.js
 msgid "{nativeTokenSymbol} can not be sent to smart contract addresses. Select another token."
 msgstr "{nativeTokenSymbol} can not be sent to smart contract addresses. Select another token."
+
+#: src/components/Synthetics/SubaccountModal/utils.ts
+msgid "{nativeTokenSymbol} is not available"
+msgstr "{nativeTokenSymbol} is not available"
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "{orderTypeLabel} {positionText}, -{0}"
