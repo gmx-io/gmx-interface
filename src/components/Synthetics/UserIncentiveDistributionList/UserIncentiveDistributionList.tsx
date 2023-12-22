@@ -1,4 +1,6 @@
 import { t, Trans } from "@lingui/macro";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import Button from "components/Button/Button";
 import Card from "components/Common/Card";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Pagination from "components/Pagination/Pagination";
@@ -44,7 +46,8 @@ function getNormalizedIncentive(incentive: UserIncentiveData, tokens: Token[]) {
 }
 
 export default function UserIncentiveDistributionList() {
-  const { account } = useWallet();
+  const { account, active } = useWallet();
+  const { openConnectModal } = useConnectModal();
   const { chainId } = useChainId();
   const tokens = getTokens(chainId);
   const userIncentiveData = useUserIncentiveData(chainId, account);
@@ -58,7 +61,10 @@ export default function UserIncentiveDistributionList() {
     });
   }, [userIncentiveData, tokens]);
 
-  const { currentPage, getCurrentData, setCurrentPage, pageCount } = usePagination(normalizedIncentiveData);
+  const { currentPage, getCurrentData, setCurrentPage, pageCount } = usePagination(
+    "UserIncentiveDistributionList",
+    normalizedIncentiveData
+  );
   const currentIncentiveData = getCurrentData();
 
   if (!userIncentiveData?.data?.length) {
@@ -67,7 +73,15 @@ export default function UserIncentiveDistributionList() {
         tooltipText={t`Incentives are airdropped weekly.`}
         message={t`No incentives distribution history yet.`}
         className="mt-sm"
-      />
+      >
+        {!active && (
+          <div className="mt-md">
+            <Button variant="secondary" onClick={openConnectModal}>
+              <Trans>Connect Wallet</Trans>
+            </Button>
+          </div>
+        )}
+      </EmptyMessage>
     );
   }
 

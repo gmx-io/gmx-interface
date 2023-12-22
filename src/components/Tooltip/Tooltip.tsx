@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { useCallback, useState, useRef } from "react";
+import { useCallback, useState, useRef, MouseEvent } from "react";
 import { IS_TOUCH } from "config/env";
 import "./Tooltip.scss";
 
@@ -73,11 +73,16 @@ export default function Tooltip(props: Props) {
     }
   }, [setVisible, intervalCloseRef]);
 
+  const onHandleClick = useCallback((event: MouseEvent) => {
+    event.preventDefault();
+  }, []);
+
   const className = cx("Tooltip", props.className);
 
   return (
     <span className={className} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onMouseClick}>
       <span
+        onClick={onHandleClick}
         className={cx({ "Tooltip-handle": !props.disableHandleStyle }, [props.handleClassName], { active: visible })}
       >
         {/* For onMouseLeave to work on disabled button https://github.com/react-component/tooltip/issues/18#issuecomment-411476678 */}

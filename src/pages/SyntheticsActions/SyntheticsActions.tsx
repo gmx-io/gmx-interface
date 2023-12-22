@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 
 import "./Actions.scss";
 
-import { Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
@@ -13,6 +13,7 @@ import { usePositionsInfo } from "domain/synthetics/positions";
 import { useChainId } from "lib/chains";
 import PageTitle from "components/PageTitle/PageTitle";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import Footer from "components/Footer/Footer";
 
 export default function SyntheticsActions({
   savedIsPnlInLeverage,
@@ -48,11 +49,11 @@ export default function SyntheticsActions({
   });
 
   return (
-    <div className="default-container Actions">
+    <div className="default-container page-layout">
       {checkSummedAccount && (
         <div className="Actions-section">
           <PageTitle
-            title="Account"
+            title={t`V2 Account`}
             subtitle={
               <>
                 <Trans>GMX V2 information for account: {checkSummedAccount}</Trans>
@@ -109,7 +110,25 @@ export default function SyntheticsActions({
       )}
       <div className="Actions-section">
         <div className="Actions-title">
-          <Trans>Actions</Trans>
+          {checkSummedAccount ? (
+            <Trans>Actions</Trans>
+          ) : (
+            <PageTitle
+              isTop
+              title={t`V2 Actions`}
+              subtitle={
+                <>
+                  {<Trans>GMX V2 actions for all accounts.</Trans>}
+                  <div>
+                    <ExternalLink newTab={false} href={`/#/actions/v1`}>
+                      Check on GMX V1
+                    </ExternalLink>
+                    .
+                  </div>
+                </>
+              }
+            />
+          )}
         </div>
         <TradeHistory
           account={checkSummedAccount}
@@ -119,6 +138,7 @@ export default function SyntheticsActions({
           shouldShowPaginationButtons
         />
       </div>
+      <Footer />
     </div>
   );
 }

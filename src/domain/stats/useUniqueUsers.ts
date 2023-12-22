@@ -1,7 +1,9 @@
-import { SUPPORTED_CHAIN_IDS } from "config/chains";
+import { ARBITRUM, AVALANCHE } from "config/chains";
 import { getSubgraphUrl } from "config/subgraph";
 import graphqlFetcher from "lib/graphqlFetcher";
 import useSWR from "swr";
+
+const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 type UserStatsData = {
   userStats: {
@@ -22,7 +24,7 @@ export default function useUniqueUsers() {
     "uniqueUsers",
     async () => {
       const results = await Promise.all(
-        SUPPORTED_CHAIN_IDS.map(async (chainId) => {
+        ACTIVE_CHAIN_IDS.map(async (chainId) => {
           const endpoint = getSubgraphUrl(chainId, "stats");
           if (!endpoint) return undefined;
           return await graphqlFetcher<UserStatsData>(endpoint, UNIQUE_USERS_QUERY);
@@ -38,7 +40,7 @@ export default function useUniqueUsers() {
   return data?.reduce(
     (acc, userInfo, index) => {
       const currentChainUsers = userInfo?.userStats?.[0]?.uniqueCountCumulative ?? 0;
-      acc[SUPPORTED_CHAIN_IDS[index]] = currentChainUsers;
+      acc[ACTIVE_CHAIN_IDS[index]] = currentChainUsers;
       acc.total += currentChainUsers;
       return acc;
     },

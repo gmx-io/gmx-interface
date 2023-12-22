@@ -6,11 +6,12 @@ import "./ShareBar.scss";
 export type Props = {
   share?: BigNumberish;
   total?: BigNumberish;
+  warningThreshold?: number; // 0-100
   className?: string;
 };
 
 export function ShareBar(p: Props) {
-  const { share, total, className } = p;
+  const { share, total, className, warningThreshold } = p;
 
   if (!share || !total || bigNumberify(total)!.eq(0)) {
     return null;
@@ -20,7 +21,7 @@ export function ShareBar(p: Props) {
   progress = Math.min(progress, 100);
 
   return (
-    <div className={cx("ShareBar", className)}>
+    <div className={cx("ShareBar", className, warningThreshold && warningThreshold < progress ? "warning" : null)}>
       <div className="ShareBar-fill" style={{ width: `${progress}%` }} />
     </div>
   );

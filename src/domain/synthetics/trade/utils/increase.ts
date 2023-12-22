@@ -1,3 +1,4 @@
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { UserReferralInfo } from "domain/referrals";
 import { getPositionFee, getPriceImpactForPosition, getTotalSwapVolumeFromSwapStats } from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
@@ -12,9 +13,13 @@ import {
 import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber } from "ethers";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { FindSwapPath, IncreasePositionAmounts, NextPositionValues } from "../types";
-import { getAcceptablePriceInfo, getMarkPrice, getTriggerThresholdType } from "./prices";
+import {
+  getAcceptablePriceInfo,
+  getDefaultAcceptablePriceImpactBps,
+  getMarkPrice,
+  getTriggerThresholdType,
+} from "./prices";
 import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "./swap";
 import { applyFactor } from "lib/numbers";
 
@@ -29,7 +34,8 @@ export function getIncreasePositionAmounts(p: {
   indexTokenAmount: BigNumber | undefined;
   leverage?: BigNumber;
   triggerPrice?: BigNumber;
-  savedAcceptablePriceImpactBps?: BigNumber;
+  fixedAcceptablePriceImpactBps?: BigNumber;
+  acceptablePriceImpactBuffer?: number;
   userReferralInfo: UserReferralInfo | undefined;
   strategy: "leverageBySize" | "leverageByCollateral" | "independent";
   findSwapPath: FindSwapPath;
@@ -46,7 +52,8 @@ export function getIncreasePositionAmounts(p: {
     leverage,
     triggerPrice,
     position,
-    savedAcceptablePriceImpactBps,
+    fixedAcceptablePriceImpactBps,
+    acceptablePriceImpactBuffer,
     findSwapPath,
     userReferralInfo,
     uiFeeFactor,
@@ -314,21 +321,29 @@ export function getIncreasePositionAmounts(p: {
   values.acceptablePriceDeltaBps = acceptablePriceInfo.acceptablePriceDeltaBps;
 
   if (isLimit) {
+    let maxNegativePriceImpactBps = fixedAcceptablePriceImpactBps;
+    if (!maxNegativePriceImpactBps) {
+      maxNegativePriceImpactBps = getDefaultAcceptablePriceImpactBps({
+        isIncrease: true,
+        isLong,
+        indexPrice: values.indexPrice,
+        sizeDeltaUsd: values.sizeDeltaUsd,
+        priceImpactDeltaUsd: values.positionPriceImpactDeltaUsd,
+        acceptablePriceImapctBuffer: acceptablePriceImpactBuffer,
+      });
+    }
+
     const limitAcceptablePriceInfo = getAcceptablePriceInfo({
       marketInfo,
       isIncrease: true,
       isLong,
       indexPrice: values.indexPrice,
       sizeDeltaUsd: values.sizeDeltaUsd,
-      maxNegativePriceImpactBps: savedAcceptablePriceImpactBps,
+      maxNegativePriceImpactBps,
     });
 
     values.acceptablePrice = limitAcceptablePriceInfo.acceptablePrice;
     values.acceptablePriceDeltaBps = limitAcceptablePriceInfo.acceptablePriceDeltaBps;
-
-    if (values.positionPriceImpactDeltaUsd.lt(limitAcceptablePriceInfo.priceImpactDeltaUsd)) {
-      values.positionPriceImpactDeltaUsd = limitAcceptablePriceInfo.priceImpactDeltaUsd;
-    }
   }
 
   let priceImpactAmount = BigNumber.from(0);

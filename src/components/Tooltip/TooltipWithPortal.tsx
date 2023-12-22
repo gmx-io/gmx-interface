@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { MouseEvent, useCallback, useRef, useState } from "react";
 import cx from "classnames";
 
 import "./Tooltip.scss";
@@ -74,24 +74,28 @@ export default function TooltipWithPortal(props: Props) {
     updateTooltipCoords();
   }, [setVisible, intervalCloseRef, intervalOpenRef, trigger, updateTooltipCoords]);
 
-  const onMouseClick = useCallback(() => {
-    if (trigger !== "click" && !IS_TOUCH) return;
-    if (intervalCloseRef.current) {
-      clearInterval(intervalCloseRef.current);
-      intervalCloseRef.current = null;
-    }
-    if (intervalOpenRef.current) {
-      clearInterval(intervalOpenRef.current);
-      intervalOpenRef.current = null;
-    }
-    updateTooltipCoords();
+  const onMouseClick = useCallback(
+    (event: MouseEvent) => {
+      event.preventDefault();
+      if (trigger !== "click" && !IS_TOUCH) return;
+      if (intervalCloseRef.current) {
+        clearInterval(intervalCloseRef.current);
+        intervalCloseRef.current = null;
+      }
+      if (intervalOpenRef.current) {
+        clearInterval(intervalOpenRef.current);
+        intervalOpenRef.current = null;
+      }
+      updateTooltipCoords();
 
-    if (props.closeOnDoubleClick) {
-      setVisible((old) => !old);
-    } else {
-      setVisible(true);
-    }
-  }, [setVisible, intervalCloseRef, trigger, updateTooltipCoords, props.closeOnDoubleClick]);
+      if (props.closeOnDoubleClick) {
+        setVisible((old) => !old);
+      } else {
+        setVisible(true);
+      }
+    },
+    [setVisible, intervalCloseRef, trigger, updateTooltipCoords, props.closeOnDoubleClick]
+  );
 
   const onMouseLeave = useCallback(() => {
     intervalCloseRef.current = setTimeout(() => {
