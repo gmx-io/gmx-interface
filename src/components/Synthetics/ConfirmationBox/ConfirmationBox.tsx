@@ -204,7 +204,6 @@ export function ConfirmationBox(p: Props) {
   });
 
   const needPayTokenApproval =
-    !isWrapOrUnwrap &&
     tokensAllowanceData &&
     fromToken &&
     payAmount &&

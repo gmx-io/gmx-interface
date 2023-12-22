@@ -13,6 +13,7 @@ import {
   useIsSubaccountActive,
   useOneClickTradingGenerateSubaccount,
   useOneClickTradingModalOpen,
+  useOneClickTradingSelector,
   useOneClickTradingState,
   useSubaccountActionCounts,
   useSubaccountAddress,
@@ -24,7 +25,6 @@ import { initSubaccount } from "domain/synthetics/subaccount/initSubaccount";
 import { removeSubaccount } from "domain/synthetics/subaccount/removeSubaccount";
 import { withdrawFromSubaccount } from "domain/synthetics/subaccount/withdrawFromSubaccount";
 import { getNeedTokenApprove, useTokenBalances, useTokensAllowanceData, useTokensData } from "domain/synthetics/tokens";
-import { BigNumber } from "ethers";
 import copyIcon from "img/ic_copy_20.svg";
 import infoIcon from "img/ic_info.svg";
 import externalLinkIcon from "img/ic_new_link_20.svg";
@@ -45,8 +45,8 @@ type FormState = "empty" | "inactive" | "activated";
 
 export function OneClickTradingModal({ setPendingTxns }: { setPendingTxns: (txns: any[]) => void }) {
   const [isVisible, setIsVisible] = useOneClickTradingModalOpen();
-  const oneClickTradingState = useOneClickTradingState();
-  const content = oneClickTradingState.subaccount ? <MainView setPendingTxns={setPendingTxns} /> : <OffStateView />;
+  const subaccountAddress = useOneClickTradingSelector((s) => s.subaccount?.address);
+  const content = subaccountAddress ? <MainView setPendingTxns={setPendingTxns} /> : <OffStateView />;
 
   return (
     <Modal label="One-Click Trading" isVisible={isVisible} setIsVisible={setIsVisible}>
@@ -57,9 +57,6 @@ export function OneClickTradingModal({ setPendingTxns }: { setPendingTxns: (txns
 
 const OffStateView = memo(() => {
   const generateSubaccount = useOneClickTradingGenerateSubaccount();
-  const onGenerateSubaccountClick = useCallback(() => {
-    generateSubaccount();
-  }, [generateSubaccount]);
 
   return (
     <>
@@ -69,7 +66,7 @@ const OffStateView = memo(() => {
           Enable <ExternalLink href="#">One-Click Trading</ExternalLink> to reduce signing popups.
         </span>
       </div>
-      <Button variant="primary-action" onClick={onGenerateSubaccountClick} className="w-full">
+      <Button variant="primary-action" onClick={generateSubaccount} className="w-full">
         Generate Subaccount
       </Button>
     </>
@@ -327,6 +324,22 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     maxAllowedActions,
   ]);
 
+  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
+    spenderAddress: getContract(chainId, "SyntheticsRouter"),
+    tokenAddresses: [wrappedToken.address],
+    skip: !isVisible,
+  });
+
+  const payAmount = oneClickTradingState.baseExecutionFee?.feeTokenAmount;
+
+  const needPayTokenApproval = useMemo(
+    () =>
+      tokensAllowanceData && payAmount
+        ? getNeedTokenApprove(tokensAllowanceData, wrappedToken.address, payAmount)
+        : false,
+    [payAmount, tokensAllowanceData, wrappedToken.address]
+  );
+
   const {
     text: buttonText,
     disabled,
@@ -341,8 +354,13 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
         wntForAutoTopUps,
         maxAllowedActions,
 
+        needPayTokenApproval,
+
         isSubaccountActive,
         accountUpdateLoading,
+
+        nativeTokenSymbol: nativeToken.symbol,
+        wrappedTokenSymbol: wrappedToken.symbol,
       }),
     [
       mainAccNativeTokenBalance,
@@ -350,8 +368,11 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
       maxAutoTopUpAmount,
       wntForAutoTopUps,
       maxAllowedActions,
+      needPayTokenApproval,
       isSubaccountActive,
       accountUpdateLoading,
+      nativeToken.symbol,
+      wrappedToken.symbol,
     ]
   );
 
@@ -379,13 +400,22 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     }
   }, [account, chainId, gasPrice, oneClickTradingState.subaccount?.privateKey, signer, subAccNativeTokenBalance]);
 
-  if (!oneClickTradingState.subaccount) {
-    return null;
-  }
-
-  const { subaccount } = oneClickTradingState;
   const shouldShowAllowedActionsWarning = isSubaccountActive && remainingActionsCount?.eq(0);
   const shouldShowInsufficientFundsButton = isSubaccountActive && insufficientFunds;
+
+  let tokenApproval: ReactNode = null;
+
+  if (needPayTokenApproval && account) {
+    tokenApproval = (
+      <div className="OneClickTrading-approve-token-btn">
+        <ApproveTokenButton
+          spenderAddress={getContract(chainId, "SyntheticsRouter")}
+          tokenAddress={wrappedToken.address}
+          tokenSymbol={wrappedToken.symbol}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="OneClickTrading-controls">
@@ -409,7 +439,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
           <span className="OneClickTrading-subaccount-label">
             <Trans>Subaccount:</Trans>
           </span>
-          <span>{copyStatus ?? shortenAddressOrEns(subaccount.address, 13)}</span>
+          <span>{copyStatus ?? shortenAddressOrEns(subaccountAddress ?? "", 13)}</span>
         </div>
         <div className="relative">
           <ButtonIcon onClick={handleCopyClick} icon={copyIcon} title="Copy" />
@@ -509,7 +539,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             }
           />
         </div>
-        <TokenApproval />
+        {tokenApproval}
         <Button
           onClick={handleActiveClick}
           disabled={disabled || spinner || isTxPending}
@@ -528,39 +558,6 @@ const ButtonIcon = memo(({ icon, title, onClick }: { icon: string; title: string
     <span title={title} className="OneClickTrading-button-icon" onClick={onClick}>
       <img src={icon} alt={title} />
     </span>
-  );
-});
-
-const TokenApproval = memo(() => {
-  const { chainId } = useChainId();
-  const wrappedToken = useMemo(() => getWrappedToken(chainId), [chainId]);
-  const [modalOpen] = useOneClickTradingModalOpen();
-
-  const { account } = useWallet();
-
-  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
-    spenderAddress: getContract(chainId, "SyntheticsRouter"),
-    tokenAddresses: [wrappedToken.address],
-    skip: !modalOpen,
-  });
-
-  const payAmount = BigNumber.from(1);
-
-  const needPayTokenApproval = useMemo(
-    () => (tokensAllowanceData ? getNeedTokenApprove(tokensAllowanceData, wrappedToken.address, payAmount) : false),
-    [payAmount, tokensAllowanceData, wrappedToken.address]
-  );
-
-  if (!needPayTokenApproval || !account) return null;
-
-  return (
-    <div className="OneClickTrading-approve-token-btn">
-      <ApproveTokenButton
-        spenderAddress={account}
-        tokenAddress={wrappedToken.address}
-        tokenSymbol={wrappedToken.symbol}
-      />
-    </div>
   );
 });
 

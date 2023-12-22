@@ -11,37 +11,47 @@ export function getButtonState({
   wntForAutoTopUps,
   maxAllowedActions,
 
+  needPayTokenApproval,
+
   mainAccEthBalance,
   isSubaccountActive,
 
   accountUpdateLoading,
+
+  nativeTokenSymbol,
+  wrappedTokenSymbol,
 }: {
   topUp: BigNumber | null;
   maxAutoTopUpAmount: BigNumber | null;
   wntForAutoTopUps: BigNumber | null;
   maxAllowedActions: BigNumber | null;
 
+  needPayTokenApproval: boolean;
+
   mainAccEthBalance: BigNumber | undefined;
   isSubaccountActive: boolean;
 
   accountUpdateLoading: boolean;
+
+  nativeTokenSymbol: string;
+  wrappedTokenSymbol: string;
 }): { text: string; disabled?: true; spinner?: true } {
   if (!mainAccEthBalance) {
-    return { disabled: true, text: t`ETH is not available` };
+    return { disabled: true, text: t`${nativeTokenSymbol} is not available` };
+  }
+
+  if (needPayTokenApproval) {
+    return { disabled: true, text: t`Allow ${wrappedTokenSymbol} to be spent` };
   }
 
   const ethSpendAmount = (topUp ?? ZERO).add(wntForAutoTopUps ?? ZERO);
 
   if (mainAccEthBalance.lt(ethSpendAmount)) {
-    return { disabled: true, text: t`Insufficient ETH balance` };
+    return { disabled: true, text: t`Insufficient ${nativeTokenSymbol} balance` };
   }
 
   if (!isSubaccountActive && maxAutoTopUpAmount === null) {
     return { disabled: true, text: t`Maximum auto top-up amount is required` };
-  }
-
-  if (!isSubaccountActive && wntForAutoTopUps === null) {
-    return { disabled: true, text: t`WETH for auto top-ups is required` };
   }
 
   if (!isSubaccountActive && maxAllowedActions === null) {
