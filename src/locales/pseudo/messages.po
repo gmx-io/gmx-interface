@@ -17,6 +17,10 @@ msgstr ""
 msgid "(up to {0}% of {feesTypeName})"
 msgstr ""
 
+#: src/domain/synthetics/orders/cancelOrdersTxn.ts
+msgid ". Subaccount max actions count reached."
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "01 Sep 2021"
 msgstr ""
@@ -745,7 +749,11 @@ msgid "Cancel submitted."
 msgstr ""
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
-msgid "Canceling {ordersText}"
+#~ msgid "Canceling {ordersText}"
+#~ msgstr ""
+
+#: src/domain/synthetics/orders/cancelOrdersTxn.ts
+msgid "Cancelling {ordersText}{subaccountNote}"
 msgstr ""
 
 #: src/App/App.js
@@ -1797,7 +1805,11 @@ msgid "Failed Settlement of Funding Fees"
 msgstr ""
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
-msgid "Failed to cancel {ordersText}"
+#~ msgid "Failed to cancel {ordersText}"
+#~ msgstr ""
+
+#: src/domain/synthetics/orders/cancelOrdersTxn.ts
+msgid "Failed to cancel {ordersText}{subaccountNote}"
 msgstr ""
 
 #: src/domain/synthetics/orders/updateOrderTxn.ts
@@ -6142,7 +6154,11 @@ msgid "{orderTypeText} {0} {longShortText}: {sign}{1}"
 msgstr ""
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
-msgid "{ordersText} canceled"
+#~ msgid "{ordersText} canceled"
+#~ msgstr ""
+
+#: src/domain/synthetics/orders/cancelOrdersTxn.ts
+msgid "{ordersText} cancelled{subaccountNote}"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
