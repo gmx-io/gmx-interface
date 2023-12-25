@@ -1,4 +1,6 @@
 import "./GmAssetDropdown.scss";
+import walletIcon from "img/ic_wallet_24.svg";
+import coingeckoIcon from "img/ic_coingecko_16.svg";
 import { Menu } from "@headlessui/react";
 import { FiChevronDown } from "react-icons/fi";
 import cx from "classnames";
@@ -12,7 +14,6 @@ import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 import { getExplorerUrl } from "config/chains";
 import { createBreakpoint } from "react-use";
-import walletIcon from "img/ic_wallet_24.svg";
 
 type Props = {
   token?: TokenData;
@@ -44,6 +45,14 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
           <FiChevronDown size={20} />
         </Menu.Button>
         <Menu.Items as="div" className={cx("asset-menu-items", { center: breakpoint === "S" })}>
+          {indexToken?.coingeckoUrl && (
+            <ExternalLink href={indexToken?.coingeckoUrl} className="asset-item">
+              <img className="asset-item-icon" src={coingeckoIcon} alt="Open in Coingecko" />
+              <p>
+                <Trans>Open {indexToken?.name} in Coingecko</Trans>
+              </p>
+            </ExternalLink>
+          )}
           <Menu.Item as="div">
             {marketName && (
               <ExternalLink href={`${explorerUrl}address/${token?.address}`} className="asset-item">

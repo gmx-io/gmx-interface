@@ -3187,10 +3187,6 @@ msgid "Open a position"
 msgstr ""
 
 #: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open in Coingecko"
-msgstr ""
-
-#: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open in Explorer"
 msgstr ""
 
