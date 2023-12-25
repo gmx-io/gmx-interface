@@ -51,7 +51,7 @@ export function SubaccountModal({ setPendingTxns }: { setPendingTxns: (txns: any
 
   return (
     <Modal label="One-Click Trading" isVisible={isVisible} setIsVisible={setIsVisible}>
-      <div className="Subaccount-modal-content">{content}</div>
+      <div className="SubaccountModal-content">{content}</div>
     </Modal>
   );
 }
@@ -61,7 +61,7 @@ const OffStateView = memo(() => {
 
   return (
     <>
-      <div className="Subaccount-alert">
+      <div className="SubaccountModal-alert">
         <img src={infoIcon} alt="Info Icon" />
         <span>
           Enable <ExternalLink href="#">One-Click Trading</ExternalLink> to reduce signing popups.
