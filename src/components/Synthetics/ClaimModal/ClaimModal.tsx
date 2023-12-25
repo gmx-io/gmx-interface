@@ -19,6 +19,7 @@ import Button from "components/Button/Button";
 import { useState } from "react";
 import "./ClaimModal.scss";
 import useWallet from "lib/wallets/useWallet";
+import { getPositiveOrNegativeClass } from "lib/utils";
 
 type Props = {
   isVisible: boolean;
@@ -133,8 +134,15 @@ export function ClaimModal(p: Props) {
       setIsVisible={onClose}
       label={t`Confirm Claim`}
     >
-      <div className="ConfirmationBox-main text-center">
-        <Trans>Claim {formatDeltaUsd(totalClaimableFundingUsd)}</Trans>
+      <div className="ConfirmationBox-main">
+        <div className="text-center">
+          <Trans>
+            Claim{" "}
+            <span className={getPositiveOrNegativeClass(totalClaimableFundingUsd)}>
+              {formatDeltaUsd(totalClaimableFundingUsd)}
+            </span>
+          </Trans>
+        </div>
       </div>
       <div className="App-card-divider ClaimModal-divider" />
       <div className="ClaimSettleModal-info-row">

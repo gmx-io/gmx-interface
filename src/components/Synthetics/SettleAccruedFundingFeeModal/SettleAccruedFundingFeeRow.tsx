@@ -6,6 +6,7 @@ import { PositionInfo } from "domain/synthetics/positions";
 import { TokenData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { formatDeltaUsd, formatTokenAmount } from "lib/numbers";
+import { getPositiveOrNegativeClass } from "lib/utils";
 import { useCallback, useMemo } from "react";
 
 type Props = {
@@ -63,7 +64,11 @@ export const SettleAccruedFundingFeeRow = ({ position, isSelected, onCheckboxCha
         <Tooltip
           className="ClaimSettleModal-tooltip"
           position="right-top"
-          handle={formatDeltaUsd(position.pendingClaimableFundingFeesUsd)}
+          handle={
+            <span className={getPositiveOrNegativeClass(position.pendingClaimableFundingFeesUsd)}>
+              {formatDeltaUsd(position.pendingClaimableFundingFeesUsd)}
+            </span>
+          }
           renderContent={renderTooltipContent}
         />
       </div>

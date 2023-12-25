@@ -29,6 +29,7 @@ import { FaAngleRight } from "react-icons/fa";
 import { useMedia } from "react-use";
 import "./PositionItem.scss";
 import { Fragment } from "react";
+import { getPositiveOrNegativeClass } from "lib/utils";
 
 export type Props = {
   position: PositionInfo;
@@ -223,7 +224,7 @@ export function PositionItem(p: Props) {
                     showDollar={false}
                     label={t`Current Funding Fee / Day`}
                     value={formatDeltaUsd(fundingFeeRateUsd)}
-                    className={fundingFeeRateUsd.gt(0) ? "text-green" : fundingFeeRateUsd.lt(0) ? "text-red" : ""}
+                    className={getPositiveOrNegativeClass(fundingFeeRateUsd)}
                   />
                   <br />
                   <Trans>Use the Edit Collateral icon to deposit or withdraw collateral.</Trans>

@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import cx from "classnames";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getIcon } from "config/icons";
@@ -24,6 +23,7 @@ import { useMedia } from "react-use";
 import PageTitle from "components/PageTitle/PageTitle";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketListSkeleton } from "components/Skeleton/Skeleton";
+import { getPositiveOrNegativeClass } from "lib/utils";
 
 function formatFundingRate(fundingRate?: BigNumber) {
   if (!fundingRate) {
@@ -156,19 +156,13 @@ export function MarketsList() {
                 showDollar={false}
                 label={longFundingMsg}
                 value={`${formatFundingRate(fundingRateLong)} / 1h`}
-                className={cx({
-                  "text-red": fundingRateLong.lt(0),
-                  "text-green": fundingRateLong.gt(0),
-                })}
+                className={getPositiveOrNegativeClass(fundingRateLong)}
               />
               <StatsTooltipRow
                 showDollar={false}
                 label={shortFundingMsg}
                 value={`${formatFundingRate(fundingRateShort)} / 1h`}
-                className={cx({
-                  "text-red": fundingRateShort.lt(0),
-                  "text-green": fundingRateShort.gt(0),
-                })}
+                className={getPositiveOrNegativeClass(fundingRateShort)}
               />
             </div>
           );
