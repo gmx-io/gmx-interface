@@ -97,8 +97,8 @@ import { useDisconnect } from "wagmi";
 import useWallet from "lib/wallets/useWallet";
 import { swrGCMiddleware } from "lib/swrMiddlewares";
 import useTradeRedirect from "lib/useTradeRedirect";
-import { OneClickTradingContextProvider } from "context/SubaccountContext/SubaccountContext";
-import { OneClickTradingModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
+import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContext";
+import { SubaccountModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -670,7 +670,7 @@ function FullApp() {
           <Trans>Save</Trans>
         </Button>
       </Modal>
-      <OneClickTradingModal setPendingTxns={setPendingTxns} />
+      <SubaccountModal setPendingTxns={setPendingTxns} />
     </>
   );
 }
@@ -697,7 +697,7 @@ function App() {
   }, [disconnect]);
 
   let app = <FullApp />;
-  app = <OneClickTradingContextProvider>{app}</OneClickTradingContextProvider>;
+  app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;
   app = <I18nProvider i18n={i18n}>{app}</I18nProvider>;
   app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;
   app = <WebsocketContextProvider>{app}</WebsocketContextProvider>;

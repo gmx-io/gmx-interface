@@ -7,7 +7,7 @@ import {
   subaccountAutoTopUpAmountKey,
   subaccountListKey,
 } from "config/dataStore";
-import { getOneClickTradingConfigKey } from "config/localStorage";
+import { getSubaccountConfigKey } from "config/localStorage";
 import { getNativeToken } from "config/tokens";
 import {
   ExecutionFee,
@@ -17,7 +17,7 @@ import {
   useGasPrice,
 } from "domain/synthetics/fees";
 import { getStringForSign } from "domain/synthetics/subaccount/onClickTradingUtils";
-import { OneClickTradingSerializedConfig } from "domain/synthetics/subaccount/types";
+import { SubaccountSerializedConfig } from "domain/synthetics/subaccount/types";
 import { useTokenBalances, useTokensData } from "domain/synthetics/tokens";
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
@@ -31,7 +31,7 @@ import { createContext, useContextSelector } from "use-context-selector";
 
 export type Subaccount = ReturnType<typeof useSubaccount>;
 
-export type OneClickTradingContext = {
+export type SubaccountContext = {
   subaccount: {
     address: string;
     privateKey: string;
@@ -49,15 +49,15 @@ export type OneClickTradingContext = {
   clearSubaccount: () => void;
 };
 
-const context = createContext<OneClickTradingContext | null>(null);
+const context = createContext<SubaccountContext | null>(null);
 
-export function OneClickTradingContextProvider({ children }: PropsWithChildren) {
+export function SubaccountContextProvider({ children }: PropsWithChildren) {
   const [modalOpen, setModalOpen] = useState(false);
 
   const { signer, account } = useWallet();
   const { chainId } = useChainId();
-  const [config, setConfig] = useLocalStorageSerializeKey<OneClickTradingSerializedConfig>(
-    getOneClickTradingConfigKey(chainId, account),
+  const [config, setConfig] = useLocalStorageSerializeKey<SubaccountSerializedConfig>(
+    getSubaccountConfigKey(chainId, account),
     null
   );
 
@@ -131,7 +131,7 @@ export function OneClickTradingContextProvider({ children }: PropsWithChildren) 
     },
   });
 
-  const value: OneClickTradingContext = useMemo(() => {
+  const value: SubaccountContext = useMemo(() => {
     return {
       modalOpen,
       setModalOpen,
@@ -151,36 +151,36 @@ export function OneClickTradingContextProvider({ children }: PropsWithChildren) 
   return <context.Provider value={value}>{children}</context.Provider>;
 }
 
-export function useOneClickTradingSelector<Selected>(selector: (s: OneClickTradingContext) => Selected) {
-  return useContextSelector(context as Context<OneClickTradingContext>, selector);
+export function useSubaccountSelector<Selected>(selector: (s: SubaccountContext) => Selected) {
+  return useContextSelector(context as Context<SubaccountContext>, selector);
 }
 
-export function useOneClickTradingModalOpen() {
-  return [useOneClickTradingSelector((s) => s.modalOpen), useOneClickTradingSelector((s) => s.setModalOpen)] as const;
+export function useSubaccountModalOpen() {
+  return [useSubaccountSelector((s) => s.modalOpen), useSubaccountSelector((s) => s.setModalOpen)] as const;
 }
 
-export function useOneClickTradingGenerateSubaccount() {
-  return useOneClickTradingSelector((s) => s.generateSubaccount);
+export function useSubaccountGenerateSubaccount() {
+  return useSubaccountSelector((s) => s.generateSubaccount);
 }
 
-export function useOneClickTradingState() {
-  return useOneClickTradingSelector((s) => s);
+export function useSubaccountState() {
+  return useSubaccountSelector((s) => s);
 }
 
 export function useSubaccountAddress() {
-  return useOneClickTradingSelector((s) => s.subaccount?.address ?? null);
+  return useSubaccountSelector((s) => s.subaccount?.address ?? null);
 }
 
 function useSubaccountPrivateKey() {
-  return useOneClickTradingSelector((s) => s.subaccount?.privateKey ?? null);
+  return useSubaccountSelector((s) => s.subaccount?.privateKey ?? null);
 }
 
 export function useIsSubaccountActive() {
-  return useOneClickTradingSelector((s) => s.contractData?.isSubaccountActive ?? false);
+  return useSubaccountSelector((s) => s.contractData?.isSubaccountActive ?? false);
 }
 
 function useSubaccountBaseExecutionFeeTokenAmount() {
-  return useOneClickTradingSelector((s) => s.baseExecutionFee?.feeTokenAmount);
+  return useSubaccountSelector((s) => s.baseExecutionFee?.feeTokenAmount);
 }
 
 export function useSubaccount(requiredBalance: BigNumber | null) {
@@ -224,8 +224,8 @@ export function useSubaccountInsufficientFunds(requiredBalance: BigNumber | unde
 }
 
 export function useSubaccountActionCounts() {
-  const current = useOneClickTradingSelector((s) => s.contractData?.currentActionsCount ?? null);
-  const max = useOneClickTradingSelector((s) => s.contractData?.maxAllowedActions ?? null);
+  const current = useSubaccountSelector((s) => s.contractData?.currentActionsCount ?? null);
+  const max = useSubaccountSelector((s) => s.contractData?.maxAllowedActions ?? null);
   const remaining = max?.sub(current ?? 0) ?? null;
 
   return {

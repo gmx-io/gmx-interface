@@ -68,17 +68,7 @@ export function getButtonState({
     if (maxAllowedActions) count += 1;
 
     if (count === 0) {
-      return { text: t`Nothing to Update`, disabled: true };
-    }
-
-    if (count === 1 || (count === 2 && maxAutoTopUpAmount)) {
-      if (topUp) {
-        return { text: t`Top-up balance` };
-      }
-
-      if (maxAllowedActions) {
-        return { text: t`Re-authorize` };
-      }
+      return { text: t`Update`, disabled: true };
     }
 
     return { text: t`Update` };

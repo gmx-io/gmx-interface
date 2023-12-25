@@ -1,11 +1,11 @@
 import { BigNumber } from "ethers";
 
-export type OneClickTradingSerializedConfig = {
+export type SubaccountSerializedConfig = {
   privateKey: string;
   address: string;
 } | null;
 
-export type OneClickTradingParams = {
+export type SubaccountParams = {
   topUp: BigNumber | null;
   maxAutoTopUpAmount: BigNumber | null;
   wntForAutoTopUps: BigNumber | null;

@@ -2,7 +2,7 @@ import { Trans } from "@lingui/macro";
 import { NavigationButton } from "components/NavigationButton/NavigationButton";
 import {
   useIsSubaccountActive,
-  useOneClickTradingModalOpen,
+  useSubaccountModalOpen,
   useSubaccountActionCounts,
   useSubaccountInsufficientFunds,
 } from "context/SubaccountContext/SubaccountContext";
@@ -21,11 +21,11 @@ export const SubaccountNavigationButton = memo(
     executionFee: BigNumber | undefined;
   }) => {
     const isSubaccountActive = useIsSubaccountActive();
-    const [, setModalOpen] = useOneClickTradingModalOpen();
+    const [, setModalOpen] = useSubaccountModalOpen();
 
     const insufficientFunds = useSubaccountInsufficientFunds(executionFee);
 
-    const jumpToOneClickTrading = useCallback(() => {
+    const jumpToSubaccount = useCallback(() => {
       closeConfirmationBox();
       setModalOpen(true);
     }, [closeConfirmationBox, setModalOpen]);
@@ -81,7 +81,7 @@ export const SubaccountNavigationButton = memo(
     return (
       <NavigationButton
         onCloseClick={onCloseClick}
-        onNavigateClick={jumpToOneClickTrading}
+        onNavigateClick={jumpToSubaccount}
         className="SubaccountNavigationButton"
       >
         {content}

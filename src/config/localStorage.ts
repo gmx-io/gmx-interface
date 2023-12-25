@@ -82,7 +82,7 @@ export function getExecutionFeeBufferBpsKey(chainId: number) {
   return [chainId, EXECUTION_FEE_BUFFER_BPS_KEY];
 }
 
-export function getOneClickTradingConfigKey(chainId: number | undefined, account: string | undefined) {
+export function getSubaccountConfigKey(chainId: number | undefined, account: string | undefined) {
   if (!chainId || !account) return null;
   return [chainId, account, "one-click-trading-config"];
 }

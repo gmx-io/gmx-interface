@@ -3,7 +3,7 @@ import { Menu } from "@headlessui/react";
 import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ETH_MAINNET } from "config/chains";
-import { useOneClickTradingModalOpen } from "context/SubaccountContext/SubaccountContext";
+import { useSubaccountModalOpen } from "context/SubaccountContext/SubaccountContext";
 import copy from "img/ic_copy_20.svg";
 import externalLink from "img/ic_new_link_20.svg";
 import disconnect from "img/ic_sign_out_20.svg";
@@ -30,8 +30,8 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
   const { ensName } = useENS(account);
   const { provider: ethereumProvider } = useJsonRpcProvider(ETH_MAINNET);
   const displayAddressLength = breakpoint === "S" ? 9 : 13;
-  const [, setOneClickModalOpen] = useOneClickTradingModalOpen();
-  const handleOneClickTradingClick = useCallback(() => {
+  const [, setOneClickModalOpen] = useSubaccountModalOpen();
+  const handleSubaccountClick = useCallback(() => {
     setOneClickModalOpen(true);
   }, [setOneClickModalOpen]);
 
@@ -71,7 +71,7 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
             </ExternalLink>
           </Menu.Item>
           <Menu.Item>
-            <div className="menu-item" onClick={handleOneClickTradingClick}>
+            <div className="menu-item" onClick={handleSubaccountClick}>
               <img width={20} src={oneClickTradingIcon} alt="Open One-click Trading settings" />
               <p>
                 <Trans>One-Click Trading</Trans>

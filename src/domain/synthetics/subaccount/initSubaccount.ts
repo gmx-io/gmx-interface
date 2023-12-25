@@ -1,7 +1,7 @@
 import { BigNumber, Signer } from "ethers";
 import { callContract } from "lib/contracts";
 import { SUBACCOUNT_ORDER_ACTION } from "./constants";
-import { OneClickTradingParams } from "./types";
+import { SubaccountParams } from "./types";
 import { t } from "@lingui/macro";
 import { getSubaccountRouterContract } from "./getSubaccountContract";
 
@@ -15,7 +15,7 @@ export async function initSubaccount(
   isAccountActive: boolean,
   currentActionsCount: BigNumber | null,
   setPendingTxns: (txns: any[]) => void,
-  { topUp, maxAllowedActions, maxAutoTopUpAmount, wntForAutoTopUps }: OneClickTradingParams
+  { topUp, maxAllowedActions, maxAutoTopUpAmount, wntForAutoTopUps }: SubaccountParams
 ) {
   const subaccountRouter = getSubaccountRouterContract(chainId, signer);
 

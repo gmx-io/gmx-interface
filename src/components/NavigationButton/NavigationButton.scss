@@ -2,24 +2,24 @@
   display: flex;
   overflow: hidden;
   border-radius: 0.4rem;
-  background-color: rgba(33 37 64);
   min-height: 30px;
   user-select: none;
 
   cursor: pointer;
 
-  &:hover {
-    background-color: rgba(33 37 64 / 85%);
-  }
-
-  &:active {
-    background-color: rgba(33 37 64 / 93%);
-  }
-
   &-button {
     display: flex;
     align-items: center;
     flex: 1;
+
+    background-color: rgb(52, 55, 86);
+    &:not([disabled]):hover {
+      background: rgba(80, 87, 126, 0.6);
+    }
+
+    &:not([disabled]):active {
+      background: rgba(80, 87, 126, 0.7);
+    }
   }
 
   &-button-text {
@@ -40,15 +40,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgb(63, 68, 103);
     padding: 0 0.7rem;
 
-    &:hover {
-      background-color: rgb(68, 73, 107);
+    background-color: rgb(52, 55, 86);
+    &:not([disabled]):hover {
+      background: rgba(80, 87, 126, 0.6);
     }
 
-    &:active {
-      background-color: #212540;
+    &:not([disabled]):active {
+      background: rgba(80, 87, 126, 0.7);
     }
   }
 }

@@ -1,19 +1,20 @@
-.OneClickTrading-alert {
+.SubaccountModal-alert {
   font-size: 1.2rem;
   color: var(--text-gray);
   display: flex;
   margin-bottom: 1.6rem;
+  align-items: flex-start;
 
   img {
     margin: 0.4rem;
   }
 }
 
-.OneClickTrading-modal-content {
-  width: 30.4rem;
+.SubaccountModal-content {
+  width: 32rem;
 }
 
-.OneClickTrading-subaccount {
+.SubaccountModal-subaccount {
   align-items: center;
   background-color: rgba(38, 43, 71, 0.9);
   border-radius: 4px;
@@ -26,12 +27,12 @@
   padding: 0 0.6rem 0 1rem;
 }
 
-.OneClickTrading-subaccount-label {
+.SubaccountModal-subaccount-label {
   color: #ffffffb2;
   margin-right: 6px;
 }
 
-.OneClickTrading-button-icon {
+.SubaccountModal-button-icon {
   align-items: center;
   background-color: rgb(52, 55, 86);
   border-radius: 4px;
@@ -42,18 +43,23 @@
   width: 2.2rem;
   margin-left: 0.4rem;
   cursor: pointer;
-  &:hover {
-    background-color: rgb(52, 55, 86, 0.8);
+
+  &:not([disabled]):hover {
+    background: rgba(80, 87, 126, 0.6);
+  }
+
+  &:not([disabled]):active {
+    background: rgba(80, 87, 126, 0.7);
   }
 }
 
-.OneClickTrading-buttons {
+.SubaccountModal-buttons {
   display: flex;
   margin-bottom: 0.8rem;
 }
 
-.OneClickTrading-mini-button {
-  background: rgba(38, 43, 71, 0.9);
+.SubaccountModal-mini-button {
+  background-color: rgba(180, 187, 255, 0.1);
   border-radius: 0.4rem;
   font-size: 1.2rem;
   color: white;
@@ -63,12 +69,12 @@
   border: none;
   cursor: pointer;
 
-  &:hover {
-    background: rgba(38, 43, 71, 1);
+  &:not([disabled]):hover {
+    background: rgba(80, 87, 126, 0.6);
   }
 
-  &:active {
-    background: rgba(38, 43, 71, 0.8);
+  &:not([disabled]):active {
+    background: rgba(80, 87, 126, 0.7);
   }
 
   &:first-child {
@@ -83,36 +89,37 @@
     background: #e74e5d26;
     color: #e74e5d;
     &:hover {
-      background: #ef697626;
+      background: #e05d6a26;
     }
     &:active {
-      background: #e74e5d26;
+      background: #e47d8726;
     }
   }
 }
 
-.OneClickTrading-subaccount-details {
+.SubaccountModal-subaccount-details {
   line-height: 2rem;
 }
 
-.OneClickTrading-stats {
+.SubaccountModal-stats {
   font-size: 1.4rem;
 }
 
-.OneClickTrading-section {
+.SubaccountModal-section {
   border-bottom: 1px solid #ffffff29;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+}
+
+.SubaccountModal-approve-token-btn {
   margin-bottom: 1.2rem;
 }
 
-.OneClickTrading-approve-token-btn {
-  margin-bottom: 1.2rem;
-}
-
-.OneClickTrading-input-wrapper {
+.SubaccountModal-input-wrapper {
   position: relative;
   width: 13rem;
 
-  .OneClickTrading-input {
+  .SubaccountModal-input {
     display: flex;
     border: 1px solid #212540;
     border-radius: var(--border-radius-sm);
@@ -154,7 +161,7 @@
   }
 }
 
-.OneClickTrading-warning {
+.SubaccountModal-warning {
   display: flex;
   margin-bottom: 1.6rem;
 
@@ -168,7 +175,13 @@
   }
 }
 
-.OneClickTrading-infinity {
+.SubaccountModal-infinity {
   font-size: 1.5rem;
   font-weight: bold;
+}
+
+.SubaccountModal-negative-sign {
+  display: flex;
+  align-items: center;
+  margin-left: 3px;
 }

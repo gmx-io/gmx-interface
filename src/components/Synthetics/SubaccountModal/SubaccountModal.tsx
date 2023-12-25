@@ -11,10 +11,10 @@ import { getContract } from "config/contracts";
 import { getNativeToken, getWrappedToken } from "config/tokens";
 import {
   useIsSubaccountActive,
-  useOneClickTradingGenerateSubaccount,
-  useOneClickTradingModalOpen,
-  useOneClickTradingSelector,
-  useOneClickTradingState,
+  useSubaccountGenerateSubaccount,
+  useSubaccountModalOpen,
+  useSubaccountSelector,
+  useSubaccountState,
   useSubaccountActionCounts,
   useSubaccountAddress,
   useSubaccountInsufficientFunds,
@@ -40,27 +40,28 @@ import { useCopyToClipboard, usePrevious } from "react-use";
 import "./SubaccountModal.scss";
 import { getApproxSubaccountActionsCountByBalance, getDefaultValues, getButtonState } from "./utils";
 import { useTransactionPending } from "domain/synthetics/common/useTransactionReceipt";
+import { helperToast } from "lib/helperToast";
 
 type FormState = "empty" | "inactive" | "activated";
 
-export function OneClickTradingModal({ setPendingTxns }: { setPendingTxns: (txns: any[]) => void }) {
-  const [isVisible, setIsVisible] = useOneClickTradingModalOpen();
-  const subaccountAddress = useOneClickTradingSelector((s) => s.subaccount?.address);
+export function SubaccountModal({ setPendingTxns }: { setPendingTxns: (txns: any[]) => void }) {
+  const [isVisible, setIsVisible] = useSubaccountModalOpen();
+  const subaccountAddress = useSubaccountSelector((s) => s.subaccount?.address);
   const content = subaccountAddress ? <MainView setPendingTxns={setPendingTxns} /> : <OffStateView />;
 
   return (
     <Modal label="One-Click Trading" isVisible={isVisible} setIsVisible={setIsVisible}>
-      <div className="OneClickTrading-modal-content">{content}</div>
+      <div className="Subaccount-modal-content">{content}</div>
     </Modal>
   );
 }
 
 const OffStateView = memo(() => {
-  const generateSubaccount = useOneClickTradingGenerateSubaccount();
+  const generateSubaccount = useSubaccountGenerateSubaccount();
 
   return (
     <>
-      <div className="OneClickTrading-alert">
+      <div className="Subaccount-alert">
         <img src={infoIcon} alt="Info Icon" />
         <span>
           Enable <ExternalLink href="#">One-Click Trading</ExternalLink> to reduce signing popups.
@@ -74,12 +75,9 @@ const OffStateView = memo(() => {
 });
 
 const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void }) => {
-  const oneClickTradingState = useOneClickTradingState();
+  const oneClickTradingState = useSubaccountState();
   const { chainId } = useChainId();
   const { signer } = useWallet();
-  const [state, copyToClipboard] = useCopyToClipboard();
-  const [copyStatus, setCopyStatus] = useState<null | string>(null);
-  const [copyCounter, setCopyCounter] = useState(0);
   const [withdrawalLoading, setWithdrawalLoading] = useState(false);
   const [disablingLoading, setDisablingLoading] = useState(false);
   const [accountUpdateLoading, setAccountUpdateLoading] = useState(false);
@@ -105,26 +103,6 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     return getDefaultValues(data);
   }, [nativeToken.address, tokensData]);
 
-  const handleCopyClick = useCallback(() => {
-    if (!subaccountAddress) return;
-    setCopyCounter((x) => x + 1);
-    copyToClipboard(subaccountAddress);
-  }, [copyToClipboard, subaccountAddress]);
-
-  useEffect(() => {
-    if (state.error) {
-      setCopyStatus("Failed to copy");
-    } else if (state.value) {
-      setCopyStatus("Copied to clipboard");
-    }
-
-    const timeoutId = setTimeout(() => {
-      setCopyStatus(null);
-    }, 500);
-
-    return () => clearTimeout(timeoutId);
-  }, [state.error, state.value, copyCounter]);
-
   const renderSubaccountBalanceTooltipContent = useCallback(() => {
     const executionFee = oneClickTradingState.baseExecutionFee?.feeTokenAmount;
     const currentAutoTopUpAmount = oneClickTradingState.contractData?.currentAutoTopUpAmount;
@@ -134,7 +112,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
         : null;
     let value: ReactNode = "";
     if (approxNumber === "infinity") {
-      value = <span className="OneClickTrading-infinity">∞</span>;
+      value = <span className="Subaccount-infinity">∞</span>;
     } else {
       value = approxNumber?.toString() ?? t`Unknown`;
     }
@@ -179,6 +157,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     wrappedToken.symbol,
   ]);
 
+  const [, copyToClipboard] = useCopyToClipboard();
   const [formState, setFormState] = useState<FormState>("empty");
   const [nextFormState, setNextFormState] = useState<FormState>("empty");
   const {
@@ -208,7 +187,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
 
   const isSubaccountActive = useIsSubaccountActive();
 
-  const [isVisible] = useOneClickTradingModalOpen();
+  const [isVisible] = useSubaccountModalOpen();
 
   const [activeTx, setActiveTx] = useState<string | null>(null);
   const isTxPending = useTransactionPending(activeTx);
@@ -407,7 +386,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
 
   if (needPayTokenApproval && account) {
     tokenApproval = (
-      <div className="OneClickTrading-approve-token-btn">
+      <div className="SubaccountModal-approve-token-btn">
         <ApproveTokenButton
           spenderAddress={getContract(chainId, "SyntheticsRouter")}
           tokenAddress={wrappedToken.address}
@@ -417,8 +396,15 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     );
   }
 
+  const handleCopyClick = useCallback(() => {
+    if (!subaccountAddress) return;
+
+    copyToClipboard(subaccountAddress);
+    helperToast.success(t`Address copied to your clipboard`);
+  }, [copyToClipboard, subaccountAddress]);
+
   return (
-    <div className="OneClickTrading-controls">
+    <div className="SubaccountModal-content">
       {shouldShowAllowedActionsWarning && (
         <Warning>
           <Trans>
@@ -434,12 +420,12 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
           </Trans>
         </Warning>
       )}
-      <div className="OneClickTrading-subaccount">
-        <div className="OneClickTrading-subaccount-details">
-          <span className="OneClickTrading-subaccount-label">
+      <div className="SubaccountModal-subaccount">
+        <div className="SubaccountModal-subaccount-details">
+          <span className="SubaccountModal-subaccount-label">
             <Trans>Subaccount:</Trans>
           </span>
-          <span>{copyStatus ?? shortenAddressOrEns(subaccountAddress ?? "", 13)}</span>
+          <span>{shortenAddressOrEns(subaccountAddress ?? "", 13)}</span>
         </div>
         <div className="relative">
           <ButtonIcon onClick={handleCopyClick} icon={copyIcon} title="Copy" />
@@ -448,18 +434,18 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
           </ExternalLink>
         </div>
       </div>
-      <div className="OneClickTrading-buttons">
-        <button onClick={handleWithdrawClick} className="OneClickTrading-mini-button">
+      <div className="SubaccountModal-buttons">
+        <button onClick={handleWithdrawClick} className="SubaccountModal-mini-button">
           {withdrawalLoading ? <SpinningLoader /> : <Trans>Withdraw</Trans>}
         </button>
-        <button onClick={handleDisableClick} className="OneClickTrading-mini-button warning">
+        <button onClick={handleDisableClick} className="SubaccountModal-mini-button warning">
           {disablingLoading ? <SpinningLoader /> : <Trans>Disable</Trans>}
         </button>
       </div>
-      <div className="OneClickTrading-stats">
-        <div className="OneClickTrading-section">
+      <div className="SubaccountModal-stats">
+        <div className="SubaccountModal-section">
           <StatsTooltipRow
-            label={t`Subaccount Balance`}
+            label={t`SubaccountModal Balance`}
             showColon={false}
             value={
               <TooltipWithPortal
@@ -487,7 +473,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             showDollar={false}
           />
         </div>
-        <div className="OneClickTrading-section">
+        <div className="SubaccountModal-section">
           <InputRow
             value={topUpString}
             setValue={setTopUpString}
@@ -495,14 +481,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             symbol={nativeToken.symbol}
             placeholder="0.0000"
             tooltipContent={t`This amount of ${nativeToken.symbol} will be sent to your subaccount to pay for transaction fees.`}
-          />
-          <InputRow
-            value={maxAutoTopUpAmountString}
-            setValue={setMaxAutoTopUpAmountString}
-            label={t`Max auto top up amount`}
-            symbol={nativeToken.symbol}
-            placeholder="0.0000"
-            tooltipContent={t`This is the maximum top up amount that will be sent to your subaccount after each transaction, the actual amount sent will depend on the actual transaction fee.`}
+            negativeSign
           />
           <InputRow
             value={wntForAutoTopUpsString}
@@ -510,7 +489,16 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             label={t`${wrappedToken.symbol} for auto top ups`}
             symbol={wrappedToken.symbol}
             placeholder="0.0000"
-            tooltipContent={t`${nativeToken.symbol} cannot be automatically transferred to your Subaccount, so only ${wrappedToken.symbol} can be used for auto top ups. Keep an amount of ${nativeToken.symbol} as ${wrappedToken.symbol} in your Main Account to allow for auto top ups.`}
+            tooltipContent={t`${nativeToken.symbol} cannot be automatically transferred to your Subaccount, so only ${wrappedToken.symbol} can be used for auto top ups. Convert this amount of ${nativeToken.symbol} to${wrappedToken.symbol} in your Main Account to allow for auto top-ups.`}
+            negativeSign
+          />
+          <InputRow
+            value={maxAutoTopUpAmountString}
+            setValue={setMaxAutoTopUpAmountString}
+            label={t`Max auto top up amount`}
+            symbol={nativeToken.symbol}
+            placeholder="0.0000"
+            tooltipContent={t`This maximum top-up amount will be sent to your subaccount after each transaction. The actual amount sent will depend on the final transaction fee.`}
           />
           <InputRow
             value={maxAllowedActionsString}
@@ -555,7 +543,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
 
 const ButtonIcon = memo(({ icon, title, onClick }: { icon: string; title: string; onClick?: () => void }) => {
   return (
-    <span title={title} className="OneClickTrading-button-icon" onClick={onClick}>
+    <span title={title} className="SubaccountModal-button-icon" onClick={onClick}>
       <img src={icon} alt={title} />
     </span>
   );
@@ -569,6 +557,7 @@ const InputRow = memo(
     symbol = "",
     tooltipContent,
     placeholder,
+    negativeSign = false,
   }: {
     value: string;
     setValue: (value: string) => void;
@@ -576,6 +565,7 @@ const InputRow = memo(
     symbol?: string;
     tooltipContent: ReactNode;
     placeholder: string;
+    negativeSign?: boolean;
   }) => {
     const renderTooltipContent = useCallback(() => {
       return tooltipContent;
@@ -585,7 +575,15 @@ const InputRow = memo(
       <StatsTooltipRow
         showColon={false}
         label={<TooltipWithPortal handle={label} renderContent={renderTooltipContent} position="left-bottom" />}
-        value={<Input placeholder={placeholder} value={value} setValue={setValue} symbol={symbol} />}
+        value={
+          <Input
+            negativeSign={negativeSign}
+            placeholder={placeholder}
+            value={value}
+            setValue={setValue}
+            symbol={symbol}
+          />
+        }
         showDollar={false}
       />
     );
@@ -598,11 +596,13 @@ const Input = memo(
     setValue,
     symbol,
     placeholder,
+    negativeSign,
   }: {
     value: string;
     setValue: (value: string) => void;
     symbol: string;
     placeholder: string;
+    negativeSign: boolean;
   }) => {
     const onChange = useCallback(
       (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -613,8 +613,9 @@ const Input = memo(
     const id = useMemo(() => `input-${Math.random()}`, []);
 
     return (
-      <div className="OneClickTrading-input-wrapper">
-        <div className={cx("OneClickTrading-input")}>
+      <div className="SubaccountModal-input-wrapper">
+        <div className={cx("SubaccountModal-input")}>
+          {negativeSign && <span className="SubaccountModal-negative-sign">-</span>}
           <input placeholder={placeholder} onChange={onChange} id={id} value={value} />
           <label htmlFor={id}>
             <span>{symbol}</span>
@@ -627,11 +628,11 @@ const Input = memo(
 
 const Warning = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="OneClickTrading-warning">
-      <div className="OneClickTrading-warning-icon">
+    <div className="SubaccountModal-warning">
+      <div className="SubaccountModal-warning-icon">
         <img src={warnIcon} alt="Warning" />
       </div>
-      <div className="OneClickTrading-warning-text text-gray">{children}</div>
+      <div className="SubaccountModal-warning-text text-gray">{children}</div>
     </div>
   );
 };
