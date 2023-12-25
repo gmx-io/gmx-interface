@@ -1,9 +1,18 @@
 .GmAssetDropdown {
   .asset-item {
     width: auto;
+
+    &:hover {
+      .subtext {
+        color: white;
+      }
+    }
   }
   .wallet-icon {
     width: 1.6rem;
+  }
+  .subtext {
+    color: #a0a3c4;
   }
 }
 

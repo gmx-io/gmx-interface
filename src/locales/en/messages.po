@@ -3205,6 +3205,7 @@ msgstr "Open positions: {0}<0/>Under risk: {1}"
 msgid "Open trades ranking and stats"
 msgstr "Open trades ranking and stats"
 
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open {0} in Coingecko"
 msgstr "Open {0} in Coingecko"

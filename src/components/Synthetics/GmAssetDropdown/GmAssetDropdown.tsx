@@ -6,7 +6,7 @@ import { FiChevronDown } from "react-icons/fi";
 import cx from "classnames";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { TokenData, TokensData, getTokenData } from "domain/synthetics/tokens";
-import { MarketsInfoData, getMarketPoolName } from "domain/synthetics/markets";
+import { MarketInfo, MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getByKey } from "lib/objects";
 import { Trans } from "@lingui/macro";
 import { getIcon } from "config/icons";
@@ -31,12 +31,29 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
   const longToken = getTokenData(tokensData, market?.longTokenAddress);
   const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
   const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
-  const marketName = market?.isSpotOnly
-    ? `GM: SWAP [${getMarketPoolName(market)}]`
-    : `GM: ${indexToken?.symbol} [${market && getMarketPoolName(market)}]`;
   const explorerUrl = getExplorerUrl(chainId);
   const useBreakpoint = createBreakpoint({ S: 500 });
   const breakpoint = useBreakpoint();
+
+  function renderMarketName(market: MarketInfo) {
+    return market && market.isSpotOnly ? (
+      <>
+        GM: SWAP
+        <div className="items-top">
+          <span>{getMarketIndexName(market)}</span>
+          <span className="subtext">[{getMarketPoolName(market)}]</span>
+        </div>
+      </>
+    ) : (
+      <>
+        GM:{" "}
+        <div className="items-top">
+          <span>{getMarketIndexName(market)}</span>
+          <span className="subtext">[{getMarketPoolName(market)}]</span>
+        </div>
+      </>
+    );
+  }
 
   return (
     <div className="AssetDropdown-wrapper GmAssetDropdown">
@@ -54,17 +71,17 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
             </ExternalLink>
           )}
           <Menu.Item as="div">
-            {marketName && (
+            {market && (
               <ExternalLink href={`${explorerUrl}address/${token?.address}`} className="asset-item">
                 <img className="asset-item-icon" src={chainIcon} alt="Open in explorer" />
                 <p>
-                  <Trans>Open {marketName} in Explorer</Trans>
+                  <Trans>Open {renderMarketName(market)} in Explorer</Trans>
                 </p>
               </ExternalLink>
             )}
           </Menu.Item>
           <Menu.Item as="div">
-            {active && marketName && (
+            {active && market && (
               <div
                 onClick={() => {
                   if (connector?.watchAsset && token) {
@@ -81,7 +98,7 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
               >
                 <img src={walletIcon} className="wallet-icon" alt="Add to wallet" />
                 <p>
-                  <Trans>Add {marketName} to Wallet</Trans>
+                  <Trans>Add {renderMarketName(market)} to Wallet</Trans>
                 </p>
               </div>
             )}
