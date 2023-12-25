@@ -979,7 +979,7 @@ export function SyntheticsStats() {
         ]}
         data={markets}
         fileName={`gmx_v2_markets_${format(new Date(), "yyyy-MM-dd")}`}
-        className="mt-md"
+        className="mt-md download-csv"
       />
     </div>
   );

@@ -1,7 +1,7 @@
+import "./DownloadAsCsv.scss";
 import { ReactNode, useCallback } from "react";
-import Button from "components/Button/Button";
-import { Trans } from "@lingui/macro";
-import { FiDownload } from "react-icons/fi";
+import DownloadIcon from "img/ic_download.svg";
+import cx from "classnames";
 
 type Props<T> = {
   data: T[];
@@ -22,17 +22,6 @@ function convertToCSV<T>(data: Partial<T>[]): string {
   const values = data.map((object) => Object.values(object).join(",")).join("\n");
 
   return `${header}\n${values}`;
-}
-
-function DefaultButtonContent() {
-  return (
-    <>
-      <FiDownload />
-      <span className="ml-xs">
-        <Trans>Download CSV</Trans>
-      </span>
-    </>
-  );
 }
 
 export function DownloadAsCsv<T>({ data, excludedFields, fileName, className, children }: Props<T>) {
@@ -59,9 +48,5 @@ export function DownloadAsCsv<T>({ data, excludedFields, fileName, className, ch
     return null;
   }
 
-  return (
-    <Button variant="secondary" title="Download CSV" className={className} onClick={onClick}>
-      {children ?? <DefaultButtonContent />}
-    </Button>
-  );
+  return <img className={cx("Download-icon", className)} src={DownloadIcon} alt="Download as CSV" onClick={onClick} />;
 }
