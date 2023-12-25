@@ -282,12 +282,13 @@ msgstr "메타마스크에 추가해주세요"
 
 #: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
 #: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Add {0} to Wallet"
 msgstr ""
 
 #: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
-msgid "Add {marketName} to Wallet"
-msgstr ""
+#~ msgid "Add {marketName} to Wallet"
+#~ msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Adding referral code failed."
@@ -3207,6 +3208,10 @@ msgstr ""
 msgid "Open {0} in Coingecko"
 msgstr ""
 
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+msgid "Open {0} in Explorer"
+msgstr ""
+
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
 msgstr ""
@@ -3216,8 +3221,8 @@ msgid "Open {longOrShortText} {tokenSymbol}"
 msgstr ""
 
 #: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
-msgid "Open {marketName} in Explorer"
-msgstr ""
+#~ msgid "Open {marketName} in Explorer"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
