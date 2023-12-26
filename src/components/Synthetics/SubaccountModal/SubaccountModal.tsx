@@ -11,15 +11,16 @@ import { getContract } from "config/contracts";
 import { getNativeToken, getWrappedToken } from "config/tokens";
 import {
   useIsSubaccountActive,
+  useSubaccountActionCounts,
+  useSubaccountAddress,
   useSubaccountGenerateSubaccount,
+  useSubaccountInsufficientFunds,
   useSubaccountModalOpen,
   useSubaccountSelector,
   useSubaccountState,
-  useSubaccountActionCounts,
-  useSubaccountAddress,
-  useSubaccountInsufficientFunds,
 } from "context/SubaccountContext/SubaccountContext";
 import { useBigNumberInput } from "domain/synthetics/common/useBigNumberInput";
+import { useTransactionPending } from "domain/synthetics/common/useTransactionReceipt";
 import { useGasPrice } from "domain/synthetics/fees";
 import { initSubaccount } from "domain/synthetics/subaccount/initSubaccount";
 import { removeSubaccount } from "domain/synthetics/subaccount/removeSubaccount";
@@ -30,6 +31,7 @@ import infoIcon from "img/ic_info.svg";
 import externalLinkIcon from "img/ic_new_link_20.svg";
 import warnIcon from "img/ic_warn.svg";
 import { useChainId } from "lib/chains";
+import { helperToast } from "lib/helperToast";
 import { getAccountUrl } from "lib/legacy";
 import { formatTokenAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -38,9 +40,7 @@ import useWallet from "lib/wallets/useWallet";
 import { ReactNode, memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useCopyToClipboard, usePrevious } from "react-use";
 import "./SubaccountModal.scss";
-import { getApproxSubaccountActionsCountByBalance, getDefaultValues, getButtonState } from "./utils";
-import { useTransactionPending } from "domain/synthetics/common/useTransactionReceipt";
-import { helperToast } from "lib/helperToast";
+import { getApproxSubaccountActionsCountByBalance, getButtonState, getDefaultValues } from "./utils";
 
 type FormState = "empty" | "inactive" | "activated";
 
@@ -87,8 +87,8 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
   const subaccountAddress = useSubaccountAddress();
   const mainBalances = useTokenBalances(chainId, account);
   const subBalances = useTokenBalances(chainId, subaccountAddress ?? undefined);
-  const wrappedToken = useMemo(() => getWrappedToken(chainId), [chainId]);
-  const nativeToken = useMemo(() => getNativeToken(chainId), [chainId]);
+  const wrappedToken = getWrappedToken(chainId);
+  const nativeToken = getNativeToken(chainId);
   const mainAccNativeTokenBalance = getByKey(mainBalances.balancesData, nativeToken.address);
   const mainAccWrappedTokenBalance = getByKey(mainBalances.balancesData, wrappedToken.address);
   const subAccNativeTokenBalance = getByKey(subBalances.balancesData, nativeToken.address);
@@ -107,15 +107,21 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     const executionFee = oneClickTradingState.baseExecutionFee?.feeTokenAmount;
     const currentAutoTopUpAmount = oneClickTradingState.contractData?.currentAutoTopUpAmount;
     const approxNumber =
-      subAccNativeTokenBalance && executionFee && currentAutoTopUpAmount
-        ? getApproxSubaccountActionsCountByBalance(subAccNativeTokenBalance, executionFee, currentAutoTopUpAmount)
+      subAccNativeTokenBalance &&
+      executionFee &&
+      currentAutoTopUpAmount &&
+      mainAccWrappedTokenBalance &&
+      mainAccNativeTokenBalance
+        ? getApproxSubaccountActionsCountByBalance(
+            mainAccWrappedTokenBalance,
+            subAccNativeTokenBalance,
+            executionFee,
+            currentAutoTopUpAmount
+          )
         : null;
     let value: ReactNode = "";
-    if (approxNumber === "infinity") {
-      value = <span className="Subaccount-infinity">∞</span>;
-    } else {
-      value = approxNumber?.toString() ?? t`Unknown`;
-    }
+
+    value = approxNumber?.toString() ?? t`Unknown`;
     return (
       <div>
         <StatsTooltipRow label={t`Expected Available Actions`} showDollar={false} value={value} />
@@ -124,6 +130,8 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
       </div>
     );
   }, [
+    mainAccNativeTokenBalance,
+    mainAccWrappedTokenBalance,
     oneClickTradingState.baseExecutionFee?.feeTokenAmount,
     oneClickTradingState.contractData?.currentAutoTopUpAmount,
     subAccNativeTokenBalance,
@@ -408,16 +416,14 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
       {shouldShowAllowedActionsWarning && (
         <Warning>
           <Trans>
-            The previously authorized maximum number of Actions have been reached for One&#8209;Click&nbsp;Trading. Set
-            Max allowed Actions and re-authorize.
+            The previously authorized maximum number of Actions have been reached for One-Click Trading. Click here to
+            re-authorize.
           </Trans>
         </Warning>
       )}
       {shouldShowInsufficientFundsButton && (
         <Warning>
-          <Trans>
-            There are insufficient funds in your Subaccount for One-Click Trading. Please top-up your Balance.
-          </Trans>
+          <Trans>There are insufficient funds in your Subaccount for One-Click Trading. Click here to top-up.</Trans>
         </Warning>
       )}
       <div className="SubaccountModal-subaccount">
@@ -445,7 +451,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
       <div className="SubaccountModal-stats">
         <div className="SubaccountModal-section">
           <StatsTooltipRow
-            label={t`SubaccountModal Balance`}
+            label={t`Subaccount Balance`}
             showColon={false}
             value={
               <TooltipWithPortal
@@ -477,28 +483,26 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
           <InputRow
             value={topUpString}
             setValue={setTopUpString}
-            label={isSubaccountActive ? t`Top up` : t`Initial top up`}
+            label={isSubaccountActive ? t`Top-up` : t`Initial top-up`}
             symbol={nativeToken.symbol}
             placeholder="0.0000"
             tooltipContent={t`This amount of ${nativeToken.symbol} will be sent to your subaccount to pay for transaction fees.`}
-            negativeSign
           />
           <InputRow
             value={wntForAutoTopUpsString}
             setValue={setWntForAutoTopUpsString}
-            label={t`${wrappedToken.symbol} for auto top ups`}
+            label={t`${wrappedToken.symbol} for auto top-ups`}
             symbol={wrappedToken.symbol}
             placeholder="0.0000"
-            tooltipContent={t`${nativeToken.symbol} cannot be automatically transferred to your Subaccount, so only ${wrappedToken.symbol} can be used for auto top ups. Convert this amount of ${nativeToken.symbol} to${wrappedToken.symbol} in your Main Account to allow for auto top-ups.`}
-            negativeSign
+            tooltipContent={t`${nativeToken.symbol} cannot be automatically transferred to your Subaccount, so only ${wrappedToken.symbol} can be used for auto top-ups. Convert this amount of ${nativeToken.symbol} to ${wrappedToken.symbol} in your Main Account to allow for auto top-ups.`}
           />
           <InputRow
             value={maxAutoTopUpAmountString}
             setValue={setMaxAutoTopUpAmountString}
-            label={t`Max auto top up amount`}
+            label={t`Max auto top-up amount`}
             symbol={nativeToken.symbol}
             placeholder="0.0000"
-            tooltipContent={t`This maximum top-up amount will be sent to your subaccount after each transaction. The actual amount sent will depend on the final transaction fee.`}
+            tooltipContent={t`This is the maximum top-up amount that will be sent to your subaccount after each transaction, the actual amount sent will depend on the actual transaction fee.`}
           />
           <InputRow
             value={maxAllowedActionsString}

@@ -70,7 +70,7 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
   const baseExecutionFee = useMemo(() => {
     if (!gasLimits || !tokensData || !gasPrice) return null;
     const estimatedGas = estimateExecuteIncreaseOrderGasLimit(gasLimits, {
-      swapsCount: 1,
+      swapsCount: 3,
     });
     return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice);
   }, [chainId, gasLimits, gasPrice, tokensData]);

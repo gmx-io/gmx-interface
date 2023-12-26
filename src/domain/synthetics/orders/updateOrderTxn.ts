@@ -15,7 +15,7 @@ export type UpdateOrderParams = {
   triggerPrice: BigNumber;
   acceptablePrice: BigNumber;
   minOutputAmount: BigNumber;
-  // used to top up execution fee for frozen orders
+  // used to top-up execution fee for frozen orders
   executionFee?: BigNumber;
   subaccount: Subaccount;
   setPendingTxns: (txns: any) => void;

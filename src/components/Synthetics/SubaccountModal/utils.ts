@@ -80,20 +80,37 @@ export function getButtonState({
 }
 
 export function getApproxSubaccountActionsCountByBalance(
-  balance: BigNumber,
-  executionFeeTokenAmount: BigNumber,
-  autoTopUpAmount: BigNumber
+  mainAccWrappedTokenBalance: BigNumber,
+  subAccNativeTokenBalance: BigNumber,
+  executionFee: BigNumber,
+  currentAutoTopUpAmount: BigNumber
 ) {
-  if (balance.lt(executionFeeTokenAmount)) {
+  if (executionFee.gt(subAccNativeTokenBalance)) {
     return BigNumber.from(0);
   }
 
-  const reducedCost = executionFeeTokenAmount.sub(autoTopUpAmount);
+  const topUp = currentAutoTopUpAmount.gt(executionFee) ? executionFee : currentAutoTopUpAmount;
+  const reducedCost = executionFee.sub(topUp);
+
+  // execution fee is fully reduced, calculating sum(countByMainAccBalance, subAccNativeTokenBalance / executionFee)
   if (reducedCost.lte(0)) {
-    return "infinity";
+    // how many times we can transfer executionFee + how many times we can perform without topUp
+    const countByMainAccBalance = topUp.lte(0) ? BigNumber.from(0) : mainAccWrappedTokenBalance.div(topUp);
+    return countByMainAccBalance.add(subAccNativeTokenBalance.div(executionFee));
   }
 
-  return balance.div(reducedCost);
+  const operationsWithReducedCost = subAccNativeTokenBalance.div(reducedCost);
+  const operationsBackedByMainAccBalance = topUp.eq(0) ? BigNumber.from(0) : mainAccWrappedTokenBalance.div(topUp);
+
+  if (operationsWithReducedCost.lte(operationsBackedByMainAccBalance)) {
+    return subAccNativeTokenBalance.sub(executionFee).div(reducedCost).add(1);
+  } else {
+    const operationsWithoutReduce = subAccNativeTokenBalance
+      .sub(reducedCost.mul(operationsBackedByMainAccBalance))
+      .div(executionFee);
+
+    return operationsBackedByMainAccBalance.add(operationsWithoutReduce);
+  }
 }
 
 export function getDefaultValues(tokenData: TokenData) {

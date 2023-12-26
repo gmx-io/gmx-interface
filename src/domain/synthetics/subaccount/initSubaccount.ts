@@ -23,12 +23,13 @@ export async function initSubaccount(
     wntForAutoTopUps && wntForAutoTopUps.gt(0) && { method: "sendWnt", params: [mainAccountAddress, wntForAutoTopUps] },
     topUp && topUp.gt(0) && { method: "sendNativeToken", params: [subaccountAddress, topUp] },
     !isAccountActive && { method: "addSubaccount", params: [subaccountAddress] },
-    maxAllowedActions && {
-      method: "setMaxAllowedSubaccountActionCount",
-      params: [subaccountAddress, SUBACCOUNT_ORDER_ACTION, maxAllowedActions.add(currentActionsCount ?? 0)],
-    },
+    maxAllowedActions &&
+      maxAllowedActions.gte(0) && {
+        method: "setMaxAllowedSubaccountActionCount",
+        params: [subaccountAddress, SUBACCOUNT_ORDER_ACTION, maxAllowedActions.add(currentActionsCount ?? 0)],
+      },
     maxAutoTopUpAmount &&
-      maxAutoTopUpAmount.gt(0) && {
+      maxAutoTopUpAmount.gte(0) && {
         method: "setSubaccountAutoTopUpAmount",
         params: [subaccountAddress, maxAutoTopUpAmount],
       },
