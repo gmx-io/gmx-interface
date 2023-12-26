@@ -411,6 +411,14 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     helperToast.success(t`Address copied to your clipboard`);
   }, [copyToClipboard, subaccountAddress]);
 
+  const subAccNativeTokenBalanceFormatted = useMemo(
+    () =>
+      formatTokenAmount(subAccNativeTokenBalance, nativeToken.decimals, nativeToken.symbol, {
+        displayDecimals: 4,
+      }),
+    [nativeToken.decimals, nativeToken.symbol, subAccNativeTokenBalance]
+  );
+
   return (
     <div className="SubaccountModal-content">
       {shouldShowAllowedActionsWarning && (
@@ -454,13 +462,15 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             label={t`Subaccount Balance`}
             showColon={false}
             value={
-              <TooltipWithPortal
-                handle={formatTokenAmount(subAccNativeTokenBalance, nativeToken.decimals, nativeToken.symbol, {
-                  displayDecimals: 4,
-                })}
-                renderContent={renderSubaccountBalanceTooltipContent}
-                position="right-bottom"
-              />
+              isSubaccountActive ? (
+                <TooltipWithPortal
+                  handle={subAccNativeTokenBalanceFormatted}
+                  renderContent={renderSubaccountBalanceTooltipContent}
+                  position="right-bottom"
+                />
+              ) : (
+                subAccNativeTokenBalanceFormatted
+              )
             }
             showDollar={false}
           />
