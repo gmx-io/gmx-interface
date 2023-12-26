@@ -10,8 +10,8 @@ import { DecreasePositionSwapType, OrderType } from "./types";
 import { isMarketOrderType } from "./utils";
 import { getPositionKey } from "../positions";
 import { applySlippageToPrice } from "../trade";
-import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { t } from "@lingui/macro";
+import { DecreaseOrderParams, createDecreaseMulticall } from "./createDecreaseOrderTxn";
 
 const { AddressZero } = ethers.constants;
 
@@ -40,7 +40,12 @@ type IncreaseOrderParams = {
   setPendingPosition: SetPendingPosition;
 };
 
-export async function createIncreaseOrderTxn(chainId: number, signer: Signer, p: IncreaseOrderParams) {
+export async function createIncreaseOrderTxn(
+  chainId: number,
+  signer: Signer,
+  p: IncreaseOrderParams,
+  decreaseOrderParams?: DecreaseOrderParams[]
+) {
   const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
 
   const orderVaultAddress = getContract(chainId, "OrderVault");
@@ -48,7 +53,15 @@ export async function createIncreaseOrderTxn(chainId: number, signer: Signer, p:
   const isNativePayment = p.initialCollateralAddress === NATIVE_TOKEN_ADDRESS;
 
   const wntCollateralAmount = isNativePayment ? p.initialCollateralAmount : BigNumber.from(0);
-  const totalWntAmount = wntCollateralAmount.add(p.executionFee);
+  const totalWntAmountToIncrease = wntCollateralAmount.add(p.executionFee);
+  let totalWntAmount = totalWntAmountToIncrease;
+
+  let decreaseMulticallParams: any[] = [];
+
+  if (decreaseOrderParams && decreaseOrderParams.length > 0) {
+    totalWntAmount = decreaseOrderParams.reduce((acc, p) => acc.add(p.executionFee), totalWntAmount);
+    decreaseMulticallParams = createDecreaseMulticall(chainId, decreaseOrderParams);
+  }
 
   const initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
 
@@ -59,7 +72,7 @@ export async function createIncreaseOrderTxn(chainId: number, signer: Signer, p:
     : p.acceptablePrice;
 
   const multicall = [
-    { method: "sendWnt", params: [orderVaultAddress, totalWntAmount] },
+    { method: "sendWnt", params: [orderVaultAddress, totalWntAmountToIncrease] },
 
     !isNativePayment
       ? { method: "sendTokens", params: [p.initialCollateralAddress, orderVaultAddress, p.initialCollateralAmount] }
@@ -75,7 +88,7 @@ export async function createIncreaseOrderTxn(chainId: number, signer: Signer, p:
             callbackContract: AddressZero,
             market: p.marketAddress,
             swapPath: p.swapPath,
-            uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.constants.AddressZero,
+            uiFeeReceiver: ethers.constants.AddressZero,
           },
           numbers: {
             sizeDeltaUsd: p.sizeDeltaUsd,
@@ -94,6 +107,7 @@ export async function createIncreaseOrderTxn(chainId: number, signer: Signer, p:
         },
       ],
     },
+    ...decreaseMulticallParams,
   ];
 
   const encodedPayload = multicall

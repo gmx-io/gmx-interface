@@ -11,7 +11,6 @@ import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
 import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderTxn";
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { isMarketOrderType } from "./utils";
-import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { t } from "@lingui/macro";
 
 const { AddressZero } = ethers.constants;
@@ -46,19 +45,10 @@ export type DecreaseOrderCallbacks = {
   setPendingFundingFeeSettlement?: SetPendingFundingFeeSettlement;
 };
 
-export async function createDecreaseOrderTxn(
-  chainId: number,
-  signer: Signer,
-  params: DecreaseOrderParams | DecreaseOrderParams[],
-  callbacks: DecreaseOrderCallbacks
-) {
+export function createDecreaseMulticall(chainId: number, params: DecreaseOrderParams[]) {
   const ps = Array.isArray(params) ? params : [params];
-  const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
-
   const orderVaultAddress = getContract(chainId, "OrderVault");
-  const totalWntAmount = ps.reduce((acc, p) => acc.add(p.executionFee), BigNumber.from(0));
-
-  const multicall = [
+  return [
     ...ps.flatMap((p) => {
       const isNativeReceive = p.receiveTokenAddress === NATIVE_TOKEN_ADDRESS;
 
@@ -85,7 +75,7 @@ export async function createDecreaseOrderTxn(
                 callbackContract: AddressZero,
                 market: p.marketAddress,
                 swapPath: p.swapPath,
-                uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.constants.AddressZero,
+                uiFeeReceiver: ethers.constants.AddressZero,
               },
               numbers: {
                 sizeDeltaUsd: p.sizeDeltaUsd,
@@ -107,6 +97,20 @@ export async function createDecreaseOrderTxn(
       ];
     }),
   ];
+}
+
+export async function createDecreaseOrderTxn(
+  chainId: number,
+  signer: Signer,
+  params: DecreaseOrderParams | DecreaseOrderParams[],
+  callbacks: DecreaseOrderCallbacks
+) {
+  const ps = Array.isArray(params) ? params : [params];
+  const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
+
+  const totalWntAmount = ps.reduce((acc, p) => acc.add(p.executionFee), BigNumber.from(0));
+
+  const multicall = createDecreaseMulticall(chainId, ps);
 
   const encodedPayload = multicall
     .filter(Boolean)

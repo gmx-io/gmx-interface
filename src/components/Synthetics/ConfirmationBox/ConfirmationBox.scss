@@ -3,6 +3,45 @@
   flex-direction: column;
 }
 
+.Confirmation-box-main {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  margin: 0.5rem 0 1.5rem;
+
+  .arrow-icon {
+    margin-top: 0.5rem;
+  }
+
+  .trade-token-amount {
+    color: white;
+    font-size: 1.8rem;
+  }
+
+  .trade-amount-usd {
+    font-size: 1.6rem;
+    color: var(--text-gray);
+  }
+}
+
+.Warning-title-container {
+  color: var(--text-gray);
+  display: flex;
+  align-items: flex-start;
+  font-size: 1.4rem;
+  span {
+    margin-left: 0.5rem;
+  }
+  .Warning-icon {
+    margin-top: 0.2rem;
+  }
+}
+
+.Existing-limit-order {
+  font-size: 1.4rem;
+}
+
 .Confirmation-box {
   .Modal-body {
     overflow-x: hidden;
@@ -22,5 +61,43 @@
 
   &:first-child {
     margin-top: 0;
+  }
+}
+
+.profit-loss-wrapper {
+  .profit-loss-input-row {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-column-gap: 1rem;
+
+    &:not(:last-child) {
+      margin-bottom: 1rem;
+    }
+  }
+
+  .profit-loss-action {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    button {
+      border: none;
+      padding: 0.5rem;
+      border-radius: var(--border-radius-sm);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .profit-loss-remove {
+      margin-right: 0.5rem;
+      background-color: rgba(231, 78, 93, 0.15);
+    }
+
+    .profit-loss-add {
+      background-color: rgba(94, 201, 137, 0.15);
+    }
+  }
+
+  .rotate-45 {
+    transform: rotate(45deg);
   }
 }
