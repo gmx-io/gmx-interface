@@ -40,6 +40,7 @@ import useWallet from "lib/wallets/useWallet";
 import { ReactNode, memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useCopyToClipboard, usePrevious } from "react-use";
 import "./SubaccountModal.scss";
+import { SubaccountStatus } from "./SubaccountStatus";
 import { getApproxSubaccountActionsCountByBalance, getButtonState, getDefaultValues } from "./utils";
 
 type FormState = "empty" | "inactive" | "activated";
@@ -421,19 +422,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
 
   return (
     <div className="SubaccountModal-content">
-      {shouldShowAllowedActionsWarning && (
-        <Warning>
-          <Trans>
-            The previously authorized maximum number of Actions have been reached for One-Click Trading. Click here to
-            re-authorize.
-          </Trans>
-        </Warning>
-      )}
-      {shouldShowInsufficientFundsButton && (
-        <Warning>
-          <Trans>There are insufficient funds in your Subaccount for One-Click Trading. Click here to top-up.</Trans>
-        </Warning>
-      )}
+      {<SubaccountStatus />}
       <div className="SubaccountModal-subaccount">
         <div className="SubaccountModal-subaccount-details">
           <span className="SubaccountModal-subaccount-label">
