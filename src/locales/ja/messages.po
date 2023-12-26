@@ -1984,6 +1984,10 @@ msgstr ""
 msgid "Funding fees"
 msgstr ""
 
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "Funds are running low for One-Click Trading."
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GBC NFTs APR tracker and rewards"
 msgstr "GBC NFTのAPRトラッカーおよび報酬"
@@ -3164,6 +3168,10 @@ msgstr "NFT ID"
 msgid "NFT Wallet"
 msgstr "NFTウォレット"
 
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "Need to click Activate to proceed."
+msgstr ""
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Negative Funding Fees are settled against the collateral automatically and will influence the liquidation price. Positive Funding Fees can be claimed under Claimable Funding after realizing any action on the position."
 msgstr ""
@@ -3268,6 +3276,10 @@ msgstr ""
 msgid "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity."
 msgstr ""
 
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "Not enough funds on subaccount."
+msgstr ""
+
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr "注文が必ず執行される保証がないことに注意してください。<0/><1/>これは例えば以下のような状況で起こりえます:"
@@ -3278,6 +3290,23 @@ msgstr "注文が必ず執行される保証がないことに注意してくだ
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "One-Click Trading"
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "One-Click Trading is active."
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "One-Click Trading is inactive"
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "One-Click Trading is inactive."
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "One-Click trading is active."
 msgstr ""
 
 #: src/components/Referrals/referralsHelper.js
@@ -3926,6 +3955,10 @@ msgstr "紹介コードの更新完了!"
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referrals"
 msgstr "紹介アカウント"
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "Remaining actions: {0}"
+msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
@@ -4828,11 +4861,15 @@ msgstr "ポジションは最大スリッページ {1}%で{0} USDでオープン
 #~ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "The previously authorized maximum number of Actions have been reached for One-Click Trading. Click here to re-authorize."
-msgstr ""
+#~ msgid "The previously authorized maximum number of Actions have been reached for One-Click Trading. Click here to re-authorize."
+#~ msgstr ""
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 msgid "The previously authorized maximum number of Actions have been reached for One-Click Trwading. Click here to re-authorize."
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "The previously authorized maximum number of Actions have been reached."
 msgstr ""
 
 #: src/components/Exchange/OrdersList.js
@@ -4856,7 +4893,6 @@ msgid "The website is a community deployed and maintained instance of the open s
 msgstr "ウェブサイトはオープンソースの<0>GMXフロントエンド</0>を利用してコミュニティが設置し維持しているものであり、P2Pの<1>IPFSネットワーク</1>上にホストされ提供されています。"
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "There are insufficient funds in your Subaccount for One-Click Trading. Click here to top-up."
 msgstr ""
 

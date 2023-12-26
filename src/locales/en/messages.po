@@ -1984,6 +1984,10 @@ msgstr "Funding Rate / 1h"
 msgid "Funding fees"
 msgstr "Funding fees"
 
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "Funds are running low for One-Click Trading."
+msgstr "Funds are running low for One-Click Trading."
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GBC NFTs APR tracker and rewards"
 msgstr "GBC NFTs APR tracker and rewards"
@@ -3167,6 +3171,10 @@ msgstr "NFT ID"
 msgid "NFT Wallet"
 msgstr "NFT Wallet"
 
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "Need to click Activate to proceed."
+msgstr "Need to click Activate to proceed."
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Negative Funding Fees are settled against the collateral automatically and will influence the liquidation price. Positive Funding Fees can be claimed under Claimable Funding after realizing any action on the position."
 msgstr "Negative Funding Fees are settled against the collateral automatically and will influence the liquidation price. Positive Funding Fees can be claimed under Claimable Funding after realizing any action on the position."
@@ -3271,6 +3279,10 @@ msgstr "Not enough Available Liquidity to fill the Order. The Order will get fil
 msgid "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity."
 msgstr "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity."
 
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "Not enough funds on subaccount."
+msgstr "Not enough funds on subaccount."
+
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
@@ -3282,6 +3294,23 @@ msgstr "Note that orders are not guaranteed to be executed.<0/><1/>This can occu
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "One-Click Trading"
 msgstr "One-Click Trading"
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "One-Click Trading is active."
+msgstr "One-Click Trading is active."
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "One-Click Trading is inactive"
+msgstr "One-Click Trading is inactive"
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "One-Click Trading is inactive."
+msgstr "One-Click Trading is inactive."
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "One-Click trading is active."
+msgstr "One-Click trading is active."
 
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
@@ -3929,6 +3958,10 @@ msgstr "Referral code updated!"
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referrals"
 msgstr "Referrals"
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "Remaining actions: {0}"
+msgstr "Remaining actions: {0}"
 
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
@@ -4831,12 +4864,16 @@ msgstr "The position will be opened at {0} USD with a max slippage of {1}%.<0/><
 #~ msgstr "The previously authorized maximum number of Actions have been reached for One‑Click Trading. Set Max allowed Actions and re-authorize."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "The previously authorized maximum number of Actions have been reached for One-Click Trading. Click here to re-authorize."
-msgstr "The previously authorized maximum number of Actions have been reached for One-Click Trading. Click here to re-authorize."
+#~ msgid "The previously authorized maximum number of Actions have been reached for One-Click Trading. Click here to re-authorize."
+#~ msgstr "The previously authorized maximum number of Actions have been reached for One-Click Trading. Click here to re-authorize."
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 msgid "The previously authorized maximum number of Actions have been reached for One-Click Trwading. Click here to re-authorize."
 msgstr "The previously authorized maximum number of Actions have been reached for One-Click Trwading. Click here to re-authorize."
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "The previously authorized maximum number of Actions have been reached."
+msgstr "The previously authorized maximum number of Actions have been reached."
 
 #: src/components/Exchange/OrdersList.js
 msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
@@ -4859,7 +4896,6 @@ msgid "The website is a community deployed and maintained instance of the open s
 msgstr "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "There are insufficient funds in your Subaccount for One-Click Trading. Click here to top-up."
 msgstr "There are insufficient funds in your Subaccount for One-Click Trading. Click here to top-up."
 

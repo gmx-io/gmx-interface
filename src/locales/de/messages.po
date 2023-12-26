@@ -1984,6 +1984,10 @@ msgstr ""
 msgid "Funding fees"
 msgstr ""
 
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "Funds are running low for One-Click Trading."
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GBC NFTs APR tracker and rewards"
 msgstr "GBC NFTs APR-Tracker und Belohnungen"
@@ -3164,6 +3168,10 @@ msgstr "NFT ID"
 msgid "NFT Wallet"
 msgstr "NFT Wallet"
 
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "Need to click Activate to proceed."
+msgstr ""
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Negative Funding Fees are settled against the collateral automatically and will influence the liquidation price. Positive Funding Fees can be claimed under Claimable Funding after realizing any action on the position."
 msgstr ""
@@ -3268,6 +3276,10 @@ msgstr ""
 msgid "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity."
 msgstr ""
 
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "Not enough funds on subaccount."
+msgstr ""
+
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr "Beachte, dass die Ausführung von Aufträgen nicht garantiert ist.<0/><1/>Dies kann in einigen Situationen vorkommen, einschließlich, aber nicht ausschließlich bei:"
@@ -3278,6 +3290,23 @@ msgstr "Beachte, dass die Ausführung von Aufträgen nicht garantiert ist.<0/><1
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "One-Click Trading"
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "One-Click Trading is active."
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "One-Click Trading is inactive"
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "One-Click Trading is inactive."
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "One-Click trading is active."
 msgstr ""
 
 #: src/components/Referrals/referralsHelper.js
@@ -3926,6 +3955,10 @@ msgstr "Referral Code aktualisiert!"
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referrals"
 msgstr "Referrals"
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "Remaining actions: {0}"
+msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
@@ -4828,11 +4861,15 @@ msgstr "Die Position wird zu {0} USD mit einer maximalen Slippage von {1}% eröf
 #~ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "The previously authorized maximum number of Actions have been reached for One-Click Trading. Click here to re-authorize."
-msgstr ""
+#~ msgid "The previously authorized maximum number of Actions have been reached for One-Click Trading. Click here to re-authorize."
+#~ msgstr ""
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 msgid "The previously authorized maximum number of Actions have been reached for One-Click Trwading. Click here to re-authorize."
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "The previously authorized maximum number of Actions have been reached."
 msgstr ""
 
 #: src/components/Exchange/OrdersList.js
@@ -4856,7 +4893,6 @@ msgid "The website is a community deployed and maintained instance of the open s
 msgstr "Die Website ist eine von der Community betriebene und gewartete Instanz des open-source <0>GMX-Frontends</0>, das im verteilten Peer-to-Peer-Netzwerk <1>IPFS</1> gehostet und bereitgestellt wird."
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "There are insufficient funds in your Subaccount for One-Click Trading. Click here to top-up."
 msgstr ""
 
