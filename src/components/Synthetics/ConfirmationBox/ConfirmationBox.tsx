@@ -213,7 +213,7 @@ export function ConfirmationBox(p: Props) {
     updateEntry: updateTakeProfitEntry,
   } = useTakeProfitEntries();
 
-  useMemo(() => {
+  const stopLossData = useMemo(() => {
     if (!account || !marketInfo || !collateralToken || !minPositionSizeUsd || !minCollateralUsd || !executionFee)
       return;
     const entries = stopLossEntries.map((entry) => {
@@ -570,30 +570,35 @@ export function ConfirmationBox(p: Props) {
       return Promise.resolve();
     }
 
-    return createIncreaseOrderTxn(chainId, signer, {
-      account,
-      marketAddress: marketInfo.marketTokenAddress,
-      initialCollateralAddress: fromToken?.address,
-      initialCollateralAmount: increaseAmounts.initialCollateralAmount,
-      targetCollateralAddress: collateralToken.address,
-      collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
-      swapPath: increaseAmounts.swapPathStats?.swapPath || [],
-      sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
-      sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
-      triggerPrice: isLimit ? triggerPrice : undefined,
-      acceptablePrice: increaseAmounts.acceptablePrice,
-      isLong,
-      orderType: isLimit ? OrderType.LimitIncrease : OrderType.MarketIncrease,
-      executionFee: executionFee.feeTokenAmount,
-      allowedSlippage,
-      referralCode: referralCodeForTxn,
-      indexToken: marketInfo.indexToken,
-      tokensData,
-      skipSimulation: isLimit || shouldDisableValidation,
-      setPendingTxns: p.setPendingTxns,
-      setPendingOrder,
-      setPendingPosition,
-    });
+    return createIncreaseOrderTxn(
+      chainId,
+      signer,
+      {
+        account,
+        marketAddress: marketInfo.marketTokenAddress,
+        initialCollateralAddress: fromToken?.address,
+        initialCollateralAmount: increaseAmounts.initialCollateralAmount,
+        targetCollateralAddress: collateralToken.address,
+        collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
+        swapPath: increaseAmounts.swapPathStats?.swapPath || [],
+        sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+        sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
+        triggerPrice: isLimit ? triggerPrice : undefined,
+        acceptablePrice: increaseAmounts.acceptablePrice,
+        isLong,
+        orderType: isLimit ? OrderType.LimitIncrease : OrderType.MarketIncrease,
+        executionFee: executionFee.feeTokenAmount,
+        allowedSlippage,
+        referralCode: referralCodeForTxn,
+        indexToken: marketInfo.indexToken,
+        tokensData,
+        skipSimulation: isLimit || shouldDisableValidation,
+        setPendingTxns: p.setPendingTxns,
+        setPendingOrder,
+        setPendingPosition,
+      },
+      stopLossData as any
+    );
   }
 
   function onSubmitDecreaseOrder() {
@@ -1090,10 +1095,10 @@ export function ConfirmationBox(p: Props) {
     return (
       <>
         <ExchangeInfoRow
+          isTop
           label={t`Leverage`}
           value={emptyValue ? "-" : <ValueTransition from={formatLeverage(from)} to={formatLeverage(to) ?? "-"} />}
         />
-        <div className="line-divider" />
       </>
     );
   }
@@ -1119,6 +1124,7 @@ export function ConfirmationBox(p: Props) {
       <>
         <div>
           {renderMain()}
+          <div className="line-divider" />
           {renderExistingLimitOrdersWarning()}
           {renderDifferentCollateralWarning()}
           {renderCollateralSpreadWarning()}
