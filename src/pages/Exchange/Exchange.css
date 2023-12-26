@@ -597,6 +597,7 @@ table.Exchange-list .Exchange-list-item-active {
   font-size: var(--font-sm);
   margin-bottom: 0.465rem;
   align-items: baseline;
+  justify-content: space-between;
 }
 
 .Exchange-info-row.top-line {
@@ -913,7 +914,7 @@ table.Exchange-list-small td {
 }
 
 .Confirmation-box .Modal-content {
-  width: 36rem;
+  width: 38rem;
 }
 
 .Confirmation-box-row {
@@ -1205,6 +1206,9 @@ table.Exchange-list-small td {
   }
   .ExchangeChart-top-inner {
     grid-template-columns: auto;
+  }
+  .Confirmation-box .Modal-content {
+    min-width: 36rem;
   }
 }
 
