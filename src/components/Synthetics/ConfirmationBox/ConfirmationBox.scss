@@ -31,6 +31,7 @@
 
 .ConfirmationBox-star {
   position: absolute;
-  top: 0;
-  right: -0.9rem;
+  top: -1px;
+  right: -6px;
+  z-index: 1;
 }
