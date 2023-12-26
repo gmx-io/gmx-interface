@@ -2300,7 +2300,11 @@ msgid "Initial collateral"
 msgstr "初始抵押品"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "Initial top up"
+#~ msgid "Initial top up"
+#~ msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Initial top-up"
 msgstr ""
 
 #: src/components/Synthetics/Subaccount/utils.ts
@@ -2931,7 +2935,11 @@ msgid "Max amount exceeded"
 msgstr "超出最高金额"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "Max auto top up amount"
+#~ msgid "Max auto top up amount"
+#~ msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Max auto top-up amount"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
@@ -4468,16 +4476,16 @@ msgid "Subacccount is updated"
 msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#~ msgid "Subaccount Balance"
-#~ msgstr ""
+msgid "Subaccount Balance"
+msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Subaccount:"
 msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "SubaccountModal Balance"
-msgstr ""
+#~ msgid "SubaccountModal Balance"
+#~ msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Submit"
@@ -4816,7 +4824,11 @@ msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1
 msgstr "该仓位将在 {0} USD 开仓,最大滑点为{1}%.<0/><1/>滑点金额可在设置下配置, 在连接你的钱包后，点击页面右上方的地址即可找到<2/><3/><4>更多资讯</4>"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "The previously authorized maximum number of Actions have been reached for One‑Click Trading. Set Max allowed Actions and re-authorize."
+#~ msgid "The previously authorized maximum number of Actions have been reached for One‑Click Trading. Set Max allowed Actions and re-authorize."
+#~ msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "The previously authorized maximum number of Actions have been reached for One-Click Trading. Click here to re-authorize."
 msgstr ""
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
@@ -4844,12 +4856,13 @@ msgid "The website is a community deployed and maintained instance of the open s
 msgstr "该网站是一个社区部署和维护的开放资源<0>GMX前端的实例</0>，在分布式、对等的<1>IPFS网络</1>上托管和服务"
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "There are insufficient funds in your Subaccount for One-Click Trading. Click here to top-up."
 msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "There are insufficient funds in your Subaccount for One-Click Trading. Please top-up your Balance."
-msgstr ""
+#~ msgid "There are insufficient funds in your Subaccount for One-Click Trading. Please top-up your Balance."
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "There are more longs than shorts, borrow fees for shorting is currently zero"
@@ -4915,14 +4928,18 @@ msgstr "此代码尚未在{0}上注册，你将不会收到回扣<0/><1/>切换�
 #~ msgid "This is the maximum top up amount that will be sent to your subaccount after each transaction, the actual amount sent will depend on the actual transaction fee."
 #~ msgstr ""
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "This is the maximum top-up amount that will be sent to your subaccount after each transaction, the actual amount sent will depend on the actual transaction fee."
+msgstr ""
+
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "This market uses an Adaptive Funding Rate. The Funding Rate will adjust over time depending on the ratio of longs and shorts. <0>Read more</0>."
 msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "This maximum top-up amount will be sent to your subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
-msgstr ""
+#~ msgid "This maximum top-up amount will be sent to your subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
+#~ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
@@ -4966,7 +4983,11 @@ msgid "Tokens"
 msgstr "代币"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "Top up"
+#~ msgid "Top up"
+#~ msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Top-up"
 msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/utils.ts
@@ -6049,15 +6070,23 @@ msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "{0} cannot be automatically transferred to your Subaccount, so only {1} can be used for auto top ups. Convert this amount of {2} to{3} in your Main Account to allow for auto top-ups."
+msgid "{0} cannot be automatically transferred to your Subaccount, so only {1} can be used for auto top-ups. Convert this amount of {2} to {3} in your Main Account to allow for auto top-ups."
 msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+#~ msgid "{0} cannot be automatically transferred to your Subaccount, so only {1} can be used for auto top ups. Convert this amount of {2} to{3} in your Main Account to allow for auto top-ups."
+#~ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 #~ msgid "{0} cannot be automatically transferred to your Subaccount, so only {1} can be used for auto top ups. Keep an amount of {2} as {3} in your Main Account to allow for auto top ups."
 #~ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "{0} for auto top ups"
+#~ msgid "{0} for auto top ups"
+#~ msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "{0} for auto top-ups"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
