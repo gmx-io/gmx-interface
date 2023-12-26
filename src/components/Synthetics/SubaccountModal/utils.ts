@@ -73,7 +73,7 @@ export function getButtonState({
 
     return { text: t`Update` };
   } else if (!isSubaccountActive) {
-    return { text: t`Activate` };
+    return { text: t`Generate & Activate Subaccount` };
   }
 
   return { disabled: true, spinner: true, text: "" };

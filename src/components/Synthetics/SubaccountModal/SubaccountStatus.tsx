@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import {
   useIsSubaccountActive,
   useSubaccountActionCounts,
@@ -7,6 +7,8 @@ import {
 } from "context/SubaccountContext/SubaccountContext";
 import { ReactNode, memo } from "react";
 import "./SubaccountStatus.scss";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 function SubaccountStatusImpl() {
   const isSubaccountActive = useIsSubaccountActive();
@@ -18,30 +20,30 @@ function SubaccountStatusImpl() {
   const insufficientFunds = useSubaccountInsufficientFunds(oneClickTradingState.baseExecutionFee?.feeTokenAmount);
   const shouldShowInsufficientFundsError = isSubaccountActive && insufficientFunds;
 
-  let statusText: ReactNode = null;
+  let working = false;
   let description: ReactNode = null;
   let status: "warning" | "error" | "active" = "active";
   let needToShowRemainingActionsCount = false;
 
   if (shouldShowAllowedActionsError) {
-    statusText = <Trans>One-Click Trading is inactive</Trans>;
+    working = false;
     status = "error";
     description = <Trans>The previously authorized maximum number of Actions have been reached.</Trans>;
   } else if (shouldShowInsufficientFundsError) {
-    statusText = <Trans>One-Click Trading is inactive.</Trans>;
+    working = false;
     status = "error";
-    description = <Trans>Not enough funds on subaccount.</Trans>;
+    description = <Trans>Not enough funds on subaccount</Trans>;
   } else if (shouldShowInsufficientFundsWarning) {
-    statusText = <Trans>One-Click Trading is active.</Trans>;
+    working = true;
     status = "warning";
     needToShowRemainingActionsCount = true;
-    description = <Trans>Funds are running low for One-Click Trading.</Trans>;
+    description = <Trans>Funds are running low for One-Click Trading</Trans>;
   } else if (!isSubaccountActive) {
-    statusText = <Trans>One-Click Trading is inactive.</Trans>;
+    working = false;
     status = "warning";
-    description = <Trans>Need to click Activate to proceed.</Trans>;
+    description = <Trans>Need to click Activate to proceed</Trans>;
   } else {
-    statusText = <Trans>One-Click trading is active.</Trans>;
+    working = true;
     status = "active";
     needToShowRemainingActionsCount = true;
   }
@@ -50,15 +52,25 @@ function SubaccountStatusImpl() {
 
   return (
     <div className={`SubaccountStatus ${className}`}>
-      {statusText && <div>Status: {statusText}</div>}
+      {/* {statusText && <div>Status: {statusText}</div>} */}
+      <StatsTooltipRow
+        showDollar={false}
+        label={t`Status`}
+        value={
+          description ? (
+            <TooltipWithPortal
+              position="right-bottom"
+              handle={<span className={working ? undefined : "text-red"}>{working ? t`Working` : t`Not working`}</span>}
+              renderContent={() => description}
+            />
+          ) : (
+            <span className={working ? undefined : "text-red"}>{working ? t`Working` : t`Not working`}</span>
+          )
+        }
+      />
       {needToShowRemainingActionsCount && (
-        <div>
-          <Trans>Remaining actions: {remainingActionsCount?.toString()}</Trans>
-        </div>
+        <StatsTooltipRow showDollar={false} label={t`Remaining actions`} value={remainingActionsCount?.toString()} />
       )}
-      <br />
-      {description && <div>{description}</div>}
-      {description && <br />}
     </div>
   );
 }

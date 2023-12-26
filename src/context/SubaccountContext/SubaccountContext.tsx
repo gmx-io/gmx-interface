@@ -46,7 +46,7 @@ export type SubaccountContext = {
   modalOpen: boolean;
   baseExecutionFee: ExecutionFee | null;
   setModalOpen: (v: boolean) => void;
-  generateSubaccount: () => Promise<void>;
+  generateSubaccount: () => Promise<string | null>;
   clearSubaccount: () => void;
 
   activeTx: string | null;
@@ -82,7 +82,7 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
   const generateSubaccount = useCallback(async () => {
     const signature = await signer?.signMessage(getStringForSign());
 
-    if (!signature) return;
+    if (!signature) return null;
 
     const pk = ethers.utils.keccak256(signature);
     const subWallet = new ethers.Wallet(pk);
@@ -91,6 +91,8 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
       privateKey: pk,
       address: subWallet.address,
     });
+
+    return subWallet.address;
   }, [setConfig, signer]);
 
   const clearSubaccount = useCallback(() => {
