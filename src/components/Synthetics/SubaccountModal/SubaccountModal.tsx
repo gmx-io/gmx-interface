@@ -16,6 +16,7 @@ import {
   useSubaccountGenerateSubaccount,
   useSubaccountInsufficientFunds,
   useSubaccountModalOpen,
+  useSubaccountPendingTx,
   useSubaccountSelector,
   useSubaccountState,
 } from "context/SubaccountContext/SubaccountContext";
@@ -197,7 +198,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
 
   const [isVisible] = useSubaccountModalOpen();
 
-  const [activeTx, setActiveTx] = useState<string | null>(null);
+  const [activeTx, setActiveTx] = useSubaccountPendingTx();
   const isTxPending = useTransactionPending(activeTx);
   const prevIsTxPending = usePrevious(isTxPending);
 
@@ -267,7 +268,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
       setActiveTx(null);
       setNextFormState("activated");
     }
-  }, [isTxPending, prevIsTxPending, setNextFormState]);
+  }, [isTxPending, prevIsTxPending, setActiveTx, setNextFormState]);
 
   const handleActiveClick = useCallback(async () => {
     if (!account) throw new Error("Account is not defined");
@@ -309,6 +310,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     maxAutoTopUpAmount,
     wntForAutoTopUps,
     maxAllowedActions,
+    setActiveTx,
   ]);
 
   const { tokensAllowanceData } = useTokensAllowanceData(chainId, {

@@ -9,6 +9,7 @@ import {
 } from "config/dataStore";
 import { getSubaccountConfigKey } from "config/localStorage";
 import { getNativeToken } from "config/tokens";
+import { useTransactionPending } from "domain/synthetics/common/useTransactionReceipt";
 import {
   ExecutionFee,
   estimateExecuteIncreaseOrderGasLimit,
@@ -47,6 +48,9 @@ export type SubaccountContext = {
   setModalOpen: (v: boolean) => void;
   generateSubaccount: () => Promise<void>;
   clearSubaccount: () => void;
+
+  activeTx: string | null;
+  setActiveTx: (tx: string | null) => void;
 };
 
 const context = createContext<SubaccountContext | null>(null);
@@ -93,8 +97,12 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
     setConfig(null);
   }, [setConfig]);
 
+  const [activeTx, setActiveTx] = useState<string | null>(null);
+  const isTxPending = useTransactionPending(activeTx);
+
   const { data: contractData } = useMulticall(chainId, "useSubaccountsFromContracts", {
-    key: account && config?.address ? [account, config.address] : null,
+    key:
+      account && config?.address ? [account, config.address, activeTx, isTxPending ? "pending" : "not-pending"] : null,
     request: () => {
       return {
         dataStore: {
@@ -145,8 +153,11 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
       contractData: config && contractData ? contractData : null,
       generateSubaccount,
       clearSubaccount,
+
+      activeTx,
+      setActiveTx,
     };
-  }, [baseExecutionFee, clearSubaccount, config, contractData, generateSubaccount, modalOpen]);
+  }, [activeTx, baseExecutionFee, clearSubaccount, config, contractData, generateSubaccount, modalOpen]);
 
   return <context.Provider value={value}>{children}</context.Provider>;
 }
@@ -233,6 +244,10 @@ export function useSubaccountActionCounts() {
     max,
     remaining,
   };
+}
+
+export function useSubaccountPendingTx() {
+  return [useSubaccountSelector((s) => s.activeTx), useSubaccountSelector((s) => s.setActiveTx)] as const;
 }
 
 export function useIsLastSubaccountAction() {
