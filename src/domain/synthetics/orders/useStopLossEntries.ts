@@ -1,5 +1,13 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { uniqueId } from "lodash";
+import { IncreasePositionAmounts, getDecreasePositionAmounts } from "domain/synthetics/trade";
+import { parseValue } from "lib/numbers";
+import { USD_DECIMALS } from "lib/legacy";
+import { MarketInfo } from "../markets";
+import { TradeFlags } from "../trade/useTradeFlags";
+import { PositionInfo, usePositionsConstants } from "../positions";
+import useUiFeeFactor from "../fees/utils/useUiFeeFactor";
+import { TokenData } from "../tokens";
 
 export type Entry = {
   id: string;
@@ -8,9 +16,67 @@ export type Entry = {
   error?: string;
 };
 
-export default function useStopLossEntries() {
+type Props = {
+  chainId: number;
+  tradeFlags: TradeFlags;
+  marketInfo?: MarketInfo;
+  collateralToken?: TokenData;
+  increaseAmounts?: IncreasePositionAmounts;
+  existingPosition?: PositionInfo;
+  keepLeverage?: boolean;
+};
+
+export default function useStopLossEntries({
+  chainId,
+  marketInfo,
+  tradeFlags,
+  collateralToken,
+  increaseAmounts,
+  existingPosition,
+  keepLeverage,
+}: Props) {
+  const { isLong } = tradeFlags;
+  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
+  const uiFeeFactor = useUiFeeFactor(chainId);
+
   const [stopLossEntries, setStopLossEntries] = useState<Entry[]>([
     { id: uniqueId(), price: "", percentage: "", error: "" },
+  ]);
+
+  const stopLossAmounts = useMemo(() => {
+    if (!marketInfo || !collateralToken || !minPositionSizeUsd || !minCollateralUsd) return;
+    return stopLossEntries
+      .filter((entry) => !entry.error)
+      .map((entry) => {
+        const sizeUsd = entry.percentage && increaseAmounts?.sizeDeltaUsd.mul(entry.percentage).div(100);
+        const price = entry.price && parseValue(entry.price, USD_DECIMALS);
+        if (!sizeUsd || !price) return undefined;
+        return getDecreasePositionAmounts({
+          marketInfo,
+          collateralToken,
+          isLong,
+          position: existingPosition,
+          closeSizeUsd: sizeUsd,
+          keepLeverage: keepLeverage!,
+          triggerPrice: price,
+          userReferralInfo: undefined,
+          minCollateralUsd,
+          minPositionSizeUsd,
+          uiFeeFactor,
+        });
+      })
+      .filter(Boolean);
+  }, [
+    stopLossEntries,
+    increaseAmounts?.sizeDeltaUsd,
+    marketInfo,
+    collateralToken,
+    isLong,
+    existingPosition,
+    keepLeverage,
+    minCollateralUsd,
+    minPositionSizeUsd,
+    uiFeeFactor,
   ]);
 
   function addEntry() {
@@ -32,9 +98,10 @@ export default function useStopLossEntries() {
       setStopLossEntries(stopLossEntries.filter((entry) => entry.id !== id));
     }
   };
+
   const reset = () => {
     setStopLossEntries([{ id: uniqueId(), price: "", percentage: "" }]);
   };
 
-  return { entries: stopLossEntries, addEntry, updateEntry, deleteEntry, reset };
+  return { entries: stopLossEntries, addEntry, updateEntry, deleteEntry, reset, stopLossAmounts };
 }

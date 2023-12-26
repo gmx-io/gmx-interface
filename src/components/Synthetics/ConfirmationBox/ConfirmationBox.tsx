@@ -41,7 +41,6 @@ import {
   formatLiquidationPrice,
   getPositionKey,
   getTriggerNameByOrderType,
-  usePositionsConstants,
 } from "domain/synthetics/positions";
 import {
   TokenData,
@@ -61,7 +60,6 @@ import {
   TriggerThresholdType,
   applySlippageToMinOut,
   applySlippageToPrice,
-  getDecreasePositionAmounts,
   getExecutionPriceForDecrease,
 } from "domain/synthetics/trade";
 import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
@@ -84,7 +82,6 @@ import {
   formatTokenAmount,
   formatTokenAmountWithUsd,
   formatUsd,
-  parseValue,
 } from "lib/numbers";
 import { usePrevious } from "lib/usePrevious";
 import useWallet from "lib/wallets/useWallet";
@@ -97,7 +94,6 @@ import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpa
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import useStopLossEntries from "domain/synthetics/orders/useStopLossEntries";
 import useTakeProfitEntries from "domain/synthetics/orders/useTakeProfitEntries";
-import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { FaArrowRight } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import ProfitLossEntries from "./ProfitLossEntries";
@@ -189,8 +185,6 @@ export function ConfirmationBox(p: Props) {
   const { openConnectModal } = useConnectModal();
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const { savedAllowedSlippage } = useSettings();
-  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
-  const uiFeeFactor = useUiFeeFactor(chainId);
   const prevIsVisible = usePrevious(p.isVisible);
 
   const { referralCodeForTxn } = useUserReferralCode(signer, chainId, account);
@@ -205,7 +199,15 @@ export function ConfirmationBox(p: Props) {
     addEntry: addStopLossEntry,
     deleteEntry: deleteStopLossEntry,
     updateEntry: updateStopLossEntry,
-  } = useStopLossEntries();
+  } = useStopLossEntries({
+    chainId,
+    marketInfo,
+    tradeFlags,
+    collateralToken,
+    increaseAmounts,
+    existingPosition,
+    keepLeverage,
+  });
   const {
     entries: takeProfitEntries,
     addEntry: addTakeProfitEntry,
@@ -213,74 +215,74 @@ export function ConfirmationBox(p: Props) {
     updateEntry: updateTakeProfitEntry,
   } = useTakeProfitEntries();
 
-  const stopLossData = useMemo(() => {
-    if (!account || !marketInfo || !collateralToken || !minPositionSizeUsd || !minCollateralUsd || !executionFee)
-      return;
-    const entries = stopLossEntries.map((entry) => {
-      const sizeUsd = entry.percentage && increaseAmounts?.sizeDeltaUsd.mul(entry.percentage).div(100);
-      const price = entry.price && parseValue(entry.price, USD_DECIMALS);
-      if (!sizeUsd || !price) return undefined;
-      return getDecreasePositionAmounts({
-        marketInfo,
-        collateralToken,
-        isLong,
-        position: existingPosition,
-        closeSizeUsd: sizeUsd,
-        keepLeverage: keepLeverage!,
-        triggerPrice: price,
-        userReferralInfo: undefined,
-        minCollateralUsd,
-        minPositionSizeUsd,
-        uiFeeFactor,
-      });
-    });
+  // const stopLossData = useMemo(() => {
+  //   if (!account || !marketInfo || !collateralToken || !minPositionSizeUsd || !minCollateralUsd || !executionFee)
+  //     return;
+  //   const entries = stopLossEntries.map((entry) => {
+  //     const sizeUsd = entry.percentage && increaseAmounts?.sizeDeltaUsd.mul(entry.percentage).div(100);
+  //     const price = entry.price && parseValue(entry.price, USD_DECIMALS);
+  //     if (!sizeUsd || !price) return undefined;
+  //     return getDecreasePositionAmounts({
+  //       marketInfo,
+  //       collateralToken,
+  //       isLong,
+  //       position: existingPosition,
+  //       closeSizeUsd: sizeUsd,
+  //       keepLeverage: keepLeverage!,
+  //       triggerPrice: price,
+  //       userReferralInfo: undefined,
+  //       minCollateralUsd,
+  //       minPositionSizeUsd,
+  //       uiFeeFactor,
+  //     });
+  //   });
 
-    return entries
-      .map((entry) => {
-        if (!entry) return undefined;
-        return {
-          account,
-          marketAddress: marketInfo.marketTokenAddress,
-          swapPath: [],
-          initialCollateralDeltaAmount: entry.collateralDeltaAmount || BigNumber.from(0),
-          initialCollateralAddress: collateralToken.address,
-          receiveTokenAddress: collateralToken.address,
-          triggerPrice: entry.triggerPrice,
-          acceptablePrice: entry.acceptablePrice,
-          sizeDeltaUsd: entry.sizeDeltaUsd,
-          sizeDeltaInTokens: entry.sizeDeltaInTokens,
-          minOutputUsd: BigNumber.from(0),
-          isLong,
-          decreasePositionSwapType: entry.decreaseSwapType,
-          orderType: entry?.triggerOrderType,
-          executionFee: executionFee.feeTokenAmount,
-          allowedSlippage,
-          referralCode: referralCodeForTxn,
-          // Skip simulation to avoid EmptyPosition error
-          // skipSimulation: !existingPosition || shouldDisableValidation,
-          skipSimulation: true,
-          indexToken: marketInfo.indexToken,
-          tokensData,
-        };
-      })
-      .filter(Boolean);
-  }, [
-    stopLossEntries,
-    increaseAmounts?.sizeDeltaUsd,
-    marketInfo,
-    collateralToken,
-    isLong,
-    existingPosition,
-    keepLeverage,
-    minCollateralUsd,
-    minPositionSizeUsd,
-    account,
-    executionFee,
-    allowedSlippage,
-    referralCodeForTxn,
-    tokensData,
-    uiFeeFactor,
-  ]);
+  //   return entries
+  //     .map((entry) => {
+  //       if (!entry) return undefined;
+  //       return {
+  //         account,
+  //         marketAddress: marketInfo.marketTokenAddress,
+  //         swapPath: [],
+  //         initialCollateralDeltaAmount: entry.collateralDeltaAmount || BigNumber.from(0),
+  //         initialCollateralAddress: collateralToken.address,
+  //         receiveTokenAddress: collateralToken.address,
+  //         triggerPrice: entry.triggerPrice,
+  //         acceptablePrice: entry.acceptablePrice,
+  //         sizeDeltaUsd: entry.sizeDeltaUsd,
+  //         sizeDeltaInTokens: entry.sizeDeltaInTokens,
+  //         minOutputUsd: BigNumber.from(0),
+  //         isLong,
+  //         decreasePositionSwapType: entry.decreaseSwapType,
+  //         orderType: entry?.triggerOrderType,
+  //         executionFee: executionFee.feeTokenAmount,
+  //         allowedSlippage,
+  //         referralCode: referralCodeForTxn,
+  //         // Skip simulation to avoid EmptyPosition error
+  //         // skipSimulation: !existingPosition || shouldDisableValidation,
+  //         skipSimulation: true,
+  //         indexToken: marketInfo.indexToken,
+  //         tokensData,
+  //       };
+  //     })
+  //     .filter(Boolean);
+  // }, [
+  //   stopLossEntries,
+  //   increaseAmounts?.sizeDeltaUsd,
+  //   marketInfo,
+  //   collateralToken,
+  //   isLong,
+  //   existingPosition,
+  //   keepLeverage,
+  //   minCollateralUsd,
+  //   minPositionSizeUsd,
+  //   account,
+  //   executionFee,
+  //   allowedSlippage,
+  //   referralCodeForTxn,
+  //   tokensData,
+  //   uiFeeFactor,
+  // ]);
 
   useEffect(() => {
     setAllowedSlippage(savedAllowedSlippage);
@@ -570,35 +572,30 @@ export function ConfirmationBox(p: Props) {
       return Promise.resolve();
     }
 
-    return createIncreaseOrderTxn(
-      chainId,
-      signer,
-      {
-        account,
-        marketAddress: marketInfo.marketTokenAddress,
-        initialCollateralAddress: fromToken?.address,
-        initialCollateralAmount: increaseAmounts.initialCollateralAmount,
-        targetCollateralAddress: collateralToken.address,
-        collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
-        swapPath: increaseAmounts.swapPathStats?.swapPath || [],
-        sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
-        sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
-        triggerPrice: isLimit ? triggerPrice : undefined,
-        acceptablePrice: increaseAmounts.acceptablePrice,
-        isLong,
-        orderType: isLimit ? OrderType.LimitIncrease : OrderType.MarketIncrease,
-        executionFee: executionFee.feeTokenAmount,
-        allowedSlippage,
-        referralCode: referralCodeForTxn,
-        indexToken: marketInfo.indexToken,
-        tokensData,
-        skipSimulation: isLimit || shouldDisableValidation,
-        setPendingTxns: p.setPendingTxns,
-        setPendingOrder,
-        setPendingPosition,
-      },
-      stopLossData as any
-    );
+    return createIncreaseOrderTxn(chainId, signer, {
+      account,
+      marketAddress: marketInfo.marketTokenAddress,
+      initialCollateralAddress: fromToken?.address,
+      initialCollateralAmount: increaseAmounts.initialCollateralAmount,
+      targetCollateralAddress: collateralToken.address,
+      collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
+      swapPath: increaseAmounts.swapPathStats?.swapPath || [],
+      sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+      sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
+      triggerPrice: isLimit ? triggerPrice : undefined,
+      acceptablePrice: increaseAmounts.acceptablePrice,
+      isLong,
+      orderType: isLimit ? OrderType.LimitIncrease : OrderType.MarketIncrease,
+      executionFee: executionFee.feeTokenAmount,
+      allowedSlippage,
+      referralCode: referralCodeForTxn,
+      indexToken: marketInfo.indexToken,
+      tokensData,
+      skipSimulation: isLimit || shouldDisableValidation,
+      setPendingTxns: p.setPendingTxns,
+      setPendingOrder,
+      setPendingPosition,
+    });
   }
 
   function onSubmitDecreaseOrder() {
