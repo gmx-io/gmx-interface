@@ -44,13 +44,12 @@ export default function useStopLossEntries({
   ]);
 
   const stopLossAmounts = useMemo(() => {
-    if (!marketInfo || !collateralToken || !minPositionSizeUsd || !minCollateralUsd) return;
+    if (!increaseAmounts || !marketInfo || !collateralToken || !minPositionSizeUsd || !minCollateralUsd) return;
     return stopLossEntries
-      .filter((entry) => !entry.error)
+      .filter((entry) => entry.price && entry.percentage && !entry.error)
       .map((entry) => {
-        const sizeUsd = entry.percentage && increaseAmounts?.sizeDeltaUsd.mul(entry.percentage).div(100);
-        const price = entry.price && parseValue(entry.price, USD_DECIMALS);
-        if (!sizeUsd || !price) return undefined;
+        const sizeUsd = increaseAmounts.sizeDeltaUsd.mul(entry.percentage).div(100);
+        const price = parseValue(entry.price, USD_DECIMALS);
         return getDecreasePositionAmounts({
           marketInfo,
           collateralToken,
@@ -64,11 +63,9 @@ export default function useStopLossEntries({
           minPositionSizeUsd,
           uiFeeFactor,
         });
-      })
-      .filter(Boolean);
+      });
   }, [
     stopLossEntries,
-    increaseAmounts?.sizeDeltaUsd,
     marketInfo,
     collateralToken,
     isLong,
@@ -77,6 +74,7 @@ export default function useStopLossEntries({
     minCollateralUsd,
     minPositionSizeUsd,
     uiFeeFactor,
+    increaseAmounts,
   ]);
 
   function addEntry() {
