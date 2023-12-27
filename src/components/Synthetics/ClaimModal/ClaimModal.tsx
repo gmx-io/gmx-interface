@@ -19,7 +19,6 @@ import Button from "components/Button/Button";
 import { useState } from "react";
 import "./ClaimModal.scss";
 import useWallet from "lib/wallets/useWallet";
-import { getPositiveOrNegativeClass } from "lib/utils";
 
 type Props = {
   isVisible: boolean;
@@ -137,10 +136,7 @@ export function ClaimModal(p: Props) {
       <div className="ConfirmationBox-main">
         <div className="text-center">
           <Trans>
-            Claim{" "}
-            <span className={getPositiveOrNegativeClass(totalClaimableFundingUsd)}>
-              {formatDeltaUsd(totalClaimableFundingUsd)}
-            </span>
+            Claim <span>{formatDeltaUsd(totalClaimableFundingUsd)}</span>
           </Trans>
         </div>
       </div>

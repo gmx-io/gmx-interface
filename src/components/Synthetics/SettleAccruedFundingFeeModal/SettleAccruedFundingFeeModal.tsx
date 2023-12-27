@@ -22,7 +22,6 @@ import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 import "./SettleAccruedFundingFeeModal.scss";
-import { getPositiveOrNegativeClass } from "lib/utils";
 
 type Props = {
   allowedSlippage: number;
@@ -168,9 +167,7 @@ export function SettleAccruedFundingFeeModal({
       label={t`Confirm Settle`}
     >
       <div className="ConfirmationBox-main">
-        <div className="text-center">
-          Settle <span className={getPositiveOrNegativeClass(total)}>{totalStr}</span>
-        </div>
+        <div className="text-center">Settle {totalStr}</div>
       </div>
       <div className="App-card-divider ClaimModal-divider FeeModal-divider ClaimSettleModal-divider" />
       <div className="ClaimModal-content ClaimSettleModal-modal-content">
@@ -178,7 +175,7 @@ export function SettleAccruedFundingFeeModal({
           <div className="ClaimSettleModal-alert">
             <Trans>
               Consider selecting only Positions where the accrued Funding Fees exceed the gas spent to Settle, which is
-              around <span className="text-red">-{formatUsd(feeUsd)}</span> per each selected Position.
+              around {formatUsd(feeUsd)} per each selected Position.
             </Trans>
           </div>
 

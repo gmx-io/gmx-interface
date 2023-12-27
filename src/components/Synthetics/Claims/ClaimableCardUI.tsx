@@ -2,7 +2,6 @@ import { Trans } from "@lingui/macro";
 import Tooltip from "components/Tooltip/Tooltip";
 import { BigNumber } from "ethers";
 import { formatDeltaUsd } from "lib/numbers";
-import { getPositiveOrNegativeClass } from "lib/utils";
 import { CSSProperties, useCallback, useMemo } from "react";
 
 type Props = {
@@ -27,11 +26,7 @@ export function ClaimableCardUI({ buttonText, fundingFees, onButtonClick, title,
             <Trans>Funding fees</Trans>
           </span>
           <span>
-            <Tooltip
-              handle={<span className={getPositiveOrNegativeClass(fundingFees)}>{totalUsd}</span>}
-              position="left-bottom"
-              renderContent={renderTooltipContent}
-            />
+            <Tooltip handle={totalUsd} position="left-bottom" renderContent={renderTooltipContent} />
           </span>
         </div>
         {fundingFees.gt(0) && (
