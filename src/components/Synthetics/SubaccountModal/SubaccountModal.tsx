@@ -17,6 +17,7 @@ import {
   useSubaccountInsufficientFunds,
   useSubaccountModalOpen,
   useSubaccountPendingTx,
+  useSubaccountPrivateKey,
   useSubaccountSelector,
   useSubaccountState,
 } from "context/SubaccountContext/SubaccountContext";
@@ -367,9 +368,9 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
 
   const { gasPrice } = useGasPrice(chainId);
 
-  const handleWithdrawClick = useCallback(async () => {
-    const privateKey = oneClickTradingState.subaccount?.privateKey;
+  const privateKey = useSubaccountPrivateKey();
 
+  const handleWithdrawClick = useCallback(async () => {
     if (!privateKey) throw new Error("privateKey is not defined");
     if (!account) throw new Error("account is not defined");
     if (!signer) throw new Error("signer is not defined");
@@ -387,7 +388,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     } finally {
       setWithdrawalLoading(false);
     }
-  }, [account, chainId, gasPrice, oneClickTradingState.subaccount?.privateKey, signer, subAccNativeTokenBalance]);
+  }, [account, chainId, gasPrice, privateKey, signer, subAccNativeTokenBalance]);
 
   const shouldShowAllowedActionsWarning = isSubaccountActive && remainingActionsCount?.eq(0);
   const shouldShowInsufficientFundsButton = isSubaccountActive && insufficientFunds;

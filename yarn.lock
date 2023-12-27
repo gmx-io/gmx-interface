@@ -7993,6 +7993,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"crypto-js@npm:4.2.0":
+  version: 4.2.0
+  resolution: "crypto-js@npm:4.2.0"
+  checksum: f051666dbc077c8324777f44fbd3aaea2986f198fe85092535130d17026c7c2ccf2d23ee5b29b36f7a4a07312db2fae23c9094b644cc35f7858b1b4fcaf27774
+  languageName: node
+  linkType: hard
+
 "crypto-random-string@npm:^2.0.0":
   version: 2.0.0
   resolution: "crypto-random-string@npm:2.0.0"
@@ -10351,6 +10358,7 @@ __metadata:
     bigdecimal: 0.6.1
     buffer: 6.0.3
     classnames: 2.3.1
+    crypto-js: 4.2.0
     date-fns: 2.27.0
     env-cmd: ^10.1.0
     eslint: ^8.41.0

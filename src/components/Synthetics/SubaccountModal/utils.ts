@@ -122,7 +122,7 @@ export function getDefaultValues(tokenData: TokenData) {
     wntForAutoTopUps: notNullOrThrow(
       convertToTokenAmount(expandDecimals(20, 30), tokenData.decimals, tokenData.prices.maxPrice)
     ),
-    maxAllowedActions: notNullOrThrow(BigNumber.from(20)),
+    maxAllowedActions: notNullOrThrow(BigNumber.from(10)),
   };
 }
 

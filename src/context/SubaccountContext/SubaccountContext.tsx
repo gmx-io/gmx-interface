@@ -1,4 +1,5 @@
 import DataStore from "abis/DataStore.json";
+import cryptoJs from "crypto-js";
 import { getContract } from "config/contracts";
 import {
   SUBACCOUNT_ORDER_ACTION,
@@ -80,6 +81,8 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
   }, [chainId, gasLimits, gasPrice, tokensData]);
 
   const generateSubaccount = useCallback(async () => {
+    if (!account) throw new Error("Account is not set");
+
     const signature = await signer?.signMessage(getStringForSign());
 
     if (!signature) return;
@@ -87,11 +90,13 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
     const pk = ethers.utils.keccak256(signature);
     const subWallet = new ethers.Wallet(pk);
 
+    const encrypted = cryptoJs.AES.encrypt(pk, account);
+
     setConfig({
-      privateKey: pk,
+      privateKey: encrypted.toString(),
       address: subWallet.address,
     });
-  }, [setConfig, signer]);
+  }, [account, setConfig, signer]);
 
   const clearSubaccount = useCallback(() => {
     setConfig(null);
@@ -182,8 +187,14 @@ export function useSubaccountAddress() {
   return useSubaccountSelector((s) => s.subaccount?.address ?? null);
 }
 
-function useSubaccountPrivateKey() {
-  return useSubaccountSelector((s) => s.subaccount?.privateKey ?? null);
+export function useSubaccountPrivateKey() {
+  const encryptedString = useSubaccountSelector((s) => s.subaccount?.privateKey ?? null);
+  const { account } = useWallet();
+  return useMemo(() => {
+    if (!account || !encryptedString) return null;
+
+    return cryptoJs.AES.decrypt(encryptedString, account).toString(cryptoJs.enc.Utf8);
+  }, [account, encryptedString]);
 }
 
 export function useIsSubaccountActive() {

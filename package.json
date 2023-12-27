@@ -24,6 +24,7 @@
     "@uniswap/v3-sdk": "3.9.0",
     "bigdecimal": "0.6.1",
     "classnames": "2.3.1",
+    "crypto-js": "4.2.0",
     "date-fns": "2.27.0",
     "env-cmd": "^10.1.0",
     "eth-testing": "1.9.1",
