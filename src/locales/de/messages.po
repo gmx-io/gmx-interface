@@ -1543,7 +1543,11 @@ msgid "Enable Leverage"
 msgstr "Hebelwirkung ermöglichen"
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-msgid "Enable One-Click Trading to reduce <0>wallet<1/></0> signing popups. This option is also accessible through the Wallet menu in the top right."
+#~ msgid "Enable One-Click Trading to reduce <0>wallet<1/></0> signing popups. This option is also accessible through the Wallet menu in the top right."
+#~ msgstr ""
+
+#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
+msgid "Enable One-Click Trading to reduce wallet signing popups. This option is also accessible through the Wallet menu in the top right."
 msgstr ""
 
 #: src/components/Exchange/OrdersToa.js
