@@ -6,7 +6,6 @@ import {
   useSubaccountActionCounts,
   useSubaccountInsufficientFunds,
 } from "context/SubaccountContext/SubaccountContext";
-import starIcon from "img/star.svg";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { ReactNode, memo, useCallback, useState } from "react";
 import "./SubaccountNavigationButton.scss";
@@ -66,12 +65,8 @@ export const SubaccountNavigationButton = memo(
       onCloseClick = handleCloseOfferClick;
       content = (
         <Trans>
-          Enable One-Click Trading to reduce{" "}
-          <span className="ConfirmationBox-star-container">
-            wallet
-            <img className="ConfirmationBox-star" alt="Star" src={starIcon} />
-          </span>{" "}
-          signing popups. This option is also accessible through the Wallet menu in the top right.
+          Enable One-Click Trading to reduce wallet signing popups. This option is also accessible through the Wallet
+          menu in the top right.
         </Trans>
       );
     } else {
