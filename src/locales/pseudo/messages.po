@@ -3203,7 +3203,6 @@ msgstr ""
 msgid "Open trades ranking and stats"
 msgstr ""
 
-#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open {0} in Coingecko"
 msgstr ""
