@@ -4,7 +4,7 @@ import coingeckoIcon from "img/ic_coingecko_16.svg";
 import metamaskIcon from "img/ic_metamask_16.svg";
 import nansenPortfolioIcon from "img/nansen_portfolio.svg";
 import { FiChevronDown } from "react-icons/fi";
-import "./AssetDropdown.css";
+import "./AssetDropdown.scss";
 
 import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
