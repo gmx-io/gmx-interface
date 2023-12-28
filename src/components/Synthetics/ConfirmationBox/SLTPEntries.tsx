@@ -10,33 +10,36 @@ function SLTPEntries({ entries, updateEntry, addEntry, deleteEntry }) {
     <div className="SLTPEntries-wrapper">
       {entries.map((entryData) => {
         return (
-          <div className="SLTPEntry-row" key={entryData.id}>
-            <div className="SLTP-price">
-              <NumberInput
-                value={entryData.price}
-                onValueChange={(e) => updateEntry(entryData.id, { price: e.target.value })}
-                placeholder="Price"
-                className="price-input"
+          <div key={entryData.id}>
+            <div className="SLTPEntry-row" key={entryData.id}>
+              <div className="SLTP-price">
+                <NumberInput
+                  value={entryData.price}
+                  onValueChange={(e) => updateEntry(entryData.id, { price: e.target.value })}
+                  placeholder="Price"
+                  className="price-input"
+                />
+                <span className="price-symbol">$</span>
+              </div>
+              <PercentageInput
+                defaultValue={entryData.percentage}
+                onChange={(value) => updateEntry(entryData.id, { percentage: value })}
+                suggestions={SUGGESTION_PERCENTAGE_LIST}
               />
-              <span className="price-symbol">$</span>
+              <div className="SLTP-actions">
+                <button
+                  className="action-remove"
+                  onClick={() => deleteEntry(entryData.id)}
+                  disabled={entries.length === 1}
+                >
+                  <FaPlus color="#E74E5D" className="rotate-45" />
+                </button>
+                <button className="action-add" onClick={addEntry}>
+                  <FaPlus color="#5EC989" />
+                </button>
+              </div>
             </div>
-            <PercentageInput
-              defaultValue={entryData.percentage}
-              onChange={(value) => updateEntry(entryData.id, { percentage: value })}
-              suggestions={SUGGESTION_PERCENTAGE_LIST}
-            />
-            <div className="SLTP-actions">
-              <button
-                className="action-remove"
-                onClick={() => deleteEntry(entryData.id)}
-                disabled={entries.length === 1}
-              >
-                <FaPlus color="#E74E5D" className="rotate-45" />
-              </button>
-              <button className="action-add" onClick={addEntry}>
-                <FaPlus color="#5EC989" />
-              </button>
-            </div>
+            {entryData.error && <div className="error">{entryData.error}</div>}
           </div>
         );
       })}

@@ -202,13 +202,13 @@ export function ConfirmationBox(p: Props) {
     reset: resetStopLossEntries,
     amounts: stopLossAmounts,
   } = useStopLossEntries({
-    chainId,
     marketInfo,
     tradeFlags,
     collateralToken,
     increaseAmounts,
     existingPosition,
     keepLeverage,
+    nextPositionValues,
   });
 
   const {
@@ -219,13 +219,13 @@ export function ConfirmationBox(p: Props) {
     reset: resetTakeProfitEntries,
     amounts: takeProfitAmounts,
   } = useTakeProfitEntries({
-    chainId,
     marketInfo,
     tradeFlags,
     collateralToken,
     increaseAmounts,
     existingPosition,
     keepLeverage,
+    nextPositionValues,
   });
 
   useEffect(() => {

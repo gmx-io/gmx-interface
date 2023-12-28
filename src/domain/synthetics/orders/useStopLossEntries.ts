@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import { uniqueId } from "lodash";
-import { IncreasePositionAmounts, getDecreasePositionAmounts } from "domain/synthetics/trade";
+import { IncreasePositionAmounts, NextPositionValues, getDecreasePositionAmounts } from "domain/synthetics/trade";
 import { parseValue } from "lib/numbers";
 import { USD_DECIMALS } from "lib/legacy";
 import { MarketInfo } from "../markets";
@@ -11,6 +11,8 @@ import { TokenData } from "../tokens";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import useWallet from "lib/wallets/useWallet";
 import { useUserReferralInfo } from "domain/referrals";
+import { useChainId } from "lib/chains";
+import { t } from "@lingui/macro";
 
 export type Entry = {
   id: string;
@@ -20,24 +22,25 @@ export type Entry = {
 };
 
 type Props = {
-  chainId: number;
   tradeFlags: TradeFlags;
   marketInfo?: MarketInfo;
   collateralToken?: TokenData;
   increaseAmounts?: IncreasePositionAmounts;
   existingPosition?: PositionInfo;
   keepLeverage?: boolean;
+  nextPositionValues?: NextPositionValues;
 };
 
 export default function useStopLossEntries({
-  chainId,
   marketInfo,
   tradeFlags,
   collateralToken,
   increaseAmounts,
   existingPosition,
   keepLeverage,
+  nextPositionValues,
 }: Props) {
+  const { chainId } = useChainId();
   const { isLong } = tradeFlags;
   const { signer, account } = useWallet();
   const userReferralInfo = useUserReferralInfo(signer, chainId, account);
@@ -92,11 +95,25 @@ export default function useStopLossEntries({
     setStopLossEntries((prevEntries) => [...prevEntries, newEntry]);
   }, []);
 
-  const updateEntry = useCallback((id: string, updatedEntry: Partial<Entry>) => {
-    setStopLossEntries((prevEntries) =>
-      prevEntries.map((entry) => (entry.id === id ? { ...entry, ...updatedEntry } : entry))
-    );
-  }, []);
+  const updateEntry = useCallback(
+    (id: string, updatedEntry: Partial<Entry>) => {
+      const handleErrors = (entry: Partial<Entry>): Partial<Entry> => {
+        if (!nextPositionValues?.nextLiqPrice || !entry.price) {
+          return entry;
+        }
+
+        const inputPrice = parseValue(entry.price, USD_DECIMALS);
+        const error = inputPrice?.lt(nextPositionValues.nextLiqPrice) ? t`Price below Liq. Price` : entry.error;
+
+        return { ...entry, error };
+      };
+
+      setStopLossEntries((prevEntries) =>
+        prevEntries.map((entry) => (entry.id === id ? { ...entry, ...handleErrors(updatedEntry) } : entry))
+      );
+    },
+    [nextPositionValues]
+  );
 
   const deleteEntry = useCallback((id: string) => {
     setStopLossEntries((prevEntries) =>
