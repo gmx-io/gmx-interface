@@ -13,6 +13,7 @@ import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 import { getExplorerUrl } from "config/chains";
 import { createBreakpoint } from "react-use";
+import { Connector } from "wagmi";
 
 type Props = {
   token?: TokenData;
@@ -20,6 +21,37 @@ type Props = {
   position?: "left" | "right";
   tokensData?: TokensData;
 };
+
+function renderMarketName(market: MarketInfo) {
+  return market && market.isSpotOnly ? (
+    <>
+      GM: SWAP
+      <div className="items-top">
+        <span className="subtext">[{getMarketPoolName(market)}]</span>
+      </div>
+    </>
+  ) : (
+    <>
+      GM:{" "}
+      <div className="items-top">
+        <span>{getMarketIndexName(market)}</span>
+        <span className="subtext">[{getMarketPoolName(market)}]</span>
+      </div>
+    </>
+  );
+}
+
+function addToWallet(active: boolean, connector?: Connector, token?: TokenData) {
+  if (active && connector?.watchAsset && token) {
+    const { address, decimals, imageUrl, symbol } = token;
+    connector.watchAsset({
+      address,
+      decimals,
+      image: imageUrl,
+      symbol,
+    });
+  }
+}
 
 export default function GmAssetDropdown({ token, marketsInfoData, tokensData, position = "right" }: Props) {
   const { chainId } = useChainId();
@@ -32,26 +64,6 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
   const explorerUrl = getExplorerUrl(chainId);
   const useBreakpoint = createBreakpoint({ S: 500 });
   const breakpoint = useBreakpoint();
-
-  function renderMarketName(market: MarketInfo) {
-    return market && market.isSpotOnly ? (
-      <>
-        GM: SWAP
-        <div className="items-top">
-          <span>{getMarketIndexName(market)}</span>
-          <span className="subtext">[{getMarketPoolName(market)}]</span>
-        </div>
-      </>
-    ) : (
-      <>
-        GM:{" "}
-        <div className="items-top">
-          <span>{getMarketIndexName(market)}</span>
-          <span className="subtext">[{getMarketPoolName(market)}]</span>
-        </div>
-      </>
-    );
-  }
 
   return (
     <div className="AssetDropdown-wrapper GmAssetDropdown">
@@ -93,52 +105,26 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
               </div>
             )}
           </Menu.Item>
-          <Menu.Item as="div">
-            {active && longToken && (
-              <div
-                onClick={() => {
-                  if (connector?.watchAsset && longToken) {
-                    const { address, decimals, imageUrl, symbol } = longToken;
-                    connector.watchAsset?.({
-                      address: address,
-                      decimals: decimals,
-                      image: imageUrl,
-                      symbol: symbol,
-                    });
-                  }
-                }}
-                className="asset-item"
-              >
+          {active && shortToken && connector && (
+            <Menu.Item as="div">
+              <div onClick={() => addToWallet(active, connector, longToken)} className="asset-item">
                 <img src={walletIcon} className="wallet-icon" alt="Add to wallet" />
                 <p>
                   <Trans>Add {longToken?.assetSymbol ?? longToken?.symbol} to Wallet</Trans>
                 </p>
               </div>
-            )}
-          </Menu.Item>
-          <Menu.Item as="div">
-            {active && shortToken && (
-              <div
-                onClick={() => {
-                  if (connector?.watchAsset && shortToken) {
-                    const { address, decimals, imageUrl, symbol } = shortToken;
-                    connector.watchAsset?.({
-                      address: address,
-                      decimals: decimals,
-                      image: imageUrl,
-                      symbol: symbol,
-                    });
-                  }
-                }}
-                className="asset-item"
-              >
+            </Menu.Item>
+          )}
+          {active && shortToken && connector && (
+            <Menu.Item as="div">
+              <div onClick={() => addToWallet(active, connector, shortToken)} className="asset-item">
                 <img src={walletIcon} className="wallet-icon" alt="Add to wallet" />
                 <p>
                   <Trans>Add {shortToken?.assetSymbol ?? shortToken?.symbol} to Wallet</Trans>
                 </p>
               </div>
-            )}
-          </Menu.Item>
+            </Menu.Item>
+          )}
         </Menu.Items>
       </Menu>
     </div>
