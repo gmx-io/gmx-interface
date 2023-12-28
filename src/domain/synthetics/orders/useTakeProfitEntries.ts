@@ -1,5 +1,16 @@
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { uniqueId } from "lodash";
+import { IncreasePositionAmounts, getDecreasePositionAmounts } from "domain/synthetics/trade";
+import { parseValue } from "lib/numbers";
+import { USD_DECIMALS } from "lib/legacy";
+import { MarketInfo } from "../markets";
+import { TradeFlags } from "../trade/useTradeFlags";
+import { PositionInfo, usePositionsConstants } from "../positions";
+import useUiFeeFactor from "../fees/utils/useUiFeeFactor";
+import { TokenData } from "../tokens";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
+import useWallet from "lib/wallets/useWallet";
+import { useUserReferralInfo } from "domain/referrals";
 
 export type Entry = {
   id: string;
@@ -8,33 +19,93 @@ export type Entry = {
   error?: string;
 };
 
-export default function useTakeProfitEntries() {
-  const [takeProfitEntries, setTakeProfitEntries] = useState<Entry[]>([
+type Props = {
+  chainId: number;
+  tradeFlags: TradeFlags;
+  marketInfo?: MarketInfo;
+  collateralToken?: TokenData;
+  increaseAmounts?: IncreasePositionAmounts;
+  existingPosition?: PositionInfo;
+  keepLeverage?: boolean;
+};
+
+export default function useTakeProfitEntries({
+  chainId,
+  marketInfo,
+  tradeFlags,
+  collateralToken,
+  increaseAmounts,
+  existingPosition,
+  keepLeverage,
+}: Props) {
+  const { isLong } = tradeFlags;
+  const { signer, account } = useWallet();
+  const userReferralInfo = useUserReferralInfo(signer, chainId, account);
+  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
+  const uiFeeFactor = useUiFeeFactor(chainId);
+  const [stopLossEntries, setStopLossEntries] = useState<Entry[]>([
     { id: uniqueId(), price: "", percentage: "", error: "" },
   ]);
 
-  function addEntry() {
+  const takeProfitAmounts = useMemo(() => {
+    if (!increaseAmounts || !marketInfo || !collateralToken || !minPositionSizeUsd || !minCollateralUsd) return;
+    return stopLossEntries
+      .filter((entry) => entry.price && entry.percentage && !entry.error)
+      .map((entry) => {
+        const sizeUsd = increaseAmounts.sizeDeltaUsd.mul(entry.percentage).div(BASIS_POINTS_DIVISOR);
+        const price = parseValue(entry.price, USD_DECIMALS);
+        return getDecreasePositionAmounts({
+          marketInfo,
+          collateralToken,
+          isLong,
+          position: existingPosition,
+          closeSizeUsd: sizeUsd,
+          keepLeverage: keepLeverage!,
+          triggerPrice: price,
+          userReferralInfo,
+          minCollateralUsd,
+          minPositionSizeUsd,
+          uiFeeFactor,
+        });
+      });
+  }, [
+    stopLossEntries,
+    marketInfo,
+    collateralToken,
+    isLong,
+    existingPosition,
+    keepLeverage,
+    minCollateralUsd,
+    minPositionSizeUsd,
+    uiFeeFactor,
+    increaseAmounts,
+    userReferralInfo,
+  ]);
+
+  const addEntry = useCallback(() => {
     const newEntry: Entry = {
       id: uniqueId(),
       price: "",
       percentage: "",
       error: "",
     };
-    setTakeProfitEntries([...takeProfitEntries, newEntry]);
-  }
+    setStopLossEntries((prevEntries) => [...prevEntries, newEntry]);
+  }, []);
 
-  const updateEntry = (id: string, updatedEntry: Partial<Entry>) => {
-    setTakeProfitEntries(takeProfitEntries.map((entry) => (entry.id === id ? { ...entry, ...updatedEntry } : entry)));
-  };
+  const updateEntry = useCallback((id: string, updatedEntry: Partial<Entry>) => {
+    setStopLossEntries((prevEntries) =>
+      prevEntries.map((entry) => (entry.id === id ? { ...entry, ...updatedEntry } : entry))
+    );
+  }, []);
 
-  const deleteEntry = (id: string) => {
-    if (takeProfitEntries.length > 1) {
-      setTakeProfitEntries(takeProfitEntries.filter((entry) => entry.id !== id));
-    }
-  };
-  const reset = () => {
-    setTakeProfitEntries([{ id: uniqueId(), price: "", percentage: "" }]);
-  };
+  const deleteEntry = useCallback((id: string) => {
+    setStopLossEntries((prevEntries) =>
+      prevEntries.length > 1 ? prevEntries.filter((entry) => entry.id !== id) : prevEntries
+    );
+  }, []);
 
-  return { entries: takeProfitEntries, addEntry, updateEntry, deleteEntry, reset };
+  const reset = useCallback(() => {
+    setStopLossEntries([{ id: uniqueId(), price: "", percentage: "" }]);
+  }, []);
+  return { entries: stopLossEntries, addEntry, updateEntry, deleteEntry, reset, amounts: takeProfitAmounts };
 }

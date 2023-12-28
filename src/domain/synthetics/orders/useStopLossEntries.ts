@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { uniqueId } from "lodash";
 import { IncreasePositionAmounts, getDecreasePositionAmounts } from "domain/synthetics/trade";
 import { parseValue } from "lib/numbers";
@@ -8,6 +8,9 @@ import { TradeFlags } from "../trade/useTradeFlags";
 import { PositionInfo, usePositionsConstants } from "../positions";
 import useUiFeeFactor from "../fees/utils/useUiFeeFactor";
 import { TokenData } from "../tokens";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
+import useWallet from "lib/wallets/useWallet";
+import { useUserReferralInfo } from "domain/referrals";
 
 export type Entry = {
   id: string;
@@ -36,9 +39,10 @@ export default function useStopLossEntries({
   keepLeverage,
 }: Props) {
   const { isLong } = tradeFlags;
+  const { signer, account } = useWallet();
+  const userReferralInfo = useUserReferralInfo(signer, chainId, account);
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
   const uiFeeFactor = useUiFeeFactor(chainId);
-
   const [stopLossEntries, setStopLossEntries] = useState<Entry[]>([
     { id: uniqueId(), price: "", percentage: "", error: "" },
   ]);
@@ -48,7 +52,7 @@ export default function useStopLossEntries({
     return stopLossEntries
       .filter((entry) => entry.price && entry.percentage && !entry.error)
       .map((entry) => {
-        const sizeUsd = increaseAmounts.sizeDeltaUsd.mul(entry.percentage).div(100);
+        const sizeUsd = increaseAmounts.sizeDeltaUsd.mul(entry.percentage).div(BASIS_POINTS_DIVISOR);
         const price = parseValue(entry.price, USD_DECIMALS);
         return getDecreasePositionAmounts({
           marketInfo,
@@ -58,7 +62,7 @@ export default function useStopLossEntries({
           closeSizeUsd: sizeUsd,
           keepLeverage: keepLeverage!,
           triggerPrice: price,
-          userReferralInfo: undefined,
+          userReferralInfo,
           minCollateralUsd,
           minPositionSizeUsd,
           uiFeeFactor,
@@ -75,31 +79,33 @@ export default function useStopLossEntries({
     minPositionSizeUsd,
     uiFeeFactor,
     increaseAmounts,
+    userReferralInfo,
   ]);
 
-  function addEntry() {
+  const addEntry = useCallback(() => {
     const newEntry: Entry = {
       id: uniqueId(),
       price: "",
       percentage: "",
       error: "",
     };
-    setStopLossEntries([...stopLossEntries, newEntry]);
-  }
+    setStopLossEntries((prevEntries) => [...prevEntries, newEntry]);
+  }, []);
 
-  const updateEntry = (id: string, updatedEntry: Partial<Entry>) => {
-    setStopLossEntries(stopLossEntries.map((entry) => (entry.id === id ? { ...entry, ...updatedEntry } : entry)));
-  };
+  const updateEntry = useCallback((id: string, updatedEntry: Partial<Entry>) => {
+    setStopLossEntries((prevEntries) =>
+      prevEntries.map((entry) => (entry.id === id ? { ...entry, ...updatedEntry } : entry))
+    );
+  }, []);
 
-  const deleteEntry = (id: string) => {
-    if (stopLossEntries.length > 1) {
-      setStopLossEntries(stopLossEntries.filter((entry) => entry.id !== id));
-    }
-  };
+  const deleteEntry = useCallback((id: string) => {
+    setStopLossEntries((prevEntries) =>
+      prevEntries.length > 1 ? prevEntries.filter((entry) => entry.id !== id) : prevEntries
+    );
+  }, []);
 
-  const reset = () => {
+  const reset = useCallback(() => {
     setStopLossEntries([{ id: uniqueId(), price: "", percentage: "" }]);
-  };
-
-  return { entries: stopLossEntries, addEntry, updateEntry, deleteEntry, reset, stopLossAmounts };
+  }, []);
+  return { entries: stopLossEntries, addEntry, updateEntry, deleteEntry, reset, amounts: stopLossAmounts };
 }

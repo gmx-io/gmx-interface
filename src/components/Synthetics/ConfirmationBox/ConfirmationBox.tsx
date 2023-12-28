@@ -93,10 +93,10 @@ import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpac
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import useStopLossEntries from "domain/synthetics/orders/useStopLossEntries";
-import useTakeProfitEntries from "domain/synthetics/orders/useTakeProfitEntries";
 import { FaArrowRight } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
-import ProfitLossEntries from "./ProfitLossEntries";
+import SLTPEntries from "./SLTPEntries";
+import useTakeProfitEntries from "domain/synthetics/orders/useTakeProfitEntries";
 
 export type Props = {
   isVisible: boolean;
@@ -199,7 +199,8 @@ export function ConfirmationBox(p: Props) {
     addEntry: addStopLossEntry,
     deleteEntry: deleteStopLossEntry,
     updateEntry: updateStopLossEntry,
-    stopLossAmounts,
+    reset: resetStopLossEntries,
+    amounts: stopLossAmounts,
   } = useStopLossEntries({
     chainId,
     marketInfo,
@@ -209,12 +210,23 @@ export function ConfirmationBox(p: Props) {
     existingPosition,
     keepLeverage,
   });
+
   const {
     entries: takeProfitEntries,
     addEntry: addTakeProfitEntry,
     deleteEntry: deleteTakeProfitEntry,
     updateEntry: updateTakeProfitEntry,
-  } = useTakeProfitEntries();
+    reset: resetTakeProfitEntries,
+    amounts: takeProfitAmounts,
+  } = useTakeProfitEntries({
+    chainId,
+    marketInfo,
+    tradeFlags,
+    collateralToken,
+    increaseAmounts,
+    existingPosition,
+    keepLeverage,
+  });
 
   useEffect(() => {
     setAllowedSlippage(savedAllowedSlippage);
@@ -536,12 +548,13 @@ export function ConfirmationBox(p: Props) {
         setPendingOrder,
         setPendingPosition,
       },
-      stopLossAmounts
+      (stopLossAmounts || [])
+        .concat(takeProfitAmounts || [])
         ?.map((entry) => {
           return {
             ...commonOrderProps,
             swapPath: [],
-            initialCollateralDeltaAmount: entry.collateralDeltaAmount || BigNumber.from(0),
+            initialCollateralDeltaAmount: entry.collateralDeltaAmount,
             receiveTokenAddress: collateralToken.address,
             triggerPrice: entry.triggerPrice,
             acceptablePrice: entry.acceptablePrice,
@@ -640,9 +653,11 @@ export function ConfirmationBox(p: Props) {
     function reset() {
       if (p.isVisible !== prevIsVisible) {
         setIsTriggerWarningAccepted(false);
+        resetStopLossEntries();
+        resetTakeProfitEntries();
       }
     },
-    [p.isVisible, prevIsVisible]
+    [p.isVisible, prevIsVisible, resetStopLossEntries, resetTakeProfitEntries]
   );
 
   function renderMain() {
@@ -992,12 +1007,11 @@ export function ConfirmationBox(p: Props) {
           isTop={true}
           value={
             <div className="profit-loss-wrapper">
-              <ProfitLossEntries
+              <SLTPEntries
                 entries={stopLossEntries}
                 updateEntry={updateStopLossEntry}
                 addEntry={addStopLossEntry}
                 deleteEntry={deleteStopLossEntry}
-                symbol="%"
               />
             </div>
           }
@@ -1016,12 +1030,11 @@ export function ConfirmationBox(p: Props) {
           isTop={true}
           value={
             <div className="profit-loss-wrapper">
-              <ProfitLossEntries
+              <SLTPEntries
                 entries={takeProfitEntries}
                 updateEntry={updateTakeProfitEntry}
                 addEntry={addTakeProfitEntry}
                 deleteEntry={deleteTakeProfitEntry}
-                symbol="%"
               />
             </div>
           }
