@@ -267,12 +267,17 @@ msgid "Actions"
 msgstr "Actions"
 
 #: src/components/Synthetics/SubaccountModal/utils.ts
-msgid "Activate"
-msgstr "Activate"
+#~ msgid "Activate"
+#~ msgstr "Activate"
 
 #: src/domain/synthetics/subaccount/initSubaccount.ts
 msgid "Activating subaccount"
 msgstr "Activating subaccount"
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "Active"
+msgstr "Active"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -352,6 +357,10 @@ msgstr "Allowed Slippage"
 #: src/App/App.js
 msgid "Allowed Slippage below {0}% may result in failed orders."
 msgstr "Allowed Slippage below {0}% may result in failed orders."
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "Almost out of funds for One‑Click Trading."
+msgstr "Almost out of funds for One‑Click Trading."
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
@@ -514,6 +523,10 @@ msgstr "Balance"
 #: src/components/AprInfo/AprInfo.tsx
 msgid "Base APR"
 msgstr "Base APR"
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "Based on balances"
+msgstr "Based on balances"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
@@ -1245,8 +1258,8 @@ msgid "Current Weight"
 msgstr "Current Weight"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "Current actions count"
-msgstr "Current actions count"
+#~ msgid "Current actions count"
+#~ msgstr "Current actions count"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Current {0} long"
@@ -1988,6 +2001,14 @@ msgstr "Funding Rate / 1h"
 msgid "Funding fees"
 msgstr "Funding fees"
 
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+#~ msgid "Funds are running low for One-Click Trading"
+#~ msgstr "Funds are running low for One-Click Trading"
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+#~ msgid "Funds are running low for One-Click Trading."
+#~ msgstr "Funds are running low for One-Click Trading."
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GBC NFTs APR tracker and rewards"
 msgstr "GBC NFTs APR tracker and rewards"
@@ -2160,6 +2181,10 @@ msgstr "GMX transfers not yet enabled"
 msgid "GMX | Decentralized Perpetual Exchange"
 msgstr "GMX | Decentralized Perpetual Exchange"
 
+#: src/components/Synthetics/SubaccountModal/utils.ts
+msgid "Generate & Activate Subaccount"
+msgstr "Generate & Activate Subaccount"
+
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Generate Referral Code"
 msgstr "Generate Referral Code"
@@ -2200,6 +2225,12 @@ msgstr "If you have an existing position, the position will be closed at {0} USD
 #: src/components/Exchange/PositionShare.tsx
 msgid "Image generation error, please refresh and try again."
 msgstr "Image generation error, please refresh and try again."
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "Inactive"
+msgstr "Inactive"
 
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Synthetics/TVChart/TVChart.tsx
@@ -2929,6 +2960,7 @@ msgstr "Max Pool Capacity"
 #~ msgstr "Max acceptable Price Impact precision is 0.01%"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "Max allowed actions"
 msgstr "Max allowed actions"
 
@@ -3171,6 +3203,14 @@ msgstr "NFT ID"
 msgid "NFT Wallet"
 msgstr "NFT Wallet"
 
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+#~ msgid "Need to click Activate to proceed"
+#~ msgstr "Need to click Activate to proceed"
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "Need to click Activate to proceed."
+msgstr "Need to click Activate to proceed."
+
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Negative Funding Fees are settled against the collateral automatically and will influence the liquidation price. Positive Funding Fees can be claimed under Claimable Funding after realizing any action on the position."
 msgstr "Negative Funding Fees are settled against the collateral automatically and will influence the liquidation price. Positive Funding Fees can be claimed under Claimable Funding after realizing any action on the position."
@@ -3275,6 +3315,23 @@ msgstr "Not enough Available Liquidity to fill the Order. The Order will get fil
 msgid "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity."
 msgstr "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity."
 
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "Not enough funds on One‑Click Trading subaccount. Use top-up field to increase the subaccount balance."
+msgstr "Not enough funds on One‑Click Trading subaccount. Use top-up field to increase the subaccount balance."
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+#~ msgid "Not enough funds on subaccount"
+#~ msgstr "Not enough funds on subaccount"
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+#~ msgid "Not enough funds on subaccount."
+#~ msgstr "Not enough funds on subaccount."
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+#~ msgid "Not working"
+#~ msgstr "Not working"
+
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
@@ -3286,6 +3343,23 @@ msgstr "Note that orders are not guaranteed to be executed.<0/><1/>This can occu
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "One-Click Trading"
 msgstr "One-Click Trading"
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+#~ msgid "One-Click Trading is active."
+#~ msgstr "One-Click Trading is active."
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+#~ msgid "One-Click Trading is inactive"
+#~ msgstr "One-Click Trading is inactive"
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+#~ msgid "One-Click Trading is inactive."
+#~ msgstr "One-Click Trading is inactive."
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+#~ msgid "One-Click trading is active."
+#~ msgstr "One-Click trading is active."
 
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
@@ -3934,6 +4008,14 @@ msgstr "Referral code updated!"
 msgid "Referrals"
 msgstr "Referrals"
 
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "Remaining actions"
+msgstr "Remaining actions"
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+#~ msgid "Remaining actions: {0}"
+#~ msgstr "Remaining actions: {0}"
+
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Request"
@@ -4462,6 +4544,10 @@ msgstr "Staking..."
 msgid "Stats"
 msgstr "Stats"
 
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "Status"
+msgstr "Status"
+
 #: src/domain/synthetics/orders/utils.ts
 msgid "Stop Loss Decrease"
 msgstr "Stop Loss Decrease"
@@ -4835,12 +4921,16 @@ msgstr "The position will be opened at {0} USD with a max slippage of {1}%.<0/><
 #~ msgstr "The previously authorized maximum number of Actions have been reached for One‑Click Trading. Set Max allowed Actions and re-authorize."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "The previously authorized maximum number of Actions have been reached for One-Click Trading. Click here to re-authorize."
-msgstr "The previously authorized maximum number of Actions have been reached for One-Click Trading. Click here to re-authorize."
+#~ msgid "The previously authorized maximum number of Actions have been reached for One-Click Trading. Click here to re-authorize."
+#~ msgstr "The previously authorized maximum number of Actions have been reached for One-Click Trading. Click here to re-authorize."
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 msgid "The previously authorized maximum number of Actions have been reached for One-Click Trwading. Click here to re-authorize."
 msgstr "The previously authorized maximum number of Actions have been reached for One-Click Trwading. Click here to re-authorize."
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "The previously authorized maximum number of Actions have been reached."
+msgstr "The previously authorized maximum number of Actions have been reached."
 
 #: src/components/Exchange/OrdersList.js
 msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
@@ -4863,7 +4953,6 @@ msgid "The website is a community deployed and maintained instance of the open s
 msgstr "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "There are insufficient funds in your Subaccount for One-Click Trading. Click here to top-up."
 msgstr "There are insufficient funds in your Subaccount for One-Click Trading. Click here to top-up."
 
@@ -5367,6 +5456,10 @@ msgstr "Update Order"
 msgid "Update order executed"
 msgstr "Update order executed"
 
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "Updating"
+msgstr "Updating"
+
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Updating Order..."
@@ -5732,6 +5825,11 @@ msgstr "Withdrew {0} USD from {tokenSymbol} {longOrShortText}."
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Withdrew {0} from {positionText}"
 msgstr "Withdrew {0} from {positionText}"
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+#~ msgid "Working"
+#~ msgstr "Working"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Yield Optimizer on Avalanche"

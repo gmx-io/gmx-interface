@@ -28,7 +28,7 @@ import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { getProvider } from "lib/rpc";
 import useWallet from "lib/wallets/useWallet";
-import { Context, PropsWithChildren, useCallback, useMemo, useState } from "react";
+import { Context, PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
 import { createContext, useContextSelector } from "use-context-selector";
 
 export type Subaccount = ReturnType<typeof useSubaccount>;
@@ -47,7 +47,7 @@ export type SubaccountContext = {
   modalOpen: boolean;
   baseExecutionFee: ExecutionFee | null;
   setModalOpen: (v: boolean) => void;
-  generateSubaccount: () => Promise<void>;
+  generateSubaccount: () => Promise<string | null>;
   clearSubaccount: () => void;
 
   activeTx: string | null;
@@ -85,7 +85,7 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
 
     const signature = await signer?.signMessage(getStringForSign());
 
-    if (!signature) return;
+    if (!signature) return null;
 
     const pk = ethers.utils.keccak256(signature);
     const subWallet = new ethers.Wallet(pk);
@@ -96,6 +96,8 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
       privateKey: encrypted.toString(),
       address: subWallet.address,
     });
+
+    return subWallet.address;
   }, [account, setConfig, signer]);
 
   const clearSubaccount = useCallback(() => {
@@ -103,9 +105,10 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
   }, [setConfig]);
 
   const [activeTx, setActiveTx] = useState<string | null>(null);
+  const [contractData, setContractData] = useState<SubaccountContext["contractData"] | null>(null);
   const isTxPending = useTransactionPending(activeTx);
 
-  const { data: contractData } = useMulticall(chainId, "useSubaccountsFromContracts", {
+  const { data: fetchedContractData, isLoading } = useMulticall(chainId, "useSubaccountsFromContracts", {
     key:
       account && config?.address ? [account, config.address, activeTx, isTxPending ? "pending" : "not-pending"] : null,
     request: () => {
@@ -143,6 +146,12 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
       return { isSubaccountActive, maxAllowedActions, currentActionsCount, currentAutoTopUpAmount };
     },
   });
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    setContractData(fetchedContractData ?? null);
+  }, [fetchedContractData, isLoading]);
 
   const value: SubaccountContext = useMemo(() => {
     return {

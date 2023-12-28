@@ -14,24 +14,22 @@ import {
   useSubaccountActionCounts,
   useSubaccountAddress,
   useSubaccountGenerateSubaccount,
-  useSubaccountInsufficientFunds,
   useSubaccountModalOpen,
   useSubaccountPendingTx,
   useSubaccountPrivateKey,
-  useSubaccountSelector,
   useSubaccountState,
 } from "context/SubaccountContext/SubaccountContext";
 import { useBigNumberInput } from "domain/synthetics/common/useBigNumberInput";
 import { useTransactionPending } from "domain/synthetics/common/useTransactionReceipt";
 import { useGasPrice } from "domain/synthetics/fees";
+import { getCurrentMaxActionsCount } from "domain/synthetics/subaccount/getCurrentActionsCount";
 import { initSubaccount } from "domain/synthetics/subaccount/initSubaccount";
 import { removeSubaccount } from "domain/synthetics/subaccount/removeSubaccount";
 import { withdrawFromSubaccount } from "domain/synthetics/subaccount/withdrawFromSubaccount";
 import { getNeedTokenApprove, useTokenBalances, useTokensAllowanceData, useTokensData } from "domain/synthetics/tokens";
+import { BigNumber } from "ethers";
 import copyIcon from "img/ic_copy_20.svg";
-import infoIcon from "img/ic_info.svg";
 import externalLinkIcon from "img/ic_new_link_20.svg";
-import warnIcon from "img/ic_warn.svg";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { getAccountUrl } from "lib/legacy";
@@ -42,47 +40,29 @@ import useWallet from "lib/wallets/useWallet";
 import { ReactNode, memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useCopyToClipboard, usePrevious } from "react-use";
 import "./SubaccountModal.scss";
+import { SubaccountStatus } from "./SubaccountStatus";
 import { getApproxSubaccountActionsCountByBalance, getButtonState, getDefaultValues } from "./utils";
 
 type FormState = "empty" | "inactive" | "activated";
 
 export function SubaccountModal({ setPendingTxns }: { setPendingTxns: (txns: any[]) => void }) {
   const [isVisible, setIsVisible] = useSubaccountModalOpen();
-  const subaccountAddress = useSubaccountSelector((s) => s.subaccount?.address);
-  const content = subaccountAddress ? <MainView setPendingTxns={setPendingTxns} /> : <OffStateView />;
 
   return (
     <Modal label="One-Click Trading" isVisible={isVisible} setIsVisible={setIsVisible}>
-      <div className="SubaccountModal-content">{content}</div>
+      <div className="SubaccountModal-content">
+        <MainView setPendingTxns={setPendingTxns} />
+      </div>
     </Modal>
   );
 }
-
-const OffStateView = memo(() => {
-  const generateSubaccount = useSubaccountGenerateSubaccount();
-
-  return (
-    <>
-      <div className="SubaccountModal-alert">
-        <img src={infoIcon} alt="Info Icon" />
-        <span>
-          Enable <ExternalLink href="#">One-Click Trading</ExternalLink> to reduce signing popups.
-        </span>
-      </div>
-      <Button variant="primary-action" onClick={generateSubaccount} className="w-full">
-        Generate Subaccount
-      </Button>
-    </>
-  );
-});
 
 const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void }) => {
   const oneClickTradingState = useSubaccountState();
   const { chainId } = useChainId();
   const { signer } = useWallet();
   const [withdrawalLoading, setWithdrawalLoading] = useState(false);
-  const [disablingLoading, setDisablingLoading] = useState(false);
-  const [accountUpdateLoading, setAccountUpdateLoading] = useState(false);
+  const [isSubaccountUpdating, setIsSubaccountUpdating] = useState(false);
   const { account } = useWallet();
 
   const { tokensData } = useTokensData(chainId);
@@ -95,7 +75,6 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
   const mainAccWrappedTokenBalance = getByKey(mainBalances.balancesData, wrappedToken.address);
   const subAccNativeTokenBalance = getByKey(subBalances.balancesData, nativeToken.address);
   const subaccountExplorerUrl = useMemo(() => getAccountUrl(chainId, subaccountAddress), [chainId, subaccountAddress]);
-  const insufficientFunds = useSubaccountInsufficientFunds(oneClickTradingState.baseExecutionFee?.feeTokenAmount);
 
   const defaults = useMemo(() => {
     if (!tokensData) return null;
@@ -105,32 +84,21 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     return getDefaultValues(data);
   }, [nativeToken.address, tokensData]);
 
-  const renderSubaccountBalanceTooltipContent = useCallback(() => {
+  const approxNumberOfOperationsByBalance = useMemo(() => {
     const executionFee = oneClickTradingState.baseExecutionFee?.feeTokenAmount;
     const currentAutoTopUpAmount = oneClickTradingState.contractData?.currentAutoTopUpAmount;
-    const approxNumber =
-      subAccNativeTokenBalance &&
+    return subAccNativeTokenBalance &&
       executionFee &&
       currentAutoTopUpAmount &&
       mainAccWrappedTokenBalance &&
       mainAccNativeTokenBalance
-        ? getApproxSubaccountActionsCountByBalance(
-            mainAccWrappedTokenBalance,
-            subAccNativeTokenBalance,
-            executionFee,
-            currentAutoTopUpAmount
-          )
-        : null;
-    let value: ReactNode = "";
-
-    value = approxNumber?.toString() ?? t`Unknown`;
-    return (
-      <div>
-        <StatsTooltipRow label={t`Expected Available Actions`} showDollar={false} value={value} />
-        <br />
-        <Trans>Expected Actions are based on the current Network Fee.</Trans>
-      </div>
-    );
+      ? getApproxSubaccountActionsCountByBalance(
+          mainAccWrappedTokenBalance,
+          subAccNativeTokenBalance,
+          executionFee,
+          currentAutoTopUpAmount
+        )
+      : null;
   }, [
     mainAccNativeTokenBalance,
     mainAccWrappedTokenBalance,
@@ -138,6 +106,19 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     oneClickTradingState.contractData?.currentAutoTopUpAmount,
     subAccNativeTokenBalance,
   ]);
+
+  const renderSubaccountBalanceTooltipContent = useCallback(() => {
+    let value: ReactNode = "";
+
+    value = approxNumberOfOperationsByBalance?.toString() ?? t`Unknown`;
+    return (
+      <div>
+        <StatsTooltipRow label={t`Expected Available Actions`} showDollar={false} value={value} />
+        <br />
+        <Trans>Expected Actions are based on the current Network Fee.</Trans>
+      </div>
+    );
+  }, [approxNumberOfOperationsByBalance]);
 
   const renderMainAccountBalanceTooltipContent = useCallback(() => {
     return (
@@ -207,17 +188,18 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
 
   useEffect(() => {
     if (nextFormState === formState) return;
+    if (isSubaccountUpdating) return;
 
     if (!isSubaccountActive && defaults && nextFormState === "inactive") {
       setTopUp(defaults.topUp);
-      setMaxAutoTopUpAmount(defaults.maxAutoTopUpAmount ?? null);
+      setMaxAutoTopUpAmount(defaults.maxAutoTopUpAmount);
       setWntForAutoTopUps(defaults.wntForAutoTopUps);
       setMaxAllowedActions(defaults.maxAllowedActions);
       setFormState("inactive");
     } else if (isSubaccountActive && nextFormState === "activated") {
       setTopUp(null);
-      setMaxAutoTopUpAmount(oneClickTradingState.contractData?.currentAutoTopUpAmount ?? null);
       setWntForAutoTopUps(null);
+      setMaxAutoTopUpAmount(oneClickTradingState.contractData?.currentAutoTopUpAmount ?? null);
       setMaxAllowedActions(remainingActionsCount);
       setFormState("activated");
     } else if (nextFormState === "empty") {
@@ -228,6 +210,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
       setFormState("empty");
     }
   }, [
+    isSubaccountUpdating,
     defaults,
     formState,
     isSubaccountActive,
@@ -240,22 +223,28 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     setWntForAutoTopUps,
   ]);
 
+  useEffect(() => {
+    if (!isTxPending) {
+      setIsSubaccountUpdating(false);
+    }
+  }, [isTxPending]);
+
   const handleDisableClick = useCallback(async () => {
     if (!subaccountAddress) throw new Error("Subaccount address is not set");
     if (!signer) throw new Error("Signer is not set");
 
     if (isSubaccountActive) {
-      setDisablingLoading(true);
+      setIsSubaccountUpdating(true);
 
       try {
         await removeSubaccount(chainId, signer, subaccountAddress);
       } finally {
-        setDisablingLoading(false);
+        setIsSubaccountUpdating(false);
       }
     }
 
     oneClickTradingState.clearSubaccount();
-    setNextFormState("empty");
+    setNextFormState("inactive");
   }, [chainId, isSubaccountActive, oneClickTradingState, signer, subaccountAddress]);
 
   useEffect(() => {
@@ -271,22 +260,41 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     }
   }, [isTxPending, prevIsTxPending, setActiveTx, setNextFormState]);
 
-  const handleActiveClick = useCallback(async () => {
-    if (!account) throw new Error("Account is not defined");
-    if (!subaccountAddress) throw new Error("Subaccount address is not defined");
-    if (!signer) throw new Error("Signer is not defined");
-    if (!actionsCount) throw new Error("Action counts are not defined");
+  const generateSubaccount = useSubaccountGenerateSubaccount();
 
-    setAccountUpdateLoading(true);
+  const handleButtonClick = useCallback(async () => {
+    async function activateOrUpdate() {
+      if (!account) throw new Error("Account is not defined");
+      if (!signer) throw new Error("Signer is not defined");
 
-    try {
+      let address = subaccountAddress;
+      let count = actionsCount;
+
+      if (!subaccountAddress || !actionsCount) {
+        address = await generateSubaccount();
+
+        // user rejects
+        if (!address) return;
+
+        count =
+          (await getCurrentMaxActionsCount({
+            account: account!,
+            chainId,
+            signer,
+            subaccount: address,
+          })) ?? BigNumber.from(0);
+      }
+
+      if (!address) throw new Error("address is not defined");
+      if (!count) throw new Error("Action counts are not defined");
+
       const tx = await initSubaccount(
         chainId,
         signer,
-        subaccountAddress,
+        address,
         account,
         isSubaccountActive ?? false,
-        actionsCount,
+        count,
         setPendingTxns,
         {
           topUp: topUp,
@@ -296,14 +304,22 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
         }
       );
       setActiveTx(tx.hash);
-    } finally {
-      setAccountUpdateLoading(false);
+    }
+
+    setIsSubaccountUpdating(true);
+    try {
+      await activateOrUpdate();
+    } catch (error) {
+      // if success - setIsSubaccountUpdating will be set to false in useEffect
+      setIsSubaccountUpdating(false);
+      throw error;
     }
   }, [
     account,
     subaccountAddress,
     signer,
     actionsCount,
+    generateSubaccount,
     chainId,
     isSubaccountActive,
     setPendingTxns,
@@ -347,7 +363,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
         needPayTokenApproval,
 
         isSubaccountActive,
-        accountUpdateLoading,
+        accountUpdateLoading: isSubaccountUpdating,
 
         nativeTokenSymbol: nativeToken.symbol,
         wrappedTokenSymbol: wrappedToken.symbol,
@@ -360,7 +376,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
       maxAllowedActions,
       needPayTokenApproval,
       isSubaccountActive,
-      accountUpdateLoading,
+      isSubaccountUpdating,
       nativeToken.symbol,
       wrappedToken.symbol,
     ]
@@ -389,9 +405,6 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
       setWithdrawalLoading(false);
     }
   }, [account, chainId, gasPrice, privateKey, signer, subAccNativeTokenBalance]);
-
-  const shouldShowAllowedActionsWarning = isSubaccountActive && remainingActionsCount?.eq(0);
-  const shouldShowInsufficientFundsButton = isSubaccountActive && insufficientFunds;
 
   let tokenApproval: ReactNode = null;
 
@@ -424,59 +437,61 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
 
   return (
     <div className="SubaccountModal-content">
-      {shouldShowAllowedActionsWarning && (
-        <Warning>
-          <Trans>
-            The previously authorized maximum number of Actions have been reached for One-Click Trading. Click here to
-            re-authorize.
-          </Trans>
-        </Warning>
+      {
+        <SubaccountStatus
+          approxNumberOfOperationsByBalance={approxNumberOfOperationsByBalance}
+          isSubaccountUpdating={isSubaccountUpdating}
+          hasBorder={Boolean(subaccountAddress)}
+        />
+      }
+      {subaccountAddress && (
+        <>
+          <div className="SubaccountModal-subaccount">
+            <div className="SubaccountModal-subaccount-details">
+              <span className="SubaccountModal-subaccount-label">
+                <Trans>Subaccount:</Trans>
+              </span>
+              <span>{shortenAddressOrEns(subaccountAddress ?? "", 13)}</span>
+            </div>
+            <div className="relative">
+              <ButtonIcon onClick={handleCopyClick} icon={copyIcon} title="Copy" />
+              <ExternalLink href={subaccountExplorerUrl}>
+                <ButtonIcon icon={externalLinkIcon} title="Open in Explorer" />
+              </ExternalLink>
+            </div>
+          </div>
+          <div className="SubaccountModal-buttons">
+            <button onClick={handleWithdrawClick} className="SubaccountModal-mini-button">
+              {withdrawalLoading ? <SpinningLoader /> : <Trans>Withdraw</Trans>}
+            </button>
+            <button onClick={handleDisableClick} className="SubaccountModal-mini-button warning">
+              {isSubaccountUpdating ? <SpinningLoader /> : <Trans>Disable</Trans>}
+            </button>
+          </div>
+        </>
       )}
-      {shouldShowInsufficientFundsButton && (
-        <Warning>
-          <Trans>There are insufficient funds in your Subaccount for One-Click Trading. Click here to top-up.</Trans>
-        </Warning>
-      )}
-      <div className="SubaccountModal-subaccount">
-        <div className="SubaccountModal-subaccount-details">
-          <span className="SubaccountModal-subaccount-label">
-            <Trans>Subaccount:</Trans>
-          </span>
-          <span>{shortenAddressOrEns(subaccountAddress ?? "", 13)}</span>
-        </div>
-        <div className="relative">
-          <ButtonIcon onClick={handleCopyClick} icon={copyIcon} title="Copy" />
-          <ExternalLink href={subaccountExplorerUrl}>
-            <ButtonIcon icon={externalLinkIcon} title="Open in Explorer" />
-          </ExternalLink>
-        </div>
-      </div>
-      <div className="SubaccountModal-buttons">
-        <button onClick={handleWithdrawClick} className="SubaccountModal-mini-button">
-          {withdrawalLoading ? <SpinningLoader /> : <Trans>Withdraw</Trans>}
-        </button>
-        <button onClick={handleDisableClick} className="SubaccountModal-mini-button warning">
-          {disablingLoading ? <SpinningLoader /> : <Trans>Disable</Trans>}
-        </button>
-      </div>
       <div className="SubaccountModal-stats">
         <div className="SubaccountModal-section">
-          <StatsTooltipRow
-            label={t`Subaccount Balance`}
-            showColon={false}
-            value={
-              isSubaccountActive ? (
-                <TooltipWithPortal
-                  handle={subAccNativeTokenBalanceFormatted}
-                  renderContent={renderSubaccountBalanceTooltipContent}
-                  position="right-bottom"
-                />
-              ) : (
-                subAccNativeTokenBalanceFormatted
-              )
-            }
-            showDollar={false}
-          />
+          {subaccountAddress ? (
+            <StatsTooltipRow
+              label={t`Subaccount Balance`}
+              showColon={false}
+              value={
+                isSubaccountActive ? (
+                  <TooltipWithPortal
+                    handle={subAccNativeTokenBalanceFormatted}
+                    renderContent={renderSubaccountBalanceTooltipContent}
+                    position="right-top"
+                  />
+                ) : (
+                  subAccNativeTokenBalanceFormatted
+                )
+              }
+              showDollar={false}
+            />
+          ) : (
+            <div className="SubaccountModal-section" />
+          )}
           <StatsTooltipRow
             label={t`Main Account Balance`}
             showColon={false}
@@ -486,7 +501,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
                   displayDecimals: 4,
                 })}
                 renderContent={renderMainAccountBalanceTooltipContent}
-                position="right-bottom"
+                position="right-top"
               />
             }
             showDollar={false}
@@ -529,24 +544,13 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
                   For additional safety, subaccounts are only allowed to perform a specified number of actions before
                   re-authorization from your main account is required.
                 </Trans>
-                {remainingActionsCount && (
-                  <>
-                    <br />
-                    <br />
-                    <StatsTooltipRow
-                      label={t`Current actions count`}
-                      value={`${remainingActionsCount.toString()} remaining`}
-                      showDollar={false}
-                    />
-                  </>
-                )}
               </div>
             }
           />
         </div>
         {tokenApproval}
         <Button
-          onClick={handleActiveClick}
+          onClick={handleButtonClick}
           disabled={disabled || spinner || isTxPending}
           variant="primary-action"
           className="w-full"
@@ -591,7 +595,7 @@ const InputRow = memo(
     return (
       <StatsTooltipRow
         showColon={false}
-        label={<TooltipWithPortal handle={label} renderContent={renderTooltipContent} position="left-bottom" />}
+        label={<TooltipWithPortal handle={label} renderContent={renderTooltipContent} position="left-top" />}
         value={
           <Input
             negativeSign={negativeSign}
@@ -642,14 +646,3 @@ const Input = memo(
     );
   }
 );
-
-const Warning = ({ children }: { children: ReactNode }) => {
-  return (
-    <div className="SubaccountModal-warning">
-      <div className="SubaccountModal-warning-icon">
-        <img src={warnIcon} alt="Warning" />
-      </div>
-      <div className="SubaccountModal-warning-text text-gray">{children}</div>
-    </div>
-  );
-};
