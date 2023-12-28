@@ -51,7 +51,7 @@ export function OrderList(p: Props) {
           rect.top >= 0 && rect.left >= 0 && rect.bottom <= window.innerHeight && rect.right <= window.innerWidth;
 
         if (!isInViewPort) {
-          orderElement.scrollIntoView({ behavior: "smooth" });
+          orderElement.scrollIntoView({ behavior: "smooth", block: "center" });
         }
       }
     }

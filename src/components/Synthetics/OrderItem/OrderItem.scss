@@ -1,6 +1,6 @@
 @keyframes fadeOut {
   from {
-    background-color: rgba(38, 43, 71, 1);
+    background-color: #727587;
     box-shadow: inset 0px 0px 3rem 0.5rem rgba(255, 255, 255, 0.01);
   }
   to {
@@ -15,6 +15,6 @@
 
 .Exchange-list-item {
   &.active-order {
-    animation: fadeOut 2s forwards;
+    animation: fadeOut 2.5s forwards;
   }
 }
