@@ -1085,7 +1085,7 @@ export default function DashboardV2() {
                                     <div className="App-card-info-subtitle">{token.symbol}</div>
                                   </div>
                                   <div>
-                                    <AssetDropdown assetSymbol={token.symbol} />
+                                    <AssetDropdown token={token} />
                                   </div>
                                 </div>
                               </div>
@@ -1163,7 +1163,7 @@ export default function DashboardV2() {
                             <TokenIcon symbol={token.symbol} importSize={24} displaySize={24} />
                             <div className="token-symbol-text">{token.symbol}</div>
                             <div>
-                              <AssetDropdown assetSymbol={token.symbol} />
+                              <AssetDropdown token={token} />
                             </div>
                           </div>
                         </div>

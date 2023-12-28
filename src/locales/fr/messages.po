@@ -286,10 +286,6 @@ msgstr "Ajouter à Metamask"
 msgid "Add {0} to Wallet"
 msgstr ""
 
-#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
-#~ msgid "Add {marketName} to Wallet"
-#~ msgstr ""
-
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Adding referral code failed."
 msgstr "L'ajout du code/ID de référence a échoué."
@@ -3188,6 +3184,10 @@ msgid "Open a position"
 msgstr "Ouvrir une position"
 
 #: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Open in Coingecko"
+msgstr ""
+
+#: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open in Explorer"
 msgstr "Ouvrir dans l'explorateur"
 
@@ -3219,10 +3219,6 @@ msgstr ""
 #: src/components/Synthetics/TVChart/TVChart.tsx
 msgid "Open {longOrShortText} {tokenSymbol}"
 msgstr ""
-
-#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
-#~ msgid "Open {marketName} in Explorer"
-#~ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx

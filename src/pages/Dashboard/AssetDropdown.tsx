@@ -60,7 +60,11 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
               <ExternalLink href={token.coingeckoUrl} className="asset-item">
                 <img className="asset-item-icon" src={coingeckoIcon} alt="Open in Coingecko" />
                 <p>
-                  <Trans>Open {token.name} in Coingecko</Trans>
+                  {token.isNative || token.isSynthetic ? (
+                    <Trans>Open {token.name} in Coingecko</Trans>
+                  ) : (
+                    <Trans>Open in Coingecko</Trans>
+                  )}
                 </p>
               </ExternalLink>
             )}
@@ -76,7 +80,7 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
             )}
           </Menu.Item>
           <Menu.Item as="div">
-            {active && !token.isNative && (
+            {active && !token.isNative && !token.isSynthetic && (
               <div
                 onClick={() => {
                   if (connector?.watchAsset && token) {
