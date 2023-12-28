@@ -92,23 +92,23 @@ export function OrderEditor(p: Props) {
       return undefined;
     }
 
+    const positionOrder = p.order as PositionOrderInfo;
+
     // For SL orders Acceptable Price is not applicable and set to 0 or MaxUnit256
     if (p.order.orderType === OrderType.StopLossDecrease) {
-      return (p.order as PositionOrderInfo).acceptablePrice;
+      return positionOrder.acceptablePrice;
     }
 
-    const acceptablePrice = (p.order as PositionOrderInfo).acceptablePrice;
-    const oldTriggerPrice = (p.order as PositionOrderInfo).triggerPrice;
-    const deltaPriceImpactUsd = acceptablePrice?.sub(oldTriggerPrice || 0).abs() || 0;
-    const acceptablePriceImpactBps = getBasisPoints(deltaPriceImpactUsd, oldTriggerPrice);
-    const newAcceptablePrice = applySlippageToPrice(
+    const oldAcceptablePrice = positionOrder.acceptablePrice;
+    const oldTriggerPrice = positionOrder.triggerPrice;
+    const priceDelta = oldAcceptablePrice?.sub(oldTriggerPrice || 0).abs() || 0;
+    const acceptablePriceImpactBps = getBasisPoints(priceDelta, oldTriggerPrice);
+    return applySlippageToPrice(
       acceptablePriceImpactBps.toNumber(),
       triggerPrice || oldTriggerPrice,
       p.order.isLong,
       isIncreaseOrderType(p.order.orderType)
     );
-
-    return newAcceptablePrice;
   }, [p.order, triggerPrice]);
 
   // Swaps
