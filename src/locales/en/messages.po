@@ -3585,6 +3585,8 @@ msgstr "Price above Mark Price"
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/orders/useStopLossEntries.ts
+#: src/domain/synthetics/orders/useTakeProfitEntries.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price below Liq. Price"
 msgstr "Price below Liq. Price"
