@@ -26,17 +26,17 @@ function renderMarketName(market: MarketInfo) {
   return market && market.isSpotOnly ? (
     <>
       GM: SWAP
-      <div className="items-top">
+      <span className="items-top">
         <span className="subtext">[{getMarketPoolName(market)}]</span>
-      </div>
+      </span>
     </>
   ) : (
     <>
       GM:{" "}
-      <div className="items-top">
+      <span className="items-top">
         <span>{getMarketIndexName(market)}</span>
         <span className="subtext">[{getMarketPoolName(market)}]</span>
-      </div>
+      </span>
     </>
   );
 }
@@ -62,7 +62,7 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
   const longToken = getTokenData(tokensData, market?.longTokenAddress);
   const shortToken = getTokenData(tokensData, market?.shortTokenAddress);
   const explorerUrl = getExplorerUrl(chainId);
-  const useBreakpoint = createBreakpoint({ S: 500 });
+  const useBreakpoint = createBreakpoint({ S: 0, M: 600 });
   const breakpoint = useBreakpoint();
 
   return (
@@ -71,7 +71,10 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
         <Menu.Button as="div" className="dropdown-arrow center-both">
           <FiChevronDown size={20} />
         </Menu.Button>
-        <Menu.Items as="div" className={cx("asset-menu-items", { center: breakpoint === "S" })}>
+        <Menu.Items
+          as="div"
+          className={cx("asset-menu-items", breakpoint === "S" ? "center" : { left: position === "left" })}
+        >
           <Menu.Item as="div">
             {market && (
               <ExternalLink href={`${explorerUrl}address/${token?.address}`} className="asset-item">
