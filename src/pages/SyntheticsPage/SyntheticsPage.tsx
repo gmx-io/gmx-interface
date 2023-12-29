@@ -31,7 +31,11 @@ import { useMarketsInfo } from "domain/synthetics/markets";
 import Helmet from "react-helmet";
 
 import { SettleAccruedFundingFeeModal } from "components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal";
-import { useIsLastSubaccountAction, useSubaccount } from "context/SubaccountContext/SubaccountContext";
+import {
+  useIsLastSubaccountAction,
+  useSubaccount,
+  useSubaccountCancelOrdersDetailsMessage,
+} from "context/SubaccountContext/SubaccountContext";
 import { getMarketIndexName, getMarketPoolName, getTotalClaimableFundingUsd } from "domain/synthetics/markets";
 import { TradeMode } from "domain/synthetics/trade";
 import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTradeOption";
@@ -223,6 +227,7 @@ export function SyntheticsPage(p: Props) {
   const [isClaiming, setIsClaiming] = useState(false);
 
   const subaccount = useSubaccount(null, selectedOrdersKeysArr.length);
+  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, selectedOrdersKeysArr.length);
   const isLastSubaccountAction = useIsLastSubaccountAction();
 
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
@@ -247,6 +252,7 @@ export function SyntheticsPage(p: Props) {
       setPendingTxns: setPendingTxns,
       subaccount,
       isLastSubaccountAction,
+      detailsMsg: cancelOrdersDetailsMessage,
     })
       .then(async (tx) => {
         const receipt = await tx.wait();

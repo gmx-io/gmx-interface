@@ -1,5 +1,5 @@
+import { Trans } from "@lingui/macro";
 import DataStore from "abis/DataStore.json";
-import cryptoJs from "crypto-js";
 import { getContract } from "config/contracts";
 import {
   SUBACCOUNT_ORDER_ACTION,
@@ -9,7 +9,8 @@ import {
   subaccountListKey,
 } from "config/dataStore";
 import { getSubaccountConfigKey } from "config/localStorage";
-import { getNativeToken } from "config/tokens";
+import { getNativeToken, getWrappedToken } from "config/tokens";
+import cryptoJs from "crypto-js";
 import { useTransactionPending } from "domain/synthetics/common/useTransactionReceipt";
 import {
   ExecutionFee,
@@ -21,6 +22,7 @@ import {
 import { getStringForSign } from "domain/synthetics/subaccount/onClickTradingUtils";
 import { SubaccountSerializedConfig } from "domain/synthetics/subaccount/types";
 import { useTokenBalances, useTokensData } from "domain/synthetics/tokens";
+import { useSetToTokenAddress } from "domain/synthetics/trade/useSelectedTradeOption";
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -245,14 +247,29 @@ export function useSubaccountInsufficientFunds(requiredBalance: BigNumber | unde
   const subaccountAddress = useSubaccountAddress();
   const subBalances = useTokenBalances(chainId, subaccountAddress ?? undefined);
   const nativeToken = useMemo(() => getNativeToken(chainId), [chainId]);
-  const subAccEthBalance = getByKey(subBalances.balancesData, nativeToken.address);
+  const nativeTokenBalance = getByKey(subBalances.balancesData, nativeToken.address);
   const isSubaccountActive = useIsSubaccountActive();
 
   if (!requiredBalance) return false;
   if (!isSubaccountActive) return false;
-  if (!subAccEthBalance) return false;
+  if (!nativeTokenBalance) return false;
 
-  return requiredBalance.gt(subAccEthBalance);
+  return requiredBalance.gt(nativeTokenBalance);
+}
+
+export function useMainAccountInsufficientFunds(requiredBalance: BigNumber | undefined) {
+  const { chainId } = useChainId();
+  const { account: address } = useWallet();
+  const subBalances = useTokenBalances(chainId, address);
+  const wrappedToken = useMemo(() => getWrappedToken(chainId), [chainId]);
+  const wntBalance = getByKey(subBalances.balancesData, wrappedToken.address);
+  const isSubaccountActive = useIsSubaccountActive();
+
+  if (!requiredBalance) return false;
+  if (!isSubaccountActive) return false;
+  if (!wntBalance) return false;
+
+  return requiredBalance.gt(wntBalance);
 }
 
 export function useSubaccountActionCounts() {
@@ -271,7 +288,66 @@ export function useSubaccountPendingTx() {
   return [useSubaccountSelector((s) => s.activeTx), useSubaccountSelector((s) => s.setActiveTx)] as const;
 }
 
-export function useIsLastSubaccountAction() {
+export function useIsLastSubaccountAction(requiredActions = 1) {
   const { remaining } = useSubaccountActionCounts();
-  return remaining?.eq(1) ?? false;
+  return remaining?.eq(Math.max(requiredActions, 1)) ?? false;
+}
+
+export function useSubaccountCancelOrdersDetailsMessage(requiredBalance: BigNumber | undefined, actionCount: number) {
+  const isLastAction = useIsLastSubaccountAction(actionCount);
+  const mainAccountInsufficientFunds = useMainAccountInsufficientFunds(requiredBalance);
+  const subaccountInsufficientFunds = useSubaccountInsufficientFunds(requiredBalance);
+  const [, setOpenSubaccountModal] = useSubaccountModalOpen();
+
+  const { chainId } = useChainId();
+  const setToTokenAddress = useSetToTokenAddress(chainId);
+  const openSwapToNativeToken = useCallback(() => {
+    setToTokenAddress(getNativeToken(chainId).address);
+  }, [chainId, setToTokenAddress]);
+
+  const openSubaccountModal = useCallback(() => {
+    setOpenSubaccountModal(true);
+  }, [setOpenSubaccountModal]);
+
+  return useMemo(() => {
+    if (isLastAction) {
+      return (
+        <Trans>
+          Max Action Count Reached.{" "}
+          <span onClick={openSubaccountModal} className="link-underline">
+            Click here
+          </span>{" "}
+          to update.
+        </Trans>
+      );
+    } else if (subaccountInsufficientFunds) {
+      return (
+        <Trans>
+          There are insufficient funds in your Subaccount for One-Click Trading.{" "}
+          <span onClick={openSubaccountModal} className="link-underline">
+            Click here
+          </span>{" "}
+          to top-up.
+        </Trans>
+      );
+    } else if (mainAccountInsufficientFunds) {
+      return (
+        <Trans>
+          There are insufficient funds in your Main account for One-Click Trading auto top-ups.{" "}
+          <span onClick={openSwapToNativeToken} className="link-underline">
+            Click here
+          </span>{" "}
+          to convert.
+        </Trans>
+      );
+    }
+
+    return null;
+  }, [
+    isLastAction,
+    mainAccountInsufficientFunds,
+    openSubaccountModal,
+    openSwapToNativeToken,
+    subaccountInsufficientFunds,
+  ]);
 }

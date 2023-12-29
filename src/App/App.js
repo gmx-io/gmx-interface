@@ -305,6 +305,8 @@ function FullApp() {
                   <Trans>View</Trans>
                 </ExternalLink>
                 <br />
+                {pendingTxn.messageDetails && <br />}
+                {pendingTxn.messageDetails}
               </div>
             );
           }

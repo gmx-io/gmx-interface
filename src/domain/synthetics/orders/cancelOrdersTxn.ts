@@ -5,12 +5,14 @@ import { Subaccount } from "context/SubaccountContext/SubaccountContext";
 import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
+import { ReactNode } from "react";
 
 export type CancelOrderParams = {
   orderKeys: string[];
   subaccount: Subaccount;
   isLastSubaccountAction: boolean;
   setPendingTxns: (txns: any) => void;
+  detailsMsg?: ReactNode;
 };
 
 export async function cancelOrdersTxn(chainId: number, signer: Signer, p: CancelOrderParams) {
@@ -27,15 +29,11 @@ export async function cancelOrdersTxn(chainId: number, signer: Signer, p: Cancel
     other: "# Orders",
   });
 
-  let subaccountNote = "";
-  if (p.subaccount && p.isLastSubaccountAction) {
-    subaccountNote = t`. Subaccount max actions count reached.`;
-  }
-
   return callContract(chainId, router, "multicall", [multicall], {
-    sentMsg: t`Cancelling ${ordersText}${subaccountNote}`,
-    successMsg: t`${ordersText} cancelled${subaccountNote}`,
-    failMsg: t`Failed to cancel ${ordersText}${subaccountNote}`,
+    sentMsg: t`Cancelling ${ordersText}`,
+    successMsg: t`${ordersText} cancelled`,
+    failMsg: t`Failed to cancel ${ordersText}`,
     setPendingTxns: p.setPendingTxns,
+    detailsMsg: p.detailsMsg,
   });
 }

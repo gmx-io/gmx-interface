@@ -10,7 +10,11 @@ import useWallet from "lib/wallets/useWallet";
 import { Dispatch, SetStateAction, useState } from "react";
 import { OrderEditor } from "../OrderEditor/OrderEditor";
 import { OrderItem } from "../OrderItem/OrderItem";
-import { useIsLastSubaccountAction, useSubaccount } from "context/SubaccountContext/SubaccountContext";
+import {
+  useIsLastSubaccountAction,
+  useSubaccount,
+  useSubaccountCancelOrdersDetailsMessage,
+} from "context/SubaccountContext/SubaccountContext";
 
 type Props = {
   hideActions?: boolean;
@@ -41,6 +45,7 @@ export function OrderList(p: Props) {
   const isAllOrdersSelected = orders.length > 0 && orders.every((o) => p.selectedOrdersKeys?.[o.key]);
   const editingOrder = orders.find((o) => o.key === editingOrderKey);
   const isLastSubaccountAction = useIsLastSubaccountAction();
+  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, 1);
 
   function onSelectOrder(key: string) {
     p.setSelectedOrdersKeys?.((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -66,6 +71,7 @@ export function OrderList(p: Props) {
       setPendingTxns: p.setPendingTxns,
       subaccount,
       isLastSubaccountAction,
+      detailsMsg: cancelOrdersDetailsMessage,
     }).finally(() => setCanellingOrdersKeys((prev) => prev.filter((k) => k !== key)));
   }
 

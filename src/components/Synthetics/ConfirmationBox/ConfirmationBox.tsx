@@ -71,7 +71,11 @@ import PercentageInput from "components/PercentageInput/PercentageInput";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useIsLastSubaccountAction, useSubaccount } from "context/SubaccountContext/SubaccountContext";
+import {
+  useSubaccountCancelOrdersDetailsMessage,
+  useIsLastSubaccountAction,
+  useSubaccount,
+} from "context/SubaccountContext/SubaccountContext";
 import { AvailableMarketsOptions } from "domain/synthetics/trade/useAvailableMarketsOptions";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { helperToast } from "lib/helperToast";
@@ -413,8 +417,10 @@ export function ConfirmationBox(p: Props) {
     [p.isVisible, submitButtonState.disabled]
   );
 
-  const subaccount = useSubaccount(p.executionFee?.feeTokenAmount ?? null);
-  const isLastSubaccountAction = useIsLastSubaccountAction();
+  const subaccountRequiredBalance = p.executionFee?.feeTokenAmount ?? null;
+  const subaccount = useSubaccount(subaccountRequiredBalance);
+  const isLastSubaccountAction = useIsLastSubaccountAction(1);
+  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(subaccountRequiredBalance ?? undefined, 1);
 
   function onCancelOrderClick(key: string): void {
     if (!signer) return;
@@ -423,6 +429,7 @@ export function ConfirmationBox(p: Props) {
       setPendingTxns: p.setPendingTxns,
       subaccount,
       isLastSubaccountAction,
+      detailsMsg: cancelOrdersDetailsMessage,
     });
   }
 

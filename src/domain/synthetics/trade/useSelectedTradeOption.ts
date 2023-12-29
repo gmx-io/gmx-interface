@@ -52,6 +52,14 @@ type StoredTradeOptions = {
   collateralAddress?: string;
 };
 
+const defaultTradeOptions: StoredTradeOptions = {
+  tradeType: TradeType.Long,
+  tradeMode: TradeMode.Market,
+  tokens: {},
+  markets: {},
+  collateralAddress: undefined,
+};
+
 export function useSelectedTradeOption(
   chainId: number,
   p: {
@@ -62,15 +70,9 @@ export function useSelectedTradeOption(
 ): SelectedTradeOption {
   const { marketsInfoData, positionsInfoData, tokensData } = p;
 
-  const [storedOptions, setStoredOptions] = useLocalStorageSerializeKey<StoredTradeOptions>(
+  const [storedOptions, setStoredOptions] = useLocalStorageSerializeKey(
     getSyntheticsTradeOptionsKey(chainId),
-    {
-      tradeType: TradeType.Long,
-      tradeMode: TradeMode.Market,
-      tokens: {},
-      markets: {},
-      collateralAddress: undefined,
-    }
+    defaultTradeOptions
   );
 
   const availableTokensOptions = useAvailableTokenOptions(chainId, { marketsInfoData, tokensData });
@@ -142,32 +144,7 @@ export function useSelectedTradeOption(
     [setStoredOptions, storedOptions]
   );
 
-  const setToTokenAddress = useCallback(
-    (tokenAddress?: string, marketTokenAddress?: string, tradeType?: TradeType) => {
-      const oldState = JSON.parse(JSON.stringify(storedOptions)) as StoredTradeOptions;
-
-      if (tradeType) {
-        oldState.tradeType = tradeType;
-      }
-
-      if (tradeFlags.isSwap) {
-        oldState.tokens.swapToTokenAddress = tokenAddress;
-      } else {
-        oldState.tokens.indexTokenAddress = tokenAddress;
-        if (tokenAddress && marketTokenAddress) {
-          oldState.markets[tokenAddress] = oldState.markets[tokenAddress] || {};
-          if (oldState.tradeType === TradeType.Long) {
-            oldState.markets[tokenAddress].long = marketTokenAddress;
-          } else if (oldState.tradeType === TradeType.Short) {
-            oldState.markets[tokenAddress].short = marketTokenAddress;
-          }
-        }
-      }
-
-      setStoredOptions(oldState);
-    },
-    [setStoredOptions, storedOptions, tradeFlags.isSwap]
-  );
+  const setToTokenAddress = useSetToTokenAddress(chainId);
 
   const switchTokenAddresses = useCallback(() => {
     const oldState = JSON.parse(JSON.stringify(storedOptions));
@@ -342,3 +319,41 @@ export function useSelectedTradeOption(
     switchTokenAddresses,
   };
 }
+
+export const useSetToTokenAddress = (chainId: number) => {
+  const [storedOptions, setStoredOptions] = useLocalStorageSerializeKey(
+    getSyntheticsTradeOptionsKey(chainId),
+    defaultTradeOptions
+  );
+
+  const tradeType = storedOptions?.tradeType;
+  const tradeMode = storedOptions?.tradeMode;
+
+  const tradeFlags = useTradeFlags(tradeType!, tradeMode!);
+  return useCallback(
+    (tokenAddress?: string, marketTokenAddress?: string, tradeType?: TradeType) => {
+      const oldState = JSON.parse(JSON.stringify(storedOptions)) as StoredTradeOptions;
+
+      if (tradeType) {
+        oldState.tradeType = tradeType;
+      }
+
+      if (tradeFlags.isSwap) {
+        oldState.tokens.swapToTokenAddress = tokenAddress;
+      } else {
+        oldState.tokens.indexTokenAddress = tokenAddress;
+        if (tokenAddress && marketTokenAddress) {
+          oldState.markets[tokenAddress] = oldState.markets[tokenAddress] || {};
+          if (oldState.tradeType === TradeType.Long) {
+            oldState.markets[tokenAddress].long = marketTokenAddress;
+          } else if (oldState.tradeType === TradeType.Short) {
+            oldState.markets[tokenAddress].short = marketTokenAddress;
+          }
+        }
+      }
+
+      setStoredOptions(oldState);
+    },
+    [setStoredOptions, storedOptions, tradeFlags.isSwap]
+  );
+};
