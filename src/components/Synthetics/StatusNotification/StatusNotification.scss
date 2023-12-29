@@ -38,3 +38,9 @@
     margin-right: -0.3rem !important;
   }
 }
+
+.OrdersStatusNotification-wrapper {
+  .StatusNotification:not(:first-child) {
+    margin-top: 1rem;
+  }
+}

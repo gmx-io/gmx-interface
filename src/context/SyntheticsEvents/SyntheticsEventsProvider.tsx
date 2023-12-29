@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import EventEmitter from "abis/EventEmitter.json";
 import { GmStatusNotification } from "components/Synthetics/StatusNotification/GmStatusNotification";
-import { OrderStatusNotification } from "components/Synthetics/StatusNotification/OrderStatusNotification";
+import { OrdersStatusNotificiation } from "components/Synthetics/StatusNotification/OrderStatusNotification";
 import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
 import { getToken, getWrappedToken } from "config/tokens";
@@ -550,11 +550,11 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       pendingPositionsUpdates,
       positionIncreaseEvents,
       positionDecreaseEvents,
-      setPendingOrder: (data: PendingOrderData) => {
+      setPendingOrder: (data: PendingOrderData | PendingOrderData[]) => {
         const toastId = Date.now();
 
         helperToast.success(
-          <OrderStatusNotification
+          <OrdersStatusNotificiation
             pendingOrderData={data}
             marketsInfoData={marketsInfoData}
             tokensData={tokensData}

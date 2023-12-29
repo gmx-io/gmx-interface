@@ -201,3 +201,33 @@ export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tok
     </div>
   );
 }
+
+export function OrdersStatusNotificiation({
+  pendingOrderData,
+  marketsInfoData,
+  tokensData,
+  toastTimestamp,
+}: {
+  pendingOrderData: PendingOrderData | PendingOrderData[];
+  marketsInfoData?: MarketsInfoData;
+  tokensData?: TokensData;
+  toastTimestamp: number;
+}) {
+  const pendingOrders = Array.isArray(pendingOrderData) ? pendingOrderData : [pendingOrderData];
+
+  return (
+    <div className="OrdersStatusNotification-wrapper">
+      {pendingOrders.map((order, index) => {
+        return (
+          <OrderStatusNotification
+            key={index}
+            pendingOrderData={order}
+            marketsInfoData={marketsInfoData}
+            tokensData={tokensData}
+            toastTimestamp={toastTimestamp}
+          />
+        );
+      })}
+    </div>
+  );
+}
