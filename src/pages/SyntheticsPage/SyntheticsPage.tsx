@@ -222,7 +222,7 @@ export function SyntheticsPage(p: Props) {
 
   const [isClaiming, setIsClaiming] = useState(false);
 
-  const subaccount = useSubaccount(null);
+  const subaccount = useSubaccount(null, selectedOrdersKeysArr.length);
   const isLastSubaccountAction = useIsLastSubaccountAction();
 
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);

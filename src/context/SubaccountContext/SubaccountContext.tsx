@@ -214,7 +214,7 @@ function useSubaccountBaseExecutionFeeTokenAmount() {
   return useSubaccountSelector((s) => s.baseExecutionFee?.feeTokenAmount);
 }
 
-export function useSubaccount(requiredBalance: BigNumber | null) {
+export function useSubaccount(requiredBalance: BigNumber | null, requiredActions = 1) {
   const address = useSubaccountAddress();
   const active = useIsSubaccountActive();
   const privateKey = useSubaccountPrivateKey();
@@ -225,7 +225,8 @@ export function useSubaccount(requiredBalance: BigNumber | null) {
   const { remaining } = useSubaccountActionCounts();
 
   return useMemo(() => {
-    if (!address || !active || !privateKey || insufficientFunds || remaining?.eq(0)) return null;
+    if (!address || !active || !privateKey || insufficientFunds || remaining?.lt(Math.max(1, requiredActions)))
+      return null;
 
     const wallet = new ethers.Wallet(privateKey);
     const provider = getProvider(undefined, chainId);
@@ -236,7 +237,7 @@ export function useSubaccount(requiredBalance: BigNumber | null) {
       active,
       signer,
     };
-  }, [address, active, privateKey, insufficientFunds, remaining, chainId]);
+  }, [address, active, privateKey, insufficientFunds, remaining, requiredActions, chainId]);
 }
 
 export function useSubaccountInsufficientFunds(requiredBalance: BigNumber | undefined) {
