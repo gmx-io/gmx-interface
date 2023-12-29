@@ -18,8 +18,8 @@ msgid "(up to {0}% of {feesTypeName})"
 msgstr ""
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
-msgid ". Subaccount max actions count reached."
-msgstr ""
+#~ msgid ". Subaccount max actions count reached."
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "01 Sep 2021"
@@ -770,8 +770,12 @@ msgstr "Cancelación enviada."
 #~ msgstr ""
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
-msgid "Cancelling {ordersText}{subaccountNote}"
+msgid "Cancelling {ordersText}"
 msgstr ""
+
+#: src/domain/synthetics/orders/cancelOrdersTxn.ts
+#~ msgid "Cancelling {ordersText}{subaccountNote}"
+#~ msgstr ""
 
 #: src/App/App.js
 #: src/pages/Exchange/Exchange.js
@@ -1832,12 +1836,12 @@ msgid "Failed Settlement of Funding Fees"
 msgstr ""
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
-#~ msgid "Failed to cancel {ordersText}"
-#~ msgstr ""
+msgid "Failed to cancel {ordersText}"
+msgstr ""
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
-msgid "Failed to cancel {ordersText}{subaccountNote}"
-msgstr ""
+#~ msgid "Failed to cancel {ordersText}{subaccountNote}"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/updateOrderTxn.ts
 msgid "Failed to update order"
@@ -2908,6 +2912,10 @@ msgstr ""
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Max"
+msgstr ""
+
+#: src/context/SubaccountContext/SubaccountContext.tsx
+msgid "Max Action Count Reached. <0>Click here</0> to update."
 msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
@@ -4917,13 +4925,13 @@ msgstr "La posición se abrirá a {0} USD con un deslizamiento máximo de {1}%.<
 #~ msgid "The previously authorized maximum number of Actions have been reached for One‑Click Trading. Set Max allowed Actions and re-authorize."
 #~ msgstr ""
 
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#~ msgid "The previously authorized maximum number of Actions have been reached for One-Click Trading. Click here to re-authorize."
-#~ msgstr ""
+#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
+msgid "The previously authorized maximum number of Actions have been reached for One-Click Trading. Click here to re-authorize."
+msgstr ""
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-msgid "The previously authorized maximum number of Actions have been reached for One-Click Trwading. Click here to re-authorize."
-msgstr ""
+#~ msgid "The previously authorized maximum number of Actions have been reached for One-Click Trwading. Click here to re-authorize."
+#~ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "The previously authorized maximum number of Actions have been reached."
@@ -4948,6 +4956,14 @@ msgstr ""
 #: src/components/ModalViews/RedirectModal.js
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
 msgstr "La página web es una instancia desplegada y mantenida del código abierto <0>Interfaz de GMX</0>, alojado y recibiendo servicio de la distribuida, de usuario a usuario <1>red IPFS</1>."
+
+#: src/context/SubaccountContext/SubaccountContext.tsx
+msgid "There are insufficient funds in your Main account for One-Click Trading auto top-ups. <0>Click here</0> to convert."
+msgstr ""
+
+#: src/context/SubaccountContext/SubaccountContext.tsx
+msgid "There are insufficient funds in your Subaccount for One-Click Trading. <0>Click here</0> to top-up."
+msgstr ""
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 msgid "There are insufficient funds in your Subaccount for One-Click Trading. Click here to top-up."
@@ -6368,8 +6384,12 @@ msgstr ""
 #~ msgstr ""
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
-msgid "{ordersText} cancelled{subaccountNote}"
+msgid "{ordersText} cancelled"
 msgstr ""
+
+#: src/domain/synthetics/orders/cancelOrdersTxn.ts
+#~ msgid "{ordersText} cancelled{subaccountNote}"
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} Failed to settle"

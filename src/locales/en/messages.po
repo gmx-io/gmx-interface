@@ -18,8 +18,8 @@ msgid "(up to {0}% of {feesTypeName})"
 msgstr "(up to {0}% of {feesTypeName})"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
-msgid ". Subaccount max actions count reached."
-msgstr ". Subaccount max actions count reached."
+#~ msgid ". Subaccount max actions count reached."
+#~ msgstr ". Subaccount max actions count reached."
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "01 Sep 2021"
@@ -770,8 +770,12 @@ msgstr "Cancel submitted."
 #~ msgstr "Canceling {ordersText}"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
-msgid "Cancelling {ordersText}{subaccountNote}"
-msgstr "Cancelling {ordersText}{subaccountNote}"
+msgid "Cancelling {ordersText}"
+msgstr "Cancelling {ordersText}"
+
+#: src/domain/synthetics/orders/cancelOrdersTxn.ts
+#~ msgid "Cancelling {ordersText}{subaccountNote}"
+#~ msgstr "Cancelling {ordersText}{subaccountNote}"
 
 #: src/App/App.js
 #: src/pages/Exchange/Exchange.js
@@ -1832,12 +1836,12 @@ msgid "Failed Settlement of Funding Fees"
 msgstr "Failed Settlement of Funding Fees"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
-#~ msgid "Failed to cancel {ordersText}"
-#~ msgstr "Failed to cancel {ordersText}"
+msgid "Failed to cancel {ordersText}"
+msgstr "Failed to cancel {ordersText}"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
-msgid "Failed to cancel {ordersText}{subaccountNote}"
-msgstr "Failed to cancel {ordersText}{subaccountNote}"
+#~ msgid "Failed to cancel {ordersText}{subaccountNote}"
+#~ msgstr "Failed to cancel {ordersText}{subaccountNote}"
 
 #: src/domain/synthetics/orders/updateOrderTxn.ts
 msgid "Failed to update order"
@@ -2912,6 +2916,10 @@ msgstr "Market Swap"
 #: src/pages/Stake/StakeV2.js
 msgid "Max"
 msgstr "Max"
+
+#: src/context/SubaccountContext/SubaccountContext.tsx
+msgid "Max Action Count Reached. <0>Click here</0> to update."
+msgstr "Max Action Count Reached. <0>Click here</0> to update."
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Max Bonus Rebate"
@@ -4920,13 +4928,13 @@ msgstr "The position will be opened at {0} USD with a max slippage of {1}%.<0/><
 #~ msgid "The previously authorized maximum number of Actions have been reached for One‑Click Trading. Set Max allowed Actions and re-authorize."
 #~ msgstr "The previously authorized maximum number of Actions have been reached for One‑Click Trading. Set Max allowed Actions and re-authorize."
 
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#~ msgid "The previously authorized maximum number of Actions have been reached for One-Click Trading. Click here to re-authorize."
-#~ msgstr "The previously authorized maximum number of Actions have been reached for One-Click Trading. Click here to re-authorize."
+#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
+msgid "The previously authorized maximum number of Actions have been reached for One-Click Trading. Click here to re-authorize."
+msgstr "The previously authorized maximum number of Actions have been reached for One-Click Trading. Click here to re-authorize."
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-msgid "The previously authorized maximum number of Actions have been reached for One-Click Trwading. Click here to re-authorize."
-msgstr "The previously authorized maximum number of Actions have been reached for One-Click Trwading. Click here to re-authorize."
+#~ msgid "The previously authorized maximum number of Actions have been reached for One-Click Trwading. Click here to re-authorize."
+#~ msgstr "The previously authorized maximum number of Actions have been reached for One-Click Trwading. Click here to re-authorize."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "The previously authorized maximum number of Actions have been reached."
@@ -4951,6 +4959,14 @@ msgstr "The spread is > 1%, please ensure the trade details are acceptable befor
 #: src/components/ModalViews/RedirectModal.js
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
 msgstr "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
+
+#: src/context/SubaccountContext/SubaccountContext.tsx
+msgid "There are insufficient funds in your Main account for One-Click Trading auto top-ups. <0>Click here</0> to convert."
+msgstr "There are insufficient funds in your Main account for One-Click Trading auto top-ups. <0>Click here</0> to convert."
+
+#: src/context/SubaccountContext/SubaccountContext.tsx
+msgid "There are insufficient funds in your Subaccount for One-Click Trading. <0>Click here</0> to top-up."
+msgstr "There are insufficient funds in your Subaccount for One-Click Trading. <0>Click here</0> to top-up."
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 msgid "There are insufficient funds in your Subaccount for One-Click Trading. Click here to top-up."
@@ -6376,8 +6392,12 @@ msgstr "{orderTypeText} {0} {longShortText}: {sign}{1}"
 #~ msgstr "{ordersText} canceled"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
-msgid "{ordersText} cancelled{subaccountNote}"
-msgstr "{ordersText} cancelled{subaccountNote}"
+msgid "{ordersText} cancelled"
+msgstr "{ordersText} cancelled"
+
+#: src/domain/synthetics/orders/cancelOrdersTxn.ts
+#~ msgid "{ordersText} cancelled{subaccountNote}"
+#~ msgstr "{ordersText} cancelled{subaccountNote}"
 
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} Failed to settle"

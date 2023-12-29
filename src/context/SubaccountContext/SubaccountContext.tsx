@@ -22,7 +22,6 @@ import {
 import { getStringForSign } from "domain/synthetics/subaccount/onClickTradingUtils";
 import { SubaccountSerializedConfig } from "domain/synthetics/subaccount/types";
 import { useTokenBalances, useTokensData } from "domain/synthetics/tokens";
-import { useSetToTokenAddress } from "domain/synthetics/trade/useSelectedTradeOption";
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -293,18 +292,16 @@ export function useIsLastSubaccountAction(requiredActions = 1) {
   return remaining?.eq(Math.max(requiredActions, 1)) ?? false;
 }
 
-export function useSubaccountCancelOrdersDetailsMessage(requiredBalance: BigNumber | undefined, actionCount: number) {
+export function useSubaccountCancelOrdersDetailsMessage(
+  overridedRequiredBalance: BigNumber | undefined,
+  actionCount: number
+) {
+  const defaultRequiredBalance = useSubaccountBaseExecutionFeeTokenAmount();
+  const requiredBalance = overridedRequiredBalance ?? defaultRequiredBalance;
   const isLastAction = useIsLastSubaccountAction(actionCount);
   const mainAccountInsufficientFunds = useMainAccountInsufficientFunds(requiredBalance);
   const subaccountInsufficientFunds = useSubaccountInsufficientFunds(requiredBalance);
   const [, setOpenSubaccountModal] = useSubaccountModalOpen();
-
-  const { chainId } = useChainId();
-  const setToTokenAddress = useSetToTokenAddress(chainId);
-  const openSwapToNativeToken = useCallback(() => {
-    setToTokenAddress(getNativeToken(chainId).address);
-  }, [chainId, setToTokenAddress]);
-
   const openSubaccountModal = useCallback(() => {
     setOpenSubaccountModal(true);
   }, [setOpenSubaccountModal]);
@@ -334,7 +331,7 @@ export function useSubaccountCancelOrdersDetailsMessage(requiredBalance: BigNumb
       return (
         <Trans>
           There are insufficient funds in your Main account for One-Click Trading auto top-ups.{" "}
-          <span onClick={openSwapToNativeToken} className="link-underline">
+          <span onClick={openSubaccountModal} className="link-underline">
             Click here
           </span>{" "}
           to convert.
@@ -343,11 +340,5 @@ export function useSubaccountCancelOrdersDetailsMessage(requiredBalance: BigNumb
     }
 
     return null;
-  }, [
-    isLastAction,
-    mainAccountInsufficientFunds,
-    openSubaccountModal,
-    openSwapToNativeToken,
-    subaccountInsufficientFunds,
-  ]);
+  }, [isLastAction, mainAccountInsufficientFunds, openSubaccountModal, subaccountInsufficientFunds]);
 }
