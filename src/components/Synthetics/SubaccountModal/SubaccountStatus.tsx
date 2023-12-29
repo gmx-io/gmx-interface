@@ -25,8 +25,6 @@ function SubaccountStatusImpl({
 
   const oneClickTradingState = useSubaccountState();
   const shouldShowAllowedActionsError = isSubaccountActive && remainingActionsCount?.eq(0);
-  // FIXME
-  const shouldShowInsufficientFundsWarning = false; // isSubaccountActive && remainingActionsCount?.lte(2) && isSubaccountActive;
   const insufficientFunds = useSubaccountInsufficientFunds(oneClickTradingState.baseExecutionFee?.feeTokenAmount);
   const shouldShowInsufficientFundsError = isSubaccountActive && insufficientFunds;
 
@@ -51,11 +49,6 @@ function SubaccountStatusImpl({
         balance.
       </Trans>
     );
-  } else if (shouldShowInsufficientFundsWarning) {
-    statusText = t`Active`;
-    working = true;
-    needToShowRemainingActionsCount = true;
-    description = <Trans>Almost out of funds for One&#8209;Click&nbsp;Trading.</Trans>;
   } else if (!isSubaccountActive) {
     statusText = t`Inactive`;
     working = false;
