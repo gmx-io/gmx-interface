@@ -1868,10 +1868,6 @@ msgstr "正在获取代币信息"
 msgid "Financial reports and protocol analytics"
 msgstr "财务报告和协议分析"
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Floor Price Fund"
-msgstr "底价金额"
-
 #: src/components/Referrals/TradersStats.tsx
 msgid "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
 msgstr ""
@@ -5024,6 +5020,10 @@ msgstr ""
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Transferring"
 msgstr "转移中"
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Treasury"
+msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionSeller.js

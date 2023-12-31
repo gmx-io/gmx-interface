@@ -1868,10 +1868,6 @@ msgstr "Fetching token info..."
 msgid "Financial reports and protocol analytics"
 msgstr "Financial reports and protocol analytics"
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Floor Price Fund"
-msgstr "Floor Price Fund"
-
 #: src/components/Referrals/TradersStats.tsx
 msgid "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
 msgstr "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
@@ -5027,6 +5023,10 @@ msgstr "Transfer {nativeTokenSymbol}"
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Transferring"
 msgstr "Transferring"
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Treasury"
+msgstr "Treasury"
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionSeller.js

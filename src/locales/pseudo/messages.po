@@ -1868,10 +1868,6 @@ msgstr ""
 msgid "Financial reports and protocol analytics"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Floor Price Fund"
-msgstr ""
-
 #: src/components/Referrals/TradersStats.tsx
 msgid "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
 msgstr ""
@@ -5023,6 +5019,10 @@ msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Transferring"
+msgstr ""
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Treasury"
 msgstr ""
 
 #: src/components/Exchange/OrdersList.js

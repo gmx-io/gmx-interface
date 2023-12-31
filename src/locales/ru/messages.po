@@ -1868,10 +1868,6 @@ msgstr "Получение информации о токенах..."
 msgid "Financial reports and protocol analytics"
 msgstr "Финансовые отчеты и аналитика протоколов"
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Floor Price Fund"
-msgstr "Фонд Минимальной Цены"
-
 #: src/components/Referrals/TradersStats.tsx
 msgid "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
 msgstr ""
@@ -5024,6 +5020,10 @@ msgstr ""
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Transferring"
 msgstr "Передим"
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Treasury"
+msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionSeller.js
