@@ -167,8 +167,9 @@ export function formatUsd(
 
   const exceedingInfo = getLimitedDisplay(usd, USD_DECIMALS, opts);
   const sign = usd.lt(0) ? "-" : "";
+  const symbol = exceedingInfo.symbol ? `${exceedingInfo.symbol} ` : "";
   const displayUsd = formatAmount(exceedingInfo.value, USD_DECIMALS, displayDecimals, true);
-  return `${exceedingInfo.symbol}${exceedingInfo.symbol ? " " : ""}${sign}$${displayUsd}`;
+  return `${symbol}${sign}$${displayUsd}`;
 }
 
 export function formatDeltaUsd(
@@ -190,11 +191,13 @@ export function formatDeltaUsd(
   } else if (opts.showPlusForZero) {
     sign = "+";
   }
+
   const exceedingInfo = getLimitedDisplay(deltaUsd, USD_DECIMALS);
   const percentageStr = percentage ? ` (${sign}${formatPercentage(percentage.abs())})` : "";
   const deltaUsdStr = formatAmount(exceedingInfo.value, USD_DECIMALS, 2, true);
+  const symbol = exceedingInfo.symbol ? `${exceedingInfo.symbol} ` : "";
 
-  return `${exceedingInfo.symbol} ${sign}$${deltaUsdStr}${percentageStr}`;
+  return `${symbol}${sign}$${deltaUsdStr}${percentageStr}`;
 }
 
 export function formatPercentage(percentage?: BigNumber, opts: { fallbackToZero?: boolean; signed?: boolean } = {}) {
@@ -252,12 +255,14 @@ export function formatTokenAmount(
 
   let amountStr: string;
 
+  const sign = amount.lt(0) ? "-" : "";
+
   if (showAllSignificant) {
     amountStr = formatAmountFree(amount, tokenDecimals, tokenDecimals);
   } else {
     const exceedingInfo = getLimitedDisplay(amount, tokenDecimals, { maxThreshold, minThreshold });
     const symbol = exceedingInfo.symbol ? `${exceedingInfo.symbol} ` : "";
-    amountStr = `${symbol}${formatAmount(exceedingInfo.value, tokenDecimals, displayDecimals, useCommas)}`;
+    amountStr = `${symbol}${sign}${formatAmount(exceedingInfo.value, tokenDecimals, displayDecimals, useCommas)}`;
   }
 
   return `${amountStr}${symbolStr}`;

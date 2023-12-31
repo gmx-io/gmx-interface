@@ -90,6 +90,7 @@ import "./ConfirmationBox.scss";
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
+import { getPositiveOrNegativeClass } from "lib/utils";
 
 export type Props = {
   isVisible: boolean;
@@ -1139,12 +1140,11 @@ export function ConfirmationBox(p: Props) {
                         label={t`Fees`}
                         value={
                           fees?.payTotalFees?.deltaUsd && !fees.payTotalFees.deltaUsd.eq(0)
-                            ? `${fees.payTotalFees.deltaUsd.gt(0) ? "+" : "-"}${formatUsd(
-                                fees.payTotalFees.deltaUsd.abs()
-                              )}`
+                            ? formatUsd(fees.payTotalFees.deltaUsd)
                             : "0.00$"
                         }
                         showDollar={false}
+                        className={getPositiveOrNegativeClass(fees?.payTotalFees?.deltaUsd)}
                       />
                       <div className="Tooltip-divider" />
                       <StatsTooltipRow

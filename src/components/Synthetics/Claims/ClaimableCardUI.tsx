@@ -15,7 +15,6 @@ type Props = {
 
 export function ClaimableCardUI({ buttonText, fundingFees, onButtonClick, title, tooltipText, style }: Props) {
   const totalUsd = useMemo(() => formatDeltaUsd(fundingFees), [fundingFees]);
-
   const renderTooltipContent = useCallback(() => tooltipText, [tooltipText]);
 
   return (

@@ -47,7 +47,7 @@ export const GmTokensBalanceInfo = ({
             showDollar={false}
             label={t`Total accrued Fees`}
             className={getColorByValue(earnedTotal)}
-            value={`${formatDeltaUsd(earnedTotal, undefined, { showPlusForZero: true })}`}
+            value={formatDeltaUsd(earnedTotal, undefined)}
           />
         )}
         {earnedRecently && (
@@ -55,7 +55,7 @@ export const GmTokensBalanceInfo = ({
             showDollar={false}
             className={getColorByValue(earnedRecently)}
             label={t`${daysConsidered}d accrued Fees`}
-            value={`${formatDeltaUsd(earnedRecently, undefined, { showPlusForZero: true })}`}
+            value={formatDeltaUsd(earnedRecently, undefined)}
           />
         )}
         <br />
