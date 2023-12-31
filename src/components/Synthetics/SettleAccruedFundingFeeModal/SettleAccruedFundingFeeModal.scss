@@ -1,0 +1,56 @@
+.ClaimSettleModal-divider {
+    margin-top: 1.5rem;
+}
+
+.ClaimSettleModal-alert {
+    color: rgba(255, 255, 255, 0.70);
+    padding-bottom: 1rem;
+}
+
+.ClaimSettleModal-modal-content {
+    margin-top: 1.8rem;
+}
+
+.ClaimSettleModal-row-text {
+    color: white;
+}
+
+.ClaimSettleModal-info-row {
+    display: flex;
+    font-size: var(--font-sm);
+    margin-bottom: 1.5rem;
+    align-items: baseline;
+
+}
+
+.ClaimSettleModal-info-label-usd {
+    margin-left: auto;
+}
+
+.ClaimSettleModal-header {
+    margin-bottom: 1.5rem;
+    display: flex;
+    color: rgba(255, 255, 255, 0.70);
+}
+
+.ClaimSettleModal-header-left {
+    margin-left: 2.3rem;
+}
+.ClaimSettleModal-header-right {
+    margin-left: auto;
+}
+
+.ClaimSettleModal-checkbox {
+    margin-right: 0.5rem;
+}
+
+.ClaimSettleModal-tooltip {
+    .Tooltip-popup {
+        min-width: 0;
+        white-space: nowrap;
+    }
+}
+
+.ClaimSettleModal-checkbox-label {
+    margin-left: 0.4rem;
+}

@@ -14,11 +14,15 @@ export default function EventToast({ event, id, onClick, t }) {
         <MdOutlineClose onClick={onClick} className="cross-icon" color="white" />
       </header>
       {Array.isArray(event.bodyText) ? (
-        event.bodyText.map((text, i) => (
-          <p key={i} className="toast-body">
-            {text}
-          </p>
-        ))
+        event.bodyText.map((text, i) =>
+          text === "" ? (
+            <br key={i} />
+          ) : (
+            <p key={i} className="toast-body">
+              {text}
+            </p>
+          )
+        )
       ) : (
         <p className="toast-body">{event.bodyText}</p>
       )}

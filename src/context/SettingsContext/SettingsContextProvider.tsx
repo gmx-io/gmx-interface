@@ -1,16 +1,17 @@
+import { EXECUTION_FEE_CONFIG_V2, SUPPORTED_CHAIN_IDS } from "config/chains";
 import { isDevelopment } from "config/env";
+import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import {
   ORACLE_KEEPER_INSTANCES_CONFIG_KEY,
   SHOW_DEBUG_VALUES_KEY,
   getAllowedSlippageKey,
   getExecutionFeeBufferBpsKey,
+  getSyntheticsAcceptablePriceImpactBufferKey,
 } from "config/localStorage";
+import { getOracleKeeperRandomIndex } from "config/oracleKeeper";
 import { useChainId } from "lib/chains";
-import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useEffect, useMemo } from "react";
-import { EXECUTION_FEE_CONFIG_V2, SUPPORTED_CHAIN_IDS } from "config/chains";
-import { getOracleKeeperRandomIndex } from "config/oracleKeeper";
 
 export type SettingsContextType = {
   showDebugValues: boolean;
@@ -18,6 +19,8 @@ export type SettingsContextType = {
   savedAllowedSlippage: number;
   setSavedAllowedSlippage: (val: number) => void;
   setExecutionFeeBufferBps: (val: number) => void;
+  savedAcceptablePriceImpactBuffer: number;
+  setSavedAcceptablePriceImpactBuffer: (val: number) => void;
   executionFeeBufferBps: number | undefined;
   shouldUseExecutionFeeBuffer: boolean;
   oracleKeeperInstancesConfig: { [chainId: number]: number };
@@ -36,6 +39,11 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   const [savedAllowedSlippage, setSavedAllowedSlippage] = useLocalStorageSerializeKey(
     getAllowedSlippageKey(chainId),
     DEFAULT_SLIPPAGE_AMOUNT
+  );
+
+  const [savedAcceptablePriceImpactBuffer, setSavedAcceptablePriceImpactBuffer] = useLocalStorageSerializeKey(
+    getSyntheticsAcceptablePriceImpactBufferKey(chainId),
+    DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER
   );
 
   const [executionFeeBufferBps, setExecutionFeeBufferBps] = useLocalStorageSerializeKey(
@@ -69,6 +77,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       shouldUseExecutionFeeBuffer,
       oracleKeeperInstancesConfig: oracleKeeperInstancesConfig!,
       setOracleKeeperInstancesConfig,
+      savedAcceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer!,
+      setSavedAcceptablePriceImpactBuffer,
     };
   }, [
     showDebugValues,
@@ -80,6 +90,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     shouldUseExecutionFeeBuffer,
     oracleKeeperInstancesConfig,
     setOracleKeeperInstancesConfig,
+    savedAcceptablePriceImpactBuffer,
+    setSavedAcceptablePriceImpactBuffer,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;

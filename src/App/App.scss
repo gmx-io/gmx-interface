@@ -458,6 +458,10 @@ button.App-connect-wallet:hover {
   justify-content: flex-end;
 }
 
+.settings-modal-error {
+  padding-bottom: 0.7rem;
+}
+
 .section-title-content .section-title-content__title {
   font-size: var(--font-lg);
   line-height: 3.1rem;
@@ -569,7 +573,7 @@ button.App-connect-wallet:hover {
 }
 
 .Position-card-title::after {
-  content: '';
+  content: "";
   position: absolute;
   left: -$app-card-padding;
   top: -$app-card-padding;
@@ -1134,7 +1138,7 @@ button.App-button {
 }
 
 .positive {
-  color: #0ecc83;
+  color: var(--green);
 }
 
 .positive-background {
@@ -1142,7 +1146,7 @@ button.App-button {
 }
 
 .negative {
-  color: #fa3c58;
+  color: var(--error-red);
 }
 
 .negative-background {
@@ -1406,8 +1410,12 @@ button.App-button {
     grid-template-columns: 1fr;
   }
   .default-container {
-    padding-left: 2.2rem;
-    padding-right: 2.2rem;
+    padding-left: 1.2rem;
+    padding-right: 1.2rem;
+  }
+
+  .page-layout {
+    padding-top: 2.5rem;
   }
 }
 

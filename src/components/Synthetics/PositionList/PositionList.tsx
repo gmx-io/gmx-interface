@@ -13,6 +13,7 @@ type Props = {
   onSelectPositionClick: (key: string, tradeMode?: TradeMode) => void;
   onClosePositionClick: (key: string) => void;
   onEditCollateralClick: (key: string) => void;
+  onSettlePositionFeesClick: (key: string) => void;
   positionsData?: PositionsInfoData;
   ordersData?: OrdersInfoData;
   savedIsPnlInLeverage: boolean;
@@ -56,6 +57,7 @@ export function PositionList(p: Props) {
               position={position}
               onEditCollateralClick={() => p.onEditCollateralClick(position.key)}
               onClosePositionClick={() => p.onClosePositionClick(position.key)}
+              onGetPendingFeesClick={() => p.onSettlePositionFeesClick(position.key)}
               onOrdersClick={p.onOrdersClick}
               onSelectPositionClick={(tradeMode?: TradeMode) => p.onSelectPositionClick(position.key, tradeMode)}
               showPnlAfterFees={p.showPnlAfterFees}
@@ -66,6 +68,7 @@ export function PositionList(p: Props) {
               currentCollateralAddress={p.currentCollateralAddress}
               currentTradeType={p.currentTradeType}
               openSettings={p.openSettings}
+              hideActions={p.hideActions}
             />
           ))}
       </div>
@@ -92,7 +95,7 @@ export function PositionList(p: Props) {
               <Trans>Mark Price</Trans>
             </th>
             <th>
-              <Trans>Liq Price</Trans>
+              <Trans>Liq. Price</Trans>
             </th>
           </tr>
           {positions.length === 0 && (
@@ -114,6 +117,7 @@ export function PositionList(p: Props) {
                 position={position}
                 onEditCollateralClick={() => p.onEditCollateralClick(position.key)}
                 onClosePositionClick={() => p.onClosePositionClick(position.key)}
+                onGetPendingFeesClick={() => p.onSettlePositionFeesClick(position.key)}
                 onOrdersClick={p.onOrdersClick}
                 onSelectPositionClick={(tradeMode?: TradeMode) => p.onSelectPositionClick(position.key, tradeMode)}
                 showPnlAfterFees={p.showPnlAfterFees}

@@ -31,6 +31,7 @@ export type RebateDistribution = {
   amountsInUsd: BigNumber[];
   timestamp: number;
   transactionHash: string;
+  id: string;
 };
 
 export type CodeOwnershipInfo = {

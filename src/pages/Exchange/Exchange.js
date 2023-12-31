@@ -970,7 +970,6 @@ export const Exchange = forwardRef((props, ref) => {
         {listSection === TRADES && (
           <TradeHistory
             account={account}
-            forSingleAccount={true}
             infoTokens={infoTokens}
             getTokenInfo={getTokenInfo}
             chainId={chainId}

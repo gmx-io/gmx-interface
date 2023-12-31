@@ -1,4 +1,4 @@
-import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { BASIS_POINTS_DIVISOR, DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER } from "config/factors";
 import { UserReferralInfo } from "domain/referrals";
 import { getPositionFee } from "domain/synthetics/fees";
 import { Market, MarketInfo } from "domain/synthetics/markets";
@@ -10,7 +10,13 @@ import { BigNumber, ethers } from "ethers";
 import { DUST_USD } from "lib/legacy";
 import { applyFactor, getBasisPoints, roundUpDivision } from "lib/numbers";
 import { DecreasePositionAmounts, NextPositionValues } from "../types";
-import { getAcceptablePriceInfo, getMarkPrice, getTriggerDecreaseOrderType, getTriggerThresholdType } from "./prices";
+import {
+  getAcceptablePriceInfo,
+  getDefaultAcceptablePriceImpactBps,
+  getMarkPrice,
+  getTriggerDecreaseOrderType,
+  getTriggerThresholdType,
+} from "./prices";
 import { getSwapStats } from "./swapStats";
 
 export function getDecreasePositionAmounts(p: {
@@ -21,10 +27,12 @@ export function getDecreasePositionAmounts(p: {
   closeSizeUsd: BigNumber;
   keepLeverage: boolean;
   triggerPrice?: BigNumber;
-  savedAcceptablePriceImpactBps?: BigNumber;
+  fixedAcceptablePriceImpactBps?: BigNumber;
+  acceptablePriceImpactBuffer?: number;
   userReferralInfo: UserReferralInfo | undefined;
   minCollateralUsd: BigNumber;
   minPositionSizeUsd: BigNumber;
+  uiFeeFactor: BigNumber;
 }) {
   const {
     marketInfo,
@@ -34,10 +42,12 @@ export function getDecreasePositionAmounts(p: {
     closeSizeUsd,
     keepLeverage,
     triggerPrice,
-    savedAcceptablePriceImpactBps,
+    fixedAcceptablePriceImpactBps,
+    acceptablePriceImpactBuffer,
     userReferralInfo,
     minCollateralUsd,
     minPositionSizeUsd,
+    uiFeeFactor,
   } = p;
   const { indexToken } = marketInfo;
 
@@ -56,12 +66,15 @@ export function getDecreasePositionAmounts(p: {
     positionPriceImpactDeltaUsd: BigNumber.from(0),
     priceImpactDiffUsd: BigNumber.from(0),
     acceptablePriceDeltaBps: BigNumber.from(0),
+    recommendedAcceptablePriceDeltaBps: BigNumber.from(0),
 
     estimatedPnl: BigNumber.from(0),
     estimatedPnlPercentage: BigNumber.from(0),
     realizedPnl: BigNumber.from(0),
 
     positionFeeUsd: BigNumber.from(0),
+    uiFeeUsd: BigNumber.from(0),
+    swapUiFeeUsd: BigNumber.from(0),
     borrowingFeeUsd: BigNumber.from(0),
     fundingFeeUsd: BigNumber.from(0),
     feeDiscountUsd: BigNumber.from(0),
@@ -118,7 +131,8 @@ export function getDecreasePositionAmounts(p: {
       marketInfo,
       isLong,
       isTrigger,
-      savedAcceptablePriceImpactBps,
+      fixedAcceptablePriceImpactBps,
+      acceptablePriceImpactBuffer,
       values,
     });
 
@@ -131,9 +145,11 @@ export function getDecreasePositionAmounts(p: {
 
     values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
     values.feeDiscountUsd = positionFeeInfo.discountUsd;
+    values.uiFeeUsd = applyFactor(values.sizeDeltaUsd, uiFeeFactor);
 
     const totalFeesUsd = BigNumber.from(0)
       .add(values.positionFeeUsd)
+      .add(values.uiFeeUsd)
       .add(values.positionPriceImpactDeltaUsd.lt(0) ? values.positionPriceImpactDeltaUsd : 0);
 
     values.payedOutputUsd = totalFeesUsd;
@@ -191,7 +207,8 @@ export function getDecreasePositionAmounts(p: {
     marketInfo,
     isLong,
     isTrigger,
-    savedAcceptablePriceImpactBps,
+    fixedAcceptablePriceImpactBps,
+    acceptablePriceImpactBuffer,
     values,
   });
 
@@ -225,6 +242,7 @@ export function getDecreasePositionAmounts(p: {
 
   values.positionFeeUsd = estimatedPositionFeeCost.usd;
   values.feeDiscountUsd = estimatedDiscountCost.usd;
+  values.uiFeeUsd = applyFactor(values.sizeDeltaUsd, uiFeeFactor);
 
   const borrowFeeCost = estimateCollateralCost(
     position.pendingBorrowingFeesUsd,
@@ -252,6 +270,7 @@ export function getDecreasePositionAmounts(p: {
     });
 
     values.swapProfitFeeUsd = swapProfitStats.swapFeeUsd.add(swapProfitStats.priceImpactDeltaUsd.mul(-1));
+    values.swapUiFeeUsd = applyFactor(swapProfitStats.usdIn, uiFeeFactor);
   } else {
     values.swapProfitFeeUsd = BigNumber.from(0);
   }
@@ -266,6 +285,8 @@ export function getDecreasePositionAmounts(p: {
     .add(values.borrowingFeeUsd)
     .add(values.fundingFeeUsd)
     .add(values.swapProfitFeeUsd)
+    .add(values.swapUiFeeUsd)
+    .add(values.uiFeeUsd)
     .add(negativePnlUsd)
     .add(negativePriceImpactUsd)
     .add(priceImpactDiffUsd);
@@ -486,10 +507,11 @@ function applyAcceptablePrice(p: {
   marketInfo: MarketInfo;
   isLong: boolean;
   isTrigger: boolean;
-  savedAcceptablePriceImpactBps?: BigNumber;
+  fixedAcceptablePriceImpactBps?: BigNumber;
+  acceptablePriceImpactBuffer?: number;
   values: DecreasePositionAmounts;
 }) {
-  const { marketInfo, isLong, values, isTrigger, savedAcceptablePriceImpactBps } = p;
+  const { marketInfo, isLong, values, isTrigger, fixedAcceptablePriceImpactBps, acceptablePriceImpactBuffer } = p;
 
   const acceptablePriceInfo = getAcceptablePriceInfo({
     marketInfo,
@@ -512,22 +534,32 @@ function applyAcceptablePrice(p: {
         values.acceptablePrice = ethers.constants.MaxUint256;
       }
     } else {
+      let maxNegativePriceImpactBps = fixedAcceptablePriceImpactBps;
+      values.recommendedAcceptablePriceDeltaBps = getDefaultAcceptablePriceImpactBps({
+        isIncrease: false,
+        isLong,
+        indexPrice: values.indexPrice,
+        sizeDeltaUsd: values.sizeDeltaUsd,
+        priceImpactDeltaUsd: values.positionPriceImpactDeltaUsd,
+        acceptablePriceImapctBuffer: acceptablePriceImpactBuffer || DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER,
+      });
+
+      if (!maxNegativePriceImpactBps) {
+        maxNegativePriceImpactBps = values.recommendedAcceptablePriceDeltaBps;
+      }
+
       const triggerAcceptablePriceInfo = getAcceptablePriceInfo({
         marketInfo,
         isIncrease: false,
         isLong,
         indexPrice: values.indexPrice,
         sizeDeltaUsd: values.sizeDeltaUsd,
-        maxNegativePriceImpactBps: savedAcceptablePriceImpactBps,
+        maxNegativePriceImpactBps,
       });
 
       values.acceptablePrice = triggerAcceptablePriceInfo.acceptablePrice;
       values.acceptablePriceDeltaBps = triggerAcceptablePriceInfo.acceptablePriceDeltaBps;
       values.priceImpactDiffUsd = triggerAcceptablePriceInfo.priceImpactDiffUsd;
-
-      if (values.positionPriceImpactDeltaUsd.lt(triggerAcceptablePriceInfo.priceImpactDeltaUsd)) {
-        values.positionPriceImpactDeltaUsd = triggerAcceptablePriceInfo.priceImpactDeltaUsd;
-      }
     }
   }
 
@@ -644,4 +676,19 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     nextPnlPercentage,
     nextLeverage,
   };
+}
+
+export function getExecutionPriceForDecrease(
+  triggerPrice: BigNumber,
+  priceImpactUsd: BigNumber,
+  sizeDeltaUsd: BigNumber,
+  isLong: boolean
+) {
+  if (sizeDeltaUsd.eq(0)) {
+    return null;
+  }
+
+  const adjustedPriceImpactUsd = isLong ? priceImpactUsd : priceImpactUsd.mul(-1);
+  const adjustment = triggerPrice.mul(adjustedPriceImpactUsd).div(sizeDeltaUsd);
+  return triggerPrice.add(adjustment);
 }

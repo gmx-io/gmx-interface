@@ -1,9 +1,10 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { MouseEvent, useCallback, useRef, useState } from "react";
 import cx from "classnames";
 
 import "./Tooltip.scss";
 import { IS_TOUCH } from "config/env";
 import Portal from "../Common/Portal";
+import { TooltipPosition } from "./Tooltip";
 
 const OPEN_DELAY = 0;
 const CLOSE_DELAY = 100;
@@ -11,7 +12,7 @@ const CLOSE_DELAY = 100;
 type Props = {
   handle: React.ReactNode;
   renderContent: () => React.ReactNode;
-  position?: string;
+  position?: TooltipPosition;
   trigger?: string;
   className?: string;
   portalClassName?: string;
@@ -73,24 +74,28 @@ export default function TooltipWithPortal(props: Props) {
     updateTooltipCoords();
   }, [setVisible, intervalCloseRef, intervalOpenRef, trigger, updateTooltipCoords]);
 
-  const onMouseClick = useCallback(() => {
-    if (trigger !== "click" && !IS_TOUCH) return;
-    if (intervalCloseRef.current) {
-      clearInterval(intervalCloseRef.current);
-      intervalCloseRef.current = null;
-    }
-    if (intervalOpenRef.current) {
-      clearInterval(intervalOpenRef.current);
-      intervalOpenRef.current = null;
-    }
-    updateTooltipCoords();
+  const onMouseClick = useCallback(
+    (event: MouseEvent) => {
+      event.preventDefault();
+      if (trigger !== "click" && !IS_TOUCH) return;
+      if (intervalCloseRef.current) {
+        clearInterval(intervalCloseRef.current);
+        intervalCloseRef.current = null;
+      }
+      if (intervalOpenRef.current) {
+        clearInterval(intervalOpenRef.current);
+        intervalOpenRef.current = null;
+      }
+      updateTooltipCoords();
 
-    if (props.closeOnDoubleClick) {
-      setVisible((old) => !old);
-    } else {
-      setVisible(true);
-    }
-  }, [setVisible, intervalCloseRef, trigger, updateTooltipCoords, props.closeOnDoubleClick]);
+      if (props.closeOnDoubleClick) {
+        setVisible((old) => !old);
+      } else {
+        setVisible(true);
+      }
+    },
+    [setVisible, intervalCloseRef, trigger, updateTooltipCoords, props.closeOnDoubleClick]
+  );
 
   const onMouseLeave = useCallback(() => {
     intervalCloseRef.current = setTimeout(() => {

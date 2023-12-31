@@ -7,6 +7,7 @@ import { SetPendingDeposit } from "context/SyntheticsEvents";
 import { applySlippageToMinOut } from "../trade";
 import { simulateExecuteOrderTxn } from "../orders/simulateExecuteOrderTxn";
 import { TokensData } from "../tokens";
+import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { t } from "@lingui/macro";
 
 type Params = {
@@ -79,7 +80,7 @@ export async function createDepositTxn(chainId: number, signer: Signer, p: Param
           shouldUnwrapNativeToken: shouldUnwrapNativeToken,
           executionFee: p.executionFee,
           callbackGasLimit: BigNumber.from(0),
-          uiFeeReceiver: ethers.constants.AddressZero,
+          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.constants.AddressZero,
         },
       ],
     },

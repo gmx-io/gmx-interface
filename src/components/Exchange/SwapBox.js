@@ -1088,10 +1088,10 @@ export default function SwapBox(props) {
       return t`Waiting for Approval`;
     }
     if (isApproving) {
-      return t`Approving ${fromToken.symbol}...`;
+      return t`Approving ${fromToken.assetSymbol ?? fromToken.symbol}...`;
     }
     if (needApproval) {
-      return t`Approve ${fromToken.symbol}`;
+      return t`Approve ${fromToken.assetSymbol ?? fromToken.symbol}`;
     }
 
     if (needOrderBookApproval && isWaitingForPluginApproval) {
@@ -1985,6 +1985,7 @@ export default function SwapBox(props) {
                 showMaxButton={false}
                 inputValue={toValue}
                 onInputValueChange={onToValueChange}
+                preventFocusOnLabelClick="right"
               >
                 <TokenSelector
                   label={getTokenLabel()}
