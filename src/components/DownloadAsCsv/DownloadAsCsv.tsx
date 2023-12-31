@@ -1,4 +1,3 @@
-import "./DownloadAsCsv.scss";
 import { ReactNode, useCallback } from "react";
 import DownloadIcon from "img/ic_download.svg";
 import cx from "classnames";
@@ -20,7 +19,6 @@ function filterFields<T>(data: T, excludedFields: string[]): Partial<T> {
 function convertToCSV<T>(data: Partial<T>[]): string {
   const header = Object.keys(data[0]).join(",");
   const values = data.map((object) => Object.values(object).join(",")).join("\n");
-
   return `${header}\n${values}`;
 }
 
@@ -48,5 +46,5 @@ export function DownloadAsCsv<T>({ data, excludedFields, fileName, className, ch
     return null;
   }
 
-  return <img className={cx("Download-icon", className)} src={DownloadIcon} alt="Download as CSV" onClick={onClick} />;
+  return <img className={cx("clickable", className)} src={DownloadIcon} alt="Download as CSV" onClick={onClick} />;
 }
