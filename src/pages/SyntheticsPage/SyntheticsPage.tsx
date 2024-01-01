@@ -130,7 +130,13 @@ export function SyntheticsPage(p: Props) {
   const { indexTokens, sortedIndexTokensWithPoolValue, swapTokens, sortedLongAndShortTokens, sortedAllMarkets } =
     availableTokensOptions;
 
-  useTradeParamsProcessor(sortedAllMarkets, setTradeConfig);
+  useTradeParamsProcessor({
+    setTradeConfig,
+    markets: sortedAllMarkets,
+    tradeMode,
+    tradeType,
+    availableTokensOptions,
+  });
 
   const { chartToken, availableChartTokens } = useMemo(() => {
     if (!fromTokenAddress || !toTokenAddress) {

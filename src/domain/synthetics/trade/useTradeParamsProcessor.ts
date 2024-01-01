@@ -1,12 +1,13 @@
 import { useEffect, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { MarketInfo, getMarketPoolName } from "../markets";
-import { getTokenBySymbolSafe } from "config/tokens";
+import { getTokenBySymbolSafe, isTokenInList } from "config/tokens";
 import { useChainId } from "lib/chains";
 import { getMatchingValueFromObject } from "lib/objects";
 import { TradeSearchParams, TradeMode, TradeType } from "./types";
 import useSearchParams from "lib/useSearchParams";
 import { isMatch } from "lodash";
+import { AvailableTokenOptions } from "./useAvailableTokenOptions";
 
 type TradeOptions = {
   fromTokenAddress?: string;
@@ -17,8 +18,7 @@ type TradeOptions = {
   collateralAddress?: string;
 };
 
-export function useTradeParamsProcessor(
-  markets: MarketInfo[],
+type Props = {
   setTradeConfig: ({
     tradeType,
     tradeMode,
@@ -26,19 +26,27 @@ export function useTradeParamsProcessor(
     toTokenAddress,
     marketAddress,
     collateralAddress,
-  }: TradeOptions) => void
-) {
+  }: TradeOptions) => void;
+  availableTokensOptions: AvailableTokenOptions;
+  markets: MarketInfo[];
+  tradeType?: TradeType;
+  tradeMode?: TradeMode;
+};
+
+export function useTradeParamsProcessor(props: Props) {
+  const { markets, setTradeConfig, availableTokensOptions, tradeType, tradeMode } = props;
   const { chainId } = useChainId();
   const history = useHistory();
   const params = useParams<{ tradeType?: string }>();
   const searchParams = useSearchParams<TradeSearchParams>();
+  const { indexTokens, swapTokens } = availableTokensOptions;
 
   const prevTradeOptions = useRef<TradeOptions>({
     fromTokenAddress: undefined,
     toTokenAddress: undefined,
     marketAddress: undefined,
-    tradeType: undefined,
-    tradeMode: undefined,
+    tradeType: tradeType,
+    tradeMode: tradeMode,
     collateralAddress: undefined,
   });
 
@@ -85,9 +93,19 @@ export function useTradeParamsProcessor(
         isSynthetic: tradeOptions.tradeType !== TradeType.Swap,
         version: "v2",
       });
+
       if (toTokenInfo) {
-        tradeOptions.toTokenAddress = toTokenInfo?.address;
+        const isSwapTrade = tradeOptions.tradeType === TradeType.Swap;
+        const isLongOrShortTrade =
+          tradeOptions.tradeType === TradeType.Long || tradeOptions.tradeType === TradeType.Short;
+        const isTokenInSwapList = isSwapTrade && isTokenInList(toTokenInfo, swapTokens);
+        const isTokenInIndexList = isLongOrShortTrade && isTokenInList(toTokenInfo, indexTokens);
+
+        if (isTokenInSwapList || isTokenInIndexList) {
+          tradeOptions.toTokenAddress = toTokenInfo.address;
+        }
       }
+
       if (pool) {
         const marketPool = markets.find((market) => {
           const poolName = getMarketPoolName(market);
@@ -118,5 +136,15 @@ export function useTradeParamsProcessor(
         }
       }, 2000);
     }
-  }, [params, searchParams, markets, chainId, history, setTradeConfig]);
+  }, [
+    params,
+    searchParams,
+    markets,
+    chainId,
+    history,
+    setTradeConfig,
+    swapTokens,
+    indexTokens,
+    availableTokensOptions,
+  ]);
 }

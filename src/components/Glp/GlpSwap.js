@@ -488,7 +488,7 @@ export default function GlpSwap(props) {
   ]);
 
   useEffect(() => {
-    const { operation, pay, receive } = searchParams;
+    const { operation, from, to } = searchParams;
 
     if (operation) {
       setTimeout(() => {
@@ -496,27 +496,27 @@ export default function GlpSwap(props) {
       });
     }
 
-    if (pay) {
-      const payTokenInfo = getTokenBySymbolSafe(chainId, pay, {
+    if (from) {
+      const fromTokenInfo = getTokenBySymbolSafe(chainId, from, {
         version: "v1",
       });
-      if (payTokenInfo) {
-        setSwapTokenAddress(payTokenInfo.address);
+      if (fromTokenInfo) {
+        setSwapTokenAddress(fromTokenInfo.address);
       }
     }
 
-    if (receive) {
-      const receiveTokenInfo = getTokenBySymbolSafe(chainId, receive, {
+    if (to) {
+      const toTokenInfo = getTokenBySymbolSafe(chainId, to, {
         version: "v1",
       });
-      if (receiveTokenInfo) {
-        setSwapTokenAddress(receiveTokenInfo.address);
+      if (toTokenInfo) {
+        setSwapTokenAddress(toTokenInfo.address);
       }
     }
 
     let timeoutId;
 
-    if (pay || receive || operation) {
+    if (from || to || operation) {
       if (history.location.search) {
         timeoutId = setTimeout(() => {
           history.replace({ search: "" });

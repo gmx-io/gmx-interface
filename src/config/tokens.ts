@@ -1042,3 +1042,7 @@ export function getTokenBySymbolSafe(
     return;
   }
 }
+
+export function isTokenInList(token: Token, tokenList: Token[]): boolean {
+  return tokenList.some((t) => t.address === token.address);
+}

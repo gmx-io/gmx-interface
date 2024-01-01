@@ -1,7 +1,7 @@
-import { getTokenBySymbolSafe } from "config/tokens";
+import { getTokenBySymbolSafe, getWhitelistedV1Tokens, isTokenInList } from "config/tokens";
 import { TradeSearchParams } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
-import { LEVERAGE_ORDER_OPTIONS, SWAP, SWAP_OPTIONS, SWAP_ORDER_OPTIONS } from "lib/legacy";
+import { LEVERAGE_ORDER_OPTIONS, LONG, SHORT, SWAP, SWAP_OPTIONS, SWAP_ORDER_OPTIONS } from "lib/legacy";
 import { getMatchingValueFromObject } from "lib/objects";
 import useSearchParams from "lib/useSearchParams";
 import { useEffect, useMemo, useRef } from "react";
@@ -66,7 +66,20 @@ export default function useV1TradeParamsProcessor({ updateTradeOptions, swapOpti
         version: "v1",
       });
       if (toTokenInfo) {
-        tradeOptions.toTokenAddress = toTokenInfo.address;
+        if (swapOption === SWAP) {
+          tradeOptions.fromTokenAddress = toTokenInfo.address;
+        } else {
+          const whitelistedTokens = getWhitelistedV1Tokens(chainId);
+          const indexTokens = whitelistedTokens.filter((token) => !token.isStable && !token.isWrapped);
+          const shortableTokens = indexTokens.filter((token) => token.isShortable);
+
+          if (
+            (swapOption === LONG && isTokenInList(toTokenInfo, indexTokens)) ||
+            (swapOption === SHORT && isTokenInList(toTokenInfo, shortableTokens))
+          ) {
+            tradeOptions.fromTokenAddress = toTokenInfo.address;
+          }
+        }
       }
     }
 
