@@ -93,7 +93,7 @@ export default function useV1TradeParamsProcessor({ updateTradeOptions, swapOpti
     }
 
     return pickBy(tradeOptions, Boolean) as TradeOptions;
-  }, [history, params, chainId, searchParams, swapOption]);
+  }, [params, chainId, searchParams, swapOption]);
 
   useEffect(() => {
     if (options && updateTradeOptions && !isMatch(prevTradeOptions.current, options)) {
@@ -105,5 +105,5 @@ export default function useV1TradeParamsProcessor({ updateTradeOptions, swapOpti
         prevTradeOptions.current = {};
       }
     }
-  }, [options, updateTradeOptions]);
+  }, [history, options, updateTradeOptions]);
 }
