@@ -9,9 +9,9 @@ import { PriceOverrides, simulateExecuteOrderTxn } from "./simulateExecuteOrderT
 import { DecreasePositionSwapType, OrderType } from "./types";
 import { isMarketOrderType } from "./utils";
 import { getPositionKey } from "../positions";
-import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
+import { applySlippageToPrice } from "../trade";
 import { t } from "@lingui/macro";
-import { DecreaseOrderParams, createDecreaseMulticall } from "./createDecreaseOrderTxn";
+import { DecreaseOrderParams, createDecreaseMulticall, getPendingOrderFromParams } from "./createDecreaseOrderTxn";
 
 const { AddressZero } = ethers.constants;
 
@@ -176,27 +176,4 @@ export async function createIncreaseOrderTxn(
   });
 
   return txn;
-}
-
-function getPendingOrderFromParams(chainId: number, p: DecreaseOrderParams) {
-  const isNativeReceive = p.receiveTokenAddress === NATIVE_TOKEN_ADDRESS;
-
-  const shouldApplySlippage = isMarketOrderType(p.orderType);
-  const minOutputAmount = shouldApplySlippage
-    ? applySlippageToMinOut(p.allowedSlippage, p.minOutputUsd)
-    : p.minOutputUsd;
-  const initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
-
-  return {
-    account: p.account,
-    marketAddress: p.marketAddress,
-    initialCollateralTokenAddress,
-    initialCollateralDeltaAmount: p.initialCollateralDeltaAmount,
-    swapPath: p.swapPath,
-    sizeDeltaUsd: p.sizeDeltaUsd,
-    minOutputAmount: minOutputAmount,
-    isLong: p.isLong,
-    orderType: p.orderType,
-    shouldUnwrapNativeToken: isNativeReceive,
-  };
 }

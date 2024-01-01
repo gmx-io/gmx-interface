@@ -170,7 +170,7 @@ export async function createDecreaseOrderTxn(
   return txn;
 }
 
-function getPendingOrderFromParams(chainId: number, p: DecreaseOrderParams) {
+export function getPendingOrderFromParams(chainId: number, p: DecreaseOrderParams) {
   const isNativeReceive = p.receiveTokenAddress === NATIVE_TOKEN_ADDRESS;
 
   const shouldApplySlippage = isMarketOrderType(p.orderType);

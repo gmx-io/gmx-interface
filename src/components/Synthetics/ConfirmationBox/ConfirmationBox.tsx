@@ -554,7 +554,7 @@ export function ConfirmationBox(p: Props) {
           return {
             ...commonOrderProps,
             swapPath: [],
-            initialCollateralDeltaAmount: entry.collateralDeltaAmount,
+            initialCollateralDeltaAmount: entry.collateralDeltaAmount || BigNumber.from(0),
             receiveTokenAddress: collateralToken.address,
             triggerPrice: entry.triggerPrice,
             acceptablePrice: entry.acceptablePrice,
