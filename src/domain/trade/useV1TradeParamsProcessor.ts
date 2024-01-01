@@ -96,20 +96,14 @@ export default function useV1TradeParamsProcessor({ updateTradeOptions, swapOpti
   }, [history, params, chainId, searchParams, swapOption]);
 
   useEffect(() => {
-    if (history.location.search) {
-      const timeoutId = setTimeout(() => {
-        history.replace({ search: "" });
-        prevTradeOptions.current = {};
-      }, 2000); // Delays the execution by 2 seconds
-
-      return () => clearTimeout(timeoutId);
-    }
-  }, [history.location.search]);
-
-  useEffect(() => {
     if (options && updateTradeOptions && !isMatch(prevTradeOptions.current, options)) {
       updateTradeOptions(options);
       prevTradeOptions.current = options;
+
+      if (history.location.search) {
+        history.replace({ search: "" });
+        prevTradeOptions.current = {};
+      }
     }
   }, [options, updateTradeOptions]);
 }
