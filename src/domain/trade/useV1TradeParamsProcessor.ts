@@ -67,7 +67,7 @@ export default function useV1TradeParamsProcessor({ updateTradeOptions, swapOpti
       });
       if (toTokenInfo) {
         if (swapOption === SWAP) {
-          tradeOptions.fromTokenAddress = toTokenInfo.address;
+          tradeOptions.toTokenAddress = toTokenInfo.address;
         } else {
           const whitelistedTokens = getWhitelistedV1Tokens(chainId);
           const indexTokens = whitelistedTokens.filter((token) => !token.isStable && !token.isWrapped);
@@ -77,7 +77,7 @@ export default function useV1TradeParamsProcessor({ updateTradeOptions, swapOpti
             (swapOption === LONG && isTokenInList(toTokenInfo, indexTokens)) ||
             (swapOption === SHORT && isTokenInList(toTokenInfo, shortableTokens))
           ) {
-            tradeOptions.fromTokenAddress = toTokenInfo.address;
+            tradeOptions.toTokenAddress = toTokenInfo.address;
           }
         }
       }
@@ -92,15 +92,19 @@ export default function useV1TradeParamsProcessor({ updateTradeOptions, swapOpti
       }
     }
 
-    if (history.location.search) {
-      setTimeout(() => {
-        history.replace({ search: "" });
-        prevTradeOptions.current = {};
-      }, 2000); // Delays the execution by 1 seconds
-    }
-
     return pickBy(tradeOptions, Boolean) as TradeOptions;
   }, [history, params, chainId, searchParams, swapOption]);
+
+  useEffect(() => {
+    if (history.location.search) {
+      const timeoutId = setTimeout(() => {
+        history.replace({ search: "" });
+        prevTradeOptions.current = {};
+      }, 2000); // Delays the execution by 2 seconds
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [history.location.search]);
 
   useEffect(() => {
     if (options && updateTradeOptions && !isMatch(prevTradeOptions.current, options)) {
