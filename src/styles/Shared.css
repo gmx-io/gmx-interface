@@ -418,7 +418,8 @@ button.btn-link:hover .logout-icon {
   display: flex;
 }
 
-.justify-space-between {
+.space-between {
+  display: flex;
   justify-content: space-between;
 }
 

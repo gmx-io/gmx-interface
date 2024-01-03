@@ -201,6 +201,7 @@ export function ConfirmationBox(p: Props) {
     updateEntry: updateStopLossEntry,
     reset: resetStopLossEntries,
     amounts: stopLossAmounts,
+    totalPnl: totalStopLossPnl,
   } = useStopLossEntries({
     marketInfo,
     tradeFlags,
@@ -218,6 +219,7 @@ export function ConfirmationBox(p: Props) {
     updateEntry: updateTakeProfitEntry,
     reset: resetTakeProfitEntries,
     amounts: takeProfitAmounts,
+    totalPnl: totalTakeProfitPnl,
   } = useTakeProfitEntries({
     marketInfo,
     tradeFlags,
@@ -1016,7 +1018,32 @@ export function ConfirmationBox(p: Props) {
             </div>
           }
         />
-        <ExchangeInfoRow className="swap-box-info-row" label={t`Stop-Loss PnL`} value={"--"} />
+        <ExchangeInfoRow
+          className="swap-box-info-row"
+          label={t`Stop-Loss PnL`}
+          value={(() => {
+            if (totalStopLossPnl?.isZero()) {
+              return "-";
+            }
+            return (
+              <Tooltip
+                handle={formatUsd(totalStopLossPnl)}
+                position="right-bottom"
+                handleClassName={totalStopLossPnl?.isNegative() ? "text-red" : "text-green"}
+                renderContent={() =>
+                  stopLossAmounts?.map((tp) => (
+                    <div className="space-between mb-xs">
+                      <span>{formatPercentage(tp.estimatedPnlPercentage, {})}</span>
+                      <span className={tp.estimatedPnl.isNegative() ? "text-red" : "text-green"}>
+                        {formatUsd(tp.estimatedPnl)}
+                      </span>
+                    </div>
+                  ))
+                }
+              />
+            );
+          })()}
+        />
       </div>
     );
   }
@@ -1039,7 +1066,32 @@ export function ConfirmationBox(p: Props) {
             </div>
           }
         />
-        <ExchangeInfoRow className="swap-box-info-row" label={t`Take-Profit PnL`} value={"--"} />
+        <ExchangeInfoRow
+          className="swap-box-info-row"
+          label={t`Take-Profit PnL`}
+          value={(() => {
+            if (totalTakeProfitPnl?.isZero()) {
+              return "-";
+            }
+            return (
+              <Tooltip
+                handle={formatUsd(totalTakeProfitPnl)}
+                position="right-bottom"
+                handleClassName={totalTakeProfitPnl?.isNegative() ? "text-red" : "text-green"}
+                renderContent={() =>
+                  takeProfitAmounts?.map((tp) => (
+                    <div className="space-between mb-xs">
+                      <span>{formatPercentage(tp.estimatedPnlPercentage, {})}</span>
+                      <span className={tp.estimatedPnl.isNegative() ? "text-red" : "text-green"}>
+                        {formatUsd(tp.estimatedPnl)}
+                      </span>
+                    </div>
+                  ))
+                }
+              />
+            );
+          })()}
+        />
       </div>
     );
   }

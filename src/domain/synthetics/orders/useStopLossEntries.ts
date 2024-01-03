@@ -2,17 +2,19 @@ import { useState, useMemo, useCallback } from "react";
 import { uniqueId } from "lodash";
 import { IncreasePositionAmounts, NextPositionValues, getDecreasePositionAmounts } from "domain/synthetics/trade";
 import { parseValue } from "lib/numbers";
-import { USD_DECIMALS } from "lib/legacy";
+import { USD_DECIMALS, getPositionKey } from "lib/legacy";
 import { MarketInfo } from "../markets";
 import { TradeFlags } from "../trade/useTradeFlags";
-import { PositionInfo, usePositionsConstants } from "../positions";
+import { PositionInfo, getPendingMockPosition, usePositionsConstants } from "../positions";
 import useUiFeeFactor from "../fees/utils/useUiFeeFactor";
-import { TokenData } from "../tokens";
+import { TokenData, convertToTokenAmount } from "../tokens";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import useWallet from "lib/wallets/useWallet";
 import { useUserReferralInfo } from "domain/referrals";
 import { useChainId } from "lib/chains";
 import { t } from "@lingui/macro";
+import { BigNumber } from "ethers";
+import { getPositionFee, getPriceImpactForPosition } from "../fees";
 
 export type Entry = {
   id: string;
@@ -50,6 +52,100 @@ export default function useStopLossEntries({
     { id: uniqueId(), price: "", percentage: "", error: "" },
   ]);
 
+  const positionKey = useMemo(() => {
+    if (!account || !marketInfo || !collateralToken) {
+      return undefined;
+    }
+
+    return getPositionKey(account, marketInfo.marketTokenAddress, collateralToken.address, isLong);
+  }, [account, collateralToken, isLong, marketInfo]);
+
+  const currentPosition = useMemo(() => {
+    if (!increaseAmounts || !positionKey) return;
+
+    return getPendingMockPosition({
+      isIncrease: true,
+      positionKey,
+      sizeDeltaUsd: increaseAmounts.sizeDeltaUsd || BigNumber.from(0),
+      sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens || BigNumber.from(0),
+      collateralDeltaAmount: increaseAmounts.collateralDeltaAmount || BigNumber.from(0),
+      updatedAt: Date.now(),
+      updatedAtBlock: BigNumber.from(0),
+    });
+  }, [increaseAmounts, positionKey]);
+
+  const currentPositionInfo: PositionInfo | undefined = useMemo(() => {
+    if (
+      !account ||
+      !positionKey ||
+      !marketInfo ||
+      !collateralToken ||
+      !isLong ||
+      !increaseAmounts ||
+      !currentPosition ||
+      !nextPositionValues ||
+      !userReferralInfo ||
+      !uiFeeFactor
+    )
+      return;
+
+    const closingPriceImpactDeltaUsd = getPriceImpactForPosition(
+      marketInfo,
+      currentPosition.sizeInUsd.mul(-1),
+      currentPosition.isLong,
+      { fallbackToZero: true }
+    );
+
+    const positionFeeInfo = getPositionFee(
+      marketInfo,
+      currentPosition.sizeInUsd,
+      closingPriceImpactDeltaUsd.gt(0),
+      userReferralInfo,
+      uiFeeFactor
+    );
+
+    return {
+      ...currentPosition,
+      marketInfo,
+      indexToken: marketInfo.indexToken,
+      collateralToken,
+      pnlToken: isLong ? marketInfo.longToken : marketInfo.shortToken,
+      markPrice: nextPositionValues.nextEntryPrice!,
+      entryPrice: nextPositionValues.nextEntryPrice,
+      liquidationPrice: nextPositionValues.nextLiqPrice,
+      collateralUsd: nextPositionValues.nextCollateralUsd!,
+      remainingCollateralUsd: nextPositionValues.nextCollateralUsd!,
+      remainingCollateralAmount: convertToTokenAmount(
+        nextPositionValues.nextCollateralUsd,
+        collateralToken.decimals,
+        collateralToken.prices.minPrice
+      )!,
+      hasLowCollateral: false,
+      leverage: nextPositionValues.nextLeverage,
+      leverageWithPnl: nextPositionValues.nextLeverage,
+      pnl: nextPositionValues.nextPnl!,
+      pnlPercentage: nextPositionValues.nextPnlPercentage!,
+      pnlAfterFees: BigNumber.from(0),
+      pnlAfterFeesPercentage: BigNumber.from(0),
+      netValue: nextPositionValues.nextCollateralUsd!,
+      closingFeeUsd: positionFeeInfo.positionFeeUsd,
+      uiFeeUsd: positionFeeInfo.uiFeeUsd || BigNumber.from(0),
+      pendingFundingFeesUsd: BigNumber.from(0),
+      pendingClaimableFundingFeesUsd: BigNumber.from(0),
+    };
+  }, [
+    account,
+    collateralToken,
+    increaseAmounts,
+    isLong,
+    marketInfo,
+    positionKey,
+    nextPositionValues,
+    userReferralInfo,
+    uiFeeFactor,
+    currentPosition,
+  ]);
+
   const stopLossAmounts = useMemo(() => {
     if (!increaseAmounts || !marketInfo || !collateralToken || !minPositionSizeUsd || !minCollateralUsd) return;
     return stopLossEntries
@@ -61,7 +157,7 @@ export default function useStopLossEntries({
           marketInfo,
           collateralToken,
           isLong,
-          position: existingPosition,
+          position: existingPosition || currentPositionInfo,
           closeSizeUsd: sizeUsd,
           keepLeverage: keepLeverage!,
           triggerPrice: price,
@@ -83,7 +179,13 @@ export default function useStopLossEntries({
     uiFeeFactor,
     increaseAmounts,
     userReferralInfo,
+    currentPositionInfo,
   ]);
+
+  const totalPnl = useMemo(() => {
+    if (!stopLossAmounts) return;
+    return stopLossAmounts.reduce((acc, amount) => acc.add(amount.estimatedPnl), BigNumber.from(0));
+  }, [stopLossAmounts]);
 
   const addEntry = useCallback(() => {
     const newEntry: Entry = {
@@ -124,5 +226,5 @@ export default function useStopLossEntries({
   const reset = useCallback(() => {
     setStopLossEntries([{ id: uniqueId(), price: "", percentage: "" }]);
   }, []);
-  return { entries: stopLossEntries, addEntry, updateEntry, deleteEntry, reset, amounts: stopLossAmounts };
+  return { entries: stopLossEntries, addEntry, updateEntry, deleteEntry, reset, amounts: stopLossAmounts, totalPnl };
 }
