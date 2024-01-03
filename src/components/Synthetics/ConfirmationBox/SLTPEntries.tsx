@@ -1,6 +1,7 @@
 import "./SLTPEntries.scss";
 import NumberInput from "components/NumberInput/NumberInput";
 import PercentageInput from "components/PercentageInput/PercentageInput";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { FaPlus } from "react-icons/fa";
 
 const SUGGESTION_PERCENTAGE_LIST = [10, 25, 50, 75, 100];
@@ -27,16 +28,30 @@ function SLTPEntries({ entries, updateEntry, addEntry, deleteEntry }) {
                 suggestions={SUGGESTION_PERCENTAGE_LIST}
               />
               <div className="SLTP-actions">
-                <button
-                  className="action-remove"
-                  onClick={() => deleteEntry(entryData.id)}
-                  disabled={entries.length === 1}
-                >
-                  <FaPlus color="#E74E5D" className="rotate-45" />
-                </button>
-                <button className="action-add" onClick={addEntry}>
-                  <FaPlus color="#5EC989" />
-                </button>
+                <TooltipWithPortal
+                  handle={
+                    <button
+                      className="action-remove"
+                      onClick={() => deleteEntry(entryData.id)}
+                      disabled={entries.length === 1}
+                    >
+                      <FaPlus color="#E74E5D" className="rotate-45" />
+                    </button>
+                  }
+                  portalClassName="SLTP-helper-text"
+                  position="right-center"
+                  renderContent={() => <span>Remove Row</span>}
+                />
+                <TooltipWithPortal
+                  handle={
+                    <button className="action-add" onClick={addEntry}>
+                      <FaPlus color="#5EC989" />
+                    </button>
+                  }
+                  portalClassName="SLTP-helper-text"
+                  position="right-center"
+                  renderContent={() => <span>Add Row</span>}
+                />
               </div>
             </div>
             {entryData.error && <div className="error">{entryData.error}</div>}

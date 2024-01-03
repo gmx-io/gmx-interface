@@ -62,6 +62,7 @@
       align-items: center;
       justify-content: center;
     }
+
     .action-remove {
       margin-right: 0.5rem;
       background-color: rgba(231, 78, 93, 0.15);
@@ -84,5 +85,14 @@
 
   .rotate-45 {
     transform: rotate(45deg);
+  }
+}
+
+.SLTP-helper-text .Tooltip-popup {
+  min-width: min-content;
+  text-wrap: nowrap;
+
+  span {
+    line-height: 1;
   }
 }

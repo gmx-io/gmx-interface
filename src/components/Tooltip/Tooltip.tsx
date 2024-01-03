@@ -12,6 +12,7 @@ export type TooltipPosition =
   | "left-top"
   | "right-top"
   | "right"
+  | "right-center"
   | "center-bottom"
   | "center-top";
 
