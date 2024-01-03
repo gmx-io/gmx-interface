@@ -60,7 +60,7 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
               <ExternalLink href={token.coingeckoUrl} className="asset-item">
                 <img className="asset-item-icon" src={coingeckoIcon} alt="Open in Coingecko" />
                 <p>
-                  <Trans>Open {token.assetSymbol ?? token.symbol} in Coingecko</Trans>
+                  <Trans>Open {token.coingeckoSymbol ?? token.assetSymbol ?? token.symbol} in Coingecko</Trans>
                 </p>
               </ExternalLink>
             )}
