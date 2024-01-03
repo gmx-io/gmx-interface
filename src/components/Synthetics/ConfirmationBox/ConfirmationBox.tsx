@@ -1018,32 +1018,28 @@ export function ConfirmationBox(p: Props) {
             </div>
           }
         />
-        <ExchangeInfoRow
-          className="swap-box-info-row"
-          label={t`Stop-Loss PnL`}
-          value={(() => {
-            if (totalStopLossPnl?.isZero()) {
-              return "-";
-            }
-            return (
-              <Tooltip
-                handle={formatUsd(totalStopLossPnl)}
-                position="right-bottom"
-                handleClassName={totalStopLossPnl?.isNegative() ? "text-red" : "text-green"}
-                renderContent={() =>
-                  stopLossAmounts?.map((tp) => (
-                    <div className="space-between mb-xs">
-                      <span>{formatPercentage(tp.estimatedPnlPercentage, {})}</span>
-                      <span className={tp.estimatedPnl.isNegative() ? "text-red" : "text-green"}>
-                        {formatUsd(tp.estimatedPnl)}
-                      </span>
-                    </div>
-                  ))
-                }
-              />
-            );
-          })()}
-        />
+        <ExchangeInfoRow className="swap-box-info-row" label={t`Stop-Loss PnL`}>
+          {totalStopLossPnl?.isZero() ? (
+            "-"
+          ) : (
+            <Tooltip
+              handle={formatUsd(totalStopLossPnl)}
+              position="right-bottom"
+              handleClassName={totalStopLossPnl?.isNegative() ? "text-red" : "text-green"}
+              className="SLTP-pnl-tooltip"
+              renderContent={() =>
+                stopLossAmounts?.map((tp) => (
+                  <div className="space-between mb-xs">
+                    <span className="mr-xs">{formatPercentage(tp.estimatedPnlPercentage, {})}</span>
+                    <span className={tp.estimatedPnl.isNegative() ? "text-red" : "text-green"}>
+                      {formatUsd(tp.estimatedPnl)}
+                    </span>
+                  </div>
+                ))
+              }
+            />
+          )}
+        </ExchangeInfoRow>
       </div>
     );
   }
@@ -1066,32 +1062,28 @@ export function ConfirmationBox(p: Props) {
             </div>
           }
         />
-        <ExchangeInfoRow
-          className="swap-box-info-row"
-          label={t`Take-Profit PnL`}
-          value={(() => {
-            if (totalTakeProfitPnl?.isZero()) {
-              return "-";
-            }
-            return (
-              <Tooltip
-                handle={formatUsd(totalTakeProfitPnl)}
-                position="right-bottom"
-                handleClassName={totalTakeProfitPnl?.isNegative() ? "text-red" : "text-green"}
-                renderContent={() =>
-                  takeProfitAmounts?.map((tp) => (
-                    <div className="space-between mb-xs">
-                      <span>{formatPercentage(tp.estimatedPnlPercentage, {})}</span>
-                      <span className={tp.estimatedPnl.isNegative() ? "text-red" : "text-green"}>
-                        {formatUsd(tp.estimatedPnl)}
-                      </span>
-                    </div>
-                  ))
-                }
-              />
-            );
-          })()}
-        />
+        <ExchangeInfoRow className="swap-box-info-row" label={t`Take-Profit PnL`}>
+          {totalTakeProfitPnl?.isZero() ? (
+            "-"
+          ) : (
+            <Tooltip
+              handle={formatUsd(totalTakeProfitPnl)}
+              position="right-bottom"
+              handleClassName={totalTakeProfitPnl?.isNegative() ? "text-red" : "text-green"}
+              className="SLTP-pnl-tooltip"
+              renderContent={() =>
+                takeProfitAmounts?.map((tp) => (
+                  <div className="space-between mb-xs">
+                    <span className="mr-xs">{formatPercentage(tp.estimatedPnlPercentage, {})}</span>
+                    <span className={tp.estimatedPnl.isNegative() ? "text-red" : "text-green"}>
+                      {formatUsd(tp.estimatedPnl)}
+                    </span>
+                  </div>
+                ))
+              }
+            />
+          )}
+        </ExchangeInfoRow>
       </div>
     );
   }

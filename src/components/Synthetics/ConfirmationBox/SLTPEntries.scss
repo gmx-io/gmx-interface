@@ -1,4 +1,7 @@
 .SLTPEntries-wrapper {
+  display: grid;
+  grid-row-gap: 0.35rem;
+
   .SLTPEntry-row {
     display: grid;
     grid-template-columns: auto auto auto;
@@ -16,7 +19,7 @@
       background: #212540;
 
       .price-input {
-        padding: 0.2rem 0.5rem 0.35rem;
+        padding: 0.2rem 0.5rem 0.2rem;
         font-size: 1.4rem;
         border-radius: 4px;
         max-width: 7rem;
