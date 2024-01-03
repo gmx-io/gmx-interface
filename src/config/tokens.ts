@@ -303,7 +303,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 6,
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/bridged-usdc-avalanche-bridge",
       explorerUrl: "https://snowtrace.io/address/0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
       isV1Available: true,
     },

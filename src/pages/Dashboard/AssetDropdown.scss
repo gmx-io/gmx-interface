@@ -9,6 +9,7 @@
   background: var(--dark-blue);
   outline: none;
   z-index: 100;
+  white-space: nowrap;
 }
 
 .center-both {
@@ -56,10 +57,8 @@
 
 @media (max-width: 1100px) {
   .asset-menu-items {
-    max-width: auto;
     min-width: 18rem;
     width: auto;
-    white-space: nowrap;
 
     &.left {
       right: 0;

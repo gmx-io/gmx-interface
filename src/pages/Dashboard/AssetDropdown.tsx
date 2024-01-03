@@ -60,11 +60,7 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
               <ExternalLink href={token.coingeckoUrl} className="asset-item">
                 <img className="asset-item-icon" src={coingeckoIcon} alt="Open in Coingecko" />
                 <p>
-                  {token.isNative || token.isSynthetic ? (
-                    <Trans>Open {token.name} in Coingecko</Trans>
-                  ) : (
-                    <Trans>Open in Coingecko</Trans>
-                  )}
+                  <Trans>Open {token.assetSymbol ?? token.symbol} in Coingecko</Trans>
                 </p>
               </ExternalLink>
             )}
@@ -74,7 +70,7 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
               <ExternalLink href={token.explorerUrl} className="asset-item">
                 <img className="asset-item-icon" src={chainIcon} alt="Open in explorer" />
                 <p>
-                  <Trans>Open in Explorer</Trans>
+                  <Trans>Open {token.assetSymbol ?? token.symbol} in Explorer</Trans>
                 </p>
               </ExternalLink>
             )}
@@ -97,7 +93,7 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
               >
                 <img className="asset-item-icon" src={metamaskIcon} alt={t`Add to Metamask`} />
                 <p>
-                  <Trans>Add to Metamask</Trans>
+                  <Trans>Add {token.assetSymbol ?? token.symbol} to Metamask</Trans>
                 </p>
               </div>
             )}
