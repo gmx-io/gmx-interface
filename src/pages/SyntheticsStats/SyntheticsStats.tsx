@@ -23,7 +23,7 @@ import "./SyntheticsStats.scss";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { DownloadAsCsv } from "components/DownloadAsCsv/DownloadAsCsv";
 import { format } from "date-fns";
-import { getPositiveOrNegativeClass } from "lib/utils";
+import { getPlusOrMinusSymbol, getPositiveOrNegativeClass } from "lib/utils";
 
 function pow(bn: BigNumber, exponent: BigNumber) {
   // this is just aproximation
@@ -794,7 +794,7 @@ export function SyntheticsStats() {
                             <span
                               className={cx({ positive: market.netPnlMax.gt(0), negative: market.netPnlMax.lt(0) })}
                             >
-                              {market.netPnlMax.gt(0) ? "+" : "-"}${formatAmountHuman(market.netPnlMax.abs(), 30)}
+                              {getPlusOrMinusSymbol(market.netPnlMax)}${formatAmountHuman(market.netPnlMax.abs(), 30)}
                             </span>
                           }
                           renderContent={() => (
@@ -803,7 +803,7 @@ export function SyntheticsStats() {
                                 showDollar={false}
                                 label="PnL Long"
                                 className={getPositiveOrNegativeClass(market.pnlLongMax)}
-                                value={`${market.pnlLongMax.gt(0) ? "+" : "-"}${formatAmountHuman(
+                                value={`${getPlusOrMinusSymbol(market.pnlLongMax)}${formatAmountHuman(
                                   market.pnlLongMax.abs(),
                                   30,
                                   true
@@ -813,7 +813,7 @@ export function SyntheticsStats() {
                                 showDollar={false}
                                 label="PnL Short"
                                 className={getPositiveOrNegativeClass(market.pnlShortMax)}
-                                value={`${market.pnlShortMax.gt(0) ? "+" : "-"}${formatAmountHuman(
+                                value={`${getPlusOrMinusSymbol(market.pnlShortMax)}${formatAmountHuman(
                                   market.pnlShortMax.abs(),
                                   30,
                                   true

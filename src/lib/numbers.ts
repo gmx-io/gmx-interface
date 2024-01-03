@@ -1,7 +1,8 @@
-import { BigNumber, BigNumberish, ethers } from "ethers";
+import { BigNumber, BigNumberish, constants, ethers } from "ethers";
 import { PRECISION, USD_DECIMALS } from "./legacy";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
+import { getPlusOrMinusSymbol } from "./utils";
 
 const MAX_EXCEEDING_THRESHOLD = "1000000000";
 const MIN_EXCEEDING_THRESHOLD = "0.01";
@@ -185,12 +186,7 @@ export function formatDeltaUsd(
     return undefined;
   }
 
-  let sign = "";
-  if (!deltaUsd.eq(0)) {
-    sign = deltaUsd?.gt(0) ? "+" : "-";
-  } else if (opts.showPlusForZero) {
-    sign = "+";
-  }
+  const sign = getPlusOrMinusSymbol(deltaUsd, { showPlusForZero: opts.showPlusForZero });
 
   const exceedingInfo = getLimitedDisplay(deltaUsd, USD_DECIMALS);
   const percentageStr = percentage ? ` (${sign}${formatPercentage(percentage.abs())})` : "";
@@ -211,11 +207,7 @@ export function formatPercentage(percentage?: BigNumber, opts: { fallbackToZero?
     return undefined;
   }
 
-  let sign = "";
-
-  if (signed && !percentage.eq(0)) {
-    sign = percentage?.gt(0) ? "+" : "-";
-  }
+  const sign = signed ? getPlusOrMinusSymbol(percentage) : "";
 
   return `${sign}${formatAmount(percentage.abs(), 2, 2)}%`;
 }
