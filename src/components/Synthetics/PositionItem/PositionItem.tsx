@@ -88,7 +88,7 @@ export function PositionItem(p: Props) {
               label={t`PnL`}
               value={formatDeltaUsd(p.position?.pnl) || "..."}
               showDollar={false}
-              className={p.position?.pnl?.gt(0) ? "text-green" : "text-red"}
+              className={getPositiveOrNegativeClass(p.position.pnl)}
             />
             <StatsTooltipRow
               label={t`Accrued Borrow Fee`}
@@ -125,7 +125,7 @@ export function PositionItem(p: Props) {
               label={t`PnL After Fees`}
               value={formatDeltaUsd(p.position.pnlAfterFees, p.position.pnlAfterFeesPercentage)}
               showDollar={false}
-              className={p.position.pnlAfterFees?.gt(0) ? "text-green" : "text-red"}
+              className={getPositiveOrNegativeClass(p.position.pnlAfterFees)}
             />
           </div>
         )}

@@ -21,6 +21,7 @@ import { ShareBar } from "components/ShareBar/ShareBar";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
 import { useCallback, useMemo } from "react";
 import "./MarketCard.scss";
+import { getPositiveOrNegativeClass } from "lib/utils";
 
 export type Props = {
   marketInfo?: MarketInfo;
@@ -75,7 +76,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
     const long = (
       <Trans>
         Long positions {isLongPositive ? t`receive` : t`pay`} a Funding Fee of{" "}
-        <span className={isLongPositive ? "text-green" : "text-red"}>
+        <span className={getPositiveOrNegativeClass(fundingRateLong)}>
           {isLongPositive ? "+" : "-"}
           {formatAmount(fundingRateLong.abs(), 30, 4)}%
         </span>{" "}
@@ -87,7 +88,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
     const short = (
       <Trans>
         Short positions {isShortPositive ? t`receive` : t`pay`} a Funding Fee of{" "}
-        <span className={isShortPositive ? "text-green" : "text-red"}>
+        <span className={getPositiveOrNegativeClass(fundingRateShort)}>
           {isShortPositive ? "+" : "-"}
           {formatAmount(fundingRateShort.abs(), 30, 4)}%
         </span>{" "}

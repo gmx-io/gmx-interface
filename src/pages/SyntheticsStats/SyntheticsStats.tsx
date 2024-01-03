@@ -23,6 +23,7 @@ import "./SyntheticsStats.scss";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { DownloadAsCsv } from "components/DownloadAsCsv/DownloadAsCsv";
 import { format } from "date-fns";
+import { getPositiveOrNegativeClass } from "lib/utils";
 
 function pow(bn: BigNumber, exponent: BigNumber) {
   // this is just aproximation
@@ -457,12 +458,12 @@ export function SyntheticsStats() {
                       <TooltipWithPortal
                         handle={
                           <>
-                            <span className={fundingAprLong.gt(0) ? "text-green" : "text-red"}>
+                            <span className={getPositiveOrNegativeClass(fundingAprLong)}>
                               {market.longsPayShorts ? "-" : "+"}
                               {formatAmount(fundingAprLong.abs(), 30, 4)}%
                             </span>
                             {" / "}
-                            <span className={fundingAprShort.gt(0) ? "text-green" : "text-red"}>
+                            <span className={getPositiveOrNegativeClass(fundingAprShort)}>
                               {market.longsPayShorts ? "+" : "-"}
                               {formatAmount(fundingAprShort.abs(), 30, 4)}%
                             </span>
@@ -801,7 +802,7 @@ export function SyntheticsStats() {
                               <StatsTooltipRow
                                 showDollar={false}
                                 label="PnL Long"
-                                className={market.pnlLongMax.gt(0) ? "text-green" : "text-red"}
+                                className={getPositiveOrNegativeClass(market.pnlLongMax)}
                                 value={`${market.pnlLongMax.gt(0) ? "+" : "-"}${formatAmountHuman(
                                   market.pnlLongMax.abs(),
                                   30,
@@ -811,7 +812,7 @@ export function SyntheticsStats() {
                               <StatsTooltipRow
                                 showDollar={false}
                                 label="PnL Short"
-                                className={market.pnlShortMax.gt(0) ? "text-green" : "text-red"}
+                                className={getPositiveOrNegativeClass(market.pnlShortMax)}
                                 value={`${market.pnlShortMax.gt(0) ? "+" : "-"}${formatAmountHuman(
                                   market.pnlShortMax.abs(),
                                   30,
