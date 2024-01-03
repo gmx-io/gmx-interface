@@ -1,4 +1,4 @@
-import { BigNumber, BigNumberish, constants, ethers } from "ethers";
+import { BigNumber, BigNumberish, ethers } from "ethers";
 import { PRECISION, USD_DECIMALS } from "./legacy";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
