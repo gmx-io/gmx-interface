@@ -1,9 +1,8 @@
 import { BigNumber, Signer } from "ethers";
 import { callContract } from "lib/contracts";
 import { SUBACCOUNT_ORDER_ACTION } from "./constants";
-import { SubaccountParams } from "./types";
-import { t } from "@lingui/macro";
 import { getSubaccountRouterContract } from "./getSubaccountContract";
+import { SubaccountParams } from "./types";
 
 const ZERO = BigNumber.from(0);
 
@@ -44,7 +43,7 @@ export async function initSubaccount(
   return callContract(chainId, subaccountRouter, "multicall", [encodedPayload], {
     value,
     setPendingTxns,
-    successMsg: isAccountActive ? t`Subacccount is updated` : t`Subacccount is activated`,
-    sentMsg: isAccountActive ? t`Updating subaccount` : t`Activating subaccount`,
+    hideSentMsg: true,
+    hideSuccessMsg: true,
   });
 }

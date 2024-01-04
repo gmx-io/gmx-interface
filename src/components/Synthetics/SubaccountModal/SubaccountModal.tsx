@@ -15,6 +15,7 @@ import {
   useSubaccountAddress,
   useSubaccountGenerateSubaccount,
   useSubaccountModalOpen,
+  useSubaccountNotificationState,
   useSubaccountPendingTx,
   useSubaccountPrivateKey,
   useSubaccountState,
@@ -39,6 +40,7 @@ import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { ReactNode, memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useCopyToClipboard, usePrevious } from "react-use";
+import { SubaccountNotification } from "../StatusNotification/SubaccountNotification";
 import "./SubaccountModal.scss";
 import { SubaccountStatus } from "./SubaccountStatus";
 import { getApproxSubaccountActionsCountByBalance, getButtonState, getDefaultValues } from "./utils";
@@ -229,23 +231,62 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     }
   }, [isTxPending]);
 
-  const handleDisableClick = useCallback(async () => {
+  const [notificationState, setNotificationState] = useSubaccountNotificationState();
+
+  const isSubaccountGenerated = !subaccountAddress || !actionsCount;
+
+  const showToast = useCallback(() => {
+    const toastId = Date.now();
+
+    helperToast.success(
+      <SubaccountNotification
+        toastId={toastId}
+        subaccountWasAlreadyGenerated={!isSubaccountGenerated}
+        subaccountWasAlreadyActivated={isSubaccountActive}
+      />,
+      {
+        autoClose: false,
+        toastId,
+      }
+    );
+  }, [isSubaccountActive, isSubaccountGenerated]);
+
+  const handleDeactivateClick = useCallback(async () => {
     if (!subaccountAddress) throw new Error("Subaccount address is not set");
     if (!signer) throw new Error("Signer is not set");
 
+    showToast();
+
+    setNotificationState("deactivating");
     if (isSubaccountActive) {
       setIsSubaccountUpdating(true);
 
       try {
-        await removeSubaccount(chainId, signer, subaccountAddress);
+        const res = await removeSubaccount(chainId, signer, subaccountAddress);
+
+        setActiveTx(res.hash);
+      } catch (err) {
+        setNotificationState("deactivationFailed");
+        throw err;
       } finally {
         setIsSubaccountUpdating(false);
       }
+    } else {
+      setNotificationState("deactivated");
     }
 
     oneClickTradingState.clearSubaccount();
     setNextFormState("inactive");
-  }, [chainId, isSubaccountActive, oneClickTradingState, signer, subaccountAddress]);
+  }, [
+    chainId,
+    isSubaccountActive,
+    oneClickTradingState,
+    setActiveTx,
+    setNotificationState,
+    showToast,
+    signer,
+    subaccountAddress,
+  ]);
 
   useEffect(() => {
     if (isVisible) {
@@ -260,6 +301,18 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     }
   }, [isTxPending, prevIsTxPending, setActiveTx, setNextFormState]);
 
+  useEffect(() => {
+    if (isTxPending === false && prevIsTxPending === true && notificationState === "activating") {
+      // FIXME "activationFailed"
+      setNotificationState("activated");
+    }
+
+    if (isTxPending === false && prevIsTxPending === true && notificationState === "deactivating") {
+      // FIXME "deactivationFailed"
+      setNotificationState("deactivated");
+    }
+  }, [isTxPending, notificationState, prevIsTxPending, setNotificationState]);
+
   const generateSubaccount = useSubaccountGenerateSubaccount();
 
   const handleButtonClick = useCallback(async () => {
@@ -270,11 +323,22 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
       let address = subaccountAddress;
       let count = actionsCount;
 
-      if (!subaccountAddress || !actionsCount) {
-        address = await generateSubaccount();
+      setNotificationState(isSubaccountGenerated ? "generating" : "activating");
+      showToast();
 
-        // user rejects
-        if (!address) return;
+      if (isSubaccountGenerated) {
+        try {
+          address = await generateSubaccount();
+
+          // user rejects
+          if (!address) {
+            setNotificationState("generationFailed");
+            return;
+          }
+        } catch (error) {
+          setNotificationState("generationFailed");
+          throw error;
+        }
 
         count =
           (await getCurrentMaxActionsCount({
@@ -285,25 +349,39 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
           })) ?? BigNumber.from(0);
       }
 
-      if (!address) throw new Error("address is not defined");
-      if (!count) throw new Error("Action counts are not defined");
+      if (!address) {
+        setNotificationState("activationFailed");
+        throw new Error("address is not defined");
+      }
 
-      const tx = await initSubaccount(
-        chainId,
-        signer,
-        address,
-        account,
-        isSubaccountActive ?? false,
-        count,
-        setPendingTxns,
-        {
-          topUp: topUp,
-          maxAutoTopUpAmount,
-          wntForAutoTopUps,
-          maxAllowedActions,
-        }
-      );
-      setActiveTx(tx.hash);
+      if (!count) {
+        setNotificationState("activationFailed");
+        throw new Error("Action counts are not defined");
+      }
+
+      setNotificationState("activating");
+
+      try {
+        const tx = await initSubaccount(
+          chainId,
+          signer,
+          address,
+          account,
+          isSubaccountActive ?? false,
+          count,
+          setPendingTxns,
+          {
+            topUp: topUp,
+            maxAutoTopUpAmount,
+            wntForAutoTopUps,
+            maxAllowedActions,
+          }
+        );
+        setActiveTx(tx.hash);
+      } catch (err) {
+        setNotificationState("activationFailed");
+        throw err;
+      }
     }
 
     setIsSubaccountUpdating(true);
@@ -316,11 +394,14 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     }
   }, [
     account,
-    subaccountAddress,
     signer,
+    subaccountAddress,
     actionsCount,
-    generateSubaccount,
+    setNotificationState,
+    isSubaccountGenerated,
+    showToast,
     chainId,
+    generateSubaccount,
     isSubaccountActive,
     setPendingTxns,
     topUp,
@@ -329,6 +410,8 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     maxAllowedActions,
     setActiveTx,
   ]);
+
+  useEffect(() => {}, []);
 
   const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
@@ -354,7 +437,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     () =>
       getButtonState({
         mainAccEthBalance: mainAccNativeTokenBalance,
-
+        subaccountAddress,
         topUp,
         maxAutoTopUpAmount,
         wntForAutoTopUps,
@@ -370,6 +453,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
       }),
     [
       mainAccNativeTokenBalance,
+      subaccountAddress,
       topUp,
       maxAutoTopUpAmount,
       wntForAutoTopUps,
@@ -464,8 +548,8 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             <button onClick={handleWithdrawClick} className="SubaccountModal-mini-button">
               {withdrawalLoading ? <SpinningLoader /> : <Trans>Withdraw</Trans>}
             </button>
-            <button onClick={handleDisableClick} className="SubaccountModal-mini-button warning">
-              {isSubaccountUpdating ? <SpinningLoader /> : <Trans>Disable</Trans>}
+            <button onClick={handleDeactivateClick} className="SubaccountModal-mini-button warning">
+              {isSubaccountUpdating ? <SpinningLoader /> : <Trans>Deactivate</Trans>}
             </button>
           </div>
         </>

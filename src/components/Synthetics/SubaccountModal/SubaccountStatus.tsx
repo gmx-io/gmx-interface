@@ -2,6 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import {
   useIsSubaccountActive,
   useSubaccountActionCounts,
+  useSubaccountAddress,
   useSubaccountInsufficientFunds,
   useSubaccountState,
 } from "context/SubaccountContext/SubaccountContext";
@@ -10,6 +11,9 @@ import "./SubaccountStatus.scss";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { BigNumber } from "ethers";
+import infoIcon from "img/ic_info.svg";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import cx from "classnames";
 
 function SubaccountStatusImpl({
   isSubaccountUpdating,
@@ -31,7 +35,8 @@ function SubaccountStatusImpl({
   let working = false;
   let description: ReactNode = null;
   let needToShowRemainingActionsCount = false;
-  let statusText: string;
+  let statusText: string = "";
+  let needToRenderActivationButton = false;
 
   if (isSubaccountUpdating) {
     statusText = t`Updating`;
@@ -50,9 +55,7 @@ function SubaccountStatusImpl({
       </Trans>
     );
   } else if (!isSubaccountActive) {
-    statusText = t`Inactive`;
-    working = false;
-    description = <Trans>Need to click Activate to proceed.</Trans>;
+    needToRenderActivationButton = true;
   } else {
     statusText = t`Active`;
     working = true;
@@ -75,6 +78,17 @@ function SubaccountStatusImpl({
   const remaining = remainingActionsCount?.lt(approxNumberOfOperationsByBalance ?? 0)
     ? remainingActionsCount
     : approxNumberOfOperationsByBalance;
+
+  const subaccountAddress = useSubaccountAddress();
+
+  if (needToRenderActivationButton) {
+    return (
+      <Info standalone={!subaccountAddress}>
+        Generate and activate a Subaccount for <ExternalLink href="#">One-Click Trading</ExternalLink> to reduce signing
+        popups.
+      </Info>
+    );
+  }
 
   return (
     <div className={`SubaccountStatus ${hasBorder ? "SubaccountStatus-border" : ""}`}>
@@ -110,3 +124,14 @@ function SubaccountStatusImpl({
   );
 }
 export const SubaccountStatus = memo(SubaccountStatusImpl);
+
+const Info = ({ standalone = false, children }: { children: ReactNode; standalone?: boolean }) => {
+  return (
+    <div className={cx("SubaccountModal-warning", { standalone })}>
+      <div className="SubaccountModal-warning-icon">
+        <img src={infoIcon} alt="Warning" />
+      </div>
+      <div className="SubaccountModal-warning-text text-gray">{children}</div>
+    </div>
+  );
+};

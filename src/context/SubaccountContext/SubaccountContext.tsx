@@ -34,31 +34,45 @@ import { createContext, useContextSelector } from "use-context-selector";
 
 export type Subaccount = ReturnType<typeof useSubaccount>;
 
+type SubaccountNotificationState =
+  | "generating"
+  | "activating"
+  | "activated"
+  | "activationFailed"
+  | "generationFailed"
+  | "deactivating"
+  | "deactivated"
+  | "deactivationFailed"
+  | "none";
+
 export type SubaccountContext = {
-  subaccount: {
-    address: string;
-    privateKey: string;
-  } | null;
+  activeTx: string | null;
+  baseExecutionFee: ExecutionFee | null;
   contractData: {
     isSubaccountActive: boolean;
     maxAllowedActions: BigNumber;
     currentActionsCount: BigNumber;
     currentAutoTopUpAmount: BigNumber;
   } | null;
+  subaccount: {
+    address: string;
+    privateKey: string;
+  } | null;
   modalOpen: boolean;
-  baseExecutionFee: ExecutionFee | null;
-  setModalOpen: (v: boolean) => void;
-  generateSubaccount: () => Promise<string | null>;
-  clearSubaccount: () => void;
+  notificationState: SubaccountNotificationState;
 
-  activeTx: string | null;
+  clearSubaccount: () => void;
+  generateSubaccount: () => Promise<string | null>;
   setActiveTx: (tx: string | null) => void;
+  setModalOpen: (v: boolean) => void;
+  setNotificationState: (state: SubaccountNotificationState) => void;
 };
 
 const context = createContext<SubaccountContext | null>(null);
 
 export function SubaccountContextProvider({ children }: PropsWithChildren) {
   const [modalOpen, setModalOpen] = useState(false);
+  const [notificationState, setNotificationState] = useState<SubaccountNotificationState>("none");
 
   const { signer, account } = useWallet();
   const { chainId } = useChainId();
@@ -168,11 +182,21 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
       contractData: config && contractData ? contractData : null,
       generateSubaccount,
       clearSubaccount,
-
+      notificationState,
       activeTx,
       setActiveTx,
+      setNotificationState,
     };
-  }, [activeTx, baseExecutionFee, clearSubaccount, config, contractData, generateSubaccount, modalOpen]);
+  }, [
+    activeTx,
+    baseExecutionFee,
+    clearSubaccount,
+    config,
+    contractData,
+    generateSubaccount,
+    modalOpen,
+    notificationState,
+  ]);
 
   return <context.Provider value={value}>{children}</context.Provider>;
 }
@@ -341,4 +365,11 @@ export function useSubaccountCancelOrdersDetailsMessage(
 
     return null;
   }, [isLastAction, mainAccountInsufficientFunds, openSubaccountModal, subaccountInsufficientFunds]);
+}
+
+export function useSubaccountNotificationState() {
+  return [
+    useSubaccountSelector((s) => s.notificationState),
+    useSubaccountSelector((s) => s.setNotificationState),
+  ] as const;
 }

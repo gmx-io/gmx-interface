@@ -11,6 +11,8 @@ export function getButtonState({
   wntForAutoTopUps,
   maxAllowedActions,
 
+  subaccountAddress,
+
   needPayTokenApproval,
 
   mainAccEthBalance,
@@ -25,6 +27,8 @@ export function getButtonState({
   maxAutoTopUpAmount: BigNumber | null;
   wntForAutoTopUps: BigNumber | null;
   maxAllowedActions: BigNumber | null;
+
+  subaccountAddress: string | null;
 
   needPayTokenApproval: boolean;
 
@@ -73,7 +77,11 @@ export function getButtonState({
 
     return { text: t`Update` };
   } else if (!isSubaccountActive) {
-    return { text: t`Generate & Activate Subaccount` };
+    if (subaccountAddress) {
+      return { text: t`Activate Subaccount` };
+    } else {
+      return { text: t`Generate & Activate Subaccount` };
+    }
   }
 
   return { disabled: true, spinner: true, text: "" };

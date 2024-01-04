@@ -270,11 +270,18 @@ msgstr ""
 #~ msgid "Activate"
 #~ msgstr ""
 
-#: src/domain/synthetics/subaccount/initSubaccount.ts
-msgid "Activating subaccount"
+#: src/components/Synthetics/SubaccountModal/utils.ts
+msgid "Activate Subaccount"
 msgstr ""
 
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Activating Subaccount"
+msgstr ""
+
+#: src/domain/synthetics/subaccount/initSubaccount.ts
+#~ msgid "Activating subaccount"
+#~ msgstr ""
+
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "Active"
 msgstr ""
@@ -359,8 +366,8 @@ msgid "Allowed Slippage below {0}% may result in failed orders."
 msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-msgid "Almost out of funds for One‑Click Trading."
-msgstr ""
+#~ msgid "Almost out of funds for One‑Click Trading."
+#~ msgstr ""
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
@@ -1311,6 +1318,20 @@ msgstr "Fecha"
 msgid "DeFi Portfolio Tracker"
 msgstr "Rastreador de la artera DeFi"
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Deactivate"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Deactivating subaccount."
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Deactivation"
+msgstr ""
+
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Synthetics/TVChart/TVChart.tsx
 msgid "Dec."
@@ -1464,8 +1485,8 @@ msgid "Diff"
 msgstr "Dif"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "Disable"
-msgstr ""
+#~ msgid "Disable"
+#~ msgstr ""
 
 #: src/App/App.js
 msgid "Disable order validations"
@@ -2193,6 +2214,10 @@ msgstr ""
 msgid "Generate Referral Code"
 msgstr "Generar Código de Referido"
 
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Generating and activating Subaccount"
+msgstr ""
+
 #: src/components/Exchange/PositionShareCard.tsx
 msgid "Generating shareable image..."
 msgstr "Generando imagen para compartir..."
@@ -2230,7 +2255,6 @@ msgstr "Si tienes una posicion existente, la posicion se cerrará a {0} USD.<0/>
 msgid "Image generation error, please refresh and try again."
 msgstr "Error de generación de imagen, por favor actualice e intente de nuevo"
 
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "Inactive"
@@ -3213,8 +3237,8 @@ msgstr "Monedero NFT"
 #~ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-msgid "Need to click Activate to proceed."
-msgstr ""
+#~ msgid "Need to click Activate to proceed."
+#~ msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Negative Funding Fees are settled against the collateral automatically and will influence the liquidation price. Positive Funding Fees can be claimed under Claimable Funding after realizing any action on the position."
@@ -3609,6 +3633,15 @@ msgstr "Pagar"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Pay Amount"
 msgstr "Importe a pagar"
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Pending Wallet message sign"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Pending Wallet transaction sign"
+msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
@@ -4566,15 +4599,43 @@ msgid "Structured Products"
 msgstr "Productos Estructurados"
 
 #: src/domain/synthetics/subaccount/initSubaccount.ts
-msgid "Subacccount is activated"
-msgstr ""
+#~ msgid "Subacccount is activated"
+#~ msgstr ""
 
 #: src/domain/synthetics/subaccount/initSubaccount.ts
-msgid "Subacccount is updated"
-msgstr ""
+#~ msgid "Subacccount is updated"
+#~ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Subaccount Balance"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Subaccount activated."
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Subaccount activation failed."
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Subaccount created."
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Subaccount deactivated."
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Subaccount deactivation failed."
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Subaccount generation failed."
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Subaccount is updated."
 msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
@@ -5478,13 +5539,17 @@ msgstr ""
 msgid "Updating Order..."
 msgstr "Actualizando orden..."
 
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Updating Subaccount"
+msgstr ""
+
 #: src/domain/synthetics/orders/updateOrderTxn.ts
 msgid "Updating order"
 msgstr ""
 
 #: src/domain/synthetics/subaccount/initSubaccount.ts
-msgid "Updating subaccount"
-msgstr ""
+#~ msgid "Updating subaccount"
+#~ msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Updating..."
@@ -5657,6 +5722,7 @@ msgstr "Ver"
 msgid "View in Explorer"
 msgstr "Ver en el Explorador"
 
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 #: src/lib/contracts/callContract.tsx
 msgid "View status."
 msgstr "Ver estado."
