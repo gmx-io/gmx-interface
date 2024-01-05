@@ -1115,6 +1115,14 @@ export function ConfirmationBox(p: Props) {
     );
   }
 
+  const hasWarning =
+    renderExistingLimitOrdersWarning() ||
+    renderDifferentCollateralWarning() ||
+    renderCollateralSpreadWarning() ||
+    renderExistingTriggerErrors() ||
+    renderExistingTriggerWarning() ||
+    renderDifferentTokensWarning();
+
   function renderIncreaseOrderSection() {
     if (!marketInfo || !fromToken || !collateralToken || !toToken) {
       return null;
@@ -1136,7 +1144,7 @@ export function ConfirmationBox(p: Props) {
       <>
         <div>
           {renderMain()}
-          <div className="line-divider" />
+          {hasWarning && <div className="line-divider" />}
           {renderExistingLimitOrdersWarning()}
           {renderDifferentCollateralWarning()}
           {renderCollateralSpreadWarning()}
