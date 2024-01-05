@@ -92,11 +92,10 @@ import "./ConfirmationBox.scss";
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
-import useStopLossEntries from "domain/synthetics/orders/useStopLossEntries";
 import { FaArrowRight } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import SLTPEntries from "./SLTPEntries";
-import useTakeProfitEntries from "domain/synthetics/orders/useTakeProfitEntries";
+import useSLTPEntries from "domain/synthetics/orders/useSLTPEntries";
 
 export type Props = {
   isVisible: boolean;
@@ -194,15 +193,7 @@ export function ConfirmationBox(p: Props) {
   const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);
   const submitButtonRef = useRef<null | HTMLDivElement>(null);
 
-  const {
-    entries: stopLossEntries,
-    addEntry: addStopLossEntry,
-    deleteEntry: deleteStopLossEntry,
-    updateEntry: updateStopLossEntry,
-    reset: resetStopLossEntries,
-    amounts: stopLossAmounts,
-    totalPnl: totalStopLossPnl,
-  } = useStopLossEntries({
+  const { stopLoss, takeProfit } = useSLTPEntries({
     marketInfo,
     tradeFlags,
     collateralToken,
@@ -213,6 +204,16 @@ export function ConfirmationBox(p: Props) {
   });
 
   const {
+    entries: stopLossEntries,
+    addEntry: addStopLossEntry,
+    deleteEntry: deleteStopLossEntry,
+    updateEntry: updateStopLossEntry,
+    reset: resetStopLossEntries,
+    amounts: stopLossAmounts,
+    totalPnl: totalStopLossPnl,
+  } = stopLoss;
+
+  const {
     entries: takeProfitEntries,
     addEntry: addTakeProfitEntry,
     deleteEntry: deleteTakeProfitEntry,
@@ -220,15 +221,7 @@ export function ConfirmationBox(p: Props) {
     reset: resetTakeProfitEntries,
     amounts: takeProfitAmounts,
     totalPnl: totalTakeProfitPnl,
-  } = useTakeProfitEntries({
-    marketInfo,
-    tradeFlags,
-    collateralToken,
-    increaseAmounts,
-    existingPosition,
-    keepLeverage,
-    nextPositionValues,
-  });
+  } = takeProfit;
 
   useEffect(() => {
     setAllowedSlippage(savedAllowedSlippage);
