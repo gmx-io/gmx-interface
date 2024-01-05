@@ -1149,6 +1149,10 @@ msgstr "続ける"
 msgid "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
 msgstr "esGMXトークンをGMXトークンに転換させる。<0/>ボールトを使用する前に <1>べスティングの詳細</1>を読んでください。"
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Convert this amount of  {0} to {1} in your Main Account to allow for auto top-ups, as only {2} can be automatically transferred to your Subaccount. The {3} balance of your main account is shown above."
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Convert {wrappedTokenSymbol} to {nativeTokenSymbol}"
@@ -3364,6 +3368,10 @@ msgstr ""
 #~ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "Not enough {0} on your main account. Use Convert {1} to {2} field to increase the balance."
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 #~ msgid "Not working"
 #~ msgstr ""
@@ -4960,6 +4968,10 @@ msgstr "esGMXトークンはいつでもステークまたはべスティング�
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr "マーク価格が変化したため、アドレスの横に表示されている\"...\"アイコンをクリックして最大許容スリッページを増やすことを検討してください。"
 
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the Max allowed actions field."
+msgstr ""
+
 #: src/domain/legacy.ts
 #: src/domain/synthetics/fees/utils/executionFee.ts
 msgid "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
@@ -5006,8 +5018,8 @@ msgstr ""
 #~ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-msgid "The previously authorized maximum number of Actions have been reached."
-msgstr ""
+#~ msgid "The previously authorized maximum number of Actions have been reached."
+#~ msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
@@ -6265,8 +6277,8 @@ msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "{0} cannot be automatically transferred for auto top-ups, convert some {1} to {2} in your main account to ensure that there is sufficient {3} for auto top-ups, the {4} balance of your main account is shown above."
-msgstr ""
+#~ msgid "{0} cannot be automatically transferred for auto top-ups, convert some {1} to {2} in your main account to ensure that there is sufficient {3} for auto top-ups, the {4} balance of your main account is shown above."
+#~ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 #~ msgid "{0} cannot be automatically transferred to your Subaccount, so only {1} can be used for auto top-ups. Convert this amount of {2} to {3} in your Main Account to allow for auto top-ups."

@@ -664,10 +664,13 @@ const InputRow = memo(
     placeholder: string;
     negativeSign?: boolean;
   }) => {
+    const renderTooltipContent = useCallback(() => description, [description]);
     return (
       <div>
         <div className="SubaccountModal-input-row flex text-gray">
-          <div className="SubaccountModal-input-row-label">{label}</div>
+          <div className="SubaccountModal-input-row-label">
+            <TooltipWithPortal handle={label} renderContent={renderTooltipContent} />
+          </div>
           <Input
             negativeSign={negativeSign}
             placeholder={placeholder}
@@ -676,8 +679,6 @@ const InputRow = memo(
             symbol={symbol}
           />
         </div>
-
-        <p className="SubaccountModal-input-description">{description}</p>
       </div>
     );
   }
