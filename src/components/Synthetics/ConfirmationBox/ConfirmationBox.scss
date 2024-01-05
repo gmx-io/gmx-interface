@@ -25,7 +25,7 @@
   }
 }
 
-.Warning-title-container {
+.Warning-container {
   color: var(--text-gray);
   display: flex;
   align-items: flex-start;
@@ -36,6 +36,14 @@
   .Warning-icon {
     margin-top: 0.2rem;
   }
+  .Warning-message {
+    margin-left: 0.5rem;
+  }
+}
+
+.Warning-list {
+  display: grid;
+  grid-row-gap: 0.75rem;
 }
 
 .Existing-limit-order {

@@ -9,9 +9,13 @@
   align-items: center;
   background: var(--dark-blue-hover);
   border-radius: var(--border-radius-sm);
-  margin-bottom: 0.5rem;
   padding: 1rem;
 }
+
+.order-list li:not(:first-child) {
+  margin-bottom: 0.5rem;
+}
+
 .order-list li p {
   margin: 0;
 }

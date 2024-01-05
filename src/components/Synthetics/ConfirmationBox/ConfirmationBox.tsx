@@ -85,7 +85,7 @@ import {
 } from "lib/numbers";
 import { usePrevious } from "lib/usePrevious";
 import useWallet from "lib/wallets/useWallet";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useKey, useLatest } from "react-use";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./ConfirmationBox.scss";
@@ -733,17 +733,6 @@ export function ConfirmationBox(p: Props) {
     );
   }
 
-  function renderWarningContainer(message: string) {
-    return (
-      <div className="Warning-title-container">
-        <img className="Warning-icon" src={infoIcon} alt="Warning-icon" />
-        <span>
-          <Trans>{message}</Trans>
-        </span>
-      </div>
-    );
-  }
-
   function renderDifferentTokensWarning() {
     if (!isPosition || !fromToken || !toToken) {
       return null;
@@ -753,20 +742,35 @@ export function ConfirmationBox(p: Props) {
     const indexTokenSymbol = indexToken?.[indexToken?.isWrapped ? "baseSymbol" : "symbol"];
 
     if (isCollateralTokenNonStable && collateralTokenSymbol !== indexTokenSymbol) {
-      return renderWarningContainer(
-        t`You have selected ${collateralTokenSymbol} as Collateral, the Liquidation Price will vary based on the price of ${collateralTokenSymbol}.`
+      return (
+        <AlertWithIcon type="warning">
+          <Trans>
+            You have selected {collateralTokenSymbol} as Collateral, the Liquidation Price will vary based on the price
+            of {collateralTokenSymbol}.
+          </Trans>
+        </AlertWithIcon>
       );
     }
 
     if (isLong && isCollateralTokenNonStable && collateralTokenSymbol === indexTokenSymbol) {
-      return renderWarningContainer(
-        t`You have selected ${collateralTokenSymbol} as collateral, the Liquidation Price is higher compared to using a stablecoin as collateral since the worth of the collateral will change with its price. If required, you can change the collateral type using the Collateral In option in the trade box.`
+      return (
+        <AlertWithIcon type="warning">
+          <Trans>
+            You have selected {collateralTokenSymbol} as collateral, the Liquidation Price is higher compared to using a
+            stablecoin as collateral since the worth of the collateral will change with its price. If required, you can
+            change the collateral type using the Collateral In option in the trade box.
+          </Trans>
+        </AlertWithIcon>
       );
     }
 
     if (isShort && isCollateralTokenNonStable && collateralTokenSymbol === indexTokenSymbol) {
-      return renderWarningContainer(
-        t`You have selected ${collateralTokenSymbol} as collateral to short ${indexTokenSymbol}.`
+      return (
+        <AlertWithIcon type="warning">
+          <Trans>
+            You have selected {collateralTokenSymbol} as collateral to short ${indexTokenSymbol}.
+          </Trans>
+        </AlertWithIcon>
       );
     }
   }
@@ -797,22 +801,22 @@ export function ConfirmationBox(p: Props) {
 
     if (isMarket) {
       return (
-        <div className="Confirmation-box-warning">
+        <AlertWithIcon type="warning">
           <Trans>
             You have an existing position with {marketsOptions?.collateralWithPosition?.symbol} as collateral. This
             action will not apply for that position.
           </Trans>
-        </div>
+        </AlertWithIcon>
       );
     }
 
     return (
-      <div className="Confirmation-box-warning">
+      <AlertWithIcon type="warning">
         <Trans>
           You have an existing position with {marketsOptions?.collateralWithPosition?.symbol} as collateral. This Order
           will not be valid for that Position.
         </Trans>
-      </div>
+      </AlertWithIcon>
     );
   }
 
@@ -822,16 +826,13 @@ export function ConfirmationBox(p: Props) {
     }
     return (
       <div className="Existing-limit-order">
-        <div className="Warning-title-container">
-          <img className="Warning-icon" src={warningIcon} alt="" />
-          <span>
-            <Plural
-              value={existingLimitOrders.length}
-              one="You have an active Limit Order to Increase"
-              other="You have multiple active Limit Orders to Increase"
-            />
-          </span>
-        </div>
+        <AlertWithIcon type="warning">
+          <Plural
+            value={existingLimitOrders.length}
+            one="You have an active Limit Order to Increase"
+            other="You have multiple active Limit Orders to Increase"
+          />
+        </AlertWithIcon>
         <ul className="order-list">{existingLimitOrders.map(renderOrderItem)}</ul>
       </div>
     );
@@ -844,13 +845,13 @@ export function ConfirmationBox(p: Props) {
     const existingTriggerOrderLength = decreaseOrdersThatWillBeExecuted.length;
     return (
       <>
-        <div className="Confirmation-box-warning">
+        <AlertWithIcon type="warning">
           <Plural
             value={existingTriggerOrderLength}
             one="You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue."
             other="You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue."
           />
-        </div>
+        </AlertWithIcon>
         <ul className="order-list">{decreaseOrdersThatWillBeExecuted.map(renderOrderItem)}</ul>
       </>
     );
@@ -868,13 +869,13 @@ export function ConfirmationBox(p: Props) {
     const existingTriggerOrderLength = existingTriggerOrders.length;
 
     return (
-      <div className="Confirmation-box-info">
+      <AlertWithIcon type="info">
         <Plural
           value={existingTriggerOrderLength}
           one="You have an active trigger order that could impact this position."
           other="You have # active trigger orders that could impact this position."
         />
-      </div>
+      </AlertWithIcon>
     );
   }
 
@@ -1145,12 +1146,14 @@ export function ConfirmationBox(p: Props) {
         <div>
           {renderMain()}
           {hasWarning && <div className="line-divider" />}
-          {renderExistingLimitOrdersWarning()}
-          {renderDifferentCollateralWarning()}
-          {renderCollateralSpreadWarning()}
-          {renderExistingTriggerErrors()}
-          {renderExistingTriggerWarning()}
-          {renderDifferentTokensWarning()}
+          <div className="Warning-list">
+            {renderExistingLimitOrdersWarning()}
+            {renderDifferentCollateralWarning()}
+            {renderCollateralSpreadWarning()}
+            {renderExistingTriggerErrors()}
+            {renderExistingTriggerWarning()}
+            {renderDifferentTokensWarning()}
+          </div>
           {renderStopLoss()}
           {renderTakeProfit()}
           {isLimit && renderAvailableLiquidity()}
@@ -1593,6 +1596,16 @@ export function ConfirmationBox(p: Props) {
           </Button>
         </div>
       </Modal>
+    </div>
+  );
+}
+
+function AlertWithIcon({ type, children }: { type: "warning" | "info"; children?: ReactNode }) {
+  const icon = type === "warning" ? warningIcon : infoIcon;
+  return (
+    <div className="Warning-container">
+      <img className="Warning-icon" src={icon} alt="Warning Icon" />
+      <span className="Warning-message">{children}</span>
     </div>
   );
 }

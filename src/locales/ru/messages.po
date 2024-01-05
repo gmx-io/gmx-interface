@@ -5653,7 +5653,7 @@ msgid "You have selected {collateralTokenSymbol} as Collateral, the Liquidation 
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-msgid "You have selected {collateralTokenSymbol} as collateral to short {indexTokenSymbol}."
+msgid "You have selected {collateralTokenSymbol} as collateral to short ${indexTokenSymbol}."
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -5982,10 +5982,6 @@ msgstr ""
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "{marketsCount, plural, one {# Market} other {# Markets}}"
-msgstr ""
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-msgid "{message}"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
