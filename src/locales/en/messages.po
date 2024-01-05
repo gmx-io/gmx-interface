@@ -284,10 +284,8 @@ msgid "Add {0} to Metamask"
 msgstr "Add {0} to Metamask"
 
 #: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
-#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
-#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
-msgid "Add {0} to Wallet"
-msgstr "Add {0} to Wallet"
+msgid "Add {marketName} to Wallet"
+msgstr "Add {marketName} to Wallet"
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Adding referral code failed."
@@ -3205,7 +3203,6 @@ msgstr "Open trades ranking and stats"
 msgid "Open {0} in Coingecko"
 msgstr "Open {0} in Coingecko"
 
-#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open {0} in Explorer"
 msgstr "Open {0} in Explorer"
@@ -3217,6 +3214,10 @@ msgstr "Open {0} {longOrShortText}"
 #: src/components/Synthetics/TVChart/TVChart.tsx
 msgid "Open {longOrShortText} {tokenSymbol}"
 msgstr "Open {longOrShortText} {tokenSymbol}"
+
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+msgid "Open {marketName} in Explorer"
+msgstr "Open {marketName} in Explorer"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx

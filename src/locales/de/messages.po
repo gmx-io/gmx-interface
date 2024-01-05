@@ -284,9 +284,7 @@ msgid "Add {0} to Metamask"
 msgstr ""
 
 #: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
-#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
-#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
-msgid "Add {0} to Wallet"
+msgid "Add {marketName} to Wallet"
 msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
@@ -3202,7 +3200,6 @@ msgstr ""
 msgid "Open {0} in Coingecko"
 msgstr ""
 
-#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open {0} in Explorer"
 msgstr ""
@@ -3213,6 +3210,10 @@ msgstr ""
 
 #: src/components/Synthetics/TVChart/TVChart.tsx
 msgid "Open {longOrShortText} {tokenSymbol}"
+msgstr ""
+
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+msgid "Open {marketName} in Explorer"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
