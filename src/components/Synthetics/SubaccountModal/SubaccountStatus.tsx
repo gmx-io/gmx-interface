@@ -30,6 +30,7 @@ function SubaccountStatusImpl({
   const oneClickTradingState = useSubaccountState();
   const shouldShowAllowedActionsError = isSubaccountActive && remainingActionsCount?.eq(0);
   const insufficientFunds = useSubaccountInsufficientFunds(oneClickTradingState.baseExecutionFee?.feeTokenAmount);
+  const subaccountAddress = useSubaccountAddress();
   const shouldShowInsufficientFundsError = isSubaccountActive && insufficientFunds;
 
   let working = false;
@@ -39,8 +40,12 @@ function SubaccountStatusImpl({
   let needToRenderActivationButton = false;
 
   if (isSubaccountUpdating) {
-    statusText = t`Updating`;
-    working = true;
+    if (isSubaccountActive) {
+      statusText = t`Updating`;
+      working = true;
+    } else {
+      needToRenderActivationButton = true;
+    }
   } else if (shouldShowAllowedActionsError) {
     statusText = t`Inactive`;
     working = false;
@@ -78,8 +83,6 @@ function SubaccountStatusImpl({
   const remaining = remainingActionsCount?.lt(approxNumberOfOperationsByBalance ?? 0)
     ? remainingActionsCount
     : approxNumberOfOperationsByBalance;
-
-  const subaccountAddress = useSubaccountAddress();
 
   if (needToRenderActivationButton) {
     return (

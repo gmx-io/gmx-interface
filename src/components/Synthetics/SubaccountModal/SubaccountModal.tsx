@@ -598,7 +598,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             label={isSubaccountActive ? t`Top-up` : t`Initial top-up`}
             symbol={nativeToken.symbol}
             placeholder="0.0000"
-            tooltipContent={t`This amount of ${nativeToken.symbol} will be sent to your subaccount to pay for transaction fees.`}
+            description={t`This amount of ${nativeToken.symbol} will be sent to your subaccount to pay for transaction fees.`}
           />
           <InputRow
             value={wntForAutoTopUpsString}
@@ -606,7 +606,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             label={t`${wrappedToken.symbol} for auto top-ups`}
             symbol={wrappedToken.symbol}
             placeholder="0.0000"
-            tooltipContent={t`${nativeToken.symbol} cannot be automatically transferred to your Subaccount, so only ${wrappedToken.symbol} can be used for auto top-ups. Convert this amount of ${nativeToken.symbol} to ${wrappedToken.symbol} in your Main Account to allow for auto top-ups.`}
+            description={t`${nativeToken.symbol} cannot be automatically transferred to your Subaccount, so only ${wrappedToken.symbol} can be used for auto top-ups. Convert this amount of ${nativeToken.symbol} to ${wrappedToken.symbol} in your Main Account to allow for auto top-ups.`}
           />
           <InputRow
             value={maxAutoTopUpAmountString}
@@ -614,7 +614,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             label={t`Max auto top-up amount`}
             symbol={nativeToken.symbol}
             placeholder="0.0000"
-            tooltipContent={t`This is the maximum top-up amount that will be sent to your subaccount after each transaction, the actual amount sent will depend on the actual transaction fee.`}
+            description={t`This is the maximum top-up amount that will be sent to your subaccount after each transaction, the actual amount sent will depend on the actual transaction fee.`}
           />
           <InputRow
             value={maxAllowedActionsString}
@@ -622,7 +622,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             label={t`Max allowed actions`}
             symbol="Actions"
             placeholder="0"
-            tooltipContent={
+            description={
               <div>
                 <Trans>
                   For additional safety, subaccounts are only allowed to perform a specified number of actions before
@@ -660,7 +660,7 @@ const InputRow = memo(
     setValue,
     label,
     symbol = "",
-    tooltipContent,
+    description,
     placeholder,
     negativeSign = false,
   }: {
@@ -668,29 +668,28 @@ const InputRow = memo(
     setValue: (value: string) => void;
     label: string;
     symbol?: string;
-    tooltipContent: ReactNode;
+    description: ReactNode;
     placeholder: string;
     negativeSign?: boolean;
   }) => {
-    const renderTooltipContent = useCallback(() => {
-      return tooltipContent;
-    }, [tooltipContent]);
-
     return (
-      <StatsTooltipRow
-        showColon={false}
-        label={<TooltipWithPortal handle={label} renderContent={renderTooltipContent} position="left-top" />}
-        value={
-          <Input
-            negativeSign={negativeSign}
-            placeholder={placeholder}
-            value={value}
-            setValue={setValue}
-            symbol={symbol}
-          />
-        }
-        showDollar={false}
-      />
+      <div>
+        <StatsTooltipRow
+          showColon={false}
+          label={label}
+          value={
+            <Input
+              negativeSign={negativeSign}
+              placeholder={placeholder}
+              value={value}
+              setValue={setValue}
+              symbol={symbol}
+            />
+          }
+          showDollar={false}
+        />
+        <p className="SubaccountModal-input-description">{description}</p>
+      </div>
     );
   }
 );
