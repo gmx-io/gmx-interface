@@ -411,8 +411,6 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     setActiveTx,
   ]);
 
-  useEffect(() => {}, []);
-
   const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokenAddresses: [wrappedToken.address],
@@ -521,13 +519,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
 
   return (
     <div className="SubaccountModal-content">
-      {
-        <SubaccountStatus
-          approxNumberOfOperationsByBalance={approxNumberOfOperationsByBalance}
-          isSubaccountUpdating={isSubaccountUpdating}
-          hasBorder={Boolean(subaccountAddress)}
-        />
-      }
+      {<SubaccountStatus hasBorder={Boolean(subaccountAddress)} />}
       {subaccountAddress && (
         <>
           <div className="SubaccountModal-subaccount">
@@ -603,10 +595,11 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
           <InputRow
             value={wntForAutoTopUpsString}
             setValue={setWntForAutoTopUpsString}
-            label={t`${wrappedToken.symbol} for auto top-ups`}
+            label={t`Сonvert ${nativeToken.symbol} to ${wrappedToken.symbol}`}
             symbol={wrappedToken.symbol}
             placeholder="0.0000"
-            description={t`${nativeToken.symbol} cannot be automatically transferred to your Subaccount, so only ${wrappedToken.symbol} can be used for auto top-ups. Convert this amount of ${nativeToken.symbol} to ${wrappedToken.symbol} in your Main Account to allow for auto top-ups.`}
+            description={t`${nativeToken.symbol} cannot be automatically transferred for auto top-ups, convert some ${nativeToken.symbol} to ${wrappedToken.symbol} in your main account to ensure that there is sufficient ${wrappedToken.symbol} for auto top-ups, the ${wrappedToken.symbol} balance of your main account is shown above.`}
+            // "AVAX  AVAX to WAVAX in your main account to ensure that there is sufficient WAVAX for auto top-ups, the WAVAX balance of your main account is shown above"
           />
           <InputRow
             value={maxAutoTopUpAmountString}

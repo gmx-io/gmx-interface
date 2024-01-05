@@ -10,6 +10,9 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { ReactNode, memo, useCallback, useState } from "react";
 import "./SubaccountNavigationButton.scss";
 import { BigNumber } from "ethers";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { SUBACCOUNT_DOCS_URL } from "domain/synthetics/subaccount/constants";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 export const SubaccountNavigationButton = memo(
   ({
@@ -49,6 +52,17 @@ export const SubaccountNavigationButton = memo(
     let content: ReactNode = null;
     let onCloseClick: null | (() => void) = null;
 
+    const renderTooltipContent = useCallback(() => {
+      return (
+        <div onClick={(e) => e.stopPropagation()}>
+          <Trans>
+            Reduce wallet signing popups with One-Click Trading. This option is also available through the Wallet menu
+            in the top right. <ExternalLink href={SUBACCOUNT_DOCS_URL}>More Info</ExternalLink>.
+          </Trans>
+        </div>
+      );
+    }, []);
+
     if (shouldShowAllowedActionsWarning) {
       content = (
         <Trans>
@@ -64,10 +78,7 @@ export const SubaccountNavigationButton = memo(
     } else if (shouldShowOfferButton) {
       onCloseClick = handleCloseOfferClick;
       content = (
-        <Trans>
-          Enable One-Click Trading to reduce wallet signing popups. This option is also accessible through the Wallet
-          menu in the top right.
-        </Trans>
+        <TooltipWithPortal handle={<Trans>Enable One-Click Trading</Trans>} renderContent={renderTooltipContent} />
       );
     } else {
       return null;

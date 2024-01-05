@@ -19,7 +19,7 @@ import {
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
-import { getStringForSign } from "domain/synthetics/subaccount/onClickTradingUtils";
+import { STRING_FOR_SIGNING } from "domain/synthetics/subaccount/constants";
 import { SubaccountSerializedConfig } from "domain/synthetics/subaccount/types";
 import { useTokenBalances, useTokensData } from "domain/synthetics/tokens";
 import { BigNumber, ethers } from "ethers";
@@ -98,7 +98,7 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
   const generateSubaccount = useCallback(async () => {
     if (!account) throw new Error("Account is not set");
 
-    const signature = await signer?.signMessage(getStringForSign());
+    const signature = await signer?.signMessage(STRING_FOR_SIGNING);
 
     if (!signature) return null;
 
