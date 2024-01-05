@@ -598,8 +598,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             label={t`Сonvert ${nativeToken.symbol} to ${wrappedToken.symbol}`}
             symbol={wrappedToken.symbol}
             placeholder="0.0000"
-            description={t`${nativeToken.symbol} cannot be automatically transferred for auto top-ups, convert some ${nativeToken.symbol} to ${wrappedToken.symbol} in your main account to ensure that there is sufficient ${wrappedToken.symbol} for auto top-ups, the ${wrappedToken.symbol} balance of your main account is shown above.`}
-            // "AVAX  AVAX to WAVAX in your main account to ensure that there is sufficient WAVAX for auto top-ups, the WAVAX balance of your main account is shown above"
+            description={t`Convert this amount of  ${nativeToken.symbol} to ${wrappedToken.symbol} in your Main Account to allow for auto top-ups, as only ${wrappedToken.symbol} can be automatically transferred to your Subaccount. The ${wrappedToken.symbol} balance of your main account is shown above.`}
           />
           <InputRow
             value={maxAutoTopUpAmountString}
@@ -667,20 +666,17 @@ const InputRow = memo(
   }) => {
     return (
       <div>
-        <StatsTooltipRow
-          showColon={false}
-          label={label}
-          value={
-            <Input
-              negativeSign={negativeSign}
-              placeholder={placeholder}
-              value={value}
-              setValue={setValue}
-              symbol={symbol}
-            />
-          }
-          showDollar={false}
-        />
+        <div className="SubaccountModal-input-row flex text-gray">
+          <div className="SubaccountModal-input-row-label">{label}</div>
+          <Input
+            negativeSign={negativeSign}
+            placeholder={placeholder}
+            value={value}
+            setValue={setValue}
+            symbol={symbol}
+          />
+        </div>
+
         <p className="SubaccountModal-input-description">{description}</p>
       </div>
     );

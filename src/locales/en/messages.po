@@ -283,8 +283,8 @@ msgstr "Activating Subaccount"
 #~ msgstr "Activating subaccount"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-msgid "Active"
-msgstr "Active"
+#~ msgid "Active"
+#~ msgstr "Active"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -532,8 +532,8 @@ msgid "Base APR"
 msgstr "Base APR"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-msgid "Based on balances"
-msgstr "Based on balances"
+#~ msgid "Based on balances"
+#~ msgstr "Based on balances"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
@@ -1581,12 +1581,16 @@ msgid "Enable Leverage"
 msgstr "Enable Leverage"
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
+msgid "Enable One-Click Trading"
+msgstr "Enable One-Click Trading"
+
+#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 #~ msgid "Enable One-Click Trading to reduce <0>wallet<1/></0> signing popups. This option is also accessible through the Wallet menu in the top right."
 #~ msgstr "Enable One-Click Trading to reduce <0>wallet<1/></0> signing popups. This option is also accessible through the Wallet menu in the top right."
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-msgid "Enable One-Click Trading to reduce wallet signing popups. This option is also accessible through the Wallet menu in the top right."
-msgstr "Enable One-Click Trading to reduce wallet signing popups. This option is also accessible through the Wallet menu in the top right."
+#~ msgid "Enable One-Click Trading to reduce wallet signing popups. This option is also accessible through the Wallet menu in the top right."
+#~ msgstr "Enable One-Click Trading to reduce wallet signing popups. This option is also accessible through the Wallet menu in the top right."
 
 #: src/components/Exchange/OrdersToa.js
 #: src/components/Exchange/OrdersToa.js
@@ -2214,6 +2218,10 @@ msgstr "Generate & Activate Subaccount"
 msgid "Generate Referral Code"
 msgstr "Generate Referral Code"
 
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "Generate and activate a Subaccount for <0>One-Click Trading</0> to reduce signing popups."
+msgstr "Generate and activate a Subaccount for <0>One-Click Trading</0> to reduce signing popups."
+
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Generating and activating Subaccount"
 msgstr "Generating and activating Subaccount"
@@ -2257,8 +2265,8 @@ msgstr "Image generation error, please refresh and try again."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-msgid "Inactive"
-msgstr "Inactive"
+#~ msgid "Inactive"
+#~ msgstr "Inactive"
 
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Synthetics/TVChart/TVChart.tsx
@@ -2992,7 +3000,6 @@ msgstr "Max Pool Capacity"
 #~ msgstr "Max acceptable Price Impact precision is 0.01%"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "Max allowed actions"
 msgstr "Max allowed actions"
 
@@ -3998,6 +4005,10 @@ msgstr "Redemption time not yet reached"
 msgid "Reduce Liquidation Risks"
 msgstr "Reduce Liquidation Risks"
 
+#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
+msgid "Reduce wallet signing popups with One-Click Trading. This option is also available through the Wallet menu in the top right. <0>More Info</0>."
+msgstr "Reduce wallet signing popups with One-Click Trading. This option is also available through the Wallet menu in the top right. <0>More Info</0>."
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Code"
 msgstr "Referral Code"
@@ -4050,8 +4061,8 @@ msgid "Referrals"
 msgstr "Referrals"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-msgid "Remaining actions"
-msgstr "Remaining actions"
+#~ msgid "Remaining actions"
+#~ msgstr "Remaining actions"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 #~ msgid "Remaining actions: {0}"
@@ -4586,8 +4597,8 @@ msgid "Stats"
 msgstr "Stats"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-msgid "Status"
-msgstr "Status"
+#~ msgid "Status"
+#~ msgstr "Status"
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "Stop Loss Decrease"
@@ -5534,8 +5545,8 @@ msgid "Update order executed"
 msgstr "Update order executed"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-msgid "Updating"
-msgstr "Updating"
+#~ msgid "Updating"
+#~ msgstr "Updating"
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -6259,8 +6270,12 @@ msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr "{0} can not be sent to smart contract addresses. Select another token."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "{0} cannot be automatically transferred to your Subaccount, so only {1} can be used for auto top-ups. Convert this amount of {2} to {3} in your Main Account to allow for auto top-ups."
-msgstr "{0} cannot be automatically transferred to your Subaccount, so only {1} can be used for auto top-ups. Convert this amount of {2} to {3} in your Main Account to allow for auto top-ups."
+msgid "{0} cannot be automatically transferred for auto top-ups, convert some {1} to {2} in your main account to ensure that there is sufficient {3} for auto top-ups, the {4} balance of your main account is shown above."
+msgstr "{0} cannot be automatically transferred for auto top-ups, convert some {1} to {2} in your main account to ensure that there is sufficient {3} for auto top-ups, the {4} balance of your main account is shown above."
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+#~ msgid "{0} cannot be automatically transferred to your Subaccount, so only {1} can be used for auto top-ups. Convert this amount of {2} to {3} in your Main Account to allow for auto top-ups."
+#~ msgstr "{0} cannot be automatically transferred to your Subaccount, so only {1} can be used for auto top-ups. Convert this amount of {2} to {3} in your Main Account to allow for auto top-ups."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 #~ msgid "{0} cannot be automatically transferred to your Subaccount, so only {1} can be used for auto top ups. Convert this amount of {2} to{3} in your Main Account to allow for auto top-ups."
@@ -6275,8 +6290,8 @@ msgstr "{0} cannot be automatically transferred to your Subaccount, so only {1
 #~ msgstr "{0} for auto top ups"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "{0} for auto top-ups"
-msgstr "{0} for auto top-ups"
+#~ msgid "{0} for auto top-ups"
+#~ msgstr "{0} for auto top-ups"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
@@ -6480,3 +6495,7 @@ msgstr "{positionName} Fees settling"
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"
 msgstr "{title}"
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Сonvert {0} to {1}"
+msgstr "Сonvert {0} to {1}"
