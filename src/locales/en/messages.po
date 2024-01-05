@@ -3359,8 +3359,8 @@ msgid "Not enough Available Swap Liquidity to fill the Order. The Order will get
 msgstr "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-msgid "Not enough funds on One‑Click Trading subaccount. Use top-up field to increase the subaccount balance."
-msgstr "Not enough funds on One‑Click Trading subaccount. Use top-up field to increase the subaccount balance."
+#~ msgid "Not enough funds on One‑Click Trading subaccount. Use top-up field to increase the subaccount balance."
+#~ msgstr "Not enough funds on One‑Click Trading subaccount. Use top-up field to increase the subaccount balance."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 #~ msgid "Not enough funds on subaccount"
@@ -4972,8 +4972,12 @@ msgid "The mark price has changed, consider increasing your Allowed Slippage by 
 msgstr "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the Max allowed actions field."
-msgstr "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the Max allowed actions field."
+msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the 'Max allowed actions' field"
+msgstr "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the 'Max allowed actions' field"
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+#~ msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the Max allowed actions field."
+#~ msgstr "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the Max allowed actions field."
 
 #: src/domain/legacy.ts
 #: src/domain/synthetics/fees/utils/executionFee.ts
@@ -5008,13 +5012,17 @@ msgstr "The position will be opened at a reference price of {0}, not accounting 
 msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
 msgstr "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
 
+#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
+msgid "The previously authorized maximum number of Actions has been reached for One-Click Trading. Click here to re-authorize."
+msgstr "The previously authorized maximum number of Actions has been reached for One-Click Trading. Click here to re-authorize."
+
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 #~ msgid "The previously authorized maximum number of Actions have been reached for One‑Click Trading. Set Max allowed Actions and re-authorize."
 #~ msgstr "The previously authorized maximum number of Actions have been reached for One‑Click Trading. Set Max allowed Actions and re-authorize."
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-msgid "The previously authorized maximum number of Actions have been reached for One-Click Trading. Click here to re-authorize."
-msgstr "The previously authorized maximum number of Actions have been reached for One-Click Trading. Click here to re-authorize."
+#~ msgid "The previously authorized maximum number of Actions have been reached for One-Click Trading. Click here to re-authorize."
+#~ msgstr "The previously authorized maximum number of Actions have been reached for One-Click Trading. Click here to re-authorize."
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 #~ msgid "The previously authorized maximum number of Actions have been reached for One-Click Trwading. Click here to re-authorize."
@@ -5059,6 +5067,10 @@ msgstr "There are insufficient funds in your Subaccount for One-Click Trading. C
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 #~ msgid "There are insufficient funds in your Subaccount for One-Click Trading. Please top-up your Balance."
 #~ msgstr "There are insufficient funds in your Subaccount for One-Click Trading. Please top-up your Balance."
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "There are insufficient funds in your Subaccount for One-Click Trading. Use the top-up field to increase the subaccount balance."
+msgstr "There are insufficient funds in your Subaccount for One-Click Trading. Use the top-up field to increase the subaccount balance."
 
 #: src/components/Exchange/SwapBox.js
 msgid "There are more longs than shorts, borrow fees for shorting is currently zero"

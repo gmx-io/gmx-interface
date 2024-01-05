@@ -13,7 +13,6 @@ import { getNativeToken, getWrappedToken } from "config/tokens";
 import cryptoJs from "crypto-js";
 import { useTransactionPending } from "domain/synthetics/common/useTransactionReceipt";
 import {
-  ExecutionFee,
   estimateExecuteIncreaseOrderGasLimit,
   getExecutionFee,
   useGasLimits,
@@ -26,6 +25,7 @@ import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMulticall } from "lib/multicall";
+import { applyFactor } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getProvider } from "lib/rpc";
 import useWallet from "lib/wallets/useWallet";
@@ -47,7 +47,7 @@ type SubaccountNotificationState =
 
 export type SubaccountContext = {
   activeTx: string | null;
-  baseExecutionFee: ExecutionFee | null;
+  baseFeePerAction: BigNumber | null;
   contractData: {
     isSubaccountActive: boolean;
     maxAllowedActions: BigNumber;
@@ -85,14 +85,25 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
   const { gasLimits } = useGasLimits(chainId);
   const { tokensData } = useTokensData(chainId);
 
-  // execution fee that is used as a basis to calculate
+  // fee that is used as a approx basis to calculate
   // costs of subaccount actions
-  const baseExecutionFee = useMemo(() => {
+  const baseFeePerAction = useMemo(() => {
     if (!gasLimits || !tokensData || !gasPrice) return null;
-    const estimatedGas = estimateExecuteIncreaseOrderGasLimit(gasLimits, {
+    const approxNetworkGasLimit = applyFactor(
+      gasLimits.estimatedFeeBaseGasLimit,
+      gasLimits.estimatedFeeMultiplierFactor
+    )
+      // createOrder is smaller than executeOrder
+      .div(4)
+      // L2 Gas
+      .add(800_000);
+    const networkFee = approxNetworkGasLimit.mul(gasPrice);
+
+    const gasLimit = estimateExecuteIncreaseOrderGasLimit(gasLimits, {
       swapsCount: 1,
     });
-    return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice);
+
+    return networkFee.add(getExecutionFee(chainId, gasLimits, tokensData, gasLimit, gasPrice)?.feeTokenAmount ?? 0);
   }, [chainId, gasLimits, gasPrice, tokensData]);
 
   const generateSubaccount = useCallback(async () => {
@@ -172,7 +183,7 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
     return {
       modalOpen,
       setModalOpen,
-      baseExecutionFee: baseExecutionFee ?? null,
+      baseFeePerAction: baseFeePerAction ?? null,
       subaccount: config
         ? {
             address: config.address,
@@ -189,7 +200,7 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
     };
   }, [
     activeTx,
-    baseExecutionFee,
+    baseFeePerAction,
     clearSubaccount,
     config,
     contractData,
@@ -235,8 +246,8 @@ export function useIsSubaccountActive() {
   return useSubaccountSelector((s) => s.contractData?.isSubaccountActive ?? false);
 }
 
-function useSubaccountBaseExecutionFeeTokenAmount() {
-  return useSubaccountSelector((s) => s.baseExecutionFee?.feeTokenAmount);
+export function useSubaccountBaseFeePerAction() {
+  return useSubaccountSelector((s) => s.baseFeePerAction);
 }
 
 export function useSubaccount(requiredBalance: BigNumber | null, requiredActions = 1) {
@@ -244,7 +255,7 @@ export function useSubaccount(requiredBalance: BigNumber | null, requiredActions
   const active = useIsSubaccountActive();
   const privateKey = useSubaccountPrivateKey();
   const { chainId } = useChainId();
-  const defaultRequiredBalance = useSubaccountBaseExecutionFeeTokenAmount();
+  const defaultRequiredBalance = useSubaccountBaseFeePerAction();
   const insufficientFunds = useSubaccountInsufficientFunds(requiredBalance ?? defaultRequiredBalance);
 
   const { remaining } = useSubaccountActionCounts();
@@ -265,7 +276,7 @@ export function useSubaccount(requiredBalance: BigNumber | null, requiredActions
   }, [address, active, privateKey, insufficientFunds, remaining, requiredActions, chainId]);
 }
 
-export function useSubaccountInsufficientFunds(requiredBalance: BigNumber | undefined) {
+export function useSubaccountInsufficientFunds(requiredBalance: BigNumber | undefined | null) {
   const { chainId } = useChainId();
   const subaccountAddress = useSubaccountAddress();
   const subBalances = useTokenBalances(chainId, subaccountAddress ?? undefined);
@@ -280,7 +291,7 @@ export function useSubaccountInsufficientFunds(requiredBalance: BigNumber | unde
   return requiredBalance.gt(nativeTokenBalance);
 }
 
-export function useMainAccountInsufficientFunds(requiredBalance: BigNumber | undefined) {
+export function useMainAccountInsufficientFunds(requiredBalance: BigNumber | undefined | null) {
   const { chainId } = useChainId();
   const { account: address } = useWallet();
   const subBalances = useTokenBalances(chainId, address);
@@ -320,7 +331,7 @@ export function useSubaccountCancelOrdersDetailsMessage(
   overridedRequiredBalance: BigNumber | undefined,
   actionCount: number
 ) {
-  const defaultRequiredBalance = useSubaccountBaseExecutionFeeTokenAmount();
+  const defaultRequiredBalance = useSubaccountBaseFeePerAction();
   const requiredBalance = overridedRequiredBalance ?? defaultRequiredBalance;
   const isLastAction = useIsLastSubaccountAction(actionCount);
   const mainAccountInsufficientFunds = useMainAccountInsufficientFunds(requiredBalance);

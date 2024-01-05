@@ -13,6 +13,7 @@ import {
   useIsSubaccountActive,
   useSubaccountActionCounts,
   useSubaccountAddress,
+  useSubaccountBaseFeePerAction,
   useSubaccountGenerateSubaccount,
   useSubaccountModalOpen,
   useSubaccountNotificationState,
@@ -86,25 +87,26 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     return getDefaultValues(data);
   }, [nativeToken.address, tokensData]);
 
+  const baseFeePerAction = useSubaccountBaseFeePerAction();
+
   const approxNumberOfOperationsByBalance = useMemo(() => {
-    const executionFee = oneClickTradingState.baseExecutionFee?.feeTokenAmount;
     const currentAutoTopUpAmount = oneClickTradingState.contractData?.currentAutoTopUpAmount;
     return subAccNativeTokenBalance &&
-      executionFee &&
+      baseFeePerAction &&
       currentAutoTopUpAmount &&
       mainAccWrappedTokenBalance &&
       mainAccNativeTokenBalance
       ? getApproxSubaccountActionsCountByBalance(
           mainAccWrappedTokenBalance,
           subAccNativeTokenBalance,
-          executionFee,
+          baseFeePerAction,
           currentAutoTopUpAmount
         )
       : null;
   }, [
+    baseFeePerAction,
     mainAccNativeTokenBalance,
     mainAccWrappedTokenBalance,
-    oneClickTradingState.baseExecutionFee?.feeTokenAmount,
     oneClickTradingState.contractData?.currentAutoTopUpAmount,
     subAccNativeTokenBalance,
   ]);
@@ -417,14 +419,12 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     skip: !isVisible,
   });
 
-  const payAmount = oneClickTradingState.baseExecutionFee?.feeTokenAmount;
-
   const needPayTokenApproval = useMemo(
     () =>
-      tokensAllowanceData && payAmount
-        ? getNeedTokenApprove(tokensAllowanceData, wrappedToken.address, payAmount)
+      tokensAllowanceData && baseFeePerAction
+        ? getNeedTokenApprove(tokensAllowanceData, wrappedToken.address, baseFeePerAction)
         : false,
-    [payAmount, tokensAllowanceData, wrappedToken.address]
+    [baseFeePerAction, tokensAllowanceData, wrappedToken.address]
   );
 
   const {
@@ -593,22 +593,6 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             description={t`This amount of ${nativeToken.symbol} will be sent to your subaccount to pay for transaction fees.`}
           />
           <InputRow
-            value={wntForAutoTopUpsString}
-            setValue={setWntForAutoTopUpsString}
-            label={t`Сonvert ${nativeToken.symbol} to ${wrappedToken.symbol}`}
-            symbol={wrappedToken.symbol}
-            placeholder="0.0000"
-            description={t`Convert this amount of  ${nativeToken.symbol} to ${wrappedToken.symbol} in your Main Account to allow for auto top-ups, as only ${wrappedToken.symbol} can be automatically transferred to your Subaccount. The ${wrappedToken.symbol} balance of your main account is shown above.`}
-          />
-          <InputRow
-            value={maxAutoTopUpAmountString}
-            setValue={setMaxAutoTopUpAmountString}
-            label={t`Max auto top-up amount`}
-            symbol={nativeToken.symbol}
-            placeholder="0.0000"
-            description={t`This is the maximum top-up amount that will be sent to your subaccount after each transaction, the actual amount sent will depend on the actual transaction fee.`}
-          />
-          <InputRow
             value={maxAllowedActionsString}
             setValue={setMaxAllowedActionsString}
             label={t`Max allowed actions`}
@@ -622,6 +606,22 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
                 </Trans>
               </div>
             }
+          />
+          <InputRow
+            value={maxAutoTopUpAmountString}
+            setValue={setMaxAutoTopUpAmountString}
+            label={t`Max auto top-up amount`}
+            symbol={nativeToken.symbol}
+            placeholder="0.0000"
+            description={t`This is the maximum top-up amount that will be sent to your subaccount after each transaction, the actual amount sent will depend on the actual transaction fee.`}
+          />
+          <InputRow
+            value={wntForAutoTopUpsString}
+            setValue={setWntForAutoTopUpsString}
+            label={t`Сonvert ${nativeToken.symbol} to ${wrappedToken.symbol}`}
+            symbol={wrappedToken.symbol}
+            placeholder="0.0000"
+            description={t`Convert this amount of  ${nativeToken.symbol} to ${wrappedToken.symbol} in your Main Account to allow for auto top-ups, as only ${wrappedToken.symbol} can be automatically transferred to your Subaccount. The ${wrappedToken.symbol} balance of your main account is shown above.`}
           />
         </div>
         {tokenApproval}
@@ -669,7 +669,7 @@ const InputRow = memo(
       <div>
         <div className="SubaccountModal-input-row flex text-gray">
           <div className="SubaccountModal-input-row-label">
-            <TooltipWithPortal handle={label} renderContent={renderTooltipContent} />
+            <TooltipWithPortal position="left-top" handle={label} renderContent={renderTooltipContent} />
           </div>
           <Input
             negativeSign={negativeSign}

@@ -66,7 +66,7 @@ export const SubaccountNavigationButton = memo(
     if (shouldShowAllowedActionsWarning) {
       content = (
         <Trans>
-          The previously authorized maximum number of Actions have been reached for One-Click Trading. Click here to
+          The previously authorized maximum number of Actions has been reached for One-Click Trading. Click here to
           re-authorize.
         </Trans>
       );

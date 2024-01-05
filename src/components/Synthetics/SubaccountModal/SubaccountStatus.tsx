@@ -1,34 +1,30 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { getNativeToken, getWrappedToken } from "config/tokens";
 import {
   useIsSubaccountActive,
   useMainAccountInsufficientFunds,
   useSubaccountActionCounts,
   useSubaccountAddress,
+  useSubaccountBaseFeePerAction,
   useSubaccountInsufficientFunds,
-  useSubaccountState,
 } from "context/SubaccountContext/SubaccountContext";
 import { SUBACCOUNT_DOCS_URL } from "domain/synthetics/subaccount/constants";
 import infoIcon from "img/ic_info.svg";
 import warnIcon from "img/ic_warn.svg";
+import { useChainId } from "lib/chains";
 import { ReactNode, memo } from "react";
 import "./SubaccountStatus.scss";
-import { getNativeToken, getWrappedToken } from "config/tokens";
-import { useChainId } from "lib/chains";
 
 function SubaccountStatusImpl({ hasBorder }: { hasBorder: boolean }) {
   const isSubaccountActive = useIsSubaccountActive();
   const { remaining: remainingActionsCount } = useSubaccountActionCounts();
 
-  const oneClickTradingState = useSubaccountState();
   const shouldShowAllowedActionsError = isSubaccountActive && remainingActionsCount?.eq(0);
-  const subAccountInsufficientFunds = useSubaccountInsufficientFunds(
-    oneClickTradingState.baseExecutionFee?.feeTokenAmount
-  );
-  const mainACcountInsufficientFunds = useMainAccountInsufficientFunds(
-    oneClickTradingState.baseExecutionFee?.feeTokenAmount
-  );
+  const baseFeePerAction = useSubaccountBaseFeePerAction();
+  const subAccountInsufficientFunds = useSubaccountInsufficientFunds(baseFeePerAction);
+  const mainACcountInsufficientFunds = useMainAccountInsufficientFunds(baseFeePerAction);
   const subaccountAddress = useSubaccountAddress();
   const { chainId } = useChainId();
   const shouldShowSubaccountInsufficientFundsError = isSubaccountActive && subAccountInsufficientFunds;
@@ -45,8 +41,8 @@ function SubaccountStatusImpl({ hasBorder }: { hasBorder: boolean }) {
       content.push(
         <Info warning key="1">
           <Trans>
-            The maximum number of authorized Actions has been reached. Re-authorize a higher value using the Max allowed
-            actions field.
+            The maximum number of authorized Actions has been reached. Re-authorize a higher value using the 'Max
+            allowed actions' field
           </Trans>
         </Info>
       );
@@ -56,8 +52,8 @@ function SubaccountStatusImpl({ hasBorder }: { hasBorder: boolean }) {
       content.push(
         <Info warning key="2">
           <Trans>
-            Not enough funds on One&#8209;Click&nbsp;Trading subaccount. Use top-up field to increase the subaccount
-            balance.
+            There are insufficient funds in your Subaccount for One-Click Trading. Use the top-up field to increase the
+            subaccount balance.
           </Trans>
         </Info>
       );
@@ -69,8 +65,8 @@ function SubaccountStatusImpl({ hasBorder }: { hasBorder: boolean }) {
       content.push(
         <Info warning key="3">
           <Trans>
-            Not enough {wrappedToken.symbol} on your main account. Use Convert {wrappedToken.symbol} to{" "}
-            {nativeToken.symbol} field to increase the balance.
+            Not enough {wrappedToken.symbol} on your main account. Use Convert {nativeToken.symbol} to{" "}
+            {wrappedToken.symbol} field to increase the balance.
           </Trans>
         </Info>
       );
