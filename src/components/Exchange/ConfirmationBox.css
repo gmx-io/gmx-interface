@@ -10,6 +10,7 @@
   background: var(--dark-blue-hover);
   border-radius: var(--border-radius-sm);
   padding: 1rem;
+  font-size: 1.3rem;
 }
 
 .order-list li:not(:first-child) {

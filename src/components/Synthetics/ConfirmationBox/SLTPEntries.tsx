@@ -30,6 +30,17 @@ function SLTPEntries({ entries, updateEntry, addEntry, deleteEntry }) {
               <div className="SLTP-actions">
                 <TooltipWithPortal
                   handle={
+                    <button className="action-add" onClick={addEntry}>
+                      <FaPlus color="#5EC989" />
+                    </button>
+                  }
+                  portalClassName="SLTP-helper-text"
+                  handleClassName="mr-xs"
+                  position="right-center"
+                  renderContent={() => <span>Add Row</span>}
+                />
+                <TooltipWithPortal
+                  handle={
                     <button
                       className="action-remove"
                       onClick={() => deleteEntry(entryData.id)}
@@ -41,16 +52,6 @@ function SLTPEntries({ entries, updateEntry, addEntry, deleteEntry }) {
                   portalClassName="SLTP-helper-text"
                   position="right-center"
                   renderContent={() => <span>Remove Row</span>}
-                />
-                <TooltipWithPortal
-                  handle={
-                    <button className="action-add" onClick={addEntry}>
-                      <FaPlus color="#5EC989" />
-                    </button>
-                  }
-                  portalClassName="SLTP-helper-text"
-                  position="right-center"
-                  renderContent={() => <span>Add Row</span>}
                 />
               </div>
             </div>

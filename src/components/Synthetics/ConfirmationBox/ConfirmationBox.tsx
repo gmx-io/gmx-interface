@@ -710,7 +710,7 @@ export function ConfirmationBox(p: Props) {
 
   function renderOrderItem(order: PositionOrderInfo) {
     return (
-      <li key={order.key} className="font-sm">
+      <li key={order.key}>
         <p>
           {order.isLong ? t`Long` : t`Short`} {order.indexToken?.symbol} ({order.targetCollateralToken.symbol}):{" "}
           {formatUsd(order.sizeDeltaUsd)} at price &nbsp;
@@ -1147,8 +1147,8 @@ export function ConfirmationBox(p: Props) {
             {renderExistingTriggerWarning()}
             {renderDifferentTokensWarning()}
           </div>
-          {renderStopLoss()}
           {renderTakeProfit()}
+          {renderStopLoss()}
           {isLimit && renderAvailableLiquidity()}
           {renderLeverage(existingPosition?.leverage, nextPositionValues?.nextLeverage)}
           {isMarket && renderAllowedSlippage(savedAllowedSlippage, setAllowedSlippage)}
