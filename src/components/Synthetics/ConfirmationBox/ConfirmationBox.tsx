@@ -1024,7 +1024,7 @@ export function ConfirmationBox(p: Props) {
               renderContent={() =>
                 stopLossAmounts?.map((tp) => (
                   <div className="space-between mb-xs">
-                    <span className="mr-xs">{formatPercentage(tp.estimatedPnlPercentage, {})}</span>
+                    <span className="mr-xs">{formatPercentage(tp.realizedPnl, {})}</span>
                     <span className={tp.estimatedPnl.isNegative() ? "text-red" : "text-green"}>
                       {formatUsd(tp.estimatedPnl)}
                     </span>
@@ -1070,7 +1070,7 @@ export function ConfirmationBox(p: Props) {
                   <div className="space-between mb-xs">
                     <span className="mr-xs">{formatPercentage(tp.estimatedPnlPercentage, {})}</span>
                     <span className={tp.estimatedPnl.isNegative() ? "text-red" : "text-green"}>
-                      {formatUsd(tp.estimatedPnl)}
+                      {formatUsd(tp.realizedPnl)}
                     </span>
                   </div>
                 ))

@@ -275,7 +275,7 @@ function useEntries(errorHandler: (entry: Partial<Entry>) => Partial<Entry>) {
 
 function calculateTotalPnl(amounts) {
   if (!amounts) return;
-  return amounts.reduce((acc, amount) => acc.add(amount.estimatedPnl), BigNumber.from(0));
+  return amounts.reduce((acc, amount) => acc.add(amount.realizedPnl), BigNumber.from(0));
 }
 
 function calculateAmounts(params: {
