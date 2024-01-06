@@ -2,6 +2,8 @@
   list-style: none;
   padding: 0;
   margin: 1rem 0;
+  display: grid;
+  grid-row-gap: 0.5rem;
 }
 .order-list li {
   display: flex;
