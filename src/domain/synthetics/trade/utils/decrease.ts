@@ -71,6 +71,7 @@ export function getDecreasePositionAmounts(p: {
     estimatedPnl: BigNumber.from(0),
     estimatedPnlPercentage: BigNumber.from(0),
     realizedPnl: BigNumber.from(0),
+    realizedPnlPercentage: BigNumber.from(0),
 
     positionFeeUsd: BigNumber.from(0),
     uiFeeUsd: BigNumber.from(0),
@@ -199,6 +200,9 @@ export function getDecreasePositionAmounts(p: {
   });
 
   values.realizedPnl = values.estimatedPnl.mul(values.sizeDeltaInTokens).div(position.sizeInTokens);
+  values.realizedPnlPercentage = !estimatedCollateralUsd.eq(0)
+    ? getBasisPoints(values.realizedPnl, estimatedCollateralUsd)
+    : BigNumber.from(0);
   values.estimatedPnlPercentage = !estimatedCollateralUsd.eq(0)
     ? getBasisPoints(values.estimatedPnl, estimatedCollateralUsd)
     : BigNumber.from(0);
