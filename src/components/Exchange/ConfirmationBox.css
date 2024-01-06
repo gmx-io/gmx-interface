@@ -9,7 +9,7 @@
   align-items: center;
   background: var(--dark-blue-hover);
   border-radius: var(--border-radius-sm);
-  padding: 1rem;
+  padding: 0.5rem 1rem;
   font-size: 1.3rem;
 }
 
@@ -26,6 +26,7 @@
   border: none;
   color: white;
   opacity: 0.8;
+  display: inline-flex;
 }
 .order-list li button:hover {
   opacity: 1;
