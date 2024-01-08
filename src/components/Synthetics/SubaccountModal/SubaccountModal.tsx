@@ -585,14 +585,6 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
         </div>
         <div className="SubaccountModal-section">
           <InputRow
-            value={topUpString}
-            setValue={setTopUpString}
-            label={isSubaccountActive ? t`Top-up` : t`Initial top-up`}
-            symbol={nativeToken.symbol}
-            placeholder="0.0000"
-            description={t`This amount of ${nativeToken.symbol} will be sent to your subaccount to pay for transaction fees.`}
-          />
-          <InputRow
             value={maxAllowedActionsString}
             setValue={setMaxAllowedActionsString}
             label={t`Max allowed actions`}
@@ -608,12 +600,12 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             }
           />
           <InputRow
-            value={maxAutoTopUpAmountString}
-            setValue={setMaxAutoTopUpAmountString}
-            label={t`Max auto top-up amount`}
+            value={topUpString}
+            setValue={setTopUpString}
+            label={isSubaccountActive ? t`Top-up` : t`Initial top-up`}
             symbol={nativeToken.symbol}
             placeholder="0.0000"
-            description={t`This is the maximum top-up amount that will be sent to your subaccount after each transaction, the actual amount sent will depend on the actual transaction fee.`}
+            description={t`This amount of ${nativeToken.symbol} will be sent to your subaccount to pay for transaction fees.`}
           />
           <InputRow
             value={wntForAutoTopUpsString}
@@ -622,6 +614,14 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             symbol={wrappedToken.symbol}
             placeholder="0.0000"
             description={t`Convert this amount of  ${nativeToken.symbol} to ${wrappedToken.symbol} in your Main Account to allow for auto top-ups, as only ${wrappedToken.symbol} can be automatically transferred to your Subaccount. The ${wrappedToken.symbol} balance of your main account is shown above.`}
+          />
+          <InputRow
+            value={maxAutoTopUpAmountString}
+            setValue={setMaxAutoTopUpAmountString}
+            label={t`Max auto top-up amount`}
+            symbol={nativeToken.symbol}
+            placeholder="0.0000"
+            description={t`This is the maximum top-up amount that will be sent to your subaccount after each transaction, the actual amount sent will depend on the actual transaction fee.`}
           />
         </div>
         {tokenApproval}
