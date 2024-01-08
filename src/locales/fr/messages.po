@@ -3562,6 +3562,7 @@ msgstr ""
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price above Liq. Price"
 msgstr "Prix supérieur au prix de liq."
@@ -3582,8 +3583,7 @@ msgstr "Prix supérieur à celui de la marque"
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/domain/synthetics/orders/useStopLossEntries.ts
-#: src/domain/synthetics/orders/useTakeProfitEntries.ts
+#: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price below Liq. Price"
 msgstr "Prix inférieur au prix de liq."

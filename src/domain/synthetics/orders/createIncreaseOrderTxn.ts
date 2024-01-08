@@ -143,6 +143,7 @@ export async function createIncreaseOrderTxn(
     hideSentMsg: true,
     hideSuccessMsg: true,
     setPendingTxns: p.setPendingTxns,
+    gasLimit: 5500000,
   }).then(() => {
     if (isMarketOrderType(p.orderType)) {
       const positionKey = getPositionKey(p.account, p.marketAddress, p.targetCollateralAddress, p.isLong);
