@@ -4980,8 +4980,12 @@ msgid "The mark price has changed, consider increasing your Allowed Slippage by 
 msgstr "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the 'Max allowed actions' field"
-msgstr "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the 'Max allowed actions' field"
+msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"Max allowed actions\" field."
+msgstr "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"Max allowed actions\" field."
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+#~ msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the 'Max allowed actions' field"
+#~ msgstr "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the 'Max allowed actions' field"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 #~ msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the Max allowed actions field."

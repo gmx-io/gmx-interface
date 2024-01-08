@@ -4977,8 +4977,12 @@ msgid "The mark price has changed, consider increasing your Allowed Slippage by 
 msgstr "标价已改变, 请考虑点击你地址旁的 \"...\" 图示来增加你的允许滑点"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the 'Max allowed actions' field"
+msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"Max allowed actions\" field."
 msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+#~ msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the 'Max allowed actions' field"
+#~ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 #~ msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the Max allowed actions field."
