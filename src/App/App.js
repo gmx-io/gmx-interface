@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import useScrollToTop from "lib/useScrollToTop";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { SWRConfig } from "swr";
 import "@wagmi/connectors";
 
@@ -203,7 +203,7 @@ function FullApp() {
     false
   );
 
-  const openSettings = () => {
+  const openSettings = useCallback(() => {
     const slippage = parseInt(settings.savedAllowedSlippage);
     setSlippageAmount(roundToTwoDecimals((slippage / BASIS_POINTS_DIVISOR) * 100));
     if (settings.executionFeeBufferBps !== undefined) {
@@ -215,7 +215,14 @@ function FullApp() {
     setShowDebugValues(settings.showDebugValues);
     setShouldDisableValidationForTesting(savedShouldDisableValidationForTesting);
     setIsSettingsVisible(true);
-  };
+  }, [
+    savedIsPnlInLeverage,
+    savedShouldDisableValidationForTesting,
+    savedShowPnlAfterFees,
+    settings.executionFeeBufferBps,
+    settings.savedAllowedSlippage,
+    settings.showDebugValues,
+  ]);
 
   const saveAndCloseSettings = () => {
     const slippage = parseFloat(slippageAmount);
