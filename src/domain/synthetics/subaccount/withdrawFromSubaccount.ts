@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { getProvider } from "lib/rpc";
 
 export async function withdrawFromSubaccount({
@@ -16,21 +16,36 @@ export async function withdrawFromSubaccount({
 
   const gasPrice = await provider.getGasPrice();
   const gasLimit = 21000;
-  const gasCost = gasPrice.mul(gasLimit);
 
+  const approxAmountToSend = value.sub(gasPrice.mul(gasLimit));
+
+  if (approxAmountToSend.lt(0)) {
+    throw new Error("Insufficient funds to cover gas cost.");
+  }
+
+  const estimatedGas = (
+    (await wallet.estimateGas({
+      to: mainAccountAddress,
+      value,
+    })) as BigNumber
+  )
+    .mul(100)
+    .div(95);
+
+  const gasCost = estimatedGas.mul(gasPrice);
   const amountToSend = value.sub(gasCost);
 
   if (amountToSend.lt(0)) {
     throw new Error("Insufficient funds to cover gas cost.");
   }
 
-  const tx = {
+  const signedTransaction = await wallet.sendTransaction({
     to: mainAccountAddress,
     value: amountToSend,
-    gasPrice: gasPrice,
-    gasLimit: gasLimit,
-  };
+    gasLimit: estimatedGas,
+    gasPrice,
+    nonce: await wallet.getTransactionCount(),
+  });
 
-  const signedTransaction = await wallet.sendTransaction(tx);
   return signedTransaction.wait();
 }

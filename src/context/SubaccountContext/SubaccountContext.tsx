@@ -94,7 +94,7 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
       gasLimits.estimatedFeeMultiplierFactor
     )
       // createOrder is smaller than executeOrder
-      .div(4)
+      .div(5)
       // L2 Gas
       .add(800_000);
     const networkFee = approxNetworkGasLimit.mul(gasPrice);
@@ -103,7 +103,9 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
       swapsCount: 1,
     });
 
-    return networkFee.add(getExecutionFee(chainId, gasLimits, tokensData, gasLimit, gasPrice)?.feeTokenAmount ?? 0);
+    const executionFee =
+      getExecutionFee(chainId, gasLimits, tokensData, gasLimit, gasPrice)?.feeTokenAmount ?? BigNumber.from(0);
+    return networkFee.add(executionFee);
   }, [chainId, gasLimits, gasPrice, tokensData]);
 
   const generateSubaccount = useCallback(async () => {
