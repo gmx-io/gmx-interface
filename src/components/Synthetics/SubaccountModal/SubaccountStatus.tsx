@@ -41,8 +41,8 @@ function SubaccountStatusImpl({ hasBorder }: { hasBorder: boolean }) {
       content.push(
         <Info warning key="1">
           <Trans>
-            The maximum number of authorized Actions has been reached. Re-authorize a higher value using the 'Max
-            allowed actions' field
+            The maximum number of authorized Actions has been reached. Re-authorize a higher value using the "Max
+            allowed actions" field.
           </Trans>
         </Info>
       );
