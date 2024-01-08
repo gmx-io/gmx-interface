@@ -44,7 +44,7 @@ const SubaccountNotificationImpl = ({
     const txUrl = getExplorerUrl(chainId) + "tx/" + tx;
     return (
       <ExternalLink href={txUrl}>
-        <Trans>View status.</Trans>
+        <Trans>View status</Trans>
       </ExternalLink>
     );
   }, [chainId, tx]);
@@ -67,10 +67,10 @@ const SubaccountNotificationImpl = ({
 
     return (
       <div>
-        {step === 1 ? <Trans>Pending Wallet message sign</Trans> : <Trans>Subaccount created.</Trans>}{" "}
+        {step === 1 ? <Trans>Pending Wallet message sign</Trans> : <Trans>Subaccount created</Trans>}{" "}
         {step === 1 ? <SpinningLoader /> : null}
         <br />
-        {step === 3 ? <Trans>Subaccount activated.</Trans> : <Trans>Pending Wallet transaction sign</Trans>}{" "}
+        {step === 3 ? <Trans>Subaccount activated</Trans> : <Trans>Pending Wallet transaction sign</Trans>}{" "}
         {step === 2 ? <SpinningLoader /> : null}
       </div>
     );
