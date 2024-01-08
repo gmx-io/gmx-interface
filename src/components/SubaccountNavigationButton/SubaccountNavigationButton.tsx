@@ -7,7 +7,7 @@ import {
   useSubaccountInsufficientFunds,
 } from "context/SubaccountContext/SubaccountContext";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { ReactNode, memo, useCallback, useState } from "react";
+import { ReactNode, memo, useCallback } from "react";
 import "./SubaccountNavigationButton.scss";
 import { BigNumber } from "ethers";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -33,19 +33,14 @@ export const SubaccountNavigationButton = memo(
     }, [closeConfirmationBox, setModalOpen]);
 
     const [offerButtonHidden, setOfferButtonHidden] = useLocalStorageSerializeKey("oneClickTradingOfferHidden", false);
-    const [insufficientFundsButtonHidden, setInsufficientFundsButtonHidden] = useState(false);
 
     const handleCloseOfferClick = useCallback(() => {
       setOfferButtonHidden(true);
     }, [setOfferButtonHidden]);
 
-    const handleCloseInsufficientFundsClick = useCallback(() => {
-      setInsufficientFundsButtonHidden(true);
-    }, [setInsufficientFundsButtonHidden]);
-
     const { remaining } = useSubaccountActionCounts();
 
-    const shouldShowInsufficientFundsButton = isSubaccountActive && insufficientFunds && !insufficientFundsButtonHidden;
+    const shouldShowInsufficientFundsButton = isSubaccountActive && insufficientFunds;
     const shouldShowOfferButton = !isSubaccountActive && !offerButtonHidden;
     const shouldShowAllowedActionsWarning = isSubaccountActive && remaining?.eq(0);
 
@@ -71,7 +66,6 @@ export const SubaccountNavigationButton = memo(
         </Trans>
       );
     } else if (shouldShowInsufficientFundsButton) {
-      onCloseClick = handleCloseInsufficientFundsClick;
       content = (
         <Trans>There are insufficient funds in your Subaccount for One-Click Trading. Click here to top-up.</Trans>
       );
