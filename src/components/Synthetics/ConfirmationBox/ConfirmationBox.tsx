@@ -1022,11 +1022,11 @@ export function ConfirmationBox(p: Props) {
               handleClassName={totalStopLossPnl?.isNegative() ? "text-red" : "text-green"}
               className="SLTP-pnl-tooltip"
               renderContent={() =>
-                stopLossAmounts?.map((tp) => (
-                  <div className="space-between mb-xs">
-                    <span className="mr-xs">{formatPercentage(tp.realizedPnl, {})}</span>
-                    <span className={tp.estimatedPnl.isNegative() ? "text-red" : "text-green"}>
-                      {formatUsd(tp.estimatedPnl)}
+                stopLossAmounts?.map((tp, index) => (
+                  <div className="space-between mb-xs" key={index}>
+                    <span className="mr-xs">{formatPercentage(tp.realizedPnlPercentage)}</span>
+                    <span className={tp.realizedPnl.isNegative() ? "text-red" : "text-green"}>
+                      {formatUsd(tp.realizedPnl)}
                     </span>
                   </div>
                 ))
@@ -1066,10 +1066,10 @@ export function ConfirmationBox(p: Props) {
               handleClassName={totalTakeProfitPnl?.isNegative() ? "text-red" : "text-green"}
               className="SLTP-pnl-tooltip"
               renderContent={() =>
-                takeProfitAmounts?.map((tp) => (
-                  <div className="space-between mb-xs">
-                    <span className="mr-xs">{formatPercentage(tp.estimatedPnlPercentage, {})}</span>
-                    <span className={tp.estimatedPnl.isNegative() ? "text-red" : "text-green"}>
+                takeProfitAmounts?.map((tp, index) => (
+                  <div className="space-between mb-xs" key={index}>
+                    <span className="mr-xs">{formatPercentage(tp.realizedPnlPercentage)}</span>
+                    <span className={tp.realizedPnl.isNegative() ? "text-red" : "text-green"}>
                       {formatUsd(tp.realizedPnl)}
                     </span>
                   </div>

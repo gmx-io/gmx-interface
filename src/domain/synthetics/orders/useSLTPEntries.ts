@@ -64,11 +64,18 @@ export default function useSLTPEntries({
       }
 
       const inputPrice = parseValue(entry.price, USD_DECIMALS);
-      const error = inputPrice?.lt(nextPositionValues.nextLiqPrice) ? t`Price below Liq. Price` : entry.error;
 
-      return { ...entry, error };
+      if (isLong && inputPrice?.lte(nextPositionValues.nextLiqPrice)) {
+        return { ...entry, error: t`Price below Liq. Price` };
+      }
+
+      if (!isLong && inputPrice?.gte(nextPositionValues.nextLiqPrice)) {
+        return { ...entry, error: t`Price above Liq. Price` };
+      }
+
+      return { ...entry, error: "" };
     },
-    [nextPositionValues]
+    [nextPositionValues, isLong]
   );
 
   const stopLossInfo = useEntries(handleErrors);
@@ -102,7 +109,6 @@ export default function useSLTPEntries({
       !positionKey ||
       !marketInfo ||
       !collateralToken ||
-      !isLong ||
       !increaseAmounts ||
       !currentPosition ||
       !nextPositionValues ||
@@ -231,7 +237,6 @@ export default function useSLTPEntries({
       currentPositionInfo,
     ]
   );
-
   return {
     stopLoss,
     takeProfit,
@@ -298,7 +303,6 @@ function calculateAmounts(params: {
     marketInfo,
     collateralToken,
     isLong,
-    existingPosition,
     keepLeverage,
     minCollateralUsd,
     minPositionSizeUsd,
@@ -308,6 +312,7 @@ function calculateAmounts(params: {
   } = params;
 
   if (!increaseAmounts || !marketInfo || !collateralToken || !minPositionSizeUsd || !minCollateralUsd) return;
+
   return entries
     .filter((entry) => entry.price && entry.percentage && !entry.error)
     .map((entry) => {
@@ -317,7 +322,7 @@ function calculateAmounts(params: {
         marketInfo,
         collateralToken,
         isLong,
-        position: existingPosition || currentPositionInfo,
+        position: currentPositionInfo,
         closeSizeUsd: sizeUsd,
         keepLeverage: keepLeverage!,
         triggerPrice: price,
