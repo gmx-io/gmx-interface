@@ -4630,16 +4630,24 @@ msgid "Subaccount Balance"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Subaccount activated."
+msgid "Subaccount activated"
 msgstr ""
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+#~ msgid "Subaccount activated."
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount activation failed."
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Subaccount created."
+msgid "Subaccount created"
 msgstr ""
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+#~ msgid "Subaccount created."
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount deactivated."
@@ -5758,6 +5766,9 @@ msgid "View in Explorer"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "View status"
+msgstr ""
+
 #: src/lib/contracts/callContract.tsx
 msgid "View status."
 msgstr ""
