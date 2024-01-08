@@ -621,7 +621,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             label={t`Max auto top-up amount`}
             symbol={nativeToken.symbol}
             placeholder="0.0000"
-            description={t`This is the maximum top-up amount that will be sent to your subaccount after each transaction, the actual amount sent will depend on the actual transaction fee.`}
+            description={t`This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee.`}
           />
         </div>
         {tokenApproval}
