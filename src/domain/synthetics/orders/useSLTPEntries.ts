@@ -88,20 +88,29 @@ export default function useSLTPEntries({
 
     return getPositionKey(account, marketInfo.marketTokenAddress, collateralToken.address, isLong);
   }, [account, collateralToken, isLong, marketInfo]);
-
   const currentPosition = useMemo(() => {
-    if (!increaseAmounts || !positionKey) return;
+    if (!positionKey || !collateralToken || !nextPositionValues || !marketInfo) return;
 
     return getPendingMockPosition({
       isIncrease: true,
       positionKey,
-      sizeDeltaUsd: increaseAmounts.sizeDeltaUsd || BigNumber.from(0),
-      sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens || BigNumber.from(0),
-      collateralDeltaAmount: increaseAmounts.collateralDeltaAmount || BigNumber.from(0),
+      sizeDeltaUsd: nextPositionValues?.nextSizeUsd || BigNumber.from(0),
+      sizeDeltaInTokens:
+        convertToTokenAmount(
+          nextPositionValues.nextSizeUsd,
+          marketInfo.indexToken.decimals,
+          marketInfo.indexToken.prices.minPrice
+        ) || BigNumber.from(0),
+      collateralDeltaAmount:
+        convertToTokenAmount(
+          nextPositionValues.nextCollateralUsd,
+          collateralToken.decimals,
+          collateralToken.prices.minPrice
+        ) || BigNumber.from(0),
       updatedAt: Date.now(),
       updatedAtBlock: BigNumber.from(0),
     });
-  }, [increaseAmounts, positionKey]);
+  }, [positionKey, collateralToken, nextPositionValues, marketInfo]);
 
   const currentPositionInfo: PositionInfo | undefined = useMemo(() => {
     if (
@@ -237,6 +246,7 @@ export default function useSLTPEntries({
       currentPositionInfo,
     ]
   );
+
   return {
     stopLoss,
     takeProfit,

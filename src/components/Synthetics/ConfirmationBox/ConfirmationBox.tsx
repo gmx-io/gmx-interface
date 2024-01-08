@@ -1022,14 +1022,21 @@ export function ConfirmationBox(p: Props) {
               handleClassName={totalStopLossPnl?.isNegative() ? "text-red" : "text-green"}
               className="SLTP-pnl-tooltip"
               renderContent={() =>
-                stopLossAmounts?.map((tp, index) => (
-                  <div className="space-between mb-xs" key={index}>
-                    <span className="mr-xs">{formatPercentage(tp.realizedPnlPercentage)}</span>
-                    <span className={tp.realizedPnl.isNegative() ? "text-red" : "text-green"}>
-                      {formatUsd(tp.realizedPnl)}
-                    </span>
-                  </div>
-                ))
+                stopLossAmounts?.map((sl, index) => {
+                  const stopLossEntry = stopLossEntries[index];
+                  return (
+                    <div className="space-between mb-xs" key={index}>
+                      <span className="mr-md">{formatPercentage(BigNumber.from(stopLossEntry?.percentage))}</span>
+                      <span className={sl.realizedPnl.isNegative() ? "text-red" : "text-green"}>
+                        {formatUsd(sl.realizedPnl)} (
+                        {formatPercentage(sl.realizedPnlPercentage, {
+                          signed: true,
+                        })}
+                        )
+                      </span>
+                    </div>
+                  );
+                })
               }
             />
           )}
@@ -1066,14 +1073,21 @@ export function ConfirmationBox(p: Props) {
               handleClassName={totalTakeProfitPnl?.isNegative() ? "text-red" : "text-green"}
               className="SLTP-pnl-tooltip"
               renderContent={() =>
-                takeProfitAmounts?.map((tp, index) => (
-                  <div className="space-between mb-xs" key={index}>
-                    <span className="mr-xs">{formatPercentage(tp.realizedPnlPercentage)}</span>
-                    <span className={tp.realizedPnl.isNegative() ? "text-red" : "text-green"}>
-                      {formatUsd(tp.realizedPnl)}
-                    </span>
-                  </div>
-                ))
+                takeProfitAmounts?.map((tp, index) => {
+                  const takeProfitEntry = takeProfitEntries[index];
+                  return (
+                    <div className="space-between mb-xs" key={index}>
+                      <span className="mr-md">{formatPercentage(BigNumber.from(takeProfitEntry?.percentage))}</span>
+                      <span className={tp.realizedPnl.isNegative() ? "text-red" : "text-green"}>
+                        {formatUsd(tp.realizedPnl)} (
+                        {formatPercentage(tp.realizedPnlPercentage, {
+                          signed: true,
+                        })}
+                        )
+                      </span>
+                    </div>
+                  );
+                })
               }
             />
           )}
