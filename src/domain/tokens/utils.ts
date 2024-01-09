@@ -193,6 +193,7 @@ export function getLowestFeeTokenForBuyGlp(
     .filter(
       (asset) =>
         asset.token.address !== fromTokenAddress &&
+        // eslint-disable-next-line no-prototype-builtins
         asset.hasOwnProperty("fees") &&
         swapUsdMin.lt(asset.amountLeftToDeposit)
     )

@@ -373,7 +373,7 @@ export default function PositionEditor(props) {
       failMsg: t`Deposit failed.`,
       setPendingTxns,
     })
-      .then(async (res) => {
+      .then(async () => {
         setFromValue("");
         setIsVisible(false);
 
@@ -431,7 +431,7 @@ export default function PositionEditor(props) {
       failMsg: t`Withdrawal failed.`,
       setPendingTxns,
     })
-      .then(async (res) => {
+      .then(async () => {
         setFromValue("");
         setIsVisible(false);
 

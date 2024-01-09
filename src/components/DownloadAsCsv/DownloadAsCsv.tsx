@@ -1,4 +1,4 @@
-import { ReactNode, useCallback } from "react";
+import { useCallback } from "react";
 import DownloadIcon from "img/ic_download.svg";
 import cx from "classnames";
 
@@ -7,7 +7,6 @@ type Props<T> = {
   excludedFields: string[];
   fileName: string;
   className?: string;
-  children?: ReactNode;
 };
 
 function filterFields<T>(data: T, excludedFields: string[]): Partial<T> {
@@ -22,7 +21,7 @@ function convertToCSV<T>(data: Partial<T>[]): string {
   return `${header}\n${values}`;
 }
 
-export function DownloadAsCsv<T>({ data, excludedFields, fileName, className, children }: Props<T>) {
+export function DownloadAsCsv<T>({ data, excludedFields, fileName, className }: Props<T>) {
   const getCsvUrl = useCallback(
     (data: T[]) => {
       const filteredData = data.map((item) => filterFields(item, excludedFields));

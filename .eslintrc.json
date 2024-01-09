@@ -1,0 +1,33 @@
+{
+    "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended",  "plugin:react-hooks/recommended"],
+    "rules": {
+      "curly": "off",
+      "no-undef": "error",
+      "@typescript-eslint/no-non-null-assertion": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "prefer-const": "off",
+      "no-irregular-whitespace": "off",
+      "@typescript-eslint/no-inferrable-types": "error", 
+      "@typescript-eslint/ban-ts-comment": "off",
+      "@typescript-eslint/no-unused-vars": "warn", 
+      "no-var": "error",
+      "no-async-promise-executor": "off",
+      "@typescript-eslint/no-non-null-asserted-optional-chain": "error",
+      "@typescript-eslint/ban-types": "off",
+      "@typescript-eslint/no-empty-function": "error",
+      "no-case-declarations": "error",
+      "@typescript-eslint/no-empty-interface": "off",
+      "no-extra-boolean-cast": "error",
+      "no-prototype-builtins": "error",
+      "no-empty": "error"
+    },
+    "env": {
+      "browser": true,
+      "jest": true,
+      "es2020": true
+    },
+    "globals": {
+      "process": true,
+      "TradingView": true
+    }
+  }

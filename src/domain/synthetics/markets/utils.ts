@@ -229,8 +229,7 @@ export function getMostLiquidMarketForPosition(
   marketsInfo: MarketInfo[],
   indexTokenAddress: string,
   collateralTokenAddress: string | undefined,
-  isLong: boolean,
-  isIncrease: boolean
+  isLong: boolean
 ) {
   let bestMarket: MarketInfo | undefined;
   let bestLiquidity: BigNumber | undefined;

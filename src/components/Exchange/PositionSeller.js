@@ -916,7 +916,7 @@ export default function PositionSeller(props) {
       // hide the success message for Arbitrum as a workaround
       hideSuccessMsg: chainId === ARBITRUM,
     })
-      .then(async (res) => {
+      .then(async () => {
         setFromValue("");
         setIsVisible(false);
 
