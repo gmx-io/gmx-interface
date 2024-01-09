@@ -106,7 +106,7 @@ const SubaccountNotificationImpl = ({
       title = t`Deactivation`;
       content = (
         <div>
-          <Trans>Deactivating subaccount.</Trans> <SpinningLoader />
+          <Trans>Deactivating subaccount</Trans> <SpinningLoader />
         </div>
       );
       break;
