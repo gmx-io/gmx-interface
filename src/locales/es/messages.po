@@ -840,10 +840,6 @@ msgstr "¡Reclamación enviada! <0>Ver estado.</0>"
 msgid "Claim submitted."
 msgstr "Reclamación enviada."
 
-#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
-#~ msgid "Claim {0}"
-#~ msgstr ""
-
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claim {wrappedTokenSymbol} Rewards"
@@ -1101,10 +1097,6 @@ msgstr "Conectar Monedero"
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Consider selecting and using the \"Pair\" option to reduce the Price Impact."
 msgstr ""
-
-#: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
-#~ msgid "Consider selecting only Positions where the accrued Funding Fees exceed the gas spent to Settle, which is around <0>-{0}</0> per each selected Position."
-#~ msgstr ""
 
 #: src/components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Consider selecting only Positions where the accrued Funding Fees exceed the gas spent to Settle, which is around {0} per each selected Position."
