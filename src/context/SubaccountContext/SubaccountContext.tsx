@@ -34,7 +34,7 @@ import { createContext, useContextSelector } from "use-context-selector";
 
 export type Subaccount = ReturnType<typeof useSubaccount>;
 
-type SubaccountNotificationState =
+export type SubaccountNotificationState =
   | "generating"
   | "activating"
   | "activated"

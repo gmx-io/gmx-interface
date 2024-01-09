@@ -1,4 +1,5 @@
 import { t } from "@lingui/macro";
+import { SubaccountNotificationState } from "context/SubaccountContext/SubaccountContext";
 import { TokenData, convertToTokenAmount } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { expandDecimals } from "lib/numbers";
@@ -14,6 +15,9 @@ export function getButtonState({
   subaccountAddress,
 
   needPayTokenApproval,
+  isTxPending,
+  notificationState,
+  withdrawalLoading,
 
   mainAccEthBalance,
   isSubaccountActive,
@@ -31,6 +35,9 @@ export function getButtonState({
   subaccountAddress: string | null;
 
   needPayTokenApproval: boolean;
+  isTxPending: boolean;
+  notificationState: SubaccountNotificationState;
+  withdrawalLoading: boolean;
 
   mainAccEthBalance: BigNumber | undefined;
   isSubaccountActive: boolean;
@@ -39,16 +46,12 @@ export function getButtonState({
 
   nativeTokenSymbol: string;
   wrappedTokenSymbol: string;
-}): { text: string; disabled?: true; spinner?: true } {
+}): { text: string; disabled?: true } {
+  const ethSpendAmount = (topUp ?? ZERO).add(wntForAutoTopUps ?? ZERO);
+
   if (!mainAccEthBalance) {
     return { disabled: true, text: t`${nativeTokenSymbol} is not available` };
   }
-
-  if (needPayTokenApproval) {
-    return { disabled: true, text: t`Allow ${wrappedTokenSymbol} to be spent` };
-  }
-
-  const ethSpendAmount = (topUp ?? ZERO).add(wntForAutoTopUps ?? ZERO);
 
   if (mainAccEthBalance.lt(ethSpendAmount)) {
     return { disabled: true, text: t`Insufficient ${nativeTokenSymbol} balance` };
@@ -62,8 +65,31 @@ export function getButtonState({
     return { disabled: true, text: t`Maximum allowed actions is required` };
   }
 
+  if (isTxPending) {
+    if (notificationState === "activating") {
+      return { disabled: true, text: "Activating Subaccount..." };
+    } else if (notificationState === "deactivating") {
+      return { disabled: true, text: "Deactivating Subaccount..." };
+    } else if (notificationState === "generating") {
+      return { disabled: true, text: "Generating Subaccount..." };
+    }
+    return { disabled: true, text: "Waiting for transaction..." };
+  }
+
+  if (withdrawalLoading) {
+    return { disabled: true, text: "Withdrawing..." };
+  }
+
   if (accountUpdateLoading) {
-    return { disabled: true, spinner: true, text: "" };
+    if (notificationState === "activating" && !isSubaccountActive) {
+      return { disabled: true, text: "Activating Subaccount..." };
+    } else if (notificationState === "deactivating" && isSubaccountActive) {
+      return { disabled: true, text: "Deactivating Subaccount..." };
+    } else if (notificationState === "generating" && !isSubaccountActive) {
+      return { disabled: true, text: "Generating Subaccount..." };
+    }
+
+    return { disabled: true, text: "Updating..." };
   } else if (isSubaccountActive) {
     let count = 0;
     if (topUp) count += 1;
@@ -84,7 +110,11 @@ export function getButtonState({
     }
   }
 
-  return { disabled: true, spinner: true, text: "" };
+  if (needPayTokenApproval) {
+    return { disabled: true, text: t`Allow ${wrappedTokenSymbol} to be spent` };
+  }
+
+  return { disabled: true, text: "" };
 }
 
 export function getApproxSubaccountActionsCountByBalance(

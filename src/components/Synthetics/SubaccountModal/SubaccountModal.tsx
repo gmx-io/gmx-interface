@@ -2,7 +2,6 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
-import SpinningLoader from "components/Common/SpinningLoader";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -427,11 +426,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     [baseFeePerAction, tokensAllowanceData, wrappedToken.address]
   );
 
-  const {
-    text: buttonText,
-    disabled,
-    spinner,
-  } = useMemo(
+  const { text: buttonText, disabled } = useMemo(
     () =>
       getButtonState({
         mainAccEthBalance: mainAccNativeTokenBalance,
@@ -440,8 +435,12 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
         maxAutoTopUpAmount,
         wntForAutoTopUps,
         maxAllowedActions,
+        withdrawalLoading,
+
+        notificationState,
 
         needPayTokenApproval,
+        isTxPending,
 
         isSubaccountActive,
         accountUpdateLoading: isSubaccountUpdating,
@@ -456,7 +455,10 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
       maxAutoTopUpAmount,
       wntForAutoTopUps,
       maxAllowedActions,
+      withdrawalLoading,
+      notificationState,
       needPayTokenApproval,
+      isTxPending,
       isSubaccountActive,
       isSubaccountUpdating,
       nativeToken.symbol,
@@ -537,11 +539,11 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             </div>
           </div>
           <div className="SubaccountModal-buttons">
-            <button onClick={handleWithdrawClick} className="SubaccountModal-mini-button">
-              {withdrawalLoading ? <SpinningLoader /> : <Trans>Withdraw</Trans>}
+            <button disabled={disabled} onClick={handleWithdrawClick} className="SubaccountModal-mini-button">
+              {withdrawalLoading ? <Trans>Withdrawing...</Trans> : <Trans>Withdraw</Trans>}
             </button>
-            <button onClick={handleDeactivateClick} className="SubaccountModal-mini-button warning">
-              {isSubaccountUpdating ? <SpinningLoader /> : <Trans>Deactivate</Trans>}
+            <button disabled={disabled} onClick={handleDeactivateClick} className="SubaccountModal-mini-button warning">
+              {notificationState === "deactivating" ? <Trans>Deactivating...</Trans> : <Trans>Deactivate</Trans>}
             </button>
           </div>
         </>
@@ -625,13 +627,8 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
           />
         </div>
         {tokenApproval}
-        <Button
-          onClick={handleButtonClick}
-          disabled={disabled || spinner || isTxPending}
-          variant="primary-action"
-          className="w-full"
-        >
-          {isTxPending || spinner ? <SpinningLoader /> : buttonText}
+        <Button onClick={handleButtonClick} disabled={disabled} variant="primary-action" className="w-full">
+          {buttonText}
         </Button>
       </div>
     </div>

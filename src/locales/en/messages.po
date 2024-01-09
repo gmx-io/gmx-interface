@@ -1334,6 +1334,10 @@ msgstr "Deactivating subaccount"
 #~ msgid "Deactivating subaccount."
 #~ msgstr "Deactivating subaccount."
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Deactivating..."
+msgstr "Deactivating..."
+
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
@@ -5955,6 +5959,7 @@ msgid "Withdrawing {0} from {positionText}"
 msgstr "Withdrawing {0} from {positionText}"
 
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Withdrawing..."
 msgstr "Withdrawing..."
 
