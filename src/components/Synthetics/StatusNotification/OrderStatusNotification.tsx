@@ -197,7 +197,8 @@ export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tok
         </div>
       </div>
 
-      <div className={cx("StatusNotification-background", { error: hasError })}></div>
+      <div className={cx("StatusNotification-background", { error: hasError })} />
+      <div className="Notification-divider" />
     </div>
   );
 }
@@ -216,7 +217,7 @@ export function OrdersStatusNotificiation({
   const pendingOrders = Array.isArray(pendingOrderData) ? pendingOrderData : [pendingOrderData];
 
   return (
-    <div className="OrdersStatusNotification-wrapper">
+    <div className="StatusNotification-wrapper">
       {pendingOrders.map((order, index) => {
         return (
           <OrderStatusNotification

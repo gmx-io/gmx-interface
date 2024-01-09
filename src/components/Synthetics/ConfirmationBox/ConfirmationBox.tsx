@@ -19,9 +19,18 @@ import {
 } from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useUserReferralCode } from "domain/referrals/hooks";
-import { ExecutionFee, getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
+import {
+  ExecutionFee,
+  estimateExecuteDecreaseOrderGasLimit,
+  getBorrowingFactorPerPeriod,
+  getExecutionFee,
+  getFundingFactorPerPeriod,
+  useGasLimits,
+  useGasPrice,
+} from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
 import {
+  DecreasePositionSwapType,
   OrderType,
   OrdersInfoData,
   PositionOrderInfo,
@@ -184,6 +193,8 @@ export function ConfirmationBox(p: Props) {
   const { openConnectModal } = useConnectModal();
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const { savedAllowedSlippage } = useSettings();
+  const { gasLimits } = useGasLimits(chainId);
+  const { gasPrice } = useGasPrice(chainId);
   const prevIsVisible = usePrevious(p.isVisible);
 
   const { referralCodeForTxn } = useUserReferralCode(signer, chainId, account);
@@ -264,6 +275,20 @@ export function ConfirmationBox(p: Props) {
 
     return Object.values(ordersData).filter((order) => isOrderForPosition(order, positionKey)) as PositionOrderInfo[];
   }, [ordersData, positionKey]);
+
+  const getDecreaseExecutionFee = useCallback(
+    (decreaseAmounts?: DecreasePositionAmounts) => {
+      if (!decreaseAmounts || !gasLimits || !tokensData || !gasPrice) return;
+      const swapsCount = decreaseAmounts.decreaseSwapType === DecreasePositionSwapType.NoSwap ? 0 : 1;
+
+      const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
+        swapsCount,
+      });
+
+      return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice);
+    },
+    [gasLimits, tokensData, gasPrice, chainId]
+  );
 
   const existingLimitOrders = useMemo(
     () => positionOrders.filter((order) => isLimitOrderType(order.orderType)),
@@ -516,7 +541,7 @@ export function ConfirmationBox(p: Props) {
       marketAddress: marketInfo.marketTokenAddress,
       initialCollateralAddress: collateralToken.address,
       isLong,
-      executionFee: executionFee.feeTokenAmount,
+
       allowedSlippage,
       referralCode: referralCodeForTxn,
       indexToken: marketInfo.indexToken,
@@ -538,6 +563,7 @@ export function ConfirmationBox(p: Props) {
         sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
         triggerPrice: isLimit ? triggerPrice : undefined,
         acceptablePrice: increaseAmounts.acceptablePrice,
+        executionFee: executionFee.feeTokenAmount,
         orderType: isLimit ? OrderType.LimitIncrease : OrderType.MarketIncrease,
         setPendingTxns: p.setPendingTxns,
         setPendingOrder,
@@ -554,6 +580,7 @@ export function ConfirmationBox(p: Props) {
             triggerPrice: entry.triggerPrice,
             acceptablePrice: entry.acceptablePrice,
             sizeDeltaUsd: entry.sizeDeltaUsd,
+            executionFee: getDecreaseExecutionFee(entry)?.feeTokenAmount || BigNumber.from(0),
             sizeDeltaInTokens: entry.sizeDeltaInTokens,
             minOutputUsd: BigNumber.from(0),
             decreasePositionSwapType: entry.decreaseSwapType,

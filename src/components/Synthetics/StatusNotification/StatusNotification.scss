@@ -1,5 +1,21 @@
+.StatusNotification-wrapper {
+  display: grid;
+  grid-row-gap: 1.5rem;
+}
+
 .StatusNotification {
   position: relative;
+}
+
+.StatusNotification:not(:last-child) {
+  .Notification-divider {
+    position: absolute;
+    bottom: -1rem;
+    left: -2rem;
+    height: 2px;
+    width: 150%;
+    background: var(--dark-blue-bg);
+  }
 }
 
 .StatusNotification-background {
@@ -8,7 +24,7 @@
   left: -10%;
   right: auto;
   width: 150%;
-  height: 150%;
+  height: 120%;
   bottom: 0;
   background-color: rgba(174, 43, 63, 0);
   transition: background-color 0.3s ease-in-out;
@@ -36,11 +52,5 @@
 
   .TransactionStatus-spin {
     margin-right: -0.3rem !important;
-  }
-}
-
-.OrdersStatusNotification-wrapper {
-  .StatusNotification:not(:first-child) {
-    margin-top: 1rem;
   }
 }
