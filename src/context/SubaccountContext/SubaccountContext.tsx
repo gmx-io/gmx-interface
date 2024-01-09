@@ -47,7 +47,8 @@ type SubaccountNotificationState =
 
 export type SubaccountContext = {
   activeTx: string | null;
-  baseFeePerAction: BigNumber | null;
+  defaultExecutionFee: BigNumber | null;
+  defaultNetworkFee: BigNumber | null;
   contractData: {
     isSubaccountActive: boolean;
     maxAllowedActions: BigNumber;
@@ -87,8 +88,8 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
 
   // fee that is used as a approx basis to calculate
   // costs of subaccount actions
-  const baseFeePerAction = useMemo(() => {
-    if (!gasLimits || !tokensData || !gasPrice) return null;
+  const [defaultExecutionFee, defaultNetworkFee] = useMemo(() => {
+    if (!gasLimits || !tokensData || !gasPrice) return [null, null];
     const approxNetworkGasLimit = applyFactor(
       gasLimits.estimatedFeeBaseGasLimit,
       gasLimits.estimatedFeeMultiplierFactor
@@ -105,7 +106,7 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
 
     const executionFee =
       getExecutionFee(chainId, gasLimits, tokensData, gasLimit, gasPrice)?.feeTokenAmount ?? BigNumber.from(0);
-    return networkFee.add(executionFee);
+    return [executionFee, networkFee];
   }, [chainId, gasLimits, gasPrice, tokensData]);
 
   const generateSubaccount = useCallback(async () => {
@@ -185,7 +186,8 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
     return {
       modalOpen,
       setModalOpen,
-      baseFeePerAction: baseFeePerAction ?? null,
+      defaultExecutionFee,
+      defaultNetworkFee,
       subaccount: config
         ? {
             address: config.address,
@@ -202,10 +204,11 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
     };
   }, [
     activeTx,
-    baseFeePerAction,
     clearSubaccount,
     config,
     contractData,
+    defaultExecutionFee,
+    defaultNetworkFee,
     generateSubaccount,
     modalOpen,
     notificationState,
@@ -248,8 +251,12 @@ export function useIsSubaccountActive() {
   return useSubaccountSelector((s) => s.contractData?.isSubaccountActive ?? false);
 }
 
-export function useSubaccountBaseFeePerAction() {
-  return useSubaccountSelector((s) => s.baseFeePerAction);
+export function useSubaccountDefaultExecutionFee() {
+  return useSubaccountSelector((s) => s.defaultExecutionFee) ?? BigNumber.from(0);
+}
+
+function useSubaccountDefaultNetworkFee() {
+  return useSubaccountSelector((s) => s.defaultNetworkFee) ?? BigNumber.from(0);
 }
 
 export function useSubaccount(requiredBalance: BigNumber | null, requiredActions = 1) {
@@ -257,8 +264,8 @@ export function useSubaccount(requiredBalance: BigNumber | null, requiredActions
   const active = useIsSubaccountActive();
   const privateKey = useSubaccountPrivateKey();
   const { chainId } = useChainId();
-  const defaultRequiredBalance = useSubaccountBaseFeePerAction();
-  const insufficientFunds = useSubaccountInsufficientFunds(requiredBalance ?? defaultRequiredBalance);
+  const defaultExecutionFee = useSubaccountDefaultExecutionFee();
+  const insufficientFunds = useSubaccountInsufficientFunds(requiredBalance ?? defaultExecutionFee);
 
   const { remaining } = useSubaccountActionCounts();
 
@@ -285,12 +292,14 @@ export function useSubaccountInsufficientFunds(requiredBalance: BigNumber | unde
   const nativeToken = useMemo(() => getNativeToken(chainId), [chainId]);
   const nativeTokenBalance = getByKey(subBalances.balancesData, nativeToken.address);
   const isSubaccountActive = useIsSubaccountActive();
+  const defaultExecutionFee = useSubaccountDefaultExecutionFee();
+  const networkFee = useSubaccountDefaultNetworkFee();
+  const required = (requiredBalance ?? defaultExecutionFee ?? BigNumber.from(0)).add(networkFee);
 
-  if (!requiredBalance) return false;
   if (!isSubaccountActive) return false;
   if (!nativeTokenBalance) return false;
 
-  return requiredBalance.gt(nativeTokenBalance);
+  return required.gt(nativeTokenBalance);
 }
 
 export function useMainAccountInsufficientFunds(requiredBalance: BigNumber | undefined | null) {
@@ -300,12 +309,14 @@ export function useMainAccountInsufficientFunds(requiredBalance: BigNumber | und
   const wrappedToken = useMemo(() => getWrappedToken(chainId), [chainId]);
   const wntBalance = getByKey(subBalances.balancesData, wrappedToken.address);
   const isSubaccountActive = useIsSubaccountActive();
+  const networkFee = useSubaccountDefaultNetworkFee();
+  const defaultExecutionFee = useSubaccountDefaultExecutionFee();
+  const required = (requiredBalance ?? defaultExecutionFee).add(networkFee);
 
-  if (!requiredBalance) return false;
   if (!isSubaccountActive) return false;
   if (!wntBalance) return false;
 
-  return requiredBalance.gt(wntBalance);
+  return required.gt(wntBalance);
 }
 
 export function useSubaccountActionCounts() {
@@ -333,7 +344,7 @@ export function useSubaccountCancelOrdersDetailsMessage(
   overridedRequiredBalance: BigNumber | undefined,
   actionCount: number
 ) {
-  const defaultRequiredBalance = useSubaccountBaseFeePerAction();
+  const defaultRequiredBalance = useSubaccountDefaultExecutionFee();
   const requiredBalance = overridedRequiredBalance ?? defaultRequiredBalance;
   const isLastAction = useIsLastSubaccountAction(actionCount);
   const mainAccountInsufficientFunds = useMainAccountInsufficientFunds(requiredBalance);

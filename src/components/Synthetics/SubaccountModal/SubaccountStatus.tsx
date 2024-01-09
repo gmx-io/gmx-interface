@@ -7,7 +7,7 @@ import {
   useMainAccountInsufficientFunds,
   useSubaccountActionCounts,
   useSubaccountAddress,
-  useSubaccountBaseFeePerAction,
+  useSubaccountDefaultExecutionFee,
   useSubaccountInsufficientFunds,
 } from "context/SubaccountContext/SubaccountContext";
 import { SUBACCOUNT_DOCS_URL } from "domain/synthetics/subaccount/constants";
@@ -22,7 +22,7 @@ function SubaccountStatusImpl({ hasBorder }: { hasBorder: boolean }) {
   const { remaining: remainingActionsCount } = useSubaccountActionCounts();
 
   const shouldShowAllowedActionsError = isSubaccountActive && remainingActionsCount?.eq(0);
-  const baseFeePerAction = useSubaccountBaseFeePerAction();
+  const baseFeePerAction = useSubaccountDefaultExecutionFee();
   const subAccountInsufficientFunds = useSubaccountInsufficientFunds(baseFeePerAction);
   const mainACcountInsufficientFunds = useMainAccountInsufficientFunds(baseFeePerAction);
   const subaccountAddress = useSubaccountAddress();

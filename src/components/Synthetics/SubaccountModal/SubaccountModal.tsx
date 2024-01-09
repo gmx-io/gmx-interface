@@ -13,7 +13,7 @@ import {
   useIsSubaccountActive,
   useSubaccountActionCounts,
   useSubaccountAddress,
-  useSubaccountBaseFeePerAction,
+  useSubaccountDefaultExecutionFee,
   useSubaccountGenerateSubaccount,
   useSubaccountModalOpen,
   useSubaccountNotificationState,
@@ -87,7 +87,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     return getDefaultValues(data);
   }, [nativeToken.address, tokensData]);
 
-  const baseFeePerAction = useSubaccountBaseFeePerAction();
+  const baseFeePerAction = useSubaccountDefaultExecutionFee();
 
   const approxNumberOfOperationsByBalance = useMemo(() => {
     const currentAutoTopUpAmount = oneClickTradingState.contractData?.currentAutoTopUpAmount;
