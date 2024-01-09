@@ -5137,8 +5137,12 @@ msgid "There may not be sufficient liquidity to execute your order when the pric
 msgstr "There may not be sufficient liquidity to execute your order when the price conditions are met."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "This amount of {0} will be sent to your subaccount to pay for transaction fees."
-msgstr "This amount of {0} will be sent to your subaccount to pay for transaction fees."
+msgid "This amount of {0} will be sent from your Main Account to your Subaccount to pay for transaction fees."
+msgstr "This amount of {0} will be sent from your Main Account to your Subaccount to pay for transaction fees."
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+#~ msgid "This amount of {0} will be sent to your subaccount to pay for transaction fees."
+#~ msgstr "This amount of {0} will be sent to your subaccount to pay for transaction fees."
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code has been taken by someone else on {0}, you will not receive rebates from traders using this code on {1}."
