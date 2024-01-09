@@ -478,9 +478,14 @@ export function PositionEditor(p: Props) {
                 }
               }}
               onClickMax={() => {
-                const maxDepositAmount = collateralToken!.isNative
+                let maxDepositAmount = collateralToken!.isNative
                   ? collateralToken!.balance!.sub(BigNumber.from(DUST_BNB).mul(2))
                   : collateralToken!.balance!;
+
+                if (maxDepositAmount.isNegative()) {
+                  maxDepositAmount = BigNumber.from(0);
+                }
+
                 const formattedMaxDepositAmount = formatAmountFree(maxDepositAmount!, collateralToken!.decimals);
                 const finalDepositAmount = isMetamaskMobile
                   ? limitDecimals(formattedMaxDepositAmount, MAX_METAMASK_MOBILE_DECIMALS)

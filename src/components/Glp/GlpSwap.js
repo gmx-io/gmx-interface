@@ -488,9 +488,13 @@ export default function GlpSwap(props) {
   const fillMaxAmount = () => {
     if (isBuying) {
       setAnchorOnSwapAmount(true);
-      const maxAvailableAmount = swapToken.isNative
+      let maxAvailableAmount = swapToken.isNative
         ? swapTokenBalance.sub(bigNumberify(DUST_BNB).mul(2))
         : swapTokenBalance;
+
+      if (maxAvailableAmount?.isNegative()) {
+        maxAvailableAmount = BigNumber.from(0);
+      }
 
       const formattedAmount = formatAmountFree(
         maxAvailableAmount.gt(0) ? maxAvailableAmount : 0,

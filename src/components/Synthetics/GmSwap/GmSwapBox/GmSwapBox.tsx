@@ -849,9 +849,13 @@ export function GmSwapBox(p: Props) {
             }}
             onClickMax={() => {
               if (firstToken?.balance) {
-                const maxAvailableAmount = firstToken.isNative
+                let maxAvailableAmount = firstToken.isNative
                   ? firstToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
                   : firstToken.balance;
+
+                if (maxAvailableAmount.isNegative()) {
+                  maxAvailableAmount = BigNumber.from(0);
+                }
 
                 const formattedMaxAvailableAmount = formatAmountFree(maxAvailableAmount, firstToken.decimals);
                 const finalAmount = isMetamaskMobile
@@ -912,9 +916,13 @@ export function GmSwapBox(p: Props) {
               })}
               onClickMax={() => {
                 if (secondToken?.balance) {
-                  const maxAvailableAmount = secondToken.isNative
+                  let maxAvailableAmount = secondToken.isNative
                     ? secondToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
                     : secondToken.balance;
+
+                  if (maxAvailableAmount.isNegative()) {
+                    maxAvailableAmount = BigNumber.from(0);
+                  }
 
                   const formattedMaxAvailableAmount = formatAmountFree(maxAvailableAmount, secondToken.decimals);
                   const finalAmount = isMetamaskMobile

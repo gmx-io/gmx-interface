@@ -1785,7 +1785,12 @@ export default function SwapBox(props) {
       return;
     }
 
-    const maxAvailableAmount = fromToken.isNative ? fromBalance.sub(bigNumberify(DUST_BNB).mul(2)) : fromBalance;
+    let maxAvailableAmount = fromToken.isNative ? fromBalance.sub(bigNumberify(DUST_BNB).mul(2)) : fromBalance;
+
+    if (maxAvailableAmount.isNegative()) {
+      maxAvailableAmount = bigNumberify(0);
+    }
+
     const formattedMaxAvailableAmount = formatAmountFree(maxAvailableAmount, fromToken.decimals, fromToken.decimals);
     const finalMaxAmount = isMetamaskMobile
       ? limitDecimals(formattedMaxAvailableAmount, MAX_METAMASK_MOBILE_DECIMALS)

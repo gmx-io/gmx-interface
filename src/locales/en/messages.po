@@ -2334,10 +2334,6 @@ msgstr "Invalid Receiver Address"
 msgid "Invalid Transfer Addresses: Please check the url."
 msgstr "Invalid Transfer Addresses: Please check the url."
 
-#: src/components/Synthetics/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
-#~ msgid "Invalid acceptable Price Impact value"
-#~ msgstr "Invalid acceptable Price Impact value"
-
 #: src/App/App.js
 msgid "Invalid execution fee buffer value"
 msgstr "Invalid execution fee buffer value"
@@ -2842,10 +2838,6 @@ msgstr "Max Out"
 #: src/components/Glp/GlpSwap.js
 msgid "Max Pool Capacity"
 msgstr "Max Pool Capacity"
-
-#: src/components/Synthetics/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
-#~ msgid "Max acceptable Price Impact precision is 0.01%"
-#~ msgstr "Max acceptable Price Impact precision is 0.01%"
 
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
@@ -3757,10 +3749,6 @@ msgstr "Receiver has not staked GLP tokens before"
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Receiver has not staked GMX tokens before"
 msgstr "Receiver has not staked GMX tokens before"
-
-#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
-#~ msgid "Recommended Impact: {0}."
-#~ msgstr "Recommended Impact: {0}."
 
 #: src/components/Glp/GlpSwap.js
 msgid "Redemption time not yet reached"

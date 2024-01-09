@@ -1037,9 +1037,14 @@ export function TradeBox(p: Props) {
 
   function onMaxClick() {
     if (fromToken?.balance) {
-      const maxAvailableAmount = fromToken.isNative
+      let maxAvailableAmount = fromToken.isNative
         ? fromToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
         : fromToken.balance;
+
+      if (maxAvailableAmount.isNegative()) {
+        maxAvailableAmount = BigNumber.from(0);
+      }
+
       setFocusedInput("from");
       const formattedAmount = formatAmountFree(maxAvailableAmount, fromToken.decimals);
       const finalAmount = isMetamaskMobile
