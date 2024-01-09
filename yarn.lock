@@ -1809,6 +1809,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@binance/w3w-types@npm:1.0.1-alpha.0":
+  version: 1.0.1-alpha.0
+  resolution: "@binance/w3w-types@npm:1.0.1-alpha.0"
+  dependencies:
+    eventemitter3: ^5.0.0
+  checksum: 231d6ade700875ecb8e0f49fca51d66da1cf6ae674e58e42cb9ad431c99ea83fbcad78ba56b963c0cb5fc046c851ef859ed4c802bfbe174a9a527c5b6b995a54
+  languageName: node
+  linkType: hard
+
+"@binance/w3w-utils@npm:1.0.1-alpha.0":
+  version: 1.0.1-alpha.0
+  resolution: "@binance/w3w-utils@npm:1.0.1-alpha.0"
+  dependencies:
+    "@binance/w3w-types": 1.0.1-alpha.0
+    eventemitter3: ^5.0.0
+    hash.js: ^1.1.7
+    js-base64: ^3.7.5
+  checksum: 615387bd77236565fb359bf99e659f3870d579ec85d88ad22ba44e62023447641d6bbeb0d4e198109d93d06b0e2f6fb3ea9d4d83566859c2e81aa03a40315326
+  languageName: node
+  linkType: hard
+
 "@coinbase/wallet-sdk@npm:^3.6.6":
   version: 3.7.1
   resolution: "@coinbase/wallet-sdk@npm:3.7.1"
@@ -10258,6 +10279,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eventemitter3@npm:^5.0.0":
+  version: 5.0.1
+  resolution: "eventemitter3@npm:5.0.1"
+  checksum: 543d6c858ab699303c3c32e0f0f47fc64d360bf73c3daf0ac0b5079710e340d6fe9f15487f94e66c629f5f82cd1a8678d692f3dbb6f6fcd1190e1b97fcad36f8
+  languageName: node
+  linkType: hard
+
 "events@npm:^3.2.0, events@npm:^3.3.0":
   version: 3.3.0
   resolution: "events@npm:3.3.0"
@@ -10924,6 +10952,7 @@ __metadata:
   dependencies:
     "@apollo/client": 3.5.6
     "@babel/plugin-proposal-private-property-in-object": 7.21.11
+    "@binance/w3w-utils": 1.0.1-alpha.0
     "@davatar/react": 1.8.1
     "@ethersproject/providers": 5.5.1
     "@ethersproject/units": 5.5.0
@@ -10973,6 +11002,7 @@ __metadata:
     react-helmet: 6.1.0
     react-hot-toast: 2.2.0
     react-icons: 4.3.1
+    react-loading-skeleton: 3.3.1
     react-remove-scroll: 2.5.5
     react-router-dom: 5.3.0
     react-scripts: 5.0.1
@@ -10982,6 +11012,7 @@ __metadata:
     react-use: 17.3.1
     recharts: 2.1.8
     sass: 1.55.0
+    shallowequal: 1.1.0
     swr: 2.2.1
     typescript: 4.7.4
     viem: 1.1.4
@@ -13137,6 +13168,13 @@ __metadata:
   bin:
     jiti: bin/jiti.js
   checksum: fdf55e315f9e81c04ae902416642062851d92c6cdcc17a59d5d1d35e1a0842e4e79be38da86613c5776fa18c579954542a441b93d1c347a50137dee2e558cbd0
+  languageName: node
+  linkType: hard
+
+"js-base64@npm:^3.7.5":
+  version: 3.7.5
+  resolution: "js-base64@npm:3.7.5"
+  checksum: 67a78c8b1c47b73f1c6fba1957e9fe6fd9dc78ac93ac46cc2e43472dcb9cf150d126fb0e593192e88e0497354fa634d17d255add7cc6ee3c7b4d29870faa8e18
   languageName: node
   linkType: hard
 
@@ -16515,6 +16553,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-loading-skeleton@npm:3.3.1":
+  version: 3.3.1
+  resolution: "react-loading-skeleton@npm:3.3.1"
+  peerDependencies:
+    react: ">=16.8.0"
+  checksum: 0de3437a5da8b7133bf86043e4e002e5422b50cd71b9a650f2947a89ace39be8b7c61a098f1d7dd0be559dc3ac293d60697fdae23cb09c3905b2952e1a68693d
+  languageName: node
+  linkType: hard
+
 "react-refresh@npm:^0.11.0":
   version: 0.11.0
   resolution: "react-refresh@npm:0.11.0"
@@ -17804,7 +17851,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"shallowequal@npm:^1.1.0":
+"shallowequal@npm:1.1.0, shallowequal@npm:^1.1.0":
   version: 1.1.0
   resolution: "shallowequal@npm:1.1.0"
   checksum: f4c1de0837f106d2dbbfd5d0720a5d059d1c66b42b580965c8f06bb1db684be8783538b684092648c981294bf817869f743a066538771dbecb293df78f765e00

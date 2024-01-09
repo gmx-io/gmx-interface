@@ -405,6 +405,7 @@ button.btn-link:hover .logout-icon {
 .mt-md {
   margin-top: 1.5rem;
 }
+
 .page-layout {
   min-height: calc(100vh - 62px);
   display: flex;
@@ -455,9 +456,14 @@ button.btn-link:hover .logout-icon {
   font-size: var(--font-base);
 }
 
+.mr-sm {
+  margin-right: 1rem;
+}
+
 .mr-md {
   margin-right: 1.5rem;
 }
+
 .default-cursor.App-cta {
   cursor: default;
 }
@@ -506,6 +512,10 @@ button.btn-link:hover .logout-icon {
 
 .mx-xs {
   margin: 0 0.5rem;
+}
+
+.my-sm {
+  margin: 1rem 0;
 }
 
 .mx-xxs {
@@ -557,7 +567,7 @@ button.btn-link:hover .logout-icon {
 }
 
 a:hover .text-red {
-  color: var(--error-red-hover)
+  color: var(--error-red-hover);
 }
 
 .text-green {

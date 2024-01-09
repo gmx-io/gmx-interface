@@ -107,7 +107,7 @@ export const appEventsData: EventData[] = [
       `Arbitrum STIP incentives are live for:`,
       "",
       "• Arbitrum GM Pools.",
-      "• Arbitrum GLP Pools.",
+      "• Arbitrum GLP to GM migration.",
       "• Arbitrum Trading.",
     ],
     buttons: [
@@ -119,12 +119,12 @@ export const appEventsData: EventData[] = [
     ],
   },
   {
-    id: "v2-adaptive-funding-all-markets-coming-soon",
+    id: "v2-adaptive-funding-all-markets",
     title: "Adaptive Funding",
     isActive: true,
-    validTill: "20 Nov 2023, 12:00",
+    validTill: "21 Dec 2023, 12:00",
     bodyText:
-      "Adaptive Funding Rates will be enabled for all markets over the next two weeks. This is to improve the open interest balance and reduce price impact for markets.",
+      "Adaptive Funding Rates are enabled for all markets. This is to improve the open interest balance and reduce price impact for markets.",
     buttons: [
       {
         text: "More Info.",
@@ -132,5 +132,19 @@ export const appEventsData: EventData[] = [
         newTab: true,
       },
     ],
+  },
+  {
+    id: "ledger-issue",
+    title: "GMX is unaffected",
+    isActive: true,
+    validTill: "15 Dec 2023, 16:00",
+    bodyText: ["The recent issue with Ledger Connect kit did not affect GMX."],
+  },
+  {
+    id: "arbitrum-issue",
+    title: "The Arbitrum Network is currently down",
+    isActive: true,
+    validTill: "16 Dec 2023, 12:00",
+    bodyText: ["They are currently working to resolve the issue."],
   },
 ];

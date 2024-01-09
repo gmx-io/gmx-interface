@@ -1,5 +1,9 @@
 .PositionSeller {
   overflow-x: hidden;
+
+  .Modal-body {
+    overflow-x: hidden;
+  }
 }
 
 .PositionSeller-modal {
@@ -11,7 +15,9 @@
 }
 
 .PositionSeller-price-impact-warning {
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 @media (max-width: 350px) {

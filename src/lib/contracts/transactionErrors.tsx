@@ -2,7 +2,9 @@ import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import { getChainName } from "config/chains";
+import { getNativeToken } from "config/tokens";
 import { switchNetwork } from "lib/wallets";
+import { Link } from "react-router-dom";
 
 export const NOT_ENOUGH_FUNDS = "NOT_ENOUGH_FUNDS";
 export const USER_DENIED = "USER_DENIED";
@@ -14,6 +16,7 @@ type ErrorPattern = { msg?: string; code?: number };
 
 const TX_ERROR_PATTERNS: { [key: string]: ErrorPattern[] } = {
   [NOT_ENOUGH_FUNDS]: [
+    { msg: "insufficient funds for gas" },
     { msg: "not enough funds for gas" },
     { msg: "failed to execute call with revert code InsufficientGasFunds" },
   ],
@@ -36,15 +39,29 @@ type TxError = {
   message?: string;
   code?: number;
   data?: any;
+  error?: any;
 };
 
 export function extractError(ex: TxError) {
   if (!ex) {
     return [];
   }
+  let message = ex.data?.message || ex.message;
+  let code = ex.code;
 
-  const message = ex.data?.message || ex.message;
-  const code = ex.code;
+  if (ex.error?.body) {
+    try {
+      const parsed = JSON.parse(ex.error?.body);
+      if (parsed?.error?.message) {
+        message = parsed.error.message;
+      }
+      if (parsed?.error?.code) {
+        code = parsed.error.code;
+      }
+    } catch (e) {
+      // do nothing
+    }
+  }
 
   if (!message && !code) {
     return [];
@@ -66,6 +83,7 @@ export function extractError(ex: TxError) {
 
 export function getErrorMessage(chainId: number, ex: TxError, txnMessage?: string) {
   const [message, type, errorData] = extractError(ex);
+  const nativeToken = getNativeToken(chainId);
 
   let failMsg;
   let autoCloseToast: any = 5000;
@@ -74,10 +92,12 @@ export function getErrorMessage(chainId: number, ex: TxError, txnMessage?: strin
     case NOT_ENOUGH_FUNDS:
       failMsg = (
         <Trans>
-          There is not enough ETH in your account on Arbitrum to send this transaction.
+          There is not enough {nativeToken.symbol} in your account on {getChainName(chainId)} to send this transaction.
           <br />
           <br />
-          <ExternalLink href="https://arbitrum.io/bridge-tutorial/">Bridge ETH to Arbitrum</ExternalLink>
+          <Link to="/buy_gmx#bridge">
+            Buy or Transfer {nativeToken.symbol} to {getChainName(chainId)}
+          </Link>
         </Trans>
       );
       break;

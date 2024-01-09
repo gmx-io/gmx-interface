@@ -11,6 +11,7 @@ import {
   getMaxReservedUsd,
   getOpenInterestUsd,
   getReservedUsd,
+  isMarketAdaptiveFundingActive,
 } from "domain/synthetics/markets";
 import { CHART_PERIODS } from "lib/legacy";
 import { formatAmount, formatPercentage, formatUsd, getBasisPoints } from "lib/numbers";
@@ -20,6 +21,7 @@ import { ShareBar } from "components/ShareBar/ShareBar";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
 import { useCallback, useMemo } from "react";
 import "./MarketCard.scss";
+import { getPlusOrMinusSymbol, getPositiveOrNegativeClass } from "lib/utils";
 
 export type Props = {
   marketInfo?: MarketInfo;
@@ -67,14 +69,14 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
 
   const renderFundingFeeTooltipContent = useCallback(() => {
     if (!fundingRateLong || !fundingRateShort) return [];
-    const isMarketWithAdaptiveFundingRate = marketInfo?.fundingIncreaseFactorPerSecond.gt(0);
+    const isAdaptiveFundingForMarketActive = marketInfo && isMarketAdaptiveFundingActive(marketInfo);
 
     const isLongPositive = fundingRateLong?.gt(0);
     const long = (
       <Trans>
         Long positions {isLongPositive ? t`receive` : t`pay`} a Funding Fee of{" "}
-        <span className={isLongPositive ? "text-green" : "text-red"}>
-          {isLongPositive ? "+" : "-"}
+        <span className={getPositiveOrNegativeClass(fundingRateLong)}>
+          {getPlusOrMinusSymbol(fundingRateLong)}
           {formatAmount(fundingRateLong.abs(), 30, 4)}%
         </span>{" "}
         per hour.
@@ -85,8 +87,8 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
     const short = (
       <Trans>
         Short positions {isShortPositive ? t`receive` : t`pay`} a Funding Fee of{" "}
-        <span className={isShortPositive ? "text-green" : "text-red"}>
-          {isShortPositive ? "+" : "-"}
+        <span className={getPositiveOrNegativeClass(fundingRateShort)}>
+          {getPlusOrMinusSymbol(fundingRateShort)}
           {formatAmount(fundingRateShort.abs(), 30, 4)}%
         </span>{" "}
         per hour.
@@ -101,18 +103,16 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
         <br />
         <br />
         {oppositeFeeElement}
-        {isMarketWithAdaptiveFundingRate && (
-          <>
+        {isAdaptiveFundingForMarketActive && (
+          <span>
             <br />
             <br />
             <Trans>
               This market uses an Adaptive Funding Rate. The Funding Rate will adjust over time depending on the ratio
-              of longs and shorts.
-              <br />
-              <br />
+              of longs and shorts.{" "}
               <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#adaptive-funding">Read more</ExternalLink>.
             </Trans>
-          </>
+          </span>
         )}
       </div>
     );
@@ -195,7 +195,9 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
             <Tooltip
               className="al-swap"
               handle={
-                fundingRate ? `${fundingRate.gt(0) ? "+" : "-"}${formatAmount(fundingRate.abs(), 30, 4)}% / 1h` : "..."
+                fundingRate
+                  ? `${getPlusOrMinusSymbol(fundingRate)}${formatAmount(fundingRate.abs(), 30, 4)}% / 1h`
+                  : "..."
               }
               position="right-bottom"
               renderContent={renderFundingFeeTooltipContent}
@@ -228,7 +230,11 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
                   />
 
                   <br />
-                  {isLong && <Trans>Reserve considers the PnL of Open Positions, while Open Interest does not.</Trans>}
+                  {isLong && (
+                    <>
+                      <Trans>Reserve considers the PnL of Open Positions, while Open Interest does not.</Trans>{" "}
+                    </>
+                  )}
                   <Trans>
                     The Available Liquidity will be the lesser of the difference between the maximum value and the
                     current value for the Reserve and Open Interest.

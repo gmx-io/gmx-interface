@@ -6,11 +6,13 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { ExecutionFee, FeeItem } from "domain/synthetics/fees";
 import { formatDeltaUsd, formatTokenAmountWithUsd } from "lib/numbers";
 import "./GmFees.scss";
+import { getPositiveOrNegativeClass } from "lib/utils";
 
 type Props = {
   totalFees?: FeeItem;
   swapFee?: FeeItem;
   swapPriceImpact?: FeeItem;
+  uiFee?: FeeItem;
   executionFee?: ExecutionFee;
   isDeposit: boolean;
 };
@@ -36,7 +38,7 @@ export function GmFees(p: Props) {
                       label={t`Price Impact`}
                       value={formatDeltaUsd(p.swapPriceImpact.deltaUsd, p.swapPriceImpact.bps)!}
                       showDollar={false}
-                      className={p.swapPriceImpact.deltaUsd.gte(0) ? "text-green" : "text-red"}
+                      className={getPositiveOrNegativeClass(p.swapPriceImpact.deltaUsd)}
                     />
                   )}
 
@@ -46,11 +48,23 @@ export function GmFees(p: Props) {
                         label={p.isDeposit ? t`Buy Fee` : t`Sell Fee`}
                         value={formatDeltaUsd(p.swapFee.deltaUsd, p.swapFee.bps)!}
                         showDollar={false}
-                        className={p.swapFee.deltaUsd.gte(0) ? "text-green" : "text-red"}
+                        className={getPositiveOrNegativeClass(p.swapFee.deltaUsd)}
                       />
                     </>
                   )}
 
+                  {p.uiFee?.deltaUsd.abs()?.gt(0) && (
+                    <StatsTooltipRow
+                      label={
+                        <>
+                          <Trans>UI Fee</Trans>:
+                        </>
+                      }
+                      value={formatDeltaUsd(p.uiFee.deltaUsd, p.uiFee.bps)!}
+                      showDollar={false}
+                      className="text-red"
+                    />
+                  )}
                   {p.executionFee && (
                     <StatsTooltipRow
                       label={t`Max Execution Fee`}

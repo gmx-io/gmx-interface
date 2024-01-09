@@ -89,7 +89,7 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
 
   const client = getSyntheticsGraphClient(chainId);
 
-  const key = marketAddresses.length && marketTokensData && client ? marketAddresses.join(",") : null;
+  const key = marketAddresses.length && marketTokensData && client ? marketAddresses.concat("apr").join(",") : null;
 
   const daysConsidered = useDaysConsideredInMarketsApr();
 

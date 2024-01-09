@@ -29,6 +29,7 @@ import { FaAngleRight } from "react-icons/fa";
 import { useMedia } from "react-use";
 import "./PositionItem.scss";
 import { Fragment } from "react";
+import { getPositiveOrNegativeClass } from "lib/utils";
 
 export type Props = {
   position: PositionInfo;
@@ -73,7 +74,9 @@ export function PositionItem(p: Props) {
         handleClassName="plain"
         renderContent={() => (
           <div>
-            {t`Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee`}
+            {p.position.uiFeeUsd.gt(0)
+              ? t`Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee`
+              : t`Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee`}
             <br />
             <br />
             <StatsTooltipRow
@@ -85,19 +88,23 @@ export function PositionItem(p: Props) {
               label={t`PnL`}
               value={formatDeltaUsd(p.position?.pnl) || "..."}
               showDollar={false}
-              className={p.position?.pnl?.gte(0) ? "text-green" : "text-red"}
+              className={getPositiveOrNegativeClass(p.position.pnl)}
             />
             <StatsTooltipRow
               label={t`Accrued Borrow Fee`}
               value={formatUsd(p.position.pendingBorrowingFeesUsd?.mul(-1)) || "..."}
               showDollar={false}
-              className="text-red"
+              className={cx({
+                "text-red": !p.position.pendingBorrowingFeesUsd.isZero(),
+              })}
             />
             <StatsTooltipRow
               label={t`Accrued Negative Funding Fee`}
               value={formatUsd(p.position.pendingFundingFeesUsd.mul(-1)) || "..."}
               showDollar={false}
-              className="text-red"
+              className={cx({
+                "text-red": !p.position.pendingFundingFeesUsd.isZero(),
+              })}
             />
             <StatsTooltipRow
               label={t`Close Fee`}
@@ -105,12 +112,20 @@ export function PositionItem(p: Props) {
               value={formatUsd(p.position.closingFeeUsd?.mul(-1)) || "..."}
               className="text-red"
             />
+            {p.position.uiFeeUsd.gt(0) && (
+              <StatsTooltipRow
+                label={t`UI Fee`}
+                showDollar={false}
+                value={formatUsd(p.position.uiFeeUsd.mul(-1))}
+                className="text-red"
+              />
+            )}
             <br />
             <StatsTooltipRow
               label={t`PnL After Fees`}
               value={formatDeltaUsd(p.position.pnlAfterFees, p.position.pnlAfterFeesPercentage)}
               showDollar={false}
-              className={p.position.pnlAfterFees?.gte(0) ? "text-green" : "text-red"}
+              className={getPositiveOrNegativeClass(p.position.pnlAfterFees)}
             />
           </div>
         )}
@@ -121,10 +136,10 @@ export function PositionItem(p: Props) {
   function renderCollateral() {
     return (
       <>
-        <div className="position-list-collateral">
+        <div className={cx("position-list-collateral", { isSmall: !p.isLarge })}>
           <Tooltip
             handle={`${formatUsd(p.position.remainingCollateralUsd)}`}
-            position={p.isLarge ? "left-bottom" : "center-bottom"}
+            position={p.isLarge ? "left-bottom" : "right-bottom"}
             className="PositionItem-collateral-tooltip"
             handleClassName={cx("plain", { negative: p.position.hasLowCollateral })}
             renderContent={() => {
@@ -176,32 +191,40 @@ export function PositionItem(p: Props) {
                     label={t`Accrued Borrow Fee`}
                     showDollar={false}
                     value={formatUsd(p.position.pendingBorrowingFeesUsd.mul(-1)) || "..."}
-                    className="text-red"
+                    className={cx({
+                      "text-red": !p.position.pendingBorrowingFeesUsd.isZero(),
+                    })}
                   />
                   <StatsTooltipRow
                     label={t`Accrued Negative Funding Fee`}
                     showDollar={false}
                     value={formatDeltaUsd(p.position.pendingFundingFeesUsd.mul(-1)) || "..."}
-                    className="text-red"
+                    className={cx({
+                      "text-red": !p.position.pendingFundingFeesUsd.isZero(),
+                    })}
                   />
                   <StatsTooltipRow
                     label={t`Accrued Positive Funding Fee`}
                     showDollar={false}
                     value={formatDeltaUsd(p.position.pendingClaimableFundingFeesUsd) || "..."}
-                    className="text-green"
+                    className={cx({
+                      "text-green": p.position.pendingClaimableFundingFeesUsd.gt(0),
+                    })}
                   />
                   <br />
                   <StatsTooltipRow
                     showDollar={false}
                     label={t`Current Borrow Fee / Day`}
                     value={formatUsd(borrowingFeeRateUsd.mul(-1))}
-                    className="text-red"
+                    className={cx({
+                      "text-red": borrowingFeeRateUsd.gt(0),
+                    })}
                   />
                   <StatsTooltipRow
                     showDollar={false}
                     label={t`Current Funding Fee / Day`}
                     value={formatDeltaUsd(fundingFeeRateUsd)}
-                    className={fundingFeeRateUsd.gt(0) ? "text-green" : "text-red"}
+                    className={getPositiveOrNegativeClass(fundingFeeRateUsd)}
                   />
                   <br />
                   <Trans>Use the Edit Collateral icon to deposit or withdraw collateral.</Trans>
@@ -216,14 +239,11 @@ export function PositionItem(p: Props) {
               );
             }}
           />
-          {p.isLarge && (
-            <>
-              {!p.position.isOpening && !p.hideActions && p.onEditCollateralClick && (
-                <span className="edit-icon" onClick={p.onEditCollateralClick}>
-                  <AiOutlineEdit fontSize={16} />
-                </span>
-              )}
-            </>
+
+          {!p.position.isOpening && !p.hideActions && p.onEditCollateralClick && (
+            <span className="edit-icon" onClick={p.onEditCollateralClick}>
+              <AiOutlineEdit fontSize={16} />
+            </span>
           )}
         </div>
 
@@ -237,16 +257,6 @@ export function PositionItem(p: Props) {
             }
           )})`}
         </div>
-
-        {!p.isLarge && (
-          <>
-            {!p.position.isOpening && !p.hideActions && p.onEditCollateralClick && (
-              <span className="edit-icon" onClick={p.onEditCollateralClick}>
-                <AiOutlineEdit fontSize={16} />
-              </span>
-            )}
-          </>
-        )}
       </>
     );
   }
@@ -297,7 +307,7 @@ export function PositionItem(p: Props) {
       return (
         <Tooltip
           handle={formatLiquidationPrice(p.position.liquidationPrice, { displayDecimals: indexPriceDecimals }) || "..."}
-          position={p.isLarge ? "left-bottom" : "right-bottom"}
+          position={"right-bottom"}
           handleClassName={cx("plain", {
             "LiqPrice-soft-warning": estimatedLiquidationHours && estimatedLiquidationHours < 24 * 7,
             "LiqPrice-hard-warning": estimatedLiquidationHours && estimatedLiquidationHours < 24,
@@ -651,7 +661,7 @@ export function PositionItem(p: Props) {
               <div className="label">
                 <Trans>Collateral</Trans>
               </div>
-              <div className="position-list-collateral items-center">{renderCollateral()}</div>
+              <div>{renderCollateral()}</div>
             </div>
           </div>
           <div className="App-card-divider" />
@@ -695,36 +705,37 @@ export function PositionItem(p: Props) {
           </div>
           {!p.hideActions && (
             <>
-              <div className="App-card-divider"></div>
-              <div className="remove-top-margin">
-                <Button
-                  variant="secondary"
-                  className="mr-md mt-md"
-                  disabled={p.position.sizeInUsd.eq(0)}
-                  onClick={p.onClosePositionClick}
-                >
-                  <Trans>Close</Trans>
-                </Button>
-                <Button
-                  variant="secondary"
-                  className="mr-md mt-md"
-                  disabled={p.position.sizeInUsd.eq(0)}
-                  onClick={p.onEditCollateralClick}
-                >
-                  <Trans>Edit Collateral</Trans>
-                </Button>
-                <Button
-                  variant="secondary"
-                  className="mt-md"
-                  disabled={p.position.sizeInUsd.eq(0)}
-                  onClick={() => {
-                    // TODO: remove after adding trigger functionality to Modal
-                    window.scrollTo({ top: isMobile ? 500 : 0 });
-                    p.onSelectPositionClick?.(TradeMode.Trigger);
-                  }}
-                >
-                  <Trans>Trigger</Trans>
-                </Button>
+              <div className="App-card-divider" />
+              <div className="Position-item-action">
+                <div className="Position-item-buttons">
+                  <Button variant="secondary" disabled={p.position.sizeInUsd.eq(0)} onClick={p.onClosePositionClick}>
+                    <Trans>Close</Trans>
+                  </Button>
+                  <Button variant="secondary" disabled={p.position.sizeInUsd.eq(0)} onClick={p.onEditCollateralClick}>
+                    <Trans>Edit Collateral</Trans>
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    disabled={p.position.sizeInUsd.eq(0)}
+                    onClick={() => {
+                      // TODO: remove after adding trigger functionality to Modal
+                      window.scrollTo({ top: isMobile ? 500 : 0 });
+                      p.onSelectPositionClick?.(TradeMode.Trigger);
+                    }}
+                  >
+                    <Trans>TP/SL</Trans>
+                  </Button>
+                </div>
+                <div>
+                  {!p.position.isOpening && !p.hideActions && (
+                    <PositionDropdown
+                      handleMarketSelect={() => p.onSelectPositionClick?.()}
+                      handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market)}
+                      handleShare={p.onShareClick}
+                      handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit)}
+                    />
+                  )}
+                </div>
               </div>
             </>
           )}

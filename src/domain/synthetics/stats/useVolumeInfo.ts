@@ -5,7 +5,7 @@ import useSWR from "swr";
 
 const query = gql`
   query volumeInfo($lastTimestamp: Int!) {
-    hourlyVolumeInfos: volumeInfos(where: { id_gte: $lastTimestamp, period: "1h" }) {
+    hourlyVolumeInfos: volumeInfos(where: { timestamp_gte: $lastTimestamp, period: "1h" }) {
       volumeUsd
       id
     }

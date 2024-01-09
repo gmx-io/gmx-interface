@@ -1,0 +1,16 @@
+.react-loading-skeleton::after {
+  background: linear-gradient(to right, transparent, #b4bbff1a, transparent);
+  animation-duration: 2s;
+}
+
+@keyframes react-loading-skeleton {
+  0% {
+    transform: translateX(-100%);
+  }
+  60% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}

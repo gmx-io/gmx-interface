@@ -50,7 +50,7 @@ import AssetDropdown from "./AssetDropdown";
 import useWallet from "lib/wallets/useWallet";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import PageTitle from "components/PageTitle/PageTitle";
-import useDashboardOverview from "domain/synthetics/stats/useDashboardOverview";
+import useV2Stats from "domain/synthetics/stats/useV2Stats";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
@@ -101,8 +101,8 @@ export default function DashboardV2() {
   const { active, signer } = useWallet();
   const { chainId } = useChainId();
   const totalVolume = useTotalVolume();
-  const arbitrumOverview = useDashboardOverview(ARBITRUM);
-  const avalancheOverview = useDashboardOverview(AVALANCHE);
+  const arbitrumOverview = useV2Stats(ARBITRUM);
+  const avalancheOverview = useV2Stats(AVALANCHE);
   const v2MarketsOverview = {
     [ARBITRUM]: arbitrumOverview,
     [AVALANCHE]: avalancheOverview,
@@ -269,17 +269,17 @@ export default function DashboardV2() {
       .add(currentV2MarketOverview.totalGMLiquidity);
   }
 
-  const ethFloorPriceFund = expandDecimals(350 + 148 + 384, 18);
-  const glpFloorPriceFund = expandDecimals(660001, 18);
-  const usdcFloorPriceFund = expandDecimals(784598 + 200000, 30);
+  const ethTreasuryFund = expandDecimals(350 + 148 + 384, 18);
+  const glpTreasuryFund = expandDecimals(660001, 18);
+  const usdcTreasuryFund = expandDecimals(784598 + 200000, 30);
 
-  let totalFloorPriceFundUsd;
+  let totalTreasuryFundUsd;
 
   if (eth && eth.contractMinPrice && glpPrice) {
-    const ethFloorPriceFundUsd = ethFloorPriceFund.mul(eth.contractMinPrice).div(expandDecimals(1, eth.decimals));
-    const glpFloorPriceFundUsd = glpFloorPriceFund.mul(glpPrice).div(expandDecimals(1, 18));
+    const ethTreasuryFundUsd = ethTreasuryFund.mul(eth.contractMinPrice).div(expandDecimals(1, eth.decimals));
+    const glpTreasuryFundUsd = glpTreasuryFund.mul(glpPrice).div(expandDecimals(1, 18));
 
-    totalFloorPriceFundUsd = ethFloorPriceFundUsd.add(glpFloorPriceFundUsd).add(usdcFloorPriceFund);
+    totalTreasuryFundUsd = ethTreasuryFundUsd.add(glpTreasuryFundUsd).add(usdcTreasuryFund);
   }
 
   let adjustedUsdgSupply = bigNumberify(0);
@@ -799,9 +799,9 @@ export default function DashboardV2() {
                 </div>
                 <div className="App-card-row">
                   <div className="label">
-                    <Trans>Floor Price Fund</Trans>
+                    <Trans>Treasury</Trans>
                   </div>
-                  <div>${formatAmount(totalFloorPriceFundUsd, 30, 0, true)}</div>
+                  <div>${formatAmount(totalTreasuryFundUsd, 30, 0, true)}</div>
                 </div>
               </div>
             </div>
@@ -1085,7 +1085,7 @@ export default function DashboardV2() {
                                     <div className="App-card-info-subtitle">{token.symbol}</div>
                                   </div>
                                   <div>
-                                    <AssetDropdown assetSymbol={token.symbol} />
+                                    <AssetDropdown token={token} />
                                   </div>
                                 </div>
                               </div>
@@ -1163,7 +1163,7 @@ export default function DashboardV2() {
                             <TokenIcon symbol={token.symbol} importSize={24} displaySize={24} />
                             <div className="token-symbol-text">{token.symbol}</div>
                             <div>
-                              <AssetDropdown assetSymbol={token.symbol} />
+                              <AssetDropdown token={token} />
                             </div>
                           </div>
                         </div>

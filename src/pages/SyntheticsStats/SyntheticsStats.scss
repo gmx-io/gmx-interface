@@ -1,7 +1,14 @@
 .SyntheticsStats {
   margin: 20px;
   text-align: left;
-  margin-bottom: 1000px;
+  margin-bottom: 850px;
+
+  .download-csv {
+    height: 4rem;
+  }
+}
+
+.SyntheticsStats-table-wrap {
   overflow-x: auto;
 
   .sticky-left {
@@ -12,10 +19,15 @@
     background: var(--main-bg-color);
   }
 }
+
 .MarketCard-config-tooltip {
   .Tooltip-popup {
     min-width: 34rem;
   }
+}
+
+.SyntheticsStats .csv-link {
+  margin-top: 20px;
 }
 
 .SyntheticsStats-tooltip {

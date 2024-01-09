@@ -10,9 +10,10 @@ export function getWithdrawalAmounts(p: {
   marketTokenAmount: BigNumber;
   longTokenAmount: BigNumber;
   shortTokenAmount: BigNumber;
+  uiFeeFactor: BigNumber;
   strategy: "byMarketToken" | "byLongCollateral" | "byShortCollateral";
 }) {
-  const { marketInfo, marketToken, marketTokenAmount, longTokenAmount, shortTokenAmount, strategy } = p;
+  const { marketInfo, marketToken, marketTokenAmount, longTokenAmount, shortTokenAmount, uiFeeFactor, strategy } = p;
 
   const { longToken, shortToken } = marketInfo;
 
@@ -32,6 +33,7 @@ export function getWithdrawalAmounts(p: {
     shortTokenAmount: BigNumber.from(0),
     shortTokenUsd: BigNumber.from(0),
     swapFeeUsd: BigNumber.from(0),
+    uiFeeUsd: BigNumber.from(0),
     swapPriceImpactDeltaUsd: BigNumber.from(0),
   };
 
@@ -48,11 +50,14 @@ export function getWithdrawalAmounts(p: {
 
     const longSwapFeeUsd = applyFactor(values.longTokenUsd, p.marketInfo.swapFeeFactorForNegativeImpact);
     const shortSwapFeeUsd = applyFactor(values.shortTokenUsd, p.marketInfo.swapFeeFactorForNegativeImpact);
+    const longUiFeeUsd = applyFactor(values.marketTokenUsd, uiFeeFactor);
+    const shortUiFeeUsd = applyFactor(values.shortTokenUsd, uiFeeFactor);
 
+    values.uiFeeUsd = applyFactor(values.marketTokenUsd, uiFeeFactor);
     values.swapFeeUsd = longSwapFeeUsd.add(shortSwapFeeUsd);
 
-    values.longTokenUsd = values.longTokenUsd.sub(longSwapFeeUsd);
-    values.shortTokenUsd = values.shortTokenUsd.sub(shortSwapFeeUsd);
+    values.longTokenUsd = values.longTokenUsd.sub(longSwapFeeUsd).sub(longUiFeeUsd);
+    values.shortTokenUsd = values.shortTokenUsd.sub(shortSwapFeeUsd).sub(shortUiFeeUsd);
 
     values.longTokenAmount = convertToTokenAmount(values.longTokenUsd, longToken.decimals, longToken.prices.maxPrice)!;
     values.shortTokenAmount = convertToTokenAmount(
