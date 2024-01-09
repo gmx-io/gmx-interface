@@ -6,4 +6,4 @@ export const SUBACCOUNT_AUTO_TOP_UP_AMOUNT = hashString("SUBACCOUNT_AUTO_TOP_UP_
 export const SUBACCOUNT_ORDER_ACTION = hashString("SUBACCOUNT_ORDER_ACTION");
 
 export const STRING_FOR_SIGNING = "Generate a GMX subaccount. Only sign this message on a trusted website.";
-export const SUBACCOUNT_DOCS_URL = "#";
+export const SUBACCOUNT_DOCS_URL = "https://docs.gmx.io/docs/trading/v2#one-click--trading";
