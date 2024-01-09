@@ -45,7 +45,7 @@ import "./SubaccountModal.scss";
 import { SubaccountStatus } from "./SubaccountStatus";
 import { getApproxSubaccountActionsCountByBalance, getButtonState, getDefaultValues } from "./utils";
 
-type FormState = "empty" | "inactive" | "activated";
+export type FormState = "empty" | "inactive" | "activated";
 
 export function SubaccountModal({ setPendingTxns }: { setPendingTxns: (txns: any[]) => void }) {
   const [isVisible, setIsVisible] = useSubaccountModalOpen();
@@ -259,24 +259,23 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     showToast();
 
     setNotificationState("deactivating");
+    setIsSubaccountUpdating(true);
     if (isSubaccountActive) {
-      setIsSubaccountUpdating(true);
-
       try {
         const res = await removeSubaccount(chainId, signer, subaccountAddress);
 
         setActiveTx(res.hash);
       } catch (err) {
         setNotificationState("deactivationFailed");
-        throw err;
-      } finally {
         setIsSubaccountUpdating(false);
+        throw err;
       }
     } else {
       setNotificationState("deactivated");
     }
 
     oneClickTradingState.clearSubaccount();
+    setIsSubaccountUpdating(false);
     setNextFormState("inactive");
   }, [
     chainId,
@@ -436,7 +435,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
         wntForAutoTopUps,
         maxAllowedActions,
         withdrawalLoading,
-
+        formState,
         notificationState,
 
         needPayTokenApproval,
@@ -454,6 +453,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
       topUp,
       maxAutoTopUpAmount,
       wntForAutoTopUps,
+      formState,
       maxAllowedActions,
       withdrawalLoading,
       notificationState,

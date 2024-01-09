@@ -5580,6 +5580,7 @@ msgstr "Arrêt du staking..."
 #: src/components/Referrals/JoinReferralCode.js
 #: src/components/Synthetics/SubaccountModal/utils.ts
 #: src/components/Synthetics/SubaccountModal/utils.ts
+#: src/components/Synthetics/SubaccountModal/utils.ts
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Update"

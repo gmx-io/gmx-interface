@@ -3,6 +3,7 @@ import { SubaccountNotificationState } from "context/SubaccountContext/Subaccoun
 import { TokenData, convertToTokenAmount } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { expandDecimals } from "lib/numbers";
+import { FormState } from "./SubaccountModal";
 
 const ZERO = BigNumber.from(0);
 
@@ -17,6 +18,7 @@ export function getButtonState({
   needPayTokenApproval,
   isTxPending,
   notificationState,
+  formState,
   withdrawalLoading,
 
   mainAccEthBalance,
@@ -37,6 +39,7 @@ export function getButtonState({
   needPayTokenApproval: boolean;
   isTxPending: boolean;
   notificationState: SubaccountNotificationState;
+  formState: FormState;
   withdrawalLoading: boolean;
 
   mainAccEthBalance: BigNumber | undefined;
@@ -66,11 +69,11 @@ export function getButtonState({
   }
 
   if (isTxPending) {
-    if (notificationState === "activating") {
+    if (notificationState === "activating" && formState === "inactive") {
       return { disabled: true, text: "Activating Subaccount..." };
     } else if (notificationState === "deactivating") {
       return { disabled: true, text: "Deactivating Subaccount..." };
-    } else if (notificationState === "generating") {
+    } else if (notificationState === "generating" && formState === "inactive") {
       return { disabled: true, text: "Generating Subaccount..." };
     }
     return { disabled: true, text: "Waiting for transaction..." };
@@ -81,11 +84,11 @@ export function getButtonState({
   }
 
   if (accountUpdateLoading) {
-    if (notificationState === "activating" && !isSubaccountActive) {
+    if (notificationState === "activating" && formState === "inactive") {
       return { disabled: true, text: "Activating Subaccount..." };
-    } else if (notificationState === "deactivating" && isSubaccountActive) {
+    } else if (notificationState === "deactivating" && formState === "activated") {
       return { disabled: true, text: "Deactivating Subaccount..." };
-    } else if (notificationState === "generating" && !isSubaccountActive) {
+    } else if (notificationState === "generating" && formState === "inactive") {
       return { disabled: true, text: "Generating Subaccount..." };
     }
 
@@ -102,7 +105,7 @@ export function getButtonState({
     }
 
     return { text: t`Update` };
-  } else if (!isSubaccountActive) {
+  } else if (!isSubaccountActive && notificationState !== "activated") {
     if (subaccountAddress) {
       return { text: t`Activate Subaccount` };
     } else {
@@ -114,7 +117,7 @@ export function getButtonState({
     return { disabled: true, text: t`Allow ${wrappedTokenSymbol} to be spent` };
   }
 
-  return { disabled: true, text: "" };
+  return { text: t`Update`, disabled: true };
 }
 
 export function getApproxSubaccountActionsCountByBalance(
