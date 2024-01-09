@@ -605,7 +605,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             label={isSubaccountActive ? t`Top-up` : t`Initial top-up`}
             symbol={nativeToken.symbol}
             placeholder="0.0000"
-            description={t`This amount of ${nativeToken.symbol} will be sent to your subaccount to pay for transaction fees.`}
+            description={t`This amount of ${nativeToken.symbol} will be sent from your Main Account to your Subaccount to pay for transaction fees.`}
           />
           <InputRow
             value={wntForAutoTopUpsString}
