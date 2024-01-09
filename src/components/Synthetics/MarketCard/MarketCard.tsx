@@ -21,6 +21,7 @@ import { ShareBar } from "components/ShareBar/ShareBar";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
 import { useCallback, useMemo } from "react";
 import "./MarketCard.scss";
+import { getPlusOrMinusSymbol, getPositiveOrNegativeClass } from "lib/utils";
 
 export type Props = {
   marketInfo?: MarketInfo;
@@ -75,8 +76,8 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
     const long = (
       <Trans>
         Long positions {isLongPositive ? t`receive` : t`pay`} a Funding Fee of{" "}
-        <span className={isLongPositive ? "text-green" : "text-red"}>
-          {isLongPositive ? "+" : "-"}
+        <span className={getPositiveOrNegativeClass(fundingRateLong)}>
+          {getPlusOrMinusSymbol(fundingRateLong)}
           {formatAmount(fundingRateLong.abs(), 30, 4)}%
         </span>{" "}
         per hour.
@@ -87,8 +88,8 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
     const short = (
       <Trans>
         Short positions {isShortPositive ? t`receive` : t`pay`} a Funding Fee of{" "}
-        <span className={isShortPositive ? "text-green" : "text-red"}>
-          {isShortPositive ? "+" : "-"}
+        <span className={getPositiveOrNegativeClass(fundingRateShort)}>
+          {getPlusOrMinusSymbol(fundingRateShort)}
           {formatAmount(fundingRateShort.abs(), 30, 4)}%
         </span>{" "}
         per hour.
@@ -195,7 +196,9 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong, isIncrease }: 
             <Tooltip
               className="al-swap"
               handle={
-                fundingRate ? `${fundingRate.gt(0) ? "+" : "-"}${formatAmount(fundingRate.abs(), 30, 4)}% / 1h` : "..."
+                fundingRate
+                  ? `${getPlusOrMinusSymbol(fundingRate)}${formatAmount(fundingRate.abs(), 30, 4)}% / 1h`
+                  : "..."
               }
               position="right-bottom"
               renderContent={renderFundingFeeTooltipContent}

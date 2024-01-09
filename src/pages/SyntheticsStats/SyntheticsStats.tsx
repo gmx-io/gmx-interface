@@ -23,6 +23,7 @@ import "./SyntheticsStats.scss";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { DownloadAsCsv } from "components/DownloadAsCsv/DownloadAsCsv";
 import { format } from "date-fns";
+import { getPlusOrMinusSymbol, getPositiveOrNegativeClass } from "lib/utils";
 
 function pow(bn: BigNumber, exponent: BigNumber) {
   // this is just aproximation
@@ -457,12 +458,12 @@ export function SyntheticsStats() {
                       <TooltipWithPortal
                         handle={
                           <>
-                            <span className={fundingAprLong.gt(0) ? "text-green" : "text-red"}>
+                            <span className={getPositiveOrNegativeClass(fundingAprLong)}>
                               {market.longsPayShorts ? "-" : "+"}
                               {formatAmount(fundingAprLong.abs(), 30, 4)}%
                             </span>
                             {" / "}
-                            <span className={fundingAprShort.gt(0) ? "text-green" : "text-red"}>
+                            <span className={getPositiveOrNegativeClass(fundingAprShort)}>
                               {market.longsPayShorts ? "+" : "-"}
                               {formatAmount(fundingAprShort.abs(), 30, 4)}%
                             </span>
@@ -793,7 +794,7 @@ export function SyntheticsStats() {
                             <span
                               className={cx({ positive: market.netPnlMax.gt(0), negative: market.netPnlMax.lt(0) })}
                             >
-                              {market.netPnlMax.gt(0) ? "+" : "-"}${formatAmountHuman(market.netPnlMax.abs(), 30)}
+                              {getPlusOrMinusSymbol(market.netPnlMax)}${formatAmountHuman(market.netPnlMax.abs(), 30)}
                             </span>
                           }
                           renderContent={() => (
@@ -801,8 +802,8 @@ export function SyntheticsStats() {
                               <StatsTooltipRow
                                 showDollar={false}
                                 label="PnL Long"
-                                className={market.pnlLongMax.gt(0) ? "text-green" : "text-red"}
-                                value={`${market.pnlLongMax.gt(0) ? "+" : "-"}${formatAmountHuman(
+                                className={getPositiveOrNegativeClass(market.pnlLongMax)}
+                                value={`${getPlusOrMinusSymbol(market.pnlLongMax)}${formatAmountHuman(
                                   market.pnlLongMax.abs(),
                                   30,
                                   true
@@ -811,8 +812,8 @@ export function SyntheticsStats() {
                               <StatsTooltipRow
                                 showDollar={false}
                                 label="PnL Short"
-                                className={market.pnlShortMax.gt(0) ? "text-green" : "text-red"}
-                                value={`${market.pnlShortMax.gt(0) ? "+" : "-"}${formatAmountHuman(
+                                className={getPositiveOrNegativeClass(market.pnlShortMax)}
+                                value={`${getPlusOrMinusSymbol(market.pnlShortMax)}${formatAmountHuman(
                                   market.pnlShortMax.abs(),
                                   30,
                                   true
