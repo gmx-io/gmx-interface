@@ -1,4 +1,4 @@
-import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, MAINNET, OPTIMISM_GOERLI_TESTNET, OPTIMISM_MAINNET, SEPOLIA_TESTNET } from "./chains";
+import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, MAINNET, OPTIMISM_MAINNET, SEPOLIA_TESTNET } from "./chains";
 
 export const GMX_STATS_API_URL = "https://t3.finance/#/dashboard"; // TODO - launch stats api
 export const TF_TV_DATAFEED_API = "https://t3-tv-datafeed.fly.dev";
