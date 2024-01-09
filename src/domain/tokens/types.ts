@@ -10,6 +10,7 @@ export type Token = {
   priceDecimals?: number;
   wrappedAddress?: string;
   coingeckoUrl?: string;
+  coingeckoSymbol?: string;
   explorerUrl?: string;
   reservesUrl?: string;
   imageUrl?: string;
