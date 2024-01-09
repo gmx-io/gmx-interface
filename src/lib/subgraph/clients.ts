@@ -5,6 +5,7 @@ import {
   AVALANCHE,
   ETH_MAINNET,
   OPTIMISM_GOERLI_TESTNET,
+  OPTIMISM_MAINNET,
   SEPOLIA_TESTNET,
 } from "config/chains";
 
@@ -27,6 +28,8 @@ export function getGmxGraphClient(chainId: number) {
   } else if (chainId === SEPOLIA_TESTNET) {
     return null;
   } else if (chainId === OPTIMISM_GOERLI_TESTNET) {
+    return null;
+  } else if (chainId === OPTIMISM_MAINNET) {
     return null;
   }
 

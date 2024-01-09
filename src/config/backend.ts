@@ -1,4 +1,4 @@
-import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, MAINNET, SEPOLIA_TESTNET } from "./chains";
+import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, MAINNET, OPTIMISM_MAINNET, SEPOLIA_TESTNET } from "./chains";
 
 export const GMX_STATS_API_URL = "https://t3.finance/#/dashboard"; // TODO - launch stats api
 export const TF_TV_DATAFEED_API = "https://t3-tv-datafeed.fly.dev";
@@ -10,7 +10,8 @@ const BACKEND_URLS = {
   [ARBITRUM_TESTNET]: "https://gambit-server-devnet.uc.r.appspot.com",
   [ARBITRUM]: "https://gmx-server-mainnet.uw.r.appspot.com",
   [AVALANCHE]: "https://gmx-avax-server.uc.r.appspot.com",
-  [SEPOLIA_TESTNET]: "https://t3-trade-history.fly.dev",
+  [SEPOLIA_TESTNET]: "https://t3-trade-history-sepolia.fly.dev",
+  [OPTIMISM_MAINNET] : "https://t3-trade-history-optimism.fly.dev",
 };
 
 export function getServerBaseUrl(chainId: number) {
