@@ -71,6 +71,7 @@ export async function createIncreaseOrderTxn(chainId: number, signer: Signer, p:
     acceptablePrice,
     subaccount,
     isNativePayment,
+    initialCollateralTokenAddress,
     signer,
   });
   const simulationEncodedPayload = await createEncodedPayload({
@@ -81,6 +82,7 @@ export async function createIncreaseOrderTxn(chainId: number, signer: Signer, p:
     acceptablePrice,
     subaccount: null,
     isNativePayment,
+    initialCollateralTokenAddress,
     signer,
   });
 
@@ -153,6 +155,7 @@ async function createEncodedPayload({
   acceptablePrice,
   subaccount,
   isNativePayment,
+  initialCollateralTokenAddress,
   signer,
 }: {
   router: ethers.Contract;
@@ -162,12 +165,13 @@ async function createEncodedPayload({
   acceptablePrice: BigNumber;
   subaccount: Subaccount;
   isNativePayment: boolean;
+  initialCollateralTokenAddress: string;
   signer: Signer;
 }) {
   const orderParams = createOrderParams({
     p,
     acceptablePrice,
-    initialCollateralTokenAddress: p.initialCollateralAddress,
+    initialCollateralTokenAddress,
     subaccount,
     isNativePayment,
   });
