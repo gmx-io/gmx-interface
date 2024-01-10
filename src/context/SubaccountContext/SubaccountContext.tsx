@@ -243,12 +243,20 @@ export function useSubaccountPrivateKey() {
   return useMemo(() => {
     if (!account || !encryptedString) return null;
 
-    return cryptoJs.AES.decrypt(encryptedString, account).toString(cryptoJs.enc.Utf8);
+    // race condition when switching accounts:
+    // account is already another address
+    // while the encryptedString is still from the previous account
+    try {
+      return cryptoJs.AES.decrypt(encryptedString, account).toString(cryptoJs.enc.Utf8);
+    } catch (e) {
+      return null;
+    }
   }, [account, encryptedString]);
 }
 
 export function useIsSubaccountActive() {
-  return useSubaccountSelector((s) => s.contractData?.isSubaccountActive ?? false);
+  const pkAvailable = useSubaccountPrivateKey() !== null;
+  return useSubaccountSelector((s) => s.contractData?.isSubaccountActive ?? false) && pkAvailable;
 }
 
 export function useSubaccountDefaultExecutionFee() {
