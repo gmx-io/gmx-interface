@@ -76,7 +76,7 @@ export default function TooltipWithPortal(props: Props) {
       }, openDelay);
     }
     updateTooltipCoords();
-  }, [setVisible, intervalCloseRef, intervalOpenRef, trigger, updateTooltipCoords]);
+  }, [setVisible, intervalCloseRef, intervalOpenRef, trigger, updateTooltipCoords, openDelay]);
 
   const onMouseClick = useCallback(
     (event: MouseEvent) => {
@@ -111,7 +111,7 @@ export default function TooltipWithPortal(props: Props) {
       intervalOpenRef.current = null;
     }
     updateTooltipCoords();
-  }, [setVisible, intervalCloseRef, updateTooltipCoords]);
+  }, [setVisible, intervalCloseRef, updateTooltipCoords, closeDelay]);
 
   const className = cx("Tooltip", props.className);
 
