@@ -37,10 +37,6 @@ export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tok
   const pendingOrderKey = useMemo(() => getPendingOrderKey(pendingOrderData), [pendingOrderData]);
   const orderStatus = getByKey(orderStatuses, orderStatusKey);
 
-  const isCompleted = isMarketOrderType(pendingOrderData.orderType)
-    ? Boolean(orderStatus?.executedTxnHash)
-    : Boolean(orderStatus?.createdTxnHash);
-
   const hasError = Boolean(orderStatus?.cancelledTxnHash);
 
   const orderData = useMemo(() => {
@@ -184,8 +180,6 @@ export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tok
     [orderStatus, orderStatusKey, orderStatuses, pendingOrderKey, setOrderStatusViewed, toastTimestamp]
   );
 
-  useToastAutoClose(isCompleted, toastTimestamp);
-
   return (
     <div className={"StatusNotification"}>
       <div className="StatusNotification-content">
@@ -214,7 +208,50 @@ export function OrdersStatusNotificiation({
   tokensData?: TokensData;
   toastTimestamp: number;
 }) {
-  const pendingOrders = Array.isArray(pendingOrderData) ? pendingOrderData : [pendingOrderData];
+  const { orderStatuses: allOrderStatuses, setOrderStatusViewed } = useSyntheticsEvents();
+  const pendingOrders = useMemo(
+    () => (Array.isArray(pendingOrderData) ? pendingOrderData : [pendingOrderData]),
+    [pendingOrderData]
+  );
+  const [matchedOrderStatusKeys, setMatchedOrderStatusKeys] = useState<string[]>([]);
+
+  const matchedOrderStatuses = useMemo(
+    () => matchedOrderStatusKeys.map((key) => allOrderStatuses[key]),
+    [allOrderStatuses, matchedOrderStatusKeys]
+  );
+
+  const orderByKey = useMemo(() => {
+    const map = new Map<string, PendingOrderData>();
+    pendingOrders.forEach((order) => {
+      const key = getPendingOrderKey(order);
+      map.set(key, order);
+    });
+    return map;
+  }, [pendingOrders]);
+
+  useEffect(() => {
+    Object.values(allOrderStatuses).forEach((orderStatus) => {
+      const key = getPendingOrderKey(orderStatus.data);
+
+      if (orderStatus.isViewed || !orderByKey.has(key)) return;
+
+      setMatchedOrderStatusKeys((prev) => [...prev, orderStatus.key]);
+      setOrderStatusViewed(orderStatus.key);
+    });
+  }, [allOrderStatuses, orderByKey, setOrderStatusViewed]);
+
+  const isCompleted = useMemo(() => {
+    return pendingOrders.every((pendingOrder) => {
+      const orderStatus = matchedOrderStatuses.find(
+        (status) => getPendingOrderKey(status.data) === getPendingOrderKey(pendingOrder)
+      );
+      return isMarketOrderType(pendingOrder.orderType)
+        ? Boolean(orderStatus?.executedTxnHash)
+        : Boolean(orderStatus?.createdTxnHash);
+    });
+  }, [matchedOrderStatuses, pendingOrders]);
+
+  useToastAutoClose(isCompleted, toastTimestamp);
 
   return (
     <div className="StatusNotification-wrapper">
