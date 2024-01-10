@@ -405,6 +405,7 @@ button.btn-link:hover .logout-icon {
 .mt-md {
   margin-top: 1.5rem;
 }
+
 .page-layout {
   min-height: calc(100vh - 62px);
   display: flex;

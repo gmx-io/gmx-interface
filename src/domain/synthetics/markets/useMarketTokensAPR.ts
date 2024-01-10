@@ -48,7 +48,9 @@ function useIncentivesBonusApr(chainId: number): MarketTokensAPRData {
     let arbTokenAddress: null | string = null;
     try {
       arbTokenAddress = getTokenBySymbol(chainId, "ARB").address;
-    } catch (err) {}
+    } catch (err) {
+      // ignore
+    }
     let arbTokenPrice = BigNumber.from(0);
 
     if (arbTokenAddress && tokensData) {

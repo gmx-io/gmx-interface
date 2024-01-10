@@ -276,9 +276,16 @@ msgid "Actual Price Impact"
 msgstr "Actual Price Impact"
 
 #: src/pages/Dashboard/AssetDropdown.tsx
-#: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Add to Metamask"
 msgstr "Add to Metamask"
+
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Add {0} to Metamask"
+msgstr "Add {0} to Metamask"
+
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+msgid "Add {marketName} to Wallet"
+msgstr "Add {marketName} to Wallet"
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Adding referral code failed."
@@ -773,6 +780,10 @@ msgstr "Choose to buy from decentralized or centralized exchanges."
 msgid "Claim"
 msgstr "Claim"
 
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+msgid "Claim <0>{0}</0>"
+msgstr "Claim <0>{0}</0>"
+
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "Claim Funding Fees"
 msgstr "Claim Funding Fees"
@@ -828,10 +839,6 @@ msgstr "Claim submitted! <0>View status.</0>"
 #: src/pages/Stake/StakeV2.js
 msgid "Claim submitted."
 msgstr "Claim submitted."
-
-#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
-msgid "Claim {0}"
-msgstr "Claim {0}"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1868,10 +1875,6 @@ msgstr "Fetching token info..."
 msgid "Financial reports and protocol analytics"
 msgstr "Financial reports and protocol analytics"
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Floor Price Fund"
-msgstr "Floor Price Fund"
-
 #: src/components/Referrals/TradersStats.tsx
 msgid "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
 msgstr "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
@@ -2333,10 +2336,6 @@ msgstr "Invalid Receiver Address"
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Invalid Transfer Addresses: Please check the url."
 msgstr "Invalid Transfer Addresses: Please check the url."
-
-#: src/components/Synthetics/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
-#~ msgid "Invalid acceptable Price Impact value"
-#~ msgstr "Invalid acceptable Price Impact value"
 
 #: src/App/App.js
 msgid "Invalid execution fee buffer value"
@@ -2843,10 +2842,6 @@ msgstr "Max Out"
 msgid "Max Pool Capacity"
 msgstr "Max Pool Capacity"
 
-#: src/components/Synthetics/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
-#~ msgid "Max acceptable Price Impact precision is 0.01%"
-#~ msgstr "Max acceptable Price Impact precision is 0.01%"
-
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -3201,14 +3196,6 @@ msgstr "Open Interest Balance"
 msgid "Open a position"
 msgstr "Open a position"
 
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open in Coingecko"
-msgstr "Open in Coingecko"
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open in Explorer"
-msgstr "Open in Explorer"
-
 #: src/pages/Home/Home.js
 msgid "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
 msgstr "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
@@ -3221,6 +3208,14 @@ msgstr "Open positions: {0}<0/>Under risk: {1}"
 msgid "Open trades ranking and stats"
 msgstr "Open trades ranking and stats"
 
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Open {0} in Coingecko"
+msgstr "Open {0} in Coingecko"
+
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Open {0} in Explorer"
+msgstr "Open {0} in Explorer"
+
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
 msgstr "Open {0} {longOrShortText}"
@@ -3228,6 +3223,10 @@ msgstr "Open {0} {longOrShortText}"
 #: src/components/Synthetics/TVChart/TVChart.tsx
 msgid "Open {longOrShortText} {tokenSymbol}"
 msgstr "Open {longOrShortText} {tokenSymbol}"
+
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+msgid "Open {marketName} in Explorer"
+msgstr "Open {marketName} in Explorer"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -3757,10 +3756,6 @@ msgstr "Receiver has not staked GLP tokens before"
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Receiver has not staked GMX tokens before"
 msgstr "Receiver has not staked GMX tokens before"
-
-#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
-#~ msgid "Recommended Impact: {0}."
-#~ msgstr "Recommended Impact: {0}."
 
 #: src/components/Glp/GlpSwap.js
 msgid "Redemption time not yet reached"
@@ -5027,6 +5022,10 @@ msgstr "Transfer {nativeTokenSymbol}"
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Transferring"
 msgstr "Transferring"
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Treasury"
+msgstr "Treasury"
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionSeller.js

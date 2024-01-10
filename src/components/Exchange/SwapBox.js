@@ -1208,11 +1208,9 @@ export default function SwapBox(props) {
       } for ${formatAmount(toAmount, toToken.decimals, 4, true)} ${toToken.symbol}!`,
       failMsg: t`Swap failed.`,
       setPendingTxns,
-    })
-      .then(async (res) => {})
-      .finally(() => {
-        setIsSubmitting(false);
-      });
+    }).finally(() => {
+      setIsSubmitting(false);
+    });
   };
 
   const unwrap = async () => {
@@ -1226,11 +1224,9 @@ export default function SwapBox(props) {
         fromToken.symbol
       } for ${formatAmount(toAmount, toToken.decimals, 4, true)} ${toToken.symbol}!`,
       setPendingTxns,
-    })
-      .then(async (res) => {})
-      .finally(() => {
-        setIsSubmitting(false);
-      });
+    }).finally(() => {
+      setIsSubmitting(false);
+    });
   };
 
   const swap = async () => {

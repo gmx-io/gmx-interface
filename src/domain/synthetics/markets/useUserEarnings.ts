@@ -214,7 +214,7 @@ function calcEndOfPeriodIncome(
   return feeUsdPerGmTokenDelta.mul(latestBalanceChange.tokensBalance).div(expandDecimals(1, 18));
 }
 
-function calcRecentIncome(balanceChanges: BalanceChange[], debug = false): BigNumber {
+function calcRecentIncome(balanceChanges: BalanceChange[]): BigNumber {
   let cumulativeIncome = BigNumber.from(0);
 
   for (let i = 1; i < balanceChanges.length; i++) {

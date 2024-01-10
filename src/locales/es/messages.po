@@ -276,9 +276,16 @@ msgid "Actual Price Impact"
 msgstr ""
 
 #: src/pages/Dashboard/AssetDropdown.tsx
-#: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Add to Metamask"
 msgstr "Añadir a Metamask"
+
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Add {0} to Metamask"
+msgstr ""
+
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+msgid "Add {marketName} to Wallet"
+msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Adding referral code failed."
@@ -773,6 +780,10 @@ msgstr ""
 msgid "Claim"
 msgstr "Reclamar"
 
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+msgid "Claim <0>{0}</0>"
+msgstr ""
+
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "Claim Funding Fees"
 msgstr ""
@@ -828,10 +839,6 @@ msgstr "¡Reclamación enviada! <0>Ver estado.</0>"
 #: src/pages/Stake/StakeV2.js
 msgid "Claim submitted."
 msgstr "Reclamación enviada."
-
-#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
-msgid "Claim {0}"
-msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1868,10 +1875,6 @@ msgstr "Obteniendo información de los tokens..."
 msgid "Financial reports and protocol analytics"
 msgstr "Reportes financieros y análisis de datos del protocolo"
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Floor Price Fund"
-msgstr "Fondo de Precio Mínimo"
-
 #: src/components/Referrals/TradersStats.tsx
 msgid "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
 msgstr ""
@@ -2333,10 +2336,6 @@ msgstr "Dirección del Receptor Inválida"
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Invalid Transfer Addresses: Please check the url."
 msgstr ""
-
-#: src/components/Synthetics/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
-#~ msgid "Invalid acceptable Price Impact value"
-#~ msgstr ""
 
 #: src/App/App.js
 msgid "Invalid execution fee buffer value"
@@ -2840,10 +2839,6 @@ msgstr ""
 msgid "Max Pool Capacity"
 msgstr "Capacidad de Reserva Máx."
 
-#: src/components/Synthetics/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
-#~ msgid "Max acceptable Price Impact precision is 0.01%"
-#~ msgstr ""
-
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -3198,14 +3193,6 @@ msgstr ""
 msgid "Open a position"
 msgstr "Abre una posición"
 
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open in Coingecko"
-msgstr "Abrir en Coingecko"
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open in Explorer"
-msgstr "Abrir en el Explorador"
-
 #: src/pages/Home/Home.js
 msgid "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
 msgstr "Abre posiciones a través de una simple interfaz de intercambio. Intercambie desde cualquier activo soportado a la posición de su elección."
@@ -3218,12 +3205,24 @@ msgstr "Posiciones Abiertas: {0}<0/>Bajo riesgo: {1}"
 msgid "Open trades ranking and stats"
 msgstr ""
 
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Open {0} in Coingecko"
+msgstr ""
+
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Open {0} in Explorer"
+msgstr ""
+
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
 msgstr ""
 
 #: src/components/Synthetics/TVChart/TVChart.tsx
 msgid "Open {longOrShortText} {tokenSymbol}"
+msgstr ""
+
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+msgid "Open {marketName} in Explorer"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
@@ -3754,10 +3753,6 @@ msgstr "El receptor no ha stakeado tokens GLP antes"
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Receiver has not staked GMX tokens before"
 msgstr "El receptor no ha stakeado tokens GMX antes"
-
-#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
-#~ msgid "Recommended Impact: {0}."
-#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Redemption time not yet reached"
@@ -5024,6 +5019,10 @@ msgstr ""
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Transferring"
 msgstr "Transfiriendo"
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Treasury"
+msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionSeller.js

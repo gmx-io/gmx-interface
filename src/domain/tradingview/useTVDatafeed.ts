@@ -144,8 +144,7 @@ export default function useTVDatafeed({ dataProvider }: Props) {
         async subscribeBars(
           symbolInfo: SymbolInfo,
           resolution: ResolutionString,
-          onRealtimeCallback: SubscribeBarsCallback,
-          _subscribeUID
+          onRealtimeCallback: SubscribeBarsCallback
         ) {
           const period = supportedResolutions[resolution];
           const { ticker, isStable } = symbolInfo;

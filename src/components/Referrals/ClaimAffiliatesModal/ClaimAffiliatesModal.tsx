@@ -92,7 +92,7 @@ export function ClaimAffiliatesModal(p: Props) {
               position="right-top"
               renderContent={() => (
                 <>
-                  {claimableAmountsItems.map((item, index) => (
+                  {claimableAmountsItems.map((item) => (
                     <div key={item}>{item}</div>
                   ))}
                 </>

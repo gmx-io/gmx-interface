@@ -15,8 +15,8 @@ import { getIcon } from "config/icons";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 
-const LANGUAGE_MODAL_KEY: string = "LANGUAGE";
-const NETWORK_MODAL_KEY: string = "NETWORK";
+const LANGUAGE_MODAL_KEY = "LANGUAGE";
+const NETWORK_MODAL_KEY = "NETWORK";
 
 export default function NetworkDropdown(props) {
   const currentLanguage = useRef(localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale);
