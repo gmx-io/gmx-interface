@@ -333,7 +333,7 @@ export function PositionItem(p: Props) {
       return positionOrders.map((order) => {
         if (order.errorLevel) {
           return (
-            <div key={order.key}>
+            <div key={order.key} className="Position-list-order">
               <Tooltip
                 handle={renderOrderText(order)}
                 position="right-bottom"
