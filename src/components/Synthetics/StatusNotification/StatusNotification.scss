@@ -1,26 +1,29 @@
 .StatusNotification-wrapper {
   display: grid;
-  grid-row-gap: 1.5rem;
+  grid-row-gap: 1.25rem;
 }
 
 .StatusNotification {
   position: relative;
-}
 
-.StatusNotification:not(:last-child) {
-  .Notification-divider {
-    position: absolute;
-    bottom: -1rem;
-    left: -2rem;
-    height: 2px;
-    width: 150%;
-    background: var(--dark-blue-bg);
+  &:not(:last-child) {
+    .StatusNotification-background {
+      .Notification-divider {
+        position: absolute;
+        left: 0;
+        bottom: -1.5px;
+        height: 1.5px;
+        width: 100%;
+        background: #0f463d;
+        z-index: 2;
+      }
+    }
   }
 }
 
 .StatusNotification-background {
   position: absolute;
-  top: -10%;
+  top: -12%;
   left: -10%;
   right: auto;
   width: 150%;
@@ -31,6 +34,12 @@
 
   &.error {
     background-color: rgba(174, 43, 63, 1);
+  }
+}
+
+.StatusNotification:last-child {
+  .StatusNotification-background {
+    height: 150%;
   }
 }
 

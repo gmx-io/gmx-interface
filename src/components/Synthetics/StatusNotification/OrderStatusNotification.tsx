@@ -191,8 +191,9 @@ export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tok
         </div>
       </div>
 
-      <div className={cx("StatusNotification-background", { error: hasError })} />
-      <div className="Notification-divider" />
+      <div className={cx("StatusNotification-background", { error: hasError })}>
+        <div className="Notification-divider" />
+      </div>
     </div>
   );
 }
