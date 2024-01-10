@@ -38,6 +38,7 @@ function SLTPEntries({ entries, updateEntry, addEntry, deleteEntry }) {
                   handleClassName="mr-xs"
                   position="right-center"
                   renderContent={() => <span>Add Row</span>}
+                  openDelay={1500}
                 />
                 <TooltipWithPortal
                   handle={
@@ -52,6 +53,7 @@ function SLTPEntries({ entries, updateEntry, addEntry, deleteEntry }) {
                   portalClassName="SLTP-helper-text"
                   position="right-center"
                   renderContent={() => <span>Remove Row</span>}
+                  openDelay={1500}
                 />
               </div>
             </div>

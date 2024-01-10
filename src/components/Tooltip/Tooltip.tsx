@@ -25,12 +25,16 @@ type Props = {
   disableHandleStyle?: boolean;
   handleClassName?: string;
   isHandlerDisabled?: boolean;
+  openDelay?: number;
+  closeDelay?: number;
 };
 
 export default function Tooltip(props: Props) {
   const [visible, setVisible] = useState(false);
   const intervalCloseRef = useRef<ReturnType<typeof setTimeout> | null>();
   const intervalOpenRef = useRef<ReturnType<typeof setTimeout> | null>();
+  const openDelay = props.openDelay ?? OPEN_DELAY;
+  const closeDelay = props.openDelay ?? CLOSE_DELAY;
 
   const position = props.position ?? "left-bottom";
   const trigger = props.trigger ?? "hover";
@@ -45,9 +49,9 @@ export default function Tooltip(props: Props) {
       intervalOpenRef.current = setTimeout(() => {
         setVisible(true);
         intervalOpenRef.current = null;
-      }, OPEN_DELAY);
+      }, openDelay);
     }
-  }, [setVisible, intervalCloseRef, intervalOpenRef, trigger]);
+  }, [setVisible, intervalCloseRef, intervalOpenRef, trigger, openDelay]);
 
   const onMouseClick = useCallback(() => {
     if (trigger !== "click" && !IS_TOUCH) return;
@@ -67,12 +71,12 @@ export default function Tooltip(props: Props) {
     intervalCloseRef.current = setTimeout(() => {
       setVisible(false);
       intervalCloseRef.current = null;
-    }, CLOSE_DELAY);
+    }, closeDelay);
     if (intervalOpenRef.current) {
       clearInterval(intervalOpenRef.current);
       intervalOpenRef.current = null;
     }
-  }, [setVisible, intervalCloseRef]);
+  }, [setVisible, intervalCloseRef, closeDelay]);
 
   const onHandleClick = useCallback((event: MouseEvent) => {
     event.preventDefault();
