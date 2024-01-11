@@ -38,7 +38,7 @@ import { formatTokenAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
-import { ReactNode, memo, useCallback, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, ReactNode, memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useCopyToClipboard, usePrevious } from "react-use";
 import { SubaccountNotification } from "../StatusNotification/SubaccountNotification";
 import "./SubaccountModal.scss";
@@ -709,7 +709,7 @@ const Input = memo(
     negativeSign: boolean;
   }) => {
     const onChange = useCallback(
-      (e: React.ChangeEvent<HTMLInputElement>) => {
+      (e: ChangeEvent<HTMLInputElement>) => {
         setValue(e.target.value);
       },
       [setValue]

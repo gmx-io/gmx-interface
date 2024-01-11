@@ -83,7 +83,7 @@ export function ClaimModal(p: Props) {
             handle={formatDeltaUsd(totalFundingUsd)}
             renderContent={() => (
               <>
-                {claimableAmountsItems.map((item, index) => (
+                {claimableAmountsItems.map((item) => (
                   <div key={item}>{item}</div>
                 ))}
               </>
@@ -133,8 +133,12 @@ export function ClaimModal(p: Props) {
       setIsVisible={onClose}
       label={t`Confirm Claim`}
     >
-      <div className="ConfirmationBox-main text-center">
-        <Trans>Claim {formatDeltaUsd(totalClaimableFundingUsd)}</Trans>
+      <div className="ConfirmationBox-main">
+        <div className="text-center">
+          <Trans>
+            Claim <span>{formatDeltaUsd(totalClaimableFundingUsd)}</span>
+          </Trans>
+        </div>
       </div>
       <div className="App-card-divider ClaimModal-divider" />
       <div className="ClaimSettleModal-info-row">

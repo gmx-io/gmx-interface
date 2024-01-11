@@ -7,7 +7,7 @@ function numberToString(value: BigNumber | null, decimals: number, displayDecima
   return formatAmount(value, decimals, displayDecimals);
 }
 
-function stringToNumber(value: string, decimals: number, displayDecimals: number) {
+function stringToNumber(value: string, decimals: number) {
   value = value.replace(/,/g, "").trim();
 
   if (value.trim() === "") {
@@ -54,12 +54,12 @@ export function useBigNumberInput(initialValue: BigNumber | null, decimals: numb
 
   const setDisplayValue = useCallback(
     (newValue: string) => {
-      const number = stringToNumber(newValue, decimals, displayDecimals);
+      const number = stringToNumber(newValue, decimals);
 
       setRawDisplayValue(newValue);
       setRawValue(number);
     },
-    [decimals, displayDecimals]
+    [decimals]
   );
 
   return {

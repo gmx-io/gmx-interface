@@ -17,10 +17,6 @@ msgstr ""
 msgid "(up to {0}% of {feesTypeName})"
 msgstr "(up to {0}% of {feesTypeName})"
 
-#: src/domain/synthetics/orders/cancelOrdersTxn.ts
-#~ msgid ". Subaccount max actions count reached."
-#~ msgstr ". Subaccount max actions count reached."
-
 #: src/pages/Dashboard/DashboardV2.js
 msgid "01 Sep 2021"
 msgstr "01 Sep 2021"
@@ -267,24 +263,12 @@ msgid "Actions"
 msgstr "Actions"
 
 #: src/components/Synthetics/SubaccountModal/utils.ts
-#~ msgid "Activate"
-#~ msgstr "Activate"
-
-#: src/components/Synthetics/SubaccountModal/utils.ts
 msgid "Activate Subaccount"
 msgstr "Activate Subaccount"
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Activating Subaccount"
 msgstr "Activating Subaccount"
-
-#: src/domain/synthetics/subaccount/initSubaccount.ts
-#~ msgid "Activating subaccount"
-#~ msgstr "Activating subaccount"
-
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "Active"
-#~ msgstr "Active"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -300,9 +284,16 @@ msgid "Actual Price Impact"
 msgstr "Actual Price Impact"
 
 #: src/pages/Dashboard/AssetDropdown.tsx
-#: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Add to Metamask"
 msgstr "Add to Metamask"
+
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Add {0} to Metamask"
+msgstr "Add {0} to Metamask"
+
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+msgid "Add {marketName} to Wallet"
+msgstr "Add {marketName} to Wallet"
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Adding referral code failed."
@@ -364,10 +355,6 @@ msgstr "Allowed Slippage"
 #: src/App/App.js
 msgid "Allowed Slippage below {0}% may result in failed orders."
 msgstr "Allowed Slippage below {0}% may result in failed orders."
-
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "Almost out of funds for One‑Click Trading."
-#~ msgstr "Almost out of funds for One‑Click Trading."
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
@@ -530,10 +517,6 @@ msgstr "Balance"
 #: src/components/AprInfo/AprInfo.tsx
 msgid "Base APR"
 msgstr "Base APR"
-
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "Based on balances"
-#~ msgstr "Based on balances"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
@@ -780,10 +763,6 @@ msgstr "Cancel submitted."
 msgid "Cancelling {ordersText}"
 msgstr "Cancelling {ordersText}"
 
-#: src/domain/synthetics/orders/cancelOrdersTxn.ts
-#~ msgid "Cancelling {ordersText}{subaccountNote}"
-#~ msgstr "Cancelling {ordersText}{subaccountNote}"
-
 #: src/App/App.js
 #: src/pages/Exchange/Exchange.js
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -817,6 +796,10 @@ msgstr "Choose to buy from decentralized or centralized exchanges."
 #: src/pages/Stake/StakeV2.js
 msgid "Claim"
 msgstr "Claim"
+
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+msgid "Claim <0>{0}</0>"
+msgstr "Claim <0>{0}</0>"
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "Claim Funding Fees"
@@ -873,10 +856,6 @@ msgstr "Claim submitted! <0>View status.</0>"
 #: src/pages/Stake/StakeV2.js
 msgid "Claim submitted."
 msgstr "Claim submitted."
-
-#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
-msgid "Claim {0}"
-msgstr "Claim {0}"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1150,10 +1129,6 @@ msgid "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details
 msgstr "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#~ msgid "Convert this amount of  {0} to {1} in your Main Account to allow for auto top-ups, as only {2} can be automatically transferred to your Subaccount. The {3} balance of your main account is shown above."
-#~ msgstr "Convert this amount of  {0} to {1} in your Main Account to allow for auto top-ups, as only {2} can be automatically transferred to your Subaccount. The {3} balance of your main account is shown above."
-
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Convert this amount of {0} to {1} in your Main Account to allow for auto top-ups, as only {2} can be automatically transferred to your Subaccount. The {3} balance of your main account is shown above."
 msgstr "Convert this amount of {0} to {1} in your Main Account to allow for auto top-ups, as only {2} can be automatically transferred to your Subaccount. The {3} balance of your main account is shown above."
 
@@ -1276,10 +1251,6 @@ msgstr "Current Reserved"
 msgid "Current Weight"
 msgstr "Current Weight"
 
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#~ msgid "Current actions count"
-#~ msgstr "Current actions count"
-
 #: src/components/Exchange/SwapBox.js
 msgid "Current {0} long"
 msgstr "Current {0} long"
@@ -1333,10 +1304,6 @@ msgstr "Deactivate"
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Deactivating subaccount"
 msgstr "Deactivating subaccount"
-
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-#~ msgid "Deactivating subaccount."
-#~ msgstr "Deactivating subaccount."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Deactivating..."
@@ -1500,10 +1467,6 @@ msgstr "Depositing..."
 msgid "Diff"
 msgstr "Diff"
 
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#~ msgid "Disable"
-#~ msgstr "Disable"
-
 #: src/App/App.js
 msgid "Disable order validations"
 msgstr "Disable order validations"
@@ -1532,10 +1495,6 @@ msgstr "Don't show this message again for 30 days."
 #: src/components/Exchange/PositionShare.tsx
 msgid "Download"
 msgstr "Download"
-
-#: src/components/Synthetics/SubaccountModal/utils.ts
-#~ msgid "ETH is not available"
-#~ msgstr "ETH is not available"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/StakeV2.js
@@ -1599,14 +1558,6 @@ msgstr "Enable Leverage"
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 msgid "Enable One-Click Trading"
 msgstr "Enable One-Click Trading"
-
-#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-#~ msgid "Enable One-Click Trading to reduce <0>wallet<1/></0> signing popups. This option is also accessible through the Wallet menu in the top right."
-#~ msgstr "Enable One-Click Trading to reduce <0>wallet<1/></0> signing popups. This option is also accessible through the Wallet menu in the top right."
-
-#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-#~ msgid "Enable One-Click Trading to reduce wallet signing popups. This option is also accessible through the Wallet menu in the top right."
-#~ msgstr "Enable One-Click Trading to reduce wallet signing popups. This option is also accessible through the Wallet menu in the top right."
 
 #: src/components/Exchange/OrdersToa.js
 #: src/components/Exchange/OrdersToa.js
@@ -1880,10 +1831,6 @@ msgstr "Failed Settlement of Funding Fees"
 msgid "Failed to cancel {ordersText}"
 msgstr "Failed to cancel {ordersText}"
 
-#: src/domain/synthetics/orders/cancelOrdersTxn.ts
-#~ msgid "Failed to cancel {ordersText}{subaccountNote}"
-#~ msgstr "Failed to cancel {ordersText}{subaccountNote}"
-
 #: src/domain/synthetics/orders/updateOrderTxn.ts
 msgid "Failed to update order"
 msgstr "Failed to update order"
@@ -1979,10 +1926,6 @@ msgstr "Fetching token info..."
 msgid "Financial reports and protocol analytics"
 msgstr "Financial reports and protocol analytics"
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Floor Price Fund"
-msgstr "Floor Price Fund"
-
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "For additional safety, subaccounts are only allowed to perform a specified number of actions before re-authorization from your main account is required."
 msgstr "For additional safety, subaccounts are only allowed to perform a specified number of actions before re-authorization from your main account is required."
@@ -2045,14 +1988,6 @@ msgstr "Funding Rate / 1h"
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 msgid "Funding fees"
 msgstr "Funding fees"
-
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "Funds are running low for One-Click Trading"
-#~ msgstr "Funds are running low for One-Click Trading"
-
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "Funds are running low for One-Click Trading."
-#~ msgstr "Funds are running low for One-Click Trading."
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GBC NFTs APR tracker and rewards"
@@ -2279,11 +2214,6 @@ msgstr "If you have an existing position, the position will be closed at {0} USD
 msgid "Image generation error, please refresh and try again."
 msgstr "Image generation error, please refresh and try again."
 
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "Inactive"
-#~ msgstr "Inactive"
-
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Synthetics/TVChart/TVChart.tsx
 msgid "Inc."
@@ -2387,24 +2317,12 @@ msgid "Initial collateral"
 msgstr "Initial collateral"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#~ msgid "Initial top up"
-#~ msgstr "Initial top up"
-
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Initial top-up"
 msgstr "Initial top-up"
-
-#: src/components/Synthetics/OneClickTrading/utils.ts
-#~ msgid "Initial top-up amount is required"
-#~ msgstr "Initial top-up amount is required"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Insufficient Available Liquidity to swap to {0}:"
 msgstr "Insufficient Available Liquidity to swap to {0}:"
-
-#: src/components/Synthetics/SubaccountModal/utils.ts
-#~ msgid "Insufficient ETH balance"
-#~ msgstr "Insufficient ETH balance"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Insufficient GLP balance"
@@ -2493,10 +2411,6 @@ msgstr "Invalid Receiver Address"
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Invalid Transfer Addresses: Please check the url."
 msgstr "Invalid Transfer Addresses: Please check the url."
-
-#: src/components/Synthetics/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
-#~ msgid "Invalid acceptable Price Impact value"
-#~ msgstr "Invalid acceptable Price Impact value"
 
 #: src/App/App.js
 msgid "Invalid execution fee buffer value"
@@ -3015,10 +2929,6 @@ msgstr "Max Out"
 msgid "Max Pool Capacity"
 msgstr "Max Pool Capacity"
 
-#: src/components/Synthetics/AcceptablePriceImpactEditor/AcceptablePriceImpactEditor.tsx
-#~ msgid "Max acceptable Price Impact precision is 0.01%"
-#~ msgstr "Max acceptable Price Impact precision is 0.01%"
-
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Max allowed actions"
 msgstr "Max allowed actions"
@@ -3031,10 +2941,6 @@ msgstr "Max allowed actions"
 #: src/pages/Stake/StakeV2.js
 msgid "Max amount exceeded"
 msgstr "Max amount exceeded"
-
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#~ msgid "Max auto top up amount"
-#~ msgstr "Max auto top up amount"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Max auto top-up amount"
@@ -3262,14 +3168,6 @@ msgstr "NFT ID"
 msgid "NFT Wallet"
 msgstr "NFT Wallet"
 
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "Need to click Activate to proceed"
-#~ msgstr "Need to click Activate to proceed"
-
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "Need to click Activate to proceed."
-#~ msgstr "Need to click Activate to proceed."
-
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Negative Funding Fees are settled against the collateral automatically and will influence the liquidation price. Positive Funding Fees can be claimed under Claimable Funding after realizing any action on the position."
 msgstr "Negative Funding Fees are settled against the collateral automatically and will influence the liquidation price. Positive Funding Fees can be claimed under Claimable Funding after realizing any action on the position."
@@ -3375,62 +3273,20 @@ msgid "Not enough Available Swap Liquidity to fill the Order. The Order will get
 msgstr "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "Not enough funds on One‑Click Trading subaccount. Use top-up field to increase the subaccount balance."
-#~ msgstr "Not enough funds on One‑Click Trading subaccount. Use top-up field to increase the subaccount balance."
-
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "Not enough funds on subaccount"
-#~ msgstr "Not enough funds on subaccount"
-
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "Not enough funds on subaccount."
-#~ msgstr "Not enough funds on subaccount."
-
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "Not enough {0} on your Main Account. Use the \"Convert {1} to {2}\" field to increase the Main Account {3} balance."
 msgstr "Not enough {0} on your Main Account. Use the \"Convert {1} to {2}\" field to increase the Main Account {3} balance."
-
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "Not enough {0} on your main account. Use Convert {1} to {2} field to increase the balance."
-#~ msgstr "Not enough {0} on your main account. Use Convert {1} to {2} field to increase the balance."
-
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "Not working"
-#~ msgstr "Not working"
 
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 
-#: src/components/Synthetics/SubaccountModal/utils.ts
-#~ msgid "Nothing to Update"
-#~ msgstr "Nothing to Update"
-
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "One-Click Trading"
 msgstr "One-Click Trading"
 
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "One-Click Trading is active."
-#~ msgstr "One-Click Trading is active."
-
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "One-Click Trading is inactive"
-#~ msgstr "One-Click Trading is inactive"
-
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "One-Click Trading is inactive."
-#~ msgstr "One-Click Trading is inactive."
-
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 msgid "One-Click Trading is not available using network's native token AVAX. Consider using WAVAX as Pay token instead."
 msgstr "One-Click Trading is not available using network's native token AVAX. Consider using WAVAX as Pay token instead."
-
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "One-Click trading is active."
-#~ msgstr "One-Click trading is active."
 
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
@@ -3455,14 +3311,6 @@ msgstr "Open Interest Balance"
 msgid "Open a position"
 msgstr "Open a position"
 
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open in Coingecko"
-msgstr "Open in Coingecko"
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open in Explorer"
-msgstr "Open in Explorer"
-
 #: src/pages/Home/Home.js
 msgid "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
 msgstr "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
@@ -3475,6 +3323,14 @@ msgstr "Open positions: {0}<0/>Under risk: {1}"
 msgid "Open trades ranking and stats"
 msgstr "Open trades ranking and stats"
 
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Open {0} in Coingecko"
+msgstr "Open {0} in Coingecko"
+
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Open {0} in Explorer"
+msgstr "Open {0} in Explorer"
+
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
 msgstr "Open {0} {longOrShortText}"
@@ -3482,6 +3338,10 @@ msgstr "Open {0} {longOrShortText}"
 #: src/components/Synthetics/TVChart/TVChart.tsx
 msgid "Open {longOrShortText} {tokenSymbol}"
 msgstr "Open {longOrShortText} {tokenSymbol}"
+
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+msgid "Open {marketName} in Explorer"
+msgstr "Open {marketName} in Explorer"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -3940,10 +3800,6 @@ msgstr "Purchase <0>GM Tokens</0> to earn fees from swaps and leverage trading."
 msgid "Purchase Insurance"
 msgstr "Purchase Insurance"
 
-#: src/components/Synthetics/SubaccountModal/utils.ts
-#~ msgid "Re-authorize"
-#~ msgstr "Re-authorize"
-
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
@@ -4025,10 +3881,6 @@ msgstr "Receiver has not staked GLP tokens before"
 msgid "Receiver has not staked GMX tokens before"
 msgstr "Receiver has not staked GMX tokens before"
 
-#: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
-#~ msgid "Recommended Impact: {0}."
-#~ msgstr "Recommended Impact: {0}."
-
 #: src/components/Glp/GlpSwap.js
 msgid "Redemption time not yet reached"
 msgstr "Redemption time not yet reached"
@@ -4091,14 +3943,6 @@ msgstr "Referral code updated!"
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referrals"
 msgstr "Referrals"
-
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "Remaining actions"
-#~ msgstr "Remaining actions"
-
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "Remaining actions: {0}"
-#~ msgstr "Remaining actions: {0}"
 
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
@@ -4628,10 +4472,6 @@ msgstr "Staking..."
 msgid "Stats"
 msgstr "Stats"
 
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "Status"
-#~ msgstr "Status"
-
 #: src/domain/synthetics/orders/utils.ts
 msgid "Stop Loss Decrease"
 msgstr "Stop Loss Decrease"
@@ -4644,14 +4484,6 @@ msgstr "Stop-Loss"
 msgid "Structured Products"
 msgstr "Structured Products"
 
-#: src/domain/synthetics/subaccount/initSubaccount.ts
-#~ msgid "Subacccount is activated"
-#~ msgstr "Subacccount is activated"
-
-#: src/domain/synthetics/subaccount/initSubaccount.ts
-#~ msgid "Subacccount is updated"
-#~ msgstr "Subacccount is updated"
-
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Subaccount Balance"
 msgstr "Subaccount Balance"
@@ -4661,20 +4493,12 @@ msgid "Subaccount activated"
 msgstr "Subaccount activated"
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-#~ msgid "Subaccount activated."
-#~ msgstr "Subaccount activated."
-
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount activation failed."
 msgstr "Subaccount activation failed."
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount created"
 msgstr "Subaccount created"
-
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-#~ msgid "Subaccount created."
-#~ msgstr "Subaccount created."
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount deactivated."
@@ -4692,14 +4516,6 @@ msgstr "Subaccount generation failed."
 msgid "Subaccount is updated"
 msgstr "Subaccount is updated"
 
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-#~ msgid "Subaccount is updated."
-#~ msgstr "Subaccount is updated."
-
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#~ msgid "Subaccount {0} Balance is used to pay for the Network Fees. It will be automatically topped up on each Action up to the set Max auto top-up amount from the Main Account {1} Balance. Use the \"Top-up\" field if you need to transfer {2} to your Subaccount."
-#~ msgstr "Subaccount {0} Balance is used to pay for the Network Fees. It will be automatically topped up on each Action up to the set Max auto top-up amount from the Main Account {1} Balance. Use the \"Top-up\" field if you need to transfer {2} to your Subaccount."
-
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Subaccount {0} Balance is used to pay for the Network Fees. Use the \"Top-up\" field if you need to transfer {1} to your Subaccount."
 msgstr "Subaccount {0} Balance is used to pay for the Network Fees. Use the \"Top-up\" field if you need to transfer {1} to your Subaccount."
@@ -4707,10 +4523,6 @@ msgstr "Subaccount {0} Balance is used to pay for the Network Fees. Use the \"To
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Subaccount:"
 msgstr "Subaccount:"
-
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#~ msgid "SubaccountModal Balance"
-#~ msgstr "SubaccountModal Balance"
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Submit"
@@ -5019,14 +4831,6 @@ msgstr "The mark price has changed, consider increasing your Allowed Slippage by
 msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"Max allowed actions\" field."
 msgstr "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"Max allowed actions\" field."
 
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the 'Max allowed actions' field"
-#~ msgstr "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the 'Max allowed actions' field"
-
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the Max allowed actions field."
-#~ msgstr "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the Max allowed actions field."
-
 #: src/domain/legacy.ts
 #: src/domain/synthetics/fees/utils/executionFee.ts
 msgid "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
@@ -5064,22 +4868,6 @@ msgstr "The position will be opened at {0} USD with a max slippage of {1}%.<0/><
 msgid "The previously authorized maximum number of Actions has been reached for One-Click Trading. Click here to re-authorize."
 msgstr "The previously authorized maximum number of Actions has been reached for One-Click Trading. Click here to re-authorize."
 
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#~ msgid "The previously authorized maximum number of Actions have been reached for One‑Click Trading. Set Max allowed Actions and re-authorize."
-#~ msgstr "The previously authorized maximum number of Actions have been reached for One‑Click Trading. Set Max allowed Actions and re-authorize."
-
-#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-#~ msgid "The previously authorized maximum number of Actions have been reached for One-Click Trading. Click here to re-authorize."
-#~ msgstr "The previously authorized maximum number of Actions have been reached for One-Click Trading. Click here to re-authorize."
-
-#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-#~ msgid "The previously authorized maximum number of Actions have been reached for One-Click Trwading. Click here to re-authorize."
-#~ msgstr "The previously authorized maximum number of Actions have been reached for One-Click Trwading. Click here to re-authorize."
-
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "The previously authorized maximum number of Actions have been reached."
-#~ msgstr "The previously authorized maximum number of Actions have been reached."
-
 #: src/components/Exchange/OrdersList.js
 msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
 msgstr "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
@@ -5112,17 +4900,9 @@ msgstr "There are insufficient funds in your Subaccount for One-Click Trading. <
 msgid "There are insufficient funds in your Subaccount for One-Click Trading. Click here to top-up."
 msgstr "There are insufficient funds in your Subaccount for One-Click Trading. Click here to top-up."
 
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#~ msgid "There are insufficient funds in your Subaccount for One-Click Trading. Please top-up your Balance."
-#~ msgstr "There are insufficient funds in your Subaccount for One-Click Trading. Please top-up your Balance."
-
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "There are insufficient funds in your Subaccount for One-Click Trading. Use the \"Top-up\" field to increase the Subaccount Balance."
 msgstr "There are insufficient funds in your Subaccount for One-Click Trading. Use the \"Top-up\" field to increase the Subaccount Balance."
-
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "There are insufficient funds in your Subaccount for One-Click Trading. Use the top-up field to increase the subaccount balance."
-#~ msgstr "There are insufficient funds in your Subaccount for One-Click Trading. Use the top-up field to increase the subaccount balance."
 
 #: src/components/Exchange/SwapBox.js
 msgid "There are more longs than shorts, borrow fees for shorting is currently zero"
@@ -5176,10 +4956,6 @@ msgstr "There may not be sufficient liquidity to execute your order when the pri
 msgid "This amount of {0} will be sent from your Main Account to your Subaccount to pay for transaction fees."
 msgstr "This amount of {0} will be sent from your Main Account to your Subaccount to pay for transaction fees."
 
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#~ msgid "This amount of {0} will be sent to your subaccount to pay for transaction fees."
-#~ msgstr "This amount of {0} will be sent to your subaccount to pay for transaction fees."
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code has been taken by someone else on {0}, you will not receive rebates from traders using this code on {1}."
 msgstr "This code has been taken by someone else on {0}, you will not receive rebates from traders using this code on {1}."
@@ -5189,25 +4965,13 @@ msgid "This code is not yet registered on {0}, you will not receive rebates ther
 msgstr "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#~ msgid "This is the maximum top up amount that will be sent to your subaccount after each transaction, the actual amount sent will depend on the actual transaction fee."
-#~ msgstr "This is the maximum top up amount that will be sent to your subaccount after each transaction, the actual amount sent will depend on the actual transaction fee."
-
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
 msgstr "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
-
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#~ msgid "This is the maximum top-up amount that will be sent to your subaccount after each transaction, the actual amount sent will depend on the actual transaction fee."
-#~ msgstr "This is the maximum top-up amount that will be sent to your subaccount after each transaction, the actual amount sent will depend on the actual transaction fee."
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "This market uses an Adaptive Funding Rate. The Funding Rate will adjust over time depending on the ratio of longs and shorts. <0>Read more</0>."
 msgstr "This market uses an Adaptive Funding Rate. The Funding Rate will adjust over time depending on the ratio of longs and shorts. <0>Read more</0>."
-
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#~ msgid "This maximum top-up amount will be sent to your subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
-#~ msgstr "This maximum top-up amount will be sent to your subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
 
 #: src/components/Exchange/TradeHistory.js
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
@@ -5251,16 +5015,8 @@ msgid "Tokens"
 msgstr "Tokens"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#~ msgid "Top up"
-#~ msgstr "Top up"
-
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Top-up"
 msgstr "Top-up"
-
-#: src/components/Synthetics/SubaccountModal/utils.ts
-#~ msgid "Top-up balance"
-#~ msgstr "Top-up balance"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -5471,6 +5227,10 @@ msgstr "Transfer {nativeTokenSymbol}"
 msgid "Transferring"
 msgstr "Transferring"
 
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Treasury"
+msgstr "Treasury"
+
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -5629,10 +5389,6 @@ msgstr "Update Order"
 msgid "Update order executed"
 msgstr "Update order executed"
 
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "Updating"
-#~ msgstr "Updating"
-
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Updating Order..."
@@ -5645,10 +5401,6 @@ msgstr "Updating Subaccount"
 #: src/domain/synthetics/orders/updateOrderTxn.ts
 msgid "Updating order"
 msgstr "Updating order"
-
-#: src/domain/synthetics/subaccount/initSubaccount.ts
-#~ msgid "Updating subaccount"
-#~ msgstr "Updating subaccount"
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Updating..."
@@ -5871,15 +5623,6 @@ msgstr "WARNING: This position has a low amount of collateral after deducting fe
 msgid "WEIGHT"
 msgstr "WEIGHT"
 
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
-#: src/components/Synthetics/OneClickTrading/OneClickTradingModal.tsx
-#~ msgid "WETH for auto top ups"
-#~ msgstr "WETH for auto top ups"
-
-#: src/components/Synthetics/SubaccountModal/utils.ts
-#~ msgid "WETH for auto top-ups is required"
-#~ msgstr "WETH for auto top-ups is required"
-
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
@@ -6007,11 +5750,6 @@ msgstr "Withdrew {0} USD from {tokenSymbol} {longOrShortText}."
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Withdrew {0} from {positionText}"
 msgstr "Withdrew {0} from {positionText}"
-
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "Working"
-#~ msgstr "Working"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Yield Optimizer on Avalanche"
@@ -6358,30 +6096,6 @@ msgstr "{0} can be used to buy GM for this market up to the specified buying cap
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr "{0} can not be sent to smart contract addresses. Select another token."
 
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#~ msgid "{0} cannot be automatically transferred for auto top-ups, convert some {1} to {2} in your main account to ensure that there is sufficient {3} for auto top-ups, the {4} balance of your main account is shown above."
-#~ msgstr "{0} cannot be automatically transferred for auto top-ups, convert some {1} to {2} in your main account to ensure that there is sufficient {3} for auto top-ups, the {4} balance of your main account is shown above."
-
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#~ msgid "{0} cannot be automatically transferred to your Subaccount, so only {1} can be used for auto top-ups. Convert this amount of {2} to {3} in your Main Account to allow for auto top-ups."
-#~ msgstr "{0} cannot be automatically transferred to your Subaccount, so only {1} can be used for auto top-ups. Convert this amount of {2} to {3} in your Main Account to allow for auto top-ups."
-
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#~ msgid "{0} cannot be automatically transferred to your Subaccount, so only {1} can be used for auto top ups. Convert this amount of {2} to{3} in your Main Account to allow for auto top-ups."
-#~ msgstr "{0} cannot be automatically transferred to your Subaccount, so only {1} can be used for auto top ups. Convert this amount of {2} to{3} in your Main Account to allow for auto top-ups."
-
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#~ msgid "{0} cannot be automatically transferred to your Subaccount, so only {1} can be used for auto top ups. Keep an amount of {2} as {3} in your Main Account to allow for auto top ups."
-#~ msgstr "{0} cannot be automatically transferred to your Subaccount, so only {1} can be used for auto top ups. Keep an amount of {2} as {3} in your Main Account to allow for auto top ups."
-
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#~ msgid "{0} for auto top ups"
-#~ msgstr "{0} for auto top ups"
-
-#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#~ msgid "{0} for auto top-ups"
-#~ msgstr "{0} for auto top-ups"
-
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
 msgstr "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
@@ -6564,10 +6278,6 @@ msgstr "{orderTypeText} {0} {longShortText}: {sign}{1}"
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} cancelled"
 msgstr "{ordersText} cancelled"
-
-#: src/domain/synthetics/orders/cancelOrdersTxn.ts
-#~ msgid "{ordersText} cancelled{subaccountNote}"
-#~ msgstr "{ordersText} cancelled{subaccountNote}"
 
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} Failed to settle"

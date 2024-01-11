@@ -81,13 +81,7 @@ export function useAvailableMarketsOptions(p: {
       return result;
     }
 
-    result.maxLiquidityMarket = getMostLiquidMarketForPosition(
-      liquidMarkets,
-      indexToken.address,
-      undefined,
-      isLong,
-      isIncrease
-    );
+    result.maxLiquidityMarket = getMostLiquidMarketForPosition(liquidMarkets, indexToken.address, undefined, isLong);
 
     if (!hasExistingPosition) {
       const positions = Object.values(positionsInfo || {});

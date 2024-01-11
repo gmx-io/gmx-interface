@@ -122,7 +122,7 @@ export default function TVChartContainer({
   useEffect(() => {
     if (chartReady && tvWidgetRef.current && symbol !== tvWidgetRef.current?.activeChart?.().symbol()) {
       if (isChartAvailabeForToken(chainId, symbol)) {
-        tvWidgetRef.current.setSymbol(symbol, tvWidgetRef.current.activeChart().resolution(), () => {});
+        tvWidgetRef.current.setSymbol(symbol, tvWidgetRef.current.activeChart().resolution(), () => null);
       }
     }
   }, [symbol, chartReady, period, chainId]);

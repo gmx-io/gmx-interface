@@ -171,7 +171,9 @@ export function SettleAccruedFundingFeeModal({
       setIsVisible={onClose}
       label={t`Confirm Settle`}
     >
-      <div className="ConfirmationBox-main text-center">Settle {totalStr}</div>
+      <div className="ConfirmationBox-main">
+        <div className="text-center">Settle {totalStr}</div>
+      </div>
       <div className="App-card-divider ClaimModal-divider FeeModal-divider ClaimSettleModal-divider" />
       <SubaccountNavigationButton executionFee={executionFee} closeConfirmationBox={onClose} />
       <div className="ClaimModal-content ClaimSettleModal-modal-content">

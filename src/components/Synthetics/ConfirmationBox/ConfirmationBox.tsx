@@ -72,9 +72,9 @@ import { SubaccountNavigationButton } from "components/SubaccountNavigationButto
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
-  useSubaccountCancelOrdersDetailsMessage,
   useIsLastSubaccountAction,
   useSubaccount,
+  useSubaccountCancelOrdersDetailsMessage,
 } from "context/SubaccountContext/SubaccountContext";
 import { AvailableMarketsOptions } from "domain/synthetics/trade/useAvailableMarketsOptions";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
@@ -89,6 +89,7 @@ import {
   formatUsd,
 } from "lib/numbers";
 import { usePrevious } from "lib/usePrevious";
+import { getPlusOrMinusSymbol, getPositiveOrNegativeClass } from "lib/utils";
 import useWallet from "lib/wallets/useWallet";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useKey, useLatest } from "react-use";
@@ -1182,12 +1183,11 @@ export function ConfirmationBox(p: Props) {
                         label={t`Fees`}
                         value={
                           fees?.payTotalFees?.deltaUsd && !fees.payTotalFees.deltaUsd.eq(0)
-                            ? `${fees.payTotalFees.deltaUsd.gt(0) ? "+" : "-"}${formatUsd(
-                                fees.payTotalFees.deltaUsd.abs()
-                              )}`
+                            ? formatUsd(fees.payTotalFees.deltaUsd)
                             : "0.00$"
                         }
                         showDollar={false}
+                        className={getPositiveOrNegativeClass(fees?.payTotalFees?.deltaUsd)}
                       />
                       <div className="Tooltip-divider" />
                       <StatsTooltipRow
@@ -1204,7 +1204,7 @@ export function ConfirmationBox(p: Props) {
           <TradeFeesRow
             {...fees}
             fundingFeeRateStr={
-              fundigRate && `${fundigRate.gt(0) ? "+" : "-"}${formatAmount(fundigRate.abs(), 30, 4)}% / 1h`
+              fundigRate && `${getPlusOrMinusSymbol(fundigRate)}${formatAmount(fundigRate.abs(), 30, 4)}% / 1h`
             }
             borrowFeeRateStr={borrowingRate && `-${formatAmount(borrowingRate, 30, 4)}% / 1h`}
             executionFee={p.executionFee}

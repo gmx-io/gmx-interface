@@ -115,7 +115,7 @@ export async function createIncreaseOrderTxn(chainId: number, signer: Signer, p:
     hideSentMsg: true,
     hideSuccessMsg: true,
     setPendingTxns: p.setPendingTxns,
-  }).then((x) => {
+  }).then(() => {
     if (isMarketOrderType(p.orderType)) {
       const positionKey = getPositionKey(p.account, p.marketAddress, p.targetCollateralAddress, p.isLong);
 

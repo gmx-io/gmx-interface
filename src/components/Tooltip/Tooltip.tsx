@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { useCallback, useState, useRef, MouseEvent } from "react";
+import { useCallback, useState, useRef, MouseEvent, ReactNode } from "react";
 import { IS_TOUCH } from "config/env";
 import "./Tooltip.scss";
 
@@ -16,8 +16,8 @@ export type TooltipPosition =
   | "center-top";
 
 type Props = {
-  handle: React.ReactNode;
-  renderContent: () => React.ReactNode;
+  handle: ReactNode;
+  renderContent: () => ReactNode;
   position?: TooltipPosition;
   trigger?: string;
   className?: string;
