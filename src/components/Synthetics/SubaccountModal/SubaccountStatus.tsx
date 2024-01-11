@@ -52,8 +52,8 @@ function SubaccountStatusImpl({ hasBorder }: { hasBorder: boolean }) {
       content.push(
         <Info warning key="2">
           <Trans>
-            There are insufficient funds in your Subaccount for One-Click Trading. Use the top-up field to increase the
-            subaccount balance.
+            There are insufficient funds in your Subaccount for One-Click Trading. Use the "Top-up" field to increase
+            the Subaccount Balance.
           </Trans>
         </Info>
       );
@@ -65,8 +65,8 @@ function SubaccountStatusImpl({ hasBorder }: { hasBorder: boolean }) {
       content.push(
         <Info warning key="3">
           <Trans>
-            Not enough {wrappedToken.symbol} on your main account. Use Convert {nativeToken.symbol} to{" "}
-            {wrappedToken.symbol} field to increase the balance.
+            Not enough {wrappedToken.symbol} on your Main Account. Use the "Convert {nativeToken.symbol} to{" "}
+            {wrappedToken.symbol}" field to increase the Main Account {wrappedToken.symbol} balance.
           </Trans>
         </Info>
       );
