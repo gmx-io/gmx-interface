@@ -4690,7 +4690,11 @@ msgstr ""
 #~ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "Subaccount {0} Balance is used to pay for the Network Fees. It will be automatically topped up on each Action up to the set Max auto top-up amount from the Main Account {1} Balance. Use the \"Top-up\" field if you need to transfer {2} to your Subaccount."
+#~ msgid "Subaccount {0} Balance is used to pay for the Network Fees. It will be automatically topped up on each Action up to the set Max auto top-up amount from the Main Account {1} Balance. Use the \"Top-up\" field if you need to transfer {2} to your Subaccount."
+#~ msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Subaccount {0} Balance is used to pay for the Network Fees. Use the \"Top-up\" field if you need to transfer {1} to your Subaccount."
 msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx

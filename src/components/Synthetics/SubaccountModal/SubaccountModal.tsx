@@ -117,9 +117,8 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     return (
       <div>
         <Trans>
-          Subaccount {nativeToken.symbol} Balance is used to pay for the Network Fees. It will be automatically topped
-          up on each Action up to the set Max auto top-up amount from the Main Account {wrappedToken.symbol} Balance.
-          Use the "Top-up" field if you need to transfer {nativeToken.symbol} to your Subaccount.
+          Subaccount {nativeToken.symbol} Balance is used to pay for the Network Fees. Use the "Top-up" field if you
+          need to transfer {nativeToken.symbol} to your Subaccount.
         </Trans>
         <br />
         <br />
@@ -128,7 +127,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
         <Trans>Expected Actions are based on the current Network Fee.</Trans>
       </div>
     );
-  }, [approxNumberOfOperationsByBalance, nativeToken.symbol, wrappedToken.symbol]);
+  }, [approxNumberOfOperationsByBalance, nativeToken.symbol]);
 
   const renderMainAccountBalanceTooltipContent = useCallback(() => {
     return (
