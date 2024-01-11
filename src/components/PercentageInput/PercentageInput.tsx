@@ -21,6 +21,7 @@ type Props = {
   highValueWarningText?: ReactNode;
   negativeSign?: boolean;
   highValueCheckStrategy?: "gte" | "gt";
+  hideDefaultPlaceholder?: boolean;
 };
 
 const DEFAULT_SUGGESTIONS = [0.3, 0.5, 1, 1.5];
@@ -36,6 +37,7 @@ export default function PercentageInput({
   lowValueWarningText,
   negativeSign,
   highValueCheckStrategy: checkStrategy = "gte",
+  hideDefaultPlaceholder = false,
 }: Props) {
   const [inputValue, setInputvalue] = useState<string>(() => getValueText(defaultValue));
   const [isPanelVisible, setIsPanelVisible] = useState<boolean>(false);
@@ -107,7 +109,7 @@ export default function PercentageInput({
           onFocus={() => setIsPanelVisible(true)}
           onBlur={() => setIsPanelVisible(false)}
           value={!!inputValue ? inputValue : ""}
-          placeholder={inputValue || getValueText(defaultValue)}
+          placeholder={hideDefaultPlaceholder ? inputValue : inputValue || getValueText(defaultValue)}
           autoComplete="off"
           onChange={handleChange}
         />

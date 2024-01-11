@@ -6,7 +6,7 @@ import { FaPlus } from "react-icons/fa";
 
 const SUGGESTION_PERCENTAGE_LIST = [10, 25, 50, 75, 100];
 
-function SLTPEntries({ entries, updateEntry, addEntry, deleteEntry }) {
+function SLTPEntries({ entries, updateEntry, addEntry, deleteEntry, canAddEntry }) {
   return (
     <div className="SLTPEntries-wrapper">
       {entries.map((entryData) => {
@@ -26,11 +26,12 @@ function SLTPEntries({ entries, updateEntry, addEntry, deleteEntry }) {
                 defaultValue={entryData.percentage}
                 onChange={(value) => updateEntry(entryData.id, { percentage: value })}
                 suggestions={SUGGESTION_PERCENTAGE_LIST}
+                hideDefaultPlaceholder
               />
               <div className="SLTP-actions">
                 <TooltipWithPortal
                   handle={
-                    <button className="action-add" onClick={addEntry}>
+                    <button className="action-add" disabled={!canAddEntry} onClick={addEntry}>
                       <FaPlus color="#5EC989" />
                     </button>
                   }

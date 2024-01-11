@@ -16,16 +16,19 @@ import { t } from "@lingui/macro";
 import { BigNumber } from "ethers";
 import { getPositionFee, getPriceImpactForPosition } from "../fees";
 
+const MAX_PERCENTAGE = 10000; // 100%
+
 export type Entry = {
   id: string;
   price: string;
-  percentage: string;
+  percentage: number;
   error?: string;
 };
 
 type EntriesInfo = {
   entries: Entry[];
   addEntry: () => void;
+  canAddEntry: boolean;
   updateEntry: (id: string, updatedEntry: Partial<Entry>) => void;
   deleteEntry: (id: string) => void;
   reset: () => void;
@@ -254,25 +257,37 @@ export default function useSLTPEntries({
 }
 
 function useEntries(errorHandler: (entry: Partial<Entry>) => Partial<Entry>) {
-  const [entries, setEntries] = useState<Entry[]>([{ id: uniqueId(), price: "", percentage: "", error: "" }]);
+  const [entries, setEntries] = useState<Entry[]>([{ id: uniqueId(), price: "", percentage: 0, error: "" }]);
+
+  const totalPercentage = useMemo(() => {
+    return entries.reduce((total, entry) => total + Number(entry.percentage), 0);
+  }, [entries]);
+
+  const maxAllowedPercentage = useMemo(() => {
+    return MAX_PERCENTAGE - totalPercentage;
+  }, [totalPercentage]);
 
   const addEntry = useCallback(() => {
+    if (totalPercentage >= MAX_PERCENTAGE) return;
     const newEntry: Entry = {
       id: uniqueId(),
       price: "",
-      percentage: "",
+      percentage: 0,
       error: "",
     };
     setEntries((prevEntries) => [...prevEntries, newEntry]);
-  }, []);
+  }, [totalPercentage]);
 
   const updateEntry = useCallback(
     (id: string, updatedEntry: Partial<Entry>) => {
+      if (updatedEntry.percentage && Number(updatedEntry.percentage) > maxAllowedPercentage) {
+        updatedEntry.percentage = maxAllowedPercentage;
+      }
       setEntries((prevEntries) =>
         prevEntries.map((entry) => (entry.id === id ? { ...entry, ...errorHandler(updatedEntry) } : entry))
       );
     },
-    [errorHandler]
+    [errorHandler, maxAllowedPercentage]
   );
 
   const deleteEntry = useCallback((id: string) => {
@@ -282,10 +297,10 @@ function useEntries(errorHandler: (entry: Partial<Entry>) => Partial<Entry>) {
   }, []);
 
   const reset = useCallback(() => {
-    setEntries([{ id: uniqueId(), price: "", percentage: "" }]);
+    setEntries([{ id: uniqueId(), price: "", percentage: 0 }]);
   }, []);
 
-  return { entries, addEntry, updateEntry, deleteEntry, reset };
+  return { entries, addEntry, updateEntry, deleteEntry, reset, canAddEntry: maxAllowedPercentage > 0 };
 }
 
 function calculateTotalPnl(amounts) {

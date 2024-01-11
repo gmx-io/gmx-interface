@@ -217,6 +217,7 @@ export function ConfirmationBox(p: Props) {
   const {
     entries: stopLossEntries,
     addEntry: addStopLossEntry,
+    canAddEntry: canAddStopLossEntry,
     deleteEntry: deleteStopLossEntry,
     updateEntry: updateStopLossEntry,
     reset: resetStopLossEntries,
@@ -230,6 +231,7 @@ export function ConfirmationBox(p: Props) {
     deleteEntry: deleteTakeProfitEntry,
     updateEntry: updateTakeProfitEntry,
     reset: resetTakeProfitEntries,
+    canAddEntry: canAddTakeProfitEntry,
     amounts: takeProfitAmounts,
     totalPnl: totalTakeProfitPnl,
   } = takeProfit;
@@ -1035,6 +1037,7 @@ export function ConfirmationBox(p: Props) {
                 updateEntry={updateStopLossEntry}
                 addEntry={addStopLossEntry}
                 deleteEntry={deleteStopLossEntry}
+                canAddEntry={canAddStopLossEntry}
               />
             </div>
           }
@@ -1086,6 +1089,7 @@ export function ConfirmationBox(p: Props) {
                 updateEntry={updateTakeProfitEntry}
                 addEntry={addTakeProfitEntry}
                 deleteEntry={deleteTakeProfitEntry}
+                canAddEntry={canAddTakeProfitEntry}
               />
             </div>
           }
