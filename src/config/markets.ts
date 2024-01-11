@@ -2,7 +2,7 @@ import mapValues from "lodash/mapValues";
 import { ARBITRUM, AVALANCHE, BSС_MAINNET } from "./chains";
 import { isDevelopment } from "config/env";
 
-export const DISPLAYABLE_MARKETS = {
+export const ENABLED_MARKETS = {
   [ARBITRUM]: [
     '0x47c031236e19d024b42f8AE6780E44A573170703', // BTC/USD [BTC-USDC]
     '0x70d95587d40A2caf56bd97485aB3Eec10Bee6336', // ETH/USD [WETH-USDC]
@@ -33,13 +33,13 @@ export const DISPLAYABLE_MARKETS = {
   [BSС_MAINNET]: [],
 }
 
-export const DISPLAYABLE_MARKETS_INDEX = mapValues<Record<number, string[]>>(
-  DISPLAYABLE_MARKETS, 
+export const ENABLED_MARKETS_INDEX = mapValues<Record<number, string[]>>(
+  ENABLED_MARKETS, 
   (markets) => markets.reduce((acc, market) => ({ ...acc, [market]: true }), {})
 );
 
-export function isMarketDisplayable(chainId: number, marketAddress: string) {
+export function isMarketEnabled(chainId: number, marketAddress: string) {
   if (isDevelopment()) return true;
 
-  return DISPLAYABLE_MARKETS_INDEX[chainId]?.[marketAddress] ?? false;
+  return ENABLED_MARKETS_INDEX[chainId]?.[marketAddress] ?? false;
 }
