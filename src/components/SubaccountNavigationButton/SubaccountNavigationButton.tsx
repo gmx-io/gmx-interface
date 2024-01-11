@@ -18,9 +18,11 @@ export const SubaccountNavigationButton = memo(
   ({
     closeConfirmationBox,
     executionFee,
+    isNativeToken,
   }: {
     closeConfirmationBox: () => void;
     executionFee: BigNumber | undefined;
+    isNativeToken?: boolean;
   }) => {
     const isSubaccountActive = useIsSubaccountActive();
     const [, setModalOpen] = useSubaccountModalOpen();
@@ -33,16 +35,25 @@ export const SubaccountNavigationButton = memo(
     }, [closeConfirmationBox, setModalOpen]);
 
     const [offerButtonHidden, setOfferButtonHidden] = useLocalStorageSerializeKey("oneClickTradingOfferHidden", false);
+    const [nativeTokenWarningHidden, setNativeTokenWarningHidden] = useLocalStorageSerializeKey(
+      "oneClickTradingNativeTokenWarning",
+      false
+    );
 
     const handleCloseOfferClick = useCallback(() => {
       setOfferButtonHidden(true);
     }, [setOfferButtonHidden]);
 
+    const handleCloseNativeTokenWarningClick = useCallback(() => {
+      setNativeTokenWarningHidden(true);
+    }, [setNativeTokenWarningHidden]);
+
     const { remaining } = useSubaccountActionCounts();
 
-    const shouldShowInsufficientFundsButton = isSubaccountActive && insufficientFunds;
-    const shouldShowOfferButton = !isSubaccountActive && !offerButtonHidden;
-    const shouldShowAllowedActionsWarning = isSubaccountActive && remaining?.eq(0);
+    const shouldShowInsufficientFundsButton = isSubaccountActive && insufficientFunds && !isNativeToken;
+    const shouldShowOfferButton = !isSubaccountActive && !offerButtonHidden && !isNativeToken;
+    const shouldShowAllowedActionsWarning = isSubaccountActive && remaining?.eq(0) && !isNativeToken;
+    const shouldShowNativeTokenWarning = isSubaccountActive && !nativeTokenWarningHidden && isNativeToken;
 
     let content: ReactNode = null;
     let onCloseClick: null | (() => void) = null;
@@ -58,7 +69,18 @@ export const SubaccountNavigationButton = memo(
       );
     }, []);
 
-    if (shouldShowAllowedActionsWarning) {
+    let clickable = true;
+
+    if (shouldShowNativeTokenWarning) {
+      clickable = false;
+      onCloseClick = handleCloseNativeTokenWarningClick;
+      content = (
+        <Trans>
+          One-Click Trading is not available using network's native token AVAX. Consider using WAVAX as Pay token
+          instead.
+        </Trans>
+      );
+    } else if (shouldShowAllowedActionsWarning) {
       content = (
         <Trans>
           The previously authorized maximum number of Actions has been reached for One-Click Trading. Click here to
@@ -81,7 +103,7 @@ export const SubaccountNavigationButton = memo(
     return (
       <NavigationButton
         onCloseClick={onCloseClick}
-        onNavigateClick={jumpToSubaccount}
+        onNavigateClick={clickable ? jumpToSubaccount : undefined}
         className="SubaccountNavigationButton"
       >
         {content}

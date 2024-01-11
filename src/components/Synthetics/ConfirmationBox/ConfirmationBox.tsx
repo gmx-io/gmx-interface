@@ -612,7 +612,13 @@ export function ConfirmationBox(p: Props) {
   );
 
   function renderSubaccountNavigationButton() {
-    return <SubaccountNavigationButton executionFee={p.executionFee?.feeTokenAmount} closeConfirmationBox={onClose} />;
+    return (
+      <SubaccountNavigationButton
+        executionFee={p.executionFee?.feeTokenAmount}
+        closeConfirmationBox={onClose}
+        isNativeToken={Boolean(fromToken?.isNative)}
+      />
+    );
   }
 
   function renderMain() {

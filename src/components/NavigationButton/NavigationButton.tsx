@@ -15,13 +15,16 @@ function NavigationButtonImpl({
   onNavigateClick?: () => void;
   className?: string;
 }) {
+  const clickable = !!onNavigateClick;
   return (
-    <div className={cx("NavigationButton", className)}>
+    <div className={cx("NavigationButton", className, clickable ? "clickable" : undefined)}>
       <div className="NavigationButton-button" onClick={onNavigateClick}>
         <div className="NavigationButton-button-text">{children}</div>
-        <div className="NavigationButton-button-arrow">
-          <img src={rightIcon} alt="Navigate" />
-        </div>
+        {clickable ? (
+          <div className="NavigationButton-button-arrow">
+            <img src={rightIcon} alt="Navigate" />
+          </div>
+        ) : null}
       </div>
       {onCloseClick && (
         <div className="NavigationButton-close" onClick={onCloseClick}>
