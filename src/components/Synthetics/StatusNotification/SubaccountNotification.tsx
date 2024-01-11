@@ -62,7 +62,7 @@ const SubaccountNotificationImpl = ({
             <Trans>Pending Wallet transaction sign</Trans> <SpinningLoader />
           </span>
         );
-      return <Trans>Subaccount is updated.</Trans>;
+      return <Trans>Subaccount is updated</Trans>;
     }
 
     return (
