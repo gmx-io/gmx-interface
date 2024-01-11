@@ -1150,8 +1150,12 @@ msgid "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details
 msgstr "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-msgid "Convert this amount of  {0} to {1} in your Main Account to allow for auto top-ups, as only {2} can be automatically transferred to your Subaccount. The {3} balance of your main account is shown above."
-msgstr "Convert this amount of  {0} to {1} in your Main Account to allow for auto top-ups, as only {2} can be automatically transferred to your Subaccount. The {3} balance of your main account is shown above."
+#~ msgid "Convert this amount of  {0} to {1} in your Main Account to allow for auto top-ups, as only {2} can be automatically transferred to your Subaccount. The {3} balance of your main account is shown above."
+#~ msgstr "Convert this amount of  {0} to {1} in your Main Account to allow for auto top-ups, as only {2} can be automatically transferred to your Subaccount. The {3} balance of your main account is shown above."
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Convert this amount of {0} to {1} in your Main Account to allow for auto top-ups, as only {2} can be automatically transferred to your Subaccount. The {3} balance of your main account is shown above."
+msgstr "Convert this amount of {0} to {1} in your Main Account to allow for auto top-ups, as only {2} can be automatically transferred to your Subaccount. The {3} balance of your main account is shown above."
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js

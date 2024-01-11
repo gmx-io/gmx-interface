@@ -629,7 +629,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             label={t`Сonvert ${nativeToken.symbol} to ${wrappedToken.symbol}`}
             symbol={wrappedToken.symbol}
             placeholder="0.0000"
-            description={t`Convert this amount of  ${nativeToken.symbol} to ${wrappedToken.symbol} in your Main Account to allow for auto top-ups, as only ${wrappedToken.symbol} can be automatically transferred to your Subaccount. The ${wrappedToken.symbol} balance of your main account is shown above.`}
+            description={t`Convert this amount of ${nativeToken.symbol} to ${wrappedToken.symbol} in your Main Account to allow for auto top-ups, as only ${wrappedToken.symbol} can be automatically transferred to your Subaccount. The ${wrappedToken.symbol} balance of your main account is shown above.`}
           />
           <InputRow
             value={maxAutoTopUpAmountString}
