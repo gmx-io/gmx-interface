@@ -1,5 +1,3 @@
-import warningIcon from "img/ic_warning.svg";
-import infoIcon from "img/ic_info_circle.svg";
 import { Plural, Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
@@ -94,7 +92,7 @@ import {
 } from "lib/numbers";
 import { usePrevious } from "lib/usePrevious";
 import useWallet from "lib/wallets/useWallet";
-import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useKey, useLatest } from "react-use";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./ConfirmationBox.scss";
@@ -105,6 +103,7 @@ import { FaArrowRight } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import SLTPEntries from "./SLTPEntries";
 import useSLTPEntries from "domain/synthetics/orders/useSLTPEntries";
+import AlertWithIcon from "components/Alert/AlertWithIcon";
 
 export type Props = {
   isVisible: boolean;
@@ -1634,16 +1633,6 @@ export function ConfirmationBox(p: Props) {
           </Button>
         </div>
       </Modal>
-    </div>
-  );
-}
-
-function AlertWithIcon({ type, children }: { type: "warning" | "info"; children?: ReactNode }) {
-  const icon = type === "warning" ? warningIcon : infoIcon;
-  return (
-    <div className="Warning-container">
-      <img className="Warning-icon" src={icon} alt="Warning Icon" />
-      <span className="Warning-message">{children}</span>
     </div>
   );
 }

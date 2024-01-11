@@ -1,0 +1,15 @@
+.Alert-container {
+  color: var(--text-gray);
+  display: flex;
+  align-items: flex-start;
+  font-size: 1.3rem;
+  span {
+    margin-left: 0.5rem;
+  }
+  .Alert__icon {
+    margin-top: 0.2rem;
+  }
+  .Alert__message {
+    margin-left: 0.5rem;
+  }
+}
