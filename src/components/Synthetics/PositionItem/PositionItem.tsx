@@ -342,23 +342,24 @@ export function PositionItem(p: Props) {
   function renderPositionOrders(isSmall = false) {
     if (positionOrders.length === 0) return null;
 
-    const ordersErrorList = positionOrders.filter((order) => order.errorLevel === "error");
-    const ordersWarningsList = positionOrders.filter((order) => order.errorLevel === "warning");
-    const hasErrors = ordersErrorList.length + ordersWarningsList.length > 0;
-
     if (isSmall) {
       return positionOrders.map((order) => {
-        if (hasErrors) {
+        if (order.errorLevel) {
           return (
             <div key={order.key} className="Position-list-order">
               <Tooltip
-                className="order-error"
                 handle={renderOrderText(order)}
                 position="right-bottom"
-                handleClassName="plain"
+                handleClassName={cx("position-order-error", {
+                  "level-warning": order.errorLevel === 'warning',
+                  "level-error": order.errorLevel === 'error',
+                })}
                 renderContent={() =>
                   order.errors.map((error) => (
-                    <span key={error.msg} className="negative mb-xs">
+                    <span key={error.msg} className={cx("mb-xs", "position-order-error", {
+                      "level-warning": order.errorLevel === 'warning',
+                      "level-error": order.errorLevel === 'error',
+                    })}>
                       {error.msg}
                     </span>
                   ))
@@ -370,6 +371,10 @@ export function PositionItem(p: Props) {
         return <div className="Position-list-order">{renderOrderText(order)}</div>;
       });
     }
+
+    const ordersErrorList = positionOrders.filter((order) => order.errorLevel === "error");
+    const ordersWarningsList = positionOrders.filter((order) => order.errorLevel === "warning");
+    const hasErrors = ordersErrorList.length + ordersWarningsList.length > 0;
 
     return (
       <div onClick={p.onOrdersClick}>
