@@ -3424,6 +3424,10 @@ msgstr "One-Click Trading"
 #~ msgid "One-Click Trading is inactive."
 #~ msgstr "One-Click Trading is inactive."
 
+#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
+msgid "One-Click Trading is not available using network's native token AVAX. Consider using WAVAX as Pay token instead."
+msgstr "One-Click Trading is not available using network's native token AVAX. Consider using WAVAX as Pay token instead."
+
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 #~ msgid "One-Click trading is active."
 #~ msgstr "One-Click trading is active."
