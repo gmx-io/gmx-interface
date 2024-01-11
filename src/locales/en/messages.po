@@ -3387,8 +3387,12 @@ msgstr "Not enough Available Swap Liquidity to fill the Order. The Order will ge
 #~ msgstr "Not enough funds on subaccount."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-msgid "Not enough {0} on your main account. Use Convert {1} to {2} field to increase the balance."
-msgstr "Not enough {0} on your main account. Use Convert {1} to {2} field to increase the balance."
+msgid "Not enough {0} on your Main Account. Use the \"Convert {1} to {2}\" field to increase the Main Account {3} balance."
+msgstr "Not enough {0} on your Main Account. Use the \"Convert {1} to {2}\" field to increase the Main Account {3} balance."
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+#~ msgid "Not enough {0} on your main account. Use Convert {1} to {2} field to increase the balance."
+#~ msgstr "Not enough {0} on your main account. Use Convert {1} to {2} field to increase the balance."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
@@ -5105,8 +5109,12 @@ msgstr "There are insufficient funds in your Subaccount for One-Click Trading. C
 #~ msgstr "There are insufficient funds in your Subaccount for One-Click Trading. Please top-up your Balance."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-msgid "There are insufficient funds in your Subaccount for One-Click Trading. Use the top-up field to increase the subaccount balance."
-msgstr "There are insufficient funds in your Subaccount for One-Click Trading. Use the top-up field to increase the subaccount balance."
+msgid "There are insufficient funds in your Subaccount for One-Click Trading. Use the \"Top-up\" field to increase the Subaccount Balance."
+msgstr "There are insufficient funds in your Subaccount for One-Click Trading. Use the \"Top-up\" field to increase the Subaccount Balance."
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+#~ msgid "There are insufficient funds in your Subaccount for One-Click Trading. Use the top-up field to increase the subaccount balance."
+#~ msgstr "There are insufficient funds in your Subaccount for One-Click Trading. Use the top-up field to increase the subaccount balance."
 
 #: src/components/Exchange/SwapBox.js
 msgid "There are more longs than shorts, borrow fees for shorting is currently zero"
