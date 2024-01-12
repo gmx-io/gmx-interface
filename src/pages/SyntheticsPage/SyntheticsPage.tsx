@@ -2,7 +2,6 @@ import { Plural, Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import Checkbox from "components/Checkbox/Checkbox";
 import Footer from "components/Footer/Footer";
-import { ClaimModal } from "components/Synthetics/ClaimModal/ClaimModal";
 import { Claims } from "components/Synthetics/Claims/Claims";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEditor";
@@ -30,13 +29,12 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useMarketsInfo } from "domain/synthetics/markets";
 import Helmet from "react-helmet";
 
-import { SettleAccruedFundingFeeModal } from "components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal";
 import { getMarketIndexName, getMarketPoolName, getTotalClaimableFundingUsd } from "domain/synthetics/markets";
 import { TradeMode } from "domain/synthetics/trade";
 import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTradeOption";
+import { getMidPrice } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import useWallet from "lib/wallets/useWallet";
-import { getMidPrice } from "domain/tokens";
 
 export type Props = {
   savedIsPnlInLeverage: boolean;
@@ -219,8 +217,6 @@ export function SyntheticsPage(p: Props) {
     return totalClaimableFundingUsd.gt(0);
   }, [marketsInfoData]);
 
-  const [isClaiming, setIsClaiming] = useState(false);
-
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
   let allowedSlippage = savedSlippageAmount!;
   if (isHigherSlippageAllowed) {
@@ -311,6 +307,23 @@ export function SyntheticsPage(p: Props) {
           ({ordersCount})
         </span>
       </div>
+    );
+  }
+
+  function renderClaims() {
+    return (
+      <Claims
+        marketsInfoData={marketsInfoData}
+        positionsInfoData={positionsInfoData}
+        tokensData={tokensData}
+        shouldShowPaginationButtons
+        setIsSettling={setIsSettling}
+        isSettling={isSettling}
+        gettingPendingFeePositionKeys={gettingPendingFeePositionKeys}
+        setGettingPendingFeePositionKeys={setGettingPendingFeePositionKeys}
+        setPendingTxns={setPendingTxns}
+        allowedSlippage={allowedSlippage}
+      />
     );
   }
 
@@ -418,16 +431,7 @@ export function SyntheticsPage(p: Props) {
                 shouldShowPaginationButtons
               />
             )}
-            {listSection === ListSection.Claims && (
-              <Claims
-                marketsInfoData={marketsInfoData}
-                positionsInfoData={positionsInfoData}
-                tokensData={tokensData}
-                shouldShowPaginationButtons
-                setIsClaiming={setIsClaiming}
-                setIsSettling={setIsSettling}
-              />
-            )}
+            {listSection === ListSection.Claims && renderClaims()}
           </div>
         </div>
 
@@ -526,16 +530,7 @@ export function SyntheticsPage(p: Props) {
               shouldShowPaginationButtons
             />
           )}
-          {listSection === ListSection.Claims && (
-            <Claims
-              marketsInfoData={marketsInfoData}
-              positionsInfoData={positionsInfoData}
-              tokensData={tokensData}
-              shouldShowPaginationButtons
-              setIsClaiming={setIsClaiming}
-              setIsSettling={setIsSettling}
-            />
-          )}
+          {listSection === ListSection.Claims && renderClaims()}
         </div>
       </div>
 
@@ -563,25 +558,6 @@ export function SyntheticsPage(p: Props) {
         shouldDisableValidation={shouldDisableValidation}
       />
 
-      <ClaimModal
-        marketsInfoData={marketsInfoData}
-        isVisible={isClaiming}
-        onClose={() => setIsClaiming(false)}
-        setPendingTxns={setPendingTxns}
-      />
-      <SettleAccruedFundingFeeModal
-        isVisible={isSettling}
-        positionKeys={gettingPendingFeePositionKeys}
-        positionsInfoData={positionsInfoData}
-        tokensData={tokensData}
-        allowedSlippage={allowedSlippage}
-        setPositionKeys={setGettingPendingFeePositionKeys}
-        setPendingTxns={setPendingTxns}
-        onClose={useCallback(() => {
-          setGettingPendingFeePositionKeys([]);
-          setIsSettling(false);
-        }, [])}
-      />
       <Footer />
     </div>
   );

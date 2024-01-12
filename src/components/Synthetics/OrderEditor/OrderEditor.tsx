@@ -191,7 +191,7 @@ export function OrderEditor(p: Props) {
   const positionKey = getPositionKey(
     p.order.account,
     p.order.marketAddress,
-    p.order.initialCollateralTokenAddress,
+    p.order.targetCollateralToken.address,
     p.order.isLong
   );
 
