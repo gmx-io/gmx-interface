@@ -21,6 +21,7 @@ export type Entry = {
   price: string;
   percentage: number;
   error?: string;
+  sizeUsd?: BigNumber;
 };
 
 type EntriesInfo = {
@@ -126,8 +127,6 @@ export default function useSLTPEntries({
   const stopLossInfo = useEntries(handleSLErrors);
   const takeProfitInfo = useEntries(handleTPErrors);
 
-  // console.log("takeProfit", takeProfitInfo);
-
   const positionKey = useMemo(() => {
     if (!account || !marketInfo || !collateralToken) {
       return undefined;
@@ -135,6 +134,7 @@ export default function useSLTPEntries({
 
     return getPositionKey(account, marketInfo.marketTokenAddress, collateralToken.address, isLong);
   }, [account, collateralToken, isLong, marketInfo]);
+
   const currentPosition = useMemo(() => {
     if (!positionKey || !collateralToken || !nextPositionValues || !marketInfo) return;
 
@@ -297,6 +297,7 @@ export default function useSLTPEntries({
   return {
     stopLoss,
     takeProfit,
+    sizeUsd: increaseAmounts?.sizeDeltaUsd,
   };
 }
 

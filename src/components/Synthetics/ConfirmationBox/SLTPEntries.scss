@@ -14,7 +14,7 @@
     .SLTP-price {
       border: 1px solid #212540;
       border-radius: var(--border-radius-sm);
-      padding-right: 0.5rem;
+      padding-left: 0.5rem;
       line-height: 1;
       background: #212540;
       position: relative;
@@ -25,7 +25,9 @@
         border-radius: 4px;
         max-width: 7rem;
         border-radius: var(--border-radius-sm);
+        text-align: right;
       }
+
       &:hover,
       &:focus {
         border-color: #3a3f798f;
@@ -55,8 +57,30 @@
       }
     }
     .SLTP-percentage {
-      .Percentage-input input {
-        width: 4.8rem;
+      position: relative;
+      .Percentage-input {
+        input {
+          width: 4.8rem;
+        }
+      }
+
+      .SLTP-percent-info {
+        display: none;
+        &.Tooltip-popup {
+          min-width: 0;
+        }
+      }
+
+      &:focus-within {
+        .SLTP-percent-info {
+          display: none;
+        }
+      }
+
+      &:hover {
+        .SLTP-percent-info {
+          display: block;
+        }
       }
     }
   }

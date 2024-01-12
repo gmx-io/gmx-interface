@@ -203,7 +203,11 @@ export function ConfirmationBox(p: Props) {
   const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);
   const submitButtonRef = useRef<null | HTMLDivElement>(null);
 
-  const { stopLoss, takeProfit } = useSLTPEntries({
+  const {
+    stopLoss,
+    takeProfit,
+    sizeUsd: sltpSizeUsd,
+  } = useSLTPEntries({
     marketInfo,
     tradeFlags,
     collateralToken,
@@ -1023,6 +1027,7 @@ export function ConfirmationBox(p: Props) {
   }
 
   function renderStopLoss() {
+    if (existingPosition) return;
     return (
       <div>
         <ExchangeInfoRow
@@ -1037,6 +1042,7 @@ export function ConfirmationBox(p: Props) {
                 addEntry={addStopLossEntry}
                 deleteEntry={deleteStopLossEntry}
                 canAddEntry={canAddStopLossEntry}
+                totalSizeUsd={sltpSizeUsd}
               />
             </div>
           }
@@ -1078,6 +1084,7 @@ export function ConfirmationBox(p: Props) {
   }
 
   function renderTakeProfit() {
+    if (existingPosition) return;
     return (
       <div>
         <ExchangeInfoRow
@@ -1092,6 +1099,7 @@ export function ConfirmationBox(p: Props) {
                 addEntry={addTakeProfitEntry}
                 deleteEntry={deleteTakeProfitEntry}
                 canAddEntry={canAddTakeProfitEntry}
+                totalSizeUsd={sltpSizeUsd}
               />
             </div>
           }
