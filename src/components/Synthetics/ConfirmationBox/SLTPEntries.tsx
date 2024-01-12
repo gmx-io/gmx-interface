@@ -22,12 +22,15 @@ function SLTPEntries({ entries, updateEntry, addEntry, deleteEntry, canAddEntry 
                 />
                 <span className="price-symbol">$</span>
               </div>
-              <PercentageInput
-                defaultValue={entryData.percentage}
-                onChange={(value) => updateEntry(entryData.id, { percentage: value })}
-                suggestions={SUGGESTION_PERCENTAGE_LIST}
-                hideDefaultPlaceholder
-              />
+              <div className="SLTP-percentage">
+                <PercentageInput
+                  defaultValue={entryData.percentage}
+                  onChange={(value) => updateEntry(entryData.id, { percentage: value })}
+                  suggestions={SUGGESTION_PERCENTAGE_LIST}
+                  hideDefaultPlaceholder
+                  skipMaxValueCheck
+                />
+              </div>
               <div className="SLTP-actions">
                 <TooltipWithPortal
                   handle={

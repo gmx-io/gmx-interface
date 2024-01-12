@@ -22,6 +22,7 @@ type Props = {
   negativeSign?: boolean;
   highValueCheckStrategy?: "gte" | "gt";
   hideDefaultPlaceholder?: boolean;
+  skipMaxValueCheck?: boolean;
 };
 
 const DEFAULT_SUGGESTIONS = [0.3, 0.5, 1, 1.5];
@@ -38,6 +39,7 @@ export default function PercentageInput({
   negativeSign,
   highValueCheckStrategy: checkStrategy = "gte",
   hideDefaultPlaceholder = false,
+  skipMaxValueCheck = false,
 }: Props) {
   const [inputValue, setInputvalue] = useState<string>(() => getValueText(defaultValue));
   const [isPanelVisible, setIsPanelVisible] = useState<boolean>(false);
@@ -59,7 +61,7 @@ export default function PercentageInput({
       return;
     }
 
-    if (parsedValue >= maxValue) {
+    if (skipMaxValueCheck && parsedValue >= maxValue) {
       onChange(maxValue);
       setInputvalue(getValueText(maxValue));
       return;

@@ -16,8 +16,6 @@ import { t } from "@lingui/macro";
 import { BigNumber } from "ethers";
 import { getPositionFee, getPriceImpactForPosition } from "../fees";
 
-const MAX_PERCENTAGE = 10000; // 100%
-
 export type Entry = {
   id: string;
   price: string;
@@ -259,35 +257,43 @@ export default function useSLTPEntries({
 function useEntries(errorHandler: (entry: Partial<Entry>) => Partial<Entry>) {
   const [entries, setEntries] = useState<Entry[]>([{ id: uniqueId(), price: "", percentage: 0, error: "" }]);
 
-  const totalPercentage = useMemo(() => {
-    return entries.reduce((total, entry) => total + Number(entry.percentage), 0);
+  const canAddEntry = useMemo(() => {
+    const totalPercentage = entries.reduce((total, entry) => total + entry.percentage, 0);
+    return totalPercentage < BASIS_POINTS_DIVISOR;
   }, [entries]);
 
-  const maxAllowedPercentage = useMemo(() => {
-    return MAX_PERCENTAGE - totalPercentage;
-  }, [totalPercentage]);
-
   const addEntry = useCallback(() => {
-    if (totalPercentage >= MAX_PERCENTAGE) return;
-    const newEntry: Entry = {
-      id: uniqueId(),
-      price: "",
-      percentage: 0,
-      error: "",
-    };
-    setEntries((prevEntries) => [...prevEntries, newEntry]);
-  }, [totalPercentage]);
+    if (!canAddEntry) return;
+
+    setEntries((prevEntries) => [
+      ...prevEntries,
+      {
+        id: uniqueId(),
+        price: "",
+        percentage: 0,
+        error: "",
+      },
+    ]);
+  }, [canAddEntry]);
 
   const updateEntry = useCallback(
     (id: string, updatedEntry: Partial<Entry>) => {
-      if (updatedEntry.percentage && Number(updatedEntry.percentage) > maxAllowedPercentage) {
-        updatedEntry.percentage = maxAllowedPercentage;
-      }
-      setEntries((prevEntries) =>
-        prevEntries.map((entry) => (entry.id === id ? { ...entry, ...errorHandler(updatedEntry) } : entry))
-      );
+      setEntries((prevEntries) => {
+        const totalExcludingCurrent = prevEntries.reduce(
+          (total, entry) => total + (entry.id !== id ? Number(entry.percentage) : 0),
+          0
+        );
+
+        if (totalExcludingCurrent + Number(updatedEntry.percentage) > BASIS_POINTS_DIVISOR) {
+          updatedEntry.percentage = BASIS_POINTS_DIVISOR - totalExcludingCurrent;
+        }
+
+        return prevEntries.map((entry) =>
+          entry.id === id ? { ...entry, ...updatedEntry, ...errorHandler(updatedEntry) } : entry
+        );
+      });
     },
-    [errorHandler, maxAllowedPercentage]
+    [errorHandler]
   );
 
   const deleteEntry = useCallback((id: string) => {
@@ -300,7 +306,7 @@ function useEntries(errorHandler: (entry: Partial<Entry>) => Partial<Entry>) {
     setEntries([{ id: uniqueId(), price: "", percentage: 0 }]);
   }, []);
 
-  return { entries, addEntry, updateEntry, deleteEntry, reset, canAddEntry: maxAllowedPercentage > 0 };
+  return { entries, addEntry, updateEntry, deleteEntry, reset, canAddEntry };
 }
 
 function calculateTotalPnl(amounts) {
