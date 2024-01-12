@@ -316,12 +316,10 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
 
   useEffect(() => {
     if (isTxPending === false && prevIsTxPending === true && notificationState === "activating") {
-      // FIXME "activationFailed"
       setNotificationState("activated");
     }
 
     if (isTxPending === false && prevIsTxPending === true && notificationState === "deactivating") {
-      // FIXME "deactivationFailed"
       setNotificationState("deactivated");
     }
   }, [isTxPending, notificationState, prevIsTxPending, setNotificationState]);
