@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, BCS_MAINNET, BCS_TESTNET } from "./chains";
+import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET } from "./chains";
 
 const { AddressZero } = ethers.constants;
 
@@ -11,7 +11,7 @@ export const XGMT_EXCLUDED_ACCOUNTS = [
 ];
 
 const CONTRACTS = {
-  [BCS_MAINNET]: {
+  [BSС_MAINNET]: {
     // bsc mainnet
     Treasury: "0xa44E7252a0C137748F523F112644042E5987FfC7",
     BUSD: "0xe9e7cea3dedca5984780bafc599bd69add087d56",
@@ -47,7 +47,7 @@ const CONTRACTS = {
     GMT_USDG_GMX_IOU: "0x481312655F81b5e249780A6a49735335BF6Ca7f4",
     XGMT_USDG_GMX_IOU: "0x8095F1A92526C304623483018aA28cC6E62EB1e1",
   },
-  [BCS_TESTNET]: {
+  [BSС_TESTNET]: {
     // bsc testnet
     Vault: "0x1B183979a5cd95FAF392c8002dbF0D5A1C687D9a",
     Router: "0x10800f683aa564534497a5b67F45bE3556a955AB",
