@@ -13,6 +13,8 @@ import { BigNumber } from "ethers";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { SUBACCOUNT_DOCS_URL } from "domain/synthetics/subaccount/constants";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { getNativeToken, getWrappedToken } from "config/tokens";
+import { useChainId } from "lib/chains";
 
 export const SubaccountNavigationButton = memo(
   ({
@@ -26,6 +28,7 @@ export const SubaccountNavigationButton = memo(
   }) => {
     const isSubaccountActive = useIsSubaccountActive();
     const [, setModalOpen] = useSubaccountModalOpen();
+    const { chainId } = useChainId();
 
     const insufficientFunds = useSubaccountInsufficientFunds(executionFee);
 
@@ -72,12 +75,14 @@ export const SubaccountNavigationButton = memo(
     let clickable = true;
 
     if (shouldShowNativeTokenWarning) {
+      const wrappedToken = getWrappedToken(chainId);
+      const nativeToken = getNativeToken(chainId);
       clickable = false;
       onCloseClick = handleCloseNativeTokenWarningClick;
       content = (
         <Trans>
-          One-Click Trading is not available using network's native token AVAX. Consider using WAVAX as Pay token
-          instead.
+          One-Click Trading is not available using network's native token {nativeToken.symbol}. Consider using{" "}
+          {wrappedToken.symbol} as Pay token instead.
         </Trans>
       );
     } else if (shouldShowAllowedActionsWarning) {

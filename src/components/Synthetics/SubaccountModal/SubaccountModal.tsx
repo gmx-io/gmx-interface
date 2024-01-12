@@ -503,6 +503,10 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     }
   }, [account, chainId, gasPrice, privateKey, signer, subAccNativeTokenBalance]);
 
+  useEffect(() => {
+    setNotificationState("none");
+  }, [chainId, setNotificationState]);
+
   let tokenApproval: ReactNode = null;
 
   if (needPayTokenApproval && account) {
