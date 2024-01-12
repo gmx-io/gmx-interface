@@ -3,6 +3,7 @@ import NumberInput from "components/NumberInput/NumberInput";
 import PercentageInput from "components/PercentageInput/PercentageInput";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { FaPlus } from "react-icons/fa";
+import cx from "classnames";
 
 const SUGGESTION_PERCENTAGE_LIST = [10, 25, 50, 75, 100];
 
@@ -13,7 +14,7 @@ function SLTPEntries({ entries, updateEntry, addEntry, deleteEntry, canAddEntry 
         return (
           <div key={entryData.id}>
             <div className="SLTPEntry-row" key={entryData.id}>
-              <div className="SLTP-price">
+              <div className={cx("SLTP-price", { "input-error": !!entryData.error })}>
                 <NumberInput
                   value={entryData.price}
                   onValueChange={(e) => updateEntry(entryData.id, { price: e.target.value })}
@@ -21,11 +22,16 @@ function SLTPEntries({ entries, updateEntry, addEntry, deleteEntry, canAddEntry 
                   className="price-input"
                 />
                 <span className="price-symbol">$</span>
+                {entryData.error && (
+                  <div className={cx("SLTP-input-error", "Tooltip-popup", "z-index-1001", "center-bottom")}>
+                    {entryData.error}
+                  </div>
+                )}
               </div>
               <div className="SLTP-percentage">
                 <PercentageInput
-                  defaultValue={entryData.percentage}
-                  onChange={(value) => updateEntry(entryData.id, { percentage: value })}
+                  defaultValue={0}
+                  onChange={(value) => updateEntry(entryData.id, { ...entryData, percentage: value })}
                   suggestions={SUGGESTION_PERCENTAGE_LIST}
                   hideDefaultPlaceholder
                   skipMaxValueCheck
@@ -61,7 +67,6 @@ function SLTPEntries({ entries, updateEntry, addEntry, deleteEntry, canAddEntry 
                 />
               </div>
             </div>
-            {entryData.error && <div className="error">{entryData.error}</div>}
           </div>
         );
       })}

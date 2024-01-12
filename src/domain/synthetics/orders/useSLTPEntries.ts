@@ -58,20 +58,32 @@ export default function useSLTPEntries({
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
   const uiFeeFactor = useUiFeeFactor(chainId);
 
-  const handleErrors = useCallback(
+  const handleSLErrors = useCallback(
     (entry: Partial<Entry>): Partial<Entry> => {
-      if (!nextPositionValues?.nextLiqPrice || !entry.price) {
-        return entry;
+      if (!nextPositionValues?.nextLiqPrice || !entry.price || parseFloat(entry.price) === 0) {
+        return { ...entry, error: "" };
       }
 
       const inputPrice = parseValue(entry.price, USD_DECIMALS);
 
-      if (isLong && inputPrice?.lte(nextPositionValues.nextLiqPrice)) {
-        return { ...entry, error: t`Price below Liq. Price` };
+      if (isLong) {
+        if (inputPrice?.lte(nextPositionValues.nextLiqPrice)) {
+          return { ...entry, error: t`Price below Liq. Price` };
+        }
+
+        if (inputPrice && nextPositionValues.nextEntryPrice && inputPrice.gte(nextPositionValues.nextEntryPrice)) {
+          return { ...entry, error: t`Price above Mark Price` };
+        }
       }
 
-      if (!isLong && inputPrice?.gte(nextPositionValues.nextLiqPrice)) {
-        return { ...entry, error: t`Price above Liq. Price` };
+      if (!isLong) {
+        if (inputPrice?.gte(nextPositionValues.nextLiqPrice)) {
+          return { ...entry, error: t`Price above Liq. Price` };
+        }
+
+        if (inputPrice && nextPositionValues.nextEntryPrice && inputPrice.lte(nextPositionValues.nextEntryPrice)) {
+          return { ...entry, error: t`Price below Mark Price` };
+        }
       }
 
       return { ...entry, error: "" };
@@ -79,8 +91,42 @@ export default function useSLTPEntries({
     [nextPositionValues, isLong]
   );
 
-  const stopLossInfo = useEntries(handleErrors);
-  const takeProfitInfo = useEntries(handleErrors);
+  const handleTPErrors = useCallback(
+    (entry: Partial<Entry>): Partial<Entry> => {
+      if (!nextPositionValues?.nextLiqPrice || !entry.price || parseFloat(entry.price) === 0) {
+        return { ...entry, error: "" };
+      }
+
+      const inputPrice = parseValue(entry.price, USD_DECIMALS);
+
+      if (isLong) {
+        if (inputPrice?.lte(nextPositionValues.nextLiqPrice)) {
+          return { ...entry, error: t`Price below Liq. Price` };
+        }
+        if (inputPrice && nextPositionValues.nextEntryPrice && inputPrice.lte(nextPositionValues.nextEntryPrice)) {
+          return { ...entry, error: t`Price below Mark Price` };
+        }
+      }
+
+      if (!isLong) {
+        if (inputPrice?.gte(nextPositionValues.nextLiqPrice)) {
+          return { ...entry, error: t`Price above Liq. Price` };
+        }
+
+        if (inputPrice && nextPositionValues.nextEntryPrice && inputPrice.gte(nextPositionValues.nextEntryPrice)) {
+          return { ...entry, error: t`Price above Mark Price` };
+        }
+      }
+
+      return { ...entry, error: "" };
+    },
+    [nextPositionValues, isLong]
+  );
+
+  const stopLossInfo = useEntries(handleSLErrors);
+  const takeProfitInfo = useEntries(handleTPErrors);
+
+  // console.log("takeProfit", takeProfitInfo);
 
   const positionKey = useMemo(() => {
     if (!account || !marketInfo || !collateralToken) {

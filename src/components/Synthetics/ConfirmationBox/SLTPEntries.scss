@@ -17,6 +17,7 @@
       padding-right: 0.5rem;
       line-height: 1;
       background: #212540;
+      position: relative;
 
       .price-input {
         padding: 0.2rem 0.5rem 0.2rem;
@@ -34,11 +35,23 @@
       }
 
       &.input-error {
-        border-color: #f3b50e;
+        border-color: var(--error-red);
       }
       .price-symbol {
         cursor: pointer;
         opacity: 0.7;
+      }
+      .SLTP-input-error {
+        display: none;
+        &.Tooltip-popup {
+          min-width: 20rem;
+        }
+      }
+
+      &:hover {
+        .SLTP-input-error {
+          display: block;
+        }
       }
     }
     .SLTP-percentage {
