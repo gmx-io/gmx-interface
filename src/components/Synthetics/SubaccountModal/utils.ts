@@ -68,6 +68,10 @@ export function getButtonState({
     return { disabled: true, text: t`Maximum allowed actions is required` };
   }
 
+  if (needPayTokenApproval) {
+    return { disabled: true, text: t`Allow ${wrappedTokenSymbol} to be spent` };
+  }
+
   if (isTxPending) {
     if (notificationState === "activating" && formState === "inactive") {
       return { disabled: true, text: "Activating Subaccount..." };
@@ -111,10 +115,6 @@ export function getButtonState({
     } else {
       return { text: t`Generate & Activate Subaccount` };
     }
-  }
-
-  if (needPayTokenApproval) {
-    return { disabled: true, text: t`Allow ${wrappedTokenSymbol} to be spent` };
   }
 
   return { text: t`Update`, disabled: true };
