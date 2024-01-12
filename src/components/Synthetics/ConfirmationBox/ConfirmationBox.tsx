@@ -1051,14 +1051,17 @@ export function ConfirmationBox(p: Props) {
               handleClassName={totalStopLossPnl?.isNegative() ? "text-red" : "text-green"}
               className="SLTP-pnl-tooltip"
               renderContent={() =>
-                stopLossAmounts?.map((sl, index) => {
+                stopLossAmounts?.map((stopLossAmount, index) => {
                   const stopLossEntry = stopLossEntries[index];
+
                   return (
                     <div className="space-between mb-xs" key={index}>
-                      <span className="mr-md">{formatPercentage(BigNumber.from(stopLossEntry?.percentage))}</span>
-                      <span className={sl.realizedPnl.isNegative() ? "text-red" : "text-green"}>
-                        {formatUsd(sl.realizedPnl)} (
-                        {formatPercentage(sl.realizedPnlPercentage, {
+                      <span className="mr-md">
+                        {stopLossEntry.price} - {formatPercentage(BigNumber.from(stopLossEntry?.percentage))}:
+                      </span>
+                      <span className={stopLossAmount.realizedPnl.isNegative() ? "text-red" : "text-green"}>
+                        {formatUsd(stopLossAmount.realizedPnl)} (
+                        {formatPercentage(stopLossAmount.realizedPnlPercentage, {
                           signed: true,
                         })}
                         )
@@ -1103,14 +1106,16 @@ export function ConfirmationBox(p: Props) {
               handleClassName={totalTakeProfitPnl?.isNegative() ? "text-red" : "text-green"}
               className="SLTP-pnl-tooltip"
               renderContent={() =>
-                takeProfitAmounts?.map((tp, index) => {
+                takeProfitAmounts?.map((takeProfitAmount, index) => {
                   const takeProfitEntry = takeProfitEntries[index];
                   return (
                     <div className="space-between mb-xs" key={index}>
-                      <span className="mr-md">{formatPercentage(BigNumber.from(takeProfitEntry?.percentage))}</span>
-                      <span className={tp.realizedPnl.isNegative() ? "text-red" : "text-green"}>
-                        {formatUsd(tp.realizedPnl)} (
-                        {formatPercentage(tp.realizedPnlPercentage, {
+                      <span className="mr-md">
+                        ${takeProfitEntry.price} - {formatPercentage(BigNumber.from(takeProfitEntry?.percentage))}:
+                      </span>
+                      <span className={takeProfitAmount.realizedPnl.isNegative() ? "text-red" : "text-green"}>
+                        {formatUsd(takeProfitAmount.realizedPnl)} (
+                        {formatPercentage(takeProfitAmount.realizedPnlPercentage, {
                           signed: true,
                         })}
                         )
