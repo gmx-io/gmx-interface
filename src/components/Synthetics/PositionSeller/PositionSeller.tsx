@@ -722,7 +722,11 @@ export function PositionSeller(p: Props) {
           optionLabels={ORDER_OPTION_LABELS}
           onChange={setOrderOption}
         />
-        <SubaccountNavigationButton executionFee={executionFee?.feeTokenAmount} closeConfirmationBox={onClose} />
+        <SubaccountNavigationButton
+          executionFee={executionFee?.feeTokenAmount}
+          closeConfirmationBox={onClose}
+          tradeFlags={tradeFlags}
+        />
 
         {position && (
           <>

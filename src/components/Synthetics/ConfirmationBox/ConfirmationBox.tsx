@@ -618,6 +618,7 @@ export function ConfirmationBox(p: Props) {
         executionFee={p.executionFee?.feeTokenAmount}
         closeConfirmationBox={onClose}
         isNativeToken={Boolean(fromToken?.isNative)}
+        tradeFlags={tradeFlags}
       />
     );
   }

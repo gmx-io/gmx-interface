@@ -1,30 +1,33 @@
 import { Trans } from "@lingui/macro";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import { NavigationButton } from "components/NavigationButton/NavigationButton";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { getNativeToken, getWrappedToken } from "config/tokens";
 import {
   useIsSubaccountActive,
-  useSubaccountModalOpen,
   useSubaccountActionCounts,
   useSubaccountInsufficientFunds,
+  useSubaccountModalOpen,
 } from "context/SubaccountContext/SubaccountContext";
+import { SUBACCOUNT_DOCS_URL } from "domain/synthetics/subaccount/constants";
+import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
+import { BigNumber } from "ethers";
+import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { ReactNode, memo, useCallback } from "react";
 import "./SubaccountNavigationButton.scss";
-import { BigNumber } from "ethers";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { SUBACCOUNT_DOCS_URL } from "domain/synthetics/subaccount/constants";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { getNativeToken, getWrappedToken } from "config/tokens";
-import { useChainId } from "lib/chains";
 
 export const SubaccountNavigationButton = memo(
   ({
     closeConfirmationBox,
     executionFee,
     isNativeToken,
+    tradeFlags,
   }: {
     closeConfirmationBox: () => void;
     executionFee: BigNumber | undefined;
     isNativeToken?: boolean;
+    tradeFlags: TradeFlags | undefined;
   }) => {
     const isSubaccountActive = useIsSubaccountActive();
     const [, setModalOpen] = useSubaccountModalOpen();
@@ -56,7 +59,8 @@ export const SubaccountNavigationButton = memo(
     const shouldShowInsufficientFundsButton = isSubaccountActive && insufficientFunds && !isNativeToken;
     const shouldShowOfferButton = !isSubaccountActive && !offerButtonHidden && !isNativeToken;
     const shouldShowAllowedActionsWarning = isSubaccountActive && remaining?.eq(0) && !isNativeToken;
-    const shouldShowNativeTokenWarning = isSubaccountActive && !nativeTokenWarningHidden && isNativeToken;
+    const shouldShowNativeTokenWarning =
+      !tradeFlags?.isTrigger && isSubaccountActive && !nativeTokenWarningHidden && isNativeToken;
 
     let content: ReactNode = null;
     let onCloseClick: null | (() => void) = null;

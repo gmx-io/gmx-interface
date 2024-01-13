@@ -454,7 +454,11 @@ export function PositionEditor(p: Props) {
               optionLabels={operationLabels}
               className="PositionEditor-tabs SwapBox-option-tabs"
             />
-            <SubaccountNavigationButton executionFee={executionFee?.feeTokenAmount} closeConfirmationBox={onClose} />
+            <SubaccountNavigationButton
+              executionFee={executionFee?.feeTokenAmount}
+              closeConfirmationBox={onClose}
+              tradeFlags={undefined}
+            />
 
             <BuyInputSection
               topLeftLabel={operationLabels[operation]}
