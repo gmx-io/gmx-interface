@@ -59,70 +59,7 @@ export default function useSLTPEntries({
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
   const uiFeeFactor = useUiFeeFactor(chainId);
 
-  const handleSLErrors = useCallback(
-    (entry: Partial<Entry>): Partial<Entry> => {
-      if (!nextPositionValues?.nextLiqPrice || !entry.price || parseFloat(entry.price) === 0) {
-        return { ...entry, error: "" };
-      }
-
-      const inputPrice = parseValue(entry.price, USD_DECIMALS);
-
-      if (isLong) {
-        if (inputPrice?.lte(nextPositionValues.nextLiqPrice)) {
-          return { ...entry, error: t`Price below Liq. Price` };
-        }
-
-        if (inputPrice && nextPositionValues.nextEntryPrice && inputPrice.gte(nextPositionValues.nextEntryPrice)) {
-          return { ...entry, error: t`Price above Mark Price` };
-        }
-      }
-
-      if (!isLong) {
-        if (inputPrice?.gte(nextPositionValues.nextLiqPrice)) {
-          return { ...entry, error: t`Price above Liq. Price` };
-        }
-
-        if (inputPrice && nextPositionValues.nextEntryPrice && inputPrice.lte(nextPositionValues.nextEntryPrice)) {
-          return { ...entry, error: t`Price below Mark Price` };
-        }
-      }
-
-      return { ...entry, error: "" };
-    },
-    [nextPositionValues, isLong]
-  );
-
-  const handleTPErrors = useCallback(
-    (entry: Partial<Entry>): Partial<Entry> => {
-      if (!nextPositionValues?.nextLiqPrice || !entry.price || parseFloat(entry.price) === 0) {
-        return { ...entry, error: "" };
-      }
-
-      const inputPrice = parseValue(entry.price, USD_DECIMALS);
-
-      if (isLong) {
-        if (inputPrice?.lte(nextPositionValues.nextLiqPrice)) {
-          return { ...entry, error: t`Price below Liq. Price` };
-        }
-        if (inputPrice && nextPositionValues.nextEntryPrice && inputPrice.lte(nextPositionValues.nextEntryPrice)) {
-          return { ...entry, error: t`Price below Mark Price` };
-        }
-      }
-
-      if (!isLong) {
-        if (inputPrice?.gte(nextPositionValues.nextLiqPrice)) {
-          return { ...entry, error: t`Price above Liq. Price` };
-        }
-
-        if (inputPrice && nextPositionValues.nextEntryPrice && inputPrice.gte(nextPositionValues.nextEntryPrice)) {
-          return { ...entry, error: t`Price above Mark Price` };
-        }
-      }
-
-      return { ...entry, error: "" };
-    },
-    [nextPositionValues, isLong]
-  );
+  const { handleSLErrors, handleTPErrors } = createErrorHandlers(nextPositionValues, isLong);
 
   const stopLossInfo = useEntries(handleSLErrors);
   const takeProfitInfo = useEntries(handleTPErrors);
@@ -335,6 +272,8 @@ function useEntries(errorHandler: (entry: Partial<Entry>) => Partial<Entry>) {
           updatedEntry.percentage = BASIS_POINTS_DIVISOR - totalExcludingCurrent;
         }
 
+        console.log({ totalExcludingCurrent, updatedEntry, prevEntries });
+
         return prevEntries.map((entry) =>
           entry.id === id ? { ...entry, ...updatedEntry, ...errorHandler(updatedEntry) } : entry
         );
@@ -457,4 +396,40 @@ function calculateEntries(params: {
   });
   const totalPnl = calculateTotalPnl(amounts);
   return { ...entriesInfo, amounts, totalPnl };
+}
+
+function createErrorHandlers(nextPositionValues?: NextPositionValues, isLong?: boolean) {
+  function getErrorHandler(entry: Partial<Entry>, isStopLoss: boolean): Partial<Entry> {
+    if (!nextPositionValues || !nextPositionValues?.nextLiqPrice || !entry.price || parseFloat(entry.price) === 0) {
+      return { ...entry, error: "" };
+    }
+
+    const inputPrice = parseValue(entry.price, USD_DECIMALS);
+    const priceLiqError = isLong ? t`Price below Liq. Price` : t`Price above Liq. Price`;
+    const priceError = isStopLoss ? t`Price above Mark Price` : t`Price below Mark Price`;
+
+    if (inputPrice?.lte(nextPositionValues.nextLiqPrice) && isLong) {
+      return { ...entry, error: priceLiqError };
+    }
+
+    if (inputPrice?.gte(nextPositionValues.nextLiqPrice) && !isLong) {
+      return { ...entry, error: priceLiqError };
+    }
+
+    if (inputPrice && nextPositionValues.nextEntryPrice) {
+      const condition = isStopLoss
+        ? inputPrice.gte(nextPositionValues.nextEntryPrice)
+        : inputPrice.lte(nextPositionValues.nextEntryPrice);
+      if (condition) {
+        return { ...entry, error: priceError };
+      }
+    }
+
+    return { ...entry, error: "" };
+  }
+
+  const handleSLErrors = (entry: Partial<Entry>) => getErrorHandler(entry, true);
+  const handleTPErrors = (entry: Partial<Entry>) => getErrorHandler(entry, false);
+
+  return { handleSLErrors, handleTPErrors };
 }
