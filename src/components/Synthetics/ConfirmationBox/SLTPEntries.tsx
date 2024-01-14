@@ -1,49 +1,52 @@
 import "./SLTPEntries.scss";
 import NumberInput from "components/NumberInput/NumberInput";
-import PercentageInput from "components/PercentageInput/PercentageInput";
+import { NUMBER_WITH_TWO_DECIMALS } from "components/PercentageInput/PercentageInput";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { FaPlus } from "react-icons/fa";
 import cx from "classnames";
 import { formatUsd } from "lib/numbers";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
+import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 
 const SUGGESTION_PERCENTAGE_LIST = [10, 25, 50, 75, 100];
 
 function SLTPEntries({ entries, updateEntry, addEntry, deleteEntry, canAddEntry, totalSizeUsd }) {
   return (
     <div className="SLTPEntries-wrapper">
-      {entries.map((entryData) => {
-        const entrySizeUsd =
-          totalSizeUsd.gt(0) &&
-          entryData.percentage &&
-          totalSizeUsd.mul(entryData.percentage).div(BASIS_POINTS_DIVISOR);
+      {entries.map((entry) => {
+        const percentage = Math.floor(Number.parseFloat(entry.percentage) * 100);
+        const entrySizeUsd = totalSizeUsd.gt(0) && percentage && totalSizeUsd.mul(percentage).div(BASIS_POINTS_DIVISOR);
 
         return (
-          <div key={entryData.id}>
-            <div className="SLTPEntry-row" key={entryData.id}>
-              <div className={cx("SLTP-price", { "input-error": !!entryData.error })}>
+          <div key={entry.id}>
+            <div className="SLTPEntry-row" key={entry.id}>
+              <div className={cx("SLTP-price", { "input-error": !!entry.error })}>
                 <span className="price-symbol">$</span>
 
                 <NumberInput
-                  value={entryData.price}
-                  onValueChange={(e) => updateEntry(entryData.id, { price: e.target.value })}
+                  value={entry.price}
+                  onValueChange={(e) => updateEntry(entry.id, { ...entry, price: e.target.value })}
                   placeholder="Price"
                   className="price-input"
                 />
 
-                {entryData.error && (
+                {entry.error && (
                   <div className={cx("SLTP-input-error", "Tooltip-popup", "z-index-1001", "center-bottom")}>
-                    {entryData.error}
+                    {entry.error}
                   </div>
                 )}
               </div>
               <div className="SLTP-percentage">
-                <PercentageInput
-                  defaultValue={0}
-                  onChange={(value) => updateEntry(entryData.id, { ...entryData, percentage: value })}
-                  suggestions={SUGGESTION_PERCENTAGE_LIST}
-                  hideDefaultPlaceholder
-                  skipMaxValueCheck
+                <SuggestionInput
+                  value={entry.percentage}
+                  setValue={(value) => {
+                    if (NUMBER_WITH_TWO_DECIMALS.test(value) || value.length === 0) {
+                      updateEntry(entry.id, { ...entry, percentage: value });
+                    }
+                  }}
+                  placeholder="10"
+                  suggestionList={SUGGESTION_PERCENTAGE_LIST}
+                  symbol="%"
                 />
                 {entrySizeUsd ? (
                   <div className={cx("SLTP-percent-info", "Tooltip-popup", "z-index-1001", "right-top")}>
@@ -70,7 +73,7 @@ function SLTPEntries({ entries, updateEntry, addEntry, deleteEntry, canAddEntry,
                   handle={
                     <button
                       className="action-remove"
-                      onClick={() => deleteEntry(entryData.id)}
+                      onClick={() => deleteEntry(entry.id)}
                       disabled={entries.length === 1}
                     >
                       <FaPlus color="#E74E5D" className="rotate-45" />

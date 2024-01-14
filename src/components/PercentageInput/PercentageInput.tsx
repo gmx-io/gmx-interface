@@ -4,7 +4,7 @@ import { roundToTwoDecimals } from "lib/numbers";
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./PercentageInput.scss";
 
-const validDecimalRegex = /^\d+(\.\d{0,2})?$/; // 0.00 ~ 99.99
+export const NUMBER_WITH_TWO_DECIMALS = /^\d+(\.\d{0,2})?$/; // 0.00 ~ 99.99
 
 function getValueText(value: number) {
   return roundToTwoDecimals((value / BASIS_POINTS_DIVISOR) * 100).toString();
@@ -38,8 +38,6 @@ export default function PercentageInput({
   lowValueWarningText,
   negativeSign,
   highValueCheckStrategy: checkStrategy = "gte",
-  hideDefaultPlaceholder = false,
-  skipMaxValueCheck = false,
 }: Props) {
   const [inputValue, setInputvalue] = useState<string>(() => getValueText(defaultValue));
   const [isPanelVisible, setIsPanelVisible] = useState<boolean>(false);
@@ -61,13 +59,13 @@ export default function PercentageInput({
       return;
     }
 
-    if (skipMaxValueCheck && parsedValue >= maxValue) {
+    if (parsedValue >= maxValue) {
       onChange(maxValue);
       setInputvalue(getValueText(maxValue));
       return;
     }
 
-    if (validDecimalRegex.test(value)) {
+    if (NUMBER_WITH_TWO_DECIMALS.test(value)) {
       onChange(parsedValue);
       setInputvalue(value);
     }
@@ -111,7 +109,7 @@ export default function PercentageInput({
           onFocus={() => setIsPanelVisible(true)}
           onBlur={() => setIsPanelVisible(false)}
           value={!!inputValue ? inputValue : ""}
-          placeholder={hideDefaultPlaceholder ? inputValue : inputValue || getValueText(defaultValue)}
+          placeholder={inputValue || getValueText(defaultValue)}
           autoComplete="off"
           onChange={handleChange}
         />

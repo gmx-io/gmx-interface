@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { uniqueId } from "lodash";
 import { IncreasePositionAmounts, NextPositionValues, getDecreasePositionAmounts } from "domain/synthetics/trade";
-import { parseValue } from "lib/numbers";
+import { parseValue, removeTrailingZeros } from "lib/numbers";
 import { USD_DECIMALS, getPositionKey } from "lib/legacy";
 import { MarketInfo } from "../markets";
 import { TradeFlags } from "../trade/useTradeFlags";
@@ -15,11 +15,14 @@ import { useChainId } from "lib/chains";
 import { t } from "@lingui/macro";
 import { BigNumber } from "ethers";
 import { getPositionFee, getPriceImpactForPosition } from "../fees";
+import { NUMBER_WITH_TWO_DECIMALS } from "components/PercentageInput/PercentageInput";
+
+const MAX_PERCENTAGE = 100;
 
 export type Entry = {
   id: string;
   price: string;
-  percentage: number;
+  percentage: string;
   error?: string;
   sizeUsd?: BigNumber;
 };
@@ -239,11 +242,11 @@ export default function useSLTPEntries({
 }
 
 function useEntries(errorHandler: (entry: Partial<Entry>) => Partial<Entry>) {
-  const [entries, setEntries] = useState<Entry[]>([{ id: uniqueId(), price: "", percentage: 0, error: "" }]);
+  const [entries, setEntries] = useState<Entry[]>([{ id: uniqueId(), price: "", percentage: "", error: "" }]);
 
   const canAddEntry = useMemo(() => {
-    const totalPercentage = entries.reduce((total, entry) => total + entry.percentage, 0);
-    return totalPercentage < BASIS_POINTS_DIVISOR;
+    const totalPercentage = entries.reduce((total, entry) => total + Number(entry.percentage), 0);
+    return totalPercentage < MAX_PERCENTAGE;
   }, [entries]);
 
   const addEntry = useCallback(() => {
@@ -254,7 +257,7 @@ function useEntries(errorHandler: (entry: Partial<Entry>) => Partial<Entry>) {
       {
         id: uniqueId(),
         price: "",
-        percentage: 0,
+        percentage: "",
         error: "",
       },
     ]);
@@ -268,11 +271,13 @@ function useEntries(errorHandler: (entry: Partial<Entry>) => Partial<Entry>) {
           0
         );
 
-        if (totalExcludingCurrent + Number(updatedEntry.percentage) > BASIS_POINTS_DIVISOR) {
-          updatedEntry.percentage = BASIS_POINTS_DIVISOR - totalExcludingCurrent;
-        }
+        if (totalExcludingCurrent + Number(updatedEntry.percentage) > MAX_PERCENTAGE) {
+          const remainingPercentage = String(removeTrailingZeros((MAX_PERCENTAGE - totalExcludingCurrent).toFixed(2)));
 
-        console.log({ totalExcludingCurrent, updatedEntry, prevEntries });
+          if (NUMBER_WITH_TWO_DECIMALS.test(remainingPercentage)) {
+            updatedEntry.percentage = remainingPercentage;
+          }
+        }
 
         return prevEntries.map((entry) =>
           entry.id === id ? { ...entry, ...updatedEntry, ...errorHandler(updatedEntry) } : entry
@@ -289,7 +294,7 @@ function useEntries(errorHandler: (entry: Partial<Entry>) => Partial<Entry>) {
   }, []);
 
   const reset = useCallback(() => {
-    setEntries([{ id: uniqueId(), price: "", percentage: 0 }]);
+    setEntries([{ id: uniqueId(), price: "", percentage: "" }]);
   }, []);
 
   return { entries, addEntry, updateEntry, deleteEntry, reset, canAddEntry };
@@ -333,8 +338,10 @@ function calculateAmounts(params: {
   return entries
     .filter((entry) => entry.price && entry.percentage && !entry.error)
     .map((entry) => {
-      const sizeUsd = increaseAmounts.sizeDeltaUsd.mul(entry.percentage).div(BASIS_POINTS_DIVISOR);
+      const percentage = Math.floor(Number.parseFloat(entry.percentage) * 100);
+      const sizeUsd = increaseAmounts.sizeDeltaUsd.mul(percentage).div(BASIS_POINTS_DIVISOR);
       const price = parseValue(entry.price, USD_DECIMALS);
+
       return getDecreasePositionAmounts({
         marketInfo,
         collateralToken,

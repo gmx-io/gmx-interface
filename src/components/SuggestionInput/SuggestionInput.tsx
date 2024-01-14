@@ -1,6 +1,7 @@
 import "./SuggestionInput.scss";
 import { ChangeEvent, useState } from "react";
 import cx from "classnames";
+import NumberInput from "components/NumberInput/NumberInput";
 
 type Props = {
   value?: string;
@@ -28,15 +29,14 @@ export default function SuggestionInput({ placeholder, value, setValue, suggesti
   return (
     <div className="Suggestion-input-wrapper">
       <div className={cx("Suggestion-input", { "input-error": false })}>
-        <input
-          id="suggestion-input"
+        <NumberInput
           onFocus={() => setIsPanelVisible(true)}
           onBlur={() => setIsPanelVisible(false)}
           value={value ?? ""}
           placeholder={placeholder}
-          onChange={handleChange}
+          onValueChange={handleChange}
         />
-        <label htmlFor="suggestion-input">
+        <label>
           <span>{symbol}</span>
         </label>
       </div>

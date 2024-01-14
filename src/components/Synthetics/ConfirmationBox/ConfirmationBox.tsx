@@ -1063,7 +1063,7 @@ export function ConfirmationBox(p: Props) {
                   return (
                     <div className="space-between mb-xs" key={index}>
                       <span className="mr-md">
-                        {stopLossEntry.price} - {formatPercentage(BigNumber.from(stopLossEntry?.percentage))}:
+                        ${stopLossEntry.price} - {stopLossEntry?.percentage}%:
                       </span>
                       <span className={stopLossAmount.realizedPnl.isNegative() ? "text-red" : "text-green"}>
                         {formatUsd(stopLossAmount.realizedPnl)} (
@@ -1119,7 +1119,7 @@ export function ConfirmationBox(p: Props) {
                   return (
                     <div className="space-between mb-xs" key={index}>
                       <span className="mr-md">
-                        ${takeProfitEntry.price} - {formatPercentage(BigNumber.from(takeProfitEntry?.percentage))}:
+                        ${takeProfitEntry.price} - {takeProfitEntry?.percentage}%:
                       </span>
                       <span className={takeProfitAmount.realizedPnl.isNegative() ? "text-red" : "text-green"}>
                         {formatUsd(takeProfitAmount.realizedPnl)} (
