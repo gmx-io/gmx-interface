@@ -7,7 +7,7 @@ import { MarketInfo } from "../markets";
 import { TradeFlags } from "../trade/useTradeFlags";
 import { PositionInfo, getPendingMockPosition, usePositionsConstants } from "../positions";
 import useUiFeeFactor from "../fees/utils/useUiFeeFactor";
-import { TokenData, convertToTokenAmount } from "../tokens";
+import { TokenData } from "../tokens";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import useWallet from "lib/wallets/useWallet";
 import { UserReferralInfo, useUserReferralInfo } from "domain/referrals";
@@ -75,28 +75,18 @@ export default function useSLTPEntries({
   }, [account, collateralToken, isLong, marketInfo]);
 
   const currentPosition = useMemo(() => {
-    if (!positionKey || !collateralToken || !nextPositionValues || !marketInfo) return;
+    if (!positionKey || !collateralToken || !marketInfo) return;
 
     return getPendingMockPosition({
       isIncrease: true,
       positionKey,
-      sizeDeltaUsd: nextPositionValues?.nextSizeUsd || BigNumber.from(0),
-      sizeDeltaInTokens:
-        convertToTokenAmount(
-          nextPositionValues.nextSizeUsd,
-          marketInfo.indexToken.decimals,
-          marketInfo.indexToken.prices.minPrice
-        ) || BigNumber.from(0),
-      collateralDeltaAmount:
-        convertToTokenAmount(
-          nextPositionValues.nextCollateralUsd,
-          collateralToken.decimals,
-          collateralToken.prices.minPrice
-        ) || BigNumber.from(0),
+      sizeDeltaUsd: increaseAmounts?.sizeDeltaUsd || BigNumber.from(0),
+      sizeDeltaInTokens: increaseAmounts?.sizeDeltaInTokens || BigNumber.from(0),
+      collateralDeltaAmount: increaseAmounts?.collateralDeltaAmount || BigNumber.from(0),
       updatedAt: Date.now(),
       updatedAtBlock: BigNumber.from(0),
     });
-  }, [positionKey, collateralToken, nextPositionValues, marketInfo]);
+  }, [positionKey, collateralToken, increaseAmounts, marketInfo]);
 
   const currentPositionInfo: PositionInfo | undefined = useMemo(() => {
     if (
@@ -121,13 +111,10 @@ export default function useSLTPEntries({
       markPrice: nextPositionValues.nextEntryPrice!,
       entryPrice: nextPositionValues.nextEntryPrice,
       liquidationPrice: nextPositionValues.nextLiqPrice,
-      collateralUsd: nextPositionValues.nextCollateralUsd!,
-      remainingCollateralUsd: nextPositionValues.nextCollateralUsd!,
-      remainingCollateralAmount: convertToTokenAmount(
-        nextPositionValues.nextCollateralUsd,
-        collateralToken.decimals,
-        collateralToken.prices.minPrice
-      )!,
+      collateralUsd: increaseAmounts?.initialCollateralUsd,
+      remainingCollateralUsd: increaseAmounts?.collateralDeltaUsd,
+      remainingCollateralAmount: increaseAmounts?.collateralDeltaAmount,
+      netValue: increaseAmounts?.collateralDeltaUsd,
       hasLowCollateral: false,
       leverage: nextPositionValues.nextLeverage,
       leverageWithPnl: nextPositionValues.nextLeverage,
@@ -135,7 +122,6 @@ export default function useSLTPEntries({
       pnlPercentage: nextPositionValues.nextPnlPercentage!,
       pnlAfterFees: BigNumber.from(0),
       pnlAfterFeesPercentage: BigNumber.from(0),
-      netValue: nextPositionValues.nextCollateralUsd!,
       closingFeeUsd: BigNumber.from(0),
       uiFeeUsd: BigNumber.from(0),
       pendingFundingFeesUsd: BigNumber.from(0),
