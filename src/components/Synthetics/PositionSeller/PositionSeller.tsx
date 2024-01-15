@@ -579,24 +579,22 @@ export function PositionSeller(p: Props) {
       className="SwapBox-info-row"
       label={t`Liq. Price`}
       value={
-        decreaseAmounts?.isFullClose ? (
-          "-"
-        ) : (
-          <ValueTransition
-            from={
-              formatLiquidationPrice(position.liquidationPrice, {
-                displayDecimals: indexPriceDecimals,
-              })!
-            }
-            to={
-              decreaseAmounts?.sizeDeltaUsd.gt(0)
-                ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
-                    displayDecimals: indexPriceDecimals,
-                  })
-                : undefined
-            }
-          />
-        )
+        <ValueTransition
+          from={
+            formatLiquidationPrice(position.liquidationPrice, {
+              displayDecimals: indexPriceDecimals,
+            })!
+          }
+          to={
+            decreaseAmounts?.isFullClose
+              ? "-"
+              : decreaseAmounts?.sizeDeltaUsd.gt(0)
+              ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
+                  displayDecimals: indexPriceDecimals,
+                })
+              : undefined
+          }
+        />
       }
     />
   );
