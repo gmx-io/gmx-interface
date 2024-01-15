@@ -3,7 +3,11 @@ import cx from "classnames";
 import SpinningLoader from "components/Common/SpinningLoader";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getExplorerUrl } from "config/chains";
-import { useSubaccountNotificationState, useSubaccountPendingTx } from "context/SubaccountContext/SubaccountContext";
+import {
+  SubaccountNotificationState,
+  useSubaccountNotificationState,
+  useSubaccountPendingTx,
+} from "context/SubaccountContext/SubaccountContext";
 import { useChainId } from "lib/chains";
 import { museNeverExist } from "lib/types";
 import { usePrevious } from "lib/usePrevious";
@@ -23,9 +27,14 @@ const SubaccountNotificationImpl = ({
 
   const [notificationState] = useSubaccountNotificationState();
   const isCompleted = useMemo(() => {
-    return ["activated", "deactivated", "deactivationFailed", "activationFailed", "generationFailed"].includes(
-      notificationState
-    );
+    const completedStates: SubaccountNotificationState[] = [
+      "activated",
+      "deactivated",
+      "deactivationFailed",
+      "activationFailed",
+      "generationFailed",
+    ];
+    return completedStates.includes(notificationState);
   }, [notificationState]);
   useToastAutoClose(isCompleted, toastId);
 
@@ -54,9 +63,9 @@ const SubaccountNotificationImpl = ({
     if (isUpdate) return t`Updating Subaccount`;
     return subaccountWasAlreadyGenerated ? t`Activating Subaccount` : t`Generating and activating Subaccount`;
   };
-  const renderActivationContent = (step: 1 | 2 | 3) => {
+  const renderActivationContent = (step: "generating" | "activating" | "activated") => {
     if (isUpdate) {
-      if (step === 2)
+      if (step === "activating")
         return (
           <span>
             <Trans>Pending Wallet transaction sign</Trans> <SpinningLoader />
@@ -67,11 +76,15 @@ const SubaccountNotificationImpl = ({
 
     return (
       <div>
-        {step === 1 ? <Trans>Pending Wallet message sign</Trans> : <Trans>Subaccount created</Trans>}{" "}
-        {step === 1 ? <SpinningLoader /> : null}
+        {step === "generating" ? <Trans>Pending Wallet message sign</Trans> : <Trans>Subaccount created</Trans>}{" "}
+        {step === "generating" ? <SpinningLoader /> : null}
         <br />
-        {step === 3 ? <Trans>Subaccount activated</Trans> : <Trans>Pending Wallet transaction sign</Trans>}{" "}
-        {step === 2 ? <SpinningLoader /> : null}
+        {step === "activated" ? (
+          <Trans>Subaccount activated</Trans>
+        ) : (
+          <Trans>Pending Wallet transaction sign</Trans>
+        )}{" "}
+        {step === "activating" ? <SpinningLoader /> : null}
       </div>
     );
   };
@@ -79,7 +92,7 @@ const SubaccountNotificationImpl = ({
   switch (notificationState) {
     case "generating":
       title = renderActivationTitle();
-      content = renderActivationContent(1);
+      content = renderActivationContent("generating");
       break;
 
     case "generationFailed":
@@ -89,12 +102,12 @@ const SubaccountNotificationImpl = ({
 
     case "activating":
       title = renderActivationTitle();
-      content = renderActivationContent(2);
+      content = renderActivationContent("activating");
       break;
 
     case "activated":
       title = renderActivationTitle();
-      content = renderActivationContent(3);
+      content = renderActivationContent("activated");
       break;
 
     case "activationFailed":
