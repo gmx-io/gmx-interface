@@ -226,6 +226,7 @@ export function ConfirmationBox(p: Props) {
     reset: resetStopLossEntries,
     amounts: stopLossAmounts,
     totalPnl: totalStopLossPnl,
+    totalPnlPercentage: totalStopLossPnlPercentage,
   } = stopLoss;
 
   const {
@@ -237,6 +238,7 @@ export function ConfirmationBox(p: Props) {
     canAddEntry: canAddTakeProfitEntry,
     amounts: takeProfitAmounts,
     totalPnl: totalTakeProfitPnl,
+    totalPnlPercentage: totalTakeProfitPnlPercentage,
   } = takeProfit;
 
   useEffect(() => {
@@ -1052,7 +1054,9 @@ export function ConfirmationBox(p: Props) {
             "-"
           ) : (
             <Tooltip
-              handle={formatUsd(totalStopLossPnl)}
+              handle={`${formatUsd(totalStopLossPnl)} (${formatPercentage(totalStopLossPnlPercentage, {
+                signed: true,
+              })})`}
               position="right-bottom"
               handleClassName={totalStopLossPnl?.isNegative() ? "text-red" : "text-green"}
               className="SLTP-pnl-tooltip"
@@ -1109,7 +1113,9 @@ export function ConfirmationBox(p: Props) {
             "-"
           ) : (
             <Tooltip
-              handle={formatUsd(totalTakeProfitPnl)}
+              handle={`${formatUsd(totalTakeProfitPnl)} (${formatPercentage(totalTakeProfitPnlPercentage, {
+                signed: true,
+              })})`}
               position="right-bottom"
               handleClassName={totalTakeProfitPnl?.isNegative() ? "text-red" : "text-green"}
               className="SLTP-pnl-tooltip"

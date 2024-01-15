@@ -270,11 +270,6 @@ function useEntries(errorHandler: (entry: Partial<Entry>) => Partial<Entry>) {
   return { entries, addEntry, updateEntry, deleteEntry, reset, canAddEntry };
 }
 
-function calculateTotalPnl(amounts) {
-  if (!amounts) return;
-  return amounts.reduce((acc, amount) => acc.add(amount.realizedPnl), BigNumber.from(0));
-}
-
 function calculateAmounts(params: {
   entries: Entry[];
   increaseAmounts?: IncreasePositionAmounts | undefined;
@@ -371,8 +366,9 @@ function calculateEntries(params: {
     userReferralInfo,
     currentPositionInfo,
   });
-  const totalPnl = calculateTotalPnl(amounts);
-  return { ...entriesInfo, amounts, totalPnl };
+  const totalPnl = amounts?.reduce((acc, amount) => acc.add(amount.realizedPnl), BigNumber.from(0));
+  const totalPnlPercentage = amounts?.reduce((acc, amount) => acc.add(amount.realizedPnlPercentage), BigNumber.from(0));
+  return { ...entriesInfo, amounts, totalPnl, totalPnlPercentage };
 }
 
 function createErrorHandlers(nextPositionValues?: NextPositionValues, isLong?: boolean) {
