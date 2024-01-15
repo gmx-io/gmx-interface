@@ -21,8 +21,6 @@ type Props = {
   highValueWarningText?: ReactNode;
   negativeSign?: boolean;
   highValueCheckStrategy?: "gte" | "gt";
-  hideDefaultPlaceholder?: boolean;
-  skipMaxValueCheck?: boolean;
 };
 
 const DEFAULT_SUGGESTIONS = [0.3, 0.5, 1, 1.5];
