@@ -51,7 +51,7 @@ export function SubaccountModal({ setPendingTxns }: { setPendingTxns: (txns: any
   const [isVisible, setIsVisible] = useSubaccountModalOpen();
 
   return (
-    <Modal label="One-Click Trading" isVisible={isVisible} setIsVisible={setIsVisible}>
+    <Modal label={t`One-Click Trading`} isVisible={isVisible} setIsVisible={setIsVisible}>
       <div className="SubaccountModal-content">
         <MainView setPendingTxns={setPendingTxns} />
       </div>

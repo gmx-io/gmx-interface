@@ -36,6 +36,9 @@ export const SYNTHETICS_COLLATERAL_EDIT_TOKEN_KEY = "synthetics-collateral-edit-
 export const PRODUCTION_PREVIEW_KEY = "production-preview";
 export const REQUIRED_UI_VERSION_KEY = "required-ui-version";
 
+export const ONE_CLICK_TRADING_OFFER_HIDDEN = "one-click-trading-offer-hidden";
+export const ONE_CLICK_TRADING_NATIVE_TOKEN_WARN_HIDDEN = "one-click-trading-native-token-warn-hidden";
+
 export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 
 export function getSyntheticsDepositIndexTokenKey(chainId: number) {

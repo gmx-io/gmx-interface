@@ -16,6 +16,7 @@ import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { ReactNode, memo, useCallback } from "react";
 import "./SubaccountNavigationButton.scss";
+import { ONE_CLICK_TRADING_NATIVE_TOKEN_WARN_HIDDEN, ONE_CLICK_TRADING_OFFER_HIDDEN } from "config/localStorage";
 
 export const SubaccountNavigationButton = memo(
   ({
@@ -40,9 +41,12 @@ export const SubaccountNavigationButton = memo(
       setModalOpen(true);
     }, [closeConfirmationBox, setModalOpen]);
 
-    const [offerButtonHidden, setOfferButtonHidden] = useLocalStorageSerializeKey("oneClickTradingOfferHidden", false);
+    const [offerButtonHidden, setOfferButtonHidden] = useLocalStorageSerializeKey(
+      ONE_CLICK_TRADING_OFFER_HIDDEN,
+      false
+    );
     const [nativeTokenWarningHidden, setNativeTokenWarningHidden] = useLocalStorageSerializeKey(
-      "oneClickTradingNativeTokenWarning",
+      ONE_CLICK_TRADING_NATIVE_TOKEN_WARN_HIDDEN,
       false
     );
 

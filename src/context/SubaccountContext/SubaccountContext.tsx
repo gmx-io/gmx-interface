@@ -218,7 +218,7 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
 }
 
 export function useSubaccountSelector<Selected>(selector: (s: SubaccountContext) => Selected) {
-  return useContextSelector(context as Context<SubaccountContext>, selector);
+  return useContextSelector(context as Context<SubaccountContext>, selector) as Selected;
 }
 
 export function useSubaccountModalOpen() {

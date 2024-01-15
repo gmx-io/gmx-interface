@@ -22,7 +22,6 @@ export async function callContract(
     hideSuccessMsg?: boolean;
     failMsg?: string;
     setPendingTxns?: (txns: any) => void;
-    waitForTxn?: boolean;
   }
 ) {
   try {

@@ -3278,6 +3278,7 @@ msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur
 msgstr "Tenga en cuenta que no se garantiza la ejecución de las órdenes.<0/><1/>Esto puede ocurrir en algunas situaciones que incluyen, pero no exclusivamente:"
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "One-Click Trading"
 msgstr ""
 
