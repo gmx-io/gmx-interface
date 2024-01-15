@@ -14,7 +14,6 @@ import { UserReferralInfo, useUserReferralInfo } from "domain/referrals";
 import { useChainId } from "lib/chains";
 import { t } from "@lingui/macro";
 import { BigNumber } from "ethers";
-import { getPositionFee, getPriceImpactForPosition } from "../fees";
 import { NUMBER_WITH_TWO_DECIMALS } from "components/PercentageInput/PercentageInput";
 
 const MAX_PERCENTAGE = 100;
@@ -113,21 +112,6 @@ export default function useSLTPEntries({
     )
       return;
 
-    const closingPriceImpactDeltaUsd = getPriceImpactForPosition(
-      marketInfo,
-      currentPosition.sizeInUsd.mul(-1),
-      currentPosition.isLong,
-      { fallbackToZero: true }
-    );
-
-    const positionFeeInfo = getPositionFee(
-      marketInfo,
-      currentPosition.sizeInUsd,
-      closingPriceImpactDeltaUsd.gt(0),
-      userReferralInfo,
-      uiFeeFactor
-    );
-
     return {
       ...currentPosition,
       marketInfo,
@@ -152,8 +136,8 @@ export default function useSLTPEntries({
       pnlAfterFees: BigNumber.from(0),
       pnlAfterFeesPercentage: BigNumber.from(0),
       netValue: nextPositionValues.nextCollateralUsd!,
-      closingFeeUsd: positionFeeInfo.positionFeeUsd,
-      uiFeeUsd: positionFeeInfo.uiFeeUsd || BigNumber.from(0),
+      closingFeeUsd: BigNumber.from(0),
+      uiFeeUsd: BigNumber.from(0),
       pendingFundingFeesUsd: BigNumber.from(0),
       pendingClaimableFundingFeesUsd: BigNumber.from(0),
     };
