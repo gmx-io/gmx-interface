@@ -276,9 +276,16 @@ msgid "Actual Price Impact"
 msgstr ""
 
 #: src/pages/Dashboard/AssetDropdown.tsx
-#: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Add to Metamask"
 msgstr "Добавить в MetaMask"
+
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Add {0} to Metamask"
+msgstr ""
+
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+msgid "Add {marketName} to Wallet"
+msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Adding referral code failed."
@@ -772,6 +779,10 @@ msgstr ""
 msgid "Claim"
 msgstr "Запрос"
 
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+msgid "Claim <0>{0}</0>"
+msgstr ""
+
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "Claim Funding Fees"
 msgstr ""
@@ -827,10 +838,6 @@ msgstr "Запрос завершен! <0>Увидеть статус.</0>"
 #: src/pages/Stake/StakeV2.js
 msgid "Claim submitted."
 msgstr "Запрос завершен."
-
-#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
-msgid "Claim {0}"
-msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1865,10 +1872,6 @@ msgstr "Получение информации о токенах..."
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Financial reports and protocol analytics"
 msgstr "Финансовые отчеты и аналитика протоколов"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Floor Price Fund"
-msgstr "Фонд Минимальной Цены"
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
@@ -3186,14 +3189,6 @@ msgstr ""
 msgid "Open a position"
 msgstr "Открыть позицию"
 
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open in Coingecko"
-msgstr "Открыть на Coingecko"
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open in Explorer"
-msgstr "Открыть в Explorer"
-
 #: src/pages/Home/Home.js
 msgid "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
 msgstr "Открывайте позиции с помощью простого интерфейса обменник. Удобный обмен из любого поддерживаемого актива в выбранную вами позицию."
@@ -3206,12 +3201,24 @@ msgstr "Открытие позиций: {0}<0/>Под риском: {1}"
 msgid "Open trades ranking and stats"
 msgstr ""
 
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Open {0} in Coingecko"
+msgstr ""
+
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Open {0} in Explorer"
+msgstr ""
+
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
 msgstr ""
 
 #: src/components/Synthetics/TVChart/TVChart.tsx
 msgid "Open {longOrShortText} {tokenSymbol}"
+msgstr ""
+
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+msgid "Open {marketName} in Explorer"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
@@ -3563,7 +3570,6 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/useSLTPEntries.ts
-#: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price above Liq. Price"
 msgstr "Цена выше Ликв. Цены"
@@ -3576,7 +3582,6 @@ msgstr "Цена выше Ликв. Цены"
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/useSLTPEntries.ts
-#: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -3586,7 +3591,6 @@ msgstr "Цена выше Маркированной Цены"
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price below Liq. Price"
@@ -3599,7 +3603,6 @@ msgstr "Цена ниже Ликв. Цены"
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5025,6 +5028,10 @@ msgstr ""
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Transferring"
 msgstr "Передим"
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Treasury"
+msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionSeller.js

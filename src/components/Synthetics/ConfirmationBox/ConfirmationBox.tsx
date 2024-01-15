@@ -104,6 +104,7 @@ import { IoClose } from "react-icons/io5";
 import SLTPEntries from "./SLTPEntries";
 import useSLTPEntries from "domain/synthetics/orders/useSLTPEntries";
 import AlertWithIcon from "components/Alert/AlertWithIcon";
+import { getPlusOrMinusSymbol, getPositiveOrNegativeClass } from "lib/utils";
 
 export type Props = {
   isVisible: boolean;
@@ -1340,12 +1341,11 @@ export function ConfirmationBox(p: Props) {
                         label={t`Fees`}
                         value={
                           fees?.payTotalFees?.deltaUsd && !fees.payTotalFees.deltaUsd.eq(0)
-                            ? `${fees.payTotalFees.deltaUsd.gt(0) ? "+" : "-"}${formatUsd(
-                                fees.payTotalFees.deltaUsd.abs()
-                              )}`
+                            ? formatUsd(fees.payTotalFees.deltaUsd)
                             : "0.00$"
                         }
                         showDollar={false}
+                        className={getPositiveOrNegativeClass(fees?.payTotalFees?.deltaUsd)}
                       />
                       <div className="Tooltip-divider" />
                       <StatsTooltipRow
@@ -1362,7 +1362,7 @@ export function ConfirmationBox(p: Props) {
           <TradeFeesRow
             {...fees}
             fundingFeeRateStr={
-              fundigRate && `${fundigRate.gt(0) ? "+" : "-"}${formatAmount(fundigRate.abs(), 30, 4)}% / 1h`
+              fundigRate && `${getPlusOrMinusSymbol(fundigRate)}${formatAmount(fundigRate.abs(), 30, 4)}% / 1h`
             }
             borrowFeeRateStr={borrowingRate && `-${formatAmount(borrowingRate, 30, 4)}% / 1h`}
             executionFee={p.executionFee}

@@ -276,9 +276,16 @@ msgid "Actual Price Impact"
 msgstr ""
 
 #: src/pages/Dashboard/AssetDropdown.tsx
-#: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Add to Metamask"
 msgstr "添加到Metamask"
+
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Add {0} to Metamask"
+msgstr ""
+
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+msgid "Add {marketName} to Wallet"
+msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Adding referral code failed."
@@ -772,6 +779,10 @@ msgstr ""
 msgid "Claim"
 msgstr "领取"
 
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+msgid "Claim <0>{0}</0>"
+msgstr ""
+
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "Claim Funding Fees"
 msgstr ""
@@ -827,10 +838,6 @@ msgstr "送出领取！<0>查看状态</0>"
 #: src/pages/Stake/StakeV2.js
 msgid "Claim submitted."
 msgstr "送出领取"
-
-#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
-msgid "Claim {0}"
-msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1865,10 +1872,6 @@ msgstr "正在获取代币信息"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Financial reports and protocol analytics"
 msgstr "财务报告和协议分析"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Floor Price Fund"
-msgstr "底价金额"
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
@@ -3186,14 +3189,6 @@ msgstr ""
 msgid "Open a position"
 msgstr "开启仓位"
 
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open in Coingecko"
-msgstr "在Coingecko开启"
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open in Explorer"
-msgstr "在Explorer开启"
-
 #: src/pages/Home/Home.js
 msgid "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
 msgstr "通过简单的互换界面开立头寸。方便地从任何币值换成你选择的头寸"
@@ -3206,12 +3201,24 @@ msgstr "未结头寸: {0}<0/>风险之下: {1}"
 msgid "Open trades ranking and stats"
 msgstr ""
 
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Open {0} in Coingecko"
+msgstr ""
+
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Open {0} in Explorer"
+msgstr ""
+
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
 msgstr ""
 
 #: src/components/Synthetics/TVChart/TVChart.tsx
 msgid "Open {longOrShortText} {tokenSymbol}"
+msgstr ""
+
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+msgid "Open {marketName} in Explorer"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
@@ -3563,7 +3570,6 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/useSLTPEntries.ts
-#: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price above Liq. Price"
 msgstr "价格高于流动资金价格"
@@ -3576,7 +3582,6 @@ msgstr "价格高于流动资金价格"
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/useSLTPEntries.ts
-#: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -3586,7 +3591,6 @@ msgstr "价格高于标价"
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price below Liq. Price"
@@ -3599,7 +3603,6 @@ msgstr "价格低于流动资金价格"
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5025,6 +5028,10 @@ msgstr ""
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Transferring"
 msgstr "转移中"
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Treasury"
+msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionSeller.js

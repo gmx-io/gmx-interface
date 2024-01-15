@@ -276,9 +276,16 @@ msgid "Actual Price Impact"
 msgstr "Actual Price Impact"
 
 #: src/pages/Dashboard/AssetDropdown.tsx
-#: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Add to Metamask"
 msgstr "Add to Metamask"
+
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Add {0} to Metamask"
+msgstr "Add {0} to Metamask"
+
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+msgid "Add {marketName} to Wallet"
+msgstr "Add {marketName} to Wallet"
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Adding referral code failed."
@@ -772,6 +779,10 @@ msgstr "Choose to buy from decentralized or centralized exchanges."
 msgid "Claim"
 msgstr "Claim"
 
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+msgid "Claim <0>{0}</0>"
+msgstr "Claim <0>{0}</0>"
+
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "Claim Funding Fees"
 msgstr "Claim Funding Fees"
@@ -827,10 +838,6 @@ msgstr "Claim submitted! <0>View status.</0>"
 #: src/pages/Stake/StakeV2.js
 msgid "Claim submitted."
 msgstr "Claim submitted."
-
-#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
-msgid "Claim {0}"
-msgstr "Claim {0}"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1865,10 +1872,6 @@ msgstr "Fetching token info..."
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Financial reports and protocol analytics"
 msgstr "Financial reports and protocol analytics"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Floor Price Fund"
-msgstr "Floor Price Fund"
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
@@ -3189,14 +3192,6 @@ msgstr "Open Interest Balance"
 msgid "Open a position"
 msgstr "Open a position"
 
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open in Coingecko"
-msgstr "Open in Coingecko"
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open in Explorer"
-msgstr "Open in Explorer"
-
 #: src/pages/Home/Home.js
 msgid "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
 msgstr "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
@@ -3209,6 +3204,14 @@ msgstr "Open positions: {0}<0/>Under risk: {1}"
 msgid "Open trades ranking and stats"
 msgstr "Open trades ranking and stats"
 
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Open {0} in Coingecko"
+msgstr "Open {0} in Coingecko"
+
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Open {0} in Explorer"
+msgstr "Open {0} in Explorer"
+
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
 msgstr "Open {0} {longOrShortText}"
@@ -3216,6 +3219,10 @@ msgstr "Open {0} {longOrShortText}"
 #: src/components/Synthetics/TVChart/TVChart.tsx
 msgid "Open {longOrShortText} {tokenSymbol}"
 msgstr "Open {longOrShortText} {tokenSymbol}"
+
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+msgid "Open {marketName} in Explorer"
+msgstr "Open {marketName} in Explorer"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -3566,7 +3573,6 @@ msgstr "Price Impact not yet acknowledged"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/useSLTPEntries.ts
-#: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price above Liq. Price"
 msgstr "Price above Liq. Price"
@@ -3579,7 +3585,6 @@ msgstr "Price above Liq. Price"
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/useSLTPEntries.ts
-#: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -3589,7 +3594,6 @@ msgstr "Price above Mark Price"
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price below Liq. Price"
@@ -3602,7 +3606,6 @@ msgstr "Price below Liq. Price"
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5028,6 +5031,10 @@ msgstr "Transfer {nativeTokenSymbol}"
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Transferring"
 msgstr "Transferring"
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Treasury"
+msgstr "Treasury"
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionSeller.js

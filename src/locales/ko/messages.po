@@ -276,9 +276,16 @@ msgid "Actual Price Impact"
 msgstr ""
 
 #: src/pages/Dashboard/AssetDropdown.tsx
-#: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Add to Metamask"
 msgstr "메타마스크에 추가해주세요"
+
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Add {0} to Metamask"
+msgstr ""
+
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+msgid "Add {marketName} to Wallet"
+msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Adding referral code failed."
@@ -772,6 +779,10 @@ msgstr ""
 msgid "Claim"
 msgstr "수령하기"
 
+#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+msgid "Claim <0>{0}</0>"
+msgstr ""
+
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "Claim Funding Fees"
 msgstr ""
@@ -827,10 +838,6 @@ msgstr "수령 제출완료! <0>상태 보기.</0>"
 #: src/pages/Stake/StakeV2.js
 msgid "Claim submitted."
 msgstr "수령 제출 완료."
-
-#: src/components/Synthetics/ClaimModal/ClaimModal.tsx
-msgid "Claim {0}"
-msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1865,10 +1872,6 @@ msgstr "토큰 정보 가져오는 중..."
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Financial reports and protocol analytics"
 msgstr "금융 보고서 및 프로토콜 분석"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Floor Price Fund"
-msgstr "하한 가격 펀드"
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
@@ -3186,14 +3189,6 @@ msgstr ""
 msgid "Open a position"
 msgstr "포지션 열기"
 
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open in Coingecko"
-msgstr "Coingecko에서 보기"
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open in Explorer"
-msgstr "Explorer에서 보기"
-
 #: src/pages/Home/Home.js
 msgid "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
 msgstr "간단한 스왑 인터페이스를 통해 포지션을 열어보세요. 지원되는 자산내에서 원하는 포지션으로 편리하게 스왑할 수 있습니다."
@@ -3206,12 +3201,24 @@ msgstr "열린 포지션: {0}<0>리스크: {1}"
 msgid "Open trades ranking and stats"
 msgstr ""
 
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Open {0} in Coingecko"
+msgstr ""
+
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Open {0} in Explorer"
+msgstr ""
+
 #: src/components/Exchange/ExchangeTVChart.js
 msgid "Open {0} {longOrShortText}"
 msgstr ""
 
 #: src/components/Synthetics/TVChart/TVChart.tsx
 msgid "Open {longOrShortText} {tokenSymbol}"
+msgstr ""
+
+#: src/components/Synthetics/GmAssetDropdown/GmAssetDropdown.tsx
+msgid "Open {marketName} in Explorer"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
@@ -3563,7 +3570,6 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/useSLTPEntries.ts
-#: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price above Liq. Price"
 msgstr "청산가 초과 가격"
@@ -3576,7 +3582,6 @@ msgstr "청산가 초과 가격"
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/useSLTPEntries.ts
-#: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -3586,7 +3591,6 @@ msgstr "시장 평균가 초과 가격"
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price below Liq. Price"
@@ -3599,7 +3603,6 @@ msgstr "청산가 미만 가격"
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5025,6 +5028,10 @@ msgstr ""
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Transferring"
 msgstr "이전중"
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Treasury"
+msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionSeller.js

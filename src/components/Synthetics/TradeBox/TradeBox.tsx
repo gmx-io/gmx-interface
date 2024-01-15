@@ -839,7 +839,7 @@ export function TradeBox(p: Props) {
     } else if (isLimit) {
       return t`Create Limit order`;
     } else {
-      return t`Create ${getTriggerNameByOrderType(decreaseAmounts?.triggerOrderType!)} Order`;
+      return t`Create ${getTriggerNameByOrderType(decreaseAmounts?.triggerOrderType)} Order`;
     }
   }, [
     decreaseAmounts?.triggerOrderType,
@@ -1606,14 +1606,7 @@ export function TradeBox(p: Props) {
 
       {isSwap && <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />}
       <div className="Exchange-swap-info-group">
-        {isPosition && (
-          <MarketCard
-            isLong={isLong}
-            isIncrease={isIncrease}
-            marketInfo={marketInfo}
-            allowedSlippage={allowedSlippage}
-          />
-        )}
+        {isPosition && <MarketCard isLong={isLong} marketInfo={marketInfo} allowedSlippage={allowedSlippage} />}
       </div>
 
       <ConfirmationBox

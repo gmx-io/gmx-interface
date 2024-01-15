@@ -1,7 +1,7 @@
 import cx from "classnames";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { roundToTwoDecimals } from "lib/numbers";
-import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ChangeEvent, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./PercentageInput.scss";
 
 export const NUMBER_WITH_TWO_DECIMALS = /^\d+(\.\d{0,2})?$/; // 0.00 ~ 99.99
@@ -46,7 +46,7 @@ export default function PercentageInput({
     setInputvalue(getValueText(defaultValue));
   }, [defaultValue]);
 
-  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+  function handleChange(event: ChangeEvent<HTMLInputElement>) {
     const { value } = event.target;
     if (value === "") {
       setInputvalue(value);
@@ -108,7 +108,7 @@ export default function PercentageInput({
           ref={inputRef}
           onFocus={() => setIsPanelVisible(true)}
           onBlur={() => setIsPanelVisible(false)}
-          value={!!inputValue ? inputValue : ""}
+          value={inputValue ? inputValue : ""}
           placeholder={inputValue || getValueText(defaultValue)}
           autoComplete="off"
           onChange={handleChange}
