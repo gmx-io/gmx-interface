@@ -1410,26 +1410,24 @@ export function TradeBox(p: Props) {
             className="SwapBox-info-row"
             label={t`Liq. Price`}
             value={
-              decreaseAmounts?.isFullClose ? (
-                "-"
-              ) : (
-                <ValueTransition
-                  from={
-                    existingPosition
-                      ? formatLiquidationPrice(existingPosition?.liquidationPrice, {
-                          displayDecimals: existingPosition?.indexToken?.priceDecimals,
-                        })
-                      : undefined
-                  }
-                  to={
-                    decreaseAmounts?.sizeDeltaUsd.gt(0)
+              <ValueTransition
+                from={
+                  existingPosition
+                    ? formatLiquidationPrice(existingPosition?.liquidationPrice, {
+                        displayDecimals: existingPosition?.indexToken?.priceDecimals,
+                      })
+                    : undefined
+                }
+                to={
+                  decreaseAmounts?.isFullClose 
+                    ? "-"
+                    : decreaseAmounts?.sizeDeltaUsd.gt(0)
                       ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
                           displayDecimals: toToken?.priceDecimals,
                         })
                       : undefined
-                  }
-                />
-              )
+                }
+              />
             }
           />
         )}
