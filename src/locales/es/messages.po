@@ -1334,7 +1334,7 @@ msgid "Decrease the Leverage by using the slider. If the Leverage slider is disa
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/SLTPEntries.tsx
-msgid "Decrease {0} Long by {1} at ${2}"
+msgid "Decrease {0} Long by {1} at ${2}."
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js

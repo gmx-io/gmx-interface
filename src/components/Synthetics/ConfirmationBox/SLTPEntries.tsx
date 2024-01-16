@@ -16,7 +16,7 @@ const SUGGESTION_PERCENTAGE_LIST = [10, 25, 50, 75, 100];
 
 type Props = {
   entries: Entry[];
-  updateEntry: (id: string, entry: any) => void;
+  updateEntry: (id: string, entry: Entry) => void;
   addEntry: () => void;
   deleteEntry: (id: string) => void;
   canAddEntry: boolean;
@@ -40,7 +40,7 @@ function SLTPEntries({ entries, updateEntry, addEntry, deleteEntry, canAddEntry,
           entry.price &&
           indexToken &&
           entrySizeUsd &&
-          t`Decrease ${indexToken?.symbol} Long by ${formatUsd(entrySizeUsd)} at $${entry.price}`;
+          t`Decrease ${indexToken?.symbol} Long by ${formatUsd(entrySizeUsd)} at $${entry.price}.`;
 
         return (
           <div key={entry.id}>

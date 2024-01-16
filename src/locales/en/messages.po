@@ -1334,8 +1334,8 @@ msgid "Decrease the Leverage by using the slider. If the Leverage slider is disa
 msgstr "Decrease the Leverage by using the slider. If the Leverage slider is disabled, you can increase the Pay amount or reduce the Order size."
 
 #: src/components/Synthetics/ConfirmationBox/SLTPEntries.tsx
-msgid "Decrease {0} Long by {1} at ${2}"
-msgstr "Decrease {0} Long by {1} at ${2}"
+msgid "Decrease {0} Long by {1} at ${2}."
+msgstr "Decrease {0} Long by {1} at ${2}."
 
 #: src/components/Exchange/TradeHistory.js
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx

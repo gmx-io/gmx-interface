@@ -46,7 +46,8 @@
       .SLTP-input-error {
         display: none;
         &.Tooltip-popup {
-          min-width: 20rem;
+          min-width: 0;
+          width: max-content;
         }
       }
 

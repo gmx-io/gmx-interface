@@ -218,6 +218,8 @@ function useEntries(errorHandler: (entry: Partial<Entry>) => Partial<Entry>) {
     return totalPercentage < MAX_PERCENTAGE;
   }, [entries]);
 
+  console.log(entries, "entries");
+
   const addEntry = useCallback(() => {
     if (!canAddEntry) return;
 
@@ -300,7 +302,7 @@ function calculateAmounts(params: {
   if (!increaseAmounts || !marketInfo || !collateralToken || !minPositionSizeUsd || !minCollateralUsd) return;
 
   return entries
-    .filter((entry) => entry.price && entry.percentage && !entry.error)
+    .filter((entry) => Number(entry.price) && entry.percentage && !entry.error)
     .map((entry) => {
       const percentage = Math.floor(Number.parseFloat(entry.percentage) * 100);
       const sizeUsd = increaseAmounts.sizeDeltaUsd.mul(percentage).div(BASIS_POINTS_DIVISOR);
