@@ -1,6 +1,6 @@
 import { Trans } from "@lingui/macro";
 import DataStore from "abis/DataStore.json";
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR } from "config/chains";
 import { getContract } from "config/contracts";
 import {
   SUBACCOUNT_ORDER_ACTION,
@@ -26,7 +26,7 @@ import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMulticall } from "lib/multicall";
-import { applyFactor, expandDecimals } from "lib/numbers";
+import { applyFactor } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getProvider } from "lib/rpc";
 import useWallet from "lib/wallets/useWallet";
@@ -72,16 +72,13 @@ export type SubaccountContext = {
 
 const context = createContext<SubaccountContext | null>(null);
 
+// TODO gmxer: refactor this in chains.ts so that new networks are required
 function getFactorByChainId(chainId: number) {
   switch (chainId) {
     case ARBITRUM:
-      return expandDecimals(5, 29);
-
     case AVALANCHE_FUJI:
-      return expandDecimals(2, 29);
-
     case AVALANCHE:
-      return expandDecimals(35, 29);
+      return NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR[chainId];
 
     default:
       throw new Error(`Unsupported chainId ${chainId}`);
@@ -107,6 +104,7 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
   // costs of subaccount actions
   const [defaultExecutionFee, defaultNetworkFee] = useMemo(() => {
     if (!gasLimits || !tokensData || !gasPrice) return [null, null];
+
     const approxNetworkGasLimit = applyFactor(
       applyFactor(gasLimits.estimatedFeeBaseGasLimit, gasLimits.estimatedFeeMultiplierFactor),
       getFactorByChainId(chainId)
