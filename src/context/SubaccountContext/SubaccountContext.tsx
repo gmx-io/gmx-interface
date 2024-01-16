@@ -1,5 +1,6 @@
 import { Trans } from "@lingui/macro";
 import DataStore from "abis/DataStore.json";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
 import { getContract } from "config/contracts";
 import {
   SUBACCOUNT_ORDER_ACTION,
@@ -25,7 +26,7 @@ import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMulticall } from "lib/multicall";
-import { applyFactor } from "lib/numbers";
+import { applyFactor, expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getProvider } from "lib/rpc";
 import useWallet from "lib/wallets/useWallet";
@@ -71,6 +72,22 @@ export type SubaccountContext = {
 
 const context = createContext<SubaccountContext | null>(null);
 
+function getFactorByChainId(chainId: number) {
+  switch (chainId) {
+    case ARBITRUM:
+      return expandDecimals(5, 29);
+
+    case AVALANCHE_FUJI:
+      return expandDecimals(2, 29);
+
+    case AVALANCHE:
+      return expandDecimals(35, 29);
+
+    default:
+      throw new Error(`Unsupported chainId ${chainId}`);
+  }
+}
+
 export function SubaccountContextProvider({ children }: PropsWithChildren) {
   const [modalOpen, setModalOpen] = useState(false);
   const [notificationState, setNotificationState] = useState<SubaccountNotificationState>("none");
@@ -91,11 +108,10 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
   const [defaultExecutionFee, defaultNetworkFee] = useMemo(() => {
     if (!gasLimits || !tokensData || !gasPrice) return [null, null];
     const approxNetworkGasLimit = applyFactor(
-      gasLimits.estimatedFeeBaseGasLimit,
-      gasLimits.estimatedFeeMultiplierFactor
+      applyFactor(gasLimits.estimatedFeeBaseGasLimit, gasLimits.estimatedFeeMultiplierFactor),
+      getFactorByChainId(chainId)
     )
       // createOrder is smaller than executeOrder
-      .div(5)
       // L2 Gas
       .add(800_000);
     const networkFee = approxNetworkGasLimit.mul(gasPrice);
