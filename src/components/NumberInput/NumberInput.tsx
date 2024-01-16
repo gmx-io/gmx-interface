@@ -16,7 +16,7 @@ type Props = {
   placeholder?: string;
 };
 
-function NumberInput({ value, inputRef, onValueChange, onFocus, onBlur, className, placeholder }: Props) {
+function NumberInput({ value = "", inputRef, onValueChange, onFocus, onBlur, className, placeholder }: Props) {
   function onChange(e: ChangeEvent<HTMLInputElement>) {
     if (!onValueChange) return;
     // Replace comma with dot

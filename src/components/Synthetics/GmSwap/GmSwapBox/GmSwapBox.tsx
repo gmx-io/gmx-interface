@@ -29,7 +29,7 @@ import { TokenData, TokensData, convertToUsd, getTokenData } from "domain/synthe
 import { GmSwapFees, useAvailableTokenOptions } from "domain/synthetics/trade";
 import { getDepositAmounts } from "domain/synthetics/trade/utils/deposit";
 import { getWithdrawalAmounts } from "domain/synthetics/trade/utils/withdrawal";
-import { Token } from "domain/tokens";
+import { Token, getMinReservedGasAmount } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -49,7 +49,6 @@ import { useHistory, useLocation } from "react-router-dom";
 import "./GmSwapBox.scss";
 import Checkbox from "components/Checkbox/Checkbox";
 import Tooltip from "components/Tooltip/Tooltip";
-import { DUST_BNB } from "lib/legacy";
 import { useHasOutdatedUi } from "domain/legacy";
 import useWallet from "lib/wallets/useWallet";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
@@ -131,6 +130,9 @@ export function GmSwapBox(p: Props) {
 
   const { chainId } = useChainId();
   const { account } = useWallet();
+
+  const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
+  const minReservedGasAmount = getMinReservedGasAmount(nativeToken);
 
   const uiFeeFactor = useUiFeeFactor(chainId);
 
@@ -832,14 +834,19 @@ export function GmSwapBox(p: Props) {
               onClickTopRightLabel: () => {
                 if (firstToken?.balance) {
                   const maxAvailableAmount = firstToken.isNative
-                    ? firstToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
+                    ? firstToken.balance.sub(minReservedGasAmount || 0)
                     : firstToken.balance;
                   setFirstTokenInputValue(formatAmountFree(maxAvailableAmount, firstToken.decimals));
                   onFocusedCollateralInputChange(firstToken.address);
                 }
               },
             })}
-            showMaxButton={isDeposit && firstToken?.balance?.gt(0) && !firstTokenAmount?.eq(firstToken.balance)}
+            showMaxButton={
+              isDeposit &&
+              firstToken?.balance?.gt(0) &&
+              !firstTokenAmount?.eq(firstToken.balance) &&
+              (minReservedGasAmount && firstToken?.isNative ? firstToken?.balance?.gt(minReservedGasAmount) : true)
+            }
             inputValue={firstTokenInputValue}
             onInputValueChange={(e) => {
               if (firstToken) {
@@ -850,7 +857,7 @@ export function GmSwapBox(p: Props) {
             onClickMax={() => {
               if (firstToken?.balance) {
                 let maxAvailableAmount = firstToken.isNative
-                  ? firstToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
+                  ? firstToken.balance.sub(minReservedGasAmount || 0)
                   : firstToken.balance;
 
                 if (maxAvailableAmount.isNegative()) {
@@ -896,7 +903,12 @@ export function GmSwapBox(p: Props) {
               })}
               preventFocusOnLabelClick="right"
               inputValue={secondTokenInputValue}
-              showMaxButton={isDeposit && secondToken?.balance?.gt(0) && !secondTokenAmount?.eq(secondToken.balance)}
+              showMaxButton={
+                isDeposit &&
+                secondToken?.balance?.gt(0) &&
+                !secondTokenAmount?.eq(secondToken.balance) &&
+                (minReservedGasAmount && secondToken?.isNative ? secondToken?.balance?.gt(minReservedGasAmount) : true)
+              }
               onInputValueChange={(e) => {
                 if (secondToken) {
                   setSecondTokenInputValue(e.target.value);
@@ -907,7 +919,7 @@ export function GmSwapBox(p: Props) {
                 onClickTopRightLabel: () => {
                   if (secondToken?.balance) {
                     const maxAvailableAmount = secondToken.isNative
-                      ? secondToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
+                      ? secondToken.balance.sub(minReservedGasAmount || 0)
                       : secondToken.balance;
                     setSecondTokenInputValue(formatAmountFree(maxAvailableAmount, secondToken.decimals));
                     onFocusedCollateralInputChange(secondToken.address);
@@ -917,7 +929,7 @@ export function GmSwapBox(p: Props) {
               onClickMax={() => {
                 if (secondToken?.balance) {
                   let maxAvailableAmount = secondToken.isNative
-                    ? secondToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
+                    ? secondToken.balance.sub(minReservedGasAmount || 0)
                     : secondToken.balance;
 
                   if (maxAvailableAmount.isNegative()) {
