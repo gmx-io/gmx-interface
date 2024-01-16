@@ -3569,9 +3569,12 @@ msgstr ""
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price above Liq. Price"
+msgstr ""
+
+#: src/domain/synthetics/orders/useSLTPEntries.ts
+msgid "Price above Liq. Price."
 msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
@@ -3581,19 +3584,25 @@ msgstr ""
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price above Mark Price"
 msgstr ""
 
+#: src/domain/synthetics/orders/useSLTPEntries.ts
+msgid "Price above Mark Price."
+msgstr ""
+
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price below Liq. Price"
+msgstr ""
+
+#: src/domain/synthetics/orders/useSLTPEntries.ts
+msgid "Price below Liq. Price."
 msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
@@ -3603,11 +3612,14 @@ msgstr ""
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price below Mark Price"
+msgstr ""
+
+#: src/domain/synthetics/orders/useSLTPEntries.ts
+msgid "Price below Mark Price."
 msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.js

@@ -7,15 +7,40 @@ import cx from "classnames";
 import { formatUsd } from "lib/numbers";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
+import { MarketInfo } from "domain/synthetics/markets";
+import { IncreasePositionAmounts } from "domain/synthetics/trade";
+import { Entry } from "domain/synthetics/orders/useSLTPEntries";
+import { t } from "@lingui/macro";
 
 const SUGGESTION_PERCENTAGE_LIST = [10, 25, 50, 75, 100];
 
-function SLTPEntries({ entries, updateEntry, addEntry, deleteEntry, canAddEntry, totalSizeUsd }) {
+type Props = {
+  entries: Entry[];
+  updateEntry: (id: string, entry: any) => void;
+  addEntry: () => void;
+  deleteEntry: (id: string) => void;
+  canAddEntry: boolean;
+  marketInfo?: MarketInfo;
+  increaseAmounts?: IncreasePositionAmounts;
+};
+
+function SLTPEntries({ entries, updateEntry, addEntry, deleteEntry, canAddEntry, increaseAmounts, marketInfo }: Props) {
   return (
     <div className="SLTPEntries-wrapper">
       {entries.map((entry) => {
         const percentage = Math.floor(Number.parseFloat(entry.percentage) * 100);
-        const entrySizeUsd = totalSizeUsd.gt(0) && percentage && totalSizeUsd.mul(percentage).div(BASIS_POINTS_DIVISOR);
+        const entrySizeUsd =
+          increaseAmounts?.sizeDeltaUsd.gt(0) &&
+          percentage &&
+          increaseAmounts?.sizeDeltaUsd.mul(percentage).div(BASIS_POINTS_DIVISOR);
+
+        const indexToken = marketInfo?.indexToken;
+        const priceTooltipMsg =
+          !entry.error &&
+          entry.price &&
+          indexToken &&
+          entrySizeUsd &&
+          t`Decrease ${indexToken?.symbol} Long by ${formatUsd(entrySizeUsd)} at $${entry.price}`;
 
         return (
           <div key={entry.id}>
@@ -44,13 +69,13 @@ function SLTPEntries({ entries, updateEntry, addEntry, deleteEntry, canAddEntry,
                       updateEntry(entry.id, { ...entry, percentage: value });
                     }
                   }}
-                  placeholder="10"
+                  placeholder="Size"
                   suggestionList={SUGGESTION_PERCENTAGE_LIST}
                   symbol="%"
                 />
-                {entrySizeUsd ? (
+                {entrySizeUsd && priceTooltipMsg ? (
                   <div className={cx("SLTP-percent-info", "Tooltip-popup", "z-index-1001", "right-top")}>
-                    {formatUsd(entrySizeUsd)}
+                    {priceTooltipMsg}
                   </div>
                 ) : (
                   ""

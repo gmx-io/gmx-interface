@@ -204,11 +204,7 @@ export function ConfirmationBox(p: Props) {
   const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);
   const submitButtonRef = useRef<null | HTMLDivElement>(null);
 
-  const {
-    stopLoss,
-    takeProfit,
-    sizeUsd: sltpSizeUsd,
-  } = useSLTPEntries({
+  const { stopLoss, takeProfit } = useSLTPEntries({
     marketInfo,
     tradeFlags,
     collateralToken,
@@ -1045,7 +1041,8 @@ export function ConfirmationBox(p: Props) {
                 addEntry={addStopLossEntry}
                 deleteEntry={deleteStopLossEntry}
                 canAddEntry={canAddStopLossEntry}
-                totalSizeUsd={sltpSizeUsd}
+                increaseAmounts={increaseAmounts}
+                marketInfo={marketInfo}
               />
             </div>
           }
@@ -1068,7 +1065,7 @@ export function ConfirmationBox(p: Props) {
                   return (
                     <div className="space-between mb-xs" key={index}>
                       <span className="mr-md">
-                        ${stopLossEntry.price} - {stopLossEntry?.percentage}%:
+                        At ${stopLossEntry.price}, SL {stopLossEntry?.percentage}%:
                       </span>
                       <span className={stopLossAmount.realizedPnl.isNegative() ? "text-red" : "text-green"}>
                         {formatUsd(stopLossAmount.realizedPnl)} (
@@ -1104,7 +1101,8 @@ export function ConfirmationBox(p: Props) {
                 addEntry={addTakeProfitEntry}
                 deleteEntry={deleteTakeProfitEntry}
                 canAddEntry={canAddTakeProfitEntry}
-                totalSizeUsd={sltpSizeUsd}
+                increaseAmounts={increaseAmounts}
+                marketInfo={marketInfo}
               />
             </div>
           }
@@ -1126,7 +1124,7 @@ export function ConfirmationBox(p: Props) {
                   return (
                     <div className="space-between mb-xs" key={index}>
                       <span className="mr-md">
-                        ${takeProfitEntry.price} - {takeProfitEntry?.percentage}%:
+                        At ${takeProfitEntry.price}, TP {takeProfitEntry?.percentage}%:
                       </span>
                       <span className={takeProfitAmount.realizedPnl.isNegative() ? "text-red" : "text-green"}>
                         {formatUsd(takeProfitAmount.realizedPnl)} (

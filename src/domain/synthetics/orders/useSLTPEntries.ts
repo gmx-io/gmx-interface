@@ -207,7 +207,6 @@ export default function useSLTPEntries({
   return {
     stopLoss,
     takeProfit,
-    sizeUsd: increaseAmounts?.sizeDeltaUsd,
   };
 }
 
@@ -378,8 +377,8 @@ function createErrorHandlers(nextPositionValues?: NextPositionValues, isLong?: b
     }
 
     const inputPrice = parseValue(entry.price, USD_DECIMALS);
-    const priceLiqError = isLong ? t`Price below Liq. Price` : t`Price above Liq. Price`;
-    const priceError = isStopLoss ? t`Price above Mark Price` : t`Price below Mark Price`;
+    const priceLiqError = isLong ? t`Price below Liq. Price.` : t`Price above Liq. Price.`;
+    const priceError = isStopLoss ? t`Price above Mark Price.` : t`Price below Mark Price.`;
 
     if (inputPrice?.lte(nextPositionValues.nextLiqPrice) && isLong) {
       return { ...entry, error: priceLiqError };
