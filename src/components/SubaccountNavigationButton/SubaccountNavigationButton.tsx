@@ -107,7 +107,12 @@ export const SubaccountNavigationButton = memo(
     } else if (shouldShowOfferButton) {
       onCloseClick = handleCloseOfferClick;
       content = (
-        <TooltipWithPortal handle={<Trans>Enable One-Click Trading</Trans>} renderContent={renderTooltipContent} />
+        <TooltipWithPortal
+          shouldHandleStopPropagation={isTouchDevice()}
+          position="left-bottom"
+          handle={<Trans>Enable One-Click Trading</Trans>}
+          renderContent={renderTooltipContent}
+        />
       );
     } else {
       return null;
@@ -124,3 +129,7 @@ export const SubaccountNavigationButton = memo(
     );
   }
 );
+
+function isTouchDevice() {
+  return "ontouchstart" in window;
+}
