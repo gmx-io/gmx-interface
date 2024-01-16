@@ -64,9 +64,13 @@ export function useTradeParamsProcessor(props: Props) {
     }
 
     if (tradeMode) {
-      const validTradeMode = getMatchingValueFromObject(TradeMode, tradeMode);
-      if (validTradeMode) {
-        tradeOptions.tradeMode = validTradeMode as TradeMode;
+      if (tradeMode.toLowerCase() === "tpsl") {
+        tradeOptions.tradeMode = TradeMode.Trigger;
+      } else {
+        const validTradeMode = getMatchingValueFromObject(TradeMode, tradeMode);
+        if (validTradeMode) {
+          tradeOptions.tradeMode = validTradeMode as TradeMode;
+        }
       }
     }
 
