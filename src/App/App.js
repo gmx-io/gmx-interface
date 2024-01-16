@@ -1,7 +1,8 @@
 import { ethers } from "ethers";
 import useScrollToTop from "lib/useScrollToTop";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { SWRConfig } from "swr";
+import "@wagmi/connectors";
 
 import { Redirect, Route, HashRouter as Router, Switch, useHistory, useLocation } from "react-router-dom";
 
@@ -96,6 +97,8 @@ import { useDisconnect } from "wagmi";
 import useWallet from "lib/wallets/useWallet";
 import { swrGCMiddleware } from "lib/swrMiddlewares";
 import useTradeRedirect from "lib/useTradeRedirect";
+import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContext";
+import { SubaccountModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -200,7 +203,7 @@ function FullApp() {
     false
   );
 
-  const openSettings = () => {
+  const openSettings = useCallback(() => {
     const slippage = parseInt(settings.savedAllowedSlippage);
     setSlippageAmount(roundToTwoDecimals((slippage / BASIS_POINTS_DIVISOR) * 100));
     if (settings.executionFeeBufferBps !== undefined) {
@@ -212,7 +215,14 @@ function FullApp() {
     setShowDebugValues(settings.showDebugValues);
     setShouldDisableValidationForTesting(savedShouldDisableValidationForTesting);
     setIsSettingsVisible(true);
-  };
+  }, [
+    savedIsPnlInLeverage,
+    savedShouldDisableValidationForTesting,
+    savedShowPnlAfterFees,
+    settings.executionFeeBufferBps,
+    settings.savedAllowedSlippage,
+    settings.showDebugValues,
+  ]);
 
   const saveAndCloseSettings = () => {
     const slippage = parseFloat(slippageAmount);
@@ -292,6 +302,7 @@ function FullApp() {
               </div>
             );
           }
+
           if (receipt.status === 1 && pendingTxn.message) {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
             helperToast.success(
@@ -301,6 +312,8 @@ function FullApp() {
                   <Trans>View</Trans>
                 </ExternalLink>
                 <br />
+                {pendingTxn.messageDetails && <br />}
+                {pendingTxn.messageDetails}
               </div>
             );
           }
@@ -666,6 +679,7 @@ function FullApp() {
           <Trans>Save</Trans>
         </Button>
       </Modal>
+      <SubaccountModal setPendingTxns={setPendingTxns} />
     </>
   );
 }
@@ -691,25 +705,23 @@ function App() {
     return () => unwatch();
   }, [disconnect]);
 
-  return (
+  let app = <FullApp />;
+  app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;
+  app = <I18nProvider i18n={i18n}>{app}</I18nProvider>;
+  app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;
+  app = <WebsocketContextProvider>{app}</WebsocketContextProvider>;
+  app = <Router>{app}</Router>;
+  app = <SEO>{app}</SEO>;
+  app = <SettingsContextProvider>{app}</SettingsContextProvider>;
+  app = (
     <SWRConfig
       value={{ refreshInterval: 5000, refreshWhenHidden: false, refreshWhenOffline: false, use: [swrGCMiddleware] }}
     >
-      <SettingsContextProvider>
-        <SEO>
-          <Router>
-            <WebsocketContextProvider>
-              <SyntheticsEventsProvider>
-                <I18nProvider i18n={i18n}>
-                  <FullApp />
-                </I18nProvider>
-              </SyntheticsEventsProvider>
-            </WebsocketContextProvider>
-          </Router>
-        </SEO>
-      </SettingsContextProvider>
+      {app}
     </SWRConfig>
   );
+
+  return app;
 }
 
 export default App;

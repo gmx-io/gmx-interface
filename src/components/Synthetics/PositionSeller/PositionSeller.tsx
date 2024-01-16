@@ -6,6 +6,7 @@ import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import Modal from "components/Modal/Modal";
 import PercentageInput from "components/PercentageInput/PercentageInput";
+import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 import Tab from "components/Tab/Tab";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenSelector from "components/TokenSelector/TokenSelector";
@@ -16,6 +17,7 @@ import { DEFAULT_SLIPPAGE_AMOUNT, EXCESSIVE_SLIPPAGE_AMOUNT } from "config/facto
 import { getKeepLeverageKey } from "config/localStorage";
 import { convertTokenAddress } from "config/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useHasOutdatedUi } from "domain/legacy";
 import { useUserReferralInfo } from "domain/referrals/hooks";
@@ -67,15 +69,15 @@ import {
   parseValue,
 } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { museNeverExist } from "lib/types";
 import { usePrevious } from "lib/usePrevious";
 import useWallet from "lib/wallets/useWallet";
 import { useEffect, useMemo, useState } from "react";
 import { useLatest } from "react-use";
+import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
-import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import "./PositionSeller.scss";
-import { museNeverExist } from "lib/types";
 
 export type Props = {
   position?: PositionInfo;
@@ -381,6 +383,8 @@ export function PositionSeller(p: Props) {
     triggerPrice,
   ]);
 
+  const subaccount = useSubaccount(executionFee?.feeTokenAmount ?? null);
+
   function onSubmit() {
     if (!account) {
       openConnectModal?.();
@@ -407,6 +411,7 @@ export function PositionSeller(p: Props) {
     createDecreaseOrderTxn(
       chainId,
       signer,
+      subaccount,
       {
         account,
         marketAddress: position.marketAddress,
@@ -714,6 +719,11 @@ export function PositionSeller(p: Props) {
           option={orderOption}
           optionLabels={ORDER_OPTION_LABELS}
           onChange={setOrderOption}
+        />
+        <SubaccountNavigationButton
+          executionFee={executionFee?.feeTokenAmount}
+          closeConfirmationBox={onClose}
+          tradeFlags={tradeFlags}
         />
 
         {position && (
