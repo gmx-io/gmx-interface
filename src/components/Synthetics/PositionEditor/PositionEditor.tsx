@@ -95,7 +95,7 @@ export function PositionEditor(p: Props) {
   const { data: hasOutdatedUi } = useHasOutdatedUi();
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
-  const minReservedGasAmount = getMinReservedGasAmount(nativeToken);
+  const minReservedGasAmount = getMinReservedGasAmount(nativeToken?.decimals, nativeToken?.prices?.maxPrice);
 
   const isVisible = Boolean(position);
   const prevIsVisible = usePrevious(isVisible);
@@ -429,7 +429,9 @@ export function PositionEditor(p: Props) {
     [Operation.Withdraw]: t`Withdraw`,
   };
 
-  const showMaxOnDeposit = collateralToken?.isNative ? collateralToken?.balance?.gt(minReservedGasAmount || 0) : true;
+  const showMaxOnDeposit = collateralToken?.isNative
+    ? minReservedGasAmount && collateralToken?.balance?.gt(minReservedGasAmount)
+    : true;
 
   return (
     <div className="PositionEditor">
@@ -483,7 +485,7 @@ export function PositionEditor(p: Props) {
               }}
               onClickMax={() => {
                 let maxDepositAmount = collateralToken!.isNative
-                  ? collateralToken!.balance!.sub(BigNumber.from(minReservedGasAmount))
+                  ? collateralToken!.balance!.sub(BigNumber.from(minReservedGasAmount || 0))
                   : collateralToken!.balance!;
 
                 if (maxDepositAmount.isNegative()) {

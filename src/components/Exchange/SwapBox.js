@@ -69,7 +69,7 @@ import {
   replaceNativeTokenAddress,
   shouldRaiseGasError,
 } from "domain/tokens";
-import { getTokenInfo, getUsd } from "domain/tokens/utils";
+import { getMinReservedGasAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
@@ -313,6 +313,9 @@ export default function SwapBox(props) {
 
   const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress);
   const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress);
+
+  const nativeTokenInfo = getTokenInfo(infoTokens, nativeTokenAddress);
+  const minReservedGasAmount = getMinReservedGasAmount(nativeTokenInfo?.decimals, nativeTokenInfo?.maxPrice);
 
   const renderAvailableLongLiquidity = () => {
     if (!isLong) {
@@ -1785,7 +1788,9 @@ export default function SwapBox(props) {
       return;
     }
 
-    let maxAvailableAmount = fromToken.isNative ? fromBalance.sub(bigNumberify(DUST_BNB).mul(2)) : fromBalance;
+    let maxAvailableAmount = fromToken.isNative
+      ? minReservedGasAmount && fromBalance.sub(minReservedGasAmount)
+      : fromBalance;
 
     if (maxAvailableAmount.isNegative()) {
       maxAvailableAmount = bigNumberify(0);
@@ -1803,8 +1808,14 @@ export default function SwapBox(props) {
     if (!fromToken || !fromBalance) {
       return false;
     }
-    const maxAvailableAmount = fromToken.isNative ? fromBalance.sub(bigNumberify(DUST_BNB).mul(2)) : fromBalance;
-    return fromValue !== formatAmountFree(maxAvailableAmount, fromToken.decimals, fromToken.decimals);
+    const maxAvailableAmount = fromToken.isNative ? fromBalance.sub(minReservedGasAmount) : fromBalance;
+    const shoudShowMaxButtonBasedOnGasAmount = fromToken.isNative
+      ? minReservedGasAmount && fromBalance.gt(minReservedGasAmount)
+      : true;
+    return (
+      shoudShowMaxButtonBasedOnGasAmount &&
+      fromValue !== formatAmountFree(maxAvailableAmount, fromToken.decimals, fromToken.decimals)
+    );
   }
 
   const ERROR_TOOLTIP_MSG = {

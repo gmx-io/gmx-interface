@@ -4,7 +4,6 @@ import { getContract } from "config/contracts";
 import { BigNumber, ethers } from "ethers";
 import {
   adjustForDecimals,
-  DUST_BNB,
   getBuyGlpFromAmount,
   getBuyGlpToAmount,
   getSellGlpFromAmount,
@@ -43,7 +42,7 @@ import { ARBITRUM, FEES_HIGH_BPS, getChainName, IS_NETWORK_DISABLED } from "conf
 import { getIcon } from "config/icons";
 import { getNativeToken, getToken, getV1Tokens, getWhitelistedV1Tokens, getWrappedToken } from "config/tokens";
 import { approveTokens, useInfoTokens } from "domain/tokens";
-import { getTokenInfo, getUsd } from "domain/tokens/utils";
+import { getMinReservedGasAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
@@ -313,6 +312,7 @@ export default function GlpSwap(props) {
   const { infoTokens } = useInfoTokens(signer, chainId, active, tokenBalances, undefined);
   const swapToken = getToken(chainId, swapTokenAddress);
   const swapTokenInfo = getTokenInfo(infoTokens, swapTokenAddress);
+  const nativeTokenInfo = getTokenInfo(infoTokens, AddressZero);
 
   const swapTokenBalance = swapTokenInfo && swapTokenInfo.balance ? swapTokenInfo.balance : bigNumberify(0);
 
@@ -324,6 +324,12 @@ export default function GlpSwap(props) {
 
   const swapUsdMin = getUsd(swapAmount, swapTokenAddress, false, infoTokens);
   const glpUsdMax = glpAmount && glpPrice ? glpAmount.mul(glpPrice).div(expandDecimals(1, GLP_DECIMALS)) : undefined;
+
+  const minReservedGasAmount = getMinReservedGasAmount(nativeTokenInfo?.decimals, nativeTokenInfo?.maxPrice);
+
+  const showMaxButtonBasedOnBalance = swapTokenInfo.isNative
+    ? minReservedGasAmount && swapTokenBalance.gt(minReservedGasAmount)
+    : true;
 
   let isSwapTokenCapReached;
   if (swapTokenInfo.managedUsd && swapTokenInfo.maxUsdgAmount) {
@@ -488,9 +494,7 @@ export default function GlpSwap(props) {
   const fillMaxAmount = () => {
     if (isBuying) {
       setAnchorOnSwapAmount(true);
-      let maxAvailableAmount = swapToken.isNative
-        ? swapTokenBalance.sub(bigNumberify(DUST_BNB).mul(2))
-        : swapTokenBalance;
+      let maxAvailableAmount = swapToken.isNative ? swapTokenBalance.sub(minReservedGasAmount || 0) : swapTokenBalance;
 
       if (maxAvailableAmount?.isNegative()) {
         maxAvailableAmount = BigNumber.from(0);
@@ -992,7 +996,10 @@ export default function GlpSwap(props) {
                 topRightValue={`${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
                 inputValue={swapValue}
                 onInputValueChange={onSwapValueChange}
-                showMaxButton={swapValue !== formatAmountFree(swapTokenBalance, swapToken.decimals, swapToken.decimals)}
+                showMaxButton={
+                  showMaxButtonBasedOnBalance &&
+                  swapValue !== formatAmountFree(swapTokenBalance, swapToken.decimals, swapToken.decimals)
+                }
                 onClickTopRightLabel={fillMaxAmount}
                 onClickMax={fillMaxAmount}
                 topLeftValue={payBalance}

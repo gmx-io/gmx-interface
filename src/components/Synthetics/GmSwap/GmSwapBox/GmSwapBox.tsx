@@ -132,7 +132,7 @@ export function GmSwapBox(p: Props) {
   const { account } = useWallet();
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
-  const minReservedGasAmount = getMinReservedGasAmount(nativeToken);
+  const minReservedGasAmount = getMinReservedGasAmount(nativeToken?.decimals, nativeToken?.prices?.maxPrice);
 
   const uiFeeFactor = useUiFeeFactor(chainId);
 
@@ -845,7 +845,7 @@ export function GmSwapBox(p: Props) {
               isDeposit &&
               firstToken?.balance?.gt(0) &&
               !firstTokenAmount?.eq(firstToken.balance) &&
-              (minReservedGasAmount && firstToken?.isNative ? firstToken?.balance?.gt(minReservedGasAmount) : true)
+              (firstToken?.isNative ? minReservedGasAmount && firstToken?.balance?.gt(minReservedGasAmount) : true)
             }
             inputValue={firstTokenInputValue}
             onInputValueChange={(e) => {
@@ -907,7 +907,7 @@ export function GmSwapBox(p: Props) {
                 isDeposit &&
                 secondToken?.balance?.gt(0) &&
                 !secondTokenAmount?.eq(secondToken.balance) &&
-                (minReservedGasAmount && secondToken?.isNative ? secondToken?.balance?.gt(minReservedGasAmount) : true)
+                (secondToken?.isNative ? minReservedGasAmount && secondToken?.balance?.gt(minReservedGasAmount) : true)
               }
               onInputValueChange={(e) => {
                 if (secondToken) {

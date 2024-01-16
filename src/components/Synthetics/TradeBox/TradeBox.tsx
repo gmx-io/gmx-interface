@@ -238,7 +238,7 @@ export function TradeBox(p: Props) {
   const [toTokenInputValue, setToTokenInputValueRaw] = useSafeState("");
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
-  const minReservedGasAmount = getMinReservedGasAmount(nativeToken);
+  const minReservedGasAmount = getMinReservedGasAmount(nativeToken?.decimals, nativeToken?.prices.maxPrice);
 
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
   const fromTokenPrice = fromToken?.prices.minPrice;
@@ -246,7 +246,7 @@ export function TradeBox(p: Props) {
   const isNotMatchAvailableBalance =
     fromToken?.balance?.gt(0) &&
     !fromToken.balance.eq(fromTokenAmount) &&
-    (fromToken?.isNative ? fromToken.balance.gt(minReservedGasAmount || 0) : true);
+    (fromToken?.isNative ? minReservedGasAmount && fromToken.balance.gt(minReservedGasAmount) : true);
 
   const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigNumber.from(0);
 
@@ -1047,7 +1047,7 @@ export function TradeBox(p: Props) {
   function onMaxClick() {
     if (fromToken?.balance) {
       let maxAvailableAmount = fromToken.isNative
-        ? fromToken.balance.sub(BigNumber.from(minReservedGasAmount))
+        ? fromToken.balance.sub(BigNumber.from(minReservedGasAmount || 0))
         : fromToken.balance;
 
       if (maxAvailableAmount.isNegative()) {

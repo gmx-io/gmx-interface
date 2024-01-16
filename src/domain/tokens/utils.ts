@@ -15,7 +15,7 @@ import {
 } from "lib/legacy";
 import { bigNumberify, expandDecimals } from "lib/numbers";
 import { InfoTokens, Token, TokenInfo, TokenPrices } from "./types";
-import { TokenData, convertToTokenAmount } from "domain/synthetics/tokens";
+import { convertToTokenAmount } from "domain/synthetics/tokens";
 const { AddressZero } = ethers.constants;
 
 export function getTokenUrl(chainId: number, address: string) {
@@ -271,11 +271,11 @@ export function getMidPrice(prices: TokenPrices) {
   return prices.minPrice.add(prices.maxPrice).div(2);
 }
 
-export function getMinReservedGasAmount(token?: TokenData) {
-  const MIN_GAS_RESERVE_USD = expandDecimals(10, USD_DECIMALS);
-
-  if (!token) {
-    return;
+export function getMinReservedGasAmount(decimals?: number, price?: BigNumber) {
+  if (!decimals || !price) {
+    return BigNumber.from(0);
   }
-  return convertToTokenAmount(MIN_GAS_RESERVE_USD, token?.decimals, token?.prices.maxPrice);
+
+  const MIN_GAS_RESERVE_USD = expandDecimals(10, USD_DECIMALS);
+  return convertToTokenAmount(MIN_GAS_RESERVE_USD, decimals, price);
 }
