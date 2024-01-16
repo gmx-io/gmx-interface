@@ -495,16 +495,11 @@ export default function GlpSwap(props) {
     if (isBuying) {
       setAnchorOnSwapAmount(true);
       let maxAvailableAmount = swapToken.isNative ? swapTokenBalance.sub(minReservedGasAmount || 0) : swapTokenBalance;
-
       if (maxAvailableAmount?.isNegative()) {
         maxAvailableAmount = BigNumber.from(0);
       }
 
-      const formattedAmount = formatAmountFree(
-        maxAvailableAmount.gt(0) ? maxAvailableAmount : 0,
-        swapToken.decimals,
-        swapToken.decimals
-      );
+      const formattedAmount = formatAmountFree(maxAvailableAmount, swapToken.decimals, swapToken.decimals);
       const finalAmount = isMetamaskMobile
         ? limitDecimals(formattedAmount, MAX_METAMASK_MOBILE_DECIMALS)
         : formattedAmount;
