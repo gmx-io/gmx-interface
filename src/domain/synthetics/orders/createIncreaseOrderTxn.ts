@@ -37,28 +37,27 @@ type IncreaseOrderParams = {
   referralCode: string | undefined;
   indexToken: TokenData;
   tokensData: TokensData;
-  subaccount: Subaccount;
   setPendingTxns: (txns: any) => void;
   setPendingOrder: SetPendingOrder;
   setPendingPosition: SetPendingPosition;
 };
 
-export async function createIncreaseOrderTxn(chainId: number, signer: Signer, p: IncreaseOrderParams) {
+export async function createIncreaseOrderTxn(
+  chainId: number,
+  signer: Signer,
+  subaccount: Subaccount,
+  p: IncreaseOrderParams
+) {
   const isNativePayment = p.initialCollateralAddress === NATIVE_TOKEN_ADDRESS;
-  const subaccount = isNativePayment ? null : p.subaccount;
+  subaccount = isNativePayment ? null : subaccount;
 
   const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
   const router = subaccount ? getSubaccountRouterContract(chainId, subaccount.signer) : exchangeRouter;
-
   const orderVaultAddress = getContract(chainId, "OrderVault");
-
   const wntCollateralAmount = isNativePayment ? p.initialCollateralAmount : BigNumber.from(0);
   const totalWntAmount = wntCollateralAmount.add(p.executionFee);
-
   const initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
-
   const shouldApplySlippage = isMarketOrderType(p.orderType);
-
   const acceptablePrice = shouldApplySlippage
     ? applySlippageToPrice(p.allowedSlippage, p.acceptablePrice, true, p.isLong)
     : p.acceptablePrice;
@@ -85,7 +84,6 @@ export async function createIncreaseOrderTxn(chainId: number, signer: Signer, p:
     initialCollateralTokenAddress,
     signer,
   });
-
   const secondaryPriceOverrides: PriceOverrides = {};
   const primaryPriceOverrides: PriceOverrides = {};
 
@@ -107,9 +105,9 @@ export async function createIncreaseOrderTxn(chainId: number, signer: Signer, p:
       errorTitle: t`Order error.`,
     });
   }
+
   const txnCreatedAt = Date.now();
   const txnCreatedAtBlock = await signer.provider?.getBlockNumber();
-
   const txn = await callContract(chainId, router, "multicall", [encodedPayload], {
     value: totalWntAmount,
     hideSentMsg: true,

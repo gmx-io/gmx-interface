@@ -66,10 +66,9 @@ export function OrderList(p: Props) {
     if (!signer) return;
     setCanellingOrdersKeys((prev) => [...prev, key]);
 
-    cancelOrdersTxn(chainId, signer, {
+    cancelOrdersTxn(chainId, signer, subaccount, {
       orderKeys: [key],
       setPendingTxns: p.setPendingTxns,
-      subaccount,
       isLastSubaccountAction,
       detailsMsg: cancelOrdersDetailsMessage,
     }).finally(() => setCanellingOrdersKeys((prev) => prev.filter((k) => k !== key)));

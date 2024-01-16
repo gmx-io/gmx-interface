@@ -327,7 +327,7 @@ export function PositionEditor(p: Props) {
     if (isDeposit) {
       setIsSubmitting(true);
 
-      createIncreaseOrderTxn(chainId, signer, {
+      createIncreaseOrderTxn(chainId, signer, subaccount, {
         account,
         marketAddress: position.marketAddress,
         initialCollateralAddress: selectedCollateralAddress,
@@ -347,7 +347,6 @@ export function PositionEditor(p: Props) {
         indexToken: position.indexToken,
         tokensData,
         skipSimulation: p.shouldDisableValidation,
-        subaccount,
         setPendingTxns,
         setPendingOrder,
         setPendingPosition,

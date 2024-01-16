@@ -25,7 +25,7 @@ import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMulticall } from "lib/multicall";
-import { applyFactor } from "lib/numbers";
+import { applyFactor, formatAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getProvider } from "lib/rpc";
 import useWallet from "lib/wallets/useWallet";
@@ -99,6 +99,7 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
       // L2 Gas
       .add(800_000);
     const networkFee = approxNetworkGasLimit.mul(gasPrice);
+    console.log(formatAmount(networkFee, getNativeToken(chainId).decimals), "network fee");
 
     const gasLimit = estimateExecuteIncreaseOrderGasLimit(gasLimits, {
       swapsCount: 1,
@@ -313,9 +314,9 @@ export function useSubaccountInsufficientFunds(requiredBalance: BigNumber | unde
 export function useMainAccountInsufficientFunds(requiredBalance: BigNumber | undefined | null) {
   const { chainId } = useChainId();
   const { account: address } = useWallet();
-  const subBalances = useTokenBalances(chainId, address);
+  const balances = useTokenBalances(chainId, address);
   const wrappedToken = useMemo(() => getWrappedToken(chainId), [chainId]);
-  const wntBalance = getByKey(subBalances.balancesData, wrappedToken.address);
+  const wntBalance = getByKey(balances.balancesData, wrappedToken.address);
   const isSubaccountActive = useIsSubaccountActive();
   const networkFee = useSubaccountDefaultNetworkFee();
   const defaultExecutionFee = useSubaccountDefaultExecutionFee();

@@ -348,7 +348,7 @@ export function OrderEditor(p: Props) {
 
     setIsSubmitting(true);
 
-    updateOrderTxn(chainId, signer, {
+    updateOrderTxn(chainId, signer, subaccount, {
       orderKey: p.order.key,
       sizeDeltaUsd: sizeDeltaUsd || positionOrder.sizeDeltaUsd,
       triggerPrice: triggerPrice || positionOrder.triggerPrice,
@@ -356,7 +356,6 @@ export function OrderEditor(p: Props) {
       minOutputAmount: minOutputAmount || p.order.minOutputAmount,
       executionFee: executionFee?.feeTokenAmount,
       indexToken: indexToken,
-      subaccount,
       setPendingTxns: p.setPendingTxns,
     })
       .then(() => p.onClose())

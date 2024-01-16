@@ -17,11 +17,10 @@ export type UpdateOrderParams = {
   minOutputAmount: BigNumber;
   // used to top-up execution fee for frozen orders
   executionFee?: BigNumber;
-  subaccount: Subaccount;
   setPendingTxns: (txns: any) => void;
 };
 
-export function updateOrderTxn(chainId: number, signer: Signer, p: UpdateOrderParams) {
+export function updateOrderTxn(chainId: number, signer: Signer, subaccount: Subaccount, p: UpdateOrderParams) {
   const {
     orderKey,
     sizeDeltaUsd,
@@ -33,8 +32,8 @@ export function updateOrderTxn(chainId: number, signer: Signer, p: UpdateOrderPa
     indexToken,
   } = p;
 
-  const router = p.subaccount
-    ? getSubaccountRouterContract(chainId, p.subaccount.signer)
+  const router = subaccount
+    ? getSubaccountRouterContract(chainId, subaccount.signer)
     : new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
 
   const orderVaultAddress = getContract(chainId, "OrderVault");

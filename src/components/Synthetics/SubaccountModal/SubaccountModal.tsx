@@ -494,7 +494,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
       await withdrawFromSubaccount({
         chainId,
         mainAccountAddress: account,
-        privateKey,
+        subaccountPrivateKey: privateKey,
       });
     } finally {
       setWithdrawalLoading(false);

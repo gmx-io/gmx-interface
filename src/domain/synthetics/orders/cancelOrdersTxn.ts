@@ -9,15 +9,14 @@ import { ReactNode } from "react";
 
 export type CancelOrderParams = {
   orderKeys: string[];
-  subaccount: Subaccount;
   isLastSubaccountAction: boolean;
   setPendingTxns: (txns: any) => void;
   detailsMsg?: ReactNode;
 };
 
-export async function cancelOrdersTxn(chainId: number, signer: Signer, p: CancelOrderParams) {
-  const router = p.subaccount
-    ? getSubaccountRouterContract(chainId, p.subaccount.signer)
+export async function cancelOrdersTxn(chainId: number, signer: Signer, subaccount: Subaccount, p: CancelOrderParams) {
+  const router = subaccount
+    ? getSubaccountRouterContract(chainId, subaccount.signer)
     : new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
 
   const multicall = p.orderKeys.map((key) => router.interface.encodeFunctionData("cancelOrder", [key]));

@@ -247,10 +247,9 @@ export function SyntheticsPage(p: Props) {
   function onCancelOrdersClick() {
     if (!signer) return;
     setIsCancelOrdersProcessig(true);
-    cancelOrdersTxn(chainId, signer, {
+    cancelOrdersTxn(chainId, signer, subaccount, {
       orderKeys: selectedOrdersKeysArr,
       setPendingTxns: setPendingTxns,
-      subaccount,
       isLastSubaccountAction,
       detailsMsg: cancelOrdersDetailsMessage,
     })

@@ -28,16 +28,15 @@ export type SwapOrderParams = {
   orderType: OrderType.MarketSwap | OrderType.LimitSwap;
   executionFee: BigNumber;
   allowedSlippage: number;
-  subaccount: Subaccount;
   setPendingTxns: (txns: any) => void;
   setPendingOrder: SetPendingOrder;
 };
 
-export async function createSwapOrderTxn(chainId: number, signer: Signer, p: SwapOrderParams) {
+export async function createSwapOrderTxn(chainId: number, signer: Signer, subaccount: Subaccount, p: SwapOrderParams) {
   const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
   const isNativePayment = p.fromTokenAddress === NATIVE_TOKEN_ADDRESS;
   const isNativeReceive = p.toTokenAddress === NATIVE_TOKEN_ADDRESS;
-  const subaccount = isNativePayment ? null : p.subaccount;
+  subaccount = isNativePayment ? null : subaccount;
   const router = subaccount ? getSubaccountRouterContract(chainId, subaccount.signer) : exchangeRouter;
 
   const { encodedPayload, totalWntAmount, minOutputAmount } = await getParams(router, signer, subaccount, chainId, p);

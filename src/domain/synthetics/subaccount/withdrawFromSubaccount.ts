@@ -3,20 +3,17 @@ import { getProvider } from "lib/rpc";
 
 export async function withdrawFromSubaccount({
   chainId,
-  privateKey,
+  subaccountPrivateKey,
   mainAccountAddress,
 }: {
   chainId: number;
-  privateKey: string;
+  subaccountPrivateKey: string;
   mainAccountAddress: string;
 }) {
   const provider = getProvider(undefined, chainId);
-  const wallet = new ethers.Wallet(privateKey, provider);
-  const value = await wallet.getBalance();
-
-  const gasPrice = await provider.getGasPrice();
+  const wallet = new ethers.Wallet(subaccountPrivateKey, provider);
+  const [value, gasPrice] = await Promise.all([wallet.getBalance(), provider.getGasPrice()]);
   const gasLimit = 21000;
-
   const approxAmountToSend = value.sub(gasPrice.mul(gasLimit));
 
   if (approxAmountToSend.lt(0)) {

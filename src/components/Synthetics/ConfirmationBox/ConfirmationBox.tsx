@@ -425,10 +425,9 @@ export function ConfirmationBox(p: Props) {
 
   function onCancelOrderClick(key: string): void {
     if (!signer) return;
-    cancelOrdersTxn(chainId, signer, {
+    cancelOrdersTxn(chainId, signer, subaccount, {
       orderKeys: [key],
       setPendingTxns: p.setPendingTxns,
-      subaccount,
       isLastSubaccountAction,
       detailsMsg: cancelOrdersDetailsMessage,
     });
@@ -461,7 +460,7 @@ export function ConfirmationBox(p: Props) {
       return Promise.resolve();
     }
 
-    return createSwapOrderTxn(chainId, signer, {
+    return createSwapOrderTxn(chainId, signer, subaccount, {
       account,
       fromTokenAddress: fromToken.address,
       fromTokenAmount: swapAmounts.amountIn,
@@ -472,7 +471,6 @@ export function ConfirmationBox(p: Props) {
       referralCode: referralCodeForTxn,
       executionFee: executionFee.feeTokenAmount,
       allowedSlippage,
-      subaccount,
       tokensData,
       setPendingTxns,
       setPendingOrder,
@@ -495,7 +493,7 @@ export function ConfirmationBox(p: Props) {
       return Promise.resolve();
     }
 
-    return createIncreaseOrderTxn(chainId, signer, {
+    return createIncreaseOrderTxn(chainId, signer, subaccount, {
       account,
       marketAddress: marketInfo.marketTokenAddress,
       initialCollateralAddress: fromToken?.address,
@@ -515,7 +513,6 @@ export function ConfirmationBox(p: Props) {
       indexToken: marketInfo.indexToken,
       tokensData,
       skipSimulation: isLimit || shouldDisableValidation,
-      subaccount,
       setPendingTxns: p.setPendingTxns,
       setPendingOrder,
       setPendingPosition,
