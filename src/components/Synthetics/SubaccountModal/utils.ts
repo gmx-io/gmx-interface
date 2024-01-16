@@ -130,6 +130,10 @@ export function getApproxSubaccountActionsCountByBalance(
     return BigNumber.from(0);
   }
 
+  if (!executionFee || executionFee.lte(0)) {
+    return null;
+  }
+
   const topUp = currentAutoTopUpAmount.gt(executionFee) ? executionFee : currentAutoTopUpAmount;
   const reducedCost = executionFee.sub(topUp);
 

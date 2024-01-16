@@ -25,7 +25,7 @@ import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMulticall } from "lib/multicall";
-import { applyFactor, formatAmount } from "lib/numbers";
+import { applyFactor } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getProvider } from "lib/rpc";
 import useWallet from "lib/wallets/useWallet";
@@ -99,7 +99,6 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
       // L2 Gas
       .add(800_000);
     const networkFee = approxNetworkGasLimit.mul(gasPrice);
-    console.log(formatAmount(networkFee, getNativeToken(chainId).decimals), "network fee");
 
     const gasLimit = estimateExecuteIncreaseOrderGasLimit(gasLimits, {
       swapsCount: 1,
@@ -238,7 +237,7 @@ export function useSubaccountAddress() {
   return useSubaccountSelector((s) => s.subaccount?.address ?? null);
 }
 
-export function useSubaccountPrivateKey() {
+function useSubaccountPrivateKey() {
   const encryptedString = useSubaccountSelector((s) => s.subaccount?.privateKey ?? null);
   const { account } = useWallet();
   return useMemo(() => {
@@ -282,14 +281,15 @@ export function useSubaccount(requiredBalance: BigNumber | null, requiredActions
     if (!address || !active || !privateKey || insufficientFunds || remaining?.lt(Math.max(1, requiredActions)))
       return null;
 
-    const wallet = new ethers.Wallet(privateKey);
     const provider = getProvider(undefined, chainId);
+    const wallet = new ethers.Wallet(privateKey, provider);
     const signer = wallet.connect(provider);
 
     return {
       address,
       active,
       signer,
+      wallet,
     };
   }, [address, active, privateKey, insufficientFunds, remaining, requiredActions, chainId]);
 }

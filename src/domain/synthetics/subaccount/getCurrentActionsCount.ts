@@ -5,13 +5,13 @@ import { BigNumber, Signer } from "ethers";
 import { executeMulticall } from "lib/multicall";
 
 export async function getCurrentMaxActionsCount({
-  account,
-  subaccount,
+  accountAddress,
+  subaccountAddress,
   chainId,
   signer,
 }: {
-  account: string;
-  subaccount: string;
+  accountAddress: string;
+  subaccountAddress: string;
   chainId: number;
   signer: Signer;
 }) {
@@ -22,7 +22,7 @@ export async function getCurrentMaxActionsCount({
       calls: {
         currentActionsCount: {
           methodName: "getUint",
-          params: [subaccountActionCountKey(account, subaccount, SUBACCOUNT_ORDER_ACTION)],
+          params: [subaccountActionCountKey(accountAddress, subaccountAddress, SUBACCOUNT_ORDER_ACTION)],
         },
       },
     },

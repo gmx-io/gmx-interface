@@ -1,18 +1,17 @@
-import { BigNumber, ethers } from "ethers";
-import { getProvider } from "lib/rpc";
+import { Subaccount } from "context/SubaccountContext/SubaccountContext";
+import { BigNumber } from "ethers";
 
 export async function withdrawFromSubaccount({
-  chainId,
-  subaccountPrivateKey,
+  subaccount,
   mainAccountAddress,
 }: {
-  chainId: number;
-  subaccountPrivateKey: string;
+  subaccount: Subaccount;
   mainAccountAddress: string;
 }) {
-  const provider = getProvider(undefined, chainId);
-  const wallet = new ethers.Wallet(subaccountPrivateKey, provider);
-  const [value, gasPrice] = await Promise.all([wallet.getBalance(), provider.getGasPrice()]);
+  if (!subaccount) throw new Error("No subaccount available.");
+
+  const wallet = subaccount.wallet;
+  const [value, gasPrice] = await Promise.all([wallet.getBalance(), wallet.getGasPrice()]);
   const gasLimit = 21000;
   const approxAmountToSend = value.sub(gasPrice.mul(gasLimit));
 

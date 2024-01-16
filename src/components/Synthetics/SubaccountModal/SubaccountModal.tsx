@@ -10,6 +10,7 @@ import { getContract } from "config/contracts";
 import { getNativeToken, getWrappedToken } from "config/tokens";
 import {
   useIsSubaccountActive,
+  useSubaccount,
   useSubaccountActionCounts,
   useSubaccountAddress,
   useSubaccountDefaultExecutionFee,
@@ -17,7 +18,6 @@ import {
   useSubaccountModalOpen,
   useSubaccountNotificationState,
   useSubaccountPendingTx,
-  useSubaccountPrivateKey,
   useSubaccountState,
 } from "context/SubaccountContext/SubaccountContext";
 import { useBigNumberInput } from "domain/synthetics/common/useBigNumberInput";
@@ -62,11 +62,9 @@ export function SubaccountModal({ setPendingTxns }: { setPendingTxns: (txns: any
 const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void }) => {
   const oneClickTradingState = useSubaccountState();
   const { chainId } = useChainId();
-  const { signer } = useWallet();
+  const { signer, account } = useWallet();
   const [withdrawalLoading, setWithdrawalLoading] = useState(false);
   const [isSubaccountUpdating, setIsSubaccountUpdating] = useState(false);
-  const { account } = useWallet();
-
   const { tokensData } = useTokensData(chainId);
   const subaccountAddress = useSubaccountAddress();
   const mainBalances = useTokenBalances(chainId, account);
@@ -353,10 +351,10 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
 
         count =
           (await getCurrentMaxActionsCount({
-            account: account!,
+            accountAddress: account!,
             chainId,
             signer,
-            subaccount: address,
+            subaccountAddress: address,
           })) ?? BigNumber.from(0);
       }
 
@@ -479,10 +477,10 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
 
   const { gasPrice } = useGasPrice(chainId);
 
-  const privateKey = useSubaccountPrivateKey();
+  const subaccount = useSubaccount(null, 1);
 
   const handleWithdrawClick = useCallback(async () => {
-    if (!privateKey) throw new Error("privateKey is not defined");
+    if (!subaccount) throw new Error("privateKey is not defined");
     if (!account) throw new Error("account is not defined");
     if (!signer) throw new Error("signer is not defined");
     if (!subAccNativeTokenBalance) throw new Error("subEthBalance is not defined");
@@ -492,14 +490,13 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
 
     try {
       await withdrawFromSubaccount({
-        chainId,
         mainAccountAddress: account,
-        subaccountPrivateKey: privateKey,
+        subaccount,
       });
     } finally {
       setWithdrawalLoading(false);
     }
-  }, [account, chainId, gasPrice, privateKey, signer, subAccNativeTokenBalance]);
+  }, [account, gasPrice, signer, subAccNativeTokenBalance, subaccount]);
 
   useEffect(() => {
     setNotificationState("none");
