@@ -796,6 +796,45 @@ export function GmSwapBox(p: Props) {
     ]
   );
 
+  function onMaxClickFirstToken() {
+    if (firstToken?.balance) {
+      let maxAvailableAmount = firstToken.isNative
+        ? firstToken.balance.sub(minReservedGasAmount || 0)
+        : firstToken.balance;
+
+      if (maxAvailableAmount.isNegative()) {
+        maxAvailableAmount = BigNumber.from(0);
+      }
+
+      const formattedMaxAvailableAmount = formatAmountFree(maxAvailableAmount, firstToken.decimals);
+      const finalAmount = isMetamaskMobile
+        ? limitDecimals(formattedMaxAvailableAmount, MAX_METAMASK_MOBILE_DECIMALS)
+        : formattedMaxAvailableAmount;
+
+      setFirstTokenInputValue(finalAmount);
+      onFocusedCollateralInputChange(firstToken.address);
+    }
+  }
+
+  function onMaxClickSecondToken() {
+    if (secondToken?.balance) {
+      let maxAvailableAmount = secondToken.isNative
+        ? secondToken.balance.sub(minReservedGasAmount || 0)
+        : secondToken.balance;
+
+      if (maxAvailableAmount.isNegative()) {
+        maxAvailableAmount = BigNumber.from(0);
+      }
+
+      const formattedMaxAvailableAmount = formatAmountFree(maxAvailableAmount, secondToken.decimals);
+      const finalAmount = isMetamaskMobile
+        ? limitDecimals(formattedMaxAvailableAmount, MAX_METAMASK_MOBILE_DECIMALS)
+        : formattedMaxAvailableAmount;
+      setSecondTokenInputValue(finalAmount);
+      onFocusedCollateralInputChange(secondToken.address);
+    }
+  }
+
   return (
     <div className={`App-box GmSwapBox`}>
       <Tab
@@ -831,15 +870,7 @@ export function GmSwapBox(p: Props) {
             })}
             preventFocusOnLabelClick="right"
             {...(isDeposit && {
-              onClickTopRightLabel: () => {
-                if (firstToken?.balance) {
-                  const maxAvailableAmount = firstToken.isNative
-                    ? firstToken.balance.sub(minReservedGasAmount || 0)
-                    : firstToken.balance;
-                  setFirstTokenInputValue(formatAmountFree(maxAvailableAmount, firstToken.decimals));
-                  onFocusedCollateralInputChange(firstToken.address);
-                }
-              },
+              onClickTopRightLabel: onMaxClickFirstToken,
             })}
             showMaxButton={
               isDeposit &&
@@ -854,25 +885,7 @@ export function GmSwapBox(p: Props) {
                 onFocusedCollateralInputChange(firstToken.address);
               }
             }}
-            onClickMax={() => {
-              if (firstToken?.balance) {
-                let maxAvailableAmount = firstToken.isNative
-                  ? firstToken.balance.sub(minReservedGasAmount || 0)
-                  : firstToken.balance;
-
-                if (maxAvailableAmount.isNegative()) {
-                  maxAvailableAmount = BigNumber.from(0);
-                }
-
-                const formattedMaxAvailableAmount = formatAmountFree(maxAvailableAmount, firstToken.decimals);
-                const finalAmount = isMetamaskMobile
-                  ? limitDecimals(formattedMaxAvailableAmount, MAX_METAMASK_MOBILE_DECIMALS)
-                  : formattedMaxAvailableAmount;
-
-                setFirstTokenInputValue(finalAmount);
-                onFocusedCollateralInputChange(firstToken.address);
-              }
-            }}
+            onClickMax={onMaxClickFirstToken}
           >
             {firstTokenAddress && isSingle ? (
               <TokenSelector
@@ -916,34 +929,9 @@ export function GmSwapBox(p: Props) {
                 }
               }}
               {...(isDeposit && {
-                onClickTopRightLabel: () => {
-                  if (secondToken?.balance) {
-                    const maxAvailableAmount = secondToken.isNative
-                      ? secondToken.balance.sub(minReservedGasAmount || 0)
-                      : secondToken.balance;
-                    setSecondTokenInputValue(formatAmountFree(maxAvailableAmount, secondToken.decimals));
-                    onFocusedCollateralInputChange(secondToken.address);
-                  }
-                },
+                onClickTopRightLabel: onMaxClickSecondToken,
               })}
-              onClickMax={() => {
-                if (secondToken?.balance) {
-                  let maxAvailableAmount = secondToken.isNative
-                    ? secondToken.balance.sub(minReservedGasAmount || 0)
-                    : secondToken.balance;
-
-                  if (maxAvailableAmount.isNegative()) {
-                    maxAvailableAmount = BigNumber.from(0);
-                  }
-
-                  const formattedMaxAvailableAmount = formatAmountFree(maxAvailableAmount, secondToken.decimals);
-                  const finalAmount = isMetamaskMobile
-                    ? limitDecimals(formattedMaxAvailableAmount, MAX_METAMASK_MOBILE_DECIMALS)
-                    : formattedMaxAvailableAmount;
-                  setSecondTokenInputValue(finalAmount);
-                  onFocusedCollateralInputChange(secondToken.address);
-                }
-              }}
+              onClickMax={onMaxClickSecondToken}
             >
               <div className="selected-token">
                 <TokenWithIcon symbol={secondToken?.symbol} displaySize={20} />
