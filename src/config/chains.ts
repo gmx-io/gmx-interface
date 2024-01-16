@@ -8,8 +8,8 @@ const { parseEther } = ethers.utils;
 export const ENV_ARBITRUM_RPC_URLS = process.env.REACT_APP_ARBITRUM_RPC_URLS;
 export const ENV_AVALANCHE_RPC_URLS = process.env.REACT_APP_AVALANCHE_RPC_URLS;
 
-export const BCS_MAINNET = 56;
-export const BCS_TESTNET = 97;
+export const BSС_MAINNET = 56;
+export const BSС_TESTNET = 97;
 export const ETH_MAINNET = 1;
 export const AVALANCHE = 43114;
 export const AVALANCHE_FUJI = 43113;
@@ -31,11 +31,12 @@ if (isDevelopment()) {
 export const IS_NETWORK_DISABLED = {
   [ARBITRUM]: false,
   [AVALANCHE]: false,
+  [BSС_MAINNET]: false,
 };
 
 export const CHAIN_NAMES_MAP = {
-  [BCS_MAINNET]: "BSC",
-  [BCS_TESTNET]: "BSC Testnet",
+  [BSС_MAINNET]: "BSC",
+  [BSС_TESTNET]: "BSC Testnet",
   [ARBITRUM_GOERLI]: "Arbitrum Goerli",
   [ARBITRUM]: "Arbitrum",
   [AVALANCHE]: "Avalanche",
@@ -93,7 +94,7 @@ export const EXECUTION_FEE_CONFIG_V2: {
 };
 
 const constants = {
-  [BCS_MAINNET]: {
+  [BSС_MAINNET]: {
     nativeTokenSymbol: "BNB",
     defaultCollateralSymbol: "BUSD",
     defaultFlagOrdersEnabled: false,
@@ -101,7 +102,7 @@ const constants = {
     v2: false,
   },
 
-  [BCS_TESTNET]: {
+  [BSС_TESTNET]: {
     nativeTokenSymbol: "BNB",
     defaultCollateralSymbol: "BUSD",
     defaultFlagOrdersEnabled: true,
@@ -170,7 +171,7 @@ const ALCHEMY_WHITELISTED_DOMAINS = ["gmx.io", "app.gmx.io"];
 
 export const RPC_PROVIDERS = {
   [ETH_MAINNET]: ["https://rpc.ankr.com/eth"],
-  [BCS_MAINNET]: [
+  [BSС_MAINNET]: [
     "https://bsc-dataseed.binance.org",
     "https://bsc-dataseed1.defibit.io",
     "https://bsc-dataseed1.ninicoin.io",
@@ -185,7 +186,7 @@ export const RPC_PROVIDERS = {
     "https://bsc-dataseed3.binance.org",
     "https://bsc-dataseed4.binance.org",
   ],
-  [BCS_TESTNET]: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
+  [BSС_TESTNET]: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
   [ARBITRUM]: ["https://arb1.arbitrum.io/rpc"],
   [ARBITRUM_GOERLI]: [
     "https://goerli-rollup.arbitrum.io/rpc",
@@ -215,26 +216,26 @@ export const FALLBACK_PROVIDERS = {
 };
 
 export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
-  [BCS_MAINNET]: {
-    chainId: "0x" + BCS_MAINNET.toString(16),
+  [BSС_MAINNET]: {
+    chainId: "0x" + BSС_MAINNET.toString(16),
     chainName: "BSC",
     nativeCurrency: {
       name: "BNB",
       symbol: "BNB",
       decimals: 18,
     },
-    rpcUrls: RPC_PROVIDERS[BCS_MAINNET],
+    rpcUrls: RPC_PROVIDERS[BSС_MAINNET],
     blockExplorerUrls: ["https://bscscan.com"],
   },
-  [BCS_TESTNET]: {
-    chainId: "0x" + BCS_TESTNET.toString(16),
+  [BSС_TESTNET]: {
+    chainId: "0x" + BSС_TESTNET.toString(16),
     chainName: "BSC Testnet",
     nativeCurrency: {
       name: "BNB",
       symbol: "BNB",
       decimals: 18,
     },
-    rpcUrls: RPC_PROVIDERS[BCS_TESTNET],
+    rpcUrls: RPC_PROVIDERS[BSС_TESTNET],
     blockExplorerUrls: ["https://testnet.bscscan.com/"],
   },
   [ARBITRUM_GOERLI]: {
@@ -326,9 +327,9 @@ export function getExplorerUrl(chainId) {
     return "https://ropsten.etherscan.io/";
   } else if (chainId === 42) {
     return "https://kovan.etherscan.io/";
-  } else if (chainId === BCS_MAINNET) {
+  } else if (chainId === BSС_MAINNET) {
     return "https://bscscan.com/";
-  } else if (chainId === BCS_TESTNET) {
+  } else if (chainId === BSС_TESTNET) {
     return "https://testnet.bscscan.com/";
   } else if (chainId === ARBITRUM_GOERLI) {
     return "https://goerli.arbiscan.io/";
