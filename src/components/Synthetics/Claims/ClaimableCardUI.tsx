@@ -40,7 +40,6 @@ export function ClaimableCardUI({
   const renderTooltipContent = useCallback(() => tooltipText, [tooltipText]);
   const renderTooltip2Content = useCallback(() => tooltip2Text, [tooltip2Text]);
   const isHorizontal = useMedia("(min-width: 600px) and (max-width: 1100px)");
-  console.log("isHorizontal", isHorizontal);
 
   return (
     <div className="Claims-card w-full" style={style}>
