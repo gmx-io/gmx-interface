@@ -3595,6 +3595,7 @@ msgid "Price above Mark Price"
 msgstr "价格高于标价"
 
 #: src/domain/synthetics/orders/useSLTPEntries.ts
+#: src/domain/synthetics/orders/useSLTPEntries.ts
 msgid "Price above Mark Price."
 msgstr ""
 
@@ -3622,6 +3623,7 @@ msgstr ""
 msgid "Price below Mark Price"
 msgstr "价格低于标价"
 
+#: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/orders/useSLTPEntries.ts
 msgid "Price below Mark Price."
 msgstr ""

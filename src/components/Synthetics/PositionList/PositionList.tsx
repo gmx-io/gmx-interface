@@ -50,9 +50,9 @@ export function PositionList(p: Props) {
       )}
       <div className="Exchange-list small">
         {!p.isLoading &&
-          positions.map((position, index) => (
+          positions.map((position) => (
             <PositionItem
-              key={`${position.key}-${index}`}
+              key={position.key}
               positionOrders={orders.filter((order) => isOrderForPosition(order, position.key)) as PositionOrderInfo[]}
               position={position}
               onEditCollateralClick={() => p.onEditCollateralClick(position.key)}
@@ -110,7 +110,7 @@ export function PositionList(p: Props) {
           {!p.isLoading &&
             positions.map((position, index) => (
               <PositionItem
-                key={`${position.key}-${index}`}
+                key={position.key}
                 positionOrders={
                   orders.filter((order) => isOrderForPosition(order, position.key)) as PositionOrderInfo[]
                 }

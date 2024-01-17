@@ -61,7 +61,11 @@ export default function useSLTPEntries({
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
   const uiFeeFactor = useUiFeeFactor(chainId);
 
-  const { handleSLErrors, handleTPErrors } = createErrorHandlers(nextPositionValues, isLong);
+  const { handleSLErrors, handleTPErrors } = createErrorHandlers({
+    liqPrice: nextPositionValues?.nextLiqPrice,
+    entryPrice: nextPositionValues?.nextEntryPrice,
+    isLong,
+  });
 
   const stopLossInfo = useEntries(handleSLErrors);
   const takeProfitInfo = useEntries(handleTPErrors);
@@ -218,8 +222,6 @@ function useEntries(errorHandler: (entry: Partial<Entry>) => Partial<Entry>) {
     return totalPercentage < MAX_PERCENTAGE;
   }, [entries]);
 
-  console.log(entries, "entries");
-
   const addEntry = useCallback(() => {
     if (!canAddEntry) return;
 
@@ -372,30 +374,51 @@ function calculateEntries(params: {
   return { ...entriesInfo, amounts, totalPnl, totalPnlPercentage };
 }
 
-function createErrorHandlers(nextPositionValues?: NextPositionValues, isLong?: boolean) {
+function createErrorHandlers({
+  liqPrice,
+  entryPrice,
+  isLong,
+}: {
+  liqPrice?: BigNumber;
+  entryPrice?: BigNumber;
+  isLong: boolean;
+}) {
   function getErrorHandler(entry: Partial<Entry>, isStopLoss: boolean): Partial<Entry> {
-    if (!nextPositionValues || !nextPositionValues?.nextLiqPrice || !entry.price || parseFloat(entry.price) === 0) {
+    if (!liqPrice || !entryPrice || !entry.price || parseFloat(entry.price) === 0) {
       return { ...entry, error: "" };
     }
 
     const inputPrice = parseValue(entry.price, USD_DECIMALS);
     const priceLiqError = isLong ? t`Price below Liq. Price.` : t`Price above Liq. Price.`;
-    const priceError = isStopLoss ? t`Price above Mark Price.` : t`Price below Mark Price.`;
 
-    if (inputPrice?.lte(nextPositionValues.nextLiqPrice) && isLong) {
+    if (inputPrice?.lte(liqPrice) && isLong) {
       return { ...entry, error: priceLiqError };
     }
 
-    if (inputPrice?.gte(nextPositionValues.nextLiqPrice) && !isLong) {
+    if (inputPrice?.gte(liqPrice) && !isLong) {
       return { ...entry, error: priceLiqError };
     }
 
-    if (inputPrice && nextPositionValues.nextEntryPrice) {
-      const condition = isStopLoss
-        ? inputPrice.gte(nextPositionValues.nextEntryPrice)
-        : inputPrice.lte(nextPositionValues.nextEntryPrice);
-      if (condition) {
-        return { ...entry, error: priceError };
+    const isPriceAboveMark = inputPrice?.gte(entryPrice);
+    const isPriceBelowMark = inputPrice?.lte(entryPrice);
+
+    if (isStopLoss) {
+      if (isPriceAboveMark && isLong) {
+        return { ...entry, error: t`Price above Mark Price.` };
+      }
+
+      if (isPriceBelowMark && !isLong) {
+        return { ...entry, error: t`Price below Mark Price.` };
+      }
+    }
+
+    if (!isStopLoss) {
+      if (isPriceBelowMark && isLong) {
+        return { ...entry, error: t`Price below Mark Price.` };
+      }
+
+      if (isPriceAboveMark && !isLong) {
+        return { ...entry, error: t`Price above Mark Price.` };
       }
     }
 
