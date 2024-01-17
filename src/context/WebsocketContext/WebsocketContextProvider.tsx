@@ -5,7 +5,7 @@ import { useChainId } from "lib/chains";
 import { closeWsConnection, getWsProvider, isProviderInClosedState, isWebsocketProvider } from "lib/rpc";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import useWallet from "lib/wallets/useWallet";
-import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { ReactNode, createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 const WS_HEALTH_CHECK_INTERVAL = 1000 * 30;
 const WS_RECONNECT_INTERVAL = 1000 * 5;
@@ -20,7 +20,7 @@ export function useWebsocketProvider() {
   return useContext(WsContext) as WebsocketContextType;
 }
 
-export function WebsocketContextProvider({ children }: { children: React.ReactNode }) {
+export function WebsocketContextProvider({ children }: { children: ReactNode }) {
   const { active } = useWallet();
   const { chainId } = useChainId();
   const [wsProvider, setWsProvider] = useState<WebSocketProvider | JsonRpcProvider>();

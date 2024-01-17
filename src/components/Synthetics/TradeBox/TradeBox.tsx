@@ -848,7 +848,7 @@ export function TradeBox(p: Props) {
     } else if (isLimit) {
       return t`Create Limit order`;
     } else {
-      return t`Create ${getTriggerNameByOrderType(decreaseAmounts?.triggerOrderType!)} Order`;
+      return t`Create ${getTriggerNameByOrderType(decreaseAmounts?.triggerOrderType)} Order`;
     }
   }, [
     decreaseAmounts?.triggerOrderType,
@@ -1424,26 +1424,24 @@ export function TradeBox(p: Props) {
             className="SwapBox-info-row"
             label={t`Liq. Price`}
             value={
-              decreaseAmounts?.isFullClose ? (
-                "-"
-              ) : (
-                <ValueTransition
-                  from={
-                    existingPosition
-                      ? formatLiquidationPrice(existingPosition?.liquidationPrice, {
-                          displayDecimals: existingPosition?.indexToken?.priceDecimals,
-                        })
-                      : undefined
-                  }
-                  to={
-                    decreaseAmounts?.sizeDeltaUsd.gt(0)
+              <ValueTransition
+                from={
+                  existingPosition
+                    ? formatLiquidationPrice(existingPosition?.liquidationPrice, {
+                        displayDecimals: existingPosition?.indexToken?.priceDecimals,
+                      })
+                    : undefined
+                }
+                to={
+                  decreaseAmounts?.isFullClose 
+                    ? "-"
+                    : decreaseAmounts?.sizeDeltaUsd.gt(0)
                       ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
                           displayDecimals: toToken?.priceDecimals,
                         })
                       : undefined
-                  }
-                />
-              )
+                }
+              />
             }
           />
         )}
@@ -1620,14 +1618,7 @@ export function TradeBox(p: Props) {
 
       {isSwap && <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />}
       <div className="Exchange-swap-info-group">
-        {isPosition && (
-          <MarketCard
-            isLong={isLong}
-            isIncrease={isIncrease}
-            marketInfo={marketInfo}
-            allowedSlippage={allowedSlippage}
-          />
-        )}
+        {isPosition && <MarketCard isLong={isLong} marketInfo={marketInfo} allowedSlippage={allowedSlippage} />}
       </div>
 
       <ConfirmationBox

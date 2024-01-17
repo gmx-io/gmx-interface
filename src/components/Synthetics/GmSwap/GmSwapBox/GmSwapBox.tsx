@@ -1078,8 +1078,8 @@ export function GmSwapBox(p: Props) {
         marketToken={marketToken!}
         longToken={longTokenInputState?.token}
         shortToken={shortTokenInputState?.token}
-        marketTokenAmount={amounts?.marketTokenAmount!}
-        marketTokenUsd={amounts?.marketTokenUsd!}
+        marketTokenAmount={amounts?.marketTokenAmount ?? BigNumber.from(0)}
+        marketTokenUsd={amounts?.marketTokenUsd ?? BigNumber.from(0)}
         longTokenAmount={amounts?.longTokenAmount}
         longTokenUsd={amounts?.longTokenUsd}
         shortTokenAmount={amounts?.shortTokenAmount}

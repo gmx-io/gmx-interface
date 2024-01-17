@@ -381,7 +381,7 @@ export function useExecutionFee(signer, active, chainId, infoTokens) {
 
   const { data: gasPrice } = useSWR<BigNumber | undefined>(["gasPrice", chainId], {
     fetcher: () => {
-      return new Promise<BigNumber | undefined>(async (resolve, reject) => {
+      return new Promise<BigNumber | undefined>(async (resolve) => {
         const provider = getProvider(signer, chainId);
         if (!provider) {
           resolve(undefined);

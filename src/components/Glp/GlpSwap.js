@@ -682,11 +682,9 @@ export default function GlpSwap(props) {
         true
       )} ${swapTokenInfo.symbol}!`,
       setPendingTxns,
-    })
-      .then(async () => {})
-      .finally(() => {
-        setIsSubmitting(false);
-      });
+    }).finally(() => {
+      setIsSubmitting(false);
+    });
   };
 
   const sellGlp = () => {
@@ -709,11 +707,9 @@ export default function GlpSwap(props) {
         true
       )} ${swapTokenInfo.symbol}!`,
       setPendingTxns,
-    })
-      .then(async () => {})
-      .finally(() => {
-        setIsSubmitting(false);
-      });
+    }).finally(() => {
+      setIsSubmitting(false);
+    });
   };
 
   const onClickPrimary = () => {
