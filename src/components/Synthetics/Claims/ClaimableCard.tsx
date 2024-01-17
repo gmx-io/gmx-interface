@@ -1,11 +1,11 @@
 import { t } from "@lingui/macro";
-import { MarketsInfoData, getTotalClaimableFundingUsd } from "domain/synthetics/markets";
-import { ClaimableCardUI } from "./ClaimableCardUI";
-import { CSSProperties, useMemo } from "react";
 import { PositionPriceImpactRebateInfo } from "domain/synthetics/claimHistory";
-import { calcTotalRebateUsd } from "./utils";
-import { useChainId } from "lib/chains";
+import { MarketsInfoData, getTotalClaimableFundingUsd } from "domain/synthetics/markets";
 import { useTokensData } from "domain/synthetics/tokens";
+import { useChainId } from "lib/chains";
+import { CSSProperties, useMemo } from "react";
+import { ClaimableCardUI } from "./ClaimableCardUI";
+import { calcTotalRebateUsd } from "./utils";
 
 type Props = {
   onClaimClick: () => void;
@@ -27,10 +27,10 @@ export function ClaimableCard({
   onClaimablePositionPriceImpactFeesClick,
 }: Props) {
   const markets = Object.values(marketsInfoData ?? {});
-  const totalClaimableFundingUsd = getTotalClaimableFundingUsd(markets);
+  const totalClaimableFundingUsd = useMemo(() => getTotalClaimableFundingUsd(markets), [markets]);
   const { chainId } = useChainId();
   const { tokensData } = useTokensData(chainId);
-  const priceImpactDifference = useMemo(
+  const priceImpactRebateUsd = useMemo(
     () => calcTotalRebateUsd(claimablePositionPriceImpactFees, tokensData, false),
     [claimablePositionPriceImpactFees, tokensData]
   );
@@ -40,7 +40,7 @@ export function ClaimableCard({
       fundingFees={totalClaimableFundingUsd}
       buttonText={buttonText}
       button2Text={buttonText}
-      priceImpactDifference={priceImpactDifference}
+      priceImpactRebate={priceImpactRebateUsd}
       title={title}
       tooltipText={tooltipText}
       onButtonClick={onClaimClick}

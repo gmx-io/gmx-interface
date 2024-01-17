@@ -3,10 +3,12 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { BigNumber } from "ethers";
 import { formatDeltaUsd } from "lib/numbers";
 import { CSSProperties, ReactNode, useCallback, useMemo } from "react";
+import { useMedia } from "react-use";
+import cx from "classnames";
 
 type Props = {
   fundingFees: BigNumber;
-  priceImpactDifference: BigNumber;
+  priceImpactRebate: BigNumber;
   buttonText: string;
   button2Text: string;
   title: string;
@@ -22,7 +24,7 @@ type Props = {
 export function ClaimableCardUI({
   buttonText,
   fundingFees,
-  priceImpactDifference,
+  priceImpactRebate: priceImpactDifference,
   onButtonClick,
   title,
   tooltipText,
@@ -37,43 +39,57 @@ export function ClaimableCardUI({
   const priceImpactDifferenceUsd = useMemo(() => formatDeltaUsd(priceImpactDifference), [priceImpactDifference]);
   const renderTooltipContent = useCallback(() => tooltipText, [tooltipText]);
   const renderTooltip2Content = useCallback(() => tooltip2Text, [tooltip2Text]);
+  const isHorizontal = useMedia("(min-width: 600px) and (max-width: 1100px)");
+  console.log("isHorizontal", isHorizontal);
 
   return (
     <div className="Claims-card w-full" style={style}>
       <div className="Claims-title">{title}</div>
-      <div className="Claims-row">
-        <div className="Claims-col">
-          <span className="muted">
-            <Trans>Funding fees</Trans>
-          </span>
-          <span>
-            <Tooltip handle={fundingFeesUsd} position="left-bottom" renderContent={renderTooltipContent} />
-          </span>
+      <div
+        className={cx("Claims-rows", {
+          "Claims-rows-horizontal": isHorizontal,
+        })}
+      >
+        <div className="Claims-row">
+          <div className="Claims-col">
+            <span className="muted">
+              <Trans>Funding fees</Trans>
+            </span>
+            <span>
+              <Tooltip handle={fundingFeesUsd} position="left-bottom" renderContent={renderTooltipContent} />
+            </span>
+          </div>
+          {fundingFees.gt(0) && (
+            <button className={`Claims-claim-button ${buttonStyle}`} onClick={onButtonClick}>
+              {buttonText}
+            </button>
+          )}
         </div>
-        {fundingFees.gt(0) && (
-          <button className={`Claims-claim-button ${buttonStyle}`} onClick={onButtonClick}>
-            {buttonText}
-          </button>
-        )}
-      </div>
-      <div className="Claims-row">
-        <div className="Claims-col">
-          <span className="muted">
-            <Trans>Price Impact Rebates</Trans>
-          </span>
-          <span>
-            {tooltip2Text ? (
-              <Tooltip handle={priceImpactDifferenceUsd} position="left-bottom" renderContent={renderTooltip2Content} />
-            ) : (
-              priceImpactDifferenceUsd
-            )}
-          </span>
+        {!isHorizontal && <div className="Claims-hr" />}
+        {isHorizontal && <div className="Claims-hr-horizontal" />}
+        <div className="Claims-row">
+          <div className="Claims-col">
+            <span className="muted">
+              <Trans>Price Impact Rebates</Trans>
+            </span>
+            <span>
+              {tooltip2Text ? (
+                <Tooltip
+                  handle={priceImpactDifferenceUsd}
+                  position="left-bottom"
+                  renderContent={renderTooltip2Content}
+                />
+              ) : (
+                priceImpactDifferenceUsd
+              )}
+            </span>
+          </div>
+          {priceImpactDifference.gt(0) && (
+            <button className={`Claims-claim-button ${button2Style}`} onClick={onButton2Click}>
+              {button2Text}
+            </button>
+          )}
         </div>
-        {priceImpactDifference.gt(0) && (
-          <button className={`Claims-claim-button ${button2Style}`} onClick={onButton2Click}>
-            {button2Text}
-          </button>
-        )}
       </div>
     </div>
   );

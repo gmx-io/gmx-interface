@@ -96,8 +96,6 @@ export function useClaimCollateralHistory(
             }
         }
 
-        # FIXME separate request?
-        # FIXME remove unused fields after
         priceImpactRebates(
           where: { account: "${account!.toLowerCase()}", claimed: false }
         ) {
@@ -112,6 +110,7 @@ export function useClaimCollateralHistory(
       }`);
 
       const { data } = await client!.query({ query, fetchPolicy: "no-cache" });
+
       return {
         claimActions: data.claimActions as RawClaimAction[],
         priceImpactRebates: data.priceImpactRebates as RawPositionPriceImpactRebateInfo[],
@@ -168,15 +167,24 @@ export function useClaimCollateralHistory(
         factor = factorByTime;
       }
 
+      const value = BigNumber.from(rawRebateInfo.value);
+      const valueByFactor = value.mul(factor).div(expandDecimals(1, 30));
+
       const rebateInfo: PositionPriceImpactRebateInfo = {
         factor,
-        value: BigNumber.from(rawRebateInfo.value),
-        valueByFactor: BigNumber.from(rawRebateInfo.value).mul(factor).div(expandDecimals(1, 30)),
+        value,
+        valueByFactor,
         timeKey: rawRebateInfo.timeKey,
         marketAddress: getAddress(rawRebateInfo.marketAddress),
         tokenAddress: getAddress(rawRebateInfo.tokenAddress),
         id: rawRebateInfo.id,
       };
+
+      if (factor.gt(0) && valueByFactor.eq(0)) {
+        // this is claimable entity but factor is too small
+        // skipping to avoid CollateralAlreadyClaimed error
+        return;
+      }
 
       if (rebateInfo.factor.eq(0)) {
         res.accruedPositionPriceImpactFees.push(rebateInfo);

@@ -3,6 +3,7 @@
   flex-direction: row;
   padding: 0.1rem 1.5rem;
   align-items: center;
+  flex: 1;
 }
 
 .Claims-card {
@@ -83,4 +84,25 @@
   white-space: nowrap;
   margin-bottom: 1.8rem;
   width: 7rem;
+}
+
+.Claims-rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.Claims-rows-horizontal.Claims-rows {
+  display: flex;
+  flex-direction: row;
+}
+
+.Claims-hr {
+  margin: 0.4rem 1.4rem 0;
+  border-bottom: 1px solid #23263b;
+}
+
+.Claims-hr-horizontal {
+  margin: 0.8rem 0 0;
+  border-left: 1px solid #23263b;
+  height: 100%;
 }

@@ -41,7 +41,7 @@ export function SettleAccruedCard({
   return (
     <ClaimableCardUI
       fundingFees={fundingFees}
-      priceImpactDifference={priceImpactDifference}
+      priceImpactRebate={priceImpactDifference}
       buttonText={buttonText}
       button2Text={button2Text}
       title={title}
