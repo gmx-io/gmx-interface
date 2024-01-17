@@ -11,8 +11,9 @@ type BalancesDataResult = {
   balancesData?: TokenBalancesData;
 };
 
-export function useTokenBalances(chainId: number): BalancesDataResult {
-  const { account } = useWallet();
+export function useTokenBalances(chainId: number, overrideAccount?: string | undefined): BalancesDataResult {
+  const { account: currentAccount } = useWallet();
+  const account = overrideAccount ?? currentAccount;
 
   const { data } = useMulticall(chainId, "useTokenBalances", {
     key: account ? [account] : null,

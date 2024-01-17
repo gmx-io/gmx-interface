@@ -5,6 +5,7 @@ import { BigNumber, Contract } from "ethers";
 import { helperToast } from "../helperToast";
 import { getErrorMessage } from "./transactionErrors";
 import { getGasLimit, setGasPrice } from "./utils";
+import { ReactNode } from "react";
 
 export async function callContract(
   chainId: number,
@@ -14,6 +15,7 @@ export async function callContract(
   opts: {
     value?: BigNumber | number;
     gasLimit?: BigNumber | number;
+    detailsMsg?: ReactNode;
     sentMsg?: string;
     successMsg?: string;
     hideSentMsg?: boolean;
@@ -55,6 +57,8 @@ export async function callContract(
             <Trans>View status.</Trans>
           </ExternalLink>
           <br />
+          {opts.detailsMsg && <br />}
+          {opts.detailsMsg}
         </div>
       );
     }
@@ -64,6 +68,7 @@ export async function callContract(
       const pendingTxn = {
         hash: res.hash,
         message,
+        messageDetails: opts.detailsMsg,
       };
       opts.setPendingTxns((pendingTxns) => [...pendingTxns, pendingTxn]);
     }

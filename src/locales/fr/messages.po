@@ -262,6 +262,14 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
+#: src/components/Synthetics/SubaccountModal/utils.ts
+msgid "Activate Subaccount"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Activating Subaccount"
+msgstr ""
+
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Active Orders"
@@ -304,6 +312,7 @@ msgid "Additionally, trigger orders are market orders and are not guaranteed to 
 msgstr "De plus, les ordres à seuil de déclenchement sont des ordres de bourse et ne sont pas garantis de s'exécuter au prix de déclenchement."
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Address copied to your clipboard"
 msgstr ""
 
@@ -329,6 +338,10 @@ msgstr "Accepter"
 
 #: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 msgid "Allow {0} to be spent"
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/utils.ts
+msgid "Allow {wrappedTokenSymbol} to be spent"
 msgstr ""
 
 #: src/App/App.js
@@ -743,7 +756,11 @@ msgid "Cancel submitted."
 msgstr "Annulation soumise"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
-msgid "Canceling {ordersText}"
+#~ msgid "Canceling {ordersText}"
+#~ msgstr ""
+
+#: src/domain/synthetics/orders/cancelOrdersTxn.ts
+msgid "Cancelling {ordersText}"
 msgstr ""
 
 #: src/App/App.js
@@ -1111,6 +1128,10 @@ msgstr "Continuer"
 msgid "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
 msgstr "Convertir les tokens esGMX en tokens GMX.<0/>Veuillez lire les  <1>détails sur le vesting</1> avant d'utiliser les coffres."
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Convert this amount of {0} to {1} in your Main Account to allow for auto top-ups, as only {2} can be automatically transferred to your Subaccount. The {3} balance of your main account is shown above."
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Convert {wrappedTokenSymbol} to {nativeTokenSymbol}"
@@ -1275,6 +1296,24 @@ msgstr "Date"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "DeFi Portfolio Tracker"
 msgstr "Suivi du portefeuille DeFi"
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Deactivate"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Deactivating subaccount"
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Deactivating..."
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Deactivation"
+msgstr ""
 
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Synthetics/TVChart/TVChart.tsx
@@ -1516,6 +1555,10 @@ msgstr ""
 msgid "Enable Leverage"
 msgstr "Permettre le levier"
 
+#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
+msgid "Enable One-Click Trading"
+msgstr ""
+
 #: src/components/Exchange/OrdersToa.js
 #: src/components/Exchange/OrdersToa.js
 #: src/components/Exchange/PositionSeller.js
@@ -1755,6 +1798,14 @@ msgstr "Prix de sortie"
 msgid "Expected 365d Fees are projected based on past {daysConsidered}d base APR."
 msgstr ""
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Expected Actions are based on the current Network Fee."
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Expected Available Actions"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Explore, analyze, and copy on-chain traders"
 msgstr ""
@@ -1874,6 +1925,10 @@ msgstr "Récupération de l'information du token..."
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Financial reports and protocol analytics"
 msgstr "Rapports financiers et analyses de protocoles"
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "For additional safety, subaccounts are only allowed to perform a specified number of actions before re-authorization from your main account is required."
+msgstr ""
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "For trades on V1, this discount will be airdropped to your account every Wednesday. On V2, discounts are applied automatically and will reduce your fees when you make a trade."
@@ -2106,9 +2161,21 @@ msgstr "Les transferts GMX ne sont pas encore activés"
 msgid "GMX | Decentralized Perpetual Exchange"
 msgstr ""
 
+#: src/components/Synthetics/SubaccountModal/utils.ts
+msgid "Generate & Activate Subaccount"
+msgstr ""
+
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Generate Referral Code"
 msgstr "Générer un code de parrainage"
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "Generate and activate a Subaccount for <0>One-Click Trading</0> to reduce signing popups."
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Generating and activating Subaccount"
+msgstr ""
 
 #: src/components/Exchange/PositionShareCard.tsx
 msgid "Generating shareable image..."
@@ -2249,6 +2316,10 @@ msgstr ""
 msgid "Initial collateral"
 msgstr "Collatéral initial"
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Initial top-up"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Insufficient Available Liquidity to swap to {0}:"
 msgstr ""
@@ -2313,6 +2384,10 @@ msgstr "Balance {0} insuffisante"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} liquidity"
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/utils.ts
+msgid "Insufficient {nativeTokenSymbol} balance"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
@@ -2717,6 +2792,14 @@ msgstr ""
 msgid "MAX"
 msgstr "MAX"
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Main Account Balance"
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Main Account {0} Balance is used to top up Subaccount Balance on each Action up to the set Max auto top-up amount. Use the \"Сonvert {1} to {2}\" field if the Main Account {3} Balance is low."
+msgstr ""
+
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -2797,6 +2880,10 @@ msgstr ""
 msgid "Max"
 msgstr ""
 
+#: src/context/SubaccountContext/SubaccountContext.tsx
+msgid "Max Action Count Reached. <0>Click here</0> to update."
+msgstr ""
+
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Max Bonus Rebate"
 msgstr ""
@@ -2839,6 +2926,10 @@ msgstr ""
 msgid "Max Pool Capacity"
 msgstr "Capacité maximale du pool"
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Max allowed actions"
+msgstr ""
+
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -2847,6 +2938,10 @@ msgstr "Capacité maximale du pool"
 #: src/pages/Stake/StakeV2.js
 msgid "Max amount exceeded"
 msgstr "Montant max. dépassé"
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Max auto top-up amount"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2953,6 +3048,14 @@ msgstr ""
 #: src/pages/Stake/StakeV1.js
 msgid "Max: {0}"
 msgstr "Max: {0}"
+
+#: src/components/Synthetics/SubaccountModal/utils.ts
+msgid "Maximum allowed actions is required"
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/utils.ts
+msgid "Maximum auto top-up amount is required"
+msgstr ""
 
 #: src/components/Footer/constants.ts
 #: src/components/Footer/constants.ts
@@ -3166,9 +3269,26 @@ msgstr ""
 msgid "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity."
 msgstr ""
 
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "Not enough {0} on your Main Account. Use the \"Convert {1} to {2}\" field to increase the Main Account {3} balance."
+msgstr ""
+
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr "Notez que l'exécution des ordres n'est pas garantie d'être exécutée.<0/><1/>Cela peut se produire dans plusieurs situations, notamment, mais pas exclusivement:"
+
+#: src/components/AddressDropdown/AddressDropdown.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "One-Click Trading"
+msgstr ""
+
+#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
+#~ msgid "One-Click Trading is not available using network's native token AVAX. Consider using WAVAX as Pay token instead."
+#~ msgstr ""
+
+#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
+msgid "One-Click Trading is not available using network's native token {0}. Consider using {1} as Pay token instead."
+msgstr ""
 
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
@@ -3417,6 +3537,15 @@ msgstr "Payer"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Pay Amount"
 msgstr "Somme à payer"
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Pending Wallet message sign"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Pending Wallet transaction sign"
+msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
@@ -3761,6 +3890,10 @@ msgstr "Le délai de rachat n'a pas encore été atteint"
 #: src/pages/Home/Home.js
 msgid "Reduce Liquidation Risks"
 msgstr "Réduire les risques de liquidation"
+
+#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
+msgid "Reduce wallet signing popups with One-Click Trading. This option is also available through the Wallet menu in the top right. <0>More Info</0>."
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Code"
@@ -4353,6 +4486,46 @@ msgstr ""
 msgid "Structured Products"
 msgstr "Produits structurés"
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Subaccount Balance"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Subaccount activated"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Subaccount activation failed."
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Subaccount created"
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Subaccount deactivated."
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Subaccount deactivation failed."
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Subaccount generation failed."
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Subaccount is updated"
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Subaccount {0} Balance is used to pay for the Network Fees. Use the \"Top-up\" field if you need to transfer {1} to your Subaccount."
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Subaccount:"
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Submit"
 msgstr "Soumettre"
@@ -4656,6 +4829,10 @@ msgstr "Les tokens esGMX peuvent être échangés ou acquis à tout moment."
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr "Le prix du marché a changé, envisagez d'augmenter votre marge autorisée en cliquant sur l'icône \"...\" à côté de votre adresse."
 
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"Max allowed actions\" field."
+msgstr ""
+
 #: src/domain/legacy.ts
 #: src/domain/synthetics/fees/utils/executionFee.ts
 msgid "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
@@ -4689,6 +4866,10 @@ msgstr ""
 msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
 msgstr "La position sera ouverte à  {0} USD avec un glissement max. de {1}%.<0/><1/> La somme du glissement peut être configurée dans la rubrique Paramètres, que vous trouverez en cliquant sur votre adresse en haut à droite de la page après avoir connecté votre portefeuille. <2/><3/><4>Plus d'infos</4>"
 
+#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
+msgid "The previously authorized maximum number of Actions has been reached for One-Click Trading. Click here to re-authorize."
+msgstr ""
+
 #: src/components/Exchange/OrdersList.js
 msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
 msgstr "Le prix auquel l'ordre peut être exécuté peut différer légèrement du prix du graphique, car les ordres de la bourse peuvent modifier le prix alors que les ordres à cours limité ou à seuil de déclenchement ne le peuvent pas."
@@ -4708,6 +4889,22 @@ msgstr ""
 #: src/components/ModalViews/RedirectModal.js
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
 msgstr "Le site web est une instance open source du <0>GMX front-end</0>, déployée et maintenue par la communauté, hébergé et servi sur le réseau distribué, pair-à-pair <1>Réseau IPFS</1>."
+
+#: src/context/SubaccountContext/SubaccountContext.tsx
+msgid "There are insufficient funds in your Main account for One-Click Trading auto top-ups. <0>Click here</0> to convert."
+msgstr ""
+
+#: src/context/SubaccountContext/SubaccountContext.tsx
+msgid "There are insufficient funds in your Subaccount for One-Click Trading. <0>Click here</0> to top-up."
+msgstr ""
+
+#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
+msgid "There are insufficient funds in your Subaccount for One-Click Trading. Click here to top-up."
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "There are insufficient funds in your Subaccount for One-Click Trading. Use the \"Top-up\" field to increase the Subaccount Balance."
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "There are more longs than shorts, borrow fees for shorting is currently zero"
@@ -4757,6 +4954,10 @@ msgstr "Il se peut que la liquidité soit insuffisante pour exécuter votre ordr
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr ""
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "This amount of {0} will be sent from your Main Account to your Subaccount to pay for transaction fees."
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code has been taken by someone else on {0}, you will not receive rebates from traders using this code on {1}."
 msgstr "Ce code a été utilisé par quelqu'un d'autre sur {0}, vous ne recevrez pas de remise de la part des traders utilisant ce code sur {1}."
@@ -4764,6 +4965,10 @@ msgstr "Ce code a été utilisé par quelqu'un d'autre sur {0}, vous ne recevrez
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 msgstr "Ce code n'est pas encore enregistré sur {0}, vous ne recevrez pas de remise dans ce cas.<0/><1/>Changez votre réseau pour créer ce code sur  {1}."
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
+msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
@@ -4810,6 +5015,10 @@ msgstr "Pour réduire les frais, choisissez un autre actif pour payer."
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Tokens"
 msgstr "Tokens"
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Top-up"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -5099,6 +5308,10 @@ msgstr ""
 msgid "UTILIZATION"
 msgstr "UTILISATION"
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Unknown"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown buy GM order"
 msgstr ""
@@ -5162,6 +5375,9 @@ msgstr "Arrêt du staking..."
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/JoinReferralCode.js
+#: src/components/Synthetics/SubaccountModal/utils.ts
+#: src/components/Synthetics/SubaccountModal/utils.ts
+#: src/components/Synthetics/SubaccountModal/utils.ts
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Update"
@@ -5179,6 +5395,10 @@ msgstr ""
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Updating Order..."
 msgstr "Actualisation de l'ordre..."
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Updating Subaccount"
+msgstr ""
 
 #: src/domain/synthetics/orders/updateOrderTxn.ts
 msgid "Updating order"
@@ -5355,6 +5575,10 @@ msgstr "Voir"
 msgid "View in Explorer"
 msgstr "Voir dans Explorer"
 
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "View status"
+msgstr ""
+
 #: src/lib/contracts/callContract.tsx
 msgid "View status."
 msgstr "Voir le statut"
@@ -5466,6 +5690,7 @@ msgstr "Lors de la clôture de la position, vous pouvez sélectionner le token a
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Withdraw"
@@ -5512,6 +5737,7 @@ msgid "Withdrawing {0} from {positionText}"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Withdrawing..."
 msgstr ""
 
@@ -6018,6 +6244,10 @@ msgstr ""
 msgid "{nativeTokenSymbol} can not be sent to smart contract addresses. Select another token."
 msgstr ""
 
+#: src/components/Synthetics/SubaccountModal/utils.ts
+msgid "{nativeTokenSymbol} is not available"
+msgstr ""
+
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "{orderTypeLabel} {positionText}, -{0}"
 msgstr ""
@@ -6039,7 +6269,11 @@ msgid "{orderTypeText} {0} {longShortText}: {sign}{1}"
 msgstr ""
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
-msgid "{ordersText} canceled"
+#~ msgid "{ordersText} canceled"
+#~ msgstr ""
+
+#: src/domain/synthetics/orders/cancelOrdersTxn.ts
+msgid "{ordersText} cancelled"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
@@ -6056,4 +6290,8 @@ msgstr ""
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Сonvert {0} to {1}"
 msgstr ""
