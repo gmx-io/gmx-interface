@@ -1287,36 +1287,64 @@ export function TradeBox(p: Props) {
           onSelectCollateralAddress={onSelectCollateralAddress}
           isMarket={isMarket}
         />
-
-        {isTrigger && existingPosition?.leverage && (
-          <Checkbox asRow isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
-            <span className="muted font-sm">
-              <Trans>Keep leverage at {formatLeverage(existingPosition.leverage)} </Trans>
-            </span>
-          </Checkbox>
-        )}
       </>
     );
+  }
+
+  function renderLeverageInfo() {
+    if (isIncrease) {
+      return (
+        <>
+          <ExchangeInfoRow
+            className="SwapBox-info-row"
+            label={t`Leverage`}
+            value={
+              nextPositionValues?.nextLeverage && increaseAmounts?.sizeDeltaUsd.gt(0) ? (
+                <ValueTransition
+                  from={formatLeverage(existingPosition?.leverage)}
+                  to={formatLeverage(nextPositionValues?.nextLeverage) || "-"}
+                />
+              ) : (
+                formatLeverage(isLeverageEnabled ? leverage : increaseAmounts?.estimatedLeverage) || "-"
+              )
+            }
+          />
+          <div className="App-card-divider" />
+        </>
+      );
+    } else if (isTrigger && existingPosition) {
+      return (
+        <>
+          <ExchangeInfoRow
+            className="SwapBox-info-row"
+            label={t`Leverage`}
+            value={
+              existingPosition.sizeInUsd.eq(decreaseAmounts?.sizeDeltaUsd || 0) ? (
+                "-"
+              ) : (
+                <ValueTransition
+                  from={formatLeverage(existingPosition.leverage)}
+                  to={formatLeverage(nextPositionValues?.nextLeverage)}
+                />
+              )
+            }
+          />
+          {existingPosition?.leverage && (
+            <Checkbox asRow isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
+              <span className="muted font-sm">
+                <Trans>Keep leverage at {formatLeverage(existingPosition.leverage)} </Trans>
+              </span>
+            </Checkbox>
+          )}
+          <div className="App-card-divider" />
+        </>
+      );
+    }
   }
 
   function renderIncreaseOrderInfo() {
     return (
       <>
-        <ExchangeInfoRow
-          className="SwapBox-info-row"
-          label={t`Leverage`}
-          value={
-            nextPositionValues?.nextLeverage && increaseAmounts?.sizeDeltaUsd.gt(0) ? (
-              <ValueTransition
-                from={formatLeverage(existingPosition?.leverage)}
-                to={formatLeverage(nextPositionValues?.nextLeverage) || "-"}
-              />
-            ) : (
-              formatLeverage(isLeverageEnabled ? leverage : increaseAmounts?.estimatedLeverage) || "-"
-            )
-          }
-        />
-
         <ExchangeInfoRow
           className="SwapBox-info-row"
           label={t`Entry Price`}
@@ -1431,7 +1459,13 @@ export function TradeBox(p: Props) {
             }
           />
         )}
+      </>
+    );
+  }
 
+  function renderExistingPositionInfo() {
+    return (
+      <>
         {existingPosition?.sizeInUsd.gt(0) && (
           <ExchangeInfoRow
             className="SwapBox-info-row"
@@ -1444,60 +1478,37 @@ export function TradeBox(p: Props) {
             }
           />
         )}
-
-        {existingPosition && (
-          <ExchangeInfoRow
-            className="SwapBox-info-row"
-            label={t`Collateral (${existingPosition?.collateralToken?.symbol})`}
-            value={
-              <ValueTransition
-                from={formatUsd(existingPosition.collateralUsd)}
-                to={formatUsd(nextPositionValues?.nextCollateralUsd)}
-              />
-            }
-          />
-        )}
-
-        {existingPosition && (
-          <ExchangeInfoRow
-            className="SwapBox-info-row"
-            label={t`Leverage`}
-            value={
-              existingPosition.sizeInUsd.eq(decreaseAmounts?.sizeDeltaUsd || 0) ? (
-                "-"
-              ) : (
-                <ValueTransition
-                  from={formatLeverage(existingPosition.leverage)}
-                  to={formatLeverage(nextPositionValues?.nextLeverage)}
-                />
-              )
-            }
-          />
-        )}
-
-        {existingPosition && (
-          <ExchangeInfoRow
-            label={t`PnL`}
-            value={
-              <ValueTransition
-                from={
+        <ExchangeInfoRow
+          label={t`PnL`}
+          value={
+            <ValueTransition
+              from={
+                <>
+                  {formatDeltaUsd(decreaseAmounts?.estimatedPnl)} (
+                  {formatPercentage(decreaseAmounts?.estimatedPnlPercentage, { signed: true })})
+                </>
+              }
+              to={
+                decreaseAmounts?.sizeDeltaUsd.gt(0) ? (
                   <>
-                    {formatDeltaUsd(decreaseAmounts?.estimatedPnl)} (
-                    {formatPercentage(decreaseAmounts?.estimatedPnlPercentage, { signed: true })})
+                    {formatDeltaUsd(nextPositionValues?.nextPnl)} (
+                    {formatPercentage(nextPositionValues?.nextPnlPercentage, { signed: true })})
                   </>
-                }
-                to={
-                  decreaseAmounts?.sizeDeltaUsd.gt(0) ? (
-                    <>
-                      {formatDeltaUsd(nextPositionValues?.nextPnl)} (
-                      {formatPercentage(nextPositionValues?.nextPnlPercentage, { signed: true })})
-                    </>
-                  ) : undefined
-                }
-              />
-            }
-          />
-        )}
+                ) : undefined
+              }
+            />
+          }
+        />
+        <ExchangeInfoRow
+          className="SwapBox-info-row"
+          label={t`Collateral (${existingPosition?.collateralToken?.symbol})`}
+          value={
+            <ValueTransition
+              from={formatUsd(existingPosition?.collateralUsd)}
+              to={formatUsd(nextPositionValues?.nextCollateralUsd)}
+            />
+          }
+        />
       </>
     );
   }
@@ -1566,24 +1577,33 @@ export function TradeBox(p: Props) {
                 </>
               )}
 
+              {renderLeverageInfo()}
+
               {isIncrease && renderIncreaseOrderInfo()}
               {isTrigger && renderTriggerOrderInfo()}
 
-              <div className="App-card-divider" />
-
-              {feesType && <TradeFeesRow {...fees} executionFee={executionFee} feesType={feesType} />}
+              {(existingPosition || feesType) && (
+                <>
+                  <div className="App-card-divider" />
+                  {existingPosition && renderExistingPositionInfo()}
+                  {feesType && <TradeFeesRow {...fees} executionFee={executionFee} feesType={feesType} />}
+                </>
+              )}
 
               {isTrigger && existingPosition && decreaseAmounts?.receiveUsd && (
-                <ExchangeInfoRow
-                  className="SwapBox-info-row"
-                  label={t`Receive`}
-                  value={formatTokenAmountWithUsd(
-                    decreaseAmounts.receiveTokenAmount,
-                    decreaseAmounts.receiveUsd,
-                    collateralToken?.symbol,
-                    collateralToken?.decimals
-                  )}
-                />
+                <>
+                  <div className="App-card-divider" />
+                  <ExchangeInfoRow
+                    className="SwapBox-info-row"
+                    label={t`Receive`}
+                    value={formatTokenAmountWithUsd(
+                      decreaseAmounts.receiveTokenAmount,
+                      decreaseAmounts.receiveUsd,
+                      collateralToken?.symbol,
+                      collateralToken?.decimals
+                    )}
+                  />
+                </>
               )}
 
               {priceImpactWarningState.shouldShowWarning && (
