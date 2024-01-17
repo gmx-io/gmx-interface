@@ -47,7 +47,6 @@ import { getCommonError, getEditCollateralError } from "domain/synthetics/trade/
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
-import { DUST_BNB } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   formatAmountFree,
