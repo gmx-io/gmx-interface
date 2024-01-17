@@ -19,6 +19,7 @@ import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useUserReferralCode } from "domain/referrals/hooks";
 import { ExecutionFee, getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import {
   OrderType,
   OrdersInfoData,
@@ -87,6 +88,7 @@ import {
   formatTokenAmount,
   formatTokenAmountWithUsd,
   formatUsd,
+  expandDecimals,
 } from "lib/numbers";
 import { usePrevious } from "lib/usePrevious";
 import { getPlusOrMinusSymbol, getPositiveOrNegativeClass } from "lib/utils";
@@ -1041,6 +1043,10 @@ export function ConfirmationBox(p: Props) {
         ? applySlippageToPrice(allowedSlippage, increaseAmounts.acceptablePrice, true, isLong)
         : increaseAmounts?.acceptablePrice;
 
+    const collateralSpreadPercent = collateralSpreadInfo?.spread
+      ?.mul(BASIS_POINTS_DIVISOR)
+      ?.div(expandDecimals(1, USD_DECIMALS));
+
     return (
       <>
         <div>
@@ -1056,9 +1062,9 @@ export function ConfirmationBox(p: Props) {
           <div className="line-divider" />
 
           {isLimit && renderAvailableLiquidity()}
-          {isMarket && collateralSpreadInfo?.spread && (
-            <ExchangeInfoRow label={t`Collateral Spread`} isWarning={swapSpreadInfo.isHigh}>
-              {formatAmount(collateralSpreadInfo.spread.mul(100), USD_DECIMALS, 2, true)}%
+          {isMarket && collateralSpreadPercent?.gt(0) && (
+            <ExchangeInfoRow label={t`Collateral Spread`} isWarning={collateralSpreadInfo?.isHigh}>
+              {formatPercentage(collateralSpreadPercent)}
             </ExchangeInfoRow>
           )}
           {isMarket && renderAllowedSlippage(savedAllowedSlippage, setAllowedSlippage)}
@@ -1133,7 +1139,19 @@ export function ConfirmationBox(p: Props) {
               />
             }
           />
-          <div className="Exchange-info-row top-line">
+          <div className="line-divider" />
+          {p.existingPosition?.sizeInUsd.gt(0) && (
+            <ExchangeInfoRow
+              label={t`Size`}
+              value={
+                <ValueTransition
+                  from={formatUsd(p.existingPosition.sizeInUsd)!}
+                  to={formatUsd(nextPositionValues?.nextSizeUsd)}
+                />
+              }
+            />
+          )}
+          <div className="Exchange-info-row">
             <div>
               {isCollateralSwap ? (
                 <Tooltip
@@ -1166,14 +1184,26 @@ export function ConfirmationBox(p: Props) {
             </div>
             <div className="align-right">
               <Tooltip
-                handle={formatUsd(increaseAmounts?.collateralDeltaUsd)}
+                handle={
+                  <ValueTransition
+                    from={formatUsd(existingPosition?.collateralUsd)}
+                    to={formatUsd(nextPositionValues?.nextCollateralUsd)}
+                  />
+                }
                 position="right-top"
                 renderContent={() => {
                   return (
                     <>
-                      <Trans>Your position's collateral after deducting fees.</Trans>
+                      <Trans>Your position's collateral after deducting fees:</Trans>
                       <br />
                       <br />
+                      {existingPosition && (
+                        <StatsTooltipRow
+                          label={t`Old Collateral`}
+                          value={formatUsd(existingPosition.collateralUsd) || "-"}
+                          showDollar={false}
+                        />
+                      )}
                       <StatsTooltipRow
                         label={t`Pay Amount`}
                         value={formatUsd(increaseAmounts?.initialCollateralUsd) || "-"}
@@ -1183,7 +1213,7 @@ export function ConfirmationBox(p: Props) {
                         label={t`Fees`}
                         value={
                           fees?.payTotalFees?.deltaUsd && !fees.payTotalFees.deltaUsd.eq(0)
-                            ? formatUsd(fees.payTotalFees.deltaUsd)
+                            ? formatDeltaUsd(fees.payTotalFees.deltaUsd)
                             : "0.00$"
                         }
                         showDollar={false}
@@ -1191,8 +1221,8 @@ export function ConfirmationBox(p: Props) {
                       />
                       <div className="Tooltip-divider" />
                       <StatsTooltipRow
-                        label={t`Collateral`}
-                        value={formatUsd(increaseAmounts?.collateralDeltaUsd) || "-"}
+                        label={existingPosition ? t`New Collateral` : t`Collateral`}
+                        value={formatUsd(nextPositionValues?.nextCollateralUsd) || "-"}
                         showDollar={false}
                       />
                     </>
@@ -1292,22 +1322,21 @@ export function ConfirmationBox(p: Props) {
         <div>
           {renderMain()}
           {renderDifferentCollateralWarning()}
-          {existingPosition?.leverage && (
+          {existingPosition?.leverage && !decreaseAmounts?.isFullClose && (
             <>
-              {!p.keepLeverage &&
-                renderLeverage(
-                  existingPosition?.leverage,
-                  nextPositionValues?.nextLeverage,
-                  nextPositionValues?.nextSizeUsd?.lte(0)
-                )}
-              {isTrigger && (
-                <Checkbox asRow isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
-                  <span className="muted font-sm">
-                    <Trans>Keep leverage at {formatLeverage(existingPosition.leverage)} </Trans>
-                  </span>
-                </Checkbox>
+              {renderLeverage(
+                existingPosition?.leverage,
+                nextPositionValues?.nextLeverage,
+                nextPositionValues?.nextSizeUsd?.lte(0)
               )}
-              {(!p.keepLeverage || isTrigger) && <div className="line-divider" />}
+              {isTrigger && (
+                <ToggleSwitch isChecked={keepLeverage ?? false} setIsChecked={setKeepLeverage}>
+                  <span className="text-gray font-sm">
+                    <Trans>Keep leverage at {formatLeverage(existingPosition.leverage)}</Trans>
+                  </span>
+                </ToggleSwitch>
+              )}
+              <div className="line-divider" />
             </>
           )}
 

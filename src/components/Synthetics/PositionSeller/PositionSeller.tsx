@@ -485,7 +485,6 @@ export function PositionSeller(p: Props) {
     <ExchangeInfoRow
       className="SwapBox-info-row"
       label={t`Trigger Price`}
-      isTop
       value={`${decreaseAmounts?.triggerThresholdType || ""} ${
         formatUsd(decreaseAmounts?.triggerPrice, {
           displayDecimals: toToken?.priceDecimals,
@@ -495,43 +494,40 @@ export function PositionSeller(p: Props) {
   );
 
   const allowedSlippageRow = (
-    <div>
-      <ExchangeInfoRow
-        label={
-          <TooltipWithPortal
-            handle={t`Allowed Slippage`}
-            position="left-top"
-            renderContent={() => {
-              return (
-                <div className="text-white">
-                  <Trans>
-                    You can edit the default Allowed Slippage in the settings menu on the top right of the page.
-                    <br />
-                    <br />
-                    Note that a low allowed slippage, e.g. less than{" "}
-                    {formatPercentage(bigNumberify(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}, may result in failed
-                    orders if prices are volatile.
-                  </Trans>
-                </div>
-              );
-            }}
-          />
-        }
-      >
-        <PercentageInput
-          onChange={setAllowedSlippage}
-          defaultValue={allowedSlippage}
-          highValue={EXCESSIVE_SLIPPAGE_AMOUNT}
-          highValueWarningText={t`Slippage is too high`}
+    <ExchangeInfoRow
+      label={
+        <TooltipWithPortal
+          handle={t`Allowed Slippage`}
+          position="left-top"
+          renderContent={() => {
+            return (
+              <div className="text-white">
+                <Trans>
+                  You can edit the default Allowed Slippage in the settings menu on the top right of the page.
+                  <br />
+                  <br />
+                  Note that a low allowed slippage, e.g. less than{" "}
+                  {formatPercentage(bigNumberify(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}, may result in failed
+                  orders if prices are volatile.
+                </Trans>
+              </div>
+            );
+          }}
         />
-      </ExchangeInfoRow>
-    </div>
+      }
+    >
+      <PercentageInput
+        onChange={setAllowedSlippage}
+        defaultValue={allowedSlippage}
+        highValue={EXCESSIVE_SLIPPAGE_AMOUNT}
+        highValueWarningText={t`Slippage is too high`}
+      />
+    </ExchangeInfoRow>
   );
 
   const markPriceRow = (
     <ExchangeInfoRow
       label={t`Mark Price`}
-      isTop
       value={
         formatUsd(markPrice, {
           displayDecimals: indexPriceDecimals,
@@ -542,6 +538,7 @@ export function PositionSeller(p: Props) {
 
   const entryPriceRow = (
     <ExchangeInfoRow
+      isTop
       label={t`Entry Price`}
       value={
         formatUsd(position?.entryPrice, {
@@ -606,7 +603,7 @@ export function PositionSeller(p: Props) {
 
   const sizeRow = (
     <ExchangeInfoRow
-      isTop={!isTrigger}
+      isTop={true}
       label={t`Size`}
       value={<ValueTransition from={formatUsd(position?.sizeInUsd)!} to={formatUsd(nextPositionValues?.nextSizeUsd)} />}
     />
@@ -650,6 +647,7 @@ export function PositionSeller(p: Props) {
 
   const receiveTokenRow = isTrigger ? (
     <ExchangeInfoRow
+      isTop
       className="SwapBox-info-row"
       label={t`Receive`}
       value={formatTokenAmountWithUsd(
@@ -766,18 +764,43 @@ export function PositionSeller(p: Props) {
             )}
 
             <div className="PositionEditor-info-box">
-              <div className="PositionEditor-keep-leverage-settings">
-                <ToggleSwitch isChecked={keepLeverage ?? false} setIsChecked={setKeepLeverage}>
-                  <span className="text-gray font-sm">
-                    <Trans>Keep leverage at {position?.leverage ? formatLeverage(position.leverage) : "..."}</Trans>
-                  </span>
-                </ToggleSwitch>
-              </div>
+              {!decreaseAmounts?.isFullClose && (
+                <>
+                  <ExchangeInfoRow
+                    label={t`Leverage`}
+                    value={
+                      decreaseAmounts?.sizeDeltaUsd.eq(position.sizeInUsd) ? (
+                        "-"
+                      ) : (
+                        <ValueTransition
+                          from={formatLeverage(position.leverage)}
+                          to={formatLeverage(nextPositionValues?.nextLeverage)}
+                        />
+                      )
+                    }
+                  />
+
+                  <div className="PositionEditor-keep-leverage-settings">
+                    <ToggleSwitch isChecked={keepLeverage ?? false} setIsChecked={setKeepLeverage}>
+                      <span className="text-gray font-sm">
+                        <Trans>Keep leverage at {position?.leverage ? formatLeverage(position.leverage) : "..."}</Trans>
+                      </span>
+                    </ToggleSwitch>
+                  </div>
+
+                  <div className="App-card-divider" />
+                </>
+              )}
 
               {isTrigger ? (
                 <>
+                  {!isStopLoss && (
+                    <>
+                      {acceptablePriceImpactInputRow}
+                      <div className="App-card-divider" />
+                    </>
+                  )}
                   {triggerPriceRow}
-                  {!isStopLoss && acceptablePriceImpactInputRow}
                   {!isStopLoss && acceptablePriceRow}
                   {liqPriceRow}
                   {sizeRow}
@@ -785,13 +808,15 @@ export function PositionSeller(p: Props) {
               ) : (
                 <>
                   {allowedSlippageRow}
-                  {markPriceRow}
                   {entryPriceRow}
                   {acceptablePriceRow}
+                  {markPriceRow}
                   {liqPriceRow}
                   {sizeRow}
                 </>
               )}
+
+              {pnlRow}
 
               <div className="Exchange-info-row">
                 <div>
@@ -814,22 +839,6 @@ export function PositionSeller(p: Props) {
                   />
                 </div>
               </div>
-              {!keepLeverage && (
-                <ExchangeInfoRow
-                  label={t`Leverage`}
-                  value={
-                    decreaseAmounts?.sizeDeltaUsd.eq(position.sizeInUsd) ? (
-                      "-"
-                    ) : (
-                      <ValueTransition
-                        from={formatLeverage(position.leverage)}
-                        to={formatLeverage(nextPositionValues?.nextLeverage)}
-                      />
-                    )
-                  }
-                />
-              )}
-              {pnlRow}
 
               <TradeFeesRow {...fees} executionFee={executionFee} feesType="decrease" />
 

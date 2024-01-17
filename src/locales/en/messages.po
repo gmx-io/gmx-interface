@@ -3204,6 +3204,10 @@ msgstr "Networks"
 msgid "Networks and Settings"
 msgstr "Networks and Settings"
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "New Collateral"
+msgstr "New Collateral"
+
 #: src/components/Synthetics/Claims/Claims.tsx
 msgid "Next"
 msgstr "Next"
@@ -3279,6 +3283,10 @@ msgstr "Not enough {0} on your Main Account. Use the \"Convert {1} to {2}\" fiel
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "Old Collateral"
+msgstr "Old Collateral"
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
@@ -4359,6 +4367,7 @@ msgstr "Single"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -4560,8 +4569,8 @@ msgid "Swap Fee"
 msgstr "Swap Fee"
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-msgid "Swap Fees"
-msgstr "Swap Fees"
+#~ msgid "Swap Fees"
+#~ msgstr "Swap Fees"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Swap Order created!"
@@ -4575,7 +4584,6 @@ msgstr "Swap Order creation failed."
 msgid "Swap Order submitted!"
 msgstr "Swap Order submitted!"
 
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap Price Impact"
 msgstr "Swap Price Impact"
@@ -5945,8 +5953,13 @@ msgstr "Your esGMX (IOU) balance will decrease by your claim amount after claimi
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-msgid "Your position's collateral after deducting fees."
-msgstr "Your position's collateral after deducting fees."
+#~ msgid "Your position's collateral after deducting fees."
+#~ msgstr "Your position's collateral after deducting fees."
+
+#: src/components/Exchange/ConfirmationBox.js
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "Your position's collateral after deducting fees:"
+msgstr "Your position's collateral after deducting fees:"
 
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Your transfer has been completed."

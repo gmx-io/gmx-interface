@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import cx from "classnames";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Modal from "components/Modal/Modal";
 import { MarketsInfoData } from "domain/synthetics/markets";
@@ -31,15 +30,7 @@ import {
 } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
-import {
-  formatAmount,
-  formatAmountFree,
-  formatDeltaUsd,
-  formatTokenAmount,
-  formatUsd,
-  getBasisPoints,
-  parseValue,
-} from "lib/numbers";
+import { formatAmount, formatAmountFree, formatTokenAmount, formatUsd, getBasisPoints, parseValue } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
@@ -463,21 +454,6 @@ export function OrderEditor(p: Props) {
 
           {isSwapOrderType(p.order.orderType) && (
             <>
-              <ExchangeInfoRow
-                label={t`Swap Price Impact`}
-                value={
-                  <span
-                    className={cx({
-                      positive: p.order.swapPathStats?.totalSwapPriceImpactDeltaUsd?.gt(0),
-                    })}
-                  >
-                    {formatDeltaUsd(p.order.swapPathStats?.totalSwapPriceImpactDeltaUsd)}
-                  </span>
-                }
-              />
-
-              <ExchangeInfoRow label={t`Swap Fees`} value={formatUsd(p.order.swapPathStats?.totalSwapFeeUsd)} />
-
               <ExchangeInfoRow
                 label={t`Min. Receive`}
                 value={formatTokenAmount(
