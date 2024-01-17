@@ -22,6 +22,8 @@ import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 import "./SettleAccruedFundingFeeModal.scss";
+import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
+import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 
 type Props = {
   allowedSlippage: number;
@@ -94,6 +96,7 @@ export function SettleAccruedFundingFeeModal({
   );
 
   const { setPendingFundingFeeSettlement } = useSyntheticsEvents();
+  const subaccount = useSubaccount(executionFee ?? null);
 
   const onSubmit = useCallback(() => {
     if (!account || !signer || !chainId || !executionFee || !tokensData) return;
@@ -103,6 +106,7 @@ export function SettleAccruedFundingFeeModal({
     createDecreaseOrderTxn(
       chainId,
       signer,
+      subaccount,
       selectedPositions.map((position) => {
         return {
           account,
@@ -146,6 +150,7 @@ export function SettleAccruedFundingFeeModal({
     setPendingFundingFeeSettlement,
     setPendingTxns,
     signer,
+    subaccount,
     tokensData,
     userReferralInfo?.referralCodeForTxn,
   ]);
@@ -170,6 +175,7 @@ export function SettleAccruedFundingFeeModal({
         <div className="text-center">Settle {totalStr}</div>
       </div>
       <div className="App-card-divider ClaimModal-divider FeeModal-divider ClaimSettleModal-divider" />
+      <SubaccountNavigationButton executionFee={executionFee} closeConfirmationBox={onClose} tradeFlags={undefined} />
       <div className="ClaimModal-content ClaimSettleModal-modal-content">
         <div className="App-card-content">
           <div className="ClaimSettleModal-alert">

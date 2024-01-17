@@ -24,6 +24,7 @@ type Props = {
   isInsideModal?: boolean;
   openDelay?: number;
   closeDelay?: number;
+  shouldHandleStopPropagation?: boolean;
 };
 
 type Coords = {
@@ -80,6 +81,9 @@ export default function TooltipWithPortal(props: Props) {
 
   const onMouseClick = useCallback(
     (event: MouseEvent) => {
+      if (props.shouldHandleStopPropagation) {
+        event.stopPropagation();
+      }
       event.preventDefault();
       if (trigger !== "click" && !IS_TOUCH) return;
       if (intervalCloseRef.current) {
@@ -98,7 +102,7 @@ export default function TooltipWithPortal(props: Props) {
         setVisible(true);
       }
     },
-    [setVisible, intervalCloseRef, trigger, updateTooltipCoords, props.closeOnDoubleClick]
+    [props.shouldHandleStopPropagation, props.closeOnDoubleClick, trigger, updateTooltipCoords]
   );
 
   const onMouseLeave = useCallback(() => {
@@ -113,12 +117,17 @@ export default function TooltipWithPortal(props: Props) {
     updateTooltipCoords();
   }, [setVisible, intervalCloseRef, updateTooltipCoords, closeDelay]);
 
+  const onHandleClick = useCallback((event: MouseEvent) => {
+    event.preventDefault();
+  }, []);
+
   const className = cx("Tooltip", props.className);
 
   return (
     <span className={className} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onMouseClick}>
       <span
         className={cx({ "Tooltip-handle": !props.disableHandleStyle }, [props.handleClassName], { active: visible })}
+        onClick={onHandleClick}
         ref={handlerRef}
       >
         {/* For onMouseLeave to work on disabled button https://github.com/react-component/tooltip/issues/18#issuecomment-411476678 */}

@@ -31,12 +31,17 @@ import { useMarketsInfo } from "domain/synthetics/markets";
 import Helmet from "react-helmet";
 
 import { SettleAccruedFundingFeeModal } from "components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal";
+import {
+  useIsLastSubaccountAction,
+  useSubaccount,
+  useSubaccountCancelOrdersDetailsMessage,
+} from "context/SubaccountContext/SubaccountContext";
 import { getMarketIndexName, getMarketPoolName, getTotalClaimableFundingUsd } from "domain/synthetics/markets";
 import { TradeMode } from "domain/synthetics/trade";
 import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTradeOption";
+import { getMidPrice } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import useWallet from "lib/wallets/useWallet";
-import { getMidPrice } from "domain/tokens";
 
 export type Props = {
   savedIsPnlInLeverage: boolean;
@@ -221,6 +226,10 @@ export function SyntheticsPage(p: Props) {
 
   const [isClaiming, setIsClaiming] = useState(false);
 
+  const subaccount = useSubaccount(null, selectedOrdersKeysArr.length);
+  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, selectedOrdersKeysArr.length);
+  const isLastSubaccountAction = useIsLastSubaccountAction();
+
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
   let allowedSlippage = savedSlippageAmount!;
   if (isHigherSlippageAllowed) {
@@ -238,9 +247,11 @@ export function SyntheticsPage(p: Props) {
   function onCancelOrdersClick() {
     if (!signer) return;
     setIsCancelOrdersProcessig(true);
-    cancelOrdersTxn(chainId, signer, {
+    cancelOrdersTxn(chainId, signer, subaccount, {
       orderKeys: selectedOrdersKeysArr,
       setPendingTxns: setPendingTxns,
+      isLastSubaccountAction,
+      detailsMsg: cancelOrdersDetailsMessage,
     })
       .then(async (tx) => {
         const receipt = await tx.wait();

@@ -12,6 +12,9 @@ import {
 import { Signer, ethers } from "ethers";
 import { useEffect, useState } from "react";
 
+export function getProvider(signer: undefined, chainId: number): ethers.providers.StaticJsonRpcProvider;
+export function getProvider(signer: Signer, chainId: number): Signer;
+export function getProvider(signer: Signer | undefined, chainId: number);
 export function getProvider(signer: Signer | undefined, chainId: number) {
   let provider;
 

@@ -1,18 +1,21 @@
 import Davatar from "@davatar/react";
 import { Menu } from "@headlessui/react";
 import { t, Trans } from "@lingui/macro";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ETH_MAINNET } from "config/chains";
-import copy from "img/ic_copy_16.svg";
-import externalLinkIcon from "img/ic_new_link_16.svg";
-import disconnect from "img/ic_sign_out_16.svg";
+import { useSubaccountModalOpen } from "context/SubaccountContext/SubaccountContext";
+import copy from "img/ic_copy_20.svg";
+import externalLink from "img/ic_new_link_20.svg";
+import disconnect from "img/ic_sign_out_20.svg";
+import oneClickTradingIcon from "img/one_click_trading_20.svg";
 import { helperToast } from "lib/helperToast";
 import { useENS } from "lib/legacy";
 import { useJsonRpcProvider } from "lib/rpc";
+import { shortenAddressOrEns } from "lib/wallets";
+import { useCallback } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import { createBreakpoint, useCopyToClipboard } from "react-use";
 import "./AddressDropdown.scss";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { shortenAddressOrEns } from "lib/wallets";
 
 type Props = {
   account: string;
@@ -27,6 +30,10 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
   const { ensName } = useENS(account);
   const { provider: ethereumProvider } = useJsonRpcProvider(ETH_MAINNET);
   const displayAddressLength = breakpoint === "S" ? 9 : 13;
+  const [, setOneClickModalOpen] = useSubaccountModalOpen();
+  const handleSubaccountClick = useCallback(() => {
+    setOneClickModalOpen(true);
+  }, [setOneClickModalOpen]);
 
   return (
     <Menu>
@@ -49,7 +56,7 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
                 helperToast.success(t`Address copied to your clipboard`);
               }}
             >
-              <img src={copy} alt="Copy user address" />
+              <img width={20} src={copy} alt="Copy user address" />
               <p>
                 <Trans>Copy Address</Trans>
               </p>
@@ -57,15 +64,23 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
           </Menu.Item>
           <Menu.Item>
             <ExternalLink href={accountUrl} className="menu-item">
-              <img src={externalLinkIcon} alt="Open address in explorer" />
+              <img width={20} src={externalLink} alt="Open address in explorer" />
               <p>
                 <Trans>View in Explorer</Trans>
               </p>
             </ExternalLink>
           </Menu.Item>
           <Menu.Item>
+            <div className="menu-item" onClick={handleSubaccountClick}>
+              <img width={20} src={oneClickTradingIcon} alt="Open One-click Trading settings" />
+              <p>
+                <Trans>One-Click Trading</Trans>
+              </p>
+            </div>
+          </Menu.Item>
+          <Menu.Item>
             <div className="menu-item" onClick={disconnectAccountAndCloseSettings}>
-              <img src={disconnect} alt="Disconnect the wallet" />
+              <img width={20} src={disconnect} alt="Disconnect the wallet" />
               <p>
                 <Trans>Disconnect</Trans>
               </p>

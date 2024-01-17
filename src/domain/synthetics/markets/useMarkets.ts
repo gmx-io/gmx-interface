@@ -1,6 +1,7 @@
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { getContract } from "config/contracts";
 import { convertTokenAddress, getToken } from "config/tokens";
+import { isMarketEnabled } from "config/markets";
 import { ethers } from "ethers";
 import { useMulticall } from "lib/multicall";
 import { MarketsData } from "./types";
@@ -34,6 +35,10 @@ export function useMarkets(chainId: number): MarketsResult {
     parseResponse: (res) => {
       return res.data.reader.markets.returnValues.reduce(
         (acc: { marketsData: MarketsData; marketsAddresses: string[] }, marketValues) => {
+          if (!isMarketEnabled(chainId, marketValues.marketToken)) {
+            return acc;
+          }
+
           try {
             const indexToken = getToken(chainId, convertTokenAddress(chainId, marketValues.indexToken, "native"));
             const longToken = getToken(chainId, marketValues.longToken);
