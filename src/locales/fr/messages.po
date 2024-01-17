@@ -795,7 +795,11 @@ msgid "Claim GMX Rewards"
 msgstr "Réclamer les récompenses GMX"
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
-msgid "Claim Price Impact"
+#~ msgid "Claim Price Impact"
+#~ msgstr ""
+
+#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
+msgid "Claim Price Impact Rebates"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
@@ -860,7 +864,11 @@ msgstr "Réclamable"
 msgid "Claimable Rebates"
 msgstr ""
 
-#: src/domain/synthetics/markets/claimCollateralTxn.ts
+#: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
+msgid "Claiming Price Impact Rebate..."
+msgstr ""
+
+#: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Claiming failed"
 msgstr ""
@@ -1782,6 +1790,10 @@ msgstr ""
 msgid "Failed Settlement of Funding Fees"
 msgstr ""
 
+#: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
+msgid "Failed to Claim Price Impact Rebate"
+msgstr ""
+
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Failed to cancel {ordersText}"
 msgstr ""
@@ -1918,7 +1930,7 @@ msgstr ""
 msgid "Fulfilling order request"
 msgstr ""
 
-#: src/domain/synthetics/markets/claimCollateralTxn.ts
+#: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding Claimed"
 msgstr ""
 
@@ -3280,7 +3292,6 @@ msgstr ""
 msgid "Order creation failed."
 msgstr ""
 
-#: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 #: src/domain/synthetics/orders/createDecreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createIncreaseOrderTxn.ts
 #: src/domain/synthetics/orders/createSwapOrderTxn.ts
@@ -3581,6 +3592,10 @@ msgstr ""
 #: src/components/Synthetics/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "Price Impact Rebate"
+msgstr ""
+
+#: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
+msgid "Price Impact Rebate Claimed"
 msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
@@ -4390,7 +4405,7 @@ msgstr "Produits structurés"
 msgid "Submit"
 msgstr "Soumettre"
 
-#: src/domain/synthetics/markets/claimCollateralTxn.ts
+#: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Success claimings"
 msgstr ""
