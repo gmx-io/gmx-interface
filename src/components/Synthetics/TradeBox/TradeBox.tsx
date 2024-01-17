@@ -107,7 +107,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { museNeverExist } from "lib/types";
 import { getByKey } from "lib/objects";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { getMinReservedGasAmount } from "domain/tokens";
+import { getMinResidualAmount } from "domain/tokens";
 
 export type Props = {
   tradeType: TradeType;
@@ -238,7 +238,7 @@ export function TradeBox(p: Props) {
   const [toTokenInputValue, setToTokenInputValueRaw] = useSafeState("");
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
-  const minReservedGasAmount = getMinReservedGasAmount(nativeToken?.decimals, nativeToken?.prices.maxPrice);
+  const minResidualAmount = getMinResidualAmount(nativeToken?.decimals, nativeToken?.prices.maxPrice);
 
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
   const fromTokenPrice = fromToken?.prices.minPrice;
@@ -246,7 +246,7 @@ export function TradeBox(p: Props) {
   const isNotMatchAvailableBalance =
     fromToken?.balance?.gt(0) &&
     !fromToken.balance.eq(fromTokenAmount) &&
-    (fromToken?.isNative ? minReservedGasAmount && fromToken.balance.gt(minReservedGasAmount) : true);
+    (fromToken?.isNative ? minResidualAmount && fromToken.balance.gt(minResidualAmount) : true);
 
   const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigNumber.from(0);
 
@@ -1047,7 +1047,7 @@ export function TradeBox(p: Props) {
   function onMaxClick() {
     if (fromToken?.balance) {
       let maxAvailableAmount = fromToken.isNative
-        ? fromToken.balance.sub(BigNumber.from(minReservedGasAmount || 0))
+        ? fromToken.balance.sub(BigNumber.from(minResidualAmount || 0))
         : fromToken.balance;
 
       if (maxAvailableAmount.isNegative()) {

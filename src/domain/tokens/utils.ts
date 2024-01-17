@@ -271,11 +271,12 @@ export function getMidPrice(prices: TokenPrices) {
   return prices.minPrice.add(prices.maxPrice).div(2);
 }
 
-export function getMinReservedGasAmount(decimals?: number, price?: BigNumber) {
+// calculates the minimum amount of native currency that should be left to be used as gas fees
+export function getMinResidualAmount(decimals?: number, price?: BigNumber) {
   if (!decimals || !price) {
     return BigNumber.from(0);
   }
 
-  const MIN_GAS_RESERVE_USD = expandDecimals(10, USD_DECIMALS);
-  return convertToTokenAmount(MIN_GAS_RESERVE_USD, decimals, price);
+  const MIN_NATIVE_CURRENCY_FOR_GAS = expandDecimals(10, USD_DECIMALS);
+  return convertToTokenAmount(MIN_NATIVE_CURRENCY_FOR_GAS, decimals, price);
 }

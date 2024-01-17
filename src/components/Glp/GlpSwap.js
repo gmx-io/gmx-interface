@@ -42,7 +42,7 @@ import { ARBITRUM, FEES_HIGH_BPS, getChainName, IS_NETWORK_DISABLED } from "conf
 import { getIcon } from "config/icons";
 import { getNativeToken, getToken, getV1Tokens, getWhitelistedV1Tokens, getWrappedToken } from "config/tokens";
 import { approveTokens, useInfoTokens } from "domain/tokens";
-import { getMinReservedGasAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
+import { getMinResidualAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
@@ -325,10 +325,10 @@ export default function GlpSwap(props) {
   const swapUsdMin = getUsd(swapAmount, swapTokenAddress, false, infoTokens);
   const glpUsdMax = glpAmount && glpPrice ? glpAmount.mul(glpPrice).div(expandDecimals(1, GLP_DECIMALS)) : undefined;
 
-  const minReservedGasAmount = getMinReservedGasAmount(nativeTokenInfo?.decimals, nativeTokenInfo?.maxPrice);
+  const minResidualAmount = getMinResidualAmount(nativeTokenInfo?.decimals, nativeTokenInfo?.maxPrice);
 
   const showMaxButtonBasedOnBalance = swapTokenInfo.isNative
-    ? minReservedGasAmount && swapTokenBalance.gt(minReservedGasAmount)
+    ? minResidualAmount && swapTokenBalance.gt(minResidualAmount)
     : true;
 
   let isSwapTokenCapReached;
@@ -494,7 +494,7 @@ export default function GlpSwap(props) {
   const fillMaxAmount = () => {
     if (isBuying) {
       setAnchorOnSwapAmount(true);
-      let maxAvailableAmount = swapToken.isNative ? swapTokenBalance.sub(minReservedGasAmount || 0) : swapTokenBalance;
+      let maxAvailableAmount = swapToken.isNative ? swapTokenBalance.sub(minResidualAmount || 0) : swapTokenBalance;
       if (maxAvailableAmount?.isNegative()) {
         maxAvailableAmount = BigNumber.from(0);
       }

@@ -69,7 +69,7 @@ import {
   replaceNativeTokenAddress,
   shouldRaiseGasError,
 } from "domain/tokens";
-import { getMinReservedGasAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
+import { getMinResidualAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
@@ -315,7 +315,7 @@ export default function SwapBox(props) {
   const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress);
 
   const nativeTokenInfo = getTokenInfo(infoTokens, nativeTokenAddress);
-  const minReservedGasAmount = getMinReservedGasAmount(nativeTokenInfo?.decimals, nativeTokenInfo?.maxPrice);
+  const minResidualAmount = getMinResidualAmount(nativeTokenInfo?.decimals, nativeTokenInfo?.maxPrice);
 
   const renderAvailableLongLiquidity = () => {
     if (!isLong) {
@@ -1788,9 +1788,7 @@ export default function SwapBox(props) {
       return;
     }
 
-    let maxAvailableAmount = fromToken.isNative
-      ? minReservedGasAmount && fromBalance.sub(minReservedGasAmount)
-      : fromBalance;
+    let maxAvailableAmount = fromToken.isNative ? minResidualAmount && fromBalance.sub(minResidualAmount) : fromBalance;
 
     if (maxAvailableAmount.isNegative()) {
       maxAvailableAmount = bigNumberify(0);
@@ -1808,9 +1806,9 @@ export default function SwapBox(props) {
     if (!fromToken || !fromBalance) {
       return false;
     }
-    const maxAvailableAmount = fromToken.isNative ? fromBalance.sub(minReservedGasAmount) : fromBalance;
+    const maxAvailableAmount = fromToken.isNative ? fromBalance.sub(minResidualAmount) : fromBalance;
     const shoudShowMaxButtonBasedOnGasAmount = fromToken.isNative
-      ? minReservedGasAmount && fromBalance.gt(minReservedGasAmount)
+      ? minResidualAmount && fromBalance.gt(minResidualAmount)
       : true;
     return (
       shoudShowMaxButtonBasedOnGasAmount &&

@@ -63,7 +63,7 @@ import useWallet from "lib/wallets/useWallet";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
-import { getMinReservedGasAmount } from "domain/tokens";
+import { getMinResidualAmount } from "domain/tokens";
 
 export type Props = {
   position?: PositionInfo;
@@ -95,7 +95,7 @@ export function PositionEditor(p: Props) {
   const { data: hasOutdatedUi } = useHasOutdatedUi();
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
-  const minReservedGasAmount = getMinReservedGasAmount(nativeToken?.decimals, nativeToken?.prices?.maxPrice);
+  const minResidualAmount = getMinResidualAmount(nativeToken?.decimals, nativeToken?.prices?.maxPrice);
 
   const isVisible = Boolean(position);
   const prevIsVisible = usePrevious(isVisible);
@@ -430,7 +430,7 @@ export function PositionEditor(p: Props) {
   };
 
   const showMaxOnDeposit = collateralToken?.isNative
-    ? minReservedGasAmount && collateralToken?.balance?.gt(minReservedGasAmount)
+    ? minResidualAmount && collateralToken?.balance?.gt(minResidualAmount)
     : true;
 
   return (
@@ -485,7 +485,7 @@ export function PositionEditor(p: Props) {
               }}
               onClickMax={() => {
                 let maxDepositAmount = collateralToken!.isNative
-                  ? collateralToken!.balance!.sub(BigNumber.from(minReservedGasAmount || 0))
+                  ? collateralToken!.balance!.sub(BigNumber.from(minResidualAmount || 0))
                   : collateralToken!.balance!;
 
                 if (maxDepositAmount.isNegative()) {

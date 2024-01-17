@@ -29,7 +29,7 @@ import { TokenData, TokensData, convertToUsd, getTokenData } from "domain/synthe
 import { GmSwapFees, useAvailableTokenOptions } from "domain/synthetics/trade";
 import { getDepositAmounts } from "domain/synthetics/trade/utils/deposit";
 import { getWithdrawalAmounts } from "domain/synthetics/trade/utils/withdrawal";
-import { Token, getMinReservedGasAmount } from "domain/tokens";
+import { Token, getMinResidualAmount } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -132,7 +132,7 @@ export function GmSwapBox(p: Props) {
   const { account } = useWallet();
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
-  const minReservedGasAmount = getMinReservedGasAmount(nativeToken?.decimals, nativeToken?.prices?.maxPrice);
+  const minResidualAmount = getMinResidualAmount(nativeToken?.decimals, nativeToken?.prices?.maxPrice);
 
   const uiFeeFactor = useUiFeeFactor(chainId);
 
@@ -799,7 +799,7 @@ export function GmSwapBox(p: Props) {
   function onMaxClickFirstToken() {
     if (firstToken?.balance) {
       let maxAvailableAmount = firstToken.isNative
-        ? firstToken.balance.sub(minReservedGasAmount || 0)
+        ? firstToken.balance.sub(minResidualAmount || 0)
         : firstToken.balance;
 
       if (maxAvailableAmount.isNegative()) {
@@ -819,7 +819,7 @@ export function GmSwapBox(p: Props) {
   function onMaxClickSecondToken() {
     if (secondToken?.balance) {
       let maxAvailableAmount = secondToken.isNative
-        ? secondToken.balance.sub(minReservedGasAmount || 0)
+        ? secondToken.balance.sub(minResidualAmount || 0)
         : secondToken.balance;
 
       if (maxAvailableAmount.isNegative()) {
@@ -876,7 +876,7 @@ export function GmSwapBox(p: Props) {
               isDeposit &&
               firstToken?.balance?.gt(0) &&
               !firstTokenAmount?.eq(firstToken.balance) &&
-              (firstToken?.isNative ? minReservedGasAmount && firstToken?.balance?.gt(minReservedGasAmount) : true)
+              (firstToken?.isNative ? minResidualAmount && firstToken?.balance?.gt(minResidualAmount) : true)
             }
             inputValue={firstTokenInputValue}
             onInputValueChange={(e) => {
@@ -920,7 +920,7 @@ export function GmSwapBox(p: Props) {
                 isDeposit &&
                 secondToken?.balance?.gt(0) &&
                 !secondTokenAmount?.eq(secondToken.balance) &&
-                (secondToken?.isNative ? minReservedGasAmount && secondToken?.balance?.gt(minReservedGasAmount) : true)
+                (secondToken?.isNative ? minResidualAmount && secondToken?.balance?.gt(minResidualAmount) : true)
               }
               onInputValueChange={(e) => {
                 if (secondToken) {
