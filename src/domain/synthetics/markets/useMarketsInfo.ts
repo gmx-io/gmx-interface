@@ -75,8 +75,8 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
     clearUnusedKeys: true,
     keepPreviousData: true,
 
-    request: () => {
-      return marketsAddresses!.reduce((request, marketAddress) => {
+    request: () =>
+      marketsAddresses!.reduce((request, marketAddress) => {
         const market = getByKey(marketsData, marketAddress)!;
         const marketPrices = getContractMarketPrices(tokensData!, market)!;
 
@@ -391,8 +391,7 @@ export function useMarketsInfo(chainId: number): MarketsInfoResult {
             },
           },
         });
-      }, {});
-    },
+      }, {}),
     parseResponse: (res) => {
       return marketsAddresses!.reduce((acc: MarketsInfoData, marketAddress) => {
         const readerErrors = res.errors[`${marketAddress}-reader`];
