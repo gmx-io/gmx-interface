@@ -108,7 +108,7 @@ export function PositionList(p: Props) {
             </tr>
           )}
           {!p.isLoading &&
-            positions.map((position, index) => (
+            positions.map((position) => (
               <PositionItem
                 key={position.key}
                 positionOrders={
