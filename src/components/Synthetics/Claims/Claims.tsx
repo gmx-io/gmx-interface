@@ -103,6 +103,7 @@ export function Claims({
           setIsAccruedPositionPriceImpactRebateModalVisible(false);
         }, [])}
         accruedPositionPriceImpactFees={accruedPositionPriceImpactFees}
+        marketsInfoData={marketsInfoData}
       />
 
       <ClaimablePositionPriceImpactRebateModal
@@ -111,6 +112,7 @@ export function Claims({
           setIsClaimablePositionPriceImpactFeesModalVisible(false);
         }, [])}
         claimablePositionPriceImpactFees={claimablePositionPriceImpactFees}
+        marketsInfoData={marketsInfoData}
       />
 
       <div className="TradeHistory">

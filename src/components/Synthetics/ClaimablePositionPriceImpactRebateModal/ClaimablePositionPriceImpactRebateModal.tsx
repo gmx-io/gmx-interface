@@ -4,7 +4,7 @@ import Modal from "components/Modal/Modal";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { PositionPriceImpactRebateInfo } from "domain/synthetics/claimHistory";
 import { createClaimCollateralTxn } from "domain/synthetics/claimHistory/claimPriceImpactRebate";
-import { MarketsInfoData, getMarketIndexName, getMarketPoolName, useMarketsInfo } from "domain/synthetics/markets";
+import { MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getTokenData, useTokensData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
@@ -18,10 +18,12 @@ export function ClaimablePositionPriceImpactRebateModal({
   isVisible,
   onClose,
   claimablePositionPriceImpactFees,
+  marketsInfoData,
 }: {
   isVisible: boolean;
   onClose: () => void;
   claimablePositionPriceImpactFees: PositionPriceImpactRebateInfo[];
+  marketsInfoData: MarketsInfoData | undefined;
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { chainId } = useChainId();
@@ -39,10 +41,10 @@ export function ClaimablePositionPriceImpactRebateModal({
 
       if (typeof groupedMarkets[key] === "number") {
         const index = groupedMarkets[key];
-        acc[index].push({ ...rebateItem });
+        acc[index].push(rebateItem);
       } else {
         groupedMarkets[key] = acc.length;
-        acc.push([{ ...rebateItem }]);
+        acc.push([rebateItem]);
       }
 
       return acc;
@@ -70,7 +72,6 @@ export function ClaimablePositionPriceImpactRebateModal({
       setIsSubmitting(false);
     }
   }, [account, chainId, claimablePositionPriceImpactFees, onClose, signer]);
-  const { marketsInfoData } = useMarketsInfo(chainId);
 
   return (
     <Modal
@@ -143,7 +144,7 @@ const Row = memo(
           acc[index].value = acc[index].value.add(rebateItem.value);
         } else {
           groupedMarkets[key] = acc.length;
-          acc.push(rebateItem);
+          acc.push({ ...rebateItem });
         }
 
         return acc;
