@@ -33,7 +33,7 @@ export function AccruedPositionPriceImpactRebateModal({
 
       if (typeof groupedMarkets[key] === "number") {
         const index = groupedMarkets[key];
-        acc[index].push(rebateItem);
+        acc[index].push({ ...rebateItem });
       } else {
         groupedMarkets[key] = acc.length;
         acc.push([{ ...rebateItem }]);
