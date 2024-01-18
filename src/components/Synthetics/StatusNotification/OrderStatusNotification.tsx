@@ -5,6 +5,7 @@ import { getWrappedToken } from "config/tokens";
 import { PendingOrderData, getPendingOrderKey, useSyntheticsEvents } from "context/SyntheticsEvents";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import {
+  isDecreaseOrderType,
   isIncreaseOrderType,
   isLimitOrderType,
   isLimitSwapOrderType,
@@ -19,6 +20,7 @@ import { getByKey } from "lib/objects";
 import { useEffect, useMemo, useState } from "react";
 import "./StatusNotification.scss";
 import { useToastAutoClose } from "./useToastAutoClose";
+import { getTriggerNameByOrderType } from "domain/synthetics/positions";
 
 type Props = {
   toastTimestamp: number;
@@ -110,7 +112,11 @@ export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tok
         if (isMarketOrderType(orderType)) {
           orderTypeText = isIncreaseOrderType(orderType) ? t`Increasing` : t`Decreasing`;
         } else {
-          orderTypeText = isLimitOrderType(orderType) ? t`Limit order for` : t`Trigger order for`;
+          if (isLimitOrderType(orderType)) {
+            orderTypeText = t`Limit order for`;
+          } else if (isDecreaseOrderType(orderType)) {
+            orderTypeText = t`${getTriggerNameByOrderType(orderType, true)} order for`;
+          }
         }
 
         const sign = isIncreaseOrderType(orderType) ? "+" : "-";
