@@ -61,8 +61,6 @@ export default function useSLTPEntries({
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
   const uiFeeFactor = useUiFeeFactor(chainId);
 
-  console.log("increaseAmounts", increaseAmounts, marketInfo);
-
   const { handleSLErrors, handleTPErrors } = createErrorHandlers({
     liqPrice: nextPositionValues?.nextLiqPrice,
     entryPrice: isLimit ? triggerPrice : nextPositionValues?.nextEntryPrice,
@@ -117,6 +115,7 @@ export default function useSLTPEntries({
       pnlToken: isLong ? marketInfo.longToken : marketInfo.shortToken,
       markPrice: nextPositionValues.nextEntryPrice!,
       entryPrice: nextPositionValues.nextEntryPrice,
+      triggerPrice: isLimit ? triggerPrice : undefined,
       liquidationPrice: nextPositionValues.nextLiqPrice,
       collateralUsd: increaseAmounts?.initialCollateralUsd,
       remainingCollateralUsd: increaseAmounts?.collateralDeltaUsd,
@@ -145,6 +144,8 @@ export default function useSLTPEntries({
     userReferralInfo,
     uiFeeFactor,
     currentPosition,
+    isLimit,
+    triggerPrice,
   ]);
 
   const stopLoss = useMemo(

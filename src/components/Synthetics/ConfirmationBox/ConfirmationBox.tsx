@@ -560,7 +560,6 @@ export function ConfirmationBox(p: Props) {
       marketAddress: marketInfo.marketTokenAddress,
       initialCollateralAddress: collateralToken.address,
       isLong,
-
       allowedSlippage,
       referralCode: referralCodeForTxn,
       indexToken: marketInfo.indexToken,
