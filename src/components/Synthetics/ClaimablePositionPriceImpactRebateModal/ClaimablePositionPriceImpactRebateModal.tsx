@@ -42,7 +42,7 @@ export function ClaimablePositionPriceImpactRebateModal({
         acc[index].push(rebateItem);
       } else {
         groupedMarkets[key] = acc.length;
-        acc.push([rebateItem]);
+        acc.push([{ ...rebateItem }]);
       }
 
       return acc;
