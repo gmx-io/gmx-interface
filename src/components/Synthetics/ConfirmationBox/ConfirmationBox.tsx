@@ -1014,8 +1014,10 @@ export function ConfirmationBox(p: Props) {
 
     if (swapSpreadInfo.spread && swapSpreadInfo.isHigh) {
       return (
-        <div className="Confirmation-box-warning">
-          <Trans>The spread is {`>`} 1%, please ensure the trade details are acceptable before comfirming</Trans>
+        <div className="mb-sm">
+          <AlertWithIcon type="warning">
+            <Trans>The spread is {`>`} 1%, please ensure the trade details are acceptable before comfirming</Trans>
+          </AlertWithIcon>
         </div>
       );
     }
@@ -1023,21 +1025,21 @@ export function ConfirmationBox(p: Props) {
 
   function renderLimitPriceWarning() {
     return (
-      <div className="Confirmation-box-info">
+      <AlertWithIcon type="info">
         <Trans>Limit Order Price will vary based on Fees and Price Impact to guarantee the Min. Receive amount.</Trans>
-      </div>
+      </AlertWithIcon>
     );
   }
 
   const renderCollateralSpreadWarning = useCallback(() => {
     if (collateralSpreadInfo && collateralSpreadInfo.isHigh) {
       return (
-        <div className="Confirmation-box-warning">
+        <AlertWithIcon type="warning">
           <Trans>
             Transacting with a depegged stable coin is subject to spreads reflecting the worse of current market price
             or $1.00, with transactions involving multiple stablecoins may have multiple spreads.
           </Trans>
-        </div>
+        </AlertWithIcon>
       );
     }
   }, [collateralSpreadInfo]);
