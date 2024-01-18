@@ -244,6 +244,8 @@ export function ConfirmationBox(p: Props) {
     totalPnlPercentage: totalTakeProfitPnlPercentage,
   } = takeProfit;
 
+  console.log("stopLossEntries", (stopLossAmounts || []).concat(takeProfitAmounts || []));
+
   useEffect(() => {
     setAllowedSlippage(savedAllowedSlippage);
   }, [savedAllowedSlippage, p.isVisible]);
@@ -603,7 +605,7 @@ export function ConfirmationBox(p: Props) {
             sizeDeltaInTokens: entry.sizeDeltaInTokens,
             minOutputUsd: BigNumber.from(0),
             decreasePositionSwapType: entry.decreaseSwapType,
-            orderType: entry.triggerOrderType || OrderType.StopLossDecrease,
+            orderType: entry.triggerOrderType!,
           };
         })
         .filter(Boolean)

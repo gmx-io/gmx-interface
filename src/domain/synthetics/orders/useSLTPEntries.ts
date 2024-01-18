@@ -156,6 +156,8 @@ export default function useSLTPEntries({
         marketInfo,
         collateralToken,
         isLong,
+        isLimit,
+        limitPrice: triggerPrice,
         keepLeverage,
         minCollateralUsd,
         minPositionSizeUsd,
@@ -168,6 +170,8 @@ export default function useSLTPEntries({
       marketInfo,
       collateralToken,
       isLong,
+      isLimit,
+      triggerPrice,
       keepLeverage,
       minCollateralUsd,
       minPositionSizeUsd,
@@ -186,6 +190,8 @@ export default function useSLTPEntries({
         marketInfo,
         collateralToken,
         isLong,
+        isLimit,
+        limitPrice: triggerPrice,
         keepLeverage,
         minCollateralUsd,
         minPositionSizeUsd,
@@ -198,6 +204,8 @@ export default function useSLTPEntries({
       marketInfo,
       collateralToken,
       isLong,
+      isLimit,
+      triggerPrice,
       keepLeverage,
       minCollateralUsd,
       minPositionSizeUsd,
@@ -279,6 +287,8 @@ function calculateAmounts(params: {
   marketInfo?: MarketInfo;
   collateralToken?: TokenData;
   isLong: boolean;
+  isLimit: boolean;
+  limitPrice?: BigNumber;
   existingPosition?: PositionInfo;
   keepLeverage?: boolean;
   minCollateralUsd?: BigNumber;
@@ -293,6 +303,8 @@ function calculateAmounts(params: {
     marketInfo,
     collateralToken,
     isLong,
+    isLimit,
+    limitPrice,
     keepLeverage,
     minCollateralUsd,
     minPositionSizeUsd,
@@ -322,6 +334,8 @@ function calculateAmounts(params: {
         minCollateralUsd,
         minPositionSizeUsd,
         uiFeeFactor,
+        isLimit,
+        limitPrice,
       });
     });
 }
@@ -332,6 +346,8 @@ function calculateEntries(params: {
   marketInfo?: MarketInfo;
   collateralToken?: TokenData;
   isLong: boolean;
+  isLimit: boolean;
+  limitPrice?: BigNumber;
   existingPosition?: PositionInfo;
   keepLeverage?: boolean;
   minCollateralUsd?: BigNumber;
@@ -346,6 +362,8 @@ function calculateEntries(params: {
     marketInfo,
     collateralToken,
     isLong,
+    isLimit,
+    limitPrice,
     existingPosition,
     keepLeverage,
     minCollateralUsd,
@@ -361,6 +379,8 @@ function calculateEntries(params: {
     marketInfo,
     collateralToken,
     isLong,
+    isLimit,
+    limitPrice,
     existingPosition,
     keepLeverage,
     minCollateralUsd,
