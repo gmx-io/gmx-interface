@@ -8,7 +8,7 @@ const SUBGRAPH_URLS = {
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-referrals/api",
     nissohVault: "https://api.thegraph.com/subgraphs/name/nissoh/gmx-vault",
     syntheticsStats:
-      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-arbitrum-stats/version/price-impact-rebate-240115145122-6568baf/api",
+      "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-arbitrum-stats/version/price-impact-rebate-240116121523-512c7c6/api",
   },
 
   [ARBITRUM_GOERLI]: {
