@@ -717,25 +717,27 @@ export function ConfirmationBox(p: Props) {
     if (isSwap) {
       return (
         <>
-          <div className="Confirmation-box-main">
-            <div>
-              <Trans>Pay</Trans>{" "}
-              {formatTokenAmountWithUsd(
-                swapAmounts?.amountIn,
-                swapAmounts?.usdIn,
-                fromToken?.symbol,
-                fromToken?.decimals
-              )}
+          <div className="Confirmation-box-main trade-info-wrapper">
+            <div className="trade-info">
+              <div className="trade-token-amount">
+                <Trans>Pay</Trans>{" "}
+                <span>
+                  {formatTokenAmount(swapAmounts?.amountIn, fromToken?.decimals, fromToken?.symbol, {
+                    useCommas: true,
+                  })}
+                </span>
+              </div>
+              <div className="trade-amount-usd">{formatUsd(swapAmounts?.usdIn)}</div>
             </div>
-            <div className="Confirmation-box-main-icon"></div>
-            <div>
-              <Trans>Receive</Trans>{" "}
-              {formatTokenAmountWithUsd(
-                swapAmounts?.amountOut,
-                swapAmounts?.usdOut,
-                toToken?.symbol,
-                toToken?.decimals
-              )}
+            <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
+            <div className="trade-info">
+              <div className="trade-token-amount">
+                <Trans>Receive</Trans>{" "}
+                <span>
+                  {formatTokenAmount(swapAmounts?.amountOut, toToken?.decimals, toToken?.symbol, { useCommas: true })}
+                </span>
+              </div>
+              <div className="trade-amount-usd">{formatUsd(swapAmounts?.usdOut)}</div>
             </div>
           </div>
           <div>{renderSubaccountNavigationButton()}</div>
@@ -746,21 +748,27 @@ export function ConfirmationBox(p: Props) {
     if (isIncrease) {
       return (
         <>
-          <div className="Confirmation-box-main">
-            <div className="trade-token-info">
+          <div className="Confirmation-box-main trade-info-wrapper">
+            <div className="trade-info">
               <div className="trade-token-amount">
                 <Trans>Pay</Trans>{" "}
                 <span>
-                  {formatTokenAmount(increaseAmounts?.initialCollateralAmount, fromToken?.decimals, fromToken?.symbol)}
+                  {formatTokenAmount(increaseAmounts?.initialCollateralAmount, fromToken?.decimals, fromToken?.symbol, {
+                    useCommas: true,
+                  })}
                 </span>
               </div>
               <div className="trade-amount-usd">{formatUsd(increaseAmounts?.initialCollateralUsd)}</div>
             </div>
             <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
-            <div className="trade-token-info">
+            <div className="trade-info">
               <div className="trade-token-amount">
                 {isLong ? t`Long` : t`Short`}{" "}
-                <span>{formatTokenAmount(increaseAmounts?.sizeDeltaInTokens, toToken?.decimals, toToken?.symbol)}</span>
+                <span>
+                  {formatTokenAmount(increaseAmounts?.sizeDeltaInTokens, toToken?.decimals, toToken?.symbol, {
+                    useCommas: true,
+                  })}
+                </span>
               </div>
               <div className="trade-amount-usd">{formatUsd(increaseAmounts?.sizeDeltaUsd)}</div>
             </div>

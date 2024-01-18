@@ -3,11 +3,10 @@
   flex-direction: column;
 }
 
-.Confirmation-box-main {
-  display: flex;
-  flex-direction: row;
+.trade-info-wrapper {
+  display: grid;
+  grid-template-columns: 48.5% 3% 48.5%;
   align-items: center;
-  justify-content: space-around;
   margin: 0.5rem 0 1.5rem;
 
   .arrow-icon {
