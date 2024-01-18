@@ -1,6 +1,5 @@
 import { Trans, t } from "@lingui/macro";
 import Modal from "components/Modal/Modal";
-import Tooltip from "components/Tooltip/Tooltip";
 import { PositionPriceImpactRebateInfo } from "domain/synthetics/claimHistory";
 import { getMarketIndexName, getMarketPoolName, useMarketsInfo } from "domain/synthetics/markets";
 import { getTokenData, useTokensData } from "domain/synthetics/tokens";
@@ -9,6 +8,8 @@ import { expandDecimals, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { memo, useCallback, useMemo } from "react";
 import { calcTotalRebateUsd } from "../Claims/utils";
+import { BigNumber } from "ethers";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 export function AccruedPositionPriceImpactRebateModal({
   isVisible,
@@ -25,20 +26,21 @@ export function AccruedPositionPriceImpactRebateModal({
     () => formatUsd(calcTotalRebateUsd(accruedPositionPriceImpactFees, tokensData, true)),
     [accruedPositionPriceImpactFees, tokensData]
   );
-  const reducedByMarketAndToken = useMemo(() => {
+  const reducedByMarketItemGroups = useMemo(() => {
     const groupedMarkets: Record<string, number> = {};
     return accruedPositionPriceImpactFees.reduce((acc, rebateItem) => {
-      const key = rebateItem.marketAddress + rebateItem.tokenAddress;
+      const key = rebateItem.marketAddress;
+
       if (typeof groupedMarkets[key] === "number") {
         const index = groupedMarkets[key];
-        acc[index].value = acc[index].value.add(rebateItem.value);
+        acc[index].push(rebateItem);
       } else {
         groupedMarkets[key] = acc.length;
-        acc.push(rebateItem);
+        acc.push([rebateItem]);
       }
 
       return acc;
-    }, [] as PositionPriceImpactRebateInfo[]);
+    }, [] as PositionPriceImpactRebateInfo[][]);
   }, [accruedPositionPriceImpactFees]);
 
   return (
@@ -63,8 +65,8 @@ export function AccruedPositionPriceImpactRebateModal({
               <Trans>REBATE</Trans>
             </div>
           </div>
-          {reducedByMarketAndToken.map((rebateItem) => (
-            <Row key={rebateItem.id} rebateItem={rebateItem} />
+          {reducedByMarketItemGroups.map((rebateItems) => (
+            <Row key={rebateItems[0].marketAddress} rebateItems={rebateItems} />
           ))}
         </div>
       </div>
@@ -72,11 +74,11 @@ export function AccruedPositionPriceImpactRebateModal({
   );
 }
 
-const Row = memo(({ rebateItem }: { rebateItem: PositionPriceImpactRebateInfo }) => {
+const Row = memo(({ rebateItems }: { rebateItems: PositionPriceImpactRebateInfo[] }) => {
   const { chainId } = useChainId();
   const { marketsInfoData } = useMarketsInfo(chainId);
   const label = useMemo(() => {
-    const market = getByKey(marketsInfoData, rebateItem.marketAddress);
+    const market = getByKey(marketsInfoData, rebateItems[0].marketAddress);
     if (!market) return "";
     const indexName = getMarketIndexName(market);
     const poolName = getMarketPoolName(market);
@@ -86,31 +88,61 @@ const Row = memo(({ rebateItem }: { rebateItem: PositionPriceImpactRebateInfo })
         <span className="subtext">[{poolName}]</span>
       </div>
     );
-  }, [marketsInfoData, rebateItem.marketAddress]);
+  }, [marketsInfoData, rebateItems]);
   const { tokensData } = useTokensData(chainId);
-  const tokenData = useMemo(
-    () => getTokenData(tokensData, rebateItem.tokenAddress),
-    [rebateItem.tokenAddress, tokensData]
-  );
-  const usd = useMemo(() => {
-    const price = tokenData?.prices.minPrice;
-    const decimals = tokenData?.decimals;
 
-    return price && decimals ? formatUsd(rebateItem.value.mul(price).div(expandDecimals(1, decimals))) : t`NA`;
-  }, [tokenData?.prices.minPrice, tokenData?.decimals, rebateItem.value]);
+  const reducedByTokenItems = useMemo(() => {
+    const groupedMarkets: Record<string, number> = {};
+    return rebateItems.reduce((acc, rebateItem) => {
+      const key = rebateItem.marketAddress + rebateItem.tokenAddress;
+      if (typeof groupedMarkets[key] === "number") {
+        const index = groupedMarkets[key];
+        acc[index].value = acc[index].value.add(rebateItem.value);
+      } else {
+        groupedMarkets[key] = acc.length;
+        acc.push(rebateItem);
+      }
+
+      return acc;
+    }, [] as PositionPriceImpactRebateInfo[]);
+  }, [rebateItems]);
+
+  const usd = useMemo(() => {
+    let total = BigNumber.from(0);
+
+    rebateItems.forEach((rebateItem) => {
+      const tokenData = getTokenData(tokensData, rebateItem.tokenAddress);
+      const price = tokenData?.prices.minPrice;
+      const decimals = tokenData?.decimals;
+      const usd = price && decimals ? rebateItem.value.mul(price).div(expandDecimals(1, decimals)) : null;
+      if (!usd) return;
+      total = total.add(usd);
+    });
+
+    return formatUsd(total);
+  }, [rebateItems, tokensData]);
+
+  const renderContent = useCallback(
+    () =>
+      reducedByTokenItems.map((rebateItem) => {
+        const tokenData = getTokenData(tokensData, rebateItem.tokenAddress);
+        if (!tokenData) return null;
+        return (
+          <div key={rebateItem.id}>{formatTokenAmount(rebateItem.value, tokenData?.decimals, tokenData?.symbol)}</div>
+        );
+      }),
+    [reducedByTokenItems, tokensData]
+  );
 
   return (
     <div className="ClaimSettleModal-info-row">
       <div className="Exchange-info-label">{label}</div>
       <div className="ClaimSettleModal-info-label-usd">
-        <Tooltip
+        <TooltipWithPortal
           position="right-top"
-          className="ClaimModal-row-tooltip"
+          portalClassName="ClaimModal-row-tooltip"
           handle={usd}
-          renderContent={useCallback(
-            () => formatTokenAmount(rebateItem.value, tokenData?.decimals, tokenData?.symbol),
-            [rebateItem.value, tokenData?.decimals, tokenData?.symbol]
-          )}
+          renderContent={renderContent}
         />
       </div>
     </div>

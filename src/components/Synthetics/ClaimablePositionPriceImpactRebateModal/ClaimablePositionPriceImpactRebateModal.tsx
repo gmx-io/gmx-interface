@@ -1,18 +1,18 @@
 import { Trans, t } from "@lingui/macro";
+import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
-import Tooltip from "components/Tooltip/Tooltip";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { PositionPriceImpactRebateInfo } from "domain/synthetics/claimHistory";
+import { createClaimCollateralTxn } from "domain/synthetics/claimHistory/claimPriceImpactRebate";
 import { MarketsInfoData, getMarketIndexName, getMarketPoolName, useMarketsInfo } from "domain/synthetics/markets";
 import { getTokenData, useTokensData } from "domain/synthetics/tokens";
+import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { expandDecimals, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import useWallet from "lib/wallets/useWallet";
 import { memo, useCallback, useMemo, useState } from "react";
 import { calcTotalRebateUsd } from "../Claims/utils";
-import Button from "components/Button/Button";
-import { createClaimCollateralTxn } from "domain/synthetics/claimHistory/claimPriceImpactRebate";
-import useWallet from "lib/wallets/useWallet";
-import { BigNumber } from "ethers";
 
 export function ClaimablePositionPriceImpactRebateModal({
   isVisible,
@@ -32,21 +32,21 @@ export function ClaimablePositionPriceImpactRebateModal({
   );
   const { signer, account } = useWallet();
 
-  const reducedByMarket = useMemo(() => {
+  const reducedByMarketItemGroups = useMemo(() => {
     const groupedMarkets: Record<string, number> = {};
-    return claimablePositionPriceImpactFees.slice().reduce((acc, rebateItem) => {
-      const key = rebateItem.marketAddress + rebateItem.tokenAddress;
+    return claimablePositionPriceImpactFees.reduce((acc, rebateItem) => {
+      const key = rebateItem.marketAddress;
+
       if (typeof groupedMarkets[key] === "number") {
         const index = groupedMarkets[key];
-        acc[index].value = BigNumber.from(0);
-        acc[index].valueByFactor = acc[index].valueByFactor.add(rebateItem.valueByFactor);
+        acc[index].push(rebateItem);
       } else {
         groupedMarkets[key] = acc.length;
-        acc.push({ ...rebateItem });
+        acc.push([rebateItem]);
       }
 
       return acc;
-    }, [] as PositionPriceImpactRebateInfo[]);
+    }, [] as PositionPriceImpactRebateInfo[][]);
   }, [claimablePositionPriceImpactFees]);
 
   const [buttonText, buttonDisabled] = useMemo(() => {
@@ -97,8 +97,8 @@ export function ClaimablePositionPriceImpactRebateModal({
             </div>
           </div>
           {marketsInfoData
-            ? reducedByMarket.map((rebateItem) => (
-                <Row marketsInfoData={marketsInfoData} key={rebateItem.id} rebateItem={rebateItem} />
+            ? reducedByMarketItemGroups.map((rebateItems) => (
+                <Row key={rebateItems[0].marketAddress} rebateItems={rebateItems} marketsInfoData={marketsInfoData} />
               ))
             : null}
         </div>
@@ -112,17 +112,16 @@ export function ClaimablePositionPriceImpactRebateModal({
 
 const Row = memo(
   ({
-    rebateItem,
+    rebateItems,
     marketsInfoData,
   }: {
-    rebateItem: PositionPriceImpactRebateInfo;
+    rebateItems: PositionPriceImpactRebateInfo[];
     marketsInfoData: MarketsInfoData;
   }) => {
     const { chainId } = useChainId();
     const label = useMemo(() => {
-      const market = getByKey(marketsInfoData, rebateItem.marketAddress);
+      const market = getByKey(marketsInfoData, rebateItems[0].marketAddress);
       if (!market) return "";
-
       const indexName = getMarketIndexName(market);
       const poolName = getMarketPoolName(market);
       return (
@@ -131,33 +130,62 @@ const Row = memo(
           <span className="subtext">[{poolName}]</span>
         </div>
       );
-    }, [marketsInfoData, rebateItem.marketAddress]);
-    const { tokensData } = useTokensData(chainId);
-    const tokenData = useMemo(
-      () => getTokenData(tokensData, rebateItem.tokenAddress),
-      [rebateItem.tokenAddress, tokensData]
-    );
-    const usd = useMemo(() => {
-      const price = tokenData?.prices.minPrice;
-      const decimals = tokenData?.decimals;
+    }, [marketsInfoData, rebateItems]);
 
-      return price && decimals
-        ? formatUsd(rebateItem.valueByFactor.mul(price).div(expandDecimals(1, decimals)))
-        : t`NA`;
-    }, [tokenData?.prices.minPrice, tokenData?.decimals, rebateItem.valueByFactor]);
+    const { tokensData } = useTokensData(chainId);
+
+    const reducedByTokenItems = useMemo(() => {
+      const groupedMarkets: Record<string, number> = {};
+      return rebateItems.reduce((acc, rebateItem) => {
+        const key = rebateItem.marketAddress + rebateItem.tokenAddress;
+        if (typeof groupedMarkets[key] === "number") {
+          const index = groupedMarkets[key];
+          acc[index].value = acc[index].value.add(rebateItem.value);
+        } else {
+          groupedMarkets[key] = acc.length;
+          acc.push(rebateItem);
+        }
+
+        return acc;
+      }, [] as PositionPriceImpactRebateInfo[]);
+    }, [rebateItems]);
+
+    const usd = useMemo(() => {
+      let total = BigNumber.from(0);
+
+      rebateItems.forEach((rebateItem) => {
+        const tokenData = getTokenData(tokensData, rebateItem.tokenAddress);
+        const price = tokenData?.prices.minPrice;
+        const decimals = tokenData?.decimals;
+        const usd = price && decimals ? rebateItem.value.mul(price).div(expandDecimals(1, decimals)) : null;
+        if (!usd) return;
+        total = total.add(usd);
+      });
+
+      return formatUsd(total);
+    }, [rebateItems, tokensData]);
+
+    const renderContent = useCallback(
+      () =>
+        reducedByTokenItems.map((rebateItem) => {
+          const tokenData = getTokenData(tokensData, rebateItem.tokenAddress);
+          if (!tokenData) return null;
+          return (
+            <div key={rebateItem.id}>{formatTokenAmount(rebateItem.value, tokenData?.decimals, tokenData?.symbol)}</div>
+          );
+        }),
+      [reducedByTokenItems, tokensData]
+    );
 
     return (
       <div className="ClaimSettleModal-info-row">
         <div className="Exchange-info-label">{label}</div>
         <div className="ClaimSettleModal-info-label-usd">
-          <Tooltip
+          <TooltipWithPortal
             position="right-top"
-            className="ClaimModal-row-tooltip"
+            portalClassName="ClaimModal-row-tooltip"
             handle={usd}
-            renderContent={useCallback(
-              () => formatTokenAmount(rebateItem.valueByFactor, tokenData?.decimals, tokenData?.symbol),
-              [rebateItem.valueByFactor, tokenData?.decimals, tokenData?.symbol]
-            )}
+            renderContent={renderContent}
           />
         </div>
       </div>
