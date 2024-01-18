@@ -215,9 +215,9 @@ export function ConfirmationBox(p: Props) {
     tradeFlags,
     collateralToken,
     increaseAmounts,
-    existingPosition,
     keepLeverage,
     nextPositionValues,
+    triggerPrice,
   });
 
   const {
@@ -231,7 +231,7 @@ export function ConfirmationBox(p: Props) {
     totalPnl: totalStopLossPnl,
     totalPnlPercentage: totalStopLossPnlPercentage,
   } = stopLoss;
-  console.log("stopLossEntries", totalStopLossPnl, stopLossAmounts);
+
   const {
     entries: takeProfitEntries,
     addEntry: addTakeProfitEntry,

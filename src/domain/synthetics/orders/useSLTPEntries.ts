@@ -40,9 +40,9 @@ type Props = {
   marketInfo?: MarketInfo;
   collateralToken?: TokenData;
   increaseAmounts?: IncreasePositionAmounts;
-  existingPosition?: PositionInfo;
   keepLeverage?: boolean;
   nextPositionValues?: NextPositionValues;
+  triggerPrice?: BigNumber;
 };
 
 export default function useSLTPEntries({
@@ -50,21 +50,24 @@ export default function useSLTPEntries({
   tradeFlags,
   collateralToken,
   increaseAmounts,
-  existingPosition,
   keepLeverage,
   nextPositionValues,
+  triggerPrice,
 }: Props) {
   const { chainId } = useChainId();
-  const { isLong } = tradeFlags;
+  const { isLong, isLimit } = tradeFlags;
   const { signer, account } = useWallet();
   const userReferralInfo = useUserReferralInfo(signer, chainId, account);
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
   const uiFeeFactor = useUiFeeFactor(chainId);
 
+  console.log("increaseAmounts", increaseAmounts, marketInfo);
+
   const { handleSLErrors, handleTPErrors } = createErrorHandlers({
     liqPrice: nextPositionValues?.nextLiqPrice,
-    entryPrice: nextPositionValues?.nextEntryPrice,
+    entryPrice: isLimit ? triggerPrice : nextPositionValues?.nextEntryPrice,
     isLong,
+    isLimit,
   });
 
   const stopLossInfo = useEntries(handleSLErrors);
@@ -152,7 +155,6 @@ export default function useSLTPEntries({
         marketInfo,
         collateralToken,
         isLong,
-        existingPosition,
         keepLeverage,
         minCollateralUsd,
         minPositionSizeUsd,
@@ -165,7 +167,6 @@ export default function useSLTPEntries({
       marketInfo,
       collateralToken,
       isLong,
-      existingPosition,
       keepLeverage,
       minCollateralUsd,
       minPositionSizeUsd,
@@ -184,7 +185,6 @@ export default function useSLTPEntries({
         marketInfo,
         collateralToken,
         isLong,
-        existingPosition,
         keepLeverage,
         minCollateralUsd,
         minPositionSizeUsd,
@@ -197,7 +197,6 @@ export default function useSLTPEntries({
       marketInfo,
       collateralToken,
       isLong,
-      existingPosition,
       keepLeverage,
       minCollateralUsd,
       minPositionSizeUsd,
@@ -378,10 +377,12 @@ function createErrorHandlers({
   liqPrice,
   entryPrice,
   isLong,
+  isLimit,
 }: {
   liqPrice?: BigNumber;
   entryPrice?: BigNumber;
-  isLong: boolean;
+  isLong?: boolean;
+  isLimit?: boolean;
 }) {
   function getErrorHandler(entry: Partial<Entry>, isStopLoss: boolean): Partial<Entry> {
     if (!liqPrice || !entryPrice || !entry.price || parseFloat(entry.price) === 0) {
@@ -401,24 +402,26 @@ function createErrorHandlers({
 
     const isPriceAboveMark = inputPrice?.gte(entryPrice);
     const isPriceBelowMark = inputPrice?.lte(entryPrice);
+    const priceAboveMsg = isLimit ? t`Price above Limit Price.` : t`Price above Mark Price.`;
+    const priceBelowMsg = isLimit ? t`Price below Limit Price.` : t`Price below Mark Price.`;
 
     if (isStopLoss) {
       if (isPriceAboveMark && isLong) {
-        return { ...entry, error: t`Price above Mark Price.` };
+        return { ...entry, error: priceAboveMsg };
       }
 
       if (isPriceBelowMark && !isLong) {
-        return { ...entry, error: t`Price below Mark Price.` };
+        return { ...entry, error: priceBelowMsg };
       }
     }
 
     if (!isStopLoss) {
       if (isPriceBelowMark && isLong) {
-        return { ...entry, error: t`Price below Mark Price.` };
+        return { ...entry, error: priceBelowMsg };
       }
 
       if (isPriceAboveMark && !isLong) {
-        return { ...entry, error: t`Price above Mark Price.` };
+        return { ...entry, error: priceAboveMsg };
       }
     }
 
