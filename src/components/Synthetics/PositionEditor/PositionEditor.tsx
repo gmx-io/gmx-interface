@@ -47,7 +47,6 @@ import { getCommonError, getEditCollateralError } from "domain/synthetics/trade/
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
-import { DUST_BNB } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   formatAmountFree,
@@ -65,6 +64,7 @@ import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionEditor.scss";
+import { getMinResidualAmount } from "domain/tokens";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 
 export type Props = {
@@ -95,6 +95,9 @@ export function PositionEditor(p: Props) {
   const routerAddress = getContract(chainId, "SyntheticsRouter");
   const userReferralInfo = useUserReferralInfo(signer, chainId, account);
   const { data: hasOutdatedUi } = useHasOutdatedUi();
+
+  const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
+  const minResidualAmount = getMinResidualAmount(nativeToken?.decimals, nativeToken?.prices?.maxPrice);
 
   const isVisible = Boolean(position);
   const prevIsVisible = usePrevious(isVisible);
@@ -431,6 +434,10 @@ export function PositionEditor(p: Props) {
     [Operation.Withdraw]: t`Withdraw`,
   };
 
+  const showMaxOnDeposit = collateralToken?.isNative
+    ? minResidualAmount && collateralToken?.balance?.gt(minResidualAmount)
+    : true;
+
   return (
     <div className="PositionEditor">
       <Modal
@@ -476,7 +483,7 @@ export function PositionEditor(p: Props) {
               onInputValueChange={(e) => setCollateralInputValue(e.target.value)}
               showMaxButton={
                 isDeposit
-                  ? collateralToken?.balance && !collateralDeltaAmount?.eq(collateralToken?.balance)
+                  ? collateralToken?.balance && showMaxOnDeposit && !collateralDeltaAmount?.eq(collateralToken?.balance)
                   : maxWithdrawAmount && !collateralDeltaAmount?.eq(maxWithdrawAmount)
               }
               showPercentSelector={!isDeposit}
@@ -488,9 +495,14 @@ export function PositionEditor(p: Props) {
                 }
               }}
               onClickMax={() => {
-                const maxDepositAmount = collateralToken!.isNative
-                  ? collateralToken!.balance!.sub(BigNumber.from(DUST_BNB).mul(2))
+                let maxDepositAmount = collateralToken!.isNative
+                  ? collateralToken!.balance!.sub(BigNumber.from(minResidualAmount || 0))
                   : collateralToken!.balance!;
+
+                if (maxDepositAmount.isNegative()) {
+                  maxDepositAmount = BigNumber.from(0);
+                }
+
                 const formattedMaxDepositAmount = formatAmountFree(maxDepositAmount!, collateralToken!.decimals);
                 const finalDepositAmount = isMetamaskMobile
                   ? limitDecimals(formattedMaxDepositAmount, MAX_METAMASK_MOBILE_DECIMALS)
