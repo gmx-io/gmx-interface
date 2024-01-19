@@ -108,7 +108,7 @@ export const SubaccountNavigationButton = memo(
       onCloseClick = handleCloseOfferClick;
       content = (
         <TooltipWithPortal
-          shouldHandleStopPropagation={isTouchDevice()}
+          shouldStopPropagation={isTouchDevice()}
           position="left-bottom"
           handle={<Trans>Enable One-Click Trading</Trans>}
           renderContent={renderTooltipContent}
