@@ -99,6 +99,7 @@ import { swrGCMiddleware } from "lib/swrMiddlewares";
 import useTradeRedirect from "lib/useTradeRedirect";
 import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContext";
 import { SubaccountModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
+import AlertWithIcon from "components/Alert/AlertWithIcon";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -632,12 +633,14 @@ function FullApp() {
             </div>
             {parseFloat(executionFeeBufferBps) <
               (EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps / BASIS_POINTS_DIVISOR) * 100 && (
-              <div className="warning settings-modal-error">
-                <Trans>
-                  Max Execution Fee buffer below{" "}
-                  {(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps / BASIS_POINTS_DIVISOR) * 100}% may result in
-                  failed orders.
-                </Trans>
+              <div className="mb-base">
+                <AlertWithIcon type="warning">
+                  <Trans>
+                    Max Execution Fee buffer below{" "}
+                    {(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps / BASIS_POINTS_DIVISOR) * 100}% may result in
+                    failed orders.
+                  </Trans>
+                </AlertWithIcon>
               </div>
             )}
           </div>
