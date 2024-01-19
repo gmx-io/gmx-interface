@@ -1,4 +1,3 @@
-import { JsonRpcProvider } from "@ethersproject/providers";
 import { Trans, t } from "@lingui/macro";
 import CustomErrors from "abis/CustomErrors.json";
 import DataStore from "abis/DataStore.json";
@@ -32,10 +31,8 @@ type SimulateExecuteOrderParams = {
 
 export async function simulateExecuteOrderTxn(chainId: number, p: SimulateExecuteOrderParams) {
   const dataStoreAddress = getContract(chainId, "DataStore");
-  const provider = getProvider(undefined, chainId) as JsonRpcProvider;
-
+  const provider = getProvider(undefined, chainId);
   const dataStore = new ethers.Contract(dataStoreAddress, DataStore.abi, provider);
-
   const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, provider);
 
   const blockNumber = await provider.getBlockNumber();

@@ -29,6 +29,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useMarketsInfo } from "domain/synthetics/markets";
 import Helmet from "react-helmet";
 
+import {
+  useIsLastSubaccountAction,
+  useSubaccount,
+  useSubaccountCancelOrdersDetailsMessage,
+} from "context/SubaccountContext/SubaccountContext";
 import { getMarketIndexName, getMarketPoolName, getTotalClaimableFundingUsd } from "domain/synthetics/markets";
 import { TradeMode } from "domain/synthetics/trade";
 import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTradeOption";
@@ -217,6 +222,10 @@ export function SyntheticsPage(p: Props) {
     return totalClaimableFundingUsd.gt(0);
   }, [marketsInfoData]);
 
+  const subaccount = useSubaccount(null, selectedOrdersKeysArr.length);
+  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, selectedOrdersKeysArr.length);
+  const isLastSubaccountAction = useIsLastSubaccountAction();
+
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
   let allowedSlippage = savedSlippageAmount!;
   if (isHigherSlippageAllowed) {
@@ -234,9 +243,11 @@ export function SyntheticsPage(p: Props) {
   function onCancelOrdersClick() {
     if (!signer) return;
     setIsCancelOrdersProcessig(true);
-    cancelOrdersTxn(chainId, signer, {
+    cancelOrdersTxn(chainId, signer, subaccount, {
       orderKeys: selectedOrdersKeysArr,
       setPendingTxns: setPendingTxns,
+      isLastSubaccountAction,
+      detailsMsg: cancelOrdersDetailsMessage,
     })
       .then(async (tx) => {
         const receipt = await tx.wait();

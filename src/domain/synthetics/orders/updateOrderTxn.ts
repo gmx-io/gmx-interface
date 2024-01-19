@@ -5,6 +5,8 @@ import { BigNumber, Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { convertToContractPrice } from "../tokens";
 import { Token } from "domain/tokens";
+import { Subaccount } from "context/SubaccountContext/SubaccountContext";
+import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 
 export type UpdateOrderParams = {
   orderKey: string;
@@ -13,12 +15,12 @@ export type UpdateOrderParams = {
   triggerPrice: BigNumber;
   acceptablePrice: BigNumber;
   minOutputAmount: BigNumber;
-  // used to top up execution fee for frozen orders
+  // used to top-up execution fee for frozen orders
   executionFee?: BigNumber;
   setPendingTxns: (txns: any) => void;
 };
 
-export function updateOrderTxn(chainId: number, signer: Signer, p: UpdateOrderParams) {
+export function updateOrderTxn(chainId: number, signer: Signer, subaccount: Subaccount, p: UpdateOrderParams) {
   const {
     orderKey,
     sizeDeltaUsd,
@@ -30,7 +32,9 @@ export function updateOrderTxn(chainId: number, signer: Signer, p: UpdateOrderPa
     indexToken,
   } = p;
 
-  const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
+  const router = subaccount
+    ? getSubaccountRouterContract(chainId, subaccount.signer)
+    : new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
 
   const orderVaultAddress = getContract(chainId, "OrderVault");
 
@@ -51,9 +55,9 @@ export function updateOrderTxn(chainId: number, signer: Signer, p: UpdateOrderPa
 
   const encodedPayload = multicall
     .filter(Boolean)
-    .map((call) => exchangeRouter.interface.encodeFunctionData(call!.method, call!.params));
+    .map((call) => router.interface.encodeFunctionData(call!.method, call!.params));
 
-  return callContract(chainId, exchangeRouter, "multicall", [encodedPayload], {
+  return callContract(chainId, router, "multicall", [encodedPayload], {
     value: p.executionFee?.gt(0) ? p.executionFee : undefined,
     sentMsg: t`Updating order`,
     successMsg: t`Update order executed`,

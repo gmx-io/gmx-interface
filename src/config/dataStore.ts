@@ -76,6 +76,11 @@ export const POOL_AMOUNT_ADJUSTMENT_KEY = hashString("POOL_AMOUNT_ADJUSTMENT");
 export const AFFILIATE_REWARD_KEY = hashString("AFFILIATE_REWARD");
 export const IS_MARKET_DISABLED_KEY = hashString("IS_MARKET_DISABLED");
 export const UI_FEE_FACTOR = hashString("UI_FEE_FACTOR");
+export const SUBACCOUNT_LIST_KEY = hashString("SUBACCOUNT_LIST");
+export const MAX_ALLOWED_SUBACCOUNT_ACTION_COUNT = hashString("MAX_ALLOWED_SUBACCOUNT_ACTION_COUNT");
+export const SUBACCOUNT_ACTION_COUNT = hashString("SUBACCOUNT_ACTION_COUNT");
+export const SUBACCOUNT_ORDER_ACTION = hashString("SUBACCOUNT_ORDER_ACTION");
+export const SUBACCOUNT_AUTO_TOP_UP_AMOUNT = hashString("SUBACCOUNT_AUTO_TOP_UP_AMOUNT");
 
 export function positionImpactFactorKey(market: string, isPositive: boolean) {
   return hashData(["bytes32", "address", "bool"], [POSITION_IMPACT_FACTOR_KEY, market, isPositive]);
@@ -296,4 +301,26 @@ export function maxPoolAmountKey(market: string, token: string) {
 
 export function uiFeeFactorKey(address: string) {
   return hashData(["bytes32", "address"], [UI_FEE_FACTOR, address]);
+}
+
+export function subaccountListKey(account: string) {
+  return hashData(["bytes32", "address"], [SUBACCOUNT_LIST_KEY, account]);
+}
+
+export function maxAllowedSubaccountActionCountKey(account: string, subaccount: string, actionType: string) {
+  return hashData(
+    ["bytes32", "address", "address", "bytes32"],
+    [MAX_ALLOWED_SUBACCOUNT_ACTION_COUNT, account, subaccount, actionType]
+  );
+}
+
+export function subaccountActionCountKey(account: string, subaccount: string, actionType: string) {
+  return hashData(
+    ["bytes32", "address", "address", "bytes32"],
+    [SUBACCOUNT_ACTION_COUNT, account, subaccount, actionType]
+  );
+}
+
+export function subaccountAutoTopUpAmountKey(account: string, subaccount: string) {
+  return hashData(["bytes32", "address", "address"], [SUBACCOUNT_AUTO_TOP_UP_AMOUNT, account, subaccount]);
 }

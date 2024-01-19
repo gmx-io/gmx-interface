@@ -8227,6 +8227,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"crypto-js@npm:4.2.0":
+  version: 4.2.0
+  resolution: "crypto-js@npm:4.2.0"
+  checksum: f051666dbc077c8324777f44fbd3aaea2986f198fe85092535130d17026c7c2ccf2d23ee5b29b36f7a4a07312db2fae23c9094b644cc35f7858b1b4fcaf27774
+  languageName: node
+  linkType: hard
+
 "crypto-random-string@npm:^2.0.0":
   version: 2.0.0
   resolution: "crypto-random-string@npm:2.0.0"
@@ -10976,6 +10983,7 @@ __metadata:
     bigdecimal: 0.6.1
     buffer: 6.0.3
     classnames: 2.3.1
+    crypto-js: 4.2.0
     date-fns: 2.27.0
     env-cmd: ^10.1.0
     eslint: ^8.41.0
@@ -11015,6 +11023,7 @@ __metadata:
     shallowequal: 1.1.0
     swr: 2.2.1
     typescript: 4.7.4
+    use-context-selector: 1.4.1
     viem: 1.1.4
     wagmi: 0.12.19
     web-vitals: 1.1.2
@@ -19419,6 +19428,23 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 7913df383a5a6fcb399212eedefaac2e0c6f843555202d4e3010bac3848afe38ecaa3d0d6500ad1d936fbeffd637e6c517e68edb024af5e6beca7f27f3ce7b21
+  languageName: node
+  linkType: hard
+
+"use-context-selector@npm:1.4.1":
+  version: 1.4.1
+  resolution: "use-context-selector@npm:1.4.1"
+  peerDependencies:
+    react: ">=16.8.0"
+    react-dom: "*"
+    react-native: "*"
+    scheduler: ">=0.19.0"
+  peerDependenciesMeta:
+    react-dom:
+      optional: true
+    react-native:
+      optional: true
+  checksum: 5af8f292c5706c43edda5b7e6e007be8f6732d9600b829acb2c8ff977e57e5b77d937c3cf810c6ee5dee950f68befb61d0d506092a51988fcc81aeb7a1ebabf8
   languageName: node
   linkType: hard
 

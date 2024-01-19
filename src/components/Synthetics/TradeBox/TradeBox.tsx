@@ -75,7 +75,7 @@ import longImg from "img/long.svg";
 import shortImg from "img/short.svg";
 import swapImg from "img/swap.svg";
 import { useChainId } from "lib/chains";
-import { DUST_BNB, USD_DECIMALS } from "lib/legacy";
+import { USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   formatAmount,
@@ -105,6 +105,9 @@ import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpac
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Tooltip from "components/Tooltip/Tooltip";
 import { museNeverExist } from "lib/types";
+import { getByKey } from "lib/objects";
+import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { getMinResidualAmount } from "domain/tokens";
 
 export type Props = {
   tradeType: TradeType;
@@ -234,10 +237,16 @@ export function TradeBox(p: Props) {
   const [fromTokenInputValue, setFromTokenInputValueRaw] = useSafeState("");
   const [toTokenInputValue, setToTokenInputValueRaw] = useSafeState("");
 
+  const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
+  const minResidualAmount = getMinResidualAmount(nativeToken?.decimals, nativeToken?.prices.maxPrice);
+
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
   const fromTokenPrice = fromToken?.prices.minPrice;
   const fromUsd = convertToUsd(fromTokenAmount, fromToken?.decimals, fromTokenPrice);
-  const isNotMatchAvailableBalance = fromToken?.balance?.gt(0) && !fromToken.balance.eq(fromTokenAmount);
+  const isNotMatchAvailableBalance =
+    fromToken?.balance?.gt(0) &&
+    !fromToken.balance.eq(fromTokenAmount) &&
+    (fromToken?.isNative ? minResidualAmount && fromToken.balance.gt(minResidualAmount) : true);
 
   const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigNumber.from(0);
 
@@ -1040,9 +1049,14 @@ export function TradeBox(p: Props) {
 
   function onMaxClick() {
     if (fromToken?.balance) {
-      const maxAvailableAmount = fromToken.isNative
-        ? fromToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
+      let maxAvailableAmount = fromToken.isNative
+        ? fromToken.balance.sub(BigNumber.from(minResidualAmount || 0))
         : fromToken.balance;
+
+      if (maxAvailableAmount.isNegative()) {
+        maxAvailableAmount = BigNumber.from(0);
+      }
+
       setFocusedInput("from");
       const formattedAmount = formatAmountFree(maxAvailableAmount, fromToken.decimals);
       const finalAmount = isMetamaskMobile
@@ -1413,26 +1427,24 @@ export function TradeBox(p: Props) {
             className="SwapBox-info-row"
             label={t`Liq. Price`}
             value={
-              decreaseAmounts?.isFullClose ? (
-                "-"
-              ) : (
-                <ValueTransition
-                  from={
-                    existingPosition
-                      ? formatLiquidationPrice(existingPosition?.liquidationPrice, {
-                          displayDecimals: existingPosition?.indexToken?.priceDecimals,
-                        })
-                      : undefined
-                  }
-                  to={
-                    decreaseAmounts?.sizeDeltaUsd.gt(0)
-                      ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
-                          displayDecimals: toToken?.priceDecimals,
-                        })
-                      : undefined
-                  }
-                />
-              )
+              <ValueTransition
+                from={
+                  existingPosition
+                    ? formatLiquidationPrice(existingPosition?.liquidationPrice, {
+                        displayDecimals: existingPosition?.indexToken?.priceDecimals,
+                      })
+                    : undefined
+                }
+                to={
+                  decreaseAmounts?.isFullClose
+                    ? "-"
+                    : decreaseAmounts?.sizeDeltaUsd.gt(0)
+                    ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
+                        displayDecimals: toToken?.priceDecimals,
+                      })
+                    : undefined
+                }
+              />
             }
           />
         )}
