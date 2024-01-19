@@ -158,7 +158,7 @@ const Row = memo(
         const tokenData = getTokenData(tokensData, rebateItem.tokenAddress);
         const price = tokenData?.prices.minPrice;
         const decimals = tokenData?.decimals;
-        const usd = price && decimals ? rebateItem.value.mul(price).div(expandDecimals(1, decimals)) : null;
+        const usd = price && decimals ? rebateItem.valueByFactor.mul(price).div(expandDecimals(1, decimals)) : null;
         if (!usd) return;
         total = total.add(usd);
       });
