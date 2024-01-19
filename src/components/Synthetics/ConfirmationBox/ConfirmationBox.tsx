@@ -244,7 +244,7 @@ export function ConfirmationBox(p: Props) {
     totalPnlPercentage: totalTakeProfitPnlPercentage,
   } = takeProfit;
 
-  console.log("stopLossEntries", (stopLossAmounts || []).concat(takeProfitAmounts || []));
+  const sltpAmounts = (takeProfitAmounts || []).concat(stopLossAmounts || []);
 
   useEffect(() => {
     setAllowedSlippage(savedAllowedSlippage);
@@ -482,9 +482,15 @@ export function ConfirmationBox(p: Props) {
     [p.isVisible, submitButtonState.disabled]
   );
 
-  const subaccountRequiredBalance = p.executionFee?.feeTokenAmount ?? null;
-  const subaccount = useSubaccount(subaccountRequiredBalance);
-  const isLastSubaccountAction = useIsLastSubaccountAction(1);
+  const subaccountRequiredBalance =
+    p.executionFee?.feeTokenAmount.add(
+      sltpAmounts.reduce(
+        (acc, amount) => acc.add(getDecreaseExecutionFee(amount)?.feeTokenAmount || 0),
+        BigNumber.from(0)
+      )
+    ) ?? null;
+  const subaccount = useSubaccount(subaccountRequiredBalance, 1 + sltpAmounts.length);
+  const isLastSubaccountAction = useIsLastSubaccountAction(1 + sltpAmounts.length);
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(subaccountRequiredBalance ?? undefined, 1);
 
   function onCancelOrderClick(key: string): void {
@@ -589,9 +595,8 @@ export function ConfirmationBox(p: Props) {
         setPendingOrder,
         setPendingPosition,
       },
-      (stopLossAmounts || [])
-        .concat(takeProfitAmounts || [])
-        ?.map((entry) => {
+      sltpAmounts
+        .map((entry) => {
           return {
             ...commonOrderProps,
             swapPath: [],
