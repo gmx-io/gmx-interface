@@ -66,7 +66,7 @@ export function TradeFeesRow(p: Props) {
   const rebatesMessage = hasRebates ? (
     <Trans>
       Price Impact Rebates for closing trades are claimable under the Claims tab.{" "}
-      <ExternalLink newTab href="https://docs.gmx.io/docs/trading/v2#price-impact">
+      <ExternalLink newTab href="https://docs.gmx.io/docs/trading/v2/#price-impact-rebates">
         Read more
       </ExternalLink>
       .

@@ -51,7 +51,10 @@ export function SettleAccruedCard({
           Pending Price Impact Rebates.
           <br />
           <br />
-          <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#price-impact">Read more</ExternalLink>.
+          <ExternalLink newTab href="https://docs.gmx.io/docs/trading/v2/#price-impact-rebates">
+            Read more
+          </ExternalLink>
+          .
         </>
       }
       onButtonClick={onSettleClick}
