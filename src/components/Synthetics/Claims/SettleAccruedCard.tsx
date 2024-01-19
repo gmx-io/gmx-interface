@@ -48,7 +48,7 @@ export function SettleAccruedCard({
       tooltipText={tooltipText}
       tooltip2Text={
         <>
-          Pending Price Impact Rebates.
+          Accrued Price Impact Rebates. They will become Claimable after some time.
           <br />
           <br />
           <ExternalLink newTab href="https://docs.gmx.io/docs/trading/v2/#price-impact-rebates">

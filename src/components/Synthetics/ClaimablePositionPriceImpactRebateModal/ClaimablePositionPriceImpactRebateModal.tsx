@@ -75,7 +75,7 @@ export function ClaimablePositionPriceImpactRebateModal({
 
   return (
     <Modal
-      label={t`Price Impact Rebate`}
+      label={t`Price Impact Rebates`}
       className="Confirmation-box ClaimableModal"
       onClose={onClose}
       setIsVisible={onClose}
