@@ -89,7 +89,7 @@ export async function createIncreaseOrderTxn(
     signer,
   });
 
-  const decreaseEncodedPayloads = createDecreaseEncodedPayload({
+  const decreaseEncodedPayload = createDecreaseEncodedPayload({
     router,
     orderVaultAddress,
     ps: decreaseOrderParams || [],
@@ -120,7 +120,7 @@ export async function createIncreaseOrderTxn(
     });
   }
 
-  const finalPayload = [...encodedPayload, ...decreaseEncodedPayloads];
+  const finalPayload = [...encodedPayload, ...decreaseEncodedPayload];
   const txnCreatedAt = Date.now();
   const txnCreatedAtBlock = await signer.provider?.getBlockNumber();
   const txn = await callContract(chainId, router, "multicall", [finalPayload], {

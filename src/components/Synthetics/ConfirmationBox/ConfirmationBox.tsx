@@ -566,8 +566,6 @@ export function ConfirmationBox(p: Props) {
       referralCode: referralCodeForTxn,
       indexToken: marketInfo.indexToken,
       tokensData,
-      // Skip simulation to avoid EmptyPosition error
-      skipSimulation: true,
     };
 
     return createIncreaseOrderTxn(
@@ -586,6 +584,7 @@ export function ConfirmationBox(p: Props) {
         acceptablePrice: increaseAmounts.acceptablePrice,
         executionFee: executionFee.feeTokenAmount,
         orderType: isLimit ? OrderType.LimitIncrease : OrderType.MarketIncrease,
+        skipSimulation: isLimit || shouldDisableValidation,
         setPendingTxns: p.setPendingTxns,
         setPendingOrder,
         setPendingPosition,
@@ -606,6 +605,7 @@ export function ConfirmationBox(p: Props) {
             minOutputUsd: BigNumber.from(0),
             decreasePositionSwapType: entry.decreaseSwapType,
             orderType: entry.triggerOrderType!,
+            skipSimulation: isLimit || shouldDisableValidation,
           };
         })
         .filter(Boolean)
