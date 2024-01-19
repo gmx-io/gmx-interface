@@ -8,7 +8,7 @@ import { MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/s
 import { getTokenData, useTokensData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { expandDecimals, formatTokenAmount, formatUsd } from "lib/numbers";
+import { expandDecimals, formatDeltaUsd, formatTokenAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import { memo, useCallback, useMemo, useState } from "react";
@@ -29,7 +29,7 @@ export function ClaimablePositionPriceImpactRebateModal({
   const { chainId } = useChainId();
   const { tokensData } = useTokensData(chainId);
   const totalUsd = useMemo(
-    () => formatUsd(calcTotalRebateUsd(claimablePositionPriceImpactFees, tokensData, false)),
+    () => formatDeltaUsd(calcTotalRebateUsd(claimablePositionPriceImpactFees, tokensData, false)),
     [claimablePositionPriceImpactFees, tokensData]
   );
   const { signer, account } = useWallet();
@@ -179,7 +179,7 @@ const Row = memo(
         total = total.add(usd);
       });
 
-      return formatUsd(total);
+      return formatDeltaUsd(total);
     }, [rebateItems, tokensData]);
 
     const renderContent = useCallback(

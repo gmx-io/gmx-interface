@@ -6,7 +6,7 @@ import { MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/s
 import { getTokenData, useTokensData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { expandDecimals, formatTokenAmount, formatUsd } from "lib/numbers";
+import { expandDecimals, formatDeltaUsd, formatTokenAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { memo, useCallback, useMemo } from "react";
 import { calcTotalRebateUsd } from "../Claims/utils";
@@ -25,7 +25,7 @@ export function AccruedPositionPriceImpactRebateModal({
   const { chainId } = useChainId();
   const { tokensData } = useTokensData(chainId);
   const totalUsd = useMemo(
-    () => formatUsd(calcTotalRebateUsd(accruedPositionPriceImpactFees, tokensData, true)),
+    () => formatDeltaUsd(calcTotalRebateUsd(accruedPositionPriceImpactFees, tokensData, true)),
     [accruedPositionPriceImpactFees, tokensData]
   );
   const reducedByMarketItemGroups = useMemo(() => {
@@ -144,7 +144,7 @@ const Row = memo(
         total = total.add(usd);
       });
 
-      return formatUsd(total);
+      return formatDeltaUsd(total);
     }, [rebateItems, tokensData]);
 
     const renderContent = useCallback(
