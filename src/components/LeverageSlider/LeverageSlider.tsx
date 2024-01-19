@@ -22,6 +22,8 @@ type Props = {
   isPositive?: boolean;
   value?: number;
   onChange: (value: number) => void;
+  min?: number;
+  leverageMarks?: { [key: number]: string };
 };
 
 export function LeverageSlider(p: Props) {
@@ -33,10 +35,10 @@ export function LeverageSlider(p: Props) {
       })}
     >
       <Slider
-        min={1.1}
+        min={p.min ?? 1.1}
         max={MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR}
         step={0.1}
-        marks={leverageMarks}
+        marks={p.leverageMarks ?? leverageMarks}
         handle={LeverageSliderHandle}
         onChange={p.onChange}
         defaultValue={p.value}

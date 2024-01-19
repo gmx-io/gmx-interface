@@ -148,6 +148,20 @@ const tradeTypeIcons = {
   [TradeType.Swap]: swapImg,
 };
 
+const leverageMarks = {
+  1: "1x",
+  5: "5x",
+  10: "10x",
+  15: "15x",
+  20: "20x",
+  25: "25x",
+  30: "30x",
+  35: "35x",
+  40: "40x",
+  45: "45x",
+  50: "50x",
+};
+
 export function TradeBox(p: Props) {
   const {
     tradeMode,
@@ -1245,7 +1259,13 @@ export function TradeBox(p: Props) {
             </ToggleSwitch>
 
             {isLeverageEnabled && (
-              <LeverageSlider value={leverageOption} onChange={setLeverageOption} isPositive={isLong} />
+              <LeverageSlider
+                leverageMarks={leverageMarks}
+                min={0.1}
+                value={leverageOption}
+                onChange={setLeverageOption}
+                isPositive={isLong}
+              />
             )}
           </>
         )}
@@ -1419,13 +1439,13 @@ export function TradeBox(p: Props) {
                     : undefined
                 }
                 to={
-                  decreaseAmounts?.isFullClose 
+                  decreaseAmounts?.isFullClose
                     ? "-"
                     : decreaseAmounts?.sizeDeltaUsd.gt(0)
-                      ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
-                          displayDecimals: toToken?.priceDecimals,
-                        })
-                      : undefined
+                    ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
+                        displayDecimals: toToken?.priceDecimals,
+                      })
+                    : undefined
                 }
               />
             }
