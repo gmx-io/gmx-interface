@@ -120,8 +120,8 @@ const Row = memo(
     marketsInfoData: MarketsInfoData;
   }) => {
     const { chainId } = useChainId();
+    const market = getByKey(marketsInfoData, rebateItems[0].marketAddress);
     const label = useMemo(() => {
-      const market = getByKey(marketsInfoData, rebateItems[0].marketAddress);
       if (!market) return "";
       const indexName = getMarketIndexName(market);
       const poolName = getMarketPoolName(market);
@@ -131,13 +131,13 @@ const Row = memo(
           <span className="subtext">[{poolName}]</span>
         </div>
       );
-    }, [marketsInfoData, rebateItems]);
+    }, [market]);
 
     const { tokensData } = useTokensData(chainId);
 
     const reducedByTokenItems = useMemo(() => {
       const groupedMarkets: Record<string, number> = {};
-      return rebateItems.reduce((acc, rebateItem) => {
+      const reduced = rebateItems.reduce((acc, rebateItem) => {
         const key = rebateItem.marketAddress + rebateItem.tokenAddress;
         if (typeof groupedMarkets[key] === "number") {
           const index = groupedMarkets[key];
@@ -149,7 +149,23 @@ const Row = memo(
 
         return acc;
       }, [] as PositionPriceImpactRebateInfo[]);
-    }, [rebateItems]);
+      if (reduced.length !== 2) return reduced;
+
+      reduced.sort((a, b) => {
+        let ax = 0;
+        let bx = 0;
+
+        if (a.tokenAddress === market?.longTokenAddress) ax = 1;
+        else if (a.tokenAddress === market?.shortTokenAddress) ax = -1;
+
+        if (b.tokenAddress === market?.longTokenAddress) bx = 1;
+        else if (b.tokenAddress === market?.shortTokenAddress) bx = -1;
+
+        return bx - ax;
+      });
+
+      return reduced;
+    }, [market?.longTokenAddress, market?.shortTokenAddress, rebateItems]);
 
     const usd = useMemo(() => {
       let total = BigNumber.from(0);
