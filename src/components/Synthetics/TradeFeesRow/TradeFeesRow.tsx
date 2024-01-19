@@ -31,6 +31,7 @@ type Props = {
   swapPriceImpact?: FeeItem;
   positionFee?: FeeItem;
   positionPriceImpact?: FeeItem;
+  priceImpactDiff?: FeeItem;
   executionFee?: ExecutionFee;
   borrowFee?: FeeItem;
   fundingFee?: FeeItem;
@@ -57,18 +58,47 @@ export function TradeFeesRow(p: Props) {
   const shouldShowRebate = p.shouldShowRebate ?? true;
   const rebateIsApplicable = shouldShowRebate && p.positionFee?.deltaUsd.lt(0) && p.feesType !== "swap";
 
+  const [fullPositionPriceImpact, hasRebates] = mergePositionPriceImpactWithPriceImpactDiff(
+    p.feesType,
+    p.positionPriceImpact,
+    p.priceImpactDiff
+  );
+  const rebatesMessage = hasRebates ? (
+    <Trans>
+      Price Impact Rebates for closing trades are claimable under the Claims tab.{" "}
+      <ExternalLink newTab href="https://docs.gmx.io/docs/trading/v2#price-impact">
+        Read more
+      </ExternalLink>
+      .
+    </Trans>
+  ) : undefined;
+
   const feeRows: FeeRow[] = useMemo(() => {
-    const positionPriceImpactRow = p.positionPriceImpact?.deltaUsd.abs().gt(0)
+    const positionPriceImpactRow = fullPositionPriceImpact?.deltaUsd.abs().gt(0)
       ? {
           id: "positionPriceImpact",
           label: (
             <>
               <div className="text-white">{t`Position Price Impact`}:</div>
-              <div>({formatPercentage(p.positionPriceImpact.bps.abs())} of position size)</div>
+              <div>({formatPercentage(fullPositionPriceImpact.bps.abs())} of position size)</div>
             </>
           ),
-          value: formatDeltaUsd(p.positionPriceImpact.deltaUsd),
-          className: p.positionPriceImpact.deltaUsd.gte(0) ? "text-green" : "text-red",
+          value: formatDeltaUsd(fullPositionPriceImpact.deltaUsd),
+          className: fullPositionPriceImpact.deltaUsd.gte(0) ? "text-green" : "text-red",
+        }
+      : undefined;
+
+    const priceImpactDiffUsd = p.priceImpactDiff?.deltaUsd.abs().gt(0)
+      ? {
+          id: "priceImpactDiff",
+          label: (
+            <>
+              <div className="text-white">{t`Price Impact Rebates`}:</div>
+              <div>({formatPercentage(p.priceImpactDiff.bps.abs())} of position size)</div>
+            </>
+          ),
+          value: formatDeltaUsd(p.priceImpactDiff.deltaUsd),
+          className: p.priceImpactDiff.deltaUsd.gte(0) ? "text-green" : "text-red",
         }
       : undefined;
 
@@ -281,6 +311,7 @@ export function TradeFeesRow(p: Props) {
     if (p.feesType === "decrease") {
       return [
         positionPriceImpactRow,
+        priceImpactDiffUsd,
         swapPriceImpactRow,
         borrowFeeRow,
         fundingFeeRow,
@@ -301,7 +332,8 @@ export function TradeFeesRow(p: Props) {
 
     return [];
   }, [
-    p.positionPriceImpact,
+    fullPositionPriceImpact,
+    p.priceImpactDiff,
     p.swapPriceImpact,
     p.swapFees,
     p.swapProfitFee,
@@ -412,6 +444,12 @@ export function TradeFeesRow(p: Props) {
                       showDollar={false}
                     />
                   ))}
+                  {hasRebates && (
+                    <>
+                      <br />
+                      {rebatesMessage}
+                    </>
+                  )}
                   {incentivesBottomText && <br />}
                   {incentivesBottomText}
                 </div>
@@ -422,4 +460,22 @@ export function TradeFeesRow(p: Props) {
       }
     />
   );
+}
+
+function mergePositionPriceImpactWithPriceImpactDiff(
+  feesType: TradeFeesType,
+  positionPriceImpact: FeeItem | undefined,
+  priceImpactDiff: FeeItem | undefined
+): [fullPositionPriceImpact: FeeItem | undefined, hasRebates: boolean] {
+  if (feesType !== "decrease" || !positionPriceImpact || !priceImpactDiff || priceImpactDiff.deltaUsd.lte(0)) {
+    return [positionPriceImpact, false];
+  }
+
+  return [
+    {
+      bps: positionPriceImpact.bps.add(priceImpactDiff.bps.mul(-1)),
+      deltaUsd: positionPriceImpact.deltaUsd.add(priceImpactDiff.deltaUsd.mul(-1)),
+    },
+    true,
+  ];
 }
