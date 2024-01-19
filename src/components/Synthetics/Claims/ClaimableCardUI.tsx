@@ -40,6 +40,8 @@ export function ClaimableCardUI({
   const renderTooltipContent = useCallback(() => tooltipText, [tooltipText]);
   const renderTooltip2Content = useCallback(() => tooltip2Text, [tooltip2Text]);
   const isHorizontal = useMedia("(min-width: 600px) and (max-width: 1100px)");
+  const buttonClassname = buttonStyle === "primary" ? "primary App-button-option App-card-option" : "secondary";
+  const button2Classname = button2Style === "primary" ? "primary App-button-option App-card-option" : "secondary";
 
   return (
     <div className="Claims-card w-full" style={style}>
@@ -59,7 +61,7 @@ export function ClaimableCardUI({
             </span>
           </div>
           {fundingFees.gt(0) && (
-            <button className={`Claims-claim-button ${buttonStyle}`} onClick={onButtonClick}>
+            <button className={`Claims-claim-button ${buttonClassname}`} onClick={onButtonClick}>
               {buttonText}
             </button>
           )}
@@ -83,11 +85,11 @@ export function ClaimableCardUI({
               )}
             </span>
           </div>
-          {priceImpactDifference.gt(0) && (
-            <button className={`Claims-claim-button ${button2Style}`} onClick={onButton2Click}>
+          {
+            <button className={`Claims-claim-button ${button2Classname}`} onClick={onButton2Click}>
               {button2Text}
             </button>
-          )}
+          }
         </div>
       </div>
     </div>
