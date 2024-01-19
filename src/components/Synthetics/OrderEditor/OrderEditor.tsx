@@ -90,7 +90,7 @@ export function OrderEditor(p: Props) {
 
   const acceptablePrice = useMemo(() => {
     if (isSwapOrderType(p.order.orderType)) {
-      return undefined;
+      return BigNumber.from(0);
     }
 
     const positionOrder = p.order as PositionOrderInfo;
