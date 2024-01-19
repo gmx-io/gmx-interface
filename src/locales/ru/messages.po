@@ -3691,6 +3691,10 @@ msgstr ""
 msgid "Price Impact not yet acknowledged"
 msgstr ""
 
+#: src/domain/synthetics/orders/useSLTPEntries.ts
+msgid "Price above Limit Price."
+msgstr ""
+
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -3716,8 +3720,11 @@ msgid "Price above Mark Price"
 msgstr "Цена выше Маркированной Цены"
 
 #: src/domain/synthetics/orders/useSLTPEntries.ts
-#: src/domain/synthetics/orders/useSLTPEntries.ts
 msgid "Price above Mark Price."
+msgstr ""
+
+#: src/domain/synthetics/orders/useSLTPEntries.ts
+msgid "Price below Limit Price."
 msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
@@ -3744,7 +3751,6 @@ msgstr ""
 msgid "Price below Mark Price"
 msgstr "Цена ниже Маркированной Цены"
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/orders/useSLTPEntries.ts
 msgid "Price below Mark Price."
 msgstr ""
@@ -5277,10 +5283,6 @@ msgstr ""
 msgid "Trigger order disabled, pending {0} upgrade"
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
-msgid "Trigger order for"
-msgstr ""
-
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Triggered at: {0}"
 msgstr ""
@@ -6120,6 +6122,10 @@ msgstr "{0} liegt unter der Zielgewichtung.<0/><1/>Erhalte niedrigere Gebühren,
 #: src/components/Exchange/SwapBox.js
 msgid "{0} is required for collateral."
 msgstr "{0} требуется для обеспечения залога."
+
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+msgid "{0} order for"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "{0} pool exceeded, try different token"

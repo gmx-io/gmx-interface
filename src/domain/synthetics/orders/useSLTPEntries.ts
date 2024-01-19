@@ -411,22 +411,23 @@ function createErrorHandlers({
     }
 
     const inputPrice = parseValue(entry.price, USD_DECIMALS);
-    const priceLiqError = isLong ? t`Price below Liq. Price.` : t`Price above Liq. Price.`;
-
-    if (inputPrice?.lte(liqPrice) && isLong) {
-      return { ...entry, error: priceLiqError };
-    }
-
-    if (inputPrice?.gte(liqPrice) && !isLong) {
-      return { ...entry, error: priceLiqError };
-    }
 
     const isPriceAboveMark = inputPrice?.gte(entryPrice);
     const isPriceBelowMark = inputPrice?.lte(entryPrice);
+    const priceLiqError = isLong ? t`Price below Liq. Price.` : t`Price above Liq. Price.`;
     const priceAboveMsg = isLimit ? t`Price above Limit Price.` : t`Price above Mark Price.`;
     const priceBelowMsg = isLimit ? t`Price below Limit Price.` : t`Price below Mark Price.`;
 
     if (isStopLoss) {
+      // liquidation price error
+      if (inputPrice?.lte(liqPrice) && isLong) {
+        return { ...entry, error: priceLiqError };
+      }
+      if (inputPrice?.gte(liqPrice) && !isLong) {
+        return { ...entry, error: priceLiqError };
+      }
+
+      // mark price error
       if (isPriceAboveMark && isLong) {
         return { ...entry, error: priceAboveMsg };
       }

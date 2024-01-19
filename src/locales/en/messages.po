@@ -3694,6 +3694,10 @@ msgstr "Price Impact"
 msgid "Price Impact not yet acknowledged"
 msgstr "Price Impact not yet acknowledged"
 
+#: src/domain/synthetics/orders/useSLTPEntries.ts
+msgid "Price above Limit Price."
+msgstr "Price above Limit Price."
+
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -3719,9 +3723,12 @@ msgid "Price above Mark Price"
 msgstr "Price above Mark Price"
 
 #: src/domain/synthetics/orders/useSLTPEntries.ts
-#: src/domain/synthetics/orders/useSLTPEntries.ts
 msgid "Price above Mark Price."
 msgstr "Price above Mark Price."
+
+#: src/domain/synthetics/orders/useSLTPEntries.ts
+msgid "Price below Limit Price."
+msgstr "Price below Limit Price."
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -3747,7 +3754,6 @@ msgstr "Price below Liq. Price."
 msgid "Price below Mark Price"
 msgstr "Price below Mark Price"
 
-#: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/orders/useSLTPEntries.ts
 msgid "Price below Mark Price."
 msgstr "Price below Mark Price."
@@ -5280,10 +5286,6 @@ msgstr "Trigger Price: {pricePrefix} {0}"
 msgid "Trigger order disabled, pending {0} upgrade"
 msgstr "Trigger order disabled, pending {0} upgrade"
 
-#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
-msgid "Trigger order for"
-msgstr "Trigger order for"
-
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Triggered at: {0}"
 msgstr "Triggered at: {0}"
@@ -6125,6 +6127,10 @@ msgstr "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> 
 #: src/components/Exchange/SwapBox.js
 msgid "{0} is required for collateral."
 msgstr "{0} is required for collateral."
+
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+msgid "{0} order for"
+msgstr "{0} order for"
 
 #: src/components/Glp/GlpSwap.js
 msgid "{0} pool exceeded, try different token"
