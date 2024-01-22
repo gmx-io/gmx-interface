@@ -247,6 +247,10 @@ msgstr "Accrued Positive Funding Fees for Positions not yet claimable. They will
 msgid "Accrued Price Impact Rebates"
 msgstr "Accrued Price Impact Rebates"
 
+#: src/components/Synthetics/Claims/SettleAccruedCard.tsx
+msgid "Accrued Price Impact Rebates. They will become Claimable after some time.<0/><1/><2>Read more</2>."
+msgstr "Accrued Price Impact Rebates. They will become Claimable after some time.<0/><1/><2>Read more</2>."
+
 #: src/components/Glp/GlpSwap.js
 msgid "Acknowledge epoch is ending in {minutes} minutes"
 msgstr "Acknowledge epoch is ending in {minutes} minutes"
@@ -872,6 +876,10 @@ msgstr "Claim {wrappedTokenSymbol} Rewards"
 #: src/pages/Stake/StakeV2.js
 msgid "Claimable"
 msgstr "Claimable"
+
+#: src/components/Synthetics/Claims/ClaimableCard.tsx
+msgid "Claimable Price Impact Rebates.<0/><1/><2>Read more</2>."
+msgstr "Claimable Price Impact Rebates.<0/><1/><2>Read more</2>."
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Claimable Rebates"

@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import { getTotalAccruedFundingUsd } from "domain/synthetics/markets";
 import { PositionsInfoData } from "domain/synthetics/positions";
 import { CSSProperties, useMemo } from "react";
@@ -47,7 +47,7 @@ export function SettleAccruedCard({
       title={title}
       tooltipText={tooltipText}
       tooltip2Text={
-        <>
+        <Trans>
           Accrued Price Impact Rebates. They will become Claimable after some time.
           <br />
           <br />
@@ -55,7 +55,7 @@ export function SettleAccruedCard({
             Read more
           </ExternalLink>
           .
-        </>
+        </Trans>
       }
       onButtonClick={onSettleClick}
       onButton2Click={onAccruedPositionPriceImpactRebateClick}

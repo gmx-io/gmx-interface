@@ -247,6 +247,10 @@ msgstr ""
 msgid "Accrued Price Impact Rebates"
 msgstr ""
 
+#: src/components/Synthetics/Claims/SettleAccruedCard.tsx
+msgid "Accrued Price Impact Rebates. They will become Claimable after some time.<0/><1/><2>Read more</2>."
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "Acknowledge epoch is ending in {minutes} minutes"
 msgstr ""
@@ -871,6 +875,10 @@ msgstr ""
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claimable"
+msgstr ""
+
+#: src/components/Synthetics/Claims/ClaimableCard.tsx
+msgid "Claimable Price Impact Rebates.<0/><1/><2>Read more</2>."
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx

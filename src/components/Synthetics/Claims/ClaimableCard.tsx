@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import { PositionPriceImpactRebateInfo } from "domain/synthetics/claimHistory";
 import { MarketsInfoData, getTotalClaimableFundingUsd } from "domain/synthetics/markets";
 import { useTokensData } from "domain/synthetics/tokens";
@@ -6,6 +6,7 @@ import { useChainId } from "lib/chains";
 import { CSSProperties, useMemo } from "react";
 import { ClaimableCardUI } from "./ClaimableCardUI";
 import { calcTotalRebateUsd } from "./utils";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 type Props = {
   onClaimClick: () => void;
@@ -43,6 +44,17 @@ export function ClaimableCard({
       priceImpactRebate={priceImpactRebateUsd}
       title={title}
       tooltipText={tooltipText}
+      tooltip2Text={
+        <Trans>
+          Claimable Price Impact Rebates.
+          <br />
+          <br />
+          <ExternalLink newTab href="https://docs.gmx.io/docs/trading/v2/#price-impact-rebates">
+            Read more
+          </ExternalLink>
+          .
+        </Trans>
+      }
       onButtonClick={onClaimClick}
       onButton2Click={onClaimablePositionPriceImpactFeesClick}
       style={style}
