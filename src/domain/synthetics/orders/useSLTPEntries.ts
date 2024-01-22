@@ -221,27 +221,23 @@ export default function useSLTPEntries({
   };
 }
 
-function useEntries(id: string, errorHandler: (entry: Partial<Entry>) => Partial<Entry>) {
-  const [entries, setEntries] = useState<Entry[]>([{ id: uniqueId(id), price: "", percentage: "", error: "" }]);
+function getDefaultEntry(id: string, override?: Partial<Entry>) {
+  return { id: uniqueId(id), price: "", percentage: "100", error: "", ...override };
+}
 
-  const canAddEntry = useMemo(() => {
-    const totalPercentage = entries.reduce((total, entry) => total + Number(entry.percentage), 0);
-    return totalPercentage < MAX_PERCENTAGE;
+function useEntries(id: string, errorHandler: (entry: Partial<Entry>) => Partial<Entry>) {
+  const [entries, setEntries] = useState<Entry[]>([getDefaultEntry(id)]);
+
+  const totalPercentage = useMemo(() => {
+    return entries.reduce((total, entry) => total + Number(entry.percentage), 0);
   }, [entries]);
 
   const addEntry = useCallback(() => {
-    if (!canAddEntry) return;
-
-    setEntries((prevEntries) => [
-      ...prevEntries,
-      {
-        id: uniqueId(id),
-        price: "",
-        percentage: "",
-        error: "",
-      },
-    ]);
-  }, [canAddEntry, id]);
+    if (totalPercentage <= MAX_PERCENTAGE) {
+      const leftPercentage = MAX_PERCENTAGE - totalPercentage;
+      setEntries((prevEntries) => [...prevEntries, getDefaultEntry(id, { percentage: String(leftPercentage) })]);
+    }
+  }, [totalPercentage, id]);
 
   const updateEntry = useCallback(
     (id: string, updatedEntry: Partial<Entry>) => {
@@ -267,9 +263,7 @@ function useEntries(id: string, errorHandler: (entry: Partial<Entry>) => Partial
     [errorHandler]
   );
 
-  const reset = useCallback(() => {
-    setEntries([{ id: uniqueId(id), price: "", percentage: "" }]);
-  }, [id]);
+  const reset = useCallback(() => setEntries([getDefaultEntry(id)]), [id]);
 
   const deleteEntry = useCallback(
     (id: string) => {
@@ -285,7 +279,7 @@ function useEntries(id: string, errorHandler: (entry: Partial<Entry>) => Partial
     [reset]
   );
 
-  return { entries, addEntry, updateEntry, deleteEntry, reset, canAddEntry };
+  return { entries, addEntry, updateEntry, deleteEntry, reset, canAddEntry: totalPercentage <= MAX_PERCENTAGE };
 }
 
 function calculateAmounts(params: {

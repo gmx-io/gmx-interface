@@ -11,6 +11,7 @@ import { MarketInfo } from "domain/synthetics/markets";
 import { IncreasePositionAmounts } from "domain/synthetics/trade";
 import { Entry } from "domain/synthetics/orders/useSLTPEntries";
 import { t } from "@lingui/macro";
+import { useRef } from "react";
 
 const SUGGESTION_PERCENTAGE_LIST = [10, 25, 50, 75, 100];
 
@@ -25,8 +26,18 @@ type Props = {
 };
 
 function SLTPEntries({ entries, updateEntry, addEntry, deleteEntry, canAddEntry, increaseAmounts, marketInfo }: Props) {
+  const sltpRef = useRef<HTMLDivElement>(null);
+
+  function handleAddEntry() {
+    addEntry();
+    setTimeout(() => {
+      const inputs = sltpRef.current?.querySelectorAll(".SLTP-price input");
+      (inputs && (inputs[inputs.length - 1] as HTMLInputElement))?.focus();
+    });
+  }
+
   return (
-    <div className="SLTPEntries-wrapper">
+    <div className="SLTPEntries-wrapper" ref={sltpRef}>
       {entries.map((entry) => {
         const percentage = Math.floor(Number.parseFloat(entry.percentage) * 100);
         const entrySizeUsd =
@@ -84,7 +95,7 @@ function SLTPEntries({ entries, updateEntry, addEntry, deleteEntry, canAddEntry,
               <div className="SLTP-actions">
                 <TooltipWithPortal
                   handle={
-                    <button className="action-add" disabled={!canAddEntry} onClick={addEntry}>
+                    <button className="action-add" disabled={!canAddEntry} onClick={handleAddEntry}>
                       <FaPlus color="#5EC989" />
                     </button>
                   }
