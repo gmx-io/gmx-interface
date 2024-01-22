@@ -136,14 +136,15 @@ const Row = memo(
     const { tokensData } = useTokensData(chainId);
 
     const reducedByTokenItems = useMemo(() => {
-      const groupedMarkets: Record<string, number> = {};
+      const groupedTokens: Record<string, number> = {};
       const reduced = rebateItems.reduce((acc, rebateItem) => {
         const key = rebateItem.marketAddress + rebateItem.tokenAddress;
-        if (typeof groupedMarkets[key] === "number") {
-          const index = groupedMarkets[key];
+        if (typeof groupedTokens[key] === "number") {
+          const index = groupedTokens[key];
           acc[index].value = acc[index].value.add(rebateItem.value);
+          acc[index].valueByFactor = acc[index].valueByFactor.add(rebateItem.valueByFactor);
         } else {
-          groupedMarkets[key] = acc.length;
+          groupedTokens[key] = acc.length;
           acc.push({ ...rebateItem });
         }
 
@@ -188,7 +189,9 @@ const Row = memo(
           const tokenData = getTokenData(tokensData, rebateItem.tokenAddress);
           if (!tokenData) return null;
           return (
-            <div key={rebateItem.id}>{formatTokenAmount(rebateItem.value, tokenData?.decimals, tokenData?.symbol)}</div>
+            <div key={rebateItem.id}>
+              {formatTokenAmount(rebateItem.valueByFactor, tokenData?.decimals, tokenData?.symbol)}
+            </div>
           );
         }),
       [reducedByTokenItems, tokensData]

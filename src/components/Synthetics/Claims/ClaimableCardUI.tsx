@@ -85,11 +85,11 @@ export function ClaimableCardUI({
               )}
             </span>
           </div>
-          {
+          {priceImpactDifference.gt(0) && (
             <button className={`Claims-claim-button ${button2Classname}`} onClick={onButton2Click}>
               {button2Text}
             </button>
-          }
+          )}
         </div>
       </div>
     </div>
