@@ -3222,6 +3222,7 @@ msgid "Networks and Settings"
 msgstr "Netzwerke und Einstellungen"
 
 #: src/components/Synthetics/Claims/Claims.tsx
+#: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "Next"
 msgstr "Weiter"
 
@@ -3667,6 +3668,7 @@ msgid "Positive Funding Fees for a Position become claimable after the Position 
 msgstr ""
 
 #: src/components/Synthetics/Claims/Claims.tsx
+#: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "Prev"
 msgstr "Prev"
 
