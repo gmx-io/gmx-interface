@@ -1,6 +1,28 @@
 .StatusNotification-wrapper {
-  display: grid;
-  grid-row-gap: 1.25rem;
+  .StatusNotification-list {
+    display: grid;
+    grid-row-gap: 1.25rem;
+  }
+  .StatusNotification-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    margin-right: -1.8rem;
+
+    .StatusNotification-cancel-all {
+      background: transparent;
+      border: none;
+      padding: 0;
+      color: white;
+      text-decoration: underline;
+      opacity: 0.7;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
 }
 
 .StatusNotification {

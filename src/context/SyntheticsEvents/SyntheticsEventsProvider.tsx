@@ -69,7 +69,13 @@ export function useSyntheticsEvents(): SyntheticsEventsContextType {
   return useContext(SyntheticsEventsContext) as SyntheticsEventsContextType;
 }
 
-export function SyntheticsEventsProvider({ children }: { children: ReactNode }) {
+export function SyntheticsEventsProvider({
+  children,
+  setPendingTxns,
+}: {
+  children: ReactNode;
+  setPendingTxns: (txns: string[]) => void;
+}) {
   const { chainId } = useChainId();
   const { account: currentAccount } = useWallet();
   const { wsProvider } = useWebsocketProvider();
@@ -559,6 +565,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             marketsInfoData={marketsInfoData}
             tokensData={tokensData}
             toastTimestamp={toastId}
+            setPendingTxns={setPendingTxns}
           />,
           {
             autoClose: false,
@@ -638,6 +645,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     positionIncreaseEvents,
     tokensData,
     withdrawalStatuses,
+    setPendingTxns,
   ]);
 
   return <SyntheticsEventsContext.Provider value={contextState}>{children}</SyntheticsEventsContext.Provider>;
