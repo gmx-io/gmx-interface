@@ -367,7 +367,7 @@ export function OrdersStatusNotificiation({
       }
     );
   }, [matchedOrderStatuses, pendingOrders]);
-  console.log(txsStatus);
+
   return (
     <div className="StatusNotification-wrapper">
       <div className="StatusNotification-list">
