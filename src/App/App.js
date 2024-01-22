@@ -414,7 +414,7 @@ function FullApp() {
               <Route exact path="/">
                 <Redirect to="/trade" />
               </Route>
-              <Route exact path="/price-impact-rebates-stats">
+              <Route exact path="/price_impact_rebates_stats">
                 <PriceImpactRebatesStatsPage />
               </Route>
               <Route exact path="/v1">

@@ -63,12 +63,11 @@ const RebateStatsTable = memo(({ rebateGroups }: { rebateGroups: RebateGroup[] }
   return (
     <div className="PriceImpactRebatesStatsPage-table">
       <div className="PriceImpactRebatesStatsPage-row">
-        <div className="PriceImpactRebatesStatsPage-cell-expand" />
         <div className="PriceImpactRebatesStatsPage-cell-timekey">Timekey</div>
         <div className="PriceImpactRebatesStatsPage-cell-time">Time</div>
         <div className="PriceImpactRebatesStatsPage-cell-market">Market</div>
         <div className="PriceImpactRebatesStatsPage-cell-token">Token</div>
-        <div className="PriceImpactRebatesStatsPage-cell-approved">Approved</div>
+        <div className="PriceImpactRebatesStatsPage-cell-approved">Factor</div>
         <div className="PriceImpactRebatesStatsPage-cell-usd">$</div>
         <div className="PriceImpactRebatesStatsPage-cell-actions"></div>
       </div>
@@ -129,12 +128,10 @@ const RebateGroupRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) => {
 
   return (
     <>
-      <div className={accountsShown ? "PriceImpactRebatesStatsPage-subrow" : "PriceImpactRebatesStatsPage-row"}>
-        <div className="PriceImpactRebatesStatsPage-cell-expand">
-          <button className="SubaccountModal-mini-button" onClick={handleExpandClick}>
-            {accountsShown ? "📂" : "📁"}
-          </button>
-        </div>
+      <div
+        className={accountsShown ? "PriceImpactRebatesStatsPage-subrow" : "PriceImpactRebatesStatsPage-row"}
+        onClick={handleExpandClick}
+      >
         <div className="PriceImpactRebatesStatsPage-cell-timekey">{rebateGroup.timeKey}</div>
         <div className="PriceImpactRebatesStatsPage-cell-time">{formatTime(rebateGroup.timeKey)}</div>
         <div className="PriceImpactRebatesStatsPage-cell-market">{formatMarket(rebateGroup.marketInfo)}</div>
@@ -147,10 +144,10 @@ const RebateGroupRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) => {
         </div>
         <div className="PriceImpactRebatesStatsPage-cell-actions">
           <button className="SubaccountModal-mini-button" onClick={handleCopyCommandClick}>
-            Copy 🧾
+            Copy Cmd
           </button>
           <button className="SubaccountModal-mini-button" onClick={handleCopyAccountsClick}>
-            Copy 👥
+            Copy Users
           </button>
         </div>
       </div>
@@ -163,12 +160,11 @@ const RebateAccountsRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) =
   return (
     <div className="PriceImpactRebatesStatsPage-account">
       <div className="PriceImpactRebatesStatsPage-row">
-        <div className="PriceImpactRebatesStatsPage-cell-expand"></div>
         <div className="PriceImpactRebatesStatsPage-cell-timekey"></div>
         <div className="PriceImpactRebatesStatsPage-cell-time"></div>
         <div className="PriceImpactRebatesStatsPage-cell-market">Address</div>
         <div className="PriceImpactRebatesStatsPage-cell-token"></div>
-        <div className="PriceImpactRebatesStatsPage-cell-approved">Approved</div>
+        <div className="PriceImpactRebatesStatsPage-cell-approved">Factor</div>
         <div className="PriceImpactRebatesStatsPage-cell-usd">USD</div>
         <div className="PriceImpactRebatesStatsPage-cell-actions"></div>
       </div>
@@ -178,7 +174,6 @@ const RebateAccountsRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) =
         const usd = price && decimals ? rebateItem.value.mul(price).div(expandDecimals(1, decimals)) : undefined;
         return (
           <div className="PriceImpactRebatesStatsPage-row">
-            <div className="PriceImpactRebatesStatsPage-cell-expand"></div>
             <div className="PriceImpactRebatesStatsPage-cell-timekey"></div>
             <div className="PriceImpactRebatesStatsPage-cell-time"></div>
             <div className="PriceImpactRebatesStatsPage-cell-market">

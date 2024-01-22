@@ -9,11 +9,14 @@
 
 .PriceImpactRebatesStatsPage-row div {
   // border-right: 1px solid #e8e8e8;
-  border-bottom: 1px solid #757575;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   width: 200px;
   padding: 10px 0 10px 0;
   text-align: center;
   transition: background-color 0.1s linear;
+  align-items: center;
+  display: flex;
+  justify-content: center;
 }
 
 .PriceImpactRebatesStatsPage-row:hover div {
@@ -25,13 +28,15 @@
 }
 
 .PriceImpactRebatesStatsPage-subrow div {
-  // border-right: 1px solid #e8e8e8;
-  border-bottom: 1px solid #757575;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   width: 200px;
   padding: 10px 0 10px 0;
   text-align: center;
   transition: background-color 0.1s linear;
   background-color: #ffffff09;
+  align-items: center;
+  display: flex;
+  justify-content: center;
 }
 
 .PriceImpactRebatesStatsPage-subrow:hover div {
