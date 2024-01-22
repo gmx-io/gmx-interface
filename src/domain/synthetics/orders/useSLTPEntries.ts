@@ -23,7 +23,6 @@ export type Entry = {
   price: string;
   percentage: string;
   error?: string;
-  sizeUsd?: BigNumber;
 };
 
 type EntriesInfo = {
@@ -68,8 +67,8 @@ export default function useSLTPEntries({
     isLimit,
   });
 
-  const stopLossInfo = useEntries(handleSLErrors);
-  const takeProfitInfo = useEntries(handleTPErrors);
+  const stopLossInfo = useEntries("sl_", handleSLErrors);
+  const takeProfitInfo = useEntries("tp_", handleTPErrors);
 
   const positionKey = useMemo(() => {
     if (!account || !marketInfo || !collateralToken) {
@@ -222,8 +221,8 @@ export default function useSLTPEntries({
   };
 }
 
-function useEntries(errorHandler: (entry: Partial<Entry>) => Partial<Entry>) {
-  const [entries, setEntries] = useState<Entry[]>([{ id: uniqueId(), price: "", percentage: "", error: "" }]);
+function useEntries(id: string, errorHandler: (entry: Partial<Entry>) => Partial<Entry>) {
+  const [entries, setEntries] = useState<Entry[]>([{ id: uniqueId(id), price: "", percentage: "", error: "" }]);
 
   const canAddEntry = useMemo(() => {
     const totalPercentage = entries.reduce((total, entry) => total + Number(entry.percentage), 0);
@@ -236,13 +235,13 @@ function useEntries(errorHandler: (entry: Partial<Entry>) => Partial<Entry>) {
     setEntries((prevEntries) => [
       ...prevEntries,
       {
-        id: uniqueId(),
+        id: uniqueId(id),
         price: "",
         percentage: "",
         error: "",
       },
     ]);
-  }, [canAddEntry]);
+  }, [canAddEntry, id]);
 
   const updateEntry = useCallback(
     (id: string, updatedEntry: Partial<Entry>) => {
@@ -268,15 +267,23 @@ function useEntries(errorHandler: (entry: Partial<Entry>) => Partial<Entry>) {
     [errorHandler]
   );
 
-  const deleteEntry = useCallback((id: string) => {
-    setEntries((prevEntries) =>
-      prevEntries.length > 1 ? prevEntries.filter((entry) => entry.id !== id) : prevEntries
-    );
-  }, []);
-
   const reset = useCallback(() => {
-    setEntries([{ id: uniqueId(), price: "", percentage: "" }]);
-  }, []);
+    setEntries([{ id: uniqueId(id), price: "", percentage: "" }]);
+  }, [id]);
+
+  const deleteEntry = useCallback(
+    (id: string) => {
+      setEntries((prevEntries) => {
+        if (prevEntries.length > 1) {
+          return prevEntries.filter((entry) => entry.id !== id);
+        } else {
+          reset();
+          return prevEntries;
+        }
+      });
+    },
+    [reset]
+  );
 
   return { entries, addEntry, updateEntry, deleteEntry, reset, canAddEntry };
 }
@@ -419,7 +426,6 @@ function createErrorHandlers({
     const priceBelowMsg = isLimit ? t`Price below Limit Price.` : t`Price below Mark Price.`;
 
     if (isStopLoss) {
-      // liquidation price error
       if (inputPrice?.lte(liqPrice) && isLong) {
         return { ...entry, error: priceLiqError };
       }
@@ -427,7 +433,6 @@ function createErrorHandlers({
         return { ...entry, error: priceLiqError };
       }
 
-      // mark price error
       if (isPriceAboveMark && isLong) {
         return { ...entry, error: priceAboveMsg };
       }

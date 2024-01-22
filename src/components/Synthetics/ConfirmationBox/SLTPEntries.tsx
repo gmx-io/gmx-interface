@@ -99,7 +99,7 @@ function SLTPEntries({ entries, updateEntry, addEntry, deleteEntry, canAddEntry,
                     <button
                       className="action-remove"
                       onClick={() => deleteEntry(entry.id)}
-                      disabled={entries.length === 1}
+                      disabled={entries.length === 1 && !entry.percentage && !entry.price}
                     >
                       <FaPlus color="#E74E5D" className="rotate-45" />
                     </button>
