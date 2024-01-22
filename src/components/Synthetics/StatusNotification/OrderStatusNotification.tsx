@@ -387,7 +387,7 @@ export function OrdersStatusNotificiation({
       {showTxStatus && (
         <div className="StatusNotification-actions">
           <div>
-            {isMarketOrLimitOrderFailed && (
+            {isMarketOrLimitOrderFailed && triggerOrderKeys.length > 0 && (
               <button onClick={onCancelOrdersClick} className="StatusNotification-cancel-all">
                 Cancel all orders
               </button>
