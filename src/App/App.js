@@ -28,6 +28,7 @@ import Referrals from "pages/Referrals/Referrals";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
 import Stake from "pages/Stake/Stake";
 import Stats from "pages/Stats/Stats";
+import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 
 import Checkbox from "components/Checkbox/Checkbox";
 import Modal from "components/Modal/Modal";
@@ -412,6 +413,9 @@ function FullApp() {
             <Switch>
               <Route exact path="/">
                 <Redirect to="/trade" />
+              </Route>
+              <Route exact path="/price-impact-rebates-stats">
+                <PriceImpactRebatesStatsPage />
               </Route>
               <Route exact path="/v1">
                 <Exchange
