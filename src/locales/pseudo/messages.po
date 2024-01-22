@@ -812,10 +812,6 @@ msgid "Claim GMX Rewards"
 msgstr ""
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
-#~ msgid "Claim Price Impact"
-#~ msgstr ""
-
-#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "Claim Price Impact Rebates"
 msgstr ""
 
@@ -1062,6 +1058,7 @@ msgstr ""
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+#: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "Confirm Claim"
 msgstr ""
 
@@ -3710,20 +3707,10 @@ msgstr ""
 msgid "Price Impact"
 msgstr ""
 
-#: src/components/Synthetics/Claims/ClaimableCardUI.tsx
-#~ msgid "Price Impact Difference"
-#~ msgstr ""
-
-#: src/components/Synthetics/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
-#: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
-#~ msgid "Price Impact Rebate"
-#~ msgstr ""
-
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Price Impact Rebate Claimed"
 msgstr ""
 
-#: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price Impact Rebates"
