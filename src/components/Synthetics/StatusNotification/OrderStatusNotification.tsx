@@ -248,6 +248,7 @@ export function OrdersStatusNotificiation({
   toastTimestamp: number;
   setPendingTxns: (txns: string[]) => void;
 }) {
+  const [isCancelOrderProcessing, setIsCancelOrderProcessing] = useState(false);
   const { chainId } = useChainId();
   const { signer } = useWallet();
   const { orderStatuses: allOrderStatuses, setOrderStatusViewed } = useSyntheticsEvents();
@@ -322,18 +323,18 @@ export function OrdersStatusNotificiation({
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, triggerOrderKeys.length);
   const isLastSubaccountAction = useIsLastSubaccountAction();
 
-  const showTxStatus = pendingOrders.length > 1;
-
   useToastAutoClose(isCompleted, toastTimestamp);
 
   function onCancelOrdersClick() {
     if (!signer || !triggerOrderKeys.length || !setPendingTxns) return;
+
+    setIsCancelOrderProcessing(true);
     cancelOrdersTxn(chainId, signer, subaccount, {
       orderKeys: triggerOrderKeys,
       setPendingTxns,
       isLastSubaccountAction,
       detailsMsg: cancelOrdersDetailsMessage,
-    });
+    }).finally(() => setIsCancelOrderProcessing(false));
   }
 
   const txsStatus = useMemo(() => {
@@ -342,19 +343,19 @@ export function OrdersStatusNotificiation({
         const orderStatus = matchedOrderStatuses.find(
           (status) => getPendingOrderKey(status.data) === getPendingOrderKey(order)
         );
-
         if (orderStatus?.cancelledTxnHash) {
           result.status = "error";
           result.cancelledTxnHash = orderStatus?.cancelledTxnHash;
-        }
-
-        if (orderStatus?.createdTxnHash) {
+        } else if (orderStatus?.createdTxnHash) {
+          if (isLimitOrderType(order.orderType)) {
+            result.status = "success";
+          }
           result.createdTxnHash = orderStatus?.createdTxnHash;
-        }
-
-        if (orderStatus?.executedTxnHash) {
+        } else if (orderStatus?.executedTxnHash) {
           result.status = "success";
           result.executedTxnHash = orderStatus?.executedTxnHash;
+        } else {
+          result.status = "loading";
         }
 
         return result;
@@ -379,26 +380,38 @@ export function OrdersStatusNotificiation({
               marketsInfoData={marketsInfoData}
               tokensData={tokensData}
               toastTimestamp={toastTimestamp}
-              hideTxStatus={showTxStatus}
+              hideTxStatus={pendingOrders.length > 1}
             />
           );
         })}
       </div>
-      {showTxStatus && (
+      {pendingOrders.length > 1 && (
         <div className="StatusNotification-actions">
           <div>
             {isMarketOrLimitOrderFailed && triggerOrderKeys.length > 0 && (
-              <button onClick={onCancelOrdersClick} className="StatusNotification-cancel-all">
+              <button
+                disabled={isCancelOrderProcessing}
+                onClick={onCancelOrdersClick}
+                className="StatusNotification-cancel-all"
+              >
                 Cancel all orders
               </button>
             )}
           </div>
-          {txsStatus.status === "loading" && (
-            <ImSpinner2 width={60} height={60} className="spin TransactionStatus-spin" />
-          )}
-          {txsStatus.executedTxnHash && (
-            <ExternalLink href={`${getExplorerUrl(chainId)}tx/${txsStatus?.executedTxnHash}`}>View</ExternalLink>
-          )}
+          <div className="inline-items-center">
+            {txsStatus.createdTxnHash && (
+              <ExternalLink href={`${getExplorerUrl(chainId)}tx/${txsStatus.createdTxnHash}`}>View</ExternalLink>
+            )}
+
+            {txsStatus.status === "loading" && (
+              <ImSpinner2 width={60} height={60} className="spin TransactionStatus-spin ml-sm" />
+            )}
+            {txsStatus.executedTxnHash && (
+              <ExternalLink href={`${getExplorerUrl(chainId)}tx/${txsStatus.executedTxnHash}`} className="ml-sm">
+                View
+              </ExternalLink>
+            )}
+          </div>
         </div>
       )}
     </div>

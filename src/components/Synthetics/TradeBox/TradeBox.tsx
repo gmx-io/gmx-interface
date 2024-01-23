@@ -1419,13 +1419,13 @@ export function TradeBox(p: Props) {
                     : undefined
                 }
                 to={
-                  decreaseAmounts?.isFullClose 
+                  decreaseAmounts?.isFullClose
                     ? "-"
                     : decreaseAmounts?.sizeDeltaUsd.gt(0)
-                      ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
-                          displayDecimals: toToken?.priceDecimals,
-                        })
-                      : undefined
+                    ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
+                        displayDecimals: toToken?.priceDecimals,
+                      })
+                    : undefined
                 }
               />
             }
