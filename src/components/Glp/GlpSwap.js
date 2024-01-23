@@ -327,7 +327,7 @@ export default function GlpSwap(props) {
 
   const minResidualAmount = getMinResidualAmount(nativeTokenInfo?.decimals, nativeTokenInfo?.maxPrice);
 
-  const showMaxButtonBasedOnBalance = swapTokenInfo.isNative
+  const showMaxButtonBasedOnBalance = swapTokenInfo?.isNative
     ? minResidualAmount && swapTokenBalance.gt(minResidualAmount)
     : true;
 
@@ -494,7 +494,7 @@ export default function GlpSwap(props) {
   const fillMaxAmount = () => {
     if (isBuying) {
       setAnchorOnSwapAmount(true);
-      let maxAvailableAmount = swapToken.isNative ? swapTokenBalance.sub(minResidualAmount || 0) : swapTokenBalance;
+      let maxAvailableAmount = swapToken?.isNative ? swapTokenBalance.sub(minResidualAmount || 0) : swapTokenBalance;
       if (maxAvailableAmount?.isNegative()) {
         maxAvailableAmount = BigNumber.from(0);
       }
