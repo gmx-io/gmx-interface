@@ -756,10 +756,6 @@ msgid "Cancel submitted."
 msgstr "キャンセル申し込み完了"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
-#~ msgid "Canceling {ordersText}"
-#~ msgstr ""
-
-#: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Cancelling {ordersText}"
 msgstr ""
 
@@ -2522,6 +2518,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -2963,6 +2960,7 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -3281,10 +3279,6 @@ msgstr "注文が必ず執行される保証がないことに注意してくだ
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "One-Click Trading"
 msgstr ""
-
-#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-#~ msgid "One-Click Trading is not available using network's native token AVAX. Consider using WAVAX as Pay token instead."
-#~ msgstr ""
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 msgid "One-Click Trading is not available using network's native token {0}. Consider using {1} as Pay token instead."
@@ -6267,10 +6261,6 @@ msgstr ""
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "{orderTypeText} {0} {longShortText}: {sign}{1}"
 msgstr ""
-
-#: src/domain/synthetics/orders/cancelOrdersTxn.ts
-#~ msgid "{ordersText} canceled"
-#~ msgstr ""
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} cancelled"
