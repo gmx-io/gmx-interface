@@ -1046,7 +1046,7 @@ export function TradeBox(p: Props) {
 
   function onMaxClick() {
     if (fromToken?.balance) {
-      let maxAvailableAmount = fromToken.isNative
+      let maxAvailableAmount = fromToken?.isNative
         ? fromToken.balance.sub(BigNumber.from(minResidualAmount || 0))
         : fromToken.balance;
 
@@ -1433,13 +1433,13 @@ export function TradeBox(p: Props) {
                     : undefined
                 }
                 to={
-                  decreaseAmounts?.isFullClose 
+                  decreaseAmounts?.isFullClose
                     ? "-"
                     : decreaseAmounts?.sizeDeltaUsd.gt(0)
-                      ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
-                          displayDecimals: toToken?.priceDecimals,
-                        })
-                      : undefined
+                    ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
+                        displayDecimals: toToken?.priceDecimals,
+                      })
+                    : undefined
                 }
               />
             }

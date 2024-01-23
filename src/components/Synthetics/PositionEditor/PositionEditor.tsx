@@ -495,7 +495,7 @@ export function PositionEditor(p: Props) {
                 }
               }}
               onClickMax={() => {
-                let maxDepositAmount = collateralToken!.isNative
+                let maxDepositAmount = collateralToken?.isNative
                   ? collateralToken!.balance!.sub(BigNumber.from(minResidualAmount || 0))
                   : collateralToken!.balance!;
 
