@@ -1,5 +1,5 @@
 import { BASIS_POINTS_DIVISOR, DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER } from "config/factors";
-import { getCappedPositionImpactUsd } from "domain/synthetics/fees";
+import { getCappedPositionImpactUsd, getPriceImpactByAcceptablePrice } from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
 import { OrderType } from "domain/synthetics/orders";
 import { TokenPrices, convertToTokenAmount } from "domain/synthetics/tokens";
@@ -112,6 +112,19 @@ export function getAcceptablePriceInfo(p: {
 
     values.acceptablePrice = indexPrice.sub(priceDelta);
     values.acceptablePriceDeltaBps = maxNegativePriceImpactBps.mul(-1);
+
+    const priceImpact = getPriceImpactByAcceptablePrice({
+      sizeDeltaUsd,
+      acceptablePrice: values.acceptablePrice,
+      indexPrice,
+      isLong,
+      isIncrease,
+    });
+
+    values.priceImpactDeltaUsd = priceImpact.priceImpactDeltaUsd;
+    values.priceImpactDeltaAmount = priceImpact.priceImpactDeltaAmount;
+
+    return values;
   }
 
   values.priceImpactDeltaUsd = getCappedPositionImpactUsd(
