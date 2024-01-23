@@ -31,14 +31,13 @@ import {
   useSubaccountCancelOrdersDetailsMessage,
 } from "context/SubaccountContext/SubaccountContext";
 import { getExplorerUrl } from "config/chains";
-import { ImSpinner2 } from "react-icons/im";
 
 type Props = {
   toastTimestamp: number;
   pendingOrderData: PendingOrderData;
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
-  hideTxStatus?: boolean;
+  hideLink?: "created" | "executed" | "none";
 };
 
 export function OrderStatusNotification({
@@ -46,7 +45,7 @@ export function OrderStatusNotification({
   marketsInfoData,
   tokensData,
   toastTimestamp,
-  hideTxStatus = false,
+  hideLink = "none",
 }: Props) {
   const { chainId } = useChainId();
   const wrappedNativeToken = getWrappedToken(chainId);
@@ -158,12 +157,11 @@ export function OrderStatusNotification({
     return (
       <TransactionStatus
         status={status}
-        txnHash={orderStatus?.createdTxnHash}
+        txnHash={hideLink !== "created" ? orderStatus?.createdTxnHash : ""}
         text={text}
-        hideTxStatus={hideTxStatus}
       />
     );
-  }, [orderStatus?.createdTxnHash, hideTxStatus]);
+  }, [orderStatus?.createdTxnHash, hideLink]);
 
   const executionStatus = useMemo(() => {
     if (!orderData || !isMarketOrderType(orderData?.orderType)) {
@@ -190,14 +188,8 @@ export function OrderStatusNotification({
       txnHash = orderStatus?.cancelledTxnHash;
     }
 
-    return <TransactionStatus status={status} txnHash={txnHash} text={text} hideTxStatus={hideTxStatus} />;
-  }, [
-    orderData,
-    orderStatus?.cancelledTxnHash,
-    orderStatus?.createdTxnHash,
-    orderStatus?.executedTxnHash,
-    hideTxStatus,
-  ]);
+    return <TransactionStatus status={status} txnHash={hideLink !== "executed" ? txnHash : ""} text={text} />;
+  }, [orderData, orderStatus?.cancelledTxnHash, orderStatus?.createdTxnHash, orderStatus?.executedTxnHash, hideLink]);
 
   useEffect(
     function getOrderStatusKey() {
@@ -337,37 +329,20 @@ export function OrdersStatusNotificiation({
     }).finally(() => setIsCancelOrderProcessing(false));
   }
 
-  const txsStatus = useMemo(() => {
-    return pendingOrders.reduce(
-      (result, order) => {
-        const orderStatus = matchedOrderStatuses.find(
-          (status) => getPendingOrderKey(status.data) === getPendingOrderKey(order)
-        );
-        if (orderStatus?.cancelledTxnHash) {
-          result.status = "error";
-          result.cancelledTxnHash = orderStatus?.cancelledTxnHash;
-        } else if (orderStatus?.createdTxnHash) {
-          if (isLimitOrderType(order.orderType)) {
-            result.status = "success";
-          }
-          result.createdTxnHash = orderStatus?.createdTxnHash;
-        } else if (orderStatus?.executedTxnHash) {
-          result.status = "success";
-          result.executedTxnHash = orderStatus?.executedTxnHash;
-        } else {
-          result.status = "loading";
-        }
-
-        return result;
-      },
-      { status: "loading" } as {
-        status: TransactionStatusType;
-        createdTxnHash?: string;
-        executedTxnHash?: string;
-        cancelledTxnHash?: string;
+  const allTxnHash = useMemo(() => {
+    const ordersCreationTxHash = pendingOrders.map((order) => {
+      const orderStatus = matchedOrderStatuses.find(
+        (status) => getPendingOrderKey(status.data) === getPendingOrderKey(order)
+      );
+      if (orderStatus?.createdTxnHash) {
+        return orderStatus.createdTxnHash;
       }
-    );
+    });
+
+    return [...new Set(ordersCreationTxHash)];
   }, [matchedOrderStatuses, pendingOrders]);
+
+  console.log("allTxnHash", allTxnHash);
 
   return (
     <div className="StatusNotification-wrapper">
@@ -380,7 +355,7 @@ export function OrdersStatusNotificiation({
               marketsInfoData={marketsInfoData}
               tokensData={tokensData}
               toastTimestamp={toastTimestamp}
-              hideTxStatus={pendingOrders.length > 1}
+              hideLink={"created"}
             />
           );
         })}
@@ -399,18 +374,12 @@ export function OrdersStatusNotificiation({
             )}
           </div>
           <div className="inline-items-center">
-            {txsStatus.createdTxnHash && (
-              <ExternalLink href={`${getExplorerUrl(chainId)}tx/${txsStatus.createdTxnHash}`}>View</ExternalLink>
-            )}
-
-            {txsStatus.status === "loading" && (
-              <ImSpinner2 width={60} height={60} className="spin TransactionStatus-spin ml-sm" />
-            )}
-            {txsStatus.executedTxnHash && (
-              <ExternalLink href={`${getExplorerUrl(chainId)}tx/${txsStatus.executedTxnHash}`} className="ml-sm">
-                View
-              </ExternalLink>
-            )}
+            {allTxnHash.length > 0 &&
+              allTxnHash.map((txnHash) => (
+                <ExternalLink className="ml-sm" href={`${getExplorerUrl(chainId)}tx/${txnHash}`}>
+                  View
+                </ExternalLink>
+              ))}
           </div>
         </div>
       )}

@@ -12,10 +12,9 @@ type Props = {
   status: TransactionStatusType;
   text: ReactNode;
   txnHash?: string;
-  hideTxStatus?: boolean;
 };
 
-export function TransactionStatus({ status, text, txnHash, hideTxStatus }: Props) {
+export function TransactionStatus({ status, text, txnHash }: Props) {
   const { chainId } = useChainId();
 
   const txnLink = `${getExplorerUrl(chainId)}tx/${txnHash}`;
@@ -29,12 +28,10 @@ export function TransactionStatus({ status, text, txnHash, hideTxStatus }: Props
       >
         {text}
       </div>
-      {!hideTxStatus && (
-        <div className="TransactionStatus-status">
-          {status === "loading" && <ImSpinner2 width={60} height={60} className="spin TransactionStatus-spin" />}
-          {status !== "loading" && txnHash && <ExternalLink href={txnLink}>View</ExternalLink>}
-        </div>
-      )}
+      <div className="TransactionStatus-status">
+        {status === "loading" && <ImSpinner2 width={60} height={60} className="spin TransactionStatus-spin" />}
+        {status !== "loading" && txnHash && <ExternalLink href={txnLink}>View</ExternalLink>}
+      </div>
     </div>
   );
 }

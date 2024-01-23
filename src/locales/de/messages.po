@@ -3544,6 +3544,10 @@ msgstr ""
 msgid "Pending {0} approval"
 msgstr ""
 
+#: src/domain/synthetics/orders/useSLTPEntries.ts
+msgid "Percentage is required."
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Platform, GLP and GM tokens."
 msgstr ""

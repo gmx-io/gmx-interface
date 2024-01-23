@@ -3547,6 +3547,10 @@ msgstr "Pending Wallet transaction sign"
 msgid "Pending {0} approval"
 msgstr "Pending {0} approval"
 
+#: src/domain/synthetics/orders/useSLTPEntries.ts
+msgid "Percentage is required."
+msgstr "Percentage is required."
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Platform, GLP and GM tokens."
 msgstr "Platform, GLP and GM tokens."
