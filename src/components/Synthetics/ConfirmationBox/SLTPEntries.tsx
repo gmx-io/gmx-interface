@@ -56,7 +56,7 @@ function SLTPEntries({ entries, updateEntry, addEntry, deleteEntry, canAddEntry,
         return (
           <div key={entry.id}>
             <div className="SLTPEntry-row" key={entry.id}>
-              <div className={cx("SLTP-price", { "input-error": !!entry.error })}>
+              <div className={cx("SLTP-price", { "input-error": !!entry.error?.price })}>
                 <span className="price-symbol">$</span>
 
                 <NumberInput
@@ -66,13 +66,13 @@ function SLTPEntries({ entries, updateEntry, addEntry, deleteEntry, canAddEntry,
                   className="price-input"
                 />
 
-                {entry.error && (
-                  <div className={cx("SLTP-input-error", "Tooltip-popup", "z-index-1001", "center-bottom")}>
-                    {entry.error}
+                {entry.error?.price && (
+                  <div className={cx("SLTP-price-error", "Tooltip-popup", "z-index-1001", "center-bottom")}>
+                    {entry.error?.price}
                   </div>
                 )}
               </div>
-              <div className="SLTP-percentage">
+              <div className={cx("SLTP-percentage", { "input-error": !!entry.error?.percentage })}>
                 <SuggestionInput
                   value={entry.percentage}
                   setValue={(value) => {
@@ -84,6 +84,11 @@ function SLTPEntries({ entries, updateEntry, addEntry, deleteEntry, canAddEntry,
                   suggestionList={SUGGESTION_PERCENTAGE_LIST}
                   symbol="%"
                 />
+                {entry.error?.percentage && (
+                  <div className={cx("SLTP-percent-error", "Tooltip-popup", "z-index-1001", "right-bottom")}>
+                    {entry.error?.percentage}
+                  </div>
+                )}
                 {entrySizeUsd && priceTooltipMsg ? (
                   <div className={cx("SLTP-percent-info", "Tooltip-popup", "z-index-1001", "right-top")}>
                     {priceTooltipMsg}

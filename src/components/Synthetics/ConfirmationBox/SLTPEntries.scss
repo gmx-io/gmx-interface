@@ -43,7 +43,7 @@
         cursor: pointer;
         opacity: 0.7;
       }
-      .SLTP-input-error {
+      .SLTP-price-error {
         display: none;
         &.Tooltip-popup {
           min-width: 0;
@@ -52,13 +52,20 @@
       }
 
       &:hover {
-        .SLTP-input-error {
+        .SLTP-price-error {
           display: block;
         }
       }
     }
     .SLTP-percentage {
       position: relative;
+      border: 1px solid #212540;
+      border-radius: var(--border-radius-sm);
+
+      &.input-error {
+        border-color: var(--error-red);
+      }
+
       .Suggestion-input {
         input {
           width: 4.8rem;
@@ -80,6 +87,19 @@
 
       &:hover {
         .SLTP-percent-info {
+          display: block;
+        }
+      }
+      .SLTP-percent-error {
+        display: none;
+        &.Tooltip-popup {
+          min-width: 0;
+          width: max-content;
+        }
+      }
+
+      &:hover {
+        .SLTP-percent-error {
           display: block;
         }
       }

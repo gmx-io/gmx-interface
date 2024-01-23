@@ -22,7 +22,10 @@ export type Entry = {
   id: string;
   price: string;
   percentage: string;
-  error?: string;
+  error?: null | {
+    price?: string;
+    percentage?: string;
+  };
 };
 
 type EntriesInfo = {
@@ -222,7 +225,7 @@ export default function useSLTPEntries({
 }
 
 function getDefaultEntry(id: string, override?: Partial<Entry>) {
-  return { id: uniqueId(id), price: "", percentage: "100", error: "", ...override };
+  return { id: uniqueId(id), price: "", percentage: "100", error: null, ...override };
 }
 
 function useEntries(id: string, errorHandler: (entry: Partial<Entry>) => Partial<Entry>) {
@@ -408,7 +411,7 @@ function createErrorHandlers({
 }) {
   function getErrorHandler(entry: Partial<Entry>, isStopLoss: boolean): Partial<Entry> {
     if (!liqPrice || !entryPrice || !entry.price || parseFloat(entry.price) === 0) {
-      return { ...entry, error: "" };
+      return { ...entry, error: null };
     }
 
     const inputPrice = parseValue(entry.price, USD_DECIMALS);
@@ -421,32 +424,71 @@ function createErrorHandlers({
 
     if (isStopLoss) {
       if (inputPrice?.lte(liqPrice) && isLong) {
-        return { ...entry, error: priceLiqError };
+        return {
+          ...entry,
+          error: {
+            price: priceLiqError,
+          },
+        };
       }
       if (inputPrice?.gte(liqPrice) && !isLong) {
-        return { ...entry, error: priceLiqError };
+        return {
+          ...entry,
+          error: {
+            price: priceLiqError,
+          },
+        };
       }
 
       if (isPriceAboveMark && isLong) {
-        return { ...entry, error: priceAboveMsg };
+        return {
+          ...entry,
+          error: {
+            price: priceAboveMsg,
+          },
+        };
       }
 
       if (isPriceBelowMark && !isLong) {
-        return { ...entry, error: priceBelowMsg };
+        return {
+          ...entry,
+          error: {
+            price: priceBelowMsg,
+          },
+        };
       }
     }
 
     if (!isStopLoss) {
       if (isPriceBelowMark && isLong) {
-        return { ...entry, error: priceBelowMsg };
+        return {
+          ...entry,
+          error: {
+            price: priceBelowMsg,
+          },
+        };
       }
 
       if (isPriceAboveMark && !isLong) {
-        return { ...entry, error: priceAboveMsg };
+        return {
+          ...entry,
+          error: {
+            price: priceAboveMsg,
+          },
+        };
       }
     }
 
-    return { ...entry, error: "" };
+    if (inputPrice?.gt(0) && !entry.percentage) {
+      return {
+        ...entry,
+        error: {
+          percentage: t`Percentage is required.`,
+        },
+      };
+    }
+
+    return { ...entry, error: null };
   }
 
   const handleSLErrors = (entry: Partial<Entry>) => getErrorHandler(entry, true);
