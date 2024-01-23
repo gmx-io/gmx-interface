@@ -124,15 +124,6 @@ export function getAcceptablePriceInfo(p: {
     values.priceImpactDeltaUsd = priceImpact.priceImpactDeltaUsd;
     values.priceImpactDeltaAmount = priceImpact.priceImpactDeltaAmount;
 
-    if (!isIncrease && values.priceImpactDeltaUsd.lt(0)) {
-      const minPriceImpactUsd = applyFactor(sizeDeltaUsd, marketInfo.maxPositionImpactFactorNegative).mul(-1);
-
-      if (values.priceImpactDeltaUsd.lt(minPriceImpactUsd)) {
-        values.priceImpactDiffUsd = minPriceImpactUsd.sub(values.priceImpactDeltaUsd);
-        values.priceImpactDeltaUsd = minPriceImpactUsd;
-      }
-    }
-
     return values;
   }
 
