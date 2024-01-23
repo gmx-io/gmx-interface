@@ -38,10 +38,18 @@ import {
 } from "context/SubaccountContext/SubaccountContext";
 import { getMarketIndexName, getMarketPoolName, getTotalClaimableFundingUsd } from "domain/synthetics/markets";
 import { TradeMode } from "domain/synthetics/trade";
-import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTradeOption";
 import { getMidPrice } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import useWallet from "lib/wallets/useWallet";
+import {
+  useAvailableTokensOptions,
+  useCollateralAddress,
+  useFromTokenAddress,
+  useMarketAddress,
+  useSetActivePosition,
+  useToTokenAddress,
+  useTradeFlags,
+} from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 
 export type Props = {
   savedIsPnlInLeverage: boolean;
@@ -98,35 +106,49 @@ export function SyntheticsPage(p: Props) {
   });
   const [isSettling, setIsSettling] = useState(false);
 
-  const {
-    tradeType,
-    tradeMode,
-    tradeFlags,
-    isWrapOrUnwrap,
-    fromTokenAddress,
-    fromToken,
-    toTokenAddress,
-    toToken,
-    marketAddress,
-    marketInfo,
-    collateralAddress,
-    collateralToken,
-    availableTokensOptions,
-    avaialbleTradeModes,
-    setTradeType,
-    setTradeMode,
-    setFromTokenAddress,
-    setToTokenAddress,
-    setMarketAddress,
-    setCollateralAddress,
-    setActivePosition,
-    switchTokenAddresses,
-  } = useSelectedTradeOption(chainId, { marketsInfoData, tokensData });
-
   const [listSection, setListSection] = useLocalStorageSerializeKey(
     getSyntheticsListSectionKey(chainId),
     ListSection.Positions
   );
+
+  /*
+*not used*
+tradeType
+tradeMode
+isWrapOrUnwrap
+fromToken
+toToken
+marketInfo
+collateralToken
+avaialbleTradeModes
+setTradeType
+setTradeMode
+setFromTokenAddress
+setToTokenAddress
+setMarketAddress
+setCollateralAddress
+switchTokenAddresses
+
+*needs refactoring*
+fromTokenAddress // fromToken
+toTokenAddress // toToken
+marketAddress // selectedPositionKey
+collateralAddress // selectedPositionKey
+
+availableTokensOptions // chartToken, availableChartTokens
+
+*used*
+tradeFlags // chartToken, availableChartTokens
+setActivePosition
+*/
+
+  const tradeFlags = useTradeFlags();
+  const fromTokenAddress = useFromTokenAddress();
+  const toTokenAddress = useToTokenAddress();
+  const marketAddress = useMarketAddress();
+  const collateralAddress = useCollateralAddress();
+  const availableTokensOptions = useAvailableTokensOptions();
+  const setActivePosition = useSetActivePosition();
 
   const { isSwap, isLong } = tradeFlags;
   const { indexTokens, sortedIndexTokensWithPoolValue, swapTokens, sortedLongAndShortTokens } = availableTokensOptions;
@@ -177,12 +199,13 @@ export function SyntheticsPage(p: Props) {
   const [gettingPendingFeePositionKeys, setGettingPendingFeePositionKeys] = useState<string[]>([]);
 
   const selectedPositionKey = useMemo(() => {
-    if (!account || !collateralAddress || !marketAddress || !tradeType) {
+    // FIXME || !tradeType was here
+    if (!account || !collateralAddress || !marketAddress) {
       return undefined;
     }
 
     return getPositionKey(account, marketAddress, collateralAddress, isLong);
-  }, [account, collateralAddress, marketAddress, tradeType, isLong]);
+  }, [account, collateralAddress, isLong, marketAddress]);
   const selectedPosition = getByKey(positionsInfoData, selectedPositionKey);
 
   const [selectedOrdersKeys, setSelectedOrdersKeys] = useState<{ [key: string]: boolean }>({});
@@ -343,9 +366,7 @@ export function SyntheticsPage(p: Props) {
             positionsInfo={positionsInfoData}
             chartTokenAddress={chartToken?.address}
             availableTokens={availableChartTokens}
-            onSelectChartTokenAddress={setToTokenAddress}
             tradeFlags={tradeFlags}
-            currentTradeType={tradeType}
             tradePageVersion={tradePageVersion}
             setTradePageVersion={setTradePageVersion}
             avaialbleTokenOptions={availableTokensOptions}
@@ -405,7 +426,6 @@ export function SyntheticsPage(p: Props) {
                 savedShowPnlAfterFees={savedShowPnlAfterFees}
                 currentMarketAddress={marketAddress}
                 currentCollateralAddress={collateralAddress}
-                currentTradeType={tradeType}
                 openSettings={openSettings}
               />
             )}
@@ -445,19 +465,6 @@ export function SyntheticsPage(p: Props) {
         <div className="Exchange-right">
           <div className="Exchange-swap-box">
             <TradeBox
-              tradeMode={tradeMode}
-              tradeType={tradeType}
-              availableTradeModes={avaialbleTradeModes}
-              tradeFlags={tradeFlags}
-              isWrapOrUnwrap={isWrapOrUnwrap}
-              fromTokenAddress={fromTokenAddress}
-              fromToken={fromToken}
-              toTokenAddress={toTokenAddress}
-              toToken={toToken}
-              marketAddress={marketAddress}
-              marketInfo={marketInfo}
-              collateralAddress={collateralAddress}
-              collateralToken={collateralToken}
               avaialbleTokenOptions={availableTokensOptions}
               savedIsPnlInLeverage={savedIsPnlInLeverage}
               existingPosition={selectedPosition}
@@ -470,14 +477,7 @@ export function SyntheticsPage(p: Props) {
               positionsInfo={positionsInfoData}
               marketsInfoData={marketsInfoData}
               setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
-              onSelectMarketAddress={setMarketAddress}
-              onSelectCollateralAddress={setCollateralAddress}
-              onSelectFromTokenAddress={setFromTokenAddress}
-              onSelectToTokenAddress={setToTokenAddress}
-              onSelectTradeMode={setTradeMode}
-              onSelectTradeType={setTradeType}
               setPendingTxns={setPendingTxns}
-              switchTokenAddresses={switchTokenAddresses}
             />
           </div>
         </div>
@@ -513,7 +513,6 @@ export function SyntheticsPage(p: Props) {
               savedShowPnlAfterFees={savedShowPnlAfterFees}
               currentMarketAddress={marketAddress}
               currentCollateralAddress={collateralAddress}
-              currentTradeType={tradeType}
               openSettings={openSettings}
             />
           )}

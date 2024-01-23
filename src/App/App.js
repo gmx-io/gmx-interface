@@ -78,6 +78,7 @@ import {
 } from "config/localStorage";
 import { TOAST_AUTO_CLOSE_TIME, WS_LOST_FOCUS_TIMEOUT } from "config/ui";
 import { SettingsContextProvider, useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
 import { useWebsocketProvider, WebsocketContextProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import { useChainId } from "lib/chains";
@@ -706,6 +707,7 @@ function App() {
   }, [disconnect]);
 
   let app = <FullApp />;
+  app = <SyntheticsStateContextProvider>{app}</SyntheticsStateContextProvider>;
   app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;
   app = <I18nProvider i18n={i18n}>{app}</I18nProvider>;
   app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;

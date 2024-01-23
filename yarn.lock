@@ -11004,6 +11004,7 @@ __metadata:
     qrcode.react: ^3.1.0
     query-string: 7.1.1
     rc-slider: 9.7.5
+    re-reselect: 5
     react: 17.0.2
     react-app-rewired: 2.2.1
     react-dom: 17.0.2
@@ -16399,6 +16400,15 @@ __metadata:
     react: ">=16.9.0"
     react-dom: ">=16.9.0"
   checksum: ef4f0834db975ff77b1940c32f7ab75e201e06e16218dfc993066e994a0199330f433ab8587ab0a49101aa94ac009f8d553e3e8818185d9b6889e62791c77a16
+  languageName: node
+  linkType: hard
+
+"re-reselect@npm:5":
+  version: 5.0.0
+  resolution: "re-reselect@npm:5.0.0"
+  peerDependencies:
+    reselect: ^5.0.0
+  checksum: 61fc4fa5cb07e601d48dea21bc16e31de12d3344f73ba906d3f79ea738afb7c6af80b04dc44273a781a361ce60f3d0e0afaedca0a91233080b3ff9feb8b416c1
   languageName: node
   linkType: hard
 

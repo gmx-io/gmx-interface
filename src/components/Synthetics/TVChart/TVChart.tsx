@@ -23,12 +23,12 @@ import { AvailableTokenOptions, TradeType } from "domain/synthetics/trade";
 import { MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getByKey } from "lib/objects";
 import { helperToast } from "lib/helperToast";
+import { useSetToTokenAddress, useTradeType } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 
 export type Props = {
   tradePageVersion: number;
   setTradePageVersion: (version: number) => void;
   savedShouldShowPositionLines: boolean;
-  onSelectChartTokenAddress: (tokenAddress: string, marketTokenAddress?: string, tradeType?: TradeType) => void;
   ordersInfo?: OrdersInfoData;
   positionsInfo?: PositionsInfoData;
   tokensData?: TokensData;
@@ -37,7 +37,6 @@ export type Props = {
   tradeFlags?: TradeFlags;
   avaialbleTokenOptions: AvailableTokenOptions;
   marketsInfoData?: MarketsInfoData;
-  currentTradeType?: TradeType;
 };
 
 const DEFAULT_PERIOD = "5m";
@@ -48,14 +47,12 @@ export function TVChart({
   tokensData,
   savedShouldShowPositionLines,
   chartTokenAddress,
-  onSelectChartTokenAddress,
   availableTokens,
   tradeFlags,
   tradePageVersion,
   setTradePageVersion,
   avaialbleTokenOptions,
   marketsInfoData,
-  currentTradeType,
 }: Props) {
   const { chainId } = useChainId();
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
@@ -75,6 +72,8 @@ export function TVChart({
 
   const selectedTokenOption = chartTokenAddress ? getToken(chainId, chartTokenAddress) : undefined;
   const dayPriceDelta = use24hPriceDelta(chainId, chartToken?.symbol);
+  const currentTradeType = useTradeType();
+  const setToTokenAddress = useSetToTokenAddress();
 
   const chartLines = useMemo(() => {
     if (!chartTokenAddress) {
@@ -140,7 +139,7 @@ export function TVChart({
   }, [chainId, chartTokenAddress, ordersInfo, positionsInfo, tokensData]);
 
   function onSelectTokenOption(address: string, marketTokenAddress?: string, tradeType?: TradeType) {
-    onSelectChartTokenAddress(address, marketTokenAddress, tradeType);
+    setToTokenAddress(address, marketTokenAddress, tradeType);
 
     if (marketTokenAddress) {
       const marketInfo = getByKey(marketsInfoData, marketTokenAddress);
@@ -164,7 +163,7 @@ export function TVChart({
   }
 
   function onSelectChartToken(token: Token) {
-    onSelectChartTokenAddress(token.address);
+    setToTokenAddress(token.address);
   }
 
   useEffect(() => {

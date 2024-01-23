@@ -4,6 +4,7 @@ import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Checkbox from "components/Checkbox/Checkbox";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
 import { MarketSelector } from "components/MarketSelector/MarketSelector";
 import { ConfirmationBox } from "components/Synthetics/ConfirmationBox/ConfirmationBox";
@@ -11,11 +12,35 @@ import Tab from "components/Tab/Tab";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
+import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { getKeepLeverageKey, getLeverageEnabledKey, getLeverageKey } from "config/localStorage";
+import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import {
+  useAvailableTradeModes,
+  useCollateralAddress,
+  useCollateralToken,
+  useFromToken,
+  useFromTokenAddress,
+  useIsWrapOrUnwrap,
+  useMarketAddress,
+  useMarketInfo,
+  useSetCollateralAddress,
+  useSetFromTokenAddress,
+  useSetMarketAddress,
+  useSetToTokenAddress,
+  useSetTradeMode,
+  useSetTradeType,
+  useSwitchTokenAddresses,
+  useToToken,
+  useToTokenAddress,
+  useTradeFlags,
+  useTradeMode,
+  useTradeType,
+} from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useHasOutdatedUi } from "domain/legacy";
 import { useUserReferralInfo } from "domain/referrals/hooks";
 import {
@@ -26,12 +51,8 @@ import {
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
-import {
-  MarketInfo,
-  MarketsInfoData,
-  getAvailableUsdLiquidityForPosition,
-  getMarketIndexName,
-} from "domain/synthetics/markets";
+import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
+import { MarketsInfoData, getAvailableUsdLiquidityForPosition, getMarketIndexName } from "domain/synthetics/markets";
 import { DecreasePositionSwapType, OrderInfo, OrderType, OrdersInfoData } from "domain/synthetics/orders";
 import {
   PositionInfo,
@@ -41,7 +62,7 @@ import {
   getTriggerNameByOrderType,
   usePositionsConstants,
 } from "domain/synthetics/positions";
-import { TokenData, TokensData, TokensRatio, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
+import { TokensData, TokensRatio, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
 import {
   AvailableTokenOptions,
   SwapAmounts,
@@ -62,7 +83,6 @@ import {
 } from "domain/synthetics/trade";
 import { useAvailableMarketsOptions } from "domain/synthetics/trade/useAvailableMarketsOptions";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
-import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
 import {
   ValidationResult,
   getCommonError,
@@ -70,6 +90,7 @@ import {
   getIncreaseError,
   getSwapError,
 } from "domain/synthetics/trade/utils/validation";
+import { getMinResidualAmount } from "domain/tokens";
 import { BigNumber } from "ethers";
 import longImg from "img/long.svg";
 import shortImg from "img/short.svg";
@@ -88,41 +109,23 @@ import {
   limitDecimals,
   parseValue,
 } from "lib/numbers";
+import { getByKey } from "lib/objects";
+import { museNeverExist } from "lib/types";
 import { useSafeState } from "lib/useSafeState";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { IoMdSwap } from "react-icons/io";
 import { useLatest, usePrevious } from "react-use";
+import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { MarketCard } from "../MarketCard/MarketCard";
 import { SwapCard } from "../SwapCard/SwapCard";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { CollateralSelectorRow } from "./CollateralSelectorRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import "./TradeBox.scss";
-import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
-import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import Tooltip from "components/Tooltip/Tooltip";
-import { museNeverExist } from "lib/types";
-import { getByKey } from "lib/objects";
-import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { getMinResidualAmount } from "domain/tokens";
 
 export type Props = {
-  tradeType: TradeType;
-  tradeMode: TradeMode;
-  availableTradeModes: TradeMode[];
-  tradeFlags: TradeFlags;
-  isWrapOrUnwrap: boolean;
-  fromTokenAddress?: string;
-  fromToken?: TokenData;
-  toTokenAddress?: string;
-  toToken?: TokenData;
-  marketAddress?: string;
-  marketInfo?: MarketInfo;
-  collateralAddress?: string;
-  collateralToken?: TokenData;
   avaialbleTokenOptions: AvailableTokenOptions;
   existingPosition?: PositionInfo;
   existingOrder?: OrderInfo;
@@ -135,14 +138,7 @@ export type Props = {
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
   setIsHigherSlippageAllowed: (value: boolean) => void;
-  onSelectFromTokenAddress: (fromTokenAddress?: string) => void;
-  onSelectToTokenAddress: (toTokenAddress?: string) => void;
-  onSelectTradeType: (tradeType: TradeType) => void;
-  onSelectTradeMode: (tradeMode: TradeMode) => void;
   setPendingTxns: (txns: any) => void;
-  onSelectMarketAddress: (marketAddress?: string) => void;
-  onSelectCollateralAddress: (collateralAddress?: string) => void;
-  switchTokenAddresses: () => void;
 };
 
 const tradeTypeIcons = {
@@ -153,20 +149,7 @@ const tradeTypeIcons = {
 
 export function TradeBox(p: Props) {
   const {
-    tradeMode,
-    tradeType,
-    tradeFlags,
-    availableTradeModes,
-    isWrapOrUnwrap,
     tokensData,
-    fromTokenAddress,
-    fromToken,
-    toTokenAddress,
-    toToken,
-    marketAddress,
-    marketInfo,
-    collateralAddress,
-    collateralToken,
     avaialbleTokenOptions,
     savedIsPnlInLeverage,
     positionsInfo,
@@ -178,16 +161,9 @@ export function TradeBox(p: Props) {
     isHigherSlippageAllowed,
     marketsInfoData,
     setIsHigherSlippageAllowed,
-    onSelectMarketAddress,
-    onSelectCollateralAddress,
-    onSelectFromTokenAddress,
-    onSelectToTokenAddress,
-    onSelectTradeMode,
-    onSelectTradeType,
     setPendingTxns,
-    switchTokenAddresses,
   } = p;
-  const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket } = tradeFlags;
+
   const { openConnectModal } = useConnectModal();
   const {
     swapTokens,
@@ -211,6 +187,29 @@ export function TradeBox(p: Props) {
     [TradeMode.Limit]: t`Limit`,
     [TradeMode.Trigger]: t`TP/SL`,
   };
+
+  const tradeType = useTradeType();
+  const tradeMode = useTradeMode();
+  const tradeFlags = useTradeFlags();
+  const isWrapOrUnwrap = useIsWrapOrUnwrap();
+  const fromTokenAddress = useFromTokenAddress();
+  const fromToken = useFromToken();
+  const toTokenAddress = useToTokenAddress();
+  const toToken = useToToken();
+  const marketAddress = useMarketAddress();
+  const marketInfo = useMarketInfo();
+  const collateralAddress = useCollateralAddress();
+  const collateralToken = useCollateralToken();
+  const availalbleTradeModes = useAvailableTradeModes();
+  const switchTokenAddresses = useSwitchTokenAddresses();
+  const onSelectMarketAddress = useSetMarketAddress();
+  const onSelectCollateralAddress = useSetCollateralAddress();
+  const onSelectFromTokenAddress = useSetFromTokenAddress();
+  const onSelectToTokenAddress = useSetToTokenAddress();
+  const onSelectTradeMode = useSetTradeMode();
+  const onSelectTradeType = useSetTradeType();
+
+  const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket } = tradeFlags;
 
   const { chainId } = useChainId();
   const { signer, account } = useWallet();
@@ -1433,13 +1432,13 @@ export function TradeBox(p: Props) {
                     : undefined
                 }
                 to={
-                  decreaseAmounts?.isFullClose 
+                  decreaseAmounts?.isFullClose
                     ? "-"
                     : decreaseAmounts?.sizeDeltaUsd.gt(0)
-                      ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
-                          displayDecimals: toToken?.priceDecimals,
-                        })
-                      : undefined
+                    ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
+                        displayDecimals: toToken?.priceDecimals,
+                      })
+                    : undefined
                 }
               />
             }
@@ -1552,7 +1551,7 @@ export function TradeBox(p: Props) {
           />
 
           <Tab
-            options={availableTradeModes}
+            options={availalbleTradeModes}
             optionLabels={tradeModeLabels}
             className="SwapBox-asset-options-tabs"
             type="inline"

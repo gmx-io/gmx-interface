@@ -1,9 +1,10 @@
 import { Trans, t } from "@lingui/macro";
 import PositionShare from "components/Exchange/PositionShare";
 import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
+import { useTradeType } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { OrdersInfoData, PositionOrderInfo, isOrderForPosition } from "domain/synthetics/orders";
 import { PositionsInfoData } from "domain/synthetics/positions";
-import { TradeMode, TradeType } from "domain/synthetics/trade";
+import { TradeMode } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
@@ -23,7 +24,6 @@ type Props = {
   savedShowPnlAfterFees: boolean;
   currentMarketAddress?: string;
   currentCollateralAddress?: string;
-  currentTradeType?: TradeType;
   openSettings: () => void;
   hideActions?: boolean;
 };
@@ -40,6 +40,7 @@ export function PositionList(p: Props) {
     setPositionToShareKey(positionKey);
     setIsPositionShareModalOpen(true);
   };
+  const tradeType = useTradeType();
 
   return (
     <div>
@@ -66,7 +67,7 @@ export function PositionList(p: Props) {
               onShareClick={() => handleSharePositionClick(position.key)}
               currentMarketAddress={p.currentMarketAddress}
               currentCollateralAddress={p.currentCollateralAddress}
-              currentTradeType={p.currentTradeType}
+              currentTradeType={tradeType}
               openSettings={p.openSettings}
               hideActions={p.hideActions}
             />
@@ -125,7 +126,7 @@ export function PositionList(p: Props) {
                 savedShowPnlAfterFees={p.savedShowPnlAfterFees}
                 currentMarketAddress={p.currentMarketAddress}
                 currentCollateralAddress={p.currentCollateralAddress}
-                currentTradeType={p.currentTradeType}
+                currentTradeType={tradeType}
                 openSettings={p.openSettings}
                 hideActions={p.hideActions}
                 onShareClick={() => handleSharePositionClick(position.key)}

@@ -22,7 +22,7 @@ import { usePositions } from "./usePositions";
 import useWallet from "lib/wallets/useWallet";
 import useUiFeeFactor from "../fees/utils/useUiFeeFactor";
 
-type PositionsInfoResult = {
+export type PositionsInfoResult = {
   positionsInfoData?: PositionsInfoData;
   isLoading: boolean;
 };
