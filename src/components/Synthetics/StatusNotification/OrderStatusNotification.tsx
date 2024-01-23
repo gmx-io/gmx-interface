@@ -342,8 +342,6 @@ export function OrdersStatusNotificiation({
     return [...new Set(ordersCreationTxHash)];
   }, [matchedOrderStatuses, pendingOrders]);
 
-  console.log("allTxnHash", allTxnHash);
-
   return (
     <div className="StatusNotification-wrapper">
       <div className="StatusNotification-list">
@@ -355,7 +353,7 @@ export function OrdersStatusNotificiation({
               marketsInfoData={marketsInfoData}
               tokensData={tokensData}
               toastTimestamp={toastTimestamp}
-              hideLink={"created"}
+              hideLink={pendingOrders.length > 1 ? "created" : "none"}
             />
           );
         })}
