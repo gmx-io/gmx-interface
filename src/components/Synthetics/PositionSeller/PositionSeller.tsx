@@ -289,6 +289,7 @@ export function PositionSeller(p: Props) {
         positionFeeUsd: decreaseAmounts.positionFeeUsd,
         swapPriceImpactDeltaUsd: swapAmounts?.swapPathStats?.totalSwapPriceImpactDeltaUsd || BigNumber.from(0),
         positionPriceImpactDeltaUsd: decreaseAmounts.positionPriceImpactDeltaUsd,
+        priceImpactDiffUsd: decreaseAmounts.priceImpactDiffUsd,
         borrowingFeeUsd: decreaseAmounts.borrowingFeeUsd,
         fundingFeeUsd: decreaseAmounts.fundingFeeUsd,
         feeDiscountUsd: decreaseAmounts.feeDiscountUsd,
