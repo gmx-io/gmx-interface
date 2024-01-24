@@ -61,31 +61,33 @@ const selectAccount = (s: SyntheticsState) => s.globals.account;
 const selectOrdersInfoData = (s: SyntheticsState) => s.globals.ordersInfo.ordersInfoData;
 const selectPositionsInfoData = (s: SyntheticsState) => s.globals.positionsInfo.positionsInfoData;
 
+export const createTradeFlags = (tradeType: TradeType, tradeMode: TradeMode): TradeFlags => {
+  const isLong = tradeType === TradeType.Long;
+  const isShort = tradeType === TradeType.Short;
+  const isSwap = tradeType === TradeType.Swap;
+  const isPosition = isLong || isShort;
+  const isMarket = tradeMode === TradeMode.Market;
+  const isLimit = tradeMode === TradeMode.Limit;
+  const isTrigger = tradeMode === TradeMode.Trigger;
+  const isIncrease = isPosition && (isMarket || isLimit);
+
+  const tradeFlags: TradeFlags = {
+    isLong,
+    isShort,
+    isSwap,
+    isPosition,
+    isIncrease,
+    isMarket,
+    isLimit,
+    isTrigger,
+  };
+
+  return tradeFlags;
+};
+
 const selectTradeFlags = createSelector(
   [selectTradeType, selectTradeMode],
-  (tradeType: TradeType, tradeMode: TradeMode) => {
-    const isLong = tradeType === TradeType.Long;
-    const isShort = tradeType === TradeType.Short;
-    const isSwap = tradeType === TradeType.Swap;
-    const isPosition = isLong || isShort;
-    const isMarket = tradeMode === TradeMode.Market;
-    const isLimit = tradeMode === TradeMode.Limit;
-    const isTrigger = tradeMode === TradeMode.Trigger;
-    const isIncrease = isPosition && (isMarket || isLimit);
-
-    const tradeFlags: TradeFlags = {
-      isLong,
-      isShort,
-      isSwap,
-      isPosition,
-      isIncrease,
-      isMarket,
-      isLimit,
-      isTrigger,
-    };
-
-    return tradeFlags;
-  }
+  (tradeType: TradeType, tradeMode: TradeMode) => createTradeFlags(tradeType, tradeMode)
 );
 
 const selectSelectedPositionKey = createSelector(

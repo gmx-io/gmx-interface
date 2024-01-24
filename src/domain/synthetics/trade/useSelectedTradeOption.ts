@@ -8,7 +8,7 @@ import { PositionInfo, PositionsInfoData } from "../positions";
 import { TokenData, TokensData } from "../tokens";
 import { TradeMode, TradeType } from "./types";
 import { AvailableTokenOptions, useAvailableTokenOptions } from "./useAvailableTokenOptions";
-import { useTradeFlags } from "context/SyntheticsStateContext/selectors";
+import { createTradeFlags } from "context/SyntheticsStateContext/selectors";
 
 export type SelectedTradeOption = {
   tradeType: TradeType;
@@ -90,7 +90,7 @@ export function useSelectedTradeOption(
     }[tradeType];
   }, [tradeType]);
 
-  const tradeFlags = useTradeFlags();
+  const tradeFlags = useMemo(() => createTradeFlags(tradeType!, tradeMode!), [tradeType, tradeMode]);
   const { isSwap, isLong, isPosition } = tradeFlags;
 
   const fromTokenAddress = storedOptions?.tokens.fromTokenAddress;
