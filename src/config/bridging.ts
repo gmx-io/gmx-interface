@@ -17,6 +17,12 @@ const BRIDGING_OPTIONS: { [symbol: string]: BridgingOption[] } = {
       generateLink: (chainId: number) => `https://www.portalbridge.com/${SOLANA_BRIDGING_IDS[chainId]}/from/solana`,
     },
   ],
+  BNB: [
+    {
+      name: "Stargate",
+      generateLink: () => `https://stargate.finance/transfer`,
+    },
+  ],
 };
 
 export function getBridgingOptionsForToken(tokenSymbol?: string): BridgingOption[] | undefined {

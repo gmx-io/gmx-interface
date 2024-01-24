@@ -11,6 +11,7 @@ export type Token = {
   wrappedAddress?: string;
   coingeckoUrl?: string;
   coingeckoSymbol?: string;
+  metamaskSymbol?: string;
   explorerUrl?: string;
   reservesUrl?: string;
   imageUrl?: string;
