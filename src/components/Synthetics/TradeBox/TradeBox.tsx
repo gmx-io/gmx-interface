@@ -23,11 +23,13 @@ import {
   useAvailableTradeModes,
   useCollateralAddress,
   useCollateralToken,
+  useExistingOrder,
   useFromToken,
   useFromTokenAddress,
   useIsWrapOrUnwrap,
   useMarketAddress,
   useMarketInfo,
+  useSelectedPosition,
   useSetCollateralAddress,
   useSetFromTokenAddress,
   useSetMarketAddress,
@@ -40,7 +42,7 @@ import {
   useTradeFlags,
   useTradeMode,
   useTradeType,
-} from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+} from "context/SyntheticsStateContext/selectors";
 import { useHasOutdatedUi } from "domain/legacy";
 import { useUserReferralInfo } from "domain/referrals/hooks";
 import {
@@ -53,9 +55,8 @@ import {
 } from "domain/synthetics/fees";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { MarketsInfoData, getAvailableUsdLiquidityForPosition, getMarketIndexName } from "domain/synthetics/markets";
-import { DecreasePositionSwapType, OrderInfo, OrderType, OrdersInfoData } from "domain/synthetics/orders";
+import { DecreasePositionSwapType, OrderType, OrdersInfoData } from "domain/synthetics/orders";
 import {
-  PositionInfo,
   PositionsInfoData,
   formatLeverage,
   formatLiquidationPrice,
@@ -127,8 +128,6 @@ import "./TradeBox.scss";
 
 export type Props = {
   avaialbleTokenOptions: AvailableTokenOptions;
-  existingPosition?: PositionInfo;
-  existingOrder?: OrderInfo;
   positionsInfo?: PositionsInfoData;
   ordersInfo?: OrdersInfoData;
   allowedSlippage: number;
@@ -153,8 +152,6 @@ export function TradeBox(p: Props) {
     avaialbleTokenOptions,
     savedIsPnlInLeverage,
     positionsInfo,
-    existingPosition,
-    existingOrder,
     ordersInfo,
     shouldDisableValidation,
     allowedSlippage,
@@ -163,6 +160,9 @@ export function TradeBox(p: Props) {
     setIsHigherSlippageAllowed,
     setPendingTxns,
   } = p;
+
+  const selectedPosition = useSelectedPosition();
+  const existingOrder = useExistingOrder();
 
   const { openConnectModal } = useConnectModal();
   const {
@@ -384,7 +384,7 @@ export function TradeBox(p: Props) {
       indexTokenAmount: toTokenAmount,
       leverage,
       triggerPrice: isLimit ? triggerPrice : undefined,
-      position: existingPosition,
+      position: selectedPosition,
       fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
       acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
       findSwapPath: swapRoute.findSwapPath,
@@ -398,7 +398,7 @@ export function TradeBox(p: Props) {
     });
   }, [
     collateralToken,
-    existingPosition,
+    selectedPosition,
     selectedTriggerAcceptablePriceImpactBps,
     focusedInput,
     fromToken,
@@ -427,7 +427,7 @@ export function TradeBox(p: Props) {
       marketInfo,
       collateralToken,
       isLong,
-      position: existingPosition,
+      position: selectedPosition,
       closeSizeUsd: closeSizeUsd,
       keepLeverage: keepLeverage!,
       triggerPrice,
@@ -446,7 +446,7 @@ export function TradeBox(p: Props) {
     minCollateralUsd,
     minPositionSizeUsd,
     isLong,
-    existingPosition,
+    selectedPosition,
     keepLeverage,
     triggerPrice,
     selectedTriggerAcceptablePriceImpactBps,
@@ -464,7 +464,7 @@ export function TradeBox(p: Props) {
       return getNextPositionValuesForIncreaseTrade({
         marketInfo,
         collateralToken,
-        existingPosition,
+        existingPosition: selectedPosition,
         isLong,
         collateralDeltaUsd: increaseAmounts.collateralDeltaUsd,
         collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
@@ -479,7 +479,7 @@ export function TradeBox(p: Props) {
 
     if (isTrigger && decreaseAmounts?.acceptablePrice && closeSizeUsd.gt(0)) {
       return getNextPositionValuesForDecreaseTrade({
-        existingPosition,
+        existingPosition: selectedPosition,
         marketInfo,
         collateralToken,
         sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
@@ -500,7 +500,7 @@ export function TradeBox(p: Props) {
     closeSizeUsd,
     collateralToken,
     decreaseAmounts,
-    existingPosition,
+    selectedPosition,
     fromTokenAmount,
     increaseAmounts,
     isIncrease,
@@ -557,8 +557,8 @@ export function TradeBox(p: Props) {
           positionFeeUsd: increaseAmounts.positionFeeUsd,
           swapPriceImpactDeltaUsd: increaseAmounts.swapPathStats?.totalSwapPriceImpactDeltaUsd || BigNumber.from(0),
           positionPriceImpactDeltaUsd: increaseAmounts.positionPriceImpactDeltaUsd,
-          borrowingFeeUsd: existingPosition?.pendingBorrowingFeesUsd || BigNumber.from(0),
-          fundingFeeUsd: existingPosition?.pendingFundingFeesUsd || BigNumber.from(0),
+          borrowingFeeUsd: selectedPosition?.pendingBorrowingFeesUsd || BigNumber.from(0),
+          fundingFeeUsd: selectedPosition?.pendingFundingFeesUsd || BigNumber.from(0),
           feeDiscountUsd: increaseAmounts.feeDiscountUsd,
           swapProfitFeeUsd: BigNumber.from(0),
           uiFeeFactor,
@@ -577,7 +577,7 @@ export function TradeBox(p: Props) {
       return {
         fees: getTradeFees({
           isIncrease: false,
-          initialCollateralUsd: existingPosition?.collateralUsd || BigNumber.from(0),
+          initialCollateralUsd: selectedPosition?.collateralUsd || BigNumber.from(0),
           sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
           swapSteps: [],
           positionFeeUsd: decreaseAmounts.positionFeeUsd,
@@ -598,7 +598,7 @@ export function TradeBox(p: Props) {
   }, [
     chainId,
     decreaseAmounts,
-    existingPosition,
+    selectedPosition,
     gasLimits,
     gasPrice,
     increaseAmounts,
@@ -613,7 +613,6 @@ export function TradeBox(p: Props) {
   const priceImpactWarningState = usePriceImpactWarningState({
     positionPriceImpact: fees?.positionPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
-    tradeFlags,
     place: "tradeBox",
   });
 
@@ -651,7 +650,7 @@ export function TradeBox(p: Props) {
     positionsInfo,
     ordersInfo,
     hasExistingOrder: Boolean(existingOrder),
-    hasExistingPosition: Boolean(existingPosition),
+    hasExistingPosition: Boolean(selectedPosition),
   });
   const { availableMarkets } = marketsOptions;
 
@@ -723,7 +722,7 @@ export function TradeBox(p: Props) {
         targetCollateralToken: collateralToken,
         collateralUsd: increaseAmounts?.collateralDeltaUsd,
         sizeDeltaUsd: increaseAmounts?.sizeDeltaUsd,
-        existingPosition,
+        existingPosition: selectedPosition,
         fees,
         swapPathStats: increaseAmounts?.swapPathStats,
         collateralLiquidity: swapOutLiquidity,
@@ -744,9 +743,9 @@ export function TradeBox(p: Props) {
         sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
         triggerPrice,
         markPrice,
-        existingPosition,
+        existingPosition: selectedPosition,
         isContractAccount: false,
-        receiveToken: existingPosition?.collateralToken,
+        receiveToken: selectedPosition?.collateralToken,
         nextPositionValues,
         isLong,
         isTrigger: true,
@@ -809,7 +808,7 @@ export function TradeBox(p: Props) {
     increaseAmounts?.sizeDeltaUsd,
     increaseAmounts?.swapPathStats,
     collateralToken,
-    existingPosition,
+    selectedPosition,
     minCollateralUsd,
     longLiquidity,
     shortLiquidity,
@@ -1179,16 +1178,16 @@ export function TradeBox(p: Props) {
     return (
       <BuyInputSection
         topLeftLabel={t`Close`}
-        topRightLabel={existingPosition?.sizeInUsd ? `Max` : undefined}
-        topRightValue={existingPosition?.sizeInUsd ? formatUsd(existingPosition.sizeInUsd) : undefined}
+        topRightLabel={selectedPosition?.sizeInUsd ? `Max` : undefined}
+        topRightValue={selectedPosition?.sizeInUsd ? formatUsd(selectedPosition.sizeInUsd) : undefined}
         inputValue={closeSizeInputValue}
         onInputValueChange={(e) => setCloseSizeInputValue(e.target.value)}
-        onClickTopRightLabel={() => setCloseSizeInputValue(formatAmount(existingPosition?.sizeInUsd, USD_DECIMALS, 2))}
-        showMaxButton={existingPosition?.sizeInUsd.gt(0) && !closeSizeUsd?.eq(existingPosition.sizeInUsd)}
-        onClickMax={() => setCloseSizeInputValue(formatAmount(existingPosition?.sizeInUsd, USD_DECIMALS, 2))}
-        showPercentSelector={existingPosition?.sizeInUsd.gt(0)}
+        onClickTopRightLabel={() => setCloseSizeInputValue(formatAmount(selectedPosition?.sizeInUsd, USD_DECIMALS, 2))}
+        showMaxButton={selectedPosition?.sizeInUsd.gt(0) && !closeSizeUsd?.eq(selectedPosition.sizeInUsd)}
+        onClickMax={() => setCloseSizeInputValue(formatAmount(selectedPosition?.sizeInUsd, USD_DECIMALS, 2))}
+        showPercentSelector={selectedPosition?.sizeInUsd.gt(0)}
         onPercentChange={(percent) =>
-          setCloseSizeInputValue(formatAmount(existingPosition?.sizeInUsd.mul(percent).div(100), USD_DECIMALS, 2))
+          setCloseSizeInputValue(formatAmount(selectedPosition?.sizeInUsd.mul(percent).div(100), USD_DECIMALS, 2))
         }
       >
         USD
@@ -1284,7 +1283,7 @@ export function TradeBox(p: Props) {
           indexToken={toToken}
           marketsOptions={marketsOptions}
           hasExistingOrder={Boolean(existingOrder)}
-          hasExistingPosition={Boolean(existingPosition)}
+          hasExistingPosition={Boolean(selectedPosition)}
           isOutPositionLiquidity={isOutPositionLiquidity}
           currentPriceImpactBps={increaseAmounts?.acceptablePriceDeltaBps}
           onSelectMarketAddress={onSelectMarketAddress}
@@ -1296,15 +1295,15 @@ export function TradeBox(p: Props) {
           availableCollaterals={availableCollaterals}
           marketsOptions={marketsOptions}
           hasExistingOrder={Boolean(existingOrder)}
-          hasExistingPosition={Boolean(existingPosition)}
+          hasExistingPosition={Boolean(selectedPosition)}
           onSelectCollateralAddress={onSelectCollateralAddress}
           isMarket={isMarket}
         />
 
-        {isTrigger && existingPosition?.leverage && (
+        {isTrigger && selectedPosition?.leverage && (
           <Checkbox asRow isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
             <span className="muted font-sm">
-              <Trans>Keep leverage at {formatLeverage(existingPosition.leverage)} </Trans>
+              <Trans>Keep leverage at {formatLeverage(selectedPosition.leverage)} </Trans>
             </span>
           </Checkbox>
         )}
@@ -1321,7 +1320,7 @@ export function TradeBox(p: Props) {
           value={
             nextPositionValues?.nextLeverage && increaseAmounts?.sizeDeltaUsd.gt(0) ? (
               <ValueTransition
-                from={formatLeverage(existingPosition?.leverage)}
+                from={formatLeverage(selectedPosition?.leverage)}
                 to={formatLeverage(nextPositionValues?.nextLeverage) || "-"}
               />
             ) : (
@@ -1334,9 +1333,9 @@ export function TradeBox(p: Props) {
           className="SwapBox-info-row"
           label={t`Entry Price`}
           value={
-            nextPositionValues?.nextEntryPrice || existingPosition?.entryPrice ? (
+            nextPositionValues?.nextEntryPrice || selectedPosition?.entryPrice ? (
               <ValueTransition
-                from={formatUsd(existingPosition?.entryPrice, {
+                from={formatUsd(selectedPosition?.entryPrice, {
                   displayDecimals: toToken?.priceDecimals,
                 })}
                 to={formatUsd(nextPositionValues?.nextEntryPrice, {
@@ -1357,9 +1356,9 @@ export function TradeBox(p: Props) {
           value={
             <ValueTransition
               from={
-                existingPosition
-                  ? formatLiquidationPrice(existingPosition?.liquidationPrice, {
-                      displayDecimals: existingPosition?.indexToken?.priceDecimals,
+                selectedPosition
+                  ? formatLiquidationPrice(selectedPosition?.liquidationPrice, {
+                      displayDecimals: selectedPosition?.indexToken?.priceDecimals,
                     })
                   : undefined
               }
@@ -1368,7 +1367,7 @@ export function TradeBox(p: Props) {
                   ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
                       displayDecimals: toToken?.priceDecimals,
                     })
-                  : existingPosition
+                  : selectedPosition
                   ? undefined
                   : "-"
               }
@@ -1418,16 +1417,16 @@ export function TradeBox(p: Props) {
           }
         />
 
-        {existingPosition && (
+        {selectedPosition && (
           <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Liq. Price`}
             value={
               <ValueTransition
                 from={
-                  existingPosition
-                    ? formatLiquidationPrice(existingPosition?.liquidationPrice, {
-                        displayDecimals: existingPosition?.indexToken?.priceDecimals,
+                  selectedPosition
+                    ? formatLiquidationPrice(selectedPosition?.liquidationPrice, {
+                        displayDecimals: selectedPosition?.indexToken?.priceDecimals,
                       })
                     : undefined
                 }
@@ -1445,42 +1444,42 @@ export function TradeBox(p: Props) {
           />
         )}
 
-        {existingPosition?.sizeInUsd.gt(0) && (
+        {selectedPosition?.sizeInUsd.gt(0) && (
           <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Size`}
             value={
               <ValueTransition
-                from={formatUsd(existingPosition.sizeInUsd)!}
+                from={formatUsd(selectedPosition.sizeInUsd)!}
                 to={formatUsd(nextPositionValues?.nextSizeUsd)}
               />
             }
           />
         )}
 
-        {existingPosition && (
+        {selectedPosition && (
           <ExchangeInfoRow
             className="SwapBox-info-row"
-            label={t`Collateral (${existingPosition?.collateralToken?.symbol})`}
+            label={t`Collateral (${selectedPosition?.collateralToken?.symbol})`}
             value={
               <ValueTransition
-                from={formatUsd(existingPosition.collateralUsd)}
+                from={formatUsd(selectedPosition.collateralUsd)}
                 to={formatUsd(nextPositionValues?.nextCollateralUsd)}
               />
             }
           />
         )}
 
-        {existingPosition && (
+        {selectedPosition && (
           <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Leverage`}
             value={
-              existingPosition.sizeInUsd.eq(decreaseAmounts?.sizeDeltaUsd || 0) ? (
+              selectedPosition.sizeInUsd.eq(decreaseAmounts?.sizeDeltaUsd || 0) ? (
                 "-"
               ) : (
                 <ValueTransition
-                  from={formatLeverage(existingPosition.leverage)}
+                  from={formatLeverage(selectedPosition.leverage)}
                   to={formatLeverage(nextPositionValues?.nextLeverage)}
                 />
               )
@@ -1488,7 +1487,7 @@ export function TradeBox(p: Props) {
           />
         )}
 
-        {existingPosition && (
+        {selectedPosition && (
           <ExchangeInfoRow
             label={t`PnL`}
             value={
@@ -1586,7 +1585,7 @@ export function TradeBox(p: Props) {
 
               {feesType && <TradeFeesRow {...fees} executionFee={executionFee} feesType={feesType} />}
 
-              {isTrigger && existingPosition && decreaseAmounts?.receiveUsd && (
+              {isTrigger && selectedPosition && decreaseAmounts?.receiveUsd && (
                 <ExchangeInfoRow
                   className="SwapBox-info-row"
                   label={t`Receive`}
@@ -1622,7 +1621,6 @@ export function TradeBox(p: Props) {
 
       <ConfirmationBox
         isVisible={stage === "confirmation"}
-        tradeFlags={tradeFlags}
         isWrapOrUnwrap={isWrapOrUnwrap}
         fromToken={fromToken}
         toToken={toToken}
@@ -1649,7 +1647,7 @@ export function TradeBox(p: Props) {
         fees={fees}
         executionFee={executionFee}
         error={buttonErrorText}
-        existingPosition={existingPosition}
+        existingPosition={selectedPosition}
         shouldDisableValidation={shouldDisableValidation!}
         isHigherSlippageAllowed={isHigherSlippageAllowed}
         ordersData={ordersInfo}

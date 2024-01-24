@@ -8,12 +8,11 @@ import { PositionInfo, PositionsInfoData } from "../positions";
 import { TokenData, TokensData } from "../tokens";
 import { TradeMode, TradeType } from "./types";
 import { AvailableTokenOptions, useAvailableTokenOptions } from "./useAvailableTokenOptions";
-import { TradeFlags, useTradeFlags } from "./useTradeFlags";
+import { useTradeFlags } from "context/SyntheticsStateContext/selectors";
 
 export type SelectedTradeOption = {
   tradeType: TradeType;
   tradeMode: TradeMode;
-  tradeFlags: TradeFlags;
   isWrapOrUnwrap: boolean;
   fromTokenAddress?: string;
   fromToken?: TokenData;
@@ -91,7 +90,7 @@ export function useSelectedTradeOption(
     }[tradeType];
   }, [tradeType]);
 
-  const tradeFlags = useTradeFlags(tradeType!, tradeMode!);
+  const tradeFlags = useTradeFlags();
   const { isSwap, isLong, isPosition } = tradeFlags;
 
   const fromTokenAddress = storedOptions?.tokens.fromTokenAddress;
@@ -320,7 +319,6 @@ export function useSelectedTradeOption(
   return {
     tradeType: tradeType!,
     tradeMode: tradeMode!,
-    tradeFlags,
     isWrapOrUnwrap,
     fromTokenAddress,
     fromToken,

@@ -60,7 +60,6 @@ import {
   applySlippageToPrice,
   getExecutionPriceForDecrease,
 } from "domain/synthetics/trade";
-import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
 import { getIsEquivalentTokens, getSpread } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
@@ -97,10 +96,10 @@ import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./ConfirmationBox.scss";
+import { useTradeFlags } from "context/SyntheticsStateContext/selectors";
 
 export type Props = {
   isVisible: boolean;
-  tradeFlags: TradeFlags;
   isWrapOrUnwrap: boolean;
   fromToken?: TokenData;
   toToken?: TokenData;
@@ -141,7 +140,6 @@ export type Props = {
 
 export function ConfirmationBox(p: Props) {
   const {
-    tradeFlags,
     isWrapOrUnwrap,
     fromToken,
     toToken,
@@ -176,7 +174,7 @@ export function ConfirmationBox(p: Props) {
     onSubmitted,
     setPendingTxns,
   } = p;
-
+  const tradeFlags = useTradeFlags();
   const { isLong, isShort, isPosition, isSwap, isMarket, isLimit, isTrigger, isIncrease } = tradeFlags;
   const { indexToken } = marketInfo || {};
 
@@ -326,7 +324,6 @@ export function ConfirmationBox(p: Props) {
   const priceImpactWarningState = usePriceImpactWarningState({
     positionPriceImpact: fees?.positionPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
-    tradeFlags,
     place: "confirmationBox",
   });
 
@@ -615,7 +612,6 @@ export function ConfirmationBox(p: Props) {
         executionFee={p.executionFee?.feeTokenAmount}
         closeConfirmationBox={onClose}
         isNativeToken={Boolean(fromToken?.isNative)}
-        tradeFlags={tradeFlags}
       />
     );
   }

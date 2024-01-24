@@ -175,7 +175,7 @@ export function SettleAccruedFundingFeeModal({
         <div className="text-center">Settle {totalStr}</div>
       </div>
       <div className="App-card-divider ClaimModal-divider FeeModal-divider ClaimSettleModal-divider" />
-      <SubaccountNavigationButton executionFee={executionFee} closeConfirmationBox={onClose} tradeFlags={undefined} />
+      <SubaccountNavigationButton executionFee={executionFee} closeConfirmationBox={onClose} ignoreTradeFlags />
       <div className="ClaimModal-content ClaimSettleModal-modal-content">
         <div className="App-card-content">
           <div className="ClaimSettleModal-alert">

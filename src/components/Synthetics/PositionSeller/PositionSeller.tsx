@@ -51,7 +51,6 @@ import {
 } from "domain/synthetics/trade";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
-import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
 import { getCommonError, getDecreaseError } from "domain/synthetics/trade/utils/validation";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber } from "ethers";
@@ -90,7 +89,6 @@ export type Props = {
   isHigherSlippageAllowed: boolean;
   setIsHigherSlippageAllowed: (isAllowed: boolean) => void;
   shouldDisableValidation: boolean;
-  tradeFlags: TradeFlags;
 };
 
 enum OrderOption {
@@ -99,16 +97,8 @@ enum OrderOption {
 }
 
 export function PositionSeller(p: Props) {
-  const {
-    position,
-    marketsInfoData,
-    tokensData,
-    showPnlInLeverage,
-    onClose,
-    setPendingTxns,
-    availableTokensOptions,
-    tradeFlags,
-  } = p;
+  const { position, marketsInfoData, tokensData, showPnlInLeverage, onClose, setPendingTxns, availableTokensOptions } =
+    p;
 
   const { chainId } = useChainId();
   const { savedAllowedSlippage } = useSettings();
@@ -313,7 +303,6 @@ export function PositionSeller(p: Props) {
   const priceImpactWarningState = usePriceImpactWarningState({
     positionPriceImpact: fees?.positionPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
-    tradeFlags,
     place: "positionSeller",
   });
 
@@ -720,11 +709,7 @@ export function PositionSeller(p: Props) {
           optionLabels={ORDER_OPTION_LABELS}
           onChange={setOrderOption}
         />
-        <SubaccountNavigationButton
-          executionFee={executionFee?.feeTokenAmount}
-          closeConfirmationBox={onClose}
-          tradeFlags={tradeFlags}
-        />
+        <SubaccountNavigationButton executionFee={executionFee?.feeTokenAmount} closeConfirmationBox={onClose} />
 
         {position && (
           <>

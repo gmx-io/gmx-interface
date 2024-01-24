@@ -15,10 +15,9 @@ import Tab from "components/Tab/Tab";
 import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
 import { getSyntheticsListSectionKey } from "config/localStorage";
 import { getToken } from "config/tokens";
-import { isSwapOrderType } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useOrdersInfo } from "domain/synthetics/orders/useOrdersInfo";
-import { PositionInfo, getPositionKey } from "domain/synthetics/positions";
+import { PositionInfo } from "domain/synthetics/positions";
 import { usePositionsInfo } from "domain/synthetics/positions/usePositionsInfo";
 import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
@@ -36,11 +35,6 @@ import {
   useSubaccount,
   useSubaccountCancelOrdersDetailsMessage,
 } from "context/SubaccountContext/SubaccountContext";
-import { getMarketIndexName, getMarketPoolName, getTotalClaimableFundingUsd } from "domain/synthetics/markets";
-import { TradeMode } from "domain/synthetics/trade";
-import { getMidPrice } from "domain/tokens";
-import { helperToast } from "lib/helperToast";
-import useWallet from "lib/wallets/useWallet";
 import {
   useAvailableTokensOptions,
   useCollateralAddress,
@@ -49,7 +43,12 @@ import {
   useSetActivePosition,
   useToTokenAddress,
   useTradeFlags,
-} from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+} from "context/SyntheticsStateContext/selectors";
+import { getMarketIndexName, getMarketPoolName, getTotalClaimableFundingUsd } from "domain/synthetics/markets";
+import { TradeMode } from "domain/synthetics/trade";
+import { getMidPrice } from "domain/tokens";
+import { helperToast } from "lib/helperToast";
+import useWallet from "lib/wallets/useWallet";
 
 export type Props = {
   savedIsPnlInLeverage: boolean;
@@ -113,21 +112,7 @@ export function SyntheticsPage(p: Props) {
 
   /*
 *not used*
-tradeType
-tradeMode
-isWrapOrUnwrap
-fromToken
-toToken
-marketInfo
-collateralToken
-avaialbleTradeModes
-setTradeType
-setTradeMode
-setFromTokenAddress
-setToTokenAddress
-setMarketAddress
-setCollateralAddress
-switchTokenAddresses
+tradeFlags
 
 *needs refactoring*
 fromTokenAddress // fromToken
@@ -139,7 +124,6 @@ availableTokensOptions // chartToken, availableChartTokens
 
 *used*
 tradeFlags // chartToken, availableChartTokens
-setActivePosition
 */
 
   const tradeFlags = useTradeFlags();
@@ -150,9 +134,10 @@ setActivePosition
   const availableTokensOptions = useAvailableTokensOptions();
   const setActivePosition = useSetActivePosition();
 
-  const { isSwap, isLong } = tradeFlags;
+  const { isSwap } = tradeFlags;
   const { indexTokens, sortedIndexTokensWithPoolValue, swapTokens, sortedLongAndShortTokens } = availableTokensOptions;
 
+  // FIXME selector
   const { chartToken, availableChartTokens } = useMemo(() => {
     if (!fromTokenAddress || !toTokenAddress) {
       return {};
@@ -198,37 +183,9 @@ setActivePosition
 
   const [gettingPendingFeePositionKeys, setGettingPendingFeePositionKeys] = useState<string[]>([]);
 
-  const selectedPositionKey = useMemo(() => {
-    // FIXME || !tradeType was here
-    if (!account || !collateralAddress || !marketAddress) {
-      return undefined;
-    }
-
-    return getPositionKey(account, marketAddress, collateralAddress, isLong);
-  }, [account, collateralAddress, isLong, marketAddress]);
-  const selectedPosition = getByKey(positionsInfoData, selectedPositionKey);
-
   const [selectedOrdersKeys, setSelectedOrdersKeys] = useState<{ [key: string]: boolean }>({});
   const selectedOrdersKeysArr = Object.keys(selectedOrdersKeys).filter((key) => selectedOrdersKeys[key]);
   const [isCancelOrdersProcessig, setIsCancelOrdersProcessig] = useState(false);
-  const existingOrder = useMemo(() => {
-    if (!selectedPositionKey) {
-      return undefined;
-    }
-
-    return Object.values(ordersInfoData || {})
-      .filter((order) => !isSwapOrderType(order.orderType))
-      .find((order) => {
-        if (isSwapOrderType(order.orderType)) {
-          return false;
-        }
-
-        return (
-          getPositionKey(order.account, order.marketAddress, order.targetCollateralToken.address, order.isLong) ===
-          selectedPositionKey
-        );
-      });
-  }, [ordersInfoData, selectedPositionKey]);
 
   const { positionsCount, ordersCount, ordersErrorsCount, ordersWarningsCount } = useMemo(() => {
     const positions = Object.values(positionsInfoData || {});
@@ -366,7 +323,6 @@ setActivePosition
             positionsInfo={positionsInfoData}
             chartTokenAddress={chartToken?.address}
             availableTokens={availableChartTokens}
-            tradeFlags={tradeFlags}
             tradePageVersion={tradePageVersion}
             setTradePageVersion={setTradePageVersion}
             avaialbleTokenOptions={availableTokensOptions}
@@ -467,8 +423,6 @@ setActivePosition
             <TradeBox
               avaialbleTokenOptions={availableTokensOptions}
               savedIsPnlInLeverage={savedIsPnlInLeverage}
-              existingPosition={selectedPosition}
-              existingOrder={existingOrder}
               shouldDisableValidation={shouldDisableValidation}
               allowedSlippage={allowedSlippage!}
               isHigherSlippageAllowed={isHigherSlippageAllowed}
@@ -560,7 +514,6 @@ setActivePosition
         isHigherSlippageAllowed={isHigherSlippageAllowed}
         setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
         shouldDisableValidation={shouldDisableValidation}
-        tradeFlags={tradeFlags}
       />
 
       <PositionEditor

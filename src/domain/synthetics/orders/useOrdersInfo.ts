@@ -8,7 +8,7 @@ import { OrdersInfoData } from "./types";
 import { useOrders } from "./useOrders";
 import { getOrderInfo, isVisibleOrder } from "./utils";
 
-type AggregatedOrdersDataResult = {
+export type AggregatedOrdersDataResult = {
   ordersInfoData?: OrdersInfoData;
   isLoading: boolean;
 };

@@ -8,13 +8,13 @@ import { Token } from "domain/tokens";
 import SearchInput from "components/SearchInput/SearchInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { t } from "@lingui/macro";
-import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
 import { AvailableTokenOptions, TradeType } from "domain/synthetics/trade";
 import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
 import { BigNumber } from "ethers";
 import { formatUsd } from "lib/numbers";
 import { PositionsInfoData } from "domain/synthetics/positions";
 import { convertTokenAddress } from "config/tokens";
+import { useTradeFlags } from "context/SyntheticsStateContext/selectors";
 
 type TokenOption = Token & {
   maxLongLiquidity: BigNumber;
@@ -27,7 +27,6 @@ type Props = {
   chainId: number;
   selectedToken: Token | undefined;
   onSelectToken: (address: string, marketAddress?: string, tradeType?: TradeType) => void;
-  tradeFlags?: TradeFlags;
   options: Token[] | undefined;
   className?: string;
   avaialbleTokenOptions: AvailableTokenOptions;
@@ -35,9 +34,9 @@ type Props = {
 };
 
 export default function ChartTokenSelector(props: Props) {
-  const { chainId, options, selectedToken, onSelectToken, tradeFlags, avaialbleTokenOptions, positionsInfo } = props;
+  const { chainId, options, selectedToken, onSelectToken, avaialbleTokenOptions, positionsInfo } = props;
   const { sortedAllMarkets } = avaialbleTokenOptions;
-  const { isSwap, isLong, isShort } = tradeFlags || {};
+  const { isSwap, isLong, isShort } = useTradeFlags();
   const [searchKeyword, setSearchKeyword] = useState("");
 
   const onSelect = (token: { indexTokenAddress: string; marketTokenAddress?: string; tradeType?: TradeType }) => {
@@ -77,7 +76,7 @@ export default function ChartTokenSelector(props: Props) {
 
     if (tokenAddress === selectedToken?.address) return;
 
-    if (tradeFlags?.isSwap) {
+    if (isSwap) {
       onSelect({
         indexTokenAddress: token.address,
       });

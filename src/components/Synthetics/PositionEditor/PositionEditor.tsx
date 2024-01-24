@@ -463,7 +463,7 @@ export function PositionEditor(p: Props) {
             <SubaccountNavigationButton
               executionFee={executionFee?.feeTokenAmount}
               closeConfirmationBox={onClose}
-              tradeFlags={undefined}
+              ignoreTradeFlags
             />
 
             <BuyInputSection

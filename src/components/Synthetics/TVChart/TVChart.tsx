@@ -18,12 +18,11 @@ import { formatAmount, formatUsd, numberWithCommas } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 import "./TVChart.scss";
 import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
-import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
 import { AvailableTokenOptions, TradeType } from "domain/synthetics/trade";
 import { MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getByKey } from "lib/objects";
 import { helperToast } from "lib/helperToast";
-import { useSetToTokenAddress, useTradeType } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import { useSetToTokenAddress, useTradeType } from "context/SyntheticsStateContext/selectors";
 
 export type Props = {
   tradePageVersion: number;
@@ -34,7 +33,6 @@ export type Props = {
   tokensData?: TokensData;
   chartTokenAddress?: string;
   availableTokens?: Token[];
-  tradeFlags?: TradeFlags;
   avaialbleTokenOptions: AvailableTokenOptions;
   marketsInfoData?: MarketsInfoData;
 };
@@ -48,7 +46,6 @@ export function TVChart({
   savedShouldShowPositionLines,
   chartTokenAddress,
   availableTokens,
-  tradeFlags,
   tradePageVersion,
   setTradePageVersion,
   avaialbleTokenOptions,
@@ -189,7 +186,6 @@ export function TVChart({
               selectedToken={selectedTokenOption}
               className="chart-token-selector"
               onSelectToken={onSelectTokenOption}
-              tradeFlags={tradeFlags}
               options={tokenOptions}
               avaialbleTokenOptions={avaialbleTokenOptions}
               positionsInfo={positionsInfo}

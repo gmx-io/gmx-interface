@@ -10,26 +10,28 @@ import {
   useSubaccountModalOpen,
 } from "context/SubaccountContext/SubaccountContext";
 import { SUBACCOUNT_DOCS_URL } from "domain/synthetics/subaccount/constants";
-import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { ReactNode, memo, useCallback } from "react";
 import "./SubaccountNavigationButton.scss";
 import { ONE_CLICK_TRADING_NATIVE_TOKEN_WARN_HIDDEN, ONE_CLICK_TRADING_OFFER_HIDDEN } from "config/localStorage";
+import { useTradeFlags } from "context/SyntheticsStateContext/selectors";
 
 export const SubaccountNavigationButton = memo(
   ({
     closeConfirmationBox,
     executionFee,
     isNativeToken,
-    tradeFlags,
+    ignoreTradeFlags,
   }: {
     closeConfirmationBox: () => void;
     executionFee: BigNumber | undefined;
     isNativeToken?: boolean;
-    tradeFlags: TradeFlags | undefined;
+    ignoreTradeFlags?: boolean;
   }) => {
+    const realTradeFlags = useTradeFlags();
+    const tradeFlags = ignoreTradeFlags ? undefined : realTradeFlags;
     const isSubaccountActive = useIsSubaccountActive();
     const [, setModalOpen] = useSubaccountModalOpen();
     const { chainId } = useChainId();
