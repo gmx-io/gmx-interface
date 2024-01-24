@@ -8,6 +8,14 @@ export const NATIVE_TOKEN_ADDRESS = ethers.constants.AddressZero;
 export const TOKENS: { [chainId: number]: Token[] } = {
   [ARBITRUM]: [
     {
+      name: "Binance",
+      symbol: "BNB",
+      address: "0xa9004A5421372E1D83fB1f85b0fc986c912f91f3",
+      decimals: 18,
+      imageUrl: "https://assets.coingecko.com/coins/images/825/standard/bnb-icon2_2x.png?1696501970",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/bnb",
+    },
+    {
       name: "Ethereum",
       symbol: "ETH",
       decimals: 18,
