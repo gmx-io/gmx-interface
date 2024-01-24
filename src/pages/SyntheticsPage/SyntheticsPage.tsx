@@ -40,6 +40,8 @@ import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTrade
 import { getMidPrice } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import useWallet from "lib/wallets/useWallet";
+import { useRebatesInfo } from "domain/synthetics/fees/useRebatesInfo";
+import { calcTotalRebateUsd } from "components/Synthetics/Claims/utils";
 
 export type Props = {
   savedIsPnlInLeverage: boolean;
@@ -94,6 +96,9 @@ export function SyntheticsPage(p: Props) {
     positionsInfoData,
     tokensData,
   });
+
+  const { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees } = useRebatesInfo(chainId);
+
   const [isSettling, setIsSettling] = useState(false);
 
   const {
@@ -216,11 +221,21 @@ export function SyntheticsPage(p: Props) {
       ordersWarningsCount: orders.filter((order) => order.errorLevel === "warning").length,
     };
   }, [ordersInfoData, positionsInfoData]);
-  const hasClaimables = useMemo(() => {
+  const hasClaimableFees = useMemo(() => {
     const markets = Object.values(marketsInfoData ?? {});
     const totalClaimableFundingUsd = getTotalClaimableFundingUsd(markets);
     return totalClaimableFundingUsd.gt(0);
   }, [marketsInfoData]);
+
+  const hasClaimableRebates = useMemo(
+    () => calcTotalRebateUsd(claimablePositionPriceImpactFees, tokensData, false).gt(0),
+    [claimablePositionPriceImpactFees, tokensData]
+  );
+
+  let totalClaimables = 0;
+
+  if (hasClaimableFees) totalClaimables += 1;
+  if (hasClaimableRebates) totalClaimables += 1;
 
   const subaccount = useSubaccount(null, selectedOrdersKeysArr.length);
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, selectedOrdersKeysArr.length);
@@ -334,6 +349,8 @@ export function SyntheticsPage(p: Props) {
         setGettingPendingFeePositionKeys={setGettingPendingFeePositionKeys}
         setPendingTxns={setPendingTxns}
         allowedSlippage={allowedSlippage}
+        accruedPositionPriceImpactFees={accruedPositionPriceImpactFees}
+        claimablePositionPriceImpactFees={claimablePositionPriceImpactFees}
       />
     );
   }
@@ -373,7 +390,7 @@ export function SyntheticsPage(p: Props) {
                   [ListSection.Positions]: t`Positions${positionsCount ? ` (${positionsCount})` : ""}`,
                   [ListSection.Orders]: renderOrdersTabTitle(),
                   [ListSection.Trades]: t`Trades`,
-                  [ListSection.Claims]: hasClaimables ? t`Claims (1)` : t`Claims`,
+                  [ListSection.Claims]: totalClaimables > 0 ? t`Claims (${totalClaimables})` : t`Claims`,
                 }}
                 option={listSection}
                 onChange={(section) => setListSection(section)}
@@ -494,7 +511,7 @@ export function SyntheticsPage(p: Props) {
                 [ListSection.Positions]: t`Positions${positionsCount ? ` (${positionsCount})` : ""}`,
                 [ListSection.Orders]: renderOrdersTabTitle(),
                 [ListSection.Trades]: t`Trades`,
-                [ListSection.Claims]: hasClaimables ? t`Claims (1)` : t`Claims`,
+                [ListSection.Claims]: hasClaimableFees ? t`Claims (1)` : t`Claims`,
               }}
               option={listSection}
               onChange={(section) => setListSection(section)}

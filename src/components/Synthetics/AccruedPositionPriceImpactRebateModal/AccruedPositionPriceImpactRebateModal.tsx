@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import Modal from "components/Modal/Modal";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { PositionPriceImpactRebateInfo } from "domain/synthetics/claimHistory";
 import { MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getTokenData, useTokensData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
@@ -10,6 +9,7 @@ import { expandDecimals, formatDeltaUsd, formatTokenAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { memo, useCallback, useMemo } from "react";
 import { calcTotalRebateUsd } from "../Claims/utils";
+import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 
 export function AccruedPositionPriceImpactRebateModal({
   isVisible,
@@ -19,7 +19,7 @@ export function AccruedPositionPriceImpactRebateModal({
 }: {
   isVisible: boolean;
   onClose: () => void;
-  accruedPositionPriceImpactFees: PositionPriceImpactRebateInfo[];
+  accruedPositionPriceImpactFees: RebateInfoItem[];
   marketsInfoData: MarketsInfoData | undefined;
 }) {
   const { chainId } = useChainId();
@@ -42,7 +42,7 @@ export function AccruedPositionPriceImpactRebateModal({
       }
 
       return acc;
-    }, [] as PositionPriceImpactRebateInfo[][]);
+    }, [] as RebateInfoItem[][]);
   }, [accruedPositionPriceImpactFees]);
 
   return (
@@ -81,7 +81,7 @@ const Row = memo(
     rebateItems,
     marketsInfoData,
   }: {
-    rebateItems: PositionPriceImpactRebateInfo[];
+    rebateItems: RebateInfoItem[];
     marketsInfoData: MarketsInfoData | undefined;
   }) => {
     const { chainId } = useChainId();
@@ -112,7 +112,7 @@ const Row = memo(
         }
 
         return acc;
-      }, [] as PositionPriceImpactRebateInfo[]);
+      }, [] as RebateInfoItem[]);
 
       if (reduced.length !== 2) return reduced;
 

@@ -17,6 +17,7 @@ import { ClaimModal } from "../ClaimModal/ClaimModal";
 import { SettleAccruedFundingFeeModal } from "../SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal";
 import { AccruedPositionPriceImpactRebateModal } from "../AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal";
 import { ClaimablePositionPriceImpactRebateModal } from "../ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal";
+import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 
 const PAGE_SIZE = 100;
 
@@ -31,6 +32,8 @@ export function Claims({
   setGettingPendingFeePositionKeys,
   setPendingTxns,
   allowedSlippage,
+  accruedPositionPriceImpactFees,
+  claimablePositionPriceImpactFees,
 }: {
   shouldShowPaginationButtons: boolean;
   marketsInfoData: MarketsInfoData | undefined;
@@ -42,6 +45,8 @@ export function Claims({
   setGettingPendingFeePositionKeys: (keys: string[]) => void;
   setPendingTxns: (txns: any) => void;
   allowedSlippage: number;
+  accruedPositionPriceImpactFees: RebateInfoItem[];
+  claimablePositionPriceImpactFees: RebateInfoItem[];
 }) {
   const { chainId } = useChainId();
   const { account } = useWallet();
@@ -53,13 +58,12 @@ export function Claims({
   const [isClaimablePositionPriceImpactFeesModalVisible, setIsClaimablePositionPriceImpactFeesModalVisible] =
     useState(false);
 
-  const { claimActions, isLoading, accruedPositionPriceImpactFees, claimablePositionPriceImpactFees } =
-    useClaimCollateralHistory(chainId, {
-      marketsInfoData,
-      tokensData,
-      pageIndex,
-      pageSize: PAGE_SIZE,
-    });
+  const { claimActions, isLoading } = useClaimCollateralHistory(chainId, {
+    marketsInfoData,
+    tokensData,
+    pageIndex,
+    pageSize: PAGE_SIZE,
+  });
 
   const isEmpty = !account || claimActions?.length === 0;
 

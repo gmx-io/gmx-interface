@@ -1,43 +1,20 @@
 import { gql } from "@apollo/client";
+import { getToken } from "config/tokens";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
-import { bigNumberify, expandDecimals } from "lib/numbers";
+import { getAddress } from "ethers/lib/utils.js";
+import { bigNumberify } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getSyntheticsGraphClient } from "lib/subgraph";
+import useWallet from "lib/wallets/useWallet";
 import { useMemo } from "react";
 import useSWR from "swr";
 import { useFixedAddreseses } from "../common/useFixedAddresses";
 import { ClaimAction, ClaimCollateralAction, ClaimFundingFeeAction, ClaimMarketItem, ClaimType } from "./types";
-import useWallet from "lib/wallets/useWallet";
-import { getAddress } from "ethers/lib/utils.js";
-import { getToken } from "config/tokens";
-
-type RawPositionPriceImpactRebateInfo = {
-  marketAddress: string;
-  tokenAddress: string;
-  timeKey: string;
-  value: string;
-  factor: string;
-  factorByTime: string;
-  id: string;
-};
-
-export type PositionPriceImpactRebateInfo = {
-  factor: BigNumber;
-  value: BigNumber;
-  marketAddress: string;
-  timeKey: string;
-  tokenAddress: string;
-  valueByFactor: BigNumber;
-  id: string;
-};
 
 export type ClaimCollateralHistoryResult = {
   claimActions?: ClaimAction[];
-  accruedPositionPriceImpactFees: PositionPriceImpactRebateInfo[];
-  claimablePositionPriceImpactFees: PositionPriceImpactRebateInfo[];
-
   isLoading: boolean;
 };
 
@@ -67,10 +44,7 @@ export function useClaimCollateralHistory(
 
   const key = chainId && client && account ? [chainId, "useClaimHistory", account, pageIndex, pageSize] : null;
 
-  const { data, error } = useSWR<{
-    claimActions: RawClaimAction[];
-    priceImpactRebates: RawPositionPriceImpactRebateInfo[];
-  }>(key, {
+  const { data, error } = useSWR<RawClaimAction[]>(key, {
     fetcher: async () => {
       const skip = pageIndex * pageSize;
       const first = pageSize;
@@ -95,26 +69,11 @@ export function useClaimCollateralHistory(
                 hash
             }
         }
-
-        priceImpactRebates(
-          where: { account: "${account!.toLowerCase()}", claimed: false }
-        ) {
-          id
-          marketAddress
-          tokenAddress
-          timeKey
-          value
-          factor
-          factorByTime
-        }
       }`);
 
       const { data } = await client!.query({ query, fetchPolicy: "no-cache" });
 
-      return {
-        claimActions: data.claimActions as RawClaimAction[],
-        priceImpactRebates: data.priceImpactRebates as RawPositionPriceImpactRebateInfo[],
-      };
+      return data.claimActions as RawClaimAction[];
     },
   });
 
@@ -125,7 +84,7 @@ export function useClaimCollateralHistory(
       return undefined;
     }
 
-    return data.claimActions.reduce((acc, rawAction) => {
+    return data.reduce((acc, rawAction) => {
       const eventName = rawAction.eventName;
 
       switch (eventName) {
@@ -153,53 +112,8 @@ export function useClaimCollateralHistory(
     }, [] as ClaimAction[]);
   }, [chainId, data, fixedAddresses, marketsInfoData, tokensData]);
 
-  const { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees } = useMemo(() => {
-    const res: {
-      accruedPositionPriceImpactFees: PositionPriceImpactRebateInfo[];
-      claimablePositionPriceImpactFees: PositionPriceImpactRebateInfo[];
-    } = { accruedPositionPriceImpactFees: [], claimablePositionPriceImpactFees: [] };
-
-    data?.priceImpactRebates.forEach((rawRebateInfo) => {
-      let factor = BigNumber.from(rawRebateInfo.factor);
-      const factorByTime = BigNumber.from(rawRebateInfo.factorByTime);
-
-      if (factorByTime.gt(factor)) {
-        factor = factorByTime;
-      }
-
-      const value = BigNumber.from(rawRebateInfo.value);
-      const valueByFactor = value.mul(factor).div(expandDecimals(1, 30));
-
-      const rebateInfo: PositionPriceImpactRebateInfo = {
-        factor,
-        value,
-        valueByFactor,
-        timeKey: rawRebateInfo.timeKey,
-        marketAddress: getAddress(rawRebateInfo.marketAddress),
-        tokenAddress: getAddress(rawRebateInfo.tokenAddress),
-        id: rawRebateInfo.id,
-      };
-
-      if (factor.gt(0) && valueByFactor.eq(0)) {
-        // this is claimable entity but factor is too small
-        // skipping to avoid CollateralAlreadyClaimed error
-        return;
-      }
-
-      if (rebateInfo.factor.eq(0)) {
-        res.accruedPositionPriceImpactFees.push(rebateInfo);
-      } else {
-        res.claimablePositionPriceImpactFees.push(rebateInfo);
-      }
-    });
-
-    return res;
-  }, [data]);
-
   return {
     claimActions,
-    accruedPositionPriceImpactFees,
-    claimablePositionPriceImpactFees,
     isLoading,
   };
 }

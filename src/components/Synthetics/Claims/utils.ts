@@ -1,10 +1,10 @@
-import { PositionPriceImpactRebateInfo } from "domain/synthetics/claimHistory";
+import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 import { TokensData, getTokenData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { expandDecimals } from "lib/numbers";
 
 export function calcTotalRebateUsd(
-  rebates: PositionPriceImpactRebateInfo[],
+  rebates: RebateInfoItem[],
   tokensData: TokensData | undefined,
   ignoreFactor: boolean
 ) {

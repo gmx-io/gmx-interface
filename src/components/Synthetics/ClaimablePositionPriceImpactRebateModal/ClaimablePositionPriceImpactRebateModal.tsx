@@ -2,7 +2,6 @@ import { Trans, t } from "@lingui/macro";
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { PositionPriceImpactRebateInfo } from "domain/synthetics/claimHistory";
 import { createClaimCollateralTxn } from "domain/synthetics/claimHistory/claimPriceImpactRebate";
 import { MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getTokenData, useTokensData } from "domain/synthetics/tokens";
@@ -13,6 +12,7 @@ import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import { memo, useCallback, useMemo, useState } from "react";
 import { calcTotalRebateUsd } from "../Claims/utils";
+import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 
 export function ClaimablePositionPriceImpactRebateModal({
   isVisible,
@@ -22,7 +22,7 @@ export function ClaimablePositionPriceImpactRebateModal({
 }: {
   isVisible: boolean;
   onClose: () => void;
-  claimablePositionPriceImpactFees: PositionPriceImpactRebateInfo[];
+  claimablePositionPriceImpactFees: RebateInfoItem[];
   marketsInfoData: MarketsInfoData | undefined;
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -48,7 +48,7 @@ export function ClaimablePositionPriceImpactRebateModal({
       }
 
       return acc;
-    }, [] as PositionPriceImpactRebateInfo[][]);
+    }, [] as RebateInfoItem[][]);
   }, [claimablePositionPriceImpactFees]);
 
   const [buttonText, buttonDisabled] = useMemo(() => {
@@ -112,13 +112,7 @@ export function ClaimablePositionPriceImpactRebateModal({
 }
 
 const Row = memo(
-  ({
-    rebateItems,
-    marketsInfoData,
-  }: {
-    rebateItems: PositionPriceImpactRebateInfo[];
-    marketsInfoData: MarketsInfoData;
-  }) => {
+  ({ rebateItems, marketsInfoData }: { rebateItems: RebateInfoItem[]; marketsInfoData: MarketsInfoData }) => {
     const { chainId } = useChainId();
     const market = getByKey(marketsInfoData, rebateItems[0].marketAddress);
     const label = useMemo(() => {
@@ -149,7 +143,7 @@ const Row = memo(
         }
 
         return acc;
-      }, [] as PositionPriceImpactRebateInfo[]);
+      }, [] as RebateInfoItem[]);
       if (reduced.length !== 2) return reduced;
 
       reduced.sort((a, b) => {

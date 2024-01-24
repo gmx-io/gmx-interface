@@ -3,11 +3,11 @@ import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
 import { Signer, ethers } from "ethers";
 import { callContract } from "lib/contracts";
-import { PositionPriceImpactRebateInfo } from "./useClaimHistory";
+import { RebateInfoItem } from "../fees/useRebatesInfo";
 
 export type ClaimPriceImpactRebateParams = {
   account: string;
-  claimablePositionPriceImpactFees: PositionPriceImpactRebateInfo[];
+  claimablePositionPriceImpactFees: RebateInfoItem[];
 };
 
 export async function createClaimCollateralTxn(
