@@ -908,8 +908,11 @@ msgid "Claims"
 msgstr ""
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims (1)"
+msgstr ""
+
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
+msgid "Claims ({totalClaimables})"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js

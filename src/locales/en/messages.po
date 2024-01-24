@@ -908,9 +908,12 @@ msgid "Claims"
 msgstr "Claims"
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims (1)"
 msgstr "Claims (1)"
+
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
+msgid "Claims ({totalClaimables})"
+msgstr "Claims ({totalClaimables})"
 
 #: src/components/Exchange/PositionsList.js
 msgid "Click on the Position to select its market, then use the trade box to increase your Position Size if needed."
