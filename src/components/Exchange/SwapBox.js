@@ -204,7 +204,6 @@ export default function SwapBox(props) {
     "2"
   );
 
-  console.log({ leverageOption }, "v1");
   const [isLeverageSliderEnabled, setIsLeverageSliderEnabled] = useLocalStorageSerializeKey(
     [chainId, "Exchange-swap-leverage-slider-enabled"],
     true

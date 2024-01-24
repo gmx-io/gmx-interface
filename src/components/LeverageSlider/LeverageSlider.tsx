@@ -5,7 +5,7 @@ import "./LeverageSlider.scss";
 import { range } from "lodash";
 import { useCallback, useEffect } from "react";
 
-const marks = [2, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
+const defaultMarks = [2, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
 const DEFAULT_LEVERAGE_KEY = 10;
 
 type Props = {
@@ -16,10 +16,13 @@ type Props = {
 };
 
 export function LeverageSlider(p: Props) {
-  const { onChange, value } = p;
-  const marksLabel = getMarksWithLabel(p.marks ?? marks);
-  const { keyValueMap, valueKeyMap } = createMarksValueMap(p.marks ?? marks);
+  const { onChange, value, marks } = p;
+  const finalMarks = marks ?? defaultMarks;
+  const marksLabel = getMarksWithLabel(finalMarks);
+  const { keyValueMap, valueKeyMap } = createMarksValueMap(finalMarks);
+
   const defaultValue = valueKeyMap[value ?? 0] ?? DEFAULT_LEVERAGE_KEY;
+  const max = (finalMarks.length - 1) * 10;
 
   const handleChange = useCallback(
     (value: number) => {
@@ -45,7 +48,7 @@ export function LeverageSlider(p: Props) {
     >
       <Slider
         min={0}
-        max={100}
+        max={max}
         step={1}
         marks={marksLabel}
         handle={customHandle}
