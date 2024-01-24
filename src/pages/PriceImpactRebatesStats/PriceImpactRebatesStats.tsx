@@ -79,7 +79,6 @@ const RebateStatsTable = memo(({ rebateGroups }: { rebateGroups: RebateGroup[] }
 });
 
 const RebateGroupRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) => {
-  // const tooltipContent = useCallback(() => rebateItem.factor.toString(), [rebateItem.factor]);
   const [, copyToClipboard] = useCopyToClipboard();
   const { chainId } = useChainId();
   const handleCopyCommandClick = useCallback(

@@ -78,6 +78,19 @@ export function Claims({
     [setIsClaimablePositionPriceImpactFeesModalVisible]
   );
 
+  const handleSettleCloseClick = useCallback(() => {
+    setGettingPendingFeePositionKeys([]);
+    setIsSettling(false);
+  }, [setGettingPendingFeePositionKeys, setIsSettling]);
+
+  const handleAccruedPositionPriceImpactRebateCloseClick = useCallback(() => {
+    setIsAccruedPositionPriceImpactRebateModalVisible(false);
+  }, []);
+
+  const handleClaimablePositionPriceImpactFeesCloseClick = useCallback(() => {
+    setIsClaimablePositionPriceImpactFeesModalVisible(false);
+  }, []);
+
   const isMobile = useMedia("(max-width: 1100px)");
 
   return (
@@ -96,25 +109,18 @@ export function Claims({
         allowedSlippage={allowedSlippage}
         setPositionKeys={setGettingPendingFeePositionKeys}
         setPendingTxns={setPendingTxns}
-        onClose={useCallback(() => {
-          setGettingPendingFeePositionKeys([]);
-          setIsSettling(false);
-        }, [setGettingPendingFeePositionKeys, setIsSettling])}
+        onClose={handleSettleCloseClick}
       />
       <AccruedPositionPriceImpactRebateModal
         isVisible={isAccruedPositionPriceImpactRebateModalVisible}
-        onClose={useCallback(() => {
-          setIsAccruedPositionPriceImpactRebateModalVisible(false);
-        }, [])}
+        onClose={handleAccruedPositionPriceImpactRebateCloseClick}
         accruedPositionPriceImpactFees={accruedPositionPriceImpactFees}
         marketsInfoData={marketsInfoData}
       />
 
       <ClaimablePositionPriceImpactRebateModal
         isVisible={isClaimablePositionPriceImpactFeesModalVisible}
-        onClose={useCallback(() => {
-          setIsClaimablePositionPriceImpactFeesModalVisible(false);
-        }, [])}
+        onClose={handleClaimablePositionPriceImpactFeesCloseClick}
         claimablePositionPriceImpactFees={claimablePositionPriceImpactFees}
         marketsInfoData={marketsInfoData}
       />

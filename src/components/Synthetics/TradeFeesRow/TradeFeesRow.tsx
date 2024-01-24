@@ -22,6 +22,7 @@ import { ReactNode, useMemo } from "react";
 import "./TradeFeesRow.scss";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { getPositiveOrNegativeClass } from "lib/utils";
 
 type Props = {
   totalFees?: FeeItem;
@@ -84,7 +85,7 @@ export function TradeFeesRow(p: Props) {
             </>
           ),
           value: formatDeltaUsd(fullPositionPriceImpact.deltaUsd),
-          className: fullPositionPriceImpact.deltaUsd.gte(0) ? "text-green" : "text-red",
+          className: getPositiveOrNegativeClass(fullPositionPriceImpact.deltaUsd, "text-green"),
         }
       : undefined;
 
@@ -98,7 +99,7 @@ export function TradeFeesRow(p: Props) {
             </>
           ),
           value: formatDeltaUsd(p.priceImpactDiff.deltaUsd),
-          className: p.priceImpactDiff.deltaUsd.gte(0) ? "text-green" : "text-red",
+          className: getPositiveOrNegativeClass(p.priceImpactDiff.deltaUsd, "text-green"),
         }
       : undefined;
 
@@ -112,7 +113,7 @@ export function TradeFeesRow(p: Props) {
             </>
           ),
           value: formatDeltaUsd(p.swapPriceImpact.deltaUsd),
-          className: p.swapPriceImpact.deltaUsd.gte(0) ? "text-green" : "text-red",
+          className: getPositiveOrNegativeClass(p.swapPriceImpact.deltaUsd, "text-green"),
         }
       : undefined;
 
@@ -131,7 +132,7 @@ export function TradeFeesRow(p: Props) {
           </>
         ),
         value: formatDeltaUsd(swap.deltaUsd),
-        className: swap.deltaUsd.gte(0) ? "text-green" : "text-red",
+        className: getPositiveOrNegativeClass(swap.deltaUsd, "text-green"),
       })) || [];
 
     const swapProfitFeeRow = p.swapProfitFee?.deltaUsd.abs().gt(0)
@@ -144,7 +145,7 @@ export function TradeFeesRow(p: Props) {
             </>
           ),
           value: formatDeltaUsd(p.swapProfitFee.deltaUsd),
-          className: p.swapProfitFee.deltaUsd.gte(0) ? "text-green" : "text-red",
+          className: getPositiveOrNegativeClass(p.swapProfitFee.deltaUsd, "text-green"),
         }
       : undefined;
 
@@ -159,7 +160,7 @@ export function TradeFeesRow(p: Props) {
             </>
           ),
           value: formatDeltaUsd(p.positionFee.deltaUsd),
-          className: p.positionFee.deltaUsd.gte(0) ? "text-green" : "text-red",
+          className: getPositiveOrNegativeClass(p.positionFee.deltaUsd, "text-green"),
         }
       : undefined;
 
@@ -216,7 +217,7 @@ export function TradeFeesRow(p: Props) {
             </>
           ),
           value: formatDeltaUsd(p.borrowFee.deltaUsd),
-          className: p.borrowFee.deltaUsd.gte(0) ? "text-green" : "text-red",
+          className: getPositiveOrNegativeClass(p.borrowFee.deltaUsd, "text-green"),
         }
       : undefined;
 
@@ -230,7 +231,7 @@ export function TradeFeesRow(p: Props) {
             </>
           ),
           value: formatDeltaUsd(p.fundingFee.deltaUsd),
-          className: p.fundingFee.deltaUsd.gte(0) ? "text-green" : "text-red",
+          className: getPositiveOrNegativeClass(p.fundingFee.deltaUsd, "text-green"),
         }
       : undefined;
 

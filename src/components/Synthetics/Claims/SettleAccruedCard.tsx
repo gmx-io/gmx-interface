@@ -37,30 +37,30 @@ export function SettleAccruedCard({
     () => calcTotalRebateUsd(accruedPositionPriceImpactFees, tokensData, true),
     [accruedPositionPriceImpactFees, tokensData]
   );
-
-  return (
-    <ClaimableCardUI
-      fundingFees={fundingFees}
-      priceImpactRebate={priceImpactDifference}
-      buttonText={buttonText}
-      button2Text={button2Text}
-      title={title}
-      tooltipText={tooltipText}
-      tooltip2Text={
-        <Trans>
-          Accrued Price Impact Rebates. They will become Claimable after some time.
-          <br />
-          <br />
-          <ExternalLink newTab href="https://docs.gmx.io/docs/trading/v2/#price-impact-rebates">
-            Read more
-          </ExternalLink>
-          .
-        </Trans>
-      }
-      onButtonClick={onSettleClick}
-      onButton2Click={onAccruedPositionPriceImpactRebateClick}
-      button2Style="secondary"
-      style={style}
-    />
+  const sections = useMemo(
+    () =>
+      [
+        { usd: fundingFees, buttonText, tooltipText, onButtonClick: onSettleClick },
+        {
+          usd: priceImpactDifference,
+          buttonText: button2Text,
+          tooltipText: (
+            <Trans>
+              Accrued Price Impact Rebates. They will become Claimable after some time.
+              <br />
+              <br />
+              <ExternalLink newTab href="https://docs.gmx.io/docs/trading/v2/#price-impact-rebates">
+                Read more
+              </ExternalLink>
+              .
+            </Trans>
+          ),
+          onButtonClick: onAccruedPositionPriceImpactRebateClick,
+          buttonStyle: "secondary",
+        },
+      ] as const,
+    [fundingFees, onAccruedPositionPriceImpactRebateClick, onSettleClick, priceImpactDifference]
   );
+
+  return <ClaimableCardUI title={title} style={style} sections={sections} />;
 }

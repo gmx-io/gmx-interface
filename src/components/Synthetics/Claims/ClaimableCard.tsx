@@ -36,28 +36,29 @@ export function ClaimableCard({
     [claimablePositionPriceImpactFees, tokensData]
   );
 
-  return (
-    <ClaimableCardUI
-      fundingFees={totalClaimableFundingUsd}
-      buttonText={buttonText}
-      button2Text={buttonText}
-      priceImpactRebate={priceImpactRebateUsd}
-      title={title}
-      tooltipText={tooltipText}
-      tooltip2Text={
-        <Trans>
-          Claimable Price Impact Rebates.
-          <br />
-          <br />
-          <ExternalLink newTab href="https://docs.gmx.io/docs/trading/v2/#price-impact-rebates">
-            Read more
-          </ExternalLink>
-          .
-        </Trans>
-      }
-      onButtonClick={onClaimClick}
-      onButton2Click={onClaimablePositionPriceImpactFeesClick}
-      style={style}
-    />
+  const sections = useMemo(
+    () =>
+      [
+        { buttonText, tooltipText, onButtonClick: onClaimClick, usd: totalClaimableFundingUsd },
+        {
+          buttonText,
+          tooltipText: (
+            <Trans>
+              Claimable Price Impact Rebates.
+              <br />
+              <br />
+              <ExternalLink newTab href="https://docs.gmx.io/docs/trading/v2/#price-impact-rebates">
+                Read more
+              </ExternalLink>
+              .
+            </Trans>
+          ),
+          onButtonClick: onClaimablePositionPriceImpactFeesClick,
+          usd: priceImpactRebateUsd,
+        },
+      ] as const,
+    [onClaimClick, onClaimablePositionPriceImpactFeesClick, priceImpactRebateUsd, totalClaimableFundingUsd]
   );
+
+  return <ClaimableCardUI sections={sections} title={title} style={style} />;
 }
