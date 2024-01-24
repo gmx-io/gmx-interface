@@ -3199,6 +3199,10 @@ msgstr "ネットワーク"
 msgid "Networks and Settings"
 msgstr "ネットワークと設定"
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "New Collateral"
+msgstr ""
+
 #: src/components/Synthetics/Claims/Claims.tsx
 msgid "Next"
 msgstr "次へ"
@@ -3274,6 +3278,10 @@ msgstr ""
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr "注文が必ず執行される保証がないことに注意してください。<0/><1/>これは例えば以下のような状況で起こりえます:"
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "Old Collateral"
+msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
@@ -4350,6 +4358,7 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -4551,8 +4560,8 @@ msgid "Swap Fee"
 msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-msgid "Swap Fees"
-msgstr ""
+#~ msgid "Swap Fees"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Swap Order created!"
@@ -4566,7 +4575,6 @@ msgstr "スワップ注文が作成できませんでした。"
 msgid "Swap Order submitted!"
 msgstr "スワップ注文提出済!"
 
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap Price Impact"
 msgstr ""
@@ -5934,7 +5942,7 @@ msgstr "あなたのesGMX (IOU)残高は請求後に請求額分だけ減少し�
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-msgid "Your position's collateral after deducting fees."
+msgid "Your position's collateral after deducting fees:"
 msgstr "手数料差引後のあなたのポジションの担保"
 
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js

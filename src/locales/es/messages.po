@@ -3199,6 +3199,10 @@ msgstr "Redes"
 msgid "Networks and Settings"
 msgstr "Redes y Ajustes"
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "New Collateral"
+msgstr ""
+
 #: src/components/Synthetics/Claims/Claims.tsx
 msgid "Next"
 msgstr "Siguiente"
@@ -3274,6 +3278,10 @@ msgstr ""
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr "Tenga en cuenta que no se garantiza la ejecución de las órdenes.<0/><1/>Esto puede ocurrir en algunas situaciones que incluyen, pero no exclusivamente:"
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "Old Collateral"
+msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
@@ -4350,6 +4358,7 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -4551,8 +4560,8 @@ msgid "Swap Fee"
 msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-msgid "Swap Fees"
-msgstr ""
+#~ msgid "Swap Fees"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Swap Order created!"
@@ -4566,7 +4575,6 @@ msgstr "Falló la creación de la Orden de Intercambio."
 msgid "Swap Order submitted!"
 msgstr "¡Orden de Intercambio enviada!"
 
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap Price Impact"
 msgstr ""
@@ -5934,8 +5942,8 @@ msgstr "El saldo de su esGMX (IOU) disminuirá en la cantidad de su reclamación
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-msgid "Your position's collateral after deducting fees."
-msgstr "La garantía de tu posición después de descontar las comisiones."
+msgid "Your position's collateral after deducting fees:"
+msgstr "La garantía de tu posición después de descontar las comisiones:"
 
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Your transfer has been completed."

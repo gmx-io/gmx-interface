@@ -593,6 +593,7 @@ export function PositionEditor(p: Props) {
 
               {!isDeposit && (
                 <ExchangeInfoRow
+                  isTop={true}
                   label={t`Receive`}
                   value={formatTokenAmountWithUsd(
                     receiveAmount,

@@ -3199,6 +3199,10 @@ msgstr ""
 msgid "Networks and Settings"
 msgstr ""
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "New Collateral"
+msgstr ""
+
 #: src/components/Synthetics/Claims/Claims.tsx
 msgid "Next"
 msgstr ""
@@ -3273,6 +3277,10 @@ msgstr ""
 
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
+msgstr ""
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "Old Collateral"
 msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
@@ -4350,6 +4358,7 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -4551,8 +4560,8 @@ msgid "Swap Fee"
 msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-msgid "Swap Fees"
-msgstr ""
+#~ msgid "Swap Fees"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Swap Order created!"
@@ -4566,7 +4575,6 @@ msgstr ""
 msgid "Swap Order submitted!"
 msgstr ""
 
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap Price Impact"
 msgstr ""
@@ -5934,7 +5942,7 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-msgid "Your position's collateral after deducting fees."
+msgid "Your position's collateral after deducting fees:"
 msgstr ""
 
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js

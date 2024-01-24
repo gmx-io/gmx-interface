@@ -407,6 +407,10 @@ button.App-connect-wallet:hover {
   height: 1px;
   background: #23263b;
   margin: 1.05rem -1.5rem;
+
+  &:last-child {
+    display: none;
+  }
 }
 
 .line-divider {
