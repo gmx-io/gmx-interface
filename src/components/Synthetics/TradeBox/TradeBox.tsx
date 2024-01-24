@@ -148,20 +148,6 @@ const tradeTypeIcons = {
   [TradeType.Swap]: swapImg,
 };
 
-const leverageMarks = {
-  1: "1x",
-  5: "5x",
-  10: "10x",
-  15: "15x",
-  20: "20x",
-  25: "25x",
-  30: "30x",
-  35: "35x",
-  40: "40x",
-  45: "45x",
-  50: "50x",
-};
-
 export function TradeBox(p: Props) {
   const {
     tradeMode,
@@ -1260,8 +1246,7 @@ export function TradeBox(p: Props) {
 
             {isLeverageEnabled && (
               <LeverageSlider
-                leverageMarks={leverageMarks}
-                min={0.1}
+                marks={[0.1, 1, 2, 5, 10, 15, 20, 25, 30, 40, 50]}
                 value={leverageOption}
                 onChange={setLeverageOption}
                 isPositive={isLong}

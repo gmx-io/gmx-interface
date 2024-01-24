@@ -756,10 +756,6 @@ msgid "Cancel submitted."
 msgstr "送出取消"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
-#~ msgid "Canceling {ordersText}"
-#~ msgstr ""
-
-#: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Cancelling {ordersText}"
 msgstr ""
 
@@ -3281,10 +3277,6 @@ msgstr "请注意，订单不保证被执行。<0/><1/>可能发生在几种情�
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "One-Click Trading"
 msgstr ""
-
-#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-#~ msgid "One-Click Trading is not available using network's native token AVAX. Consider using WAVAX as Pay token instead."
-#~ msgstr ""
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 msgid "One-Click Trading is not available using network's native token {0}. Consider using {1} as Pay token instead."
@@ -6267,10 +6259,6 @@ msgstr ""
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "{orderTypeText} {0} {longShortText}: {sign}{1}"
 msgstr ""
-
-#: src/domain/synthetics/orders/cancelOrdersTxn.ts
-#~ msgid "{ordersText} canceled"
-#~ msgstr ""
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} cancelled"
