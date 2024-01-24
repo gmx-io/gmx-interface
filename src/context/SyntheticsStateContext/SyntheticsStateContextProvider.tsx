@@ -5,17 +5,23 @@ import useWallet from "lib/wallets/useWallet";
 import { ReactNode, useMemo } from "react";
 import { useSelectedTradeOption, SelectedTradeOption } from "domain/synthetics/trade/useSelectedTradeOption";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
+import { createSelector } from "lib/selectors";
 
-export type SyntheticsStateContext = {
-  globals: { markets: MarketsResult; marketsInfo: MarketsInfoResult; positionsInfo: PositionsInfoResult };
+export type SyntheticsState = {
+  globals: {
+    markets: MarketsResult;
+    marketsInfo: MarketsInfoResult;
+    positionsInfo: PositionsInfoResult;
+    account: string | undefined;
+  };
   page: {};
   trade: SelectedTradeOption;
 };
 
-const StateCtx = createContext<SyntheticsStateContext | null>(null);
+const StateCtx = createContext<SyntheticsState | null>(null);
 
 export function useSettings() {
-  return useContext(StateCtx) as SyntheticsStateContext;
+  return useContext(StateCtx) as SyntheticsState;
 }
 
 export function SyntheticsStateContextProvider({ children }: { children: ReactNode }) {
@@ -62,12 +68,13 @@ export function SyntheticsStateContextProvider({ children }: { children: ReactNo
     tokensData: marketsInfo.tokensData,
   });
 
-  const state: SyntheticsStateContext = useMemo(() => {
+  const state: SyntheticsState = useMemo(() => {
     return {
       globals: {
         markets,
         marketsInfo,
         positionsInfo,
+        account,
       },
       page: {},
       trade: {
@@ -96,6 +103,7 @@ export function SyntheticsStateContextProvider({ children }: { children: ReactNo
       },
     };
   }, [
+    account,
     avaialbleTradeModes,
     availableTokensOptions,
     collateralAddress,
@@ -126,8 +134,8 @@ export function SyntheticsStateContextProvider({ children }: { children: ReactNo
   return <StateCtx.Provider value={state}>{children}</StateCtx.Provider>;
 }
 
-function useSyntheticsStateSelector<Selected>(selector: (s: SyntheticsStateContext) => Selected) {
-  return useContextSelector(StateCtx as Context<SyntheticsStateContext>, selector) as Selected;
+function useSyntheticsStateSelector<Selected>(selector: (s: SyntheticsState) => Selected) {
+  return useContextSelector(StateCtx as Context<SyntheticsState>, selector) as Selected;
 }
 
 /*
@@ -155,89 +163,55 @@ setActivePosition,
 switchTokenAddresses,
 */
 
-export function useTradeType() {
-  return useSyntheticsStateSelector((s) => s.trade.tradeType);
-}
+const selectTradeType = (s: SyntheticsState) => s.trade.tradeType;
+const selectTradeMode = (s: SyntheticsState) => s.trade.tradeMode;
+const selectTradeFlags = (s: SyntheticsState) => s.trade.tradeFlags;
+const selectIsWrapOrUnwrap = (s: SyntheticsState) => s.trade.isWrapOrUnwrap;
+const selectFromTokenAddress = (s: SyntheticsState) => s.trade.fromTokenAddress;
+const selectFromToken = (s: SyntheticsState) => s.trade.fromToken;
+const selectToTokenAddress = (s: SyntheticsState) => s.trade.toTokenAddress;
+const selectToToken = (s: SyntheticsState) => s.trade.toToken;
+const selectMarketAddress = (s: SyntheticsState) => s.trade.marketAddress;
+const selectMarketInfo = (s: SyntheticsState) => s.trade.marketInfo;
+const selectCollateralAddress = (s: SyntheticsState) => s.trade.collateralAddress;
+const selectCollateralToken = (s: SyntheticsState) => s.trade.collateralToken;
+const selectAvailableTokensOptions = (s: SyntheticsState) => s.trade.availableTokensOptions;
+const selectAvaialbleTradeModes = (s: SyntheticsState) => s.trade.avaialbleTradeModes;
+const selectSetTradeType = (s: SyntheticsState) => s.trade.setTradeType;
+const selectSetTradeMode = (s: SyntheticsState) => s.trade.setTradeMode;
+const selectSetFromTokenAddress = (s: SyntheticsState) => s.trade.setFromTokenAddress;
+const selectSetToTokenAddress = (s: SyntheticsState) => s.trade.setToTokenAddress;
+const selectSetMarketAddress = (s: SyntheticsState) => s.trade.setMarketAddress;
+const selectSetCollateralAddress = (s: SyntheticsState) => s.trade.setCollateralAddress;
+const selectSetActivePosition = (s: SyntheticsState) => s.trade.setActivePosition;
+const selectSwitchTokenAddresses = (s: SyntheticsState) => s.trade.switchTokenAddresses;
+const selectAccount = (s: SyntheticsState) => s.globals.account;
 
-export function useTradeMode() {
-  return useSyntheticsStateSelector((s) => s.trade.tradeMode);
-}
-export function useTradeFlags() {
-  return useSyntheticsStateSelector((s) => s.trade.tradeFlags);
-}
+export const useTradeType = () => useSyntheticsStateSelector(selectTradeType);
+export const useTradeMode = () => useSyntheticsStateSelector(selectTradeMode);
+export const useTradeFlags = () => useSyntheticsStateSelector(selectTradeFlags);
+export const useIsWrapOrUnwrap = () => useSyntheticsStateSelector(selectIsWrapOrUnwrap);
+export const useFromTokenAddress = () => useSyntheticsStateSelector(selectFromTokenAddress);
+export const useFromToken = () => useSyntheticsStateSelector(selectFromToken);
+export const useToTokenAddress = () => useSyntheticsStateSelector(selectToTokenAddress);
+export const useToToken = () => useSyntheticsStateSelector(selectToToken);
+export const useMarketAddress = () => useSyntheticsStateSelector(selectMarketAddress);
+export const useMarketInfo = () => useSyntheticsStateSelector(selectMarketInfo);
+export const useCollateralAddress = () => useSyntheticsStateSelector(selectCollateralAddress);
+export const useCollateralToken = () => useSyntheticsStateSelector(selectCollateralToken);
+export const useAvailableTokensOptions = () => useSyntheticsStateSelector(selectAvailableTokensOptions);
+export const useAvaialbleTradeModes = () => useSyntheticsStateSelector(selectAvaialbleTradeModes);
+export const useSetTradeType = () => useSyntheticsStateSelector(selectSetTradeType);
+export const useSetTradeMode = () => useSyntheticsStateSelector(selectSetTradeMode);
+export const useSetFromTokenAddress = () => useSyntheticsStateSelector(selectSetFromTokenAddress);
+export const useSetToTokenAddress = () => useSyntheticsStateSelector(selectSetToTokenAddress);
+export const useSetMarketAddress = () => useSyntheticsStateSelector(selectSetMarketAddress);
+export const useSetCollateralAddress = () => useSyntheticsStateSelector(selectSetCollateralAddress);
+export const useSetActivePosition = () => useSyntheticsStateSelector(selectSetActivePosition);
+export const useSwitchTokenAddresses = () => useSyntheticsStateSelector(selectSwitchTokenAddresses);
+// export const useAccount = () => useSyntheticsStateSelector(selectAccount);
 
-export function useIsWrapOrUnwrap() {
-  return useSyntheticsStateSelector((s) => s.trade.isWrapOrUnwrap);
-}
-
-export function useFromTokenAddress() {
-  return useSyntheticsStateSelector((s) => s.trade.fromTokenAddress);
-}
-
-export function useFromToken() {
-  return useSyntheticsStateSelector((s) => s.trade.fromToken);
-}
-
-export function useToTokenAddress() {
-  return useSyntheticsStateSelector((s) => s.trade.toTokenAddress);
-}
-
-export function useToToken() {
-  return useSyntheticsStateSelector((s) => s.trade.toToken);
-}
-
-export function useMarketAddress() {
-  return useSyntheticsStateSelector((s) => s.trade.marketAddress);
-}
-
-export function useMarketInfo() {
-  return useSyntheticsStateSelector((s) => s.trade.marketInfo);
-}
-
-export function useCollateralAddress() {
-  return useSyntheticsStateSelector((s) => s.trade.collateralAddress);
-}
-
-export function useCollateralToken() {
-  return useSyntheticsStateSelector((s) => s.trade.collateralToken);
-}
-
-export function useAvailableTokensOptions() {
-  return useSyntheticsStateSelector((s) => s.trade.availableTokensOptions);
-}
-
-export function useAvailableTradeModes() {
-  return useSyntheticsStateSelector((s) => s.trade.avaialbleTradeModes);
-}
-
-export function useSetTradeType() {
-  return useSyntheticsStateSelector((s) => s.trade.setTradeType);
-}
-
-export function useSetTradeMode() {
-  return useSyntheticsStateSelector((s) => s.trade.setTradeMode);
-}
-
-export function useSetFromTokenAddress() {
-  return useSyntheticsStateSelector((s) => s.trade.setFromTokenAddress);
-}
-
-export function useSetToTokenAddress() {
-  return useSyntheticsStateSelector((s) => s.trade.setToTokenAddress);
-}
-
-export function useSetMarketAddress() {
-  return useSyntheticsStateSelector((s) => s.trade.setMarketAddress);
-}
-
-export function useSetCollateralAddress() {
-  return useSyntheticsStateSelector((s) => s.trade.setCollateralAddress);
-}
-
-export function useSetActivePosition() {
-  return useSyntheticsStateSelector((s) => s.trade.setActivePosition);
-}
-
-export function useSwitchTokenAddresses() {
-  return useSyntheticsStateSelector((s) => s.trade.switchTokenAddresses);
-}
+const selectSelectedPositionKey = createSelector(
+  [selectAccount, selectCollateralAddress, selectMarketAddress],
+  (account, collateralAddress, marketAddress) => marketAddress
+);

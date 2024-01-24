@@ -11004,7 +11004,6 @@ __metadata:
     qrcode.react: ^3.1.0
     query-string: 7.1.1
     rc-slider: 9.7.5
-    re-reselect: 5
     react: 17.0.2
     react-app-rewired: 2.2.1
     react-dom: 17.0.2
@@ -11020,6 +11019,7 @@ __metadata:
     react-toastify: 6.0.9
     react-use: 17.3.1
     recharts: 2.1.8
+    reselect: 5.1.0
     sass: 1.55.0
     shallowequal: 1.1.0
     swr: 2.2.1
@@ -16403,15 +16403,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"re-reselect@npm:5":
-  version: 5.0.0
-  resolution: "re-reselect@npm:5.0.0"
-  peerDependencies:
-    reselect: ^5.0.0
-  checksum: 61fc4fa5cb07e601d48dea21bc16e31de12d3344f73ba906d3f79ea738afb7c6af80b04dc44273a781a361ce60f3d0e0afaedca0a91233080b3ff9feb8b416c1
-  languageName: node
-  linkType: hard
-
 "react-app-polyfill@npm:^3.0.0":
   version: 3.0.0
   resolution: "react-app-polyfill@npm:3.0.0"
@@ -17200,6 +17191,13 @@ __metadata:
   version: 1.0.0
   resolution: "requires-port@npm:1.0.0"
   checksum: eee0e303adffb69be55d1a214e415cf42b7441ae858c76dfc5353148644f6fd6e698926fc4643f510d5c126d12a705e7c8ed7e38061113bdf37547ab356797ff
+  languageName: node
+  linkType: hard
+
+"reselect@npm:5.1.0":
+  version: 5.1.0
+  resolution: "reselect@npm:5.1.0"
+  checksum: 5bc9c5d03d7caea00d0c0e24330bf23d91801227346fec1cef6a60988ab8d3dd7cee76e6994ca0915bc1c20845bb2bd929b95753763e0a9db74c0f9dff5cb845
   languageName: node
   linkType: hard
 
