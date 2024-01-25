@@ -230,4 +230,5 @@ export type TradeSearchParams = {
   mode?: string;
   pool?: string;
   collateral?: string;
+  market?: string;
 };

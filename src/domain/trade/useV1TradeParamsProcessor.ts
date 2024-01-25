@@ -30,7 +30,8 @@ export default function useV1TradeParamsProcessor({ updateTradeOptions, swapOpti
 
   const options = useMemo(() => {
     const { tradeType } = params;
-    const { from: fromToken, to: toToken, collateral: collateralToken, mode: tradeMode } = searchParams;
+    const { from: fromToken, to, market, collateral: collateralToken, mode: tradeMode } = searchParams;
+    const toToken = to ?? market;
 
     const tradeOptions: TradeOptions = {
       tradeType: swapOption,

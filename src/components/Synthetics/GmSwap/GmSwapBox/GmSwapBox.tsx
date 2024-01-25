@@ -61,6 +61,8 @@ import useSearchParams from "lib/useSearchParams";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 import useSortedMarketsWithIndexToken from "domain/synthetics/trade/useSortedMarketsWithIndexToken";
 
+const SWAP_MARKET_REGEX = /^(swap-only|swap)$/i;
+
 type SearchParams = {
   market?: string;
   operation?: string;
@@ -93,54 +95,6 @@ type Props = {
   setMode: Dispatch<SetStateAction<Mode>>;
   setOperation: Dispatch<SetStateAction<Operation>>;
 };
-
-const getAvailableModes = (operation: Operation, market?: Market) => {
-  if (operation === Operation.Deposit) {
-    if (!market?.isSameCollaterals) {
-      return [Mode.Single, Mode.Pair];
-    }
-
-    return [Mode.Single];
-  }
-
-  return [Mode.Pair];
-};
-
-function showMarketToast(market) {
-  if (!market) return;
-  const indexName = getMarketIndexName(market);
-  const poolName = getMarketPoolName(market);
-  helperToast.success(
-    <Trans>
-      <div className="inline-flex">
-        GM:&nbsp;<span>{indexName}</span>
-        <span className="subtext gm-toast">[{poolName}]</span>
-      </div>{" "}
-      <span>selected in order form</span>
-    </Trans>
-  );
-}
-
-function findMarketInfoByPool(markets: MarketInfo[], pool?: string, indexTokenAddress?: string) {
-  const poolMaketInfo =
-    pool &&
-    markets.find((marketInfo) => {
-      if (isAddress(pool)) {
-        return marketInfo.marketTokenAddress === pool;
-      }
-      if (indexTokenAddress) {
-        const poolName = getMarketPoolName(marketInfo);
-        return marketInfo.indexTokenAddress === indexTokenAddress && poolName.toLowerCase() === pool.toLowerCase();
-      }
-      return false;
-    });
-
-  if (poolMaketInfo) {
-    return poolMaketInfo;
-  }
-
-  return markets.find((marketInfo) => marketInfo.indexTokenAddress === indexTokenAddress);
-}
 
 export function GmSwapBox(p: Props) {
   const {
@@ -768,8 +722,13 @@ export function GmSwapBox(p: Props) {
       }
 
       if ((market || pool) && markets.length > 0) {
-        const indexTokenInfo = market && getTokenBySymbolSafe(chainId, market, { isSynthetic: true, version: "v2" });
-        const indexTokenAddress = indexTokenInfo && convertTokenAddress(chainId, indexTokenInfo.address, "wrapped");
+        let indexTokenAddress;
+        if (SWAP_MARKET_REGEX.test(market || "")) {
+          indexTokenAddress = NATIVE_TOKEN_ADDRESS;
+        } else {
+          const indexTokenInfo = market && getTokenBySymbolSafe(chainId, market, { isSynthetic: true, version: "v2" });
+          indexTokenAddress = indexTokenInfo && convertTokenAddress(chainId, indexTokenInfo.address, "wrapped");
+        }
         const marketInfo = findMarketInfoByPool(markets, pool, indexTokenAddress);
         if (marketInfo) {
           setIndexName(getMarketIndexName(marketInfo));
@@ -1157,4 +1116,56 @@ export function GmSwapBox(p: Props) {
       />
     </div>
   );
+}
+
+const getAvailableModes = (operation: Operation, market?: Market) => {
+  if (operation === Operation.Deposit) {
+    if (!market?.isSameCollaterals) {
+      return [Mode.Single, Mode.Pair];
+    }
+
+    return [Mode.Single];
+  }
+
+  return [Mode.Pair];
+};
+
+function showMarketToast(market) {
+  if (!market) return;
+  const indexName = getMarketIndexName(market);
+  const poolName = getMarketPoolName(market);
+  helperToast.success(
+    <Trans>
+      <div className="inline-flex">
+        GM:&nbsp;<span>{indexName}</span>
+        <span className="subtext gm-toast">[{poolName}]</span>
+      </div>{" "}
+      <span>selected in order form</span>
+    </Trans>
+  );
+}
+
+function findMarketInfoByPool(markets: MarketInfo[], pool?: string, indexTokenAddress?: string) {
+  const poolMaketInfo =
+    pool &&
+    markets.find((marketInfo) => {
+      if (isAddress(pool)) {
+        return marketInfo.marketTokenAddress === pool;
+      }
+      if (indexTokenAddress) {
+        const poolName = getMarketPoolName(marketInfo);
+        const reversedPoolName = poolName.split("-").reverse().join("-");
+        return (
+          marketInfo.indexTokenAddress === indexTokenAddress &&
+          (poolName.toLowerCase() === pool.toLowerCase() || reversedPoolName.toLowerCase() === pool.toLowerCase())
+        );
+      }
+      return false;
+    });
+
+  if (poolMaketInfo) {
+    return poolMaketInfo;
+  }
+
+  return markets.find((marketInfo) => marketInfo.indexTokenAddress === indexTokenAddress);
 }

@@ -52,7 +52,8 @@ export function useTradeParamsProcessor(props: Props) {
 
   useEffect(() => {
     const { tradeType } = params;
-    const { mode: tradeMode, from: fromToken, to: toToken, pool, collateral: collateralToken } = searchParams;
+    const { mode: tradeMode, from: fromToken, to, market, pool, collateral: collateralToken } = searchParams;
+    const toToken = to ?? market;
 
     const tradeOptions: TradeOptions = {};
 
