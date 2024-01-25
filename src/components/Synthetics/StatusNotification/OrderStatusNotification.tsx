@@ -37,7 +37,7 @@ type Props = {
   pendingOrderData: PendingOrderData;
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
-  hideLink?: "created" | "executed" | "none";
+  hideTxLink?: "creation" | "execution" | "none";
 };
 
 export function OrderStatusNotification({
@@ -45,7 +45,7 @@ export function OrderStatusNotification({
   marketsInfoData,
   tokensData,
   toastTimestamp,
-  hideLink = "none",
+  hideTxLink = "none",
 }: Props) {
   const { chainId } = useChainId();
   const wrappedNativeToken = getWrappedToken(chainId);
@@ -157,11 +157,11 @@ export function OrderStatusNotification({
     return (
       <TransactionStatus
         status={status}
-        txnHash={hideLink !== "created" ? orderStatus?.createdTxnHash : ""}
+        txnHash={hideTxLink !== "creation" ? orderStatus?.createdTxnHash : undefined}
         text={text}
       />
     );
-  }, [orderStatus?.createdTxnHash, hideLink]);
+  }, [orderStatus?.createdTxnHash, hideTxLink]);
 
   const executionStatus = useMemo(() => {
     if (!orderData || !isMarketOrderType(orderData?.orderType)) {
@@ -188,8 +188,8 @@ export function OrderStatusNotification({
       txnHash = orderStatus?.cancelledTxnHash;
     }
 
-    return <TransactionStatus status={status} txnHash={hideLink !== "executed" ? txnHash : ""} text={text} />;
-  }, [orderData, orderStatus?.cancelledTxnHash, orderStatus?.createdTxnHash, orderStatus?.executedTxnHash, hideLink]);
+    return <TransactionStatus status={status} txnHash={hideTxLink !== "execution" ? txnHash : undefined} text={text} />;
+  }, [orderData, orderStatus?.cancelledTxnHash, orderStatus?.createdTxnHash, orderStatus?.executedTxnHash, hideTxLink]);
 
   useEffect(
     function getOrderStatusKey() {
@@ -311,8 +311,6 @@ export function OrdersStatusNotificiation({
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, triggerOrderKeys.length);
   const isLastSubaccountAction = useIsLastSubaccountAction();
 
-  useToastAutoClose(isCompleted, toastTimestamp);
-
   function onCancelOrdersClick() {
     if (!signer || !triggerOrderKeys.length || !setPendingTxns) return;
 
@@ -343,6 +341,8 @@ export function OrdersStatusNotificiation({
     }
   }, [matchedOrderStatuses, pendingOrders]);
 
+  useToastAutoClose(isCompleted, toastTimestamp);
+
   return (
     <div className="StatusNotification-wrapper">
       <div className="StatusNotification-list">
@@ -354,7 +354,7 @@ export function OrdersStatusNotificiation({
               marketsInfoData={marketsInfoData}
               tokensData={tokensData}
               toastTimestamp={toastTimestamp}
-              hideLink={pendingOrders.length > 1 ? "created" : "none"}
+              hideTxLink={pendingOrders.length > 1 ? "creation" : "none"}
             />
           );
         })}
