@@ -5,7 +5,7 @@ import "./LeverageSlider.scss";
 import { range } from "lodash";
 import { useCallback, useEffect, useMemo } from "react";
 
-const defaultMarks = [2, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
+const defaultMarks = [1.1, 2, 5, 10, 15, 20, 25, 30, 35, 40, 50];
 const DEFAULT_LEVERAGE_KEY = 20;
 
 type Props = {
