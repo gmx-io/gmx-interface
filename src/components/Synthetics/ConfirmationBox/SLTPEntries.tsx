@@ -9,23 +9,20 @@ import { BASIS_POINTS_DIVISOR } from "config/factors";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import { MarketInfo } from "domain/synthetics/markets";
 import { IncreasePositionAmounts } from "domain/synthetics/trade";
-import { Entry } from "domain/synthetics/orders/useSLTPEntries";
 import { t } from "@lingui/macro";
 import { useRef } from "react";
+import { EntriesInfo } from "domain/synthetics/orders/useEntries";
 
 const SUGGESTION_PERCENTAGE_LIST = [10, 25, 50, 75, 100];
 
 type Props = {
-  entries: Entry[];
-  updateEntry: (id: string, entry: Entry) => void;
-  addEntry: () => void;
-  deleteEntry: (id: string) => void;
-  canAddEntry: boolean;
+  entriesInfo: EntriesInfo;
   marketInfo?: MarketInfo;
   increaseAmounts?: IncreasePositionAmounts;
 };
 
-function SLTPEntries({ entries, updateEntry, addEntry, deleteEntry, canAddEntry, increaseAmounts, marketInfo }: Props) {
+function SLTPEntries({ entriesInfo, increaseAmounts, marketInfo }: Props) {
+  const { addEntry, entries, updateEntry, canAddEntry, deleteEntry } = entriesInfo;
   const sltpRef = useRef<HTMLDivElement>(null);
 
   function handleAddEntry() {

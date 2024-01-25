@@ -222,32 +222,8 @@ export function ConfirmationBox(p: Props) {
     triggerPrice,
   });
 
-  const {
-    entries: stopLossEntries,
-    addEntry: addStopLossEntry,
-    canAddEntry: canAddStopLossEntry,
-    deleteEntry: deleteStopLossEntry,
-    updateEntry: updateStopLossEntry,
-    reset: resetStopLossEntries,
-    amounts: stopLossAmounts,
-    totalPnl: totalStopLossPnl,
-    totalPnlPercentage: totalStopLossPnlPercentage,
-  } = stopLoss;
-
-  const {
-    entries: takeProfitEntries,
-    addEntry: addTakeProfitEntry,
-    deleteEntry: deleteTakeProfitEntry,
-    updateEntry: updateTakeProfitEntry,
-    reset: resetTakeProfitEntries,
-    canAddEntry: canAddTakeProfitEntry,
-    amounts: takeProfitAmounts,
-    totalPnl: totalTakeProfitPnl,
-    totalPnlPercentage: totalTakeProfitPnlPercentage,
-  } = takeProfit;
-
-  const sltpAmounts = (takeProfitAmounts || []).concat(stopLossAmounts || []);
-  const sltpEntries = (takeProfitEntries || []).concat(stopLossEntries || []);
+  const sltpAmounts = (stopLoss?.amounts || []).concat(takeProfit?.amounts || []);
+  const sltpEntries = (stopLoss?.entriesInfo.entries || []).concat(takeProfit?.entriesInfo?.entries || []);
 
   useEffect(() => {
     setAllowedSlippage(savedAllowedSlippage);
@@ -714,11 +690,11 @@ export function ConfirmationBox(p: Props) {
     function reset() {
       if (p.isVisible !== prevIsVisible) {
         setIsTriggerWarningAccepted(false);
-        resetStopLossEntries();
-        resetTakeProfitEntries();
+        stopLoss?.entriesInfo.reset();
+        takeProfit?.entriesInfo.reset();
       }
     },
-    [p.isVisible, prevIsVisible, resetStopLossEntries, resetTakeProfitEntries]
+    [p.isVisible, prevIsVisible, takeProfit?.entriesInfo, stopLoss?.entriesInfo]
   );
 
   function renderSubaccountNavigationButton() {
@@ -1096,7 +1072,7 @@ export function ConfirmationBox(p: Props) {
   }
 
   function renderStopLoss() {
-    if (existingPosition) return;
+    if (existingPosition || !stopLoss) return;
     return (
       <div>
         <ExchangeInfoRow
@@ -1106,11 +1082,7 @@ export function ConfirmationBox(p: Props) {
           value={
             <div className="profit-loss-wrapper">
               <SLTPEntries
-                entries={stopLossEntries}
-                updateEntry={updateStopLossEntry}
-                addEntry={addStopLossEntry}
-                deleteEntry={deleteStopLossEntry}
-                canAddEntry={canAddStopLossEntry}
+                entriesInfo={stopLoss.entriesInfo}
                 increaseAmounts={increaseAmounts}
                 marketInfo={marketInfo}
               />
@@ -1118,20 +1090,19 @@ export function ConfirmationBox(p: Props) {
           }
         />
         <ExchangeInfoRow className="swap-box-info-row" label={t`Stop-Loss PnL`}>
-          {totalStopLossPnl?.isZero() ? (
+          {stopLoss?.totalPnl?.isZero() ? (
             "-"
           ) : (
             <Tooltip
-              handle={`${formatUsd(totalStopLossPnl)} (${formatPercentage(totalStopLossPnlPercentage, {
+              handle={`${formatUsd(stopLoss?.totalPnl)} (${formatPercentage(stopLoss?.totalPnlPercentage, {
                 signed: true,
               })})`}
               position="right-bottom"
-              handleClassName={totalStopLossPnl?.isNegative() ? "text-red" : "text-green"}
+              handleClassName={stopLoss.totalPnl?.isNegative() ? "text-red" : "text-green"}
               className="SLTP-pnl-tooltip"
               renderContent={() =>
-                stopLossAmounts?.map((stopLossAmount, index) => {
-                  const stopLossEntry = stopLossEntries[index];
-
+                stopLoss.amounts?.map((stopLossAmount, index) => {
+                  const stopLossEntry = stopLoss?.entriesInfo?.entries[index];
                   return (
                     <div className="space-between mb-xs" key={index}>
                       <span className="mr-md">
@@ -1156,7 +1127,7 @@ export function ConfirmationBox(p: Props) {
   }
 
   function renderTakeProfit() {
-    if (existingPosition) return;
+    if (existingPosition || !takeProfit) return;
     return (
       <div>
         <ExchangeInfoRow
@@ -1166,11 +1137,7 @@ export function ConfirmationBox(p: Props) {
           value={
             <div className="profit-loss-wrapper">
               <SLTPEntries
-                entries={takeProfitEntries}
-                updateEntry={updateTakeProfitEntry}
-                addEntry={addTakeProfitEntry}
-                deleteEntry={deleteTakeProfitEntry}
-                canAddEntry={canAddTakeProfitEntry}
+                entriesInfo={takeProfit?.entriesInfo}
                 increaseAmounts={increaseAmounts}
                 marketInfo={marketInfo}
               />
@@ -1178,19 +1145,19 @@ export function ConfirmationBox(p: Props) {
           }
         />
         <ExchangeInfoRow className="swap-box-info-row" label={t`Take-Profit PnL`}>
-          {totalTakeProfitPnl?.isZero() ? (
+          {takeProfit?.totalPnl?.isZero() ? (
             "-"
           ) : (
             <Tooltip
-              handle={`${formatUsd(totalTakeProfitPnl)} (${formatPercentage(totalTakeProfitPnlPercentage, {
+              handle={`${formatUsd(takeProfit?.totalPnl)} (${formatPercentage(takeProfit?.totalPnlPercentage, {
                 signed: true,
               })})`}
               position="right-bottom"
-              handleClassName={totalTakeProfitPnl?.isNegative() ? "text-red" : "text-green"}
+              handleClassName={takeProfit?.totalPnl?.isNegative() ? "text-red" : "text-green"}
               className="SLTP-pnl-tooltip"
               renderContent={() =>
-                takeProfitAmounts?.map((takeProfitAmount, index) => {
-                  const takeProfitEntry = takeProfitEntries[index];
+                takeProfit?.amounts?.map((takeProfitAmount, index) => {
+                  const takeProfitEntry = takeProfit?.entriesInfo?.entries[index];
                   return (
                     <div className="space-between mb-xs" key={index}>
                       <span className="mr-md">
