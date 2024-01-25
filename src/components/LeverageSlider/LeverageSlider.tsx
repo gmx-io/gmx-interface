@@ -55,7 +55,9 @@ export function LeverageSlider(p: Props) {
     }
   }, [value, defaultValue, handleChange]);
 
-  const customHandle = (props: any) => <LeverageSliderHandle {...props} keyValueMap={keyValueMap} />;
+  const customHandle = useMemo(() => {
+    return (props: any) => <LeverageSliderHandle {...props} keyValueMap={keyValueMap} />;
+  }, [keyValueMap]);
 
   return (
     <div
