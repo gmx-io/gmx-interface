@@ -1,5 +1,4 @@
 import { Trans, plural, t } from "@lingui/macro";
-import cx from "classnames";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Modal from "components/Modal/Modal";
 import { getContract } from "config/contracts";
