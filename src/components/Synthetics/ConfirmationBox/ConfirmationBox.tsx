@@ -1239,17 +1239,19 @@ export function ConfirmationBox(p: Props) {
         <div>
           {renderMain()}
           {hasWarning && <div className="line-divider" />}
-          <div className="Warning-list">
-            {renderDifferentCollateralWarning()}
-            {renderCollateralSpreadWarning()}
-            {renderExistingLimitOrdersWarning()}
-            {renderExistingTriggerErrors()}
-            {renderExistingTriggerWarning()}
-            {renderDifferentTokensWarning()}
-          </div>
+          {hasWarning && (
+            <div className="Warning-list">
+              {renderDifferentCollateralWarning()}
+              {renderCollateralSpreadWarning()}
+              {renderExistingLimitOrdersWarning()}
+              {renderExistingTriggerErrors()}
+              {renderExistingTriggerWarning()}
+              {renderDifferentTokensWarning()}
+            </div>
+          )}
           {renderTakeProfit()}
           {renderStopLoss()}
-          {hasWarning && <div className="line-divider" />}
+          <div className="line-divider" />
           {renderLeverage(existingPosition?.leverage, nextPositionValues?.nextLeverage)}
 
           <div className="line-divider" />
