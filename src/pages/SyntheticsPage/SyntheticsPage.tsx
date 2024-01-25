@@ -40,6 +40,8 @@ import {
   useCollateralAddress,
   useFromTokenAddress,
   useMarketAddress,
+  useSavedIsPnlInLeverage,
+  useSavedShowPnlAfterFees,
   useSetActivePosition,
   useToTokenAddress,
   useTradeFlags,
@@ -51,11 +53,9 @@ import { helperToast } from "lib/helperToast";
 import useWallet from "lib/wallets/useWallet";
 
 export type Props = {
-  savedIsPnlInLeverage: boolean;
   shouldDisableValidation: boolean;
   savedShouldShowPositionLines: boolean;
   showPnlAfterFees: boolean;
-  savedShowPnlAfterFees: boolean;
   savedSlippageAmount: number;
   setSavedShouldShowPositionLines: (value: boolean) => void;
   setPendingTxns: (txns: any) => void;
@@ -73,7 +73,6 @@ enum ListSection {
 
 export function SyntheticsPage(p: Props) {
   const {
-    savedIsPnlInLeverage,
     shouldDisableValidation,
     savedShouldShowPositionLines,
     showPnlAfterFees,
@@ -81,13 +80,14 @@ export function SyntheticsPage(p: Props) {
     setSavedShouldShowPositionLines,
     setPendingTxns,
     setTradePageVersion,
-    savedShowPnlAfterFees,
     savedSlippageAmount,
     openSettings,
   } = p;
   const { chainId } = useChainId();
   const { signer, account } = useWallet();
   const { marketsInfoData, tokensData, pricesUpdatedAt } = useMarketsInfo(chainId);
+  const savedIsPnlInLeverage = useSavedIsPnlInLeverage();
+  const savedShowPnlAfterFees = useSavedShowPnlAfterFees();
 
   const { positionsInfoData, isLoading: isPositionsLoading } = usePositionsInfo(chainId, {
     marketsInfoData,
@@ -422,7 +422,6 @@ tradeFlags // chartToken, availableChartTokens
           <div className="Exchange-swap-box">
             <TradeBox
               avaialbleTokenOptions={availableTokensOptions}
-              savedIsPnlInLeverage={savedIsPnlInLeverage}
               shouldDisableValidation={shouldDisableValidation}
               allowedSlippage={allowedSlippage!}
               isHigherSlippageAllowed={isHigherSlippageAllowed}
@@ -505,7 +504,6 @@ tradeFlags // chartToken, availableChartTokens
 
       <PositionSeller
         position={closingPosition!}
-        marketsInfoData={marketsInfoData}
         tokensData={tokensData}
         showPnlInLeverage={savedIsPnlInLeverage}
         onClose={onPositionSellerClose}

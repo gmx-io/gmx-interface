@@ -28,7 +28,6 @@ import {
   useGasPrice,
 } from "domain/synthetics/fees";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
-import { MarketsInfoData } from "domain/synthetics/markets";
 import { DecreasePositionSwapType, OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
 import {
   PositionInfo,
@@ -47,7 +46,6 @@ import {
   getNextPositionValuesForDecreaseTrade,
   getSwapAmountsByFromValue,
   getTradeFees,
-  useSwapRoutes,
 } from "domain/synthetics/trade";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
@@ -77,10 +75,10 @@ import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionSeller.scss";
+import { useSwapRoutes } from "context/SyntheticsStateContext/selectors";
 
 export type Props = {
   position?: PositionInfo;
-  marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
   showPnlInLeverage: boolean;
   availableTokensOptions?: AvailableTokenOptions;
@@ -97,8 +95,7 @@ enum OrderOption {
 }
 
 export function PositionSeller(p: Props) {
-  const { position, marketsInfoData, tokensData, showPnlInLeverage, onClose, setPendingTxns, availableTokensOptions } =
-    p;
+  const { position, tokensData, showPnlInLeverage, onClose, setPendingTxns, availableTokensOptions } = p;
 
   const { chainId } = useChainId();
   const { savedAllowedSlippage } = useSettings();
@@ -150,11 +147,7 @@ export function PositionSeller(p: Props) {
     ? getMarkPrice({ prices: position.indexToken.prices, isLong: position.isLong, isIncrease: false })
     : undefined;
 
-  const { findSwapPath, maxSwapLiquidity } = useSwapRoutes({
-    marketsInfoData,
-    fromTokenAddress: position?.collateralTokenAddress,
-    toTokenAddress: receiveTokenAddress,
-  });
+  const { findSwapPath, maxSwapLiquidity } = useSwapRoutes(position?.collateralTokenAddress, receiveTokenAddress);
 
   const decreaseAmounts = useMemo(() => {
     if (!position || !minCollateralUsd || !minPositionSizeUsd) {

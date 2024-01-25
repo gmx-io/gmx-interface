@@ -460,19 +460,22 @@ function FullApp() {
 
               <Route exact path="/trade">
                 {getIsSyntheticsSupported(chainId) ? (
-                  <SyntheticsPage
+                  <SyntheticsStateContextProvider
                     savedIsPnlInLeverage={savedIsPnlInLeverage}
-                    shouldDisableValidation={savedShouldDisableValidationForTesting}
-                    savedShouldShowPositionLines={savedShouldShowPositionLines}
-                    setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
-                    setPendingTxns={setPendingTxns}
-                    showPnlAfterFees={showPnlAfterFees}
                     savedShowPnlAfterFees={savedShowPnlAfterFees}
-                    tradePageVersion={tradePageVersion}
-                    setTradePageVersion={setTradePageVersion}
-                    savedSlippageAmount={settings.savedAllowedSlippage}
-                    openSettings={openSettings}
-                  />
+                  >
+                    <SyntheticsPage
+                      shouldDisableValidation={savedShouldDisableValidationForTesting}
+                      savedShouldShowPositionLines={savedShouldShowPositionLines}
+                      setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
+                      setPendingTxns={setPendingTxns}
+                      showPnlAfterFees={showPnlAfterFees}
+                      tradePageVersion={tradePageVersion}
+                      setTradePageVersion={setTradePageVersion}
+                      savedSlippageAmount={settings.savedAllowedSlippage}
+                      openSettings={openSettings}
+                    />
+                  </SyntheticsStateContextProvider>
                 ) : (
                   <SyntheticsFallbackPage />
                 )}
@@ -514,10 +517,15 @@ function FullApp() {
                 <Actions savedIsPnlInLeverage={savedIsPnlInLeverage} savedShowPnlAfterFees={savedShowPnlAfterFees} />
               </Route>
               <Route exact path="/actions">
-                <SyntheticsActions
+                <SyntheticsStateContextProvider
                   savedIsPnlInLeverage={savedIsPnlInLeverage}
                   savedShowPnlAfterFees={savedShowPnlAfterFees}
-                />
+                >
+                  <SyntheticsActions
+                    savedIsPnlInLeverage={savedIsPnlInLeverage}
+                    savedShowPnlAfterFees={savedShowPnlAfterFees}
+                  />
+                </SyntheticsStateContextProvider>
               </Route>
               <Redirect exact from="/actions/v2" to="/actions" />
               <Route exact path="/actions/:account">
@@ -707,7 +715,6 @@ function App() {
   }, [disconnect]);
 
   let app = <FullApp />;
-  app = <SyntheticsStateContextProvider>{app}</SyntheticsStateContextProvider>;
   app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;
   app = <I18nProvider i18n={i18n}>{app}</I18nProvider>;
   app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;
