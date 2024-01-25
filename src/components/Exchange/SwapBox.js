@@ -69,7 +69,7 @@ import {
   replaceNativeTokenAddress,
   shouldRaiseGasError,
 } from "domain/tokens";
-import { getTokenInfo, getUsd } from "domain/tokens/utils";
+import { getMinResidualAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
@@ -313,6 +313,9 @@ export default function SwapBox(props) {
 
   const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress);
   const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress);
+
+  const nativeTokenInfo = getTokenInfo(infoTokens, nativeTokenAddress);
+  const minResidualAmount = getMinResidualAmount(nativeTokenInfo?.decimals, nativeTokenInfo?.maxPrice);
 
   const renderAvailableLongLiquidity = () => {
     if (!isLong) {
@@ -1781,7 +1784,14 @@ export default function SwapBox(props) {
       return;
     }
 
-    const maxAvailableAmount = fromToken.isNative ? fromBalance.sub(bigNumberify(DUST_BNB).mul(2)) : fromBalance;
+    let maxAvailableAmount = fromToken?.isNative
+      ? minResidualAmount && fromBalance.sub(minResidualAmount)
+      : fromBalance;
+
+    if (maxAvailableAmount.isNegative()) {
+      maxAvailableAmount = bigNumberify(0);
+    }
+
     const formattedMaxAvailableAmount = formatAmountFree(maxAvailableAmount, fromToken.decimals, fromToken.decimals);
     const finalMaxAmount = isMetamaskMobile
       ? limitDecimals(formattedMaxAvailableAmount, MAX_METAMASK_MOBILE_DECIMALS)
@@ -1794,8 +1804,14 @@ export default function SwapBox(props) {
     if (!fromToken || !fromBalance) {
       return false;
     }
-    const maxAvailableAmount = fromToken.isNative ? fromBalance.sub(bigNumberify(DUST_BNB).mul(2)) : fromBalance;
-    return fromValue !== formatAmountFree(maxAvailableAmount, fromToken.decimals, fromToken.decimals);
+    const maxAvailableAmount = fromToken?.isNative ? fromBalance.sub(minResidualAmount) : fromBalance;
+    const shoudShowMaxButtonBasedOnGasAmount = fromToken?.isNative
+      ? minResidualAmount && fromBalance.gt(minResidualAmount)
+      : true;
+    return (
+      shoudShowMaxButtonBasedOnGasAmount &&
+      fromValue !== formatAmountFree(maxAvailableAmount, fromToken.decimals, fromToken.decimals)
+    );
   }
 
   const ERROR_TOOLTIP_MSG = {

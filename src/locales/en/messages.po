@@ -135,6 +135,10 @@ msgstr "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1>"
 msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
 msgstr "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
 
+#: src/domain/synthetics/orders/useSLTPEntries.ts
+msgid "A Size percentage is required."
+msgstr "A Size percentage is required."
+
 #: src/components/Exchange/SwapBox.js
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
@@ -2519,6 +2523,7 @@ msgstr "Leftover position below 10 USD"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
@@ -2962,6 +2967,7 @@ msgstr "Max leverage without PnL: {0}x"
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -3546,10 +3552,6 @@ msgstr "Pending Wallet transaction sign"
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 msgid "Pending {0} approval"
 msgstr "Pending {0} approval"
-
-#: src/domain/synthetics/orders/useSLTPEntries.ts
-msgid "Percentage is required."
-msgstr "Percentage is required."
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Platform, GLP and GM tokens."

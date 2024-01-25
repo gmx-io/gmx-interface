@@ -24,7 +24,7 @@ type Props = {
   isInsideModal?: boolean;
   openDelay?: number;
   closeDelay?: number;
-  shouldHandleStopPropagation?: boolean;
+  shouldStopPropagation?: boolean;
 };
 
 type Coords = {
@@ -81,10 +81,9 @@ export default function TooltipWithPortal(props: Props) {
 
   const onMouseClick = useCallback(
     (event: MouseEvent) => {
-      if (props.shouldHandleStopPropagation) {
+      if (props.shouldStopPropagation) {
         event.stopPropagation();
       }
-      event.preventDefault();
       if (trigger !== "click" && !IS_TOUCH) return;
       if (intervalCloseRef.current) {
         clearInterval(intervalCloseRef.current);
@@ -102,7 +101,7 @@ export default function TooltipWithPortal(props: Props) {
         setVisible(true);
       }
     },
-    [props.shouldHandleStopPropagation, props.closeOnDoubleClick, trigger, updateTooltipCoords]
+    [props.closeOnDoubleClick, props.shouldStopPropagation, trigger, updateTooltipCoords]
   );
 
   const onMouseLeave = useCallback(() => {
