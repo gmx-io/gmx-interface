@@ -985,7 +985,7 @@ export function ConfirmationBox(p: Props) {
     }
 
     return (
-      <ExchangeInfoRow isTop label={t`Available Liquidity`}>
+      <ExchangeInfoRow label={t`Available Liquidity`}>
         <Tooltip
           position="right-bottom"
           handleClassName={isLiquidityRisk ? "negative" : ""}
@@ -1078,7 +1078,7 @@ export function ConfirmationBox(p: Props) {
         <ExchangeInfoRow
           className="swap-box-info-row"
           label={t`Stop-Loss`}
-          isTop={true}
+          isTop
           value={
             <div className="profit-loss-wrapper">
               <SLTPEntries
@@ -1133,7 +1133,7 @@ export function ConfirmationBox(p: Props) {
         <ExchangeInfoRow
           className="swap-box-info-row"
           label={t`Take-Profit`}
-          isTop={true}
+          isTop
           value={
             <div className="profit-loss-wrapper">
               <SLTPEntries
@@ -1249,6 +1249,7 @@ export function ConfirmationBox(p: Props) {
           </div>
           {renderTakeProfit()}
           {renderStopLoss()}
+          {hasWarning && <div className="line-divider" />}
           {renderLeverage(existingPosition?.leverage, nextPositionValues?.nextLeverage)}
 
           <div className="line-divider" />
@@ -1448,12 +1449,14 @@ export function ConfirmationBox(p: Props) {
   }
 
   function renderSwapSection() {
+    const hasWarning = renderSwapSpreadWarining() || (isLimit && renderLimitPriceWarning());
     return (
       <>
         <div>
           {renderMain()}
           {renderSwapSpreadWarining()}
           {isLimit && renderLimitPriceWarning()}
+          {hasWarning && <div className="line-divider" />}
           {isLimit && renderAvailableLiquidity()}
           {swapSpreadInfo.showSpread && swapSpreadInfo.spread && (
             <ExchangeInfoRow label={t`Spread`} isWarning={swapSpreadInfo.isHigh}>
