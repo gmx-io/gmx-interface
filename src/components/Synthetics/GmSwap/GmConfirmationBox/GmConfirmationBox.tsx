@@ -13,7 +13,7 @@ import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowan
 import { GmSwapFees } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { formatTokenAmountWithUsd } from "lib/numbers";
+import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { uniq } from "lodash";
 import { GmFees } from "../GmFees/GmFees";
@@ -25,6 +25,7 @@ import { useState } from "react";
 import "./GmConfirmationBox.scss";
 import { useKey } from "react-use";
 import useWallet from "lib/wallets/useWallet";
+import { FaArrowRight } from "react-icons/fa";
 
 type Props = {
   isVisible: boolean;
@@ -147,21 +148,6 @@ export function GmConfirmationBox({
 
   const longSymbol = market?.isSameCollaterals ? `${longToken?.symbol} Long` : longToken?.symbol;
   const shortSymbol = market?.isSameCollaterals ? `${shortToken?.symbol} Short` : shortToken?.symbol;
-
-  const longTokenText = longTokenAmount?.gt(0)
-    ? formatTokenAmountWithUsd(longTokenAmount, longTokenUsd, longSymbol, longToken?.decimals)
-    : undefined;
-
-  const shortTokenText = shortTokenAmount?.gt(0)
-    ? formatTokenAmountWithUsd(shortTokenAmount, shortTokenUsd, shortSymbol, shortToken?.decimals)
-    : undefined;
-
-  const marketTokenText = formatTokenAmountWithUsd(
-    marketTokenAmount,
-    marketTokenUsd,
-    marketToken?.symbol,
-    marketToken?.decimals
-  );
 
   const operationText = isDeposit ? t`Buy` : t`Sell`;
 
@@ -304,6 +290,34 @@ export function GmConfirmationBox({
     });
   }
 
+  function renderTokenInfo({
+    amount,
+    usd,
+    token,
+    className,
+    overrideSymbol,
+  }: {
+    amount?: BigNumber;
+    usd?: BigNumber;
+    token?: TokenData;
+    className?: string;
+    overrideSymbol?: string;
+  }) {
+    if (!amount || !usd || !token) return;
+    return (
+      <div className={className ?? ""}>
+        <div className="trade-token-amount">
+          <span>
+            {formatTokenAmount(amount, token?.decimals, overrideSymbol ?? token?.symbol, {
+              useCommas: true,
+            })}
+          </span>
+        </div>
+        <div className="trade-amount-usd">{formatUsd(usd)}</div>
+      </div>
+    );
+  }
+
   return (
     <div className="Confirmation-box GmConfirmationBox">
       <Modal isVisible={isVisible} setIsVisible={onClose} label={t`Confirm ${operationText}`} allowContentTouchMove>
@@ -311,30 +325,62 @@ export function GmConfirmationBox({
           <>
             <div className={cx("Confirmation-box-main GmConfirmationBox-main")}>
               {isDeposit && (
-                <>
-                  {[longTokenText, shortTokenText].filter(Boolean).map((text) => (
-                    <div key={text}>
-                      <Trans>Pay</Trans> {text}
-                    </div>
-                  ))}
-                  <div className="Confirmation-box-main-icon"></div>
-                  <div>
-                    <Trans>Receive</Trans> {marketTokenText}
+                <div className="Confirmation-box-main trade-info-wrapper">
+                  <div className="trade-info">
+                    <Trans>Pay</Trans>{" "}
+                    {renderTokenInfo({
+                      amount: longTokenAmount,
+                      usd: longTokenUsd,
+                      token: longToken,
+                      overrideSymbol: longSymbol,
+                    })}
+                    {renderTokenInfo({
+                      amount: shortTokenAmount,
+                      usd: shortTokenUsd,
+                      token: shortToken,
+                      overrideSymbol: shortSymbol,
+                      className: "mt-xs",
+                    })}
                   </div>
-                </>
+                  <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
+                  <div className="trade-info">
+                    <Trans>Receive</Trans>{" "}
+                    {renderTokenInfo({
+                      amount: marketTokenAmount,
+                      usd: marketTokenUsd,
+                      token: marketToken,
+                    })}
+                  </div>
+                </div>
               )}
               {!isDeposit && (
-                <>
-                  <div>
-                    <Trans>Pay</Trans>&nbsp;{marketTokenText}
+                <div className="Confirmation-box-main trade-info-wrapper">
+                  <div className="trade-info">
+                    <Trans>Pay</Trans>{" "}
+                    {renderTokenInfo({
+                      amount: marketTokenAmount,
+                      usd: marketTokenUsd,
+                      token: marketToken,
+                    })}
                   </div>
-                  <div className="Confirmation-box-main-icon"></div>
-                  {[longTokenText, shortTokenText].filter(Boolean).map((text) => (
-                    <div key={text}>
-                      <Trans>Receive</Trans>&nbsp;{text}
-                    </div>
-                  ))}
-                </>
+                  <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
+                  <div className="trade-info">
+                    <Trans>Receive</Trans>{" "}
+                    {renderTokenInfo({
+                      amount: longTokenAmount,
+                      usd: longTokenUsd,
+                      token: longToken,
+                      overrideSymbol: longSymbol,
+                    })}
+                    {renderTokenInfo({
+                      amount: shortTokenAmount,
+                      usd: shortTokenUsd,
+                      token: shortToken,
+                      overrideSymbol: shortSymbol,
+                      className: "mt-xs",
+                    })}
+                  </div>
+                </div>
               )}
             </div>
 
