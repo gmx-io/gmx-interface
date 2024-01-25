@@ -7,7 +7,7 @@ import useWallet from "lib/wallets/useWallet";
 import { useMemo } from "react";
 import useSWR from "swr";
 
-type RawRebateInfoItem = {
+type RawClaimableCollateral = {
   marketAddress: string;
   tokenAddress: string;
   timeKey: string;
@@ -38,10 +38,10 @@ export function useRebatesInfo(chainId: number): RebatesInfoResult {
 
   const key = chainId && client && account ? [chainId, "useRebatesInfo", account] : null;
 
-  const { data } = useSWR<RawRebateInfoItem[]>(key, {
+  const { data } = useSWR<RawClaimableCollateral[]>(key, {
     fetcher: async () => {
       const query = gql(`{
-        priceImpactRebates(
+        claimableCollaterals(
           where: { account: "${account!.toLowerCase()}", claimed: false }
         ) {
           id
@@ -56,7 +56,7 @@ export function useRebatesInfo(chainId: number): RebatesInfoResult {
 
       const { data } = await client!.query({ query, fetchPolicy: "no-cache" });
 
-      return data.priceImpactRebates as RawRebateInfoItem[];
+      return data.claimableCollaterals as RawClaimableCollateral[];
     },
   });
 
