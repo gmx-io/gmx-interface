@@ -570,6 +570,7 @@ export function SyntheticsEventsProvider({
           {
             autoClose: false,
             toastId,
+            className: "OrdersStatusNotificiation",
           }
         );
       },

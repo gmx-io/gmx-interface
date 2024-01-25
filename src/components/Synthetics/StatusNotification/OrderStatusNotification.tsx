@@ -210,7 +210,7 @@ export function OrderStatusNotification({
   );
 
   return (
-    <div className={"StatusNotification"}>
+    <div className={cx("StatusNotification", { error: hasError })}>
       <div className="StatusNotification-content">
         <div className="StatusNotification-title">{title}</div>
 
@@ -218,10 +218,6 @@ export function OrderStatusNotification({
           {creationStatus}
           {executionStatus}
         </div>
-      </div>
-
-      <div className={cx("StatusNotification-background", { error: hasError })}>
-        <div className="Notification-divider" />
       </div>
     </div>
   );
@@ -329,17 +325,22 @@ export function OrdersStatusNotificiation({
     }).finally(() => setIsCancelOrderProcessing(false));
   }
 
-  const allTxnHash = useMemo(() => {
-    const ordersCreationTxHash = pendingOrders.map((order) => {
+  const createdTxnHashList = useMemo(() => {
+    const uniqueHashSet = pendingOrders.reduce((acc, order) => {
       const orderStatus = matchedOrderStatuses.find(
         (status) => getPendingOrderKey(status.data) === getPendingOrderKey(order)
       );
       if (orderStatus?.createdTxnHash) {
-        return orderStatus.createdTxnHash;
+        acc.add(orderStatus.createdTxnHash);
       }
-    });
+      return acc;
+    }, new Set<string>());
 
-    return [...new Set(ordersCreationTxHash)];
+    const uniqueHashList = Array.from(uniqueHashSet);
+
+    if (uniqueHashList.length > 0) {
+      return uniqueHashList;
+    }
   }, [matchedOrderStatuses, pendingOrders]);
 
   return (
@@ -372,12 +373,11 @@ export function OrdersStatusNotificiation({
             )}
           </div>
           <div className="inline-items-center">
-            {allTxnHash.length > 0 &&
-              allTxnHash.map((txnHash) => (
-                <ExternalLink className="ml-sm" href={`${getExplorerUrl(chainId)}tx/${txnHash}`}>
-                  View
-                </ExternalLink>
-              ))}
+            {createdTxnHashList?.map((txnHash) => (
+              <ExternalLink className="ml-sm" href={`${getExplorerUrl(chainId)}tx/${txnHash}`}>
+                View
+              </ExternalLink>
+            ))}
           </div>
         </div>
       )}

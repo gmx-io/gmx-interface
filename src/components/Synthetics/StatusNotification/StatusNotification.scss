@@ -1,14 +1,9 @@
 .StatusNotification-wrapper {
-  .StatusNotification-list {
-    display: grid;
-    grid-row-gap: 1.25rem;
-  }
   .StatusNotification-actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 0.75rem;
-    margin-right: -1.8rem;
+    padding: 0 0.8rem 0.8rem 0.8rem;
 
     .StatusNotification-cancel-all {
       background: transparent;
@@ -24,40 +19,6 @@
   }
 }
 
-.StatusNotification {
-  position: relative;
-
-  &:not(:last-child) {
-    .StatusNotification-background {
-      .Notification-divider {
-        position: absolute;
-        left: 0;
-        bottom: -1px;
-        height: 1px;
-        width: 100%;
-        background: #0f463d;
-        z-index: 2;
-      }
-    }
-  }
-}
-
-.StatusNotification-background {
-  position: absolute;
-  top: -12%;
-  left: -10%;
-  right: auto;
-  width: 150%;
-  height: 150%;
-  bottom: 0;
-  background-color: rgba(174, 43, 63, 0);
-  transition: background-color 0.3s ease-in-out;
-
-  &.error {
-    background-color: rgba(174, 43, 63, 1);
-  }
-}
-
 .StatusNotification-content {
   position: relative;
   z-index: 1;
@@ -69,12 +30,32 @@
 
 .StatusNotification-items {
   margin-top: 1rem;
+}
 
-  .TransactionStatus-status {
-    margin-right: -1.8rem !important;
+.Toastify__toast.OrdersStatusNotificiation {
+  padding: 0;
+  position: relative;
+
+  .Toastify__close-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
   }
 
-  .TransactionStatus-spin {
-    margin-right: -0.3rem !important;
+  .Toastify__toast-body {
+    padding: 0;
+    .StatusNotification-wrapper {
+      .StatusNotification-list {
+        .StatusNotification {
+          padding: 0.8rem 1rem;
+          &.error {
+            background-color: rgba(174, 43, 63, 1);
+          }
+          &:not(:last-child) {
+            border-bottom: 1.5px #0f463d solid;
+          }
+        }
+      }
+    }
   }
 }
