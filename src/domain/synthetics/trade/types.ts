@@ -209,6 +209,7 @@ export type TradeFees = {
   positionFee?: FeeItem;
   swapPriceImpact?: FeeItem;
   positionPriceImpact?: FeeItem;
+  priceImpactDiff?: FeeItem;
   positionFeeFactor?: BigNumber;
   borrowFee?: FeeItem;
   fundingFee?: FeeItem;

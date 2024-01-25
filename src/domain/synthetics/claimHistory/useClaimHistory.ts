@@ -1,17 +1,17 @@
 import { gql } from "@apollo/client";
+import { getToken } from "config/tokens";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
+import { getAddress } from "ethers/lib/utils.js";
 import { bigNumberify } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getSyntheticsGraphClient } from "lib/subgraph";
+import useWallet from "lib/wallets/useWallet";
 import { useMemo } from "react";
 import useSWR from "swr";
 import { useFixedAddreseses } from "../common/useFixedAddresses";
 import { ClaimAction, ClaimCollateralAction, ClaimFundingFeeAction, ClaimMarketItem, ClaimType } from "./types";
-import useWallet from "lib/wallets/useWallet";
-import { getAddress } from "ethers/lib/utils.js";
-import { getToken } from "config/tokens";
 
 export type ClaimCollateralHistoryResult = {
   claimActions?: ClaimAction[];
@@ -73,7 +73,7 @@ export function useClaimCollateralHistory(
 
       const { data } = await client!.query({ query, fetchPolicy: "no-cache" });
 
-      return data?.claimActions as RawClaimAction[];
+      return data.claimActions as RawClaimAction[];
     },
   });
 

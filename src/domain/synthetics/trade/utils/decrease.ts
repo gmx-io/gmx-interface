@@ -567,7 +567,6 @@ function applyAcceptablePrice(p: {
 
       values.acceptablePrice = triggerAcceptablePriceInfo.acceptablePrice;
       values.acceptablePriceDeltaBps = triggerAcceptablePriceInfo.acceptablePriceDeltaBps;
-      values.priceImpactDiffUsd = triggerAcceptablePriceInfo.priceImpactDiffUsd;
     }
   }
 

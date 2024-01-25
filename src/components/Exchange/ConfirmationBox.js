@@ -705,7 +705,7 @@ export default function ConfirmationBox(props) {
               renderContent={() => {
                 return (
                   <>
-                    <Trans>Your position's collateral after deducting fees.</Trans>
+                    <Trans>Your position's collateral after deducting fees:</Trans>
                     <br />
                     <br />
                     <StatsTooltipRow label={t`Pay Amount`} value={formatAmount(fromUsdMin, USD_DECIMALS, 2, true)} />

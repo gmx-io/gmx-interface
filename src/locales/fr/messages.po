@@ -247,6 +247,14 @@ msgstr ""
 msgid "Accrued Positive Funding Fees for Positions not yet claimable. They will become available to claim by using the \"Settle\" button, or after the Position is increased, decreased or closed."
 msgstr ""
 
+#: src/components/Synthetics/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
+msgid "Accrued Price Impact Rebates"
+msgstr ""
+
+#: src/components/Synthetics/Claims/SettleAccruedCard.tsx
+msgid "Accrued Price Impact Rebates. They will become Claimable after some time.<0/><1/><2>Read more</2>."
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "Acknowledge epoch is ending in {minutes} minutes"
 msgstr ""
@@ -784,6 +792,7 @@ msgstr ""
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+#: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/Synthetics/Claims/ClaimableCard.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV1.js
@@ -810,7 +819,7 @@ msgid "Claim GMX Rewards"
 msgstr "Réclamer les récompenses GMX"
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
-msgid "Claim Price Impact"
+msgid "Claim Price Impact Rebates"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
@@ -856,6 +865,10 @@ msgstr "Réclamation soumise ! <0>Voir le statut.</0>"
 msgid "Claim submitted."
 msgstr "Réclamation soumise."
 
+#: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
+msgid "Claim {totalUsd}"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claim {wrappedTokenSymbol} Rewards"
@@ -867,17 +880,26 @@ msgstr "Réclamer les récompenses de {wrappedTokenSymbol}"
 msgid "Claimable"
 msgstr "Réclamable"
 
+#: src/components/Synthetics/Claims/ClaimableCard.tsx
+msgid "Claimable Price Impact Rebates.<0/><1/><2>Read more</2>."
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Claimable Rebates"
 msgstr ""
 
-#: src/domain/synthetics/markets/claimCollateralTxn.ts
+#: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
+msgid "Claiming Price Impact Rebate..."
+msgstr ""
+
+#: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Claiming failed"
 msgstr ""
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+#: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claiming..."
@@ -889,8 +911,11 @@ msgid "Claims"
 msgstr ""
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims (1)"
+msgstr ""
+
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
+msgid "Claims ({totalClaimables})"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
@@ -1047,6 +1072,7 @@ msgstr "Composition en cours..."
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+#: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "Confirm Claim"
 msgstr ""
 
@@ -1829,6 +1855,10 @@ msgstr ""
 msgid "Failed Settlement of Funding Fees"
 msgstr ""
 
+#: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
+msgid "Failed to Claim Price Impact Rebate"
+msgstr ""
+
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Failed to cancel {ordersText}"
 msgstr ""
@@ -1969,7 +1999,7 @@ msgstr ""
 msgid "Fulfilling order request"
 msgstr ""
 
-#: src/domain/synthetics/markets/claimCollateralTxn.ts
+#: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding Claimed"
 msgstr ""
 
@@ -2782,7 +2812,9 @@ msgstr "Il semble que vous n'ayez pas de code de parrainage à partager. <0/> Cr
 msgid "Loss"
 msgstr "Perte"
 
+#: src/components/Synthetics/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
+#: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "MARKET"
 msgstr ""
@@ -3203,7 +3235,12 @@ msgstr "Réseaux"
 msgid "Networks and Settings"
 msgstr "Réseaux et paramètres"
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "New Collateral"
+msgstr ""
+
 #: src/components/Synthetics/Claims/Claims.tsx
+#: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "Next"
 msgstr "suivant"
 
@@ -3278,6 +3315,10 @@ msgstr ""
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr "Notez que l'exécution des ordres n'est pas garantie d'être exécutée.<0/><1/>Cela peut se produire dans plusieurs situations, notamment, mais pas exclusivement:"
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "Old Collateral"
+msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
@@ -3649,6 +3690,7 @@ msgid "Positive Funding Fees for a Position become claimable after the Position 
 msgstr ""
 
 #: src/components/Synthetics/Claims/Claims.tsx
+#: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "Prev"
 msgstr "Préc"
 
@@ -3688,6 +3730,19 @@ msgstr "Prix"
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Price Impact"
+msgstr ""
+
+#: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
+msgid "Price Impact Rebate Claimed"
+msgstr ""
+
+#: src/components/Synthetics/Claims/ClaimableCardUI.tsx
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Price Impact Rebates"
+msgstr ""
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "Price Impact Rebates for closing trades are claimable under the Claims tab. <0>Read more</0>."
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -3823,6 +3878,11 @@ msgstr ""
 #: src/pages/Stake/StakeV2.js
 msgid "Purchase Insurance"
 msgstr "Acheter l'assurance"
+
+#: src/components/Synthetics/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
+#: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
+msgid "REBATE"
+msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
@@ -4352,6 +4412,10 @@ msgstr "Short en cours..."
 msgid "Show debug values"
 msgstr ""
 
+#: src/components/Synthetics/Claims/SettleAccruedCard.tsx
+msgid "Show details"
+msgstr ""
+
 #: src/pages/Home/Home.js
 msgid "Simple Swaps"
 msgstr "Échanges simples"
@@ -4376,6 +4440,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
@@ -4556,7 +4621,7 @@ msgstr ""
 msgid "Submit"
 msgstr "Soumettre"
 
-#: src/domain/synthetics/markets/claimCollateralTxn.ts
+#: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Success claimings"
 msgstr ""
@@ -4582,10 +4647,6 @@ msgstr "Échanger"
 msgid "Swap Fee"
 msgstr ""
 
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-msgid "Swap Fees"
-msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 msgid "Swap Order created!"
 msgstr "Ordre d'échange créé !"
@@ -4598,7 +4659,6 @@ msgstr "Ordre d'échange échoué."
 msgid "Swap Order submitted!"
 msgstr "Ordre d'échange soumis !"
 
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap Price Impact"
 msgstr ""
@@ -5959,8 +6019,8 @@ msgstr "Le montant de vos esGMX (IOU - reconnaissance de dette) diminuera du mon
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-msgid "Your position's collateral after deducting fees."
-msgstr "Le collatéral de votre position après déduction des frais."
+msgid "Your position's collateral after deducting fees:"
+msgstr "Le collatéral de votre position après déduction des frais:"
 
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Your transfer has been completed."
