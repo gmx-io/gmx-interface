@@ -323,66 +323,64 @@ export function GmConfirmationBox({
       <Modal isVisible={isVisible} setIsVisible={onClose} label={t`Confirm ${operationText}`} allowContentTouchMove>
         {isVisible && (
           <>
-            <div className={cx("Confirmation-box-main GmConfirmationBox-main")}>
-              {isDeposit && (
-                <div className="Confirmation-box-main trade-info-wrapper">
-                  <div className="trade-info">
-                    <Trans>Pay</Trans>{" "}
-                    {renderTokenInfo({
-                      amount: longTokenAmount,
-                      usd: longTokenUsd,
-                      token: longToken,
-                      overrideSymbol: longSymbol,
-                    })}
-                    {renderTokenInfo({
-                      amount: shortTokenAmount,
-                      usd: shortTokenUsd,
-                      token: shortToken,
-                      overrideSymbol: shortSymbol,
-                      className: "mt-xs",
-                    })}
-                  </div>
-                  <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
-                  <div className="trade-info">
-                    <Trans>Receive</Trans>{" "}
-                    {renderTokenInfo({
-                      amount: marketTokenAmount,
-                      usd: marketTokenUsd,
-                      token: marketToken,
-                    })}
-                  </div>
+            {isDeposit && (
+              <div className="Confirmation-box-main trade-info-wrapper">
+                <div className="trade-info">
+                  <Trans>Pay</Trans>{" "}
+                  {renderTokenInfo({
+                    amount: longTokenAmount,
+                    usd: longTokenUsd,
+                    token: longToken,
+                    overrideSymbol: longSymbol,
+                  })}
+                  {renderTokenInfo({
+                    amount: shortTokenAmount,
+                    usd: shortTokenUsd,
+                    token: shortToken,
+                    overrideSymbol: shortSymbol,
+                    className: "mt-xs",
+                  })}
                 </div>
-              )}
-              {!isDeposit && (
-                <div className="Confirmation-box-main trade-info-wrapper">
-                  <div className="trade-info">
-                    <Trans>Pay</Trans>{" "}
-                    {renderTokenInfo({
-                      amount: marketTokenAmount,
-                      usd: marketTokenUsd,
-                      token: marketToken,
-                    })}
-                  </div>
-                  <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
-                  <div className="trade-info">
-                    <Trans>Receive</Trans>{" "}
-                    {renderTokenInfo({
-                      amount: longTokenAmount,
-                      usd: longTokenUsd,
-                      token: longToken,
-                      overrideSymbol: longSymbol,
-                    })}
-                    {renderTokenInfo({
-                      amount: shortTokenAmount,
-                      usd: shortTokenUsd,
-                      token: shortToken,
-                      overrideSymbol: shortSymbol,
-                      className: "mt-xs",
-                    })}
-                  </div>
+                <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
+                <div className="trade-info">
+                  <Trans>Receive</Trans>{" "}
+                  {renderTokenInfo({
+                    amount: marketTokenAmount,
+                    usd: marketTokenUsd,
+                    token: marketToken,
+                  })}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
+            {!isDeposit && (
+              <div className="Confirmation-box-main trade-info-wrapper">
+                <div className="trade-info">
+                  <Trans>Pay</Trans>{" "}
+                  {renderTokenInfo({
+                    amount: marketTokenAmount,
+                    usd: marketTokenUsd,
+                    token: marketToken,
+                  })}
+                </div>
+                <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
+                <div className="trade-info">
+                  <Trans>Receive</Trans>{" "}
+                  {renderTokenInfo({
+                    amount: longTokenAmount,
+                    usd: longTokenUsd,
+                    token: longToken,
+                    overrideSymbol: longSymbol,
+                  })}
+                  {renderTokenInfo({
+                    amount: shortTokenAmount,
+                    usd: shortTokenUsd,
+                    token: shortToken,
+                    overrideSymbol: shortSymbol,
+                    className: "mt-xs",
+                  })}
+                </div>
+              </div>
+            )}
 
             <GmFees
               isDeposit={isDeposit}
