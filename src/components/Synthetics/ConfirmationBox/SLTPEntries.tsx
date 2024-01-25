@@ -85,7 +85,7 @@ function SLTPEntries({ entries, updateEntry, addEntry, deleteEntry, canAddEntry,
                   symbol="%"
                 />
                 {entry.error?.percentage && (
-                  <div className={cx("SLTP-percent-error", "Tooltip-popup", "z-index-1001", "right-bottom")}>
+                  <div className={cx("SLTP-percent-error", "Tooltip-popup", "z-index-1001", "right-top")}>
                     {entry.error?.percentage}
                   </div>
                 )}

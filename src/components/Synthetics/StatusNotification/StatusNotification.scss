@@ -32,8 +32,8 @@
       .Notification-divider {
         position: absolute;
         left: 0;
-        bottom: -1.5px;
-        height: 1.5px;
+        bottom: -1px;
+        height: 1px;
         width: 100%;
         background: #0f463d;
         z-index: 2;
@@ -48,19 +48,13 @@
   left: -10%;
   right: auto;
   width: 150%;
-  height: 120%;
+  height: 150%;
   bottom: 0;
   background-color: rgba(174, 43, 63, 0);
   transition: background-color 0.3s ease-in-out;
 
   &.error {
     background-color: rgba(174, 43, 63, 1);
-  }
-}
-
-.StatusNotification:last-child {
-  .StatusNotification-background {
-    height: 150%;
   }
 }
 

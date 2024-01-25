@@ -245,6 +245,7 @@ export function ConfirmationBox(p: Props) {
   } = takeProfit;
 
   const sltpAmounts = (takeProfitAmounts || []).concat(stopLossAmounts || []);
+  const sltpEntries = (takeProfitEntries || []).concat(stopLossEntries || []);
 
   useEffect(() => {
     setAllowedSlippage(savedAllowedSlippage);
@@ -449,6 +450,14 @@ export function ConfirmationBox(p: Props) {
       text = t`Confirm ${getTriggerNameByOrderType(fixedTriggerOrderType)} Order`;
     }
 
+    if (sltpEntries.length > 0) {
+      const isError = sltpEntries.some((entry) => entry.error);
+      return {
+        text,
+        disabled: isError,
+      };
+    }
+
     return {
       text,
       disabled: false,
@@ -468,6 +477,7 @@ export function ConfirmationBox(p: Props) {
     isSwap,
     isLong,
     fixedTriggerOrderType,
+    sltpEntries,
   ]);
 
   useKey(

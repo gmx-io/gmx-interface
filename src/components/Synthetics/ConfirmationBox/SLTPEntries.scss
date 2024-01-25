@@ -59,11 +59,11 @@
     }
     .SLTP-percentage {
       position: relative;
-      border: 1px solid #212540;
-      border-radius: var(--border-radius-sm);
 
       &.input-error {
-        border-color: var(--error-red);
+        .Suggestion-input {
+          border-color: var(--error-red);
+        }
       }
 
       .Suggestion-input {

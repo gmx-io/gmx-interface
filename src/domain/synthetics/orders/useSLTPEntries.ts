@@ -479,11 +479,11 @@ function createErrorHandlers({
       }
     }
 
-    if (inputPrice?.gt(0) && !entry.percentage) {
+    if (inputPrice?.gt(0) && (!entry.percentage || parseFloat(entry.percentage) === 0)) {
       return {
         ...entry,
         error: {
-          percentage: t`Percentage is required.`,
+          percentage: t`A Size percentage is required.`,
         },
       };
     }
