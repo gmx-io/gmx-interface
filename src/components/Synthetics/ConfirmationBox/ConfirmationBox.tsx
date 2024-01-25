@@ -1312,7 +1312,6 @@ export function ConfirmationBox(p: Props) {
           <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Entry Price`}
-            isTop
             value={
               <ValueTransition
                 from={formatUsd(p.existingPosition?.entryPrice, {
