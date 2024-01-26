@@ -1,30 +1,64 @@
 import cx from "classnames";
-import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
 import Slider, { SliderTooltip, Handle } from "rc-slider";
 import "rc-slider/assets/index.css";
 import "./LeverageSlider.scss";
+import { range } from "lodash";
+import { useCallback, useEffect, useMemo } from "react";
 
-const leverageMarks = {
-  2: "2x",
-  5: "5x",
-  10: "10x",
-  15: "15x",
-  20: "20x",
-  25: "25x",
-  30: "30x",
-  35: "35x",
-  40: "40x",
-  45: "45x",
-  50: "50x",
-};
+const defaultMarks = [1.1, 2, 5, 10, 15, 20, 25, 30, 35, 40, 50];
+const DEFAULT_LEVERAGE_KEY = 20;
 
 type Props = {
   isPositive?: boolean;
   value?: number;
   onChange: (value: number) => void;
+  marks: number[];
 };
 
+type HandleProps = {
+  value: number;
+  dragging: boolean;
+  index: number;
+  keyValueMap: { [key: number]: number };
+};
+
+function getMarksWithLabel(marks: number[]) {
+  return marks.reduce((marks, value, index) => {
+    marks[index * 10] = `${value}x`;
+    return marks;
+  }, {} as { [key: number]: string });
+}
+
 export function LeverageSlider(p: Props) {
+  const { onChange, value, marks } = p;
+  const finalMarks = marks ?? defaultMarks;
+
+  const { marksLabel, keyValueMap, valueKeyMap } = useMemo(() => {
+    const marksLabel = getMarksWithLabel(finalMarks);
+    const { keyValueMap, valueKeyMap } = generateKeyValueMap(finalMarks);
+    return { marksLabel, keyValueMap, valueKeyMap };
+  }, [finalMarks]);
+
+  const defaultValue = valueKeyMap[value ?? 0] ?? DEFAULT_LEVERAGE_KEY;
+  const max = (finalMarks.length - 1) * 10;
+
+  const handleChange = useCallback(
+    (value: number) => {
+      onChange(keyValueMap[value ?? 0] ?? DEFAULT_LEVERAGE_KEY);
+    },
+    [onChange, keyValueMap]
+  );
+
+  useEffect(() => {
+    if (value !== defaultValue) {
+      handleChange(defaultValue);
+    }
+  }, [value, defaultValue, handleChange]);
+
+  const customHandle = useMemo(() => {
+    return (props: any) => <LeverageSliderHandle {...props} keyValueMap={keyValueMap} />;
+  }, [keyValueMap]);
+
   return (
     <div
       className={cx("LeverageSlider", {
@@ -33,23 +67,24 @@ export function LeverageSlider(p: Props) {
       })}
     >
       <Slider
-        min={1.1}
-        max={MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR}
-        step={0.1}
-        marks={leverageMarks}
-        handle={LeverageSliderHandle}
-        onChange={p.onChange}
-        defaultValue={p.value}
+        min={0}
+        max={max}
+        step={1}
+        marks={marksLabel}
+        handle={customHandle}
+        onChange={handleChange}
+        defaultValue={defaultValue}
       />
     </div>
   );
 }
 
-function LeverageSliderHandle({ value, dragging, index, ...restProps }: any) {
+function LeverageSliderHandle({ value, dragging, index, keyValueMap, ...restProps }: HandleProps) {
+  const displayValue = keyValueMap[value || 0] ?? DEFAULT_LEVERAGE_KEY;
   return (
     <SliderTooltip
       prefixCls="rc-slider-tooltip"
-      overlay={`${parseFloat(value).toFixed(2)}x`}
+      overlay={`${parseFloat(displayValue.toString()).toFixed(2)}x`}
       visible={dragging}
       placement="top"
       key={index}
@@ -57,4 +92,27 @@ function LeverageSliderHandle({ value, dragging, index, ...restProps }: any) {
       <Handle value={value} {...restProps} />
     </SliderTooltip>
   );
+}
+
+function generateEquallySpacedArray(min: number, max: number, shouldIncludeMax?: boolean): number[] {
+  const step = (max - min) / 10;
+  let array = range(min, max, step).map((num) => parseFloat(num.toFixed(1)));
+
+  if (shouldIncludeMax && array[array.length - 1] !== max) {
+    array.push(max);
+  }
+
+  return array;
+}
+
+function generateKeyValueMap(marks: number[]) {
+  const values = marks.slice(0, -1).flatMap((mark, index) => {
+    const shouldIncludeMax = index === marks.length - 2;
+    return generateEquallySpacedArray(mark, marks[index + 1], shouldIncludeMax);
+  });
+
+  const keyValueMap = Object.fromEntries(values.map((value, index) => [index, value]));
+  const valueKeyMap = Object.fromEntries(values.map((value, index) => [value, index]));
+
+  return { keyValueMap, valueKeyMap };
 }

@@ -13,7 +13,7 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { getKeepLeverageKey, getLeverageEnabledKey, getLeverageKey } from "config/localStorage";
-import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { MAX_METAMASK_MOBILE_DECIMALS, V2_LEVERAGE_SLIDER_MARKS } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useHasOutdatedUi } from "domain/legacy";
 import { useUserReferralInfo } from "domain/referrals/hooks";
@@ -1261,7 +1261,12 @@ export function TradeBox(p: Props) {
             </ToggleSwitch>
 
             {isLeverageEnabled && (
-              <LeverageSlider value={leverageOption} onChange={setLeverageOption} isPositive={isLong} />
+              <LeverageSlider
+                marks={V2_LEVERAGE_SLIDER_MARKS}
+                value={leverageOption}
+                onChange={setLeverageOption}
+                isPositive={isLong}
+              />
             )}
           </>
         )}
