@@ -582,32 +582,30 @@ export function ConfirmationBox(p: Props) {
         setPendingOrder,
         setPendingPosition,
       },
-      sltpAmounts
-        .map((entry) => {
-          return {
-            account,
-            marketAddress: marketInfo.marketTokenAddress,
-            initialCollateralAddress: fromToken?.address,
-            initialCollateralDeltaAmount: entry.collateralDeltaAmount || BigNumber.from(0),
-            receiveTokenAddress: collateralToken.address,
-            swapPath: [],
-            sizeDeltaUsd: entry.sizeDeltaUsd,
-            sizeDeltaInTokens: entry.sizeDeltaInTokens,
-            isLong,
-            acceptablePrice: entry.acceptablePrice,
-            triggerPrice: entry.triggerPrice,
-            minOutputUsd: BigNumber.from(0),
-            decreasePositionSwapType: entry.decreaseSwapType,
-            orderType: entry.triggerOrderType!,
-            referralCode: referralCodeForTxn,
-            executionFee: getDecreaseExecutionFee(entry)?.feeTokenAmount || BigNumber.from(0),
-            allowedSlippage,
-            indexToken: marketInfo.indexToken,
-            tokensData,
-            skipSimulation: isLimit || shouldDisableValidation,
-          };
-        })
-        .filter(Boolean)
+      sltpAmounts.map((entry) => {
+        return {
+          account,
+          marketAddress: marketInfo.marketTokenAddress,
+          initialCollateralAddress: fromToken?.address,
+          initialCollateralDeltaAmount: entry.collateralDeltaAmount || BigNumber.from(0),
+          receiveTokenAddress: collateralToken.address,
+          swapPath: [],
+          sizeDeltaUsd: entry.sizeDeltaUsd,
+          sizeDeltaInTokens: entry.sizeDeltaInTokens,
+          isLong,
+          acceptablePrice: entry.acceptablePrice,
+          triggerPrice: entry.triggerPrice,
+          minOutputUsd: BigNumber.from(0),
+          decreasePositionSwapType: entry.decreaseSwapType,
+          orderType: entry.triggerOrderType!,
+          referralCode: referralCodeForTxn,
+          executionFee: getDecreaseExecutionFee(entry)?.feeTokenAmount || BigNumber.from(0),
+          allowedSlippage,
+          indexToken: marketInfo.indexToken,
+          tokensData,
+          skipSimulation: isLimit || shouldDisableValidation,
+        };
+      })
     );
   }
 
