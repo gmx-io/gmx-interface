@@ -890,6 +890,11 @@ msgid "Claiming Price Impact Rebate..."
 msgstr "Claiming Price Impact Rebate..."
 
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
+#: src/pages/Stake/StakeV2.js
+msgid "Claimed Multiplier Points"
+msgstr "Claimed Multiplier Points"
+
+#: src/domain/synthetics/markets/claimCollateralTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Claiming failed"
 msgstr "Claiming failed"
@@ -5368,6 +5373,10 @@ msgstr "USD Value may not be accurate since the data does not contain prices for
 #: src/pages/Dashboard/DashboardV2.js
 msgid "UTILIZATION"
 msgstr "UTILIZATION"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Unclaimed Multiplier Points"
+msgstr "Unclaimed Multiplier Points"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Unknown"
