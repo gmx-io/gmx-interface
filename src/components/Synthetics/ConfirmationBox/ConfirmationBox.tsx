@@ -222,8 +222,8 @@ export function ConfirmationBox(p: Props) {
     triggerPrice,
   });
 
-  const sltpAmounts = (stopLoss?.amounts || []).concat(takeProfit?.amounts || []);
-  const sltpEntries = (stopLoss?.entriesInfo.entries || []).concat(takeProfit?.entriesInfo?.entries || []);
+  const sltpEntries = (stopLoss?.entries || []).concat(takeProfit?.entries || []);
+  const sltpAmounts = sltpEntries.map((entry) => entry.amounts).filter(Boolean) as DecreasePositionAmounts[];
 
   useEffect(() => {
     setAllowedSlippage(savedAllowedSlippage);
@@ -690,11 +690,11 @@ export function ConfirmationBox(p: Props) {
     function reset() {
       if (p.isVisible !== prevIsVisible) {
         setIsTriggerWarningAccepted(false);
-        stopLoss?.entriesInfo.reset();
-        takeProfit?.entriesInfo.reset();
+        stopLoss?.reset();
+        takeProfit?.reset();
       }
     },
-    [p.isVisible, prevIsVisible, takeProfit?.entriesInfo, stopLoss?.entriesInfo]
+    [p.isVisible, prevIsVisible, takeProfit, stopLoss]
   );
 
   function renderSubaccountNavigationButton() {
@@ -1081,36 +1081,32 @@ export function ConfirmationBox(p: Props) {
           isTop
           value={
             <div className="profit-loss-wrapper">
-              <SLTPEntries
-                entriesInfo={stopLoss.entriesInfo}
-                increaseAmounts={increaseAmounts}
-                marketInfo={marketInfo}
-              />
+              <SLTPEntries entriesInfo={stopLoss} marketInfo={marketInfo} increaseAmounts={increaseAmounts} />
             </div>
           }
         />
         <ExchangeInfoRow className="swap-box-info-row" label={t`Stop-Loss PnL`}>
-          {stopLoss?.totalPnl?.isZero() ? (
+          {stopLoss?.totalPnL?.isZero() ? (
             "-"
           ) : (
             <Tooltip
-              handle={`${formatUsd(stopLoss?.totalPnl)} (${formatPercentage(stopLoss?.totalPnlPercentage, {
+              handle={`${formatUsd(stopLoss?.totalPnL)} (${formatPercentage(stopLoss?.totalPnLPercentage, {
                 signed: true,
               })})`}
               position="right-bottom"
-              handleClassName={stopLoss.totalPnl?.isNegative() ? "text-red" : "text-green"}
+              handleClassName={stopLoss.totalPnL?.isNegative() ? "text-red" : "text-green"}
               className="SLTP-pnl-tooltip"
               renderContent={() =>
-                stopLoss.amounts?.map((stopLossAmount, index) => {
-                  const stopLossEntry = stopLoss?.entriesInfo?.entries[index];
+                stopLoss?.entries?.map((entry, index) => {
+                  if (!entry || !entry.amounts) return;
                   return (
                     <div className="space-between mb-xs" key={index}>
                       <span className="mr-md">
-                        At ${stopLossEntry.price}, SL {stopLossEntry?.percentage}%:
+                        At ${entry.price}, SL {entry?.percentage}%:
                       </span>
-                      <span className={stopLossAmount.realizedPnl.isNegative() ? "text-red" : "text-green"}>
-                        {formatUsd(stopLossAmount.realizedPnl)} (
-                        {formatPercentage(stopLossAmount.realizedPnlPercentage, {
+                      <span className={entry.amounts?.realizedPnl.isNegative() ? "text-red" : "text-green"}>
+                        {formatUsd(entry.amounts?.realizedPnl)} (
+                        {formatPercentage(entry.amounts?.realizedPnlPercentage, {
                           signed: true,
                         })}
                         )
@@ -1136,36 +1132,33 @@ export function ConfirmationBox(p: Props) {
           isTop
           value={
             <div className="profit-loss-wrapper">
-              <SLTPEntries
-                entriesInfo={takeProfit?.entriesInfo}
-                increaseAmounts={increaseAmounts}
-                marketInfo={marketInfo}
-              />
+              <SLTPEntries entriesInfo={takeProfit} increaseAmounts={increaseAmounts} marketInfo={marketInfo} />
             </div>
           }
         />
         <ExchangeInfoRow className="swap-box-info-row" label={t`Take-Profit PnL`}>
-          {takeProfit?.totalPnl?.isZero() ? (
+          {takeProfit?.totalPnL?.isZero() ? (
             "-"
           ) : (
             <Tooltip
-              handle={`${formatUsd(takeProfit?.totalPnl)} (${formatPercentage(takeProfit?.totalPnlPercentage, {
+              handle={`${formatUsd(takeProfit?.totalPnL)} (${formatPercentage(takeProfit?.totalPnLPercentage, {
                 signed: true,
               })})`}
               position="right-bottom"
-              handleClassName={takeProfit?.totalPnl?.isNegative() ? "text-red" : "text-green"}
+              handleClassName={takeProfit?.totalPnL?.isNegative() ? "text-red" : "text-green"}
               className="SLTP-pnl-tooltip"
               renderContent={() =>
-                takeProfit?.amounts?.map((takeProfitAmount, index) => {
-                  const takeProfitEntry = takeProfit?.entriesInfo?.entries[index];
+                takeProfit?.entries?.map((entry, index) => {
+                  if (!entry || !entry.amounts) return;
+
                   return (
                     <div className="space-between mb-xs" key={index}>
                       <span className="mr-md">
-                        At ${takeProfitEntry.price}, TP {takeProfitEntry?.percentage}%:
+                        At ${entry.price}, TP {entry?.percentage}%:
                       </span>
-                      <span className={takeProfitAmount.realizedPnl.isNegative() ? "text-red" : "text-green"}>
-                        {formatUsd(takeProfitAmount.realizedPnl)} (
-                        {formatPercentage(takeProfitAmount.realizedPnlPercentage, {
+                      <span className={entry.amounts.realizedPnl.isNegative() ? "text-red" : "text-green"}>
+                        {formatUsd(entry.amounts?.realizedPnl)} (
+                        {formatPercentage(entry.amounts.realizedPnlPercentage, {
                           signed: true,
                         })}
                         )

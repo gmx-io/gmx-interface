@@ -381,6 +381,8 @@ export function GmConfirmationBox({
               </div>
             )}
 
+            <div className="line-divider" />
+
             <GmFees
               isDeposit={isDeposit}
               totalFees={fees?.totalFees}

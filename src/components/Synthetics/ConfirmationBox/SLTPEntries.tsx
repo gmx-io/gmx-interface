@@ -11,12 +11,12 @@ import { MarketInfo } from "domain/synthetics/markets";
 import { IncreasePositionAmounts } from "domain/synthetics/trade";
 import { t } from "@lingui/macro";
 import { useRef } from "react";
-import { EntriesInfo } from "domain/synthetics/orders/useEntries";
+import { SLTPInfo } from "domain/synthetics/orders/useSLTPEntries";
 
 const SUGGESTION_PERCENTAGE_LIST = [10, 25, 50, 75, 100];
 
 type Props = {
-  entriesInfo: EntriesInfo;
+  entriesInfo: SLTPInfo;
   marketInfo?: MarketInfo;
   increaseAmounts?: IncreasePositionAmounts;
 };

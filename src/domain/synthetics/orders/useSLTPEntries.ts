@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import {
   DecreasePositionAmounts,
   IncreasePositionAmounts,
@@ -20,11 +20,14 @@ import { t } from "@lingui/macro";
 import { BigNumber } from "ethers";
 import useEntries, { EntriesInfo, Entry } from "./useEntries";
 
-type SLTPInfo = {
-  entriesInfo: EntriesInfo;
-  amounts: DecreasePositionAmounts[];
-  totalPnl: BigNumber;
-  totalPnlPercentage: BigNumber;
+export type EntryWithAmounts = Entry & {
+  amounts?: DecreasePositionAmounts;
+};
+
+export type SLTPInfo = EntriesInfo & {
+  entries: EntryWithAmounts[];
+  totalPnL: BigNumber;
+  totalPnLPercentage: BigNumber;
 };
 
 type Props = {
@@ -60,8 +63,8 @@ export default function useSLTPEntries({
     isLimit,
   });
 
-  const stopLossInfo = useEntries("sl_", handleSLErrors);
-  const takeProfitInfo = useEntries("tp_", handleTPErrors);
+  const stopLossEntriesInfo = useEntries("sl_", handleSLErrors);
+  const takeProfitEntriesInfo = useEntries("tp_", handleTPErrors);
 
   const positionKey = useMemo(() => {
     if (!account || !marketInfo || !collateralToken) {
@@ -125,119 +128,102 @@ export default function useSLTPEntries({
     triggerPrice,
   ]);
 
-  const stopLoss = useMemo<SLTPInfo | undefined>(() => {
-    if (
-      !stopLossInfo ||
-      !increaseAmounts ||
-      !marketInfo ||
-      !collateralToken ||
-      !currentPositionInfo ||
-      !minPositionSizeUsd ||
-      !minCollateralUsd
-    ) {
-      return;
-    }
-    const amounts = stopLossInfo.entries
-      .filter((entry) => Number(entry.price) && entry.percentage && !entry.error)
-      .map((entry) => {
-        const percentage = Math.floor(Number.parseFloat(entry.percentage) * 100);
-        const sizeUsd = increaseAmounts.sizeDeltaUsd.mul(percentage).div(BASIS_POINTS_DIVISOR);
-        const price = parseValue(entry.price, USD_DECIMALS);
+  const getDecreaseAmountsFromEntry = useCallback(
+    (entry: Entry) => {
+      if (!Number(entry.price) || !entry.percentage || entry.error) {
+        return;
+      }
 
-        return getDecreasePositionAmounts({
-          marketInfo,
-          collateralToken,
-          isLong,
-          position: currentPositionInfo,
-          closeSizeUsd: sizeUsd,
-          keepLeverage: keepLeverage!,
-          triggerPrice: price,
-          userReferralInfo,
-          minCollateralUsd,
-          minPositionSizeUsd,
-          uiFeeFactor,
-          isLimit,
-          limitPrice: triggerPrice,
-        });
+      if (
+        !increaseAmounts ||
+        !marketInfo ||
+        !collateralToken ||
+        !currentPositionInfo ||
+        !minPositionSizeUsd ||
+        !minCollateralUsd
+      ) {
+        return;
+      }
+
+      const percentage = Math.floor(Number.parseFloat(entry.percentage) * 100);
+      const sizeUsd = increaseAmounts.sizeDeltaUsd.mul(percentage).div(BASIS_POINTS_DIVISOR);
+      const price = parseValue(entry.price, USD_DECIMALS);
+
+      return getDecreasePositionAmounts({
+        marketInfo,
+        collateralToken,
+        isLong,
+        position: currentPositionInfo,
+        closeSizeUsd: sizeUsd,
+        keepLeverage: keepLeverage!,
+        triggerPrice: price,
+        userReferralInfo,
+        minCollateralUsd,
+        minPositionSizeUsd,
+        uiFeeFactor,
+        isLimit,
+        limitPrice: triggerPrice,
       });
-    const totalPnl = amounts?.reduce((acc, amount) => acc.add(amount.realizedPnl), BigNumber.from(0));
-    const totalPnlPercentage = amounts?.reduce(
-      (acc, amount) => acc.add(amount.realizedPnlPercentage),
+    },
+    [
+      collateralToken,
+      currentPositionInfo,
+      increaseAmounts,
+      isLong,
+      isLimit,
+      marketInfo,
+      triggerPrice,
+      keepLeverage,
+      minCollateralUsd,
+      minPositionSizeUsd,
+      uiFeeFactor,
+      userReferralInfo,
+    ]
+  );
+
+  const stopLoss = useMemo(() => {
+    const entries = stopLossEntriesInfo.entries.map((entry) => {
+      return {
+        ...entry,
+        amounts: getDecreaseAmountsFromEntry(entry),
+      };
+    });
+
+    const totalPnL = entries.reduce((acc, entry) => acc.add(entry.amounts?.realizedPnl || 0), BigNumber.from(0));
+    const totalPnLPercentage = entries.reduce(
+      (acc, entry) => acc.add(entry.amounts?.realizedPnlPercentage || 0),
       BigNumber.from(0)
     );
-    return { entriesInfo: stopLossInfo, amounts, totalPnl, totalPnlPercentage };
-  }, [
-    stopLossInfo,
-    collateralToken,
-    currentPositionInfo,
-    increaseAmounts,
-    isLong,
-    isLimit,
-    marketInfo,
-    triggerPrice,
-    keepLeverage,
-    minCollateralUsd,
-    minPositionSizeUsd,
-    uiFeeFactor,
-    userReferralInfo,
-  ]);
 
-  const takeProfit = useMemo<SLTPInfo | undefined>(() => {
-    if (
-      !takeProfitInfo ||
-      !increaseAmounts ||
-      !marketInfo ||
-      !collateralToken ||
-      !currentPositionInfo ||
-      !minPositionSizeUsd ||
-      !minCollateralUsd
-    ) {
-      return;
-    }
-    const amounts = takeProfitInfo.entries
-      .filter((entry) => Number(entry.price) && entry.percentage && !entry.error)
-      .map((entry) => {
-        const percentage = Math.floor(Number.parseFloat(entry.percentage) * 100);
-        const sizeUsd = increaseAmounts.sizeDeltaUsd.mul(percentage).div(BASIS_POINTS_DIVISOR);
-        const price = parseValue(entry.price, USD_DECIMALS);
+    return {
+      ...stopLossEntriesInfo,
+      entries: entries as EntryWithAmounts[],
+      totalPnL,
+      totalPnLPercentage,
+    };
+  }, [getDecreaseAmountsFromEntry, stopLossEntriesInfo]);
 
-        return getDecreasePositionAmounts({
-          marketInfo,
-          collateralToken,
-          isLong,
-          position: currentPositionInfo,
-          closeSizeUsd: sizeUsd,
-          keepLeverage: keepLeverage!,
-          triggerPrice: price,
-          userReferralInfo,
-          minCollateralUsd,
-          minPositionSizeUsd,
-          uiFeeFactor,
-          isLimit,
-          limitPrice: triggerPrice,
-        });
-      });
-    const totalPnl = amounts?.reduce((acc, amount) => acc.add(amount.realizedPnl), BigNumber.from(0));
-    const totalPnlPercentage = amounts?.reduce(
-      (acc, amount) => acc.add(amount.realizedPnlPercentage),
+  const takeProfit = useMemo(() => {
+    const entries = takeProfitEntriesInfo.entries.map((entry) => {
+      return {
+        ...entry,
+        amounts: getDecreaseAmountsFromEntry(entry),
+      };
+    });
+
+    const totalPnL = entries.reduce((acc, entry) => acc.add(entry.amounts?.realizedPnl || 0), BigNumber.from(0));
+    const totalPnLPercentage = entries.reduce(
+      (acc, entry) => acc.add(entry.amounts?.realizedPnlPercentage || 0),
       BigNumber.from(0)
     );
-    return { entriesInfo: takeProfitInfo, amounts, totalPnl, totalPnlPercentage };
-  }, [
-    takeProfitInfo,
-    collateralToken,
-    currentPositionInfo,
-    increaseAmounts,
-    isLong,
-    isLimit,
-    marketInfo,
-    triggerPrice,
-    keepLeverage,
-    minCollateralUsd,
-    minPositionSizeUsd,
-    uiFeeFactor,
-    userReferralInfo,
-  ]);
+
+    return {
+      ...takeProfitEntriesInfo,
+      entries: entries as EntryWithAmounts[],
+      totalPnL,
+      totalPnLPercentage,
+    };
+  }, [getDecreaseAmountsFromEntry, takeProfitEntriesInfo]);
 
   return {
     stopLoss,
