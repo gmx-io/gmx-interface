@@ -840,7 +840,7 @@ export function ConfirmationBox(p: Props) {
       return (
         <AlertWithIcon type="warning">
           <Trans>
-            You have selected {collateralTokenSymbol} as collateral to short ${indexTokenSymbol}.
+            You have selected {collateralTokenSymbol} as collateral to short {indexTokenSymbol}.
           </Trans>
         </AlertWithIcon>
       );
@@ -1085,7 +1085,7 @@ export function ConfirmationBox(p: Props) {
           isTop
           value={
             <div className="profit-loss-wrapper">
-              <SLTPEntries entriesInfo={stopLoss} marketInfo={marketInfo} increaseAmounts={increaseAmounts} />
+              <SLTPEntries entriesInfo={stopLoss} marketInfo={marketInfo} />
             </div>
           }
         />
@@ -1136,7 +1136,7 @@ export function ConfirmationBox(p: Props) {
           isTop
           value={
             <div className="profit-loss-wrapper">
-              <SLTPEntries entriesInfo={takeProfit} increaseAmounts={increaseAmounts} marketInfo={marketInfo} />
+              <SLTPEntries entriesInfo={takeProfit} marketInfo={marketInfo} />
             </div>
           }
         />

@@ -20,12 +20,12 @@ import { t } from "@lingui/macro";
 import { BigNumber } from "ethers";
 import useEntries, { EntriesInfo, Entry } from "./useEntries";
 
-export type EntryWithAmounts = Entry & {
+export type SLTPEntry = Entry & {
   amounts?: DecreasePositionAmounts;
 };
 
 export type SLTPInfo = EntriesInfo & {
-  entries: EntryWithAmounts[];
+  entries: SLTPEntry[];
   totalPnL: BigNumber;
   totalPnLPercentage: BigNumber;
 };
@@ -197,7 +197,7 @@ export default function useSLTPEntries({
 
     return {
       ...stopLossEntriesInfo,
-      entries: entries as EntryWithAmounts[],
+      entries,
       totalPnL,
       totalPnLPercentage,
     };
@@ -219,7 +219,7 @@ export default function useSLTPEntries({
 
     return {
       ...takeProfitEntriesInfo,
-      entries: entries as EntryWithAmounts[],
+      entries,
       totalPnL,
       totalPnLPercentage,
     };

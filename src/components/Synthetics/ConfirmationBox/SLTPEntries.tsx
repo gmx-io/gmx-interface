@@ -5,25 +5,23 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { FaPlus } from "react-icons/fa";
 import cx from "classnames";
 import { formatUsd } from "lib/numbers";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import { MarketInfo } from "domain/synthetics/markets";
-import { IncreasePositionAmounts } from "domain/synthetics/trade";
 import { t } from "@lingui/macro";
 import { useRef } from "react";
-import { SLTPInfo } from "domain/synthetics/orders/useSLTPEntries";
+import { SLTPEntry, SLTPInfo } from "domain/synthetics/orders/useSLTPEntries";
 
 const SUGGESTION_PERCENTAGE_LIST = [10, 25, 50, 75, 100];
 
 type Props = {
   entriesInfo: SLTPInfo;
   marketInfo?: MarketInfo;
-  increaseAmounts?: IncreasePositionAmounts;
 };
 
-function SLTPEntries({ entriesInfo, increaseAmounts, marketInfo }: Props) {
-  const { addEntry, entries, updateEntry, canAddEntry, deleteEntry } = entriesInfo;
+function SLTPEntries({ entriesInfo, marketInfo }: Props) {
+  const { addEntry, updateEntry, canAddEntry, deleteEntry } = entriesInfo;
   const sltpRef = useRef<HTMLDivElement>(null);
+  const entries: SLTPEntry[] = entriesInfo.entries;
 
   function handleAddEntry() {
     addEntry();
@@ -36,13 +34,8 @@ function SLTPEntries({ entriesInfo, increaseAmounts, marketInfo }: Props) {
   return (
     <div className="SLTPEntries-wrapper" ref={sltpRef}>
       {entries.map((entry) => {
-        const percentage = Math.floor(Number.parseFloat(entry.percentage) * 100);
-        const entrySizeUsd =
-          increaseAmounts?.sizeDeltaUsd.gt(0) &&
-          percentage &&
-          increaseAmounts?.sizeDeltaUsd.mul(percentage).div(BASIS_POINTS_DIVISOR);
-
         const indexToken = marketInfo?.indexToken;
+        const entrySizeUsd = entry.amounts?.sizeDeltaUsd;
         const priceTooltipMsg =
           !entry.error &&
           entry.price &&
