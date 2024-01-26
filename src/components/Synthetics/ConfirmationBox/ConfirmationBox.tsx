@@ -222,8 +222,11 @@ export function ConfirmationBox(p: Props) {
     triggerPrice,
   });
 
-  const sltpEntries = (stopLoss?.entries || []).concat(takeProfit?.entries || []);
-  const sltpAmounts = sltpEntries.map((entry) => entry.amounts).filter(Boolean) as DecreasePositionAmounts[];
+  const { sltpEntries, sltpAmounts } = useMemo(() => {
+    const entries = (stopLoss?.entries || []).concat(takeProfit?.entries || []);
+    const amounts = entries.map((entry) => entry.amounts).filter(Boolean) as DecreasePositionAmounts[];
+    return { sltpEntries: entries, sltpAmounts: amounts };
+  }, [stopLoss, takeProfit]);
 
   useEffect(() => {
     setAllowedSlippage(savedAllowedSlippage);
@@ -551,23 +554,14 @@ export function ConfirmationBox(p: Props) {
       return Promise.resolve();
     }
 
-    const commonOrderProps = {
-      account,
-      marketAddress: marketInfo.marketTokenAddress,
-      initialCollateralAddress: collateralToken.address,
-      isLong,
-      allowedSlippage,
-      referralCode: referralCodeForTxn,
-      indexToken: marketInfo.indexToken,
-      tokensData,
-    };
-
     return createIncreaseOrderTxn(
       chainId,
       signer,
       subaccount,
       {
-        ...commonOrderProps,
+        account,
+        marketAddress: marketInfo.marketTokenAddress,
+        initialCollateralAddress: fromToken?.address,
         initialCollateralAmount: increaseAmounts.initialCollateralAmount,
         targetCollateralAddress: collateralToken.address,
         collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
@@ -576,8 +570,13 @@ export function ConfirmationBox(p: Props) {
         sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
         triggerPrice: isLimit ? triggerPrice : undefined,
         acceptablePrice: increaseAmounts.acceptablePrice,
-        executionFee: executionFee.feeTokenAmount,
+        isLong,
         orderType: isLimit ? OrderType.LimitIncrease : OrderType.MarketIncrease,
+        executionFee: executionFee.feeTokenAmount,
+        allowedSlippage,
+        referralCode: referralCodeForTxn,
+        indexToken: marketInfo.indexToken,
+        tokensData,
         skipSimulation: isLimit || shouldDisableValidation,
         setPendingTxns: p.setPendingTxns,
         setPendingOrder,
@@ -586,18 +585,25 @@ export function ConfirmationBox(p: Props) {
       sltpAmounts
         .map((entry) => {
           return {
-            ...commonOrderProps,
-            swapPath: [],
+            account,
+            marketAddress: marketInfo.marketTokenAddress,
+            initialCollateralAddress: fromToken?.address,
             initialCollateralDeltaAmount: entry.collateralDeltaAmount || BigNumber.from(0),
             receiveTokenAddress: collateralToken.address,
-            triggerPrice: entry.triggerPrice,
-            acceptablePrice: entry.acceptablePrice,
+            swapPath: [],
             sizeDeltaUsd: entry.sizeDeltaUsd,
-            executionFee: getDecreaseExecutionFee(entry)?.feeTokenAmount || BigNumber.from(0),
             sizeDeltaInTokens: entry.sizeDeltaInTokens,
+            isLong,
+            acceptablePrice: entry.acceptablePrice,
+            triggerPrice: entry.triggerPrice,
             minOutputUsd: BigNumber.from(0),
             decreasePositionSwapType: entry.decreaseSwapType,
             orderType: entry.triggerOrderType!,
+            referralCode: referralCodeForTxn,
+            executionFee: getDecreaseExecutionFee(entry)?.feeTokenAmount || BigNumber.from(0),
+            allowedSlippage,
+            indexToken: marketInfo.indexToken,
+            tokensData,
             skipSimulation: isLimit || shouldDisableValidation,
           };
         })
