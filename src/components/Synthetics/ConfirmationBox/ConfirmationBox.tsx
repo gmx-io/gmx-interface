@@ -586,7 +586,7 @@ export function ConfirmationBox(p: Props) {
         return {
           account,
           marketAddress: marketInfo.marketTokenAddress,
-          initialCollateralAddress: fromToken?.address,
+          initialCollateralAddress: collateralToken?.address,
           initialCollateralDeltaAmount: entry.collateralDeltaAmount || BigNumber.from(0),
           receiveTokenAddress: collateralToken.address,
           swapPath: [],
