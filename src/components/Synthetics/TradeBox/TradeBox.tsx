@@ -848,7 +848,7 @@ export function TradeBox(p: Props) {
 
   function onMaxClick() {
     if (fromToken?.balance) {
-      let maxAvailableAmount = fromToken.isNative
+      let maxAvailableAmount = fromToken?.isNative
         ? fromToken.balance.sub(BigNumber.from(minResidualAmount || 0))
         : fromToken.balance;
 

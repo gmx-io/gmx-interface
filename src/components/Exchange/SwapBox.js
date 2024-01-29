@@ -1814,7 +1814,9 @@ export default function SwapBox(props) {
       return;
     }
 
-    let maxAvailableAmount = fromToken.isNative ? minResidualAmount && fromBalance.sub(minResidualAmount) : fromBalance;
+    let maxAvailableAmount = fromToken?.isNative
+      ? minResidualAmount && fromBalance.sub(minResidualAmount)
+      : fromBalance;
 
     if (maxAvailableAmount.isNegative()) {
       maxAvailableAmount = bigNumberify(0);
@@ -1832,8 +1834,8 @@ export default function SwapBox(props) {
     if (!fromToken || !fromBalance) {
       return false;
     }
-    const maxAvailableAmount = fromToken.isNative ? fromBalance.sub(minResidualAmount) : fromBalance;
-    const shoudShowMaxButtonBasedOnGasAmount = fromToken.isNative
+    const maxAvailableAmount = fromToken?.isNative ? fromBalance.sub(minResidualAmount) : fromBalance;
+    const shoudShowMaxButtonBasedOnGasAmount = fromToken?.isNative
       ? minResidualAmount && fromBalance.gt(minResidualAmount)
       : true;
     return (
