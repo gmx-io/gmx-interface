@@ -140,6 +140,18 @@ const tradeTypeIcons = {
 
 const emptyArray = [];
 
+const tradeModeLabels = {
+  [TradeMode.Market]: t`Market`,
+  [TradeMode.Limit]: t`Limit`,
+  [TradeMode.Trigger]: t`TP/SL`,
+};
+
+const tradeTypeLabels = {
+  [TradeType.Long]: t`Long`,
+  [TradeType.Short]: t`Short`,
+  [TradeType.Swap]: t`Swap`,
+};
+
 export function TradeBox(p: Props) {
   const {
     tokensData,
@@ -166,20 +178,6 @@ export function TradeBox(p: Props) {
     sortedLongAndShortTokens,
     sortedAllMarkets,
   } = avaialbleTokenOptions;
-
-  const tradeTypeLabels = useMemo(() => {
-    return {
-      [TradeType.Long]: t`Long`,
-      [TradeType.Short]: t`Short`,
-      [TradeType.Swap]: t`Swap`,
-    };
-  }, []);
-
-  const tradeModeLabels = {
-    [TradeMode.Market]: t`Market`,
-    [TradeMode.Limit]: t`Limit`,
-    [TradeMode.Trigger]: t`TP/SL`,
-  };
 
   const tradeType = useTradeType();
   const tradeMode = useTradeMode();
@@ -657,7 +655,6 @@ export function TradeBox(p: Props) {
     isSwap,
     toToken?.symbol,
     tradeType,
-    tradeTypeLabels,
   ]);
 
   function onSubmit() {

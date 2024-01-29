@@ -693,6 +693,13 @@ function FullApp() {
   );
 }
 
+const SWRConfigProp = {
+  refreshInterval: 5000,
+  refreshWhenHidden: false,
+  refreshWhenOffline: false,
+  use: [swrGCMiddleware],
+};
+
 function App() {
   const { disconnect } = useDisconnect();
 
@@ -722,13 +729,7 @@ function App() {
   app = <Router>{app}</Router>;
   app = <SEO>{app}</SEO>;
   app = <SettingsContextProvider>{app}</SettingsContextProvider>;
-  app = (
-    <SWRConfig
-      value={{ refreshInterval: 5000, refreshWhenHidden: false, refreshWhenOffline: false, use: [swrGCMiddleware] }}
-    >
-      {app}
-    </SWRConfig>
-  );
+  app = <SWRConfig value={SWRConfigProp}>{app}</SWRConfig>;
 
   return app;
 }

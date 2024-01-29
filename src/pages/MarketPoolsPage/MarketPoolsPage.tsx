@@ -5,14 +5,14 @@ import Footer from "components/Footer/Footer";
 import { GmSwapBox, Mode, Operation } from "components/Synthetics/GmSwap/GmSwapBox/GmSwapBox";
 import { MarketStats } from "components/Synthetics/MarketStats/MarketStats";
 import { getSyntheticsDepositMarketKey } from "config/localStorage";
-import { useMarketTokensData, useMarketsInfo } from "domain/synthetics/markets";
+import { MarketsInfoData, useMarketTokensData, useMarketsInfo } from "domain/synthetics/markets";
 import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useRef, useState } from "react";
 
 import { getTokenData } from "domain/synthetics/tokens";
-import { getByKey } from "lib/objects";
+import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import "./MarketPoolsPage.scss";
 import { GmList } from "components/Synthetics/GmList/GmList";
 import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
@@ -32,7 +32,7 @@ export function MarketPoolsPage(p: Props) {
     window.scrollBy(0, -25); // add some offset
   }
 
-  const { marketsInfoData = {}, tokensData } = useMarketsInfo(chainId);
+  const { marketsInfoData = EMPTY_OBJECT as MarketsInfoData, tokensData } = useMarketsInfo(chainId);
   const markets = Object.values(marketsInfoData);
 
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });

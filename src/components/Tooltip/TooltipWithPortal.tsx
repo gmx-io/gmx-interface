@@ -1,4 +1,4 @@
-import React, { MouseEvent, useCallback, useRef, useState } from "react";
+import React, { CSSProperties, MouseEvent, useCallback, useMemo, useRef, useState } from "react";
 import cx from "classnames";
 
 import "./Tooltip.scss";
@@ -116,6 +116,8 @@ export default function TooltipWithPortal(props: Props) {
   }, []);
 
   const className = cx("Tooltip", props.className);
+  const portalStyle = useMemo<CSSProperties>(() => ({ ...coords, position: "absolute" }), [coords]);
+  const popupStyle = useMemo(() => ({ width: tooltipWidth }), [tooltipWidth]);
 
   return (
     <span className={className} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onMouseClick}>
@@ -129,8 +131,8 @@ export default function TooltipWithPortal(props: Props) {
       </span>
       {visible && coords.left && (
         <Portal>
-          <div style={{ ...coords, position: "absolute" }} className={props.portalClassName}>
-            <div className={cx(["Tooltip-popup z-index-1001", position])} style={{ width: tooltipWidth }}>
+          <div style={portalStyle} className={props.portalClassName}>
+            <div className={cx(["Tooltip-popup z-index-1001", position])} style={popupStyle}>
               {props.renderContent()}
             </div>
           </div>

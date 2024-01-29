@@ -1388,6 +1388,14 @@ export default function StakeV2({ setPendingTxns }) {
     );
   }
 
+  const stakedEntries = useMemo(
+    () => ({
+      "Staked on Arbitrum": arbitrumGmxStaked,
+      "Staked on Avalanche": avaxGmxStaked,
+    }),
+    [arbitrumGmxStaked, avaxGmxStaked]
+  );
+
   return (
     <div className="default-container page-layout">
       <StakeModal
@@ -1674,10 +1682,7 @@ export default function StakeV2({ setPendingTxns }) {
                           showDollar={false}
                           decimalsForConversion={18}
                           symbol="GMX"
-                          entries={{
-                            "Staked on Arbitrum": arbitrumGmxStaked,
-                            "Staked on Avalanche": avaxGmxStaked,
-                          }}
+                          entries={stakedEntries}
                         />
                       )}
                     />

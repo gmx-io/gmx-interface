@@ -25,6 +25,9 @@ type Props = {
   positionsInfoData: PositionsInfoData | undefined;
 };
 
+const MARGIN_RIGHT = { marginRight: 4 };
+const MARGIN_LEFT = { marginRight: 4 };
+
 export function Claims({
   shouldShowPaginationButtons,
   marketsInfoData,
@@ -72,14 +75,14 @@ export function Claims({
           <SettleAccruedCard
             positionsInfoData={positionsInfoData}
             onSettleClick={handleSettleClick}
-            style={isMobile ? undefined : { marginRight: 4 }}
+            style={isMobile ? undefined : MARGIN_RIGHT}
           />
         )}
         {account && !isLoading && (
           <ClaimableCard
             marketsInfoData={marketsInfoData}
             onClaimClick={handleClaimClick}
-            style={isMobile ? undefined : { marginLeft: 4 }}
+            style={isMobile ? undefined : MARGIN_LEFT}
           />
         )}
       </div>

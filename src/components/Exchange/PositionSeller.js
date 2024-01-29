@@ -66,6 +66,11 @@ const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
+const ORDER_OPTION_LABELS = {
+  [MARKET]: t`Market`,
+  [STOP]: t`Trigger`,
+};
+
 function applySpread(amount, spread) {
   if (!amount || !spread) {
     return amount;
@@ -240,10 +245,7 @@ export default function PositionSeller(props) {
   );
 
   const ORDER_OPTIONS = useMemo(() => [MARKET, STOP], []);
-  const ORDER_OPTION_LABELS = {
-    [MARKET]: t`Market`,
-    [STOP]: t`Trigger`,
-  };
+
   let [orderOption, setOrderOption] = useState(MARKET);
 
   if (!flagOrdersEnabled) {
@@ -365,8 +367,20 @@ export default function PositionSeller(props) {
     setSavedRecieveTokenAddress,
   ]);
 
-  let executionFee = orderOption === STOP ? getConstant(chainId, "DECREASE_ORDER_EXECUTION_GAS_FEE") : minExecutionFee;
-  let executionFeeUsd = getUsd(executionFee, nativeTokenAddress, false, infoTokens) || bigNumberify(0);
+  const executionFee =
+    orderOption === STOP ? getConstant(chainId, "DECREASE_ORDER_EXECUTION_GAS_FEE") : minExecutionFee;
+  const executionFeeUsd = useMemo(
+    () => getUsd(executionFee, nativeTokenAddress, false, infoTokens) || bigNumberify(0),
+    [executionFee, infoTokens, nativeTokenAddress]
+  );
+
+  const executionFees = useMemo(
+    () => ({
+      fee: executionFee,
+      feeUsd: executionFeeUsd,
+    }),
+    [executionFee, executionFeeUsd]
+  );
 
   const collateralToken = position.collateralToken;
   const collateralTokenInfo = getTokenInfo(infoTokens, collateralToken.address);
@@ -1272,10 +1286,7 @@ export default function PositionSeller(props) {
                   isOpening={false}
                   positionFee={positionFee}
                   fundingFee={fundingFee}
-                  executionFees={{
-                    fee: executionFee,
-                    feeUsd: executionFeeUsd,
-                  }}
+                  executionFees={executionFees}
                   swapFee={swapFee}
                 />
               </div>

@@ -82,6 +82,11 @@ enum Operation {
   Withdraw = "Withdraw",
 }
 
+const OPERATION_LABELS = {
+  [Operation.Deposit]: t`Deposit`,
+  [Operation.Withdraw]: t`Withdraw`,
+};
+
 export function PositionEditor(p: Props) {
   const { position, tokensData, showPnlInLeverage, setPendingTxns, onClose, allowedSlippage } = p;
   const { chainId } = useChainId();
@@ -429,11 +434,6 @@ export function PositionEditor(p: Props) {
     [isVisible, prevIsVisible]
   );
 
-  const operationLabels = {
-    [Operation.Deposit]: t`Deposit`,
-    [Operation.Withdraw]: t`Withdraw`,
-  };
-
   const showMaxOnDeposit = collateralToken?.isNative
     ? minResidualAmount && collateralToken?.balance?.gt(minResidualAmount)
     : true;
@@ -457,7 +457,7 @@ export function PositionEditor(p: Props) {
               onChange={setOperation}
               option={operation}
               options={Object.values(Operation)}
-              optionLabels={operationLabels}
+              optionLabels={OPERATION_LABELS}
               className="PositionEditor-tabs SwapBox-option-tabs"
             />
             <SubaccountNavigationButton
@@ -467,7 +467,7 @@ export function PositionEditor(p: Props) {
             />
 
             <BuyInputSection
-              topLeftLabel={operationLabels[operation]}
+              topLeftLabel={OPERATION_LABELS[operation]}
               topLeftValue={formatUsd(collateralDeltaUsd)}
               topRightLabel={t`Max`}
               topRightValue={
@@ -519,7 +519,7 @@ export function PositionEditor(p: Props) {
             >
               {availableSwapTokens ? (
                 <TokenSelector
-                  label={operationLabels[operation]}
+                  label={OPERATION_LABELS[operation]}
                   chainId={chainId}
                   tokenAddress={selectedCollateralAddress!}
                   onSelectToken={(token) => setSelectedCollateralAddress(token.address)}
@@ -624,7 +624,7 @@ export function PositionEditor(p: Props) {
                 onClick={onSubmit}
                 disabled={Boolean(error) && !p.shouldDisableValidation}
               >
-                {error || operationLabels[operation]}
+                {error || OPERATION_LABELS[operation]}
               </Button>
             </div>
           </>

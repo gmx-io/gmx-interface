@@ -94,6 +94,11 @@ enum OrderOption {
   Trigger = "Trigger",
 }
 
+const ORDER_OPTION_LABELS = {
+  [OrderOption.Market]: t`Market`,
+  [OrderOption.Trigger]: t`TP/SL`,
+};
+
 export function PositionSeller(p: Props) {
   const { position, tokensData, showPnlInLeverage, onClose, setPendingTxns, availableTokensOptions } = p;
 
@@ -111,11 +116,6 @@ export function PositionSeller(p: Props) {
 
   const isVisible = Boolean(position);
   const prevIsVisible = usePrevious(isVisible);
-
-  const ORDER_OPTION_LABELS = {
-    [OrderOption.Market]: t`Market`,
-    [OrderOption.Trigger]: t`TP/SL`,
-  };
 
   const [orderOption, setOrderOption] = useState<OrderOption>(OrderOption.Market);
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState("");

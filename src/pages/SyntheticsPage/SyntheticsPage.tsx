@@ -284,7 +284,7 @@ tradeFlags // chartToken, availableChartTokens
     setIsSettling(true);
   }
 
-  function renderOrdersTabTitle() {
+  const renderOrdersTabTitle = useCallback(() => {
     if (!ordersCount) {
       return (
         <div>
@@ -303,7 +303,18 @@ tradeFlags // chartToken, availableChartTokens
         </span>
       </div>
     );
-  }
+  }, [ordersCount, ordersErrorsCount, ordersWarningsCount]);
+
+  const tabLabels = useMemo(
+    () => ({
+      [ListSection.Positions]: t`Positions${positionsCount ? ` (${positionsCount})` : ""}`,
+      [ListSection.Orders]: renderOrdersTabTitle(),
+      [ListSection.Trades]: t`Trades`,
+      [ListSection.Claims]: hasClaimables ? t`Claims (1)` : t`Claims`,
+    }),
+    [hasClaimables, positionsCount, renderOrdersTabTitle]
+  );
+  const tabOptions = useMemo(() => Object.keys(ListSection), []);
 
   return (
     <div className="Exchange page-layout">
@@ -334,13 +345,8 @@ tradeFlags // chartToken, availableChartTokens
           <div className="Exchange-lists large">
             <div className="Exchange-list-tab-container">
               <Tab
-                options={Object.keys(ListSection)}
-                optionLabels={{
-                  [ListSection.Positions]: t`Positions${positionsCount ? ` (${positionsCount})` : ""}`,
-                  [ListSection.Orders]: renderOrdersTabTitle(),
-                  [ListSection.Trades]: t`Trades`,
-                  [ListSection.Claims]: hasClaimables ? t`Claims (1)` : t`Claims`,
-                }}
+                options={tabOptions}
+                optionLabels={tabLabels}
                 option={listSection}
                 onChange={(section) => setListSection(section)}
                 type="inline"
@@ -440,13 +446,8 @@ tradeFlags // chartToken, availableChartTokens
         <div className="Exchange-lists small">
           <div className="Exchange-list-tab-container">
             <Tab
-              options={Object.keys(ListSection)}
-              optionLabels={{
-                [ListSection.Positions]: t`Positions${positionsCount ? ` (${positionsCount})` : ""}`,
-                [ListSection.Orders]: renderOrdersTabTitle(),
-                [ListSection.Trades]: t`Trades`,
-                [ListSection.Claims]: hasClaimables ? t`Claims (1)` : t`Claims`,
-              }}
+              options={tabOptions}
+              optionLabels={tabLabels}
               option={listSection}
               onChange={(section) => setListSection(section)}
               type="inline"

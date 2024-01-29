@@ -23,6 +23,7 @@ import { MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/s
 import { getByKey } from "lib/objects";
 import { helperToast } from "lib/helperToast";
 import { useSetToTokenAddress, useTradeType } from "context/SyntheticsStateContext/selectors";
+import { BigNumber } from "ethers";
 
 export type Props = {
   tradePageVersion: number;
@@ -176,6 +177,21 @@ export function TVChart({
     [period, setPeriod]
   );
 
+  const chartTokenProp = useMemo(
+    () =>
+      chartToken
+        ? {
+            symbol: chartToken.symbol,
+            ...chartToken.prices,
+          }
+        : {
+            symbol: "",
+            minPrice: BigNumber.from(0),
+            maxPrice: BigNumber.from(0),
+          },
+    [chartToken]
+  );
+
   return (
     <div className="ExchangeChart tv">
       <div className="ExchangeChart-header">
@@ -246,10 +262,7 @@ export function TVChart({
             dataProvider={dataProvider}
             period={period}
             setPeriod={setPeriod}
-            chartToken={{
-              symbol: chartToken.symbol,
-              ...chartToken.prices,
-            }}
+            chartToken={chartTokenProp}
             supportedResolutions={SUPPORTED_RESOLUTIONS_V2}
             tradePageVersion={tradePageVersion}
             setTradePageVersion={setTradePageVersion}
