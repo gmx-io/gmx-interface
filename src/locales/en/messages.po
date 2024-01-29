@@ -881,11 +881,9 @@ msgid "Claiming..."
 msgstr "Claiming..."
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims"
 msgstr "Claims"
 
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims (1)"
 msgstr "Claims (1)"
@@ -3637,7 +3635,6 @@ msgid "Positions ({0})"
 msgstr "Positions ({0})"
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Positions{0}"
 msgstr "Positions{0}"
 
@@ -5137,7 +5134,6 @@ msgid "Traders Referred on Avalanche Fuji"
 msgstr "Traders Referred on Avalanche Fuji"
 
 #: src/pages/Exchange/Exchange.js
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trades"
 msgstr "Trades"
