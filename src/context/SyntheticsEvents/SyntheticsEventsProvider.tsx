@@ -15,7 +15,7 @@ import {
   isMarketOrderType,
 } from "domain/synthetics/orders";
 import { getPositionKey } from "domain/synthetics/positions";
-import { useTokensData } from "domain/synthetics/tokens";
+import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
@@ -80,7 +80,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     debugId: "V2 Events",
   });
 
-  const { tokensData } = useTokensData(chainId);
+  const { tokensData } = useTokensDataRequest(chainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
 
   const [orderStatuses, setOrderStatuses] = useState<OrderStatuses>({});

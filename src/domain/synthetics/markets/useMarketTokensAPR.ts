@@ -8,7 +8,7 @@ import { getSyntheticsGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
 import useSWR from "swr";
 import { useMarketsInfoRequest } from ".";
-import { useTokensData } from "../tokens";
+import { useTokensDataRequest } from "../tokens";
 import { MarketTokensAPRData } from "./types";
 import { useMarketTokensData } from "./useMarketTokensData";
 import { getByKey } from "lib/objects";
@@ -40,7 +40,7 @@ function useMarketAddresses(chainId: number) {
 
 function useIncentivesBonusApr(chainId: number): MarketTokensAPRData {
   const rawIncentivesStats = useIncentiveStats(chainId);
-  const { tokensData } = useTokensData(chainId);
+  const { tokensData } = useTokensDataRequest(chainId);
   const marketAddresses = useMarketAddresses(chainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
 
