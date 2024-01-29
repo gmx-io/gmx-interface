@@ -1,5 +1,5 @@
 {
-    "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended",  "plugin:react-hooks/recommended", "plugin:react/all", "plugin:react-perf/recommended"],
+    "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended",  "plugin:react-hooks/recommended", "plugin:react/recommended", "plugin:react-perf/recommended"],
     "rules": {
       "no-undef": "error",
       "no-console": "warn",
@@ -41,32 +41,7 @@
       "react/jsx-no-useless-fragment": "off",
       "react/require-default-props": "off",
       "react/jsx-handler-names": "off",
-      
-      
-      /* useless */
-      "react/display-name": "off",
-      "react/jsx-indent": "off",
-      "react/jsx-max-depth": "off",
-      "react/jsx-newline": "off",
-      "react/jsx-no-literals": "off",
-      "react/jsx-one-expression-per-line": "off",
-      "react/jsx-indent-props": "off",
-      "react/jsx-sort-props": "off",
-      "react/forbid-component-props": "off",
-      "react/jsx-max-props-per-line": "off",
-      "react/jsx-curly-brace-presence": "off",
-      "react/jsx-pascal-case": "off",
-      "react/jsx-filename-extension": "off",
-      "react/self-closing-comp": "off",
-      "react/jsx-child-element-spacing": "off",
-      "react/jsx-curly-newline": "off",
-      "react/jsx-boolean-value": "off",
-      "react/jsx-props-no-spreading": "off",
-      "react/button-has-type": "off",
-      "react/prefer-read-only-props": "off",
-      "react/destructuring-assignment": "off",
-      "react/function-component-definition": "off",
-      "react/jsx-closing-tag-location": "off"
+      "react/display-name": "off"
     },
     "env": {
       "browser": true,
