@@ -21,7 +21,6 @@ type Props = {
   isHandlerDisabled?: boolean;
   fitHandleWidth?: boolean;
   closeOnDoubleClick?: boolean;
-  isInsideModal?: boolean;
   shouldStopPropagation?: boolean;
 };
 

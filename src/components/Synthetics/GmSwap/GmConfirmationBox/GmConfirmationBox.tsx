@@ -41,9 +41,6 @@ type Props = {
   error?: string;
   isDeposit: boolean;
   executionFee?: ExecutionFee;
-  isHighPriceImpact: boolean;
-  isHighPriceImpactAccepted: boolean;
-  setIsHighPriceImpactAccepted: (value: boolean) => void;
   onSubmitted: () => void;
   onClose: () => void;
   setPendingTxns: (txns: any) => void;

@@ -49,7 +49,7 @@ export default function PositionsOverview() {
           {positions &&
             positions
               .filter((p) => p.danger)
-              .map((position) => {
+              .map((position, i) => {
                 const { size, account, collateral, fee, danger } = position;
 
                 const diffToLiq = position.collateral.sub(position.fee);
@@ -58,7 +58,7 @@ export default function PositionsOverview() {
                 const hoursToLiq = diffToLiq.div(feesPerHour);
                 const liqTime = hoursToLiq.toNumber() * 60 * 60 + Date.now() / 1000;
                 return (
-                  <tr>
+                  <tr key={i}>
                     <td>{account}</td>
                     <td>${formatAmount(size, USD_DECIMALS, 2, true)}</td>
                     <td>${formatAmount(collateral, USD_DECIMALS, 2, true)}</td>

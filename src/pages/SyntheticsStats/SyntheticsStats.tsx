@@ -66,6 +66,14 @@ function formatFactor(factor: BigNumber) {
   return formatAmount(factor, 30, factorDecimals);
 }
 
+const CSV_EXCLUDED_FIELDS = [
+  "longToken",
+  "shortToken",
+  "indexToken",
+  "longPoolAmountAdjustment",
+  "shortPoolAmountAdjustment",
+];
+
 export function SyntheticsStats() {
   const { chainId } = useChainId();
 
@@ -1066,13 +1074,7 @@ export function SyntheticsStats() {
         </table>
       </div>
       <DownloadAsCsv
-        excludedFields={[
-          "longToken",
-          "shortToken",
-          "indexToken",
-          "longPoolAmountAdjustment",
-          "shortPoolAmountAdjustment",
-        ]}
+        excludedFields={CSV_EXCLUDED_FIELDS}
         data={markets}
         fileName={`gmx_v2_markets_${format(new Date(), "yyyy-MM-dd")}`}
         className="mt-md download-csv"

@@ -351,15 +351,18 @@ export function PositionItem(p: Props) {
                 handle={renderOrderText(order)}
                 position="right-bottom"
                 handleClassName={cx("position-order-error", {
-                  "level-warning": order.errorLevel === 'warning',
-                  "level-error": order.errorLevel === 'error',
+                  "level-warning": order.errorLevel === "warning",
+                  "level-error": order.errorLevel === "error",
                 })}
                 renderContent={() =>
                   order.errors.map((error) => (
-                    <span key={error.msg} className={cx("mb-xs", "position-order-error", {
-                      "level-warning": order.errorLevel === 'warning',
-                      "level-error": order.errorLevel === 'error',
-                    })}>
+                    <span
+                      key={error.msg}
+                      className={cx("mb-xs", "position-order-error", {
+                        "level-warning": order.errorLevel === "warning",
+                        "level-error": order.errorLevel === "error",
+                      })}
+                    >
                       {error.msg}
                     </span>
                   ))
@@ -368,7 +371,11 @@ export function PositionItem(p: Props) {
             </div>
           );
         }
-        return <div className="Position-list-order">{renderOrderText(order)}</div>;
+        return (
+          <div key={getKey(order)} className="Position-list-order">
+            {renderOrderText(order)}
+          </div>
+        );
       });
     }
 
@@ -750,4 +757,13 @@ export function PositionItem(p: Props) {
   }
 
   return p.isLarge ? renderLarge() : renderSmall();
+}
+
+function getKey(order: PositionOrderInfo) {
+  return (
+    order.initialCollateralToken.address +
+    order.orderType +
+    order.triggerPrice.toString() +
+    order.targetCollateralToken.address
+  );
 }

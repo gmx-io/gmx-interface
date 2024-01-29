@@ -85,8 +85,8 @@ export function OrderEditor(p: Props) {
   const [sizeInputValue, setSizeInputValue] = useState("");
   const sizeDeltaUsd = parseValue(sizeInputValue || "0", USD_DECIMALS);
 
-  const [triggerPirceInputValue, setTriggerPriceInputValue] = useState("");
-  const triggerPrice = parseValue(triggerPirceInputValue || "0", USD_DECIMALS)!;
+  const [triggerPriceInputValue, setTriggerPriceInputValue] = useState("");
+  const triggerPrice = parseValue(triggerPriceInputValue || "0", USD_DECIMALS)!;
 
   const acceptablePrice = useMemo(() => {
     if (isSwapOrderType(p.order.orderType)) {
@@ -414,7 +414,7 @@ export function OrderEditor(p: Props) {
               onClickTopRightLabel={() =>
                 setTriggerPriceInputValue(formatAmount(markPrice, USD_DECIMALS, indexPriceDecimals || 2))
               }
-              inputValue={triggerPirceInputValue}
+              inputValue={triggerPriceInputValue}
               onInputValueChange={(e) => setTriggerPriceInputValue(e.target.value)}
             >
               USD

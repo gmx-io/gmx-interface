@@ -1710,6 +1710,21 @@ export default function SwapBox(props) {
     feeBps = feeBasisPoints;
   }
 
+  const maxInValue = useMemo(
+    () => [
+      `${formatAmount(maxFromTokenIn, fromTokenInfo.decimals, 0, true)} ${fromTokenInfo.symbol}`,
+      `($${formatAmount(maxFromTokenInUSD, USD_DECIMALS, 0, true)})`,
+    ],
+    [fromTokenInfo.decimals, fromTokenInfo.symbol, maxFromTokenIn, maxFromTokenInUSD]
+  );
+  const maxOutValue = useMemo(
+    () => [
+      `${formatAmount(maxToTokenOut, toTokenInfo.decimals, 0, true)} ${toTokenInfo.symbol}`,
+      `($${formatAmount(maxToTokenOutUSD, USD_DECIMALS, 0, true)})`,
+    ],
+    [maxToTokenOut, maxToTokenOutUSD, toTokenInfo.decimals, toTokenInfo.symbol]
+  );
+
   if (!fromToken || !toToken) {
     return null;
   }
@@ -1956,7 +1971,7 @@ export default function SwapBox(props) {
             )}
           </div>
           {showFromAndToSection && (
-            <React.Fragment>
+            <>
               <BuyInputSection
                 topLeftLabel={t`Pay`}
                 topLeftValue={fromUsdMin && `$${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)}`}
@@ -2011,7 +2026,7 @@ export default function SwapBox(props) {
                   showBalances={false}
                 />
               </BuyInputSection>
-            </React.Fragment>
+            </>
           )}
           {showTriggerRatioSection && (
             <BuyInputSection
@@ -2286,20 +2301,8 @@ export default function SwapBox(props) {
                   renderContent={() => {
                     return (
                       <div>
-                        <StatsTooltipRow
-                          label={t`Max ${fromTokenInfo.symbol} in`}
-                          value={[
-                            `${formatAmount(maxFromTokenIn, fromTokenInfo.decimals, 0, true)} ${fromTokenInfo.symbol}`,
-                            `($${formatAmount(maxFromTokenInUSD, USD_DECIMALS, 0, true)})`,
-                          ]}
-                        />
-                        <StatsTooltipRow
-                          label={t`Max ${toTokenInfo.symbol} out`}
-                          value={[
-                            `${formatAmount(maxToTokenOut, toTokenInfo.decimals, 0, true)} ${toTokenInfo.symbol}`,
-                            `($${formatAmount(maxToTokenOutUSD, USD_DECIMALS, 0, true)})`,
-                          ]}
-                        />
+                        <StatsTooltipRow label={t`Max ${fromTokenInfo.symbol} in`} value={maxInValue} />
+                        <StatsTooltipRow label={t`Max ${toTokenInfo.symbol} out`} value={maxOutValue} />
                       </div>
                     );
                   }}

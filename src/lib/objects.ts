@@ -13,3 +13,7 @@ export function getByKey<T>(obj?: { [key: string]: T }, key?: string): T | undef
 
   return obj[key];
 }
+
+export const EMPTY_OBJECT = {};
+
+export const EMPTY_ARRAY = [];

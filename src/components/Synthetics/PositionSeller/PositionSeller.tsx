@@ -65,7 +65,7 @@ import {
   formatUsd,
   parseValue,
 } from "lib/numbers";
-import { getByKey } from "lib/objects";
+import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { museNeverExist } from "lib/types";
 import { usePrevious } from "lib/usePrevious";
 import useWallet from "lib/wallets/useWallet";
@@ -127,7 +127,7 @@ export function PositionSeller(p: Props) {
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
 
   const [defaultTriggerAcceptablePriceImpactBps, setDefaultTriggerAcceptablePriceImpactBps] = useState<BigNumber>();
-  const [selectedTriggerAcceptablePriceImpactBps, setSelectedAcceptablePriceImapctBps] = useState<BigNumber>();
+  const [selectedTriggerAcceptablePriceImpactBps, setSelectedTriggerAcceptablePriceImpactBps] = useState<BigNumber>();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -543,7 +543,7 @@ export function PositionSeller(p: Props) {
         notAvailable={!triggerPriceInputValue || decreaseAmounts.triggerOrderType === OrderType.StopLossDecrease}
         defaultAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
         fees={fees}
-        setSelectedAcceptablePriceImpactBps={setSelectedAcceptablePriceImapctBps}
+        setSelectedAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
       />
     );
   })();
@@ -655,11 +655,10 @@ export function PositionSeller(p: Props) {
             })}
             chainId={chainId}
             showBalances={false}
-            disableBodyScrollLock={true}
             infoTokens={availableTokensOptions?.infoTokens}
             tokenAddress={receiveToken.address}
             onSelectToken={(token) => setReceiveTokenAddress(token.address)}
-            tokens={availableTokensOptions?.swapTokens || []}
+            tokens={availableTokensOptions?.swapTokens || EMPTY_ARRAY}
             showTokenImgInDropdown={true}
             selectedTokenLabel={
               <span className="PositionSelector-selected-receive-token">

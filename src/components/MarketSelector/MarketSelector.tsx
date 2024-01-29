@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
-import { MarketInfo, MarketsInfoData, getMarketIndexName } from "domain/synthetics/markets";
+import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
 import { TokensData, convertToUsd } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { importImage } from "lib/legacy";
@@ -18,9 +18,7 @@ type Props = {
   className?: string;
   selectedIndexName?: string;
   markets: MarketInfo[];
-  marketsInfoData?: MarketsInfoData;
   marketTokensData?: TokensData;
-  disabled?: boolean;
   showBalances?: boolean;
   selectedMarketLabel?: ReactNode | string;
   isSideMenu?: boolean;

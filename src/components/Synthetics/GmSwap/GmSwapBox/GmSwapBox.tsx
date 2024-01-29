@@ -985,7 +985,6 @@ export function GmSwapBox(p: Props) {
               selectedMarketAddress={marketAddress}
               markets={sortedMarketsInfoByIndexToken}
               marketTokensData={marketTokensData}
-              marketsInfoData={marketsInfoData}
               isSideMenu
               showBalances
               showAllPools
@@ -1011,7 +1010,6 @@ export function GmSwapBox(p: Props) {
                 selectedMarketAddress={marketAddress}
                 markets={markets}
                 marketTokensData={marketTokensData}
-                marketsInfoData={marketsInfoData}
                 isSideMenu
                 showBalances
                 onSelectMarket={(marketInfo) => {
@@ -1095,9 +1093,6 @@ export function GmSwapBox(p: Props) {
         onClose={() => {
           setStage("swap");
         }}
-        isHighPriceImpact={isHighPriceImpact!}
-        isHighPriceImpactAccepted={isHighPriceImpactAccepted}
-        setIsHighPriceImpactAccepted={setIsHighPriceImpactAccepted}
         shouldDisableValidation={shouldDisableValidation}
       />
     </div>

@@ -138,6 +138,8 @@ const tradeTypeIcons = {
   [TradeType.Swap]: swapImg,
 };
 
+const emptyArray = [];
+
 export function TradeBox(p: Props) {
   const {
     tokensData,
@@ -1075,7 +1077,7 @@ export function TradeBox(p: Props) {
                 label={t`Market`}
                 className="SwapBox-info-dropdown"
                 selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}
-                markets={sortedAllMarkets || []}
+                markets={sortedAllMarkets || emptyArray}
                 isSideMenu
                 onSelectMarket={(indexName, marketInfo) => onSelectToTokenAddress(marketInfo.indexToken.address)}
               />

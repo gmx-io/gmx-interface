@@ -576,36 +576,6 @@ const selectMarkPrice = createSelector([selectToToken, selectTradeFlags], (toTok
   return getMarkPrice({ prices: toToken.prices, isIncrease: tradeFlags.isIncrease, isLong: tradeFlags.isLong });
 });
 
-// const { markRatio, triggerRatio } = useMemo(() => {
-//   if (!isSwap || !fromToken || !toToken || !fromTokenPrice || !markPrice) {
-//     return {};
-//   }
-
-//   const markRatio = getTokensRatioByPrice({
-//     fromToken,
-//     toToken,
-//     fromPrice: fromTokenPrice,
-//     toPrice: markPrice,
-//   });
-
-//   const triggerRatioValue = parseValue(triggerRatioInputValue, USD_DECIMALS);
-
-//   if (!triggerRatioValue) {
-//     return { markRatio };
-//   }
-
-//   const triggerRatio: TokensRatio = {
-//     ratio: triggerRatioValue?.gt(0) ? triggerRatioValue : markRatio.ratio,
-//     largestToken: markRatio.largestToken,
-//     smallestToken: markRatio.smallestToken,
-//   };
-
-//   return {
-//     markRatio,
-//     triggerRatio,
-//   };
-// }, [fromToken, fromTokenPrice, isSwap, markPrice, toToken, triggerRatioInputValue]);
-
 const selectRatios = createSelector(
   [selectTradeFlags, selectFromToken, selectToToken, selectMarkPrice, selectTriggerRatioInputValue],
   (tradeFlags, fromToken, toToken, markPrice, triggerRatioInputValue) => {
@@ -743,7 +713,7 @@ const makeSelectNextPositionValues = (
         return undefined;
       }
 
-      const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
+      const closeSizeUsd = parseValue(closeSizeInputValue ?? "0", USD_DECIMALS)!;
 
       if (tradeFlags.isIncrease && increaseAmounts?.acceptablePrice && fromTokenAmount.gt(0)) {
         return getNextPositionValuesForIncreaseTrade({

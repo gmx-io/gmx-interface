@@ -184,7 +184,6 @@ export function TVChart({
             <ChartTokenSelector
               chainId={chainId}
               selectedToken={selectedTokenOption}
-              className="chart-token-selector"
               onSelectToken={onSelectTokenOption}
               options={tokenOptions}
               avaialbleTokenOptions={avaialbleTokenOptions}

@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import TooltipComponent from "components/Tooltip/Tooltip";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Cell, Pie, PieChart, Tooltip } from "recharts";
 import useSWR from "swr";
@@ -391,23 +391,32 @@ export default function DashboardV2() {
 
   let notStakedPercent = 100 - stakedPercent - liquidityPercent;
 
-  let gmxDistributionData = [
-    {
-      name: t`staked`,
-      value: stakedPercent,
-      color: "#4353fa",
-    },
-    {
-      name: t`in liquidity`,
-      value: liquidityPercent,
-      color: "#0598fa",
-    },
-    {
-      name: t`not staked`,
-      value: notStakedPercent,
-      color: "#5c0af5",
-    },
-  ];
+  let gmxDistributionData = useMemo(() => {
+    let arr = [
+      {
+        name: t`staked`,
+        value: stakedPercent,
+        color: "#4353fa",
+      },
+      {
+        name: t`in liquidity`,
+        value: liquidityPercent,
+        color: "#0598fa",
+      },
+      {
+        name: t`not staked`,
+        value: notStakedPercent,
+        color: "#5c0af5",
+      },
+    ];
+
+    arr = arr.sort(function (a, b) {
+      if (a.value < b.value) return 1;
+      else return -1;
+    });
+
+    return arr;
+  }, [liquidityPercent, notStakedPercent, stakedPercent]);
 
   const totalStatsStartDate = chainId === AVALANCHE ? t`06 Jan 2022` : t`01 Sep 2021`;
 
@@ -438,11 +447,6 @@ export default function DashboardV2() {
   });
 
   glpPool = glpPool.sort(function (a, b) {
-    if (a.value < b.value) return 1;
-    else return -1;
-  });
-
-  gmxDistributionData = gmxDistributionData.sort(function (a, b) {
     if (a.value < b.value) return 1;
     else return -1;
   });

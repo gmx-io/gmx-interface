@@ -239,7 +239,7 @@ export default function PositionSeller(props) {
     savedRecieveTokenAddress ? toTokens.find((token) => token.address === savedRecieveTokenAddress) : undefined
   );
 
-  const ORDER_OPTIONS = [MARKET, STOP];
+  const ORDER_OPTIONS = useMemo(() => [MARKET, STOP], []);
   const ORDER_OPTION_LABELS = {
     [MARKET]: t`Market`,
     [STOP]: t`Trigger`,
@@ -1285,7 +1285,7 @@ export default function PositionSeller(props) {
                 {formatAmount(receiveSpreadInfo.value.mul(100), USD_DECIMALS, 2, true)}%
               </ExchangeInfoRow>
             )}
-            <div className={["Exchange-info-row PositionSeller-receive-row", !showReceiveSpread ? "top-line" : ""]}>
+            <div className={cx("Exchange-info-row PositionSeller-receive-row", !showReceiveSpread ? "top-line" : "")}>
               <div className="Exchange-info-label">
                 <Trans>Receive</Trans>
               </div>
@@ -1346,6 +1346,7 @@ export default function PositionSeller(props) {
                               <br />
                               <StatsTooltipRow
                                 label={t`Max ${collateralInfo.symbol} in`}
+                                // eslint-disable-next-line react-perf/jsx-no-new-array-as-prop
                                 value={[
                                   `${formatAmount(maxIn, collateralInfo.decimals, 0, true)} ${collateralInfo.symbol}`,
                                   `($${formatAmount(maxInUsd, USD_DECIMALS, 0, true)})`,
@@ -1354,6 +1355,7 @@ export default function PositionSeller(props) {
                               <br />
                               <StatsTooltipRow
                                 label={t`Max ${tokenOptionInfo.symbol} out`}
+                                // eslint-disable-next-line react-perf/jsx-no-new-array-as-prop
                                 value={[
                                   `${formatAmount(maxOut, tokenOptionInfo.decimals, 2, true)} ${
                                     tokenOptionInfo.symbol

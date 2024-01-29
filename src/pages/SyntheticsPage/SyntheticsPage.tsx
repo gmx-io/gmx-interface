@@ -308,11 +308,13 @@ tradeFlags // chartToken, availableChartTokens
   return (
     <div className="Exchange page-layout">
       <Helmet>
-        <style type="text/css">{`
+        <style type="text/css">
+          {`
             :root {
               --main-bg-color: #08091b;                   
              {
-         `}</style>
+         `}
+        </style>
       </Helmet>
       <div className="Exchange-content">
         <div className="Exchange-left">

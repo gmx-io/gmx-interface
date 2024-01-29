@@ -28,7 +28,6 @@ type Props = {
   selectedToken: Token | undefined;
   onSelectToken: (address: string, marketAddress?: string, tradeType?: TradeType) => void;
   options: Token[] | undefined;
-  className?: string;
   avaialbleTokenOptions: AvailableTokenOptions;
   positionsInfo?: PositionsInfoData;
 };

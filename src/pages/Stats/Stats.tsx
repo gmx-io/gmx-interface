@@ -229,7 +229,7 @@ export default function Stats() {
             }
 
             return (
-              <tr>
+              <tr key={tokenInfo.address}>
                 <td>{tokenInfo.symbol}</td>
                 <td>
                   <>${formatAmountHuman(tokenInfo.managedUsd, 30)}</>
