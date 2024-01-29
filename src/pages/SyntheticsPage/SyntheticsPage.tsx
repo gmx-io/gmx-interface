@@ -16,7 +16,6 @@ import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
 import { getSyntheticsListSectionKey } from "config/localStorage";
 import { getToken } from "config/tokens";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
-import { useOrdersInfo } from "domain/synthetics/orders/useOrdersInfo";
 import { PositionInfo } from "domain/synthetics/positions";
 import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
@@ -37,9 +36,11 @@ import {
   useAvailableTokensOptions,
   useCollateralAddress,
   useFromTokenAddress,
+  useIsOrdersLoading,
   useIsPositionsLoading,
   useMarketAddress,
   useMarketsInfoData,
+  useOrdersInfoData,
   usePositionsInfoData,
   useSavedIsPnlInLeverage,
   useSavedShowPnlAfterFees,
@@ -93,15 +94,10 @@ export function SyntheticsPage(p: Props) {
   const tokensData = useTokensData();
   const positionsInfoData = usePositionsInfoData();
   const isPositionsLoading = useIsPositionsLoading();
+  const ordersInfoData = useOrdersInfoData();
+  const isOrdersLoading = useIsOrdersLoading();
 
-  const { ordersInfoData, isLoading: isOrdersLoading } = useOrdersInfo(chainId, {
-    account,
-    marketsInfoData,
-    positionsInfoData,
-    tokensData,
-  });
   const [isSettling, setIsSettling] = useState(false);
-
   const [listSection, setListSection] = useLocalStorageSerializeKey(
     getSyntheticsListSectionKey(chainId),
     ListSection.Positions
@@ -118,7 +114,7 @@ export function SyntheticsPage(p: Props) {
   const { isSwap } = tradeFlags;
   const { indexTokens, sortedIndexTokensWithPoolValue, swapTokens, sortedLongAndShortTokens } = availableTokensOptions;
 
-  // FIXME selector
+  // FIXME selector?
   const { chartToken, availableChartTokens } = useMemo(() => {
     if (!fromTokenAddress || !toTokenAddress) {
       return {};

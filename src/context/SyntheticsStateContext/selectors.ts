@@ -113,6 +113,7 @@ const selectSetKeepLeverage = (s: SyntheticsState) => s.trade.setKeepLeverage;
 // globals
 const selectAccount = (s: SyntheticsState) => s.globals.account;
 const selectOrdersInfoData = (s: SyntheticsState) => s.globals.ordersInfo.ordersInfoData;
+const selectIsOrdersLoading = (s: SyntheticsState) => s.globals.ordersInfo.isLoading;
 const selectPositionsInfoData = (s: SyntheticsState) => s.globals.positionsInfo.positionsInfoData;
 const selectIsPositionsLoading = (s: SyntheticsState) => s.globals.positionsInfo.isLoading;
 const selectMarketsInfoData = (s: SyntheticsState) => s.globals.marketsInfo.marketsInfoData;
@@ -787,6 +788,8 @@ export const useSwitchTokenAddresses = () => useSelector(selectSwitchTokenAddres
 
 export const useMarketsInfoData = () => useSelector(selectMarketsInfoData);
 export const useTokensData = () => useSelector(selectTokensData);
+export const useOrdersInfoData = () => useSelector(selectOrdersInfoData);
+export const useIsOrdersLoading = () => useSelector(selectIsOrdersLoading);
 export const usePricesUpdatedAt = () => useSelector(selectPricesUpdatedAt);
 export const useUserReferralInfo = () => useSelector(selectUserReferralInfo);
 export const useSavedIsPnlInLeverage = () => useSelector(selectSavedIsPnlInLeverage);

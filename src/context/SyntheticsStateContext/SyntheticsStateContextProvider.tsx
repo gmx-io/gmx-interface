@@ -2,7 +2,7 @@ import { SettingsContextType, useSettings } from "context/SettingsContext/Settin
 import { UserReferralInfo, useUserReferralInfoRequest } from "domain/referrals";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { MarketsInfoResult, MarketsResult, useMarkets, useMarketsInfoRequest } from "domain/synthetics/markets";
-import { AggregatedOrdersDataResult, useOrdersInfo } from "domain/synthetics/orders/useOrdersInfo";
+import { AggregatedOrdersDataResult, useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
 import {
   PositionsConstantsResult,
   PositionsInfoResult,
@@ -65,7 +65,7 @@ export function SyntheticsStateContextProvider({
     skipLocalReferralCode,
     tokensData: marketsInfo.tokensData,
   });
-  const ordersInfo = useOrdersInfo(chainId, {
+  const ordersInfo = useOrdersInfoRequest(chainId, {
     account,
     marketsInfoData: marketsInfo.marketsInfoData,
     positionsInfoData: positionsInfo.positionsInfoData,

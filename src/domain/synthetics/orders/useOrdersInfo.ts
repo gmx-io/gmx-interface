@@ -13,7 +13,7 @@ export type AggregatedOrdersDataResult = {
   isLoading: boolean;
 };
 
-export function useOrdersInfo(
+export function useOrdersInfoRequest(
   chainId: number,
   p: {
     marketsInfoData?: MarketsInfoData;

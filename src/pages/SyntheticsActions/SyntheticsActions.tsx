@@ -11,20 +11,18 @@ import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import {
+  useIsOrdersLoading,
   useIsPositionsLoading,
   useMarketsInfoData,
+  useOrdersInfoData,
   usePositionsInfoData,
   useSavedIsPnlInLeverage,
   useSavedShowPnlAfterFees,
   useTokensData,
 } from "context/SyntheticsStateContext/selectors";
-import { useOrdersInfo } from "domain/synthetics/orders/useOrdersInfo";
-import { useChainId } from "lib/chains";
 
 export default function SyntheticsActions() {
   const { account: paramsAccount } = useParams<{ account?: string }>();
-
-  const { chainId } = useChainId();
   const savedIsPnlInLeverage = useSavedIsPnlInLeverage();
   const savedShowPnlAfterFees = useSavedShowPnlAfterFees();
 
@@ -38,12 +36,8 @@ export default function SyntheticsActions() {
   const tokensData = useTokensData();
   const positionsInfoData = usePositionsInfoData();
   const isPositionsLoading = useIsPositionsLoading();
-  const { ordersInfoData, isLoading: isOrdersLoading } = useOrdersInfo(chainId, {
-    account: checkSummedAccount,
-    marketsInfoData,
-    positionsInfoData,
-    tokensData,
-  });
+  const ordersInfoData = useOrdersInfoData();
+  const isOrdersLoading = useIsOrdersLoading();
 
   return (
     <div className="default-container page-layout">
