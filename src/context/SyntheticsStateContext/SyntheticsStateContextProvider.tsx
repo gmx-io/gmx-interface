@@ -14,7 +14,7 @@ import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 import { ReactNode, useMemo } from "react";
-import { Context, createContext, useContextSelector } from "use-context-selector";
+import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 import { useUserReferralInfo } from "./selectors";
 
 export type SyntheticsState = {
@@ -38,10 +38,6 @@ export type SyntheticsState = {
 };
 
 const StateCtx = createContext<SyntheticsState | null>(null);
-
-// export function useSyntheticsState() {
-//   return useContext(StateCtx) as SyntheticsState;
-// }
 
 export function SyntheticsStateContextProvider({
   children,
@@ -122,5 +118,11 @@ export function SyntheticsStateContextProvider({
 }
 
 export function useSyntheticsStateSelector<Selected>(selector: (s: SyntheticsState) => Selected) {
+  const value = useContext(StateCtx);
+
+  if (!value) {
+    throw new Error("Used useSyntheticsStateSelector outside of SyntheticsStateContextProvider");
+  }
+
   return useContextSelector(StateCtx as Context<SyntheticsState>, selector) as Selected;
 }
