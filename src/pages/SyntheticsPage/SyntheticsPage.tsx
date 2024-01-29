@@ -26,7 +26,6 @@ import { formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { useMarketsInfo } from "domain/synthetics/markets";
 import Helmet from "react-helmet";
 
 import { SettleAccruedFundingFeeModal } from "components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal";
@@ -40,10 +39,13 @@ import {
   useCollateralAddress,
   useFromTokenAddress,
   useMarketAddress,
+  useMarketsInfoData,
+  usePricesUpdatedAt,
   useSavedIsPnlInLeverage,
   useSavedShowPnlAfterFees,
   useSetActivePosition,
   useToTokenAddress,
+  useTokensData,
   useTradeFlags,
 } from "context/SyntheticsStateContext/selectors";
 import { getMarketIndexName, getMarketPoolName, getTotalClaimableFundingUsd } from "domain/synthetics/markets";
@@ -85,9 +87,11 @@ export function SyntheticsPage(p: Props) {
   } = p;
   const { chainId } = useChainId();
   const { signer, account } = useWallet();
-  const { marketsInfoData, tokensData, pricesUpdatedAt } = useMarketsInfo(chainId);
   const savedIsPnlInLeverage = useSavedIsPnlInLeverage();
   const savedShowPnlAfterFees = useSavedShowPnlAfterFees();
+  const marketsInfoData = useMarketsInfoData();
+  const tokensData = useTokensData();
+  const pricesUpdatedAt = usePricesUpdatedAt();
 
   const { positionsInfoData, isLoading: isPositionsLoading } = usePositionsInfo(chainId, {
     marketsInfoData,
@@ -109,22 +113,6 @@ export function SyntheticsPage(p: Props) {
     getSyntheticsListSectionKey(chainId),
     ListSection.Positions
   );
-
-  /*
-*not used*
-tradeFlags
-
-*needs refactoring*
-fromTokenAddress // fromToken
-toTokenAddress // toToken
-marketAddress // selectedPositionKey
-collateralAddress // selectedPositionKey
-
-availableTokensOptions // chartToken, availableChartTokens
-
-*used*
-tradeFlags // chartToken, availableChartTokens
-*/
 
   const tradeFlags = useTradeFlags();
   const fromTokenAddress = useFromTokenAddress();

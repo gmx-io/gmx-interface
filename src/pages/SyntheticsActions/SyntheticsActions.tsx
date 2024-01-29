@@ -7,24 +7,21 @@ import { Trans, t } from "@lingui/macro";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
-import { useMarketsInfo } from "domain/synthetics/markets";
+import { useMarketsInfoRequest } from "domain/synthetics/markets";
 import { useOrdersInfo } from "domain/synthetics/orders/useOrdersInfo";
 import { usePositionsInfo } from "domain/synthetics/positions";
 import { useChainId } from "lib/chains";
 import PageTitle from "components/PageTitle/PageTitle";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
+import { useSavedIsPnlInLeverage, useSavedShowPnlAfterFees } from "context/SyntheticsStateContext/selectors";
 
-export default function SyntheticsActions({
-  savedIsPnlInLeverage,
-  savedShowPnlAfterFees,
-}: {
-  savedIsPnlInLeverage: boolean;
-  savedShowPnlAfterFees: boolean;
-}) {
+export default function SyntheticsActions() {
   const { account: paramsAccount } = useParams<{ account?: string }>();
 
   const { chainId } = useChainId();
+  const savedIsPnlInLeverage = useSavedIsPnlInLeverage();
+  const savedShowPnlAfterFees = useSavedShowPnlAfterFees();
 
   let checkSummedAccount: string | undefined;
 
@@ -32,7 +29,7 @@ export default function SyntheticsActions({
     checkSummedAccount = ethers.utils.getAddress(paramsAccount);
   }
 
-  const { marketsInfoData, tokensData, pricesUpdatedAt } = useMarketsInfo(chainId);
+  const { marketsInfoData, tokensData, pricesUpdatedAt } = useMarketsInfoRequest(chainId);
   const { positionsInfoData, isLoading: isPositionsLoading } = usePositionsInfo(chainId, {
     marketsInfoData,
     tokensData,

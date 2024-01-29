@@ -7,7 +7,6 @@ import {
   MarketInfo,
   getMarketPoolName,
   getAvailableLiquidity,
-  useMarketsInfo,
   isMarketAdaptiveFundingActive,
 } from "domain/synthetics/markets";
 import { TokenData, getMidPrice } from "domain/synthetics/tokens";
@@ -24,6 +23,7 @@ import PageTitle from "components/PageTitle/PageTitle";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketListSkeleton } from "components/Skeleton/Skeleton";
 import { getPositiveOrNegativeClass } from "lib/utils";
+import { useMarketsInfoData } from "context/SyntheticsStateContext/selectors";
 
 function formatFundingRate(fundingRate?: BigNumber) {
   if (!fundingRate) {
@@ -38,7 +38,7 @@ function formatFundingRate(fundingRate?: BigNumber) {
 export function MarketsList() {
   const { chainId } = useChainId();
 
-  const { marketsInfoData } = useMarketsInfo(chainId);
+  const marketsInfoData = useMarketsInfoData();
 
   const isMobile = useMedia("(max-width: 1100px)");
 

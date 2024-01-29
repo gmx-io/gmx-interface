@@ -46,7 +46,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { getIcons } from "config/icons";
 import { getServerUrl } from "config/backend";
 import { getIsSyntheticsSupported } from "config/features";
-import { getTotalGmInfo, useMarketTokensData, useMarketsInfo } from "domain/synthetics/markets";
+import { getTotalGmInfo, useMarketTokensData, useMarketsInfoRequest } from "domain/synthetics/markets";
 import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
 import { approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -1023,7 +1023,7 @@ export default function StakeV2({ setPendingTxns }) {
     feeGlpTrackerAddress,
   ];
 
-  const { marketsInfoData, tokensData } = useMarketsInfo(chainId);
+  const { marketsInfoData, tokensData } = useMarketsInfoRequest(chainId);
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
   const { marketsTokensAPRData, marketsTokensIncentiveAprData } = useMarketTokensAPR(chainId, {
     marketsInfoData,

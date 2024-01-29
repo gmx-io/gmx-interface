@@ -116,6 +116,7 @@ const selectOrdersInfoData = (s: SyntheticsState) => s.globals.ordersInfo.orders
 const selectPositionsInfoData = (s: SyntheticsState) => s.globals.positionsInfo.positionsInfoData;
 const selectMarketsInfoData = (s: SyntheticsState) => s.globals.marketsInfo.marketsInfoData;
 const selectTokensData = (s: SyntheticsState) => s.globals.marketsInfo.tokensData;
+const selectPricesUpdatedAt = (s: SyntheticsState) => s.globals.marketsInfo.pricesUpdatedAt;
 const selectUiFeeFactor = (s: SyntheticsState) => s.globals.uiFeeFactor;
 const selectUserReferralInfo = (s: SyntheticsState) => s.globals.userReferralInfo;
 const selectChainId = (s: SyntheticsState) => s.globals.chainId;
@@ -775,10 +776,12 @@ export const useSetMarketAddress = () => useSelector(selectSetMarketAddress);
 export const useSetCollateralAddress = () => useSelector(selectSetCollateralAddress);
 export const useSetActivePosition = () => useSelector(selectSetActivePosition);
 export const useSwitchTokenAddresses = () => useSelector(selectSwitchTokenAddresses);
-export const useSavedIsPnlInLeverage = () => useSelector(selectSavedIsPnlInLeverage);
-export const useSavedShowPnlAfterFees = () => useSelector(selectSavedShowPnlAfterFees);
 
 export const useMarketsInfoData = () => useSelector(selectMarketsInfoData);
+export const useTokensData = () => useSelector(selectTokensData);
+export const usePricesUpdatedAt = () => useSelector(selectPricesUpdatedAt);
+export const useSavedIsPnlInLeverage = () => useSelector(selectSavedIsPnlInLeverage);
+export const useSavedShowPnlAfterFees = () => useSelector(selectSavedShowPnlAfterFees);
 
 export const useLeverage = () => useSelector(selectLeverage);
 export const useTradeboxState = () => useSelector(selectTradeboxState);

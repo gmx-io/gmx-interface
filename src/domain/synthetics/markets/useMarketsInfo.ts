@@ -58,7 +58,7 @@ export type MarketsInfoResult = {
   pricesUpdatedAt?: number;
 };
 
-export function useMarketsInfo(chainId: number): MarketsInfoResult {
+export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
   const { account } = useWallet();
   const { marketsData, marketsAddresses } = useMarkets(chainId);
   const { tokensData, pricesUpdatedAt } = useTokensData(chainId);

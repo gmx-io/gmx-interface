@@ -521,18 +521,12 @@ function FullApp() {
                   savedIsPnlInLeverage={savedIsPnlInLeverage}
                   savedShowPnlAfterFees={savedShowPnlAfterFees}
                 >
-                  <SyntheticsActions
-                    savedIsPnlInLeverage={savedIsPnlInLeverage}
-                    savedShowPnlAfterFees={savedShowPnlAfterFees}
-                  />
+                  <SyntheticsActions />
                 </SyntheticsStateContextProvider>
               </Route>
               <Redirect exact from="/actions/v2" to="/actions" />
               <Route exact path="/actions/:account">
-                <SyntheticsActions
-                  savedIsPnlInLeverage={savedIsPnlInLeverage}
-                  savedShowPnlAfterFees={savedShowPnlAfterFees}
-                />
+                <SyntheticsActions />
               </Route>
               <Route path="/actions/v2/:account">
                 {({ match }) => <Redirect to={`/actions/${match.params.account}`} />}

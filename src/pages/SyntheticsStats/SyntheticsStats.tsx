@@ -15,7 +15,7 @@ import {
   getMaxOpenInterestUsd,
   getMaxReservedUsd,
   getReservedUsd,
-  useMarketsInfo,
+  useMarketsInfoRequest,
 } from "domain/synthetics/markets";
 import { usePositionsConstants } from "domain/synthetics/positions";
 import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
@@ -77,7 +77,7 @@ const CSV_EXCLUDED_FIELDS = [
 export function SyntheticsStats() {
   const { chainId } = useChainId();
 
-  const { marketsInfoData } = useMarketsInfo(chainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId);
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
 
   const markets = Object.values(marketsInfoData || {});

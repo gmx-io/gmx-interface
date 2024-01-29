@@ -7,7 +7,7 @@ import { isDevelopment } from "config/env";
 import { getToken, getWrappedToken } from "config/tokens";
 import { WS_LOST_FOCUS_TIMEOUT } from "config/ui";
 import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
-import { useMarketsInfo } from "domain/synthetics/markets";
+import { useMarketsInfoRequest } from "domain/synthetics/markets";
 import {
   isDecreaseOrderType,
   isIncreaseOrderType,
@@ -81,7 +81,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   });
 
   const { tokensData } = useTokensData(chainId);
-  const { marketsInfoData } = useMarketsInfo(chainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId);
 
   const [orderStatuses, setOrderStatuses] = useState<OrderStatuses>({});
   const [depositStatuses, setDepositStatuses] = useState<DepositStatuses>({});

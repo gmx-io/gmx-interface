@@ -1,7 +1,7 @@
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { UserReferralInfo, useUserReferralInfo } from "domain/referrals";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
-import { MarketsInfoResult, MarketsResult, useMarkets, useMarketsInfo } from "domain/synthetics/markets";
+import { MarketsInfoResult, MarketsResult, useMarkets, useMarketsInfoRequest } from "domain/synthetics/markets";
 import { AggregatedOrdersDataResult, useOrdersInfo } from "domain/synthetics/orders/useOrdersInfo";
 import {
   PositionsConstantsResult,
@@ -54,7 +54,7 @@ export function SyntheticsStateContextProvider({
   const { chainId } = useChainId();
   const { account, signer } = useWallet();
   const markets = useMarkets(chainId);
-  const marketsInfo = useMarketsInfo(chainId);
+  const marketsInfo = useMarketsInfoRequest(chainId);
   const positionsConstants = usePositionsConstants(chainId);
   const uiFeeFactor = useUiFeeFactor(chainId);
   const userReferralInfo = useUserReferralInfo(signer, chainId, account);

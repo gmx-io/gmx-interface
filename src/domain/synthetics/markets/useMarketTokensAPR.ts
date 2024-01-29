@@ -7,7 +7,7 @@ import { bigNumberify, expandDecimals } from "lib/numbers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
 import useSWR from "swr";
-import { useMarketsInfo } from ".";
+import { useMarketsInfoRequest } from ".";
 import { useTokensData } from "../tokens";
 import { MarketTokensAPRData } from "./types";
 import { useMarketTokensData } from "./useMarketTokensData";
@@ -31,7 +31,7 @@ type SwrResult = {
 };
 
 function useMarketAddresses(chainId: number) {
-  const { marketsInfoData } = useMarketsInfo(chainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId);
   return useMemo(
     () => Object.keys(marketsInfoData || {}).filter((address) => !marketsInfoData![address].isDisabled),
     [marketsInfoData]
@@ -42,7 +42,7 @@ function useIncentivesBonusApr(chainId: number): MarketTokensAPRData {
   const rawIncentivesStats = useIncentiveStats(chainId);
   const { tokensData } = useTokensData(chainId);
   const marketAddresses = useMarketAddresses(chainId);
-  const { marketsInfoData } = useMarketsInfo(chainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId);
 
   return useMemo(() => {
     let arbTokenAddress: null | string = null;
