@@ -225,6 +225,18 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://raw.githubusercontent.com/gmx-io/gmx-assets/main/GMX-Assets/PNG/GM_LOGO.png",
       isPlatformToken: true,
     },
+    {
+      name: "Wrapped BNB (LayerZero)",
+      symbol: "BNB",
+      assetSymbol: "WBNB (LayerZero)",
+      address: "0xa9004A5421372E1D83fB1f85b0fc986c912f91f3",
+      decimals: 18,
+      imageUrl: "https://assets.coingecko.com/coins/images/825/standard/bnb-icon2_2x.png?1696501970",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/bnb",
+      coingeckoSymbol: "BNB",
+      metamaskSymbol: "WBNB",
+      explorerUrl: "https://arbiscan.io/token/0xa9004A5421372E1D83fB1f85b0fc986c912f91f3",
+    },
   ],
   [AVALANCHE]: [
     {
