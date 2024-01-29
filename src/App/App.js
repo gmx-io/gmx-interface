@@ -463,6 +463,7 @@ function FullApp() {
                   <SyntheticsStateContextProvider
                     savedIsPnlInLeverage={savedIsPnlInLeverage}
                     savedShowPnlAfterFees={savedShowPnlAfterFees}
+                    skipLocalReferralCode={false}
                   >
                     <SyntheticsPage
                       shouldDisableValidation={savedShouldDisableValidationForTesting}
@@ -518,6 +519,7 @@ function FullApp() {
               </Route>
               <Route exact path="/actions">
                 <SyntheticsStateContextProvider
+                  skipLocalReferralCode
                   savedIsPnlInLeverage={savedIsPnlInLeverage}
                   savedShowPnlAfterFees={savedShowPnlAfterFees}
                 >
@@ -526,7 +528,13 @@ function FullApp() {
               </Route>
               <Redirect exact from="/actions/v2" to="/actions" />
               <Route exact path="/actions/:account">
-                <SyntheticsActions />
+                <SyntheticsStateContextProvider
+                  skipLocalReferralCode={false}
+                  savedIsPnlInLeverage={savedIsPnlInLeverage}
+                  savedShowPnlAfterFees={savedShowPnlAfterFees}
+                >
+                  <SyntheticsActions />
+                </SyntheticsStateContextProvider>
               </Route>
               <Route path="/actions/v2/:account">
                 {({ match }) => <Redirect to={`/actions/${match.params.account}`} />}

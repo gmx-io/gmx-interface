@@ -18,7 +18,6 @@ import { getToken } from "config/tokens";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useOrdersInfo } from "domain/synthetics/orders/useOrdersInfo";
 import { PositionInfo } from "domain/synthetics/positions";
-import { usePositionsInfo } from "domain/synthetics/positions/usePositionsInfo";
 import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -38,9 +37,10 @@ import {
   useAvailableTokensOptions,
   useCollateralAddress,
   useFromTokenAddress,
+  useIsPositionsLoading,
   useMarketAddress,
   useMarketsInfoData,
-  usePricesUpdatedAt,
+  usePositionsInfoData,
   useSavedIsPnlInLeverage,
   useSavedShowPnlAfterFees,
   useSetActivePosition,
@@ -91,15 +91,8 @@ export function SyntheticsPage(p: Props) {
   const savedShowPnlAfterFees = useSavedShowPnlAfterFees();
   const marketsInfoData = useMarketsInfoData();
   const tokensData = useTokensData();
-  const pricesUpdatedAt = usePricesUpdatedAt();
-
-  const { positionsInfoData, isLoading: isPositionsLoading } = usePositionsInfo(chainId, {
-    marketsInfoData,
-    tokensData,
-    pricesUpdatedAt,
-    showPnlInLeverage: savedIsPnlInLeverage,
-    account,
-  });
+  const positionsInfoData = usePositionsInfoData();
+  const isPositionsLoading = useIsPositionsLoading();
 
   const { ordersInfoData, isLoading: isOrdersLoading } = useOrdersInfo(chainId, {
     account,

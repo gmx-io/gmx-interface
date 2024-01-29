@@ -4,17 +4,22 @@ import { useParams } from "react-router-dom";
 import "./Actions.scss";
 
 import { Trans, t } from "@lingui/macro";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import Footer from "components/Footer/Footer";
+import PageTitle from "components/PageTitle/PageTitle";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
-import { useMarketsInfoRequest } from "domain/synthetics/markets";
+import {
+  useIsPositionsLoading,
+  useMarketsInfoData,
+  usePositionsInfoData,
+  useSavedIsPnlInLeverage,
+  useSavedShowPnlAfterFees,
+  useTokensData,
+} from "context/SyntheticsStateContext/selectors";
 import { useOrdersInfo } from "domain/synthetics/orders/useOrdersInfo";
-import { usePositionsInfo } from "domain/synthetics/positions";
 import { useChainId } from "lib/chains";
-import PageTitle from "components/PageTitle/PageTitle";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import Footer from "components/Footer/Footer";
-import { useSavedIsPnlInLeverage, useSavedShowPnlAfterFees } from "context/SyntheticsStateContext/selectors";
 
 export default function SyntheticsActions() {
   const { account: paramsAccount } = useParams<{ account?: string }>();
@@ -29,15 +34,10 @@ export default function SyntheticsActions() {
     checkSummedAccount = ethers.utils.getAddress(paramsAccount);
   }
 
-  const { marketsInfoData, tokensData, pricesUpdatedAt } = useMarketsInfoRequest(chainId);
-  const { positionsInfoData, isLoading: isPositionsLoading } = usePositionsInfo(chainId, {
-    marketsInfoData,
-    tokensData,
-    pricesUpdatedAt,
-    showPnlInLeverage: savedIsPnlInLeverage,
-    account: checkSummedAccount,
-    skipLocalReferralCode: true,
-  });
+  const marketsInfoData = useMarketsInfoData();
+  const tokensData = useTokensData();
+  const positionsInfoData = usePositionsInfoData();
+  const isPositionsLoading = useIsPositionsLoading();
   const { ordersInfoData, isLoading: isOrdersLoading } = useOrdersInfo(chainId, {
     account: checkSummedAccount,
     marketsInfoData,

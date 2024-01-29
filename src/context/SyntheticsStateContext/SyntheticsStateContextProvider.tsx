@@ -1,5 +1,5 @@
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { UserReferralInfo } from "domain/referrals";
+import { UserReferralInfo, useUserReferralInfoRequest } from "domain/referrals";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { MarketsInfoResult, MarketsResult, useMarkets, useMarketsInfoRequest } from "domain/synthetics/markets";
 import { AggregatedOrdersDataResult, useOrdersInfo } from "domain/synthetics/orders/useOrdersInfo";
@@ -7,7 +7,7 @@ import {
   PositionsConstantsResult,
   PositionsInfoResult,
   usePositionsConstantsRequest,
-  usePositionsInfo,
+  usePositionsInfoRequest,
 } from "domain/synthetics/positions";
 import { TradeState, useTradeState } from "domain/synthetics/trade/useSelectedTradeOption";
 import { BigNumber } from "ethers";
@@ -15,7 +15,6 @@ import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 import { ReactNode, useMemo } from "react";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
-import { useUserReferralInfo } from "./selectors";
 
 export type SyntheticsState = {
   globals: {
@@ -43,27 +42,27 @@ export function SyntheticsStateContextProvider({
   children,
   savedIsPnlInLeverage,
   savedShowPnlAfterFees,
+  skipLocalReferralCode,
 }: {
   children: ReactNode;
   savedIsPnlInLeverage: boolean;
   savedShowPnlAfterFees: boolean;
+  skipLocalReferralCode: boolean;
 }) {
   const { chainId } = useChainId();
-  const { account } = useWallet();
+  const { account, signer } = useWallet();
   const markets = useMarkets(chainId);
   const marketsInfo = useMarketsInfoRequest(chainId);
   const positionsConstants = usePositionsConstantsRequest(chainId);
   const uiFeeFactor = useUiFeeFactor(chainId);
-  const userReferralInfo = useUserReferralInfo();
+  const userReferralInfo = useUserReferralInfoRequest(signer, chainId, account, skipLocalReferralCode);
 
-  const positionsInfo = usePositionsInfo(chainId, {
+  const positionsInfo = usePositionsInfoRequest(chainId, {
     account,
-    // FIXME
-    showPnlInLeverage: false,
+    showPnlInLeverage: savedIsPnlInLeverage,
     marketsInfoData: marketsInfo.marketsInfoData,
     pricesUpdatedAt: marketsInfo.pricesUpdatedAt,
-    // FIXME
-    skipLocalReferralCode: true,
+    skipLocalReferralCode,
     tokensData: marketsInfo.tokensData,
   });
   const ordersInfo = useOrdersInfo(chainId, {
@@ -119,10 +118,8 @@ export function SyntheticsStateContextProvider({
 
 export function useSyntheticsStateSelector<Selected>(selector: (s: SyntheticsState) => Selected) {
   const value = useContext(StateCtx);
-
   if (!value) {
     throw new Error("Used useSyntheticsStateSelector outside of SyntheticsStateContextProvider");
   }
-
   return useContextSelector(StateCtx as Context<SyntheticsState>, selector) as Selected;
 }

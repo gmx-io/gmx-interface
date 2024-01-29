@@ -27,7 +27,7 @@ export type PositionsInfoResult = {
   isLoading: boolean;
 };
 
-export function usePositionsInfo(
+export function usePositionsInfoRequest(
   chainId: number,
   p: {
     account: string | null | undefined;
