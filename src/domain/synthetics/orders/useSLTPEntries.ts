@@ -35,7 +35,6 @@ type Props = {
   marketInfo?: MarketInfo;
   collateralToken?: TokenData;
   increaseAmounts?: IncreasePositionAmounts;
-  keepLeverage?: boolean;
   nextPositionValues?: NextPositionValues;
   triggerPrice?: BigNumber;
 };
@@ -45,7 +44,6 @@ export default function useSLTPEntries({
   tradeFlags,
   collateralToken,
   increaseAmounts,
-  keepLeverage,
   nextPositionValues,
   triggerPrice,
 }: Props) {
@@ -155,7 +153,7 @@ export default function useSLTPEntries({
         isLong,
         position: currentPositionInfo,
         closeSizeUsd: sizeUsd,
-        keepLeverage: keepLeverage!,
+        keepLeverage: true,
         triggerPrice: price,
         userReferralInfo,
         minCollateralUsd,
@@ -173,7 +171,6 @@ export default function useSLTPEntries({
       isLimit,
       marketInfo,
       triggerPrice,
-      keepLeverage,
       minCollateralUsd,
       minPositionSizeUsd,
       uiFeeFactor,

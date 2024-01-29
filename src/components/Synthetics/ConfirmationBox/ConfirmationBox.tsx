@@ -217,7 +217,6 @@ export function ConfirmationBox(p: Props) {
     tradeFlags,
     collateralToken,
     increaseAmounts,
-    keepLeverage,
     nextPositionValues,
     triggerPrice,
   });
