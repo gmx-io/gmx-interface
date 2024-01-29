@@ -9,7 +9,6 @@ import { SettleAccruedFundingFeeRow } from "./SettleAccruedFundingFeeRow";
 
 import Tooltip from "components/Tooltip/Tooltip";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { useUserReferralInfo } from "domain/referrals";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   getExecutionFee,
@@ -24,6 +23,7 @@ import useWallet from "lib/wallets/useWallet";
 import "./SettleAccruedFundingFeeModal.scss";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
+import { useUserReferralInfo } from "context/SyntheticsStateContext/selectors";
 
 type Props = {
   allowedSlippage: number;
@@ -48,7 +48,7 @@ export function SettleAccruedFundingFeeModal({
 }: Props) {
   const { account, signer } = useWallet();
   const { chainId } = useChainId();
-  const userReferralInfo = useUserReferralInfo(signer, chainId, account);
+  const userReferralInfo = useUserReferralInfo();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { gasLimits } = useGasLimits(chainId);
   const { gasPrice } = useGasPrice(chainId);

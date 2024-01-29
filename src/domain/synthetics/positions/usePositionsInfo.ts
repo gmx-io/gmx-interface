@@ -1,4 +1,4 @@
-import { useUserReferralInfo } from "domain/referrals";
+import { useUserReferralInfoRequest } from "domain/referrals";
 import { BigNumber } from "ethers";
 import { MAX_ALLOWED_LEVERAGE } from "config/factors";
 import { getBasisPoints } from "lib/numbers";
@@ -44,7 +44,7 @@ export function usePositionsInfo(
   const { positionsData } = usePositions(chainId, p);
   const { minCollateralUsd } = usePositionsConstantsRequest(chainId);
   const uiFeeFactor = useUiFeeFactor(chainId);
-  const userReferralInfo = useUserReferralInfo(signer, chainId, account, skipLocalReferralCode);
+  const userReferralInfo = useUserReferralInfoRequest(signer, chainId, account, skipLocalReferralCode);
 
   return useMemo(() => {
     if (!marketsInfoData || !tokensData || !positionsData || !minCollateralUsd) {

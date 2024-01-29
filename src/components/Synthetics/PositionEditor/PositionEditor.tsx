@@ -17,7 +17,6 @@ import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useHasOutdatedUi } from "domain/legacy";
-import { useUserReferralInfo } from "domain/referrals/hooks";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
@@ -65,7 +64,7 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionEditor.scss";
 import { getMinResidualAmount } from "domain/tokens";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
-import { usePositionsConstants } from "context/SyntheticsStateContext/selectors";
+import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsStateContext/selectors";
 
 export type Props = {
   position?: PositionInfo;
@@ -98,7 +97,7 @@ export function PositionEditor(p: Props) {
   const { gasLimits } = useGasLimits(chainId);
   const { minCollateralUsd } = usePositionsConstants();
   const routerAddress = getContract(chainId, "SyntheticsRouter");
-  const userReferralInfo = useUserReferralInfo(signer, chainId, account);
+  const userReferralInfo = useUserReferralInfo();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);

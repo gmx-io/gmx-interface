@@ -787,6 +787,7 @@ export const useSwitchTokenAddresses = () => useSelector(selectSwitchTokenAddres
 export const useMarketsInfoData = () => useSelector(selectMarketsInfoData);
 export const useTokensData = () => useSelector(selectTokensData);
 export const usePricesUpdatedAt = () => useSelector(selectPricesUpdatedAt);
+export const useUserReferralInfo = () => useSelector(selectUserReferralInfo);
 export const useSavedIsPnlInLeverage = () => useSelector(selectSavedIsPnlInLeverage);
 export const useSavedShowPnlAfterFees = () => useSelector(selectSavedShowPnlAfterFees);
 

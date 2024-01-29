@@ -20,7 +20,6 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useHasOutdatedUi } from "domain/legacy";
-import { useUserReferralInfo } from "domain/referrals/hooks";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   getExecutionFee,
@@ -74,7 +73,7 @@ import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionSeller.scss";
-import { usePositionsConstants, useSwapRoutes } from "context/SyntheticsStateContext/selectors";
+import { usePositionsConstants, useSwapRoutes, useUserReferralInfo } from "context/SyntheticsStateContext/selectors";
 
 export type Props = {
   position?: PositionInfo;
@@ -108,7 +107,7 @@ export function PositionSeller(p: Props) {
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
-  const userReferralInfo = useUserReferralInfo(signer, chainId, account);
+  const userReferralInfo = useUserReferralInfo();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const uiFeeFactor = useUiFeeFactor(chainId);
   const { savedAcceptablePriceImpactBuffer } = useSettings();

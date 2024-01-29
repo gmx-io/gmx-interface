@@ -1,5 +1,5 @@
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { UserReferralInfo, useUserReferralInfo } from "domain/referrals";
+import { UserReferralInfo } from "domain/referrals";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { MarketsInfoResult, MarketsResult, useMarkets, useMarketsInfoRequest } from "domain/synthetics/markets";
 import { AggregatedOrdersDataResult, useOrdersInfo } from "domain/synthetics/orders/useOrdersInfo";
@@ -15,6 +15,7 @@ import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 import { ReactNode, useMemo } from "react";
 import { Context, createContext, useContextSelector } from "use-context-selector";
+import { useUserReferralInfo } from "./selectors";
 
 export type SyntheticsState = {
   globals: {
@@ -52,12 +53,12 @@ export function SyntheticsStateContextProvider({
   savedShowPnlAfterFees: boolean;
 }) {
   const { chainId } = useChainId();
-  const { account, signer } = useWallet();
+  const { account } = useWallet();
   const markets = useMarkets(chainId);
   const marketsInfo = useMarketsInfoRequest(chainId);
   const positionsConstants = usePositionsConstantsRequest(chainId);
   const uiFeeFactor = useUiFeeFactor(chainId);
-  const userReferralInfo = useUserReferralInfo(signer, chainId, account);
+  const userReferralInfo = useUserReferralInfo();
 
   const positionsInfo = usePositionsInfo(chainId, {
     account,
