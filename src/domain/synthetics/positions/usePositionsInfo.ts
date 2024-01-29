@@ -9,7 +9,7 @@ import { MarketsInfoData } from "../markets";
 import { TokensData, convertToTokenAmount, convertToUsd } from "../tokens";
 import { getMarkPrice } from "../trade";
 import { PositionsInfoData } from "./types";
-import { usePositionsConstants } from "./usePositionsConstants";
+import { usePositionsConstantsRequest } from "./usePositionsConstants";
 import {
   getEntryPrice,
   getLeverage,
@@ -42,7 +42,7 @@ export function usePositionsInfo(
 
   const { signer } = useWallet();
   const { positionsData } = usePositions(chainId, p);
-  const { minCollateralUsd } = usePositionsConstants(chainId);
+  const { minCollateralUsd } = usePositionsConstantsRequest(chainId);
   const uiFeeFactor = useUiFeeFactor(chainId);
   const userReferralInfo = useUserReferralInfo(signer, chainId, account, skipLocalReferralCode);
 

@@ -39,7 +39,6 @@ import {
   formatLiquidationPrice,
   getLeverage,
   getLiquidationPrice,
-  usePositionsConstants,
 } from "domain/synthetics/positions";
 import { TokensData, adaptToV1InfoTokens, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { TradeFees, getMarkPrice, getMinCollateralUsdForLeverage } from "domain/synthetics/trade";
@@ -66,6 +65,7 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionEditor.scss";
 import { getMinResidualAmount } from "domain/tokens";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
+import { usePositionsConstants } from "context/SyntheticsStateContext/selectors";
 
 export type Props = {
   position?: PositionInfo;
@@ -96,7 +96,7 @@ export function PositionEditor(p: Props) {
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
-  const { minCollateralUsd } = usePositionsConstants(chainId);
+  const { minCollateralUsd } = usePositionsConstants();
   const routerAddress = getContract(chainId, "SyntheticsRouter");
   const userReferralInfo = useUserReferralInfo(signer, chainId, account);
   const { data: hasOutdatedUi } = useHasOutdatedUi();

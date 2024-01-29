@@ -9,7 +9,7 @@ export type PositionsConstantsResult = {
   minPositionSizeUsd?: BigNumber;
 };
 
-export function usePositionsConstants(chainId: number): PositionsConstantsResult {
+export function usePositionsConstantsRequest(chainId: number): PositionsConstantsResult {
   const { data } = useMulticall(chainId, "usePositionsConstants", {
     key: [],
 

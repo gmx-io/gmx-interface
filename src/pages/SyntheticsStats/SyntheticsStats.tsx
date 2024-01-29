@@ -17,7 +17,7 @@ import {
   getReservedUsd,
   useMarketsInfoRequest,
 } from "domain/synthetics/markets";
-import { usePositionsConstants } from "domain/synthetics/positions";
+import { usePositionsConstantsRequest } from "domain/synthetics/positions";
 import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import "./SyntheticsStats.scss";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -78,7 +78,7 @@ export function SyntheticsStats() {
   const { chainId } = useChainId();
 
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
-  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
+  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstantsRequest(chainId);
 
   const markets = Object.values(marketsInfoData || {});
   markets.sort((a, b) => {

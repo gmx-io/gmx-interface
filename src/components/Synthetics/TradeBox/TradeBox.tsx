@@ -65,7 +65,7 @@ import {
   formatLeverage,
   formatLiquidationPrice,
   getTriggerNameByOrderType,
-  usePositionsConstants,
+  usePositionsConstantsRequest,
 } from "domain/synthetics/positions";
 import { TokensData, TokensRatio, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
 import {
@@ -210,7 +210,7 @@ export function TradeBox(p: Props) {
   const { showDebugValues } = useSettings();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
 
-  const { minCollateralUsd } = usePositionsConstants(chainId);
+  const { minCollateralUsd } = usePositionsConstantsRequest(chainId);
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
   const minResidualAmount = getMinResidualAmount(nativeToken?.decimals, nativeToken?.prices.maxPrice);

@@ -6,7 +6,7 @@ import { AggregatedOrdersDataResult, useOrdersInfo } from "domain/synthetics/ord
 import {
   PositionsConstantsResult,
   PositionsInfoResult,
-  usePositionsConstants,
+  usePositionsConstantsRequest,
   usePositionsInfo,
 } from "domain/synthetics/positions";
 import { TradeState, useTradeState } from "domain/synthetics/trade/useSelectedTradeOption";
@@ -55,7 +55,7 @@ export function SyntheticsStateContextProvider({
   const { account, signer } = useWallet();
   const markets = useMarkets(chainId);
   const marketsInfo = useMarketsInfoRequest(chainId);
-  const positionsConstants = usePositionsConstants(chainId);
+  const positionsConstants = usePositionsConstantsRequest(chainId);
   const uiFeeFactor = useUiFeeFactor(chainId);
   const userReferralInfo = useUserReferralInfo(signer, chainId, account);
 

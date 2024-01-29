@@ -140,6 +140,13 @@ const selectSavedAcceptablePriceImpactBuffer = (s: SyntheticsState) => s.setting
 // constants
 const selectMinCollateralUsd = (s: SyntheticsState) => s.globals.positionsConstants.minCollateralUsd;
 const selectMinPositionSizeUsd = (s: SyntheticsState) => s.globals.positionsConstants.minPositionSizeUsd;
+const selectPositionConstants = createSelector(
+  [selectMinCollateralUsd, selectMinPositionSizeUsd],
+  (minCollateralUsd, minPositionSizeUsd) => ({
+    minCollateralUsd,
+    minPositionSizeUsd,
+  })
+);
 
 const selectFromToken = createSelector([selectFromTokenAddress, selectTokensData], (fromTokenAddress, tokensData) =>
   getByKey(tokensData, fromTokenAddress)
@@ -792,6 +799,7 @@ export const useExistingOrder = () => useSelector(selectExistingOrder);
 export const useHasExistingOrder = () => useSelector(selectHasExistingOrder);
 
 export const useUiFeeFactor = () => useSelector(selectUiFeeFactor);
+export const usePositionsConstants = () => useSelector(selectPositionConstants);
 
 export const useIncreasePositionAmounts = (
   fromTokenAddress: string | undefined,

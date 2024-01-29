@@ -35,7 +35,6 @@ import {
   formatLeverage,
   formatLiquidationPrice,
   getTriggerNameByOrderType,
-  usePositionsConstants,
 } from "domain/synthetics/positions";
 import { TokensData } from "domain/synthetics/tokens";
 import {
@@ -75,7 +74,7 @@ import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionSeller.scss";
-import { useSwapRoutes } from "context/SyntheticsStateContext/selectors";
+import { usePositionsConstants, useSwapRoutes } from "context/SyntheticsStateContext/selectors";
 
 export type Props = {
   position?: PositionInfo;
@@ -108,7 +107,7 @@ export function PositionSeller(p: Props) {
   const { openConnectModal } = useConnectModal();
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
-  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
+  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo(signer, chainId, account);
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const uiFeeFactor = useUiFeeFactor(chainId);

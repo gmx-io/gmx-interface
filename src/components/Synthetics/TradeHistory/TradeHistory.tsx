@@ -3,7 +3,7 @@ import { useTradeHistory } from "domain/synthetics/tradeHistory";
 import { useChainId } from "lib/chains";
 import { TradeHistoryRow } from "../TradeHistoryRow/TradeHistoryRow";
 import { useEffect } from "react";
-import { usePositionsConstants } from "domain/synthetics/positions/usePositionsConstants";
+import { usePositionsConstantsRequest } from "domain/synthetics/positions/usePositionsConstants";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
 import usePagination from "components/Referrals/usePagination";
@@ -25,7 +25,7 @@ export function TradeHistory(p: Props) {
   const { shouldShowPaginationButtons, marketsInfoData, tokensData, forAllAccounts, account } = p;
   const { chainId } = useChainId();
 
-  const { minCollateralUsd } = usePositionsConstants(chainId);
+  const { minCollateralUsd } = usePositionsConstantsRequest(chainId);
   const {
     tradeActions,
     isLoading: isHistoryLoading,
