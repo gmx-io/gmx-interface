@@ -9,7 +9,7 @@ import { UserEarningsData } from "./types";
 import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import { useMarketTokensAPR } from "./useMarketTokensAPR";
 import { useMarketTokensData } from "./useMarketTokensData";
-import { useMarketsInfoRequest } from "./useMarketsInfo";
+import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
 
 type RawBalanceChange = {
   cumulativeIncome: string;
