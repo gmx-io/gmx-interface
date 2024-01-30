@@ -33,19 +33,19 @@ import {
   useSubaccountCancelOrdersDetailsMessage,
 } from "context/SubaccountContext/SubaccountContext";
 import {
-  useAvailableTokensOptions,
-  useCollateralAddress,
-  useFromTokenAddress,
+  useTradeboxAvailableTokensOptions,
+  useTradeboxCollateralAddress,
+  useTradeboxFromTokenAddress,
   useIsOrdersLoading,
   useIsPositionsLoading,
-  useMarketAddress,
+  useTradeboxMarketAddress,
   useMarketsInfoData,
   useOrdersInfoData,
   usePositionsInfoData,
   useSavedIsPnlInLeverage,
   useSavedShowPnlAfterFees,
-  useSetActivePosition,
-  useToTokenAddress,
+  useTradeboxSetActivePosition,
+  useTradeboxToTokenAddress,
   useTokensData,
   useTradeFlags,
 } from "context/SyntheticsStateContext/selectors";
@@ -104,12 +104,12 @@ export function SyntheticsPage(p: Props) {
   );
 
   const tradeFlags = useTradeFlags();
-  const fromTokenAddress = useFromTokenAddress();
-  const toTokenAddress = useToTokenAddress();
-  const marketAddress = useMarketAddress();
-  const collateralAddress = useCollateralAddress();
-  const availableTokensOptions = useAvailableTokensOptions();
-  const setActivePosition = useSetActivePosition();
+  const fromTokenAddress = useTradeboxFromTokenAddress();
+  const toTokenAddress = useTradeboxToTokenAddress();
+  const marketAddress = useTradeboxMarketAddress();
+  const collateralAddress = useTradeboxCollateralAddress();
+  const availableTokensOptions = useTradeboxAvailableTokensOptions();
+  const setActivePosition = useTradeboxSetActivePosition();
 
   const { isSwap } = tradeFlags;
   const { indexTokens, sortedIndexTokensWithPoolValue, swapTokens, sortedLongAndShortTokens } = availableTokensOptions;

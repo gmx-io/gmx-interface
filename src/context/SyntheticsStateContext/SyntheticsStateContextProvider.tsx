@@ -33,7 +33,7 @@ export type SyntheticsState = {
     savedShowPnlAfterFees: boolean;
   };
   settings: SettingsContextType;
-  trade: TradeState;
+  tradebox: TradeState;
 };
 
 const StateCtx = createContext<SyntheticsState | null>(null);
@@ -78,8 +78,8 @@ export function SyntheticsStateContextProvider({
     tokensData: marketsInfo.tokensData,
   });
 
-  const state: SyntheticsState = useMemo(() => {
-    return {
+  const state = useMemo(() => {
+    const s: SyntheticsState = {
       globals: {
         chainId,
         account,
@@ -95,8 +95,10 @@ export function SyntheticsStateContextProvider({
         savedShowPnlAfterFees,
       },
       settings,
-      trade: tradeState,
+      tradebox: tradeState,
     };
+
+    return s;
   }, [
     chainId,
     account,

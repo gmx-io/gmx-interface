@@ -22,7 +22,7 @@ import { AvailableTokenOptions, TradeType } from "domain/synthetics/trade";
 import { MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getByKey } from "lib/objects";
 import { helperToast } from "lib/helperToast";
-import { useSetToTokenAddress, useTradeType } from "context/SyntheticsStateContext/selectors";
+import { useTradeboxSetToTokenAddress, useTradeboxTradeType } from "context/SyntheticsStateContext/selectors";
 import { BigNumber } from "ethers";
 
 export type Props = {
@@ -70,8 +70,8 @@ export function TVChart({
 
   const selectedTokenOption = chartTokenAddress ? getToken(chainId, chartTokenAddress) : undefined;
   const dayPriceDelta = use24hPriceDelta(chainId, chartToken?.symbol);
-  const currentTradeType = useTradeType();
-  const setToTokenAddress = useSetToTokenAddress();
+  const currentTradeType = useTradeboxTradeType();
+  const setToTokenAddress = useTradeboxSetToTokenAddress();
 
   const chartLines = useMemo(() => {
     if (!chartTokenAddress) {

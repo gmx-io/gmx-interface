@@ -18,35 +18,35 @@ import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
-  useAvailableTradeModes,
-  useCollateralAddress,
-  useCollateralToken,
   useDecreasePositionAmounts,
   useExistingOrder,
-  useFromToken,
-  useFromTokenAddress,
   useIncreasePositionAmounts,
-  useIsWrapOrUnwrap,
   useLeverage,
-  useMarketAddress,
-  useMarketInfo,
   useNextPositionValues,
   useSelectedPosition,
-  useSetCollateralAddress,
-  useSetFromTokenAddress,
-  useSetMarketAddress,
-  useSetToTokenAddress,
-  useSetTradeMode,
-  useSetTradeType,
   useSwapAmounts,
   useSwapRoutes,
-  useSwitchTokenAddresses,
-  useToToken,
-  useToTokenAddress,
   useTradeFlags,
-  useTradeMode,
-  useTradeType,
+  useTradeboxAvailableTradeModes,
+  useTradeboxCollateralAddress,
+  useTradeboxCollateralToken,
+  useTradeboxFromToken,
+  useTradeboxFromTokenAddress,
+  useTradeboxIsWrapOrUnwrap,
+  useTradeboxMarketAddress,
+  useTradeboxMarketInfo,
+  useTradeboxSetCollateralAddress,
+  useTradeboxSetFromTokenAddress,
+  useTradeboxSetMarketAddress,
+  useTradeboxSetToTokenAddress,
+  useTradeboxSetTradeMode,
+  useTradeboxSetTradeType,
   useTradeboxState,
+  useTradeboxSwitchTokenAddresses,
+  useTradeboxToToken,
+  useTradeboxToTokenAddress,
+  useTradeboxTradeMode,
+  useTradeboxTradeType,
   useUiFeeFactor,
 } from "context/SyntheticsStateContext/selectors";
 import { useHasOutdatedUi } from "domain/legacy";
@@ -179,26 +179,26 @@ export function TradeBox(p: Props) {
     sortedAllMarkets,
   } = avaialbleTokenOptions;
 
-  const tradeType = useTradeType();
-  const tradeMode = useTradeMode();
+  const tradeType = useTradeboxTradeType();
+  const tradeMode = useTradeboxTradeMode();
   const tradeFlags = useTradeFlags();
-  const isWrapOrUnwrap = useIsWrapOrUnwrap();
-  const fromTokenAddress = useFromTokenAddress();
-  const fromToken = useFromToken();
-  const toTokenAddress = useToTokenAddress();
-  const toToken = useToToken();
-  const marketAddress = useMarketAddress();
-  const marketInfo = useMarketInfo();
-  const collateralAddress = useCollateralAddress();
-  const collateralToken = useCollateralToken();
-  const availalbleTradeModes = useAvailableTradeModes();
-  const switchTokenAddresses = useSwitchTokenAddresses();
-  const onSelectMarketAddress = useSetMarketAddress();
-  const onSelectCollateralAddress = useSetCollateralAddress();
-  const onSelectFromTokenAddress = useSetFromTokenAddress();
-  const onSelectToTokenAddress = useSetToTokenAddress();
-  const onSelectTradeMode = useSetTradeMode();
-  const onSelectTradeType = useSetTradeType();
+  const isWrapOrUnwrap = useTradeboxIsWrapOrUnwrap();
+  const fromTokenAddress = useTradeboxFromTokenAddress();
+  const fromToken = useTradeboxFromToken();
+  const toTokenAddress = useTradeboxToTokenAddress();
+  const toToken = useTradeboxToToken();
+  const marketAddress = useTradeboxMarketAddress();
+  const marketInfo = useTradeboxMarketInfo();
+  const collateralAddress = useTradeboxCollateralAddress();
+  const collateralToken = useTradeboxCollateralToken();
+  const availalbleTradeModes = useTradeboxAvailableTradeModes();
+  const switchTokenAddresses = useTradeboxSwitchTokenAddresses();
+  const onSelectMarketAddress = useTradeboxSetMarketAddress();
+  const onSelectCollateralAddress = useTradeboxSetCollateralAddress();
+  const onSelectFromTokenAddress = useTradeboxSetFromTokenAddress();
+  const onSelectToTokenAddress = useTradeboxSetToTokenAddress();
+  const onSelectTradeMode = useTradeboxSetTradeMode();
+  const onSelectTradeType = useTradeboxSetTradeType();
 
   const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket } = tradeFlags;
 
