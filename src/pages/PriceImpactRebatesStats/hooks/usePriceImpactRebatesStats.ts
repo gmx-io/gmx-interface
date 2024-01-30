@@ -15,7 +15,7 @@ type RawRebateGroup = {
   marketAddress: string;
   tokenAddress: string;
   factor: string;
-  userRebates: {
+  claimables: {
     account: string;
     value: BigNumber;
     factor: BigNumber;
@@ -76,7 +76,7 @@ export const usePriceImpactRebateGroups = (
     async function load() {
       if (!client) throw new Error(`Unsupported chain ${chainId}`);
       const query = gql(`{
-        priceImpactRebateGroups(
+        claimableCollateralGroups(
           skip: ${pageIndex * pageSize}
           first: ${pageSize}
           orderBy: timeKey
@@ -88,7 +88,7 @@ export const usePriceImpactRebateGroups = (
             marketAddress
             tokenAddress
             factor
-            userRebates: rebates {
+            claimables {
               id
               account
               value
@@ -99,14 +99,14 @@ export const usePriceImpactRebateGroups = (
 
       const { data } = await client.query({ query, fetchPolicy: "no-cache" });
 
-      const rebateGroups = data.priceImpactRebateGroups.map(
+      const rebateGroups = data.claimableCollateralGroups.map(
         (group: RawRebateGroup): RebateGroup => ({
           factor: BigNumber.from(group.factor),
           id: group.id,
           marketInfo: getByKey(marketsInfoDataLatest.current, getAddress(group.marketAddress)),
           tokenData: getByKey(tokensDataLatest.current, getAddress(group.tokenAddress)),
           timeKey: group.timeKey,
-          userRebates: group.userRebates.map((userRebate) => ({
+          userRebates: group.claimables.map((userRebate) => ({
             account: userRebate.account,
             value: BigNumber.from(userRebate.value),
             factor: BigNumber.from(userRebate.factor),
