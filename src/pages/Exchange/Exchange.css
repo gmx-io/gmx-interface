@@ -540,8 +540,9 @@ table.Exchange-list tr:last-child {
 }
 
 table.Exchange-list tr:hover {
-  background: linear-gradient(90deg, rgba(30, 34, 61, 1) 0%, rgba(38, 43, 71, 1) 100%);
+  background: rgba(180, 187, 255, 0.1);
   box-shadow: inset 0px 0px 3rem 0.5rem rgba(255, 255, 255, 0.01);
+  cursor: pointer;
 }
 
 table.Exchange-list tr.Exchange-list-header {

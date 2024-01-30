@@ -1,10 +1,6 @@
-@keyframes fadeOut {
-  from {
-    background-color: #727587;
-    box-shadow: inset 0px 0px 3rem 0.5rem rgba(255, 255, 255, 0.01);
-  }
-  to {
-    background-color: transparent;
+@keyframes blink {
+  50% {
+    background-color: #50577e99;
     box-shadow: none;
   }
 }
@@ -15,6 +11,7 @@
 
 .Exchange-list-item {
   &.active-order {
-    animation: fadeOut 2.5s forwards;
+    animation: blink 1.5s;
+    animation-iteration-count: 2;
   }
 }
