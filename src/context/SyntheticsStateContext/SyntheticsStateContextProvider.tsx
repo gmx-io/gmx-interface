@@ -9,7 +9,7 @@ import {
   usePositionsConstantsRequest,
   usePositionsInfoRequest,
 } from "domain/synthetics/positions";
-import { TradeState, useTradeState } from "domain/synthetics/trade/useSelectedTradeOption";
+import { TradeState, useTradeState } from "domain/synthetics/trade/useTradeState";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
