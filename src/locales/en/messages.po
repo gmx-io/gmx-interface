@@ -6368,6 +6368,10 @@ msgstr "{positionName} Fees settling"
 msgid "{title}"
 msgstr "{title}"
 
+#: src/pages/Stake/StakeV2.js
+msgid "{warning}"
+msgstr "{warning}"
+
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Сonvert {0} to {1}"
 msgstr "Сonvert {0} to {1}"

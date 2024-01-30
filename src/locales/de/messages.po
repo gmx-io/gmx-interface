@@ -6354,6 +6354,10 @@ msgstr ""
 msgid "{title}"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
+msgid "{warning}"
+msgstr ""
+
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Сonvert {0} to {1}"
 msgstr ""

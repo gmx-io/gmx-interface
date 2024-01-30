@@ -16,6 +16,7 @@ import Vester from "abis/Vester.json";
 
 import { ARBITRUM, getConstant } from "config/chains";
 import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
+import { useCompoundModalWarning } from "domain/stake/useCompoundModalWarning";
 import { ethers } from "ethers";
 import {
   GLP_DECIMALS,
@@ -43,6 +44,7 @@ import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { GmList } from "components/Synthetics/GmList/GmList";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { ModalInfo } from "components/ModalInfo/ModalInfo";
 import { getIcons } from "config/icons";
 import { getServerUrl } from "config/backend";
 import { getIsSyntheticsSupported } from "config/features";
@@ -624,6 +626,7 @@ function CompoundModal(props) {
     totalVesterRewards,
     nativeTokenSymbol,
     wrappedTokenSymbol,
+    processedData,
   } = props;
   const [isCompounding, setIsCompounding] = useState(false);
   const [shouldClaimGmx, setShouldClaimGmx] = useLocalStorageSerializeKey(
@@ -747,9 +750,29 @@ function CompoundModal(props) {
     setShouldConvertWeth(value);
   };
 
+  const warning = useCompoundModalWarning(
+    {
+      accumulatedGMX: processedData.totalVesterRewards,
+      accumulatedBnGMX: processedData.bonusGmxTrackerRewards,
+      accumulatedEsGMX: processedData.totalEsGmxRewards,
+      stakedGMX: processedData.gmxInStakedGmx,
+      stakedBnGMX: processedData.bnGmxInFeeGmx,
+      stakedEsGMX: processedData.esGmxInStakedGmx,
+    },
+    {
+      shouldStakeGmx,
+      shouldStakeEsGmx,
+    }
+  );
+
   return (
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Compound Rewards`}>
+        {warning && (
+          <ModalInfo>
+            <Trans>{warning}</Trans>
+          </ModalInfo>
+        )}
         <div className="CompoundModal-menu">
           <div>
             <Checkbox
@@ -1462,6 +1485,8 @@ export default function StakeV2({ setPendingTxns }) {
         account={account}
         setPendingTxns={setPendingTxns}
         isVisible={isCompoundModalVisible}
+        multiplierPointsAmount={multiplierPointsAmount}
+        processedData={processedData}
         setIsVisible={setIsCompoundModalVisible}
         rewardRouterAddress={rewardRouterAddress}
         totalVesterRewards={processedData.totalVesterRewards}

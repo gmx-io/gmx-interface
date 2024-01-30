@@ -7,6 +7,8 @@ import { getPlusOrMinusSymbol } from "./utils";
 const MAX_EXCEEDING_THRESHOLD = "1000000000";
 const MIN_EXCEEDING_THRESHOLD = "0.01";
 
+export const BIG_ZERO = BigNumber.from(0);
+
 export function bigNumberify(n?: BigNumberish) {
   try {
     return BigNumber.from(n);

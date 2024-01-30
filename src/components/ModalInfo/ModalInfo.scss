@@ -1,0 +1,17 @@
+.ModalInfo.standalone {
+  margin-bottom: 0.8rem;
+}
+
+.ModalInfo {
+  display: flex;
+  margin-bottom: 1.6rem;
+
+  &-icon {
+    padding-right: 0.6rem;
+    padding-top: 0.2rem;
+  }
+
+  &-text {
+    font-size: 1.3rem;
+  }
+}
