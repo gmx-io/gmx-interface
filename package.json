@@ -66,6 +66,7 @@
     "react-error-overlay": "6.0.9"
   },
   "scripts": {
+    "add-redirects": "mv _redirects_ref public/_redirects",
     "start": "PORT=3010 react-app-rewired start",
     "start-home": "yarn lingui:prepare && PORT=3010 env-cmd -e development-home react-app-rewired start",
     "start-app": "yarn lingui:prepare && PORT=3011 env-cmd -e development-app react-app-rewired start",
@@ -73,6 +74,7 @@
     "build": "INLINE_RUNTIME_CHUNK=false react-app-rewired build",
     "build-home": "INLINE_RUNTIME_CHUNK=false env-cmd -e production-home react-app-rewired build",
     "build-app": "INLINE_RUNTIME_CHUNK=false env-cmd -e production-app react-app-rewired build",
+    "build-fleek": "yarn add-redirects && INLINE_RUNTIME_CHUNK=false env-cmd -e production-app react-app-rewired build",
     "test": "react-app-rewired test --transformIgnorePatterns \"node_modules/(?!@wagmi)/\"",
     "test:ci": "react-app-rewired test --watchAll=false --transformIgnorePatterns \"node_modules/(?!@wagmi)/\"",
     "eject": "react-scripts eject",
