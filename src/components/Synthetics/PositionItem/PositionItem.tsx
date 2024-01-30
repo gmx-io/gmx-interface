@@ -29,6 +29,7 @@ import { FaAngleRight } from "react-icons/fa";
 import { useMedia } from "react-use";
 import "./PositionItem.scss";
 import { Fragment } from "react";
+import { getPositiveOrNegativeClass } from "lib/utils";
 
 export type Props = {
   position: PositionInfo;
@@ -87,19 +88,23 @@ export function PositionItem(p: Props) {
               label={t`PnL`}
               value={formatDeltaUsd(p.position?.pnl) || "..."}
               showDollar={false}
-              className={p.position?.pnl?.gte(0) ? "text-green" : "text-red"}
+              className={getPositiveOrNegativeClass(p.position.pnl)}
             />
             <StatsTooltipRow
               label={t`Accrued Borrow Fee`}
               value={formatUsd(p.position.pendingBorrowingFeesUsd?.mul(-1)) || "..."}
               showDollar={false}
-              className="text-red"
+              className={cx({
+                "text-red": !p.position.pendingBorrowingFeesUsd.isZero(),
+              })}
             />
             <StatsTooltipRow
               label={t`Accrued Negative Funding Fee`}
               value={formatUsd(p.position.pendingFundingFeesUsd.mul(-1)) || "..."}
               showDollar={false}
-              className="text-red"
+              className={cx({
+                "text-red": !p.position.pendingFundingFeesUsd.isZero(),
+              })}
             />
             <StatsTooltipRow
               label={t`Close Fee`}
@@ -120,7 +125,7 @@ export function PositionItem(p: Props) {
               label={t`PnL After Fees`}
               value={formatDeltaUsd(p.position.pnlAfterFees, p.position.pnlAfterFeesPercentage)}
               showDollar={false}
-              className={p.position.pnlAfterFees?.gte(0) ? "text-green" : "text-red"}
+              className={getPositiveOrNegativeClass(p.position.pnlAfterFees)}
             />
           </div>
         )}
@@ -134,7 +139,7 @@ export function PositionItem(p: Props) {
         <div className={cx("position-list-collateral", { isSmall: !p.isLarge })}>
           <Tooltip
             handle={`${formatUsd(p.position.remainingCollateralUsd)}`}
-            position={p.isLarge ? "left-bottom" : "center-bottom"}
+            position={p.isLarge ? "left-bottom" : "right-bottom"}
             className="PositionItem-collateral-tooltip"
             handleClassName={cx("plain", { negative: p.position.hasLowCollateral })}
             renderContent={() => {
@@ -186,32 +191,40 @@ export function PositionItem(p: Props) {
                     label={t`Accrued Borrow Fee`}
                     showDollar={false}
                     value={formatUsd(p.position.pendingBorrowingFeesUsd.mul(-1)) || "..."}
-                    className="text-red"
+                    className={cx({
+                      "text-red": !p.position.pendingBorrowingFeesUsd.isZero(),
+                    })}
                   />
                   <StatsTooltipRow
                     label={t`Accrued Negative Funding Fee`}
                     showDollar={false}
                     value={formatDeltaUsd(p.position.pendingFundingFeesUsd.mul(-1)) || "..."}
-                    className="text-red"
+                    className={cx({
+                      "text-red": !p.position.pendingFundingFeesUsd.isZero(),
+                    })}
                   />
                   <StatsTooltipRow
                     label={t`Accrued Positive Funding Fee`}
                     showDollar={false}
                     value={formatDeltaUsd(p.position.pendingClaimableFundingFeesUsd) || "..."}
-                    className="text-green"
+                    className={cx({
+                      "text-green": p.position.pendingClaimableFundingFeesUsd.gt(0),
+                    })}
                   />
                   <br />
                   <StatsTooltipRow
                     showDollar={false}
                     label={t`Current Borrow Fee / Day`}
                     value={formatUsd(borrowingFeeRateUsd.mul(-1))}
-                    className="text-red"
+                    className={cx({
+                      "text-red": borrowingFeeRateUsd.gt(0),
+                    })}
                   />
                   <StatsTooltipRow
                     showDollar={false}
                     label={t`Current Funding Fee / Day`}
                     value={formatDeltaUsd(fundingFeeRateUsd)}
-                    className={fundingFeeRateUsd.gt(0) ? "text-green" : "text-red"}
+                    className={getPositiveOrNegativeClass(fundingFeeRateUsd)}
                   />
                   <br />
                   <Trans>Use the Edit Collateral icon to deposit or withdraw collateral.</Trans>
@@ -294,7 +307,7 @@ export function PositionItem(p: Props) {
       return (
         <Tooltip
           handle={formatLiquidationPrice(p.position.liquidationPrice, { displayDecimals: indexPriceDecimals }) || "..."}
-          position={p.isLarge ? "left-bottom" : "right-bottom"}
+          position={"right-bottom"}
           handleClassName={cx("plain", {
             "LiqPrice-soft-warning": estimatedLiquidationHours && estimatedLiquidationHours < 24 * 7,
             "LiqPrice-hard-warning": estimatedLiquidationHours && estimatedLiquidationHours < 24,
@@ -329,24 +342,27 @@ export function PositionItem(p: Props) {
   function renderPositionOrders(isSmall = false) {
     if (positionOrders.length === 0) return null;
 
-    const ordersErrorList = positionOrders.filter((order) => order.errorLevel === "error");
-    const ordersWarningsList = positionOrders.filter((order) => order.errorLevel === "warning");
-    const hasErrors = ordersErrorList.length + ordersWarningsList.length > 0;
-
     if (isSmall) {
       return positionOrders.map((order) => {
-        const isErrorInOrder = order.errorLevel === "error" || order.errorLevel === "warning";
-        if (isErrorInOrder) {
+        if (order.errorLevel) {
           return (
             <div key={order.key} className="Position-list-order">
               <Tooltip
-                className="order-error"
                 handle={renderOrderText(order)}
                 position="right-bottom"
-                handleClassName="plain"
+                handleClassName={cx("position-order-error", {
+                  "level-warning": order.errorLevel === "warning",
+                  "level-error": order.errorLevel === "error",
+                })}
                 renderContent={() =>
                   order.errors.map((error) => (
-                    <span key={error.msg} className="negative mb-xs">
+                    <span
+                      key={error.msg}
+                      className={cx("mb-xs", "position-order-error", {
+                        "level-warning": order.errorLevel === "warning",
+                        "level-error": order.errorLevel === "error",
+                      })}
+                    >
                       {error.msg}
                     </span>
                   ))
@@ -358,6 +374,10 @@ export function PositionItem(p: Props) {
         return <div className="Position-list-order">{renderOrderText(order)}</div>;
       });
     }
+
+    const ordersErrorList = positionOrders.filter((order) => order.errorLevel === "error");
+    const ordersWarningsList = positionOrders.filter((order) => order.errorLevel === "warning");
+    const hasErrors = ordersErrorList.length + ordersWarningsList.length > 0;
 
     return (
       <div>

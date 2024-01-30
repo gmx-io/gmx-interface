@@ -1,12 +1,13 @@
 import { Trans, t } from "@lingui/macro";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import Tooltip from "components/Tooltip/Tooltip";
+import Tooltip, { TooltipPosition } from "components/Tooltip/Tooltip";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { UserEarningsData } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { TokenData, convertToUsd } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
+import { getPositiveOrNegativeClass } from "lib/utils";
 import { useCallback } from "react";
 
 export const GmTokensBalanceInfo = ({
@@ -46,16 +47,16 @@ export const GmTokensBalanceInfo = ({
           <StatsTooltipRow
             showDollar={false}
             label={t`Total accrued Fees`}
-            className={getColorByValue(earnedTotal)}
-            value={`${formatDeltaUsd(earnedTotal, undefined, { showPlusForZero: true })}`}
+            className={getPositiveOrNegativeClass(earnedTotal)}
+            value={formatDeltaUsd(earnedTotal, undefined)}
           />
         )}
         {earnedRecently && (
           <StatsTooltipRow
             showDollar={false}
-            className={getColorByValue(earnedRecently)}
+            className={getPositiveOrNegativeClass(earnedRecently)}
             label={t`${daysConsidered}d accrued Fees`}
-            value={`${formatDeltaUsd(earnedRecently, undefined, { showPlusForZero: true })}`}
+            value={formatDeltaUsd(earnedRecently, undefined)}
           />
         )}
         <br />
@@ -84,18 +85,22 @@ export const GmTokensTotalBalanceInfo = ({
   balance,
   balanceUsd,
   userEarnings,
+  tooltipPosition,
+  label,
 }: {
   balance?: BigNumber;
   balanceUsd?: BigNumber;
   userEarnings: UserEarningsData | null;
+  tooltipPosition?: TooltipPosition;
+  label: string;
 }) => {
   const shouldShowIncentivesNote = useLpIncentivesIsActive();
   const daysConsidered = useDaysConsideredInMarketsApr();
   return balance && balanceUsd ? (
     <Tooltip
-      handle={<Trans>WALLET</Trans>}
+      handle={label}
       className="text-none"
-      position="right-bottom"
+      position={tooltipPosition ?? "right-bottom"}
       renderContent={() => (
         <>
           <StatsTooltipRow
@@ -113,13 +118,13 @@ export const GmTokensTotalBalanceInfo = ({
             <>
               <StatsTooltipRow
                 label={t`Wallet total accrued Fees`}
-                className={getColorByValue(userEarnings.allMarkets.total)}
+                className={getPositiveOrNegativeClass(userEarnings.allMarkets.total)}
                 value={formatDeltaUsd(userEarnings.allMarkets.total, undefined, { showPlusForZero: true })}
                 showDollar={false}
               />
               <StatsTooltipRow
                 label={t`Wallet ${daysConsidered}d accrued Fees `}
-                className={getColorByValue(userEarnings.allMarkets.recent)}
+                className={getPositiveOrNegativeClass(userEarnings.allMarkets.recent)}
                 value={formatDeltaUsd(userEarnings.allMarkets.recent, undefined, { showPlusForZero: true })}
                 showDollar={false}
               />
@@ -127,13 +132,13 @@ export const GmTokensTotalBalanceInfo = ({
                 <>
                   <StatsTooltipRow
                     label={t`Wallet 365d expected Fees`}
-                    className={getColorByValue(userEarnings.allMarkets.expected365d)}
+                    className={getPositiveOrNegativeClass(userEarnings.allMarkets.expected365d)}
                     value={formatDeltaUsd(userEarnings.allMarkets.expected365d, undefined, { showPlusForZero: true })}
                     showDollar={false}
                   />
                   <br />
                   <div className="text-white">
-                    <Trans>Expected 365d Fees are projected based on past {daysConsidered}d base APR</Trans>
+                    <Trans>Expected 365d Fees are projected based on past {daysConsidered}d base APR.</Trans>
                   </div>
                   {shouldShowIncentivesNote && (
                     <>
@@ -151,15 +156,9 @@ export const GmTokensTotalBalanceInfo = ({
       )}
     />
   ) : (
-    <Trans>WALLET</Trans>
+    <>{label}</>
   );
 };
-
-function getColorByValue(value: BigNumber) {
-  if (!value || value.eq(0)) return undefined;
-
-  return value.gt(0) ? "text-green" : "text-red";
-}
 
 function useLpIncentivesIsActive() {
   return useIncentiveStats()?.lp?.isActive ?? false;

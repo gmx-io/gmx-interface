@@ -25,7 +25,7 @@ export const SHOW_DEBUG_VALUES_KEY = "show-debug-values";
 export const ORACLE_KEEPER_INSTANCES_CONFIG_KEY = "oracle-keeper-instances-config";
 
 export const SYNTHETICS_TRADE_OPTIONS = "synthetics-trade-options";
-export const SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BPS_KEY = "synthetics-acceptable-price-impact-bps";
+export const SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BUFFER_KEY = "synthetics-acceptable-price-impact-buffer";
 export const SYNTHETICS_DEPOSIT_INDEX_TOKEN_KEY = "synthetics-deposit-index-token";
 export const SYNTHETICS_DEPOSIT_MARKET_KEY = "synthetics-market-deposit-market";
 
@@ -35,6 +35,9 @@ export const SYNTHETICS_LIST_SECTION_KEY = "synthetics-list-section";
 export const SYNTHETICS_COLLATERAL_EDIT_TOKEN_KEY = "synthetics-collateral-edit-token";
 export const PRODUCTION_PREVIEW_KEY = "production-preview";
 export const REQUIRED_UI_VERSION_KEY = "required-ui-version";
+
+export const ONE_CLICK_TRADING_OFFER_HIDDEN = "one-click-trading-offer-hidden";
+export const ONE_CLICK_TRADING_NATIVE_TOKEN_WARN_HIDDEN = "one-click-trading-native-token-warn-hidden";
 
 export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 
@@ -48,6 +51,10 @@ export function getSyntheticsDepositMarketKey(chainId: number) {
 
 export function getSyntheticsListSectionKey(chainId: number) {
   return [chainId, SYNTHETICS_LIST_SECTION_KEY];
+}
+
+export function getSyntheticsAcceptablePriceImpactBufferKey(chainId: number) {
+  return [chainId, SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BUFFER_KEY];
 }
 
 export function getSyntheticsTradeOptionsKey(chainId: number) {
@@ -70,14 +77,15 @@ export function getLeverageEnabledKey(chainId: number) {
   return [chainId, LEVERAGE_ENABLED_KEY];
 }
 
-export function getAcceptablePriceImpactBpsKey(chainId: number) {
-  return [chainId, SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BPS_KEY];
-}
-
 export function getAllowedSlippageKey(chainId: number) {
   return [chainId, SLIPPAGE_BPS_KEY];
 }
 
 export function getExecutionFeeBufferBpsKey(chainId: number) {
   return [chainId, EXECUTION_FEE_BUFFER_BPS_KEY];
+}
+
+export function getSubaccountConfigKey(chainId: number | undefined, account: string | undefined) {
+  if (!chainId || !account) return null;
+  return [chainId, account, "one-click-trading-config"];
 }

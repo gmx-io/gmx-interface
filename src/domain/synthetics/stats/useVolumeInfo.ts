@@ -44,7 +44,7 @@ export default function useVolumeInfo(chainId: number) {
     }
   }
 
-  async function fetcher([_, chainId]) {
+  async function fetcher([, chainId]) {
     const lastPeriodFor24Hours = Math.floor(Date.now() / 1000 / 3600) * 3600 - 60 * 60 * 24;
     try {
       const { dailyVolume, totalVolume } = await fetchVolumeData(chainId, lastPeriodFor24Hours);

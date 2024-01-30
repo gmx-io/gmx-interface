@@ -197,7 +197,7 @@ export const OrderItem = forwardRef<HTMLTableRowElement, Props>((p, ref) => {
 
               {p.order.errors.length ? (
                 <>
-                  {p.order.errors.map((error, i) => (
+                  {p.order.errors.map((error) => (
                     <div className="OrderItem-tooltip-row" key={error.msg}>
                       <span className={error!.level === "error" ? "negative" : "warning"}>{error.msg}</span>
                     </div>

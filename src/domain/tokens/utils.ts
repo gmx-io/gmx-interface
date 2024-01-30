@@ -15,6 +15,7 @@ import {
 } from "lib/legacy";
 import { bigNumberify, expandDecimals } from "lib/numbers";
 import { InfoTokens, Token, TokenInfo, TokenPrices } from "./types";
+import { convertToTokenAmount } from "domain/synthetics/tokens";
 const { AddressZero } = ethers.constants;
 
 export function getTokenUrl(chainId: number, address: string) {
@@ -193,6 +194,7 @@ export function getLowestFeeTokenForBuyGlp(
     .filter(
       (asset) =>
         asset.token.address !== fromTokenAddress &&
+        // eslint-disable-next-line no-prototype-builtins
         asset.hasOwnProperty("fees") &&
         swapUsdMin.lt(asset.amountLeftToDeposit)
     )
@@ -268,4 +270,14 @@ export function getSpread(p: { minPrice: BigNumber; maxPrice: BigNumber }): BigN
 
 export function getMidPrice(prices: TokenPrices) {
   return prices.minPrice.add(prices.maxPrice).div(2);
+}
+
+// calculates the minimum amount of native currency that should be left to be used as gas fees
+export function getMinResidualAmount(decimals?: number, price?: BigNumber) {
+  if (!decimals || !price) {
+    return BigNumber.from(0);
+  }
+
+  const MIN_NATIVE_CURRENCY_FOR_GAS = expandDecimals(10, USD_DECIMALS);
+  return convertToTokenAmount(MIN_NATIVE_CURRENCY_FOR_GAS, decimals, price);
 }

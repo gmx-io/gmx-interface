@@ -866,7 +866,7 @@ export function useAccountOrders(flagOrdersEnabled, overrideAccount) {
     error: ordersError,
   } = useSWR(key, {
     dedupingInterval: 5000,
-    fetcher: async ([active, chainId, orderBookAddress, account]) => {
+    fetcher: async ([, chainId, orderBookAddress, account]) => {
       const provider = getProvider(signer, chainId);
       const orderBookContract = new ethers.Contract(orderBookAddress, OrderBook.abi, provider);
       const orderBookReaderContract = new ethers.Contract(orderBookReaderAddress, OrderBookReader.abi, provider);

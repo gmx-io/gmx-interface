@@ -1,6 +1,5 @@
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import Tooltip from "components/Tooltip/Tooltip";
 import { getExplorerUrl } from "config/chains";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { MarketInfo, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
@@ -13,6 +12,8 @@ import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import "./TradeHistoryRow.scss";
 import { formatPositionMessage, formatSwapMessage } from "./utils";
+import { t } from "@lingui/macro";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 type Props = {
   tradeAction: TradeAction;
@@ -24,8 +25,8 @@ function renderMarketName(market: MarketInfo) {
   const indexName = getMarketIndexName(market);
   const poolName = getMarketPoolName(market);
   return (
-    <div className="items-top">
-      <span>{indexName}</span>
+    <div className="items-top lh-1">
+      <span className="text-white">{indexName}</span>
       <span className="subtext">[{poolName}]</span>
     </div>
   );
@@ -41,7 +42,7 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
 
   return (
     <span className="TradeHistoryRow-message">
-      {messages.map((message, i) => {
+      {messages.map((message) => {
         const hasSmthAfterTitle = message.tooltipRows?.length || message.tooltipFooter;
         const hasSmthBeforeFooter = message.tooltipTitle || message.tooltipRows?.length;
         const showTooltip = message.tooltipRows || message.tooltipFooter || message.tooltipTitle;
@@ -50,7 +51,7 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
         );
 
         return showTooltip ? (
-          <Tooltip
+          <TooltipWithPortal
             position="left-top"
             handle={textElement}
             className={message.isError ? "Tooltip-error" : undefined}
@@ -88,7 +89,14 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
           textElement
         );
       })}
-      , Market: {renderMarketName(tradeAction.marketInfo)}
+      , Market:{" "}
+      <TooltipWithPortal
+        position="right-bottom"
+        handle={getMarketIndexName(tradeAction.marketInfo)}
+        renderContent={() => (
+          <StatsTooltipRow showDollar={false} label={t`Market`} value={renderMarketName(tradeAction.marketInfo)} />
+        )}
+      />
     </span>
   );
 }

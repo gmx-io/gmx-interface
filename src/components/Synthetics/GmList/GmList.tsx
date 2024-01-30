@@ -14,7 +14,6 @@ import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens
 import { useChainId } from "lib/chains";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { useMedia } from "react-use";
 import { Operation } from "../GmSwap/GmSwapBox/GmSwapBox";
 import "./GmList.scss";
@@ -32,6 +31,7 @@ import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { getNormalizedTokenSymbol } from "config/tokens";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { GMListSkeleton } from "components/Skeleton/Skeleton";
+import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
 
 type Props = {
   hideTitle?: boolean;
@@ -110,6 +110,7 @@ export function GmList({
                     balance={userTotalGmInfo?.balance}
                     balanceUsd={userTotalGmInfo?.balanceUsd}
                     userEarnings={userEarnings}
+                    label={t`WALLET`}
                   />
                 </th>
                 <th>
@@ -175,11 +176,13 @@ export function GmList({
                           <div className="App-card-title-info-text">
                             <div className="App-card-info-title">
                               {getMarketIndexName({ indexToken, isSpotOnly: market?.isSpotOnly })}
-                              {!market.isSpotOnly && (
-                                <div className="Asset-dropdown-container">
-                                  <AssetDropdown assetSymbol={indexToken.symbol} position="left" />
-                                </div>
-                              )}
+                              <div className="Asset-dropdown-container">
+                                <GmAssetDropdown
+                                  token={token}
+                                  marketsInfoData={marketsInfoData}
+                                  tokensData={tokensData}
+                                />
+                              </div>
                             </div>
                             <div className="App-card-info-subtitle">
                               [{getMarketPoolName({ longToken, shortToken })}]
@@ -260,7 +263,7 @@ export function GmList({
           {!hideTitle && <PageTitle title={t`GM Pools`} />}
 
           <div className="token-grid">
-            {sortedMarketsByIndexToken.map((token) => {
+            {sortedMarketsByIndexToken.map((token, index) => {
               const apr = marketsTokensAPRData?.[token.address];
               const incentiveApr = marketsTokensIncentiveAprData?.[token.address];
               const marketEarnings = getByKey(userEarnings?.byMarketAddress, token?.address);
@@ -294,7 +297,12 @@ export function GmList({
                         </div>
                       </div>
                       <div>
-                        <AssetDropdown assetSymbol={indexToken.symbol} position="left" />
+                        <GmAssetDropdown
+                          token={token}
+                          tokensData={tokensData}
+                          marketsInfoData={marketsInfoData}
+                          position={index % 2 !== 0 ? "left" : "right"}
+                        />
                       </div>
                     </div>
                   </div>
@@ -348,15 +356,12 @@ export function GmList({
                     </div>
                     <div className="App-card-row">
                       <div className="label">
-                        <Tooltip
-                          handle={<Trans>Wallet</Trans>}
-                          className="text-none"
-                          position="right-bottom"
-                          renderContent={() => (
-                            <p className="text-white">
-                              <Trans>Available amount to deposit into the specific GM pool.</Trans>
-                            </p>
-                          )}
+                        <GmTokensTotalBalanceInfo
+                          balance={userTotalGmInfo?.balance}
+                          balanceUsd={userTotalGmInfo?.balanceUsd}
+                          userEarnings={userEarnings}
+                          tooltipPosition="left-bottom"
+                          label={t`Wallet`}
                         />
                       </div>
                       <div>

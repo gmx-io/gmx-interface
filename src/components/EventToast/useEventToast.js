@@ -1,7 +1,7 @@
 import { useLocalStorage } from "react-use";
 import toast from "react-hot-toast";
 import { homeEventsData, appEventsData } from "config/events";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import EventToast from "./EventToast";
 import { isFuture, parse } from "date-fns";
 import { isHomeSite } from "lib/legacy";
@@ -9,6 +9,7 @@ import { useChainId } from "lib/chains";
 import { useMarketsInfo } from "domain/synthetics/markets";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { ARBITRUM } from "config/chains";
+import { getProvider } from "lib/rpc";
 
 function useEventToast() {
   const isHome = isHomeSite();
@@ -16,6 +17,22 @@ function useEventToast() {
   const { chainId } = useChainId();
   const { marketsInfoData } = useMarketsInfo(chainId);
   const incentiveStats = useIncentiveStats(ARBITRUM);
+
+  const [isArbitrumDown, setIsArbitrumDown] = useState(false);
+
+  useEffect(() => {
+    if (chainId !== ARBITRUM) {
+      return;
+    }
+
+    const provider = getProvider(undefined, chainId);
+    provider.getBlock().then((block) => {
+      const now = Date.now() / 1000;
+      if (now - block.timestamp > 60) {
+        setIsArbitrumDown(true);
+      }
+    });
+  }, [setIsArbitrumDown, chainId]);
 
   const isAdaptiveFundingActiveSomeMarkets = useMemo(() => {
     if (!marketsInfoData) return;
@@ -43,6 +60,7 @@ function useEventToast() {
       "v2-adaptive-funding-all-markets": isAdaptiveFundingActiveAllMarkets,
       "incentives-launch": someIncentivesOn,
       "all-incentives-launch": allIncentivesOn,
+      "arbitrum-issue": isArbitrumDown,
     };
     const eventsData = isHome ? homeEventsData : appEventsData;
 
@@ -80,6 +98,7 @@ function useEventToast() {
     isAdaptiveFundingActiveSomeMarkets,
     isAdaptiveFundingActiveAllMarkets,
     incentiveStats,
+    isArbitrumDown,
   ]);
 }
 

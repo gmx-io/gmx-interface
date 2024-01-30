@@ -24,7 +24,7 @@ export default function ExchangeBanner(props) {
       </p>
       <span
         className="ExchangeBanner-close"
-        onClick={(e) => {
+        onClick={() => {
           hideBanner();
         }}
       >

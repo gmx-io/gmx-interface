@@ -3,7 +3,7 @@ import { ARBITRUM, ARBITRUM_GOERLI } from "config/chains";
 import { getTokenBySymbol } from "config/tokens";
 import { sub } from "date-fns";
 import { BigNumber } from "ethers";
-import { bigNumberify, expandDecimals } from "lib/numbers";
+import { expandDecimals } from "lib/numbers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
 import useSWR from "swr";
@@ -48,7 +48,9 @@ function useIncentivesBonusApr(chainId: number): MarketTokensAPRData {
     let arbTokenAddress: null | string = null;
     try {
       arbTokenAddress = getTokenBySymbol(chainId, "ARB").address;
-    } catch (err) {}
+    } catch (err) {
+      // ignore
+    }
     let arbTokenPrice = BigNumber.from(0);
 
     if (arbTokenAddress && tokensData) {
@@ -144,10 +146,10 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
         const lteStartOfPeriodFees = response[`_${marketAddress}_lte_start_of_period_`];
         const recentFees = response[`_${marketAddress}_recent`];
 
-        const x1 = bigNumberify(lteStartOfPeriodFees[0].cumulativeFeeUsdPerPoolValue) ?? BigNumber.from(0);
-        const x2 = bigNumberify(recentFees[0].cumulativeFeeUsdPerPoolValue);
+        const x1 = BigNumber.from(lteStartOfPeriodFees[0]?.cumulativeFeeUsdPerPoolValue ?? 0);
+        const x2 = BigNumber.from(recentFees[0]?.cumulativeFeeUsdPerPoolValue ?? 0);
 
-        if (!x2) {
+        if (x2.eq(0)) {
           acc[marketAddress] = BigNumber.from(0);
           return acc;
         }

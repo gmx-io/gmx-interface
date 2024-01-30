@@ -38,7 +38,7 @@ export class TVDataProvider {
     ticker: string;
     isChartReady: boolean;
   };
-  shouldResetCache: boolean = false;
+  shouldResetCache = false;
 
   constructor({ resolutions }) {
     const { lastBar, currentBar, lastBarRefreshTime, barsInfo, chartTokenInfo } = initialState;

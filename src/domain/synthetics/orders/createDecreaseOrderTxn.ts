@@ -13,6 +13,8 @@ import { DecreasePositionSwapType, OrderType } from "./types";
 import { isMarketOrderType } from "./utils";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { t } from "@lingui/macro";
+import { Subaccount } from "context/SubaccountContext/SubaccountContext";
+import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 
 const { AddressZero } = ethers.constants;
 
@@ -49,68 +51,33 @@ export type DecreaseOrderCallbacks = {
 export async function createDecreaseOrderTxn(
   chainId: number,
   signer: Signer,
+  subaccount: Subaccount,
   params: DecreaseOrderParams | DecreaseOrderParams[],
   callbacks: DecreaseOrderCallbacks
 ) {
   const ps = Array.isArray(params) ? params : [params];
   const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
+  const router = subaccount ? getSubaccountRouterContract(chainId, subaccount.signer) : exchangeRouter;
 
   const orderVaultAddress = getContract(chainId, "OrderVault");
   const totalWntAmount = ps.reduce((acc, p) => acc.add(p.executionFee), BigNumber.from(0));
-
-  const multicall = [
-    ...ps.flatMap((p) => {
-      const isNativeReceive = p.receiveTokenAddress === NATIVE_TOKEN_ADDRESS;
-
-      const initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
-
-      const shouldApplySlippage = isMarketOrderType(p.orderType);
-
-      const acceptablePrice = shouldApplySlippage
-        ? applySlippageToPrice(p.allowedSlippage, p.acceptablePrice, false, p.isLong)
-        : p.acceptablePrice;
-
-      const minOutputAmount = shouldApplySlippage
-        ? applySlippageToMinOut(p.allowedSlippage, p.minOutputUsd)
-        : p.minOutputUsd;
-      return [
-        { method: "sendWnt", params: [orderVaultAddress, p.executionFee] },
-        {
-          method: "createOrder",
-          params: [
-            {
-              addresses: {
-                receiver: p.account,
-                initialCollateralToken: initialCollateralTokenAddress,
-                callbackContract: AddressZero,
-                market: p.marketAddress,
-                swapPath: p.swapPath,
-                uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.constants.AddressZero,
-              },
-              numbers: {
-                sizeDeltaUsd: p.sizeDeltaUsd,
-                initialCollateralDeltaAmount: p.initialCollateralDeltaAmount,
-                triggerPrice: convertToContractPrice(p.triggerPrice || BigNumber.from(0), p.indexToken.decimals),
-                acceptablePrice: convertToContractPrice(acceptablePrice, p.indexToken.decimals),
-                executionFee: p.executionFee,
-                callbackGasLimit: BigNumber.from(0),
-                minOutputAmount,
-              },
-              orderType: p.orderType,
-              decreasePositionSwapType: p.decreasePositionSwapType,
-              isLong: p.isLong,
-              shouldUnwrapNativeToken: isNativeReceive,
-              referralCode: p.referralCode || ethers.constants.HashZero,
-            },
-          ],
-        },
-      ];
-    }),
-  ];
-
-  const encodedPayload = multicall
-    .filter(Boolean)
-    .map((call) => exchangeRouter.interface.encodeFunctionData(call!.method, call!.params));
+  const account = ps[0].account;
+  const encodedPayload = createEncodedPayload({
+    router,
+    orderVaultAddress,
+    ps,
+    subaccount,
+    mainAccountAddress: account,
+    chainId,
+  });
+  const simulationEncodedPayload = createEncodedPayload({
+    router: exchangeRouter,
+    orderVaultAddress,
+    ps,
+    subaccount: null,
+    mainAccountAddress: account,
+    chainId,
+  });
 
   ps.forEach(async (p) => {
     if (!p.skipSimulation) {
@@ -123,10 +90,10 @@ export async function createDecreaseOrderTxn(
         };
       }
       await simulateExecuteOrderTxn(chainId, {
-        account: p.account,
+        account,
         primaryPriceOverrides,
         secondaryPriceOverrides,
-        createOrderMulticallPayload: encodedPayload,
+        createOrderMulticallPayload: simulationEncodedPayload,
         value: totalWntAmount,
         tokensData: p.tokensData,
         errorTitle: t`Order error.`,
@@ -137,7 +104,7 @@ export async function createDecreaseOrderTxn(
   const txnCreatedAt = Date.now();
   const txnCreatedAtBlock = await signer.provider?.getBlockNumber();
 
-  const txn = await callContract(chainId, exchangeRouter, "multicall", [encodedPayload], {
+  const txn = await callContract(chainId, router, "multicall", [encodedPayload], {
     value: totalWntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
@@ -204,4 +171,72 @@ function getPendingPositionFromParams(
     updatedAt: txnCreatedAt,
     updatedAtBlock: BigNumber.from(txnCreatedAtBlock),
   };
+}
+
+function createEncodedPayload({
+  router,
+  orderVaultAddress,
+  ps,
+  subaccount,
+  mainAccountAddress,
+  chainId,
+}: {
+  router: ethers.Contract;
+  orderVaultAddress: string;
+  ps: DecreaseOrderParams[];
+  subaccount: Subaccount;
+  mainAccountAddress: string;
+  chainId: number;
+}) {
+  const multicall = [
+    ...ps.flatMap((p) => {
+      const isNativeReceive = p.receiveTokenAddress === NATIVE_TOKEN_ADDRESS;
+
+      const initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
+
+      const shouldApplySlippage = isMarketOrderType(p.orderType);
+
+      const acceptablePrice = shouldApplySlippage
+        ? applySlippageToPrice(p.allowedSlippage, p.acceptablePrice, false, p.isLong)
+        : p.acceptablePrice;
+
+      const minOutputAmount = shouldApplySlippage
+        ? applySlippageToMinOut(p.allowedSlippage, p.minOutputUsd)
+        : p.minOutputUsd;
+      const orderParams = {
+        addresses: {
+          receiver: p.account,
+          initialCollateralToken: initialCollateralTokenAddress,
+          callbackContract: AddressZero,
+          market: p.marketAddress,
+          swapPath: p.swapPath,
+          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.constants.AddressZero,
+        },
+        numbers: {
+          sizeDeltaUsd: p.sizeDeltaUsd,
+          initialCollateralDeltaAmount: p.initialCollateralDeltaAmount,
+          triggerPrice: convertToContractPrice(p.triggerPrice || BigNumber.from(0), p.indexToken.decimals),
+          acceptablePrice: convertToContractPrice(acceptablePrice, p.indexToken.decimals),
+          executionFee: p.executionFee,
+          callbackGasLimit: BigNumber.from(0),
+          minOutputAmount,
+        },
+        orderType: p.orderType,
+        decreasePositionSwapType: p.decreasePositionSwapType,
+        isLong: p.isLong,
+        shouldUnwrapNativeToken: isNativeReceive,
+        referralCode: p.referralCode || ethers.constants.HashZero,
+      };
+
+      return [
+        { method: "sendWnt", params: [orderVaultAddress, p.executionFee] },
+        {
+          method: "createOrder",
+          params: subaccount ? [mainAccountAddress, orderParams] : [orderParams],
+        },
+      ];
+    }),
+  ];
+
+  return multicall.filter(Boolean).map((call) => router.interface.encodeFunctionData(call!.method, call!.params));
 }

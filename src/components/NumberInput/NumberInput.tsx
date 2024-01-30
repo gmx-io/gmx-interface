@@ -1,4 +1,4 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, RefObject } from "react";
 
 function escapeSpecialRegExpChars(string: string): string {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -8,7 +8,7 @@ const inputRegex = RegExp(`^\\d*(?:\\\\[.])?\\d*$`);
 
 type Props = {
   value?: string | number;
-  inputRef?: React.RefObject<HTMLInputElement>;
+  inputRef?: RefObject<HTMLInputElement>;
   onValueChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   onFocus?: () => void;
   onBlur?: () => void;
@@ -16,7 +16,7 @@ type Props = {
   placeholder?: string;
 };
 
-function NumberInput({ value, inputRef, onValueChange, onFocus, onBlur, className, placeholder }: Props) {
+function NumberInput({ value = "", inputRef, onValueChange, onFocus, onBlur, className, placeholder }: Props) {
   function onChange(e: ChangeEvent<HTMLInputElement>) {
     if (!onValueChange) return;
     // Replace comma with dot

@@ -485,7 +485,7 @@
 }
 
 .Exchange-list-item-error {
-  color: #fa3c58;
+  color: var(--error-red);
   margin-top: 0.465rem;
   font-size: var(--font-sm);
 }
@@ -611,7 +611,7 @@ table.Exchange-list .Exchange-list-item-active {
   margin-right: 0.8rem;
 }
 .Exchange-info-value-warning {
-  color: #fa3c58;
+  color: var(--error-red);
 }
 
 .Confirmation-box-info,
@@ -634,7 +634,7 @@ table.Exchange-list .Exchange-list-item-active {
 
 .Confirmation-box-warning,
 .Confirmation-box-warning a {
-  color: #fa3c58;
+  color: var(--error-red);
 }
 
 .Exchange-swap-usd {
@@ -1209,13 +1209,13 @@ table.Exchange-list-small td {
   }
 }
 
-@media (max-width: 350px) {
+@media (max-width: 375px) {
   .ExchangeChart-header {
     grid-column-gap: 0.5rem;
   }
 
   .Exchange-list .Tooltip-popup,
   .Exchange-list .App-card .Tooltip-popup {
-    min-width: 24.5rem;
+    min-width: 27rem;
   }
 }

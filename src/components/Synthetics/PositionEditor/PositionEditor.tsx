@@ -1,4 +1,5 @@
 import { Trans, t } from "@lingui/macro";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import Token from "abis/Token.json";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
@@ -12,7 +13,10 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { getContract } from "config/contracts";
 import { getSyntheticsCollateralEditAddressKey } from "config/localStorage";
 import { NATIVE_TOKEN_ADDRESS, getToken } from "config/tokens";
+import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { useHasOutdatedUi } from "domain/legacy";
 import { useUserReferralInfo } from "domain/referrals/hooks";
 import {
   estimateExecuteDecreaseOrderGasLimit,
@@ -54,16 +58,14 @@ import {
 } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
+import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
+import useWallet from "lib/wallets/useWallet";
 import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionEditor.scss";
-import { useHasOutdatedUi } from "domain/legacy";
-import useWallet from "lib/wallets/useWallet";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { DUST_BNB } from "lib/legacy";
-import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
-import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { getMinResidualAmount } from "domain/tokens";
+import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 
 export type Props = {
   position?: PositionInfo;
@@ -93,6 +95,9 @@ export function PositionEditor(p: Props) {
   const routerAddress = getContract(chainId, "SyntheticsRouter");
   const userReferralInfo = useUserReferralInfo(signer, chainId, account);
   const { data: hasOutdatedUi } = useHasOutdatedUi();
+
+  const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
+  const minResidualAmount = getMinResidualAmount(nativeToken?.decimals, nativeToken?.prices?.maxPrice);
 
   const isVisible = Boolean(position);
   const prevIsVisible = usePrevious(isVisible);
@@ -302,6 +307,8 @@ export function PositionEditor(p: Props) {
     position,
   ]);
 
+  const subaccount = useSubaccount(executionFee?.feeTokenAmount ?? null);
+
   function onSubmit() {
     if (!account) {
       openConnectModal?.();
@@ -323,7 +330,7 @@ export function PositionEditor(p: Props) {
     if (isDeposit) {
       setIsSubmitting(true);
 
-      createIncreaseOrderTxn(chainId, signer, {
+      createIncreaseOrderTxn(chainId, signer, subaccount, {
         account,
         marketAddress: position.marketAddress,
         initialCollateralAddress: selectedCollateralAddress,
@@ -361,6 +368,7 @@ export function PositionEditor(p: Props) {
       createDecreaseOrderTxn(
         chainId,
         signer,
+        subaccount,
         {
           account,
           marketAddress: position.marketAddress,
@@ -426,6 +434,10 @@ export function PositionEditor(p: Props) {
     [Operation.Withdraw]: t`Withdraw`,
   };
 
+  const showMaxOnDeposit = collateralToken?.isNative
+    ? minResidualAmount && collateralToken?.balance?.gt(minResidualAmount)
+    : true;
+
   return (
     <div className="PositionEditor">
       <Modal
@@ -448,6 +460,11 @@ export function PositionEditor(p: Props) {
               optionLabels={operationLabels}
               className="PositionEditor-tabs SwapBox-option-tabs"
             />
+            <SubaccountNavigationButton
+              executionFee={executionFee?.feeTokenAmount}
+              closeConfirmationBox={onClose}
+              tradeFlags={undefined}
+            />
 
             <BuyInputSection
               topLeftLabel={operationLabels[operation]}
@@ -466,7 +483,7 @@ export function PositionEditor(p: Props) {
               onInputValueChange={(e) => setCollateralInputValue(e.target.value)}
               showMaxButton={
                 isDeposit
-                  ? collateralToken?.balance && !collateralDeltaAmount?.eq(collateralToken?.balance)
+                  ? collateralToken?.balance && showMaxOnDeposit && !collateralDeltaAmount?.eq(collateralToken?.balance)
                   : maxWithdrawAmount && !collateralDeltaAmount?.eq(maxWithdrawAmount)
               }
               showPercentSelector={!isDeposit}
@@ -478,9 +495,14 @@ export function PositionEditor(p: Props) {
                 }
               }}
               onClickMax={() => {
-                const maxDepositAmount = collateralToken!.isNative
-                  ? collateralToken!.balance!.sub(BigNumber.from(DUST_BNB).mul(2))
+                let maxDepositAmount = collateralToken?.isNative
+                  ? collateralToken!.balance!.sub(BigNumber.from(minResidualAmount || 0))
                   : collateralToken!.balance!;
+
+                if (maxDepositAmount.isNegative()) {
+                  maxDepositAmount = BigNumber.from(0);
+                }
+
                 const formattedMaxDepositAmount = formatAmountFree(maxDepositAmount!, collateralToken!.decimals);
                 const finalDepositAmount = isMetamaskMobile
                   ? limitDecimals(formattedMaxDepositAmount, MAX_METAMASK_MOBILE_DECIMALS)
@@ -567,13 +589,7 @@ export function PositionEditor(p: Props) {
                 </div>
               </div>
 
-              <TradeFeesRow
-                {...fees}
-                executionFee={executionFee}
-                feesType={"edit"}
-                warning={executionFee?.warning}
-                shouldShowRebate={false}
-              />
+              <TradeFeesRow {...fees} executionFee={executionFee} feesType="edit" shouldShowRebate={false} />
 
               {!isDeposit && (
                 <ExchangeInfoRow

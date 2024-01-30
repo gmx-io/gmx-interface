@@ -16,6 +16,7 @@ import {
 } from "domain/synthetics/orders";
 import {
   PositionsInfoData,
+  formatLeverage,
   formatAcceptablePrice,
   formatLiquidationPrice,
   getPositionKey,
@@ -32,20 +33,21 @@ import {
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
 import {
-  bigNumberify,
   formatAmount,
   formatAmountFree,
   formatDeltaUsd,
   formatTokenAmount,
   formatUsd,
+  getBasisPoints,
   parseValue,
 } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS } from "config/factors";
-import { SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BPS_KEY } from "config/localStorage";
+import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { getWrappedToken } from "config/tokens";
+import { usePositionsConstants } from "domain/synthetics/positions";
+import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
@@ -55,14 +57,19 @@ import {
   useGasPrice,
 } from "domain/synthetics/fees";
 import { updateOrderTxn } from "domain/synthetics/orders/updateOrderTxn";
-import { getAcceptablePrice, getSwapPathOutputAddresses } from "domain/synthetics/trade";
+import { applySlippageToPrice, getSwapPathOutputAddresses, useSwapRoutes } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
+import { getIncreasePositionAmounts, getNextPositionValuesForIncreaseTrade } from "domain/synthetics/trade";
+import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { IS_PNL_IN_LEVERAGE_KEY } from "config/localStorage";
+import { useUserReferralInfo } from "domain/referrals/hooks";
 
 import Button from "components/Button/Button";
-import "./OrderEditor.scss";
 import useWallet from "lib/wallets/useWallet";
+import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
+import "./OrderEditor.scss";
 
 type Props = {
   positionsData?: PositionsInfoData;
@@ -76,15 +83,10 @@ type Props = {
 export function OrderEditor(p: Props) {
   const { marketsInfoData, tokensData } = p;
   const { chainId } = useChainId();
-  const { signer } = useWallet();
+  const { signer, account } = useWallet();
 
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
-  const [savedAcceptablePriceImpactBps] = useLocalStorageSerializeKey(
-    [chainId, SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BPS_KEY],
-    DEFAULT_ACCEPABLE_PRICE_IMPACT_BPS
-  );
-  const acceptablePriceImpactBps = bigNumberify(savedAcceptablePriceImpactBps!);
 
   const [isInited, setIsInited] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -95,18 +97,35 @@ export function OrderEditor(p: Props) {
   const [triggerPirceInputValue, setTriggerPriceInputValue] = useState("");
   const triggerPrice = parseValue(triggerPirceInputValue || "0", USD_DECIMALS)!;
 
-  let { acceptablePrice } = getAcceptablePrice({
-    isIncrease: isIncreaseOrderType(p.order.orderType),
-    isLong: p.order.isLong,
-    indexPrice: triggerPrice,
-    acceptablePriceImpactBps: acceptablePriceImpactBps,
-    sizeDeltaUsd: p.order.sizeDeltaUsd,
-  });
+  const uiFeeFactor = useUiFeeFactor(chainId);
+  const { minCollateralUsd } = usePositionsConstants(chainId);
+  const userReferralInfo = useUserReferralInfo(signer, chainId, account);
 
-  // For SL orders Acceptable Price is not applicable and set to 0 or MaxUnit256
-  if (p.order.orderType === OrderType.StopLossDecrease) {
-    acceptablePrice = (p.order as PositionOrderInfo).acceptablePrice;
-  }
+  const [savedIsPnlInLeverage] = useLocalStorageSerializeKey([chainId, IS_PNL_IN_LEVERAGE_KEY], false);
+
+  const acceptablePrice = useMemo(() => {
+    if (isSwapOrderType(p.order.orderType)) {
+      return BigNumber.from(0);
+    }
+
+    const positionOrder = p.order as PositionOrderInfo;
+
+    // For SL orders Acceptable Price is not applicable and set to 0 or MaxUnit256
+    if (p.order.orderType === OrderType.StopLossDecrease) {
+      return positionOrder.acceptablePrice;
+    }
+
+    const oldAcceptablePrice = positionOrder.acceptablePrice;
+    const oldTriggerPrice = positionOrder.triggerPrice;
+    const priceDelta = oldAcceptablePrice?.sub(oldTriggerPrice || 0).abs() || 0;
+    const acceptablePriceImpactBps = getBasisPoints(priceDelta, oldTriggerPrice);
+    return applySlippageToPrice(
+      acceptablePriceImpactBps.toNumber(),
+      triggerPrice || oldTriggerPrice,
+      p.order.isLong,
+      isIncreaseOrderType(p.order.orderType)
+    );
+  }, [p.order, triggerPrice]);
 
   // Swaps
   const fromToken = getTokenData(tokensData, p.order.initialCollateralTokenAddress);
@@ -188,7 +207,7 @@ export function OrderEditor(p: Props) {
   const positionKey = getPositionKey(
     p.order.account,
     p.order.marketAddress,
-    p.order.initialCollateralTokenAddress,
+    p.order.targetCollateralToken.address,
     p.order.isLong
   );
 
@@ -221,6 +240,87 @@ export function OrderEditor(p: Props) {
 
     return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice);
   }, [chainId, gasLimits, gasPrice, p.order.isFrozen, p.order.orderType, p.order.swapPath, tokensData]);
+
+  const subaccount = useSubaccount(executionFee?.feeTokenAmount ?? null);
+  const swapRoute = useSwapRoutes({
+    marketsInfoData,
+    fromTokenAddress: p.order.initialCollateralTokenAddress,
+    toTokenAddress: existingPosition ? existingPosition.collateralTokenAddress : toTokenAddress,
+  });
+
+  const isLimitIncreaseOrder = p.order.orderType === OrderType.LimitIncrease;
+
+  const increaseAmounts = useMemo(() => {
+    if (!isLimitIncreaseOrder || !toToken || !fromToken || !market || !triggerPrice?.gt(0)) {
+      return undefined;
+    }
+
+    const positionOrder = p.order as PositionOrderInfo;
+
+    const indexTokenAmount = convertToTokenAmount(sizeDeltaUsd, positionOrder.indexToken.decimals, triggerPrice);
+
+    return getIncreasePositionAmounts({
+      marketInfo: market,
+      indexToken: positionOrder.indexToken,
+      initialCollateralToken: fromToken,
+      collateralToken: p.order.targetCollateralToken,
+      isLong: p.order.isLong,
+      initialCollateralAmount: p.order.initialCollateralDeltaAmount,
+      indexTokenAmount,
+      leverage: existingPosition?.leverage,
+      triggerPrice: isLimitOrderType(p.order.orderType) ? triggerPrice : undefined,
+      position: existingPosition,
+      findSwapPath: swapRoute.findSwapPath,
+      userReferralInfo,
+      uiFeeFactor,
+      strategy: "independent",
+    });
+  }, [
+    isLimitIncreaseOrder,
+    existingPosition,
+    fromToken,
+    market,
+    sizeDeltaUsd,
+    p.order,
+    swapRoute,
+    toToken,
+    triggerPrice,
+    uiFeeFactor,
+    userReferralInfo,
+  ]);
+
+  const nextPositionValues = useMemo(() => {
+    if (!isLimitIncreaseOrder || !minCollateralUsd || !market) {
+      return undefined;
+    }
+
+    if (increaseAmounts?.acceptablePrice && sizeDeltaUsd?.gt(0)) {
+      return getNextPositionValuesForIncreaseTrade({
+        marketInfo: market,
+        collateralToken: p.order.targetCollateralToken,
+        existingPosition,
+        isLong: p.order.isLong,
+        collateralDeltaUsd: increaseAmounts.collateralDeltaUsd,
+        collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
+        sizeDeltaUsd: increaseAmounts?.sizeDeltaUsd,
+        sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
+        indexPrice: increaseAmounts.indexPrice,
+        showPnlInLeverage: savedIsPnlInLeverage ?? false,
+        minCollateralUsd: minCollateralUsd!,
+        userReferralInfo,
+      });
+    }
+  }, [
+    increaseAmounts,
+    isLimitIncreaseOrder,
+    market,
+    minCollateralUsd,
+    p.order,
+    savedIsPnlInLeverage,
+    sizeDeltaUsd,
+    existingPosition,
+    userReferralInfo,
+  ]);
 
   function getError() {
     if (isSubmitting) {
@@ -314,6 +414,12 @@ export function OrderEditor(p: Props) {
         }
       }
     }
+
+    if (isLimitIncreaseOrder) {
+      if (nextPositionValues?.nextLeverage?.gt(MAX_ALLOWED_LEVERAGE)) {
+        return t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`;
+      }
+    }
   }
 
   function getSubmitButtonState(): { text: string; disabled?: boolean; onClick?: () => void } {
@@ -342,7 +448,7 @@ export function OrderEditor(p: Props) {
 
     setIsSubmitting(true);
 
-    updateOrderTxn(chainId, signer, {
+    updateOrderTxn(chainId, signer, subaccount, {
       orderKey: p.order.key,
       sizeDeltaUsd: sizeDeltaUsd || positionOrder.sizeDeltaUsd,
       triggerPrice: triggerPrice || positionOrder.triggerPrice,
@@ -437,6 +543,21 @@ export function OrderEditor(p: Props) {
         )}
 
         <div className="PositionEditor-info-box">
+          {isLimitIncreaseOrder && (
+            <>
+              <ExchangeInfoRow
+                label={t`Leverage`}
+                value={
+                  <ValueTransition
+                    from={formatLeverage(existingPosition?.leverage)}
+                    to={formatLeverage(nextPositionValues?.nextLeverage) ?? "-"}
+                  />
+                }
+              />
+
+              <div className="line-divider" />
+            </>
+          )}
           {!isSwapOrderType(p.order.orderType) && (
             <>
               <ExchangeInfoRow

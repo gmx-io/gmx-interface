@@ -14,7 +14,7 @@ import UniPool from "abis/UniPool.json";
 import UniswapV2 from "abis/UniswapV2.json";
 import Vault from "abis/Vault.json";
 
-import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, getConstant, getHighExecutionFee } from "config/chains";
+import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, getChainName, getConstant, getHighExecutionFee } from "config/chains";
 import { getContract } from "config/contracts";
 import { DECREASE, INCREASE, SWAP, USD_DECIMALS, getOrderKey } from "lib/legacy";
 
@@ -381,7 +381,7 @@ export function useExecutionFee(signer, active, chainId, infoTokens) {
 
   const { data: gasPrice } = useSWR<BigNumber | undefined>(["gasPrice", chainId], {
     fetcher: () => {
-      return new Promise<BigNumber | undefined>(async (resolve, reject) => {
+      return new Promise<BigNumber | undefined>(async (resolve) => {
         const provider = getProvider(signer, chainId);
         if (!provider) {
           resolve(undefined);
@@ -423,7 +423,9 @@ export function useExecutionFee(signer, active, chainId, infoTokens) {
   const isFeeHigh = finalExecutionFeeUSD?.gt(expandDecimals(getHighExecutionFee(chainId), USD_DECIMALS));
   const errorMessage =
     isFeeHigh &&
-    `The network cost to send transactions is high at the moment, please check the "Max Execution Fee" value before proceeding.`;
+    t`The network Fees are very high currently, which may be due to a temporary increase in transactions on the ${getChainName(
+      chainId
+    )} network.`;
 
   return {
     minExecutionFee: finalExecutionFee,

@@ -6,7 +6,7 @@ import { BsArrowRight } from "react-icons/bs";
 
 import PositionRouter from "abis/PositionRouter.json";
 import Button from "components/Button/Button";
-import SlippageInput from "components/SlippageInput/SlippageInput";
+import PercentageInput from "components/PercentageInput/PercentageInput";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { ARBITRUM, IS_NETWORK_DISABLED, getChainName, getConstant } from "config/chains";
@@ -35,7 +35,7 @@ import {
   getProfitPrice,
   isAddressZero,
 } from "lib/legacy";
-import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
+import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT, DEFAULT_SLIPPAGE_AMOUNT, EXCESSIVE_SLIPPAGE_AMOUNT } from "config/factors";
 import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE, MAX_LEVERAGE } from "config/factors";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import {
@@ -916,7 +916,7 @@ export default function PositionSeller(props) {
       // hide the success message for Arbitrum as a workaround
       hideSuccessMsg: chainId === ARBITRUM,
     })
-      .then(async (res) => {
+      .then(async () => {
         setFromValue("");
         setIsVisible(false);
 
@@ -1121,7 +1121,12 @@ export default function PositionSeller(props) {
                     />
                   }
                 >
-                  <SlippageInput setAllowedSlippage={setAllowedSlippage} defaultSlippage={savedSlippageAmount} />
+                  <PercentageInput
+                    onChange={setAllowedSlippage}
+                    defaultValue={savedSlippageAmount}
+                    highValue={EXCESSIVE_SLIPPAGE_AMOUNT}
+                    highValueWarningText={t`Slippage is too high`}
+                  />
                 </ExchangeInfoRow>
               </div>
             )}
