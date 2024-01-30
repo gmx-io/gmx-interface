@@ -11,12 +11,12 @@ export function ValueTransition(p: Props) {
   if (!p.from) return <>{p.to}</>;
 
   return (
-    <>
+    <div className="inline-block">
       <div className="inline-block muted">
         {p.from}
         <BsArrowRight className="transition-arrow" />
       </div>
       {p.to}
-    </>
+    </div>
   );
 }

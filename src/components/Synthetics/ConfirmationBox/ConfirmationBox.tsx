@@ -19,6 +19,7 @@ import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useUserReferralCode } from "domain/referrals/hooks";
 import { ExecutionFee, getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
 import { MarketInfo } from "domain/synthetics/markets";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import {
   OrderType,
   OrdersInfoData,
@@ -87,6 +88,7 @@ import {
   formatTokenAmount,
   formatTokenAmountWithUsd,
   formatUsd,
+  expandDecimals,
 } from "lib/numbers";
 import { usePrevious } from "lib/usePrevious";
 import { getPlusOrMinusSymbol, getPositiveOrNegativeClass } from "lib/utils";
@@ -1017,13 +1019,10 @@ export function ConfirmationBox(p: Props) {
 
   function renderLeverage(from: BigNumber | undefined, to: BigNumber | undefined, emptyValue = false) {
     return (
-      <>
-        <ExchangeInfoRow
-          label={t`Leverage`}
-          value={emptyValue ? "-" : <ValueTransition from={formatLeverage(from)} to={formatLeverage(to) ?? "-"} />}
-        />
-        <div className="line-divider" />
-      </>
+      <ExchangeInfoRow
+        label={t`Leverage`}
+        value={emptyValue ? "-" : <ValueTransition from={formatLeverage(from)} to={formatLeverage(to) ?? "-"} />}
+      />
     );
   }
 
@@ -1044,6 +1043,10 @@ export function ConfirmationBox(p: Props) {
         ? applySlippageToPrice(allowedSlippage, increaseAmounts.acceptablePrice, true, isLong)
         : increaseAmounts?.acceptablePrice;
 
+    const collateralSpreadPercent = collateralSpreadInfo?.spread
+      ?.mul(BASIS_POINTS_DIVISOR)
+      ?.div(expandDecimals(1, USD_DECIMALS));
+
     return (
       <>
         <div>
@@ -1054,13 +1057,31 @@ export function ConfirmationBox(p: Props) {
           {renderExistingTriggerErrors()}
           {renderExistingTriggerWarning()}
           {renderDifferentTokensWarning()}
-          {isLimit && renderAvailableLiquidity()}
           {renderLeverage(existingPosition?.leverage, nextPositionValues?.nextLeverage)}
-          {isMarket && renderAllowedSlippage(savedAllowedSlippage, setAllowedSlippage)}
-          {isMarket && collateralSpreadInfo?.spread && (
-            <ExchangeInfoRow label={t`Collateral Spread`} isWarning={swapSpreadInfo.isHigh} isTop={true}>
-              {formatAmount(collateralSpreadInfo.spread.mul(100), USD_DECIMALS, 2, true)}%
+
+          <div className="line-divider" />
+
+          {isLimit && renderAvailableLiquidity()}
+          {isMarket && collateralSpreadPercent?.gt(0) && (
+            <ExchangeInfoRow label={t`Collateral Spread`} isWarning={collateralSpreadInfo?.isHigh}>
+              {formatPercentage(collateralSpreadPercent)}
             </ExchangeInfoRow>
+          )}
+          {isMarket && renderAllowedSlippage(savedAllowedSlippage, setAllowedSlippage)}
+          {isLimit && increaseAmounts && renderAcceptablePriceImpactInput()}
+
+          <div className="line-divider" />
+
+          {isLimit && (
+            <ExchangeInfoRow
+              className="SwapBox-info-row"
+              label={t`Limit Price`}
+              value={
+                formatUsd(triggerPrice, {
+                  displayDecimals: toTokenPriceDecimals,
+                }) || "-"
+              }
+            />
           )}
 
           <ExchangeInfoRow
@@ -1078,18 +1099,6 @@ export function ConfirmationBox(p: Props) {
             }
           />
 
-          {isLimit && (
-            <ExchangeInfoRow
-              className="SwapBox-info-row"
-              label={t`Limit Price`}
-              value={
-                formatUsd(triggerPrice, {
-                  displayDecimals: toTokenPriceDecimals,
-                }) || "-"
-              }
-            />
-          )}
-
           <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Acceptable Price`}
@@ -1099,7 +1108,6 @@ export function ConfirmationBox(p: Props) {
               }) || "-"
             }
           />
-          {isLimit && increaseAmounts && renderAcceptablePriceImpactInput()}
 
           <ExchangeInfoRow
             className="SwapBox-info-row"
@@ -1131,7 +1139,19 @@ export function ConfirmationBox(p: Props) {
               />
             }
           />
-          <div className="Exchange-info-row top-line">
+          <div className="line-divider" />
+          {p.existingPosition?.sizeInUsd.gt(0) && (
+            <ExchangeInfoRow
+              label={t`Size`}
+              value={
+                <ValueTransition
+                  from={formatUsd(p.existingPosition.sizeInUsd)!}
+                  to={formatUsd(nextPositionValues?.nextSizeUsd)}
+                />
+              }
+            />
+          )}
+          <div className="Exchange-info-row">
             <div>
               {isCollateralSwap ? (
                 <Tooltip
@@ -1164,14 +1184,26 @@ export function ConfirmationBox(p: Props) {
             </div>
             <div className="align-right">
               <Tooltip
-                handle={formatUsd(increaseAmounts?.collateralDeltaUsd)}
+                handle={
+                  <ValueTransition
+                    from={formatUsd(existingPosition?.collateralUsd)}
+                    to={formatUsd(nextPositionValues?.nextCollateralUsd)}
+                  />
+                }
                 position="right-top"
                 renderContent={() => {
                   return (
                     <>
-                      <Trans>Your position's collateral after deducting fees.</Trans>
+                      <Trans>Your position's collateral after deducting fees:</Trans>
                       <br />
                       <br />
+                      {existingPosition && (
+                        <StatsTooltipRow
+                          label={t`Old Collateral`}
+                          value={formatUsd(existingPosition.collateralUsd) || "-"}
+                          showDollar={false}
+                        />
+                      )}
                       <StatsTooltipRow
                         label={t`Pay Amount`}
                         value={formatUsd(increaseAmounts?.initialCollateralUsd) || "-"}
@@ -1181,7 +1213,7 @@ export function ConfirmationBox(p: Props) {
                         label={t`Fees`}
                         value={
                           fees?.payTotalFees?.deltaUsd && !fees.payTotalFees.deltaUsd.eq(0)
-                            ? formatUsd(fees.payTotalFees.deltaUsd)
+                            ? formatDeltaUsd(fees.payTotalFees.deltaUsd)
                             : "0.00$"
                         }
                         showDollar={false}
@@ -1189,8 +1221,8 @@ export function ConfirmationBox(p: Props) {
                       />
                       <div className="Tooltip-divider" />
                       <StatsTooltipRow
-                        label={t`Collateral`}
-                        value={formatUsd(increaseAmounts?.collateralDeltaUsd) || "-"}
+                        label={existingPosition ? t`New Collateral` : t`Collateral`}
+                        value={formatUsd(nextPositionValues?.nextCollateralUsd) || "-"}
                         showDollar={false}
                       />
                     </>
@@ -1230,16 +1262,16 @@ export function ConfirmationBox(p: Props) {
           {renderMain()}
           {renderSwapSpreadWarining()}
           {isLimit && renderLimitPriceWarning()}
+          {isLimit && renderAvailableLiquidity()}
           {swapSpreadInfo.showSpread && swapSpreadInfo.spread && (
             <ExchangeInfoRow label={t`Spread`} isWarning={swapSpreadInfo.isHigh}>
               {formatAmount(swapSpreadInfo.spread.mul(100), USD_DECIMALS, 2, true)}%
             </ExchangeInfoRow>
           )}
-          {isLimit && renderAvailableLiquidity()}
           {isMarket && renderAllowedSlippage(savedAllowedSlippage, setAllowedSlippage)}
-          <ExchangeInfoRow label={t`Mark Price`} isTop>
-            {formatTokensRatio(fromToken, toToken, markRatio)}
-          </ExchangeInfoRow>
+
+          <div className="line-divider" />
+
           {isLimit && (
             <ExchangeInfoRow label={t`Limit Price`}>
               <Tooltip
@@ -1251,6 +1283,8 @@ export function ConfirmationBox(p: Props) {
               />
             </ExchangeInfoRow>
           )}
+
+          <ExchangeInfoRow label={t`Mark Price`}>{formatTokensRatio(fromToken, toToken, markRatio)}</ExchangeInfoRow>
 
           <ExchangeInfoRow label={t`${fromToken?.symbol} Price`}>
             {formatUsd(swapAmounts?.priceIn, {
@@ -1288,13 +1322,29 @@ export function ConfirmationBox(p: Props) {
         <div>
           {renderMain()}
           {renderDifferentCollateralWarning()}
+          {existingPosition?.leverage && !decreaseAmounts?.isFullClose && (
+            <>
+              {renderLeverage(
+                existingPosition?.leverage,
+                nextPositionValues?.nextLeverage,
+                nextPositionValues?.nextSizeUsd?.lte(0)
+              )}
+              {isTrigger && (
+                <ToggleSwitch isChecked={keepLeverage ?? false} setIsChecked={setKeepLeverage}>
+                  <span className="text-gray font-sm">
+                    <Trans>Keep leverage at {formatLeverage(existingPosition.leverage)}</Trans>
+                  </span>
+                </ToggleSwitch>
+              )}
+              <div className="line-divider" />
+            </>
+          )}
 
-          {isTrigger && existingPosition?.leverage && (
-            <Checkbox asRow isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
-              <span className="muted font-sm">
-                <Trans>Keep leverage at {formatLeverage(existingPosition.leverage)} </Trans>
-              </span>
-            </Checkbox>
+          {decreaseAmounts && decreaseAmounts.triggerOrderType !== OrderType.StopLossDecrease && (
+            <>
+              {renderAcceptablePriceImpactInput()}
+              <div className="line-divider" />
+            </>
           )}
 
           <ExchangeInfoRow
@@ -1304,18 +1354,6 @@ export function ConfirmationBox(p: Props) {
                 ? `${fixedTriggerThresholdType} ${formatUsd(triggerPrice, {
                     displayDecimals: toTokenPriceDecimals,
                   })}`
-                : "..."
-            }
-          />
-
-          <ExchangeInfoRow
-            isTop
-            label={t`Mark Price`}
-            value={
-              p.markPrice
-                ? formatUsd(p.markPrice, {
-                    displayDecimals: toTokenPriceDecimals,
-                  })
                 : "..."
             }
           />
@@ -1344,7 +1382,6 @@ export function ConfirmationBox(p: Props) {
 
           {decreaseAmounts && decreaseAmounts.triggerOrderType !== OrderType.StopLossDecrease && (
             <>
-              {renderAcceptablePriceImpactInput()}
               <ExchangeInfoRow
                 className="SwapBox-info-row"
                 label={t`Acceptable Price`}
@@ -1356,6 +1393,17 @@ export function ConfirmationBox(p: Props) {
               />
             </>
           )}
+
+          <ExchangeInfoRow
+            label={t`Mark Price`}
+            value={
+              p.markPrice
+                ? formatUsd(p.markPrice, {
+                    displayDecimals: toTokenPriceDecimals,
+                  })
+                : "..."
+            }
+          />
 
           {p.existingPosition && (
             <ExchangeInfoRow
@@ -1396,27 +1444,6 @@ export function ConfirmationBox(p: Props) {
             }
           />
 
-          {!p.existingPosition && <ExchangeInfoRow label={t`Collateral`} value={collateralToken?.symbol} />}
-
-          {p.existingPosition && (
-            <ExchangeInfoRow
-              label={t`Collateral (${p.existingPosition?.collateralToken?.symbol})`}
-              value={
-                <ValueTransition
-                  from={formatUsd(existingPosition?.remainingCollateralUsd)!}
-                  to={formatUsd(nextPositionValues?.nextCollateralUsd)}
-                />
-              }
-            />
-          )}
-
-          {!p.keepLeverage &&
-            p.existingPosition?.leverage &&
-            renderLeverage(
-              existingPosition?.leverage,
-              nextPositionValues?.nextLeverage,
-              nextPositionValues?.nextSizeUsd?.lte(0)
-            )}
           {existingPosition && (
             <ExchangeInfoRow
               label={t`PnL`}
@@ -1439,10 +1466,25 @@ export function ConfirmationBox(p: Props) {
             />
           )}
 
+          {!p.existingPosition && <ExchangeInfoRow label={t`Collateral`} value={collateralToken?.symbol} />}
+
+          {p.existingPosition && (
+            <ExchangeInfoRow
+              label={t`Collateral (${p.existingPosition?.collateralToken?.symbol})`}
+              value={
+                <ValueTransition
+                  from={formatUsd(existingPosition?.remainingCollateralUsd)!}
+                  to={formatUsd(nextPositionValues?.nextCollateralUsd)}
+                />
+              }
+            />
+          )}
+
           <TradeFeesRow {...fees} executionFee={p.executionFee} feesType="decrease" />
 
           {existingPosition && decreaseAmounts?.receiveUsd && (
             <ExchangeInfoRow
+              isTop
               label={t`Receive`}
               value={formatTokenAmountWithUsd(
                 decreaseAmounts.receiveTokenAmount,

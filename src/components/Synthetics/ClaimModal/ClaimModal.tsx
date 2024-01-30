@@ -13,7 +13,7 @@ import { useChainId } from "lib/chains";
 import { formatDeltaUsd, formatTokenAmount } from "lib/numbers";
 
 import Tooltip from "components/Tooltip/Tooltip";
-import { claimCollateralTxn } from "domain/synthetics/markets/claimCollateralTxn";
+import { claimFundingFeesTxn } from "domain/synthetics/markets/claimFundingFeesTxn";
 
 import Button from "components/Button/Button";
 import { useState } from "react";
@@ -114,7 +114,7 @@ export function ClaimModal(p: Props) {
 
     setIsSubmitting(true);
 
-    claimCollateralTxn(chainId, signer, {
+    claimFundingFeesTxn(chainId, signer, {
       account,
       fundingFees: {
         marketAddresses: fundingMarketAddresses,

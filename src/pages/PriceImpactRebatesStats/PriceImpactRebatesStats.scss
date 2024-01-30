@@ -1,0 +1,79 @@
+.PriceImpactRebatesStatsPage-table {
+  flex: 1;
+  font-size: 12px;
+}
+
+.PriceImpactRebatesStatsPage-row {
+  display: flex;
+}
+
+.PriceImpactRebatesStatsPage-row div {
+  // border-right: 1px solid #e8e8e8;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  width: 200px;
+  padding: 10px 0 10px 0;
+  text-align: center;
+  transition: background-color 0.1s linear;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.PriceImpactRebatesStatsPage-row:hover div {
+  background-color: #ffffff02;
+}
+
+.PriceImpactRebatesStatsPage-subrow {
+  display: flex;
+}
+
+.PriceImpactRebatesStatsPage-subrow div {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  width: 200px;
+  padding: 10px 0 10px 0;
+  text-align: center;
+  transition: background-color 0.1s linear;
+  background-color: #ffffff09;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.PriceImpactRebatesStatsPage-subrow:hover div {
+  background-color: #ffffff0a;
+}
+
+.PriceImpactRebatesStatsPage-account {
+  margin-bottom: 100px;
+}
+
+.PriceImpactRebatesStatsPage-subrow div button,
+.PriceImpactRebatesStatsPage-row div button {
+  margin: 1px;
+}
+
+.PriceImpactRebatesStatsPage-row .PriceImpactRebatesStatsPage-cell-expand,
+.PriceImpactRebatesStatsPage-subrow .PriceImpactRebatesStatsPage-cell-expand {
+  width: 50px;
+}
+.PriceImpactRebatesStatsPage-row .PriceImpactRebatesStatsPage-cell-timekey,
+.PriceImpactRebatesStatsPage-subrow .PriceImpactRebatesStatsPage-cell-timekey {
+  width: 100px;
+}
+
+.PriceImpactRebatesStatsPage-row .PriceImpactRebatesStatsPage-cell-token,
+.PriceImpactRebatesStatsPage-subrow .PriceImpactRebatesStatsPage-cell-token {
+  width: 50px;
+}
+.PriceImpactRebatesStatsPage-row .PriceImpactRebatesStatsPage-cell-approved,
+.PriceImpactRebatesStatsPage-subrow .PriceImpactRebatesStatsPage-cell-approved {
+  width: 90px;
+}
+.PriceImpactRebatesStatsPage-row .PriceImpactRebatesStatsPage-cell-usd,
+.PriceImpactRebatesStatsPage-subrow .PriceImpactRebatesStatsPage-cell-usd {
+  width: 250px;
+}
+
+.PriceImpactRebatesStats-loading {
+  margin-left: 20px;
+}

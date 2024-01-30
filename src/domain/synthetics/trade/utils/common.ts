@@ -33,6 +33,7 @@ export function getTradeFees(p: {
   positionFeeUsd: BigNumber;
   swapPriceImpactDeltaUsd: BigNumber;
   positionPriceImpactDeltaUsd: BigNumber;
+  priceImpactDiffUsd: BigNumber;
   borrowingFeeUsd: BigNumber;
   fundingFeeUsd: BigNumber;
   feeDiscountUsd: BigNumber;
@@ -47,6 +48,7 @@ export function getTradeFees(p: {
     positionFeeUsd,
     swapPriceImpactDeltaUsd,
     positionPriceImpactDeltaUsd,
+    priceImpactDiffUsd,
     borrowingFeeUsd,
     fundingFeeUsd,
     feeDiscountUsd,
@@ -117,6 +119,7 @@ export function getTradeFees(p: {
     swapPriceImpact,
     positionFee: positionFeeBeforeDiscount,
     positionPriceImpact,
+    priceImpactDiff: getFeeItem(priceImpactDiffUsd, sizeDeltaUsd),
     borrowFee,
     fundingFee,
     feeDiscountUsd,
