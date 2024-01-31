@@ -16,7 +16,7 @@ import useWallet from "lib/wallets/useWallet";
 import { ReactNode, useMemo } from "react";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 
-export type SyntheticsState = {
+export type SyntheticsTradeState = {
   pageType: "actions" | "trade";
   globals: {
     chainId: number;
@@ -35,7 +35,7 @@ export type SyntheticsState = {
   tradebox: TradeState;
 };
 
-const StateCtx = createContext<SyntheticsState | null>(null);
+const StateCtx = createContext<SyntheticsTradeState | null>(null);
 
 export function SyntheticsStateContextProvider({
   children,
@@ -80,7 +80,7 @@ export function SyntheticsStateContextProvider({
   });
 
   const state = useMemo(() => {
-    const s: SyntheticsState = {
+    const s: SyntheticsTradeState = {
       pageType,
       globals: {
         chainId,
@@ -121,10 +121,10 @@ export function SyntheticsStateContextProvider({
   return <StateCtx.Provider value={state}>{children}</StateCtx.Provider>;
 }
 
-export function useSyntheticsStateSelector<Selected>(selector: (s: SyntheticsState) => Selected) {
+export function useSyntheticsStateSelector<Selected>(selector: (s: SyntheticsTradeState) => Selected) {
   const value = useContext(StateCtx);
   if (!value) {
     throw new Error("Used useSyntheticsStateSelector outside of SyntheticsStateContextProvider");
   }
-  return useContextSelector(StateCtx as Context<SyntheticsState>, selector) as Selected;
+  return useContextSelector(StateCtx as Context<SyntheticsTradeState>, selector) as Selected;
 }
