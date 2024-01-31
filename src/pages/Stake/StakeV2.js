@@ -16,7 +16,7 @@ import Vester from "abis/Vester.json";
 
 import { ARBITRUM, getConstant } from "config/chains";
 import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
-import { useCompoundModalWarning } from "domain/stake/useCompoundModalWarning";
+import { useRecommendStakeGmxAmount } from "domain/stake/useRecommendStakeGmxAmount";
 import { ethers } from "ethers";
 import {
   GLP_DECIMALS,
@@ -750,7 +750,7 @@ function CompoundModal(props) {
     setShouldConvertWeth(value);
   };
 
-  const warning = useCompoundModalWarning(
+  const recommendStakeGmx = useRecommendStakeGmxAmount(
     {
       accumulatedGMX: processedData.totalVesterRewards,
       accumulatedBnGMX: processedData.bonusGmxTrackerRewards,
@@ -768,9 +768,15 @@ function CompoundModal(props) {
   return (
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Compound Rewards`}>
-        {warning && (
+        {recommendStakeGmx.gt(0) && (
           <ModalInfo>
-            <Trans>{warning}</Trans>
+            <Trans>
+              You have reached the max. Boost Percentage. Stake an additional
+              {formatAmount(recommendStakeGmx, 18, 2, true)}
+              GMX/esGMX to be able to stake all your unstaked
+              {formatAmount(processedData.bonusGmxTrackerRewards, 18, 4, true)}
+              Multiplier Points.
+            </Trans>
           </ModalInfo>
         )}
         <div className="CompoundModal-menu">
@@ -1353,6 +1359,44 @@ export default function StakeV2({ setPendingTxns }) {
     setUnstakeMethodName("unstakeEsGmx");
   };
 
+  const recommendStakeGmx = useRecommendStakeGmxAmount(
+    {
+      accumulatedGMX: processedData.totalVesterRewards,
+      accumulatedBnGMX: processedData.bonusGmxTrackerRewards,
+      accumulatedEsGMX: processedData.totalEsGmxRewards,
+      stakedGMX: processedData.gmxInStakedGmx,
+      stakedBnGMX: processedData.bnGmxInFeeGmx,
+      stakedEsGMX: processedData.esGmxInStakedGmx,
+    },
+    {
+      shouldStakeGmx: true,
+      shouldStakeEsGmx: true,
+    }
+  );
+
+  const renderBoostPercentageTooltip = useCallback(() => {
+    return (
+      <div>
+        <Trans>
+          You are earning {formatAmount(processedData.boostBasisPoints, 2, 2, false)}% more {nativeTokenSymbol} rewards
+          using {formatAmount(processedData.bnGmxInFeeGmx, 18, 4, 2, true)} Staked Multiplier Points.
+        </Trans>
+        <br />
+        <br />
+        {recommendStakeGmx.gt(0) ? (
+          <Trans>
+            You have reached the max. Boost Percentage. Stake an additional
+            {formatAmount(recommendStakeGmx, 18, 2, true)} GMX/esGMX to be able to stake all your unstaked
+            {formatAmount(processedData.bonusGmxTrackerRewards, 18, 4, true)}
+            Multiplier Points using the "Compound" button.
+          </Trans>
+        ) : (
+          <Trans>Use the "Compound" button to stake your Multiplier Points.</Trans>
+        )}
+      </div>
+    );
+  }, [nativeTokenSymbol, processedData, recommendStakeGmx]);
+
   const renderMultiplierPointsLabel = useCallback(() => {
     return t`Multiplier Points APR`;
   }, []);
@@ -1661,20 +1705,7 @@ export default function StakeV2({ setPendingTxns }) {
                   <Tooltip
                     handle={`${formatAmount(processedData.boostBasisPoints, 2, 2, false)}%`}
                     position="right-bottom"
-                    renderContent={() => {
-                      return (
-                        <div>
-                          <Trans>
-                            You are earning {formatAmount(processedData.boostBasisPoints, 2, 2, false)}% more{" "}
-                            {nativeTokenSymbol} rewards using{" "}
-                            {formatAmount(processedData.bnGmxInFeeGmx, 18, 4, 2, true)} Staked Multiplier Points.
-                          </Trans>
-                          <br />
-                          <br />
-                          <Trans>Use the "Compound" button to stake your Multiplier Points.</Trans>
-                        </div>
-                      );
-                    }}
+                    renderContent={renderBoostPercentageTooltip}
                   />
                 </div>
               </div>

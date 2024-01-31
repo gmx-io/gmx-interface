@@ -1,10 +1,10 @@
 import { BigNumber } from "ethers";
-import { formatAmount, BIG_ZERO } from "lib/numbers";
+import { BIG_ZERO } from "lib/numbers";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 import { useMaxBoostBasicPoints } from "domain/rewards/useMaxBoostBasisPoints";
 
-export function useCompoundModalWarning(
+export function useRecommendStakeGmxAmount(
   p: {
     accumulatedGMX?: BigNumber;
     accumulatedBnGMX?: BigNumber;
@@ -39,20 +39,8 @@ export function useCompoundModalWarning(
   }
 
   if (nextTotalGmx.gt(0) && nextTotalBnGMX.mul(BASIS_POINTS_DIVISOR).div(nextTotalGmx).gt(maxBoostBasicPoints)) {
-    const suggestToStakeGMX = nextTotalBnGMX.mul(BASIS_POINTS_DIVISOR).div(maxBoostBasicPoints).sub(nextTotalGmx);
-
-    return `You have reached the max. Boost Percentage. Stake an additional ${formatAmount(
-      suggestToStakeGMX,
-      18,
-      2,
-      true
-    )} GMX/esGMX to be able to stake all your unstaked ${formatAmount(
-      accumulatedBnGMX,
-      18,
-      4,
-      true
-    )} Multiplier Points.`;
+    return nextTotalBnGMX.mul(BASIS_POINTS_DIVISOR).div(maxBoostBasicPoints).sub(nextTotalGmx);
   }
 
-  return null;
+  return BIG_ZERO;
 }

@@ -5958,6 +5958,18 @@ msgstr "You have multiple existing Increase {longShortText} {0} limit orders"
 msgid "You have not deposited any tokens for vesting."
 msgstr "You have not deposited any tokens for vesting."
 
+#: src/pages/Stake/StakeV2.js
+#~ msgid "You have reached the max. Boost Percentage. Stake an additional {0} GMX/esGMX to be able to stake all your unstaked {1} Multiplier Points using the \"Compound\" button."
+#~ msgstr "You have reached the max. Boost Percentage. Stake an additional {0} GMX/esGMX to be able to stake all your unstaked {1} Multiplier Points using the \"Compound\" button."
+
+#: src/pages/Stake/StakeV2.js
+msgid "You have reached the max. Boost Percentage. Stake an additional{0} GMX/esGMX to be able to stake all your unstaked{1}Multiplier Points using the \"Compound\" button."
+msgstr "You have reached the max. Boost Percentage. Stake an additional{0} GMX/esGMX to be able to stake all your unstaked{1}Multiplier Points using the \"Compound\" button."
+
+#: src/pages/Stake/StakeV2.js
+msgid "You have reached the max. Boost Percentage. Stake an additional{0}GMX/esGMX to be able to stake all your unstaked{1}Multiplier Points."
+msgstr "You have reached the max. Boost Percentage. Stake an additional{0}GMX/esGMX to be able to stake all your unstaked{1}Multiplier Points."
+
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "You have selected {collateralTokenSymbol} as Collateral, the Liquidation Price will vary based on the price of {collateralTokenSymbol}."
 msgstr "You have selected {collateralTokenSymbol} as Collateral, the Liquidation Price will vary based on the price of {collateralTokenSymbol}."
@@ -6369,8 +6381,8 @@ msgid "{title}"
 msgstr "{title}"
 
 #: src/pages/Stake/StakeV2.js
-msgid "{warning}"
-msgstr "{warning}"
+#~ msgid "{warning}"
+#~ msgstr "{warning}"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Сonvert {0} to {1}"

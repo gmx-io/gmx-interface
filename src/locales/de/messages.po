@@ -5952,6 +5952,18 @@ msgstr ""
 msgid "You have not deposited any tokens for vesting."
 msgstr "Du hast keine Token für das Vesting hinterlegt."
 
+#: src/pages/Stake/StakeV2.js
+#~ msgid "You have reached the max. Boost Percentage. Stake an additional {0} GMX/esGMX to be able to stake all your unstaked {1} Multiplier Points using the \"Compound\" button."
+#~ msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "You have reached the max. Boost Percentage. Stake an additional{0} GMX/esGMX to be able to stake all your unstaked{1}Multiplier Points using the \"Compound\" button."
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "You have reached the max. Boost Percentage. Stake an additional{0}GMX/esGMX to be able to stake all your unstaked{1}Multiplier Points."
+msgstr ""
+
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "You have selected {collateralTokenSymbol} as Collateral, the Liquidation Price will vary based on the price of {collateralTokenSymbol}."
 msgstr ""
@@ -6355,8 +6367,8 @@ msgid "{title}"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
-msgid "{warning}"
-msgstr ""
+#~ msgid "{warning}"
+#~ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Сonvert {0} to {1}"
