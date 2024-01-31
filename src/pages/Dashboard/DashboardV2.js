@@ -475,7 +475,10 @@ export default function DashboardV2() {
   };
 
   const CustomTooltip = ({ active, payload }) => {
-    const customTooltipStyle = useMemo(() => ({ backgroundColor: payload[0].color }), [payload]);
+    const customTooltipStyle = useMemo(
+      () => (payload && payload.length ? { backgroundColor: payload[0].color } : undefined),
+      [payload]
+    );
 
     if (active && payload && payload.length) {
       return (

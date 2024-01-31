@@ -13,10 +13,10 @@ import { PositionInfo, PositionsInfoData } from "../positions";
 import { TokenData, TokensData } from "../tokens";
 import { TradeMode, TradeType, TriggerThresholdType } from "./types";
 import { AvailableTokenOptions, useAvailableTokenOptions } from "./useAvailableTokenOptions";
-import { createTradeFlags } from "context/SyntheticsStateContext/selectors";
 import { useSafeState } from "lib/useSafeState";
 import { OrderType } from "../orders/types";
 import { BigNumber } from "ethers";
+import { createTradeFlags } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 
 type ReactSetState<T> = Dispatch<SetStateAction<T>>;
 type LocalStorageSetState<T> = Dispatch<SetStateAction<T | undefined>>;

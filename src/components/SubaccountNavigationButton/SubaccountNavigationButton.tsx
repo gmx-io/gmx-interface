@@ -16,22 +16,20 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { ReactNode, memo, useCallback } from "react";
 import "./SubaccountNavigationButton.scss";
 import { ONE_CLICK_TRADING_NATIVE_TOKEN_WARN_HIDDEN, ONE_CLICK_TRADING_OFFER_HIDDEN } from "config/localStorage";
-import { useTradeFlags } from "context/SyntheticsStateContext/selectors";
+import { TradeFlags } from "domain/synthetics/trade";
 
 export const SubaccountNavigationButton = memo(
   ({
     closeConfirmationBox,
     executionFee,
     isNativeToken,
-    ignoreTradeFlags,
+    tradeFlags,
   }: {
     closeConfirmationBox: () => void;
     executionFee: BigNumber | undefined;
     isNativeToken?: boolean;
-    ignoreTradeFlags?: boolean;
+    tradeFlags: TradeFlags | undefined;
   }) => {
-    const realTradeFlags = useTradeFlags();
-    const tradeFlags = ignoreTradeFlags ? undefined : realTradeFlags;
     const isSubaccountActive = useIsSubaccountActive();
     const [, setModalOpen] = useSubaccountModalOpen();
     const { chainId } = useChainId();

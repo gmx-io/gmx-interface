@@ -1,20 +1,20 @@
-import React, { useMemo, useState } from "react";
 import { Popover } from "@headlessui/react";
+import { t } from "@lingui/macro";
 import cx from "classnames";
-import groupBy from "lodash/groupBy";
-import { FaChevronDown } from "react-icons/fa";
-import "./ChartTokenSelector.scss";
-import { Token } from "domain/tokens";
 import SearchInput from "components/SearchInput/SearchInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import { t } from "@lingui/macro";
-import { AvailableTokenOptions, TradeType } from "domain/synthetics/trade";
+import { convertTokenAddress } from "config/tokens";
 import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
+import { PositionsInfoData } from "domain/synthetics/positions";
+import { AvailableTokenOptions, TradeType } from "domain/synthetics/trade";
+import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { formatUsd } from "lib/numbers";
-import { PositionsInfoData } from "domain/synthetics/positions";
-import { convertTokenAddress } from "config/tokens";
-import { useTradeFlags } from "context/SyntheticsStateContext/selectors";
+import groupBy from "lodash/groupBy";
+import { useMemo, useState } from "react";
+import { FaChevronDown } from "react-icons/fa";
+import "./ChartTokenSelector.scss";
+import { useTradeboxTradeFlags } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 
 type TokenOption = Token & {
   maxLongLiquidity: BigNumber;
@@ -35,7 +35,7 @@ type Props = {
 export default function ChartTokenSelector(props: Props) {
   const { chainId, options, selectedToken, onSelectToken, avaialbleTokenOptions, positionsInfo } = props;
   const { sortedAllMarkets } = avaialbleTokenOptions;
-  const { isSwap, isLong, isShort } = useTradeFlags();
+  const { isSwap, isLong, isShort } = useTradeboxTradeFlags();
   const [searchKeyword, setSearchKeyword] = useState("");
 
   const onSelect = (token: { indexTokenAddress: string; marketTokenAddress?: string; tradeType?: TradeType }) => {

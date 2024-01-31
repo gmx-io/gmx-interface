@@ -21,7 +21,7 @@ import {
 import { ReactNode, useMemo } from "react";
 import "./TradeFeesRow.scss";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useExecutionFeeBufferBps } from "context/SyntheticsStateContext/hooks/settingsHooks";
 
 type Props = {
   totalFees?: FeeItem;
@@ -51,7 +51,7 @@ type FeeRow = {
 };
 
 export function TradeFeesRow(p: Props) {
-  const settings = useSettings();
+  const executionFeeBufferBps = useExecutionFeeBufferBps();
   const { chainId } = useChainId();
   const tradingIncentives = useTradingIncentives();
   const shouldShowRebate = p.shouldShowRebate ?? true;
@@ -359,11 +359,11 @@ export function TradeFeesRow(p: Props) {
   }, [rebateIsApplicable, tradingIncentives]);
 
   const maxExecutionFeeText = useMemo(() => {
-    if (settings.executionFeeBufferBps !== undefined) {
-      const bps = settings.executionFeeBufferBps;
+    if (executionFeeBufferBps !== undefined) {
+      const bps = executionFeeBufferBps;
       return roundToTwoDecimals((bps / BASIS_POINTS_DIVISOR) * 100);
     }
-  }, [settings.executionFeeBufferBps]);
+  }, [executionFeeBufferBps]);
 
   return (
     <ExchangeInfoRow

@@ -64,7 +64,7 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionEditor.scss";
 import { getMinResidualAmount } from "domain/tokens";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
-import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsStateContext/selectors";
+import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
 
 export type Props = {
   position?: PositionInfo;
@@ -95,8 +95,8 @@ export function PositionEditor(p: Props) {
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
-  const { minCollateralUsd } = usePositionsConstants();
   const routerAddress = getContract(chainId, "SyntheticsRouter");
+  const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
 
@@ -462,7 +462,7 @@ export function PositionEditor(p: Props) {
             <SubaccountNavigationButton
               executionFee={executionFee?.feeTokenAmount}
               closeConfirmationBox={onClose}
-              ignoreTradeFlags
+              tradeFlags={undefined}
             />
 
             <BuyInputSection

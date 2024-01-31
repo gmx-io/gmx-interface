@@ -69,7 +69,6 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import PercentageInput from "components/PercentageInput/PercentageInput";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   useIsLastSubaccountAction,
   useSubaccount,
@@ -96,7 +95,8 @@ import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./ConfirmationBox.scss";
-import { useTradeFlags } from "context/SyntheticsStateContext/selectors";
+import { useSavedAllowedSlippage } from "context/SyntheticsStateContext/hooks/settingsHooks";
+import { useTradeboxTradeFlags } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 
 export type Props = {
   isVisible: boolean;
@@ -174,7 +174,7 @@ export function ConfirmationBox(p: Props) {
     onSubmitted,
     setPendingTxns,
   } = p;
-  const tradeFlags = useTradeFlags();
+  const tradeFlags = useTradeboxTradeFlags();
   const { isLong, isShort, isPosition, isSwap, isMarket, isLimit, isTrigger, isIncrease } = tradeFlags;
   const { indexToken } = marketInfo || {};
 
@@ -182,7 +182,7 @@ export function ConfirmationBox(p: Props) {
   const { chainId } = useChainId();
   const { openConnectModal } = useConnectModal();
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
-  const { savedAllowedSlippage } = useSettings();
+  const savedAllowedSlippage = useSavedAllowedSlippage();
 
   const prevIsVisible = usePrevious(p.isVisible);
 
@@ -325,6 +325,7 @@ export function ConfirmationBox(p: Props) {
     positionPriceImpact: fees?.positionPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
     place: "confirmationBox",
+    tradeFlags,
   });
 
   const setIsHighPositionImpactAcceptedRef = useLatest(priceImpactWarningState.setIsHighPositionImpactAccepted);
@@ -612,6 +613,7 @@ export function ConfirmationBox(p: Props) {
         executionFee={p.executionFee?.feeTokenAmount}
         closeConfirmationBox={onClose}
         isNativeToken={Boolean(fromToken?.isNative)}
+        tradeFlags={tradeFlags}
       />
     );
   }

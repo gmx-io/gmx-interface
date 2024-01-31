@@ -19,7 +19,7 @@ import {
   useSavedIsPnlInLeverage,
   useSavedShowPnlAfterFees,
   useTokensData,
-} from "context/SyntheticsStateContext/selectors";
+} from "context/SyntheticsStateContext/hooks/globalsHooks";
 
 export default function SyntheticsActions() {
   const { account: paramsAccount } = useParams<{ account?: string }>();

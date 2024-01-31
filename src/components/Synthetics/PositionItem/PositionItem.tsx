@@ -19,7 +19,6 @@ import { ImSpinner2 } from "react-icons/im";
 import Button from "components/Button/Button";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { usePositionsConstants } from "context/SyntheticsStateContext/selectors";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { TradeMode, TradeType, getTriggerThresholdType } from "domain/synthetics/trade";
@@ -29,6 +28,7 @@ import { Fragment } from "react";
 import { FaAngleRight } from "react-icons/fa";
 import { useMedia } from "react-use";
 import "./PositionItem.scss";
+import { usePositionsConstants } from "context/SyntheticsStateContext/hooks/globalsHooks";
 
 export type Props = {
   position: PositionInfo;

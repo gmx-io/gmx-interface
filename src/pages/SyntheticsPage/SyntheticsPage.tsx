@@ -33,22 +33,24 @@ import {
   useSubaccountCancelOrdersDetailsMessage,
 } from "context/SubaccountContext/SubaccountContext";
 import {
-  useTradeboxAvailableTokensOptions,
-  useTradeboxCollateralAddress,
-  useTradeboxFromTokenAddress,
   useIsOrdersLoading,
   useIsPositionsLoading,
-  useTradeboxMarketAddress,
   useMarketsInfoData,
   useOrdersInfoData,
   usePositionsInfoData,
   useSavedIsPnlInLeverage,
   useSavedShowPnlAfterFees,
+  useTokensData,
+} from "context/SyntheticsStateContext/hooks/globalsHooks";
+import {
+  useTradeboxAvailableTokensOptions,
+  useTradeboxCollateralAddress,
+  useTradeboxFromTokenAddress,
+  useTradeboxMarketAddress,
   useTradeboxSetActivePosition,
   useTradeboxToTokenAddress,
-  useTokensData,
-  useTradeFlags,
-} from "context/SyntheticsStateContext/selectors";
+  useTradeboxTradeFlags,
+} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { getMarketIndexName, getMarketPoolName, getTotalClaimableFundingUsd } from "domain/synthetics/markets";
 import { TradeMode } from "domain/synthetics/trade";
 import { getMidPrice } from "domain/tokens";
@@ -103,18 +105,15 @@ export function SyntheticsPage(p: Props) {
     ListSection.Positions
   );
 
-  const tradeFlags = useTradeFlags();
+  const { isSwap } = useTradeboxTradeFlags();
   const fromTokenAddress = useTradeboxFromTokenAddress();
   const toTokenAddress = useTradeboxToTokenAddress();
   const marketAddress = useTradeboxMarketAddress();
   const collateralAddress = useTradeboxCollateralAddress();
   const availableTokensOptions = useTradeboxAvailableTokensOptions();
   const setActivePosition = useTradeboxSetActivePosition();
-
-  const { isSwap } = tradeFlags;
   const { indexTokens, sortedIndexTokensWithPoolValue, swapTokens, sortedLongAndShortTokens } = availableTokensOptions;
 
-  // FIXME selector?
   const { chartToken, availableChartTokens } = useMemo(() => {
     if (!fromTokenAddress || !toTokenAddress) {
       return {};
@@ -142,13 +141,13 @@ export function SyntheticsPage(p: Props) {
       return {};
     }
   }, [
-    chainId,
     fromTokenAddress,
-    indexTokens,
-    isSwap,
     toTokenAddress,
-    sortedIndexTokensWithPoolValue,
+    chainId,
+    isSwap,
     swapTokens,
+    indexTokens,
+    sortedIndexTokensWithPoolValue,
     sortedLongAndShortTokens,
   ]);
 

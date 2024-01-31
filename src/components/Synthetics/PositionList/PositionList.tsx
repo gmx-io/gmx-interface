@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import PositionShare from "components/Exchange/PositionShare";
 import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
-import { useTradeboxTradeType } from "context/SyntheticsStateContext/selectors";
+import { useTradeboxTradeType } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { OrdersInfoData, PositionOrderInfo, isOrderForPosition } from "domain/synthetics/orders";
 import { PositionsInfoData } from "domain/synthetics/positions";
 import { TradeMode } from "domain/synthetics/trade";

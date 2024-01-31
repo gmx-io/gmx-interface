@@ -17,38 +17,6 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import {
-  useDecreasePositionAmounts,
-  useExistingOrder,
-  useIncreasePositionAmounts,
-  useLeverage,
-  useNextPositionValues,
-  useSelectedPosition,
-  useSwapAmounts,
-  useSwapRoutes,
-  useTradeFlags,
-  useTradeboxAvailableTradeModes,
-  useTradeboxCollateralAddress,
-  useTradeboxCollateralToken,
-  useTradeboxFromToken,
-  useTradeboxFromTokenAddress,
-  useTradeboxIsWrapOrUnwrap,
-  useTradeboxMarketAddress,
-  useTradeboxMarketInfo,
-  useTradeboxSetCollateralAddress,
-  useTradeboxSetFromTokenAddress,
-  useTradeboxSetMarketAddress,
-  useTradeboxSetToTokenAddress,
-  useTradeboxSetTradeMode,
-  useTradeboxSetTradeType,
-  useTradeboxState,
-  useTradeboxSwitchTokenAddresses,
-  useTradeboxToToken,
-  useTradeboxToTokenAddress,
-  useTradeboxTradeMode,
-  useTradeboxTradeType,
-  useUiFeeFactor,
-} from "context/SyntheticsStateContext/selectors";
 import { useHasOutdatedUi } from "domain/legacy";
 import {
   estimateExecuteDecreaseOrderGasLimit,
@@ -67,7 +35,7 @@ import {
   getTriggerNameByOrderType,
   usePositionsConstantsRequest,
 } from "domain/synthetics/positions";
-import { TokensData, TokensRatio, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
+import { TokensData, convertToUsd } from "domain/synthetics/tokens";
 import {
   AvailableTokenOptions,
   TradeFeesType,
@@ -118,6 +86,19 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { CollateralSelectorRow } from "./CollateralSelectorRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import "./TradeBox.scss";
+import {
+  useTradeboxTradeFlags,
+  useTradeboxState,
+  useTradeboxSwapAmounts,
+  useTradeboxIncreasePositionAmounts,
+  useTradeboxDecreasePositionAmounts,
+  useTradeboxNextPositionValues,
+  useTradeboxSelectedPosition,
+  useTradeboxExistingOrder,
+  useTradeboxLeverage,
+} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+import { useUiFeeFactor } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useSwapRoutes, useTradeRatios } from "context/SyntheticsStateContext/hooks/tradeHooks";
 
 export type Props = {
   avaialbleTokenOptions: AvailableTokenOptions;
@@ -166,9 +147,6 @@ export function TradeBox(p: Props) {
     setPendingTxns,
   } = p;
 
-  const selectedPosition = useSelectedPosition();
-  const existingOrder = useExistingOrder();
-
   const { openConnectModal } = useConnectModal();
   const {
     swapTokens,
@@ -179,27 +157,7 @@ export function TradeBox(p: Props) {
     sortedAllMarkets,
   } = avaialbleTokenOptions;
 
-  const tradeType = useTradeboxTradeType();
-  const tradeMode = useTradeboxTradeMode();
-  const tradeFlags = useTradeFlags();
-  const isWrapOrUnwrap = useTradeboxIsWrapOrUnwrap();
-  const fromTokenAddress = useTradeboxFromTokenAddress();
-  const fromToken = useTradeboxFromToken();
-  const toTokenAddress = useTradeboxToTokenAddress();
-  const toToken = useTradeboxToToken();
-  const marketAddress = useTradeboxMarketAddress();
-  const marketInfo = useTradeboxMarketInfo();
-  const collateralAddress = useTradeboxCollateralAddress();
-  const collateralToken = useTradeboxCollateralToken();
-  const availalbleTradeModes = useTradeboxAvailableTradeModes();
-  const switchTokenAddresses = useTradeboxSwitchTokenAddresses();
-  const onSelectMarketAddress = useTradeboxSetMarketAddress();
-  const onSelectCollateralAddress = useTradeboxSetCollateralAddress();
-  const onSelectFromTokenAddress = useTradeboxSetFromTokenAddress();
-  const onSelectToTokenAddress = useTradeboxSetToTokenAddress();
-  const onSelectTradeMode = useTradeboxSetTradeMode();
-  const onSelectTradeType = useTradeboxSetTradeType();
-
+  const tradeFlags = useTradeboxTradeFlags();
   const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket } = tradeFlags;
 
   const { chainId } = useChainId();
@@ -219,6 +177,12 @@ export function TradeBox(p: Props) {
     setFromTokenInputValue: setFromTokenInputValueRaw,
     toTokenInputValue,
     setToTokenInputValue: setToTokenInputValueRaw,
+    setMarketAddress: onSelectMarketAddress,
+    setCollateralAddress: onSelectCollateralAddress,
+    setFromTokenAddress: onSelectFromTokenAddress,
+    setToTokenAddress: onSelectToTokenAddress,
+    setTradeType: onSelectTradeType,
+    setTradeMode: onSelectTradeMode,
     stage,
     setStage,
     focusedInput,
@@ -243,8 +207,21 @@ export function TradeBox(p: Props) {
     setIsLeverageEnabled,
     keepLeverage,
     setKeepLeverage,
+    isWrapOrUnwrap,
+    switchTokenAddresses,
+    tradeMode,
+    tradeType,
+    collateralAddress,
+    collateralToken,
+    fromTokenAddress,
+    marketAddress,
+    marketInfo,
+    toTokenAddress,
+    avaialbleTradeModes: availalbleTradeModes,
   } = useTradeboxState();
 
+  const fromToken = getByKey(tokensData, fromTokenAddress);
+  const toToken = getByKey(tokensData, toTokenAddress);
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
   const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigNumber.from(0);
   const fromTokenPrice = fromToken?.prices.minPrice;
@@ -269,44 +246,16 @@ export function TradeBox(p: Props) {
   const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
   const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
 
-  const { markRatio, triggerRatio } = useMemo(() => {
-    if (!isSwap || !fromToken || !toToken || !fromTokenPrice || !markPrice) {
-      return {};
-    }
-
-    const markRatio = getTokensRatioByPrice({
-      fromToken,
-      toToken,
-      fromPrice: fromTokenPrice,
-      toPrice: markPrice,
-    });
-
-    const triggerRatioValue = parseValue(triggerRatioInputValue, USD_DECIMALS);
-
-    if (!triggerRatioValue) {
-      return { markRatio };
-    }
-
-    const triggerRatio: TokensRatio = {
-      ratio: triggerRatioValue?.gt(0) ? triggerRatioValue : markRatio.ratio,
-      largestToken: markRatio.largestToken,
-      smallestToken: markRatio.smallestToken,
-    };
-
-    return {
-      markRatio,
-      triggerRatio,
-    };
-  }, [fromToken, fromTokenPrice, isSwap, markPrice, toToken, triggerRatioInputValue]);
-
-  const leverage = useLeverage();
   const uiFeeFactor = useUiFeeFactor();
 
   const swapRoute = useSwapRoutes(fromTokenAddress, isPosition ? collateralAddress : toTokenAddress);
-  const swapAmounts = useSwapAmounts(fromTokenAddress, toTokenAddress);
-  const increaseAmounts = useIncreasePositionAmounts(fromTokenAddress, toTokenAddress, selectedPosition);
-  const decreaseAmounts = useDecreasePositionAmounts(selectedPosition);
-  const nextPositionValues = useNextPositionValues(fromTokenAddress, toTokenAddress, selectedPosition);
+  const swapAmounts = useTradeboxSwapAmounts();
+  const increaseAmounts = useTradeboxIncreasePositionAmounts();
+  const decreaseAmounts = useTradeboxDecreasePositionAmounts();
+  const nextPositionValues = useTradeboxNextPositionValues();
+  const selectedPosition = useTradeboxSelectedPosition();
+  const existingOrder = useTradeboxExistingOrder();
+  const leverage = useTradeboxLeverage();
 
   const { fees, feesType, executionFee } = useMemo(() => {
     if (!gasLimits || !gasPrice || !tokensData) {
@@ -395,8 +344,7 @@ export function TradeBox(p: Props) {
     gasPrice,
     tokensData,
     isSwap,
-    swapAmounts?.swapPathStats,
-    swapAmounts?.usdIn,
+    swapAmounts,
     isIncrease,
     increaseAmounts,
     isTrigger,
@@ -412,6 +360,7 @@ export function TradeBox(p: Props) {
     positionPriceImpact: fees?.positionPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
     place: "tradeBox",
+    tradeFlags,
   });
 
   const setIsHighPositionImpactAcceptedRef = useLatest(priceImpactWarningState.setIsHighPositionImpactAccepted);
@@ -465,6 +414,15 @@ export function TradeBox(p: Props) {
   }, [marketInfo]);
 
   const swapOutLiquidity = swapRoute.maxSwapLiquidity;
+  const triggerRatioValue = useMemo(() => parseValue(triggerRatioInputValue, USD_DECIMALS), [triggerRatioInputValue]);
+
+  const { markRatio, triggerRatio } = useTradeRatios({
+    fromTokenAddress,
+    toTokenAddress,
+    tradeMode,
+    tradeType,
+    triggerRatioValue,
+  });
 
   const { longLiquidity, shortLiquidity, isOutPositionLiquidity } = useMemo(() => {
     if (!marketInfo || !isIncrease) {
@@ -778,7 +736,6 @@ export function TradeBox(p: Props) {
       marketsOptions.marketWithPosition,
       marketsOptions.maxLiquidityMarket,
       marketsOptions.minPriceImpactMarket,
-      onSelectCollateralAddress,
       onSelectMarketAddress,
     ]
   );

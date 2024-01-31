@@ -16,7 +16,6 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { DEFAULT_SLIPPAGE_AMOUNT, EXCESSIVE_SLIPPAGE_AMOUNT } from "config/factors";
 import { getKeepLeverageKey } from "config/localStorage";
 import { convertTokenAddress } from "config/tokens";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useHasOutdatedUi } from "domain/legacy";
@@ -73,7 +72,13 @@ import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionSeller.scss";
-import { usePositionsConstants, useSwapRoutes, useUserReferralInfo } from "context/SyntheticsStateContext/selectors";
+import {
+  useSavedAcceptablePriceImpactBuffer,
+  useSavedAllowedSlippage,
+} from "context/SyntheticsStateContext/hooks/settingsHooks";
+import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useSwapRoutes } from "context/SyntheticsStateContext/hooks/tradeHooks";
+import { useTradeboxTradeFlags } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 
 export type Props = {
   position?: PositionInfo;
@@ -101,7 +106,7 @@ export function PositionSeller(p: Props) {
   const { position, tokensData, showPnlInLeverage, onClose, setPendingTxns, availableTokensOptions } = p;
 
   const { chainId } = useChainId();
-  const { savedAllowedSlippage } = useSettings();
+  const savedAllowedSlippage = useSavedAllowedSlippage();
   const { signer, account } = useWallet();
   const { openConnectModal } = useConnectModal();
   const { gasPrice } = useGasPrice(chainId);
@@ -110,7 +115,8 @@ export function PositionSeller(p: Props) {
   const userReferralInfo = useUserReferralInfo();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const uiFeeFactor = useUiFeeFactor(chainId);
-  const { savedAcceptablePriceImpactBuffer } = useSettings();
+  const savedAcceptablePriceImpactBuffer = useSavedAcceptablePriceImpactBuffer();
+  const tradeFlags = useTradeboxTradeFlags();
 
   const isVisible = Boolean(position);
   const prevIsVisible = usePrevious(isVisible);
@@ -295,6 +301,7 @@ export function PositionSeller(p: Props) {
     positionPriceImpact: fees?.positionPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
     place: "positionSeller",
+    tradeFlags,
   });
 
   const isNotEnoughReceiveTokenLiquidity = shouldSwap ? maxSwapLiquidity?.lt(receiveUsd || 0) : false;
@@ -699,7 +706,11 @@ export function PositionSeller(p: Props) {
           optionLabels={ORDER_OPTION_LABELS}
           onChange={setOrderOption}
         />
-        <SubaccountNavigationButton executionFee={executionFee?.feeTokenAmount} closeConfirmationBox={onClose} />
+        <SubaccountNavigationButton
+          executionFee={executionFee?.feeTokenAmount}
+          closeConfirmationBox={onClose}
+          tradeFlags={tradeFlags}
+        />
 
         {position && (
           <>

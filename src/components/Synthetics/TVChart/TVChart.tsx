@@ -22,8 +22,8 @@ import { AvailableTokenOptions, TradeType } from "domain/synthetics/trade";
 import { MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getByKey } from "lib/objects";
 import { helperToast } from "lib/helperToast";
-import { useTradeboxSetToTokenAddress, useTradeboxTradeType } from "context/SyntheticsStateContext/selectors";
 import { BigNumber } from "ethers";
+import { useTradeboxSetToTokenAddress, useTradeboxTradeType } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 
 export type Props = {
   tradePageVersion: number;

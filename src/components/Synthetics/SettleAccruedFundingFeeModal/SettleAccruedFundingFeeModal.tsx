@@ -23,7 +23,7 @@ import useWallet from "lib/wallets/useWallet";
 import "./SettleAccruedFundingFeeModal.scss";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
-import { useUserReferralInfo } from "context/SyntheticsStateContext/selectors";
+import { useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
 
 type Props = {
   allowedSlippage: number;
@@ -175,7 +175,7 @@ export function SettleAccruedFundingFeeModal({
         <div className="text-center">Settle {totalStr}</div>
       </div>
       <div className="App-card-divider ClaimModal-divider FeeModal-divider ClaimSettleModal-divider" />
-      <SubaccountNavigationButton executionFee={executionFee} closeConfirmationBox={onClose} ignoreTradeFlags />
+      <SubaccountNavigationButton executionFee={executionFee} closeConfirmationBox={onClose} tradeFlags={undefined} />
       <div className="ClaimModal-content ClaimSettleModal-modal-content">
         <div className="App-card-content">
           <div className="ClaimSettleModal-alert">
