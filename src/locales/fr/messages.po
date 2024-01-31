@@ -5432,8 +5432,12 @@ msgid "Unstake submitted! <0>View status.</0>"
 msgstr "Arrêt du staking soumis! <0>Voir le statut.</0>"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Unstaking will burn <0>{0} Multiplier Points</0>. {1}"
+msgid "Unstaking will burn <0>{0} Multiplier Points</0>. <1>You will earn {1}% less ETH rewards with this action.</1>"
 msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+#~ msgid "Unstaking will burn <0>{0} Multiplier Points</0>. {1}"
+#~ msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.js

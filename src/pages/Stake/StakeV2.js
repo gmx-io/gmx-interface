@@ -233,6 +233,7 @@ function UnstakeModal(props) {
     reservedAmount,
     bonusGmxInFeeGmx,
     setPendingTxns,
+    processedData,
   } = props;
   const [isUnstaking, setIsUnstaking] = useState(false);
   const icons = getIcons(chainId);
@@ -251,10 +252,12 @@ function UnstakeModal(props) {
     burnAmount = multiplierPointsAmount.mul(amount).div(bonusGmxInFeeGmx);
   }
 
-  const shouldShowReductionAmount = true;
-  let rewardReductionBasisPoints;
-  if (burnAmount && bonusGmxInFeeGmx) {
-    rewardReductionBasisPoints = burnAmount.mul(BASIS_POINTS_DIVISOR).div(bonusGmxInFeeGmx);
+  let unstakeBonusLostPercentage;
+  if (amount?.gt(0) && multiplierPointsAmount?.gt(0)) {
+    unstakeBonusLostPercentage = amount
+      ?.add(burnAmount)
+      .mul(BASIS_POINTS_DIVISOR)
+      ?.div(multiplierPointsAmount?.add(processedData.esGmxInStakedGmx)?.add(processedData.gmxInStakedGmx));
   }
 
   const getError = () => {
@@ -328,23 +331,21 @@ function UnstakeModal(props) {
           </div>
         </BuyInputSection>
         {reservedAmount && reservedAmount.gt(0) && (
-          <div className="Modal-note">
-            You have {formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting.
-          </div>
+          <ModalInfo>You have {formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting.</ModalInfo>
         )}
-        {burnAmount && burnAmount.gt(0) && rewardReductionBasisPoints && rewardReductionBasisPoints.gt(0) && (
-          <div className="Modal-note">
+        {burnAmount?.gt(0) && unstakeBonusLostPercentage?.gt(0) && (
+          <ModalInfo>
             <Trans>
               Unstaking will burn&nbsp;
               <ExternalLink className="display-inline" href="https://docs.gmx.io/docs/tokenomics/rewards">
                 {formatAmount(burnAmount, 18, 4, true)} Multiplier Points
               </ExternalLink>
               .&nbsp;
-              {shouldShowReductionAmount && (
-                <span>Boost Percentage: -{formatAmount(rewardReductionBasisPoints, 2, 2)}%.</span>
-              )}
+              <span>
+                You will earn {formatAmount(unstakeBonusLostPercentage, 2, 2)}% less ETH rewards with this action.
+              </span>
             </Trans>
-          </div>
+          </ModalInfo>
         )}
         <div className="Exchange-swap-button-container">
           <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
@@ -1494,6 +1495,7 @@ export default function StakeV2({ setPendingTxns }) {
         unstakeMethodName={unstakeMethodName}
         multiplierPointsAmount={multiplierPointsAmount}
         bonusGmxInFeeGmx={bonusGmxInFeeGmx}
+        processedData={processedData}
       />
       <VesterDepositModal
         isVisible={isVesterDepositModalVisible}
