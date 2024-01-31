@@ -885,16 +885,16 @@ msgstr "Claimable Price Impact Rebates.<0/><1/><2>Read more</2>."
 msgid "Claimable Rebates"
 msgstr "Claimable Rebates"
 
+#: src/domain/synthetics/markets/claimFundingFeesTxn.ts
+#: src/pages/Stake/StakeV2.js
+#~ msgid "Claimed Multiplier Points"
+#~ msgstr "Claimed Multiplier Points"
+
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Claiming Price Impact Rebate..."
 msgstr "Claiming Price Impact Rebate..."
 
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
-#: src/pages/Stake/StakeV2.js
-msgid "Claimed Multiplier Points"
-msgstr "Claimed Multiplier Points"
-
-#: src/domain/synthetics/markets/claimCollateralTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Claiming failed"
 msgstr "Claiming failed"
@@ -5379,8 +5379,8 @@ msgid "UTILIZATION"
 msgstr "UTILIZATION"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Unclaimed Multiplier Points"
-msgstr "Unclaimed Multiplier Points"
+#~ msgid "Unclaimed Multiplier Points"
+#~ msgstr "Unclaimed Multiplier Points"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Unknown"

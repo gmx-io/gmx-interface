@@ -886,8 +886,8 @@ msgid "Claimable Rebates"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
-msgid "Claimed Multiplier Points"
-msgstr ""
+#~ msgid "Claimed Multiplier Points"
+#~ msgstr ""
 
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Claiming Price Impact Rebate..."
@@ -5375,8 +5375,8 @@ msgid "UTILIZATION"
 msgstr "NUTZUNG"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Unclaimed Multiplier Points"
-msgstr ""
+#~ msgid "Unclaimed Multiplier Points"
+#~ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Unknown"

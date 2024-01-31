@@ -1812,24 +1812,7 @@ export default function StakeV2({ setPendingTxns }) {
                 <div className="label">
                   <Trans>Multiplier Points</Trans>
                 </div>
-                <Tooltip
-                  handle={formatAmount(multiplierPointsAmount, 18, 4, true)}
-                  position="right-bottom"
-                  renderContent={() => (
-                    <div>
-                      <StatsTooltipRow
-                        label={t`Unclaimed Multiplier Points`}
-                        showDollar={false}
-                        value={formatKeyAmount(processedData, "bonusGmxTrackerRewards", 18, 4, true)}
-                      />
-                      <StatsTooltipRow
-                        label={t`Claimed Multiplier Points`}
-                        showDollar={false}
-                        value={formatKeyAmount(processedData, "bnGmxInFeeGmx", 18, 4, true)}
-                      />
-                    </div>
-                  )}
-                />
+                <div>{formatKeyAmount(processedData, "bonusGmxTrackerRewards", 18, 4, true)}</div>
               </div>
               <div className="App-card-row">
                 <div className="label">
