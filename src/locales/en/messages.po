@@ -3078,8 +3078,12 @@ msgid "Max. Leverage exceeded"
 msgstr "Max. Leverage exceeded"
 
 #: src/components/Stake/GMXAprTooltip.tsx
-msgid "Max. {nativeTokenSymbol} APR with 200% Boost for this week: {0}%."
-msgstr "Max. {nativeTokenSymbol} APR with 200% Boost for this week: {0}%."
+#~ msgid "Max. {nativeTokenSymbol} APR with 200% Boost for this week: {0}%."
+#~ msgstr "Max. {nativeTokenSymbol} APR with 200% Boost for this week: {0}%."
+
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "Max. {nativeTokenSymbol} APR with {0}% Boost for this week: {1}%."
+msgstr "Max. {nativeTokenSymbol} APR with {0}% Boost for this week: {1}%."
 
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
