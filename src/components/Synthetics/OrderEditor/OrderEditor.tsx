@@ -2,7 +2,6 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Modal from "components/Modal/Modal";
-import { MarketsInfoData } from "domain/synthetics/markets";
 import {
   OrderInfo,
   OrderType,
@@ -15,7 +14,6 @@ import {
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
 import {
-  PositionsInfoData,
   formatAcceptablePrice,
   formatLeverage,
   formatLiquidationPrice,
@@ -23,7 +21,6 @@ import {
   getTriggerNameByOrderType,
 } from "domain/synthetics/positions";
 import {
-  TokensData,
   TokensRatio,
   convertToTokenAmount,
   getAmountByRatio,
@@ -62,23 +59,27 @@ import { getByKey } from "lib/objects";
 
 import Button from "components/Button/Button";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
+import {
+  useMarketsInfoData,
+  usePositionsInfoData,
+  useTokensData,
+} from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useNextPositionValues } from "context/SyntheticsStateContext/hooks/tradeHooks";
 import useWallet from "lib/wallets/useWallet";
 import "./OrderEditor.scss";
-import { useNextPositionValues } from "context/SyntheticsStateContext/hooks/tradeHooks";
 
 type Props = {
-  positionsData?: PositionsInfoData;
-  marketsInfoData?: MarketsInfoData;
-  tokensData?: TokensData;
   order: OrderInfo;
   onClose: () => void;
   setPendingTxns: (txns: any) => void;
 };
 
 export function OrderEditor(p: Props) {
-  const { marketsInfoData, tokensData } = p;
   const { chainId } = useChainId();
   const { signer } = useWallet();
+  const tokensData = useTokensData();
+  const marketsInfoData = useMarketsInfoData();
+  const positionsData = usePositionsInfoData();
 
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
@@ -200,7 +201,7 @@ export function OrderEditor(p: Props) {
     p.order.isLong
   );
 
-  const existingPosition = getByKey(p.positionsData, positionKey);
+  const existingPosition = getByKey(positionsData, positionKey);
 
   const executionFee = useMemo(() => {
     if (!p.order.isFrozen || !gasLimits || !gasPrice || !tokensData) return undefined;

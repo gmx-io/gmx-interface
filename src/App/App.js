@@ -464,6 +464,7 @@ function FullApp() {
                     savedIsPnlInLeverage={savedIsPnlInLeverage}
                     savedShowPnlAfterFees={savedShowPnlAfterFees}
                     skipLocalReferralCode={false}
+                    pageType="trade"
                   >
                     <SyntheticsPage
                       shouldDisableValidation={savedShouldDisableValidationForTesting}
@@ -519,6 +520,7 @@ function FullApp() {
               </Route>
               <Route exact path="/actions">
                 <SyntheticsStateContextProvider
+                  pageType="actions"
                   skipLocalReferralCode
                   savedIsPnlInLeverage={savedIsPnlInLeverage}
                   savedShowPnlAfterFees={savedShowPnlAfterFees}
@@ -529,6 +531,7 @@ function FullApp() {
               <Redirect exact from="/actions/v2" to="/actions" />
               <Route exact path="/actions/:account">
                 <SyntheticsStateContextProvider
+                  pageType="actions"
                   skipLocalReferralCode={false}
                   savedIsPnlInLeverage={savedIsPnlInLeverage}
                   savedShowPnlAfterFees={savedShowPnlAfterFees}

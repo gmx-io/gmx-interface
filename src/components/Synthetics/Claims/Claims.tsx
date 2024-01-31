@@ -1,44 +1,39 @@
-import cx from "classnames";
 import { Trans } from "@lingui/macro";
-import { useChainId } from "lib/chains";
-import { useCallback, useState } from "react";
+import cx from "classnames";
 import { useClaimCollateralHistory } from "domain/synthetics/claimHistory";
-import { ClaimHistoryRow } from "../ClaimHistoryRow/ClaimHistoryRow";
-import { MarketsInfoData } from "domain/synthetics/markets";
-import { TokensData } from "domain/synthetics/tokens";
+import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
+import { useCallback, useState } from "react";
+import { ClaimHistoryRow } from "../ClaimHistoryRow/ClaimHistoryRow";
 import { ClaimableCard } from "./ClaimableCard";
 
-import "./Claims.scss";
+import {
+  useMarketsInfoData,
+  usePositionsInfoData,
+  useTokensData,
+} from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useMedia } from "react-use";
+import "./Claims.scss";
 import { SettleAccruedCard } from "./SettleAccruedCard";
-import { PositionsInfoData } from "domain/synthetics/positions";
 
 const PAGE_SIZE = 100;
 
 type Props = {
   shouldShowPaginationButtons: boolean;
-  marketsInfoData: MarketsInfoData | undefined;
-  tokensData: TokensData | undefined;
   setIsClaiming: (isClaiming: boolean) => void;
   setIsSettling: (isSettling: boolean) => void;
-  positionsInfoData: PositionsInfoData | undefined;
 };
 
 const MARGIN_RIGHT = { marginRight: 4 };
 const MARGIN_LEFT = { marginRight: 4 };
 
-export function Claims({
-  shouldShowPaginationButtons,
-  marketsInfoData,
-  tokensData,
-  setIsClaiming,
-  setIsSettling,
-  positionsInfoData,
-}: Props) {
+export function Claims({ shouldShowPaginationButtons, setIsClaiming, setIsSettling }: Props) {
   const { chainId } = useChainId();
   const { account } = useWallet();
   const [pageIndex, setPageIndex] = useState(0);
+  const tokensData = useTokensData();
+  const marketsInfoData = useMarketsInfoData();
+  const positionsInfoData = usePositionsInfoData();
 
   const { claimActions, isLoading } = useClaimCollateralHistory(chainId, {
     marketsInfoData,

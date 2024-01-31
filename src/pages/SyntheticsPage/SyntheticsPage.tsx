@@ -39,14 +39,11 @@ import {
   useOrdersInfoData,
   usePositionsInfoData,
   useSavedIsPnlInLeverage,
-  useSavedShowPnlAfterFees,
   useTokensData,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   useTradeboxAvailableTokensOptions,
-  useTradeboxCollateralAddress,
   useTradeboxFromTokenAddress,
-  useTradeboxMarketAddress,
   useTradeboxSetActivePosition,
   useTradeboxToTokenAddress,
   useTradeboxTradeFlags,
@@ -91,7 +88,6 @@ export function SyntheticsPage(p: Props) {
   const { chainId } = useChainId();
   const { signer, account } = useWallet();
   const savedIsPnlInLeverage = useSavedIsPnlInLeverage();
-  const savedShowPnlAfterFees = useSavedShowPnlAfterFees();
   const marketsInfoData = useMarketsInfoData();
   const tokensData = useTokensData();
   const positionsInfoData = usePositionsInfoData();
@@ -108,8 +104,6 @@ export function SyntheticsPage(p: Props) {
   const { isSwap } = useTradeboxTradeFlags();
   const fromTokenAddress = useTradeboxFromTokenAddress();
   const toTokenAddress = useTradeboxToTokenAddress();
-  const marketAddress = useTradeboxMarketAddress();
-  const collateralAddress = useTradeboxCollateralAddress();
   const availableTokensOptions = useTradeboxAvailableTokensOptions();
   const setActivePosition = useTradeboxSetActivePosition();
   const { indexTokens, sortedIndexTokensWithPoolValue, swapTokens, sortedLongAndShortTokens } = availableTokensOptions;
@@ -353,51 +347,27 @@ export function SyntheticsPage(p: Props) {
 
             {listSection === ListSection.Positions && (
               <PositionList
-                positionsData={positionsInfoData}
-                ordersData={ordersInfoData}
                 isLoading={isPositionsLoading}
-                savedIsPnlInLeverage={savedIsPnlInLeverage}
                 onOrdersClick={() => setListSection(ListSection.Orders)}
                 onSettlePositionFeesClick={handleSettlePositionFeesClick}
                 onSelectPositionClick={onSelectPositionClick}
                 onClosePositionClick={setClosingPositionKey}
                 onEditCollateralClick={setEditingPositionKey}
                 showPnlAfterFees={showPnlAfterFees}
-                savedShowPnlAfterFees={savedShowPnlAfterFees}
-                currentMarketAddress={marketAddress}
-                currentCollateralAddress={collateralAddress}
                 openSettings={openSettings}
               />
             )}
             {listSection === ListSection.Orders && (
               <OrderList
-                marketsInfoData={marketsInfoData}
-                tokensData={tokensData}
-                positionsData={positionsInfoData}
-                ordersData={ordersInfoData}
                 selectedOrdersKeys={selectedOrdersKeys}
                 setSelectedOrdersKeys={setSelectedOrdersKeys}
                 isLoading={isOrdersLoading}
                 setPendingTxns={setPendingTxns}
               />
             )}
-            {listSection === ListSection.Trades && (
-              <TradeHistory
-                account={account}
-                marketsInfoData={marketsInfoData}
-                tokensData={tokensData}
-                shouldShowPaginationButtons
-              />
-            )}
+            {listSection === ListSection.Trades && <TradeHistory account={account} shouldShowPaginationButtons />}
             {listSection === ListSection.Claims && (
-              <Claims
-                marketsInfoData={marketsInfoData}
-                positionsInfoData={positionsInfoData}
-                tokensData={tokensData}
-                shouldShowPaginationButtons
-                setIsClaiming={setIsClaiming}
-                setIsSettling={setIsSettling}
-              />
+              <Claims shouldShowPaginationButtons setIsClaiming={setIsClaiming} setIsSettling={setIsSettling} />
             )}
           </div>
         </div>
@@ -409,10 +379,6 @@ export function SyntheticsPage(p: Props) {
               shouldDisableValidation={shouldDisableValidation}
               allowedSlippage={allowedSlippage!}
               isHigherSlippageAllowed={isHigherSlippageAllowed}
-              tokensData={tokensData}
-              ordersInfo={ordersInfoData}
-              positionsInfo={positionsInfoData}
-              marketsInfoData={marketsInfoData}
               setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
               setPendingTxns={setPendingTxns}
             />
@@ -432,9 +398,6 @@ export function SyntheticsPage(p: Props) {
           </div>
           {listSection === ListSection.Positions && (
             <PositionList
-              positionsData={positionsInfoData}
-              ordersData={ordersInfoData}
-              savedIsPnlInLeverage={savedIsPnlInLeverage}
               isLoading={isPositionsLoading}
               onOrdersClick={() => setListSection(ListSection.Orders)}
               onSelectPositionClick={onSelectPositionClick}
@@ -442,41 +405,20 @@ export function SyntheticsPage(p: Props) {
               onEditCollateralClick={setEditingPositionKey}
               onSettlePositionFeesClick={handleSettlePositionFeesClick}
               showPnlAfterFees={showPnlAfterFees}
-              savedShowPnlAfterFees={savedShowPnlAfterFees}
-              currentMarketAddress={marketAddress}
-              currentCollateralAddress={collateralAddress}
               openSettings={openSettings}
             />
           )}
           {listSection === ListSection.Orders && (
             <OrderList
-              marketsInfoData={marketsInfoData}
-              tokensData={tokensData}
-              positionsData={positionsInfoData}
-              ordersData={ordersInfoData}
               isLoading={isOrdersLoading}
               selectedOrdersKeys={selectedOrdersKeys}
               setSelectedOrdersKeys={setSelectedOrdersKeys}
               setPendingTxns={setPendingTxns}
             />
           )}
-          {listSection === ListSection.Trades && (
-            <TradeHistory
-              account={account}
-              marketsInfoData={marketsInfoData}
-              tokensData={tokensData}
-              shouldShowPaginationButtons
-            />
-          )}
+          {listSection === ListSection.Trades && <TradeHistory account={account} shouldShowPaginationButtons />}
           {listSection === ListSection.Claims && (
-            <Claims
-              marketsInfoData={marketsInfoData}
-              positionsInfoData={positionsInfoData}
-              tokensData={tokensData}
-              shouldShowPaginationButtons
-              setIsClaiming={setIsClaiming}
-              setIsSettling={setIsSettling}
-            />
+            <Claims shouldShowPaginationButtons setIsClaiming={setIsClaiming} setIsSettling={setIsSettling} />
           )}
         </div>
       </div>

@@ -15,15 +15,19 @@ import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { createSelector } from "../utils";
 import { isSwapOrderType } from "domain/synthetics/orders";
 
+const selectOnlyOnTradeboxPage = <T>(s: SyntheticsState, selection: T) =>
+  s.pageType === "trade" ? selection : undefined;
 export const selectTradeboxState = (s: SyntheticsState) => s.tradebox;
 export const selectTradeboxTradeType = (s: SyntheticsState) => s.tradebox.tradeType;
 export const selectTradeboxTradeMode = (s: SyntheticsState) => s.tradebox.tradeMode;
 export const selectTradeboxIsWrapOrUnwrap = (s: SyntheticsState) => s.tradebox.isWrapOrUnwrap;
 export const selectTradeboxFromTokenAddress = (s: SyntheticsState) => s.tradebox.fromTokenAddress;
 export const selectTradeboxToTokenAddress = (s: SyntheticsState) => s.tradebox.toTokenAddress;
-export const selectTradeboxMarketAddress = (s: SyntheticsState) => s.tradebox.marketAddress;
+export const selectTradeboxMarketAddress = (s: SyntheticsState) =>
+  selectOnlyOnTradeboxPage(s, s.tradebox.marketAddress);
 export const selectTradeboxMarketInfo = (s: SyntheticsState) => s.tradebox.marketInfo;
-export const selectTradeboxCollateralTokenAddress = (s: SyntheticsState) => s.tradebox.collateralAddress;
+export const selectTradeboxCollateralTokenAddress = (s: SyntheticsState) =>
+  selectOnlyOnTradeboxPage(s, s.tradebox.collateralAddress);
 export const selectTradeboxCollateralToken = (s: SyntheticsState) => s.tradebox.collateralToken;
 export const selectTradeboxAvailableTradeModes = (s: SyntheticsState) => s.tradebox.avaialbleTradeModes;
 export const selectTradeboxAvailableTokensOptions = (s: SyntheticsState) => s.tradebox.availableTokensOptions;

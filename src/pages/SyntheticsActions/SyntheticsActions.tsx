@@ -13,17 +13,11 @@ import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import {
   useIsOrdersLoading,
   useIsPositionsLoading,
-  useMarketsInfoData,
-  useOrdersInfoData,
-  usePositionsInfoData,
-  useSavedIsPnlInLeverage,
   useSavedShowPnlAfterFees,
-  useTokensData,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 
 export default function SyntheticsActions() {
   const { account: paramsAccount } = useParams<{ account?: string }>();
-  const savedIsPnlInLeverage = useSavedIsPnlInLeverage();
   const savedShowPnlAfterFees = useSavedShowPnlAfterFees();
 
   let checkSummedAccount: string | undefined;
@@ -32,11 +26,7 @@ export default function SyntheticsActions() {
     checkSummedAccount = ethers.utils.getAddress(paramsAccount);
   }
 
-  const marketsInfoData = useMarketsInfoData();
-  const tokensData = useTokensData();
-  const positionsInfoData = usePositionsInfoData();
   const isPositionsLoading = useIsPositionsLoading();
-  const ordersInfoData = useOrdersInfoData();
   const isOrdersLoading = useIsOrdersLoading();
 
   return (
@@ -66,17 +56,13 @@ export default function SyntheticsActions() {
             <Trans>Positions</Trans>
           </div>
           <PositionList
-            positionsData={positionsInfoData}
-            ordersData={ordersInfoData}
             isLoading={isPositionsLoading}
-            savedIsPnlInLeverage={savedIsPnlInLeverage}
             onOrdersClick={() => null}
             onSelectPositionClick={() => null}
             onClosePositionClick={() => null}
             onEditCollateralClick={() => null}
             onSettlePositionFeesClick={() => null}
             showPnlAfterFees={savedShowPnlAfterFees}
-            savedShowPnlAfterFees={savedShowPnlAfterFees}
             openSettings={() => null}
             hideActions
           />
@@ -88,10 +74,6 @@ export default function SyntheticsActions() {
             <Trans>Orders</Trans>
           </div>
           <OrderList
-            marketsInfoData={marketsInfoData}
-            tokensData={tokensData}
-            positionsData={positionsInfoData}
-            ordersData={ordersInfoData}
             setSelectedOrdersKeys={() => null}
             isLoading={isOrdersLoading}
             setPendingTxns={() => null}
@@ -121,13 +103,7 @@ export default function SyntheticsActions() {
             />
           )}
         </div>
-        <TradeHistory
-          account={checkSummedAccount}
-          forAllAccounts={!checkSummedAccount}
-          marketsInfoData={marketsInfoData}
-          tokensData={tokensData}
-          shouldShowPaginationButtons
-        />
+        <TradeHistory account={checkSummedAccount} forAllAccounts={!checkSummedAccount} shouldShowPaginationButtons />
       </div>
       <Footer />
     </div>

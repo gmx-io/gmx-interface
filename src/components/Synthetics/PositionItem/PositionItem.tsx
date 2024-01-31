@@ -19,6 +19,12 @@ import { ImSpinner2 } from "react-icons/im";
 import Button from "components/Button/Button";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { usePositionsConstants, useSavedShowPnlAfterFees } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import {
+  useTradeboxCollateralAddress,
+  useTradeboxMarketAddress,
+  useTradeboxTradeType,
+} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { TradeMode, TradeType, getTriggerThresholdType } from "domain/synthetics/trade";
@@ -28,40 +34,38 @@ import { Fragment } from "react";
 import { FaAngleRight } from "react-icons/fa";
 import { useMedia } from "react-use";
 import "./PositionItem.scss";
-import { usePositionsConstants } from "context/SyntheticsStateContext/hooks/globalsHooks";
 
 export type Props = {
   position: PositionInfo;
   positionOrders: PositionOrderInfo[];
   hideActions?: boolean;
   showPnlAfterFees: boolean;
-  savedShowPnlAfterFees: boolean;
   onClosePositionClick?: () => void;
   onEditCollateralClick?: () => void;
   onShareClick: () => void;
   onSelectPositionClick?: (tradeMode?: TradeMode) => void;
   onOrdersClick?: () => void;
   isLarge: boolean;
-  currentMarketAddress?: string;
-  currentCollateralAddress?: string;
-  currentTradeType?: TradeType;
   openSettings: () => void;
   onGetPendingFeesClick: () => void;
 };
 
 export function PositionItem(p: Props) {
-  const { showDebugValues } = useSettings();
   const { positionOrders } = p;
-  const displayedPnl = p.savedShowPnlAfterFees ? p.position.pnlAfterFees : p.position.pnl;
-  const displayedPnlPercentage = p.savedShowPnlAfterFees ? p.position.pnlAfterFeesPercentage : p.position.pnlPercentage;
+  const { showDebugValues } = useSettings();
+  const savedShowPnlAfterFees = useSavedShowPnlAfterFees();
+  const currentTradeType = useTradeboxTradeType();
+  const currentMarketAddress = useTradeboxMarketAddress();
+  const currentCollateralAddress = useTradeboxCollateralAddress();
+  const displayedPnl = savedShowPnlAfterFees ? p.position.pnlAfterFees : p.position.pnl;
+  const displayedPnlPercentage = savedShowPnlAfterFees ? p.position.pnlAfterFeesPercentage : p.position.pnlPercentage;
   const isMobile = useMedia("(max-width: 1100px)");
   const indexPriceDecimals = p.position?.indexToken?.priceDecimals;
   const { minCollateralUsd } = usePositionsConstants();
-
-  const isCurrentTradeTypeLong = p.currentTradeType === TradeType.Long;
+  const isCurrentTradeTypeLong = currentTradeType === TradeType.Long;
   const isCurrentMarket =
-    p.currentMarketAddress === p.position.marketAddress &&
-    p.currentCollateralAddress === p.position.collateralTokenAddress &&
+    currentMarketAddress === p.position.marketAddress &&
+    currentCollateralAddress === p.position.collateralTokenAddress &&
     isCurrentTradeTypeLong === p.position.isLong;
 
   function renderNetValue() {

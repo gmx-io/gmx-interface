@@ -17,6 +17,19 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useMarketsInfoData, useTokensData, useUiFeeFactor } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useSwapRoutes, useTradeRatios } from "context/SyntheticsStateContext/hooks/tradeHooks";
+import {
+  useTradeboxDecreasePositionAmounts,
+  useTradeboxExistingOrder,
+  useTradeboxIncreasePositionAmounts,
+  useTradeboxLeverage,
+  useTradeboxNextPositionValues,
+  useTradeboxSelectedPosition,
+  useTradeboxState,
+  useTradeboxSwapAmounts,
+  useTradeboxTradeFlags,
+} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { useHasOutdatedUi } from "domain/legacy";
 import {
   estimateExecuteDecreaseOrderGasLimit,
@@ -26,16 +39,15 @@ import {
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
-import { MarketsInfoData, getAvailableUsdLiquidityForPosition, getMarketIndexName } from "domain/synthetics/markets";
-import { DecreasePositionSwapType, OrdersInfoData } from "domain/synthetics/orders";
+import { getAvailableUsdLiquidityForPosition, getMarketIndexName } from "domain/synthetics/markets";
+import { DecreasePositionSwapType } from "domain/synthetics/orders";
 import {
-  PositionsInfoData,
   formatLeverage,
   formatLiquidationPrice,
   getTriggerNameByOrderType,
   usePositionsConstantsRequest,
 } from "domain/synthetics/positions";
-import { TokensData, convertToUsd } from "domain/synthetics/tokens";
+import { convertToUsd } from "domain/synthetics/tokens";
 import {
   AvailableTokenOptions,
   TradeFeesType,
@@ -86,29 +98,12 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { CollateralSelectorRow } from "./CollateralSelectorRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import "./TradeBox.scss";
-import {
-  useTradeboxTradeFlags,
-  useTradeboxState,
-  useTradeboxSwapAmounts,
-  useTradeboxIncreasePositionAmounts,
-  useTradeboxDecreasePositionAmounts,
-  useTradeboxNextPositionValues,
-  useTradeboxSelectedPosition,
-  useTradeboxExistingOrder,
-  useTradeboxLeverage,
-} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
-import { useUiFeeFactor } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useSwapRoutes, useTradeRatios } from "context/SyntheticsStateContext/hooks/tradeHooks";
 
 export type Props = {
   avaialbleTokenOptions: AvailableTokenOptions;
-  positionsInfo?: PositionsInfoData;
-  ordersInfo?: OrdersInfoData;
   allowedSlippage: number;
   isHigherSlippageAllowed: boolean;
   shouldDisableValidation?: boolean;
-  marketsInfoData?: MarketsInfoData;
-  tokensData?: TokensData;
   setIsHigherSlippageAllowed: (value: boolean) => void;
   setPendingTxns: (txns: any) => void;
 };
@@ -134,18 +129,7 @@ const tradeTypeLabels = {
 };
 
 export function TradeBox(p: Props) {
-  const {
-    tokensData,
-    avaialbleTokenOptions,
-    positionsInfo,
-    ordersInfo,
-    shouldDisableValidation,
-    allowedSlippage,
-    isHigherSlippageAllowed,
-    marketsInfoData,
-    setIsHigherSlippageAllowed,
-    setPendingTxns,
-  } = p;
+  const { avaialbleTokenOptions, shouldDisableValidation, allowedSlippage, setPendingTxns } = p;
 
   const { openConnectModal } = useConnectModal();
   const {
@@ -156,6 +140,8 @@ export function TradeBox(p: Props) {
     sortedLongAndShortTokens,
     sortedAllMarkets,
   } = avaialbleTokenOptions;
+  const tokensData = useTokensData();
+  const marketsInfoData = useMarketsInfoData();
 
   const tradeFlags = useTradeboxTradeFlags();
   const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket } = tradeFlags;
@@ -191,9 +177,7 @@ export function TradeBox(p: Props) {
     setFixedTriggerThresholdType,
     fixedTriggerOrderType,
     setFixedTriggerOrderType,
-    defaultTriggerAcceptablePriceImpactBps,
     setDefaultTriggerAcceptablePriceImapctBps,
-    selectedTriggerAcceptablePriceImpactBps,
     setSelectedAcceptablePriceImapctBps,
     closeSizeInputValue,
     setCloseSizeInputValue,
@@ -388,14 +372,11 @@ export function TradeBox(p: Props) {
   );
 
   const marketsOptions = useAvailableMarketsOptions({
-    marketsInfoData,
     isIncrease,
     disable: !isPosition,
     indexToken: toToken,
     isLong,
     increaseSizeUsd: increaseAmounts?.sizeDeltaUsd,
-    positionsInfo,
-    ordersInfo,
     hasExistingOrder: Boolean(existingOrder),
     hasExistingPosition: Boolean(selectedPosition),
   });
@@ -1382,42 +1363,24 @@ export function TradeBox(p: Props) {
 
       <ConfirmationBox
         isVisible={stage === "confirmation"}
-        isWrapOrUnwrap={isWrapOrUnwrap}
-        fromToken={fromToken}
-        toToken={toToken}
-        markPrice={markPrice}
-        markRatio={markRatio}
+        triggerRatioValue={triggerRatioValue}
         triggerPrice={triggerPrice}
         fixedTriggerThresholdType={fixedTriggerThresholdType}
         fixedTriggerOrderType={fixedTriggerOrderType}
-        selectedTriggerAcceptablePriceImpactBps={selectedTriggerAcceptablePriceImpactBps}
         setSelectedTriggerAcceptablePriceImapctBps={setSelectedAcceptablePriceImapctBps}
-        defaultTriggerAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
-        triggerRatio={triggerRatio}
-        marketInfo={marketInfo}
-        collateralToken={collateralToken}
         marketsOptions={marketsOptions}
-        swapAmounts={swapAmounts}
-        increaseAmounts={increaseAmounts}
-        decreaseAmounts={decreaseAmounts}
-        nextPositionValues={nextPositionValues}
         swapLiquidityUsd={swapOutLiquidity}
         longLiquidityUsd={longLiquidity}
         shortLiquidityUsd={shortLiquidity}
-        keepLeverage={keepLeverage}
         fees={fees}
         executionFee={executionFee}
         error={buttonErrorText}
         existingPosition={selectedPosition}
         shouldDisableValidation={shouldDisableValidation!}
-        isHigherSlippageAllowed={isHigherSlippageAllowed}
-        ordersData={ordersInfo}
-        tokensData={tokensData}
-        setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
-        setKeepLeverage={setKeepLeverage}
         onClose={onConfirmationClose}
         onSubmitted={onConfirmed}
         setPendingTxns={setPendingTxns}
+        markPrice={markPrice}
       />
     </>
   );

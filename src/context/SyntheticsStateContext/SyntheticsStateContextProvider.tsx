@@ -17,9 +17,9 @@ import { ReactNode, useMemo } from "react";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 
 export type SyntheticsState = {
+  pageType: "actions" | "trade";
   globals: {
     chainId: number;
-    // FIXME remove undefineds in types
     markets: MarketsResult;
     marketsInfo: MarketsInfoResult;
     positionsInfo: PositionsInfoResult;
@@ -28,7 +28,6 @@ export type SyntheticsState = {
     positionsConstants: PositionsConstantsResult;
     uiFeeFactor: BigNumber;
     userReferralInfo: UserReferralInfo | undefined;
-
     savedIsPnlInLeverage: boolean;
     savedShowPnlAfterFees: boolean;
   };
@@ -43,11 +42,13 @@ export function SyntheticsStateContextProvider({
   savedIsPnlInLeverage,
   savedShowPnlAfterFees,
   skipLocalReferralCode,
+  pageType,
 }: {
   children: ReactNode;
   savedIsPnlInLeverage: boolean;
   savedShowPnlAfterFees: boolean;
   skipLocalReferralCode: boolean;
+  pageType: "actions" | "trade";
 }) {
   const { chainId } = useChainId();
   const { account, signer } = useWallet();
@@ -80,6 +81,7 @@ export function SyntheticsStateContextProvider({
 
   const state = useMemo(() => {
     const s: SyntheticsState = {
+      pageType,
       globals: {
         chainId,
         account,
@@ -100,6 +102,7 @@ export function SyntheticsStateContextProvider({
 
     return s;
   }, [
+    pageType,
     chainId,
     account,
     markets,

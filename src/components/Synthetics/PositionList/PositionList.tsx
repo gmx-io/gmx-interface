@@ -1,9 +1,8 @@
 import { Trans, t } from "@lingui/macro";
 import PositionShare from "components/Exchange/PositionShare";
 import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
-import { useTradeboxTradeType } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
-import { OrdersInfoData, PositionOrderInfo, isOrderForPosition } from "domain/synthetics/orders";
-import { PositionsInfoData } from "domain/synthetics/positions";
+import { useOrdersInfoData, usePositionsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { PositionOrderInfo, isOrderForPosition } from "domain/synthetics/orders";
 import { TradeMode } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
@@ -15,61 +14,63 @@ type Props = {
   onClosePositionClick: (key: string) => void;
   onEditCollateralClick: (key: string) => void;
   onSettlePositionFeesClick: (key: string) => void;
-  positionsData?: PositionsInfoData;
-  ordersData?: OrdersInfoData;
-  savedIsPnlInLeverage: boolean;
   isLoading: boolean;
   onOrdersClick: () => void;
   showPnlAfterFees: boolean;
-  savedShowPnlAfterFees: boolean;
-  currentMarketAddress?: string;
-  currentCollateralAddress?: string;
   openSettings: () => void;
   hideActions?: boolean;
 };
 
 export function PositionList(p: Props) {
+  const {
+    isLoading,
+    onClosePositionClick,
+    onEditCollateralClick,
+    onOrdersClick,
+    onSelectPositionClick,
+    onSettlePositionFeesClick,
+    openSettings,
+    showPnlAfterFees,
+    hideActions,
+  } = p;
+  const positionsInfoData = usePositionsInfoData();
+  const ordersData = useOrdersInfoData();
   const { chainId } = useChainId();
   const { account } = useWallet();
   const [isPositionShareModalOpen, setIsPositionShareModalOpen] = useState(false);
   const [positionToShareKey, setPositionToShareKey] = useState<string>();
-  const positionToShare = getByKey(p.positionsData, positionToShareKey);
-  const positions = Object.values(p.positionsData || {});
-  const orders = Object.values(p.ordersData || {});
+  const positionToShare = getByKey(positionsInfoData, positionToShareKey);
+  const positions = Object.values(positionsInfoData || {});
+  const orders = Object.values(ordersData || {});
   const handleSharePositionClick = (positionKey: string) => {
     setPositionToShareKey(positionKey);
     setIsPositionShareModalOpen(true);
   };
-  const tradeType = useTradeboxTradeType();
 
   return (
     <div>
       {positions.length === 0 && (
         <div className="Exchange-empty-positions-list-note App-card small">
-          {p.isLoading ? t`Loading...` : t`No open positions`}
+          {isLoading ? t`Loading...` : t`No open positions`}
         </div>
       )}
       <div className="Exchange-list small">
-        {!p.isLoading &&
+        {!isLoading &&
           positions.map((position) => (
             <PositionItem
               key={position.key}
               positionOrders={orders.filter((order) => isOrderForPosition(order, position.key)) as PositionOrderInfo[]}
               position={position}
-              onEditCollateralClick={() => p.onEditCollateralClick(position.key)}
-              onClosePositionClick={() => p.onClosePositionClick(position.key)}
-              onGetPendingFeesClick={() => p.onSettlePositionFeesClick(position.key)}
-              onOrdersClick={p.onOrdersClick}
-              onSelectPositionClick={(tradeMode?: TradeMode) => p.onSelectPositionClick(position.key, tradeMode)}
-              showPnlAfterFees={p.showPnlAfterFees}
-              savedShowPnlAfterFees={p.savedShowPnlAfterFees}
+              onEditCollateralClick={() => onEditCollateralClick(position.key)}
+              onClosePositionClick={() => onClosePositionClick(position.key)}
+              onGetPendingFeesClick={() => onSettlePositionFeesClick(position.key)}
+              onOrdersClick={onOrdersClick}
+              onSelectPositionClick={(tradeMode?: TradeMode) => onSelectPositionClick(position.key, tradeMode)}
+              showPnlAfterFees={showPnlAfterFees}
               isLarge={false}
               onShareClick={() => handleSharePositionClick(position.key)}
-              currentMarketAddress={p.currentMarketAddress}
-              currentCollateralAddress={p.currentCollateralAddress}
-              currentTradeType={tradeType}
-              openSettings={p.openSettings}
-              hideActions={p.hideActions}
+              openSettings={openSettings}
+              hideActions={hideActions}
             />
           ))}
       </div>
@@ -123,10 +124,6 @@ export function PositionList(p: Props) {
                 onSelectPositionClick={(tradeMode?: TradeMode) => p.onSelectPositionClick(position.key, tradeMode)}
                 showPnlAfterFees={p.showPnlAfterFees}
                 isLarge={true}
-                savedShowPnlAfterFees={p.savedShowPnlAfterFees}
-                currentMarketAddress={p.currentMarketAddress}
-                currentCollateralAddress={p.currentCollateralAddress}
-                currentTradeType={tradeType}
                 openSettings={p.openSettings}
                 hideActions={p.hideActions}
                 onShareClick={() => handleSharePositionClick(position.key)}
