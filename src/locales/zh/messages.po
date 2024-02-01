@@ -5436,7 +5436,11 @@ msgid "Unstake submitted! <0>View status.</0>"
 msgstr "解除质押送出!<0>查看状况</0>"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Unstaking will burn <0>{0} Multiplier Points</0>. <1>You will earn {1}% less ETH rewards with this action.</1>"
+#~ msgid "Unstaking will burn <0>{0} Multiplier Points</0>. <1>You will earn {1}% less ETH rewards with this action.</1>"
+#~ msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Unstaking will burn <0>{0} Multiplier Points</0>. <1>You will earn {1}% less {nativeTokenSymbol} rewards with this action.</1>"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
@@ -5962,15 +5966,11 @@ msgid "You have not deposited any tokens for vesting."
 msgstr "你尚未存入任何可用于授权的代币"
 
 #: src/pages/Stake/StakeV2.js
-#~ msgid "You have reached the max. Boost Percentage. Stake an additional {0} GMX/esGMX to be able to stake all your unstaked {1} Multiplier Points using the \"Compound\" button."
-#~ msgstr ""
-
-#: src/pages/Stake/StakeV2.js
-msgid "You have reached the max. Boost Percentage. Stake an additional{0} GMX/esGMX to be able to stake all your unstaked{1}Multiplier Points using the \"Compound\" button."
+msgid "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points using the \"Compound\" button."
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
-msgid "You have reached the max. Boost Percentage. Stake an additional{0}GMX/esGMX to be able to stake all your unstaked{1}Multiplier Points."
+msgid "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points."
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx

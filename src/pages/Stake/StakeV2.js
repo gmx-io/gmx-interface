@@ -17,6 +17,7 @@ import Vester from "abis/Vester.json";
 import { ARBITRUM, getConstant } from "config/chains";
 import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 import { useRecommendStakeGmxAmount } from "domain/stake/useRecommendStakeGmxAmount";
+import { useMaxBoostBasicPoints } from "domain/rewards/useMaxBoostBasisPoints";
 import { ethers } from "ethers";
 import {
   GLP_DECIMALS,
@@ -234,6 +235,7 @@ function UnstakeModal(props) {
     bonusGmxInFeeGmx,
     setPendingTxns,
     processedData,
+    nativeTokenSymbol,
   } = props;
   const [isUnstaking, setIsUnstaking] = useState(false);
   const icons = getIcons(chainId);
@@ -333,7 +335,7 @@ function UnstakeModal(props) {
         {reservedAmount && reservedAmount.gt(0) && (
           <ModalInfo>You have {formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting.</ModalInfo>
         )}
-        {burnAmount?.gt(0) && unstakeBonusLostPercentage?.gt(0) && (
+        {burnAmount?.gt(0) && unstakeBonusLostPercentage?.gt(0) && !amount.gt(maxAmount) && (
           <ModalInfo>
             <Trans>
               Unstaking will burn&nbsp;
@@ -342,7 +344,8 @@ function UnstakeModal(props) {
               </ExternalLink>
               .&nbsp;
               <span>
-                You will earn {formatAmount(unstakeBonusLostPercentage, 2, 2)}% less ETH rewards with this action.
+                You will earn {formatAmount(unstakeBonusLostPercentage, 2, 2)}% less {nativeTokenSymbol} rewards with
+                this action.
               </span>
             </Trans>
           </ModalInfo>
@@ -772,11 +775,9 @@ function CompoundModal(props) {
         {recommendStakeGmx.gt(0) && (
           <ModalInfo>
             <Trans>
-              You have reached the max. Boost Percentage. Stake an additional
-              {formatAmount(recommendStakeGmx, 18, 2, true)}
-              GMX/esGMX to be able to stake all your unstaked
-              {formatAmount(processedData.bonusGmxTrackerRewards, 18, 4, true)}
-              Multiplier Points.
+              You have reached the maximum Boost Percentage. Stake an additional{" "}
+              {formatAmount(recommendStakeGmx, 18, 2, true)} GMX or esGMX to be able to stake your unstaked{" "}
+              {formatAmount(processedData.bonusGmxTrackerRewards, 18, 4, true)} Multiplier Points.
             </Trans>
           </ModalInfo>
         )}
@@ -1125,6 +1126,8 @@ export default function StakeV2({ setPendingTxns }) {
     }
   );
 
+  const maxBoostBasicPoints = useMaxBoostBasicPoints();
+
   const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useGmxPrice(
     chainId,
     { arbitrum: chainId === ARBITRUM ? signer : undefined },
@@ -1172,7 +1175,8 @@ export default function StakeV2({ setPendingTxns }) {
     nativeTokenPrice,
     stakedGmxSupply,
     gmxPrice,
-    gmxSupply
+    gmxSupply,
+    maxBoostBasicPoints?.div(BASIS_POINTS_DIVISOR)
   );
 
   let hasMultiplierPoints = false;
@@ -1386,10 +1390,10 @@ export default function StakeV2({ setPendingTxns }) {
         <br />
         {recommendStakeGmx.gt(0) ? (
           <Trans>
-            You have reached the max. Boost Percentage. Stake an additional
-            {formatAmount(recommendStakeGmx, 18, 2, true)} GMX/esGMX to be able to stake all your unstaked
-            {formatAmount(processedData.bonusGmxTrackerRewards, 18, 4, true)}
-            Multiplier Points using the "Compound" button.
+            You have reached the maximum Boost Percentage. Stake an additional{" "}
+            {formatAmount(recommendStakeGmx, 18, 2, true)} GMX or esGMX to be able to stake your unstaked{" "}
+            {formatAmount(processedData.bonusGmxTrackerRewards, 18, 4, true)} Multiplier Points using the "Compound"
+            button.
           </Trans>
         ) : (
           <Trans>Use the "Compound" button to stake your Multiplier Points.</Trans>
@@ -1496,6 +1500,7 @@ export default function StakeV2({ setPendingTxns }) {
         multiplierPointsAmount={multiplierPointsAmount}
         bonusGmxInFeeGmx={bonusGmxInFeeGmx}
         processedData={processedData}
+        nativeTokenSymbol={nativeTokenSymbol}
       />
       <VesterDepositModal
         isVisible={isVesterDepositModalVisible}

@@ -1089,7 +1089,8 @@ export function getProcessedData(
   nativeTokenPrice,
   stakedGmxSupply,
   gmxPrice,
-  gmxSupply
+  gmxSupply,
+  maxBoostMultiplier
 ) {
   if (
     !balanceData ||
@@ -1101,11 +1102,11 @@ export function getProcessedData(
     !nativeTokenPrice ||
     !stakedGmxSupply ||
     !gmxPrice ||
-    !gmxSupply
+    !gmxSupply ||
+    !maxBoostMultiplier
   ) {
     return {};
   }
-  const maxBoostMultiplier = 2;
   const data: any = {};
 
   data.gmxBalance = balanceData.gmx;
