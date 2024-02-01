@@ -17,6 +17,7 @@ import Vester from "abis/Vester.json";
 import { ARBITRUM, getConstant } from "config/chains";
 import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 import { useRecommendStakeGmxAmount } from "domain/stake/useRecommendStakeGmxAmount";
+import { useAccumulatedBnGMXAmount } from "domain/rewards/useAccumulatedBnGMXAmount";
 import { useMaxBoostBasicPoints } from "domain/rewards/useMaxBoostBasisPoints";
 import { ethers } from "ethers";
 import {
@@ -754,10 +755,12 @@ function CompoundModal(props) {
     setShouldConvertWeth(value);
   };
 
+  const accumulatedBnGMXAmount = useAccumulatedBnGMXAmount();
+
   const recommendStakeGmx = useRecommendStakeGmxAmount(
     {
       accumulatedGMX: processedData.totalVesterRewards,
-      accumulatedBnGMX: processedData.bonusGmxTrackerRewards,
+      accumulatedBnGMX: accumulatedBnGMXAmount,
       accumulatedEsGMX: processedData.totalEsGmxRewards,
       stakedGMX: processedData.gmxInStakedGmx,
       stakedBnGMX: processedData.bnGmxInFeeGmx,
@@ -777,7 +780,7 @@ function CompoundModal(props) {
             <Trans>
               You have reached the maximum Boost Percentage. Stake an additional{" "}
               {formatAmount(recommendStakeGmx, 18, 2, true)} GMX or esGMX to be able to stake your unstaked{" "}
-              {formatAmount(processedData.bonusGmxTrackerRewards, 18, 4, true)} Multiplier Points.
+              {formatAmount(accumulatedBnGMXAmount, 18, 4, true)} Multiplier Points.
             </Trans>
           </ModalInfo>
         )}
@@ -1126,6 +1129,8 @@ export default function StakeV2({ setPendingTxns }) {
     }
   );
 
+  const accumulatedBnGMXAmount = useAccumulatedBnGMXAmount();
+
   const maxBoostBasicPoints = useMaxBoostBasicPoints();
 
   const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useGmxPrice(
@@ -1181,8 +1186,8 @@ export default function StakeV2({ setPendingTxns }) {
 
   let hasMultiplierPoints = false;
   let multiplierPointsAmount;
-  if (processedData && processedData.bonusGmxTrackerRewards && processedData.bnGmxInFeeGmx) {
-    multiplierPointsAmount = processedData.bonusGmxTrackerRewards.add(processedData.bnGmxInFeeGmx);
+  if (accumulatedBnGMXAmount && processedData?.bnGmxInFeeGmx) {
+    multiplierPointsAmount = accumulatedBnGMXAmount.add(processedData.bnGmxInFeeGmx);
     if (multiplierPointsAmount.gt(0)) {
       hasMultiplierPoints = true;
     }
@@ -1367,7 +1372,7 @@ export default function StakeV2({ setPendingTxns }) {
   const recommendStakeGmx = useRecommendStakeGmxAmount(
     {
       accumulatedGMX: processedData.totalVesterRewards,
-      accumulatedBnGMX: processedData.bonusGmxTrackerRewards,
+      accumulatedBnGMX: accumulatedBnGMXAmount,
       accumulatedEsGMX: processedData.totalEsGmxRewards,
       stakedGMX: processedData.gmxInStakedGmx,
       stakedBnGMX: processedData.bnGmxInFeeGmx,
@@ -1392,15 +1397,14 @@ export default function StakeV2({ setPendingTxns }) {
           <Trans>
             You have reached the maximum Boost Percentage. Stake an additional{" "}
             {formatAmount(recommendStakeGmx, 18, 2, true)} GMX or esGMX to be able to stake your unstaked{" "}
-            {formatAmount(processedData.bonusGmxTrackerRewards, 18, 4, true)} Multiplier Points using the "Compound"
-            button.
+            {formatAmount(accumulatedBnGMXAmount, 18, 4, true)} Multiplier Points using the "Compound" button.
           </Trans>
         ) : (
           <Trans>Use the "Compound" button to stake your Multiplier Points.</Trans>
         )}
       </div>
     );
-  }, [nativeTokenSymbol, processedData, recommendStakeGmx]);
+  }, [nativeTokenSymbol, processedData, recommendStakeGmx, accumulatedBnGMXAmount]);
 
   const renderMultiplierPointsLabel = useCallback(() => {
     return t`Multiplier Points APR`;
@@ -1817,7 +1821,7 @@ export default function StakeV2({ setPendingTxns }) {
                 <div className="label">
                   <Trans>Multiplier Points</Trans>
                 </div>
-                <div>{formatKeyAmount(processedData, "bonusGmxTrackerRewards", 18, 4, true)}</div>
+                <div>{formatAmount(accumulatedBnGMXAmount, 18, 4, true)}</div>
               </div>
               <div className="App-card-row">
                 <div className="label">
