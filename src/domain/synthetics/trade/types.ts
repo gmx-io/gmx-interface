@@ -82,6 +82,7 @@ export type DecreasePositionAmounts = {
   estimatedPnl: BigNumber;
   estimatedPnlPercentage: BigNumber;
   realizedPnl: BigNumber;
+  realizedPnlPercentage: BigNumber;
 
   positionFeeUsd: BigNumber;
   uiFeeUsd: BigNumber;

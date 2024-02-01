@@ -422,7 +422,7 @@ export default function ConfirmationBox(props) {
                 const indexToken = getToken(chainId, order.indexToken);
 
                 return (
-                  <li key={id} className="font-sm">
+                  <li key={id}>
                     <p>
                       {type === INCREASE ? t`Increase` : t`Decrease`} {indexToken.symbol} {isLong ? t`Long` : t`Short`}{" "}
                       &nbsp;{triggerPricePrefix} ${formatAmount(triggerPrice, USD_DECIMALS, 2, true)}
@@ -470,7 +470,7 @@ export default function ConfirmationBox(props) {
             const triggerPricePrefix = triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
             const indexToken = getToken(chainId, order.indexToken);
             return (
-              <li key={id} className="font-sm">
+              <li key={id}>
                 <p>
                   {type === INCREASE ? t`Increase` : t`Decrease`} {indexToken.symbol} {isLong ? t`Long` : t`Short`}
                   &nbsp;{triggerPricePrefix} ${formatAmount(triggerPrice, USD_DECIMALS, 2, true)}

@@ -100,6 +100,7 @@ import { swrGCMiddleware } from "lib/swrMiddlewares";
 import useTradeRedirect from "lib/useTradeRedirect";
 import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContext";
 import { SubaccountModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
+import AlertWithIcon from "components/Alert/AlertWithIcon";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -114,8 +115,7 @@ const Zoom = cssTransition({
   duration: 200,
 });
 
-function FullApp() {
-  const { signer } = useWallet();
+function FullApp({ pendingTxns, setPendingTxns }) {
   const { disconnect } = useDisconnect();
   const isHome = isHomeSite();
   const exchangeRef = useRef();
@@ -276,63 +276,12 @@ function FullApp() {
     }
   }
 
-  const [pendingTxns, setPendingTxns] = useState([]);
-
   const showRedirectModal = (to) => {
     setRedirectModalVisible(true);
     setSelectedToPage(to);
   };
 
   useTradeRedirect({ chainId, tradePageVersion, setTradePageVersion });
-
-  useEffect(() => {
-    const checkPendingTxns = async () => {
-      const updatedPendingTxns = [];
-      for (let i = 0; i < pendingTxns.length; i++) {
-        const pendingTxn = pendingTxns[i];
-        const receipt = await signer.provider.getTransactionReceipt(pendingTxn.hash);
-        if (receipt) {
-          if (receipt.status === 0) {
-            const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
-            helperToast.error(
-              <div>
-                <Trans>
-                  Txn failed. <ExternalLink href={txUrl}>View</ExternalLink>
-                </Trans>
-                <br />
-              </div>
-            );
-          }
-
-          if (receipt.status === 1 && pendingTxn.message) {
-            const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
-            helperToast.success(
-              <div>
-                {pendingTxn.message}{" "}
-                <ExternalLink href={txUrl}>
-                  <Trans>View</Trans>
-                </ExternalLink>
-                <br />
-                {pendingTxn.messageDetails && <br />}
-                {pendingTxn.messageDetails}
-              </div>
-            );
-          }
-          continue;
-        }
-        updatedPendingTxns.push(pendingTxn);
-      }
-
-      if (updatedPendingTxns.length !== pendingTxns.length) {
-        setPendingTxns(updatedPendingTxns);
-      }
-    };
-
-    const interval = setInterval(() => {
-      checkPendingTxns();
-    }, 2 * 1000);
-    return () => clearInterval(interval);
-  }, [signer, pendingTxns, chainId]);
 
   const { wsProvider } = useWebsocketProvider();
 
@@ -636,12 +585,14 @@ function FullApp() {
             </div>
             {parseFloat(executionFeeBufferBps) <
               (EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps / BASIS_POINTS_DIVISOR) * 100 && (
-              <div className="warning settings-modal-error">
-                <Trans>
-                  Max Execution Fee buffer below{" "}
-                  {(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps / BASIS_POINTS_DIVISOR) * 100}% may result in
-                  failed orders.
-                </Trans>
+              <div className="mb-base">
+                <AlertWithIcon type="warning">
+                  <Trans>
+                    Max Execution Fee buffer below{" "}
+                    {(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps / BASIS_POINTS_DIVISOR) * 100}% may result in
+                    failed orders.
+                  </Trans>
+                </AlertWithIcon>
               </div>
             )}
           </div>
@@ -690,6 +641,58 @@ function FullApp() {
 
 function App() {
   const { disconnect } = useDisconnect();
+  const { signer } = useWallet();
+  const { chainId } = useChainId();
+  const [pendingTxns, setPendingTxns] = useState([]);
+
+  useEffect(() => {
+    const checkPendingTxns = async () => {
+      const updatedPendingTxns = [];
+      for (let i = 0; i < pendingTxns.length; i++) {
+        const pendingTxn = pendingTxns[i];
+        const receipt = await signer.provider.getTransactionReceipt(pendingTxn.hash);
+        if (receipt) {
+          if (receipt.status === 0) {
+            const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
+            helperToast.error(
+              <div>
+                <Trans>
+                  Txn failed. <ExternalLink href={txUrl}>View</ExternalLink>
+                </Trans>
+                <br />
+              </div>
+            );
+          }
+
+          if (receipt.status === 1 && pendingTxn.message) {
+            const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
+            helperToast.success(
+              <div>
+                {pendingTxn.message}{" "}
+                <ExternalLink href={txUrl}>
+                  <Trans>View</Trans>
+                </ExternalLink>
+                <br />
+                {pendingTxn.messageDetails && <br />}
+                {pendingTxn.messageDetails}
+              </div>
+            );
+          }
+          continue;
+        }
+        updatedPendingTxns.push(pendingTxn);
+      }
+
+      if (updatedPendingTxns.length !== pendingTxns.length) {
+        setPendingTxns(updatedPendingTxns);
+      }
+    };
+
+    const interval = setInterval(() => {
+      checkPendingTxns();
+    }, 2 * 1000);
+    return () => clearInterval(interval);
+  }, [signer, pendingTxns, chainId]);
 
   useScrollToTop();
 
@@ -709,10 +712,10 @@ function App() {
     return () => unwatch();
   }, [disconnect]);
 
-  let app = <FullApp />;
+  let app = <FullApp pendingTxn={pendingTxns} setPendingTxns={setPendingTxns} />;
   app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;
   app = <I18nProvider i18n={i18n}>{app}</I18nProvider>;
-  app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;
+  app = <SyntheticsEventsProvider setPendingTxns={setPendingTxns}>{app}</SyntheticsEventsProvider>;
   app = <WebsocketContextProvider>{app}</WebsocketContextProvider>;
   app = <Router>{app}</Router>;
   app = <SEO>{app}</SEO>;

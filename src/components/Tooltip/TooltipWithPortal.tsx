@@ -22,6 +22,8 @@ type Props = {
   fitHandleWidth?: boolean;
   closeOnDoubleClick?: boolean;
   isInsideModal?: boolean;
+  openDelay?: number;
+  closeDelay?: number;
   shouldStopPropagation?: boolean;
 };
 
@@ -38,6 +40,8 @@ export default function TooltipWithPortal(props: Props) {
   const [tooltipWidth, setTooltipWidth] = useState<string>();
   const intervalCloseRef = useRef<ReturnType<typeof setTimeout> | null>();
   const intervalOpenRef = useRef<ReturnType<typeof setTimeout> | null>();
+  const openDelay = props.openDelay ?? OPEN_DELAY;
+  const closeDelay = props.closeDelay ?? CLOSE_DELAY;
 
   const position = props.position ?? "left-bottom";
   const trigger = props.trigger ?? "hover";
@@ -70,10 +74,10 @@ export default function TooltipWithPortal(props: Props) {
       intervalOpenRef.current = setTimeout(() => {
         setVisible(true);
         intervalOpenRef.current = null;
-      }, OPEN_DELAY);
+      }, openDelay);
     }
     updateTooltipCoords();
-  }, [setVisible, intervalCloseRef, intervalOpenRef, trigger, updateTooltipCoords]);
+  }, [setVisible, intervalCloseRef, intervalOpenRef, trigger, updateTooltipCoords, openDelay]);
 
   const onMouseClick = useCallback(
     (event: MouseEvent) => {
@@ -104,13 +108,13 @@ export default function TooltipWithPortal(props: Props) {
     intervalCloseRef.current = setTimeout(() => {
       setVisible(false);
       intervalCloseRef.current = null;
-    }, CLOSE_DELAY);
+    }, closeDelay);
     if (intervalOpenRef.current) {
       clearInterval(intervalOpenRef.current);
       intervalOpenRef.current = null;
     }
     updateTooltipCoords();
-  }, [setVisible, intervalCloseRef, updateTooltipCoords]);
+  }, [setVisible, intervalCloseRef, updateTooltipCoords, closeDelay]);
 
   const onHandleClick = useCallback((event: MouseEvent) => {
     event.preventDefault();

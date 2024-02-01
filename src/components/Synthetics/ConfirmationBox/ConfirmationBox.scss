@@ -3,6 +3,36 @@
   flex-direction: column;
 }
 
+.trade-info-wrapper {
+  display: grid;
+  grid-template-columns: 48.5% 3% 48.5%;
+  align-items: center;
+  margin-top: 0;
+
+  .arrow-icon {
+    margin-top: 0.5rem;
+  }
+
+  .trade-token-amount {
+    color: white;
+    font-size: 1.8rem;
+  }
+
+  .trade-amount-usd {
+    font-size: 1.6rem;
+    color: var(--text-gray);
+  }
+}
+
+.Warning-list {
+  display: grid;
+  grid-row-gap: 0.75rem;
+}
+
+.Existing-limit-order {
+  font-size: 1.4rem;
+}
+
 .Confirmation-box {
   .Modal-body {
     overflow-x: hidden;
@@ -23,4 +53,9 @@
   &:first-child {
     margin-top: 0;
   }
+}
+
+.SLTP-pnl-tooltip .Tooltip-popup {
+  white-space: nowrap;
+  min-width: fit-content;
 }

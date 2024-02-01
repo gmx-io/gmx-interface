@@ -5,11 +5,13 @@ import { getWrappedToken } from "config/tokens";
 import { PendingOrderData, getPendingOrderKey, useSyntheticsEvents } from "context/SyntheticsEvents";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import {
+  isDecreaseOrderType,
   isIncreaseOrderType,
   isLimitOrderType,
   isLimitSwapOrderType,
   isMarketOrderType,
   isSwapOrderType,
+  isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
 import { TokensData } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
@@ -19,15 +21,32 @@ import { getByKey } from "lib/objects";
 import { useEffect, useMemo, useState } from "react";
 import "./StatusNotification.scss";
 import { useToastAutoClose } from "./useToastAutoClose";
+import { getTriggerNameByOrderType } from "domain/synthetics/positions";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
+import useWallet from "lib/wallets/useWallet";
+import {
+  useIsLastSubaccountAction,
+  useSubaccount,
+  useSubaccountCancelOrdersDetailsMessage,
+} from "context/SubaccountContext/SubaccountContext";
+import { getExplorerUrl } from "config/chains";
 
 type Props = {
   toastTimestamp: number;
   pendingOrderData: PendingOrderData;
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
+  hideTxLink?: "creation" | "execution" | "none";
 };
 
-export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tokensData, toastTimestamp }: Props) {
+export function OrderStatusNotification({
+  pendingOrderData,
+  marketsInfoData,
+  tokensData,
+  toastTimestamp,
+  hideTxLink = "none",
+}: Props) {
   const { chainId } = useChainId();
   const wrappedNativeToken = getWrappedToken(chainId);
   const { orderStatuses, setOrderStatusViewed } = useSyntheticsEvents();
@@ -36,10 +55,6 @@ export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tok
 
   const pendingOrderKey = useMemo(() => getPendingOrderKey(pendingOrderData), [pendingOrderData]);
   const orderStatus = getByKey(orderStatuses, orderStatusKey);
-
-  const isCompleted = isMarketOrderType(pendingOrderData.orderType)
-    ? Boolean(orderStatus?.executedTxnHash)
-    : Boolean(orderStatus?.createdTxnHash);
 
   const hasError = Boolean(orderStatus?.cancelledTxnHash);
 
@@ -114,7 +129,11 @@ export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tok
         if (isMarketOrderType(orderType)) {
           orderTypeText = isIncreaseOrderType(orderType) ? t`Increasing` : t`Decreasing`;
         } else {
-          orderTypeText = isLimitOrderType(orderType) ? t`Limit order for` : t`Trigger order for`;
+          if (isLimitOrderType(orderType)) {
+            orderTypeText = t`Limit order for`;
+          } else if (isDecreaseOrderType(orderType)) {
+            orderTypeText = t`${getTriggerNameByOrderType(orderType, true)} order for`;
+          }
         }
 
         const sign = isIncreaseOrderType(orderType) ? "+" : "-";
@@ -135,8 +154,14 @@ export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tok
       text = t`Order request sent`;
     }
 
-    return <TransactionStatus status={status} txnHash={orderStatus?.createdTxnHash} text={text} />;
-  }, [orderStatus?.createdTxnHash]);
+    return (
+      <TransactionStatus
+        status={status}
+        txnHash={hideTxLink !== "creation" ? orderStatus?.createdTxnHash : undefined}
+        text={text}
+      />
+    );
+  }, [orderStatus?.createdTxnHash, hideTxLink]);
 
   const executionStatus = useMemo(() => {
     if (!orderData || !isMarketOrderType(orderData?.orderType)) {
@@ -163,8 +188,8 @@ export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tok
       txnHash = orderStatus?.cancelledTxnHash;
     }
 
-    return <TransactionStatus status={status} txnHash={txnHash} text={text} />;
-  }, [orderData, orderStatus?.cancelledTxnHash, orderStatus?.createdTxnHash, orderStatus?.executedTxnHash]);
+    return <TransactionStatus status={status} txnHash={hideTxLink !== "execution" ? txnHash : undefined} text={text} />;
+  }, [orderData, orderStatus?.cancelledTxnHash, orderStatus?.createdTxnHash, orderStatus?.executedTxnHash, hideTxLink]);
 
   useEffect(
     function getOrderStatusKey() {
@@ -184,10 +209,8 @@ export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tok
     [orderStatus, orderStatusKey, orderStatuses, pendingOrderKey, setOrderStatusViewed, toastTimestamp]
   );
 
-  useToastAutoClose(isCompleted, toastTimestamp);
-
   return (
-    <div className={"StatusNotification"}>
+    <div className={cx("StatusNotification", { error: hasError })}>
       <div className="StatusNotification-content">
         <div className="StatusNotification-title">{title}</div>
 
@@ -196,8 +219,168 @@ export function OrderStatusNotification({ pendingOrderData, marketsInfoData, tok
           {executionStatus}
         </div>
       </div>
+    </div>
+  );
+}
 
-      <div className={cx("StatusNotification-background", { error: hasError })}></div>
+export function OrdersStatusNotificiation({
+  pendingOrderData,
+  marketsInfoData,
+  tokensData,
+  toastTimestamp,
+  setPendingTxns,
+}: {
+  pendingOrderData: PendingOrderData | PendingOrderData[];
+  marketsInfoData?: MarketsInfoData;
+  tokensData?: TokensData;
+  toastTimestamp: number;
+  setPendingTxns: (txns: string[]) => void;
+}) {
+  const [isCancelOrderProcessing, setIsCancelOrderProcessing] = useState(false);
+  const { chainId } = useChainId();
+  const { signer } = useWallet();
+  const { orderStatuses: allOrderStatuses, setOrderStatusViewed } = useSyntheticsEvents();
+  const pendingOrders = useMemo(
+    () => (Array.isArray(pendingOrderData) ? pendingOrderData : [pendingOrderData]),
+    [pendingOrderData]
+  );
+
+  const [matchedOrderStatusKeys, setMatchedOrderStatusKeys] = useState<string[]>([]);
+
+  const matchedOrderStatuses = useMemo(
+    () => matchedOrderStatusKeys.map((key) => allOrderStatuses[key]),
+    [allOrderStatuses, matchedOrderStatusKeys]
+  );
+
+  const orderByKey = useMemo(() => {
+    const map = new Map<string, PendingOrderData>();
+    pendingOrders.forEach((order) => {
+      const key = getPendingOrderKey(order);
+      map.set(key, order);
+    });
+    return map;
+  }, [pendingOrders]);
+
+  useEffect(() => {
+    Object.values(allOrderStatuses).forEach((orderStatus) => {
+      const key = getPendingOrderKey(orderStatus.data);
+
+      if (orderStatus.isViewed || !orderByKey.has(key)) return;
+
+      setMatchedOrderStatusKeys((prev) => [...prev, orderStatus.key]);
+      setOrderStatusViewed(orderStatus.key);
+    });
+  }, [allOrderStatuses, orderByKey, setOrderStatusViewed]);
+
+  const isCompleted = useMemo(() => {
+    return pendingOrders.every((pendingOrder) => {
+      const orderStatus = matchedOrderStatuses.find(
+        (status) => getPendingOrderKey(status.data) === getPendingOrderKey(pendingOrder)
+      );
+      return isMarketOrderType(pendingOrder.orderType)
+        ? Boolean(orderStatus?.executedTxnHash)
+        : Boolean(orderStatus?.createdTxnHash);
+    });
+  }, [matchedOrderStatuses, pendingOrders]);
+
+  const isMarketOrLimitOrderFailed = useMemo(() => {
+    return pendingOrders.some((pendingOrder) => {
+      if (isMarketOrderType(pendingOrder.orderType) || isLimitOrderType(pendingOrder.orderType)) {
+        const orderStatusKey = getPendingOrderKey(pendingOrder);
+        const orderStatus = matchedOrderStatuses.find((status) => getPendingOrderKey(status.data) === orderStatusKey);
+        return orderStatus?.cancelledTxnHash !== undefined;
+      }
+      return false;
+    });
+  }, [matchedOrderStatuses, pendingOrders]);
+
+  const triggerOrderKeys = useMemo(() => {
+    return pendingOrders.reduce((result, order) => {
+      if (isTriggerDecreaseOrderType(order.orderType)) {
+        const key = getPendingOrderKey(order);
+        const orderStatus = matchedOrderStatuses.find((status) => getPendingOrderKey(status.data) === key);
+        if (orderStatus?.createdTxnHash && orderStatus?.key) {
+          result.push(orderStatus.key);
+        }
+      }
+      return result;
+    }, [] as string[]);
+  }, [matchedOrderStatuses, pendingOrders]);
+
+  const subaccount = useSubaccount(null, triggerOrderKeys.length);
+  const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, triggerOrderKeys.length);
+  const isLastSubaccountAction = useIsLastSubaccountAction();
+
+  function onCancelOrdersClick() {
+    if (!signer || !triggerOrderKeys.length || !setPendingTxns) return;
+
+    setIsCancelOrderProcessing(true);
+    cancelOrdersTxn(chainId, signer, subaccount, {
+      orderKeys: triggerOrderKeys,
+      setPendingTxns,
+      isLastSubaccountAction,
+      detailsMsg: cancelOrdersDetailsMessage,
+    }).finally(() => setIsCancelOrderProcessing(false));
+  }
+
+  const createdTxnHashList = useMemo(() => {
+    const uniqueHashSet = pendingOrders.reduce((acc, order) => {
+      const orderStatus = matchedOrderStatuses.find(
+        (status) => getPendingOrderKey(status.data) === getPendingOrderKey(order)
+      );
+      if (orderStatus?.createdTxnHash) {
+        acc.add(orderStatus.createdTxnHash);
+      }
+      return acc;
+    }, new Set<string>());
+
+    const uniqueHashList = Array.from(uniqueHashSet);
+
+    if (uniqueHashList.length > 0) {
+      return uniqueHashList;
+    }
+  }, [matchedOrderStatuses, pendingOrders]);
+
+  useToastAutoClose(isCompleted, toastTimestamp);
+
+  return (
+    <div className="StatusNotification-wrapper">
+      <div className="StatusNotification-list">
+        {pendingOrders.map((order, index) => {
+          return (
+            <OrderStatusNotification
+              key={index}
+              pendingOrderData={order}
+              marketsInfoData={marketsInfoData}
+              tokensData={tokensData}
+              toastTimestamp={toastTimestamp}
+              hideTxLink={pendingOrders.length > 1 ? "creation" : "none"}
+            />
+          );
+        })}
+      </div>
+      {pendingOrders.length > 1 && (
+        <div className="StatusNotification-actions">
+          <div>
+            {isMarketOrLimitOrderFailed && triggerOrderKeys.length > 0 && (
+              <button
+                disabled={isCancelOrderProcessing}
+                onClick={onCancelOrdersClick}
+                className="StatusNotification-cancel-all"
+              >
+                Cancel all orders
+              </button>
+            )}
+          </div>
+          <div className="inline-items-center">
+            {createdTxnHashList?.map((txnHash) => (
+              <ExternalLink className="ml-sm" href={`${getExplorerUrl(chainId)}tx/${txnHash}`}>
+                View
+              </ExternalLink>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
