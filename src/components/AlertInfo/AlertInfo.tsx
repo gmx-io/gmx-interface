@@ -4,7 +4,7 @@ import cx from "classnames";
 import infoIcon from "img/ic_info.svg";
 import warnIcon from "img/ic_warn.svg";
 
-import "./ModalInfo.scss";
+import "./AlertInfo.scss";
 
 interface Props {
   children: ReactNode;
@@ -12,13 +12,13 @@ interface Props {
   warning?: boolean;
 }
 
-export function ModalInfo({ standalone = false, children, warning }: Props) {
+export function AlertInfo({ standalone = false, children, warning }: Props) {
   return (
-    <div className={cx("ModalInfo", { standalone })}>
-      <div className="ModalInfo-icon">
+    <div className={cx("AlertInfo", { standalone })}>
+      <div className="AlertInfo-icon">
         <img src={warning ? warnIcon : infoIcon} alt="Warning" />
       </div>
-      <div className="ModalInfo-text text-gray">{children}</div>
+      <div className="AlertInfo-text text-gray">{children}</div>
     </div>
   );
 }

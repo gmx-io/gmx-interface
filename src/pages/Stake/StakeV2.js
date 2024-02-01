@@ -46,7 +46,7 @@ import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { GmList } from "components/Synthetics/GmList/GmList";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { ModalInfo } from "components/ModalInfo/ModalInfo";
+import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import { getIcons } from "config/icons";
 import { getServerUrl } from "config/backend";
 import { getIsSyntheticsSupported } from "config/features";
@@ -334,10 +334,10 @@ function UnstakeModal(props) {
           </div>
         </BuyInputSection>
         {reservedAmount && reservedAmount.gt(0) && (
-          <ModalInfo>You have {formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting.</ModalInfo>
+          <AlertInfo>You have {formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting.</AlertInfo>
         )}
         {burnAmount?.gt(0) && unstakeBonusLostPercentage?.gt(0) && !amount.gt(maxAmount) && (
-          <ModalInfo warning>
+          <AlertInfo warning>
             <Trans>
               Unstaking will burn&nbsp;
               <ExternalLink className="display-inline" href="https://docs.gmx.io/docs/tokenomics/rewards">
@@ -349,7 +349,7 @@ function UnstakeModal(props) {
                 this action.
               </span>
             </Trans>
-          </ModalInfo>
+          </AlertInfo>
         )}
         <div className="Exchange-swap-button-container">
           <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
@@ -776,13 +776,13 @@ function CompoundModal(props) {
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Compound Rewards`}>
         {recommendStakeGmx.gt(0) && (
-          <ModalInfo>
+          <AlertInfo>
             <Trans>
               You have reached the maximum Boost Percentage. Stake an additional{" "}
               {formatAmount(recommendStakeGmx, 18, 2, true)} GMX or esGMX to be able to stake your unstaked{" "}
               {formatAmount(accumulatedBnGMXAmount, 18, 4, true)} Multiplier Points.
             </Trans>
-          </ModalInfo>
+          </AlertInfo>
         )}
         <div className="CompoundModal-menu">
           <div>
