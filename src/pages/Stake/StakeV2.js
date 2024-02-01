@@ -337,7 +337,7 @@ function UnstakeModal(props) {
           <ModalInfo>You have {formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting.</ModalInfo>
         )}
         {burnAmount?.gt(0) && unstakeBonusLostPercentage?.gt(0) && !amount.gt(maxAmount) && (
-          <ModalInfo>
+          <ModalInfo warning>
             <Trans>
               Unstaking will burn&nbsp;
               <ExternalLink className="display-inline" href="https://docs.gmx.io/docs/tokenomics/rewards">
