@@ -1,5 +1,5 @@
 import { BigNumber } from "ethers";
-import { BIG_ZERO } from "lib/numbers";
+import { BN_ZERO } from "lib/numbers";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 import { useMaxBoostBasicPoints } from "domain/rewards/useMaxBoostBasisPoints";
@@ -20,12 +20,12 @@ export function useRecommendStakeGmxAmount(
 ) {
   const maxBoostBasicPoints = useMaxBoostBasicPoints();
 
-  const accumulatedGMX = p.accumulatedGMX ?? BIG_ZERO;
-  const accumulatedBnGMX = p.accumulatedBnGMX ?? BIG_ZERO;
-  const accumulatedEsGMX = p.accumulatedEsGMX ?? BIG_ZERO;
-  const stakedGMX = p.stakedGMX ?? BIG_ZERO;
-  const stakedBnGMX = p.stakedBnGMX ?? BIG_ZERO;
-  const stakedEsGMX = p.stakedEsGMX ?? BIG_ZERO;
+  const accumulatedGMX = p.accumulatedGMX ?? BN_ZERO;
+  const accumulatedBnGMX = p.accumulatedBnGMX ?? BN_ZERO;
+  const accumulatedEsGMX = p.accumulatedEsGMX ?? BN_ZERO;
+  const stakedGMX = p.stakedGMX ?? BN_ZERO;
+  const stakedBnGMX = p.stakedBnGMX ?? BN_ZERO;
+  const stakedEsGMX = p.stakedEsGMX ?? BN_ZERO;
 
   const nextTotalBnGMX = stakedBnGMX.add(accumulatedBnGMX);
   let nextTotalGmx = stakedGMX.add(stakedEsGMX);
@@ -42,5 +42,5 @@ export function useRecommendStakeGmxAmount(
     return nextTotalBnGMX.mul(BASIS_POINTS_DIVISOR).div(maxBoostBasicPoints).sub(nextTotalGmx);
   }
 
-  return BIG_ZERO;
+  return BN_ZERO;
 }
