@@ -4792,14 +4792,9 @@ msgstr ""
 msgid "TP/SL"
 msgstr ""
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/domain/synthetics/orders/utils.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take-Profit"
-msgstr ""
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-msgid "Take-Profit PnL"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js

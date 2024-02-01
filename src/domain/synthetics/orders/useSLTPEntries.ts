@@ -18,13 +18,13 @@ import { useUserReferralInfo } from "domain/referrals";
 import { useChainId } from "lib/chains";
 import { t } from "@lingui/macro";
 import { BigNumber } from "ethers";
-import useEntries, { EntriesInfo, Entry } from "./useEntries";
+import useOrderEntries, { OrderEntriesInfo, OrderEntry } from "./useOrderEntries";
 
-export type SLTPEntry = Entry & {
+type SLTPEntry = OrderEntry & {
   amounts?: DecreasePositionAmounts;
 };
 
-export type SLTPInfo = EntriesInfo & {
+export type SLTPInfo = Omit<OrderEntriesInfo, "entries"> & {
   entries: SLTPEntry[];
   totalPnL: BigNumber;
   totalPnLPercentage: BigNumber;
@@ -61,8 +61,8 @@ export default function useSLTPEntries({
     isLimit,
   });
 
-  const stopLossEntriesInfo = useEntries("sl_", handleSLErrors);
-  const takeProfitEntriesInfo = useEntries("tp_", handleTPErrors);
+  const stopLossEntriesInfo = useOrderEntries("sl_", handleSLErrors);
+  const takeProfitEntriesInfo = useOrderEntries("tp_", handleTPErrors);
 
   const positionKey = useMemo(() => {
     if (!account || !marketInfo || !collateralToken) {
@@ -127,7 +127,7 @@ export default function useSLTPEntries({
   ]);
 
   const getDecreaseAmountsFromEntry = useCallback(
-    (entry: Entry) => {
+    (entry: OrderEntry) => {
       if (!Number(entry.price) || !entry.percentage || entry.error) {
         return;
       }
@@ -239,7 +239,7 @@ function createErrorHandlers({
   isLong?: boolean;
   isLimit?: boolean;
 }) {
-  function getErrorHandler(entry: Partial<Entry>, isStopLoss: boolean): Partial<Entry> {
+  function getErrorHandler(entry: Partial<OrderEntry>, isStopLoss: boolean): Partial<OrderEntry> {
     if (!liqPrice || !entryPrice || !entry.price || parseFloat(entry.price) === 0) {
       return { ...entry, error: null };
     }
@@ -321,8 +321,8 @@ function createErrorHandlers({
     return { ...entry, error: null };
   }
 
-  const handleSLErrors = (entry: Partial<Entry>) => getErrorHandler(entry, true);
-  const handleTPErrors = (entry: Partial<Entry>) => getErrorHandler(entry, false);
+  const handleSLErrors = (entry: Partial<OrderEntry>) => getErrorHandler(entry, true);
+  const handleTPErrors = (entry: Partial<OrderEntry>) => getErrorHandler(entry, false);
 
   return { handleSLErrors, handleTPErrors };
 }

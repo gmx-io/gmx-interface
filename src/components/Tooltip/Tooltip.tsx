@@ -34,7 +34,7 @@ export default function Tooltip(props: Props) {
   const intervalCloseRef = useRef<ReturnType<typeof setTimeout> | null>();
   const intervalOpenRef = useRef<ReturnType<typeof setTimeout> | null>();
   const openDelay = props.openDelay ?? OPEN_DELAY;
-  const closeDelay = props.openDelay ?? CLOSE_DELAY;
+  const closeDelay = props.closeDelay ?? CLOSE_DELAY;
 
   const position = props.position ?? "left-bottom";
   const trigger = props.trigger ?? "hover";

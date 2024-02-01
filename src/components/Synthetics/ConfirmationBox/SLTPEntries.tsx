@@ -9,7 +9,7 @@ import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import { MarketInfo } from "domain/synthetics/markets";
 import { t } from "@lingui/macro";
 import { useRef } from "react";
-import { SLTPEntry, SLTPInfo } from "domain/synthetics/orders/useSLTPEntries";
+import { SLTPInfo } from "domain/synthetics/orders/useSLTPEntries";
 
 const SUGGESTION_PERCENTAGE_LIST = [10, 25, 50, 75, 100];
 
@@ -21,7 +21,6 @@ type Props = {
 function SLTPEntries({ entriesInfo, marketInfo }: Props) {
   const { addEntry, updateEntry, canAddEntry, deleteEntry } = entriesInfo;
   const sltpRef = useRef<HTMLDivElement>(null);
-  const entries: SLTPEntry[] = entriesInfo.entries;
 
   function handleAddEntry() {
     addEntry();
@@ -33,7 +32,7 @@ function SLTPEntries({ entriesInfo, marketInfo }: Props) {
 
   return (
     <div className="SLTPEntries-wrapper" ref={sltpRef}>
-      {entries.map((entry) => {
+      {entriesInfo.entries.map((entry) => {
         const indexToken = marketInfo?.indexToken;
         const entrySizeUsd = entry.amounts?.sizeDeltaUsd;
         const priceTooltipMsg =
@@ -105,7 +104,7 @@ function SLTPEntries({ entriesInfo, marketInfo }: Props) {
                     <button
                       className="action-remove"
                       onClick={() => deleteEntry(entry.id)}
-                      disabled={entries.length === 1 && !entry.percentage && !entry.price}
+                      disabled={entriesInfo.entries.length === 1 && !entry.percentage && !entry.price}
                     >
                       <FaPlus color="#E74E5D" className="rotate-45" />
                     </button>

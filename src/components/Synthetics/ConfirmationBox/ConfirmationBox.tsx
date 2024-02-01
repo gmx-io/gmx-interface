@@ -1074,33 +1074,40 @@ export function ConfirmationBox(p: Props) {
     );
   }
 
-  function renderStopLoss() {
-    if (existingPosition || !stopLoss) return;
+  function renderSLTP(type: "stopLoss" | "takeProfit") {
+    const isStopLoss = type === "stopLoss";
+    const entriesInfo = isStopLoss ? stopLoss : takeProfit;
+
+    if (existingPosition || !entriesInfo) return;
+
+    const label = isStopLoss ? t`Stop-Loss` : t`Take-Profit`;
+    const labelPnl = isStopLoss ? t`Stop-Loss PnL` : t`Take-Profit PnL`;
+
     return (
       <div>
         <ExchangeInfoRow
           className="swap-box-info-row"
-          label={t`Stop-Loss`}
+          label={label}
           isTop
           value={
             <div className="profit-loss-wrapper">
-              <SLTPEntries entriesInfo={stopLoss} marketInfo={marketInfo} />
+              <SLTPEntries entriesInfo={entriesInfo} marketInfo={marketInfo} />
             </div>
           }
         />
-        <ExchangeInfoRow className="swap-box-info-row" label={t`Stop-Loss PnL`}>
-          {stopLoss?.totalPnL?.isZero() ? (
+        <ExchangeInfoRow className="swap-box-info-row" label={labelPnl}>
+          {entriesInfo?.totalPnL?.isZero() ? (
             "-"
           ) : (
             <Tooltip
-              handle={`${formatUsd(stopLoss?.totalPnL)} (${formatPercentage(stopLoss?.totalPnLPercentage, {
+              handle={`${formatUsd(entriesInfo?.totalPnL)} (${formatPercentage(entriesInfo?.totalPnLPercentage, {
                 signed: true,
               })})`}
               position="right-bottom"
-              handleClassName={stopLoss.totalPnL?.isNegative() ? "text-red" : "text-green"}
+              handleClassName={entriesInfo.totalPnL?.isNegative() ? "text-red" : "text-green"}
               className="SLTP-pnl-tooltip"
               renderContent={() =>
-                stopLoss?.entries?.map((entry, index) => {
+                entriesInfo?.entries?.map((entry, index) => {
                   if (!entry || !entry.amounts) return;
                   return (
                     <div className="space-between mb-xs" key={index}>
@@ -1110,58 +1117,6 @@ export function ConfirmationBox(p: Props) {
                       <span className={entry.amounts?.realizedPnl.isNegative() ? "text-red" : "text-green"}>
                         {formatUsd(entry.amounts?.realizedPnl)} (
                         {formatPercentage(entry.amounts?.realizedPnlPercentage, {
-                          signed: true,
-                        })}
-                        )
-                      </span>
-                    </div>
-                  );
-                })
-              }
-            />
-          )}
-        </ExchangeInfoRow>
-      </div>
-    );
-  }
-
-  function renderTakeProfit() {
-    if (existingPosition || !takeProfit) return;
-    return (
-      <div>
-        <ExchangeInfoRow
-          className="swap-box-info-row"
-          label={t`Take-Profit`}
-          isTop
-          value={
-            <div className="profit-loss-wrapper">
-              <SLTPEntries entriesInfo={takeProfit} marketInfo={marketInfo} />
-            </div>
-          }
-        />
-        <ExchangeInfoRow className="swap-box-info-row" label={t`Take-Profit PnL`}>
-          {takeProfit?.totalPnL?.isZero() ? (
-            "-"
-          ) : (
-            <Tooltip
-              handle={`${formatUsd(takeProfit?.totalPnL)} (${formatPercentage(takeProfit?.totalPnLPercentage, {
-                signed: true,
-              })})`}
-              position="right-bottom"
-              handleClassName={takeProfit?.totalPnL?.isNegative() ? "text-red" : "text-green"}
-              className="SLTP-pnl-tooltip"
-              renderContent={() =>
-                takeProfit?.entries?.map((entry, index) => {
-                  if (!entry || !entry.amounts) return;
-
-                  return (
-                    <div className="space-between mb-xs" key={index}>
-                      <span className="mr-md">
-                        At ${entry.price}, TP {entry?.percentage}%:
-                      </span>
-                      <span className={entry.amounts.realizedPnl.isNegative() ? "text-red" : "text-green"}>
-                        {formatUsd(entry.amounts?.realizedPnl)} (
-                        {formatPercentage(entry.amounts.realizedPnlPercentage, {
                           signed: true,
                         })}
                         )
@@ -1245,8 +1200,9 @@ export function ConfirmationBox(p: Props) {
               {renderDifferentTokensWarning()}
             </div>
           )}
-          {renderTakeProfit()}
-          {renderStopLoss()}
+          {renderSLTP("takeProfit")}
+          {renderSLTP("stopLoss")}
+
           <div className="line-divider" />
           {renderLeverage(existingPosition?.leverage, nextPositionValues?.nextLeverage)}
 

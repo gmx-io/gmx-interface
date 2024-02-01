@@ -5,7 +5,7 @@ import { useCallback, useMemo, useState } from "react";
 
 const MAX_PERCENTAGE = 100;
 
-export type Entry = {
+export type OrderEntry = {
   id: string;
   price: string;
   percentage: string;
@@ -15,21 +15,24 @@ export type Entry = {
   };
 };
 
-export type EntriesInfo = {
-  entries: Entry[];
+export type OrderEntriesInfo = {
+  entries: OrderEntry[];
   addEntry: () => void;
   canAddEntry: boolean;
-  updateEntry: (id: string, updatedEntry: Partial<Entry>) => void;
+  updateEntry: (id: string, updatedEntry: Partial<OrderEntry>) => void;
   deleteEntry: (id: string) => void;
   reset: () => void;
 };
 
-function getDefaultEntry(id: string, override?: Partial<Entry>) {
+function getDefaultEntry(id: string, override?: Partial<OrderEntry>) {
   return { id: uniqueId(id), price: "", percentage: "100", error: null, ...override };
 }
 
-export default function useEntries(id: string, errorHandler: (entry: Partial<Entry>) => Partial<Entry>) {
-  const [entries, setEntries] = useState<Entry[]>([getDefaultEntry(id)]);
+export default function useOrderEntries(
+  id: string,
+  errorHandler: (entry: Partial<OrderEntry>) => Partial<OrderEntry>
+): OrderEntriesInfo {
+  const [entries, setEntries] = useState<OrderEntry[]>([getDefaultEntry(id)]);
 
   const totalPercentage = useMemo(() => {
     return entries.reduce((total, entry) => total + Number(entry.percentage), 0);
@@ -43,7 +46,7 @@ export default function useEntries(id: string, errorHandler: (entry: Partial<Ent
   }, [totalPercentage, id]);
 
   const updateEntry = useCallback(
-    (id: string, updatedEntry: Partial<Entry>) => {
+    (id: string, updatedEntry: Partial<OrderEntry>) => {
       setEntries((prevEntries) => {
         const totalExcludingCurrent = prevEntries.reduce(
           (total, entry) => total + (entry.id !== id ? Number(entry.percentage) : 0),
