@@ -394,7 +394,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "Wrapped Ethereum (WETH)",
       symbol: "WETH",
-      address: "0xCe46c87Df4E73952358f6a46590147Ac5f262787",
+      address: "0xa62C17D6FBda8Aa177804e02A92A42AB5106b395",
       isWrapped: true,
       decimals: 18,
       isShortable: true,
@@ -403,7 +403,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "DAI",
       symbol: "DAI",
-      address: "0x1409cb2fC5F44b8e99C8276c02E8a551889ccad1",
+      address: "0x14f828262d13C63AbBdf14fD7b76FC9e2827C71E",
       decimals: 18,
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/9956/small/4943.png?1636636734",
@@ -411,7 +411,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "Wrapped Bitcoin",
       symbol: "WBTC",
-      address: "0x0BF70614A500B8B21269116eB5b2BC638F8554fC",
+      address: "0x82998402DB6aA364c9c45A0F542F9696D1241B78",
       decimals: 8,
       isStable: false,
       isShortable: true,
@@ -429,7 +429,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "Link",
       symbol: "LINK",
-      address: "0xCE2D01c1F151b2036aC7cc32459e03336001B709",
+      address: "0x26bFbcF5Af31C6c0a8cA7794D62A48708e3D5a44",
       decimals: 18,
       isStable: false,
       isShortable: true,
@@ -439,7 +439,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "USD Coin",
       symbol: "USDC",
       decimals: 6,
-      address: "0x36A4F86D8C85c42A7d2e5eb73D29E5AcBBe64186",
+      address: "0x564465C7B8c89Cfa9068d47059a164eD4a6D1B5d",
       isStable: true,
       coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
       imageUrl: "https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png",
@@ -447,7 +447,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "USD Tether",
       symbol: "USDT",
-      address: "0x6a33B30e54028E7335fd8924F4ad7B70470eAE27",
+      address: "0xA322688864bD62F8afD99b06ecf5dbE2f785908D",
       decimals: 6,
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether.png?1668148663",
