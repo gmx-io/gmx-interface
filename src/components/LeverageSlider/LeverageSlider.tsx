@@ -81,6 +81,11 @@ export function LeverageSlider(p: Props) {
 
 function LeverageSliderHandle({ value, dragging, index, keyValueMap, ...restProps }: HandleProps) {
   const displayValue = keyValueMap[value || 0] ?? DEFAULT_LEVERAGE_KEY;
+
+  useEffect(() => {
+    document.body.classList.toggle("dragging", dragging);
+  }, [dragging]);
+
   return (
     <SliderTooltip
       prefixCls="rc-slider-tooltip"
