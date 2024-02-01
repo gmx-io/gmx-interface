@@ -885,6 +885,11 @@ msgstr ""
 msgid "Claimable Rebates"
 msgstr ""
 
+#: src/domain/synthetics/markets/claimFundingFeesTxn.ts
+#: src/pages/Stake/StakeV2.js
+#~ msgid "Claimed Multiplier Points"
+#~ msgstr ""
+
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Claiming Price Impact Rebate..."
 msgstr ""
@@ -3070,7 +3075,11 @@ msgid "Max. Leverage exceeded"
 msgstr ""
 
 #: src/components/Stake/GMXAprTooltip.tsx
-msgid "Max. {nativeTokenSymbol} APR with 200% Boost for this week: {0}%."
+#~ msgid "Max. {nativeTokenSymbol} APR with 200% Boost for this week: {0}%."
+#~ msgstr ""
+
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "Max. {nativeTokenSymbol} APR with {0}% Boost for this week: {1}%."
 msgstr ""
 
 #: src/components/Migration/Migration.js
@@ -5366,6 +5375,10 @@ msgstr ""
 msgid "UTILIZATION"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
+#~ msgid "Unclaimed Multiplier Points"
+#~ msgstr ""
+
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Unknown"
 msgstr ""
@@ -5423,8 +5436,16 @@ msgid "Unstake submitted! <0>View status.</0>"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
-msgid "Unstaking will burn <0>{0} Multiplier Points</0>. {1}"
+#~ msgid "Unstaking will burn <0>{0} Multiplier Points</0>. <1>You will earn {1}% less ETH rewards with this action.</1>"
+#~ msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Unstaking will burn <0>{0} Multiplier Points</0>. <1>You will earn {1}% less {nativeTokenSymbol} rewards with this action.</1>"
 msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+#~ msgid "Unstaking will burn <0>{0} Multiplier Points</0>. {1}"
+#~ msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.js
@@ -5944,6 +5965,14 @@ msgstr ""
 msgid "You have not deposited any tokens for vesting."
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
+msgid "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points using the \"Compound\" button."
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points."
+msgstr ""
+
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "You have selected {collateralTokenSymbol} as Collateral, the Liquidation Price will vary based on the price of {collateralTokenSymbol}."
 msgstr ""
@@ -6345,6 +6374,10 @@ msgstr ""
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"
 msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+#~ msgid "{warning}"
+#~ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Сonvert {0} to {1}"
