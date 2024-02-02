@@ -5,9 +5,7 @@ import "./Tooltip.scss";
 import { IS_TOUCH } from "config/env";
 import Portal from "../Common/Portal";
 import { TooltipPosition } from "./Tooltip";
-
-const OPEN_DELAY = 0;
-const CLOSE_DELAY = 100;
+import { TOOLTIP_CLOSE_DELAY, TOOLTIP_OPEN_DELAY } from "config/ui";
 
 type Props = {
   handle: React.ReactNode;
@@ -23,6 +21,8 @@ type Props = {
   closeOnDoubleClick?: boolean;
   isInsideModal?: boolean;
   shouldStopPropagation?: boolean;
+  openDelay?: number;
+  closeDelay?: number;
 };
 
 type Coords = {
@@ -70,10 +70,10 @@ export default function TooltipWithPortal(props: Props) {
       intervalOpenRef.current = setTimeout(() => {
         setVisible(true);
         intervalOpenRef.current = null;
-      }, OPEN_DELAY);
+      }, props.openDelay ?? TOOLTIP_OPEN_DELAY);
     }
     updateTooltipCoords();
-  }, [setVisible, intervalCloseRef, intervalOpenRef, trigger, updateTooltipCoords]);
+  }, [setVisible, trigger, updateTooltipCoords, props.openDelay]);
 
   const onMouseClick = useCallback(
     (event: MouseEvent) => {
@@ -104,13 +104,13 @@ export default function TooltipWithPortal(props: Props) {
     intervalCloseRef.current = setTimeout(() => {
       setVisible(false);
       intervalCloseRef.current = null;
-    }, CLOSE_DELAY);
+    }, props.closeDelay ?? TOOLTIP_CLOSE_DELAY);
     if (intervalOpenRef.current) {
       clearInterval(intervalOpenRef.current);
       intervalOpenRef.current = null;
     }
     updateTooltipCoords();
-  }, [setVisible, intervalCloseRef, updateTooltipCoords]);
+  }, [setVisible, updateTooltipCoords, props.closeDelay]);
 
   const onHandleClick = useCallback((event: MouseEvent) => {
     event.preventDefault();
