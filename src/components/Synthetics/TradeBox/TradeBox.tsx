@@ -83,7 +83,7 @@ import {
   limitDecimals,
   parseValue,
 } from "lib/numbers";
-import { getByKey } from "lib/objects";
+import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { museNeverExist } from "lib/types";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
@@ -112,8 +112,6 @@ const tradeTypeIcons = {
   [TradeType.Short]: shortImg,
   [TradeType.Swap]: swapImg,
 };
-
-const emptyArray = [];
 
 const tradeModeLabels = {
   [TradeMode.Market]: t`Market`,
@@ -1019,7 +1017,7 @@ export function TradeBox(p: Props) {
                 label={t`Market`}
                 className="SwapBox-info-dropdown"
                 selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}
-                markets={sortedAllMarkets || emptyArray}
+                markets={sortedAllMarkets ?? EMPTY_ARRAY}
                 isSideMenu
                 onSelectMarket={(indexName, marketInfo) => onSelectToTokenAddress(marketInfo.indexToken.address)}
               />

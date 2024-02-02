@@ -204,13 +204,13 @@ export function GmList({
                         <br />({formatUsd(totalSupplyUsd)})
                       </td>
                       <td className="GmList-last-column">
-                        {MintableAmount({
-                          mintableInfo,
-                          market,
-                          token,
-                          longToken,
-                          shortToken,
-                        })}
+                        <MintableAmount
+                          mintableInfo={mintableInfo}
+                          market={market}
+                          token={token}
+                          longToken={longToken}
+                          shortToken={shortToken}
+                        />
                       </td>
 
                       <td>
