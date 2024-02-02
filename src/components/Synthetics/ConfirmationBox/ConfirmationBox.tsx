@@ -112,7 +112,7 @@ import { FaArrowRight } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import SLTPEntries from "./SLTPEntries";
 import useSLTPEntries from "domain/synthetics/orders/useSLTPEntries";
-import AlertWithIcon from "components/Alert/AlertWithIcon";
+import { AlertInfo } from "components/AlertInfo/AlertInfo";
 
 export type Props = {
   isVisible: boolean;
@@ -814,34 +814,34 @@ export function ConfirmationBox(p: Props) {
 
     if (isCollateralTokenNonStable && collateralTokenSymbol !== indexTokenSymbol) {
       return (
-        <AlertWithIcon type="warning">
+        <AlertInfo compact type="warning">
           <Trans>
             You have selected {collateralTokenSymbol} as Collateral, the Liquidation Price will vary based on the price
             of {collateralTokenSymbol}.
           </Trans>
-        </AlertWithIcon>
+        </AlertInfo>
       );
     }
 
     if (isLong && isCollateralTokenNonStable && collateralTokenSymbol === indexTokenSymbol) {
       return (
-        <AlertWithIcon type="warning">
+        <AlertInfo compact type="warning">
           <Trans>
             You have selected {collateralTokenSymbol} as collateral, the Liquidation Price is higher compared to using a
             stablecoin as collateral since the worth of the collateral will change with its price. If required, you can
             change the collateral type using the Collateral In option in the trade box.
           </Trans>
-        </AlertWithIcon>
+        </AlertInfo>
       );
     }
 
     if (isShort && isCollateralTokenNonStable && collateralTokenSymbol === indexTokenSymbol) {
       return (
-        <AlertWithIcon type="warning">
+        <AlertInfo compact type="warning">
           <Trans>
             You have selected {collateralTokenSymbol} as collateral to short {indexTokenSymbol}.
           </Trans>
-        </AlertWithIcon>
+        </AlertInfo>
       );
     }
   }
@@ -872,22 +872,22 @@ export function ConfirmationBox(p: Props) {
 
     if (isMarket) {
       return (
-        <AlertWithIcon type="warning">
+        <AlertInfo compact type="warning">
           <Trans>
             You have an existing position with {marketsOptions?.collateralWithPosition?.symbol} as collateral. This
             action will not apply for that position.
           </Trans>
-        </AlertWithIcon>
+        </AlertInfo>
       );
     }
 
     return (
-      <AlertWithIcon type="warning">
+      <AlertInfo compact type="warning">
         <Trans>
           You have an existing position with {marketsOptions?.collateralWithPosition?.symbol} as collateral. This Order
           will not be valid for that Position.
         </Trans>
-      </AlertWithIcon>
+      </AlertInfo>
     );
   }
 
@@ -897,13 +897,13 @@ export function ConfirmationBox(p: Props) {
     }
     return (
       <div className="Existing-limit-order">
-        <AlertWithIcon type="warning">
+        <AlertInfo compact type="warning">
           <Plural
             value={existingLimitOrders.length}
             one="You have an active Limit Order to Increase"
             other="You have multiple active Limit Orders to Increase"
           />
-        </AlertWithIcon>
+        </AlertInfo>
         <ul className="order-list">{existingLimitOrders.map(renderOrderItem)}</ul>
       </div>
     );
@@ -916,13 +916,13 @@ export function ConfirmationBox(p: Props) {
     const existingTriggerOrderLength = decreaseOrdersThatWillBeExecuted.length;
     return (
       <>
-        <AlertWithIcon type="warning">
+        <AlertInfo compact type="warning">
           <Plural
             value={existingTriggerOrderLength}
             one="You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue."
             other="You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue."
           />
-        </AlertWithIcon>
+        </AlertInfo>
         <ul className="order-list">{decreaseOrdersThatWillBeExecuted.map(renderOrderItem)}</ul>
       </>
     );
@@ -940,13 +940,13 @@ export function ConfirmationBox(p: Props) {
     const existingTriggerOrderLength = existingTriggerOrders.length;
 
     return (
-      <AlertWithIcon type="info">
+      <AlertInfo compact type="info">
         <Plural
           value={existingTriggerOrderLength}
           one="You have an active trigger order that could impact this position."
           other="You have # active trigger orders that could impact this position."
         />
-      </AlertWithIcon>
+      </AlertInfo>
     );
   }
 
@@ -1011,9 +1011,9 @@ export function ConfirmationBox(p: Props) {
     if (swapSpreadInfo.spread && swapSpreadInfo.isHigh) {
       return (
         <div className="mb-sm">
-          <AlertWithIcon type="warning">
+          <AlertInfo compact type="warning">
             <Trans>The spread is {`>`} 1%, please ensure the trade details are acceptable before comfirming</Trans>
-          </AlertWithIcon>
+          </AlertInfo>
         </div>
       );
     }
@@ -1021,21 +1021,21 @@ export function ConfirmationBox(p: Props) {
 
   function renderLimitPriceWarning() {
     return (
-      <AlertWithIcon type="info">
+      <AlertInfo compact type="info">
         <Trans>Limit Order Price will vary based on Fees and Price Impact to guarantee the Min. Receive amount.</Trans>
-      </AlertWithIcon>
+      </AlertInfo>
     );
   }
 
   const renderCollateralSpreadWarning = useCallback(() => {
     if (collateralSpreadInfo && collateralSpreadInfo.isHigh) {
       return (
-        <AlertWithIcon type="warning">
+        <AlertInfo compact type="warning">
           <Trans>
             Transacting with a depegged stable coin is subject to spreads reflecting the worse of current market price
             or $1.00, with transactions involving multiple stablecoins may have multiple spreads.
           </Trans>
-        </AlertWithIcon>
+        </AlertInfo>
       );
     }
   }, [collateralSpreadInfo]);
@@ -1191,14 +1191,14 @@ export function ConfirmationBox(p: Props) {
           {renderMain()}
           {hasWarning && <div className="line-divider" />}
           {hasWarning && (
-            <div className="Warning-list">
+            <>
               {renderDifferentCollateralWarning()}
               {renderCollateralSpreadWarning()}
               {renderExistingLimitOrdersWarning()}
               {renderExistingTriggerErrors()}
               {renderExistingTriggerWarning()}
               {renderDifferentTokensWarning()}
-            </div>
+            </>
           )}
           {renderSLTP("takeProfit")}
           {renderSLTP("stopLoss")}

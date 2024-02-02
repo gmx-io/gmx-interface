@@ -334,10 +334,12 @@ function UnstakeModal(props) {
           </div>
         </BuyInputSection>
         {reservedAmount && reservedAmount.gt(0) && (
-          <AlertInfo>You have {formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting.</AlertInfo>
+          <AlertInfo type="info">
+            You have {formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting.
+          </AlertInfo>
         )}
         {burnAmount?.gt(0) && unstakeBonusLostPercentage?.gt(0) && !amount.gt(maxAmount) && (
-          <AlertInfo warning>
+          <AlertInfo type="warning">
             <Trans>
               Unstaking will burn&nbsp;
               <ExternalLink className="display-inline" href="https://docs.gmx.io/docs/tokenomics/rewards">
@@ -776,7 +778,7 @@ function CompoundModal(props) {
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Compound Rewards`}>
         {recommendStakeGmx.gt(0) && (
-          <AlertInfo>
+          <AlertInfo type="info">
             <Trans>
               You have reached the maximum Boost Percentage. Stake an additional{" "}
               {formatAmount(recommendStakeGmx, 18, 2, true)} GMX or esGMX to be able to stake your unstaked{" "}
