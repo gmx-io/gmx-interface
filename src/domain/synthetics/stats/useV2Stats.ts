@@ -3,7 +3,7 @@ import { BigNumber } from "ethers";
 import useVolumeInfo from "../stats/useVolumeInfo";
 import useFeesInfo from "../stats/useFeesInfo";
 import useUsers from "../stats/useUsers";
-import { useMarketsInfo } from "../markets";
+import { useMarketsInfoRequest } from "../markets";
 
 type DashboardOverview = {
   totalGMLiquidity: BigNumber;
@@ -20,7 +20,7 @@ type DashboardOverview = {
 export default function useV2Stats(chainId: number): DashboardOverview {
   const volumeInfo = useVolumeInfo(chainId);
   const feesInfo = useFeesInfo(chainId);
-  const { marketsInfoData } = useMarketsInfo(chainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId);
   const usersInfo = useUsers(chainId);
 
   const stats = useMemo(() => {

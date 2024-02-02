@@ -26,12 +26,10 @@ import {
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
-import { MarketInfo } from "domain/synthetics/markets";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import {
   DecreasePositionSwapType,
   OrderType,
-  OrdersInfoData,
   PositionOrderInfo,
   createDecreaseOrderTxn,
   createIncreaseOrderTxn,
@@ -51,9 +49,6 @@ import {
   getTriggerNameByOrderType,
 } from "domain/synthetics/positions";
 import {
-  TokenData,
-  TokensData,
-  TokensRatio,
   convertToTokenAmount,
   formatTokensRatio,
   getNeedTokenApprove,
@@ -61,16 +56,12 @@ import {
 } from "domain/synthetics/tokens";
 import {
   DecreasePositionAmounts,
-  IncreasePositionAmounts,
-  NextPositionValues,
-  SwapAmounts,
   TradeFees,
   TriggerThresholdType,
   applySlippageToMinOut,
   applySlippageToPrice,
   getExecutionPriceForDecrease,
 } from "domain/synthetics/trade";
-import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
 import { getIsEquivalentTokens, getSpread } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
@@ -80,12 +71,21 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import PercentageInput from "components/PercentageInput/PercentageInput";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   useIsLastSubaccountAction,
   useSubaccount,
   useSubaccountCancelOrdersDetailsMessage,
 } from "context/SubaccountContext/SubaccountContext";
+import { useOrdersInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useTradeRatios } from "context/SyntheticsStateContext/hooks/tradeHooks";
+import {
+  useTradeboxDecreasePositionAmounts,
+  useTradeboxIncreasePositionAmounts,
+  useTradeboxNextPositionValues,
+  useTradeboxState,
+  useTradeboxSwapAmounts,
+  useTradeboxTradeFlags,
+} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { AvailableMarketsOptions } from "domain/synthetics/trade/useAvailableMarketsOptions";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { helperToast } from "lib/helperToast";
@@ -99,6 +99,7 @@ import {
   formatUsd,
   expandDecimals,
 } from "lib/numbers";
+import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import { getPlusOrMinusSymbol, getPositiveOrNegativeClass } from "lib/utils";
 import useWallet from "lib/wallets/useWallet";
@@ -113,29 +114,14 @@ import { IoClose } from "react-icons/io5";
 import SLTPEntries from "./SLTPEntries";
 import useSLTPEntries from "domain/synthetics/orders/useSLTPEntries";
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 export type Props = {
   isVisible: boolean;
-  tradeFlags: TradeFlags;
-  isWrapOrUnwrap: boolean;
-  fromToken?: TokenData;
-  toToken?: TokenData;
-  markPrice?: BigNumber;
-  markRatio?: TokensRatio;
   triggerPrice?: BigNumber;
   fixedTriggerThresholdType?: TriggerThresholdType;
   fixedTriggerOrderType?: OrderType.LimitDecrease | OrderType.StopLossDecrease;
-  selectedTriggerAcceptablePriceImpactBps?: BigNumber;
-  defaultTriggerAcceptablePriceImpactBps?: BigNumber;
-  triggerRatio?: TokensRatio;
-  marketInfo?: MarketInfo;
-  collateralToken?: TokenData;
-  swapAmounts?: SwapAmounts;
   marketsOptions?: AvailableMarketsOptions;
-  increaseAmounts?: IncreasePositionAmounts;
-  decreaseAmounts?: DecreasePositionAmounts;
-  nextPositionValues?: NextPositionValues;
-  keepLeverage?: boolean;
   swapLiquidityUsd?: BigNumber;
   longLiquidityUsd?: BigNumber;
   shortLiquidityUsd?: BigNumber;
@@ -144,55 +130,67 @@ export type Props = {
   error?: string;
   existingPosition?: PositionInfo;
   shouldDisableValidation: boolean;
-  isHigherSlippageAllowed?: boolean;
-  ordersData?: OrdersInfoData;
-  tokensData?: TokensData;
   setSelectedTriggerAcceptablePriceImapctBps: (value: BigNumber) => void;
-  setIsHigherSlippageAllowed: (isHigherSlippageAllowed: boolean) => void;
-  setKeepLeverage: (keepLeverage: boolean) => void;
   onClose: () => void;
   onSubmitted: () => void;
   setPendingTxns: (txns: any) => void;
+  triggerRatioValue: BigNumber | undefined;
+  markPrice: BigNumber | undefined;
 };
 
 export function ConfirmationBox(p: Props) {
   const {
-    tradeFlags,
-    isWrapOrUnwrap,
-    fromToken,
-    toToken,
-    markPrice,
-    markRatio,
     triggerPrice,
     fixedTriggerThresholdType,
     fixedTriggerOrderType,
-    defaultTriggerAcceptablePriceImpactBps,
-    triggerRatio,
-    marketInfo,
-    collateralToken,
-    swapAmounts,
-    increaseAmounts,
-    decreaseAmounts,
-    nextPositionValues,
     swapLiquidityUsd,
     longLiquidityUsd,
     shortLiquidityUsd,
-    keepLeverage,
     fees,
     executionFee,
     error,
     existingPosition,
     shouldDisableValidation,
     marketsOptions,
-    ordersData,
-    tokensData,
     setSelectedTriggerAcceptablePriceImapctBps,
-    setKeepLeverage,
     onClose,
     onSubmitted,
     setPendingTxns,
+    triggerRatioValue,
+    markPrice,
   } = p;
+  const {
+    isWrapOrUnwrap,
+    fromTokenAddress,
+    toTokenAddress,
+    defaultTriggerAcceptablePriceImpactBps,
+    marketInfo,
+    collateralToken,
+    keepLeverage,
+    setKeepLeverage,
+    tradeMode,
+    tradeType,
+  } = useTradeboxState();
 
+  const { markRatio, triggerRatio } = useTradeRatios({
+    fromTokenAddress,
+    toTokenAddress,
+    tradeMode,
+    tradeType,
+    triggerRatioValue,
+  });
+
+  const tokensData = useTokensData();
+  const ordersData = useOrdersInfoData();
+  const swapAmounts = useTradeboxSwapAmounts();
+  const increaseAmounts = useTradeboxIncreasePositionAmounts();
+  const decreaseAmounts = useTradeboxDecreasePositionAmounts();
+  const nextPositionValues = useTradeboxNextPositionValues();
+
+  const fromToken = getByKey(tokensData, fromTokenAddress);
+  const toToken = getByKey(tokensData, toTokenAddress);
+
+  const tradeFlags = useTradeboxTradeFlags();
   const { isLong, isShort, isPosition, isSwap, isMarket, isLimit, isTrigger, isIncrease } = tradeFlags;
   const { indexToken } = marketInfo || {};
 
@@ -371,8 +369,8 @@ export function ConfirmationBox(p: Props) {
   const priceImpactWarningState = usePriceImpactWarningState({
     positionPriceImpact: fees?.positionPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
-    tradeFlags,
     place: "confirmationBox",
+    tradeFlags,
   });
 
   const setIsHighPositionImpactAcceptedRef = useLatest(priceImpactWarningState.setIsHighPositionImpactAccepted);
@@ -1447,7 +1445,7 @@ export function ConfirmationBox(p: Props) {
             })}
           </ExchangeInfoRow>
 
-          {!p.isWrapOrUnwrap && <TradeFeesRow {...fees} isTop executionFee={p.executionFee} feesType="swap" />}
+          {!isWrapOrUnwrap && <TradeFeesRow {...fees} isTop executionFee={p.executionFee} feesType="swap" />}
 
           <ExchangeInfoRow label={t`Min. Receive`} isTop>
             {isMarket && swapAmounts?.minOutputAmount

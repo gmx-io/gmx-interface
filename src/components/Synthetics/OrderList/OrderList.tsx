@@ -1,27 +1,25 @@
 import { Trans, t } from "@lingui/macro";
 import Checkbox from "components/Checkbox/Checkbox";
-import { MarketsInfoData } from "domain/synthetics/markets";
-import { OrdersInfoData, isLimitOrderType, isTriggerDecreaseOrderType } from "domain/synthetics/orders";
-import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
-import { PositionsInfoData } from "domain/synthetics/positions";
-import { TokensData } from "domain/synthetics/tokens";
-import { useChainId } from "lib/chains";
-import useWallet from "lib/wallets/useWallet";
-import { Dispatch, SetStateAction, useState } from "react";
-import { OrderEditor } from "../OrderEditor/OrderEditor";
-import { OrderItem } from "../OrderItem/OrderItem";
 import {
   useIsLastSubaccountAction,
   useSubaccount,
   useSubaccountCancelOrdersDetailsMessage,
 } from "context/SubaccountContext/SubaccountContext";
+import {
+  useMarketsInfoData,
+  useOrdersInfoData,
+  usePositionsInfoData,
+} from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { isLimitOrderType, isTriggerDecreaseOrderType } from "domain/synthetics/orders";
+import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
+import { useChainId } from "lib/chains";
+import useWallet from "lib/wallets/useWallet";
+import { Dispatch, SetStateAction, useMemo, useState } from "react";
+import { OrderEditor } from "../OrderEditor/OrderEditor";
+import { OrderItem } from "../OrderItem/OrderItem";
 
 type Props = {
   hideActions?: boolean;
-  ordersData?: OrdersInfoData;
-  marketsInfoData?: MarketsInfoData;
-  tokensData?: TokensData;
-  positionsData?: PositionsInfoData;
   setSelectedOrdersKeys?: Dispatch<SetStateAction<{ [key: string]: boolean }>>;
   selectedOrdersKeys?: { [key: string]: boolean };
   isLoading: boolean;
@@ -29,7 +27,10 @@ type Props = {
 };
 
 export function OrderList(p: Props) {
-  const { marketsInfoData, tokensData, positionsData } = p;
+  const marketsInfoData = useMarketsInfoData();
+  const positionsData = usePositionsInfoData();
+  const ordersData = useOrdersInfoData();
+
   const { chainId } = useChainId();
   const { signer } = useWallet();
 
@@ -38,8 +39,12 @@ export function OrderList(p: Props) {
 
   const subaccount = useSubaccount(null);
 
-  const orders = Object.values(p.ordersData || {}).filter(
-    (order) => isLimitOrderType(order.orderType) || isTriggerDecreaseOrderType(order.orderType)
+  const orders = useMemo(
+    () =>
+      Object.values(ordersData || {}).filter(
+        (order) => isLimitOrderType(order.orderType) || isTriggerDecreaseOrderType(order.orderType)
+      ),
+    [ordersData]
   );
 
   const isAllOrdersSelected = orders.length > 0 && orders.every((o) => p.selectedOrdersKeys?.[o.key]);
@@ -162,9 +167,6 @@ export function OrderList(p: Props) {
 
       {editingOrder && (
         <OrderEditor
-          marketsInfoData={marketsInfoData}
-          tokensData={tokensData}
-          positionsData={positionsData}
           order={editingOrder}
           onClose={() => setEditingOrderKey(undefined)}
           setPendingTxns={p.setPendingTxns}

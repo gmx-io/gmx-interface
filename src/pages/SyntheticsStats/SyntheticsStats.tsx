@@ -15,9 +15,9 @@ import {
   getMaxOpenInterestUsd,
   getMaxReservedUsd,
   getReservedUsd,
-  useMarketsInfo,
+  useMarketsInfoRequest,
 } from "domain/synthetics/markets";
-import { usePositionsConstants } from "domain/synthetics/positions";
+import { usePositionsConstantsRequest } from "domain/synthetics/positions";
 import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import "./SyntheticsStats.scss";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -66,11 +66,19 @@ function formatFactor(factor: BigNumber) {
   return formatAmount(factor, 30, factorDecimals);
 }
 
+const CSV_EXCLUDED_FIELDS = [
+  "longToken",
+  "shortToken",
+  "indexToken",
+  "longPoolAmountAdjustment",
+  "shortPoolAmountAdjustment",
+];
+
 export function SyntheticsStats() {
   const { chainId } = useChainId();
 
-  const { marketsInfoData } = useMarketsInfo(chainId);
-  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId);
+  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstantsRequest(chainId);
 
   const markets = Object.values(marketsInfoData || {});
   markets.sort((a, b) => {
@@ -1066,13 +1074,7 @@ export function SyntheticsStats() {
         </table>
       </div>
       <DownloadAsCsv
-        excludedFields={[
-          "longToken",
-          "shortToken",
-          "indexToken",
-          "longPoolAmountAdjustment",
-          "shortPoolAmountAdjustment",
-        ]}
+        excludedFields={CSV_EXCLUDED_FIELDS}
         data={markets}
         fileName={`gmx_v2_markets_${format(new Date(), "yyyy-MM-dd")}`}
         className="mt-md download-csv"

@@ -3,22 +3,24 @@ import {
   DecreasePositionAmounts,
   IncreasePositionAmounts,
   NextPositionValues,
+  TradeFlags,
   getDecreasePositionAmounts,
 } from "domain/synthetics/trade";
 import { parseValue } from "lib/numbers";
 import { USD_DECIMALS, getPositionKey } from "lib/legacy";
 import { MarketInfo } from "../markets";
-import { TradeFlags } from "../trade/useTradeFlags";
-import { PositionInfo, getPendingMockPosition, usePositionsConstants } from "../positions";
-import useUiFeeFactor from "../fees/utils/useUiFeeFactor";
+import { PositionInfo, getPendingMockPosition } from "../positions";
 import { TokenData } from "../tokens";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import useWallet from "lib/wallets/useWallet";
-import { useUserReferralInfo } from "domain/referrals";
-import { useChainId } from "lib/chains";
 import { t } from "@lingui/macro";
 import { BigNumber } from "ethers";
 import useOrderEntries, { OrderEntriesInfo, OrderEntry } from "./useOrderEntries";
+import {
+  usePositionsConstants,
+  useUiFeeFactor,
+  useUserReferralInfo,
+} from "context/SyntheticsStateContext/hooks/globalsHooks";
 
 type SLTPEntry = OrderEntry & {
   amounts?: DecreasePositionAmounts;
@@ -47,12 +49,11 @@ export default function useSLTPEntries({
   nextPositionValues,
   triggerPrice,
 }: Props) {
-  const { chainId } = useChainId();
   const { isLong, isLimit } = tradeFlags;
-  const { signer, account } = useWallet();
-  const userReferralInfo = useUserReferralInfo(signer, chainId, account);
-  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
-  const uiFeeFactor = useUiFeeFactor(chainId);
+  const { account } = useWallet();
+  const userReferralInfo = useUserReferralInfo();
+  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
+  const uiFeeFactor = useUiFeeFactor();
 
   const { handleSLErrors, handleTPErrors } = createErrorHandlers({
     liqPrice: nextPositionValues?.nextLiqPrice,

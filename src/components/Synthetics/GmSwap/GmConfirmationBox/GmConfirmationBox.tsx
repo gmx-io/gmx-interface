@@ -6,7 +6,7 @@ import { ExecutionFee } from "domain/synthetics/fees";
 import { useMarkets } from "domain/synthetics/markets";
 import { createDepositTxn } from "domain/synthetics/markets/createDepositTxn";
 import { createWithdrawalTxn } from "domain/synthetics/markets/createWithdrawalTxn";
-import { getNeedTokenApprove, getTokenData, useTokensData } from "domain/synthetics/tokens";
+import { getNeedTokenApprove, getTokenData, useTokensDataRequest } from "domain/synthetics/tokens";
 import { TokenData } from "domain/synthetics/tokens/types";
 import { useTokensAllowanceData } from "domain/synthetics/tokens/useTokenAllowanceData";
 import { GmSwapFees } from "domain/synthetics/trade";
@@ -41,9 +41,6 @@ type Props = {
   error?: string;
   isDeposit: boolean;
   executionFee?: ExecutionFee;
-  isHighPriceImpact: boolean;
-  isHighPriceImpactAccepted: boolean;
-  setIsHighPriceImpactAccepted: (value: boolean) => void;
   onSubmitted: () => void;
   onClose: () => void;
   setPendingTxns: (txns: any) => void;
@@ -73,7 +70,7 @@ export function GmConfirmationBox({
   const { signer, account } = useWallet();
   const { chainId } = useChainId();
   const { marketsData } = useMarkets(chainId);
-  const { tokensData } = useTokensData(chainId);
+  const { tokensData } = useTokensDataRequest(chainId);
   const { setPendingDeposit, setPendingWithdrawal } = useSyntheticsEvents();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -289,19 +286,19 @@ export function GmConfirmationBox({
     });
   }
 
-  function renderTokenInfo({
+  const renderTokenInfo = ({
     amount,
-    usd,
-    token,
     className,
     overrideSymbol,
+    token,
+    usd,
   }: {
     amount?: BigNumber;
     usd?: BigNumber;
     token?: TokenData;
     className?: string;
     overrideSymbol?: string;
-  }) {
+  }) => {
     if (!amount || !usd || !token) return;
     return (
       <div className={className ?? ""}>
@@ -315,7 +312,7 @@ export function GmConfirmationBox({
         <div className="trade-amount-usd">{formatUsd(usd)}</div>
       </div>
     );
-  }
+  };
 
   return (
     <div className="Confirmation-box GmConfirmationBox">

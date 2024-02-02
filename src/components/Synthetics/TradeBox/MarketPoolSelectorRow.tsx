@@ -7,6 +7,7 @@ import { AvailableMarketsOptions } from "domain/synthetics/trade/useAvailableMar
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { formatPercentage } from "lib/numbers";
+import { EMPTY_ARRAY } from "lib/objects";
 import { useCallback, useMemo } from "react";
 
 export type Props = {
@@ -178,7 +179,7 @@ export function MarketPoolSelectorRow(p: Props) {
             className="SwapBox-info-dropdown"
             selectedIndexName={indexName}
             selectedMarketAddress={selectedMarket?.marketTokenAddress}
-            markets={availableMarkets || []}
+            markets={availableMarkets || EMPTY_ARRAY}
             isSideMenu
             onSelectMarket={(marketInfo) => onSelectMarketAddress(marketInfo.marketTokenAddress)}
           />

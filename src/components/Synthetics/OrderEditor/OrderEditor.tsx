@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Modal from "components/Modal/Modal";
-import { MarketsInfoData } from "domain/synthetics/markets";
 import {
   OrderInfo,
   OrderType,
@@ -14,15 +13,13 @@ import {
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
 import {
-  PositionsInfoData,
-  formatLeverage,
   formatAcceptablePrice,
+  formatLeverage,
   formatLiquidationPrice,
   getPositionKey,
   getTriggerNameByOrderType,
 } from "domain/synthetics/positions";
 import {
-  TokensData,
   TokensRatio,
   convertToTokenAmount,
   getAmountByRatio,
@@ -36,9 +33,8 @@ import { useEffect, useMemo, useState } from "react";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import { getWrappedToken } from "config/tokens";
-import { usePositionsConstants } from "domain/synthetics/positions";
 import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
+import { getWrappedToken } from "config/tokens";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
@@ -48,33 +44,33 @@ import {
   useGasPrice,
 } from "domain/synthetics/fees";
 import { updateOrderTxn } from "domain/synthetics/orders/updateOrderTxn";
-import { applySlippageToPrice, getSwapPathOutputAddresses, useSwapRoutes } from "domain/synthetics/trade";
+import { TradeMode, TradeType, applySlippageToPrice, getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { getByKey } from "lib/objects";
-import { getIncreasePositionAmounts, getNextPositionValuesForIncreaseTrade } from "domain/synthetics/trade";
-import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { IS_PNL_IN_LEVERAGE_KEY } from "config/localStorage";
-import { useUserReferralInfo } from "domain/referrals/hooks";
 
 import Button from "components/Button/Button";
-import useWallet from "lib/wallets/useWallet";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
+import {
+  useMarketsInfoData,
+  usePositionsInfoData,
+  useTokensData,
+} from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useNextPositionValues } from "context/SyntheticsStateContext/hooks/tradeHooks";
+import useWallet from "lib/wallets/useWallet";
 import "./OrderEditor.scss";
 
 type Props = {
-  positionsData?: PositionsInfoData;
-  marketsInfoData?: MarketsInfoData;
-  tokensData?: TokensData;
   order: OrderInfo;
   onClose: () => void;
   setPendingTxns: (txns: any) => void;
 };
 
 export function OrderEditor(p: Props) {
-  const { marketsInfoData, tokensData } = p;
   const { chainId } = useChainId();
-  const { signer, account } = useWallet();
+  const { signer } = useWallet();
+  const tokensData = useTokensData();
+  const marketsInfoData = useMarketsInfoData();
+  const positionsData = usePositionsInfoData();
 
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
@@ -85,14 +81,8 @@ export function OrderEditor(p: Props) {
   const [sizeInputValue, setSizeInputValue] = useState("");
   const sizeDeltaUsd = parseValue(sizeInputValue || "0", USD_DECIMALS);
 
-  const [triggerPirceInputValue, setTriggerPriceInputValue] = useState("");
-  const triggerPrice = parseValue(triggerPirceInputValue || "0", USD_DECIMALS)!;
-
-  const uiFeeFactor = useUiFeeFactor(chainId);
-  const { minCollateralUsd } = usePositionsConstants(chainId);
-  const userReferralInfo = useUserReferralInfo(signer, chainId, account);
-
-  const [savedIsPnlInLeverage] = useLocalStorageSerializeKey([chainId, IS_PNL_IN_LEVERAGE_KEY], false);
+  const [triggerPriceInputValue, setTriggerPriceInputValue] = useState("");
+  const triggerPrice = parseValue(triggerPriceInputValue || "0", USD_DECIMALS)!;
 
   const acceptablePrice = useMemo(() => {
     if (isSwapOrderType(p.order.orderType)) {
@@ -202,7 +192,7 @@ export function OrderEditor(p: Props) {
     p.order.isLong
   );
 
-  const existingPosition = getByKey(p.positionsData, positionKey);
+  const existingPosition = getByKey(positionsData, positionKey);
 
   const executionFee = useMemo(() => {
     if (!p.order.isFrozen || !gasLimits || !gasPrice || !tokensData) return undefined;
@@ -233,85 +223,31 @@ export function OrderEditor(p: Props) {
   }, [chainId, gasLimits, gasPrice, p.order.isFrozen, p.order.orderType, p.order.swapPath, tokensData]);
 
   const subaccount = useSubaccount(executionFee?.feeTokenAmount ?? null);
-  const swapRoute = useSwapRoutes({
-    marketsInfoData,
-    fromTokenAddress: p.order.initialCollateralTokenAddress,
-    toTokenAddress: existingPosition ? existingPosition.collateralTokenAddress : toTokenAddress,
-  });
 
   const isLimitIncreaseOrder = p.order.orderType === OrderType.LimitIncrease;
 
-  const increaseAmounts = useMemo(() => {
-    if (!isLimitIncreaseOrder || !toToken || !fromToken || !market || !triggerPrice?.gt(0)) {
-      return undefined;
-    }
-
-    const positionOrder = p.order as PositionOrderInfo;
-
-    const indexTokenAmount = convertToTokenAmount(sizeDeltaUsd, positionOrder.indexToken.decimals, triggerPrice);
-
-    return getIncreasePositionAmounts({
-      marketInfo: market,
-      indexToken: positionOrder.indexToken,
-      initialCollateralToken: fromToken,
-      collateralToken: p.order.targetCollateralToken,
-      isLong: p.order.isLong,
-      initialCollateralAmount: p.order.initialCollateralDeltaAmount,
-      indexTokenAmount,
-      leverage: existingPosition?.leverage,
-      triggerPrice: isLimitOrderType(p.order.orderType) ? triggerPrice : undefined,
-      position: existingPosition,
-      findSwapPath: swapRoute.findSwapPath,
-      userReferralInfo,
-      uiFeeFactor,
-      strategy: "independent",
-    });
-  }, [
-    isLimitIncreaseOrder,
-    existingPosition,
-    fromToken,
-    market,
-    sizeDeltaUsd,
-    p.order,
-    swapRoute,
-    toToken,
-    triggerPrice,
-    uiFeeFactor,
-    userReferralInfo,
-  ]);
-
-  const nextPositionValues = useMemo(() => {
-    if (!isLimitIncreaseOrder || !minCollateralUsd || !market) {
-      return undefined;
-    }
-
-    if (increaseAmounts?.acceptablePrice && sizeDeltaUsd?.gt(0)) {
-      return getNextPositionValuesForIncreaseTrade({
-        marketInfo: market,
-        collateralToken: p.order.targetCollateralToken,
-        existingPosition,
-        isLong: p.order.isLong,
-        collateralDeltaUsd: increaseAmounts.collateralDeltaUsd,
-        collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
-        sizeDeltaUsd: increaseAmounts?.sizeDeltaUsd,
-        sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
-        indexPrice: increaseAmounts.indexPrice,
-        showPnlInLeverage: savedIsPnlInLeverage ?? false,
-        minCollateralUsd: minCollateralUsd!,
-        userReferralInfo,
-      });
-    }
-  }, [
-    increaseAmounts,
-    isLimitIncreaseOrder,
-    market,
-    minCollateralUsd,
-    p.order,
-    savedIsPnlInLeverage,
-    sizeDeltaUsd,
-    existingPosition,
-    userReferralInfo,
-  ]);
+  const positionOrder = p.order as PositionOrderInfo;
+  const indexTokenAmount = useMemo(
+    () => convertToTokenAmount(sizeDeltaUsd, positionOrder.indexToken.decimals, triggerPrice),
+    [positionOrder.indexToken.decimals, sizeDeltaUsd, triggerPrice]
+  );
+  const nextPositionValues = useNextPositionValues({
+    closeSizeUsd: undefined,
+    collateralTokenAddress: positionOrder.targetCollateralToken.address,
+    fixedAcceptablePriceImpactBps: undefined,
+    indexTokenAddress: positionOrder.indexToken.address,
+    indexTokenAmount,
+    initialCollateralAmount: positionOrder.initialCollateralDeltaAmount,
+    initialCollateralTokenAddress: fromToken?.address,
+    keepLeverage: false,
+    leverage: existingPosition?.leverage,
+    marketAddress: positionOrder.marketAddress,
+    positionKey: existingPosition?.key,
+    strategy: "independent",
+    tradeMode: isLimitOrderType(p.order.orderType) ? TradeMode.Limit : TradeMode.Trigger,
+    tradeType: positionOrder.isLong ? TradeType.Long : TradeType.Short,
+    triggerPrice: isLimitOrderType(p.order.orderType) ? triggerPrice : undefined,
+  });
 
   function getError() {
     if (isSubmitting) {
@@ -505,7 +441,7 @@ export function OrderEditor(p: Props) {
               onClickTopRightLabel={() =>
                 setTriggerPriceInputValue(formatAmount(markPrice, USD_DECIMALS, indexPriceDecimals || 2))
               }
-              inputValue={triggerPirceInputValue}
+              inputValue={triggerPriceInputValue}
               onInputValueChange={(e) => setTriggerPriceInputValue(e.target.value)}
             >
               USD

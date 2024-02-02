@@ -22,6 +22,7 @@ export function ShareBar(p: Props) {
 
   return (
     <div className={cx("ShareBar", className, warningThreshold && warningThreshold < progress ? "warning" : null)}>
+      {/* eslint-disable-next-line react-perf/jsx-no-new-object-as-prop */}
       <div className="ShareBar-fill" style={{ width: `${progress}%` }} />
     </div>
   );

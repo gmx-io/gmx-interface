@@ -79,6 +79,7 @@ import {
 } from "config/localStorage";
 import { TOAST_AUTO_CLOSE_TIME, WS_LOST_FOCUS_TIMEOUT } from "config/ui";
 import { SettingsContextProvider, useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
 import { useWebsocketProvider, WebsocketContextProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import { useChainId } from "lib/chains";
@@ -412,19 +413,24 @@ function FullApp({ pendingTxns, setPendingTxns }) {
 
               <Route exact path="/trade">
                 {getIsSyntheticsSupported(chainId) ? (
-                  <SyntheticsPage
+                  <SyntheticsStateContextProvider
                     savedIsPnlInLeverage={savedIsPnlInLeverage}
-                    shouldDisableValidation={savedShouldDisableValidationForTesting}
-                    savedShouldShowPositionLines={savedShouldShowPositionLines}
-                    setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
-                    setPendingTxns={setPendingTxns}
-                    showPnlAfterFees={showPnlAfterFees}
                     savedShowPnlAfterFees={savedShowPnlAfterFees}
-                    tradePageVersion={tradePageVersion}
-                    setTradePageVersion={setTradePageVersion}
-                    savedSlippageAmount={settings.savedAllowedSlippage}
-                    openSettings={openSettings}
-                  />
+                    skipLocalReferralCode={false}
+                    pageType="trade"
+                  >
+                    <SyntheticsPage
+                      shouldDisableValidation={savedShouldDisableValidationForTesting}
+                      savedShouldShowPositionLines={savedShouldShowPositionLines}
+                      setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
+                      setPendingTxns={setPendingTxns}
+                      showPnlAfterFees={showPnlAfterFees}
+                      tradePageVersion={tradePageVersion}
+                      setTradePageVersion={setTradePageVersion}
+                      savedSlippageAmount={settings.savedAllowedSlippage}
+                      openSettings={openSettings}
+                    />
+                  </SyntheticsStateContextProvider>
                 ) : (
                   <SyntheticsFallbackPage />
                 )}
@@ -466,17 +472,25 @@ function FullApp({ pendingTxns, setPendingTxns }) {
                 <Actions savedIsPnlInLeverage={savedIsPnlInLeverage} savedShowPnlAfterFees={savedShowPnlAfterFees} />
               </Route>
               <Route exact path="/actions">
-                <SyntheticsActions
+                <SyntheticsStateContextProvider
+                  pageType="actions"
+                  skipLocalReferralCode
                   savedIsPnlInLeverage={savedIsPnlInLeverage}
                   savedShowPnlAfterFees={savedShowPnlAfterFees}
-                />
+                >
+                  <SyntheticsActions />
+                </SyntheticsStateContextProvider>
               </Route>
               <Redirect exact from="/actions/v2" to="/actions" />
               <Route exact path="/actions/:account">
-                <SyntheticsActions
+                <SyntheticsStateContextProvider
+                  pageType="actions"
+                  skipLocalReferralCode={false}
                   savedIsPnlInLeverage={savedIsPnlInLeverage}
                   savedShowPnlAfterFees={savedShowPnlAfterFees}
-                />
+                >
+                  <SyntheticsActions />
+                </SyntheticsStateContextProvider>
               </Route>
               <Route path="/actions/v2/:account">
                 {({ match }) => <Redirect to={`/actions/${match.params.account}`} />}
@@ -639,6 +653,13 @@ function FullApp({ pendingTxns, setPendingTxns }) {
   );
 }
 
+const SWRConfigProp = {
+  refreshInterval: 5000,
+  refreshWhenHidden: false,
+  refreshWhenOffline: false,
+  use: [swrGCMiddleware],
+};
+
 function App() {
   const { disconnect } = useDisconnect();
   const { signer } = useWallet();
@@ -720,13 +741,7 @@ function App() {
   app = <Router>{app}</Router>;
   app = <SEO>{app}</SEO>;
   app = <SettingsContextProvider>{app}</SettingsContextProvider>;
-  app = (
-    <SWRConfig
-      value={{ refreshInterval: 5000, refreshWhenHidden: false, refreshWhenOffline: false, use: [swrGCMiddleware] }}
-    >
-      {app}
-    </SWRConfig>
-  );
+  app = <SWRConfig value={SWRConfigProp}>{app}</SWRConfig>;
 
   return app;
 }

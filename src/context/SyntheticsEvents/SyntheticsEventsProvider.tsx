@@ -7,7 +7,7 @@ import { isDevelopment } from "config/env";
 import { getToken, getWrappedToken } from "config/tokens";
 import { WS_LOST_FOCUS_TIMEOUT } from "config/ui";
 import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
-import { useMarketsInfo } from "domain/synthetics/markets";
+import { useMarketsInfoRequest } from "domain/synthetics/markets";
 import {
   isDecreaseOrderType,
   isIncreaseOrderType,
@@ -15,7 +15,7 @@ import {
   isMarketOrderType,
 } from "domain/synthetics/orders";
 import { getPositionKey } from "domain/synthetics/positions";
-import { useTokensData } from "domain/synthetics/tokens";
+import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
@@ -86,8 +86,8 @@ export function SyntheticsEventsProvider({
     debugId: "V2 Events",
   });
 
-  const { tokensData } = useTokensData(chainId);
-  const { marketsInfoData } = useMarketsInfo(chainId);
+  const { tokensData } = useTokensDataRequest(chainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId);
 
   const [orderStatuses, setOrderStatuses] = useState<OrderStatuses>({});
   const [depositStatuses, setDepositStatuses] = useState<DepositStatuses>({});
