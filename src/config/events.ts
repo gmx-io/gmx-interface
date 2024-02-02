@@ -63,7 +63,7 @@ export const appEventsData: EventData[] = [
       "Adaptive Funding Rates are enabled for the ARB/USD market on Arbitrum and AVAX/USD market on Avalanche. This is a trial to improve the open interest balance and reduce price impact for markets.",
     buttons: [
       {
-        text: "More Info.",
+        text: "Read more.",
         link: "https://docs.gmx.io/docs/trading/v2/#adaptive-funding",
         newTab: true,
       },
@@ -78,7 +78,7 @@ export const appEventsData: EventData[] = [
       "Adaptive Funding Rates will be enabled for the ARB/USD market on Arbitrum and AVAX/USD market on Avalanche this week. This is a trial to improve the open interest balance and reduce price impact for markets.",
     buttons: [
       {
-        text: "More Info.",
+        text: "Read more.",
         link: "https://docs.gmx.io/docs/trading/v2/#adaptive-funding",
         newTab: true,
       },
@@ -92,7 +92,7 @@ export const appEventsData: EventData[] = [
     bodyText: "Arbitrum STIP incentives are live for Arbitrum GM pools and GLP to GM migrations.",
     buttons: [
       {
-        text: "More Info.",
+        text: "Read more.",
         link: "https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3",
         newTab: true,
       },
@@ -102,17 +102,16 @@ export const appEventsData: EventData[] = [
     id: "all-incentives-launch",
     title: "Incentives are live",
     isActive: true,
-    validTill: "31 Oct 2024, 12:00",
+    validTill: "30 Mar 2024, 00:00",
     bodyText: [
       `Arbitrum STIP incentives are live for:`,
       "",
-      "• Arbitrum GM Pools.",
-      "• Arbitrum GLP to GM migration.",
-      "• Arbitrum Trading.",
+      "• Arbitrum GM Pools Liquidity.",
+      "• Arbitrum GMX V2 Trading.",
     ],
     buttons: [
       {
-        text: "More Info.",
+        text: "Read more.",
         link: "https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3",
         newTab: true,
       },
@@ -127,7 +126,7 @@ export const appEventsData: EventData[] = [
       "Adaptive Funding Rates are enabled for all markets. This is to improve the open interest balance and reduce price impact for markets.",
     buttons: [
       {
-        text: "More Info.",
+        text: "Read more.",
         link: "https://docs.gmx.io/docs/trading/v2/#adaptive-funding",
         newTab: true,
       },
@@ -146,5 +145,19 @@ export const appEventsData: EventData[] = [
     isActive: true,
     validTill: "16 Dec 2023, 12:00",
     bodyText: ["They are currently working to resolve the issue."],
+  },
+  {
+    id: "bnb-market",
+    title: "BNB market added on Arbitrum!",
+    isActive: true,
+    validTill: "15 Feb 2024, 12:00",
+    bodyText: ["Trade BNB or provide liquidity using BNB or USDC in the GM Pool."],
+    buttons: [
+      {
+        text: "Read more.",
+        link: "https://twitter.com/GMX_IO/status/1750157046748446982",
+        newTab: true,
+      },
+    ],
   },
 ];
