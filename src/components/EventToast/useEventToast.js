@@ -47,12 +47,9 @@ function useEventToast() {
   }, [marketsInfoData]);
 
   useEffect(() => {
-    const allIncentivesOn = Boolean(
-      incentiveStats?.lp?.isActive && incentiveStats?.migration?.isActive && incentiveStats?.trading?.isActive
-    );
+    const allIncentivesOn = Boolean(incentiveStats?.lp?.isActive && incentiveStats?.trading?.isActive);
     const someIncentivesOn =
-      !allIncentivesOn &&
-      Boolean(incentiveStats?.lp?.isActive || incentiveStats?.migration?.isActive || incentiveStats?.trading?.isActive);
+      !allIncentivesOn && Boolean(incentiveStats?.lp?.isActive || incentiveStats?.trading?.isActive);
     const validationParams = {
       "v2-adaptive-funding": isAdaptiveFundingActiveSomeMarkets,
       "v2-adaptive-funding-coming-soon":
