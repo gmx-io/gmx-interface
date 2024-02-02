@@ -265,6 +265,10 @@ msgstr ""
 msgid "Acknowledge high Swap Price Impact"
 msgstr ""
 
+#: src/domain/synthetics/trade/useHighExecutionFeeAcknowledgement.tsx
+msgid "Acknowledge very high network Fees"
+msgstr ""
+
 #: src/pages/Actions/Actions.js
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
 msgid "Actions"
@@ -2215,6 +2219,10 @@ msgstr ""
 msgid "Governance"
 msgstr ""
 
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+msgid "High Execution Fee not yet acknowledged"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "High Slippage, Swap Anyway"
 msgstr ""
@@ -2222,6 +2230,13 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 msgid "High USDG Slippage, Long Anyway"
 msgstr ""
+
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#~ msgid "High network Fee not yet acknowledged"
+#~ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -4889,6 +4904,10 @@ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"Max allowed actions\" field."
+msgstr ""
+
+#: src/domain/synthetics/fees/utils/executionFee.ts
+msgid "The network Fees are high currently, which may be due to a temporary increase in transactions on the {0} network."
 msgstr ""
 
 #: src/domain/legacy.ts

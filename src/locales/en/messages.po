@@ -265,6 +265,10 @@ msgstr "Acknowledge high Price Impact"
 msgid "Acknowledge high Swap Price Impact"
 msgstr "Acknowledge high Swap Price Impact"
 
+#: src/domain/synthetics/trade/useHighExecutionFeeAcknowledgement.tsx
+msgid "Acknowledge very high network Fees"
+msgstr "Acknowledge very high network Fees"
+
 #: src/pages/Actions/Actions.js
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
 msgid "Actions"
@@ -2215,6 +2219,10 @@ msgstr "Get fee discounts and earn rebates through the GMX referral program.<0/>
 msgid "Governance"
 msgstr "Governance"
 
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+msgid "High Execution Fee not yet acknowledged"
+msgstr "High Execution Fee not yet acknowledged"
+
 #: src/components/Exchange/SwapBox.js
 msgid "High Slippage, Swap Anyway"
 msgstr "High Slippage, Swap Anyway"
@@ -2222,6 +2230,13 @@ msgstr "High Slippage, Swap Anyway"
 #: src/components/Exchange/SwapBox.js
 msgid "High USDG Slippage, Long Anyway"
 msgstr "High USDG Slippage, Long Anyway"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#~ msgid "High network Fee not yet acknowledged"
+#~ msgstr "High network Fee not yet acknowledged"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -4893,6 +4908,10 @@ msgstr "The mark price has changed, consider increasing your Allowed Slippage by
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"Max allowed actions\" field."
 msgstr "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"Max allowed actions\" field."
+
+#: src/domain/synthetics/fees/utils/executionFee.ts
+msgid "The network Fees are high currently, which may be due to a temporary increase in transactions on the {0} network."
+msgstr "The network Fees are high currently, which may be due to a temporary increase in transactions on the {0} network."
 
 #: src/domain/legacy.ts
 #: src/domain/synthetics/fees/utils/executionFee.ts

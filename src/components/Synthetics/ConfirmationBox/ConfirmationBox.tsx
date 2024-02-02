@@ -99,6 +99,7 @@ import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./ConfirmationBox.scss";
+import { useHighExecutionFeeAcknowledgement } from "domain/synthetics/trade/useHighExecutionFeeAcknowledgement";
 
 export type Props = {
   isVisible: boolean;
@@ -178,6 +179,9 @@ export function ConfirmationBox(p: Props) {
     onSubmitted,
     setPendingTxns,
   } = p;
+
+  const { element: highExecutionFeeAcknowledgement, highExecutionFeeNotAcceptedError } =
+    useHighExecutionFeeAcknowledgement(executionFee?.feeUsd);
 
   const { isLong, isShort, isPosition, isSwap, isMarket, isLimit, isTrigger, isIncrease } = tradeFlags;
   const { indexToken } = marketInfo || {};
@@ -348,6 +352,13 @@ export function ConfirmationBox(p: Props) {
       };
     }
 
+    if (highExecutionFeeNotAcceptedError) {
+      return {
+        text: "High Execution Fee not yet acknowledged",
+        disabled: true,
+      };
+    }
+
     if (isSubmitting) {
       return {
         text: t`Creating Order...`,
@@ -392,8 +403,8 @@ export function ConfirmationBox(p: Props) {
       disabled: false,
     };
   }, [
-    isLimit,
     priceImpactWarningState.validationError,
+    highExecutionFeeNotAcceptedError,
     isSubmitting,
     error,
     needPayTokenApproval,
@@ -401,6 +412,7 @@ export function ConfirmationBox(p: Props) {
     decreaseOrdersThatWillBeExecuted.length,
     isTriggerWarningAccepted,
     isMarket,
+    isLimit,
     fromToken?.assetSymbol,
     fromToken?.symbol,
     isSwap,
@@ -1511,6 +1523,7 @@ export function ConfirmationBox(p: Props) {
         {isTrigger && renderTriggerDecreaseSection()}
         {hasCheckboxesSection && <div className="line-divider" />}
         {renderHighPriceImpactWarning()}
+        {highExecutionFeeAcknowledgement}
 
         {needPayTokenApproval && fromToken && (
           <>

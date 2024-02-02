@@ -25,6 +25,7 @@ import { useState } from "react";
 import "./GmConfirmationBox.scss";
 import { useKey } from "react-use";
 import useWallet from "lib/wallets/useWallet";
+import { useHighExecutionFeeAcknowledgement } from "domain/synthetics/trade/useHighExecutionFeeAcknowledgement";
 
 type Props = {
   isVisible: boolean;
@@ -81,6 +82,8 @@ export function GmConfirmationBox({
   const market = getByKey(marketsData, marketToken?.address);
 
   const routerAddress = getContract(chainId, "SyntheticsRouter");
+  const { element: highExecutionFeeAcknowledgement, highExecutionFeeNotAcceptedError } =
+    useHighExecutionFeeAcknowledgement(executionFee?.feeUsd);
 
   const payTokenAddresses = (function getPayTokenAddresses() {
     if (!marketToken) {
@@ -200,6 +203,13 @@ export function GmConfirmationBox({
         text: error,
         disabled: !shouldDisableValidation,
         onClick: onSubmit,
+      };
+    }
+
+    if (highExecutionFeeNotAcceptedError) {
+      return {
+        text: t`High Execution Fee not yet acknowledged`,
+        disabled: true,
       };
     }
 
@@ -367,6 +377,9 @@ export function GmConfirmationBox({
             )}
 
             <div className="Confirmation-box-row">
+              {highExecutionFeeAcknowledgement ? (
+                <div className="GmConfirmationBox-high-fee">{highExecutionFeeAcknowledgement}</div>
+              ) : null}
               <Button
                 className="w-full"
                 variant="primary-action"
