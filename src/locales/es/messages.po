@@ -135,6 +135,10 @@ msgstr ""
 msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
 msgstr ""
 
+#: src/domain/synthetics/orders/useSLTPEntries.ts
+msgid "A Size percentage is required."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr "Se registra el valor en USD de tu {0} garantía en el momento que la posición se abre."
@@ -737,7 +741,6 @@ msgstr "No se puede ejecutar debido a un error"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
@@ -1375,7 +1378,6 @@ msgstr "Exchange<0/>Perpetuo Decentralizado"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/domain/synthetics/orders/utils.ts
@@ -1393,6 +1395,10 @@ msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Decrease the Leverage by using the slider. If the Leverage slider is disabled, you can increase the Pay amount or reduce the Order size."
+msgstr ""
+
+#: src/components/Synthetics/ConfirmationBox/SLTPEntries.tsx
+msgid "Decrease {0} Long by {1} at ${2}."
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -2279,7 +2285,6 @@ msgstr "Red incorrecta"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/domain/synthetics/orders/utils.ts
@@ -2734,7 +2739,6 @@ msgstr "Cargando..."
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
@@ -3069,7 +3073,7 @@ msgid "Max. Leverage exceeded"
 msgstr ""
 
 #: src/components/Stake/GMXAprTooltip.tsx
-msgid "Max. {nativeTokenSymbol} APR with 200% Boost for this week: {0}%."
+msgid "Max. {nativeTokenSymbol} APR with {0}% Boost for this week: {1}%."
 msgstr ""
 
 #: src/components/Migration/Migration.js
@@ -3746,12 +3750,20 @@ msgstr ""
 msgid "Price Impact not yet acknowledged"
 msgstr ""
 
+#: src/domain/synthetics/orders/useSLTPEntries.ts
+msgid "Price above Limit Price."
+msgstr ""
+
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price above Liq. Price"
 msgstr "Precio superior al de liquidación"
+
+#: src/domain/synthetics/orders/useSLTPEntries.ts
+msgid "Price above Liq. Price."
+msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/SwapBox.js
@@ -3766,12 +3778,24 @@ msgstr "Precio superior al de liquidación"
 msgid "Price above Mark Price"
 msgstr "Precio superior al Precio de Referencia"
 
+#: src/domain/synthetics/orders/useSLTPEntries.ts
+msgid "Price above Mark Price."
+msgstr ""
+
+#: src/domain/synthetics/orders/useSLTPEntries.ts
+msgid "Price below Limit Price."
+msgstr ""
+
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price below Liq. Price"
 msgstr "Precio inferior al de liquidación"
+
+#: src/domain/synthetics/orders/useSLTPEntries.ts
+msgid "Price below Liq. Price."
+msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/SwapBox.js
@@ -3785,6 +3809,10 @@ msgstr "Precio inferior al de liquidación"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price below Mark Price"
 msgstr "Precio inferior al Precio de Marca"
+
+#: src/domain/synthetics/orders/useSLTPEntries.ts
+msgid "Price below Mark Price."
+msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Price conditions are met"
@@ -4314,7 +4342,6 @@ msgstr "Compartir Posición"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
@@ -4535,8 +4562,13 @@ msgstr "Estadísticas"
 msgid "Stop Loss Decrease"
 msgstr ""
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop-Loss"
+msgstr ""
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "Stop-Loss PnL"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -4612,10 +4644,6 @@ msgstr "Intercambiar"
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "Swap Fee"
 msgstr ""
-
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#~ msgid "Swap Fees"
-#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Swap Order created!"
@@ -4762,9 +4790,14 @@ msgstr ""
 msgid "TP/SL"
 msgstr ""
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/domain/synthetics/orders/utils.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take-Profit"
+msgstr ""
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "Take-Profit PnL"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -5313,10 +5346,6 @@ msgstr ""
 msgid "Trigger order disabled, pending {0} upgrade"
 msgstr ""
 
-#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
-msgid "Trigger order for"
-msgstr ""
-
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Triggered at: {0}"
 msgstr ""
@@ -5420,7 +5449,7 @@ msgid "Unstake submitted! <0>View status.</0>"
 msgstr "¡Destakeo enviado! <0>Ver estado.</0>"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Unstaking will burn <0>{0} Multiplier Points</0>. {1}"
+msgid "Unstaking will burn <0>{0} Multiplier Points</0>. <1>You will earn {1}% less {nativeTokenSymbol} rewards with this action.</1>"
 msgstr ""
 
 #: src/pages/Stake/StakeV1.js
@@ -5890,10 +5919,6 @@ msgstr "Tiene una transferencia pendiente de {sender}."
 msgid "You have an active Limit Order to Increase {longOrShortText} {sizeInToken} {0} (${1}) at price ${2}"
 msgstr "Tienes una Orden Límite para Incrementar {longOrShortText} {sizeInToken} {0} (${1}) al precio ${2}"
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-msgid "You have an active Limit Order to Increase {longShortText} {0} {sizeText} at price {1}."
-msgstr ""
-
 #: src/components/Exchange/PositionSeller.js
 msgid "You have an active order to decrease {longOrShortText} {sizeInToken} {0} (${1}) at {prefix} {2}"
 msgstr ""
@@ -5932,14 +5957,18 @@ msgstr ""
 msgid "You have multiple existing Increase {longOrShortText} {0} limit orders"
 msgstr "Tienes múltiples órdenes límites para incrementar {longOrShortText} {0}"
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-msgid "You have multiple existing Increase {longShortText} {0} limit orders"
-msgstr ""
-
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "You have not deposited any tokens for vesting."
 msgstr "No has depositado ningún token para su adquisición."
+
+#: src/pages/Stake/StakeV2.js
+msgid "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points using the \"Compound\" button."
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points."
+msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "You have selected {collateralTokenSymbol} as Collateral, the Liquidation Price will vary based on the price of {collateralTokenSymbol}."
@@ -6031,7 +6060,6 @@ msgid "from"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "hide"
 msgstr "ocultar"
 
@@ -6066,7 +6094,6 @@ msgid "time to liq"
 msgstr "tiempo para liq."
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "view"
 msgstr "vista"
 
@@ -6081,6 +6108,10 @@ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
+msgstr ""
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "{0, plural, one {You have an active Limit Order to Increase} other {You have multiple active Limit Orders to Increase}}"
 msgstr ""
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -6162,6 +6193,10 @@ msgstr "{0} está por debajo de su peso objetivo.<0/><1/>Consigue menores comisi
 #: src/components/Exchange/SwapBox.js
 msgid "{0} is required for collateral."
 msgstr "{0} es requerido como garantía."
+
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+msgid "{0} order for"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "{0} pool exceeded, try different token"

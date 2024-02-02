@@ -14,6 +14,7 @@ import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { t } from "@lingui/macro";
 import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
+import { DecreaseOrderParams, createDecreaseEncodedPayload, getPendingOrderFromParams } from "./createDecreaseOrderTxn";
 
 const { AddressZero } = ethers.constants;
 
@@ -46,7 +47,8 @@ export async function createIncreaseOrderTxn(
   chainId: number,
   signer: Signer,
   subaccount: Subaccount,
-  p: IncreaseOrderParams
+  p: IncreaseOrderParams,
+  decreaseOrderParams?: DecreaseOrderParams[]
 ) {
   const isNativePayment = p.initialCollateralAddress === NATIVE_TOKEN_ADDRESS;
   subaccount = isNativePayment ? null : subaccount;
@@ -55,17 +57,19 @@ export async function createIncreaseOrderTxn(
   const router = subaccount ? getSubaccountRouterContract(chainId, subaccount.signer) : exchangeRouter;
   const orderVaultAddress = getContract(chainId, "OrderVault");
   const wntCollateralAmount = isNativePayment ? p.initialCollateralAmount : BigNumber.from(0);
-  const totalWntAmount = wntCollateralAmount.add(p.executionFee);
   const initialCollateralTokenAddress = convertTokenAddress(chainId, p.initialCollateralAddress, "wrapped");
   const shouldApplySlippage = isMarketOrderType(p.orderType);
   const acceptablePrice = shouldApplySlippage
     ? applySlippageToPrice(p.allowedSlippage, p.acceptablePrice, true, p.isLong)
     : p.acceptablePrice;
 
+  const wntAmountToIncrease = wntCollateralAmount.add(p.executionFee);
+  const totalWntAmount = (decreaseOrderParams || []).reduce((acc, p) => acc.add(p.executionFee), wntAmountToIncrease);
+
   const encodedPayload = await createEncodedPayload({
     router,
     orderVaultAddress,
-    totalWntAmount,
+    totalWntAmount: wntAmountToIncrease,
     p,
     acceptablePrice,
     subaccount,
@@ -76,7 +80,7 @@ export async function createIncreaseOrderTxn(
   const simulationEncodedPayload = await createEncodedPayload({
     router: exchangeRouter,
     orderVaultAddress,
-    totalWntAmount,
+    totalWntAmount: wntAmountToIncrease,
     p,
     acceptablePrice,
     subaccount: null,
@@ -84,6 +88,16 @@ export async function createIncreaseOrderTxn(
     initialCollateralTokenAddress,
     signer,
   });
+
+  const decreaseEncodedPayload = createDecreaseEncodedPayload({
+    router,
+    orderVaultAddress,
+    ps: decreaseOrderParams || [],
+    subaccount,
+    mainAccountAddress: p.account,
+    chainId,
+  });
+
   const secondaryPriceOverrides: PriceOverrides = {};
   const primaryPriceOverrides: PriceOverrides = {};
 
@@ -106,9 +120,10 @@ export async function createIncreaseOrderTxn(
     });
   }
 
+  const finalPayload = [...encodedPayload, ...decreaseEncodedPayload];
   const txnCreatedAt = Date.now();
   const txnCreatedAtBlock = await signer.provider?.getBlockNumber();
-  const txn = await callContract(chainId, router, "multicall", [encodedPayload], {
+  const txn = await callContract(chainId, router, "multicall", [finalPayload], {
     value: totalWntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
@@ -128,7 +143,7 @@ export async function createIncreaseOrderTxn(
       });
     }
 
-    p.setPendingOrder({
+    const increaseOrder = {
       account: p.account,
       marketAddress: p.marketAddress,
       initialCollateralTokenAddress,
@@ -139,7 +154,10 @@ export async function createIncreaseOrderTxn(
       isLong: p.isLong,
       orderType: p.orderType,
       shouldUnwrapNativeToken: isNativePayment,
-    });
+    };
+    const orders = decreaseOrderParams?.map((p) => getPendingOrderFromParams(chainId, p)) || [];
+
+    p.setPendingOrder([increaseOrder, ...orders]);
   });
 
   return txn;
