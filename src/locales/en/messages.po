@@ -554,7 +554,6 @@ msgstr "Boost your rewards with Multiplier Points. <0>More info</0>."
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Borrow Fee"
@@ -884,11 +883,6 @@ msgstr "Claimable Price Impact Rebates.<0/><1/><2>Read more</2>."
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Claimable Rebates"
 msgstr "Claimable Rebates"
-
-#: src/domain/synthetics/markets/claimFundingFeesTxn.ts
-#: src/pages/Stake/StakeV2.js
-#~ msgid "Claimed Multiplier Points"
-#~ msgstr "Claimed Multiplier Points"
 
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Claiming Price Impact Rebate..."
@@ -1846,10 +1840,6 @@ msgstr "FEES"
 msgid "FUNDING FEE"
 msgstr "FUNDING FEE"
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "FUNDING RATE / 1h"
-msgstr "FUNDING RATE / 1h"
-
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "Failed Settlement of Funding Fees"
 msgstr "Failed Settlement of Funding Fees"
@@ -2002,7 +1992,6 @@ msgstr "Fulfilling order request"
 msgid "Funding Claimed"
 msgstr "Funding Claimed"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Funding Fee"
@@ -2011,10 +2000,6 @@ msgstr "Funding Fee"
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Funding Fee Rate"
 msgstr "Funding Fee Rate"
-
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Funding Rate / 1h"
-msgstr "Funding Rate / 1h"
 
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 msgid "Funding fees"
@@ -2776,14 +2761,6 @@ msgstr "Long"
 msgid "Long Collateral"
 msgstr "Long Collateral"
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Long Funding Payments"
-msgstr "Long Funding Payments"
-
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Long Funding Rewards"
-msgstr "Long Funding Rewards"
-
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Long Liquidity"
 msgstr "Long Liquidity"
@@ -2796,9 +2773,21 @@ msgstr "Long Open Interest"
 msgid "Long Positions"
 msgstr "Long Positions"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Long positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
-msgstr "Long positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "Long Positions Net Fee"
+msgstr "Long Positions Net Fee"
+
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "Long Positions pay a Borrow Fee of <0>{0}</0> per hour."
+msgstr "Long Positions pay a Borrow Fee of <0>{0}</0> per hour."
+
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "Long Positions pay a Funding Fee of <0>{0}</0> per hour."
+msgstr "Long Positions pay a Funding Fee of <0>{0}</0> per hour."
+
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "Long Positions receive a Funding Fee of <0>{0}</0> per hour."
+msgstr "Long Positions receive a Funding Fee of <0>{0}</0> per hour."
 
 #: src/components/Exchange/SwapBox.js
 msgid "Long {0}"
@@ -3078,10 +3067,6 @@ msgid "Max. Leverage exceeded"
 msgstr "Max. Leverage exceeded"
 
 #: src/components/Stake/GMXAprTooltip.tsx
-#~ msgid "Max. {nativeTokenSymbol} APR with 200% Boost for this week: {0}%."
-#~ msgstr "Max. {nativeTokenSymbol} APR with 200% Boost for this week: {0}%."
-
-#: src/components/Stake/GMXAprTooltip.tsx
 msgid "Max. {nativeTokenSymbol} APR with {0}% Boost for this week: {1}%."
 msgstr "Max. {nativeTokenSymbol} APR with {0}% Boost for this week: {1}%."
 
@@ -3195,6 +3180,10 @@ msgstr "Multiplier Points APR"
 msgid "NA"
 msgstr "NA"
 
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "NET FEE / 1 H"
+msgstr "NET FEE / 1 H"
+
 #: src/pages/NftWallet/NftWallet.js
 msgid "NFT Address"
 msgstr "NFT Address"
@@ -3214,6 +3203,14 @@ msgstr "Negative Funding Fees are settled against the collateral automatically a
 #: src/components/Exchange/PositionSeller.js
 msgid "Neither Collateral nor realized PnL is enough to cover pending Fees. Please close a larger position amount."
 msgstr "Neither Collateral nor realized PnL is enough to cover pending Fees. Please close a larger position amount."
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+msgid "Net Fee"
+msgstr "Net Fee"
+
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "Net Fee / 1h"
+msgstr "Net Fee / 1h"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -4361,14 +4358,6 @@ msgstr "Short"
 msgid "Short Collateral"
 msgstr "Short Collateral"
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Short Funding Payments"
-msgstr "Short Funding Payments"
-
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Short Funding Rewards"
-msgstr "Short Funding Rewards"
-
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Short Liquidity"
 msgstr "Short Liquidity"
@@ -4381,9 +4370,21 @@ msgstr "Short Open Interest"
 msgid "Short Positions"
 msgstr "Short Positions"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Short positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
-msgstr "Short positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "Short Positions Net Fee"
+msgstr "Short Positions Net Fee"
+
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "Short Positions do not pay a Borrow Fee."
+msgstr "Short Positions do not pay a Borrow Fee."
+
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "Short Positions pay a Funding Fee of <0>{0}</0> per hour."
+msgstr "Short Positions pay a Funding Fee of <0>{0}</0> per hour."
+
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "Short Positions receive a Funding Fee of <0>{0}</0> per hour."
+msgstr "Short Positions receive a Funding Fee of <0>{0}</0> per hour."
 
 #: src/components/Exchange/SwapBox.js
 msgid "Short {0}"
@@ -4626,10 +4627,6 @@ msgstr "Swap"
 #: src/components/Exchange/FeesTooltip.tsx
 msgid "Swap Fee"
 msgstr "Swap Fee"
-
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#~ msgid "Swap Fees"
-#~ msgstr "Swap Fees"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Swap Order created!"
@@ -5378,10 +5375,6 @@ msgstr "USD Value may not be accurate since the data does not contain prices for
 msgid "UTILIZATION"
 msgstr "UTILIZATION"
 
-#: src/pages/Stake/StakeV2.js
-#~ msgid "Unclaimed Multiplier Points"
-#~ msgstr "Unclaimed Multiplier Points"
-
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Unknown"
 msgstr "Unknown"
@@ -5439,16 +5432,8 @@ msgid "Unstake submitted! <0>View status.</0>"
 msgstr "Unstake submitted! <0>View status.</0>"
 
 #: src/pages/Stake/StakeV2.js
-#~ msgid "Unstaking will burn <0>{0} Multiplier Points</0>. <1>You will earn {1}% less ETH rewards with this action.</1>"
-#~ msgstr "Unstaking will burn <0>{0} Multiplier Points</0>. <1>You will earn {1}% less ETH rewards with this action.</1>"
-
-#: src/pages/Stake/StakeV2.js
 msgid "Unstaking will burn <0>{0} Multiplier Points</0>. <1>You will earn {1}% less {nativeTokenSymbol} rewards with this action.</1>"
 msgstr "Unstaking will burn <0>{0} Multiplier Points</0>. <1>You will earn {1}% less {nativeTokenSymbol} rewards with this action.</1>"
-
-#: src/pages/Stake/StakeV2.js
-#~ msgid "Unstaking will burn <0>{0} Multiplier Points</0>. {1}"
-#~ msgstr "Unstaking will burn <0>{0} Multiplier Points</0>. {1}"
 
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.js
@@ -5971,18 +5956,6 @@ msgid "You have not deposited any tokens for vesting."
 msgstr "You have not deposited any tokens for vesting."
 
 #: src/pages/Stake/StakeV2.js
-#~ msgid "You have reached the max. Boost Percentage. Stake an additional {0} GMX/esGMX to be able to stake all your unstaked {1} Multiplier Points using the \"Compound\" button."
-#~ msgstr "You have reached the max. Boost Percentage. Stake an additional {0} GMX/esGMX to be able to stake all your unstaked {1} Multiplier Points using the \"Compound\" button."
-
-#: src/pages/Stake/StakeV2.js
-#~ msgid "You have reached the max. Boost Percentage. Stake an additional{0} GMX/esGMX to be able to stake all your unstaked{1}Multiplier Points using the \"Compound\" button."
-#~ msgstr "You have reached the max. Boost Percentage. Stake an additional{0} GMX/esGMX to be able to stake all your unstaked{1}Multiplier Points using the \"Compound\" button."
-
-#: src/pages/Stake/StakeV2.js
-#~ msgid "You have reached the max. Boost Percentage. Stake an additional{0}GMX/esGMX to be able to stake all your unstaked{1}Multiplier Points."
-#~ msgstr "You have reached the max. Boost Percentage. Stake an additional{0}GMX/esGMX to be able to stake all your unstaked{1}Multiplier Points."
-
-#: src/pages/Stake/StakeV2.js
 msgid "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points using the \"Compound\" button."
 msgstr "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points using the \"Compound\" button."
 
@@ -6044,11 +6017,6 @@ msgstr "Your esGMX (IOU) balance will decrease by your claim amount after claimi
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "Your position's collateral after deducting fees."
-#~ msgstr "Your position's collateral after deducting fees."
-
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Your position's collateral after deducting fees:"
 msgstr "Your position's collateral after deducting fees:"
 
@@ -6096,16 +6064,6 @@ msgstr "in liquidity"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "not staked"
 msgstr "not staked"
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "pay"
-msgstr "pay"
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "receive"
-msgstr "receive"
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "size"
@@ -6399,10 +6357,6 @@ msgstr "{positionName} Fees settling"
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"
 msgstr "{title}"
-
-#: src/pages/Stake/StakeV2.js
-#~ msgid "{warning}"
-#~ msgstr "{warning}"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Сonvert {0} to {1}"

@@ -16,7 +16,7 @@ import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS, importImage } from "lib/legacy";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
-import { formatAmount, formatUsd } from "lib/numbers";
+import { formatAmount, formatRatePercentage, formatUsd } from "lib/numbers";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 
 import { useMemo } from "react";
@@ -24,18 +24,9 @@ import { useMedia } from "react-use";
 import PageTitle from "components/PageTitle/PageTitle";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketListSkeleton } from "components/Skeleton/Skeleton";
-import { getPositiveOrNegativeClass } from "lib/utils";
 import { DOCS_LINKS } from "config/links";
-
-function formatFundingRate(fundingRate?: BigNumber) {
-  if (!fundingRate) {
-    return "-";
-  }
-
-  const sign = fundingRate.isZero() ? "" : fundingRate.isNegative() ? "-" : "+";
-
-  return `${sign}${formatAmount(fundingRate.mul(100).abs(), 30, 4)}%`;
-}
+import MarketNetFee from "../MarketNetFee/MarketNetFee";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 export function MarketsList() {
   const { chainId } = useChainId();
@@ -161,71 +152,14 @@ export function MarketsList() {
     return () => (
       <>
         {stats.marketsStats.map((stat) => {
-          const {
-            marketInfo: market,
-            fundingRateLong,
-            fundingRateShort,
-            borrowingRateLong,
-            netFeePerHourLong,
-            netFeePerHourShort,
-          } = stat;
-          const fundingRateLongClassName = getPositiveOrNegativeClass(fundingRateLong);
-          const fundingRateShortClassName = getPositiveOrNegativeClass(fundingRateShort);
-          const borrowingRateClassName = getPositiveOrNegativeClass(borrowingRateLong);
-
-          const longFundingMsg = fundingRateLong.gte(0) ? (
-            <Trans>
-              Long Positions receive a Funding Fee of{" "}
-              <span className={fundingRateLongClassName}>{formatFundingRate(fundingRateLong)}</span> per hour.
-            </Trans>
-          ) : (
-            <Trans>
-              Long Positions pay a Funding Fee of{" "}
-              <span className={fundingRateLongClassName}>{formatFundingRate(fundingRateLong)}</span> per hour.
-            </Trans>
-          );
-
-          const shortFundingMsg = fundingRateShort.gte(0) ? (
-            <Trans>
-              Short Positions receive a Funding Fee of{" "}
-              <span className={fundingRateShortClassName}>{formatFundingRate(fundingRateShort)}</span> per hour.
-            </Trans>
-          ) : (
-            <Trans>
-              Short Positions pay a Funding Fee of{" "}
-              <span className={fundingRateShortClassName}>{formatFundingRate(fundingRateShort)}</span> per hour.
-            </Trans>
-          );
-
-          const longBorrowingMsg = (
-            <Trans>
-              Long Positions pay a Borrow Fee of{" "}
-              <span className={borrowingRateClassName}>{formatFundingRate(borrowingRateLong)}</span> per hour.
-            </Trans>
-          );
-
-          const shortBorrowingMsg = t`Short Positions do not pay a Borrow Fee.`;
+          const { marketInfo: market, fundingRateLong, fundingRateShort, borrowingRateLong, borrowingRateShort } = stat;
 
           return (
             <div className="mb-base" key={market.marketTokenAddress}>
               <div className="mb-sm text-white">[{getMarketPoolName(market)}]</div>
-              <div className="mb-xs">{longFundingMsg}</div>
-              <div>{longBorrowingMsg}</div>
+              <MarketNetFee borrowRateHourly={borrowingRateLong} fundingRateHourly={fundingRateLong} isLong={true} />
               <br />
-              <StatsTooltipRow
-                showDollar={false}
-                label={t`Long Positions Net Fee`}
-                value={renderNetFeesOverTime(netFeePerHourLong)}
-              />
-              <br />
-              <div className="mb-xs">{shortFundingMsg}</div>
-              <div>{shortBorrowingMsg}</div>
-              <br />
-              <StatsTooltipRow
-                showDollar={false}
-                label={t`Short Positions Net Fee`}
-                value={renderNetFeesOverTime(netFeePerHourShort)}
-              />
+              <MarketNetFee borrowRateHourly={borrowingRateShort} fundingRateHourly={fundingRateShort} isLong={false} />
             </div>
           );
         })}
@@ -335,8 +269,9 @@ export function MarketsList() {
                         />
                       </td>
                       <td>
-                        <Tooltip
-                          handle={`${formatFundingRate(largestPool.netFeePerHourLong)} / ${formatFundingRate(
+                        <TooltipWithPortal
+                          portalClassName="MarketList-netfee-tooltip"
+                          handle={`${formatRatePercentage(largestPool.netFeePerHourLong)} / ${formatRatePercentage(
                             largestPool.netFeePerHourShort
                           )}`}
                           renderContent={renderFundingRateTooltip(stats)}
@@ -358,94 +293,85 @@ export function MarketsList() {
         <>
           <PageTitle title={t`GM Pools`} />
           <div className="token-grid">
-            {indexTokensStats.map((stats) => (
-              <div className="App-card" key={stats.token.symbol}>
-                <div className="App-card-title">
-                  <div className="mobile-token-card">
-                    <img
-                      src={importImage("ic_" + stats.token.symbol.toLocaleLowerCase() + "_40.svg")}
-                      alt={stats.token.symbol}
-                      width="20"
-                    />
-                    <div className="token-symbol-text">{stats.token.symbol}</div>
-                    <div>
-                      <AssetDropdown assetSymbol={stats.token.symbol} />
+            {indexTokensStats.map((stats) => {
+              const largestPool = stats.marketsStats.sort((a, b) => {
+                return b.poolValueUsd.gt(a.poolValueUsd) ? 1 : -1;
+              })[0];
+
+              return (
+                <div className="App-card" key={stats.token.symbol}>
+                  <div className="App-card-title">
+                    <div className="mobile-token-card">
+                      <img
+                        src={importImage("ic_" + stats.token.symbol.toLocaleLowerCase() + "_40.svg")}
+                        alt={stats.token.symbol}
+                        width="20"
+                      />
+                      <div className="token-symbol-text">{stats.token.symbol}</div>
+                      <div>
+                        <AssetDropdown assetSymbol={stats.token.symbol} />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="App-card-divider"></div>
+                  <div className="App-card-content">
+                    <div className="App-card-row">
+                      <div className="label">
+                        <Trans>Price</Trans>
+                      </div>
+                      <div>{formatUsd(stats.token.prices?.minPrice)}</div>
+                    </div>
+                    <div className="App-card-row">
+                      <div className="label">
+                        <Trans>Pools</Trans>
+                      </div>
+                      <div>
+                        <Tooltip
+                          handle={formatUsd(stats.totalPoolValue)}
+                          position="right-bottom"
+                          renderContent={() => (
+                            <>
+                              {stats.marketsStats.map(({ marketInfo, poolValueUsd }) => (
+                                <StatsTooltipRow
+                                  key={marketInfo.marketTokenAddress}
+                                  showDollar={false}
+                                  label={`[${getMarketPoolName(marketInfo)}]`}
+                                  value={formatUsd(poolValueUsd)}
+                                />
+                              ))}
+                            </>
+                          )}
+                        />
+                      </div>
+                    </div>
+                    <div className="App-card-row">
+                      <div className="label">
+                        <Trans>Net Fee / 1h</Trans>
+                      </div>
+                      <div>
+                        <TooltipWithPortal
+                          portalClassName="MarketList-netfee-tooltip"
+                          handle={`${formatRatePercentage(largestPool.netFeePerHourLong)} / ${formatRatePercentage(
+                            largestPool.netFeePerHourShort
+                          )}`}
+                          position="right-bottom"
+                          renderContent={renderFundingRateTooltip(stats)}
+                        />
+                      </div>
+                    </div>
+                    <div className="App-card-row">
+                      <div className="label">
+                        <Trans>Utilization</Trans>
+                      </div>
+                      <div>{formatAmount(stats.totalUtilization, 2, 2, false)}%</div>
                     </div>
                   </div>
                 </div>
-                <div className="App-card-divider"></div>
-                <div className="App-card-content">
-                  <div className="App-card-row">
-                    <div className="label">
-                      <Trans>Price</Trans>
-                    </div>
-                    <div>{formatUsd(stats.token.prices?.minPrice)}</div>
-                  </div>
-                  <div className="App-card-row">
-                    <div className="label">
-                      <Trans>Pools</Trans>
-                    </div>
-                    <div>
-                      <Tooltip
-                        handle={formatUsd(stats.totalPoolValue)}
-                        position="right-bottom"
-                        renderContent={() => (
-                          <>
-                            {stats.marketsStats.map(({ marketInfo, poolValueUsd }) => (
-                              <StatsTooltipRow
-                                key={marketInfo.marketTokenAddress}
-                                showDollar={false}
-                                label={`[${getMarketPoolName(marketInfo)}]`}
-                                value={formatUsd(poolValueUsd)}
-                              />
-                            ))}
-                          </>
-                        )}
-                      />
-                    </div>
-                  </div>
-                  <div className="App-card-row">
-                    <div className="label">
-                      <Trans>Funding Rate / 1h</Trans>
-                    </div>
-                    <div>
-                      <Tooltip
-                        handle={`${formatFundingRate(stats.avgFundingRateLong)} / ${formatFundingRate(
-                          stats.avgFundingRateShort
-                        )}`}
-                        position="right-bottom"
-                        renderContent={renderFundingRateTooltip(stats)}
-                      />
-                    </div>
-                  </div>
-                  <div className="App-card-row">
-                    <div className="label">
-                      <Trans>Utilization</Trans>
-                    </div>
-                    <div>{formatAmount(stats.totalUtilization, 2, 2, false)}%</div>
-                  </div>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </>
       )}
     </>
-  );
-}
-
-function renderNetFeesOverTime(hourlyRate: BigNumber) {
-  function formatRateForPeriod(hours: number) {
-    const rateForPeriod = hourlyRate.mul(hours);
-    return <span className={getPositiveOrNegativeClass(rateForPeriod)}>{formatFundingRate(rateForPeriod)}</span>;
-  }
-  return (
-    <ul className="net-fees-over-time">
-      <li>1h: {formatRateForPeriod(1)}</li>
-      <li>8h: {formatRateForPeriod(8)}</li>
-      <li>24h: {formatRateForPeriod(24)}</li>
-      <li>Weekly: {formatRateForPeriod(24 * 7)}</li>
-      <li>Annualized: {formatRateForPeriod(24 * 365)}</li>
-    </ul>
   );
 }

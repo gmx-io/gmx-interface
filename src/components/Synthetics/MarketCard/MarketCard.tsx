@@ -21,7 +21,10 @@ import { ShareBar } from "components/ShareBar/ShareBar";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
 import { useCallback, useMemo } from "react";
 import "./MarketCard.scss";
-import { getPlusOrMinusSymbol, getPositiveOrNegativeClass } from "lib/utils";
+import { getPlusOrMinusSymbol } from "lib/utils";
+import MarketNetFee from "../MarketNetFee/MarketNetFee";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { DOCS_LINKS } from "config/links";
 
 export type Props = {
   marketInfo?: MarketInfo;
@@ -41,7 +44,8 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
     liquidity,
     maxReservedUsd,
     reservedUsd,
-    borrowingRate,
+    borrowingRateLong,
+    borrowingRateShort,
     fundingRateLong,
     fundingRateShort,
     totalInterestUsd,
@@ -54,9 +58,10 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
       liquidity: getAvailableUsdLiquidityForPosition(marketInfo, isLong),
       maxReservedUsd: getMaxReservedUsd(marketInfo, isLong),
       reservedUsd: getReservedUsd(marketInfo, isLong),
-      borrowingRate: getBorrowingFactorPerPeriod(marketInfo, isLong, CHART_PERIODS["1h"]).mul(100),
-      fundingRateLong: getFundingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]).mul(100),
-      fundingRateShort: getFundingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]).mul(100),
+      borrowingRateLong: getBorrowingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]).mul(-1),
+      borrowingRateShort: getBorrowingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]).mul(-1),
+      fundingRateLong: getFundingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]),
+      fundingRateShort: getFundingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]),
       currentOpenInterest: getOpenInterestUsd(marketInfo, isLong),
       totalInterestUsd: marketInfo.longInterestUsd.add(marketInfo.shortInterestUsd),
       priceDecimals: marketInfo.indexToken.priceDecimals,
@@ -64,6 +69,8 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
     };
   }, [marketInfo, isLong]);
   const fundingRate = isLong ? fundingRateLong : fundingRateShort;
+  const borrowingRate = isLong ? borrowingRateLong : borrowingRateShort;
+  const netRate = fundingRate?.add(borrowingRate?.mul(-1) ?? 0);
   const indexName = marketInfo && getMarketIndexName(marketInfo);
   const poolName = marketInfo && getMarketPoolName(marketInfo);
 
@@ -71,28 +78,12 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
     if (!fundingRateLong || !fundingRateShort) return [];
     const isAdaptiveFundingForMarketActive = marketInfo && isMarketAdaptiveFundingActive(marketInfo);
 
-    const isLongPositive = fundingRateLong?.gt(0);
     const long = (
-      <Trans>
-        Long positions {isLongPositive ? t`receive` : t`pay`} a Funding Fee of{" "}
-        <span className={getPositiveOrNegativeClass(fundingRateLong)}>
-          {getPlusOrMinusSymbol(fundingRateLong)}
-          {formatAmount(fundingRateLong.abs(), 30, 4)}%
-        </span>{" "}
-        per hour.
-      </Trans>
+      <MarketNetFee borrowRateHourly={borrowingRateLong} fundingRateHourly={fundingRateLong} isLong={true} />
     );
 
-    const isShortPositive = fundingRateShort?.gt(0);
     const short = (
-      <Trans>
-        Short positions {isShortPositive ? t`receive` : t`pay`} a Funding Fee of{" "}
-        <span className={getPositiveOrNegativeClass(fundingRateShort)}>
-          {getPlusOrMinusSymbol(fundingRateShort)}
-          {formatAmount(fundingRateShort.abs(), 30, 4)}%
-        </span>{" "}
-        per hour.
-      </Trans>
+      <MarketNetFee borrowRateHourly={borrowingRateShort} fundingRateHourly={fundingRateShort} isLong={false} />
     );
 
     const [currentFeeElement, oppositeFeeElement] = isLong ? [long, short] : [short, long];
@@ -101,22 +92,31 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
       <div>
         {currentFeeElement}
         <br />
-        <br />
         {oppositeFeeElement}
+        <br />
+        <span>
+          Funding Fees help to balance Longs and Shorts and are exchanged between both sides.{" "}
+          <ExternalLink href={DOCS_LINKS.fundingFees}>Read more</ExternalLink>.
+        </span>
+        <br />
+        <br />
+        <span>
+          Borrowing Fees help ensuring liquidity.
+          <ExternalLink href={DOCS_LINKS.borrowingFees}>Read more</ExternalLink>.
+        </span>
         {isAdaptiveFundingForMarketActive && (
           <span>
             <br />
             <br />
             <Trans>
               This market uses an Adaptive Funding Rate. The Funding Rate will adjust over time depending on the ratio
-              of longs and shorts.{" "}
-              <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#adaptive-funding">Read more</ExternalLink>.
+              of longs and shorts. <ExternalLink href={DOCS_LINKS.adaptiveFunding}>Read more</ExternalLink>.
             </Trans>
           </span>
         )}
       </div>
     );
-  }, [fundingRateLong, fundingRateShort, isLong, marketInfo]);
+  }, [fundingRateLong, fundingRateShort, isLong, marketInfo, borrowingRateLong, borrowingRateShort]);
 
   return (
     <div className="Exchange-swap-market-box App-box App-box-border MarketCard">
@@ -185,19 +185,12 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
         />
 
         <ExchangeInfoRow
-          label={t`Borrow Fee`}
-          value={borrowingRate ? `-${formatAmount(borrowingRate, 30, 4)}% / 1h` : "..."}
-        />
-
-        <ExchangeInfoRow
-          label={t`Funding Fee`}
+          label={t`Net Fee`}
           value={
-            <Tooltip
-              className="al-swap"
+            <TooltipWithPortal
+              portalClassName="MarketCard-net-fee"
               handle={
-                fundingRate
-                  ? `${getPlusOrMinusSymbol(fundingRate)}${formatAmount(fundingRate.abs(), 30, 4)}% / 1h`
-                  : "..."
+                netRate ? `${getPlusOrMinusSymbol(netRate)}${formatAmount(netRate.abs().mul(100), 30, 4)}% / 1h` : "..."
               }
               position="right-bottom"
               renderContent={renderFundingFeeTooltipContent}

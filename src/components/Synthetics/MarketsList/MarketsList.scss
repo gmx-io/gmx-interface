@@ -4,3 +4,17 @@
     padding-bottom: 0.5rem;
   }
 }
+
+.MarketList-netfee-tooltip {
+  .Tooltip-popup {
+    min-width: 32rem;
+  }
+}
+
+@media (max-width: 350px) {
+  .MarketList-netfee-tooltip {
+    .Tooltip-popup {
+      min-width: 29rem;
+    }
+  }
+}

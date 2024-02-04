@@ -337,6 +337,14 @@ export function getBasisPoints(numerator: BigNumber, denominator: BigNumber, sho
   return result;
 }
 
+export function formatRatePercentage(rate?: BigNumber) {
+  if (!rate) {
+    return "-";
+  }
+
+  return `${getPlusOrMinusSymbol(rate)}${formatAmount(rate.mul(100).abs(), 30, 4)}%`;
+}
+
 export function basisPointsToFloat(basisPoints: BigNumber) {
   return basisPoints.mul(PRECISION).div(BASIS_POINTS_DIVISOR);
 }

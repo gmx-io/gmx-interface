@@ -20,8 +20,17 @@
   }
 }
 
-.MarketCard {
+.MarketCard,
+.MarketCard-net-fee {
   .Tooltip-popup {
     min-width: 32rem;
+  }
+}
+
+@media (max-width: 350px) {
+  .MarketCard-net-fee {
+    .Tooltip-popup {
+      min-width: 29rem;
+    }
   }
 }
