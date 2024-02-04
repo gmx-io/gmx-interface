@@ -1,8 +1,9 @@
 import { Trans, t } from "@lingui/macro";
+import "./MarketsList.scss";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getIcon } from "config/icons";
-import { getFundingFactorPerPeriod } from "domain/synthetics/fees";
+import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
 import {
   MarketInfo,
   getMarketPoolName,
@@ -24,6 +25,7 @@ import PageTitle from "components/PageTitle/PageTitle";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketListSkeleton } from "components/Skeleton/Skeleton";
 import { getPositiveOrNegativeClass } from "lib/utils";
+import { DOCS_LINKS } from "config/links";
 
 function formatFundingRate(fundingRate?: BigNumber) {
   if (!fundingRate) {
@@ -62,6 +64,10 @@ export function MarketsList() {
           poolValueUsd: BigNumber;
           fundingRateLong: BigNumber;
           fundingRateShort: BigNumber;
+          borrowingRateLong: BigNumber;
+          borrowingRateShort: BigNumber;
+          netFeePerHourLong: BigNumber;
+          netFeePerHourShort: BigNumber;
           utilization: BigNumber;
         }[];
       };
@@ -96,6 +102,10 @@ export function MarketsList() {
 
       const fundingRateLong = getFundingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]);
       const fundingRateShort = getFundingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]);
+      const borrowingRateLong = getBorrowingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]).mul(-1);
+      const borrowingRateShort = getBorrowingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]).mul(-1);
+      const netFeePerHourLong = fundingRateLong.add(borrowingRateLong);
+      const netFeePerHourShort = fundingRateShort.add(borrowingRateShort);
 
       const [longAvailableLiquidity, longMaxLiquidity] = getAvailableLiquidity(marketInfo, true);
 
@@ -117,6 +127,10 @@ export function MarketsList() {
         fundingRateLong,
         fundingRateShort,
         poolValueUsd,
+        borrowingRateLong,
+        borrowingRateShort,
+        netFeePerHourLong,
+        netFeePerHourShort,
       });
     }
 
@@ -146,28 +160,85 @@ export function MarketsList() {
 
     return () => (
       <>
-        {stats.marketsStats.map(({ marketInfo: market, fundingRateLong, fundingRateShort }) => {
-          const longFundingMsg = fundingRateLong.gte(0) ? t`Long Funding Rewards` : t`Long Funding Payments`;
-          const shortFundingMsg = fundingRateShort.gte(0) ? t`Short Funding Rewards` : t`Short Funding Payments`;
+        {stats.marketsStats.map((stat) => {
+          const {
+            marketInfo: market,
+            fundingRateLong,
+            fundingRateShort,
+            borrowingRateLong,
+            netFeePerHourLong,
+            netFeePerHourShort,
+          } = stat;
+          const fundingRateLongClassName = getPositiveOrNegativeClass(fundingRateLong);
+          const fundingRateShortClassName = getPositiveOrNegativeClass(fundingRateShort);
+          const borrowingRateClassName = getPositiveOrNegativeClass(borrowingRateLong);
+
+          const longFundingMsg = fundingRateLong.gte(0) ? (
+            <Trans>
+              Long Positions receive a Funding Fee of{" "}
+              <span className={fundingRateLongClassName}>{formatFundingRate(fundingRateLong)}</span> per hour.
+            </Trans>
+          ) : (
+            <Trans>
+              Long Positions pay a Funding Fee of{" "}
+              <span className={fundingRateLongClassName}>{formatFundingRate(fundingRateLong)}</span> per hour.
+            </Trans>
+          );
+
+          const shortFundingMsg = fundingRateShort.gte(0) ? (
+            <Trans>
+              Short Positions receive a Funding Fee of{" "}
+              <span className={fundingRateShortClassName}>{formatFundingRate(fundingRateShort)}</span> per hour.
+            </Trans>
+          ) : (
+            <Trans>
+              Short Positions pay a Funding Fee of{" "}
+              <span className={fundingRateShortClassName}>{formatFundingRate(fundingRateShort)}</span> per hour.
+            </Trans>
+          );
+
+          const longBorrowingMsg = (
+            <Trans>
+              Long Positions pay a Borrow Fee of{" "}
+              <span className={borrowingRateClassName}>{formatFundingRate(borrowingRateLong)}</span> per hour.
+            </Trans>
+          );
+
+          const shortBorrowingMsg = t`Short Positions do not pay a Borrow Fee.`;
+
           return (
             <div className="mb-base" key={market.marketTokenAddress}>
-              <div className="mb-xs text-white">[{getMarketPoolName(market)}]</div>
+              <div className="mb-sm text-white">[{getMarketPoolName(market)}]</div>
+              <div className="mb-xs">{longFundingMsg}</div>
+              <div>{longBorrowingMsg}</div>
+              <br />
               <StatsTooltipRow
                 showDollar={false}
-                label={longFundingMsg}
-                value={`${formatFundingRate(fundingRateLong)} / 1h`}
-                className={getPositiveOrNegativeClass(fundingRateLong)}
+                label={t`Long Positions Net Fee`}
+                value={renderNetFeesOverTime(netFeePerHourLong)}
               />
+              <br />
+              <div className="mb-xs">{shortFundingMsg}</div>
+              <div>{shortBorrowingMsg}</div>
+              <br />
               <StatsTooltipRow
                 showDollar={false}
-                label={shortFundingMsg}
-                value={`${formatFundingRate(fundingRateShort)} / 1h`}
-                className={getPositiveOrNegativeClass(fundingRateShort)}
+                label={t`Short Positions Net Fee`}
+                value={renderNetFeesOverTime(netFeePerHourShort)}
               />
             </div>
           );
         })}
-        <span>Funding Fees help to balance Longs and Shorts and are exchanged between both sides.</span>
+        <span>
+          Funding Fees help to balance Longs and Shorts and are exchanged between both sides.{" "}
+          <ExternalLink href={DOCS_LINKS.fundingFees}>Read more</ExternalLink>.
+        </span>
+        <br />
+        <br />
+        <span>
+          Borrowing Fees help ensuring liquidity.
+          <ExternalLink href={DOCS_LINKS.borrowingFees}>Read more</ExternalLink>.
+        </span>
         <br />
         <br />
         <span>
@@ -180,8 +251,7 @@ export function MarketsList() {
             <br />
             <Trans>
               This market uses an Adaptive Funding Rate. The Funding Rate will adjust over time depending on the ratio
-              of longs and shorts.{" "}
-              <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#adaptive-funding">Read more</ExternalLink>.
+              of longs and shorts. <ExternalLink href={DOCS_LINKS.adaptiveFunding}>Read more</ExternalLink>.
             </Trans>
           </span>
         )}
@@ -210,7 +280,7 @@ export function MarketsList() {
                   <Trans>POOLS</Trans>
                 </th>
                 <th>
-                  <Trans>FUNDING RATE / 1h</Trans>
+                  <Trans>NET FEE / 1 H</Trans>
                 </th>
                 <th>
                   <Trans>UTILIZATION</Trans>
@@ -266,8 +336,8 @@ export function MarketsList() {
                       </td>
                       <td>
                         <Tooltip
-                          handle={`${formatFundingRate(largestPool.fundingRateLong)} / ${formatFundingRate(
-                            largestPool.fundingRateShort
+                          handle={`${formatFundingRate(largestPool.netFeePerHourLong)} / ${formatFundingRate(
+                            largestPool.netFeePerHourShort
                           )}`}
                           renderContent={renderFundingRateTooltip(stats)}
                         />
@@ -361,5 +431,21 @@ export function MarketsList() {
         </>
       )}
     </>
+  );
+}
+
+function renderNetFeesOverTime(hourlyRate: BigNumber) {
+  function formatRateForPeriod(hours: number) {
+    const rateForPeriod = hourlyRate.mul(hours);
+    return <span className={getPositiveOrNegativeClass(rateForPeriod)}>{formatFundingRate(rateForPeriod)}</span>;
+  }
+  return (
+    <ul className="net-fees-over-time">
+      <li>1h: {formatRateForPeriod(1)}</li>
+      <li>8h: {formatRateForPeriod(8)}</li>
+      <li>24h: {formatRateForPeriod(24)}</li>
+      <li>Weekly: {formatRateForPeriod(24 * 7)}</li>
+      <li>Annualized: {formatRateForPeriod(24 * 365)}</li>
+    </ul>
   );
 }
