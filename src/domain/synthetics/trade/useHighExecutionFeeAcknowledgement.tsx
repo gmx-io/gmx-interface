@@ -14,7 +14,7 @@ export function useHighExecutionFeeAcknowledgement(executionFeeUsd: BigNumber | 
     () => expandDecimals(getVeryHighExecutionFee(chainId), USD_DECIMALS),
     [chainId]
   );
-  const shouldAccept = executionFeeUsd?.gt(veryHighExecutionFeeUsd);
+  const shouldAccept = executionFeeUsd?.gte(veryHighExecutionFeeUsd);
 
   return {
     highExecutionFeeNotAcceptedError: shouldAccept && !isHighExecutionFeeAccepted,
