@@ -108,8 +108,10 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
               </Trans>
             </div>
             <div className="Home-token-card-option-apr">
-              <Trans>Arbitrum APR:</Trans> <APRLabel chainId={ARBITRUM} label="gmxAprTotal" />,{" "}
-              <Trans>Avalanche APR:</Trans> <APRLabel chainId={AVALANCHE} label="gmxAprTotal" key="AVALANCHE" />
+              <Trans>Arbitrum APR:</Trans>{" "}
+              <APRRange chainId={ARBITRUM} minLabel="gmxAprForNativeToken" maxLabel="maxGmxAprForNativeToken" />,{" "}
+              <Trans>Avalanche APR:</Trans>{" "}
+              <APRRange chainId={AVALANCHE} minLabel="gmxAprForNativeToken" maxLabel="maxGmxAprForNativeToken" />
             </div>
           </div>
         </div>
@@ -216,5 +218,13 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
         </div>
       </div>
     </div>
+  );
+}
+
+function APRRange({ chainId, minLabel, maxLabel }) {
+  return (
+    <>
+      <APRLabel chainId={chainId} label={minLabel} /> - <APRLabel chainId={chainId} label={maxLabel} />
+    </>
   );
 }
