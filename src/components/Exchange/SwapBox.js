@@ -1733,6 +1733,13 @@ export default function SwapBox(props) {
     [maxToTokenOut, maxToTokenOutUSD, toTokenInfo.decimals, toTokenInfo.symbol]
   );
 
+  const SWAP_ORDER_EXECUTION_GAS_FEE = getConstant(chainId, "SWAP_ORDER_EXECUTION_GAS_FEE");
+  const INCREASE_ORDER_EXECUTION_GAS_FEE = getConstant(chainId, "INCREASE_ORDER_EXECUTION_GAS_FEE");
+  const executionFee = isSwap ? SWAP_ORDER_EXECUTION_GAS_FEE : INCREASE_ORDER_EXECUTION_GAS_FEE;
+  const executionFeeUsd = getUsd(executionFee, nativeTokenAddress, false, infoTokens);
+  const currentExecutionFee = isMarketOrder ? minExecutionFee : executionFee;
+  const currentExecutionFeeUsd = isMarketOrder ? minExecutionFeeUSD : executionFeeUsd;
+
   const executionFees = useMemo(
     () => ({
       fee: currentExecutionFee,
@@ -1903,13 +1910,6 @@ export default function SwapBox(props) {
       </Trans>
     ),
   };
-
-  const SWAP_ORDER_EXECUTION_GAS_FEE = getConstant(chainId, "SWAP_ORDER_EXECUTION_GAS_FEE");
-  const INCREASE_ORDER_EXECUTION_GAS_FEE = getConstant(chainId, "INCREASE_ORDER_EXECUTION_GAS_FEE");
-  const executionFee = isSwap ? SWAP_ORDER_EXECUTION_GAS_FEE : INCREASE_ORDER_EXECUTION_GAS_FEE;
-  const executionFeeUsd = getUsd(executionFee, nativeTokenAddress, false, infoTokens);
-  const currentExecutionFee = isMarketOrder ? minExecutionFee : executionFee;
-  const currentExecutionFeeUsd = isMarketOrder ? minExecutionFeeUSD : executionFeeUsd;
 
   const existingCurrentIndexShortPosition =
     isShort &&
