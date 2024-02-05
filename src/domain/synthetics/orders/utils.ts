@@ -31,7 +31,10 @@ export function isOrderForPosition(order: OrderInfo, positionKey: string): order
 
   // For limit orders, we need to check the target collateral token
   if (isLimitOrderType(order.orderType)) {
-    isMatch = isMatch && order.targetCollateralToken.address === collateralAddress;
+    const targetCollateralTokenAddress = order.targetCollateralToken.isNative
+      ? order.targetCollateralToken.wrappedAddress
+      : order.targetCollateralToken.address;
+    isMatch = isMatch && targetCollateralTokenAddress === collateralAddress;
   } else if (isTriggerDecreaseOrderType(order.orderType)) {
     isMatch = isMatch && order.initialCollateralTokenAddress === collateralAddress;
   }
