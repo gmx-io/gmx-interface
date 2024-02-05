@@ -1406,6 +1406,16 @@ export default function StakeV2({ setPendingTxns }) {
     );
   }, [nativeTokenSymbol, processedData, recommendStakeGmx, accumulatedBnGMXAmount]);
 
+  const gmxAprText = useMemo(() => {
+    return `${formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true)}% - ${formatKeyAmount(
+      processedData,
+      "maxGmxAprForNativeToken",
+      2,
+      2,
+      true
+    )}%`;
+  }, [processedData]);
+
   const renderMultiplierPointsLabel = useCallback(() => {
     return t`Multiplier Points APR`;
   }, []);
@@ -1653,7 +1663,7 @@ export default function StakeV2({ setPendingTxns }) {
                 </div>
                 <div>
                   <Tooltip
-                    handle={`${formatKeyAmount(processedData, "gmxAprTotalWithBoost", 2, 2, true)}%`}
+                    handle={gmxAprText}
                     position="right-bottom"
                     renderContent={() => (
                       <GMXAprTooltip processedData={processedData} nativeTokenSymbol={nativeTokenSymbol} />
@@ -1661,6 +1671,22 @@ export default function StakeV2({ setPendingTxns }) {
                   />
                 </div>
               </div>
+              {active && (
+                <div className="App-card-row">
+                  <div className="label">
+                    <Trans>Your APR</Trans>
+                  </div>
+                  <div>
+                    <Tooltip
+                      handle={`${formatKeyAmount(processedData, "gmxAprTotalWithBoost", 2, 2, true)}%`}
+                      position="right-bottom"
+                      renderContent={() => (
+                        <GMXAprTooltip processedData={processedData} nativeTokenSymbol={nativeTokenSymbol} isActive />
+                      )}
+                    />
+                  </div>
+                </div>
+              )}
               <div className="App-card-row">
                 <div className="label">
                   <Trans>Rewards</Trans>
@@ -2057,7 +2083,7 @@ export default function StakeV2({ setPendingTxns }) {
                 </div>
                 <div>
                   <Tooltip
-                    handle={`${formatKeyAmount(processedData, "gmxAprTotalWithBoost", 2, 2, true)}%`}
+                    handle={gmxAprText}
                     position="right-bottom"
                     renderContent={() => (
                       <GMXAprTooltip processedData={processedData} nativeTokenSymbol={nativeTokenSymbol} />
@@ -2065,6 +2091,22 @@ export default function StakeV2({ setPendingTxns }) {
                   />
                 </div>
               </div>
+              {active && (
+                <div className="App-card-row">
+                  <div className="label">
+                    <Trans>Your APR</Trans>
+                  </div>
+                  <div>
+                    <Tooltip
+                      handle={`${formatKeyAmount(processedData, "gmxAprTotalWithBoost", 2, 2, true)}%`}
+                      position="right-bottom"
+                      renderContent={() => (
+                        <GMXAprTooltip processedData={processedData} nativeTokenSymbol={nativeTokenSymbol} isActive />
+                      )}
+                    />
+                  </div>
+                </div>
+              )}
               <div className="App-card-row">
                 <div className="label">{renderMultiplierPointsLabel()}</div>
                 <div>{renderMultiplierPointsValue()}</div>

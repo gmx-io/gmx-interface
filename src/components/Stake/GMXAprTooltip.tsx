@@ -2,16 +2,17 @@ import { t, Trans } from "@lingui/macro";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { BigNumber } from "ethers";
 import { formatKeyAmount, formatAmount } from "lib/numbers";
-import { useMaxBoostBasicPoints } from "domain/rewards/useMaxBoostBasisPoints";
 
 type Props = {
   processedData: {
     gmxAprForEsGmx: BigNumber;
     gmxAprForNativeToken: BigNumber;
+    maxGmxAprForNativeToken: BigNumber;
     gmxAprForNativeTokenWithBoost: BigNumber;
     gmxBoostAprForNativeToken?: BigNumber;
   };
   nativeTokenSymbol: string;
+  isActive: boolean;
 };
 
 function renderEscrowedGMXApr(processedData) {
@@ -25,10 +26,29 @@ function renderEscrowedGMXApr(processedData) {
   );
 }
 
-export default function GMXAprTooltip({ processedData, nativeTokenSymbol }: Props) {
+export default function GMXAprTooltip({ processedData, nativeTokenSymbol, isActive = false }: Props) {
   const escrowedGMXApr = renderEscrowedGMXApr(processedData);
+  const gmxAprPercentage = formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true);
+  const maxGmxAprPercentage = formatKeyAmount(processedData, "maxGmxAprForNativeToken", 2, 2, true);
+  const maxGmxAprPercentageDifference = processedData.maxGmxAprForNativeToken.sub(processedData.gmxAprForNativeToken);
 
-  const maxBoostBasicPoints = useMaxBoostBasicPoints();
+  const aprUpdateMsg = t`APRs are updated weekly on Wednesday and will depend on the fees collected for the week.`;
+
+  if (!isActive) {
+    return (
+      <>
+        <StatsTooltipRow label={t`Base ${nativeTokenSymbol} APR`} showDollar={false} value={`${gmxAprPercentage}%`} />
+        <StatsTooltipRow
+          label={t`Max. ${nativeTokenSymbol} APR`}
+          showDollar={false}
+          value={`${maxGmxAprPercentage}%`}
+        />
+        <br />
+        {aprUpdateMsg}
+        <br />
+      </>
+    );
+  }
 
   return (
     <>
@@ -36,16 +56,12 @@ export default function GMXAprTooltip({ processedData, nativeTokenSymbol }: Prop
         <StatsTooltipRow
           label={t`${nativeTokenSymbol} APR`}
           showDollar={false}
-          value={`${formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true)}%`}
+          value={`${gmxAprPercentage}% - ${maxGmxAprPercentage}%`}
         />
       )}
       {processedData?.gmxBoostAprForNativeToken?.gt(0) ? (
         <div>
-          <StatsTooltipRow
-            label={t`${nativeTokenSymbol} Base APR`}
-            showDollar={false}
-            value={`${formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true)}%`}
-          />
+          <StatsTooltipRow label={t`${nativeTokenSymbol} Base APR`} showDollar={false} value={`${gmxAprPercentage}%`} />
           <StatsTooltipRow
             label={t`${nativeTokenSymbol} Boosted APR`}
             showDollar={false}
@@ -63,21 +79,17 @@ export default function GMXAprTooltip({ processedData, nativeTokenSymbol }: Prop
             </>
           )}
           <br />
-          <Trans>The Boosted APR is from your staked Multiplier Points.</Trans>
+          <Trans>
+            The Boosted APR is from your staked Multiplier Points. Earn an extra{" "}
+            {formatAmount(maxGmxAprPercentageDifference, 2, 2, true)}% APR by increasing your MPs.
+          </Trans>
         </div>
       ) : (
         escrowedGMXApr
       )}
       <div>
         <br />
-        <Trans>APRs are updated weekly on Wednesday and will depend on the fees collected for the week.</Trans>
-        <br />
-        <br />
-
-        <Trans>
-          Max. {nativeTokenSymbol} APR with {formatAmount(maxBoostBasicPoints, 2, 0)}% Boost for this week:{" "}
-          {formatKeyAmount(processedData, "maxGmxAprForNativeToken", 2, 2, true)}%.
-        </Trans>
+        {aprUpdateMsg}
       </div>
     </>
   );
