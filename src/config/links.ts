@@ -33,3 +33,7 @@ export function getLeaderboardLink(chainId) {
   }
   return "https://www.gmx.house";
 }
+
+export const DOCS_LINKS = {
+  multiplierPoints: "https://docs.gmx.io/docs/tokenomics/rewards/#multiplier-points",
+};

@@ -1,5 +1,7 @@
 import { t, Trans } from "@lingui/macro";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { DOCS_LINKS } from "config/links";
 import { BigNumber } from "ethers";
 import { formatKeyAmount, formatAmount } from "lib/numbers";
 
@@ -30,7 +32,9 @@ export default function GMXAprTooltip({ processedData, nativeTokenSymbol, isUser
   const escrowedGMXApr = renderEscrowedGMXApr(processedData);
   const gmxAprPercentage = formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true);
   const maxGmxAprPercentage = formatKeyAmount(processedData, "maxGmxAprForNativeToken", 2, 2, true);
-  const maxGmxAprPercentageDifference = processedData.maxGmxAprForNativeToken.sub(processedData.gmxAprForNativeToken);
+  const maxGmxAprPercentageDifference = processedData.maxGmxAprForNativeToken.sub(
+    processedData.gmxAprForNativeTokenWithBoost
+  );
 
   const aprUpdateMsg = t`APRs are updated weekly on Wednesday and will depend on the fees collected for the week.`;
 
@@ -44,49 +48,51 @@ export default function GMXAprTooltip({ processedData, nativeTokenSymbol, isUser
           value={`${maxGmxAprPercentage}%`}
         />
         <br />
-        {aprUpdateMsg}
+        <Trans>
+          Max. {nativeTokenSymbol} APR is calculated with the max. 200% Boost Percentage by staking{" "}
+          <ExternalLink href={DOCS_LINKS.multiplierPoints}>Multiplier Points</ExternalLink>.
+        </Trans>
         <br />
+        <br />
+        {aprUpdateMsg}
       </>
     );
   }
 
   return (
     <>
-      {(!processedData.gmxBoostAprForNativeToken || processedData.gmxBoostAprForNativeToken.eq(0)) && (
+      <div>
+        <StatsTooltipRow label={t`${nativeTokenSymbol} Base APR`} showDollar={false} value={`${gmxAprPercentage}%`} />
         <StatsTooltipRow
-          label={t`${nativeTokenSymbol} APR`}
+          label={t`${nativeTokenSymbol} Boosted APR`}
           showDollar={false}
-          value={`${gmxAprPercentage}% - ${maxGmxAprPercentage}%`}
+          value={`${formatKeyAmount(processedData, "gmxBoostAprForNativeToken", 2, 2, true)}%`}
         />
-      )}
-      {processedData?.gmxBoostAprForNativeToken?.gt(0) ? (
-        <div>
-          <StatsTooltipRow label={t`${nativeTokenSymbol} Base APR`} showDollar={false} value={`${gmxAprPercentage}%`} />
-          <StatsTooltipRow
-            label={t`${nativeTokenSymbol} Boosted APR`}
-            showDollar={false}
-            value={`${formatKeyAmount(processedData, "gmxBoostAprForNativeToken", 2, 2, true)}%`}
-          />
-          <div className="Tooltip-divider" />
-          <StatsTooltipRow
-            label={t`${nativeTokenSymbol} Total APR`}
-            showDollar={false}
-            value={`${formatKeyAmount(processedData, "gmxAprForNativeTokenWithBoost", 2, 2, true)}%`}
-          />
-          {escrowedGMXApr && (
-            <>
-              <br /> {escrowedGMXApr}
-            </>
-          )}
-          <br />
+        <div className="Tooltip-divider" />
+        <StatsTooltipRow
+          label={t`${nativeTokenSymbol} Total APR`}
+          showDollar={false}
+          value={`${formatKeyAmount(processedData, "gmxAprForNativeTokenWithBoost", 2, 2, true)}%`}
+        />
+        {escrowedGMXApr && (
+          <>
+            <br /> {escrowedGMXApr}
+          </>
+        )}
+        <br />
+
+        {processedData.gmxBoostAprForNativeToken?.gt(0) ? (
           <Trans>
             The Boosted APR is from your staked Multiplier Points. Earn an extra{" "}
             {formatAmount(maxGmxAprPercentageDifference, 2, 2, true)}% APR by increasing your MPs.
           </Trans>
-        </div>
-      ) : (
-        escrowedGMXApr
-      )}
+        ) : (
+          <Trans>
+            Earn an extra {formatAmount(maxGmxAprPercentageDifference, 2, 2, true)}% {nativeTokenSymbol} Boosted APR by
+            increasing your staked <ExternalLink href={DOCS_LINKS.multiplierPoints}>Multiplier Points</ExternalLink>.
+          </Trans>
+        )}
+      </div>
       <div>
         <br />
         {aprUpdateMsg}
