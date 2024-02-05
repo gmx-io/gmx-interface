@@ -345,13 +345,13 @@ export function GmList({
                         />
                       </div>
                       <div>
-                        {MintableAmount({
-                          mintableInfo,
-                          market,
-                          token,
-                          longToken,
-                          shortToken,
-                        })}
+                        <MintableAmount
+                          mintableInfo={mintableInfo}
+                          market={market}
+                          token={token}
+                          longToken={longToken}
+                          shortToken={shortToken}
+                        />
                       </div>
                     </div>
                     <div className="App-card-row">
