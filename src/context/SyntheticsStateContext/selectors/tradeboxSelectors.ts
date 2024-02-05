@@ -84,6 +84,7 @@ export const selectTradeboxIncreasePositionAmounts = createEnhancedSelector((q) 
   const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigNumber.from(0);
   const leverage = BigNumber.from(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
   const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
+  const positionKey = q(selectTradeboxSelectedPositionKey);
 
   const selector = makeSelectIncreasePositionAmounts({
     collateralTokenAddress,
@@ -94,7 +95,7 @@ export const selectTradeboxIncreasePositionAmounts = createEnhancedSelector((q) 
     initialCollateralTokenAddress: fromTokenAddress,
     leverage,
     marketAddress,
-    positionKey: undefined,
+    positionKey,
     strategy: isLeverageEnabled ? (focusedInput === "from" ? "leverageByCollateral" : "leverageBySize") : "independent",
     tradeMode,
     tradeType,
@@ -114,6 +115,7 @@ export const selectTradeboxDecreasePositionAmounts = createEnhancedSelector((q) 
   const closeSizeInputValue = q(selectTradeboxCloseSizeInputValue);
   const keepLeverage = q(selectTradeboxKeepLeverage);
   const selectedTriggerAcceptablePriceImpactBps = q(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
+  const positionKey = q(selectTradeboxSelectedPositionKey);
 
   const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
   const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
@@ -125,7 +127,7 @@ export const selectTradeboxDecreasePositionAmounts = createEnhancedSelector((q) 
     collateralTokenAddress: collateralTokenAddress,
     fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
     marketAddress,
-    positionKey: undefined,
+    positionKey,
     tradeMode,
     tradeType,
     triggerPrice,
@@ -243,6 +245,7 @@ export const selectTradeboxNextPositionValuesForIncrease = createEnhancedSelecto
   const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
   const selectedTriggerAcceptablePriceImpactBps = q(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
   const triggerPriceInputValue = q(selectTradeboxTriggerPriceInputValue);
+  const positionKey = q(selectTradeboxSelectedPositionKey);
 
   const tradeFlags = createTradeFlags(tradeType, tradeMode);
   const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
@@ -260,7 +263,7 @@ export const selectTradeboxNextPositionValuesForIncrease = createEnhancedSelecto
     initialCollateralTokenAddress: fromTokenAddress,
     leverage,
     marketAddress,
-    positionKey: undefined,
+    positionKey,
     increaseStrategy: isLeverageEnabled
       ? focusedInput === "from"
         ? "leverageByCollateral"
@@ -284,6 +287,7 @@ export const selectTradeboxNextPositionValuesForDecrease = createEnhancedSelecto
   const closeSizeInputValue = q(selectTradeboxCloseSizeInputValue);
   const keepLeverage = q(selectTradeboxKeepLeverage);
   const selectedTriggerAcceptablePriceImpactBps = q(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
+  const positionKey = q(selectTradeboxSelectedPositionKey);
 
   const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
   const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
@@ -292,7 +296,7 @@ export const selectTradeboxNextPositionValuesForDecrease = createEnhancedSelecto
     collateralTokenAddress: collateralTokenAddress,
     fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
     marketAddress,
-    positionKey: undefined,
+    positionKey,
     tradeMode,
     tradeType,
     triggerPrice,

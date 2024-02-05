@@ -240,6 +240,10 @@ export function TradeBox(p: Props) {
   const existingOrder = useTradeboxExistingOrder();
   const leverage = useTradeboxLeverage();
 
+  const nextPositionValues = useMemo(() => {
+    return tradeFlags.isIncrease ? nextPositionValuesForIncrease : nextPositionValuesForDecrease;
+  }, [nextPositionValuesForDecrease, nextPositionValuesForIncrease, tradeFlags.isIncrease]);
+
   const { fees, feesType, executionFee } = useMemo(() => {
     if (!gasLimits || !gasPrice || !tokensData) {
       return {};
@@ -1061,10 +1065,10 @@ export function TradeBox(p: Props) {
             className="SwapBox-info-row"
             label={t`Leverage`}
             value={
-              nextPositionValuesForIncrease?.nextLeverage && increaseAmounts?.sizeDeltaUsd.gt(0) ? (
+              nextPositionValues?.nextLeverage && increaseAmounts?.sizeDeltaUsd.gt(0) ? (
                 <ValueTransition
                   from={formatLeverage(selectedPosition?.leverage)}
-                  to={formatLeverage(nextPositionValuesForIncrease?.nextLeverage) || "-"}
+                  to={formatLeverage(nextPositionValues?.nextLeverage) || "-"}
                 />
               ) : (
                 formatLeverage(isLeverageEnabled ? leverage : increaseAmounts?.estimatedLeverage) || "-"
@@ -1086,7 +1090,7 @@ export function TradeBox(p: Props) {
               ) : (
                 <ValueTransition
                   from={formatLeverage(selectedPosition.leverage)}
-                  to={formatLeverage(nextPositionValuesForIncrease?.nextLeverage)}
+                  to={formatLeverage(nextPositionValues?.nextLeverage)}
                 />
               )
             }
@@ -1111,12 +1115,12 @@ export function TradeBox(p: Props) {
           className="SwapBox-info-row"
           label={t`Entry Price`}
           value={
-            nextPositionValuesForIncrease?.nextEntryPrice || selectedPosition?.entryPrice ? (
+            nextPositionValues?.nextEntryPrice || selectedPosition?.entryPrice ? (
               <ValueTransition
                 from={formatUsd(selectedPosition?.entryPrice, {
                   displayDecimals: toToken?.priceDecimals,
                 })}
-                to={formatUsd(nextPositionValuesForIncrease?.nextEntryPrice, {
+                to={formatUsd(nextPositionValues?.nextEntryPrice, {
                   displayDecimals: toToken?.priceDecimals,
                 })}
               />
@@ -1142,7 +1146,7 @@ export function TradeBox(p: Props) {
               }
               to={
                 increaseAmounts?.sizeDeltaUsd.gt(0)
-                  ? formatLiquidationPrice(nextPositionValuesForIncrease?.nextLiqPrice, {
+                  ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
                       displayDecimals: toToken?.priceDecimals,
                     })
                   : selectedPosition
@@ -1212,7 +1216,7 @@ export function TradeBox(p: Props) {
                   decreaseAmounts?.isFullClose
                     ? "-"
                     : decreaseAmounts?.sizeDeltaUsd.gt(0)
-                    ? formatLiquidationPrice(nextPositionValuesForIncrease?.nextLiqPrice, {
+                    ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
                         displayDecimals: toToken?.priceDecimals,
                       })
                     : undefined
@@ -1235,7 +1239,7 @@ export function TradeBox(p: Props) {
             value={
               <ValueTransition
                 from={formatUsd(selectedPosition.sizeInUsd)!}
-                to={formatUsd(nextPositionValuesForIncrease?.nextSizeUsd)}
+                to={formatUsd(nextPositionValues?.nextSizeUsd)}
               />
             }
           />
@@ -1254,8 +1258,8 @@ export function TradeBox(p: Props) {
                 to={
                   decreaseAmounts?.sizeDeltaUsd.gt(0) ? (
                     <>
-                      {formatDeltaUsd(nextPositionValuesForIncrease?.nextPnl)} (
-                      {formatPercentage(nextPositionValuesForIncrease?.nextPnlPercentage, { signed: true })})
+                      {formatDeltaUsd(nextPositionValues?.nextPnl)} (
+                      {formatPercentage(nextPositionValues?.nextPnlPercentage, { signed: true })})
                     </>
                   ) : undefined
                 }
@@ -1269,7 +1273,7 @@ export function TradeBox(p: Props) {
           value={
             <ValueTransition
               from={formatUsd(selectedPosition?.collateralUsd)}
-              to={formatUsd(nextPositionValuesForIncrease?.nextCollateralUsd)}
+              to={formatUsd(nextPositionValues?.nextCollateralUsd)}
             />
           }
         />
