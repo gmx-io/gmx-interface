@@ -12,11 +12,11 @@ import {
   selectTradeboxSetActivePosition,
   selectTradeboxTradeType,
   selectTradeboxSetToTokenAddress,
-  makeSelectTradeboxSwapAmounts,
-  makeSelectTradeboxIncreasePositionAmounts,
-  makeSelectTradeboxDecreasePositionAmounts,
-  makeSelectTradeboxNextPositionValuesForIncrease,
-  makeSelectTradeboxNextPositionValuesForDecrease,
+  selectTradeboxIncreasePositionAmounts,
+  selectTradeboxDecreasePositionAmounts,
+  selectTradeboxSwapAmounts,
+  selectTradeboxNextPositionValuesForIncrease,
+  selectTradeboxNextPositionValuesForDecrease,
 } from "../selectors/tradeboxSelectors";
 import { useSelector } from "../utils";
 
@@ -34,13 +34,8 @@ export const useTradeboxSetActivePosition = () => useSelector(selectTradeboxSetA
 export const useTradeboxTradeType = () => useSelector(selectTradeboxTradeType);
 export const useTradeboxSetToTokenAddress = () => useSelector(selectTradeboxSetToTokenAddress);
 
-// TODO this will work normally after PositionSeller and PositionEditor is migrated to global state
-export const useTradeboxSwapAmounts = () => useSelector((s) => makeSelectTradeboxSwapAmounts(s)(s));
-export const useTradeboxNextPositionValuesForIncrease = () =>
-  useSelector((s) => makeSelectTradeboxNextPositionValuesForIncrease(s)(s));
-export const useTradeboxNextPositionValuesForDecrease = () =>
-  useSelector((s) => makeSelectTradeboxNextPositionValuesForDecrease(s)(s));
-export const useTradeboxIncreasePositionAmounts = () =>
-  useSelector((s) => makeSelectTradeboxIncreasePositionAmounts(s)(s));
-export const useTradeboxDecreasePositionAmounts = () =>
-  useSelector((s) => makeSelectTradeboxDecreasePositionAmounts(s)(s));
+export const useTradeboxSwapAmounts = () => useSelector(selectTradeboxSwapAmounts);
+export const useTradeboxNextPositionValuesForIncrease = () => useSelector(selectTradeboxNextPositionValuesForIncrease);
+export const useTradeboxNextPositionValuesForDecrease = () => useSelector(selectTradeboxNextPositionValuesForDecrease);
+export const useTradeboxIncreasePositionAmounts = () => useSelector(selectTradeboxIncreasePositionAmounts);
+export const useTradeboxDecreasePositionAmounts = () => useSelector(selectTradeboxDecreasePositionAmounts);

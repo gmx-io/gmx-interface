@@ -13,7 +13,7 @@ import {
 } from "./tradeSelectors";
 import { USD_DECIMALS, getPositionKey } from "lib/legacy";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
-import { createSelector } from "../utils";
+import { createEnhancedSelector, createSelector } from "../utils";
 import { isSwapOrderType } from "domain/synthetics/orders";
 
 const selectOnlyOnTradeboxPage = <T>(s: SyntheticsTradeState, selection: T) =>
@@ -52,152 +52,107 @@ export const selectTradeboxKeepLeverage = (s: SyntheticsTradeState) => s.tradebo
 export const selectTradeboxSetActivePosition = (s: SyntheticsTradeState) => s.tradebox.setActivePosition;
 export const selectTradeboxSetToTokenAddress = (s: SyntheticsTradeState) => s.tradebox.setToTokenAddress;
 
-export const makeSelectTradeboxIncreasePositionAmounts = createSelector(
-  [
-    selectTokensData,
-    selectTradeboxTradeMode,
-    selectTradeboxTradeType,
-    selectTradeboxFromTokenAddress,
-    selectTradeboxFromTokenInputValue,
-    selectTradeboxToTokenAddress,
-    selectTradeboxToTokenInputValue,
-    selectTradeboxMarketAddress,
-    selectTradeboxLeverageOption,
-    selectTradeboxIsLeverageEnabled,
-    selectTradeboxFocusedInput,
-    selectTradeboxCollateralTokenAddress,
-    selectTradeboxSelectedTriggerAcceptablePriceImpactBps,
-    selectTradeboxTriggerPriceInputValue,
-  ],
-  (
-    tokensData,
+export const selectTradeboxIncreasePositionAmounts = createEnhancedSelector((q) => {
+  const tokensData = q(selectTokensData);
+  const tradeMode = q(selectTradeboxTradeMode);
+  const tradeType = q(selectTradeboxTradeType);
+  const fromTokenAddress = q(selectTradeboxFromTokenAddress);
+  const fromTokenInputValue = q(selectTradeboxFromTokenInputValue);
+  const toTokenAddress = q(selectTradeboxToTokenAddress);
+  const toTokenInputValue = q(selectTradeboxToTokenInputValue);
+  const marketAddress = q(selectTradeboxMarketAddress);
+  const leverageOption = q(selectTradeboxLeverageOption);
+  const isLeverageEnabled = q(selectTradeboxIsLeverageEnabled);
+  const focusedInput = q(selectTradeboxFocusedInput);
+  const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
+  const selectedTriggerAcceptablePriceImpactBps = q(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
+  const triggerPriceInputValue = q(selectTradeboxTriggerPriceInputValue);
+
+  const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
+  const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
+  const toToken = toTokenAddress ? getByKey(tokensData, toTokenAddress) : undefined;
+  const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigNumber.from(0);
+  const leverage = BigNumber.from(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
+  const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
+
+  const selector = makeSelectIncreasePositionAmounts({
+    collateralTokenAddress,
+    fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
+    indexTokenAddress: toTokenAddress,
+    indexTokenAmount: toTokenAmount,
+    initialCollateralAmount: fromTokenAmount,
+    initialCollateralTokenAddress: fromTokenAddress,
+    leverage,
+    marketAddress,
+    positionKey: undefined,
+    strategy: isLeverageEnabled ? (focusedInput === "from" ? "leverageByCollateral" : "leverageBySize") : "independent",
     tradeMode,
     tradeType,
-    fromTokenAddress,
-    fromTokenInputValue,
-    toTokenAddress,
-    toTokenInputValue,
+    triggerPrice,
+  });
+
+  return q(selector);
+});
+
+export const selectTradeboxDecreasePositionAmounts = createEnhancedSelector((q) => {
+  const tradeMode = q(selectTradeboxTradeMode);
+  const tradeType = q(selectTradeboxTradeType);
+  const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
+  const marketAddress = q(selectTradeboxMarketAddress);
+  const triggerPriceInputValue = q(selectTradeboxTriggerPriceInputValue);
+  const closeSizeInputValue = q(selectTradeboxCloseSizeInputValue);
+  const keepLeverage = q(selectTradeboxKeepLeverage);
+  const selectedTriggerAcceptablePriceImpactBps = q(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
+
+  const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
+  const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
+
+  if (typeof keepLeverage === "undefined")
+    throw new Error("selectTradeboxDecreasePositionAmounts: keepLeverage is undefined");
+
+  const selector = makeSelectDecreasePositionAmounts({
+    collateralTokenAddress: collateralTokenAddress,
+    fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
     marketAddress,
-    leverageOption,
-    isLeverageEnabled,
-    focusedInput,
-    collateralTokenAddress,
-    selectedTriggerAcceptablePriceImpactBps,
-    triggerPriceInputValue
-  ) => {
-    const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
-    const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
-    const toToken = toTokenAddress ? getByKey(tokensData, toTokenAddress) : undefined;
-    const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigNumber.from(0);
-    const leverage = BigNumber.from(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
-    const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
-    const selector = makeSelectIncreasePositionAmounts({
-      collateralTokenAddress,
-      fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
-      indexTokenAddress: toTokenAddress,
-      indexTokenAmount: toTokenAmount,
-      initialCollateralAmount: fromTokenAmount,
-      initialCollateralTokenAddress: fromTokenAddress,
-      leverage,
-      marketAddress,
-      positionKey: undefined,
-      strategy: isLeverageEnabled
-        ? focusedInput === "from"
-          ? "leverageByCollateral"
-          : "leverageBySize"
-        : "independent",
-      tradeMode,
-      tradeType,
-      triggerPrice,
-    });
-
-    return (s: SyntheticsTradeState) => selector(s);
-  }
-);
-
-export const makeSelectTradeboxDecreasePositionAmounts = createSelector(
-  [
-    selectTradeboxTradeMode,
-    selectTradeboxTradeType,
-    selectTradeboxCollateralTokenAddress,
-    selectTradeboxMarketAddress,
-    selectTradeboxTriggerPriceInputValue,
-    selectTradeboxCloseSizeInputValue,
-    selectTradeboxKeepLeverage,
-    selectTradeboxSelectedTriggerAcceptablePriceImpactBps,
-  ],
-  (
+    positionKey: undefined,
     tradeMode,
     tradeType,
-    collateralTokenAddress,
-    marketAddress,
-    triggerPriceInputValue,
-    closeSizeInputValue,
+    triggerPrice,
+    closeSizeUsd,
     keepLeverage,
-    selectedTriggerAcceptablePriceImpactBps
-  ) => {
-    const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
-    const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
+  });
 
-    if (typeof keepLeverage === "undefined")
-      throw new Error("selectTradeboxDecreasePositionAmounts: keepLeverage is undefined");
+  return q(selector);
+});
 
-    const selector = makeSelectDecreasePositionAmounts({
-      collateralTokenAddress: collateralTokenAddress,
-      fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
-      marketAddress,
-      positionKey: undefined,
-      tradeMode,
-      tradeType,
-      triggerPrice,
-      closeSizeUsd,
-      keepLeverage,
-    });
+export const selectTradeboxSwapAmounts = createEnhancedSelector((q) => {
+  const tokensData = q(selectTokensData);
+  const tradeMode = q(selectTradeboxTradeMode);
+  const fromTokenAddress = q(selectTradeboxFromTokenAddress);
+  const fromTokenInputValue = q(selectTradeboxFromTokenInputValue);
+  const toTokenAddress = q(selectTradeboxToTokenAddress);
+  const toTokenInputValue = q(selectTradeboxToTokenInputValue);
+  const triggerRatioInputValue = q(selectTradeboxTriggerRatioInputValue);
+  const amountBy = q(selectTradeboxFocusedInput);
 
-    return (s: SyntheticsTradeState) => selector(s);
-  }
-);
-
-export const makeSelectTradeboxSwapAmounts = createSelector(
-  [
-    selectTokensData,
-    selectTradeboxTradeMode,
-    selectTradeboxFromTokenAddress,
-    selectTradeboxFromTokenInputValue,
-    selectTradeboxToTokenAddress,
-    selectTradeboxToTokenInputValue,
-    selectTradeboxTriggerRatioInputValue,
-    selectTradeboxFocusedInput,
-  ],
-  (
-    tokensData,
-    tradeMode,
+  const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
+  const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
+  const toToken = toTokenAddress ? getByKey(tokensData, toTokenAddress) : undefined;
+  const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigNumber.from(0);
+  const triggerRatioValue = parseValue(triggerRatioInputValue, USD_DECIMALS);
+  const selector = makeSelectSwapAmounts({
+    amountBy,
     fromTokenAddress,
-    fromTokenInputValue,
+    fromTokenAmount,
+    isWrapOrUnwrap: false,
     toTokenAddress,
-    toTokenInputValue,
-    triggerRatioInputValue,
-    amountBy
-  ) => {
-    const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
-    const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
-    const toToken = toTokenAddress ? getByKey(tokensData, toTokenAddress) : undefined;
-    const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigNumber.from(0);
-    const triggerRatioValue = parseValue(triggerRatioInputValue, USD_DECIMALS);
-    const selector = makeSelectSwapAmounts({
-      amountBy,
-      fromTokenAddress,
-      fromTokenAmount,
-      isWrapOrUnwrap: false,
-      toTokenAddress,
-      toTokenAmount,
-      tradeMode,
-      triggerRatioValue,
-    });
+    toTokenAmount,
+    tradeMode,
+    triggerRatioValue,
+  });
 
-    return (s: SyntheticsTradeState) => selector(s);
-  }
-);
+  return q(selector);
+});
 
 export const selectTradeboxTradeFlags = createSelector(
   [selectTradeboxTradeType, selectTradeboxTradeMode],
@@ -211,104 +166,78 @@ export const selectTradeboxLeverage = createSelector([selectTradeboxLeverageOpti
   BigNumber.from(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)))
 );
 
-export const makeSelectTradeboxNextPositionValuesForIncrease = createSelector(
-  [
-    selectTokensData,
-    selectTradeboxTradeMode,
-    selectTradeboxTradeType,
-    selectTradeboxFromTokenAddress,
-    selectTradeboxFromTokenInputValue,
-    selectTradeboxToTokenAddress,
-    selectTradeboxToTokenInputValue,
-    selectTradeboxMarketAddress,
-    selectTradeboxLeverage,
-    selectTradeboxIsLeverageEnabled,
-    selectTradeboxFocusedInput,
-    selectTradeboxCollateralTokenAddress,
-    selectTradeboxTriggerPriceInputValue,
-    selectTradeboxSelectedTriggerAcceptablePriceImpactBps,
-  ],
-  (
-    tokensData,
-    tradeMode,
-    tradeType,
-    fromTokenAddress,
-    fromTokenInputValue,
-    toTokenAddress,
-    toTokenInputValue,
-    marketAddress,
+export const selectTradeboxNextPositionValuesForIncrease = createEnhancedSelector((q) => {
+  const tokensData = q(selectTokensData);
+  const tradeMode = q(selectTradeboxTradeMode);
+  const tradeType = q(selectTradeboxTradeType);
+  const fromTokenAddress = q(selectTradeboxFromTokenAddress);
+  const fromTokenInputValue = q(selectTradeboxFromTokenInputValue);
+  const toTokenAddress = q(selectTradeboxToTokenAddress);
+  const toTokenInputValue = q(selectTradeboxToTokenInputValue);
+  const marketAddress = q(selectTradeboxMarketAddress);
+  const leverageOption = q(selectTradeboxLeverageOption);
+  const isLeverageEnabled = q(selectTradeboxIsLeverageEnabled);
+  const focusedInput = q(selectTradeboxFocusedInput);
+  const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
+  const selectedTriggerAcceptablePriceImpactBps = q(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
+  const triggerPriceInputValue = q(selectTradeboxTriggerPriceInputValue);
+
+  const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
+  const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
+  const toToken = toTokenAddress ? getByKey(tokensData, toTokenAddress) : undefined;
+  const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigNumber.from(0);
+  const leverage = BigNumber.from(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
+  const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
+  const selector = makeSelectNextPositionValuesForIncrease({
+    collateralTokenAddress,
+    fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
+    indexTokenAddress: toTokenAddress,
+    indexTokenAmount: toTokenAmount,
+    initialCollateralAmount: fromTokenAmount,
+    initialCollateralTokenAddress: fromTokenAddress,
     leverage,
-    isLeverageEnabled,
-    focusedInput,
-    collateralTokenAddress,
-    triggerPriceInputValue,
-    selectedTriggerAcceptablePriceImpactBps
-  ) => {
-    const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
-    const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
-    const toToken = toTokenAddress ? getByKey(tokensData, toTokenAddress) : undefined;
-    const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigNumber.from(0);
-    const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
-
-    return makeSelectNextPositionValuesForIncrease({
-      collateralTokenAddress,
-      fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
-      indexTokenAddress: toTokenAddress,
-      indexTokenAmount: toTokenAmount,
-      initialCollateralAmount: fromTokenAmount,
-      initialCollateralTokenAddress: fromTokenAddress,
-      leverage,
-      marketAddress,
-      positionKey: undefined,
-      increaseStrategy: isLeverageEnabled
-        ? focusedInput === "from"
-          ? "leverageByCollateral"
-          : "leverageBySize"
-        : "independent",
-      tradeMode,
-      tradeType,
-      triggerPrice,
-    });
-  }
-);
-
-export const makeSelectTradeboxNextPositionValuesForDecrease = createSelector(
-  [
-    selectTradeboxTradeMode,
-    selectTradeboxTradeType,
-    selectTradeboxMarketAddress,
-    selectTradeboxCollateralTokenAddress,
-    selectTradeboxTriggerPriceInputValue,
-    selectTradeboxCloseSizeInputValue,
-    selectTradeboxKeepLeverage,
-    selectTradeboxSelectedTriggerAcceptablePriceImpactBps,
-  ],
-  (
+    marketAddress,
+    positionKey: undefined,
+    increaseStrategy: isLeverageEnabled
+      ? focusedInput === "from"
+        ? "leverageByCollateral"
+        : "leverageBySize"
+      : "independent",
     tradeMode,
     tradeType,
-    marketAddress,
-    collateralTokenAddress,
-    triggerPriceInputValue,
-    closeSizeInputValue,
-    keepLeverage,
-    selectedTriggerAcceptablePriceImpactBps
-  ) => {
-    const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
-    const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
+    triggerPrice,
+  });
 
-    return makeSelectNextPositionValuesForDecrease({
-      collateralTokenAddress,
-      fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
-      marketAddress,
-      positionKey: undefined,
-      tradeMode,
-      tradeType,
-      triggerPrice,
-      closeSizeUsd,
-      keepLeverage,
-    });
-  }
-);
+  return q(selector);
+});
+
+export const selectTradeboxNextPositionValuesForDecrease = createEnhancedSelector((q) => {
+  const tradeMode = q(selectTradeboxTradeMode);
+  const tradeType = q(selectTradeboxTradeType);
+  const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
+  const marketAddress = q(selectTradeboxMarketAddress);
+  const triggerPriceInputValue = q(selectTradeboxTriggerPriceInputValue);
+  const closeSizeInputValue = q(selectTradeboxCloseSizeInputValue);
+  const keepLeverage = q(selectTradeboxKeepLeverage);
+  const selectedTriggerAcceptablePriceImpactBps = q(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
+
+  const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
+  const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
+
+  const selector = makeSelectNextPositionValuesForDecrease({
+    collateralTokenAddress: collateralTokenAddress,
+    fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
+    marketAddress,
+    positionKey: undefined,
+    tradeMode,
+    tradeType,
+    triggerPrice,
+    closeSizeUsd,
+    keepLeverage,
+  });
+
+  return q(selector);
+});
 
 export const selectTradeboxSelectedPositionKey = createSelector(
   [selectAccount, selectTradeboxCollateralTokenAddress, selectTradeboxMarketAddress, selectTradeboxTradeFlags],
