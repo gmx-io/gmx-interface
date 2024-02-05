@@ -5,7 +5,8 @@ import {
   createTradeFlags,
   makeSelectDecreasePositionAmounts,
   makeSelectIncreasePositionAmounts,
-  makeSelectNextPositionValues,
+  makeSelectNextPositionValuesForDecrease,
+  makeSelectNextPositionValuesForIncrease,
   makeSelectSwapAmounts,
   makeSelectSwapRoutes,
   makeSelectTradeRatios,
@@ -126,7 +127,7 @@ export const useDecreasePositionAmounts = ({
   return useSelector(selector);
 };
 
-export const useNextPositionValues = ({
+export const useNextPositionValuesForIncrease = ({
   collateralTokenAddress,
   fixedAcceptablePriceImpactBps,
   initialCollateralTokenAddress,
@@ -140,8 +141,6 @@ export const useNextPositionValues = ({
   tradeMode,
   tradeType,
   triggerPrice,
-  closeSizeUsd,
-  keepLeverage,
 }: {
   initialCollateralTokenAddress: string | undefined;
   indexTokenAddress: string | undefined;
@@ -156,12 +155,10 @@ export const useNextPositionValues = ({
   triggerPrice: BigNumber | undefined;
   fixedAcceptablePriceImpactBps: BigNumber | undefined;
   strategy: "leverageByCollateral" | "leverageBySize" | "independent";
-  closeSizeUsd: BigNumber | undefined;
-  keepLeverage: boolean;
 }) => {
   const selector = useMemo(
     () =>
-      makeSelectNextPositionValues({
+      makeSelectNextPositionValuesForIncrease({
         collateralTokenAddress,
         fixedAcceptablePriceImpactBps,
         initialCollateralTokenAddress,
@@ -175,6 +172,57 @@ export const useNextPositionValues = ({
         tradeMode,
         tradeType,
         triggerPrice,
+      }),
+    [
+      collateralTokenAddress,
+      fixedAcceptablePriceImpactBps,
+      indexTokenAddress,
+      indexTokenAmount,
+      initialCollateralAmount,
+      initialCollateralTokenAddress,
+      leverage,
+      marketAddress,
+      positionKey,
+      strategy,
+      tradeMode,
+      tradeType,
+      triggerPrice,
+    ]
+  );
+  return useSelector(selector);
+};
+
+export const useNextPositionValuesForDecrease = ({
+  closeSizeUsd,
+  collateralTokenAddress,
+  fixedAcceptablePriceImpactBps,
+  keepLeverage,
+  marketAddress,
+  positionKey,
+  tradeMode,
+  tradeType,
+  triggerPrice,
+}: {
+  closeSizeUsd: BigNumber | undefined;
+  collateralTokenAddress: string | undefined;
+  fixedAcceptablePriceImpactBps: BigNumber | undefined;
+  keepLeverage: boolean;
+  marketAddress: string | undefined;
+  positionKey: string | undefined;
+  tradeMode: TradeMode;
+  tradeType: TradeType;
+  triggerPrice: BigNumber | undefined;
+}) => {
+  const selector = useMemo(
+    () =>
+      makeSelectNextPositionValuesForDecrease({
+        collateralTokenAddress,
+        fixedAcceptablePriceImpactBps,
+        marketAddress,
+        positionKey,
+        tradeMode,
+        tradeType,
+        triggerPrice,
         closeSizeUsd,
         keepLeverage,
       }),
@@ -182,15 +230,9 @@ export const useNextPositionValues = ({
       closeSizeUsd,
       collateralTokenAddress,
       fixedAcceptablePriceImpactBps,
-      indexTokenAddress,
-      indexTokenAmount,
-      initialCollateralAmount,
-      initialCollateralTokenAddress,
       keepLeverage,
-      leverage,
       marketAddress,
       positionKey,
-      strategy,
       tradeMode,
       tradeType,
       triggerPrice,

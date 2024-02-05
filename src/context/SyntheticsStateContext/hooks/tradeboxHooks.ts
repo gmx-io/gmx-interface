@@ -13,9 +13,10 @@ import {
   selectTradeboxTradeType,
   selectTradeboxSetToTokenAddress,
   makeSelectTradeboxSwapAmounts,
-  makeSelectTradeboxNextPositionValues,
   makeSelectTradeboxIncreasePositionAmounts,
   makeSelectTradeboxDecreasePositionAmounts,
+  makeSelectTradeboxNextPositionValuesForIncrease,
+  makeSelectTradeboxNextPositionValuesForDecrease,
 } from "../selectors/tradeboxSelectors";
 import { useSelector } from "../utils";
 
@@ -35,7 +36,10 @@ export const useTradeboxSetToTokenAddress = () => useSelector(selectTradeboxSetT
 
 // TODO this will work normally after PositionSeller and PositionEditor is migrated to global state
 export const useTradeboxSwapAmounts = () => useSelector((s) => makeSelectTradeboxSwapAmounts(s)(s));
-export const useTradeboxNextPositionValues = () => useSelector((s) => makeSelectTradeboxNextPositionValues(s)(s));
+export const useTradeboxNextPositionValuesForIncrease = () =>
+  useSelector((s) => makeSelectTradeboxNextPositionValuesForIncrease(s)(s));
+export const useTradeboxNextPositionValuesForDecrease = () =>
+  useSelector((s) => makeSelectTradeboxNextPositionValuesForDecrease(s)(s));
 export const useTradeboxIncreasePositionAmounts = () =>
   useSelector((s) => makeSelectTradeboxIncreasePositionAmounts(s)(s));
 export const useTradeboxDecreasePositionAmounts = () =>

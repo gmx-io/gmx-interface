@@ -23,7 +23,8 @@ import {
   useTradeboxExistingOrder,
   useTradeboxIncreasePositionAmounts,
   useTradeboxLeverage,
-  useTradeboxNextPositionValues,
+  useTradeboxNextPositionValuesForDecrease,
+  useTradeboxNextPositionValuesForIncrease,
   useTradeboxSelectedPosition,
   useTradeboxState,
   useTradeboxSwapAmounts,
@@ -233,7 +234,8 @@ export function TradeBox(p: Props) {
   const swapAmounts = useTradeboxSwapAmounts();
   const increaseAmounts = useTradeboxIncreasePositionAmounts();
   const decreaseAmounts = useTradeboxDecreasePositionAmounts();
-  const nextPositionValues = useTradeboxNextPositionValues();
+  const nextPositionValuesForIncrease = useTradeboxNextPositionValuesForIncrease();
+  const nextPositionValuesForDecrease = useTradeboxNextPositionValuesForDecrease();
   const selectedPosition = useTradeboxSelectedPosition();
   const existingOrder = useTradeboxExistingOrder();
   const leverage = useTradeboxLeverage();
@@ -471,7 +473,7 @@ export function TradeBox(p: Props) {
         triggerPrice,
         priceImpactWarning: priceImpactWarningState,
         isLimit,
-        nextPositionValues,
+        nextPositionValues: nextPositionValuesForIncrease,
       });
     } else if (isTrigger) {
       tradeError = getDecreaseError({
@@ -483,7 +485,7 @@ export function TradeBox(p: Props) {
         existingPosition: selectedPosition,
         isContractAccount: false,
         receiveToken: selectedPosition?.collateralToken,
-        nextPositionValues,
+        nextPositionValues: nextPositionValuesForDecrease,
         isLong,
         isTrigger: true,
         minCollateralUsd,
@@ -534,6 +536,7 @@ export function TradeBox(p: Props) {
     swapAmounts?.swapPathStats,
     toTokenAmount,
     swapOutLiquidity,
+    priceImpactWarningState,
     isLimit,
     isWrapOrUnwrap,
     triggerRatio,
@@ -552,10 +555,10 @@ export function TradeBox(p: Props) {
     isLong,
     markPrice,
     triggerPrice,
-    priceImpactWarningState,
-    nextPositionValues,
+    nextPositionValuesForIncrease,
     closeSizeUsd,
     decreaseAmounts?.sizeDeltaUsd,
+    nextPositionValuesForDecrease,
     stage,
     fixedTriggerThresholdType,
   ]);
@@ -1058,10 +1061,10 @@ export function TradeBox(p: Props) {
             className="SwapBox-info-row"
             label={t`Leverage`}
             value={
-              nextPositionValues?.nextLeverage && increaseAmounts?.sizeDeltaUsd.gt(0) ? (
+              nextPositionValuesForIncrease?.nextLeverage && increaseAmounts?.sizeDeltaUsd.gt(0) ? (
                 <ValueTransition
                   from={formatLeverage(selectedPosition?.leverage)}
-                  to={formatLeverage(nextPositionValues?.nextLeverage) || "-"}
+                  to={formatLeverage(nextPositionValuesForIncrease?.nextLeverage) || "-"}
                 />
               ) : (
                 formatLeverage(isLeverageEnabled ? leverage : increaseAmounts?.estimatedLeverage) || "-"
@@ -1083,7 +1086,7 @@ export function TradeBox(p: Props) {
               ) : (
                 <ValueTransition
                   from={formatLeverage(selectedPosition.leverage)}
-                  to={formatLeverage(nextPositionValues?.nextLeverage)}
+                  to={formatLeverage(nextPositionValuesForIncrease?.nextLeverage)}
                 />
               )
             }
@@ -1108,12 +1111,12 @@ export function TradeBox(p: Props) {
           className="SwapBox-info-row"
           label={t`Entry Price`}
           value={
-            nextPositionValues?.nextEntryPrice || selectedPosition?.entryPrice ? (
+            nextPositionValuesForIncrease?.nextEntryPrice || selectedPosition?.entryPrice ? (
               <ValueTransition
                 from={formatUsd(selectedPosition?.entryPrice, {
                   displayDecimals: toToken?.priceDecimals,
                 })}
-                to={formatUsd(nextPositionValues?.nextEntryPrice, {
+                to={formatUsd(nextPositionValuesForIncrease?.nextEntryPrice, {
                   displayDecimals: toToken?.priceDecimals,
                 })}
               />
@@ -1139,7 +1142,7 @@ export function TradeBox(p: Props) {
               }
               to={
                 increaseAmounts?.sizeDeltaUsd.gt(0)
-                  ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
+                  ? formatLiquidationPrice(nextPositionValuesForIncrease?.nextLiqPrice, {
                       displayDecimals: toToken?.priceDecimals,
                     })
                   : selectedPosition
@@ -1209,7 +1212,7 @@ export function TradeBox(p: Props) {
                   decreaseAmounts?.isFullClose
                     ? "-"
                     : decreaseAmounts?.sizeDeltaUsd.gt(0)
-                    ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
+                    ? formatLiquidationPrice(nextPositionValuesForIncrease?.nextLiqPrice, {
                         displayDecimals: toToken?.priceDecimals,
                       })
                     : undefined
@@ -1232,7 +1235,7 @@ export function TradeBox(p: Props) {
             value={
               <ValueTransition
                 from={formatUsd(selectedPosition.sizeInUsd)!}
-                to={formatUsd(nextPositionValues?.nextSizeUsd)}
+                to={formatUsd(nextPositionValuesForIncrease?.nextSizeUsd)}
               />
             }
           />
@@ -1251,8 +1254,8 @@ export function TradeBox(p: Props) {
                 to={
                   decreaseAmounts?.sizeDeltaUsd.gt(0) ? (
                     <>
-                      {formatDeltaUsd(nextPositionValues?.nextPnl)} (
-                      {formatPercentage(nextPositionValues?.nextPnlPercentage, { signed: true })})
+                      {formatDeltaUsd(nextPositionValuesForIncrease?.nextPnl)} (
+                      {formatPercentage(nextPositionValuesForIncrease?.nextPnlPercentage, { signed: true })})
                     </>
                   ) : undefined
                 }
@@ -1266,7 +1269,7 @@ export function TradeBox(p: Props) {
           value={
             <ValueTransition
               from={formatUsd(selectedPosition?.collateralUsd)}
-              to={formatUsd(nextPositionValues?.nextCollateralUsd)}
+              to={formatUsd(nextPositionValuesForIncrease?.nextCollateralUsd)}
             />
           }
         />

@@ -1,18 +1,18 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useClaimCollateralHistory } from "domain/synthetics/claimHistory";
+import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
+import { PositionsInfoData } from "domain/synthetics/positions";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 import { useCallback, useState } from "react";
-import { ClaimHistoryRow } from "../ClaimHistoryRow/ClaimHistoryRow";
-import { ClaimableCard } from "./ClaimableCard";
-import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
-import { PositionsInfoData } from "domain/synthetics/positions";
 import { useMedia } from "react-use";
 import { AccruedPositionPriceImpactRebateModal } from "../AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal";
+import { ClaimHistoryRow } from "../ClaimHistoryRow/ClaimHistoryRow";
 import { ClaimModal } from "../ClaimModal/ClaimModal";
 import { ClaimablePositionPriceImpactRebateModal } from "../ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal";
 import { SettleAccruedFundingFeeModal } from "../SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal";
+import { ClaimableCard } from "./ClaimableCard";
 import "./Claims.scss";
 import { SettleAccruedCard } from "./SettleAccruedCard";
 

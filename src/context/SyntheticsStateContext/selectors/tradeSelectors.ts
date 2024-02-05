@@ -484,7 +484,135 @@ export const makeSelectSwapAmounts = ({
     }
   );
 
-export const makeSelectNextPositionValues = ({
+// export const makeSelectNextPositionValues = ({
+//   collateralTokenAddress,
+//   fixedAcceptablePriceImpactBps,
+//   initialCollateralTokenAddress,
+//   initialCollateralAmount,
+//   leverage,
+//   marketAddress,
+//   positionKey,
+//   increaseStrategy,
+//   indexTokenAddress,
+//   indexTokenAmount,
+//   tradeMode,
+//   tradeType,
+//   triggerPrice,
+//   closeSizeUsd,
+//   keepLeverage,
+// }: {
+//   initialCollateralTokenAddress: string | undefined;
+//   indexTokenAddress: string | undefined;
+//   positionKey: string | undefined;
+//   tradeMode: TradeMode;
+//   tradeType: TradeType;
+//   collateralTokenAddress: string | undefined;
+//   marketAddress: string | undefined;
+//   initialCollateralAmount: BigNumber;
+//   indexTokenAmount: BigNumber | undefined;
+//   leverage: BigNumber | undefined;
+//   triggerPrice: BigNumber | undefined;
+//   fixedAcceptablePriceImpactBps: BigNumber | undefined;
+//   increaseStrategy: "leverageByCollateral" | "leverageBySize" | "independent";
+//   closeSizeUsd: BigNumber | undefined;
+//   keepLeverage: boolean | undefined;
+// }) =>
+//   createSelector(
+//     [
+//       selectPositionConstants,
+//       selectMarketsInfoData,
+//       selectTokensData,
+//       makeSelectIncreasePositionAmounts({
+//         collateralTokenAddress,
+//         fixedAcceptablePriceImpactBps,
+//         initialCollateralTokenAddress,
+//         initialCollateralAmount,
+//         leverage,
+//         marketAddress,
+//         positionKey,
+//         strategy: increaseStrategy,
+//         indexTokenAddress,
+//         indexTokenAmount,
+//         tradeMode,
+//         tradeType,
+//         triggerPrice,
+//       }),
+//       makeSelectDecreasePositionAmounts({
+//         closeSizeUsd,
+//         collateralTokenAddress,
+//         fixedAcceptablePriceImpactBps,
+//         keepLeverage,
+//         marketAddress,
+//         positionKey,
+//         tradeMode,
+//         tradeType,
+//         triggerPrice,
+//       }),
+//       selectPositionsInfoData,
+//       selectSavedIsPnlInLeverage,
+//       selectUserReferralInfo,
+//     ],
+//     (
+//       { minCollateralUsd },
+//       marketsInfoData,
+//       tokensData,
+//       increaseAmounts,
+//       decreaseAmounts,
+//       positionsInfoData,
+//       savedIsPnlInLeverage,
+//       userReferralInfo
+//     ) => {
+//       const tradeFlags = createTradeFlags(tradeType, tradeMode);
+//       const marketInfo = getByKey(marketsInfoData, marketAddress);
+//       const collateralToken = collateralTokenAddress ? getByKey(tokensData, collateralTokenAddress) : undefined;
+//       const position = positionKey ? getByKey(positionsInfoData, positionKey) : undefined;
+
+//       if (!tradeFlags.isPosition || !minCollateralUsd || !marketInfo || !collateralToken) {
+//         return undefined;
+//       }
+
+//       if (!closeSizeUsd) throw new Error("makeSelectNextPositionValues: closeSizeUsd is undefined");
+
+//       if (tradeFlags.isIncrease && increaseAmounts?.acceptablePrice && initialCollateralAmount.gt(0)) {
+//         return getNextPositionValuesForIncreaseTrade({
+//           marketInfo,
+//           collateralToken,
+//           existingPosition: position,
+//           isLong: tradeFlags.isLong,
+//           collateralDeltaUsd: increaseAmounts.collateralDeltaUsd,
+//           collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
+//           sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+//           sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
+//           indexPrice: increaseAmounts.indexPrice,
+//           showPnlInLeverage: savedIsPnlInLeverage,
+//           minCollateralUsd,
+//           userReferralInfo,
+//         });
+//       }
+
+//       if (tradeFlags.isTrigger && decreaseAmounts?.acceptablePrice && closeSizeUsd.gt(0)) {
+//         return getNextPositionValuesForDecreaseTrade({
+//           existingPosition: position,
+//           marketInfo,
+//           collateralToken,
+//           sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
+//           sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
+//           estimatedPnl: decreaseAmounts.estimatedPnl,
+//           realizedPnl: decreaseAmounts.realizedPnl,
+//           collateralDeltaUsd: decreaseAmounts.collateralDeltaUsd,
+//           collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount,
+//           payedRemainingCollateralUsd: decreaseAmounts.payedRemainingCollateralUsd,
+//           payedRemainingCollateralAmount: decreaseAmounts.payedRemainingCollateralAmount,
+//           showPnlInLeverage: savedIsPnlInLeverage,
+//           isLong: tradeFlags.isLong,
+//           minCollateralUsd,
+//           userReferralInfo,
+//         });
+//       }
+//     }
+//   );
+
+export const makeSelectNextPositionValuesForIncrease = ({
   collateralTokenAddress,
   fixedAcceptablePriceImpactBps,
   initialCollateralTokenAddress,
@@ -498,8 +626,6 @@ export const makeSelectNextPositionValues = ({
   tradeMode,
   tradeType,
   triggerPrice,
-  closeSizeUsd,
-  keepLeverage,
 }: {
   initialCollateralTokenAddress: string | undefined;
   indexTokenAddress: string | undefined;
@@ -514,8 +640,6 @@ export const makeSelectNextPositionValues = ({
   triggerPrice: BigNumber | undefined;
   fixedAcceptablePriceImpactBps: BigNumber | undefined;
   increaseStrategy: "leverageByCollateral" | "leverageBySize" | "independent";
-  closeSizeUsd: BigNumber | undefined;
-  keepLeverage: boolean | undefined;
 }) =>
   createSelector(
     [
@@ -537,6 +661,73 @@ export const makeSelectNextPositionValues = ({
         tradeType,
         triggerPrice,
       }),
+      selectPositionsInfoData,
+      selectSavedIsPnlInLeverage,
+      selectUserReferralInfo,
+    ],
+    (
+      { minCollateralUsd },
+      marketsInfoData,
+      tokensData,
+      increaseAmounts,
+      positionsInfoData,
+      savedIsPnlInLeverage,
+      userReferralInfo
+    ) => {
+      const tradeFlags = createTradeFlags(tradeType, tradeMode);
+      const marketInfo = getByKey(marketsInfoData, marketAddress);
+      const collateralToken = collateralTokenAddress ? getByKey(tokensData, collateralTokenAddress) : undefined;
+      const position = positionKey ? getByKey(positionsInfoData, positionKey) : undefined;
+
+      if (!tradeFlags.isPosition || !minCollateralUsd || !marketInfo || !collateralToken) {
+        return undefined;
+      }
+
+      if (tradeFlags.isIncrease && increaseAmounts?.acceptablePrice && initialCollateralAmount.gt(0)) {
+        return getNextPositionValuesForIncreaseTrade({
+          marketInfo,
+          collateralToken,
+          existingPosition: position,
+          isLong: tradeFlags.isLong,
+          collateralDeltaUsd: increaseAmounts.collateralDeltaUsd,
+          collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
+          sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+          sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
+          indexPrice: increaseAmounts.indexPrice,
+          showPnlInLeverage: savedIsPnlInLeverage,
+          minCollateralUsd,
+          userReferralInfo,
+        });
+      }
+    }
+  );
+
+export const makeSelectNextPositionValuesForDecrease = ({
+  closeSizeUsd,
+  collateralTokenAddress,
+  fixedAcceptablePriceImpactBps,
+  keepLeverage,
+  marketAddress,
+  positionKey,
+  tradeMode,
+  tradeType,
+  triggerPrice,
+}: {
+  closeSizeUsd: BigNumber | undefined;
+  collateralTokenAddress: string | undefined;
+  fixedAcceptablePriceImpactBps: BigNumber | undefined;
+  keepLeverage: boolean | undefined;
+  marketAddress: string | undefined;
+  positionKey: string | undefined;
+  tradeMode: TradeMode;
+  tradeType: TradeType;
+  triggerPrice: BigNumber | undefined;
+}) =>
+  createSelector(
+    [
+      selectPositionConstants,
+      selectMarketsInfoData,
+      selectTokensData,
       makeSelectDecreasePositionAmounts({
         closeSizeUsd,
         collateralTokenAddress,
@@ -556,7 +747,6 @@ export const makeSelectNextPositionValues = ({
       { minCollateralUsd },
       marketsInfoData,
       tokensData,
-      increaseAmounts,
       decreaseAmounts,
       positionsInfoData,
       savedIsPnlInLeverage,
@@ -571,24 +761,7 @@ export const makeSelectNextPositionValues = ({
         return undefined;
       }
 
-      if (!closeSizeUsd) throw new Error("makeSelectNextPositionValues: closeSizeUsd is undefined");
-
-      if (tradeFlags.isIncrease && increaseAmounts?.acceptablePrice && initialCollateralAmount.gt(0)) {
-        return getNextPositionValuesForIncreaseTrade({
-          marketInfo,
-          collateralToken,
-          existingPosition: position,
-          isLong: tradeFlags.isLong,
-          collateralDeltaUsd: increaseAmounts.collateralDeltaUsd,
-          collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
-          sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
-          sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
-          indexPrice: increaseAmounts.indexPrice,
-          showPnlInLeverage: savedIsPnlInLeverage,
-          minCollateralUsd,
-          userReferralInfo,
-        });
-      }
+      if (!closeSizeUsd) throw new Error("makeSelectNextPositionValuesForDecrease: closeSizeUsd is undefined");
 
       if (tradeFlags.isTrigger && decreaseAmounts?.acceptablePrice && closeSizeUsd.gt(0)) {
         return getNextPositionValuesForDecreaseTrade({
