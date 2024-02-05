@@ -12,7 +12,7 @@ type Props = {
     gmxBoostAprForNativeToken?: BigNumber;
   };
   nativeTokenSymbol: string;
-  isActive: boolean;
+  isUserConnected: boolean;
 };
 
 function renderEscrowedGMXApr(processedData) {
@@ -26,7 +26,7 @@ function renderEscrowedGMXApr(processedData) {
   );
 }
 
-export default function GMXAprTooltip({ processedData, nativeTokenSymbol, isActive = false }: Props) {
+export default function GMXAprTooltip({ processedData, nativeTokenSymbol, isUserConnected = false }: Props) {
   const escrowedGMXApr = renderEscrowedGMXApr(processedData);
   const gmxAprPercentage = formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true);
   const maxGmxAprPercentage = formatKeyAmount(processedData, "maxGmxAprForNativeToken", 2, 2, true);
@@ -34,7 +34,7 @@ export default function GMXAprTooltip({ processedData, nativeTokenSymbol, isActi
 
   const aprUpdateMsg = t`APRs are updated weekly on Wednesday and will depend on the fees collected for the week.`;
 
-  if (!isActive) {
+  if (!isUserConnected) {
     return (
       <>
         <StatsTooltipRow label={t`Base ${nativeTokenSymbol} APR`} showDollar={false} value={`${gmxAprPercentage}%`} />

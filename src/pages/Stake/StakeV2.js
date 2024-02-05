@@ -1681,7 +1681,11 @@ export default function StakeV2({ setPendingTxns }) {
                       handle={`${formatKeyAmount(processedData, "gmxAprTotalWithBoost", 2, 2, true)}%`}
                       position="right-bottom"
                       renderContent={() => (
-                        <GMXAprTooltip processedData={processedData} nativeTokenSymbol={nativeTokenSymbol} isActive />
+                        <GMXAprTooltip
+                          processedData={processedData}
+                          nativeTokenSymbol={nativeTokenSymbol}
+                          isUserConnected
+                        />
                       )}
                     />
                   </div>
@@ -2101,7 +2105,11 @@ export default function StakeV2({ setPendingTxns }) {
                       handle={`${formatKeyAmount(processedData, "gmxAprTotalWithBoost", 2, 2, true)}%`}
                       position="right-bottom"
                       renderContent={() => (
-                        <GMXAprTooltip processedData={processedData} nativeTokenSymbol={nativeTokenSymbol} isActive />
+                        <GMXAprTooltip
+                          processedData={processedData}
+                          nativeTokenSymbol={nativeTokenSymbol}
+                          isUserConnected
+                        />
                       )}
                     />
                   </div>
