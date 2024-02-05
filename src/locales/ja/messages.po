@@ -4843,10 +4843,6 @@ msgstr ""
 msgid "The Bonus Rebate will be airdropped as ARB tokens on a pro-rata basis. <0>Read more</0>."
 msgstr ""
 
-#: src/components/Stake/GMXAprTooltip.tsx
-msgid "The Boosted APR is from your staked Multiplier Points. Earn an extra {0}% APR by increasing your MPs."
-msgstr ""
-
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
 msgstr ""
