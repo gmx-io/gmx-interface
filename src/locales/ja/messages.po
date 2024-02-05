@@ -2727,6 +2727,7 @@ msgstr "ロード中"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -2771,19 +2772,7 @@ msgid "Long Positions"
 msgstr "ロングポジション"
 
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-msgid "Long Positions Net Fee"
-msgstr ""
-
-#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 msgid "Long Positions pay a Borrow Fee of <0>{0}</0> per hour."
-msgstr ""
-
-#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-msgid "Long Positions pay a Funding Fee of <0>{0}</0> per hour."
-msgstr ""
-
-#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-msgid "Long Positions receive a Funding Fee of <0>{0}</0> per hour."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -4324,6 +4313,7 @@ msgstr "ポジションをシェアする"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -4368,19 +4358,7 @@ msgid "Short Positions"
 msgstr "ショートポジション"
 
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-msgid "Short Positions Net Fee"
-msgstr ""
-
-#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 msgid "Short Positions do not pay a Borrow Fee."
-msgstr ""
-
-#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-msgid "Short Positions pay a Funding Fee of <0>{0}</0> per hour."
-msgstr ""
-
-#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-msgid "Short Positions receive a Funding Fee of <0>{0}</0> per hour."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -6060,6 +6038,14 @@ msgstr "流動性"
 msgid "not staked"
 msgstr "ステークされていない"
 
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "pay"
+msgstr ""
+
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "receive"
+msgstr ""
+
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "size"
 msgstr "サイズ"
@@ -6126,6 +6112,10 @@ msgstr "{0} GMXトークンを請求可能です。総報酬セクションの�
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "{0} Pool Capacity Reached"
 msgstr "{0}のプールキャパシティに到達しました"
+
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "{0} Positions Net Fee"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -6268,6 +6258,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "{longOrShortText} {0} market selected"
+msgstr ""
+
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "{longOrShort} Positions {receiveOrPay} a Funding Fee of <0>{0}</0> per hour."
 msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx

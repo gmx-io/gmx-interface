@@ -1,3 +1,4 @@
+import "./MarketCard.scss";
 import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -14,14 +15,12 @@ import {
   isMarketAdaptiveFundingActive,
 } from "domain/synthetics/markets";
 import { CHART_PERIODS } from "lib/legacy";
-import { formatAmount, formatPercentage, formatUsd, getBasisPoints } from "lib/numbers";
+import { formatPercentage, formatRatePercentage, formatUsd, getBasisPoints } from "lib/numbers";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { ShareBar } from "components/ShareBar/ShareBar";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
 import { useCallback, useMemo } from "react";
-import "./MarketCard.scss";
-import { getPlusOrMinusSymbol } from "lib/utils";
 import MarketNetFee from "../MarketNetFee/MarketNetFee";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { DOCS_LINKS } from "config/links";
@@ -70,7 +69,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
   }, [marketInfo, isLong]);
   const fundingRate = isLong ? fundingRateLong : fundingRateShort;
   const borrowingRate = isLong ? borrowingRateLong : borrowingRateShort;
-  const netRate = fundingRate?.add(borrowingRate?.mul(-1) ?? 0);
+  const netRateHourly = fundingRate?.add(borrowingRate ?? 0);
   const indexName = marketInfo && getMarketIndexName(marketInfo);
   const poolName = marketInfo && getMarketPoolName(marketInfo);
 
@@ -189,9 +188,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
           value={
             <TooltipWithPortal
               portalClassName="MarketCard-net-fee"
-              handle={
-                netRate ? `${getPlusOrMinusSymbol(netRate)}${formatAmount(netRate.abs().mul(100), 30, 4)}% / 1h` : "..."
-              }
+              handle={netRateHourly ? `${formatRatePercentage(netRateHourly)} / 1h` : "..."}
               position="right-bottom"
               renderContent={renderFundingFeeTooltipContent}
             />

@@ -6,38 +6,25 @@ import { getPositiveOrNegativeClass } from "lib/utils";
 
 type Props = {
   fundingRateHourly: BigNumber;
-  isLong: boolean;
   borrowRateHourly: BigNumber;
+  isLong: boolean;
 };
 
 export default function MarketNetFee({ borrowRateHourly = BN_ZERO, fundingRateHourly = BN_ZERO, isLong }: Props) {
   const netFeeHourly = borrowRateHourly.add(fundingRateHourly);
   const borrowRateClassName = getPositiveOrNegativeClass(borrowRateHourly);
   const fundingRateClassName = getPositiveOrNegativeClass(fundingRateHourly);
-  const fundingMsgLong =
-    isLong && fundingRateHourly.gte(0) ? (
+
+  function generateFundingMessage() {
+    const receiveOrPay = isLong === fundingRateHourly.gte(0) ? t`receive` : t`pay`;
+    const longOrShort = isLong ? t`Long` : t`Short`;
+    return (
       <Trans>
-        Long Positions receive a Funding Fee of{" "}
-        <span className={fundingRateClassName}>{formatRatePercentage(fundingRateHourly)}</span> per hour.
-      </Trans>
-    ) : (
-      <Trans>
-        Long Positions pay a Funding Fee of{" "}
-        <span className={fundingRateClassName}>{formatRatePercentage(fundingRateHourly)}</span> per hour.
-      </Trans>
-    );
-  const fundingMsgShort =
-    !isLong && fundingRateHourly.gte(0) ? (
-      <Trans>
-        Short Positions receive a Funding Fee of{" "}
-        <span className={fundingRateClassName}>{formatRatePercentage(fundingRateHourly)}</span> per hour.
-      </Trans>
-    ) : (
-      <Trans>
-        Short Positions pay a Funding Fee of{" "}
+        {longOrShort} Positions {receiveOrPay} a Funding Fee of{" "}
         <span className={fundingRateClassName}>{formatRatePercentage(fundingRateHourly)}</span> per hour.
       </Trans>
     );
+  }
 
   const borrowingMsgLong = (
     <Trans>
@@ -48,36 +35,18 @@ export default function MarketNetFee({ borrowRateHourly = BN_ZERO, fundingRateHo
 
   const borrowingMsgShort = t`Short Positions do not pay a Borrow Fee.`;
 
-  if (isLong) {
-    return (
-      <>
-        <div className="mb-xs">{fundingMsgLong}</div>
-        <div>{borrowingMsgLong}</div>
-        <br />
-        <StatsTooltipRow
-          showDollar={false}
-          label={t`Long Positions Net Fee`}
-          value={renderNetFeesOverTime(netFeeHourly)}
-        />
-      </>
-    );
-  }
-
-  if (!isLong) {
-    return (
-      <>
-        <div className="mb-xs">{fundingMsgShort}</div>
-        <div>{borrowingMsgShort}</div>
-        <br />
-        <StatsTooltipRow
-          showDollar={false}
-          label={t`Short Positions Net Fee`}
-          value={renderNetFeesOverTime(netFeeHourly)}
-        />
-      </>
-    );
-  }
-  return <></>;
+  return (
+    <>
+      <div className="mb-xs">{generateFundingMessage()}</div>
+      <div>{isLong ? borrowingMsgLong : borrowingMsgShort}</div>
+      <br />
+      <StatsTooltipRow
+        showDollar={false}
+        label={t`${isLong ? "Long" : "Short"} Positions Net Fee`}
+        value={renderNetFeesOverTime(netFeeHourly)}
+      />
+    </>
+  );
 }
 
 function renderNetFeesOverTime(hourlyRate: BigNumber) {

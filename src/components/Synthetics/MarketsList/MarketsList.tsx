@@ -57,8 +57,6 @@ export function MarketsList() {
           fundingRateShort: BigNumber;
           borrowingRateLong: BigNumber;
           borrowingRateShort: BigNumber;
-          netFeePerHourLong: BigNumber;
-          netFeePerHourShort: BigNumber;
           utilization: BigNumber;
         }[];
       };
@@ -95,8 +93,6 @@ export function MarketsList() {
       const fundingRateShort = getFundingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]);
       const borrowingRateLong = getBorrowingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]).mul(-1);
       const borrowingRateShort = getBorrowingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]).mul(-1);
-      const netFeePerHourLong = fundingRateLong.add(borrowingRateLong);
-      const netFeePerHourShort = fundingRateShort.add(borrowingRateShort);
 
       const [longAvailableLiquidity, longMaxLiquidity] = getAvailableLiquidity(marketInfo, true);
 
@@ -120,8 +116,6 @@ export function MarketsList() {
         poolValueUsd,
         borrowingRateLong,
         borrowingRateShort,
-        netFeePerHourLong,
-        netFeePerHourShort,
       });
     }
 
@@ -227,6 +221,8 @@ export function MarketsList() {
                   const largestPool = stats.marketsStats.sort((a, b) => {
                     return b.poolValueUsd.gt(a.poolValueUsd) ? 1 : -1;
                   })[0];
+                  const netFeePerHourLong = largestPool.fundingRateLong.add(largestPool.borrowingRateLong);
+                  const netFeePerHourShort = largestPool.fundingRateShort.add(largestPool.borrowingRateShort);
 
                   return (
                     <tr key={stats.token.symbol}>
@@ -271,8 +267,8 @@ export function MarketsList() {
                       <td>
                         <TooltipWithPortal
                           portalClassName="MarketList-netfee-tooltip"
-                          handle={`${formatRatePercentage(largestPool.netFeePerHourLong)} / ${formatRatePercentage(
-                            largestPool.netFeePerHourShort
+                          handle={`${formatRatePercentage(netFeePerHourLong)} / ${formatRatePercentage(
+                            netFeePerHourShort
                           )}`}
                           renderContent={renderFundingRateTooltip(stats)}
                         />
@@ -297,6 +293,9 @@ export function MarketsList() {
               const largestPool = stats.marketsStats.sort((a, b) => {
                 return b.poolValueUsd.gt(a.poolValueUsd) ? 1 : -1;
               })[0];
+
+              const netFeePerHourLong = largestPool.fundingRateLong.add(largestPool.borrowingRateLong);
+              const netFeePerHourShort = largestPool.fundingRateShort.add(largestPool.borrowingRateShort);
 
               return (
                 <div className="App-card" key={stats.token.symbol}>
@@ -351,8 +350,8 @@ export function MarketsList() {
                       <div>
                         <TooltipWithPortal
                           portalClassName="MarketList-netfee-tooltip"
-                          handle={`${formatRatePercentage(largestPool.netFeePerHourLong)} / ${formatRatePercentage(
-                            largestPool.netFeePerHourShort
+                          handle={`${formatRatePercentage(netFeePerHourLong)} / ${formatRatePercentage(
+                            netFeePerHourShort
                           )}`}
                           position="right-bottom"
                           renderContent={renderFundingRateTooltip(stats)}

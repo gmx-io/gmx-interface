@@ -2730,6 +2730,7 @@ msgstr "Loading..."
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -2774,20 +2775,8 @@ msgid "Long Positions"
 msgstr "Long Positions"
 
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-msgid "Long Positions Net Fee"
-msgstr "Long Positions Net Fee"
-
-#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 msgid "Long Positions pay a Borrow Fee of <0>{0}</0> per hour."
 msgstr "Long Positions pay a Borrow Fee of <0>{0}</0> per hour."
-
-#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-msgid "Long Positions pay a Funding Fee of <0>{0}</0> per hour."
-msgstr "Long Positions pay a Funding Fee of <0>{0}</0> per hour."
-
-#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-msgid "Long Positions receive a Funding Fee of <0>{0}</0> per hour."
-msgstr "Long Positions receive a Funding Fee of <0>{0}</0> per hour."
 
 #: src/components/Exchange/SwapBox.js
 msgid "Long {0}"
@@ -4327,6 +4316,7 @@ msgstr "Share Position"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -4371,20 +4361,8 @@ msgid "Short Positions"
 msgstr "Short Positions"
 
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-msgid "Short Positions Net Fee"
-msgstr "Short Positions Net Fee"
-
-#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 msgid "Short Positions do not pay a Borrow Fee."
 msgstr "Short Positions do not pay a Borrow Fee."
-
-#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-msgid "Short Positions pay a Funding Fee of <0>{0}</0> per hour."
-msgstr "Short Positions pay a Funding Fee of <0>{0}</0> per hour."
-
-#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-msgid "Short Positions receive a Funding Fee of <0>{0}</0> per hour."
-msgstr "Short Positions receive a Funding Fee of <0>{0}</0> per hour."
 
 #: src/components/Exchange/SwapBox.js
 msgid "Short {0}"
@@ -6065,6 +6043,14 @@ msgstr "in liquidity"
 msgid "not staked"
 msgstr "not staked"
 
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "pay"
+msgstr "pay"
+
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "receive"
+msgstr "receive"
+
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "size"
 msgstr "size"
@@ -6131,6 +6117,10 @@ msgstr "{0} GMX tokens can be claimed, use the options under the Total Rewards s
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "{0} Pool Capacity Reached"
 msgstr "{0} Pool Capacity Reached"
+
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "{0} Positions Net Fee"
+msgstr "{0} Positions Net Fee"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -6277,6 +6267,10 @@ msgstr "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 #: src/components/Exchange/PositionsList.js
 msgid "{longOrShortText} {0} market selected"
 msgstr "{longOrShortText} {0} market selected"
+
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "{longOrShort} Positions {receiveOrPay} a Funding Fee of <0>{0}</0> per hour."
+msgstr "{longOrShort} Positions {receiveOrPay} a Funding Fee of <0>{0}</0> per hour."
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "{longShortText} {0} Open Interest"
