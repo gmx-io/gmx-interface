@@ -1061,6 +1061,26 @@ export function SyntheticsStats() {
                               }
                               showDollar={false}
                             />
+                            <StatsTooltipRow
+                              label="Reserve Factor Longs"
+                              value={formatFactor(market.reserveFactorLong)}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label="Reserve Factor Shorts"
+                              value={formatFactor(market.reserveFactorShort)}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label="Open Interest Reserve Factor Longs"
+                              value={formatFactor(market.openInterestReserveFactorLong)}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label="Open Interest Reserve Factor Shorts"
+                              value={formatFactor(market.openInterestReserveFactorShort)}
+                              showDollar={false}
+                            />
                             <br />
                           </>
                         )}
