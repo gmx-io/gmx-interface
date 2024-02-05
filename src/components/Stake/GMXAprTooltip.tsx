@@ -81,17 +81,10 @@ export default function GMXAprTooltip({ processedData, nativeTokenSymbol, isUser
         )}
         <br />
 
-        {processedData.gmxBoostAprForNativeToken?.gt(0) ? (
-          <Trans>
-            The Boosted APR is from your staked Multiplier Points. Earn an extra{" "}
-            {formatAmount(maxGmxAprPercentageDifference, 2, 2, true)}% APR by increasing your MPs.
-          </Trans>
-        ) : (
-          <Trans>
-            Earn an extra {formatAmount(maxGmxAprPercentageDifference, 2, 2, true)}% {nativeTokenSymbol} Boosted APR by
-            increasing your staked <ExternalLink href={DOCS_LINKS.multiplierPoints}>Multiplier Points</ExternalLink>.
-          </Trans>
-        )}
+        <Trans>
+          Earn an extra {formatAmount(maxGmxAprPercentageDifference, 2, 2, true)}% {nativeTokenSymbol} Boosted APR by
+          increasing your staked <ExternalLink href={DOCS_LINKS.multiplierPoints}>Multiplier Points</ExternalLink>.
+        </Trans>
       </div>
       <div>
         <br />
