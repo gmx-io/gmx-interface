@@ -1,5 +1,11 @@
 import { SyntheticsTradeState } from "../SyntheticsStateContextProvider";
-import { selectAccount, selectOrdersInfoData, selectPositionsInfoData, selectTokensData } from "./globalSelectors";
+import {
+  selectAccount,
+  selectOrdersInfoData,
+  selectPositionsInfoData,
+  selectTokensData,
+  selectUiFeeFactor,
+} from "./globalSelectors";
 import { getByKey } from "lib/objects";
 import { parseValue } from "lib/numbers";
 import { BigNumber } from "ethers";
@@ -9,12 +15,15 @@ import {
   makeSelectIncreasePositionAmounts,
   makeSelectNextPositionValuesForDecrease,
   makeSelectNextPositionValuesForIncrease,
-  makeSelectSwapAmounts,
+  makeSelectSwapRoutes,
+  makeSelectTradeRatios,
 } from "./tradeSelectors";
 import { USD_DECIMALS, getPositionKey } from "lib/legacy";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { createEnhancedSelector, createSelector } from "../utils";
 import { isSwapOrderType } from "domain/synthetics/orders";
+import { SwapAmounts, TradeType, getSwapAmountsByFromValue, getSwapAmountsByToValue } from "domain/synthetics/trade";
+import { convertToUsd } from "domain/synthetics/tokens";
 
 const selectOnlyOnTradeboxPage = <T>(s: SyntheticsTradeState, selection: T) =>
   s.pageType === "trade" ? selection : undefined;
@@ -68,6 +77,7 @@ export const selectTradeboxIncreasePositionAmounts = createEnhancedSelector((q) 
   const selectedTriggerAcceptablePriceImpactBps = q(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
   const triggerPriceInputValue = q(selectTradeboxTriggerPriceInputValue);
 
+  const tradeFlags = createTradeFlags(tradeType, tradeMode);
   const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
   const toToken = toTokenAddress ? getByKey(tokensData, toTokenAddress) : undefined;
@@ -89,6 +99,7 @@ export const selectTradeboxIncreasePositionAmounts = createEnhancedSelector((q) 
     tradeMode,
     tradeType,
     triggerPrice,
+    tokenTypeForSwapRoute: tradeFlags.isPosition ? "collateralToken" : "indexToken",
   });
 
   return q(selector);
@@ -132,26 +143,77 @@ export const selectTradeboxSwapAmounts = createEnhancedSelector((q) => {
   const fromTokenInputValue = q(selectTradeboxFromTokenInputValue);
   const toTokenAddress = q(selectTradeboxToTokenAddress);
   const toTokenInputValue = q(selectTradeboxToTokenInputValue);
-  const triggerRatioInputValue = q(selectTradeboxTriggerRatioInputValue);
   const amountBy = q(selectTradeboxFocusedInput);
+  const uiFeeFactor = q(selectUiFeeFactor);
+  const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
 
   const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
   const toToken = toTokenAddress ? getByKey(tokensData, toTokenAddress) : undefined;
   const toTokenAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals)! : BigNumber.from(0);
-  const triggerRatioValue = parseValue(triggerRatioInputValue, USD_DECIMALS);
-  const selector = makeSelectSwapAmounts({
-    amountBy,
-    fromTokenAddress,
-    fromTokenAmount,
-    isWrapOrUnwrap: false,
-    toTokenAddress,
-    toTokenAmount,
-    tradeMode,
-    triggerRatioValue,
-  });
+  const tradeFlags = createTradeFlags(TradeType.Swap, tradeMode);
+  const isWrapOrUnwrap = q(selectTradeboxIsWrapOrUnwrap);
 
-  return q(selector);
+  const fromTokenPrice = fromToken?.prices.minPrice;
+
+  if (!fromToken || !toToken || !fromTokenPrice) {
+    return undefined;
+  }
+
+  const { findSwapPath } = q(
+    makeSelectSwapRoutes(fromTokenAddress, tradeFlags.isPosition ? collateralTokenAddress : toTokenAddress)
+  );
+  const triggerRatioInputValue = q(selectTradeboxTriggerRatioInputValue);
+  const triggerRatioValue = parseValue(triggerRatioInputValue, USD_DECIMALS);
+
+  const { markRatio, triggerRatio } = q(
+    makeSelectTradeRatios({
+      fromTokenAddress,
+      toTokenAddress,
+      tradeMode,
+      tradeType: TradeType.Swap,
+      triggerRatioValue,
+    })
+  );
+
+  if (isWrapOrUnwrap) {
+    const tokenAmount = amountBy === "from" ? fromTokenAmount : toTokenAmount;
+    const usdAmount = convertToUsd(tokenAmount, fromToken.decimals, fromTokenPrice)!;
+    const price = fromTokenPrice;
+
+    const swapAmounts: SwapAmounts = {
+      amountIn: tokenAmount,
+      usdIn: usdAmount!,
+      amountOut: tokenAmount,
+      usdOut: usdAmount!,
+      swapPathStats: undefined,
+      priceIn: price,
+      priceOut: price,
+      minOutputAmount: tokenAmount,
+    };
+
+    return swapAmounts;
+  } else if (amountBy === "from") {
+    return getSwapAmountsByFromValue({
+      tokenIn: fromToken,
+      tokenOut: toToken,
+      amountIn: fromTokenAmount,
+      triggerRatio: triggerRatio || markRatio,
+      isLimit: tradeFlags.isLimit,
+      findSwapPath: findSwapPath,
+      uiFeeFactor,
+    });
+  } else {
+    return getSwapAmountsByToValue({
+      tokenIn: fromToken,
+      tokenOut: toToken,
+      amountOut: toTokenAmount,
+      triggerRatio: triggerRatio || markRatio,
+      isLimit: tradeFlags.isLimit,
+      findSwapPath: findSwapPath,
+      uiFeeFactor,
+    });
+  }
 });
 
 export const selectTradeboxTradeFlags = createSelector(
@@ -182,6 +244,7 @@ export const selectTradeboxNextPositionValuesForIncrease = createEnhancedSelecto
   const selectedTriggerAcceptablePriceImpactBps = q(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
   const triggerPriceInputValue = q(selectTradeboxTriggerPriceInputValue);
 
+  const tradeFlags = createTradeFlags(tradeType, tradeMode);
   const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : BigNumber.from(0);
   const toToken = toTokenAddress ? getByKey(tokensData, toTokenAddress) : undefined;
@@ -206,6 +269,7 @@ export const selectTradeboxNextPositionValuesForIncrease = createEnhancedSelecto
     tradeMode,
     tradeType,
     triggerPrice,
+    tokenTypeForSwapRoute: tradeFlags.isPosition ? "collateralToken" : "indexToken",
   });
 
   return q(selector);

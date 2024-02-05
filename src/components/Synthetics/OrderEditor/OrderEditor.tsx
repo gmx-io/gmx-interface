@@ -245,6 +245,7 @@ export function OrderEditor(p: Props) {
     tradeMode: isLimitOrderType(p.order.orderType) ? TradeMode.Limit : TradeMode.Trigger,
     tradeType: positionOrder.isLong ? TradeType.Long : TradeType.Short,
     triggerPrice: isLimitOrderType(p.order.orderType) ? triggerPrice : undefined,
+    tokenTypeForSwapRoute: existingPosition ? "collateralToken" : "indexToken",
   });
 
   function getError() {
