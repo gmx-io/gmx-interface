@@ -15,8 +15,8 @@ export default function MarketNetFee({ borrowRateHourly = BN_ZERO, fundingRateHo
   const borrowRateClassName = getPositiveOrNegativeClass(borrowRateHourly);
   const fundingRateClassName = getPositiveOrNegativeClass(fundingRateHourly);
 
-  function generateFundingMessage() {
-    const receiveOrPay = isLong === fundingRateHourly.gte(0) ? t`receive` : t`pay`;
+  function renderFundingMessage() {
+    const receiveOrPay = fundingRateHourly.gte(0) ? t`receive` : t`pay`;
     const longOrShort = isLong ? t`Long` : t`Short`;
     return (
       <Trans>
@@ -25,20 +25,25 @@ export default function MarketNetFee({ borrowRateHourly = BN_ZERO, fundingRateHo
       </Trans>
     );
   }
+  function renderBorrowMessage() {
+    const longOrShort = isLong ? t`Long` : t`Short`;
 
-  const borrowingMsgLong = (
-    <Trans>
-      Long Positions pay a Borrow Fee of{" "}
-      <span className={borrowRateClassName}>{formatRatePercentage(borrowRateHourly)}</span> per hour.
-    </Trans>
-  );
-
-  const borrowingMsgShort = t`Short Positions do not pay a Borrow Fee.`;
+    if (borrowRateHourly.isZero()) {
+      return <Trans>{longOrShort} Positions do not pay a Borrow Fee.</Trans>;
+    } else {
+      return (
+        <Trans>
+          {longOrShort} Positions pay a Borrow Fee of{" "}
+          <span className={borrowRateClassName}>{formatRatePercentage(borrowRateHourly)}</span> per hour.
+        </Trans>
+      );
+    }
+  }
 
   return (
     <>
-      <div className="mb-xs">{generateFundingMessage()}</div>
-      <div>{isLong ? borrowingMsgLong : borrowingMsgShort}</div>
+      <div className="mb-xs">{renderFundingMessage()}</div>
+      <div>{renderBorrowMessage()}</div>
       <br />
       <StatsTooltipRow
         showDollar={false}
@@ -57,10 +62,8 @@ function renderNetFeesOverTime(hourlyRate: BigNumber) {
   return (
     <ul className="net-fees-over-time">
       <li>1h: {formatRateForPeriod(1)}</li>
-      <li>8h: {formatRateForPeriod(8)}</li>
-      <li>24h: {formatRateForPeriod(24)}</li>
-      <li>Weekly: {formatRateForPeriod(24 * 7)}</li>
-      <li>Annualized: {formatRateForPeriod(24 * 365)}</li>
+      <li>7d: {formatRateForPeriod(24 * 7)}</li>
+      <li>365d: {formatRateForPeriod(24 * 365)}</li>
     </ul>
   );
 }
