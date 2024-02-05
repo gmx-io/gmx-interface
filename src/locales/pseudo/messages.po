@@ -2728,6 +2728,7 @@ msgstr ""
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -2769,10 +2770,6 @@ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Long Positions"
-msgstr ""
-
-#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-msgid "Long Positions pay a Borrow Fee of <0>{0}</0> per hour."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -4314,6 +4311,7 @@ msgstr ""
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -4355,10 +4353,6 @@ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Short Positions"
-msgstr ""
-
-#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-msgid "Short Positions do not pay a Borrow Fee."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -6258,6 +6252,14 @@ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "{longOrShortText} {0} market selected"
+msgstr ""
+
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "{longOrShort} Positions do not pay a Borrow Fee."
+msgstr ""
+
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "{longOrShort} Positions pay a Borrow Fee of <0>{0}</0> per hour."
 msgstr ""
 
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
