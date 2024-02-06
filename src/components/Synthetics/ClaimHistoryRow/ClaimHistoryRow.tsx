@@ -26,7 +26,7 @@ type ClaimFundingFeesHistoryRowProps = {
 
 const claimCollateralEventTitles: Record<ClaimCollateralAction["eventName"], string> = {
   [ClaimType.ClaimFunding]: t`Claim Funding Fees`,
-  [ClaimType.ClaimPriceImpact]: t`Claim Price Impact`,
+  [ClaimType.ClaimPriceImpact]: t`Claim Price Impact Rebates`,
 };
 
 export function ClaimHistoryRow({ claimAction }: ClaimHistoryRowProps) {

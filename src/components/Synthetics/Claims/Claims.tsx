@@ -13,29 +13,50 @@ import "./Claims.scss";
 import { useMedia } from "react-use";
 import { SettleAccruedCard } from "./SettleAccruedCard";
 import { PositionsInfoData } from "domain/synthetics/positions";
+import { ClaimModal } from "../ClaimModal/ClaimModal";
+import { SettleAccruedFundingFeeModal } from "../SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal";
+import { AccruedPositionPriceImpactRebateModal } from "../AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal";
+import { ClaimablePositionPriceImpactRebateModal } from "../ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal";
+import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 
 const PAGE_SIZE = 100;
-
-type Props = {
-  shouldShowPaginationButtons: boolean;
-  marketsInfoData: MarketsInfoData | undefined;
-  tokensData: TokensData | undefined;
-  setIsClaiming: (isClaiming: boolean) => void;
-  setIsSettling: (isSettling: boolean) => void;
-  positionsInfoData: PositionsInfoData | undefined;
-};
 
 export function Claims({
   shouldShowPaginationButtons,
   marketsInfoData,
   tokensData,
-  setIsClaiming,
+  isSettling,
   setIsSettling,
   positionsInfoData,
-}: Props) {
+  gettingPendingFeePositionKeys,
+  setGettingPendingFeePositionKeys,
+  setPendingTxns,
+  allowedSlippage,
+  accruedPositionPriceImpactFees,
+  claimablePositionPriceImpactFees,
+}: {
+  shouldShowPaginationButtons: boolean;
+  marketsInfoData: MarketsInfoData | undefined;
+  tokensData: TokensData | undefined;
+  isSettling: boolean;
+  setIsSettling: (v: boolean) => void;
+  positionsInfoData: PositionsInfoData | undefined;
+  gettingPendingFeePositionKeys: string[];
+  setGettingPendingFeePositionKeys: (keys: string[]) => void;
+  setPendingTxns: (txns: any) => void;
+  allowedSlippage: number;
+  accruedPositionPriceImpactFees: RebateInfoItem[];
+  claimablePositionPriceImpactFees: RebateInfoItem[];
+}) {
   const { chainId } = useChainId();
   const { account } = useWallet();
   const [pageIndex, setPageIndex] = useState(0);
+  const [isClaiming, setIsClaiming] = useState(false);
+
+  const [isAccruedPositionPriceImpactRebateModalVisible, setIsAccruedPositionPriceImpactRebateModalVisible] =
+    useState(false);
+  const [isClaimablePositionPriceImpactFeesModalVisible, setIsClaimablePositionPriceImpactFeesModalVisible] =
+    useState(false);
 
   const { claimActions, isLoading } = useClaimCollateralHistory(chainId, {
     marketsInfoData,
@@ -46,65 +67,117 @@ export function Claims({
 
   const isEmpty = !account || claimActions?.length === 0;
 
-  const handleClaimClick = useCallback(() => {
-    setIsClaiming(true);
-  }, [setIsClaiming]);
+  const handleClaimClick = useCallback(() => setIsClaiming(true), [setIsClaiming]);
+  const handleSettleClick = useCallback(() => setIsSettling(true), [setIsSettling]);
+  const handleAccruedPositionPriceImpactRebateClick = useCallback(
+    () => setIsAccruedPositionPriceImpactRebateModalVisible(true),
+    [setIsAccruedPositionPriceImpactRebateModalVisible]
+  );
+  const handleClaimablePositionPriceImpactFeesClick = useCallback(
+    () => setIsClaimablePositionPriceImpactFeesModalVisible(true),
+    [setIsClaimablePositionPriceImpactFeesModalVisible]
+  );
 
-  const handleSettleClick = useCallback(() => {
-    setIsSettling(true);
-  }, [setIsSettling]);
+  const handleSettleCloseClick = useCallback(() => {
+    setGettingPendingFeePositionKeys([]);
+    setIsSettling(false);
+  }, [setGettingPendingFeePositionKeys, setIsSettling]);
+
+  const handleAccruedPositionPriceImpactRebateCloseClick = useCallback(() => {
+    setIsAccruedPositionPriceImpactRebateModalVisible(false);
+  }, []);
+
+  const handleClaimablePositionPriceImpactFeesCloseClick = useCallback(() => {
+    setIsClaimablePositionPriceImpactFeesModalVisible(false);
+  }, []);
 
   const isMobile = useMedia("(max-width: 1100px)");
 
   return (
-    <div className="TradeHistory">
-      {account && isLoading && (
-        <div className="TradeHistoryRow App-box">
-          <Trans>Loading...</Trans>
-        </div>
-      )}
-      <div
-        className={cx("flex", "w-full", {
-          "flex-column": isMobile,
-        })}
-      >
-        {account && !isLoading && (
-          <SettleAccruedCard
-            positionsInfoData={positionsInfoData}
-            onSettleClick={handleSettleClick}
-            style={isMobile ? undefined : { marginRight: 4 }}
-          />
+    <>
+      <ClaimModal
+        marketsInfoData={marketsInfoData}
+        isVisible={isClaiming}
+        onClose={() => setIsClaiming(false)}
+        setPendingTxns={setPendingTxns}
+      />
+      <SettleAccruedFundingFeeModal
+        isVisible={isSettling}
+        positionKeys={gettingPendingFeePositionKeys}
+        positionsInfoData={positionsInfoData}
+        tokensData={tokensData}
+        allowedSlippage={allowedSlippage}
+        setPositionKeys={setGettingPendingFeePositionKeys}
+        setPendingTxns={setPendingTxns}
+        onClose={handleSettleCloseClick}
+      />
+      <AccruedPositionPriceImpactRebateModal
+        isVisible={isAccruedPositionPriceImpactRebateModalVisible}
+        onClose={handleAccruedPositionPriceImpactRebateCloseClick}
+        accruedPositionPriceImpactFees={accruedPositionPriceImpactFees}
+        marketsInfoData={marketsInfoData}
+      />
+
+      <ClaimablePositionPriceImpactRebateModal
+        isVisible={isClaimablePositionPriceImpactFeesModalVisible}
+        onClose={handleClaimablePositionPriceImpactFeesCloseClick}
+        claimablePositionPriceImpactFees={claimablePositionPriceImpactFees}
+        marketsInfoData={marketsInfoData}
+      />
+
+      <div className="TradeHistory">
+        {account && isLoading && (
+          <div className="TradeHistoryRow App-box">
+            <Trans>Loading...</Trans>
+          </div>
         )}
-        {account && !isLoading && (
-          <ClaimableCard
-            marketsInfoData={marketsInfoData}
-            onClaimClick={handleClaimClick}
-            style={isMobile ? undefined : { marginLeft: 4 }}
-          />
+        <div
+          className={cx("flex", "w-full", {
+            "flex-column": isMobile,
+          })}
+        >
+          {account && !isLoading && (
+            <SettleAccruedCard
+              accruedPositionPriceImpactFees={accruedPositionPriceImpactFees}
+              positionsInfoData={positionsInfoData}
+              onSettleClick={handleSettleClick}
+              onAccruedPositionPriceImpactRebateClick={handleAccruedPositionPriceImpactRebateClick}
+              style={isMobile ? undefined : { marginRight: 4 }}
+            />
+          )}
+          {account && !isLoading && (
+            <ClaimableCard
+              claimablePositionPriceImpactFees={claimablePositionPriceImpactFees}
+              marketsInfoData={marketsInfoData}
+              onClaimClick={handleClaimClick}
+              onClaimablePositionPriceImpactFeesClick={handleClaimablePositionPriceImpactFeesClick}
+              style={isMobile ? undefined : { marginLeft: 4 }}
+            />
+          )}
+        </div>
+        {isEmpty && (
+          <div className="TradeHistoryRow App-box">
+            <Trans>No claims yet</Trans>
+          </div>
+        )}
+        {claimActions?.map((claimAction) => (
+          <ClaimHistoryRow key={claimAction.id} claimAction={claimAction} />
+        ))}
+        {shouldShowPaginationButtons && (
+          <div>
+            {pageIndex > 0 && (
+              <button className="App-button-option App-card-option" onClick={() => setPageIndex((old) => old - 1)}>
+                <Trans>Prev</Trans>
+              </button>
+            )}
+            {claimActions && claimActions.length >= PAGE_SIZE && (
+              <button className="App-button-option App-card-option" onClick={() => setPageIndex((old) => old + 1)}>
+                <Trans>Next</Trans>
+              </button>
+            )}
+          </div>
         )}
       </div>
-      {isEmpty && (
-        <div className="TradeHistoryRow App-box">
-          <Trans>No claims yet</Trans>
-        </div>
-      )}
-      {claimActions?.map((claimAction) => (
-        <ClaimHistoryRow key={claimAction.id} claimAction={claimAction} />
-      ))}
-      {shouldShowPaginationButtons && (
-        <div>
-          {pageIndex > 0 && (
-            <button className="App-button-option App-card-option" onClick={() => setPageIndex((old) => old - 1)}>
-              <Trans>Prev</Trans>
-            </button>
-          )}
-          {claimActions && claimActions.length >= PAGE_SIZE && (
-            <button className="App-button-option App-card-option" onClick={() => setPageIndex((old) => old + 1)}>
-              <Trans>Next</Trans>
-            </button>
-          )}
-        </div>
-      )}
-    </div>
+    </>
   );
 }

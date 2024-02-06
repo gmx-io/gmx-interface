@@ -1,10 +1,10 @@
 import { BigNumber } from "ethers";
 
-export function getPositiveOrNegativeClass(value?: BigNumber): string {
+export function getPositiveOrNegativeClass(value?: BigNumber, zeroValue: "" | "text-red" | "text-green" = ""): string {
   if (!value) {
     return "";
   }
-  return value.isZero() ? "" : value.isNegative() ? "text-red" : "text-green";
+  return value.isZero() ? zeroValue : value.isNegative() ? "text-red" : "text-green";
 }
 
 export function getPlusOrMinusSymbol(value?: BigNumber, opts: { showPlusForZero?: boolean } = {}): string {

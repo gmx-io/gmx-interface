@@ -1,7 +1,8 @@
 import { t, Trans } from "@lingui/macro";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { BigNumber } from "ethers";
-import { formatKeyAmount } from "lib/numbers";
+import { formatKeyAmount, formatAmount } from "lib/numbers";
+import { useMaxBoostBasicPoints } from "domain/rewards/useMaxBoostBasisPoints";
 
 type Props = {
   processedData: {
@@ -26,6 +27,9 @@ function renderEscrowedGMXApr(processedData) {
 
 export default function GMXAprTooltip({ processedData, nativeTokenSymbol }: Props) {
   const escrowedGMXApr = renderEscrowedGMXApr(processedData);
+
+  const maxBoostBasicPoints = useMaxBoostBasicPoints();
+
   return (
     <>
       {(!processedData.gmxBoostAprForNativeToken || processedData.gmxBoostAprForNativeToken.eq(0)) && (
@@ -71,7 +75,7 @@ export default function GMXAprTooltip({ processedData, nativeTokenSymbol }: Prop
         <br />
 
         <Trans>
-          Max. {nativeTokenSymbol} APR with 200% Boost for this week:{" "}
+          Max. {nativeTokenSymbol} APR with {formatAmount(maxBoostBasicPoints, 2, 0)}% Boost for this week:{" "}
           {formatKeyAmount(processedData, "maxGmxAprForNativeToken", 2, 2, true)}%.
         </Trans>
       </div>
