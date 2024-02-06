@@ -6,7 +6,7 @@ export default function ExchangeInfoRow(props) {
   return (
     <div className={cx("Exchange-info-row", className, { "top-line": isTop })}>
       <div className="Exchange-info-label">{label}</div>
-      <div className={cx({ "Exchange-info-value-warning": isWarning })}>{children || value}</div>
+      <div className={cx("Exchange-info-value", { "Exchange-info-value-warning": isWarning })}>{children || value}</div>
     </div>
   );
 }

@@ -596,8 +596,12 @@ table.Exchange-list .Exchange-list-item-active {
   grid-template-columns: auto auto;
   font-size: var(--font-sm);
   margin-bottom: 0.465rem;
-  align-items: baseline;
+  align-items: flex-start;
   justify-content: space-between;
+}
+
+.Exchange-info-row .Exchange-info-value {
+  text-align: right;
 }
 
 .Exchange-info-row.top-line {
