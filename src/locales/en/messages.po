@@ -4618,10 +4618,6 @@ msgstr "Swap"
 msgid "Swap Fee"
 msgstr "Swap Fee"
 
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#~ msgid "Swap Fees"
-#~ msgstr "Swap Fees"
-
 #: src/components/Exchange/SwapBox.js
 msgid "Swap Order created!"
 msgstr "Swap Order created!"
@@ -6000,11 +5996,6 @@ msgstr "You will receive at least {toAmountText} if this order is executed. This
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 msgstr "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
-
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#~ msgid "Your position's collateral after deducting fees."
-#~ msgstr "Your position's collateral after deducting fees."
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx

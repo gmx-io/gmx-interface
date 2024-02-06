@@ -4615,10 +4615,6 @@ msgstr "交易"
 msgid "Swap Fee"
 msgstr ""
 
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-#~ msgid "Swap Fees"
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 msgid "Swap Order created!"
 msgstr "创建了交易订单"

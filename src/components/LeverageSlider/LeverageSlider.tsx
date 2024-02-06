@@ -83,7 +83,11 @@ function LeverageSliderHandle({ value, dragging, index, keyValueMap, ...restProp
   const displayValue = keyValueMap[value || 0] ?? DEFAULT_LEVERAGE_KEY;
 
   useEffect(() => {
-    document.body.classList.toggle("dragging", dragging);
+    if (dragging) {
+      document.body.classList.add("dragging");
+    } else {
+      document.body.classList.remove("dragging");
+    }
   }, [dragging]);
 
   return (
