@@ -1,13 +1,20 @@
 import { Trans, t } from "@lingui/macro";
 import Checkbox from "components/Checkbox/Checkbox";
 import { MarketsInfoData } from "domain/synthetics/markets";
-import { OrdersInfoData, isLimitOrderType, isTriggerDecreaseOrderType } from "domain/synthetics/orders";
+import {
+  OrdersInfoData,
+  PositionOrderInfo,
+  SwapOrderInfo,
+  isLimitOrderType,
+  isSwapOrderType,
+  isTriggerDecreaseOrderType,
+} from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { PositionsInfoData } from "domain/synthetics/positions";
 import { TokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { OrderEditor } from "../OrderEditor/OrderEditor";
 import { OrderItem } from "../OrderItem/OrderItem";
 import {
@@ -38,9 +45,35 @@ export function OrderList(p: Props) {
 
   const subaccount = useSubaccount(null);
 
-  const orders = Object.values(p.ordersData || {}).filter(
-    (order) => isLimitOrderType(order.orderType) || isTriggerDecreaseOrderType(order.orderType)
-  );
+  const orders = useMemo(() => {
+    const { swapOrders, positionOrders } = Object.values(p.ordersData || {}).reduce(
+      (acc, order) => {
+        if (isLimitOrderType(order.orderType) || isTriggerDecreaseOrderType(order.orderType)) {
+          if (isSwapOrderType(order.orderType)) {
+            acc.swapOrders.push(order);
+          } else {
+            acc.positionOrders.push(order as PositionOrderInfo);
+          }
+        }
+        return acc;
+      },
+      { swapOrders: [] as SwapOrderInfo[], positionOrders: [] as PositionOrderInfo[] }
+    );
+
+    const sortedPositionOrders = positionOrders.sort((a, b) => {
+      const nameComparison = a.marketInfo.name.localeCompare(b.marketInfo.name);
+      if (nameComparison !== 0) return nameComparison;
+      return a.triggerPrice.sub(b.triggerPrice).isNegative() ? -1 : 1;
+    });
+
+    const sortedSwapOrders = swapOrders.sort((a, b) => {
+      const collateralComparison = a.targetCollateralToken.symbol.localeCompare(b.targetCollateralToken.symbol);
+      if (collateralComparison !== 0) return collateralComparison;
+      return a.minOutputAmount.sub(b.minOutputAmount).isNegative() ? -1 : 1;
+    });
+
+    return [...sortedPositionOrders, ...sortedSwapOrders];
+  }, [p.ordersData]);
 
   const isAllOrdersSelected = orders.length > 0 && orders.every((o) => p.selectedOrdersKeys?.[o.key]);
   const editingOrder = orders.find((o) => o.key === editingOrderKey);
