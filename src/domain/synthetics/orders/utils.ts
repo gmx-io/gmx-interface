@@ -469,7 +469,7 @@ export function sortPositionOrders(orders: PositionOrderInfo[]): PositionOrderIn
   return orders.sort((a, b) => {
     // Compare by market name
     const nameComparison = a.marketInfo.name.localeCompare(b.marketInfo.name);
-    if (nameComparison !== 0) return nameComparison;
+    if (nameComparison) return nameComparison;
 
     // Compare by trigger price
     const triggerPriceComparison = a.triggerPrice.sub(b.triggerPrice);
@@ -477,7 +477,7 @@ export function sortPositionOrders(orders: PositionOrderInfo[]): PositionOrderIn
 
     // Compare by order type
     const orderTypeComparison = a.orderType - b.orderType;
-    if (orderTypeComparison !== 0) return orderTypeComparison;
+    if (orderTypeComparison) return orderTypeComparison;
 
     // Finally, sort by size delta USD
     return b.sizeDeltaUsd.sub(a.sizeDeltaUsd).isNegative() ? -1 : 1;
@@ -488,7 +488,7 @@ export function sortSwapOrders(orders: SwapOrderInfo[]): SwapOrderInfo[] {
   return orders.sort((a, b) => {
     // Compare by target collateral token symbol
     const collateralComparison = a.targetCollateralToken.symbol.localeCompare(b.targetCollateralToken.symbol);
-    if (collateralComparison !== 0) return collateralComparison;
+    if (collateralComparison) return collateralComparison;
 
     // Finally, sort by min output amount
     return a.minOutputAmount.sub(b.minOutputAmount).isNegative() ? -1 : 1;
