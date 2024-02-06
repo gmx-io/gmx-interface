@@ -195,7 +195,7 @@ export function OrderEditor(p: Props) {
   const existingPosition = getByKey(positionsData, positionKey);
 
   const executionFee = useMemo(() => {
-    if (!p.order.isFrozen || !gasLimits || !gasPrice || !tokensData) return undefined;
+    if (!gasLimits || !gasPrice || !tokensData) return undefined;
 
     let estimatedGas: BigNumber | undefined;
 
@@ -220,9 +220,15 @@ export function OrderEditor(p: Props) {
     if (!estimatedGas) return undefined;
 
     return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice);
-  }, [chainId, gasLimits, gasPrice, p.order.isFrozen, p.order.orderType, p.order.swapPath, tokensData]);
+  }, [chainId, gasLimits, gasPrice, p.order.orderType, p.order.swapPath, tokensData]);
 
-  const subaccount = useSubaccount(executionFee?.feeTokenAmount ?? null);
+  const lackOfExecutionFeeTokenAmount = useMemo(() => {
+    if (!executionFee || p.order.executionFee?.gte(executionFee.feeTokenAmount)) return undefined;
+
+    return executionFee.feeTokenAmount.sub(p.order.executionFee ?? 0);
+  }, [executionFee, p.order.executionFee]);
+
+  const subaccount = useSubaccount(lackOfExecutionFeeTokenAmount ?? null);
 
   const isLimitIncreaseOrder = p.order.orderType === OrderType.LimitIncrease;
 
@@ -382,7 +388,7 @@ export function OrderEditor(p: Props) {
       triggerPrice: triggerPrice || positionOrder.triggerPrice,
       acceptablePrice: acceptablePrice || positionOrder.acceptablePrice,
       minOutputAmount: minOutputAmount || p.order.minOutputAmount,
-      executionFee: executionFee?.feeTokenAmount,
+      executionFee: lackOfExecutionFeeTokenAmount,
       indexToken: indexToken,
       setPendingTxns: p.setPendingTxns,
     })
