@@ -401,6 +401,9 @@ export function SyntheticsPage(p: Props) {
                 onOrdersClick={(key) => {
                   setListSection(ListSection.Orders);
                   setSelectedOrderKey(key);
+                  if (key) {
+                    setSelectedOrdersKeys((prev) => ({ ...prev, [key]: true }));
+                  }
                 }}
                 onSettlePositionFeesClick={handleSettlePositionFeesClick}
                 onSelectPositionClick={onSelectPositionClick}

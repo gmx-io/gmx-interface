@@ -41,7 +41,7 @@ export type Props = {
   onEditCollateralClick?: () => void;
   onShareClick: () => void;
   onSelectPositionClick?: (tradeMode?: TradeMode) => void;
-  onOrdersClick?: (key: string) => void;
+  onOrdersClick?: (key?: string) => void;
   isLarge: boolean;
   currentMarketAddress?: string;
   currentCollateralAddress?: string;
@@ -416,13 +416,14 @@ export function PositionItem(p: Props) {
                   <div
                     key={order.key}
                     className="Position-list-order active-order-tooltip"
-                    onClick={() => p.onOrdersClick?.(order.key)}
+                    onClick={() => {
+                      p.onOrdersClick?.(order.key);
+                    }}
                   >
                     <div className="Position-list-order-label">
                       {renderOrderText(order)}
                       <FaAngleRight fontSize={14} />
                     </div>
-
                     {errors.map((err, i) => (
                       <Fragment key={err.msg}>
                         <div className={cx("order-error-text", `level-${err.level}`)}>{err.msg}</div>

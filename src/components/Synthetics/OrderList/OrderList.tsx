@@ -31,7 +31,7 @@ type Props = {
 };
 
 export function OrderList(p: Props) {
-  const { marketsInfoData, tokensData, positionsData, selectedOrderKey, setSelectedOrderKey } = p;
+  const { marketsInfoData, tokensData, positionsData, selectedOrderKey, setSelectedOrdersKeys } = p;
   const { chainId } = useChainId();
   const { signer } = useWallet();
 
@@ -66,25 +66,19 @@ export function OrderList(p: Props) {
     }
   }, [selectedOrderKey]);
 
-  useEffect(() => {
-    return () => {
-      setSelectedOrderKey?.(undefined);
-    };
-  }, [setSelectedOrderKey]);
-
   function onSelectOrder(key: string) {
-    p.setSelectedOrdersKeys?.((prev) => ({ ...prev, [key]: !prev[key] }));
+    setSelectedOrdersKeys?.((prev) => ({ ...prev, [key]: !prev[key] }));
   }
 
   function onSelectAllOrders() {
     if (isAllOrdersSelected) {
-      p.setSelectedOrdersKeys?.({});
+      setSelectedOrdersKeys?.({});
       return;
     }
 
     const allSelectedOrders = orders.reduce((acc, order) => ({ ...acc, [order.key]: true }), {});
 
-    p.setSelectedOrdersKeys?.(allSelectedOrders);
+    setSelectedOrdersKeys?.(allSelectedOrders);
   }
 
   function onCancelOrder(key: string) {

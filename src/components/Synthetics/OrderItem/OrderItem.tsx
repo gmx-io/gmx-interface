@@ -357,12 +357,7 @@ export const OrderItem = forwardRef<HTMLTableRowElement, Props>((p, ref) => {
 
   function renderLarge() {
     return (
-      <tr
-        ref={ref}
-        className={cx("Exchange-list-item", {
-          "active-order": p.selectedOrderKey === p.order.key,
-        })}
-      >
+      <tr ref={ref} className="Exchange-list-item">
         {!p.hideActions && p.onSelectOrder && (
           <td className="Exchange-list-item-type">
             <div>

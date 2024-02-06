@@ -18,7 +18,7 @@ type Props = {
   ordersData?: OrdersInfoData;
   savedIsPnlInLeverage: boolean;
   isLoading: boolean;
-  onOrdersClick: (key: string) => void;
+  onOrdersClick: (key?: string) => void;
   showPnlAfterFees: boolean;
   savedShowPnlAfterFees: boolean;
   currentMarketAddress?: string;
