@@ -1,6 +1,5 @@
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getWrappedToken } from "config/tokens";
 import {
-  SwapAmounts,
   TradeFlags,
   TradeMode,
   TradeType,
@@ -14,8 +13,6 @@ import {
   getMaxSwapPathLiquidity,
   getNextPositionValuesForDecreaseTrade,
   getNextPositionValuesForIncreaseTrade,
-  getSwapAmountsByFromValue,
-  getSwapAmountsByToValue,
   getSwapPathStats,
 } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
@@ -31,9 +28,12 @@ import {
   selectUserReferralInfo,
 } from "./globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
-import { TokensRatio, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
+import { TokensRatio, getTokensRatioByPrice } from "domain/synthetics/tokens";
 import { createSelector } from "../utils";
 
+export type TokenTypeForSwapRoute = "collateralToken" | "indexToken";
+
+// dont swap addresses here
 export const makeSelectSwapRoutes = (fromTokenAddress: string | undefined, toTokenAddress: string | undefined) =>
   createSelector([selectChainId, selectMarketsInfoData], (chainId, marketsInfoData) => {
     const wrappedToken = getWrappedToken(chainId);
@@ -152,6 +152,7 @@ export const makeSelectIncreasePositionAmounts = ({
   tradeMode,
   tradeType,
   triggerPrice,
+  tokenTypeForSwapRoute,
 }: {
   initialCollateralTokenAddress: string | undefined;
   indexTokenAddress: string | undefined;
@@ -166,6 +167,7 @@ export const makeSelectIncreasePositionAmounts = ({
   triggerPrice: BigNumber | undefined;
   fixedAcceptablePriceImpactBps: BigNumber | undefined;
   strategy: "leverageByCollateral" | "leverageBySize" | "independent";
+  tokenTypeForSwapRoute: TokenTypeForSwapRoute;
 }) =>
   createSelector(
     [
@@ -173,7 +175,10 @@ export const makeSelectIncreasePositionAmounts = ({
       selectMarketsInfoData,
       selectPositionsInfoData,
       selectSavedAcceptablePriceImpactBuffer,
-      makeSelectSwapRoutes(initialCollateralTokenAddress, indexTokenAddress),
+      makeSelectSwapRoutes(
+        initialCollateralTokenAddress,
+        tokenTypeForSwapRoute === "indexToken" ? indexTokenAddress : collateralTokenAddress
+      ),
       selectUserReferralInfo,
       selectUiFeeFactor,
     ],
@@ -400,91 +405,7 @@ export const makeSelectTradeRatios = ({
     }
   );
 
-export const makeSelectSwapAmounts = ({
-  amountBy,
-  fromTokenAddress,
-  fromTokenAmount,
-  isWrapOrUnwrap,
-  toTokenAddress,
-  toTokenAmount,
-  tradeMode,
-  triggerRatioValue,
-}: {
-  fromTokenAddress: string | undefined;
-  toTokenAddress: string | undefined;
-  tradeMode: TradeMode;
-  isWrapOrUnwrap: boolean;
-  amountBy: "from" | "to" | undefined;
-  fromTokenAmount: BigNumber;
-  toTokenAmount: BigNumber;
-  triggerRatioValue: BigNumber | undefined;
-}) =>
-  createSelector(
-    [
-      selectTokensData,
-      makeSelectSwapRoutes(fromTokenAddress, toTokenAddress),
-      selectUiFeeFactor,
-      makeSelectTradeRatios({
-        fromTokenAddress,
-        toTokenAddress,
-        tradeMode,
-        tradeType: TradeType.Swap,
-        triggerRatioValue,
-      }),
-    ],
-    (tokensData, swapRoute, uiFeeFactor, { markRatio, triggerRatio }) => {
-      const tradeFlags = createTradeFlags(TradeType.Swap, tradeMode);
-      const toToken = toTokenAddress ? getByKey(tokensData, toTokenAddress) : undefined;
-      const fromToken = fromTokenAddress ? getByKey(tokensData, fromTokenAddress) : undefined;
-
-      const fromTokenPrice = fromToken?.prices.minPrice;
-
-      if (!fromToken || !toToken || !fromTokenPrice) {
-        return undefined;
-      }
-
-      if (isWrapOrUnwrap) {
-        const tokenAmount = amountBy === "from" ? fromTokenAmount : toTokenAmount;
-        const usdAmount = convertToUsd(tokenAmount, fromToken.decimals, fromTokenPrice)!;
-        const price = fromTokenPrice;
-
-        const swapAmounts: SwapAmounts = {
-          amountIn: tokenAmount,
-          usdIn: usdAmount!,
-          amountOut: tokenAmount,
-          usdOut: usdAmount!,
-          swapPathStats: undefined,
-          priceIn: price,
-          priceOut: price,
-          minOutputAmount: tokenAmount,
-        };
-
-        return swapAmounts;
-      } else if (amountBy === "from") {
-        return getSwapAmountsByFromValue({
-          tokenIn: fromToken,
-          tokenOut: toToken,
-          amountIn: fromTokenAmount,
-          triggerRatio: triggerRatio || markRatio,
-          isLimit: tradeFlags.isLimit,
-          findSwapPath: swapRoute.findSwapPath,
-          uiFeeFactor,
-        });
-      } else {
-        return getSwapAmountsByToValue({
-          tokenIn: fromToken,
-          tokenOut: toToken,
-          amountOut: toTokenAmount,
-          triggerRatio: triggerRatio || markRatio,
-          isLimit: tradeFlags.isLimit,
-          findSwapPath: swapRoute.findSwapPath,
-          uiFeeFactor,
-        });
-      }
-    }
-  );
-
-export const makeSelectNextPositionValues = ({
+export const makeSelectNextPositionValuesForIncrease = ({
   collateralTokenAddress,
   fixedAcceptablePriceImpactBps,
   initialCollateralTokenAddress,
@@ -498,8 +419,7 @@ export const makeSelectNextPositionValues = ({
   tradeMode,
   tradeType,
   triggerPrice,
-  closeSizeUsd,
-  keepLeverage,
+  tokenTypeForSwapRoute,
 }: {
   initialCollateralTokenAddress: string | undefined;
   indexTokenAddress: string | undefined;
@@ -514,8 +434,7 @@ export const makeSelectNextPositionValues = ({
   triggerPrice: BigNumber | undefined;
   fixedAcceptablePriceImpactBps: BigNumber | undefined;
   increaseStrategy: "leverageByCollateral" | "leverageBySize" | "independent";
-  closeSizeUsd: BigNumber | undefined;
-  keepLeverage: boolean | undefined;
+  tokenTypeForSwapRoute: TokenTypeForSwapRoute;
 }) =>
   createSelector(
     [
@@ -536,7 +455,75 @@ export const makeSelectNextPositionValues = ({
         tradeMode,
         tradeType,
         triggerPrice,
+        tokenTypeForSwapRoute,
       }),
+      selectPositionsInfoData,
+      selectSavedIsPnlInLeverage,
+      selectUserReferralInfo,
+    ],
+    (
+      { minCollateralUsd },
+      marketsInfoData,
+      tokensData,
+      increaseAmounts,
+      positionsInfoData,
+      savedIsPnlInLeverage,
+      userReferralInfo
+    ) => {
+      const tradeFlags = createTradeFlags(tradeType, tradeMode);
+      const marketInfo = getByKey(marketsInfoData, marketAddress);
+      const collateralToken = collateralTokenAddress ? getByKey(tokensData, collateralTokenAddress) : undefined;
+      const position = positionKey ? getByKey(positionsInfoData, positionKey) : undefined;
+
+      if (!tradeFlags.isPosition || !minCollateralUsd || !marketInfo || !collateralToken) {
+        return undefined;
+      }
+
+      if (tradeFlags.isIncrease && increaseAmounts?.acceptablePrice && initialCollateralAmount.gt(0)) {
+        return getNextPositionValuesForIncreaseTrade({
+          marketInfo,
+          collateralToken,
+          existingPosition: position,
+          isLong: tradeFlags.isLong,
+          collateralDeltaUsd: increaseAmounts.collateralDeltaUsd,
+          collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
+          sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+          sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
+          indexPrice: increaseAmounts.indexPrice,
+          showPnlInLeverage: savedIsPnlInLeverage,
+          minCollateralUsd,
+          userReferralInfo,
+        });
+      }
+    }
+  );
+
+export const makeSelectNextPositionValuesForDecrease = ({
+  closeSizeUsd,
+  collateralTokenAddress,
+  fixedAcceptablePriceImpactBps,
+  keepLeverage,
+  marketAddress,
+  positionKey,
+  tradeMode,
+  tradeType,
+  triggerPrice,
+}: {
+  closeSizeUsd: BigNumber | undefined;
+  collateralTokenAddress: string | undefined;
+  fixedAcceptablePriceImpactBps: BigNumber | undefined;
+  keepLeverage: boolean | undefined;
+  marketAddress: string | undefined;
+  positionKey: string | undefined;
+  tradeMode: TradeMode;
+  tradeType: TradeType;
+  triggerPrice: BigNumber | undefined;
+}) =>
+  createSelector(
+    [
+      selectPositionConstants,
+      selectMarketsInfoData,
+      selectTokensData,
       makeSelectDecreasePositionAmounts({
         closeSizeUsd,
         collateralTokenAddress,
@@ -556,7 +543,6 @@ export const makeSelectNextPositionValues = ({
       { minCollateralUsd },
       marketsInfoData,
       tokensData,
-      increaseAmounts,
       decreaseAmounts,
       positionsInfoData,
       savedIsPnlInLeverage,
@@ -571,24 +557,7 @@ export const makeSelectNextPositionValues = ({
         return undefined;
       }
 
-      if (!closeSizeUsd) throw new Error("makeSelectNextPositionValues: closeSizeUsd is undefined");
-
-      if (tradeFlags.isIncrease && increaseAmounts?.acceptablePrice && initialCollateralAmount.gt(0)) {
-        return getNextPositionValuesForIncreaseTrade({
-          marketInfo,
-          collateralToken,
-          existingPosition: position,
-          isLong: tradeFlags.isLong,
-          collateralDeltaUsd: increaseAmounts.collateralDeltaUsd,
-          collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
-          sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
-          sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
-          indexPrice: increaseAmounts.indexPrice,
-          showPnlInLeverage: savedIsPnlInLeverage,
-          minCollateralUsd,
-          userReferralInfo,
-        });
-      }
+      if (!closeSizeUsd) throw new Error("makeSelectNextPositionValuesForDecrease: closeSizeUsd is undefined");
 
       if (tradeFlags.isTrigger && decreaseAmounts?.acceptablePrice && closeSizeUsd.gt(0)) {
         return getNextPositionValuesForDecreaseTrade({

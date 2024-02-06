@@ -81,7 +81,8 @@ import { useTradeRatios } from "context/SyntheticsStateContext/hooks/tradeHooks"
 import {
   useTradeboxDecreasePositionAmounts,
   useTradeboxIncreasePositionAmounts,
-  useTradeboxNextPositionValues,
+  useTradeboxNextPositionValuesForDecrease,
+  useTradeboxNextPositionValuesForIncrease,
   useTradeboxState,
   useTradeboxSwapAmounts,
   useTradeboxTradeFlags,
@@ -185,12 +186,17 @@ export function ConfirmationBox(p: Props) {
   const swapAmounts = useTradeboxSwapAmounts();
   const increaseAmounts = useTradeboxIncreasePositionAmounts();
   const decreaseAmounts = useTradeboxDecreasePositionAmounts();
-  const nextPositionValues = useTradeboxNextPositionValues();
+  const nextPositionValuesForIncrease = useTradeboxNextPositionValuesForIncrease();
+  const nextPositionValuesForDecrease = useTradeboxNextPositionValuesForDecrease();
+  const tradeFlags = useTradeboxTradeFlags();
+
+  const nextPositionValues = useMemo(() => {
+    return tradeFlags.isIncrease ? nextPositionValuesForIncrease : nextPositionValuesForDecrease;
+  }, [nextPositionValuesForDecrease, nextPositionValuesForIncrease, tradeFlags.isIncrease]);
 
   const fromToken = getByKey(tokensData, fromTokenAddress);
   const toToken = getByKey(tokensData, toTokenAddress);
 
-  const tradeFlags = useTradeboxTradeFlags();
   const { isLong, isShort, isPosition, isSwap, isMarket, isLimit, isTrigger, isIncrease } = tradeFlags;
   const { indexToken } = marketInfo || {};
 
