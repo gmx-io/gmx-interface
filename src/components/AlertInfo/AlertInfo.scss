@@ -1,0 +1,21 @@
+.AlertInfo.compact {
+  margin-bottom: 0.8rem;
+}
+
+.AlertInfo {
+  display: flex;
+  margin-bottom: 1.6rem;
+
+  &-icon {
+    padding-right: 0.6rem;
+    padding-top: 0.2rem;
+
+    img {
+      display: block;
+    }
+  }
+
+  &-text {
+    font-size: 1.3rem;
+  }
+}

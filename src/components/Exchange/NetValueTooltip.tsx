@@ -4,6 +4,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { Position } from "domain/positions/types";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
+import { useMemo } from "react";
 
 type Props = {
   position: Position;
@@ -11,6 +12,11 @@ type Props = {
 };
 
 export default function NetValueTooltip({ position, isMobile }: Props) {
+  const pnlAfterFees = useMemo(
+    () => [position.deltaAfterFeesStr, `(${position.deltaAfterFeesPercentageStr})`],
+    [position.deltaAfterFeesPercentageStr, position.deltaAfterFeesStr]
+  );
+
   return (
     <Tooltip
       handle={`$${formatAmount(position.netValue, USD_DECIMALS, 2, true)}`}
@@ -53,7 +59,7 @@ export default function NetValueTooltip({ position, isMobile }: Props) {
             <br />
             <StatsTooltipRow
               label={t`PnL After Fees`}
-              value={[position.deltaAfterFeesStr, `(${position.deltaAfterFeesPercentageStr})`]}
+              value={pnlAfterFees}
               showDollar={false}
               className={position.hasProfitAfterFees ? "text-green" : "text-red"}
             />

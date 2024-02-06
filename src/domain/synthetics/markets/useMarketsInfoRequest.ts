@@ -46,7 +46,7 @@ import { convertTokenAddress } from "config/tokens";
 import { BigNumber } from "ethers";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
-import { TokensData, useTokensData } from "../tokens";
+import { TokensData, useTokensDataRequest } from "../tokens";
 import { MarketsInfoData } from "./types";
 import { useMarkets } from "./useMarkets";
 import { getContractMarketPrices } from "./utils";
@@ -58,10 +58,10 @@ export type MarketsInfoResult = {
   pricesUpdatedAt?: number;
 };
 
-export function useMarketsInfo(chainId: number): MarketsInfoResult {
+export function useMarketsInfoRequest(chainId: number): MarketsInfoResult {
   const { account } = useWallet();
   const { marketsData, marketsAddresses } = useMarkets(chainId);
-  const { tokensData, pricesUpdatedAt } = useTokensData(chainId);
+  const { tokensData, pricesUpdatedAt } = useTokensDataRequest(chainId);
   const dataStoreAddress = getContract(chainId, "DataStore");
 
   const isDepencenciesLoading = !marketsAddresses || !tokensData;

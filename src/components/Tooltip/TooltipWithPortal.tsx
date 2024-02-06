@@ -1,4 +1,4 @@
-import React, { MouseEvent, useCallback, useRef, useState } from "react";
+import React, { CSSProperties, MouseEvent, useCallback, useMemo, useRef, useState } from "react";
 import cx from "classnames";
 
 import "./Tooltip.scss";
@@ -21,7 +21,8 @@ type Props = {
   isHandlerDisabled?: boolean;
   fitHandleWidth?: boolean;
   closeOnDoubleClick?: boolean;
-  isInsideModal?: boolean;
+  openDelay?: number;
+  closeDelay?: number;
   shouldStopPropagation?: boolean;
 };
 
@@ -38,6 +39,8 @@ export default function TooltipWithPortal(props: Props) {
   const [tooltipWidth, setTooltipWidth] = useState<string>();
   const intervalCloseRef = useRef<ReturnType<typeof setTimeout> | null>();
   const intervalOpenRef = useRef<ReturnType<typeof setTimeout> | null>();
+  const openDelay = props.openDelay ?? OPEN_DELAY;
+  const closeDelay = props.closeDelay ?? CLOSE_DELAY;
 
   const position = props.position ?? "left-bottom";
   const trigger = props.trigger ?? "hover";
@@ -70,10 +73,10 @@ export default function TooltipWithPortal(props: Props) {
       intervalOpenRef.current = setTimeout(() => {
         setVisible(true);
         intervalOpenRef.current = null;
-      }, OPEN_DELAY);
+      }, openDelay);
     }
     updateTooltipCoords();
-  }, [setVisible, intervalCloseRef, intervalOpenRef, trigger, updateTooltipCoords]);
+  }, [setVisible, intervalCloseRef, intervalOpenRef, trigger, updateTooltipCoords, openDelay]);
 
   const onMouseClick = useCallback(
     (event: MouseEvent) => {
@@ -104,19 +107,21 @@ export default function TooltipWithPortal(props: Props) {
     intervalCloseRef.current = setTimeout(() => {
       setVisible(false);
       intervalCloseRef.current = null;
-    }, CLOSE_DELAY);
+    }, closeDelay);
     if (intervalOpenRef.current) {
       clearInterval(intervalOpenRef.current);
       intervalOpenRef.current = null;
     }
     updateTooltipCoords();
-  }, [setVisible, intervalCloseRef, updateTooltipCoords]);
+  }, [setVisible, intervalCloseRef, updateTooltipCoords, closeDelay]);
 
   const onHandleClick = useCallback((event: MouseEvent) => {
     event.preventDefault();
   }, []);
 
   const className = cx("Tooltip", props.className);
+  const portalStyle = useMemo<CSSProperties>(() => ({ ...coords, position: "absolute" }), [coords]);
+  const popupStyle = useMemo(() => ({ width: tooltipWidth }), [tooltipWidth]);
 
   return (
     <span className={className} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onMouseClick}>
@@ -130,8 +135,8 @@ export default function TooltipWithPortal(props: Props) {
       </span>
       {visible && coords.left && (
         <Portal>
-          <div style={{ ...coords, position: "absolute" }} className={props.portalClassName}>
-            <div className={cx(["Tooltip-popup z-index-1001", position])} style={{ width: tooltipWidth }}>
+          <div style={portalStyle} className={props.portalClassName}>
+            <div className={cx(["Tooltip-popup z-index-1001", position])} style={popupStyle}>
               {props.renderContent()}
             </div>
           </div>

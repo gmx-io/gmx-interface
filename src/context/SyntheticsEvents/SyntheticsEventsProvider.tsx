@@ -1,13 +1,13 @@
 import { t } from "@lingui/macro";
 import EventEmitter from "abis/EventEmitter.json";
 import { GmStatusNotification } from "components/Synthetics/StatusNotification/GmStatusNotification";
-import { OrderStatusNotification } from "components/Synthetics/StatusNotification/OrderStatusNotification";
+import { OrdersStatusNotificiation } from "components/Synthetics/StatusNotification/OrderStatusNotification";
 import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
 import { getToken, getWrappedToken } from "config/tokens";
 import { WS_LOST_FOCUS_TIMEOUT } from "config/ui";
 import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
-import { useMarketsInfo } from "domain/synthetics/markets";
+import { useMarketsInfoRequest } from "domain/synthetics/markets";
 import {
   isDecreaseOrderType,
   isIncreaseOrderType,
@@ -15,7 +15,7 @@ import {
   isMarketOrderType,
 } from "domain/synthetics/orders";
 import { getPositionKey } from "domain/synthetics/positions";
-import { useTokensData } from "domain/synthetics/tokens";
+import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
@@ -69,7 +69,13 @@ export function useSyntheticsEvents(): SyntheticsEventsContextType {
   return useContext(SyntheticsEventsContext) as SyntheticsEventsContextType;
 }
 
-export function SyntheticsEventsProvider({ children }: { children: ReactNode }) {
+export function SyntheticsEventsProvider({
+  children,
+  setPendingTxns,
+}: {
+  children: ReactNode;
+  setPendingTxns: (txns: string[]) => void;
+}) {
   const { chainId } = useChainId();
   const { account: currentAccount } = useWallet();
   const { wsProvider } = useWebsocketProvider();
@@ -80,8 +86,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     debugId: "V2 Events",
   });
 
-  const { tokensData } = useTokensData(chainId);
-  const { marketsInfoData } = useMarketsInfo(chainId);
+  const { tokensData } = useTokensDataRequest(chainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId);
 
   const [orderStatuses, setOrderStatuses] = useState<OrderStatuses>({});
   const [depositStatuses, setDepositStatuses] = useState<DepositStatuses>({});
@@ -550,19 +556,21 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       pendingPositionsUpdates,
       positionIncreaseEvents,
       positionDecreaseEvents,
-      setPendingOrder: (data: PendingOrderData) => {
+      setPendingOrder: (data: PendingOrderData | PendingOrderData[]) => {
         const toastId = Date.now();
 
         helperToast.success(
-          <OrderStatusNotification
+          <OrdersStatusNotificiation
             pendingOrderData={data}
             marketsInfoData={marketsInfoData}
             tokensData={tokensData}
             toastTimestamp={toastId}
+            setPendingTxns={setPendingTxns}
           />,
           {
             autoClose: false,
             toastId,
+            className: "OrdersStatusNotificiation",
           }
         );
       },
@@ -638,6 +646,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     positionIncreaseEvents,
     tokensData,
     withdrawalStatuses,
+    setPendingTxns,
   ]);
 
   return <SyntheticsEventsContext.Provider value={contextState}>{children}</SyntheticsEventsContext.Provider>;

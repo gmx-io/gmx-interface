@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import useSWR from "swr";
 import { Trans, t } from "@lingui/macro";
 import { ethers } from "ethers";
@@ -37,6 +37,15 @@ const WITHDRAW = "Withdraw";
 const EDIT_OPTIONS = [DEPOSIT, WITHDRAW];
 const MIN_ORDER_USD = expandDecimals(10, USD_DECIMALS);
 const { AddressZero } = ethers.constants;
+
+const EDIT_OPTIONS_LABELS = {
+  [DEPOSIT]: t`Deposit`,
+  [WITHDRAW]: t`Withdraw`,
+};
+const ERROR_TOOLTIP_MSG = {
+  [ErrorCode.InvalidLiqPrice]: t`Liquidation price would cross mark price.`,
+  [ErrorCode.InsufficientDepositAmount]: t`Deposit amount is insufficient to bring leverage below the max allowed leverage of 100x`,
+};
 
 export default function PositionEditor(props) {
   const {
@@ -480,15 +489,6 @@ export default function PositionEditor(props) {
     withdrawCollateral();
   };
 
-  const EDIT_OPTIONS_LABELS = {
-    [DEPOSIT]: t`Deposit`,
-    [WITHDRAW]: t`Withdraw`,
-  };
-  const ERROR_TOOLTIP_MSG = {
-    [ErrorCode.InvalidLiqPrice]: t`Liquidation price would cross mark price.`,
-    [ErrorCode.InsufficientDepositAmount]: t`Deposit amount is insufficient to bring leverage below the max allowed leverage of 100x`,
-  };
-
   function renderPrimaryButton() {
     const [errorMessage, errorType, errorCode] = getError();
     const primaryTextMessage = getPrimaryText();
@@ -513,6 +513,14 @@ export default function PositionEditor(props) {
       </Button>
     );
   }
+
+  const minExecutionFees = useMemo(
+    () => ({
+      fee: minExecutionFee,
+      feeUsd: minExecutionFeeUSD,
+    }),
+    [minExecutionFee, minExecutionFeeUSD]
+  );
 
   return (
     <div className="PositionEditor">
@@ -683,13 +691,7 @@ export default function PositionEditor(props) {
                       <Trans>Fees</Trans>
                     </div>
                     <div className="align-right">
-                      <FeesTooltip
-                        executionFees={{
-                          fee: minExecutionFee,
-                          feeUsd: minExecutionFeeUSD,
-                        }}
-                        depositFee={depositFeeUSD}
-                      />
+                      <FeesTooltip executionFees={minExecutionFees} depositFee={depositFeeUSD} />
                     </div>
                   </div>
                 </div>

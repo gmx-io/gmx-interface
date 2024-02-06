@@ -2,6 +2,8 @@
   list-style: none;
   padding: 0;
   margin: 1rem 0;
+  display: grid;
+  grid-row-gap: 0.5rem;
 }
 .order-list li {
   display: flex;
@@ -9,9 +11,14 @@
   align-items: center;
   background: var(--dark-blue-hover);
   border-radius: var(--border-radius-sm);
-  margin-bottom: 0.5rem;
-  padding: 1rem;
+  padding: 0.5rem 0.5rem 0.5rem 1rem;
+  font-size: 1.3rem;
 }
+
+.order-list li:not(:first-child) {
+  margin-bottom: 0.5rem;
+}
+
 .order-list li p {
   margin: 0;
 }
@@ -21,6 +28,8 @@
   border: none;
   color: white;
   opacity: 0.8;
+  display: inline-flex;
+  padding: 0;
 }
 .order-list li button:hover {
   opacity: 1;

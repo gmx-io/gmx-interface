@@ -16,6 +16,9 @@ import Vester from "abis/Vester.json";
 
 import { ARBITRUM, getConstant } from "config/chains";
 import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
+import { useRecommendStakeGmxAmount } from "domain/stake/useRecommendStakeGmxAmount";
+import { useAccumulatedBnGMXAmount } from "domain/rewards/useAccumulatedBnGMXAmount";
+import { useMaxBoostBasicPoints } from "domain/rewards/useMaxBoostBasisPoints";
 import { ethers } from "ethers";
 import {
   GLP_DECIMALS,
@@ -43,10 +46,11 @@ import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { GmList } from "components/Synthetics/GmList/GmList";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import { getIcons } from "config/icons";
 import { getServerUrl } from "config/backend";
 import { getIsSyntheticsSupported } from "config/features";
-import { getTotalGmInfo, useMarketTokensData, useMarketsInfo } from "domain/synthetics/markets";
+import { getTotalGmInfo, useMarketTokensData, useMarketsInfoRequest } from "domain/synthetics/markets";
 import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
 import { approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -231,6 +235,8 @@ function UnstakeModal(props) {
     reservedAmount,
     bonusGmxInFeeGmx,
     setPendingTxns,
+    processedData,
+    nativeTokenSymbol,
   } = props;
   const [isUnstaking, setIsUnstaking] = useState(false);
   const icons = getIcons(chainId);
@@ -249,10 +255,12 @@ function UnstakeModal(props) {
     burnAmount = multiplierPointsAmount.mul(amount).div(bonusGmxInFeeGmx);
   }
 
-  const shouldShowReductionAmount = true;
-  let rewardReductionBasisPoints;
-  if (burnAmount && bonusGmxInFeeGmx) {
-    rewardReductionBasisPoints = burnAmount.mul(BASIS_POINTS_DIVISOR).div(bonusGmxInFeeGmx);
+  let unstakeBonusLostPercentage;
+  if (amount?.gt(0) && multiplierPointsAmount?.gt(0)) {
+    unstakeBonusLostPercentage = amount
+      ?.add(burnAmount)
+      .mul(BASIS_POINTS_DIVISOR)
+      ?.div(multiplierPointsAmount?.add(processedData.esGmxInStakedGmx)?.add(processedData.gmxInStakedGmx));
   }
 
   const getError = () => {
@@ -326,23 +334,24 @@ function UnstakeModal(props) {
           </div>
         </BuyInputSection>
         {reservedAmount && reservedAmount.gt(0) && (
-          <div className="Modal-note">
+          <AlertInfo type="info">
             You have {formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting.
-          </div>
+          </AlertInfo>
         )}
-        {burnAmount && burnAmount.gt(0) && rewardReductionBasisPoints && rewardReductionBasisPoints.gt(0) && (
-          <div className="Modal-note">
+        {burnAmount?.gt(0) && unstakeBonusLostPercentage?.gt(0) && !amount.gt(maxAmount) && (
+          <AlertInfo type="warning">
             <Trans>
               Unstaking will burn&nbsp;
               <ExternalLink className="display-inline" href="https://docs.gmx.io/docs/tokenomics/rewards">
                 {formatAmount(burnAmount, 18, 4, true)} Multiplier Points
               </ExternalLink>
               .&nbsp;
-              {shouldShowReductionAmount && (
-                <span>Boost Percentage: -{formatAmount(rewardReductionBasisPoints, 2, 2)}%.</span>
-              )}
+              <span>
+                You will earn {formatAmount(unstakeBonusLostPercentage, 2, 2)}% less {nativeTokenSymbol} rewards with
+                this action.
+              </span>
             </Trans>
-          </div>
+          </AlertInfo>
         )}
         <div className="Exchange-swap-button-container">
           <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
@@ -624,6 +633,7 @@ function CompoundModal(props) {
     totalVesterRewards,
     nativeTokenSymbol,
     wrappedTokenSymbol,
+    processedData,
   } = props;
   const [isCompounding, setIsCompounding] = useState(false);
   const [shouldClaimGmx, setShouldClaimGmx] = useLocalStorageSerializeKey(
@@ -747,9 +757,35 @@ function CompoundModal(props) {
     setShouldConvertWeth(value);
   };
 
+  const accumulatedBnGMXAmount = useAccumulatedBnGMXAmount();
+
+  const recommendStakeGmx = useRecommendStakeGmxAmount(
+    {
+      accumulatedGMX: processedData.totalVesterRewards,
+      accumulatedBnGMX: accumulatedBnGMXAmount,
+      accumulatedEsGMX: processedData.totalEsGmxRewards,
+      stakedGMX: processedData.gmxInStakedGmx,
+      stakedBnGMX: processedData.bnGmxInFeeGmx,
+      stakedEsGMX: processedData.esGmxInStakedGmx,
+    },
+    {
+      shouldStakeGmx,
+      shouldStakeEsGmx,
+    }
+  );
+
   return (
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Compound Rewards`}>
+        {recommendStakeGmx.gt(0) && (
+          <AlertInfo type="info">
+            <Trans>
+              You have reached the maximum Boost Percentage. Stake an additional{" "}
+              {formatAmount(recommendStakeGmx, 18, 2, true)} GMX or esGMX to be able to stake your unstaked{" "}
+              {formatAmount(accumulatedBnGMXAmount, 18, 4, true)} Multiplier Points.
+            </Trans>
+          </AlertInfo>
+        )}
         <div className="CompoundModal-menu">
           <div>
             <Checkbox
@@ -1023,7 +1059,7 @@ export default function StakeV2({ setPendingTxns }) {
     feeGlpTrackerAddress,
   ];
 
-  const { marketsInfoData, tokensData } = useMarketsInfo(chainId);
+  const { marketsInfoData, tokensData } = useMarketsInfoRequest(chainId);
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
   const { marketsTokensAPRData, marketsTokensIncentiveAprData } = useMarketTokensAPR(chainId, {
     marketsInfoData,
@@ -1095,6 +1131,10 @@ export default function StakeV2({ setPendingTxns }) {
     }
   );
 
+  const accumulatedBnGMXAmount = useAccumulatedBnGMXAmount();
+
+  const maxBoostBasicPoints = useMaxBoostBasicPoints();
+
   const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useGmxPrice(
     chainId,
     { arbitrum: chainId === ARBITRUM ? signer : undefined },
@@ -1142,13 +1182,14 @@ export default function StakeV2({ setPendingTxns }) {
     nativeTokenPrice,
     stakedGmxSupply,
     gmxPrice,
-    gmxSupply
+    gmxSupply,
+    maxBoostBasicPoints?.div(BASIS_POINTS_DIVISOR)
   );
 
   let hasMultiplierPoints = false;
   let multiplierPointsAmount;
-  if (processedData && processedData.bonusGmxTrackerRewards && processedData.bnGmxInFeeGmx) {
-    multiplierPointsAmount = processedData.bonusGmxTrackerRewards.add(processedData.bnGmxInFeeGmx);
+  if (accumulatedBnGMXAmount && processedData?.bnGmxInFeeGmx) {
+    multiplierPointsAmount = accumulatedBnGMXAmount.add(processedData.bnGmxInFeeGmx);
     if (multiplierPointsAmount.gt(0)) {
       hasMultiplierPoints = true;
     }
@@ -1330,6 +1371,43 @@ export default function StakeV2({ setPendingTxns }) {
     setUnstakeMethodName("unstakeEsGmx");
   };
 
+  const recommendStakeGmx = useRecommendStakeGmxAmount(
+    {
+      accumulatedGMX: processedData.totalVesterRewards,
+      accumulatedBnGMX: accumulatedBnGMXAmount,
+      accumulatedEsGMX: processedData.totalEsGmxRewards,
+      stakedGMX: processedData.gmxInStakedGmx,
+      stakedBnGMX: processedData.bnGmxInFeeGmx,
+      stakedEsGMX: processedData.esGmxInStakedGmx,
+    },
+    {
+      shouldStakeGmx: true,
+      shouldStakeEsGmx: true,
+    }
+  );
+
+  const renderBoostPercentageTooltip = useCallback(() => {
+    return (
+      <div>
+        <Trans>
+          You are earning {formatAmount(processedData.boostBasisPoints, 2, 2, false)}% more {nativeTokenSymbol} rewards
+          using {formatAmount(processedData.bnGmxInFeeGmx, 18, 4, 2, true)} Staked Multiplier Points.
+        </Trans>
+        <br />
+        <br />
+        {recommendStakeGmx.gt(0) ? (
+          <Trans>
+            You have reached the maximum Boost Percentage. Stake an additional{" "}
+            {formatAmount(recommendStakeGmx, 18, 2, true)} GMX or esGMX to be able to stake your unstaked{" "}
+            {formatAmount(accumulatedBnGMXAmount, 18, 4, true)} Multiplier Points using the "Compound" button.
+          </Trans>
+        ) : (
+          <Trans>Use the "Compound" button to stake your Multiplier Points.</Trans>
+        )}
+      </div>
+    );
+  }, [nativeTokenSymbol, processedData, recommendStakeGmx, accumulatedBnGMXAmount]);
+
   const renderMultiplierPointsLabel = useCallback(() => {
     return t`Multiplier Points APR`;
   }, []);
@@ -1388,6 +1466,14 @@ export default function StakeV2({ setPendingTxns }) {
     );
   }
 
+  const stakedEntries = useMemo(
+    () => ({
+      "Staked on Arbitrum": arbitrumGmxStaked,
+      "Staked on Avalanche": avaxGmxStaked,
+    }),
+    [arbitrumGmxStaked, avaxGmxStaked]
+  );
+
   return (
     <div className="default-container page-layout">
       <StakeModal
@@ -1427,6 +1513,8 @@ export default function StakeV2({ setPendingTxns }) {
         unstakeMethodName={unstakeMethodName}
         multiplierPointsAmount={multiplierPointsAmount}
         bonusGmxInFeeGmx={bonusGmxInFeeGmx}
+        processedData={processedData}
+        nativeTokenSymbol={nativeTokenSymbol}
       />
       <VesterDepositModal
         isVisible={isVesterDepositModalVisible}
@@ -1462,6 +1550,8 @@ export default function StakeV2({ setPendingTxns }) {
         account={account}
         setPendingTxns={setPendingTxns}
         isVisible={isCompoundModalVisible}
+        multiplierPointsAmount={multiplierPointsAmount}
+        processedData={processedData}
         setIsVisible={setIsCompoundModalVisible}
         rewardRouterAddress={rewardRouterAddress}
         totalVesterRewards={processedData.totalVesterRewards}
@@ -1636,20 +1726,7 @@ export default function StakeV2({ setPendingTxns }) {
                   <Tooltip
                     handle={`${formatAmount(processedData.boostBasisPoints, 2, 2, false)}%`}
                     position="right-bottom"
-                    renderContent={() => {
-                      return (
-                        <div>
-                          <Trans>
-                            You are earning {formatAmount(processedData.boostBasisPoints, 2, 2, false)}% more{" "}
-                            {nativeTokenSymbol} rewards using{" "}
-                            {formatAmount(processedData.bnGmxInFeeGmx, 18, 4, 2, true)} Staked Multiplier Points.
-                          </Trans>
-                          <br />
-                          <br />
-                          <Trans>Use the "Compound" button to stake your Multiplier Points.</Trans>
-                        </div>
-                      );
-                    }}
+                    renderContent={renderBoostPercentageTooltip}
                   />
                 </div>
               </div>
@@ -1674,10 +1751,7 @@ export default function StakeV2({ setPendingTxns }) {
                           showDollar={false}
                           decimalsForConversion={18}
                           symbol="GMX"
-                          entries={{
-                            "Staked on Arbitrum": arbitrumGmxStaked,
-                            "Staked on Avalanche": avaxGmxStaked,
-                          }}
+                          entries={stakedEntries}
                         />
                       )}
                     />
@@ -1754,7 +1828,7 @@ export default function StakeV2({ setPendingTxns }) {
                 <div className="label">
                   <Trans>Multiplier Points</Trans>
                 </div>
-                <div>{formatKeyAmount(processedData, "bonusGmxTrackerRewards", 18, 4, true)}</div>
+                <div>{formatAmount(accumulatedBnGMXAmount, 18, 4, true)}</div>
               </div>
               <div className="App-card-row">
                 <div className="label">

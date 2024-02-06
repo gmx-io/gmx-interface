@@ -20,6 +20,17 @@ export enum TriggerThresholdType {
   Below = "<",
 }
 
+export type TradeFlags = {
+  isLong: boolean;
+  isShort: boolean;
+  isSwap: boolean;
+  isPosition: boolean;
+  isIncrease: boolean;
+  isTrigger: boolean;
+  isMarket: boolean;
+  isLimit: boolean;
+};
+
 export type SwapAmounts = {
   amountIn: BigNumber;
   usdIn: BigNumber;
@@ -82,6 +93,7 @@ export type DecreasePositionAmounts = {
   estimatedPnl: BigNumber;
   estimatedPnlPercentage: BigNumber;
   realizedPnl: BigNumber;
+  realizedPnlPercentage: BigNumber;
 
   positionFeeUsd: BigNumber;
   uiFeeUsd: BigNumber;

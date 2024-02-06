@@ -137,6 +137,7 @@ function getTooltipContent(managedUsd, tokenInfo, token) {
     <>
       <StatsTooltipRow
         label={t`Current Pool Amount`}
+        // eslint-disable-next-line react-perf/jsx-no-new-array-as-prop
         value={[
           `$${formatAmount(managedUsd, USD_DECIMALS, 0, true)}`,
           `(${formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 0, true)} ${token.symbol})`,
@@ -146,6 +147,8 @@ function getTooltipContent(managedUsd, tokenInfo, token) {
     </>
   );
 }
+
+const tabOptions = [t`Buy GLP`, t`Sell GLP`];
 
 export default function GlpSwap(props) {
   const { savedSlippageAmount, isBuying, setPendingTxns, setIsBuying, savedShouldDisableValidationForTesting } = props;
@@ -975,7 +978,7 @@ export default function GlpSwap(props) {
             }}
           >
             <Tab
-              options={[t`Buy GLP`, t`Sell GLP`]}
+              options={tabOptions}
               option={tabLabel}
               onChange={onSwapOptionChange}
               className="Exchange-swap-option-tabs"

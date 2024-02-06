@@ -172,7 +172,7 @@ const RebateAccountsRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) =
         const decimals = rebateItem.tokenData?.decimals;
         const usd = price && decimals ? rebateItem.value.mul(price).div(expandDecimals(1, decimals)) : undefined;
         return (
-          <div className="PriceImpactRebatesStatsPage-row">
+          <div key={rebateItem.id} className="PriceImpactRebatesStatsPage-row">
             <div className="PriceImpactRebatesStatsPage-cell-timekey"></div>
             <div className="PriceImpactRebatesStatsPage-cell-time"></div>
             <div className="PriceImpactRebatesStatsPage-cell-market">

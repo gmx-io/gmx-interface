@@ -18,9 +18,11 @@ import Token from "abis/Token.json";
 import GlpManager from "abis/GlpManager.json";
 
 import { useGmxPrice } from "domain/legacy";
+import { useMaxBoostBasicPoints } from "domain/rewards/useMaxBoostBasisPoints";
 
 import { getContract } from "config/contracts";
 import { getServerUrl } from "config/backend";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { contractFetcher } from "lib/contracts";
 import { formatKeyAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
@@ -125,6 +127,8 @@ export default function APRLabel({ chainId, label }) {
 
   const { gmxPrice } = useGmxPrice(chainId, {}, active);
 
+  const maxBoostBasicPoints = useMaxBoostBasicPoints();
+
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply");
   const { data: gmxSupply } = useSWR(gmxSupplyUrl, {
     fetcher: (url) => fetch(url).then((res) => res.text()),
@@ -150,7 +154,8 @@ export default function APRLabel({ chainId, label }) {
     nativeTokenPrice,
     stakedGmxSupply,
     gmxPrice,
-    gmxSupply
+    gmxSupply,
+    maxBoostBasicPoints?.div(BASIS_POINTS_DIVISOR)
   );
 
   return <>{`${formatKeyAmount(processedData, label, 2, 2, true)}%`}</>;

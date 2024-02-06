@@ -69,7 +69,7 @@ function getPositionOrderMessage(tradeAction: PositionTradeAction, minCollateral
                   </span>
                 ) : null}
                 {message.tooltipRows?.map((props) => (
-                  <StatsTooltipRow {...props} />
+                  <StatsTooltipRow {...props} key={props.key} />
                 ))}
                 {message.tooltipFooter ? (
                   <span className={message.tooltipFooterRed ? "text-red" : undefined}>

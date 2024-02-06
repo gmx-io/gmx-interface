@@ -114,6 +114,14 @@ function getNextAveragePrice({ size, sizeDelta, hasProfit, delta, nextPrice, isL
   return nextAveragePrice;
 }
 
+const SWAP_LABELS = {
+  [LONG]: t`Long`,
+  [SHORT]: t`Short`,
+  [SWAP]: t`Swap`,
+};
+
+const ORDER_OPTION_LABELS = { [STOP]: t`Trigger`, [MARKET]: t`Market`, [LIMIT]: t`Limit` };
+
 export default function SwapBox(props) {
   const {
     pendingPositions,
@@ -224,7 +232,6 @@ export default function SwapBox(props) {
 
   const isMarketOrder = orderOption === MARKET;
   const orderOptions = isSwap ? SWAP_ORDER_OPTIONS : LEVERAGE_ORDER_OPTIONS;
-  const orderOptionLabels = { [STOP]: t`Trigger`, [MARKET]: t`Market`, [LIMIT]: t`Limit` };
 
   const [triggerPriceValue, setTriggerPriceValue] = useState("");
   const triggerPriceUsd = isMarketOrder ? 0 : parseValue(triggerPriceValue, USD_DECIMALS);
@@ -1711,6 +1718,29 @@ export default function SwapBox(props) {
     feeBps = feeBasisPoints;
   }
 
+  const maxInValue = useMemo(
+    () => [
+      `${formatAmount(maxFromTokenIn, fromTokenInfo.decimals, 0, true)} ${fromTokenInfo.symbol}`,
+      `($${formatAmount(maxFromTokenInUSD, USD_DECIMALS, 0, true)})`,
+    ],
+    [fromTokenInfo.decimals, fromTokenInfo.symbol, maxFromTokenIn, maxFromTokenInUSD]
+  );
+  const maxOutValue = useMemo(
+    () => [
+      `${formatAmount(maxToTokenOut, toTokenInfo.decimals, 0, true)} ${toTokenInfo.symbol}`,
+      `($${formatAmount(maxToTokenOutUSD, USD_DECIMALS, 0, true)})`,
+    ],
+    [maxToTokenOut, maxToTokenOutUSD, toTokenInfo.decimals, toTokenInfo.symbol]
+  );
+
+  const executionFees = useMemo(
+    () => ({
+      fee: currentExecutionFee,
+      feeUsd: currentExecutionFeeUsd,
+    }),
+    [currentExecutionFee, currentExecutionFeeUsd]
+  );
+
   if (!fromToken || !toToken) {
     return null;
   }
@@ -1874,12 +1904,6 @@ export default function SwapBox(props) {
     ),
   };
 
-  const SWAP_LABELS = {
-    [LONG]: t`Long`,
-    [SHORT]: t`Short`,
-    [SWAP]: t`Swap`,
-  };
-
   const SWAP_ORDER_EXECUTION_GAS_FEE = getConstant(chainId, "SWAP_ORDER_EXECUTION_GAS_FEE");
   const INCREASE_ORDER_EXECUTION_GAS_FEE = getConstant(chainId, "INCREASE_ORDER_EXECUTION_GAS_FEE");
   const executionFee = isSwap ? SWAP_ORDER_EXECUTION_GAS_FEE : INCREASE_ORDER_EXECUTION_GAS_FEE;
@@ -1950,7 +1974,7 @@ export default function SwapBox(props) {
             {flagOrdersEnabled && (
               <Tab
                 options={orderOptions}
-                optionLabels={orderOptionLabels}
+                optionLabels={ORDER_OPTION_LABELS}
                 className="Exchange-swap-order-type-tabs"
                 type="inline"
                 option={orderOption}
@@ -1959,7 +1983,7 @@ export default function SwapBox(props) {
             )}
           </div>
           {showFromAndToSection && (
-            <React.Fragment>
+            <>
               <BuyInputSection
                 topLeftLabel={t`Pay`}
                 topLeftValue={fromUsdMin && `$${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)}`}
@@ -2014,7 +2038,7 @@ export default function SwapBox(props) {
                   showBalances={false}
                 />
               </BuyInputSection>
-            </React.Fragment>
+            </>
           )}
           {showTriggerRatioSection && (
             <BuyInputSection
@@ -2068,17 +2092,7 @@ export default function SwapBox(props) {
               <ExchangeInfoRow label={t`Fees`}>
                 <div>
                   {!fees && "-"}
-                  {fees && (
-                    <FeesTooltip
-                      swapFee={feesUsd}
-                      executionFees={
-                        !isMarketOrder && {
-                          fee: currentExecutionFee,
-                          feeUsd: currentExecutionFeeUsd,
-                        }
-                      }
-                    />
-                  )}
+                  {fees && <FeesTooltip swapFee={feesUsd} executionFees={!isMarketOrder && executionFees} />}
                 </div>
               </ExchangeInfoRow>
             </div>
@@ -2222,10 +2236,7 @@ export default function SwapBox(props) {
                   {feesUsd && (
                     <FeesTooltip
                       fundingRate={getFundingRate()}
-                      executionFees={{
-                        fee: currentExecutionFee,
-                        feeUsd: currentExecutionFeeUsd,
-                      }}
+                      executionFees={executionFees}
                       positionFee={positionFee}
                       swapFee={swapFees}
                       titleText={swapFees && <Trans>{collateralToken.symbol} is required for collateral.</Trans>}
@@ -2289,20 +2300,8 @@ export default function SwapBox(props) {
                   renderContent={() => {
                     return (
                       <div>
-                        <StatsTooltipRow
-                          label={t`Max ${fromTokenInfo.symbol} in`}
-                          value={[
-                            `${formatAmount(maxFromTokenIn, fromTokenInfo.decimals, 0, true)} ${fromTokenInfo.symbol}`,
-                            `($${formatAmount(maxFromTokenInUSD, USD_DECIMALS, 0, true)})`,
-                          ]}
-                        />
-                        <StatsTooltipRow
-                          label={t`Max ${toTokenInfo.symbol} out`}
-                          value={[
-                            `${formatAmount(maxToTokenOut, toTokenInfo.decimals, 0, true)} ${toTokenInfo.symbol}`,
-                            `($${formatAmount(maxToTokenOutUSD, USD_DECIMALS, 0, true)})`,
-                          ]}
-                        />
+                        <StatsTooltipRow label={t`Max ${fromTokenInfo.symbol} in`} value={maxInValue} />
+                        <StatsTooltipRow label={t`Max ${toTokenInfo.symbol} out`} value={maxOutValue} />
                       </div>
                     );
                   }}

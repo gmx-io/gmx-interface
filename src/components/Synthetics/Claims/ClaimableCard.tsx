@@ -1,17 +1,15 @@
 import { Trans, t } from "@lingui/macro";
-import { MarketsInfoData, getTotalClaimableFundingUsd } from "domain/synthetics/markets";
-import { useTokensData } from "domain/synthetics/tokens";
-import { useChainId } from "lib/chains";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
+import { getTotalClaimableFundingUsd } from "domain/synthetics/markets";
 import { CSSProperties, useMemo } from "react";
 import { ClaimableCardUI } from "./ClaimableCardUI";
 import { calcTotalRebateUsd } from "./utils";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 
 type Props = {
   onClaimClick: () => void;
   onClaimablePositionPriceImpactFeesClick: () => void;
-  marketsInfoData: MarketsInfoData | undefined;
   style?: CSSProperties;
   claimablePositionPriceImpactFees: RebateInfoItem[];
 };
@@ -21,16 +19,15 @@ const buttonText = t`Claim`;
 const title = t`Claimable`;
 
 export function ClaimableCard({
-  marketsInfoData,
   onClaimClick,
   style,
   claimablePositionPriceImpactFees,
   onClaimablePositionPriceImpactFeesClick,
 }: Props) {
+  const marketsInfoData = useMarketsInfoData();
   const markets = Object.values(marketsInfoData ?? {});
   const totalClaimableFundingUsd = useMemo(() => getTotalClaimableFundingUsd(markets), [markets]);
-  const { chainId } = useChainId();
-  const { tokensData } = useTokensData(chainId);
+  const tokensData = useTokensData();
   const priceImpactRebateUsd = useMemo(
     () => calcTotalRebateUsd(claimablePositionPriceImpactFees, tokensData, false),
     [claimablePositionPriceImpactFees, tokensData]
