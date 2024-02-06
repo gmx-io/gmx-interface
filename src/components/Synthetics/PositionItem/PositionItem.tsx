@@ -3,7 +3,12 @@ import cx from "classnames";
 import PositionDropdown from "components/Exchange/PositionDropdown";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import { PositionOrderInfo, isDecreaseOrderType, isIncreaseOrderType } from "domain/synthetics/orders";
+import {
+  PositionOrderInfo,
+  isDecreaseOrderType,
+  isIncreaseOrderType,
+  sortPositionOrders,
+} from "domain/synthetics/orders";
 import {
   PositionInfo,
   formatEstimatedLiquidationTime,
@@ -67,7 +72,7 @@ export function PositionItem(p: Props) {
     isCurrentTradeTypeLong === p.position.isLong;
 
   const sortedPositionOrders = useMemo(() => {
-    return positionOrders.sort((a, b) => (a.triggerPrice.sub(b.triggerPrice).isNegative() ? -1 : 1));
+    return sortPositionOrders(positionOrders);
   }, [positionOrders]);
 
   function renderNetValue() {

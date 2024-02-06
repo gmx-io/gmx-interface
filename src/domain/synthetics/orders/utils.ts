@@ -464,3 +464,33 @@ export function getOrderErrors(p: {
     level,
   };
 }
+
+export function sortPositionOrders(orders: PositionOrderInfo[]): PositionOrderInfo[] {
+  return orders.sort((a, b) => {
+    // Compare by market name
+    const nameComparison = a.marketInfo.name.localeCompare(b.marketInfo.name);
+    if (nameComparison !== 0) return nameComparison;
+
+    // Compare by trigger price
+    const triggerPriceComparison = a.triggerPrice.sub(b.triggerPrice);
+    if (!triggerPriceComparison.isZero()) return triggerPriceComparison.isNegative() ? -1 : 1;
+
+    // Compare by order type
+    const orderTypeComparison = a.orderType - b.orderType;
+    if (orderTypeComparison !== 0) return orderTypeComparison;
+
+    // Finally, sort by size delta USD
+    return b.sizeDeltaUsd.sub(a.sizeDeltaUsd).isNegative() ? -1 : 1;
+  });
+}
+
+export function sortSwapOrders(orders: SwapOrderInfo[]): SwapOrderInfo[] {
+  return orders.sort((a, b) => {
+    // Compare by target collateral token symbol
+    const collateralComparison = a.targetCollateralToken.symbol.localeCompare(b.targetCollateralToken.symbol);
+    if (collateralComparison !== 0) return collateralComparison;
+
+    // Finally, sort by min output amount
+    return a.minOutputAmount.sub(b.minOutputAmount).isNegative() ? -1 : 1;
+  });
+}
