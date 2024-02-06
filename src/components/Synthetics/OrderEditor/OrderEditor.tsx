@@ -226,24 +226,26 @@ export function OrderEditor(p: Props) {
 
   const isLimitIncreaseOrder = p.order.orderType === OrderType.LimitIncrease;
 
-  const positionOrder = p.order as PositionOrderInfo;
+  const positionOrder = p.order as PositionOrderInfo | undefined;
+  const positionIndexToken = positionOrder?.indexToken;
   const indexTokenAmount = useMemo(
-    () => convertToTokenAmount(sizeDeltaUsd, positionOrder.indexToken.decimals, triggerPrice),
-    [positionOrder.indexToken.decimals, sizeDeltaUsd, triggerPrice]
+    () =>
+      positionIndexToken ? convertToTokenAmount(sizeDeltaUsd, positionIndexToken.decimals, triggerPrice) : undefined,
+    [positionIndexToken, sizeDeltaUsd, triggerPrice]
   );
   const nextPositionValuesForIncrease = useNextPositionValuesForIncrease({
-    collateralTokenAddress: positionOrder.targetCollateralToken.address,
+    collateralTokenAddress: positionOrder?.targetCollateralToken.address,
     fixedAcceptablePriceImpactBps: undefined,
-    indexTokenAddress: positionOrder.indexToken.address,
+    indexTokenAddress: positionIndexToken?.address,
     indexTokenAmount,
-    initialCollateralAmount: positionOrder.initialCollateralDeltaAmount,
+    initialCollateralAmount: positionOrder?.initialCollateralDeltaAmount ?? BigNumber.from(0),
     initialCollateralTokenAddress: fromToken?.address,
     leverage: existingPosition?.leverage,
-    marketAddress: positionOrder.marketAddress,
+    marketAddress: positionOrder?.marketAddress,
     positionKey: existingPosition?.key,
     strategy: "independent",
     tradeMode: isLimitOrderType(p.order.orderType) ? TradeMode.Limit : TradeMode.Trigger,
-    tradeType: positionOrder.isLong ? TradeType.Long : TradeType.Short,
+    tradeType: positionOrder?.isLong ? TradeType.Long : TradeType.Short,
     triggerPrice: isLimitOrderType(p.order.orderType) ? triggerPrice : undefined,
     tokenTypeForSwapRoute: existingPosition ? "collateralToken" : "indexToken",
   });

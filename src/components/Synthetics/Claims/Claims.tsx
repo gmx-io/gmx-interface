@@ -19,7 +19,7 @@ import { SettleAccruedCard } from "./SettleAccruedCard";
 const PAGE_SIZE = 100;
 
 const MARGIN_RIGHT = { marginRight: 4 };
-const MARGIN_LEFT = { marginRight: 4 };
+const MARGIN_LEFT = { marginLeft: 4 };
 
 export function Claims({
   shouldShowPaginationButtons,
