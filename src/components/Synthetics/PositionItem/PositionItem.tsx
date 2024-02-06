@@ -28,7 +28,7 @@ import { CHART_PERIODS } from "lib/legacy";
 import { FaAngleRight } from "react-icons/fa";
 import { useMedia } from "react-use";
 import "./PositionItem.scss";
-import { Fragment } from "react";
+import { Fragment, useMemo } from "react";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
 export type Props = {
@@ -65,6 +65,10 @@ export function PositionItem(p: Props) {
     p.currentMarketAddress === p.position.marketAddress &&
     p.currentCollateralAddress === p.position.collateralTokenAddress &&
     isCurrentTradeTypeLong === p.position.isLong;
+
+  const sortedPositionOrders = useMemo(() => {
+    return positionOrders.sort((a, b) => (a.triggerPrice.sub(b.triggerPrice).isNegative() ? -1 : 1));
+  }, [positionOrders]);
 
   function renderNetValue() {
     return (
@@ -340,10 +344,10 @@ export function PositionItem(p: Props) {
   }
 
   function renderPositionOrders(isSmall = false) {
-    if (positionOrders.length === 0) return null;
+    if (sortedPositionOrders.length === 0) return null;
 
     if (isSmall) {
-      return positionOrders.map((order) => {
+      return sortedPositionOrders.map((order) => {
         if (order.errorLevel) {
           return (
             <div key={order.key} className="Position-list-order">
@@ -351,15 +355,18 @@ export function PositionItem(p: Props) {
                 handle={renderOrderText(order)}
                 position="right-bottom"
                 handleClassName={cx("position-order-error", {
-                  "level-warning": order.errorLevel === 'warning',
-                  "level-error": order.errorLevel === 'error',
+                  "level-warning": order.errorLevel === "warning",
+                  "level-error": order.errorLevel === "error",
                 })}
                 renderContent={() =>
                   order.errors.map((error) => (
-                    <span key={error.msg} className={cx("mb-xs", "position-order-error", {
-                      "level-warning": order.errorLevel === 'warning',
-                      "level-error": order.errorLevel === 'error',
-                    })}>
+                    <span
+                      key={error.msg}
+                      className={cx("mb-xs", "position-order-error", {
+                        "level-warning": order.errorLevel === "warning",
+                        "level-error": order.errorLevel === "error",
+                      })}
+                    >
                       {error.msg}
                     </span>
                   ))
@@ -372,8 +379,8 @@ export function PositionItem(p: Props) {
       });
     }
 
-    const ordersErrorList = positionOrders.filter((order) => order.errorLevel === "error");
-    const ordersWarningsList = positionOrders.filter((order) => order.errorLevel === "warning");
+    const ordersErrorList = sortedPositionOrders.filter((order) => order.errorLevel === "error");
+    const ordersWarningsList = sortedPositionOrders.filter((order) => order.errorLevel === "warning");
     const hasErrors = ordersErrorList.length + ordersWarningsList.length > 0;
 
     return (
@@ -390,7 +397,7 @@ export function PositionItem(p: Props) {
                   "level-warning": !ordersErrorList.length && ordersWarningsList.length > 0,
                 })}
               >
-                ({positionOrders.length})
+                ({sortedPositionOrders.length})
               </span>
             </Trans>
           }
@@ -407,7 +414,7 @@ export function PositionItem(p: Props) {
               <strong>
                 <Trans>Active Orders</Trans>
               </strong>
-              {positionOrders.map((order) => {
+              {sortedPositionOrders.map((order) => {
                 const errors = order.errors;
                 return (
                   <div key={order.key} className="Position-list-order active-order-tooltip">
@@ -704,7 +711,7 @@ export function PositionItem(p: Props) {
               <Trans>Orders</Trans>
             </div>
             <div>
-              {!p.positionOrders?.length && "None"}
+              {!sortedPositionOrders?.length && "None"}
               {renderPositionOrders(true)}
             </div>
           </div>
