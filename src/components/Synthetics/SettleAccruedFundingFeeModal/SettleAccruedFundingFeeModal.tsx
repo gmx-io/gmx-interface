@@ -3,7 +3,6 @@ import Modal from "components/Modal/Modal";
 import { formatDeltaUsd, formatUsd } from "lib/numbers";
 import Button from "components/Button/Button";
 import { getTotalAccruedFundingUsd } from "domain/synthetics/markets";
-import { PositionsInfoData } from "domain/synthetics/positions";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { SettleAccruedFundingFeeRow } from "./SettleAccruedFundingFeeRow";
 
@@ -16,42 +15,43 @@ import {
   useGasPrice,
 } from "domain/synthetics/fees";
 import { createDecreaseOrderTxn, DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
-import { TokensData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 import "./SettleAccruedFundingFeeModal.scss";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
-import { useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import {
+  usePositionsInfoData,
+  useTokensData,
+  useUserReferralInfo,
+} from "context/SyntheticsStateContext/hooks/globalsHooks";
 
 type Props = {
   allowedSlippage: number;
   isVisible: boolean;
   onClose: () => void;
   positionKeys: string[];
-  positionsInfoData: PositionsInfoData | undefined;
   setPositionKeys: (keys: string[]) => void;
-  tokensData?: TokensData;
   setPendingTxns: (txns: any) => void;
 };
 
 export function SettleAccruedFundingFeeModal({
   allowedSlippage,
-  tokensData,
   isVisible,
   onClose,
   positionKeys,
   setPositionKeys,
-  positionsInfoData,
   setPendingTxns,
 }: Props) {
+  const tokensData = useTokensData();
   const { account, signer } = useWallet();
   const { chainId } = useChainId();
   const userReferralInfo = useUserReferralInfo();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { gasLimits } = useGasLimits(chainId);
   const { gasPrice } = useGasPrice(chainId);
+  const positionsInfoData = usePositionsInfoData();
 
   const positiveFeePositions = useMemo(
     () => Object.values(positionsInfoData || {}).filter((position) => position.pendingClaimableFundingFeesUsd.gt(0)),

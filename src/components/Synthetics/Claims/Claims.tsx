@@ -93,7 +93,6 @@ export function Claims({
       <SettleAccruedFundingFeeModal
         isVisible={isSettling}
         positionKeys={gettingPendingFeePositionKeys}
-        positionsInfoData={positionsInfoData}
         allowedSlippage={allowedSlippage}
         setPositionKeys={setGettingPendingFeePositionKeys}
         setPendingTxns={setPendingTxns}
