@@ -7,6 +7,7 @@ import { ExecutionFee, FeeItem } from "domain/synthetics/fees";
 import { formatDeltaUsd, formatTokenAmountWithUsd } from "lib/numbers";
 import "./GmFees.scss";
 import { getPositiveOrNegativeClass } from "lib/utils";
+import { useMemo } from "react";
 
 type Props = {
   totalFees?: FeeItem;
@@ -20,9 +21,18 @@ type Props = {
 export function GmFees(p: Props) {
   const totalFeesUsd = p.totalFees?.deltaUsd.sub(p.executionFee?.feeUsd || 0);
 
+  const label = useMemo(() => {
+    const text = <Trans>Fees and Price Impact</Trans>;
+    if (p.executionFee?.warning) {
+      return <Tooltip handle={text} renderContent={() => p.executionFee?.warning} />;
+    } else {
+      return text;
+    }
+  }, [p.executionFee?.warning]);
+
   return (
     <ExchangeInfoRow
-      label={<Trans>Fees and Price Impact</Trans>}
+      label={label}
       value={
         <>
           {!p.totalFees?.deltaUsd && "-"}
