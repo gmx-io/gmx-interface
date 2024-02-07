@@ -12,7 +12,6 @@ import {
   getMaxReservedUsd,
   getOpenInterestUsd,
   getReservedUsd,
-  isMarketAdaptiveFundingActive,
 } from "domain/synthetics/markets";
 import { CHART_PERIODS } from "lib/legacy";
 import { formatPercentage, formatRatePercentage, formatUsd, getBasisPoints } from "lib/numbers";
@@ -75,7 +74,6 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
 
   const renderFundingFeeTooltipContent = useCallback(() => {
     if (!fundingRateLong || !fundingRateShort) return [];
-    const isAdaptiveFundingForMarketActive = marketInfo && isMarketAdaptiveFundingActive(marketInfo);
 
     const long = (
       <MarketNetFee borrowRateHourly={borrowingRateLong} fundingRateHourly={fundingRateLong} isLong={true} />
@@ -103,16 +101,6 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
           Borrowing Fees help ensuring liquidity.
           <ExternalLink href={DOCS_LINKS.borrowingFees}>Read more</ExternalLink>.
         </span>
-        {isAdaptiveFundingForMarketActive && (
-          <span>
-            <br />
-            <br />
-            <Trans>
-              This market uses an Adaptive Funding Rate. The Funding Rate will adjust over time depending on the ratio
-              of longs and shorts. <ExternalLink href={DOCS_LINKS.adaptiveFunding}>Read more</ExternalLink>.
-            </Trans>
-          </span>
-        )}
       </div>
     );
   }, [fundingRateLong, fundingRateShort, isLong, marketInfo, borrowingRateLong, borrowingRateShort]);
@@ -189,7 +177,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
             <TooltipWithPortal
               portalClassName="MarketCard-net-fee"
               handle={netRateHourly ? `${formatRatePercentage(netRateHourly)} / 1h` : "..."}
-              position="right-bottom"
+              position="right-top"
               renderContent={renderFundingFeeTooltipContent}
             />
           }
