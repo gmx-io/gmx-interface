@@ -62,7 +62,8 @@ function renderNetFeesOverTime(hourlyRate: BigNumber) {
   }
   return (
     <ul className="net-fees-over-time">
-      <li>1h: {formatRateForPeriod(1)}</li>
+      <li>8h: {formatRateForPeriod(8)}</li>
+      <li>1d: {formatRateForPeriod(24)}</li>
       <li>7d: {formatRateForPeriod(24 * 7)}</li>
       <li>365d: {formatRateForPeriod(24 * 365)}</li>
     </ul>
