@@ -1665,7 +1665,7 @@ export function ConfirmationBox(p: Props) {
   }
 
   const hasCheckboxesSection = Boolean(
-    priceImpactWarningState.shouldShowWarning || (needPayTokenApproval && fromToken)
+    priceImpactWarningState.shouldShowWarning || (needPayTokenApproval && fromToken) || highExecutionFeeAcknowledgement
   );
 
   return (

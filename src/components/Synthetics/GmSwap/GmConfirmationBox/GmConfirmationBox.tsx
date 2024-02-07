@@ -324,6 +324,8 @@ export function GmConfirmationBox({
     );
   };
 
+  const shouldRenderDivider = Boolean(tokensToApprove?.length > 0) || Boolean(highExecutionFeeAcknowledgement);
+
   return (
     <div className="Confirmation-box GmConfirmationBox">
       <Modal isVisible={isVisible} setIsVisible={onClose} label={t`Confirm ${operationText}`} allowContentTouchMove>
@@ -398,7 +400,7 @@ export function GmConfirmationBox({
               swapPriceImpact={fees?.swapPriceImpact}
               executionFee={executionFee}
             />
-            {tokensToApprove?.length > 0 && <div className="line-divider" />}
+            {shouldRenderDivider && <div className="line-divider" />}
 
             {tokensToApprove && tokensToApprove.length > 0 && (
               <div>
@@ -418,10 +420,11 @@ export function GmConfirmationBox({
               </div>
             )}
 
+            {highExecutionFeeAcknowledgement ? (
+              <div className="GmConfirmationBox-high-fee">{highExecutionFeeAcknowledgement}</div>
+            ) : null}
+
             <div className="Confirmation-box-row">
-              {highExecutionFeeAcknowledgement ? (
-                <div className="GmConfirmationBox-high-fee">{highExecutionFeeAcknowledgement}</div>
-              ) : null}
               <Button
                 className="w-full"
                 variant="primary-action"
