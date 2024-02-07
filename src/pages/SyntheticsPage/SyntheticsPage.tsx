@@ -448,19 +448,14 @@ export function SyntheticsPage(p: Props) {
 
       <PositionSeller
         position={closingPosition!}
-        tokensData={tokensData}
-        showPnlInLeverage={savedIsPnlInLeverage}
         onClose={onPositionSellerClose}
         setPendingTxns={setPendingTxns}
-        availableTokensOptions={availableTokensOptions}
         isHigherSlippageAllowed={isHigherSlippageAllowed}
         setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
         shouldDisableValidation={shouldDisableValidation}
       />
 
       <PositionEditor
-        tokensData={tokensData}
-        showPnlInLeverage={savedIsPnlInLeverage}
         position={editingPosition}
         allowedSlippage={allowedSlippage}
         onClose={onPositionEditorClose}

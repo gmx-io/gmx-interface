@@ -4,11 +4,11 @@ import { Token, getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber, ethers } from "ethers";
 import { CHART_PERIODS } from "lib/legacy";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
-import { applyFactor, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
+import { applyFactor, expandDecimals, formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd, getPositionFee, getPriceImpactForPosition } from "../fees";
 import { TokenData, convertToUsd } from "../tokens";
 import { PositionInfo } from "./types";
-import { OrderType } from "../orders/types";
+import { Order, OrderType } from "../orders/types";
 import { t } from "@lingui/macro";
 
 export function getPositionKey(account: string, marketAddress: string, collateralAddress: string, isLong: boolean) {
@@ -331,4 +331,101 @@ export function getTriggerNameByOrderType(orderType: OrderType | undefined, abbr
   }
 
   return triggerStr;
+}
+
+/*
+
+struct WillPositionCollateralBeSufficientValues {
+    uint256 positionSizeInUsd;
+    uint256 positionCollateralAmount;
+    int256 realizedPnlUsd;
+    int256 openInterestDelta;
+}
+
+WillPositionCollateralBeSufficientValues memory values = WillPositionCollateralBeSufficientValues(
+  params.position.sizeInUsd() - params.order.sizeDeltaUsd(), // positionSizeInUsd
+  params.position.collateralAmount() - params.order.initialCollateralDeltaAmount(), // positionCollateralAmount
+  cache.estimatedRealizedPnlUsd,  // realizedPnlUsd
+  -params.order.sizeDeltaUsd().toInt256() // openInterestDelta
+)
+
+function willPositionCollateralBeSufficient(
+        DataStore dataStore,
+        Market.Props memory market,
+        MarketUtils.MarketPrices memory prices,
+        address collateralToken,
+        bool isLong,
+        WillPositionCollateralBeSufficientValues memory values
+    ) public view returns (bool, int256) {
+        Price.Props memory collateralTokenPrice = MarketUtils.getCachedTokenPrice(
+            collateralToken,
+            market,
+            prices
+        );
+
+        int256 remainingCollateralUsd = values.positionCollateralAmount.toInt256() * collateralTokenPrice.min.toInt256();
+
+        // deduct realized pnl if it is negative since this would be paid from
+        // the position's collateral
+        if (values.realizedPnlUsd < 0) {
+            remainingCollateralUsd = remainingCollateralUsd + values.realizedPnlUsd;
+        }
+
+        if (remainingCollateralUsd < 0) {
+            return (false, remainingCollateralUsd);
+        }
+
+        // the min collateral factor will increase as the open interest for a market increases
+        // this may lead to previously created limit increase orders not being executable
+        //
+        // the position's pnl is not factored into the remainingCollateralUsd value, since
+        // factoring in a positive pnl may allow the user to manipulate price and bypass this check
+        // it may be useful to factor in a negative pnl for this check, this can be added if required
+        uint256 minCollateralFactor = MarketUtils.getMinCollateralFactorForOpenInterest(
+            dataStore,
+            market,
+            values.openInterestDelta,
+            isLong
+        );
+
+        uint256 minCollateralFactorForMarket = MarketUtils.getMinCollateralFactor(dataStore, market.marketToken);
+        // use the minCollateralFactor for the market if it is larger
+        if (minCollateralFactorForMarket > minCollateralFactor) {
+            minCollateralFactor = minCollateralFactorForMarket;
+        }
+
+        int256 minCollateralUsdForLeverage = Precision.applyFactor(values.positionSizeInUsd, minCollateralFactor).toInt256();
+        bool willBeSufficient = remainingCollateralUsd >= minCollateralUsdForLeverage;
+
+        return (willBeSufficient, remainingCollateralUsd);
+    }
+*/
+
+export function willPositionCollateralBeSufficient(
+  collateralToken: TokenData,
+  position: PositionInfo,
+  collateralDeltaAmount: BigNumber,
+  realizedPnlUsd: BigNumber,
+  minCollateralFactor: BigNumber
+) {
+  const collateralTokenPrice = collateralToken.prices.minPrice; // TODO min or max?
+  let remainingCollateralUsd = position.collateralAmount
+    .sub(collateralDeltaAmount)
+    .mul(collateralTokenPrice)
+    .div(expandDecimals(1, collateralToken.decimals));
+
+  if (realizedPnlUsd.lt(0)) {
+    remainingCollateralUsd = remainingCollateralUsd.add(realizedPnlUsd);
+  }
+
+  if (remainingCollateralUsd.lt(0)) {
+    return false;
+  }
+
+  const minCollateralUsdForLeverage = applyFactor(position.sizeInUsd, minCollateralFactor);
+  console.log("minCollateralUsdForLeverage", formatUsd(minCollateralUsdForLeverage));
+  console.log("remainingCollateralUsd", formatUsd(remainingCollateralUsd));
+  console.log("diff", formatUsd(remainingCollateralUsd.sub(minCollateralUsdForLeverage)));
+
+  return remainingCollateralUsd.gte(minCollateralUsdForLeverage);
 }

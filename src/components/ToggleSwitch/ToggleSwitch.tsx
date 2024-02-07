@@ -7,10 +7,11 @@ type Props = {
   setIsChecked: (value: boolean) => void;
   className?: string;
   children?: ReactNode;
+  disabled?: boolean;
 };
 
-export default function ToggleSwitch({ isChecked, setIsChecked, className, children }: Props) {
-  const classNames = cx("Switch-toggle-wrapper", className);
+export default function ToggleSwitch({ isChecked, setIsChecked, className, children, disabled }: Props) {
+  const classNames = cx("Switch-toggle-wrapper", { "Switch-toggle-wrapper_disabled": disabled }, className);
   return (
     <div className={classNames}>
       {children}

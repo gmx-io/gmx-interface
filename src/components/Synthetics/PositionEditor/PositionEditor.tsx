@@ -64,12 +64,15 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionEditor.scss";
 import { getMinResidualAmount } from "domain/tokens";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
-import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import {
+  usePositionsConstants,
+  useSavedIsPnlInLeverage,
+  useTokensData,
+  useUserReferralInfo,
+} from "context/SyntheticsStateContext/hooks/globalsHooks";
 
 export type Props = {
   position?: PositionInfo;
-  tokensData?: TokensData;
-  showPnlInLeverage: boolean;
   allowedSlippage: number;
   setPendingTxns: (txns: any) => void;
   onClose: () => void;
@@ -87,8 +90,10 @@ const OPERATION_LABELS = {
 };
 
 export function PositionEditor(p: Props) {
-  const { position, tokensData, showPnlInLeverage, setPendingTxns, onClose, allowedSlippage } = p;
+  const { position, setPendingTxns, onClose, allowedSlippage } = p;
   const { chainId } = useChainId();
+  const showPnlInLeverage = useSavedIsPnlInLeverage();
+  const tokensData = useTokensData();
   const { account, signer, active } = useWallet();
   const { openConnectModal } = useConnectModal();
   const isMetamaskMobile = useIsMetamaskMobile();

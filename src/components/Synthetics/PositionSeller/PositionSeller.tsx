@@ -33,6 +33,7 @@ import {
   formatLeverage,
   formatLiquidationPrice,
   getTriggerNameByOrderType,
+  willPositionCollateralBeSufficient,
 } from "domain/synthetics/positions";
 import { TokensData } from "domain/synthetics/tokens";
 import {
@@ -66,7 +67,7 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { museNeverExist } from "lib/types";
 import { usePrevious } from "lib/usePrevious";
 import useWallet from "lib/wallets/useWallet";
-import { useEffect, useMemo, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { useLatest } from "react-use";
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
@@ -76,15 +77,21 @@ import {
   useSavedAcceptablePriceImpactBuffer,
   useSavedAllowedSlippage,
 } from "context/SyntheticsStateContext/hooks/settingsHooks";
-import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useSwapRoutes } from "context/SyntheticsStateContext/hooks/tradeHooks";
-import { useTradeboxTradeFlags } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+import {
+  usePositionsConstants,
+  useSavedIsPnlInLeverage,
+  useTokensData,
+  useUserReferralInfo,
+} from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useMinCollateralFactorForPosition, useSwapRoutes } from "context/SyntheticsStateContext/hooks/tradeHooks";
+import {
+  useTradeboxAvailableTokensOptions,
+  useTradeboxTradeFlags,
+} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 export type Props = {
   position?: PositionInfo;
-  tokensData?: TokensData;
-  showPnlInLeverage: boolean;
-  availableTokensOptions?: AvailableTokenOptions;
   onClose: () => void;
   setPendingTxns: (txns: any) => void;
   isHigherSlippageAllowed: boolean;
@@ -103,8 +110,10 @@ const ORDER_OPTION_LABELS = {
 };
 
 export function PositionSeller(p: Props) {
-  const { position, tokensData, showPnlInLeverage, onClose, setPendingTxns, availableTokensOptions } = p;
-
+  const { position, onClose, setPendingTxns } = p;
+  const availableTokensOptions = useTradeboxAvailableTokensOptions();
+  const showPnlInLeverage = useSavedIsPnlInLeverage();
+  const tokensData = useTokensData();
   const { chainId } = useChainId();
   const savedAllowedSlippage = useSavedAllowedSlippage();
   const { signer, account } = useWallet();
@@ -143,6 +152,8 @@ export function PositionSeller(p: Props) {
   const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);
   const receiveToken = isTrigger ? position?.collateralToken : getByKey(tokensData, receiveTokenAddress);
 
+  const minCollateralFactor = useMinCollateralFactorForPosition(position?.key);
+
   useEffect(() => {
     setAllowedSlippage(savedAllowedSlippage);
   }, [savedAllowedSlippage, isVisible]);
@@ -158,6 +169,7 @@ export function PositionSeller(p: Props) {
       return undefined;
     }
 
+    // console.log(formatUsd(closeSizeUsd), "<<<<<<");
     return getDecreasePositionAmounts({
       marketInfo: position.marketInfo,
       collateralToken: position.collateralToken,
@@ -187,6 +199,21 @@ export function PositionSeller(p: Props) {
     uiFeeFactor,
   ]);
 
+  const leverageCheckboxDisabledByCollateral = useMemo(() => {
+    if (!position) return false;
+    if (!minCollateralFactor) return false;
+    if (!decreaseAmounts) return false;
+    if (decreaseAmounts.sizeDeltaUsd.gte(position.sizeInUsd)) return false;
+
+    return !willPositionCollateralBeSufficient(
+      position.collateralToken,
+      position,
+      decreaseAmounts.collateralDeltaAmount,
+      position.pnlAfterFees,
+      minCollateralFactor
+    );
+  }, [decreaseAmounts, minCollateralFactor, position]);
+
   const acceptablePrice = useMemo(() => {
     if (!position || !decreaseAmounts?.acceptablePrice) {
       return undefined;
@@ -209,6 +236,10 @@ export function PositionSeller(p: Props) {
     sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd.mul(-1),
     isLong: position?.isLong,
   });
+
+  useEffect(() => {
+    if (leverageCheckboxDisabledByCollateral && keepLeverage) setKeepLeverage(false);
+  }, [keepLeverage, leverageCheckboxDisabledByCollateral, setKeepLeverage]);
 
   const shouldSwap = position && receiveToken && !getIsEquivalentTokens(position.collateralToken, receiveToken);
 
@@ -685,6 +716,23 @@ export function PositionSeller(p: Props) {
   );
 
   const isStopLoss = decreaseAmounts?.triggerOrderType === OrderType.StopLossDecrease;
+  const keepLeverageText = (
+    <Trans>Keep leverage at {position?.leverage ? formatLeverage(position.leverage) : "..."}</Trans>
+  );
+  const renderKeepLeverageTooltipContent = useCallback(
+    () => (
+      <Trans>
+        Keep leverage is not available as Position exceeds Max. Allowed Leverage.{" "}
+        <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
+      </Trans>
+    ),
+    []
+  );
+  const keepLeverageTextElem = leverageCheckboxDisabledByCollateral ? (
+    <TooltipWithPortal handle={keepLeverageText} renderContent={renderKeepLeverageTooltipContent} />
+  ) : (
+    keepLeverageText
+  );
 
   return (
     <div className="PositionEditor PositionSeller">
@@ -768,10 +816,12 @@ export function PositionSeller(p: Props) {
                   />
 
                   <div className="PositionEditor-keep-leverage-settings">
-                    <ToggleSwitch isChecked={keepLeverage ?? false} setIsChecked={setKeepLeverage}>
-                      <span className="text-gray font-sm">
-                        <Trans>Keep leverage at {position?.leverage ? formatLeverage(position.leverage) : "..."}</Trans>
-                      </span>
+                    <ToggleSwitch
+                      disabled={leverageCheckboxDisabledByCollateral}
+                      isChecked={keepLeverage ?? false}
+                      setIsChecked={setKeepLeverage}
+                    >
+                      <span className="text-gray font-sm">{keepLeverageTextElem}</span>
                     </ToggleSwitch>
                   </div>
 
