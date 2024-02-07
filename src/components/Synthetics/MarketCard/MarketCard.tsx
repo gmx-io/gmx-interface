@@ -103,7 +103,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
         </span>
       </div>
     );
-  }, [fundingRateLong, fundingRateShort, isLong, marketInfo, borrowingRateLong, borrowingRateShort]);
+  }, [fundingRateLong, fundingRateShort, isLong, borrowingRateLong, borrowingRateShort]);
 
   return (
     <div className="Exchange-swap-market-box App-box App-box-border MarketCard">
