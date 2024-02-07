@@ -55,7 +55,7 @@ import {
   usePositionsInfoData,
   useTokensData,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useNextPositionValues } from "context/SyntheticsStateContext/hooks/tradeHooks";
+import { useNextPositionValuesForIncrease } from "context/SyntheticsStateContext/hooks/tradeHooks";
 import useWallet from "lib/wallets/useWallet";
 import "./OrderEditor.scss";
 
@@ -226,27 +226,28 @@ export function OrderEditor(p: Props) {
 
   const isLimitIncreaseOrder = p.order.orderType === OrderType.LimitIncrease;
 
-  const positionOrder = p.order as PositionOrderInfo;
+  const positionOrder = p.order as PositionOrderInfo | undefined;
+  const positionIndexToken = positionOrder?.indexToken;
   const indexTokenAmount = useMemo(
-    () => convertToTokenAmount(sizeDeltaUsd, positionOrder.indexToken.decimals, triggerPrice),
-    [positionOrder.indexToken.decimals, sizeDeltaUsd, triggerPrice]
+    () =>
+      positionIndexToken ? convertToTokenAmount(sizeDeltaUsd, positionIndexToken.decimals, triggerPrice) : undefined,
+    [positionIndexToken, sizeDeltaUsd, triggerPrice]
   );
-  const nextPositionValues = useNextPositionValues({
-    closeSizeUsd: undefined,
-    collateralTokenAddress: positionOrder.targetCollateralToken.address,
+  const nextPositionValuesForIncrease = useNextPositionValuesForIncrease({
+    collateralTokenAddress: positionOrder?.targetCollateralToken.address,
     fixedAcceptablePriceImpactBps: undefined,
-    indexTokenAddress: positionOrder.indexToken.address,
+    indexTokenAddress: positionIndexToken?.address,
     indexTokenAmount,
-    initialCollateralAmount: positionOrder.initialCollateralDeltaAmount,
+    initialCollateralAmount: positionOrder?.initialCollateralDeltaAmount ?? BigNumber.from(0),
     initialCollateralTokenAddress: fromToken?.address,
-    keepLeverage: false,
     leverage: existingPosition?.leverage,
-    marketAddress: positionOrder.marketAddress,
+    marketAddress: positionOrder?.marketAddress,
     positionKey: existingPosition?.key,
     strategy: "independent",
     tradeMode: isLimitOrderType(p.order.orderType) ? TradeMode.Limit : TradeMode.Trigger,
-    tradeType: positionOrder.isLong ? TradeType.Long : TradeType.Short,
+    tradeType: positionOrder?.isLong ? TradeType.Long : TradeType.Short,
     triggerPrice: isLimitOrderType(p.order.orderType) ? triggerPrice : undefined,
+    tokenTypeForSwapRoute: existingPosition ? "collateralToken" : "indexToken",
   });
 
   function getError() {
@@ -343,7 +344,7 @@ export function OrderEditor(p: Props) {
     }
 
     if (isLimitIncreaseOrder) {
-      if (nextPositionValues?.nextLeverage?.gt(MAX_ALLOWED_LEVERAGE)) {
+      if (nextPositionValuesForIncrease?.nextLeverage?.gt(MAX_ALLOWED_LEVERAGE)) {
         return t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`;
       }
     }
@@ -477,7 +478,7 @@ export function OrderEditor(p: Props) {
                 value={
                   <ValueTransition
                     from={formatLeverage(existingPosition?.leverage)}
-                    to={formatLeverage(nextPositionValues?.nextLeverage) ?? "-"}
+                    to={formatLeverage(nextPositionValuesForIncrease?.nextLeverage) ?? "-"}
                   />
                 }
               />

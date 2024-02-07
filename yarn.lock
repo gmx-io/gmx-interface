@@ -4447,6 +4447,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@taskworld.com/rereselect@npm:0.3.0":
+  version: 0.3.0
+  resolution: "@taskworld.com/rereselect@npm:0.3.0"
+  checksum: cff013ca22d5e6aa5370cda11b7e885d5b8cd9d55d7bbf83a0093e10cb4dd49c391f68d1b65d4eda608aa52501079fc61d1307b4a34b0939e988d96a2413c175
+  languageName: node
+  linkType: hard
+
 "@testing-library/dom@npm:^7.28.1":
   version: 7.31.2
   resolution: "@testing-library/dom@npm:7.31.2"
@@ -10656,6 +10663,7 @@ __metadata:
     "@lingui/macro": 3.13.3
     "@lingui/react": 3.13.3
     "@rainbow-me/rainbowkit": 0.12.18
+    "@taskworld.com/rereselect": 0.3.0
     "@testing-library/jest-dom": 5.16.1
     "@testing-library/react": 11.2.7
     "@testing-library/user-event": 12.8.3

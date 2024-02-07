@@ -2,17 +2,15 @@ import { TradeMode, TradeType } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { useMemo } from "react";
 import {
+  TokenTypeForSwapRoute,
   createTradeFlags,
-  makeSelectDecreasePositionAmounts,
-  makeSelectIncreasePositionAmounts,
-  makeSelectNextPositionValues,
-  makeSelectSwapAmounts,
+  makeSelectNextPositionValuesForIncrease,
   makeSelectSwapRoutes,
   makeSelectTradeRatios,
 } from "../selectors/tradeSelectors";
 import { useSelector } from "../utils";
 
-export const useIncreasePositionAmounts = ({
+export const useNextPositionValuesForIncrease = ({
   collateralTokenAddress,
   fixedAcceptablePriceImpactBps,
   initialCollateralTokenAddress,
@@ -26,122 +24,7 @@ export const useIncreasePositionAmounts = ({
   tradeMode,
   tradeType,
   triggerPrice,
-}: {
-  initialCollateralTokenAddress: string | undefined;
-  indexTokenAddress: string | undefined;
-  positionKey: string | undefined;
-  tradeMode: TradeMode;
-  tradeType: TradeType;
-  collateralTokenAddress: string | undefined;
-  marketAddress: string | undefined;
-  initialCollateralAmount: BigNumber;
-  indexTokenAmount: BigNumber;
-  leverage: BigNumber | undefined;
-  triggerPrice: BigNumber | undefined;
-  fixedAcceptablePriceImpactBps: BigNumber | undefined;
-  strategy: "leverageByCollateral" | "leverageBySize" | "independent";
-}) => {
-  const selector = useMemo(
-    () =>
-      makeSelectIncreasePositionAmounts({
-        collateralTokenAddress,
-        fixedAcceptablePriceImpactBps,
-        initialCollateralTokenAddress,
-        initialCollateralAmount,
-        leverage,
-        marketAddress,
-        positionKey,
-        strategy,
-        indexTokenAddress,
-        indexTokenAmount,
-        tradeMode,
-        tradeType,
-        triggerPrice,
-      }),
-    [
-      collateralTokenAddress,
-      fixedAcceptablePriceImpactBps,
-      indexTokenAddress,
-      indexTokenAmount,
-      initialCollateralAmount,
-      initialCollateralTokenAddress,
-      leverage,
-      marketAddress,
-      positionKey,
-      strategy,
-      tradeMode,
-      tradeType,
-      triggerPrice,
-    ]
-  );
-  return useSelector(selector);
-};
-
-export const useDecreasePositionAmounts = ({
-  collateralTokenAddress,
-  marketAddress,
-  positionKey,
-  tradeMode,
-  tradeType,
-  triggerPrice,
-  closeSizeUsd,
-  keepLeverage,
-  fixedAcceptablePriceImpactBps,
-}: {
-  positionKey: string | undefined;
-  tradeMode: TradeMode;
-  tradeType: TradeType;
-  collateralTokenAddress: string | undefined;
-  marketAddress: string | undefined;
-  triggerPrice: BigNumber | undefined;
-  closeSizeUsd: BigNumber | undefined;
-  fixedAcceptablePriceImpactBps: BigNumber | undefined;
-  keepLeverage: boolean;
-}) => {
-  const selector = useMemo(
-    () =>
-      makeSelectDecreasePositionAmounts({
-        collateralTokenAddress,
-        marketAddress,
-        positionKey,
-        tradeMode,
-        tradeType,
-        triggerPrice,
-        closeSizeUsd,
-        keepLeverage,
-        fixedAcceptablePriceImpactBps,
-      }),
-    [
-      closeSizeUsd,
-      collateralTokenAddress,
-      fixedAcceptablePriceImpactBps,
-      keepLeverage,
-      marketAddress,
-      positionKey,
-      tradeMode,
-      tradeType,
-      triggerPrice,
-    ]
-  );
-  return useSelector(selector);
-};
-
-export const useNextPositionValues = ({
-  collateralTokenAddress,
-  fixedAcceptablePriceImpactBps,
-  initialCollateralTokenAddress,
-  initialCollateralAmount,
-  leverage,
-  marketAddress,
-  positionKey,
-  strategy,
-  indexTokenAddress,
-  indexTokenAmount,
-  tradeMode,
-  tradeType,
-  triggerPrice,
-  closeSizeUsd,
-  keepLeverage,
+  tokenTypeForSwapRoute,
 }: {
   initialCollateralTokenAddress: string | undefined;
   indexTokenAddress: string | undefined;
@@ -156,12 +39,11 @@ export const useNextPositionValues = ({
   triggerPrice: BigNumber | undefined;
   fixedAcceptablePriceImpactBps: BigNumber | undefined;
   strategy: "leverageByCollateral" | "leverageBySize" | "independent";
-  closeSizeUsd: BigNumber | undefined;
-  keepLeverage: boolean;
+  tokenTypeForSwapRoute: TokenTypeForSwapRoute;
 }) => {
   const selector = useMemo(
     () =>
-      makeSelectNextPositionValues({
+      makeSelectNextPositionValuesForIncrease({
         collateralTokenAddress,
         fixedAcceptablePriceImpactBps,
         initialCollateralTokenAddress,
@@ -175,22 +57,20 @@ export const useNextPositionValues = ({
         tradeMode,
         tradeType,
         triggerPrice,
-        closeSizeUsd,
-        keepLeverage,
+        tokenTypeForSwapRoute,
       }),
     [
-      closeSizeUsd,
       collateralTokenAddress,
       fixedAcceptablePriceImpactBps,
       indexTokenAddress,
       indexTokenAmount,
       initialCollateralAmount,
       initialCollateralTokenAddress,
-      keepLeverage,
       leverage,
       marketAddress,
       positionKey,
       strategy,
+      tokenTypeForSwapRoute,
       tradeMode,
       tradeType,
       triggerPrice,
@@ -204,52 +84,6 @@ export const useSwapRoutes = (fromTokenAddress: string | undefined, toTokenAddre
     () => makeSelectSwapRoutes(fromTokenAddress, toTokenAddress),
     [fromTokenAddress, toTokenAddress]
   );
-  return useSelector(selector);
-};
-
-export const useSwapAmounts = ({
-  amountBy,
-  fromTokenAddress,
-  fromTokenAmount,
-  isWrapOrUnwrap,
-  toTokenAddress,
-  toTokenAmount,
-  tradeMode,
-  triggerRatioValue,
-}: {
-  fromTokenAddress: string | undefined;
-  toTokenAddress: string | undefined;
-  tradeMode: TradeMode;
-  isWrapOrUnwrap: boolean;
-  amountBy: "from" | "to" | undefined;
-  fromTokenAmount: BigNumber;
-  toTokenAmount: BigNumber;
-  triggerRatioValue: BigNumber | undefined;
-}) => {
-  const selector = useMemo(
-    () =>
-      makeSelectSwapAmounts({
-        amountBy,
-        fromTokenAddress,
-        fromTokenAmount,
-        isWrapOrUnwrap,
-        toTokenAddress,
-        toTokenAmount,
-        tradeMode,
-        triggerRatioValue,
-      }),
-    [
-      amountBy,
-      fromTokenAddress,
-      fromTokenAmount,
-      isWrapOrUnwrap,
-      toTokenAddress,
-      toTokenAmount,
-      tradeMode,
-      triggerRatioValue,
-    ]
-  );
-
   return useSelector(selector);
 };
 

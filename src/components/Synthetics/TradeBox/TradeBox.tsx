@@ -23,7 +23,8 @@ import {
   useTradeboxExistingOrder,
   useTradeboxIncreasePositionAmounts,
   useTradeboxLeverage,
-  useTradeboxNextPositionValues,
+  useTradeboxNextPositionValuesForDecrease,
+  useTradeboxNextPositionValuesForIncrease,
   useTradeboxSelectedPosition,
   useTradeboxState,
   useTradeboxSwapAmounts,
@@ -233,10 +234,15 @@ export function TradeBox(p: Props) {
   const swapAmounts = useTradeboxSwapAmounts();
   const increaseAmounts = useTradeboxIncreasePositionAmounts();
   const decreaseAmounts = useTradeboxDecreasePositionAmounts();
-  const nextPositionValues = useTradeboxNextPositionValues();
+  const nextPositionValuesForIncrease = useTradeboxNextPositionValuesForIncrease();
+  const nextPositionValuesForDecrease = useTradeboxNextPositionValuesForDecrease();
   const selectedPosition = useTradeboxSelectedPosition();
   const existingOrder = useTradeboxExistingOrder();
   const leverage = useTradeboxLeverage();
+
+  const nextPositionValues = useMemo(() => {
+    return tradeFlags.isIncrease ? nextPositionValuesForIncrease : nextPositionValuesForDecrease;
+  }, [nextPositionValuesForDecrease, nextPositionValuesForIncrease, tradeFlags.isIncrease]);
 
   const { fees, feesType, executionFee } = useMemo(() => {
     if (!gasLimits || !gasPrice || !tokensData) {
@@ -471,7 +477,7 @@ export function TradeBox(p: Props) {
         triggerPrice,
         priceImpactWarning: priceImpactWarningState,
         isLimit,
-        nextPositionValues,
+        nextPositionValues: nextPositionValuesForIncrease,
       });
     } else if (isTrigger) {
       tradeError = getDecreaseError({
@@ -483,7 +489,7 @@ export function TradeBox(p: Props) {
         existingPosition: selectedPosition,
         isContractAccount: false,
         receiveToken: selectedPosition?.collateralToken,
-        nextPositionValues,
+        nextPositionValues: nextPositionValuesForDecrease,
         isLong,
         isTrigger: true,
         minCollateralUsd,
@@ -534,6 +540,7 @@ export function TradeBox(p: Props) {
     swapAmounts?.swapPathStats,
     toTokenAmount,
     swapOutLiquidity,
+    priceImpactWarningState,
     isLimit,
     isWrapOrUnwrap,
     triggerRatio,
@@ -552,10 +559,10 @@ export function TradeBox(p: Props) {
     isLong,
     markPrice,
     triggerPrice,
-    priceImpactWarningState,
-    nextPositionValues,
+    nextPositionValuesForIncrease,
     closeSizeUsd,
     decreaseAmounts?.sizeDeltaUsd,
+    nextPositionValuesForDecrease,
     stage,
     fixedTriggerThresholdType,
   ]);
