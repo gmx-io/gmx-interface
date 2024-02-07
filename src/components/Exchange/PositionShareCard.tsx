@@ -8,7 +8,7 @@ import { useChainId } from "lib/chains";
 import { USD_DECIMALS, getHomeUrl } from "lib/legacy";
 import { formatAmount, formatPercentage } from "lib/numbers";
 import { QRCodeSVG } from "qrcode.react";
-import { forwardRef } from "react";
+import { forwardRef, useMemo } from "react";
 import { useMedia } from "react-use";
 
 type Props = {
@@ -43,10 +43,11 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
     const { code, success } = userAffiliateCode;
     const positionPriceDecimal = getPriceDecimals(chainId, indexToken.symbol);
     const homeURL = getHomeUrl();
+    const style = useMemo(() => ({ backgroundImage: `url(${sharePositionBgImg})` }), [sharePositionBgImg]);
 
     return (
       <div className="relative">
-        <div ref={ref} className="position-share" style={{ backgroundImage: `url(${sharePositionBgImg})` }}>
+        <div ref={ref} className="position-share" style={style}>
           <img className="logo" src={gmxLogo} alt="GMX Logo" />
           <ul className="info">
             <li className="side">{isLong ? "LONG" : "SHORT"}</li>

@@ -79,6 +79,7 @@ import {
 } from "config/localStorage";
 import { TOAST_AUTO_CLOSE_TIME, WS_LOST_FOCUS_TIMEOUT } from "config/ui";
 import { SettingsContextProvider, useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
 import { useWebsocketProvider, WebsocketContextProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import { useChainId } from "lib/chains";
@@ -100,6 +101,7 @@ import { swrGCMiddleware } from "lib/swrMiddlewares";
 import useTradeRedirect from "lib/useTradeRedirect";
 import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContext";
 import { SubaccountModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
+import { AlertInfo } from "components/AlertInfo/AlertInfo";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -114,8 +116,7 @@ const Zoom = cssTransition({
   duration: 200,
 });
 
-function FullApp() {
-  const { signer } = useWallet();
+function FullApp({ pendingTxns, setPendingTxns }) {
   const { disconnect } = useDisconnect();
   const isHome = isHomeSite();
   const exchangeRef = useRef();
@@ -276,63 +277,12 @@ function FullApp() {
     }
   }
 
-  const [pendingTxns, setPendingTxns] = useState([]);
-
   const showRedirectModal = (to) => {
     setRedirectModalVisible(true);
     setSelectedToPage(to);
   };
 
   useTradeRedirect({ chainId, tradePageVersion, setTradePageVersion });
-
-  useEffect(() => {
-    const checkPendingTxns = async () => {
-      const updatedPendingTxns = [];
-      for (let i = 0; i < pendingTxns.length; i++) {
-        const pendingTxn = pendingTxns[i];
-        const receipt = await signer.provider.getTransactionReceipt(pendingTxn.hash);
-        if (receipt) {
-          if (receipt.status === 0) {
-            const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
-            helperToast.error(
-              <div>
-                <Trans>
-                  Txn failed. <ExternalLink href={txUrl}>View</ExternalLink>
-                </Trans>
-                <br />
-              </div>
-            );
-          }
-
-          if (receipt.status === 1 && pendingTxn.message) {
-            const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
-            helperToast.success(
-              <div>
-                {pendingTxn.message}{" "}
-                <ExternalLink href={txUrl}>
-                  <Trans>View</Trans>
-                </ExternalLink>
-                <br />
-                {pendingTxn.messageDetails && <br />}
-                {pendingTxn.messageDetails}
-              </div>
-            );
-          }
-          continue;
-        }
-        updatedPendingTxns.push(pendingTxn);
-      }
-
-      if (updatedPendingTxns.length !== pendingTxns.length) {
-        setPendingTxns(updatedPendingTxns);
-      }
-    };
-
-    const interval = setInterval(() => {
-      checkPendingTxns();
-    }, 2 * 1000);
-    return () => clearInterval(interval);
-  }, [signer, pendingTxns, chainId]);
 
   const { wsProvider } = useWebsocketProvider();
 
@@ -463,19 +413,24 @@ function FullApp() {
 
               <Route exact path="/trade">
                 {getIsSyntheticsSupported(chainId) ? (
-                  <SyntheticsPage
+                  <SyntheticsStateContextProvider
                     savedIsPnlInLeverage={savedIsPnlInLeverage}
-                    shouldDisableValidation={savedShouldDisableValidationForTesting}
-                    savedShouldShowPositionLines={savedShouldShowPositionLines}
-                    setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
-                    setPendingTxns={setPendingTxns}
-                    showPnlAfterFees={showPnlAfterFees}
                     savedShowPnlAfterFees={savedShowPnlAfterFees}
-                    tradePageVersion={tradePageVersion}
-                    setTradePageVersion={setTradePageVersion}
-                    savedSlippageAmount={settings.savedAllowedSlippage}
-                    openSettings={openSettings}
-                  />
+                    skipLocalReferralCode={false}
+                    pageType="trade"
+                  >
+                    <SyntheticsPage
+                      shouldDisableValidation={savedShouldDisableValidationForTesting}
+                      savedShouldShowPositionLines={savedShouldShowPositionLines}
+                      setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
+                      setPendingTxns={setPendingTxns}
+                      showPnlAfterFees={showPnlAfterFees}
+                      tradePageVersion={tradePageVersion}
+                      setTradePageVersion={setTradePageVersion}
+                      savedSlippageAmount={settings.savedAllowedSlippage}
+                      openSettings={openSettings}
+                    />
+                  </SyntheticsStateContextProvider>
                 ) : (
                   <SyntheticsFallbackPage />
                 )}
@@ -517,17 +472,25 @@ function FullApp() {
                 <Actions savedIsPnlInLeverage={savedIsPnlInLeverage} savedShowPnlAfterFees={savedShowPnlAfterFees} />
               </Route>
               <Route exact path="/actions">
-                <SyntheticsActions
+                <SyntheticsStateContextProvider
+                  pageType="actions"
+                  skipLocalReferralCode
                   savedIsPnlInLeverage={savedIsPnlInLeverage}
                   savedShowPnlAfterFees={savedShowPnlAfterFees}
-                />
+                >
+                  <SyntheticsActions />
+                </SyntheticsStateContextProvider>
               </Route>
               <Redirect exact from="/actions/v2" to="/actions" />
               <Route exact path="/actions/:account">
-                <SyntheticsActions
+                <SyntheticsStateContextProvider
+                  pageType="actions"
+                  skipLocalReferralCode={false}
                   savedIsPnlInLeverage={savedIsPnlInLeverage}
                   savedShowPnlAfterFees={savedShowPnlAfterFees}
-                />
+                >
+                  <SyntheticsActions />
+                </SyntheticsStateContextProvider>
               </Route>
               <Route path="/actions/v2/:account">
                 {({ match }) => <Redirect to={`/actions/${match.params.account}`} />}
@@ -636,12 +599,14 @@ function FullApp() {
             </div>
             {parseFloat(executionFeeBufferBps) <
               (EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps / BASIS_POINTS_DIVISOR) * 100 && (
-              <div className="warning settings-modal-error">
-                <Trans>
-                  Max Execution Fee buffer below{" "}
-                  {(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps / BASIS_POINTS_DIVISOR) * 100}% may result in
-                  failed orders.
-                </Trans>
+              <div className="mb-base">
+                <AlertInfo type="warning">
+                  <Trans>
+                    Max Execution Fee buffer below{" "}
+                    {(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps / BASIS_POINTS_DIVISOR) * 100}% may result in
+                    failed orders.
+                  </Trans>
+                </AlertInfo>
               </div>
             )}
           </div>
@@ -688,8 +653,67 @@ function FullApp() {
   );
 }
 
+const SWRConfigProp = {
+  refreshInterval: 5000,
+  refreshWhenHidden: false,
+  refreshWhenOffline: false,
+  use: [swrGCMiddleware],
+};
+
 function App() {
   const { disconnect } = useDisconnect();
+  const { signer } = useWallet();
+  const { chainId } = useChainId();
+  const [pendingTxns, setPendingTxns] = useState([]);
+
+  useEffect(() => {
+    const checkPendingTxns = async () => {
+      const updatedPendingTxns = [];
+      for (let i = 0; i < pendingTxns.length; i++) {
+        const pendingTxn = pendingTxns[i];
+        const receipt = await signer.provider.getTransactionReceipt(pendingTxn.hash);
+        if (receipt) {
+          if (receipt.status === 0) {
+            const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
+            helperToast.error(
+              <div>
+                <Trans>
+                  Txn failed. <ExternalLink href={txUrl}>View</ExternalLink>
+                </Trans>
+                <br />
+              </div>
+            );
+          }
+
+          if (receipt.status === 1 && pendingTxn.message) {
+            const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
+            helperToast.success(
+              <div>
+                {pendingTxn.message}{" "}
+                <ExternalLink href={txUrl}>
+                  <Trans>View</Trans>
+                </ExternalLink>
+                <br />
+                {pendingTxn.messageDetails && <br />}
+                {pendingTxn.messageDetails}
+              </div>
+            );
+          }
+          continue;
+        }
+        updatedPendingTxns.push(pendingTxn);
+      }
+
+      if (updatedPendingTxns.length !== pendingTxns.length) {
+        setPendingTxns(updatedPendingTxns);
+      }
+    };
+
+    const interval = setInterval(() => {
+      checkPendingTxns();
+    }, 2 * 1000);
+    return () => clearInterval(interval);
+  }, [signer, pendingTxns, chainId]);
 
   useScrollToTop();
 
@@ -709,21 +733,15 @@ function App() {
     return () => unwatch();
   }, [disconnect]);
 
-  let app = <FullApp />;
+  let app = <FullApp pendingTxn={pendingTxns} setPendingTxns={setPendingTxns} />;
   app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;
   app = <I18nProvider i18n={i18n}>{app}</I18nProvider>;
-  app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;
+  app = <SyntheticsEventsProvider setPendingTxns={setPendingTxns}>{app}</SyntheticsEventsProvider>;
   app = <WebsocketContextProvider>{app}</WebsocketContextProvider>;
   app = <Router>{app}</Router>;
   app = <SEO>{app}</SEO>;
   app = <SettingsContextProvider>{app}</SettingsContextProvider>;
-  app = (
-    <SWRConfig
-      value={{ refreshInterval: 5000, refreshWhenHidden: false, refreshWhenOffline: false, use: [swrGCMiddleware] }}
-    >
-      {app}
-    </SWRConfig>
-  );
+  app = <SWRConfig value={SWRConfigProp}>{app}</SWRConfig>;
 
   return app;
 }

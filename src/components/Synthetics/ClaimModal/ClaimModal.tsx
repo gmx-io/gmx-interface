@@ -2,7 +2,6 @@ import { Trans, t } from "@lingui/macro";
 import Modal from "components/Modal/Modal";
 import {
   MarketInfo,
-  MarketsInfoData,
   getMarketIndexName,
   getMarketPoolName,
   getTotalClaimableFundingUsd,
@@ -16,21 +15,22 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { claimFundingFeesTxn } from "domain/synthetics/markets/claimFundingFeesTxn";
 
 import Button from "components/Button/Button";
+import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import useWallet from "lib/wallets/useWallet";
 import { useState } from "react";
 import "./ClaimModal.scss";
-import useWallet from "lib/wallets/useWallet";
 
 type Props = {
   isVisible: boolean;
-  marketsInfoData?: MarketsInfoData;
   onClose: () => void;
   setPendingTxns: (txns: any) => void;
 };
 
 export function ClaimModal(p: Props) {
-  const { isVisible, onClose, setPendingTxns, marketsInfoData } = p;
+  const { isVisible, onClose, setPendingTxns } = p;
   const { account, signer } = useWallet();
   const { chainId } = useChainId();
+  const marketsInfoData = useMarketsInfoData();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 

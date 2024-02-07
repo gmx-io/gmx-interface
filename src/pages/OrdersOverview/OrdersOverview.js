@@ -26,6 +26,13 @@ import { useChainId } from "lib/chains";
 import { formatDateTime } from "lib/dates";
 import useWallet from "lib/wallets/useWallet";
 
+const ORDER_TYPE_LABELS = {
+  Increase: t`Increase`,
+  Decrease: t`Decrease`,
+  Swap: t`Swap`,
+};
+const closeToExecutionPriceStyle = { color: "orange" };
+
 export default function OrdersOverview() {
   const { chainId } = useChainId();
   const { signer, account, active } = useWallet();
@@ -36,11 +43,6 @@ export default function OrdersOverview() {
 
   const orders = useAllOrders(chainId, signer);
   const stats = useAllOrdersStats(chainId);
-  const ORDER_TYPE_LABELS = {
-    Increase: t`Increase`,
-    Decrease: t`Decrease`,
-    Swap: t`Swap`,
-  };
 
   const positionsForOrders = usePositionsForOrders(
     chainId,
@@ -104,7 +106,7 @@ export default function OrdersOverview() {
           <Trans>Price conditions are met</Trans>
         </span>
         <br />
-        <span style={{ color: "orange" }}>
+        <span style={closeToExecutionPriceStyle}>
           <Trans>Close to execution price</Trans>
         </span>
         <br />

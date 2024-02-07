@@ -1,9 +1,26 @@
 import "./Modal.css";
-import React, { useRef, useEffect } from "react";
+import { useRef, useEffect, useMemo } from "react";
 import cx from "classnames";
 import { motion, AnimatePresence } from "framer-motion";
 import { RemoveScroll } from "react-remove-scroll";
 import { MdClose } from "react-icons/md";
+
+const FADE_VARIANTS = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1 },
+};
+
+const VISIBLE_STYLES = {
+  overflow: "hidden",
+  position: "fixed",
+};
+
+const HIDDEN_STYLES = {
+  overflow: "visible",
+  position: "fixed",
+};
+
+const TRANSITION = { duration: 0.2 };
 
 export default function Modal(props) {
   const { isVisible, setIsVisible, className, zIndex, onAfterOpen } = props;
@@ -24,29 +41,23 @@ export default function Modal(props) {
     if (typeof onAfterOpen === "function") onAfterOpen();
   }, [onAfterOpen]);
 
-  const fadeVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1 },
-  };
+  const style = useMemo(() => ({ zIndex }), [zIndex]);
 
   return (
     <AnimatePresence>
       {isVisible && (
         <motion.div
           className={cx("Modal", className)}
-          style={{ zIndex }}
+          style={style}
           initial="hidden"
           animate="visible"
           exit="hidden"
-          variants={fadeVariants}
-          transition={{ duration: 0.2 }}
+          variants={FADE_VARIANTS}
+          transition={TRANSITION}
         >
           <div
             className="Modal-backdrop"
-            style={{
-              overflow: isVisible ? "hidden" : "visible",
-              position: "fixed",
-            }}
+            style={isVisible ? VISIBLE_STYLES : HIDDEN_STYLES}
             onClick={() => setIsVisible(false)}
           ></div>
           <div className="Modal-content">

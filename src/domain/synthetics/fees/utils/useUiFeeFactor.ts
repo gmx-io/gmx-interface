@@ -5,7 +5,8 @@ import { uiFeeFactorKey } from "config/dataStore";
 import { BigNumber } from "ethers";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 
-export default function useUiFeeFactor(chainId: number, account = UI_FEE_RECEIVER_ACCOUNT) {
+export default function useUiFeeFactor(chainId: number) {
+  const account = UI_FEE_RECEIVER_ACCOUNT;
   const { data: uiFeeFactorForAccount } = useMulticall(chainId, "uiFeeFactorForAccount", {
     key: account ? [account] : null,
     refreshInterval: 60000,

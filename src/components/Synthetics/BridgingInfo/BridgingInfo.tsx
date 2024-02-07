@@ -27,9 +27,13 @@ export default function BridgingInfo(props: Props) {
           </Trans>
           <br />
           <br />
-          {bridgingOptions.map((option) => {
+          {bridgingOptions.map((option, i) => {
             const bridgeLink = option.generateLink(chainId);
-            return <ExternalLink href={bridgeLink}>{option?.name}</ExternalLink>;
+            return (
+              <ExternalLink key={i} href={bridgeLink}>
+                {option?.name}
+              </ExternalLink>
+            );
           })}
         </>
       )}

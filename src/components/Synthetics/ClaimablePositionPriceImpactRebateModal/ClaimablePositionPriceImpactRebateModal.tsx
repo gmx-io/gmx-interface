@@ -4,7 +4,7 @@ import Modal from "components/Modal/Modal";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { createClaimCollateralTxn } from "domain/synthetics/claimHistory/claimPriceImpactRebate";
 import { MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
-import { getTokenData, useTokensData } from "domain/synthetics/tokens";
+import { getTokenData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { expandDecimals, formatDeltaUsd, formatTokenAmount } from "lib/numbers";
@@ -13,21 +13,21 @@ import useWallet from "lib/wallets/useWallet";
 import { memo, useCallback, useMemo, useState } from "react";
 import { calcTotalRebateUsd } from "../Claims/utils";
 import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
+import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 
 export function ClaimablePositionPriceImpactRebateModal({
   isVisible,
   onClose,
   claimablePositionPriceImpactFees,
-  marketsInfoData,
 }: {
   isVisible: boolean;
   onClose: () => void;
   claimablePositionPriceImpactFees: RebateInfoItem[];
-  marketsInfoData: MarketsInfoData | undefined;
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { chainId } = useChainId();
-  const { tokensData } = useTokensData(chainId);
+  const tokensData = useTokensData();
+  const marketsInfoData = useMarketsInfoData();
   const totalUsd = useMemo(
     () => formatDeltaUsd(calcTotalRebateUsd(claimablePositionPriceImpactFees, tokensData, false)),
     [claimablePositionPriceImpactFees, tokensData]
@@ -113,7 +113,6 @@ export function ClaimablePositionPriceImpactRebateModal({
 
 const Row = memo(
   ({ rebateItems, marketsInfoData }: { rebateItems: RebateInfoItem[]; marketsInfoData: MarketsInfoData }) => {
-    const { chainId } = useChainId();
     const market = getByKey(marketsInfoData, rebateItems[0].marketAddress);
     const label = useMemo(() => {
       if (!market) return "";
@@ -127,7 +126,7 @@ const Row = memo(
       );
     }, [market]);
 
-    const { tokensData } = useTokensData(chainId);
+    const tokensData = useTokensData();
 
     const reducedByTokenItems = useMemo(() => {
       const groupedTokens: Record<string, number> = {};
