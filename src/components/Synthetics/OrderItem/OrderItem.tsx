@@ -37,7 +37,6 @@ type Props = {
   isLarge: boolean;
   marketsInfoData?: MarketsInfoData;
   positionsInfoData?: PositionsInfoData;
-  selectedOrderKey?: string;
 };
 
 export const OrderItem = forwardRef<HTMLTableRowElement, Props>((p, ref) => {

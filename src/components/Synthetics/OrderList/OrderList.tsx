@@ -26,12 +26,11 @@ type Props = {
   selectedOrdersKeys?: { [key: string]: boolean };
   isLoading: boolean;
   setPendingTxns: (txns: any) => void;
-  setSelectedOrderKey?: Dispatch<SetStateAction<string | undefined>>;
-  selectedOrderKey?: string;
+  selectedPositionOrderKey?: string;
 };
 
 export function OrderList(p: Props) {
-  const { marketsInfoData, tokensData, positionsData, selectedOrderKey, setSelectedOrdersKeys } = p;
+  const { marketsInfoData, tokensData, positionsData, selectedPositionOrderKey, setSelectedOrdersKeys } = p;
   const { chainId } = useChainId();
   const { signer } = useWallet();
 
@@ -52,8 +51,8 @@ export function OrderList(p: Props) {
   const orderRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   useEffect(() => {
-    if (selectedOrderKey) {
-      const orderElement = orderRefs.current[selectedOrderKey];
+    if (selectedPositionOrderKey) {
+      const orderElement = orderRefs.current[selectedPositionOrderKey];
       if (orderElement) {
         const rect = orderElement.getBoundingClientRect();
         const isInViewPort =
@@ -64,7 +63,7 @@ export function OrderList(p: Props) {
         }
       }
     }
-  }, [selectedOrderKey]);
+  }, [selectedPositionOrderKey]);
 
   function onSelectOrder(key: string) {
     setSelectedOrdersKeys?.((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -115,7 +114,6 @@ export function OrderList(p: Props) {
                 onEditOrder={() => setEditingOrderKey(order.key)}
                 marketsInfoData={marketsInfoData}
                 positionsInfoData={positionsData}
-                selectedOrderKey={p.selectedOrderKey}
                 hideActions={p.hideActions}
               />
             );
@@ -174,7 +172,6 @@ export function OrderList(p: Props) {
                   hideActions={p.hideActions}
                   marketsInfoData={marketsInfoData}
                   positionsInfoData={positionsData}
-                  selectedOrderKey={p.selectedOrderKey}
                   ref={(el) => (orderRefs.current[order.key] = el)}
                 />
               );
