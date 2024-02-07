@@ -329,9 +329,16 @@ export function OrderEditor(p: Props) {
   });
 
   const recommendedAcceptablePriceImpactBps =
-    isLimitOrderType(p.order.orderType) && increaseAmounts?.acceptablePrice
+    isLimitIncreaseOrder && increaseAmounts?.acceptablePrice
       ? increaseAmounts?.acceptablePriceDeltaBps.abs()
-      : decreaseAmounts?.acceptablePriceDeltaBps.abs();
+      : decreaseAmounts?.recommendedAcceptablePriceDeltaBps.abs();
+
+  const priceImpactFeeBps = getFeeItem(
+    isLimitIncreaseOrder && increaseAmounts?.acceptablePrice
+      ? increaseAmounts?.positionPriceImpactDeltaUsd
+      : decreaseAmounts?.positionPriceImpactDeltaUsd,
+    sizeDeltaUsd
+  )?.bps;
 
   function getError() {
     if (isSubmitting) {
@@ -397,7 +404,11 @@ export function OrderEditor(p: Props) {
         return t`Loading...`;
       }
 
-      if (sizeDeltaUsd?.eq(p.order.sizeDeltaUsd || 0) && triggerPrice?.eq(positionOrder.triggerPrice || 0)) {
+      if (
+        sizeDeltaUsd?.eq(p.order.sizeDeltaUsd || 0) &&
+        triggerPrice?.eq(positionOrder.triggerPrice || 0) &&
+        acceptablePrice.eq(positionOrder.acceptablePrice)
+      ) {
         return t`Enter a new size or price`;
       }
 
@@ -696,6 +707,8 @@ function useAcceptablePrice(
     }
 
     setAcceptablePriceImpactBps(initialAcceptablePriceImpactBps);
+    // Safety: when user opens edit modal while the request is still in progress
+    // we want to force set value when the request is finished
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [(order as PositionOrderInfo).acceptablePrice?.toString()]);
 
