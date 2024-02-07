@@ -402,10 +402,17 @@ function FullApp({ pendingTxns, setPendingTxns }) {
               </Route>
               <Route exact path="/pools">
                 {getIsSyntheticsSupported(chainId) ? (
-                  <MarketPoolsPage
-                    shouldDisableValidation={savedShouldDisableValidationForTesting}
-                    setPendingTxns={setPendingTxns}
-                  />
+                  <SyntheticsStateContextProvider
+                    savedIsPnlInLeverage={savedIsPnlInLeverage}
+                    savedShowPnlAfterFees={savedShowPnlAfterFees}
+                    skipLocalReferralCode={false}
+                    pageType="pools"
+                  >
+                    <MarketPoolsPage
+                      shouldDisableValidation={savedShouldDisableValidationForTesting}
+                      setPendingTxns={setPendingTxns}
+                    />
+                  </SyntheticsStateContextProvider>
                 ) : (
                   <SyntheticsFallbackPage />
                 )}

@@ -17,7 +17,7 @@ import { ReactNode, useMemo } from "react";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 
 export type SyntheticsTradeState = {
-  pageType: "actions" | "trade";
+  pageType: "actions" | "trade" | "pools";
   globals: {
     chainId: number;
     markets: MarketsResult;
@@ -48,7 +48,7 @@ export function SyntheticsStateContextProvider({
   savedIsPnlInLeverage: boolean;
   savedShowPnlAfterFees: boolean;
   skipLocalReferralCode: boolean;
-  pageType: "actions" | "trade";
+  pageType: "actions" | "trade" | "pools";
 }) {
   const { chainId } = useChainId();
   const { account, signer } = useWallet();
