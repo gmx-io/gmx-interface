@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { BigNumber } from "ethers";
 import { BN_ZERO, formatRatePercentage } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
@@ -45,11 +44,8 @@ export default function MarketNetFee({ borrowRateHourly = BN_ZERO, fundingRateHo
       <div className="mb-xs">{renderFundingMessage()}</div>
       <div>{renderBorrowMessage()}</div>
       <br />
-      <StatsTooltipRow
-        showDollar={false}
-        label={t`${isLong ? "Long" : "Short"} Positions Net Fee`}
-        value={renderNetFeesOverTime(netFeeHourly)}
-      />
+      <div className="text-gray">{t`${isLong ? "Long" : "Short"} Positions Net Fee:`}</div>
+      {renderNetFeesOverTime(netFeeHourly)}
     </>
   );
 }

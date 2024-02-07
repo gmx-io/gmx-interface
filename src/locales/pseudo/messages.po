@@ -5007,7 +5007,6 @@ msgid "This is the maximum top-up amount that will be sent from your Main accoun
 msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
 msgid "This market uses an Adaptive Funding Rate. The Funding Rate will adjust over time depending on the ratio of longs and shorts. <0>Read more</0>."
 msgstr ""
 
@@ -6108,7 +6107,7 @@ msgid "{0} Pool Capacity Reached"
 msgstr ""
 
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-msgid "{0} Positions Net Fee"
+msgid "{0} Positions Net Fee:"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js

@@ -4,13 +4,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getIcon } from "config/icons";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
-import {
-  MarketInfo,
-  getMarketPoolName,
-  getAvailableLiquidity,
-  useMarketsInfo,
-  isMarketAdaptiveFundingActive,
-} from "domain/synthetics/markets";
+import { MarketInfo, getMarketPoolName, getAvailableLiquidity, useMarketsInfo } from "domain/synthetics/markets";
 import { TokenData, getMidPrice } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
@@ -139,10 +133,6 @@ export function MarketsList() {
   }, [marketsInfoData]);
 
   function renderFundingRateTooltip(stats: typeof indexTokensStats[0]) {
-    const isAdaptiveFundingActive = stats.marketsStats.some(({ marketInfo }) =>
-      isMarketAdaptiveFundingActive(marketInfo)
-    );
-
     return () => (
       <>
         {stats.marketsStats.map((stat) => {
@@ -167,22 +157,6 @@ export function MarketsList() {
           Borrowing Fees help ensuring liquidity.
           <ExternalLink href={DOCS_LINKS.borrowingFees}>Read more</ExternalLink>.
         </span>
-        <br />
-        <br />
-        <span>
-          A negative Funding Fee value indicates that percentage needs to be paid, a positive Funding Fee value
-          indicates that percentage will be received as funding rewards.
-        </span>
-        {isAdaptiveFundingActive && (
-          <span>
-            <br />
-            <br />
-            <Trans>
-              This market uses an Adaptive Funding Rate. The Funding Rate will adjust over time depending on the ratio
-              of longs and shorts. <ExternalLink href={DOCS_LINKS.adaptiveFunding}>Read more</ExternalLink>.
-            </Trans>
-          </span>
-        )}
       </>
     );
   }
@@ -217,10 +191,11 @@ export function MarketsList() {
             </thead>
             <tbody>
               {indexTokensStats.length ? (
-                indexTokensStats.map((stats) => {
+                indexTokensStats.map((stats, index) => {
                   const largestPool = stats.marketsStats.sort((a, b) => {
                     return b.poolValueUsd.gt(a.poolValueUsd) ? 1 : -1;
                   })[0];
+                  const tooltipPositionNetFee = index < indexTokensStats.length / 2 ? "right-bottom" : "right-top";
                   const netFeePerHourLong = largestPool.fundingRateLong.add(largestPool.borrowingRateLong);
                   const netFeePerHourShort = largestPool.fundingRateShort.add(largestPool.borrowingRateShort);
 
@@ -271,6 +246,7 @@ export function MarketsList() {
                             netFeePerHourShort
                           )}`}
                           renderContent={renderFundingRateTooltip(stats)}
+                          position={tooltipPositionNetFee}
                         />
                       </td>
                       <td>{formatAmount(stats.totalUtilization, 2, 2)}%</td>
@@ -289,11 +265,12 @@ export function MarketsList() {
         <>
           <PageTitle title={t`GM Pools`} />
           <div className="token-grid">
-            {indexTokensStats.map((stats) => {
+            {indexTokensStats.map((stats, index) => {
               const largestPool = stats.marketsStats.sort((a, b) => {
                 return b.poolValueUsd.gt(a.poolValueUsd) ? 1 : -1;
               })[0];
 
+              const tooltipPositionNetFee = index < indexTokensStats.length / 2 ? "right-bottom" : "right-top";
               const netFeePerHourLong = largestPool.fundingRateLong.add(largestPool.borrowingRateLong);
               const netFeePerHourShort = largestPool.fundingRateShort.add(largestPool.borrowingRateShort);
 
@@ -353,7 +330,7 @@ export function MarketsList() {
                           handle={`${formatRatePercentage(netFeePerHourLong)} / ${formatRatePercentage(
                             netFeePerHourShort
                           )}`}
-                          position="right-bottom"
+                          position={tooltipPositionNetFee}
                           renderContent={renderFundingRateTooltip(stats)}
                         />
                       </div>
