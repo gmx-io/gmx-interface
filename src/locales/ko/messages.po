@@ -5006,10 +5006,6 @@ msgstr "해당 코드는 {0}에 아직 등록되지 않았기때문에, 소개 �
 msgid "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
 msgstr ""
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "This market uses an Adaptive Funding Rate. The Funding Rate will adjust over time depending on the ratio of longs and shorts. <0>Read more</0>."
-msgstr ""
-
 #: src/components/Exchange/TradeHistory.js
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
 msgstr "해당 포지션은 최대 레버리지인 100x를 초과하여 청산되었습니다."
