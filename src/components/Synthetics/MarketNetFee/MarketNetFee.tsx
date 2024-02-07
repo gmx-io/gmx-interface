@@ -11,29 +11,32 @@ type Props = {
 
 export default function MarketNetFee({ borrowRateHourly = BN_ZERO, fundingRateHourly = BN_ZERO, isLong }: Props) {
   const netFeeHourly = borrowRateHourly.add(fundingRateHourly);
-  const borrowRateClassName = getPositiveOrNegativeClass(borrowRateHourly);
-  const fundingRateClassName = getPositiveOrNegativeClass(fundingRateHourly);
 
-  function renderFundingMessage() {
-    const receiveOrPay = fundingRateHourly.gte(0) ? t`receive` : t`pay`;
-    const longOrShort = isLong ? t`Long` : t`Short`;
-    return (
-      <Trans>
-        {longOrShort} Positions {receiveOrPay} a Funding Fee of{" "}
-        <span className={fundingRateClassName}>{formatRatePercentage(fundingRateHourly)}</span> per hour.
-      </Trans>
-    );
-  }
-  function renderBorrowMessage() {
+  function renderMessage() {
+    const fundingAction = fundingRateHourly.gte(0) ? t`receive` : t`pay`;
     const longOrShort = isLong ? t`Long` : t`Short`;
 
-    if (borrowRateHourly.isZero()) {
-      return <Trans>{longOrShort} Positions do not pay a Borrow Fee.</Trans>;
+    if (fundingRateHourly.isZero() && borrowRateHourly.isZero()) {
+      return <Trans>{longOrShort} Positions do not pay a Funding Fee or a Borrow Fee.</Trans>;
+    } else if (fundingRateHourly.isZero() && !borrowRateHourly.isZero()) {
+      return (
+        <Trans>
+          {longOrShort} Positions do not pay a Funding Fee and pay a Borrow Fee of {renderRate(borrowRateHourly)} per
+          hour.
+        </Trans>
+      );
+    } else if (!fundingRateHourly.isZero() && borrowRateHourly.isZero()) {
+      return (
+        <Trans>
+          {longOrShort} Positions {fundingAction} a Funding Fee of {renderRate(fundingRateHourly)} per hour and do not
+          pay a Borrow Fee.
+        </Trans>
+      );
     } else {
       return (
         <Trans>
-          {longOrShort} Positions pay a Borrow Fee of{" "}
-          <span className={borrowRateClassName}>{formatRatePercentage(borrowRateHourly)}</span> per hour.
+          {longOrShort} Positions {fundingAction} a Funding Fee of {renderRate(fundingRateHourly)} per hour and{" "}
+          {fundingRateHourly.gt(0) ? t`pay` : ""} a Borrow Fee of {renderRate(borrowRateHourly)} per hour.
         </Trans>
       );
     }
@@ -41,8 +44,7 @@ export default function MarketNetFee({ borrowRateHourly = BN_ZERO, fundingRateHo
 
   return (
     <>
-      <div className="mb-xs">{renderFundingMessage()}</div>
-      <div>{renderBorrowMessage()}</div>
+      <div className="mb-xs">{renderMessage()}</div>
       <br />
       <div className="text-gray">{t`${isLong ? "Long" : "Short"} Positions Net Fee:`}</div>
       {renderNetFeesOverTime(netFeeHourly)}
@@ -50,6 +52,9 @@ export default function MarketNetFee({ borrowRateHourly = BN_ZERO, fundingRateHo
   );
 }
 
+function renderRate(rate: BigNumber) {
+  return <span className={getPositiveOrNegativeClass(rate)}>{formatRatePercentage(rate)}</span>;
+}
 function renderNetFeesOverTime(hourlyRate: BigNumber) {
   function formatRateForPeriod(hours: number) {
     const rateForPeriod = hourlyRate.mul(hours);
