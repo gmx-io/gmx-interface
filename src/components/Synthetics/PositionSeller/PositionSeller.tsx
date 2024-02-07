@@ -602,6 +602,7 @@ export function PositionSeller(p: Props) {
     (isTrigger ? (
       <ExchangeInfoRow
         label={t`PnL`}
+        className="items-start"
         value={
           <ValueTransition
             from={
