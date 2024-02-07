@@ -522,7 +522,11 @@ table.Exchange-list td {
   font-weight: normal;
   text-align: left;
   padding: 1.05rem;
-  padding-left: 1.5rem;
+}
+
+table.Exchange-list th:first-child,
+table.Exchange-list td:first-child {
+  padding-left: 1.4rem;
 }
 
 table.Exchange-list.Orders th,
@@ -564,7 +568,7 @@ table.Exchange-list .Exchange-list-item {
 }
 
 table.Exchange-list .Exchange-list-item td:first-child {
-  padding-left: 1.3rem;
+  padding-left: 1.4rem;
 }
 
 table.Exchange-list .Exchange-list-item-active {

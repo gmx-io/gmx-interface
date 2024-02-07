@@ -400,7 +400,7 @@ export function SyntheticsPage(p: Props) {
                 className="Exchange-list-tabs"
               />
               <div className="align-right Exchange-should-show-position-lines">
-                {selectedOrdersKeysArr.length > 0 && listSection === ListSection.Orders && (
+                {listSection === ListSection.Orders && selectedOrdersKeysArr.length > 0 && (
                   <button
                     className="muted font-base cancel-order-btn"
                     disabled={isCancelOrdersProcessig}
