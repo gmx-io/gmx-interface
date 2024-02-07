@@ -613,8 +613,6 @@ table.Exchange-list .Exchange-list-item-active {
 .Exchange-info-label {
   color: var(--text-gray);
   margin-right: 0.8rem;
-  display: inline-flex;
-  align-items: flex-start;
 }
 .Exchange-info-value-warning {
   color: var(--error-red);
