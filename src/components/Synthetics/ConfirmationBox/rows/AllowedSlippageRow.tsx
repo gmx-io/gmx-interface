@@ -9,9 +9,11 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 export function AllowedSlippageRow({
   defaultSlippage,
+  allowedSlippage,
   setSlippage,
 }: {
   defaultSlippage: number;
+  allowedSlippage: number;
   setSlippage: (value: number) => void;
 }) {
   return (
@@ -41,6 +43,7 @@ export function AllowedSlippageRow({
         onChange={setSlippage}
         negativeSign
         defaultValue={defaultSlippage}
+        value={allowedSlippage}
         highValue={EXCESSIVE_SLIPPAGE_AMOUNT}
         highValueWarningText={t`Slippage is too high`}
       />

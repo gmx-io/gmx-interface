@@ -1,12 +1,13 @@
 import { t } from "@lingui/macro";
+import { BigNumber, Signer, ethers } from "ethers";
+
 import ExchangeRouter from "abis/ExchangeRouter.json";
 import { getContract } from "config/contracts";
-import { BigNumber, Signer, ethers } from "ethers";
-import { callContract } from "lib/contracts";
-import { convertToContractPrice } from "../tokens";
-import { Token } from "domain/tokens";
 import { Subaccount } from "context/SubaccountContext/SubaccountContext";
-import { getSubaccountRouterContract } from "../subaccount/getSubaccountContract";
+import { getSubaccountRouterContract } from "domain/synthetics/subaccount/getSubaccountContract";
+import { convertToContractPrice } from "domain/synthetics/tokens";
+import { Token } from "domain/tokens";
+import { callContract } from "lib/contracts";
 
 export type UpdateOrderParams = {
   orderKey: string;
@@ -20,7 +21,12 @@ export type UpdateOrderParams = {
   setPendingTxns: (txns: any) => void;
 };
 
-export function updateOrderTxn(chainId: number, signer: Signer, subaccount: Subaccount, p: UpdateOrderParams) {
+export function updateOrderTxn(
+  chainId: number,
+  signer: Signer,
+  subaccount: Subaccount,
+  p: UpdateOrderParams
+): Promise<void> {
   const {
     orderKey,
     sizeDeltaUsd,
@@ -39,7 +45,7 @@ export function updateOrderTxn(chainId: number, signer: Signer, subaccount: Suba
   const orderVaultAddress = getContract(chainId, "OrderVault");
 
   const multicall: { method: string; params: any[] }[] = [];
-  if (p.executionFee?.gt(0)) {
+  if (executionFee?.gt(0)) {
     multicall.push({ method: "sendWnt", params: [orderVaultAddress, executionFee] });
   }
   multicall.push({
@@ -58,7 +64,7 @@ export function updateOrderTxn(chainId: number, signer: Signer, subaccount: Suba
     .map((call) => router.interface.encodeFunctionData(call!.method, call!.params));
 
   return callContract(chainId, router, "multicall", [encodedPayload], {
-    value: p.executionFee?.gt(0) ? p.executionFee : undefined,
+    value: executionFee?.gt(0) ? executionFee : undefined,
     sentMsg: t`Updating order`,
     successMsg: t`Update order executed`,
     failMsg: t`Failed to update order`,

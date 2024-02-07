@@ -178,6 +178,7 @@ export function TradeBox(p: Props) {
     fixedTriggerOrderType,
     setFixedTriggerOrderType,
     setDefaultTriggerAcceptablePriceImapctBps,
+    selectedTriggerAcceptablePriceImpactBps,
     setSelectedAcceptablePriceImapctBps,
     closeSizeInputValue,
     setCloseSizeInputValue,
@@ -1416,6 +1417,7 @@ export function TradeBox(p: Props) {
         triggerPrice={triggerPrice}
         fixedTriggerThresholdType={fixedTriggerThresholdType}
         fixedTriggerOrderType={fixedTriggerOrderType}
+        selectedTriggerAcceptablePriceImpactBps={selectedTriggerAcceptablePriceImpactBps}
         setSelectedTriggerAcceptablePriceImapctBps={setSelectedAcceptablePriceImapctBps}
         marketsOptions={marketsOptions}
         swapLiquidityUsd={swapOutLiquidity}
