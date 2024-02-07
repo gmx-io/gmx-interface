@@ -4,6 +4,7 @@ import cx from "classnames";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
 import PercentageInput from "components/PercentageInput/PercentageInput";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
@@ -18,6 +19,21 @@ import { getKeepLeverageKey } from "config/localStorage";
 import { convertTokenAddress } from "config/tokens";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import {
+  usePositionsConstants,
+  useSavedIsPnlInLeverage,
+  useTokensData,
+  useUserReferralInfo,
+} from "context/SyntheticsStateContext/hooks/globalsHooks";
+import {
+  useSavedAcceptablePriceImpactBuffer,
+  useSavedAllowedSlippage,
+} from "context/SyntheticsStateContext/hooks/settingsHooks";
+import { useMinCollateralFactorForPosition, useSwapRoutes } from "context/SyntheticsStateContext/hooks/tradeHooks";
+import {
+  useTradeboxAvailableTokensOptions,
+  useTradeboxTradeFlags,
+} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { useHasOutdatedUi } from "domain/legacy";
 import {
   estimateExecuteDecreaseOrderGasLimit,
@@ -35,9 +51,8 @@ import {
   getTriggerNameByOrderType,
   willPositionCollateralBeSufficient,
 } from "domain/synthetics/positions";
-import { TokensData } from "domain/synthetics/tokens";
 import {
-  AvailableTokenOptions,
+  DecreasePositionAmounts,
   applySlippageToPrice,
   getDecreasePositionAmounts,
   getMarkPrice,
@@ -67,28 +82,12 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { museNeverExist } from "lib/types";
 import { usePrevious } from "lib/usePrevious";
 import useWallet from "lib/wallets/useWallet";
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLatest } from "react-use";
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionSeller.scss";
-import {
-  useSavedAcceptablePriceImpactBuffer,
-  useSavedAllowedSlippage,
-} from "context/SyntheticsStateContext/hooks/settingsHooks";
-import {
-  usePositionsConstants,
-  useSavedIsPnlInLeverage,
-  useTokensData,
-  useUserReferralInfo,
-} from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useMinCollateralFactorForPosition, useSwapRoutes } from "context/SyntheticsStateContext/hooks/tradeHooks";
-import {
-  useTradeboxAvailableTokensOptions,
-  useTradeboxTradeFlags,
-} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 
 export type Props = {
   position?: PositionInfo;
@@ -164,19 +163,22 @@ export function PositionSeller(p: Props) {
 
   const { findSwapPath, maxSwapLiquidity } = useSwapRoutes(position?.collateralTokenAddress, receiveTokenAddress);
 
-  const decreaseAmounts = useMemo(() => {
+  const [decreaseAmounts, decreaseAmountsWithKeepLeverage, decreaseAmountsWithoutKeepLeverage]: [
+    DecreasePositionAmounts | undefined,
+    DecreasePositionAmounts | undefined,
+    DecreasePositionAmounts | undefined
+  ] = useMemo(() => {
     if (!position || !minCollateralUsd || !minPositionSizeUsd) {
-      return undefined;
+      return [undefined, undefined, undefined];
     }
 
-    // console.log(formatUsd(closeSizeUsd), "<<<<<<");
-    return getDecreasePositionAmounts({
+    const decreaseteAmountsArg: Parameters<typeof getDecreasePositionAmounts>[0] = {
       marketInfo: position.marketInfo,
       collateralToken: position.collateralToken,
       isLong: position.isLong,
       position,
       closeSizeUsd: closeSizeUsd,
-      keepLeverage: keepLeverage!,
+      keepLeverage: keepLeverage ?? false,
       triggerPrice: isTrigger ? triggerPrice : undefined,
       acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
       fixedAcceptablePriceImpactBps: isTrigger ? selectedTriggerAcceptablePriceImpactBps : undefined,
@@ -184,7 +186,15 @@ export function PositionSeller(p: Props) {
       minCollateralUsd,
       minPositionSizeUsd,
       uiFeeFactor,
-    });
+    };
+
+    const res: [DecreasePositionAmounts, DecreasePositionAmounts, DecreasePositionAmounts] = [
+      getDecreasePositionAmounts(decreaseteAmountsArg),
+      getDecreasePositionAmounts({ ...decreaseteAmountsArg, keepLeverage: true }),
+      getDecreasePositionAmounts({ ...decreaseteAmountsArg, keepLeverage: false }),
+    ];
+
+    return res;
   }, [
     closeSizeUsd,
     isTrigger,
@@ -202,17 +212,17 @@ export function PositionSeller(p: Props) {
   const leverageCheckboxDisabledByCollateral = useMemo(() => {
     if (!position) return false;
     if (!minCollateralFactor) return false;
-    if (!decreaseAmounts) return false;
-    if (decreaseAmounts.sizeDeltaUsd.gte(position.sizeInUsd)) return false;
+    if (!decreaseAmountsWithKeepLeverage) return false;
+    if (decreaseAmountsWithKeepLeverage.sizeDeltaUsd.gte(position.sizeInUsd)) return false;
 
     return !willPositionCollateralBeSufficient(
       position.collateralToken,
       position,
-      decreaseAmounts.collateralDeltaAmount,
+      decreaseAmountsWithKeepLeverage.collateralDeltaAmount,
       position.pnlAfterFees,
       minCollateralFactor
     );
-  }, [decreaseAmounts, minCollateralFactor, position]);
+  }, [decreaseAmountsWithKeepLeverage, minCollateralFactor, position]);
 
   const acceptablePrice = useMemo(() => {
     if (!position || !decreaseAmounts?.acceptablePrice) {
@@ -236,10 +246,6 @@ export function PositionSeller(p: Props) {
     sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd.mul(-1),
     isLong: position?.isLong,
   });
-
-  useEffect(() => {
-    if (leverageCheckboxDisabledByCollateral && keepLeverage) setKeepLeverage(false);
-  }, [keepLeverage, leverageCheckboxDisabledByCollateral, setKeepLeverage]);
 
   const shouldSwap = position && receiveToken && !getIsEquivalentTokens(position.collateralToken, receiveToken);
 
@@ -284,6 +290,30 @@ export function PositionSeller(p: Props) {
       userReferralInfo,
     });
   }, [decreaseAmounts, minCollateralUsd, position, showPnlInLeverage, userReferralInfo]);
+
+  const nextPositionValuesWithoutKeepLeverage = useMemo(() => {
+    if (!position || !decreaseAmountsWithoutKeepLeverage?.sizeDeltaUsd.gt(0) || !minCollateralUsd) {
+      return undefined;
+    }
+
+    return getNextPositionValuesForDecreaseTrade({
+      existingPosition: position,
+      marketInfo: position.marketInfo,
+      collateralToken: position.collateralToken,
+      sizeDeltaUsd: decreaseAmountsWithoutKeepLeverage.sizeDeltaUsd,
+      sizeDeltaInTokens: decreaseAmountsWithoutKeepLeverage.sizeDeltaInTokens,
+      collateralDeltaUsd: decreaseAmountsWithoutKeepLeverage.collateralDeltaUsd,
+      collateralDeltaAmount: decreaseAmountsWithoutKeepLeverage.collateralDeltaAmount,
+      payedRemainingCollateralUsd: decreaseAmountsWithoutKeepLeverage.payedRemainingCollateralUsd,
+      payedRemainingCollateralAmount: decreaseAmountsWithoutKeepLeverage.payedRemainingCollateralAmount,
+      realizedPnl: decreaseAmountsWithoutKeepLeverage.realizedPnl,
+      estimatedPnl: decreaseAmountsWithoutKeepLeverage.estimatedPnl,
+      showPnlInLeverage,
+      isLong: position.isLong,
+      minCollateralUsd,
+      userReferralInfo,
+    });
+  }, [decreaseAmountsWithoutKeepLeverage, minCollateralUsd, position, showPnlInLeverage, userReferralInfo]);
 
   const { fees, executionFee } = useMemo(() => {
     if (!position || !decreaseAmounts || !gasLimits || !tokensData || !gasPrice) {
@@ -806,6 +836,11 @@ export function PositionSeller(p: Props) {
                     value={
                       decreaseAmounts?.sizeDeltaUsd.eq(position.sizeInUsd) ? (
                         "-"
+                      ) : leverageCheckboxDisabledByCollateral ? (
+                        <ValueTransition
+                          from={formatLeverage(position.leverage)}
+                          to={formatLeverage(nextPositionValuesWithoutKeepLeverage?.nextLeverage)}
+                        />
                       ) : (
                         <ValueTransition
                           from={formatLeverage(position.leverage)}
@@ -818,7 +853,7 @@ export function PositionSeller(p: Props) {
                   <div className="PositionEditor-keep-leverage-settings">
                     <ToggleSwitch
                       disabled={leverageCheckboxDisabledByCollateral}
-                      isChecked={keepLeverage ?? false}
+                      isChecked={leverageCheckboxDisabledByCollateral ? false : keepLeverage ?? false}
                       setIsChecked={setKeepLeverage}
                     >
                       <span className="text-gray font-sm">{keepLeverageTextElem}</span>

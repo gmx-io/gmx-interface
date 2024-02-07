@@ -15,7 +15,10 @@ export default function ToggleSwitch({ isChecked, setIsChecked, className, child
   return (
     <div className={classNames}>
       {children}
-      <div className={cx("Switch-toggle", { checked: isChecked })} onClick={() => setIsChecked(!isChecked)}>
+      <div
+        className={cx("Switch-toggle", { checked: isChecked })}
+        onClick={disabled ? undefined : () => setIsChecked(!isChecked)}
+      >
         <div className="handle" />
       </div>
     </div>

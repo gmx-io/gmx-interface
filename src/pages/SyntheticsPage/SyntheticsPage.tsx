@@ -36,7 +36,6 @@ import {
   useMarketsInfoData,
   useOrdersInfoData,
   usePositionsInfoData,
-  useSavedIsPnlInLeverage,
   useTokensData,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
@@ -87,7 +86,6 @@ export function SyntheticsPage(p: Props) {
   } = p;
   const { chainId } = useChainId();
   const { signer, account } = useWallet();
-  const savedIsPnlInLeverage = useSavedIsPnlInLeverage();
   const marketsInfoData = useMarketsInfoData();
   const tokensData = useTokensData();
   const positionsInfoData = usePositionsInfoData();
