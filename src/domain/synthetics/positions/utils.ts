@@ -340,7 +340,7 @@ export function willPositionCollateralBeSufficient(
   realizedPnlUsd: BigNumber,
   minCollateralFactor: BigNumber
 ) {
-  const collateralTokenPrice = collateralToken.prices.minPrice;
+  const collateralTokenPrice = position.isLong ? collateralToken.prices.minPrice : collateralToken.prices.maxPrice;
   let remainingCollateralUsd = position.collateralAmount
     .sub(collateralDeltaAmount)
     .mul(collateralTokenPrice)
