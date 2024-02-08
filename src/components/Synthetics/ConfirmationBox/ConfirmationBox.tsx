@@ -1631,7 +1631,7 @@ export function ConfirmationBox(p: Props) {
 
   return (
     <div className="Confirmation-box">
-      <Modal isVisible={p.isVisible} setIsVisible={onClose} label={title} allowContentTouchMove>
+      <Modal isVisible={p.isVisible} setIsVisible={onClose} label={title}>
         {isSwap && renderSwapSection()}
         {isIncrease && renderIncreaseOrderSection()}
         {isTrigger && renderTriggerDecreaseSection()}

@@ -451,7 +451,6 @@ export function OrderEditor(p: Props) {
         isVisible={true}
         setIsVisible={p.onClose}
         label={<Trans>Edit {p.order.title}</Trans>}
-        allowContentTouchMove
       >
         {!isSwapOrderType(p.order.orderType) && (
           <>

@@ -672,7 +672,6 @@ export function PositionSeller(p: Props) {
             Close {p.position?.isLong ? t`Long` : t`Short`} {p.position?.indexToken?.symbol}
           </Trans>
         }
-        allowContentTouchMove
       >
         <Tab
           options={Object.values(OrderOption)}
