@@ -23,14 +23,14 @@
 .MarketCard,
 .MarketCard-net-fee {
   .Tooltip-popup {
-    min-width: 32rem;
+    min-width: 33rem;
   }
 }
 
 @media (max-width: 350px) {
   .MarketCard-net-fee {
     .Tooltip-popup {
-      min-width: 29rem;
+      min-width: 26rem;
     }
   }
 }

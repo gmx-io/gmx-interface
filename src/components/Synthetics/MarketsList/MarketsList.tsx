@@ -148,13 +148,13 @@ export function MarketsList() {
           );
         })}
         <span>
-          Funding Fees help to balance Longs and Shorts and are exchanged between both sides.{" "}
+          Funding fees help to balance longs and shorts and are exchanged between both sides.{" "}
           <ExternalLink href={DOCS_LINKS.fundingFees}>Read more</ExternalLink>.
         </span>
         <br />
         <br />
         <span>
-          Borrowing Fees help ensuring liquidity.
+          Borrowing fees help ensuring liquidity.
           <ExternalLink href={DOCS_LINKS.borrowingFees}>Read more</ExternalLink>.
         </span>
       </>
