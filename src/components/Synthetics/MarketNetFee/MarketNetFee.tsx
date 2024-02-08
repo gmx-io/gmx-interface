@@ -46,7 +46,7 @@ export default function MarketNetFee({ borrowRateHourly = BN_ZERO, fundingRateHo
     <>
       <div className="mb-xs">{renderMessage()}</div>
       <br />
-      <div className="text-gray">{t`${isLong ? "Long" : "Short"} Positions Net Fee:`}</div>
+      <div className="text-gray mb-xs">{t`${isLong ? "Long" : "Short"} Positions Net Fee:`}</div>
       {renderNetFeesOverTime(netFeeHourly)}
     </>
   );
@@ -56,16 +56,29 @@ function renderRate(rate: BigNumber) {
   return <span className={getPositiveOrNegativeClass(rate)}>{formatRatePercentage(rate)}</span>;
 }
 function renderNetFeesOverTime(hourlyRate: BigNumber) {
-  function formatRateForPeriod(hours: number) {
+  function formatRateForPeriod(hours: number, decimals?: number) {
     const rateForPeriod = hourlyRate.mul(hours);
-    return <span className={getPositiveOrNegativeClass(rateForPeriod)}>{formatRatePercentage(rateForPeriod)}</span>;
+    return (
+      <span className={getPositiveOrNegativeClass(rateForPeriod)}>
+        {formatRatePercentage(rateForPeriod, decimals ?? 3)}
+      </span>
+    );
   }
+
   return (
     <ul className="net-fees-over-time">
-      <li>8h: {formatRateForPeriod(8)}</li>
-      <li>1d: {formatRateForPeriod(24)}</li>
-      <li>7d: {formatRateForPeriod(24 * 7)}</li>
-      <li>365d: {formatRateForPeriod(24 * 365)}</li>
+      <li>
+        {formatRateForPeriod(8)}
+        <span className="net-fee__period">(8h)</span>
+      </li>
+      <li>
+        {formatRateForPeriod(24)}
+        <span className="net-fee__period">(24h)</span>
+      </li>
+      <li>
+        {formatRateForPeriod(24 * 365, 2)}
+        <span className="net-fee__period">(365d)</span>
+      </li>
     </ul>
   );
 }
