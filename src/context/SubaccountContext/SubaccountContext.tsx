@@ -21,7 +21,7 @@ import {
 } from "domain/synthetics/fees";
 import { STRING_FOR_SIGNING } from "domain/synthetics/subaccount/constants";
 import { SubaccountSerializedConfig } from "domain/synthetics/subaccount/types";
-import { useTokenBalances, useTokensData } from "domain/synthetics/tokens";
+import { useTokenBalances, useTokensDataRequest } from "domain/synthetics/tokens";
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -98,7 +98,7 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
 
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
-  const { tokensData } = useTokensData(chainId);
+  const { tokensData } = useTokensDataRequest(chainId);
 
   // fee that is used as a approx basis to calculate
   // costs of subaccount actions

@@ -4,7 +4,7 @@ import { roundToTwoDecimals } from "lib/numbers";
 import { ChangeEvent, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./PercentageInput.scss";
 
-const validDecimalRegex = /^\d+(\.\d{0,2})?$/; // 0.00 ~ 99.99
+export const NUMBER_WITH_TWO_DECIMALS = /^\d+(\.\d{0,2})?$/; // 0.00 ~ 99.99
 
 function getValueText(value: number) {
   return roundToTwoDecimals((value / BASIS_POINTS_DIVISOR) * 100).toString();
@@ -37,17 +37,17 @@ export default function PercentageInput({
   negativeSign,
   highValueCheckStrategy: checkStrategy = "gte",
 }: Props) {
-  const [inputValue, setInputvalue] = useState<string>(() => getValueText(defaultValue));
+  const [inputValue, setInputValue] = useState<string>(() => getValueText(defaultValue));
   const [isPanelVisible, setIsPanelVisible] = useState<boolean>(false);
 
   useEffect(() => {
-    setInputvalue(getValueText(defaultValue));
+    setInputValue(getValueText(defaultValue));
   }, [defaultValue]);
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
     const { value } = event.target;
     if (value === "") {
-      setInputvalue(value);
+      setInputValue(value);
       onChange(defaultValue);
       return;
     }
@@ -59,13 +59,13 @@ export default function PercentageInput({
 
     if (parsedValue >= maxValue) {
       onChange(maxValue);
-      setInputvalue(getValueText(maxValue));
+      setInputValue(getValueText(maxValue));
       return;
     }
 
-    if (validDecimalRegex.test(value)) {
+    if (NUMBER_WITH_TWO_DECIMALS.test(value)) {
       onChange(parsedValue);
-      setInputvalue(value);
+      setInputValue(value);
     }
   }
 
@@ -124,7 +124,7 @@ export default function PercentageInput({
             <li
               key={slippage}
               onMouseDown={() => {
-                setInputvalue(String(slippage));
+                setInputValue(String(slippage));
                 onChange(slippage * 100);
                 setIsPanelVisible(false);
               }}

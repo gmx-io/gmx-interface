@@ -9,7 +9,7 @@ import { UserEarningsData } from "./types";
 import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import { useMarketTokensAPR } from "./useMarketTokensAPR";
 import { useMarketTokensData } from "./useMarketTokensData";
-import { useMarketsInfo } from "./useMarketsInfo";
+import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
 
 type RawBalanceChange = {
   cumulativeIncome: string;
@@ -28,7 +28,7 @@ type RawCollectedMarketFeesInfo = {
 };
 
 export const useUserEarnings = (chainId: number) => {
-  const { marketsInfoData } = useMarketsInfo(chainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId);
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
 
   const client = getSyntheticsGraphClient(chainId);

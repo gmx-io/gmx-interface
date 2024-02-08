@@ -204,13 +204,13 @@ export function GmList({
                         <br />({formatUsd(totalSupplyUsd)})
                       </td>
                       <td className="GmList-last-column">
-                        {renderMintableAmount({
-                          mintableInfo,
-                          market,
-                          token,
-                          longToken,
-                          shortToken,
-                        })}
+                        <MintableAmount
+                          mintableInfo={mintableInfo}
+                          market={market}
+                          token={token}
+                          longToken={longToken}
+                          shortToken={shortToken}
+                        />
                       </td>
 
                       <td>
@@ -345,13 +345,13 @@ export function GmList({
                         />
                       </div>
                       <div>
-                        {renderMintableAmount({
-                          mintableInfo,
-                          market,
-                          token,
-                          longToken,
-                          shortToken,
-                        })}
+                        <MintableAmount
+                          mintableInfo={mintableInfo}
+                          market={market}
+                          token={token}
+                          longToken={longToken}
+                          shortToken={shortToken}
+                        />
                       </div>
                     </div>
                     <div className="App-card-row">
@@ -409,7 +409,37 @@ export function GmList({
   );
 }
 
-function renderMintableAmount({ mintableInfo, market, token, longToken, shortToken }) {
+function MintableAmount({ mintableInfo, market, token, longToken, shortToken }) {
+  const longTokenMaxValue = useMemo(
+    () => [
+      formatTokenAmount(mintableInfo?.longDepositCapacityAmount, longToken.decimals, longToken.symbol, {
+        useCommas: true,
+      }),
+      `(${formatTokenAmount(market.longPoolAmount, longToken.decimals, "", {
+        useCommas: true,
+        displayDecimals: 0,
+      })} / ${formatTokenAmount(getMaxPoolAmountForDeposit(market, true), longToken.decimals, longToken.symbol, {
+        useCommas: true,
+        displayDecimals: 0,
+      })})`,
+    ],
+    [longToken.decimals, longToken.symbol, market, mintableInfo?.longDepositCapacityAmount]
+  );
+  const shortTokenMaxValue = useMemo(
+    () => [
+      formatTokenAmount(mintableInfo?.shortDepositCapacityAmount, shortToken.decimals, shortToken.symbol, {
+        useCommas: true,
+      }),
+      `(${formatTokenAmount(market.shortPoolAmount, shortToken.decimals, "", {
+        useCommas: true,
+        displayDecimals: 0,
+      })} / ${formatTokenAmount(getMaxPoolAmountForDeposit(market, false), shortToken.decimals, shortToken.symbol, {
+        useCommas: true,
+        displayDecimals: 0,
+      })})`,
+    ],
+    [market, mintableInfo?.shortDepositCapacityAmount, shortToken.decimals, shortToken.symbol]
+  );
   return (
     <Tooltip
       handle={
@@ -436,46 +466,8 @@ function renderMintableAmount({ mintableInfo, market, token, longToken, shortTok
             </Trans>
           </p>
           <br />
-          <StatsTooltipRow
-            label={`Max ${longToken.symbol}`}
-            value={[
-              formatTokenAmount(mintableInfo?.longDepositCapacityAmount, longToken.decimals, longToken.symbol, {
-                useCommas: true,
-              }),
-              `(${formatTokenAmount(market.longPoolAmount, longToken.decimals, "", {
-                useCommas: true,
-                displayDecimals: 0,
-              })} / ${formatTokenAmount(
-                getMaxPoolAmountForDeposit(market, true),
-                longToken.decimals,
-                longToken.symbol,
-                {
-                  useCommas: true,
-                  displayDecimals: 0,
-                }
-              )})`,
-            ]}
-          />
-          <StatsTooltipRow
-            label={`Max ${shortToken.symbol}`}
-            value={[
-              formatTokenAmount(mintableInfo?.shortDepositCapacityAmount, shortToken.decimals, shortToken.symbol, {
-                useCommas: true,
-              }),
-              `(${formatTokenAmount(market.shortPoolAmount, shortToken.decimals, "", {
-                useCommas: true,
-                displayDecimals: 0,
-              })} / ${formatTokenAmount(
-                getMaxPoolAmountForDeposit(market, false),
-                shortToken.decimals,
-                shortToken.symbol,
-                {
-                  useCommas: true,
-                  displayDecimals: 0,
-                }
-              )})`,
-            ]}
-          />
+          <StatsTooltipRow label={`Max ${longToken.symbol}`} value={longTokenMaxValue} />
+          <StatsTooltipRow label={`Max ${shortToken.symbol}`} value={shortTokenMaxValue} />
         </>
       )}
     />
