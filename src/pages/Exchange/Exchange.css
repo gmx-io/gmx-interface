@@ -312,6 +312,11 @@
   width: 4.65rem;
   padding: 0.8rem 0;
 }
+
+body.dragging .ExchangeChart iframe {
+  pointer-events: none;
+}
+
 .ExchangeChart.tv .ExchangeChart-bottom-header {
   position: absolute;
   display: flex;
