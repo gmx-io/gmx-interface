@@ -75,7 +75,7 @@ export function PositionList(p: Props) {
           ))}
       </div>
 
-      <table className="Exchange-list large App-box">
+      <table className="Exchange-list Position-list large App-box">
         <tbody>
           <tr className="Exchange-list-header">
             <th>

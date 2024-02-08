@@ -563,8 +563,7 @@ table.Exchange-list th {
   opacity: 0.7;
 }
 
-table.Exchange-list .Exchange-list-item,
-table.Exchange-list .Exchange-list-header {
+table.Position-list .Exchange-list-item {
   border-left: 2px solid transparent;
 }
 
@@ -572,7 +571,7 @@ table.Exchange-list .Exchange-list-item td:first-child {
   padding-left: 1.4rem;
 }
 
-table.Exchange-list .Exchange-list-item-active {
+table.Position-list .Exchange-list-item-active {
   border-left: 2px solid #3a3f79;
 }
 
