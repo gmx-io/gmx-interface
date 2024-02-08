@@ -3362,8 +3362,16 @@ msgid "One-Click Trading"
 msgstr "One-Click Trading"
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-msgid "One-Click Trading is not available using network's native token {0}. Consider using {1} as Pay token instead."
-msgstr "One-Click Trading is not available using network's native token {0}. Consider using {1} as Pay token instead."
+msgid "One-Click Trading is not available for Wrapping or Unwrapping native token {0}"
+msgstr "One-Click Trading is not available for Wrapping or Unwrapping native token {0}"
+
+#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
+#~ msgid "One-Click Trading is not available using network's native token {0}. Consider using {1} as Pay token instead."
+#~ msgstr "One-Click Trading is not available using network's native token {0}. Consider using {1} as Pay token instead."
+
+#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
+msgid "One-Click Trading is not available using network's native token {0}. Consider using {1} instead."
+msgstr "One-Click Trading is not available using network's native token {0}. Consider using {1} instead."
 
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
