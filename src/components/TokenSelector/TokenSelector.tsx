@@ -37,7 +37,6 @@ type Props = {
   showSymbolImage?: boolean;
   showNewCaret?: boolean;
   getTokenState?: (info: TokenInfo) => TokenState | undefined;
-  disableBodyScrollLock?: boolean;
   onSelectToken: (token: Token) => void;
   extendedSortSequence?: string[] | undefined;
 };

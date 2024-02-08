@@ -285,7 +285,7 @@ function applyEventChanges(position: Position, event: PositionIncreaseEvent | Po
   return nextPosition;
 }
 
-function getPendingMockPosition(pendingUpdate: PendingPositionUpdate): Position {
+export function getPendingMockPosition(pendingUpdate: PendingPositionUpdate): Position {
   const { account, marketAddress, collateralAddress, isLong } = parsePositionKey(pendingUpdate.positionKey);
 
   return {

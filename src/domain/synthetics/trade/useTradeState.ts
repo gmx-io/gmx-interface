@@ -1,30 +1,40 @@
-import { getSyntheticsTradeOptionsKey } from "config/localStorage";
+import {
+  getKeepLeverageKey,
+  getLeverageEnabledKey,
+  getLeverageKey,
+  getSyntheticsTradeOptionsKey,
+} from "config/localStorage";
 import { getIsUnwrap, getIsWrap } from "domain/tokens";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
-import { useCallback, useEffect, useMemo } from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 import { MarketInfo, MarketsInfoData } from "../markets";
 import { PositionInfo, PositionsInfoData } from "../positions";
 import { TokenData, TokensData } from "../tokens";
-import { TradeMode, TradeType } from "./types";
+import { TradeMode, TradeType, TriggerThresholdType } from "./types";
 import { AvailableTokenOptions, useAvailableTokenOptions } from "./useAvailableTokenOptions";
-import { TradeFlags, useTradeFlags } from "./useTradeFlags";
+import { useSafeState } from "lib/useSafeState";
+import { OrderType } from "../orders/types";
+import { BigNumber } from "ethers";
+import { createTradeFlags } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 
-export type SelectedTradeOption = {
+type ReactSetState<T> = Dispatch<SetStateAction<T>>;
+type LocalStorageSetState<T> = Dispatch<SetStateAction<T | undefined>>;
+type TradeStage = "trade" | "confirmation" | "processing";
+
+export type TradeState = {
   tradeType: TradeType;
   tradeMode: TradeMode;
-  tradeFlags: TradeFlags;
   isWrapOrUnwrap: boolean;
   fromTokenAddress?: string;
-  fromToken?: TokenData;
   toTokenAddress?: string;
-  toToken?: TokenData;
   marketAddress?: string;
   marketInfo?: MarketInfo;
   collateralAddress?: string;
   collateralToken?: TokenData;
   avaialbleTradeModes: TradeMode[];
   availableTokensOptions: AvailableTokenOptions;
+
   setActivePosition: (position?: PositionInfo, tradeMode?: TradeMode) => void;
   setTradeType: (tradeType: TradeType) => void;
   setTradeMode: (tradeMode: TradeMode) => void;
@@ -33,6 +43,48 @@ export type SelectedTradeOption = {
   setMarketAddress: (marketAddress?: string) => void;
   setCollateralAddress: (tokenAddress?: string) => void;
   switchTokenAddresses: () => void;
+
+  fromTokenInputValue: string;
+  setFromTokenInputValue: ReactSetState<string>;
+
+  toTokenInputValue: string;
+  setToTokenInputValue: ReactSetState<string>;
+
+  stage: TradeStage;
+  setStage: ReactSetState<TradeStage>;
+
+  focusedInput: "from" | "to" | undefined;
+  setFocusedInput: ReactSetState<"from" | "to" | undefined>;
+
+  fixedTriggerThresholdType: TriggerThresholdType | undefined;
+  setFixedTriggerThresholdType: ReactSetState<TriggerThresholdType | undefined>;
+
+  fixedTriggerOrderType: OrderType.LimitDecrease | OrderType.StopLossDecrease | undefined;
+  setFixedTriggerOrderType: ReactSetState<OrderType.LimitDecrease | OrderType.StopLossDecrease | undefined>;
+
+  defaultTriggerAcceptablePriceImpactBps: BigNumber | undefined;
+  setDefaultTriggerAcceptablePriceImapctBps: ReactSetState<BigNumber | undefined>;
+
+  selectedTriggerAcceptablePriceImpactBps: BigNumber | undefined;
+  setSelectedAcceptablePriceImapctBps: ReactSetState<BigNumber | undefined>;
+
+  closeSizeInputValue: string;
+  setCloseSizeInputValue: ReactSetState<string>;
+
+  triggerPriceInputValue: string;
+  setTriggerPriceInputValue: ReactSetState<string>;
+
+  triggerRatioInputValue: string;
+  setTriggerRatioInputValue: ReactSetState<string>;
+
+  leverageOption: number | undefined;
+  setLeverageOption: LocalStorageSetState<number>;
+
+  isLeverageEnabled: boolean | undefined;
+  setIsLeverageEnabled: LocalStorageSetState<boolean>;
+
+  keepLeverage: boolean | undefined;
+  setKeepLeverage: LocalStorageSetState<boolean>;
 };
 
 type StoredTradeOptions = {
@@ -52,14 +104,14 @@ type StoredTradeOptions = {
   collateralAddress?: string;
 };
 
-export function useSelectedTradeOption(
+export function useTradeState(
   chainId: number,
   p: {
     marketsInfoData?: MarketsInfoData;
     positionsInfoData?: PositionsInfoData;
     tokensData?: TokensData;
   }
-): SelectedTradeOption {
+): TradeState {
   const { marketsInfoData, positionsInfoData, tokensData } = p;
 
   const [storedOptions, setStoredOptions] = useLocalStorageSerializeKey<StoredTradeOptions>(
@@ -73,11 +125,29 @@ export function useSelectedTradeOption(
     }
   );
 
+  const [fromTokenInputValue, setFromTokenInputValue] = useSafeState("");
+  const [toTokenInputValue, setToTokenInputValue] = useSafeState("");
+  const [stage, setStage] = useState<TradeStage>("trade");
+  const [focusedInput, setFocusedInput] = useState<"from" | "to">();
+  const [fixedTriggerThresholdType, setFixedTriggerThresholdType] = useState<TriggerThresholdType>();
+  const [fixedTriggerOrderType, setFixedTriggerOrderType] = useState<
+    OrderType.LimitDecrease | OrderType.StopLossDecrease
+  >();
+  const [defaultTriggerAcceptablePriceImpactBps, setDefaultTriggerAcceptablePriceImpactBps] = useState<BigNumber>();
+  const [selectedTriggerAcceptablePriceImpactBps, setSelectedTriggerAcceptablePriceImpactBps] = useState<BigNumber>();
+  const [closeSizeInputValue, setCloseSizeInputValue] = useState("");
+  const [triggerPriceInputValue, setTriggerPriceInputValue] = useState<string>("");
+  const [triggerRatioInputValue, setTriggerRatioInputValue] = useState<string>("");
+
   const availableTokensOptions = useAvailableTokenOptions(chainId, { marketsInfoData, tokensData });
   const { swapTokens, indexTokens } = availableTokensOptions;
 
   const tradeType = storedOptions?.tradeType;
   const tradeMode = storedOptions?.tradeMode;
+
+  const [leverageOption, setLeverageOption] = useLocalStorageSerializeKey(getLeverageKey(chainId), 2);
+  const [isLeverageEnabled, setIsLeverageEnabled] = useLocalStorageSerializeKey(getLeverageEnabledKey(chainId), true);
+  const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
 
   const avaialbleTradeModes = useMemo(() => {
     if (!tradeType) {
@@ -91,7 +161,7 @@ export function useSelectedTradeOption(
     }[tradeType];
   }, [tradeType]);
 
-  const tradeFlags = useTradeFlags(tradeType!, tradeMode!);
+  const tradeFlags = useMemo(() => createTradeFlags(tradeType!, tradeMode!), [tradeType, tradeMode]);
   const { isSwap, isLong, isPosition } = tradeFlags;
 
   const fromTokenAddress = storedOptions?.tokens.fromTokenAddress;
@@ -320,12 +390,9 @@ export function useSelectedTradeOption(
   return {
     tradeType: tradeType!,
     tradeMode: tradeMode!,
-    tradeFlags,
     isWrapOrUnwrap,
     fromTokenAddress,
-    fromToken,
     toTokenAddress,
-    toToken,
     marketAddress,
     marketInfo,
     collateralAddress,
@@ -340,5 +407,33 @@ export function useSelectedTradeOption(
     setTradeType,
     setTradeMode,
     switchTokenAddresses,
+    fromTokenInputValue,
+    setFromTokenInputValue,
+    toTokenInputValue,
+    setToTokenInputValue,
+    stage,
+    setStage,
+    focusedInput,
+    setFocusedInput,
+    fixedTriggerThresholdType,
+    setFixedTriggerThresholdType,
+    fixedTriggerOrderType,
+    setFixedTriggerOrderType,
+    defaultTriggerAcceptablePriceImpactBps,
+    setDefaultTriggerAcceptablePriceImapctBps: setDefaultTriggerAcceptablePriceImpactBps,
+    selectedTriggerAcceptablePriceImpactBps,
+    setSelectedAcceptablePriceImapctBps: setSelectedTriggerAcceptablePriceImpactBps,
+    closeSizeInputValue,
+    setCloseSizeInputValue,
+    triggerPriceInputValue,
+    setTriggerPriceInputValue,
+    triggerRatioInputValue,
+    setTriggerRatioInputValue,
+    leverageOption,
+    setLeverageOption,
+    isLeverageEnabled,
+    setIsLeverageEnabled,
+    keepLeverage,
+    setKeepLeverage,
   };
 }

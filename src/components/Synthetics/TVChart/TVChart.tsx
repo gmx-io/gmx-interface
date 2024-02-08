@@ -18,26 +18,24 @@ import { formatAmount, formatUsd, numberWithCommas } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 import "./TVChart.scss";
 import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
-import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
 import { AvailableTokenOptions, TradeType } from "domain/synthetics/trade";
 import { MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getByKey } from "lib/objects";
 import { helperToast } from "lib/helperToast";
+import { BigNumber } from "ethers";
+import { useTradeboxSetToTokenAddress, useTradeboxTradeType } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 
 export type Props = {
   tradePageVersion: number;
   setTradePageVersion: (version: number) => void;
   savedShouldShowPositionLines: boolean;
-  onSelectChartTokenAddress: (tokenAddress: string, marketTokenAddress?: string, tradeType?: TradeType) => void;
   ordersInfo?: OrdersInfoData;
   positionsInfo?: PositionsInfoData;
   tokensData?: TokensData;
   chartTokenAddress?: string;
   availableTokens?: Token[];
-  tradeFlags?: TradeFlags;
   avaialbleTokenOptions: AvailableTokenOptions;
   marketsInfoData?: MarketsInfoData;
-  currentTradeType?: TradeType;
 };
 
 const DEFAULT_PERIOD = "5m";
@@ -48,14 +46,11 @@ export function TVChart({
   tokensData,
   savedShouldShowPositionLines,
   chartTokenAddress,
-  onSelectChartTokenAddress,
   availableTokens,
-  tradeFlags,
   tradePageVersion,
   setTradePageVersion,
   avaialbleTokenOptions,
   marketsInfoData,
-  currentTradeType,
 }: Props) {
   const { chainId } = useChainId();
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
@@ -75,6 +70,8 @@ export function TVChart({
 
   const selectedTokenOption = chartTokenAddress ? getToken(chainId, chartTokenAddress) : undefined;
   const dayPriceDelta = use24hPriceDelta(chainId, chartToken?.symbol);
+  const currentTradeType = useTradeboxTradeType();
+  const setToTokenAddress = useTradeboxSetToTokenAddress();
 
   const chartLines = useMemo(() => {
     if (!chartTokenAddress) {
@@ -140,7 +137,7 @@ export function TVChart({
   }, [chainId, chartTokenAddress, ordersInfo, positionsInfo, tokensData]);
 
   function onSelectTokenOption(address: string, marketTokenAddress?: string, tradeType?: TradeType) {
-    onSelectChartTokenAddress(address, marketTokenAddress, tradeType);
+    setToTokenAddress(address, marketTokenAddress, tradeType);
 
     if (marketTokenAddress) {
       const marketInfo = getByKey(marketsInfoData, marketTokenAddress);
@@ -164,7 +161,7 @@ export function TVChart({
   }
 
   function onSelectChartToken(token: Token) {
-    onSelectChartTokenAddress(token.address);
+    setToTokenAddress(token.address);
   }
 
   useEffect(() => {
@@ -180,6 +177,21 @@ export function TVChart({
     [period, setPeriod]
   );
 
+  const chartTokenProp = useMemo(
+    () =>
+      chartToken
+        ? {
+            symbol: chartToken.symbol,
+            ...chartToken.prices,
+          }
+        : {
+            symbol: "",
+            minPrice: BigNumber.from(0),
+            maxPrice: BigNumber.from(0),
+          },
+    [chartToken]
+  );
+
   return (
     <div className="ExchangeChart tv">
       <div className="ExchangeChart-header">
@@ -188,9 +200,7 @@ export function TVChart({
             <ChartTokenSelector
               chainId={chainId}
               selectedToken={selectedTokenOption}
-              className="chart-token-selector"
               onSelectToken={onSelectTokenOption}
-              tradeFlags={tradeFlags}
               options={tokenOptions}
               avaialbleTokenOptions={avaialbleTokenOptions}
               positionsInfo={positionsInfo}
@@ -252,10 +262,7 @@ export function TVChart({
             dataProvider={dataProvider}
             period={period}
             setPeriod={setPeriod}
-            chartToken={{
-              symbol: chartToken.symbol,
-              ...chartToken.prices,
-            }}
+            chartToken={chartTokenProp}
             supportedResolutions={SUPPORTED_RESOLUTIONS_V2}
             tradePageVersion={tradePageVersion}
             setTradePageVersion={setTradePageVersion}

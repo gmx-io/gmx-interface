@@ -27,7 +27,12 @@ import { getCurrentMaxActionsCount } from "domain/synthetics/subaccount/getCurre
 import { initSubaccount } from "domain/synthetics/subaccount/initSubaccount";
 import { removeSubaccount } from "domain/synthetics/subaccount/removeSubaccount";
 import { withdrawFromSubaccount } from "domain/synthetics/subaccount/withdrawFromSubaccount";
-import { getNeedTokenApprove, useTokenBalances, useTokensAllowanceData, useTokensData } from "domain/synthetics/tokens";
+import {
+  getNeedTokenApprove,
+  useTokenBalances,
+  useTokensAllowanceData,
+  useTokensDataRequest,
+} from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import copyIcon from "img/ic_copy_20.svg";
 import externalLinkIcon from "img/ic_new_link_20.svg";
@@ -65,7 +70,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
   const { signer, account } = useWallet();
   const [withdrawalLoading, setWithdrawalLoading] = useState(false);
   const [isSubaccountUpdating, setIsSubaccountUpdating] = useState(false);
-  const { tokensData } = useTokensData(chainId);
+  const { tokensData } = useTokensDataRequest(chainId);
   const subaccountAddress = useSubaccountAddress();
   const mainBalances = useTokenBalances(chainId, account);
   const subBalances = useTokenBalances(chainId, subaccountAddress ?? undefined);

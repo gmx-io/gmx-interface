@@ -98,6 +98,16 @@
     background: #252740;
   }
 }
+.Tooltip-popup.right-center {
+  left: 3rem;
+  top: -50%;
+  &::after {
+    display: block;
+    left: -4px;
+    top: 50%;
+    background: #252740;
+  }
+}
 
 .Tooltip-popup.left-top {
   left: 0;

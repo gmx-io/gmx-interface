@@ -1,30 +1,28 @@
-import cx from "classnames";
 import { Trans } from "@lingui/macro";
-import { useChainId } from "lib/chains";
-import { useCallback, useState } from "react";
+import cx from "classnames";
 import { useClaimCollateralHistory } from "domain/synthetics/claimHistory";
-import { ClaimHistoryRow } from "../ClaimHistoryRow/ClaimHistoryRow";
-import { MarketsInfoData } from "domain/synthetics/markets";
-import { TokensData } from "domain/synthetics/tokens";
-import useWallet from "lib/wallets/useWallet";
-import { ClaimableCard } from "./ClaimableCard";
-
-import "./Claims.scss";
-import { useMedia } from "react-use";
-import { SettleAccruedCard } from "./SettleAccruedCard";
-import { PositionsInfoData } from "domain/synthetics/positions";
-import { ClaimModal } from "../ClaimModal/ClaimModal";
-import { SettleAccruedFundingFeeModal } from "../SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal";
-import { AccruedPositionPriceImpactRebateModal } from "../AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal";
-import { ClaimablePositionPriceImpactRebateModal } from "../ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal";
 import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
+import { PositionsInfoData } from "domain/synthetics/positions";
+import { useChainId } from "lib/chains";
+import useWallet from "lib/wallets/useWallet";
+import { useCallback, useState } from "react";
+import { useMedia } from "react-use";
+import { AccruedPositionPriceImpactRebateModal } from "../AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal";
+import { ClaimHistoryRow } from "../ClaimHistoryRow/ClaimHistoryRow";
+import { ClaimModal } from "../ClaimModal/ClaimModal";
+import { ClaimablePositionPriceImpactRebateModal } from "../ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal";
+import { SettleAccruedFundingFeeModal } from "../SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal";
+import { ClaimableCard } from "./ClaimableCard";
+import "./Claims.scss";
+import { SettleAccruedCard } from "./SettleAccruedCard";
 
 const PAGE_SIZE = 100;
 
+const MARGIN_RIGHT = { marginRight: 4 };
+const MARGIN_LEFT = { marginLeft: 4 };
+
 export function Claims({
   shouldShowPaginationButtons,
-  marketsInfoData,
-  tokensData,
   isSettling,
   setIsSettling,
   positionsInfoData,
@@ -36,8 +34,6 @@ export function Claims({
   claimablePositionPriceImpactFees,
 }: {
   shouldShowPaginationButtons: boolean;
-  marketsInfoData: MarketsInfoData | undefined;
-  tokensData: TokensData | undefined;
   isSettling: boolean;
   setIsSettling: (v: boolean) => void;
   positionsInfoData: PositionsInfoData | undefined;
@@ -59,8 +55,6 @@ export function Claims({
     useState(false);
 
   const { claimActions, isLoading } = useClaimCollateralHistory(chainId, {
-    marketsInfoData,
-    tokensData,
     pageIndex,
     pageSize: PAGE_SIZE,
   });
@@ -95,17 +89,10 @@ export function Claims({
 
   return (
     <>
-      <ClaimModal
-        marketsInfoData={marketsInfoData}
-        isVisible={isClaiming}
-        onClose={() => setIsClaiming(false)}
-        setPendingTxns={setPendingTxns}
-      />
+      <ClaimModal isVisible={isClaiming} onClose={() => setIsClaiming(false)} setPendingTxns={setPendingTxns} />
       <SettleAccruedFundingFeeModal
         isVisible={isSettling}
         positionKeys={gettingPendingFeePositionKeys}
-        positionsInfoData={positionsInfoData}
-        tokensData={tokensData}
         allowedSlippage={allowedSlippage}
         setPositionKeys={setGettingPendingFeePositionKeys}
         setPendingTxns={setPendingTxns}
@@ -115,14 +102,12 @@ export function Claims({
         isVisible={isAccruedPositionPriceImpactRebateModalVisible}
         onClose={handleAccruedPositionPriceImpactRebateCloseClick}
         accruedPositionPriceImpactFees={accruedPositionPriceImpactFees}
-        marketsInfoData={marketsInfoData}
       />
 
       <ClaimablePositionPriceImpactRebateModal
         isVisible={isClaimablePositionPriceImpactFeesModalVisible}
         onClose={handleClaimablePositionPriceImpactFeesCloseClick}
         claimablePositionPriceImpactFees={claimablePositionPriceImpactFees}
-        marketsInfoData={marketsInfoData}
       />
 
       <div className="TradeHistory">
@@ -142,16 +127,15 @@ export function Claims({
               positionsInfoData={positionsInfoData}
               onSettleClick={handleSettleClick}
               onAccruedPositionPriceImpactRebateClick={handleAccruedPositionPriceImpactRebateClick}
-              style={isMobile ? undefined : { marginRight: 4 }}
+              style={isMobile ? undefined : MARGIN_RIGHT}
             />
           )}
           {account && !isLoading && (
             <ClaimableCard
               claimablePositionPriceImpactFees={claimablePositionPriceImpactFees}
-              marketsInfoData={marketsInfoData}
               onClaimClick={handleClaimClick}
               onClaimablePositionPriceImpactFeesClick={handleClaimablePositionPriceImpactFeesClick}
-              style={isMobile ? undefined : { marginLeft: 4 }}
+              style={isMobile ? undefined : MARGIN_LEFT}
             />
           )}
         </div>

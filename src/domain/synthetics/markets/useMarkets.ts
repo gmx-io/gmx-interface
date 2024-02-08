@@ -7,7 +7,7 @@ import { useMulticall } from "lib/multicall";
 import { MarketsData } from "./types";
 import { getMarketFullName } from "./utils";
 
-type MarketsResult = {
+export type MarketsResult = {
   marketsData?: MarketsData;
   marketsAddresses?: string[];
 };
@@ -16,7 +16,7 @@ const MARKETS_COUNT = 100;
 
 export function useMarkets(chainId: number): MarketsResult {
   const { data } = useMulticall(chainId, "useMarketsData", {
-    key: [],
+    key: [chainId],
 
     refreshInterval: 60000,
 
