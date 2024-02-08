@@ -11,7 +11,7 @@ import PercentageInput from "components/PercentageInput/PercentageInput";
 import "./AcceptablePriceImpactInputRow.scss";
 
 type Props = {
-  acceptablePriceImpactBps: BigNumber | undefined;
+  acceptablePriceImpactBps?: BigNumber;
   recommendedAcceptablePriceImpactBps?: BigNumber;
   initialPriceImpactFeeBps?: BigNumber;
   priceImpactFeeBps: BigNumber | undefined;
@@ -58,7 +58,7 @@ function AcceptablePriceImpactInputRowImpl({
     setValue(recommendedValue);
   }, [recommendedValue, setValue]);
 
-  if (value === undefined || recommendedValue === undefined || initialValue === undefined || !priceImpactFeeBps) {
+  if (recommendedValue === undefined || initialValue === undefined || !priceImpactFeeBps) {
     return null;
   }
 

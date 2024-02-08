@@ -471,6 +471,7 @@ export function PositionSeller(p: Props) {
         !defaultTriggerAcceptablePriceImpactBps.eq(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs())
       ) {
         setDefaultTriggerAcceptablePriceImpactBps(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs());
+        setSelectedTriggerAcceptablePriceImpactBps(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs());
       }
     }
   }, [decreaseAmounts, defaultTriggerAcceptablePriceImpactBps, isTrigger]);

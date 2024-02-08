@@ -23,7 +23,7 @@ type Props = {
   highValueWarningText?: ReactNode;
   negativeSign?: boolean;
   highValueCheckStrategy?: "gte" | "gt";
-  value: number;
+  value?: number;
 };
 
 const DEFAULT_SUGGESTIONS = [0.3, 0.5, 1, 1.5];
@@ -42,7 +42,7 @@ export default function PercentageInput({
   highValueCheckStrategy: checkStrategy = "gte",
 }: Props) {
   const [isPanelVisible, setIsPanelVisible] = useState<boolean>(false);
-  const [inputValue, setInputValue] = useState(getValueText(value));
+  const [inputValue, setInputValue] = useState(() => (value === undefined ? "" : getValueText(value)));
   const inputRef = useRef<HTMLInputElement>(null);
   const handleSignClick = useCallback(() => {
     inputRef.current?.focus();
@@ -74,6 +74,14 @@ export default function PercentageInput({
   }
 
   useEffect(() => {
+    if (value === undefined) {
+      if (inputValue !== "") {
+        setInputValue("");
+      }
+
+      return;
+    }
+
     if (
       // When the value is changed from outside we want to keep input empty
       // if the value is the same as the default value as it means the user

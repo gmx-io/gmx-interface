@@ -130,7 +130,7 @@ export type Props = {
   existingPosition?: PositionInfo;
   shouldDisableValidation: boolean;
   selectedTriggerAcceptablePriceImpactBps?: BigNumber;
-  setSelectedTriggerAcceptablePriceImapctBps: (value: BigNumber) => void;
+  setSelectedTriggerAcceptablePriceImpactBps: (value: BigNumber) => void;
   onClose: () => void;
   onSubmitted: () => void;
   setPendingTxns: (txns: any) => void;
@@ -153,7 +153,7 @@ export function ConfirmationBox(p: Props) {
     shouldDisableValidation,
     marketsOptions,
     selectedTriggerAcceptablePriceImpactBps,
-    setSelectedTriggerAcceptablePriceImapctBps,
+    setSelectedTriggerAcceptablePriceImpactBps,
     onClose,
     onSubmitted,
     setPendingTxns,
@@ -1112,7 +1112,7 @@ export function ConfirmationBox(p: Props) {
         acceptablePriceImpactBps={selectedTriggerAcceptablePriceImpactBps}
         recommendedAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
         priceImpactFeeBps={fees?.positionPriceImpact?.bps}
-        setAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImapctBps}
+        setAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
       />
     );
   }
