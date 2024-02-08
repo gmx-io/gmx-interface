@@ -18,10 +18,18 @@ export const selectSavedShowPnlAfterFees = (s: SyntheticsTradeState) => s.global
 export const selectMinCollateralUsd = (s: SyntheticsTradeState) => s.globals.positionsConstants.minCollateralUsd;
 export const selectMinPositionSizeUsd = (s: SyntheticsTradeState) => s.globals.positionsConstants.minPositionSizeUsd;
 
+export const selectClosingPositionKey = (s: SyntheticsTradeState) => s.globals.closingPositionKey;
+export const selectSetClosingPositionKey = (s: SyntheticsTradeState) => s.globals.setClosingPositionKey;
+
 export const selectPositionConstants = createSelector(
   [selectMinCollateralUsd, selectMinPositionSizeUsd],
   (minCollateralUsd, minPositionSizeUsd) => ({
     minCollateralUsd,
     minPositionSizeUsd,
   })
+);
+
+export const selectClosingPositionKeyState = createSelector(
+  [selectClosingPositionKey, selectSetClosingPositionKey],
+  (closingPositionKey, setClosingPositionKey) => [closingPositionKey, setClosingPositionKey] as const
 );

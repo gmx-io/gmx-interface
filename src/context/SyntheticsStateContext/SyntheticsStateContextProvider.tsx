@@ -14,7 +14,7 @@ import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTrad
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
-import { ReactNode, useMemo } from "react";
+import { ReactNode, useMemo, useState } from "react";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 
 export type SyntheticsTradeState = {
@@ -31,6 +31,9 @@ export type SyntheticsTradeState = {
     userReferralInfo: UserReferralInfo | undefined;
     savedIsPnlInLeverage: boolean;
     savedShowPnlAfterFees: boolean;
+
+    closingPositionKey: string | undefined;
+    setClosingPositionKey: (key: string | undefined) => void;
   };
   settings: SettingsContextType;
   tradebox: TradeboxState;
@@ -59,6 +62,7 @@ export function SyntheticsStateContextProvider({
   const positionsConstants = usePositionsConstantsRequest(chainId);
   const uiFeeFactor = useUiFeeFactor(chainId);
   const userReferralInfo = useUserReferralInfoRequest(signer, chainId, account, skipLocalReferralCode);
+  const [closingPositionKey, setClosingPositionKey] = useState<string>();
 
   const positionsInfo = usePositionsInfoRequest(chainId, {
     account,
@@ -99,6 +103,9 @@ export function SyntheticsStateContextProvider({
 
         savedIsPnlInLeverage,
         savedShowPnlAfterFees,
+
+        closingPositionKey,
+        setClosingPositionKey,
       },
       settings,
       tradebox: tradeboxState,
@@ -119,6 +126,7 @@ export function SyntheticsStateContextProvider({
     userReferralInfo,
     savedIsPnlInLeverage,
     savedShowPnlAfterFees,
+    closingPositionKey,
     settings,
     tradeboxState,
     positionSellerState,

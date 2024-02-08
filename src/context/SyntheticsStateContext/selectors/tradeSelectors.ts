@@ -303,14 +303,7 @@ export const makeSelectDecreasePositionAmounts = ({
       const collateralToken = collateralTokenAddress ? getByKey(tokensData, collateralTokenAddress) : undefined;
       const marketInfo = marketAddress ? getByKey(marketsInfoData, marketAddress) : undefined;
 
-      if (
-        !tradeFlags.isTrigger ||
-        !closeSizeUsd ||
-        !marketInfo ||
-        !collateralToken ||
-        !minCollateralUsd ||
-        !minPositionSizeUsd
-      ) {
+      if (!closeSizeUsd || !marketInfo || !collateralToken || !minCollateralUsd || !minPositionSizeUsd) {
         return undefined;
       }
 

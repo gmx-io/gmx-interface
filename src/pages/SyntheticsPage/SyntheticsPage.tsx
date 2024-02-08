@@ -31,6 +31,7 @@ import {
   useSubaccountCancelOrdersDetailsMessage,
 } from "context/SubaccountContext/SubaccountContext";
 import {
+  useClosingPositionKeyState,
   useIsOrdersLoading,
   useIsPositionsLoading,
   useMarketsInfoData,
@@ -106,6 +107,7 @@ export function SyntheticsPage(p: Props) {
   const toTokenAddress = useTradeboxToTokenAddress();
   const availableTokensOptions = useTradeboxAvailableTokensOptions();
   const setActivePosition = useTradeboxSetActivePosition();
+  const [, setClosingPositionKey] = useClosingPositionKeyState();
   const { indexTokens, sortedIndexTokensWithPoolValue, swapTokens, sortedLongAndShortTokens } = availableTokensOptions;
 
   const { chartToken, availableChartTokens } = useMemo(() => {
@@ -144,9 +146,6 @@ export function SyntheticsPage(p: Props) {
     sortedIndexTokensWithPoolValue,
     sortedLongAndShortTokens,
   ]);
-
-  const [closingPositionKey, setClosingPositionKey] = useState<string>();
-  const closingPosition = getByKey(positionsInfoData, closingPositionKey);
 
   const [editingPositionKey, setEditingPositionKey] = useState<string>();
   const editingPosition = getByKey(positionsInfoData, editingPositionKey);
@@ -193,10 +192,6 @@ export function SyntheticsPage(p: Props) {
   if (isHigherSlippageAllowed) {
     allowedSlippage = DEFAULT_HIGHER_SLIPPAGE_AMOUNT;
   }
-
-  const onPositionSellerClose = useCallback(() => {
-    setClosingPositionKey(undefined);
-  }, []);
 
   const onPositionEditorClose = useCallback(() => {
     setEditingPositionKey(undefined);
@@ -445,8 +440,6 @@ export function SyntheticsPage(p: Props) {
       </div>
 
       <PositionSeller
-        position={closingPosition!}
-        onClose={onPositionSellerClose}
         setPendingTxns={setPendingTxns}
         isHigherSlippageAllowed={isHigherSlippageAllowed}
         setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
