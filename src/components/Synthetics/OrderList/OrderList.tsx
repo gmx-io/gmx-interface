@@ -27,10 +27,18 @@ type Props = {
   isLoading: boolean;
   setPendingTxns: (txns: any) => void;
   selectedPositionOrderKey?: string;
+  setSelectedPositionOrderKey?: Dispatch<SetStateAction<string | undefined>>;
 };
 
 export function OrderList(p: Props) {
-  const { marketsInfoData, tokensData, positionsData, selectedPositionOrderKey, setSelectedOrdersKeys } = p;
+  const {
+    marketsInfoData,
+    tokensData,
+    positionsData,
+    selectedPositionOrderKey,
+    setSelectedPositionOrderKey,
+    setSelectedOrdersKeys,
+  } = p;
   const { chainId } = useChainId();
   const { signer } = useWallet();
 
@@ -63,7 +71,11 @@ export function OrderList(p: Props) {
         }
       }
     }
-  }, [selectedPositionOrderKey]);
+
+    return () => {
+      setSelectedPositionOrderKey?.(undefined);
+    };
+  }, [selectedPositionOrderKey, setSelectedPositionOrderKey]);
 
   function onSelectOrder(key: string) {
     setSelectedOrdersKeys?.((prev) => ({ ...prev, [key]: !prev[key] }));
