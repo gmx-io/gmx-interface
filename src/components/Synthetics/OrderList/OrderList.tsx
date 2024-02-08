@@ -56,7 +56,7 @@ export function OrderList(p: Props) {
   const isLastSubaccountAction = useIsLastSubaccountAction();
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, 1);
 
-  const orderRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+  const orderRefs = useRef<{ [key: string]: HTMLTableRowElement | null }>({});
 
   useEffect(() => {
     if (selectedPositionOrderKey) {
@@ -184,7 +184,7 @@ export function OrderList(p: Props) {
                   hideActions={p.hideActions}
                   marketsInfoData={marketsInfoData}
                   positionsInfoData={positionsData}
-                  ref={(el) => (orderRefs.current[order.key] = el)}
+                  setRef={(el) => (orderRefs.current[order.key] = el)}
                 />
               );
             })}
