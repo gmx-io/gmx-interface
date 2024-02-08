@@ -6,10 +6,15 @@ import Checkbox from "components/Checkbox/Checkbox";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import Modal from "components/Modal/Modal";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { getContract } from "config/contracts";
-import { BASIS_POINTS_DIVISOR, HIGH_SPREAD_THRESHOLD } from "config/factors";
+import {
+  BASIS_POINTS_DIVISOR,
+  COLLATERAL_SPREAD_SHOW_AFTER_INITIAL_ZERO_THRESHOLD,
+  HIGH_SPREAD_THRESHOLD,
+} from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useUserReferralCode } from "domain/referrals/hooks";
 import {
@@ -21,7 +26,6 @@ import {
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
-import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import {
   DecreasePositionSwapType,
   OrderType,
@@ -63,7 +67,9 @@ import { useChainId } from "lib/chains";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   useIsLastSubaccountAction,
   useSubaccount,
@@ -80,35 +86,33 @@ import {
   useTradeboxSwapAmounts,
   useTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+import useSLTPEntries from "domain/synthetics/orders/useSLTPEntries";
 import { AvailableMarketsOptions } from "domain/synthetics/trade/useAvailableMarketsOptions";
+import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { helperToast } from "lib/helperToast";
 import {
+  expandDecimals,
   formatAmount,
   formatDeltaUsd,
   formatPercentage,
   formatTokenAmount,
   formatTokenAmountWithUsd,
   formatUsd,
-  expandDecimals,
 } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import { getPlusOrMinusSymbol, getPositiveOrNegativeClass } from "lib/utils";
 import useWallet from "lib/wallets/useWallet";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { FaArrowRight } from "react-icons/fa";
+import { IoClose } from "react-icons/io5";
 import { useKey, useLatest } from "react-use";
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./ConfirmationBox.scss";
-import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
-import { FaArrowRight } from "react-icons/fa";
-import { IoClose } from "react-icons/io5";
 import SLTPEntries from "./SLTPEntries";
-import useSLTPEntries from "domain/synthetics/orders/useSLTPEntries";
-import { AlertInfo } from "components/AlertInfo/AlertInfo";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 
 export type Props = {
@@ -1029,14 +1033,6 @@ export function ConfirmationBox(p: Props) {
     }
   }
 
-  function renderLimitPriceWarning() {
-    return (
-      <AlertInfo compact type="info">
-        <Trans>Limit Order Price will vary based on Fees and Price Impact to guarantee the Min. Receive amount.</Trans>
-      </AlertInfo>
-    );
-  }
-
   const renderCollateralSpreadWarning = useCallback(() => {
     if (collateralSpreadInfo && collateralSpreadInfo.isHigh) {
       return (
@@ -1123,15 +1119,6 @@ export function ConfirmationBox(p: Props) {
     return <HighPriceImpactWarning priceImpactWarinigState={priceImpactWarningState} />;
   }
 
-  function renderLeverage(from: BigNumber | undefined, to: BigNumber | undefined, emptyValue = false) {
-    return (
-      <ExchangeInfoRow
-        label={t`Leverage`}
-        value={emptyValue ? "-" : <ValueTransition from={formatLeverage(from)} to={formatLeverage(to) ?? "-"} />}
-      />
-    );
-  }
-
   const hasWarning =
     renderExistingLimitOrdersWarning() ||
     renderDifferentCollateralWarning() ||
@@ -1139,6 +1126,18 @@ export function ConfirmationBox(p: Props) {
     renderExistingTriggerErrors() ||
     renderExistingTriggerWarning() ||
     renderDifferentTokensWarning();
+
+  const [initialCollateralSpread, setInitialCollateralSpread] = useState<BigNumber | undefined>();
+
+  const collateralSpreadPercent = collateralSpreadInfo?.spread
+    ?.mul(BASIS_POINTS_DIVISOR)
+    ?.div(expandDecimals(1, USD_DECIMALS));
+
+  useEffect(() => {
+    if (collateralSpreadPercent && !initialCollateralSpread) {
+      setInitialCollateralSpread(collateralSpreadPercent);
+    }
+  }, [collateralSpreadPercent, initialCollateralSpread]);
 
   function renderIncreaseOrderSection() {
     if (!marketInfo || !fromToken || !collateralToken || !toToken) {
@@ -1157,9 +1156,11 @@ export function ConfirmationBox(p: Props) {
         ? applySlippageToPrice(allowedSlippage, increaseAmounts.acceptablePrice, true, isLong)
         : increaseAmounts?.acceptablePrice;
 
-    const collateralSpreadPercent = collateralSpreadInfo?.spread
-      ?.mul(BASIS_POINTS_DIVISOR)
-      ?.div(expandDecimals(1, USD_DECIMALS));
+    const isNearZeroFromStart =
+      initialCollateralSpread?.eq(0) &&
+      collateralSpreadPercent?.lt(COLLATERAL_SPREAD_SHOW_AFTER_INITIAL_ZERO_THRESHOLD);
+    const isCurrentlyNonZero = collateralSpreadPercent?.gt(0);
+    const showCollateralSpread = isMarket && isCurrentlyNonZero && !isNearZeroFromStart;
 
     return (
       <>
@@ -1185,7 +1186,7 @@ export function ConfirmationBox(p: Props) {
           <div className="line-divider" />
 
           {isLimit && renderAvailableLiquidity()}
-          {isMarket && collateralSpreadPercent?.gt(0) && (
+          {showCollateralSpread && (
             <ExchangeInfoRow label={t`Collateral Spread`} isWarning={collateralSpreadInfo?.isHigh}>
               {formatPercentage(collateralSpreadPercent)}
             </ExchangeInfoRow>
@@ -1662,5 +1663,22 @@ export function ConfirmationBox(p: Props) {
         </div>
       </Modal>
     </div>
+  );
+}
+
+function renderLeverage(from: BigNumber | undefined, to: BigNumber | undefined, emptyValue = false) {
+  return (
+    <ExchangeInfoRow
+      label={t`Leverage`}
+      value={emptyValue ? "-" : <ValueTransition from={formatLeverage(from)} to={formatLeverage(to) ?? "-"} />}
+    />
+  );
+}
+
+function renderLimitPriceWarning() {
+  return (
+    <AlertInfo compact type="info">
+      <Trans>Limit Order Price will vary based on Fees and Price Impact to guarantee the Min. Receive amount.</Trans>
+    </AlertInfo>
   );
 }

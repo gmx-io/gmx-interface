@@ -1,6 +1,10 @@
 import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
+import { BigNumber } from "ethers";
+import React, { useEffect, useMemo, useState } from "react";
+import { useLatest } from "react-use";
+
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
@@ -15,6 +19,13 @@ import { getKeepLeverageKey } from "config/localStorage";
 import { convertTokenAddress } from "config/tokens";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import {
+  useSavedAcceptablePriceImpactBuffer,
+  useSavedAllowedSlippage,
+} from "context/SyntheticsStateContext/hooks/settingsHooks";
+import { useSwapRoutes } from "context/SyntheticsStateContext/hooks/tradeHooks";
+import { useTradeboxTradeFlags } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { useHasOutdatedUi } from "domain/legacy";
 import {
   estimateExecuteDecreaseOrderGasLimit,
@@ -42,10 +53,10 @@ import {
   getTradeFees,
 } from "domain/synthetics/trade";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
+import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { getCommonError, getDecreaseError } from "domain/synthetics/trade/utils/validation";
 import { getIsEquivalentTokens } from "domain/tokens";
-import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -62,21 +73,12 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { museNeverExist } from "lib/types";
 import { usePrevious } from "lib/usePrevious";
 import useWallet from "lib/wallets/useWallet";
-import { useEffect, useMemo, useState } from "react";
-import { useLatest } from "react-use";
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
-import "./PositionSeller.scss";
-import {
-  useSavedAcceptablePriceImpactBuffer,
-  useSavedAllowedSlippage,
-} from "context/SyntheticsStateContext/hooks/settingsHooks";
-import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useSwapRoutes } from "context/SyntheticsStateContext/hooks/tradeHooks";
-import { useTradeboxTradeFlags } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
-import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
+
+import "./PositionSeller.scss";
 
 export type Props = {
   position?: PositionInfo;
@@ -511,6 +513,8 @@ export function PositionSeller(p: Props) {
     />
   );
 
+  const isStopLoss = decreaseAmounts?.triggerOrderType === OrderType.StopLossDecrease;
+
   const acceptablePriceImpactInputRow = (() => {
     if (!decreaseAmounts) {
       return;
@@ -518,7 +522,7 @@ export function PositionSeller(p: Props) {
 
     return (
       <AcceptablePriceImpactInputRow
-        notAvailable={!triggerPriceInputValue || decreaseAmounts.triggerOrderType === OrderType.StopLossDecrease}
+        notAvailable={!triggerPriceInputValue || isStopLoss}
         defaultAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
         fees={fees}
         setSelectedAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
@@ -526,18 +530,18 @@ export function PositionSeller(p: Props) {
     );
   })();
 
-  const acceptablePriceRow = (
-    <ExchangeInfoRow
-      label={t`Acceptable Price`}
-      value={
-        decreaseAmounts?.sizeDeltaUsd.gt(0)
-          ? formatAcceptablePrice(acceptablePrice, {
-              displayDecimals: indexPriceDecimals,
-            })
-          : "-"
-      }
-    />
-  );
+  let acceptablePriceValue: React.ReactNode = "-";
+  if (isStopLoss) {
+    acceptablePriceValue = t`NA`;
+  } else if (decreaseAmounts?.sizeDeltaUsd.gt(0)) {
+    acceptablePriceValue = formatAcceptablePrice(acceptablePrice, {
+      displayDecimals: indexPriceDecimals,
+    });
+  } else {
+    acceptablePriceValue = "-";
+  }
+
+  const acceptablePriceRow = <ExchangeInfoRow label={t`Acceptable Price`} value={acceptablePriceValue} />;
 
   const liqPriceRow = position && (
     <ExchangeInfoRow
@@ -659,7 +663,24 @@ export function PositionSeller(p: Props) {
     />
   );
 
-  const isStopLoss = decreaseAmounts?.triggerOrderType === OrderType.StopLossDecrease;
+  let leverageValue: React.ReactNode = "-";
+
+  if (decreaseAmounts?.isFullClose) {
+    leverageValue = t`NA`;
+  } else if (position && isTrigger) {
+    if (decreaseAmounts?.sizeDeltaUsd.eq(position.sizeInUsd)) {
+      leverageValue = "-";
+    } else {
+      leverageValue = (
+        <ValueTransition
+          from={formatLeverage(position.leverage)}
+          to={formatLeverage(nextPositionValues?.nextLeverage)}
+        />
+      );
+    }
+  }
+
+  const keepLeverageChecked = decreaseAmounts?.isFullClose ? false : keepLeverage ?? false;
 
   return (
     <div className="PositionEditor PositionSeller">
@@ -725,44 +746,28 @@ export function PositionSeller(p: Props) {
             )}
 
             <div className="PositionEditor-info-box">
-              {!decreaseAmounts?.isFullClose && (
-                <>
-                  <ExchangeInfoRow
-                    label={t`Leverage`}
-                    value={
-                      decreaseAmounts?.sizeDeltaUsd.eq(position.sizeInUsd) ? (
-                        "-"
-                      ) : (
-                        <ValueTransition
-                          from={formatLeverage(position.leverage)}
-                          to={formatLeverage(nextPositionValues?.nextLeverage)}
-                        />
-                      )
-                    }
-                  />
+              <ExchangeInfoRow label={t`Leverage`} value={leverageValue} />
 
-                  <div className="PositionEditor-keep-leverage-settings">
-                    <ToggleSwitch isChecked={keepLeverage ?? false} setIsChecked={setKeepLeverage}>
-                      <span className="text-gray font-sm">
-                        <Trans>Keep leverage at {position?.leverage ? formatLeverage(position.leverage) : "..."}</Trans>
-                      </span>
-                    </ToggleSwitch>
-                  </div>
+              <div className="PositionEditor-keep-leverage-settings">
+                <ToggleSwitch
+                  isChecked={keepLeverageChecked}
+                  setIsChecked={setKeepLeverage}
+                  disabled={decreaseAmounts?.isFullClose}
+                >
+                  <span className="text-gray font-sm">
+                    <Trans>Keep leverage at {position?.leverage ? formatLeverage(position.leverage) : "..."}</Trans>
+                  </span>
+                </ToggleSwitch>
+              </div>
 
-                  <div className="App-card-divider" />
-                </>
-              )}
+              <div className="App-card-divider" />
 
               {isTrigger ? (
                 <>
-                  {!isStopLoss && (
-                    <>
-                      {acceptablePriceImpactInputRow}
-                      <div className="App-card-divider" />
-                    </>
-                  )}
+                  {acceptablePriceImpactInputRow}
+                  <div className="App-card-divider" />
                   {triggerPriceRow}
-                  {!isStopLoss && acceptablePriceRow}
+                  {acceptablePriceRow}
                   {liqPriceRow}
                   {sizeRow}
                 </>
