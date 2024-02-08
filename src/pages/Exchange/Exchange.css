@@ -563,7 +563,8 @@ table.Exchange-list th {
   opacity: 0.7;
 }
 
-table.Exchange-list .Exchange-list-item {
+table.Exchange-list .Exchange-list-item,
+table.Exchange-list .Exchange-list-header {
   border-left: 2px solid transparent;
 }
 
