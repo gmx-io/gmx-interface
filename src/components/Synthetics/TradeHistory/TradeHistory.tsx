@@ -8,7 +8,7 @@ import usePagination from "components/Referrals/usePagination";
 import Pagination from "components/Pagination/Pagination";
 import { TRADE_HISTORY_PER_PAGE } from "config/ui";
 
-const PAGE_SIZE = 100;
+const PAGE_SIZE = 1000;
 const ENTITIES_PER_PAGE = 25;
 
 type Props = {

@@ -57,7 +57,11 @@ export function useTradeHistory(
             first: ${first},
             orderBy: transaction__timestamp,
             orderDirection: desc,
-            ${!forAllAccounts && account ? `where: { account: "${account!.toLowerCase()}" }` : ""}
+            where: {
+              orderType: "2"
+              eventName: "OrderCancelled",
+              #sizeDeltaUsd: "0"
+            }
         ) {
             id
             eventName

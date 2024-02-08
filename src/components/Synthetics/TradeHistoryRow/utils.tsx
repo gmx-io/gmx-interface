@@ -1,5 +1,5 @@
 import CustomErrors from "abis/CustomErrors.json";
-import { t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import words from "lodash/words";
 import { StatsTooltipRowProps } from "components/StatsTooltip/StatsTooltipRow";
 import { OrderType, isIncreaseOrderType, isLimitOrderType } from "domain/synthetics/orders";
@@ -12,6 +12,8 @@ import { PRECISION, getExchangeRateDisplay } from "lib/legacy";
 import { formatDeltaUsd, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { museNeverExist } from "lib/types";
 import { trimStart } from "lodash";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { ReactNode } from "react";
 
 type TooltipProps = StatsTooltipRowProps & { key: string };
 
@@ -19,7 +21,7 @@ type FormatPositionMessageChunk = {
   text: string;
   isError?: boolean;
   tooltipRows?: TooltipProps[];
-  tooltipTitle?: string;
+  tooltipTitle?: ReactNode;
   tooltipTitleRed?: boolean;
   tooltipFooterRed?: boolean;
   tooltipFooter?: string;
@@ -166,7 +168,11 @@ export const formatPositionMessage = (
 
         return [
           {
-            text: trimStart(`${actionText} ${marketStr} ${increaseText}: ${positionText} ${sizeDeltaText}, `),
+            text: trimStart(`${actionText} ${marketStr} ${increaseText}`),
+            tooltipTitle: parseErrorReason(tradeAction, true),
+          },
+          {
+            text: `: ${positionText} ${sizeDeltaText}, `,
           },
           {
             text: priceStr,
@@ -184,9 +190,40 @@ export const formatPositionMessage = (
         );
 
         if (isIncrease) {
-          return [{ text: t`${actionText} Deposit ${collateralText} into ${positionText}` }];
+          return [
+            {
+              text: t`${actionText} Deposit`,
+              tooltipTitle: parseErrorReason(tradeAction),
+            },
+            {
+              text: ": ",
+            },
+            {
+              text: t`${collateralText} into ${positionText}`,
+            },
+          ];
         } else {
-          return [{ text: t`${actionText} Withdraw ${collateralText} from ${positionText}` }];
+          const error = parseErrorReason(tradeAction);
+          if (error) {
+            return [
+              {
+                text: t`${actionText} Withdraw`,
+                tooltipTitle: error,
+              },
+              {
+                text: " ",
+              },
+              {
+                text: t`${collateralText} from ${positionText}`,
+              },
+            ];
+          } else {
+            return [
+              {
+                text: t`${actionText} Withdraw ${collateralText} from ${positionText}`,
+              },
+            ];
+          }
         }
       }
     }
@@ -363,25 +400,31 @@ function getLiquidationTooltipProps(tradeAction: PositionTradeAction, minCollate
   ].map((row) => (row.value?.startsWith("-") ? { className: "text-red", ...row } : row));
 }
 
-function getExecutionFailedTooltipProps(tradeAction: PositionTradeAction): Partial<FormatPositionMessageChunk> {
+function parseErrorReason(tradeAction: PositionTradeAction, defaultToAbstractReason = true) {
   const customErrors = new ethers.Contract(ethers.constants.AddressZero, CustomErrors.abi);
-  const res: Partial<FormatPositionMessageChunk> = {};
-
-  if (!tradeAction.reasonBytes) return res;
-
   let error: ReturnType<typeof customErrors.interface.parseError> | null = null;
+
+  if (!tradeAction.reasonBytes) return null;
+
   try {
     error = customErrors.interface.parseError(tradeAction.reasonBytes);
   } catch (err) {
-    return res;
+    return null;
   }
+
+  return getHumanReadableErrorByName(error.name, defaultToAbstractReason);
+}
+
+function getExecutionFailedTooltipProps(tradeAction: PositionTradeAction): Partial<FormatPositionMessageChunk> {
+  const res: Partial<FormatPositionMessageChunk> = {};
+  const error = parseErrorReason(tradeAction);
 
   if (!error) return res;
 
   const tokenPrice = getTokenPriceByTradeAction(tradeAction);
 
   return {
-    tooltipTitle: getErrorTooltipTitle(error.name),
+    tooltipTitle: error,
     tooltipTitleRed: true,
     tooltipRows: [
       tokenPrice && {
@@ -450,7 +493,9 @@ function getMarketTooltipRows(tradeAction: PositionTradeAction): TooltipProps[] 
   return arr.length > 0 ? arr : undefined;
 }
 
-function getErrorTooltipTitle(errorName: string) {
+(window as any).lol = {};
+
+function getHumanReadableErrorByName(errorName: string, defaultToAbstractReason: boolean, lol = false) {
   switch (errorName) {
     case "OrderNotFulfillableAtAcceptablePrice": {
       return t`The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met.`;
@@ -464,7 +509,22 @@ function getErrorTooltipTitle(errorName: string) {
       return t`Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity.`;
     }
 
-    default:
-      return t`Reason: ${words(errorName).join(" ").toLowerCase()}`;
+    // case "InsufficientCollateralAmount":
+    case "UnableToWithdrawCollateral": {
+      return (
+        <Trans>
+          Max. Leverage exceeded.{" "}
+          <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
+        </Trans>
+      );
+    }
+
+    default: {
+      if (lol) {
+        (window as any).lol[errorName] = 1;
+      }
+      if (defaultToAbstractReason) return t`Reason: ${words(errorName).join(" ").toLowerCase()} (${errorName})`;
+      else return null;
+    }
   }
 }
