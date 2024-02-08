@@ -36,9 +36,6 @@ export default function MarketNetFee(props: Props) {
 
   return (
     <>
-      <div className="mb-sm">
-        <NetFeeMessage {...props} />
-      </div>
       <div className="text-gray mb-xs">
         {positionType} {feeOrRebate}:
       </div>
@@ -55,6 +52,9 @@ export default function MarketNetFee(props: Props) {
           );
         })}
       </ul>
+      <div className="mt-xs">
+        <NetFeeMessage {...props} />
+      </div>
     </>
   );
 }
@@ -74,23 +74,23 @@ function NetFeeMessage(props: Props) {
   const borrowRate = renderRate(borrowRateHourly);
 
   if (isFundingRateZero && isBorrowRateZero) {
-    return <Trans>{longOrShort} Positions do not pay a funding fee or a borrow fee.</Trans>;
+    return <Trans>{longOrShort} positions do not pay a funding fee or a borrow fee.</Trans>;
   } else if (isFundingRateZero) {
     return (
       <Trans>
-        {longOrShort} Positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour.
+        {longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour.
       </Trans>
     );
   } else if (isBorrowRateZero) {
     return (
       <Trans>
-        {longOrShort} Positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee.
+        {longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee.
       </Trans>
     );
   } else {
     return (
       <Trans>
-        {longOrShort} Positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee
+        {longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee
         of {borrowRate} per hour.
       </Trans>
     );

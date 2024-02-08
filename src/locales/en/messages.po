@@ -6115,10 +6115,6 @@ msgstr "{0} GMX tokens can be claimed, use the options under the Total Rewards s
 msgid "{0} Pool Capacity Reached"
 msgstr "{0} Pool Capacity Reached"
 
-#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-#~ msgid "{0} Positions Net Fee:"
-#~ msgstr "{0} Positions Net Fee:"
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/SwapBox.js
@@ -6266,36 +6262,20 @@ msgid "{longOrShortText} {0} market selected"
 msgstr "{longOrShortText} {0} market selected"
 
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-#~ msgid "{longOrShort} Positions do not pay a Funding Fee and pay a Borrow Fee of {0} per hour."
-#~ msgstr "{longOrShort} Positions do not pay a Funding Fee and pay a Borrow Fee of {0} per hour."
+msgid "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour."
+msgstr "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour."
 
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-#~ msgid "{longOrShort} Positions do not pay a Funding Fee or a Borrow Fee."
-#~ msgstr "{longOrShort} Positions do not pay a Funding Fee or a Borrow Fee."
+msgid "{longOrShort} positions do not pay a funding fee or a borrow fee."
+msgstr "{longOrShort} positions do not pay a funding fee or a borrow fee."
 
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-msgid "{longOrShort} Positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour."
-msgstr "{longOrShort} Positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour."
+msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee."
+msgstr "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee."
 
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-msgid "{longOrShort} Positions do not pay a funding fee or a borrow fee."
-msgstr "{longOrShort} Positions do not pay a funding fee or a borrow fee."
-
-#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-#~ msgid "{longOrShort} Positions {fundingAction} a Funding Fee of {0} per hour and do not pay a Borrow Fee."
-#~ msgstr "{longOrShort} Positions {fundingAction} a Funding Fee of {0} per hour and do not pay a Borrow Fee."
-
-#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-#~ msgid "{longOrShort} Positions {fundingAction} a Funding Fee of {0} per hour and {1} a Borrow Fee of {2} per hour."
-#~ msgstr "{longOrShort} Positions {fundingAction} a Funding Fee of {0} per hour and {1} a Borrow Fee of {2} per hour."
-
-#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-msgid "{longOrShort} Positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee."
-msgstr "{longOrShort} Positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee."
-
-#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
-msgid "{longOrShort} Positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour."
-msgstr "{longOrShort} Positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour."
+msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour."
+msgstr "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour."
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "{longShortText} {0} Open Interest"
