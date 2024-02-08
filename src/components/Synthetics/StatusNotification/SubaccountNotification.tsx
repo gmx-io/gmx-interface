@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import cx from "classnames";
 import SpinningLoader from "components/Common/SpinningLoader";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getExplorerUrl } from "config/chains";
@@ -13,6 +12,7 @@ import { museNeverExist } from "lib/types";
 import { usePrevious } from "lib/usePrevious";
 import { ReactNode, memo, useMemo } from "react";
 import { useToastAutoClose } from "./useToastAutoClose";
+import { StatusNotification } from "./StatusNotification";
 
 const SubaccountNotificationImpl = ({
   toastId,
@@ -142,18 +142,11 @@ const SubaccountNotificationImpl = ({
   }
 
   return (
-    <div className={"StatusNotification"}>
-      <div className="StatusNotification-content">
-        <div className="StatusNotification-title">{title}</div>
-        <div className="StatusNotification-items">
-          {content}
-          {link && <br />}
-          {link}
-        </div>
-      </div>
-
-      <div className={cx("StatusNotification-background", { error: hasError })}></div>
-    </div>
+    <StatusNotification title={title} hasError={hasError}>
+      {content}
+      {link && <br />}
+      {link}
+    </StatusNotification>
   );
 };
 

@@ -6,6 +6,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { StatusNotification } from "components/Synthetics/StatusNotification/StatusNotification";
 import { getContract } from "config/contracts";
 import { getNativeToken, getWrappedToken } from "config/tokens";
 import {
@@ -498,10 +499,18 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
         mainAccountAddress: account,
         subaccount,
       });
+
+      helperToast.success(
+        <StatusNotification title={t`Withdrawing from Subaccount`}>
+          {t`Withdrawn ${formatTokenAmount(subAccNativeTokenBalance, nativeToken.decimals, nativeToken.symbol, {
+            displayDecimals: 4,
+          })} to Main Account`}
+        </StatusNotification>
+      );
     } finally {
       setWithdrawalLoading(false);
     }
-  }, [account, gasPrice, signer, subAccNativeTokenBalance, subaccount]);
+  }, [account, gasPrice, signer, subAccNativeTokenBalance, subaccount, nativeToken]);
 
   useEffect(() => {
     setNotificationState("none");

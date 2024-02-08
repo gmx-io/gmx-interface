@@ -5865,6 +5865,10 @@ msgstr "Withdrawal failed."
 msgid "Withdrawal submitted."
 msgstr "Withdrawal submitted."
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Withdrawing from Subaccount"
+msgstr "Withdrawing from Subaccount"
+
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Withdrawing {0} from {positionText}"
 msgstr "Withdrawing {0} from {positionText}"
@@ -5873,6 +5877,10 @@ msgstr "Withdrawing {0} from {positionText}"
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Withdrawing..."
 msgstr "Withdrawing..."
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Withdrawn {0} to Main Account"
+msgstr "Withdrawn {0} to Main Account"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Withdrawn!"
