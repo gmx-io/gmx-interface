@@ -568,6 +568,11 @@ msgstr "Borrow Fee / Day"
 msgid "Borrow Fee Rate"
 msgstr "Borrow Fee Rate"
 
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "Borrowing fees help ensure available liquidity.<0>Read more</0>."
+msgstr "Borrowing fees help ensure available liquidity.<0>Read more</0>."
+
 #: src/components/Synthetics/BridgingInfo/BridgingInfo.tsx
 msgid "Bridge {tokenSymbol} to {chainName} using any of the options below:"
 msgstr "Bridge {tokenSymbol} to {chainName} using any of the options below:"
@@ -2004,6 +2009,11 @@ msgstr "Funding Fee Rate"
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 msgid "Funding fees"
 msgstr "Funding fees"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "Funding fees help to balance longs and shorts and are exchanged between both sides. <0>Read more</0>."
+msgstr "Funding fees help to balance longs and shorts and are exchanged between both sides. <0>Read more</0>."
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GBC NFTs APR tracker and rewards"
