@@ -15,7 +15,6 @@ import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { DEFAULT_SLIPPAGE_AMOUNT, EXCESSIVE_SLIPPAGE_AMOUNT } from "config/factors";
-import { getKeepLeverageKey } from "config/localStorage";
 import { convertTokenAddress } from "config/tokens";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
@@ -25,10 +24,8 @@ import {
   useTokensData,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import {
-  useSavedAcceptablePriceImpactBuffer,
-  useSavedAllowedSlippage,
-} from "context/SyntheticsStateContext/hooks/settingsHooks";
+import { usePositionSeller } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
+import { useSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { useMinCollateralFactorForPosition, useSwapRoutes } from "context/SyntheticsStateContext/hooks/tradeHooks";
 import {
   useTradeboxAvailableTokensOptions,
@@ -61,13 +58,13 @@ import {
   getTradeFees,
 } from "domain/synthetics/trade";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
+import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { getCommonError, getDecreaseError } from "domain/synthetics/trade/utils/validation";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   bigNumberify,
   formatAmount,
@@ -82,7 +79,7 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { museNeverExist } from "lib/types";
 import { usePrevious } from "lib/usePrevious";
 import useWallet from "lib/wallets/useWallet";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useLatest } from "react-use";
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
@@ -98,11 +95,6 @@ export type Props = {
   shouldDisableValidation: boolean;
 };
 
-enum OrderOption {
-  Market = "Market",
-  Trigger = "Trigger",
-}
-
 const ORDER_OPTION_LABELS = {
   [OrderOption.Market]: t`Market`,
   [OrderOption.Trigger]: t`TP/SL`,
@@ -114,7 +106,7 @@ export function PositionSeller(p: Props) {
   const showPnlInLeverage = useSavedIsPnlInLeverage();
   const tokensData = useTokensData();
   const { chainId } = useChainId();
-  const savedAllowedSlippage = useSavedAllowedSlippage();
+  // const savedAllowedSlippage = useSavedAllowedSlippage();
   const { signer, account } = useWallet();
   const { openConnectModal } = useConnectModal();
   const { gasPrice } = useGasPrice(chainId);
@@ -129,33 +121,46 @@ export function PositionSeller(p: Props) {
   const isVisible = Boolean(position);
   const prevIsVisible = usePrevious(isVisible);
 
-  const [orderOption, setOrderOption] = useState<OrderOption>(OrderOption.Market);
-  const [triggerPriceInputValue, setTriggerPriceInputValue] = useState("");
+  const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
+
+  const {
+    allowedSlippage,
+    closeUsdInputValue,
+    defaultTriggerAcceptablePriceImpactBps,
+    isSubmitting,
+    keepLeverage,
+    orderOption,
+    receiveTokenAddress,
+    selectedTriggerAcceptablePriceImpactBps,
+    setAllowedSlippage,
+    setCloseUsdInputValue,
+    setDefaultTriggerAcceptablePriceImpactBps,
+    setIsSubmitting,
+    setKeepLeverage,
+    setOrderOption,
+    setReceiveTokenAddress,
+    setSelectedTriggerAcceptablePriceImpactBps,
+    setTriggerPriceInputValue,
+    triggerPriceInputValue,
+    resetPositionSeller,
+  } = usePositionSeller();
+
   const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
 
   const isTrigger = orderOption === OrderOption.Trigger;
 
-  const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
-  const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
-
-  const [defaultTriggerAcceptablePriceImpactBps, setDefaultTriggerAcceptablePriceImpactBps] = useState<BigNumber>();
-  const [selectedTriggerAcceptablePriceImpactBps, setSelectedTriggerAcceptablePriceImpactBps] = useState<BigNumber>();
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const [closeUsdInputValue, setCloseUsdInputValue] = useState("");
   const closeSizeUsd = parseValue(closeUsdInputValue || "0", USD_DECIMALS)!;
   const maxCloseSize = position?.sizeInUsd || BigNumber.from(0);
 
-  const [receiveTokenAddress, setReceiveTokenAddress] = useState<string>();
-  const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);
   const receiveToken = isTrigger ? position?.collateralToken : getByKey(tokensData, receiveTokenAddress);
 
   const minCollateralFactor = useMinCollateralFactorForPosition(position?.key);
 
   useEffect(() => {
-    setAllowedSlippage(savedAllowedSlippage);
-  }, [savedAllowedSlippage, isVisible]);
+    if (!isVisible) {
+      resetPositionSeller();
+    }
+  }, [isVisible, resetPositionSeller]);
 
   const markPrice = position
     ? getMarkPrice({ prices: position.indexToken.prices, isLong: position.isLong, isIncrease: false })
@@ -503,7 +508,16 @@ export function PositionSeller(p: Props) {
         setOrderOption(OrderOption.Market);
       }
     },
-    [isVisible, prevIsVisible, setIsHighPositionImpactAcceptedLatestRef, setIsHighSwapImpactAcceptedLatestRef]
+    [
+      isVisible,
+      prevIsVisible,
+      setCloseUsdInputValue,
+      setIsHighPositionImpactAcceptedLatestRef,
+      setIsHighSwapImpactAcceptedLatestRef,
+      setOrderOption,
+      setReceiveTokenAddress,
+      setTriggerPriceInputValue,
+    ]
   );
 
   useEffect(
@@ -513,7 +527,7 @@ export function PositionSeller(p: Props) {
         setReceiveTokenAddress(convertedAddress);
       }
     },
-    [chainId, position?.collateralToken, receiveTokenAddress]
+    [chainId, position?.collateralToken, receiveTokenAddress, setReceiveTokenAddress]
   );
 
   useEffect(() => {
@@ -525,7 +539,7 @@ export function PositionSeller(p: Props) {
         setDefaultTriggerAcceptablePriceImpactBps(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs());
       }
     }
-  }, [decreaseAmounts, defaultTriggerAcceptablePriceImpactBps, isTrigger]);
+  }, [decreaseAmounts, defaultTriggerAcceptablePriceImpactBps, isTrigger, setDefaultTriggerAcceptablePriceImpactBps]);
 
   const indexPriceDecimals = position?.indexToken?.priceDecimals;
   const toToken = position?.indexToken;

@@ -9,7 +9,8 @@ import {
   usePositionsConstantsRequest,
   usePositionsInfoRequest,
 } from "domain/synthetics/positions";
-import { TradeState, useTradeState } from "domain/synthetics/trade/useTradeState";
+import { PositionSellerState, usePositionSellerState } from "domain/synthetics/trade/usePositionSellerState";
+import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
@@ -32,7 +33,8 @@ export type SyntheticsTradeState = {
     savedShowPnlAfterFees: boolean;
   };
   settings: SettingsContextType;
-  tradebox: TradeState;
+  tradebox: TradeboxState;
+  positionSeller: PositionSellerState;
 };
 
 const StateCtx = createContext<SyntheticsTradeState | null>(null);
@@ -74,10 +76,12 @@ export function SyntheticsStateContextProvider({
   });
   const settings = useSettings();
 
-  const tradeState = useTradeState(chainId, {
+  const tradeboxState = useTradeboxState(chainId, {
     marketsInfoData: marketsInfo.marketsInfoData,
     tokensData: marketsInfo.tokensData,
   });
+
+  const positionSellerState = usePositionSellerState(chainId);
 
   const state = useMemo(() => {
     const s: SyntheticsTradeState = {
@@ -97,7 +101,8 @@ export function SyntheticsStateContextProvider({
         savedShowPnlAfterFees,
       },
       settings,
-      tradebox: tradeState,
+      tradebox: tradeboxState,
+      positionSeller: positionSellerState,
     };
 
     return s;
@@ -115,7 +120,8 @@ export function SyntheticsStateContextProvider({
     savedIsPnlInLeverage,
     savedShowPnlAfterFees,
     settings,
-    tradeState,
+    tradeboxState,
+    positionSellerState,
   ]);
 
   return <StateCtx.Provider value={state}>{children}</StateCtx.Provider>;

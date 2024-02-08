@@ -22,7 +22,7 @@ type ReactSetState<T> = Dispatch<SetStateAction<T>>;
 type LocalStorageSetState<T> = Dispatch<SetStateAction<T | undefined>>;
 type TradeStage = "trade" | "confirmation" | "processing";
 
-export type TradeState = {
+export type TradeboxState = {
   tradeType: TradeType;
   tradeMode: TradeMode;
   isWrapOrUnwrap: boolean;
@@ -104,14 +104,14 @@ type StoredTradeOptions = {
   collateralAddress?: string;
 };
 
-export function useTradeState(
+export function useTradeboxState(
   chainId: number,
   p: {
     marketsInfoData?: MarketsInfoData;
     positionsInfoData?: PositionsInfoData;
     tokensData?: TokensData;
   }
-): TradeState {
+): TradeboxState {
   const { marketsInfoData, positionsInfoData, tokensData } = p;
 
   const [storedOptions, setStoredOptions] = useLocalStorageSerializeKey<StoredTradeOptions>(
