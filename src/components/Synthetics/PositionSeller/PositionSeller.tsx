@@ -79,6 +79,7 @@ import {
 import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useSwapRoutes } from "context/SyntheticsStateContext/hooks/tradeHooks";
 import { useTradeboxTradeFlags } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+import { useHighExecutionFeeAcknowledgement } from "domain/synthetics/trade/useHighExecutionFeeAcknowledgement";
 
 export type Props = {
   position?: PositionInfo;
@@ -298,6 +299,9 @@ export function PositionSeller(p: Props) {
     uiFeeFactor,
   ]);
 
+  const { element: highExecutionFeeAcknowledgement, highExecutionFeeNotAcceptedError } =
+    useHighExecutionFeeAcknowledgement(executionFee?.feeUsd);
+
   const priceImpactWarningState = usePriceImpactWarningState({
     positionPriceImpact: fees?.positionPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
@@ -350,6 +354,10 @@ export function PositionSeller(p: Props) {
       return commonError[0] || decreaseError[0];
     }
 
+    if (highExecutionFeeNotAcceptedError) {
+      return [t`High Execution Fee not yet acknowledged`];
+    }
+
     if (isSubmitting) {
       return t`Creating Order...`;
     }
@@ -359,6 +367,7 @@ export function PositionSeller(p: Props) {
     closeSizeUsd,
     decreaseAmounts?.sizeDeltaUsd,
     hasOutdatedUi,
+    highExecutionFeeNotAcceptedError,
     isNotEnoughReceiveTokenLiquidity,
     isSubmitting,
     isTrigger,
@@ -833,13 +842,16 @@ export function PositionSeller(p: Props) {
               {receiveTokenRow}
             </div>
 
-            {priceImpactWarningState.shouldShowWarning && (
+            {(priceImpactWarningState.shouldShowWarning || highExecutionFeeAcknowledgement) && (
               <>
                 <div className="App-card-divider" />
-                <HighPriceImpactWarning
-                  priceImpactWarinigState={priceImpactWarningState}
-                  className="PositionSeller-price-impact-warning"
-                />
+                <div className="PositionSeller-price-impact-warning">
+                  {priceImpactWarningState.shouldShowWarning && (
+                    <HighPriceImpactWarning priceImpactWarinigState={priceImpactWarningState} />
+                  )}
+
+                  {highExecutionFeeAcknowledgement}
+                </div>
               </>
             )}
 

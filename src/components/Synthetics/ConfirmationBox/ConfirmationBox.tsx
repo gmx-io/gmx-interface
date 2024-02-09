@@ -394,14 +394,14 @@ export function ConfirmationBox(p: Props) {
   const submitButtonState = useMemo(() => {
     if (priceImpactWarningState.validationError) {
       return {
-        text: "Price Impact not yet acknowledged",
+        text: t`Price Impact not yet acknowledged`,
         disabled: true,
       };
     }
 
     if (highExecutionFeeNotAcceptedError) {
       return {
-        text: "High Execution Fee not yet acknowledged",
+        text: t`High Execution Fee not yet acknowledged`,
         disabled: true,
       };
     }
