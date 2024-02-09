@@ -1,6 +1,3 @@
-import { ethers } from "ethers";
-import { useParams } from "react-router-dom";
-
 import "./Actions.scss";
 
 import { Trans, t } from "@lingui/macro";
@@ -11,21 +8,15 @@ import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
 import {
+  useAccount,
   useIsOrdersLoading,
   useIsPositionsLoading,
   useSavedShowPnlAfterFees,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 
 export default function SyntheticsActions() {
-  const { account: paramsAccount } = useParams<{ account?: string }>();
   const savedShowPnlAfterFees = useSavedShowPnlAfterFees();
-
-  let checkSummedAccount: string | undefined;
-
-  if (paramsAccount && ethers.utils.isAddress(paramsAccount)) {
-    checkSummedAccount = ethers.utils.getAddress(paramsAccount);
-  }
-
+  const checkSummedAccount = useAccount();
   const isPositionsLoading = useIsPositionsLoading();
   const isOrdersLoading = useIsOrdersLoading();
 
