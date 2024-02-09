@@ -2,6 +2,7 @@ import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { DOCS_LINKS } from "config/links";
+import { useAccumulatedBnGMXAmount } from "domain/rewards/useAccumulatedBnGMXAmount";
 import { BigNumber } from "ethers";
 import { formatKeyAmount, formatAmount } from "lib/numbers";
 
@@ -15,6 +16,7 @@ type Props = {
   };
   nativeTokenSymbol: string;
   isUserConnected: boolean;
+  recommendStakeGmx?: BigNumber;
 };
 
 function renderEscrowedGMXApr(processedData) {
@@ -28,7 +30,13 @@ function renderEscrowedGMXApr(processedData) {
   );
 }
 
-export default function GMXAprTooltip({ processedData, nativeTokenSymbol, isUserConnected = false }: Props) {
+export default function GMXAprTooltip({
+  processedData,
+  nativeTokenSymbol,
+  recommendStakeGmx,
+  isUserConnected = false,
+}: Props) {
+  const accumulatedBnGMXAmount = useAccumulatedBnGMXAmount();
   const escrowedGMXApr = renderEscrowedGMXApr(processedData);
   const gmxAprPercentage = formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true);
   const maxGmxAprPercentage = formatKeyAmount(processedData, "maxGmxAprForNativeToken", 2, 2, true);
@@ -80,11 +88,18 @@ export default function GMXAprTooltip({ processedData, nativeTokenSymbol, isUser
           </>
         )}
         <br />
-
-        <Trans>
-          Earn an extra {formatAmount(maxGmxAprPercentageDifference, 2, 2, true)}% {nativeTokenSymbol} Boosted APR by
-          increasing your staked <ExternalLink href={DOCS_LINKS.multiplierPoints}>Multiplier Points</ExternalLink>.
-        </Trans>
+        {recommendStakeGmx?.gt(0) ? (
+          <Trans>
+            You have reached the maximum Boost Percentage. Stake an additional{" "}
+            {formatAmount(recommendStakeGmx, 18, 2, true)} GMX or esGMX to be able to stake your unstaked{" "}
+            {formatAmount(accumulatedBnGMXAmount, 18, 4, true)} Multiplier Points using the "Compound" button.
+          </Trans>
+        ) : (
+          <Trans>
+            Earn an extra {formatAmount(maxGmxAprPercentageDifference, 2, 2, true)}% {nativeTokenSymbol} Boosted APR by
+            increasing your staked <ExternalLink href={DOCS_LINKS.multiplierPoints}>Multiplier Points</ExternalLink>.
+          </Trans>
+        )}
       </div>
       <div>
         <br />
