@@ -2,9 +2,7 @@ import cx from "classnames";
 import { useCallback, useState, useRef, MouseEvent, ReactNode } from "react";
 import { IS_TOUCH } from "config/env";
 import "./Tooltip.scss";
-
-const OPEN_DELAY = 0;
-const CLOSE_DELAY = 100;
+import { TOOLTIP_CLOSE_DELAY, TOOLTIP_OPEN_DELAY } from "config/ui";
 
 export type TooltipPosition =
   | "left-bottom"
@@ -33,8 +31,6 @@ export default function Tooltip(props: Props) {
   const [visible, setVisible] = useState(false);
   const intervalCloseRef = useRef<ReturnType<typeof setTimeout> | null>();
   const intervalOpenRef = useRef<ReturnType<typeof setTimeout> | null>();
-  const openDelay = props.openDelay ?? OPEN_DELAY;
-  const closeDelay = props.closeDelay ?? CLOSE_DELAY;
 
   const position = props.position ?? "left-bottom";
   const trigger = props.trigger ?? "hover";
@@ -49,9 +45,9 @@ export default function Tooltip(props: Props) {
       intervalOpenRef.current = setTimeout(() => {
         setVisible(true);
         intervalOpenRef.current = null;
-      }, openDelay);
+      }, props.openDelay ?? TOOLTIP_OPEN_DELAY);
     }
-  }, [setVisible, intervalCloseRef, intervalOpenRef, trigger, openDelay]);
+  }, [setVisible, trigger, props.openDelay]);
 
   const onMouseClick = useCallback(() => {
     if (trigger !== "click" && !IS_TOUCH) return;
@@ -65,18 +61,18 @@ export default function Tooltip(props: Props) {
     }
 
     setVisible(true);
-  }, [setVisible, intervalCloseRef, trigger]);
+  }, [setVisible, trigger]);
 
   const onMouseLeave = useCallback(() => {
     intervalCloseRef.current = setTimeout(() => {
       setVisible(false);
       intervalCloseRef.current = null;
-    }, closeDelay);
+    }, props.closeDelay ?? TOOLTIP_CLOSE_DELAY);
     if (intervalOpenRef.current) {
       clearInterval(intervalOpenRef.current);
       intervalOpenRef.current = null;
     }
-  }, [setVisible, intervalCloseRef, closeDelay]);
+  }, [setVisible, props.closeDelay]);
 
   const onHandleClick = useCallback((event: MouseEvent) => {
     event.preventDefault();
