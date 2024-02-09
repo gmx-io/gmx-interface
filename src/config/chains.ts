@@ -2,6 +2,7 @@ import { BigNumber, ethers } from "ethers";
 import { sample } from "lodash";
 import { NetworkMetadata } from "lib/wallets";
 import { isDevelopment } from "./env";
+import { Chain } from "viem";
 
 const { parseEther } = ethers.utils;
 
@@ -397,3 +398,41 @@ export function getExecutionFeeMultiplier(chainId) {
 export function isSupportedChain(chainId) {
   return SUPPORTED_CHAIN_IDS.includes(chainId);
 }
+
+export const ARBITRUM_SEPOLIA_METADATA: Chain = {
+  id: 421614,
+  name: "Arbitrum Sepolia",
+  network: "arbitrum-sepolia",
+  nativeCurrency: {
+    name: "Arbitrum Sepolia Ether",
+    symbol: "ETH",
+    decimals: 18,
+  },
+  rpcUrls: {
+    alchemy: {
+      http: ["https://arb-sepolia.g.alchemy.com/v2"],
+      webSocket: ["wss://arb-sepolia.g.alchemy.com/v2"],
+    },
+    infura: {
+      http: ["https://arbitrum-sepolia.infura.io/v3"],
+      webSocket: ["wss://arbitrum-sepolia.infura.io/ws/v3"],
+    },
+    default: {
+      http: ["https://sepolia-rollup.arbitrum.io/rpc"],
+    },
+    public: {
+      http: ["https://sepolia-rollup.arbitrum.io/rpc"],
+    },
+  },
+  blockExplorers: {
+    etherscan: { name: "Arbiscan", url: "https://sepolia.arbiscan.io/" },
+    default: { name: "Arbiscan", url: "https://sepolia.arbiscan.io/" },
+  },
+  contracts: {
+    multicall3: {
+      address: "0xca11bde05977b3631167028862be2a173976ca11",
+      blockCreated: 136,
+    },
+  },
+  testnet: true,
+};

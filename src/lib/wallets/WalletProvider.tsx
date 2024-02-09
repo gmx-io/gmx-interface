@@ -15,13 +15,14 @@ import {
   okxWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
-import { Chain, arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "wagmi/chains";
+import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import merge from "lodash/merge";
 import { isDevelopment } from "config/env";
 import { coreWallet } from "./connecters/core/coreWallet";
 import { bitgetWallet } from "./connecters/bitgetWallet/bitgetWallet";
 import binanceWallet from "./connecters/binanceW3W/binanceWallet";
+import { ARBITRUM_SEPOLIA_METADATA } from "config/chains";
 
 const WALLET_CONNECT_PROJECT_ID = "de24cddbaf2a68f027eae30d9bb5df58";
 const APP_NAME = "GMX";
@@ -38,46 +39,8 @@ const walletTheme = merge(darkTheme(), {
   },
 } as Theme);
 
-export const arbitrumSepolia: Chain = {
-  id: 421614,
-  name: "Arbitrum Sepolia",
-  network: "arbitrum-sepolia",
-  nativeCurrency: {
-    name: "Arbitrum Sepolia Ether",
-    symbol: "ETH",
-    decimals: 18,
-  },
-  rpcUrls: {
-    alchemy: {
-      http: ["https://arb-sepolia.g.alchemy.com/v2"],
-      webSocket: ["wss://arb-sepolia.g.alchemy.com/v2"],
-    },
-    infura: {
-      http: ["https://arbitrum-sepolia.infura.io/v3"],
-      webSocket: ["wss://arbitrum-sepolia.infura.io/ws/v3"],
-    },
-    default: {
-      http: ["https://sepolia-rollup.arbitrum.io/rpc"],
-    },
-    public: {
-      http: ["https://sepolia-rollup.arbitrum.io/rpc"],
-    },
-  },
-  blockExplorers: {
-    etherscan: { name: "Arbiscan", url: "https://sepolia.arbiscan.io/" },
-    default: { name: "Arbiscan", url: "https://sepolia.arbiscan.io/" },
-  },
-  contracts: {
-    multicall3: {
-      address: "0xca11bde05977b3631167028862be2a173976ca11",
-      blockCreated: 136,
-    },
-  },
-  testnet: true,
-};
-
 const { chains, provider } = configureChains(
-  [arbitrum, avalanche, ...(isDevelopment() ? [arbitrumGoerli, arbitrumSepolia, avalancheFuji] : [])],
+  [arbitrum, avalanche, ...(isDevelopment() ? [arbitrumGoerli, ARBITRUM_SEPOLIA_METADATA, avalancheFuji] : [])],
   [publicProvider()]
 );
 

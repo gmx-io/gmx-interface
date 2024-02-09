@@ -3,25 +3,25 @@ import {
   ARBITRUM,
   ARBITRUM_GOERLI,
   ARBITRUM_SEPOLIA,
+  ARBITRUM_SEPOLIA_METADATA,
   AVALANCHE,
   AVALANCHE_FUJI,
   getFallbackRpcUrl,
   getRpcUrl,
 } from "config/chains";
-import { PublicClient, createPublicClient, http } from "viem";
+import { PublicClient, createPublicClient, defineChain, http } from "viem";
 import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "viem/chains";
 import { MulticallRequestConfig, MulticallResult } from "./types";
 
 import { sleep } from "lib/sleep";
 import { Signer } from "ethers";
-import { arbitrumSepolia } from "lib/wallets/WalletProvider";
 
 export const MAX_TIMEOUT = 20000;
 
 const CHAIN_BY_CHAIN_ID = {
   [AVALANCHE_FUJI]: avalancheFuji,
   [ARBITRUM_GOERLI]: arbitrumGoerli,
-  [ARBITRUM_SEPOLIA]: arbitrumSepolia,
+  [ARBITRUM_SEPOLIA]: defineChain(ARBITRUM_SEPOLIA_METADATA),
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
 };
