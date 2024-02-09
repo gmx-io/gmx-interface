@@ -406,6 +406,7 @@ button.btn-link:hover .logout-icon {
 .mt-sm {
   margin-top: 1rem;
 }
+
 .mt-md {
   margin-top: 1.5rem;
 }
@@ -528,6 +529,10 @@ button.btn-link:hover .logout-icon {
 
 .my-sm {
   margin: 1rem 0;
+}
+
+.my-base {
+  margin: 1.5rem 0;
 }
 
 .mx-xxs {

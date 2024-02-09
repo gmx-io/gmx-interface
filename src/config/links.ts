@@ -33,3 +33,9 @@ export function getLeaderboardLink(chainId) {
   }
   return "https://www.gmx.house";
 }
+
+export const DOCS_LINKS = {
+  fundingFees: "https://docs.gmx.io/docs/trading/v2/#funding-fees",
+  adaptiveFunding: "https://docs.gmx.io/docs/trading/v2/#adaptive-funding",
+  borrowingFees: "https://docs.gmx.io/docs/trading/v2/#borrowing-fees",
+};
