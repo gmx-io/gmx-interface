@@ -681,6 +681,10 @@ export function PositionSeller(p: Props) {
   }
 
   const keepLeverageChecked = decreaseAmounts?.isFullClose ? false : keepLeverage ?? false;
+  let keepLeverageAtValue: string | undefined = "...";
+  if (position?.leverage && !decreaseAmounts?.isFullClose) {
+    keepLeverageAtValue = formatLeverage(position.leverage);
+  }
 
   return (
     <div className="PositionEditor PositionSeller">
@@ -755,7 +759,7 @@ export function PositionSeller(p: Props) {
                   disabled={decreaseAmounts?.isFullClose}
                 >
                   <span className="text-gray font-sm">
-                    <Trans>Keep leverage at {position?.leverage ? formatLeverage(position.leverage) : "..."}</Trans>
+                    <Trans>Keep leverage at {keepLeverageAtValue}</Trans>
                   </span>
                 </ToggleSwitch>
               </div>

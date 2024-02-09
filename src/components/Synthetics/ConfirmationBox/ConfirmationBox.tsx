@@ -1159,8 +1159,8 @@ export function ConfirmationBox(p: Props) {
     const isNearZeroFromStart =
       initialCollateralSpread?.eq(0) &&
       collateralSpreadPercent?.lt(COLLATERAL_SPREAD_SHOW_AFTER_INITIAL_ZERO_THRESHOLD);
-    const isCurrentlyNonZero = collateralSpreadPercent?.gt(0);
-    const showCollateralSpread = isMarket && isCurrentlyNonZero && !isNearZeroFromStart;
+
+    const showCollateralSpread = isMarket && !isNearZeroFromStart;
 
     return (
       <>
