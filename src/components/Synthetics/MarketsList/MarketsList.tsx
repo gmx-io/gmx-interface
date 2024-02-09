@@ -142,11 +142,12 @@ export function MarketsList() {
             <div className="mb-base" key={market.marketTokenAddress}>
               <div className="mb-sm text-white">[{getMarketPoolName(market)}]</div>
               <MarketNetFee borrowRateHourly={borrowingRateLong} fundingRateHourly={fundingRateLong} isLong={true} />
-              <br />
+              <div className="divider my-base" />
               <MarketNetFee borrowRateHourly={borrowingRateShort} fundingRateHourly={fundingRateShort} isLong={false} />
             </div>
           );
         })}
+        <div className="divider my-base" />
         <Trans>
           Funding fees help to balance longs and shorts and are exchanged between both sides.{" "}
           <ExternalLink href={DOCS_LINKS.fundingFees}>Read more</ExternalLink>.

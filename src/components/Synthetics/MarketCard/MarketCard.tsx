@@ -88,9 +88,9 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
     return (
       <div>
         {currentFeeElement}
-        <br />
+        <div className="divider my-base" />
         {oppositeFeeElement}
-        <br />
+        <div className="divider my-base" />
         <Trans>
           Funding fees help to balance longs and shorts and are exchanged between both sides.{" "}
           <ExternalLink href={DOCS_LINKS.fundingFees}>Read more</ExternalLink>.
