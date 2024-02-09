@@ -263,6 +263,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
         subaccountWasAlreadyActivated={isSubaccountActive}
       />,
       {
+        className: "SubaccountNotification",
         autoClose: false,
         toastId,
       }

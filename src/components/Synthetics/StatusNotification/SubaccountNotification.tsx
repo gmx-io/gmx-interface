@@ -67,24 +67,24 @@ const SubaccountNotificationImpl = ({
     if (isUpdate) {
       if (step === "activating")
         return (
-          <span>
-            <Trans>Pending Wallet transaction sign</Trans> <SpinningLoader />
-          </span>
+          <div className="space-between">
+            <Trans>Pending Wallet transaction sign</Trans>
+            <SpinningLoader className="mr-xs self-center" />
+          </div>
         );
       return <Trans>Subaccount is updated</Trans>;
     }
 
     return (
       <div>
-        {step === "generating" ? <Trans>Pending Wallet message sign</Trans> : <Trans>Subaccount created</Trans>}{" "}
-        {step === "generating" ? <SpinningLoader /> : null}
-        <br />
-        {step === "activated" ? (
-          <Trans>Subaccount activated</Trans>
-        ) : (
-          <Trans>Pending Wallet transaction sign</Trans>
-        )}{" "}
-        {step === "activating" ? <SpinningLoader /> : null}
+        <div className="space-between">
+          {step === "generating" ? <Trans>Pending Wallet message sign</Trans> : <Trans>Subaccount created</Trans>}{" "}
+          {step === "generating" ? <SpinningLoader className="mr-xs self-center" /> : null}
+        </div>
+        <div className="space-between">
+          {step === "activated" ? <Trans>Subaccount activated</Trans> : <Trans>Pending Wallet transaction sign</Trans>}{" "}
+          {step === "activating" ? <SpinningLoader className="mr-xs self-center" /> : null}
+        </div>
       </div>
     );
   };
@@ -118,8 +118,9 @@ const SubaccountNotificationImpl = ({
     case "deactivating":
       title = t`Deactivation`;
       content = (
-        <div>
-          <Trans>Deactivating subaccount</Trans> <SpinningLoader />
+        <div className="space-between">
+          <Trans>Deactivating subaccount</Trans>
+          <SpinningLoader className="mr-xs self-center" />
         </div>
       );
       break;
