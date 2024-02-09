@@ -2505,13 +2505,16 @@ msgid "Keep Leverage is not possible"
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Keep leverage at {0}"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Keep leverage at {0}x"
+msgstr ""
+
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+msgid "Keep leverage at {keepLeverageAtValue}"
 msgstr ""
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
