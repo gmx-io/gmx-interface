@@ -312,6 +312,11 @@
   width: 4.65rem;
   padding: 0.8rem 0;
 }
+
+body.dragging .ExchangeChart iframe {
+  pointer-events: none;
+}
+
 .ExchangeChart.tv .ExchangeChart-bottom-header {
   position: absolute;
   display: flex;
@@ -597,6 +602,11 @@ table.Exchange-list .Exchange-list-item-active {
   font-size: var(--font-sm);
   margin-bottom: 0.465rem;
   align-items: baseline;
+  justify-content: space-between;
+}
+
+.Exchange-info-row .Exchange-info-value {
+  text-align: right;
 }
 
 .Exchange-info-row.top-line {
@@ -913,7 +923,7 @@ table.Exchange-list-small td {
 }
 
 .Confirmation-box .Modal-content {
-  width: 36rem;
+  width: 38rem;
 }
 
 .Confirmation-box-row {
@@ -1205,6 +1215,9 @@ table.Exchange-list-small td {
   }
   .ExchangeChart-top-inner {
     grid-template-columns: auto;
+  }
+  .Confirmation-box .Modal-content {
+    min-width: 36rem;
   }
 }
 

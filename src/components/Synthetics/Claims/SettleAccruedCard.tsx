@@ -1,13 +1,12 @@
 import { Trans, t } from "@lingui/macro";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 import { getTotalAccruedFundingUsd } from "domain/synthetics/markets";
 import { PositionsInfoData } from "domain/synthetics/positions";
 import { CSSProperties, useMemo } from "react";
 import { ClaimableCardUI } from "./ClaimableCardUI";
 import { calcTotalRebateUsd } from "./utils";
-import { useTokensData } from "domain/synthetics/tokens";
-import { useChainId } from "lib/chains";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 
 type Props = {
   onSettleClick: () => void;
@@ -31,8 +30,7 @@ export function SettleAccruedCard({
 }: Props) {
   const positions = useMemo(() => Object.values(positionsInfoData || {}), [positionsInfoData]);
   const fundingFees = useMemo(() => getTotalAccruedFundingUsd(positions), [positions]);
-  const { chainId } = useChainId();
-  const { tokensData } = useTokensData(chainId);
+  const tokensData = useTokensData();
   const priceImpactDifference = useMemo(
     () => calcTotalRebateUsd(accruedPositionPriceImpactFees, tokensData, true),
     [accruedPositionPriceImpactFees, tokensData]

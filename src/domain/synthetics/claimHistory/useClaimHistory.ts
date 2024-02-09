@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import { getToken } from "config/tokens";
+import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { MarketsInfoData } from "domain/synthetics/markets";
-import { TokensData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { getAddress } from "ethers/lib/utils.js";
 import { bigNumberify } from "lib/numbers";
@@ -34,9 +34,11 @@ type RawClaimAction = {
 
 export function useClaimCollateralHistory(
   chainId: number,
-  p: { marketsInfoData?: MarketsInfoData; tokensData?: TokensData; pageIndex: number; pageSize: number }
+  p: { pageIndex: number; pageSize: number }
 ): ClaimCollateralHistoryResult {
-  const { pageIndex, pageSize, marketsInfoData, tokensData } = p;
+  const { pageIndex, pageSize } = p;
+  const marketsInfoData = useMarketsInfoData();
+  const tokensData = useTokensData();
 
   const { account } = useWallet();
   const fixedAddresses = useFixedAddreseses(marketsInfoData, tokensData);

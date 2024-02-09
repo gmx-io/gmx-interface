@@ -4,7 +4,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getIcon } from "config/icons";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
-import { MarketInfo, getMarketPoolName, getAvailableLiquidity, useMarketsInfo } from "domain/synthetics/markets";
+import { MarketInfo, getMarketPoolName, getAvailableLiquidity, useMarketsInfoRequest } from "domain/synthetics/markets";
 import { TokenData, getMidPrice } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
@@ -25,7 +25,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 export function MarketsList() {
   const { chainId } = useChainId();
 
-  const { marketsInfoData } = useMarketsInfo(chainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId);
 
   const isMobile = useMedia("(max-width: 1100px)");
 
