@@ -10,10 +10,11 @@ import {
   usePositionsInfoRequest,
 } from "domain/synthetics/positions";
 import { TradeState, useTradeState } from "domain/synthetics/trade/useTradeState";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 import { ReactNode, useMemo } from "react";
+import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 
 export type SyntheticsTradeState = {
@@ -51,7 +52,16 @@ export function SyntheticsStateContextProvider({
   pageType: "actions" | "trade";
 }) {
   const { chainId } = useChainId();
-  const { account, signer } = useWallet();
+  const { account: walletAccount, signer } = useWallet();
+  const { account: paramsAccount } = useParams<{ account?: string }>();
+
+  let checkSummedAccount: string | undefined;
+
+  if (paramsAccount && ethers.utils.isAddress(paramsAccount)) {
+    checkSummedAccount = ethers.utils.getAddress(paramsAccount);
+  }
+
+  const account = pageType === "actions" ? checkSummedAccount : walletAccount;
   const markets = useMarkets(chainId);
   const marketsInfo = useMarketsInfoRequest(chainId);
   const positionsConstants = usePositionsConstantsRequest(chainId);

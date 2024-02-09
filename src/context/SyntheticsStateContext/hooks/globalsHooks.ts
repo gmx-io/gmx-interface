@@ -11,6 +11,7 @@ import {
   selectIsPositionsLoading,
   selectUiFeeFactor,
   selectPositionConstants,
+  selectAccount,
 } from "../selectors/globalSelectors";
 import { useSelector } from "../utils";
 
@@ -26,3 +27,4 @@ export const usePositionsInfoData = () => useSelector(selectPositionsInfoData);
 export const useIsPositionsLoading = () => useSelector(selectIsPositionsLoading);
 export const useUiFeeFactor = () => useSelector(selectUiFeeFactor);
 export const usePositionsConstants = () => useSelector(selectPositionConstants);
+export const useAccount = () => useSelector(selectAccount);
