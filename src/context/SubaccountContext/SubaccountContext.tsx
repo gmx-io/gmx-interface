@@ -1,6 +1,12 @@
 import { Trans } from "@lingui/macro";
 import DataStore from "abis/DataStore.json";
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR } from "config/chains";
+import {
+  ARBITRUM,
+  ARBITRUM_SEPOLIA,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR,
+} from "config/chains";
 import { getContract } from "config/contracts";
 import {
   SUBACCOUNT_ORDER_ACTION,
@@ -77,6 +83,7 @@ function getFactorByChainId(chainId: number) {
   switch (chainId) {
     case ARBITRUM:
     case AVALANCHE_FUJI:
+    case ARBITRUM_SEPOLIA:
     case AVALANCHE:
       return NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR[chainId];
 
@@ -103,7 +110,14 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
   // fee that is used as a approx basis to calculate
   // costs of subaccount actions
   const [defaultExecutionFee, defaultNetworkFee] = useMemo(() => {
-    if (!gasLimits || !tokensData || !gasPrice) return [null, null];
+    if (
+      !gasLimits ||
+      !tokensData ||
+      !gasPrice ||
+      !gasLimits.estimatedFeeBaseGasLimit ||
+      !gasLimits.estimatedFeeMultiplierFactor
+    )
+      return [null, null];
 
     const approxNetworkGasLimit = applyFactor(
       applyFactor(gasLimits.estimatedFeeBaseGasLimit, gasLimits.estimatedFeeMultiplierFactor),
