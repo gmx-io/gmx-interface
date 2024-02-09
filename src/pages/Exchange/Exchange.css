@@ -527,7 +527,11 @@ table.Exchange-list td {
   font-weight: normal;
   text-align: left;
   padding: 1.05rem;
-  padding-left: 1.5rem;
+}
+
+table.Exchange-list th:first-child,
+table.Exchange-list td:first-child {
+  padding-left: 1.4rem;
 }
 
 table.Exchange-list.Orders th,
@@ -545,8 +549,9 @@ table.Exchange-list tr:last-child {
 }
 
 table.Exchange-list tr:hover {
-  background: linear-gradient(90deg, rgba(30, 34, 61, 1) 0%, rgba(38, 43, 71, 1) 100%);
+  background: rgba(180, 187, 255, 0.1);
   box-shadow: inset 0px 0px 3rem 0.5rem rgba(255, 255, 255, 0.01);
+  cursor: pointer;
 }
 
 table.Exchange-list tr.Exchange-list-header {
@@ -563,15 +568,15 @@ table.Exchange-list th {
   opacity: 0.7;
 }
 
-table.Exchange-list .Exchange-list-item {
+table.Position-list .Exchange-list-item {
   border-left: 2px solid transparent;
 }
 
 table.Exchange-list .Exchange-list-item td:first-child {
-  padding-left: 1.3rem;
+  padding-left: 1.4rem;
 }
 
-table.Exchange-list .Exchange-list-item-active {
+table.Position-list .Exchange-list-item-active {
   border-left: 2px solid #3a3f79;
 }
 
