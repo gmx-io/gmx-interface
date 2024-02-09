@@ -11,6 +11,7 @@ import { useMemo } from "react";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { useExecutionFeeBufferBps } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 type Props = {
   totalFees?: FeeItem;
@@ -35,7 +36,7 @@ export function GmFees(p: Props) {
   const label = useMemo(() => {
     const text = <Trans>Fees and Price Impact</Trans>;
     return (
-      <Tooltip
+      <TooltipWithPortal
         position="left-top"
         handle={text}
         renderContent={() => (
