@@ -38,6 +38,17 @@ export function SwapCard(p: Props) {
     return `${formatAmount(markRatio.ratio, USD_DECIMALS, 4)} ${smallest.symbol} / ${largest.symbol}`;
   }, [fromToken, toToken]);
 
+  const maxOutValue = useMemo(
+    () => [
+      formatTokenAmount(maxLiquidityAmount, toToken?.decimals, toToken?.symbol, {
+        useCommas: true,
+        displayDecimals: 0,
+      }),
+      `(${formatUsd(maxLiquidityUsd, { displayDecimals: 0 })})`,
+    ],
+    [maxLiquidityAmount, maxLiquidityUsd, toToken?.decimals, toToken?.symbol]
+  );
+
   return (
     <div className="Exchange-swap-market-box App-box App-box-border">
       <div className="App-card-title">
@@ -75,13 +86,7 @@ export function SwapCard(p: Props) {
                   <StatsTooltipRow
                     className="al-swap"
                     label={t`Max ${toToken?.symbol} out`}
-                    value={[
-                      formatTokenAmount(maxLiquidityAmount, toToken?.decimals, toToken?.symbol, {
-                        useCommas: true,
-                        displayDecimals: 0,
-                      }),
-                      `(${formatUsd(maxLiquidityUsd, { displayDecimals: 0 })})`,
-                    ]}
+                    value={maxOutValue}
                     showDollar={false}
                   />
                 </div>

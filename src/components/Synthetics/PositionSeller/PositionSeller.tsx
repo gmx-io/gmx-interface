@@ -16,11 +16,9 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { DEFAULT_SLIPPAGE_AMOUNT, EXCESSIVE_SLIPPAGE_AMOUNT } from "config/factors";
 import { getKeepLeverageKey } from "config/localStorage";
 import { convertTokenAddress } from "config/tokens";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useHasOutdatedUi } from "domain/legacy";
-import { useUserReferralInfo } from "domain/referrals/hooks";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   getExecutionFee,
@@ -28,7 +26,6 @@ import {
   useGasPrice,
 } from "domain/synthetics/fees";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
-import { MarketsInfoData } from "domain/synthetics/markets";
 import { DecreasePositionSwapType, OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
 import {
   PositionInfo,
@@ -36,7 +33,6 @@ import {
   formatLeverage,
   formatLiquidationPrice,
   getTriggerNameByOrderType,
-  usePositionsConstants,
 } from "domain/synthetics/positions";
 import { TokensData } from "domain/synthetics/tokens";
 import {
@@ -47,11 +43,9 @@ import {
   getNextPositionValuesForDecreaseTrade,
   getSwapAmountsByFromValue,
   getTradeFees,
-  useSwapRoutes,
 } from "domain/synthetics/trade";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
-import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
 import { getCommonError, getDecreaseError } from "domain/synthetics/trade/utils/validation";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber } from "ethers";
@@ -68,7 +62,7 @@ import {
   formatUsd,
   parseValue,
 } from "lib/numbers";
-import { getByKey } from "lib/objects";
+import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { museNeverExist } from "lib/types";
 import { usePrevious } from "lib/usePrevious";
 import useWallet from "lib/wallets/useWallet";
@@ -78,10 +72,16 @@ import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionSeller.scss";
+import {
+  useSavedAcceptablePriceImpactBuffer,
+  useSavedAllowedSlippage,
+} from "context/SyntheticsStateContext/hooks/settingsHooks";
+import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useSwapRoutes } from "context/SyntheticsStateContext/hooks/tradeHooks";
+import { useTradeboxTradeFlags } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 
 export type Props = {
   position?: PositionInfo;
-  marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
   showPnlInLeverage: boolean;
   availableTokensOptions?: AvailableTokenOptions;
@@ -90,7 +90,6 @@ export type Props = {
   isHigherSlippageAllowed: boolean;
   setIsHigherSlippageAllowed: (isAllowed: boolean) => void;
   shouldDisableValidation: boolean;
-  tradeFlags: TradeFlags;
 };
 
 enum OrderOption {
@@ -98,37 +97,29 @@ enum OrderOption {
   Trigger = "Trigger",
 }
 
+const ORDER_OPTION_LABELS = {
+  [OrderOption.Market]: t`Market`,
+  [OrderOption.Trigger]: t`TP/SL`,
+};
+
 export function PositionSeller(p: Props) {
-  const {
-    position,
-    marketsInfoData,
-    tokensData,
-    showPnlInLeverage,
-    onClose,
-    setPendingTxns,
-    availableTokensOptions,
-    tradeFlags,
-  } = p;
+  const { position, tokensData, showPnlInLeverage, onClose, setPendingTxns, availableTokensOptions } = p;
 
   const { chainId } = useChainId();
-  const { savedAllowedSlippage } = useSettings();
+  const savedAllowedSlippage = useSavedAllowedSlippage();
   const { signer, account } = useWallet();
   const { openConnectModal } = useConnectModal();
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
-  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
-  const userReferralInfo = useUserReferralInfo(signer, chainId, account);
+  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
+  const userReferralInfo = useUserReferralInfo();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const uiFeeFactor = useUiFeeFactor(chainId);
-  const { savedAcceptablePriceImpactBuffer } = useSettings();
+  const savedAcceptablePriceImpactBuffer = useSavedAcceptablePriceImpactBuffer();
+  const tradeFlags = useTradeboxTradeFlags();
 
   const isVisible = Boolean(position);
   const prevIsVisible = usePrevious(isVisible);
-
-  const ORDER_OPTION_LABELS = {
-    [OrderOption.Market]: t`Market`,
-    [OrderOption.Trigger]: t`TP/SL`,
-  };
 
   const [orderOption, setOrderOption] = useState<OrderOption>(OrderOption.Market);
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState("");
@@ -140,7 +131,7 @@ export function PositionSeller(p: Props) {
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
 
   const [defaultTriggerAcceptablePriceImpactBps, setDefaultTriggerAcceptablePriceImpactBps] = useState<BigNumber>();
-  const [selectedTriggerAcceptablePriceImpactBps, setSelectedAcceptablePriceImapctBps] = useState<BigNumber>();
+  const [selectedTriggerAcceptablePriceImpactBps, setSelectedTriggerAcceptablePriceImpactBps] = useState<BigNumber>();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -160,11 +151,7 @@ export function PositionSeller(p: Props) {
     ? getMarkPrice({ prices: position.indexToken.prices, isLong: position.isLong, isIncrease: false })
     : undefined;
 
-  const { findSwapPath, maxSwapLiquidity } = useSwapRoutes({
-    marketsInfoData,
-    fromTokenAddress: position?.collateralTokenAddress,
-    toTokenAddress: receiveTokenAddress,
-  });
+  const { findSwapPath, maxSwapLiquidity } = useSwapRoutes(position?.collateralTokenAddress, receiveTokenAddress);
 
   const decreaseAmounts = useMemo(() => {
     if (!position || !minCollateralUsd || !minPositionSizeUsd) {
@@ -314,8 +301,8 @@ export function PositionSeller(p: Props) {
   const priceImpactWarningState = usePriceImpactWarningState({
     positionPriceImpact: fees?.positionPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
-    tradeFlags,
     place: "positionSeller",
+    tradeFlags,
   });
 
   const isNotEnoughReceiveTokenLiquidity = shouldSwap ? maxSwapLiquidity?.lt(receiveUsd || 0) : false;
@@ -559,7 +546,7 @@ export function PositionSeller(p: Props) {
         notAvailable={!triggerPriceInputValue || decreaseAmounts.triggerOrderType === OrderType.StopLossDecrease}
         defaultAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
         fees={fees}
-        setSelectedAcceptablePriceImpactBps={setSelectedAcceptablePriceImapctBps}
+        setSelectedAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
       />
     );
   })();
@@ -672,11 +659,10 @@ export function PositionSeller(p: Props) {
             })}
             chainId={chainId}
             showBalances={false}
-            disableBodyScrollLock={true}
             infoTokens={availableTokensOptions?.infoTokens}
             tokenAddress={receiveToken.address}
             onSelectToken={(token) => setReceiveTokenAddress(token.address)}
-            tokens={availableTokensOptions?.swapTokens || []}
+            tokens={availableTokensOptions?.swapTokens || EMPTY_ARRAY}
             showTokenImgInDropdown={true}
             selectedTokenLabel={
               <span className="PositionSelector-selected-receive-token">

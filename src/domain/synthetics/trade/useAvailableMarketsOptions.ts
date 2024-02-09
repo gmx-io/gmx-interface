@@ -1,19 +1,22 @@
 import {
+  useMarketsInfoData,
+  useOrdersInfoData,
+  usePositionsInfoData,
+} from "context/SyntheticsStateContext/hooks/globalsHooks";
+import {
   MarketInfo,
-  MarketsInfoData,
   getAvailableUsdLiquidityForPosition,
   getMinPriceImpactMarket,
   getMostLiquidMarketForPosition,
   isMarketIndexToken,
 } from "domain/synthetics/markets";
-import { PositionsInfoData } from "domain/synthetics/positions";
 import { TokenData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useMemo } from "react";
-import { OrdersInfoData, PositionOrderInfo, isIncreaseOrderType } from "../orders";
+import { PositionOrderInfo, isIncreaseOrderType } from "../orders";
 import { getAcceptablePriceByPriceImpact, getMarkPrice } from "./utils";
 
 export type AvailableMarketsOptions = {
@@ -30,29 +33,18 @@ export type AvailableMarketsOptions = {
 };
 
 export function useAvailableMarketsOptions(p: {
-  marketsInfoData?: MarketsInfoData;
   isIncrease: boolean;
   disable?: boolean;
   indexToken: TokenData | undefined;
   isLong: boolean;
   increaseSizeUsd: BigNumber | undefined;
-  positionsInfo: PositionsInfoData | undefined;
-  ordersInfo: OrdersInfoData | undefined;
   hasExistingPosition: boolean;
   hasExistingOrder: boolean;
 }): AvailableMarketsOptions {
-  const {
-    marketsInfoData,
-    disable,
-    positionsInfo,
-    ordersInfo,
-    hasExistingPosition,
-    hasExistingOrder,
-    isIncrease,
-    indexToken,
-    increaseSizeUsd,
-    isLong,
-  } = p;
+  const { disable, hasExistingPosition, hasExistingOrder, isIncrease, indexToken, increaseSizeUsd, isLong } = p;
+  const marketsInfoData = useMarketsInfoData();
+  const positionsInfo = usePositionsInfoData();
+  const ordersInfo = useOrdersInfoData();
 
   return useMemo(() => {
     if (disable || !indexToken || isLong === undefined) {

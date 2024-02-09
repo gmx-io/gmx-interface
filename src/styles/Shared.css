@@ -399,11 +399,20 @@ button.btn-link:hover .logout-icon {
   margin: 0 !important;
 }
 
+.mt-xs {
+  margin-top: 0.5rem;
+}
+
 .mt-sm {
   margin-top: 1rem;
 }
+
 .mt-md {
   margin-top: 1.5rem;
+}
+
+.items-start {
+  align-items: flex-start;
 }
 
 .page-layout {
@@ -419,7 +428,8 @@ button.btn-link:hover .logout-icon {
   display: flex;
 }
 
-.justify-space-between {
+.space-between {
+  display: flex;
   justify-content: space-between;
 }
 
@@ -509,6 +519,9 @@ button.btn-link:hover .logout-icon {
 .ml-xs {
   margin-left: 0.5rem;
 }
+.ml-sm {
+  margin-left: 1rem;
+}
 
 .mx-xs {
   margin: 0 0.5rem;
@@ -516,6 +529,10 @@ button.btn-link:hover .logout-icon {
 
 .my-sm {
   margin: 1rem 0;
+}
+
+.my-base {
+  margin: 1.5rem 0;
 }
 
 .mx-xxs {

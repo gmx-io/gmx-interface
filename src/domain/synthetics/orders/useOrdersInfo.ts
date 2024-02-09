@@ -8,12 +8,12 @@ import { OrdersInfoData } from "./types";
 import { useOrders } from "./useOrders";
 import { getOrderInfo, isVisibleOrder } from "./utils";
 
-type AggregatedOrdersDataResult = {
+export type AggregatedOrdersDataResult = {
   ordersInfoData?: OrdersInfoData;
   isLoading: boolean;
 };
 
-export function useOrdersInfo(
+export function useOrdersInfoRequest(
   chainId: number,
   p: {
     marketsInfoData?: MarketsInfoData;

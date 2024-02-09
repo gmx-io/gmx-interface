@@ -135,6 +135,10 @@ msgstr ""
 msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1> <4>market selected</4>"
 msgstr ""
 
+#: src/domain/synthetics/orders/useSLTPEntries.ts
+msgid "A Size percentage is required."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr ""
@@ -558,7 +562,6 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Borrow Fee"
@@ -571,6 +574,11 @@ msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Borrow Fee Rate"
+msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "Borrowing fees help ensure available liquidity. <0>Read more</0>."
 msgstr ""
 
 #: src/components/Synthetics/BridgingInfo/BridgingInfo.tsx
@@ -741,7 +749,6 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
@@ -907,12 +914,7 @@ msgid "Claiming..."
 msgstr ""
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims"
-msgstr ""
-
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
-msgid "Claims (1)"
 msgstr ""
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -1380,7 +1382,6 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/domain/synthetics/orders/utils.ts
@@ -1398,6 +1399,10 @@ msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Decrease the Leverage by using the slider. If the Leverage slider is disabled, you can increase the Pay amount or reduce the Order size."
+msgstr ""
+
+#: src/components/Synthetics/ConfirmationBox/SLTPEntries.tsx
+msgid "Decrease {0} Long by {1} at ${2}."
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -1849,10 +1854,6 @@ msgstr ""
 msgid "FUNDING FEE"
 msgstr ""
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "FUNDING RATE / 1h"
-msgstr ""
-
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "Failed Settlement of Funding Fees"
 msgstr ""
@@ -2005,7 +2006,6 @@ msgstr ""
 msgid "Funding Claimed"
 msgstr ""
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Funding Fee"
@@ -2015,12 +2015,13 @@ msgstr ""
 msgid "Funding Fee Rate"
 msgstr ""
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Funding Rate / 1h"
-msgstr ""
-
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 msgid "Funding fees"
+msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "Funding fees help to balance longs and shorts and are exchanged between both sides. <0>Read more</0>."
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -2288,7 +2289,6 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/domain/synthetics/orders/utils.ts
@@ -2743,8 +2743,8 @@ msgstr ""
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -2776,14 +2776,6 @@ msgstr ""
 msgid "Long Collateral"
 msgstr ""
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Long Funding Payments"
-msgstr ""
-
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Long Funding Rewards"
-msgstr ""
-
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Long Liquidity"
 msgstr ""
@@ -2792,12 +2784,9 @@ msgstr ""
 msgid "Long Open Interest"
 msgstr ""
 
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Long Positions"
-msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Long positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -3195,6 +3184,10 @@ msgstr ""
 msgid "NA"
 msgstr ""
 
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "NET FEE / 1 H"
+msgstr ""
+
 #: src/pages/NftWallet/NftWallet.js
 msgid "NFT Address"
 msgstr ""
@@ -3213,6 +3206,20 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Neither Collateral nor realized PnL is enough to cover pending Fees. Please close a larger position amount."
+msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "Net Fee"
+msgstr ""
+
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "Net Fee / 1h"
+msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "Net Rebate"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
@@ -3689,7 +3696,6 @@ msgid "Positions ({0})"
 msgstr ""
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Positions{0}"
 msgstr ""
 
@@ -3760,11 +3766,19 @@ msgstr ""
 msgid "Price Impact not yet acknowledged"
 msgstr ""
 
+#: src/domain/synthetics/orders/useSLTPEntries.ts
+msgid "Price above Limit Price."
+msgstr ""
+
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price above Liq. Price"
+msgstr ""
+
+#: src/domain/synthetics/orders/useSLTPEntries.ts
+msgid "Price above Liq. Price."
 msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
@@ -3780,11 +3794,23 @@ msgstr ""
 msgid "Price above Mark Price"
 msgstr ""
 
+#: src/domain/synthetics/orders/useSLTPEntries.ts
+msgid "Price above Mark Price."
+msgstr ""
+
+#: src/domain/synthetics/orders/useSLTPEntries.ts
+msgid "Price below Limit Price."
+msgstr ""
+
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price below Liq. Price"
+msgstr ""
+
+#: src/domain/synthetics/orders/useSLTPEntries.ts
+msgid "Price below Liq. Price."
 msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
@@ -3798,6 +3824,10 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Price below Mark Price"
+msgstr ""
+
+#: src/domain/synthetics/orders/useSLTPEntries.ts
+msgid "Price below Mark Price."
 msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.js
@@ -4328,8 +4358,8 @@ msgstr ""
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -4361,14 +4391,6 @@ msgstr ""
 msgid "Short Collateral"
 msgstr ""
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Short Funding Payments"
-msgstr ""
-
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Short Funding Rewards"
-msgstr ""
-
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Short Liquidity"
 msgstr ""
@@ -4377,12 +4399,9 @@ msgstr ""
 msgid "Short Open Interest"
 msgstr ""
 
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Short Positions"
-msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Short positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -4549,8 +4568,13 @@ msgstr ""
 msgid "Stop Loss Decrease"
 msgstr ""
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop-Loss"
+msgstr ""
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "Stop-Loss PnL"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -4772,9 +4796,14 @@ msgstr ""
 msgid "TP/SL"
 msgstr ""
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/domain/synthetics/orders/utils.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take-Profit"
+msgstr ""
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "Take-Profit PnL"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -5032,11 +5061,6 @@ msgstr ""
 msgid "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
 msgstr ""
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "This market uses an Adaptive Funding Rate. The Funding Rate will adjust over time depending on the ratio of longs and shorts. <0>Read more</0>."
-msgstr ""
-
 #: src/components/Exchange/TradeHistory.js
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
 msgstr ""
@@ -5205,7 +5229,6 @@ msgstr ""
 
 #: src/pages/Exchange/Exchange.js
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trades"
 msgstr ""
 
@@ -5318,10 +5341,6 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Trigger order disabled, pending {0} upgrade"
-msgstr ""
-
-#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
-msgid "Trigger order for"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
@@ -5897,10 +5916,6 @@ msgstr ""
 msgid "You have an active Limit Order to Increase {longOrShortText} {sizeInToken} {0} (${1}) at price ${2}"
 msgstr ""
 
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-msgid "You have an active Limit Order to Increase {longShortText} {0} {sizeText} at price {1}."
-msgstr ""
-
 #: src/components/Exchange/PositionSeller.js
 msgid "You have an active order to decrease {longOrShortText} {sizeInToken} {0} (${1}) at {prefix} {2}"
 msgstr ""
@@ -5937,10 +5952,6 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "You have multiple existing Increase {longOrShortText} {0} limit orders"
-msgstr ""
-
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-msgid "You have multiple existing Increase {longShortText} {0} limit orders"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
@@ -6052,7 +6063,6 @@ msgid "from"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "hide"
 msgstr ""
 
@@ -6064,13 +6074,13 @@ msgstr ""
 msgid "not staked"
 msgstr ""
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 msgid "pay"
 msgstr ""
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 msgid "receive"
 msgstr ""
 
@@ -6087,7 +6097,6 @@ msgid "time to liq"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "view"
 msgstr ""
 
@@ -6102,6 +6111,10 @@ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
 msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
+msgstr ""
+
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "{0, plural, one {You have an active Limit Order to Increase} other {You have multiple active Limit Orders to Increase}}"
 msgstr ""
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -6182,6 +6195,10 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "{0} is required for collateral."
+msgstr ""
+
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+msgid "{0} order for"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -6282,6 +6299,22 @@ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "{longOrShortText} {0} market selected"
+msgstr ""
+
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour."
+msgstr ""
+
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "{longOrShort} positions do not pay a funding fee or a borrow fee."
+msgstr ""
+
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee."
+msgstr ""
+
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour."
 msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
