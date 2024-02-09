@@ -5948,6 +5948,7 @@ msgstr ""
 msgid "You have not deposited any tokens for vesting."
 msgstr "Vous n'avez pas déposé de tokens pour vester."
 
+#: src/components/Stake/GMXAprTooltip.tsx
 #: src/pages/Stake/StakeV2.js
 msgid "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points using the \"Compound\" button."
 msgstr ""
