@@ -2034,25 +2034,28 @@ export default function StakeV2({ setPendingTxns }) {
                     {formatKeyAmount(processedData, "glpSupplyUsd", USD_DECIMALS, 2, true)})
                   </div>
                 </div>
-                <div className="App-card-divider" />
+
                 <div />
               </div>
             </div>
-            <div className="App-card-buttons m-0">
-              <Button variant="secondary" to="/buy_glp">
-                <Trans>Buy GLP</Trans>
-              </Button>
-              <Button variant="secondary" to="/buy_glp#redeem">
-                <Trans>Sell GLP</Trans>
-              </Button>
-              {hasInsurance && (
-                <Button
-                  variant="secondary"
-                  to="https://app.insurace.io/Insurance/Cart?id=124&referrer=545066382753150189457177837072918687520318754040"
-                >
-                  <Trans>Purchase Insurance</Trans>
+            <div>
+              <div className="App-card-divider" />
+              <div className="App-card-buttons glp-buttons m-0">
+                <Button variant="secondary" to="/buy_glp">
+                  <Trans>Buy GLP</Trans>
                 </Button>
-              )}
+                <Button variant="secondary" to="/buy_glp#redeem">
+                  <Trans>Sell GLP</Trans>
+                </Button>
+                {hasInsurance && (
+                  <Button
+                    variant="secondary"
+                    to="https://app.insurace.io/Insurance/Cart?id=124&referrer=545066382753150189457177837072918687520318754040"
+                  >
+                    <Trans>Purchase Insurance</Trans>
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
           <div className="App-card">
