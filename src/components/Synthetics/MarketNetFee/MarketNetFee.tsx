@@ -43,7 +43,7 @@ export default function MarketNetFee(props: Props) {
         {RATE_PERIODS.map((period) => {
           const netFee = netFeeHourly.mul(period.hours);
           return (
-            <li>
+            <li key={period.label}>
               <span className="net-fee__period">{period.label}:</span>
               <span className={getPositiveOrNegativeClass(netFee)}>
                 {formatRatePercentage(netFee, period.decimals)}
