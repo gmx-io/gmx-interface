@@ -176,10 +176,9 @@ export function PositionSeller(p: Props) {
     if (decreaseAmountsWithKeepLeverage.sizeDeltaUsd.gte(position.sizeInUsd)) return false;
 
     return !willPositionCollateralBeSufficient(
-      position.collateralToken,
       position,
       decreaseAmountsWithKeepLeverage.collateralDeltaAmount,
-      position.pnlAfterFees,
+      decreaseAmountsWithKeepLeverage.realizedPnl,
       minCollateralFactor
     );
   }, [decreaseAmountsWithKeepLeverage, minCollateralFactor, position]);

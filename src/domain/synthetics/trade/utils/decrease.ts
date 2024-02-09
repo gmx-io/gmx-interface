@@ -418,30 +418,7 @@ export function getIsFullClose(p: {
   return false;
 }
 
-export function checkWillCollateralBeSufficient(p: {
-  position: PositionInfo;
-  realizedPnl: BigNumber;
-  remainingCollateralUsd: BigNumber;
-  minCollateralUsd: BigNumber;
-}) {
-  const { position, realizedPnl, remainingCollateralUsd, minCollateralUsd } = p;
-
-  let estimatedRemainingCollateralUsd = BigNumber.from(remainingCollateralUsd);
-
-  if (realizedPnl.lt(0)) {
-    estimatedRemainingCollateralUsd = estimatedRemainingCollateralUsd.sub(realizedPnl);
-  }
-
-  if (estimatedRemainingCollateralUsd.lt(minCollateralUsd)) {
-    return false;
-  }
-
-  const minCollateralUsdForLeverage = getMinCollateralUsdForLeverage(position);
-  const willCollateralBeSufficient = estimatedRemainingCollateralUsd.gte(minCollateralUsdForLeverage);
-
-  return willCollateralBeSufficient;
-}
-
+// TODO should minCollateralFactorForOpenInterestShort be multiplied by OI?
 export function getMinCollateralUsdForLeverage(position: PositionInfo) {
   const { marketInfo, isLong } = position;
 

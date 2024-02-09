@@ -334,17 +334,16 @@ export function getTriggerNameByOrderType(orderType: OrderType | undefined, abbr
 }
 
 export function willPositionCollateralBeSufficient(
-  collateralToken: TokenData,
   position: PositionInfo,
   collateralDeltaAmount: BigNumber,
   realizedPnlUsd: BigNumber,
   minCollateralFactor: BigNumber
 ) {
-  const collateralTokenPrice = collateralToken.prices.minPrice;
+  const collateralTokenPrice = position.collateralToken.prices.minPrice;
   let remainingCollateralUsd = position.collateralAmount
     .sub(collateralDeltaAmount)
     .mul(collateralTokenPrice)
-    .div(expandDecimals(1, collateralToken.decimals));
+    .div(expandDecimals(1, position.collateralToken.decimals));
 
   if (realizedPnlUsd.lt(0)) {
     remainingCollateralUsd = remainingCollateralUsd.add(realizedPnlUsd);
