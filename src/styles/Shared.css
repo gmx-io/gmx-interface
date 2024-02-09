@@ -410,6 +410,10 @@ button.btn-link:hover .logout-icon {
   margin-top: 1.5rem;
 }
 
+.items-start {
+  align-items: flex-start;
+}
+
 .page-layout {
   min-height: calc(100vh - 62px);
   display: flex;

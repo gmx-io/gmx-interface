@@ -600,6 +600,10 @@ table.Exchange-list .Exchange-list-item-active {
   justify-content: space-between;
 }
 
+.Exchange-info-row .Exchange-info-value {
+  text-align: right;
+}
+
 .Exchange-info-row.top-line {
   border-top: 1px solid #23263b;
   margin-top: 1.5rem;
