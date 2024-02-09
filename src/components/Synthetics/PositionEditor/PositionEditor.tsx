@@ -65,6 +65,7 @@ import "./PositionEditor.scss";
 import { getMinResidualAmount } from "domain/tokens";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useHighExecutionFeeAcknowledgement } from "domain/synthetics/trade/useHighExecutionFeeAcknowledgement";
 
 export type Props = {
   position?: PositionInfo;
@@ -204,6 +205,9 @@ export function PositionEditor(p: Props) {
     };
   }, [chainId, collateralDeltaUsd, gasLimits, gasPrice, isDeposit, position, tokensData]);
 
+  const { element: highExecutionFeeAcknowledgement, highExecutionFeeNotAcceptedError } =
+    useHighExecutionFeeAcknowledgement(executionFee?.feeUsd.mul(100));
+
   const { nextCollateralUsd, nextLeverage, nextLiqPrice, receiveUsd, receiveAmount } = useMemo(() => {
     if (!position || !collateralDeltaUsd?.gt(0) || !minCollateralUsd || !fees?.totalFees) {
       return {};
@@ -291,6 +295,10 @@ export function PositionEditor(p: Props) {
       return t`Pending ${collateralToken?.assetSymbol ?? collateralToken?.symbol} approval`;
     }
 
+    if (highExecutionFeeNotAcceptedError) {
+      return t`High Execution Fee not yet acknowledged`;
+    }
+
     if (isSubmitting) {
       return t`Creating Order...`;
     }
@@ -301,6 +309,7 @@ export function PositionEditor(p: Props) {
     collateralDeltaUsd,
     collateralToken,
     hasOutdatedUi,
+    highExecutionFeeNotAcceptedError,
     isDeposit,
     isSubmitting,
     minCollateralUsd,
@@ -605,15 +614,18 @@ export function PositionEditor(p: Props) {
               )}
             </div>
 
-            {needCollateralApproval && collateralToken && (
+            {((needCollateralApproval && collateralToken) || highExecutionFeeAcknowledgement) && (
               <>
                 <div className="App-card-divider" />
 
-                <ApproveTokenButton
-                  tokenAddress={collateralToken.address}
-                  tokenSymbol={collateralToken.assetSymbol ?? collateralToken.symbol}
-                  spenderAddress={routerAddress}
-                />
+                {needCollateralApproval && collateralToken && (
+                  <ApproveTokenButton
+                    tokenAddress={collateralToken.address}
+                    tokenSymbol={collateralToken.assetSymbol ?? collateralToken.symbol}
+                    spenderAddress={routerAddress}
+                  />
+                )}
+                {highExecutionFeeAcknowledgement}
               </>
             )}
 
