@@ -44,10 +44,10 @@ export default function MarketNetFee(props: Props) {
           const netFee = netFeeHourly.mul(period.hours);
           return (
             <li>
+              <span className="net-fee__period">{period.label}:</span>
               <span className={getPositiveOrNegativeClass(netFee)}>
                 {formatRatePercentage(netFee, period.decimals)}
               </span>
-              <span className="net-fee__period">({period.label})</span>
             </li>
           );
         })}

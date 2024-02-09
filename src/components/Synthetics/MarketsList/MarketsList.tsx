@@ -157,7 +157,7 @@ export function MarketsList() {
         <br />
 
         <Trans>
-          Borrowing fees help ensure available liquidity.
+          Borrowing fees help ensure available liquidity.{" "}
           <ExternalLink href={DOCS_LINKS.borrowingFees}>Read more</ExternalLink>.
         </Trans>
       </>

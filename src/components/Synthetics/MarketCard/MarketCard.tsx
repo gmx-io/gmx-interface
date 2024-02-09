@@ -99,7 +99,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
         <br />
         <br />
         <Trans>
-          Borrowing fees help ensure available liquidity.
+          Borrowing fees help ensure available liquidity.{" "}
           <ExternalLink href={DOCS_LINKS.borrowingFees}>Read more</ExternalLink>.
         </Trans>
       </div>
