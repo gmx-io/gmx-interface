@@ -3396,10 +3396,6 @@ msgstr "Ouverture..."
 msgid "Order"
 msgstr "Ordre"
 
-#: src/domain/synthetics/orders/utils.ts
-#~ msgid "Order Trigger Price is beyond position's Liquidation Price."
-#~ msgstr ""
-
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Order Type"
 msgstr ""
@@ -4913,12 +4909,8 @@ msgid "The network Fees are very high currently, which may be due to a temporary
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
-msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedAcceptablePriceImpact}, which is below the current market price impact of {formattedPriceImpact}. It can be edited using the \"Edit\" button."
+msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedOrderAcceptablePriceImpact}, which is lower than the current market price impact of {formattedCurrentAcceptablePriceImpact}. It can be edited using the \"Edit\" button."
 msgstr ""
-
-#: src/domain/synthetics/orders/utils.ts
-#~ msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedPriceImpact}, which is below the current market price impact of {formattedAcceptablePriceImpact}. Consider canceling and creating a new {suggestionType} order."
-#~ msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "The order will not be executed as its trigger price is beyond the position's liquidation price."
@@ -5055,10 +5047,6 @@ msgstr "Ce code n'est pas encore enregistré sur {0}, vous ne recevrez pas de re
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
 msgstr ""
-
-#: src/domain/synthetics/orders/utils.ts
-#~ msgid "This order using DAI as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
-#~ msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
@@ -6061,10 +6049,6 @@ msgid "in liquidity"
 msgstr "en liquidité"
 
 #: src/domain/synthetics/orders/utils.ts
-#~ msgid "limit"
-#~ msgstr ""
-
-#: src/domain/synthetics/orders/utils.ts
 msgid "limit price"
 msgstr ""
 
@@ -6097,10 +6081,6 @@ msgstr "montant"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "staked"
 msgstr "staké"
-
-#: src/domain/synthetics/orders/utils.ts
-#~ msgid "take-profit"
-#~ msgstr ""
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "time to liq"

@@ -3399,10 +3399,6 @@ msgstr "Opening..."
 msgid "Order"
 msgstr "Order"
 
-#: src/domain/synthetics/orders/utils.ts
-#~ msgid "Order Trigger Price is beyond position's Liquidation Price."
-#~ msgstr "Order Trigger Price is beyond position's Liquidation Price."
-
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Order Type"
 msgstr "Order Type"
@@ -4916,12 +4912,8 @@ msgid "The network Fees are very high currently, which may be due to a temporary
 msgstr "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
 
 #: src/domain/synthetics/orders/utils.ts
-msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedAcceptablePriceImpact}, which is below the current market price impact of {formattedPriceImpact}. It can be edited using the \"Edit\" button."
-msgstr "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedAcceptablePriceImpact}, which is below the current market price impact of {formattedPriceImpact}. It can be edited using the \"Edit\" button."
-
-#: src/domain/synthetics/orders/utils.ts
-#~ msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedPriceImpact}, which is below the current market price impact of {formattedAcceptablePriceImpact}. Consider canceling and creating a new {suggestionType} order."
-#~ msgstr "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedPriceImpact}, which is below the current market price impact of {formattedAcceptablePriceImpact}. Consider canceling and creating a new {suggestionType} order."
+msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedOrderAcceptablePriceImpact}, which is lower than the current market price impact of {formattedCurrentAcceptablePriceImpact}. It can be edited using the \"Edit\" button."
+msgstr "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedOrderAcceptablePriceImpact}, which is lower than the current market price impact of {formattedCurrentAcceptablePriceImpact}. It can be edited using the \"Edit\" button."
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "The order will not be executed as its trigger price is beyond the position's liquidation price."
@@ -5058,10 +5050,6 @@ msgstr "This code is not yet registered on {0}, you will not receive rebates the
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
 msgstr "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
-
-#: src/domain/synthetics/orders/utils.ts
-#~ msgid "This order using DAI as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
-#~ msgstr "This order using DAI as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
@@ -6064,10 +6052,6 @@ msgid "in liquidity"
 msgstr "in liquidity"
 
 #: src/domain/synthetics/orders/utils.ts
-#~ msgid "limit"
-#~ msgstr "limit"
-
-#: src/domain/synthetics/orders/utils.ts
 msgid "limit price"
 msgstr "limit price"
 
@@ -6100,10 +6084,6 @@ msgstr "size"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "staked"
 msgstr "staked"
-
-#: src/domain/synthetics/orders/utils.ts
-#~ msgid "take-profit"
-#~ msgstr "take-profit"
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "time to liq"

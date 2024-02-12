@@ -347,13 +347,13 @@ export function getOrderErrors(p: {
 
     if (currentAcceptablePriceDeltaBps.lt(0) && currentAcceptablePriceDeltaBps.lt(orderAcceptablePriceDeltaBps)) {
       const priceText = positionOrder.orderType === OrderType.LimitIncrease ? t`limit price` : t`trigger price`;
-      const formattedPriceImpact = formatPercentage(currentAcceptablePriceDeltaBps, { signed: true });
-      const formattedAcceptablePriceImpact = formatPercentage(orderAcceptablePriceDeltaBps, {
+      const formattedCurrentAcceptablePriceImpact = formatPercentage(currentAcceptablePriceDeltaBps, { signed: true });
+      const formattedOrderAcceptablePriceImpact = formatPercentage(orderAcceptablePriceDeltaBps, {
         signed: true,
       });
 
       errors.push({
-        msg: t`The order may not execute at the desired ${priceText} as its acceptable price impact is set to ${formattedAcceptablePriceImpact}, which is below the current market price impact of ${formattedPriceImpact}. It can be edited using the "Edit" button.`,
+        msg: t`The order may not execute at the desired ${priceText} as its acceptable price impact is set to ${formattedOrderAcceptablePriceImpact}, which is lower than the current market price impact of ${formattedCurrentAcceptablePriceImpact}. It can be edited using the "Edit" button.`,
         level: "warning",
       });
     }
