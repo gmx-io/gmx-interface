@@ -2,7 +2,7 @@ import { getTokensMap, getV2Tokens } from "config/tokens";
 import { useMemo } from "react";
 import { TokensData } from "./types";
 import { useTokenBalances } from "./useTokenBalances";
-import { useTokenRecentPrices } from "./useTokenRecentPricesData";
+import { useTokenRecentPricesRequest } from "./useTokenRecentPricesData";
 
 type TokensDataResult = {
   tokensData?: TokensData;
@@ -12,7 +12,7 @@ type TokensDataResult = {
 export function useTokensDataRequest(chainId: number): TokensDataResult {
   const tokenConfigs = getTokensMap(chainId);
   const { balancesData } = useTokenBalances(chainId);
-  const { pricesData, updatedAt: pricesUpdatedAt } = useTokenRecentPrices(chainId);
+  const { pricesData, updatedAt: pricesUpdatedAt } = useTokenRecentPricesRequest(chainId);
 
   return useMemo(() => {
     const tokenAddresses = getV2Tokens(chainId).map((token) => token.address);

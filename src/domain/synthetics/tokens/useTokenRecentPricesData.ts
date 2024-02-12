@@ -10,7 +10,7 @@ type TokenPricesDataResult = {
   updatedAt?: number;
 };
 
-export function useTokenRecentPrices(chainId: number): TokenPricesDataResult {
+export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataResult {
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
 
   const { data } = useSWR([chainId, oracleKeeperFetcher.oracleKeeperUrl, "useTokenRecentPrices"], {
