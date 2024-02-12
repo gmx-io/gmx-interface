@@ -23,12 +23,6 @@ export function createSelectorFactory<SelectionResult, Args extends SupportedArg
 ): (...args: Args) => CachedSelector<SelectionResult> {
   const cache = new LRUCache<CachedSelector<SelectionResult>>(20);
 
-  if ((window as any).myCaches) {
-    (window as any).myCaches.push(cache);
-  } else {
-    (window as any).myCaches = [cache];
-  }
-
   return (...args: Args) => {
     const key = getKeyForArgs(...args);
 
