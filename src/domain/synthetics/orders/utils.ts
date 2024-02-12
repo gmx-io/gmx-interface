@@ -15,6 +15,8 @@ import {
   getTriggerThresholdType,
 } from "../trade";
 import { Order, OrderError, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo } from "./types";
+import { isAddressZero } from "lib/legacy";
+import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 
 export function isVisibleOrder(orderType: OrderType) {
   return isLimitOrderType(orderType) || isTriggerDecreaseOrderType(orderType) || isLimitSwapOrderType(orderType);
@@ -133,7 +135,10 @@ export function getOrderInfo(p: {
   const { marketsInfoData, positionsInfoData, tokensData, wrappedNativeToken, order } = p;
 
   if (isSwapOrderType(order.orderType)) {
-    const initialCollateralToken = getByKey(tokensData, order.initialCollateralTokenAddress);
+    const initialCollateralToken = getByKey(
+      tokensData,
+      order.shouldUnwrapNativeToken ? NATIVE_TOKEN_ADDRESS : order.initialCollateralTokenAddress
+    );
 
     const { outTokenAddress } = getSwapPathOutputAddresses({
       marketsInfoData,
@@ -143,7 +148,10 @@ export function getOrderInfo(p: {
       shouldUnwrapNativeToken: order.shouldUnwrapNativeToken,
     });
 
-    const targetCollateralToken = getByKey(tokensData, outTokenAddress);
+    const targetCollateralToken = getByKey(
+      tokensData,
+      isAddressZero(outTokenAddress) ? wrappedNativeToken.address : outTokenAddress
+    );
 
     if (!initialCollateralToken || !targetCollateralToken) {
       return undefined;
@@ -214,7 +222,10 @@ export function getOrderInfo(p: {
   } else {
     const marketInfo = getByKey(marketsInfoData, order.marketAddress);
     const indexToken = marketInfo?.indexToken;
-    const initialCollateralToken = getByKey(tokensData, order.initialCollateralTokenAddress);
+    const initialCollateralToken = getByKey(
+      tokensData,
+      order.shouldUnwrapNativeToken ? NATIVE_TOKEN_ADDRESS : order.initialCollateralTokenAddress
+    );
     const { outTokenAddress } = getSwapPathOutputAddresses({
       marketsInfoData,
       swapPath: order.swapPath,
@@ -222,7 +233,11 @@ export function getOrderInfo(p: {
       wrappedNativeTokenAddress: wrappedNativeToken.address,
       shouldUnwrapNativeToken: order.shouldUnwrapNativeToken,
     });
-    const targetCollateralToken = getByKey(tokensData, outTokenAddress);
+
+    const targetCollateralToken = getByKey(
+      tokensData,
+      isAddressZero(outTokenAddress) ? wrappedNativeToken.address : outTokenAddress
+    );
 
     if (!marketInfo || !indexToken || !initialCollateralToken || !targetCollateralToken) {
       return undefined;
