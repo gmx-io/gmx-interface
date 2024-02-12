@@ -667,7 +667,7 @@ export function PositionSeller(p: Props) {
 
   if (decreaseAmounts?.isFullClose) {
     leverageValue = t`NA`;
-  } else if (position && isTrigger) {
+  } else if (position) {
     if (decreaseAmounts?.sizeDeltaUsd.eq(position.sizeInUsd)) {
       leverageValue = "-";
     } else {
@@ -689,7 +689,7 @@ export function PositionSeller(p: Props) {
   return (
     <div className="PositionEditor PositionSeller">
       <Modal
-        className="PositionSeller-modal"
+        className="PositionSeller-modal PositionSeller-modal-top"
         isVisible={isVisible}
         setIsVisible={p.onClose}
         label={

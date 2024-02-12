@@ -9,7 +9,7 @@
 .PositionSeller-modal {
   overflow-x: hidden;
 
-  .Modal-content {
+  &-top .Modal-content {
     top: 10%;
   }
 }
