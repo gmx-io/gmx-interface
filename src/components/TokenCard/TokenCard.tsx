@@ -17,12 +17,13 @@ import BannerButton from "components/Banner/BannerButton";
 import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
 import { mergeWith } from "lodash";
 import { formatPercentage } from "lib/numbers";
+import type { MarketTokensAPRData } from "domain/synthetics/markets/types";
 
 const glpIcon = getIcon("common", "glp");
 const gmxIcon = getIcon("common", "gmx");
 const gmIcon = getIcon("common", "gm");
 
-function calculateMaxApr(apr, incentiveApr) {
+function calculateMaxApr(apr: MarketTokensAPRData, incentiveApr: MarketTokensAPRData) {
   const totalApr = mergeWith({}, apr, incentiveApr, (aprValue, incentiveAprValue) => aprValue?.add(incentiveAprValue));
   const aprValues = Object.values(totalApr || {});
 
@@ -31,7 +32,12 @@ function calculateMaxApr(apr, incentiveApr) {
   return maxApr;
 }
 
-export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }) {
+type Props = {
+  showRedirectModal?: (to: string) => void;
+  redirectPopupTimestamp?: number;
+};
+
+export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }: Props) {
   const isHome = isHomeSite();
   const { chainId } = useChainId();
   const { active } = useWallet();
@@ -73,7 +79,7 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
   );
 
   const BuyLink = ({ className, to, children, network }) => {
-    if (isHome && showRedirectModal) {
+    if (isHome && showRedirectModal && redirectPopupTimestamp !== undefined) {
       return (
         <HeaderLink
           to={to}
@@ -118,10 +124,10 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
         <div className="Home-token-card-option-action">
           <div className="buy">
             <BuyLink to="/buy_gmx" className="default-btn" network={ARBITRUM}>
-              <Trans>Buy on Arbitrum</Trans>
+              <Trans>View on Arbitrum</Trans>
             </BuyLink>
             <BuyLink to="/buy_gmx" className="default-btn" network={AVALANCHE}>
-              <Trans>Buy on Avalanche</Trans>
+              <Trans>View on Avalanche</Trans>
             </BuyLink>
           </div>
           <ExternalLink href="https://docs.gmx.io/docs/category/tokenomics" className="default-btn read-more">
@@ -157,11 +163,11 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
         <div className="Home-token-card-option-action Token-card-buy">
           <div className="buy">
             <BuyLink to="/pools" className="default-btn" network={ARBITRUM}>
-              <Trans>Buy on Arbitrum</Trans>
+              <Trans>View on Arbitrum</Trans>
             </BuyLink>
 
             <BuyLink to="/pools" className="default-btn" network={AVALANCHE}>
-              <Trans>Buy on Avalanche</Trans>
+              <Trans>View on Avalanche</Trans>
             </BuyLink>
           </div>
           <a
@@ -201,10 +207,10 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
         <div className="Home-token-card-option-action">
           <div className="buy">
             <BuyLink to="/buy_glp" className="default-btn" network={ARBITRUM}>
-              <Trans>Buy on Arbitrum</Trans>
+              <Trans>View on Arbitrum</Trans>
             </BuyLink>
             <BuyLink to="/buy_glp" className="default-btn" network={AVALANCHE}>
-              <Trans>Buy on Avalanche</Trans>
+              <Trans>View on Avalanche</Trans>
             </BuyLink>
           </div>
           <a

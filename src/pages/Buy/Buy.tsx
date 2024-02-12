@@ -1,18 +1,20 @@
-import React from "react";
 import { t } from "@lingui/macro";
-import Footer from "components/Footer/Footer";
-import "./Buy.css";
-import TokenCard from "components/TokenCard/TokenCard";
-import SEO from "components/Common/SEO";
+
 import { getPageTitle } from "lib/legacy";
+
+import SEO from "components/Common/SEO";
+import Footer from "components/Footer/Footer";
 import PageTitle from "components/PageTitle/PageTitle";
+import TokenCard from "components/TokenCard/TokenCard";
+
+import "./Buy.css";
 
 export default function BuyGMXGLP() {
   return (
     <SEO title={getPageTitle(t`Buy GLP or GMX`)}>
       <div className="BuyGMXGLP page-layout">
         <div className="BuyGMXGLP-container default-container">
-          <PageTitle showNetworkIcon={false} isTop title={t`Buy Protocol Tokens`} />
+          <PageTitle showNetworkIcon={false} isTop title={t`Protocol Tokens`} />
           <TokenCard />
         </div>
         <Footer />
