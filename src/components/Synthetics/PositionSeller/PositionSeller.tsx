@@ -74,7 +74,6 @@ import {
 } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { museNeverExist } from "lib/types";
-import { usePrevious } from "lib/usePrevious";
 import useWallet from "lib/wallets/useWallet";
 import { useCallback, useEffect, useMemo } from "react";
 import { useLatest } from "react-use";
@@ -82,6 +81,7 @@ import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionSeller.scss";
+import { useDebouncedInputValue } from "lib/useDebouncedInputValue";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -105,7 +105,6 @@ export function PositionSeller(p: Props) {
   const availableTokensOptions = useTradeboxAvailableTokensOptions();
   const tokensData = useTokensData();
   const { chainId } = useChainId();
-  // const savedAllowedSlippage = useSavedAllowedSlippage();
   const { signer, account } = useWallet();
   const { openConnectModal } = useConnectModal();
   const { gasPrice } = useGasPrice(chainId);
@@ -118,31 +117,38 @@ export function PositionSeller(p: Props) {
   const position = usePositionSellerPosition();
 
   const isVisible = Boolean(position);
-  const prevIsVisible = usePrevious(isVisible);
 
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
 
   const {
     allowedSlippage,
-    closeUsdInputValue,
+    closeUsdInputValue: closeUsdInputValueRaw,
     defaultTriggerAcceptablePriceImpactBps,
     isSubmitting,
     keepLeverage,
     orderOption,
     receiveTokenAddress,
     setAllowedSlippage,
-    setCloseUsdInputValue,
+    setCloseUsdInputValue: setCloseUsdInputValueRaw,
     setDefaultTriggerAcceptablePriceImpactBps,
     setIsSubmitting,
     setKeepLeverage,
     setOrderOption,
     setReceiveTokenAddress,
     setSelectedTriggerAcceptablePriceImpactBps,
-    setTriggerPriceInputValue,
-    triggerPriceInputValue,
+    setTriggerPriceInputValue: setTriggerPriceInputValueRaw,
+    triggerPriceInputValue: triggerPriceInputValueRaw,
     resetPositionSeller,
   } = usePositionSeller();
 
+  const [closeUsdInputValue, setCloseUsdInputValue] = useDebouncedInputValue(
+    closeUsdInputValueRaw,
+    setCloseUsdInputValueRaw
+  );
+  const [triggerPriceInputValue, setTriggerPriceInputValue] = useDebouncedInputValue(
+    triggerPriceInputValueRaw,
+    setTriggerPriceInputValueRaw
+  );
   const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
 
   const isTrigger = orderOption === OrderOption.Trigger;
@@ -156,7 +162,10 @@ export function PositionSeller(p: Props) {
 
   useEffect(() => {
     if (!isVisible) {
-      resetPositionSeller();
+      // timeout to not disturb animation
+      setTimeout(() => {
+        resetPositionSeller();
+      }, 200);
     }
   }, [isVisible, resetPositionSeller]);
 
@@ -406,28 +415,6 @@ export function PositionSeller(p: Props) {
       .then(onClose)
       .finally(() => setIsSubmitting(false));
   }
-  useEffect(
-    function resetForm() {
-      if (!isVisible !== prevIsVisible) {
-        setCloseUsdInputValue("");
-        setIsHighPositionImpactAcceptedLatestRef.current(false);
-        setIsHighSwapImpactAcceptedLatestRef.current(false);
-        setTriggerPriceInputValue("");
-        setReceiveTokenAddress(undefined);
-        setOrderOption(OrderOption.Market);
-      }
-    },
-    [
-      isVisible,
-      prevIsVisible,
-      setCloseUsdInputValue,
-      setIsHighPositionImpactAcceptedLatestRef,
-      setIsHighSwapImpactAcceptedLatestRef,
-      setOrderOption,
-      setReceiveTokenAddress,
-      setTriggerPriceInputValue,
-    ]
-  );
 
   useEffect(
     function initReceiveToken() {
@@ -527,7 +514,7 @@ export function PositionSeller(p: Props) {
 
     return (
       <AcceptablePriceImpactInputRow
-        notAvailable={!triggerPriceInputValue || decreaseAmounts.triggerOrderType === OrderType.StopLossDecrease}
+        notAvailable={!triggerPriceInputValueRaw || decreaseAmounts.triggerOrderType === OrderType.StopLossDecrease}
         defaultAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
         fees={fees}
         setSelectedAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
@@ -722,11 +709,11 @@ export function PositionSeller(p: Props) {
                 inputValue={closeUsdInputValue}
                 onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
                 showMaxButton={maxCloseSize?.gt(0) && !closeSizeUsd?.eq(maxCloseSize)}
-                onClickMax={() => setCloseUsdInputValue(formatAmountFree(maxCloseSize, USD_DECIMALS))}
+                onClickMax={() => setCloseUsdInputValueRaw(formatAmountFree(maxCloseSize, USD_DECIMALS))}
                 showPercentSelector={true}
                 onPercentChange={(percentage) => {
                   const formattedAmount = formatAmountFree(maxCloseSize.mul(percentage).div(100), USD_DECIMALS, 2);
-                  setCloseUsdInputValue(formattedAmount);
+                  setCloseUsdInputValueRaw(formattedAmount);
                 }}
               >
                 USD
@@ -740,7 +727,7 @@ export function PositionSeller(p: Props) {
                   displayDecimals: toToken?.priceDecimals,
                 })}
                 onClickTopRightLabel={() => {
-                  setTriggerPriceInputValue(formatAmount(markPrice, USD_DECIMALS, toToken?.priceDecimals || 2));
+                  setTriggerPriceInputValueRaw(formatAmount(markPrice, USD_DECIMALS, toToken?.priceDecimals || 2));
                 }}
                 inputValue={triggerPriceInputValue}
                 onInputValueChange={(e) => {
