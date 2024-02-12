@@ -64,7 +64,7 @@ export function SyntheticsStateContextProvider({
   const userReferralInfo = useUserReferralInfoRequest(signer, chainId, account, skipLocalReferralCode);
   const [closingPositionKey, setClosingPositionKey] = useState<string>();
 
-  const positionsInfo = usePositionsInfoRequest(chainId, {
+  const { isLoading, positionsInfoData } = usePositionsInfoRequest(chainId, {
     account,
     showPnlInLeverage: savedIsPnlInLeverage,
     marketsInfoData: marketsInfo.marketsInfoData,
@@ -72,10 +72,11 @@ export function SyntheticsStateContextProvider({
     skipLocalReferralCode,
     tokensData: marketsInfo.tokensData,
   });
+
   const ordersInfo = useOrdersInfoRequest(chainId, {
     account,
     marketsInfoData: marketsInfo.marketsInfoData,
-    positionsInfoData: positionsInfo.positionsInfoData,
+    positionsInfoData: positionsInfoData,
     tokensData: marketsInfo.tokensData,
   });
   const settings = useSettings();
@@ -97,7 +98,10 @@ export function SyntheticsStateContextProvider({
         marketsInfo,
         ordersInfo,
         positionsConstants,
-        positionsInfo,
+        positionsInfo: {
+          isLoading,
+          positionsInfoData,
+        },
         uiFeeFactor,
         userReferralInfo,
 
@@ -121,7 +125,8 @@ export function SyntheticsStateContextProvider({
     marketsInfo,
     ordersInfo,
     positionsConstants,
-    positionsInfo,
+    isLoading,
+    positionsInfoData,
     uiFeeFactor,
     userReferralInfo,
     savedIsPnlInLeverage,
@@ -140,5 +145,6 @@ export function useSyntheticsStateSelector<Selected>(selector: (s: SyntheticsTra
   if (!value) {
     throw new Error("Used useSyntheticsStateSelector outside of SyntheticsStateContextProvider");
   }
+
   return useContextSelector(StateCtx as Context<SyntheticsTradeState>, selector) as Selected;
 }
