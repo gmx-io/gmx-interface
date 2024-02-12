@@ -422,7 +422,7 @@ export default function ConfirmationBox(props) {
                 const indexToken = getToken(chainId, order.indexToken);
 
                 return (
-                  <li key={id} className="font-sm">
+                  <li key={id}>
                     <p>
                       {type === INCREASE ? t`Increase` : t`Decrease`} {indexToken.symbol} {isLong ? t`Long` : t`Short`}{" "}
                       &nbsp;{triggerPricePrefix} ${formatAmount(triggerPrice, USD_DECIMALS, 2, true)}
@@ -470,7 +470,7 @@ export default function ConfirmationBox(props) {
             const triggerPricePrefix = triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
             const indexToken = getToken(chainId, order.indexToken);
             return (
-              <li key={id} className="font-sm">
+              <li key={id}>
                 <p>
                   {type === INCREASE ? t`Increase` : t`Decrease`} {indexToken.symbol} {isLong ? t`Long` : t`Short`}
                   &nbsp;{triggerPricePrefix} ${formatAmount(triggerPrice, USD_DECIMALS, 2, true)}
@@ -623,6 +623,14 @@ export default function ConfirmationBox(props) {
     );
   }, [toTokenInfo, shortCollateralToken, isShort, isLong, isSwap, toAmount, toUsdMax]);
 
+  const currentExecutionFees = useMemo(
+    () => ({
+      fee: currentExecutionFee,
+      feeUsd: currentExecutionFeeUsd,
+    }),
+    [currentExecutionFee, currentExecutionFeeUsd]
+  );
+
   const renderMarginSection = useCallback(() => {
     const collateralToken = getToken(chainId, collateralTokenAddress);
     return (
@@ -723,10 +731,7 @@ export default function ConfirmationBox(props) {
           <ExchangeInfoRow label={t`Fees`}>
             <FeesTooltip
               fundingRate={fundingRate}
-              executionFees={{
-                fee: currentExecutionFee,
-                feeUsd: currentExecutionFeeUsd,
-              }}
+              executionFees={currentExecutionFees}
               positionFee={positionFee}
               swapFee={swapFees}
             />
@@ -745,44 +750,45 @@ export default function ConfirmationBox(props) {
       </>
     );
   }, [
-    renderMain,
-    nextAveragePrice,
-    toAmount,
-    hasExistingPosition,
-    existingPosition,
-    isMarketOrder,
-    triggerPriceUsd,
-    displayLiquidationPrice,
-    existingLiquidationPrice,
-    feesUsd,
-    leverage,
     chainId,
-    renderFeeWarning,
-    hasPendingProfit,
-    isProfitWarningAccepted,
-    renderAvailableLiquidity,
-    orderOption,
-    fromUsdMin,
-    collateralAfterFees,
-    renderExistingOrderWarning,
-    renderExistingTriggerWarning,
-    renderExistingTriggerErrors,
-    isTriggerWarningAccepted,
-    decreaseOrdersThatWillBeExecuted,
-    minExecutionFeeErrorMessage,
     collateralTokenAddress,
+    renderMain,
+    renderCollateralSpreadWarning,
+    renderFeeWarning,
+    renderExistingOrderWarning,
+    renderExistingTriggerErrors,
+    renderExistingTriggerWarning,
+    minExecutionFeeErrorMessage,
+    hasPendingProfit,
+    isMarketOrder,
+    isProfitWarningAccepted,
+    orderOption,
+    renderAvailableLiquidity,
+    hasExistingPosition,
+    toAmount,
+    existingPosition?.leverage,
+    existingPosition?.averagePrice,
+    leverage,
+    savedSlippageAmount,
+    showCollateralSpread,
+    collateralSpreadInfo.isHigh,
+    collateralSpreadInfo.value,
+    existingPositionPriceDecimal,
+    nextAveragePrice,
     entryMarkPrice,
+    toTokenPriceDecimal,
+    triggerPriceUsd,
+    existingLiquidationPrice,
+    displayLiquidationPrice,
+    collateralAfterFees,
+    fundingRate,
+    currentExecutionFees,
     positionFee,
     swapFees,
-    currentExecutionFee,
-    currentExecutionFeeUsd,
-    renderCollateralSpreadWarning,
-    collateralSpreadInfo,
-    showCollateralSpread,
-    savedSlippageAmount,
-    fundingRate,
-    existingPositionPriceDecimal,
-    toTokenPriceDecimal,
+    decreaseOrdersThatWillBeExecuted.length,
+    isTriggerWarningAccepted,
+    fromUsdMin,
+    feesUsd,
   ]);
 
   const renderSwapSection = useCallback(() => {
@@ -827,15 +833,7 @@ export default function ConfirmationBox(props) {
           </div>
         )}
         <ExchangeInfoRow label={t`Fees`} isTop>
-          <FeesTooltip
-            executionFees={
-              !isMarketOrder && {
-                fee: currentExecutionFee,
-                feeUsd: currentExecutionFeeUsd,
-              }
-            }
-            swapFee={feesUsd}
-          />
+          <FeesTooltip executionFees={!isMarketOrder && currentExecutionFees} swapFee={feesUsd} />
         </ExchangeInfoRow>
 
         <ExchangeInfoRow label={t`Min. Receive`} isTop>
@@ -845,23 +843,23 @@ export default function ConfirmationBox(props) {
     );
   }, [
     renderMain,
+    renderFeeWarning,
     renderSwapSpreadWarning,
+    showSwapSpread,
+    spreadInfo.isHigh,
+    spreadInfo.value,
+    orderOption,
+    renderAvailableLiquidity,
+    isMarketOrder,
+    savedSlippageAmount,
     fromTokenInfo,
     toTokenInfo,
-    orderOption,
-    showSwapSpread,
-    spreadInfo,
-    feesUsd,
+    triggerRatio,
     fromTokenUsd,
     toTokenUsd,
-    triggerRatio,
-    isMarketOrder,
+    currentExecutionFees,
+    feesUsd,
     minOut,
-    renderFeeWarning,
-    renderAvailableLiquidity,
-    currentExecutionFee,
-    currentExecutionFeeUsd,
-    savedSlippageAmount,
   ]);
   const submitButtonRef = useRef(null);
 

@@ -9,7 +9,7 @@ type TokensDataResult = {
   pricesUpdatedAt?: number;
 };
 
-export function useTokensData(chainId: number): TokensDataResult {
+export function useTokensDataRequest(chainId: number): TokensDataResult {
   const tokenConfigs = getTokensMap(chainId);
   const { balancesData } = useTokenBalances(chainId);
   const { pricesData, updatedAt: pricesUpdatedAt } = useTokenRecentPrices(chainId);

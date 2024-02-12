@@ -32,6 +32,7 @@ import PageTitle from "components/PageTitle/PageTitle";
 const TRADERS = "Traders";
 const AFFILIATES = "Affiliates";
 const TAB_OPTIONS = [TRADERS, AFFILIATES];
+const TAB_OPTION_LABELS = { [TRADERS]: t`Traders`, [AFFILIATES]: t`Affiliates` };
 
 function Referrals({
   setPendingTxns,
@@ -119,7 +120,6 @@ function Referrals({
       />
     );
   }
-  const TAB_OPTION_LABELS = { [TRADERS]: t`Traders`, [AFFILIATES]: t`Affiliates` };
 
   return (
     <SEO title={getPageTitle(t`Referrals`)}>

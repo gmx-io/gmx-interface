@@ -41,32 +41,32 @@ function stringToNumber(value: string, decimals: number) {
 }
 
 export function useBigNumberInput(initialValue: BigNumber | null, decimals: number, displayDecimals: number) {
-  const [value, setRawValue] = useState(initialValue);
-  const [displayValue, setRawDisplayValue] = useState(() => numberToString(initialValue, decimals, displayDecimals));
+  const [value, setValue] = useState(initialValue);
+  const [displayValue, setDisplayValue] = useState(() => numberToString(initialValue, decimals, displayDecimals));
 
-  const setValue = useCallback(
+  const setValueWrapped = useCallback(
     (newValue: BigNumber | null) => {
-      setRawValue(newValue);
-      setRawDisplayValue(numberToString(newValue, decimals, displayDecimals));
+      setValue(newValue);
+      setDisplayValue(numberToString(newValue, decimals, displayDecimals));
     },
     [decimals, displayDecimals]
   );
 
-  const setDisplayValue = useCallback(
+  const setDisplayValueWrapped = useCallback(
     (newValue: string) => {
       const number = stringToNumber(newValue, decimals);
 
-      setRawDisplayValue(newValue);
-      setRawValue(number);
+      setDisplayValue(newValue);
+      setValue(number);
     },
     [decimals]
   );
 
   return {
     value,
-    setValue,
+    setValue: setValueWrapped,
     displayValue,
-    setDisplayValue,
+    setDisplayValue: setDisplayValueWrapped,
     isEmpty: !displayValue.trim(),
   };
 }

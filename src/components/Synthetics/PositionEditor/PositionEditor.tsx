@@ -17,7 +17,6 @@ import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useHasOutdatedUi } from "domain/legacy";
-import { useUserReferralInfo } from "domain/referrals/hooks";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
@@ -39,7 +38,6 @@ import {
   formatLiquidationPrice,
   getLeverage,
   getLiquidationPrice,
-  usePositionsConstants,
 } from "domain/synthetics/positions";
 import { TokensData, adaptToV1InfoTokens, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { TradeFees, getMarkPrice, getMinCollateralUsdForLeverage } from "domain/synthetics/trade";
@@ -66,6 +64,7 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionEditor.scss";
 import { getMinResidualAmount } from "domain/tokens";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
+import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
 
 export type Props = {
   position?: PositionInfo;
@@ -82,6 +81,11 @@ enum Operation {
   Withdraw = "Withdraw",
 }
 
+const OPERATION_LABELS = {
+  [Operation.Deposit]: t`Deposit`,
+  [Operation.Withdraw]: t`Withdraw`,
+};
+
 export function PositionEditor(p: Props) {
   const { position, tokensData, showPnlInLeverage, setPendingTxns, onClose, allowedSlippage } = p;
   const { chainId } = useChainId();
@@ -91,9 +95,9 @@ export function PositionEditor(p: Props) {
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
-  const { minCollateralUsd } = usePositionsConstants(chainId);
   const routerAddress = getContract(chainId, "SyntheticsRouter");
-  const userReferralInfo = useUserReferralInfo(signer, chainId, account);
+  const { minCollateralUsd } = usePositionsConstants();
+  const userReferralInfo = useUserReferralInfo();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
@@ -429,11 +433,6 @@ export function PositionEditor(p: Props) {
     [isVisible, prevIsVisible]
   );
 
-  const operationLabels = {
-    [Operation.Deposit]: t`Deposit`,
-    [Operation.Withdraw]: t`Withdraw`,
-  };
-
   const showMaxOnDeposit = collateralToken?.isNative
     ? minResidualAmount && collateralToken?.balance?.gt(minResidualAmount)
     : true;
@@ -457,7 +456,7 @@ export function PositionEditor(p: Props) {
               onChange={setOperation}
               option={operation}
               options={Object.values(Operation)}
-              optionLabels={operationLabels}
+              optionLabels={OPERATION_LABELS}
               className="PositionEditor-tabs SwapBox-option-tabs"
             />
             <SubaccountNavigationButton
@@ -467,7 +466,7 @@ export function PositionEditor(p: Props) {
             />
 
             <BuyInputSection
-              topLeftLabel={operationLabels[operation]}
+              topLeftLabel={OPERATION_LABELS[operation]}
               topLeftValue={formatUsd(collateralDeltaUsd)}
               topRightLabel={t`Max`}
               topRightValue={
@@ -519,7 +518,7 @@ export function PositionEditor(p: Props) {
             >
               {availableSwapTokens ? (
                 <TokenSelector
-                  label={operationLabels[operation]}
+                  label={OPERATION_LABELS[operation]}
                   chainId={chainId}
                   tokenAddress={selectedCollateralAddress!}
                   onSelectToken={(token) => setSelectedCollateralAddress(token.address)}
@@ -625,7 +624,7 @@ export function PositionEditor(p: Props) {
                 onClick={onSubmit}
                 disabled={Boolean(error) && !p.shouldDisableValidation}
               >
-                {error || operationLabels[operation]}
+                {error || OPERATION_LABELS[operation]}
               </Button>
             </div>
           </>

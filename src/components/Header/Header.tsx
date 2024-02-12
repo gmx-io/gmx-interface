@@ -20,15 +20,17 @@ const AnimatePresence = (props: React.ComponentProps<typeof FramerAnimatePresenc
   <FramerAnimatePresence {...props} />
 );
 
-const fadeVariants = {
+const FADE_VARIANTS = {
   hidden: { opacity: 0 },
   visible: { opacity: 1 },
 };
 
-const slideVariants = {
+const SLIDE_VARIANTS = {
   hidden: { x: "-100%" },
   visible: { x: 0 },
 };
+
+const TRANSITION = { duration: 0.2 };
 
 type Props = {
   disconnectAccountAndCloseSettings: () => void;
@@ -70,8 +72,8 @@ export function Header({
               initial="hidden"
               animate="visible"
               exit="hidden"
-              variants={fadeVariants}
-              transition={{ duration: 0.2 }}
+              variants={FADE_VARIANTS}
+              transition={TRANSITION}
               onClick={() => setIsDrawerVisible(!isDrawerVisible)}
             ></motion.div>
           )}
@@ -85,8 +87,8 @@ export function Header({
               initial="hidden"
               animate="visible"
               exit="hidden"
-              variants={fadeVariants}
-              transition={{ duration: 0.2 }}
+              variants={FADE_VARIANTS}
+              transition={TRANSITION}
               onClick={() => setIsNativeSelectorModalVisible(!isNativeSelectorModalVisible)}
             ></motion.div>
           )}
@@ -152,8 +154,8 @@ export function Header({
             initial="hidden"
             animate="visible"
             exit="hidden"
-            variants={slideVariants}
-            transition={{ duration: 0.2 }}
+            variants={SLIDE_VARIANTS}
+            transition={TRANSITION}
           >
             {isHomeSite() ? (
               <HomeHeaderLinks

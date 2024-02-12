@@ -37,7 +37,7 @@ function SubaccountStatusImpl({ hasBorder }: { hasBorder: boolean }) {
   ) {
     if (shouldShowAllowedActionsError) {
       content.push(
-        <AlertInfo warning key="1">
+        <AlertInfo type="warning" key="1">
           <Trans>
             The maximum number of authorized Actions has been reached. Re-authorize a higher value using the "Max
             allowed actions" field.
@@ -48,7 +48,7 @@ function SubaccountStatusImpl({ hasBorder }: { hasBorder: boolean }) {
 
     if (shouldShowSubaccountInsufficientFundsError) {
       content.push(
-        <AlertInfo warning key="2">
+        <AlertInfo type="warning" key="2">
           <Trans>
             There are insufficient funds in your Subaccount for One-Click Trading. Use the "Top-up" field to increase
             the Subaccount Balance.
@@ -61,7 +61,7 @@ function SubaccountStatusImpl({ hasBorder }: { hasBorder: boolean }) {
       const wrappedToken = getWrappedToken(chainId);
       const nativeToken = getNativeToken(chainId);
       content.push(
-        <AlertInfo warning key="3">
+        <AlertInfo type="warning" key="3">
           <Trans>
             Not enough {wrappedToken.symbol} on your Main Account. Use the "Convert {nativeToken.symbol} to{" "}
             {wrappedToken.symbol}" field to increase the Main Account {wrappedToken.symbol} balance.
@@ -71,7 +71,7 @@ function SubaccountStatusImpl({ hasBorder }: { hasBorder: boolean }) {
     }
   } else if (!isSubaccountActive) {
     return (
-      <AlertInfo standalone={!subaccountAddress}>
+      <AlertInfo type="info" compact={!subaccountAddress}>
         <Trans>
           Generate and activate a Subaccount for{" "}
           <ExternalLink href={SUBACCOUNT_DOCS_URL}>One-Click Trading</ExternalLink> to reduce signing popups.
