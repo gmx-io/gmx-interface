@@ -4913,8 +4913,12 @@ msgid "The network Fees are very high currently, which may be due to a temporary
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
-msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedPriceImpact}, which is below the current market price impact of {formattedAcceptablePriceImpact}. Consider canceling and creating a new {suggestionType} order."
+msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedAcceptablePriceImpact}, which is below the current market price impact of {formattedPriceImpact}. It can be edited using the \"Edit\" button."
 msgstr ""
+
+#: src/domain/synthetics/orders/utils.ts
+#~ msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedPriceImpact}, which is below the current market price impact of {formattedAcceptablePriceImpact}. Consider canceling and creating a new {suggestionType} order."
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "The order will not be executed as its trigger price is beyond the position's liquidation price."
@@ -5053,7 +5057,11 @@ msgid "This is the maximum top-up amount that will be sent from your Main accoun
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
-msgid "This order using DAI as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
+#~ msgid "This order using DAI as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
+#~ msgstr ""
+
+#: src/domain/synthetics/orders/utils.ts
+msgid "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -6053,8 +6061,8 @@ msgid "in liquidity"
 msgstr "используется для обеспечения ликвидности"
 
 #: src/domain/synthetics/orders/utils.ts
-msgid "limit"
-msgstr ""
+#~ msgid "limit"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "limit price"
@@ -6091,8 +6099,8 @@ msgid "staked"
 msgstr "в стейкинги"
 
 #: src/domain/synthetics/orders/utils.ts
-msgid "take-profit"
-msgstr ""
+#~ msgid "take-profit"
+#~ msgstr ""
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "time to liq"

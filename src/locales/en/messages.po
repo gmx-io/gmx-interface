@@ -4916,8 +4916,12 @@ msgid "The network Fees are very high currently, which may be due to a temporary
 msgstr "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
 
 #: src/domain/synthetics/orders/utils.ts
-msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedPriceImpact}, which is below the current market price impact of {formattedAcceptablePriceImpact}. Consider canceling and creating a new {suggestionType} order."
-msgstr "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedPriceImpact}, which is below the current market price impact of {formattedAcceptablePriceImpact}. Consider canceling and creating a new {suggestionType} order."
+msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedAcceptablePriceImpact}, which is below the current market price impact of {formattedPriceImpact}. It can be edited using the \"Edit\" button."
+msgstr "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedAcceptablePriceImpact}, which is below the current market price impact of {formattedPriceImpact}. It can be edited using the \"Edit\" button."
+
+#: src/domain/synthetics/orders/utils.ts
+#~ msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedPriceImpact}, which is below the current market price impact of {formattedAcceptablePriceImpact}. Consider canceling and creating a new {suggestionType} order."
+#~ msgstr "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedPriceImpact}, which is below the current market price impact of {formattedAcceptablePriceImpact}. Consider canceling and creating a new {suggestionType} order."
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "The order will not be executed as its trigger price is beyond the position's liquidation price."
@@ -5056,8 +5060,12 @@ msgid "This is the maximum top-up amount that will be sent from your Main accoun
 msgstr "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
 
 #: src/domain/synthetics/orders/utils.ts
-msgid "This order using DAI as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
-msgstr "This order using DAI as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
+#~ msgid "This order using DAI as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
+#~ msgstr "This order using DAI as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
+
+#: src/domain/synthetics/orders/utils.ts
+msgid "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
+msgstr "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
 
 #: src/components/Exchange/TradeHistory.js
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
@@ -6056,8 +6064,8 @@ msgid "in liquidity"
 msgstr "in liquidity"
 
 #: src/domain/synthetics/orders/utils.ts
-msgid "limit"
-msgstr "limit"
+#~ msgid "limit"
+#~ msgstr "limit"
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "limit price"
@@ -6094,8 +6102,8 @@ msgid "staked"
 msgstr "staked"
 
 #: src/domain/synthetics/orders/utils.ts
-msgid "take-profit"
-msgstr "take-profit"
+#~ msgid "take-profit"
+#~ msgstr "take-profit"
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "time to liq"

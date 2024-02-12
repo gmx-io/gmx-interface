@@ -347,14 +347,13 @@ export function getOrderErrors(p: {
 
     if (currentAcceptablePriceDeltaBps.lt(0) && currentAcceptablePriceDeltaBps.lt(orderAcceptablePriceDeltaBps)) {
       const priceText = positionOrder.orderType === OrderType.LimitIncrease ? t`limit price` : t`trigger price`;
-      const suggestionType = positionOrder.orderType === OrderType.LimitIncrease ? t`limit` : t`take-profit`;
       const formattedPriceImpact = formatPercentage(currentAcceptablePriceDeltaBps, { signed: true });
       const formattedAcceptablePriceImpact = formatPercentage(orderAcceptablePriceDeltaBps, {
         signed: true,
       });
 
       errors.push({
-        msg: t`The order may not execute at the desired ${priceText} as its acceptable price impact is set to ${formattedPriceImpact}, which is below the current market price impact of ${formattedAcceptablePriceImpact}. Consider canceling and creating a new ${suggestionType} order.`,
+        msg: t`The order may not execute at the desired ${priceText} as its acceptable price impact is set to ${formattedAcceptablePriceImpact}, which is below the current market price impact of ${formattedPriceImpact}. It can be edited using the "Edit" button.`,
         level: "warning",
       });
     }
@@ -393,6 +392,7 @@ export function getOrderErrors(p: {
   }
 
   if (!position) {
+    const collateralSymbol = order.initialCollateralToken.symbol;
     const sameMarketPosition = Object.values(positionsInfoData || {}).find(
       (pos) => pos.marketAddress === order.marketAddress && pos.isLong === order.isLong
     );
@@ -402,7 +402,7 @@ export function getOrderErrors(p: {
 
     if (sameMarketPosition) {
       errors.push({
-        msg: t`This order using DAI as collateral will not be valid for the existing ${longText} position using ${symbol} as collateral.`,
+        msg: t`This order using ${collateralSymbol} as collateral will not be valid for the existing ${longText} position using ${symbol} as collateral.`,
         level: "warning",
       });
     }
