@@ -23,8 +23,8 @@ export class LRUCache<T> {
   }
 
   set(key: string, value: T): void {
-    if (!key || typeof key !== "string") {
-      throw new Error("Key must be a non-empty string");
+    if (typeof key !== "string") {
+      throw new Error("Key must be a string");
     }
 
     // If key exists, update its value and move it to the front of recentKeys
