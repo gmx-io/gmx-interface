@@ -259,7 +259,7 @@ export const formatSwapMessage = (tradeAction: SwapTradeAction): string => {
         ? [fromTokenInfo, toTokenInfo]
         : [toTokenInfo, fromTokenInfo];
 
-    const ratioText = tokensRatio.ratio.gt(0) ? getExchangeRateDisplay(tokensRatio?.ratio, largest, smallest) : "0";
+    const ratioText = tokensRatio.ratio.gt(0) ? getExchangeRateDisplay(tokensRatio?.ratio, smallest, largest) : "0";
 
     return tradeAction.eventName === TradeActionType.OrderFrozen
       ? t`${orderTypeName} Swap Execution Failed: ${fromText} for ${toText}, Price: ${ratioText}`
