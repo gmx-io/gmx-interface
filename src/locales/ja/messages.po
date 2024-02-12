@@ -530,6 +530,10 @@ msgstr "残高"
 msgid "Base APR"
 msgstr ""
 
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "Base {nativeTokenSymbol} APR"
+msgstr ""
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
 msgstr "移転開始"
@@ -1531,6 +1535,10 @@ msgstr "報酬獲得"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2."
+msgstr ""
+
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "Earn an extra {0}% {nativeTokenSymbol} Boosted APR by increasing your staked <0>Multiplier Points</0>."
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
@@ -3059,7 +3067,11 @@ msgid "Max. Leverage exceeded"
 msgstr ""
 
 #: src/components/Stake/GMXAprTooltip.tsx
-msgid "Max. {nativeTokenSymbol} APR with {0}% Boost for this week: {1}%."
+msgid "Max. {nativeTokenSymbol} APR"
+msgstr ""
+
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "Max. {nativeTokenSymbol} APR is calculated with the max. 200% Boost Percentage by staking <0>Multiplier Points</0>."
 msgstr ""
 
 #: src/components/Migration/Migration.js
@@ -4860,10 +4872,6 @@ msgstr ""
 msgid "The Bonus Rebate will be airdropped as ARB tokens on a pro-rata basis. <0>Read more</0>."
 msgstr ""
 
-#: src/components/Stake/GMXAprTooltip.tsx
-msgid "The Boosted APR is from your staked Multiplier Points."
-msgstr "APRブーストはステーク済マルチプライヤーポイントによるものです。"
-
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
 msgstr ""
@@ -5951,6 +5959,7 @@ msgstr "{longOrShortText} {0}のリミット注文を増額する複数の注文
 msgid "You have not deposited any tokens for vesting."
 msgstr "べスティング用のトークンが入金されていません。"
 
+#: src/components/Stake/GMXAprTooltip.tsx
 #: src/pages/Stake/StakeV2.js
 msgid "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points using the \"Compound\" button."
 msgstr ""
@@ -6005,6 +6014,11 @@ msgstr "この注文が執行された場合、少なくとも{0} {1}を受け�
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "You will receive at least {toAmountText} if this order is executed. This price is being updated in real time based on Swap Fees and Price Impact."
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "Your APR"
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
@@ -6318,10 +6332,6 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 msgstr "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR(実質年利)"
-
-#: src/components/Stake/GMXAprTooltip.tsx
-msgid "{nativeTokenSymbol} APR"
-msgstr ""
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} Base APR"

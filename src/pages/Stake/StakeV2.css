@@ -72,6 +72,10 @@
   gap: 1rem;
 }
 
+.App-card-buttons.glp-buttons {
+  padding-top: 0.8rem;
+}
+
 .App-card-footer {
   position: absolute;
   bottom: 0;

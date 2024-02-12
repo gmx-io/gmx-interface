@@ -530,6 +530,10 @@ msgstr "Balance"
 msgid "Base APR"
 msgstr "Base APR"
 
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "Base {nativeTokenSymbol} APR"
+msgstr "Base {nativeTokenSymbol} APR"
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
 msgstr "Begin Transfer"
@@ -1532,6 +1536,10 @@ msgstr "Earn"
 #: src/pages/Stake/StakeV2.js
 msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2."
 msgstr "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2."
+
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "Earn an extra {0}% {nativeTokenSymbol} Boosted APR by increasing your staked <0>Multiplier Points</0>."
+msgstr "Earn an extra {0}% {nativeTokenSymbol} Boosted APR by increasing your staked <0>Multiplier Points</0>."
 
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Ecosystem"
@@ -3062,8 +3070,12 @@ msgid "Max. Leverage exceeded"
 msgstr "Max. Leverage exceeded"
 
 #: src/components/Stake/GMXAprTooltip.tsx
-msgid "Max. {nativeTokenSymbol} APR with {0}% Boost for this week: {1}%."
-msgstr "Max. {nativeTokenSymbol} APR with {0}% Boost for this week: {1}%."
+msgid "Max. {nativeTokenSymbol} APR"
+msgstr "Max. {nativeTokenSymbol} APR"
+
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "Max. {nativeTokenSymbol} APR is calculated with the max. 200% Boost Percentage by staking <0>Multiplier Points</0>."
+msgstr "Max. {nativeTokenSymbol} APR is calculated with the max. 200% Boost Percentage by staking <0>Multiplier Points</0>."
 
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
@@ -4863,10 +4875,6 @@ msgstr "The Bonus Rebate is an estimate and will be airdropped as ARB tokens whe
 msgid "The Bonus Rebate will be airdropped as ARB tokens on a pro-rata basis. <0>Read more</0>."
 msgstr "The Bonus Rebate will be airdropped as ARB tokens on a pro-rata basis. <0>Read more</0>."
 
-#: src/components/Stake/GMXAprTooltip.tsx
-msgid "The Boosted APR is from your staked Multiplier Points."
-msgstr "The Boosted APR is from your staked Multiplier Points."
-
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
 msgstr "The Current Price Impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
@@ -5956,6 +5964,7 @@ msgstr "You have multiple existing Increase {longOrShortText} {0} limit orders"
 msgid "You have not deposited any tokens for vesting."
 msgstr "You have not deposited any tokens for vesting."
 
+#: src/components/Stake/GMXAprTooltip.tsx
 #: src/pages/Stake/StakeV2.js
 msgid "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points using the \"Compound\" button."
 msgstr "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points using the \"Compound\" button."
@@ -6011,6 +6020,11 @@ msgstr "You will receive at least {0} {1} if this order is executed. The executi
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "You will receive at least {toAmountText} if this order is executed. This price is being updated in real time based on Swap Fees and Price Impact."
 msgstr "You will receive at least {toAmountText} if this order is executed. This price is being updated in real time based on Swap Fees and Price Impact."
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "Your APR"
+msgstr "Your APR"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
@@ -6326,10 +6340,6 @@ msgstr "{marketsCount, plural, one {# Market} other {# Markets}}"
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 msgstr "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
-
-#: src/components/Stake/GMXAprTooltip.tsx
-msgid "{nativeTokenSymbol} APR"
-msgstr "{nativeTokenSymbol} APR"
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} Base APR"
