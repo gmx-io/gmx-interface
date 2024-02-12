@@ -107,7 +107,11 @@ export function SyntheticsPage(p: Props) {
   const toTokenAddress = useTradeboxToTokenAddress();
   const availableTokensOptions = useTradeboxAvailableTokensOptions();
   const setActivePosition = useTradeboxSetActivePosition();
-  const [, setClosingPositionKey] = useClosingPositionKeyState();
+  const [, setClosingPositionKeyRaw] = useClosingPositionKeyState();
+  const setClosingPositionKey = useCallback(
+    (key: string | undefined) => requestAnimationFrame(() => setClosingPositionKeyRaw(key)),
+    [setClosingPositionKeyRaw]
+  );
   const { indexTokens, sortedIndexTokensWithPoolValue, swapTokens, sortedLongAndShortTokens } = availableTokensOptions;
 
   const { chartToken, availableChartTokens } = useMemo(() => {
@@ -306,6 +310,8 @@ export function SyntheticsPage(p: Props) {
     );
   }
 
+  const handlePositionListOrdersClick = useCallback(() => setListSection(ListSection.Orders), [setListSection]);
+
   return (
     <div className="Exchange page-layout">
       <Helmet>
@@ -368,7 +374,7 @@ export function SyntheticsPage(p: Props) {
             {listSection === ListSection.Positions && (
               <PositionList
                 isLoading={isPositionsLoading}
-                onOrdersClick={() => setListSection(ListSection.Orders)}
+                onOrdersClick={handlePositionListOrdersClick}
                 onSettlePositionFeesClick={handleSettlePositionFeesClick}
                 onSelectPositionClick={onSelectPositionClick}
                 onClosePositionClick={setClosingPositionKey}
