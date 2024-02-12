@@ -346,16 +346,15 @@ export function getOrderErrors(p: {
     });
 
     if (currentAcceptablePriceDeltaBps.lt(0) && currentAcceptablePriceDeltaBps.lt(orderAcceptablePriceDeltaBps)) {
-      const priceText = positionOrder.orderType === OrderType.LimitIncrease ? t`Limit Price` : t`Trigger Price`;
-      const suggestionType = positionOrder.orderType === OrderType.LimitIncrease ? t`Limit` : t`Take-Profit`;
+      const priceText = positionOrder.orderType === OrderType.LimitIncrease ? t`limit price` : t`trigger price`;
+      const suggestionType = positionOrder.orderType === OrderType.LimitIncrease ? t`limit` : t`take-profit`;
+      const formattedPriceImpact = formatPercentage(currentAcceptablePriceDeltaBps, { signed: true });
+      const formattedAcceptablePriceImpact = formatPercentage(orderAcceptablePriceDeltaBps, {
+        signed: true,
+      });
 
       errors.push({
-        msg: t`The Order may not execute at the desired ${priceText} as the current Price Impact ${formatPercentage(
-          currentAcceptablePriceDeltaBps,
-          { signed: true }
-        )} is higher than its Acceptable Price Impact ${formatPercentage(orderAcceptablePriceDeltaBps, {
-          signed: true,
-        })}. Consider canceling and creating a new ${suggestionType} Order.`,
+        msg: t`The order may not execute at the desired ${priceText} as its acceptable price impact is set to ${formattedPriceImpact}, which is below the current market price impact of ${formattedAcceptablePriceImpact}. Consider canceling and creating a new ${suggestionType} order.`,
         level: "warning",
       });
     }
@@ -398,12 +397,12 @@ export function getOrderErrors(p: {
       (pos) => pos.marketAddress === order.marketAddress && pos.isLong === order.isLong
     );
 
-    const longText = sameMarketPosition?.isLong ? t`Long` : t`Short`;
+    const symbol = sameMarketPosition?.collateralToken.symbol;
+    const longText = sameMarketPosition?.isLong ? t`long` : t`short`;
 
     if (sameMarketPosition) {
       errors.push({
-        msg: t`You have an existing ${longText} position with ${sameMarketPosition?.collateralToken.symbol} as Collateral. This Order will not
-        be valid for that Position.`,
+        msg: t`This order using DAI as collateral will not be valid for the existing ${longText} position using ${symbol} as collateral.`,
         level: "warning",
       });
     }
@@ -418,7 +417,7 @@ export function getOrderErrors(p: {
 
     if (isInvalidTriggerPrice) {
       errors.push({
-        msg: t`Order Trigger Price is beyond position's Liquidation Price.`,
+        msg: t`The order will not be executed as its trigger price is beyond the position's liquidation price.`,
         level: "error",
       });
     }

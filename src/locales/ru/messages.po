@@ -2578,7 +2578,6 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
-#: src/domain/synthetics/orders/utils.ts
 msgid "Limit"
 msgstr "Ограничение"
 
@@ -2602,7 +2601,6 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/domain/synthetics/orders/utils.ts
 msgid "Limit Price"
 msgstr "Предельная Цена"
 
@@ -2752,7 +2750,6 @@ msgstr "Загрузка..."
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
-#: src/domain/synthetics/orders/utils.ts
 #: src/domain/synthetics/orders/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
@@ -3400,8 +3397,8 @@ msgid "Order"
 msgstr "Ордер"
 
 #: src/domain/synthetics/orders/utils.ts
-msgid "Order Trigger Price is beyond position's Liquidation Price."
-msgstr ""
+#~ msgid "Order Trigger Price is beyond position's Liquidation Price."
+#~ msgstr ""
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Order Type"
@@ -4364,7 +4361,6 @@ msgstr "Позиция Акции"
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/domain/synthetics/orders/utils.ts
-#: src/domain/synthetics/orders/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -4785,7 +4781,6 @@ msgid "TP/SL"
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/domain/synthetics/orders/utils.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take-Profit"
 msgstr ""
@@ -4884,10 +4879,6 @@ msgstr ""
 msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
-msgid "The Order may not execute at the desired {priceText} as the current Price Impact {0} is higher than its Acceptable Price Impact {1}. Consider canceling and creating a new {suggestionType} Order."
-msgstr ""
-
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
 msgstr "Адрес токена esGMX называется {esGmxIouAddress}."
@@ -4919,6 +4910,14 @@ msgstr ""
 #: src/domain/legacy.ts
 #: src/domain/synthetics/fees/utils/executionFee.ts
 msgid "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
+msgstr ""
+
+#: src/domain/synthetics/orders/utils.ts
+msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedPriceImpact}, which is below the current market price impact of {formattedAcceptablePriceImpact}. Consider canceling and creating a new {suggestionType} order."
+msgstr ""
+
+#: src/domain/synthetics/orders/utils.ts
+msgid "The order will not be executed as its trigger price is beyond the position's liquidation price."
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -5051,6 +5050,10 @@ msgstr "Этот код еще не зарегистрирован на {0}, в�
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
+msgstr ""
+
+#: src/domain/synthetics/orders/utils.ts
+msgid "This order using DAI as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -5323,7 +5326,6 @@ msgstr "Триггер"
 #: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/domain/synthetics/orders/utils.ts
 msgid "Trigger Price"
 msgstr ""
 
@@ -5936,12 +5938,6 @@ msgstr ""
 msgid "You have an existing position with {0} as collateral. This action will not apply for that position."
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
-msgid ""
-"You have an existing {longText} position with {0} as Collateral. This Order will not\n"
-"be valid for that Position."
-msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.js
 msgid "You have multiple existing Increase {longOrShortText} {0} limit orders"
 msgstr "У вас есть несколько существующих на увеличение {longOrShortText} {0} лимитных ордеров"
@@ -6056,6 +6052,18 @@ msgstr "скрыть"
 msgid "in liquidity"
 msgstr "используется для обеспечения ликвидности"
 
+#: src/domain/synthetics/orders/utils.ts
+msgid "limit"
+msgstr ""
+
+#: src/domain/synthetics/orders/utils.ts
+msgid "limit price"
+msgstr ""
+
+#: src/domain/synthetics/orders/utils.ts
+msgid "long"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "not staked"
 msgstr "без стейкинга"
@@ -6070,6 +6078,10 @@ msgstr ""
 msgid "receive"
 msgstr ""
 
+#: src/domain/synthetics/orders/utils.ts
+msgid "short"
+msgstr ""
+
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "size"
 msgstr "размер"
@@ -6078,9 +6090,17 @@ msgstr "размер"
 msgid "staked"
 msgstr "в стейкинги"
 
+#: src/domain/synthetics/orders/utils.ts
+msgid "take-profit"
+msgstr ""
+
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "time to liq"
 msgstr "время ликвидировать"
+
+#: src/domain/synthetics/orders/utils.ts
+msgid "trigger price"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "view"
