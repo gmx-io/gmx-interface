@@ -106,7 +106,7 @@ export function SettingsModal({
           <Trans>Allowed Slippage</Trans>
         </div>
         <div className="App-slippage-tolerance-input-container">
-          <div className="App-slippage-tolerance-input-minus">-</div>
+          <div className="App-slippage-tolerance-input-minus muted">-</div>
           <NumberInput
             className="App-slippage-tolerance-input with-minus"
             value={slippageAmount}
