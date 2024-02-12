@@ -5,15 +5,12 @@ import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import Modal from "components/Modal/Modal";
-import PercentageInput from "components/PercentageInput/PercentageInput";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 import Tab from "components/Tab/Tab";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import { DEFAULT_SLIPPAGE_AMOUNT, EXCESSIVE_SLIPPAGE_AMOUNT } from "config/factors";
 import { getKeepLeverageKey } from "config/localStorage";
 import { convertTokenAddress } from "config/tokens";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
@@ -53,7 +50,6 @@ import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
-  bigNumberify,
   formatAmount,
   formatAmountFree,
   formatDeltaUsd,
@@ -80,6 +76,7 @@ import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsSt
 import { useSwapRoutes } from "context/SyntheticsStateContext/hooks/tradeHooks";
 import { useTradeboxTradeFlags } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
+import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 
 export type Props = {
   position?: PositionInfo;
@@ -491,38 +488,6 @@ export function PositionSeller(p: Props) {
     />
   );
 
-  const allowedSlippageRow = (
-    <ExchangeInfoRow
-      label={
-        <TooltipWithPortal
-          handle={t`Allowed Slippage`}
-          position="left-top"
-          renderContent={() => {
-            return (
-              <div className="text-white">
-                <Trans>
-                  You can edit the default Allowed Slippage in the settings menu on the top right of the page.
-                  <br />
-                  <br />
-                  Note that a low allowed slippage, e.g. less than{" "}
-                  {formatPercentage(bigNumberify(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}, may result in failed
-                  orders if prices are volatile.
-                </Trans>
-              </div>
-            );
-          }}
-        />
-      }
-    >
-      <PercentageInput
-        onChange={setAllowedSlippage}
-        defaultValue={allowedSlippage}
-        highValue={EXCESSIVE_SLIPPAGE_AMOUNT}
-        highValueWarningText={t`Slippage is too high`}
-      />
-    </ExchangeInfoRow>
-  );
-
   const markPriceRow = (
     <ExchangeInfoRow
       label={t`Mark Price`}
@@ -804,7 +769,7 @@ export function PositionSeller(p: Props) {
                 </>
               ) : (
                 <>
-                  {allowedSlippageRow}
+                  <AllowedSlippageRow allowedSlippage={allowedSlippage} setAllowedSlippage={setAllowedSlippage} />
                   {entryPriceRow}
                   {acceptablePriceRow}
                   {markPriceRow}
