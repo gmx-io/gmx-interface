@@ -1394,7 +1394,11 @@ msgid "Decrease size"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-msgid "Decrease the Leverage by using the slider. If the Leverage slider is disabled, you can increase the Pay amount or reduce the Order size."
+#~ msgid "Decrease the Leverage by using the slider. If the Leverage slider is disabled, you can increase the Pay amount or reduce the Order size."
+#~ msgstr ""
+
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "Decrease the Leverage to match the Max. Allowed Leverage:"
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/SLTPEntries.tsx
@@ -4283,6 +4287,10 @@ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Sending settle request"
+msgstr ""
+
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "Set Order Size to: {0}x"
 msgstr ""
 
 #: src/components/Exchange/PositionDropdown.tsx
