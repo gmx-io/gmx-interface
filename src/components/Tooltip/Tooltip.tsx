@@ -2,7 +2,7 @@ import "./Tooltip.scss";
 import cx from "classnames";
 import { useCallback, useState, useRef, MouseEvent, ReactNode, useEffect } from "react";
 import { IS_TOUCH } from "config/env";
-import { computePosition, flip, shift } from "@floating-ui/dom";
+import { computePosition, flip } from "@floating-ui/dom";
 import { DEFAULT_TOOLTIP_POSITION } from "config/ui";
 import { TOOLTIP_CLOSE_DELAY, TOOLTIP_OPEN_DELAY } from "config/ui";
 
@@ -57,7 +57,7 @@ export default function Tooltip({
     const computeTooltipPlacement = async () => {
       if (handlerRef.current && popupRef.current) {
         const { placement } = await computePosition(handlerRef.current, popupRef.current, {
-          middleware: [flip(), shift()],
+          middleware: [flip()],
           placement: position,
         });
         setComputedPlacement(placement);

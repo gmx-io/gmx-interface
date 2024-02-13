@@ -6,7 +6,7 @@ import { IS_TOUCH } from "config/env";
 import Portal from "../Common/Portal";
 import { TooltipPosition } from "./Tooltip";
 import { DEFAULT_TOOLTIP_POSITION, TOOLTIP_CLOSE_DELAY, TOOLTIP_OPEN_DELAY } from "config/ui";
-import { computePosition, flip, shift } from "@floating-ui/dom";
+import { computePosition, flip } from "@floating-ui/dom";
 
 type Props = {
   handle: React.ReactNode;
@@ -63,7 +63,7 @@ export default function TooltipWithPortal({
     const computeTooltipPlacement = async () => {
       if (handlerRef.current && popupRef.current) {
         const { placement } = await computePosition(handlerRef.current, popupRef.current, {
-          middleware: [flip(), shift()],
+          middleware: [flip()],
           placement: position,
         });
         setComputedPlacement(placement);
