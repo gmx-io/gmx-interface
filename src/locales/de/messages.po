@@ -1401,6 +1401,10 @@ msgstr ""
 msgid "Decrease the Leverage to match the Max. Allowed Leverage:"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "Decrease the Size to match the Max. Allowed Leverage:"
+msgstr ""
+
 #: src/components/Synthetics/ConfirmationBox/SLTPEntries.tsx
 msgid "Decrease {0} Long by {1} at ${2}."
 msgstr ""
@@ -2958,6 +2962,10 @@ msgstr ""
 msgid "Max Leverage without PnL: 100x"
 msgstr ""
 
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "Max Leveraged Exceeded"
+msgstr ""
+
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Max Out"
 msgstr ""
@@ -4296,6 +4304,10 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #~ msgid "Set Order Size to: {0}x"
 #~ msgstr ""
+
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "Set Size to: {0}"
+msgstr ""
 
 #: src/components/Exchange/PositionDropdown.tsx
 msgid "Set TP/SL"

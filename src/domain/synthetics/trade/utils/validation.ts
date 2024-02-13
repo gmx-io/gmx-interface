@@ -262,26 +262,46 @@ export function getIncreaseError(p: {
     return [t`Price Impact not yet acknowledged`];
   }
 
-  if (nextPositionValues?.nextLeverage) {
-    const openInterest = getOpenInterestUsd(marketInfo, isLong);
-    const minCollateralFactorMultiplier = isLong
-      ? marketInfo.minCollateralFactorForOpenInterestLong
-      : marketInfo.minCollateralFactorForOpenInterestShort;
-    let minCollateralFactor = openInterest.add(sizeDeltaUsd).mul(minCollateralFactorMultiplier).div(PRECISION);
-    const minCollateralFactorForMarket = marketInfo.minCollateralFactor;
+  if (nextPositionValues.nextLeverage) {
+    const [maxLeverageError, maxLeverage] = validateMaxLeverage(
+      nextPositionValues.nextLeverage,
+      marketInfo,
+      isLong,
+      sizeDeltaUsd
+    );
 
-    if (minCollateralFactorForMarket.gt(minCollateralFactor)) {
-      minCollateralFactor = minCollateralFactorForMarket;
-    }
-
-    const maxLeverage = PRECISION.mul(BASIS_POINTS_DIVISOR).div(minCollateralFactor);
-
-    if (nextPositionValues.nextLeverage.gt(maxLeverage)) {
+    if (maxLeverageError && maxLeverage) {
       return [t`Max. Leverage exceeded`, "maxLeverage", maxLeverage];
     }
   }
 
   return [undefined];
+}
+
+export function validateMaxLeverage(
+  nextLeverage: BigNumber,
+  marketInfo: MarketInfo,
+  isLong: boolean,
+  sizeDeltaUsd: BigNumber
+): [boolean, BigNumber | undefined] {
+  const openInterest = getOpenInterestUsd(marketInfo, isLong);
+  const minCollateralFactorMultiplier = isLong
+    ? marketInfo.minCollateralFactorForOpenInterestLong
+    : marketInfo.minCollateralFactorForOpenInterestShort;
+  let minCollateralFactor = openInterest.add(sizeDeltaUsd).mul(minCollateralFactorMultiplier).div(PRECISION);
+  const minCollateralFactorForMarket = marketInfo.minCollateralFactor;
+
+  if (minCollateralFactorForMarket.gt(minCollateralFactor)) {
+    minCollateralFactor = minCollateralFactorForMarket;
+  }
+
+  const maxLeverage = PRECISION.mul(BASIS_POINTS_DIVISOR).div(minCollateralFactor);
+
+  if (nextLeverage.gt(maxLeverage)) {
+    return [true, maxLeverage];
+  }
+
+  return [false, undefined];
 }
 
 export function getDecreaseError(p: {
@@ -439,6 +459,21 @@ export function getEditCollateralError(p: {
   }
 
   return [undefined];
+}
+
+export function decreasePositionSizeByLeverageDiff(
+  currentLeverage: BigNumber,
+  targetLeverage: BigNumber,
+  sizeDeltaUsd: BigNumber
+) {
+  return (
+    sizeDeltaUsd
+      .mul(targetLeverage)
+      .div(currentLeverage)
+      // 2% slipage
+      .mul(98)
+      .div(100)
+  );
 }
 
 export function getGmSwapError(p: {

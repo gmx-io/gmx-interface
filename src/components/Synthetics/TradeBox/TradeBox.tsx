@@ -61,6 +61,7 @@ import { useAvailableMarketsOptions } from "domain/synthetics/trade/useAvailable
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import {
   ValidationResult,
+  decreasePositionSizeByLeverageDiff,
   getCommonError,
   getDecreaseError,
   getIncreaseError,
@@ -508,20 +509,55 @@ export function TradeBox(p: Props) {
     if (tooltipName) {
       switch (tooltipName) {
         case "maxLeverage": {
-          const nextLeverage = Number(((tooltipArg?.toNumber() ?? 0) / BASIS_POINTS_DIVISOR).toFixed(0));
-          tooltipContent = (
-            <>
-              <Trans>Decrease the Leverage to match the Max. Allowed Leverage:</Trans>
-              <br />
-              <br />
-              <span onClick={() => setLeverageOption(nextLeverage)} className="Tradebox-handle">
-                <Trans>Set Leverage to: {formatAmount(tooltipArg, 4, 0)}x</Trans>
-              </span>
-              <br />
-              <br />
-              <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
-            </>
-          );
+          const allowedLeverage = Number(((tooltipArg?.toNumber() ?? 0) / BASIS_POINTS_DIVISOR).toFixed(0));
+
+          if (isLeverageEnabled) {
+            tooltipContent = (
+              <>
+                <Trans>Decrease the Leverage to match the Max. Allowed Leverage:</Trans>
+                <br />
+                <br />
+                <span onClick={() => setLeverageOption(allowedLeverage)} className="Tradebox-handle">
+                  <Trans>Set Leverage to: {formatAmount(tooltipArg, 4, 0)}x</Trans>
+                </span>
+                <br />
+                <br />
+                <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
+              </>
+            );
+          } else if (increaseAmounts && nextPositionValues && nextPositionValues.nextLeverage && toToken) {
+            const newIndexTokenAmount = decreasePositionSizeByLeverageDiff(
+              nextPositionValues.nextLeverage.div(BASIS_POINTS_DIVISOR),
+              BigNumber.from(allowedLeverage),
+              increaseAmounts.indexTokenAmount
+            );
+
+            tooltipContent = (
+              <>
+                <Trans>Decrease the Size to match the Max. Allowed Leverage:</Trans>
+                <br />
+                <br />
+                <span
+                  onClick={() => setToTokenInputValueRaw(formatAmount(newIndexTokenAmount, toToken.decimals))}
+                  className="Tradebox-handle"
+                >
+                  <Trans>Set Size to: {formatTokenAmount(newIndexTokenAmount, toToken.decimals, toToken.symbol)}</Trans>
+                </span>
+                <br />
+                <br />
+                <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
+              </>
+            );
+          } else {
+            tooltipContent = (
+              <>
+                <Trans>Max Leveraged Exceeded</Trans>
+                <br />
+                <br />
+                <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
+              </>
+            );
+          }
           break;
         }
 
@@ -553,10 +589,7 @@ export function TradeBox(p: Props) {
     markRatio,
     fees,
     marketInfo,
-    increaseAmounts?.initialCollateralUsd,
-    increaseAmounts?.collateralDeltaUsd,
-    increaseAmounts?.sizeDeltaUsd,
-    increaseAmounts?.swapPathStats,
+    increaseAmounts,
     collateralToken,
     selectedPosition,
     minCollateralUsd,
@@ -571,7 +604,10 @@ export function TradeBox(p: Props) {
     nextPositionValuesForDecrease,
     stage,
     fixedTriggerThresholdType,
+    isLeverageEnabled,
+    nextPositionValues,
     setLeverageOption,
+    setToTokenInputValueRaw,
   ]);
 
   const isSubmitButtonDisabled = useMemo(() => {
