@@ -1,5 +1,5 @@
 import CustomErrors from "abis/CustomErrors.json";
-import { Trans, t } from "@lingui/macro";
+import { t } from "@lingui/macro";
 import words from "lodash/words";
 import { StatsTooltipRowProps } from "components/StatsTooltip/StatsTooltipRow";
 import { OrderType, isIncreaseOrderType, isLimitOrderType } from "domain/synthetics/orders";
@@ -12,7 +12,6 @@ import { PRECISION, getExchangeRateDisplay } from "lib/legacy";
 import { formatDeltaUsd, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { museNeverExist } from "lib/types";
 import { trimStart } from "lodash";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ReactNode } from "react";
 
 type TooltipProps = StatsTooltipRowProps & { key: string };
@@ -169,7 +168,7 @@ export const formatPositionMessage = (
         return [
           {
             text: trimStart(`${actionText} ${marketStr} ${increaseText}`),
-            tooltipTitle: parseErrorReason(tradeAction, true),
+            tooltipTitle: parseErrorReason(tradeAction),
           },
           {
             text: `: ${positionText} ${sizeDeltaText}, `,
@@ -400,7 +399,7 @@ function getLiquidationTooltipProps(tradeAction: PositionTradeAction, minCollate
   ].map((row) => (row.value?.startsWith("-") ? { className: "text-red", ...row } : row));
 }
 
-function parseErrorReason(tradeAction: PositionTradeAction, defaultToAbstractReason = true) {
+function parseErrorReason(tradeAction: PositionTradeAction) {
   const customErrors = new ethers.Contract(ethers.constants.AddressZero, CustomErrors.abi);
   let error: ReturnType<typeof customErrors.interface.parseError> | null = null;
 
@@ -412,7 +411,7 @@ function parseErrorReason(tradeAction: PositionTradeAction, defaultToAbstractRea
     return null;
   }
 
-  return getHumanReadableErrorByName(error.name, defaultToAbstractReason);
+  return getHumanReadableErrorByName(error.name);
 }
 
 function getExecutionFailedTooltipProps(tradeAction: PositionTradeAction): Partial<FormatPositionMessageChunk> {
@@ -493,9 +492,7 @@ function getMarketTooltipRows(tradeAction: PositionTradeAction): TooltipProps[] 
   return arr.length > 0 ? arr : undefined;
 }
 
-(window as any).lol = {};
-
-function getHumanReadableErrorByName(errorName: string, defaultToAbstractReason: boolean, lol = false) {
+function getHumanReadableErrorByName(errorName: string) {
   switch (errorName) {
     case "OrderNotFulfillableAtAcceptablePrice": {
       return t`The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met.`;
@@ -509,22 +506,8 @@ function getHumanReadableErrorByName(errorName: string, defaultToAbstractReason:
       return t`Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity.`;
     }
 
-    // case "InsufficientCollateralAmount":
-    case "UnableToWithdrawCollateral": {
-      return (
-        <Trans>
-          Max. Leverage exceeded.{" "}
-          <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
-        </Trans>
-      );
-    }
-
     default: {
-      if (lol) {
-        (window as any).lol[errorName] = 1;
-      }
-      if (defaultToAbstractReason) return t`Reason: ${words(errorName).join(" ").toLowerCase()} (${errorName})`;
-      else return null;
+      return t`Reason: ${words(errorName).join(" ").toLowerCase()}`;
     }
   }
 }

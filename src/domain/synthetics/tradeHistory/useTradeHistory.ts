@@ -53,15 +53,11 @@ export function useTradeHistory(
 
       const query = gql(`{
         tradeActions(
-            skip: ${skip},
-            first: ${first},
-            orderBy: transaction__timestamp,
-            orderDirection: desc,
-            where: {
-              orderType: "2"
-              eventName: "OrderCancelled",
-              #sizeDeltaUsd: "0"
-            }
+          skip: ${skip},
+          first: ${first},
+          orderBy: transaction__timestamp,
+          orderDirection: desc,
+          ${!forAllAccounts && account ? `where: { account: "${account!.toLowerCase()}" }` : ""}
         ) {
             id
             eventName
