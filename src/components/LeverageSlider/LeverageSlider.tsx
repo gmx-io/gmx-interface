@@ -3,7 +3,7 @@ import Slider, { SliderTooltip, Handle } from "rc-slider";
 import "rc-slider/assets/index.css";
 import "./LeverageSlider.scss";
 import { range } from "lodash";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 const defaultMarks = [1.1, 2, 5, 10, 15, 20, 25, 30, 35, 40, 50];
 const DEFAULT_LEVERAGE_KEY = 20;
@@ -39,7 +39,7 @@ export function LeverageSlider(p: Props) {
     return { marksLabel, keyValueMap, valueKeyMap };
   }, [finalMarks]);
 
-  const defaultValue = valueKeyMap[value ?? 0] ?? DEFAULT_LEVERAGE_KEY;
+  const sliderValue = valueKeyMap[value ?? 0] ?? DEFAULT_LEVERAGE_KEY;
   const max = (finalMarks.length - 1) * 10;
 
   const handleChange = useCallback(
@@ -48,12 +48,6 @@ export function LeverageSlider(p: Props) {
     },
     [onChange, keyValueMap]
   );
-
-  useEffect(() => {
-    if (value !== defaultValue) {
-      handleChange(defaultValue);
-    }
-  }, [value, defaultValue, handleChange]);
 
   const customHandle = useMemo(() => {
     return (props: any) => <LeverageSliderHandle {...props} keyValueMap={keyValueMap} />;
@@ -73,7 +67,7 @@ export function LeverageSlider(p: Props) {
         marks={marksLabel}
         handle={customHandle}
         onChange={handleChange}
-        defaultValue={defaultValue}
+        value={sliderValue}
       />
     </div>
   );

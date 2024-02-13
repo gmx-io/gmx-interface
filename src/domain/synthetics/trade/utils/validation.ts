@@ -16,7 +16,7 @@ export type ValidationTooltipName = "maxLeverage";
 export type ValidationResult =
   | [errorMessage: undefined]
   | [errorMessage: string]
-  | [errorMessage: string, tooltipName: ValidationTooltipName];
+  | [errorMessage: string, tooltipName: "maxLeverage", recommendedValue: BigNumber];
 
 export function getCommonError(p: { chainId: number; isConnected: boolean; hasOutdatedUi: boolean }): ValidationResult {
   const { chainId, isConnected, hasOutdatedUi } = p;
@@ -277,7 +277,7 @@ export function getIncreaseError(p: {
     const maxLeverage = PRECISION.mul(BASIS_POINTS_DIVISOR).div(minCollateralFactor);
 
     if (nextPositionValues.nextLeverage.gt(maxLeverage)) {
-      return [t`Max. Leverage exceeded`, "maxLeverage"];
+      return [t`Max. Leverage exceeded`, "maxLeverage", maxLeverage];
     }
   }
 

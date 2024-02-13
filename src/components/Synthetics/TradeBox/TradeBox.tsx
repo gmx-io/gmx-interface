@@ -98,6 +98,7 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { CollateralSelectorRow } from "./CollateralSelectorRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import "./TradeBox.scss";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 export type Props = {
   avaialbleTokenOptions: AvailableTokenOptions;
@@ -501,23 +502,28 @@ export function TradeBox(p: Props) {
 
     const buttonErrorText = commonError[0] || tradeError[0];
     const tooltipName = commonError[1] || tradeError[1];
+    const tooltipArg = commonError[2] || tradeError[2];
 
     let tooltipContent: ReactNode = null;
     if (tooltipName) {
       switch (tooltipName) {
-        case "maxLeverage":
+        case "maxLeverage": {
+          const nextLeverage = Number(((tooltipArg?.toNumber() ?? 0) / BASIS_POINTS_DIVISOR).toFixed(0));
           tooltipContent = (
             <>
-              <Trans>
-                Decrease the Leverage by using the slider. If the Leverage slider is disabled, you can increase the Pay
-                amount or reduce the Order size.
-              </Trans>
+              <Trans>Decrease the Leverage to match the Max. Allowed Leverage:</Trans>
               <br />
               <br />
-              <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">More Info</ExternalLink>.
+              <span onClick={() => setLeverageOption(nextLeverage)} className="Tradebox-handle">
+                <Trans>Set Order Size to: {formatAmount(tooltipArg, 4, 0)}x</Trans>
+              </span>
+              <br />
+              <br />
+              <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
             </>
           );
           break;
+        }
 
         default:
           museNeverExist(tooltipName);
@@ -565,6 +571,7 @@ export function TradeBox(p: Props) {
     nextPositionValuesForDecrease,
     stage,
     fixedTriggerThresholdType,
+    setLeverageOption,
   ]);
 
   const isSubmitButtonDisabled = useMemo(() => {
