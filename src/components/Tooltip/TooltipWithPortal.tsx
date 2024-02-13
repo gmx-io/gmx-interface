@@ -60,14 +60,17 @@ export default function TooltipWithPortal({
   const [computedPlacement, setComputedPlacement] = useState<TooltipPosition | undefined>(position);
 
   useEffect(() => {
-    if (handlerRef.current && popupRef.current) {
-      computePosition(handlerRef.current, popupRef.current, {
-        middleware: [flip(), shift()],
-        placement: position,
-      }).then(({ placement }) => {
+    const computeTooltipPlacement = async () => {
+      if (handlerRef.current && popupRef.current) {
+        const { placement } = await computePosition(handlerRef.current, popupRef.current, {
+          middleware: [flip(), shift()],
+          placement: position,
+        });
         setComputedPlacement(placement);
-      });
-    }
+      }
+    };
+
+    computeTooltipPlacement();
   }, [visible, position]);
 
   const updateTooltipCoords = useCallback(() => {

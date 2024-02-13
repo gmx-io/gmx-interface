@@ -48,21 +48,23 @@ export default function Tooltip({
   const [visible, setVisible] = useState(false);
   const intervalCloseRef = useRef<ReturnType<typeof setTimeout> | null>();
   const intervalOpenRef = useRef<ReturnType<typeof setTimeout> | null>();
-
   const handlerRef = useRef<HTMLSpanElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
 
   const [computedPlacement, setComputedPlacement] = useState<TooltipPosition | undefined>(position);
 
   useEffect(() => {
-    if (handlerRef.current && popupRef.current) {
-      computePosition(handlerRef.current, popupRef.current, {
-        middleware: [flip(), shift()],
-        placement: position,
-      }).then(({ placement }) => {
+    const computeTooltipPlacement = async () => {
+      if (handlerRef.current && popupRef.current) {
+        const { placement } = await computePosition(handlerRef.current, popupRef.current, {
+          middleware: [flip(), shift()],
+          placement: position,
+        });
         setComputedPlacement(placement);
-      });
-    }
+      }
+    };
+
+    computeTooltipPlacement();
   }, [visible, position]);
 
   const onMouseEnter = useCallback(() => {
