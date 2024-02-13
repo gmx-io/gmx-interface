@@ -150,6 +150,8 @@ export function SyntheticsPage(p: Props) {
   const [closingPositionKey, setClosingPositionKey] = useState<string>();
   const closingPosition = getByKey(positionsInfoData, closingPositionKey);
 
+  const [selectedPositionOrderKey, setSelectedPositionOrderKey] = useState<string>();
+
   const [editingPositionKey, setEditingPositionKey] = useState<string>();
   const editingPosition = getByKey(positionsInfoData, editingPositionKey);
 
@@ -222,6 +224,14 @@ export function SyntheticsPage(p: Props) {
       .finally(() => {
         setIsCancelOrdersProcessig(false);
       });
+  }
+
+  function handleOrderClick(key?: string) {
+    setListSection(ListSection.Orders);
+    setSelectedPositionOrderKey(key);
+    if (key) {
+      setSelectedOrdersKeys((prev) => ({ ...prev, [key]: true }));
+    }
   }
 
   useEffect(() => {
@@ -350,7 +360,7 @@ export function SyntheticsPage(p: Props) {
                 className="Exchange-list-tabs"
               />
               <div className="align-right Exchange-should-show-position-lines">
-                {selectedOrdersKeysArr.length > 0 && (
+                {listSection === ListSection.Orders && selectedOrdersKeysArr.length > 0 && (
                   <button
                     className="muted font-base cancel-order-btn"
                     disabled={isCancelOrdersProcessig}
@@ -375,7 +385,7 @@ export function SyntheticsPage(p: Props) {
             {listSection === ListSection.Positions && (
               <PositionList
                 isLoading={isPositionsLoading}
-                onOrdersClick={() => setListSection(ListSection.Orders)}
+                onOrdersClick={handleOrderClick}
                 onSettlePositionFeesClick={handleSettlePositionFeesClick}
                 onSelectPositionClick={onSelectPositionClick}
                 onClosePositionClick={setClosingPositionKey}
@@ -390,6 +400,8 @@ export function SyntheticsPage(p: Props) {
                 setSelectedOrdersKeys={setSelectedOrdersKeys}
                 isLoading={isOrdersLoading}
                 setPendingTxns={setPendingTxns}
+                selectedPositionOrderKey={selectedPositionOrderKey}
+                setSelectedPositionOrderKey={setSelectedPositionOrderKey}
               />
             )}
             {listSection === ListSection.Trades && <TradeHistory account={account} shouldShowPaginationButtons />}
@@ -424,7 +436,7 @@ export function SyntheticsPage(p: Props) {
           {listSection === ListSection.Positions && (
             <PositionList
               isLoading={isPositionsLoading}
-              onOrdersClick={() => setListSection(ListSection.Orders)}
+              onOrdersClick={handleOrderClick}
               onSelectPositionClick={onSelectPositionClick}
               onClosePositionClick={setClosingPositionKey}
               onEditCollateralClick={setEditingPositionKey}
@@ -439,6 +451,8 @@ export function SyntheticsPage(p: Props) {
               selectedOrdersKeys={selectedOrdersKeys}
               setSelectedOrdersKeys={setSelectedOrdersKeys}
               setPendingTxns={setPendingTxns}
+              selectedPositionOrderKey={selectedPositionOrderKey}
+              setSelectedPositionOrderKey={setSelectedPositionOrderKey}
             />
           )}
           {listSection === ListSection.Trades && <TradeHistory account={account} shouldShowPaginationButtons />}

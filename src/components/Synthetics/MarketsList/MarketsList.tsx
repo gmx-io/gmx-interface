@@ -1,21 +1,16 @@
 import { Trans, t } from "@lingui/macro";
+import "./MarketsList.scss";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getIcon } from "config/icons";
-import { getFundingFactorPerPeriod } from "domain/synthetics/fees";
-import {
-  MarketInfo,
-  getMarketPoolName,
-  getAvailableLiquidity,
-  isMarketAdaptiveFundingActive,
-  useMarketsInfoRequest,
-} from "domain/synthetics/markets";
+import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
+import { MarketInfo, getMarketPoolName, getAvailableLiquidity, useMarketsInfoRequest } from "domain/synthetics/markets";
 import { TokenData, getMidPrice } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS, importImage } from "lib/legacy";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
-import { formatAmount, formatUsd } from "lib/numbers";
+import { formatAmount, formatRatePercentage, formatUsd } from "lib/numbers";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 
 import { useMemo } from "react";
@@ -23,17 +18,9 @@ import { useMedia } from "react-use";
 import PageTitle from "components/PageTitle/PageTitle";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketListSkeleton } from "components/Skeleton/Skeleton";
-import { getPositiveOrNegativeClass } from "lib/utils";
-
-function formatFundingRate(fundingRate?: BigNumber) {
-  if (!fundingRate) {
-    return "-";
-  }
-
-  const sign = fundingRate.isZero() ? "" : fundingRate.isNegative() ? "-" : "+";
-
-  return `${sign}${formatAmount(fundingRate.mul(100).abs(), 30, 4)}%`;
-}
+import { DOCS_LINKS } from "config/links";
+import MarketNetFee from "../MarketNetFee/MarketNetFee";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 export function MarketsList() {
   const { chainId } = useChainId();
@@ -62,6 +49,8 @@ export function MarketsList() {
           poolValueUsd: BigNumber;
           fundingRateLong: BigNumber;
           fundingRateShort: BigNumber;
+          borrowingRateLong: BigNumber;
+          borrowingRateShort: BigNumber;
           utilization: BigNumber;
         }[];
       };
@@ -96,6 +85,8 @@ export function MarketsList() {
 
       const fundingRateLong = getFundingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]);
       const fundingRateShort = getFundingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]);
+      const borrowingRateLong = getBorrowingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]).mul(-1);
+      const borrowingRateShort = getBorrowingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]).mul(-1);
 
       const [longAvailableLiquidity, longMaxLiquidity] = getAvailableLiquidity(marketInfo, true);
 
@@ -117,6 +108,8 @@ export function MarketsList() {
         fundingRateLong,
         fundingRateShort,
         poolValueUsd,
+        borrowingRateLong,
+        borrowingRateShort,
       });
     }
 
@@ -140,51 +133,33 @@ export function MarketsList() {
   }, [marketsInfoData]);
 
   function renderFundingRateTooltip(stats: typeof indexTokensStats[0]) {
-    const isAdaptiveFundingActive = stats.marketsStats.some(({ marketInfo }) =>
-      isMarketAdaptiveFundingActive(marketInfo)
-    );
-
     return () => (
       <>
-        {stats.marketsStats.map(({ marketInfo: market, fundingRateLong, fundingRateShort }) => {
-          const longFundingMsg = fundingRateLong.gte(0) ? t`Long Funding Rewards` : t`Long Funding Payments`;
-          const shortFundingMsg = fundingRateShort.gte(0) ? t`Short Funding Rewards` : t`Short Funding Payments`;
+        {stats.marketsStats.map((stat) => {
+          const { marketInfo: market, fundingRateLong, fundingRateShort, borrowingRateLong, borrowingRateShort } = stat;
+
           return (
             <div className="mb-base" key={market.marketTokenAddress}>
-              <div className="mb-xs text-white">[{getMarketPoolName(market)}]</div>
-              <StatsTooltipRow
-                showDollar={false}
-                label={longFundingMsg}
-                value={`${formatFundingRate(fundingRateLong)} / 1h`}
-                className={getPositiveOrNegativeClass(fundingRateLong)}
-              />
-              <StatsTooltipRow
-                showDollar={false}
-                label={shortFundingMsg}
-                value={`${formatFundingRate(fundingRateShort)} / 1h`}
-                className={getPositiveOrNegativeClass(fundingRateShort)}
-              />
+              <div className="mb-sm text-white">[{getMarketPoolName(market)}]</div>
+              <MarketNetFee borrowRateHourly={borrowingRateLong} fundingRateHourly={fundingRateLong} isLong={true} />
+              <div className="divider my-base" />
+              <MarketNetFee borrowRateHourly={borrowingRateShort} fundingRateHourly={fundingRateShort} isLong={false} />
             </div>
           );
         })}
-        <span>Funding Fees help to balance Longs and Shorts and are exchanged between both sides.</span>
+        <div className="divider my-base" />
+        <Trans>
+          Funding fees help to balance longs and shorts and are exchanged between both sides.{" "}
+          <ExternalLink href={DOCS_LINKS.fundingFees}>Read more</ExternalLink>.
+        </Trans>
+
         <br />
         <br />
-        <span>
-          A negative Funding Fee value indicates that percentage needs to be paid, a positive Funding Fee value
-          indicates that percentage will be received as funding rewards.
-        </span>
-        {isAdaptiveFundingActive && (
-          <span>
-            <br />
-            <br />
-            <Trans>
-              This market uses an Adaptive Funding Rate. The Funding Rate will adjust over time depending on the ratio
-              of longs and shorts.{" "}
-              <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#adaptive-funding">Read more</ExternalLink>.
-            </Trans>
-          </span>
-        )}
+
+        <Trans>
+          Borrowing fees help ensure available liquidity.{" "}
+          <ExternalLink href={DOCS_LINKS.borrowingFees}>Read more</ExternalLink>.
+        </Trans>
       </>
     );
   }
@@ -210,7 +185,7 @@ export function MarketsList() {
                   <Trans>POOLS</Trans>
                 </th>
                 <th>
-                  <Trans>FUNDING RATE / 1h</Trans>
+                  <Trans>NET FEE / 1 H</Trans>
                 </th>
                 <th>
                   <Trans>UTILIZATION</Trans>
@@ -219,10 +194,13 @@ export function MarketsList() {
             </thead>
             <tbody>
               {indexTokensStats.length ? (
-                indexTokensStats.map((stats) => {
+                indexTokensStats.map((stats, index) => {
                   const largestPool = stats.marketsStats.sort((a, b) => {
                     return b.poolValueUsd.gt(a.poolValueUsd) ? 1 : -1;
                   })[0];
+                  const tooltipPositionNetFee = index < indexTokensStats.length / 2 ? "right-bottom" : "right-top";
+                  const netFeePerHourLong = largestPool.fundingRateLong.add(largestPool.borrowingRateLong);
+                  const netFeePerHourShort = largestPool.fundingRateShort.add(largestPool.borrowingRateShort);
 
                   return (
                     <tr key={stats.token.symbol}>
@@ -265,11 +243,13 @@ export function MarketsList() {
                         />
                       </td>
                       <td>
-                        <Tooltip
-                          handle={`${formatFundingRate(largestPool.fundingRateLong)} / ${formatFundingRate(
-                            largestPool.fundingRateShort
+                        <TooltipWithPortal
+                          portalClassName="MarketList-netfee-tooltip"
+                          handle={`${formatRatePercentage(netFeePerHourLong)} / ${formatRatePercentage(
+                            netFeePerHourShort
                           )}`}
                           renderContent={renderFundingRateTooltip(stats)}
+                          position={tooltipPositionNetFee}
                         />
                       </td>
                       <td>{formatAmount(stats.totalUtilization, 2, 2)}%</td>
@@ -288,75 +268,86 @@ export function MarketsList() {
         <>
           <PageTitle title={t`GM Pools`} />
           <div className="token-grid">
-            {indexTokensStats.map((stats) => (
-              <div className="App-card" key={stats.token.symbol}>
-                <div className="App-card-title">
-                  <div className="mobile-token-card">
-                    <img
-                      src={importImage("ic_" + stats.token.symbol.toLocaleLowerCase() + "_40.svg")}
-                      alt={stats.token.symbol}
-                      width="20"
-                    />
-                    <div className="token-symbol-text">{stats.token.symbol}</div>
-                    <div>
-                      <AssetDropdown assetSymbol={stats.token.symbol} />
+            {indexTokensStats.map((stats, index) => {
+              const largestPool = stats.marketsStats.sort((a, b) => {
+                return b.poolValueUsd.gt(a.poolValueUsd) ? 1 : -1;
+              })[0];
+
+              const tooltipPositionNetFee = index < indexTokensStats.length / 2 ? "right-bottom" : "right-top";
+              const netFeePerHourLong = largestPool.fundingRateLong.add(largestPool.borrowingRateLong);
+              const netFeePerHourShort = largestPool.fundingRateShort.add(largestPool.borrowingRateShort);
+
+              return (
+                <div className="App-card" key={stats.token.symbol}>
+                  <div className="App-card-title">
+                    <div className="mobile-token-card">
+                      <img
+                        src={importImage("ic_" + stats.token.symbol.toLocaleLowerCase() + "_40.svg")}
+                        alt={stats.token.symbol}
+                        width="20"
+                      />
+                      <div className="token-symbol-text">{stats.token.symbol}</div>
+                      <div>
+                        <AssetDropdown assetSymbol={stats.token.symbol} />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="App-card-divider"></div>
+                  <div className="App-card-content">
+                    <div className="App-card-row">
+                      <div className="label">
+                        <Trans>Price</Trans>
+                      </div>
+                      <div>{formatUsd(stats.token.prices?.minPrice)}</div>
+                    </div>
+                    <div className="App-card-row">
+                      <div className="label">
+                        <Trans>Pools</Trans>
+                      </div>
+                      <div>
+                        <Tooltip
+                          handle={formatUsd(stats.totalPoolValue)}
+                          position="right-bottom"
+                          renderContent={() => (
+                            <>
+                              {stats.marketsStats.map(({ marketInfo, poolValueUsd }) => (
+                                <StatsTooltipRow
+                                  key={marketInfo.marketTokenAddress}
+                                  showDollar={false}
+                                  label={`[${getMarketPoolName(marketInfo)}]`}
+                                  value={formatUsd(poolValueUsd)}
+                                />
+                              ))}
+                            </>
+                          )}
+                        />
+                      </div>
+                    </div>
+                    <div className="App-card-row">
+                      <div className="label">
+                        <Trans>Net Fee / 1h</Trans>
+                      </div>
+                      <div>
+                        <TooltipWithPortal
+                          portalClassName="MarketList-netfee-tooltip"
+                          handle={`${formatRatePercentage(netFeePerHourLong)} / ${formatRatePercentage(
+                            netFeePerHourShort
+                          )}`}
+                          position={tooltipPositionNetFee}
+                          renderContent={renderFundingRateTooltip(stats)}
+                        />
+                      </div>
+                    </div>
+                    <div className="App-card-row">
+                      <div className="label">
+                        <Trans>Utilization</Trans>
+                      </div>
+                      <div>{formatAmount(stats.totalUtilization, 2, 2, false)}%</div>
                     </div>
                   </div>
                 </div>
-                <div className="App-card-divider"></div>
-                <div className="App-card-content">
-                  <div className="App-card-row">
-                    <div className="label">
-                      <Trans>Price</Trans>
-                    </div>
-                    <div>{formatUsd(stats.token.prices?.minPrice)}</div>
-                  </div>
-                  <div className="App-card-row">
-                    <div className="label">
-                      <Trans>Pools</Trans>
-                    </div>
-                    <div>
-                      <Tooltip
-                        handle={formatUsd(stats.totalPoolValue)}
-                        position="right-bottom"
-                        renderContent={() => (
-                          <>
-                            {stats.marketsStats.map(({ marketInfo, poolValueUsd }) => (
-                              <StatsTooltipRow
-                                key={marketInfo.marketTokenAddress}
-                                showDollar={false}
-                                label={`[${getMarketPoolName(marketInfo)}]`}
-                                value={formatUsd(poolValueUsd)}
-                              />
-                            ))}
-                          </>
-                        )}
-                      />
-                    </div>
-                  </div>
-                  <div className="App-card-row">
-                    <div className="label">
-                      <Trans>Funding Rate / 1h</Trans>
-                    </div>
-                    <div>
-                      <Tooltip
-                        handle={`${formatFundingRate(stats.avgFundingRateLong)} / ${formatFundingRate(
-                          stats.avgFundingRateShort
-                        )}`}
-                        position="right-bottom"
-                        renderContent={renderFundingRateTooltip(stats)}
-                      />
-                    </div>
-                  </div>
-                  <div className="App-card-row">
-                    <div className="label">
-                      <Trans>Utilization</Trans>
-                    </div>
-                    <div>{formatAmount(stats.totalUtilization, 2, 2, false)}%</div>
-                  </div>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </>
       )}

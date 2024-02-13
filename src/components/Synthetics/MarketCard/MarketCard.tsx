@@ -1,3 +1,4 @@
+import "./MarketCard.scss";
 import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -11,17 +12,17 @@ import {
   getMaxReservedUsd,
   getOpenInterestUsd,
   getReservedUsd,
-  isMarketAdaptiveFundingActive,
 } from "domain/synthetics/markets";
 import { CHART_PERIODS } from "lib/legacy";
-import { formatAmount, formatPercentage, formatUsd, getBasisPoints } from "lib/numbers";
+import { formatPercentage, formatRatePercentage, formatUsd, getBasisPoints } from "lib/numbers";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { ShareBar } from "components/ShareBar/ShareBar";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
 import { useCallback, useMemo } from "react";
-import "./MarketCard.scss";
-import { getPlusOrMinusSymbol, getPositiveOrNegativeClass } from "lib/utils";
+import MarketNetFee from "../MarketNetFee/MarketNetFee";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { DOCS_LINKS } from "config/links";
 
 export type Props = {
   marketInfo?: MarketInfo;
@@ -41,7 +42,8 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
     liquidity,
     maxReservedUsd,
     reservedUsd,
-    borrowingRate,
+    borrowingRateLong,
+    borrowingRateShort,
     fundingRateLong,
     fundingRateShort,
     totalInterestUsd,
@@ -54,9 +56,10 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
       liquidity: getAvailableUsdLiquidityForPosition(marketInfo, isLong),
       maxReservedUsd: getMaxReservedUsd(marketInfo, isLong),
       reservedUsd: getReservedUsd(marketInfo, isLong),
-      borrowingRate: getBorrowingFactorPerPeriod(marketInfo, isLong, CHART_PERIODS["1h"]).mul(100),
-      fundingRateLong: getFundingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]).mul(100),
-      fundingRateShort: getFundingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]).mul(100),
+      borrowingRateLong: getBorrowingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]).mul(-1),
+      borrowingRateShort: getBorrowingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]).mul(-1),
+      fundingRateLong: getFundingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]),
+      fundingRateShort: getFundingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]),
       currentOpenInterest: getOpenInterestUsd(marketInfo, isLong),
       totalInterestUsd: marketInfo.longInterestUsd.add(marketInfo.shortInterestUsd),
       priceDecimals: marketInfo.indexToken.priceDecimals,
@@ -64,35 +67,20 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
     };
   }, [marketInfo, isLong]);
   const fundingRate = isLong ? fundingRateLong : fundingRateShort;
+  const borrowingRate = isLong ? borrowingRateLong : borrowingRateShort;
+  const netRateHourly = fundingRate?.add(borrowingRate ?? 0);
   const indexName = marketInfo && getMarketIndexName(marketInfo);
   const poolName = marketInfo && getMarketPoolName(marketInfo);
 
   const renderFundingFeeTooltipContent = useCallback(() => {
     if (!fundingRateLong || !fundingRateShort) return [];
-    const isAdaptiveFundingForMarketActive = marketInfo && isMarketAdaptiveFundingActive(marketInfo);
 
-    const isLongPositive = fundingRateLong?.gt(0);
     const long = (
-      <Trans>
-        Long positions {isLongPositive ? t`receive` : t`pay`} a Funding Fee of{" "}
-        <span className={getPositiveOrNegativeClass(fundingRateLong)}>
-          {getPlusOrMinusSymbol(fundingRateLong)}
-          {formatAmount(fundingRateLong.abs(), 30, 4)}%
-        </span>{" "}
-        per hour.
-      </Trans>
+      <MarketNetFee borrowRateHourly={borrowingRateLong} fundingRateHourly={fundingRateLong} isLong={true} />
     );
 
-    const isShortPositive = fundingRateShort?.gt(0);
     const short = (
-      <Trans>
-        Short positions {isShortPositive ? t`receive` : t`pay`} a Funding Fee of{" "}
-        <span className={getPositiveOrNegativeClass(fundingRateShort)}>
-          {getPlusOrMinusSymbol(fundingRateShort)}
-          {formatAmount(fundingRateShort.abs(), 30, 4)}%
-        </span>{" "}
-        per hour.
-      </Trans>
+      <MarketNetFee borrowRateHourly={borrowingRateShort} fundingRateHourly={fundingRateShort} isLong={false} />
     );
 
     const [currentFeeElement, oppositeFeeElement] = isLong ? [long, short] : [short, long];
@@ -100,23 +88,23 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
     return (
       <div>
         {currentFeeElement}
-        <br />
-        <br />
+        <div className="divider my-base" />
         {oppositeFeeElement}
-        {isAdaptiveFundingForMarketActive && (
-          <span>
-            <br />
-            <br />
-            <Trans>
-              This market uses an Adaptive Funding Rate. The Funding Rate will adjust over time depending on the ratio
-              of longs and shorts.{" "}
-              <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#adaptive-funding">Read more</ExternalLink>.
-            </Trans>
-          </span>
-        )}
+        <div className="divider my-base" />
+        <Trans>
+          Funding fees help to balance longs and shorts and are exchanged between both sides.{" "}
+          <ExternalLink href={DOCS_LINKS.fundingFees}>Read more</ExternalLink>.
+        </Trans>
+
+        <br />
+        <br />
+        <Trans>
+          Borrowing fees help ensure available liquidity.{" "}
+          <ExternalLink href={DOCS_LINKS.borrowingFees}>Read more</ExternalLink>.
+        </Trans>
       </div>
     );
-  }, [fundingRateLong, fundingRateShort, isLong, marketInfo]);
+  }, [fundingRateLong, fundingRateShort, isLong, borrowingRateLong, borrowingRateShort]);
 
   return (
     <div className="Exchange-swap-market-box App-box App-box-border MarketCard">
@@ -185,21 +173,12 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
         />
 
         <ExchangeInfoRow
-          label={t`Borrow Fee`}
-          value={borrowingRate ? `-${formatAmount(borrowingRate, 30, 4)}% / 1h` : "..."}
-        />
-
-        <ExchangeInfoRow
-          label={t`Funding Fee`}
+          label={netRateHourly?.gt(0) ? t`Net Rebate` : t`Net Fee`}
           value={
-            <Tooltip
-              className="al-swap"
-              handle={
-                fundingRate
-                  ? `${getPlusOrMinusSymbol(fundingRate)}${formatAmount(fundingRate.abs(), 30, 4)}% / 1h`
-                  : "..."
-              }
-              position="right-bottom"
+            <TooltipWithPortal
+              portalClassName="MarketCard-net-fee"
+              handle={netRateHourly ? `${formatRatePercentage(netRateHourly)} / 1h` : "..."}
+              position="right-top"
               renderContent={renderFundingFeeTooltipContent}
             />
           }
