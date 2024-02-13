@@ -4293,8 +4293,12 @@ msgid "Sending settle request"
 msgstr "Sending settle request"
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-msgid "Set Order Size to: {0}x"
-msgstr "Set Order Size to: {0}x"
+msgid "Set Leverage to: {0}x"
+msgstr "Set Leverage to: {0}x"
+
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+#~ msgid "Set Order Size to: {0}x"
+#~ msgstr "Set Order Size to: {0}x"
 
 #: src/components/Exchange/PositionDropdown.tsx
 msgid "Set TP/SL"
