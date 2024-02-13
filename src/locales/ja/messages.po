@@ -315,6 +315,10 @@ msgstr "紹介コードが追加できませんでした"
 msgid "Adding..."
 msgstr "追加中"
 
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+msgid "Additional Execution Fee"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "Additional reserve required"
 msgstr "必要な追加リザーブ額"
@@ -460,6 +464,10 @@ msgstr "承認中"
 #: src/components/TokenCard/TokenCard.js
 msgid "Arbitrum APR:"
 msgstr "ArbitrumのAPR(実質年利)"
+
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+msgid "As network fees have increased, an additional execution fee is needed."
+msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
@@ -1886,6 +1894,7 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees"
 msgstr "手数料"
@@ -2923,7 +2932,6 @@ msgid "Max Capacity for {0} Reached"
 msgstr "{0}の最大キャパシティに到達しています"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Max Execution Fee"
 msgstr ""
