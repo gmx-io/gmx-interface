@@ -515,7 +515,7 @@ export function TradeBox(p: Props) {
               <br />
               <br />
               <span onClick={() => setLeverageOption(nextLeverage)} className="Tradebox-handle">
-                <Trans>Set Order Size to: {formatAmount(tooltipArg, 4, 0)}x</Trans>
+                <Trans>Set Leverage to: {formatAmount(tooltipArg, 4, 0)}x</Trans>
               </span>
               <br />
               <br />
