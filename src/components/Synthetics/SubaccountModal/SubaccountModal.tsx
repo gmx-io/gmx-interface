@@ -251,7 +251,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
 
   const [notificationState, setNotificationState] = useSubaccountNotificationState();
 
-  const isSubaccountGenerated = !subaccountAddress || !actionsCount;
+  const isSubaccountGenerated = Boolean(subaccountAddress && actionsCount);
 
   const showToast = useCallback(() => {
     const toastId = Date.now();
@@ -259,7 +259,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     helperToast.success(
       <SubaccountNotification
         toastId={toastId}
-        subaccountWasAlreadyGenerated={!isSubaccountGenerated}
+        subaccountWasAlreadyGenerated={isSubaccountGenerated}
         subaccountWasAlreadyActivated={isSubaccountActive}
       />,
       {
@@ -315,9 +315,11 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
   useEffect(() => {
     if (isTxPending === false && prevIsTxPending === true) {
       setActiveTx(null);
+      setTopUp(null);
+      setWntForAutoTopUps(null);
       setNextFormState("activated");
     }
-  }, [isTxPending, prevIsTxPending, setActiveTx, setNextFormState]);
+  }, [isTxPending, prevIsTxPending, setActiveTx, setNextFormState, setTopUp, setWntForAutoTopUps]);
 
   useEffect(() => {
     if (isTxPending === false && prevIsTxPending === true && notificationState === "activating") {
@@ -339,10 +341,10 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
       let address = subaccountAddress;
       let count = actionsCount;
 
-      setNotificationState(isSubaccountGenerated ? "generating" : "activating");
+      setNotificationState(isSubaccountGenerated ? "activating" : "generating");
       showToast();
 
-      if (isSubaccountGenerated) {
+      if (!isSubaccountGenerated) {
         try {
           address = await generateSubaccount();
 
