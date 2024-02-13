@@ -49,16 +49,14 @@ export default function Tooltip({
   const intervalCloseRef = useRef<ReturnType<typeof setTimeout> | null>();
   const intervalOpenRef = useRef<ReturnType<typeof setTimeout> | null>();
 
-  const handleRef = useRef<HTMLSpanElement>(null);
+  const handlerRef = useRef<HTMLSpanElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
 
-  const [computedPlacement, setComputedPlacement] = useState<TooltipPosition | undefined>(
-    position ?? DEFAULT_TOOLTIP_POSITION
-  );
+  const [computedPlacement, setComputedPlacement] = useState<TooltipPosition | undefined>(position);
 
   useEffect(() => {
-    if (handleRef.current && popupRef.current) {
-      computePosition(handleRef.current, popupRef.current, {
+    if (handlerRef.current && popupRef.current) {
+      computePosition(handlerRef.current, popupRef.current, {
         middleware: [flip(), shift()],
         placement: position,
       }).then(({ placement }) => {
@@ -118,7 +116,7 @@ export default function Tooltip({
       onClick={onMouseClick}
     >
       <span
-        ref={handleRef}
+        ref={handlerRef}
         onClick={onHandleClick}
         className={cx({ "Tooltip-handle": !disableHandleStyle }, [handleClassName], { active: visible })}
       >

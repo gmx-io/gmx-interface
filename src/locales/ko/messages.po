@@ -90,6 +90,10 @@ msgstr "<0>풀의 최대허용량이 {0}에 도달했습니다. 다른 토큰을
 msgid "<0>The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not.</0><1>This can also cause limit/triggers to not be executed if the price is not reached for long enough. <2>Read more</2>.</1>"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
+msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>This value may be higher on other websites due to the collateral of positions being included in the calculation.</1>"
 msgstr ""
@@ -147,12 +151,19 @@ msgstr "{0}담보의 USD가치 스냅샷은 해당 포지션이 열려있을 때
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "APR"
 msgstr "APR"
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week."
 msgstr "APR은 매주 수요일에 업데이트되며 한 주 동안 쌓인 수수료에 따라 달라집니다."
+
+#: src/pages/Stake/StakeV2.js
+msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week. <0/><1/>Historical GLP APRs can be checked in this <2>community dashboard</2>."
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "AUM"
@@ -304,6 +315,10 @@ msgstr "추천 코드 추가 실패"
 msgid "Adding..."
 msgstr "추가중..."
 
+#: src/pages/Stake/StakeV2.js
+msgid "Additional reserve required"
+msgstr ""
+
 #: src/components/Exchange/OrdersToa.js
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr "추가로, 트리거 주문은 시장가 주문이며 트리거 가격으로 결제되지 않을 수도 있습니다."
@@ -405,6 +420,7 @@ msgid "Approval was cancelled"
 msgstr "제출 취소되었습니다"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/Stake/StakeV2.js
 msgid "Approve GMX"
 msgstr "GMX 승인"
 
@@ -416,8 +432,13 @@ msgid "Approve {0}"
 msgstr "{0} 승인"
 
 #: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV2.js
 msgid "Approve {stakingTokenSymbol}"
 msgstr "{stakingTokenSymbol} 승인"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Approving GMX..."
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
@@ -426,6 +447,7 @@ msgid "Approving {0}..."
 msgstr "{0} 승인중..."
 
 #: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV2.js
 msgid "Approving {stakingTokenSymbol}..."
 msgstr "{stakingTokenSymbol} 승인중..."
 
@@ -525,6 +547,14 @@ msgstr ""
 msgid "Bonus Tokens"
 msgstr "보너스 토큰"
 
+#: src/pages/Stake/StakeV2.js
+msgid "Boost Percentage"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
+msgstr ""
+
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Exchange/PositionEditor.js
@@ -582,6 +612,7 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
 msgid "Buy GLP"
 msgstr "GLP 구매"
 
@@ -596,6 +627,10 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Buy GM tokens before the epoch resets in {0} to be eligible for the Bonus Rebate. Alternatively, wait for the epoch to reset to redeem GLP and buy GM within the same epoch."
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Buy GMX"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -773,6 +808,8 @@ msgstr ""
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claim"
 msgstr "수령하기"
 
@@ -784,8 +821,17 @@ msgstr ""
 msgid "Claim Funding Fees"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "Claim GMX Rewards"
+msgstr ""
+
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "Claim Price Impact Rebates"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Claim Rewards"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -793,6 +839,7 @@ msgid "Claim V2 Rebates from your referred Traders."
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claim completed!"
 msgstr "수령 완료!"
 
@@ -800,11 +847,17 @@ msgstr "수령 완료!"
 msgid "Claim esGMX"
 msgstr "esGMX 수령하기"
 
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "Claim esGMX Rewards"
+msgstr ""
+
 #: src/pages/Stake/StakeV1.js
 msgid "Claim failed"
 msgstr "수령 실패"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claim failed."
 msgstr "수령 실패"
 
@@ -816,11 +869,22 @@ msgstr "수령 제출 완료!"
 msgid "Claim submitted! <0>View status.</0>"
 msgstr "수령 제출완료! <0>상태 보기.</0>"
 
+#: src/pages/Stake/StakeV2.js
+msgid "Claim submitted."
+msgstr ""
+
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "Claim {totalUsd}"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "Claim {wrappedTokenSymbol} Rewards"
+msgstr ""
+
 #: src/components/Synthetics/Claims/ClaimableCard.tsx
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claimable"
 msgstr "수령가능"
 
@@ -845,6 +909,7 @@ msgstr ""
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claiming..."
 msgstr "수령중..."
 
@@ -983,6 +1048,31 @@ msgstr "계정 전송 완료"
 msgid "Complete Transfer"
 msgstr "전송 완료"
 
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "Compound"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Compound Rewards"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Compound completed!"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Compound failed."
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Compound submitted!"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Compounding..."
+msgstr ""
+
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -1042,6 +1132,10 @@ msgstr "연동"
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Connect Wallet"
 msgstr "지갑 연동"
 
@@ -1058,8 +1152,17 @@ msgstr ""
 msgid "Continue"
 msgstr "계속하기"
 
+#: src/pages/Stake/StakeV2.js
+msgid "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
+msgstr ""
+
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Convert this amount of {0} to {1} in your Main Account to allow for auto top-ups, as only {2} can be automatically transferred to your Subaccount. The {3} balance of your main account is shown above."
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "Convert {wrappedTokenSymbol} to {nativeTokenSymbol}"
 msgstr ""
 
 #: src/components/Exchange/PositionShare.tsx
@@ -1167,6 +1270,10 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 msgid "Current Pool Amount"
 msgstr "현재 풀 양"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Current Reserved"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Current Weight"
@@ -1315,6 +1422,10 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Deposit"
 msgstr "예치"
 
@@ -1334,12 +1445,20 @@ msgstr ""
 msgid "Deposit error."
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
+msgid "Deposit failed!"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 msgid "Deposit failed."
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Deposit not enough to cover fees"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Deposit submitted!"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -1350,6 +1469,10 @@ msgstr ""
 msgid "Deposit {0} USD into {1} {longOrShortText}"
 msgstr "{0} USD를 {1} {longOrShortText}으로 입금"
 
+#: src/pages/Stake/StakeV2.js
+msgid "Deposited"
+msgstr ""
+
 #: src/pages/Exchange/Exchange.js
 msgid "Deposited {0} USD into {tokenSymbol} {longOrShortText}"
 msgstr "{0} USD를 {tokenSymbol} {longOrShortText}으로 입금 완료"
@@ -1358,11 +1481,16 @@ msgstr "{0} USD를 {tokenSymbol} {longOrShortText}으로 입금 완료"
 msgid "Deposited {0} into {positionText}"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
+msgid "Deposited!"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Depositing {0} to {positionText}"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
+#: src/pages/Stake/StakeV2.js
 msgid "Depositing..."
 msgstr "예치중..."
 
@@ -1400,8 +1528,14 @@ msgid "Download"
 msgstr "다운로드"
 
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Earn"
 msgstr "보상"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2."
+msgstr ""
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "Earn an extra {0}% {nativeTokenSymbol} Boosted APR by increasing your staked <0>Multiplier Points</0>."
@@ -1596,6 +1730,9 @@ msgstr ""
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Enter an amount"
 msgstr "수량 입력"
 
@@ -1638,6 +1775,11 @@ msgstr ""
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Error submitting order"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "Escrowed GMX"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -1895,6 +2037,11 @@ msgstr "GLP 인덱스 구성"
 msgid "GLP Pool"
 msgstr "GLP 풀"
 
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "GLP Vault"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GLP and GMX autocompounding vaults"
 msgstr ""
@@ -1983,6 +2130,11 @@ msgstr ""
 msgid "GMX V2 information for account: {checkSummedAccount}"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "GMX Vault"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX Weekly Updates"
 msgstr "GMX 주간 업데이트"
@@ -2034,6 +2186,11 @@ msgstr ""
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX staking rewards updates and insights"
 msgstr "GMX 스테이킹 보상 업데이트 및 인사이트"
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "GMX transfers not yet enabled"
+msgstr ""
 
 #: src/components/Common/SEO.js
 msgid "GMX | Decentralized Perpetual Exchange"
@@ -2096,6 +2253,10 @@ msgstr "이미지 생성 에러. 새로고침 후 다시 시도해주세요."
 #: src/components/Synthetics/TVChart/TVChart.tsx
 msgid "Inc."
 msgstr "Inc."
+
+#: src/pages/Stake/StakeV2.js
+msgid "Incentives"
+msgstr ""
 
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Incentives Distribution History"
@@ -2236,6 +2397,10 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient receive token liquidity"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Insufficient staked tokens"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -2525,6 +2690,10 @@ msgstr ""
 msgid "Liquidation price would cross mark price."
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
+msgid "Liquidity and trading incentives program is live on Arbitrum. <0>Read more</0>."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Liquidity data not loaded"
@@ -2731,6 +2900,9 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Max"
 msgstr ""
 
@@ -2740,6 +2912,10 @@ msgstr ""
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Max Bonus Rebate"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Max Capacity"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -2783,6 +2959,9 @@ msgstr ""
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Max amount exceeded"
 msgstr "최대 수량을 초과했습니다"
 
@@ -2992,6 +3171,14 @@ msgstr "더 자세한 정보"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "More Options"
 msgstr "더 많은 설정"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Multiplier Points"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Multiplier Points APR"
+msgstr ""
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "NA"
@@ -3547,6 +3734,9 @@ msgstr "이전"
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/OrdersOverview/OrdersOverview.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Price"
 msgstr "가격"
 
@@ -3653,10 +3843,12 @@ msgid "Price is below Mark Price"
 msgstr "가격이 시장 평군가보다 낮습니다"
 
 #: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Price on Arbitrum"
 msgstr "Arbitrum에서 가격"
 
 #: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Price on Avalanche"
 msgstr "Avalanche에서 가격"
 
@@ -3695,6 +3887,10 @@ msgstr ""
 
 #: src/pages/MarketPoolsPage/MarketPoolsPage.tsx
 msgid "Purchase <0>GM Tokens</0> to earn fees from swaps and leverage trading."
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Purchase Insurance"
 msgstr ""
 
 #: src/components/Synthetics/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
@@ -3887,6 +4083,10 @@ msgstr "{tokenSymbol} {longOrShortText} {0} USD의 증가 요청됨."
 msgid "Requested withdrawal of {0} USD from {1} {longOrShortText}."
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
+msgid "Reserve Amount"
+msgstr ""
+
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Reserve considers the PnL of Open Positions, while Open Interest does not."
 msgstr ""
@@ -3894,6 +4094,11 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 msgid "Reserved"
 msgstr "리저브 완료"
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "Reserved for Vesting"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Returns calculator for GMX and GLP"
@@ -3905,6 +4110,8 @@ msgstr "GMX 및 GLP 수익 계산기"
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Rewards"
 msgstr "보상"
 
@@ -4012,6 +4219,7 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
 msgid "Sell GLP"
 msgstr "GLP 판매"
 
@@ -4279,12 +4487,48 @@ msgstr "스테이블코인 비율"
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Stake"
 msgstr "스테이킹"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Stake <0>GMX</0> and buy <1>GM</1> or <2>GLP</2> to earn rewards."
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Stake GMX"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Stake GMX Rewards"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Stake Multiplier Points"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Stake esGMX"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Stake esGMX Rewards"
+msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 msgid "Stake failed"
 msgstr "스테이킹 실패됨"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Stake failed."
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Stake submitted!"
+msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 msgid "Stake submitted! <0>View status.</0>"
@@ -4296,10 +4540,23 @@ msgstr "스테이킹 제출완료! <0>상태 보기.</0>"
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Staked"
 msgstr "스테이킹 완료"
 
+#: src/pages/Stake/StakeV2.js
+msgid "Staked Multiplier Points"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "Staked Tokens"
+msgstr ""
+
 #: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV2.js
 msgid "Staking..."
 msgstr "스테이킹중..."
 
@@ -4854,6 +5111,7 @@ msgstr ""
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/Referrals/TradersStats.tsx
+#: src/pages/Stake/StakeV2.js
 msgid "Total"
 msgstr "총계"
 
@@ -4873,6 +5131,10 @@ msgstr "총 수수료"
 msgid "Total Rebates"
 msgstr "총 소개 보수"
 
+#: src/pages/Stake/StakeV2.js
+msgid "Total Rewards"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Stake/StakeV1.js
@@ -4880,6 +5142,9 @@ msgstr "총 소개 보수"
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Total Staked"
 msgstr "총 스테이킹"
 
@@ -4892,6 +5157,9 @@ msgstr "전체 통계"
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Total Supply"
 msgstr "총 공급량"
 
@@ -5010,6 +5278,7 @@ msgid "Transaction was cancelled."
 msgstr "트랜잭션 실패됨."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/Stake/StakeV2.js
 msgid "Transfer Account"
 msgstr "계정 이전"
 
@@ -5141,18 +5410,47 @@ msgstr ""
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Unstake"
 msgstr "언스테이킹"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Unstake GMX"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Unstake completed!"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Unstake esGMX"
+msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 msgid "Unstake failed"
 msgstr "스테이킹 실패"
 
+#: src/pages/Stake/StakeV2.js
+msgid "Unstake failed."
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Unstake submitted!"
+msgstr ""
+
 #: src/pages/Stake/StakeV1.js
 msgid "Unstake submitted! <0>View status.</0>"
 msgstr "언스테이킹 제출완료! <0>상태 보기.</0>"
 
+#: src/pages/Stake/StakeV2.js
+msgid "Unstaking will burn <0>{0} Multiplier Points</0>. <1>You will earn {1}% less {nativeTokenSymbol} rewards with this action.</1>"
+msgstr ""
+
 #: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV2.js
 msgid "Unstaking..."
 msgstr "언스테이킹중..."
 
@@ -5197,6 +5495,10 @@ msgstr ""
 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Use the \"Close\" button to reduce your Position Size."
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Use the \"Compound\" button to stake your Multiplier Points."
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
@@ -5301,6 +5603,18 @@ msgstr ""
 msgid "V2 is newly live, and liquidity may be low initially."
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
+msgid "Vault Capacity"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Vault Capacity for your Account:"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Vest"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Vest with GLP on Arbitrum"
 msgstr "Arbitrum에서 GLP로 베스팅하기"
@@ -5324,6 +5638,11 @@ msgstr "베스트팅된 GLP에서 인출되지 않은 양"
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Vested GMX not withdrawn"
 msgstr "베스트팅된 GMX에서 인출되지 않은 양"
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "Vesting Status"
+msgstr ""
 
 #: src/App/App.js
 #: src/lib/contracts/notifications.tsx
@@ -5403,6 +5722,10 @@ msgstr "승인 대기중"
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Wallet"
 msgstr "지갑"
 
@@ -5449,11 +5772,29 @@ msgstr "포지션을 닫을 때, 어떤 토큰으로 이익을 수취할 지 선
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Withdraw"
 msgstr "인출"
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Withdraw disabled, pending {0} upgrade"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Withdraw failed."
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Withdraw from GLP Vault"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Withdraw from GMX Vault"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Withdraw submitted."
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -5481,6 +5822,10 @@ msgstr ""
 msgid "Withdrawing..."
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
+msgid "Withdrawn!"
+msgstr ""
+
 #: src/pages/Exchange/Exchange.js
 msgid "Withdrew {0} USD from {tokenSymbol} {longOrShortText}."
 msgstr "{tokenSymbol} {longOrShortText} {0} USD 인출됨."
@@ -5504,6 +5849,14 @@ msgstr "일드 볼트"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Yield simulator for GMX"
 msgstr "GMX를 위한 일드 시뮬레이터"
+
+#: src/pages/Stake/StakeV2.js
+msgid "You are earning rewards with {0} tokens.<0/>Tokens: {amountStr}."
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "You are earning {0}% more {nativeTokenSymbol} rewards using {1} Staked Multiplier Points."
+msgstr ""
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
@@ -5601,8 +5954,18 @@ msgstr ""
 msgid "You have multiple existing Increase {longOrShortText} {0} limit orders"
 msgstr "{longOrShortText} {0}에 대한 복수의 지정가 주문이 존재합니다."
 
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "You have not deposited any tokens for vesting."
+msgstr ""
+
 #: src/components/Stake/GMXAprTooltip.tsx
+#: src/pages/Stake/StakeV2.js
 msgid "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points using the \"Compound\" button."
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points."
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -5624,6 +5987,10 @@ msgstr ""
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You have {0} esGMX (IOU) tokens."
 msgstr "귀하는 {0} esGMx (IOU) 토큰을 보유하고 있습니다."
+
+#: src/pages/Stake/StakeV2.js
+msgid "You need a total of at least {0} {stakeTokenLabel} to vest {1} esGMX."
+msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for collateral to initiate this trade."
@@ -5647,6 +6014,11 @@ msgstr "해당 주문이 실행되게 되면 최소 {0} {1}을 받을 수 있습
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "You will receive at least {toAmountText} if this order is executed. This price is being updated in real time based on Swap Fees and Price Impact."
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "Your APR"
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
@@ -5773,6 +6145,11 @@ msgstr "{0} GLP가 베스팅을 위해 리저브되었습니다."
 msgid "{0} GLP sold for {1} {2}!"
 msgstr "{0} GLP를 {1} {2}로 판매하였습니다!"
 
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
+msgstr ""
+
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "{0} Pool Capacity Reached"
 msgstr "{0} 풀 수용량 도달됨"
@@ -5836,6 +6213,11 @@ msgstr "{0} 가격"
 #: src/components/Glp/GlpSwap.js
 msgid "{0} selected in order form"
 msgstr "{0}이(가) 주문 폼에서 선택되었습니다."
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
+msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
