@@ -994,7 +994,7 @@ export function ConfirmationBox(p: Props) {
     return (
       <ExchangeInfoRow label={t`Available Liquidity`}>
         <Tooltip
-          position="right-bottom"
+          position="bottom-end"
           handleClassName={isLiquidityRisk ? "negative" : ""}
           handle={
             isSwap
@@ -1050,7 +1050,7 @@ export function ConfirmationBox(p: Props) {
         label={
           <TooltipWithPortal
             handle={t`Allowed Slippage`}
-            position="left-top"
+            position="top-start"
             renderContent={() => {
               return (
                 <div className="text-white">
@@ -1107,7 +1107,7 @@ export function ConfirmationBox(p: Props) {
               handle={`${formatUsd(entriesInfo?.totalPnL)} (${formatPercentage(entriesInfo?.totalPnLPercentage, {
                 signed: true,
               })})`}
-              position="right-bottom"
+              position="bottom-end"
               handleClassName={entriesInfo.totalPnL?.isNegative() ? "text-red" : "text-green"}
               className="SLTP-pnl-tooltip"
               renderContent={() =>
@@ -1311,7 +1311,7 @@ export function ConfirmationBox(p: Props) {
                       <Trans>Collateral ({collateralToken?.symbol})</Trans>
                     </span>
                   }
-                  position="left-top"
+                  position="top-start"
                   renderContent={() => {
                     return (
                       <div>
@@ -1341,7 +1341,7 @@ export function ConfirmationBox(p: Props) {
                     to={formatUsd(nextPositionValues?.nextCollateralUsd)}
                   />
                 }
-                position="right-top"
+                position="top-end"
                 renderContent={() => {
                   return (
                     <>
@@ -1428,7 +1428,7 @@ export function ConfirmationBox(p: Props) {
           {isLimit && (
             <ExchangeInfoRow label={t`Limit Price`}>
               <Tooltip
-                position="right-bottom"
+                position="bottom-end"
                 handle={formatTokensRatio(fromToken, toToken, triggerRatio)}
                 renderContent={() =>
                   t`Limit Order Price to guarantee Min. Receive amount is updated in real time in the Orders tab after the order has been created.`

@@ -493,7 +493,7 @@ function VesterDepositModal(props) {
                     2,
                     true
                   )}`}
-                  position="right-top"
+                  position="top-end"
                   renderContent={() => {
                     return (
                       <div>
@@ -530,7 +530,7 @@ function VesterDepositModal(props) {
                     2,
                     true
                   )} / ${formatAmount(maxReserveAmount, 18, 2, true)}`}
-                  position="right-top"
+                  position="top-end"
                   renderContent={() => {
                     return (
                       <>
@@ -1416,7 +1416,7 @@ export default function StakeV2({ setPendingTxns }) {
     return (
       <Tooltip
         handle={`100.00%`}
-        position="right-bottom"
+        position="bottom-end"
         renderContent={() => {
           return (
             <Trans>
@@ -1619,7 +1619,7 @@ export default function StakeV2({ setPendingTxns }) {
                   {!gmxPrice && "..."}
                   {gmxPrice && (
                     <Tooltip
-                      position="right-bottom"
+                      position="bottom-end"
                       className="nowrap"
                       handle={"$" + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
                       renderContent={() => (
@@ -1664,7 +1664,7 @@ export default function StakeV2({ setPendingTxns }) {
                 <div>
                   <Tooltip
                     handle={`${formatKeyAmount(processedData, "gmxAprTotalWithBoost", 2, 2, true)}%`}
-                    position="right-bottom"
+                    position="bottom-end"
                     renderContent={() => (
                       <GMXAprTooltip processedData={processedData} nativeTokenSymbol={nativeTokenSymbol} />
                     )}
@@ -1678,7 +1678,7 @@ export default function StakeV2({ setPendingTxns }) {
                 <div>
                   <Tooltip
                     handle={`$${formatKeyAmount(processedData, "totalGmxRewardsUsd", USD_DECIMALS, 2, true)}`}
-                    position="right-bottom"
+                    position="bottom-end"
                     renderContent={() => {
                       return (
                         <>
@@ -1725,7 +1725,7 @@ export default function StakeV2({ setPendingTxns }) {
                 <div>
                   <Tooltip
                     handle={`${formatAmount(processedData.boostBasisPoints, 2, 2, false)}%`}
-                    position="right-bottom"
+                    position="bottom-end"
                     renderContent={renderBoostPercentageTooltip}
                   />
                 </div>
@@ -1739,7 +1739,7 @@ export default function StakeV2({ setPendingTxns }) {
                   {!totalGmxStaked && "..."}
                   {totalGmxStaked && (
                     <Tooltip
-                      position="right-bottom"
+                      position="bottom-end"
                       className="nowrap"
                       handle={
                         formatAmount(totalGmxStaked, 18, 0, true) +
@@ -1905,7 +1905,7 @@ export default function StakeV2({ setPendingTxns }) {
                 <div>
                   <Tooltip
                     handle={`${formatKeyAmount(processedData, "glpAprTotal", 2, 2, true)}%`}
-                    position="right-bottom"
+                    position="bottom-end"
                     renderContent={() => {
                       return (
                         <>
@@ -1948,7 +1948,7 @@ export default function StakeV2({ setPendingTxns }) {
                 <div>
                   <Tooltip
                     handle={`$${formatKeyAmount(processedData, "totalGlpRewardsUsd", USD_DECIMALS, 2, true)}`}
-                    position="right-bottom"
+                    position="bottom-end"
                     renderContent={() => {
                       return (
                         <>
@@ -2065,7 +2065,7 @@ export default function StakeV2({ setPendingTxns }) {
                 <div>
                   <Tooltip
                     handle={`${formatKeyAmount(processedData, "gmxAprTotalWithBoost", 2, 2, true)}%`}
-                    position="right-bottom"
+                    position="bottom-end"
                     renderContent={() => (
                       <GMXAprTooltip processedData={processedData} nativeTokenSymbol={nativeTokenSymbol} />
                     )}
@@ -2164,7 +2164,7 @@ export default function StakeV2({ setPendingTxns }) {
                   <div>
                     <Tooltip
                       handle={formatAmount(totalRewardTokens, 18, 2, true)}
-                      position="right-bottom"
+                      position="bottom-end"
                       renderContent={() => {
                         return (
                           <>
@@ -2212,7 +2212,7 @@ export default function StakeV2({ setPendingTxns }) {
                         4,
                         true
                       )}`}
-                      position="right-bottom"
+                      position="bottom-end"
                       renderContent={() => {
                         return (
                           <div>
@@ -2235,7 +2235,7 @@ export default function StakeV2({ setPendingTxns }) {
                   <div>
                     <Tooltip
                       handle={`${formatKeyAmount(vestingData, "gmxVesterClaimable", 18, 4, true)} GMX`}
-                      position="right-bottom"
+                      position="bottom-end"
                       renderContent={() => (
                         <Trans>
                           {formatKeyAmount(vestingData, "gmxVesterClaimable", 18, 4, true)} GMX tokens can be claimed,
@@ -2302,7 +2302,7 @@ export default function StakeV2({ setPendingTxns }) {
                         4,
                         true
                       )}`}
-                      position="right-bottom"
+                      position="bottom-end"
                       renderContent={() => {
                         return (
                           <div>
@@ -2325,7 +2325,7 @@ export default function StakeV2({ setPendingTxns }) {
                   <div>
                     <Tooltip
                       handle={`${formatKeyAmount(vestingData, "glpVesterClaimable", 18, 4, true)} GMX`}
-                      position="right-bottom"
+                      position="bottom-end"
                       renderContent={() => (
                         <Trans>
                           {formatKeyAmount(vestingData, "glpVesterClaimable", 18, 4, true)} GMX tokens can be claimed,

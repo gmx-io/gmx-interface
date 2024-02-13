@@ -910,10 +910,6 @@ msgid "Claims"
 msgstr ""
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
-#~ msgid "Claims (1)"
-#~ msgstr ""
-
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims ({totalClaimables})"
 msgstr ""
 

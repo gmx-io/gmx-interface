@@ -170,7 +170,7 @@ export function MarketStats(p: Props) {
                   displayDecimals: 3,
                 }) || "..."
               }
-              position="right-bottom"
+              position="bottom-end"
               renderContent={() => {
                 return (
                   <div>
@@ -219,7 +219,7 @@ export function MarketStats(p: Props) {
                     displayDecimals: 0,
                   }
                 )}
-                position="right-bottom"
+                position="bottom-end"
                 renderContent={() => {
                   return (
                     <div>
@@ -276,7 +276,7 @@ export function MarketStats(p: Props) {
                   displayDecimals: 0,
                 }
               )}
-              position="right-bottom"
+              position="bottom-end"
               renderContent={() => (
                 <div>
                   <Trans>

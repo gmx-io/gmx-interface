@@ -576,7 +576,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
                   <TooltipWithPortal
                     handle={subAccNativeTokenBalanceFormatted}
                     renderContent={renderSubaccountBalanceTooltipContent}
-                    position="right-top"
+                    position="top-end"
                   />
                 ) : (
                   subAccNativeTokenBalanceFormatted
@@ -596,7 +596,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
                   displayDecimals: 4,
                 })}
                 renderContent={renderMainAccountBalanceTooltipContent}
-                position="right-top"
+                position="top-end"
               />
             }
             showDollar={false}
@@ -683,7 +683,7 @@ const InputRow = memo(
       <div>
         <div className="SubaccountModal-input-row flex text-gray">
           <div className="SubaccountModal-input-row-label">
-            <TooltipWithPortal position="left-top" handle={label} renderContent={renderTooltipContent} />
+            <TooltipWithPortal position="top-start" handle={label} renderContent={renderTooltipContent} />
           </div>
           <Input
             negativeSign={negativeSign}

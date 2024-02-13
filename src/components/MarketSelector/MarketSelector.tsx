@@ -142,7 +142,7 @@ export function MarketSelector({
                   <TooltipWithPortal
                     className="TokenSelector-tooltip"
                     handle={<div className="TokenSelector-tooltip-backing" />}
-                    position={marketIndex < filteredOptions.length / 2 ? "center-bottom" : "center-top"}
+                    position={marketIndex < filteredOptions.length / 2 ? "bottom" : "top"}
                     disableHandleStyle
                     closeOnDoubleClick
                     fitHandleWidth

@@ -139,7 +139,7 @@ export function SyntheticsStats() {
               <th>
                 <TooltipWithPortal
                   handle="VI Positions"
-                  position="right-bottom"
+                  position="bottom-end"
                   renderContent={() => (
                     <>
                       <p>Virtual inventory for positons</p>
@@ -154,7 +154,7 @@ export function SyntheticsStats() {
               <th>
                 <TooltipWithPortal
                   handle="VI Swaps"
-                  position="right-bottom"
+                  position="bottom-end"
                   renderContent={() => (
                     <>
                       <p>Virtual inventory for swaps (Long / Short)</p>
@@ -709,7 +709,7 @@ export function SyntheticsStats() {
                   <div className="cell">
                     <TooltipWithPortal
                       handle={`$${formatAmount(positionImpactUsd, 30, 2, true)}`}
-                      position="right-bottom"
+                      position="bottom-end"
                       renderContent={() => (
                         <>
                           <StatsTooltipRow
@@ -844,7 +844,7 @@ export function SyntheticsStats() {
                         "..."
                       ) : (
                         <TooltipWithPortal
-                          position="right-bottom"
+                          position="bottom-end"
                           handle={
                             <>
                               <div>
@@ -869,7 +869,7 @@ export function SyntheticsStats() {
                   <td>
                     <div className="cell">
                       <TooltipWithPortal
-                        position="right-bottom"
+                        position="bottom-end"
                         handle={
                           <div>
                             {formatAmountHuman(
@@ -910,7 +910,7 @@ export function SyntheticsStats() {
                   <td>
                     <div className="cell">
                       <TooltipWithPortal
-                        position={"right-bottom"}
+                        position="bottom-end"
                         handle="..."
                         portalClassName="MarketCard-config-tooltip"
                         renderContent={() => (

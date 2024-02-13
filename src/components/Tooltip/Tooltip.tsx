@@ -2,19 +2,24 @@ import cx from "classnames";
 import { useCallback, useState, useRef, MouseEvent, ReactNode } from "react";
 import { IS_TOUCH } from "config/env";
 import "./Tooltip.scss";
+// import { computePosition, flip, shift } from "@floating-ui/dom";
 
 const OPEN_DELAY = 0;
 const CLOSE_DELAY = 100;
 
 export type TooltipPosition =
-  | "left-bottom"
-  | "right-bottom"
-  | "left-top"
-  | "right-top"
+  | "top"
+  | "top-start"
+  | "top-end"
   | "right"
-  | "right-center"
-  | "center-bottom"
-  | "center-top";
+  | "right-start"
+  | "right-end"
+  | "bottom"
+  | "bottom-start"
+  | "bottom-end"
+  | "left"
+  | "left-start"
+  | "left-end";
 
 type Props = {
   handle: ReactNode;
@@ -33,11 +38,23 @@ export default function Tooltip(props: Props) {
   const [visible, setVisible] = useState(false);
   const intervalCloseRef = useRef<ReturnType<typeof setTimeout> | null>();
   const intervalOpenRef = useRef<ReturnType<typeof setTimeout> | null>();
+
+  const handleRef = useRef<HTMLSpanElement>(null);
+  const popupRef = useRef<HTMLDivElement>(null);
+
   const openDelay = props.openDelay ?? OPEN_DELAY;
   const closeDelay = props.closeDelay ?? CLOSE_DELAY;
 
-  const position = props.position ?? "left-bottom";
+  const position = props.position ?? "bottom-start";
   const trigger = props.trigger ?? "hover";
+
+  if (visible && handleRef.current && popupRef.current) {
+    // computePosition(handleRef.current, popupRef.current, {
+    //   middleware: [flip(), shift()],
+    //   placement: "bottom-end",
+    // }).then(({ placement }) => {
+    // });
+  }
 
   const onMouseEnter = useCallback(() => {
     if (trigger !== "hover" || IS_TOUCH) return;
@@ -87,13 +104,18 @@ export default function Tooltip(props: Props) {
   return (
     <span className={className} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onMouseClick}>
       <span
+        ref={handleRef}
         onClick={onHandleClick}
         className={cx({ "Tooltip-handle": !props.disableHandleStyle }, [props.handleClassName], { active: visible })}
       >
         {/* For onMouseLeave to work on disabled button https://github.com/react-component/tooltip/issues/18#issuecomment-411476678 */}
         {props.isHandlerDisabled ? <div className="Tooltip-disabled-wrapper">{props.handle}</div> : <>{props.handle}</>}
       </span>
-      {visible && <div className={cx(["Tooltip-popup", position])}>{props.renderContent()}</div>}
+      {visible && (
+        <div ref={popupRef} className={cx(["Tooltip-popup", position])}>
+          {props.renderContent()}
+        </div>
+      )}
     </span>
   );
 }

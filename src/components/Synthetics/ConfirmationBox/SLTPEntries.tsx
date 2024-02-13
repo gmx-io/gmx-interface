@@ -95,7 +95,7 @@ function SLTPEntries({ entriesInfo, marketInfo }: Props) {
                   }
                   portalClassName="SLTP-helper-text"
                   handleClassName="mr-xs"
-                  position="right-center"
+                  position="right"
                   renderContent={() => <span>Add Row</span>}
                   openDelay={1500}
                 />
@@ -110,7 +110,7 @@ function SLTPEntries({ entriesInfo, marketInfo }: Props) {
                     </button>
                   }
                   portalClassName="SLTP-helper-text"
-                  position="right-center"
+                  position="right"
                   renderContent={() => <span>Remove Row</span>}
                   openDelay={1500}
                 />

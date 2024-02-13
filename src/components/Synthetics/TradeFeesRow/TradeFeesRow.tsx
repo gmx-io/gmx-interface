@@ -404,7 +404,7 @@ export function TradeFeesRow(p: Props) {
       isTop={p.isTop}
       label={
         <Tooltip
-          position="left-top"
+          position="top-start"
           handle={title}
           renderContent={() => (
             <>
@@ -433,7 +433,7 @@ export function TradeFeesRow(p: Props) {
             <TooltipWithPortal
               portalClassName="TradeFeesRow-tooltip"
               handle={<span className={cx({ positive: totalFeeUsd.gt(0) })}>{formatDeltaUsd(totalFeeUsd)}</span>}
-              position="right-top"
+              position="top-end"
               renderContent={() => (
                 <div>
                   {feeRows.map((feeRow) => (

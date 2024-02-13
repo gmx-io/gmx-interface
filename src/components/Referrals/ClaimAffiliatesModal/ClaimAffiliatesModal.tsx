@@ -89,7 +89,7 @@ export function ClaimAffiliatesModal(p: Props) {
             <Tooltip
               className="ClaimModal-row-tooltip"
               handle={formatUsd(totalReward)}
-              position="right-top"
+              position="top-end"
               renderContent={() => (
                 <>
                   {claimableAmountsItems.map((item) => (

@@ -1045,7 +1045,7 @@ export function GmSwapBox(p: Props) {
                 <Tooltip
                   className="warning-tooltip"
                   handle={<Trans>Acknowledge high Price Impact</Trans>}
-                  position="left-top"
+                  position="top-start"
                   renderContent={() => (
                     <div>{t`Consider selecting and using the "Pair" option to reduce the Price Impact.`}</div>
                   )}

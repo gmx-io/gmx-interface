@@ -318,7 +318,7 @@ export function MarketsList() {
                     <div>
                       <Tooltip
                         handle={formatUsd(stats.totalPoolValue)}
-                        position="right-bottom"
+                        position="bottom-end"
                         renderContent={() => (
                           <>
                             {stats.marketsStats.map(({ marketInfo, poolValueUsd }) => (
@@ -343,7 +343,7 @@ export function MarketsList() {
                         handle={`${formatFundingRate(stats.avgFundingRateLong)} / ${formatFundingRate(
                           stats.avgFundingRateShort
                         )}`}
-                        position="right-bottom"
+                        position="bottom-end"
                         renderContent={renderFundingRateTooltip(stats)}
                       />
                     </div>

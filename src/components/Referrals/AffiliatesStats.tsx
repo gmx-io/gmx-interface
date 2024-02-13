@@ -366,7 +366,7 @@ function AffiliatesStats({
                       <td data-label="Total Volume">
                         <Tooltip
                           handle={`$${getUSDValue(stat.volume)}`}
-                          position="left-bottom"
+                          position="bottom-start"
                           renderContent={() => (
                             <>
                               <StatsTooltipRow label={t`Volume on V1`} value={getUSDValue(stat?.v1Data.volume)} />
@@ -379,7 +379,7 @@ function AffiliatesStats({
                       <td data-label="Total Rebates">
                         <Tooltip
                           handle={`$${getUSDValue(stat.affiliateRebateUsd)}`}
-                          position="left-bottom"
+                          position="bottom-start"
                           renderContent={() => (
                             <>
                               <StatsTooltipRow

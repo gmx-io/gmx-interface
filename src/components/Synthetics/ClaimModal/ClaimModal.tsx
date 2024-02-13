@@ -79,7 +79,7 @@ export function ClaimModal(p: Props) {
         <div className="ClaimSettleModal-info-label-usd">
           <Tooltip
             className="ClaimSettleModal-tooltip"
-            position="right-top"
+            position="top-end"
             handle={formatDeltaUsd(totalFundingUsd)}
             renderContent={() => (
               <>
@@ -152,7 +152,7 @@ export function ClaimModal(p: Props) {
         <div className="ClaimSettleModal-info-label-usd">
           <Tooltip
             className="ClaimSettleModal-tooltip-text-grey"
-            position="right-top"
+            position="top-end"
             handle={t`FUNDING FEE`}
             renderContent={() => (
               <Trans>

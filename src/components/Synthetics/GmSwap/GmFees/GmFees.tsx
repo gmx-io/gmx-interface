@@ -30,7 +30,7 @@ export function GmFees(p: Props) {
             <Tooltip
               className="GmFees-tooltip"
               handle={<span className={cx({ positive: totalFeesUsd?.gt(0) })}>{formatDeltaUsd(totalFeesUsd)}</span>}
-              position="right-top"
+              position="top-end"
               renderContent={() => (
                 <div>
                   {p.swapPriceImpact?.deltaUsd.abs().gt(0) && (

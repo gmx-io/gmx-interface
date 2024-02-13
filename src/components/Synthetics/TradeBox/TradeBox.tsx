@@ -1297,7 +1297,7 @@ export function TradeBox(p: Props) {
       renderContent={() => tooltipContent}
       handle={buttonContent}
       handleClassName="w-full"
-      position="center-bottom"
+      position="bottom"
     />
   ) : (
     buttonContent

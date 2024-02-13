@@ -139,7 +139,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
           value={
             <Tooltip
               handle={formatUsd(entryPrice, { displayDecimals: priceDecimals }) || "..."}
-              position="right-bottom"
+              position="bottom-end"
               renderContent={() => (
                 <Trans>
                   The position will be opened at a reference price of{" "}
@@ -167,7 +167,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
                   displayDecimals: priceDecimals,
                 }) || "..."
               }
-              position="right-bottom"
+              position="bottom-end"
               renderContent={() => (
                 <Trans>
                   If you have an existing position, the position will be closed at a reference price of{" "}
@@ -199,7 +199,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
                   ? `${getPlusOrMinusSymbol(fundingRate)}${formatAmount(fundingRate.abs(), 30, 4)}% / 1h`
                   : "..."
               }
-              position="right-bottom"
+              position="bottom-end"
               renderContent={renderFundingFeeTooltipContent}
             />
           }
@@ -211,7 +211,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
             <Tooltip
               className="al-swap"
               handle={formatUsd(liquidity) || "..."}
-              position="right-bottom"
+              position="bottom-end"
               renderContent={() => (
                 <div>
                   <StatsTooltipRow
@@ -250,7 +250,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
           value={
             <div className="MarketCard-pool-balance">
               <Tooltip
-                position="right-bottom"
+                position="bottom-end"
                 handle={
                   totalInterestUsd?.gt(0) ? (
                     <ShareBar
