@@ -37,11 +37,11 @@ type Props = {
   isLarge: boolean;
   marketsInfoData?: MarketsInfoData;
   positionsInfoData?: PositionsInfoData;
+  setRef?: (el: HTMLTableRowElement | null) => void;
 };
 
 export function OrderItem(p: Props) {
   const { showDebugValues } = useSettings();
-
   const isCollateralSwap = p.order.initialCollateralToken.address !== p.order.targetCollateralToken.address;
 
   function getCollateralText() {
@@ -357,7 +357,7 @@ export function OrderItem(p: Props) {
 
   function renderLarge() {
     return (
-      <tr className="Exchange-list-item">
+      <tr ref={p.setRef} className="Exchange-list-item">
         {!p.hideActions && p.onSelectOrder && (
           <td className="Exchange-list-item-type">
             <div>

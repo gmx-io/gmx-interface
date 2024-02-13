@@ -4,9 +4,7 @@ import { useCallback, useState, useRef, MouseEvent, ReactNode, useEffect } from 
 import { IS_TOUCH } from "config/env";
 import { computePosition, flip, shift } from "@floating-ui/dom";
 import { DEFAULT_TOOLTIP_POSITION } from "config/ui";
-
-const OPEN_DELAY = 0;
-const CLOSE_DELAY = 100;
+import { TOOLTIP_CLOSE_DELAY, TOOLTIP_OPEN_DELAY } from "config/ui";
 
 export type TooltipPosition =
   | "top"
@@ -44,8 +42,8 @@ export default function Tooltip({
   disableHandleStyle,
   handleClassName,
   isHandlerDisabled,
-  openDelay = OPEN_DELAY,
-  closeDelay = CLOSE_DELAY,
+  openDelay = TOOLTIP_OPEN_DELAY,
+  closeDelay = TOOLTIP_CLOSE_DELAY,
 }: Props) {
   const [visible, setVisible] = useState(false);
   const intervalCloseRef = useRef<ReturnType<typeof setTimeout> | null>();
@@ -81,7 +79,7 @@ export default function Tooltip({
         intervalOpenRef.current = null;
       }, openDelay);
     }
-  }, [setVisible, intervalCloseRef, intervalOpenRef, trigger, openDelay]);
+  }, [setVisible, trigger, openDelay]);
 
   const onMouseClick = useCallback(() => {
     if (trigger !== "click" && !IS_TOUCH) return;
@@ -95,7 +93,7 @@ export default function Tooltip({
     }
 
     setVisible(true);
-  }, [setVisible, intervalCloseRef, trigger]);
+  }, [setVisible, trigger]);
 
   const onMouseLeave = useCallback(() => {
     intervalCloseRef.current = setTimeout(() => {
@@ -106,7 +104,7 @@ export default function Tooltip({
       clearInterval(intervalOpenRef.current);
       intervalOpenRef.current = null;
     }
-  }, [setVisible, intervalCloseRef, closeDelay]);
+  }, [setVisible, closeDelay]);
 
   const onHandleClick = useCallback((event: MouseEvent) => {
     event.preventDefault();

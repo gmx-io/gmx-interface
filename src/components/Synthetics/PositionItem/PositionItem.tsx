@@ -44,7 +44,7 @@ export type Props = {
   onEditCollateralClick?: () => void;
   onShareClick: () => void;
   onSelectPositionClick?: (tradeMode?: TradeMode) => void;
-  onOrdersClick?: () => void;
+  onOrdersClick?: (key?: string) => void;
   isLarge: boolean;
   openSettings: () => void;
   onGetPendingFeesClick: () => void;
@@ -386,7 +386,7 @@ export function PositionItem(p: Props) {
     const hasErrors = ordersErrorList.length + ordersWarningsList.length > 0;
 
     return (
-      <div onClick={p.onOrdersClick}>
+      <div>
         <Tooltip
           className="Position-list-active-orders"
           handle={
@@ -419,12 +419,17 @@ export function PositionItem(p: Props) {
               {positionOrders.map((order) => {
                 const errors = order.errors;
                 return (
-                  <div key={order.key} className="Position-list-order active-order-tooltip">
+                  <div
+                    key={order.key}
+                    className="Position-list-order active-order-tooltip"
+                    onClick={() => {
+                      p.onOrdersClick?.(order.key);
+                    }}
+                  >
                     <div className="Position-list-order-label">
                       {renderOrderText(order)}
                       <FaAngleRight fontSize={14} />
                     </div>
-
                     {errors.map((err, i) => (
                       <Fragment key={err.msg}>
                         <div className={cx("order-error-text", `level-${err.level}`)}>{err.msg}</div>

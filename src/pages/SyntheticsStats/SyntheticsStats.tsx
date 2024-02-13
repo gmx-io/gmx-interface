@@ -30,7 +30,7 @@ function pow(bn: BigNumber, exponent: BigNumber) {
   const n = Number(bn.toString()) / 1e30;
   const e = Number(exponent.toString()) / 1e30;
   const afterExponent = Math.pow(n, e);
-  return expandDecimals((afterExponent * 1e10).toFixed(0), 20);
+  return expandDecimals(afterExponent.toFixed(0), 30);
 }
 
 function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: number, showDollar = false) {
