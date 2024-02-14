@@ -269,7 +269,7 @@ msgstr "Acknowledge high Price Impact"
 msgid "Acknowledge high Swap Price Impact"
 msgstr "Acknowledge high Swap Price Impact"
 
-#: src/domain/synthetics/trade/useHighExecutionFeeAcknowledgement.tsx
+#: src/domain/synthetics/trade/useHighExecutionFeeConsent.tsx
 msgid "Acknowledge very high network Fees"
 msgstr "Acknowledge very high network Fees"
 
