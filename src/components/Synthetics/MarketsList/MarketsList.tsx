@@ -227,6 +227,7 @@ export function MarketsList() {
                       <td>{formatUsd(stats.token.prices?.minPrice)}</td>
                       <td>
                         <Tooltip
+                          className="nowrap"
                           handle={formatUsd(stats.totalPoolValue)}
                           renderContent={() => (
                             <>

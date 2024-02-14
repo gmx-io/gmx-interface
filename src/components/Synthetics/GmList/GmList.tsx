@@ -442,6 +442,7 @@ function MintableAmount({ mintableInfo, market, token, longToken, shortToken }) 
   );
   return (
     <Tooltip
+      maxAllowedWidth={350}
       handle={
         <>
           {formatTokenAmount(mintableInfo?.mintableAmount, token.decimals, "GM", {
