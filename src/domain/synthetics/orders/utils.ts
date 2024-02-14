@@ -465,11 +465,18 @@ export function getOrderErrors(p: {
   };
 }
 
-export function sortPositionOrders(orders: PositionOrderInfo[]): PositionOrderInfo[] {
+export function sortPositionOrders(orders: PositionOrderInfo[], tokenSortOrder?: string[]): PositionOrderInfo[] {
   return orders.sort((a, b) => {
-    // Compare by market name
-    const nameComparison = a.marketInfo.name.localeCompare(b.marketInfo.name);
-    if (nameComparison) return nameComparison;
+    if (tokenSortOrder) {
+      const aToken = a.marketInfo.indexToken;
+      const bToken = b.marketInfo.indexToken;
+      const indexA = tokenSortOrder.indexOf(aToken.address);
+      const indexB = tokenSortOrder.indexOf(bToken.address);
+      if (indexA !== indexB) return indexA - indexB;
+    } else {
+      const nameComparison = a.marketInfo.name.localeCompare(b.marketInfo.name);
+      if (nameComparison) return nameComparison;
+    }
 
     // Compare by trigger price
     const triggerPriceComparison = a.triggerPrice.sub(b.triggerPrice);
@@ -484,11 +491,16 @@ export function sortPositionOrders(orders: PositionOrderInfo[]): PositionOrderIn
   });
 }
 
-export function sortSwapOrders(orders: SwapOrderInfo[]): SwapOrderInfo[] {
+export function sortSwapOrders(orders: SwapOrderInfo[], tokenSortOrder?: string[]): SwapOrderInfo[] {
   return orders.sort((a, b) => {
-    // Compare by target collateral token symbol
-    const collateralComparison = a.targetCollateralToken.symbol.localeCompare(b.targetCollateralToken.symbol);
-    if (collateralComparison) return collateralComparison;
+    if (tokenSortOrder) {
+      const indexA = tokenSortOrder.indexOf(a.targetCollateralToken.address);
+      const indexB = tokenSortOrder.indexOf(b.targetCollateralToken.address);
+      if (indexA !== indexB) return indexA - indexB;
+    } else {
+      const collateralComparison = a.targetCollateralToken.symbol.localeCompare(b.targetCollateralToken.symbol);
+      if (collateralComparison) return collateralComparison;
+    }
 
     // Finally, sort by min output amount
     return a.minOutputAmount.sub(b.minOutputAmount).isNegative() ? -1 : 1;

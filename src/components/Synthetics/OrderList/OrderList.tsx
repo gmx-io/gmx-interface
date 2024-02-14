@@ -25,6 +25,7 @@ import useWallet from "lib/wallets/useWallet";
 import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
 import { OrderEditor } from "../OrderEditor/OrderEditor";
 import { OrderItem } from "../OrderItem/OrderItem";
+import { AvailableTokenOptions } from "domain/synthetics/trade";
 
 type Props = {
   hideActions?: boolean;
@@ -34,6 +35,7 @@ type Props = {
   setPendingTxns: (txns: any) => void;
   selectedPositionOrderKey?: string;
   setSelectedPositionOrderKey?: Dispatch<SetStateAction<string | undefined>>;
+  availableTokensOptions: AvailableTokenOptions;
 };
 
 export function OrderList(p: Props) {
@@ -65,8 +67,11 @@ export function OrderList(p: Props) {
       { swapOrders: [] as SwapOrderInfo[], positionOrders: [] as PositionOrderInfo[] }
     );
 
-    return [...sortPositionOrders(positionOrders), ...sortSwapOrders(swapOrders)];
-  }, [ordersData]);
+    return [
+      ...sortPositionOrders(positionOrders, p.availableTokensOptions?.sortedLongAndShortTokens ?? []),
+      ...sortSwapOrders(swapOrders, p.availableTokensOptions?.sortedLongAndShortTokens ?? []),
+    ];
+  }, [ordersData, p.availableTokensOptions]);
 
   const isAllOrdersSelected = orders.length > 0 && orders.every((o) => p.selectedOrdersKeys?.[o.key]);
   const editingOrder = orders.find((o) => o.key === editingOrderKey);

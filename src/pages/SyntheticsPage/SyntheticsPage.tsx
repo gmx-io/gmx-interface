@@ -402,6 +402,7 @@ export function SyntheticsPage(p: Props) {
                 setPendingTxns={setPendingTxns}
                 selectedPositionOrderKey={selectedPositionOrderKey}
                 setSelectedPositionOrderKey={setSelectedPositionOrderKey}
+                availableTokensOptions={availableTokensOptions}
               />
             )}
             {listSection === ListSection.Trades && <TradeHistory account={account} shouldShowPaginationButtons />}
@@ -453,6 +454,7 @@ export function SyntheticsPage(p: Props) {
               setPendingTxns={setPendingTxns}
               selectedPositionOrderKey={selectedPositionOrderKey}
               setSelectedPositionOrderKey={setSelectedPositionOrderKey}
+              availableTokensOptions={availableTokensOptions}
             />
           )}
           {listSection === ListSection.Trades && <TradeHistory account={account} shouldShowPaginationButtons />}
