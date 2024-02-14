@@ -197,8 +197,9 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
   } = useBigNumberInput(null, 0, 0);
 
   const isSubaccountActive = useIsSubaccountActive();
+  const prevIsSubaccountActive = usePrevious(isSubaccountActive);
 
-  const [isVisible] = useSubaccountModalOpen();
+  const [isVisible, setIsVisible] = useSubaccountModalOpen();
 
   const [activeTx, setActiveTx] = useSubaccountPendingTx();
   const isTxPending = useTransactionPending(activeTx);
@@ -313,13 +314,26 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
   }, [isVisible, isSubaccountActive, setNextFormState]);
 
   useEffect(() => {
-    if (isTxPending === false && prevIsTxPending === true) {
+    if (prevIsTxPending === true && isTxPending === false) {
       setActiveTx(null);
       setTopUp(null);
       setWntForAutoTopUps(null);
       setNextFormState("activated");
+
+      if (!prevIsSubaccountActive) {
+        setIsVisible(false);
+      }
     }
-  }, [isTxPending, prevIsTxPending, setActiveTx, setNextFormState, setTopUp, setWntForAutoTopUps]);
+  }, [
+    isTxPending,
+    prevIsTxPending,
+    prevIsSubaccountActive,
+    setIsVisible,
+    setActiveTx,
+    setNextFormState,
+    setTopUp,
+    setWntForAutoTopUps,
+  ]);
 
   useEffect(() => {
     if (isTxPending === false && prevIsTxPending === true && notificationState === "activating") {
