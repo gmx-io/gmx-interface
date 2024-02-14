@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { getChainName, getHighExecutionFee, getVeryHighExecutionFee } from "config/chains";
+import { getChainName, getHighExecutionFee, getExcessiveExecutionFee } from "config/chains";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
@@ -27,7 +27,7 @@ export function getExecutionFee(
   const feeUsd = convertToUsd(feeTokenAmount, nativeToken.decimals, nativeToken.prices.minPrice)!;
 
   const isFeeHigh = feeUsd.gt(expandDecimals(getHighExecutionFee(chainId), USD_DECIMALS));
-  const isFeeVeryHigh = feeUsd.gt(expandDecimals(getVeryHighExecutionFee(chainId), USD_DECIMALS));
+  const isFeeVeryHigh = feeUsd.gt(expandDecimals(getExcessiveExecutionFee(chainId), USD_DECIMALS));
 
   const highWarning = t`The network Fees are high currently, which may be due to a temporary increase in transactions on the ${getChainName(
     chainId

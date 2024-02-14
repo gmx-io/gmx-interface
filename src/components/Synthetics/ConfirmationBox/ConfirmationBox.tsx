@@ -110,7 +110,7 @@ import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./ConfirmationBox.scss";
-import { useHighExecutionFeeAcknowledgement } from "domain/synthetics/trade/useHighExecutionFeeAcknowledgement";
+import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { FaArrowRight } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import SLTPEntries from "./SLTPEntries";
@@ -174,8 +174,9 @@ export function ConfirmationBox(p: Props) {
     tradeType,
   } = useTradeboxState();
 
-  const { element: highExecutionFeeAcknowledgement, highExecutionFeeNotAcceptedError } =
-    useHighExecutionFeeAcknowledgement(executionFee?.feeUsd);
+  const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
+    executionFee?.feeUsd
+  );
 
   const { markRatio, triggerRatio } = useTradeRatios({
     fromTokenAddress,
@@ -399,7 +400,7 @@ export function ConfirmationBox(p: Props) {
       };
     }
 
-    if (highExecutionFeeNotAcceptedError) {
+    if (isHighFeeConsentError) {
       return {
         text: t`High Execution Fee not yet acknowledged`,
         disabled: true,
@@ -459,7 +460,7 @@ export function ConfirmationBox(p: Props) {
     };
   }, [
     priceImpactWarningState.validationError,
-    highExecutionFeeNotAcceptedError,
+    isHighFeeConsentError,
     isSubmitting,
     error,
     needPayTokenApproval,

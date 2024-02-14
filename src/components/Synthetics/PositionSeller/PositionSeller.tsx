@@ -79,7 +79,7 @@ import {
 import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useSwapRoutes } from "context/SyntheticsStateContext/hooks/tradeHooks";
 import { useTradeboxTradeFlags } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
-import { useHighExecutionFeeAcknowledgement } from "domain/synthetics/trade/useHighExecutionFeeAcknowledgement";
+import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 
 export type Props = {
   position?: PositionInfo;
@@ -299,8 +299,9 @@ export function PositionSeller(p: Props) {
     uiFeeFactor,
   ]);
 
-  const { element: highExecutionFeeAcknowledgement, highExecutionFeeNotAcceptedError } =
-    useHighExecutionFeeAcknowledgement(executionFee?.feeUsd);
+  const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
+    executionFee?.feeUsd
+  );
 
   const priceImpactWarningState = usePriceImpactWarningState({
     positionPriceImpact: fees?.positionPriceImpact,
@@ -354,7 +355,7 @@ export function PositionSeller(p: Props) {
       return commonError[0] || decreaseError[0];
     }
 
-    if (highExecutionFeeNotAcceptedError) {
+    if (isHighFeeConsentError) {
       return [t`High Execution Fee not yet acknowledged`];
     }
 
@@ -367,7 +368,7 @@ export function PositionSeller(p: Props) {
     closeSizeUsd,
     decreaseAmounts?.sizeDeltaUsd,
     hasOutdatedUi,
-    highExecutionFeeNotAcceptedError,
+    isHighFeeConsentError,
     isNotEnoughReceiveTokenLiquidity,
     isSubmitting,
     isTrigger,

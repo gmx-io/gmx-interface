@@ -65,7 +65,7 @@ import "./PositionEditor.scss";
 import { getMinResidualAmount } from "domain/tokens";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useHighExecutionFeeAcknowledgement } from "domain/synthetics/trade/useHighExecutionFeeAcknowledgement";
+import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 
 export type Props = {
   position?: PositionInfo;
@@ -205,8 +205,9 @@ export function PositionEditor(p: Props) {
     };
   }, [chainId, collateralDeltaUsd, gasLimits, gasPrice, isDeposit, position, tokensData]);
 
-  const { element: highExecutionFeeAcknowledgement, highExecutionFeeNotAcceptedError } =
-    useHighExecutionFeeAcknowledgement(executionFee?.feeUsd.mul(100));
+  const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
+    executionFee?.feeUsd.mul(100)
+  );
 
   const { nextCollateralUsd, nextLeverage, nextLiqPrice, receiveUsd, receiveAmount } = useMemo(() => {
     if (!position || !collateralDeltaUsd?.gt(0) || !minCollateralUsd || !fees?.totalFees) {
@@ -295,7 +296,7 @@ export function PositionEditor(p: Props) {
       return t`Pending ${collateralToken?.assetSymbol ?? collateralToken?.symbol} approval`;
     }
 
-    if (highExecutionFeeNotAcceptedError) {
+    if (isHighFeeConsentError) {
       return t`High Execution Fee not yet acknowledged`;
     }
 
@@ -309,7 +310,7 @@ export function PositionEditor(p: Props) {
     collateralDeltaUsd,
     collateralToken,
     hasOutdatedUi,
-    highExecutionFeeNotAcceptedError,
+    isHighFeeConsentError,
     isDeposit,
     isSubmitting,
     minCollateralUsd,

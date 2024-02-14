@@ -58,7 +58,7 @@ export const HIGH_EXECUTION_FEES_MAP = {
   [AVALANCHE_FUJI]: 5, // 5 USD
 };
 
-export const VERY_HIGH_EXECUTION_FEES_MAP = {
+export const EXCESSIVE_EXECUTION_FEES_MAP = {
   [ARBITRUM]: 10, // 10 USD
   [AVALANCHE]: 10, // 10 USD
   [AVALANCHE_FUJI]: 10, // 10 USD
@@ -359,8 +359,8 @@ export function getHighExecutionFee(chainId) {
   return HIGH_EXECUTION_FEES_MAP[chainId] ?? 5;
 }
 
-export function getVeryHighExecutionFee(chainId) {
-  return VERY_HIGH_EXECUTION_FEES_MAP[chainId] ?? 10;
+export function getExcessiveExecutionFee(chainId) {
+  return EXCESSIVE_EXECUTION_FEES_MAP[chainId] ?? 10;
 }
 
 export function getExecutionFeeMultiplier(chainId) {

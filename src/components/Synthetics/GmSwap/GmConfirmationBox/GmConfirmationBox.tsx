@@ -24,7 +24,7 @@ import { useState } from "react";
 import "./GmConfirmationBox.scss";
 import { useKey } from "react-use";
 import useWallet from "lib/wallets/useWallet";
-import { useHighExecutionFeeAcknowledgement } from "domain/synthetics/trade/useHighExecutionFeeAcknowledgement";
+import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { FaArrowRight } from "react-icons/fa";
 
 type Props = {
@@ -79,8 +79,9 @@ export function GmConfirmationBox({
   const market = getByKey(marketsData, marketToken?.address);
 
   const routerAddress = getContract(chainId, "SyntheticsRouter");
-  const { element: highExecutionFeeAcknowledgement, highExecutionFeeNotAcceptedError } =
-    useHighExecutionFeeAcknowledgement(executionFee?.feeUsd);
+  const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
+    executionFee?.feeUsd
+  );
 
   const payTokenAddresses = (function getPayTokenAddresses() {
     if (!marketToken) {
@@ -188,7 +189,7 @@ export function GmConfirmationBox({
       };
     }
 
-    if (highExecutionFeeNotAcceptedError) {
+    if (isHighFeeConsentError) {
       return {
         text: t`High Execution Fee not yet acknowledged`,
         disabled: true,
