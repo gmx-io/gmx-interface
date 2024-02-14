@@ -543,7 +543,7 @@ export function OrderEditor(p: Props) {
                     renderContent={() => (
                       <>
                         <StatsTooltipRow
-                          label={<div className="text-white">{t`Additional Execution Fee`}:</div>}
+                          label={<div className="text-white">{t`Execution Fee`}:</div>}
                           value={formatTokenAmountWithUsd(
                             additionalExecutionFee.feeTokenAmount.mul(-1),
                             additionalExecutionFee.feeUsd?.mul(-1),

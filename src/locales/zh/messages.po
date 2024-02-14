@@ -316,8 +316,8 @@ msgid "Adding..."
 msgstr "添加中"
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
-msgid "Additional Execution Fee"
-msgstr ""
+#~ msgid "Additional Execution Fee"
+#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Additional reserve required"
@@ -1818,6 +1818,7 @@ msgid "Execute {orderTypeName} Order: {positionText} {sizeDeltaText},"
 msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Execution Fee"
 msgstr ""
 
