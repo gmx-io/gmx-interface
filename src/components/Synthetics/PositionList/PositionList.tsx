@@ -15,7 +15,7 @@ type Props = {
   onEditCollateralClick: (key: string) => void;
   onSettlePositionFeesClick: (key: string) => void;
   isLoading: boolean;
-  onOrdersClick: () => void;
+  onOrdersClick: (key?: string) => void;
   showPnlAfterFees: boolean;
   openSettings: () => void;
   hideActions?: boolean;
@@ -75,7 +75,7 @@ export function PositionList(p: Props) {
           ))}
       </div>
 
-      <table className="Exchange-list large App-box">
+      <table className="Exchange-list Position-list large App-box">
         <tbody>
           <tr className="Exchange-list-header">
             <th>

@@ -534,6 +534,10 @@ msgstr "Balance"
 msgid "Base APR"
 msgstr ""
 
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "Base {nativeTokenSymbol} APR"
+msgstr ""
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
 msgstr "Übertragung beginnen"
@@ -562,7 +566,6 @@ msgstr "Steigere deine Belohnungen mit Multiplikatorpunkten. <0>Mehr Infos</0>.
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Borrow Fee"
@@ -575,6 +578,11 @@ msgstr "Leihgebühr / Tag"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Borrow Fee Rate"
+msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "Borrowing fees help ensure available liquidity. <0>Read more</0>."
 msgstr ""
 
 #: src/components/Synthetics/BridgingInfo/BridgingInfo.tsx
@@ -912,10 +920,6 @@ msgstr "Beanspruchen..."
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims"
 msgstr ""
-
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
-#~ msgid "Claims (1)"
-#~ msgstr ""
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims ({totalClaimables})"
@@ -1537,6 +1541,10 @@ msgstr "Verdienen"
 msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2."
 msgstr ""
 
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "Earn an extra {0}% {nativeTokenSymbol} Boosted APR by increasing your staked <0>Multiplier Points</0>."
+msgstr ""
+
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Ecosystem"
 msgstr "Ökosystem"
@@ -1850,10 +1858,6 @@ msgstr "GEBÜHREN"
 msgid "FUNDING FEE"
 msgstr ""
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "FUNDING RATE / 1h"
-msgstr ""
-
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "Failed Settlement of Funding Fees"
 msgstr ""
@@ -2006,7 +2010,6 @@ msgstr ""
 msgid "Funding Claimed"
 msgstr ""
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Funding Fee"
@@ -2016,12 +2019,13 @@ msgstr ""
 msgid "Funding Fee Rate"
 msgstr ""
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Funding Rate / 1h"
-msgstr ""
-
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 msgid "Funding fees"
+msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "Funding fees help to balance longs and shorts and are exchanged between both sides. <0>Read more</0>."
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -2758,6 +2762,7 @@ msgstr "Lädt..."
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -2789,14 +2794,6 @@ msgstr "Long"
 msgid "Long Collateral"
 msgstr ""
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Long Funding Payments"
-msgstr ""
-
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Long Funding Rewards"
-msgstr ""
-
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Long Liquidity"
 msgstr ""
@@ -2805,13 +2802,10 @@ msgstr ""
 msgid "Long Open Interest"
 msgstr ""
 
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Long Positions"
 msgstr "Long Positionen"
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Long positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
-msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Long {0}"
@@ -3091,7 +3085,11 @@ msgid "Max. Leverage exceeded"
 msgstr ""
 
 #: src/components/Stake/GMXAprTooltip.tsx
-msgid "Max. {nativeTokenSymbol} APR with {0}% Boost for this week: {1}%."
+msgid "Max. {nativeTokenSymbol} APR"
+msgstr ""
+
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "Max. {nativeTokenSymbol} APR is calculated with the max. 200% Boost Percentage by staking <0>Multiplier Points</0>."
 msgstr ""
 
 #: src/components/Migration/Migration.js
@@ -3204,6 +3202,10 @@ msgstr "Multiplikator-Punkte APR"
 msgid "NA"
 msgstr ""
 
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "NET FEE / 1 H"
+msgstr ""
+
 #: src/pages/NftWallet/NftWallet.js
 msgid "NFT Address"
 msgstr "NFT Adresse"
@@ -3222,6 +3224,20 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Neither Collateral nor realized PnL is enough to cover pending Fees. Please close a larger position amount."
+msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "Net Fee"
+msgstr ""
+
+#: src/components/Synthetics/MarketsList/MarketsList.tsx
+msgid "Net Fee / 1h"
+msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "Net Rebate"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
@@ -4362,6 +4378,7 @@ msgstr "Position teilen"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
@@ -4393,14 +4410,6 @@ msgstr "Short"
 msgid "Short Collateral"
 msgstr ""
 
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Short Funding Payments"
-msgstr ""
-
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "Short Funding Rewards"
-msgstr ""
-
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Short Liquidity"
 msgstr ""
@@ -4409,13 +4418,10 @@ msgstr ""
 msgid "Short Open Interest"
 msgstr ""
 
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Short Positions"
 msgstr "Short Positionen"
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "Short positions {0} a Funding Fee of <0>{1}{2}%</0> per hour."
-msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Short {0}"
@@ -4885,10 +4891,6 @@ msgstr ""
 msgid "The Bonus Rebate will be airdropped as ARB tokens on a pro-rata basis. <0>Read more</0>."
 msgstr ""
 
-#: src/components/Stake/GMXAprTooltip.tsx
-msgid "The Boosted APR is from your staked Multiplier Points."
-msgstr "Der erhöhte APR ergibt sich aus den von dir gestaketen Multiplikatorpunkten."
-
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
 msgstr ""
@@ -5081,11 +5083,6 @@ msgstr "Dieser Code ist noch nicht auf {0} registriert, du wirst dort keine Raba
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
-msgstr ""
-
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/MarketsList/MarketsList.tsx
-msgid "This market uses an Adaptive Funding Rate. The Funding Rate will adjust over time depending on the ratio of longs and shorts. <0>Read more</0>."
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -5986,6 +5983,7 @@ msgstr "Du hast mehrere bestehende {longOrShortText} {0} Limit-Orders zur Erhöh
 msgid "You have not deposited any tokens for vesting."
 msgstr "Du hast keine Token für das Vesting hinterlegt."
 
+#: src/components/Stake/GMXAprTooltip.tsx
 #: src/pages/Stake/StakeV2.js
 msgid "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points using the \"Compound\" button."
 msgstr ""
@@ -6042,6 +6040,11 @@ msgstr "Du wirst mind. {0} {1} erhalten, wenn dieser Auftrag ausgeführt wird. D
 msgid "You will receive at least {toAmountText} if this order is executed. This price is being updated in real time based on Swap Fees and Price Impact."
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "Your APR"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 msgstr "Dein esGMX-Guthaben (IOU) verringert sich nach der Beanspruchung um deinen beanspruchten Betrag, dies ist ein zu erwartendes Verhalten."
@@ -6095,13 +6098,13 @@ msgstr "In Liquidität"
 msgid "not staked"
 msgstr "Nicht gestaket"
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 msgid "pay"
 msgstr ""
 
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
-#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 msgid "receive"
 msgstr ""
 
@@ -6322,6 +6325,22 @@ msgstr ""
 msgid "{longOrShortText} {0} market selected"
 msgstr ""
 
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour."
+msgstr ""
+
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "{longOrShort} positions do not pay a funding fee or a borrow fee."
+msgstr ""
+
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee."
+msgstr ""
+
+#: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
+msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour."
+msgstr ""
+
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "{longShortText} {0} Open Interest"
 msgstr ""
@@ -6337,10 +6356,6 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 msgstr "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
-
-#: src/components/Stake/GMXAprTooltip.tsx
-msgid "{nativeTokenSymbol} APR"
-msgstr ""
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} Base APR"
