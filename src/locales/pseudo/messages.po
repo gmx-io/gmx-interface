@@ -460,8 +460,8 @@ msgstr ""
 msgid "Approving..."
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.js
-#: src/components/TokenCard/TokenCard.js
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
 msgid "Arbitrum APR:"
 msgstr ""
 
@@ -508,8 +508,8 @@ msgstr ""
 msgid "Available on your preferred network"
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.js
-#: src/components/TokenCard/TokenCard.js
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche APR:"
 msgstr ""
 
@@ -620,7 +620,7 @@ msgstr ""
 msgid "Buy GLP"
 msgstr ""
 
-#: src/pages/Buy/Buy.js
+#: src/pages/Buy/Buy.tsx
 msgid "Buy GLP or GMX"
 msgstr ""
 
@@ -673,24 +673,8 @@ msgstr ""
 msgid "Buy GMX using any token from any network:"
 msgstr ""
 
-#: src/pages/Buy/Buy.js
-msgid "Buy Protocol Tokens"
-msgstr ""
-
 #: src/components/Glp/GlpSwap.js
 msgid "Buy failed."
-msgstr ""
-
-#: src/components/TokenCard/TokenCard.js
-#: src/components/TokenCard/TokenCard.js
-#: src/components/TokenCard/TokenCard.js
-msgid "Buy on Arbitrum"
-msgstr ""
-
-#: src/components/TokenCard/TokenCard.js
-#: src/components/TokenCard/TokenCard.js
-#: src/components/TokenCard/TokenCard.js
-msgid "Buy on Avalanche"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -2058,7 +2042,7 @@ msgstr ""
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.js
+#: src/components/TokenCard/TokenCard.tsx
 msgid "GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of the V1 markets generated fees."
 msgstr ""
 
@@ -2086,7 +2070,7 @@ msgstr ""
 msgid "GM can be sold for {0} and {1} for this market up to the specified selling caps. The remaining tokens in the pool are reserved for currently open Positions."
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.js
+#: src/components/TokenCard/TokenCard.tsx
 msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees."
 msgstr ""
 
@@ -2175,7 +2159,7 @@ msgstr ""
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.js
+#: src/components/TokenCard/TokenCard.tsx
 msgid "GMX is the utility and governance token. Accrues 30% and 27% of V1 and V2 markets generated fees, respectively."
 msgstr ""
 
@@ -3072,11 +3056,11 @@ msgstr ""
 msgid "Max {0} short exceeded"
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.js
+#: src/components/TokenCard/TokenCard.tsx
 msgid "Max. Arbitrum APR:"
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.js
+#: src/components/TokenCard/TokenCard.tsx
 msgid "Max. Avalanche APR: {0}"
 msgstr ""
 
@@ -3891,6 +3875,10 @@ msgstr ""
 msgid "Protocol"
 msgstr ""
 
+#: src/pages/Buy/Buy.tsx
+msgid "Protocol Tokens"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Protocol analytics"
@@ -3917,9 +3905,9 @@ msgstr ""
 msgid "REBATE"
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.js
-#: src/components/TokenCard/TokenCard.js
-#: src/components/TokenCard/TokenCard.js
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
 msgid "Read more"
 msgstr ""
 
@@ -5678,6 +5666,18 @@ msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "View in Explorer"
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+msgid "View on Arbitrum"
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+msgid "View on Avalanche"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
