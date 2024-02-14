@@ -110,6 +110,7 @@ import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./ConfirmationBox.scss";
+import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { FaArrowRight } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import SLTPEntries from "./SLTPEntries";
@@ -172,6 +173,10 @@ export function ConfirmationBox(p: Props) {
     tradeMode,
     tradeType,
   } = useTradeboxState();
+
+  const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
+    executionFee?.feeUsd
+  );
 
   const { markRatio, triggerRatio } = useTradeRatios({
     fromTokenAddress,
@@ -390,7 +395,14 @@ export function ConfirmationBox(p: Props) {
   const submitButtonState = useMemo(() => {
     if (priceImpactWarningState.validationError) {
       return {
-        text: "Price Impact not yet acknowledged",
+        text: t`Price Impact not yet acknowledged`,
+        disabled: true,
+      };
+    }
+
+    if (isHighFeeConsentError) {
+      return {
+        text: t`High Execution Fee not yet acknowledged`,
         disabled: true,
       };
     }
@@ -447,8 +459,8 @@ export function ConfirmationBox(p: Props) {
       disabled: false,
     };
   }, [
-    isLimit,
     priceImpactWarningState.validationError,
+    isHighFeeConsentError,
     isSubmitting,
     error,
     needPayTokenApproval,
@@ -456,6 +468,7 @@ export function ConfirmationBox(p: Props) {
     decreaseOrdersThatWillBeExecuted.length,
     isTriggerWarningAccepted,
     isMarket,
+    isLimit,
     fromToken?.assetSymbol,
     fromToken?.symbol,
     isSwap,
@@ -1653,7 +1666,7 @@ export function ConfirmationBox(p: Props) {
   }
 
   const hasCheckboxesSection = Boolean(
-    priceImpactWarningState.shouldShowWarning || (needPayTokenApproval && fromToken)
+    priceImpactWarningState.shouldShowWarning || (needPayTokenApproval && fromToken) || highExecutionFeeAcknowledgement
   );
 
   return (
@@ -1664,6 +1677,7 @@ export function ConfirmationBox(p: Props) {
         {isTrigger && renderTriggerDecreaseSection()}
         {hasCheckboxesSection && <div className="line-divider" />}
         {renderHighPriceImpactWarning()}
+        {highExecutionFeeAcknowledgement}
 
         {needPayTokenApproval && fromToken && (
           <>
