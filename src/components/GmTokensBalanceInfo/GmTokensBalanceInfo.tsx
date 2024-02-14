@@ -8,7 +8,7 @@ import { TokenData, convertToUsd } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
 export const GmTokensBalanceInfo = ({
   token,
@@ -96,64 +96,69 @@ export const GmTokensTotalBalanceInfo = ({
 }) => {
   const shouldShowIncentivesNote = useLpIncentivesIsActive();
   const daysConsidered = useDaysConsideredInMarketsApr();
+  const walletTotalValue = useMemo(
+    () => [
+      formatTokenAmount(balance, 18, "GM", {
+        useCommas: true,
+        fallbackToZero: true,
+      }),
+      `(${formatUsd(balanceUsd)})`,
+    ],
+    [balance, balanceUsd]
+  );
+
+  const renderTooltipContent = useCallback(() => {
+    return (
+      <>
+        <StatsTooltipRow label={t`Wallet total`} value={walletTotalValue} showDollar={false} />
+        {userEarnings && (
+          <>
+            <StatsTooltipRow
+              label={t`Wallet total accrued Fees`}
+              className={getPositiveOrNegativeClass(userEarnings.allMarkets.total)}
+              value={formatDeltaUsd(userEarnings.allMarkets.total, undefined, { showPlusForZero: true })}
+              showDollar={false}
+            />
+            <StatsTooltipRow
+              label={t`Wallet ${daysConsidered}d accrued Fees `}
+              className={getPositiveOrNegativeClass(userEarnings.allMarkets.recent)}
+              value={formatDeltaUsd(userEarnings.allMarkets.recent, undefined, { showPlusForZero: true })}
+              showDollar={false}
+            />
+            {userEarnings.allMarkets.expected365d.gt(0) && (
+              <>
+                <StatsTooltipRow
+                  label={t`Wallet 365d expected Fees`}
+                  className={getPositiveOrNegativeClass(userEarnings.allMarkets.expected365d)}
+                  value={formatDeltaUsd(userEarnings.allMarkets.expected365d, undefined, { showPlusForZero: true })}
+                  showDollar={false}
+                />
+                <br />
+                <div className="text-white">
+                  <Trans>Expected 365d Fees are projected based on past {daysConsidered}d base APR.</Trans>
+                </div>
+                {shouldShowIncentivesNote && (
+                  <>
+                    <br />
+                    <div className="text-white">
+                      <Trans>Fee values do not include incentives.</Trans>
+                    </div>
+                  </>
+                )}
+              </>
+            )}
+          </>
+        )}
+      </>
+    );
+  }, [daysConsidered, shouldShowIncentivesNote, userEarnings, walletTotalValue]);
+
   return balance && balanceUsd ? (
     <Tooltip
       handle={label}
       className="text-none"
       position={tooltipPosition ?? "right-bottom"}
-      renderContent={() => (
-        <>
-          <StatsTooltipRow
-            label={t`Wallet total`}
-            value={[
-              formatTokenAmount(balance, 18, "GM", {
-                useCommas: true,
-                fallbackToZero: true,
-              }),
-              `(${formatUsd(balanceUsd)})`,
-            ]}
-            showDollar={false}
-          />
-          {userEarnings && (
-            <>
-              <StatsTooltipRow
-                label={t`Wallet total accrued Fees`}
-                className={getPositiveOrNegativeClass(userEarnings.allMarkets.total)}
-                value={formatDeltaUsd(userEarnings.allMarkets.total, undefined, { showPlusForZero: true })}
-                showDollar={false}
-              />
-              <StatsTooltipRow
-                label={t`Wallet ${daysConsidered}d accrued Fees `}
-                className={getPositiveOrNegativeClass(userEarnings.allMarkets.recent)}
-                value={formatDeltaUsd(userEarnings.allMarkets.recent, undefined, { showPlusForZero: true })}
-                showDollar={false}
-              />
-              {userEarnings.allMarkets.expected365d.gt(0) && (
-                <>
-                  <StatsTooltipRow
-                    label={t`Wallet 365d expected Fees`}
-                    className={getPositiveOrNegativeClass(userEarnings.allMarkets.expected365d)}
-                    value={formatDeltaUsd(userEarnings.allMarkets.expected365d, undefined, { showPlusForZero: true })}
-                    showDollar={false}
-                  />
-                  <br />
-                  <div className="text-white">
-                    <Trans>Expected 365d Fees are projected based on past {daysConsidered}d base APR.</Trans>
-                  </div>
-                  {shouldShowIncentivesNote && (
-                    <>
-                      <br />
-                      <div className="text-white">
-                        <Trans>Fee values do not include incentives.</Trans>
-                      </div>
-                    </>
-                  )}
-                </>
-              )}
-            </>
-          )}
-        </>
-      )}
+      renderContent={renderTooltipContent}
     />
   ) : (
     <>{label}</>

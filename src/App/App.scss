@@ -162,6 +162,12 @@ $app-card-padding: 1.5rem;
   font-size: var(--font-base);
 }
 
+.App-card-space-between {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 .App-card-bottom-placeholder {
   visibility: hidden;
 }

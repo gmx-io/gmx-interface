@@ -2,21 +2,22 @@ import { ReactNode } from "react";
 import cx from "classnames";
 
 import infoIcon from "img/ic_info.svg";
-import warnIcon from "img/ic_warn.svg";
+import warningIcon from "img/ic_warn.svg";
 
 import "./AlertInfo.scss";
 
 interface Props {
+  type: "warning" | "info";
   children: ReactNode;
-  standalone?: boolean;
-  warning?: boolean;
+  compact?: boolean;
 }
 
-export function AlertInfo({ standalone = false, children, warning }: Props) {
+export function AlertInfo({ compact = false, children, type }: Props) {
+  const icon = type === "warning" ? warningIcon : infoIcon;
   return (
-    <div className={cx("AlertInfo", { standalone })}>
+    <div className={cx("AlertInfo", { compact })}>
       <div className="AlertInfo-icon">
-        <img src={warning ? warnIcon : infoIcon} alt="Warning" />
+        <img src={icon} alt="Alert Icon" />
       </div>
       <div className="AlertInfo-text text-gray">{children}</div>
     </div>

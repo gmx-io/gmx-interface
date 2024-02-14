@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { MarketInfo, useMarketsInfo } from "domain/synthetics/markets";
+import { MarketInfo, useMarketsInfoRequest } from "domain/synthetics/markets";
 import { TokenData } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { getAddress } from "ethers/lib/utils.js";
@@ -49,11 +49,9 @@ export const usePriceImpactRebateGroups = (
   inclReviewed: boolean
 ): [hasMore: boolean, loadedPageIndex: number, data: RebateGroup[]] => {
   const { chainId } = useChainId();
-  const { marketsInfoData, tokensData } = useMarketsInfo(chainId);
-
+  const { marketsInfoData, tokensData } = useMarketsInfoRequest(chainId);
   const marketsInfoDataLatest = useLatest(marketsInfoData);
   const tokensDataLatest = useLatest(tokensData);
-
   const [marketsReady, setMarketsReady] = useState(false);
   const [loadedPageIndex, setLoadedPageIndex] = useState(-1);
   const [data, setData] = useState<RebateGroup[]>([]);

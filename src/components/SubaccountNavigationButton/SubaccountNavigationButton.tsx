@@ -10,13 +10,13 @@ import {
   useSubaccountModalOpen,
 } from "context/SubaccountContext/SubaccountContext";
 import { SUBACCOUNT_DOCS_URL } from "domain/synthetics/subaccount/constants";
-import { TradeFlags } from "domain/synthetics/trade/useTradeFlags";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { ReactNode, memo, useCallback } from "react";
 import "./SubaccountNavigationButton.scss";
 import { ONE_CLICK_TRADING_NATIVE_TOKEN_WARN_HIDDEN, ONE_CLICK_TRADING_OFFER_HIDDEN } from "config/localStorage";
+import { TradeFlags } from "domain/synthetics/trade";
 
 export const SubaccountNavigationButton = memo(
   ({

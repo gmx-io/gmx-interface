@@ -12,6 +12,10 @@ type Props = {
   placeholder?: string;
 };
 
+const STYLE = {
+  backgroundImage: `url(${searchIcon})`,
+};
+
 export default function SearchInput({ value, setValue, onKeyDown, className, placeholder }: Props) {
   const isSmallerScreen = useMedia("(max-width: 700px)");
   const classNames = cx("Search-input", className);
@@ -25,9 +29,7 @@ export default function SearchInput({ value, setValue, onKeyDown, className, pla
         onKeyDown={onKeyDown}
         autoFocus={!isSmallerScreen}
         className="Tokenselector-search-input"
-        style={{
-          backgroundImage: `url(${searchIcon})`,
-        }}
+        style={STYLE}
       />
     </div>
   );
