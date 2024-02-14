@@ -538,6 +538,7 @@ export function OrderEditor(p: Props) {
                 value={
                   <TooltipWithPortal
                     position="right-top"
+                    portalClassName="PositionEditor-fees-tooltip"
                     handle={formatDeltaUsd(additionalExecutionFee.feeUsd?.mul(-1))}
                     renderContent={() => (
                       <>
