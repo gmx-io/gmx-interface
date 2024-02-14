@@ -2,6 +2,7 @@ import { SwapFeeItem, getFeeItem, getTotalFeeItem, getTotalSwapVolumeFromSwapSta
 import { BigNumber } from "ethers";
 import { applyFactor, getBasisPoints } from "lib/numbers";
 import { SwapStats, TradeFees, TradeMode, TradeType } from "../types";
+import { OrderInfo, isLimitOrderType, isMarketOrderType, isSwapOrderType } from "domain/synthetics/orders";
 
 export function getTradeFlags(tradeType: TradeType, tradeMode: TradeMode) {
   const isLong = tradeType === TradeType.Long;
@@ -23,6 +24,29 @@ export function getTradeFlags(tradeType: TradeType, tradeMode: TradeMode) {
     isMarket,
     isLimit,
   };
+}
+
+export function getTradeFlagsForOrder(order: OrderInfo) {
+  let tradeType: TradeType;
+  let tradeMode: TradeMode;
+
+  if (isMarketOrderType(order.orderType)) {
+    tradeMode = TradeMode.Market;
+  } else if (isLimitOrderType(order.orderType)) {
+    tradeMode = TradeMode.Limit;
+  } else {
+    tradeMode = TradeMode.Trigger;
+  }
+
+  if (isSwapOrderType(order.orderType)) {
+    tradeType = TradeType.Swap;
+  } else if (order.isLong) {
+    tradeType = TradeType.Long;
+  } else {
+    tradeType = TradeType.Short;
+  }
+
+  return getTradeFlags(tradeType, tradeMode);
 }
 
 export function getTradeFees(p: {

@@ -12,6 +12,7 @@ import {
 import { SUBACCOUNT_DOCS_URL } from "domain/synthetics/subaccount/constants";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
+import cx from "classnames";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { ReactNode, memo, useCallback } from "react";
 import "./SubaccountNavigationButton.scss";
@@ -29,12 +30,14 @@ export const SubaccountNavigationButton = memo(
     isNativeToken,
     isWrapOrUnwrap,
     tradeFlags,
+    className,
   }: {
     closeConfirmationBox: () => void;
     executionFee: BigNumber | undefined;
     isNativeToken?: boolean;
     isWrapOrUnwrap?: boolean;
     tradeFlags: TradeFlags | undefined;
+    className?: string;
   }) => {
     const isSubaccountActive = useIsSubaccountActive();
     const [, setModalOpen] = useSubaccountModalOpen();
@@ -145,7 +148,7 @@ export const SubaccountNavigationButton = memo(
       <NavigationButton
         onCloseClick={onCloseClick}
         onNavigateClick={clickable ? jumpToSubaccount : undefined}
-        className="SubaccountNavigationButton"
+        className={cx("SubaccountNavigationButton", className)}
       >
         {content}
       </NavigationButton>
