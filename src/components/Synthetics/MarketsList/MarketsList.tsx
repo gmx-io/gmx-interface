@@ -329,6 +329,7 @@ export function MarketsList() {
                       </div>
                       <div>
                         <TooltipWithPortal
+                          maxAllowedWidth={350}
                           portalClassName="MarketList-netfee-tooltip"
                           handle={`${formatRatePercentage(netFeePerHourLong)} / ${formatRatePercentage(
                             netFeePerHourShort

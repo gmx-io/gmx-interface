@@ -6,7 +6,7 @@ import { IS_TOUCH } from "config/env";
 import Portal from "../Common/Portal";
 import { TooltipPosition } from "./Tooltip";
 import { DEFAULT_TOOLTIP_POSITION, TOOLTIP_CLOSE_DELAY, TOOLTIP_OPEN_DELAY } from "config/ui";
-import { computePosition, flip } from "@floating-ui/dom";
+import { computePosition, flip, size } from "@floating-ui/dom";
 
 type Props = {
   handle: React.ReactNode;
@@ -23,6 +23,7 @@ type Props = {
   openDelay?: number;
   closeDelay?: number;
   shouldStopPropagation?: boolean;
+  maxAllowedWidth?: number;
 };
 
 type Coords = {
@@ -47,6 +48,7 @@ export default function TooltipWithPortal({
   openDelay = TOOLTIP_OPEN_DELAY,
   closeDelay = TOOLTIP_CLOSE_DELAY,
   shouldStopPropagation,
+  maxAllowedWidth,
 }: Props) {
   const [visible, setVisible] = useState(false);
   const [coords, setCoords] = useState<Coords>({});
@@ -58,20 +60,32 @@ export default function TooltipWithPortal({
   const popupRef = useRef<HTMLDivElement>(null);
 
   const [computedPlacement, setComputedPlacement] = useState<TooltipPosition | undefined>(position);
-
   useEffect(() => {
-    const computeTooltipPlacement = async () => {
-      if (handlerRef.current && popupRef.current) {
-        const { placement } = await computePosition(handlerRef.current, popupRef.current, {
-          middleware: [flip()],
-          placement: position,
-        });
-        setComputedPlacement(placement);
-      }
-    };
+    async function computeTooltipPlacement() {
+      if (!handlerRef.current || !popupRef.current) return;
+
+      const { placement } = await computePosition(handlerRef.current, popupRef.current, {
+        middleware: [
+          flip({ fallbackStrategy: "initialPlacement" }),
+          maxAllowedWidth
+            ? size({
+                padding: 10,
+                apply({ availableWidth, elements }) {
+                  Object.assign(elements.floating.style, {
+                    minWidth: `${Math.min(availableWidth, maxAllowedWidth)}px`,
+                    maxWidth: `${maxAllowedWidth}px`,
+                  });
+                },
+              })
+            : undefined,
+        ].filter(Boolean),
+        placement: position,
+      });
+      setComputedPlacement(placement);
+    }
 
     computeTooltipPlacement();
-  }, [visible, position]);
+  }, [visible, position, maxAllowedWidth]);
 
   const updateTooltipCoords = useCallback(() => {
     const rect = handlerRef?.current?.getBoundingClientRect();

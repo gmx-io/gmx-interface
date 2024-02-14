@@ -2,7 +2,7 @@ import "./Tooltip.scss";
 import cx from "classnames";
 import { useCallback, useState, useRef, MouseEvent, ReactNode, useEffect } from "react";
 import { IS_TOUCH } from "config/env";
-import { computePosition, flip } from "@floating-ui/dom";
+import { computePosition, flip, size } from "@floating-ui/dom";
 import { DEFAULT_TOOLTIP_POSITION } from "config/ui";
 import { TOOLTIP_CLOSE_DELAY, TOOLTIP_OPEN_DELAY } from "config/ui";
 
@@ -31,6 +31,7 @@ type Props = {
   isHandlerDisabled?: boolean;
   openDelay?: number;
   closeDelay?: number;
+  maxAllowedWidth?: number;
 };
 
 export default function Tooltip({
@@ -44,6 +45,7 @@ export default function Tooltip({
   isHandlerDisabled,
   openDelay = TOOLTIP_OPEN_DELAY,
   closeDelay = TOOLTIP_CLOSE_DELAY,
+  maxAllowedWidth, // in px
 }: Props) {
   const [visible, setVisible] = useState(false);
   const intervalCloseRef = useRef<ReturnType<typeof setTimeout> | null>();
@@ -54,18 +56,31 @@ export default function Tooltip({
   const [computedPlacement, setComputedPlacement] = useState<TooltipPosition | undefined>(position);
 
   useEffect(() => {
-    const computeTooltipPlacement = async () => {
-      if (handlerRef.current && popupRef.current) {
-        const { placement } = await computePosition(handlerRef.current, popupRef.current, {
-          middleware: [flip()],
-          placement: position,
-        });
-        setComputedPlacement(placement);
-      }
-    };
+    async function computeTooltipPlacement() {
+      if (!handlerRef.current || !popupRef.current) return;
+
+      const { placement } = await computePosition(handlerRef.current, popupRef.current, {
+        middleware: [
+          flip({ fallbackStrategy: "initialPlacement" }),
+          maxAllowedWidth
+            ? size({
+                padding: 10,
+                apply({ availableWidth, elements }) {
+                  Object.assign(elements.floating.style, {
+                    minWidth: `${Math.min(availableWidth, maxAllowedWidth)}px`,
+                    maxWidth: `${maxAllowedWidth}px`,
+                  });
+                },
+              })
+            : undefined,
+        ].filter(Boolean),
+        placement: position,
+      });
+      setComputedPlacement(placement);
+    }
 
     computeTooltipPlacement();
-  }, [visible, position]);
+  }, [visible, position, maxAllowedWidth]);
 
   const onMouseEnter = useCallback(() => {
     if (trigger !== "hover" || IS_TOUCH) return;
