@@ -39,7 +39,8 @@ type Props = {
 };
 
 export function OrderList(p: Props) {
-  const { setSelectedOrdersKeys, selectedPositionOrderKey, setSelectedPositionOrderKey } = p;
+  const { setSelectedOrdersKeys, selectedPositionOrderKey, setSelectedPositionOrderKey, availableTokensOptions } = p;
+  const { sortedIndexTokensWithPoolValue, sortedLongAndShortTokens } = availableTokensOptions;
   const marketsInfoData = useMarketsInfoData();
   const positionsData = usePositionsInfoData();
   const ordersData = useOrdersInfoData();
@@ -68,10 +69,10 @@ export function OrderList(p: Props) {
     );
 
     return [
-      ...sortPositionOrders(positionOrders, p.availableTokensOptions?.sortedIndexTokensWithPoolValue),
-      ...sortSwapOrders(swapOrders, p.availableTokensOptions?.sortedLongAndShortTokens),
+      ...sortPositionOrders(positionOrders, sortedIndexTokensWithPoolValue),
+      ...sortSwapOrders(swapOrders, sortedLongAndShortTokens),
     ];
-  }, [ordersData, p.availableTokensOptions]);
+  }, [ordersData, sortedIndexTokensWithPoolValue, sortedLongAndShortTokens]);
 
   const isAllOrdersSelected = orders.length > 0 && orders.every((o) => p.selectedOrdersKeys?.[o.key]);
   const editingOrder = orders.find((o) => o.key === editingOrderKey);
