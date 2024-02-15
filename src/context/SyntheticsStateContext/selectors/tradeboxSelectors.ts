@@ -61,6 +61,17 @@ export const selectTradeboxKeepLeverage = (s: SyntheticsTradeState) => s.tradebo
 export const selectTradeboxSetActivePosition = (s: SyntheticsTradeState) => s.tradebox.setActivePosition;
 export const selectTradeboxSetToTokenAddress = (s: SyntheticsTradeState) => s.tradebox.setToTokenAddress;
 
+export const selectTradeboxSwapRoutes = createEnhancedSelector((q) => {
+  const fromTokenAddress = q(selectTradeboxFromTokenAddress);
+  const toTokenAddress = q(selectTradeboxToTokenAddress);
+  const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
+  const tradeMode = q(selectTradeboxTradeMode);
+  const tradeType = q(selectTradeboxTradeType);
+  const tradeFlags = createTradeFlags(tradeType, tradeMode);
+
+  return q(makeSelectSwapRoutes(fromTokenAddress, tradeFlags.isPosition ? collateralTokenAddress : toTokenAddress));
+});
+
 export const selectTradeboxIncreasePositionAmounts = createEnhancedSelector((q) => {
   const tokensData = q(selectTokensData);
   const tradeMode = q(selectTradeboxTradeMode);

@@ -17,6 +17,7 @@ import {
   selectTradeboxSwapAmounts,
   selectTradeboxNextPositionValuesForIncrease,
   selectTradeboxNextPositionValuesForDecrease,
+  selectTradeboxSelectedTriggerAcceptablePriceImpactBps,
 } from "../selectors/tradeboxSelectors";
 import { useSelector } from "../utils";
 
@@ -33,6 +34,8 @@ export const useTradeboxAvailableTokensOptions = () => useSelector(selectTradebo
 export const useTradeboxSetActivePosition = () => useSelector(selectTradeboxSetActivePosition);
 export const useTradeboxTradeType = () => useSelector(selectTradeboxTradeType);
 export const useTradeboxSetToTokenAddress = () => useSelector(selectTradeboxSetToTokenAddress);
+export const useTradeboxSelectedTriggerAcceptablePriceImpactBps = () =>
+  useSelector(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
 
 export const useTradeboxSwapAmounts = () => useSelector(selectTradeboxSwapAmounts);
 export const useTradeboxNextPositionValuesForIncrease = () => useSelector(selectTradeboxNextPositionValuesForIncrease);

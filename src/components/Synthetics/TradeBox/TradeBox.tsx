@@ -13,10 +13,16 @@ import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
+import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
 import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { MAX_METAMASK_MOBILE_DECIMALS, V2_LEVERAGE_SLIDER_MARKS } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { useMarketsInfoData, useTokensData, useUiFeeFactor } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import {
+  useMarketsInfoData,
+  useTokensData,
+  useUiFeeFactor,
+  useUserReferralInfo,
+} from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useSwapRoutes, useTradeRatios } from "context/SyntheticsStateContext/hooks/tradeHooks";
 import {
   useTradeboxDecreasePositionAmounts,
@@ -26,10 +32,14 @@ import {
   useTradeboxNextPositionValuesForDecrease,
   useTradeboxNextPositionValuesForIncrease,
   useTradeboxSelectedPosition,
+  useTradeboxSelectedTriggerAcceptablePriceImpactBps,
   useTradeboxState,
   useTradeboxSwapAmounts,
   useTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import { selectTradeboxSwapRoutes } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useHasOutdatedUi } from "domain/legacy";
 import {
   estimateExecuteDecreaseOrderGasLimit,
@@ -54,24 +64,27 @@ import {
   TradeMode,
   TradeType,
   getExecutionPriceForDecrease,
+  getIncreasePositionAmounts,
   getMarkPrice,
+  getNextPositionValuesForIncreaseTrade,
   getTradeFees,
 } from "domain/synthetics/trade";
 import { useAvailableMarketsOptions } from "domain/synthetics/trade/useAvailableMarketsOptions";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import {
   ValidationResult,
-  decreasePositionSizeByLeverageDiff,
   getCommonError,
   getDecreaseError,
   getIncreaseError,
   getSwapError,
+  validateMaxLeverage,
 } from "domain/synthetics/trade/utils/validation";
 import { getMinResidualAmount } from "domain/tokens";
 import { BigNumber } from "ethers";
 import longImg from "img/long.svg";
 import shortImg from "img/short.svg";
 import swapImg from "img/swap.svg";
+import { numericBinarySearch } from "lib/binarySearch";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
 import {
@@ -99,7 +112,6 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { CollateralSelectorRow } from "./CollateralSelectorRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import "./TradeBox.scss";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 export type Props = {
   avaialbleTokenOptions: AvailableTokenOptions;
@@ -431,6 +443,107 @@ export function TradeBox(p: Props) {
     };
   }, [increaseAmounts, isIncrease, isLong, marketInfo]);
 
+  const selectedTriggerAcceptablePriceImpactBps = useTradeboxSelectedTriggerAcceptablePriceImpactBps();
+  const swapRoutes = useSelector(selectTradeboxSwapRoutes);
+  const userReferralInfo = useUserReferralInfo();
+  const acceptablePriceImpactBuffer = useSelector(selectSavedAcceptablePriceImpactBuffer);
+
+  const detectAndSetAvailableMaxLeverage = useCallback(() => {
+    if (!collateralToken || !toToken || !fromToken || !marketInfo || !minCollateralUsd) return;
+
+    const { result: maxLeverage, returnValue: sizeDeltaInTokens } = numericBinarySearch<BigNumber | undefined>(
+      1,
+      MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR,
+      (lev) => {
+        const leverage = BigNumber.from(lev * BASIS_POINTS_DIVISOR);
+        const increaseAmounts = getIncreasePositionAmounts({
+          collateralToken,
+          findSwapPath: swapRoutes.findSwapPath,
+          indexToken: toToken,
+          indexTokenAmount: toTokenAmount,
+          initialCollateralAmount: fromTokenAmount,
+          initialCollateralToken: fromToken,
+          isLong,
+          marketInfo,
+          position: selectedPosition,
+          strategy: "leverageByCollateral",
+          uiFeeFactor,
+          userReferralInfo,
+          acceptablePriceImpactBuffer,
+          fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
+          leverage,
+          triggerPrice,
+        });
+
+        const nextPositionValues = getNextPositionValuesForIncreaseTrade({
+          collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
+          collateralDeltaUsd: increaseAmounts.collateralDeltaUsd,
+          collateralToken,
+          indexPrice: increaseAmounts.indexPrice,
+          isLong,
+          marketInfo,
+          minCollateralUsd,
+          showPnlInLeverage: false,
+          sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
+          sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+          userReferralInfo,
+          existingPosition: selectedPosition,
+        });
+
+        if (nextPositionValues.nextLeverage) {
+          const [error] = validateMaxLeverage(
+            nextPositionValues.nextLeverage,
+            marketInfo,
+            isLong,
+            increaseAmounts.sizeDeltaUsd
+          );
+
+          if (error) {
+            return {
+              isValid: false,
+              returnValue: increaseAmounts.sizeDeltaInTokens,
+            };
+          } else {
+            return {
+              isValid: true,
+              returnValue: increaseAmounts.sizeDeltaInTokens,
+            };
+          }
+        }
+
+        return {
+          isValid: false,
+          returnValue: increaseAmounts.sizeDeltaInTokens,
+        };
+      }
+    );
+
+    if (isLeverageEnabled) {
+      setLeverageOption(maxLeverage);
+    } else {
+      setToTokenInputValue(formatAmount(sizeDeltaInTokens, toToken.decimals, 8), true);
+    }
+  }, [
+    acceptablePriceImpactBuffer,
+    collateralToken,
+    fromToken,
+    fromTokenAmount,
+    isLeverageEnabled,
+    isLong,
+    marketInfo,
+    minCollateralUsd,
+    selectedPosition,
+    selectedTriggerAcceptablePriceImpactBps,
+    setLeverageOption,
+    setToTokenInputValue,
+    swapRoutes.findSwapPath,
+    toToken,
+    toTokenAmount,
+    triggerPrice,
+    uiFeeFactor,
+    userReferralInfo,
+  ]);
+
   const { buttonErrorText, tooltipContent } = useMemo(() => {
     const commonError = getCommonError({
       chainId,
@@ -503,61 +616,29 @@ export function TradeBox(p: Props) {
 
     const buttonErrorText = commonError[0] || tradeError[0];
     const tooltipName = commonError[1] || tradeError[1];
-    const tooltipArg = commonError[2] || tradeError[2];
 
     let tooltipContent: ReactNode = null;
     if (tooltipName) {
       switch (tooltipName) {
         case "maxLeverage": {
-          const allowedLeverage = Number(((tooltipArg?.toNumber() ?? 0) / BASIS_POINTS_DIVISOR).toFixed(0));
-
-          if (isLeverageEnabled) {
-            tooltipContent = (
-              <>
-                <Trans>Decrease the Leverage to match the Max. Allowed Leverage:</Trans>
-                <br />
-                <br />
-                <span onClick={() => setLeverageOption(allowedLeverage)} className="Tradebox-handle">
-                  <Trans>Set Leverage to: {formatAmount(tooltipArg, 4, 0)}x</Trans>
-                </span>
-                <br />
-                <br />
-                <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
-              </>
-            );
-          } else if (increaseAmounts && nextPositionValues && nextPositionValues.nextLeverage && toToken) {
-            const newIndexTokenAmount = decreasePositionSizeByLeverageDiff(
-              nextPositionValues.nextLeverage.div(BASIS_POINTS_DIVISOR),
-              BigNumber.from(allowedLeverage),
-              increaseAmounts.indexTokenAmount
-            );
-
-            tooltipContent = (
-              <>
+          tooltipContent = (
+            <>
+              {isLeverageEnabled ? (
+                <Trans>Decrease the Leverage to match the Max. Allowed Leverage.</Trans>
+              ) : (
                 <Trans>Decrease the Size to match the Max. Allowed Leverage:</Trans>
-                <br />
-                <br />
-                <span
-                  onClick={() => setToTokenInputValueRaw(formatAmount(newIndexTokenAmount, toToken.decimals))}
-                  className="Tradebox-handle"
-                >
-                  <Trans>Set Size to: {formatTokenAmount(newIndexTokenAmount, toToken.decimals, toToken.symbol)}</Trans>
-                </span>
-                <br />
-                <br />
-                <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
-              </>
-            );
-          } else {
-            tooltipContent = (
-              <>
-                <Trans>Max Leveraged Exceeded</Trans>
-                <br />
-                <br />
-                <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
-              </>
-            );
-          }
+              )}
+              <br />
+              <br />
+              <span onClick={detectAndSetAvailableMaxLeverage} className="Tradebox-handle">
+                <Trans>Set Max Leverage</Trans>
+              </span>
+              <br />
+              <br />
+              <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
+            </>
+          );
+
           break;
         }
 
@@ -589,7 +670,10 @@ export function TradeBox(p: Props) {
     markRatio,
     fees,
     marketInfo,
-    increaseAmounts,
+    increaseAmounts?.initialCollateralUsd,
+    increaseAmounts?.collateralDeltaUsd,
+    increaseAmounts?.sizeDeltaUsd,
+    increaseAmounts?.swapPathStats,
     collateralToken,
     selectedPosition,
     minCollateralUsd,
@@ -605,9 +689,7 @@ export function TradeBox(p: Props) {
     stage,
     fixedTriggerThresholdType,
     isLeverageEnabled,
-    nextPositionValues,
-    setLeverageOption,
-    setToTokenInputValueRaw,
+    detectAndSetAvailableMaxLeverage,
   ]);
 
   const isSubmitButtonDisabled = useMemo(() => {
