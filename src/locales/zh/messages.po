@@ -364,15 +364,15 @@ msgstr ""
 msgid "Allow {wrappedTokenSymbol} to be spent"
 msgstr ""
 
-#: src/App/App.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/Synthetics/ConfirmationBox/rows/AllowedSlippageRow.tsx
+#: src/components/Synthetics/PositionSeller/rows/AllowedSlippageRow.tsx
 msgid "Allowed Slippage"
 msgstr "允许的滑点"
 
-#: src/App/App.js
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "Allowed Slippage below {0}% may result in failed orders."
 msgstr ""
 
@@ -774,7 +774,7 @@ msgstr "送出取消"
 msgid "Cancelling {ordersText}"
 msgstr ""
 
-#: src/App/App.js
+#: src/components/SettingsModal/SettingsModal.tsx
 #: src/pages/Exchange/Exchange.js
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Chart positions"
@@ -1494,7 +1494,7 @@ msgstr "存款中..."
 msgid "Diff"
 msgstr "差异"
 
-#: src/App/App.js
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "Disable order validations"
 msgstr "关闭订单验证"
 
@@ -1502,7 +1502,7 @@ msgstr "关闭订单验证"
 msgid "Disconnect"
 msgstr "连线中断"
 
-#: src/App/App.js
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "Display PnL after fees"
 msgstr "收费后显示PnL"
 
@@ -2279,7 +2279,7 @@ msgstr ""
 msgid "Incentives are airdropped weekly."
 msgstr ""
 
-#: src/App/App.js
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "Include PnL in leverage display"
 msgstr "在杠杆显示中包括PnL"
 
@@ -2458,7 +2458,7 @@ msgstr "无效的接收地址"
 msgid "Invalid Transfer Addresses: Please check the url."
 msgstr ""
 
-#: src/App/App.js
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid execution fee buffer value"
 msgstr ""
 
@@ -2476,7 +2476,7 @@ msgstr "无效的流动资金价格"
 msgid "Invalid price, see warning"
 msgstr "无效的价格，请参阅警告"
 
-#: src/App/App.js
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid slippage value"
 msgstr "无效的滑点值"
 
@@ -2936,11 +2936,11 @@ msgstr "达到{0}的最高上限"
 msgid "Max Execution Fee"
 msgstr ""
 
-#: src/App/App.js
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max Execution Fee Buffer"
 msgstr ""
 
-#: src/App/App.js
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max Execution Fee buffer below {0}% may result in failed orders."
 msgstr ""
 
@@ -2982,7 +2982,7 @@ msgstr ""
 msgid "Max close amount exceeded"
 msgstr ""
 
-#: src/App/App.js
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max execution fee buffer precision is 0.01%"
 msgstr ""
 
@@ -3012,9 +3012,13 @@ msgstr "已达到{0}池的最大容量。请使用另一个代币挖GLP"
 msgid "Max pool capacity reached for {0}<0/><1/>Please mint GLP using another token"
 msgstr "已达到{0}<0/><1/>池的最大容量，请使用另一个代币铸币GLP"
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Max slippage precision is -0.01%"
+msgstr ""
+
 #: src/App/App.js
-msgid "Max slippage precision is 0.01%"
-msgstr "最大滑点精准度为0.01%"
+#~ msgid "Max slippage precision is 0.01%"
+#~ msgstr "最大滑点精准度为0.01%"
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
@@ -4136,7 +4140,7 @@ msgstr ""
 msgid "Same as current active code"
 msgstr "与当前的有效代码相同"
 
-#: src/App/App.js
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "Save"
 msgstr "储存"
 
@@ -4302,10 +4306,10 @@ msgstr ""
 msgid "Set TP/SL"
 msgstr ""
 
-#: src/App/App.js
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "Settings"
 msgstr "设置"
 
@@ -4420,7 +4424,7 @@ msgstr "做空{0}"
 msgid "Shorting..."
 msgstr "做空中..."
 
-#: src/App/App.js
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "Show debug values"
 msgstr ""
 
@@ -4465,14 +4469,18 @@ msgstr "规模"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/ConfirmationBox/rows/AllowedSlippageRow.tsx
+#: src/components/Synthetics/PositionSeller/rows/AllowedSlippageRow.tsx
 msgid "Slippage is too high"
 msgstr ""
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Slippage should be less than -5%"
+msgstr ""
+
 #: src/App/App.js
-msgid "Slippage should be less than 5%"
-msgstr "滑点应低于5%"
+#~ msgid "Slippage should be less than 5%"
+#~ msgstr "滑点应低于5%"
 
 #: src/components/Exchange/UsefulLinks.tsx
 msgid "Speed up page loading"
@@ -4896,7 +4904,7 @@ msgstr "Gambit协议处于测试阶段，请在参与之前阅读<0>质押细节
 msgid "The Max Execution Fee is overestimated by {maxExecutionFeeText}%. Upon execution, the excess Execution Fee is sent back to your account."
 msgstr ""
 
-#: src/App/App.js
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 msgstr ""
 
@@ -4966,8 +4974,12 @@ msgid "The pending borrow fee will be charged on this transaction."
 msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
+msgid "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of -{1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
 msgstr ""
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#~ msgid "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
@@ -5917,9 +5929,12 @@ msgstr "你可以在这里查看你的提领历史<0></0>"
 msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr "目前，您最多可以授权{0}个esGMX代币，比例为{1}个esGMX。 {stakingToken}对1esGMX"
 
+#: src/components/Synthetics/ConfirmationBox/rows/AllowedSlippageRow.tsx
+#: src/components/Synthetics/PositionSeller/rows/AllowedSlippageRow.tsx
+msgid "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than -{0}, may result in failed orders if prices are volatile."
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than {0}, may result in failed orders if prices are volatile."
 msgstr ""
 

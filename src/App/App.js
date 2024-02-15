@@ -6,7 +6,6 @@ import "@wagmi/connectors";
 
 import { Redirect, Route, HashRouter as Router, Switch, useHistory, useLocation } from "react-router-dom";
 
-import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { getAppBaseUrl, isHomeSite, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 
 import { decodeReferralCode, encodeReferralCode } from "domain/referrals";
@@ -30,8 +29,6 @@ import Stake from "pages/Stake/Stake";
 import Stats from "pages/Stats/Stats";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 
-import Checkbox from "components/Checkbox/Checkbox";
-import Modal from "components/Modal/Modal";
 import { cssTransition, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -43,7 +40,6 @@ import "./App.scss";
 import SEO from "components/Common/SEO";
 import EventToastContainer from "components/EventToast/EventToastContainer";
 import useEventToast from "components/EventToast/useEventToast";
-import Tooltip from "components/Tooltip/Tooltip";
 import useRouteQuery from "lib/useRouteQuery";
 
 import PositionRouter from "abis/PositionRouter.json";
@@ -59,23 +55,17 @@ import TermsAndConditions from "pages/TermsAndConditions/TermsAndConditions";
 import { useLocalStorage } from "react-use";
 
 import { i18n } from "@lingui/core";
-import { t, Trans } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import { I18nProvider } from "@lingui/react";
-import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Header } from "components/Header/Header";
-import { ARBITRUM, DEFAULT_ALLOWED_SLIPPAGE_BPS, EXECUTION_FEE_CONFIG_V2, getExplorerUrl } from "config/chains";
-import { isDevelopment } from "config/env";
+import { ARBITRUM, getExplorerUrl } from "config/chains";
 import { getIsSyntheticsSupported } from "config/features";
 import {
   CURRENT_PROVIDER_LOCALSTORAGE_KEY,
-  DISABLE_ORDER_VALIDATION_KEY,
-  IS_PNL_IN_LEVERAGE_KEY,
   LANGUAGE_LOCALSTORAGE_KEY,
   REFERRAL_CODE_KEY,
   SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
-  SHOULD_SHOW_POSITION_LINES_KEY,
-  SHOW_PNL_AFTER_FEES_KEY,
 } from "config/localStorage";
 import { TOAST_AUTO_CLOSE_TIME, WS_LOST_FOCUS_TIMEOUT } from "config/ui";
 import { SettingsContextProvider, useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -86,14 +76,12 @@ import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { roundToTwoDecimals } from "lib/numbers";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
 import SyntheticsActions from "pages/SyntheticsActions/SyntheticsActions";
 import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsFallbackPage";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
-import NumberInput from "components/NumberInput/NumberInput";
 import { watchNetwork } from "@wagmi/core";
 import { useDisconnect } from "wagmi";
 import useWallet from "lib/wallets/useWallet";
@@ -101,7 +89,7 @@ import { swrGCMiddleware } from "lib/swrMiddlewares";
 import useTradeRedirect from "lib/useTradeRedirect";
 import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContext";
 import { SubaccountModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
-import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import { SettingsModal } from "components/SettingsModal/SettingsModal";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -174,98 +162,9 @@ function FullApp({ pendingTxns, setPendingTxns }) {
   const settings = useSettings();
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
 
-  const [slippageAmount, setSlippageAmount] = useState(0);
-  const [executionFeeBufferBps, setExecutionFeeBufferBps] = useState(0);
-  const [isPnlInLeverage, setIsPnlInLeverage] = useState(false);
-  const [shouldDisableValidationForTesting, setShouldDisableValidationForTesting] = useState(false);
-
-  const [showPnlAfterFees, setShowPnlAfterFees] = useState(true);
-  const [showDebugValues, setShowDebugValues] = useState(false);
-
-  const [savedIsPnlInLeverage, setSavedIsPnlInLeverage] = useLocalStorageSerializeKey(
-    [chainId, IS_PNL_IN_LEVERAGE_KEY],
-    false
-  );
-
-  const [savedShowPnlAfterFees, setSavedShowPnlAfterFees] = useLocalStorageSerializeKey(
-    [chainId, SHOW_PNL_AFTER_FEES_KEY],
-    true
-  );
-
-  let [savedShouldDisableValidationForTesting, setSavedShouldDisableValidationForTesting] = useLocalStorageSerializeKey(
-    [chainId, DISABLE_ORDER_VALIDATION_KEY],
-    false
-  );
-  if (!isDevelopment()) {
-    savedShouldDisableValidationForTesting = false;
-  }
-
-  const [savedShouldShowPositionLines, setSavedShouldShowPositionLines] = useLocalStorageSerializeKey(
-    [chainId, SHOULD_SHOW_POSITION_LINES_KEY],
-    false
-  );
-
   const openSettings = useCallback(() => {
-    const slippage = parseInt(settings.savedAllowedSlippage);
-    setSlippageAmount(roundToTwoDecimals((slippage / BASIS_POINTS_DIVISOR) * 100));
-    if (settings.executionFeeBufferBps !== undefined) {
-      const bps = settings.executionFeeBufferBps;
-      setExecutionFeeBufferBps(roundToTwoDecimals((bps / BASIS_POINTS_DIVISOR) * 100));
-    }
-    setIsPnlInLeverage(savedIsPnlInLeverage);
-    setShowPnlAfterFees(savedShowPnlAfterFees);
-    setShowDebugValues(settings.showDebugValues);
-    setShouldDisableValidationForTesting(savedShouldDisableValidationForTesting);
     setIsSettingsVisible(true);
-  }, [
-    savedIsPnlInLeverage,
-    savedShouldDisableValidationForTesting,
-    savedShowPnlAfterFees,
-    settings.executionFeeBufferBps,
-    settings.savedAllowedSlippage,
-    settings.showDebugValues,
-  ]);
-
-  const saveAndCloseSettings = () => {
-    const slippage = parseFloat(slippageAmount);
-    if (isNaN(slippage)) {
-      helperToast.error(t`Invalid slippage value`);
-      return;
-    }
-    if (slippage > 5) {
-      helperToast.error(t`Slippage should be less than 5%`);
-      return;
-    }
-    const basisPoints = roundToTwoDecimals((slippage * BASIS_POINTS_DIVISOR) / 100);
-    if (parseInt(basisPoints) !== parseFloat(basisPoints)) {
-      helperToast.error(t`Max slippage precision is 0.01%`);
-      return;
-    }
-
-    settings.setSavedAllowedSlippage(basisPoints);
-
-    if (settings.shouldUseExecutionFeeBuffer) {
-      const executionFeeBuffer = parseFloat(executionFeeBufferBps);
-      if (isNaN(executionFeeBuffer) || executionFeeBuffer < 0) {
-        helperToast.error(t`Invalid execution fee buffer value`);
-        return;
-      }
-      const nextExecutionBufferFeeBps = roundToTwoDecimals((executionFeeBuffer * BASIS_POINTS_DIVISOR) / 100);
-
-      if (parseInt(nextExecutionBufferFeeBps) !== parseFloat(nextExecutionBufferFeeBps)) {
-        helperToast.error(t`Max execution fee buffer precision is 0.01%`);
-        return;
-      }
-
-      settings.setExecutionFeeBufferBps(nextExecutionBufferFeeBps);
-    }
-
-    setSavedIsPnlInLeverage(isPnlInLeverage);
-    setSavedShowPnlAfterFees(showPnlAfterFees);
-    setSavedShouldDisableValidationForTesting(shouldDisableValidationForTesting);
-    setIsSettingsVisible(false);
-    settings.setShowDebugValues(showDebugValues);
-  };
+  }, []);
 
   const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
   const baseUrl = getAppBaseUrl();
@@ -370,15 +269,15 @@ function FullApp({ pendingTxns, setPendingTxns }) {
               <Route exact path="/v1">
                 <Exchange
                   ref={exchangeRef}
-                  savedShowPnlAfterFees={savedShowPnlAfterFees}
-                  savedIsPnlInLeverage={savedIsPnlInLeverage}
-                  setSavedIsPnlInLeverage={setSavedIsPnlInLeverage}
+                  savedShowPnlAfterFees={settings.showPnlAfterFees}
+                  savedIsPnlInLeverage={settings.isPnlInLeverage}
+                  setSavedIsPnlInLeverage={settings.setIsPnlInLeverage}
                   savedSlippageAmount={settings.savedAllowedSlippage}
                   setPendingTxns={setPendingTxns}
                   pendingTxns={pendingTxns}
-                  savedShouldShowPositionLines={savedShouldShowPositionLines}
-                  setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
-                  savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
+                  savedShouldShowPositionLines={settings.shouldShowPositionLines}
+                  setSavedShouldShowPositionLines={settings.setShouldShowPositionLines}
+                  savedShouldDisableValidationForTesting={settings.shouldDisableValidationForTesting}
                   tradePageVersion={tradePageVersion}
                   setTradePageVersion={setTradePageVersion}
                   openSettings={openSettings}
@@ -403,13 +302,13 @@ function FullApp({ pendingTxns, setPendingTxns }) {
               <Route exact path="/pools">
                 {getIsSyntheticsSupported(chainId) ? (
                   <SyntheticsStateContextProvider
-                    savedIsPnlInLeverage={savedIsPnlInLeverage}
-                    savedShowPnlAfterFees={savedShowPnlAfterFees}
+                    savedIsPnlInLeverage={settings.isPnlInLeverage}
+                    savedShowPnlAfterFees={settings.showPnlAfterFees}
                     skipLocalReferralCode={false}
                     pageType="pools"
                   >
                     <MarketPoolsPage
-                      shouldDisableValidation={savedShouldDisableValidationForTesting}
+                      shouldDisableValidation={settings.shouldDisableValidationForTesting}
                       setPendingTxns={setPendingTxns}
                     />
                   </SyntheticsStateContextProvider>
@@ -421,17 +320,17 @@ function FullApp({ pendingTxns, setPendingTxns }) {
               <Route exact path="/trade">
                 {getIsSyntheticsSupported(chainId) ? (
                   <SyntheticsStateContextProvider
-                    savedIsPnlInLeverage={savedIsPnlInLeverage}
-                    savedShowPnlAfterFees={savedShowPnlAfterFees}
+                    savedIsPnlInLeverage={settings.isPnlInLeverage}
+                    savedShowPnlAfterFees={settings.showPnlAfterFees}
                     skipLocalReferralCode={false}
                     pageType="trade"
                   >
                     <SyntheticsPage
-                      shouldDisableValidation={savedShouldDisableValidationForTesting}
-                      savedShouldShowPositionLines={savedShouldShowPositionLines}
-                      setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
+                      shouldDisableValidation={settings.shouldDisableValidationForTesting}
+                      savedShouldShowPositionLines={settings.shouldShowPositionLines}
+                      setSavedShouldShowPositionLines={settings.setShouldShowPositionLines}
                       setPendingTxns={setPendingTxns}
-                      showPnlAfterFees={showPnlAfterFees}
+                      showPnlAfterFees={settings.showPnlAfterFees}
                       tradePageVersion={tradePageVersion}
                       setTradePageVersion={setTradePageVersion}
                       savedSlippageAmount={settings.savedAllowedSlippage}
@@ -447,7 +346,7 @@ function FullApp({ pendingTxns, setPendingTxns }) {
                 <BuyGlp
                   savedSlippageAmount={settings.savedAllowedSlippage}
                   setPendingTxns={setPendingTxns}
-                  savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
+                  savedShouldDisableValidationForTesting={settings.shouldDisableValidationForTesting}
                 />
               </Route>
               <Route exact path="/jobs">
@@ -476,14 +375,17 @@ function FullApp({ pendingTxns, setPendingTxns }) {
                 <Actions />
               </Route>
               <Route exact path="/actions/v1/:account">
-                <Actions savedIsPnlInLeverage={savedIsPnlInLeverage} savedShowPnlAfterFees={savedShowPnlAfterFees} />
+                <Actions
+                  savedIsPnlInLeverage={settings.isPnlInLeverage}
+                  savedShowPnlAfterFees={settings.showPnlAfterFees}
+                />
               </Route>
               <Route exact path="/actions">
                 <SyntheticsStateContextProvider
                   pageType="actions"
                   skipLocalReferralCode
-                  savedIsPnlInLeverage={savedIsPnlInLeverage}
-                  savedShowPnlAfterFees={savedShowPnlAfterFees}
+                  savedIsPnlInLeverage={settings.isPnlInLeverage}
+                  savedShowPnlAfterFees={settings.showPnlAfterFees}
                 >
                   <SyntheticsActions />
                 </SyntheticsStateContextProvider>
@@ -493,8 +395,8 @@ function FullApp({ pendingTxns, setPendingTxns }) {
                 <SyntheticsStateContextProvider
                   pageType="actions"
                   skipLocalReferralCode={false}
-                  savedIsPnlInLeverage={savedIsPnlInLeverage}
-                  savedShowPnlAfterFees={savedShowPnlAfterFees}
+                  savedIsPnlInLeverage={settings.isPnlInLeverage}
+                  savedShowPnlAfterFees={settings.showPnlAfterFees}
                 >
                   <SyntheticsActions />
                 </SyntheticsStateContextProvider>
@@ -548,113 +450,7 @@ function FullApp({ pendingTxns, setPendingTxns }) {
         setShouldHideRedirectModal={setShouldHideRedirectModal}
         shouldHideRedirectModal={shouldHideRedirectModal}
       />
-      <Modal
-        className="App-settings"
-        isVisible={isSettingsVisible}
-        setIsVisible={setIsSettingsVisible}
-        label={t`Settings`}
-      >
-        <div className="App-settings-row">
-          <div>
-            <Trans>Allowed Slippage</Trans>
-          </div>
-          <div className="App-slippage-tolerance-input-container">
-            <NumberInput
-              className="App-slippage-tolerance-input"
-              value={slippageAmount}
-              onValueChange={(e) => setSlippageAmount(e.target.value)}
-              placeholder="0.3"
-            />
-            <div className="App-slippage-tolerance-input-percent">%</div>
-          </div>
-          {parseFloat(slippageAmount) < (DEFAULT_ALLOWED_SLIPPAGE_BPS / BASIS_POINTS_DIVISOR) * 100 && (
-            <div className="warning settings-modal-error">
-              <Trans>
-                Allowed Slippage below {(DEFAULT_ALLOWED_SLIPPAGE_BPS / BASIS_POINTS_DIVISOR) * 100}% may result in
-                failed orders.
-              </Trans>
-            </div>
-          )}
-        </div>
-        {settings.shouldUseExecutionFeeBuffer && (
-          <div className="App-settings-row">
-            <div>
-              <Tooltip
-                handle={<Trans>Max Execution Fee Buffer</Trans>}
-                renderContent={() => (
-                  <div>
-                    <Trans>
-                      The Max Execution Fee is set to a higher value to handle potential increases in gas price during
-                      order execution. Any excess execution fee will be refunded to your account when the order is
-                      executed. Only applicable to GMX V2.
-                    </Trans>
-                    <br />
-                    <br />
-                    <ExternalLink href="https://docs.gmx.io/docs/trading/v2#execution-fee">Read more</ExternalLink>
-                  </div>
-                )}
-              />
-            </div>
-            <div className="App-slippage-tolerance-input-container">
-              <NumberInput
-                className="App-slippage-tolerance-input"
-                value={executionFeeBufferBps}
-                onValueChange={(e) => setExecutionFeeBufferBps(e.target.value)}
-                placeholder="10"
-              />
-              <div className="App-slippage-tolerance-input-percent">%</div>
-            </div>
-            {parseFloat(executionFeeBufferBps) <
-              (EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps / BASIS_POINTS_DIVISOR) * 100 && (
-              <div className="mb-base">
-                <AlertInfo type="warning">
-                  <Trans>
-                    Max Execution Fee buffer below{" "}
-                    {(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps / BASIS_POINTS_DIVISOR) * 100}% may result in
-                    failed orders.
-                  </Trans>
-                </AlertInfo>
-              </div>
-            )}
-          </div>
-        )}
-        <div className="Exchange-settings-row">
-          <Checkbox isChecked={showPnlAfterFees} setIsChecked={setShowPnlAfterFees}>
-            <Trans>Display PnL after fees</Trans>
-          </Checkbox>
-        </div>
-        <div className="Exchange-settings-row">
-          <Checkbox isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>
-            <Trans>Include PnL in leverage display</Trans>
-          </Checkbox>
-        </div>
-        <div className="Exchange-settings-row chart-positions-settings">
-          <Checkbox isChecked={savedShouldShowPositionLines} setIsChecked={setSavedShouldShowPositionLines}>
-            <span>
-              <Trans>Chart positions</Trans>
-            </span>
-          </Checkbox>
-        </div>
-        {isDevelopment() && (
-          <div className="Exchange-settings-row">
-            <Checkbox isChecked={shouldDisableValidationForTesting} setIsChecked={setShouldDisableValidationForTesting}>
-              <Trans>Disable order validations</Trans>
-            </Checkbox>
-          </div>
-        )}
-
-        {isDevelopment() && (
-          <div className="Exchange-settings-row">
-            <Checkbox isChecked={showDebugValues} setIsChecked={setShowDebugValues}>
-              <Trans>Show debug values</Trans>
-            </Checkbox>
-          </div>
-        )}
-
-        <Button variant="primary-action" className="w-full mt-md" onClick={saveAndCloseSettings}>
-          <Trans>Save</Trans>
-        </Button>
-      </Modal>
+      <SettingsModal isSettingsVisible={isSettingsVisible} setIsSettingsVisible={setIsSettingsVisible} />
       <SubaccountModal setPendingTxns={setPendingTxns} />
     </>
   );

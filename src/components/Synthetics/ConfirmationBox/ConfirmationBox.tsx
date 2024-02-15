@@ -9,12 +9,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { getContract } from "config/contracts";
-import {
-  BASIS_POINTS_DIVISOR,
-  DEFAULT_SLIPPAGE_AMOUNT,
-  EXCESSIVE_SLIPPAGE_AMOUNT,
-  HIGH_SPREAD_THRESHOLD,
-} from "config/factors";
+import { BASIS_POINTS_DIVISOR, HIGH_SPREAD_THRESHOLD } from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useUserReferralCode } from "domain/referrals/hooks";
 import {
@@ -68,9 +63,7 @@ import { useChainId } from "lib/chains";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import PercentageInput from "components/PercentageInput/PercentageInput";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import {
   useIsLastSubaccountAction,
   useSubaccount,
@@ -91,7 +84,6 @@ import { AvailableMarketsOptions } from "domain/synthetics/trade/useAvailableMar
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { helperToast } from "lib/helperToast";
 import {
-  bigNumberify,
   formatAmount,
   formatDeltaUsd,
   formatPercentage,
@@ -117,6 +109,7 @@ import SLTPEntries from "./SLTPEntries";
 import useSLTPEntries from "domain/synthetics/orders/useSLTPEntries";
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 
 export type Props = {
   isVisible: boolean;
@@ -1057,40 +1050,6 @@ export function ConfirmationBox(p: Props) {
     }
   }, [collateralSpreadInfo]);
 
-  function renderAllowedSlippage(defaultSlippage, setSlippage) {
-    return (
-      <ExchangeInfoRow
-        label={
-          <TooltipWithPortal
-            handle={t`Allowed Slippage`}
-            position="left-top"
-            renderContent={() => {
-              return (
-                <div className="text-white">
-                  <Trans>
-                    You can edit the default Allowed Slippage in the settings menu on the top right of the page.
-                    <br />
-                    <br />
-                    Note that a low allowed slippage, e.g. less than{" "}
-                    {formatPercentage(bigNumberify(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}, may result in failed
-                    orders if prices are volatile.
-                  </Trans>
-                </div>
-              );
-            }}
-          />
-        }
-      >
-        <PercentageInput
-          onChange={setSlippage}
-          defaultValue={defaultSlippage}
-          highValue={EXCESSIVE_SLIPPAGE_AMOUNT}
-          highValueWarningText={t`Slippage is too high`}
-        />
-      </ExchangeInfoRow>
-    );
-  }
-
   function renderSLTP(type: "stopLoss" | "takeProfit") {
     const isStopLoss = type === "stopLoss";
     const entriesInfo = isStopLoss ? stopLoss : takeProfit;
@@ -1231,7 +1190,7 @@ export function ConfirmationBox(p: Props) {
               {formatPercentage(collateralSpreadPercent)}
             </ExchangeInfoRow>
           )}
-          {isMarket && renderAllowedSlippage(savedAllowedSlippage, setAllowedSlippage)}
+          {isMarket && <AllowedSlippageRow defaultSlippage={savedAllowedSlippage} setSlippage={setAllowedSlippage} />}
           {isLimit && increaseAmounts && renderAcceptablePriceImpactInput()}
 
           <div className="line-divider" />
@@ -1434,7 +1393,8 @@ export function ConfirmationBox(p: Props) {
               {formatAmount(swapSpreadInfo.spread.mul(100), USD_DECIMALS, 2, true)}%
             </ExchangeInfoRow>
           )}
-          {isMarket && renderAllowedSlippage(savedAllowedSlippage, setAllowedSlippage)}
+
+          {isMarket && <AllowedSlippageRow defaultSlippage={savedAllowedSlippage} setSlippage={setAllowedSlippage} />}
 
           <div className="line-divider" />
 
