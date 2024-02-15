@@ -7,6 +7,9 @@ export function numericBinarySearch<T>(
 
   while (from < to) {
     const mid = Math.floor((from + to) / 2);
+
+    if (from === mid) break;
+
     const { isValid, returnValue: v } = validator(mid);
     if (isValid) {
       returnValue = v;
