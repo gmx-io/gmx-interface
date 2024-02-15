@@ -68,8 +68,8 @@ export function OrderList(p: Props) {
     );
 
     return [
-      ...sortPositionOrders(positionOrders, p.availableTokensOptions?.sortedLongAndShortTokens ?? []),
-      ...sortSwapOrders(swapOrders, p.availableTokensOptions?.sortedLongAndShortTokens ?? []),
+      ...sortPositionOrders(positionOrders, p.availableTokensOptions?.sortedIndexTokensWithPoolValue),
+      ...sortSwapOrders(swapOrders, p.availableTokensOptions?.sortedLongAndShortTokens),
     ];
   }, [ordersData, p.availableTokensOptions]);
 
