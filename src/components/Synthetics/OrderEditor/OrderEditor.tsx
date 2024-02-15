@@ -24,14 +24,25 @@ import {
   convertToTokenAmount,
   getAmountByRatio,
   getTokenData,
+  convertToUsd,
   getTokensRatioByPrice,
 } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
-import { formatAmount, formatAmountFree, formatTokenAmount, formatUsd, getBasisPoints, parseValue } from "lib/numbers";
+import {
+  formatAmount,
+  formatAmountFree,
+  formatTokenAmount,
+  formatDeltaUsd,
+  formatTokenAmountWithUsd,
+  formatUsd,
+  getBasisPoints,
+  parseValue,
+} from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
 import { getWrappedToken } from "config/tokens";
@@ -49,6 +60,8 @@ import { BigNumber } from "ethers";
 import { getByKey } from "lib/objects";
 
 import Button from "components/Button/Button";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import {
   useMarketsInfoData,
@@ -195,7 +208,7 @@ export function OrderEditor(p: Props) {
   const existingPosition = getByKey(positionsData, positionKey);
 
   const executionFee = useMemo(() => {
-    if (!p.order.isFrozen || !gasLimits || !gasPrice || !tokensData) return undefined;
+    if (!gasLimits || !gasPrice || !tokensData) return undefined;
 
     let estimatedGas: BigNumber | undefined;
 
@@ -220,9 +233,24 @@ export function OrderEditor(p: Props) {
     if (!estimatedGas) return undefined;
 
     return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice);
-  }, [chainId, gasLimits, gasPrice, p.order.isFrozen, p.order.orderType, p.order.swapPath, tokensData]);
+  }, [chainId, gasLimits, gasPrice, p.order.orderType, p.order.swapPath, tokensData]);
 
-  const subaccount = useSubaccount(executionFee?.feeTokenAmount ?? null);
+  const additionalExecutionFee = useMemo(() => {
+    if (!executionFee || p.order.executionFee?.gte(executionFee.feeTokenAmount)) {
+      return undefined;
+    }
+
+    const feeTokenData = getTokenData(tokensData, executionFee.feeToken.address);
+    const additionalTokenAmount = executionFee.feeTokenAmount.sub(p.order.executionFee ?? 0);
+
+    return {
+      feeUsd: convertToUsd(additionalTokenAmount, executionFee.feeToken.decimals, feeTokenData?.prices.minPrice),
+      feeTokenAmount: additionalTokenAmount,
+      feeToken: executionFee.feeToken,
+    };
+  }, [executionFee, tokensData, p.order.executionFee]);
+
+  const subaccount = useSubaccount(additionalExecutionFee?.feeTokenAmount ?? null);
 
   const isLimitIncreaseOrder = p.order.orderType === OrderType.LimitIncrease;
 
@@ -382,7 +410,7 @@ export function OrderEditor(p: Props) {
       triggerPrice: triggerPrice || positionOrder.triggerPrice,
       acceptablePrice: acceptablePrice || positionOrder.acceptablePrice,
       minOutputAmount: minOutputAmount || p.order.minOutputAmount,
-      executionFee: executionFee?.feeTokenAmount,
+      executionFee: additionalExecutionFee?.feeTokenAmount,
       indexToken: indexToken,
       setPendingTxns: p.setPendingTxns,
     })
@@ -470,9 +498,9 @@ export function OrderEditor(p: Props) {
           </>
         )}
 
-        <div className="PositionEditor-info-box">
-          {isLimitIncreaseOrder && (
-            <>
+        <ExchangeInfo className="PositionEditor-info-box">
+          <ExchangeInfo.Group>
+            {isLimitIncreaseOrder && (
               <ExchangeInfoRow
                 label={t`Leverage`}
                 value={
@@ -482,52 +510,76 @@ export function OrderEditor(p: Props) {
                   />
                 }
               />
-
-              <div className="line-divider" />
-            </>
-          )}
-          {!isSwapOrderType(p.order.orderType) && (
-            <>
-              <ExchangeInfoRow
-                label={t`Acceptable Price`}
-                value={formatAcceptablePrice(acceptablePrice, { displayDecimals: indexPriceDecimals })}
-              />
-
-              {existingPosition && (
+            )}
+          </ExchangeInfo.Group>
+          <ExchangeInfo.Group>
+            {!isSwapOrderType(p.order.orderType) && (
+              <>
                 <ExchangeInfoRow
-                  label={t`Liq. Price`}
-                  value={formatLiquidationPrice(existingPosition.liquidationPrice, {
-                    displayDecimals: indexPriceDecimals,
-                  })}
+                  label={t`Acceptable Price`}
+                  value={formatAcceptablePrice(acceptablePrice, { displayDecimals: indexPriceDecimals })}
                 />
-              )}
-            </>
-          )}
 
-          {isSwapOrderType(p.order.orderType) && (
-            <>
-              <ExchangeInfoRow
-                label={t`Min. Receive`}
-                value={formatTokenAmount(
-                  minOutputAmount,
-                  p.order.targetCollateralToken.decimals,
-                  p.order.targetCollateralToken.symbol
+                {existingPosition && (
+                  <ExchangeInfoRow
+                    label={t`Liq. Price`}
+                    value={formatLiquidationPrice(existingPosition.liquidationPrice, {
+                      displayDecimals: indexPriceDecimals,
+                    })}
+                  />
                 )}
+              </>
+            )}
+          </ExchangeInfo.Group>
+          <ExchangeInfo.Group>
+            {additionalExecutionFee && (
+              <ExchangeInfoRow
+                label={t`Fees`}
+                value={
+                  <TooltipWithPortal
+                    position="right-top"
+                    portalClassName="PositionEditor-fees-tooltip"
+                    handle={formatDeltaUsd(additionalExecutionFee.feeUsd?.mul(-1))}
+                    renderContent={() => (
+                      <>
+                        <StatsTooltipRow
+                          label={<div className="text-white">{t`Execution Fee`}:</div>}
+                          value={formatTokenAmountWithUsd(
+                            additionalExecutionFee.feeTokenAmount.mul(-1),
+                            additionalExecutionFee.feeUsd?.mul(-1),
+                            additionalExecutionFee.feeToken.symbol,
+                            additionalExecutionFee.feeToken.decimals,
+                            {
+                              displayDecimals: 5,
+                            }
+                          )}
+                          showDollar={false}
+                        />
+                        <br />
+                        <div className="text-white">
+                          <Trans>As network fees have increased, an additional execution fee is needed.</Trans>
+                        </div>
+                      </>
+                    )}
+                  />
+                }
               />
-            </>
-          )}
+            )}
 
-          {executionFee?.feeTokenAmount.gt(0) && (
-            <ExchangeInfoRow label={t`Max Execution Fee`}>
-              {formatTokenAmount(
-                executionFee?.feeTokenAmount,
-                executionFee?.feeToken.decimals,
-                executionFee?.feeToken.symbol,
-                { displayDecimals: 5 }
-              )}
-            </ExchangeInfoRow>
-          )}
-        </div>
+            {isSwapOrderType(p.order.orderType) && (
+              <>
+                <ExchangeInfoRow
+                  label={t`Min. Receive`}
+                  value={formatTokenAmount(
+                    minOutputAmount,
+                    p.order.targetCollateralToken.decimals,
+                    p.order.targetCollateralToken.symbol
+                  )}
+                />
+              </>
+            )}
+          </ExchangeInfo.Group>
+        </ExchangeInfo>
 
         <div className="Exchange-swap-button-container">
           <Button
