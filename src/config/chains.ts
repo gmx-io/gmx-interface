@@ -15,6 +15,7 @@ export const ARBITRUM_TESTNET = 421611;
 export const SEPOLIA_TESTNET = 11155111;
 export const OPTIMISM_GOERLI_TESTNET = 420;
 export const OPTIMISM_MAINNET = 10;
+export const BLAST_SEPOLIA_TESTNET = 168587773;
 
 // TODO take it from web3
 export const DEFAULT_CHAIN_ID = OPTIMISM_MAINNET;
@@ -23,7 +24,7 @@ export const CHAIN_ID = DEFAULT_CHAIN_ID;
 export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE, OPTIMISM_MAINNET];
 
 if (isDevelopment()) {
-  SUPPORTED_CHAIN_IDS.push(ARBITRUM_TESTNET, AVALANCHE_FUJI, SEPOLIA_TESTNET, OPTIMISM_GOERLI_TESTNET);
+  SUPPORTED_CHAIN_IDS.push(ARBITRUM_TESTNET, AVALANCHE_FUJI, SEPOLIA_TESTNET, OPTIMISM_GOERLI_TESTNET, BLAST_SEPOLIA_TESTNET);
 }
 
 export const IS_NETWORK_DISABLED = {
@@ -32,6 +33,7 @@ export const IS_NETWORK_DISABLED = {
   [OPTIMISM_GOERLI_TESTNET]: false,
   [AVALANCHE]: false,
   [OPTIMISM_MAINNET]: false,
+  [BLAST_SEPOLIA_TESTNET]: false,
 };
 
 export const CHAIN_NAMES_MAP = {
@@ -44,6 +46,7 @@ export const CHAIN_NAMES_MAP = {
   [SEPOLIA_TESTNET]: "Sepolia",
   [OPTIMISM_GOERLI_TESTNET]: "Optimism Goerli",
   [OPTIMISM_MAINNET]: "Optimism Mainnet",
+  [BLAST_SEPOLIA_TESTNET]: "Blast Testnet"
 };
 
 export const GAS_PRICE_ADJUSTMENT_MAP = {
@@ -173,6 +176,20 @@ const constants = {
     // contract requires that execution fee be strictly greater than instead of gte
     DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.000300001"),
   },
+
+  [BLAST_SEPOLIA_TESTNET]: {
+    nativeTokenSymbol: "ETH",
+    wrappedTokenSymbol: "WETH",
+    defaultCollateralSymbol: "USDT",
+    defaultFlagOrdersEnabled: false,
+    positionReaderPropsLength: 9,
+    v2: true,
+
+    SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.0003"),
+    INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0003"),
+    // contract requires that execution fee be strictly greater than instead of gte
+    DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.000300001"),
+  },
 };
 
 const ALCHEMY_WHITELISTED_DOMAINS = ["gmx.io", "app.gmx.io"];
@@ -201,7 +218,8 @@ export const RPC_PROVIDERS = {
   [AVALANCHE_FUJI]: ["https://api.avax-test.network/ext/bc/C/rpc"],
   [SEPOLIA_TESTNET]: ["https://sepolia.infura.io/v3/88088bd69e9f45cd9e1842a20addb42d"],
   [OPTIMISM_GOERLI_TESTNET]: ["https://opt-goerli.g.alchemy.com/v2/4AflwA8Mr5qf9nxuS90eSGlsLHPHMCHK"],
-  [OPTIMISM_MAINNET]: ["https://mainnet.optimism.io"], // @todo replace with paid json rpc url (?)
+  [OPTIMISM_MAINNET]: ["https://mainnet.optimism.io"],
+  [BLAST_SEPOLIA_TESTNET]: ["https://sepolia.blast.io"]
 };
 
 export const FALLBACK_PROVIDERS = {
@@ -308,6 +326,17 @@ export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
     },
     rpcUrls: RPC_PROVIDERS[OPTIMISM_MAINNET],
     blockExplorerUrls: [getExplorerUrl(OPTIMISM_MAINNET)],
+  },
+  [BLAST_SEPOLIA_TESTNET]: {
+    chainId: "0x" + BLAST_SEPOLIA_TESTNET.toString(16),
+    chainName: "Blast Sepolia",
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    rpcUrls: RPC_PROVIDERS[BLAST_SEPOLIA_TESTNET],
+    blockExplorerUrls: [getExplorerUrl(BLAST_SEPOLIA_TESTNET)],
   },
 };
 

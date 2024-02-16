@@ -10,6 +10,7 @@ import {
   TESTNET,
   OPTIMISM_GOERLI_TESTNET,
   OPTIMISM_MAINNET,
+  BLAST_SEPOLIA_TESTNET,
 } from "./chains";
 import { Token } from "domain/tokens";
 
@@ -586,6 +587,77 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether.png?1668148663",
     },
   ],
+  [BLAST_SEPOLIA_TESTNET]: [
+    {
+      name: "Ethereum",
+      symbol: "ETH",
+      decimals: 18,
+      address: ethers.constants.AddressZero,
+      isNative: true,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
+    },
+    // {
+    //   name: "USD Gambit",
+    //   symbol: "USDG",
+    //   decimals: 18,
+    //   address: "0x8a070eF00F054a217501574cAb37c77C2F5A4bb9",
+    //   isUsdg: true,
+    //   imageUrl: "https://assets.coingecko.com/coins/images/15886/small/usdg-02.png",
+    // },
+    {
+      name: "Wrapped Ethereum (WETH)",
+      symbol: "WETH",
+      address: "0xBb2de0A11260112160F5FBD2bC5e1a31963356d2",
+      isWrapped: true,
+      decimals: 18,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/2518/small/weth.png?1628852295",
+    },
+    {
+      name: "DAI",
+      symbol: "DAI",
+      address: "0x555253A4724c03c4DD54341efd0aEBCf10c54873",
+      decimals: 18,
+      isStable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/9956/small/4943.png?1636636734",
+    },
+    {
+      name: "Wrapped Bitcoin",
+      symbol: "WBTC",
+      address: "0xdb302Cf8B566EA4a773ccb89d679b675fC638aDb",
+      decimals: 8,
+      isStable: false,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/7598/small/wrapped_bitcoin_wbtc.png?1548822744",
+    },
+    {
+      name: "Link",
+      symbol: "LINK",
+      address: "0x9b9Acd2b90e91a5bf0C9d0a97D070FAdFFEdE0F5",
+      decimals: 18,
+      isStable: false,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/877/small/chainlink-new-logo.png?1547034700",
+    },
+    {
+      name: "USD Coin",
+      symbol: "USDC",
+      decimals: 6,
+      address: "0xFEef69098dAC7D6d4C81c7f54aC73a7b0741C32a",
+      isStable: true,
+      coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
+      imageUrl: "https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png",
+    },
+    {
+      name: "USD Tether",
+      symbol: "USDT",
+      address: "0xED20B1459Bf848e15e603670214DD3948160C529",
+      decimals: 6,
+      isStable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether.png?1668148663",
+    },
+  ],
 };
 
 export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
@@ -651,6 +723,28 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
       name: "GMX LP",
       symbol: "GLP",
       address: getContract(SEPOLIA_TESTNET, "GLP"),
+      decimals: 18,
+      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
+    },
+  ],
+  [BLAST_SEPOLIA_TESTNET]: [
+    {
+      name: "GMX",
+      symbol: "GMX",
+      address: getContract(BLAST_SEPOLIA_TESTNET, "GMX"),
+      decimals: 18,
+      imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
+    },
+    {
+      name: "Escrowed GMX",
+      symbol: "esGMX",
+      address: getContract(BLAST_SEPOLIA_TESTNET, "ES_GMX"),
+      decimals: 18,
+    },
+    {
+      name: "GMX LP",
+      symbol: "GLP",
+      address: getContract(BLAST_SEPOLIA_TESTNET, "GLP"),
       decimals: 18,
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
@@ -749,6 +843,22 @@ export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: Token } }
       symbol: "GLP",
       decimals: 18,
       address: getContract(SEPOLIA_TESTNET, "StakedGlpTracker"), // address of fsGLP token because user only holds fsGLP
+      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
+    },
+  },
+  [BLAST_SEPOLIA_TESTNET]: {
+    GMX: {
+      name: "GMX",
+      symbol: "GMX",
+      decimals: 18,
+      address: getContract(BLAST_SEPOLIA_TESTNET, "GMX"),
+      imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
+    },
+    GLP: {
+      name: "GMX LP",
+      symbol: "GLP",
+      decimals: 18,
+      address: getContract(BLAST_SEPOLIA_TESTNET, "StakedGlpTracker"), // address of fsGLP token because user only holds fsGLP
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
   },
