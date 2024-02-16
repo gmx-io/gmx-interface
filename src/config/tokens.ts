@@ -1068,6 +1068,28 @@ export const ICONLINKS = {
     //   reserves: "https://portfolio.nansen.ai/dashboard/gmx?chain=ARBITRUM",
     // },
   },
+  [BLAST_SEPOLIA_TESTNET]: {
+    ETH: {
+      coingecko: "https://www.coingecko.com/en/coins/weth",
+      avalanche: "https://testnet.snowtrace.io/address/0x8226EC2c1926c9162b6F815153d10018A7ccdf07",
+    },
+    USDC: {
+      coingecko: "https://www.coingecko.com/en/coins/usd-coin",
+      avalanche: "https://testnet.snowtrace.io/address/0xC492c8d82DC576Ad870707bb40EDb63E2026111E",
+    },
+    USDT: {
+      coingecko: "https://assets.coingecko.com/coins/images/325/small/Tether.png?1668148663",
+      avalanche: "https://testnet.snowtrace.io/address/0xC492c8d82DC576Ad870707bb40EDb63E2026111E",
+    },
+    TMX: {
+      coingecko: "https://www.coingecko.com/en/coins/gmx",
+      arbitrum: "https://arbiscan.io/address/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
+    },
+    TLP: {
+      arbitrum: "https://arbiscan.io/token/0x1aDDD80E6039594eE970E5872D247bf0414C8903",
+      reserves: "https://portfolio.nansen.ai/dashboard/gmx?chain=ARBITRUM",
+    },
+  },
 };
 
 export const GLP_POOL_COLORS = {
