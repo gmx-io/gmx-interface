@@ -24,7 +24,13 @@ export const CHAIN_ID = DEFAULT_CHAIN_ID;
 export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE, OPTIMISM_MAINNET];
 
 if (isDevelopment()) {
-  SUPPORTED_CHAIN_IDS.push(ARBITRUM_TESTNET, AVALANCHE_FUJI, SEPOLIA_TESTNET, OPTIMISM_GOERLI_TESTNET, BLAST_SEPOLIA_TESTNET);
+  SUPPORTED_CHAIN_IDS.push(
+    ARBITRUM_TESTNET,
+    AVALANCHE_FUJI,
+    SEPOLIA_TESTNET,
+    OPTIMISM_GOERLI_TESTNET,
+    BLAST_SEPOLIA_TESTNET
+  );
 }
 
 export const IS_NETWORK_DISABLED = {
@@ -46,7 +52,7 @@ export const CHAIN_NAMES_MAP = {
   [SEPOLIA_TESTNET]: "Sepolia",
   [OPTIMISM_GOERLI_TESTNET]: "Optimism Goerli",
   [OPTIMISM_MAINNET]: "Optimism Mainnet",
-  [BLAST_SEPOLIA_TESTNET]: "Blast Testnet"
+  [BLAST_SEPOLIA_TESTNET]: "Blast Testnet",
 };
 
 export const GAS_PRICE_ADJUSTMENT_MAP = {
@@ -192,7 +198,7 @@ const constants = {
   },
 };
 
-const ALCHEMY_WHITELISTED_DOMAINS = ["gmx.io", "app.gmx.io"];
+const ALCHEMY_WHITELISTED_DOMAINS = ["t3.money", "app.t3.money"];
 
 export const RPC_PROVIDERS = {
   [ETH_MAINNET]: ["https://rpc.ankr.com/eth"],
@@ -219,7 +225,7 @@ export const RPC_PROVIDERS = {
   [SEPOLIA_TESTNET]: ["https://sepolia.infura.io/v3/88088bd69e9f45cd9e1842a20addb42d"],
   [OPTIMISM_GOERLI_TESTNET]: ["https://opt-goerli.g.alchemy.com/v2/4AflwA8Mr5qf9nxuS90eSGlsLHPHMCHK"],
   [OPTIMISM_MAINNET]: ["https://mainnet.optimism.io"],
-  [BLAST_SEPOLIA_TESTNET]: ["https://sepolia.blast.io"]
+  [BLAST_SEPOLIA_TESTNET]: ["https://sepolia.blast.io"],
 };
 
 export const FALLBACK_PROVIDERS = {
@@ -383,30 +389,34 @@ export function getAlchemyWsUrl() {
 }
 
 export function getExplorerUrl(chainId) {
-  if (chainId === 3) {
-    return "https://ropsten.etherscan.io/";
-  } else if (chainId === 42) {
-    return "https://kovan.etherscan.io/";
-  } else if (chainId === MAINNET) {
-    return "https://bscscan.com/";
-  } else if (chainId === TESTNET) {
-    return "https://testnet.bscscan.com/";
-  } else if (chainId === ARBITRUM_TESTNET) {
-    return "https://testnet.arbiscan.io/";
-  } else if (chainId === ARBITRUM) {
-    return "https://arbiscan.io/";
-  } else if (chainId === AVALANCHE) {
-    return "https://snowtrace.io/";
-  } else if (chainId === AVALANCHE_FUJI) {
-    return "https://testnet.snowtrace.io/";
-  } else if (chainId === SEPOLIA_TESTNET) {
-    return "https://sepolia.etherscan.io/";
-  } else if (chainId === OPTIMISM_GOERLI_TESTNET) {
-    return "https://goerli-optimism.etherscan.io/";
-  } else if (chainId === OPTIMISM_MAINNET) {
-    return "https://optimistic.etherscan.io/";
+  switch (chainId) {
+    case 3:
+      return "https://ropsten.etherscan.io/";
+    case 42:
+      return "https://kovan.etherscan.io/";
+    case MAINNET:
+      return "https://bscscan.com/";
+    case TESTNET:
+      return "https://testnet.bscscan.com/";
+    case ARBITRUM_TESTNET:
+      return "https://testnet.arbiscan.io/";
+    case ARBITRUM:
+      return "https://arbiscan.io/";
+    case AVALANCHE:
+      return "https://snowtrace.io/";
+    case AVALANCHE_FUJI:
+      return "https://testnet.snowtrace.io/";
+    case SEPOLIA_TESTNET:
+      return "https://sepolia.etherscan.io/";
+    case OPTIMISM_GOERLI_TESTNET:
+      return "https://goerli-optimism.etherscan.io/";
+    case OPTIMISM_MAINNET:
+      return "https://optimistic.etherscan.io/";
+    case BLAST_SEPOLIA_TESTNET:
+      return "https://testnet.blastscan.io/";
+    default:
+      return "https://etherscan.io/";
   }
-  return "https://etherscan.io/";
 }
 
 export function getHighExecutionFee(chainId) {
