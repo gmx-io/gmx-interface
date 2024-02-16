@@ -24,6 +24,7 @@ import {
   OPTIMISM_MAINNET,
   getConstant,
   getHighExecutionFee,
+  BLAST_SEPOLIA_TESTNET,
 } from "config/chains";
 import { DECREASE, getOrderKey, INCREASE, SWAP, USD_DECIMALS } from "lib/legacy";
 
@@ -395,7 +396,8 @@ export function useExecutionFee(library, active, chainId, infoTokens) {
     chainId === ARBITRUM ||
     chainId === ARBITRUM_TESTNET ||
     chainId === OPTIMISM_GOERLI_TESTNET ||
-    chainId === OPTIMISM_MAINNET
+    chainId === OPTIMISM_MAINNET ||
+    chainId === BLAST_SEPOLIA_TESTNET
   ) {
     multiplier = 2150000;
   }

@@ -703,7 +703,7 @@ export default function DashboardV2() {
                         <div className="App-card-title-mark-subtitle">TMX</div>
                       </div>
                       <div>
-                        <AssetDropdown assetSymbol="GMX" />
+                        <AssetDropdown assetSymbol="TMX" />
                       </div>
                     </div>
                   </div>
@@ -834,7 +834,7 @@ export default function DashboardV2() {
                         <div className="App-card-title-mark-subtitle">TLP</div>
                       </div>
                       <div>
-                        <AssetDropdown assetSymbol="GLP" />
+                        <AssetDropdown assetSymbol="TLP" />
                       </div>
                     </div>
                   </div>

@@ -26,6 +26,7 @@ type Props = {
 function AssetDropdown({ assetSymbol, assetInfo }: Props) {
   const { active } = useWeb3React();
   const { chainId } = useChainId();
+  if (!chainId || !assetSymbol) return null;
   let { coingecko, arbitrum, avalanche, reserves } = ICONLINKS[chainId][assetSymbol] || {};
   const unavailableTokenSymbols =
     {

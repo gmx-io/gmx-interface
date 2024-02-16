@@ -11,7 +11,7 @@ import cx from "classnames";
 import { Trans } from "@lingui/macro";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
-import { OPTIMISM_GOERLI_TESTNET, OPTIMISM_MAINNET, SEPOLIA_TESTNET, getChainName } from "config/chains";
+import { BLAST_SEPOLIA_TESTNET, OPTIMISM_GOERLI_TESTNET, OPTIMISM_MAINNET, SEPOLIA_TESTNET, getChainName } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import { useChainId } from "lib/chains";
 import { isDevelopment } from "config/env";
@@ -48,6 +48,12 @@ if (isDevelopment()) {
     label: getChainName(SEPOLIA_TESTNET),
     value: SEPOLIA_TESTNET,
     icon: getIcon(SEPOLIA_TESTNET, "network"),
+    color: "#264f79",
+  });
+  NETWORK_OPTIONS.push({
+    label: getChainName(BLAST_SEPOLIA_TESTNET),
+    value: BLAST_SEPOLIA_TESTNET,
+    icon: getIcon(BLAST_SEPOLIA_TESTNET, "network"),
     color: "#264f79",
   });
 }
@@ -146,7 +152,7 @@ export function AppHeaderUser({
 
   return (
     <div className="App-header-user">
-      {chainId === OPTIMISM_GOERLI_TESTNET || chainId === SEPOLIA_TESTNET ? (
+      {chainId === OPTIMISM_GOERLI_TESTNET || chainId === SEPOLIA_TESTNET || chainId === BLAST_SEPOLIA_TESTNET ? (
         <div className="App-header-faucet">
           <FaucetDropdown />
         </div>
