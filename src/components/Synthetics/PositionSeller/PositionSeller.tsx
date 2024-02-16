@@ -689,7 +689,7 @@ export function PositionSeller(p: Props) {
   return (
     <div className="PositionEditor PositionSeller">
       <Modal
-        className="PositionSeller-modal PositionSeller-modal-top"
+        className="PositionSeller-modal"
         isVisible={isVisible}
         setIsVisible={p.onClose}
         label={
