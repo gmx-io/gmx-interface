@@ -10,4 +10,11 @@ describe("binarySearch", () => {
       expect(result).toEqual(correctAnswer);
     });
   });
+
+  it(`always false`, () => {
+    const { result } = numericBinarySearch(1, 50, () => {
+      return { isValid: false, returnValue: null };
+    });
+    expect(result).toEqual(1);
+  });
 });
