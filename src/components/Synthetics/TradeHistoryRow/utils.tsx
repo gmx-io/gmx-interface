@@ -152,6 +152,8 @@ export const formatPositionMessage = (
         [TradeActionType.OrderFrozen]: t`Freeze`,
       }[tradeAction.eventName!];
 
+      const error = parseErrorReason(tradeAction);
+
       if (sizeDeltaUsd?.gt(0)) {
         const pricePrefix =
           tradeAction.eventName === TradeActionType.OrderExecuted ? t`Execution Price` : t`Acceptable Price`;
@@ -168,7 +170,8 @@ export const formatPositionMessage = (
         return [
           {
             text: trimStart(`${actionText} ${marketStr} ${increaseText}`),
-            tooltipTitle: parseErrorReason(tradeAction),
+            tooltipTitle: error,
+            tooltipTitleRed: Boolean(error),
           },
           {
             text: `: ${positionText} ${sizeDeltaText}, `,
@@ -192,7 +195,8 @@ export const formatPositionMessage = (
           return [
             {
               text: t`${actionText} Deposit`,
-              tooltipTitle: parseErrorReason(tradeAction),
+              tooltipTitle: error,
+              tooltipTitleRed: Boolean(error),
             },
             {
               text: ": ",
@@ -202,12 +206,12 @@ export const formatPositionMessage = (
             },
           ];
         } else {
-          const error = parseErrorReason(tradeAction);
           if (error) {
             return [
               {
                 text: t`${actionText} Withdraw`,
                 tooltipTitle: error,
+                tooltipTitleRed: true,
               },
               {
                 text: " ",
@@ -494,10 +498,6 @@ function getMarketTooltipRows(tradeAction: PositionTradeAction): TooltipProps[] 
 
 function getHumanReadableErrorByName(errorName: string) {
   switch (errorName) {
-    case "OrderNotFulfillableAtAcceptablePrice": {
-      return t`The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met.`;
-    }
-
     case "InsufficientReserveForOpenInterest": {
       return t`Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity.`;
     }
