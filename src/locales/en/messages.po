@@ -4922,8 +4922,8 @@ msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.30% to it 
 msgstr "The Current Price Impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
 
 #: src/components/Synthetics/TradeHistoryRow/utils.tsx
-msgid "The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met."
-msgstr "The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met."
+#~ msgid "The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met."
+#~ msgstr "The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met."
 
 #: src/pages/Stake/StakeV1.js
 msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
