@@ -4,6 +4,8 @@ import { ChangeEvent, ReactNode, useCallback, useEffect, useMemo, useRef, useSta
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { roundToTwoDecimals } from "lib/numbers";
 
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
 import "./PercentageInput.scss";
 
 export const NUMBER_WITH_TWO_DECIMALS = /^\d+(\.\d{0,2})?$/; // 0.00 ~ 99.99
@@ -114,29 +116,33 @@ export default function PercentageInput({
 
   return (
     <div className="Percentage-input-wrapper">
-      <div className={cx("Percentage-input", { "input-error": Boolean(error) })}>
-        {negativeSign && (
-          <span className="Percentage-input-negative-sign" onClick={handleSignClick}>
-            -
-          </span>
-        )}
-        <input
-          id={id}
-          ref={inputRef}
-          onFocus={() => setIsPanelVisible(true)}
-          onBlur={() => setIsPanelVisible(false)}
-          value={inputValue}
-          placeholder={getValueText(defaultValue)}
-          autoComplete="off"
-          onChange={handleChange}
-        />
-        <label htmlFor={id}>
-          <span>%</span>
-        </label>
-      </div>
-      {error && !shouldShowPanel && (
-        <div className={cx("Percentage-input-error", "Tooltip-popup", "z-index-1001", "right-bottom")}>{error}</div>
-      )}
+      <TooltipWithPortal
+        disableHandleStyle
+        disabled={!error || shouldShowPanel}
+        renderContent={() => <div>{error}</div>}
+      >
+        <div className={cx("Percentage-input", { "input-error": Boolean(error) })}>
+          {negativeSign && (
+            <span className="Percentage-input-negative-sign" onClick={handleSignClick}>
+              -
+            </span>
+          )}
+          <input
+            id={id}
+            ref={inputRef}
+            onFocus={() => setIsPanelVisible(true)}
+            onBlur={() => setIsPanelVisible(false)}
+            value={inputValue}
+            placeholder={getValueText(defaultValue)}
+            autoComplete="off"
+            onChange={handleChange}
+          />
+          <label htmlFor={id}>
+            <span>%</span>
+          </label>
+        </div>
+      </TooltipWithPortal>
+
       {shouldShowPanel && (
         <ul className="Percentage-list  ">
           {suggestions.map((slippage) => (

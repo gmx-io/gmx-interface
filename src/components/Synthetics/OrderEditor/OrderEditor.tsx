@@ -63,6 +63,7 @@ import {
   TradeMode,
   TradeType,
   applySlippageToPrice,
+  getAcceptablePriceInfo,
   getDecreasePositionAmounts,
   getIncreasePositionAmounts,
   getSwapPathOutputAddresses,
@@ -334,9 +335,13 @@ export function OrderEditor(p: Props) {
       : decreaseAmounts?.recommendedAcceptablePriceDeltaBps.abs();
 
   const priceImpactFeeBps = getFeeItem(
-    isLimitIncreaseOrder && increaseAmounts?.acceptablePrice
-      ? increaseAmounts?.positionPriceImpactDeltaUsd
-      : decreaseAmounts?.positionPriceImpactDeltaUsd,
+    getAcceptablePriceInfo({
+      indexPrice: markPrice!,
+      isIncrease: isIncreaseOrderType(p.order.orderType),
+      isLong: p.order.isLong,
+      marketInfo: market!,
+      sizeDeltaUsd: sizeDeltaUsd!,
+    }).priceImpactDeltaUsd,
     sizeDeltaUsd
   )?.bps;
 
@@ -591,7 +596,7 @@ export function OrderEditor(p: Props) {
                       initialPriceImpactFeeBps={initialAcceptablePriceImpactBps}
                       recommendedAcceptablePriceImpactBps={recommendedAcceptablePriceImpactBps}
                       setAcceptablePriceImpactBps={setAcceptablePriceImpactBps}
-                      priceImpactFeeBps={getFeeItem(increaseAmounts?.positionPriceImpactDeltaUsd, sizeDeltaUsd)?.bps}
+                      priceImpactFeeBps={priceImpactFeeBps}
                     />
 
                     <div className="line-divider" />

@@ -14,7 +14,7 @@ type Props = {
   acceptablePriceImpactBps?: BigNumber;
   recommendedAcceptablePriceImpactBps?: BigNumber;
   initialPriceImpactFeeBps?: BigNumber;
-  priceImpactFeeBps: BigNumber | undefined;
+  priceImpactFeeBps?: BigNumber;
   setAcceptablePriceImpactBps: (value: BigNumber) => void;
   notAvailable?: boolean;
 };
