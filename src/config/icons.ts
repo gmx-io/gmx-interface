@@ -17,6 +17,7 @@ import sepoliaTesnet from "img/ic_sepolia_testnet_24.svg";
 import optimismIcn from "img/icn_opt_24.svg";
 import tmxImg from "img/ic_tmx.svg";
 import tlpImg from "img/ic_tlp.svg";
+import blastIcn from "img/icn_blast.svg";
 
 const ICONS = {
   [ARBITRUM]: {
@@ -45,7 +46,7 @@ const ICONS = {
     glp: tlpImg,
   },
   [BLAST_SEPOLIA_TESTNET]: {
-    network: sepoliaTesnet,
+    network: blastIcn,
     gmx: tmxImg,
     glp: tlpImg,
   },
