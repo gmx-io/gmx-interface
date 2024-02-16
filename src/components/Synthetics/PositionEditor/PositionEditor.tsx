@@ -471,6 +471,7 @@ export function PositionEditor(p: Props) {
             <SubaccountNavigationButton
               executionFee={executionFee?.feeTokenAmount}
               closeConfirmationBox={onClose}
+              isNativeToken={isDeposit && collateralToken?.isNative}
               tradeFlags={undefined}
             />
 
