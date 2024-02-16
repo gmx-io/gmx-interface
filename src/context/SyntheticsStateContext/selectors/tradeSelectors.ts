@@ -577,7 +577,7 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
 
         if (!closeSizeUsd) throw new Error("makeSelectNextPositionValuesForDecrease: closeSizeUsd is undefined");
 
-        if (tradeFlags.isTrigger && decreaseAmounts?.acceptablePrice && closeSizeUsd.gt(0)) {
+        if (decreaseAmounts?.acceptablePrice && closeSizeUsd.gt(0)) {
           return getNextPositionValuesForDecreaseTrade({
             existingPosition: position,
             marketInfo,

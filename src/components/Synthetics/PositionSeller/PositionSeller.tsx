@@ -27,12 +27,13 @@ import {
 import {
   usePositionSeller,
   usePositionSellerDecreaseAmount,
-  usePositionSellerDecreaseAmountWithKeepLeverage,
+  usePositionSellerKeepLeverage,
+  usePositionSellerLeverageDisabledByCollateral,
   usePositionSellerNextPositionValuesForDecrease,
   usePositionSellerNextPositionValuesForDecreaseWithoutKeepLeverage,
   usePositionSellerPosition,
 } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
-import { useMinCollateralFactorForPosition, useSwapRoutes } from "context/SyntheticsStateContext/hooks/tradeHooks";
+import { useSwapRoutes } from "context/SyntheticsStateContext/hooks/tradeHooks";
 import {
   useTradeboxAvailableTokensOptions,
   useTradeboxTradeFlags,
@@ -51,7 +52,6 @@ import {
   formatLeverage,
   formatLiquidationPrice,
   getTriggerNameByOrderType,
-  willPositionCollateralBeSufficient,
 } from "domain/synthetics/positions";
 import { applySlippageToPrice, getMarkPrice, getSwapAmountsByFromValue, getTradeFees } from "domain/synthetics/trade";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
@@ -74,6 +74,7 @@ import {
 } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { museNeverExist } from "lib/types";
+import { useDebouncedInputValue } from "lib/useDebouncedInputValue";
 import useWallet from "lib/wallets/useWallet";
 import { useCallback, useEffect, useMemo } from "react";
 import { useLatest } from "react-use";
@@ -81,7 +82,6 @@ import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionSeller.scss";
-import { useDebouncedInputValue } from "lib/useDebouncedInputValue";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -125,7 +125,6 @@ export function PositionSeller(p: Props) {
     closeUsdInputValue: closeUsdInputValueRaw,
     defaultTriggerAcceptablePriceImpactBps,
     isSubmitting,
-    keepLeverage,
     orderOption,
     receiveTokenAddress,
     setAllowedSlippage,
@@ -140,6 +139,8 @@ export function PositionSeller(p: Props) {
     triggerPriceInputValue: triggerPriceInputValueRaw,
     resetPositionSeller,
   } = usePositionSeller();
+  const keepLeverage = usePositionSellerKeepLeverage();
+  const leverageCheckboxDisabledByCollateral = usePositionSellerLeverageDisabledByCollateral();
 
   const [closeUsdInputValue, setCloseUsdInputValue] = useDebouncedInputValue(
     closeUsdInputValueRaw,
@@ -158,8 +159,6 @@ export function PositionSeller(p: Props) {
 
   const receiveToken = isTrigger ? position?.collateralToken : getByKey(tokensData, receiveTokenAddress);
 
-  const minCollateralFactor = useMinCollateralFactorForPosition(position?.key);
-
   useEffect(() => {
     if (!isVisible) {
       // timeout to not disturb animation
@@ -176,21 +175,6 @@ export function PositionSeller(p: Props) {
   const { findSwapPath, maxSwapLiquidity } = useSwapRoutes(position?.collateralTokenAddress, receiveTokenAddress);
 
   const decreaseAmounts = usePositionSellerDecreaseAmount();
-  const decreaseAmountsWithKeepLeverage = usePositionSellerDecreaseAmountWithKeepLeverage();
-
-  const leverageCheckboxDisabledByCollateral = useMemo(() => {
-    if (!position) return false;
-    if (!minCollateralFactor) return false;
-    if (!decreaseAmountsWithKeepLeverage) return false;
-    if (decreaseAmountsWithKeepLeverage.sizeDeltaUsd.gte(position.sizeInUsd)) return false;
-
-    return !willPositionCollateralBeSufficient(
-      position,
-      decreaseAmountsWithKeepLeverage.collateralDeltaAmount,
-      decreaseAmountsWithKeepLeverage.realizedPnl,
-      minCollateralFactor
-    );
-  }, [decreaseAmountsWithKeepLeverage, minCollateralFactor, position]);
 
   const acceptablePrice = useMemo(() => {
     if (!position || !decreaseAmounts?.acceptablePrice) {
