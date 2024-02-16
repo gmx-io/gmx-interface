@@ -10,13 +10,22 @@ import {
   useOrdersInfoData,
   usePositionsInfoData,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { isLimitOrderType, isTriggerDecreaseOrderType } from "domain/synthetics/orders";
+import {
+  PositionOrderInfo,
+  SwapOrderInfo,
+  isLimitOrderType,
+  isSwapOrderType,
+  isTriggerDecreaseOrderType,
+  sortPositionOrders,
+  sortSwapOrders,
+} from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
 import { OrderEditor } from "../OrderEditor/OrderEditor";
 import { OrderItem } from "../OrderItem/OrderItem";
+import { AvailableTokenOptions } from "domain/synthetics/trade";
 
 type Props = {
   hideActions?: boolean;
@@ -26,10 +35,12 @@ type Props = {
   setPendingTxns: (txns: any) => void;
   selectedPositionOrderKey?: string;
   setSelectedPositionOrderKey?: Dispatch<SetStateAction<string | undefined>>;
+  availableTokensOptions: AvailableTokenOptions;
 };
 
 export function OrderList(p: Props) {
-  const { setSelectedOrdersKeys, selectedPositionOrderKey, setSelectedPositionOrderKey } = p;
+  const { setSelectedOrdersKeys, selectedPositionOrderKey, setSelectedPositionOrderKey, availableTokensOptions } = p;
+  const { sortedIndexTokensWithPoolValue, sortedLongAndShortTokens } = availableTokensOptions;
   const marketsInfoData = useMarketsInfoData();
   const positionsData = usePositionsInfoData();
   const ordersData = useOrdersInfoData();
@@ -42,13 +53,26 @@ export function OrderList(p: Props) {
 
   const subaccount = useSubaccount(null);
 
-  const orders = useMemo(
-    () =>
-      Object.values(ordersData || {}).filter(
-        (order) => isLimitOrderType(order.orderType) || isTriggerDecreaseOrderType(order.orderType)
-      ),
-    [ordersData]
-  );
+  const orders = useMemo(() => {
+    const { swapOrders, positionOrders } = Object.values(ordersData || {}).reduce(
+      (acc, order) => {
+        if (isLimitOrderType(order.orderType) || isTriggerDecreaseOrderType(order.orderType)) {
+          if (isSwapOrderType(order.orderType)) {
+            acc.swapOrders.push(order);
+          } else {
+            acc.positionOrders.push(order as PositionOrderInfo);
+          }
+        }
+        return acc;
+      },
+      { swapOrders: [] as SwapOrderInfo[], positionOrders: [] as PositionOrderInfo[] }
+    );
+
+    return [
+      ...sortPositionOrders(positionOrders, sortedIndexTokensWithPoolValue),
+      ...sortSwapOrders(swapOrders, sortedLongAndShortTokens),
+    ];
+  }, [ordersData, sortedIndexTokensWithPoolValue, sortedLongAndShortTokens]);
 
   const isAllOrdersSelected = orders.length > 0 && orders.every((o) => p.selectedOrdersKeys?.[o.key]);
   const editingOrder = orders.find((o) => o.key === editingOrderKey);

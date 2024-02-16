@@ -481,3 +481,48 @@ export function getOrderErrors(p: {
     level,
   };
 }
+
+function getTokenIndex(token: Token, referenceArray: string[]): number {
+  return referenceArray.indexOf(
+    token.wrappedAddress && referenceArray.includes(token.wrappedAddress) ? token.wrappedAddress : token.address
+  );
+}
+
+export function sortPositionOrders(orders: PositionOrderInfo[], tokenSortOrder?: string[]): PositionOrderInfo[] {
+  return orders.sort((a, b) => {
+    if (tokenSortOrder) {
+      const indexA = getTokenIndex(a.marketInfo.indexToken, tokenSortOrder);
+      const indexB = getTokenIndex(b.marketInfo.indexToken, tokenSortOrder);
+      if (indexA !== indexB) return indexA - indexB;
+    } else {
+      const nameComparison = a.marketInfo.name.localeCompare(b.marketInfo.name);
+      if (nameComparison) return nameComparison;
+    }
+
+    // Compare by trigger price
+    const triggerPriceComparison = a.triggerPrice.sub(b.triggerPrice);
+    if (!triggerPriceComparison.isZero()) return triggerPriceComparison.isNegative() ? -1 : 1;
+
+    // Compare by order type
+    const orderTypeComparison = a.orderType - b.orderType;
+    if (orderTypeComparison) return orderTypeComparison;
+
+    // Finally, sort by size delta USD
+    return b.sizeDeltaUsd.sub(a.sizeDeltaUsd).isNegative() ? -1 : 1;
+  });
+}
+
+export function sortSwapOrders(orders: SwapOrderInfo[], tokenSortOrder?: string[]): SwapOrderInfo[] {
+  return orders.sort((a, b) => {
+    if (tokenSortOrder) {
+      const indexA = getTokenIndex(a.targetCollateralToken, tokenSortOrder);
+      const indexB = getTokenIndex(b.targetCollateralToken, tokenSortOrder);
+      if (indexA !== indexB) return indexA - indexB;
+    } else {
+      const collateralComparison = a.targetCollateralToken.symbol.localeCompare(b.targetCollateralToken.symbol);
+      if (collateralComparison) return collateralComparison;
+    }
+
+    return a.minOutputAmount.sub(b.minOutputAmount).isNegative() ? -1 : 1;
+  });
+}
