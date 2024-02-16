@@ -1,18 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "regenerator-runtime/runtime";
-import { BrowserRouter as Router } from "react-router-dom";
 import App from "./App/App";
 import reportWebVitals from "./reportWebVitals";
 import WalletProvider from "lib/wallets/WalletProvider";
 
 ReactDOM.render(
   <React.StrictMode>
-    <Router>
-      <WalletProvider>
-        <App />
-      </WalletProvider>
-    </Router>
+    <WalletProvider>
+      <App />
+    </WalletProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
