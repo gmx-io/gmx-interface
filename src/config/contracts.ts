@@ -1,5 +1,13 @@
 import { ethers } from "ethers";
-import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, BSС_MAINNET, BSС_TESTNET } from "./chains";
+import {
+  ARBITRUM,
+  ARBITRUM_GOERLI,
+  ARBITRUM_SEPOLIA,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  BSС_MAINNET,
+  BSС_TESTNET,
+} from "./chains";
 
 const { AddressZero } = ethers.constants;
 
@@ -75,6 +83,61 @@ const CONTRACTS = {
     XGMT_GMX_IOU: "0xeB3733DFe3b68C9d26898De2493A3Bb59FDb4A7B",
     GMT_USDG_GMX_IOU: "0x481312655F81b5e249780A6a49735335BF6Ca7f4",
     XGMT_USDG_GMX_IOU: "0x8095F1A92526C304623483018aA28cC6E62EB1e1",
+  },
+  [ARBITRUM_SEPOLIA]: {
+    // arbitrum testnet
+    Vault: AddressZero,
+    Router: AddressZero,
+    VaultReader: AddressZero,
+    Reader: AddressZero,
+    GlpManager: AddressZero,
+    RewardRouter: AddressZero,
+    RewardReader: AddressZero,
+    GlpRewardRouter: AddressZero,
+    NATIVE_TOKEN: "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73",
+    GLP: AddressZero,
+    GMX: AddressZero,
+    ES_GMX: AddressZero,
+    BN_GMX: AddressZero,
+    USDG: AddressZero,
+    ES_GMX_IOU: AddressZero,
+
+    StakedGmxTracker: AddressZero,
+    BonusGmxTracker: AddressZero,
+    FeeGmxTracker: AddressZero,
+    StakedGlpTracker: AddressZero,
+    FeeGlpTracker: AddressZero,
+
+    StakedGmxDistributor: AddressZero,
+    StakedGlpDistributor: AddressZero,
+
+    GmxVester: AddressZero,
+    GlpVester: AddressZero,
+
+    OrderBook: AddressZero,
+    OrderExecutor: AddressZero,
+    OrderBookReader: AddressZero,
+
+    PositionRouter: AddressZero,
+    PositionManager: AddressZero,
+
+    TraderJoeGmxAvaxPool: AddressZero,
+    ReferralStorage: "0xDB17C1EC0d5a8333458362Aaff0E2fdE2a60e698",
+    ReferralReader: AddressZero,
+
+    // Synthetics
+    DataStore: "0xB558f529F97a405178E2437737F97Bb10eFadAfE",
+    EventEmitter: "0x3Ab21B44cffFD87a69F909f40dD2335ff68945A8",
+    ExchangeRouter: "0xbbb774b00102e2866677b9d238b2Ee489779E532",
+    SubaccountRouter: "0x088c241ecb987236f33D0f215D52f3f8E4E9cD31",
+    DepositVault: "0x971f55686a9bb62a41D8cB6B4f7e75215341cD56",
+    WithdrawalVault: "0xA9337AeE9360DaeC439830A69b23877c00972a25",
+    OrderVault: "0xD2A2044f62D7cD77470AC237408f9f59AcB5965E",
+    SyntheticsReader: "0xb317837966A69ffB533048208F06e8aa0D98eC47",
+    SyntheticsRouter: "0xd15B8b178981BFEF71f54BD5C9c4992424a73E5A",
+    Timelock: AddressZero,
+
+    Multicall: "0x5AB1ee8913415bCF4865728cAd78aA96E95DC531",
   },
   [ARBITRUM_GOERLI]: {
     // arbitrum testnet

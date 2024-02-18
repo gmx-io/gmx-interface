@@ -2,6 +2,7 @@ import { BigNumber, ethers } from "ethers";
 import { sample } from "lodash";
 import { NetworkMetadata } from "lib/wallets";
 import { isDevelopment } from "./env";
+import { Chain } from "viem";
 
 const { parseEther } = ethers.utils;
 
@@ -15,6 +16,7 @@ export const AVALANCHE = 43114;
 export const AVALANCHE_FUJI = 43113;
 export const ARBITRUM = 42161;
 export const ARBITRUM_GOERLI = 421613;
+export const ARBITRUM_SEPOLIA = 421614;
 export const FEES_HIGH_BPS = 50;
 export const DEFAULT_ALLOWED_SLIPPAGE_BPS = 30;
 
@@ -25,7 +27,7 @@ export const CHAIN_ID = DEFAULT_CHAIN_ID;
 export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 if (isDevelopment()) {
-  SUPPORTED_CHAIN_IDS.push(AVALANCHE_FUJI, ARBITRUM_GOERLI);
+  SUPPORTED_CHAIN_IDS.push(AVALANCHE_FUJI, ARBITRUM_GOERLI, ARBITRUM_SEPOLIA);
 }
 
 export const IS_NETWORK_DISABLED = {
@@ -38,6 +40,7 @@ export const CHAIN_NAMES_MAP = {
   [BSС_MAINNET]: "BSC",
   [BSС_TESTNET]: "BSC Testnet",
   [ARBITRUM_GOERLI]: "Arbitrum Goerli",
+  [ARBITRUM_SEPOLIA]: "Arbitrum Sepolia",
   [ARBITRUM]: "Arbitrum",
   [AVALANCHE]: "Avalanche",
   [AVALANCHE_FUJI]: "Avalanche Fuji",
@@ -54,6 +57,7 @@ export const MAX_GAS_PRICE_MAP = {
 
 export const HIGH_EXECUTION_FEES_MAP = {
   [ARBITRUM]: 3, // 3 USD
+  [ARBITRUM_SEPOLIA]: 3, // 3 USD
   [AVALANCHE]: 3, // 3 USD
   [AVALANCHE_FUJI]: 3, // 3 USD
 };
@@ -64,6 +68,7 @@ export const EXECUTION_FEE_MULTIPLIER_MAP = {
   // if gas prices on Ethereum are high, than the gas usage might be higher, this calculation doesn't deal with that
   // case yet
   [ARBITRUM]: 65000,
+  [ARBITRUM_SEPOLIA]: 65000,
   // multiplier for Avalanche is just the average gas usage
   [AVALANCHE]: 700000,
   [AVALANCHE_FUJI]: 700000,
@@ -71,6 +76,7 @@ export const EXECUTION_FEE_MULTIPLIER_MAP = {
 
 export const NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR = {
   [ARBITRUM]: BigNumber.from(10).pow(29).mul(5),
+  [ARBITRUM_SEPOLIA]: BigNumber.from(10).pow(29).mul(5),
   [AVALANCHE]: BigNumber.from(10).pow(29).mul(35),
   [AVALANCHE_FUJI]: BigNumber.from(10).pow(29).mul(2),
 } as const;
@@ -97,6 +103,10 @@ export const EXECUTION_FEE_CONFIG_V2: {
     shouldUseMaxPriorityFeePerGas: false,
     defaultBufferBps: 1000, // 10%
   },
+  [ARBITRUM_SEPOLIA]: {
+    shouldUseMaxPriorityFeePerGas: false,
+    defaultBufferBps: 1000, // 10%
+  },
 };
 
 const constants = {
@@ -117,6 +127,20 @@ const constants = {
   },
 
   [ARBITRUM_GOERLI]: {
+    nativeTokenSymbol: "ETH",
+    wrappedTokenSymbol: "WETH",
+    defaultCollateralSymbol: "USDC",
+    defaultFlagOrdersEnabled: false,
+    positionReaderPropsLength: 9,
+    v2: true,
+
+    SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.0003"),
+    INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0003"),
+    // contract requires that execution fee be strictly greater than instead of gte
+    DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.000300001"),
+  },
+
+  [ARBITRUM_SEPOLIA]: {
     nativeTokenSymbol: "ETH",
     wrappedTokenSymbol: "WETH",
     defaultCollateralSymbol: "USDC",
@@ -199,6 +223,7 @@ export const RPC_PROVIDERS = {
     // "https://endpoints.omniatech.io/v1/arbitrum/goerli/public",
     // "https://arbitrum-goerli.public.blastapi.io",
   ],
+  [ARBITRUM_SEPOLIA]: ["https://sepolia-rollup.arbitrum.io/rpc"],
   [AVALANCHE]: ["https://api.avax.network/ext/bc/C/rpc"],
   [AVALANCHE_FUJI]: [
     "https://avalanche-fuji-c-chain.publicnode.com",
@@ -254,6 +279,17 @@ export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
     },
     rpcUrls: RPC_PROVIDERS[ARBITRUM_GOERLI],
     blockExplorerUrls: ["https://goerli.arbiscan.io/"],
+  },
+  [ARBITRUM_SEPOLIA]: {
+    chainId: "0x" + ARBITRUM_SEPOLIA.toString(16),
+    chainName: "Arbitrum Sepolia Testnet",
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    rpcUrls: RPC_PROVIDERS[ARBITRUM_SEPOLIA],
+    blockExplorerUrls: ["https://sepolia.arbiscan.io/"],
   },
   [ARBITRUM]: {
     chainId: "0x" + ARBITRUM.toString(16),
@@ -339,6 +375,8 @@ export function getExplorerUrl(chainId) {
     return "https://testnet.bscscan.com/";
   } else if (chainId === ARBITRUM_GOERLI) {
     return "https://goerli.arbiscan.io/";
+  } else if (chainId === ARBITRUM_SEPOLIA) {
+    return "https://sepolia.arbiscan.io/";
   } else if (chainId === ARBITRUM) {
     return "https://arbiscan.io/";
   } else if (chainId === AVALANCHE) {
@@ -360,3 +398,41 @@ export function getExecutionFeeMultiplier(chainId) {
 export function isSupportedChain(chainId) {
   return SUPPORTED_CHAIN_IDS.includes(chainId);
 }
+
+export const ARBITRUM_SEPOLIA_METADATA: Chain = {
+  id: 421614,
+  name: "Arbitrum Sepolia",
+  network: "arbitrum-sepolia",
+  nativeCurrency: {
+    name: "Arbitrum Sepolia Ether",
+    symbol: "ETH",
+    decimals: 18,
+  },
+  rpcUrls: {
+    alchemy: {
+      http: ["https://arb-sepolia.g.alchemy.com/v2"],
+      webSocket: ["wss://arb-sepolia.g.alchemy.com/v2"],
+    },
+    infura: {
+      http: ["https://arbitrum-sepolia.infura.io/v3"],
+      webSocket: ["wss://arbitrum-sepolia.infura.io/ws/v3"],
+    },
+    default: {
+      http: ["https://sepolia-rollup.arbitrum.io/rpc"],
+    },
+    public: {
+      http: ["https://sepolia-rollup.arbitrum.io/rpc"],
+    },
+  },
+  blockExplorers: {
+    etherscan: { name: "Arbiscan", url: "https://sepolia.arbiscan.io/" },
+    default: { name: "Arbiscan", url: "https://sepolia.arbiscan.io/" },
+  },
+  contracts: {
+    multicall3: {
+      address: "0xca11bde05977b3631167028862be2a173976ca11",
+      blockCreated: 81930,
+    },
+  },
+  testnet: true,
+};

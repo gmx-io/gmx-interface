@@ -2,6 +2,7 @@ import { JsonRpcProvider, WebSocketProvider } from "@ethersproject/providers";
 import {
   ARBITRUM,
   ARBITRUM_GOERLI,
+  ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
   FALLBACK_PROVIDERS,
@@ -42,6 +43,12 @@ export function getWsProvider(chainId: number): WebSocketProvider | JsonRpcProvi
 
   if (chainId === ARBITRUM_GOERLI) {
     return new ethers.providers.WebSocketProvider("wss://arb-goerli.g.alchemy.com/v2/cZfd99JyN42V9Clbs_gOvA3GSBZH1-1j");
+  }
+
+  if (chainId === ARBITRUM_SEPOLIA) {
+    return new ethers.providers.WebSocketProvider(
+      "wss://arb-sepolia.g.alchemy.com/v2/xjsV8Npq7RL2C5iXvoHl44OzIFSWTXH2"
+    );
   }
 
   if (chainId === AVALANCHE_FUJI) {

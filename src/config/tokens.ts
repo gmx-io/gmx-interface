@@ -1,6 +1,6 @@
 import { Token } from "domain/tokens";
 import { ethers } from "ethers";
-import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI } from "./chains";
+import { ARBITRUM, ARBITRUM_GOERLI, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 import { getContract } from "./contracts";
 
 export const NATIVE_TOKEN_ADDRESS = ethers.constants.AddressZero;
@@ -452,6 +452,79 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isPlatformToken: true,
     },
   ],
+  [ARBITRUM_SEPOLIA]: [
+    {
+      name: "Ethereum",
+      symbol: "ETH",
+      decimals: 18,
+      address: ethers.constants.AddressZero,
+      isNative: true,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
+    },
+    {
+      name: "Wrapped Ethereum",
+      symbol: "WETH",
+      decimals: 18,
+      address: "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73",
+      isWrapped: true,
+      baseSymbol: "ETH",
+      imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
+      explorerUrl: "https://goerli.arbiscan.io/address/0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
+    },
+    {
+      name: "Bitcoin",
+      symbol: "BTC",
+      decimals: 8,
+      address: "0xF79cE1Cf38A09D572b021B4C5548b75A14082F12",
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
+      explorerUrl: "https://goerli.arbiscan.io/address/0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
+    },
+    {
+      name: "USD Coin",
+      symbol: "USDC",
+      decimals: 6,
+      address: "0x3321Fd36aEaB0d5CdfD26f4A3A93E2D2aAcCB99f",
+      isStable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
+      explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
+    },
+    {
+      name: "GMX",
+      symbol: "GMX",
+      address: "",
+      decimals: 18,
+      imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
+      isPlatformToken: true,
+    },
+    {
+      name: "Escrowed GMX",
+      symbol: "esGMX",
+      address: "",
+      decimals: 18,
+      isPlatformToken: true,
+    },
+    {
+      name: "GMX LP",
+      symbol: "GLP",
+      address: "",
+      decimals: 18,
+      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
+      isPlatformToken: true,
+    },
+    {
+      name: "GMX Market tokens",
+      symbol: "GM",
+      address: "<market-token-address>",
+      decimals: 18,
+      imageUrl: "https://raw.githubusercontent.com/gmx-io/gmx-assets/main/GMX-Assets/PNG/GM_LOGO.png",
+      isPlatformToken: true,
+    },
+  ],
   [ARBITRUM_GOERLI]: [
     {
       name: "Ethereum",
@@ -870,7 +943,7 @@ export const TOKENS_BY_SYMBOL_MAP: { [chainId: number]: { [symbol: string]: Toke
 export const WRAPPED_TOKENS_MAP: { [chainId: number]: Token } = {};
 export const NATIVE_TOKENS_MAP: { [chainId: number]: Token } = {};
 
-const CHAIN_IDS = [ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI];
+const CHAIN_IDS = [ARBITRUM, ARBITRUM_GOERLI, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI];
 
 for (let j = 0; j < CHAIN_IDS.length; j++) {
   const chainId = CHAIN_IDS[j];

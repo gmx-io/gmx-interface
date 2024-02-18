@@ -22,6 +22,7 @@ import { isDevelopment } from "config/env";
 import { coreWallet } from "./connecters/core/coreWallet";
 import { bitgetWallet } from "./connecters/bitgetWallet/bitgetWallet";
 import binanceWallet from "./connecters/binanceW3W/binanceWallet";
+import { ARBITRUM_SEPOLIA_METADATA } from "config/chains";
 
 const WALLET_CONNECT_PROJECT_ID = "de24cddbaf2a68f027eae30d9bb5df58";
 const APP_NAME = "GMX";
@@ -39,7 +40,7 @@ const walletTheme = merge(darkTheme(), {
 } as Theme);
 
 const { chains, provider } = configureChains(
-  [arbitrum, avalanche, ...(isDevelopment() ? [arbitrumGoerli, avalancheFuji] : [])],
+  [arbitrum, avalanche, ...(isDevelopment() ? [arbitrumGoerli, ARBITRUM_SEPOLIA_METADATA, avalancheFuji] : [])],
   [publicProvider()]
 );
 
