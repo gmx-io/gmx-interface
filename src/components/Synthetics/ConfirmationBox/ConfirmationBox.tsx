@@ -129,7 +129,8 @@ export type Props = {
   error?: string;
   existingPosition?: PositionInfo;
   shouldDisableValidation: boolean;
-  setSelectedTriggerAcceptablePriceImapctBps: (value: BigNumber) => void;
+  selectedTriggerAcceptablePriceImpactBps?: BigNumber;
+  setSelectedTriggerAcceptablePriceImpactBps: (value: BigNumber) => void;
   onClose: () => void;
   onSubmitted: () => void;
   setPendingTxns: (txns: any) => void;
@@ -151,7 +152,8 @@ export function ConfirmationBox(p: Props) {
     existingPosition,
     shouldDisableValidation,
     marketsOptions,
-    setSelectedTriggerAcceptablePriceImapctBps,
+    selectedTriggerAcceptablePriceImpactBps,
+    setSelectedTriggerAcceptablePriceImpactBps,
     onClose,
     onSubmitted,
     setPendingTxns,
@@ -1107,9 +1109,10 @@ export function ConfirmationBox(p: Props) {
   function renderAcceptablePriceImpactInput() {
     return (
       <AcceptablePriceImpactInputRow
-        defaultAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
-        fees={fees}
-        setSelectedAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImapctBps}
+        acceptablePriceImpactBps={selectedTriggerAcceptablePriceImpactBps}
+        recommendedAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
+        priceImpactFeeBps={fees?.positionPriceImpact?.bps}
+        setAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
       />
     );
   }
@@ -1191,7 +1194,13 @@ export function ConfirmationBox(p: Props) {
               {formatPercentage(collateralSpreadPercent)}
             </ExchangeInfoRow>
           )}
-          {isMarket && <AllowedSlippageRow defaultSlippage={savedAllowedSlippage} setSlippage={setAllowedSlippage} />}
+          {isMarket && (
+            <AllowedSlippageRow
+              defaultSlippage={savedAllowedSlippage}
+              allowedSlippage={allowedSlippage}
+              setSlippage={setAllowedSlippage}
+            />
+          )}
           {isLimit && increaseAmounts && renderAcceptablePriceImpactInput()}
 
           <div className="line-divider" />
@@ -1395,7 +1404,13 @@ export function ConfirmationBox(p: Props) {
             </ExchangeInfoRow>
           )}
 
-          {isMarket && <AllowedSlippageRow defaultSlippage={savedAllowedSlippage} setSlippage={setAllowedSlippage} />}
+          {isMarket && (
+            <AllowedSlippageRow
+              defaultSlippage={savedAllowedSlippage}
+              allowedSlippage={allowedSlippage}
+              setSlippage={setAllowedSlippage}
+            />
+          )}
 
           <div className="line-divider" />
 

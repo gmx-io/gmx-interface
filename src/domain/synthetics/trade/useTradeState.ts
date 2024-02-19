@@ -63,10 +63,10 @@ export type TradeState = {
   setFixedTriggerOrderType: ReactSetState<OrderType.LimitDecrease | OrderType.StopLossDecrease | undefined>;
 
   defaultTriggerAcceptablePriceImpactBps: BigNumber | undefined;
-  setDefaultTriggerAcceptablePriceImapctBps: ReactSetState<BigNumber | undefined>;
+  setDefaultTriggerAcceptablePriceImpactBps: ReactSetState<BigNumber | undefined>;
 
   selectedTriggerAcceptablePriceImpactBps: BigNumber | undefined;
-  setSelectedAcceptablePriceImapctBps: ReactSetState<BigNumber | undefined>;
+  setSelectedAcceptablePriceImpactBps: ReactSetState<BigNumber | undefined>;
 
   closeSizeInputValue: string;
   setCloseSizeInputValue: ReactSetState<string>;
@@ -420,9 +420,9 @@ export function useTradeState(
     fixedTriggerOrderType,
     setFixedTriggerOrderType,
     defaultTriggerAcceptablePriceImpactBps,
-    setDefaultTriggerAcceptablePriceImapctBps: setDefaultTriggerAcceptablePriceImpactBps,
+    setDefaultTriggerAcceptablePriceImpactBps,
     selectedTriggerAcceptablePriceImpactBps,
-    setSelectedAcceptablePriceImapctBps: setSelectedTriggerAcceptablePriceImpactBps,
+    setSelectedAcceptablePriceImpactBps: setSelectedTriggerAcceptablePriceImpactBps,
     closeSizeInputValue,
     setCloseSizeInputValue,
     triggerPriceInputValue,

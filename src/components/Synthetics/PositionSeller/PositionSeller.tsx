@@ -471,6 +471,7 @@ export function PositionSeller(p: Props) {
         !defaultTriggerAcceptablePriceImpactBps.eq(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs())
       ) {
         setDefaultTriggerAcceptablePriceImpactBps(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs());
+        setSelectedTriggerAcceptablePriceImpactBps(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs());
       }
     }
   }, [decreaseAmounts, defaultTriggerAcceptablePriceImpactBps, isTrigger]);
@@ -523,9 +524,10 @@ export function PositionSeller(p: Props) {
     return (
       <AcceptablePriceImpactInputRow
         notAvailable={!triggerPriceInputValue || isStopLoss}
-        defaultAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
-        fees={fees}
-        setSelectedAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
+        acceptablePriceImpactBps={selectedTriggerAcceptablePriceImpactBps}
+        recommendedAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
+        priceImpactFeeBps={fees?.positionPriceImpact?.bps}
+        setAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
       />
     );
   })();

@@ -40,6 +40,7 @@ export function AllowedSlippageRow({
       <PercentageInput
         onChange={setAllowedSlippage}
         defaultValue={allowedSlippage}
+        value={allowedSlippage}
         highValue={EXCESSIVE_SLIPPAGE_AMOUNT}
         highValueWarningText={t`Slippage is too high`}
         negativeSign

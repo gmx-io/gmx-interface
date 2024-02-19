@@ -177,8 +177,9 @@ export function TradeBox(p: Props) {
     setFixedTriggerThresholdType,
     fixedTriggerOrderType,
     setFixedTriggerOrderType,
-    setDefaultTriggerAcceptablePriceImapctBps,
-    setSelectedAcceptablePriceImapctBps,
+    setDefaultTriggerAcceptablePriceImpactBps,
+    selectedTriggerAcceptablePriceImpactBps,
+    setSelectedAcceptablePriceImpactBps,
     closeSizeInputValue,
     setCloseSizeInputValue,
     triggerPriceInputValue,
@@ -619,13 +620,13 @@ export function TradeBox(p: Props) {
     ) {
       setFixedTriggerOrderType(decreaseAmounts.triggerOrderType);
       setFixedTriggerThresholdType(decreaseAmounts.triggerThresholdType);
-      setSelectedAcceptablePriceImapctBps(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs());
-      setDefaultTriggerAcceptablePriceImapctBps(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs());
+      setSelectedAcceptablePriceImpactBps(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs());
+      setDefaultTriggerAcceptablePriceImpactBps(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs());
     }
 
     if (isLimit && increaseAmounts?.acceptablePrice) {
-      setSelectedAcceptablePriceImapctBps(increaseAmounts.acceptablePriceDeltaBps.abs());
-      setDefaultTriggerAcceptablePriceImapctBps(increaseAmounts.acceptablePriceDeltaBps.abs());
+      setSelectedAcceptablePriceImpactBps(increaseAmounts.acceptablePriceDeltaBps.abs());
+      setDefaultTriggerAcceptablePriceImpactBps(increaseAmounts.acceptablePriceDeltaBps.abs());
     }
 
     setStage("confirmation");
@@ -759,16 +760,16 @@ export function TradeBox(p: Props) {
   }
 
   const onConfirmationClose = useCallback(() => {
-    setSelectedAcceptablePriceImapctBps(undefined);
-    setDefaultTriggerAcceptablePriceImapctBps(undefined);
+    setSelectedAcceptablePriceImpactBps(undefined);
+    setDefaultTriggerAcceptablePriceImpactBps(undefined);
     setFixedTriggerOrderType(undefined);
     setFixedTriggerThresholdType(undefined);
     setStage("trade");
   }, [
-    setDefaultTriggerAcceptablePriceImapctBps,
+    setDefaultTriggerAcceptablePriceImpactBps,
     setFixedTriggerOrderType,
     setFixedTriggerThresholdType,
-    setSelectedAcceptablePriceImapctBps,
+    setSelectedAcceptablePriceImpactBps,
     setStage,
   ]);
 
@@ -1416,7 +1417,8 @@ export function TradeBox(p: Props) {
         triggerPrice={triggerPrice}
         fixedTriggerThresholdType={fixedTriggerThresholdType}
         fixedTriggerOrderType={fixedTriggerOrderType}
-        setSelectedTriggerAcceptablePriceImapctBps={setSelectedAcceptablePriceImapctBps}
+        selectedTriggerAcceptablePriceImpactBps={selectedTriggerAcceptablePriceImpactBps}
+        setSelectedTriggerAcceptablePriceImpactBps={setSelectedAcceptablePriceImpactBps}
         marketsOptions={marketsOptions}
         swapLiquidityUsd={swapOutLiquidity}
         longLiquidityUsd={longLiquidity}
