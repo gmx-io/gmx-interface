@@ -119,6 +119,7 @@ function AcceptablePriceImpactInputRowImpl({
       highValueWarningText={highValueWarningText}
       lowValueWarningText={lowValueWarningText}
       negativeSign
+      tooltipPosition="right-bottom"
     />
   );
 

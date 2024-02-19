@@ -4,6 +4,7 @@ import { ChangeEvent, ReactNode, useCallback, useEffect, useMemo, useRef, useSta
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { roundToTwoDecimals } from "lib/numbers";
 
+import type { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import "./PercentageInput.scss";
@@ -26,6 +27,7 @@ type Props = {
   negativeSign?: boolean;
   highValueCheckStrategy?: "gte" | "gt";
   value?: number;
+  tooltipPosition?: TooltipPosition;
 };
 
 const DEFAULT_SUGGESTIONS = [0.3, 0.5, 1, 1.5];
@@ -42,6 +44,7 @@ export default function PercentageInput({
   lowValueWarningText,
   negativeSign,
   highValueCheckStrategy: checkStrategy = "gte",
+  tooltipPosition,
 }: Props) {
   const [isPanelVisible, setIsPanelVisible] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState(() => (value === undefined ? "" : getValueText(value)));
@@ -120,6 +123,7 @@ export default function PercentageInput({
         disableHandleStyle
         disabled={!error || shouldShowPanel}
         renderContent={() => <div>{error}</div>}
+        position={tooltipPosition}
       >
         <div className={cx("Percentage-input", { "input-error": Boolean(error) })}>
           {negativeSign && (
