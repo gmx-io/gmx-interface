@@ -410,7 +410,7 @@ export function getOrderErrors(p: {
   }
 
   if (!position) {
-    const collateralSymbol = order.initialCollateralToken.symbol;
+    const collateralSymbol = order.targetCollateralToken.symbol;
     const sameMarketPosition = Object.values(positionsInfoData || {}).find(
       (pos) => pos.marketAddress === order.marketAddress && pos.isLong === order.isLong
     );
