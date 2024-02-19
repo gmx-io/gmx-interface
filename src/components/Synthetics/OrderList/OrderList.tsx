@@ -1,5 +1,6 @@
 import { Trans, t } from "@lingui/macro";
-import Checkbox from "components/Checkbox/Checkbox";
+import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
+
 import {
   useIsLastSubaccountAction,
   useSubaccount,
@@ -22,7 +23,8 @@ import {
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
-import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
+
+import Checkbox from "components/Checkbox/Checkbox";
 import { OrderEditor } from "../OrderEditor/OrderEditor";
 import { OrderItem } from "../OrderItem/OrderItem";
 import { AvailableTokenOptions } from "domain/synthetics/trade";
@@ -136,23 +138,21 @@ export function OrderList(p: Props) {
       )}
       <div className="Exchange-list Orders small">
         {!p.isLoading &&
-          orders.map((order) => {
-            return (
-              <OrderItem
-                key={order.key}
-                order={order}
-                isLarge={false}
-                isSelected={p.selectedOrdersKeys?.[order.key]}
-                onSelectOrder={() => onSelectOrder(order.key)}
-                isCanceling={canellingOrdersKeys.includes(order.key)}
-                onCancelOrder={() => onCancelOrder(order.key)}
-                onEditOrder={() => setEditingOrderKey(order.key)}
-                marketsInfoData={marketsInfoData}
-                positionsInfoData={positionsData}
-                hideActions={p.hideActions}
-              />
-            );
-          })}
+          orders.map((order) => (
+            <OrderItem
+              key={order.key}
+              order={order}
+              isLarge={false}
+              isSelected={p.selectedOrdersKeys?.[order.key]}
+              onSelectOrder={() => onSelectOrder(order.key)}
+              isCanceling={canellingOrdersKeys.includes(order.key)}
+              onCancelOrder={() => onCancelOrder(order.key)}
+              onEditOrder={() => setEditingOrderKey(order.key)}
+              marketsInfoData={marketsInfoData}
+              positionsInfoData={positionsData}
+              hideActions={p.hideActions}
+            />
+          ))}
       </div>
 
       <table className="Exchange-list Orders large App-box">

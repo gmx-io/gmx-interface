@@ -329,7 +329,7 @@ export function GmConfirmationBox({
 
   return (
     <div className="Confirmation-box GmConfirmationBox">
-      <Modal isVisible={isVisible} setIsVisible={onClose} label={t`Confirm ${operationText}`} allowContentTouchMove>
+      <Modal isVisible={isVisible} setIsVisible={onClose} label={t`Confirm ${operationText}`}>
         {isVisible && (
           <>
             {isDeposit && (

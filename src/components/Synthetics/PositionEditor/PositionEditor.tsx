@@ -451,14 +451,13 @@ export function PositionEditor(p: Props) {
     <div className="PositionEditor">
       <Modal
         className="PositionEditor-modal"
-        isVisible={position}
+        isVisible={!!position}
         setIsVisible={onClose}
         label={
           <Trans>
             Edit {position?.isLong ? t`Long` : t`Short`} {position?.indexToken?.symbol}
           </Trans>
         }
-        allowContentTouchMove
       >
         {position && (
           <>

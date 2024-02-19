@@ -1,19 +1,25 @@
-import React, { useRef, useState } from "react";
 import { Menu } from "@headlessui/react";
-import ModalWithPortal from "../Modal/ModalWithPortal";
-import { t, Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
+import noop from "lodash/noop";
+import { useRef, useState } from "react";
 import { HiDotsVertical } from "react-icons/hi";
-import "./NetworkDropdown.css";
-import language24Icon from "img/ic_language24.svg";
-import settingsIcon from "img/ic_settings_16.svg";
-import { defaultLocale } from "lib/i18n";
-import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
-import LanguageModalContent from "./LanguageModalContent";
-import { useChainId } from "lib/chains";
+
 import { getIcon } from "config/icons";
+import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
+import { useChainId } from "lib/chains";
+import { defaultLocale } from "lib/i18n";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
+
+import type { ModalProps } from "components/Modal/Modal";
+import ModalWithPortal from "../Modal/ModalWithPortal";
+import LanguageModalContent from "./LanguageModalContent";
+
+import language24Icon from "img/ic_language24.svg";
+import settingsIcon from "img/ic_settings_16.svg";
+
+import "./NetworkDropdown.css";
 
 const LANGUAGE_MODAL_KEY = "LANGUAGE";
 const NETWORK_MODAL_KEY = "NETWORK";
@@ -40,7 +46,7 @@ export default function NetworkDropdown(props) {
     }
   }
 
-  function getModalProps(modalName) {
+  function getModalProps(modalName: string | null): ModalProps {
     switch (modalName) {
       case LANGUAGE_MODAL_KEY:
         return {
@@ -57,7 +63,9 @@ export default function NetworkDropdown(props) {
           label: t`Networks and Settings`,
         };
       default:
-        return {};
+        return {
+          setIsVisible: noop,
+        };
     }
   }
 

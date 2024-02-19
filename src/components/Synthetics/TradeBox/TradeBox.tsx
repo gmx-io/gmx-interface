@@ -1,5 +1,10 @@
 import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { BigNumber } from "ethers";
+import { ReactNode, useCallback, useEffect, useMemo } from "react";
+import { IoMdSwap } from "react-icons/io";
+import { useLatest, usePrevious } from "react-use";
+
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
@@ -67,7 +72,6 @@ import {
   getSwapError,
 } from "domain/synthetics/trade/utils/validation";
 import { getMinResidualAmount } from "domain/tokens";
-import { BigNumber } from "ethers";
 import longImg from "img/long.svg";
 import shortImg from "img/short.svg";
 import swapImg from "img/swap.svg";
@@ -88,9 +92,7 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { museNeverExist } from "lib/types";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
-import { ReactNode, useCallback, useEffect, useMemo } from "react";
-import { IoMdSwap } from "react-icons/io";
-import { useLatest, usePrevious } from "react-use";
+
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { MarketCard } from "../MarketCard/MarketCard";
 import { SwapCard } from "../SwapCard/SwapCard";
@@ -1078,25 +1080,33 @@ export function TradeBox(p: Props) {
           <div className="App-card-divider" />
         </>
       );
-    } else if (isTrigger && selectedPosition && !decreaseAmounts?.isFullClose) {
+    } else if (isTrigger && selectedPosition) {
+      let leverageValue: ReactNode = "-";
+
+      if (decreaseAmounts?.isFullClose) {
+        leverageValue = t`NA`;
+      } else if (selectedPosition.sizeInUsd.eq(decreaseAmounts?.sizeDeltaUsd || 0)) {
+        leverageValue = "-";
+      } else {
+        leverageValue = (
+          <ValueTransition
+            from={formatLeverage(selectedPosition.leverage)}
+            to={formatLeverage(nextPositionValues?.nextLeverage)}
+          />
+        );
+      }
+
+      const keepLeverageChecked = decreaseAmounts?.isFullClose ? false : keepLeverage ?? false;
+
       return (
         <>
-          <ExchangeInfoRow
-            className="SwapBox-info-row"
-            label={t`Leverage`}
-            value={
-              selectedPosition.sizeInUsd.eq(decreaseAmounts?.sizeDeltaUsd || 0) ? (
-                "-"
-              ) : (
-                <ValueTransition
-                  from={formatLeverage(selectedPosition.leverage)}
-                  to={formatLeverage(nextPositionValues?.nextLeverage)}
-                />
-              )
-            }
-          />
+          <ExchangeInfoRow className="SwapBox-info-row" label={t`Leverage`} value={leverageValue} />
           {selectedPosition?.leverage && (
-            <ToggleSwitch isChecked={keepLeverage ?? false} setIsChecked={setKeepLeverage}>
+            <ToggleSwitch
+              isChecked={keepLeverageChecked}
+              setIsChecked={setKeepLeverage}
+              disabled={decreaseAmounts?.isFullClose}
+            >
               <span className="text-gray font-sm">
                 <Trans>Keep leverage at {formatLeverage(selectedPosition.leverage)}</Trans>
               </span>
