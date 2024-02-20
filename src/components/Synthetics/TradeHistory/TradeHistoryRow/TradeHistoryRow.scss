@@ -1,0 +1,13 @@
+.TradeHistoryRow {
+  &.debug {
+    border-bottom: none;
+  }
+}
+
+.TradeHistoryRow-time {
+  font-size: 1.25rem;
+}
+
+.TradeHistoryRow-tooltip {
+  white-space: pre-line;
+}

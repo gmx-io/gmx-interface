@@ -8,7 +8,7 @@ type ButtonProps = {
   className: string;
   to: string;
   showExternalLinkArrow: boolean;
-  onClick?: () => void;
+  onClick?: (event: React.MouseEvent<HTMLElement>) => void;
   newTab?: boolean;
   disabled?: boolean;
 };

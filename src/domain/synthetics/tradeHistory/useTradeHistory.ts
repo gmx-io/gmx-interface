@@ -7,7 +7,7 @@ import { bigNumberify } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
-import useInfinateSwr from "swr/infinite";
+import useInfiniteSwr from "swr/infinite";
 import { isSwapOrderType } from "../orders";
 import { getSwapPathOutputAddresses } from "../trade/utils";
 import { PositionTradeAction, RawTradeAction, SwapTradeAction, TradeAction } from "./types";
@@ -19,15 +19,49 @@ export type TradeHistoryResult = {
   setPageIndex: (index: number) => Promise<RawTradeAction[] | undefined>;
 };
 
+type GraphQlFilters = {
+  [key: `_${string}`]: never;
+  [key: string]: string | number | boolean | undefined | GraphQlFilters;
+};
+
+function buildFiltersBody(filters: GraphQlFilters): string {
+  const res = {};
+
+  for (const [key, value] of Object.entries(filters)) {
+    if (value === undefined) {
+      continue;
+    }
+
+    if (typeof value === "string") {
+      res[key] = `"${value}"`;
+    } else if (typeof value === "number") {
+      res[key] = `${value}`;
+    } else if (typeof value === "boolean") {
+      res[key] = `${value}`;
+    } else {
+      res[key + "_"] = buildFiltersBody(value);
+    }
+  }
+
+  const str = Object.entries(res).reduce((previous, [key, value], index) => {
+    const maybeComma = index === 0 ? "" : ",";
+    return `${previous}${maybeComma}${key}:${value}`;
+  }, "");
+
+  return `{${str}}`;
+}
+
 export function useTradeHistory(
   chainId: number,
   p: {
     account: string | null | undefined;
     forAllAccounts?: boolean;
     pageSize: number;
+    fromTxTimestamp?: number;
+    toTxTimestamp?: number;
   }
 ) {
-  const { pageSize, account, forAllAccounts } = p;
+  const { pageSize, account, forAllAccounts, fromTxTimestamp, toTxTimestamp } = p;
   const marketsInfoData = useMarketsInfoData();
   const tokensData = useTokensData();
 
@@ -35,7 +69,7 @@ export function useTradeHistory(
 
   const getKey = (index: number) => {
     if (chainId && client && (account || forAllAccounts)) {
-      return [chainId, "useTradeHistory", account, forAllAccounts, index, pageSize];
+      return [chainId, "useTradeHistory", account, forAllAccounts, index, pageSize, fromTxTimestamp, toTxTimestamp];
     }
     return null;
   };
@@ -45,11 +79,21 @@ export function useTradeHistory(
     error,
     size: pageIndex,
     setSize: setPageIndex,
-  } = useInfinateSwr<RawTradeAction[]>(getKey, {
+  } = useInfiniteSwr<RawTradeAction[]>(getKey, {
     fetcher: async (key) => {
       const [, , , , pageIndex] = key;
       const skip = pageIndex * pageSize;
       const first = pageSize;
+
+      const filtersStr = buildFiltersBody({
+        account: forAllAccounts ? undefined : account!.toLowerCase(),
+        transaction: {
+          timestamp_gte: fromTxTimestamp,
+          timestamp_lte: toTxTimestamp,
+        },
+      });
+
+      const whereClause = `where: ${filtersStr}`;
 
       const query = gql(`{
         tradeActions(
@@ -57,16 +101,16 @@ export function useTradeHistory(
             first: ${first},
             orderBy: transaction__timestamp,
             orderDirection: desc,
-            ${!forAllAccounts && account ? `where: { account: "${account!.toLowerCase()}" }` : ""}
+            ${whereClause}
         ) {
             id
             eventName
-            
+
             account
             marketAddress
             swapPath
             initialCollateralTokenAddress
-            
+
             initialCollateralDeltaAmount
             sizeDeltaUsd
             triggerPrice
@@ -81,21 +125,22 @@ export function useTradeHistory(
             borrowingFeeAmount
             fundingFeeAmount
             pnlUsd
+            basePnlUsd
 
             collateralTokenPriceMax
             collateralTokenPriceMin
 
             indexTokenPriceMin
             indexTokenPriceMax
-            
+
             orderType
             orderKey
             isLong
             shouldUnwrapNativeToken
-            
+
             reason
             reasonBytes
-            
+
             transaction {
                 timestamp
                 hash
@@ -221,6 +266,7 @@ export function useTradeHistory(
             orderKey: rawAction.orderKey,
             isLong: rawAction.isLong!,
             pnlUsd: rawAction.pnlUsd ? BigNumber.from(rawAction.pnlUsd) : undefined,
+            basePnlUsd: rawAction.basePnlUsd ? BigNumber.from(rawAction.basePnlUsd) : undefined,
 
             priceImpactDiffUsd: rawAction.priceImpactDiffUsd ? BigNumber.from(rawAction.priceImpactDiffUsd) : undefined,
             priceImpactUsd: rawAction.priceImpactUsd ? BigNumber.from(rawAction.priceImpactUsd) : undefined,
