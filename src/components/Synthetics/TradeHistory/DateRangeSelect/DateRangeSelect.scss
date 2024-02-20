@@ -1,0 +1,59 @@
+.DateRangeSelect {
+  &-menu {
+    position: relative;
+  }
+
+  &-menu-items {
+    position: relative;
+    z-index: 1000;
+  }
+
+  &-calendarWrapper {
+    border-radius: var(--border-radius-sm);
+    background-color: rgb(49, 54, 85);
+    box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.25);
+
+    color: white;
+  }
+
+  &-monthAndYearPickers select {
+    color: white;
+
+    background-image: none;
+    padding: 10px;
+  }
+
+  &-dayNumber span {
+    color: white;
+  }
+
+  &-nextPrevButton {
+    background-color: rgba(180, 187, 255, 0.1);
+  }
+
+  &-prevButton i {
+    border-color: transparent white transparent transparent;
+  }
+
+  &-prevButton:hover {
+    background-color: rgba(80, 87, 126, 0.6);
+  }
+
+  &-nextButton i {
+    border-color: transparent transparent transparent white;
+  }
+
+  &-nextButton:hover {
+    background-color: rgba(80, 87, 126, 0.6);
+  }
+
+  @media (max-width: 600px) {
+    &-month {
+      width: auto;
+    }
+  }
+}
+
+#webpack-dev-server-client-overlay {
+  display: none;
+}
