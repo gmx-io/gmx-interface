@@ -334,16 +334,18 @@ export function OrderEditor(p: Props) {
       ? increaseAmounts?.acceptablePriceDeltaBps.abs()
       : decreaseAmounts?.recommendedAcceptablePriceDeltaBps.abs();
 
-  const priceImpactFeeBps = getFeeItem(
-    getAcceptablePriceInfo({
-      indexPrice: markPrice!,
-      isIncrease: isIncreaseOrderType(p.order.orderType),
-      isLong: p.order.isLong,
-      marketInfo: market!,
-      sizeDeltaUsd: sizeDeltaUsd!,
-    }).priceImpactDeltaUsd,
-    sizeDeltaUsd
-  )?.bps;
+  const priceImpactFeeBps =
+    market &&
+    getFeeItem(
+      getAcceptablePriceInfo({
+        indexPrice: markPrice!,
+        isIncrease: isIncreaseOrderType(p.order.orderType),
+        isLong: p.order.isLong,
+        marketInfo: market,
+        sizeDeltaUsd: sizeDeltaUsd!,
+      }).priceImpactDeltaUsd,
+      sizeDeltaUsd
+    )?.bps;
 
   function getError() {
     if (isSubmitting) {
