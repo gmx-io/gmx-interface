@@ -787,6 +787,7 @@ function useDecreaseAmounts({
       minCollateralUsd,
       minPositionSizeUsd,
       uiFeeFactor,
+      triggerOrderType: order.orderType as OrderType.LimitDecrease | OrderType.StopLossDecrease | undefined,
     });
   }, [
     acceptablePriceImpactBps,
@@ -796,6 +797,7 @@ function useDecreaseAmounts({
     minCollateralUsd,
     minPositionSizeUsd,
     order.isLong,
+    order.orderType,
     order.targetCollateralToken,
     savedAcceptablePriceImpactBuffer,
     sizeDeltaUsd,
