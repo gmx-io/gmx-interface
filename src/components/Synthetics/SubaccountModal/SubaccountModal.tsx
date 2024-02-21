@@ -521,6 +521,14 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     setWithdrawalLoading(true);
 
     try {
+      helperToast.success(
+        <StatusNotification title={t`Withdrawing from Subaccount`}>
+          {t`Withdrawing ${formatTokenAmount(subAccNativeTokenBalance, nativeToken.decimals, nativeToken.symbol, {
+            displayDecimals: 4,
+          })} to Main Account`}
+        </StatusNotification>
+      );
+
       await withdrawFromSubaccount({
         mainAccountAddress: account,
         subaccount,

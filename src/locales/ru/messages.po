@@ -4958,12 +4958,13 @@ msgstr "Цена отметки изменилась, подумайте об у
 msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"<0>Max allowed actions</0>\" field."
 msgstr ""
 
-#: src/domain/synthetics/fees/utils/executionFee.ts
-msgid "The network Fees are high currently, which may be due to a temporary increase in transactions on the {0} network."
-msgstr ""
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 #~ msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"Max allowed actions\" field."
 #~ msgstr ""
+
+#: src/domain/synthetics/fees/utils/executionFee.ts
+msgid "The network Fees are high currently, which may be due to a temporary increase in transactions on the {0} network."
+msgstr ""
 
 #: src/domain/legacy.ts
 #: src/domain/synthetics/fees/utils/executionFee.ts
@@ -5886,11 +5887,16 @@ msgid "Withdrawal submitted."
 msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Withdrawing from Subaccount"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Withdrawing {0} from {positionText}"
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Withdrawing {0} to Main Account"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js

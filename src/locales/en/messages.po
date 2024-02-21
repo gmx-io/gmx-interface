@@ -5890,12 +5890,17 @@ msgid "Withdrawal submitted."
 msgstr "Withdrawal submitted."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Withdrawing from Subaccount"
 msgstr "Withdrawing from Subaccount"
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Withdrawing {0} from {positionText}"
 msgstr "Withdrawing {0} from {positionText}"
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Withdrawing {0} to Main Account"
+msgstr "Withdrawing {0} to Main Account"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
