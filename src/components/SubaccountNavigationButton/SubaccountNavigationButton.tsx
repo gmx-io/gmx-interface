@@ -31,6 +31,7 @@ export const SubaccountNavigationButton = memo(
     isWrapOrUnwrap,
     tradeFlags,
     className,
+    requiredActions = 0,
   }: {
     closeConfirmationBox: () => void;
     executionFee: BigNumber | undefined;
@@ -38,6 +39,7 @@ export const SubaccountNavigationButton = memo(
     isWrapOrUnwrap?: boolean;
     tradeFlags: TradeFlags | undefined;
     className?: string;
+    requiredActions?: number;
   }) => {
     const isSubaccountActive = useIsSubaccountActive();
     const [, setModalOpen] = useSubaccountModalOpen();
@@ -79,7 +81,8 @@ export const SubaccountNavigationButton = memo(
 
     const shouldShowInsufficientFundsButton = isSubaccountActive && insufficientFunds && !isNativeToken;
     const shouldShowOfferButton = !isSubaccountActive && !offerButtonHidden && !isNativeToken;
-    const shouldShowAllowedActionsWarning = isSubaccountActive && remaining?.eq(0) && !isNativeToken;
+    const shouldShowAllowedActionsWarning =
+      isSubaccountActive && (remaining?.eq(0) || remaining?.lt(requiredActions)) && !isNativeToken;
     const shouldShowWrapOrUnwrapWarning =
       !tradeFlags?.isTrigger && isSubaccountActive && !wrapOrUnwrapWarningHidden && isWrapOrUnwrap;
     const shouldShowNativeTokenWarning =

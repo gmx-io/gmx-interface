@@ -724,6 +724,7 @@ export function ConfirmationBox(p: Props) {
         isNativeToken={fromToken?.isNative || toToken?.isNative}
         isWrapOrUnwrap={isWrapOrUnwrap}
         tradeFlags={tradeFlags}
+        requiredActions={1 + sltpAmounts.length}
       />
     );
   }
