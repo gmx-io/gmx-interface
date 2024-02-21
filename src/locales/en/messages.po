@@ -3366,8 +3366,12 @@ msgid "One-Click Trading"
 msgstr "One-Click Trading"
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-msgid "One-Click Trading is not available for Wrapping or Unwrapping native token {0}"
-msgstr "One-Click Trading is not available for Wrapping or Unwrapping native token {0}"
+#~ msgid "One-Click Trading is not available for Wrapping or Unwrapping native token {0}"
+#~ msgstr "One-Click Trading is not available for Wrapping or Unwrapping native token {0}"
+
+#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
+msgid "One-Click Trading is not available for wrapping or unwrapping native token {0}"
+msgstr "One-Click Trading is not available for wrapping or unwrapping native token {0}"
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 #~ msgid "One-Click Trading is not available using network's native token {0}. Consider using {1} as Pay token instead."

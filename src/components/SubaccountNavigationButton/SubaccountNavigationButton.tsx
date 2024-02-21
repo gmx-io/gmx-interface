@@ -109,7 +109,7 @@ export const SubaccountNavigationButton = memo(
       clickable = false;
       onCloseClick = handleCloseWrapOrUnwrapWarningClick;
       content = (
-        <Trans>One-Click Trading is not available for Wrapping or Unwrapping native token {nativeToken.symbol}</Trans>
+        <Trans>One-Click Trading is not available for wrapping or unwrapping native token {nativeToken.symbol}</Trans>
       );
     } else if (shouldShowNativeTokenWarning) {
       const wrappedToken = getWrappedToken(chainId);
