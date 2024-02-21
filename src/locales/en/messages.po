@@ -269,6 +269,10 @@ msgstr "Acknowledge high Price Impact"
 msgid "Acknowledge high Swap Price Impact"
 msgstr "Acknowledge high Swap Price Impact"
 
+#: src/domain/synthetics/trade/useHighExecutionFeeConsent.tsx
+msgid "Acknowledge very high network Fees"
+msgstr "Acknowledge very high network Fees"
+
 #: src/pages/Actions/Actions.js
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
 msgid "Actions"
@@ -315,6 +319,10 @@ msgstr "Adding referral code failed."
 msgid "Adding..."
 msgstr "Adding..."
 
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#~ msgid "Additional Execution Fee"
+#~ msgstr "Additional Execution Fee"
+
 #: src/pages/Stake/StakeV2.js
 msgid "Additional reserve required"
 msgstr "Additional reserve required"
@@ -356,15 +364,15 @@ msgstr "Allow {0} to be spent"
 msgid "Allow {wrappedTokenSymbol} to be spent"
 msgstr "Allow {wrappedTokenSymbol} to be spent"
 
-#: src/App/App.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/SettingsModal/SettingsModal.tsx
+#: src/components/Synthetics/ConfirmationBox/rows/AllowedSlippageRow.tsx
+#: src/components/Synthetics/PositionSeller/rows/AllowedSlippageRow.tsx
 msgid "Allowed Slippage"
 msgstr "Allowed Slippage"
 
-#: src/App/App.js
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "Allowed Slippage below {0}% may result in failed orders."
 msgstr "Allowed Slippage below {0}% may result in failed orders."
 
@@ -456,10 +464,14 @@ msgstr "Approving {stakingTokenSymbol}..."
 msgid "Approving..."
 msgstr "Approving..."
 
-#: src/components/TokenCard/TokenCard.js
-#: src/components/TokenCard/TokenCard.js
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
 msgid "Arbitrum APR:"
 msgstr "Arbitrum APR:"
+
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+msgid "As network fees have increased, an additional execution fee is needed."
+msgstr "As network fees have increased, an additional execution fee is needed."
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
@@ -504,8 +516,8 @@ msgstr "Available amount to withdraw from GLP. Funds not utilized by current ope
 msgid "Available on your preferred network"
 msgstr "Available on your preferred network"
 
-#: src/components/TokenCard/TokenCard.js
-#: src/components/TokenCard/TokenCard.js
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
 
@@ -616,7 +628,7 @@ msgstr "Buy Fee"
 msgid "Buy GLP"
 msgstr "Buy GLP"
 
-#: src/pages/Buy/Buy.js
+#: src/pages/Buy/Buy.tsx
 msgid "Buy GLP or GMX"
 msgstr "Buy GLP or GMX"
 
@@ -669,25 +681,9 @@ msgstr "Buy GMX using FIAT gateways:"
 msgid "Buy GMX using any token from any network:"
 msgstr "Buy GMX using any token from any network:"
 
-#: src/pages/Buy/Buy.js
-msgid "Buy Protocol Tokens"
-msgstr "Buy Protocol Tokens"
-
 #: src/components/Glp/GlpSwap.js
 msgid "Buy failed."
 msgstr "Buy failed."
-
-#: src/components/TokenCard/TokenCard.js
-#: src/components/TokenCard/TokenCard.js
-#: src/components/TokenCard/TokenCard.js
-msgid "Buy on Arbitrum"
-msgstr "Buy on Arbitrum"
-
-#: src/components/TokenCard/TokenCard.js
-#: src/components/TokenCard/TokenCard.js
-#: src/components/TokenCard/TokenCard.js
-msgid "Buy on Avalanche"
-msgstr "Buy on Avalanche"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy or Transfer AVAX to Avalanche"
@@ -778,7 +774,7 @@ msgstr "Cancel submitted."
 msgid "Cancelling {ordersText}"
 msgstr "Cancelling {ordersText}"
 
-#: src/App/App.js
+#: src/components/SettingsModal/SettingsModal.tsx
 #: src/pages/Exchange/Exchange.js
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Chart positions"
@@ -1498,7 +1494,7 @@ msgstr "Depositing..."
 msgid "Diff"
 msgstr "Diff"
 
-#: src/App/App.js
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "Disable order validations"
 msgstr "Disable order validations"
 
@@ -1506,7 +1502,7 @@ msgstr "Disable order validations"
 msgid "Disconnect"
 msgstr "Disconnect"
 
-#: src/App/App.js
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "Display PnL after fees"
 msgstr "Display PnL after fees"
 
@@ -1810,6 +1806,7 @@ msgid "Execute {orderTypeName} Order: {positionText} {sizeDeltaText},"
 msgstr "Execute {orderTypeName} Order: {positionText} {sizeDeltaText},"
 
 #: src/components/Exchange/FeesTooltip.tsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "Execution Fee"
 msgstr "Execution Fee"
 
@@ -1886,6 +1883,7 @@ msgstr "Fee values do not include incentives."
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees"
 msgstr "Fees"
@@ -2054,7 +2052,7 @@ msgstr "GLP autocompounding vaults"
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "GLP buy disabled, pending {0} upgrade"
 
-#: src/components/TokenCard/TokenCard.js
+#: src/components/TokenCard/TokenCard.tsx
 msgid "GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of the V1 markets generated fees."
 msgstr "GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of the V1 markets generated fees."
 
@@ -2082,7 +2080,7 @@ msgstr "GM Token pricing includes positions' Pending PnL, Impact Pool Amount and
 msgid "GM can be sold for {0} and {1} for this market up to the specified selling caps. The remaining tokens in the pool are reserved for currently open Positions."
 msgstr "GM can be sold for {0} and {1} for this market up to the specified selling caps. The remaining tokens in the pool are reserved for currently open Positions."
 
-#: src/components/TokenCard/TokenCard.js
+#: src/components/TokenCard/TokenCard.tsx
 msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees."
 msgstr "GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees."
 
@@ -2171,7 +2169,7 @@ msgstr "GMX is currently live on Arbitrum and Avalanche."
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 
-#: src/components/TokenCard/TokenCard.js
+#: src/components/TokenCard/TokenCard.tsx
 msgid "GMX is the utility and governance token. Accrues 30% and 27% of V1 and V2 markets generated fees, respectively."
 msgstr "GMX is the utility and governance token. Accrues 30% and 27% of V1 and V2 markets generated fees, respectively."
 
@@ -2224,6 +2222,13 @@ msgstr "Get fee discounts and earn rebates through the GMX referral program.<0/>
 msgid "Governance"
 msgstr "Governance"
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+#: src/components/Synthetics/GmSwap/GmConfirmationBox/GmConfirmationBox.tsx
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+msgid "High Execution Fee not yet acknowledged"
+msgstr "High Execution Fee not yet acknowledged"
+
 #: src/components/Exchange/SwapBox.js
 msgid "High Slippage, Swap Anyway"
 msgstr "High Slippage, Swap Anyway"
@@ -2231,6 +2236,13 @@ msgstr "High Slippage, Swap Anyway"
 #: src/components/Exchange/SwapBox.js
 msgid "High USDG Slippage, Long Anyway"
 msgstr "High USDG Slippage, Long Anyway"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#~ msgid "High network Fee not yet acknowledged"
+#~ msgstr "High network Fee not yet acknowledged"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -2267,7 +2279,7 @@ msgstr "Incentives Distribution History"
 msgid "Incentives are airdropped weekly."
 msgstr "Incentives are airdropped weekly."
 
-#: src/App/App.js
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "Include PnL in leverage display"
 msgstr "Include PnL in leverage display"
 
@@ -2446,7 +2458,7 @@ msgstr "Invalid Receiver Address"
 msgid "Invalid Transfer Addresses: Please check the url."
 msgstr "Invalid Transfer Addresses: Please check the url."
 
-#: src/App/App.js
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid execution fee buffer value"
 msgstr "Invalid execution fee buffer value"
 
@@ -2464,7 +2476,7 @@ msgstr "Invalid liq. price"
 msgid "Invalid price, see warning"
 msgstr "Invalid price, see warning"
 
-#: src/App/App.js
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid slippage value"
 msgstr "Invalid slippage value"
 
@@ -2493,7 +2505,6 @@ msgid "Keep Leverage is not possible"
 msgstr "Keep Leverage is not possible"
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Keep leverage at {0}"
 msgstr "Keep leverage at {0}"
@@ -2501,6 +2512,10 @@ msgstr "Keep leverage at {0}"
 #: src/components/Exchange/PositionSeller.js
 msgid "Keep leverage at {0}x"
 msgstr "Keep leverage at {0}x"
+
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+msgid "Keep leverage at {keepLeverageAtValue}"
+msgstr "Keep leverage at {keepLeverageAtValue}"
 
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "LONG LIQ."
@@ -2586,7 +2601,6 @@ msgstr "Leverage slider"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
-#: src/domain/synthetics/orders/utils.ts
 msgid "Limit"
 msgstr "Limit"
 
@@ -2610,7 +2624,6 @@ msgstr "Limit Order Price will vary based on Fees and Price Impact to guarantee 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/domain/synthetics/orders/utils.ts
 msgid "Limit Price"
 msgstr "Limit Price"
 
@@ -2763,7 +2776,6 @@ msgstr "Loading..."
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
-#: src/domain/synthetics/orders/utils.ts
 #: src/domain/synthetics/orders/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
@@ -2926,16 +2938,15 @@ msgid "Max Capacity for {0} Reached"
 msgstr "Max Capacity for {0} Reached"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Max Execution Fee"
 msgstr "Max Execution Fee"
 
-#: src/App/App.js
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max Execution Fee Buffer"
 msgstr "Max Execution Fee Buffer"
 
-#: src/App/App.js
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max Execution Fee buffer below {0}% may result in failed orders."
 msgstr "Max Execution Fee buffer below {0}% may result in failed orders."
 
@@ -2977,7 +2988,7 @@ msgstr "Max auto top-up amount"
 msgid "Max close amount exceeded"
 msgstr "Max close amount exceeded"
 
-#: src/App/App.js
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max execution fee buffer precision is 0.01%"
 msgstr "Max execution fee buffer precision is 0.01%"
 
@@ -3007,9 +3018,13 @@ msgstr "Max pool capacity reached for {0}. Please mint GLP using another token"
 msgid "Max pool capacity reached for {0}<0/><1/>Please mint GLP using another token"
 msgstr "Max pool capacity reached for {0}<0/><1/>Please mint GLP using another token"
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Max slippage precision is -0.01%"
+msgstr "Max slippage precision is -0.01%"
+
 #: src/App/App.js
-msgid "Max slippage precision is 0.01%"
-msgstr "Max slippage precision is 0.01%"
+#~ msgid "Max slippage precision is 0.01%"
+#~ msgstr "Max slippage precision is 0.01%"
 
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/MarketStats/MarketStats.tsx
@@ -3057,11 +3072,11 @@ msgstr "Max {0} short capacity"
 msgid "Max {0} short exceeded"
 msgstr "Max {0} short exceeded"
 
-#: src/components/TokenCard/TokenCard.js
+#: src/components/TokenCard/TokenCard.tsx
 msgid "Max. Arbitrum APR:"
 msgstr "Max. Arbitrum APR:"
 
-#: src/components/TokenCard/TokenCard.js
+#: src/components/TokenCard/TokenCard.tsx
 msgid "Max. Avalanche APR: {0}"
 msgstr "Max. Avalanche APR: {0}"
 
@@ -3184,6 +3199,9 @@ msgid "Multiplier Points APR"
 msgstr "Multiplier Points APR"
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "NA"
 msgstr "NA"
 
@@ -3413,10 +3431,6 @@ msgstr "Opening..."
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Order"
 msgstr "Order"
-
-#: src/domain/synthetics/orders/utils.ts
-msgid "Order Trigger Price is beyond position's Liquidation Price."
-msgstr "Order Trigger Price is beyond position's Liquidation Price."
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Order Type"
@@ -3762,6 +3776,7 @@ msgstr "Price Impact Rebates"
 msgid "Price Impact Rebates for closing trades are claimable under the Claims tab. <0>Read more</0>."
 msgstr "Price Impact Rebates for closing trades are claimable under the Claims tab. <0>Read more</0>."
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -3875,6 +3890,10 @@ msgstr "Proof of Reserves"
 msgid "Protocol"
 msgstr "Protocol"
 
+#: src/pages/Buy/Buy.tsx
+msgid "Protocol Tokens"
+msgstr "Protocol Tokens"
+
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Protocol analytics"
@@ -3901,9 +3920,9 @@ msgstr "Purchase Insurance"
 msgid "REBATE"
 msgstr "REBATE"
 
-#: src/components/TokenCard/TokenCard.js
-#: src/components/TokenCard/TokenCard.js
-#: src/components/TokenCard/TokenCard.js
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
 msgid "Read more"
 msgstr "Read more"
 
@@ -4130,7 +4149,7 @@ msgstr "SL"
 msgid "Same as current active code"
 msgstr "Same as current active code"
 
-#: src/App/App.js
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "Save"
 msgstr "Save"
 
@@ -4296,10 +4315,10 @@ msgstr "Sending settle request"
 msgid "Set TP/SL"
 msgstr "Set TP/SL"
 
-#: src/App/App.js
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "Settings"
 msgstr "Settings"
 
@@ -4379,7 +4398,6 @@ msgstr "Share Position"
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/domain/synthetics/orders/utils.ts
-#: src/domain/synthetics/orders/utils.ts
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -4415,7 +4433,7 @@ msgstr "Short {0}"
 msgid "Shorting..."
 msgstr "Shorting..."
 
-#: src/App/App.js
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "Show debug values"
 msgstr "Show debug values"
 
@@ -4460,14 +4478,18 @@ msgstr "Size"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/ConfirmationBox/rows/AllowedSlippageRow.tsx
+#: src/components/Synthetics/PositionSeller/rows/AllowedSlippageRow.tsx
 msgid "Slippage is too high"
 msgstr "Slippage is too high"
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Slippage should be less than -5%"
+msgstr "Slippage should be less than -5%"
+
 #: src/App/App.js
-msgid "Slippage should be less than 5%"
-msgstr "Slippage should be less than 5%"
+#~ msgid "Slippage should be less than 5%"
+#~ msgstr "Slippage should be less than 5%"
 
 #: src/components/Exchange/UsefulLinks.tsx
 msgid "Speed up page loading"
@@ -4800,7 +4822,6 @@ msgid "TP/SL"
 msgstr "TP/SL"
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/domain/synthetics/orders/utils.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take-Profit"
 msgstr "Take-Profit"
@@ -4887,17 +4908,14 @@ msgstr "The Execution Price didn't meet the Acceptable Price condition. The Orde
 msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
 msgstr "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
 
+#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "The Max Execution Fee is overestimated by {maxExecutionFeeText}%. Upon execution, the excess Execution Fee is sent back to your account."
 msgstr "The Max Execution Fee is overestimated by {maxExecutionFeeText}%. Upon execution, the excess Execution Fee is sent back to your account."
 
-#: src/App/App.js
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 msgstr "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
-
-#: src/domain/synthetics/orders/utils.ts
-msgid "The Order may not execute at the desired {priceText} as the current Price Impact {0} is higher than its Acceptable Price Impact {1}. Consider canceling and creating a new {suggestionType} Order."
-msgstr "The Order may not execute at the desired {priceText} as the current Price Impact {0} is higher than its Acceptable Price Impact {1}. Consider canceling and creating a new {suggestionType} Order."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
@@ -4927,10 +4945,22 @@ msgstr "The mark price has changed, consider increasing your Allowed Slippage by
 msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"Max allowed actions\" field."
 msgstr "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"Max allowed actions\" field."
 
+#: src/domain/synthetics/fees/utils/executionFee.ts
+msgid "The network Fees are high currently, which may be due to a temporary increase in transactions on the {0} network."
+msgstr "The network Fees are high currently, which may be due to a temporary increase in transactions on the {0} network."
+
 #: src/domain/legacy.ts
 #: src/domain/synthetics/fees/utils/executionFee.ts
 msgid "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
 msgstr "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
+
+#: src/domain/synthetics/orders/utils.ts
+msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedOrderAcceptablePriceImpact}, which is lower than the current market price impact of {formattedCurrentAcceptablePriceImpact}. It can be edited using the \"Edit\" button."
+msgstr "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedOrderAcceptablePriceImpact}, which is lower than the current market price impact of {formattedCurrentAcceptablePriceImpact}. It can be edited using the \"Edit\" button."
+
+#: src/domain/synthetics/orders/utils.ts
+msgid "The order will not be executed as its trigger price is beyond the position's liquidation price."
+msgstr "The order will not be executed as its trigger price is beyond the position's liquidation price."
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "The order will only execute if the Min. Receive is met and there is sufficient liquidity."
@@ -4953,8 +4983,12 @@ msgid "The pending borrow fee will be charged on this transaction."
 msgstr "The pending borrow fee will be charged on this transaction."
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
-msgstr "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
+msgid "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of -{1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
+msgstr "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of -{1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
+
+#: src/components/Synthetics/MarketCard/MarketCard.tsx
+#~ msgid "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
+#~ msgstr "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
 
 #: src/components/Exchange/SwapBox.js
 msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
@@ -5063,6 +5097,10 @@ msgstr "This code is not yet registered on {0}, you will not receive rebates the
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
 msgstr "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
+
+#: src/domain/synthetics/orders/utils.ts
+msgid "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
+msgstr "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
 
 #: src/components/Exchange/TradeHistory.js
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
@@ -5334,7 +5372,6 @@ msgstr "Trigger"
 #: src/components/Synthetics/OrderList/OrderList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/domain/synthetics/orders/utils.ts
 msgid "Trigger Price"
 msgstr "Trigger Price"
 
@@ -5659,6 +5696,18 @@ msgstr "View"
 msgid "View in Explorer"
 msgstr "View in Explorer"
 
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+msgid "View on Arbitrum"
+msgstr "View on Arbitrum"
+
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+#: src/components/TokenCard/TokenCard.tsx
+msgid "View on Avalanche"
+msgstr "View on Avalanche"
+
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "View status"
 msgstr "View status"
@@ -5889,9 +5938,12 @@ msgstr "You can check your claim history <0>here</0>."
 msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
 
+#: src/components/Synthetics/ConfirmationBox/rows/AllowedSlippageRow.tsx
+#: src/components/Synthetics/PositionSeller/rows/AllowedSlippageRow.tsx
+msgid "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than -{0}, may result in failed orders if prices are volatile."
+msgstr "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than -{0}, may result in failed orders if prices are volatile."
+
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 msgid "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than {0}, may result in failed orders if prices are volatile."
 msgstr "You can edit the default Allowed Slippage in the settings menu on the top right of the page.<0/><1/>Note that a low allowed slippage, e.g. less than {0}, may result in failed orders if prices are volatile."
 
@@ -5946,14 +5998,6 @@ msgstr "You have an existing position with {0} as collateral. This Order will no
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "You have an existing position with {0} as collateral. This action will not apply for that position."
 msgstr "You have an existing position with {0} as collateral. This action will not apply for that position."
-
-#: src/domain/synthetics/orders/utils.ts
-msgid ""
-"You have an existing {longText} position with {0} as Collateral. This Order will not\n"
-"be valid for that Position."
-msgstr ""
-"You have an existing {longText} position with {0} as Collateral. This Order will not\n"
-"be valid for that Position."
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "You have multiple existing Increase {longOrShortText} {0} limit orders"
@@ -6075,6 +6119,14 @@ msgstr "hide"
 msgid "in liquidity"
 msgstr "in liquidity"
 
+#: src/domain/synthetics/orders/utils.ts
+msgid "limit price"
+msgstr "limit price"
+
+#: src/domain/synthetics/orders/utils.ts
+msgid "long"
+msgstr "long"
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "not staked"
 msgstr "not staked"
@@ -6089,6 +6141,10 @@ msgstr "pay"
 msgid "receive"
 msgstr "receive"
 
+#: src/domain/synthetics/orders/utils.ts
+msgid "short"
+msgstr "short"
+
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "size"
 msgstr "size"
@@ -6100,6 +6156,10 @@ msgstr "staked"
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "time to liq"
 msgstr "time to liq"
+
+#: src/domain/synthetics/orders/utils.ts
+msgid "trigger price"
+msgstr "trigger price"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "view"

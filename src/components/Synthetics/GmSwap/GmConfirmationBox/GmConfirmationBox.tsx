@@ -24,6 +24,7 @@ import { useState } from "react";
 import "./GmConfirmationBox.scss";
 import { useKey } from "react-use";
 import useWallet from "lib/wallets/useWallet";
+import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { FaArrowRight } from "react-icons/fa";
 
 type Props = {
@@ -78,6 +79,9 @@ export function GmConfirmationBox({
   const market = getByKey(marketsData, marketToken?.address);
 
   const routerAddress = getContract(chainId, "SyntheticsRouter");
+  const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
+    executionFee?.feeUsd
+  );
 
   const payTokenAddresses = (function getPayTokenAddresses() {
     if (!marketToken) {
@@ -182,6 +186,13 @@ export function GmConfirmationBox({
         text: error,
         disabled: !shouldDisableValidation,
         onClick: onSubmit,
+      };
+    }
+
+    if (isHighFeeConsentError) {
+      return {
+        text: t`High Execution Fee not yet acknowledged`,
+        disabled: true,
       };
     }
 
@@ -314,9 +325,11 @@ export function GmConfirmationBox({
     );
   };
 
+  const shouldRenderDivider = Boolean(tokensToApprove?.length > 0) || Boolean(highExecutionFeeAcknowledgement);
+
   return (
     <div className="Confirmation-box GmConfirmationBox">
-      <Modal isVisible={isVisible} setIsVisible={onClose} label={t`Confirm ${operationText}`} allowContentTouchMove>
+      <Modal isVisible={isVisible} setIsVisible={onClose} label={t`Confirm ${operationText}`}>
         {isVisible && (
           <>
             {isDeposit && (
@@ -388,7 +401,7 @@ export function GmConfirmationBox({
               swapPriceImpact={fees?.swapPriceImpact}
               executionFee={executionFee}
             />
-            {tokensToApprove?.length > 0 && <div className="line-divider" />}
+            {shouldRenderDivider && <div className="line-divider" />}
 
             {tokensToApprove && tokensToApprove.length > 0 && (
               <div>
@@ -407,6 +420,10 @@ export function GmConfirmationBox({
                 })}
               </div>
             )}
+
+            {highExecutionFeeAcknowledgement ? (
+              <div className="GmConfirmationBox-high-fee">{highExecutionFeeAcknowledgement}</div>
+            ) : null}
 
             <div className="Confirmation-box-row">
               <Button

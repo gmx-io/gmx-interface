@@ -46,7 +46,6 @@ export function AccruedPositionPriceImpactRebateModal({
     <Modal
       label={t`Accrued Price Impact Rebates`}
       className="Confirmation-box ClaimableModal"
-      onClose={onClose}
       setIsVisible={onClose}
       isVisible={isVisible}
     >

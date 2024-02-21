@@ -1,34 +1,45 @@
-import "./Modal.css";
-import { useRef, useEffect, useMemo } from "react";
+import React, { useRef, useEffect, useMemo, PropsWithChildren } from "react";
 import cx from "classnames";
 import { motion, AnimatePresence } from "framer-motion";
 import { RemoveScroll } from "react-remove-scroll";
 import { MdClose } from "react-icons/md";
+
+import "./Modal.css";
 
 const FADE_VARIANTS = {
   hidden: { opacity: 0 },
   visible: { opacity: 1 },
 };
 
-const VISIBLE_STYLES = {
+const VISIBLE_STYLES: React.CSSProperties = {
   overflow: "hidden",
   position: "fixed",
 };
 
-const HIDDEN_STYLES = {
+const HIDDEN_STYLES: React.CSSProperties = {
   overflow: "visible",
   position: "fixed",
 };
 
 const TRANSITION = { duration: 0.2 };
 
-export default function Modal(props) {
+export type ModalProps = PropsWithChildren<{
+  isVisible?: boolean;
+  setIsVisible: (isVisible: boolean) => void;
+  className?: string;
+  zIndex?: number;
+  onAfterOpen?: () => void;
+  label?: React.ReactNode;
+  headerContent?: () => React.ReactNode;
+}>;
+
+export default function Modal(props: ModalProps) {
   const { isVisible, setIsVisible, className, zIndex, onAfterOpen } = props;
 
   const modalRef = useRef(null);
 
   useEffect(() => {
-    function close(e) {
+    function close(e: KeyboardEvent) {
       if (e.keyCode === 27 && setIsVisible) {
         setIsVisible(false);
       }
@@ -44,6 +55,7 @@ export default function Modal(props) {
   const style = useMemo(() => ({ zIndex }), [zIndex]);
 
   return (
+    // @ts-ignore
     <AnimatePresence>
       {isVisible && (
         <motion.div

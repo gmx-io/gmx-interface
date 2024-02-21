@@ -1,42 +1,49 @@
-import React, { useCallback, useState, useMemo, useRef, useEffect } from "react";
+import { Plural, Trans, t } from "@lingui/macro";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { BsArrowRight } from "react-icons/bs";
 import { useKey } from "react-use";
-import "./ConfirmationBox.css";
-import {
-  USD_DECIMALS,
-  PRECISION,
-  LIMIT,
-  MIN_PROFIT_TIME,
-  INCREASE,
-  getExchangeRate,
-  getExchangeRateDisplay,
-  calculatePositionDelta,
-  DECREASE,
-} from "lib/legacy";
-import { DEFAULT_SLIPPAGE_AMOUNT, DEFAULT_HIGHER_SLIPPAGE_AMOUNT, EXCESSIVE_SLIPPAGE_AMOUNT } from "config/factors";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
+
+import { cancelDecreaseOrder, handleCancelOrder } from "domain/legacy";
+import { getTokenInfo, getUsd } from "domain/tokens";
+
 import { getConstant } from "config/chains";
 import { getContract } from "config/contracts";
-
-import { BsArrowRight } from "react-icons/bs";
-import Modal from "../Modal/Modal";
-import Tooltip from "../Tooltip/Tooltip";
-import Checkbox from "../Checkbox/Checkbox";
-import ExchangeInfoRow from "./ExchangeInfoRow";
-import { cancelDecreaseOrder, handleCancelOrder } from "domain/legacy";
-import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
+import {
+  BASIS_POINTS_DIVISOR,
+  DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
+  DEFAULT_SLIPPAGE_AMOUNT,
+  EXCESSIVE_SLIPPAGE_AMOUNT,
+} from "config/factors";
 import { SLIPPAGE_BPS_KEY } from "config/localStorage";
-import { bigNumberify, expandDecimals, formatAmount, formatPercentage } from "lib/numbers";
 import { getPriceDecimals, getToken, getWrappedToken } from "config/tokens";
-import { Plural, t, Trans } from "@lingui/macro";
-import Button from "components/Button/Button";
-import FeesTooltip from "./FeesTooltip";
-import { getTokenInfo, getUsd } from "domain/tokens";
-import PercentageInput from "components/PercentageInput/PercentageInput";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
+import {
+  DECREASE,
+  INCREASE,
+  LIMIT,
+  MIN_PROFIT_TIME,
+  PRECISION,
+  USD_DECIMALS,
+  calculatePositionDelta,
+  getExchangeRate,
+  getExchangeRateDisplay,
+} from "lib/legacy";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { bigNumberify, expandDecimals, formatAmount, formatPercentage } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
+
+import Button from "components/Button/Button";
+import PercentageInput from "components/PercentageInput/PercentageInput";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import Checkbox from "../Checkbox/Checkbox";
+import Modal from "../Modal/Modal";
+import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
+import Tooltip from "../Tooltip/Tooltip";
+import ExchangeInfoRow from "./ExchangeInfoRow";
+import FeesTooltip from "./FeesTooltip";
+
+import "./ConfirmationBox.css";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
@@ -58,7 +65,7 @@ function getSwapSpreadInfo(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddres
   }
 }
 
-function renderAllowedSlippage(setAllowedSlippage, defaultSlippage) {
+function renderAllowedSlippage(setAllowedSlippage, defaultSlippage, allowedSlippage) {
   return (
     <ExchangeInfoRow
       label={
@@ -84,6 +91,7 @@ function renderAllowedSlippage(setAllowedSlippage, defaultSlippage) {
     >
       <PercentageInput
         onChange={setAllowedSlippage}
+        value={allowedSlippage}
         defaultValue={defaultSlippage}
         highValue={EXCESSIVE_SLIPPAGE_AMOUNT}
         highValueWarningText={t`Slippage is too high`}
@@ -664,7 +672,7 @@ export default function ConfirmationBox(props) {
             {!toAmount && leverage && leverage.gt(0) && `-`}
             {leverage && leverage.eq(0) && `-`}
           </ExchangeInfoRow>
-          {isMarketOrder && renderAllowedSlippage(setAllowedSlippage, savedSlippageAmount)}
+          {isMarketOrder && renderAllowedSlippage(setAllowedSlippage, savedSlippageAmount, allowedSlippage)}
           {showCollateralSpread && (
             <ExchangeInfoRow label={t`Collateral Spread`} isWarning={collateralSpreadInfo.isHigh} isTop>
               {formatAmount(collateralSpreadInfo.value.mul(100), USD_DECIMALS, 2, true)}%
@@ -766,8 +774,8 @@ export default function ConfirmationBox(props) {
     renderAvailableLiquidity,
     hasExistingPosition,
     toAmount,
-    existingPosition?.leverage,
-    existingPosition?.averagePrice,
+    existingPosition.leverage,
+    existingPosition.averagePrice,
     leverage,
     savedSlippageAmount,
     showCollateralSpread,
@@ -789,6 +797,7 @@ export default function ConfirmationBox(props) {
     isTriggerWarningAccepted,
     fromUsdMin,
     feesUsd,
+    allowedSlippage,
   ]);
 
   const renderSwapSection = useCallback(() => {
@@ -803,7 +812,7 @@ export default function ConfirmationBox(props) {
           </ExchangeInfoRow>
         )}
         {orderOption === LIMIT && renderAvailableLiquidity()}
-        {isMarketOrder && renderAllowedSlippage(setAllowedSlippage, savedSlippageAmount)}
+        {isMarketOrder && renderAllowedSlippage(setAllowedSlippage, savedSlippageAmount, allowedSlippage)}
         <ExchangeInfoRow label={t`Mark Price`} isTop>
           {getExchangeRateDisplay(getExchangeRate(fromTokenInfo, toTokenInfo), fromTokenInfo, toTokenInfo)}
         </ExchangeInfoRow>
@@ -860,6 +869,7 @@ export default function ConfirmationBox(props) {
     currentExecutionFees,
     feesUsd,
     minOut,
+    allowedSlippage,
   ]);
   const submitButtonRef = useRef(null);
 

@@ -1,84 +1,81 @@
 import { Trans, t } from "@lingui/macro";
+import { BigNumber } from "ethers";
+import { memo, useCallback, useMemo } from "react";
+
+import { HIGH_POSITION_IMPACT_BPS } from "config/factors";
+import { formatPercentage } from "lib/numbers";
+
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import PercentageInput from "components/PercentageInput/PercentageInput";
-import { HIGH_POSITION_IMPACT_BPS } from "config/factors";
-import { TradeFees } from "domain/synthetics/trade";
-import { BigNumber } from "ethers";
-import { formatPercentage } from "lib/numbers";
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+
 import "./AcceptablePriceImpactInputRow.scss";
 
 type Props = {
-  defaultAcceptablePriceImpactBps: BigNumber | undefined;
-  fees: TradeFees | undefined;
-  setSelectedAcceptablePriceImpactBps: (value: BigNumber) => void;
+  acceptablePriceImpactBps?: BigNumber;
+  recommendedAcceptablePriceImpactBps?: BigNumber;
+  initialPriceImpactFeeBps?: BigNumber;
+  priceImpactFeeBps?: BigNumber;
+  setAcceptablePriceImpactBps: (value: BigNumber) => void;
   notAvailable?: boolean;
 };
 
 const EMPTY_SUGGESTIONS: number[] = [];
 
 function AcceptablePriceImpactInputRowImpl({
-  defaultAcceptablePriceImpactBps,
-  fees,
-  setSelectedAcceptablePriceImpactBps,
+  acceptablePriceImpactBps,
+  recommendedAcceptablePriceImpactBps = acceptablePriceImpactBps,
+  initialPriceImpactFeeBps = acceptablePriceImpactBps,
+  priceImpactFeeBps,
+  setAcceptablePriceImpactBps,
   notAvailable = false,
 }: Props) {
   const setValue = useCallback(
-    (value) => {
-      setSelectedAcceptablePriceImpactBps(BigNumber.from(value));
+    (value: number | undefined) => {
+      setAcceptablePriceImpactBps(BigNumber.from(value));
     },
-    [setSelectedAcceptablePriceImpactBps]
+    [setAcceptablePriceImpactBps]
   );
 
-  const defaultValue = defaultAcceptablePriceImpactBps?.toNumber();
-
-  // calculated Acceptable Price value is not refreshing to the new percentage
-  // when size field is changed.
-  useEffect(() => {
-    if (defaultValue) {
-      setValue(defaultValue);
-    }
-  }, [defaultValue, setValue]);
-
-  const [key, setKey] = useState(0);
+  const recommendedValue = recommendedAcceptablePriceImpactBps?.toNumber();
+  const initialValue = initialPriceImpactFeeBps?.toNumber();
+  const value = acceptablePriceImpactBps?.toNumber();
 
   // if current price impact is 0.01%, the message will be shown
   // only if acceptable price impact is set to more than 0.51%
   const highValue = useMemo(() => {
-    if (!fees) {
+    if (!priceImpactFeeBps) {
       return undefined;
     }
 
-    if (fees.positionPriceImpact?.bps.lte(0)) {
-      return HIGH_POSITION_IMPACT_BPS + fees.positionPriceImpact?.bps.abs().toNumber();
+    if (priceImpactFeeBps.lte(0)) {
+      return HIGH_POSITION_IMPACT_BPS + priceImpactFeeBps.abs().toNumber();
     } else {
       return HIGH_POSITION_IMPACT_BPS;
     }
-  }, [fees]);
+  }, [priceImpactFeeBps]);
 
   const handleRecommendedValueClick = useCallback(() => {
-    setKey((key) => key + 1);
-    setValue(defaultValue);
-  }, [defaultValue, setValue]);
+    setValue(recommendedValue);
+  }, [recommendedValue, setValue]);
 
-  if (!defaultAcceptablePriceImpactBps || !fees || defaultValue === undefined) {
+  if (recommendedValue === undefined || initialValue === undefined || !priceImpactFeeBps) {
     return null;
   }
 
   const recommendedHandle = (
     <Trans>
       <span className="AcceptablePriceImpactInputRow-handle" onClick={handleRecommendedValueClick}>
-        Set Recommended Impact: {formatPercentage(BigNumber.from(defaultValue).mul(-1), { signed: true })}
+        Set Recommended Impact: {formatPercentage(BigNumber.from(recommendedValue).mul(-1), { signed: true })}
       </span>
       .
     </Trans>
   );
 
-  const lowValueWarningText = fees.positionPriceImpact?.bps.gte(0) ? (
+  const lowValueWarningText = priceImpactFeeBps.gte(0) ? (
     <p>
       <Trans>
-        The current Price Impact is {formatPercentage(fees.positionPriceImpact?.bps, { signed: true })}. Consider using
-        -0.30% Acceptable Price Impact so the order is more likely to be processed.
+        The current Price Impact is {formatPercentage(priceImpactFeeBps, { signed: true })}. Consider using -0.30%
+        Acceptable Price Impact so the order is more likely to be processed.
       </Trans>
       <br />
       <br />
@@ -87,8 +84,8 @@ function AcceptablePriceImpactInputRowImpl({
   ) : (
     <p>
       <Trans>
-        The Current Price Impact is {formatPercentage(fees.positionPriceImpact?.bps, { signed: true })}. Consider adding
-        a buffer of 0.30% to it so the order is more likely to be processed.
+        The Current Price Impact is {formatPercentage(priceImpactFeeBps, { signed: true })}. Consider adding a buffer of
+        0.30% to it so the order is more likely to be processed.
       </Trans>
       <br />
       <br />
@@ -100,7 +97,7 @@ function AcceptablePriceImpactInputRowImpl({
     <p>
       <Trans>
         You have set a high Acceptable Price Impact. The current Price Impact is{" "}
-        {formatPercentage(fees.positionPriceImpact?.bps, { signed: true })}.
+        {formatPercentage(priceImpactFeeBps, { signed: true })}.
       </Trans>
       <br />
       <br />
@@ -112,16 +109,17 @@ function AcceptablePriceImpactInputRowImpl({
     t`NA`
   ) : (
     <PercentageInput
-      key={key}
       onChange={setValue}
-      defaultValue={defaultValue}
+      defaultValue={initialValue}
+      value={value}
       highValue={highValue}
       highValueCheckStrategy="gt"
-      lowValue={defaultValue}
+      lowValue={recommendedValue}
       suggestions={EMPTY_SUGGESTIONS}
       highValueWarningText={highValueWarningText}
       lowValueWarningText={lowValueWarningText}
       negativeSign
+      tooltipPosition="right-bottom"
     />
   );
 
