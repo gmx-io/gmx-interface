@@ -44,7 +44,7 @@ import { formatTokenAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
-import { ChangeEvent, ReactNode, memo, useCallback, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, ReactNode, memo, useCallback, useEffect, useMemo, useState, forwardRef, useRef } from "react";
 import { useCopyToClipboard, usePrevious } from "react-use";
 import { SubaccountNotification } from "../StatusNotification/SubaccountNotification";
 import "./SubaccountModal.scss";
@@ -81,6 +81,10 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
   const mainAccWrappedTokenBalance = getByKey(mainBalances.balancesData, wrappedToken.address);
   const subAccNativeTokenBalance = getByKey(subBalances.balancesData, nativeToken.address);
   const subaccountExplorerUrl = useMemo(() => getAccountUrl(chainId, subaccountAddress), [chainId, subaccountAddress]);
+
+  const maxAllowedActionsInputRef = useRef<HTMLInputElement>(null);
+  const topUpInputRef = useRef<HTMLInputElement>(null);
+  const convertInputRef = useRef<HTMLInputElement>(null);
 
   const defaults = useMemo(() => {
     if (!tokensData) return null;
@@ -562,9 +566,28 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     [nativeToken.decimals, nativeToken.symbol, subAccNativeTokenBalance]
   );
 
+  const focusTopUpInput = useCallback(() => {
+    topUpInputRef.current?.focus();
+  }, []);
+
+  const focusMaxAllowedActionsInput = useCallback(() => {
+    maxAllowedActionsInputRef.current?.focus();
+  }, []);
+
+  const focusConvertInput = useCallback(() => {
+    convertInputRef.current?.focus();
+  }, []);
+
   return (
     <div className="SubaccountModal-content">
-      {<SubaccountStatus hasBorder={Boolean(subaccountAddress)} />}
+      {
+        <SubaccountStatus
+          hasBorder={Boolean(subaccountAddress)}
+          onTopUpClick={focusTopUpInput}
+          onMaxAllowedActionsClick={focusMaxAllowedActionsInput}
+          onConvertClick={focusConvertInput}
+        />
+      }
       {subaccountAddress && (
         <>
           <div className="SubaccountModal-subaccount">
@@ -630,6 +653,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
         </div>
         <div className="SubaccountModal-section">
           <InputRow
+            ref={maxAllowedActionsInputRef}
             value={maxAllowedActionsString}
             setValue={setMaxAllowedActionsString}
             label={t`Max allowed actions`}
@@ -645,6 +669,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             }
           />
           <InputRow
+            ref={topUpInputRef}
             value={topUpString}
             setValue={setTopUpString}
             label={isSubaccountActive ? t`Top-up` : t`Initial top-up`}
@@ -653,6 +678,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             description={t`This amount of ${nativeToken.symbol} will be sent from your Main Account to your Subaccount to pay for transaction fees.`}
           />
           <InputRow
+            ref={convertInputRef}
             value={wntForAutoTopUpsString}
             setValue={setWntForAutoTopUpsString}
             label={t`Сonvert ${nativeToken.symbol} to ${wrappedToken.symbol}`}
@@ -686,25 +712,20 @@ const ButtonIcon = memo(({ icon, title, onClick }: { icon: string; title: string
   );
 });
 
-const InputRow = memo(
-  ({
-    value,
-    setValue,
-    label,
-    symbol = "",
-    description,
-    placeholder,
-    negativeSign = false,
-  }: {
-    value: string;
-    setValue: (value: string) => void;
-    label: string;
-    symbol?: string;
-    description: ReactNode;
-    placeholder: string;
-    negativeSign?: boolean;
-  }) => {
+interface InputRowProps {
+  value: string;
+  setValue: (value: string) => void;
+  label: string;
+  symbol?: string;
+  description: ReactNode;
+  placeholder: string;
+  negativeSign?: boolean;
+}
+
+const InputRowBase = forwardRef<HTMLInputElement, InputRowProps>(
+  ({ value, setValue, label, symbol = "", description, placeholder, negativeSign = false }: InputRowProps, ref) => {
     const renderTooltipContent = useCallback(() => description, [description]);
+
     return (
       <div>
         <div className="SubaccountModal-input-row flex text-gray">
@@ -712,6 +733,7 @@ const InputRow = memo(
             <TooltipWithPortal position="left-top" handle={label} renderContent={renderTooltipContent} />
           </div>
           <Input
+            ref={ref}
             negativeSign={negativeSign}
             placeholder={placeholder}
             value={value}
@@ -724,20 +746,18 @@ const InputRow = memo(
   }
 );
 
-const Input = memo(
-  ({
-    value,
-    setValue,
-    symbol,
-    placeholder,
-    negativeSign,
-  }: {
-    value: string;
-    setValue: (value: string) => void;
-    symbol: string;
-    placeholder: string;
-    negativeSign: boolean;
-  }) => {
+const InputRow = memo(InputRowBase);
+
+interface InputProp {
+  value: string;
+  setValue: (value: string) => void;
+  symbol: string;
+  placeholder: string;
+  negativeSign: boolean;
+}
+
+const InputBase = forwardRef<HTMLInputElement, InputProp>(
+  ({ value, setValue, symbol, placeholder, negativeSign }, ref) => {
     const onChange = useCallback(
       (e: ChangeEvent<HTMLInputElement>) => {
         setValue(e.target.value);
@@ -750,7 +770,7 @@ const Input = memo(
       <div className="SubaccountModal-input-wrapper">
         <div className={cx("SubaccountModal-input")}>
           {negativeSign && <span className="SubaccountModal-negative-sign">-</span>}
-          <input placeholder={placeholder} onChange={onChange} id={id} value={value} />
+          <input ref={ref} placeholder={placeholder} onChange={onChange} id={id} value={value} />
           <label htmlFor={id}>
             <span>{symbol}</span>
           </label>
@@ -759,3 +779,5 @@ const Input = memo(
     );
   }
 );
+
+const Input = memo(InputBase);

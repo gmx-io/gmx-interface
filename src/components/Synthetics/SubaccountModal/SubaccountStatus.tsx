@@ -15,7 +15,17 @@ import { ReactNode, memo } from "react";
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import "./SubaccountStatus.scss";
 
-function SubaccountStatusImpl({ hasBorder }: { hasBorder: boolean }) {
+function SubaccountStatusImpl({
+  hasBorder,
+  onTopUpClick,
+  onConvertClick,
+  onMaxAllowedActionsClick,
+}: {
+  hasBorder: boolean;
+  onTopUpClick: () => void;
+  onConvertClick: () => void;
+  onMaxAllowedActionsClick: () => void;
+}) {
   const isSubaccountActive = useIsSubaccountActive();
   const { remaining: remainingActionsCount } = useSubaccountActionCounts();
 
@@ -39,8 +49,11 @@ function SubaccountStatusImpl({ hasBorder }: { hasBorder: boolean }) {
       content.push(
         <AlertInfo type="warning" key="1">
           <Trans>
-            The maximum number of authorized Actions has been reached. Re-authorize a higher value using the "Max
-            allowed actions" field.
+            The maximum number of authorized Actions has been reached. Re-authorize a higher value using the "
+            <span onClick={onMaxAllowedActionsClick} className="SubaccountStatus-clickable-text">
+              Max allowed actions
+            </span>
+            " field.
           </Trans>
         </AlertInfo>
       );
@@ -50,8 +63,11 @@ function SubaccountStatusImpl({ hasBorder }: { hasBorder: boolean }) {
       content.push(
         <AlertInfo type="warning" key="2">
           <Trans>
-            There are insufficient funds in your Subaccount for One-Click Trading. Use the "Top-up" field to increase
-            the Subaccount Balance.
+            There are insufficient funds in your Subaccount for One-Click Trading. Use the "
+            <span onClick={onTopUpClick} className="SubaccountStatus-clickable-text">
+              Top-up
+            </span>
+            " field to increase the Subaccount Balance.
           </Trans>
         </AlertInfo>
       );
@@ -63,8 +79,11 @@ function SubaccountStatusImpl({ hasBorder }: { hasBorder: boolean }) {
       content.push(
         <AlertInfo type="warning" key="3">
           <Trans>
-            Not enough {wrappedToken.symbol} on your Main Account. Use the "Convert {nativeToken.symbol} to{" "}
-            {wrappedToken.symbol}" field to increase the Main Account {wrappedToken.symbol} balance.
+            Not enough {wrappedToken.symbol} on your Main Account. Use the "
+            <span onClick={onConvertClick} className="SubaccountStatus-clickable-text">
+              Convert {nativeToken.symbol} to {wrappedToken.symbol}
+            </span>
+            " field to increase the Main Account {wrappedToken.symbol} balance.
           </Trans>
         </AlertInfo>
       );
