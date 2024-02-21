@@ -191,7 +191,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     setDisplayValue: setMaxAutoTopUpAmountString,
     setValue: setMaxAutoTopUpAmount,
     value: maxAutoTopUpAmount,
-  } = useBigNumberInput(null, nativeToken.decimals, 4);
+  } = useBigNumberInput(null, wrappedToken.decimals, 4);
   const {
     displayValue: wntForAutoTopUpsString,
     setDisplayValue: setWntForAutoTopUpsString,
@@ -705,12 +705,12 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             value={maxAutoTopUpAmountString}
             setValue={setMaxAutoTopUpAmountString}
             label={t`Max auto top-up amount`}
-            symbol={nativeToken.symbol}
+            symbol={wrappedToken.symbol}
             placeholder="0.0000"
             inputTooltip={
               maxAutoTopUpAmount?.gt(0) &&
-              nativeTokenData &&
-              formatUsd(convertToUsd(maxAutoTopUpAmount, nativeToken.decimals, nativeTokenData.prices?.minPrice))
+              wrappedTokenData &&
+              formatUsd(convertToUsd(maxAutoTopUpAmount, nativeToken.decimals, wrappedTokenData.prices?.minPrice))
             }
             description={t`This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee.`}
           />
