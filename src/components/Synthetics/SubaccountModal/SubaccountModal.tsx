@@ -33,6 +33,7 @@ import {
   useTokenBalances,
   useTokensAllowanceData,
   useTokensDataRequest,
+  getTokenData,
 } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import copyIcon from "img/ic_copy_20.svg";
@@ -44,6 +45,8 @@ import { formatTokenAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
+import { formatUsd } from "lib/numbers";
+import { convertToUsd } from "domain/synthetics/tokens";
 import { ChangeEvent, ReactNode, memo, useCallback, useEffect, useMemo, useState, forwardRef, useRef } from "react";
 import { useCopyToClipboard, usePrevious } from "react-use";
 import { SubaccountNotification } from "../StatusNotification/SubaccountNotification";
@@ -76,7 +79,9 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
   const mainBalances = useTokenBalances(chainId, account);
   const subBalances = useTokenBalances(chainId, subaccountAddress ?? undefined);
   const wrappedToken = getWrappedToken(chainId);
+  const wrappedTokenData = getTokenData(tokensData, wrappedToken.address);
   const nativeToken = getNativeToken(chainId);
+  const nativeTokenData = getTokenData(tokensData, nativeToken.address);
   const mainAccNativeTokenBalance = getByKey(mainBalances.balancesData, nativeToken.address);
   const mainAccWrappedTokenBalance = getByKey(mainBalances.balancesData, wrappedToken.address);
   const subAccNativeTokenBalance = getByKey(subBalances.balancesData, nativeToken.address);
@@ -675,6 +680,11 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             label={isSubaccountActive ? t`Top-up` : t`Initial top-up`}
             symbol={nativeToken.symbol}
             placeholder="0.0000"
+            inputTooltip={
+              topUp?.gt(0) &&
+              nativeTokenData &&
+              formatUsd(convertToUsd(topUp, nativeToken.decimals, nativeTokenData.prices?.minPrice))
+            }
             description={t`This amount of ${nativeToken.symbol} will be sent from your Main Account to your Subaccount to pay for transaction fees.`}
           />
           <InputRow
@@ -684,6 +694,11 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             label={t`Сonvert ${nativeToken.symbol} to ${wrappedToken.symbol}`}
             symbol={wrappedToken.symbol}
             placeholder="0.0000"
+            inputTooltip={
+              wntForAutoTopUps?.gt(0) &&
+              wrappedTokenData &&
+              formatUsd(convertToUsd(wntForAutoTopUps, wrappedToken.decimals, wrappedTokenData.prices?.minPrice))
+            }
             description={t`Convert this amount of ${nativeToken.symbol} to ${wrappedToken.symbol} in your Main Account to allow for auto top-ups, as only ${wrappedToken.symbol} can be automatically transferred to your Subaccount. The ${wrappedToken.symbol} balance of your main account is shown above.`}
           />
           <InputRow
@@ -692,6 +707,11 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             label={t`Max auto top-up amount`}
             symbol={nativeToken.symbol}
             placeholder="0.0000"
+            inputTooltip={
+              maxAutoTopUpAmount?.gt(0) &&
+              nativeTokenData &&
+              formatUsd(convertToUsd(maxAutoTopUpAmount, nativeToken.decimals, nativeTokenData.prices?.minPrice))
+            }
             description={t`This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee.`}
           />
         </div>
@@ -720,10 +740,23 @@ interface InputRowProps {
   description: ReactNode;
   placeholder: string;
   negativeSign?: boolean;
+  inputTooltip?: ReactNode;
 }
 
 const InputRowBase = forwardRef<HTMLInputElement, InputRowProps>(
-  ({ value, setValue, label, symbol = "", description, placeholder, negativeSign = false }: InputRowProps, ref) => {
+  (
+    {
+      value,
+      setValue,
+      label,
+      symbol = "",
+      description,
+      placeholder,
+      negativeSign = false,
+      inputTooltip,
+    }: InputRowProps,
+    ref
+  ) => {
     const renderTooltipContent = useCallback(() => description, [description]);
 
     return (
@@ -736,6 +769,7 @@ const InputRowBase = forwardRef<HTMLInputElement, InputRowProps>(
             ref={ref}
             negativeSign={negativeSign}
             placeholder={placeholder}
+            tooltip={inputTooltip}
             value={value}
             setValue={setValue}
             symbol={symbol}
@@ -754,10 +788,11 @@ interface InputProp {
   symbol: string;
   placeholder: string;
   negativeSign: boolean;
+  tooltip?: ReactNode;
 }
 
 const InputBase = forwardRef<HTMLInputElement, InputProp>(
-  ({ value, setValue, symbol, placeholder, negativeSign }, ref) => {
+  ({ value, setValue, symbol, placeholder, negativeSign, tooltip }, ref) => {
     const onChange = useCallback(
       (e: ChangeEvent<HTMLInputElement>) => {
         setValue(e.target.value);
@@ -775,6 +810,11 @@ const InputBase = forwardRef<HTMLInputElement, InputProp>(
             <span>{symbol}</span>
           </label>
         </div>
+        {tooltip && (
+          <div className={cx("SubaccountModal-field-info", "Tooltip-popup", "z-index-1001", "right-top")}>
+            {tooltip}
+          </div>
+        )}
       </div>
     );
   }
