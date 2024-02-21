@@ -58,6 +58,7 @@ import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
+  BN_ZERO,
   bigNumberify,
   expandDecimals,
   formatAmount,
@@ -623,12 +624,14 @@ function VesterWithdrawModal(props) {
 }
 
 function AffiliateVesterWithdrawModal(props) {
-  const { isVisible, setIsVisible, chainId, title, signer, vesterAddress, setPendingTxns } = props;
+  const { isVisible, setIsVisible, chainId, signer, setPendingTxns } = props;
   const [isWithdrawing, setIsWithdrawing] = useState(false);
+
+  const affiliateVesterAddress = getContract(chainId, "AffiliateVester");
 
   const onClickPrimary = () => {
     setIsWithdrawing(true);
-    const contract = new ethers.Contract(vesterAddress, Vester.abi, signer);
+    const contract = new ethers.Contract(affiliateVesterAddress, Vester.abi, signer);
 
     callContract(chainId, contract, "withdraw", [], {
       sentMsg: t`Withdraw submitted.`,
@@ -646,7 +649,7 @@ function AffiliateVesterWithdrawModal(props) {
 
   return (
     <div className="StakeModal">
-      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
+      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Withdraw from Affiliate Vault`}>
         <Trans>
           <div>
             This will withdraw all esGMX tokens as well as pause vesting.
@@ -1006,6 +1009,74 @@ function ClaimModal(props) {
   );
 }
 
+function AffiliateClaimModal(props) {
+  const { isVisible, setIsVisible, signer, chainId, setPendingTxns, totalVesterRewards } = props;
+  const [isClaiming, setIsClaiming] = useState(false);
+
+  const affiliateVesterAddress = getContract(chainId, "AffiliateVester");
+
+  const [shouldStakeGmx, setShouldStakeGmx] = useLocalStorageSerializeKey(
+    [chainId, "StakeV2-affiliate-vault-stake-gmx"],
+    true
+  );
+
+  const isPrimaryEnabled = () => {
+    if (totalVesterRewards.isZero()) {
+      return false;
+    }
+    return !isClaiming;
+  };
+
+  const getPrimaryText = () => {
+    if (isClaiming) {
+      return t`Claiming...`;
+    }
+    return t`Claim`;
+  };
+
+  const onClickPrimary = () => {
+    setIsClaiming(true);
+
+    const affiliateVesterContract = new ethers.Contract(affiliateVesterAddress, Vester.abi, signer);
+    callContract(chainId, affiliateVesterContract, "claim", {
+      sentMsg: t`Claim submitted.`,
+      failMsg: t`Claim failed.`,
+      successMsg: t`Claim completed!`,
+      setPendingTxns,
+    })
+      .then(() => {
+        setIsVisible(false);
+      })
+      .finally(() => {
+        setIsClaiming(false);
+      });
+  };
+
+  return (
+    <div className="StakeModal">
+      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Claiming and Staking Affiliate Vault Rewards`}>
+        <div className="CompoundModal-menu">
+          <div>
+            <Checkbox isChecked={true} disabled={true}>
+              <Trans>Claim {formatAmount(totalVesterRewards, 18, 2, true)} GMX</Trans>
+            </Checkbox>
+          </div>
+          <div>
+            <Checkbox isChecked={shouldStakeGmx} setIsChecked={setShouldStakeGmx}>
+              <Trans>Stake GMX</Trans>
+            </Checkbox>
+          </div>
+        </div>
+        <div className="Exchange-swap-button-container">
+          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+            {getPrimaryText()}
+          </Button>
+        </div>
+      </Modal>
+    </div>
+  );
+}
+
 export default function StakeV2({ setPendingTxns }) {
   const { active, signer, account } = useWallet();
   const { chainId } = useChainId();
@@ -1052,6 +1123,7 @@ export default function StakeV2({ setPendingTxns }) {
 
   const [isCompoundModalVisible, setIsCompoundModalVisible] = useState(false);
   const [isClaimModalVisible, setIsClaimModalVisible] = useState(false);
+  const [isAffiliateClaimModalVisible, setIsAffiliateClaimModalVisible] = useState(false);
 
   const rewardRouterAddress = getContract(chainId, "RewardRouter");
   const rewardReaderAddress = getContract(chainId, "RewardReader");
@@ -1219,8 +1291,6 @@ export default function StakeV2({ setPendingTxns }) {
   const depositBalanceData = getDepositBalanceData(depositBalances);
   const stakingData = getStakingData(stakingInfo);
   const vestingData = getVestingData(vestingInfo);
-
-  // console.log({ vestingData });
 
   const userTotalGmInfo = useMemo(() => {
     if (!active) return;
@@ -1457,11 +1527,10 @@ export default function StakeV2({ setPendingTxns }) {
     }
 
     setIsAffiliateVesterWithdrawModalVisible(true);
-    setVesterWithdrawTitle(t`Withdraw from Affiliate Vault`);
   }
 
   function showAffiliateVesterClaimModal() {
-    //
+    setIsAffiliateClaimModalVisible(true);
   }
 
   const recommendStakeGmx = useRecommendStakeGmxAmount(
@@ -1651,9 +1720,7 @@ export default function StakeV2({ setPendingTxns }) {
       <AffiliateVesterWithdrawModal
         isVisible={isAffiliateVesterWithdrawModalVisible}
         setIsVisible={setIsAffiliateVesterWithdrawModalVisible}
-        vesterAddress={affiliateVesterAddress}
         chainId={chainId}
-        title={vesterWithdrawTitle}
         signer={signer}
         setPendingTxns={setPendingTxns}
       />
@@ -1684,6 +1751,17 @@ export default function StakeV2({ setPendingTxns }) {
         nativeTokenSymbol={nativeTokenSymbol}
         signer={signer}
         chainId={chainId}
+      />
+      <AffiliateClaimModal
+        active={active}
+        account={account}
+        signer={signer}
+        chainId={chainId}
+        setPendingTxns={setPendingTxns}
+        isVisible={isAffiliateClaimModalVisible}
+        setIsVisible={setIsAffiliateClaimModalVisible}
+        rewardRouterAddress={rewardRouterAddress}
+        totalVesterRewards={vestingData?.affiliateVesterClaimable ?? BN_ZERO}
       />
 
       <PageTitle
