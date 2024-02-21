@@ -197,7 +197,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     setDisplayValue: setWntForAutoTopUpsString,
     setValue: setWntForAutoTopUps,
     value: wntForAutoTopUps,
-  } = useBigNumberInput(null, wrappedToken.decimals, 4);
+  } = useBigNumberInput(null, nativeToken.decimals, 4);
   const {
     displayValue: maxAllowedActionsString,
     setDisplayValue: setMaxAllowedActionsString,
@@ -692,12 +692,12 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             value={wntForAutoTopUpsString}
             setValue={setWntForAutoTopUpsString}
             label={t`Сonvert ${nativeToken.symbol} to ${wrappedToken.symbol}`}
-            symbol={wrappedToken.symbol}
+            symbol={nativeToken.symbol}
             placeholder="0.0000"
             inputTooltip={
               wntForAutoTopUps?.gt(0) &&
-              wrappedTokenData &&
-              formatUsd(convertToUsd(wntForAutoTopUps, wrappedToken.decimals, wrappedTokenData.prices?.minPrice))
+              nativeTokenData &&
+              formatUsd(convertToUsd(wntForAutoTopUps, nativeToken.decimals, nativeTokenData.prices?.minPrice))
             }
             description={t`Convert this amount of ${nativeToken.symbol} to ${wrappedToken.symbol} in your Main Account to allow for auto top-ups, as only ${wrappedToken.symbol} can be automatically transferred to your Subaccount. The ${wrappedToken.symbol} balance of your main account is shown above.`}
           />
