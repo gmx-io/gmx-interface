@@ -1028,7 +1028,7 @@ export function getVestingData(vestingInfo) {
     return;
   }
 
-  const keys = ["gmxVester", "glpVester"];
+  const keys = ["gmxVester", "glpVester", "affiliateVester"];
   const data = {};
   const propsLength = 7;
 
