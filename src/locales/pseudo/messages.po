@@ -820,6 +820,7 @@ msgstr ""
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claim"
 msgstr ""
 
@@ -850,6 +851,7 @@ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claim completed!"
 msgstr ""
 
@@ -868,6 +870,7 @@ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claim failed."
 msgstr ""
 
@@ -880,7 +883,12 @@ msgid "Claim submitted! <0>View status.</0>"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claim submitted."
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Claim {0} GMX"
 msgstr ""
 
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -911,6 +919,10 @@ msgstr ""
 msgid "Claiming Price Impact Rebate..."
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
+msgid "Claiming and Staking Affiliate Vault Rewards"
+msgstr ""
+
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Claiming failed"
@@ -920,6 +932,7 @@ msgstr ""
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claiming..."
 msgstr ""
@@ -4511,6 +4524,7 @@ msgstr ""
 msgid "Stake <0>GMX</0> and buy <1>GM</1> or <2>GLP</2> to earn rewards."
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Stake GMX"
 msgstr ""
