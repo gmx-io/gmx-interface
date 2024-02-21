@@ -25,6 +25,8 @@ import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import "./OrderItem.scss";
 import { getByKey } from "lib/objects";
 import { useMemo } from "react";
+import { useChainId } from "lib/chains";
+import { getWrappedToken } from "config/tokens";
 
 type Props = {
   order: OrderInfo;
@@ -45,13 +47,17 @@ export function OrderItem(p: Props) {
     initialCollateralDeltaAmount,
     initialCollateralToken,
     targetCollateralToken,
+    shouldUnwrapNativeToken,
     orderType,
     minOutputAmount,
     key,
     errors,
     errorLevel,
   } = p.order;
+  const { chainId } = useChainId();
   const { showDebugValues } = useSettings();
+  const wrappedToken = getWrappedToken(chainId);
+
   const isCollateralSwap = initialCollateralToken.address !== targetCollateralToken.address;
 
   function getCollateralText() {
@@ -70,7 +76,7 @@ export function OrderItem(p: Props) {
     const tokenAmountText = formatTokenAmount(
       targetCollateralAmount,
       targetCollateralToken?.decimals,
-      targetCollateralToken?.symbol
+      targetCollateralToken.isNative ? wrappedToken.symbol : targetCollateralToken.symbol
     );
 
     return `${tokenAmountText}`;
@@ -186,9 +192,11 @@ export function OrderItem(p: Props) {
                     {formatTokenAmount(
                       initialCollateralDeltaAmount,
                       initialCollateralToken.decimals,
-                      initialCollateralToken.symbol
+                      initialCollateralToken[shouldUnwrapNativeToken ? "baseSymbol" : "symbol"]
                     )}{" "}
-                    will be swapped to {targetCollateralToken.symbol} on order execution.
+                    will be swapped to{" "}
+                    {targetCollateralToken.isNative ? wrappedToken.symbol : targetCollateralToken.symbol} on order
+                    execution.
                   </Trans>
                 </div>
               )}
