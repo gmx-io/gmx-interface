@@ -2419,6 +2419,55 @@ export default function StakeV2({ setPendingTxns }) {
                 </div>
               </div>
             </div>
+            <div className="App-card StakeV2-gmx-card">
+              <div className="App-card-title">
+                <div className="inline-items-center">
+                  <img className="mr-xs" alt="GLP" src={icons.gmx} height={20} />
+                  <Trans>Affiliate Vault</Trans>
+                </div>
+              </div>
+              <div className="App-card-divider"></div>
+              <div className="App-card-content">
+                <div className="App-card-row">
+                  <div className="label">
+                    <Trans>Vesting Status</Trans>
+                  </div>
+                  <div>{formatAmount(processedData.glpBalance, 18, 2, true)} GLP</div>
+                </div>
+                <div className="App-card-row">
+                  <div className="label">
+                    <Trans>Claimable</Trans>
+                  </div>
+                  <div>
+                    {formatKeyAmount(vestingData, "glpVesterPairAmount", 18, 2, true)} /{" "}
+                    {formatAmount(processedData.glpBalance, 18, 2, true)}
+                  </div>
+                </div>
+                <div className="App-card-divider"></div>
+                <div className="App-card-buttons m-0">
+                  {!active && (
+                    <Button variant="secondary" onClick={openConnectModal}>
+                      <Trans>Connect Wallet</Trans>
+                    </Button>
+                  )}
+                  {active && (
+                    <Button variant="secondary" onClick={() => showGlpVesterDepositModal()}>
+                      <Trans>Deposit</Trans>
+                    </Button>
+                  )}
+                  {active && (
+                    <Button variant="secondary" onClick={() => showGlpVesterWithdrawModal()}>
+                      <Trans>Withdraw</Trans>
+                    </Button>
+                  )}
+                  {active && (
+                    <Button variant="secondary" onClick={() => showGlpVesterWithdrawModal()}>
+                      <Trans>Claim</Trans>
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
