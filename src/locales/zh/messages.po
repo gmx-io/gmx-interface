@@ -446,6 +446,7 @@ msgstr "核准已被取消"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Approve GMX"
 msgstr "核准GMX"
 
@@ -461,6 +462,7 @@ msgstr "核准"
 msgid "Approve {stakingTokenSymbol}"
 msgstr "核准"
 
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Approving GMX..."
 msgstr "核准GMX中"

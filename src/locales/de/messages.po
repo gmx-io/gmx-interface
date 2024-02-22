@@ -446,6 +446,7 @@ msgstr "Genehmigung wurde aufgehoben"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Approve GMX"
 msgstr "GMX genehmigen"
 
@@ -461,6 +462,7 @@ msgstr "Genehmige {0}"
 msgid "Approve {stakingTokenSymbol}"
 msgstr "Genehmige {stakingTokenSymbol}"
 
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Approving GMX..."
 msgstr "GMX wird genehmigt..."

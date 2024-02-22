@@ -446,6 +446,7 @@ msgstr "承認はキャンセルされました"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Approve GMX"
 msgstr "GMXを承認する"
 
@@ -461,6 +462,7 @@ msgstr "{0}を承認する"
 msgid "Approve {stakingTokenSymbol}"
 msgstr "{stakingTokenSymbol}を承認する"
 
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Approving GMX..."
 msgstr "GMXを承認中"

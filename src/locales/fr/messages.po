@@ -446,6 +446,7 @@ msgstr "L'approbation a été annulée"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Approve GMX"
 msgstr "Approuver GMX"
 
@@ -461,6 +462,7 @@ msgstr "Approuver {0}"
 msgid "Approve {stakingTokenSymbol}"
 msgstr "Approuver {stakingTokenSymbol}"
 
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Approving GMX..."
 msgstr "Approbation de GMX..."

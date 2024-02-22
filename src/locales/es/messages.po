@@ -446,6 +446,7 @@ msgstr "Aprobación cancelada"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Approve GMX"
 msgstr "Aprobar GMX"
 
@@ -461,6 +462,7 @@ msgstr "Aprobar {0}"
 msgid "Approve {stakingTokenSymbol}"
 msgstr "Aprobar {stakingTokenSymbol}"
 
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Approving GMX..."
 msgstr "Aprobando GMX..."

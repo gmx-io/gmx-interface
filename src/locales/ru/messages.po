@@ -446,6 +446,7 @@ msgstr "Одобрение было отменено"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Approve GMX"
 msgstr "Одобрить GMX"
 
@@ -461,6 +462,7 @@ msgstr "Одобрить {0}"
 msgid "Approve {stakingTokenSymbol}"
 msgstr "Одобрить {stakingTokenSymbol}"
 
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Approving GMX..."
 msgstr "Одобрение GMX..."
