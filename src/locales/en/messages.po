@@ -2284,6 +2284,10 @@ msgstr "High USDG Slippage, Long Anyway"
 msgid "I am aware of the trigger orders"
 msgstr "I am aware of the trigger orders"
 
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+msgid "I do not want to transfer the Affiliate esGMX tokens"
+msgstr "I do not want to transfer the Affiliate esGMX tokens"
+
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "If you have an existing position, the position will be closed at a reference price of {0}, not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
 msgstr "If you have an existing position, the position will be closed at a reference price of {0}, not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
@@ -4319,6 +4323,10 @@ msgid "Selling..."
 msgstr "Selling..."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+msgid "Sender has withdrawn all tokens from Affiliate Vesting Vault"
+msgstr "Sender has withdrawn all tokens from Affiliate Vesting Vault"
+
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Sender has withdrawn all tokens from GLP Vesting Vault"
 msgstr "Sender has withdrawn all tokens from GLP Vesting Vault"
 
@@ -6040,6 +6048,10 @@ msgstr "You have an existing position with {0} as collateral. This Order will no
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "You have an existing position with {0} as collateral. This action will not apply for that position."
 msgstr "You have an existing position with {0} as collateral. This action will not apply for that position."
+
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
+msgstr "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "You have multiple existing Increase {longOrShortText} {0} limit orders"

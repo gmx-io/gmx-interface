@@ -127,9 +127,9 @@ export default function BeginAccountTransfer(props) {
 
   const needApproval = gmxAllowance && gmxStaked && gmxStaked.gt(gmxAllowance);
 
-  const hasVestedGmx = gmxVesterBalance && gmxVesterBalance.gt(0);
-  const hasVestedGlp = glpVesterBalance && glpVesterBalance.gt(0);
-  const hasVestedAffiliate = affiliateVesterBalance && affiliateVesterBalance?.add(1).gt(0);
+  const hasVestedGmx = gmxVesterBalance?.gt(0);
+  const hasVestedGlp = glpVesterBalance?.gt(0);
+  const hasVestedAffiliate = affiliateVesterBalance?.gt(0);
   const hasStakedGmx =
     (cumulativeGmxRewards && cumulativeGmxRewards.gt(0)) ||
     (transferredCumulativeGmxRewards && transferredCumulativeGmxRewards.gt(0));
