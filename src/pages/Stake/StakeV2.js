@@ -77,6 +77,7 @@ import UserIncentiveDistributionList from "components/Synthetics/UserIncentiveDi
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { useSequentialTransactions } from "lib/contracts/useSequentialTransactions";
 import MultiTransactionNotification from "components/Synthetics/StatusNotification/MultiTransactionNotification";
+import { usePrevious } from "lib/usePrevious";
 
 const { AddressZero } = ethers.constants;
 
@@ -1012,21 +1013,37 @@ function ClaimModal(props) {
 }
 
 function AffiliateClaimModal(props) {
-  const { isVisible, setIsVisible, signer, chainId, totalVesterRewards } = props;
+  const { isVisible, setIsVisible, signer, active, chainId, account, totalVesterRewards } = props;
+  const [isApproving, setIsApproving] = useState(false);
+
+  const gmxAddress = getContract(chainId, "GMX");
+  const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
+  const rewardRouterAddress = getContract(chainId, "RewardRouter");
+
+  const gmxVestedAmount = usePrevious(totalVesterRewards);
+  const amount = parseValue(gmxVestedAmount, 18);
+
   const [isClaiming, setIsClaiming] = useState(false);
-
   const { executeTransactions } = useSequentialTransactions();
-
-  const affiliateVesterAddress = getContract(chainId, "AffiliateVester");
 
   const [shouldStakeGmx, setShouldStakeGmx] = useLocalStorageSerializeKey(
     [chainId, "StakeV2-affiliate-vault-stake-gmx"],
     true
   );
 
+  const affiliateVesterAddress = getContract(chainId, "AffiliateVester");
   const transactionKeys = useMemo(() => {
     return ["claimGmx"].concat(shouldStakeGmx ? ["stakeGmx"] : []);
   }, [shouldStakeGmx]);
+
+  const { data: gmxTokenAllowence } = useSWR(
+    active && gmxAddress && [active, chainId, gmxAddress, "allowance", account, stakedGmxTrackerAddress],
+    {
+      fetcher: contractFetcher(signer, Token),
+    }
+  );
+
+  const needApproval = stakedGmxTrackerAddress !== AddressZero && gmxTokenAllowence && amount?.gt(gmxTokenAllowence);
 
   const statusMessages = useMemo(
     () => ({
@@ -1048,12 +1065,21 @@ function AffiliateClaimModal(props) {
     if (totalVesterRewards.isZero()) {
       return false;
     }
+    if (isApproving) {
+      return false;
+    }
     return !isClaiming;
   };
 
   const getPrimaryText = () => {
     if (isClaiming) {
       return t`Claiming...`;
+    }
+    if (isApproving) {
+      return t`Approving GMX...`;
+    }
+    if (needApproval) {
+      return t`Approve GMX`;
     }
     return t`Claim`;
   };
@@ -1079,8 +1105,20 @@ function AffiliateClaimModal(props) {
     setIsClaiming(true);
 
     const affiliateVesterContract = new ethers.Contract(affiliateVesterAddress, Vester.abi, signer);
+    const rewardRouterContract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, signer);
 
-    const transactions = [
+    if (shouldStakeGmx && needApproval) {
+      approveTokens({
+        setIsApproving,
+        signer,
+        tokenAddress: gmxAddress,
+        spender: stakedGmxTrackerAddress,
+        chainId,
+      });
+      return;
+    }
+
+    const transactionDetails = [
       {
         key: "claimGmx",
         chainId,
@@ -1095,12 +1133,12 @@ function AffiliateClaimModal(props) {
     ];
 
     if (shouldStakeGmx) {
-      transactions.push({
+      transactionDetails.push({
         key: "stakeGmx",
         chainId,
-        contract: affiliateVesterContract,
-        method: "claim",
-        params: [],
+        contract: rewardRouterContract,
+        method: "stakeGmx",
+        params: [amount],
         opts: {
           hideSentMsg: true,
           hideSuccessMsg: true,
@@ -1108,7 +1146,7 @@ function AffiliateClaimModal(props) {
       });
     }
 
-    executeTransactions(transactions, () => {
+    executeTransactions(transactionDetails, () => {
       setIsVisible(false);
       setIsClaiming(false);
     });
