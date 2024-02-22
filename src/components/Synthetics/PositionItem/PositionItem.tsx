@@ -3,7 +3,12 @@ import cx from "classnames";
 import PositionDropdown from "components/Exchange/PositionDropdown";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import { PositionOrderInfo, isDecreaseOrderType, isIncreaseOrderType } from "domain/synthetics/orders";
+import {
+  PositionOrderInfo,
+  isDecreaseOrderType,
+  isIncreaseOrderType,
+  sortPositionOrders,
+} from "domain/synthetics/orders";
 import {
   PositionInfo,
   formatEstimatedLiquidationTime,
@@ -30,7 +35,7 @@ import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets
 import { TradeMode, TradeType, getTriggerThresholdType } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
 import { getPositiveOrNegativeClass } from "lib/utils";
-import { Fragment } from "react";
+import { Fragment, useMemo } from "react";
 import { FaAngleRight } from "react-icons/fa";
 import { useMedia } from "react-use";
 import "./PositionItem.scss";
@@ -67,6 +72,10 @@ export function PositionItem(p: Props) {
     currentMarketAddress === p.position.marketAddress &&
     currentCollateralAddress === p.position.collateralTokenAddress &&
     isCurrentTradeTypeLong === p.position.isLong;
+
+  const sortedPositionOrders = useMemo(() => {
+    return sortPositionOrders(positionOrders);
+  }, [positionOrders]);
 
   function renderNetValue() {
     return (
@@ -342,10 +351,10 @@ export function PositionItem(p: Props) {
   }
 
   function renderPositionOrders(isSmall = false) {
-    if (positionOrders.length === 0) return null;
+    if (sortedPositionOrders.length === 0) return null;
 
     if (isSmall) {
-      return positionOrders.map((order) => {
+      return sortedPositionOrders.map((order) => {
         if (order.errorLevel) {
           return (
             <div key={order.key} className="Position-list-order">
@@ -381,8 +390,8 @@ export function PositionItem(p: Props) {
       });
     }
 
-    const ordersErrorList = positionOrders.filter((order) => order.errorLevel === "error");
-    const ordersWarningsList = positionOrders.filter((order) => order.errorLevel === "warning");
+    const ordersErrorList = sortedPositionOrders.filter((order) => order.errorLevel === "error");
+    const ordersWarningsList = sortedPositionOrders.filter((order) => order.errorLevel === "warning");
     const hasErrors = ordersErrorList.length + ordersWarningsList.length > 0;
 
     return (
@@ -399,7 +408,7 @@ export function PositionItem(p: Props) {
                   "level-warning": !ordersErrorList.length && ordersWarningsList.length > 0,
                 })}
               >
-                ({positionOrders.length})
+                ({sortedPositionOrders.length})
               </span>
             </Trans>
           }
@@ -416,7 +425,7 @@ export function PositionItem(p: Props) {
               <strong>
                 <Trans>Active Orders</Trans>
               </strong>
-              {positionOrders.map((order) => {
+              {sortedPositionOrders.map((order) => {
                 const errors = order.errors;
                 return (
                   <div
@@ -718,7 +727,7 @@ export function PositionItem(p: Props) {
               <Trans>Orders</Trans>
             </div>
             <div>
-              {!p.positionOrders?.length && "None"}
+              {!sortedPositionOrders?.length && "None"}
               {renderPositionOrders(true)}
             </div>
           </div>

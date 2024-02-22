@@ -1,7 +1,12 @@
 import cx from "classnames";
+import { ChangeEvent, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
+
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { roundToTwoDecimals } from "lib/numbers";
-import { ChangeEvent, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
+
+import type { TooltipPosition } from "components/Tooltip/Tooltip";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
 import "./PercentageInput.scss";
 
 export const NUMBER_WITH_TWO_DECIMALS = /^\d+(\.\d{0,2})?$/; // 0.00 ~ 99.99
@@ -21,6 +26,8 @@ type Props = {
   highValueWarningText?: ReactNode;
   negativeSign?: boolean;
   highValueCheckStrategy?: "gte" | "gt";
+  value?: number;
+  tooltipPosition?: TooltipPosition;
 };
 
 const DEFAULT_SUGGESTIONS = [0.3, 0.5, 1, 1.5];
@@ -28,6 +35,7 @@ const DEFAULT_SUGGESTIONS = [0.3, 0.5, 1, 1.5];
 export default function PercentageInput({
   onChange,
   defaultValue,
+  value,
   maxValue = 99 * 100,
   highValue,
   lowValue,
@@ -36,18 +44,19 @@ export default function PercentageInput({
   lowValueWarningText,
   negativeSign,
   highValueCheckStrategy: checkStrategy = "gte",
+  tooltipPosition,
 }: Props) {
-  const [inputValue, setInputValue] = useState<string>(() => getValueText(defaultValue));
   const [isPanelVisible, setIsPanelVisible] = useState<boolean>(false);
-
-  useEffect(() => {
-    setInputValue(getValueText(defaultValue));
-  }, [defaultValue]);
+  const [inputValue, setInputValue] = useState(() => (value === undefined ? "" : getValueText(value)));
+  const inputRef = useRef<HTMLInputElement>(null);
+  const handleSignClick = useCallback(() => {
+    inputRef.current?.focus();
+  }, []);
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
     const { value } = event.target;
     if (value === "") {
-      setInputValue(value);
+      setInputValue("");
       onChange(defaultValue);
       return;
     }
@@ -69,6 +78,26 @@ export default function PercentageInput({
     }
   }
 
+  useEffect(() => {
+    if (value === undefined) {
+      if (inputValue !== "") {
+        setInputValue("");
+      }
+
+      return;
+    }
+
+    if (
+      // When the value is changed from outside we want to keep input empty
+      // if the value is the same as the default value as it means the user
+      // just cleared the input
+      Number.parseFloat(inputValue) !== Number.parseFloat(getValueText(value)) &&
+      !(getValueText(value) === getValueText(defaultValue) && inputValue === "")
+    ) {
+      setInputValue(getValueText(value));
+    }
+  }, [defaultValue, inputValue, value]);
+
   const error = useMemo(() => {
     const parsedValue = Math.round(Number.parseFloat(inputValue) * 100);
 
@@ -88,36 +117,36 @@ export default function PercentageInput({
 
   const shouldShowPanel = isPanelVisible && Boolean(suggestions.length);
 
-  const inputRef = useRef<HTMLInputElement>(null);
-  const handleSignClick = useCallback(() => {
-    inputRef.current?.focus();
-  }, []);
-
   return (
     <div className="Percentage-input-wrapper">
-      <div className={cx("Percentage-input", { "input-error": Boolean(error) })}>
-        {negativeSign && (
-          <span className="Percentage-input-negative-sign" onClick={handleSignClick}>
-            -
-          </span>
-        )}
-        <input
-          id={id}
-          ref={inputRef}
-          onFocus={() => setIsPanelVisible(true)}
-          onBlur={() => setIsPanelVisible(false)}
-          value={inputValue ? inputValue : ""}
-          placeholder={inputValue || getValueText(defaultValue)}
-          autoComplete="off"
-          onChange={handleChange}
-        />
-        <label htmlFor={id}>
-          <span>%</span>
-        </label>
-      </div>
-      {error && !shouldShowPanel && (
-        <div className={cx("Percentage-input-error", "Tooltip-popup", "z-index-1001", "right-bottom")}>{error}</div>
-      )}
+      <TooltipWithPortal
+        disableHandleStyle
+        disabled={!error || shouldShowPanel}
+        renderContent={() => <div>{error}</div>}
+        position={tooltipPosition}
+      >
+        <div className={cx("Percentage-input", { "input-error": Boolean(error) })}>
+          {negativeSign && (
+            <span className="Percentage-input-negative-sign" onClick={handleSignClick}>
+              -
+            </span>
+          )}
+          <input
+            id={id}
+            ref={inputRef}
+            onFocus={() => setIsPanelVisible(true)}
+            onBlur={() => setIsPanelVisible(false)}
+            value={inputValue}
+            placeholder={getValueText(defaultValue)}
+            autoComplete="off"
+            onChange={handleChange}
+          />
+          <label htmlFor={id}>
+            <span>%</span>
+          </label>
+        </div>
+      </TooltipWithPortal>
+
       {shouldShowPanel && (
         <ul className="Percentage-list  ">
           {suggestions.map((slippage) => (

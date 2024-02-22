@@ -6,13 +6,13 @@ import Checkbox from "components/Checkbox/Checkbox";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import Modal from "components/Modal/Modal";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import { getContract } from "config/contracts";
 import {
   BASIS_POINTS_DIVISOR,
-  DEFAULT_SLIPPAGE_AMOUNT,
-  EXCESSIVE_SLIPPAGE_AMOUNT,
+  COLLATERAL_SPREAD_SHOW_AFTER_INITIAL_ZERO_THRESHOLD,
   HIGH_SPREAD_THRESHOLD,
 } from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
@@ -26,7 +26,6 @@ import {
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
-import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import {
   DecreasePositionSwapType,
   OrderType,
@@ -68,9 +67,9 @@ import { useChainId } from "lib/chains";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import PercentageInput from "components/PercentageInput/PercentageInput";
+import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   useIsLastSubaccountAction,
   useSubaccount,
@@ -87,35 +86,34 @@ import {
   useTradeboxSwapAmounts,
   useTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+import useSLTPEntries from "domain/synthetics/orders/useSLTPEntries";
 import { AvailableMarketsOptions } from "domain/synthetics/trade/useAvailableMarketsOptions";
+import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { helperToast } from "lib/helperToast";
 import {
-  bigNumberify,
+  expandDecimals,
   formatAmount,
   formatDeltaUsd,
   formatPercentage,
   formatTokenAmount,
   formatTokenAmountWithUsd,
   formatUsd,
-  expandDecimals,
 } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import { getPlusOrMinusSymbol, getPositiveOrNegativeClass } from "lib/utils";
 import useWallet from "lib/wallets/useWallet";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { FaArrowRight } from "react-icons/fa";
+import { IoClose } from "react-icons/io5";
 import { useKey, useLatest } from "react-use";
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./ConfirmationBox.scss";
-import { FaArrowRight } from "react-icons/fa";
-import { IoClose } from "react-icons/io5";
 import SLTPEntries from "./SLTPEntries";
-import useSLTPEntries from "domain/synthetics/orders/useSLTPEntries";
-import { AlertInfo } from "components/AlertInfo/AlertInfo";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 
 export type Props = {
   isVisible: boolean;
@@ -131,7 +129,8 @@ export type Props = {
   error?: string;
   existingPosition?: PositionInfo;
   shouldDisableValidation: boolean;
-  setSelectedTriggerAcceptablePriceImapctBps: (value: BigNumber) => void;
+  selectedTriggerAcceptablePriceImpactBps?: BigNumber;
+  setSelectedTriggerAcceptablePriceImpactBps: (value: BigNumber) => void;
   onClose: () => void;
   onSubmitted: () => void;
   setPendingTxns: (txns: any) => void;
@@ -153,7 +152,8 @@ export function ConfirmationBox(p: Props) {
     existingPosition,
     shouldDisableValidation,
     marketsOptions,
-    setSelectedTriggerAcceptablePriceImapctBps,
+    selectedTriggerAcceptablePriceImpactBps,
+    setSelectedTriggerAcceptablePriceImpactBps,
     onClose,
     onSubmitted,
     setPendingTxns,
@@ -172,6 +172,10 @@ export function ConfirmationBox(p: Props) {
     tradeMode,
     tradeType,
   } = useTradeboxState();
+
+  const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
+    executionFee?.feeUsd
+  );
 
   const { markRatio, triggerRatio } = useTradeRatios({
     fromTokenAddress,
@@ -390,7 +394,14 @@ export function ConfirmationBox(p: Props) {
   const submitButtonState = useMemo(() => {
     if (priceImpactWarningState.validationError) {
       return {
-        text: "Price Impact not yet acknowledged",
+        text: t`Price Impact not yet acknowledged`,
+        disabled: true,
+      };
+    }
+
+    if (isHighFeeConsentError) {
+      return {
+        text: t`High Execution Fee not yet acknowledged`,
         disabled: true,
       };
     }
@@ -447,8 +458,8 @@ export function ConfirmationBox(p: Props) {
       disabled: false,
     };
   }, [
-    isLimit,
     priceImpactWarningState.validationError,
+    isHighFeeConsentError,
     isSubmitting,
     error,
     needPayTokenApproval,
@@ -456,6 +467,7 @@ export function ConfirmationBox(p: Props) {
     decreaseOrdersThatWillBeExecuted.length,
     isTriggerWarningAccepted,
     isMarket,
+    isLimit,
     fromToken?.assetSymbol,
     fromToken?.symbol,
     isSwap,
@@ -1023,14 +1035,6 @@ export function ConfirmationBox(p: Props) {
     }
   }
 
-  function renderLimitPriceWarning() {
-    return (
-      <AlertInfo compact type="info">
-        <Trans>Limit Order Price will vary based on Fees and Price Impact to guarantee the Min. Receive amount.</Trans>
-      </AlertInfo>
-    );
-  }
-
   const renderCollateralSpreadWarning = useCallback(() => {
     if (collateralSpreadInfo && collateralSpreadInfo.isHigh) {
       return (
@@ -1043,40 +1047,6 @@ export function ConfirmationBox(p: Props) {
       );
     }
   }, [collateralSpreadInfo]);
-
-  function renderAllowedSlippage(defaultSlippage, setSlippage) {
-    return (
-      <ExchangeInfoRow
-        label={
-          <TooltipWithPortal
-            handle={t`Allowed Slippage`}
-            position="left-top"
-            renderContent={() => {
-              return (
-                <div className="text-white">
-                  <Trans>
-                    You can edit the default Allowed Slippage in the settings menu on the top right of the page.
-                    <br />
-                    <br />
-                    Note that a low allowed slippage, e.g. less than{" "}
-                    {formatPercentage(bigNumberify(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}, may result in failed
-                    orders if prices are volatile.
-                  </Trans>
-                </div>
-              );
-            }}
-          />
-        }
-      >
-        <PercentageInput
-          onChange={setSlippage}
-          defaultValue={defaultSlippage}
-          highValue={EXCESSIVE_SLIPPAGE_AMOUNT}
-          highValueWarningText={t`Slippage is too high`}
-        />
-      </ExchangeInfoRow>
-    );
-  }
 
   function renderSLTP(type: "stopLoss" | "takeProfit") {
     const isStopLoss = type === "stopLoss";
@@ -1139,9 +1109,10 @@ export function ConfirmationBox(p: Props) {
   function renderAcceptablePriceImpactInput() {
     return (
       <AcceptablePriceImpactInputRow
-        defaultAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
-        fees={fees}
-        setSelectedAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImapctBps}
+        acceptablePriceImpactBps={selectedTriggerAcceptablePriceImpactBps}
+        recommendedAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
+        priceImpactFeeBps={fees?.positionPriceImpact?.bps}
+        setAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
       />
     );
   }
@@ -1151,15 +1122,6 @@ export function ConfirmationBox(p: Props) {
     return <HighPriceImpactWarning priceImpactWarinigState={priceImpactWarningState} />;
   }
 
-  function renderLeverage(from: BigNumber | undefined, to: BigNumber | undefined, emptyValue = false) {
-    return (
-      <ExchangeInfoRow
-        label={t`Leverage`}
-        value={emptyValue ? "-" : <ValueTransition from={formatLeverage(from)} to={formatLeverage(to) ?? "-"} />}
-      />
-    );
-  }
-
   const hasWarning =
     renderExistingLimitOrdersWarning() ||
     renderDifferentCollateralWarning() ||
@@ -1167,6 +1129,18 @@ export function ConfirmationBox(p: Props) {
     renderExistingTriggerErrors() ||
     renderExistingTriggerWarning() ||
     renderDifferentTokensWarning();
+
+  const [initialCollateralSpread, setInitialCollateralSpread] = useState<BigNumber | undefined>();
+
+  const collateralSpreadPercent = collateralSpreadInfo?.spread
+    ?.mul(BASIS_POINTS_DIVISOR)
+    ?.div(expandDecimals(1, USD_DECIMALS));
+
+  useEffect(() => {
+    if (collateralSpreadPercent && !initialCollateralSpread) {
+      setInitialCollateralSpread(collateralSpreadPercent);
+    }
+  }, [collateralSpreadPercent, initialCollateralSpread]);
 
   function renderIncreaseOrderSection() {
     if (!marketInfo || !fromToken || !collateralToken || !toToken) {
@@ -1185,9 +1159,11 @@ export function ConfirmationBox(p: Props) {
         ? applySlippageToPrice(allowedSlippage, increaseAmounts.acceptablePrice, true, isLong)
         : increaseAmounts?.acceptablePrice;
 
-    const collateralSpreadPercent = collateralSpreadInfo?.spread
-      ?.mul(BASIS_POINTS_DIVISOR)
-      ?.div(expandDecimals(1, USD_DECIMALS));
+    const isNearZeroFromStart =
+      initialCollateralSpread?.eq(0) &&
+      collateralSpreadPercent?.lt(COLLATERAL_SPREAD_SHOW_AFTER_INITIAL_ZERO_THRESHOLD);
+
+    const showCollateralSpread = isMarket && !isNearZeroFromStart;
 
     return (
       <>
@@ -1213,12 +1189,18 @@ export function ConfirmationBox(p: Props) {
           <div className="line-divider" />
 
           {isLimit && renderAvailableLiquidity()}
-          {isMarket && collateralSpreadPercent?.gt(0) && (
+          {showCollateralSpread && (
             <ExchangeInfoRow label={t`Collateral Spread`} isWarning={collateralSpreadInfo?.isHigh}>
               {formatPercentage(collateralSpreadPercent)}
             </ExchangeInfoRow>
           )}
-          {isMarket && renderAllowedSlippage(savedAllowedSlippage, setAllowedSlippage)}
+          {isMarket && (
+            <AllowedSlippageRow
+              defaultSlippage={savedAllowedSlippage}
+              allowedSlippage={allowedSlippage}
+              setSlippage={setAllowedSlippage}
+            />
+          )}
           {isLimit && increaseAmounts && renderAcceptablePriceImpactInput()}
 
           <div className="line-divider" />
@@ -1421,7 +1403,14 @@ export function ConfirmationBox(p: Props) {
               {formatAmount(swapSpreadInfo.spread.mul(100), USD_DECIMALS, 2, true)}%
             </ExchangeInfoRow>
           )}
-          {isMarket && renderAllowedSlippage(savedAllowedSlippage, setAllowedSlippage)}
+
+          {isMarket && (
+            <AllowedSlippageRow
+              defaultSlippage={savedAllowedSlippage}
+              allowedSlippage={allowedSlippage}
+              setSlippage={setAllowedSlippage}
+            />
+          )}
 
           <div className="line-divider" />
 
@@ -1653,17 +1642,18 @@ export function ConfirmationBox(p: Props) {
   }
 
   const hasCheckboxesSection = Boolean(
-    priceImpactWarningState.shouldShowWarning || (needPayTokenApproval && fromToken)
+    priceImpactWarningState.shouldShowWarning || (needPayTokenApproval && fromToken) || highExecutionFeeAcknowledgement
   );
 
   return (
     <div className="Confirmation-box">
-      <Modal isVisible={p.isVisible} setIsVisible={onClose} label={title} allowContentTouchMove>
+      <Modal isVisible={p.isVisible} setIsVisible={onClose} label={title}>
         {isSwap && renderSwapSection()}
         {isIncrease && renderIncreaseOrderSection()}
         {isTrigger && renderTriggerDecreaseSection()}
         {hasCheckboxesSection && <div className="line-divider" />}
         {renderHighPriceImpactWarning()}
+        {highExecutionFeeAcknowledgement}
 
         {needPayTokenApproval && fromToken && (
           <>
@@ -1688,5 +1678,22 @@ export function ConfirmationBox(p: Props) {
         </div>
       </Modal>
     </div>
+  );
+}
+
+function renderLeverage(from: BigNumber | undefined, to: BigNumber | undefined, emptyValue = false) {
+  return (
+    <ExchangeInfoRow
+      label={t`Leverage`}
+      value={emptyValue ? "-" : <ValueTransition from={formatLeverage(from)} to={formatLeverage(to) ?? "-"} />}
+    />
+  );
+}
+
+function renderLimitPriceWarning() {
+  return (
+    <AlertInfo compact type="info">
+      <Trans>Limit Order Price will vary based on Fees and Price Impact to guarantee the Min. Receive amount.</Trans>
+    </AlertInfo>
   );
 }

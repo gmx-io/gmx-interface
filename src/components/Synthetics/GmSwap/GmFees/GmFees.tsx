@@ -4,9 +4,14 @@ import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ExecutionFee, FeeItem } from "domain/synthetics/fees";
-import { formatDeltaUsd, formatTokenAmountWithUsd } from "lib/numbers";
+import { formatDeltaUsd, formatTokenAmountWithUsd, roundToTwoDecimals } from "lib/numbers";
 import "./GmFees.scss";
 import { getPositiveOrNegativeClass } from "lib/utils";
+import { useMemo } from "react";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { useExecutionFeeBufferBps } from "context/SyntheticsStateContext/hooks/settingsHooks";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 type Props = {
   totalFees?: FeeItem;
@@ -18,11 +23,46 @@ type Props = {
 };
 
 export function GmFees(p: Props) {
+  const executionFeeBufferBps = useExecutionFeeBufferBps();
   const totalFeesUsd = p.totalFees?.deltaUsd.sub(p.executionFee?.feeUsd || 0);
+
+  const maxExecutionFeeText = useMemo(() => {
+    if (executionFeeBufferBps !== undefined) {
+      const bps = executionFeeBufferBps;
+      return roundToTwoDecimals((bps / BASIS_POINTS_DIVISOR) * 100);
+    }
+  }, [executionFeeBufferBps]);
+
+  const label = useMemo(() => {
+    const text = <Trans>Fees and Price Impact</Trans>;
+    return (
+      <TooltipWithPortal
+        position="left-top"
+        handle={text}
+        renderContent={() => (
+          <>
+            {p.executionFee?.warning && (
+              <span className="text-white">
+                {p.executionFee?.warning} <br />
+                <br />
+              </span>
+            )}
+            <div className="text-white">
+              <Trans>
+                The Max Execution Fee is overestimated by {maxExecutionFeeText}%. Upon execution, the excess Execution
+                Fee is sent back to your account.
+              </Trans>
+              <ExternalLink href="https://docs.gmx.io/docs/trading/v2#execution-fee">Read more</ExternalLink>.
+            </div>
+          </>
+        )}
+      />
+    );
+  }, [maxExecutionFeeText, p.executionFee?.warning]);
 
   return (
     <ExchangeInfoRow
-      label={<Trans>Fees and Price Impact</Trans>}
+      label={label}
       value={
         <>
           {!p.totalFees?.deltaUsd && "-"}

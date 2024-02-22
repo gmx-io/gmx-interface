@@ -132,7 +132,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
                 <Trans>
                   The position will be opened at a reference price of{" "}
                   {formatUsd(entryPrice, { displayDecimals: priceDecimals })}, not accounting for price impact, with a
-                  max slippage of {allowedSlippage ? (allowedSlippage / 100.0).toFixed(2) : "..."}%.
+                  max slippage of -{allowedSlippage ? (allowedSlippage / 100.0).toFixed(2) : "..."}%.
                   <br />
                   <br />
                   The slippage amount can be configured under Settings, found by clicking on your address at the top
