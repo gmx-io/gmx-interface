@@ -1599,10 +1599,15 @@ export default function StakeV2({ setPendingTxns }) {
   };
 
   function showAffiliateVesterDepositModal() {
-    let remainingVestableAmount = vestingData.affiliateVester.maxVestableAmount.sub(
-      vestingData.affiliateVester.vestedAmount
+    if (!vestingData?.affiliateVester) {
+      helperToast.error(t`Unsupported network`);
+      return;
+    }
+
+    let remainingVestableAmount = vestingData?.affiliateVester?.maxVestableAmount?.sub(
+      vestingData?.affiliateVester?.vestedAmount
     );
-    if (processedData.esGmxBalance.lt(remainingVestableAmount)) {
+    if (processedData.esGmxBalance?.lt(remainingVestableAmount)) {
       remainingVestableAmount = processedData.esGmxBalance;
     }
 
@@ -1611,10 +1616,10 @@ export default function StakeV2({ setPendingTxns }) {
 
     setVesterDepositMaxAmount(remainingVestableAmount);
     setVesterDepositBalance(processedData.esGmxBalance);
-    setVesterDepositEscrowedBalance(vestingData.affiliateVester.escrowedBalance);
-    setVesterDepositVestedAmount(vestingData.affiliateVester.vestedAmount);
-    setVesterDepositMaxVestableAmount(vestingData.affiliateVester.maxVestableAmount);
-    setVesterDepositAverageStakedAmount(vestingData.affiliateVester.averageStakedAmount);
+    setVesterDepositEscrowedBalance(vestingData?.affiliateVester.escrowedBalance);
+    setVesterDepositVestedAmount(vestingData?.affiliateVester.vestedAmount);
+    setVesterDepositMaxVestableAmount(vestingData?.affiliateVester.maxVestableAmount);
+    setVesterDepositAverageStakedAmount(vestingData?.affiliateVester.averageStakedAmount);
 
     setVesterDepositReserveAmount("");
     setVesterDepositValue("");
@@ -1632,6 +1637,10 @@ export default function StakeV2({ setPendingTxns }) {
   }
 
   function showAffiliateVesterClaimModal() {
+    if (!vestingData?.affiliateVester) {
+      helperToast.error(t`Unsupported network`);
+      return;
+    }
     setIsAffiliateClaimModalVisible(true);
   }
 

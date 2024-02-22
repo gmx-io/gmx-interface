@@ -5505,6 +5505,11 @@ msgstr ""
 msgid "Unstaking..."
 msgstr "Снятие стакинга..."
 
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "Unsupported network"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/JoinReferralCode.js
 #: src/components/Synthetics/SubaccountModal/utils.ts

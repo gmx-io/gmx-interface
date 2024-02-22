@@ -5508,6 +5508,11 @@ msgstr "Unstaking will burn <0>{0} Multiplier Points</0>. <1>You will earn {1}
 msgid "Unstaking..."
 msgstr "Unstaking..."
 
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "Unsupported network"
+msgstr "Unsupported network"
+
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/JoinReferralCode.js
 #: src/components/Synthetics/SubaccountModal/utils.ts
