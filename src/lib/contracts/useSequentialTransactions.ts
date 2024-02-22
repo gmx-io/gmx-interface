@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { callContract } from "../contracts/callContract";
 import useWallet from "../../lib/wallets/useWallet";
 import { Contract } from "ethers";
@@ -27,17 +27,7 @@ export function useSequentialTransactions() {
   const { signer } = useWallet();
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { transactions: multiTransactions, setTransactions } = useMultiTransactions();
-
-  const reset = useCallback(() => {
-    setTransactions({});
-    setIsProcessing(false);
-    setError(null);
-  }, [setTransactions]);
-
-  useEffect(() => {
-    return () => reset();
-  }, [reset]);
+  const { transactions, setTransactions } = useMultiTransactions();
 
   const processTransaction = useCallback(
     async (transaction: TransactionInput): Promise<string> => {
@@ -67,46 +57,47 @@ export function useSequentialTransactions() {
     [signer]
   );
 
+  const updateTransactionState = useCallback(
+    (key: string, hash: string, status: TransactionStatusType, errorMsg?: string) => {
+      setTransactions((prevResults) => ({
+        ...prevResults,
+        [key]: { hash, status, errorMsg },
+      }));
+    },
+    [setTransactions]
+  );
+
   const executeTransactions = useCallback(
-    async (transactions: TransactionInput[], onSuccess?: () => void) => {
-      if (isProcessing || transactions.length === 0) return;
+    async (txs: TransactionInput[], onSuccess?: () => void) => {
+      if (isProcessing || txs.length === 0) return;
 
       setIsProcessing(true);
       setError(null);
       setTransactions({});
 
-      for (const transaction of transactions) {
-        const { key } = transaction;
+      for (const tx of txs) {
+        const { key } = tx;
         try {
-          setTransactions((prevResults) => ({
-            ...prevResults,
-            [key]: { hash: "", status: "loading" },
-          }));
-          const hash = await processTransaction(transaction);
+          updateTransactionState(key, "", "loading");
+          const hash = await processTransaction(tx);
           const status = await checkTransactionStatus(hash);
-          setTransactions((prevResults) => ({
-            ...prevResults,
-            [key]: { hash, status },
-          }));
+          updateTransactionState(key, hash, status);
         } catch (e) {
           setError(e.message);
-          setTransactions((prevResults) => ({
-            ...prevResults,
-            [key]: { hash: "", status: "error", errorMsg: e.message },
-          }));
+          updateTransactionState(key, "", "error", e.message);
           break;
         }
       }
 
       setIsProcessing(false);
 
-      const isCompleted = Object.values(multiTransactions || {}).every((result) => result.status === "success");
+      const isCompleted = Object.values(transactions || {}).every((result) => result.status === "success");
       if (isCompleted && onSuccess) {
         onSuccess();
       }
     },
-    [isProcessing, processTransaction, checkTransactionStatus, setTransactions, multiTransactions]
+    [isProcessing, processTransaction, checkTransactionStatus, setTransactions, transactions, updateTransactionState]
   );
 
-  return { executeTransactions, error, reset };
+  return { executeTransactions, error };
 }
