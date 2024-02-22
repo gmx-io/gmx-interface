@@ -97,7 +97,7 @@ const SubaccountNotificationImpl = ({
 
     case "generationFailed":
       title = renderActivationTitle();
-      content = t`Subaccount generation failed.`;
+      content = t`Subaccount generation failed`;
       break;
 
     case "activating":
@@ -112,7 +112,7 @@ const SubaccountNotificationImpl = ({
 
     case "activationFailed":
       title = renderActivationTitle();
-      content = t`Subaccount activation failed.`;
+      content = t`Subaccount activation failed`;
       break;
 
     case "deactivating":
@@ -127,12 +127,12 @@ const SubaccountNotificationImpl = ({
 
     case "deactivated":
       title = t`Deactivation`;
-      content = t`Subaccount deactivated.`;
+      content = t`Subaccount deactivated`;
       break;
 
     case "deactivationFailed":
       title = t`Deactivation`;
-      content = t`Subaccount deactivation failed.`;
+      content = t`Subaccount deactivation failed`;
       break;
 
     case "none":
@@ -144,9 +144,13 @@ const SubaccountNotificationImpl = ({
 
   return (
     <StatusNotification title={title} hasError={hasError}>
-      {content}
-      {link && <br />}
-      {link}
+      <div>{content}</div>
+      {link && (
+        <>
+          <br />
+          {link}
+        </>
+      )}
     </StatusNotification>
   );
 };

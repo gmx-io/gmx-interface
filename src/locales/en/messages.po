@@ -4631,24 +4631,40 @@ msgid "Subaccount activated"
 msgstr "Subaccount activated"
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Subaccount activation failed."
-msgstr "Subaccount activation failed."
+msgid "Subaccount activation failed"
+msgstr "Subaccount activation failed"
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+#~ msgid "Subaccount activation failed."
+#~ msgstr "Subaccount activation failed."
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount created"
 msgstr "Subaccount created"
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Subaccount deactivated."
-msgstr "Subaccount deactivated."
+msgid "Subaccount deactivated"
+msgstr "Subaccount deactivated"
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Subaccount deactivation failed."
-msgstr "Subaccount deactivation failed."
+#~ msgid "Subaccount deactivated."
+#~ msgstr "Subaccount deactivated."
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Subaccount generation failed."
-msgstr "Subaccount generation failed."
+msgid "Subaccount deactivation failed"
+msgstr "Subaccount deactivation failed"
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+#~ msgid "Subaccount deactivation failed."
+#~ msgstr "Subaccount deactivation failed."
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+msgid "Subaccount generation failed"
+msgstr "Subaccount generation failed"
+
+#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
+#~ msgid "Subaccount generation failed."
+#~ msgstr "Subaccount generation failed."
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount is updated"
