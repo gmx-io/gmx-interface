@@ -90,6 +90,7 @@ import useTradeRedirect from "lib/useTradeRedirect";
 import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContext";
 import { SubaccountModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
+import LeaderboardTest from "pages/LeaderboardTest/LeaderboardTest";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -357,6 +358,20 @@ function FullApp({ pendingTxns, setPendingTxns }) {
               </Route>
               <Route exact path="/ecosystem">
                 <Ecosystem />
+              </Route>
+              <Route path="/leaderboard-test/:account?">
+                {getIsSyntheticsSupported(chainId) ? (
+                  <SyntheticsStateContextProvider
+                    savedIsPnlInLeverage={settings.isPnlInLeverage}
+                    savedShowPnlAfterFees={settings.showPnlAfterFees}
+                    skipLocalReferralCode={false}
+                    pageType="trade"
+                  >
+                    <LeaderboardTest />
+                  </SyntheticsStateContextProvider>
+                ) : (
+                  <SyntheticsFallbackPage />
+                )}
               </Route>
               <Route exact path="/referrals">
                 <Referrals pendingTxns={pendingTxns} setPendingTxns={setPendingTxns} />
