@@ -336,6 +336,10 @@ msgstr "추가로, 트리거 주문은 시장가 주문이며 트리거 가격�
 msgid "Address copied to your clipboard"
 msgstr ""
 
+#: src/pages/LeaderboardTest/LeaderboardTest.tsx
+msgid "Addresses V2 trading statistics."
+msgstr ""
+
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
 msgstr ""
@@ -772,6 +776,10 @@ msgstr "취소 제출 완료"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Cancelling {ordersText}"
+msgstr ""
+
+#: src/pages/LeaderboardTest/LeaderboardTest.tsx
+msgid "Chain Icon"
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
@@ -2536,9 +2544,17 @@ msgstr "앱 실행하기"
 msgid "Leaderboard"
 msgstr "리더보드"
 
+#: src/pages/LeaderboardTest/LeaderboardTest.tsx
+msgid "Leaderboard Data"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Leaderboard for GMX traders"
 msgstr "GMX 트레이더를 위한 리더보드"
+
+#: src/pages/LeaderboardTest/LeaderboardTest.tsx
+#~ msgid "Leaderboards"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Leave at least {0} ETH for gas"

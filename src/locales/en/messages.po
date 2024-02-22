@@ -336,6 +336,10 @@ msgstr "Additionally, trigger orders are market orders and are not guaranteed to
 msgid "Address copied to your clipboard"
 msgstr "Address copied to your clipboard"
 
+#: src/pages/LeaderboardTest/LeaderboardTest.tsx
+msgid "Addresses V2 trading statistics."
+msgstr "Addresses V2 trading statistics."
+
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
 msgstr "Affiliate Rewards Claimed"
@@ -773,6 +777,10 @@ msgstr "Cancel submitted."
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Cancelling {ordersText}"
 msgstr "Cancelling {ordersText}"
+
+#: src/pages/LeaderboardTest/LeaderboardTest.tsx
+msgid "Chain Icon"
+msgstr "Chain Icon"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 #: src/pages/Exchange/Exchange.js
@@ -2536,9 +2544,17 @@ msgstr "Launch App"
 msgid "Leaderboard"
 msgstr "Leaderboard"
 
+#: src/pages/LeaderboardTest/LeaderboardTest.tsx
+msgid "Leaderboard Data"
+msgstr "Leaderboard Data"
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Leaderboard for GMX traders"
 msgstr "Leaderboard for GMX traders"
+
+#: src/pages/LeaderboardTest/LeaderboardTest.tsx
+#~ msgid "Leaderboards"
+#~ msgstr "Leaderboards"
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Leave at least {0} ETH for gas"

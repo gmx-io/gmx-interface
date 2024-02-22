@@ -5,6 +5,7 @@ import useSWR from "swr";
 import { MarketInfo } from "../markets";
 import { gql } from "@apollo/client";
 import { getLeaderboardGraphClient } from "lib/subgraph";
+import { expandDecimals } from "lib/numbers";
 
 type LeaderboardAccountsJson = {
   accountPerves: {
@@ -100,8 +101,12 @@ const fetchAccounts = async (chainId: number, account?: string): Promise<Leaderb
 
   const response = await client.query<LeaderboardAccountsJson>({
     query: gql`
-      query AccountPerfQuery($account: String) {
-        accountPerves(limit: 1000, where: { id_eq: $account }) {
+      query AccountPerfQuery($account: String, $requiredMaxCollateral: BigInt) {
+        accountPerves(
+          limit: 100
+          orderBy: totalPnl_DESC
+          where: { id_eq: $account, maxCollateral_gt: $requiredMaxCollateral }
+        ) {
           id
           closedCount
           cumsumCollateral
@@ -120,6 +125,7 @@ const fetchAccounts = async (chainId: number, account?: string): Promise<Leaderb
     `,
     variables: {
       account,
+      requiredMaxCollateral: expandDecimals(100, 30).toString(),
     },
   });
 
@@ -143,11 +149,11 @@ const fetchAccounts = async (chainId: number, account?: string): Promise<Leaderb
 };
 
 export function useLeaderboardAccounts(chainId: number, account?: string) {
-  const { data } = useSWR("leaderboard/useLeaderboardAccounts", () => fetchAccounts(chainId, account), {
+  const { data, error } = useSWR("leaderboard/useLeaderboardAccounts", () => fetchAccounts(chainId, account), {
     refreshInterval: 60_000,
   });
 
-  return data;
+  return { data, error };
 }
 
 const fetchPositions = async (chainId: number, account?: string): Promise<LeaderboardPositionBase[] | undefined> => {
@@ -161,7 +167,7 @@ const fetchPositions = async (chainId: number, account?: string): Promise<Leader
   const response = await client.query<LeaderboardPositionsJson>({
     query: gql`
       query PositionQuery($account: String) {
-        positions(limit: 1000, where: { account_eq: $account }) {
+        positions(limit: 100, where: { account_eq: $account }) {
           id
           account
           market
@@ -207,22 +213,25 @@ const fetchPositions = async (chainId: number, account?: string): Promise<Leader
 };
 
 export function useLeaderboardPositions(chainId: number, account?: string) {
-  const { data } = useSWR("leaderboard/useLeaderboardPositions", () => fetchPositions(chainId, account), {
+  const { data, error } = useSWR("leaderboard/useLeaderboardPositions", () => fetchPositions(chainId, account), {
     refreshInterval: 60_000,
   });
 
-  return data;
+  return { data, error };
 }
 
 export function useLeaderboardData(
   chainId: number,
   account?: string
 ): {
-  accounts?: LeaderboardAccount[];
-  positions?: LeaderboardPosition[];
+  data: {
+    accounts?: LeaderboardAccount[];
+    positions?: LeaderboardPosition[];
+  };
+  error?: Error;
 } {
-  const accounts = useLeaderboardAccounts(chainId, account);
-  const positions = useLeaderboardPositions(chainId, account);
+  const { data: accounts, error: accountsError } = useLeaderboardAccounts(chainId, account);
+  const { data: positions, error: positionsError } = useLeaderboardPositions(chainId, account);
   const marketsInfoData = useMarketsInfoData();
 
   const data = useMemo(() => {
@@ -276,7 +285,7 @@ export function useLeaderboardData(
     };
   }, [accounts, positions, marketsInfoData]);
 
-  return data;
+  return { data, error: accountsError || positionsError };
 }
 
 function getPositionPnl(position: LeaderboardPositionBase, market: MarketInfo) {

@@ -1,0 +1,10 @@
+.LeaderboardTest {
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.LeaderboardTest td,
+.LeaderboardTest th {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 5px;
+}
