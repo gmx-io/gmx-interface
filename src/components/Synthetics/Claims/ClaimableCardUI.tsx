@@ -1,40 +1,75 @@
-import { Trans } from "@lingui/macro";
+import { t } from "@lingui/macro";
+import cx from "classnames";
 import Tooltip from "components/Tooltip/Tooltip";
 import { BigNumber } from "ethers";
 import { formatDeltaUsd } from "lib/numbers";
-import { CSSProperties, useCallback, useMemo } from "react";
+import { CSSProperties, ReactNode, useCallback, useMemo } from "react";
+import { useMedia } from "react-use";
 
-type Props = {
-  fundingFees: BigNumber;
-  buttonText: string;
-  title: string;
+type Section = {
+  buttonText: ReactNode;
+  tooltipText: ReactNode;
   onButtonClick: () => void;
-  tooltipText: string;
-  style?: CSSProperties;
+  usd: BigNumber;
+  buttonStyle?: "primary" | "secondary";
 };
 
-export function ClaimableCardUI({ buttonText, fundingFees, onButtonClick, title, tooltipText, style }: Props) {
-  const totalUsd = useMemo(() => formatDeltaUsd(fundingFees), [fundingFees]);
-  const renderTooltipContent = useCallback(() => tooltipText, [tooltipText]);
+type Props = {
+  title: string;
+  style?: CSSProperties;
+  sections: Readonly<[Section, Section]>;
+};
+
+export function ClaimableCardUI({ title, style, sections }: Props) {
+  const [section1, section2] = sections;
+  const isHorizontal = useMedia("(min-width: 600px) and (max-width: 1100px)");
 
   return (
-    <div className="TradeHistoryRow App-box w-full" style={style}>
-      <div className="Claims-row">
-        <div className="Claims-col Claims-col-title">{title}</div>
-        <div className="Claims-col">
-          <span className="muted">
-            <Trans>Funding fees</Trans>
-          </span>
-          <span>
-            <Tooltip handle={totalUsd} position="left-bottom" renderContent={renderTooltipContent} />
-          </span>
-        </div>
-        {fundingFees.gt(0) && (
-          <button className="App-button-option App-card-option Claims-claim-button" onClick={onButtonClick}>
-            {buttonText}
-          </button>
-        )}
+    <div className="Claims-card w-full" style={style}>
+      <div className="Claims-title">{title}</div>
+      <div
+        className={cx("Claims-rows", {
+          "Claims-rows-horizontal": isHorizontal,
+        })}
+      >
+        <Section title={t`Funding fees`} {...section1} />
+        {!isHorizontal && <div className="Claims-hr" />}
+        {isHorizontal && <div className="Claims-hr-horizontal" />}
+        <Section title={t`Price Impact Rebates`} {...section2} />
       </div>
+    </div>
+  );
+}
+
+function Section({
+  buttonStyle = "primary",
+  buttonText,
+  onButtonClick,
+  tooltipText,
+  title,
+  usd,
+}: Section & { title: string }) {
+  const renderTooltipContent = useCallback(() => tooltipText, [tooltipText]);
+  const usdFormatted = useMemo(() => formatDeltaUsd(usd), [usd]);
+  const buttonClassname = buttonStyle === "primary" ? "primary App-button-option App-card-option" : "secondary";
+
+  return (
+    <div className="Claims-row">
+      <div className="Claims-col">
+        <span className="muted">{title}</span>
+        <span>
+          {tooltipText ? (
+            <Tooltip handle={usdFormatted} position="left-bottom" renderContent={renderTooltipContent} />
+          ) : (
+            usdFormatted
+          )}
+        </span>
+      </div>
+      {usd.gt(0) && (
+        <button className={`Claims-claim-button ${buttonClassname}`} onClick={onButtonClick}>
+          {buttonText}
+        </button>
+      )}
     </div>
   );
 }

@@ -1,12 +1,12 @@
-import { useMemo } from "react";
 import { gql } from "@apollo/client";
 import { getWrappedToken } from "config/tokens";
-import { MarketsInfoData } from "domain/synthetics/markets";
-import { TokensData, parseContractPrice } from "domain/synthetics/tokens";
+import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { parseContractPrice } from "domain/synthetics/tokens";
 import { BigNumber, ethers } from "ethers";
 import { bigNumberify } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getSyntheticsGraphClient } from "lib/subgraph";
+import { useMemo } from "react";
 import useInfinateSwr from "swr/infinite";
 import { isSwapOrderType } from "../orders";
 import { getSwapPathOutputAddresses } from "../trade/utils";
@@ -24,12 +24,12 @@ export function useTradeHistory(
   p: {
     account: string | null | undefined;
     forAllAccounts?: boolean;
-    marketsInfoData?: MarketsInfoData;
-    tokensData?: TokensData;
     pageSize: number;
   }
 ) {
-  const { pageSize, marketsInfoData, tokensData, account, forAllAccounts } = p;
+  const { pageSize, account, forAllAccounts } = p;
+  const marketsInfoData = useMarketsInfoData();
+  const tokensData = useTokensData();
 
   const client = getSyntheticsGraphClient(chainId);
 

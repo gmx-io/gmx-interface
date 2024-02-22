@@ -5,18 +5,18 @@ export function useSafeState<S>(
   inititalValue?: S | (() => S),
   shouldUpdateFn: (prev: S, next: S) => boolean = (a, b) => a !== b
 ): [S, Dispatch<SetStateAction<S>>] {
-  const [state, _setState] = useState<any>(inititalValue);
+  const [state, setState] = useState<any>(inititalValue);
 
-  const setState = useCallback(
+  const setStateWrapped = useCallback(
     (value: S | ((prevState: S) => S)) => {
       if (typeof value === "function") {
-        _setState(value);
+        setState(value);
       } else if (shouldUpdateFn(state, value)) {
-        _setState(value);
+        setState(value);
       }
     },
     [shouldUpdateFn, state]
   );
 
-  return [state, setState];
+  return [state, setStateWrapped];
 }

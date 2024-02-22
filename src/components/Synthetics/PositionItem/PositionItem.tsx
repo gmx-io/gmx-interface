@@ -3,7 +3,12 @@ import cx from "classnames";
 import PositionDropdown from "components/Exchange/PositionDropdown";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import { PositionOrderInfo, isDecreaseOrderType, isIncreaseOrderType } from "domain/synthetics/orders";
+import {
+  PositionOrderInfo,
+  isDecreaseOrderType,
+  isIncreaseOrderType,
+  sortPositionOrders,
+} from "domain/synthetics/orders";
 import {
   PositionInfo,
   formatEstimatedLiquidationTime,
@@ -11,7 +16,6 @@ import {
   formatLiquidationPrice,
   getEstimatedLiquidationTimeInHours,
   getTriggerNameByOrderType,
-  usePositionsConstants,
 } from "domain/synthetics/positions";
 import { formatDeltaUsd, formatTokenAmount, formatUsd } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
@@ -20,51 +24,58 @@ import { ImSpinner2 } from "react-icons/im";
 import Button from "components/Button/Button";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { usePositionsConstants, useSavedShowPnlAfterFees } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import {
+  useTradeboxCollateralAddress,
+  useTradeboxMarketAddress,
+  useTradeboxTradeType,
+} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { TradeMode, TradeType, getTriggerThresholdType } from "domain/synthetics/trade";
-import { useChainId } from "lib/chains";
 import { CHART_PERIODS } from "lib/legacy";
+import { getPositiveOrNegativeClass } from "lib/utils";
+import { Fragment, useMemo } from "react";
 import { FaAngleRight } from "react-icons/fa";
 import { useMedia } from "react-use";
 import "./PositionItem.scss";
-import { Fragment } from "react";
-import { getPositiveOrNegativeClass } from "lib/utils";
 
 export type Props = {
   position: PositionInfo;
   positionOrders: PositionOrderInfo[];
   hideActions?: boolean;
   showPnlAfterFees: boolean;
-  savedShowPnlAfterFees: boolean;
   onClosePositionClick?: () => void;
   onEditCollateralClick?: () => void;
   onShareClick: () => void;
   onSelectPositionClick?: (tradeMode?: TradeMode) => void;
-  onOrdersClick?: () => void;
+  onOrdersClick?: (key?: string) => void;
   isLarge: boolean;
-  currentMarketAddress?: string;
-  currentCollateralAddress?: string;
-  currentTradeType?: TradeType;
   openSettings: () => void;
   onGetPendingFeesClick: () => void;
 };
 
 export function PositionItem(p: Props) {
-  const { showDebugValues } = useSettings();
   const { positionOrders } = p;
-  const displayedPnl = p.savedShowPnlAfterFees ? p.position.pnlAfterFees : p.position.pnl;
-  const displayedPnlPercentage = p.savedShowPnlAfterFees ? p.position.pnlAfterFeesPercentage : p.position.pnlPercentage;
-  const { chainId } = useChainId();
+  const { showDebugValues } = useSettings();
+  const savedShowPnlAfterFees = useSavedShowPnlAfterFees();
+  const currentTradeType = useTradeboxTradeType();
+  const currentMarketAddress = useTradeboxMarketAddress();
+  const currentCollateralAddress = useTradeboxCollateralAddress();
+  const displayedPnl = savedShowPnlAfterFees ? p.position.pnlAfterFees : p.position.pnl;
+  const displayedPnlPercentage = savedShowPnlAfterFees ? p.position.pnlAfterFeesPercentage : p.position.pnlPercentage;
   const isMobile = useMedia("(max-width: 1100px)");
   const indexPriceDecimals = p.position?.indexToken?.priceDecimals;
-  const { minCollateralUsd } = usePositionsConstants(chainId);
-
-  const isCurrentTradeTypeLong = p.currentTradeType === TradeType.Long;
+  const { minCollateralUsd } = usePositionsConstants();
+  const isCurrentTradeTypeLong = currentTradeType === TradeType.Long;
   const isCurrentMarket =
-    p.currentMarketAddress === p.position.marketAddress &&
-    p.currentCollateralAddress === p.position.collateralTokenAddress &&
+    currentMarketAddress === p.position.marketAddress &&
+    currentCollateralAddress === p.position.collateralTokenAddress &&
     isCurrentTradeTypeLong === p.position.isLong;
+
+  const sortedPositionOrders = useMemo(() => {
+    return sortPositionOrders(positionOrders);
+  }, [positionOrders]);
 
   function renderNetValue() {
     return (
@@ -340,10 +351,10 @@ export function PositionItem(p: Props) {
   }
 
   function renderPositionOrders(isSmall = false) {
-    if (positionOrders.length === 0) return null;
+    if (sortedPositionOrders.length === 0) return null;
 
     if (isSmall) {
-      return positionOrders.map((order) => {
+      return sortedPositionOrders.map((order) => {
         if (order.errorLevel) {
           return (
             <div key={order.key} className="Position-list-order">
@@ -351,15 +362,18 @@ export function PositionItem(p: Props) {
                 handle={renderOrderText(order)}
                 position="right-bottom"
                 handleClassName={cx("position-order-error", {
-                  "level-warning": order.errorLevel === 'warning',
-                  "level-error": order.errorLevel === 'error',
+                  "level-warning": order.errorLevel === "warning",
+                  "level-error": order.errorLevel === "error",
                 })}
                 renderContent={() =>
                   order.errors.map((error) => (
-                    <span key={error.msg} className={cx("mb-xs", "position-order-error", {
-                      "level-warning": order.errorLevel === 'warning',
-                      "level-error": order.errorLevel === 'error',
-                    })}>
+                    <span
+                      key={error.msg}
+                      className={cx("mb-xs", "position-order-error", {
+                        "level-warning": order.errorLevel === "warning",
+                        "level-error": order.errorLevel === "error",
+                      })}
+                    >
                       {error.msg}
                     </span>
                   ))
@@ -368,16 +382,20 @@ export function PositionItem(p: Props) {
             </div>
           );
         }
-        return <div className="Position-list-order">{renderOrderText(order)}</div>;
+        return (
+          <div key={getKey(order)} className="Position-list-order">
+            {renderOrderText(order)}
+          </div>
+        );
       });
     }
 
-    const ordersErrorList = positionOrders.filter((order) => order.errorLevel === "error");
-    const ordersWarningsList = positionOrders.filter((order) => order.errorLevel === "warning");
+    const ordersErrorList = sortedPositionOrders.filter((order) => order.errorLevel === "error");
+    const ordersWarningsList = sortedPositionOrders.filter((order) => order.errorLevel === "warning");
     const hasErrors = ordersErrorList.length + ordersWarningsList.length > 0;
 
     return (
-      <div onClick={p.onOrdersClick}>
+      <div>
         <Tooltip
           className="Position-list-active-orders"
           handle={
@@ -390,7 +408,7 @@ export function PositionItem(p: Props) {
                   "level-warning": !ordersErrorList.length && ordersWarningsList.length > 0,
                 })}
               >
-                ({positionOrders.length})
+                ({sortedPositionOrders.length})
               </span>
             </Trans>
           }
@@ -407,15 +425,20 @@ export function PositionItem(p: Props) {
               <strong>
                 <Trans>Active Orders</Trans>
               </strong>
-              {positionOrders.map((order) => {
+              {sortedPositionOrders.map((order) => {
                 const errors = order.errors;
                 return (
-                  <div key={order.key} className="Position-list-order active-order-tooltip">
+                  <div
+                    key={order.key}
+                    className="Position-list-order active-order-tooltip"
+                    onClick={() => {
+                      p.onOrdersClick?.(order.key);
+                    }}
+                  >
                     <div className="Position-list-order-label">
                       {renderOrderText(order)}
                       <FaAngleRight fontSize={14} />
                     </div>
-
                     {errors.map((err, i) => (
                       <Fragment key={err.msg}>
                         <div className={cx("order-error-text", `level-${err.level}`)}>{err.msg}</div>
@@ -704,7 +727,7 @@ export function PositionItem(p: Props) {
               <Trans>Orders</Trans>
             </div>
             <div>
-              {!p.positionOrders?.length && "None"}
+              {!sortedPositionOrders?.length && "None"}
               {renderPositionOrders(true)}
             </div>
           </div>
@@ -750,4 +773,13 @@ export function PositionItem(p: Props) {
   }
 
   return p.isLarge ? renderLarge() : renderSmall();
+}
+
+function getKey(order: PositionOrderInfo) {
+  return (
+    order.initialCollateralToken.address +
+    order.orderType +
+    order.triggerPrice.toString() +
+    order.targetCollateralToken.address
+  );
 }

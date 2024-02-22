@@ -50,14 +50,14 @@ export default function BuyInputSection(props: Props) {
     if (showPercentSelector && onPercentChange) {
       setIsPercentSelectorVisible(true);
     }
-    onFocus?.();
+    if (onFocus) onFocus();
   }
 
   function handleOnBlur() {
     if (showPercentSelector && onPercentChange) {
       setIsPercentSelectorVisible(false);
     }
-    onBlur?.();
+    if (onBlur) onBlur();
   }
 
   function handleBoxClick(event: React.MouseEvent<HTMLDivElement>) {
@@ -65,7 +65,10 @@ export default function BuyInputSection(props: Props) {
     const labelElement = target.closest("[data-label]");
     const labelClicked = labelElement ? labelElement.getAttribute("data-label") : null;
 
-    if (!(preventFocusOnLabelClick === labelClicked || preventFocusOnLabelClick === "both") && inputRef.current) {
+    const shouldPreventFocus = preventFocusOnLabelClick === labelClicked || preventFocusOnLabelClick === "both";
+    const isMaxButtonClicked = target.classList.contains("Exchange-swap-max");
+
+    if (!shouldPreventFocus && !isMaxButtonClicked && inputRef.current) {
       inputRef.current.focus();
     }
   }

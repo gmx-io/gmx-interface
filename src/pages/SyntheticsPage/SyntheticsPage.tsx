@@ -2,7 +2,6 @@ import { Plural, Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import Checkbox from "components/Checkbox/Checkbox";
 import Footer from "components/Footer/Footer";
-import { ClaimModal } from "components/Synthetics/ClaimModal/ClaimModal";
 import { Claims } from "components/Synthetics/Claims/Claims";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionEditor } from "components/Synthetics/PositionEditor/PositionEditor";
@@ -15,11 +14,8 @@ import Tab from "components/Tab/Tab";
 import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT } from "config/factors";
 import { getSyntheticsListSectionKey } from "config/localStorage";
 import { getToken } from "config/tokens";
-import { isSwapOrderType } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
-import { useOrdersInfo } from "domain/synthetics/orders/useOrdersInfo";
-import { PositionInfo, getPositionKey } from "domain/synthetics/positions";
-import { usePositionsInfo } from "domain/synthetics/positions/usePositionsInfo";
+import { PositionInfo } from "domain/synthetics/positions";
 import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -27,28 +23,41 @@ import { formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { useMarketsInfo } from "domain/synthetics/markets";
 import Helmet from "react-helmet";
 
-import { SettleAccruedFundingFeeModal } from "components/Synthetics/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal";
 import {
   useIsLastSubaccountAction,
   useSubaccount,
   useSubaccountCancelOrdersDetailsMessage,
 } from "context/SubaccountContext/SubaccountContext";
+import {
+  useIsOrdersLoading,
+  useIsPositionsLoading,
+  useMarketsInfoData,
+  useOrdersInfoData,
+  usePositionsInfoData,
+  useSavedIsPnlInLeverage,
+  useTokensData,
+} from "context/SyntheticsStateContext/hooks/globalsHooks";
+import {
+  useTradeboxAvailableTokensOptions,
+  useTradeboxFromTokenAddress,
+  useTradeboxSetActivePosition,
+  useTradeboxToTokenAddress,
+  useTradeboxTradeFlags,
+} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { getMarketIndexName, getMarketPoolName, getTotalClaimableFundingUsd } from "domain/synthetics/markets";
 import { TradeMode } from "domain/synthetics/trade";
-import { useSelectedTradeOption } from "domain/synthetics/trade/useSelectedTradeOption";
 import { getMidPrice } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import useWallet from "lib/wallets/useWallet";
+import { useRebatesInfo } from "domain/synthetics/fees/useRebatesInfo";
+import { calcTotalRebateUsd } from "components/Synthetics/Claims/utils";
 
 export type Props = {
-  savedIsPnlInLeverage: boolean;
   shouldDisableValidation: boolean;
   savedShouldShowPositionLines: boolean;
   showPnlAfterFees: boolean;
-  savedShowPnlAfterFees: boolean;
   savedSlippageAmount: number;
   setSavedShouldShowPositionLines: (value: boolean) => void;
   setPendingTxns: (txns: any) => void;
@@ -66,7 +75,6 @@ enum ListSection {
 
 export function SyntheticsPage(p: Props) {
   const {
-    savedIsPnlInLeverage,
     shouldDisableValidation,
     savedShouldShowPositionLines,
     showPnlAfterFees,
@@ -74,61 +82,32 @@ export function SyntheticsPage(p: Props) {
     setSavedShouldShowPositionLines,
     setPendingTxns,
     setTradePageVersion,
-    savedShowPnlAfterFees,
     savedSlippageAmount,
     openSettings,
   } = p;
   const { chainId } = useChainId();
   const { signer, account } = useWallet();
-  const { marketsInfoData, tokensData, pricesUpdatedAt } = useMarketsInfo(chainId);
+  const savedIsPnlInLeverage = useSavedIsPnlInLeverage();
+  const marketsInfoData = useMarketsInfoData();
+  const tokensData = useTokensData();
+  const positionsInfoData = usePositionsInfoData();
+  const isPositionsLoading = useIsPositionsLoading();
+  const ordersInfoData = useOrdersInfoData();
+  const isOrdersLoading = useIsOrdersLoading();
 
-  const { positionsInfoData, isLoading: isPositionsLoading } = usePositionsInfo(chainId, {
-    marketsInfoData,
-    tokensData,
-    pricesUpdatedAt,
-    showPnlInLeverage: savedIsPnlInLeverage,
-    account,
-  });
+  const { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees } = useRebatesInfo(chainId);
 
-  const { ordersInfoData, isLoading: isOrdersLoading } = useOrdersInfo(chainId, {
-    account,
-    marketsInfoData,
-    positionsInfoData,
-    tokensData,
-  });
   const [isSettling, setIsSettling] = useState(false);
-
-  const {
-    tradeType,
-    tradeMode,
-    tradeFlags,
-    isWrapOrUnwrap,
-    fromTokenAddress,
-    fromToken,
-    toTokenAddress,
-    toToken,
-    marketAddress,
-    marketInfo,
-    collateralAddress,
-    collateralToken,
-    availableTokensOptions,
-    avaialbleTradeModes,
-    setTradeType,
-    setTradeMode,
-    setFromTokenAddress,
-    setToTokenAddress,
-    setMarketAddress,
-    setCollateralAddress,
-    setActivePosition,
-    switchTokenAddresses,
-  } = useSelectedTradeOption(chainId, { marketsInfoData, tokensData });
-
   const [listSection, setListSection] = useLocalStorageSerializeKey(
     getSyntheticsListSectionKey(chainId),
     ListSection.Positions
   );
 
-  const { isSwap, isLong } = tradeFlags;
+  const { isSwap } = useTradeboxTradeFlags();
+  const fromTokenAddress = useTradeboxFromTokenAddress();
+  const toTokenAddress = useTradeboxToTokenAddress();
+  const availableTokensOptions = useTradeboxAvailableTokensOptions();
+  const setActivePosition = useTradeboxSetActivePosition();
   const { indexTokens, sortedIndexTokensWithPoolValue, swapTokens, sortedLongAndShortTokens } = availableTokensOptions;
 
   const { chartToken, availableChartTokens } = useMemo(() => {
@@ -158,54 +137,29 @@ export function SyntheticsPage(p: Props) {
       return {};
     }
   }, [
-    chainId,
     fromTokenAddress,
-    indexTokens,
-    isSwap,
     toTokenAddress,
-    sortedIndexTokensWithPoolValue,
+    chainId,
+    isSwap,
     swapTokens,
+    indexTokens,
+    sortedIndexTokensWithPoolValue,
     sortedLongAndShortTokens,
   ]);
 
   const [closingPositionKey, setClosingPositionKey] = useState<string>();
   const closingPosition = getByKey(positionsInfoData, closingPositionKey);
 
+  const [selectedPositionOrderKey, setSelectedPositionOrderKey] = useState<string>();
+
   const [editingPositionKey, setEditingPositionKey] = useState<string>();
   const editingPosition = getByKey(positionsInfoData, editingPositionKey);
 
   const [gettingPendingFeePositionKeys, setGettingPendingFeePositionKeys] = useState<string[]>([]);
 
-  const selectedPositionKey = useMemo(() => {
-    if (!account || !collateralAddress || !marketAddress || !tradeType) {
-      return undefined;
-    }
-
-    return getPositionKey(account, marketAddress, collateralAddress, isLong);
-  }, [account, collateralAddress, marketAddress, tradeType, isLong]);
-  const selectedPosition = getByKey(positionsInfoData, selectedPositionKey);
-
   const [selectedOrdersKeys, setSelectedOrdersKeys] = useState<{ [key: string]: boolean }>({});
   const selectedOrdersKeysArr = Object.keys(selectedOrdersKeys).filter((key) => selectedOrdersKeys[key]);
   const [isCancelOrdersProcessig, setIsCancelOrdersProcessig] = useState(false);
-  const existingOrder = useMemo(() => {
-    if (!selectedPositionKey) {
-      return undefined;
-    }
-
-    return Object.values(ordersInfoData || {})
-      .filter((order) => !isSwapOrderType(order.orderType))
-      .find((order) => {
-        if (isSwapOrderType(order.orderType)) {
-          return false;
-        }
-
-        return (
-          getPositionKey(order.account, order.marketAddress, order.targetCollateralToken.address, order.isLong) ===
-          selectedPositionKey
-        );
-      });
-  }, [ordersInfoData, selectedPositionKey]);
 
   const { positionsCount, ordersCount, ordersErrorsCount, ordersWarningsCount } = useMemo(() => {
     const positions = Object.values(positionsInfoData || {});
@@ -218,13 +172,21 @@ export function SyntheticsPage(p: Props) {
       ordersWarningsCount: orders.filter((order) => order.errorLevel === "warning").length,
     };
   }, [ordersInfoData, positionsInfoData]);
-  const hasClaimables = useMemo(() => {
+  const hasClaimableFees = useMemo(() => {
     const markets = Object.values(marketsInfoData ?? {});
     const totalClaimableFundingUsd = getTotalClaimableFundingUsd(markets);
     return totalClaimableFundingUsd.gt(0);
   }, [marketsInfoData]);
 
-  const [isClaiming, setIsClaiming] = useState(false);
+  const hasClaimableRebates = useMemo(
+    () => calcTotalRebateUsd(claimablePositionPriceImpactFees, tokensData, false).gt(0),
+    [claimablePositionPriceImpactFees, tokensData]
+  );
+
+  let totalClaimables = 0;
+
+  if (hasClaimableFees) totalClaimables += 1;
+  if (hasClaimableRebates) totalClaimables += 1;
 
   const subaccount = useSubaccount(null, selectedOrdersKeysArr.length);
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, selectedOrdersKeysArr.length);
@@ -262,6 +224,14 @@ export function SyntheticsPage(p: Props) {
       .finally(() => {
         setIsCancelOrdersProcessig(false);
       });
+  }
+
+  function handleOrderClick(key?: string) {
+    setListSection(ListSection.Orders);
+    setSelectedPositionOrderKey(key);
+    if (key) {
+      setSelectedOrdersKeys((prev) => ({ ...prev, [key]: true }));
+    }
   }
 
   useEffect(() => {
@@ -304,7 +274,7 @@ export function SyntheticsPage(p: Props) {
     setIsSettling(true);
   }
 
-  function renderOrdersTabTitle() {
+  const renderOrdersTabTitle = useCallback(() => {
     if (!ordersCount) {
       return (
         <div>
@@ -323,16 +293,46 @@ export function SyntheticsPage(p: Props) {
         </span>
       </div>
     );
+  }, [ordersCount, ordersErrorsCount, ordersWarningsCount]);
+
+  const tabLabels = useMemo(
+    () => ({
+      [ListSection.Positions]: t`Positions${positionsCount ? ` (${positionsCount})` : ""}`,
+      [ListSection.Orders]: renderOrdersTabTitle(),
+      [ListSection.Trades]: t`Trades`,
+      [ListSection.Claims]: totalClaimables > 0 ? t`Claims (${totalClaimables})` : t`Claims`,
+    }),
+    [positionsCount, renderOrdersTabTitle, totalClaimables]
+  );
+  const tabOptions = useMemo(() => Object.keys(ListSection), []);
+
+  function renderClaims() {
+    return (
+      <Claims
+        positionsInfoData={positionsInfoData}
+        shouldShowPaginationButtons
+        setIsSettling={setIsSettling}
+        isSettling={isSettling}
+        gettingPendingFeePositionKeys={gettingPendingFeePositionKeys}
+        setGettingPendingFeePositionKeys={setGettingPendingFeePositionKeys}
+        setPendingTxns={setPendingTxns}
+        allowedSlippage={allowedSlippage}
+        accruedPositionPriceImpactFees={accruedPositionPriceImpactFees}
+        claimablePositionPriceImpactFees={claimablePositionPriceImpactFees}
+      />
+    );
   }
 
   return (
     <div className="Exchange page-layout">
       <Helmet>
-        <style type="text/css">{`
+        <style type="text/css">
+          {`
             :root {
               --main-bg-color: #08091b;                   
              {
-         `}</style>
+         `}
+        </style>
       </Helmet>
       <div className="Exchange-content">
         <div className="Exchange-left">
@@ -343,9 +343,6 @@ export function SyntheticsPage(p: Props) {
             positionsInfo={positionsInfoData}
             chartTokenAddress={chartToken?.address}
             availableTokens={availableChartTokens}
-            onSelectChartTokenAddress={setToTokenAddress}
-            tradeFlags={tradeFlags}
-            currentTradeType={tradeType}
             tradePageVersion={tradePageVersion}
             setTradePageVersion={setTradePageVersion}
             avaialbleTokenOptions={availableTokensOptions}
@@ -356,19 +353,14 @@ export function SyntheticsPage(p: Props) {
             <div className="Exchange-list-tab-container">
               <Tab
                 options={Object.keys(ListSection)}
-                optionLabels={{
-                  [ListSection.Positions]: t`Positions${positionsCount ? ` (${positionsCount})` : ""}`,
-                  [ListSection.Orders]: renderOrdersTabTitle(),
-                  [ListSection.Trades]: t`Trades`,
-                  [ListSection.Claims]: hasClaimables ? t`Claims (1)` : t`Claims`,
-                }}
+                optionLabels={tabLabels}
                 option={listSection}
                 onChange={(section) => setListSection(section)}
                 type="inline"
                 className="Exchange-list-tabs"
               />
               <div className="align-right Exchange-should-show-position-lines">
-                {selectedOrdersKeysArr.length > 0 && (
+                {listSection === ListSection.Orders && selectedOrdersKeysArr.length > 0 && (
                   <button
                     className="muted font-base cancel-order-btn"
                     disabled={isCancelOrdersProcessig}
@@ -392,92 +384,41 @@ export function SyntheticsPage(p: Props) {
 
             {listSection === ListSection.Positions && (
               <PositionList
-                positionsData={positionsInfoData}
-                ordersData={ordersInfoData}
                 isLoading={isPositionsLoading}
-                savedIsPnlInLeverage={savedIsPnlInLeverage}
-                onOrdersClick={() => setListSection(ListSection.Orders)}
+                onOrdersClick={handleOrderClick}
                 onSettlePositionFeesClick={handleSettlePositionFeesClick}
                 onSelectPositionClick={onSelectPositionClick}
                 onClosePositionClick={setClosingPositionKey}
                 onEditCollateralClick={setEditingPositionKey}
                 showPnlAfterFees={showPnlAfterFees}
-                savedShowPnlAfterFees={savedShowPnlAfterFees}
-                currentMarketAddress={marketAddress}
-                currentCollateralAddress={collateralAddress}
-                currentTradeType={tradeType}
                 openSettings={openSettings}
               />
             )}
             {listSection === ListSection.Orders && (
               <OrderList
-                marketsInfoData={marketsInfoData}
-                tokensData={tokensData}
-                positionsData={positionsInfoData}
-                ordersData={ordersInfoData}
                 selectedOrdersKeys={selectedOrdersKeys}
                 setSelectedOrdersKeys={setSelectedOrdersKeys}
                 isLoading={isOrdersLoading}
                 setPendingTxns={setPendingTxns}
+                selectedPositionOrderKey={selectedPositionOrderKey}
+                setSelectedPositionOrderKey={setSelectedPositionOrderKey}
+                availableTokensOptions={availableTokensOptions}
               />
             )}
-            {listSection === ListSection.Trades && (
-              <TradeHistory
-                account={account}
-                marketsInfoData={marketsInfoData}
-                tokensData={tokensData}
-                shouldShowPaginationButtons
-              />
-            )}
-            {listSection === ListSection.Claims && (
-              <Claims
-                marketsInfoData={marketsInfoData}
-                positionsInfoData={positionsInfoData}
-                tokensData={tokensData}
-                shouldShowPaginationButtons
-                setIsClaiming={setIsClaiming}
-                setIsSettling={setIsSettling}
-              />
-            )}
+            {listSection === ListSection.Trades && <TradeHistory account={account} shouldShowPaginationButtons />}
+            {listSection === ListSection.Claims && renderClaims()}
           </div>
         </div>
 
         <div className="Exchange-right">
           <div className="Exchange-swap-box">
             <TradeBox
-              tradeMode={tradeMode}
-              tradeType={tradeType}
-              availableTradeModes={avaialbleTradeModes}
-              tradeFlags={tradeFlags}
-              isWrapOrUnwrap={isWrapOrUnwrap}
-              fromTokenAddress={fromTokenAddress}
-              fromToken={fromToken}
-              toTokenAddress={toTokenAddress}
-              toToken={toToken}
-              marketAddress={marketAddress}
-              marketInfo={marketInfo}
-              collateralAddress={collateralAddress}
-              collateralToken={collateralToken}
               avaialbleTokenOptions={availableTokensOptions}
-              savedIsPnlInLeverage={savedIsPnlInLeverage}
-              existingPosition={selectedPosition}
-              existingOrder={existingOrder}
               shouldDisableValidation={shouldDisableValidation}
               allowedSlippage={allowedSlippage!}
               isHigherSlippageAllowed={isHigherSlippageAllowed}
-              tokensData={tokensData}
-              ordersInfo={ordersInfoData}
-              positionsInfo={positionsInfoData}
-              marketsInfoData={marketsInfoData}
               setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
-              onSelectMarketAddress={setMarketAddress}
-              onSelectCollateralAddress={setCollateralAddress}
-              onSelectFromTokenAddress={setFromTokenAddress}
-              onSelectToTokenAddress={setToTokenAddress}
-              onSelectTradeMode={setTradeMode}
-              onSelectTradeType={setTradeType}
               setPendingTxns={setPendingTxns}
-              switchTokenAddresses={switchTokenAddresses}
             />
           </div>
         </div>
@@ -485,13 +426,8 @@ export function SyntheticsPage(p: Props) {
         <div className="Exchange-lists small">
           <div className="Exchange-list-tab-container">
             <Tab
-              options={Object.keys(ListSection)}
-              optionLabels={{
-                [ListSection.Positions]: t`Positions${positionsCount ? ` (${positionsCount})` : ""}`,
-                [ListSection.Orders]: renderOrdersTabTitle(),
-                [ListSection.Trades]: t`Trades`,
-                [ListSection.Claims]: hasClaimables ? t`Claims (1)` : t`Claims`,
-              }}
+              options={tabOptions}
+              optionLabels={tabLabels}
               option={listSection}
               onChange={(section) => setListSection(section)}
               type="inline"
@@ -500,59 +436,34 @@ export function SyntheticsPage(p: Props) {
           </div>
           {listSection === ListSection.Positions && (
             <PositionList
-              positionsData={positionsInfoData}
-              ordersData={ordersInfoData}
-              savedIsPnlInLeverage={savedIsPnlInLeverage}
               isLoading={isPositionsLoading}
-              onOrdersClick={() => setListSection(ListSection.Orders)}
+              onOrdersClick={handleOrderClick}
               onSelectPositionClick={onSelectPositionClick}
               onClosePositionClick={setClosingPositionKey}
               onEditCollateralClick={setEditingPositionKey}
               onSettlePositionFeesClick={handleSettlePositionFeesClick}
               showPnlAfterFees={showPnlAfterFees}
-              savedShowPnlAfterFees={savedShowPnlAfterFees}
-              currentMarketAddress={marketAddress}
-              currentCollateralAddress={collateralAddress}
-              currentTradeType={tradeType}
               openSettings={openSettings}
             />
           )}
           {listSection === ListSection.Orders && (
             <OrderList
-              marketsInfoData={marketsInfoData}
-              tokensData={tokensData}
-              positionsData={positionsInfoData}
-              ordersData={ordersInfoData}
               isLoading={isOrdersLoading}
               selectedOrdersKeys={selectedOrdersKeys}
               setSelectedOrdersKeys={setSelectedOrdersKeys}
               setPendingTxns={setPendingTxns}
+              selectedPositionOrderKey={selectedPositionOrderKey}
+              setSelectedPositionOrderKey={setSelectedPositionOrderKey}
+              availableTokensOptions={availableTokensOptions}
             />
           )}
-          {listSection === ListSection.Trades && (
-            <TradeHistory
-              account={account}
-              marketsInfoData={marketsInfoData}
-              tokensData={tokensData}
-              shouldShowPaginationButtons
-            />
-          )}
-          {listSection === ListSection.Claims && (
-            <Claims
-              marketsInfoData={marketsInfoData}
-              positionsInfoData={positionsInfoData}
-              tokensData={tokensData}
-              shouldShowPaginationButtons
-              setIsClaiming={setIsClaiming}
-              setIsSettling={setIsSettling}
-            />
-          )}
+          {listSection === ListSection.Trades && <TradeHistory account={account} shouldShowPaginationButtons />}
+          {listSection === ListSection.Claims && renderClaims()}
         </div>
       </div>
 
       <PositionSeller
         position={closingPosition!}
-        marketsInfoData={marketsInfoData}
         tokensData={tokensData}
         showPnlInLeverage={savedIsPnlInLeverage}
         onClose={onPositionSellerClose}
@@ -561,7 +472,6 @@ export function SyntheticsPage(p: Props) {
         isHigherSlippageAllowed={isHigherSlippageAllowed}
         setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
         shouldDisableValidation={shouldDisableValidation}
-        tradeFlags={tradeFlags}
       />
 
       <PositionEditor
@@ -574,25 +484,6 @@ export function SyntheticsPage(p: Props) {
         shouldDisableValidation={shouldDisableValidation}
       />
 
-      <ClaimModal
-        marketsInfoData={marketsInfoData}
-        isVisible={isClaiming}
-        onClose={() => setIsClaiming(false)}
-        setPendingTxns={setPendingTxns}
-      />
-      <SettleAccruedFundingFeeModal
-        isVisible={isSettling}
-        positionKeys={gettingPendingFeePositionKeys}
-        positionsInfoData={positionsInfoData}
-        tokensData={tokensData}
-        allowedSlippage={allowedSlippage}
-        setPositionKeys={setGettingPendingFeePositionKeys}
-        setPendingTxns={setPendingTxns}
-        onClose={useCallback(() => {
-          setGettingPendingFeePositionKeys([]);
-          setIsSettling(false);
-        }, [])}
-      />
       <Footer />
     </div>
   );

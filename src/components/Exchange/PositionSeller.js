@@ -6,11 +6,21 @@ import { BsArrowRight } from "react-icons/bs";
 
 import PositionRouter from "abis/PositionRouter.json";
 import Button from "components/Button/Button";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import PercentageInput from "components/PercentageInput/PercentageInput";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenSelector from "components/TokenSelector/TokenSelector";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ARBITRUM, IS_NETWORK_DISABLED, getChainName, getConstant } from "config/chains";
 import { getContract } from "config/contracts";
+import {
+  BASIS_POINTS_DIVISOR,
+  DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
+  DEFAULT_SLIPPAGE_AMOUNT,
+  EXCESSIVE_SLIPPAGE_AMOUNT,
+  MAX_ALLOWED_LEVERAGE,
+  MAX_LEVERAGE,
+} from "config/factors";
 import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "config/localStorage";
 import { getPriceDecimals, getV1Tokens, getWrappedToken } from "config/tokens";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
@@ -35,8 +45,6 @@ import {
   getProfitPrice,
   isAddressZero,
 } from "lib/legacy";
-import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT, DEFAULT_SLIPPAGE_AMOUNT, EXCESSIVE_SLIPPAGE_AMOUNT } from "config/factors";
-import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE, MAX_LEVERAGE } from "config/factors";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   bigNumberify,
@@ -58,13 +66,16 @@ import ExchangeInfoRow from "./ExchangeInfoRow";
 import FeesTooltip from "./FeesTooltip";
 import "./PositionSeller.css";
 import { ErrorCode, ErrorDisplayType } from "./constants";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
+
+const ORDER_OPTION_LABELS = {
+  [MARKET]: t`Market`,
+  [STOP]: t`Trigger`,
+};
 
 function applySpread(amount, spread) {
   if (!amount || !spread) {
@@ -239,11 +250,8 @@ export default function PositionSeller(props) {
     savedRecieveTokenAddress ? toTokens.find((token) => token.address === savedRecieveTokenAddress) : undefined
   );
 
-  const ORDER_OPTIONS = [MARKET, STOP];
-  const ORDER_OPTION_LABELS = {
-    [MARKET]: t`Market`,
-    [STOP]: t`Trigger`,
-  };
+  const ORDER_OPTIONS = useMemo(() => [MARKET, STOP], []);
+
   let [orderOption, setOrderOption] = useState(MARKET);
 
   if (!flagOrdersEnabled) {
@@ -365,8 +373,20 @@ export default function PositionSeller(props) {
     setSavedRecieveTokenAddress,
   ]);
 
-  let executionFee = orderOption === STOP ? getConstant(chainId, "DECREASE_ORDER_EXECUTION_GAS_FEE") : minExecutionFee;
-  let executionFeeUsd = getUsd(executionFee, nativeTokenAddress, false, infoTokens) || bigNumberify(0);
+  const executionFee =
+    orderOption === STOP ? getConstant(chainId, "DECREASE_ORDER_EXECUTION_GAS_FEE") : minExecutionFee;
+  const executionFeeUsd = useMemo(
+    () => getUsd(executionFee, nativeTokenAddress, false, infoTokens) || bigNumberify(0),
+    [executionFee, infoTokens, nativeTokenAddress]
+  );
+
+  const executionFees = useMemo(
+    () => ({
+      fee: executionFee,
+      feeUsd: executionFeeUsd,
+    }),
+    [executionFee, executionFeeUsd]
+  );
 
   const collateralToken = position.collateralToken;
   const collateralTokenInfo = getTokenInfo(infoTokens, collateralToken.address);
@@ -429,7 +449,7 @@ export default function PositionSeller(props) {
        a position has profit or loss and how much fees it has. The following logic counters the backend logic
        and determines the exact collateralDelta to be passed so that ultimately the nextCollateral value
        generated will keep leverage the same.
-       
+
        The backend logic can be found in reduceCollateral function at
        https://github.com/gmx-io/gmx-contracts/blob/master/contracts/core/Vault.sol#L992
       */
@@ -1123,6 +1143,7 @@ export default function PositionSeller(props) {
                 >
                   <PercentageInput
                     onChange={setAllowedSlippage}
+                    value={allowedSlippage}
                     defaultValue={savedSlippageAmount}
                     highValue={EXCESSIVE_SLIPPAGE_AMOUNT}
                     highValueWarningText={t`Slippage is too high`}
@@ -1272,10 +1293,7 @@ export default function PositionSeller(props) {
                   isOpening={false}
                   positionFee={positionFee}
                   fundingFee={fundingFee}
-                  executionFees={{
-                    fee: executionFee,
-                    feeUsd: executionFeeUsd,
-                  }}
+                  executionFees={executionFees}
                   swapFee={swapFee}
                 />
               </div>
@@ -1285,7 +1303,7 @@ export default function PositionSeller(props) {
                 {formatAmount(receiveSpreadInfo.value.mul(100), USD_DECIMALS, 2, true)}%
               </ExchangeInfoRow>
             )}
-            <div className={["Exchange-info-row PositionSeller-receive-row", !showReceiveSpread ? "top-line" : ""]}>
+            <div className={cx("Exchange-info-row PositionSeller-receive-row", !showReceiveSpread ? "top-line" : "")}>
               <div className="Exchange-info-label">
                 <Trans>Receive</Trans>
               </div>
@@ -1346,6 +1364,7 @@ export default function PositionSeller(props) {
                               <br />
                               <StatsTooltipRow
                                 label={t`Max ${collateralInfo.symbol} in`}
+                                // eslint-disable-next-line react-perf/jsx-no-new-array-as-prop
                                 value={[
                                   `${formatAmount(maxIn, collateralInfo.decimals, 0, true)} ${collateralInfo.symbol}`,
                                   `($${formatAmount(maxInUsd, USD_DECIMALS, 0, true)})`,
@@ -1354,6 +1373,7 @@ export default function PositionSeller(props) {
                               <br />
                               <StatsTooltipRow
                                 label={t`Max ${tokenOptionInfo.symbol} out`}
+                                // eslint-disable-next-line react-perf/jsx-no-new-array-as-prop
                                 value={[
                                   `${formatAmount(maxOut, tokenOptionInfo.decimals, 2, true)} ${
                                     tokenOptionInfo.symbol

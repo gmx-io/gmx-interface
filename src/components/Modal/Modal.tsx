@@ -1,17 +1,45 @@
-import "./Modal.css";
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useMemo, PropsWithChildren } from "react";
 import cx from "classnames";
 import { motion, AnimatePresence } from "framer-motion";
 import { RemoveScroll } from "react-remove-scroll";
 import { MdClose } from "react-icons/md";
 
-export default function Modal(props) {
+import "./Modal.css";
+
+const FADE_VARIANTS = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1 },
+};
+
+const VISIBLE_STYLES: React.CSSProperties = {
+  overflow: "hidden",
+  position: "fixed",
+};
+
+const HIDDEN_STYLES: React.CSSProperties = {
+  overflow: "visible",
+  position: "fixed",
+};
+
+const TRANSITION = { duration: 0.2 };
+
+export type ModalProps = PropsWithChildren<{
+  isVisible?: boolean;
+  setIsVisible: (isVisible: boolean) => void;
+  className?: string;
+  zIndex?: number;
+  onAfterOpen?: () => void;
+  label?: React.ReactNode;
+  headerContent?: () => React.ReactNode;
+}>;
+
+export default function Modal(props: ModalProps) {
   const { isVisible, setIsVisible, className, zIndex, onAfterOpen } = props;
 
   const modalRef = useRef(null);
 
   useEffect(() => {
-    function close(e) {
+    function close(e: KeyboardEvent) {
       if (e.keyCode === 27 && setIsVisible) {
         setIsVisible(false);
       }
@@ -24,29 +52,24 @@ export default function Modal(props) {
     if (typeof onAfterOpen === "function") onAfterOpen();
   }, [onAfterOpen]);
 
-  const fadeVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1 },
-  };
+  const style = useMemo(() => ({ zIndex }), [zIndex]);
 
   return (
+    // @ts-ignore
     <AnimatePresence>
       {isVisible && (
         <motion.div
           className={cx("Modal", className)}
-          style={{ zIndex }}
+          style={style}
           initial="hidden"
           animate="visible"
           exit="hidden"
-          variants={fadeVariants}
-          transition={{ duration: 0.2 }}
+          variants={FADE_VARIANTS}
+          transition={TRANSITION}
         >
           <div
             className="Modal-backdrop"
-            style={{
-              overflow: isVisible ? "hidden" : "visible",
-              position: "fixed",
-            }}
+            style={isVisible ? VISIBLE_STYLES : HIDDEN_STYLES}
             onClick={() => setIsVisible(false)}
           ></div>
           <div className="Modal-content">

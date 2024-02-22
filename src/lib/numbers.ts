@@ -7,6 +7,8 @@ import { getPlusOrMinusSymbol } from "./utils";
 const MAX_EXCEEDING_THRESHOLD = "1000000000";
 const MIN_EXCEEDING_THRESHOLD = "0.01";
 
+export const BN_ZERO = BigNumber.from(0);
+
 export function bigNumberify(n?: BigNumberish) {
   try {
     return BigNumber.from(n);
@@ -333,6 +335,14 @@ export function getBasisPoints(numerator: BigNumber, denominator: BigNumber, sho
   }
 
   return result;
+}
+
+export function formatRatePercentage(rate?: BigNumber, displayDecimals?: number) {
+  if (!rate) {
+    return "-";
+  }
+
+  return `${getPlusOrMinusSymbol(rate)}${formatAmount(rate.mul(100).abs(), 30, displayDecimals ?? 4)}%`;
 }
 
 export function basisPointsToFloat(basisPoints: BigNumber) {

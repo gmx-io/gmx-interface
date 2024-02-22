@@ -1,9 +1,16 @@
+import noop from "lodash/noop";
+import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useEffect, useMemo } from "react";
+
 import { EXECUTION_FEE_CONFIG_V2, SUPPORTED_CHAIN_IDS } from "config/chains";
 import { isDevelopment } from "config/env";
 import { DEFAULT_ACCEPABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import {
+  DISABLE_ORDER_VALIDATION_KEY,
+  IS_PNL_IN_LEVERAGE_KEY,
   ORACLE_KEEPER_INSTANCES_CONFIG_KEY,
+  SHOULD_SHOW_POSITION_LINES_KEY,
   SHOW_DEBUG_VALUES_KEY,
+  SHOW_PNL_AFTER_FEES_KEY,
   getAllowedSlippageKey,
   getExecutionFeeBufferBpsKey,
   getSyntheticsAcceptablePriceImpactBufferKey,
@@ -11,7 +18,6 @@ import {
 import { getOracleKeeperRandomIndex } from "config/oracleKeeper";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useEffect, useMemo } from "react";
 
 export type SettingsContextType = {
   showDebugValues: boolean;
@@ -25,6 +31,14 @@ export type SettingsContextType = {
   shouldUseExecutionFeeBuffer: boolean;
   oracleKeeperInstancesConfig: { [chainId: number]: number };
   setOracleKeeperInstancesConfig: Dispatch<SetStateAction<{ [chainId: number]: number } | undefined>>;
+  showPnlAfterFees: boolean;
+  setShowPnlAfterFees: (val: boolean) => void;
+  isPnlInLeverage: boolean;
+  setIsPnlInLeverage: (val: boolean) => void;
+  shouldDisableValidationForTesting: boolean;
+  setShouldDisableValidationForTesting: (val: boolean) => void;
+  shouldShowPositionLines: boolean;
+  setShouldShowPositionLines: (val: boolean) => void;
 };
 
 export const SettingsContext = createContext({});
@@ -60,6 +74,35 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     }, {} as { [chainId: number]: number })
   );
 
+  const [savedShowPnlAfterFees, setSavedShowPnlAfterFees] = useLocalStorageSerializeKey(
+    [chainId, SHOW_PNL_AFTER_FEES_KEY],
+    true
+  );
+
+  const [savedIsPnlInLeverage, setSavedIsPnlInLeverage] = useLocalStorageSerializeKey(
+    [chainId, IS_PNL_IN_LEVERAGE_KEY],
+    false
+  );
+
+  let savedShouldDisableValidationForTesting: boolean | undefined;
+  let setSavedShouldDisableValidationForTesting: (val: boolean) => void;
+  if (isDevelopment()) {
+    // Safety: isDevelopment never changes
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    [savedShouldDisableValidationForTesting, setSavedShouldDisableValidationForTesting] = useLocalStorageSerializeKey(
+      [chainId, DISABLE_ORDER_VALIDATION_KEY],
+      false
+    );
+  } else {
+    savedShouldDisableValidationForTesting = false;
+    setSavedShouldDisableValidationForTesting = noop;
+  }
+
+  const [savedShouldShowPositionLines, setSavedShouldShowPositionLines] = useLocalStorageSerializeKey(
+    [chainId, SHOULD_SHOW_POSITION_LINES_KEY],
+    false
+  );
+
   useEffect(() => {
     if (shouldUseExecutionFeeBuffer && executionFeeBufferBps === undefined) {
       setExecutionFeeBufferBps(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps);
@@ -79,6 +122,14 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       setOracleKeeperInstancesConfig,
       savedAcceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer!,
       setSavedAcceptablePriceImpactBuffer,
+      showPnlAfterFees: savedShowPnlAfterFees!,
+      setShowPnlAfterFees: setSavedShowPnlAfterFees,
+      isPnlInLeverage: savedIsPnlInLeverage!,
+      setIsPnlInLeverage: setSavedIsPnlInLeverage,
+      shouldDisableValidationForTesting: savedShouldDisableValidationForTesting!,
+      setShouldDisableValidationForTesting: setSavedShouldDisableValidationForTesting,
+      shouldShowPositionLines: savedShouldShowPositionLines!,
+      setShouldShowPositionLines: setSavedShouldShowPositionLines,
     };
   }, [
     showDebugValues,
@@ -92,6 +143,14 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setOracleKeeperInstancesConfig,
     savedAcceptablePriceImpactBuffer,
     setSavedAcceptablePriceImpactBuffer,
+    savedShowPnlAfterFees,
+    setSavedShowPnlAfterFees,
+    savedIsPnlInLeverage,
+    setSavedIsPnlInLeverage,
+    savedShouldDisableValidationForTesting,
+    setSavedShouldDisableValidationForTesting,
+    savedShouldShowPositionLines,
+    setSavedShouldShowPositionLines,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;

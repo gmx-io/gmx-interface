@@ -55,7 +55,7 @@ async function getCodeOwnersData(network, account, codes = []) {
     });
 }
 
-export function useUserReferralInfo(
+export function useUserReferralInfoRequest(
   signer: Signer | undefined,
   chainId: number,
   account?: string | null,

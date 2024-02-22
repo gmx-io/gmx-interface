@@ -17,7 +17,6 @@ import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useHasOutdatedUi } from "domain/legacy";
-import { useUserReferralInfo } from "domain/referrals/hooks";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
@@ -39,7 +38,6 @@ import {
   formatLiquidationPrice,
   getLeverage,
   getLiquidationPrice,
-  usePositionsConstants,
 } from "domain/synthetics/positions";
 import { TokensData, adaptToV1InfoTokens, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { TradeFees, getMarkPrice, getMinCollateralUsdForLeverage } from "domain/synthetics/trade";
@@ -66,6 +64,8 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import "./PositionEditor.scss";
 import { getMinResidualAmount } from "domain/tokens";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
+import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 
 export type Props = {
   position?: PositionInfo;
@@ -82,6 +82,11 @@ enum Operation {
   Withdraw = "Withdraw",
 }
 
+const OPERATION_LABELS = {
+  [Operation.Deposit]: t`Deposit`,
+  [Operation.Withdraw]: t`Withdraw`,
+};
+
 export function PositionEditor(p: Props) {
   const { position, tokensData, showPnlInLeverage, setPendingTxns, onClose, allowedSlippage } = p;
   const { chainId } = useChainId();
@@ -91,9 +96,9 @@ export function PositionEditor(p: Props) {
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
-  const { minCollateralUsd } = usePositionsConstants(chainId);
   const routerAddress = getContract(chainId, "SyntheticsRouter");
-  const userReferralInfo = useUserReferralInfo(signer, chainId, account);
+  const { minCollateralUsd } = usePositionsConstants();
+  const userReferralInfo = useUserReferralInfo();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
@@ -200,6 +205,10 @@ export function PositionEditor(p: Props) {
     };
   }, [chainId, collateralDeltaUsd, gasLimits, gasPrice, isDeposit, position, tokensData]);
 
+  const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
+    executionFee?.feeUsd
+  );
+
   const { nextCollateralUsd, nextLeverage, nextLiqPrice, receiveUsd, receiveAmount } = useMemo(() => {
     if (!position || !collateralDeltaUsd?.gt(0) || !minCollateralUsd || !fees?.totalFees) {
       return {};
@@ -287,6 +296,10 @@ export function PositionEditor(p: Props) {
       return t`Pending ${collateralToken?.assetSymbol ?? collateralToken?.symbol} approval`;
     }
 
+    if (isHighFeeConsentError) {
+      return t`High Execution Fee not yet acknowledged`;
+    }
+
     if (isSubmitting) {
       return t`Creating Order...`;
     }
@@ -297,6 +310,7 @@ export function PositionEditor(p: Props) {
     collateralDeltaUsd,
     collateralToken,
     hasOutdatedUi,
+    isHighFeeConsentError,
     isDeposit,
     isSubmitting,
     minCollateralUsd,
@@ -429,11 +443,6 @@ export function PositionEditor(p: Props) {
     [isVisible, prevIsVisible]
   );
 
-  const operationLabels = {
-    [Operation.Deposit]: t`Deposit`,
-    [Operation.Withdraw]: t`Withdraw`,
-  };
-
   const showMaxOnDeposit = collateralToken?.isNative
     ? minResidualAmount && collateralToken?.balance?.gt(minResidualAmount)
     : true;
@@ -442,14 +451,13 @@ export function PositionEditor(p: Props) {
     <div className="PositionEditor">
       <Modal
         className="PositionEditor-modal"
-        isVisible={position}
+        isVisible={!!position}
         setIsVisible={onClose}
         label={
           <Trans>
             Edit {position?.isLong ? t`Long` : t`Short`} {position?.indexToken?.symbol}
           </Trans>
         }
-        allowContentTouchMove
       >
         {position && (
           <>
@@ -457,7 +465,7 @@ export function PositionEditor(p: Props) {
               onChange={setOperation}
               option={operation}
               options={Object.values(Operation)}
-              optionLabels={operationLabels}
+              optionLabels={OPERATION_LABELS}
               className="PositionEditor-tabs SwapBox-option-tabs"
             />
             <SubaccountNavigationButton
@@ -467,7 +475,7 @@ export function PositionEditor(p: Props) {
             />
 
             <BuyInputSection
-              topLeftLabel={operationLabels[operation]}
+              topLeftLabel={OPERATION_LABELS[operation]}
               topLeftValue={formatUsd(collateralDeltaUsd)}
               topRightLabel={t`Max`}
               topRightValue={
@@ -519,7 +527,7 @@ export function PositionEditor(p: Props) {
             >
               {availableSwapTokens ? (
                 <TokenSelector
-                  label={operationLabels[operation]}
+                  label={OPERATION_LABELS[operation]}
                   chainId={chainId}
                   tokenAddress={selectedCollateralAddress!}
                   onSelectToken={(token) => setSelectedCollateralAddress(token.address)}
@@ -593,6 +601,7 @@ export function PositionEditor(p: Props) {
 
               {!isDeposit && (
                 <ExchangeInfoRow
+                  isTop={true}
                   label={t`Receive`}
                   value={formatTokenAmountWithUsd(
                     receiveAmount,
@@ -605,15 +614,18 @@ export function PositionEditor(p: Props) {
               )}
             </div>
 
-            {needCollateralApproval && collateralToken && (
+            {((needCollateralApproval && collateralToken) || highExecutionFeeAcknowledgement) && (
               <>
                 <div className="App-card-divider" />
 
-                <ApproveTokenButton
-                  tokenAddress={collateralToken.address}
-                  tokenSymbol={collateralToken.assetSymbol ?? collateralToken.symbol}
-                  spenderAddress={routerAddress}
-                />
+                {needCollateralApproval && collateralToken && (
+                  <ApproveTokenButton
+                    tokenAddress={collateralToken.address}
+                    tokenSymbol={collateralToken.assetSymbol ?? collateralToken.symbol}
+                    spenderAddress={routerAddress}
+                  />
+                )}
+                {highExecutionFeeAcknowledgement}
               </>
             )}
 
@@ -624,7 +636,7 @@ export function PositionEditor(p: Props) {
                 onClick={onSubmit}
                 disabled={Boolean(error) && !p.shouldDisableValidation}
               >
-                {error || operationLabels[operation]}
+                {error || OPERATION_LABELS[operation]}
               </Button>
             </div>
           </>

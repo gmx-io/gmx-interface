@@ -4,7 +4,7 @@ import { getExplorerUrl } from "config/chains";
 import { getContract } from "config/contracts";
 import { MAX_PNL_FACTOR_FOR_DEPOSITS_KEY, MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY } from "config/dataStore";
 import { getTokenBySymbol } from "config/tokens";
-import { TokensData, useTokensData } from "domain/synthetics/tokens";
+import { TokensData, useTokensDataRequest } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { useMulticall } from "lib/multicall";
@@ -21,7 +21,7 @@ type MarketTokensDataResult = {
 export function useMarketTokensData(chainId: number, p: { isDeposit: boolean }): MarketTokensDataResult {
   const { isDeposit } = p;
   const { account } = useWallet();
-  const { tokensData, pricesUpdatedAt } = useTokensData(chainId);
+  const { tokensData, pricesUpdatedAt } = useTokensDataRequest(chainId);
   const { marketsData, marketsAddresses } = useMarkets(chainId);
 
   const isDataLoaded = tokensData && marketsAddresses?.length;

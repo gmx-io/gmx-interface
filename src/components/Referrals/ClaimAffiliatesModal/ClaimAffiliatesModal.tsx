@@ -3,7 +3,7 @@ import Button from "components/Button/Button";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import Modal from "components/Modal/Modal";
 import Tooltip from "components/Tooltip/Tooltip";
-import { getMarketIndexName, getMarketPoolName, useMarketsInfo } from "domain/synthetics/markets";
+import { getMarketIndexName, getMarketPoolName, useMarketsInfoRequest } from "domain/synthetics/markets";
 import { AffiliateReward } from "domain/synthetics/referrals/types";
 import { useAffiliateRewards } from "domain/synthetics/referrals/useAffiliateRewards";
 import { getTotalClaimableAffiliateRewardsUsd } from "domain/synthetics/referrals/utils";
@@ -28,7 +28,7 @@ export function ClaimAffiliatesModal(p: Props) {
   const { account, signer } = useWallet();
   const { chainId } = useChainId();
 
-  const { marketsInfoData } = useMarketsInfo(chainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId);
   const { affiliateRewardsData } = useAffiliateRewards(chainId);
   const [isSubmitting, setIsSubmitting] = useState(false);
 

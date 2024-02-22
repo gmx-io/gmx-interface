@@ -82,6 +82,16 @@ type Props = {
   setOperation: Dispatch<SetStateAction<Operation>>;
 };
 
+const OPERATION_LABELS = {
+  [Operation.Deposit]: t`Buy GM`,
+  [Operation.Withdrawal]: t`Sell GM`,
+};
+
+const MODE_LABELS = {
+  [Mode.Single]: t`Single`,
+  [Mode.Pair]: t`Pair`,
+};
+
 const getAvailableModes = (operation: Operation, market?: Market) => {
   if (operation === Operation.Deposit) {
     if (!market?.isSameCollaterals) {
@@ -150,16 +160,6 @@ export function GmSwapBox(p: Props) {
     marketsInfoData,
     depositMarketTokensData
   );
-
-  const operationLabels = {
-    [Operation.Deposit]: t`Buy GM`,
-    [Operation.Withdrawal]: t`Sell GM`,
-  };
-
-  const modeLabels = {
-    [Mode.Single]: t`Single`,
-    [Mode.Pair]: t`Pair`,
-  };
 
   const isDeposit = operation === Operation.Deposit;
   const isWithdrawal = operation === Operation.Withdrawal;
@@ -839,7 +839,7 @@ export function GmSwapBox(p: Props) {
     <div className={`App-box GmSwapBox`}>
       <Tab
         options={Object.values(Operation)}
-        optionLabels={operationLabels}
+        optionLabels={OPERATION_LABELS}
         option={operation}
         onChange={onOperationChange}
         className="Exchange-swap-option-tabs"
@@ -847,7 +847,7 @@ export function GmSwapBox(p: Props) {
 
       <Tab
         options={availableModes}
-        optionLabels={modeLabels}
+        optionLabels={MODE_LABELS}
         className="GmSwapBox-asset-options-tabs"
         type="inline"
         option={mode}
@@ -985,7 +985,6 @@ export function GmSwapBox(p: Props) {
               selectedMarketAddress={marketAddress}
               markets={sortedMarketsInfoByIndexToken}
               marketTokensData={marketTokensData}
-              marketsInfoData={marketsInfoData}
               isSideMenu
               showBalances
               showAllPools
@@ -1011,7 +1010,6 @@ export function GmSwapBox(p: Props) {
                 selectedMarketAddress={marketAddress}
                 markets={markets}
                 marketTokensData={marketTokensData}
-                marketsInfoData={marketsInfoData}
                 isSideMenu
                 showBalances
                 onSelectMarket={(marketInfo) => {
@@ -1095,9 +1093,6 @@ export function GmSwapBox(p: Props) {
         onClose={() => {
           setStage("swap");
         }}
-        isHighPriceImpact={isHighPriceImpact!}
-        isHighPriceImpactAccepted={isHighPriceImpactAccepted}
-        setIsHighPriceImpactAccepted={setIsHighPriceImpactAccepted}
         shouldDisableValidation={shouldDisableValidation}
       />
     </div>

@@ -6,7 +6,7 @@ import EventToast from "./EventToast";
 import { isFuture, parse } from "date-fns";
 import { isHomeSite } from "lib/legacy";
 import { useChainId } from "lib/chains";
-import { useMarketsInfo } from "domain/synthetics/markets";
+import { useMarketsInfoRequest } from "domain/synthetics/markets";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { ARBITRUM } from "config/chains";
 import { getProvider } from "lib/rpc";
@@ -15,7 +15,7 @@ function useEventToast() {
   const isHome = isHomeSite();
   const [visited, setVisited] = useLocalStorage("visited-announcements", []);
   const { chainId } = useChainId();
-  const { marketsInfoData } = useMarketsInfo(chainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId);
   const incentiveStats = useIncentiveStats(ARBITRUM);
 
   const [isArbitrumDown, setIsArbitrumDown] = useState(false);
@@ -47,12 +47,9 @@ function useEventToast() {
   }, [marketsInfoData]);
 
   useEffect(() => {
-    const allIncentivesOn = Boolean(
-      incentiveStats?.lp?.isActive && incentiveStats?.migration?.isActive && incentiveStats?.trading?.isActive
-    );
+    const allIncentivesOn = Boolean(incentiveStats?.lp?.isActive && incentiveStats?.trading?.isActive);
     const someIncentivesOn =
-      !allIncentivesOn &&
-      Boolean(incentiveStats?.lp?.isActive || incentiveStats?.migration?.isActive || incentiveStats?.trading?.isActive);
+      !allIncentivesOn && Boolean(incentiveStats?.lp?.isActive || incentiveStats?.trading?.isActive);
     const validationParams = {
       "v2-adaptive-funding": isAdaptiveFundingActiveSomeMarkets,
       "v2-adaptive-funding-coming-soon":
