@@ -20,7 +20,7 @@ export default function binanceWallet({
   const provider = typeof window !== "undefined" && isInBinance() ? window.ethereum : undefined;
   return {
     id: "binance",
-    name: "Binance Wallet",
+    name: "Binance Web3 Wallet",
     iconUrl: async () => (await import("./binanceWallet.svg")).default,
     iconAccent: "#1E1E1E",
     iconBackground: "#1E1E1E",
