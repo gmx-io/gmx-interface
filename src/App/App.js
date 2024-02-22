@@ -102,6 +102,7 @@ import useTradeRedirect from "lib/useTradeRedirect";
 import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContext";
 import { SubaccountModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import { MultiTransactionsProvider } from "context/MultiTransactionsContext/MultiTransactionsProvider";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -741,6 +742,7 @@ function App() {
   app = <Router>{app}</Router>;
   app = <SEO>{app}</SEO>;
   app = <SettingsContextProvider>{app}</SettingsContextProvider>;
+  app = <MultiTransactionsProvider>{app}</MultiTransactionsProvider>;
   app = <SWRConfig value={SWRConfigProp}>{app}</SWRConfig>;
 
   return app;

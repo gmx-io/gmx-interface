@@ -341,6 +341,22 @@ msgstr ""
 msgid "Affiliate Vault"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
+msgid "Affiliate Vault Rewards Claim Failed"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Affiliate Vault Rewards Claimed"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Affiliate Vault Rewards Stake Failed"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Affiliate Vault Rewards Staked"
+msgstr ""
+
 #: src/pages/Referrals/Referrals.tsx
 msgid "Affiliates"
 msgstr ""
@@ -851,7 +867,6 @@ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Claim completed!"
 msgstr ""
 
@@ -870,7 +885,6 @@ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Claim failed."
 msgstr ""
 
@@ -882,7 +896,6 @@ msgstr ""
 msgid "Claim submitted! <0>View status.</0>"
 msgstr ""
 
-#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claim submitted."
 msgstr ""
@@ -915,10 +928,15 @@ msgstr ""
 msgid "Claimable Rebates"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
+msgid "Claiming Affiliate Vault Rewards"
+msgstr ""
+
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Claiming Price Impact Rebate..."
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claiming and Staking Affiliate Vault Rewards"
 msgstr ""
@@ -4580,6 +4598,10 @@ msgstr ""
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Staked Tokens"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Staking Affiliate Vault Rewards"
 msgstr ""
 
 #: src/pages/Stake/StakeV1.js

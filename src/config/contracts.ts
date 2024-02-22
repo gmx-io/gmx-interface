@@ -105,6 +105,7 @@ const CONTRACTS = {
 
     GmxVester: AddressZero,
     GlpVester: AddressZero,
+    AffiliateVester: AddressZero,
 
     OrderBook: AddressZero,
     OrderExecutor: AddressZero,
@@ -271,6 +272,7 @@ const CONTRACTS = {
 
     GmxVester: AddressZero,
     GlpVester: AddressZero,
+    AffiliateVester: AddressZero,
 
     OrderBook: AddressZero,
     OrderExecutor: AddressZero,

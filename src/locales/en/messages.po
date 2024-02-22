@@ -341,6 +341,22 @@ msgstr "Affiliate Rewards Claimed"
 msgid "Affiliate Vault"
 msgstr "Affiliate Vault"
 
+#: src/pages/Stake/StakeV2.js
+msgid "Affiliate Vault Rewards Claim Failed"
+msgstr "Affiliate Vault Rewards Claim Failed"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Affiliate Vault Rewards Claimed"
+msgstr "Affiliate Vault Rewards Claimed"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Affiliate Vault Rewards Stake Failed"
+msgstr "Affiliate Vault Rewards Stake Failed"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Affiliate Vault Rewards Staked"
+msgstr "Affiliate Vault Rewards Staked"
+
 #: src/pages/Referrals/Referrals.tsx
 msgid "Affiliates"
 msgstr "Affiliates"
@@ -851,7 +867,6 @@ msgstr "Claim V2 Rebates from your referred Traders."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Claim completed!"
 msgstr "Claim completed!"
 
@@ -870,7 +885,6 @@ msgstr "Claim failed"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Claim failed."
 msgstr "Claim failed."
 
@@ -882,7 +896,6 @@ msgstr "Claim submitted!"
 msgid "Claim submitted! <0>View status.</0>"
 msgstr "Claim submitted! <0>View status.</0>"
 
-#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claim submitted."
 msgstr "Claim submitted."
@@ -915,10 +928,15 @@ msgstr "Claimable Price Impact Rebates.<0/><1/><2>Read more</2>."
 msgid "Claimable Rebates"
 msgstr "Claimable Rebates"
 
+#: src/pages/Stake/StakeV2.js
+msgid "Claiming Affiliate Vault Rewards"
+msgstr "Claiming Affiliate Vault Rewards"
+
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Claiming Price Impact Rebate..."
 msgstr "Claiming Price Impact Rebate..."
 
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claiming and Staking Affiliate Vault Rewards"
 msgstr "Claiming and Staking Affiliate Vault Rewards"
@@ -4584,6 +4602,10 @@ msgstr "Staked Multiplier Points"
 #: src/pages/Stake/StakeV2.js
 msgid "Staked Tokens"
 msgstr "Staked Tokens"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Staking Affiliate Vault Rewards"
+msgstr "Staking Affiliate Vault Rewards"
 
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.js

@@ -75,6 +75,8 @@ import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import UserIncentiveDistributionList from "components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
+import { useSequentialTransactions } from "lib/contracts/useSequentialTransactions";
+import MultiTransactionNotification from "components/Synthetics/StatusNotification/MultiTransactionNotification";
 
 const { AddressZero } = ethers.constants;
 
@@ -1010,14 +1012,36 @@ function ClaimModal(props) {
 }
 
 function AffiliateClaimModal(props) {
-  const { isVisible, setIsVisible, signer, chainId, setPendingTxns, totalVesterRewards } = props;
+  const { isVisible, setIsVisible, signer, chainId, totalVesterRewards } = props;
   const [isClaiming, setIsClaiming] = useState(false);
+
+  const { executeTransactions } = useSequentialTransactions();
 
   const affiliateVesterAddress = getContract(chainId, "AffiliateVester");
 
   const [shouldStakeGmx, setShouldStakeGmx] = useLocalStorageSerializeKey(
     [chainId, "StakeV2-affiliate-vault-stake-gmx"],
     true
+  );
+
+  const transactionKeys = useMemo(() => {
+    return ["claimGmx"].concat(shouldStakeGmx ? ["stakeGmx"] : []);
+  }, [shouldStakeGmx]);
+
+  const statusMessages = useMemo(
+    () => ({
+      claimGmx: {
+        loading: t`Claiming Affiliate Vault Rewards`,
+        success: t`Affiliate Vault Rewards Claimed`,
+        error: t`Affiliate Vault Rewards Claim Failed`,
+      },
+      stakeGmx: {
+        loading: t`Staking Affiliate Vault Rewards`,
+        success: t`Affiliate Vault Rewards Staked`,
+        error: t`Affiliate Vault Rewards Stake Failed`,
+      },
+    }),
+    []
   );
 
   const isPrimaryEnabled = () => {
@@ -1034,22 +1058,62 @@ function AffiliateClaimModal(props) {
     return t`Claim`;
   };
 
+  const showToast = useCallback(() => {
+    const toastId = Date.now();
+
+    helperToast.success(
+      <MultiTransactionNotification
+        transactionKeys={transactionKeys}
+        statusMessages={statusMessages}
+        toastId={toastId}
+        title={t`Claiming and Staking Affiliate Vault Rewards`}
+      />,
+      {
+        toastId,
+        autoClose: false,
+      }
+    );
+  }, [transactionKeys, statusMessages]);
+
   const onClickPrimary = () => {
     setIsClaiming(true);
 
     const affiliateVesterContract = new ethers.Contract(affiliateVesterAddress, Vester.abi, signer);
-    callContract(chainId, affiliateVesterContract, "claim", {
-      sentMsg: t`Claim submitted.`,
-      failMsg: t`Claim failed.`,
-      successMsg: t`Claim completed!`,
-      setPendingTxns,
-    })
-      .then(() => {
-        setIsVisible(false);
-      })
-      .finally(() => {
-        setIsClaiming(false);
+
+    const transactions = [
+      {
+        key: "claimGmx",
+        chainId,
+        contract: affiliateVesterContract,
+        method: "claim",
+        params: [],
+        opts: {
+          hideSentMsg: true,
+          hideSuccessMsg: true,
+        },
+      },
+    ];
+
+    if (shouldStakeGmx) {
+      transactions.push({
+        key: "stakeGmx",
+        chainId,
+        contract: affiliateVesterContract,
+        method: "claim",
+        params: [],
+        opts: {
+          hideSentMsg: true,
+          hideSuccessMsg: true,
+        },
       });
+    }
+
+    executeTransactions(transactions, () => {
+      setIsVisible(false);
+      setIsClaiming(false);
+    });
+
+    showToast();
   };
 
   return (

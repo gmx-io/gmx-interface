@@ -341,6 +341,22 @@ msgstr ""
 msgid "Affiliate Vault"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
+msgid "Affiliate Vault Rewards Claim Failed"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Affiliate Vault Rewards Claimed"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Affiliate Vault Rewards Stake Failed"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Affiliate Vault Rewards Staked"
+msgstr ""
+
 #: src/pages/Referrals/Referrals.tsx
 msgid "Affiliates"
 msgstr ""
@@ -851,7 +867,6 @@ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Claim completed!"
 msgstr "請求完了!"
 
@@ -870,7 +885,6 @@ msgstr "請求できませんでした"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Claim failed."
 msgstr "請求できませんでした。"
 
@@ -882,7 +896,6 @@ msgstr "請求申し込み完了!"
 msgid "Claim submitted! <0>View status.</0>"
 msgstr "請求申し込み完了! <0>状況を確認する。</0>"
 
-#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claim submitted."
 msgstr "請求申し込み完了"
@@ -915,10 +928,15 @@ msgstr ""
 msgid "Claimable Rebates"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
+msgid "Claiming Affiliate Vault Rewards"
+msgstr ""
+
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Claiming Price Impact Rebate..."
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claiming and Staking Affiliate Vault Rewards"
 msgstr ""
@@ -4581,6 +4599,10 @@ msgstr "ステークされたマルチプライヤーポイント"
 #: src/pages/Stake/StakeV2.js
 msgid "Staked Tokens"
 msgstr "ステークされたトークン"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Staking Affiliate Vault Rewards"
+msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.js
