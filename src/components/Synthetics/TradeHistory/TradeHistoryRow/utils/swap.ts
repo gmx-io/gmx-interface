@@ -10,7 +10,11 @@ import { formatTokenAmount } from "lib/numbers";
 import { getActionTitle } from "../../keys";
 import { RowDetails, TooltipContent, formatTradeActionTimestamp, lines } from "./shared";
 
-export const formatSwapMessage = (tradeAction: SwapTradeAction, marketsInfoData?: MarketsInfoData): RowDetails => {
+export const formatSwapMessage = (
+  tradeAction: SwapTradeAction,
+  marketsInfoData?: MarketsInfoData,
+  relativeTimestamp = true
+): RowDetails => {
   const tokenIn = tradeAction.initialCollateralToken!;
   const tokenOut = tradeAction.targetCollateralToken!;
   const amountIn = tradeAction.initialCollateralDeltaAmount!;
@@ -132,6 +136,6 @@ export const formatSwapMessage = (tradeAction: SwapTradeAction, marketsInfoData?
     size: size,
     price: ratioText,
     priceComment: priceComment,
-    timestamp: formatTradeActionTimestamp(tradeAction.transaction.timestamp),
+    timestamp: formatTradeActionTimestamp(tradeAction.transaction.timestamp, relativeTimestamp),
   };
 };

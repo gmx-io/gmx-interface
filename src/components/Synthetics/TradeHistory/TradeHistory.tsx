@@ -1,14 +1,27 @@
-import { Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import * as dateFns from "date-fns";
-import { useEffect, useMemo, useState } from "react";
+import type { BigNumber } from "ethers";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { downloadAsCsv } from "components/DownloadAsCsv/DownloadAsCsv";
 import { TRADE_HISTORY_PER_PAGE } from "config/ui";
+import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { useMarkets } from "domain/synthetics/markets";
 import { OrderType } from "domain/synthetics/orders/types";
+import { isSwapOrderType } from "domain/synthetics/orders/utils";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions/usePositionsConstants";
-import { TradeActionType, useTradeHistory } from "domain/synthetics/tradeHistory";
+import {
+  PositionTradeAction,
+  SwapTradeAction,
+  TradeAction,
+  TradeActionType,
+  useTradeHistory,
+} from "domain/synthetics/tradeHistory";
 import { useChainId } from "lib/chains";
+import { formatPositionMessage } from "./TradeHistoryRow/utils/position";
+import type { RowDetails } from "./TradeHistoryRow/utils/shared";
+import { formatSwapMessage } from "./TradeHistoryRow/utils/swap";
 
 import Button from "components/Button/Button";
 import Pagination from "components/Pagination/Pagination";
@@ -72,6 +85,40 @@ function useMarketAddressesFromTokenAddresses(tokenAddresses: string[]): string[
   return marketAddresses;
 }
 
+function useDownloadAsCsv(tradeActions: TradeAction[] | undefined, minCollateralUsd?: BigNumber) {
+  const marketsInfoData = useMarketsInfoData();
+  const handleCsvDownload = useCallback(() => {
+    if (!tradeActions || !minCollateralUsd) {
+      return;
+    }
+
+    const fullFormattedData = tradeActions
+      .map((tradeAction) => {
+        if (isSwapOrderType(tradeAction.orderType!)) {
+          return formatSwapMessage(tradeAction as SwapTradeAction, marketsInfoData, false);
+        }
+
+        return formatPositionMessage(tradeAction as PositionTradeAction, minCollateralUsd, false);
+      })
+      .filter<RowDetails>(Boolean as any);
+
+    downloadAsCsv("trade-history", fullFormattedData, ["priceComment"], ",", {
+      action: t`Action`,
+      acceptablePrice: t`Acceptable price`,
+      executionPrice: t`Execution price`,
+      fullMarket: t`Full market`,
+      market: t`Market`,
+      price: t`Price`,
+      size: t`Size`,
+      priceImpact: t`Price impact`,
+      timestamp: t`Timestamp`,
+      triggerPrice: t`Trigger price`,
+    });
+  }, [marketsInfoData, minCollateralUsd, tradeActions]);
+
+  return handleCsvDownload;
+}
+
 export function TradeHistory(p: Props) {
   const { shouldShowPaginationButtons, forAllAccounts, account } = p;
   const { chainId } = useChainId();
@@ -127,6 +174,8 @@ export function TradeHistory(p: Props) {
     }
   }, [currentPage, pageCount, tradeActionsPageIndex, setTradeActionsPageIndex]);
 
+  const handleCsvDownload = useDownloadAsCsv(tradeActions, minCollateralUsd);
+
   return (
     <div className="TradeHistorySynthetics">
       <div className="App-box">
@@ -134,7 +183,7 @@ export function TradeHistory(p: Props) {
           <div className="TradeHistorySynthetics-filters">
             <DateRangeSelect startDate={dateRange[0]} endDate={dateRange[1]} onChange={setDateRange} />
           </div>
-          <Button variant="secondary" imgInfo={CSV_ICON_INFO}>
+          <Button variant="secondary" imgInfo={CSV_ICON_INFO} onClick={handleCsvDownload}>
             CSV
           </Button>
         </div>

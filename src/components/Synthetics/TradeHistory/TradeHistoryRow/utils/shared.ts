@@ -1,6 +1,7 @@
 import { i18n } from "@lingui/core";
 import { t } from "@lingui/macro";
 import formatRelative from "date-fns/formatRelative";
+import format from "date-fns/format";
 import { BigNumber } from "ethers";
 import type { Locale as DateLocale } from "date-fns";
 import dateDe from "date-fns/locale/de";
@@ -109,10 +110,16 @@ Object.values(dateLocaleMap).forEach((locale) => {
   };
 });
 
-export function formatTradeActionTimestamp(timestamp: number) {
+export function formatTradeActionTimestamp(timestamp: number, relativeTimestamp = true) {
   const localeStr = i18n.locale;
 
   const locale: DateLocale = dateLocaleMap[localeStr] || dateEn;
+
+  if (!relativeTimestamp) {
+    return format(new Date(timestamp * 1000), "dd MMM yyyy, HH:mm", {
+      locale,
+    });
+  }
 
   return formatRelative(new Date(timestamp * 1000), new Date(), {
     locale: locale,
