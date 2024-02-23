@@ -29,7 +29,6 @@ import {
   getPageTitle,
   getProcessedData,
   getStakingData,
-  getVestingData,
 } from "lib/legacy";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 
@@ -78,6 +77,7 @@ import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { useSequentialTransactions } from "lib/contracts/useSequentialTransactions";
 import MultiTransactionNotification from "components/Synthetics/StatusNotification/MultiTransactionNotification";
 import { usePrevious } from "lib/usePrevious";
+import useVestingData from "domain/vesting/useVestingData";
 
 const { AddressZero } = ethers.constants;
 
@@ -1156,7 +1156,7 @@ function AffiliateClaimModal(props) {
 
   return (
     <div className="StakeModal">
-      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Claiming and Staking Affiliate Vault Rewards`}>
+      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Claim Affiliate Vault Rewards`}>
         <div className="CompoundModal-menu">
           <div>
             <Checkbox isChecked={true} disabled={true}>
@@ -1254,8 +1254,6 @@ export default function StakeV2({ setPendingTxns }) {
   const glpVesterAddress = getContract(chainId, "GlpVester");
   const affiliateVesterAddress = getContract(chainId, "AffiliateVester");
 
-  const vesterAddresses = [gmxVesterAddress, glpVesterAddress, affiliateVesterAddress];
-
   const excludedEsGmxAccounts = [stakedGmxDistributorAddress, stakedGlpDistributorAddress];
 
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
@@ -1292,6 +1290,8 @@ export default function StakeV2({ setPendingTxns }) {
     marketsInfoData,
     marketTokensData,
   });
+
+  const vestingData = useVestingData(account);
 
   const { data: walletBalances } = useSWR(
     [
@@ -1351,13 +1351,6 @@ export default function StakeV2({ setPendingTxns }) {
     }
   );
 
-  const { data: vestingInfo } = useSWR(
-    [`StakeV2:vestingInfo:${active}`, chainId, readerAddress, "getVestingInfo", account || PLACEHOLDER_ACCOUNT],
-    {
-      fetcher: contractFetcher(signer, ReaderV2, [vesterAddresses]),
-    }
-  );
-
   const accumulatedBnGMXAmount = useAccumulatedBnGMXAmount();
 
   const maxBoostBasicPoints = useMaxBoostBasicPoints();
@@ -1389,10 +1382,9 @@ export default function StakeV2({ setPendingTxns }) {
     aum = aums[0].add(aums[1]).div(2);
   }
 
-  const { balanceData, supplyData } = getBalanceAndSupplyData(walletBalances);
-  const depositBalanceData = getDepositBalanceData(depositBalances);
-  const stakingData = getStakingData(stakingInfo);
-  const vestingData = getVestingData(vestingInfo);
+  const { balanceData, supplyData } = useMemo(() => getBalanceAndSupplyData(walletBalances), [walletBalances]);
+  const depositBalanceData = useMemo(() => getDepositBalanceData(depositBalances), [depositBalances]);
+  const stakingData = useMemo(() => getStakingData(stakingInfo), [stakingInfo]);
 
   const userTotalGmInfo = useMemo(() => {
     if (!active) return;
@@ -1637,8 +1629,8 @@ export default function StakeV2({ setPendingTxns }) {
   }
 
   function showAffiliateVesterClaimModal() {
-    if (!vestingData?.affiliateVester) {
-      helperToast.error(t`Unsupported network`);
+    if (!vestingData?.affiliateVesterClaimable?.gt(0)) {
+      helperToast.error(t`You have no GMX tokens to claim`);
       return;
     }
     setIsAffiliateClaimModalVisible(true);
@@ -2710,86 +2702,77 @@ export default function StakeV2({ setPendingTxns }) {
                 </div>
               </div>
             </div>
-            <div className="App-card StakeV2-gmx-card">
-              <div className="App-card-title">
-                <div className="inline-items-center">
-                  <img className="mr-xs" alt="GLP" src={icons.gmx} height={20} />
-                  <Trans>Affiliate Vault</Trans>
+            {vestingData?.affiliateVesterMaxVestableAmount?.gt(0) && (
+              <div className="App-card StakeV2-gmx-card">
+                <div className="App-card-title">
+                  <div className="inline-items-center">
+                    <img className="mr-xs" alt="GLP" src={icons.gmx} height={20} />
+                    <Trans>Affiliate Vault</Trans>
+                  </div>
+                </div>
+                <div className="App-card-divider" />
+                <div className="App-card-content">
+                  <div className="App-card-row">
+                    <div className="label">
+                      <Trans>Vesting Status</Trans>
+                    </div>
+                    <div>
+                      <Tooltip
+                        handle={`${formatKeyAmount(
+                          vestingData,
+                          "affiliateVesterClaimSum",
+                          18,
+                          4,
+                          true
+                        )} / ${formatKeyAmount(vestingData, "affiliateVesterVestedAmount", 18, 4, true)}`}
+                        position="right-bottom"
+                        renderContent={() => {
+                          return (
+                            <div>
+                              <Trans>
+                                {formatKeyAmount(vestingData, "affiliateVesterClaimSum", 18, 4, true)} tokens have been
+                                converted to GMX from the{" "}
+                                {formatKeyAmount(vestingData, "affiliateVesterVestedAmount", 18, 4, true)} esGMX
+                                deposited for vesting.
+                              </Trans>
+                            </div>
+                          );
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="App-card-row">
+                    <div className="label">
+                      <Trans>Claimable</Trans>
+                    </div>
+                    <div>{formatKeyAmount(vestingData, "affiliateVesterClaimable", 18, 4, true)} GMX</div>
+                  </div>
+                  <div className="App-card-divider" />
+                  <div className="App-card-buttons m-0">
+                    {!active && (
+                      <Button variant="secondary" onClick={openConnectModal}>
+                        <Trans>Connect Wallet</Trans>
+                      </Button>
+                    )}
+                    {active && (
+                      <Button variant="secondary" onClick={() => showAffiliateVesterDepositModal()}>
+                        <Trans>Deposit</Trans>
+                      </Button>
+                    )}
+                    {active && (
+                      <Button variant="secondary" onClick={() => showAffiliateVesterWithdrawModal()}>
+                        <Trans>Withdraw</Trans>
+                      </Button>
+                    )}
+                    {active && (
+                      <Button variant="secondary" onClick={() => showAffiliateVesterClaimModal()}>
+                        <Trans>Claim</Trans>
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </div>
-              <div className="App-card-divider" />
-              <div className="App-card-content">
-                <div className="App-card-row">
-                  <div className="label">
-                    <Trans>Vesting Status</Trans>
-                  </div>
-                  <div>
-                    <Tooltip
-                      handle={`${formatKeyAmount(
-                        vestingData,
-                        "affiliateVesterClaimSum",
-                        18,
-                        4,
-                        true
-                      )} / ${formatKeyAmount(vestingData, "affiliateVesterVestedAmount", 18, 4, true)}`}
-                      position="right-bottom"
-                      renderContent={() => {
-                        return (
-                          <div>
-                            <Trans>
-                              {formatKeyAmount(vestingData, "affiliateVesterClaimSum", 18, 4, true)} tokens have been
-                              converted to GMX from the{" "}
-                              {formatKeyAmount(vestingData, "affiliateVesterVestedAmount", 18, 4, true)} esGMX deposited
-                              for vesting.
-                            </Trans>
-                          </div>
-                        );
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">
-                    <Trans>Claimable</Trans>
-                  </div>
-                  <div>
-                    <Tooltip
-                      handle={`${formatKeyAmount(vestingData, "affiliateVesterClaimable", 18, 4, true)} GMX`}
-                      position="right-bottom"
-                      renderContent={() => (
-                        <Trans>
-                          {formatKeyAmount(vestingData, "affiliateVesterClaimable", 18, 4, true)} GMX tokens can be
-                          claimed, use the options under the Total Rewards section to claim them.
-                        </Trans>
-                      )}
-                    />
-                  </div>
-                </div>
-                <div className="App-card-divider"></div>
-                <div className="App-card-buttons m-0">
-                  {!active && (
-                    <Button variant="secondary" onClick={openConnectModal}>
-                      <Trans>Connect Wallet</Trans>
-                    </Button>
-                  )}
-                  {active && (
-                    <Button variant="secondary" onClick={() => showAffiliateVesterDepositModal()}>
-                      <Trans>Deposit</Trans>
-                    </Button>
-                  )}
-                  {active && (
-                    <Button variant="secondary" onClick={() => showAffiliateVesterWithdrawModal()}>
-                      <Trans>Withdraw</Trans>
-                    </Button>
-                  )}
-                  {active && (
-                    <Button variant="secondary" onClick={() => showAffiliateVesterClaimModal()}>
-                      <Trans>Claim</Trans>
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

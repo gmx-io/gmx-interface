@@ -1027,10 +1027,10 @@ export function getVestingData(vestingInfo) {
   if (!vestingInfo || vestingInfo.length === 0) {
     return;
   }
+  const propsLength = 7;
+  const data = {};
 
   const keys = ["gmxVester", "glpVester", "affiliateVester"];
-  const data = {};
-  const propsLength = 7;
 
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i];

@@ -6,7 +6,6 @@ import {
   PLACEHOLDER_ACCOUNT,
   getBalanceAndSupplyData,
   getDepositBalanceData,
-  getVestingData,
   getStakingData,
   getProcessedData,
 } from "lib/legacy";
@@ -26,10 +25,11 @@ import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { contractFetcher } from "lib/contracts";
 import { formatKeyAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
+import useVestingData from "domain/vesting/useVestingData";
 
 export default function APRLabel({ chainId, label }) {
-  let { active } = useWallet();
-
+  const { active } = useWallet();
+  const vestingData = useVestingData();
   const rewardReaderAddress = getContract(chainId, "RewardReader");
   const readerAddress = getContract(chainId, "Reader");
 
@@ -48,11 +48,6 @@ export default function APRLabel({ chainId, label }) {
   const feeGlpTrackerAddress = getContract(chainId, "FeeGlpTracker");
 
   const glpManagerAddress = getContract(chainId, "GlpManager");
-
-  const gmxVesterAddress = getContract(chainId, "GmxVester");
-  const glpVesterAddress = getContract(chainId, "GlpVester");
-
-  const vesterAddresses = [gmxVesterAddress, glpVesterAddress];
 
   const walletTokens = [gmxAddress, esGmxAddress, glpAddress, stakedGmxTrackerAddress];
   const depositTokens = [
@@ -118,13 +113,6 @@ export default function APRLabel({ chainId, label }) {
     }
   );
 
-  const { data: vestingInfo } = useSWR(
-    [`StakeV2:vestingInfo:${active}`, chainId, readerAddress, "getVestingInfo", PLACEHOLDER_ACCOUNT],
-    {
-      fetcher: contractFetcher(undefined, ReaderV2, [vesterAddresses]),
-    }
-  );
-
   const { gmxPrice } = useGmxPrice(chainId, {}, active);
 
   const maxBoostBasicPoints = useMaxBoostBasicPoints();
@@ -142,7 +130,6 @@ export default function APRLabel({ chainId, label }) {
   const { balanceData, supplyData } = getBalanceAndSupplyData(walletBalances);
   const depositBalanceData = getDepositBalanceData(depositBalances);
   const stakingData = getStakingData(stakingInfo);
-  const vestingData = getVestingData(vestingInfo);
 
   const processedData = getProcessedData(
     balanceData,
