@@ -1,6 +1,19 @@
+import { i18n } from "@lingui/core";
 import { t } from "@lingui/macro";
-import { TradeActionType } from "domain/synthetics/tradeHistory";
+import formatRelative from "date-fns/formatRelative";
 import { BigNumber } from "ethers";
+import type { Locale as DateLocale } from "date-fns";
+import dateDe from "date-fns/locale/de";
+import dateEn from "date-fns/locale/en-US";
+import dateEs from "date-fns/locale/es";
+import dateFr from "date-fns/locale/fr";
+import dateJa from "date-fns/locale/ja";
+import dateKo from "date-fns/locale/ko";
+import dateRu from "date-fns/locale/ru";
+import dateZh from "date-fns/locale/zh-CN";
+
+import { TradeActionType } from "domain/synthetics/tradeHistory";
+import { locales } from "lib/i18n";
 
 export function getOrderActionText(eventName: TradeActionType) {
   let actionText = "";
@@ -29,6 +42,7 @@ export function getOrderActionText(eventName: TradeActionType) {
 }
 export type TooltipState = "success" | "error" | undefined;
 export type TooltipString =
+  | undefined
   | string
   | {
       text: string;
@@ -70,3 +84,36 @@ export type RowDetails = {
   triggerPrice?: string;
   //#endregion
 };
+
+export const dateLocaleMap: Record<keyof typeof locales, DateLocale> = {
+  en: dateEn,
+  es: dateEs,
+  zh: dateZh,
+  ko: dateKo,
+  ru: dateRu,
+  ja: dateJa,
+  fr: dateFr,
+  de: dateDe,
+  pseudo: dateEn,
+};
+
+Object.values(dateLocaleMap).forEach((locale) => {
+  const originalFormatRelative = locale.formatRelative;
+
+  locale.formatRelative = (token) => {
+    if (token === "other") {
+      return "dd MMM yyyy, HH:mm";
+    }
+    return originalFormatRelative!(token);
+  };
+});
+
+export function formatTradeActionTimestamp(timestamp: number) {
+  const localeStr = i18n.locale;
+
+  const locale: DateLocale = dateLocaleMap[localeStr] || dateEn;
+
+  return formatRelative(timestamp * 1000, new Date(), {
+    locale: locale,
+  });
+}

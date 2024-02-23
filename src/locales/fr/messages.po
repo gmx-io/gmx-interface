@@ -249,9 +249,10 @@ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Acceptable price for the order."
-msgstr ""
+msgstr "Prix acceptable pour l'ordre."
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Account"
@@ -309,9 +310,9 @@ msgstr ""
 msgid "Acknowledge very high network Fees"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+#: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
 msgid "Action"
-msgstr ""
+msgstr "Action"
 
 #: src/pages/Actions/Actions.js
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
@@ -831,21 +832,29 @@ msgstr "Impossible d'exécuter à cause d'une erreur"
 msgid "Cancel"
 msgstr "Annuler"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Cancel Limit Order"
-msgstr ""
+msgstr "Annuler l'ordre limité"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Cancel Limit Swap"
-msgstr ""
+msgstr "Annuler l'échange limité"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Cancel Market Decrease"
+msgstr "Annuler la diminution du marché"
+
+#: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Cancel Market Increase"
+msgstr "Annuler l'augmentation du marché"
+
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Cancel Stop-Loss Order"
-msgstr ""
+msgstr "Annuler l'ordre stop-loss"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Cancel Take-Profit Order"
-msgstr ""
+msgstr "Annuler l'ordre de prise de profit"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Cancel failed"
@@ -1327,13 +1336,13 @@ msgstr ""
 msgid "Create"
 msgstr "Créer"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Create Limit Order"
-msgstr ""
+msgstr "Créer un ordre limité"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Create Limit Swap"
-msgstr ""
+msgstr "Créer un échange limité"
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 msgid "Create Limit order"
@@ -1348,13 +1357,13 @@ msgstr "Créer un Ordre"
 msgid "Create Referral Code"
 msgstr "Créer un code de parrainage"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Create Stop-Loss Order"
-msgstr ""
+msgstr "Créer un ordre stop-loss"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Create Take-Profit Order"
-msgstr ""
+msgstr "Créer un ordre de prise de profit"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -1549,7 +1558,7 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1942,17 +1951,17 @@ msgstr "Remboursement estimé des frais"
 msgid "Execute"
 msgstr "Exécuter"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Execute Limit Order"
-msgstr ""
+msgstr "Exécuter l'ordre limité"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Execute Limit Swap"
-msgstr ""
+msgstr "Exécuter l'échange limité"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Execute Market Swap"
-msgstr ""
+msgstr "Exécuter l'échange de marché"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
@@ -1962,13 +1971,13 @@ msgstr "Exécuter l'ordre: Échanger {fromAmountDisplay} {0} pour {toAmountDispl
 msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Execute Stop-Loss Order"
-msgstr ""
+msgstr "Exécuter l'ordre stop-loss"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Execute Take-Profit Order"
-msgstr ""
+msgstr "Exécuter l'ordre de prise de profit"
 
 #: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
 #: src/domain/synthetics/orders/simulateExecuteOrderTxn.tsx
@@ -2020,49 +2029,45 @@ msgstr "FRAIS"
 msgid "FUNDING FEE"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
-msgid "Failed"
-msgstr ""
-
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Deposit"
-msgstr ""
+msgstr "Dépôt échoué"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Limit Order"
-msgstr ""
+msgstr "Ordre limité échoué"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Limit Swap"
-msgstr ""
+msgstr "Échange limité échoué"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Market Decrease"
-msgstr ""
+msgstr "Diminution de marché échouée"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Market Increase"
-msgstr ""
+msgstr "Augmentation de marché échouée"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Market Swap"
-msgstr ""
+msgstr "Échange de marché échoué"
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "Failed Settlement of Funding Fees"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Stop-Loss Order"
-msgstr ""
+msgstr "Ordre stop-loss échoué"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Take-Profit Order"
-msgstr ""
+msgstr "Ordre de prise de profit échoué"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Failed Withdraw"
-msgstr ""
+msgstr "Retrait échoué"
 
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Failed to Claim Price Impact Rebate"
@@ -2842,7 +2847,6 @@ msgstr ""
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Limit"
 msgstr "Limite"
 
@@ -2926,7 +2930,7 @@ msgid "Liq. {longOrShortText} {tokenSymbol}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Liquidated"
 msgstr "Liquidé"
@@ -2937,6 +2941,10 @@ msgid ""
 "-{1} USD,\n"
 "{2} Price: {3} USD"
 msgstr ""
+
+#: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
+msgid "Liquidation"
+msgstr "Liquidation"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidation Fee"
@@ -3145,9 +3153,8 @@ msgstr ""
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/Synthetics/TradeHistory/filters/MarketFilter.tsx
 msgid "Market"
 msgstr "Bourse"
 
@@ -3157,15 +3164,19 @@ msgstr "Bourse"
 msgid "Market Cap"
 msgstr "Capitalisation boursière"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.ts
 msgid "Market Decrease"
-msgstr ""
+msgstr "Baisse du marché"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.ts
 msgid "Market Increase"
-msgstr ""
+msgstr "Augmentation du marché"
+
+#: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
+msgid "Market Orders"
+msgstr "Ordres de marché"
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "Market Swap"
@@ -3721,8 +3732,11 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order Execution Price"
-msgstr ""
+msgstr "Prix ​​d'exécution de l'ordre"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Order Trigger Price: {greaterSign}{triggerPrice}"
@@ -4416,28 +4430,29 @@ msgid "Request"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Deposit"
-msgstr ""
+msgstr "Demander un dépôt"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Decrease"
-msgstr ""
+msgstr "Demander une réduction du marché"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Increase"
-msgstr ""
+msgstr "Demander une augmentation du marché"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Swap"
-msgstr ""
+msgstr "Demander un échange de marché"
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "Request Settlement of Funding Fees"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Withdraw"
-msgstr ""
+msgstr "Demander un retrait"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Request decrease {0} {longOrShortText}, -{1} USD, Acceptable Price: {2} {3} USD"
@@ -5173,6 +5188,10 @@ msgstr "{0} {1} échangés pour {2} {3}!"
 msgid "Swapping..."
 msgstr "Échange en cours..."
 
+#: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
+msgid "Swaps"
+msgstr "Échanges"
+
 #: src/components/Exchange/SwapBox.js
 msgid "Swaps disabled, pending {0} upgrade"
 msgstr "Échanges désactivés, en attente de {0} actualisations"
@@ -5783,6 +5802,10 @@ msgstr ""
 msgid "Trigger"
 msgstr "Déclencheur"
 
+#: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
+msgid "Trigger Orders"
+msgstr "Ordres déclencheurs"
+
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
@@ -5930,25 +5953,25 @@ msgstr ""
 msgid "Update"
 msgstr "Actualiser"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update Limit Order"
-msgstr ""
+msgstr "Mettre à jour l'ordre limité"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update Limit Swap"
-msgstr ""
+msgstr "Mettre à jour le swap limité"
 
 #: src/components/Exchange/OrderEditor.js
 msgid "Update Order"
 msgstr "Actualiser l'ordre"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update Stop-Loss Order"
-msgstr ""
+msgstr "Mettre à jour l'ordre stop-loss"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Update Take-Profit Order"
-msgstr ""
+msgstr "Mettre à jour l'ordre de prise de profit"
 
 #: src/domain/synthetics/orders/updateOrderTxn.ts
 msgid "Update order executed"
@@ -6264,7 +6287,7 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/keys.ts
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -6667,6 +6690,10 @@ msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "{0, plural, one {You have an active Limit Order to Increase} other {You have multiple active Limit Orders to Increase}}"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
+msgid "{0}"
 msgstr ""
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx

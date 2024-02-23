@@ -2,6 +2,7 @@ import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { BigNumber } from "ethers";
 import { useMemo } from "react";
+import { Link } from "react-router-dom";
 
 import { isSwapOrderType } from "domain/synthetics/orders";
 import { PositionTradeAction, SwapTradeAction, TradeAction } from "domain/synthetics/tradeHistory";
@@ -28,6 +29,10 @@ type Props = {
 };
 
 function LineSpan({ span }: { span: TooltipString }) {
+  if (span === undefined) {
+    return null;
+  }
+
   if (typeof span === "string") {
     return <span>{span}</span>;
   }
@@ -58,6 +63,10 @@ function TooltipContentComponent({ content }: { content: TooltipContent }) {
   return (
     <div className="TradeHistoryRow-tooltip">
       {content.map((line, i) => {
+        if (line === undefined) {
+          return null;
+        }
+
         if (line === "") {
           return <br key={i} />;
         }
@@ -84,7 +93,6 @@ function TooltipContentComponent({ content }: { content: TooltipContent }) {
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAccount, showDebugValues }: Props) {
   const { chainId } = useChainId();
   const marketsInfoData = useMarketsInfoData();
@@ -113,6 +121,14 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           </ExternalLink>
           <br />
           <span className="TradeHistoryRow-time muted">({msg.timestamp})</span>
+          {shouldDisplayAccount && (
+            <>
+              <br />
+              <Link className="TradeHistoryRow-account muted" to={`/actions/${tradeAction.account}`}>
+                {tradeAction.account}
+              </Link>
+            </>
+          )}
         </td>
         <td>
           {msg.fullMarket ? (

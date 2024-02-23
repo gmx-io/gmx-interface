@@ -8,9 +8,9 @@ import { getByKey } from "lib/objects";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
 import useInfiniteSwr from "swr/infinite";
-import { isSwapOrderType } from "../orders";
+import { OrderType, isSwapOrderType } from "../orders";
 import { getSwapPathOutputAddresses } from "../trade/utils";
-import { PositionTradeAction, RawTradeAction, SwapTradeAction, TradeAction } from "./types";
+import { PositionTradeAction, RawTradeAction, SwapTradeAction, TradeAction, TradeActionType } from "./types";
 
 export type TradeHistoryResult = {
   tradeActions?: TradeAction[];
@@ -19,11 +19,24 @@ export type TradeHistoryResult = {
   setPageIndex: (index: number) => Promise<RawTradeAction[] | undefined>;
 };
 
-type GraphQlFilters = {
-  [key: `_${string}`]: never;
-  [key: string]: string | number | boolean | undefined | GraphQlFilters;
-};
+type GraphQlFilters =
+  | {
+      or: GraphQlFilters[];
+    }
+  | {
+      and: GraphQlFilters[];
+    }
+  | {
+      or?: never;
+      and?: never;
+      [key: `_${string}`]: never;
+      [key: string]: string | number | boolean | undefined | GraphQlFilters | string[] | number[] | GraphQlFilters[];
+    };
 
+/**
+ * Builds a body for the filters in the GraphQL query with respect to The Graph api.
+ * @returns a string encased in braces `{...}`
+ */
 function buildFiltersBody(filters: GraphQlFilters): string {
   const res = {};
 
@@ -38,8 +51,37 @@ function buildFiltersBody(filters: GraphQlFilters): string {
       res[key] = `${value}`;
     } else if (typeof value === "boolean") {
       res[key] = `${value}`;
+    } else if (Array.isArray(value)) {
+      const valueStr =
+        "[" +
+        value
+          .map((el: string | number | GraphQlFilters) => {
+            if (typeof el === "string") {
+              return `"${el}"`;
+            } else if (typeof el === "number") {
+              return `${el}`;
+            } else {
+              const elemStr = buildFiltersBody(el);
+
+              if (elemStr === "{}") {
+                return "";
+              } else {
+                return elemStr;
+              }
+            }
+          })
+          .filter((el) => el !== "")
+          .join(",") +
+        "]";
+
+      if (valueStr !== "[]") {
+        res[key] = valueStr;
+      }
     } else {
-      res[key + "_"] = buildFiltersBody(value);
+      const valueStr = buildFiltersBody(value);
+      if (valueStr !== "{}") {
+        res[key + "_"] = buildFiltersBody(value);
+      }
     }
   }
 
@@ -59,9 +101,17 @@ export function useTradeHistory(
     pageSize: number;
     fromTxTimestamp?: number;
     toTxTimestamp?: number;
+    marketAddresses?: string[];
+    tokenAddresses?: string[];
+
+    orderEventCombinations?: {
+      eventName?: TradeActionType;
+      orderType?: OrderType;
+      isDepositOrWithdraw?: boolean;
+    }[];
   }
 ) {
-  const { pageSize, account, forAllAccounts, fromTxTimestamp, toTxTimestamp } = p;
+  const { pageSize, account, forAllAccounts, fromTxTimestamp, toTxTimestamp, marketAddresses } = p;
   const marketsInfoData = useMarketsInfoData();
   const tokensData = useTokensData();
 
@@ -86,11 +136,37 @@ export function useTradeHistory(
       const first = pageSize;
 
       const filtersStr = buildFiltersBody({
-        account: forAllAccounts ? undefined : account!.toLowerCase(),
-        transaction: {
-          timestamp_gte: fromTxTimestamp,
-          timestamp_lte: toTxTimestamp,
-        },
+        and: [
+          {
+            account: forAllAccounts ? undefined : account!.toLowerCase(),
+            transaction: {
+              timestamp_gte: fromTxTimestamp,
+              timestamp_lte: toTxTimestamp,
+            },
+          },
+          {
+            or: [
+              { marketAddress_in: marketAddresses?.length ? marketAddresses.map((s) => s.toLowerCase()) : undefined },
+              {
+                initialCollateralTokenAddress_in: p.tokenAddresses?.length
+                  ? p.tokenAddresses.map((s) => s.toLowerCase())
+                  : undefined,
+              },
+              ...(p.marketAddresses?.length
+                ? p.marketAddresses.map((s) => ({ swapPath_contains: [s.toLowerCase()] }))
+                : []),
+            ],
+          },
+          {
+            or: p.orderEventCombinations?.map((combination) => {
+              return {
+                eventName: combination.eventName,
+                orderType: combination.orderType,
+                sizeDeltaUsd: combination.isDepositOrWithdraw ? 0 : undefined,
+              };
+            }),
+          },
+        ],
       });
 
       const whereClause = `where: ${filtersStr}`;

@@ -1,18 +1,14 @@
 import { t } from "@lingui/macro";
 
 import type { MarketInfo, MarketsInfoData } from "domain/synthetics/markets/types";
-import { OrderType, isLimitOrderType } from "domain/synthetics/orders";
+import { OrderType } from "domain/synthetics/orders";
 import { TokenData, adaptToV1TokenInfo, getTokensRatioByAmounts } from "domain/synthetics/tokens";
 import { SwapTradeAction, TradeActionType } from "domain/synthetics/tradeHistory";
-import { formatDateTime } from "lib/dates";
 import { getExchangeRateDisplay } from "lib/legacy";
 import { formatTokenAmount } from "lib/numbers";
 
-import { RowDetails, TooltipContent, getOrderActionText, lines } from "./shared";
-
-function getSwapOrderTypeName(tradeAction: SwapTradeAction) {
-  return tradeAction.orderType === OrderType.MarketSwap ? t`Market` : t`Limit`;
-}
+import { getActionTitle } from "../../keys";
+import { RowDetails, TooltipContent, formatTradeActionTimestamp, lines } from "./shared";
 
 export const formatSwapMessage = (tradeAction: SwapTradeAction, marketsInfoData?: MarketsInfoData): RowDetails => {
   const tokenIn = tradeAction.initialCollateralToken!;
@@ -29,7 +25,6 @@ export const formatSwapMessage = (tradeAction: SwapTradeAction, marketsInfoData?
   const toText = formatTokenAmount(amountOut, tokenOut?.decimals, tokenOut?.symbol, {
     useCommas: true,
   });
-  const orderTypeName = getSwapOrderTypeName(tradeAction);
 
   const tokensRatio = getTokensRatioByAmounts({
     fromToken: tokenIn,
@@ -81,22 +76,10 @@ export const formatSwapMessage = (tradeAction: SwapTradeAction, marketsInfoData?
 
   const size = `${fromText} to ${toText}`;
 
-  const isLimit = isLimitOrderType(tradeAction.orderType);
-  const isFailed = tradeAction.eventName === TradeActionType.OrderFrozen;
-
-  let actionText = "";
-  if (isLimit && isFailed) {
-    actionText = t`Failed`;
-  } else if (!isLimit && tradeAction.eventName === TradeActionType.OrderCreated) {
-    actionText = t`Request`;
-  } else if (!isLimit && tradeAction.eventName === TradeActionType.OrderExecuted) {
-    actionText = "";
-  } else {
-    actionText = getOrderActionText(tradeAction.eventName);
-  }
+  let actionText = getActionTitle(tradeAction.orderType, tradeAction.eventName);
 
   let priceComment: TooltipContent = lines();
-  if (isLimit) {
+  if (tradeAction.orderType === OrderType.LimitSwap) {
     if (
       tradeAction.eventName === TradeActionType.OrderCreated ||
       tradeAction.eventName === TradeActionType.OrderUpdated
@@ -144,11 +127,11 @@ export const formatSwapMessage = (tradeAction: SwapTradeAction, marketsInfoData?
   }
 
   return {
-    action: `${actionText} ${orderTypeName} Swap`,
+    action: actionText,
     market: market,
     size: size,
     price: ratioText,
     priceComment: priceComment,
-    timestamp: formatDateTime(tradeAction.transaction.timestamp),
+    timestamp: formatTradeActionTimestamp(tradeAction.transaction.timestamp),
   };
 };

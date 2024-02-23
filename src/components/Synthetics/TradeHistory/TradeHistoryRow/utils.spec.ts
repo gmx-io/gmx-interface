@@ -34,12 +34,12 @@ describe("TradeHistoryRow helpers", () => {
         "action": "Request Market Increase",
         "fullMarket": "AVAX/USD [WAVAX-USDC]",
         "market": "Short AVAX/USD",
-        "price": "< $35.05",
+        "price": "<  $35.05",
         "priceComment": Array [
           "Acceptable price for the order.",
         ],
         "size": "+$1,054.88",
-        "timestamp": "08 Feb 2024, 10:50 AM",
+        "timestamp": "08 Feb 2024, 10:50",
       }
     `);
 
@@ -48,12 +48,12 @@ describe("TradeHistoryRow helpers", () => {
         "action": "Request Withdraw",
         "fullMarket": "AVAX/USD [WAVAX-USDC]",
         "market": "Short AVAX/USD",
-        "price": "> $43.23",
+        "price": ">  $43.23",
         "priceComment": Array [
           "Acceptable price for the order.",
         ],
         "size": "12.3357 USDC",
-        "timestamp": "15 Feb 2024, 6:34 PM",
+        "timestamp": "15 Feb 2024, 18:34",
       }
     `);
 
@@ -62,12 +62,12 @@ describe("TradeHistoryRow helpers", () => {
         "action": "Request Deposit",
         "fullMarket": "DOGE/USD [ETH-DAI]",
         "market": "Long DOGE/USD",
-        "price": "< $0.08",
+        "price": "<  $0.08",
         "priceComment": Array [
           "Acceptable price for the order.",
         ],
         "size": "0.0500 DAI",
-        "timestamp": "15 Feb 2024, 9:30 PM",
+        "timestamp": "15 Feb 2024, 21:30",
       }
     `);
 
@@ -76,7 +76,7 @@ describe("TradeHistoryRow helpers", () => {
         "action": "Create Take-Profit Order",
         "fullMarket": "BTC/USD [BTC-USDC]",
         "market": "Long BTC/USD",
-        "price": "> $30,000.00",
+        "price": ">  $30,000.00",
         "priceComment": Array [
           "Trigger price for the order.",
           "",
@@ -87,7 +87,7 @@ describe("TradeHistoryRow helpers", () => {
           ],
         ],
         "size": "-$266.23",
-        "timestamp": "15 Sep 2023, 1:29 PM",
+        "timestamp": "15 Sep 2023, 13:29",
       }
     `);
 
@@ -96,7 +96,7 @@ describe("TradeHistoryRow helpers", () => {
         "action": "Cancel Limit Order",
         "fullMarket": "ETH/USD [WETH-USDC]",
         "market": "Long ETH/USD",
-        "price": "< $1,629.40",
+        "price": "<  $1,629.40",
         "priceComment": Array [
           "Trigger price for the order.",
           "",
@@ -107,7 +107,7 @@ describe("TradeHistoryRow helpers", () => {
           ],
         ],
         "size": "+$4.11",
-        "timestamp": "15 Sep 2023, 1:37 PM",
+        "timestamp": "15 Sep 2023, 13:37",
       }
     `);
 
@@ -116,7 +116,7 @@ describe("TradeHistoryRow helpers", () => {
         "action": "Create Limit Order",
         "fullMarket": "BTC/USD [BTC-USDC]",
         "market": "Long BTC/USD",
-        "price": "< $1.00",
+        "price": "<  $1.00",
         "priceComment": Array [
           "Trigger price for the order.",
           "",
@@ -127,7 +127,7 @@ describe("TradeHistoryRow helpers", () => {
           ],
         ],
         "size": "+$2.64",
-        "timestamp": "15 Sep 2023, 2:54 PM",
+        "timestamp": "15 Sep 2023, 14:54",
       }
     `);
 
@@ -162,7 +162,7 @@ describe("TradeHistoryRow helpers", () => {
           "Order execution price takes into account price impact.",
         ],
         "size": "+$2,070.18",
-        "timestamp": "18 Sep 2023, 4:43 PM",
+        "timestamp": "18 Sep 2023, 16:43",
       }
     `);
 
@@ -180,9 +180,10 @@ describe("TradeHistoryRow helpers", () => {
             ": < ",
             "$26,937.90",
           ],
+          undefined,
         ],
         "size": "+$1,348.82",
-        "timestamp": "18 Sep 2023, 3:14 PM",
+        "timestamp": "18 Sep 2023, 15:14",
       }
     `);
 
@@ -193,7 +194,7 @@ describe("TradeHistoryRow helpers", () => {
         "market": "Long XRP/USD",
         "price": undefined,
         "size": "-$4,954.24",
-        "timestamp": "18 Sep 2023, 11:52 AM",
+        "timestamp": "18 Sep 2023, 11:52",
       }
     `);
 
@@ -282,7 +283,7 @@ describe("TradeHistoryRow helpers", () => {
           ],
         ],
         "size": "-$6,441.90",
-        "timestamp": "04 Sep 2023, 6:38 AM",
+        "timestamp": "04 Sep 2023, 06:38",
       }
     `);
 
@@ -317,7 +318,7 @@ describe("TradeHistoryRow helpers", () => {
           "Order execution price takes into account price impact.",
         ],
         "size": "+$49.83",
-        "timestamp": "21 Sep 2023, 7:32 PM",
+        "timestamp": "21 Sep 2023, 19:32",
       }
     `);
   });
@@ -333,12 +334,12 @@ describe("TradeHistoryRow helpers", () => {
           "Acceptable price for the order.",
         ],
         "size": "0.0119 WETH to 39.8800 USDC",
-        "timestamp": "02 Oct 2023, 6:35 PM",
+        "timestamp": "02 Oct 2023, 18:35",
       }
     `);
     expect(formatSwapMessage(executeSwap)).toMatchInlineSnapshot(`
       Object {
-        "action": " Market Swap",
+        "action": "Execute Market Swap",
         "market": "...",
         "price": "965.18 USDC / ETH",
         "priceComment": Array [
@@ -347,7 +348,7 @@ describe("TradeHistoryRow helpers", () => {
           "Order Acceptable Price: < 965.18 USDC / ETH",
         ],
         "size": "1,080.6325 USDC to 1.1196 ETH",
-        "timestamp": "02 Oct 2023, 6:08 AM",
+        "timestamp": "02 Oct 2023, 06:08",
       }
     `);
     // LIMIT SWAPS
@@ -362,7 +363,7 @@ describe("TradeHistoryRow helpers", () => {
           "Order Trigger Price: > 0.8110 WETH / BTC",
         ],
         "size": "0.3000 WETH to 0.3698 BTC",
-        "timestamp": "29 Sep 2023, 10:46 AM",
+        "timestamp": "29 Sep 2023, 10:46",
       }
     `);
     expect(formatSwapMessage(failedSwap)).toMatchInlineSnapshot(`
@@ -376,7 +377,7 @@ describe("TradeHistoryRow helpers", () => {
           "Order Trigger Price: < 2.2613 WETH / BTC",
         ],
         "size": "0.3000 WETH to 0.1326 BTC",
-        "timestamp": "29 Sep 2023, 10:45 AM",
+        "timestamp": "29 Sep 2023, 10:45",
       }
     `);
   });

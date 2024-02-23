@@ -15,11 +15,13 @@ export function getPriceImpactByAcceptablePrice(p: {
   const shouldFlipPriceDiff = isIncrease ? !isLong : isLong;
 
   const priceDelta = markPrice.sub(acceptablePrice).mul(shouldFlipPriceDiff ? -1 : 1);
-  const acceptablePriceDeltaBps = getBasisPoints(priceDelta, p.indexPrice);
+  const acceptablePriceDeltaBps = markPrice.isZero() ? BigNumber.from(0) : getBasisPoints(priceDelta, markPrice);
 
-  const priceImpactDeltaUsd = sizeDeltaUsd.mul(priceDelta).div(acceptablePrice);
+  const priceImpactDeltaUsd = acceptablePrice.isZero()
+    ? BigNumber.from(0)
+    : sizeDeltaUsd.mul(priceDelta).div(acceptablePrice);
 
-  const priceImpactDeltaAmount = priceImpactDeltaUsd.div(markPrice);
+  const priceImpactDeltaAmount = markPrice.isZero() ? BigNumber.from(0) : priceImpactDeltaUsd.div(markPrice);
 
   return {
     priceImpactDeltaUsd,

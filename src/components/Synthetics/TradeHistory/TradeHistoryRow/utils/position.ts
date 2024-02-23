@@ -1,104 +1,36 @@
 import { i18n } from "@lingui/core";
 import { t } from "@lingui/macro";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 
 import { getMarketFullName, getMarketIndexName } from "domain/synthetics/markets";
-import { OrderType, isIncreaseOrderType, isLimitOrderType } from "domain/synthetics/orders";
-import { formatAcceptablePrice, getTriggerNameByOrderType } from "domain/synthetics/positions/utils";
+import { OrderType, isIncreaseOrderType } from "domain/synthetics/orders";
 import { convertToUsd } from "domain/synthetics/tokens/utils";
 import { getShouldUseMaxPrice } from "domain/synthetics/trade";
 import { PositionTradeAction, TradeActionType } from "domain/synthetics/tradeHistory";
-import { formatDateTime } from "lib/dates";
 import { PRECISION } from "lib/legacy";
 import { formatDeltaUsd, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
-import { museNeverExist } from "lib/types";
-import { RowDetails, getOrderActionText, lines, numberToState } from "./shared";
+
+import { actionTextMap, getActionTitle } from "../../keys";
+import { RowDetails, formatTradeActionTimestamp, lines, numberToState } from "./shared";
+
+import CustomErrors from "abis/CustomErrors.json";
 
 type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
-type OrderTypes = keyof typeof OrderType;
+const customErrors = new ethers.Contract(ethers.constants.AddressZero, CustomErrors.abi);
 
-const actionTextMap: Partial<Record<`${OrderTypes | "Deposit" | "Withdraw"}-${TradeActionType}`, string>> = {
-  "MarketSwap-OrderCreated": /*i18n*/ "Request Market Swap",
-  "MarketSwap-OrderExecuted": /*i18n*/ "Execute Market Swap",
-  "MarketSwap-OrderFrozen": /*i18n*/ "Failed Market Swap",
+function tryGetError(
+  reasonBytes: ethers.utils.Bytes
+): ReturnType<typeof customErrors.interface.parseError> | undefined {
+  let error: ReturnType<typeof customErrors.interface.parseError> | undefined;
 
-  "LimitSwap-OrderCreated": /*i18n*/ "Create Limit Swap",
-  "LimitSwap-OrderExecuted": /*i18n*/ "Execute Limit Swap",
-  "LimitSwap-OrderCancelled": /*i18n*/ "Cancel Limit Swap",
-  "LimitSwap-OrderUpdated": /*i18n*/ "Update Limit Swap",
-  "LimitSwap-OrderFrozen": /*i18n*/ "Failed Limit Swap",
-
-  "MarketIncrease-OrderCreated": /*i18n*/ "Request Market Increase",
-  "MarketIncrease-OrderExecuted": /*i18n*/ "Market Increase",
-  "MarketIncrease-OrderFrozen": /*i18n*/ "Failed Market Increase",
-
-  "LimitIncrease-OrderCreated": /*i18n*/ "Create Limit Order",
-  "LimitIncrease-OrderExecuted": /*i18n*/ "Execute Limit Order",
-  "LimitIncrease-OrderCancelled": /*i18n*/ "Cancel Limit Order",
-  "LimitIncrease-OrderUpdated": /*i18n*/ "Update Limit Order",
-  "LimitIncrease-OrderFrozen": /*i18n*/ "Failed Limit Order",
-
-  "MarketDecrease-OrderCreated": /*i18n*/ "Request Market Decrease",
-  "MarketDecrease-OrderExecuted": /*i18n*/ "Market Decrease",
-  "MarketDecrease-OrderFrozen": /*i18n*/ "Failed Market Decrease",
-
-  "LimitDecrease-OrderCreated": /*i18n*/ "Create Take-Profit Order",
-  "LimitDecrease-OrderExecuted": /*i18n*/ "Execute Take-Profit Order",
-  "LimitDecrease-OrderCancelled": /*i18n*/ "Cancel Take-Profit Order",
-  "LimitDecrease-OrderUpdated": /*i18n*/ "Update Take-Profit Order",
-  "LimitDecrease-OrderFrozen": /*i18n*/ "Failed Take-Profit Order",
-
-  "StopLossDecrease-OrderCreated": /*i18n*/ "Create Stop-Loss Order",
-  "StopLossDecrease-OrderExecuted": /*i18n*/ "Execute Stop-Loss Order",
-  "StopLossDecrease-OrderCancelled": /*i18n*/ "Cancel Stop-Loss Order",
-  "StopLossDecrease-OrderUpdated": /*i18n*/ "Update Stop-Loss Order",
-  "StopLossDecrease-OrderFrozen": /*i18n*/ "Failed Stop-Loss Order",
-
-  "Liquidation-OrderExecuted": /*i18n*/ "Liquidated",
-
-  "Deposit-OrderCreated": /*i18n*/ "Request Deposit",
-  "Deposit-OrderExecuted": /*i18n*/ "Deposit",
-  "Deposit-OrderFrozen": /*i18n*/ "Failed Deposit",
-
-  "Withdraw-OrderCreated": /*i18n*/ "Request Withdraw",
-  "Withdraw-OrderExecuted": /*i18n*/ "Withdraw",
-  "Withdraw-OrderFrozen": /*i18n*/ "Failed Withdraw",
-};
-
-function orderTypeToKey(orderType: OrderType): keyof typeof OrderType {
-  switch (orderType) {
-    case OrderType.MarketSwap:
-      return "MarketSwap";
-    case OrderType.LimitSwap:
-      return "LimitSwap";
-    case OrderType.MarketIncrease:
-      return "MarketIncrease";
-    case OrderType.LimitIncrease:
-      return "LimitIncrease";
-    case OrderType.MarketDecrease:
-      return "MarketDecrease";
-    case OrderType.LimitDecrease:
-      return "LimitDecrease";
-    case OrderType.StopLossDecrease:
-      return "StopLossDecrease";
-    case OrderType.Liquidation:
-      return "Liquidation";
+  try {
+    error = customErrors.interface.parseError(reasonBytes);
+  } catch {
+    return undefined;
   }
 
-  museNeverExist(orderType as never);
-}
-
-function getActionTitle(orderType: OrderType, eventName: TradeActionType) {
-  const title = actionTextMap[`${orderTypeToKey(orderType)}-${eventName}`];
-
-  if (title) {
-    return i18n._(title);
-  }
-
-  const fallbackOrderTypeName = isLimitOrderType(orderType) ? "Limit" : getTriggerNameByOrderType(orderType);
-
-  return `${getOrderActionText(eventName)} ${fallbackOrderTypeName}`;
+  return error;
 }
 
 export const formatPositionMessage = (
@@ -129,10 +61,10 @@ export const formatPositionMessage = (
   const marketPrice = getTokenPriceByTradeAction(tradeAction);
   const formattedMarketPrice = formatUsd(marketPrice)!;
 
-  const formattedAcceptablePrice = formatAcceptablePrice(tradeAction.acceptablePrice);
+  const formattedAcceptablePrice = formatUsd(tradeAction.acceptablePrice);
 
   const action = getActionTitle(tradeAction.orderType, tradeAction.eventName);
-  const timestamp = formatDateTime(tradeAction.transaction.timestamp);
+  const timestamp = formatTradeActionTimestamp(tradeAction.transaction.timestamp);
   const market = `${longShortText} ${indexName}`;
 
   const formattedCollateralDelta = formatTokenAmount(
@@ -150,13 +82,13 @@ export const formatPositionMessage = (
   let result: MakeOptional<RowDetails, "action" | "market" | "timestamp" | "price" | "size">;
 
   const ot = tradeAction.orderType;
-  const at = tradeAction.eventName;
+  const ev = tradeAction.eventName;
 
   //#region MarketIncrease
-  if (ot === OrderType.MarketIncrease && at === TradeActionType.OrderCreated) {
+  if (ot === OrderType.MarketIncrease && ev === TradeActionType.OrderCreated) {
     const customAction = sizeDeltaUsd.gt(0) ? action : i18n._(actionTextMap["Deposit-OrderCreated"]!);
     const customSize = sizeDeltaUsd.gt(0) ? sizeDeltaText : formattedCollateralDelta;
-    const customPrice = "< " + formattedAcceptablePrice!;
+    const customPrice = "<  " + formattedAcceptablePrice!;
     const priceComment = lines(t`Acceptable price for the order.`);
 
     result = {
@@ -165,7 +97,7 @@ export const formatPositionMessage = (
       price: customPrice,
       priceComment,
     };
-  } else if (ot === OrderType.MarketIncrease && at === TradeActionType.OrderExecuted) {
+  } else if (ot === OrderType.MarketIncrease && ev === TradeActionType.OrderExecuted) {
     const customAction = sizeDeltaUsd.gt(0) ? action : i18n._(actionTextMap["Deposit-OrderExecuted"]!);
     const customSize = sizeDeltaUsd.gt(0) ? sizeDeltaText : formattedCollateralDelta;
     const priceComment = sizeDeltaUsd.gt(0)
@@ -185,7 +117,7 @@ export const formatPositionMessage = (
       size: customSize,
       priceComment: priceComment,
     };
-  } else if (ot === OrderType.MarketIncrease && at === TradeActionType.OrderFrozen) {
+  } else if (ot === OrderType.MarketIncrease && ev === TradeActionType.OrderFrozen) {
     const customAction = sizeDeltaUsd.gt(0) ? action : i18n._(actionTextMap["Deposit-OrderFrozen"]!);
     const customSize = sizeDeltaUsd.gt(0) ? sizeDeltaText : formattedCollateralDelta;
 
@@ -201,11 +133,11 @@ export const formatPositionMessage = (
     //#endregion MarketIncrease
     //#region LimitIncrease
   } else if (
-    (ot === OrderType.LimitIncrease && at === TradeActionType.OrderCreated) ||
-    (ot === OrderType.LimitIncrease && at === TradeActionType.OrderUpdated) ||
-    (ot === OrderType.LimitIncrease && at === TradeActionType.OrderCancelled)
+    (ot === OrderType.LimitIncrease && ev === TradeActionType.OrderCreated) ||
+    (ot === OrderType.LimitIncrease && ev === TradeActionType.OrderUpdated) ||
+    (ot === OrderType.LimitIncrease && ev === TradeActionType.OrderCancelled)
   ) {
-    const customPrice = "< " + formatUsd(tradeAction.triggerPrice)!;
+    const customPrice = "<  " + formatUsd(tradeAction.triggerPrice)!;
 
     result = {
       price: customPrice,
@@ -215,7 +147,7 @@ export const formatPositionMessage = (
         formattedAcceptablePrice!,
       ]),
     };
-  } else if (ot === OrderType.LimitIncrease && at === TradeActionType.OrderExecuted) {
+  } else if (ot === OrderType.LimitIncrease && ev === TradeActionType.OrderExecuted) {
     result = {
       priceComment: lines(
         t`Mark price for the order.`,
@@ -227,20 +159,23 @@ export const formatPositionMessage = (
         t`Order execution price takes into account price impact.`
       ),
     };
-  } else if (ot === OrderType.LimitIncrease && at === TradeActionType.OrderFrozen) {
+  } else if (ot === OrderType.LimitIncrease && ev === TradeActionType.OrderFrozen) {
+    let error = tradeAction.reasonBytes && tryGetError(tradeAction.reasonBytes);
+
     result = {
-      priceComment: lines(t`Mark price for the order.`, "", [
-        t`Order Acceptable Price`,
-        ": < ",
-        formattedAcceptablePrice!,
-      ]),
+      priceComment: lines(
+        t`Mark price for the order.`,
+        "",
+        [t`Order Acceptable Price`, ": < ", formattedAcceptablePrice!],
+        error?.args?.price && [t`Order Execution Price`, ": ", formatUsd(error.args.price)]
+      ),
     };
     //#endregion LimitIncrease
     //#region MarketDecrease
-  } else if (ot === OrderType.MarketDecrease && at === TradeActionType.OrderCreated) {
+  } else if (ot === OrderType.MarketDecrease && ev === TradeActionType.OrderCreated) {
     const customAction = sizeDeltaUsd.gt(0) ? action : i18n._(actionTextMap["Withdraw-OrderCreated"]!);
     const customSize = sizeDeltaUsd.gt(0) ? sizeDeltaText : formattedCollateralDelta;
-    const customPrice = "> " + formattedAcceptablePrice!;
+    const customPrice = ">  " + formattedAcceptablePrice!;
     const priceComment = lines(t`Acceptable price for the order.`);
 
     result = {
@@ -249,7 +184,19 @@ export const formatPositionMessage = (
       price: customPrice,
       priceComment,
     };
-  } else if (ot === OrderType.MarketDecrease && at === TradeActionType.OrderExecuted) {
+  } else if (ot === OrderType.MarketDecrease && ev === TradeActionType.OrderCancelled) {
+    const customAction = sizeDeltaUsd.gt(0) ? action : i18n._(actionTextMap["Withdraw-OrderCreated"]!);
+    const customSize = sizeDeltaUsd.gt(0) ? sizeDeltaText : formattedCollateralDelta;
+    const customPrice = ">  " + formattedAcceptablePrice!;
+    const priceComment = lines(t`Acceptable price for the order.`);
+
+    result = {
+      action: customAction,
+      size: customSize,
+      price: customPrice,
+      priceComment,
+    };
+  } else if (ot === OrderType.MarketDecrease && ev === TradeActionType.OrderExecuted) {
     const customAction = sizeDeltaUsd.gt(0) ? action : i18n._(actionTextMap["Withdraw-OrderExecuted"]!);
     const customSize = sizeDeltaUsd.gt(0) ? sizeDeltaText : formattedCollateralDelta;
 
@@ -266,7 +213,7 @@ export const formatPositionMessage = (
         t`Order execution price takes into account price impact.`
       ),
     };
-  } else if (ot === OrderType.MarketDecrease && at === TradeActionType.OrderFrozen) {
+  } else if (ot === OrderType.MarketDecrease && ev === TradeActionType.OrderFrozen) {
     const customAction = sizeDeltaUsd.gt(0) ? action : i18n._(actionTextMap["Withdraw-OrderFrozen"]!);
     const customSize = sizeDeltaUsd.gt(0) ? sizeDeltaText : formattedCollateralDelta;
 
@@ -282,11 +229,11 @@ export const formatPositionMessage = (
     //#endregion MarketDecrease
     //#region LimitDecrease
   } else if (
-    (ot === OrderType.LimitDecrease && at === TradeActionType.OrderCreated) ||
-    (ot === OrderType.LimitDecrease && at === TradeActionType.OrderUpdated) ||
-    (ot === OrderType.LimitDecrease && at === TradeActionType.OrderCancelled)
+    (ot === OrderType.LimitDecrease && ev === TradeActionType.OrderCreated) ||
+    (ot === OrderType.LimitDecrease && ev === TradeActionType.OrderUpdated) ||
+    (ot === OrderType.LimitDecrease && ev === TradeActionType.OrderCancelled)
   ) {
-    const customPrice = "> " + formatUsd(tradeAction.triggerPrice)!;
+    const customPrice = ">  " + formatUsd(tradeAction.triggerPrice)!;
 
     result = {
       price: customPrice,
@@ -296,7 +243,7 @@ export const formatPositionMessage = (
         formattedAcceptablePrice!,
       ]),
     };
-  } else if (ot === OrderType.LimitDecrease && at === TradeActionType.OrderExecuted) {
+  } else if (ot === OrderType.LimitDecrease && ev === TradeActionType.OrderExecuted) {
     result = {
       priceComment: lines(
         t`Mark price for the order.`,
@@ -308,22 +255,25 @@ export const formatPositionMessage = (
         t`Order execution price takes into account price impact.`
       ),
     };
-  } else if (ot === OrderType.LimitDecrease && at === TradeActionType.OrderFrozen) {
+  } else if (ot === OrderType.LimitDecrease && ev === TradeActionType.OrderFrozen) {
+    let error = tradeAction.reasonBytes && tryGetError(tradeAction.reasonBytes);
+
     result = {
-      priceComment: lines(t`Mark price for the order.`, "", [
-        t`Order Acceptable Price`,
-        ": > ",
-        formattedAcceptablePrice!,
-      ]),
+      priceComment: lines(
+        t`Mark price for the order.`,
+        "",
+        [t`Order Acceptable Price`, ": > ", formattedAcceptablePrice!],
+        error?.args?.price && [t`Order Execution Price`, ": ", formatUsd(error.args.price)]
+      ),
     };
     //#endregion LimitDecrease
     //#region StopLossDecrease
   } else if (
-    (ot === OrderType.StopLossDecrease && at === TradeActionType.OrderCreated) ||
-    (ot === OrderType.StopLossDecrease && at === TradeActionType.OrderUpdated) ||
-    (ot === OrderType.StopLossDecrease && at === TradeActionType.OrderCancelled)
+    (ot === OrderType.StopLossDecrease && ev === TradeActionType.OrderCreated) ||
+    (ot === OrderType.StopLossDecrease && ev === TradeActionType.OrderUpdated) ||
+    (ot === OrderType.StopLossDecrease && ev === TradeActionType.OrderCancelled)
   ) {
-    const customPrice = "< " + formatUsd(tradeAction.triggerPrice)!;
+    const customPrice = "<  " + formatUsd(tradeAction.triggerPrice)!;
 
     result = {
       price: customPrice,
@@ -333,7 +283,7 @@ export const formatPositionMessage = (
         formattedAcceptablePrice!,
       ]),
     };
-  } else if (ot === OrderType.StopLossDecrease && at === TradeActionType.OrderExecuted) {
+  } else if (ot === OrderType.StopLossDecrease && ev === TradeActionType.OrderExecuted) {
     result = {
       priceComment: lines(
         t`Mark price for the order.`,
@@ -345,18 +295,21 @@ export const formatPositionMessage = (
         t`Order execution price takes into account price impact.`
       ),
     };
-  } else if (ot === OrderType.StopLossDecrease && at === TradeActionType.OrderFrozen) {
+  } else if (ot === OrderType.StopLossDecrease && ev === TradeActionType.OrderFrozen) {
+    let error = tradeAction.reasonBytes && tryGetError(tradeAction.reasonBytes);
+
     result = {
-      priceComment: lines(t`Mark price for the order.`, "", [
-        t`Order Acceptable Price`,
-        ": < ",
-        formattedAcceptablePrice!,
-      ]),
+      priceComment: lines(
+        t`Mark price for the order.`,
+        "",
+        [t`Order Acceptable Price`, ": < ", formattedAcceptablePrice!],
+        error?.args?.price && [t`Order Execution Price`, ": ", formatUsd(error.args.price)]
+      ),
     };
 
     //#endregion StopLossDecrease
     //#region Liquidation
-  } else if (ot === OrderType.Liquidation && at === TradeActionType.OrderExecuted) {
+  } else if (ot === OrderType.Liquidation && ev === TradeActionType.OrderExecuted) {
     const maxLeverage = PRECISION.div(tradeAction.marketInfo.minCollateralFactor);
     const formattedMaxLeverage = Number(maxLeverage).toFixed(1) + "x";
 
