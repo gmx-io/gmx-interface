@@ -104,15 +104,15 @@ function useDownloadAsCsv(tradeActions: TradeAction[] | undefined, minCollateral
 
     downloadAsCsv("trade-history", fullFormattedData, ["priceComment"], ",", {
       action: t`Action`,
-      acceptablePrice: t`Acceptable price`,
-      executionPrice: t`Execution price`,
+      acceptablePrice: t`Acceptable Price`,
+      executionPrice: t`Execution Price`,
       fullMarket: t`Full market`,
       market: t`Market`,
       price: t`Price`,
       size: t`Size`,
-      priceImpact: t`Price impact`,
-      timestamp: t`Timestamp`,
-      triggerPrice: t`Trigger price`,
+      priceImpact: t`Price Impact`,
+      timestamp: t`Date`,
+      triggerPrice: t`Trigger Price`,
     });
   }, [marketsInfoData, minCollateralUsd, tradeActions]);
 
