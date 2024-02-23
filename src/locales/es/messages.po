@@ -2215,7 +2215,7 @@ msgstr ""
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Funding Fee"
-msgstr ""
+msgstr "Comisión de Financiación"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Funding Fee Rate"
@@ -2794,7 +2794,7 @@ msgstr "Deja al menos {0} {1} para el gas"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Leftover Collateral"
-msgstr ""
+msgstr "Garantía Restante"
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Leftover Collateral not enough to cover fees"
@@ -3124,7 +3124,7 @@ msgstr "Precio de Referencia"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the liquidation."
-msgstr ""
+msgstr "Precio de referencia para la liquidación."
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -3139,7 +3139,7 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the order."
-msgstr ""
+msgstr "Precio de referencia para la orden."
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -3435,7 +3435,7 @@ msgstr "Min. a Recibir"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Min. required Collateral"
-msgstr ""
+msgstr "Garantía mínima requerida"
 
 #: src/components/Exchange/OrderEditor.js
 msgid "Minimum received"
@@ -3720,7 +3720,7 @@ msgstr "Orden"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order Acceptable Price"
-msgstr ""
+msgstr "Precio Aceptable de la Orden"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Order Acceptable Price: {greaterSign}{triggerPrice}"
@@ -3788,7 +3788,7 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order execution price takes into account price impact."
-msgstr ""
+msgstr "El precio de ejecución de la orden tiene en cuenta el impacto del precio."
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Order request sent"
@@ -3988,7 +3988,7 @@ msgstr "GyP Después de Comisiones"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "PnL after Fees and Price Impact"
-msgstr ""
+msgstr "GyP después de Comisiones e Impacto de Precio"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
@@ -4019,7 +4019,7 @@ msgstr "Posición"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Position Fee"
-msgstr ""
+msgstr "Comisión de Posición"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Position Price Impact"
@@ -4093,7 +4093,7 @@ msgstr "Precio"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Price Impact"
-msgstr ""
+msgstr "Impacto de Precio"
 
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Price Impact Rebate Claimed"
@@ -5524,7 +5524,7 @@ msgstr "Esta posición fue liquidada debido a que el apalancamiento máximo de 1
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "This position was liquidated as the max. leverage of {formattedMaxLeverage} was exceeded when taking into account fees."
-msgstr ""
+msgstr "Esta posición fue liquidada debido a que el apalancamiento máximo de {formattedMaxLeverage} fue superado al tener en cuenta las comisiones."
 
 #: src/pages/Home/Home.js
 msgid "Three tokens create our ecosystem"
@@ -5822,7 +5822,7 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Trigger price for the order."
-msgstr ""
+msgstr "Precio de activación para la orden."
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right"

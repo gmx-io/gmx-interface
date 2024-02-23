@@ -35,7 +35,8 @@ function tryGetError(
 
 export const formatPositionMessage = (
   tradeAction: PositionTradeAction,
-  minCollateralUsd: BigNumber
+  minCollateralUsd: BigNumber,
+  relativeTimestamp = true
 ): RowDetails | null => {
   const collateralToken = tradeAction.initialCollateralToken;
   const sizeDeltaUsd = tradeAction.sizeDeltaUsd;
@@ -64,7 +65,7 @@ export const formatPositionMessage = (
   const formattedAcceptablePrice = formatUsd(tradeAction.acceptablePrice);
 
   const action = getActionTitle(tradeAction.orderType, tradeAction.eventName);
-  const timestamp = formatTradeActionTimestamp(tradeAction.transaction.timestamp);
+  const timestamp = formatTradeActionTimestamp(tradeAction.transaction.timestamp, relativeTimestamp);
   const market = `${longShortText} ${indexName}`;
 
   const formattedCollateralDelta = formatTokenAmount(

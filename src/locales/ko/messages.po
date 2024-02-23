@@ -2215,7 +2215,7 @@ msgstr ""
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Funding Fee"
-msgstr ""
+msgstr "자금 수수료"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Funding Fee Rate"
@@ -2794,7 +2794,7 @@ msgstr "가스를 위해 최소 {0} {1}을(를) 남겨주세요"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Leftover Collateral"
-msgstr ""
+msgstr "남은 담보"
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Leftover Collateral not enough to cover fees"
@@ -3124,7 +3124,7 @@ msgstr "시장 평균가"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the liquidation."
-msgstr ""
+msgstr "청산을 위한 시장 평균가"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -3139,7 +3139,7 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the order."
-msgstr ""
+msgstr "주문을 위한 시장 평균가"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -3435,7 +3435,7 @@ msgstr "최소 수취량"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Min. required Collateral"
-msgstr ""
+msgstr "최소 필요 담보"
 
 #: src/components/Exchange/OrderEditor.js
 msgid "Minimum received"
@@ -3720,7 +3720,7 @@ msgstr "주문"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order Acceptable Price"
-msgstr ""
+msgstr "주문 가능 가격"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Order Acceptable Price: {greaterSign}{triggerPrice}"
@@ -3788,7 +3788,7 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order execution price takes into account price impact."
-msgstr ""
+msgstr "주문 체결 가격은 가격 영향을 고려합니다."
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Order request sent"
@@ -3988,7 +3988,7 @@ msgstr "수수료 제외한 PnL"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "PnL after Fees and Price Impact"
-msgstr ""
+msgstr "수수료 및 가격 영향 후 PnL"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
@@ -4019,7 +4019,7 @@ msgstr "포지션"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Position Fee"
-msgstr ""
+msgstr "포지션 수수료"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Position Price Impact"
@@ -4093,7 +4093,7 @@ msgstr "가격"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Price Impact"
-msgstr ""
+msgstr "가격 영향"
 
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Price Impact Rebate Claimed"
@@ -5524,7 +5524,7 @@ msgstr "해당 포지션은 최대 레버리지인 100x를 초과하여 청산�
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "This position was liquidated as the max. leverage of {formattedMaxLeverage} was exceeded when taking into account fees."
-msgstr ""
+msgstr "수수료를 고려했을 때 최대 레버리지 {formattedMaxLeverage}가 초과되어 해당 포지션이 청산되었습니다."
 
 #: src/pages/Home/Home.js
 msgid "Three tokens create our ecosystem"
@@ -5822,7 +5822,7 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Trigger price for the order."
-msgstr ""
+msgstr "주문의 트리거 가격입니다."
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right"

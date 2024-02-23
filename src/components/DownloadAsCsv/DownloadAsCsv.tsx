@@ -4,42 +4,55 @@ import cx from "classnames";
 
 type Props<T> = {
   data: T[];
-  excludedFields: string[];
+  excludedFields: (keyof T)[];
   fileName: string;
   className?: string;
 };
 
-function filterFields<T>(data: T, excludedFields: string[]): Partial<T> {
+function filterFields<T>(data: T, excludedFields: (keyof T)[]): Partial<T> {
   const result = { ...data };
-  excludedFields.forEach((field) => delete result[field]);
+  excludedFields.forEach((field) => delete result[field as keyof T]);
   return result;
 }
 
-function convertToCSV<T>(data: Partial<T>[]): string {
-  const header = Object.keys(data[0]).join(",");
-  const values = data.map((object) => Object.values(object).join(",")).join("\n");
+function convertToCSV<T>(data: Partial<T>[], separator = ",", customHeader?: Partial<Record<keyof T, string>>): string {
+  const header = Object.keys(data[0])
+    .map((key) => customHeader?.[key as keyof T] || key)
+    .join(separator);
+
+  const values = data
+    .map((object) =>
+      Object.values(object)
+        .map((cell) => String(cell))
+        .map((cell) => (cell.includes(separator) ? `"${cell}"` : cell))
+        .join(separator)
+    )
+    .join("\n");
   return `${header}\n${values}`;
 }
 
-export function DownloadAsCsv<T>({ data, excludedFields, fileName, className }: Props<T>) {
-  const getCsvUrl = useCallback(
-    (data: T[]) => {
-      const filteredData = data.map((item) => filterFields(item, excludedFields));
-      const csv = convertToCSV(filteredData);
-      return `data:application/octet-stream,${encodeURIComponent(csv)}`;
-    },
-    [excludedFields]
-  );
+export function downloadAsCsv<T>(
+  fileName: string,
+  data: T[],
+  excludedFields: (keyof T)[],
+  separator = ",",
+  customHeader?: Partial<Record<keyof T, string>>
+) {
+  const filteredData = data.map((item) => filterFields(item, excludedFields));
+  const csv = convertToCSV(filteredData, separator, customHeader);
+  const csvUrl = `data:application/octet-stream,${encodeURIComponent(csv)}`;
+  const aElement = document.createElement("a");
+  aElement.href = csvUrl;
+  aElement.download = `${fileName}.csv`;
+  document.body.appendChild(aElement);
+  aElement.click();
+  document.body.removeChild(aElement);
+}
 
+export function DownloadAsCsv<T>({ data, excludedFields, fileName, className }: Props<T>) {
   const onClick = useCallback(() => {
-    const csvUrl = getCsvUrl(data);
-    const aElement = document.createElement("a");
-    aElement.href = csvUrl;
-    aElement.download = `${fileName}.csv`;
-    document.body.appendChild(aElement);
-    aElement.click();
-    document.body.removeChild(aElement);
-  }, [data, fileName, getCsvUrl]);
+    downloadAsCsv(fileName, data, excludedFields);
+  }, [data, fileName, excludedFields]);
 
   if (!data || data.length === 0) {
     return null;
