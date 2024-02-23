@@ -4433,6 +4433,10 @@ msgid "Request Deposit"
 msgstr "Request Deposit"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Request Liquidation"
+msgstr "Request Liquidation"
+
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Decrease"
 msgstr "Request Market Decrease"
 

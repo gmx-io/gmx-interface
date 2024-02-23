@@ -189,7 +189,7 @@ describe("TradeHistoryRow helpers", () => {
 
     expect(formatPositionMessage(undefinedOrder, minCollateralUsd)).toMatchInlineSnapshot(`
       Object {
-        "action": "Create Trigger",
+        "action": "Request Liquidation",
         "fullMarket": "XRP/USD [WETH-USDC]",
         "market": "Long XRP/USD",
         "price": undefined,

@@ -4430,6 +4430,10 @@ msgid "Request Deposit"
 msgstr "Solicitar Depósito"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Request Liquidation"
+msgstr "Solicitar Liquidación"
+
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Decrease"
 msgstr "Solicitar disminución del mercado"
 
