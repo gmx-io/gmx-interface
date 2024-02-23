@@ -20,7 +20,7 @@ export default function LeaderboardTest() {
   const { accounts, positions } = data;
 
   return (
-    <div className="default-container page-layout Leaderboard">
+    <div className="default-container page-layout LeaderboardTest">
       <div className="section-title-block">
         <div className="section-title-content">
           <div className="Page-title">
@@ -33,7 +33,7 @@ export default function LeaderboardTest() {
       </div>
       <h3>Accounts ({accounts?.length})</h3>
       {error ? <div>{error.toString()}</div> : null}
-      <table className="LeaderboardTest">
+      <table>
         <thead>
           <tr>
             <th>account</th>
