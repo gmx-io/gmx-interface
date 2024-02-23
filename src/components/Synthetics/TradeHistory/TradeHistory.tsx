@@ -1,35 +1,30 @@
 import { Trans } from "@lingui/macro";
-import { useEffect, useState } from "react";
 import * as dateFns from "date-fns";
+import { useEffect, useMemo, useState } from "react";
 
 import { TRADE_HISTORY_PER_PAGE } from "config/ui";
+import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
+import { useMarkets } from "domain/synthetics/markets";
+import { OrderType } from "domain/synthetics/orders/types";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions/usePositionsConstants";
-import { useTradeHistory } from "domain/synthetics/tradeHistory";
+import { TradeActionType, useTradeHistory } from "domain/synthetics/tradeHistory";
 import { useChainId } from "lib/chains";
 
+import Button from "components/Button/Button";
 import Pagination from "components/Pagination/Pagination";
 import usePagination from "components/Referrals/usePagination";
-import { TradeHistoryRow } from "./TradeHistoryRow/TradeHistoryRow";
-import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
-import Button from "components/Button/Button";
 import { DateRangeSelect } from "./DateRangeSelect/DateRangeSelect";
+import { TradeHistoryRow } from "./TradeHistoryRow/TradeHistoryRow";
 
-// import filterIcon from "img/ic_filter.svg";
+import { ActionFilter } from "./filters/ActionFilter";
+import { MarketFilter } from "./filters/MarketFilter";
+
 import downloadIcon from "img/ic_download_simple.svg";
-// import calendarIcon from "img/ic_calendar.svg";
 
 import "./TradeHistorySynthetics.scss";
 
 const PAGE_SIZE = 100;
 const ENTITIES_PER_PAGE = 25;
-
-// const FILTER_ICON_INFO = {
-//   src: filterIcon,
-// };
-
-// const CALENDAR_ICON_INFO = {
-//   src: calendarIcon,
-// };
 
 const CSV_ICON_INFO = {
   src: downloadIcon,
@@ -51,11 +46,47 @@ function toSeconds(date: Date) {
   return date.getTime() / 1000;
 }
 
+function useMarketAddressesFromTokenAddresses(tokenAddresses: string[]): string[] {
+  const { chainId } = useChainId();
+  const markets = useMarkets(chainId);
+
+  const marketAddresses = useMemo(() => {
+    const { marketsAddresses, marketsData } = markets;
+    if (!marketsAddresses || !marketsData) {
+      return [];
+    }
+
+    return marketsAddresses.filter((marketAddress) => {
+      const marketData = marketsData[marketAddress];
+
+      const marketTokenAddresses = [
+        marketData.longTokenAddress,
+        marketData.shortTokenAddress,
+        marketData.indexTokenAddress,
+      ];
+
+      return tokenAddresses.some((tokenAddress) => marketTokenAddresses.includes(tokenAddress));
+    });
+  }, [tokenAddresses, markets]);
+
+  return marketAddresses;
+}
+
 export function TradeHistory(p: Props) {
   const { shouldShowPaginationButtons, forAllAccounts, account } = p;
   const { chainId } = useChainId();
   const showDebugValues = useShowDebugValues();
   const [dateRange, setDateRange] = useState<[Date | undefined, Date | undefined]>([undefined, undefined]);
+  const [tokenAddressesFilter, setTokenAddressesFilter] = useState<string[]>([]);
+  const [actionFilter, setActionFilter] = useState<
+    {
+      orderType: OrderType;
+      eventName: TradeActionType;
+      isDepositOrWithdraw?: boolean;
+    }[]
+  >([]);
+
+  const marketAddresses = useMarketAddressesFromTokenAddresses(tokenAddressesFilter);
 
   const { minCollateralUsd } = usePositionsConstantsRequest(chainId);
   const {
@@ -69,6 +100,9 @@ export function TradeHistory(p: Props) {
     pageSize: PAGE_SIZE,
     fromTxTimestamp: dateRange[0] ? toSeconds(dateRange[0]) : undefined,
     toTxTimestamp: dateRange[1] ? toSeconds(dateFns.add(dateRange[1], INCLUDING_CURRENT_DAY_DURATION)) : undefined,
+    marketAddresses: marketAddresses,
+    tokenAddresses: tokenAddressesFilter,
+    orderEventCombinations: actionFilter,
   });
 
   const isLoading = !!account && (!minCollateralUsd || isHistoryLoading);
@@ -80,7 +114,7 @@ export function TradeHistory(p: Props) {
     ENTITIES_PER_PAGE
   );
   const currentPageData = getCurrentData();
-  const hasFilters = Boolean(dateRange[0] || dateRange[1]);
+  const hasFilters = Boolean(dateRange[0] || dateRange[1] || tokenAddressesFilter.length || actionFilter.length);
 
   useEffect(() => {
     if (!pageCount || !currentPage) return;
@@ -98,12 +132,6 @@ export function TradeHistory(p: Props) {
       <div className="App-box">
         <div className="TradeHistorySynthetics-controls">
           <div className="TradeHistorySynthetics-filters">
-            {/* <Button variant="secondary" imgInfo={FILTER_ICON_INFO}>
-              Types
-            </Button>
-            <Button variant="secondary" imgInfo={FILTER_ICON_INFO}>
-              Assets
-            </Button> */}
             <DateRangeSelect startDate={dateRange[0]} endDate={dateRange[1]} onChange={setDateRange} />
           </div>
           <Button variant="secondary" imgInfo={CSV_ICON_INFO}>
@@ -115,26 +143,17 @@ export function TradeHistory(p: Props) {
             <Trans>Loading...</Trans>
           </div>
         )}
-        {isEmpty && !hasFilters && (
-          <div className="TradeHistorySynthetics-padded-cell">
-            <Trans>No trades yet</Trans>
-          </div>
-        )}
-        {isEmpty && hasFilters && (
-          <div className="TradeHistorySynthetics-padded-cell">
-            <Trans>No trades match the selected filters</Trans>
-          </div>
-        )}
-        {!isLoading && !isEmpty && (
+
+        {!isLoading && (
           <div className="TradeHistorySynthetics-horizontal-scroll-container">
             <table className="Exchange-list TradeHistorySynthetics-table">
               <thead className="TradeHistorySynthetics-header">
                 <tr>
                   <th>
-                    <Trans>Action</Trans>
+                    <ActionFilter value={actionFilter} onChange={setActionFilter} />
                   </th>
                   <th>
-                    <Trans>Market</Trans>
+                    <MarketFilter value={tokenAddressesFilter} onChange={setTokenAddressesFilter} />
                   </th>
                   <th>
                     <Trans>Size</Trans>
@@ -158,7 +177,18 @@ export function TradeHistory(p: Props) {
             </table>
           </div>
         )}
+        {isEmpty && hasFilters && (
+          <div className="TradeHistorySynthetics-padded-cell">
+            <Trans>No trades match the selected filters</Trans>
+          </div>
+        )}
+        {isEmpty && !hasFilters && !isLoading && (
+          <div className="TradeHistorySynthetics-padded-cell">
+            <Trans>No trades yet</Trans>
+          </div>
+        )}
       </div>
+
       {shouldShowPaginationButtons && (
         <Pagination page={currentPage} pageCount={pageCount} onPageChange={(page) => setCurrentPage(page)} />
       )}

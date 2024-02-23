@@ -1,19 +1,22 @@
+import { flip, offset, shift, useFloating } from "@floating-ui/react";
 import { Popover } from "@headlessui/react";
-import * as dateFns from "date-fns";
-import { enUS } from "date-fns/locale";
-
+import { i18n } from "@lingui/core";
+import type { Locale as DateLocale } from "date-fns";
+import addYears from "date-fns/addYears";
+import format from "date-fns/format";
 import { useEffect, useMemo, useState } from "react";
 import { DateRange, ClassNames as DateRangeClassNames, Range } from "react-date-range";
+
+import { dateLocaleMap } from "../TradeHistoryRow/utils/shared";
 
 import Button from "components/Button/Button";
 
 import calendarIcon from "img/ic_calendar.svg";
 
 import "react-date-range/dist/styles.css"; // main css file
+import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
-
 import "./DateRangeSelect.scss";
-import { useFloating, flip, shift, offset } from "@floating-ui/react";
 
 type Props = {
   startDate?: Date;
@@ -26,7 +29,7 @@ const CALENDAR_ICON_INFO = {
 };
 
 const MIN_DATE = new Date(2021, 0, 1);
-const MAX_DATE = dateFns.addYears(new Date(), 1);
+const MAX_DATE = addYears(new Date(), 1);
 
 const DATE_RANGE_CLASSNAMES: DateRangeClassNames = {
   calendarWrapper: "DateRangeSelect-calendarWrapper",
@@ -65,11 +68,19 @@ export function DateRangeSelect({ startDate, endDate, onChange }: Props) {
     onChange([item.selection.startDate, item.selection.endDate]);
   };
 
+  const localeStr = i18n.locale;
+
+  const locale: DateLocale = dateLocaleMap[localeStr] || dateLocaleMap.en;
+
   const buttonText = useMemo(() => {
-    const start = startDate && dateFns.format(startDate, "dd MMM yyyy");
-    const end = endDate && dateFns.format(endDate, "dd MMM yyyy");
+    const start =
+      startDate &&
+      format(startDate, "dd MMM yyyy", {
+        locale,
+      });
+    const end = endDate && format(endDate, "dd MMM yyyy", { locale });
     return start && end ? `${start} — ${end}` : "All time";
-  }, [startDate, endDate]);
+  }, [startDate, locale, endDate]);
 
   const { refs, floatingStyles } = useFloating({
     middleware: [offset(10), flip(), shift()],
@@ -89,7 +100,7 @@ export function DateRangeSelect({ startDate, endDate, onChange }: Props) {
             moveRangeOnFirstSelection={false}
             ranges={rangeState}
             showDateDisplay={false}
-            locale={enUS}
+            locale={locale}
             minDate={MIN_DATE}
             maxDate={MAX_DATE}
             weekStartsOn={1}

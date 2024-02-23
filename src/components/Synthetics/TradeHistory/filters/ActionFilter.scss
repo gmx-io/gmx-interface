@@ -1,0 +1,33 @@
+.ActionFilter {
+  &-options {
+    max-height: 20rem;
+    overflow-y: auto;
+
+    overscroll-behavior: contain;
+  }
+
+  &-group-name {
+    font-size: var(--font-base);
+
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+
+    cursor: pointer;
+  }
+
+  &-option {
+    font-size: var(--font-base);
+
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    padding-left: 1em;
+
+    cursor: pointer;
+  }
+
+  &-search {
+    margin: 1rem;
+  }
+}
