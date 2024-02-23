@@ -377,7 +377,6 @@ export function useSubaccountCancelOrdersDetailsMessage(
   const defaultRequiredBalance = useSubaccountDefaultExecutionFee();
   const requiredBalance = overridedRequiredBalance ?? defaultRequiredBalance;
   const isLastAction = useIsLastSubaccountAction(actionCount);
-  const mainAccountInsufficientFunds = useMainAccountInsufficientFunds(requiredBalance);
   const subaccountInsufficientFunds = useSubaccountInsufficientFunds(requiredBalance);
   const [, setOpenSubaccountModal] = useSubaccountModalOpen();
   const refetchContractData = useSubaccountRefetchContractData();
@@ -407,20 +406,10 @@ export function useSubaccountCancelOrdersDetailsMessage(
           to top-up.
         </Trans>
       );
-    } else if (mainAccountInsufficientFunds) {
-      return (
-        <Trans>
-          There are insufficient funds in your Main account for One-Click Trading auto top-ups.{" "}
-          <span onClick={handleOpenSubaccountModal} className="link-underline">
-            Click here
-          </span>{" "}
-          to convert.
-        </Trans>
-      );
     }
 
     return null;
-  }, [isLastAction, mainAccountInsufficientFunds, handleOpenSubaccountModal, subaccountInsufficientFunds]);
+  }, [isLastAction, handleOpenSubaccountModal, subaccountInsufficientFunds]);
 }
 
 export function useSubaccountNotificationState() {
