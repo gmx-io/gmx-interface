@@ -1170,10 +1170,9 @@ export function ConfirmationBox(p: Props) {
           {renderDifferentTokensWarning()}
         </ExchangeInfo.Group>
 
-        <ExchangeInfo.Group>
-          {renderSLTP("takeProfit")}
-          {renderSLTP("stopLoss")}
-        </ExchangeInfo.Group>
+        <ExchangeInfo.Group>{renderSLTP("takeProfit")}</ExchangeInfo.Group>
+
+        <ExchangeInfo.Group>{renderSLTP("stopLoss")}</ExchangeInfo.Group>
 
         <ExchangeInfo.Group>
           {renderLeverage(existingPosition?.leverage, nextPositionValues?.nextLeverage)}
@@ -1387,7 +1386,7 @@ export function ConfirmationBox(p: Props) {
   function renderSwapSection() {
     return (
       <ExchangeInfo>
-        <ExchangeInfo.Group>{renderMain()}</ExchangeInfo.Group>
+        {renderMain()}
 
         <ExchangeInfo.Group>
           {renderSwapSpreadWarining()}
