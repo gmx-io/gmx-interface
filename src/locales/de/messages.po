@@ -838,6 +838,10 @@ msgstr "Beanspruchen"
 msgid "Claim <0>{0}</0>"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
+msgid "Claim Affiliate Vault Rewards"
+msgstr ""
+
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "Claim Funding Fees"
 msgstr ""
@@ -930,7 +934,6 @@ msgstr ""
 msgid "Claiming Price Impact Rebate..."
 msgstr ""
 
-#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claiming and Staking Affiliate Vault Rewards"
 msgstr ""
@@ -2485,10 +2488,6 @@ msgid "Invalid NFT Address"
 msgstr "Ungültige NFT-Adresse"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Invalid Receiver"
-msgstr "Ungültiger Empfänger"
-
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/NftWallet/NftWallet.js
 msgid "Invalid Receiver Address"
 msgstr "Ungültige Empfängeradresse"
@@ -4033,6 +4032,10 @@ msgstr "Der Empfänger hat noch keine GLP-Token gestaket"
 msgid "Receiver has not staked GMX tokens before"
 msgstr "Der Empfänger hat noch keine GMX-Token gestaket"
 
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+msgid "Receiver has staked GMX/GLP before"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "Redemption time not yet reached"
 msgstr "Tilgungszeitpunkt noch nicht erreicht"
@@ -5528,7 +5531,6 @@ msgid "Unstaking..."
 msgstr "Unstaken..."
 
 #: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Unsupported network"
 msgstr ""
 
@@ -5713,6 +5715,7 @@ msgstr "Vesting mit GMX auf Avalanche"
 msgid "Vested GLP not withdrawn"
 msgstr "Gevestete GLP nicht abgehoben"
 
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Vested GMX not withdrawn"
 msgstr "Gevestete GMX nicht abgehoben"
@@ -6055,6 +6058,10 @@ msgid "You have multiple existing Increase {longOrShortText} {0} limit orders"
 msgstr "Du hast mehrere bestehende {longOrShortText} {0} Limit-Orders zur Erhöhung"
 
 #: src/pages/Stake/StakeV2.js
+msgid "You have no GMX tokens to claim"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "You have not deposited any tokens for vesting."
@@ -6262,7 +6269,6 @@ msgstr "{0} GLP sind für Vesting reserviert worden."
 msgid "{0} GLP sold for {1} {2}!"
 msgstr "{0} GLP verkauft für {1} {2}!"
 
-#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."

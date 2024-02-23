@@ -838,6 +838,10 @@ msgstr "請求"
 msgid "Claim <0>{0}</0>"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
+msgid "Claim Affiliate Vault Rewards"
+msgstr ""
+
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "Claim Funding Fees"
 msgstr ""
@@ -930,7 +934,6 @@ msgstr ""
 msgid "Claiming Price Impact Rebate..."
 msgstr ""
 
-#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claiming and Staking Affiliate Vault Rewards"
 msgstr ""
@@ -2485,10 +2488,6 @@ msgid "Invalid NFT Address"
 msgstr "無効なNFTアドレス"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Invalid Receiver"
-msgstr "無効な受け取り人"
-
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/NftWallet/NftWallet.js
 msgid "Invalid Receiver Address"
 msgstr "無効な受け取りアドレス"
@@ -4033,6 +4032,10 @@ msgstr "受け取り側でこれまでGLPトークンをステークしたこと
 msgid "Receiver has not staked GMX tokens before"
 msgstr "受け取り側でこれまでGMXトークンをステークしたことはありません"
 
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+msgid "Receiver has staked GMX/GLP before"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "Redemption time not yet reached"
 msgstr "売却までの規定時間に達していません"
@@ -5528,7 +5531,6 @@ msgid "Unstaking..."
 msgstr "アンステーク中..."
 
 #: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Unsupported network"
 msgstr ""
 
@@ -5713,6 +5715,7 @@ msgstr "AvalancheでGMXを使ってべスティングする"
 msgid "Vested GLP not withdrawn"
 msgstr "べスティングされたGLPで引き出されていないもの"
 
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Vested GMX not withdrawn"
 msgstr "べスティングされたGMXで引き出されていないもの"
@@ -6055,6 +6058,10 @@ msgid "You have multiple existing Increase {longOrShortText} {0} limit orders"
 msgstr "{longOrShortText} {0}のリミット注文を増額する複数の注文があります"
 
 #: src/pages/Stake/StakeV2.js
+msgid "You have no GMX tokens to claim"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "You have not deposited any tokens for vesting."
@@ -6262,7 +6269,6 @@ msgstr "{0} GLPがべスティングのためにリザーブされました。"
 msgid "{0} GLP sold for {1} {2}!"
 msgstr "{0} GLPを売却し、{1} {2}を得ました!"
 
-#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."

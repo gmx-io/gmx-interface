@@ -154,9 +154,15 @@ export default function BeginAccountTransfer(props) {
     if (!ethers.utils.isAddress(receiver)) {
       return t`Invalid Receiver Address`;
     }
-    if (hasStakedGmx || hasStakedGlp || (hasVestedAffiliate && !isAffiliateVesterSkipValidation)) {
-      return t`Invalid Receiver`;
+
+    if (hasVestedAffiliate && !isAffiliateVesterSkipValidation) {
+      return t`Vested GMX not withdrawn`;
     }
+
+    if (hasStakedGmx || hasStakedGlp) {
+      return t`Receiver has staked GMX/GLP before`;
+    }
+
     if ((parsedReceiver || "").toString().toLowerCase() === (account || "").toString().toLowerCase()) {
       return t`Self-transfer not supported`;
     }
