@@ -309,6 +309,8 @@ export const formatPositionMessage = (
 
     //#endregion StopLossDecrease
     //#region Liquidation
+  } else if (ot === OrderType.Liquidation && ev === TradeActionType.OrderCreated) {
+    //
   } else if (ot === OrderType.Liquidation && ev === TradeActionType.OrderExecuted) {
     const maxLeverage = PRECISION.div(tradeAction.marketInfo.minCollateralFactor);
     const formattedMaxLeverage = Number(maxLeverage).toFixed(1) + "x";

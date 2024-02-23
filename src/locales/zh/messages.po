@@ -4269,6 +4269,10 @@ msgid "Request Deposit"
 msgstr "要求押金"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
+msgid "Request Liquidation"
+msgstr "要求清算"
+
+#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Decrease"
 msgstr "要求市场减少"
 
