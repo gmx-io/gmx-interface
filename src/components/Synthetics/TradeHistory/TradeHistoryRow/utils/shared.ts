@@ -100,11 +100,12 @@ export const dateLocaleMap: Record<keyof typeof locales, DateLocale> = {
 Object.values(dateLocaleMap).forEach((locale) => {
   const originalFormatRelative = locale.formatRelative;
 
-  locale.formatRelative = (token) => {
-    if (token === "other") {
+  locale.formatRelative = (...args) => {
+    const token = args[0];
+    if (token === "other" || !originalFormatRelative) {
       return "dd MMM yyyy, HH:mm";
     }
-    return originalFormatRelative!(token);
+    return originalFormatRelative(...args);
   };
 });
 
@@ -113,7 +114,7 @@ export function formatTradeActionTimestamp(timestamp: number) {
 
   const locale: DateLocale = dateLocaleMap[localeStr] || dateEn;
 
-  return formatRelative(timestamp * 1000, new Date(), {
+  return formatRelative(new Date(timestamp * 1000), new Date(), {
     locale: locale,
   });
 }
