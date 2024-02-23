@@ -74,9 +74,6 @@ import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import UserIncentiveDistributionList from "components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
-import { useSequentialTransactions } from "lib/contracts/useSequentialTransactions";
-import MultiTransactionNotification from "components/Synthetics/StatusNotification/MultiTransactionNotification";
-import { usePrevious } from "lib/usePrevious";
 import useVestingData from "domain/vesting/useVestingData";
 
 const { AddressZero } = ethers.constants;
@@ -1013,61 +1010,15 @@ function ClaimModal(props) {
 }
 
 function AffiliateClaimModal(props) {
-  const { isVisible, setIsVisible, signer, active, chainId, account, totalVesterRewards } = props;
-  const [isApproving, setIsApproving] = useState(false);
-
-  const gmxAddress = getContract(chainId, "GMX");
-  const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
-  const rewardRouterAddress = getContract(chainId, "RewardRouter");
-
-  const gmxVestedAmount = usePrevious(totalVesterRewards);
-  const amount = parseValue(gmxVestedAmount, 18);
-
+  const { isVisible, setIsVisible, signer, chainId, setPendingTxns, totalVesterRewards } = props;
   const [isClaiming, setIsClaiming] = useState(false);
-  const { executeTransactions } = useSequentialTransactions();
-
-  const [shouldStakeGmx, setShouldStakeGmx] = useLocalStorageSerializeKey(
-    [chainId, "StakeV2-affiliate-vault-stake-gmx"],
-    true
-  );
-
   const affiliateVesterAddress = getContract(chainId, "AffiliateVester");
-  const transactionKeys = useMemo(() => {
-    return ["claimGmx"].concat(shouldStakeGmx ? ["stakeGmx"] : []);
-  }, [shouldStakeGmx]);
-
-  const { data: gmxTokenAllowence } = useSWR(
-    active && gmxAddress && [active, chainId, gmxAddress, "allowance", account, stakedGmxTrackerAddress],
-    {
-      fetcher: contractFetcher(signer, Token),
-    }
-  );
-
-  const needApproval = stakedGmxTrackerAddress !== AddressZero && gmxTokenAllowence && amount?.gt(gmxTokenAllowence);
-
-  const statusMessages = useMemo(
-    () => ({
-      claimGmx: {
-        loading: t`Claiming Affiliate Vault Rewards`,
-        success: t`Affiliate Vault Rewards Claimed`,
-        error: t`Affiliate Vault Rewards Claim Failed`,
-      },
-      stakeGmx: {
-        loading: t`Staking Affiliate Vault Rewards`,
-        success: t`Affiliate Vault Rewards Staked`,
-        error: t`Affiliate Vault Rewards Stake Failed`,
-      },
-    }),
-    []
-  );
 
   const isPrimaryEnabled = () => {
     if (totalVesterRewards.isZero()) {
       return false;
     }
-    if (isApproving) {
-      return false;
-    }
+
     return !isClaiming;
   };
 
@@ -1075,100 +1026,41 @@ function AffiliateClaimModal(props) {
     if (isClaiming) {
       return t`Claiming...`;
     }
-    if (isApproving) {
-      return t`Approving GMX...`;
-    }
-    if (needApproval) {
-      return t`Approve GMX`;
-    }
     return t`Claim`;
   };
-
-  const showToast = useCallback(() => {
-    const toastId = Date.now();
-
-    helperToast.success(
-      <MultiTransactionNotification
-        transactionKeys={transactionKeys}
-        statusMessages={statusMessages}
-        toastId={toastId}
-        title={t`Claiming and Staking Affiliate Vault Rewards`}
-      />,
-      {
-        toastId,
-        autoClose: false,
-      }
-    );
-  }, [transactionKeys, statusMessages]);
 
   const onClickPrimary = () => {
     setIsClaiming(true);
 
     const affiliateVesterContract = new ethers.Contract(affiliateVesterAddress, Vester.abi, signer);
-    const rewardRouterContract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, signer);
 
-    if (shouldStakeGmx && needApproval) {
-      approveTokens({
-        setIsApproving,
-        signer,
-        tokenAddress: gmxAddress,
-        spender: stakedGmxTrackerAddress,
-        chainId,
+    callContract(chainId, affiliateVesterContract, "claim", [], {
+      sentMsg: t`Claim submitted.`,
+      failMsg: t`Claim failed.`,
+      successMsg: t`Claim completed!`,
+      setPendingTxns,
+    })
+      .then(() => {
+        setIsVisible(false);
+      })
+      .finally(() => {
+        setIsClaiming(false);
       });
-      return;
-    }
-
-    const transactionDetails = [
-      {
-        key: "claimGmx",
-        chainId,
-        contract: affiliateVesterContract,
-        method: "claim",
-        params: [],
-        opts: {
-          hideSentMsg: true,
-          hideSuccessMsg: true,
-        },
-      },
-    ];
-
-    if (shouldStakeGmx) {
-      transactionDetails.push({
-        key: "stakeGmx",
-        chainId,
-        contract: rewardRouterContract,
-        method: "stakeGmx",
-        params: [amount],
-        opts: {
-          hideSentMsg: true,
-          hideSuccessMsg: true,
-        },
-      });
-    }
-
-    executeTransactions(transactionDetails, () => {
-      setIsVisible(false);
-      setIsClaiming(false);
-    });
-
-    showToast();
   };
 
   return (
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Claim Affiliate Vault Rewards`}>
-        <div className="CompoundModal-menu">
+        <Trans>
           <div>
-            <Checkbox isChecked={true} disabled={true}>
-              <Trans>Claim {formatAmount(totalVesterRewards, 18, 2, true)} GMX</Trans>
-            </Checkbox>
+            This will claim {formatAmount(totalVesterRewards, 18, 4, true)} GMX.
+            <br />
+            <br />
+            To stake the GMX tokens, please use the "Stake" button located in the GMX section on this page.
+            <br />
+            <br />
           </div>
-          <div>
-            <Checkbox isChecked={shouldStakeGmx} setIsChecked={setShouldStakeGmx}>
-              <Trans>Stake GMX</Trans>
-            </Checkbox>
-          </div>
-        </div>
+        </Trans>
         <div className="Exchange-swap-button-container">
           <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
             {getPrimaryText()}
@@ -1856,14 +1748,11 @@ export default function StakeV2({ setPendingTxns }) {
         chainId={chainId}
       />
       <AffiliateClaimModal
-        active={active}
-        account={account}
         signer={signer}
         chainId={chainId}
         setPendingTxns={setPendingTxns}
         isVisible={isAffiliateClaimModalVisible}
         setIsVisible={setIsAffiliateClaimModalVisible}
-        rewardRouterAddress={rewardRouterAddress}
         totalVesterRewards={vestingData?.affiliateVesterClaimable ?? BN_ZERO}
       />
 
