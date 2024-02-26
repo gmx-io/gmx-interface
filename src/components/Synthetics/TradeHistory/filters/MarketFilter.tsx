@@ -8,6 +8,7 @@ import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks
 
 import Checkbox from "components/Checkbox/Checkbox";
 import SearchInput from "components/SearchInput/SearchInput";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import { ReactComponent as FilterIcon } from "img/ic_filter.svg";
 
@@ -92,6 +93,7 @@ export function MarketFilter({ value, onChange }: Props) {
                   }}
                 >
                   <Checkbox isChecked={value.includes(token.address)} />
+                  <TokenIcon symbol={token.symbol} displaySize={16} importSize={24} className="mr-xs" />
                   {token.symbol}
                 </div>
               ))}

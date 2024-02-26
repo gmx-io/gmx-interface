@@ -400,6 +400,11 @@ msgstr ""
 msgid "Agree"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/DateRangeSelect/DateRangeSelect.tsx
+#: src/components/Synthetics/TradeHistory/DateRangeSelect/DateRangeSelect.tsx
+msgid "All time"
+msgstr ""
+
 #: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 msgid "Allow {0} to be spent"
 msgstr ""
@@ -2771,6 +2776,10 @@ msgstr ""
 msgid "Last 7 days"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/DateRangeSelect/DateRangeSelect.tsx
+msgid "Last month"
+msgstr ""
+
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/ModalViews/RedirectModal.js
@@ -3185,6 +3194,10 @@ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
 msgid "Market Orders"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+msgid "Market Price"
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
@@ -3728,11 +3741,8 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Order Acceptable Price"
-msgstr ""
-
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
-msgid "Order Acceptable Price: {greaterSign}{triggerPrice}"
+msgid "Order Acceptable Price"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -3748,7 +3758,7 @@ msgid "Order Execution Price"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
-msgid "Order Trigger Price: {greaterSign}{triggerPrice}"
+msgid "Order Trigger Price"
 msgstr ""
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
@@ -4083,7 +4093,6 @@ msgstr ""
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -4438,10 +4447,6 @@ msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Deposit"
-msgstr ""
-
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Request Liquidation"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
@@ -5678,6 +5683,10 @@ msgstr ""
 
 #: src/pages/Home/Home.js
 msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+msgid "Trade History"
 msgstr ""
 
 #: src/components/Exchange/ExchangeBanner.js

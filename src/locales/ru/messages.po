@@ -400,6 +400,11 @@ msgstr "После подачи заявки токены esGMX будут пе�
 msgid "Agree"
 msgstr "Согласен"
 
+#: src/components/Synthetics/TradeHistory/DateRangeSelect/DateRangeSelect.tsx
+#: src/components/Synthetics/TradeHistory/DateRangeSelect/DateRangeSelect.tsx
+msgid "All time"
+msgstr "Всё время"
+
 #: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 msgid "Allow {0} to be spent"
 msgstr ""
@@ -2771,6 +2776,10 @@ msgstr ""
 msgid "Last 7 days"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/DateRangeSelect/DateRangeSelect.tsx
+msgid "Last month"
+msgstr "Последний месяц"
+
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/ModalViews/RedirectModal.js
@@ -3186,6 +3195,10 @@ msgstr "Увеличение рынка"
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
 msgid "Market Orders"
 msgstr ""
+
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+msgid "Market Price"
+msgstr "Рыночная Цена"
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "Market Swap"
@@ -3728,12 +3741,9 @@ msgstr "Ордер"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Order Acceptable Price"
 msgstr "Допустимая цена ордера"
-
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
-msgid "Order Acceptable Price: {greaterSign}{triggerPrice}"
-msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -3748,8 +3758,8 @@ msgid "Order Execution Price"
 msgstr "Цена исполнения ордера"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
-msgid "Order Trigger Price: {greaterSign}{triggerPrice}"
-msgstr ""
+msgid "Order Trigger Price"
+msgstr "Цена триггера ордера"
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Order Type"
@@ -4083,7 +4093,6 @@ msgstr "Предыдущий"
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -4439,10 +4448,6 @@ msgstr "Рефералы"
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Deposit"
 msgstr "Запрос на депозит"
-
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Request Liquidation"
-msgstr "Запрос на ликвидацию"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Decrease"
@@ -5679,6 +5684,10 @@ msgstr "Торговля"
 #: src/pages/Home/Home.js
 msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
 msgstr "Торгуйте BTC, ETH, AVAX и другими популярными криптовалютами с кредитным плечом до 50x прямо из вашего кошелька."
+
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+msgid "Trade History"
+msgstr "История торгов"
 
 #: src/components/Exchange/ExchangeBanner.js
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."

@@ -47,7 +47,6 @@ export const actionTextMapBase: Partial<Record<`${OrderTypes | "Deposit" | "With
   "StopLossDecrease-OrderFrozen": /*i18n*/ "Failed Stop-Loss Order",
 
   "Liquidation-OrderExecuted": /*i18n*/ "Liquidated",
-  "Liquidation-OrderCreated": /*i18n*/ "Request Liquidation",
 };
 
 export const actionTextMap: Partial<Record<`${OrderTypes | "Deposit" | "Withdraw"}-${TradeActionType}`, string>> = {

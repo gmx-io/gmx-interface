@@ -43,10 +43,18 @@ const CSV_ICON_INFO = {
   src: downloadIcon,
 };
 
+const START_OF_DAY_DURATION = {
+  hours: 0,
+  minutes: 0,
+  seconds: 0,
+  milliseconds: 0,
+};
+
 const INCLUDING_CURRENT_DAY_DURATION = {
   hours: 23,
   minutes: 59,
   seconds: 59,
+  milliseconds: 999,
 };
 
 type Props = {
@@ -56,7 +64,7 @@ type Props = {
 };
 
 function toSeconds(date: Date) {
-  return date.getTime() / 1000;
+  return Math.round(date.getTime() / 1000);
 }
 
 function useMarketAddressesFromTokenAddresses(tokenAddresses: string[]): string[] {
@@ -102,17 +110,19 @@ function useDownloadAsCsv(tradeActions: TradeAction[] | undefined, minCollateral
       })
       .filter<RowDetails>(Boolean as any);
 
+    const timezone = dateFns.format(new Date(), "z");
+
     downloadAsCsv("trade-history", fullFormattedData, ["priceComment"], ",", {
+      timestamp: t`Date` + ` (${timezone})`,
       action: t`Action`,
+      size: t`Size`,
+      market: t`Market`,
+      fullMarket: t`Full market`,
+      marketPrice: t`Market Price`,
       acceptablePrice: t`Acceptable Price`,
       executionPrice: t`Execution Price`,
-      fullMarket: t`Full market`,
-      market: t`Market`,
-      price: t`Price`,
-      size: t`Size`,
-      priceImpact: t`Price Impact`,
-      timestamp: t`Date`,
       triggerPrice: t`Trigger Price`,
+      priceImpact: t`Price Impact`,
     });
   }, [marketsInfoData, minCollateralUsd, tradeActions]);
 
@@ -133,6 +143,9 @@ export function TradeHistory(p: Props) {
     }[]
   >([]);
 
+  const fromTxTimestamp = dateRange[0] ? toSeconds(dateFns.set(dateRange[0], START_OF_DAY_DURATION)) : undefined;
+  const toTxTimestamp = dateRange[1] ? toSeconds(dateFns.set(dateRange[1], INCLUDING_CURRENT_DAY_DURATION)) : undefined;
+
   const marketAddresses = useMarketAddressesFromTokenAddresses(tokenAddressesFilter);
 
   const { minCollateralUsd } = usePositionsConstantsRequest(chainId);
@@ -145,8 +158,8 @@ export function TradeHistory(p: Props) {
     account,
     forAllAccounts,
     pageSize: PAGE_SIZE,
-    fromTxTimestamp: dateRange[0] ? toSeconds(dateRange[0]) : undefined,
-    toTxTimestamp: dateRange[1] ? toSeconds(dateFns.add(dateRange[1], INCLUDING_CURRENT_DAY_DURATION)) : undefined,
+    fromTxTimestamp,
+    toTxTimestamp,
     marketAddresses: marketAddresses,
     tokenAddresses: tokenAddressesFilter,
     orderEventCombinations: actionFilter,
@@ -180,50 +193,52 @@ export function TradeHistory(p: Props) {
     <div className="TradeHistorySynthetics">
       <div className="App-box">
         <div className="TradeHistorySynthetics-controls">
-          <div className="TradeHistorySynthetics-filters">
-            <DateRangeSelect startDate={dateRange[0]} endDate={dateRange[1]} onChange={setDateRange} />
+          <div>
+            <Trans>Trade History</Trans>
           </div>
-          <Button variant="secondary" imgInfo={CSV_ICON_INFO} onClick={handleCsvDownload}>
-            CSV
-          </Button>
+          <div className="TradeHistorySynthetics-controls-right">
+            <div className="TradeHistorySynthetics-filters">
+              <DateRangeSelect startDate={dateRange[0]} endDate={dateRange[1]} onChange={setDateRange} />
+            </div>
+            <Button variant="secondary" imgInfo={CSV_ICON_INFO} onClick={handleCsvDownload}>
+              CSV
+            </Button>
+          </div>
+        </div>
+        <div className="TradeHistorySynthetics-horizontal-scroll-container">
+          <table className="Exchange-list TradeHistorySynthetics-table">
+            <thead className="TradeHistorySynthetics-header">
+              <tr>
+                <th>
+                  <ActionFilter value={actionFilter} onChange={setActionFilter} />
+                </th>
+                <th>
+                  <MarketFilter value={tokenAddressesFilter} onChange={setTokenAddressesFilter} />
+                </th>
+                <th>
+                  <Trans>Size</Trans>
+                </th>
+                <th>
+                  <Trans>Price</Trans>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentPageData?.map((tradeAction) => (
+                <TradeHistoryRow
+                  key={tradeAction.id}
+                  tradeAction={tradeAction}
+                  minCollateralUsd={minCollateralUsd!}
+                  showDebugValues={showDebugValues}
+                  shouldDisplayAccount={forAllAccounts}
+                />
+              ))}
+            </tbody>
+          </table>
         </div>
         {isLoading && (
           <div className="TradeHistorySynthetics-padded-cell">
             <Trans>Loading...</Trans>
-          </div>
-        )}
-
-        {!isLoading && (
-          <div className="TradeHistorySynthetics-horizontal-scroll-container">
-            <table className="Exchange-list TradeHistorySynthetics-table">
-              <thead className="TradeHistorySynthetics-header">
-                <tr>
-                  <th>
-                    <ActionFilter value={actionFilter} onChange={setActionFilter} />
-                  </th>
-                  <th>
-                    <MarketFilter value={tokenAddressesFilter} onChange={setTokenAddressesFilter} />
-                  </th>
-                  <th>
-                    <Trans>Size</Trans>
-                  </th>
-                  <th>
-                    <Trans>Price</Trans>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentPageData?.map((tradeAction) => (
-                  <TradeHistoryRow
-                    key={tradeAction.id}
-                    tradeAction={tradeAction}
-                    minCollateralUsd={minCollateralUsd!}
-                    showDebugValues={showDebugValues}
-                    shouldDisplayAccount={forAllAccounts}
-                  />
-                ))}
-              </tbody>
-            </table>
           </div>
         )}
         {isEmpty && hasFilters && (
