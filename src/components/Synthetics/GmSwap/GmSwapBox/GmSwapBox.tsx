@@ -29,7 +29,7 @@ import { TokenData, TokensData, convertToUsd, getTokenData } from "domain/synthe
 import { GmSwapFees, useAvailableTokenOptions } from "domain/synthetics/trade";
 import { getDepositAmounts } from "domain/synthetics/trade/utils/deposit";
 import { getWithdrawalAmounts } from "domain/synthetics/trade/utils/withdrawal";
-import { Token } from "domain/tokens";
+import { Token, getMinResidualAmount } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -49,7 +49,6 @@ import { useHistory } from "react-router-dom";
 import "./GmSwapBox.scss";
 import Checkbox from "components/Checkbox/Checkbox";
 import Tooltip from "components/Tooltip/Tooltip";
-import { DUST_BNB } from "lib/legacy";
 import { useHasOutdatedUi } from "domain/legacy";
 import useWallet from "lib/wallets/useWallet";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
@@ -96,6 +95,16 @@ type Props = {
   setOperation: Dispatch<SetStateAction<Operation>>;
 };
 
+const OPERATION_LABELS = {
+  [Operation.Deposit]: t`Buy GM`,
+  [Operation.Withdrawal]: t`Sell GM`,
+};
+
+const MODE_LABELS = {
+  [Mode.Single]: t`Single`,
+  [Mode.Pair]: t`Pair`,
+};
+
 export function GmSwapBox(p: Props) {
   const {
     operation,
@@ -116,6 +125,9 @@ export function GmSwapBox(p: Props) {
   const { chainId } = useChainId();
   const { account } = useWallet();
 
+  const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
+  const minResidualAmount = getMinResidualAmount(nativeToken?.decimals, nativeToken?.prices?.maxPrice);
+
   const uiFeeFactor = useUiFeeFactor(chainId);
 
   const { gasLimits } = useGasLimits(chainId);
@@ -132,16 +144,6 @@ export function GmSwapBox(p: Props) {
     marketsInfoData,
     depositMarketTokensData
   );
-
-  const operationLabels = {
-    [Operation.Deposit]: t`Buy GM`,
-    [Operation.Withdrawal]: t`Sell GM`,
-  };
-
-  const modeLabels = {
-    [Mode.Single]: t`Single`,
-    [Mode.Pair]: t`Pair`,
-  };
 
   const isDeposit = operation === Operation.Deposit;
   const isWithdrawal = operation === Operation.Withdrawal;
@@ -816,11 +818,50 @@ export function GmSwapBox(p: Props) {
     ]
   );
 
+  function onMaxClickFirstToken() {
+    if (firstToken?.balance) {
+      let maxAvailableAmount = firstToken.isNative
+        ? firstToken.balance.sub(minResidualAmount || 0)
+        : firstToken.balance;
+
+      if (maxAvailableAmount.isNegative()) {
+        maxAvailableAmount = BigNumber.from(0);
+      }
+
+      const formattedMaxAvailableAmount = formatAmountFree(maxAvailableAmount, firstToken.decimals);
+      const finalAmount = isMetamaskMobile
+        ? limitDecimals(formattedMaxAvailableAmount, MAX_METAMASK_MOBILE_DECIMALS)
+        : formattedMaxAvailableAmount;
+
+      setFirstTokenInputValue(finalAmount);
+      onFocusedCollateralInputChange(firstToken.address);
+    }
+  }
+
+  function onMaxClickSecondToken() {
+    if (secondToken?.balance) {
+      let maxAvailableAmount = secondToken.isNative
+        ? secondToken.balance.sub(minResidualAmount || 0)
+        : secondToken.balance;
+
+      if (maxAvailableAmount.isNegative()) {
+        maxAvailableAmount = BigNumber.from(0);
+      }
+
+      const formattedMaxAvailableAmount = formatAmountFree(maxAvailableAmount, secondToken.decimals);
+      const finalAmount = isMetamaskMobile
+        ? limitDecimals(formattedMaxAvailableAmount, MAX_METAMASK_MOBILE_DECIMALS)
+        : formattedMaxAvailableAmount;
+      setSecondTokenInputValue(finalAmount);
+      onFocusedCollateralInputChange(secondToken.address);
+    }
+  }
+
   return (
     <div className={`App-box GmSwapBox`}>
       <Tab
         options={Object.values(Operation)}
-        optionLabels={operationLabels}
+        optionLabels={OPERATION_LABELS}
         option={operation}
         onChange={onOperationChange}
         className="Exchange-swap-option-tabs"
@@ -828,7 +869,7 @@ export function GmSwapBox(p: Props) {
 
       <Tab
         options={availableModes}
-        optionLabels={modeLabels}
+        optionLabels={MODE_LABELS}
         className="GmSwapBox-asset-options-tabs"
         type="inline"
         option={mode}
@@ -851,17 +892,14 @@ export function GmSwapBox(p: Props) {
             })}
             preventFocusOnLabelClick="right"
             {...(isDeposit && {
-              onClickTopRightLabel: () => {
-                if (firstToken?.balance) {
-                  const maxAvailableAmount = firstToken.isNative
-                    ? firstToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
-                    : firstToken.balance;
-                  setFirstTokenInputValue(formatAmountFree(maxAvailableAmount, firstToken.decimals));
-                  onFocusedCollateralInputChange(firstToken.address);
-                }
-              },
+              onClickTopRightLabel: onMaxClickFirstToken,
             })}
-            showMaxButton={isDeposit && firstToken?.balance?.gt(0) && !firstTokenAmount?.eq(firstToken.balance)}
+            showMaxButton={
+              isDeposit &&
+              firstToken?.balance?.gt(0) &&
+              !firstTokenAmount?.eq(firstToken.balance) &&
+              (firstToken?.isNative ? minResidualAmount && firstToken?.balance?.gt(minResidualAmount) : true)
+            }
             inputValue={firstTokenInputValue}
             onInputValueChange={(e) => {
               if (firstToken) {
@@ -869,21 +907,7 @@ export function GmSwapBox(p: Props) {
                 onFocusedCollateralInputChange(firstToken.address);
               }
             }}
-            onClickMax={() => {
-              if (firstToken?.balance) {
-                const maxAvailableAmount = firstToken.isNative
-                  ? firstToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
-                  : firstToken.balance;
-
-                const formattedMaxAvailableAmount = formatAmountFree(maxAvailableAmount, firstToken.decimals);
-                const finalAmount = isMetamaskMobile
-                  ? limitDecimals(formattedMaxAvailableAmount, MAX_METAMASK_MOBILE_DECIMALS)
-                  : formattedMaxAvailableAmount;
-
-                setFirstTokenInputValue(finalAmount);
-                onFocusedCollateralInputChange(firstToken.address);
-              }
-            }}
+            onClickMax={onMaxClickFirstToken}
           >
             {firstTokenAddress && isSingle ? (
               <TokenSelector
@@ -914,7 +938,12 @@ export function GmSwapBox(p: Props) {
               })}
               preventFocusOnLabelClick="right"
               inputValue={secondTokenInputValue}
-              showMaxButton={isDeposit && secondToken?.balance?.gt(0) && !secondTokenAmount?.eq(secondToken.balance)}
+              showMaxButton={
+                isDeposit &&
+                secondToken?.balance?.gt(0) &&
+                !secondTokenAmount?.eq(secondToken.balance) &&
+                (secondToken?.isNative ? minResidualAmount && secondToken?.balance?.gt(minResidualAmount) : true)
+              }
               onInputValueChange={(e) => {
                 if (secondToken) {
                   setSecondTokenInputValue(e.target.value);
@@ -922,30 +951,9 @@ export function GmSwapBox(p: Props) {
                 }
               }}
               {...(isDeposit && {
-                onClickTopRightLabel: () => {
-                  if (secondToken?.balance) {
-                    const maxAvailableAmount = secondToken.isNative
-                      ? secondToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
-                      : secondToken.balance;
-                    setSecondTokenInputValue(formatAmountFree(maxAvailableAmount, secondToken.decimals));
-                    onFocusedCollateralInputChange(secondToken.address);
-                  }
-                },
+                onClickTopRightLabel: onMaxClickSecondToken,
               })}
-              onClickMax={() => {
-                if (secondToken?.balance) {
-                  const maxAvailableAmount = secondToken.isNative
-                    ? secondToken.balance.sub(BigNumber.from(DUST_BNB).mul(2))
-                    : secondToken.balance;
-
-                  const formattedMaxAvailableAmount = formatAmountFree(maxAvailableAmount, secondToken.decimals);
-                  const finalAmount = isMetamaskMobile
-                    ? limitDecimals(formattedMaxAvailableAmount, MAX_METAMASK_MOBILE_DECIMALS)
-                    : formattedMaxAvailableAmount;
-                  setSecondTokenInputValue(finalAmount);
-                  onFocusedCollateralInputChange(secondToken.address);
-                }
-              }}
+              onClickMax={onMaxClickSecondToken}
             >
               <div className="selected-token">
                 <TokenWithIcon symbol={secondToken?.symbol} displaySize={20} />
@@ -999,7 +1007,6 @@ export function GmSwapBox(p: Props) {
               selectedMarketAddress={marketAddress}
               markets={sortedMarketsInfoByIndexToken}
               marketTokensData={marketTokensData}
-              marketsInfoData={marketsInfoData}
               isSideMenu
               showBalances
               showAllPools
@@ -1025,7 +1032,6 @@ export function GmSwapBox(p: Props) {
                 selectedMarketAddress={marketAddress}
                 markets={markets}
                 marketTokensData={marketTokensData}
-                marketsInfoData={marketsInfoData}
                 isSideMenu
                 showBalances
                 onSelectMarket={(marketInfo) => {
@@ -1092,8 +1098,8 @@ export function GmSwapBox(p: Props) {
         marketToken={marketToken!}
         longToken={longTokenInputState?.token}
         shortToken={shortTokenInputState?.token}
-        marketTokenAmount={amounts?.marketTokenAmount!}
-        marketTokenUsd={amounts?.marketTokenUsd!}
+        marketTokenAmount={amounts?.marketTokenAmount ?? BigNumber.from(0)}
+        marketTokenUsd={amounts?.marketTokenUsd ?? BigNumber.from(0)}
         longTokenAmount={amounts?.longTokenAmount}
         longTokenUsd={amounts?.longTokenUsd}
         shortTokenAmount={amounts?.shortTokenAmount}
@@ -1109,9 +1115,6 @@ export function GmSwapBox(p: Props) {
         onClose={() => {
           setStage("swap");
         }}
-        isHighPriceImpact={isHighPriceImpact!}
-        isHighPriceImpactAccepted={isHighPriceImpactAccepted}
-        setIsHighPriceImpactAccepted={setIsHighPriceImpactAccepted}
         shouldDisableValidation={shouldDisableValidation}
       />
     </div>

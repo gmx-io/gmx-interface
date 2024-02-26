@@ -1,6 +1,5 @@
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS, PRECISION } from "lib/legacy";
-
 import { BigNumber, BigNumberish, ethers } from "ethers";
 import { bigNumberify, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 
@@ -9,7 +8,6 @@ import { ShareBar } from "components/ShareBar/ShareBar";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod, getPriceImpactUsd } from "domain/synthetics/fees";
 import {
-  MarketInfo,
   getAvailableLiquidity,
   getAvailableUsdLiquidityForCollateral,
   getMarketIndexName,
@@ -17,24 +15,25 @@ import {
   getMaxOpenInterestUsd,
   getMaxReservedUsd,
   getReservedUsd,
-  useMarketsInfo,
+  useMarketsInfoRequest,
 } from "domain/synthetics/markets";
-import { usePositionsConstants } from "domain/synthetics/positions";
+import { usePositionsConstantsRequest } from "domain/synthetics/positions";
 import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import "./SyntheticsStats.scss";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { useCallback } from "react";
-import Button from "components/Button/Button";
+import { DownloadAsCsv } from "components/DownloadAsCsv/DownloadAsCsv";
+import { format } from "date-fns";
+import { getPlusOrMinusSymbol, getPositiveOrNegativeClass } from "lib/utils";
 
 function pow(bn: BigNumber, exponent: BigNumber) {
   // this is just aproximation
   const n = Number(bn.toString()) / 1e30;
   const e = Number(exponent.toString()) / 1e30;
   const afterExponent = Math.pow(n, e);
-  return expandDecimals((afterExponent * 1e10).toFixed(0), 20);
+  return expandDecimals(afterExponent.toFixed(0), 30);
 }
 
-function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: number, showDollar: boolean = false) {
+function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: number, showDollar = false) {
   const n = Number(formatAmount(amount, tokenDecimals));
   const isNegative = n < 0;
   const absN = Math.abs(n);
@@ -67,55 +66,19 @@ function formatFactor(factor: BigNumber) {
   return formatAmount(factor, 30, factorDecimals);
 }
 
-function getCsvUrl(data: any[]) {
-  const excludedFields = new Set([
-    "longToken",
-    "shortToken",
-    "indexToken",
-    "longPoolAmountAdjustment",
-    "shortPoolAmountAdjustment",
-  ]);
-  const fields = Object.keys(data[0]).filter((field) => !excludedFields.has(field));
-  const csvHeader = "Date," + fields.join(",");
-  const date = new Date().toISOString().substring(0, 10);
-  const csvBody = data
-    .map((item) => {
-      return date + "," + fields.map((field) => item[field].toString()).join(",");
-    })
-    .join("\n");
-  const csv = csvHeader + "\n" + csvBody;
-  return `data:application/octet-stream,${encodeURIComponent(csv)}`;
-}
-
-function CsvLink(p: { markets: MarketInfo[] }) {
-  const onClick = useCallback(() => {
-    const csvUrl = getCsvUrl(p.markets);
-    const fileName = `gmx_v2_markets.csv`;
-
-    const aElement = document.createElement("a");
-    aElement.href = csvUrl;
-    aElement.download = fileName;
-    document.body.appendChild(aElement);
-    aElement.click();
-    document.body.removeChild(aElement);
-  }, [p.markets]);
-
-  if (!p.markets || p.markets.length === 0) {
-    return null;
-  }
-
-  return (
-    <Button variant="secondary" title="Download CSV" className="csv-link" onClick={onClick}>
-      Download CSV
-    </Button>
-  );
-}
+const CSV_EXCLUDED_FIELDS = [
+  "longToken",
+  "shortToken",
+  "indexToken",
+  "longPoolAmountAdjustment",
+  "shortPoolAmountAdjustment",
+];
 
 export function SyntheticsStats() {
   const { chainId } = useChainId();
 
-  const { marketsInfoData } = useMarketsInfo(chainId);
-  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(chainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId);
+  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstantsRequest(chainId);
 
   const markets = Object.values(marketsInfoData || {});
   markets.sort((a, b) => {
@@ -503,12 +466,12 @@ export function SyntheticsStats() {
                       <TooltipWithPortal
                         handle={
                           <>
-                            <span className={fundingAprLong.gt(0) ? "text-green" : "text-red"}>
+                            <span className={getPositiveOrNegativeClass(fundingAprLong)}>
                               {market.longsPayShorts ? "-" : "+"}
                               {formatAmount(fundingAprLong.abs(), 30, 4)}%
                             </span>
                             {" / "}
-                            <span className={fundingAprShort.gt(0) ? "text-green" : "text-red"}>
+                            <span className={getPositiveOrNegativeClass(fundingAprShort)}>
                               {market.longsPayShorts ? "+" : "-"}
                               {formatAmount(fundingAprShort.abs(), 30, 4)}%
                             </span>
@@ -590,20 +553,24 @@ export function SyntheticsStats() {
                             <StatsTooltipRow label="Long" value={formatAmount(market.longInterestUsd, 30, 0, true)} />
                             <StatsTooltipRow label="Short" value={formatAmount(market.shortInterestUsd, 30, 0, true)} />
                             <StatsTooltipRow
+                              showDollar={false}
                               label="Percentage"
                               value={(() => {
                                 const totalInterestUsd = market.shortInterestUsd.add(market.longInterestUsd);
-                                const longInterestPercent = formatAmount(
-                                  market.longInterestUsd.mul(10000).div(totalInterestUsd),
-                                  2,
-                                  2
-                                );
-                                const shortInterestPercent = formatAmount(
-                                  market.shortInterestUsd.mul(10000).div(totalInterestUsd),
-                                  2,
-                                  2
-                                );
-
+                                let longInterestPercent = "0";
+                                let shortInterestPercent = "0";
+                                if (!totalInterestUsd.isZero()) {
+                                  longInterestPercent = formatAmount(
+                                    market.longInterestUsd.mul(10000).div(totalInterestUsd),
+                                    2,
+                                    2
+                                  );
+                                  shortInterestPercent = formatAmount(
+                                    market.shortInterestUsd.mul(10000).div(totalInterestUsd),
+                                    2,
+                                    2
+                                  );
+                                }
                                 return (
                                   <>
                                     {longInterestPercent}% / {shortInterestPercent}%
@@ -835,7 +802,7 @@ export function SyntheticsStats() {
                             <span
                               className={cx({ positive: market.netPnlMax.gt(0), negative: market.netPnlMax.lt(0) })}
                             >
-                              {market.netPnlMax.gt(0) ? "+" : "-"}${formatAmountHuman(market.netPnlMax.abs(), 30)}
+                              {getPlusOrMinusSymbol(market.netPnlMax)}${formatAmountHuman(market.netPnlMax.abs(), 30)}
                             </span>
                           }
                           renderContent={() => (
@@ -843,8 +810,8 @@ export function SyntheticsStats() {
                               <StatsTooltipRow
                                 showDollar={false}
                                 label="PnL Long"
-                                className={market.pnlLongMax.gt(0) ? "text-green" : "text-red"}
-                                value={`${market.pnlLongMax.gt(0) ? "+" : "-"}${formatAmountHuman(
+                                className={getPositiveOrNegativeClass(market.pnlLongMax)}
+                                value={`${getPlusOrMinusSymbol(market.pnlLongMax)}${formatAmountHuman(
                                   market.pnlLongMax.abs(),
                                   30,
                                   true
@@ -853,8 +820,8 @@ export function SyntheticsStats() {
                               <StatsTooltipRow
                                 showDollar={false}
                                 label="PnL Short"
-                                className={market.pnlShortMax.gt(0) ? "text-green" : "text-red"}
-                                value={`${market.pnlShortMax.gt(0) ? "+" : "-"}${formatAmountHuman(
+                                className={getPositiveOrNegativeClass(market.pnlShortMax)}
+                                value={`${getPlusOrMinusSymbol(market.pnlShortMax)}${formatAmountHuman(
                                   market.pnlShortMax.abs(),
                                   30,
                                   true
@@ -1094,6 +1061,26 @@ export function SyntheticsStats() {
                               }
                               showDollar={false}
                             />
+                            <StatsTooltipRow
+                              label="Reserve Factor Longs"
+                              value={formatFactor(market.reserveFactorLong)}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label="Reserve Factor Shorts"
+                              value={formatFactor(market.reserveFactorShort)}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label="Open Interest Reserve Factor Longs"
+                              value={formatFactor(market.openInterestReserveFactorLong)}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label="Open Interest Reserve Factor Shorts"
+                              value={formatFactor(market.openInterestReserveFactorShort)}
+                              showDollar={false}
+                            />
                             <br />
                           </>
                         )}
@@ -1106,7 +1093,12 @@ export function SyntheticsStats() {
           </tbody>
         </table>
       </div>
-      <CsvLink markets={markets} />
+      <DownloadAsCsv
+        excludedFields={CSV_EXCLUDED_FIELDS}
+        data={markets}
+        fileName={`gmx_v2_markets_${format(new Date(), "yyyy-MM-dd")}`}
+        className="mt-md download-csv"
+      />
     </div>
   );
 }

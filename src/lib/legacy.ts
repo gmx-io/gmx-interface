@@ -866,7 +866,7 @@ export function useAccountOrders(flagOrdersEnabled, overrideAccount) {
     error: ordersError,
   } = useSWR(key, {
     dedupingInterval: 5000,
-    fetcher: async ([active, chainId, orderBookAddress, account]) => {
+    fetcher: async ([, chainId, orderBookAddress, account]) => {
       const provider = getProvider(signer, chainId);
       const orderBookContract = new ethers.Contract(orderBookAddress, OrderBook.abi, provider);
       const orderBookReaderContract = new ethers.Contract(orderBookReaderAddress, OrderBookReader.abi, provider);
@@ -1089,7 +1089,8 @@ export function getProcessedData(
   nativeTokenPrice,
   stakedGmxSupply,
   gmxPrice,
-  gmxSupply
+  gmxSupply,
+  maxBoostMultiplier
 ) {
   if (
     !balanceData ||
@@ -1101,11 +1102,11 @@ export function getProcessedData(
     !nativeTokenPrice ||
     !stakedGmxSupply ||
     !gmxPrice ||
-    !gmxSupply
+    !gmxSupply ||
+    !maxBoostMultiplier
   ) {
     return {};
   }
-  const maxBoostMultiplier = 2;
   const data: any = {};
 
   data.gmxBalance = balanceData.gmx;
@@ -1137,8 +1138,6 @@ export function getProcessedData(
 
   data.stakedGmxTrackerRewards = stakingData.stakedGmxTracker.claimable;
   data.stakedGmxTrackerRewardsUsd = stakingData.stakedGmxTracker.claimable.mul(gmxPrice).div(expandDecimals(1, 18));
-
-  data.bonusGmxTrackerRewards = stakingData.bonusGmxTracker.claimable;
 
   data.feeGmxTrackerRewards = stakingData.feeGmxTracker.claimable;
   data.feeGmxTrackerRewardsUsd = stakingData.feeGmxTracker.claimable.mul(nativeTokenPrice).div(expandDecimals(1, 18));

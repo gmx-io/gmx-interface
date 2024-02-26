@@ -4,7 +4,6 @@ import { getContract } from "config/contracts";
 import { BigNumber, ethers } from "ethers";
 import {
   adjustForDecimals,
-  DUST_BNB,
   getBuyGlpFromAmount,
   getBuyGlpToAmount,
   getSellGlpFromAmount,
@@ -50,7 +49,7 @@ import {
   getWrappedToken,
 } from "config/tokens";
 import { approveTokens, useInfoTokens } from "domain/tokens";
-import { getTokenInfo, getUsd } from "domain/tokens/utils";
+import { getMinResidualAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
@@ -146,6 +145,7 @@ function getTooltipContent(managedUsd, tokenInfo, token) {
     <>
       <StatsTooltipRow
         label={t`Current Pool Amount`}
+        // eslint-disable-next-line react-perf/jsx-no-new-array-as-prop
         value={[
           `$${formatAmount(managedUsd, USD_DECIMALS, 0, true)}`,
           `(${formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 0, true)} ${token.symbol})`,
@@ -155,6 +155,8 @@ function getTooltipContent(managedUsd, tokenInfo, token) {
     </>
   );
 }
+
+const tabOptions = [t`Buy GLP`, t`Sell GLP`];
 
 export default function GlpSwap(props) {
   const { savedSlippageAmount, isBuying, setPendingTxns, setIsBuying, savedShouldDisableValidationForTesting } = props;
@@ -322,6 +324,7 @@ export default function GlpSwap(props) {
   const { infoTokens } = useInfoTokens(signer, chainId, active, tokenBalances, undefined);
   const swapToken = getToken(chainId, swapTokenAddress);
   const swapTokenInfo = getTokenInfo(infoTokens, swapTokenAddress);
+  const nativeTokenInfo = getTokenInfo(infoTokens, AddressZero);
 
   const swapTokenBalance = swapTokenInfo && swapTokenInfo.balance ? swapTokenInfo.balance : bigNumberify(0);
 
@@ -333,6 +336,12 @@ export default function GlpSwap(props) {
 
   const swapUsdMin = getUsd(swapAmount, swapTokenAddress, false, infoTokens);
   const glpUsdMax = glpAmount && glpPrice ? glpAmount.mul(glpPrice).div(expandDecimals(1, GLP_DECIMALS)) : undefined;
+
+  const minResidualAmount = getMinResidualAmount(nativeTokenInfo?.decimals, nativeTokenInfo?.maxPrice);
+
+  const showMaxButtonBasedOnBalance = swapTokenInfo?.isNative
+    ? minResidualAmount && swapTokenBalance.gt(minResidualAmount)
+    : true;
 
   let isSwapTokenCapReached;
   if (swapTokenInfo.managedUsd && swapTokenInfo.maxUsdgAmount) {
@@ -541,15 +550,12 @@ export default function GlpSwap(props) {
   const fillMaxAmount = () => {
     if (isBuying) {
       setAnchorOnSwapAmount(true);
-      const maxAvailableAmount = swapToken.isNative
-        ? swapTokenBalance.sub(bigNumberify(DUST_BNB).mul(2))
-        : swapTokenBalance;
+      let maxAvailableAmount = swapToken?.isNative ? swapTokenBalance.sub(minResidualAmount || 0) : swapTokenBalance;
+      if (maxAvailableAmount?.isNegative()) {
+        maxAvailableAmount = BigNumber.from(0);
+      }
 
-      const formattedAmount = formatAmountFree(
-        maxAvailableAmount.gt(0) ? maxAvailableAmount : 0,
-        swapToken.decimals,
-        swapToken.decimals
-      );
+      const formattedAmount = formatAmountFree(maxAvailableAmount, swapToken.decimals, swapToken.decimals);
       const finalAmount = isMetamaskMobile
         ? limitDecimals(formattedAmount, MAX_METAMASK_MOBILE_DECIMALS)
         : formattedAmount;
@@ -732,11 +738,9 @@ export default function GlpSwap(props) {
         true
       )} ${swapTokenInfo.symbol}!`,
       setPendingTxns,
-    })
-      .then(async () => {})
-      .finally(() => {
-        setIsSubmitting(false);
-      });
+    }).finally(() => {
+      setIsSubmitting(false);
+    });
   };
 
   const sellGlp = () => {
@@ -759,11 +763,9 @@ export default function GlpSwap(props) {
         true
       )} ${swapTokenInfo.symbol}!`,
       setPendingTxns,
-    })
-      .then(async () => {})
-      .finally(() => {
-        setIsSubmitting(false);
-      });
+    }).finally(() => {
+      setIsSubmitting(false);
+    });
   };
 
   const onClickPrimary = () => {
@@ -1029,7 +1031,7 @@ export default function GlpSwap(props) {
             }}
           >
             <Tab
-              options={[t`Buy GLP`, t`Sell GLP`]}
+              options={tabOptions}
               option={tabLabel}
               onChange={onSwapOptionChange}
               className="Exchange-swap-option-tabs"
@@ -1041,7 +1043,10 @@ export default function GlpSwap(props) {
                 topRightValue={`${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
                 inputValue={swapValue}
                 onInputValueChange={onSwapValueChange}
-                showMaxButton={swapValue !== formatAmountFree(swapTokenBalance, swapToken.decimals, swapToken.decimals)}
+                showMaxButton={
+                  showMaxButtonBasedOnBalance &&
+                  swapValue !== formatAmountFree(swapTokenBalance, swapToken.decimals, swapToken.decimals)
+                }
                 onClickTopRightLabel={fillMaxAmount}
                 onClickMax={fillMaxAmount}
                 topLeftValue={payBalance}

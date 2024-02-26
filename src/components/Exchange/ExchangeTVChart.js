@@ -72,6 +72,7 @@ export default function ExchangeTVChart(props) {
     period = DEFAULT_PERIOD;
   }
 
+  // eslint-disable-next-line react/hook-use-state
   const [currentSeries] = useState();
 
   const dataProvider = useRef();

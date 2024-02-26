@@ -30,3 +30,6 @@ export function getMatchingValueFromObject(
     }
   }
 }
+export const EMPTY_OBJECT = {};
+
+export const EMPTY_ARRAY = [];

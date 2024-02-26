@@ -25,9 +25,12 @@ function shareBar(share?: BigNumberish, total?: BigNumberish) {
   let progress = bigNumberify(share)!.mul(100).div(total).toNumber();
   progress = Math.min(progress, 100);
 
+  // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
+  const style = { width: `${progress}%` };
+
   return (
     <div className="Stats-share-bar">
-      <div className="Stats-share-bar-fill" style={{ width: `${progress}%` }} />
+      <div className="Stats-share-bar-fill" style={style} />
     </div>
   );
 }
@@ -229,7 +232,7 @@ export default function Stats() {
             }
 
             return (
-              <tr>
+              <tr key={tokenInfo.address}>
                 <td>{tokenInfo.symbol}</td>
                 <td>
                   <>${formatAmountHuman(tokenInfo.managedUsd, 30)}</>

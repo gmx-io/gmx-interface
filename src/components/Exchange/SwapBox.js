@@ -69,7 +69,7 @@ import {
   replaceNativeTokenAddress,
   shouldRaiseGasError,
 } from "domain/tokens";
-import { getTokenInfo, getUsd } from "domain/tokens/utils";
+import { getMinResidualAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -114,6 +114,14 @@ function getNextAveragePrice({ size, sizeDelta, hasProfit, delta, nextPrice, isL
   const nextAveragePrice = nextPrice.mul(nextSize).div(divisor);
   return nextAveragePrice;
 }
+
+const SWAP_LABELS = {
+  [LONG]: t`Long`,
+  [SHORT]: t`Short`,
+  [SWAP]: t`Swap`,
+};
+
+const ORDER_OPTION_LABELS = { [STOP]: t`Trigger`, [MARKET]: t`Market`, [LIMIT]: t`Limit` };
 
 export default function SwapBox(props) {
   const {
@@ -202,6 +210,7 @@ export default function SwapBox(props) {
     [chainId, "Exchange-swap-leverage-option"],
     "2"
   );
+
   const [isLeverageSliderEnabled, setIsLeverageSliderEnabled] = useLocalStorageSerializeKey(
     [chainId, "Exchange-swap-leverage-slider-enabled"],
     true
@@ -217,7 +226,6 @@ export default function SwapBox(props) {
 
   const isMarketOrder = orderOption === MARKET;
   const orderOptions = isSwap ? SWAP_ORDER_OPTIONS : LEVERAGE_ORDER_OPTIONS;
-  const orderOptionLabels = { [STOP]: t`Trigger`, [MARKET]: t`Market`, [LIMIT]: t`Limit` };
 
   const [triggerPriceValue, setTriggerPriceValue] = useState("");
   const triggerPriceUsd = isMarketOrder ? 0 : parseValue(triggerPriceValue, USD_DECIMALS);
@@ -307,6 +315,9 @@ export default function SwapBox(props) {
 
   const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress);
   const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress);
+
+  const nativeTokenInfo = getTokenInfo(infoTokens, nativeTokenAddress);
+  const minResidualAmount = getMinResidualAmount(nativeTokenInfo?.decimals, nativeTokenInfo?.maxPrice);
 
   const renderAvailableLongLiquidity = () => {
     if (!isLong) {
@@ -1202,11 +1213,9 @@ export default function SwapBox(props) {
       } for ${formatAmount(toAmount, toToken.decimals, 4, true)} ${toToken.symbol}!`,
       failMsg: t`Swap failed.`,
       setPendingTxns,
-    })
-      .then(async (res) => {})
-      .finally(() => {
-        setIsSubmitting(false);
-      });
+    }).finally(() => {
+      setIsSubmitting(false);
+    });
   };
 
   const unwrap = async () => {
@@ -1220,11 +1229,9 @@ export default function SwapBox(props) {
         fromToken.symbol
       } for ${formatAmount(toAmount, toToken.decimals, 4, true)} ${toToken.symbol}!`,
       setPendingTxns,
-    })
-      .then(async (res) => {})
-      .finally(() => {
-        setIsSubmitting(false);
-      });
+    }).finally(() => {
+      setIsSubmitting(false);
+    });
   };
 
   const swap = async () => {
@@ -1709,6 +1716,36 @@ export default function SwapBox(props) {
     feeBps = feeBasisPoints;
   }
 
+  const maxInValue = useMemo(
+    () => [
+      `${formatAmount(maxFromTokenIn, fromTokenInfo.decimals, 0, true)} ${fromTokenInfo.symbol}`,
+      `($${formatAmount(maxFromTokenInUSD, USD_DECIMALS, 0, true)})`,
+    ],
+    [fromTokenInfo.decimals, fromTokenInfo.symbol, maxFromTokenIn, maxFromTokenInUSD]
+  );
+  const maxOutValue = useMemo(
+    () => [
+      `${formatAmount(maxToTokenOut, toTokenInfo.decimals, 0, true)} ${toTokenInfo.symbol}`,
+      `($${formatAmount(maxToTokenOutUSD, USD_DECIMALS, 0, true)})`,
+    ],
+    [maxToTokenOut, maxToTokenOutUSD, toTokenInfo.decimals, toTokenInfo.symbol]
+  );
+
+  const SWAP_ORDER_EXECUTION_GAS_FEE = getConstant(chainId, "SWAP_ORDER_EXECUTION_GAS_FEE");
+  const INCREASE_ORDER_EXECUTION_GAS_FEE = getConstant(chainId, "INCREASE_ORDER_EXECUTION_GAS_FEE");
+  const executionFee = isSwap ? SWAP_ORDER_EXECUTION_GAS_FEE : INCREASE_ORDER_EXECUTION_GAS_FEE;
+  const executionFeeUsd = getUsd(executionFee, nativeTokenAddress, false, infoTokens);
+  const currentExecutionFee = isMarketOrder ? minExecutionFee : executionFee;
+  const currentExecutionFeeUsd = isMarketOrder ? minExecutionFeeUSD : executionFeeUsd;
+
+  const executionFees = useMemo(
+    () => ({
+      fee: currentExecutionFee,
+      feeUsd: currentExecutionFeeUsd,
+    }),
+    [currentExecutionFee, currentExecutionFeeUsd]
+  );
+
   if (!fromToken || !toToken) {
     return null;
   }
@@ -1783,7 +1820,14 @@ export default function SwapBox(props) {
       return;
     }
 
-    const maxAvailableAmount = fromToken.isNative ? fromBalance.sub(bigNumberify(DUST_BNB).mul(2)) : fromBalance;
+    let maxAvailableAmount = fromToken?.isNative
+      ? minResidualAmount && fromBalance.sub(minResidualAmount)
+      : fromBalance;
+
+    if (maxAvailableAmount.isNegative()) {
+      maxAvailableAmount = bigNumberify(0);
+    }
+
     const formattedMaxAvailableAmount = formatAmountFree(maxAvailableAmount, fromToken.decimals, fromToken.decimals);
     const finalMaxAmount = isMetamaskMobile
       ? limitDecimals(formattedMaxAvailableAmount, MAX_METAMASK_MOBILE_DECIMALS)
@@ -1796,8 +1840,14 @@ export default function SwapBox(props) {
     if (!fromToken || !fromBalance) {
       return false;
     }
-    const maxAvailableAmount = fromToken.isNative ? fromBalance.sub(bigNumberify(DUST_BNB).mul(2)) : fromBalance;
-    return fromValue !== formatAmountFree(maxAvailableAmount, fromToken.decimals, fromToken.decimals);
+    const maxAvailableAmount = fromToken?.isNative ? fromBalance.sub(minResidualAmount) : fromBalance;
+    const shoudShowMaxButtonBasedOnGasAmount = fromToken?.isNative
+      ? minResidualAmount && fromBalance.gt(minResidualAmount)
+      : true;
+    return (
+      shoudShowMaxButtonBasedOnGasAmount &&
+      fromValue !== formatAmountFree(maxAvailableAmount, fromToken.decimals, fromToken.decimals)
+    );
   }
 
   const ERROR_TOOLTIP_MSG = {
@@ -1858,19 +1908,6 @@ export default function SwapBox(props) {
       </Trans>
     ),
   };
-
-  const SWAP_LABELS = {
-    [LONG]: t`Long`,
-    [SHORT]: t`Short`,
-    [SWAP]: t`Swap`,
-  };
-
-  const SWAP_ORDER_EXECUTION_GAS_FEE = getConstant(chainId, "SWAP_ORDER_EXECUTION_GAS_FEE");
-  const INCREASE_ORDER_EXECUTION_GAS_FEE = getConstant(chainId, "INCREASE_ORDER_EXECUTION_GAS_FEE");
-  const executionFee = isSwap ? SWAP_ORDER_EXECUTION_GAS_FEE : INCREASE_ORDER_EXECUTION_GAS_FEE;
-  const executionFeeUsd = getUsd(executionFee, nativeTokenAddress, false, infoTokens);
-  const currentExecutionFee = isMarketOrder ? minExecutionFee : executionFee;
-  const currentExecutionFeeUsd = isMarketOrder ? minExecutionFeeUSD : executionFeeUsd;
 
   const existingCurrentIndexShortPosition =
     isShort &&
@@ -1935,7 +1972,7 @@ export default function SwapBox(props) {
             {flagOrdersEnabled && (
               <Tab
                 options={orderOptions}
-                optionLabels={orderOptionLabels}
+                optionLabels={ORDER_OPTION_LABELS}
                 className="Exchange-swap-order-type-tabs"
                 type="inline"
                 option={orderOption}
@@ -1944,7 +1981,7 @@ export default function SwapBox(props) {
             )}
           </div>
           {showFromAndToSection && (
-            <React.Fragment>
+            <>
               <BuyInputSection
                 topLeftLabel={t`Pay`}
                 topLeftValue={fromUsdMin && `$${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)}`}
@@ -1999,7 +2036,7 @@ export default function SwapBox(props) {
                   showBalances={false}
                 />
               </BuyInputSection>
-            </React.Fragment>
+            </>
           )}
           {showTriggerRatioSection && (
             <BuyInputSection
@@ -2053,17 +2090,7 @@ export default function SwapBox(props) {
               <ExchangeInfoRow label={t`Fees`}>
                 <div>
                   {!fees && "-"}
-                  {fees && (
-                    <FeesTooltip
-                      swapFee={feesUsd}
-                      executionFees={
-                        !isMarketOrder && {
-                          fee: currentExecutionFee,
-                          feeUsd: currentExecutionFeeUsd,
-                        }
-                      }
-                    />
-                  )}
+                  {fees && <FeesTooltip swapFee={feesUsd} executionFees={!isMarketOrder && executionFees} />}
                 </div>
               </ExchangeInfoRow>
             </div>
@@ -2207,10 +2234,7 @@ export default function SwapBox(props) {
                   {feesUsd && (
                     <FeesTooltip
                       fundingRate={getFundingRate()}
-                      executionFees={{
-                        fee: currentExecutionFee,
-                        feeUsd: currentExecutionFeeUsd,
-                      }}
+                      executionFees={executionFees}
                       positionFee={positionFee}
                       swapFee={swapFees}
                       titleText={swapFees && <Trans>{collateralToken.symbol} is required for collateral.</Trans>}
@@ -2274,20 +2298,8 @@ export default function SwapBox(props) {
                   renderContent={() => {
                     return (
                       <div>
-                        <StatsTooltipRow
-                          label={t`Max ${fromTokenInfo.symbol} in`}
-                          value={[
-                            `${formatAmount(maxFromTokenIn, fromTokenInfo.decimals, 0, true)} ${fromTokenInfo.symbol}`,
-                            `($${formatAmount(maxFromTokenInUSD, USD_DECIMALS, 0, true)})`,
-                          ]}
-                        />
-                        <StatsTooltipRow
-                          label={t`Max ${toTokenInfo.symbol} out`}
-                          value={[
-                            `${formatAmount(maxToTokenOut, toTokenInfo.decimals, 0, true)} ${toTokenInfo.symbol}`,
-                            `($${formatAmount(maxToTokenOutUSD, USD_DECIMALS, 0, true)})`,
-                          ]}
-                        />
+                        <StatsTooltipRow label={t`Max ${fromTokenInfo.symbol} in`} value={maxInValue} />
+                        <StatsTooltipRow label={t`Max ${toTokenInfo.symbol} out`} value={maxOutValue} />
                       </div>
                     );
                   }}

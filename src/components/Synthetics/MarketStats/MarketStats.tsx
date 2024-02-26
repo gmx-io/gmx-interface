@@ -22,6 +22,7 @@ import { getBridgingOptionsForToken } from "config/bridging";
 import { BigNumber } from "ethers";
 import { AprInfo } from "components/AprInfo/AprInfo";
 import MarketTokenSelector from "../MarketTokenSelector/MarketTokenSelector";
+import { useMemo } from "react";
 
 type Props = {
   marketsInfoData?: MarketsInfoData;
@@ -77,6 +78,64 @@ export function MarketStats(p: Props) {
 
   const bridgingOprionsForToken = getBridgingOptionsForToken(longToken?.symbol);
   const shouldShowMoreInfo = Boolean(bridgingOprionsForToken);
+
+  const maxLongTokenValue = useMemo(
+    () => [
+      formatTokenAmount(
+        mintableInfo?.longDepositCapacityAmount,
+        marketInfo?.longToken.decimals,
+        marketInfo?.longToken.symbol,
+        {
+          useCommas: true,
+        }
+      ),
+      `(${formatTokenAmount(marketInfo?.longPoolAmount, marketInfo?.longToken.decimals, undefined, {
+        displayDecimals: 0,
+        useCommas: true,
+      })} / ${formatTokenAmount(
+        marketInfo?.maxLongPoolAmount,
+        marketInfo?.longToken.decimals,
+        marketInfo?.longToken.symbol,
+        { displayDecimals: 0, useCommas: true }
+      )})`,
+    ],
+    [
+      marketInfo?.longPoolAmount,
+      marketInfo?.longToken.decimals,
+      marketInfo?.longToken.symbol,
+      marketInfo?.maxLongPoolAmount,
+      mintableInfo?.longDepositCapacityAmount,
+    ]
+  );
+
+  const maxShortTokenValue = useMemo(
+    () => [
+      formatTokenAmount(
+        mintableInfo?.shortDepositCapacityAmount,
+        marketInfo?.shortToken.decimals,
+        marketInfo?.shortToken.symbol,
+        {
+          useCommas: true,
+        }
+      ),
+      `(${formatTokenAmount(marketInfo?.shortPoolAmount, marketInfo?.shortToken.decimals, undefined, {
+        displayDecimals: 0,
+        useCommas: true,
+      })} / ${formatTokenAmount(
+        marketInfo?.maxShortPoolAmount,
+        marketInfo?.shortToken.decimals,
+        marketInfo?.shortToken.symbol,
+        { displayDecimals: 0, useCommas: true }
+      )})`,
+    ],
+    [
+      marketInfo?.maxShortPoolAmount,
+      marketInfo?.shortPoolAmount,
+      marketInfo?.shortToken.decimals,
+      marketInfo?.shortToken.symbol,
+      mintableInfo?.shortDepositCapacityAmount,
+    ]
+  );
 
   return (
     <div className="App-card MarketStats-card">
@@ -181,25 +240,7 @@ export function MarketStats(p: Props) {
 
                       <StatsTooltipRow
                         label={t`Max ${marketInfo?.longToken.symbol}`}
-                        value={[
-                          formatTokenAmount(
-                            mintableInfo?.longDepositCapacityAmount,
-                            marketInfo?.longToken.decimals,
-                            marketInfo?.longToken.symbol,
-                            {
-                              useCommas: true,
-                            }
-                          ),
-                          `(${formatTokenAmount(marketInfo?.longPoolAmount, marketInfo?.longToken.decimals, undefined, {
-                            displayDecimals: 0,
-                            useCommas: true,
-                          })} / ${formatTokenAmount(
-                            marketInfo?.maxLongPoolAmount,
-                            marketInfo?.longToken.decimals,
-                            marketInfo?.longToken.symbol,
-                            { displayDecimals: 0, useCommas: true }
-                          )})`,
-                        ]}
+                        value={maxLongTokenValue}
                         showDollar={false}
                       />
 
@@ -208,27 +249,7 @@ export function MarketStats(p: Props) {
                       {!marketInfo?.isSameCollaterals && (
                         <StatsTooltipRow
                           label={t`Max ${marketInfo?.shortToken.symbol}`}
-                          value={[
-                            formatTokenAmount(
-                              mintableInfo?.shortDepositCapacityAmount,
-                              marketInfo?.shortToken.decimals,
-                              marketInfo?.shortToken.symbol,
-                              {
-                                useCommas: true,
-                              }
-                            ),
-                            `(${formatTokenAmount(
-                              marketInfo?.shortPoolAmount,
-                              marketInfo?.shortToken.decimals,
-                              undefined,
-                              { displayDecimals: 0, useCommas: true }
-                            )} / ${formatTokenAmount(
-                              marketInfo?.maxShortPoolAmount,
-                              marketInfo?.shortToken.decimals,
-                              marketInfo?.shortToken.symbol,
-                              { displayDecimals: 0, useCommas: true }
-                            )})`,
-                          ]}
+                          value={maxShortTokenValue}
                           showDollar={false}
                         />
                       )}

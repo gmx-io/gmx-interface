@@ -9,7 +9,7 @@ import { UserEarningsData } from "./types";
 import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import { useMarketTokensAPR } from "./useMarketTokensAPR";
 import { useMarketTokensData } from "./useMarketTokensData";
-import { useMarketsInfo } from "./useMarketsInfo";
+import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
 
 type RawBalanceChange = {
   cumulativeIncome: string;
@@ -28,7 +28,7 @@ type RawCollectedMarketFeesInfo = {
 };
 
 export const useUserEarnings = (chainId: number) => {
-  const { marketsInfoData } = useMarketsInfo(chainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId);
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
 
   const client = getSyntheticsGraphClient(chainId);
@@ -214,7 +214,7 @@ function calcEndOfPeriodIncome(
   return feeUsdPerGmTokenDelta.mul(latestBalanceChange.tokensBalance).div(expandDecimals(1, 18));
 }
 
-function calcRecentIncome(balanceChanges: BalanceChange[], debug = false): BigNumber {
+function calcRecentIncome(balanceChanges: BalanceChange[]): BigNumber {
   let cumulativeIncome = BigNumber.from(0);
 
   for (let i = 1; i < balanceChanges.length; i++) {

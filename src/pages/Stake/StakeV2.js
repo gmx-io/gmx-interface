@@ -16,6 +16,9 @@ import Vester from "abis/Vester.json";
 
 import { ARBITRUM, getConstant } from "config/chains";
 import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
+import { useRecommendStakeGmxAmount } from "domain/stake/useRecommendStakeGmxAmount";
+import { useAccumulatedBnGMXAmount } from "domain/rewards/useAccumulatedBnGMXAmount";
+import { useMaxBoostBasicPoints } from "domain/rewards/useMaxBoostBasisPoints";
 import { ethers } from "ethers";
 import {
   GLP_DECIMALS,
@@ -43,10 +46,11 @@ import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { GmList } from "components/Synthetics/GmList/GmList";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import { getIcons } from "config/icons";
 import { getServerUrl } from "config/backend";
 import { getIsSyntheticsSupported } from "config/features";
-import { getTotalGmInfo, useMarketTokensData, useMarketsInfo } from "domain/synthetics/markets";
+import { getTotalGmInfo, useMarketTokensData, useMarketsInfoRequest } from "domain/synthetics/markets";
 import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
 import { approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -136,7 +140,7 @@ function StakeModal(props) {
       failMsg: t`Stake failed.`,
       setPendingTxns,
     })
-      .then(async (res) => {
+      .then(() => {
         setIsVisible(false);
       })
       .finally(() => {
@@ -231,6 +235,8 @@ function UnstakeModal(props) {
     reservedAmount,
     bonusGmxInFeeGmx,
     setPendingTxns,
+    processedData,
+    nativeTokenSymbol,
   } = props;
   const [isUnstaking, setIsUnstaking] = useState(false);
   const icons = getIcons(chainId);
@@ -249,10 +255,12 @@ function UnstakeModal(props) {
     burnAmount = multiplierPointsAmount.mul(amount).div(bonusGmxInFeeGmx);
   }
 
-  const shouldShowReductionAmount = true;
-  let rewardReductionBasisPoints;
-  if (burnAmount && bonusGmxInFeeGmx) {
-    rewardReductionBasisPoints = burnAmount.mul(BASIS_POINTS_DIVISOR).div(bonusGmxInFeeGmx);
+  let unstakeBonusLostPercentage;
+  if (amount?.gt(0) && multiplierPointsAmount?.gt(0)) {
+    unstakeBonusLostPercentage = amount
+      ?.add(burnAmount)
+      .mul(BASIS_POINTS_DIVISOR)
+      ?.div(multiplierPointsAmount?.add(processedData.esGmxInStakedGmx)?.add(processedData.gmxInStakedGmx));
   }
 
   const getError = () => {
@@ -273,7 +281,7 @@ function UnstakeModal(props) {
       successMsg: t`Unstake completed!`,
       setPendingTxns,
     })
-      .then(async (res) => {
+      .then(() => {
         setIsVisible(false);
       })
       .finally(() => {
@@ -326,23 +334,24 @@ function UnstakeModal(props) {
           </div>
         </BuyInputSection>
         {reservedAmount && reservedAmount.gt(0) && (
-          <div className="Modal-note">
+          <AlertInfo type="info">
             You have {formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting.
-          </div>
+          </AlertInfo>
         )}
-        {burnAmount && burnAmount.gt(0) && rewardReductionBasisPoints && rewardReductionBasisPoints.gt(0) && (
-          <div className="Modal-note">
+        {burnAmount?.gt(0) && unstakeBonusLostPercentage?.gt(0) && !amount.gt(maxAmount) && (
+          <AlertInfo type="warning">
             <Trans>
               Unstaking will burn&nbsp;
               <ExternalLink className="display-inline" href="https://docs.gmx.io/docs/tokenomics/rewards">
                 {formatAmount(burnAmount, 18, 4, true)} Multiplier Points
               </ExternalLink>
               .&nbsp;
-              {shouldShowReductionAmount && (
-                <span>Boost Percentage: -{formatAmount(rewardReductionBasisPoints, 2, 2)}%.</span>
-              )}
+              <span>
+                You will earn {formatAmount(unstakeBonusLostPercentage, 2, 2)}% less {nativeTokenSymbol} rewards with
+                this action.
+              </span>
             </Trans>
-          </div>
+          </AlertInfo>
         )}
         <div className="Exchange-swap-button-container">
           <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
@@ -416,7 +425,7 @@ function VesterDepositModal(props) {
       successMsg: t`Deposited!`,
       setPendingTxns,
     })
-      .then(async (res) => {
+      .then(() => {
         setIsVisible(false);
       })
       .finally(() => {
@@ -576,7 +585,7 @@ function VesterWithdrawModal(props) {
       successMsg: t`Withdrawn!`,
       setPendingTxns,
     })
-      .then(async (res) => {
+      .then(() => {
         setIsVisible(false);
       })
       .finally(() => {
@@ -624,6 +633,7 @@ function CompoundModal(props) {
     totalVesterRewards,
     nativeTokenSymbol,
     wrappedTokenSymbol,
+    processedData,
   } = props;
   const [isCompounding, setIsCompounding] = useState(false);
   const [shouldClaimGmx, setShouldClaimGmx] = useLocalStorageSerializeKey(
@@ -718,7 +728,7 @@ function CompoundModal(props) {
         setPendingTxns,
       }
     )
-      .then(async (res) => {
+      .then(() => {
         setIsVisible(false);
       })
       .finally(() => {
@@ -747,9 +757,35 @@ function CompoundModal(props) {
     setShouldConvertWeth(value);
   };
 
+  const accumulatedBnGMXAmount = useAccumulatedBnGMXAmount();
+
+  const recommendStakeGmx = useRecommendStakeGmxAmount(
+    {
+      accumulatedGMX: processedData.totalVesterRewards,
+      accumulatedBnGMX: accumulatedBnGMXAmount,
+      accumulatedEsGMX: processedData.totalEsGmxRewards,
+      stakedGMX: processedData.gmxInStakedGmx,
+      stakedBnGMX: processedData.bnGmxInFeeGmx,
+      stakedEsGMX: processedData.esGmxInStakedGmx,
+    },
+    {
+      shouldStakeGmx,
+      shouldStakeEsGmx,
+    }
+  );
+
   return (
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Compound Rewards`}>
+        {recommendStakeGmx.gt(0) && (
+          <AlertInfo type="info">
+            <Trans>
+              You have reached the maximum Boost Percentage. Stake an additional{" "}
+              {formatAmount(recommendStakeGmx, 18, 2, true)} GMX or esGMX to be able to stake your unstaked{" "}
+              {formatAmount(accumulatedBnGMXAmount, 18, 4, true)} Multiplier Points.
+            </Trans>
+          </AlertInfo>
+        )}
         <div className="CompoundModal-menu">
           <div>
             <Checkbox
@@ -867,7 +903,7 @@ function ClaimModal(props) {
         setPendingTxns,
       }
     )
-      .then(async (res) => {
+      .then(() => {
         setIsVisible(false);
       })
       .finally(() => {
@@ -1023,7 +1059,7 @@ export default function StakeV2({ setPendingTxns }) {
     feeGlpTrackerAddress,
   ];
 
-  const { marketsInfoData, tokensData } = useMarketsInfo(chainId);
+  const { marketsInfoData, tokensData } = useMarketsInfoRequest(chainId);
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
   const { marketsTokensAPRData, marketsTokensIncentiveAprData } = useMarketTokensAPR(chainId, {
     marketsInfoData,
@@ -1095,6 +1131,10 @@ export default function StakeV2({ setPendingTxns }) {
     }
   );
 
+  const accumulatedBnGMXAmount = useAccumulatedBnGMXAmount();
+
+  const maxBoostBasicPoints = useMaxBoostBasicPoints();
+
   const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useGmxPrice(
     chainId,
     { arbitrum: chainId === ARBITRUM ? signer : undefined },
@@ -1142,13 +1182,14 @@ export default function StakeV2({ setPendingTxns }) {
     nativeTokenPrice,
     stakedGmxSupply,
     gmxPrice,
-    gmxSupply
+    gmxSupply,
+    maxBoostBasicPoints?.div(BASIS_POINTS_DIVISOR)
   );
 
   let hasMultiplierPoints = false;
   let multiplierPointsAmount;
-  if (processedData && processedData.bonusGmxTrackerRewards && processedData.bnGmxInFeeGmx) {
-    multiplierPointsAmount = processedData.bonusGmxTrackerRewards.add(processedData.bnGmxInFeeGmx);
+  if (accumulatedBnGMXAmount && processedData?.bnGmxInFeeGmx) {
+    multiplierPointsAmount = accumulatedBnGMXAmount.add(processedData.bnGmxInFeeGmx);
     if (multiplierPointsAmount.gt(0)) {
       hasMultiplierPoints = true;
     }
@@ -1330,6 +1371,53 @@ export default function StakeV2({ setPendingTxns }) {
     setUnstakeMethodName("unstakeEsGmx");
   };
 
+  const recommendStakeGmx = useRecommendStakeGmxAmount(
+    {
+      accumulatedGMX: processedData.totalVesterRewards,
+      accumulatedBnGMX: accumulatedBnGMXAmount,
+      accumulatedEsGMX: processedData.totalEsGmxRewards,
+      stakedGMX: processedData.gmxInStakedGmx,
+      stakedBnGMX: processedData.bnGmxInFeeGmx,
+      stakedEsGMX: processedData.esGmxInStakedGmx,
+    },
+    {
+      shouldStakeGmx: true,
+      shouldStakeEsGmx: true,
+    }
+  );
+
+  const renderBoostPercentageTooltip = useCallback(() => {
+    return (
+      <div>
+        <Trans>
+          You are earning {formatAmount(processedData.boostBasisPoints, 2, 2, false)}% more {nativeTokenSymbol} rewards
+          using {formatAmount(processedData.bnGmxInFeeGmx, 18, 4, 2, true)} Staked Multiplier Points.
+        </Trans>
+        <br />
+        <br />
+        {recommendStakeGmx.gt(0) ? (
+          <Trans>
+            You have reached the maximum Boost Percentage. Stake an additional{" "}
+            {formatAmount(recommendStakeGmx, 18, 2, true)} GMX or esGMX to be able to stake your unstaked{" "}
+            {formatAmount(accumulatedBnGMXAmount, 18, 4, true)} Multiplier Points using the "Compound" button.
+          </Trans>
+        ) : (
+          <Trans>Use the "Compound" button to stake your Multiplier Points.</Trans>
+        )}
+      </div>
+    );
+  }, [nativeTokenSymbol, processedData, recommendStakeGmx, accumulatedBnGMXAmount]);
+
+  const gmxAprText = useMemo(() => {
+    return `${formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true)}% - ${formatKeyAmount(
+      processedData,
+      "maxGmxAprForNativeToken",
+      2,
+      2,
+      true
+    )}%`;
+  }, [processedData]);
+
   const renderMultiplierPointsLabel = useCallback(() => {
     return t`Multiplier Points APR`;
   }, []);
@@ -1388,6 +1476,14 @@ export default function StakeV2({ setPendingTxns }) {
     );
   }
 
+  const stakedEntries = useMemo(
+    () => ({
+      "Staked on Arbitrum": arbitrumGmxStaked,
+      "Staked on Avalanche": avaxGmxStaked,
+    }),
+    [arbitrumGmxStaked, avaxGmxStaked]
+  );
+
   return (
     <div className="default-container page-layout">
       <StakeModal
@@ -1427,6 +1523,8 @@ export default function StakeV2({ setPendingTxns }) {
         unstakeMethodName={unstakeMethodName}
         multiplierPointsAmount={multiplierPointsAmount}
         bonusGmxInFeeGmx={bonusGmxInFeeGmx}
+        processedData={processedData}
+        nativeTokenSymbol={nativeTokenSymbol}
       />
       <VesterDepositModal
         isVisible={isVesterDepositModalVisible}
@@ -1462,6 +1560,8 @@ export default function StakeV2({ setPendingTxns }) {
         account={account}
         setPendingTxns={setPendingTxns}
         isVisible={isCompoundModalVisible}
+        multiplierPointsAmount={multiplierPointsAmount}
+        processedData={processedData}
         setIsVisible={setIsCompoundModalVisible}
         rewardRouterAddress={rewardRouterAddress}
         totalVesterRewards={processedData.totalVesterRewards}
@@ -1573,7 +1673,7 @@ export default function StakeV2({ setPendingTxns }) {
                 </div>
                 <div>
                   <Tooltip
-                    handle={`${formatKeyAmount(processedData, "gmxAprTotalWithBoost", 2, 2, true)}%`}
+                    handle={gmxAprText}
                     position="right-bottom"
                     renderContent={() => (
                       <GMXAprTooltip processedData={processedData} nativeTokenSymbol={nativeTokenSymbol} />
@@ -1581,6 +1681,27 @@ export default function StakeV2({ setPendingTxns }) {
                   />
                 </div>
               </div>
+              {active && (
+                <div className="App-card-row">
+                  <div className="label">
+                    <Trans>Your APR</Trans>
+                  </div>
+                  <div>
+                    <Tooltip
+                      handle={`${formatKeyAmount(processedData, "gmxAprTotalWithBoost", 2, 2, true)}%`}
+                      position="right-bottom"
+                      renderContent={() => (
+                        <GMXAprTooltip
+                          processedData={processedData}
+                          nativeTokenSymbol={nativeTokenSymbol}
+                          recommendStakeGmx={recommendStakeGmx}
+                          isUserConnected={true}
+                        />
+                      )}
+                    />
+                  </div>
+                </div>
+              )}
               <div className="App-card-row">
                 <div className="label">
                   <Trans>Rewards</Trans>
@@ -1636,20 +1757,7 @@ export default function StakeV2({ setPendingTxns }) {
                   <Tooltip
                     handle={`${formatAmount(processedData.boostBasisPoints, 2, 2, false)}%`}
                     position="right-bottom"
-                    renderContent={() => {
-                      return (
-                        <div>
-                          <Trans>
-                            You are earning {formatAmount(processedData.boostBasisPoints, 2, 2, false)}% more{" "}
-                            {nativeTokenSymbol} rewards using{" "}
-                            {formatAmount(processedData.bnGmxInFeeGmx, 18, 4, 2, true)} Staked Multiplier Points.
-                          </Trans>
-                          <br />
-                          <br />
-                          <Trans>Use the "Compound" button to stake your Multiplier Points.</Trans>
-                        </div>
-                      );
-                    }}
+                    renderContent={renderBoostPercentageTooltip}
                   />
                 </div>
               </div>
@@ -1674,10 +1782,7 @@ export default function StakeV2({ setPendingTxns }) {
                           showDollar={false}
                           decimalsForConversion={18}
                           symbol="GMX"
-                          entries={{
-                            "Staked on Arbitrum": arbitrumGmxStaked,
-                            "Staked on Avalanche": avaxGmxStaked,
-                          }}
+                          entries={stakedEntries}
                         />
                       )}
                     />
@@ -1754,7 +1859,7 @@ export default function StakeV2({ setPendingTxns }) {
                 <div className="label">
                   <Trans>Multiplier Points</Trans>
                 </div>
-                <div>{formatKeyAmount(processedData, "bonusGmxTrackerRewards", 18, 4, true)}</div>
+                <div>{formatAmount(accumulatedBnGMXAmount, 18, 4, true)}</div>
               </div>
               <div className="App-card-row">
                 <div className="label">
@@ -1790,147 +1895,159 @@ export default function StakeV2({ setPendingTxns }) {
               </div>
             </div>
           </div>
-          <div className="App-card">
-            <div className="App-card-title">
-              <div className="inline-items-center">
-                <img className="mr-xs" alt="GLP" src={icons.glp} height={20} />
-                GLP
-              </div>
-            </div>
-            <div className="App-card-divider"></div>
-            <div className="App-card-content">
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Price</Trans>
-                </div>
-                <div>${formatKeyAmount(processedData, "glpPrice", USD_DECIMALS, 3, true)}</div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Wallet</Trans>
-                </div>
-                <div>
-                  {formatKeyAmount(processedData, "glpBalance", GLP_DECIMALS, 2, true)} GLP ($
-                  {formatKeyAmount(processedData, "glpBalanceUsd", USD_DECIMALS, 2, true)})
-                </div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Staked</Trans>
-                </div>
-                <div>
-                  {formatKeyAmount(processedData, "glpBalance", GLP_DECIMALS, 2, true)} GLP ($
-                  {formatKeyAmount(processedData, "glpBalanceUsd", USD_DECIMALS, 2, true)})
+          <div className="App-card App-card-space-between">
+            <div>
+              <div className="App-card-title">
+                <div className="inline-items-center">
+                  <img className="mr-xs" alt="GLP" src={icons.glp} height={20} />
+                  GLP
                 </div>
               </div>
               <div className="App-card-divider"></div>
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>APR</Trans>
+              <div className="App-card-content">
+                <div className="App-card-row">
+                  <div className="label">
+                    <Trans>Price</Trans>
+                  </div>
+                  <div>${formatKeyAmount(processedData, "glpPrice", USD_DECIMALS, 3, true)}</div>
                 </div>
-                <div>
-                  <Tooltip
-                    handle={`${formatKeyAmount(processedData, "glpAprTotal", 2, 2, true)}%`}
-                    position="right-bottom"
-                    renderContent={() => {
-                      return (
-                        <>
-                          <StatsTooltipRow
-                            label={`${nativeTokenSymbol} (${wrappedTokenSymbol}) APR`}
-                            value={`${formatKeyAmount(processedData, "glpAprForNativeToken", 2, 2, true)}%`}
-                            showDollar={false}
-                          />
-
-                          {processedData?.glpAprForEsGmx.gt(0) && (
+                <div className="App-card-row">
+                  <div className="label">
+                    <Trans>Wallet</Trans>
+                  </div>
+                  <div>
+                    {formatKeyAmount(processedData, "glpBalance", GLP_DECIMALS, 2, true)} GLP ($
+                    {formatKeyAmount(processedData, "glpBalanceUsd", USD_DECIMALS, 2, true)})
+                  </div>
+                </div>
+                <div className="App-card-row">
+                  <div className="label">
+                    <Trans>Staked</Trans>
+                  </div>
+                  <div>
+                    {formatKeyAmount(processedData, "glpBalance", GLP_DECIMALS, 2, true)} GLP ($
+                    {formatKeyAmount(processedData, "glpBalanceUsd", USD_DECIMALS, 2, true)})
+                  </div>
+                </div>
+                <div className="App-card-divider"></div>
+                <div className="App-card-row">
+                  <div className="label">
+                    <Trans>APR</Trans>
+                  </div>
+                  <div>
+                    <Tooltip
+                      handle={`${formatKeyAmount(processedData, "glpAprTotal", 2, 2, true)}%`}
+                      position="right-bottom"
+                      renderContent={() => {
+                        return (
+                          <>
                             <StatsTooltipRow
-                              label="Escrowed GMX APR"
-                              value={`${formatKeyAmount(processedData, "glpAprForEsGmx", 2, 2, true)}%`}
+                              label={`${nativeTokenSymbol} (${wrappedTokenSymbol}) APR`}
+                              value={`${formatKeyAmount(processedData, "glpAprForNativeToken", 2, 2, true)}%`}
                               showDollar={false}
                             />
-                          )}
 
-                          <br />
+                            {processedData?.glpAprForEsGmx.gt(0) && (
+                              <StatsTooltipRow
+                                label="Escrowed GMX APR"
+                                value={`${formatKeyAmount(processedData, "glpAprForEsGmx", 2, 2, true)}%`}
+                                showDollar={false}
+                              />
+                            )}
 
-                          <Trans>
-                            APRs are updated weekly on Wednesday and will depend on the fees collected for the week.{" "}
                             <br />
-                            <br />
-                            Historical GLP APRs can be checked in this{" "}
-                            <ExternalLink href="https://dune.com/saulius/gmx-analytics">
-                              community dashboard
-                            </ExternalLink>
-                            .
-                          </Trans>
-                        </>
-                      );
-                    }}
-                  />
+
+                            <Trans>
+                              APRs are updated weekly on Wednesday and will depend on the fees collected for the week.{" "}
+                              <br />
+                              <br />
+                              Historical GLP APRs can be checked in this{" "}
+                              <ExternalLink href="https://dune.com/saulius/gmx-analytics">
+                                community dashboard
+                              </ExternalLink>
+                              .
+                            </Trans>
+                          </>
+                        );
+                      }}
+                    />
+                  </div>
                 </div>
+                <div className="App-card-row">
+                  <div className="label">
+                    <Trans>Rewards</Trans>
+                  </div>
+                  <div>
+                    <Tooltip
+                      handle={`$${formatKeyAmount(processedData, "totalGlpRewardsUsd", USD_DECIMALS, 2, true)}`}
+                      position="right-bottom"
+                      renderContent={() => {
+                        return (
+                          <>
+                            <StatsTooltipRow
+                              label={`${nativeTokenSymbol} (${wrappedTokenSymbol})`}
+                              value={`${formatKeyAmount(
+                                processedData,
+                                "feeGlpTrackerRewards",
+                                18,
+                                4
+                              )} ($${formatKeyAmount(
+                                processedData,
+                                "feeGlpTrackerRewardsUsd",
+                                USD_DECIMALS,
+                                2,
+                                true
+                              )})`}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label="Escrowed GMX"
+                              value={`${formatKeyAmount(
+                                processedData,
+                                "stakedGlpTrackerRewards",
+                                18,
+                                4
+                              )} ($${formatKeyAmount(
+                                processedData,
+                                "stakedGlpTrackerRewardsUsd",
+                                USD_DECIMALS,
+                                2,
+                                true
+                              )})`}
+                              showDollar={false}
+                            />
+                          </>
+                        );
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="App-card-divider" />
+                <div className="App-card-row">
+                  <div className="label">
+                    <Trans>Total Staked</Trans>
+                  </div>
+                  <div>
+                    {formatKeyAmount(processedData, "glpSupply", 18, 2, true)} GLP ($
+                    {formatKeyAmount(processedData, "glpSupplyUsd", USD_DECIMALS, 2, true)})
+                  </div>
+                </div>
+                <div className="App-card-row">
+                  <div className="label">
+                    <Trans>Total Supply</Trans>
+                  </div>
+                  <div>
+                    {formatKeyAmount(processedData, "glpSupply", 18, 2, true)} GLP ($
+                    {formatKeyAmount(processedData, "glpSupplyUsd", USD_DECIMALS, 2, true)})
+                  </div>
+                </div>
+
+                <div />
               </div>
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Rewards</Trans>
-                </div>
-                <div>
-                  <Tooltip
-                    handle={`$${formatKeyAmount(processedData, "totalGlpRewardsUsd", USD_DECIMALS, 2, true)}`}
-                    position="right-bottom"
-                    renderContent={() => {
-                      return (
-                        <>
-                          <StatsTooltipRow
-                            label={`${nativeTokenSymbol} (${wrappedTokenSymbol})`}
-                            value={`${formatKeyAmount(
-                              processedData,
-                              "feeGlpTrackerRewards",
-                              18,
-                              4
-                            )} ($${formatKeyAmount(processedData, "feeGlpTrackerRewardsUsd", USD_DECIMALS, 2, true)})`}
-                            showDollar={false}
-                          />
-                          <StatsTooltipRow
-                            label="Escrowed GMX"
-                            value={`${formatKeyAmount(
-                              processedData,
-                              "stakedGlpTrackerRewards",
-                              18,
-                              4
-                            )} ($${formatKeyAmount(
-                              processedData,
-                              "stakedGlpTrackerRewardsUsd",
-                              USD_DECIMALS,
-                              2,
-                              true
-                            )})`}
-                            showDollar={false}
-                          />
-                        </>
-                      );
-                    }}
-                  />
-                </div>
-              </div>
-              <div className="App-card-divider"></div>
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Total Staked</Trans>
-                </div>
-                <div>
-                  {formatKeyAmount(processedData, "glpSupply", 18, 2, true)} GLP ($
-                  {formatKeyAmount(processedData, "glpSupplyUsd", USD_DECIMALS, 2, true)})
-                </div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">
-                  <Trans>Total Supply</Trans>
-                </div>
-                <div>
-                  {formatKeyAmount(processedData, "glpSupply", 18, 2, true)} GLP ($
-                  {formatKeyAmount(processedData, "glpSupplyUsd", USD_DECIMALS, 2, true)})
-                </div>
-              </div>
-              <div className="App-card-divider"></div>
-              <div className="App-card-buttons m-0">
+            </div>
+            <div>
+              <div className="App-card-divider" />
+              <div className="App-card-buttons glp-buttons m-0">
                 <Button variant="secondary" to="/buy_glp">
                   <Trans>Buy GLP</Trans>
                 </Button>
@@ -1990,7 +2107,7 @@ export default function StakeV2({ setPendingTxns }) {
                 </div>
                 <div>
                   <Tooltip
-                    handle={`${formatKeyAmount(processedData, "gmxAprTotalWithBoost", 2, 2, true)}%`}
+                    handle={gmxAprText}
                     position="right-bottom"
                     renderContent={() => (
                       <GMXAprTooltip processedData={processedData} nativeTokenSymbol={nativeTokenSymbol} />
@@ -1998,6 +2115,27 @@ export default function StakeV2({ setPendingTxns }) {
                   />
                 </div>
               </div>
+              {active && (
+                <div className="App-card-row">
+                  <div className="label">
+                    <Trans>Your APR</Trans>
+                  </div>
+                  <div>
+                    <Tooltip
+                      handle={`${formatKeyAmount(processedData, "gmxAprTotalWithBoost", 2, 2, true)}%`}
+                      position="right-bottom"
+                      renderContent={() => (
+                        <GMXAprTooltip
+                          processedData={processedData}
+                          nativeTokenSymbol={nativeTokenSymbol}
+                          recommendStakeGmx={recommendStakeGmx}
+                          isUserConnected={true}
+                        />
+                      )}
+                    />
+                  </div>
+                </div>
+              )}
               <div className="App-card-row">
                 <div className="label">{renderMultiplierPointsLabel()}</div>
                 <div>{renderMultiplierPointsValue()}</div>

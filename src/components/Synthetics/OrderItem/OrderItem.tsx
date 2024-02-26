@@ -37,11 +37,11 @@ type Props = {
   isLarge: boolean;
   marketsInfoData?: MarketsInfoData;
   positionsInfoData?: PositionsInfoData;
+  setRef?: (el: HTMLTableRowElement | null) => void;
 };
 
 export function OrderItem(p: Props) {
   const { showDebugValues } = useSettings();
-
   const isCollateralSwap = p.order.initialCollateralToken.address !== p.order.targetCollateralToken.address;
 
   function getCollateralText() {
@@ -88,7 +88,8 @@ export function OrderItem(p: Props) {
     const swapRatioText = `${formatAmount(
       triggerRatio?.ratio,
       USD_DECIMALS,
-      triggerRatio?.smallestToken.isStable ? 2 : 4
+      triggerRatio?.smallestToken.isStable ? 2 : 4,
+      true
     )} ${triggerRatio?.smallestToken.symbol} / ${triggerRatio?.largestToken.symbol}`;
 
     const markSwapRatioText = getExchangeRateDisplay(markExchangeRate, fromTokenInfo, toTokenInfo);
@@ -197,7 +198,7 @@ export function OrderItem(p: Props) {
 
               {p.order.errors.length ? (
                 <>
-                  {p.order.errors.map((error, i) => (
+                  {p.order.errors.map((error) => (
                     <div className="OrderItem-tooltip-row" key={error.msg}>
                       <span className={error!.level === "error" ? "negative" : "warning"}>{error.msg}</span>
                     </div>
@@ -357,7 +358,7 @@ export function OrderItem(p: Props) {
 
   function renderLarge() {
     return (
-      <tr className="Exchange-list-item">
+      <tr ref={p.setRef} className="Exchange-list-item">
         {!p.hideActions && p.onSelectOrder && (
           <td className="Exchange-list-item-type">
             <div>

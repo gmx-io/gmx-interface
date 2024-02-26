@@ -8,7 +8,7 @@ import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl } from "config/chai
 import { isDevelopment } from "config/env";
 import { getNativeToken, getToken, getTokenBySymbol } from "config/tokens";
 import { RebateDistributionType, ReferralCodeStats, TotalReferralsStats, useTiers } from "domain/referrals";
-import { useMarketsInfo } from "domain/synthetics/markets";
+import { useMarketsInfoRequest } from "domain/synthetics/markets";
 import { useAffiliateRewards } from "domain/synthetics/referrals/useAffiliateRewards";
 import { getTotalClaimableAffiliateRewardsUsd } from "domain/synthetics/referrals/utils";
 import { BigNumber } from "ethers";
@@ -59,7 +59,7 @@ function AffiliatesStats({
   const [isAddReferralCodeModalOpen, setIsAddReferralCodeModalOpen] = useState(false);
   const addNewModalRef = useRef<HTMLDivElement>(null);
 
-  const { marketsInfoData } = useMarketsInfo(chainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId);
   const { affiliateRewardsData } = useAffiliateRewards(chainId);
 
   const esGmxAddress = getTokenBySymbol(chainId, "esGMX").address;

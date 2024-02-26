@@ -33,6 +33,9 @@ export function getDecreasePositionAmounts(p: {
   minCollateralUsd: BigNumber;
   minPositionSizeUsd: BigNumber;
   uiFeeFactor: BigNumber;
+  isLimit?: boolean;
+  limitPrice?: BigNumber;
+  triggerOrderType?: DecreasePositionAmounts["triggerOrderType"];
 }) {
   const {
     marketInfo,
@@ -48,6 +51,9 @@ export function getDecreasePositionAmounts(p: {
     minCollateralUsd,
     minPositionSizeUsd,
     uiFeeFactor,
+    isLimit,
+    limitPrice,
+    triggerOrderType: orderType,
   } = p;
   const { indexToken } = marketInfo;
 
@@ -71,6 +77,7 @@ export function getDecreasePositionAmounts(p: {
     estimatedPnl: BigNumber.from(0),
     estimatedPnlPercentage: BigNumber.from(0),
     realizedPnl: BigNumber.from(0),
+    realizedPnlPercentage: BigNumber.from(0),
 
     positionFeeUsd: BigNumber.from(0),
     uiFeeUsd: BigNumber.from(0),
@@ -86,7 +93,7 @@ export function getDecreasePositionAmounts(p: {
     receiveTokenAmount: BigNumber.from(0),
     receiveUsd: BigNumber.from(0),
 
-    triggerOrderType: undefined,
+    triggerOrderType: orderType,
     triggerThresholdType: undefined,
     decreaseSwapType: DecreasePositionSwapType.NoSwap,
   };
@@ -108,8 +115,8 @@ export function getDecreasePositionAmounts(p: {
       ? triggerPrice
       : collateralToken.prices.minPrice;
 
-    values.triggerOrderType = getTriggerDecreaseOrderType({
-      markPrice,
+    values.triggerOrderType ||= getTriggerDecreaseOrderType({
+      markPrice: isLimit ? limitPrice || BigNumber.from(0) : markPrice,
       triggerPrice,
       isLong,
     });
@@ -199,6 +206,9 @@ export function getDecreasePositionAmounts(p: {
   });
 
   values.realizedPnl = values.estimatedPnl.mul(values.sizeDeltaInTokens).div(position.sizeInTokens);
+  values.realizedPnlPercentage = !estimatedCollateralUsd.eq(0)
+    ? getBasisPoints(values.realizedPnl, estimatedCollateralUsd)
+    : BigNumber.from(0);
   values.estimatedPnlPercentage = !estimatedCollateralUsd.eq(0)
     ? getBasisPoints(values.estimatedPnl, estimatedCollateralUsd)
     : BigNumber.from(0);
@@ -559,7 +569,6 @@ function applyAcceptablePrice(p: {
 
       values.acceptablePrice = triggerAcceptablePriceInfo.acceptablePrice;
       values.acceptablePriceDeltaBps = triggerAcceptablePriceInfo.acceptablePriceDeltaBps;
-      values.priceImpactDiffUsd = triggerAcceptablePriceInfo.priceImpactDiffUsd;
     }
   }
 

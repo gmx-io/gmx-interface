@@ -9,7 +9,7 @@ import { getObjectKeyFromValue } from "domain/tradingview/utils";
 import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocalStorage, useMedia } from "react-use";
 import { ChartData, IChartingLibraryWidget, IPositionLineAdapter } from "../../charting_library";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
@@ -122,7 +122,7 @@ export default function TVChartContainer({
   useEffect(() => {
     if (chartReady && tvWidgetRef.current && symbol !== tvWidgetRef.current?.activeChart?.().symbol()) {
       if (isChartAvailabeForToken(chainId, symbol)) {
-        tvWidgetRef.current.setSymbol(symbol, tvWidgetRef.current.activeChart().resolution(), () => {});
+        tvWidgetRef.current.setSymbol(symbol, tvWidgetRef.current.activeChart().resolution(), () => null);
       }
     }
   }, [symbol, chartReady, period, chainId]);
@@ -195,14 +195,15 @@ export default function TVChartContainer({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, dataProvider]);
 
+  const style = useMemo<CSSProperties>(
+    () => ({ visibility: !chartDataLoading ? "visible" : "hidden" }),
+    [chartDataLoading]
+  );
+
   return (
     <div className="ExchangeChart-error">
       {chartDataLoading && <Loader />}
-      <div
-        style={{ visibility: !chartDataLoading ? "visible" : "hidden" }}
-        ref={chartContainerRef}
-        className="TVChartContainer ExchangeChart-bottom-content"
-      />
+      <div style={style} ref={chartContainerRef} className="TVChartContainer ExchangeChart-bottom-content" />
     </div>
   );
 }

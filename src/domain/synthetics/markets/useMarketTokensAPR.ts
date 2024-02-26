@@ -3,12 +3,12 @@ import { ARBITRUM, ARBITRUM_GOERLI } from "config/chains";
 import { getTokenBySymbol } from "config/tokens";
 import { sub } from "date-fns";
 import { BigNumber } from "ethers";
-import { bigNumberify, expandDecimals } from "lib/numbers";
+import { expandDecimals } from "lib/numbers";
 import { getSyntheticsGraphClient } from "lib/subgraph";
 import { useMemo } from "react";
 import useSWR from "swr";
-import { useMarketsInfo } from ".";
-import { useTokensData } from "../tokens";
+import { useMarketsInfoRequest } from ".";
+import { useTokensDataRequest } from "../tokens";
 import { MarketTokensAPRData } from "./types";
 import { useMarketTokensData } from "./useMarketTokensData";
 import { getByKey } from "lib/objects";
@@ -31,7 +31,7 @@ type SwrResult = {
 };
 
 function useMarketAddresses(chainId: number) {
-  const { marketsInfoData } = useMarketsInfo(chainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId);
   return useMemo(
     () => Object.keys(marketsInfoData || {}).filter((address) => !marketsInfoData![address].isDisabled),
     [marketsInfoData]
@@ -40,15 +40,17 @@ function useMarketAddresses(chainId: number) {
 
 function useIncentivesBonusApr(chainId: number): MarketTokensAPRData {
   const rawIncentivesStats = useIncentiveStats(chainId);
-  const { tokensData } = useTokensData(chainId);
+  const { tokensData } = useTokensDataRequest(chainId);
   const marketAddresses = useMarketAddresses(chainId);
-  const { marketsInfoData } = useMarketsInfo(chainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId);
 
   return useMemo(() => {
     let arbTokenAddress: null | string = null;
     try {
       arbTokenAddress = getTokenBySymbol(chainId, "ARB").address;
-    } catch (err) {}
+    } catch (err) {
+      // ignore
+    }
     let arbTokenPrice = BigNumber.from(0);
 
     if (arbTokenAddress && tokensData) {
@@ -144,10 +146,10 @@ export function useMarketTokensAPR(chainId: number): MarketTokensAPRResult {
         const lteStartOfPeriodFees = response[`_${marketAddress}_lte_start_of_period_`];
         const recentFees = response[`_${marketAddress}_recent`];
 
-        const x1 = bigNumberify(lteStartOfPeriodFees[0].cumulativeFeeUsdPerPoolValue) ?? BigNumber.from(0);
-        const x2 = bigNumberify(recentFees[0].cumulativeFeeUsdPerPoolValue);
+        const x1 = BigNumber.from(lteStartOfPeriodFees[0]?.cumulativeFeeUsdPerPoolValue ?? 0);
+        const x2 = BigNumber.from(recentFees[0]?.cumulativeFeeUsdPerPoolValue ?? 0);
 
-        if (!x2) {
+        if (x2.eq(0)) {
           acc[marketAddress] = BigNumber.from(0);
           return acc;
         }

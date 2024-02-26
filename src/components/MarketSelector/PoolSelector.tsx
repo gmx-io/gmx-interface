@@ -1,6 +1,9 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
-import { MarketInfo, MarketsInfoData, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import SearchInput from "components/SearchInput/SearchInput";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+import { getNormalizedTokenSymbol } from "config/tokens";
+import { MarketInfo, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { TokensData, convertToUsd } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
@@ -10,9 +13,6 @@ import { BiChevronDown } from "react-icons/bi";
 import Modal from "../Modal/Modal";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 import "./MarketSelector.scss";
-import SearchInput from "components/SearchInput/SearchInput";
-import TokenIcon from "components/TokenIcon/TokenIcon";
-import { getNormalizedTokenSymbol } from "config/tokens";
 
 type Props = {
   label?: string;
@@ -20,9 +20,7 @@ type Props = {
   selectedMarketAddress?: string;
   selectedIndexName?: string;
   markets: MarketInfo[];
-  marketsInfoData?: MarketsInfoData;
   marketTokensData?: TokensData;
-  disabled?: boolean;
   showBalances?: boolean;
   isSideMenu?: boolean;
   getMarketState?: (market: MarketInfo) => MarketState | undefined;

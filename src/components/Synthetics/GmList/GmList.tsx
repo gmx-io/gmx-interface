@@ -14,7 +14,6 @@ import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens
 import { useChainId } from "lib/chains";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { useMedia } from "react-use";
 import "./GmList.scss";
 import Tooltip from "components/Tooltip/Tooltip";
@@ -31,6 +30,7 @@ import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { getNormalizedTokenSymbol } from "config/tokens";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { GMListSkeleton } from "components/Skeleton/Skeleton";
+import GmAssetDropdown from "../GmAssetDropdown/GmAssetDropdown";
 
 type Props = {
   hideTitle?: boolean;
@@ -175,11 +175,13 @@ export function GmList({
                           <div className="App-card-title-info-text">
                             <div className="App-card-info-title">
                               {getMarketIndexName({ indexToken, isSpotOnly: market?.isSpotOnly })}
-                              {!market.isSpotOnly && (
-                                <div className="Asset-dropdown-container">
-                                  <AssetDropdown token={indexToken} position="left" />
-                                </div>
-                              )}
+                              <div className="Asset-dropdown-container">
+                                <GmAssetDropdown
+                                  token={token}
+                                  marketsInfoData={marketsInfoData}
+                                  tokensData={tokensData}
+                                />
+                              </div>
                             </div>
                             <div className="App-card-info-subtitle">
                               [{getMarketPoolName({ longToken, shortToken })}]
@@ -201,13 +203,13 @@ export function GmList({
                         <br />({formatUsd(totalSupplyUsd)})
                       </td>
                       <td className="GmList-last-column">
-                        {renderMintableAmount({
-                          mintableInfo,
-                          market,
-                          token,
-                          longToken,
-                          shortToken,
-                        })}
+                        <MintableAmount
+                          mintableInfo={mintableInfo}
+                          market={market}
+                          token={token}
+                          longToken={longToken}
+                          shortToken={shortToken}
+                        />
                       </td>
 
                       <td>
@@ -256,7 +258,7 @@ export function GmList({
           {!hideTitle && <PageTitle title={t`GM Pools`} />}
 
           <div className="token-grid">
-            {sortedMarketsByIndexToken.map((token) => {
+            {sortedMarketsByIndexToken.map((token, index) => {
               const apr = marketsTokensAPRData?.[token.address];
               const incentiveApr = marketsTokensIncentiveAprData?.[token.address];
               const marketEarnings = getByKey(userEarnings?.byMarketAddress, token?.address);
@@ -290,7 +292,12 @@ export function GmList({
                         </div>
                       </div>
                       <div>
-                        <AssetDropdown token={indexToken} position="left" />
+                        <GmAssetDropdown
+                          token={token}
+                          tokensData={tokensData}
+                          marketsInfoData={marketsInfoData}
+                          position={index % 2 !== 0 ? "left" : "right"}
+                        />
                       </div>
                     </div>
                   </div>
@@ -333,13 +340,13 @@ export function GmList({
                         />
                       </div>
                       <div>
-                        {renderMintableAmount({
-                          mintableInfo,
-                          market,
-                          token,
-                          longToken,
-                          shortToken,
-                        })}
+                        <MintableAmount
+                          mintableInfo={mintableInfo}
+                          market={market}
+                          token={token}
+                          longToken={longToken}
+                          shortToken={shortToken}
+                        />
                       </div>
                     </div>
                     <div className="App-card-row">
@@ -391,7 +398,37 @@ export function GmList({
   );
 }
 
-function renderMintableAmount({ mintableInfo, market, token, longToken, shortToken }) {
+function MintableAmount({ mintableInfo, market, token, longToken, shortToken }) {
+  const longTokenMaxValue = useMemo(
+    () => [
+      formatTokenAmount(mintableInfo?.longDepositCapacityAmount, longToken.decimals, longToken.symbol, {
+        useCommas: true,
+      }),
+      `(${formatTokenAmount(market.longPoolAmount, longToken.decimals, "", {
+        useCommas: true,
+        displayDecimals: 0,
+      })} / ${formatTokenAmount(getMaxPoolAmountForDeposit(market, true), longToken.decimals, longToken.symbol, {
+        useCommas: true,
+        displayDecimals: 0,
+      })})`,
+    ],
+    [longToken.decimals, longToken.symbol, market, mintableInfo?.longDepositCapacityAmount]
+  );
+  const shortTokenMaxValue = useMemo(
+    () => [
+      formatTokenAmount(mintableInfo?.shortDepositCapacityAmount, shortToken.decimals, shortToken.symbol, {
+        useCommas: true,
+      }),
+      `(${formatTokenAmount(market.shortPoolAmount, shortToken.decimals, "", {
+        useCommas: true,
+        displayDecimals: 0,
+      })} / ${formatTokenAmount(getMaxPoolAmountForDeposit(market, false), shortToken.decimals, shortToken.symbol, {
+        useCommas: true,
+        displayDecimals: 0,
+      })})`,
+    ],
+    [market, mintableInfo?.shortDepositCapacityAmount, shortToken.decimals, shortToken.symbol]
+  );
   return (
     <Tooltip
       handle={
@@ -418,46 +455,8 @@ function renderMintableAmount({ mintableInfo, market, token, longToken, shortTok
             </Trans>
           </p>
           <br />
-          <StatsTooltipRow
-            label={`Max ${longToken.symbol}`}
-            value={[
-              formatTokenAmount(mintableInfo?.longDepositCapacityAmount, longToken.decimals, longToken.symbol, {
-                useCommas: true,
-              }),
-              `(${formatTokenAmount(market.longPoolAmount, longToken.decimals, "", {
-                useCommas: true,
-                displayDecimals: 0,
-              })} / ${formatTokenAmount(
-                getMaxPoolAmountForDeposit(market, true),
-                longToken.decimals,
-                longToken.symbol,
-                {
-                  useCommas: true,
-                  displayDecimals: 0,
-                }
-              )})`,
-            ]}
-          />
-          <StatsTooltipRow
-            label={`Max ${shortToken.symbol}`}
-            value={[
-              formatTokenAmount(mintableInfo?.shortDepositCapacityAmount, shortToken.decimals, shortToken.symbol, {
-                useCommas: true,
-              }),
-              `(${formatTokenAmount(market.shortPoolAmount, shortToken.decimals, "", {
-                useCommas: true,
-                displayDecimals: 0,
-              })} / ${formatTokenAmount(
-                getMaxPoolAmountForDeposit(market, false),
-                shortToken.decimals,
-                shortToken.symbol,
-                {
-                  useCommas: true,
-                  displayDecimals: 0,
-                }
-              )})`,
-            ]}
-          />
+          <StatsTooltipRow label={`Max ${longToken.symbol}`} value={longTokenMaxValue} />
+          <StatsTooltipRow label={`Max ${shortToken.symbol}`} value={shortTokenMaxValue} />
         </>
       )}
     />

@@ -1,4 +1,4 @@
-import { useUserReferralInfo } from "domain/referrals";
+import { useUserReferralInfoRequest } from "domain/referrals";
 import { BigNumber } from "ethers";
 import { MAX_ALLOWED_LEVERAGE } from "config/factors";
 import { getBasisPoints } from "lib/numbers";
@@ -9,7 +9,7 @@ import { MarketsInfoData } from "../markets";
 import { TokensData, convertToTokenAmount, convertToUsd } from "../tokens";
 import { getMarkPrice } from "../trade";
 import { PositionsInfoData } from "./types";
-import { usePositionsConstants } from "./usePositionsConstants";
+import { usePositionsConstantsRequest } from "./usePositionsConstants";
 import {
   getEntryPrice,
   getLeverage,
@@ -22,12 +22,12 @@ import { usePositions } from "./usePositions";
 import useWallet from "lib/wallets/useWallet";
 import useUiFeeFactor from "../fees/utils/useUiFeeFactor";
 
-type PositionsInfoResult = {
+export type PositionsInfoResult = {
   positionsInfoData?: PositionsInfoData;
   isLoading: boolean;
 };
 
-export function usePositionsInfo(
+export function usePositionsInfoRequest(
   chainId: number,
   p: {
     account: string | null | undefined;
@@ -42,9 +42,9 @@ export function usePositionsInfo(
 
   const { signer } = useWallet();
   const { positionsData } = usePositions(chainId, p);
-  const { minCollateralUsd } = usePositionsConstants(chainId);
+  const { minCollateralUsd } = usePositionsConstantsRequest(chainId);
   const uiFeeFactor = useUiFeeFactor(chainId);
-  const userReferralInfo = useUserReferralInfo(signer, chainId, account, skipLocalReferralCode);
+  const userReferralInfo = useUserReferralInfoRequest(signer, chainId, account, skipLocalReferralCode);
 
   return useMemo(() => {
     if (!marketsInfoData || !tokensData || !positionsData || !minCollateralUsd) {

@@ -7,12 +7,10 @@ import "./Header.css";
 import { isHomeSite, shouldShowRedirectModal } from "lib/legacy";
 
 type Props = {
-  isHome?: boolean;
   isHomeLink?: boolean;
   className?: string;
   exact?: boolean;
   to: string;
-  shouldShowRedirectModal?: boolean;
   showRedirectModal: (to: string) => void;
   redirectPopupTimestamp: number;
   onClick?: MouseEventHandler<HTMLDivElement | HTMLAnchorElement>;

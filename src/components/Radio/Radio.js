@@ -10,6 +10,7 @@ export default function Radio(props) {
   return (
     <div className="Radio">
       {options.map((opt) => (
+        // eslint-disable-next-line react/jsx-key
         <div className={cx("Radio-option", { active: opt === option })} onClick={() => setOption(opt)}>
           <div className="Radio-option-bubble">
             <div className="Radio-option-bubble-inner"></div>
