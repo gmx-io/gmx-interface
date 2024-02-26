@@ -25,6 +25,8 @@ import { formatAmount, formatTokenAmount, formatUsd } from "lib/numbers";
 import "./OrderItem.scss";
 import { getByKey } from "lib/objects";
 import { useMemo } from "react";
+import { useChainId } from "lib/chains";
+import { getWrappedToken } from "config/tokens";
 
 type Props = {
   order: OrderInfo;
@@ -41,15 +43,26 @@ type Props = {
 };
 
 export function OrderItem(p: Props) {
+  const {
+    initialCollateralDeltaAmount,
+    initialCollateralToken,
+    targetCollateralToken,
+    shouldUnwrapNativeToken,
+    orderType,
+    minOutputAmount,
+    key,
+    errors,
+    errorLevel,
+  } = p.order;
+  const { chainId } = useChainId();
   const { showDebugValues } = useSettings();
-  const isCollateralSwap = p.order.initialCollateralToken.address !== p.order.targetCollateralToken.address;
+  const wrappedToken = getWrappedToken(chainId);
+
+  const isCollateralSwap = initialCollateralToken.address !== targetCollateralToken.address;
 
   function getCollateralText() {
-    const initialCollateralToken = p.order.initialCollateralToken;
-    const targetCollateralToken = p.order.targetCollateralToken;
-
     const collateralUsd = convertToUsd(
-      p.order.initialCollateralDeltaAmount,
+      initialCollateralDeltaAmount,
       initialCollateralToken.decimals,
       initialCollateralToken.prices.minPrice
     );
@@ -63,17 +76,17 @@ export function OrderItem(p: Props) {
     const tokenAmountText = formatTokenAmount(
       targetCollateralAmount,
       targetCollateralToken?.decimals,
-      targetCollateralToken?.symbol
+      targetCollateralToken.isNative ? wrappedToken.symbol : targetCollateralToken.symbol
     );
 
     return `${tokenAmountText}`;
   }
 
   function getSwapRatioText() {
-    if (!isSwapOrderType(p.order.orderType)) return {};
+    if (!isSwapOrderType(orderType)) return {};
 
-    const fromToken = p.order.initialCollateralToken;
-    const toToken = p.order.targetCollateralToken;
+    const fromToken = initialCollateralToken;
+    const toToken = targetCollateralToken;
 
     const fromTokenInfo = fromToken ? adaptToV1TokenInfo(fromToken) : undefined;
     const toTokenInfo = toToken ? adaptToV1TokenInfo(toToken) : undefined;
@@ -98,7 +111,7 @@ export function OrderItem(p: Props) {
   }
 
   function renderTitle() {
-    if (isSwapOrderType(p.order.orderType)) {
+    if (isSwapOrderType(orderType)) {
       if (showDebugValues) {
         return (
           <Tooltip
@@ -108,12 +121,12 @@ export function OrderItem(p: Props) {
               <>
                 <StatsTooltipRow
                   label={"Key"}
-                  value={<div className="debug-key muted">{p.order.key}</div>}
+                  value={<div className="debug-key muted">{key}</div>}
                   showDollar={false}
                 />
                 <StatsTooltipRow
                   label={"Amount"}
-                  value={<div className="debug-key muted">{p.order.minOutputAmount.toString()}</div>}
+                  value={<div className="debug-key muted">{minOutputAmount.toString()}</div>}
                   showDollar={false}
                 />
               </>
@@ -122,15 +135,15 @@ export function OrderItem(p: Props) {
         );
       }
 
-      if (p.order.errors.length) {
+      if (errors.length) {
         return (
           <Tooltip
             handle={renderTitleWithIcon(p.order)}
-            className={cx(`order-error-text-msg`, `level-${p.order.errorLevel}`)}
+            className={cx(`order-error-text-msg`, `level-${errorLevel}`)}
             position="left-bottom"
             renderContent={() => (
               <>
-                {p.order.errors.map((error, i) => (
+                {errors.map((error, i) => (
                   <div
                     className={cx({
                       "OrderItem-tooltip-row": i > 0,
@@ -157,7 +170,7 @@ export function OrderItem(p: Props) {
       <Tooltip
         handle={renderTitleWithIcon(p.order)}
         position="left-bottom"
-        className={p.order.errorLevel ? `order-error-text-msg level-${p.order.errorLevel}` : undefined}
+        className={errorLevel ? `order-error-text-msg level-${errorLevel}` : undefined}
         renderContent={() => {
           return (
             <>
@@ -177,11 +190,13 @@ export function OrderItem(p: Props) {
                 <div className="OrderItem-tooltip-row">
                   <Trans>
                     {formatTokenAmount(
-                      p.order.initialCollateralDeltaAmount,
-                      p.order.initialCollateralToken.decimals,
-                      p.order.initialCollateralToken.symbol
+                      initialCollateralDeltaAmount,
+                      initialCollateralToken.decimals,
+                      initialCollateralToken[shouldUnwrapNativeToken ? "baseSymbol" : "symbol"]
                     )}{" "}
-                    will be swapped to {p.order.targetCollateralToken.symbol} on order execution.
+                    will be swapped to{" "}
+                    {targetCollateralToken.isNative ? wrappedToken.symbol : targetCollateralToken.symbol} on order
+                    execution.
                   </Trans>
                 </div>
               )}
@@ -196,9 +211,9 @@ export function OrderItem(p: Props) {
                 </div>
               )}
 
-              {p.order.errors.length ? (
+              {errors.length ? (
                 <>
-                  {p.order.errors.map((error) => (
+                  {errors.map((error) => (
                     <div className="OrderItem-tooltip-row" key={error.msg}>
                       <span className={error!.level === "error" ? "negative" : "warning"}>{error.msg}</span>
                     </div>
@@ -264,9 +279,9 @@ export function OrderItem(p: Props) {
   }
 
   function renderTriggerPrice() {
-    if (isSwapOrderType(p.order.orderType)) {
-      const toAmount = p.order.minOutputAmount;
-      const toToken = p.order.targetCollateralToken;
+    if (isSwapOrderType(orderType)) {
+      const toAmount = minOutputAmount;
+      const toToken = targetCollateralToken;
       const toAmountText = formatTokenAmount(toAmount, toToken?.decimals, toToken?.symbol);
 
       const { swapRatioText } = getSwapRatioText();
@@ -317,7 +332,7 @@ export function OrderItem(p: Props) {
   const priceDecimals = positionOrder?.indexToken?.priceDecimals;
 
   const markPrice = useMemo(() => {
-    if (isSwapOrderType(p.order.orderType)) {
+    if (isSwapOrderType(orderType)) {
       return undefined;
     }
     return getMarkPrice({
@@ -325,10 +340,10 @@ export function OrderItem(p: Props) {
       isIncrease: isIncreaseOrderType(positionOrder.orderType),
       isLong: positionOrder.isLong,
     });
-  }, [p.order.orderType, positionOrder?.indexToken?.prices, positionOrder.isLong, positionOrder.orderType]);
+  }, [orderType, positionOrder?.indexToken?.prices, positionOrder.isLong, positionOrder.orderType]);
 
   function renderMarkPrice() {
-    if (isSwapOrderType(p.order.orderType)) {
+    if (isSwapOrderType(orderType)) {
       const { markSwapRatioText } = getSwapRatioText();
 
       return markSwapRatioText;
@@ -367,7 +382,7 @@ export function OrderItem(p: Props) {
           </td>
         )}
         <td className="Exchange-list-item-type">
-          {isDecreaseOrderType(p.order.orderType) ? getTriggerNameByOrderType(positionOrder.orderType) : t`Limit`}
+          {isDecreaseOrderType(orderType) ? getTriggerNameByOrderType(positionOrder.orderType) : t`Limit`}
         </td>
         <td className="Order-list-item-text">{renderTitle()}</td>
         <td>{renderTriggerPrice()}</td>
@@ -404,7 +419,7 @@ export function OrderItem(p: Props) {
             {showDebugValues && (
               <div className="App-card-row">
                 <div className="label">Key</div>
-                <div className="debug-key muted">{p.order.key}</div>
+                <div className="debug-key muted">{key}</div>
               </div>
             )}
             <div className="App-card-row">
@@ -412,7 +427,7 @@ export function OrderItem(p: Props) {
                 <Trans>Order Type</Trans>
               </div>
               <div>
-                {isDecreaseOrderType(p.order.orderType) ? getTriggerNameByOrderType(positionOrder.orderType) : t`Limit`}
+                {isDecreaseOrderType(orderType) ? getTriggerNameByOrderType(positionOrder.orderType) : t`Limit`}
               </div>
             </div>
             <div className="App-card-row">
