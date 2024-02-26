@@ -28,6 +28,11 @@
   &.checked .handle {
     left: 14px;
   }
+
+  &.disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
 }
 
 .Switch-toggle-wrapper {

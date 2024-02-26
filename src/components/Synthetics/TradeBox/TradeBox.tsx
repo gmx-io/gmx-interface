@@ -1,5 +1,10 @@
 import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { BigNumber } from "ethers";
+import { ReactNode, useCallback, useEffect, useMemo } from "react";
+import { IoMdSwap } from "react-icons/io";
+import { useLatest, usePrevious } from "react-use";
+
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
@@ -32,7 +37,6 @@ import {
   useTradeboxNextPositionValuesForDecrease,
   useTradeboxNextPositionValuesForIncrease,
   useTradeboxSelectedPosition,
-  useTradeboxSelectedTriggerAcceptablePriceImpactBps,
   useTradeboxState,
   useTradeboxSwapAmounts,
   useTradeboxTradeFlags,
@@ -80,7 +84,6 @@ import {
   validateMaxLeverage,
 } from "domain/synthetics/trade/utils/validation";
 import { getMinResidualAmount } from "domain/tokens";
-import { BigNumber } from "ethers";
 import longImg from "img/long.svg";
 import shortImg from "img/short.svg";
 import swapImg from "img/swap.svg";
@@ -102,9 +105,7 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { museNeverExist } from "lib/types";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
-import { ReactNode, useCallback, useEffect, useMemo } from "react";
-import { IoMdSwap } from "react-icons/io";
-import { useLatest, usePrevious } from "react-use";
+
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { MarketCard } from "../MarketCard/MarketCard";
 import { SwapCard } from "../SwapCard/SwapCard";
@@ -189,8 +190,9 @@ export function TradeBox(p: Props) {
     setFixedTriggerThresholdType,
     fixedTriggerOrderType,
     setFixedTriggerOrderType,
-    setDefaultTriggerAcceptablePriceImapctBps,
-    setSelectedAcceptablePriceImapctBps,
+    setDefaultTriggerAcceptablePriceImpactBps,
+    selectedTriggerAcceptablePriceImpactBps,
+    setSelectedAcceptablePriceImpactBps,
     closeSizeInputValue,
     setCloseSizeInputValue,
     triggerPriceInputValue,
@@ -443,7 +445,6 @@ export function TradeBox(p: Props) {
     };
   }, [increaseAmounts, isIncrease, isLong, marketInfo]);
 
-  const selectedTriggerAcceptablePriceImpactBps = useTradeboxSelectedTriggerAcceptablePriceImpactBps();
   const swapRoutes = useSelector(selectTradeboxSwapRoutes);
   const userReferralInfo = useUserReferralInfo();
   const acceptablePriceImpactBuffer = useSelector(selectSavedAcceptablePriceImpactBuffer);
@@ -742,13 +743,13 @@ export function TradeBox(p: Props) {
     ) {
       setFixedTriggerOrderType(decreaseAmounts.triggerOrderType);
       setFixedTriggerThresholdType(decreaseAmounts.triggerThresholdType);
-      setSelectedAcceptablePriceImapctBps(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs());
-      setDefaultTriggerAcceptablePriceImapctBps(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs());
+      setSelectedAcceptablePriceImpactBps(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs());
+      setDefaultTriggerAcceptablePriceImpactBps(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs());
     }
 
     if (isLimit && increaseAmounts?.acceptablePrice) {
-      setSelectedAcceptablePriceImapctBps(increaseAmounts.acceptablePriceDeltaBps.abs());
-      setDefaultTriggerAcceptablePriceImapctBps(increaseAmounts.acceptablePriceDeltaBps.abs());
+      setSelectedAcceptablePriceImpactBps(increaseAmounts.acceptablePriceDeltaBps.abs());
+      setDefaultTriggerAcceptablePriceImpactBps(increaseAmounts.acceptablePriceDeltaBps.abs());
     }
 
     setStage("confirmation");
@@ -882,16 +883,16 @@ export function TradeBox(p: Props) {
   }
 
   const onConfirmationClose = useCallback(() => {
-    setSelectedAcceptablePriceImapctBps(undefined);
-    setDefaultTriggerAcceptablePriceImapctBps(undefined);
+    setSelectedAcceptablePriceImpactBps(undefined);
+    setDefaultTriggerAcceptablePriceImpactBps(undefined);
     setFixedTriggerOrderType(undefined);
     setFixedTriggerThresholdType(undefined);
     setStage("trade");
   }, [
-    setDefaultTriggerAcceptablePriceImapctBps,
+    setDefaultTriggerAcceptablePriceImpactBps,
     setFixedTriggerOrderType,
     setFixedTriggerThresholdType,
-    setSelectedAcceptablePriceImapctBps,
+    setSelectedAcceptablePriceImpactBps,
     setStage,
   ]);
 
@@ -1203,25 +1204,33 @@ export function TradeBox(p: Props) {
           <div className="App-card-divider" />
         </>
       );
-    } else if (isTrigger && selectedPosition && !decreaseAmounts?.isFullClose) {
+    } else if (isTrigger && selectedPosition) {
+      let leverageValue: ReactNode = "-";
+
+      if (decreaseAmounts?.isFullClose) {
+        leverageValue = t`NA`;
+      } else if (selectedPosition.sizeInUsd.eq(decreaseAmounts?.sizeDeltaUsd || 0)) {
+        leverageValue = "-";
+      } else {
+        leverageValue = (
+          <ValueTransition
+            from={formatLeverage(selectedPosition.leverage)}
+            to={formatLeverage(nextPositionValues?.nextLeverage)}
+          />
+        );
+      }
+
+      const keepLeverageChecked = decreaseAmounts?.isFullClose ? false : keepLeverage ?? false;
+
       return (
         <>
-          <ExchangeInfoRow
-            className="SwapBox-info-row"
-            label={t`Leverage`}
-            value={
-              selectedPosition.sizeInUsd.eq(decreaseAmounts?.sizeDeltaUsd || 0) ? (
-                "-"
-              ) : (
-                <ValueTransition
-                  from={formatLeverage(selectedPosition.leverage)}
-                  to={formatLeverage(nextPositionValues?.nextLeverage)}
-                />
-              )
-            }
-          />
+          <ExchangeInfoRow className="SwapBox-info-row" label={t`Leverage`} value={leverageValue} />
           {selectedPosition?.leverage && (
-            <ToggleSwitch isChecked={keepLeverage ?? false} setIsChecked={setKeepLeverage}>
+            <ToggleSwitch
+              isChecked={keepLeverageChecked}
+              setIsChecked={setKeepLeverage}
+              disabled={decreaseAmounts?.isFullClose}
+            >
               <span className="text-gray font-sm">
                 <Trans>Keep leverage at {formatLeverage(selectedPosition.leverage)}</Trans>
               </span>
@@ -1531,7 +1540,8 @@ export function TradeBox(p: Props) {
         triggerPrice={triggerPrice}
         fixedTriggerThresholdType={fixedTriggerThresholdType}
         fixedTriggerOrderType={fixedTriggerOrderType}
-        setSelectedTriggerAcceptablePriceImapctBps={setSelectedAcceptablePriceImapctBps}
+        selectedTriggerAcceptablePriceImpactBps={selectedTriggerAcceptablePriceImpactBps}
+        setSelectedTriggerAcceptablePriceImpactBps={setSelectedAcceptablePriceImpactBps}
         marketsOptions={marketsOptions}
         swapLiquidityUsd={swapOutLiquidity}
         longLiquidityUsd={longLiquidity}

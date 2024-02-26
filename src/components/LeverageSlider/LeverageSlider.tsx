@@ -3,7 +3,7 @@ import Slider, { SliderTooltip, Handle } from "rc-slider";
 import "rc-slider/assets/index.css";
 import "./LeverageSlider.scss";
 import { range } from "lodash";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 
 const defaultMarks = [1.1, 2, 5, 10, 15, 20, 25, 30, 35, 40, 50];
 const DEFAULT_LEVERAGE_KEY = 20;
@@ -75,6 +75,15 @@ export function LeverageSlider(p: Props) {
 
 function LeverageSliderHandle({ value, dragging, index, keyValueMap, ...restProps }: HandleProps) {
   const displayValue = keyValueMap[value || 0] ?? DEFAULT_LEVERAGE_KEY;
+
+  useEffect(() => {
+    if (dragging) {
+      document.body.classList.add("dragging");
+    } else {
+      document.body.classList.remove("dragging");
+    }
+  }, [dragging]);
+
   return (
     <SliderTooltip
       prefixCls="rc-slider-tooltip"

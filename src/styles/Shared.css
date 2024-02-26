@@ -1,8 +1,6 @@
 html,
 body,
 #root {
-  height: 100%;
-  width: 100%;
   margin: 0;
   padding: 0;
   color: white;
@@ -23,7 +21,9 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   font-family: "Relative", sans-serif;
   letter-spacing: 0.05rem;
@@ -406,8 +406,13 @@ button.btn-link:hover .logout-icon {
 .mt-sm {
   margin-top: 1rem;
 }
+
 .mt-md {
   margin-top: 1.5rem;
+}
+
+.items-start {
+  align-items: flex-start;
 }
 
 .page-layout {
@@ -524,6 +529,10 @@ button.btn-link:hover .logout-icon {
 
 .my-sm {
   margin: 1rem 0;
+}
+
+.my-base {
+  margin: 1.5rem 0;
 }
 
 .mx-xxs {

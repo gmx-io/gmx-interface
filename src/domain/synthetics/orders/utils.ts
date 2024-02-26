@@ -31,7 +31,10 @@ export function isOrderForPosition(order: OrderInfo, positionKey: string): order
 
   // For limit orders, we need to check the target collateral token
   if (isLimitOrderType(order.orderType)) {
-    isMatch = isMatch && order.targetCollateralToken.address === collateralAddress;
+    const targetCollateralTokenAddress = order.targetCollateralToken.isNative
+      ? order.targetCollateralToken.wrappedAddress
+      : order.targetCollateralToken.address;
+    isMatch = isMatch && targetCollateralTokenAddress === collateralAddress;
   } else if (isTriggerDecreaseOrderType(order.orderType)) {
     isMatch = isMatch && order.initialCollateralTokenAddress === collateralAddress;
   }
@@ -131,7 +134,6 @@ export function getOrderInfo(p: {
 
   if (isSwapOrderType(order.orderType)) {
     const initialCollateralToken = getByKey(tokensData, order.initialCollateralTokenAddress);
-
     const { outTokenAddress } = getSwapPathOutputAddresses({
       marketsInfoData,
       swapPath: order.swapPath,
@@ -211,6 +213,7 @@ export function getOrderInfo(p: {
   } else {
     const marketInfo = getByKey(marketsInfoData, order.marketAddress);
     const indexToken = marketInfo?.indexToken;
+
     const initialCollateralToken = getByKey(tokensData, order.initialCollateralTokenAddress);
     const { outTokenAddress } = getSwapPathOutputAddresses({
       marketsInfoData,
@@ -219,6 +222,7 @@ export function getOrderInfo(p: {
       wrappedNativeTokenAddress: wrappedNativeToken.address,
       shouldUnwrapNativeToken: order.shouldUnwrapNativeToken,
     });
+
     const targetCollateralToken = getByKey(tokensData, outTokenAddress);
 
     if (!marketInfo || !indexToken || !initialCollateralToken || !targetCollateralToken) {
@@ -346,16 +350,14 @@ export function getOrderErrors(p: {
     });
 
     if (currentAcceptablePriceDeltaBps.lt(0) && currentAcceptablePriceDeltaBps.lt(orderAcceptablePriceDeltaBps)) {
-      const priceText = positionOrder.orderType === OrderType.LimitIncrease ? t`Limit Price` : t`Trigger Price`;
-      const suggestionType = positionOrder.orderType === OrderType.LimitIncrease ? t`Limit` : t`Take-Profit`;
+      const priceText = positionOrder.orderType === OrderType.LimitIncrease ? t`limit price` : t`trigger price`;
+      const formattedCurrentAcceptablePriceImpact = formatPercentage(currentAcceptablePriceDeltaBps, { signed: true });
+      const formattedOrderAcceptablePriceImpact = formatPercentage(orderAcceptablePriceDeltaBps, {
+        signed: true,
+      });
 
       errors.push({
-        msg: t`The Order may not execute at the desired ${priceText} as the current Price Impact ${formatPercentage(
-          currentAcceptablePriceDeltaBps,
-          { signed: true }
-        )} is higher than its Acceptable Price Impact ${formatPercentage(orderAcceptablePriceDeltaBps, {
-          signed: true,
-        })}. Consider canceling and creating a new ${suggestionType} Order.`,
+        msg: t`The order may not execute at the desired ${priceText} as its acceptable price impact is set to ${formattedOrderAcceptablePriceImpact}, which is lower than the current market price impact of ${formattedCurrentAcceptablePriceImpact}. It can be edited using the "Edit" button.`,
         level: "warning",
       });
     }
@@ -394,16 +396,17 @@ export function getOrderErrors(p: {
   }
 
   if (!position) {
+    const collateralSymbol = order.targetCollateralToken.symbol;
     const sameMarketPosition = Object.values(positionsInfoData || {}).find(
       (pos) => pos.marketAddress === order.marketAddress && pos.isLong === order.isLong
     );
 
-    const longText = sameMarketPosition?.isLong ? t`Long` : t`Short`;
+    const symbol = sameMarketPosition?.collateralToken.symbol;
+    const longText = sameMarketPosition?.isLong ? t`long` : t`short`;
 
     if (sameMarketPosition) {
       errors.push({
-        msg: t`You have an existing ${longText} position with ${sameMarketPosition?.collateralToken.symbol} as Collateral. This Order will not
-        be valid for that Position.`,
+        msg: t`This order using ${collateralSymbol} as collateral will not be valid for the existing ${longText} position using ${symbol} as collateral.`,
         level: "warning",
       });
     }
@@ -418,7 +421,7 @@ export function getOrderErrors(p: {
 
     if (isInvalidTriggerPrice) {
       errors.push({
-        msg: t`Order Trigger Price is beyond position's Liquidation Price.`,
+        msg: t`The order will not be executed as its trigger price is beyond the position's liquidation price.`,
         level: "error",
       });
     }
@@ -463,4 +466,49 @@ export function getOrderErrors(p: {
     }),
     level,
   };
+}
+
+function getTokenIndex(token: Token, referenceArray: string[]): number {
+  return referenceArray.indexOf(
+    token.wrappedAddress && referenceArray.includes(token.wrappedAddress) ? token.wrappedAddress : token.address
+  );
+}
+
+export function sortPositionOrders(orders: PositionOrderInfo[], tokenSortOrder?: string[]): PositionOrderInfo[] {
+  return orders.sort((a, b) => {
+    if (tokenSortOrder) {
+      const indexA = getTokenIndex(a.marketInfo.indexToken, tokenSortOrder);
+      const indexB = getTokenIndex(b.marketInfo.indexToken, tokenSortOrder);
+      if (indexA !== indexB) return indexA - indexB;
+    } else {
+      const nameComparison = a.marketInfo.name.localeCompare(b.marketInfo.name);
+      if (nameComparison) return nameComparison;
+    }
+
+    // Compare by trigger price
+    const triggerPriceComparison = a.triggerPrice.sub(b.triggerPrice);
+    if (!triggerPriceComparison.isZero()) return triggerPriceComparison.isNegative() ? -1 : 1;
+
+    // Compare by order type
+    const orderTypeComparison = a.orderType - b.orderType;
+    if (orderTypeComparison) return orderTypeComparison;
+
+    // Finally, sort by size delta USD
+    return b.sizeDeltaUsd.sub(a.sizeDeltaUsd).isNegative() ? -1 : 1;
+  });
+}
+
+export function sortSwapOrders(orders: SwapOrderInfo[], tokenSortOrder?: string[]): SwapOrderInfo[] {
+  return orders.sort((a, b) => {
+    if (tokenSortOrder) {
+      const indexA = getTokenIndex(a.targetCollateralToken, tokenSortOrder);
+      const indexB = getTokenIndex(b.targetCollateralToken, tokenSortOrder);
+      if (indexA !== indexB) return indexA - indexB;
+    } else {
+      const collateralComparison = a.targetCollateralToken.symbol.localeCompare(b.targetCollateralToken.symbol);
+      if (collateralComparison) return collateralComparison;
+    }
+
+    return a.minOutputAmount.sub(b.minOutputAmount).isNegative() ? -1 : 1;
+  });
 }

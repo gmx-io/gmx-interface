@@ -1,16 +1,17 @@
-import React, { CSSProperties, MouseEvent, useCallback, useMemo, useRef, useState } from "react";
+import React, { CSSProperties, MouseEvent, PropsWithChildren, useCallback, useMemo, useRef, useState } from "react";
 import cx from "classnames";
 
 import "./Tooltip.scss";
 import { IS_TOUCH } from "config/env";
 import Portal from "../Common/Portal";
 import { TooltipPosition } from "./Tooltip";
+import { TOOLTIP_CLOSE_DELAY, TOOLTIP_OPEN_DELAY } from "config/ui";
 
-const OPEN_DELAY = 0;
-const CLOSE_DELAY = 100;
-
-type Props = {
-  handle: React.ReactNode;
+type Props = PropsWithChildren<{
+  /**
+   * Takes precedence over `children`
+   */
+  handle?: React.ReactNode;
   renderContent: () => React.ReactNode;
   position?: TooltipPosition;
   trigger?: string;
@@ -24,7 +25,8 @@ type Props = {
   openDelay?: number;
   closeDelay?: number;
   shouldStopPropagation?: boolean;
-};
+  disabled?: boolean;
+}>;
 
 type Coords = {
   height?: number;
@@ -39,8 +41,6 @@ export default function TooltipWithPortal(props: Props) {
   const [tooltipWidth, setTooltipWidth] = useState<string>();
   const intervalCloseRef = useRef<ReturnType<typeof setTimeout> | null>();
   const intervalOpenRef = useRef<ReturnType<typeof setTimeout> | null>();
-  const openDelay = props.openDelay ?? OPEN_DELAY;
-  const closeDelay = props.closeDelay ?? CLOSE_DELAY;
 
   const position = props.position ?? "left-bottom";
   const trigger = props.trigger ?? "hover";
@@ -73,10 +73,10 @@ export default function TooltipWithPortal(props: Props) {
       intervalOpenRef.current = setTimeout(() => {
         setVisible(true);
         intervalOpenRef.current = null;
-      }, openDelay);
+      }, props.openDelay ?? TOOLTIP_OPEN_DELAY);
     }
     updateTooltipCoords();
-  }, [setVisible, intervalCloseRef, intervalOpenRef, trigger, updateTooltipCoords, openDelay]);
+  }, [setVisible, trigger, updateTooltipCoords, props.openDelay]);
 
   const onMouseClick = useCallback(
     (event: MouseEvent) => {
@@ -107,13 +107,13 @@ export default function TooltipWithPortal(props: Props) {
     intervalCloseRef.current = setTimeout(() => {
       setVisible(false);
       intervalCloseRef.current = null;
-    }, closeDelay);
+    }, props.closeDelay ?? TOOLTIP_CLOSE_DELAY);
     if (intervalOpenRef.current) {
       clearInterval(intervalOpenRef.current);
       intervalOpenRef.current = null;
     }
     updateTooltipCoords();
-  }, [setVisible, intervalCloseRef, updateTooltipCoords, closeDelay]);
+  }, [setVisible, updateTooltipCoords, props.closeDelay]);
 
   const onHandleClick = useCallback((event: MouseEvent) => {
     event.preventDefault();
@@ -131,9 +131,13 @@ export default function TooltipWithPortal(props: Props) {
         ref={handlerRef}
       >
         {/* For onMouseLeave to work on disabled button https://github.com/react-component/tooltip/issues/18#issuecomment-411476678 */}
-        {props.isHandlerDisabled ? <div className="Tooltip-disabled-wrapper">{props.handle}</div> : <>{props.handle}</>}
+        {props.isHandlerDisabled ? (
+          <div className="Tooltip-disabled-wrapper">{props.handle || props.children}</div>
+        ) : (
+          <>{props.handle || props.children}</>
+        )}
       </span>
-      {visible && coords.left && (
+      {visible && coords.left && !props.disabled && (
         <Portal>
           <div style={portalStyle} className={props.portalClassName}>
             <div className={cx(["Tooltip-popup z-index-1001", position])} style={popupStyle}>

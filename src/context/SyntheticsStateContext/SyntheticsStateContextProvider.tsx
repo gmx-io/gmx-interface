@@ -11,14 +11,15 @@ import {
 } from "domain/synthetics/positions";
 import { PositionSellerState, usePositionSellerState } from "domain/synthetics/trade/usePositionSellerState";
 import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 import { ReactNode, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 
 export type SyntheticsTradeState = {
-  pageType: "actions" | "trade";
+  pageType: "actions" | "trade" | "pools";
   globals: {
     chainId: number;
     markets: MarketsResult;
@@ -53,10 +54,19 @@ export function SyntheticsStateContextProvider({
   savedIsPnlInLeverage: boolean;
   savedShowPnlAfterFees: boolean;
   skipLocalReferralCode: boolean;
-  pageType: "actions" | "trade";
+  pageType: "actions" | "trade" | "pools";
 }) {
   const { chainId } = useChainId();
-  const { account, signer } = useWallet();
+  const { account: walletAccount, signer } = useWallet();
+  const { account: paramsAccount } = useParams<{ account?: string }>();
+
+  let checkSummedAccount: string | undefined;
+
+  if (paramsAccount && ethers.utils.isAddress(paramsAccount)) {
+    checkSummedAccount = ethers.utils.getAddress(paramsAccount);
+  }
+
+  const account = pageType === "actions" ? checkSummedAccount : walletAccount;
   const markets = useMarkets(chainId);
   const marketsInfo = useMarketsInfoRequest(chainId);
   const positionsConstants = usePositionsConstantsRequest(chainId);

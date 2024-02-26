@@ -1,6 +1,7 @@
-import "./ToggleSwitch.scss";
-import { ReactNode } from "react";
 import cx from "classnames";
+import { useCallback, type ReactNode } from "react";
+
+import "./ToggleSwitch.scss";
 
 type Props = {
   isChecked: boolean;
@@ -10,15 +11,21 @@ type Props = {
   disabled?: boolean;
 };
 
-export default function ToggleSwitch({ isChecked, setIsChecked, className, children, disabled }: Props) {
-  const classNames = cx("Switch-toggle-wrapper", { "Switch-toggle-wrapper_disabled": disabled }, className);
+export default function ToggleSwitch({ isChecked, setIsChecked, className, disabled, children }: Props) {
+  const classNames = cx("Switch-toggle-wrapper", className);
+
+  const handleToggle = useCallback(() => {
+    if (disabled) {
+      return;
+    }
+
+    setIsChecked(!isChecked);
+  }, [disabled, isChecked, setIsChecked]);
+
   return (
     <div className={classNames}>
       {children}
-      <div
-        className={cx("Switch-toggle", { checked: isChecked })}
-        onClick={disabled ? undefined : () => setIsChecked(!isChecked)}
-      >
+      <div className={cx("Switch-toggle", { checked: isChecked, disabled })} onClick={handleToggle}>
         <div className="handle" />
       </div>
     </div>

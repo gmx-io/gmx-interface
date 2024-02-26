@@ -35,6 +35,7 @@ export function getDecreasePositionAmounts(p: {
   uiFeeFactor: BigNumber;
   isLimit?: boolean;
   limitPrice?: BigNumber;
+  triggerOrderType?: DecreasePositionAmounts["triggerOrderType"];
 }) {
   const {
     marketInfo,
@@ -52,6 +53,7 @@ export function getDecreasePositionAmounts(p: {
     uiFeeFactor,
     isLimit,
     limitPrice,
+    triggerOrderType: orderType,
   } = p;
   const { indexToken } = marketInfo;
 
@@ -91,7 +93,7 @@ export function getDecreasePositionAmounts(p: {
     receiveTokenAmount: BigNumber.from(0),
     receiveUsd: BigNumber.from(0),
 
-    triggerOrderType: undefined,
+    triggerOrderType: orderType,
     triggerThresholdType: undefined,
     decreaseSwapType: DecreasePositionSwapType.NoSwap,
   };
@@ -113,7 +115,7 @@ export function getDecreasePositionAmounts(p: {
       ? triggerPrice
       : collateralToken.prices.minPrice;
 
-    values.triggerOrderType = getTriggerDecreaseOrderType({
+    values.triggerOrderType ||= getTriggerDecreaseOrderType({
       markPrice: isLimit ? limitPrice || BigNumber.from(0) : markPrice,
       triggerPrice,
       isLong,

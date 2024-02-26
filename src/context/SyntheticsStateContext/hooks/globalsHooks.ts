@@ -12,6 +12,7 @@ import {
   selectUiFeeFactor,
   selectPositionConstants,
   selectClosingPositionKeyState,
+  selectAccount,
 } from "../selectors/globalSelectors";
 import { useSelector } from "../utils";
 
@@ -30,3 +31,4 @@ export const useUiFeeFactor = () => useSelector(selectUiFeeFactor);
 export const usePositionsConstants = () => useSelector(selectPositionConstants);
 
 export const useClosingPositionKeyState = () => useSelector(selectClosingPositionKeyState);
+export const useAccount = () => useSelector(selectAccount);

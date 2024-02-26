@@ -1,3 +1,4 @@
+import "./ValueTransition.scss";
 import { ReactNode } from "react";
 import { BsArrowRight } from "react-icons/bs";
 
@@ -11,7 +12,7 @@ export function ValueTransition(p: Props) {
   if (!p.from) return <>{p.to}</>;
 
   return (
-    <div className="inline-block">
+    <div className="ValueTransition">
       <div className="inline-block muted">
         {p.from}
         <BsArrowRight className="transition-arrow" />

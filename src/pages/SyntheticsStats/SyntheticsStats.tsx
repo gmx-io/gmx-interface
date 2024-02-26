@@ -30,7 +30,7 @@ function pow(bn: BigNumber, exponent: BigNumber) {
   const n = Number(bn.toString()) / 1e30;
   const e = Number(exponent.toString()) / 1e30;
   const afterExponent = Math.pow(n, e);
-  return expandDecimals((afterExponent * 1e10).toFixed(0), 20);
+  return expandDecimals(afterExponent.toFixed(0), 30);
 }
 
 function formatAmountHuman(amount: BigNumberish | undefined, tokenDecimals: number, showDollar = false) {
@@ -1059,6 +1059,26 @@ export function SyntheticsStats() {
                                   ? formatAmount(PRECISION.div(market.minCollateralFactor).mul(100), 2, 2)
                                   : "..."
                               }
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label="Reserve Factor Longs"
+                              value={formatFactor(market.reserveFactorLong)}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label="Reserve Factor Shorts"
+                              value={formatFactor(market.reserveFactorShort)}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label="Open Interest Reserve Factor Longs"
+                              value={formatFactor(market.openInterestReserveFactorLong)}
+                              showDollar={false}
+                            />
+                            <StatsTooltipRow
+                              label="Open Interest Reserve Factor Shorts"
+                              value={formatFactor(market.openInterestReserveFactorShort)}
                               showDollar={false}
                             />
                             <br />

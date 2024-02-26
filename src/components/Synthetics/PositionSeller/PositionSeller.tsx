@@ -1,20 +1,21 @@
 import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
+import { BigNumber } from "ethers";
+import React, { useCallback, useEffect, useMemo } from "react";
+import { useLatest } from "react-use";
+
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
-import PercentageInput from "components/PercentageInput/PercentageInput";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 import Tab from "components/Tab/Tab";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import { DEFAULT_SLIPPAGE_AMOUNT, EXCESSIVE_SLIPPAGE_AMOUNT } from "config/factors";
 import { convertTokenAddress } from "config/tokens";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
@@ -55,15 +56,14 @@ import {
 } from "domain/synthetics/positions";
 import { applySlippageToPrice, getMarkPrice, getSwapAmountsByFromValue, getTradeFees } from "domain/synthetics/trade";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
+import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { getCommonError, getDecreaseError } from "domain/synthetics/trade/utils/validation";
 import { getIsEquivalentTokens } from "domain/tokens";
-import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
 import {
-  bigNumberify,
   formatAmount,
   formatAmountFree,
   formatDeltaUsd,
@@ -76,11 +76,12 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { museNeverExist } from "lib/types";
 import { useDebouncedInputValue } from "lib/useDebouncedInputValue";
 import useWallet from "lib/wallets/useWallet";
-import { useCallback, useEffect, useMemo } from "react";
-import { useLatest } from "react-use";
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
+import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
+
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import "./PositionSeller.scss";
 
 export type Props = {
@@ -135,6 +136,7 @@ export function PositionSeller(p: Props) {
     setOrderOption,
     setReceiveTokenAddress,
     setSelectedTriggerAcceptablePriceImpactBps,
+    selectedTriggerAcceptablePriceImpactBps,
     setTriggerPriceInputValue: setTriggerPriceInputValueRaw,
     triggerPriceInputValue: triggerPriceInputValueRaw,
     resetPositionSeller,
@@ -266,6 +268,10 @@ export function PositionSeller(p: Props) {
     uiFeeFactor,
   ]);
 
+  const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
+    executionFee?.feeUsd
+  );
+
   const priceImpactWarningState = usePriceImpactWarningState({
     positionPriceImpact: fees?.positionPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
@@ -318,6 +324,10 @@ export function PositionSeller(p: Props) {
       return commonError[0] || decreaseError[0];
     }
 
+    if (isHighFeeConsentError) {
+      return [t`High Execution Fee not yet acknowledged`];
+    }
+
     if (isSubmitting) {
       return t`Creating Order...`;
     }
@@ -327,6 +337,7 @@ export function PositionSeller(p: Props) {
     closeSizeUsd,
     decreaseAmounts?.sizeDeltaUsd,
     hasOutdatedUi,
+    isHighFeeConsentError,
     isNotEnoughReceiveTokenLiquidity,
     isSubmitting,
     isTrigger,
@@ -417,9 +428,16 @@ export function PositionSeller(p: Props) {
         !defaultTriggerAcceptablePriceImpactBps.eq(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs())
       ) {
         setDefaultTriggerAcceptablePriceImpactBps(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs());
+        setSelectedTriggerAcceptablePriceImpactBps(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs());
       }
     }
-  }, [decreaseAmounts, defaultTriggerAcceptablePriceImpactBps, isTrigger, setDefaultTriggerAcceptablePriceImpactBps]);
+  }, [
+    decreaseAmounts,
+    defaultTriggerAcceptablePriceImpactBps,
+    isTrigger,
+    setDefaultTriggerAcceptablePriceImpactBps,
+    setSelectedTriggerAcceptablePriceImpactBps,
+  ]);
 
   const indexPriceDecimals = position?.indexToken?.priceDecimals;
   const toToken = position?.indexToken;
@@ -434,38 +452,6 @@ export function PositionSeller(p: Props) {
         }) || "-"
       }`}
     />
-  );
-
-  const allowedSlippageRow = (
-    <ExchangeInfoRow
-      label={
-        <TooltipWithPortal
-          handle={t`Allowed Slippage`}
-          position="left-top"
-          renderContent={() => {
-            return (
-              <div className="text-white">
-                <Trans>
-                  You can edit the default Allowed Slippage in the settings menu on the top right of the page.
-                  <br />
-                  <br />
-                  Note that a low allowed slippage, e.g. less than{" "}
-                  {formatPercentage(bigNumberify(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}, may result in failed
-                  orders if prices are volatile.
-                </Trans>
-              </div>
-            );
-          }}
-        />
-      }
-    >
-      <PercentageInput
-        onChange={setAllowedSlippage}
-        defaultValue={allowedSlippage}
-        highValue={EXCESSIVE_SLIPPAGE_AMOUNT}
-        highValueWarningText={t`Slippage is too high`}
-      />
-    </ExchangeInfoRow>
   );
 
   const markPriceRow = (
@@ -491,6 +477,8 @@ export function PositionSeller(p: Props) {
     />
   );
 
+  const isStopLoss = decreaseAmounts?.triggerOrderType === OrderType.StopLossDecrease;
+
   const acceptablePriceImpactInputRow = (() => {
     if (!decreaseAmounts) {
       return;
@@ -498,26 +486,27 @@ export function PositionSeller(p: Props) {
 
     return (
       <AcceptablePriceImpactInputRow
-        notAvailable={!triggerPriceInputValueRaw || decreaseAmounts.triggerOrderType === OrderType.StopLossDecrease}
-        defaultAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
-        fees={fees}
-        setSelectedAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
+        notAvailable={!triggerPriceInputValue || isStopLoss}
+        acceptablePriceImpactBps={selectedTriggerAcceptablePriceImpactBps}
+        recommendedAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
+        priceImpactFeeBps={fees?.positionPriceImpact?.bps}
+        setAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
       />
     );
   })();
 
-  const acceptablePriceRow = (
-    <ExchangeInfoRow
-      label={t`Acceptable Price`}
-      value={
-        decreaseAmounts?.sizeDeltaUsd.gt(0)
-          ? formatAcceptablePrice(acceptablePrice, {
-              displayDecimals: indexPriceDecimals,
-            })
-          : "-"
-      }
-    />
-  );
+  let acceptablePriceValue: React.ReactNode = "-";
+  if (isStopLoss) {
+    acceptablePriceValue = t`NA`;
+  } else if (decreaseAmounts?.sizeDeltaUsd.gt(0)) {
+    acceptablePriceValue = formatAcceptablePrice(acceptablePrice, {
+      displayDecimals: indexPriceDecimals,
+    });
+  } else {
+    acceptablePriceValue = "-";
+  }
+
+  const acceptablePriceRow = <ExchangeInfoRow label={t`Acceptable Price`} value={acceptablePriceValue} />;
 
   const liqPriceRow = position && (
     <ExchangeInfoRow
@@ -639,10 +628,13 @@ export function PositionSeller(p: Props) {
     />
   );
 
-  const isStopLoss = decreaseAmounts?.triggerOrderType === OrderType.StopLossDecrease;
-  const keepLeverageText = (
-    <Trans>Keep leverage at {position?.leverage ? formatLeverage(position.leverage) : "..."}</Trans>
-  );
+  const keepLeverageChecked = decreaseAmounts?.isFullClose ? false : keepLeverage ?? false;
+  let keepLeverageAtValue: string | undefined = "...";
+  if (position?.leverage && !decreaseAmounts?.isFullClose) {
+    keepLeverageAtValue = formatLeverage(position.leverage);
+  }
+
+  const keepLeverageText = <Trans>Keep leverage at {keepLeverageAtValue}</Trans>;
   const renderKeepLeverageTooltipContent = useCallback(
     () => (
       <Trans>
@@ -657,6 +649,22 @@ export function PositionSeller(p: Props) {
   ) : (
     keepLeverageText
   );
+  let leverageValue: React.ReactNode = "-";
+
+  if (decreaseAmounts?.isFullClose) {
+    leverageValue = t`NA`;
+  } else if (position) {
+    if (decreaseAmounts?.sizeDeltaUsd.eq(position.sizeInUsd)) {
+      leverageValue = "-";
+    } else {
+      leverageValue = (
+        <ValueTransition
+          from={formatLeverage(position.leverage)}
+          to={formatLeverage(nextPositionValuesWithoutKeepLeverage?.nextLeverage)}
+        />
+      );
+    }
+  }
 
   return (
     <div className="PositionEditor PositionSeller">
@@ -669,7 +677,6 @@ export function PositionSeller(p: Props) {
             Close {position?.isLong ? t`Long` : t`Short`} {position?.indexToken?.symbol}
           </Trans>
         }
-        allowContentTouchMove
       >
         <Tab
           options={Object.values(OrderOption)}
@@ -723,57 +730,32 @@ export function PositionSeller(p: Props) {
             )}
 
             <div className="PositionEditor-info-box">
-              {!decreaseAmounts?.isFullClose && (
-                <>
-                  <ExchangeInfoRow
-                    label={t`Leverage`}
-                    value={
-                      decreaseAmounts?.sizeDeltaUsd.eq(position.sizeInUsd) ? (
-                        "-"
-                      ) : leverageCheckboxDisabledByCollateral ? (
-                        <ValueTransition
-                          from={formatLeverage(position.leverage)}
-                          to={formatLeverage(nextPositionValuesWithoutKeepLeverage?.nextLeverage)}
-                        />
-                      ) : (
-                        <ValueTransition
-                          from={formatLeverage(position.leverage)}
-                          to={formatLeverage(nextPositionValues?.nextLeverage)}
-                        />
-                      )
-                    }
-                  />
+              <ExchangeInfoRow label={t`Leverage`} value={leverageValue} />
 
-                  <div className="PositionEditor-keep-leverage-settings">
-                    <ToggleSwitch
-                      disabled={leverageCheckboxDisabledByCollateral}
-                      isChecked={leverageCheckboxDisabledByCollateral ? false : keepLeverage ?? false}
-                      setIsChecked={setKeepLeverage}
-                    >
-                      <span className="text-gray font-sm">{keepLeverageTextElem}</span>
-                    </ToggleSwitch>
-                  </div>
+              <div className="PositionEditor-keep-leverage-settings">
+                <ToggleSwitch
+                  isChecked={leverageCheckboxDisabledByCollateral ? false : keepLeverageChecked}
+                  setIsChecked={setKeepLeverage}
+                  disabled={leverageCheckboxDisabledByCollateral ?? decreaseAmounts?.isFullClose}
+                >
+                  {keepLeverageTextElem}
+                </ToggleSwitch>
+              </div>
 
-                  <div className="App-card-divider" />
-                </>
-              )}
+              <div className="App-card-divider" />
 
               {isTrigger ? (
                 <>
-                  {!isStopLoss && (
-                    <>
-                      {acceptablePriceImpactInputRow}
-                      <div className="App-card-divider" />
-                    </>
-                  )}
+                  {acceptablePriceImpactInputRow}
+                  <div className="App-card-divider" />
                   {triggerPriceRow}
-                  {!isStopLoss && acceptablePriceRow}
+                  {acceptablePriceRow}
                   {liqPriceRow}
                   {sizeRow}
                 </>
               ) : (
                 <>
-                  {allowedSlippageRow}
+                  <AllowedSlippageRow allowedSlippage={allowedSlippage} setAllowedSlippage={setAllowedSlippage} />
                   {entryPriceRow}
                   {acceptablePriceRow}
                   {markPriceRow}
@@ -811,13 +793,16 @@ export function PositionSeller(p: Props) {
               {receiveTokenRow}
             </div>
 
-            {priceImpactWarningState.shouldShowWarning && (
+            {(priceImpactWarningState.shouldShowWarning || highExecutionFeeAcknowledgement) && (
               <>
                 <div className="App-card-divider" />
-                <HighPriceImpactWarning
-                  priceImpactWarinigState={priceImpactWarningState}
-                  className="PositionSeller-price-impact-warning"
-                />
+                <div className="PositionSeller-price-impact-warning">
+                  {priceImpactWarningState.shouldShowWarning && (
+                    <HighPriceImpactWarning priceImpactWarinigState={priceImpactWarningState} />
+                  )}
+
+                  {highExecutionFeeAcknowledgement}
+                </div>
               </>
             )}
 
