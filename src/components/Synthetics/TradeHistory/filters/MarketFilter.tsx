@@ -1,6 +1,6 @@
 import { FloatingPortal, flip, offset, shift, useFloating } from "@floating-ui/react";
 import { Popover } from "@headlessui/react";
-import { Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import React, { useMemo, useState } from "react";
 
@@ -77,7 +77,7 @@ export function MarketFilter({ value, onChange }: Props) {
           >
             <SearchInput
               className="MarketFilter-search"
-              placeholder="Search Token"
+              placeholder={t`Search Token`}
               value={marketSearch}
               setValue={(event) => setMarketSearch(event.target.value)}
               onKeyDown={handleSearchEnterKey}

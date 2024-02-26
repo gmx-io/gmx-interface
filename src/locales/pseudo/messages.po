@@ -4570,7 +4570,12 @@ msgid "Search Pool"
 msgstr ""
 
 #: src/components/SearchInput/SearchInput.tsx
+#: src/components/Synthetics/TradeHistory/filters/MarketFilter.tsx
 msgid "Search Token"
+msgstr ""
+
+#: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
+msgid "Search action"
 msgstr ""
 
 #: src/components/NetworkDropdown/LanguagePopupHome.tsx
