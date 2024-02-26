@@ -104,33 +104,35 @@ export async function createDecreaseOrderTxn(
   const txnCreatedAt = Date.now();
   const txnCreatedAtBlock = await signer.provider?.getBlockNumber();
 
-  const txn = await callContract(chainId, router, "multicall", [encodedPayload], {
+  const txn = callContract(chainId, router, "multicall", [encodedPayload], {
     value: totalWntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
     setPendingTxns: callbacks.setPendingTxns,
-  }).then(() => {
-    ps.forEach((p) => {
-      if (isMarketOrderType(p.orderType)) {
-        if (callbacks.setPendingPosition) {
-          callbacks.setPendingPosition(getPendingPositionFromParams(txnCreatedAt, txnCreatedAtBlock, p));
-        }
-      }
+  });
 
-      if (callbacks.setPendingOrder) {
-        callbacks.setPendingOrder(getPendingOrderFromParams(chainId, p));
-      }
-    });
+  if (!subaccount) {
+    await txn;
+  }
 
-    if (callbacks.setPendingFundingFeeSettlement) {
-      callbacks.setPendingFundingFeeSettlement({
-        orders: ps.map((p) => getPendingOrderFromParams(chainId, p)),
-        positions: ps.map((p) => getPendingPositionFromParams(txnCreatedAt, txnCreatedAtBlock, p)),
-      });
+  ps.forEach((p) => {
+    if (isMarketOrderType(p.orderType)) {
+      if (callbacks.setPendingPosition) {
+        callbacks.setPendingPosition(getPendingPositionFromParams(txnCreatedAt, txnCreatedAtBlock, p));
+      }
+    }
+
+    if (callbacks.setPendingOrder) {
+      callbacks.setPendingOrder(getPendingOrderFromParams(chainId, p));
     }
   });
 
-  return txn;
+  if (callbacks.setPendingFundingFeeSettlement) {
+    callbacks.setPendingFundingFeeSettlement({
+      orders: ps.map((p) => getPendingOrderFromParams(chainId, p)),
+      positions: ps.map((p) => getPendingPositionFromParams(txnCreatedAt, txnCreatedAtBlock, p)),
+    });
+  }
 }
 
 export function getPendingOrderFromParams(chainId: number, p: DecreaseOrderParams) {

@@ -62,24 +62,28 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
     });
   }
 
-  return callContract(chainId, router, "multicall", [encodedPayload], {
+  const txn = callContract(chainId, router, "multicall", [encodedPayload], {
     value: totalWntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
     setPendingTxns: p.setPendingTxns,
-  }).then(() => {
-    p.setPendingOrder({
-      account: p.account,
-      marketAddress: AddressZero,
-      initialCollateralTokenAddress,
-      initialCollateralDeltaAmount: p.fromTokenAmount,
-      swapPath: p.swapPath,
-      sizeDeltaUsd: BigNumber.from(0),
-      minOutputAmount,
-      isLong: false,
-      orderType: p.orderType,
-      shouldUnwrapNativeToken: isNativeReceive,
-    });
+  });
+
+  if (!subaccount) {
+    await txn;
+  }
+
+  p.setPendingOrder({
+    account: p.account,
+    marketAddress: AddressZero,
+    initialCollateralTokenAddress,
+    initialCollateralDeltaAmount: p.fromTokenAmount,
+    swapPath: p.swapPath,
+    sizeDeltaUsd: BigNumber.from(0),
+    minOutputAmount,
+    isLong: false,
+    orderType: p.orderType,
+    shouldUnwrapNativeToken: isNativeReceive,
   });
 }
 
