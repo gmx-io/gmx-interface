@@ -115,7 +115,7 @@ export function GmList({
                 </th>
                 <th>
                   <Tooltip
-                    handle={<Trans>APR</Trans>}
+                    handle={t`APR`}
                     className="text-none"
                     position="bottom-end"
                     renderContent={() => (

@@ -321,6 +321,7 @@ export default function DashboardV2() {
       <TooltipComponent
         handle={weightText}
         position="bottom-end"
+        maxAllowedWidth={300}
         renderContent={() => {
           return (
             <>

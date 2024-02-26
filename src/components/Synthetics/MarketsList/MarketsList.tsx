@@ -249,6 +249,7 @@ export function MarketsList() {
                           handle={`${formatRatePercentage(netFeePerHourLong)} / ${formatRatePercentage(
                             netFeePerHourShort
                           )}`}
+                          maxAllowedWidth={340}
                           renderContent={renderFundingRateTooltip(stats)}
                           position={tooltipPositionNetFee}
                         />
@@ -330,7 +331,7 @@ export function MarketsList() {
                       </div>
                       <div>
                         <TooltipWithPortal
-                          maxAllowedWidth={350}
+                          maxAllowedWidth={340}
                           portalClassName="MarketList-netfee-tooltip"
                           handle={`${formatRatePercentage(netFeePerHourLong)} / ${formatRatePercentage(
                             netFeePerHourShort

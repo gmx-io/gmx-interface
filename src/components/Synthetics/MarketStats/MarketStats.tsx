@@ -210,6 +210,7 @@ export function MarketStats(p: Props) {
           value={
             mintableInfo && marketTotalSupplyUsd && marketToken ? (
               <Tooltip
+                maxAllowedWidth={350}
                 handle={formatTokenAmountWithUsd(
                   mintableInfo.mintableAmount,
                   mintableInfo.mintableUsd,
@@ -267,6 +268,7 @@ export function MarketStats(p: Props) {
           label={t`Sellable`}
           value={
             <Tooltip
+              maxAllowedWidth={300}
               handle={formatTokenAmountWithUsd(
                 sellableInfo?.totalAmount,
                 sellableInfo?.totalUsd,

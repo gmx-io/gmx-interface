@@ -117,6 +117,7 @@ export default function UserIncentiveDistributionList() {
                     <td data-label="Amount">
                       <Tooltip
                         handle={formatUsd(totalUsd)}
+                        className="nowrap"
                         renderContent={() => {
                           return tokenIncentiveDetails.map((tokenInfo) => (
                             <StatsTooltipRow
