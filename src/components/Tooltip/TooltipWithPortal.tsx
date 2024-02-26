@@ -83,17 +83,19 @@ export default function TooltipWithPortal({
       const { placement } = await computePosition(handlerRef.current, popupRef.current, {
         middleware: [
           flip({ fallbackStrategy: "initialPlacement" }),
-          maxAllowedWidth
-            ? size({
-                padding: 10,
-                apply({ availableWidth, elements }) {
-                  Object.assign(elements.floating.style, {
-                    minWidth: `${Math.min(availableWidth, maxAllowedWidth)}px`,
-                    maxWidth: `${maxAllowedWidth}px`,
-                  });
-                },
-              })
-            : undefined,
+          size({
+            padding: 10,
+            apply({ availableWidth, elements }) {
+              const { floating } = elements;
+              if (!floating) return;
+              const maxWidth = maxAllowedWidth ?? floating.offsetWidth;
+              const minWidth = Math.min(availableWidth, maxWidth);
+              Object.assign(floating.style, {
+                minWidth: `${minWidth}px`,
+                maxWidth: `${maxWidth}px`,
+              });
+            },
+          }),
         ].filter(Boolean),
         placement: position,
       });
