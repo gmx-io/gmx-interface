@@ -91,16 +91,16 @@ msgid "<0>The price that orders can be executed at may differ slightly from the 
 msgstr "<0>The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not.</0><1>This can also cause limit/triggers to not be executed if the price is not reached for long enough. <2>Read more</2>.</1>"
 
 #: src/pages/Stake/StakeV2.js
-msgid "<0>This will claim {0} GMX.<1/><2/>To stake the GMX tokens, please use the \"Stake\" button located in the GMX section on this page.<3/><4/></0>"
-msgstr "<0>This will claim {0} GMX.<1/><2/>To stake the GMX tokens, please use the \"Stake\" button located in the GMX section on this page.<3/><4/></0>"
+msgid "<0>This will claim {0} GMX.<1/><2/>After claiming, you can stake these GMX tokens by using the \"Stake\" button in the GMX section of this Earn page.<3/><4/></0>"
+msgstr "<0>This will claim {0} GMX.<1/><2/>After claiming, you can stake these GMX tokens by using the \"Stake\" button in the GMX section of this Earn page.<3/><4/></0>"
 
 #: src/pages/Stake/StakeV2.js
 msgid "<0>This will withdraw all esGMX tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button.<5/><6/></0>"
 msgstr "<0>This will withdraw all esGMX tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button.<5/><6/></0>"
 
 #: src/pages/Stake/StakeV2.js
-msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
-msgstr "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
+msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
+msgstr "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>This value may be higher on other websites due to the collateral of positions being included in the calculation.</1>"
@@ -348,22 +348,6 @@ msgstr "Affiliate Rewards Claimed"
 #: src/pages/Stake/StakeV2.js
 msgid "Affiliate Vault"
 msgstr "Affiliate Vault"
-
-#: src/pages/Stake/StakeV2.js
-#~ msgid "Affiliate Vault Rewards Claim Failed"
-#~ msgstr "Affiliate Vault Rewards Claim Failed"
-
-#: src/pages/Stake/StakeV2.js
-#~ msgid "Affiliate Vault Rewards Claimed"
-#~ msgstr "Affiliate Vault Rewards Claimed"
-
-#: src/pages/Stake/StakeV2.js
-#~ msgid "Affiliate Vault Rewards Stake Failed"
-#~ msgstr "Affiliate Vault Rewards Stake Failed"
-
-#: src/pages/Stake/StakeV2.js
-#~ msgid "Affiliate Vault Rewards Staked"
-#~ msgstr "Affiliate Vault Rewards Staked"
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Affiliates"
@@ -903,10 +887,6 @@ msgstr "Claim submitted! <0>View status.</0>"
 msgid "Claim submitted."
 msgstr "Claim submitted."
 
-#: src/pages/Stake/StakeV2.js
-#~ msgid "Claim {0} GMX"
-#~ msgstr "Claim {0} GMX"
-
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "Claim {totalUsd}"
 msgstr "Claim {totalUsd}"
@@ -931,17 +911,9 @@ msgstr "Claimable Price Impact Rebates.<0/><1/><2>Read more</2>."
 msgid "Claimable Rebates"
 msgstr "Claimable Rebates"
 
-#: src/pages/Stake/StakeV2.js
-#~ msgid "Claiming Affiliate Vault Rewards"
-#~ msgstr "Claiming Affiliate Vault Rewards"
-
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Claiming Price Impact Rebate..."
 msgstr "Claiming Price Impact Rebate..."
-
-#: src/pages/Stake/StakeV2.js
-#~ msgid "Claiming and Staking Affiliate Vault Rewards"
-#~ msgstr "Claiming and Staking Affiliate Vault Rewards"
 
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
@@ -4623,10 +4595,6 @@ msgstr "Staked Multiplier Points"
 msgid "Staked Tokens"
 msgstr "Staked Tokens"
 
-#: src/pages/Stake/StakeV2.js
-#~ msgid "Staking Affiliate Vault Rewards"
-#~ msgstr "Staking Affiliate Vault Rewards"
-
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.js
 msgid "Staking..."
@@ -6065,8 +6033,8 @@ msgid "You have multiple existing Increase {longOrShortText} {0} limit orders"
 msgstr "You have multiple existing Increase {longOrShortText} {0} limit orders"
 
 #: src/pages/Stake/StakeV2.js
-msgid "You have no GMX tokens to claim"
-msgstr "You have no GMX tokens to claim"
+msgid "You have no GMX tokens to claim."
+msgstr "You have no GMX tokens to claim."
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js

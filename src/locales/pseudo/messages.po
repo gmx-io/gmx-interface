@@ -91,7 +91,7 @@ msgid "<0>The price that orders can be executed at may differ slightly from the 
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
-msgid "<0>This will claim {0} GMX.<1/><2/>To stake the GMX tokens, please use the \"Stake\" button located in the GMX section on this page.<3/><4/></0>"
+msgid "<0>This will claim {0} GMX.<1/><2/>After claiming, you can stake these GMX tokens by using the \"Stake\" button in the GMX section of this Earn page.<3/><4/></0>"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
@@ -99,7 +99,7 @@ msgid "<0>This will withdraw all esGMX tokens as well as pause vesting.<1/><2/>e
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
-msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
+msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
@@ -348,22 +348,6 @@ msgstr ""
 #: src/pages/Stake/StakeV2.js
 msgid "Affiliate Vault"
 msgstr ""
-
-#: src/pages/Stake/StakeV2.js
-#~ msgid "Affiliate Vault Rewards Claim Failed"
-#~ msgstr ""
-
-#: src/pages/Stake/StakeV2.js
-#~ msgid "Affiliate Vault Rewards Claimed"
-#~ msgstr ""
-
-#: src/pages/Stake/StakeV2.js
-#~ msgid "Affiliate Vault Rewards Stake Failed"
-#~ msgstr ""
-
-#: src/pages/Stake/StakeV2.js
-#~ msgid "Affiliate Vault Rewards Staked"
-#~ msgstr ""
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Affiliates"
@@ -903,10 +887,6 @@ msgstr ""
 msgid "Claim submitted."
 msgstr ""
 
-#: src/pages/Stake/StakeV2.js
-#~ msgid "Claim {0} GMX"
-#~ msgstr ""
-
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "Claim {totalUsd}"
 msgstr ""
@@ -931,17 +911,9 @@ msgstr ""
 msgid "Claimable Rebates"
 msgstr ""
 
-#: src/pages/Stake/StakeV2.js
-#~ msgid "Claiming Affiliate Vault Rewards"
-#~ msgstr ""
-
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Claiming Price Impact Rebate..."
 msgstr ""
-
-#: src/pages/Stake/StakeV2.js
-#~ msgid "Claiming and Staking Affiliate Vault Rewards"
-#~ msgstr ""
 
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
@@ -4620,10 +4592,6 @@ msgstr ""
 msgid "Staked Tokens"
 msgstr ""
 
-#: src/pages/Stake/StakeV2.js
-#~ msgid "Staking Affiliate Vault Rewards"
-#~ msgstr ""
-
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.js
 msgid "Staking..."
@@ -6062,7 +6030,7 @@ msgid "You have multiple existing Increase {longOrShortText} {0} limit orders"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
-msgid "You have no GMX tokens to claim"
+msgid "You have no GMX tokens to claim."
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js

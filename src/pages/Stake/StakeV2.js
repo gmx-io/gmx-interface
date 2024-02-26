@@ -604,7 +604,7 @@ function VesterWithdrawModal(props) {
             This will withdraw and unreserve all tokens as well as pause vesting.
             <br />
             <br />
-            esGMX tokens that have been converted to GMX will remain as GMX tokens.
+            esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.
             <br />
             <br />
             To claim GMX tokens without withdrawing, use the "Claim" button under the Total Rewards section.
@@ -1056,7 +1056,8 @@ function AffiliateClaimModal(props) {
             This will claim {formatAmount(totalVesterRewards, 18, 4, true)} GMX.
             <br />
             <br />
-            To stake the GMX tokens, please use the "Stake" button located in the GMX section on this page.
+            After claiming, you can stake these GMX tokens by using the "Stake" button in the GMX section of this Earn
+            page.
             <br />
             <br />
           </div>
@@ -1522,7 +1523,7 @@ export default function StakeV2({ setPendingTxns }) {
 
   function showAffiliateVesterClaimModal() {
     if (!vestingData?.affiliateVesterClaimable?.gt(0)) {
-      helperToast.error(t`You have no GMX tokens to claim`);
+      helperToast.error(t`You have no GMX tokens to claim.`);
       return;
     }
     setIsAffiliateClaimModalVisible(true);

@@ -301,26 +301,31 @@ export default function BeginAccountTransfer(props) {
               <Trans>Sender has withdrawn all tokens from Affiliate Vesting Vault</Trans>
             </ValidationRow>
             {hasVestedAffiliate && (
-              <p className="soft-error">
-                <Trans>
-                  You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to
-                  transfer them to the new account
-                </Trans>
-              </p>
+              <>
+                <p className="soft-error">
+                  <Trans>
+                    You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to
+                    transfer them to the new account
+                  </Trans>
+                </p>
+                <Checkbox
+                  className="VestedAffiliate-checkbox"
+                  isChecked={isAffiliateVesterSkipValidation}
+                  setIsChecked={setIsAffiliateVesterSkipValidation}
+                >
+                  <span className="text-warning font-sm">
+                    <Trans>I do not want to transfer the Affiliate esGMX tokens</Trans>
+                  </span>
+                </Checkbox>
+              </>
             )}
+
             <ValidationRow isValid={!hasStakedGmx}>
               <Trans>Receiver has not staked GMX tokens before</Trans>
             </ValidationRow>
             <ValidationRow isValid={!hasStakedGlp}>
               <Trans>Receiver has not staked GLP tokens before</Trans>
             </ValidationRow>
-            {hasVestedAffiliate && (
-              <Checkbox isChecked={isAffiliateVesterSkipValidation} setIsChecked={setIsAffiliateVesterSkipValidation}>
-                <span className="text-warning font-sm">
-                  <Trans>I do not want to transfer the Affiliate esGMX tokens</Trans>
-                </span>
-              </Checkbox>
-            )}
           </div>
           <div className="input-row">
             <Button
