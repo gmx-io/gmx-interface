@@ -40,7 +40,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
     swrOpts.refreshInterval = params.refreshInterval || undefined;
   }
 
-  const { data } = useSWR<TResult | undefined>(swrFullKey, {
+  const { data, mutate } = useSWR<TResult | undefined>(swrFullKey, {
     ...swrOpts,
     fetcher: async () => {
       try {
@@ -76,6 +76,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
 
   return {
     data,
+    mutate,
     isLoading: Boolean(swrFullKey) && !data,
   };
 }

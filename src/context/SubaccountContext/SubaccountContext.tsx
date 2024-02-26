@@ -68,6 +68,7 @@ export type SubaccountContext = {
   setActiveTx: (tx: string | null) => void;
   setModalOpen: (v: boolean) => void;
   setNotificationState: (state: SubaccountNotificationState) => void;
+  refetchContractData: () => void;
 };
 
 const context = createContext<SubaccountContext | null>(null);
@@ -151,7 +152,11 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
   const [contractData, setContractData] = useState<SubaccountContext["contractData"] | null>(null);
   const isTxPending = useTransactionPending(activeTx);
 
-  const { data: fetchedContractData, isLoading } = useMulticall(chainId, "useSubaccountsFromContracts", {
+  const {
+    data: fetchedContractData,
+    isLoading,
+    mutate: refetchContractData,
+  } = useMulticall(chainId, "useSubaccountsFromContracts", {
     key:
       account && config?.address ? [account, config.address, activeTx, isTxPending ? "pending" : "not-pending"] : null,
     request: () => {
@@ -209,6 +214,7 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
           }
         : null,
       contractData: config && contractData ? contractData : null,
+      refetchContractData,
       generateSubaccount,
       clearSubaccount,
       notificationState,
@@ -221,6 +227,7 @@ export function SubaccountContextProvider({ children }: PropsWithChildren) {
     clearSubaccount,
     config,
     contractData,
+    refetchContractData,
     defaultExecutionFee,
     defaultNetworkFee,
     generateSubaccount,
@@ -370,19 +377,20 @@ export function useSubaccountCancelOrdersDetailsMessage(
   const defaultRequiredBalance = useSubaccountDefaultExecutionFee();
   const requiredBalance = overridedRequiredBalance ?? defaultRequiredBalance;
   const isLastAction = useIsLastSubaccountAction(actionCount);
-  const mainAccountInsufficientFunds = useMainAccountInsufficientFunds(requiredBalance);
   const subaccountInsufficientFunds = useSubaccountInsufficientFunds(requiredBalance);
   const [, setOpenSubaccountModal] = useSubaccountModalOpen();
-  const openSubaccountModal = useCallback(() => {
+  const refetchContractData = useSubaccountRefetchContractData();
+  const handleOpenSubaccountModal = useCallback(() => {
     setOpenSubaccountModal(true);
-  }, [setOpenSubaccountModal]);
+    refetchContractData();
+  }, [setOpenSubaccountModal, refetchContractData]);
 
   return useMemo(() => {
     if (isLastAction) {
       return (
         <Trans>
           Max Action Count Reached.{" "}
-          <span onClick={openSubaccountModal} className="link-underline">
+          <span onClick={handleOpenSubaccountModal} className="link-underline">
             Click here
           </span>{" "}
           to update.
@@ -392,26 +400,16 @@ export function useSubaccountCancelOrdersDetailsMessage(
       return (
         <Trans>
           There are insufficient funds in your Subaccount for One-Click Trading.{" "}
-          <span onClick={openSubaccountModal} className="link-underline">
+          <span onClick={handleOpenSubaccountModal} className="link-underline">
             Click here
           </span>{" "}
           to top-up.
         </Trans>
       );
-    } else if (mainAccountInsufficientFunds) {
-      return (
-        <Trans>
-          There are insufficient funds in your Main account for One-Click Trading auto top-ups.{" "}
-          <span onClick={openSubaccountModal} className="link-underline">
-            Click here
-          </span>{" "}
-          to convert.
-        </Trans>
-      );
     }
 
     return null;
-  }, [isLastAction, mainAccountInsufficientFunds, openSubaccountModal, subaccountInsufficientFunds]);
+  }, [isLastAction, handleOpenSubaccountModal, subaccountInsufficientFunds]);
 }
 
 export function useSubaccountNotificationState() {
@@ -419,4 +417,8 @@ export function useSubaccountNotificationState() {
     useSubaccountSelector((s) => s.notificationState),
     useSubaccountSelector((s) => s.setNotificationState),
   ] as const;
+}
+
+export function useSubaccountRefetchContractData() {
+  return useSubaccountSelector((s) => s.refetchContractData);
 }

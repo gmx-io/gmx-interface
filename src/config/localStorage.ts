@@ -38,6 +38,7 @@ export const REQUIRED_UI_VERSION_KEY = "required-ui-version";
 
 export const ONE_CLICK_TRADING_OFFER_HIDDEN = "one-click-trading-offer-hidden";
 export const ONE_CLICK_TRADING_NATIVE_TOKEN_WARN_HIDDEN = "one-click-trading-native-token-warn-hidden";
+export const ONE_CLICK_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN = "one-click-trading-wrap-or-unwrap-warn-hidden";
 
 export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 
