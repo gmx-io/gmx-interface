@@ -99,7 +99,7 @@ msgid "<0>This will withdraw all esGMX tokens as well as pause vesting.<1/><2/>e
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
-msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
+msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js

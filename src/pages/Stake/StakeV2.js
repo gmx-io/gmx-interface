@@ -604,7 +604,7 @@ function VesterWithdrawModal(props) {
             This will withdraw and unreserve all tokens as well as pause vesting.
             <br />
             <br />
-            esGMX tokens that have been converted to GMX will remain as GMX tokens.
+            esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.
             <br />
             <br />
             To claim GMX tokens without withdrawing, use the "Claim" button under the Total Rewards section.
