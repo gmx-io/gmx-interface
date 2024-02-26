@@ -646,7 +646,7 @@ export function PositionSeller(p: Props) {
   const renderKeepLeverageTooltipContent = useCallback(
     () => (
       <Trans>
-        Keep leverage is not available as Position exceeds Max. Allowed Leverage.{" "}
+        Keep leverage is not available as Position exceeds max. allowed leverage.{" "}
         <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
       </Trans>
     ),
