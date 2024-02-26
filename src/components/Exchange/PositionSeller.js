@@ -6,11 +6,21 @@ import { BsArrowRight } from "react-icons/bs";
 
 import PositionRouter from "abis/PositionRouter.json";
 import Button from "components/Button/Button";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import PercentageInput from "components/PercentageInput/PercentageInput";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenSelector from "components/TokenSelector/TokenSelector";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ARBITRUM, IS_NETWORK_DISABLED, getChainName, getConstant } from "config/chains";
 import { getContract } from "config/contracts";
+import {
+  BASIS_POINTS_DIVISOR,
+  DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
+  DEFAULT_SLIPPAGE_AMOUNT,
+  EXCESSIVE_SLIPPAGE_AMOUNT,
+  MAX_ALLOWED_LEVERAGE,
+  MAX_LEVERAGE,
+} from "config/factors";
 import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "config/localStorage";
 import { getPriceDecimals, getV1Tokens, getWrappedToken } from "config/tokens";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
@@ -35,8 +45,6 @@ import {
   getProfitPrice,
   isAddressZero,
 } from "lib/legacy";
-import { DEFAULT_HIGHER_SLIPPAGE_AMOUNT, DEFAULT_SLIPPAGE_AMOUNT, EXCESSIVE_SLIPPAGE_AMOUNT } from "config/factors";
-import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE, MAX_LEVERAGE } from "config/factors";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   bigNumberify,
@@ -58,8 +66,6 @@ import ExchangeInfoRow from "./ExchangeInfoRow";
 import FeesTooltip from "./FeesTooltip";
 import "./PositionSeller.css";
 import { ErrorCode, ErrorDisplayType } from "./constants";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -443,7 +449,7 @@ export default function PositionSeller(props) {
        a position has profit or loss and how much fees it has. The following logic counters the backend logic
        and determines the exact collateralDelta to be passed so that ultimately the nextCollateral value
        generated will keep leverage the same.
-       
+
        The backend logic can be found in reduceCollateral function at
        https://github.com/gmx-io/gmx-contracts/blob/master/contracts/core/Vault.sol#L992
       */
@@ -1137,6 +1143,7 @@ export default function PositionSeller(props) {
                 >
                   <PercentageInput
                     onChange={setAllowedSlippage}
+                    value={allowedSlippage}
                     defaultValue={savedSlippageAmount}
                     highValue={EXCESSIVE_SLIPPAGE_AMOUNT}
                     highValueWarningText={t`Slippage is too high`}

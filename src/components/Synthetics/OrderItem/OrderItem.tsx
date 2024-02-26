@@ -88,7 +88,8 @@ export function OrderItem(p: Props) {
     const swapRatioText = `${formatAmount(
       triggerRatio?.ratio,
       USD_DECIMALS,
-      triggerRatio?.smallestToken.isStable ? 2 : 4
+      triggerRatio?.smallestToken.isStable ? 2 : 4,
+      true
     )} ${triggerRatio?.smallestToken.symbol} / ${triggerRatio?.largestToken.symbol}`;
 
     const markSwapRatioText = getExchangeRateDisplay(markExchangeRate, fromTokenInfo, toTokenInfo);

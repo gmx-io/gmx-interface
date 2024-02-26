@@ -53,9 +53,15 @@ export const MAX_GAS_PRICE_MAP = {
 };
 
 export const HIGH_EXECUTION_FEES_MAP = {
-  [ARBITRUM]: 3, // 3 USD
-  [AVALANCHE]: 3, // 3 USD
-  [AVALANCHE_FUJI]: 3, // 3 USD
+  [ARBITRUM]: 5, // 5 USD
+  [AVALANCHE]: 5, // 5 USD
+  [AVALANCHE_FUJI]: 5, // 5 USD
+};
+
+export const EXCESSIVE_EXECUTION_FEES_MAP = {
+  [ARBITRUM]: 10, // 10 USD
+  [AVALANCHE]: 10, // 10 USD
+  [AVALANCHE_FUJI]: 10, // 10 USD
 };
 
 export const EXECUTION_FEE_MULTIPLIER_MAP = {
@@ -350,7 +356,11 @@ export function getExplorerUrl(chainId) {
 }
 
 export function getHighExecutionFee(chainId) {
-  return HIGH_EXECUTION_FEES_MAP[chainId] || 3;
+  return HIGH_EXECUTION_FEES_MAP[chainId] ?? 5;
+}
+
+export function getExcessiveExecutionFee(chainId) {
+  return EXCESSIVE_EXECUTION_FEES_MAP[chainId] ?? 10;
 }
 
 export function getExecutionFeeMultiplier(chainId) {

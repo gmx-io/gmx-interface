@@ -468,10 +468,6 @@ button.App-connect-wallet:hover {
   justify-content: flex-end;
 }
 
-.settings-modal-error {
-  padding-bottom: 0.7rem;
-}
-
 .section-title-content .section-title-content__title {
   font-size: var(--font-lg);
   line-height: 3.1rem;
@@ -929,41 +925,6 @@ button.App-button-option:disabled {
   display: inline-flex;
   justify-content: center;
   align-items: center;
-}
-
-.App-settings-row {
-  margin-bottom: 0.8rem;
-  font-size: var(--font-base);
-}
-
-.App-settings .App-cta {
-  margin-top: 1.5rem;
-}
-
-.App-settings {
-  .Modal-content {
-    width: 40rem;
-  }
-}
-
-.App-slippage-tolerance-input-container {
-  position: relative;
-}
-
-.App-slippage-tolerance-input {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  margin-top: 0.8rem;
-  margin-bottom: 0.8rem;
-  width: 100%;
-}
-
-.App-slippage-tolerance-input-percent {
-  position: absolute;
-  right: 1.1rem;
-  width: 3.1rem;
-  top: 2.325rem;
-  bottom: 0;
-  text-align: right;
 }
 
 .Network-icon {

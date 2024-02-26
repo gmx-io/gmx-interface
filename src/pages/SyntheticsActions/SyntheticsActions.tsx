@@ -13,12 +13,14 @@ import {
   useIsPositionsLoading,
   useSavedShowPnlAfterFees,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 
 export default function SyntheticsActions() {
   const savedShowPnlAfterFees = useSavedShowPnlAfterFees();
   const checkSummedAccount = useAccount();
   const isPositionsLoading = useIsPositionsLoading();
   const isOrdersLoading = useIsOrdersLoading();
+  const availableTokensOptions = useTradeboxAvailableTokensOptions();
 
   return (
     <div className="default-container page-layout">
@@ -69,6 +71,7 @@ export default function SyntheticsActions() {
             isLoading={isOrdersLoading}
             setPendingTxns={() => null}
             hideActions
+            availableTokensOptions={availableTokensOptions}
           />
         </div>
       )}

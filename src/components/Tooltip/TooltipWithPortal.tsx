@@ -1,4 +1,13 @@
-import React, { CSSProperties, MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  CSSProperties,
+  MouseEvent,
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import cx from "classnames";
 
 import "./Tooltip.scss";
@@ -8,8 +17,11 @@ import { TooltipPosition } from "./Tooltip";
 import { DEFAULT_TOOLTIP_POSITION, TOOLTIP_CLOSE_DELAY, TOOLTIP_OPEN_DELAY } from "config/ui";
 import { computePosition, flip, size } from "@floating-ui/dom";
 
-type Props = {
-  handle: React.ReactNode;
+type Props = PropsWithChildren<{
+  /**
+   * Takes precedence over `children`
+   */
+  handle?: React.ReactNode;
   renderContent: () => React.ReactNode;
   position?: TooltipPosition;
   trigger?: string;
@@ -24,7 +36,8 @@ type Props = {
   closeDelay?: number;
   shouldStopPropagation?: boolean;
   maxAllowedWidth?: number;
-};
+  disabled?: boolean;
+}>;
 
 type Coords = {
   height?: number;
@@ -49,6 +62,8 @@ export default function TooltipWithPortal({
   closeDelay = TOOLTIP_CLOSE_DELAY,
   shouldStopPropagation,
   maxAllowedWidth,
+  disabled,
+  children,
 }: Props) {
   const [visible, setVisible] = useState(false);
   const [coords, setCoords] = useState<Coords>({});
@@ -60,6 +75,7 @@ export default function TooltipWithPortal({
   const popupRef = useRef<HTMLDivElement>(null);
 
   const [computedPlacement, setComputedPlacement] = useState<TooltipPosition | undefined>(position);
+
   useEffect(() => {
     async function computeTooltipPlacement() {
       if (!handlerRef.current || !popupRef.current) return;
@@ -177,9 +193,13 @@ export default function TooltipWithPortal({
         ref={handlerRef}
       >
         {/* For onMouseLeave to work on disabled button https://github.com/react-component/tooltip/issues/18#issuecomment-411476678 */}
-        {isHandlerDisabled ? <div className="Tooltip-disabled-wrapper">{handle}</div> : <>{handle}</>}
+        {isHandlerDisabled ? (
+          <div className="Tooltip-disabled-wrapper">{handle || children}</div>
+        ) : (
+          <>{handle || children}</>
+        )}
       </span>
-      {visible && coords.left && (
+      {visible && coords.left && !disabled && (
         <Portal>
           <div style={portalStyle} className={portalClassName}>
             <div ref={popupRef} className={cx(["Tooltip-popup z-index-1001", computedPlacement])} style={popupStyle}>

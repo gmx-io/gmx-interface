@@ -602,12 +602,12 @@ table.Position-list .Exchange-list-item-active {
 }
 
 .Exchange-info-row {
-  display: grid;
-  grid-template-columns: auto auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+
   font-size: var(--font-sm);
   margin-bottom: 0.465rem;
-  align-items: baseline;
-  justify-content: space-between;
 }
 
 .Exchange-info-row .Exchange-info-value {
