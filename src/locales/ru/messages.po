@@ -4405,8 +4405,13 @@ msgid "Search Pool"
 msgstr ""
 
 #: src/components/SearchInput/SearchInput.tsx
+#: src/components/Synthetics/TradeHistory/filters/MarketFilter.tsx
 msgid "Search Token"
 msgstr "Искать Токен"
+
+#: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
+msgid "Search action"
+msgstr "Искать действие"
 
 #: src/components/NetworkDropdown/LanguagePopupHome.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx

@@ -4408,8 +4408,13 @@ msgid "Search Pool"
 msgstr "Search Pool"
 
 #: src/components/SearchInput/SearchInput.tsx
+#: src/components/Synthetics/TradeHistory/filters/MarketFilter.tsx
 msgid "Search Token"
 msgstr "Search Token"
+
+#: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
+msgid "Search action"
+msgstr "Search action"
 
 #: src/components/NetworkDropdown/LanguagePopupHome.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
