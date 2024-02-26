@@ -368,6 +368,11 @@ msgstr "申领后，esGMX代币将在7天内空投到您所选网络的账户中
 msgid "Agree"
 msgstr "同意"
 
+#: src/components/Synthetics/TradeHistory/DateRangeSelect/DateRangeSelect.tsx
+#: src/components/Synthetics/TradeHistory/DateRangeSelect/DateRangeSelect.tsx
+msgid "All time"
+msgstr "所有时间"
+
 #: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 msgid "Allow {0} to be spent"
 msgstr ""
@@ -2645,6 +2650,10 @@ msgstr ""
 msgid "Language"
 msgstr "语言"
 
+#: src/components/Synthetics/TradeHistory/DateRangeSelect/DateRangeSelect.tsx
+msgid "Last month"
+msgstr "上个月"
+
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/ModalViews/RedirectModal.js
@@ -3054,6 +3063,10 @@ msgstr "市场增加"
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
 msgid "Market Orders"
 msgstr "市场订单"
+
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+msgid "Market Price"
+msgstr "市场价格"
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "Market Swap"
@@ -3599,12 +3612,9 @@ msgstr "订单"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Order Acceptable Price"
 msgstr "订单可接受价格"
-
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
-msgid "Order Acceptable Price: {greaterSign}{triggerPrice}"
-msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -3619,8 +3629,8 @@ msgid "Order Execution Price"
 msgstr "订单执行价格"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
-msgid "Order Trigger Price: {greaterSign}{triggerPrice}"
-msgstr ""
+msgid "Order Trigger Price"
+msgstr "订单触发价格"
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Order Type"
@@ -3946,7 +3956,6 @@ msgstr "上一页"
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -4278,10 +4287,6 @@ msgstr "推荐人"
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Deposit"
 msgstr "要求押金"
-
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Request Liquidation"
-msgstr "要求清算"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Decrease"
@@ -5464,6 +5469,10 @@ msgstr "交易"
 #: src/pages/Home/Home.js
 msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
 msgstr ""
+
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+msgid "Trade History"
+msgstr "交易历史"
 
 #: src/components/Exchange/ExchangeBanner.js
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."

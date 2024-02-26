@@ -368,6 +368,11 @@ msgstr "Tras reclamar, los tokens esGMX serán enviados a su cuenta en la red se
 msgid "Agree"
 msgstr "Aceptar"
 
+#: src/components/Synthetics/TradeHistory/DateRangeSelect/DateRangeSelect.tsx
+#: src/components/Synthetics/TradeHistory/DateRangeSelect/DateRangeSelect.tsx
+msgid "All time"
+msgstr "Todo el tiempo"
+
 #: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 msgid "Allow {0} to be spent"
 msgstr ""
@@ -2645,6 +2650,10 @@ msgstr ""
 msgid "Language"
 msgstr "Idioma"
 
+#: src/components/Synthetics/TradeHistory/DateRangeSelect/DateRangeSelect.tsx
+msgid "Last month"
+msgstr "El mes pasado"
+
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/ModalViews/RedirectModal.js
@@ -3054,6 +3063,10 @@ msgstr "Aumento del mercado"
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
 msgid "Market Orders"
 msgstr "Órdenes de Mercado"
+
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+msgid "Market Price"
+msgstr "Precio de Mercado"
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "Market Swap"
@@ -3599,12 +3612,9 @@ msgstr "Orden"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Order Acceptable Price"
 msgstr "Precio Aceptable de la Orden"
-
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
-msgid "Order Acceptable Price: {greaterSign}{triggerPrice}"
-msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -3619,8 +3629,8 @@ msgid "Order Execution Price"
 msgstr "Precio de ejecución de la orden"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
-msgid "Order Trigger Price: {greaterSign}{triggerPrice}"
-msgstr ""
+msgid "Order Trigger Price"
+msgstr "Precio de activación de la orden"
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Order Type"
@@ -3946,7 +3956,6 @@ msgstr "Prev"
 #: src/components/Synthetics/SwapCard/SwapCard.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -4278,10 +4287,6 @@ msgstr "Referidos"
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Deposit"
 msgstr "Solicitar Depósito"
-
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Request Liquidation"
-msgstr "Solicitar Liquidación"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Decrease"
@@ -5464,6 +5469,10 @@ msgstr "Comercio"
 #: src/pages/Home/Home.js
 msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
 msgstr ""
+
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+msgid "Trade History"
+msgstr "Historial de Operaciones"
 
 #: src/components/Exchange/ExchangeBanner.js
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."

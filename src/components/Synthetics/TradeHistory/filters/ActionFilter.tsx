@@ -178,6 +178,7 @@ export function ActionFilter({ value, onChange }: Props) {
   const { refs, floatingStyles } = useFloating({
     middleware: [offset(10), flip(), shift()],
     strategy: "fixed",
+    placement: "bottom-end",
   });
 
   const isActive = value.length > 0;

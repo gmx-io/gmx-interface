@@ -111,7 +111,16 @@ export function useTradeHistory(
     }[];
   }
 ) {
-  const { pageSize, account, forAllAccounts, fromTxTimestamp, toTxTimestamp, marketAddresses } = p;
+  const {
+    pageSize,
+    account,
+    forAllAccounts,
+    fromTxTimestamp,
+    toTxTimestamp,
+    marketAddresses,
+    orderEventCombinations,
+    tokenAddresses,
+  } = p;
   const marketsInfoData = useMarketsInfoData();
   const tokensData = useTokensData();
 
@@ -119,7 +128,19 @@ export function useTradeHistory(
 
   const getKey = (index: number) => {
     if (chainId && client && (account || forAllAccounts)) {
-      return [chainId, "useTradeHistory", account, forAllAccounts, index, pageSize, fromTxTimestamp, toTxTimestamp];
+      return [
+        chainId,
+        "useTradeHistory",
+        account,
+        forAllAccounts,
+        index,
+        pageSize,
+        fromTxTimestamp,
+        toTxTimestamp,
+        JSON.stringify(orderEventCombinations),
+        JSON.stringify(marketAddresses),
+        JSON.stringify(tokenAddresses),
+      ];
     }
     return null;
   };
@@ -148,23 +169,26 @@ export function useTradeHistory(
             or: [
               { marketAddress_in: marketAddresses?.length ? marketAddresses.map((s) => s.toLowerCase()) : undefined },
               {
-                initialCollateralTokenAddress_in: p.tokenAddresses?.length
-                  ? p.tokenAddresses.map((s) => s.toLowerCase())
+                initialCollateralTokenAddress_in: tokenAddresses?.length
+                  ? tokenAddresses.map((s) => s.toLowerCase())
                   : undefined,
               },
-              ...(p.marketAddresses?.length
-                ? p.marketAddresses.map((s) => ({ swapPath_contains: [s.toLowerCase()] }))
+              ...(marketAddresses?.length
+                ? marketAddresses.map((s) => ({ swapPath_contains: [s.toLowerCase()] }))
                 : []),
             ],
           },
           {
-            or: p.orderEventCombinations?.map((combination) => {
-              return {
-                eventName: combination.eventName,
-                orderType: combination.orderType,
-                sizeDeltaUsd: combination.isDepositOrWithdraw ? 0 : undefined,
-              };
-            }),
+            or: orderEventCombinations?.map((combination) => ({
+              eventName: combination.eventName,
+              orderType: combination.orderType,
+              sizeDeltaUsd: combination.isDepositOrWithdraw ? 0 : undefined,
+            })),
+          },
+          {
+            // We do not show create liquidation orders in the trade history, thus we filter it out
+            // ... && not (liquidation && orderCreated) === ... && (not liquidation || not orderCreated)
+            or: [{ orderType_not: OrderType.Liquidation }, { eventName_not: TradeActionType.OrderCreated }],
           },
         ],
       });

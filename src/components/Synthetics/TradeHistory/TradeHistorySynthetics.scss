@@ -46,10 +46,16 @@
 
     display: flex;
     justify-content: space-between;
+    align-items: center;
 
     .button {
       padding: 6px 10px !important;
     }
+  }
+
+  &-controls-right {
+    display: flex;
+    gap: 0.5em;
   }
 
   &-filters {

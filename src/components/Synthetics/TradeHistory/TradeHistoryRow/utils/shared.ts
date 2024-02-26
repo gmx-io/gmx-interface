@@ -1,9 +1,10 @@
 import { i18n } from "@lingui/core";
 import { t } from "@lingui/macro";
-import formatRelative from "date-fns/formatRelative";
-import format from "date-fns/format";
-import { BigNumber } from "ethers";
 import type { Locale as DateLocale } from "date-fns";
+import format from "date-fns/format";
+import formatRelative from "date-fns/formatRelative";
+import { BigNumber } from "ethers";
+
 import dateDe from "date-fns/locale/de";
 import dateEn from "date-fns/locale/en-US";
 import dateEs from "date-fns/locale/es";
@@ -79,6 +80,7 @@ export type RowDetails = {
   price: string;
   priceComment: TooltipContent;
   //#region CSV fields
+  marketPrice?: string;
   executionPrice?: string;
   acceptablePrice?: string;
   priceImpact?: string;
@@ -116,7 +118,7 @@ export function formatTradeActionTimestamp(timestamp: number, relativeTimestamp 
   const locale: DateLocale = dateLocaleMap[localeStr] || dateEn;
 
   if (!relativeTimestamp) {
-    return format(new Date(timestamp * 1000), "dd MMM yyyy, HH:mm", {
+    return format(new Date(timestamp * 1000), "yyyy-MM-dd HH:mm:ss", {
       locale,
     });
   }
@@ -125,3 +127,5 @@ export function formatTradeActionTimestamp(timestamp: number, relativeTimestamp 
     locale: locale,
   });
 }
+
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;

@@ -8,7 +8,7 @@ import { getExchangeRateDisplay } from "lib/legacy";
 import { formatTokenAmount } from "lib/numbers";
 
 import { getActionTitle } from "../../keys";
-import { RowDetails, TooltipContent, formatTradeActionTimestamp, lines } from "./shared";
+import { MakeOptional, RowDetails, formatTradeActionTimestamp, lines } from "./shared";
 
 export const formatSwapMessage = (
   tradeAction: SwapTradeAction,
@@ -82,52 +82,53 @@ export const formatSwapMessage = (
 
   let actionText = getActionTitle(tradeAction.orderType, tradeAction.eventName);
 
-  let priceComment: TooltipContent = lines();
-  if (tradeAction.orderType === OrderType.LimitSwap) {
-    if (
-      tradeAction.eventName === TradeActionType.OrderCreated ||
-      tradeAction.eventName === TradeActionType.OrderUpdated
-    ) {
-      const formattedMinReceive = formatTokenAmount(
-        tradeAction.minOutputAmount!,
-        tokenOut?.decimals,
-        tokenOut?.symbol,
-        {
-          useCommas: true,
-        }
-      );
+  let result: MakeOptional<RowDetails, "action" | "market" | "timestamp" | "price" | "size">;
 
-      priceComment = lines(
+  const ot = tradeAction.orderType;
+  const ev = tradeAction.eventName;
+
+  if (
+    (ot === OrderType.LimitSwap && ev === TradeActionType.OrderCreated) ||
+    (ot === OrderType.LimitSwap && ev === TradeActionType.OrderUpdated)
+  ) {
+    const formattedMinReceive = formatTokenAmount(tradeAction.minOutputAmount!, tokenOut?.decimals, tokenOut?.symbol, {
+      useCommas: true,
+    });
+
+    result = {
+      priceComment: lines(
         t`Ratio price for the order at the time of creation.`,
         "",
         t`It may differ at the time of execution based on swap fees and price impact to guarantee that you will receive at least ${formattedMinReceive} if this order is executed.`
-      );
-    } else if (
-      tradeAction.eventName === TradeActionType.OrderFrozen ||
-      tradeAction.eventName === TradeActionType.OrderExecuted
-    ) {
-      priceComment = lines(
-        t`Execution price for the order.`,
-        "",
-        t`Order Trigger Price: ${greaterSign}${triggerPrice}`
-      );
-    }
-  } else {
-    if (
-      tradeAction.eventName === TradeActionType.OrderCreated ||
-      tradeAction.eventName === TradeActionType.OrderUpdated
-    ) {
-      priceComment = lines(t`Acceptable price for the order.`);
-    } else if (
-      tradeAction.eventName === TradeActionType.OrderFrozen ||
-      tradeAction.eventName === TradeActionType.OrderExecuted
-    ) {
-      priceComment = lines(
-        t`Execution price for the order.`,
-        "",
-        t`Order Acceptable Price: ${greaterSign}${triggerPrice}`
-      );
-    }
+      ),
+    };
+  } else if (
+    (ot === OrderType.LimitSwap && ev === TradeActionType.OrderFrozen) ||
+    (ot === OrderType.LimitSwap && ev === TradeActionType.OrderExecuted)
+  ) {
+    result = {
+      priceComment: lines(t`Execution price for the order.`, "", [
+        t`Order Trigger Price`,
+        `: ${greaterSign}${triggerPrice}`,
+      ]),
+    };
+  } else if (
+    (ot === OrderType.MarketSwap && ev === TradeActionType.OrderCreated) ||
+    (ot === OrderType.MarketSwap && ev === TradeActionType.OrderUpdated)
+  ) {
+    result = {
+      priceComment: lines(t`Acceptable price for the order.`),
+    };
+  } else if (
+    (ot === OrderType.MarketSwap && ev === TradeActionType.OrderFrozen) ||
+    (ot === OrderType.MarketSwap && ev === TradeActionType.OrderExecuted)
+  ) {
+    result = {
+      priceComment: lines(t`Execution price for the order.`, "", [
+        t`Order Acceptable Price`,
+        `: ${greaterSign}${triggerPrice}`,
+      ]),
+    };
   }
 
   return {
@@ -135,7 +136,8 @@ export const formatSwapMessage = (
     market: market,
     size: size,
     price: ratioText,
-    priceComment: priceComment,
     timestamp: formatTradeActionTimestamp(tradeAction.transaction.timestamp, relativeTimestamp),
+    triggerPrice: triggerPrice,
+    ...result!,
   };
 };

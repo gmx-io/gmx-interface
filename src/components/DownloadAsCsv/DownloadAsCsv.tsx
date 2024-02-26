@@ -16,14 +16,15 @@ function filterFields<T>(data: T, excludedFields: (keyof T)[]): Partial<T> {
 }
 
 function convertToCSV<T>(data: Partial<T>[], separator = ",", customHeader?: Partial<Record<keyof T, string>>): string {
-  const header = Object.keys(data[0])
-    .map((key) => customHeader?.[key as keyof T] || key)
-    .join(separator);
+  const keys = customHeader ? Object.keys(customHeader) : Object.keys(data[0]);
+
+  const header = keys.map((key) => customHeader?.[key as keyof T] || key).join(separator);
 
   const values = data
     .map((object) =>
-      Object.values(object)
-        .map((cell) => String(cell))
+      keys
+        .map((key) => object[key as keyof T])
+        .map((cell) => (cell === undefined ? "" : String(cell)))
         .map((cell) => (cell.includes(separator) ? `"${cell}"` : cell))
         .join(separator)
     )
