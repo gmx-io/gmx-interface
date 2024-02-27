@@ -129,7 +129,10 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
         })}
       >
         <td>
-          <ExternalLink className="plain" href={`${getExplorerUrl(chainId)}tx/${tradeAction.transaction.hash}`}>
+          <ExternalLink
+            className="TradeHistoryRow-action plain"
+            href={`${getExplorerUrl(chainId)}tx/${tradeAction.transaction.hash}`}
+          >
             {msg.action}
           </ExternalLink>
           <br />
