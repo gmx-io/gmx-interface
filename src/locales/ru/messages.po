@@ -1413,6 +1413,10 @@ msgstr ""
 msgid "Decrease the size to match the max. allowed leverage:"
 msgstr ""
 
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+msgid "Decrease the withdraw size to match the max. <0>Read more</0>.<1/><2/><3>Set max withdrawal</3>"
+msgstr ""
+
 #: src/components/Synthetics/ConfirmationBox/SLTPEntries.tsx
 msgid "Decrease {0} Long by {1} at ${2}."
 msgstr ""
@@ -3097,6 +3101,7 @@ msgstr ""
 msgid "Max. Avalanche APR: {0}"
 msgstr ""
 
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max. Leverage exceeded"
 msgstr ""

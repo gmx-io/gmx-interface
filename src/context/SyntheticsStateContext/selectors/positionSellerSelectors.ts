@@ -125,10 +125,6 @@ export const selectPositionSellerLeverageDisabledByCollateral = createEnhancedSe
 
   if (!position) return false;
 
-  // const keepLeverageRaw = q(selectPositionSellerKeepLeverageRaw);
-
-  // if (!keepLeverageRaw) return false;
-
   const minCollateralFactor = q(makeSelectMinCollateralFactorForPosition(position.key));
 
   if (!minCollateralFactor) return false;
