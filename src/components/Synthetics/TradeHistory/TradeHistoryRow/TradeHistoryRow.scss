@@ -1,7 +1,9 @@
 .TradeHistoryRow {
-  &.debug {
-    border-bottom: none;
-  }
+  border-bottom: none !important;
+}
+
+.TradeHistoryRow-action {
+  color: white !important;
 }
 
 .TradeHistoryRow-time {

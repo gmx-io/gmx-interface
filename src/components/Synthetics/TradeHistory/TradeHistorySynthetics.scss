@@ -10,10 +10,18 @@
     margin-right: -10px;
   }
 
+  &-header tr {
+    cursor: default !important;
+    border-bottom: none !important;
+  }
+
+  &-header tr:hover {
+    background: unset !important;
+    box-shadow: none !important;
+  }
+
   &-header th {
     text-transform: uppercase;
-
-    cursor: default;
   }
 
   &-filter {
