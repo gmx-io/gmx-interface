@@ -8,8 +8,8 @@
     z-index: 1000;
 
     border-radius: var(--border-radius-sm);
-    background-color: rgb(49, 54, 85);
-    box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.25);
+    background-color: var(--dark-blue-bg);
+    border: 1px solid #32344c;
   }
 
   &-common-items {
@@ -22,7 +22,7 @@
 
   &-calendarWrapper {
     color: white;
-    background-color: rgb(49, 54, 85);
+    background-color: inherit;
   }
 
   &-monthAndYearPickers select {
@@ -82,7 +82,8 @@
   &-dayStartOfWeek &-dayStartPreview,
   &-dayStartOfWeek &-dayInPreview,
   &-dayStartOfWeek &-inRange,
-  &-dayStartOfMonth &-inRange {
+  &-dayStartOfMonth &-inRange,
+  &-dayStartOfMonth &-dayInPreview {
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
   }
@@ -91,7 +92,8 @@
   &-dayEndOfWeek &-dayEndPreview,
   &-dayEndOfWeek &-dayInPreview,
   &-dayEndOfWeek &-inRange,
-  &-dayEndOfMonth &-inRange {
+  &-dayEndOfMonth &-inRange,
+  &-dayEndOfMonth &-dayInPreview {
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
   }
