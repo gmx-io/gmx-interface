@@ -778,14 +778,6 @@ msgid "Cancel Limit Swap"
 msgstr "指値スワップのキャンセル"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Cancel Market Decrease"
-msgstr "市場減少のキャンセル"
-
-#: src/components/Synthetics/TradeHistory/keys.ts
-msgid "Cancel Market Increase"
-msgstr "市場増加のキャンセル"
-
-#: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Cancel Stop-Loss Order"
 msgstr "ストップロス注文のキャンセル"
 

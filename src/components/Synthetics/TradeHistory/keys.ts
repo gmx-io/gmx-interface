@@ -20,8 +20,7 @@ export const actionTextMapBase: Partial<Record<`${OrderTypes | "Deposit" | "With
 
   "MarketIncrease-OrderCreated": /*i18n*/ "Request Market Increase",
   "MarketIncrease-OrderExecuted": /*i18n*/ "Market Increase",
-  "MarketIncrease-OrderCancelled": /*i18n*/ "Cancel Market Increase",
-  "MarketIncrease-OrderFrozen": /*i18n*/ "Failed Market Increase",
+  "MarketIncrease-OrderCancelled": /*i18n*/ "Failed Market Increase",
 
   "LimitIncrease-OrderCreated": /*i18n*/ "Create Limit Order",
   "LimitIncrease-OrderExecuted": /*i18n*/ "Execute Limit Order",
@@ -31,8 +30,7 @@ export const actionTextMapBase: Partial<Record<`${OrderTypes | "Deposit" | "With
 
   "MarketDecrease-OrderCreated": /*i18n*/ "Request Market Decrease",
   "MarketDecrease-OrderExecuted": /*i18n*/ "Market Decrease",
-  "MarketDecrease-OrderCancelled": /*i18n*/ "Cancel Market Decrease",
-  "MarketDecrease-OrderFrozen": /*i18n*/ "Failed Market Decrease",
+  "MarketDecrease-OrderCancelled": /*i18n*/ "Failed Market Decrease",
 
   "LimitDecrease-OrderCreated": /*i18n*/ "Create Take-Profit Order",
   "LimitDecrease-OrderExecuted": /*i18n*/ "Execute Take-Profit Order",
