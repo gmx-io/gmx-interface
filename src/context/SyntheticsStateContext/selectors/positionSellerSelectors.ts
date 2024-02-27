@@ -10,7 +10,7 @@ import {
   makeSelectMinCollateralFactorForPosition,
   makeSelectNextPositionValuesForDecrease,
 } from "./tradeSelectors";
-import { willPositionCollateralBeSufficient } from "domain/synthetics/positions";
+import { willPositionCollateralBeSufficientForPosition } from "domain/synthetics/positions";
 
 export const selectPositionSeller = (state: SyntheticsTradeState) => state.positionSeller;
 
@@ -135,7 +135,7 @@ export const selectPositionSellerLeverageDisabledByCollateral = createEnhancedSe
 
   if (decreaseAmountsWithKeepLeverage.sizeDeltaUsd.gte(position.sizeInUsd)) return false;
 
-  return !willPositionCollateralBeSufficient(
+  return !willPositionCollateralBeSufficientForPosition(
     position,
     decreaseAmountsWithKeepLeverage.collateralDeltaAmount,
     decreaseAmountsWithKeepLeverage.realizedPnl,

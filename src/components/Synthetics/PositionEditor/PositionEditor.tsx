@@ -38,7 +38,7 @@ import {
   formatLiquidationPrice,
   getLeverage,
   getLiquidationPrice,
-  willPositionCollateralBeSufficient,
+  willPositionCollateralBeSufficientForPosition,
 } from "domain/synthetics/positions";
 import { adaptToV1InfoTokens, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { TradeFees, getMarkPrice, getMinCollateralUsdForLeverage } from "domain/synthetics/trade";
@@ -352,7 +352,12 @@ export function PositionEditor(p: Props) {
       maxWithdrawAmount,
       expandDecimals(1, Math.ceil(collateralToken.decimals / 3)),
       (x) => {
-        const isValid = willPositionCollateralBeSufficient(position, x, BigNumber.from(0), minCollateralFactor);
+        const isValid = willPositionCollateralBeSufficientForPosition(
+          position,
+          x,
+          BigNumber.from(0),
+          minCollateralFactor
+        );
         return { isValid, returnValue: null };
       }
     );

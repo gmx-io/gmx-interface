@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 import { IS_NETWORK_DISABLED, getChainName } from "config/chains";
 import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
 import { MarketInfo, getMintableMarketTokens, getOpenInterestUsd } from "domain/synthetics/markets";
-import { PositionInfo, willPositionCollateralBeSufficient } from "domain/synthetics/positions";
+import { PositionInfo, willPositionCollateralBeSufficientForPosition } from "domain/synthetics/positions";
 import { TokenData, TokensRatio } from "domain/synthetics/tokens";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber, ethers } from "ethers";
@@ -462,7 +462,7 @@ export function getEditCollateralError(p: {
   }
 
   if (!isFullClose && position && minCollateralFactor) {
-    const isPositionCollateralSufficient = willPositionCollateralBeSufficient(
+    const isPositionCollateralSufficient = willPositionCollateralBeSufficientForPosition(
       position,
       collateralDeltaAmount,
       BigNumber.from(0),

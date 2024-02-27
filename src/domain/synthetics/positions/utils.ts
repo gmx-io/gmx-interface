@@ -334,16 +334,18 @@ export function getTriggerNameByOrderType(orderType: OrderType | undefined, abbr
 }
 
 export function willPositionCollateralBeSufficient(
-  position: PositionInfo,
+  collateralTokenMinPrice: BigNumber,
+  collateralAmount: BigNumber,
   collateralDeltaAmount: BigNumber,
+  collateralTokenDecimals: number,
   realizedPnlUsd: BigNumber,
-  minCollateralFactor: BigNumber
+  minCollateralFactor: BigNumber,
+  sizeInUsd: BigNumber
 ) {
-  const collateralTokenPrice = position.collateralToken.prices.minPrice;
-  let remainingCollateralUsd = position.collateralAmount
+  let remainingCollateralUsd = collateralAmount
     .sub(collateralDeltaAmount)
-    .mul(collateralTokenPrice)
-    .div(expandDecimals(1, position.collateralToken.decimals));
+    .mul(collateralTokenMinPrice)
+    .div(expandDecimals(1, collateralTokenDecimals));
 
   if (realizedPnlUsd.lt(0)) {
     remainingCollateralUsd = remainingCollateralUsd.add(realizedPnlUsd);
@@ -353,7 +355,24 @@ export function willPositionCollateralBeSufficient(
     return false;
   }
 
-  const minCollateralUsdForLeverage = applyFactor(position.sizeInUsd, minCollateralFactor);
+  const minCollateralUsdForLeverage = applyFactor(sizeInUsd, minCollateralFactor);
 
   return remainingCollateralUsd.gte(minCollateralUsdForLeverage);
+}
+
+export function willPositionCollateralBeSufficientForPosition(
+  position: PositionInfo,
+  collateralDeltaAmount: BigNumber,
+  realizedPnlUsd: BigNumber,
+  minCollateralFactor: BigNumber
+) {
+  return willPositionCollateralBeSufficient(
+    position.collateralToken.prices.minPrice,
+    position.collateralAmount,
+    collateralDeltaAmount,
+    position.collateralToken.decimals,
+    realizedPnlUsd,
+    minCollateralFactor,
+    position.sizeInUsd
+  );
 }
