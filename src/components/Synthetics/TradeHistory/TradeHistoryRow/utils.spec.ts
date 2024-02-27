@@ -95,11 +95,10 @@ describe("TradeHistoryRow helpers", () => {
         "priceComment": Array [
           "Trigger price for the order.",
           "",
-          Array [
-            "Order Acceptable Price",
-            ": > ",
-            "$29,700.00",
-          ],
+          Object {
+            "key": "Order Acceptable Price",
+            "value": ">  $29,700.00",
+          },
         ],
         "priceImpact": undefined,
         "size": "-$266.23",
@@ -120,11 +119,10 @@ describe("TradeHistoryRow helpers", () => {
         "priceComment": Array [
           "Trigger price for the order.",
           "",
-          Array [
-            "Order Acceptable Price",
-            ": < ",
-            "$1,645.69",
-          ],
+          Object {
+            "key": "Order Acceptable Price",
+            "value": "<  $1,645.69",
+          },
         ],
         "priceImpact": undefined,
         "size": "+$4.11",
@@ -145,11 +143,10 @@ describe("TradeHistoryRow helpers", () => {
         "priceComment": Array [
           "Trigger price for the order.",
           "",
-          Array [
-            "Order Acceptable Price",
-            ": < ",
-            "$1.01",
-          ],
+          Object {
+            "key": "Order Acceptable Price",
+            "value": "<  $1.01",
+          },
         ],
         "priceImpact": undefined,
         "size": "+$2.64",
@@ -170,24 +167,21 @@ describe("TradeHistoryRow helpers", () => {
         "priceComment": Array [
           "Mark price for the order.",
           "",
-          Array [
-            "Order Acceptable Price",
-            ": < ",
-            "$0.82",
-          ],
-          Array [
-            "Order Execution Price",
-            ": ",
-            "$0.83",
-          ],
-          Array [
-            "Price Impact",
-            ": ",
-            Object {
+          Object {
+            "key": "Order Acceptable Price",
+            "value": "<  $0.82",
+          },
+          Object {
+            "key": "Order Execution Price",
+            "value": "$0.83",
+          },
+          Object {
+            "key": "Price Impact",
+            "value": Object {
               "state": "error",
               "text": "-$16.82",
             },
-          ],
+          },
           "",
           "Order execution price takes into account price impact.",
         ],
@@ -209,11 +203,10 @@ describe("TradeHistoryRow helpers", () => {
         "priceComment": Array [
           "Mark price for the order.",
           "",
-          Array [
-            "Order Acceptable Price",
-            ": < ",
-            "$26,937.90",
-          ],
+          Object {
+            "key": "Order Acceptable Price",
+            "value": "<  $26,937.90",
+          },
           undefined,
         ],
         "priceImpact": "-$9,488.98",
@@ -249,78 +242,68 @@ describe("TradeHistoryRow helpers", () => {
           "",
           "This position was liquidated as the max. leverage of 100.0x was exceeded when taking into account fees.",
           "",
-          Array [
-            "Order Execution Price",
-            ": ",
-            "$6.10",
-          ],
+          Object {
+            "key": "Order Execution Price",
+            "value": "$6.10",
+          },
           "Order execution price takes into account price impact.",
           "",
-          Array [
-            "Initial Collateral",
-            ": ",
-            "214.7790 USDC ($214.77)",
-          ],
-          Array [
-            "PnL",
-            ": ",
-            Object {
+          Object {
+            "key": "Initial Collateral",
+            "value": "214.7790 USDC ($214.77)",
+          },
+          Object {
+            "key": "PnL",
+            "value": Object {
               "state": "error",
               "text": "-$126.31",
             },
-          ],
-          Array [
-            "Borrow Fee",
-            ": ",
-            Object {
+          },
+          Object {
+            "key": "Borrow Fee",
+            "value": Object {
               "state": "error",
               "text": "$0.00",
             },
-          ],
-          Array [
-            "Funding Fee",
-            ": ",
-            Object {
+          },
+          Object {
+            "key": "Funding Fee",
+            "value": Object {
               "state": "error",
               "text": "$0.00",
             },
-          ],
-          Array [
-            "Position Fee",
-            ": ",
-            Object {
+          },
+          Object {
+            "key": "Position Fee",
+            "value": Object {
               "state": "error",
               "text": "-$4.50",
             },
-          ],
-          Array [
-            "Price Impact",
-            ": ",
-            Object {
+          },
+          Object {
+            "key": "Price Impact",
+            "value": Object {
               "state": "error",
               "text": "-$16.82",
             },
-          ],
+          },
           "",
-          Array [
-            "PnL after Fees and Price Impact",
-            ": ",
-            Object {
+          Object {
+            "key": "PnL after Fees and Price Impact",
+            "value": Object {
               "state": "error",
               "text": "-$126.31",
             },
-          ],
+          },
           "",
-          Array [
-            "Leftover Collateral",
-            ": ",
-            "< $0.01",
-          ],
-          Array [
-            "Min. required Collateral",
-            ": ",
-            "< $0.01",
-          ],
+          Object {
+            "key": "Leftover Collateral",
+            "value": "< $0.01",
+          },
+          Object {
+            "key": "Min. required Collateral",
+            "value": "< $0.01",
+          },
         ],
         "priceImpact": "-$16.82",
         "size": "-$6,441.90",
@@ -340,24 +323,21 @@ describe("TradeHistoryRow helpers", () => {
         "priceComment": Array [
           "Mark price for the order.",
           "",
-          Array [
-            "Order Acceptable Price",
-            ": < ",
-            "$1,589.47",
-          ],
-          Array [
-            "Order Execution Price",
-            ": ",
-            "$1,584.74",
-          ],
-          Array [
-            "Price Impact",
-            ": ",
-            Object {
+          Object {
+            "key": "Order Acceptable Price",
+            "value": "<  $1,589.47",
+          },
+          Object {
+            "key": "Order Execution Price",
+            "value": "$1,584.74",
+          },
+          Object {
+            "key": "Price Impact",
+            "value": Object {
               "state": "error",
               "text": "-$0.08",
             },
-          ],
+          },
           "",
           "Order execution price takes into account price impact.",
         ],
@@ -372,70 +352,78 @@ describe("TradeHistoryRow helpers", () => {
     // MARKET SWAPS
     expect(formatSwapMessage(requestSwap)).toMatchInlineSnapshot(`
       Object {
+        "acceptablePrice": "<  0.00 USDC / WETH",
         "action": "Request Market Swap",
+        "executionPrice": "...",
+        "fullMarket": "...",
         "market": "...",
-        "price": "> 3,327.54 USDC / WETH",
+        "price": "<  0.00 USDC / WETH",
         "priceComment": Array [
           "Acceptable price for the order.",
         ],
         "size": "0.0119 WETH to 39.8800 USDC",
         "timestamp": "02 Oct 2023, 18:35",
-        "triggerPrice": "3,327.54 USDC / WETH",
       }
     `);
     expect(formatSwapMessage(executeSwap)).toMatchInlineSnapshot(`
       Object {
+        "acceptablePrice": "<  968.04 USDC / ETH",
         "action": "Execute Market Swap",
+        "executionPrice": "965.18 USDC / ETH",
+        "fullMarket": "...",
         "market": "...",
         "price": "965.18 USDC / ETH",
         "priceComment": Array [
           "Execution price for the order.",
           "",
-          Array [
-            "Order Acceptable Price",
-            ": < 965.18 USDC / ETH",
-          ],
+          Object {
+            "key": "Order Acceptable Price",
+            "value": "<  968.04 USDC / ETH",
+          },
         ],
         "size": "1,080.6325 USDC to 1.1196 ETH",
         "timestamp": "02 Oct 2023, 06:08",
-        "triggerPrice": "965.18 USDC / ETH",
       }
     `);
     // LIMIT SWAPS
     expect(formatSwapMessage(executeOrderSwap)).toMatchInlineSnapshot(`
       Object {
+        "acceptablePrice": ">  0.4422 WETH / BTC",
         "action": "Execute Limit Swap",
+        "executionPrice": "0.8110 WETH / BTC",
+        "fullMarket": "...",
         "market": "...",
         "price": "0.8110 WETH / BTC",
         "priceComment": Array [
           "Execution price for the order.",
           "",
-          Array [
-            "Order Trigger Price",
-            ": > 0.8110 WETH / BTC",
-          ],
+          Object {
+            "key": "Order Acceptable Price",
+            "value": ">  0.4422 WETH / BTC",
+          },
         ],
         "size": "0.3000 WETH to 0.3698 BTC",
         "timestamp": "29 Sep 2023, 10:46",
-        "triggerPrice": "0.8110 WETH / BTC",
       }
     `);
     expect(formatSwapMessage(failedSwap)).toMatchInlineSnapshot(`
       Object {
+        "acceptablePrice": "<  2.2613 WETH / BTC",
         "action": "Failed Limit Swap",
+        "executionPrice": "...",
+        "fullMarket": "...",
         "market": "...",
-        "price": "2.2613 WETH / BTC",
+        "price": "...",
         "priceComment": Array [
           "Execution price for the order.",
           "",
-          Array [
-            "Order Trigger Price",
-            ": < 2.2613 WETH / BTC",
-          ],
+          Object {
+            "key": "Order Acceptable Price",
+            "value": "<  2.2613 WETH / BTC",
+          },
         ],
-        "size": "0.3000 WETH to 0.1326 BTC",
+        "size": "0.3000 WETH to",
         "timestamp": "29 Sep 2023, 10:45",
-        "triggerPrice": "2.2613 WETH / BTC",
       }
     `);
   });

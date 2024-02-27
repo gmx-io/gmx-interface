@@ -15,3 +15,11 @@
 .TradeHistoryRow-tooltip {
   white-space: pre-line;
 }
+
+.TradeHistoryRow-info-row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+
+  padding: 4px 0;
+}

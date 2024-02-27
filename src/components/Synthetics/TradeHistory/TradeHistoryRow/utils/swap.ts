@@ -8,7 +8,8 @@ import { getExchangeRateDisplay } from "lib/legacy";
 import { formatTokenAmount } from "lib/numbers";
 
 import { getActionTitle } from "../../keys";
-import { MakeOptional, RowDetails, formatTradeActionTimestamp, lines } from "./shared";
+import { MakeOptional, RowDetails, formatTradeActionTimestamp, infoRow, lines, tryGetError } from "./shared";
+import { BigNumber } from "ethers";
 
 export const formatSwapMessage = (
   tradeAction: SwapTradeAction,
@@ -18,44 +19,47 @@ export const formatSwapMessage = (
   const tokenIn = tradeAction.initialCollateralToken!;
   const tokenOut = tradeAction.targetCollateralToken!;
   const amountIn = tradeAction.initialCollateralDeltaAmount!;
-  const amountOut =
-    tradeAction.eventName === TradeActionType.OrderExecuted
-      ? tradeAction.executionAmountOut!
-      : tradeAction.minOutputAmount!;
 
   const fromText = formatTokenAmount(amountIn, tokenIn?.decimals, tokenIn?.symbol, {
     useCommas: true,
   });
-  const toText = formatTokenAmount(amountOut, tokenOut?.decimals, tokenOut?.symbol, {
+
+  const toExecutionText = formatTokenAmount(tradeAction.executionAmountOut, tokenOut?.decimals, tokenOut?.symbol, {
+    useCommas: true,
+  });
+  const toMinText = formatTokenAmount(tradeAction.minOutputAmount, tokenOut?.decimals, tokenOut?.symbol, {
     useCommas: true,
   });
 
-  const tokensRatio = getTokensRatioByAmounts({
-    fromToken: tokenIn,
-    toToken: tokenOut,
-    fromTokenAmount: amountIn,
-    toTokenAmount: amountOut,
-  });
+  const tokensExecutionRatio =
+    tradeAction.executionAmountOut &&
+    getTokensRatioByAmounts({
+      fromToken: tokenIn,
+      toToken: tokenOut,
+      fromTokenAmount: amountIn,
+      toTokenAmount: tradeAction.executionAmountOut,
+    });
+
+  const tokensMinRatio =
+    tradeAction.minOutputAmount &&
+    getTokensRatioByAmounts({
+      fromToken: tokenIn,
+      toToken: tokenOut,
+      fromTokenAmount: amountIn,
+      toTokenAmount: tradeAction.minOutputAmount,
+    });
+
   const fromTokenInfo = tokenIn ? adaptToV1TokenInfo(tokenIn) : undefined;
   const toTokenInfo = tokenOut ? adaptToV1TokenInfo(tokenOut) : undefined;
 
   const [largest, smallest] =
-    tokensRatio?.largestToken.address === tokenIn?.address
+    tokensExecutionRatio?.largestToken.address === tokenIn?.address
       ? [fromTokenInfo, toTokenInfo]
       : [toTokenInfo, fromTokenInfo];
 
-  let greaterSign = largest?.address === tokenOut?.address ? "< " : "> ";
-  let triggerPrice = getExchangeRateDisplay(tokensRatio?.ratio, smallest, largest);
-
-  let ratioText = "";
-
-  if (tokensRatio.ratio.lte(0)) {
-    ratioText = "0";
-  } else if (tradeAction.eventName === TradeActionType.OrderCreated) {
-    ratioText = greaterSign + triggerPrice;
-  } else {
-    ratioText = getExchangeRateDisplay(tokensRatio?.ratio, smallest, largest);
-  }
+  const greaterSign = largest?.address === tokenOut?.address ? "<  " : ">  ";
+  const executionRate = getExchangeRateDisplay(tokensExecutionRatio?.ratio, smallest, largest);
+  const acceptableRate = getExchangeRateDisplay(tokensMinRatio?.ratio, smallest, largest);
 
   const market = !marketsInfoData
     ? "..."
@@ -78,66 +82,123 @@ export const formatSwapMessage = (
         .map((token: TokenData) => token?.symbol)
         .join(" → ");
 
-  const size = `${fromText} to ${toText}`;
+  const fullMarket = !marketsInfoData
+    ? "..."
+    : tradeAction.swapPath?.map((marketAddress) => marketsInfoData?.[marketAddress].name).join(" → ");
 
   let actionText = getActionTitle(tradeAction.orderType, tradeAction.eventName);
 
-  let result: MakeOptional<RowDetails, "action" | "market" | "timestamp" | "price" | "size">;
+  let result: MakeOptional<RowDetails, "action" | "market" | "timestamp">;
 
   const ot = tradeAction.orderType;
   const ev = tradeAction.eventName;
 
   if (
     (ot === OrderType.LimitSwap && ev === TradeActionType.OrderCreated) ||
-    (ot === OrderType.LimitSwap && ev === TradeActionType.OrderUpdated)
+    (ot === OrderType.LimitSwap && ev === TradeActionType.OrderUpdated) ||
+    (ot === OrderType.LimitSwap && ev === TradeActionType.OrderCancelled)
   ) {
     const formattedMinReceive = formatTokenAmount(tradeAction.minOutputAmount!, tokenOut?.decimals, tokenOut?.symbol, {
       useCommas: true,
     });
 
     result = {
+      price: `${greaterSign}${acceptableRate}`,
       priceComment: lines(
-        t`Ratio price for the order at the time of creation.`,
+        t`Acceptable price for the order.`,
         "",
-        t`It may differ at the time of execution based on swap fees and price impact to guarantee that you will receive at least ${formattedMinReceive} if this order is executed.`
+        t`The trigger price for this order is based on the swap fees and price impact to guarantee that you will receive at least ${formattedMinReceive} on order execution.`
       ),
+      size: t`${fromText} to ${toMinText}`,
     };
-  } else if (
-    (ot === OrderType.LimitSwap && ev === TradeActionType.OrderFrozen) ||
-    (ot === OrderType.LimitSwap && ev === TradeActionType.OrderExecuted)
-  ) {
+  } else if (ot === OrderType.LimitSwap && ev === TradeActionType.OrderExecuted) {
     result = {
-      priceComment: lines(t`Execution price for the order.`, "", [
-        t`Order Trigger Price`,
-        `: ${greaterSign}${triggerPrice}`,
-      ]),
+      price: executionRate,
+      priceComment: lines(
+        t`Execution price for the order.`,
+        "",
+        infoRow(t`Order Acceptable Price`, `${greaterSign}${acceptableRate}`)
+      ),
+      size: t`${fromText} to ${toExecutionText}`,
+    };
+  } else if (ot === OrderType.LimitSwap && ev === TradeActionType.OrderFrozen) {
+    const error = tradeAction.reasonBytes && tryGetError(tradeAction.reasonBytes);
+    const outputAmount = error?.args?.outputAmount as BigNumber | undefined;
+    const ratio =
+      outputAmount &&
+      getTokensRatioByAmounts({
+        fromToken: tokenIn,
+        toToken: tokenOut,
+        fromTokenAmount: amountIn,
+        toTokenAmount: outputAmount,
+      });
+    const rate = getExchangeRateDisplay(ratio?.ratio, tokenIn, tokenOut);
+    const toExecutionText = formatTokenAmount(outputAmount, tokenOut?.decimals, tokenOut?.symbol, {
+      useCommas: true,
+    });
+
+    result = {
+      price: rate,
+      priceComment: lines(
+        t`Execution price for the order.`,
+        "",
+        infoRow(t`Order Acceptable Price`, `${greaterSign}${acceptableRate}`)
+      ),
+      size: t`${fromText} to ${toExecutionText}`,
     };
   } else if (
     (ot === OrderType.MarketSwap && ev === TradeActionType.OrderCreated) ||
     (ot === OrderType.MarketSwap && ev === TradeActionType.OrderUpdated)
   ) {
     result = {
+      price: `${greaterSign}${acceptableRate}`,
       priceComment: lines(t`Acceptable price for the order.`),
+      size: t`${fromText} to ${toMinText}`,
     };
-  } else if (
-    (ot === OrderType.MarketSwap && ev === TradeActionType.OrderFrozen) ||
-    (ot === OrderType.MarketSwap && ev === TradeActionType.OrderExecuted)
-  ) {
+  } else if (ot === OrderType.MarketSwap && ev === TradeActionType.OrderExecuted) {
     result = {
-      priceComment: lines(t`Execution price for the order.`, "", [
-        t`Order Acceptable Price`,
-        `: ${greaterSign}${triggerPrice}`,
-      ]),
+      price: executionRate,
+      priceComment: lines(
+        t`Execution price for the order.`,
+        "",
+        infoRow(t`Order Acceptable Price`, `${greaterSign}${acceptableRate}`)
+      ),
+      size: t`${fromText} to ${toExecutionText}`,
+    };
+  } else if (ot === OrderType.MarketSwap && ev === TradeActionType.OrderCancelled) {
+    const error = tradeAction.reasonBytes && tryGetError(tradeAction.reasonBytes);
+    const outputAmount = error?.args?.outputAmount as BigNumber | undefined;
+    const ratio =
+      outputAmount &&
+      getTokensRatioByAmounts({
+        fromToken: tokenIn,
+        toToken: tokenOut,
+        fromTokenAmount: amountIn,
+        toTokenAmount: outputAmount,
+      });
+    const rate = getExchangeRateDisplay(ratio?.ratio, tokenIn, tokenOut);
+    const toExecutionText = formatTokenAmount(outputAmount, tokenOut?.decimals, tokenOut?.symbol, {
+      useCommas: true,
+    });
+
+    result = {
+      price: rate,
+      priceComment: lines(
+        t`Execution price for the order.`,
+        "",
+        infoRow(t`Order Acceptable Price`, `${greaterSign}${acceptableRate}`)
+      ),
+      size: t`${fromText} to ${toExecutionText}`,
     };
   }
 
   return {
     action: actionText,
     market: market,
-    size: size,
-    price: ratioText,
+    fullMarket: fullMarket,
     timestamp: formatTradeActionTimestamp(tradeAction.transaction.timestamp, relativeTimestamp),
-    triggerPrice: triggerPrice,
+    acceptablePrice: `${greaterSign}${acceptableRate}`,
+    executionPrice: executionRate,
     ...result!,
   };
 };

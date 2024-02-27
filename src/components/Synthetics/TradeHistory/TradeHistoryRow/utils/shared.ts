@@ -3,7 +3,7 @@ import { t } from "@lingui/macro";
 import type { Locale as DateLocale } from "date-fns";
 import format from "date-fns/format";
 import formatRelative from "date-fns/formatRelative";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 
 import dateDe from "date-fns/locale/de";
 import dateEn from "date-fns/locale/en-US";
@@ -16,6 +16,8 @@ import dateZh from "date-fns/locale/zh-CN";
 
 import { TradeActionType } from "domain/synthetics/tradeHistory";
 import { locales } from "lib/i18n";
+
+import CustomErrors from "abis/CustomErrors.json";
 
 export function getOrderActionText(eventName: TradeActionType) {
   let actionText = "";
@@ -42,7 +44,7 @@ export function getOrderActionText(eventName: TradeActionType) {
 
   return actionText;
 }
-export type TooltipState = "success" | "error" | undefined;
+export type TooltipState = "success" | "error" | "muted" | undefined;
 export type TooltipString =
   | undefined
   | string
@@ -65,10 +67,22 @@ export function numberToState(value: BigNumber | undefined): TooltipState {
 
   return undefined;
 }
-export type Line = TooltipString | TooltipString[];
+export type Line =
+  | TooltipString
+  | TooltipString[]
+  | {
+      key: string;
+      value: TooltipString;
+    };
 export type TooltipContent = Line[];
 export function lines(...args: TooltipContent): TooltipContent {
   return args;
+}
+export function infoRow(key: string, value: TooltipString): Line {
+  return {
+    key,
+    value,
+  };
 }
 
 export type RowDetails = {
@@ -129,3 +143,19 @@ export function formatTradeActionTimestamp(timestamp: number, relativeTimestamp 
 }
 
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+
+const customErrors = new ethers.Contract(ethers.constants.AddressZero, CustomErrors.abi);
+
+export function tryGetError(
+  reasonBytes: ethers.utils.Bytes
+): ReturnType<typeof customErrors.interface.parseError> | undefined {
+  let error: ReturnType<typeof customErrors.interface.parseError> | undefined;
+
+  try {
+    error = customErrors.interface.parseError(reasonBytes);
+  } catch {
+    return undefined;
+  }
+
+  return error;
+}

@@ -302,6 +302,8 @@ export function useTradeHistory(
             targetCollateralToken,
             initialCollateralToken,
             transaction: rawAction.transaction,
+            reason: rawAction.reason,
+            reasonBytes: rawAction.reasonBytes,
           };
 
           return tradeAction;

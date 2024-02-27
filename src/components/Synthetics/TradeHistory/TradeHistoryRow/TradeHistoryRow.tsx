@@ -42,6 +42,7 @@ function LineSpan({ span }: { span: TooltipString }) {
       className={cx({
         "text-red": span.state === "error",
         "text-green": span.state === "success",
+        muted: span.state === "muted",
       })}
     >
       {span.text}
@@ -79,6 +80,18 @@ function TooltipContentComponent({ content }: { content: TooltipContent }) {
           return (
             <div key={i}>
               <LineSpans spans={line} />
+            </div>
+          );
+        }
+
+        if ("key" in line && "value" in line) {
+          return (
+            <div key={i} className="TradeHistoryRow-info-row">
+              <div>
+                {/* eslint-disable-next-line react-perf/jsx-no-new-object-as-prop */}
+                <LineSpan span={{ text: line.key, state: "muted" }} />:{" "}
+              </div>
+              <LineSpan span={line.value} />
             </div>
           );
         }
