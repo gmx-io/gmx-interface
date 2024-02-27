@@ -2,7 +2,7 @@ import { i18n } from "@lingui/core";
 import { t } from "@lingui/macro";
 import type { Locale as DateLocale } from "date-fns";
 import format from "date-fns/format";
-import formatRelative from "date-fns/formatRelative";
+import formatISO from "date-fns/formatISO";
 import { BigNumber, ethers } from "ethers";
 
 import dateDe from "date-fns/locale/de";
@@ -114,18 +114,6 @@ export const dateLocaleMap: Record<keyof typeof locales, DateLocale> = {
   pseudo: dateEn,
 };
 
-Object.values(dateLocaleMap).forEach((locale) => {
-  const originalFormatRelative = locale.formatRelative;
-
-  locale.formatRelative = (...args) => {
-    const token = args[0];
-    if (token === "other" || !originalFormatRelative) {
-      return "dd MMM yyyy, HH:mm";
-    }
-    return originalFormatRelative(...args);
-  };
-});
-
 export function formatTradeActionTimestamp(timestamp: number, relativeTimestamp = true) {
   const localeStr = i18n.locale;
 
@@ -137,9 +125,7 @@ export function formatTradeActionTimestamp(timestamp: number, relativeTimestamp 
     });
   }
 
-  return formatRelative(new Date(timestamp * 1000), new Date(), {
-    locale: locale,
-  });
+  return formatISO(new Date(timestamp * 1000), { representation: "complete" });
 }
 
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;

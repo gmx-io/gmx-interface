@@ -136,7 +136,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
             {msg.action}
           </ExternalLink>
           <br />
-          <span className="TradeHistoryRow-time muted">({msg.timestamp})</span>
+          <span className="TradeHistoryRow-time muted">{msg.timestamp}</span>
           {shouldDisplayAccount && (
             <>
               <br />
