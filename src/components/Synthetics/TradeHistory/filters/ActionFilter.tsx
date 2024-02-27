@@ -39,39 +39,31 @@ const GROUPS: Groups = [
     items: [
       {
         orderType: OrderType.MarketIncrease,
-        eventName: TradeActionType.OrderCreated,
-      },
-      {
-        orderType: OrderType.MarketIncrease,
-        eventName: TradeActionType.OrderExecuted,
-      },
-      {
-        orderType: OrderType.MarketIncrease,
-        eventName: TradeActionType.OrderCancelled,
-      },
-      {
-        orderType: OrderType.MarketDecrease,
-        eventName: TradeActionType.OrderCreated,
-      },
-      {
-        orderType: OrderType.MarketDecrease,
         eventName: TradeActionType.OrderExecuted,
       },
       {
         orderType: OrderType.MarketDecrease,
-        eventName: TradeActionType.OrderCancelled,
-      },
-      {
-        orderType: OrderType.MarketIncrease,
-        eventName: TradeActionType.OrderCreated,
-        isDepositOrWithdraw: true,
-        text: actionTextMap["Deposit-OrderCreated"],
+        eventName: TradeActionType.OrderExecuted,
       },
       {
         orderType: OrderType.MarketIncrease,
         eventName: TradeActionType.OrderExecuted,
         isDepositOrWithdraw: true,
         text: actionTextMap["Deposit-OrderExecuted"],
+      },
+      {
+        orderType: OrderType.MarketDecrease,
+        eventName: TradeActionType.OrderExecuted,
+        isDepositOrWithdraw: true,
+        text: actionTextMap["Withdraw-OrderExecuted"],
+      },
+      {
+        orderType: OrderType.MarketIncrease,
+        eventName: TradeActionType.OrderCancelled,
+      },
+      {
+        orderType: OrderType.MarketDecrease,
+        eventName: TradeActionType.OrderCancelled,
       },
       {
         orderType: OrderType.MarketIncrease,
@@ -81,31 +73,39 @@ const GROUPS: Groups = [
       },
       {
         orderType: OrderType.MarketDecrease,
-        eventName: TradeActionType.OrderCreated,
-        isDepositOrWithdraw: true,
-        text: actionTextMap["Withdraw-OrderCreated"],
-      },
-      {
-        orderType: OrderType.MarketDecrease,
-        eventName: TradeActionType.OrderExecuted,
-        isDepositOrWithdraw: true,
-        text: actionTextMap["Withdraw-OrderExecuted"],
-      },
-      {
-        orderType: OrderType.MarketDecrease,
         eventName: TradeActionType.OrderCancelled,
         isDepositOrWithdraw: true,
         text: actionTextMap["Withdraw-OrderCancelled"],
+      },
+      {
+        orderType: OrderType.MarketIncrease,
+        eventName: TradeActionType.OrderCreated,
+      },
+      {
+        orderType: OrderType.MarketDecrease,
+        eventName: TradeActionType.OrderCreated,
+      },
+      {
+        orderType: OrderType.MarketIncrease,
+        eventName: TradeActionType.OrderCreated,
+        isDepositOrWithdraw: true,
+        text: actionTextMap["Deposit-OrderCreated"],
+      },
+      {
+        orderType: OrderType.MarketDecrease,
+        eventName: TradeActionType.OrderCreated,
+        isDepositOrWithdraw: true,
+        text: actionTextMap["Withdraw-OrderCreated"],
       },
     ],
   },
   {
     groupName: /*i18n*/ "Trigger Orders",
     items: [
+      TradeActionType.OrderExecuted,
       TradeActionType.OrderCreated,
       TradeActionType.OrderUpdated,
       TradeActionType.OrderCancelled,
-      TradeActionType.OrderExecuted,
       TradeActionType.OrderFrozen,
     ].flatMap((eventName) =>
       [OrderType.LimitIncrease, OrderType.LimitDecrease, OrderType.StopLossDecrease].map((orderType) => ({
@@ -119,15 +119,27 @@ const GROUPS: Groups = [
     items: [
       {
         orderType: OrderType.MarketSwap,
-        eventName: TradeActionType.OrderCreated,
+        eventName: TradeActionType.OrderExecuted,
       },
       {
-        orderType: OrderType.MarketSwap,
+        orderType: OrderType.LimitSwap,
         eventName: TradeActionType.OrderExecuted,
       },
       {
         orderType: OrderType.MarketSwap,
         eventName: TradeActionType.OrderCancelled,
+      },
+      {
+        orderType: OrderType.LimitSwap,
+        eventName: TradeActionType.OrderFrozen,
+      },
+      {
+        orderType: OrderType.LimitSwap,
+        eventName: TradeActionType.OrderCancelled,
+      },
+      {
+        orderType: OrderType.MarketSwap,
+        eventName: TradeActionType.OrderCreated,
       },
       {
         orderType: OrderType.LimitSwap,
@@ -137,21 +149,8 @@ const GROUPS: Groups = [
         orderType: OrderType.LimitSwap,
         eventName: TradeActionType.OrderUpdated,
       },
-      {
-        orderType: OrderType.LimitSwap,
-        eventName: TradeActionType.OrderExecuted,
-      },
-      {
-        orderType: OrderType.LimitSwap,
-        eventName: TradeActionType.OrderCancelled,
-      },
-      {
-        orderType: OrderType.LimitSwap,
-        eventName: TradeActionType.OrderFrozen,
-      },
     ],
   },
-
   {
     groupName: /*i18n*/ "Liquidation",
     items: [
