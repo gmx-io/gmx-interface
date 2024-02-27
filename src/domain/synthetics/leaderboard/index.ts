@@ -60,12 +60,14 @@ type LeaderboardPositionsJson = {
     maxSize: string;
     paidPriceImpact: string;
     pendingPriceImpact: string;
+    pendingPnl: string;
     realizedPnl: string;
     sizeInTokens: string;
     sizeInUsd: string;
     entryPrice: string;
     collateralToken: string;
     collateralAmount: string;
+    snapshotTimestamp: number;
   }[];
 };
 
@@ -79,12 +81,14 @@ export type LeaderboardPositionBase = {
   maxSize: BigNumber;
   paidPriceImpact: BigNumber;
   pendingPriceImpact: BigNumber;
+  pendingPnl: BigNumber;
   realizedPnl: BigNumber;
   sizeInTokens: BigNumber;
   sizeInUsd: BigNumber;
   entryPrice: BigNumber;
   collateralToken: string;
   collateralAmount: BigNumber;
+  snapshotTimestamp: number;
 };
 
 export type LeaderboardPosition = LeaderboardPositionBase & {
@@ -149,14 +153,24 @@ const fetchAccounts = async (chainId: number, account?: string): Promise<Leaderb
 };
 
 export function useLeaderboardAccounts(chainId: number, account?: string) {
-  const { data, error } = useSWR("leaderboard/useLeaderboardAccounts", () => fetchAccounts(chainId, account), {
-    refreshInterval: 60_000,
-  });
+  const { data, error } = useSWR(
+    ["leaderboard/useLeaderboardAccounts", chainId, account],
+    () => fetchAccounts(chainId, account),
+    {
+      refreshInterval: 60_000,
+    }
+  );
 
   return { data, error };
 }
 
-const fetchPositions = async (chainId: number, account?: string): Promise<LeaderboardPositionBase[] | undefined> => {
+const fetchPositions = async (
+  chainId: number,
+  account?: string,
+  isSnapshot = false,
+  snapshotTimestamp?: number,
+  orderBy?: string | string[]
+): Promise<LeaderboardPositionBase[] | undefined> => {
   const client = getLeaderboardGraphClient(chainId);
   if (!client) {
     // eslint-disable-next-line
@@ -166,8 +180,17 @@ const fetchPositions = async (chainId: number, account?: string): Promise<Leader
 
   const response = await client.query<LeaderboardPositionsJson>({
     query: gql`
-      query PositionQuery($account: String) {
-        positions(limit: 100, where: { account_eq: $account }) {
+      query PositionQuery(
+        $account: String
+        $isSnapshot: Boolean
+        $snapshotTimestamp: Int
+        $orderBy: [PositionOrderByInput!]
+      ) {
+        positions(
+          limit: 100
+          where: { account_eq: $account, isSnapshot_eq: $isSnapshot, snapshotTimestamp_eq: $snapshotTimestamp }
+          orderBy: $orderBy
+        ) {
           id
           account
           market
@@ -178,16 +201,21 @@ const fetchPositions = async (chainId: number, account?: string): Promise<Leader
           maxSize
           paidPriceImpact
           pendingPriceImpact
+          pendingPnl
           realizedPnl
           sizeInTokens
           sizeInUsd
           entryPrice
           collateralAmount
+          snapshotTimestamp
         }
       }
     `,
     variables: {
       account,
+      isSnapshot,
+      snapshotTimestamp,
+      orderBy,
     },
   });
 
@@ -207,15 +235,26 @@ const fetchPositions = async (chainId: number, account?: string): Promise<Leader
       sizeInTokens: BigNumber.from(p.sizeInTokens),
       realizedPnl: BigNumber.from(p.realizedPnl),
       pendingPriceImpact: BigNumber.from(p.pendingPriceImpact),
+      pendingPnl: BigNumber.from(p.pendingPnl),
       maxSize: BigNumber.from(p.maxSize),
+      snapshotTimestamp: p.snapshotTimestamp,
     };
   });
 };
 
-export function useLeaderboardPositions(chainId: number, account?: string) {
-  const { data, error } = useSWR("leaderboard/useLeaderboardPositions", () => fetchPositions(chainId, account), {
-    refreshInterval: 60_000,
-  });
+export function useLeaderboardPositions(
+  chainId: number,
+  account?: string,
+  isSnapshot = false,
+  orderBy?: string | string[]
+) {
+  const { data, error } = useSWR(
+    ["leaderboard/useLeaderboardPositions", chainId, account, isSnapshot],
+    () => fetchPositions(chainId, account, isSnapshot, undefined, orderBy),
+    {
+      refreshInterval: 60_000,
+    }
+  );
 
   return { data, error };
 }
