@@ -3488,7 +3488,7 @@ msgstr "No hay recompensas para reclamar todavía"
 
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "No trades match the selected filters"
-msgstr ""
+msgstr "No hay operaciones que coincidan con los filtros seleccionados"
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx

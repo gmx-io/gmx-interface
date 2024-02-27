@@ -3488,7 +3488,7 @@ msgstr "수령할 보상이 아직 없습니다"
 
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "No trades match the selected filters"
-msgstr ""
+msgstr "선택한 필터와 일치하는 거래가 없습니다"
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx

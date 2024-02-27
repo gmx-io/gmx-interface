@@ -3488,7 +3488,7 @@ msgstr "請求できる報酬はありません"
 
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "No trades match the selected filters"
-msgstr ""
+msgstr "選択したフィルターに一致するトレードはありません"
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
