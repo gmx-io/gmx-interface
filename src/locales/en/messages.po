@@ -1398,12 +1398,20 @@ msgstr "Decrease size"
 #~ msgstr "Decrease the Leverage by using the slider. If the Leverage slider is disabled, you can increase the Pay amount or reduce the Order size."
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-msgid "Decrease the Leverage to match the Max. Allowed Leverage."
-msgstr "Decrease the Leverage to match the Max. Allowed Leverage."
+#~ msgid "Decrease the Leverage to match the Max. Allowed Leverage."
+#~ msgstr "Decrease the Leverage to match the Max. Allowed Leverage."
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-msgid "Decrease the Size to match the Max. Allowed Leverage:"
-msgstr "Decrease the Size to match the Max. Allowed Leverage:"
+#~ msgid "Decrease the Size to match the Max. Allowed Leverage:"
+#~ msgstr "Decrease the Size to match the Max. Allowed Leverage:"
+
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "Decrease the leverage to match the max. allowed leverage."
+msgstr "Decrease the leverage to match the max. allowed leverage."
+
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "Decrease the size to match the max. allowed leverage:"
+msgstr "Decrease the size to match the max. allowed leverage:"
 
 #: src/components/Synthetics/ConfirmationBox/SLTPEntries.tsx
 msgid "Decrease {0} Long by {1} at ${2}."

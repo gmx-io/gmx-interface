@@ -145,6 +145,7 @@ export function getIncreaseError(p: {
   minCollateralUsd: BigNumber | undefined;
   isLong: boolean;
   isLimit: boolean;
+  nextLeverageWithoutPnl: BigNumber | undefined;
 }): ValidationResult {
   const {
     marketInfo,
@@ -167,6 +168,7 @@ export function getIncreaseError(p: {
     triggerPrice,
     isLimit,
     nextPositionValues,
+    nextLeverageWithoutPnl,
   } = p;
 
   if (!marketInfo || !indexToken) {
@@ -254,7 +256,7 @@ export function getIncreaseError(p: {
     }
   }
 
-  if (!nextPositionValues?.nextLeverage || nextPositionValues?.nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
+  if (nextLeverageWithoutPnl?.gt(MAX_ALLOWED_LEVERAGE)) {
     return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
   }
 
@@ -262,9 +264,9 @@ export function getIncreaseError(p: {
     return [t`Price Impact not yet acknowledged`];
   }
 
-  if (nextPositionValues.nextLeverage) {
+  if (nextLeverageWithoutPnl) {
     const [maxLeverageError, maxLeverage] = validateMaxLeverage(
-      nextPositionValues.nextLeverage,
+      nextLeverageWithoutPnl,
       marketInfo,
       isLong,
       sizeDeltaUsd

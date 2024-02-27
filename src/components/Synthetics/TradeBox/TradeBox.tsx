@@ -34,8 +34,8 @@ import {
   useTradeboxExistingOrder,
   useTradeboxIncreasePositionAmounts,
   useTradeboxLeverage,
-  useTradeboxNextPositionValuesForDecrease,
-  useTradeboxNextPositionValuesForIncrease,
+  useTradeboxNextLeverageWithoutPnl,
+  useTradeboxNextPositionValues,
   useTradeboxSelectedPosition,
   useTradeboxState,
   useTradeboxSwapAmounts,
@@ -229,6 +229,8 @@ export function TradeBox(p: Props) {
     !fromToken.balance.eq(fromTokenAmount) &&
     (fromToken?.isNative ? minResidualAmount && fromToken.balance.gt(minResidualAmount) : true);
 
+  const nextLeverageWithoutPnl = useTradeboxNextLeverageWithoutPnl();
+
   const markPrice = useMemo(() => {
     if (!toToken) {
       return undefined;
@@ -250,15 +252,11 @@ export function TradeBox(p: Props) {
   const swapAmounts = useTradeboxSwapAmounts();
   const increaseAmounts = useTradeboxIncreasePositionAmounts();
   const decreaseAmounts = useTradeboxDecreasePositionAmounts();
-  const nextPositionValuesForIncrease = useTradeboxNextPositionValuesForIncrease();
-  const nextPositionValuesForDecrease = useTradeboxNextPositionValuesForDecrease();
   const selectedPosition = useTradeboxSelectedPosition();
   const existingOrder = useTradeboxExistingOrder();
   const leverage = useTradeboxLeverage();
 
-  const nextPositionValues = useMemo(() => {
-    return tradeFlags.isIncrease ? nextPositionValuesForIncrease : nextPositionValuesForDecrease;
-  }, [nextPositionValuesForDecrease, nextPositionValuesForIncrease, tradeFlags.isIncrease]);
+  const nextPositionValues = useTradeboxNextPositionValues();
 
   const { fees, feesType, executionFee } = useMemo(() => {
     if (!gasLimits || !gasPrice || !tokensData) {
@@ -467,7 +465,11 @@ export function TradeBox(p: Props) {
           isLong,
           marketInfo,
           position: selectedPosition,
-          strategy: "leverageByCollateral",
+          strategy: isLeverageEnabled
+            ? focusedInput === "from"
+              ? "leverageByCollateral"
+              : "leverageBySize"
+            : "independent",
           uiFeeFactor,
           userReferralInfo,
           acceptablePriceImpactBuffer,
@@ -480,6 +482,7 @@ export function TradeBox(p: Props) {
           collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
           collateralDeltaUsd: increaseAmounts.collateralDeltaUsd,
           collateralToken,
+          existingPosition: selectedPosition,
           indexPrice: increaseAmounts.indexPrice,
           isLong,
           marketInfo,
@@ -488,7 +491,6 @@ export function TradeBox(p: Props) {
           sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
           sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
           userReferralInfo,
-          existingPosition: selectedPosition,
         });
 
         if (nextPositionValues.nextLeverage) {
@@ -527,6 +529,7 @@ export function TradeBox(p: Props) {
   }, [
     acceptablePriceImpactBuffer,
     collateralToken,
+    focusedInput,
     fromToken,
     fromTokenAmount,
     isLeverageEnabled,
@@ -593,7 +596,8 @@ export function TradeBox(p: Props) {
         triggerPrice,
         priceImpactWarning: priceImpactWarningState,
         isLimit,
-        nextPositionValues: nextPositionValuesForIncrease,
+        nextPositionValues,
+        nextLeverageWithoutPnl,
       });
     } else if (isTrigger) {
       tradeError = getDecreaseError({
@@ -605,7 +609,7 @@ export function TradeBox(p: Props) {
         existingPosition: selectedPosition,
         isContractAccount: false,
         receiveToken: selectedPosition?.collateralToken,
-        nextPositionValues: nextPositionValuesForDecrease,
+        nextPositionValues: nextPositionValues,
         isLong,
         isTrigger: true,
         minCollateralUsd,
@@ -625,18 +629,16 @@ export function TradeBox(p: Props) {
           tooltipContent = (
             <>
               {isLeverageEnabled ? (
-                <Trans>Decrease the Leverage to match the Max. Allowed Leverage.</Trans>
+                <Trans>Decrease the leverage to match the max. allowed leverage.</Trans>
               ) : (
-                <Trans>Decrease the Size to match the Max. Allowed Leverage:</Trans>
-              )}
+                <Trans>Decrease the size to match the max. allowed leverage:</Trans>
+              )}{" "}
+              <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
               <br />
               <br />
               <span onClick={detectAndSetAvailableMaxLeverage} className="Tradebox-handle">
                 <Trans>Set Max Leverage</Trans>
               </span>
-              <br />
-              <br />
-              <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
             </>
           );
 
@@ -683,10 +685,10 @@ export function TradeBox(p: Props) {
     isLong,
     markPrice,
     triggerPrice,
-    nextPositionValuesForIncrease,
+    nextPositionValues,
+    nextLeverageWithoutPnl,
     closeSizeUsd,
     decreaseAmounts?.sizeDeltaUsd,
-    nextPositionValuesForDecrease,
     stage,
     fixedTriggerThresholdType,
     isLeverageEnabled,

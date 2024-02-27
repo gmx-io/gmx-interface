@@ -1398,11 +1398,19 @@ msgstr ""
 #~ msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-msgid "Decrease the Leverage to match the Max. Allowed Leverage."
+#~ msgid "Decrease the Leverage to match the Max. Allowed Leverage."
+#~ msgstr ""
+
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+#~ msgid "Decrease the Size to match the Max. Allowed Leverage:"
+#~ msgstr ""
+
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "Decrease the leverage to match the max. allowed leverage."
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-msgid "Decrease the Size to match the Max. Allowed Leverage:"
+msgid "Decrease the size to match the max. allowed leverage:"
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/SLTPEntries.tsx

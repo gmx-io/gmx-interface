@@ -165,8 +165,15 @@
   position: relative;
   display: inline-flex;
   text-decoration: underline;
-  text-decoration-style: dashed;
+  text-decoration-style: solid;
   text-decoration-thickness: 1px;
   text-underline-offset: 2px;
-  text-decoration-color: rgba(255, 255, 255, 0.6);
+  text-decoration-color: rgba(255, 255, 255, 0.7);
+  user-select: none;
+  color: rgba(255, 255, 255, 0.7);
+
+  &:hover {
+    text-decoration-color: rgba(255, 255, 255);
+    color: rgba(255, 255, 255);
+  }
 }

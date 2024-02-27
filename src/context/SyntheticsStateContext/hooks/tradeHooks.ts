@@ -10,6 +10,7 @@ import {
   makeSelectTradeRatios,
 } from "../selectors/tradeSelectors";
 import { useSelector } from "../utils";
+import { useSavedIsPnlInLeverage } from "./globalsHooks";
 
 export const useNextPositionValuesForIncrease = ({
   collateralTokenAddress,
@@ -42,6 +43,7 @@ export const useNextPositionValuesForIncrease = ({
   strategy: "leverageByCollateral" | "leverageBySize" | "independent";
   tokenTypeForSwapRoute: TokenTypeForSwapRoute;
 }) => {
+  const isPnlInLeverage = useSavedIsPnlInLeverage();
   const selector = useMemo(
     () =>
       makeSelectNextPositionValuesForIncrease({
@@ -59,6 +61,7 @@ export const useNextPositionValuesForIncrease = ({
         tradeType,
         triggerPrice,
         tokenTypeForSwapRoute,
+        isPnlInLeverage,
       }),
     [
       collateralTokenAddress,
@@ -67,6 +70,7 @@ export const useNextPositionValuesForIncrease = ({
       indexTokenAmount,
       initialCollateralAmount,
       initialCollateralTokenAddress,
+      isPnlInLeverage,
       leverage,
       marketAddress,
       positionKey,

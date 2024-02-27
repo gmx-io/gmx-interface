@@ -18,6 +18,8 @@ import {
   selectTradeboxNextPositionValuesForIncrease,
   selectTradeboxNextPositionValuesForDecrease,
   selectTradeboxSelectedTriggerAcceptablePriceImpactBps,
+  selectTradeboxNextPositionValues,
+  selectTradeboxNextLeverageWithoutPnl,
 } from "../selectors/tradeboxSelectors";
 import { useSelector } from "../utils";
 
@@ -42,3 +44,5 @@ export const useTradeboxNextPositionValuesForIncrease = () => useSelector(select
 export const useTradeboxNextPositionValuesForDecrease = () => useSelector(selectTradeboxNextPositionValuesForDecrease);
 export const useTradeboxIncreasePositionAmounts = () => useSelector(selectTradeboxIncreasePositionAmounts);
 export const useTradeboxDecreasePositionAmounts = () => useSelector(selectTradeboxDecreasePositionAmounts);
+export const useTradeboxNextPositionValues = () => useSelector(selectTradeboxNextPositionValues);
+export const useTradeboxNextLeverageWithoutPnl = () => useSelector(selectTradeboxNextLeverageWithoutPnl);

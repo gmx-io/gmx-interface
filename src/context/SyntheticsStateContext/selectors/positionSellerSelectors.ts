@@ -4,7 +4,7 @@ import { USD_DECIMALS } from "lib/legacy";
 import { parseValue } from "lib/numbers";
 import { SyntheticsTradeState } from "../SyntheticsStateContextProvider";
 import { createEnhancedSelector } from "../utils";
-import { selectClosingPositionKey, selectPositionsInfoData } from "./globalSelectors";
+import { selectClosingPositionKey, selectPositionsInfoData, selectSavedIsPnlInLeverage } from "./globalSelectors";
 import {
   makeSelectDecreasePositionAmounts,
   makeSelectMinCollateralFactorForPosition,
@@ -70,6 +70,7 @@ const selectPositionSellerDecreaseAmountArgs = createEnhancedSelector((q) => {
 
   const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
   const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
+  const isPnlInLeverage = q(selectSavedIsPnlInLeverage);
 
   return {
     collateralTokenAddress,
@@ -80,6 +81,7 @@ const selectPositionSellerDecreaseAmountArgs = createEnhancedSelector((q) => {
     tradeType,
     triggerPrice,
     closeSizeUsd,
+    isPnlInLeverage,
   };
 });
 

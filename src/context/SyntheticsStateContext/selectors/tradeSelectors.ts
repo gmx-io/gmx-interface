@@ -22,7 +22,6 @@ import {
   selectMarketsInfoData,
   selectPositionConstants,
   selectPositionsInfoData,
-  selectSavedIsPnlInLeverage,
   selectTokensData,
   selectUiFeeFactor,
   selectUserReferralInfo,
@@ -436,6 +435,7 @@ export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
     tradeType,
     triggerPrice,
     tokenTypeForSwapRoute,
+    isPnlInLeverage,
   }: {
     initialCollateralTokenAddress: string | undefined;
     indexTokenAddress: string | undefined;
@@ -451,6 +451,7 @@ export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
     fixedAcceptablePriceImpactBps: BigNumber | undefined;
     increaseStrategy: "leverageByCollateral" | "leverageBySize" | "independent";
     tokenTypeForSwapRoute: TokenTypeForSwapRoute;
+    isPnlInLeverage: boolean;
   }) =>
     createSelector(
       [
@@ -474,18 +475,9 @@ export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
           tokenTypeForSwapRoute,
         }),
         selectPositionsInfoData,
-        selectSavedIsPnlInLeverage,
         selectUserReferralInfo,
       ],
-      (
-        { minCollateralUsd },
-        marketsInfoData,
-        tokensData,
-        increaseAmounts,
-        positionsInfoData,
-        savedIsPnlInLeverage,
-        userReferralInfo
-      ) => {
+      ({ minCollateralUsd }, marketsInfoData, tokensData, increaseAmounts, positionsInfoData, userReferralInfo) => {
         const tradeFlags = createTradeFlags(tradeType, tradeMode);
         const marketInfo = getByKey(marketsInfoData, marketAddress);
         const collateralToken = collateralTokenAddress ? getByKey(tokensData, collateralTokenAddress) : undefined;
@@ -506,7 +498,7 @@ export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
             sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
             sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
             indexPrice: increaseAmounts.indexPrice,
-            showPnlInLeverage: savedIsPnlInLeverage,
+            showPnlInLeverage: isPnlInLeverage,
             minCollateralUsd,
             userReferralInfo,
           });
@@ -526,6 +518,7 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
     tradeMode,
     tradeType,
     triggerPrice,
+    isPnlInLeverage,
   }: {
     closeSizeUsd: BigNumber | undefined;
     collateralTokenAddress: string | undefined;
@@ -536,6 +529,7 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
     tradeMode: TradeMode;
     tradeType: TradeType;
     triggerPrice: BigNumber | undefined;
+    isPnlInLeverage: boolean;
   }) =>
     createSelector(
       [
@@ -554,18 +548,9 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
           triggerPrice,
         }),
         selectPositionsInfoData,
-        selectSavedIsPnlInLeverage,
         selectUserReferralInfo,
       ],
-      (
-        { minCollateralUsd },
-        marketsInfoData,
-        tokensData,
-        decreaseAmounts,
-        positionsInfoData,
-        savedIsPnlInLeverage,
-        userReferralInfo
-      ) => {
+      ({ minCollateralUsd }, marketsInfoData, tokensData, decreaseAmounts, positionsInfoData, userReferralInfo) => {
         const tradeFlags = createTradeFlags(tradeType, tradeMode);
         const marketInfo = getByKey(marketsInfoData, marketAddress);
         const collateralToken = collateralTokenAddress ? getByKey(tokensData, collateralTokenAddress) : undefined;
@@ -590,7 +575,7 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
             collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount,
             payedRemainingCollateralUsd: decreaseAmounts.payedRemainingCollateralUsd,
             payedRemainingCollateralAmount: decreaseAmounts.payedRemainingCollateralAmount,
-            showPnlInLeverage: savedIsPnlInLeverage,
+            showPnlInLeverage: isPnlInLeverage,
             isLong: tradeFlags.isLong,
             minCollateralUsd,
             userReferralInfo,
