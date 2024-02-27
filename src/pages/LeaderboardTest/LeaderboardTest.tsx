@@ -40,10 +40,11 @@ export default function LeaderboardTest() {
             <tr>
               <th>account</th>
               <th>pnl (realized / pending)</th>
-              <th>%</th>
+              <th>pnl % (total)</th>
               <th>cost (paid / pending)</th>
               <th>total / max collateral</th>
               <th>cum size / collateral</th>
+              <th>avg size</th>
               <th>lev</th>
             </tr>
           </thead>
@@ -66,6 +67,7 @@ export default function LeaderboardTest() {
                     {formatUsd(d.cumsumSize, { displayDecimals: 0 })} /{" "}
                     {formatUsd(d.cumsumCollateral, { displayDecimals: 0 })}
                   </td>
+                  <td>{formatUsd(d.sumMaxSize.div(d.totalCount), { displayDecimals: 0 })}</td>
                   <td>{formatAmount(d.cumsumSize.mul(10000).div(d.cumsumCollateral), 4, 2)}x</td>
                 </tr>
               );
