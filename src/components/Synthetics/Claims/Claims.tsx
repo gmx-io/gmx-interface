@@ -13,8 +13,9 @@ import { ClaimModal } from "../ClaimModal/ClaimModal";
 import { ClaimablePositionPriceImpactRebateModal } from "../ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal";
 import { SettleAccruedFundingFeeModal } from "../SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal";
 import { ClaimableCard } from "./ClaimableCard";
-import "./Claims.scss";
 import { SettleAccruedCard } from "./SettleAccruedCard";
+
+import "./Claims.scss";
 
 const PAGE_SIZE = 100;
 
@@ -110,9 +111,9 @@ export function Claims({
         claimablePositionPriceImpactFees={claimablePositionPriceImpactFees}
       />
 
-      <div className="TradeHistory">
+      <div>
         {account && isLoading && (
-          <div className="TradeHistoryRow App-box">
+          <div className="Claims-history-row App-box">
             <Trans>Loading...</Trans>
           </div>
         )}
@@ -140,7 +141,7 @@ export function Claims({
           )}
         </div>
         {isEmpty && (
-          <div className="TradeHistoryRow App-box">
+          <div className="Claims-history-row App-box">
             <Trans>No claims yet</Trans>
           </div>
         )}

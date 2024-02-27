@@ -71,8 +71,8 @@ function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
   }, [chainId, claimAction.claimItems]);
 
   return (
-    <div className="TradeHistoryRow App-box App-box-border">
-      <div className="muted TradeHistoryRow-time">{formatDateTime(claimAction.timestamp)}</div>
+    <div className="Claims-history-row App-box App-box-border">
+      <div className="muted Claims-history-row-time">{formatDateTime(claimAction.timestamp)}</div>
       <ExternalLink className="plain" href={`${getExplorerUrl(chainId)}tx/${claimAction.transactionHash}`}>
         {eventTitle}: {tokensMsg} from&nbsp;
         <Tooltip
@@ -246,8 +246,8 @@ function ClaimFundingFeesHistoryRow(p: ClaimFundingFeesHistoryRowProps) {
   ]);
 
   return (
-    <div className="TradeHistoryRow App-box App-box-border">
-      <div className="muted TradeHistoryRow-time">{formatDateTime(claimAction.timestamp)}</div>
+    <div className="Claims-history-row App-box App-box-border">
+      <div className="muted Claims-history-row-time">{formatDateTime(claimAction.timestamp)}</div>
       {content}
     </div>
   );
