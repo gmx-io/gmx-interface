@@ -3613,7 +3613,7 @@ msgstr "Pas de récompense à réclamer"
 
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "No trades match the selected filters"
-msgstr ""
+msgstr "Aucun échange ne correspond aux filtres sélectionnés"
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
