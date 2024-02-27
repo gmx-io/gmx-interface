@@ -1,4 +1,4 @@
-import { FloatingPortal, flip, offset, shift, useFloating } from "@floating-ui/react";
+import { FloatingPortal, flip, offset, shift, useFloating, autoUpdate } from "@floating-ui/react";
 import { Popover } from "@headlessui/react";
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
@@ -26,6 +26,7 @@ export function MarketFilter({ value, onChange }: Props) {
   const { refs, floatingStyles } = useFloating({
     middleware: [offset(10), flip(), shift()],
     strategy: "fixed",
+    whileElementsMounted: autoUpdate,
   });
 
   const isActive = value.length > 0;

@@ -207,6 +207,12 @@ export function TradeHistory(p: Props) {
         </div>
         <div className="TradeHistorySynthetics-horizontal-scroll-container">
           <table className="Exchange-list TradeHistorySynthetics-table">
+            <colgroup>
+              <col className="TradeHistorySynthetics-action-column" />
+              <col className="TradeHistorySynthetics-market-column" />
+              <col className="TradeHistorySynthetics-size-column" />
+              <col className="TradeHistorySynthetics-price-column" />
+            </colgroup>
             <thead className="TradeHistorySynthetics-header">
               <tr>
                 <th>
@@ -218,7 +224,7 @@ export function TradeHistory(p: Props) {
                 <th>
                   <Trans>Size</Trans>
                 </th>
-                <th>
+                <th className="TradeHistorySynthetics-price-header">
                   <Trans>Price</Trans>
                 </th>
               </tr>

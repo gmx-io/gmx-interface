@@ -161,7 +161,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           )}
         </td>
         <td>{msg.size}</td>
-        <td>
+        <td className="TradeHistoryRow-price">
           <TooltipWithPortal
             handle={msg.price}
             renderContent={() => <TooltipContentComponent content={msg.priceComment} />}
