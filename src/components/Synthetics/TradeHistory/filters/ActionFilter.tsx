@@ -268,19 +268,21 @@ export function ActionFilter({ value, onChange }: Props) {
   return (
     <>
       <Popover>
-        <Popover.Button as="div" ref={refs.setReference} className="TradeHistorySynthetics-filter">
+        <Popover.Button
+          as="div"
+          ref={refs.setReference}
+          className={cx("TradeHistorySynthetics-filter", {
+            active: isActive,
+          })}
+        >
           <Trans>Action</Trans>
-          <FilterIcon
-            className={cx("TradeHistorySynthetics-filter-icon", {
-              active: isActive,
-            })}
-          />
+          <FilterIcon className="TradeHistorySynthetics-filter-icon" />
         </Popover.Button>
         <FloatingPortal>
           <Popover.Panel
             ref={refs.setFloating}
             style={floatingStyles}
-            className={"TradeHistorySynthetics-filter-popover"}
+            className="TradeHistorySynthetics-filter-popover"
           >
             <SearchInput
               className="ActionFilter-search"
@@ -304,12 +306,9 @@ export function ActionFilter({ value, onChange }: Props) {
                         <PartialCheckedIcon className="Checkbox-icon" />
                       </div>
                     ) : (
-                      <Checkbox
-                        className={cx({ muted: !group.isEverythingSelected })}
-                        isChecked={group.isEverythingSelected}
-                      />
+                      <Checkbox isChecked={group.isEverythingSelected} />
                     )}
-                    <span className="muted">{group.groupNameTranslated}</span>
+                    <span>{group.groupNameTranslated}</span>
                   </div>
                   {group.items.map((pair) => (
                     <div
@@ -319,9 +318,7 @@ export function ActionFilter({ value, onChange }: Props) {
                         togglePair(pair);
                       }}
                     >
-                      <Checkbox className={cx({ muted: !getIsSelected(pair) })} isChecked={getIsSelected(pair)}>
-                        {pair.text}
-                      </Checkbox>
+                      <Checkbox isChecked={getIsSelected(pair)}>{pair.text}</Checkbox>
                     </div>
                   ))}
                 </div>

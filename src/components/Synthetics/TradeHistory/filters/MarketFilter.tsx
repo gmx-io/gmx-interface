@@ -62,13 +62,15 @@ export function MarketFilter({ value, onChange }: Props) {
   return (
     <>
       <Popover>
-        <Popover.Button as="div" ref={refs.setReference} className="TradeHistorySynthetics-filter">
+        <Popover.Button
+          as="div"
+          ref={refs.setReference}
+          className={cx("TradeHistorySynthetics-filter", {
+            active: isActive,
+          })}
+        >
           <Trans>Market</Trans>
-          <FilterIcon
-            className={cx("TradeHistorySynthetics-filter-icon", {
-              active: isActive,
-            })}
-          />
+          <FilterIcon className="TradeHistorySynthetics-filter-icon" />
         </Popover.Button>
         <FloatingPortal>
           <Popover.Panel
