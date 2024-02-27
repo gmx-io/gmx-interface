@@ -1,6 +1,6 @@
 import { i18n } from "@lingui/core";
 import { t } from "@lingui/macro";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "ethers";
 
 import { getMarketFullName, getMarketIndexName } from "domain/synthetics/markets";
 import { OrderType, isIncreaseOrderType } from "domain/synthetics/orders";
@@ -11,25 +11,15 @@ import { PRECISION } from "lib/legacy";
 import { formatDeltaUsd, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 
 import { actionTextMap, getActionTitle } from "../../keys";
-import { MakeOptional, RowDetails, formatTradeActionTimestamp, lines, numberToState } from "./shared";
-
-import CustomErrors from "abis/CustomErrors.json";
-
-const customErrors = new ethers.Contract(ethers.constants.AddressZero, CustomErrors.abi);
-
-function tryGetError(
-  reasonBytes: ethers.utils.Bytes
-): ReturnType<typeof customErrors.interface.parseError> | undefined {
-  let error: ReturnType<typeof customErrors.interface.parseError> | undefined;
-
-  try {
-    error = customErrors.interface.parseError(reasonBytes);
-  } catch {
-    return undefined;
-  }
-
-  return error;
-}
+import {
+  MakeOptional,
+  RowDetails,
+  formatTradeActionTimestamp,
+  infoRow,
+  lines,
+  numberToState,
+  tryGetError,
+} from "./shared";
 
 export const formatPositionMessage = (
   tradeAction: PositionTradeAction,
@@ -104,9 +94,12 @@ export const formatPositionMessage = (
       ? lines(
           t`Mark price for the order.`,
           "",
-          [t`Order Acceptable Price`, ": < ", formattedAcceptablePrice!],
-          [t`Order Execution Price`, ": ", formattedExecutionPrice!],
-          [t`Price Impact`, ": ", { text: formattedPriceImpact!, state: numberToState(tradeAction.priceImpactUsd!) }],
+          infoRow(t`Order Acceptable Price`, "<  " + formattedAcceptablePrice!),
+          infoRow(t`Order Execution Price`, formattedExecutionPrice!),
+          infoRow(t`Price Impact`, {
+            text: formattedPriceImpact!,
+            state: numberToState(tradeAction.priceImpactUsd!),
+          }),
           "",
           t`Order execution price takes into account price impact.`
         )
@@ -123,7 +116,7 @@ export const formatPositionMessage = (
     const customSize = sizeDeltaUsd.gt(0) ? sizeDeltaText : formattedCollateralDelta;
 
     const priceComment = sizeDeltaUsd.gt(0)
-      ? lines(t`Mark price for the order.`, "", [t`Order Acceptable Price`, ": < ", formattedAcceptablePrice!])
+      ? lines(t`Mark price for the order.`, "", infoRow(t`Order Acceptable Price`, "<  " + formattedAcceptablePrice!))
       : lines(t`Mark price for the order.`);
 
     result = {
@@ -143,11 +136,11 @@ export const formatPositionMessage = (
 
     result = {
       price: customPrice,
-      priceComment: lines(t`Trigger price for the order.`, "", [
-        t`Order Acceptable Price`,
-        ": < ",
-        formattedAcceptablePrice!,
-      ]),
+      priceComment: lines(
+        t`Trigger price for the order.`,
+        "",
+        infoRow(t`Order Acceptable Price`, "<  " + formattedAcceptablePrice!)
+      ),
       triggerPrice: customPrice,
       acceptablePrice: "<  " + formattedAcceptablePrice!,
     };
@@ -156,9 +149,12 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order.`,
         "",
-        [t`Order Acceptable Price`, ": < ", formattedAcceptablePrice!],
-        [t`Order Execution Price`, ": ", formattedExecutionPrice!],
-        [t`Price Impact`, ": ", { text: formattedPriceImpact!, state: numberToState(tradeAction.priceImpactUsd!) }],
+        infoRow(t`Order Acceptable Price`, "<  " + formattedAcceptablePrice!),
+        infoRow(t`Order Execution Price`, formattedExecutionPrice!),
+        infoRow(t`Price Impact`, {
+          text: formattedPriceImpact!,
+          state: numberToState(tradeAction.priceImpactUsd!),
+        }),
         "",
         t`Order execution price takes into account price impact.`
       ),
@@ -171,8 +167,8 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order.`,
         "",
-        [t`Order Acceptable Price`, ": < ", formattedAcceptablePrice!],
-        error?.args?.price && [t`Order Execution Price`, ": ", formatUsd(error.args.price)]
+        infoRow(t`Order Acceptable Price`, "<  " + formattedAcceptablePrice!),
+        error?.args?.price && infoRow(t`Order Execution Price`, formatUsd(error.args.price))
       ),
       acceptablePrice: "<  " + formattedAcceptablePrice!,
     };
@@ -214,9 +210,12 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order.`,
         "",
-        [t`Order Acceptable Price`, ": > ", formattedAcceptablePrice!],
-        [t`Order Execution Price`, ": ", formattedExecutionPrice!],
-        [t`Price Impact`, ": ", { text: formattedPriceImpact!, state: numberToState(tradeAction.priceImpactUsd!) }],
+        infoRow(t`Order Acceptable Price`, ">  " + formattedAcceptablePrice!),
+        infoRow(t`Order Execution Price`, formattedExecutionPrice!),
+        infoRow(t`Price Impact`, {
+          text: formattedPriceImpact!,
+          state: numberToState(tradeAction.priceImpactUsd!),
+        }),
         "",
         t`Order execution price takes into account price impact.`
       ),
@@ -229,11 +228,11 @@ export const formatPositionMessage = (
     result = {
       action: customAction,
       size: customSize,
-      priceComment: lines(t`Mark price for the order.`, "", [
-        t`Order Acceptable Price`,
-        ": > ",
-        formattedAcceptablePrice!,
-      ]),
+      priceComment: lines(
+        t`Mark price for the order.`,
+        "",
+        infoRow(t`Order Acceptable Price`, ">  " + formattedAcceptablePrice!)
+      ),
       acceptablePrice: ">  " + formattedAcceptablePrice!,
     };
     //#endregion MarketDecrease
@@ -247,11 +246,11 @@ export const formatPositionMessage = (
 
     result = {
       price: customPrice,
-      priceComment: lines(t`Trigger price for the order.`, "", [
-        t`Order Acceptable Price`,
-        ": > ",
-        formattedAcceptablePrice!,
-      ]),
+      priceComment: lines(
+        t`Trigger price for the order.`,
+        "",
+        infoRow(t`Order Acceptable Price`, ">  " + formattedAcceptablePrice!)
+      ),
       triggerPrice: customPrice,
       acceptablePrice: ">  " + formattedAcceptablePrice!,
     };
@@ -260,9 +259,12 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order.`,
         "",
-        [t`Order Acceptable Price`, ": > ", formattedAcceptablePrice!],
-        [t`Order Execution Price`, ": ", formattedExecutionPrice!],
-        [t`Price Impact`, ": ", { text: formattedPriceImpact!, state: numberToState(tradeAction.priceImpactUsd!) }],
+        infoRow(t`Order Acceptable Price`, ">  " + formattedAcceptablePrice!),
+        infoRow(t`Order Execution Price`, formattedExecutionPrice!),
+        infoRow(t`Price Impact`, {
+          text: formattedPriceImpact!,
+          state: numberToState(tradeAction.priceImpactUsd!),
+        }),
         "",
         t`Order execution price takes into account price impact.`
       ),
@@ -275,7 +277,7 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order.`,
         "",
-        [t`Order Acceptable Price`, ": > ", formattedAcceptablePrice!],
+        infoRow(t`Order Acceptable Price`, ">  " + formattedAcceptablePrice!),
         error?.args?.price && [t`Order Execution Price`, ": ", formatUsd(error.args.price)]
       ),
       acceptablePrice: ">  " + formattedAcceptablePrice!,
@@ -291,11 +293,11 @@ export const formatPositionMessage = (
 
     result = {
       price: customPrice,
-      priceComment: lines(t`Trigger price for the order.`, "", [
-        t`Order Acceptable Price`,
-        ": < ",
-        formattedAcceptablePrice!,
-      ]),
+      priceComment: lines(
+        t`Trigger price for the order.`,
+        "",
+        infoRow(t`Order Acceptable Price`, "<  " + formattedAcceptablePrice!)
+      ),
       triggerPrice: customPrice,
     };
   } else if (ot === OrderType.StopLossDecrease && ev === TradeActionType.OrderExecuted) {
@@ -303,9 +305,12 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order.`,
         "",
-        [t`Order Acceptable Price`, ": < ", formattedAcceptablePrice!],
-        [t`Order Execution Price`, ": ", formattedExecutionPrice!],
-        [t`Price Impact`, ": ", { text: formattedPriceImpact!, state: numberToState(tradeAction.priceImpactUsd!) }],
+        infoRow(t`Order Acceptable Price`, "<  " + formattedAcceptablePrice!),
+        infoRow(t`Order Execution Price`, formattedExecutionPrice!),
+        infoRow(t`Price Impact`, {
+          text: formattedPriceImpact!,
+          state: numberToState(tradeAction.priceImpactUsd!),
+        }),
         "",
         t`Order execution price takes into account price impact.`
       ),
@@ -317,7 +322,7 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order.`,
         "",
-        [t`Order Acceptable Price`, ": < ", formattedAcceptablePrice!],
+        infoRow(t`Order Acceptable Price`, "<  " + formattedAcceptablePrice!),
         error?.args?.price && [t`Order Execution Price`, ": ", formatUsd(error.args.price)]
       ),
     };
@@ -373,27 +378,38 @@ export const formatPositionMessage = (
         "",
         t`This position was liquidated as the max. leverage of ${formattedMaxLeverage} was exceeded when taking into account fees.`,
         "",
-        [t`Order Execution Price`, ": ", formattedExecutionPrice!],
+        infoRow(t`Order Execution Price`, formattedExecutionPrice!),
         t`Order execution price takes into account price impact.`,
         "",
-        [t`Initial Collateral`, ": ", formattedInitialCollateral!],
-        [
-          t`PnL`,
-          ": ",
-          {
-            text: formattedBasePnl,
-            state: numberToState(tradeAction.pnlUsd!),
-          },
-        ],
-        [t`Borrow Fee`, ": ", { text: formattedBorrowFee, state: "error" }],
-        [t`Funding Fee`, ": ", { text: formattedFundingFee, state: "error" }],
-        [t`Position Fee`, ": ", { text: formattedPositionFee, state: "error" }],
-        [t`Price Impact`, ": ", { text: formattedPriceImpact!, state: numberToState(tradeAction.priceImpactUsd!) }],
+        infoRow(t`Initial Collateral`, formattedInitialCollateral!),
+        infoRow(t`PnL`, {
+          text: formattedBasePnl,
+          state: numberToState(tradeAction.pnlUsd!),
+        }),
+        infoRow(t`Borrow Fee`, {
+          text: formattedBorrowFee,
+          state: "error",
+        }),
+        infoRow(t`Funding Fee`, {
+          text: formattedFundingFee,
+          state: "error",
+        }),
+        infoRow(t`Position Fee`, {
+          text: formattedPositionFee,
+          state: "error",
+        }),
+        infoRow(t`Price Impact`, {
+          text: formattedPriceImpact!,
+          state: numberToState(tradeAction.priceImpactUsd!),
+        }),
         "",
-        [t`PnL after Fees and Price Impact`, ": ", { text: formattedPnl, state: numberToState(tradeAction.pnlUsd!) }],
+        infoRow(t`PnL after Fees and Price Impact`, {
+          text: formattedPnl,
+          state: numberToState(tradeAction.pnlUsd!),
+        }),
         "",
-        [t`Leftover Collateral`, ": ", formattedMinCollateral],
-        [t`Min. required Collateral`, ": ", formattedMinCollateral]
+        infoRow(t`Leftover Collateral`, formattedMinCollateral),
+        infoRow(t`Min. required Collateral`, formattedMinCollateral)
       ),
     };
     //#endregion Liquidation

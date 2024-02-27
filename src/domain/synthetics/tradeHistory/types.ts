@@ -112,6 +112,7 @@ export type SwapTradeAction = {
   orderKey: string;
 
   reason?: string;
+  reasonBytes?: Bytes;
 
   transaction: {
     timestamp: number;

@@ -224,6 +224,7 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Acceptable price for the order."
 msgstr "Precio aceptable para la orden."
 
@@ -1908,8 +1909,10 @@ msgstr "Precio de Ejecución"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Execution price for the order."
-msgstr ""
+msgstr "Precio de ejecución para la orden."
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
@@ -2609,10 +2612,6 @@ msgstr "Token inválido de token: \"{0}\" a token: \"{toTokenAddress}\""
 msgid "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
 msgstr "Token inválido índice del token: \"{0}\" Garantía del token: \"{1}\""
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
-msgid "It may differ at the time of execution based on swap fees and price impact to guarantee that you will receive at least {formattedMinReceive} if this order is executed."
-msgstr ""
-
 #: src/pages/Jobs/Jobs.js
 msgid "Job Openings"
 msgstr ""
@@ -3004,6 +3003,7 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark Price"
 msgstr "Precio de Referencia"
@@ -3063,10 +3063,6 @@ msgstr "Aumento del mercado"
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
 msgid "Market Orders"
 msgstr "Órdenes de Mercado"
-
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
-msgid "Market Price"
-msgstr "Precio de Mercado"
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "Market Swap"
@@ -3613,6 +3609,9 @@ msgstr "Orden"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Order Acceptable Price"
 msgstr "Precio Aceptable de la Orden"
 
@@ -3627,10 +3626,6 @@ msgstr "Precio Aceptable de la Orden"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order Execution Price"
 msgstr "Precio de ejecución de la orden"
-
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
-msgid "Order Trigger Price"
-msgstr "Precio de activación de la orden"
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Order Type"
@@ -5254,6 +5249,10 @@ msgstr ""
 msgid "The spread is > 1%, please ensure the trade details are acceptable before confirming"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+msgid "The trigger price for this order is based on the swap fees and price impact to guarantee that you will receive at least {formattedMinReceive} on order execution."
+msgstr "El precio de activación para esta orden se basa en las comisiones de intercambio y el impacto de precio para garantizar que recibirás al menos {formattedMinReceive} en la ejecución de la orden."
+
 #: src/components/ModalViews/RedirectModal.js
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
 msgstr "La página web es una instancia desplegada y mantenida del código abierto <0>Interfaz de GMX</0>, alojado y recibiendo servicio de la distribuida, de usuario a usuario <1>red IPFS</1>."
@@ -6479,10 +6478,6 @@ msgstr ""
 msgid "{0, plural, one {You have an active Limit Order to Increase} other {You have multiple active Limit Orders to Increase}}"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
-msgid "{0}"
-msgstr ""
-
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>."
 msgstr ""
@@ -6643,6 +6638,18 @@ msgstr "{existingTriggerOrderLength, plural, one {Tienes activa una orden de act
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr "{existingTriggerOrderLength, plural, one {Tienes activa una orden de activación que podría ejecutarse inmediatamente después de que abras esta posición. Por favor, cancela la orden o acepta la confirmación para continuar.} other {Tienes # órdenes de activación activas que podrían ejecutarse inmediatamente después de que abras la posición. Por favor, cancela las órdenes o acepta la confirmación para continuar.}}"
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+msgid "{fromText} to {toExecutionText}"
+msgstr "{fromText} a {toExecutionText}"
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+msgid "{fromText} to {toMinText}"
+msgstr "{fromText} a {toMinText}"
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"

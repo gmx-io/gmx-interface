@@ -118,7 +118,7 @@ function useDownloadAsCsv(tradeActions: TradeAction[] | undefined, minCollateral
       size: t`Size`,
       market: t`Market`,
       fullMarket: t`Full market`,
-      marketPrice: t`Market Price`,
+      marketPrice: t`Mark Price`,
       acceptablePrice: t`Acceptable Price`,
       executionPrice: t`Execution Price`,
       triggerPrice: t`Trigger Price`,

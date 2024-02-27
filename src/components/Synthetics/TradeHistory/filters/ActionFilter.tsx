@@ -1,6 +1,8 @@
 import { FloatingPortal, flip, offset, shift, useFloating } from "@floating-ui/react";
 import { Popover } from "@headlessui/react";
 import { Trans, t } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
+
 import cx from "classnames";
 import React, { useMemo, useState } from "react";
 
@@ -133,6 +135,10 @@ const GROUPS: Groups = [
       },
       {
         orderType: OrderType.LimitSwap,
+        eventName: TradeActionType.OrderUpdated,
+      },
+      {
+        orderType: OrderType.LimitSwap,
         eventName: TradeActionType.OrderExecuted,
       },
       {
@@ -175,6 +181,7 @@ function isIdentical(left: Item, right: Item): boolean {
 }
 
 export function ActionFilter({ value, onChange }: Props) {
+  const { i18n } = useLingui();
   const { refs, floatingStyles } = useFloating({
     middleware: [offset(10), flip(), shift()],
     strategy: "fixed",
@@ -191,7 +198,7 @@ export function ActionFilter({ value, onChange }: Props) {
         .map((pair) => {
           return {
             ...pair,
-            text: pair.text || getActionTitle(pair.orderType, pair.eventName),
+            text: pair.text ? i18n._(pair.text) : getActionTitle(pair.orderType, pair.eventName),
           };
         })
         .filter((pair) => {
@@ -208,14 +215,14 @@ export function ActionFilter({ value, onChange }: Props) {
       );
 
       return {
-        groupName: group.groupName,
+        groupNameTranslated: i18n._(group.groupName),
         isEverythingSelected,
         isEverythingFilteredSelected,
         isSomethingSelected,
         items,
       };
     }).filter((group) => group.items.length > 0);
-  }, [marketSearch, value]);
+  }, [i18n, marketSearch, value]);
 
   function togglePair(newItem: Item) {
     if (value.some((pair) => isIdentical(pair, newItem))) {
@@ -285,7 +292,7 @@ export function ActionFilter({ value, onChange }: Props) {
 
             <div className="ActionFilter-options">
               {filteredGroups.map((group) => (
-                <div key={group.groupName} className="ActionFilter-group">
+                <div key={group.groupNameTranslated} className="ActionFilter-group">
                   <div
                     className="ActionFilter-group-name"
                     onClick={() => {
@@ -302,9 +309,7 @@ export function ActionFilter({ value, onChange }: Props) {
                         isChecked={group.isEverythingSelected}
                       />
                     )}
-                    <span className="muted">
-                      <Trans>{group.groupName}</Trans>
-                    </span>
+                    <span className="muted">{group.groupNameTranslated}</span>
                   </div>
                   {group.items.map((pair) => (
                     <div

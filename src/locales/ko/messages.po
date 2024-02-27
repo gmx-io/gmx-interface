@@ -224,6 +224,7 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Acceptable price for the order."
 msgstr "주문에 대한 허용 가능한 가격"
 
@@ -1908,8 +1909,10 @@ msgstr "실행 가격"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Execution price for the order."
-msgstr ""
+msgstr "주문의 실행 가격입니다."
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
@@ -2609,10 +2612,6 @@ msgstr "유요하지 않은 fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
 msgid "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
 msgstr "유요하지 않은 indexToken: \"{0}\" collateralToken\" \"{1}\""
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
-msgid "It may differ at the time of execution based on swap fees and price impact to guarantee that you will receive at least {formattedMinReceive} if this order is executed."
-msgstr ""
-
 #: src/pages/Jobs/Jobs.js
 msgid "Job Openings"
 msgstr ""
@@ -3004,6 +3003,7 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark Price"
 msgstr "시장 평균가"
@@ -3063,10 +3063,6 @@ msgstr "시장 증가"
 #: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
 msgid "Market Orders"
 msgstr "시장 주문"
-
-#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
-msgid "Market Price"
-msgstr "시장 가격"
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "Market Swap"
@@ -3613,6 +3609,9 @@ msgstr "주문"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Order Acceptable Price"
 msgstr "주문 가능 가격"
 
@@ -3627,10 +3626,6 @@ msgstr "주문 가능 가격"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order Execution Price"
 msgstr "주문 체결 가격"
-
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
-msgid "Order Trigger Price"
-msgstr "주문 트리거 가격"
 
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 msgid "Order Type"
@@ -5254,6 +5249,10 @@ msgstr ""
 msgid "The spread is > 1%, please ensure the trade details are acceptable before confirming"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+msgid "The trigger price for this order is based on the swap fees and price impact to guarantee that you will receive at least {formattedMinReceive} on order execution."
+msgstr "이 주문의 트리거 가격은 스왑 수수료와 가격 영향을 기반으로 하여 주문 실행시 최소 {formattedMinReceive}를 보장합니다."
+
 #: src/components/ModalViews/RedirectModal.js
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
 msgstr "웹사이트는 오픈소스인 <0>GMX front end</0>를 이용하고 커뮤니티에의해 배포되며, P2P <1>IPFS network<1/>에 의해 서빙및 호스팅됩니다."
@@ -6479,10 +6478,6 @@ msgstr ""
 msgid "{0, plural, one {You have an active Limit Order to Increase} other {You have multiple active Limit Orders to Increase}}"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistory/filters/ActionFilter.tsx
-msgid "{0}"
-msgstr ""
-
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>."
 msgstr ""
@@ -6643,6 +6638,18 @@ msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger ord
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+msgid "{fromText} to {toExecutionText}"
+msgstr "{fromText}에서 {toExecutionText}로"
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
+msgid "{fromText} to {toMinText}"
+msgstr "{fromText}에서 {toMinText}로"
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
