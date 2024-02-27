@@ -8,6 +8,8 @@
 
     // Table causes global layout issues on mobile
     margin-right: -10px;
+
+    table-layout: fixed;
   }
 
   &-header tr {
@@ -69,5 +71,21 @@
   &-filters {
     display: flex;
     gap: 0.5em;
+  }
+
+  &-price-header {
+    text-align: end !important;
+  }
+
+  $action-column-width: 50%;
+
+  &-action-column {
+    width: $action-column-width;
+  }
+
+  &-market-column,
+  &-size-column,
+  &-price-column {
+    width: calc((100% - #{$action-column-width}) / 3);
   }
 }

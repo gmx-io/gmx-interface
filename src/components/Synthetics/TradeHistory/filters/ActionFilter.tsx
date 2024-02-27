@@ -1,4 +1,4 @@
-import { FloatingPortal, flip, offset, shift, useFloating } from "@floating-ui/react";
+import { FloatingPortal, flip, offset, shift, useFloating, autoUpdate } from "@floating-ui/react";
 import { Popover } from "@headlessui/react";
 import { Trans, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
@@ -185,7 +185,8 @@ export function ActionFilter({ value, onChange }: Props) {
   const { refs, floatingStyles } = useFloating({
     middleware: [offset(10), flip(), shift()],
     strategy: "fixed",
-    placement: "bottom-end",
+    placement: "bottom-start",
+    whileElementsMounted: autoUpdate,
   });
 
   const isActive = value.length > 0;
