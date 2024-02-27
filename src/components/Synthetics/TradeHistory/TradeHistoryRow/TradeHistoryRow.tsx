@@ -87,10 +87,7 @@ function TooltipContentComponent({ content }: { content: TooltipContent }) {
         if ("key" in line && "value" in line) {
           return (
             <div key={i} className="TradeHistoryRow-info-row">
-              <div>
-                {/* eslint-disable-next-line react-perf/jsx-no-new-object-as-prop */}
-                <LineSpan span={{ text: line.key, state: "muted" }} />:{" "}
-              </div>
+              <div className="muted mr-xxs">{line.key}:</div>
               <LineSpan span={line.value} />
             </div>
           );
