@@ -43,7 +43,7 @@ describe("TradeHistoryRow helpers", () => {
         ],
         "priceImpact": undefined,
         "size": "+$1,054.88",
-        "timestamp": "08 Feb 2024, 10:50",
+        "timestamp": "2024-02-08T10:50:50+04:00",
       }
     `);
 
@@ -61,7 +61,7 @@ describe("TradeHistoryRow helpers", () => {
         ],
         "priceImpact": undefined,
         "size": "12.3357 USDC",
-        "timestamp": "15 Feb 2024, 18:34",
+        "timestamp": "2024-02-15T18:34:48+04:00",
       }
     `);
 
@@ -79,7 +79,7 @@ describe("TradeHistoryRow helpers", () => {
         ],
         "priceImpact": undefined,
         "size": "0.0500 DAI",
-        "timestamp": "15 Feb 2024, 21:30",
+        "timestamp": "2024-02-15T21:30:44+04:00",
       }
     `);
 
@@ -102,7 +102,7 @@ describe("TradeHistoryRow helpers", () => {
         ],
         "priceImpact": undefined,
         "size": "-$266.23",
-        "timestamp": "15 Sep 2023, 13:29",
+        "timestamp": "2023-09-15T13:29:36+04:00",
         "triggerPrice": ">  $30,000.00",
       }
     `);
@@ -126,7 +126,7 @@ describe("TradeHistoryRow helpers", () => {
         ],
         "priceImpact": undefined,
         "size": "+$4.11",
-        "timestamp": "15 Sep 2023, 13:37",
+        "timestamp": "2023-09-15T13:37:13+04:00",
         "triggerPrice": "<  $1,629.40",
       }
     `);
@@ -150,7 +150,7 @@ describe("TradeHistoryRow helpers", () => {
         ],
         "priceImpact": undefined,
         "size": "+$2.64",
-        "timestamp": "15 Sep 2023, 14:54",
+        "timestamp": "2023-09-15T14:54:04+04:00",
         "triggerPrice": "<  $1.00",
       }
     `);
@@ -187,7 +187,7 @@ describe("TradeHistoryRow helpers", () => {
         ],
         "priceImpact": "-$16.82",
         "size": "+$2,070.18",
-        "timestamp": "18 Sep 2023, 16:43",
+        "timestamp": "2023-09-18T16:43:18+04:00",
       }
     `);
 
@@ -211,7 +211,7 @@ describe("TradeHistoryRow helpers", () => {
         ],
         "priceImpact": "-$9,488.98",
         "size": "+$1,348.82",
-        "timestamp": "18 Sep 2023, 15:14",
+        "timestamp": "2023-09-18T15:14:09+04:00",
       }
     `);
 
@@ -225,7 +225,7 @@ describe("TradeHistoryRow helpers", () => {
         "price": "",
         "priceImpact": undefined,
         "size": "-$4,954.24",
-        "timestamp": "18 Sep 2023, 11:52",
+        "timestamp": "2023-09-18T11:52:39+04:00",
       }
     `);
 
@@ -307,7 +307,7 @@ describe("TradeHistoryRow helpers", () => {
         ],
         "priceImpact": "-$16.82",
         "size": "-$6,441.90",
-        "timestamp": "04 Sep 2023, 06:38",
+        "timestamp": "2023-09-04T06:38:49+04:00",
       }
     `);
 
@@ -343,7 +343,7 @@ describe("TradeHistoryRow helpers", () => {
         ],
         "priceImpact": "-$0.08",
         "size": "+$49.83",
-        "timestamp": "21 Sep 2023, 19:32",
+        "timestamp": "2023-09-21T19:32:40+04:00",
       }
     `);
   });
@@ -362,7 +362,7 @@ describe("TradeHistoryRow helpers", () => {
           "Acceptable price for the order.",
         ],
         "size": "0.0119 WETH to 39.8800 USDC",
-        "timestamp": "02 Oct 2023, 18:35",
+        "timestamp": "2023-10-02T18:35:16+04:00",
       }
     `);
     expect(formatSwapMessage(executeSwap)).toMatchInlineSnapshot(`
@@ -382,7 +382,7 @@ describe("TradeHistoryRow helpers", () => {
           },
         ],
         "size": "1,080.6325 USDC to 1.1196 ETH",
-        "timestamp": "02 Oct 2023, 06:08",
+        "timestamp": "2023-10-02T06:08:40+04:00",
       }
     `);
     // LIMIT SWAPS
@@ -403,7 +403,7 @@ describe("TradeHistoryRow helpers", () => {
           },
         ],
         "size": "0.3000 WETH to 0.3698 BTC",
-        "timestamp": "29 Sep 2023, 10:46",
+        "timestamp": "2023-09-29T10:46:39+04:00",
       }
     `);
     expect(formatSwapMessage(failedSwap)).toMatchInlineSnapshot(`
@@ -423,7 +423,7 @@ describe("TradeHistoryRow helpers", () => {
           },
         ],
         "size": "0.3000 WETH to",
-        "timestamp": "29 Sep 2023, 10:45",
+        "timestamp": "2023-09-29T10:45:04+04:00",
       }
     `);
   });
