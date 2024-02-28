@@ -336,6 +336,7 @@ msgstr "추가로, 트리거 주문은 시장가 주문이며 트리거 가격�
 msgid "Address copied to your clipboard"
 msgstr ""
 
+#: src/pages/Leaderboard/Leaderboard.tsx
 #: src/pages/LeaderboardTest/LeaderboardTest.tsx
 msgid "Addresses V2 trading statistics."
 msgstr ""
@@ -778,6 +779,7 @@ msgstr "취소 제출 완료"
 msgid "Cancelling {ordersText}"
 msgstr ""
 
+#: src/pages/Leaderboard/Leaderboard.tsx
 #: src/pages/LeaderboardTest/LeaderboardTest.tsx
 msgid "Chain Icon"
 msgstr ""
@@ -2544,6 +2546,7 @@ msgstr "앱 실행하기"
 msgid "Leaderboard"
 msgstr "리더보드"
 
+#: src/pages/Leaderboard/Leaderboard.tsx
 #: src/pages/LeaderboardTest/LeaderboardTest.tsx
 msgid "Leaderboard Data"
 msgstr ""

@@ -336,6 +336,7 @@ msgstr ""
 msgid "Address copied to your clipboard"
 msgstr ""
 
+#: src/pages/Leaderboard/Leaderboard.tsx
 #: src/pages/LeaderboardTest/LeaderboardTest.tsx
 msgid "Addresses V2 trading statistics."
 msgstr ""
@@ -778,6 +779,7 @@ msgstr ""
 msgid "Cancelling {ordersText}"
 msgstr ""
 
+#: src/pages/Leaderboard/Leaderboard.tsx
 #: src/pages/LeaderboardTest/LeaderboardTest.tsx
 msgid "Chain Icon"
 msgstr ""
@@ -2544,6 +2546,7 @@ msgstr ""
 msgid "Leaderboard"
 msgstr ""
 
+#: src/pages/Leaderboard/Leaderboard.tsx
 #: src/pages/LeaderboardTest/LeaderboardTest.tsx
 msgid "Leaderboard Data"
 msgstr ""

@@ -336,6 +336,7 @@ msgstr "Additionally, trigger orders are market orders and are not guaranteed to
 msgid "Address copied to your clipboard"
 msgstr "Address copied to your clipboard"
 
+#: src/pages/Leaderboard/Leaderboard.tsx
 #: src/pages/LeaderboardTest/LeaderboardTest.tsx
 msgid "Addresses V2 trading statistics."
 msgstr "Addresses V2 trading statistics."
@@ -778,6 +779,7 @@ msgstr "Cancel submitted."
 msgid "Cancelling {ordersText}"
 msgstr "Cancelling {ordersText}"
 
+#: src/pages/Leaderboard/Leaderboard.tsx
 #: src/pages/LeaderboardTest/LeaderboardTest.tsx
 msgid "Chain Icon"
 msgstr "Chain Icon"
@@ -2544,6 +2546,7 @@ msgstr "Launch App"
 msgid "Leaderboard"
 msgstr "Leaderboard"
 
+#: src/pages/Leaderboard/Leaderboard.tsx
 #: src/pages/LeaderboardTest/LeaderboardTest.tsx
 msgid "Leaderboard Data"
 msgstr "Leaderboard Data"

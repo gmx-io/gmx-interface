@@ -336,6 +336,7 @@ msgstr "此外，触发订单為市场订单，不保证以触发价格结算"
 msgid "Address copied to your clipboard"
 msgstr ""
 
+#: src/pages/Leaderboard/Leaderboard.tsx
 #: src/pages/LeaderboardTest/LeaderboardTest.tsx
 msgid "Addresses V2 trading statistics."
 msgstr ""
@@ -778,6 +779,7 @@ msgstr "送出取消"
 msgid "Cancelling {ordersText}"
 msgstr ""
 
+#: src/pages/Leaderboard/Leaderboard.tsx
 #: src/pages/LeaderboardTest/LeaderboardTest.tsx
 msgid "Chain Icon"
 msgstr ""
@@ -2544,6 +2546,7 @@ msgstr "启动应用程序"
 msgid "Leaderboard"
 msgstr "排行榜"
 
+#: src/pages/Leaderboard/Leaderboard.tsx
 #: src/pages/LeaderboardTest/LeaderboardTest.tsx
 msgid "Leaderboard Data"
 msgstr ""
