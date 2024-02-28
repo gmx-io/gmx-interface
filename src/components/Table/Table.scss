@@ -3,6 +3,10 @@
   overflow: visible;
 }
 
+.TableBox table.Exchange-list tr:hover {
+  cursor: default;
+}
+
 @media screen and (max-width: 1200px) {
   .TableBox {
     width: 100%;

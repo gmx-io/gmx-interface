@@ -4233,6 +4233,10 @@ msgstr "Ahorrar en Costes"
 msgid "Save on Fees"
 msgstr "Ahorrar en Comisiones"
 
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "Search Address"
+msgstr ""
+
 #: src/components/MarketSelector/MarketSelector.tsx
 msgid "Search Market"
 msgstr ""

@@ -4233,6 +4233,10 @@ msgstr "コスト削減"
 msgid "Save on Fees"
 msgstr "手数料削減"
 
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "Search Address"
+msgstr ""
+
 #: src/components/MarketSelector/MarketSelector.tsx
 msgid "Search Market"
 msgstr ""

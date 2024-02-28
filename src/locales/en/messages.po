@@ -4236,6 +4236,10 @@ msgstr "Save on Costs"
 msgid "Save on Fees"
 msgstr "Save on Fees"
 
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "Search Address"
+msgstr "Search Address"
+
 #: src/components/MarketSelector/MarketSelector.tsx
 msgid "Search Market"
 msgstr "Search Market"
