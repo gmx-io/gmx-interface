@@ -78,6 +78,7 @@ import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
+import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 
 import "./PositionSeller.scss";
 
@@ -806,7 +807,8 @@ export function PositionSeller(p: Props) {
                   </div>
                 </div>
 
-                <TradeFeesRow {...fees} executionFee={executionFee} feesType="decrease" />
+                <TradeFeesRow {...fees} feesType="decrease" />
+                <NetworkFeeRow executionFee={executionFee} />
               </ExchangeInfo.Group>
 
               <ExchangeInfo.Group>{receiveTokenRow}</ExchangeInfo.Group>

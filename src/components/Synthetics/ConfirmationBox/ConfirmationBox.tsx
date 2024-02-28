@@ -112,9 +112,11 @@ import { useKey, useLatest } from "react-use";
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
-import "./ConfirmationBox.scss";
 import SLTPEntries from "./SLTPEntries";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
+import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
+
+import "./ConfirmationBox.scss";
 
 export type Props = {
   isVisible: boolean;
@@ -1365,9 +1367,9 @@ export function ConfirmationBox(p: Props) {
               fundigRate && `${getPlusOrMinusSymbol(fundigRate)}${formatAmount(fundigRate.abs(), 30, 4)}% / 1h`
             }
             borrowFeeRateStr={borrowingRate && `-${formatAmount(borrowingRate, 30, 4)}% / 1h`}
-            executionFee={p.executionFee}
             feesType="increase"
           />
+          <NetworkFeeRow executionFee={p.executionFee} />
         </ExchangeInfo.Group>
 
         <ExchangeInfo.Group>
@@ -1438,7 +1440,12 @@ export function ConfirmationBox(p: Props) {
         </ExchangeInfo.Group>
 
         <ExchangeInfo.Group>
-          {!isWrapOrUnwrap && <TradeFeesRow {...fees} executionFee={p.executionFee} feesType="swap" />}
+          {!isWrapOrUnwrap && (
+            <>
+              <TradeFeesRow {...fees} feesType="swap" />
+              <NetworkFeeRow executionFee={p.executionFee} />
+            </>
+          )}
         </ExchangeInfo.Group>
 
         <ExchangeInfo.Group>
@@ -1620,7 +1627,8 @@ export function ConfirmationBox(p: Props) {
             />
           )}
 
-          <TradeFeesRow {...fees} executionFee={p.executionFee} feesType="decrease" />
+          <TradeFeesRow {...fees} feesType="decrease" />
+          <NetworkFeeRow executionFee={p.executionFee} />
         </ExchangeInfo.Group>
 
         <ExchangeInfo.Group>
