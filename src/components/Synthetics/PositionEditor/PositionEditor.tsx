@@ -62,11 +62,13 @@ import useWallet from "lib/wallets/useWallet";
 import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
-import "./PositionEditor.scss";
+import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { getMinResidualAmount } from "domain/tokens";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
+
+import "./PositionEditor.scss";
 
 export type Props = {
   position?: PositionInfo;
@@ -602,7 +604,8 @@ export function PositionEditor(p: Props) {
                     />
                   </div>
                 </div>
-                <TradeFeesRow {...fees} executionFee={executionFee} feesType="edit" shouldShowRebate={false} />
+                <TradeFeesRow {...fees} feesType="edit" shouldShowRebate={false} />
+                <NetworkFeeRow executionFee={executionFee} />
               </ExchangeInfo.Group>
 
               <ExchangeInfo.Group>

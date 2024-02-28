@@ -2935,9 +2935,10 @@ msgid "Max Capacity for {0} Reached"
 msgstr "达到{0}的最高上限"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max Execution Fee"
-msgstr ""
+msgstr "最高执行费"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max Execution Fee Buffer"
@@ -3102,6 +3103,10 @@ msgstr ""
 #: src/components/Synthetics/SubaccountModal/utils.ts
 msgid "Maximum auto top-up amount is required"
 msgstr ""
+
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "Maximum execution fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does not impact your collateral."
+msgstr "最高执行费用支付给网络。这个费用是区块链的成本，不是GMX特有的，它不会影响你的抵押品。"
 
 #: src/components/Footer/constants.ts
 #: src/components/Footer/constants.ts
@@ -3345,10 +3350,6 @@ msgstr ""
 msgid "Not enough {0} on your Main Account. Use the \"<0>Convert {1} to {2}</0>\" field to increase the Main Account {3} balance."
 msgstr ""
 
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "Not enough {0} on your Main Account. Use the \"Convert {1} to {2}\" field to increase the Main Account {3} balance."
-#~ msgstr ""
-
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr "请注意，订单不保证被执行。<0/><1/>可能发生在几种情况下，包括但不限于:"
@@ -3363,20 +3364,8 @@ msgid "One-Click Trading"
 msgstr ""
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-#~ msgid "One-Click Trading is not available for Wrapping or Unwrapping native token {0}"
-#~ msgstr ""
-
-#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-#~ msgid "One-Click Trading is not available for wrapping or unwrapping native token {0}"
-#~ msgstr ""
-
-#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 msgid "One-Click Trading is not available for wrapping or unwrapping native token {0}."
 msgstr ""
-
-#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-#~ msgid "One-Click Trading is not available using network's native token {0}. Consider using {1} as Pay token instead."
-#~ msgstr ""
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 msgid "One-Click Trading is not available using network's native token {0}. Consider using {1} instead."
@@ -3937,6 +3926,7 @@ msgstr "购买保险"
 msgid "REBATE"
 msgstr ""
 
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
@@ -4636,10 +4626,6 @@ msgid "Subaccount activation failed"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-#~ msgid "Subaccount activation failed."
-#~ msgstr ""
-
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount created"
 msgstr ""
 
@@ -4648,24 +4634,12 @@ msgid "Subaccount deactivated"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-#~ msgid "Subaccount deactivated."
-#~ msgstr ""
-
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount deactivation failed"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-#~ msgid "Subaccount deactivation failed."
-#~ msgstr ""
-
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount generation failed"
 msgstr ""
-
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-#~ msgid "Subaccount generation failed."
-#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount is updated"
@@ -4942,9 +4916,9 @@ msgid "The Gambit protocol is in beta, please read the <0>staking details</0>be
 msgstr "Gambit协议处于测试阶段，请在参与之前阅读<0>质押细节</0>"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "The Max Execution Fee is overestimated by {maxExecutionFeeText}%. Upon execution, the excess Execution Fee is sent back to your account."
-msgstr ""
+msgstr "最大执行费用被高估了{maxExecutionFeeText}%.执行时，多余的执行费用将退还到您的账户"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
@@ -4977,10 +4951,6 @@ msgstr "标价已改变, 请考虑点击你地址旁的 \"...\" 图示来增加�
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"<0>Max allowed actions</0>\" field."
 msgstr ""
-
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"Max allowed actions\" field."
-#~ msgstr ""
 
 #: src/domain/synthetics/fees/utils/executionFee.ts
 msgid "The network Fees are high currently, which may be due to a temporary increase in transactions on the {0} network."
@@ -5056,10 +5026,6 @@ msgid "The website is a community deployed and maintained instance of the open s
 msgstr "该网站是一个社区部署和维护的开放资源<0>GMX前端的实例</0>，在分布式、对等的<1>IPFS网络</1>上托管和服务"
 
 #: src/context/SubaccountContext/SubaccountContext.tsx
-#~ msgid "There are insufficient funds in your Main account for One-Click Trading auto top-ups. <0>Click here</0> to convert."
-#~ msgstr ""
-
-#: src/context/SubaccountContext/SubaccountContext.tsx
 msgid "There are insufficient funds in your Subaccount for One-Click Trading. <0>Click here</0> to top-up."
 msgstr ""
 
@@ -5070,10 +5036,6 @@ msgstr ""
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "There are insufficient funds in your Subaccount for One-Click Trading. Use the \"<0>Top-up</0>\" field to increase the Subaccount Balance."
 msgstr ""
-
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "There are insufficient funds in your Subaccount for One-Click Trading. Use the \"Top-up\" field to increase the Subaccount Balance."
-#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "There are more longs than shorts, borrow fees for shorting is currently zero"
