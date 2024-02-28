@@ -5,6 +5,7 @@ import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenBu
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import Modal from "components/Modal/Modal";
 import Tab from "components/Tab/Tab";
 import TokenSelector from "components/TokenSelector/TokenSelector";
@@ -471,6 +472,7 @@ export function PositionEditor(p: Props) {
             <SubaccountNavigationButton
               executionFee={executionFee?.feeTokenAmount}
               closeConfirmationBox={onClose}
+              isNativeToken={isDeposit && collateralToken?.isNative}
               tradeFlags={undefined}
             />
 
@@ -543,81 +545,82 @@ export function PositionEditor(p: Props) {
               )}
             </BuyInputSection>
 
-            <div className="PositionEditor-info-box">
-              <ExchangeInfoRow
-                label={t`Leverage`}
-                value={<ValueTransition from={formatLeverage(position?.leverage)} to={formatLeverage(nextLeverage)} />}
-              />
-
-              <ExchangeInfoRow
-                isTop
-                label={t`Entry Price`}
-                value={formatUsd(position.entryPrice, { displayDecimals: indexPriceDecimals })}
-              />
-              <ExchangeInfoRow
-                label={t`Mark Price`}
-                value={formatUsd(position.markPrice, { displayDecimals: indexPriceDecimals })}
-              />
-
-              <ExchangeInfoRow
-                label={t`Liq. Price`}
-                value={
-                  <ValueTransition
-                    from={formatLiquidationPrice(position.liquidationPrice, { displayDecimals: indexPriceDecimals })}
-                    to={
-                      collateralDeltaAmount?.gt(0)
-                        ? formatLiquidationPrice(nextLiqPrice, { displayDecimals: indexPriceDecimals })
-                        : undefined
-                    }
-                  />
-                }
-              />
-
-              <ExchangeInfoRow isTop label={t`Size`} value={formatUsd(position.sizeInUsd)} />
-
-              <div className="Exchange-info-row">
-                <div>
-                  <Tooltip
-                    handle={
-                      <span className="Exchange-info-label">
-                        <Trans>Collateral ({position?.collateralToken?.symbol})</Trans>
-                      </span>
-                    }
-                    position="left-top"
-                    renderContent={() => {
-                      return <Trans>Initial Collateral (Collateral excluding Borrow and Funding Fee).</Trans>;
-                    }}
-                  />
-                </div>
-                <div className="align-right">
-                  <ValueTransition
-                    from={formatUsd(position?.collateralUsd)!}
-                    to={collateralDeltaUsd?.gt(0) ? formatUsd(nextCollateralUsd) : undefined}
-                  />
-                </div>
-              </div>
-
-              <TradeFeesRow {...fees} executionFee={executionFee} feesType="edit" shouldShowRebate={false} />
-
-              {!isDeposit && (
+            <ExchangeInfo className="PositionEditor-info-box">
+              <ExchangeInfo.Group>
                 <ExchangeInfoRow
-                  isTop={true}
-                  label={t`Receive`}
-                  value={formatTokenAmountWithUsd(
-                    receiveAmount,
-                    receiveUsd,
-                    collateralToken?.symbol,
-                    collateralToken?.decimals,
-                    { fallbackToZero: true }
-                  )}
+                  label={t`Leverage`}
+                  value={
+                    <ValueTransition from={formatLeverage(position?.leverage)} to={formatLeverage(nextLeverage)} />
+                  }
                 />
-              )}
-            </div>
+              </ExchangeInfo.Group>
 
-            {((needCollateralApproval && collateralToken) || highExecutionFeeAcknowledgement) && (
-              <>
-                <div className="App-card-divider" />
+              <ExchangeInfo.Group>
+                <ExchangeInfoRow
+                  label={t`Entry Price`}
+                  value={formatUsd(position.entryPrice, { displayDecimals: indexPriceDecimals })}
+                />
+                <ExchangeInfoRow
+                  label={t`Mark Price`}
+                  value={formatUsd(position.markPrice, { displayDecimals: indexPriceDecimals })}
+                />
+                <ExchangeInfoRow
+                  label={t`Liq. Price`}
+                  value={
+                    <ValueTransition
+                      from={formatLiquidationPrice(position.liquidationPrice, { displayDecimals: indexPriceDecimals })}
+                      to={
+                        collateralDeltaAmount?.gt(0)
+                          ? formatLiquidationPrice(nextLiqPrice, { displayDecimals: indexPriceDecimals })
+                          : undefined
+                      }
+                    />
+                  }
+                />
+              </ExchangeInfo.Group>
 
+              <ExchangeInfo.Group>
+                <ExchangeInfoRow label={t`Size`} value={formatUsd(position.sizeInUsd)} />
+                <div className="Exchange-info-row">
+                  <div>
+                    <Tooltip
+                      handle={
+                        <span className="Exchange-info-label">
+                          <Trans>Collateral ({position?.collateralToken?.symbol})</Trans>
+                        </span>
+                      }
+                      position="left-top"
+                      renderContent={() => {
+                        return <Trans>Initial Collateral (Collateral excluding Borrow and Funding Fee).</Trans>;
+                      }}
+                    />
+                  </div>
+                  <div className="align-right">
+                    <ValueTransition
+                      from={formatUsd(position?.collateralUsd)!}
+                      to={collateralDeltaUsd?.gt(0) ? formatUsd(nextCollateralUsd) : undefined}
+                    />
+                  </div>
+                </div>
+                <TradeFeesRow {...fees} executionFee={executionFee} feesType="edit" shouldShowRebate={false} />
+              </ExchangeInfo.Group>
+
+              <ExchangeInfo.Group>
+                {!isDeposit && (
+                  <ExchangeInfoRow
+                    label={t`Receive`}
+                    value={formatTokenAmountWithUsd(
+                      receiveAmount,
+                      receiveUsd,
+                      collateralToken?.symbol,
+                      collateralToken?.decimals,
+                      { fallbackToZero: true }
+                    )}
+                  />
+                )}
+              </ExchangeInfo.Group>
+
+              <ExchangeInfo.Group>
                 {needCollateralApproval && collateralToken && (
                   <ApproveTokenButton
                     tokenAddress={collateralToken.address}
@@ -626,8 +629,8 @@ export function PositionEditor(p: Props) {
                   />
                 )}
                 {highExecutionFeeAcknowledgement}
-              </>
-            )}
+              </ExchangeInfo.Group>
+            </ExchangeInfo>
 
             <div className="Exchange-swap-button-container Confirmation-box-row">
               <Button

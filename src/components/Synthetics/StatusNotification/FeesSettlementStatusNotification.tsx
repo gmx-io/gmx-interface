@@ -1,5 +1,4 @@
 import { Trans, plural, t } from "@lingui/macro";
-import cx from "classnames";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 import {
   OrderStatus,
@@ -14,6 +13,7 @@ import { getByKey } from "lib/objects";
 import { useEffect, useMemo, useState } from "react";
 import "./StatusNotification.scss";
 import { useToastAutoClose } from "./useToastAutoClose";
+import { StatusNotification } from "./StatusNotification";
 
 type Props = {
   toastTimestamp: number;
@@ -173,19 +173,9 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
   useToastAutoClose(isCompleted, toastTimestamp);
 
   return (
-    <div className={"StatusNotification"}>
-      <div className="StatusNotification-content">
-        <div className="StatusNotification-title">
-          <Trans>Settling Positions' Fees</Trans>
-        </div>
-
-        <div className="StatusNotification-items">
-          {creationStatus}
-          {executionStatuses}
-        </div>
-      </div>
-
-      <div className={cx("StatusNotification-background", { error: hasError })}></div>
-    </div>
+    <StatusNotification title={t`Settling Positions' Fees`} hasError={hasError}>
+      {creationStatus}
+      {executionStatuses}
+    </StatusNotification>
   );
 }

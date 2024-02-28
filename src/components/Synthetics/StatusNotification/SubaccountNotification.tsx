@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import cx from "classnames";
 import SpinningLoader from "components/Common/SpinningLoader";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getExplorerUrl } from "config/chains";
@@ -13,6 +12,7 @@ import { museNeverExist } from "lib/types";
 import { usePrevious } from "lib/usePrevious";
 import { ReactNode, memo, useMemo } from "react";
 import { useToastAutoClose } from "./useToastAutoClose";
+import { StatusNotification } from "./StatusNotification";
 
 const SubaccountNotificationImpl = ({
   toastId,
@@ -67,24 +67,24 @@ const SubaccountNotificationImpl = ({
     if (isUpdate) {
       if (step === "activating")
         return (
-          <span>
-            <Trans>Pending Wallet transaction sign</Trans> <SpinningLoader />
-          </span>
+          <div className="space-between">
+            <Trans>Pending Wallet transaction sign</Trans>
+            <SpinningLoader className="mr-xs self-center" />
+          </div>
         );
       return <Trans>Subaccount is updated</Trans>;
     }
 
     return (
       <div>
-        {step === "generating" ? <Trans>Pending Wallet message sign</Trans> : <Trans>Subaccount created</Trans>}{" "}
-        {step === "generating" ? <SpinningLoader /> : null}
-        <br />
-        {step === "activated" ? (
-          <Trans>Subaccount activated</Trans>
-        ) : (
-          <Trans>Pending Wallet transaction sign</Trans>
-        )}{" "}
-        {step === "activating" ? <SpinningLoader /> : null}
+        <div className="space-between">
+          {step === "generating" ? <Trans>Pending Wallet message sign</Trans> : <Trans>Subaccount created</Trans>}{" "}
+          {step === "generating" ? <SpinningLoader className="mr-xs self-center" /> : null}
+        </div>
+        <div className="space-between">
+          {step === "activated" ? <Trans>Subaccount activated</Trans> : <Trans>Pending Wallet transaction sign</Trans>}{" "}
+          {step === "activating" ? <SpinningLoader className="mr-xs self-center" /> : null}
+        </div>
       </div>
     );
   };
@@ -97,7 +97,7 @@ const SubaccountNotificationImpl = ({
 
     case "generationFailed":
       title = renderActivationTitle();
-      content = t`Subaccount generation failed.`;
+      content = t`Subaccount generation failed`;
       break;
 
     case "activating":
@@ -112,26 +112,27 @@ const SubaccountNotificationImpl = ({
 
     case "activationFailed":
       title = renderActivationTitle();
-      content = t`Subaccount activation failed.`;
+      content = t`Subaccount activation failed`;
       break;
 
     case "deactivating":
       title = t`Deactivation`;
       content = (
-        <div>
-          <Trans>Deactivating subaccount</Trans> <SpinningLoader />
+        <div className="space-between">
+          <Trans>Deactivating subaccount</Trans>
+          <SpinningLoader className="mr-xs self-center" />
         </div>
       );
       break;
 
     case "deactivated":
       title = t`Deactivation`;
-      content = t`Subaccount deactivated.`;
+      content = t`Subaccount deactivated`;
       break;
 
     case "deactivationFailed":
       title = t`Deactivation`;
-      content = t`Subaccount deactivation failed.`;
+      content = t`Subaccount deactivation failed`;
       break;
 
     case "none":
@@ -142,18 +143,15 @@ const SubaccountNotificationImpl = ({
   }
 
   return (
-    <div className={"StatusNotification"}>
-      <div className="StatusNotification-content">
-        <div className="StatusNotification-title">{title}</div>
-        <div className="StatusNotification-items">
-          {content}
-          {link && <br />}
+    <StatusNotification title={title} hasError={hasError}>
+      <div>{content}</div>
+      {link && (
+        <>
+          <br />
           {link}
-        </div>
-      </div>
-
-      <div className={cx("StatusNotification-background", { error: hasError })}></div>
-    </div>
+        </>
+      )}
+    </StatusNotification>
   );
 };
 
