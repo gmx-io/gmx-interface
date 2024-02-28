@@ -7,54 +7,68 @@ import { gql } from "@apollo/client";
 import { getLeaderboardGraphClient } from "lib/subgraph";
 import { expandDecimals } from "lib/numbers";
 
-type LeaderboardAccountsJson = {
-  accountPerves: {
+type LeaderboardPeriodAccountsJson = {
+  periodAccountStats: {
     id: string;
-    closedCount: number;
     cumsumCollateral: string;
     cumsumSize: string;
-    losses: number;
-    maxCollateral: string;
-    paidPriceImpact: string;
     sumMaxSize: string;
-    totalCollateral: string;
-    totalPaidCost: string;
-    totalPnl: string;
+
+    maxCollateral: string;
+    netCollateral: string;
+
+    realizedPnl: string;
+    paidPriceImpact: string;
+    paidFees: string;
+
+    startPendingPnl: string;
+    startPendingPriceImpact: string;
+    startPendingFees: string;
+
+    closedCount: number;
     volume: string;
+    losses: number;
     wins: number;
   }[];
 };
 
-export type LeaderboardAccountBase = {
+export type LeaderboardPeriodAccountStatBase = {
   account: string;
-  closedCount: number;
   cumsumCollateral: BigNumber;
   cumsumSize: BigNumber;
-  losses: number;
-  maxCollateral: BigNumber;
-  paidPriceImpact: BigNumber;
   sumMaxSize: BigNumber;
-  totalCollateral: BigNumber;
-  totalPaidCost: BigNumber;
-  totalPnl: BigNumber;
+
+  maxCollateral: BigNumber;
+  netCollateral: BigNumber;
+
+  paidPriceImpact: BigNumber;
+  paidFees: BigNumber;
+  realizedPnl: BigNumber;
+
+  startPendingPnl: BigNumber;
+  startPendingPriceImpact: BigNumber;
+  startPendingFees: BigNumber;
+
+  closedCount: number;
   volume: BigNumber;
+  losses: number;
   wins: number;
 };
 
-export type LeaderboardAccount = LeaderboardAccountBase & {
+export type LeaderboardPeriodAccountStat = LeaderboardPeriodAccountStatBase & {
   totalCount: number;
-  totalRealizedPnl: BigNumber;
-  totalCost: BigNumber;
-  totalPendingCost: BigNumber;
-  totalPendingPnl: BigNumber;
+  totalPnl: BigNumber;
+  totalFees: BigNumber;
+  pendingFees: BigNumber;
+  pendingPnl: BigNumber;
 };
 
 type LeaderboardPositionsJson = {
   positions: {
     id: string;
     account: string;
-    totalPaidCost: string;
-    totalPendingCost: string;
+    paidFees: string;
+    pendingFees: string;
     isLong: boolean;
     market: string;
     maxSize: string;
@@ -74,8 +88,8 @@ type LeaderboardPositionsJson = {
 export type LeaderboardPositionBase = {
   key: string;
   account: string;
-  totalPaidCost: BigNumber;
-  totalPendingCost: BigNumber;
+  paidFees: BigNumber;
+  pendingFees: BigNumber;
   isLong: boolean;
   market: string;
   maxSize: BigNumber;
@@ -95,7 +109,10 @@ export type LeaderboardPosition = LeaderboardPositionBase & {
   pendingPnl: BigNumber;
 };
 
-const fetchAccounts = async (chainId: number, account?: string): Promise<LeaderboardAccountBase[] | undefined> => {
+const fetchAccounts = async (
+  chainId: number,
+  p?: { account?: string; from?: number; to?: number }
+): Promise<LeaderboardPeriodAccountStatBase[] | undefined> => {
   const client = getLeaderboardGraphClient(chainId);
   if (!client) {
     // eslint-disable-next-line
@@ -103,13 +120,12 @@ const fetchAccounts = async (chainId: number, account?: string): Promise<Leaderb
     return;
   }
 
-  const response = await client.query<LeaderboardAccountsJson>({
+  const response = await client.query<LeaderboardPeriodAccountsJson>({
     query: gql`
-      query AccountPerfQuery($account: String, $requiredMaxCollateral: BigInt) {
-        accountPerves(
+      query PeriodAccountStats($account: String, $requiredMaxCollateral: String, $from: Int, $to: Int) {
+        periodAccountStats(
           limit: 100
-          orderBy: totalPnl_DESC
-          where: { id_eq: $account, maxCollateral_gt: $requiredMaxCollateral }
+          where: { id_eq: $account, maxCollateral_gte: $requiredMaxCollateral, from: $from, to: $to }
         ) {
           id
           closedCount
@@ -119,43 +135,54 @@ const fetchAccounts = async (chainId: number, account?: string): Promise<Leaderb
           maxCollateral
           paidPriceImpact
           sumMaxSize
-          totalCollateral
-          totalPaidCost
-          totalPnl
+          netCollateral
+          paidFees
+          realizedPnl
           volume
           wins
+          startPendingPnl
+          startPendingFees
+          startPendingPriceImpact
         }
       }
     `,
     variables: {
-      account,
-      requiredMaxCollateral: expandDecimals(100, 30).toString(),
+      account: p?.account,
+      requiredMaxCollateral: expandDecimals(500, 30).toString(),
+      from: p?.from,
+      to: p?.to,
     },
   });
 
-  return response?.data.accountPerves.map((p) => {
+  return response?.data.periodAccountStats.map((p) => {
     return {
       account: p.id,
-      closedCount: p.closedCount,
       cumsumCollateral: BigNumber.from(p.cumsumCollateral),
       cumsumSize: BigNumber.from(p.cumsumSize),
-      maxCollateral: BigNumber.from(p.maxCollateral),
-      paidPriceImpact: BigNumber.from(p.paidPriceImpact),
-      totalCollateral: BigNumber.from(p.totalCollateral),
-      totalPaidCost: BigNumber.from(p.totalPaidCost),
-      totalPnl: BigNumber.from(p.totalPnl),
-      volume: BigNumber.from(p.volume),
       sumMaxSize: BigNumber.from(p.sumMaxSize),
+      maxCollateral: BigNumber.from(p.maxCollateral),
+      netCollateral: BigNumber.from(p.netCollateral),
+
+      realizedPnl: BigNumber.from(p.realizedPnl),
+      paidPriceImpact: BigNumber.from(p.paidPriceImpact),
+      paidFees: BigNumber.from(p.paidFees),
+
+      startPendingPnl: BigNumber.from(p.startPendingPnl),
+      startPendingPriceImpact: BigNumber.from(p.startPendingPriceImpact),
+      startPendingFees: BigNumber.from(p.startPendingFees),
+
+      volume: BigNumber.from(p.volume),
+      closedCount: p.closedCount,
       losses: p.losses,
       wins: p.wins,
     };
   });
 };
 
-export function useLeaderboardAccounts(chainId: number, account?: string) {
+export function useLeaderboardAccounts(chainId: number, p?: { account?: string; from?: number; to?: number }) {
   const { data, error } = useSWR(
-    ["leaderboard/useLeaderboardAccounts", chainId, account],
-    () => fetchAccounts(chainId, account),
+    ["leaderboard/useLeaderboardAccounts", chainId, p?.account, p?.from, p?.to],
+    () => fetchAccounts(chainId, p),
     {
       refreshInterval: 60_000,
     }
@@ -196,8 +223,8 @@ const fetchPositions = async (
           market
           collateralToken
           isLong
-          totalPaidCost
-          totalPendingCost
+          paidFees
+          pendingFees
           maxSize
           paidPriceImpact
           pendingPriceImpact
@@ -227,9 +254,9 @@ const fetchPositions = async (
       collateralToken: p.collateralToken,
       isLong: p.isLong,
       paidPriceImpact: BigNumber.from(p.paidPriceImpact),
-      totalPaidCost: BigNumber.from(p.totalPaidCost),
+      paidFees: BigNumber.from(p.paidFees),
       collateralAmount: BigNumber.from(p.collateralAmount),
-      totalPendingCost: BigNumber.from(p.totalPendingCost),
+      pendingFees: BigNumber.from(p.pendingFees),
       entryPrice: BigNumber.from(p.entryPrice),
       sizeInUsd: BigNumber.from(p.sizeInUsd),
       sizeInTokens: BigNumber.from(p.sizeInTokens),
@@ -261,16 +288,20 @@ export function useLeaderboardPositions(
 
 export function useLeaderboardData(
   chainId: number,
-  account?: string
+  p?: {
+    account?: string;
+    from?: number;
+    to?: number;
+  }
 ): {
   data: {
-    accounts?: LeaderboardAccount[];
+    accounts?: LeaderboardPeriodAccountStat[];
     positions?: LeaderboardPosition[];
   };
   error?: Error;
 } {
-  const { data: accounts, error: accountsError } = useLeaderboardAccounts(chainId, account);
-  const { data: positions, error: positionsError } = useLeaderboardPositions(chainId, account);
+  const { data: accounts, error: accountsError } = useLeaderboardAccounts(chainId, p);
+  const { data: positions, error: positionsError } = useLeaderboardPositions(chainId, p?.account);
   const marketsInfoData = useMarketsInfoData();
 
   const data = useMemo(() => {
@@ -285,13 +316,13 @@ export function useLeaderboardData(
     }, {});
 
     const _accounts = accounts.map((account) => {
-      const ret: LeaderboardAccount = {
+      const ret: LeaderboardPeriodAccountStat = {
         ...account,
         totalCount: account.closedCount,
-        totalRealizedPnl: account.totalPnl,
-        totalPendingPnl: BigNumber.from(0),
-        totalPendingCost: BigNumber.from(0),
-        totalCost: account.totalPaidCost,
+        totalPnl: account.realizedPnl,
+        pendingPnl: BigNumber.from(0),
+        pendingFees: BigNumber.from(0),
+        totalFees: account.paidFees,
       };
 
       for (const p of positionsByAccount[account.account] || []) {
@@ -299,11 +330,12 @@ export function useLeaderboardData(
 
         const pendingPnl = getPositionPnl(p, market);
         ret.totalCount++;
-        ret.totalPnl = ret.totalPnl.add(pendingPnl);
+        ret.realizedPnl = ret.realizedPnl.add(pendingPnl);
         ret.sumMaxSize = ret.sumMaxSize.add(p.maxSize);
-        ret.totalCost = ret.totalCost.add(p.totalPendingCost);
-        ret.totalPendingCost = ret.totalPendingCost.add(p.totalPendingCost);
-        ret.totalPendingPnl = ret.totalPendingPnl.add(pendingPnl);
+        ret.totalFees = ret.totalFees.add(p.pendingFees);
+        ret.pendingFees = ret.pendingFees.add(p.pendingFees);
+        ret.pendingPnl = ret.pendingPnl.add(pendingPnl);
+        ret.totalPnl = ret.totalPnl.add(pendingPnl);
       }
 
       return ret;

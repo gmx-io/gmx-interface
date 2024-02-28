@@ -18,8 +18,14 @@ const TAB_OPTIONS = ["accounts", "positions", "snapshots"];
 export default function LeaderboardTest() {
   const { chainId } = useChainId();
   const { account } = useParams<{ account?: string }>();
+  const [from, setFrom] = useState<string | undefined>();
+  const [to, setTo] = useState<string | undefined>();
 
-  const { data, error } = useLeaderboardData(chainId, account);
+  const { data, error } = useLeaderboardData(chainId, {
+    account,
+    from: from ? Number(new Date(from)) / 1000 : undefined,
+    to: to ? Number(new Date(to)) / 1000 : undefined,
+  });
   const marketsInfoData = useMarketsInfoData();
   const { accounts, positions } = data;
 
@@ -46,6 +52,8 @@ export default function LeaderboardTest() {
               <th>cum size / collateral</th>
               <th>avg size</th>
               <th>lev</th>
+              <th>count</th>
+              <th>volume</th>
             </tr>
           </thead>
           <tbody>
@@ -54,21 +62,25 @@ export default function LeaderboardTest() {
                 <tr key={d.account}>
                   <td>{d.account}</td>
                   <td>
-                    {formatUsd(d.totalRealizedPnl)} / {formatUsd(d.totalPendingPnl)}
+                    {formatUsd(d.realizedPnl)} / {formatUsd(d.pendingPnl)}
                   </td>
                   <td>{formatAmount(d.totalPnl.mul(10000).div(d.maxCollateral), 2, 2)}%</td>
                   <td>
-                    {formatUsd(d.totalPaidCost)} / {formatUsd(d.totalPendingCost)}
+                    {formatUsd(d.paidFees)} / {formatUsd(d.pendingFees)}
                   </td>
                   <td>
-                    {formatUsd(d.totalCollateral)} / {formatUsd(d.maxCollateral)}
+                    {formatUsd(d.netCollateral)} / {formatUsd(d.maxCollateral)}
                   </td>
                   <td>
                     {formatUsd(d.cumsumSize, { displayDecimals: 0 })} /{" "}
                     {formatUsd(d.cumsumCollateral, { displayDecimals: 0 })}
                   </td>
-                  <td>{formatUsd(d.sumMaxSize.div(d.totalCount), { displayDecimals: 0 })}</td>
+                  <td>{d.totalCount > 0 ? formatUsd(d.sumMaxSize.div(d.totalCount), { displayDecimals: 0 }) : null}</td>
                   <td>{formatAmount(d.cumsumSize.mul(10000).div(d.cumsumCollateral), 4, 2)}x</td>
+                  <td>
+                    {d.closedCount} ({d.totalCount - d.closedCount})
+                  </td>
+                  <td>{formatUsd(d.volume)}</td>
                 </tr>
               );
             })}
@@ -121,9 +133,9 @@ export default function LeaderboardTest() {
                     {formatAmount(p.sizeInTokens, market.indexToken.decimals, 2, true)}&nbsp;{market.indexToken.symbol}
                   </td>
                   <td>
-                    {formatUsd(p.pendingPnl)} ({formatUsd(p.pendingPnl.sub(p.totalPendingCost))})
+                    {formatUsd(p.pendingPnl)} ({formatUsd(p.pendingPnl.sub(p.pendingFees))})
                   </td>
-                  <td>-{formatUsd(BigNumber.from(p.totalPendingCost))}</td>
+                  <td>-{formatUsd(BigNumber.from(p.pendingFees))}</td>
                 </tr>
               );
             })}
@@ -177,9 +189,9 @@ export default function LeaderboardTest() {
                     {formatAmount(p.sizeInTokens, market.indexToken.decimals, 2, true)}&nbsp;{market.indexToken.symbol}
                   </td>
                   <td>
-                    {formatUsd(p.pendingPnl)} ({formatUsd(p.pendingPnl.sub(p.totalPendingCost))})
+                    {formatUsd(p.pendingPnl)} ({formatUsd(p.pendingPnl.sub(p.pendingFees))})
                   </td>
-                  <td>-{formatUsd(BigNumber.from(p.totalPendingCost))}</td>
+                  <td>-{formatUsd(BigNumber.from(p.pendingFees))}</td>
                   <td>{new Date(p.snapshotTimestamp * 1000).toISOString().substring(0, 10)}</td>
                 </tr>
               );
@@ -200,6 +212,8 @@ export default function LeaderboardTest() {
           <div className="Page-description">
             <Trans>Addresses V2 trading statistics.</Trans>
           </div>
+          From: <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} />
+          To: <input type="date" value={to} onChange={(e) => setTo(e.target.value)} />
         </div>
       </div>
       {error ? <div>{error.toString()}</div> : null}
