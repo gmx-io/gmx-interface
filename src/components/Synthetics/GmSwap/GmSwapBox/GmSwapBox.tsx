@@ -58,6 +58,7 @@ import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 import useSortedMarketsWithIndexToken from "domain/synthetics/trade/useSortedMarketsWithIndexToken";
+import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
 
 export enum Operation {
   Deposit = "Deposit",
@@ -1030,9 +1031,9 @@ export function GmSwapBox(p: Props) {
                 totalFees={fees?.totalFees}
                 swapFee={fees?.swapFee}
                 swapPriceImpact={fees?.swapPriceImpact}
-                executionFee={executionFee}
                 uiFee={fees?.uiFee}
               />
+              <NetworkFeeRow executionFee={executionFee} />
             </div>
           </ExchangeInfo.Group>
 

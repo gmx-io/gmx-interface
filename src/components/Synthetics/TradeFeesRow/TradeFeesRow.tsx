@@ -57,15 +57,19 @@ export function TradeFeesRow(p: Props) {
     p.positionPriceImpact,
     p.priceImpactDiff
   );
-  const rebatesMessage = hasRebates ? (
-    <Trans>
-      Price Impact Rebates for closing trades are claimable under the Claims tab.{" "}
-      <ExternalLink newTab href="https://docs.gmx.io/docs/trading/v2/#price-impact-rebates">
-        Read more
-      </ExternalLink>
-      .
-    </Trans>
-  ) : undefined;
+  const rebatesMessage = useMemo(
+    () =>
+      hasRebates ? (
+        <Trans>
+          Price Impact Rebates for closing trades are claimable under the Claims tab.{" "}
+          <ExternalLink newTab href="https://docs.gmx.io/docs/trading/v2/#price-impact-rebates">
+            Read more
+          </ExternalLink>
+          .
+        </Trans>
+      ) : undefined,
+    [hasRebates]
+  );
 
   const feeRows: FeeRow[] = useMemo(() => {
     const positionPriceImpactRow = fullPositionPriceImpact?.deltaUsd.abs().gt(0)
@@ -368,41 +372,42 @@ export function TradeFeesRow(p: Props) {
     );
   }, [rebateIsApplicable, tradingIncentives]);
 
-  let value: ReactNode;
-  if (!totalFeeUsd || totalFeeUsd.eq(0)) {
-    value = "-";
-  } else if (!feeRows.length && !hasRebates && !incentivesBottomText) {
-    value = <span className={cx({ positive: totalFeeUsd.gt(0) })}>{formatDeltaUsd(totalFeeUsd)}</span>;
-  } else {
-    value = (
-      <TooltipWithPortal
-        portalClassName="TradeFeesRow-tooltip"
-        handle={<span className={cx({ positive: totalFeeUsd.gt(0) })}>{formatDeltaUsd(totalFeeUsd)}</span>}
-        position="right-top"
-        renderContent={() => (
-          <div>
-            {feeRows.map((feeRow) => (
-              <StatsTooltipRow
-                key={feeRow.id}
-                className={feeRow.className}
-                label={feeRow.label}
-                value={feeRow.value}
-                showDollar={false}
-              />
-            ))}
-            {hasRebates && (
-              <>
-                <br />
-                {rebatesMessage}
-              </>
-            )}
-            {incentivesBottomText && <br />}
-            {incentivesBottomText}
-          </div>
-        )}
-      />
-    );
-  }
+  let value: ReactNode = useMemo(() => {
+    if (!totalFeeUsd || totalFeeUsd.eq(0)) {
+      return "-";
+    } else if (!feeRows.length && !hasRebates && !incentivesBottomText) {
+      return <span className={cx({ positive: totalFeeUsd.gt(0) })}>{formatDeltaUsd(totalFeeUsd)}</span>;
+    } else {
+      return (
+        <TooltipWithPortal
+          portalClassName="TradeFeesRow-tooltip"
+          handle={<span className={cx({ positive: totalFeeUsd.gt(0) })}>{formatDeltaUsd(totalFeeUsd)}</span>}
+          position="right-top"
+          renderContent={() => (
+            <div>
+              {feeRows.map((feeRow) => (
+                <StatsTooltipRow
+                  key={feeRow.id}
+                  className={feeRow.className}
+                  label={feeRow.label}
+                  value={feeRow.value}
+                  showDollar={false}
+                />
+              ))}
+              {hasRebates && (
+                <>
+                  <br />
+                  {rebatesMessage}
+                </>
+              )}
+              {incentivesBottomText && <br />}
+              {incentivesBottomText}
+            </div>
+          )}
+        />
+      );
+    }
+  }, [feeRows, hasRebates, incentivesBottomText, rebatesMessage, totalFeeUsd]);
 
   return <ExchangeInfoRow className="TradeFeesRow" isTop={p.isTop} label={title} value={value} />;
 }
