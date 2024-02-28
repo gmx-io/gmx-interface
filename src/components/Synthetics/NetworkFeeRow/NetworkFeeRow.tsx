@@ -1,5 +1,5 @@
 import { Trans, t } from "@lingui/macro";
-import { useMemo } from "react";
+import { ReactNode, useMemo } from "react";
 
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { useExecutionFeeBufferBps } from "context/SyntheticsStateContext/hooks/settingsHooks";
@@ -38,15 +38,29 @@ export function NetworkFeeRow({ executionFee }: Props) {
     [executionFee]
   );
 
-  if (!executionFee?.feeTokenAmount.gt(0)) {
-    return null;
-  }
+  const value: ReactNode = useMemo(() => {
+    if (!executionFee?.feeUsd) {
+      return "-";
+    }
+
+    return (
+      <TooltipWithPortal
+        portalClassName="NetworkFeeRow-tooltip"
+        position="top-end"
+        renderContent={() => (
+          <StatsTooltipRow label={t`Max Execution Fee`} showDollar={false} value={executionFeeText} />
+        )}
+      >
+        {formatUsd(executionFee?.feeUsd.mul(-1))}
+      </TooltipWithPortal>
+    );
+  }, [executionFee?.feeUsd, executionFeeText]);
 
   return (
     <ExchangeInfoRow
       label={
         <TooltipWithPortal
-          position="left-top"
+          position="top-start"
           renderContent={() => (
             <div>
               <Trans>
@@ -73,17 +87,7 @@ export function NetworkFeeRow({ executionFee }: Props) {
           <Trans>Max Execution Fee</Trans>
         </TooltipWithPortal>
       }
-      value={
-        <TooltipWithPortal
-          portalClassName="NetworkFeeRow-tooltip"
-          position="right-top"
-          renderContent={() => (
-            <StatsTooltipRow label={t`Max Execution Fee`} showDollar={false} value={executionFeeText} />
-          )}
-        >
-          {formatUsd(executionFee?.feeUsd.mul(-1))}
-        </TooltipWithPortal>
-      }
+      value={value}
     />
   );
 }

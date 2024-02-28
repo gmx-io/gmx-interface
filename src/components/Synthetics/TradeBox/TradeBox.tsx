@@ -1358,8 +1358,12 @@ export function TradeBox(p: Props) {
 
               <ExchangeInfo.Group>
                 {selectedPosition && !isSwap && renderExistingPositionInfo()}
-                {feesType && <TradeFeesRow {...fees} feesType={feesType} />}
-                <NetworkFeeRow executionFee={executionFee} />
+                {feesType && (
+                  <>
+                    <TradeFeesRow {...fees} feesType={feesType} />
+                    <NetworkFeeRow executionFee={executionFee} />
+                  </>
+                )}
               </ExchangeInfo.Group>
 
               <ExchangeInfo.Group>

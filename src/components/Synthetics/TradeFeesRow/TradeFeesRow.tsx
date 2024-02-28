@@ -377,35 +377,36 @@ export function TradeFeesRow(p: Props) {
       return "-";
     } else if (!feeRows.length && !hasRebates && !incentivesBottomText) {
       return <span className={cx({ positive: totalFeeUsd.gt(0) })}>{formatDeltaUsd(totalFeeUsd)}</span>;
+    } else {
+      return (
+        <TooltipWithPortal
+          portalClassName="TradeFeesRow-tooltip"
+          handle={<span className={cx({ positive: totalFeeUsd.gt(0) })}>{formatDeltaUsd(totalFeeUsd)}</span>}
+          position="top-end"
+          renderContent={() => (
+            <div>
+              {feeRows.map((feeRow) => (
+                <StatsTooltipRow
+                  key={feeRow.id}
+                  className={feeRow.className}
+                  label={feeRow.label}
+                  value={feeRow.value}
+                  showDollar={false}
+                />
+              ))}
+              {hasRebates && (
+                <>
+                  <br />
+                  {rebatesMessage}
+                </>
+              )}
+              {incentivesBottomText && <br />}
+              {incentivesBottomText}
+            </div>
+          )}
+        />
+      );
     }
-    return (
-      <TooltipWithPortal
-        portalClassName="TradeFeesRow-tooltip"
-        handle={<span className={cx({ positive: totalFeeUsd.gt(0) })}>{formatDeltaUsd(totalFeeUsd)}</span>}
-        position="top-end"
-        renderContent={() => (
-          <div>
-            {feeRows.map((feeRow) => (
-              <StatsTooltipRow
-                key={feeRow.id}
-                className={feeRow.className}
-                label={feeRow.label}
-                value={feeRow.value}
-                showDollar={false}
-              />
-            ))}
-            {hasRebates && (
-              <>
-                <br />
-                {rebatesMessage}
-              </>
-            )}
-            {incentivesBottomText && <br />}
-            {incentivesBottomText}
-          </div>
-        )}
-      />
-    );
   }, [feeRows, hasRebates, incentivesBottomText, rebatesMessage, totalFeeUsd]);
 
   return <ExchangeInfoRow className="TradeFeesRow" isTop={p.isTop} label={title} value={value} />;
