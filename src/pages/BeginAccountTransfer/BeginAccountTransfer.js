@@ -23,6 +23,7 @@ import { approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import Button from "components/Button/Button";
 import useWallet from "lib/wallets/useWallet";
+import Checkbox from "components/Checkbox/Checkbox";
 
 function ValidationRow({ isValid, children }) {
   return (
@@ -45,6 +46,7 @@ export default function BeginAccountTransfer(props) {
   const [isTransferring, setIsTransferring] = useState(false);
   const [isApproving, setIsApproving] = useState(false);
   const [isTransferSubmittedModalVisible, setIsTransferSubmittedModalVisible] = useState(false);
+  const [isAffiliateVesterSkipValidation, setIsAffiliateVesterSkipValidation] = useState(false);
   let parsedReceiver = ethers.constants.AddressZero;
   if (ethers.utils.isAddress(receiver)) {
     parsedReceiver = receiver;
@@ -53,6 +55,7 @@ export default function BeginAccountTransfer(props) {
   const gmxAddress = getContract(chainId, "GMX");
   const gmxVesterAddress = getContract(chainId, "GmxVester");
   const glpVesterAddress = getContract(chainId, "GlpVester");
+  const affiliateVesterAddress = getContract(chainId, "AffiliateVester");
 
   const rewardRouterAddress = getContract(chainId, "RewardRouter");
 
@@ -63,6 +66,13 @@ export default function BeginAccountTransfer(props) {
   const { data: glpVesterBalance } = useSWR(active && [active, chainId, glpVesterAddress, "balanceOf", account], {
     fetcher: contractFetcher(signer, Token),
   });
+
+  const { data: affiliateVesterBalance } = useSWR(
+    active && [active, chainId, affiliateVesterAddress, "balanceOf", account],
+    {
+      fetcher: contractFetcher(signer, Token),
+    }
+  );
 
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
   const { data: cumulativeGmxRewards } = useSWR(
@@ -117,8 +127,9 @@ export default function BeginAccountTransfer(props) {
 
   const needApproval = gmxAllowance && gmxStaked && gmxStaked.gt(gmxAllowance);
 
-  const hasVestedGmx = gmxVesterBalance && gmxVesterBalance.gt(0);
-  const hasVestedGlp = glpVesterBalance && glpVesterBalance.gt(0);
+  const hasVestedGmx = gmxVesterBalance?.gt(0);
+  const hasVestedGlp = glpVesterBalance?.gt(0);
+  const hasVestedAffiliate = affiliateVesterBalance?.gt(0);
   const hasStakedGmx =
     (cumulativeGmxRewards && cumulativeGmxRewards.gt(0)) ||
     (transferredCumulativeGmxRewards && transferredCumulativeGmxRewards.gt(0));
@@ -143,9 +154,15 @@ export default function BeginAccountTransfer(props) {
     if (!ethers.utils.isAddress(receiver)) {
       return t`Invalid Receiver Address`;
     }
-    if (hasStakedGmx || hasStakedGlp) {
-      return t`Invalid Receiver`;
+
+    if (hasVestedAffiliate && !isAffiliateVesterSkipValidation) {
+      return t`Vested GMX not withdrawn`;
     }
+
+    if (hasStakedGmx || hasStakedGlp) {
+      return t`Receiver has staked GMX/GLP before`;
+    }
+
     if ((parsedReceiver || "").toString().toLowerCase() === (account || "").toString().toLowerCase()) {
       return t`Self-transfer not supported`;
     }
@@ -280,6 +297,29 @@ export default function BeginAccountTransfer(props) {
             <ValidationRow isValid={!hasVestedGlp}>
               <Trans>Sender has withdrawn all tokens from GLP Vesting Vault</Trans>
             </ValidationRow>
+            <ValidationRow isValid={!hasVestedAffiliate}>
+              <Trans>Sender has withdrawn all tokens from Affiliate Vesting Vault</Trans>
+            </ValidationRow>
+            {hasVestedAffiliate && (
+              <>
+                <p className="soft-error">
+                  <Trans>
+                    You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to
+                    transfer them to the new account
+                  </Trans>
+                </p>
+                <Checkbox
+                  className="VestedAffiliate-checkbox"
+                  isChecked={isAffiliateVesterSkipValidation}
+                  setIsChecked={setIsAffiliateVesterSkipValidation}
+                >
+                  <span className="text-warning font-sm">
+                    <Trans>I do not want to transfer the Affiliate esGMX tokens</Trans>
+                  </span>
+                </Checkbox>
+              </>
+            )}
+
             <ValidationRow isValid={!hasStakedGmx}>
               <Trans>Receiver has not staked GMX tokens before</Trans>
             </ValidationRow>

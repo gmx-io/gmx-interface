@@ -28,3 +28,21 @@
   text-align: center;
   font-size: var(--font-base);
 }
+
+.BeginAccountTransfer .soft-error {
+  color: #b7b7bd;
+  line-height: 2.15rem;
+  font-size: 14px;
+  margin: -0.5rem 0 1rem 3rem;
+}
+
+.VestedAffiliate-checkbox {
+  margin-bottom: 1.5rem;
+  margin-left: 3rem;
+  align-items: flex-start;
+}
+
+.VestedAffiliate-checkbox > .Checkbox-icon-wrapper {
+  align-items: flex-start;
+  margin-top: 4px;
+}
