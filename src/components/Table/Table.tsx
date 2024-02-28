@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import isObject from "lodash/isObject";
 import { t } from "@lingui/macro";
 import cx from "classnames";
@@ -82,15 +82,17 @@ export default function Table<T extends Record<string, any>>({
 }
 
 const TableHeader = ({ data, breakpoint }: TableHeaderProps) => {
-  const { onClick, className, tooltip, tooltipPosition, width, title } = data;
+  const { onClick, className, tooltip, tooltipPosition, width, title, columnName } = data;
   const style = width
     ? {
         width: `${typeof width === "function" ? width(breakpoint) : width}%`,
       }
     : undefined;
 
+  const handleClick = useCallback(() => onClick?.(columnName), [columnName, onClick]);
+
   return (
-    <th onClick={onClick} className={cx("TableHeader", className)} style={style}>
+    <th onClick={handleClick} className={cx("TableHeader", className)} style={style}>
       {tooltip ? (
         <Tooltip
           handle={<span className="TableHeaderTitle">{title}</span>}

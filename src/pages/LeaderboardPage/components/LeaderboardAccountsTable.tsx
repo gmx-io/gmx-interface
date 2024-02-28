@@ -99,25 +99,27 @@ type TopAccountsProps = {
   search: string;
 };
 
+type LeaderboardAccountField = keyof LeaderboardAccount;
+
 export function LeaderboardAccountsTable({ accounts, search }: TopAccountsProps) {
   const perPage = 15;
   const { isLoading, error, data } = accounts;
   const [page, setPage] = useState(1);
-  const [orderBy, setOrderBy] = useState<keyof LeaderboardAccount>("totalPnl");
+  const [orderBy, setOrderBy] = useState<LeaderboardAccountField>("totalPnl");
   const [direction, setDirection] = useState<number>(1);
-  const onColumnClick = useCallback(
-    (key: keyof LeaderboardAccount) => () => {
+  const handleColumnClick = useCallback(
+    (key: string) => {
       if (key === "wins") {
         setOrderBy(orderBy === "wins" ? "losses" : "wins");
         setDirection(1);
       } else if (key === orderBy) {
         setDirection((d: number) => -1 * d);
       } else {
-        setOrderBy(key);
+        setOrderBy(key as LeaderboardAccountField);
         setDirection(1);
       }
     },
-    [orderBy, setOrderBy, setDirection]
+    [orderBy]
   );
 
   const accountsHash = (data || []).map((a) => a[orderBy]!.toString()).join(":");
@@ -132,6 +134,8 @@ export function LeaderboardAccountsTable({ accounts, search }: TopAccountsProps)
         const key = orderBy;
         if (BigNumber.isBigNumber(a[key]) && BigNumber.isBigNumber(b[key])) {
           return direction * ((a[key] as BigNumber).gt(b[key] as BigNumber) ? -1 : 1);
+        } else if (typeof a[key] === "number" && typeof b[key] === "number") {
+          return direction * (a[key] > b[key] ? -1 : 1);
         } else {
           return 1;
         }
@@ -147,7 +151,7 @@ export function LeaderboardAccountsTable({ accounts, search }: TopAccountsProps)
   const rows = filteredStats.slice(indexFrom, indexFrom + perPage).map(constructRow);
   const pageCount = Math.ceil(filteredStats.length / perPage);
   const getSortableClass = useCallback(
-    (key: keyof LeaderboardAccount) =>
+    (key: LeaderboardAccountField) =>
       cx(
         orderBy === key || (key === "wins" && orderBy === "losses")
           ? direction > 0
@@ -160,49 +164,55 @@ export function LeaderboardAccountsTable({ accounts, search }: TopAccountsProps)
 
   const titles: { [key in keyof TopAccountsRow]?: TableHeader } = useMemo(
     () => ({
-      rank: { title: t`Rank`, width: 6 },
+      rank: { columnName: "rank", title: t`Rank`, width: 6 },
       account: {
+        columnName: "account",
         title: t`Address`,
-        width: (p = "XL") => ({ XL: 40, L: 36, M: 16, S: 10 }[p] || 40),
         tooltip: t`Only Addresses with over $1,000 in traded volume are displayed.`,
         tooltipPosition: "left-bottom",
+        width: (p = "XL") => ({ XL: 40, L: 36, M: 16, S: 10 }[p] || 40),
       },
       absPnl: {
+        className: getSortableClass("totalPnl"),
+        columnName: "totalPnl",
+        onClick: handleColumnClick,
         title: t`PnL ($)`,
         tooltip: t`Total Realized and Unrealized Profit and Loss.`,
-        onClick: onColumnClick("totalPnl"),
         width: 12,
-        className: getSortableClass("totalPnl"),
       },
       relPnl: {
-        title: t`PnL (%)`,
-        onClick: onColumnClick("pnlPercentage"),
-        width: 10,
         className: getSortableClass("pnlPercentage"),
+        columnName: "pnlPercentage",
+        onClick: handleColumnClick,
+        title: t`PnL (%)`,
+        width: 10,
       },
       averageSize: {
+        className: getSortableClass("averageSize"),
+        columnName: "averageSize",
+        onClick: handleColumnClick,
         title: t`Avg. Size`,
         tooltip: t`Average Position Size.`,
-        onClick: onColumnClick("averageSize"),
         width: 12,
-        className: getSortableClass("averageSize"),
       },
       averageLeverage: {
+        className: getSortableClass("averageLeverage"),
+        columnName: "averageLeverage",
+        onClick: handleColumnClick,
         title: t`Avg. Lev.`,
         tooltip: t`Average Leverage used.`,
-        onClick: onColumnClick("averageLeverage"),
         width: 10,
-        className: getSortableClass("averageLeverage"),
       },
       winsLosses: {
+        className: cx("text-right", getSortableClass("wins")),
+        columnName: "wins",
+        onClick: handleColumnClick,
         title: t`Win/Loss`,
         tooltip: t`Wins and Losses for fully closed Positions.`,
-        onClick: onColumnClick("wins"),
         width: 10,
-        className: cx("text-right", getSortableClass("wins")),
       },
     }),
-    [getSortableClass, onColumnClick]
+    [getSortableClass, handleColumnClick]
   );
 
   const loader = useCallback(() => <TopAccountsSkeleton count={15} />, []);
