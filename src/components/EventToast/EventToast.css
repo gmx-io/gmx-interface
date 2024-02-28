@@ -49,6 +49,7 @@
   border-radius: 4px;
   padding: 2px;
   margin-left: 1.5rem;
+  flex-shrink: 0;
 }
 .single-toast header .cross-icon:hover {
   background: #ffffff47;
@@ -62,6 +63,7 @@
   width: 2rem;
   height: 2rem;
   color: white;
+  flex-shrink: 0;
 }
 .single-toast header p {
   margin: 0;
