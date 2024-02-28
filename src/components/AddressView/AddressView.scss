@@ -1,0 +1,22 @@
+.AddressView {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.AddressView-trader-id {
+  display: inline-block;
+  margin-left: 0.5rem;
+}
+
+.AddressView-ens-avatar {
+  display: inline-block;
+  border-radius: 50%;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}

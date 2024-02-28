@@ -39,6 +39,8 @@ export type SyntheticsTradeState = {
     savedShowPnlAfterFees: boolean;
   };
   leaderboard: {
+    currentAccount: LeaderboardAccountBase | undefined;
+    currentAccountError: any; // FIXME any
     accounts: LeaderboardAccountBase[] | undefined;
     accountsError: any; // FIXME any
     positions: LeaderboardPositionBase[] | undefined;
@@ -104,7 +106,8 @@ export function SyntheticsStateContextProvider({
   });
 
   const isLeaderboardPage = pageType === "leaderboard";
-  const { data: accounts, error: accountsError } = useLeaderboardAccounts(isLeaderboardPage, chainId, account);
+  const { data: currentAccountArr, error: currentAccountError } = useLeaderboardAccounts(true, chainId, account);
+  const { data: accounts, error: accountsError } = useLeaderboardAccounts(isLeaderboardPage, chainId, undefined);
   const { data: positions, error: positionsError } = useLeaderboardPositions(isLeaderboardPage, chainId, account);
   const { data: snapshotPositions, error: snapshotsError } = useLeaderboardPositions(
     isLeaderboardPage,
@@ -132,6 +135,8 @@ export function SyntheticsStateContextProvider({
         savedShowPnlAfterFees,
       },
       leaderboard: {
+        currentAccount: currentAccountArr?.[0],
+        currentAccountError,
         accounts,
         accountsError,
         positions,
@@ -157,6 +162,8 @@ export function SyntheticsStateContextProvider({
     userReferralInfo,
     savedIsPnlInLeverage,
     savedShowPnlAfterFees,
+    currentAccountArr,
+    currentAccountError,
     accounts,
     accountsError,
     positions,

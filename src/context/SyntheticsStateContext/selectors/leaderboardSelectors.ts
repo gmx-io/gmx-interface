@@ -4,6 +4,7 @@ import { createEnhancedSelector } from "../utils";
 import { LeaderboardAccount, LeaderboardPositionBase } from "domain/synthetics/leaderboard";
 import { selectMarketsInfoData } from "./globalSelectors";
 import { MarketInfo } from "domain/synthetics/markets";
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 export const selectLeaderboardAccountBases = (s: SyntheticsTradeState) => s.leaderboard.accounts;
 export const selectLeaderboardAccountsError = (s: SyntheticsTradeState) => s.leaderboard.accountsError;
@@ -32,14 +33,17 @@ export const selectLeaderboardAccounts = createEnhancedSelector((q) => {
   if (!accounts) return undefined;
   if (!positionBasesByAccount) return undefined;
 
-  return accounts.map((base): LeaderboardAccount => {
-    const account = {
+  return accounts.map((base) => {
+    const account: LeaderboardAccount = {
       ...base,
       totalCount: base.closedCount,
       totalRealizedPnl: base.totalPnl,
       totalPendingPnl: BigNumber.from(0),
       totalPendingCost: BigNumber.from(0),
       totalCost: base.totalPaidCost,
+      pnlPercentage: BigNumber.from(0),
+      averageSize: BigNumber.from(0),
+      averageLeverage: BigNumber.from(0),
     };
 
     for (const p of positionBasesByAccount[base.account] || []) {
@@ -51,6 +55,24 @@ export const selectLeaderboardAccounts = createEnhancedSelector((q) => {
       account.totalCost = account.totalCost.add(p.totalPendingCost);
       account.totalPendingCost = account.totalPendingCost.add(p.totalPendingCost);
       account.totalPendingPnl = account.totalPendingPnl.add(pendingPnl);
+    }
+
+    try {
+      account.pnlPercentage = account.totalPnl.mul(BASIS_POINTS_DIVISOR).div(account.maxCollateral);
+    } catch (err) {
+      // pass
+    }
+
+    try {
+      account.averageSize = base.sumMaxSize.div(account.totalCount);
+    } catch (err) {
+      // pass
+    }
+
+    try {
+      account.averageLeverage = base.cumsumSize.mul(BASIS_POINTS_DIVISOR).div(base.cumsumCollateral);
+    } catch (err) {
+      // pass
     }
 
     return account;

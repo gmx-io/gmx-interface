@@ -91,7 +91,7 @@ import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountC
 import { SubaccountModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
 import LeaderboardTest from "pages/LeaderboardTest/LeaderboardTest";
-import { Leaderboard } from "pages/Leaderboard/Leaderboard";
+import { Leaderboard } from "pages/LeaderboardPage/LeaderboardPage";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;

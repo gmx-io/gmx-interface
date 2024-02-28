@@ -5,7 +5,10 @@ import useSWR from "swr";
 import { MarketInfo } from "../markets";
 import { gql } from "@apollo/client";
 import { getLeaderboardGraphClient } from "lib/subgraph";
-import { expandDecimals } from "lib/numbers";
+import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "./constants";
+
+export * from "./types";
+export * from "./utils";
 
 type LeaderboardAccountsJson = {
   accountPerves: {
@@ -47,6 +50,9 @@ export type LeaderboardAccount = LeaderboardAccountBase & {
   totalCost: BigNumber;
   totalPendingCost: BigNumber;
   totalPendingPnl: BigNumber;
+  pnlPercentage: BigNumber;
+  averageSize: BigNumber;
+  averageLeverage: BigNumber;
 };
 
 type LeaderboardPositionsJson = {
@@ -106,11 +112,7 @@ const fetchAccounts = async (chainId: number, account?: string): Promise<Leaderb
   const response = await client.query<LeaderboardAccountsJson>({
     query: gql`
       query AccountPerfQuery($account: String, $requiredMaxCollateral: BigInt) {
-        accountPerves(
-          limit: 100
-          orderBy: totalPnl_DESC
-          where: { id_eq: $account, maxCollateral_gt: $requiredMaxCollateral }
-        ) {
+        accountPerves(orderBy: totalPnl_DESC, where: { id_eq: $account, maxCollateral_gt: $requiredMaxCollateral }) {
           id
           closedCount
           cumsumCollateral
@@ -129,7 +131,7 @@ const fetchAccounts = async (chainId: number, account?: string): Promise<Leaderb
     `,
     variables: {
       account,
-      requiredMaxCollateral: expandDecimals(100, 30).toString(),
+      requiredMaxCollateral: MIN_COLLATERAL_USD_IN_LEADERBOARD.toString(),
     },
   });
 
@@ -216,6 +218,7 @@ const fetchPositions = async (
       isSnapshot,
       snapshotTimestamp,
       orderBy,
+      requiredMaxCollateral: MIN_COLLATERAL_USD_IN_LEADERBOARD.toString(),
     },
   });
 
@@ -273,7 +276,7 @@ export function useLeaderboardData(
   };
   error?: Error;
 } {
-  const { data: accounts, error: accountsError } = useLeaderboardAccounts(true, chainId, account);
+  const { data: accounts, error: accountsError } = useLeaderboardAccounts(true, chainId, undefined);
   const { data: positions, error: positionsError } = useLeaderboardPositions(true, chainId, account);
   const marketsInfoData = useMarketsInfoData();
 
@@ -296,6 +299,9 @@ export function useLeaderboardData(
         totalPendingPnl: BigNumber.from(0),
         totalPendingCost: BigNumber.from(0),
         totalCost: account.totalPaidCost,
+        pnlPercentage: BigNumber.from(0),
+        averageLeverage: BigNumber.from(0),
+        averageSize: BigNumber.from(0),
       };
 
       for (const p of positionsByAccount[account.account] || []) {

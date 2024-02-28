@@ -331,12 +331,15 @@ msgstr "Zusätzliche Reserve erforderlich"
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr "Außerdem handelt es sich bei Trigger-Order um Markt-Orders, bei denen nicht garantiert wird, dass sie zum Trigger-Kurs abgerechnet werden."
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Address"
+msgstr ""
+
 #: src/components/AddressDropdown/AddressDropdown.tsx
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Address copied to your clipboard"
 msgstr ""
 
-#: src/pages/Leaderboard/Leaderboard.tsx
 #: src/pages/LeaderboardTest/LeaderboardTest.tsx
 msgid "Addresses V2 trading statistics."
 msgstr ""
@@ -525,6 +528,22 @@ msgstr "Verfügbar in deinem bevorzugten Netzwerk"
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Average Leverage used."
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Average Position Size."
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Avg. Lev."
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Avg. Size"
+msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "BUYABLE"
@@ -779,7 +798,7 @@ msgstr "Abbruch übermittelt."
 msgid "Cancelling {ordersText}"
 msgstr ""
 
-#: src/pages/Leaderboard/Leaderboard.tsx
+#: src/pages/LeaderboardPage/LeaderboardPage.tsx
 #: src/pages/LeaderboardTest/LeaderboardTest.tsx
 msgid "Chain Icon"
 msgstr ""
@@ -1777,6 +1796,10 @@ msgstr "Einstiegspreis"
 msgid "Epoch ending is not acknowledged"
 msgstr ""
 
+#: src/components/Table/Table.tsx
+msgid "Error"
+msgstr ""
+
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -2543,10 +2566,10 @@ msgid "Launch App"
 msgstr "App starten"
 
 #: src/components/Exchange/UsefulLinks.tsx
+#: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
 msgstr "Bestenliste"
 
-#: src/pages/Leaderboard/Leaderboard.tsx
 #: src/pages/LeaderboardTest/LeaderboardTest.tsx
 msgid "Leaderboard Data"
 msgstr ""
@@ -2554,6 +2577,10 @@ msgstr ""
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Leaderboard for GMX traders"
 msgstr "Rangliste für GMX-Trader"
+
+#: src/pages/LeaderboardPage/LeaderboardPage.tsx
+msgid "Leaderboard for traders on GMX V2."
+msgstr ""
 
 #: src/pages/LeaderboardTest/LeaderboardTest.tsx
 #~ msgid "Leaderboards"
@@ -2742,6 +2769,7 @@ msgstr "Liquiditätsdaten nicht geladen"
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+#: src/components/Table/Table.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Loading..."
@@ -2952,6 +2980,10 @@ msgstr "Max. Kapazität"
 #: src/components/Glp/GlpSwap.js
 msgid "Max Capacity for {0} Reached"
 msgstr "Max. Kapazität für {0} erreicht"
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Max Collateral"
+msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
@@ -3304,6 +3336,10 @@ msgstr "Keine PnLs gefunden"
 msgid "No claims yet"
 msgstr ""
 
+#: src/components/Table/Table.tsx
+msgid "No data yet"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "No esGMX to claim"
 msgstr "Kein esGMX zu beanspruchen"
@@ -3379,6 +3415,10 @@ msgstr ""
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 msgid "One-Click Trading is not available using network's native token {0}. Consider using {1} as Pay token instead."
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Only Addresses with over $1,000 in traded volume are displayed."
 msgstr ""
 
 #: src/components/Referrals/referralsHelper.js
@@ -3673,6 +3713,14 @@ msgstr ""
 msgid "PnL"
 msgstr "PnL"
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "PnL ($)"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "PnL (%)"
+msgstr ""
+
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
@@ -3936,11 +3984,19 @@ msgstr "Versicherung kaufen"
 msgid "REBATE"
 msgstr ""
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Rank"
+msgstr ""
+
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Read more"
 msgstr "Mehr lesen"
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Realized PnL"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Realized PnL insufficient for Fees"
@@ -5184,6 +5240,10 @@ msgstr "Insgesamt gestakete Assets"
 msgid "Total Fees"
 msgstr "Gebühren insgesamt"
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Total Realized and Unrealized Profit and Loss."
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Rebates"
 msgstr "Rabatte insgesamt"
@@ -5459,6 +5519,10 @@ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown sell GM order"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Unrealized PnL"
 msgstr ""
 
 #: src/pages/Stake/StakeV1.js
@@ -5834,6 +5898,14 @@ msgstr "Gewichtung"
 #: src/components/Exchange/SwapBox.js
 msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr "Wenn du die Position schließt, kannst du auswählen, in welchem Token du die Gewinne erhalten möchtest."
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Win/Loss"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Wins and Losses for fully closed Positions."
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js

@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { useCallback, useState, useRef, MouseEvent, ReactNode } from "react";
+import { useCallback, useState, useRef, MouseEvent, ReactNode, useEffect } from "react";
 import { IS_TOUCH } from "config/env";
 import "./Tooltip.scss";
 import { TOOLTIP_CLOSE_DELAY, TOOLTIP_OPEN_DELAY } from "config/ui";
@@ -73,6 +73,17 @@ export default function Tooltip(props: Props) {
       intervalOpenRef.current = null;
     }
   }, [setVisible, props.closeDelay]);
+
+  useEffect(() => {
+    return () => {
+      if (intervalCloseRef.current) {
+        clearInterval(intervalCloseRef.current);
+      }
+      if (intervalOpenRef.current) {
+        clearInterval(intervalOpenRef.current);
+      }
+    };
+  }, []);
 
   const onHandleClick = useCallback((event: MouseEvent) => {
     event.preventDefault();

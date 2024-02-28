@@ -1,0 +1,134 @@
+.LeaderboardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1.5rem 0;
+}
+
+.GlobalLeaderboards .Tab {
+  width: 40rem;
+  margin: 0 auto;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+}
+
+@media screen and (max-width: 600px) {
+  .GlobalLeaderboards .Tab {
+    width: unset;
+  }
+
+  .GlobalLeaderboards .Tab-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .LeaderboardHeader {
+    display: block;
+  }
+
+  .LeaderboardSearch.TopPositionsSearch {
+    width: unset;
+  }
+}
+
+.Table .formula {
+  font-style: italic;
+}
+
+.TopPositionsItem {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.TopPositionsItem img,
+.TopPositionsItem span {
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+.LeaderboardSearch {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 30rem;
+}
+
+.TopPositionsPositionCell .Tooltip {
+  display: inline-block;
+  width: 100%;
+}
+
+.TopPositionsPositionCell .Tooltip-handle {
+  display: inline-block;
+  width: 100%;
+}
+
+.TopPositionsPositionView {
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+  text-decoration: inherit;
+}
+
+.TopPositionsPositionView .TopPositionsSymbol {
+  display: inline-block;
+  text-decoration: inherit;
+}
+
+.TopPositionsMarketName {
+  margin-right: 0.5rem;
+}
+
+.TopPositionsDirection {
+  margin-left: 0.5rem;
+  text-align: left;
+  width: 4.4rem;
+}
+
+.LeaderboardSearch.disabled {
+  cursor: not-allowed;
+}
+
+.LeaderboardSearch:hover {
+  background: var(--dark-blue-hover);
+}
+
+.LeaderboardSearch:active {
+  background: var(--dark-blue-active);
+}
+
+.LeaderboardRank-1,
+.LeaderboardRank-2,
+.LeaderboardRank-3 {
+  display: inline-flex;
+}
+
+.LeaderboardRank-1::after,
+.LeaderboardRank-2::after,
+.LeaderboardRank-3::after {
+  content: "";
+  width: 2.5rem;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  margin-left: 0.5rem;
+}
+
+.NoLiqPriceTooltip {
+  min-width: 28rem;
+  white-space: normal;
+}
+
+.LeaderboardRank-1::after {
+  background-image: url(../../img/ic_trophy_1.svg);
+}
+
+.LeaderboardRank-2::after {
+  background-image: url(../../img/ic_trophy_2.svg);
+}
+
+.LeaderboardRank-3::after {
+  background-image: url(../../img/ic_trophy_3.svg);
+}
