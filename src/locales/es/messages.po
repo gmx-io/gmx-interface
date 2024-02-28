@@ -2934,7 +2934,6 @@ msgstr "Capacidad Máxima"
 msgid "Max Capacity for {0} Reached"
 msgstr "Capacidad Máxima para {0} Alcanzada"
 
-#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max Execution Fee"
@@ -4915,7 +4914,6 @@ msgstr ""
 msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
 msgstr "El protocolo Gambit se encuentra en beta, por favor lea los <0>detalles de staking</0>antes de participar."
 
-#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "The Max Execution Fee is overestimated by {maxExecutionFeeText}%. Upon execution, the excess Execution Fee is sent back to your account."
 msgstr "La tarifa de ejecución máxima está sobreestimada en {maxExecutionFeeText}%. Al ejecutar, el exceso de tarifa de ejecución se envía de vuelta a tu cuenta."
