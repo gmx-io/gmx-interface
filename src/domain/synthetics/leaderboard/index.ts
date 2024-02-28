@@ -152,9 +152,9 @@ const fetchAccounts = async (chainId: number, account?: string): Promise<Leaderb
   });
 };
 
-export function useLeaderboardAccounts(chainId: number, account?: string) {
+export function useLeaderboardAccounts(enabled: boolean, chainId: number, account?: string) {
   const { data, error } = useSWR(
-    ["leaderboard/useLeaderboardAccounts", chainId, account],
+    enabled ? ["leaderboard/useLeaderboardAccounts", chainId, account] : null,
     () => fetchAccounts(chainId, account),
     {
       refreshInterval: 60_000,
@@ -243,13 +243,14 @@ const fetchPositions = async (
 };
 
 export function useLeaderboardPositions(
+  enabled: boolean,
   chainId: number,
   account?: string,
   isSnapshot = false,
   orderBy?: string | string[]
 ) {
   const { data, error } = useSWR(
-    ["leaderboard/useLeaderboardPositions", chainId, account, isSnapshot],
+    enabled ? ["leaderboard/useLeaderboardPositions", chainId, account, isSnapshot] : null,
     () => fetchPositions(chainId, account, isSnapshot, undefined, orderBy),
     {
       refreshInterval: 60_000,
@@ -259,6 +260,9 @@ export function useLeaderboardPositions(
   return { data, error };
 }
 
+/**
+ * @deprecated use SyntheticsStateContextProvider instead
+ */
 export function useLeaderboardData(
   chainId: number,
   account?: string
@@ -269,8 +273,8 @@ export function useLeaderboardData(
   };
   error?: Error;
 } {
-  const { data: accounts, error: accountsError } = useLeaderboardAccounts(chainId, account);
-  const { data: positions, error: positionsError } = useLeaderboardPositions(chainId, account);
+  const { data: accounts, error: accountsError } = useLeaderboardAccounts(true, chainId, account);
+  const { data: positions, error: positionsError } = useLeaderboardPositions(true, chainId, account);
   const marketsInfoData = useMarketsInfoData();
 
   const data = useMemo(() => {

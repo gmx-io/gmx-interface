@@ -91,6 +91,7 @@ import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountC
 import { SubaccountModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
 import LeaderboardTest from "pages/LeaderboardTest/LeaderboardTest";
+import { Leaderboard } from "pages/Leaderboard/Leaderboard";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -368,6 +369,20 @@ function FullApp({ pendingTxns, setPendingTxns }) {
                     pageType="trade"
                   >
                     <LeaderboardTest />
+                  </SyntheticsStateContextProvider>
+                ) : (
+                  <SyntheticsFallbackPage />
+                )}
+              </Route>
+              <Route path="/leaderboard/:account?">
+                {getIsSyntheticsSupported(chainId) ? (
+                  <SyntheticsStateContextProvider
+                    savedIsPnlInLeverage={settings.isPnlInLeverage}
+                    savedShowPnlAfterFees={settings.showPnlAfterFees}
+                    skipLocalReferralCode
+                    pageType="leaderboard"
+                  >
+                    <Leaderboard />
                   </SyntheticsStateContextProvider>
                 ) : (
                   <SyntheticsFallbackPage />

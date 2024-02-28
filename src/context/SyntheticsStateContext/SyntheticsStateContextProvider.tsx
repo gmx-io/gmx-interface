@@ -1,6 +1,12 @@
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { UserReferralInfo, useUserReferralInfoRequest } from "domain/referrals";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
+import {
+  LeaderboardAccountBase,
+  LeaderboardPositionBase,
+  useLeaderboardAccounts,
+  useLeaderboardPositions,
+} from "domain/synthetics/leaderboard";
 import { MarketsInfoResult, MarketsResult, useMarkets, useMarketsInfoRequest } from "domain/synthetics/markets";
 import { AggregatedOrdersDataResult, useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
 import {
@@ -18,7 +24,7 @@ import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 
 export type SyntheticsTradeState = {
-  pageType: "actions" | "trade" | "pools";
+  pageType: "actions" | "trade" | "pools" | "leaderboard";
   globals: {
     chainId: number;
     markets: MarketsResult;
@@ -31,6 +37,14 @@ export type SyntheticsTradeState = {
     userReferralInfo: UserReferralInfo | undefined;
     savedIsPnlInLeverage: boolean;
     savedShowPnlAfterFees: boolean;
+  };
+  leaderboard: {
+    accounts: LeaderboardAccountBase[] | undefined;
+    accountsError: any; // FIXME any
+    positions: LeaderboardPositionBase[] | undefined;
+    positionsError: any;
+    snapshotPositions: LeaderboardPositionBase[] | undefined;
+    snapshotsError: any;
   };
   settings: SettingsContextType;
   tradebox: TradeState;
@@ -49,7 +63,7 @@ export function SyntheticsStateContextProvider({
   savedIsPnlInLeverage: boolean;
   savedShowPnlAfterFees: boolean;
   skipLocalReferralCode: boolean;
-  pageType: "actions" | "trade" | "pools";
+  pageType: SyntheticsTradeState["pageType"];
 }) {
   const { chainId } = useChainId();
   const { account: walletAccount, signer } = useWallet();
@@ -89,6 +103,17 @@ export function SyntheticsStateContextProvider({
     tokensData: marketsInfo.tokensData,
   });
 
+  const isLeaderboardPage = pageType === "leaderboard";
+  const { data: accounts, error: accountsError } = useLeaderboardAccounts(isLeaderboardPage, chainId, account);
+  const { data: positions, error: positionsError } = useLeaderboardPositions(isLeaderboardPage, chainId, account);
+  const { data: snapshotPositions, error: snapshotsError } = useLeaderboardPositions(
+    isLeaderboardPage,
+    chainId,
+    account,
+    true,
+    "snapshotTimestamp_DESC"
+  );
+
   const state = useMemo(() => {
     const s: SyntheticsTradeState = {
       pageType,
@@ -105,6 +130,14 @@ export function SyntheticsStateContextProvider({
 
         savedIsPnlInLeverage,
         savedShowPnlAfterFees,
+      },
+      leaderboard: {
+        accounts,
+        accountsError,
+        positions,
+        positionsError,
+        snapshotPositions,
+        snapshotsError,
       },
       settings,
       tradebox: tradeState,
@@ -124,6 +157,12 @@ export function SyntheticsStateContextProvider({
     userReferralInfo,
     savedIsPnlInLeverage,
     savedShowPnlAfterFees,
+    accounts,
+    accountsError,
+    positions,
+    positionsError,
+    snapshotPositions,
+    snapshotsError,
     settings,
     tradeState,
   ]);

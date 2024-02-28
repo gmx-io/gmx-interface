@@ -23,7 +23,7 @@ export default function LeaderboardTest() {
   const marketsInfoData = useMarketsInfoData();
   const { accounts, positions } = data;
 
-  const { data: snapshotPositions } = useLeaderboardPositions(chainId, account, true, "snapshotTimestamp_DESC");
+  const { data: snapshotPositions } = useLeaderboardPositions(true, chainId, account, true, "snapshotTimestamp_DESC");
 
   const [tab, setTab] = useState<"accounts" | "positions" | "snapshots">("accounts");
 
