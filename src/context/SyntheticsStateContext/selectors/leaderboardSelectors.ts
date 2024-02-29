@@ -37,10 +37,10 @@ export const selectLeaderboardAccounts = createEnhancedSelector((q) => {
     const account: LeaderboardAccount = {
       ...base,
       totalCount: base.closedCount,
-      totalRealizedPnl: base.totalPnl,
-      totalPendingPnl: BigNumber.from(0),
-      totalPendingCost: BigNumber.from(0),
-      totalCost: base.totalPaidCost,
+      totalPnl: base.realizedPnl,
+      pendingPnl: BigNumber.from(0),
+      pendingFees: BigNumber.from(0),
+      totalFees: base.paidFees,
       pnlPercentage: BigNumber.from(0),
       averageSize: BigNumber.from(0),
       averageLeverage: BigNumber.from(0),
@@ -50,11 +50,12 @@ export const selectLeaderboardAccounts = createEnhancedSelector((q) => {
       const market = (marketsInfoData || {})[p.market];
       const pendingPnl = getPositionPnl(p, market);
       account.totalCount++;
-      account.totalPnl = account.totalPnl.add(pendingPnl);
+      account.realizedPnl = account.realizedPnl.add(pendingPnl);
       account.sumMaxSize = account.sumMaxSize.add(p.maxSize);
-      account.totalCost = account.totalCost.add(p.totalPendingCost);
-      account.totalPendingCost = account.totalPendingCost.add(p.totalPendingCost);
-      account.totalPendingPnl = account.totalPendingPnl.add(pendingPnl);
+      account.totalFees = account.totalFees.add(p.pendingFees);
+      account.pendingFees = account.pendingFees.add(p.pendingFees);
+      account.pendingPnl = account.pendingPnl.add(pendingPnl);
+      account.totalPnl = account.totalPnl.add(pendingPnl);
     }
 
     try {

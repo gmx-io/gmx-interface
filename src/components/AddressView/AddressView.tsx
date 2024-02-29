@@ -13,7 +13,7 @@ type AddressViewProps = {
   maxLength?: number;
 };
 
-const lengths = { S: 9, M: 13, L: 24, XL: 42 };
+const lengths = { S: 9, M: 13, L: 13, XL: 13 };
 
 export default function AddressView({
   address,

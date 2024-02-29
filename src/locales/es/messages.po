@@ -341,8 +341,8 @@ msgid "Address copied to your clipboard"
 msgstr ""
 
 #: src/pages/LeaderboardTest/LeaderboardTest.tsx
-msgid "Addresses V2 trading statistics."
-msgstr ""
+#~ msgid "Addresses V2 trading statistics."
+#~ msgstr ""
 
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
@@ -799,7 +799,6 @@ msgid "Cancelling {ordersText}"
 msgstr ""
 
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
-#: src/pages/LeaderboardTest/LeaderboardTest.tsx
 msgid "Chain Icon"
 msgstr ""
 
@@ -2575,8 +2574,8 @@ msgid "Leaderboard"
 msgstr "Tabla de clasificación"
 
 #: src/pages/LeaderboardTest/LeaderboardTest.tsx
-msgid "Leaderboard Data"
-msgstr ""
+#~ msgid "Leaderboard Data"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Leaderboard for GMX traders"

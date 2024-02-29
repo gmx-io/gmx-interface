@@ -38,7 +38,7 @@ const constructRow = (
     value: () => <span className={getWinnerClassname(rank, competition)}>{rank}</span>,
   },
   account: {
-    value: (breakpoint) => <AddressView size={24} address={s.account} breakpoint={breakpoint} />,
+    value: (breakpoint) => <AddressView size={20} address={s.account} breakpoint={breakpoint} />,
   },
   absPnl: {
     value: () => (
@@ -56,8 +56,8 @@ const constructRow = (
               label={t`Realized PnL`}
               showDollar={false}
               value={
-                <span className={signedValueClassName(s.totalRealizedPnl)}>
-                  {formatDelta(s.totalRealizedPnl, { signed: true, prefix: "$" })}
+                <span className={signedValueClassName(s.realizedPnl)}>
+                  {formatDelta(s.realizedPnl, { signed: true, prefix: "$" })}
                 </span>
               }
             />
@@ -65,8 +65,8 @@ const constructRow = (
               label={t`Unrealized PnL`}
               showDollar={false}
               value={
-                <span className={signedValueClassName(s.totalPendingPnl)}>
-                  {formatDelta(s.totalPendingPnl, { signed: true, prefix: "$" })}
+                <span className={signedValueClassName(s.pendingPnl)}>
+                  {formatDelta(s.pendingPnl, { signed: true, prefix: "$" })}
                 </span>
               }
             />
@@ -203,7 +203,7 @@ export function LeaderboardAccountsTable({
         title: t`Address`,
         tooltip: t`Only Addresses with over $1,000 in traded volume are displayed.`,
         tooltipPosition: "left-bottom",
-        width: (p = "XL") => ({ XL: 40, L: 36, M: 16, S: 10 }[p] || 40),
+        width: (p = "XL") => ({ XL: 16, L: 16, M: 16, S: 10 }[p] || 16),
       },
       absPnl: {
         className: getSortableClass("totalPnl"),
