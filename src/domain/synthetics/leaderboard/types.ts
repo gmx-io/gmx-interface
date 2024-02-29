@@ -18,11 +18,11 @@ export type TopAccountsRow = {
   winsLosses: TableCell;
 };
 
-export type Ranked<T> = T & { rank: number };
-
 export type RemoteData<T> = {
   isLoading: boolean;
   data: T[];
   error: Error | null;
   updatedAt: number;
 };
+
+export type CompetitionType = "notionalPnl" | "pnlPercentage";

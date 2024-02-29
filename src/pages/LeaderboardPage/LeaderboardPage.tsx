@@ -4,22 +4,27 @@ import { useChainId } from "lib/chains";
 import "./LeaderboardPage.scss";
 import { LeaderboardContainer } from "./components/LeaderboardContainer";
 
-export function Leaderboard() {
+export function Leaderboard({ isCompetitions }: { isCompetitions?: boolean }) {
   const { chainId } = useChainId();
+
+  const title = isCompetitions ? <Trans>March 2014 Competitions</Trans> : <Trans>Leaderboard</Trans>;
+  const description = isCompetitions ? (
+    <Trans>Competitions for traders on GMX V2.</Trans>
+  ) : (
+    <Trans>Leaderboard for traders on GMX V2.</Trans>
+  );
 
   return (
     <div className="default-container page-layout LeaderboardTest">
       <div className="section-title-block">
         <div className="section-title-content">
           <div className="Page-title">
-            <Trans>Leaderboard</Trans> <img alt={t`Chain Icon`} src={getIcon(chainId, "network")} />
+            {title} <img alt={t`Chain Icon`} src={getIcon(chainId, "network")} />
           </div>
-          <div className="Page-description">
-            <Trans>Leaderboard for traders on GMX V2.</Trans>
-          </div>
+          <div className="Page-description">{description}</div>
         </div>
       </div>
-      <LeaderboardContainer />
+      <LeaderboardContainer isCompetitions={isCompetitions ?? false} />
     </div>
   );
 }

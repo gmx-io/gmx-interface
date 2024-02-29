@@ -388,6 +388,20 @@ function FullApp({ pendingTxns, setPendingTxns }) {
                   <SyntheticsFallbackPage />
                 )}
               </Route>
+              <Route path="/competitions/:account?">
+                {getIsSyntheticsSupported(chainId) ? (
+                  <SyntheticsStateContextProvider
+                    savedIsPnlInLeverage={settings.isPnlInLeverage}
+                    savedShowPnlAfterFees={settings.showPnlAfterFees}
+                    skipLocalReferralCode
+                    pageType="leaderboard"
+                  >
+                    <Leaderboard isCompetitions />
+                  </SyntheticsStateContextProvider>
+                ) : (
+                  <SyntheticsFallbackPage />
+                )}
+              </Route>
               <Route exact path="/referrals">
                 <Referrals pendingTxns={pendingTxns} setPendingTxns={setPendingTxns} />
               </Route>

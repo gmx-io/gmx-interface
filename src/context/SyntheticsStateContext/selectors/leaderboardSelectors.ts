@@ -26,14 +26,14 @@ const selectPositionBasesByAccount = createEnhancedSelector((q) => {
 });
 
 export const selectLeaderboardAccounts = createEnhancedSelector((q) => {
-  const accounts = q(selectLeaderboardAccountBases);
+  const baseAccounts = q(selectLeaderboardAccountBases);
   const positionBasesByAccount = q(selectPositionBasesByAccount);
   const marketsInfoData = q(selectMarketsInfoData);
 
-  if (!accounts) return undefined;
+  if (!baseAccounts) return undefined;
   if (!positionBasesByAccount) return undefined;
 
-  return accounts.map((base) => {
+  return baseAccounts.map((base) => {
     const account: LeaderboardAccount = {
       ...base,
       totalCount: base.closedCount,
@@ -77,6 +77,28 @@ export const selectLeaderboardAccounts = createEnhancedSelector((q) => {
 
     return account;
   });
+});
+
+export const selectLeaderboardAccountsRanks = createEnhancedSelector((q) => {
+  const accounts = q(selectLeaderboardAccounts);
+  const ranks = { pnl: new Map<string, number>(), pnlPercentage: new Map<string, number>() };
+  if (!accounts) return ranks;
+
+  const accountsCopy = [...accounts];
+
+  accountsCopy
+    .sort((a, b) => (b.totalPnl.sub(a.totalPnl).gt(0) ? 1 : -1))
+    .forEach((pnl, index) => {
+      ranks.pnl.set(pnl.account, index + 1);
+    });
+
+  accountsCopy
+    .sort((a, b) => (b.pnlPercentage.sub(a.pnlPercentage).gt(0) ? 1 : -1))
+    .forEach((pnl, index) => {
+      ranks.pnlPercentage.set(pnl.account, index + 1);
+    });
+
+  return ranks;
 });
 
 export const selectLeaderboardPositions = createEnhancedSelector((q) => {

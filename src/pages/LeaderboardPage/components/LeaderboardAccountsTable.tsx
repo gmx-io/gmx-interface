@@ -6,25 +6,36 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Table from "components/Table/Table";
 import { TableHeader } from "components/Table/types";
 import Tooltip from "components/Tooltip/Tooltip";
-import { BigNumber } from "ethers";
 import { formatAmount, formatPercentage, formatUsd } from "lib/numbers";
 import { useDebounce } from "lib/useDebounce";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useLayoutEffect, useMemo, useState } from "react";
 
 import { TopAccountsSkeleton } from "components/Skeleton/Skeleton";
 import {
+  CompetitionType,
   LeaderboardAccount,
-  Ranked,
   RemoteData,
   TopAccountsRow,
   formatDelta,
   signedValueClassName,
 } from "domain/synthetics/leaderboard";
+import { useLeaderboardAccountsRanks } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
+import { BigNumber } from "ethers";
 
-const constructRow = (s: Ranked<LeaderboardAccount>, i: number): TopAccountsRow => ({
+function getWinnerClassname(rank: number, competition: CompetitionType | undefined) {
+  if (!competition) return rank <= 3 ? `LeaderboardRank-${rank}` : undefined;
+  return rank <= 10 ? `LeaderboardRank-Top10` : undefined;
+}
+
+const constructRow = (
+  s: LeaderboardAccount,
+  index: number,
+  rank: number,
+  competition: CompetitionType | undefined
+): TopAccountsRow => ({
   key: s.account,
   rank: {
-    value: () => <span className={cx(s.rank < 3 && `LeaderboardRank-${s.rank + 1}`)}>{s.rank + 1}</span>,
+    value: () => <span className={getWinnerClassname(rank, competition)}>{rank}</span>,
   },
   account: {
     value: (breakpoint) => <AddressView size={24} address={s.account} breakpoint={breakpoint} />,
@@ -37,7 +48,7 @@ const constructRow = (s: Ranked<LeaderboardAccount>, i: number): TopAccountsRow 
             {formatDelta(s.totalPnl, { signed: true, prefix: "$" })}
           </span>
         }
-        position={i > 7 ? "right-top" : "right-bottom"}
+        position={index > 7 ? "right-top" : "right-bottom"}
         className="nowrap"
         renderContent={() => (
           <div>
@@ -68,7 +79,7 @@ const constructRow = (s: Ranked<LeaderboardAccount>, i: number): TopAccountsRow 
     value: () => (
       <Tooltip
         handle={<span className={signedValueClassName(s.pnlPercentage)}>{formatPercentage(s.pnlPercentage)}</span>}
-        position={i > 7 ? "right-top" : "right-bottom"}
+        position={index > 7 ? "right-top" : "right-bottom"}
         className="nowrap"
         renderContent={() => (
           <StatsTooltipRow
@@ -94,15 +105,18 @@ const constructRow = (s: Ranked<LeaderboardAccount>, i: number): TopAccountsRow 
   },
 });
 
-type TopAccountsProps = {
-  accounts: RemoteData<LeaderboardAccount>;
-  search: string;
-};
-
 type LeaderboardAccountField = keyof LeaderboardAccount;
 
-export function LeaderboardAccountsTable({ accounts, search }: TopAccountsProps) {
-  const perPage = 15;
+export function LeaderboardAccountsTable({
+  accounts,
+  search,
+  activeCompetition,
+}: {
+  accounts: RemoteData<LeaderboardAccount>;
+  search: string;
+  activeCompetition: CompetitionType | undefined;
+}) {
+  const perPage = 20;
   const { isLoading, error, data } = accounts;
   const [page, setPage] = useState(1);
   const [orderBy, setOrderBy] = useState<LeaderboardAccountField>("totalPnl");
@@ -121,35 +135,54 @@ export function LeaderboardAccountsTable({ accounts, search }: TopAccountsProps)
     },
     [orderBy]
   );
+  const isCompetitions = Boolean(activeCompetition);
 
-  const accountsHash = (data || []).map((a) => a[orderBy]!.toString()).join(":");
-  const rankedAccounts = useMemo(() => {
-    if (!data) {
-      return [];
+  useLayoutEffect(() => {
+    if (!isCompetitions) return;
+
+    if (activeCompetition === "notionalPnl") {
+      setOrderBy("totalPnl");
+      setDirection(1);
     }
+    if (activeCompetition === "pnlPercentage") {
+      setOrderBy("pnlPercentage");
+      setDirection(1);
+    }
+  }, [activeCompetition, isCompetitions]);
 
-    const result = data
-      .map((p, i) => ({ ...p, rank: i }))
-      .sort((a, b) => {
-        const key = orderBy;
-        if (BigNumber.isBigNumber(a[key]) && BigNumber.isBigNumber(b[key])) {
-          return direction * ((a[key] as BigNumber).gt(b[key] as BigNumber) ? -1 : 1);
-        } else if (typeof a[key] === "number" && typeof b[key] === "number") {
-          return direction * (a[key] > b[key] ? -1 : 1);
-        } else {
-          return 1;
-        }
-      });
-
-    return result;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accountsHash, orderBy, direction]);
+  const ranks = useLeaderboardAccountsRanks();
 
   const term = useDebounce(search, 300);
-  const filteredStats = rankedAccounts.filter((a) => a.account.toLowerCase().indexOf(term.toLowerCase()) >= 0);
+  const sorted = useMemo(() => {
+    return [...data].sort((a, b) => {
+      const key = orderBy;
+
+      if (BigNumber.isBigNumber(a[key]) && BigNumber.isBigNumber(b[key])) {
+        return direction * ((a[key] as BigNumber).gt(b[key] as BigNumber) ? -1 : 1);
+      } else if (typeof a[key] === "number" && typeof b[key] === "number") {
+        return direction * (a[key] > b[key] ? -1 : 1);
+      } else {
+        return 1;
+      }
+    });
+  }, [data, direction, orderBy]);
+
+  const filteredStats = useMemo(
+    () => sorted.filter((a) => a.account.toLowerCase().indexOf(term.toLowerCase()) >= 0),
+    [sorted, term]
+  );
+
   const indexFrom = (page - 1) * perPage;
-  const rows = filteredStats.slice(indexFrom, indexFrom + perPage).map(constructRow);
+  const activeRank = activeCompetition === "pnlPercentage" ? ranks.pnlPercentage : ranks.pnl;
+  const rows = useMemo(
+    () =>
+      filteredStats
+        .slice(indexFrom, indexFrom + perPage)
+        .map((acc, i) => constructRow(acc, i, activeRank.get(acc.account) ?? 0, activeCompetition)),
+    [activeCompetition, activeRank, filteredStats, indexFrom]
+  );
   const pageCount = Math.ceil(filteredStats.length / perPage);
+
   const getSortableClass = useCallback(
     (key: LeaderboardAccountField) =>
       cx(

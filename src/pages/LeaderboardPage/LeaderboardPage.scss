@@ -101,8 +101,13 @@
 
 .LeaderboardRank-1,
 .LeaderboardRank-2,
-.LeaderboardRank-3 {
+.LeaderboardRank-3,
+.LeaderboardRank-Top10 {
   display: inline-flex;
+}
+
+.LeaderboardRank-Top10 {
+  font-weight: bold;
 }
 
 .LeaderboardRank-1::after,

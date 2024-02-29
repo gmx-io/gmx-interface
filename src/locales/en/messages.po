@@ -1064,6 +1064,10 @@ msgstr "Community Projects"
 msgid "Community-led Telegram groups."
 msgstr "Community-led Telegram groups."
 
+#: src/pages/LeaderboardPage/LeaderboardPage.tsx
+msgid "Competitions for traders on GMX V2."
+msgstr "Competitions for traders on GMX V2."
+
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Complete Account Transfer"
@@ -2888,6 +2892,10 @@ msgstr "Main Account Balance"
 msgid "Main Account {0} Balance is used to top up Subaccount Balance on each Action up to the set Max auto top-up amount. Use the \"Сonvert {1} to {2}\" field if the Main Account {3} Balance is low."
 msgstr "Main Account {0} Balance is used to top up Subaccount Balance on each Action up to the set Max auto top-up amount. Use the \"Сonvert {1} to {2}\" field if the Main Account {3} Balance is low."
 
+#: src/pages/LeaderboardPage/LeaderboardPage.tsx
+msgid "March 2014 Competitions"
+msgstr "March 2014 Competitions"
+
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -3407,6 +3415,10 @@ msgstr "Not enough {0} on your Main Account. Use the \"Convert {1} to {2}\" fiel
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "Notional PnL"
+msgstr "Notional PnL"
+
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Old Collateral"
 msgstr "Old Collateral"
@@ -3729,6 +3741,10 @@ msgstr "PnL (%)"
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "PnL After Fees"
 msgstr "PnL After Fees"
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "PnL Percentage"
+msgstr "PnL Percentage"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
