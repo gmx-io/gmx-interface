@@ -19,3 +19,12 @@
     display: flex;
   }
 }
+
+.SubaccountStatus-clickable-text {
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover {
+    color: white;
+  }
+}

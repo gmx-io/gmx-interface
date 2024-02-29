@@ -6,6 +6,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { StatusNotification } from "components/Synthetics/StatusNotification/StatusNotification";
 import { getContract } from "config/contracts";
 import { getNativeToken, getWrappedToken } from "config/tokens";
 import {
@@ -32,6 +33,7 @@ import {
   useTokenBalances,
   useTokensAllowanceData,
   useTokensDataRequest,
+  getTokenData,
 } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import copyIcon from "img/ic_copy_20.svg";
@@ -43,7 +45,9 @@ import { formatTokenAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
-import { ChangeEvent, ReactNode, memo, useCallback, useEffect, useMemo, useState } from "react";
+import { formatUsd } from "lib/numbers";
+import { convertToUsd } from "domain/synthetics/tokens";
+import { ChangeEvent, ReactNode, memo, useCallback, useEffect, useMemo, useState, forwardRef, useRef } from "react";
 import { useCopyToClipboard, usePrevious } from "react-use";
 import { SubaccountNotification } from "../StatusNotification/SubaccountNotification";
 import "./SubaccountModal.scss";
@@ -75,11 +79,17 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
   const mainBalances = useTokenBalances(chainId, account);
   const subBalances = useTokenBalances(chainId, subaccountAddress ?? undefined);
   const wrappedToken = getWrappedToken(chainId);
+  const wrappedTokenData = getTokenData(tokensData, wrappedToken.address);
   const nativeToken = getNativeToken(chainId);
+  const nativeTokenData = getTokenData(tokensData, nativeToken.address);
   const mainAccNativeTokenBalance = getByKey(mainBalances.balancesData, nativeToken.address);
   const mainAccWrappedTokenBalance = getByKey(mainBalances.balancesData, wrappedToken.address);
   const subAccNativeTokenBalance = getByKey(subBalances.balancesData, nativeToken.address);
   const subaccountExplorerUrl = useMemo(() => getAccountUrl(chainId, subaccountAddress), [chainId, subaccountAddress]);
+
+  const maxAllowedActionsInputRef = useRef<HTMLInputElement>(null);
+  const topUpInputRef = useRef<HTMLInputElement>(null);
+  const convertInputRef = useRef<HTMLInputElement>(null);
 
   const defaults = useMemo(() => {
     if (!tokensData) return null;
@@ -181,13 +191,13 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     setDisplayValue: setMaxAutoTopUpAmountString,
     setValue: setMaxAutoTopUpAmount,
     value: maxAutoTopUpAmount,
-  } = useBigNumberInput(null, nativeToken.decimals, 4);
+  } = useBigNumberInput(null, wrappedToken.decimals, 4);
   const {
     displayValue: wntForAutoTopUpsString,
     setDisplayValue: setWntForAutoTopUpsString,
     setValue: setWntForAutoTopUps,
     value: wntForAutoTopUps,
-  } = useBigNumberInput(null, wrappedToken.decimals, 4);
+  } = useBigNumberInput(null, nativeToken.decimals, 4);
   const {
     displayValue: maxAllowedActionsString,
     setDisplayValue: setMaxAllowedActionsString,
@@ -196,8 +206,9 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
   } = useBigNumberInput(null, 0, 0);
 
   const isSubaccountActive = useIsSubaccountActive();
+  const prevIsSubaccountActive = usePrevious(isSubaccountActive);
 
-  const [isVisible] = useSubaccountModalOpen();
+  const [isVisible, setIsVisible] = useSubaccountModalOpen();
 
   const [activeTx, setActiveTx] = useSubaccountPendingTx();
   const isTxPending = useTransactionPending(activeTx);
@@ -250,7 +261,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
 
   const [notificationState, setNotificationState] = useSubaccountNotificationState();
 
-  const isSubaccountGenerated = !subaccountAddress || !actionsCount;
+  const isSubaccountGenerated = Boolean(subaccountAddress && actionsCount);
 
   const showToast = useCallback(() => {
     const toastId = Date.now();
@@ -258,10 +269,11 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     helperToast.success(
       <SubaccountNotification
         toastId={toastId}
-        subaccountWasAlreadyGenerated={!isSubaccountGenerated}
+        subaccountWasAlreadyGenerated={isSubaccountGenerated}
         subaccountWasAlreadyActivated={isSubaccountActive}
       />,
       {
+        className: "SubaccountNotification",
         autoClose: false,
         toastId,
       }
@@ -311,11 +323,26 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
   }, [isVisible, isSubaccountActive, setNextFormState]);
 
   useEffect(() => {
-    if (isTxPending === false && prevIsTxPending === true) {
+    if (prevIsTxPending === true && isTxPending === false) {
       setActiveTx(null);
+      setTopUp(null);
+      setWntForAutoTopUps(null);
       setNextFormState("activated");
+
+      if (!prevIsSubaccountActive) {
+        setIsVisible(false);
+      }
     }
-  }, [isTxPending, prevIsTxPending, setActiveTx, setNextFormState]);
+  }, [
+    isTxPending,
+    prevIsTxPending,
+    prevIsSubaccountActive,
+    setIsVisible,
+    setActiveTx,
+    setNextFormState,
+    setTopUp,
+    setWntForAutoTopUps,
+  ]);
 
   useEffect(() => {
     if (isTxPending === false && prevIsTxPending === true && notificationState === "activating") {
@@ -337,10 +364,10 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
       let address = subaccountAddress;
       let count = actionsCount;
 
-      setNotificationState(isSubaccountGenerated ? "generating" : "activating");
+      setNotificationState(isSubaccountGenerated ? "activating" : "generating");
       showToast();
 
-      if (isSubaccountGenerated) {
+      if (!isSubaccountGenerated) {
         try {
           address = await generateSubaccount();
 
@@ -494,14 +521,30 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     setWithdrawalLoading(true);
 
     try {
+      helperToast.success(
+        <StatusNotification title={t`Withdrawing from Subaccount`}>
+          {t`Withdrawing ${formatTokenAmount(subAccNativeTokenBalance, nativeToken.decimals, nativeToken.symbol, {
+            displayDecimals: 4,
+          })} to Main Account`}
+        </StatusNotification>
+      );
+
       await withdrawFromSubaccount({
         mainAccountAddress: account,
         subaccount,
       });
+
+      helperToast.success(
+        <StatusNotification title={t`Withdrawing from Subaccount`}>
+          {t`Withdrawn ${formatTokenAmount(subAccNativeTokenBalance, nativeToken.decimals, nativeToken.symbol, {
+            displayDecimals: 4,
+          })} to Main Account`}
+        </StatusNotification>
+      );
     } finally {
       setWithdrawalLoading(false);
     }
-  }, [account, gasPrice, signer, subAccNativeTokenBalance, subaccount]);
+  }, [account, gasPrice, signer, subAccNativeTokenBalance, subaccount, nativeToken]);
 
   useEffect(() => {
     setNotificationState("none");
@@ -536,9 +579,28 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     [nativeToken.decimals, nativeToken.symbol, subAccNativeTokenBalance]
   );
 
+  const focusTopUpInput = useCallback(() => {
+    topUpInputRef.current?.focus();
+  }, []);
+
+  const focusMaxAllowedActionsInput = useCallback(() => {
+    maxAllowedActionsInputRef.current?.focus();
+  }, []);
+
+  const focusConvertInput = useCallback(() => {
+    convertInputRef.current?.focus();
+  }, []);
+
   return (
     <div className="SubaccountModal-content">
-      {<SubaccountStatus hasBorder={Boolean(subaccountAddress)} />}
+      {
+        <SubaccountStatus
+          hasBorder={Boolean(subaccountAddress)}
+          onTopUpClick={focusTopUpInput}
+          onMaxAllowedActionsClick={focusMaxAllowedActionsInput}
+          onConvertClick={focusConvertInput}
+        />
+      }
       {subaccountAddress && (
         <>
           <div className="SubaccountModal-subaccount">
@@ -604,6 +666,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
         </div>
         <div className="SubaccountModal-section">
           <InputRow
+            ref={maxAllowedActionsInputRef}
             value={maxAllowedActionsString}
             setValue={setMaxAllowedActionsString}
             label={t`Max allowed actions`}
@@ -619,27 +682,44 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
             }
           />
           <InputRow
+            ref={topUpInputRef}
             value={topUpString}
             setValue={setTopUpString}
             label={isSubaccountActive ? t`Top-up` : t`Initial top-up`}
             symbol={nativeToken.symbol}
             placeholder="0.0000"
+            inputTooltip={
+              topUp?.gt(0) &&
+              nativeTokenData &&
+              formatUsd(convertToUsd(topUp, nativeToken.decimals, nativeTokenData.prices?.minPrice))
+            }
             description={t`This amount of ${nativeToken.symbol} will be sent from your Main Account to your Subaccount to pay for transaction fees.`}
           />
           <InputRow
+            ref={convertInputRef}
             value={wntForAutoTopUpsString}
             setValue={setWntForAutoTopUpsString}
             label={t`Сonvert ${nativeToken.symbol} to ${wrappedToken.symbol}`}
-            symbol={wrappedToken.symbol}
+            symbol={nativeToken.symbol}
             placeholder="0.0000"
+            inputTooltip={
+              wntForAutoTopUps?.gt(0) &&
+              nativeTokenData &&
+              formatUsd(convertToUsd(wntForAutoTopUps, nativeToken.decimals, nativeTokenData.prices?.minPrice))
+            }
             description={t`Convert this amount of ${nativeToken.symbol} to ${wrappedToken.symbol} in your Main Account to allow for auto top-ups, as only ${wrappedToken.symbol} can be automatically transferred to your Subaccount. The ${wrappedToken.symbol} balance of your main account is shown above.`}
           />
           <InputRow
             value={maxAutoTopUpAmountString}
             setValue={setMaxAutoTopUpAmountString}
             label={t`Max auto top-up amount`}
-            symbol={nativeToken.symbol}
+            symbol={wrappedToken.symbol}
             placeholder="0.0000"
+            inputTooltip={
+              maxAutoTopUpAmount?.gt(0) &&
+              wrappedTokenData &&
+              formatUsd(convertToUsd(maxAutoTopUpAmount, nativeToken.decimals, wrappedTokenData.prices?.minPrice))
+            }
             description={t`This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee.`}
           />
         </div>
@@ -660,25 +740,33 @@ const ButtonIcon = memo(({ icon, title, onClick }: { icon: string; title: string
   );
 });
 
-const InputRow = memo(
-  ({
-    value,
-    setValue,
-    label,
-    symbol = "",
-    description,
-    placeholder,
-    negativeSign = false,
-  }: {
-    value: string;
-    setValue: (value: string) => void;
-    label: string;
-    symbol?: string;
-    description: ReactNode;
-    placeholder: string;
-    negativeSign?: boolean;
-  }) => {
+interface InputRowProps {
+  value: string;
+  setValue: (value: string) => void;
+  label: string;
+  symbol?: string;
+  description: ReactNode;
+  placeholder: string;
+  negativeSign?: boolean;
+  inputTooltip?: ReactNode;
+}
+
+const InputRowBase = forwardRef<HTMLInputElement, InputRowProps>(
+  (
+    {
+      value,
+      setValue,
+      label,
+      symbol = "",
+      description,
+      placeholder,
+      negativeSign = false,
+      inputTooltip,
+    }: InputRowProps,
+    ref
+  ) => {
     const renderTooltipContent = useCallback(() => description, [description]);
+
     return (
       <div>
         <div className="SubaccountModal-input-row flex text-gray">
@@ -686,8 +774,10 @@ const InputRow = memo(
             <TooltipWithPortal position="left-top" handle={label} renderContent={renderTooltipContent} />
           </div>
           <Input
+            ref={ref}
             negativeSign={negativeSign}
             placeholder={placeholder}
+            tooltip={inputTooltip}
             value={value}
             setValue={setValue}
             symbol={symbol}
@@ -698,20 +788,19 @@ const InputRow = memo(
   }
 );
 
-const Input = memo(
-  ({
-    value,
-    setValue,
-    symbol,
-    placeholder,
-    negativeSign,
-  }: {
-    value: string;
-    setValue: (value: string) => void;
-    symbol: string;
-    placeholder: string;
-    negativeSign: boolean;
-  }) => {
+const InputRow = memo(InputRowBase);
+
+interface InputProp {
+  value: string;
+  setValue: (value: string) => void;
+  symbol: string;
+  placeholder: string;
+  negativeSign: boolean;
+  tooltip?: ReactNode;
+}
+
+const InputBase = forwardRef<HTMLInputElement, InputProp>(
+  ({ value, setValue, symbol, placeholder, negativeSign, tooltip }, ref) => {
     const onChange = useCallback(
       (e: ChangeEvent<HTMLInputElement>) => {
         setValue(e.target.value);
@@ -724,12 +813,19 @@ const Input = memo(
       <div className="SubaccountModal-input-wrapper">
         <div className={cx("SubaccountModal-input")}>
           {negativeSign && <span className="SubaccountModal-negative-sign">-</span>}
-          <input placeholder={placeholder} onChange={onChange} id={id} value={value} />
+          <input ref={ref} placeholder={placeholder} onChange={onChange} id={id} value={value} />
           <label htmlFor={id}>
             <span>{symbol}</span>
           </label>
         </div>
+        {tooltip && (
+          <div className={cx("SubaccountModal-field-info", "Tooltip-popup", "z-index-1001", "right-top")}>
+            {tooltip}
+          </div>
+        )}
       </div>
     );
   }
 );
+
+const Input = memo(InputBase);

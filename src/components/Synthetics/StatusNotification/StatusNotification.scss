@@ -19,19 +19,6 @@
   }
 }
 
-.StatusNotification-content {
-  position: relative;
-  z-index: 1;
-}
-
-.StatusNotification-title {
-  font-weight: bold;
-}
-
-.StatusNotification-items {
-  margin-top: 1rem;
-}
-
 .Toastify__toast.OrdersStatusNotificiation {
   padding: 0;
   position: relative;
@@ -44,6 +31,7 @@
 
   .Toastify__toast-body {
     padding: 0;
+
     .StatusNotification-wrapper {
       .StatusNotification-list {
         .StatusNotification {
@@ -58,4 +46,36 @@
       }
     }
   }
+}
+
+.Toastify__toast.SubaccountNotification {
+  padding: 0;
+  position: relative;
+
+  .Toastify__close-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+  }
+
+  .Toastify__toast-body {
+    padding: 0;
+  }
+
+  .StatusNotification {
+    padding: 0.8rem;
+  }
+}
+
+.StatusNotification-content {
+  position: relative;
+  z-index: 1;
+}
+
+.StatusNotification-title {
+  font-weight: bold;
+}
+
+.StatusNotification-items {
+  margin-top: 1rem;
 }

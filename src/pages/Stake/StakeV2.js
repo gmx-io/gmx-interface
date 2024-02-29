@@ -29,7 +29,6 @@ import {
   getPageTitle,
   getProcessedData,
   getStakingData,
-  getVestingData,
 } from "lib/legacy";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 
@@ -58,6 +57,7 @@ import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
+  BN_ZERO,
   bigNumberify,
   expandDecimals,
   formatAmount,
@@ -74,6 +74,7 @@ import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import UserIncentiveDistributionList from "components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
+import useVestingData from "domain/vesting/useVestingData";
 
 const { AddressZero } = ethers.constants;
 
@@ -396,9 +397,9 @@ function VesterDepositModal(props) {
   }
 
   let additionalReserveAmount = bigNumberify(0);
-  if (amount && averageStakedAmount && maxVestableAmount && maxVestableAmount.gt(0)) {
+  if (amount && averageStakedAmount && maxVestableAmount && maxVestableAmount.gt(0) && nextReserveAmount) {
     nextReserveAmount = nextDepositAmount.mul(averageStakedAmount).div(maxVestableAmount);
-    if (nextReserveAmount.gt(reserveAmount)) {
+    if (nextReserveAmount?.gt(reserveAmount)) {
       additionalReserveAmount = nextReserveAmount.sub(reserveAmount);
     }
   }
@@ -410,7 +411,7 @@ function VesterDepositModal(props) {
     if (maxAmount && amount.gt(maxAmount)) {
       return t`Max amount exceeded`;
     }
-    if (nextReserveAmount.gt(maxReserveAmount)) {
+    if (nextReserveAmount && nextReserveAmount?.gt(maxReserveAmount)) {
       return t`Insufficient staked tokens`;
     }
   };
@@ -516,49 +517,51 @@ function VesterDepositModal(props) {
                 />
               </div>
             </div>
-            <div className="Exchange-info-row">
-              <div className="Exchange-info-label">
-                <Trans>Reserve Amount</Trans>
+            {reserveAmount && (
+              <div className="Exchange-info-row">
+                <div className="Exchange-info-label">
+                  <Trans>Reserve Amount</Trans>
+                </div>
+                <div className="align-right">
+                  <TooltipWithPortal
+                    handle={`${formatAmount(
+                      reserveAmount && reserveAmount.gte(additionalReserveAmount)
+                        ? reserveAmount
+                        : additionalReserveAmount,
+                      18,
+                      2,
+                      true
+                    )} / ${formatAmount(maxReserveAmount, 18, 2, true)}`}
+                    position="right-top"
+                    renderContent={() => {
+                      return (
+                        <>
+                          <StatsTooltipRow
+                            label={t`Current Reserved`}
+                            value={formatAmount(reserveAmount, 18, 2, true)}
+                            showDollar={false}
+                          />
+                          <StatsTooltipRow
+                            label={t`Additional reserve required`}
+                            value={formatAmount(additionalReserveAmount, 18, 2, true)}
+                            showDollar={false}
+                          />
+                          {amount && nextReserveAmount.gt(maxReserveAmount) && (
+                            <>
+                              <br />
+                              <Trans>
+                                You need a total of at least {formatAmount(nextReserveAmount, 18, 2, true)}{" "}
+                                {stakeTokenLabel} to vest {formatAmount(amount, 18, 2, true)} esGMX.
+                              </Trans>
+                            </>
+                          )}
+                        </>
+                      );
+                    }}
+                  />
+                </div>
               </div>
-              <div className="align-right">
-                <TooltipWithPortal
-                  handle={`${formatAmount(
-                    reserveAmount && reserveAmount.gte(additionalReserveAmount)
-                      ? reserveAmount
-                      : additionalReserveAmount,
-                    18,
-                    2,
-                    true
-                  )} / ${formatAmount(maxReserveAmount, 18, 2, true)}`}
-                  position="right-top"
-                  renderContent={() => {
-                    return (
-                      <>
-                        <StatsTooltipRow
-                          label={t`Current Reserved`}
-                          value={formatAmount(reserveAmount, 18, 2, true)}
-                          showDollar={false}
-                        />
-                        <StatsTooltipRow
-                          label={t`Additional reserve required`}
-                          value={formatAmount(additionalReserveAmount, 18, 2, true)}
-                          showDollar={false}
-                        />
-                        {amount && nextReserveAmount.gt(maxReserveAmount) && (
-                          <>
-                            <br />
-                            <Trans>
-                              You need a total of at least {formatAmount(nextReserveAmount, 18, 2, true)}{" "}
-                              {stakeTokenLabel} to vest {formatAmount(amount, 18, 2, true)} esGMX.
-                            </Trans>
-                          </>
-                        )}
-                      </>
-                    );
-                  }}
-                />
-              </div>
-            </div>
+            )}
           </div>
           <div className="Exchange-swap-button-container">
             <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
@@ -601,10 +604,61 @@ function VesterWithdrawModal(props) {
             This will withdraw and unreserve all tokens as well as pause vesting.
             <br />
             <br />
-            esGMX tokens that have been converted to GMX will remain as GMX tokens.
+            esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.
             <br />
             <br />
             To claim GMX tokens without withdrawing, use the "Claim" button under the Total Rewards section.
+            <br />
+            <br />
+          </div>
+        </Trans>
+        <div className="Exchange-swap-button-container">
+          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={isWithdrawing}>
+            {!isWithdrawing && "Confirm Withdraw"}
+            {isWithdrawing && "Confirming..."}
+          </Button>
+        </div>
+      </Modal>
+    </div>
+  );
+}
+
+function AffiliateVesterWithdrawModal(props) {
+  const { isVisible, setIsVisible, chainId, signer, setPendingTxns } = props;
+  const [isWithdrawing, setIsWithdrawing] = useState(false);
+
+  const affiliateVesterAddress = getContract(chainId, "AffiliateVester");
+
+  const onClickPrimary = () => {
+    setIsWithdrawing(true);
+    const contract = new ethers.Contract(affiliateVesterAddress, Vester.abi, signer);
+
+    callContract(chainId, contract, "withdraw", [], {
+      sentMsg: t`Withdraw submitted.`,
+      failMsg: t`Withdraw failed.`,
+      successMsg: t`Withdrawn!`,
+      setPendingTxns,
+    })
+      .then(() => {
+        setIsVisible(false);
+      })
+      .finally(() => {
+        setIsWithdrawing(false);
+      });
+  };
+
+  return (
+    <div className="StakeModal">
+      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Withdraw from Affiliate Vault`}>
+        <Trans>
+          <div>
+            This will withdraw all esGMX tokens as well as pause vesting.
+            <br />
+            <br />
+            esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.
+            <br />
+            <br />
+            To claim GMX tokens without withdrawing, use the "Claim" button.
             <br />
             <br />
           </div>
@@ -955,6 +1009,69 @@ function ClaimModal(props) {
   );
 }
 
+function AffiliateClaimModal(props) {
+  const { isVisible, setIsVisible, signer, chainId, setPendingTxns, totalVesterRewards } = props;
+  const [isClaiming, setIsClaiming] = useState(false);
+  const affiliateVesterAddress = getContract(chainId, "AffiliateVester");
+
+  const isPrimaryEnabled = () => {
+    if (totalVesterRewards.isZero()) {
+      return false;
+    }
+
+    return !isClaiming;
+  };
+
+  const getPrimaryText = () => {
+    if (isClaiming) {
+      return t`Claiming...`;
+    }
+    return t`Claim`;
+  };
+
+  const onClickPrimary = () => {
+    setIsClaiming(true);
+
+    const affiliateVesterContract = new ethers.Contract(affiliateVesterAddress, Vester.abi, signer);
+
+    callContract(chainId, affiliateVesterContract, "claim", [], {
+      sentMsg: t`Claim submitted.`,
+      failMsg: t`Claim failed.`,
+      successMsg: t`Claim completed!`,
+      setPendingTxns,
+    })
+      .then(() => {
+        setIsVisible(false);
+      })
+      .finally(() => {
+        setIsClaiming(false);
+      });
+  };
+
+  return (
+    <div className="StakeModal">
+      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Claim Affiliate Vault Rewards`}>
+        <Trans>
+          <div>
+            This will claim {formatAmount(totalVesterRewards, 18, 4, true)} GMX.
+            <br />
+            <br />
+            After claiming, you can stake these GMX tokens by using the "Stake" button in the GMX section of this Earn
+            page.
+            <br />
+            <br />
+          </div>
+        </Trans>
+        <div className="Exchange-swap-button-container">
+          <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+            {getPrimaryText()}
+          </Button>
+        </div>
+      </Modal>
+    </div>
+  );
+}
+
 export default function StakeV2({ setPendingTxns }) {
   const { active, signer, account } = useWallet();
   const { chainId } = useChainId();
@@ -995,11 +1112,13 @@ export default function StakeV2({ setPendingTxns }) {
   const [vesterDepositAddress, setVesterDepositAddress] = useState("");
 
   const [isVesterWithdrawModalVisible, setIsVesterWithdrawModalVisible] = useState(false);
+  const [isAffiliateVesterWithdrawModalVisible, setIsAffiliateVesterWithdrawModalVisible] = useState(false);
   const [vesterWithdrawTitle, setVesterWithdrawTitle] = useState(false);
   const [vesterWithdrawAddress, setVesterWithdrawAddress] = useState("");
 
   const [isCompoundModalVisible, setIsCompoundModalVisible] = useState(false);
   const [isClaimModalVisible, setIsClaimModalVisible] = useState(false);
+  const [isAffiliateClaimModalVisible, setIsAffiliateClaimModalVisible] = useState(false);
 
   const rewardRouterAddress = getContract(chainId, "RewardRouter");
   const rewardReaderAddress = getContract(chainId, "RewardReader");
@@ -1026,8 +1145,7 @@ export default function StakeV2({ setPendingTxns }) {
 
   const gmxVesterAddress = getContract(chainId, "GmxVester");
   const glpVesterAddress = getContract(chainId, "GlpVester");
-
-  const vesterAddresses = [gmxVesterAddress, glpVesterAddress];
+  const affiliateVesterAddress = getContract(chainId, "AffiliateVester");
 
   const excludedEsGmxAccounts = [stakedGmxDistributorAddress, stakedGlpDistributorAddress];
 
@@ -1065,6 +1183,8 @@ export default function StakeV2({ setPendingTxns }) {
     marketsInfoData,
     marketTokensData,
   });
+
+  const vestingData = useVestingData(account);
 
   const { data: walletBalances } = useSWR(
     [
@@ -1124,13 +1244,6 @@ export default function StakeV2({ setPendingTxns }) {
     }
   );
 
-  const { data: vestingInfo } = useSWR(
-    [`StakeV2:vestingInfo:${active}`, chainId, readerAddress, "getVestingInfo", account || PLACEHOLDER_ACCOUNT],
-    {
-      fetcher: contractFetcher(signer, ReaderV2, [vesterAddresses]),
-    }
-  );
-
   const accumulatedBnGMXAmount = useAccumulatedBnGMXAmount();
 
   const maxBoostBasicPoints = useMaxBoostBasicPoints();
@@ -1162,10 +1275,9 @@ export default function StakeV2({ setPendingTxns }) {
     aum = aums[0].add(aums[1]).div(2);
   }
 
-  const { balanceData, supplyData } = getBalanceAndSupplyData(walletBalances);
-  const depositBalanceData = getDepositBalanceData(depositBalances);
-  const stakingData = getStakingData(stakingInfo);
-  const vestingData = getVestingData(vestingInfo);
+  const { balanceData, supplyData } = useMemo(() => getBalanceAndSupplyData(walletBalances), [walletBalances]);
+  const depositBalanceData = useMemo(() => getDepositBalanceData(depositBalances), [depositBalances]);
+  const stakingData = useMemo(() => getStakingData(stakingInfo), [stakingInfo]);
 
   const userTotalGmInfo = useMemo(() => {
     if (!active) return;
@@ -1371,6 +1483,52 @@ export default function StakeV2({ setPendingTxns }) {
     setUnstakeMethodName("unstakeEsGmx");
   };
 
+  function showAffiliateVesterDepositModal() {
+    if (!vestingData?.affiliateVester) {
+      helperToast.error(t`Unsupported network`);
+      return;
+    }
+
+    let remainingVestableAmount = vestingData?.affiliateVester?.maxVestableAmount?.sub(
+      vestingData?.affiliateVester?.vestedAmount
+    );
+    if (processedData.esGmxBalance?.lt(remainingVestableAmount)) {
+      remainingVestableAmount = processedData.esGmxBalance;
+    }
+
+    setIsVesterDepositModalVisible(true);
+    setVesterDepositTitle(t`Affiliate Vault`);
+
+    setVesterDepositMaxAmount(remainingVestableAmount);
+    setVesterDepositBalance(processedData.esGmxBalance);
+    setVesterDepositEscrowedBalance(vestingData?.affiliateVester.escrowedBalance);
+    setVesterDepositVestedAmount(vestingData?.affiliateVester.vestedAmount);
+    setVesterDepositMaxVestableAmount(vestingData?.affiliateVester.maxVestableAmount);
+    setVesterDepositAverageStakedAmount(vestingData?.affiliateVester.averageStakedAmount);
+
+    setVesterDepositReserveAmount("");
+    setVesterDepositValue("");
+
+    setVesterDepositAddress(affiliateVesterAddress);
+  }
+
+  function showAffiliateVesterWithdrawModal() {
+    if (!vestingData?.affiliateVesterVestedAmount?.gt(0)) {
+      helperToast.error(t`You have not deposited any tokens for vesting.`);
+      return;
+    }
+
+    setIsAffiliateVesterWithdrawModalVisible(true);
+  }
+
+  function showAffiliateVesterClaimModal() {
+    if (!vestingData?.affiliateVesterClaimable?.gt(0)) {
+      helperToast.error(t`You have no GMX tokens to claim.`);
+      return;
+    }
+    setIsAffiliateClaimModalVisible(true);
+  }
+
   const recommendStakeGmx = useRecommendStakeGmxAmount(
     {
       accumulatedGMX: processedData.totalVesterRewards,
@@ -1555,6 +1713,13 @@ export default function StakeV2({ setPendingTxns }) {
         signer={signer}
         setPendingTxns={setPendingTxns}
       />
+      <AffiliateVesterWithdrawModal
+        isVisible={isAffiliateVesterWithdrawModalVisible}
+        setIsVisible={setIsAffiliateVesterWithdrawModalVisible}
+        chainId={chainId}
+        signer={signer}
+        setPendingTxns={setPendingTxns}
+      />
       <CompoundModal
         active={active}
         account={account}
@@ -1582,6 +1747,14 @@ export default function StakeV2({ setPendingTxns }) {
         nativeTokenSymbol={nativeTokenSymbol}
         signer={signer}
         chainId={chainId}
+      />
+      <AffiliateClaimModal
+        signer={signer}
+        chainId={chainId}
+        setPendingTxns={setPendingTxns}
+        isVisible={isAffiliateClaimModalVisible}
+        setIsVisible={setIsAffiliateClaimModalVisible}
+        totalVesterRewards={vestingData?.affiliateVesterClaimable ?? BN_ZERO}
       />
 
       <PageTitle
@@ -2419,6 +2592,77 @@ export default function StakeV2({ setPendingTxns }) {
                 </div>
               </div>
             </div>
+            {vestingData?.affiliateVesterMaxVestableAmount?.gt(0) && (
+              <div className="App-card StakeV2-gmx-card">
+                <div className="App-card-title">
+                  <div className="inline-items-center">
+                    <img className="mr-xs" alt="GLP" src={icons.gmx} height={20} />
+                    <Trans>Affiliate Vault</Trans>
+                  </div>
+                </div>
+                <div className="App-card-divider" />
+                <div className="App-card-content">
+                  <div className="App-card-row">
+                    <div className="label">
+                      <Trans>Vesting Status</Trans>
+                    </div>
+                    <div>
+                      <Tooltip
+                        handle={`${formatKeyAmount(
+                          vestingData,
+                          "affiliateVesterClaimSum",
+                          18,
+                          4,
+                          true
+                        )} / ${formatKeyAmount(vestingData, "affiliateVesterVestedAmount", 18, 4, true)}`}
+                        position="right-bottom"
+                        renderContent={() => {
+                          return (
+                            <div>
+                              <Trans>
+                                {formatKeyAmount(vestingData, "affiliateVesterClaimSum", 18, 4, true)} tokens have been
+                                converted to GMX from the{" "}
+                                {formatKeyAmount(vestingData, "affiliateVesterVestedAmount", 18, 4, true)} esGMX
+                                deposited for vesting.
+                              </Trans>
+                            </div>
+                          );
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="App-card-row">
+                    <div className="label">
+                      <Trans>Claimable</Trans>
+                    </div>
+                    <div>{formatKeyAmount(vestingData, "affiliateVesterClaimable", 18, 4, true)} GMX</div>
+                  </div>
+                  <div className="App-card-divider" />
+                  <div className="App-card-buttons m-0">
+                    {!active && (
+                      <Button variant="secondary" onClick={openConnectModal}>
+                        <Trans>Connect Wallet</Trans>
+                      </Button>
+                    )}
+                    {active && (
+                      <Button variant="secondary" onClick={() => showAffiliateVesterDepositModal()}>
+                        <Trans>Deposit</Trans>
+                      </Button>
+                    )}
+                    {active && (
+                      <Button variant="secondary" onClick={() => showAffiliateVesterWithdrawModal()}>
+                        <Trans>Withdraw</Trans>
+                      </Button>
+                    )}
+                    {active && (
+                      <Button variant="secondary" onClick={() => showAffiliateVesterClaimModal()}>
+                        <Trans>Claim</Trans>
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
