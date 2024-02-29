@@ -139,12 +139,9 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
             renderContent={() => msg.timestampISO}
           />
           {shouldDisplayAccount && (
-            <>
-              <br />
-              <Link className="TradeHistoryRow-account muted" to={`/actions/${tradeAction.account}`}>
-                {tradeAction.account}
-              </Link>
-            </>
+            <Link className="TradeHistoryRow-account muted" to={`/actions/${tradeAction.account}`}>
+              {tradeAction.account}
+            </Link>
           )}
         </td>
         <td>
