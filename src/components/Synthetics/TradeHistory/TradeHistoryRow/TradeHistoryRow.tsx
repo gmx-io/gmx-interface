@@ -133,7 +133,11 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
             {msg.action}
           </ExternalLink>
           <br />
-          <span className="TradeHistoryRow-time muted">{msg.timestamp}</span>
+          <TooltipWithPortal
+            disableHandleStyle
+            handle={<span className="TradeHistoryRow-time muted">{msg.timestamp}</span>}
+            renderContent={() => msg.timestampISO}
+          />
           {shouldDisplayAccount && (
             <>
               <br />
