@@ -489,7 +489,7 @@ export default function OrdersList(props) {
                 <Tooltip
                   className="order-error"
                   handle={orderTitle}
-                  position="left-bottom"
+                  position="bottom-start"
                   handleClassName="plain"
                   renderContent={() => <span className="negative">{error}</span>}
                 />

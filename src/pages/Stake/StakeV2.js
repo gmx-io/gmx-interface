@@ -532,7 +532,7 @@ function VesterDepositModal(props) {
                       2,
                       true
                     )} / ${formatAmount(maxReserveAmount, 18, 2, true)}`}
-                    position="right-top"
+                    position="top-end"
                     renderContent={() => {
                       return (
                         <>
@@ -2615,7 +2615,7 @@ export default function StakeV2({ setPendingTxns }) {
                           4,
                           true
                         )} / ${formatKeyAmount(vestingData, "affiliateVesterVestedAmount", 18, 4, true)}`}
-                        position="right-bottom"
+                        position="bottom-end"
                         renderContent={() => {
                           return (
                             <div>

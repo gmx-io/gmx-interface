@@ -56,7 +56,7 @@ function SLTPEntries({ entriesInfo, marketInfo }: Props) {
                 />
 
                 {entry.error?.price && (
-                  <div className={cx("SLTP-price-error", "Tooltip-popup", "z-index-1001", "center-bottom")}>
+                  <div className={cx("SLTP-price-error", "Tooltip-popup", "z-index-1001", "bottom")}>
                     {entry.error?.price}
                   </div>
                 )}
@@ -74,12 +74,12 @@ function SLTPEntries({ entriesInfo, marketInfo }: Props) {
                   symbol="%"
                 />
                 {entry.error?.percentage && (
-                  <div className={cx("SLTP-percent-error", "Tooltip-popup", "z-index-1001", "right-top")}>
+                  <div className={cx("SLTP-percent-error", "Tooltip-popup", "z-index-1001", "top-end")}>
                     {entry.error?.percentage}
                   </div>
                 )}
                 {entrySizeUsd && priceTooltipMsg ? (
-                  <div className={cx("SLTP-percent-info", "Tooltip-popup", "z-index-1001", "right-top")}>
+                  <div className={cx("SLTP-percent-info", "Tooltip-popup", "z-index-1001", "top-end")}>
                     {priceTooltipMsg}
                   </div>
                 ) : (
