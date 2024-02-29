@@ -2950,7 +2950,6 @@ msgid "Max Capacity for {0} Reached"
 msgstr "达到{0}的最高上限"
 
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
-#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max Execution Fee"
 msgstr "最高执行费"
 
@@ -3273,6 +3272,10 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee"
 msgstr ""
+
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "Network Fee"
+msgstr "网络费"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -4929,10 +4932,6 @@ msgstr ""
 msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
 msgstr "Gambit协议处于测试阶段，请在参与之前阅读<0>质押细节</0>"
 
-#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
-msgid "The Max Execution Fee is overestimated by {maxExecutionFeeText}%. Upon execution, the excess Execution Fee is sent back to your account."
-msgstr "最大执行费用被高估了{maxExecutionFeeText}%.执行时，多余的执行费用将退还到您的账户"
-
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 msgstr ""
@@ -4961,18 +4960,25 @@ msgstr "esGMX代币可以在任何时候被质押或授权"
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr "标价已改变, 请考虑点击你地址旁的 \"...\" 图示来增加你的允许滑点"
 
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "The max execution fee is overestimated by {maxExecutionFeeText}%. Upon execution, the excess execution fee is sent back to your account."
+msgstr "最大执行费用被高估了{maxExecutionFeeText}%. 执行后，多余的执行费用将退还到您的账户"
+
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"<0>Max allowed actions</0>\" field."
 msgstr ""
 
-#: src/domain/synthetics/fees/utils/executionFee.ts
-msgid "The network Fees are high currently, which may be due to a temporary increase in transactions on the {0} network."
-msgstr ""
-
 #: src/domain/legacy.ts
-#: src/domain/synthetics/fees/utils/executionFee.ts
 msgid "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
-msgstr ""
+msgstr "当前网络费用非常高，这可能是由于{0}网络上的交易暂时增加"
+
+#: src/domain/synthetics/fees/utils/executionFee.ts
+msgid "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
+msgstr "当前网络费用较高，这可能是由于{chainName}网络上的交易暂时增加"
+
+#: src/domain/synthetics/fees/utils/executionFee.ts
+msgid "The network fees are very high currently, which may be due to a temporary increase in transactions on the {chainName} network."
+msgstr "当前网络费用非常高，这可能是由于{chainName}网络上的交易暂时增加"
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedOrderAcceptablePriceImpact}, which is lower than the current market price impact of {formattedCurrentAcceptablePriceImpact}. It can be edited using the \"Edit\" button."

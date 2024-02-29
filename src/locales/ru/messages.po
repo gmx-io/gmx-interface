@@ -2950,7 +2950,6 @@ msgid "Max Capacity for {0} Reached"
 msgstr "Максимальная Вместимость для {0} Достигнута"
 
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
-#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max Execution Fee"
 msgstr "Максимальная Комиссия за Выполнение"
 
@@ -3273,6 +3272,10 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee"
 msgstr ""
+
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "Network Fee"
+msgstr "Комиссия Сети"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -4929,10 +4932,6 @@ msgstr ""
 msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
 msgstr "Протокол Gambit находится в стадии бета-тестирования, пожалуйста, прочитайте <0>детали стакинга</0>перед участием."
 
-#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
-msgid "The Max Execution Fee is overestimated by {maxExecutionFeeText}%. Upon execution, the excess Execution Fee is sent back to your account."
-msgstr "Максимальная комиссия за исполнение завышена на {maxExecutionFeeText}%. При исполнении избыточная комиссия за исполнение возвращается на ваш счет."
-
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 msgstr ""
@@ -4961,18 +4960,25 @@ msgstr "Токены esGMX могут быть размещены или над�
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr "Цена отметки изменилась, подумайте об увеличении Допустимого Скольжения, нажав на значок \"...\" рядом с вашим адресом."
 
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "The max execution fee is overestimated by {maxExecutionFeeText}%. Upon execution, the excess execution fee is sent back to your account."
+msgstr "Максимальная комиссия за исполнение завышена на {maxExecutionFeeText}%. При исполнении избыточная комиссия за исполнение возвращается на ваш счет."
+
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"<0>Max allowed actions</0>\" field."
 msgstr ""
 
-#: src/domain/synthetics/fees/utils/executionFee.ts
-msgid "The network Fees are high currently, which may be due to a temporary increase in transactions on the {0} network."
-msgstr ""
-
 #: src/domain/legacy.ts
-#: src/domain/synthetics/fees/utils/executionFee.ts
 msgid "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
-msgstr ""
+msgstr "Комиссии сети в настоящее время очень высокие, что может быть связано с временным увеличением транзакций в сети {0}."
+
+#: src/domain/synthetics/fees/utils/executionFee.ts
+msgid "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
+msgstr "Комиссии сети в настоящее время высокие, что может быть связано с временным увеличением транзакций в сети {chainName}."
+
+#: src/domain/synthetics/fees/utils/executionFee.ts
+msgid "The network fees are very high currently, which may be due to a temporary increase in transactions on the {chainName} network."
+msgstr "Комиссии сети в настоящее время очень высокие, что может быть связано с временным увеличением транзакций в сети {chainName}."
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedOrderAcceptablePriceImpact}, which is lower than the current market price impact of {formattedCurrentAcceptablePriceImpact}. It can be edited using the \"Edit\" button."
