@@ -359,7 +359,7 @@ function FullApp({ pendingTxns, setPendingTxns }) {
               <Route exact path="/ecosystem">
                 <Ecosystem />
               </Route>
-              <Route path="/leaderboard-test/:account?">
+              <Route path="/leaderboard-test">
                 {getIsSyntheticsSupported(chainId) ? (
                   <SyntheticsStateContextProvider
                     savedIsPnlInLeverage={settings.isPnlInLeverage}

@@ -58,6 +58,7 @@ export type LeaderboardPeriodAccountStatBase = {
 export type LeaderboardPeriodAccountStat = LeaderboardPeriodAccountStatBase & {
   totalCount: number;
   totalPnl: BigNumber;
+  totalPnlAfterFees: BigNumber;
   totalFees: BigNumber;
   pendingFees: BigNumber;
   pendingPnl: BigNumber;
@@ -82,10 +83,11 @@ type LeaderboardPositionsJson = {
     collateralToken: string;
     collateralAmount: string;
     snapshotTimestamp: number;
+    isSnapshot: boolean;
   }[];
 };
 
-export type LeaderboardPositionBase = {
+export type LeaderboardPosition = {
   key: string;
   account: string;
   paidFees: BigNumber;
@@ -103,10 +105,7 @@ export type LeaderboardPositionBase = {
   collateralToken: string;
   collateralAmount: BigNumber;
   snapshotTimestamp: number;
-};
-
-export type LeaderboardPosition = LeaderboardPositionBase & {
-  pendingPnl: BigNumber;
+  isSnapshot: boolean;
 };
 
 const fetchAccounts = async (
@@ -194,10 +193,11 @@ export function useLeaderboardAccounts(chainId: number, p?: { account?: string; 
 const fetchPositions = async (
   chainId: number,
   account?: string,
+  market?: string,
   isSnapshot = false,
   snapshotTimestamp?: number,
   orderBy?: string | string[]
-): Promise<LeaderboardPositionBase[] | undefined> => {
+): Promise<LeaderboardPosition[] | undefined> => {
   const client = getLeaderboardGraphClient(chainId);
   if (!client) {
     // eslint-disable-next-line
@@ -209,13 +209,19 @@ const fetchPositions = async (
     query: gql`
       query PositionQuery(
         $account: String
+        $market: String
         $isSnapshot: Boolean
         $snapshotTimestamp: Int
         $orderBy: [PositionOrderByInput!]
       ) {
         positions(
           limit: 100
-          where: { account_eq: $account, isSnapshot_eq: $isSnapshot, snapshotTimestamp_eq: $snapshotTimestamp }
+          where: {
+            account_eq: $account
+            market_eq: $market
+            isSnapshot_eq: $isSnapshot
+            snapshotTimestamp_eq: $snapshotTimestamp
+          }
           orderBy: $orderBy
         ) {
           id
@@ -235,11 +241,13 @@ const fetchPositions = async (
           entryPrice
           collateralAmount
           snapshotTimestamp
+          isSnapshot
         }
       }
     `,
     variables: {
       account,
+      market,
       isSnapshot,
       snapshotTimestamp,
       orderBy,
@@ -265,19 +273,24 @@ const fetchPositions = async (
       pendingPnl: BigNumber.from(p.pendingPnl),
       maxSize: BigNumber.from(p.maxSize),
       snapshotTimestamp: p.snapshotTimestamp,
+      isSnapshot: p.isSnapshot,
     };
   });
 };
 
 export function useLeaderboardPositions(
   chainId: number,
-  account?: string,
-  isSnapshot = false,
+  p: {
+    account?: string;
+    market?: string;
+    isSnapshot?: boolean;
+    snapshotTimestamp?: number;
+  },
   orderBy?: string | string[]
 ) {
   const { data, error } = useSWR(
-    ["leaderboard/useLeaderboardPositions", chainId, account, isSnapshot],
-    () => fetchPositions(chainId, account, isSnapshot, undefined, orderBy),
+    ["leaderboard/useLeaderboardPositions", chainId, p?.account, p?.market, p?.isSnapshot, p?.snapshotTimestamp],
+    () => fetchPositions(chainId, p?.account, p?.market, p?.isSnapshot, p?.snapshotTimestamp, orderBy),
     {
       refreshInterval: 60_000,
     }
@@ -290,6 +303,7 @@ export function useLeaderboardData(
   chainId: number,
   p?: {
     account?: string;
+    market?: string;
     from?: number;
     to?: number;
   }
@@ -301,7 +315,12 @@ export function useLeaderboardData(
   error?: Error;
 } {
   const { data: accounts, error: accountsError } = useLeaderboardAccounts(chainId, p);
-  const { data: positions, error: positionsError } = useLeaderboardPositions(chainId, p?.account);
+  const { data: positions, error: positionsError } = useLeaderboardPositions(chainId, {
+    account: p?.account,
+    market: p?.market,
+    snapshotTimestamp: p?.to,
+    isSnapshot: Boolean(p?.to),
+  });
   const marketsInfoData = useMarketsInfoData();
 
   const data = useMemo(() => {
@@ -309,7 +328,7 @@ export function useLeaderboardData(
       return {};
     }
 
-    const positionsByAccount = positions.reduce((memo: Record<string, LeaderboardPositionBase[]>, p) => {
+    const positionsByAccount = positions.reduce((memo: Record<string, LeaderboardPosition[]>, p) => {
       memo[p.account] = memo[p.account] || [];
       memo[p.account].push(p);
       return memo;
@@ -323,6 +342,7 @@ export function useLeaderboardData(
         pendingPnl: BigNumber.from(0),
         pendingFees: BigNumber.from(0),
         totalFees: account.paidFees,
+        totalPnlAfterFees: BigNumber.from(0),
       };
 
       for (const p of positionsByAccount[account.account] || []) {
@@ -330,19 +350,21 @@ export function useLeaderboardData(
 
         const pendingPnl = getPositionPnl(p, market);
         ret.totalCount++;
-        ret.realizedPnl = ret.realizedPnl.add(pendingPnl);
         ret.sumMaxSize = ret.sumMaxSize.add(p.maxSize);
         ret.totalFees = ret.totalFees.add(p.pendingFees);
         ret.pendingFees = ret.pendingFees.add(p.pendingFees);
         ret.pendingPnl = ret.pendingPnl.add(pendingPnl);
-        ret.totalPnl = ret.totalPnl.add(pendingPnl);
       }
+
+      ret.totalPnl = ret.totalPnl.add(ret.pendingPnl);
+      ret.totalPnlAfterFees = ret.totalPnl.sub(ret.totalFees).sub(ret.startPendingPnl).add(ret.startPendingFees);
 
       return ret;
     });
 
     const _positions = positions.map((position) => {
       const market = (marketsInfoData || {})[position.market];
+
       const pendingPnl = getPositionPnl(position, market);
       return {
         ...position,
@@ -359,9 +381,13 @@ export function useLeaderboardData(
   return { data, error: accountsError || positionsError };
 }
 
-function getPositionPnl(position: LeaderboardPositionBase, market: MarketInfo) {
+function getPositionPnl(position: LeaderboardPosition, market: MarketInfo) {
   if (!market) {
     return BigNumber.from(0);
+  }
+
+  if (position.isSnapshot) {
+    return position.pendingPnl;
   }
 
   let pnl = BigNumber.from(position.sizeInTokens)
