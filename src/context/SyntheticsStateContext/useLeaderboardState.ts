@@ -1,17 +1,23 @@
 import { useLeaderboardAccounts, useLeaderboardPositions } from "domain/synthetics/leaderboard";
-import { COMPETITIONS_TIMEFRAMES_SECS } from "domain/synthetics/leaderboard/constants";
+import { COMPETITIONS_TIMEFRAMES } from "domain/synthetics/leaderboard/constants";
 import { useChainId } from "lib/chains";
 import { useMemo, useState } from "react";
+import { SyntheticsPageType } from "./SyntheticsStateContextProvider";
 
-type TimeframeName = keyof typeof COMPETITIONS_TIMEFRAMES_SECS;
+type TimeframeName = keyof typeof COMPETITIONS_TIMEFRAMES;
 
-export const useLeaderboardState = (account: string | undefined, enabled: boolean) => {
+export const useLeaderboardState = (account: string | undefined, pageType: SyntheticsPageType) => {
   const { chainId } = useChainId();
-  const [activeTimeframe, setActiveTimeframe] = useState<TimeframeName>("test1");
+  const [competitionsActiveTimeframe, setCompetitionsActiveTimeframe] = useState<TimeframeName>("test4");
+
+  const isLeaderboard = pageType === "leaderboard";
+  const isCompetitions = pageType === "competitions";
+  const enabled = isLeaderboard || isCompetitions;
 
   // @ts-ignore
-  window.setActiveTimeframe = setActiveTimeframe;
-  const timeframe = COMPETITIONS_TIMEFRAMES_SECS[activeTimeframe];
+  window.setTimeframe = setCompetitionsActiveTimeframe;
+  const competitionsTimeframe = COMPETITIONS_TIMEFRAMES[competitionsActiveTimeframe];
+  const timeframe = isCompetitions ? competitionsTimeframe : COMPETITIONS_TIMEFRAMES.all;
   const { data: currentAccountArr, error: currentAccountError } = useLeaderboardAccounts(true, chainId, {
     account,
     from: timeframe.from,
@@ -22,13 +28,18 @@ export const useLeaderboardState = (account: string | undefined, enabled: boolea
     from: timeframe.from,
     to: timeframe.to,
   });
-  const { data: positions, error: positionsError } = useLeaderboardPositions(enabled, chainId, account);
-  const { data: snapshotPositions, error: snapshotsError } = useLeaderboardPositions(
+
+  const isEndInFuture = timeframe.to === undefined || timeframe.to > Date.now() / 1000;
+  // console.table({
+  //   isEndInFuture,
+  //   from: new Date(timeframe.from * 1000).toISOString(),
+  //   to: timeframe.to ? new Date(timeframe.to * 1000).toISOString() : "undefined",
+  // });
+  const positionSnapshotTimestamp = isEndInFuture ? undefined : timeframe.to;
+  const { data: positions, error: positionsError } = useLeaderboardPositions(
     enabled,
     chainId,
-    account,
-    true,
-    "snapshotTimestamp_DESC"
+    positionSnapshotTimestamp
   );
 
   return useMemo(
@@ -39,18 +50,7 @@ export const useLeaderboardState = (account: string | undefined, enabled: boolea
       accountsError,
       positions,
       positionsError,
-      snapshotPositions,
-      snapshotsError,
     }),
-    [
-      accounts,
-      accountsError,
-      currentAccountArr,
-      currentAccountError,
-      positions,
-      positionsError,
-      snapshotPositions,
-      snapshotsError,
-    ]
+    [accounts, accountsError, currentAccountArr, currentAccountError, positions, positionsError]
   );
 };

@@ -10,8 +10,6 @@ export const selectLeaderboardAccountBases = (s: SyntheticsTradeState) => s.lead
 export const selectLeaderboardAccountsError = (s: SyntheticsTradeState) => s.leaderboard.accountsError;
 export const selectLeaderboardPositionBases = (s: SyntheticsTradeState) => s.leaderboard.positions;
 export const selectLeaderboardPositionsError = (s: SyntheticsTradeState) => s.leaderboard.positionsError;
-export const selectLeaderboardSnapshotPositionBases = (s: SyntheticsTradeState) => s.leaderboard.snapshotPositions;
-export const selectLeaderboardSnapshotPositionsError = (s: SyntheticsTradeState) => s.leaderboard.snapshotsError;
 
 const selectPositionBasesByAccount = createEnhancedSelector((q) => {
   const positionBases = q(selectLeaderboardPositionBases);
@@ -38,6 +36,7 @@ export const selectLeaderboardAccounts = createEnhancedSelector((q) => {
       ...base,
       totalCount: base.closedCount,
       totalPnl: base.realizedPnl,
+      totalPnlAfterFees: BigNumber.from(0),
       pendingPnl: BigNumber.from(0),
       pendingFees: BigNumber.from(0),
       totalFees: base.paidFees,
@@ -50,30 +49,25 @@ export const selectLeaderboardAccounts = createEnhancedSelector((q) => {
       const market = (marketsInfoData || {})[p.market];
       const pendingPnl = getPositionPnl(p, market);
       account.totalCount++;
-      account.realizedPnl = account.realizedPnl.add(pendingPnl);
       account.sumMaxSize = account.sumMaxSize.add(p.maxSize);
-      account.totalFees = account.totalFees.add(p.pendingFees);
       account.pendingFees = account.pendingFees.add(p.pendingFees);
-      account.pendingPnl = account.pendingPnl.add(pendingPnl);
-      account.totalPnl = account.totalPnl.add(pendingPnl);
+      account.pendingPnl = account.pendingPnl.add(pendingPnl).sub(p.pendingFees);
     }
 
-    try {
-      account.pnlPercentage = account.totalPnl.mul(BASIS_POINTS_DIVISOR).div(account.maxCollateral);
-    } catch (err) {
-      // pass
+    account.totalFees = account.totalFees.add(account.pendingFees).sub(account.startPendingFees);
+    account.totalPnl = account.totalPnl.add(account.pendingPnl).sub(account.startPendingPnl);
+    account.totalPnlAfterFees = account.totalPnl.sub(account.totalFees);
+
+    if (account.maxCollateral.gt(0)) {
+      account.pnlPercentage = account.totalPnlAfterFees.mul(BASIS_POINTS_DIVISOR).div(account.maxCollateral);
     }
 
-    try {
-      account.averageSize = base.sumMaxSize.div(account.totalCount);
-    } catch (err) {
-      // pass
+    if (account.totalCount > 0) {
+      account.averageSize = account.sumMaxSize.div(account.totalCount);
     }
 
-    try {
+    if (base.cumsumCollateral.gt(0)) {
       account.averageLeverage = base.cumsumSize.mul(BASIS_POINTS_DIVISOR).div(base.cumsumCollateral);
-    } catch (err) {
-      // pass
     }
 
     return account;
@@ -119,6 +113,10 @@ export const selectLeaderboardPositions = createEnhancedSelector((q) => {
 });
 
 function getPositionPnl(position: LeaderboardPositionBase, market: MarketInfo) {
+  if (position.isSnapshot) {
+    return position.pendingPnl;
+  }
+
   if (!market) {
     return BigNumber.from(0);
   }

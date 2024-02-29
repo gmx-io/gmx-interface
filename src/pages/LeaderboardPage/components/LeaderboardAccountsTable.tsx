@@ -24,7 +24,7 @@ import { BigNumber } from "ethers";
 
 function getWinnerClassname(rank: number, competition: CompetitionType | undefined) {
   if (!competition) return rank <= 3 ? `LeaderboardRank-${rank}` : undefined;
-  return rank <= 10 ? `LeaderboardRank-Top10` : undefined;
+  return rank <= 10 ? `LeaderboardRank-TopCompetitor` : undefined;
 }
 
 const constructRow = (
@@ -44,8 +44,8 @@ const constructRow = (
     value: () => (
       <Tooltip
         handle={
-          <span className={signedValueClassName(s.totalPnl)}>
-            {formatDelta(s.totalPnl, { signed: true, prefix: "$" })}
+          <span className={signedValueClassName(s.totalPnlAfterFees)}>
+            {formatDelta(s.totalPnlAfterFees, { signed: true, prefix: "$" })}
           </span>
         }
         position={index > 7 ? "right-top" : "right-bottom"}
@@ -67,6 +67,42 @@ const constructRow = (
               value={
                 <span className={signedValueClassName(s.pendingPnl)}>
                   {formatDelta(s.pendingPnl, { signed: true, prefix: "$" })}
+                </span>
+              }
+            />
+            <StatsTooltipRow
+              label={t`Start Pending PnL`}
+              showDollar={false}
+              value={
+                <span className={signedValueClassName(s.startPendingPnl)}>
+                  {formatDelta(s.startPendingPnl, { signed: true, prefix: "$" })}
+                </span>
+              }
+            />
+            <StatsTooltipRow
+              label={t`Paid Fees`}
+              showDollar={false}
+              value={
+                <span className={signedValueClassName(s.paidFees.mul(-1))}>
+                  {formatDelta(s.paidFees.mul(-1), { signed: true, prefix: "$" })}
+                </span>
+              }
+            />
+            <StatsTooltipRow
+              label={t`Pending Fees`}
+              showDollar={false}
+              value={
+                <span className={signedValueClassName(s.pendingFees.mul(-1))}>
+                  {formatDelta(s.pendingFees.mul(-1), { signed: true, prefix: "$" })}
+                </span>
+              }
+            />
+            <StatsTooltipRow
+              label={t`Start Pending Fees`}
+              showDollar={false}
+              value={
+                <span className={signedValueClassName(s.startPendingFees.mul(-1))}>
+                  {formatDelta(s.startPendingFees.mul(-1), { signed: true, prefix: "$" })}
                 </span>
               }
             />
@@ -119,7 +155,7 @@ export function LeaderboardAccountsTable({
   const perPage = 20;
   const { isLoading, error, data } = accounts;
   const [page, setPage] = useState(1);
-  const [orderBy, setOrderBy] = useState<LeaderboardAccountField>("totalPnl");
+  const [orderBy, setOrderBy] = useState<LeaderboardAccountField>("totalPnlAfterFees");
   const [direction, setDirection] = useState<number>(1);
   const handleColumnClick = useCallback(
     (key: string) => {
@@ -141,7 +177,7 @@ export function LeaderboardAccountsTable({
     if (!isCompetitions) return;
 
     if (activeCompetition === "notionalPnl") {
-      setOrderBy("totalPnl");
+      setOrderBy("totalPnlAfterFees");
       setDirection(1);
     }
     if (activeCompetition === "pnlPercentage") {
@@ -206,8 +242,8 @@ export function LeaderboardAccountsTable({
         width: (p = "XL") => ({ XL: 16, L: 16, M: 16, S: 10 }[p] || 16),
       },
       absPnl: {
-        className: getSortableClass("totalPnl"),
-        columnName: "totalPnl",
+        className: getSortableClass("totalPnlAfterFees"),
+        columnName: "totalPnlAfterFees",
         onClick: handleColumnClick,
         title: t`PnL ($)`,
         tooltip: t`Total Realized and Unrealized Profit and Loss.`,

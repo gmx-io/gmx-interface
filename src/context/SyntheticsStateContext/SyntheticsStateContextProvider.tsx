@@ -19,8 +19,10 @@ import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 import { useLeaderboardState } from "./useLeaderboardState";
 
+export type SyntheticsPageType = "actions" | "trade" | "pools" | "leaderboard" | "competitions";
+
 export type SyntheticsTradeState = {
-  pageType: "actions" | "trade" | "pools" | "leaderboard";
+  pageType: SyntheticsPageType;
   globals: {
     chainId: number;
     markets: MarketsResult;
@@ -41,8 +43,6 @@ export type SyntheticsTradeState = {
     accountsError: any; // FIXME any
     positions: LeaderboardPositionBase[] | undefined;
     positionsError: any;
-    snapshotPositions: LeaderboardPositionBase[] | undefined;
-    snapshotsError: any;
   };
   settings: SettingsContextType;
   tradebox: TradeState;
@@ -101,7 +101,7 @@ export function SyntheticsStateContextProvider({
     tokensData: marketsInfo.tokensData,
   });
 
-  const leaderboard = useLeaderboardState(account, pageType === "leaderboard");
+  const leaderboard = useLeaderboardState(account, pageType);
 
   const state = useMemo(() => {
     const s: SyntheticsTradeState = {

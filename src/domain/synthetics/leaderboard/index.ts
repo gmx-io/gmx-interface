@@ -58,6 +58,7 @@ export type LeaderboardAccountBase = {
 export type LeaderboardAccount = LeaderboardAccountBase & {
   totalCount: number;
   totalPnl: BigNumber;
+  totalPnlAfterFees: BigNumber;
   totalFees: BigNumber;
   pendingFees: BigNumber;
   pendingPnl: BigNumber;
@@ -68,22 +69,23 @@ export type LeaderboardAccount = LeaderboardAccountBase & {
 
 type LeaderboardPositionsJson = {
   positions: {
-    id: string;
     account: string;
-    paidFees: string;
-    pendingFees: string;
+    collateralAmount: string;
+    collateralToken: string;
+    entryPrice: string;
+    id: string;
     isLong: boolean;
+    isSnapshot: boolean;
     market: string;
     maxSize: string;
+    paidFees: string;
     paidPriceImpact: string;
-    pendingPriceImpact: string;
+    pendingFees: string;
     pendingPnl: string;
+    pendingPriceImpact: string;
     realizedPnl: string;
     sizeInTokens: string;
     sizeInUsd: string;
-    entryPrice: string;
-    collateralToken: string;
-    collateralAmount: string;
     snapshotTimestamp: number;
   }[];
 };
@@ -98,6 +100,7 @@ export type LeaderboardPositionBase = {
   maxSize: BigNumber;
   paidPriceImpact: BigNumber;
   pendingPriceImpact: BigNumber;
+  isSnapshot: boolean;
   pendingPnl: BigNumber;
   realizedPnl: BigNumber;
   sizeInTokens: BigNumber;
@@ -125,9 +128,14 @@ const fetchAccounts = async (
 
   const response = await client.query<LeaderboardAccountsJson>({
     query: gql`
-      query PeriodAccountStats($account: String, $requiredMaxCollateral: String, $from: Int, $to: Int) {
+      query PeriodAccountStats($requiredMaxCollateral: String, $from: Int, $to: Int) {
         periodAccountStats(
-          where: { id_eq: $account, maxCollateral_gte: $requiredMaxCollateral, from: $from, to: $to }
+          where: {
+            maxCollateral_gte: $requiredMaxCollateral
+            from: $from
+            to: $to
+            id_eq: "0x5d477f258912B634914D68f20FE5614856DCac94"
+          }
         ) {
           id
           closedCount
@@ -149,8 +157,7 @@ const fetchAccounts = async (
       }
     `,
     variables: {
-      account: p?.account,
-      requiredMaxCollateral: MIN_COLLATERAL_USD_IN_LEADERBOARD.toString(),
+      requiredMaxCollateral: p?.account ? undefined : MIN_COLLATERAL_USD_IN_LEADERBOARD.toString(),
       from: p?.from,
       to: p?.to,
     },
@@ -199,10 +206,7 @@ export function useLeaderboardAccounts(
 
 const fetchPositions = async (
   chainId: number,
-  account?: string,
-  isSnapshot = false,
-  snapshotTimestamp?: number,
-  orderBy?: string | string[]
+  snapshotTimestamp: number | undefined
 ): Promise<LeaderboardPositionBase[] | undefined> => {
   const client = getLeaderboardGraphClient(chainId);
   if (!client) {
@@ -213,16 +217,8 @@ const fetchPositions = async (
 
   const response = await client.query<LeaderboardPositionsJson>({
     query: gql`
-      query PositionQuery(
-        $account: String
-        $isSnapshot: Boolean
-        $snapshotTimestamp: Int
-        $orderBy: [PositionOrderByInput!]
-      ) {
-        positions(
-          where: { account_eq: $account, isSnapshot_eq: $isSnapshot, snapshotTimestamp_eq: $snapshotTimestamp }
-          orderBy: $orderBy
-        ) {
+      query PositionQuery($isSnapshot: Boolean, $snapshotTimestamp: Int) {
+        positions(where: { isSnapshot_eq: $isSnapshot, snapshotTimestamp_eq: $snapshotTimestamp }) {
           id
           account
           market
@@ -240,14 +236,13 @@ const fetchPositions = async (
           entryPrice
           collateralAmount
           snapshotTimestamp
+          isSnapshot
         }
       }
     `,
     variables: {
-      account,
-      isSnapshot,
+      isSnapshot: snapshotTimestamp !== undefined,
       snapshotTimestamp,
-      orderBy,
     },
   });
 
@@ -270,20 +265,15 @@ const fetchPositions = async (
       pendingPnl: BigNumber.from(p.pendingPnl),
       maxSize: BigNumber.from(p.maxSize),
       snapshotTimestamp: p.snapshotTimestamp,
+      isSnapshot: p.isSnapshot,
     };
   });
 };
 
-export function useLeaderboardPositions(
-  enabled: boolean,
-  chainId: number,
-  account?: string,
-  isSnapshot = false,
-  orderBy?: string | string[]
-) {
+export function useLeaderboardPositions(enabled: boolean, chainId: number, snapshotTimestamp: number | undefined) {
   const { data, error } = useSWR(
-    enabled ? ["leaderboard/useLeaderboardPositions", chainId, account, isSnapshot] : null,
-    () => fetchPositions(chainId, account, isSnapshot, undefined, orderBy),
+    enabled ? ["leaderboard/useLeaderboardPositions", chainId, snapshotTimestamp] : null,
+    () => fetchPositions(chainId, snapshotTimestamp),
     {
       refreshInterval: 60_000,
     }

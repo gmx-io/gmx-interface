@@ -379,7 +379,7 @@ function FullApp({ pendingTxns, setPendingTxns }) {
                     savedIsPnlInLeverage={settings.isPnlInLeverage}
                     savedShowPnlAfterFees={settings.showPnlAfterFees}
                     skipLocalReferralCode
-                    pageType="leaderboard"
+                    pageType="competitions"
                   >
                     <Leaderboard isCompetitions />
                   </SyntheticsStateContextProvider>
