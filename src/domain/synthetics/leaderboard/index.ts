@@ -130,6 +130,7 @@ const fetchAccounts = async (
     query: gql`
       query PeriodAccountStats($account: String, $requiredMaxCollateral: String, $from: Int, $to: Int) {
         periodAccountStats(
+          limit: 10000
           where: { id_eq: $account, maxCollateral_gte: $requiredMaxCollateral, from: $from, to: $to }
         ) {
           id
@@ -214,7 +215,7 @@ const fetchPositions = async (
   const response = await client.query<LeaderboardPositionsJson>({
     query: gql`
       query PositionQuery($isSnapshot: Boolean, $snapshotTimestamp: Int) {
-        positions(where: { isSnapshot_eq: $isSnapshot, snapshotTimestamp_eq: $snapshotTimestamp }) {
+        positions(limit: 20000, where: { isSnapshot_eq: $isSnapshot, snapshotTimestamp_eq: $snapshotTimestamp }) {
           id
           account
           market
