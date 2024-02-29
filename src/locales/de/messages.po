@@ -91,7 +91,15 @@ msgid "<0>The price that orders can be executed at may differ slightly from the 
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
-msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
+msgid "<0>This will claim {0} GMX.<1/><2/>After claiming, you can stake these GMX tokens by using the \"Stake\" button in the GMX section of this Earn page.<3/><4/></0>"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "<0>This will withdraw all esGMX tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button.<5/><6/></0>"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
@@ -334,6 +342,11 @@ msgstr ""
 
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "Affiliate Vault"
 msgstr ""
 
 #: src/pages/Referrals/Referrals.tsx
@@ -802,11 +815,17 @@ msgstr ""
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claim"
 msgstr "Beanspruchen"
 
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 msgid "Claim <0>{0}</0>"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Claim Affiliate Vault Rewards"
 msgstr ""
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
@@ -832,6 +851,7 @@ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claim completed!"
 msgstr "Anspruch abgeschlossen!"
 
@@ -850,6 +870,7 @@ msgstr "Anpruch fehlgeschlagen"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claim failed."
 msgstr "Anspruch gescheitert."
 
@@ -861,6 +882,7 @@ msgstr "Anspruch übermittelt!"
 msgid "Claim submitted! <0>View status.</0>"
 msgstr "Anspruch übermittelt! <0>Status anzeigen.</0>"
 
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claim submitted."
 msgstr ""
@@ -875,6 +897,7 @@ msgid "Claim {wrappedTokenSymbol} Rewards"
 msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimableCard.tsx
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claimable"
@@ -901,6 +924,7 @@ msgstr ""
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claiming..."
 msgstr "Beanspruchen..."
@@ -1124,6 +1148,7 @@ msgstr "Verbinden"
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1414,6 +1439,7 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -2238,6 +2264,10 @@ msgstr "Hohe USDG-Abweichung, trotzdem Long"
 msgid "I am aware of the trigger orders"
 msgstr "Ich bin mir der Trigger-Orders bewusst"
 
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+msgid "I do not want to transfer the Affiliate esGMX tokens"
+msgstr ""
+
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "If you have an existing position, the position will be closed at a reference price of {0}, not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
 msgstr ""
@@ -2433,10 +2463,6 @@ msgstr ""
 #: src/pages/NftWallet/NftWallet.js
 msgid "Invalid NFT Address"
 msgstr "Ungültige NFT-Adresse"
-
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Invalid Receiver"
-msgstr "Ungültiger Empfänger"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/NftWallet/NftWallet.js
@@ -3327,7 +3353,7 @@ msgid "Not enough Available Swap Liquidity to fill the Order. The Order will get
 msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-msgid "Not enough {0} on your Main Account. Use the \"Convert {1} to {2}\" field to increase the Main Account {3} balance."
+msgid "Not enough {0} on your Main Account. Use the \"<0>Convert {1} to {2}</0>\" field to increase the Main Account {3} balance."
 msgstr ""
 
 #: src/components/Exchange/OrdersToa.js
@@ -3344,7 +3370,11 @@ msgid "One-Click Trading"
 msgstr ""
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-msgid "One-Click Trading is not available using network's native token {0}. Consider using {1} as Pay token instead."
+msgid "One-Click Trading is not available for wrapping or unwrapping native token {0}."
+msgstr ""
+
+#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
+msgid "One-Click Trading is not available using network's native token {0}. Consider using {1} instead."
 msgstr ""
 
 #: src/components/Referrals/referralsHelper.js
@@ -3983,6 +4013,10 @@ msgstr "Der Empfänger hat noch keine GLP-Token gestaket"
 msgid "Receiver has not staked GMX tokens before"
 msgstr "Der Empfänger hat noch keine GMX-Token gestaket"
 
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+msgid "Receiver has staked GMX/GLP before"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "Redemption time not yet reached"
 msgstr "Tilgungszeitpunkt noch nicht erreicht"
@@ -4268,6 +4302,10 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 msgid "Selling..."
 msgstr "Verkaufe..."
+
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+msgid "Sender has withdrawn all tokens from Affiliate Vesting Vault"
+msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Sender has withdrawn all tokens from GLP Vesting Vault"
@@ -4593,7 +4631,7 @@ msgid "Subaccount activated"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Subaccount activation failed."
+msgid "Subaccount activation failed"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
@@ -4601,15 +4639,15 @@ msgid "Subaccount created"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Subaccount deactivated."
+msgid "Subaccount deactivated"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Subaccount deactivation failed."
+msgid "Subaccount deactivation failed"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Subaccount generation failed."
+msgid "Subaccount generation failed"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
@@ -4920,7 +4958,7 @@ msgid "The mark price has changed, consider increasing your Allowed Slippage by 
 msgstr "Der Mark-Preis hat sich geändert. Erhöhe dein zulässiges Slippage, indem du auf das Symbol \"...\" neben deiner Adresse klickst."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"Max allowed actions\" field."
+msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"<0>Max allowed actions</0>\" field."
 msgstr ""
 
 #: src/domain/synthetics/fees/utils/executionFee.ts
@@ -4993,10 +5031,6 @@ msgid "The website is a community deployed and maintained instance of the open s
 msgstr "Die Website ist eine von der Community betriebene und gewartete Instanz des open-source <0>GMX-Frontends</0>, das im verteilten Peer-to-Peer-Netzwerk <1>IPFS</1> gehostet und bereitgestellt wird."
 
 #: src/context/SubaccountContext/SubaccountContext.tsx
-msgid "There are insufficient funds in your Main account for One-Click Trading auto top-ups. <0>Click here</0> to convert."
-msgstr ""
-
-#: src/context/SubaccountContext/SubaccountContext.tsx
 msgid "There are insufficient funds in your Subaccount for One-Click Trading. <0>Click here</0> to top-up."
 msgstr ""
 
@@ -5005,7 +5039,7 @@ msgid "There are insufficient funds in your Subaccount for One-Click Trading. Cl
 msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-msgid "There are insufficient funds in your Subaccount for One-Click Trading. Use the \"Top-up\" field to increase the Subaccount Balance."
+msgid "There are insufficient funds in your Subaccount for One-Click Trading. Use the \"<0>Top-up</0>\" field to increase the Subaccount Balance."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -5468,6 +5502,10 @@ msgstr ""
 msgid "Unstaking..."
 msgstr "Unstaken..."
 
+#: src/pages/Stake/StakeV2.js
+msgid "Unsupported network"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/JoinReferralCode.js
 #: src/components/Synthetics/SubaccountModal/utils.ts
@@ -5650,9 +5688,11 @@ msgid "Vested GLP not withdrawn"
 msgstr "Gevestete GLP nicht abgehoben"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Vested GMX not withdrawn"
 msgstr "Gevestete GMX nicht abgehoben"
 
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Vesting Status"
@@ -5800,6 +5840,7 @@ msgstr "Wenn du die Position schließt, kannst du auswählen, in welchem Token d
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Withdraw"
 msgstr "Abheben"
 
@@ -5808,7 +5849,12 @@ msgid "Withdraw disabled, pending {0} upgrade"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Withdraw failed."
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Withdraw from Affiliate Vault"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
@@ -5819,6 +5865,7 @@ msgstr ""
 msgid "Withdraw from GMX Vault"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Withdraw submitted."
 msgstr ""
@@ -5839,8 +5886,17 @@ msgstr ""
 msgid "Withdrawal submitted."
 msgstr ""
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Withdrawing from Subaccount"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Withdrawing {0} from {positionText}"
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Withdrawing {0} to Main Account"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -5848,6 +5904,11 @@ msgstr ""
 msgid "Withdrawing..."
 msgstr ""
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Withdrawn {0} to Main Account"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Withdrawn!"
 msgstr ""
@@ -5973,10 +6034,19 @@ msgstr ""
 msgid "You have an existing position with {0} as collateral. This action will not apply for that position."
 msgstr ""
 
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.js
 msgid "You have multiple existing Increase {longOrShortText} {0} limit orders"
 msgstr "Du hast mehrere bestehende {longOrShortText} {0} Limit-Orders zur Erhöhung"
 
+#: src/pages/Stake/StakeV2.js
+msgid "You have no GMX tokens to claim."
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "You have not deposited any tokens for vesting."
@@ -6253,6 +6323,7 @@ msgstr "{0} Preis"
 msgid "{0} selected in order form"
 msgstr "{0} ausgewählt im Orderformular"
 
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."

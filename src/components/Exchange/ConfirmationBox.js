@@ -664,7 +664,7 @@ export default function ConfirmationBox(props) {
           <ExchangeInfoRow label={t`Leverage`}>
             {hasExistingPosition && toAmount && toAmount.gt(0) && (
               <div className="inline-block muted">
-                {formatAmount(existingPosition.leverage, 4, 2)}x
+                {formatAmount(existingPosition?.leverage, 4, 2)}x
                 <BsArrowRight className="transition-arrow" />
               </div>
             )}
@@ -774,8 +774,8 @@ export default function ConfirmationBox(props) {
     renderAvailableLiquidity,
     hasExistingPosition,
     toAmount,
-    existingPosition.leverage,
-    existingPosition.averagePrice,
+    existingPosition?.leverage,
+    existingPosition?.averagePrice,
     leverage,
     savedSlippageAmount,
     showCollateralSpread,

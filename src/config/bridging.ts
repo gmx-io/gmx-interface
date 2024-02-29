@@ -23,6 +23,12 @@ const BRIDGING_OPTIONS: { [symbol: string]: BridgingOption[] } = {
       generateLink: () => `https://stargate.finance/transfer`,
     },
   ],
+  AAVE: [
+    {
+      name: "Arbitrum",
+      generateLink: () => `https://bridge.arbitrum.io/?destinationChain=arbitrum-one&sourceChain=ethereum`,
+    },
+  ],
 };
 
 export function getBridgingOptionsForToken(tokenSymbol?: string): BridgingOption[] | undefined {

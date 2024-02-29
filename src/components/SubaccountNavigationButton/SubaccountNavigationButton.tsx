@@ -12,10 +12,15 @@ import {
 import { SUBACCOUNT_DOCS_URL } from "domain/synthetics/subaccount/constants";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
+import cx from "classnames";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { ReactNode, memo, useCallback } from "react";
 import "./SubaccountNavigationButton.scss";
-import { ONE_CLICK_TRADING_NATIVE_TOKEN_WARN_HIDDEN, ONE_CLICK_TRADING_OFFER_HIDDEN } from "config/localStorage";
+import {
+  ONE_CLICK_TRADING_NATIVE_TOKEN_WARN_HIDDEN,
+  ONE_CLICK_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN,
+  ONE_CLICK_TRADING_OFFER_HIDDEN,
+} from "config/localStorage";
 import { TradeFlags } from "domain/synthetics/trade";
 
 export const SubaccountNavigationButton = memo(
@@ -23,12 +28,18 @@ export const SubaccountNavigationButton = memo(
     closeConfirmationBox,
     executionFee,
     isNativeToken,
+    isWrapOrUnwrap,
     tradeFlags,
+    className,
+    requiredActions = 0,
   }: {
     closeConfirmationBox: () => void;
     executionFee: BigNumber | undefined;
     isNativeToken?: boolean;
+    isWrapOrUnwrap?: boolean;
     tradeFlags: TradeFlags | undefined;
+    className?: string;
+    requiredActions?: number;
   }) => {
     const isSubaccountActive = useIsSubaccountActive();
     const [, setModalOpen] = useSubaccountModalOpen();
@@ -49,6 +60,10 @@ export const SubaccountNavigationButton = memo(
       ONE_CLICK_TRADING_NATIVE_TOKEN_WARN_HIDDEN,
       false
     );
+    const [wrapOrUnwrapWarningHidden, setWrapOrUnwrapWarningHidden] = useLocalStorageSerializeKey(
+      ONE_CLICK_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN,
+      false
+    );
 
     const handleCloseOfferClick = useCallback(() => {
       setOfferButtonHidden(true);
@@ -58,11 +73,18 @@ export const SubaccountNavigationButton = memo(
       setNativeTokenWarningHidden(true);
     }, [setNativeTokenWarningHidden]);
 
+    const handleCloseWrapOrUnwrapWarningClick = useCallback(() => {
+      setWrapOrUnwrapWarningHidden(true);
+    }, [setWrapOrUnwrapWarningHidden]);
+
     const { remaining } = useSubaccountActionCounts();
 
     const shouldShowInsufficientFundsButton = isSubaccountActive && insufficientFunds && !isNativeToken;
     const shouldShowOfferButton = !isSubaccountActive && !offerButtonHidden && !isNativeToken;
-    const shouldShowAllowedActionsWarning = isSubaccountActive && remaining?.eq(0) && !isNativeToken;
+    const shouldShowAllowedActionsWarning =
+      isSubaccountActive && (remaining?.eq(0) || remaining?.lt(requiredActions)) && !isNativeToken;
+    const shouldShowWrapOrUnwrapWarning =
+      !tradeFlags?.isTrigger && isSubaccountActive && !wrapOrUnwrapWarningHidden && isWrapOrUnwrap;
     const shouldShowNativeTokenWarning =
       !tradeFlags?.isTrigger && isSubaccountActive && !nativeTokenWarningHidden && isNativeToken;
 
@@ -82,7 +104,14 @@ export const SubaccountNavigationButton = memo(
 
     let clickable = true;
 
-    if (shouldShowNativeTokenWarning) {
+    if (shouldShowWrapOrUnwrapWarning) {
+      const nativeToken = getNativeToken(chainId);
+      clickable = false;
+      onCloseClick = handleCloseWrapOrUnwrapWarningClick;
+      content = (
+        <Trans>One-Click Trading is not available for wrapping or unwrapping native token {nativeToken.symbol}.</Trans>
+      );
+    } else if (shouldShowNativeTokenWarning) {
       const wrappedToken = getWrappedToken(chainId);
       const nativeToken = getNativeToken(chainId);
       clickable = false;
@@ -90,7 +119,7 @@ export const SubaccountNavigationButton = memo(
       content = (
         <Trans>
           One-Click Trading is not available using network's native token {nativeToken.symbol}. Consider using{" "}
-          {wrappedToken.symbol} as Pay token instead.
+          {wrappedToken.symbol} instead.
         </Trans>
       );
     } else if (shouldShowAllowedActionsWarning) {
@@ -122,7 +151,7 @@ export const SubaccountNavigationButton = memo(
       <NavigationButton
         onCloseClick={onCloseClick}
         onNavigateClick={clickable ? jumpToSubaccount : undefined}
-        className="SubaccountNavigationButton"
+        className={cx("SubaccountNavigationButton", className)}
       >
         {content}
       </NavigationButton>
