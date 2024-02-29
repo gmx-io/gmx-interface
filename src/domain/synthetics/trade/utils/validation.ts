@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 import { IS_NETWORK_DISABLED, getChainName } from "config/chains";
 import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
 import { MarketInfo, getMintableMarketTokens, getOpenInterestUsd } from "domain/synthetics/markets";
-import { PositionInfo } from "domain/synthetics/positions";
+import { PositionInfo, willPositionCollateralBeSufficientForPosition } from "domain/synthetics/positions";
 import { TokenData, TokensRatio } from "domain/synthetics/tokens";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber, ethers } from "ethers";
@@ -16,7 +16,7 @@ export type ValidationTooltipName = "maxLeverage";
 export type ValidationResult =
   | [errorMessage: undefined]
   | [errorMessage: string]
-  | [errorMessage: string, tooltipName: "maxLeverage", recommendedValue: BigNumber];
+  | [errorMessage: string, tooltipName: "maxLeverage"];
 
 export function getCommonError(p: { chainId: number; isConnected: boolean; hasOutdatedUi: boolean }): ValidationResult {
   const { chainId, isConnected, hasOutdatedUi } = p;
@@ -265,15 +265,10 @@ export function getIncreaseError(p: {
   }
 
   if (nextLeverageWithoutPnl) {
-    const [maxLeverageError, maxLeverage] = validateMaxLeverage(
-      nextLeverageWithoutPnl,
-      marketInfo,
-      isLong,
-      sizeDeltaUsd
-    );
+    const [maxLeverageError] = validateMaxLeverage(nextLeverageWithoutPnl, marketInfo, isLong, sizeDeltaUsd);
 
-    if (maxLeverageError && maxLeverage) {
-      return [t`Max. Leverage exceeded`, "maxLeverage", maxLeverage];
+    if (maxLeverageError) {
+      return [t`Max. Leverage exceeded`, "maxLeverage"];
     }
   }
 
@@ -410,17 +405,20 @@ export function getEditCollateralError(p: {
   collateralDeltaUsd: BigNumber | undefined;
   nextCollateralUsd: BigNumber | undefined;
   minCollateralUsd: BigNumber | undefined;
+  maxWithdrawAmount: BigNumber | undefined;
   nextLiqPrice: BigNumber | undefined;
   nextLeverage: BigNumber | undefined;
   position: PositionInfo | undefined;
   isDeposit: boolean;
   depositToken: TokenData | undefined;
   depositAmount: BigNumber | undefined;
-}) {
+  minCollateralFactor: BigNumber | undefined;
+}): ValidationResult {
   const {
     collateralDeltaAmount,
     collateralDeltaUsd,
     minCollateralUsd,
+    maxWithdrawAmount,
     nextCollateralUsd,
     nextLeverage,
     nextLiqPrice,
@@ -428,7 +426,10 @@ export function getEditCollateralError(p: {
     isDeposit,
     depositToken,
     depositAmount,
+    minCollateralFactor,
   } = p;
+
+  const isFullClose = maxWithdrawAmount ? collateralDeltaAmount?.eq(maxWithdrawAmount) : false;
 
   if (!collateralDeltaAmount || !collateralDeltaUsd || collateralDeltaAmount.eq(0) || collateralDeltaUsd?.eq(0)) {
     return [t`Enter an amount`];
@@ -438,7 +439,7 @@ export function getEditCollateralError(p: {
     return [t`Insufficient ${depositToken.symbol} balance`];
   }
 
-  if (nextCollateralUsd && minCollateralUsd && position) {
+  if (!isFullClose && nextCollateralUsd && minCollateralUsd && position) {
     const minCollateralUsdForLeverage = getMinCollateralUsdForLeverage(position);
 
     if (nextCollateralUsd.lt(minCollateralUsdForLeverage)) {
@@ -456,8 +457,21 @@ export function getEditCollateralError(p: {
     }
   }
 
-  if (nextLeverage && nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
+  if (!isFullClose && nextLeverage && nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
     return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
+  }
+
+  if (!isFullClose && position && minCollateralFactor) {
+    const isPositionCollateralSufficient = willPositionCollateralBeSufficientForPosition(
+      position,
+      collateralDeltaAmount,
+      BigNumber.from(0),
+      minCollateralFactor
+    );
+
+    if (!isPositionCollateralSufficient) {
+      return [t`Max. Leverage exceeded`, "maxLeverage"];
+    }
   }
 
   return [undefined];
