@@ -29,7 +29,7 @@ const SUBGRAPH_URLS = {
     stats: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-stats",
     referrals: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-fuji-referrals/api",
     syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-fuji-stats/api",
-    leaderboard: "https://squid.subsquid.io/gmx-synthetics-fuji/v/v2/graphql",
+    leaderboard: "https://squid.subsquid.io/gmx-synthetics-fuji/v/v3/graphql",
   },
 
   common: {
