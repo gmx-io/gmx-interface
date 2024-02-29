@@ -126,6 +126,18 @@ const GROUPS: Groups = [
         eventName: TradeActionType.OrderExecuted,
       },
       {
+        orderType: OrderType.LimitSwap,
+        eventName: TradeActionType.OrderCreated,
+      },
+      {
+        orderType: OrderType.LimitSwap,
+        eventName: TradeActionType.OrderUpdated,
+      },
+      {
+        orderType: OrderType.LimitSwap,
+        eventName: TradeActionType.OrderCancelled,
+      },
+      {
         orderType: OrderType.MarketSwap,
         eventName: TradeActionType.OrderCancelled,
       },
@@ -134,20 +146,8 @@ const GROUPS: Groups = [
         eventName: TradeActionType.OrderFrozen,
       },
       {
-        orderType: OrderType.LimitSwap,
-        eventName: TradeActionType.OrderCancelled,
-      },
-      {
         orderType: OrderType.MarketSwap,
         eventName: TradeActionType.OrderCreated,
-      },
-      {
-        orderType: OrderType.LimitSwap,
-        eventName: TradeActionType.OrderCreated,
-      },
-      {
-        orderType: OrderType.LimitSwap,
-        eventName: TradeActionType.OrderUpdated,
       },
     ],
   },

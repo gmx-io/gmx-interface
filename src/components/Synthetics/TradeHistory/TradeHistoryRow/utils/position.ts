@@ -15,6 +15,7 @@ import {
   MakeOptional,
   RowDetails,
   formatTradeActionTimestamp,
+  formatTradeActionTimestampISO,
   infoRow,
   lines,
   numberToState,
@@ -54,6 +55,8 @@ export const formatPositionMessage = (
 
   const action = getActionTitle(tradeAction.orderType, tradeAction.eventName);
   const timestamp = formatTradeActionTimestamp(tradeAction.transaction.timestamp, relativeTimestamp);
+  const timestampISO = formatTradeActionTimestampISO(tradeAction.transaction.timestamp);
+
   const market = `${longShortText} ${indexName}`;
 
   const formattedCollateralDelta = formatTokenAmount(
@@ -68,7 +71,7 @@ export const formatPositionMessage = (
   const formattedExecutionPrice = formatUsd(tradeAction.executionPrice);
   const formattedPriceImpact = formatDeltaUsd(tradeAction.priceImpactUsd);
 
-  let result: MakeOptional<RowDetails, "action" | "market" | "timestamp" | "price" | "size">;
+  let result: MakeOptional<RowDetails, "action" | "market" | "timestamp" | "timestampISO" | "price" | "size">;
 
   const ot = tradeAction.orderType;
   const ev = tradeAction.eventName;
@@ -379,6 +382,7 @@ export const formatPositionMessage = (
         t`This position was liquidated as the max. leverage of ${formattedMaxLeverage} was exceeded when taking into account fees.`,
         "",
         infoRow(t`Order Execution Price`, formattedExecutionPrice!),
+        "",
         t`Order execution price takes into account price impact.`,
         "",
         infoRow(t`Initial Collateral`, formattedInitialCollateral!),
@@ -420,6 +424,7 @@ export const formatPositionMessage = (
     market,
     fullMarket,
     timestamp,
+    timestampISO,
     price: formattedMarketPrice || "",
     size: sizeDeltaText,
     marketPrice: formattedMarketPrice,

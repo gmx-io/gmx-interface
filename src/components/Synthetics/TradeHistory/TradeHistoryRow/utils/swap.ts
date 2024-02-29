@@ -8,7 +8,15 @@ import { getExchangeRateDisplay } from "lib/legacy";
 import { formatTokenAmount } from "lib/numbers";
 
 import { getActionTitle } from "../../keys";
-import { MakeOptional, RowDetails, formatTradeActionTimestamp, infoRow, lines, tryGetError } from "./shared";
+import {
+  MakeOptional,
+  RowDetails,
+  formatTradeActionTimestamp,
+  formatTradeActionTimestampISO,
+  infoRow,
+  lines,
+  tryGetError,
+} from "./shared";
 import { BigNumber } from "ethers";
 
 export const formatSwapMessage = (
@@ -88,7 +96,7 @@ export const formatSwapMessage = (
 
   let actionText = getActionTitle(tradeAction.orderType, tradeAction.eventName);
 
-  let result: MakeOptional<RowDetails, "action" | "market" | "timestamp">;
+  let result: MakeOptional<RowDetails, "action" | "market" | "timestamp" | "timestampISO">;
 
   const ot = tradeAction.orderType;
   const ev = tradeAction.eventName;
@@ -197,6 +205,7 @@ export const formatSwapMessage = (
     market: market,
     fullMarket: fullMarket,
     timestamp: formatTradeActionTimestamp(tradeAction.transaction.timestamp, relativeTimestamp),
+    timestampISO: formatTradeActionTimestampISO(tradeAction.transaction.timestamp),
     acceptablePrice: `${greaterSign}${acceptableRate}`,
     executionPrice: executionRate,
     ...result!,
