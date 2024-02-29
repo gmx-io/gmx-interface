@@ -71,8 +71,8 @@ export function NetworkFeeRow({ executionFee }: Props) {
               <br />
               <div className="text-white">
                 <Trans>
-                  The Max Execution Fee is overestimated by {maxExecutionFeeText}%. Upon execution, the excess Execution
-                  Fee is sent back to your account.
+                  The max execution fee is overestimated by {maxExecutionFeeText}%. Upon execution, the excess execution
+                  fee is sent back to your account.
                 </Trans>
                 <ExternalLink href="https://docs.gmx.io/docs/trading/v2#execution-fee">
                   <Trans>Read more</Trans>
@@ -84,7 +84,7 @@ export function NetworkFeeRow({ executionFee }: Props) {
             </div>
           )}
         >
-          <Trans>Max Execution Fee</Trans>
+          <Trans>Network Fee</Trans>
         </TooltipWithPortal>
       }
       value={value}
