@@ -128,14 +128,9 @@ const fetchAccounts = async (
 
   const response = await client.query<LeaderboardAccountsJson>({
     query: gql`
-      query PeriodAccountStats($requiredMaxCollateral: String, $from: Int, $to: Int) {
+      query PeriodAccountStats($account: String, $requiredMaxCollateral: String, $from: Int, $to: Int) {
         periodAccountStats(
-          where: {
-            maxCollateral_gte: $requiredMaxCollateral
-            from: $from
-            to: $to
-            id_eq: "0x5d477f258912B634914D68f20FE5614856DCac94"
-          }
+          where: { id_eq: $account, maxCollateral_gte: $requiredMaxCollateral, from: $from, to: $to }
         ) {
           id
           closedCount
@@ -157,6 +152,7 @@ const fetchAccounts = async (
       }
     `,
     variables: {
+      account: p?.account,
       requiredMaxCollateral: p?.account ? undefined : MIN_COLLATERAL_USD_IN_LEADERBOARD.toString(),
       from: p?.from,
       to: p?.to,

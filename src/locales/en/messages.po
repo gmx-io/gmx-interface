@@ -3639,6 +3639,10 @@ msgstr "Page not found"
 msgid "Page outdated, please refresh"
 msgstr "Page outdated, please refresh"
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Paid Fees"
+msgstr "Paid Fees"
+
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Pair"
 msgstr "Pair"
@@ -3678,6 +3682,10 @@ msgstr "Pay"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Pay Amount"
 msgstr "Pay Amount"
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Pending Fees"
+msgstr "Pending Fees"
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Pending Wallet message sign"
@@ -4678,6 +4686,14 @@ msgstr "Staked Tokens"
 #: src/pages/Stake/StakeV2.js
 msgid "Staking..."
 msgstr "Staking..."
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Start Pending Fees"
+msgstr "Start Pending Fees"
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Start Pending PnL"
+msgstr "Start Pending PnL"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Stats"
