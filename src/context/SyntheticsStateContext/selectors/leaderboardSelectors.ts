@@ -82,15 +82,15 @@ export const selectLeaderboardAccountsRanks = createEnhancedSelector((q) => {
   const accountsCopy = [...accounts];
 
   accountsCopy
-    .sort((a, b) => (b.totalPnl.sub(a.totalPnl).gt(0) ? 1 : -1))
-    .forEach((pnl, index) => {
-      ranks.pnl.set(pnl.account, index + 1);
+    .sort((a, b) => (b.totalPnlAfterFees.sub(a.totalPnlAfterFees).gt(0) ? 1 : -1))
+    .forEach((account, index) => {
+      ranks.pnl.set(account.account, index + 1);
     });
 
   accountsCopy
     .sort((a, b) => (b.pnlPercentage.sub(a.pnlPercentage).gt(0) ? 1 : -1))
-    .forEach((pnl, index) => {
-      ranks.pnlPercentage.set(pnl.account, index + 1);
+    .forEach((account, index) => {
+      ranks.pnlPercentage.set(account.account, index + 1);
     });
 
   return ranks;
