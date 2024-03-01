@@ -26,11 +26,12 @@ import { formatSwapMessage } from "./TradeHistoryRow/utils/swap";
 import Button from "components/Button/Button";
 import Pagination from "components/Pagination/Pagination";
 import usePagination from "components/Referrals/usePagination";
-import { DateRangeSelect } from "./DateRangeSelect/DateRangeSelect";
-import { TradeHistoryRow } from "./TradeHistoryRow/TradeHistoryRow";
+import { TradesHistorySkeleton } from "components/Skeleton/Skeleton";
 
+import { DateRangeSelect } from "./DateRangeSelect/DateRangeSelect";
 import { ActionFilter } from "./filters/ActionFilter";
 import { MarketFilter } from "./filters/MarketFilter";
+import { TradeHistoryRow } from "./TradeHistoryRow/TradeHistoryRow";
 
 import downloadIcon from "img/ic_download_simple.svg";
 
@@ -165,7 +166,7 @@ export function TradeHistory(p: Props) {
     orderEventCombinations: actionFilter,
   });
 
-  const isLoading = !!account && (!minCollateralUsd || isHistoryLoading);
+  const isLoading = !minCollateralUsd || isHistoryLoading;
 
   const isEmpty = !isLoading && !tradeActions?.length;
   const { currentPage, setCurrentPage, getCurrentData, pageCount } = usePagination(
@@ -230,15 +231,19 @@ export function TradeHistory(p: Props) {
               </tr>
             </thead>
             <tbody>
-              {currentPageData?.map((tradeAction) => (
-                <TradeHistoryRow
-                  key={tradeAction.id}
-                  tradeAction={tradeAction}
-                  minCollateralUsd={minCollateralUsd!}
-                  showDebugValues={showDebugValues}
-                  shouldDisplayAccount={forAllAccounts}
-                />
-              ))}
+              {isLoading ? (
+                <TradesHistorySkeleton withTimestamp={forAllAccounts} />
+              ) : (
+                currentPageData.map((tradeAction) => (
+                  <TradeHistoryRow
+                    key={tradeAction.id}
+                    tradeAction={tradeAction}
+                    minCollateralUsd={minCollateralUsd!}
+                    showDebugValues={showDebugValues}
+                    shouldDisplayAccount={forAllAccounts}
+                  />
+                ))
+              )}
             </tbody>
           </table>
         </div>
