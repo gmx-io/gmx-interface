@@ -3648,6 +3648,10 @@ msgstr "페이지가 오래되었습니다. 새로고침해주세요."
 msgid "Paid Fees"
 msgstr ""
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Paid Price Impact"
+msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Pair"
 msgstr ""
@@ -4692,7 +4696,6 @@ msgstr "스테이킹된 토큰"
 msgid "Staking..."
 msgstr "스테이킹중..."
 
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start Pending Fees"
 msgstr ""

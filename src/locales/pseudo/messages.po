@@ -3648,6 +3648,10 @@ msgstr ""
 msgid "Paid Fees"
 msgstr ""
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Paid Price Impact"
+msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Pair"
 msgstr ""
@@ -4692,7 +4696,6 @@ msgstr ""
 msgid "Staking..."
 msgstr ""
 
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start Pending Fees"
 msgstr ""

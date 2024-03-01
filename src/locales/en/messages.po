@@ -3651,6 +3651,10 @@ msgstr "Page outdated, please refresh"
 msgid "Paid Fees"
 msgstr "Paid Fees"
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Paid Price Impact"
+msgstr "Paid Price Impact"
+
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Pair"
 msgstr "Pair"
@@ -4695,7 +4699,6 @@ msgstr "Staked Tokens"
 msgid "Staking..."
 msgstr "Staking..."
 
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start Pending Fees"
 msgstr "Start Pending Fees"

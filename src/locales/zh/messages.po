@@ -3648,6 +3648,10 @@ msgstr "页面已过期，请刷新"
 msgid "Paid Fees"
 msgstr ""
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Paid Price Impact"
+msgstr ""
+
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Pair"
 msgstr ""
@@ -4692,7 +4696,6 @@ msgstr "代币质押"
 msgid "Staking..."
 msgstr "质押中..."
 
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start Pending Fees"
 msgstr ""
