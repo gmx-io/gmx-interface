@@ -2892,8 +2892,12 @@ msgid "Main Account {0} Balance is used to top up Subaccount Balance on each Act
 msgstr "Main Account {0} Balance is used to top up Subaccount Balance on each Action up to the set Max auto top-up amount. Use the \"Сonvert {1} to {2}\" field if the Main Account {3} Balance is low."
 
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
-msgid "March 2014 Competitions"
-msgstr "March 2014 Competitions"
+#~ msgid "March 2014 Competitions"
+#~ msgstr "March 2014 Competitions"
+
+#: src/pages/LeaderboardPage/LeaderboardPage.tsx
+msgid "March 2024 Competitions"
+msgstr "March 2024 Competitions"
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
