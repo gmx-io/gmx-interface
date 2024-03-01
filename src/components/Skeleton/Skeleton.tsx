@@ -1,29 +1,40 @@
+import { ComponentPropsWithoutRef, ComponentType, FunctionComponent } from "react";
+import { SkeletonTheme } from "react-loading-skeleton";
+
+import GMListSkeletonStructure from "./GMListSkeletonStructure";
+import MarketListSkeletonStructure from "./MarketListSkeletonStructure";
+import TradesHistorySkeletonStructure from "./TradesHistorySkeletonStructure";
+
 import "react-loading-skeleton/dist/skeleton.css";
 import "./Skeleton.scss";
-import { SkeletonTheme } from "react-loading-skeleton";
-import { ComponentType } from "react";
-import MarketListSkeletonStructure from "./MarketListSkeletonStructure";
-import GMListSkeletonStructure from "./GMListSkeletonStructure";
 
 type Props = {
-  count: number;
+  count?: number;
   Structure: ComponentType;
 };
 
-function TableListSkeleton({ count = 10, Structure }: Props) {
+function TableListSkeleton({ count = 10, Structure, ...restProps }: Props) {
   return (
     <SkeletonTheme baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A">
       {Array.from({ length: count }).map((_, index) => (
-        <Structure key={index} />
+        <Structure {...restProps} key={index} />
       ))}
     </SkeletonTheme>
   );
 }
 
-export function MarketListSkeleton(props) {
+type SkeletonProps<Component extends FunctionComponent> = {
+  count?: number;
+} & ComponentPropsWithoutRef<Component>;
+
+export function MarketListSkeleton(props: SkeletonProps<typeof MarketListSkeletonStructure>) {
   return <TableListSkeleton {...props} Structure={MarketListSkeletonStructure} />;
 }
 
-export function GMListSkeleton(props) {
+export function GMListSkeleton(props: SkeletonProps<typeof GMListSkeletonStructure>) {
   return <TableListSkeleton {...props} Structure={GMListSkeletonStructure} />;
+}
+
+export function TradesHistorySkeleton(props: SkeletonProps<typeof TradesHistorySkeletonStructure>) {
+  return <TableListSkeleton {...props} Structure={TradesHistorySkeletonStructure} />;
 }
