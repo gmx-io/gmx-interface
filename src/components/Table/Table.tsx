@@ -2,11 +2,11 @@ import React, { useCallback } from "react";
 import isObject from "lodash/isObject";
 import { t } from "@lingui/macro";
 import cx from "classnames";
-import Tooltip from "../Tooltip/Tooltip";
 import { TableCellData, TableCellProps, TableHeaderProps, TableProps } from "./types";
+import { createBreakpoint } from "react-use";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import "./Table.scss";
-import { createBreakpoint } from "react-use";
 
 function DefaultLoaderComponent({ cols }: { cols: number }) {
   return (
@@ -94,7 +94,7 @@ const TableHeader = ({ data, breakpoint }: TableHeaderProps) => {
   return (
     <th onClick={handleClick} className={cx("TableHeader", className)} style={style}>
       {tooltip ? (
-        <Tooltip
+        <TooltipWithPortal
           handle={<span className="TableHeaderTitle">{title}</span>}
           position={tooltipPosition || "right-bottom"}
           className="TableHeaderTooltip"
@@ -107,7 +107,7 @@ const TableHeader = ({ data, breakpoint }: TableHeaderProps) => {
   );
 };
 
-const TableCell = ({ data, breakpoint }: TableCellProps) => {
+export const TableCell = ({ data, breakpoint }: TableCellProps) => {
   const isObj = isObject(data);
   const cellClassName = cx(isObj && (data as TableCellData).className);
   let content;

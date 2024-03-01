@@ -29,6 +29,8 @@ type LeaderboardAccountsJson = {
     volume: string;
     losses: number;
     wins: number;
+
+    hasRank?: boolean;
   }[];
 };
 
@@ -40,6 +42,7 @@ export type LeaderboardAccountBase = {
 
   maxCollateral: BigNumber;
   netCollateral: BigNumber;
+  hasRank: boolean;
 
   paidPriceImpact: BigNumber;
   paidFees: BigNumber;
@@ -117,7 +120,7 @@ export type LeaderboardPosition = LeaderboardPositionBase & {
 
 const fetchAccounts = async (
   chainId: number,
-  p?: { account?: string; from?: number; to?: number }
+  p: { account?: string; from?: number; to?: number }
 ): Promise<LeaderboardAccountBase[] | undefined> => {
   const client = getLeaderboardGraphClient(chainId);
   if (!client) {
@@ -126,42 +129,74 @@ const fetchAccounts = async (
     return;
   }
 
-  const response = await client.query<LeaderboardAccountsJson>({
-    query: gql`
-      query PeriodAccountStats($account: String, $requiredMaxCollateral: String, $from: Int, $to: Int) {
-        periodAccountStats(
-          limit: 10000
-          where: { id_eq: $account, maxCollateral_gte: $requiredMaxCollateral, from: $from, to: $to }
-        ) {
-          id
-          closedCount
-          cumsumCollateral
-          cumsumSize
-          losses
-          maxCollateral
-          paidPriceImpact
-          sumMaxSize
-          netCollateral
-          paidFees
-          realizedPnl
-          volume
-          wins
-          startPendingPnl
-          startPendingFees
-          startPendingPriceImpact
+  const [allAccounts, currentAccount] = await Promise.all([
+    client.query<LeaderboardAccountsJson>({
+      query: gql`
+        query PeriodAccountStats($requiredMaxCollateral: String, $from: Int, $to: Int) {
+          periodAccountStats(limit: 10000, where: { maxCollateral_gte: $requiredMaxCollateral, from: $from, to: $to }) {
+            id
+            closedCount
+            cumsumCollateral
+            cumsumSize
+            losses
+            maxCollateral
+            paidPriceImpact
+            sumMaxSize
+            netCollateral
+            paidFees
+            realizedPnl
+            volume
+            wins
+            startPendingPnl
+            startPendingFees
+            startPendingPriceImpact
+          }
         }
-      }
-    `,
-    variables: {
-      account: p?.account,
-      requiredMaxCollateral: p?.account ? undefined : MIN_COLLATERAL_USD_IN_LEADERBOARD.toString(),
-      from: p?.from,
-      to: p?.to,
-    },
-    fetchPolicy: "no-cache",
-  });
+      `,
+      variables: {
+        requiredMaxCollateral: MIN_COLLATERAL_USD_IN_LEADERBOARD.toString(),
+        from: p?.from,
+        to: p?.to,
+      },
+      fetchPolicy: "no-cache",
+    }),
+    client.query<LeaderboardAccountsJson>({
+      query: gql`
+        query PeriodAccountStats($account: String) {
+          periodAccountStats(limit: 1, where: { id_eq: $account }) {
+            id
+            closedCount
+            cumsumCollateral
+            cumsumSize
+            losses
+            maxCollateral
+            paidPriceImpact
+            sumMaxSize
+            netCollateral
+            paidFees
+            realizedPnl
+            volume
+            wins
+            startPendingPnl
+            startPendingFees
+            startPendingPriceImpact
+          }
+        }
+      `,
+      variables: {
+        account: p.account,
+      },
+      fetchPolicy: "no-cache",
+    }),
+  ]);
 
-  return response?.data.periodAccountStats.map((p) => {
+  const allAccountsSet = new Set(allAccounts?.data.periodAccountStats.map((p) => p.id));
+
+  if (p.account && !allAccountsSet.has(p.account) && currentAccount?.data.periodAccountStats.length) {
+    allAccounts?.data.periodAccountStats.push({ ...currentAccount.data.periodAccountStats[0], hasRank: false });
+  }
+
+  return allAccounts?.data.periodAccountStats.map((p) => {
     return {
       account: p.id,
       cumsumCollateral: BigNumber.from(p.cumsumCollateral),
@@ -182,6 +217,8 @@ const fetchAccounts = async (
       closedCount: p.closedCount,
       losses: p.losses,
       wins: p.wins,
+
+      hasRank: p.hasRank ?? true,
     };
   });
 };
@@ -196,19 +233,11 @@ export function useLeaderboardData(
       ? ["leaderboard/useLeaderboardAccounts", chainId, p.account, p.from, p.to, p.positionsSnapshotTimestamp]
       : null,
     async () => {
-      // console.time(`fetchAccounts ${p.account}`);
       const accounts = await fetchAccounts(chainId, p);
-      // console.timeEnd(`fetchAccounts ${p.account}`);
 
       if (!accounts || !accounts.length) return undefined;
 
-      // console.time(`fetchPositions ${p.account}`);
-      const positions = await fetchPositions(
-        chainId,
-        p.positionsSnapshotTimestamp,
-        accounts.map((a) => a.account)
-      );
-      // console.timeEnd(`fetchPositions ${p.account}`);
+      const positions = await fetchPositions(chainId, p.positionsSnapshotTimestamp);
 
       return {
         accounts,
@@ -225,8 +254,7 @@ export function useLeaderboardData(
 
 const fetchPositions = async (
   chainId: number,
-  snapshotTimestamp: number | undefined,
-  accounts: string[] | undefined
+  snapshotTimestamp: number | undefined
 ): Promise<LeaderboardPositionBase[] | undefined> => {
   const client = getLeaderboardGraphClient(chainId);
   if (!client) {
@@ -237,10 +265,14 @@ const fetchPositions = async (
 
   const response = await client.query<LeaderboardPositionsJson>({
     query: gql`
-      query PositionQuery($isSnapshot: Boolean, $snapshotTimestamp: Int, $accounts: [String!]) {
+      query PositionQuery($requiredMaxCollateral: BigInt, $isSnapshot: Boolean, $snapshotTimestamp: Int) {
         positions(
           limit: 20000
-          where: { isSnapshot_eq: $isSnapshot, snapshotTimestamp_eq: $snapshotTimestamp, account_in: $accounts }
+          where: {
+            isSnapshot_eq: $isSnapshot
+            snapshotTimestamp_eq: $snapshotTimestamp
+            accountStat: { maxCollateral_gt: $requiredMaxCollateral }
+          }
         ) {
           id
           account
@@ -265,8 +297,8 @@ const fetchPositions = async (
     `,
     variables: {
       isSnapshot: snapshotTimestamp !== undefined,
+      requiredMaxCollateral: MIN_COLLATERAL_USD_IN_LEADERBOARD.toString(),
       snapshotTimestamp,
-      accounts,
     },
     fetchPolicy: "no-cache",
   });

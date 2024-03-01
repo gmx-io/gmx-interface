@@ -3432,8 +3432,12 @@ msgid "One-Click Trading is not available using network's native token {0}. Cons
 msgstr "One-Click Trading is not available using network's native token {0}. Consider using {1} as Pay token instead."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "Only Addresses with over $1,000 in traded volume are displayed."
-msgstr "Only Addresses with over $1,000 in traded volume are displayed."
+#~ msgid "Only Addresses with over $1,000 in traded volume are displayed."
+#~ msgstr "Only Addresses with over $1,000 in traded volume are displayed."
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Only Addresses with over {0} are ranked."
+msgstr "Only Addresses with over {0} are ranked."
 
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."

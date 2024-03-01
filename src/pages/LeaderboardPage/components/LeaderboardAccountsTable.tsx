@@ -5,7 +5,6 @@ import Pagination from "components/Pagination/Pagination";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Table from "components/Table/Table";
 import { TableHeader } from "components/Table/types";
-import Tooltip from "components/Tooltip/Tooltip";
 import { formatAmount, formatPercentage, formatUsd } from "lib/numbers";
 import { useDebounce } from "lib/useDebounce";
 import { useCallback, useLayoutEffect, useMemo, useState } from "react";
@@ -21,10 +20,12 @@ import {
 } from "domain/synthetics/leaderboard";
 import { useLeaderboardAccountsRanks } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import { BigNumber } from "ethers";
+import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "domain/synthetics/leaderboard/constants";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 function getWinnerClassname(rank: number, competition: CompetitionType | undefined) {
   if (!competition) return rank <= 3 ? `LeaderboardRank-${rank}` : undefined;
-  return rank <= 10 ? `LeaderboardRank-TopCompetitor` : undefined;
+  return rank > 0 && rank <= 10 ? `LeaderboardRank-TopCompetitor` : undefined;
 }
 
 const constructRow = (
@@ -35,14 +36,14 @@ const constructRow = (
 ): TopAccountsRow => ({
   key: s.account,
   rank: {
-    value: () => <span className={getWinnerClassname(rank, competition)}>{rank}</span>,
+    value: () => <span className={getWinnerClassname(rank, competition)}>{rank === 0 ? "-" : rank}</span>,
   },
   account: {
     value: (breakpoint) => <AddressView size={20} address={s.account} breakpoint={breakpoint} />,
   },
   absPnl: {
     value: () => (
-      <Tooltip
+      <TooltipWithPortal
         handle={
           <span className={signedValueClassName(s.totalPnlAfterFees)}>
             {formatDelta(s.totalPnlAfterFees, { signed: true, prefix: "$" })}
@@ -113,7 +114,7 @@ const constructRow = (
   },
   relPnl: {
     value: () => (
-      <Tooltip
+      <TooltipWithPortal
         handle={<span className={signedValueClassName(s.pnlPercentage)}>{formatPercentage(s.pnlPercentage)}</span>}
         position={index > 7 ? "right-top" : "right-bottom"}
         className="nowrap"
@@ -147,10 +148,14 @@ export function LeaderboardAccountsTable({
   accounts,
   search,
   activeCompetition,
+  sortingEnabled = true,
+  skeletonCount = 15,
 }: {
   accounts: RemoteData<LeaderboardAccount>;
   search: string;
   activeCompetition: CompetitionType | undefined;
+  sortingEnabled?: boolean;
+  skeletonCount?: number;
 }) {
   const perPage = 20;
   const { isLoading, error, data } = accounts;
@@ -221,23 +226,31 @@ export function LeaderboardAccountsTable({
 
   const getSortableClass = useCallback(
     (key: LeaderboardAccountField) =>
-      cx(
-        orderBy === key || (key === "wins" && orderBy === "losses")
-          ? direction > 0
-            ? "sorted-asc"
-            : "sorted-desc"
-          : "sortable"
-      ),
-    [direction, orderBy]
+      sortingEnabled
+        ? cx(
+            orderBy === key || (key === "wins" && orderBy === "losses")
+              ? direction > 0
+                ? "sorted-asc"
+                : "sorted-desc"
+              : "sortable"
+          )
+        : undefined,
+    [direction, orderBy, sortingEnabled]
   );
 
   const titles: { [key in keyof TopAccountsRow]?: TableHeader } = useMemo(
     () => ({
-      rank: { columnName: "rank", title: t`Rank`, width: 6 },
+      rank: {
+        columnName: "rank",
+        title: t`Rank`,
+        width: 6,
+        tooltip: t`Only Addresses with over ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD)} are ranked.`,
+        tooltipPosition: "left-bottom",
+      },
       account: {
         columnName: "account",
         title: t`Address`,
-        tooltip: t`Only Addresses with over $1,000 in traded volume are displayed.`,
+
         tooltipPosition: "left-bottom",
         width: (p = "XL") => ({ XL: 16, L: 16, M: 16, S: 10 }[p] || 16),
       },
@@ -284,7 +297,7 @@ export function LeaderboardAccountsTable({
     [getSortableClass, handleColumnClick]
   );
 
-  const loader = useCallback(() => <TopAccountsSkeleton count={15} />, []);
+  const loader = useCallback(() => <TopAccountsSkeleton count={skeletonCount} />, [skeletonCount]);
 
   return (
     <div>

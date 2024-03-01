@@ -3,25 +3,41 @@ import cx from "classnames";
 import { useCallback, useMemo, useState } from "react";
 
 import SearchInput from "components/SearchInput/SearchInput";
-import { useLeaderboardAccounts } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
-import { LeaderboardAccountsTable } from "./LeaderboardAccountsTable";
 import Tab from "components/Tab/Tab";
+import {
+  useLeaderboardCurrentAccount,
+  useLeaderboardRankedAccounts,
+} from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import { CompetitionType } from "domain/synthetics/leaderboard";
+import { LeaderboardAccountsTable } from "./LeaderboardAccountsTable";
+import { useAccount } from "context/SyntheticsStateContext/hooks/globalsHooks";
 
 const competitionLabels = [t`Notional PnL`, t`PnL Percentage`];
 const competitionsTabs = [0, 1];
 
 export function LeaderboardContainer({ isCompetitions }: { isCompetitions: boolean }) {
   const [search, setSearch] = useState("");
-  const accounts = useLeaderboardAccounts();
+  const accounts = useLeaderboardRankedAccounts();
+  const account = useAccount();
+  const leaderboardCurrentAccount = useLeaderboardCurrentAccount();
+  const isLoading = !accounts;
   const accountsStruct = useMemo(
     () => ({
-      isLoading: !accounts,
+      isLoading,
       data: accounts ? accounts : [],
       error: null,
       updatedAt: 0,
     }),
-    [accounts]
+    [accounts, isLoading]
+  );
+  const currentAccountStruct = useMemo(
+    () => ({
+      isLoading,
+      data: leaderboardCurrentAccount ? [leaderboardCurrentAccount] : [],
+      error: null,
+      updatedAt: 0,
+    }),
+    [isLoading, leaderboardCurrentAccount]
   );
   const handleKeyDown = useCallback(() => null, []);
   const [activeCompetitionIndex, setActiveCompetitionIndex] = useState(0);
@@ -29,6 +45,19 @@ export function LeaderboardContainer({ isCompetitions }: { isCompetitions: boole
 
   return (
     <div className="GlobalLeaderboards">
+      {account && leaderboardCurrentAccount && (
+        <>
+          <LeaderboardAccountsTable
+            activeCompetition={isCompetitions ? activeCompetition : undefined}
+            accounts={currentAccountStruct}
+            search=""
+            sortingEnabled={false}
+            skeletonCount={1}
+          />
+          <br />
+          <br />
+        </>
+      )}
       {isCompetitions && (
         <Tab
           option={activeCompetitionIndex}

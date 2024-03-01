@@ -2,19 +2,56 @@ import { BigNumber } from "ethers";
 import { SyntheticsTradeState } from "../SyntheticsStateContextProvider";
 import { createEnhancedSelector } from "../utils";
 import { LeaderboardAccount, LeaderboardPositionBase } from "domain/synthetics/leaderboard";
-import { selectMarketsInfoData } from "./globalSelectors";
+import { selectAccount, selectMarketsInfoData } from "./globalSelectors";
 import { MarketInfo } from "domain/synthetics/markets";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 export const selectLeaderboardAccountBases = (s: SyntheticsTradeState) => s.leaderboard.accounts;
 export const selectLeaderboardPositionBases = (s: SyntheticsTradeState) => s.leaderboard.positions;
-const selectLeaderBoardCurrentAccountPositionBases = (s: SyntheticsTradeState) => s.leaderboard.currentAccountPositions;
+
+export const selectLeaderboardCurrentAccount = createEnhancedSelector((q): LeaderboardAccount | undefined => {
+  const accounts = q(selectLeaderboardAccounts);
+  const currentAccount = q(selectAccount);
+  const leaderboardAccount = accounts?.find((a) => a.account === currentAccount);
+  if (leaderboardAccount) return leaderboardAccount;
+  if (!currentAccount) return undefined;
+
+  return {
+    account: currentAccount,
+    averageLeverage: BigNumber.from(0),
+    averageSize: BigNumber.from(0),
+    closedCount: 0,
+    cumsumCollateral: BigNumber.from(0),
+    cumsumSize: BigNumber.from(0),
+    hasRank: false,
+    losses: 0,
+    maxCollateral: BigNumber.from(0),
+    netCollateral: BigNumber.from(0),
+    paidFees: BigNumber.from(0),
+    paidPriceImpact: BigNumber.from(0),
+    pnlPercentage: BigNumber.from(0),
+    realizedPnl: BigNumber.from(0),
+    startPendingFees: BigNumber.from(0),
+    startPendingPnl: BigNumber.from(0),
+    startPendingPriceImpact: BigNumber.from(0),
+    pendingFees: BigNumber.from(0),
+    pendingPnl: BigNumber.from(0),
+    sumMaxSize: BigNumber.from(0),
+    totalCount: 0,
+    totalFees: BigNumber.from(0),
+    totalPnl: BigNumber.from(0),
+    totalPnlAfterFees: BigNumber.from(0),
+    volume: BigNumber.from(0),
+    wins: 0,
+  };
+});
 
 const selectPositionBasesByAccount = createEnhancedSelector((q) => {
   const positionBases = q(selectLeaderboardPositionBases);
-  const currentAccountPositionBases = q(selectLeaderBoardCurrentAccountPositionBases);
 
-  return [...(currentAccountPositionBases ?? []), ...(positionBases ?? [])].reduce((acc, position) => {
+  if (!positionBases) return {};
+
+  return positionBases.reduce((acc, position) => {
     if (!acc[position.account]) {
       acc[position.account] = [];
     }
@@ -23,13 +60,12 @@ const selectPositionBasesByAccount = createEnhancedSelector((q) => {
   }, {} as Record<string, LeaderboardPositionBase[]>);
 });
 
-export const selectLeaderboardAccounts = createEnhancedSelector((q) => {
+const selectLeaderboardAccounts = createEnhancedSelector((q) => {
   const baseAccounts = q(selectLeaderboardAccountBases);
   const positionBasesByAccount = q(selectPositionBasesByAccount);
   const marketsInfoData = q(selectMarketsInfoData);
 
   if (!baseAccounts) return undefined;
-  if (!positionBasesByAccount) return undefined;
 
   return baseAccounts.map((base) => {
     const account: LeaderboardAccount = {
@@ -74,8 +110,14 @@ export const selectLeaderboardAccounts = createEnhancedSelector((q) => {
   });
 });
 
-export const selectLeaderboardAccountsRanks = createEnhancedSelector((q) => {
+export const selectLeaderboardRankedAccounts = createEnhancedSelector((q) => {
   const accounts = q(selectLeaderboardAccounts);
+  if (!accounts) return undefined;
+  return accounts.filter((a) => a.hasRank);
+});
+
+export const selectLeaderboardAccountsRanks = createEnhancedSelector((q) => {
+  const accounts = q(selectLeaderboardRankedAccounts);
   const ranks = { pnl: new Map<string, number>(), pnlPercentage: new Map<string, number>() };
   if (!accounts) return ranks;
 

@@ -37,9 +37,6 @@ export type SyntheticsTradeState = {
     savedShowPnlAfterFees: boolean;
   };
   leaderboard: {
-    currentAccount: LeaderboardAccountBase | undefined;
-    currentAccountError: any; // FIXME any
-    currentAccountPositions: LeaderboardPositionBase[] | undefined;
     accounts: LeaderboardAccountBase[] | undefined;
     leaderboardDataError: any; // FIXME any
     positions: LeaderboardPositionBase[] | undefined;

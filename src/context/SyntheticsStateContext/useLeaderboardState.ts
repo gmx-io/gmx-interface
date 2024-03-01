@@ -21,14 +21,8 @@ export const useLeaderboardState = (account: string | undefined, pageType: Synth
   const isEndInFuture = timeframe.to === undefined || timeframe.to > Date.now() / 1000;
   const positionsSnapshotTimestamp = isEndInFuture ? undefined : timeframe.to;
 
-  const { data: currentAccountData, error: currentAccountError } = useLeaderboardData(true, chainId, {
-    account,
-    from: timeframe.from,
-    to: timeframe.to,
-    positionsSnapshotTimestamp,
-  });
   const { data, error: leaderboardDataError } = useLeaderboardData(enabled, chainId, {
-    account: undefined,
+    account,
     from: timeframe.from,
     to: timeframe.to,
     positionsSnapshotTimestamp,
@@ -36,20 +30,10 @@ export const useLeaderboardState = (account: string | undefined, pageType: Synth
 
   return useMemo(
     () => ({
-      currentAccount: currentAccountData?.accounts[0],
-      currentAccountError,
-      currentAccountPositions: currentAccountData?.positions,
       accounts: data?.accounts,
       leaderboardDataError,
       positions: data?.positions,
     }),
-    [
-      currentAccountData?.accounts,
-      currentAccountData?.positions,
-      currentAccountError,
-      data?.accounts,
-      data?.positions,
-      leaderboardDataError,
-    ]
+    [data?.accounts, data?.positions, leaderboardDataError]
   );
 };
