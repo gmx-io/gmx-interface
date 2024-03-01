@@ -158,6 +158,7 @@ const fetchAccounts = async (
       from: p?.from,
       to: p?.to,
     },
+    fetchPolicy: "no-cache",
   });
 
   return response?.data.periodAccountStats.map((p) => {
@@ -185,14 +186,35 @@ const fetchAccounts = async (
   });
 };
 
-export function useLeaderboardAccounts(
+export function useLeaderboardData(
   enabled: boolean,
   chainId: number,
-  p?: { account?: string; from?: number; to?: number }
+  p: { account?: string; from?: number; to?: number; positionsSnapshotTimestamp?: number }
 ) {
   const { data, error } = useSWR(
-    enabled ? ["leaderboard/useLeaderboardAccounts", chainId, p?.account, p?.from, p?.to] : null,
-    () => fetchAccounts(chainId, p),
+    enabled
+      ? ["leaderboard/useLeaderboardAccounts", chainId, p.account, p.from, p.to, p.positionsSnapshotTimestamp]
+      : null,
+    async () => {
+      // console.time(`fetchAccounts ${p.account}`);
+      const accounts = await fetchAccounts(chainId, p);
+      // console.timeEnd(`fetchAccounts ${p.account}`);
+
+      if (!accounts || !accounts.length) return undefined;
+
+      // console.time(`fetchPositions ${p.account}`);
+      const positions = await fetchPositions(
+        chainId,
+        p.positionsSnapshotTimestamp,
+        accounts.map((a) => a.account)
+      );
+      // console.timeEnd(`fetchPositions ${p.account}`);
+
+      return {
+        accounts,
+        positions,
+      };
+    },
     {
       refreshInterval: 60_000,
     }
@@ -203,7 +225,8 @@ export function useLeaderboardAccounts(
 
 const fetchPositions = async (
   chainId: number,
-  snapshotTimestamp: number | undefined
+  snapshotTimestamp: number | undefined,
+  accounts: string[] | undefined
 ): Promise<LeaderboardPositionBase[] | undefined> => {
   const client = getLeaderboardGraphClient(chainId);
   if (!client) {
@@ -214,8 +237,11 @@ const fetchPositions = async (
 
   const response = await client.query<LeaderboardPositionsJson>({
     query: gql`
-      query PositionQuery($isSnapshot: Boolean, $snapshotTimestamp: Int) {
-        positions(limit: 20000, where: { isSnapshot_eq: $isSnapshot, snapshotTimestamp_eq: $snapshotTimestamp }) {
+      query PositionQuery($isSnapshot: Boolean, $snapshotTimestamp: Int, $accounts: [String!]) {
+        positions(
+          limit: 20000
+          where: { isSnapshot_eq: $isSnapshot, snapshotTimestamp_eq: $snapshotTimestamp, account_in: $accounts }
+        ) {
           id
           account
           market
@@ -240,7 +266,9 @@ const fetchPositions = async (
     variables: {
       isSnapshot: snapshotTimestamp !== undefined,
       snapshotTimestamp,
+      accounts,
     },
+    fetchPolicy: "no-cache",
   });
 
   return response?.data.positions.map((p) => {
@@ -266,15 +294,3 @@ const fetchPositions = async (
     };
   });
 };
-
-export function useLeaderboardPositions(enabled: boolean, chainId: number, snapshotTimestamp: number | undefined) {
-  const { data, error } = useSWR(
-    enabled ? ["leaderboard/useLeaderboardPositions", chainId, snapshotTimestamp] : null,
-    () => fetchPositions(chainId, snapshotTimestamp),
-    {
-      refreshInterval: 60_000,
-    }
-  );
-
-  return { data, error };
-}

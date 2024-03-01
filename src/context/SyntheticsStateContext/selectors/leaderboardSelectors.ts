@@ -7,14 +7,14 @@ import { MarketInfo } from "domain/synthetics/markets";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 export const selectLeaderboardAccountBases = (s: SyntheticsTradeState) => s.leaderboard.accounts;
-export const selectLeaderboardAccountsError = (s: SyntheticsTradeState) => s.leaderboard.accountsError;
 export const selectLeaderboardPositionBases = (s: SyntheticsTradeState) => s.leaderboard.positions;
-export const selectLeaderboardPositionsError = (s: SyntheticsTradeState) => s.leaderboard.positionsError;
+const selectLeaderBoardCurrentAccountPositionBases = (s: SyntheticsTradeState) => s.leaderboard.currentAccountPositions;
 
 const selectPositionBasesByAccount = createEnhancedSelector((q) => {
   const positionBases = q(selectLeaderboardPositionBases);
-  if (!positionBases) return undefined;
-  return positionBases.reduce((acc, position) => {
+  const currentAccountPositionBases = q(selectLeaderBoardCurrentAccountPositionBases);
+
+  return [...(currentAccountPositionBases ?? []), ...(positionBases ?? [])].reduce((acc, position) => {
     if (!acc[position.account]) {
       acc[position.account] = [];
     }

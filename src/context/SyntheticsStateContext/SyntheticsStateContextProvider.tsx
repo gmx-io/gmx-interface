@@ -39,10 +39,10 @@ export type SyntheticsTradeState = {
   leaderboard: {
     currentAccount: LeaderboardAccountBase | undefined;
     currentAccountError: any; // FIXME any
+    currentAccountPositions: LeaderboardPositionBase[] | undefined;
     accounts: LeaderboardAccountBase[] | undefined;
-    accountsError: any; // FIXME any
+    leaderboardDataError: any; // FIXME any
     positions: LeaderboardPositionBase[] | undefined;
-    positionsError: any;
   };
   settings: SettingsContextType;
   tradebox: TradeState;
