@@ -26,10 +26,16 @@
   }
 
   &-monthAndYearPickers select {
+    background-color: var(--dark-blue-bg);
     color: white;
 
     background-image: none;
     padding: 10px;
+
+    option {
+      color: white;
+      background-color: var(--dark-blue-bg);
+    }
   }
 
   &-dayNumber span {
