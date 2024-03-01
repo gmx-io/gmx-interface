@@ -92,6 +92,12 @@ export type RowDetails = {
   timestampISO: string;
   market: string;
   fullMarket?: string;
+  indexName?: string;
+  poolName?: string;
+  fullMarketNames?: {
+    indexName: string;
+    poolName: string;
+  }[];
   size: string;
   price: string;
   priceComment: TooltipContent;

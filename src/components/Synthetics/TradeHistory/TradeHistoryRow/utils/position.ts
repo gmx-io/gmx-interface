@@ -2,7 +2,7 @@ import { i18n } from "@lingui/core";
 import { t } from "@lingui/macro";
 import { BigNumber } from "ethers";
 
-import { getMarketFullName, getMarketIndexName } from "domain/synthetics/markets";
+import { getMarketFullName, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { OrderType, isIncreaseOrderType } from "domain/synthetics/orders";
 import { convertToUsd } from "domain/synthetics/tokens/utils";
 import { getShouldUseMaxPrice } from "domain/synthetics/trade";
@@ -39,6 +39,10 @@ export const formatPositionMessage = (
   const indexName = getMarketIndexName({
     indexToken: tradeAction.indexToken,
     isSpotOnly: tradeAction.marketInfo.isSpotOnly,
+  });
+  const poolName = getMarketPoolName({
+    longToken: tradeAction.marketInfo.longToken,
+    shortToken: tradeAction.marketInfo.shortToken,
   });
 
   const fullMarket = getMarketFullName({
@@ -430,6 +434,8 @@ export const formatPositionMessage = (
     marketPrice: formattedMarketPrice,
     executionPrice: formattedExecutionPrice,
     priceImpact: formattedPriceImpact,
+    indexName,
+    poolName,
     ...result!,
   };
 };

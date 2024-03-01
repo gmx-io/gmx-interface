@@ -1,6 +1,8 @@
 import { t } from "@lingui/macro";
+import { BigNumber } from "ethers";
 
 import type { MarketInfo, MarketsInfoData } from "domain/synthetics/markets/types";
+import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { OrderType } from "domain/synthetics/orders";
 import { TokenData, adaptToV1TokenInfo, getTokensRatioByAmounts } from "domain/synthetics/tokens";
 import { SwapTradeAction, TradeActionType } from "domain/synthetics/tradeHistory";
@@ -17,7 +19,6 @@ import {
   lines,
   tryGetError,
 } from "./shared";
-import { BigNumber } from "ethers";
 
 export const formatSwapMessage = (
   tradeAction: SwapTradeAction,
@@ -93,6 +94,25 @@ export const formatSwapMessage = (
   const fullMarket = !marketsInfoData
     ? "..."
     : tradeAction.swapPath?.map((marketAddress) => marketsInfoData?.[marketAddress].name).join(" → ");
+
+  const fullMarketNames: RowDetails["fullMarketNames"] = !marketsInfoData
+    ? undefined
+    : tradeAction.swapPath?.map((marketAddress) => {
+        const marketInfo = marketsInfoData?.[marketAddress];
+        const indexName = getMarketIndexName({
+          indexToken: marketInfo.indexToken,
+          isSpotOnly: marketInfo.isSpotOnly,
+        });
+        const poolName = getMarketPoolName({
+          longToken: marketInfo.longToken,
+          shortToken: marketInfo.shortToken,
+        });
+
+        return {
+          indexName: indexName,
+          poolName: poolName,
+        };
+      });
 
   let actionText = getActionTitle(tradeAction.orderType, tradeAction.eventName);
 
@@ -208,6 +228,7 @@ export const formatSwapMessage = (
     timestampISO: formatTradeActionTimestampISO(tradeAction.transaction.timestamp),
     acceptablePrice: `${greaterSign}${acceptableRate}`,
     executionPrice: executionRate,
+    fullMarketNames,
     ...result!,
   };
 };

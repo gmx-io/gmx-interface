@@ -35,8 +35,10 @@ describe("TradeHistoryRow helpers", () => {
         "action": "Request Market Increase",
         "executionPrice": undefined,
         "fullMarket": "AVAX/USD [WAVAX-USDC]",
+        "indexName": "AVAX/USD",
         "market": "Short AVAX/USD",
         "marketPrice": undefined,
+        "poolName": "WAVAX-USDC",
         "price": "<  $35.05",
         "priceComment": Array [
           "Acceptable price for the order.",
@@ -54,8 +56,10 @@ describe("TradeHistoryRow helpers", () => {
         "action": "Request Withdraw",
         "executionPrice": undefined,
         "fullMarket": "AVAX/USD [WAVAX-USDC]",
+        "indexName": "AVAX/USD",
         "market": "Short AVAX/USD",
         "marketPrice": undefined,
+        "poolName": "WAVAX-USDC",
         "price": ">  $43.23",
         "priceComment": Array [
           "Acceptable price for the order.",
@@ -73,8 +77,10 @@ describe("TradeHistoryRow helpers", () => {
         "action": "Request Deposit",
         "executionPrice": undefined,
         "fullMarket": "DOGE/USD [ETH-DAI]",
+        "indexName": "DOGE/USD",
         "market": "Long DOGE/USD",
         "marketPrice": undefined,
+        "poolName": "ETH-DAI",
         "price": "<  $0.08",
         "priceComment": Array [
           "Acceptable price for the order.",
@@ -92,8 +98,10 @@ describe("TradeHistoryRow helpers", () => {
         "action": "Create Take-Profit Order",
         "executionPrice": undefined,
         "fullMarket": "BTC/USD [BTC-USDC]",
+        "indexName": "BTC/USD",
         "market": "Long BTC/USD",
         "marketPrice": undefined,
+        "poolName": "BTC-USDC",
         "price": ">  $30,000.00",
         "priceComment": Array [
           "Trigger price for the order.",
@@ -117,8 +125,10 @@ describe("TradeHistoryRow helpers", () => {
         "action": "Cancel Limit Order",
         "executionPrice": undefined,
         "fullMarket": "ETH/USD [WETH-USDC]",
+        "indexName": "ETH/USD",
         "market": "Long ETH/USD",
         "marketPrice": undefined,
+        "poolName": "WETH-USDC",
         "price": "<  $1,629.40",
         "priceComment": Array [
           "Trigger price for the order.",
@@ -142,8 +152,10 @@ describe("TradeHistoryRow helpers", () => {
         "action": "Create Limit Order",
         "executionPrice": undefined,
         "fullMarket": "BTC/USD [BTC-USDC]",
+        "indexName": "BTC/USD",
         "market": "Long BTC/USD",
         "marketPrice": undefined,
+        "poolName": "BTC-USDC",
         "price": "<  $1.00",
         "priceComment": Array [
           "Trigger price for the order.",
@@ -167,8 +179,10 @@ describe("TradeHistoryRow helpers", () => {
         "action": "Execute Limit Order",
         "executionPrice": "$0.83",
         "fullMarket": "ARB/USD [ARB-USDC]",
+        "indexName": "ARB/USD",
         "market": "Short ARB/USD",
         "marketPrice": "< $0.01",
+        "poolName": "ARB-USDC",
         "price": "< $0.01",
         "priceComment": Array [
           "Mark price for the order.",
@@ -204,8 +218,10 @@ describe("TradeHistoryRow helpers", () => {
         "action": "Failed Limit Order",
         "executionPrice": undefined,
         "fullMarket": "BTC/USD [BTC-USDC]",
+        "indexName": "BTC/USD",
         "market": "Short BTC/USD",
         "marketPrice": undefined,
+        "poolName": "BTC-USDC",
         "price": "",
         "priceComment": Array [
           "Mark price for the order.",
@@ -228,8 +244,10 @@ describe("TradeHistoryRow helpers", () => {
         "action": "Create Trigger",
         "executionPrice": undefined,
         "fullMarket": "XRP/USD [WETH-USDC]",
+        "indexName": "XRP/USD",
         "market": "Long XRP/USD",
         "marketPrice": undefined,
+        "poolName": "WETH-USDC",
         "price": "",
         "priceImpact": undefined,
         "size": "-$4,954.24",
@@ -243,8 +261,10 @@ describe("TradeHistoryRow helpers", () => {
         "action": "Liquidated",
         "executionPrice": "$6.10",
         "fullMarket": "LINK/USD [LINK-USDC]",
+        "indexName": "LINK/USD",
         "market": "Short LINK/USD",
         "marketPrice": "$6.09",
+        "poolName": "LINK-USDC",
         "price": "$6.09",
         "priceComment": Array [
           "Mark price for the liquidation.",
@@ -328,8 +348,10 @@ describe("TradeHistoryRow helpers", () => {
         "action": "Market Increase",
         "executionPrice": "$1,584.74",
         "fullMarket": "ETH/USD [WETH-USDC]",
+        "indexName": "ETH/USD",
         "market": "Long ETH/USD",
         "marketPrice": "$4.46",
+        "poolName": "WETH-USDC",
         "price": "$4.46",
         "priceComment": Array [
           "Mark price for the order.",
@@ -368,6 +390,7 @@ describe("TradeHistoryRow helpers", () => {
         "action": "Request Market Swap",
         "executionPrice": "...",
         "fullMarket": "...",
+        "fullMarketNames": undefined,
         "market": "...",
         "price": "<  0.00 USDC / WETH",
         "priceComment": Array [
@@ -384,6 +407,7 @@ describe("TradeHistoryRow helpers", () => {
         "action": "Execute Market Swap",
         "executionPrice": "965.18 USDC / ETH",
         "fullMarket": "...",
+        "fullMarketNames": undefined,
         "market": "...",
         "price": "965.18 USDC / ETH",
         "priceComment": Array [
@@ -406,6 +430,7 @@ describe("TradeHistoryRow helpers", () => {
         "action": "Execute Limit Swap",
         "executionPrice": "0.8110 WETH / BTC",
         "fullMarket": "...",
+        "fullMarketNames": undefined,
         "market": "...",
         "price": "0.8110 WETH / BTC",
         "priceComment": Array [
@@ -423,23 +448,24 @@ describe("TradeHistoryRow helpers", () => {
     `);
     expect(formatSwapMessage(failedSwap)).toMatchInlineSnapshot(`
       Object {
-        "acceptablePrice": "<  2.2613 WETH / BTC",
+        "acceptablePrice": "<  2,054.58 USDC / ETH",
         "action": "Failed Limit Swap",
         "executionPrice": "...",
         "fullMarket": "...",
+        "fullMarketNames": undefined,
         "market": "...",
-        "price": "...",
+        "price": "2,056.13 USDC / ETH",
         "priceComment": Array [
           "Execution price for the order.",
           "",
           Object {
             "key": "Order Acceptable Price",
-            "value": "<  2.2613 WETH / BTC",
+            "value": "<  2,054.58 USDC / ETH",
           },
         ],
-        "size": "0.3000 WETH to",
-        "timestamp": "29 Sep 2023, 10:45",
-        "timestampISO": "2023-09-29T10:45:04+04:00",
+        "size": "1.0000 USDC to 0.0004 ETH",
+        "timestamp": "14 Feb 2024, 13:33",
+        "timestampISO": "2024-02-14T13:33:19+04:00",
       }
     `);
   });
