@@ -1,10 +1,11 @@
-import { FloatingPortal, flip, offset, shift, useFloating, autoUpdate } from "@floating-ui/react";
+import { FloatingPortal, autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
 import { Popover } from "@headlessui/react";
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import React, { useMemo, useState } from "react";
 
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 
 import Checkbox from "components/Checkbox/Checkbox";
 import SearchInput from "components/SearchInput/SearchInput";
@@ -28,6 +29,7 @@ export function MarketFilter({ value, onChange }: Props) {
     strategy: "fixed",
     whileElementsMounted: autoUpdate,
   });
+  const sortOptions = useTradeboxAvailableTokensOptions();
 
   const isActive = value.length > 0;
 
@@ -35,7 +37,34 @@ export function MarketFilter({ value, onChange }: Props) {
 
   const tokensData = useTokensData();
 
-  const tokens = useMemo(() => Object.values(tokensData || {}), [tokensData]);
+  const tokens = useMemo(() => {
+    const tokenDataArr = Object.values(tokensData || {});
+    const sortSequence = sortOptions.sortedLongAndShortTokens;
+    const sortedTokens = tokenDataArr.sort((a, b) => {
+      // making sure to use the wrapped address if it exists in the extended sort sequence
+      const aAddress = a.wrappedAddress && sortSequence.includes(a.wrappedAddress) ? a.wrappedAddress : a.address;
+      const bAddress = b.wrappedAddress && sortSequence.includes(b.wrappedAddress) ? b.wrappedAddress : b.address;
+
+      const aIndex = sortSequence.indexOf(aAddress);
+      const bIndex = sortSequence.indexOf(bAddress);
+
+      if (aIndex === -1 && bIndex === -1) {
+        return 0;
+      }
+
+      if (aIndex === -1) {
+        return 1;
+      }
+
+      if (bIndex === -1) {
+        return -1;
+      }
+
+      return aIndex - bIndex;
+    });
+
+    return sortedTokens;
+  }, [sortOptions.sortedLongAndShortTokens, tokensData]);
 
   const filteredTokens = useMemo(() => {
     if (!marketSearch.trim()) {
