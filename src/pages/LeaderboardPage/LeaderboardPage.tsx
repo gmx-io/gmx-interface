@@ -7,7 +7,7 @@ import { LeaderboardContainer } from "./components/LeaderboardContainer";
 export function Leaderboard({ isCompetitions }: { isCompetitions?: boolean }) {
   const { chainId } = useChainId();
 
-  const title = isCompetitions ? <Trans>March 2014 Competitions</Trans> : <Trans>Leaderboard</Trans>;
+  const title = isCompetitions ? <Trans>March 2024 Competitions</Trans> : <Trans>Leaderboard</Trans>;
   const description = isCompetitions ? (
     <Trans>Competitions for traders on GMX V2.</Trans>
   ) : (
