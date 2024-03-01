@@ -42,11 +42,8 @@ export function NetworkFeeRow({ executionFee }: Props) {
     if (!executionFee || !executionFeeBufferBps) {
       estimatedRefundTokenAmount = undefined;
     } else {
-      // Fee = real fee * (1 + buffer)
       const fee = executionFee.feeTokenAmount;
-      // Fee before buffer = fee / (1 + buffer)
       const feeBeforeBuffer = fee.mul(BASIS_POINTS_DIVISOR).div(BASIS_POINTS_DIVISOR + executionFeeBufferBps);
-      // Refund = fee * usual refund ratio
       estimatedRefundTokenAmount = feeBeforeBuffer.mul(ESTIMATED_REFUND_BPS).div(BASIS_POINTS_DIVISOR);
     }
 
