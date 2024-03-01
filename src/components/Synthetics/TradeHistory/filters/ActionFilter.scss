@@ -9,7 +9,7 @@
   }
 
   &-group-name {
-    font-size: var(--font-base);
+    font-size: var(--font-sm);
 
     display: flex;
     align-items: center;
@@ -19,12 +19,12 @@
   }
 
   &-option {
-    font-size: var(--font-base);
+    font-size: var(--font-sm);
 
     display: flex;
     align-items: center;
     padding: 0.5rem 1rem;
-    padding-left: 1em;
+    padding-left: 25px;
 
     cursor: pointer;
   }
