@@ -108,7 +108,7 @@ const constructRow = (
               }
             />
             <StatsTooltipRow
-              label={t`Start Pending Fees`}
+              label={t`Paid Price Impact`}
               showDollar={false}
               value={
                 <span className={signedValueClassName(s.paidPriceImpact)}>
