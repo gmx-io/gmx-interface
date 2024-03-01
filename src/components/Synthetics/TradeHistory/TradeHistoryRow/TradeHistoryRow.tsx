@@ -85,12 +85,7 @@ function TooltipContentComponent({ content }: { content: TooltipContent }) {
         }
 
         if ("key" in line && "value" in line) {
-          return (
-            <div key={i} className="TradeHistoryRow-info-row">
-              <div className="muted mr-xxs">{line.key}:</div>
-              <LineSpan span={line.value} />
-            </div>
-          );
+          return <StatsTooltipRow key={i} label={line.key} value={<LineSpan span={line.value} />} showDollar={false} />;
         }
 
         return (
