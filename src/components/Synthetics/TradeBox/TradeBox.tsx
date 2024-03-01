@@ -466,11 +466,7 @@ export function TradeBox(p: Props) {
           isLong,
           marketInfo,
           position: selectedPosition,
-          strategy: isLeverageEnabled
-            ? focusedInput === "from"
-              ? "leverageByCollateral"
-              : "leverageBySize"
-            : "independent",
+          strategy: "leverageByCollateral",
           uiFeeFactor,
           userReferralInfo,
           acceptablePriceImpactBuffer,
@@ -524,13 +520,12 @@ export function TradeBox(p: Props) {
 
     if (isLeverageEnabled) {
       setLeverageOption(maxLeverage);
-    } else {
-      setToTokenInputValue(formatAmount(sizeDeltaInTokens, toToken.decimals, 8), true);
+    } else if (sizeDeltaInTokens) {
+      setToTokenInputValue(formatAmountFree(sizeDeltaInTokens, toToken.decimals, 8), true);
     }
   }, [
     acceptablePriceImpactBuffer,
     collateralToken,
-    focusedInput,
     fromToken,
     fromTokenAmount,
     isLeverageEnabled,
