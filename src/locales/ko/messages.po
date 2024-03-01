@@ -1805,6 +1805,10 @@ msgstr ""
 msgid "Escrowed GMX APR"
 msgstr "esGMX APR"
 
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "Estimated Fee Refund"
+msgstr "예상 수수료 환불"
+
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Execute"
@@ -4961,8 +4965,8 @@ msgid "The mark price has changed, consider increasing your Allowed Slippage by 
 msgstr "시장 평균가가 변화되었습니다. 귀하의 주소 옆에 \"...\" 아이콘을 클릭해서 허용 가능한 슬리피지 증가를 고려해보세요."
 
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
-msgid "The max execution fee is overestimated by {maxExecutionFeeText}%. Upon execution, the excess execution fee is sent back to your account."
-msgstr "최대 실행 수수료가 {maxExecutionFeeText}% 초과로 추정됩니다. 실행시 초과 실행 수수료는 귀하의 계정으로 반환됩니다."
+msgid "The max execution fee is overestimated, including by the buffer set under settings. Upon execution, any excess execution fee is sent back to your account."
+msgstr "최대 실행 수수료가 과도하게 추정되었습니다. 설정에서 설정된 버퍼를 포함하여 계산되었습니다. 실행시, 초과된 실행 수수료는 귀하의 계정으로 반환됩니다."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"<0>Max allowed actions</0>\" field."

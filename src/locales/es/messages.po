@@ -1805,6 +1805,10 @@ msgstr ""
 msgid "Escrowed GMX APR"
 msgstr "Escrowed GMX APR"
 
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "Estimated Fee Refund"
+msgstr "Reembolso de Comisión Estimado"
+
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Execute"
@@ -4961,8 +4965,8 @@ msgid "The mark price has changed, consider increasing your Allowed Slippage by 
 msgstr "El precio de referencia ha cambiado, considera incrementar el deslizamiento permitido haciendo clic en el icono \"...\" al lado de tu dirección."
 
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
-msgid "The max execution fee is overestimated by {maxExecutionFeeText}%. Upon execution, the excess execution fee is sent back to your account."
-msgstr "La tasa de ejecución máxima está sobreestimada por {maxExecutionFeeText}%. Al ejecutar, el exceso de tasa de ejecución se envía de vuelta a tu cuenta."
+msgid "The max execution fee is overestimated, including by the buffer set under settings. Upon execution, any excess execution fee is sent back to your account."
+msgstr "La tasa de ejecución máxima está sobreestimada, incluyendo el buffer establecido en ajustes. Al ejecutar, cualquier tasa de ejecución excedente se envía de vuelta a tu cuenta."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"<0>Max allowed actions</0>\" field."
