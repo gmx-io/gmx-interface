@@ -217,7 +217,7 @@ export default function OrdersList(props) {
             <td className="inline-flex">
               <Tooltip
                 handle={titleText}
-                position="right-bottom"
+                position="bottom-end"
                 className="Order-list-item-text"
                 renderContent={() => {
                   return (
@@ -283,7 +283,7 @@ export default function OrdersList(props) {
             <Tooltip
               className="order-error"
               handle={orderTitle}
-              position="right-bottom"
+              position="bottom-end"
               handleClassName="plain"
               renderContent={() => <span className="negative">{error}</span>}
             />
@@ -320,7 +320,7 @@ export default function OrdersList(props) {
             ) : (
               <Tooltip
                 handle={orderText}
-                position="right-bottom"
+                position="bottom-end"
                 renderContent={() => {
                   const collateralTokenInfo = getTokenInfo(infoTokens, order.purchaseToken);
                   const collateralUSD = getUsd(order.purchaseTokenAmount, order.purchaseToken, false, infoTokens);
@@ -346,7 +346,7 @@ export default function OrdersList(props) {
           <td>
             <Tooltip
               handle={formatAmount(markPrice, USD_DECIMALS, indexTokenPriceDecimal, true)}
-              position="right-bottom"
+              position="bottom-end"
               renderContent={() => {
                 return (
                   <Trans>
@@ -418,7 +418,7 @@ export default function OrdersList(props) {
                 </div>
                 <div>
                   <Tooltip
-                    position="right-bottom"
+                    position="bottom-end"
                     handle={getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo)}
                     renderContent={() => t`
                     You will receive at least ${formatAmount(
@@ -489,7 +489,7 @@ export default function OrdersList(props) {
                 <Tooltip
                   className="order-error"
                   handle={orderTitle}
-                  position="left-bottom"
+                  position="bottom-start"
                   handleClassName="plain"
                   renderContent={() => <span className="negative">{error}</span>}
                 />
@@ -513,7 +513,7 @@ export default function OrdersList(props) {
               <div>
                 <Tooltip
                   handle={formatAmount(markPrice, USD_DECIMALS, 2, true)}
-                  position="right-bottom"
+                  position="bottom-end"
                   renderContent={() => {
                     return (
                       <Trans>

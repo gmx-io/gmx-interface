@@ -589,7 +589,7 @@ export function PositionEditor(p: Props) {
                           <Trans>Collateral ({position?.collateralToken?.symbol})</Trans>
                         </span>
                       }
-                      position="left-top"
+                      position="top-start"
                       renderContent={() => {
                         return <Trans>Initial Collateral (Collateral excluding Borrow and Funding Fee).</Trans>;
                       }}

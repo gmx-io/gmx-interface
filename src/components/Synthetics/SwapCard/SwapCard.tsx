@@ -80,7 +80,7 @@ export function SwapCard(p: Props) {
           value={
             <Tooltip
               handle={formatUsd(maxLiquidityUsd) || "..."}
-              position="right-bottom"
+              position="bottom-end"
               renderContent={() => (
                 <div>
                   <StatsTooltipRow

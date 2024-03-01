@@ -116,7 +116,7 @@ export function OrderItem(p: Props) {
         return (
           <Tooltip
             handle={renderTitleWithIcon(p.order)}
-            position="left-bottom"
+            position="bottom-start"
             renderContent={() => (
               <>
                 <StatsTooltipRow
@@ -140,7 +140,7 @@ export function OrderItem(p: Props) {
           <Tooltip
             handle={renderTitleWithIcon(p.order)}
             className={cx(`order-error-text-msg`, `level-${errorLevel}`)}
-            position="left-bottom"
+            position="bottom-start"
             renderContent={() => (
               <>
                 {errors.map((error, i) => (
@@ -169,7 +169,7 @@ export function OrderItem(p: Props) {
     return (
       <Tooltip
         handle={renderTitleWithIcon(p.order)}
-        position="left-bottom"
+        position="bottom-start"
         className={errorLevel ? `order-error-text-msg level-${errorLevel}` : undefined}
         renderContent={() => {
           return (
@@ -290,7 +290,7 @@ export function OrderItem(p: Props) {
         <>
           {!p.hideActions ? (
             <Tooltip
-              position="right-bottom"
+              position="bottom-end"
               handle={swapRatioText}
               renderContent={() =>
                 t`You will receive at least ${toAmountText} if this order is executed. This price is being updated in real time based on Swap Fees and Price Impact.`
@@ -307,7 +307,7 @@ export function OrderItem(p: Props) {
           handle={`${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.triggerPrice, {
             displayDecimals: priceDecimals,
           })}`}
-          position="right-bottom"
+          position="bottom-end"
           renderContent={() => (
             <>
               <StatsTooltipRow
@@ -351,7 +351,7 @@ export function OrderItem(p: Props) {
       return (
         <Tooltip
           handle={formatUsd(markPrice, { displayDecimals: priceDecimals })}
-          position="right-bottom"
+          position="bottom-end"
           renderContent={() => {
             return (
               <Trans>

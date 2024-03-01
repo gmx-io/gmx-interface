@@ -164,7 +164,7 @@ export function MarketPoolSelectorRow(p: Props) {
         message ? (
           <Tooltip
             handle={t`Pool`}
-            position="left-bottom"
+            position="bottom-start"
             className="MarketSelector-tooltip"
             renderContent={() => <div className="MarketSelector-tooltip-content">{message}</div>}
           />

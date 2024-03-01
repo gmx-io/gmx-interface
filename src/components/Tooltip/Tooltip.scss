@@ -1,3 +1,5 @@
+$left-arrow-bg: #2e3351;
+
 .Tooltip {
   position: relative;
 }
@@ -49,101 +51,131 @@
   margin-bottom: 0;
 }
 
-.Tooltip-popup.left-bottom {
-  left: 0;
-  transform: translateY(0.8rem);
-  top: 100%;
-
-  &::after {
-    display: block;
-    top: -4px;
-    background: #232741;
-  }
-}
-
-.Tooltip-popup.right-bottom {
-  right: 0;
-  transform: translateY(0.8rem);
-  top: 100%;
-
-  &::after {
-    display: block;
-    top: -4px;
-    right: 8px;
-    background: #2e3351;
-  }
-}
-
-.Tooltip-popup.right-top {
-  right: 0;
-  transform: translateY(-0.8rem);
-  bottom: 100%;
-
-  &::after {
-    display: block;
-    bottom: -4px;
-    right: 8px;
-    background: #2e3351;
-  }
-}
-.Tooltip-popup.right {
-  left: 3rem;
-  transform: translateY(50%);
-  bottom: 100%;
-
-  &::after {
-    display: block;
-    left: -4px;
-    top: 50%;
-    background: #252740;
-  }
-}
-.Tooltip-popup.right-center {
-  left: 3rem;
-  top: -50%;
-  &::after {
-    display: block;
-    left: -4px;
-    top: 50%;
-    background: #252740;
-  }
-}
-
-.Tooltip-popup.left-top {
-  left: 0;
-  transform: translateY(-0.8rem);
-  bottom: 100%;
-
-  &::after {
-    display: block;
-    bottom: -4px;
-    background: #252740;
-  }
-}
-
-.Tooltip-popup.center-bottom {
-  left: 50%;
-  transform: translateY(0.8rem) translateX(-50%);
-  top: 100%;
-
-  &::after {
-    display: block;
-    background: #292d49;
+.Tooltip-popup {
+  &.top {
     left: 50%;
-    top: -4px;
+    transform: translateY(-0.8rem) translateX(-50%);
+    bottom: 100%;
+
+    &::after {
+      display: block;
+      background: #292e49;
+      left: 50%;
+      bottom: -4px;
+    }
   }
-}
 
-.Tooltip-popup.center-top {
-  left: 50%;
-  transform: translateY(-0.8rem) translateX(-50%);
-  bottom: 100%;
+  &.top-start {
+    left: 0;
+    transform: translateY(-0.8rem);
+    bottom: 100%;
 
-  &::after {
-    display: block;
-    background: #292d49;
+    &::after {
+      display: block;
+      bottom: -4px;
+      background: #232640;
+    }
+  }
+
+  &.top-end {
+    right: 0;
+    transform: translateY(-0.8rem);
+    bottom: 100%;
+
+    &::after {
+      display: block;
+      bottom: -4px;
+      right: 8px;
+      background: #2e3351;
+    }
+  }
+
+  &.bottom {
     left: 50%;
-    bottom: -4px;
+    transform: translateY(0.8rem) translateX(-50%);
+    top: 100%;
+
+    &::after {
+      display: block;
+      left: 50%;
+      top: -4px;
+      background: #2b304b;
+    }
+  }
+
+  &.bottom-start {
+    left: 0;
+    transform: translateY(0.8rem);
+    top: 100%;
+
+    &::after {
+      display: block;
+      top: -4px;
+      background: #282b43;
+    }
+  }
+
+  &.bottom-end {
+    right: 0;
+    transform: translateY(0.8rem);
+    top: 100%;
+
+    &::after {
+      display: block;
+      top: -4px;
+      right: 8px;
+      background: #303553;
+    }
+  }
+
+  &.left,
+  &.left-start,
+  &.left-end {
+    right: calc(100% + 0.5rem);
+    transform: translateY(50%);
+    &::after {
+      display: block;
+      right: -4px;
+      top: 50%;
+      background: #2e3351;
+    }
+  }
+
+  &.left {
+    bottom: 70%;
+  }
+
+  &.left-start {
+    bottom: 95%;
+  }
+
+  &.left-end {
+    bottom: 25%;
+  }
+
+  &.right,
+  &.right-start,
+  &.right-end {
+    left: calc(100% + 0.5rem);
+    transform: translateY(50%);
+    &::after {
+      display: block;
+      left: -4px;
+      top: 50%;
+      background: #252640;
+    }
+  }
+
+  &.right {
+    bottom: 70%;
+  }
+
+  &.right-start {
+    bottom: 95%;
+  }
+
+  &.right-end {
+    bottom: 25%;
   }
 }
 
