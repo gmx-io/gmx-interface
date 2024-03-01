@@ -79,41 +79,43 @@ export async function createDecreaseOrderTxn(
     chainId,
   });
 
-  ps.forEach(async (p) => {
-    if (!p.skipSimulation) {
-      const primaryPriceOverrides: PriceOverrides = {};
-      const secondaryPriceOverrides: PriceOverrides = {};
-      if (p.triggerPrice) {
-        primaryPriceOverrides[p.indexToken.address] = {
-          minPrice: p.triggerPrice,
-          maxPrice: p.triggerPrice,
-        };
+  await Promise.all(
+    ps.map(async (p) => {
+      if (subaccount && callbacks.setPendingOrder) {
+        callbacks.setPendingOrder(getPendingOrderFromParams(chainId, p));
       }
-      await simulateExecuteOrderTxn(chainId, {
-        account,
-        primaryPriceOverrides,
-        secondaryPriceOverrides,
-        createOrderMulticallPayload: simulationEncodedPayload,
-        value: totalWntAmount,
-        tokensData: p.tokensData,
-        errorTitle: t`Order error.`,
-      });
-    }
-  });
+
+      if (!p.skipSimulation) {
+        const primaryPriceOverrides: PriceOverrides = {};
+        const secondaryPriceOverrides: PriceOverrides = {};
+        if (p.triggerPrice) {
+          primaryPriceOverrides[p.indexToken.address] = {
+            minPrice: p.triggerPrice,
+            maxPrice: p.triggerPrice,
+          };
+        }
+        await simulateExecuteOrderTxn(chainId, {
+          account,
+          primaryPriceOverrides,
+          secondaryPriceOverrides,
+          createOrderMulticallPayload: simulationEncodedPayload,
+          value: totalWntAmount,
+          tokensData: p.tokensData,
+          errorTitle: t`Order error.`,
+        });
+      }
+    })
+  );
 
   const txnCreatedAt = Date.now();
   const txnCreatedAtBlock = await signer.provider?.getBlockNumber();
 
-  const txn = callContract(chainId, router, "multicall", [encodedPayload], {
+  await callContract(chainId, router, "multicall", [encodedPayload], {
     value: totalWntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
     setPendingTxns: callbacks.setPendingTxns,
   });
-
-  if (!subaccount) {
-    await txn;
-  }
 
   ps.forEach((p) => {
     if (isMarketOrderType(p.orderType)) {
@@ -122,7 +124,7 @@ export async function createDecreaseOrderTxn(
       }
     }
 
-    if (callbacks.setPendingOrder) {
+    if (!subaccount && callbacks.setPendingOrder) {
       callbacks.setPendingOrder(getPendingOrderFromParams(chainId, p));
     }
   });

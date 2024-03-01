@@ -66,6 +66,19 @@ export async function createIncreaseOrderTxn(
   const wntAmountToIncrease = wntCollateralAmount.add(p.executionFee);
   const totalWntAmount = (decreaseOrderParams || []).reduce((acc, p) => acc.add(p.executionFee), wntAmountToIncrease);
 
+  const increaseOrder = {
+    account: p.account,
+    marketAddress: p.marketAddress,
+    initialCollateralTokenAddress,
+    initialCollateralDeltaAmount: p.initialCollateralAmount,
+    swapPath: p.swapPath,
+    sizeDeltaUsd: p.sizeDeltaUsd,
+    minOutputAmount: BigNumber.from(0),
+    isLong: p.isLong,
+    orderType: p.orderType,
+    shouldUnwrapNativeToken: isNativePayment,
+  };
+
   const encodedPayload = await createEncodedPayload({
     router,
     orderVaultAddress,
@@ -77,6 +90,13 @@ export async function createIncreaseOrderTxn(
     initialCollateralTokenAddress,
     signer,
   });
+
+  const orders = decreaseOrderParams?.map((p) => getPendingOrderFromParams(chainId, p)) || [];
+
+  if (subaccount) {
+    p.setPendingOrder([increaseOrder, ...orders]);
+  }
+
   const simulationEncodedPayload = await createEncodedPayload({
     router: exchangeRouter,
     orderVaultAddress,
@@ -122,8 +142,8 @@ export async function createIncreaseOrderTxn(
 
   const finalPayload = [...encodedPayload, ...decreaseEncodedPayload];
   const txnCreatedAt = Date.now();
-  const txnCreatedAtBlock = await signer.provider?.getBlockNumber();
-  const txn = callContract(chainId, router, "multicall", [finalPayload], {
+
+  await callContract(chainId, router, "multicall", [finalPayload], {
     value: totalWntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
@@ -131,10 +151,11 @@ export async function createIncreaseOrderTxn(
   });
 
   if (!subaccount) {
-    await txn;
+    p.setPendingOrder([increaseOrder, ...orders]);
   }
 
   if (isMarketOrderType(p.orderType)) {
+    const txnCreatedAtBlock = await signer.provider?.getBlockNumber();
     const positionKey = getPositionKey(p.account, p.marketAddress, p.targetCollateralAddress, p.isLong);
 
     p.setPendingPosition({
@@ -147,22 +168,6 @@ export async function createIncreaseOrderTxn(
       updatedAtBlock: BigNumber.from(txnCreatedAtBlock),
     });
   }
-
-  const increaseOrder = {
-    account: p.account,
-    marketAddress: p.marketAddress,
-    initialCollateralTokenAddress,
-    initialCollateralDeltaAmount: p.initialCollateralAmount,
-    swapPath: p.swapPath,
-    sizeDeltaUsd: p.sizeDeltaUsd,
-    minOutputAmount: BigNumber.from(0),
-    isLong: p.isLong,
-    orderType: p.orderType,
-    shouldUnwrapNativeToken: isNativePayment,
-  };
-  const orders = decreaseOrderParams?.map((p) => getPendingOrderFromParams(chainId, p)) || [];
-
-  p.setPendingOrder([increaseOrder, ...orders]);
 }
 
 async function createEncodedPayload({

@@ -482,7 +482,7 @@ export function OrderEditor(p: Props) {
 
     setIsSubmitting(true);
 
-    updateOrderTxn(chainId, signer, subaccount, {
+    const txnPromise = updateOrderTxn(chainId, signer, subaccount, {
       orderKey: p.order.key,
       sizeDeltaUsd: sizeDeltaUsd || positionOrder.sizeDeltaUsd,
       triggerPrice: triggerPrice || positionOrder.triggerPrice,
@@ -491,7 +491,15 @@ export function OrderEditor(p: Props) {
       executionFee: additionalExecutionFee?.feeTokenAmount,
       indexToken: indexToken,
       setPendingTxns: p.setPendingTxns,
-    })
+    });
+
+    if (subaccount) {
+      p.onClose();
+      setIsSubmitting(false);
+      return;
+    }
+
+    txnPromise
       .then(() => p.onClose())
       .finally(() => {
         setIsSubmitting(false);

@@ -697,6 +697,13 @@ export function ConfirmationBox(p: Props) {
       txnPromise = onSubmitDecreaseOrder();
     }
 
+    if (subaccount) {
+      onSubmitted();
+      setIsSubmitting(false);
+
+      return;
+    }
+
     txnPromise
       .then(() => {
         onSubmitted();
