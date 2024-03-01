@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t } from "@lingui/macro";
 import cx from "classnames";
 import { BigNumber } from "ethers";
 import { useMemo } from "react";
@@ -11,13 +11,13 @@ import { getExplorerUrl } from "config/chains";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useChainId } from "lib/chains";
 
+import { formatPositionMessage } from "./utils/position";
 import { formatSwapMessage } from "./utils/swap";
-
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { TooltipContent, TooltipString } from "./utils/shared";
 
-import { formatPositionMessage } from "./utils/position";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import "./TradeHistoryRow.scss";
 
@@ -136,6 +136,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           <TooltipWithPortal
             disableHandleStyle
             handle={<span className="TradeHistoryRow-time muted">{msg.timestamp}</span>}
+            portalClassName="TradeHistoryRow-tooltip-portal"
             renderContent={() => msg.timestampISO}
           />
           {shouldDisplayAccount && (
@@ -145,17 +146,39 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           )}
         </td>
         <td>
-          {msg.fullMarket ? (
+          {msg.indexName ? (
             <TooltipWithPortal
               handle={msg.market}
               renderContent={() => (
                 <>
-                  <Trans>Market</Trans>: {msg.fullMarket}
+                  <StatsTooltipRow
+                    label={t`Market`}
+                    value={
+                      <div className="items-center">
+                        <span>{msg.indexName!}</span>
+                        <span className="subtext lh-1">[{msg.poolName!}]</span>
+                      </div>
+                    }
+                    showDollar={false}
+                  />
                 </>
               )}
             />
           ) : (
-            msg.market
+            <TooltipWithPortal
+              handle={msg.market}
+              renderContent={() => (
+                <>
+                  {msg.fullMarketNames?.map((market, index) => (
+                    <span key={market.indexName}>
+                      {index > 0 && " → "}
+                      <span>{market.indexName}</span>
+                      <span className="subtext lh-1">[{market.poolName}]</span>
+                    </span>
+                  ))}
+                </>
+              )}
+            />
           )}
         </td>
         <td>{msg.size}</td>

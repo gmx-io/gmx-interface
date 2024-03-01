@@ -37,3 +37,9 @@
 .TradeHistoryRow-price {
   text-align: end !important;
 }
+
+.TradeHistoryRow-tooltip-portal {
+  .Tooltip-popup {
+    min-width: max-content;
+  }
+}
