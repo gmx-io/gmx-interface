@@ -92,7 +92,7 @@ const selectLeaderboardAccounts = createEnhancedSelector((q) => {
 
     account.totalFees = account.totalFees.add(account.pendingFees).sub(account.startPendingFees);
     account.totalPnl = account.totalPnl.add(account.pendingPnl).sub(account.startPendingPnl);
-    account.totalPnlAfterFees = account.totalPnl.sub(account.totalFees);
+    account.totalPnlAfterFees = account.totalPnl.sub(account.totalFees).add(account.paidPriceImpact);
 
     if (account.maxCollateral.gt(0)) {
       account.pnlPercentage = account.totalPnlAfterFees.mul(BASIS_POINTS_DIVISOR).div(account.maxCollateral);

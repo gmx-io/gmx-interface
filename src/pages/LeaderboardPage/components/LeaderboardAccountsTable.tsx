@@ -5,7 +5,7 @@ import Pagination from "components/Pagination/Pagination";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Table from "components/Table/Table";
 import { TableHeader } from "components/Table/types";
-import { formatAmount, formatPercentage, formatUsd } from "lib/numbers";
+import { formatAmount, formatUsd } from "lib/numbers";
 import { useDebounce } from "lib/useDebounce";
 import { useCallback, useLayoutEffect, useMemo, useState } from "react";
 
@@ -107,6 +107,15 @@ const constructRow = (
                 </span>
               }
             />
+            <StatsTooltipRow
+              label={t`Start Pending Fees`}
+              showDollar={false}
+              value={
+                <span className={signedValueClassName(s.paidPriceImpact)}>
+                  {formatDelta(s.paidPriceImpact, { signed: true, prefix: "$" })}
+                </span>
+              }
+            />
           </div>
         )}
       />
@@ -115,7 +124,11 @@ const constructRow = (
   relPnl: {
     value: () => (
       <TooltipWithPortal
-        handle={<span className={signedValueClassName(s.pnlPercentage)}>{formatPercentage(s.pnlPercentage)}</span>}
+        handle={
+          <span className={signedValueClassName(s.pnlPercentage)}>
+            {formatDelta(s.pnlPercentage, { signed: true, postfix: "%", decimals: 2 })}
+          </span>
+        }
         position={index > 7 ? "right-top" : "right-bottom"}
         className="nowrap"
         renderContent={() => (

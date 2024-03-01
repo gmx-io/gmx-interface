@@ -2,7 +2,7 @@ import { expandDecimals } from "lib/numbers";
 
 export const MIN_COLLATERAL_USD_IN_LEADERBOARD = expandDecimals(500, 30);
 
-export const COMPETITIONS_TIMEFRAMES = {
+export const LEADERBOARD_TIMEFRAMES = {
   test1: {
     from: 1706745600, // 1 feb 2024
     to: 1707955200, // 15 feb 2024

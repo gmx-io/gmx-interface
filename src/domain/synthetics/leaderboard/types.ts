@@ -26,3 +26,8 @@ export type RemoteData<T> = {
 };
 
 export type CompetitionType = "notionalPnl" | "pnlPercentage";
+
+export type LeaderboardTimeframe = {
+  from: number;
+  to: number | undefined;
+};

@@ -4693,6 +4693,7 @@ msgid "Staking..."
 msgstr "Staking en cours..."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start Pending Fees"
 msgstr ""
 
