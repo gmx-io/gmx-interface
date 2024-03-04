@@ -31,3 +31,5 @@ export type LeaderboardTimeframe = {
   from: number;
   to: number | undefined;
 };
+
+export type LeaderboardType = "all" | "30days" | "7days";

@@ -9,6 +9,9 @@ import { BASIS_POINTS_DIVISOR } from "config/factors";
 export const selectLeaderboardAccountBases = (s: SyntheticsTradeState) => s.leaderboard.accounts;
 export const selectLeaderboardPositionBases = (s: SyntheticsTradeState) => s.leaderboard.positions;
 
+export const selectLeaderboardType = (s: SyntheticsTradeState) => s.leaderboard.leaderboardType;
+export const selectLeaderboardSetType = (s: SyntheticsTradeState) => s.leaderboard.setLeaderboardType;
+
 export const selectLeaderboardCurrentAccount = createEnhancedSelector((q): LeaderboardAccount | undefined => {
   const accounts = q(selectLeaderboardAccounts);
   const currentAccount = q(selectAccount);

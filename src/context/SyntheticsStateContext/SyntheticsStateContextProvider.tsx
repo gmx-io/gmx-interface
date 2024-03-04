@@ -1,7 +1,7 @@
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { UserReferralInfo, useUserReferralInfoRequest } from "domain/referrals";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
-import { LeaderboardAccountBase, LeaderboardPositionBase } from "domain/synthetics/leaderboard";
+import { LeaderboardAccountBase, LeaderboardPositionBase, LeaderboardType } from "domain/synthetics/leaderboard";
 import { MarketsInfoResult, MarketsResult, useMarkets, useMarketsInfoRequest } from "domain/synthetics/markets";
 import { AggregatedOrdersDataResult, useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
 import {
@@ -40,6 +40,8 @@ export type SyntheticsTradeState = {
     accounts: LeaderboardAccountBase[] | undefined;
     leaderboardDataError: any; // FIXME any
     positions: LeaderboardPositionBase[] | undefined;
+    leaderboardType: LeaderboardType;
+    setLeaderboardType: (type: LeaderboardType) => void;
   };
   settings: SettingsContextType;
   tradebox: TradeState;
