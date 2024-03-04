@@ -68,6 +68,7 @@ export type LeaderboardAccount = LeaderboardAccountBase & {
   pnlPercentage: BigNumber;
   averageSize: BigNumber;
   averageLeverage: BigNumber;
+  unrealizedPnl: BigNumber;
 };
 
 type LeaderboardPositionsJson = {

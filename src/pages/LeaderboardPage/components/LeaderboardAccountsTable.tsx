@@ -71,8 +71,8 @@ const constructRow = (
                   label={t`Unrealized PnL`}
                   showDollar={false}
                   value={
-                    <span className={signedValueClassName(s.pendingPnl)}>
-                      {formatDelta(s.pendingPnl, { signed: true, prefix: "$" })}
+                    <span className={signedValueClassName(s.unrealizedPnl)}>
+                      {formatDelta(s.unrealizedPnl, { signed: true, prefix: "$" })}
                     </span>
                   }
                 />

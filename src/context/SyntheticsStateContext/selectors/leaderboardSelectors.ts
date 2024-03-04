@@ -45,6 +45,7 @@ export const selectLeaderboardCurrentAccount = createEnhancedSelector((q): Leade
     totalPnl: BigNumber.from(0),
     totalPnlAfterFees: BigNumber.from(0),
     volume: BigNumber.from(0),
+    unrealizedPnl: BigNumber.from(0),
     wins: 0,
   };
 });
@@ -82,6 +83,7 @@ const selectLeaderboardAccounts = createEnhancedSelector((q) => {
       pnlPercentage: BigNumber.from(0),
       averageSize: BigNumber.from(0),
       averageLeverage: BigNumber.from(0),
+      unrealizedPnl: BigNumber.from(0),
     };
 
     for (const p of positionBasesByAccount[base.account] || []) {
@@ -91,6 +93,7 @@ const selectLeaderboardAccounts = createEnhancedSelector((q) => {
       account.sumMaxSize = account.sumMaxSize.add(p.maxSize);
       account.pendingFees = account.pendingFees.add(p.pendingFees);
       account.pendingPnl = account.pendingPnl.add(pendingPnl).sub(p.pendingFees);
+      account.unrealizedPnl = account.unrealizedPnl.add(pendingPnl);
     }
 
     account.totalFees = account.totalFees.add(account.pendingFees).sub(account.startPendingFees);
