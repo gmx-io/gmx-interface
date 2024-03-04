@@ -406,7 +406,7 @@ export function PositionSeller(p: Props) {
 
     setIsSubmitting(true);
 
-    createDecreaseOrderTxn(
+    const txnPromise = createDecreaseOrderTxn(
       chainId,
       signer,
       subaccount,
@@ -437,10 +437,19 @@ export function PositionSeller(p: Props) {
         setPendingTxns,
         setPendingPosition,
       }
-    )
-      .then(onClose)
-      .finally(() => setIsSubmitting(false));
+    );
+
+    if (subaccount) {
+      onClose();
+      setIsSubmitting(false);
+      return;
+    }
+
+    txnPromise.then(onClose).finally(() => {
+      setIsSubmitting(false);
+    });
   }
+
   useEffect(
     function resetForm() {
       if (!isVisible !== prevIsVisible) {

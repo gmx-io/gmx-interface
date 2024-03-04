@@ -5319,6 +5319,8 @@ msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC u
 msgstr "La transaction a échoué en raison d'une erreur RPC.<0/><1/>Veuillez essayer de changer l'url RPC dans les paramètres de votre portefeuille. <2> Plus d'infos</2>"
 
 #: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/callContract.tsx
 msgid "Transaction sent."
 msgstr "Transaction envoyée."
 

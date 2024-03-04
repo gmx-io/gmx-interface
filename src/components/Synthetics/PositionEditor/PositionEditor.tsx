@@ -342,10 +342,12 @@ export function PositionEditor(p: Props) {
       return;
     }
 
+    let txnPromise: Promise<void>;
+
     if (isDeposit) {
       setIsSubmitting(true);
 
-      createIncreaseOrderTxn(chainId, signer, subaccount, {
+      txnPromise = createIncreaseOrderTxn(chainId, signer, subaccount, {
         account,
         marketAddress: position.marketAddress,
         initialCollateralAddress: selectedCollateralAddress,
@@ -368,11 +370,7 @@ export function PositionEditor(p: Props) {
         setPendingTxns,
         setPendingOrder,
         setPendingPosition,
-      })
-        .then(onClose)
-        .finally(() => {
-          setIsSubmitting(false);
-        });
+      });
     } else {
       if (!receiveUsd) {
         return;
@@ -380,7 +378,7 @@ export function PositionEditor(p: Props) {
 
       setIsSubmitting(true);
 
-      createDecreaseOrderTxn(
+      txnPromise = createDecreaseOrderTxn(
         chainId,
         signer,
         subaccount,
@@ -411,12 +409,18 @@ export function PositionEditor(p: Props) {
           setPendingOrder,
           setPendingPosition,
         }
-      )
-        .then(onClose)
-        .finally(() => {
-          setIsSubmitting(false);
-        });
+      );
     }
+
+    if (subaccount) {
+      onClose();
+      setIsSubmitting(false);
+      return;
+    }
+
+    txnPromise.then(onClose).finally(() => {
+      setIsSubmitting(false);
+    });
   }
 
   useEffect(

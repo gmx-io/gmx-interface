@@ -5319,6 +5319,8 @@ msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC u
 msgstr "RPCエラーにより取引できませんでした。<0/><1/>ウォレットの設定でRPCのURLを変更してください。<2>詳細情報</2>"
 
 #: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/callContract.tsx
 msgid "Transaction sent."
 msgstr "取引は送信済です。"
 
