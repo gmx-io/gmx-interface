@@ -1,6 +1,15 @@
 import cx from "classnames";
+import React, { PropsWithChildren } from "react";
 
-export default function ExchangeInfoRow(props) {
+type Props = PropsWithChildren<{
+  label: React.ReactNode;
+  value?: React.ReactNode;
+  isTop?: boolean;
+  isWarning?: boolean;
+  className?: string;
+}>;
+
+export default function ExchangeInfoRow(props: Props) {
   const { label, children, value, isTop, isWarning, className } = props;
 
   return (
