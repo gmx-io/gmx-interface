@@ -69,5 +69,6 @@ export function updateOrderTxn(
     successMsg: t`Update order executed`,
     failMsg: t`Failed to update order`,
     setPendingTxns,
+    showPreliminaryMsg: Boolean(subaccount),
   });
 }
