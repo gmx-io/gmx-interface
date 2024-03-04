@@ -166,7 +166,8 @@ export function TradeHistory(p: Props) {
     orderEventCombinations: actionFilter,
   });
 
-  const isLoading = !minCollateralUsd || isHistoryLoading;
+  const isConnected = Boolean(account);
+  const isLoading = (forAllAccounts || isConnected) && (!minCollateralUsd || isHistoryLoading);
 
   const isEmpty = !isLoading && !tradeActions?.length;
   const { currentPage, setCurrentPage, getCurrentData, pageCount } = usePagination(
@@ -247,11 +248,6 @@ export function TradeHistory(p: Props) {
             </tbody>
           </table>
         </div>
-        {isLoading && (
-          <div className="TradeHistorySynthetics-padded-cell">
-            <Trans>Loading...</Trans>
-          </div>
-        )}
         {isEmpty && hasFilters && (
           <div className="TradeHistorySynthetics-padded-cell">
             <Trans>No trades match the selected filters</Trans>
