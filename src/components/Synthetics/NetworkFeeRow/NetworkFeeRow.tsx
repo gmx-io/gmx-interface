@@ -39,7 +39,7 @@ export function NetworkFeeRow({ executionFee }: Props) {
     );
 
     let estimatedRefundTokenAmount: BigNumber | undefined;
-    if (!executionFee || !executionFeeBufferBps) {
+    if (!executionFee || executionFeeBufferBps === undefined) {
       estimatedRefundTokenAmount = undefined;
     } else {
       const fee = executionFee.feeTokenAmount;
@@ -52,7 +52,7 @@ export function NetworkFeeRow({ executionFee }: Props) {
 
     let estimatedRefundUsd: BigNumber | undefined;
 
-    if (!executionFeeBufferBps || !executionFee || !tokenData) {
+    if (executionFeeBufferBps === undefined || !executionFee || !tokenData) {
       estimatedRefundUsd = undefined;
     } else {
       estimatedRefundUsd = convertToUsd(
