@@ -44,7 +44,10 @@ export function NetworkFeeRow({ executionFee }: Props) {
     } else {
       const fee = executionFee.feeTokenAmount;
       const feeBeforeBuffer = fee.mul(BASIS_POINTS_DIVISOR).div(BASIS_POINTS_DIVISOR + executionFeeBufferBps);
-      estimatedRefundTokenAmount = feeBeforeBuffer.mul(ESTIMATED_REFUND_BPS).div(BASIS_POINTS_DIVISOR);
+      estimatedRefundTokenAmount = feeBeforeBuffer
+        .mul(ESTIMATED_REFUND_BPS)
+        .div(BASIS_POINTS_DIVISOR)
+        .add(fee.sub(feeBeforeBuffer));
     }
 
     let estimatedRefundUsd: BigNumber | undefined;
@@ -83,24 +86,23 @@ export function NetworkFeeRow({ executionFee }: Props) {
         renderContent={() => (
           <>
             <StatsTooltipRow label={t`Max Execution Fee`} showDollar={false} value={executionFeeText} />
-            <br />
-            <Trans>
-              The max execution fee is overestimated, including by the buffer set under settings. Upon execution, any
-              excess execution fee is sent back to your account.
-            </Trans>{" "}
-            <ExternalLink className="display-inline" href="https://docs.gmx.io/docs/trading/v2#execution-fee">
-              <Trans>Read more</Trans>
-            </ExternalLink>
-            .
-            <br />
-            <br />
+            <p>
+              <Trans>
+                The max execution fee is overestimated, including by the buffer set under settings. Upon execution, any
+                excess execution fee is sent back to your account.
+              </Trans>{" "}
+              <ExternalLink className="display-inline" href="https://docs.gmx.io/docs/trading/v2#execution-fee">
+                <Trans>Read more</Trans>
+              </ExternalLink>
+              .
+            </p>
             <StatsTooltipRow
               label={t`Estimated Fee Refund`}
               showDollar={false}
               value={estimatedRefundText}
               className="text-green"
             />
-            {executionFee?.warning && <div className="text-warning">{executionFee?.warning}</div>}
+            {executionFee?.warning && <p className="text-warning">{executionFee?.warning}</p>}
           </>
         )}
       >
