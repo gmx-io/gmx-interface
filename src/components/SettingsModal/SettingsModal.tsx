@@ -116,12 +116,12 @@ export function SettingsModal({
           <div className="App-slippage-tolerance-input-percent">%</div>
         </div>
         {parseFloat(slippageAmount) < (DEFAULT_ALLOWED_SLIPPAGE_BPS / BASIS_POINTS_DIVISOR) * 100 && (
-          <div className="warning settings-modal-error">
+          <AlertInfo type="warning">
             <Trans>
               Allowed Slippage below {(DEFAULT_ALLOWED_SLIPPAGE_BPS / BASIS_POINTS_DIVISOR) * 100}% may result in failed
               orders.
             </Trans>
-          </div>
+          </AlertInfo>
         )}
       </div>
       {settings.shouldUseExecutionFeeBuffer && (
