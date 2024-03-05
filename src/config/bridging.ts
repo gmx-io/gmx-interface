@@ -20,13 +20,19 @@ const BRIDGING_OPTIONS: { [symbol: string]: BridgingOption[] } = {
   BNB: [
     {
       name: "Stargate",
-      generateLink: () => `https://stargate.finance/transfer`,
+      generateLink: () => "https://stargate.finance/transfer",
     },
   ],
   AAVE: [
     {
       name: "Arbitrum",
-      generateLink: () => `https://bridge.arbitrum.io/?destinationChain=arbitrum-one&sourceChain=ethereum`,
+      generateLink: () => "https://bridge.arbitrum.io/?destinationChain=arbitrum-one&sourceChain=ethereum",
+    },
+  ],
+  AVAX: [
+    {
+      name: "Portalbridge",
+      generateLink: () => "https://portalbridge.com/#/transfer",
     },
   ],
 };
