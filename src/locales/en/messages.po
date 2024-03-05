@@ -25,9 +25,41 @@ msgstr "01 Sep 2021"
 msgid "06 Jan 2022"
 msgstr "06 Jan 2022"
 
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "10000 ARB tokens"
+msgstr "10000 ARB tokens"
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "1st Place"
+msgstr "1st Place"
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "20000 ARB tokens"
+msgstr "20000 ARB tokens"
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "24h Volume"
 msgstr "24h Volume"
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "2nd Place"
+msgstr "2nd Place"
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "30000 ARB tokens"
+msgstr "30000 ARB tokens"
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "3rd Place"
+msgstr "3rd Place"
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "4-12 Places"
+msgstr "4-12 Places"
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "50000 ARB tokens"
+msgstr "50000 ARB tokens"
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "<0><1>{eventTitle}</1> from <2>{0} {indexName} <3>[{poolName}]</3> Position</2></0>"
@@ -1064,8 +1096,8 @@ msgid "Community-led Telegram groups."
 msgstr "Community-led Telegram groups."
 
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
-msgid "Competitions for traders on GMX V2."
-msgstr "Competitions for traders on GMX V2."
+#~ msgid "Competitions for traders on GMX V2."
+#~ msgstr "Competitions for traders on GMX V2."
 
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
@@ -1682,6 +1714,10 @@ msgstr "Enabling Leverage..."
 #: src/components/Exchange/SwapBox.js
 msgid "Enabling Orders..."
 msgstr "Enabling Orders..."
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "Ends in"
+msgstr "Ends in"
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "Enter NFT Address"
@@ -2577,7 +2613,6 @@ msgid "Launch App"
 msgstr "Launch App"
 
 #: src/components/Exchange/UsefulLinks.tsx
-#: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
 msgstr "Leaderboard"
 
@@ -2590,12 +2625,12 @@ msgid "Leaderboard for GMX traders"
 msgstr "Leaderboard for GMX traders"
 
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
-msgid "Leaderboard for traders on GMX V2."
-msgstr "Leaderboard for traders on GMX V2."
+#~ msgid "Leaderboard for traders on GMX V2."
+#~ msgstr "Leaderboard for traders on GMX V2."
 
-#: src/pages/LeaderboardTest/LeaderboardTest.tsx
-#~ msgid "Leaderboards"
-#~ msgstr "Leaderboards"
+#: src/pages/LeaderboardPage/LeaderboardPage.tsx
+msgid "Leaderboards"
+msgstr "Leaderboards"
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Leave at least {0} ETH for gas"
@@ -2904,8 +2939,8 @@ msgstr "Main Account {0} Balance is used to top up Subaccount Balance on each Ac
 #~ msgstr "March 2014 Competitions"
 
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
-msgid "March 2024 Competitions"
-msgstr "March 2024 Competitions"
+#~ msgid "March 2024 Competitions"
+#~ msgstr "March 2024 Competitions"
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -4715,6 +4750,10 @@ msgstr "Start Pending Fees"
 msgid "Start Pending PnL"
 msgstr "Start Pending PnL"
 
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "Starts in"
+msgstr "Starts in"
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Stats"
 msgstr "Stats"
@@ -6246,6 +6285,14 @@ msgstr "account"
 msgid "collateral"
 msgstr "collateral"
 
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "day"
+msgstr "day"
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "days"
+msgstr "days"
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "esGMX OTC Market"
 msgstr "esGMX OTC Market"
@@ -6262,6 +6309,14 @@ msgstr "from"
 msgid "hide"
 msgstr "hide"
 
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "hour"
+msgstr "hour"
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "hours"
+msgstr "hours"
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "in liquidity"
 msgstr "in liquidity"
@@ -6273,6 +6328,14 @@ msgstr "limit price"
 #: src/domain/synthetics/orders/utils.ts
 msgid "long"
 msgstr "long"
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "minute"
+msgstr "minute"
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "minutes"
+msgstr "minutes"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "not staked"
@@ -6287,6 +6350,14 @@ msgstr "pay"
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 msgid "receive"
 msgstr "receive"
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "second"
+msgstr "second"
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "seconds"
+msgstr "seconds"
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "short"
@@ -6490,6 +6561,10 @@ msgstr "{chainName} Total Stats start from {totalStatsStartDate}.<0/> For detail
 msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr "{count, plural, one {Order} other {# Orders}}"
 
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+#~ msgid "{days, plural, }"
+#~ msgstr "{days, plural, }"
+
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
 msgid "{daysConsidered}d accrued Fees"
 msgstr "{daysConsidered}d accrued Fees"
@@ -6507,6 +6582,10 @@ msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger ord
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+#~ msgid "{hours, plural, }"
+#~ msgstr "{hours, plural, }"
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
@@ -6543,6 +6622,10 @@ msgstr "{longShortText} {0} Reserve"
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "{marketsCount, plural, one {# Market} other {# Markets}}"
 msgstr "{marketsCount, plural, one {# Market} other {# Markets}}"
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+#~ msgid "{minutes, plural, }"
+#~ msgstr "{minutes, plural, }"
 
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
@@ -6603,6 +6686,10 @@ msgstr "{positionName} Fees settled"
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} Fees settling"
 msgstr "{positionName} Fees settling"
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+#~ msgid "{seconds, plural, }"
+#~ msgstr "{seconds, plural, }"
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"

@@ -1,7 +1,6 @@
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { UserReferralInfo, useUserReferralInfoRequest } from "domain/referrals";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
-import { LeaderboardAccountBase, LeaderboardPositionBase, LeaderboardType } from "domain/synthetics/leaderboard";
 import { MarketsInfoResult, MarketsResult, useMarkets, useMarketsInfoRequest } from "domain/synthetics/markets";
 import { AggregatedOrdersDataResult, useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
 import {
@@ -17,7 +16,7 @@ import useWallet from "lib/wallets/useWallet";
 import { ReactNode, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
-import { useLeaderboardState } from "./useLeaderboardState";
+import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
 
 export type SyntheticsPageType = "actions" | "trade" | "pools" | "leaderboard" | "competitions";
 
@@ -36,13 +35,7 @@ export type SyntheticsTradeState = {
     savedIsPnlInLeverage: boolean;
     savedShowPnlAfterFees: boolean;
   };
-  leaderboard: {
-    accounts: LeaderboardAccountBase[] | undefined;
-    leaderboardDataError: any; // FIXME any
-    positions: LeaderboardPositionBase[] | undefined;
-    leaderboardType: LeaderboardType;
-    setLeaderboardType: (type: LeaderboardType) => void;
-  };
+  leaderboard: LeaderboardState;
   settings: SettingsContextType;
   tradebox: TradeState;
 };

@@ -12,6 +12,9 @@ import {
 import { CompetitionType } from "domain/synthetics/leaderboard";
 import { LeaderboardAccountsTable } from "./LeaderboardAccountsTable";
 import { useAccount } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { CompetitionPrizes } from "./CompetitionPrizes";
+import { CompetitionCountdown } from "./CompetitionCountdown";
+import { LeaderboardNavigation } from "./LeaderboardNavigation";
 
 const competitionLabels = [t`Notional PnL`, t`PnL Percentage`];
 const competitionsTabs = [0, 1];
@@ -76,6 +79,9 @@ export function LeaderboardContainer({ isCompetitions }: { isCompetitions: boole
 
   return (
     <div className="GlobalLeaderboards">
+      <LeaderboardNavigation />
+      {isCompetitions && <CompetitionPrizes competition={activeCompetition} />}
+      {isCompetitions && <CompetitionCountdown />}
       {account && leaderboardCurrentAccount && (
         <>
           <LeaderboardAccountsTable

@@ -12,6 +12,10 @@ export const selectLeaderboardPositionBases = (s: SyntheticsTradeState) => s.lea
 export const selectLeaderboardType = (s: SyntheticsTradeState) => s.leaderboard.leaderboardType;
 export const selectLeaderboardSetType = (s: SyntheticsTradeState) => s.leaderboard.setLeaderboardType;
 
+export const selectLeaderboardTimeframe = (s: SyntheticsTradeState) => s.leaderboard.timeframe;
+export const selectLeaderboardIsEndInFuture = (s: SyntheticsTradeState) => s.leaderboard.isEndInFuture;
+export const selectLeaderboardIsStartInFuture = (s: SyntheticsTradeState) => s.leaderboard.isStartInFuture;
+
 export const selectLeaderboardCurrentAccount = createEnhancedSelector((q): LeaderboardAccount | undefined => {
   const accounts = q(selectLeaderboardAccounts);
   const currentAccount = q(selectAccount);

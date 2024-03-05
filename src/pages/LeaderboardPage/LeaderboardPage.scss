@@ -137,3 +137,136 @@
 .LeaderboardRank-3::after {
   background-image: url(../../img/ic_trophy_3.svg);
 }
+
+.CompetitionPrizes {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.CompetitionsPrizes__prize {
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+  width: 22.8rem;
+  height: 18.6rem;
+  background-color: #16182e;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  text-align: center;
+}
+
+.CompetitionPrizes__prize-icon {
+  height: 6.4rem;
+  width: 6.4rem;
+  margin-bottom: 1rem;
+}
+
+.CompetitionPrizes__prize-title {
+  color: white;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  width: 80%;
+}
+
+.CompetitionPrizes__prize-description {
+  width: 80%;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.CompetitionCountdown__countdown {
+  display: flex;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.CompetitionCountdown__section {
+  display: flex;
+  flex-direction: column;
+}
+
+.CompetitionCountdown__section-number {
+  color: white;
+  font-size: 4.2rem;
+}
+
+.CompetitionCountdown__section-label {
+  font-size: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.CompetitionCountdown-separator {
+  color: white;
+  display: flex;
+  flex-direction: column;
+  font-size: 4.2rem;
+  margin: 0 6px;
+}
+
+.CompetitionCountdown__prefix {
+  margin-right: 2.1rem;
+  font-size: 2rem;
+}
+
+.LeaderboardNavigation {
+  display: flex;
+}
+
+.LeaderboardHeader__item {
+  height: 4.2rem;
+  background-color: #16182e;
+  display: flex;
+  justify-items: center;
+  align-items: center;
+  padding: 1.6rem;
+  margin-right: 0.8rem;
+  margin-bottom: 0.8rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  text-decoration: none;
+
+  &_selected {
+    background-color: rgba(180, 187, 255, 0.1);
+  }
+}
+
+.LeaderboardNavigation__chip {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 999rem;
+  font-size: 1.1rem;
+  padding: 0.3rem 0.6rem;
+  font-weight: bold;
+  margin-left: 0.8rem;
+  height: 2.2rem;
+
+  &_soon {
+    background-color: #2d42fc;
+  }
+
+  &_over {
+    background-color: rgb(180 187 255 / 10%);
+  }
+
+  &_live {
+    background-color: #b42941;
+    color: white;
+  }
+
+  &-circle {
+    background-color: white;
+    border-radius: 9999rem;
+    width: 1.1rem;
+    height: 1.1rem;
+    display: inline-block;
+    margin-right: 0.3rem;
+  }
+}

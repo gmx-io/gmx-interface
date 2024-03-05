@@ -25,9 +25,41 @@ msgstr "2021年9月1日"
 msgid "06 Jan 2022"
 msgstr "2022年1月6日"
 
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "10000 ARB tokens"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "1st Place"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "20000 ARB tokens"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "24h Volume"
 msgstr "24時間取引高"
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "2nd Place"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "30000 ARB tokens"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "3rd Place"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "4-12 Places"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "50000 ARB tokens"
+msgstr ""
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "<0><1>{eventTitle}</1> from <2>{0} {indexName} <3>[{poolName}]</3> Position</2></0>"
@@ -1064,8 +1096,8 @@ msgid "Community-led Telegram groups."
 msgstr "コミュニティ主導のTelegramグループ"
 
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
-msgid "Competitions for traders on GMX V2."
-msgstr ""
+#~ msgid "Competitions for traders on GMX V2."
+#~ msgstr ""
 
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
@@ -1682,6 +1714,10 @@ msgstr "レバレッジ有効化中..."
 #: src/components/Exchange/SwapBox.js
 msgid "Enabling Orders..."
 msgstr "注文有効化中..."
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "Ends in"
+msgstr ""
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "Enter NFT Address"
@@ -2577,7 +2613,6 @@ msgid "Launch App"
 msgstr "アプリ起動"
 
 #: src/components/Exchange/UsefulLinks.tsx
-#: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
 msgstr "順位表"
 
@@ -2590,12 +2625,12 @@ msgid "Leaderboard for GMX traders"
 msgstr "GMXトレーダー順位表"
 
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
-msgid "Leaderboard for traders on GMX V2."
-msgstr ""
-
-#: src/pages/LeaderboardTest/LeaderboardTest.tsx
-#~ msgid "Leaderboards"
+#~ msgid "Leaderboard for traders on GMX V2."
 #~ msgstr ""
+
+#: src/pages/LeaderboardPage/LeaderboardPage.tsx
+msgid "Leaderboards"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Leave at least {0} ETH for gas"
@@ -2901,8 +2936,8 @@ msgstr ""
 #~ msgstr ""
 
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
-msgid "March 2024 Competitions"
-msgstr ""
+#~ msgid "March 2024 Competitions"
+#~ msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -4712,6 +4747,10 @@ msgstr ""
 msgid "Start Pending PnL"
 msgstr ""
 
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "Starts in"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Stats"
 msgstr "統計"
@@ -6243,6 +6282,14 @@ msgstr "アカウント"
 msgid "collateral"
 msgstr "担保"
 
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "day"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "days"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "esGMX OTC Market"
 msgstr ""
@@ -6259,6 +6306,14 @@ msgstr ""
 msgid "hide"
 msgstr "隠す"
 
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "hour"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "hours"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "in liquidity"
 msgstr "流動性"
@@ -6269,6 +6324,14 @@ msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "long"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "minute"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "minutes"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
@@ -6283,6 +6346,14 @@ msgstr ""
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 #: src/components/Synthetics/MarketNetFee/MarketNetFee.tsx
 msgid "receive"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "second"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "seconds"
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
@@ -6484,6 +6555,10 @@ msgstr "{chainName}の全統計の開始日は{totalStatsStartDate}です。<0/>
 msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr ""
 
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+#~ msgid "{days, plural, }"
+#~ msgstr ""
+
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
 msgid "{daysConsidered}d accrued Fees"
 msgstr ""
@@ -6501,6 +6576,10 @@ msgstr "{existingTriggerOrderLength, plural, one {このポジションに影響
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr "{existingTriggerOrderLength, plural, one {このポジションをオープンした後ただちに執行される可能性があるアクティブなトリガー注文があります。注文をキャンセルするか、または確認を押して続けてください。} other {このポジションをオープンした後ただちに執行される可能性があるアクティブなトリガー注文が#あります。注文をキャンセルするか、または確認を押して続けてください。}}"
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+#~ msgid "{hours, plural, }"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
@@ -6537,6 +6616,10 @@ msgstr ""
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "{marketsCount, plural, one {# Market} other {# Markets}}"
 msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+#~ msgid "{minutes, plural, }"
+#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
@@ -6597,6 +6680,10 @@ msgstr ""
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} Fees settling"
 msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+#~ msgid "{seconds, plural, }"
+#~ msgstr ""
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"

@@ -19,8 +19,39 @@ export const LEADERBOARD_TIMEFRAMES = {
     from: 1704067200, // 1 jan 2024
     to: 1705622400, // 19 jan 2024
   },
+  march24abspnl: {
+    from: 1709841600, // 8 mar 2024
+    to: 1711051200, // 22 mar 2024
+  },
+  march24relpnl: {
+    from: 1709841600, // 8 mar 2024
+    to: 1711051200, // 22 mar 2024
+  },
   all: {
     from: 0,
     to: undefined,
   },
 } as const;
+
+export const LEADERBOARD_PAGES = {
+  leaderboard: {
+    key: "leaderboard",
+    label: "Global leaderboard",
+    href: "/leaderboard",
+    isCompetition: false,
+  },
+  march24abspnl: {
+    key: "march24abspnl",
+    label: "Top PnL $ March '24",
+    href: "/competitions/march24abspnl",
+    isCompetition: true,
+  },
+  march24relpnl: {
+    key: "march24relpnl",
+    label: "Top Pnl % March '24",
+    href: "/competitions/march24relpnl",
+    isCompetition: true,
+  },
+} as const;
+
+export const LEADERBOARD_PAGES_ORDER = ["leaderboard", "march24abspnl", "march24relpnl"] as const;

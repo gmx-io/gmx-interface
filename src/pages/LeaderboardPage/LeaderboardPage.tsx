@@ -7,12 +7,7 @@ import { LeaderboardContainer } from "./components/LeaderboardContainer";
 export function Leaderboard({ isCompetitions }: { isCompetitions?: boolean }) {
   const { chainId } = useChainId();
 
-  const title = isCompetitions ? <Trans>March 2024 Competitions</Trans> : <Trans>Leaderboard</Trans>;
-  const description = isCompetitions ? (
-    <Trans>Competitions for traders on GMX V2.</Trans>
-  ) : (
-    <Trans>Leaderboard for traders on GMX V2.</Trans>
-  );
+  const title = <Trans>Leaderboards</Trans>;
 
   return (
     <div className="default-container page-layout LeaderboardTest">
@@ -21,7 +16,6 @@ export function Leaderboard({ isCompetitions }: { isCompetitions?: boolean }) {
           <div className="Page-title">
             {title} <img alt={t`Chain Icon`} src={getIcon(chainId, "network")} />
           </div>
-          <div className="Page-description">{description}</div>
         </div>
       </div>
       <LeaderboardContainer isCompetitions={isCompetitions ?? false} />

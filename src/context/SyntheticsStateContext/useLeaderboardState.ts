@@ -1,21 +1,32 @@
-import { LeaderboardTimeframe, LeaderboardType, useLeaderboardData } from "domain/synthetics/leaderboard";
+import {
+  LeaderboardPageKey,
+  LeaderboardTimeframe,
+  LeaderboardType,
+  useLeaderboardData,
+} from "domain/synthetics/leaderboard";
 import { LEADERBOARD_TIMEFRAMES } from "domain/synthetics/leaderboard/constants";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useEffect, useMemo, useState } from "react";
 import { SyntheticsPageType } from "./SyntheticsStateContextProvider";
 import { mustNeverExist } from "lib/types";
+import { useParams } from "react-router-dom";
+
+export type LeaderboardState = ReturnType<typeof useLeaderboardState>;
 
 export const useLeaderboardState = (account: string | undefined, pageType: SyntheticsPageType) => {
   const { chainId } = useChainId();
   const [leaderboardType, setLeaderboardType] = useState<LeaderboardType>("all");
+  const { leaderboardPageKey: leaderboardPageKeyRaw } = useParams<{ leaderboardPageKey?: LeaderboardPageKey }>();
 
   const isLeaderboard = pageType === "leaderboard";
   const isCompetitions = pageType === "competitions";
   const enabled = isLeaderboard || isCompetitions;
+  const leaderboardPageKey = leaderboardPageKeyRaw ?? "leaderboard";
 
-  const timeframe = useLeaderboardTimeframe(pageType, leaderboardType);
+  const timeframe = useLeaderboardTimeframe(pageType, leaderboardType, leaderboardPageKey);
   const isEndInFuture = timeframe.to === undefined || timeframe.to > Date.now() / 1000;
+  const isStartInFuture = timeframe.from > Date.now() / 1000;
   const positionsSnapshotTimestamp = isEndInFuture ? undefined : timeframe.to;
 
   const { data, error: leaderboardDataError } = useLeaderboardData(enabled, chainId, {
@@ -33,8 +44,21 @@ export const useLeaderboardState = (account: string | undefined, pageType: Synth
       positions: data?.positions,
       leaderboardType,
       setLeaderboardType,
+      isStartInFuture,
+      isEndInFuture,
+      timeframe,
+      leaderboardPageKey,
     }),
-    [data?.accounts, data?.positions, leaderboardDataError, leaderboardType]
+    [
+      data?.accounts,
+      data?.positions,
+      isEndInFuture,
+      isStartInFuture,
+      leaderboardDataError,
+      leaderboardPageKey,
+      leaderboardType,
+      timeframe,
+    ]
   );
 };
 
@@ -54,9 +78,24 @@ function deserializeTimeframe(timeframeStr: string): LeaderboardTimeframe {
   };
 }
 
-function useLeaderboardTimeframe(pageType: SyntheticsPageType, leaderboardType: LeaderboardType): LeaderboardTimeframe {
+function useLeaderboardTimeframe(
+  pageType: SyntheticsPageType,
+  leaderboardType: LeaderboardType,
+  pageKey: LeaderboardPageKey | undefined
+): LeaderboardTimeframe {
   const isCompetitions = pageType === "competitions";
-  const competitionsDefaultTimeframe = LEADERBOARD_TIMEFRAMES.test3;
+  const competitionsDefaultTimeframe: LeaderboardTimeframe = useMemo(() => {
+    if (pageKey === "leaderboard") {
+      return LEADERBOARD_TIMEFRAMES.all;
+    } else if (pageKey === "march24abspnl") {
+      return LEADERBOARD_TIMEFRAMES.march24abspnl;
+    } else if (pageKey === "march24relpnl") {
+      return LEADERBOARD_TIMEFRAMES.march24relpnl;
+    } else {
+      return LEADERBOARD_TIMEFRAMES.all;
+    }
+  }, [pageKey]);
+
   const leaderboardDefaultTimeframe: LeaderboardTimeframe = useMemo(() => {
     if (leaderboardType === "all") {
       return LEADERBOARD_TIMEFRAMES.all;

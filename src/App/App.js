@@ -359,7 +359,7 @@ function FullApp({ pendingTxns, setPendingTxns }) {
               <Route exact path="/ecosystem">
                 <Ecosystem />
               </Route>
-              <Route path="/leaderboard/:account?">
+              <Route path="/leaderboard/">
                 {getIsSyntheticsSupported(chainId) ? (
                   <SyntheticsStateContextProvider
                     savedIsPnlInLeverage={settings.isPnlInLeverage}
@@ -373,7 +373,7 @@ function FullApp({ pendingTxns, setPendingTxns }) {
                   <SyntheticsFallbackPage />
                 )}
               </Route>
-              <Route path="/competitions/:account?">
+              <Route path="/competitions/:leaderboardPageKey">
                 {getIsSyntheticsSupported(chainId) ? (
                   <SyntheticsStateContextProvider
                     savedIsPnlInLeverage={settings.isPnlInLeverage}
