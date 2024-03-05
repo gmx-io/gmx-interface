@@ -4,7 +4,7 @@ type Props = {
   withTimestamp?: boolean;
 };
 
-export default function MarketListSkeletonStructure(props: Props) {
+export default function TradesHistorySkeletonStructure(props: Props) {
   return (
     <tr>
       <td>

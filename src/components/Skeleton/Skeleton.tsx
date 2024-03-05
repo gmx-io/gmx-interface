@@ -1,6 +1,7 @@
 import { ComponentPropsWithoutRef, ComponentType, FunctionComponent } from "react";
 import { SkeletonTheme } from "react-loading-skeleton";
 
+import ClaimsHistorySkeletonStructure from "./ClaimsHistorySkeletonStructure";
 import GMListSkeletonStructure from "./GMListSkeletonStructure";
 import { LeaderboardTopAccountsStructure } from "./LeaderboardTopAccountsStructure";
 import MarketListSkeletonStructure from "./MarketListSkeletonStructure";
@@ -42,4 +43,8 @@ export function TopAccountsSkeleton(props) {
 
 export function TradesHistorySkeleton(props: SkeletonProps<typeof TradesHistorySkeletonStructure>) {
   return <TableListSkeleton {...props} Structure={TradesHistorySkeletonStructure} />;
+}
+
+export function ClaimsHistorySkeleton(props: SkeletonProps<typeof ClaimsHistorySkeletonStructure>) {
+  return <TableListSkeleton {...props} Structure={ClaimsHistorySkeletonStructure} />;
 }

@@ -1,10 +1,21 @@
-.MarketFilter {
+.TableOptionsFilter {
   &-options {
     max-height: 20rem;
     overflow-y: auto;
 
     overscroll-behavior: contain;
+
     border-top: 1px solid #32344c;
+  }
+
+  &-group-name {
+    font-size: var(--font-sm);
+
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+
+    cursor: pointer;
   }
 
   &-option {
@@ -15,6 +26,10 @@
     padding: 0.5rem 1rem;
 
     cursor: pointer;
+
+    &-in-group {
+      padding-left: 25px;
+    }
   }
 
   &-search {

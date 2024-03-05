@@ -9,6 +9,7 @@ export const MAX_METAMASK_MOBILE_DECIMALS = 5;
 export const INPUT_LABEL_SEPARATOR = ":";
 
 export const TRADE_HISTORY_PER_PAGE = 25;
+export const CLAIMS_HISTORY_PER_PAGE = 25;
 export const UI_FEE_RECEIVER_ACCOUNT = process.env.REACT_APP_UI_FEE_RECEIVER || null;
 
 export const DEFAULT_TOOLTIP_POSITION = "bottom-start";

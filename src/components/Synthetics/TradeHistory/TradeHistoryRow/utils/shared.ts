@@ -6,17 +6,10 @@ import formatISO from "date-fns/formatISO";
 import formatRelative from "date-fns/formatRelative";
 import { BigNumber, ethers } from "ethers";
 
-import dateDe from "date-fns/locale/de";
 import dateEn from "date-fns/locale/en-US";
-import dateEs from "date-fns/locale/es";
-import dateFr from "date-fns/locale/fr";
-import dateJa from "date-fns/locale/ja";
-import dateKo from "date-fns/locale/ko";
-import dateRu from "date-fns/locale/ru";
-import dateZh from "date-fns/locale/zh-CN";
 
+import { LOCALE_DATE_LOCALE_MAP } from "components/Synthetics/DateRangeSelect/DateRangeSelect";
 import { TradeActionType } from "domain/synthetics/tradeHistory";
-import { locales } from "lib/i18n";
 
 import CustomErrors from "abis/CustomErrors.json";
 
@@ -110,34 +103,32 @@ export type RowDetails = {
   //#endregion
 };
 
-export const dateLocaleMap: Record<keyof typeof locales, DateLocale> = {
-  en: dateEn,
-  es: dateEs,
-  zh: dateZh,
-  ko: dateKo,
-  ru: dateRu,
-  ja: dateJa,
-  fr: dateFr,
-  de: dateDe,
-  pseudo: dateEn,
-};
+const CUSTOM_DATE_LOCALES = Object.fromEntries(
+  Object.entries(LOCALE_DATE_LOCALE_MAP).map(([locale, dateLocale]) => {
+    const originalFormatRelative = dateLocale.formatRelative;
 
-Object.values(dateLocaleMap).forEach((locale) => {
-  const originalFormatRelative = locale.formatRelative;
+    const customDateLocale = {
+      ...dateLocale,
+      formatRelative: (...args) => {
+        const token = args[0];
+        if (token === "other" || !originalFormatRelative) {
+          return "dd MMM yyyy, HH:mm";
+        }
+        return originalFormatRelative(...args);
+      },
+    };
 
-  locale.formatRelative = (...args) => {
-    const token = args[0];
-    if (token === "other" || !originalFormatRelative) {
-      return "dd MMM yyyy, HH:mm";
-    }
-    return originalFormatRelative(...args);
-  };
-});
+    return [locale, customDateLocale];
+  })
+);
 
+/**
+ * This format is understandable by the Google Sheets
+ */
 export function formatTradeActionTimestamp(timestamp: number, relativeTimestamp = true) {
   const localeStr = i18n.locale;
 
-  const locale: DateLocale = dateLocaleMap[localeStr] || dateEn;
+  const locale: DateLocale = CUSTOM_DATE_LOCALES[localeStr] || dateEn;
 
   if (!relativeTimestamp) {
     return format(new Date(timestamp * 1000), "yyyy-MM-dd HH:mm:ss", {
@@ -146,7 +137,7 @@ export function formatTradeActionTimestamp(timestamp: number, relativeTimestamp 
   }
 
   return formatRelative(new Date(timestamp * 1000), new Date(), {
-    locale: locale,
+    locale,
   });
 }
 

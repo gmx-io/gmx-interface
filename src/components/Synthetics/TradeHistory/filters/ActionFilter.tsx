@@ -1,23 +1,13 @@
-import { FloatingPortal, flip, offset, shift, useFloating, autoUpdate } from "@floating-ui/react";
-import { Popover } from "@headlessui/react";
-import { Trans, t } from "@lingui/macro";
+import { t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-
-import cx from "classnames";
-import React, { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 import { OrderType } from "domain/synthetics/orders/types";
 import { TradeActionType } from "domain/synthetics/tradeHistory/types";
 
+import { TableOptionsFilter } from "components/Synthetics/TableOptionsFilter/TableOptionsFilter";
+
 import { actionTextMap, getActionTitle } from "../keys";
-
-import Checkbox from "components/Checkbox/Checkbox";
-import SearchInput from "components/SearchInput/SearchInput";
-
-import { ReactComponent as FilterIcon } from "img/ic_filter.svg";
-import { ReactComponent as PartialCheckedIcon } from "img/ic_partial_checked.svg";
-
-import "./ActionFilter.scss";
 
 type Item = {
   orderType: OrderType;
@@ -166,167 +156,40 @@ type Props = {
   value: {
     orderType: OrderType;
     eventName: TradeActionType;
-    isDepositOrWithdraw?: boolean;
+    isDepositOrWithdraw: boolean;
   }[];
-  onChange: (value: { orderType: OrderType; eventName: TradeActionType; isDepositOrWithdraw?: boolean }[]) => void;
+  onChange: (value: { orderType: OrderType; eventName: TradeActionType; isDepositOrWithdraw: boolean }[]) => void;
 };
-
-function isIdentical(left: Item, right: Item): boolean {
-  return (
-    left.orderType === right.orderType &&
-    left.eventName === right.eventName &&
-    Boolean(left.isDepositOrWithdraw) === Boolean(right.isDepositOrWithdraw)
-  );
-}
 
 export function ActionFilter({ value, onChange }: Props) {
   const { i18n } = useLingui();
-  const { refs, floatingStyles } = useFloating({
-    middleware: [offset(10), flip(), shift()],
-    strategy: "fixed",
-    placement: "bottom-start",
-    whileElementsMounted: autoUpdate,
-  });
-
-  const isActive = value.length > 0;
-
-  const [marketSearch, setMarketSearch] = useState("");
-
-  const filteredGroups = useMemo(() => {
+  const localizedGroups = useMemo(() => {
     return GROUPS.map((group) => {
-      const items = group.items
-        .map((pair) => {
-          return {
-            ...pair,
-            text: pair.text ? i18n._(pair.text) : getActionTitle(pair.orderType, pair.eventName),
-          };
-        })
-        .filter((pair) => {
-          return pair.text!.toLowerCase().includes(marketSearch.toLowerCase());
-        });
-      const isEverythingSelected = group.items.every((item) =>
-        value.some((selectedItem) => isIdentical(selectedItem, item))
-      );
-      const isEverythingFilteredSelected = items.every((item) =>
-        value.some((selectedItem) => isIdentical(selectedItem, item))
-      );
-      const isSomethingSelected = group.items.some((item) =>
-        value.some((selectedItem) => isIdentical(selectedItem, item))
-      );
-
       return {
-        groupNameTranslated: i18n._(group.groupName),
-        isEverythingSelected,
-        isEverythingFilteredSelected,
-        isSomethingSelected,
-        items,
+        groupName: i18n._(group.groupName),
+        items: group.items.map((item) => {
+          return {
+            data: {
+              orderType: item.orderType,
+              eventName: item.eventName,
+              isDepositOrWithdraw: Boolean(item.isDepositOrWithdraw),
+            },
+            text: item.text ? i18n._(item.text) : getActionTitle(item.orderType, item.eventName),
+          };
+        }),
       };
-    }).filter((group) => group.items.length > 0);
-  }, [i18n, marketSearch, value]);
-
-  function togglePair(newItem: Item) {
-    if (value.some((pair) => isIdentical(pair, newItem))) {
-      onChange(value.filter((pair) => !isIdentical(pair, newItem)));
-    } else {
-      onChange([
-        ...value,
-        {
-          orderType: newItem.orderType,
-          eventName: newItem.eventName,
-          isDepositOrWithdraw: newItem.isDepositOrWithdraw,
-        },
-      ]);
-    }
-  }
-
-  function handleSearchEnterKey(e: React.KeyboardEvent) {
-    if (e.key === "Enter" && filteredGroups.length > 0) {
-      togglePair(filteredGroups[0].items[0]);
-    }
-  }
-
-  function getIsSelected(item: Item) {
-    return value.some((selectedPair) => isIdentical(selectedPair, item));
-  }
-
-  function handleGroupToggle(group: typeof filteredGroups[number]) {
-    if (group.isEverythingFilteredSelected) {
-      onChange(value.filter((pair) => !group.items.some((item) => isIdentical(pair, item))));
-    } else {
-      onChange(
-        value.concat(
-          group.items.map((item) => ({
-            orderType: item.orderType,
-            eventName: item.eventName,
-            isDepositOrWithdraw: item.isDepositOrWithdraw,
-          }))
-        )
-      );
-    }
-  }
+    });
+  }, [i18n]);
 
   return (
-    <>
-      <Popover>
-        <Popover.Button
-          as="div"
-          ref={refs.setReference}
-          className={cx("TradeHistorySynthetics-filter", {
-            active: isActive,
-          })}
-        >
-          <Trans>Action</Trans>
-          <FilterIcon className="TradeHistorySynthetics-filter-icon" />
-        </Popover.Button>
-        <FloatingPortal>
-          <Popover.Panel
-            ref={refs.setFloating}
-            style={floatingStyles}
-            className="TradeHistorySynthetics-filter-popover"
-          >
-            <SearchInput
-              className="ActionFilter-search"
-              placeholder={t`Search action`}
-              value={marketSearch}
-              setValue={(event) => setMarketSearch(event.target.value)}
-              onKeyDown={handleSearchEnterKey}
-            />
-
-            <div className="ActionFilter-options">
-              {filteredGroups.map((group) => (
-                <div key={group.groupNameTranslated} className="ActionFilter-group">
-                  <div
-                    className="ActionFilter-group-name"
-                    onClick={() => {
-                      handleGroupToggle(group);
-                    }}
-                  >
-                    {group.isSomethingSelected && !group.isEverythingSelected ? (
-                      <div className="Checkbox">
-                        <PartialCheckedIcon className="Checkbox-icon" />
-                      </div>
-                    ) : (
-                      <Checkbox isChecked={group.isEverythingSelected} />
-                    )}
-                    <span>{group.groupNameTranslated}</span>
-                  </div>
-                  {group.items.map((pair) => (
-                    <div
-                      key={pair.text}
-                      className="ActionFilter-option"
-                      onClick={() => {
-                        togglePair(pair);
-                      }}
-                    >
-                      <Checkbox isChecked={getIsSelected(pair)}>{pair.text}</Checkbox>
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </Popover.Panel>
-        </FloatingPortal>
-      </Popover>
-    </>
+    <TableOptionsFilter<Props["value"][number]>
+      multiple
+      label={t`Action`}
+      placeholder={t`Search action`}
+      value={value}
+      options={localizedGroups}
+      onChange={onChange}
+      popupPlacement="bottom-start"
+    />
   );
 }

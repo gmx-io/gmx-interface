@@ -1,0 +1,21 @@
+.TableFilterBase {
+  &-filter {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+
+    &.active,
+    &:hover {
+      color: #7885ff;
+    }
+  }
+
+  &-filter-popover {
+    position: relative;
+    z-index: 1000;
+
+    border-radius: var(--border-radius-sm);
+    background-color: var(--dark-blue-bg);
+    border: 1px solid #32344c;
+  }
+}

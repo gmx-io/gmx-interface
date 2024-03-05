@@ -19,6 +19,7 @@ import {
   useTradeHistory,
 } from "domain/synthetics/tradeHistory";
 import { useChainId } from "lib/chains";
+import { useNormalizeDateRange } from "lib/dates";
 import { formatPositionMessage } from "./TradeHistoryRow/utils/position";
 import type { RowDetails } from "./TradeHistoryRow/utils/shared";
 import { formatSwapMessage } from "./TradeHistoryRow/utils/swap";
@@ -28,34 +29,20 @@ import Pagination from "components/Pagination/Pagination";
 import usePagination from "components/Referrals/usePagination";
 import { TradesHistorySkeleton } from "components/Skeleton/Skeleton";
 
-import { DateRangeSelect } from "./DateRangeSelect/DateRangeSelect";
+import { DateRangeSelect } from "../DateRangeSelect/DateRangeSelect";
 import { ActionFilter } from "./filters/ActionFilter";
-import { MarketFilter } from "./filters/MarketFilter";
+import { MarketFilter } from "../TableMarketFilter/MarketFilter";
 import { TradeHistoryRow } from "./TradeHistoryRow/TradeHistoryRow";
 
 import downloadIcon from "img/ic_download_simple.svg";
 
 import "./TradeHistorySynthetics.scss";
 
-const PAGE_SIZE = 100;
-const ENTITIES_PER_PAGE = 25;
+const TRADE_HISTORY_PREFETCH_SIZE = 100;
+const ENTITIES_PER_PAGE = TRADE_HISTORY_PER_PAGE;
 
 const CSV_ICON_INFO = {
   src: downloadIcon,
-};
-
-const START_OF_DAY_DURATION = {
-  hours: 0,
-  minutes: 0,
-  seconds: 0,
-  milliseconds: 0,
-};
-
-const INCLUDING_CURRENT_DAY_DURATION = {
-  hours: 23,
-  minutes: 59,
-  seconds: 59,
-  milliseconds: 999,
 };
 
 type Props = {
@@ -63,10 +50,6 @@ type Props = {
   account: string | null | undefined;
   forAllAccounts?: boolean;
 };
-
-function toSeconds(date: Date) {
-  return Math.round(date.getTime() / 1000);
-}
 
 function useMarketAddressesFromTokenAddresses(tokenAddresses: string[]): string[] {
   const { chainId } = useChainId();
@@ -140,12 +123,11 @@ export function TradeHistory(p: Props) {
     {
       orderType: OrderType;
       eventName: TradeActionType;
-      isDepositOrWithdraw?: boolean;
+      isDepositOrWithdraw: boolean;
     }[]
   >([]);
 
-  const fromTxTimestamp = dateRange[0] ? toSeconds(dateFns.set(dateRange[0], START_OF_DAY_DURATION)) : undefined;
-  const toTxTimestamp = dateRange[1] ? toSeconds(dateFns.set(dateRange[1], INCLUDING_CURRENT_DAY_DURATION)) : undefined;
+  const [fromTxTimestamp, toTxTimestamp] = useNormalizeDateRange(dateRange);
 
   const marketAddresses = useMarketAddressesFromTokenAddresses(tokenAddressesFilter);
 
@@ -158,7 +140,7 @@ export function TradeHistory(p: Props) {
   } = useTradeHistory(chainId, {
     account,
     forAllAccounts,
-    pageSize: PAGE_SIZE,
+    pageSize: TRADE_HISTORY_PREFETCH_SIZE,
     fromTxTimestamp,
     toTxTimestamp,
     marketAddresses: marketAddresses,
@@ -180,7 +162,7 @@ export function TradeHistory(p: Props) {
 
   useEffect(() => {
     if (!pageCount || !currentPage) return;
-    const totalPossiblePages = (PAGE_SIZE * tradeActionsPageIndex) / TRADE_HISTORY_PER_PAGE;
+    const totalPossiblePages = (TRADE_HISTORY_PREFETCH_SIZE * tradeActionsPageIndex) / TRADE_HISTORY_PER_PAGE;
     const doesMoreDataExist = pageCount >= totalPossiblePages;
     const isCloseToEnd = pageCount && pageCount < currentPage + 2;
 

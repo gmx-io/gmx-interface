@@ -1,0 +1,41 @@
+.ClaimsHistory {
+  &-controls {
+    padding: 1em;
+    border-bottom: 1px solid #23263b;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .button {
+      padding: 6px 10px !important;
+    }
+  }
+
+  &-controls-right {
+    display: flex;
+    gap: 0.5em;
+  }
+
+  &-filters {
+    display: flex;
+    gap: 0.5em;
+  }
+
+  &-table {
+    table-layout: fixed;
+  }
+  &-action-column {
+    width: 45%;
+  }
+  &-market-column {
+    width: 30%;
+  }
+  &-size-column {
+    width: 25%;
+  }
+
+  &-fake-row {
+    padding: 1.5rem;
+  }
+}

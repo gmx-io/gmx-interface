@@ -1,13 +1,16 @@
 import { gql } from "@apollo/client";
+import { BigNumber, ethers } from "ethers";
+import { useMemo } from "react";
+import useInfiniteSwr, { SWRInfiniteResponse } from "swr/infinite";
+
 import { getWrappedToken } from "config/tokens";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { parseContractPrice } from "domain/synthetics/tokens";
-import { BigNumber, ethers } from "ethers";
 import { bigNumberify } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getSyntheticsGraphClient } from "lib/subgraph";
-import { useMemo } from "react";
-import useInfiniteSwr from "swr/infinite";
+import { buildFiltersBody } from "lib/subgraph/utils";
+
 import { OrderType, isSwapOrderType } from "../orders";
 import { getSwapPathOutputAddresses } from "../trade/utils";
 import { PositionTradeAction, RawTradeAction, SwapTradeAction, TradeAction, TradeActionType } from "./types";
@@ -16,82 +19,8 @@ export type TradeHistoryResult = {
   tradeActions?: TradeAction[];
   isLoading: boolean;
   pageIndex: number;
-  setPageIndex: (index: number) => Promise<RawTradeAction[] | undefined>;
+  setPageIndex: (...args: Parameters<SWRInfiniteResponse["setSize"]>) => void;
 };
-
-type GraphQlFilters =
-  | {
-      or: GraphQlFilters[];
-    }
-  | {
-      and: GraphQlFilters[];
-    }
-  | {
-      or?: never;
-      and?: never;
-      [key: `_${string}`]: never;
-      [key: string]: string | number | boolean | undefined | GraphQlFilters | string[] | number[] | GraphQlFilters[];
-    };
-
-/**
- * Builds a body for the filters in the GraphQL query with respect to The Graph api.
- * @returns a string encased in braces `{...}`
- */
-function buildFiltersBody(filters: GraphQlFilters): string {
-  const res = {};
-
-  for (const [key, value] of Object.entries(filters)) {
-    if (value === undefined) {
-      continue;
-    }
-
-    if (typeof value === "string") {
-      res[key] = `"${value}"`;
-    } else if (typeof value === "number") {
-      res[key] = `${value}`;
-    } else if (typeof value === "boolean") {
-      res[key] = `${value}`;
-    } else if (Array.isArray(value)) {
-      const valueStr =
-        "[" +
-        value
-          .map((el: string | number | GraphQlFilters) => {
-            if (typeof el === "string") {
-              return `"${el}"`;
-            } else if (typeof el === "number") {
-              return `${el}`;
-            } else {
-              const elemStr = buildFiltersBody(el);
-
-              if (elemStr === "{}") {
-                return "";
-              } else {
-                return elemStr;
-              }
-            }
-          })
-          .filter((el) => el !== "")
-          .join(",") +
-        "]";
-
-      if (valueStr !== "[]") {
-        res[key] = valueStr;
-      }
-    } else {
-      const valueStr = buildFiltersBody(value);
-      if (valueStr !== "{}") {
-        res[key + "_"] = buildFiltersBody(value);
-      }
-    }
-  }
-
-  const str = Object.entries(res).reduce((previous, [key, value], index) => {
-    const maybeComma = index === 0 ? "" : ",";
-    return `${previous}${maybeComma}${key}:${value}`;
-  }, "");
-
-  return `{${str}}`;
-}
 
 export function useTradeHistory(
   chainId: number,
@@ -110,7 +39,7 @@ export function useTradeHistory(
       isDepositOrWithdraw?: boolean;
     }[];
   }
-) {
+): TradeHistoryResult {
   const {
     pageSize,
     account,

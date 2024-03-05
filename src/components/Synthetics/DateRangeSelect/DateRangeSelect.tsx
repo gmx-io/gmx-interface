@@ -1,16 +1,27 @@
+import { useCallback, useMemo } from "react";
+
 import { flip, offset, shift, useFloating } from "@floating-ui/react";
 import { Popover } from "@headlessui/react";
 import { i18n } from "@lingui/core";
 import { t } from "@lingui/macro";
 import type { Locale as DateLocale } from "date-fns";
+import { DateRange, ClassNames as DateRangeClassNames, Range, RangeKeyDict } from "react-date-range";
+
 import addYears from "date-fns/addYears";
 import format from "date-fns/format";
 import setTime from "date-fns/set";
 import subMonths from "date-fns/subMonths";
-import { useCallback, useMemo } from "react";
-import { DateRange, ClassNames as DateRangeClassNames, Range, RangeKeyDict } from "react-date-range";
 
-import { dateLocaleMap } from "../TradeHistoryRow/utils/shared";
+import dateDe from "date-fns/locale/de";
+import dateEn from "date-fns/locale/en-US";
+import dateEs from "date-fns/locale/es";
+import dateFr from "date-fns/locale/fr";
+import dateJa from "date-fns/locale/ja";
+import dateKo from "date-fns/locale/ko";
+import dateRu from "date-fns/locale/ru";
+import dateZh from "date-fns/locale/zh-CN";
+
+import { locales } from "lib/i18n";
 
 import Button from "components/Button/Button";
 
@@ -19,6 +30,18 @@ import calendarIcon from "img/ic_calendar.svg";
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import "./DateRangeSelect.scss";
+
+export const LOCALE_DATE_LOCALE_MAP: Record<keyof typeof locales, DateLocale> = {
+  en: dateEn,
+  es: dateEs,
+  zh: dateZh,
+  ko: dateKo,
+  ru: dateRu,
+  ja: dateJa,
+  fr: dateFr,
+  de: dateDe,
+  pseudo: dateEn,
+};
 
 type Props = {
   startDate?: Date;
@@ -81,7 +104,7 @@ export function DateRangeSelect({ startDate, endDate, onChange }: Props) {
 
   const localeStr = i18n.locale;
 
-  const locale: DateLocale = dateLocaleMap[localeStr] || dateLocaleMap.en;
+  const locale: DateLocale = LOCALE_DATE_LOCALE_MAP[localeStr] || LOCALE_DATE_LOCALE_MAP.en;
 
   const buttonText = useMemo(() => {
     const start =

@@ -6,16 +6,18 @@ import { BigNumber } from "ethers";
 import { getAddress } from "ethers/lib/utils.js";
 import { bigNumberify } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { getSyntheticsGraphClient } from "lib/subgraph";
+import { buildFiltersBody, getSyntheticsGraphClient } from "lib/subgraph";
 import useWallet from "lib/wallets/useWallet";
 import { useMemo } from "react";
-import useSWR from "swr";
+import useSWRInfinite, { SWRInfiniteResponse } from "swr/infinite";
 import { useFixedAddreseses } from "../common/useFixedAddresses";
 import { ClaimAction, ClaimCollateralAction, ClaimFundingFeeAction, ClaimMarketItem, ClaimType } from "./types";
 
 export type ClaimCollateralHistoryResult = {
   claimActions?: ClaimAction[];
   isLoading: boolean;
+  pageIndex: number;
+  setPageIndex: (...args: Parameters<SWRInfiniteResponse["setSize"]>) => void;
 };
 
 type RawClaimAction = {
@@ -34,9 +36,15 @@ type RawClaimAction = {
 
 export function useClaimCollateralHistory(
   chainId: number,
-  p: { pageIndex: number; pageSize: number }
+  p: {
+    pageSize: number;
+    fromTxTimestamp?: number;
+    toTxTimestamp?: number;
+    eventName?: string[];
+    tokenAddresses?: string[];
+  }
 ): ClaimCollateralHistoryResult {
-  const { pageIndex, pageSize } = p;
+  const { pageSize, fromTxTimestamp, toTxTimestamp, eventName, tokenAddresses } = p;
   const marketsInfoData = useMarketsInfoData();
   const tokensData = useTokensData();
 
@@ -44,12 +52,56 @@ export function useClaimCollateralHistory(
   const fixedAddresses = useFixedAddreseses(marketsInfoData, tokensData);
   const client = getSyntheticsGraphClient(chainId);
 
-  const key = chainId && client && account ? [chainId, "useClaimHistory", account, pageIndex, pageSize] : null;
+  const queryDisabled = !chainId || !client || !account;
 
-  const { data, error } = useSWR<RawClaimAction[]>(key, {
-    fetcher: async () => {
+  const key = (pageIndex: number) => {
+    if (queryDisabled) {
+      return null;
+    }
+
+    return [
+      chainId,
+      "useClaimHistory",
+      account,
+      pageIndex,
+      pageSize,
+      fromTxTimestamp,
+      toTxTimestamp,
+      eventName?.sort().join(","),
+      tokenAddresses?.sort().join(","),
+    ];
+  };
+
+  const {
+    data,
+    error,
+    size: pageIndex,
+    setSize: setPageIndex,
+  } = useSWRInfinite<RawClaimAction[]>(key, {
+    fetcher: async (key) => {
+      const pageIndex = key[3];
       const skip = pageIndex * pageSize;
       const first = pageSize;
+
+      const filterStr = buildFiltersBody({
+        and: [
+          {
+            account: account!.toLowerCase(),
+            transaction: {
+              timestamp_gte: fromTxTimestamp,
+              timestamp_lte: toTxTimestamp,
+            },
+            eventName_in: eventName,
+          },
+          {
+            or: tokenAddresses?.map((tokenAddress) => ({
+              tokenAddresses_contains: [tokenAddress.toLowerCase()],
+            })),
+          },
+        ],
+      });
+
+      const whereClause = `where: ${filterStr}`;
 
       const query = gql(`{
         claimActions(
@@ -57,7 +109,7 @@ export function useClaimCollateralHistory(
             first: ${first},
             orderBy: transaction__timestamp,
             orderDirection: desc,
-            where: { account: "${account!.toLowerCase()}" }
+            ${whereClause}
         ) {
             id
             account
@@ -86,7 +138,7 @@ export function useClaimCollateralHistory(
       return undefined;
     }
 
-    return data.reduce((acc, rawAction) => {
+    return data.flat().reduce((acc, rawAction) => {
       const eventName = rawAction.eventName;
 
       switch (eventName) {
@@ -117,6 +169,8 @@ export function useClaimCollateralHistory(
   return {
     claimActions,
     isLoading,
+    pageIndex,
+    setPageIndex,
   };
 }
 
