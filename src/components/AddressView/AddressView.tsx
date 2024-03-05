@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { shortenAddress } from "lib/legacy";
 import "./AddressView.scss";
 import { useMemo } from "react";
+import useWallet from "lib/wallets/useWallet";
+import { t } from "@lingui/macro";
 
 type AddressViewProps = {
   address: string;
@@ -23,14 +25,24 @@ export default function AddressView({
   breakpoint,
   maxLength,
 }: AddressViewProps) {
+  const { account } = useWallet();
   const strLength = (breakpoint && lengths[breakpoint]) ?? maxLength;
-  let trader;
 
-  if (strLength) {
-    trader = (ensName ? "" : "0x") + shortenAddress(ensName || address.replace(/^0x/, ""), strLength, 0);
-  } else {
-    trader = ensName || address;
-  }
+  const trader = useMemo(() => {
+    let trader;
+
+    if (account === address) {
+      return t`You`;
+    }
+
+    if (strLength) {
+      trader = (ensName ? "" : "0x") + shortenAddress(ensName || address.replace(/^0x/, ""), strLength, 0);
+    } else {
+      trader = ensName || address;
+    }
+
+    return trader;
+  }, [account, address, ensName, strLength]);
 
   const style = useMemo(
     () => ({

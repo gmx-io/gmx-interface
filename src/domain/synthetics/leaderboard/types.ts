@@ -10,6 +10,7 @@ export enum PerfPeriod {
 
 export type TopAccountsRow = {
   key: string;
+  className: string | undefined;
   rank: TableCell;
   account: TableCell;
   absPnl: TableCell;

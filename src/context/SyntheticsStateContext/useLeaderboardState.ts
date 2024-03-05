@@ -85,14 +85,28 @@ function useLeaderboardTimeframe(
 ): LeaderboardTimeframe {
   const isCompetitions = pageType === "competitions";
   const competitionsDefaultTimeframe: LeaderboardTimeframe = useMemo(() => {
-    if (pageKey === "leaderboard") {
-      return LEADERBOARD_TIMEFRAMES.all;
-    } else if (pageKey === "march24abspnl") {
-      return LEADERBOARD_TIMEFRAMES.march24abspnl;
-    } else if (pageKey === "march24relpnl") {
-      return LEADERBOARD_TIMEFRAMES.march24relpnl;
-    } else {
-      return LEADERBOARD_TIMEFRAMES.all;
+    switch (pageKey) {
+      case "leaderboard":
+        return LEADERBOARD_TIMEFRAMES.all;
+
+      case "march24abspnl":
+        return LEADERBOARD_TIMEFRAMES.march24abspnl;
+
+      case "march24relpnl":
+        return LEADERBOARD_TIMEFRAMES.march24relpnl;
+
+      case "test":
+        return LEADERBOARD_TIMEFRAMES.test;
+
+      case "test2":
+        return LEADERBOARD_TIMEFRAMES.test2;
+
+      default:
+        if (pageKey) {
+          throw mustNeverExist(pageKey);
+        } else {
+          return LEADERBOARD_TIMEFRAMES.all;
+        }
     }
   }, [pageKey]);
 

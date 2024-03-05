@@ -2290,6 +2290,11 @@ msgstr "공유가능한 이미지 생성중..."
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 msgstr ""
 
+#: src/domain/synthetics/leaderboard/constants.ts
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "Global leaderboard"
+msgstr ""
+
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
 msgstr ""
@@ -2624,6 +2629,10 @@ msgstr "리더보드"
 msgid "Leaderboard for GMX traders"
 msgstr "GMX 트레이더를 위한 리더보드"
 
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "Leaderboard for traders on GMX V2"
+msgstr ""
+
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 #~ msgid "Leaderboard for traders on GMX V2."
 #~ msgstr ""
@@ -2929,6 +2938,14 @@ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Main Account {0} Balance is used to top up Subaccount Balance on each Action up to the set Max auto top-up amount. Use the \"Сonvert {1} to {2}\" field if the Main Account {3} Balance is low."
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "March '24 Absolute PnL"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "March '24 Relative PnL"
 msgstr ""
 
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
@@ -4071,6 +4088,10 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Read more"
 msgstr "더 알아보기"
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "Read the rules"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Realized PnL"
@@ -5260,6 +5281,10 @@ msgstr "해당 코드는 {0}에서 다른 사용자에 의해 이미 사용되�
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 msgstr "해당 코드는 {0}에 아직 등록되지 않았기때문에, 소개 보수를 받을 수 없습니다.<0/><1/>네트워크를 변경후 해당 코드를 {1}상에서 생성하세요."
 
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "This competition has ended"
+msgstr ""
+
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
 msgstr ""
@@ -5308,6 +5333,14 @@ msgstr "수수료를 줄이기 위해서는 다른 자산으로 지불해주세�
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Tokens"
 msgstr "토큰"
+
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "Top PnL $ March '24"
+msgstr ""
+
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "Top Pnl % March '24"
+msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Top-up"
@@ -6084,6 +6117,10 @@ msgstr "일드 볼트"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Yield simulator for GMX"
 msgstr "GMX를 위한 일드 시뮬레이터"
+
+#: src/components/AddressView/AddressView.tsx
+msgid "You"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "You are earning rewards with {0} tokens.<0/>Tokens: {amountStr}."

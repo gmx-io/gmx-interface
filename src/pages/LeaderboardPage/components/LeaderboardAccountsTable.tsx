@@ -23,7 +23,14 @@ import { BigNumber } from "ethers";
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "domain/synthetics/leaderboard/constants";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-function getWinnerClassname(rank: number | null, competition: CompetitionType | undefined) {
+function getRowClassname(rank: number | null, competition: CompetitionType | undefined, pinned: boolean) {
+  if (pinned) return "LeaderboardRankRow-Pinned";
+  if (rank === null) return undefined;
+  if (!competition) return rank <= 3 ? `LeaderboardRankRow-${rank}` : undefined;
+  return undefined;
+}
+
+function getWinnerRankClassname(rank: number | null, competition: CompetitionType | undefined) {
   if (rank === null) return undefined;
   if (!competition) return rank <= 3 ? `LeaderboardRank-${rank}` : undefined;
   return rank <= 10 ? `LeaderboardRank-TopCompetitor` : undefined;
@@ -33,14 +40,16 @@ const constructRow = (
   s: LeaderboardAccount,
   index: number,
   rank: number | null,
-  competition: CompetitionType | undefined
+  competition: CompetitionType | undefined,
+  pinned: boolean
 ): TopAccountsRow => {
   const shouldRenderValue = rank !== null;
 
   return {
     key: s.account,
+    className: getRowClassname(rank, competition, pinned),
     rank: {
-      value: () => <span className={getWinnerClassname(rank, competition)}>{rank === null ? "-" : rank}</span>,
+      value: () => <span className={getWinnerRankClassname(rank, competition)}>{rank === null ? "-" : rank}</span>,
     },
     account: {
       value: (breakpoint) => <AddressView size={20} address={s.account} breakpoint={breakpoint} />,
@@ -170,12 +179,14 @@ type LeaderboardAccountField = keyof LeaderboardAccount;
 
 export function LeaderboardAccountsTable({
   accounts,
+  currentAccount,
   search,
   activeCompetition,
   sortingEnabled = true,
   skeletonCount = 15,
 }: {
   accounts: RemoteData<LeaderboardAccount>;
+  currentAccount: LeaderboardAccount | undefined;
   search: string;
   activeCompetition: CompetitionType | undefined;
   sortingEnabled?: boolean;
@@ -216,8 +227,8 @@ export function LeaderboardAccountsTable({
   }, [activeCompetition, isCompetitions]);
 
   const ranks = useLeaderboardAccountsRanks();
-
   const term = useDebounce(search, 300);
+
   const sorted = useMemo(() => {
     return [...data].sort((a, b) => {
       const key = orderBy;
@@ -243,9 +254,14 @@ export function LeaderboardAccountsTable({
     () =>
       filteredStats
         .slice(indexFrom, indexFrom + perPage)
-        .map((acc, i) => constructRow(acc, i, activeRank.get(acc.account) ?? null, activeCompetition)),
+        .map((acc, i) => constructRow(acc, i, activeRank.get(acc.account) ?? null, activeCompetition, false)),
     [activeCompetition, activeRank, filteredStats, indexFrom]
   );
+  const pinnedRow = useMemo(() => {
+    if (!currentAccount) return undefined;
+    const rank = activeRank.get(currentAccount.account) ?? null;
+    return constructRow(currentAccount, 0, rank, activeCompetition, true);
+  }, [activeCompetition, activeRank, currentAccount]);
   const pageCount = Math.ceil(filteredStats.length / perPage);
 
   const getSortableClass = useCallback(
@@ -326,7 +342,15 @@ export function LeaderboardAccountsTable({
 
   return (
     <div>
-      <Table isLoading={isLoading} error={error} content={rows} titles={titles} rowKey={"key"} Loader={loader} />
+      <Table
+        isLoading={isLoading}
+        error={error}
+        content={rows}
+        pinnedContent={pinnedRow}
+        titles={titles}
+        rowKey={"key"}
+        Loader={loader}
+      />
       <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
     </div>
   );

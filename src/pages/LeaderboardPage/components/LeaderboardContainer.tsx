@@ -1,19 +1,22 @@
-import { t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import SearchInput from "components/SearchInput/SearchInput";
 import Tab from "components/Tab/Tab";
 import {
   useLeaderboardCurrentAccount,
+  useLeaderboardPageKey,
   useLeaderboardRankedAccounts,
+  useLeaderboardTiming,
   useLeaderboardTypeState,
 } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import { CompetitionType } from "domain/synthetics/leaderboard";
-import { LeaderboardAccountsTable } from "./LeaderboardAccountsTable";
-import { useAccount } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { CompetitionPrizes } from "./CompetitionPrizes";
+import { mustNeverExist } from "lib/types";
 import { CompetitionCountdown } from "./CompetitionCountdown";
+import { CompetitionPrizes } from "./CompetitionPrizes";
+import { LeaderboardAccountsTable } from "./LeaderboardAccountsTable";
 import { LeaderboardNavigation } from "./LeaderboardNavigation";
 
 const competitionLabels = [t`Notional PnL`, t`PnL Percentage`];
@@ -24,11 +27,11 @@ const leaderboardTabs = [0, 1, 2];
 
 export function LeaderboardContainer({ isCompetitions }: { isCompetitions: boolean }) {
   const [search, setSearch] = useState("");
+  const { isStartInFuture } = useLeaderboardTiming();
   const [activeLeaderboardIndex, setActiveLeaderboardIndex] = useState(0);
   const [activeCompetitionIndex, setActiveCompetitionIndex] = useState(0);
   const [, setLeaderboardType] = useLeaderboardTypeState();
   const accounts = useLeaderboardRankedAccounts();
-  const account = useAccount();
   const leaderboardCurrentAccount = useLeaderboardCurrentAccount();
   const isLoading = !accounts;
   const accountsStruct = useMemo(
@@ -40,18 +43,10 @@ export function LeaderboardContainer({ isCompetitions }: { isCompetitions: boole
     }),
     [accounts, isLoading]
   );
-  const currentAccountStruct = useMemo(
-    () => ({
-      isLoading,
-      data: leaderboardCurrentAccount ? [leaderboardCurrentAccount] : [],
-      error: null,
-      updatedAt: 0,
-    }),
-    [isLoading, leaderboardCurrentAccount]
-  );
   const handleKeyDown = useCallback(() => null, []);
 
   const activeCompetition: CompetitionType = activeCompetitionIndex === 0 ? "notionalPnl" : "pnlPercentage";
+  const leaderboardPageKey = useLeaderboardPageKey();
 
   const handleLeaderboardTabChange = useCallback(
     (index: number) => setActiveLeaderboardIndex(index),
@@ -77,54 +72,98 @@ export function LeaderboardContainer({ isCompetitions }: { isCompetitions: boole
     }
   }, [activeLeaderboardIndex, setLeaderboardType]);
 
+  const title = useMemo(() => {
+    switch (leaderboardPageKey) {
+      case "leaderboard":
+        return t`Global leaderboard`;
+
+      case "march24abspnl":
+        return t`March '24 Absolute PnL`;
+
+      case "march24relpnl":
+        return t`March '24 Relative PnL`;
+
+      case "test":
+        return "Test championship March '24";
+
+      case "test2":
+        return "Test championship 14-16 Feb '24";
+
+      default:
+        throw mustNeverExist(leaderboardPageKey);
+    }
+  }, [leaderboardPageKey]);
+
+  const description = useMemo(() => {
+    switch (leaderboardPageKey) {
+      case "leaderboard":
+        return t`Leaderboard for traders on GMX V2`;
+
+      case "march24abspnl":
+      case "march24relpnl":
+      case "test":
+      case "test2":
+        return (
+          <ExternalLink href="#">
+            <Trans>Read the rules</Trans>
+          </ExternalLink>
+        );
+
+      default:
+        throw mustNeverExist(leaderboardPageKey);
+    }
+  }, [leaderboardPageKey]);
+
   return (
     <div className="GlobalLeaderboards">
       <LeaderboardNavigation />
+      <div className="Leaderboard-Title">
+        <div>
+          <h1>{title}</h1>
+          <div className="Leaderboard-Title__description">{description}</div>
+        </div>
+        {isCompetitions && <CompetitionCountdown />}
+      </div>
       {isCompetitions && <CompetitionPrizes competition={activeCompetition} />}
-      {isCompetitions && <CompetitionCountdown />}
-      {account && leaderboardCurrentAccount && (
+
+      {!isStartInFuture && (
         <>
+          {!isCompetitions && (
+            <>
+              <br />
+              <Tab
+                option={activeLeaderboardIndex}
+                onChange={handleLeaderboardTabChange}
+                options={leaderboardTabs}
+                optionLabels={leaderboardLabels}
+              />
+            </>
+          )}
+          {isCompetitions && (
+            <Tab
+              option={activeCompetitionIndex}
+              onChange={handleCompetitionTabChange}
+              options={competitionsTabs}
+              optionLabels={competitionLabels}
+            />
+          )}
+          <div className="LeaderboardHeader">
+            <SearchInput
+              placeholder={t`Search Address`}
+              className={cx("LeaderboardSearch")}
+              value={search}
+              setValue={(e) => setSearch(e.target.value)}
+              onKeyDown={handleKeyDown}
+            />
+          </div>
           <LeaderboardAccountsTable
+            currentAccount={leaderboardCurrentAccount}
             activeCompetition={isCompetitions ? activeCompetition : undefined}
-            accounts={currentAccountStruct}
-            search=""
-            sortingEnabled={false}
-            skeletonCount={1}
+            accounts={accountsStruct}
+            search={search}
           />
-          <br />
-          <br />
         </>
       )}
-      {!isCompetitions && (
-        <Tab
-          option={activeLeaderboardIndex}
-          onChange={handleLeaderboardTabChange}
-          options={leaderboardTabs}
-          optionLabels={leaderboardLabels}
-        />
-      )}
-      {isCompetitions && (
-        <Tab
-          option={activeCompetitionIndex}
-          onChange={handleCompetitionTabChange}
-          options={competitionsTabs}
-          optionLabels={competitionLabels}
-        />
-      )}
-      <div className="LeaderboardHeader">
-        <SearchInput
-          placeholder={t`Search Address`}
-          className={cx("LeaderboardSearch")}
-          value={search}
-          setValue={(e) => setSearch(e.target.value)}
-          onKeyDown={handleKeyDown}
-        />
-      </div>
-      <LeaderboardAccountsTable
-        activeCompetition={isCompetitions ? activeCompetition : undefined}
-        accounts={accountsStruct}
-        search={search}
-      />
     </div>
   );
 }

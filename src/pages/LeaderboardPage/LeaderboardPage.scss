@@ -5,6 +5,21 @@
   margin: 1.5rem 0;
 }
 
+.Leaderboard-Title {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+}
+
+.Leaderboard-Title h1 {
+  margin: 0 0 1rem;
+}
+
+.Leaderboard-Title__description {
+  color: rgb(255 255 255 / 70%);
+}
+
 .GlobalLeaderboards .Tab {
   width: 40rem;
   margin: 0 auto;
@@ -106,8 +121,40 @@
   display: inline-flex;
 }
 
-.LeaderboardRank-TopCompetitor {
-  font-weight: bold;
+.LeaderboardRankRow-Pinned td:first-child::before {
+  content: "";
+  display: inline-block;
+  width: 0.3rem;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: red;
+}
+
+.LeaderboardRankRow-1 td:first-child::before,
+.LeaderboardRankRow-2 td:first-child::before,
+.LeaderboardRankRow-3 td:first-child::before {
+  content: "";
+  display: inline-block;
+  width: 35rem;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0.2;
+}
+
+.LeaderboardRankRow-1 td:first-child::before {
+  background: linear-gradient(90deg, #ffd22f, #ffd22f00);
+}
+
+.LeaderboardRankRow-2 td:first-child::before {
+  background: linear-gradient(90deg, #a7abe1, #a7abe100);
+}
+
+.LeaderboardRankRow-3 td:first-child::before {
+  background: linear-gradient(90deg, #ff932f, #ff932f00);
 }
 
 .LeaderboardRank-1::after,
@@ -142,6 +189,7 @@
   display: flex;
   align-items: center;
   min-width: 0;
+  margin-bottom: 2rem;
 }
 
 .CompetitionsPrizes__prize {
@@ -182,9 +230,16 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
+.CompetitionCountdown__ended {
+  font-size: 2rem;
+  margin-top: 4.3rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
 .CompetitionCountdown__section {
   display: flex;
   flex-direction: column;
+  height: 7rem;
 }
 
 .CompetitionCountdown__section-number {
@@ -234,6 +289,10 @@
 
   &_selected {
     background-color: rgba(180, 187, 255, 0.1);
+  }
+
+  &:hover {
+    background: #3a3f798f;
   }
 }
 

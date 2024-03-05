@@ -3,6 +3,10 @@
   overflow: visible;
 }
 
+.TableBox table.Exchange-list tr {
+  border: none;
+}
+
 .TableBox table.Exchange-list tr:hover {
   cursor: default;
 }
@@ -52,4 +56,13 @@ table.Table.Exchange-list th {
 .TableHeader.sorted-desc .TableHeaderTitle::after {
   background-image: url(../../img/ic_sorted_desc.svg);
   background-position: center 0.4rem;
+}
+
+.Table_tr {
+  position: relative;
+}
+
+.Table_tr td {
+  z-index: 1;
+  position: relative;
 }

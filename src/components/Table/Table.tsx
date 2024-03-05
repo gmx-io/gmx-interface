@@ -20,6 +20,7 @@ export default function Table<T extends Record<string, any>>({
   isLoading,
   error,
   content,
+  pinnedContent,
   titles,
   rowKey,
   className,
@@ -54,13 +55,21 @@ export default function Table<T extends Record<string, any>>({
       );
     }
 
-    return content.map((row: T) => (
-      <tr key={row[rowKey]}>
+    const trs = content.map((row: T) => (
+      <tr key={row[rowKey]} className={`Table_tr ${row.className}`}>
         {Object.keys(titles).map((k) => (
           <TableCell key={`${row[rowKey]}_${k}`} breakpoint={breakpoint} data={row[k]} />
         ))}
       </tr>
     ));
+    const pinnedTr = pinnedContent ? (
+      <tr>
+        {Object.keys(titles).map((k) => (
+          <TableCell key={`pinned_${k}`} breakpoint={breakpoint} data={pinnedContent[k]} />
+        ))}
+      </tr>
+    ) : null;
+    return [pinnedTr].concat(trs);
   }
 
   return (

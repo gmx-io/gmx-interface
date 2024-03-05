@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import { useLeaderboardTiming } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 
@@ -16,7 +16,11 @@ export function CompetitionCountdown() {
       return null;
     }
   } else {
-    return null;
+    return (
+      <div className="CompetitionCountdown__ended">
+        <Trans>This competition has ended</Trans>
+      </div>
+    );
   }
 
   return counter;
