@@ -373,6 +373,7 @@ function FullApp({ pendingTxns, setPendingTxns }) {
                   <SyntheticsFallbackPage />
                 )}
               </Route>
+              <Redirect exact from="/competitions" to="/leaderboard" />
               <Route path="/competitions/:leaderboardPageKey">
                 {getIsSyntheticsSupported(chainId) ? (
                   <SyntheticsStateContextProvider
