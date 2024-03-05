@@ -502,7 +502,7 @@ export default function PositionEditor(props) {
             </Button>
           }
           className="Tooltip-flex"
-          position="center-top"
+          position="top"
           renderContent={() => ERROR_TOOLTIP_MSG[errorCode]}
         />
       );
@@ -677,7 +677,7 @@ export default function PositionEditor(props) {
                               $0
                             </>
                           }
-                          position="right-top"
+                          position="top-end"
                           renderContent={() => (
                             <Trans>The pending borrow fee will be charged on this transaction.</Trans>
                           )}

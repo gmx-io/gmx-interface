@@ -19,7 +19,7 @@ export default function BridgingInfo(props: Props) {
   return (
     <Tooltip
       handle="Bridging instructions"
-      position="right-bottom"
+      position="bottom-end"
       renderContent={() => (
         <>
           <Trans>

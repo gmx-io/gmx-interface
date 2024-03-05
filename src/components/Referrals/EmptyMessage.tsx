@@ -13,7 +13,7 @@ function EmptyMessage({ message = "", tooltipText, className = "", children }: P
   return (
     <div className={cx("empty-message", className)}>
       {tooltipText ? (
-        <Tooltip handle={<span>{message}</span>} position="center-top" renderContent={() => tooltipText} />
+        <Tooltip handle={<span>{message}</span>} position="top" renderContent={() => tooltipText} />
       ) : (
         <p>{message}</p>
       )}

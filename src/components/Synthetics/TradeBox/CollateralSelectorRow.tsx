@@ -138,7 +138,7 @@ export function CollateralSelectorRow(p: Props) {
         message ? (
           <Tooltip
             handle={t`Collateral In`}
-            position="left-bottom"
+            position="bottom-start"
             className={cx("MarketSelector-tooltip", { error: level === "error" })}
             renderContent={() => <div className="MarketSelector-tooltip-content">{message}</div>}
           />

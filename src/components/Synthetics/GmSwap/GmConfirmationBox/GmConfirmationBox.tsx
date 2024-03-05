@@ -26,6 +26,7 @@ import { useKey } from "react-use";
 import useWallet from "lib/wallets/useWallet";
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { FaArrowRight } from "react-icons/fa";
+import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
 
 type Props = {
   isVisible: boolean;
@@ -399,8 +400,9 @@ export function GmConfirmationBox({
               uiFee={fees?.uiFee}
               swapFee={fees?.swapFee}
               swapPriceImpact={fees?.swapPriceImpact}
-              executionFee={executionFee}
             />
+            <NetworkFeeRow executionFee={executionFee} />
+
             {shouldRenderDivider && <div className="line-divider" />}
 
             {tokensToApprove && tokensToApprove.length > 0 && (

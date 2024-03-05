@@ -62,11 +62,13 @@ import useWallet from "lib/wallets/useWallet";
 import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
-import "./PositionEditor.scss";
+import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { getMinResidualAmount } from "domain/tokens";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
+
+import "./PositionEditor.scss";
 
 export type Props = {
   position?: PositionInfo;
@@ -342,10 +344,12 @@ export function PositionEditor(p: Props) {
       return;
     }
 
+    let txnPromise: Promise<void>;
+
     if (isDeposit) {
       setIsSubmitting(true);
 
-      createIncreaseOrderTxn(chainId, signer, subaccount, {
+      txnPromise = createIncreaseOrderTxn(chainId, signer, subaccount, {
         account,
         marketAddress: position.marketAddress,
         initialCollateralAddress: selectedCollateralAddress,
@@ -368,11 +372,7 @@ export function PositionEditor(p: Props) {
         setPendingTxns,
         setPendingOrder,
         setPendingPosition,
-      })
-        .then(onClose)
-        .finally(() => {
-          setIsSubmitting(false);
-        });
+      });
     } else {
       if (!receiveUsd) {
         return;
@@ -380,7 +380,7 @@ export function PositionEditor(p: Props) {
 
       setIsSubmitting(true);
 
-      createDecreaseOrderTxn(
+      txnPromise = createDecreaseOrderTxn(
         chainId,
         signer,
         subaccount,
@@ -411,12 +411,18 @@ export function PositionEditor(p: Props) {
           setPendingOrder,
           setPendingPosition,
         }
-      )
-        .then(onClose)
-        .finally(() => {
-          setIsSubmitting(false);
-        });
+      );
     }
+
+    if (subaccount) {
+      onClose();
+      setIsSubmitting(false);
+      return;
+    }
+
+    txnPromise.then(onClose).finally(() => {
+      setIsSubmitting(false);
+    });
   }
 
   useEffect(
@@ -589,7 +595,7 @@ export function PositionEditor(p: Props) {
                           <Trans>Collateral ({position?.collateralToken?.symbol})</Trans>
                         </span>
                       }
-                      position="left-top"
+                      position="top-start"
                       renderContent={() => {
                         return <Trans>Initial Collateral (Collateral excluding Borrow and Funding Fee).</Trans>;
                       }}
@@ -602,7 +608,8 @@ export function PositionEditor(p: Props) {
                     />
                   </div>
                 </div>
-                <TradeFeesRow {...fees} executionFee={executionFee} feesType="edit" shouldShowRebate={false} />
+                <TradeFeesRow {...fees} feesType="edit" shouldShowRebate={false} />
+                <NetworkFeeRow executionFee={executionFee} />
               </ExchangeInfo.Group>
 
               <ExchangeInfo.Group>
