@@ -91,8 +91,16 @@ msgid "<0>The price that orders can be executed at may differ slightly from the 
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
-msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
-msgstr "<0>これによりすべてのトークンは引き出され、リザーブから解除され、べスティングは停止されます。<1/><2/>GMXへ転換されたesGMXトークンはGMXトークンとなります。<3/><4/>引き出しをせずにGMXトークンを請求するには全報酬セクションの下部にある\"請求\"ボタンを使用してください。<5/><6/></0>"
+msgid "<0>This will claim {0} GMX.<1/><2/>After claiming, you can stake these GMX tokens by using the \"Stake\" button in the GMX section of this Earn page.<3/><4/></0>"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "<0>This will withdraw all esGMX tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button.<5/><6/></0>"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>This value may be higher on other websites due to the collateral of positions being included in the calculation.</1>"
@@ -321,7 +329,7 @@ msgstr "追加中"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Additional reserve required"
-msgstr "必要な追加リザーブ額"
+msgstr ""
 
 #: src/components/Exchange/OrdersToa.js
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
@@ -334,6 +342,11 @@ msgstr ""
 
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Affiliate Rewards Claimed"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "Affiliate Vault"
 msgstr ""
 
 #: src/pages/Referrals/Referrals.tsx
@@ -442,7 +455,7 @@ msgstr "{stakingTokenSymbol}を承認する"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Approving GMX..."
-msgstr "GMXを承認中"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
@@ -557,11 +570,11 @@ msgstr "ボーナストークン"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Boost Percentage"
-msgstr "ブースト率"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
-msgstr "マルチプライヤーポイントで報酬をブーストする。<0>より詳しい情報</0>"
+msgstr ""
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
@@ -639,7 +652,7 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GMX"
-msgstr "GMXを購入"
+msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from Traderjoe:"
@@ -802,11 +815,17 @@ msgstr ""
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claim"
 msgstr "請求"
 
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 msgid "Claim <0>{0}</0>"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Claim Affiliate Vault Rewards"
 msgstr ""
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
@@ -816,7 +835,7 @@ msgstr ""
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claim GMX Rewards"
-msgstr "GMX報酬の請求"
+msgstr ""
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "Claim Price Impact Rebates"
@@ -824,13 +843,14 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Claim Rewards"
-msgstr "報酬の請求"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Claim V2 Rebates from your referred Traders."
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claim completed!"
 msgstr "請求完了!"
@@ -842,13 +862,14 @@ msgstr "esGMXの請求"
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claim esGMX Rewards"
-msgstr "esGMX報酬の請求"
+msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 msgid "Claim failed"
 msgstr "請求できませんでした"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claim failed."
 msgstr "請求できませんでした。"
@@ -862,8 +883,9 @@ msgid "Claim submitted! <0>View status.</0>"
 msgstr "請求申し込み完了! <0>状況を確認する。</0>"
 
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claim submitted."
-msgstr "請求申し込み完了"
+msgstr ""
 
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "Claim {totalUsd}"
@@ -872,9 +894,10 @@ msgstr ""
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claim {wrappedTokenSymbol} Rewards"
-msgstr "{wrappedTokenSymbol}報酬の請求"
+msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimableCard.tsx
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claimable"
@@ -901,6 +924,7 @@ msgstr ""
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claiming..."
 msgstr "請求中..."
@@ -1043,27 +1067,27 @@ msgstr "移転を完了させる"
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Compound"
-msgstr "請求とステーク"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Compound Rewards"
-msgstr "報酬を請求およびステーク"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Compound completed!"
-msgstr "請求とステーク完了!"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Compound failed."
-msgstr "請求とステークができませんでした。"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Compound submitted!"
-msgstr "請求とステークの申し込み完了!"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Compounding..."
-msgstr "請求およびステーク中..."
+msgstr ""
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/Synthetics/ClaimModal/ClaimModal.tsx
@@ -1128,6 +1152,7 @@ msgstr "接続"
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Connect Wallet"
 msgstr "ウォレット接続"
 
@@ -1146,7 +1171,7 @@ msgstr "続ける"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
-msgstr "esGMXトークンをGMXトークンに転換させる。<0/>ボールトを使用する前に <1>べスティングの詳細</1>を読んでください。"
+msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Convert this amount of {0} to {1} in your Main Account to allow for auto top-ups, as only {2} can be automatically transferred to your Subaccount. The {3} balance of your main account is shown above."
@@ -1155,7 +1180,7 @@ msgstr ""
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Convert {wrappedTokenSymbol} to {nativeTokenSymbol}"
-msgstr "{wrappedTokenSymbol}を{nativeTokenSymbol}に転換する"
+msgstr ""
 
 #: src/components/Exchange/PositionShare.tsx
 msgid "Copy"
@@ -1265,7 +1290,7 @@ msgstr "現在のプール額"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Current Reserved"
-msgstr "現在のリザーブ額"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Current Weight"
@@ -1418,6 +1443,7 @@ msgstr ""
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Deposit"
 msgstr "入金"
 
@@ -1439,7 +1465,7 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Deposit failed!"
-msgstr "入金できませんでした!"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Deposit failed."
@@ -1451,7 +1477,7 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Deposit submitted!"
-msgstr "入金申し込み完了!"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Deposit submitted."
@@ -1463,7 +1489,7 @@ msgstr "{0} USDを {1} {longOrShortText}に入金"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Deposited"
-msgstr "入金済"
+msgstr ""
 
 #: src/pages/Exchange/Exchange.js
 msgid "Deposited {0} USD into {tokenSymbol} {longOrShortText}"
@@ -1475,7 +1501,7 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Deposited!"
-msgstr "入金完了!"
+msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Depositing {0} to {positionText}"
@@ -1772,12 +1798,16 @@ msgstr ""
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Escrowed GMX"
-msgstr "esGMX (エスクローされたGMX)"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "Escrowed GMX APR"
 msgstr "esGMXのAPR(実質年利)"
+
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "Estimated Fee Refund"
+msgstr "見積もり手数料返金"
 
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
@@ -2034,7 +2064,7 @@ msgstr "GLPプール"
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "GLP Vault"
-msgstr "GLPボールト"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GLP and GMX autocompounding vaults"
@@ -2127,7 +2157,7 @@ msgstr ""
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "GMX Vault"
-msgstr "GMXボールト"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX Weekly Updates"
@@ -2184,7 +2214,7 @@ msgstr "GMXステーキング報酬の最新情報および見通し"
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "GMX transfers not yet enabled"
-msgstr "GMX移転はまだ有効化されていません"
+msgstr ""
 
 #: src/components/Common/SEO.js
 msgid "GMX | Decentralized Perpetual Exchange"
@@ -2237,6 +2267,10 @@ msgstr "USDGスリッページが大きいです。ともかくロングする"
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "I am aware of the trigger orders"
 msgstr "トリガー注文について承知しています"
+
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+msgid "I do not want to transfer the Affiliate esGMX tokens"
+msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "If you have an existing position, the position will be closed at a reference price of {0}, not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
@@ -2402,7 +2436,7 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Insufficient staked tokens"
-msgstr "ステークされたトークンが不足しています"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -2433,10 +2467,6 @@ msgstr ""
 #: src/pages/NftWallet/NftWallet.js
 msgid "Invalid NFT Address"
 msgstr "無効なNFTアドレス"
-
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Invalid Receiver"
-msgstr "無効な受け取り人"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/NftWallet/NftWallet.js
@@ -2917,16 +2947,15 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Max Capacity"
-msgstr "最大キャパシティ"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Max Capacity for {0} Reached"
 msgstr "{0}の最大キャパシティに到達しています"
 
-#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max Execution Fee"
-msgstr ""
+msgstr "最大実行手数料"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max Execution Fee Buffer"
@@ -3088,6 +3117,10 @@ msgstr ""
 msgid "Maximum auto top-up amount is required"
 msgstr ""
 
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "Maximum execution fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does not impact your collateral."
+msgstr "ネットワークに支払う最大実行手数料。この手数料はGMXに特有のものではなく、担保に影響を与えません。"
+
 #: src/components/Footer/constants.ts
 #: src/components/Footer/constants.ts
 msgid "Media Kit"
@@ -3174,11 +3207,11 @@ msgstr "別の選択肢"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Multiplier Points"
-msgstr "マルチプライヤーポイント"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Multiplier Points APR"
-msgstr "マルチプライヤーポイントのAPR(実質年利)"
+msgstr ""
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -3243,6 +3276,10 @@ msgstr ""
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee"
 msgstr ""
+
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "Network Fee"
+msgstr "ネットワーク手数料"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -3327,7 +3364,7 @@ msgid "Not enough Available Swap Liquidity to fill the Order. The Order will get
 msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-msgid "Not enough {0} on your Main Account. Use the \"Convert {1} to {2}\" field to increase the Main Account {3} balance."
+msgid "Not enough {0} on your Main Account. Use the \"<0>Convert {1} to {2}</0>\" field to increase the Main Account {3} balance."
 msgstr ""
 
 #: src/components/Exchange/OrdersToa.js
@@ -3344,7 +3381,11 @@ msgid "One-Click Trading"
 msgstr ""
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-msgid "One-Click Trading is not available using network's native token {0}. Consider using {1} as Pay token instead."
+msgid "One-Click Trading is not available for wrapping or unwrapping native token {0}."
+msgstr ""
+
+#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
+msgid "One-Click Trading is not available using network's native token {0}. Consider using {1} instead."
 msgstr ""
 
 #: src/components/Referrals/referralsHelper.js
@@ -3895,13 +3936,14 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Purchase Insurance"
-msgstr "保険購入"
+msgstr ""
 
 #: src/components/Synthetics/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 #: src/components/Synthetics/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "REBATE"
 msgstr ""
 
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
@@ -3982,6 +4024,10 @@ msgstr "受け取り側でこれまでGLPトークンをステークしたこと
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Receiver has not staked GMX tokens before"
 msgstr "受け取り側でこれまでGMXトークンをステークしたことはありません"
+
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+msgid "Receiver has staked GMX/GLP before"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Redemption time not yet reached"
@@ -4089,7 +4135,7 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Reserve Amount"
-msgstr "リザーブ額"
+msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "Reserve considers the PnL of Open Positions, while Open Interest does not."
@@ -4102,7 +4148,7 @@ msgstr "リザーブ済"
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Reserved for Vesting"
-msgstr "べスティング用にリザーブ済"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Returns calculator for GMX and GLP"
@@ -4268,6 +4314,10 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 msgid "Selling..."
 msgstr "売却中..."
+
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+msgid "Sender has withdrawn all tokens from Affiliate Vesting Vault"
+msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Sender has withdrawn all tokens from GLP Vesting Vault"
@@ -4503,23 +4553,23 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Stake GMX"
-msgstr "GMXをステーク"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Stake GMX Rewards"
-msgstr "GMX報酬をステークする"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Stake Multiplier Points"
-msgstr "マルチプライヤーポイントをステークする"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Stake esGMX"
-msgstr "esGMXをステーク"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Stake esGMX Rewards"
-msgstr "esGMX報酬をステークする"
+msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 msgid "Stake failed"
@@ -4527,11 +4577,11 @@ msgstr "ステークできませんでした"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Stake failed."
-msgstr "ステークできませんでした。"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Stake submitted!"
-msgstr "ステーク申し込み完了!"
+msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 msgid "Stake submitted! <0>View status.</0>"
@@ -4551,12 +4601,12 @@ msgstr "ステーク済"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Staked Multiplier Points"
-msgstr "ステークされたマルチプライヤーポイント"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Staked Tokens"
-msgstr "ステークされたトークン"
+msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.js
@@ -4593,7 +4643,7 @@ msgid "Subaccount activated"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Subaccount activation failed."
+msgid "Subaccount activation failed"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
@@ -4601,15 +4651,15 @@ msgid "Subaccount created"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Subaccount deactivated."
+msgid "Subaccount deactivated"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Subaccount deactivation failed."
+msgid "Subaccount deactivation failed"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-msgid "Subaccount generation failed."
+msgid "Subaccount generation failed"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
@@ -4886,11 +4936,6 @@ msgstr ""
 msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
 msgstr "Gambitプロトコルはベータ版であり、参加する前に<0>ステーキングの詳細</0>を読んでください。"
 
-#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "The Max Execution Fee is overestimated by {maxExecutionFeeText}%. Upon execution, the excess Execution Fee is sent back to your account."
-msgstr ""
-
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 msgstr ""
@@ -4919,18 +4964,25 @@ msgstr "esGMXトークンはいつでもステークまたはべスティング�
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr "マーク価格が変化したため、アドレスの横に表示されている\"...\"アイコンをクリックして最大許容スリッページを増やすことを検討してください。"
 
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"Max allowed actions\" field."
-msgstr ""
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "The max execution fee is overestimated, including by the buffer set under settings. Upon execution, any excess execution fee is sent back to your account."
+msgstr "最大実行手数料は設定のバッファを含めて過大評価されています。実行時には、余剰実行手数料はアカウントに返金されます。"
 
-#: src/domain/synthetics/fees/utils/executionFee.ts
-msgid "The network Fees are high currently, which may be due to a temporary increase in transactions on the {0} network."
+#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
+msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"<0>Max allowed actions</0>\" field."
 msgstr ""
 
 #: src/domain/legacy.ts
-#: src/domain/synthetics/fees/utils/executionFee.ts
 msgid "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
-msgstr ""
+msgstr "現在ネットワーク手数料が非常に高いです。これは{0}ネットワーク上の一時的なトランザクション増加によるものかもしれません。"
+
+#: src/domain/synthetics/fees/utils/executionFee.ts
+msgid "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
+msgstr "現在ネットワーク手数料が高いです。これは{chainName}ネットワーク上の一時的なトランザクション増加によるものかもしれません。"
+
+#: src/domain/synthetics/fees/utils/executionFee.ts
+msgid "The network fees are very high currently, which may be due to a temporary increase in transactions on the {chainName} network."
+msgstr "現在ネットワーク手数料が非常に高いです。これは{chainName}ネットワーク上の一時的なトランザクション増加によるものかもしれません。"
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedOrderAcceptablePriceImpact}, which is lower than the current market price impact of {formattedCurrentAcceptablePriceImpact}. It can be edited using the \"Edit\" button."
@@ -4993,10 +5045,6 @@ msgid "The website is a community deployed and maintained instance of the open s
 msgstr "ウェブサイトはオープンソースの<0>GMXフロントエンド</0>を利用してコミュニティが設置し維持しているものであり、P2Pの<1>IPFSネットワーク</1>上にホストされ提供されています。"
 
 #: src/context/SubaccountContext/SubaccountContext.tsx
-msgid "There are insufficient funds in your Main account for One-Click Trading auto top-ups. <0>Click here</0> to convert."
-msgstr ""
-
-#: src/context/SubaccountContext/SubaccountContext.tsx
 msgid "There are insufficient funds in your Subaccount for One-Click Trading. <0>Click here</0> to top-up."
 msgstr ""
 
@@ -5005,7 +5053,7 @@ msgid "There are insufficient funds in your Subaccount for One-Click Trading. Cl
 msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-msgid "There are insufficient funds in your Subaccount for One-Click Trading. Use the \"Top-up\" field to increase the Subaccount Balance."
+msgid "There are insufficient funds in your Subaccount for One-Click Trading. Use the \"<0>Top-up</0>\" field to increase the Subaccount Balance."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -5148,7 +5196,7 @@ msgstr "リベート総額"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Total Rewards"
-msgstr "報酬総額"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -5284,6 +5332,8 @@ msgstr "取引に失敗しました"
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings. <2>More info</2>"
 msgstr "RPCエラーにより取引できませんでした。<0/><1/>ウォレットの設定でRPCのURLを変更してください。<2>詳細情報</2>"
 
+#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx
 msgid "Transaction sent."
 msgstr "取引は送信済です。"
@@ -5433,15 +5483,15 @@ msgstr "アンステーク"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Unstake GMX"
-msgstr "GMXをアンステークする"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Unstake completed!"
-msgstr "アンステーク完了!"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Unstake esGMX"
-msgstr "esGMXをアンステークする"
+msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 msgid "Unstake failed"
@@ -5449,11 +5499,11 @@ msgstr "アンステークできませんでした"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Unstake failed."
-msgstr "アンステークできませんでした。"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Unstake submitted!"
-msgstr "アンステーク申し込み完了!"
+msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 msgid "Unstake submitted! <0>View status.</0>"
@@ -5467,6 +5517,10 @@ msgstr ""
 #: src/pages/Stake/StakeV2.js
 msgid "Unstaking..."
 msgstr "アンステーク中..."
+
+#: src/pages/Stake/StakeV2.js
+msgid "Unsupported network"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/JoinReferralCode.js
@@ -5513,7 +5567,7 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Use the \"Compound\" button to stake your Multiplier Points."
-msgstr "マルチプレイヤーポイントをステークするには\"請求とステーク\"ボタンを使ってください。"
+msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -5619,15 +5673,15 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Vault Capacity"
-msgstr "ボールトキャパシティ"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Vault Capacity for your Account:"
-msgstr "あなたのアカウントのボールトキャパシティ"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Vest"
-msgstr "べスティング"
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Vest with GLP on Arbitrum"
@@ -5650,13 +5704,15 @@ msgid "Vested GLP not withdrawn"
 msgstr "べスティングされたGLPで引き出されていないもの"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Vested GMX not withdrawn"
 msgstr "べスティングされたGMXで引き出されていないもの"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Vesting Status"
-msgstr "べスティング状況"
+msgstr ""
 
 #: src/App/App.js
 #: src/lib/contracts/notifications.tsx
@@ -5800,6 +5856,7 @@ msgstr "ポジションをクローズする際、利益をどのトークンで
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Withdraw"
 msgstr "出金"
 
@@ -5808,20 +5865,26 @@ msgid "Withdraw disabled, pending {0} upgrade"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Withdraw failed."
-msgstr "出金できませんでした"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Withdraw from Affiliate Vault"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Withdraw from GLP Vault"
-msgstr "GLPボールトから出金"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Withdraw from GMX Vault"
-msgstr "GMXボールトから出金"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Withdraw submitted."
-msgstr "出金申し込み完了。"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Withdraw {0} USD from {1}{longOrShortText}"
@@ -5839,8 +5902,17 @@ msgstr ""
 msgid "Withdrawal submitted."
 msgstr ""
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Withdrawing from Subaccount"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 msgid "Withdrawing {0} from {positionText}"
+msgstr ""
+
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Withdrawing {0} to Main Account"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -5848,9 +5920,14 @@ msgstr ""
 msgid "Withdrawing..."
 msgstr ""
 
+#: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+msgid "Withdrawn {0} to Main Account"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Withdrawn!"
-msgstr "出金完了!"
+msgstr ""
 
 #: src/pages/Exchange/Exchange.js
 msgid "Withdrew {0} USD from {tokenSymbol} {longOrShortText}."
@@ -5882,7 +5959,7 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "You are earning {0}% more {nativeTokenSymbol} rewards using {1} Staked Multiplier Points."
-msgstr "あなたがステークしている{1}マルチプレイヤーポイントにより、報酬の{nativeTokenSymbol}が{0}%上乗せされています。"
+msgstr ""
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
@@ -5973,14 +6050,23 @@ msgstr ""
 msgid "You have an existing position with {0} as collateral. This action will not apply for that position."
 msgstr ""
 
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.js
 msgid "You have multiple existing Increase {longOrShortText} {0} limit orders"
 msgstr "{longOrShortText} {0}のリミット注文を増額する複数の注文があります"
 
 #: src/pages/Stake/StakeV2.js
+msgid "You have no GMX tokens to claim."
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "You have not deposited any tokens for vesting."
-msgstr "べスティング用のトークンが入金されていません。"
+msgstr ""
 
 #: src/components/Stake/GMXAprTooltip.tsx
 #: src/pages/Stake/StakeV2.js
@@ -6013,7 +6099,7 @@ msgstr "あなたは{0} esGMX (IOU)トークンを保有しています。"
 
 #: src/pages/Stake/StakeV2.js
 msgid "You need a total of at least {0} {stakeTokenLabel} to vest {1} esGMX."
-msgstr "{1} esGMXをべスティングするには合計で最低{0} {stakeTokenLabel}が必要です。"
+msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "You need to select {swapTokenSymbol} as the \"Pay\" token to use it for collateral to initiate this trade."
@@ -6187,7 +6273,7 @@ msgstr "{0} GLPを売却し、{1} {2}を得ました!"
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
-msgstr "{0} GMXトークンを請求可能です。総報酬セクションの下の選択肢を使用して請求してください。"
+msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "{0} Pool Capacity Reached"
@@ -6255,8 +6341,9 @@ msgstr "{0}が注文フォームで選択されました"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
-msgstr "{0}トークンがべスティング用に入金された{1} esGMXからGMXに変換されました。"
+msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx

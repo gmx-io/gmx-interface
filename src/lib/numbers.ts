@@ -156,7 +156,13 @@ export const formatAmountFree = (amount: BigNumberish, tokenDecimals: number, di
 
 export function formatUsd(
   usd?: BigNumber,
-  opts: { fallbackToZero?: boolean; displayDecimals?: number; maxThreshold?: string; minThreshold?: string } = {}
+  opts: {
+    fallbackToZero?: boolean;
+    displayDecimals?: number;
+    maxThreshold?: string;
+    minThreshold?: string;
+    displayPlus?: boolean;
+  } = {}
 ) {
   const { fallbackToZero = false, displayDecimals = 2 } = opts;
 
@@ -169,7 +175,9 @@ export function formatUsd(
   }
 
   const exceedingInfo = getLimitedDisplay(usd, USD_DECIMALS, opts);
-  const sign = usd.lt(0) ? "-" : "";
+
+  const maybePlus = opts.displayPlus ? "+" : "";
+  const sign = usd.lt(0) ? "-" : maybePlus;
   const symbol = exceedingInfo.symbol ? `${exceedingInfo.symbol} ` : "";
   const displayUsd = formatAmount(exceedingInfo.value, USD_DECIMALS, displayDecimals, true);
   return `${symbol}${sign}$${displayUsd}`;
@@ -225,6 +233,7 @@ export function formatTokenAmount(
     useCommas?: boolean;
     minThreshold?: string;
     maxThreshold?: string;
+    displayPlus?: boolean;
   } = {}
 ) {
   const {
@@ -249,7 +258,8 @@ export function formatTokenAmount(
 
   let amountStr: string;
 
-  const sign = amount.lt(0) ? "-" : "";
+  const maybePlus = opts.displayPlus ? "+" : "";
+  const sign = amount.lt(0) ? "-" : maybePlus;
 
   if (showAllSignificant) {
     amountStr = formatAmountFree(amount, tokenDecimals, tokenDecimals);
@@ -270,6 +280,7 @@ export function formatTokenAmountWithUsd(
   opts: {
     fallbackToZero?: boolean;
     displayDecimals?: number;
+    displayPlus?: boolean;
   } = {}
 ) {
   if (!tokenAmount || !usdAmount || !tokenSymbol || !tokenDecimals) {
@@ -278,10 +289,15 @@ export function formatTokenAmountWithUsd(
     }
   }
 
-  const tokenStr = formatTokenAmount(tokenAmount, tokenDecimals, tokenSymbol, { ...opts, useCommas: true });
+  const tokenStr = formatTokenAmount(tokenAmount, tokenDecimals, tokenSymbol, {
+    ...opts,
+    useCommas: true,
+    displayPlus: opts.displayPlus,
+  });
 
   const usdStr = formatUsd(usdAmount, {
     fallbackToZero: opts.fallbackToZero,
+    displayPlus: opts.displayPlus,
   });
 
   return `${tokenStr} (${usdStr})`;

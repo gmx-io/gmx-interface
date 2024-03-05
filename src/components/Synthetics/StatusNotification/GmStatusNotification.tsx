@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 import { convertTokenAddress } from "config/tokens";
-import cx from "classnames";
 import {
   PendingDepositData,
   PendingWithdrawalData,
@@ -15,6 +14,7 @@ import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import { useEffect, useMemo, useState } from "react";
 import { useToastAutoClose } from "./useToastAutoClose";
+import { StatusNotification } from "./StatusNotification";
 
 export type Props = {
   toastTimestamp: number;
@@ -247,17 +247,9 @@ export function GmStatusNotification({
   useToastAutoClose(isCompleted, toastTimestamp);
 
   return (
-    <div className="StatusNotification">
-      <div className="StatusNotification-content">
-        <div className="StatusNotification-title">{title}</div>
-
-        <div className="StatusNotification-items">
-          {creationStatus}
-          {executionStatus}
-        </div>
-      </div>
-
-      <div className={cx("StatusNotification-background", { error: hasError })}></div>
-    </div>
+    <StatusNotification title={title} hasError={hasError}>
+      {creationStatus}
+      {executionStatus}
+    </StatusNotification>
   );
 }

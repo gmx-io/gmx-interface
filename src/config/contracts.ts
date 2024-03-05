@@ -105,6 +105,7 @@ const CONTRACTS = {
 
     GmxVester: AddressZero,
     GlpVester: AddressZero,
+    AffiliateVester: AddressZero,
 
     OrderBook: AddressZero,
     OrderExecutor: AddressZero,
@@ -159,6 +160,7 @@ const CONTRACTS = {
 
     GmxVester: "0x199070DDfd1CFb69173aa2F7e20906F26B363004",
     GlpVester: "0xA75287d2f8b217273E7FCD7E86eF07D33972042E",
+    AffiliateVester: "0x7c100c0F55A15221A4c1C5a25Db8C98A81df49B2",
 
     OrderBook: "0x09f77E8A13De9a35a7231028187e9fD5DB8a2ACB",
     OrderExecutor: "0x7257ac5D0a0aaC04AA7bA2AC0A6Eb742E332c3fB",
@@ -214,6 +216,7 @@ const CONTRACTS = {
 
     GmxVester: "0x472361d3cA5F49c8E633FB50385BfaD1e018b445",
     GlpVester: "0x62331A7Bd1dfB3A7642B7db50B5509E57CA3154A",
+    AffiliateVester: "0x754eC029EF9926184b4CFDeA7756FbBAE7f326f7",
 
     OrderBook: "0x4296e307f108B2f583FF2F7B7270ee7831574Ae5",
     OrderExecutor: "0x4296e307f108B2f583FF2F7B7270ee7831574Ae5",
@@ -269,6 +272,7 @@ const CONTRACTS = {
 
     GmxVester: AddressZero,
     GlpVester: AddressZero,
+    AffiliateVester: AddressZero,
 
     OrderBook: AddressZero,
     OrderExecutor: AddressZero,

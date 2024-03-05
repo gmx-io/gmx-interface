@@ -160,4 +160,18 @@ export const appEventsData: EventData[] = [
       },
     ],
   },
+  {
+    id: "feb-2024-markets",
+    title: "NEAR, ATOM and AAVE markets added on Arbitrum!",
+    isActive: true,
+    validTill: "14 Mar 2024, 12:00",
+    bodyText: ["Trade NEAR, ATOM and AAVE or provide liquidity in the GM Pool."],
+    buttons: [
+      {
+        text: "Read more.",
+        link: "https://x.com/GMX_IO/status/1762860552609468551",
+        newTab: true,
+      },
+    ],
+  },
 ];

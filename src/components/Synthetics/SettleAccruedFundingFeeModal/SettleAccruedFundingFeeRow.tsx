@@ -62,7 +62,7 @@ export const SettleAccruedFundingFeeRow = ({ position, isSelected, onCheckboxCha
       <div className="ClaimSettleModal-info-label-usd">
         <Tooltip
           className="ClaimSettleModal-tooltip"
-          position="right-top"
+          position="top-end"
           handle={formatDeltaUsd(position.pendingClaimableFundingFeesUsd)}
           renderContent={renderTooltipContent}
         />

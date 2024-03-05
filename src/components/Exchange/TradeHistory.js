@@ -63,7 +63,7 @@ function renderLiquidationTooltip(liquidationData, label) {
       : t`Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account:`;
   return (
     <Tooltip
-      position="left-top"
+      position="top-start"
       handle={label}
       renderContent={() => (
         <>
@@ -265,7 +265,7 @@ export default function TradeHistory(props) {
               {params.isLong ? "<" : ">"}&nbsp; USD
             </Trans>
             <Tooltip
-              position="center-top"
+              position="top"
               handle={`${formatAmount(params.acceptablePrice, USD_DECIMALS, indexTokenPriceDecimal, true)} USD`}
               renderContent={() => (
                 <Trans>Try increasing the "Allowed Slippage", under the Settings menu on the top right.</Trans>
@@ -299,7 +299,7 @@ export default function TradeHistory(props) {
             </Trans>
             USD
             <Tooltip
-              position="right-top"
+              position="top-end"
               handle={`${formatAmount(params.acceptablePrice, USD_DECIMALS, indexTokenPriceDecimal, true)} USD`}
               renderContent={() => (
                 <Trans>Try increasing the "Allowed Slippage", under the Settings menu on the top right</Trans>

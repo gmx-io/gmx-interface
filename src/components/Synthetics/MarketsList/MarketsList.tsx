@@ -198,7 +198,7 @@ export function MarketsList() {
                   const largestPool = stats.marketsStats.sort((a, b) => {
                     return b.poolValueUsd.gt(a.poolValueUsd) ? 1 : -1;
                   })[0];
-                  const tooltipPositionNetFee = index < indexTokensStats.length / 2 ? "right-bottom" : "right-top";
+                  const tooltipPositionNetFee = index < indexTokensStats.length / 2 ? "bottom-end" : "top-end";
                   const netFeePerHourLong = largestPool.fundingRateLong.add(largestPool.borrowingRateLong);
                   const netFeePerHourShort = largestPool.fundingRateShort.add(largestPool.borrowingRateShort);
 
@@ -227,6 +227,7 @@ export function MarketsList() {
                       <td>{formatUsd(stats.token.prices?.minPrice)}</td>
                       <td>
                         <Tooltip
+                          className="nowrap"
                           handle={formatUsd(stats.totalPoolValue)}
                           renderContent={() => (
                             <>
@@ -248,6 +249,7 @@ export function MarketsList() {
                           handle={`${formatRatePercentage(netFeePerHourLong)} / ${formatRatePercentage(
                             netFeePerHourShort
                           )}`}
+                          maxAllowedWidth={340}
                           renderContent={renderFundingRateTooltip(stats)}
                           position={tooltipPositionNetFee}
                         />
@@ -273,7 +275,7 @@ export function MarketsList() {
                 return b.poolValueUsd.gt(a.poolValueUsd) ? 1 : -1;
               })[0];
 
-              const tooltipPositionNetFee = index < indexTokensStats.length / 2 ? "right-bottom" : "right-top";
+              const tooltipPositionNetFee = index < indexTokensStats.length / 2 ? "bottom-end" : "top-end";
               const netFeePerHourLong = largestPool.fundingRateLong.add(largestPool.borrowingRateLong);
               const netFeePerHourShort = largestPool.fundingRateShort.add(largestPool.borrowingRateShort);
 
@@ -307,7 +309,7 @@ export function MarketsList() {
                       <div>
                         <Tooltip
                           handle={formatUsd(stats.totalPoolValue)}
-                          position="right-bottom"
+                          position="bottom-end"
                           renderContent={() => (
                             <>
                               {stats.marketsStats.map(({ marketInfo, poolValueUsd }) => (
@@ -329,6 +331,7 @@ export function MarketsList() {
                       </div>
                       <div>
                         <TooltipWithPortal
+                          maxAllowedWidth={340}
                           portalClassName="MarketList-netfee-tooltip"
                           handle={`${formatRatePercentage(netFeePerHourLong)} / ${formatRatePercentage(
                             netFeePerHourShort

@@ -7,6 +7,7 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, getSyntheticsDepositIndexTokenKey } from "config/localStorage";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getTokenBySymbolSafe } from "config/tokens";
+import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import {
   FeeItem,
   estimateExecuteDepositGasLimit,
@@ -59,6 +60,7 @@ import { isAddress } from "ethers/lib/utils.js";
 import useSearchParams from "lib/useSearchParams";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 import useSortedMarketsWithIndexToken from "domain/synthetics/trade/useSortedMarketsWithIndexToken";
+import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
 
 const SWAP_MARKET_REGEX = /^(swap-only|swap)$/i;
 
@@ -1020,66 +1022,69 @@ export function GmSwapBox(p: Props) {
           </BuyInputSection>
         </div>
 
-        <div className="GmSwapBox-info-section">
-          <ExchangeInfoRow
-            className="SwapBox-info-row"
-            label={t`Pool`}
-            value={
-              <PoolSelector
-                label={t`Pool`}
-                className="SwapBox-info-dropdown"
-                selectedIndexName={indexName}
-                selectedMarketAddress={marketAddress}
-                markets={markets}
-                marketTokensData={marketTokensData}
-                isSideMenu
-                showBalances
-                onSelectMarket={(marketInfo) => {
-                  onMarketChange(marketInfo.marketTokenAddress);
-                  showMarketToast(marketInfo);
-                }}
-              />
-            }
-          />
-
-          <div className="App-card-divider" />
-
-          <GmFees
-            isDeposit={isDeposit}
-            totalFees={fees?.totalFees}
-            swapFee={fees?.swapFee}
-            swapPriceImpact={fees?.swapPriceImpact}
-            executionFee={executionFee}
-            uiFee={fees?.uiFee}
-          />
-        </div>
-
-        {isHighPriceImpact && (
-          <>
-            <div className="App-card-divider" />
-            <Checkbox
-              className="GmSwapBox-warning"
-              asRow
-              isChecked={isHighPriceImpactAccepted}
-              setIsChecked={setIsHighPriceImpactAccepted}
-            >
-              {isSingle ? (
-                <Tooltip
-                  className="warning-tooltip"
-                  handle={<Trans>Acknowledge high Price Impact</Trans>}
-                  position="left-top"
-                  renderContent={() => (
-                    <div>{t`Consider selecting and using the "Pair" option to reduce the Price Impact.`}</div>
-                  )}
+        <ExchangeInfo className="GmSwapBox-info-section" dividerClassName="App-card-divider">
+          <ExchangeInfo.Group>
+            <ExchangeInfoRow
+              className="SwapBox-info-row"
+              label={t`Pool`}
+              value={
+                <PoolSelector
+                  label={t`Pool`}
+                  className="SwapBox-info-dropdown"
+                  selectedIndexName={indexName}
+                  selectedMarketAddress={marketAddress}
+                  markets={markets}
+                  marketTokensData={marketTokensData}
+                  isSideMenu
+                  showBalances
+                  onSelectMarket={(marketInfo) => {
+                    onMarketChange(marketInfo.marketTokenAddress);
+                    showMarketToast(marketInfo);
+                  }}
                 />
-              ) : (
-                <span className="muted font-sm text-warning">
-                  <Trans>Acknowledge high Price Impact</Trans>
-                </span>
-              )}
-            </Checkbox>
-          </>
-        )}
+              }
+            />
+          </ExchangeInfo.Group>
+
+          <ExchangeInfo.Group>
+            <div className="GmSwapBox-info-section">
+              <GmFees
+                isDeposit={isDeposit}
+                totalFees={fees?.totalFees}
+                swapFee={fees?.swapFee}
+                swapPriceImpact={fees?.swapPriceImpact}
+                uiFee={fees?.uiFee}
+              />
+              <NetworkFeeRow executionFee={executionFee} />
+            </div>
+          </ExchangeInfo.Group>
+
+          {isHighPriceImpact && (
+            <ExchangeInfo.Group>
+              <Checkbox
+                className="GmSwapBox-warning"
+                asRow
+                isChecked={isHighPriceImpactAccepted}
+                setIsChecked={setIsHighPriceImpactAccepted}
+              >
+                {isSingle ? (
+                  <Tooltip
+                    className="warning-tooltip"
+                    handle={<Trans>Acknowledge high Price Impact</Trans>}
+                    position="top-start"
+                    renderContent={() => (
+                      <div>{t`Consider selecting and using the "Pair" option to reduce the Price Impact.`}</div>
+                    )}
+                  />
+                ) : (
+                  <span className="muted font-sm text-warning">
+                    <Trans>Acknowledge high Price Impact</Trans>
+                  </span>
+                )}
+              </Checkbox>
+            </ExchangeInfo.Group>
+          )}
+        </ExchangeInfo>
 
         <div className="Exchange-swap-button-container">
           <Button

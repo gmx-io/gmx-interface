@@ -18,7 +18,7 @@ function ReferralInfoCard({
   labelTooltipText,
   children,
   tooltipContent,
-  tooltipPosition = "center-bottom",
+  tooltipPosition = "bottom",
   className,
 }: Props) {
   return (
@@ -33,7 +33,7 @@ function ReferralInfoCard({
         </h3>
         <div className="card-data">
           {tooltipContent && (
-            <Tooltip position="center-bottom" className="nowrap" handle={value} renderContent={() => tooltipContent} />
+            <Tooltip position="bottom" className="nowrap" handle={value} renderContent={() => tooltipContent} />
           )}
           {children}
         </div>

@@ -96,7 +96,7 @@ export function GmList({
                   <Tooltip
                     handle={<Trans>BUYABLE</Trans>}
                     className="text-none"
-                    position="right-bottom"
+                    position="bottom-end"
                     renderContent={() => (
                       <p className="text-white">
                         <Trans>Available amount to deposit into the specific GM pool.</Trans>
@@ -114,9 +114,9 @@ export function GmList({
                 </th>
                 <th>
                   <Tooltip
-                    handle={<Trans>APR</Trans>}
+                    handle={t`APR`}
                     className="text-none"
-                    position="right-bottom"
+                    position="bottom-end"
                     renderContent={() => (
                       <p className="text-white">
                         <Trans>
@@ -331,7 +331,7 @@ export function GmList({
                         <Tooltip
                           handle={<Trans>Buyable</Trans>}
                           className="text-none"
-                          position="left-bottom"
+                          position="bottom-start"
                           renderContent={() => (
                             <p className="text-white">
                               <Trans>Available amount to deposit into the specific GM pool.</Trans>
@@ -355,7 +355,7 @@ export function GmList({
                           balance={userTotalGmInfo?.balance}
                           balanceUsd={userTotalGmInfo?.balanceUsd}
                           userEarnings={userEarnings}
-                          tooltipPosition="left-bottom"
+                          tooltipPosition="bottom-start"
                           label={t`Wallet`}
                         />
                       </div>
@@ -431,6 +431,7 @@ function MintableAmount({ mintableInfo, market, token, longToken, shortToken }) 
   );
   return (
     <Tooltip
+      maxAllowedWidth={350}
       handle={
         <>
           {formatTokenAmount(mintableInfo?.mintableAmount, token.decimals, "GM", {
@@ -445,7 +446,7 @@ function MintableAmount({ mintableInfo, market, token, longToken, shortToken }) 
         </>
       }
       className="text-none"
-      position="right-bottom"
+      position="bottom-end"
       renderContent={() => (
         <>
           <p className="text-white">

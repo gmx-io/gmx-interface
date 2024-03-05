@@ -332,7 +332,7 @@ export default function SwapBox(props) {
         <div className="align-right">
           <Tooltip
             handle={`$${formatAmount(toTokenInfo?.maxAvailableLong, USD_DECIMALS, 2, true)}`}
-            position="right-bottom"
+            position="bottom-end"
             renderContent={() => {
               return (
                 <>
@@ -1932,7 +1932,7 @@ export default function SwapBox(props) {
               {primaryTextMessage}
             </Button>
           }
-          position="center-bottom"
+          position="bottom"
           className="Tooltip-flex"
           renderContent={() => ERROR_TOOLTIP_MSG[errorCode]}
         />
@@ -2112,7 +2112,7 @@ export default function SwapBox(props) {
                   {isExistingAndCollateralTokenDifferent ? (
                     <Tooltip
                       className="Collateral-warning"
-                      position="left-bottom"
+                      position="bottom-start"
                       handle={<Trans>Collateral In</Trans>}
                       renderContent={() => (
                         <span>
@@ -2158,7 +2158,7 @@ export default function SwapBox(props) {
                   </div>
                   <div className="align-right">
                     <Tooltip
-                      position="right-bottom"
+                      position="bottom-end"
                       handle="USD"
                       renderContent={() => (
                         <span className="SwapBox-collateral-tooltip-text">
@@ -2294,7 +2294,7 @@ export default function SwapBox(props) {
               <div className="align-right al-swap">
                 <Tooltip
                   handle={`$${formatAmount(maxSwapAmountUsd, USD_DECIMALS, 2, true)}`}
-                  position="right-bottom"
+                  position="bottom-end"
                   renderContent={() => {
                     return (
                       <div>
@@ -2326,7 +2326,7 @@ export default function SwapBox(props) {
               <div className="align-right">
                 <Tooltip
                   handle={`$${formatAmount(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
-                  position="right-bottom"
+                  position="bottom-end"
                   renderContent={() => {
                     return (
                       <div>
@@ -2357,7 +2357,7 @@ export default function SwapBox(props) {
               <div className="align-right">
                 <Tooltip
                   handle={`$${formatAmount(exitMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
-                  position="right-bottom"
+                  position="bottom-end"
                   renderContent={() => {
                     return (
                       <div>
@@ -2386,7 +2386,7 @@ export default function SwapBox(props) {
               <div className="align-right">
                 <Tooltip
                   handle={borrowFeeText}
-                  position="right-bottom"
+                  position="bottom-end"
                   renderContent={() => {
                     return (
                       <div>
@@ -2428,7 +2428,7 @@ export default function SwapBox(props) {
                 <div className="align-right">
                   <Tooltip
                     handle={`$${formatAmount(toTokenInfo.maxAvailableShort, USD_DECIMALS, 2, true)}`}
-                    position="right-bottom"
+                    position="bottom-end"
                     renderContent={() => {
                       return (
                         <>

@@ -1,0 +1,13 @@
+.NetworkFeeRow-tooltip {
+  .Tooltip-popup {
+    min-width: 32rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .NetworkFeeRow-tooltip {
+    .Tooltip-popup {
+      min-width: 31rem;
+    }
+  }
+}

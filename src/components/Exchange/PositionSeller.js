@@ -1034,7 +1034,7 @@ export default function PositionSeller(props) {
               {primaryTextMessage}
             </Button>
           }
-          position="center-top"
+          position="top"
           className="Tooltip-flex"
           renderContent={() => ERROR_TOOLTIP_MSG[errorCode]}
         />
@@ -1123,7 +1123,7 @@ export default function PositionSeller(props) {
                   label={
                     <TooltipWithPortal
                       handle={t`Allowed Slippage`}
-                      position="left-top"
+                      position="top-start"
                       renderContent={() => {
                         return (
                           <div className="text-white">
@@ -1230,7 +1230,7 @@ export default function PositionSeller(props) {
                       <Trans>Collateral ({collateralToken.symbol})</Trans>
                     </span>
                   }
-                  position="left-top"
+                  position="top-start"
                   renderContent={() => {
                     return <Trans>Initial Collateral (Collateral excluding Borrow Fee).</Trans>;
                   }}

@@ -316,7 +316,7 @@ export default function PositionsList(props) {
                         <div className="position-list-collateral">
                           <Tooltip
                             handle={`$${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}`}
-                            position="right-bottom"
+                            position="bottom-end"
                             handleClassName={cx("plain", { negative: position.hasLowCollateral })}
                             renderContent={() => {
                               return (
@@ -405,7 +405,7 @@ export default function PositionsList(props) {
                                 <Tooltip
                                   className="order-error"
                                   handle={orderText()}
-                                  position="right-bottom"
+                                  position="bottom-end"
                                   handleClassName="plain"
                                   renderContent={() => <span className="negative">{order.error}</span>}
                                 />
@@ -545,7 +545,7 @@ export default function PositionsList(props) {
                             {position.indexToken.symbol}
                           </>
                         }
-                        position="left-bottom"
+                        position="bottom-start"
                         handleClassName="plain clickable"
                         renderContent={() => {
                           return (
@@ -609,7 +609,7 @@ export default function PositionsList(props) {
                     >
                       <Tooltip
                         handle={t`Orders (${positionOrders.length})`}
-                        position="left-bottom"
+                        position="bottom-start"
                         handleClassName={cx(
                           ["Exchange-list-info-label", "Exchange-position-list-orders", "plain", "clickable"],
                           { muted: !hasOrderError, negative: hasOrderError }
@@ -653,7 +653,7 @@ export default function PositionsList(props) {
                   <div className="position-list-collateral">
                     <Tooltip
                       handle={`$${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}`}
-                      position="left-bottom"
+                      position="bottom-start"
                       handleClassName={cx("plain", { negative: position.hasLowCollateral })}
                       renderContent={() => {
                         return (
