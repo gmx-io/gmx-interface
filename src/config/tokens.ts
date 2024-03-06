@@ -61,6 +61,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoUrl: "https://www.coingecko.com/en/coins/solana",
       coingeckoSymbol: "SOL",
       explorerUrl: "https://arbiscan.io/token/0x2bCc6D6CdBbDC0a4071e48bb3B969b06B3330c07",
+      explorerSymbol: "SOL",
     },
     {
       name: "Chainlink",
