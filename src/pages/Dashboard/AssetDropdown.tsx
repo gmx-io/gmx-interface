@@ -80,12 +80,12 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
               <div
                 onClick={() => {
                   if (connector?.watchAsset && token) {
-                    const { address, decimals, imageUrl, metamaskSymbol, symbol } = token;
+                    const { address, decimals, imageUrl, metamaskSymbol, assetSymbol, symbol } = token;
                     connector.watchAsset?.({
                       address: address,
                       decimals: decimals,
                       image: imageUrl,
-                      symbol: metamaskSymbol ?? symbol,
+                      symbol: assetSymbol ?? metamaskSymbol ?? symbol,
                     });
                   }
                 }}

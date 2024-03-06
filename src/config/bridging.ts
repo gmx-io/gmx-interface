@@ -24,7 +24,7 @@ const BRIDGING_OPTIONS: { [symbol: string]: BridgingOption[] } = {
   AVAX: [
     {
       name: "Portalbridge",
-      generateLink: () => "https://portalbridge.com/?sourceChain=ethereum&targetChain=arbitrum",
+      generateLink: () => "https://portalbridge.com/?sourceChain=avalanche&targetChain=arbitrum",
     },
   ],
 };
