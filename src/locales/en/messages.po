@@ -1836,8 +1836,8 @@ msgid "Epoch ending is not acknowledged"
 msgstr "Epoch ending is not acknowledged"
 
 #: src/components/Table/Table.tsx
-msgid "Error"
-msgstr "Error"
+#~ msgid "Error"
+#~ msgstr "Error"
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -2827,7 +2827,6 @@ msgstr "Liquidity data not loaded"
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
-#: src/components/Table/Table.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Loading..."
@@ -3055,6 +3054,7 @@ msgstr "Max Capacity"
 msgid "Max Capacity for {0} Reached"
 msgstr "Max Capacity for {0} Reached"
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Max Collateral"
 msgstr "Max Collateral"
@@ -3411,8 +3411,8 @@ msgid "No claims yet"
 msgstr "No claims yet"
 
 #: src/components/Table/Table.tsx
-msgid "No data yet"
-msgstr "No data yet"
+#~ msgid "No data yet"
+#~ msgstr "No data yet"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "No esGMX to claim"
@@ -3708,9 +3708,11 @@ msgid "Page outdated, please refresh"
 msgstr "Page outdated, please refresh"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Paid Fees"
 msgstr "Paid Fees"
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Paid Price Impact"
 msgstr "Paid Price Impact"
@@ -3755,6 +3757,7 @@ msgstr "Pay"
 msgid "Pay Amount"
 msgstr "Pay Amount"
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Pending Fees"
 msgstr "Pending Fees"
@@ -4096,6 +4099,7 @@ msgstr "Read more"
 msgid "Read the rules"
 msgstr "Read the rules"
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Realized PnL"
 msgstr "Realized PnL"
@@ -4764,9 +4768,11 @@ msgid "Staking..."
 msgstr "Staking..."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start Pending Fees"
 msgstr "Start Pending Fees"
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start Pending PnL"
 msgstr "Start Pending PnL"
@@ -5372,6 +5378,7 @@ msgid "Total Fees"
 msgstr "Total Fees"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Total Realized and Unrealized Profit and Loss."
 msgstr "Total Realized and Unrealized Profit and Loss."
 
@@ -5652,6 +5659,7 @@ msgstr "Unknown order"
 msgid "Unknown sell GM order"
 msgstr "Unknown sell GM order"
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Unrealized PnL"
 msgstr "Unrealized PnL"

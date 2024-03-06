@@ -1836,8 +1836,8 @@ msgid "Epoch ending is not acknowledged"
 msgstr ""
 
 #: src/components/Table/Table.tsx
-msgid "Error"
-msgstr ""
+#~ msgid "Error"
+#~ msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -2824,7 +2824,6 @@ msgstr "유동성 데이터를 불러오지 못하였습니다."
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
-#: src/components/Table/Table.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Loading..."
@@ -3052,6 +3051,7 @@ msgstr "최대 수용량"
 msgid "Max Capacity for {0} Reached"
 msgstr "{0}의 최대치에 도달했습니다."
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Max Collateral"
 msgstr ""
@@ -3408,8 +3408,8 @@ msgid "No claims yet"
 msgstr ""
 
 #: src/components/Table/Table.tsx
-msgid "No data yet"
-msgstr ""
+#~ msgid "No data yet"
+#~ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "No esGMX to claim"
@@ -3705,9 +3705,11 @@ msgid "Page outdated, please refresh"
 msgstr "페이지가 오래되었습니다. 새로고침해주세요."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Paid Fees"
 msgstr ""
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Paid Price Impact"
 msgstr ""
@@ -3752,6 +3754,7 @@ msgstr "지불"
 msgid "Pay Amount"
 msgstr "지불액"
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Pending Fees"
 msgstr ""
@@ -4093,6 +4096,7 @@ msgstr "더 알아보기"
 msgid "Read the rules"
 msgstr ""
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Realized PnL"
 msgstr ""
@@ -4761,9 +4765,11 @@ msgid "Staking..."
 msgstr "스테이킹중..."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start Pending Fees"
 msgstr ""
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start Pending PnL"
 msgstr ""
@@ -5369,6 +5375,7 @@ msgid "Total Fees"
 msgstr "총 수수료"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Total Realized and Unrealized Profit and Loss."
 msgstr ""
 
@@ -5649,6 +5656,7 @@ msgstr ""
 msgid "Unknown sell GM order"
 msgstr ""
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Unrealized PnL"
 msgstr ""

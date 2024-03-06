@@ -1,4 +1,3 @@
-import { TableCell } from "components/Table/types";
 import { LEADERBOARD_PAGES } from "./constants";
 
 export enum PerfPeriod {
@@ -7,18 +6,6 @@ export enum PerfPeriod {
   MONTH = "1 month",
   TOTAL = "All time",
 }
-
-export type TopAccountsRow = {
-  key: string;
-  className: string | undefined;
-  rank: TableCell;
-  account: TableCell;
-  absPnl: TableCell;
-  relPnl: TableCell;
-  averageSize: TableCell;
-  averageLeverage: TableCell;
-  winsLosses: TableCell;
-};
 
 export type RemoteData<T> = {
   isLoading: boolean;
