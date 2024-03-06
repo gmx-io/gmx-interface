@@ -237,6 +237,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoSymbol: "BNB",
       metamaskSymbol: "WBNB",
       explorerUrl: "https://arbiscan.io/token/0xa9004A5421372E1D83fB1f85b0fc986c912f91f3",
+      explorerSymbol: "WBNB",
     },
     {
       name: "Cosmos",
