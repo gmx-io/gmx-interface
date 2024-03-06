@@ -274,12 +274,13 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "Wrapped AVAX (Wormhole)",
       symbol: "AVAX",
-      assetSymbol: "WAVAX",
+      assetSymbol: "WAVAX (Wormhole)",
       address: "0x565609fAF65B92F7be02468acF86f8979423e514",
       decimals: 18,
       imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
       coingeckoUrl: "https://www.coingecko.com/en/coins/avalanche",
       coingeckoSymbol: "AVAX",
+      explorerSymbol: "WAVAX",
     },
   ],
   [AVALANCHE]: [
