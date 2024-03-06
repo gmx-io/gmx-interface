@@ -327,7 +327,7 @@ function UnstakeModal(props) {
           <div className="Stake-modal-icons">
             <img
               className="mr-xs icon"
-              width="25"
+              height="22"
               src={icons[unstakingTokenSymbol.toLowerCase()]}
               alt={unstakingTokenSymbol}
             />
