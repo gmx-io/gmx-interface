@@ -3052,7 +3052,6 @@ msgid "Max Capacity for {0} Reached"
 msgstr "{0}の最大キャパシティに到達しています"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Max Collateral"
 msgstr ""
 
@@ -3705,11 +3704,9 @@ msgid "Page outdated, please refresh"
 msgstr "ページの内容が期限切れです。更新してください。"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Paid Fees"
 msgstr ""
 
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Paid Price Impact"
 msgstr ""
@@ -3755,13 +3752,12 @@ msgid "Pay Amount"
 msgstr "支払い額"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Pending Fees"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "Pending PnL"
-msgstr ""
+#~ msgid "Pending PnL"
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Pending Wallet message sign"
@@ -4100,7 +4096,6 @@ msgstr "詳細について読む"
 msgid "Read the rules"
 msgstr ""
 
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Realized PnL"
 msgstr ""
@@ -4769,11 +4764,9 @@ msgid "Staking..."
 msgstr "ステーク中..."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start Pending Fees"
 msgstr ""
 
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start Pending PnL"
 msgstr ""
@@ -5441,6 +5434,10 @@ msgstr ""
 msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 msgstr "合計 アクティブ: {openTotal} 執行済: {executedTotal} キャンセル済: {cancelledTotal}"
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Total trades"
+msgstr ""
+
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
 msgstr "合計:"
@@ -6037,6 +6034,10 @@ msgstr "ウェイト"
 #: src/components/Exchange/SwapBox.js
 msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr "ポジションをクローズする際、利益をどのトークンで受け取るかを選択できます。"
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Win Rate"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Win/Loss"

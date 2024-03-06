@@ -3052,7 +3052,6 @@ msgid "Max Capacity for {0} Reached"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Max Collateral"
 msgstr ""
 
@@ -3705,11 +3704,9 @@ msgid "Page outdated, please refresh"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Paid Fees"
 msgstr ""
 
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Paid Price Impact"
 msgstr ""
@@ -3755,13 +3752,12 @@ msgid "Pay Amount"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Pending Fees"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "Pending PnL"
-msgstr ""
+#~ msgid "Pending PnL"
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Pending Wallet message sign"
@@ -4100,7 +4096,6 @@ msgstr ""
 msgid "Read the rules"
 msgstr ""
 
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Realized PnL"
 msgstr ""
@@ -4769,11 +4764,9 @@ msgid "Staking..."
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start Pending Fees"
 msgstr ""
 
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start Pending PnL"
 msgstr ""
@@ -5441,6 +5434,10 @@ msgstr ""
 msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 msgstr ""
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Total trades"
+msgstr ""
+
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
 msgstr ""
@@ -6036,6 +6033,10 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "When closing the position, you can select which token you would like to receive the profits in."
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Win Rate"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx

@@ -3052,7 +3052,6 @@ msgid "Max Capacity for {0} Reached"
 msgstr "{0}의 최대치에 도달했습니다."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Max Collateral"
 msgstr ""
 
@@ -3705,11 +3704,9 @@ msgid "Page outdated, please refresh"
 msgstr "페이지가 오래되었습니다. 새로고침해주세요."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Paid Fees"
 msgstr ""
 
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Paid Price Impact"
 msgstr ""
@@ -3755,13 +3752,12 @@ msgid "Pay Amount"
 msgstr "지불액"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Pending Fees"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "Pending PnL"
-msgstr ""
+#~ msgid "Pending PnL"
+#~ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Pending Wallet message sign"
@@ -4100,7 +4096,6 @@ msgstr "더 알아보기"
 msgid "Read the rules"
 msgstr ""
 
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Realized PnL"
 msgstr ""
@@ -4769,11 +4764,9 @@ msgid "Staking..."
 msgstr "스테이킹중..."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start Pending Fees"
 msgstr ""
 
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start Pending PnL"
 msgstr ""
@@ -5441,6 +5434,10 @@ msgstr ""
 msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 msgstr "전체 액티브: {openTotal}, 실행 완료: {executedTotal}, 취소 완료: {cancelledTotal}"
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Total trades"
+msgstr ""
+
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
 msgstr "총계:"
@@ -6037,6 +6034,10 @@ msgstr "가중치"
 #: src/components/Exchange/SwapBox.js
 msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr "포지션을 닫을 때, 어떤 토큰으로 이익을 수취할 지 선택할 수 있습니다."
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Win Rate"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Win/Loss"
