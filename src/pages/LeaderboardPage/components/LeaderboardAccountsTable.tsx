@@ -5,7 +5,7 @@ import Pagination from "components/Pagination/Pagination";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { formatAmount, formatUsd } from "lib/numbers";
 import { useDebounce } from "lib/useDebounce";
-import { ReactNode, useCallback, useLayoutEffect, useMemo, useState } from "react";
+import { ReactNode, memo, useCallback, useLayoutEffect, useMemo, useState } from "react";
 
 import { TopAccountsSkeleton } from "components/Skeleton/Skeleton";
 import { TooltipPosition } from "components/Tooltip/Tooltip";
@@ -117,7 +117,6 @@ export function LeaderboardAccountsTable({
         account: leaderboardAccount,
         index: i,
         rank: activeRank.get(leaderboardAccount.account) ?? null,
-        pinned: false,
       })),
     [activeRank, filteredStats, indexFrom]
   );
@@ -128,7 +127,6 @@ export function LeaderboardAccountsTable({
       account: currentAccount,
       index: 0,
       rank,
-      pinned: true,
     };
   }, [activeRank, currentAccount]);
   const pageCount = Math.ceil(filteredStats.length / perPage);
@@ -148,304 +146,32 @@ export function LeaderboardAccountsTable({
   );
 
   const breakpoint = useBreakpoint();
-  const shouldRenderValueForPinnedRow = pinnedRowData?.rank !== null;
 
   const content = isLoading ? (
     <TopAccountsSkeleton count={skeletonCount} />
   ) : (
     <>
       {pinnedRowData && (
-        <tr
-          className={getRowClassname(pinnedRowData.rank, activeCompetition, true)}
-          key={pinnedRowData.account.account}
-        >
-          <TableCell>
-            <span className={getWinnerRankClassname(pinnedRowData.rank, activeCompetition)}>
-              {pinnedRowData.rank === null ? "-" : pinnedRowData.rank}
-            </span>
-          </TableCell>
-          <TableCell>
-            <AddressView size={20} address={pinnedRowData.account.account} breakpoint={breakpoint} />
-          </TableCell>
-          <TableCell>
-            {shouldRenderValueForPinnedRow ? (
-              <TooltipWithPortal
-                handle={
-                  <span className={signedValueClassName(pinnedRowData.account.totalQualifyingPnl)}>
-                    {formatDelta(pinnedRowData.account.totalQualifyingPnl, { signed: true, prefix: "$" })}
-                  </span>
-                }
-                position="right-bottom"
-                className="nowrap"
-                renderContent={() => (
-                  <div>
-                    <StatsTooltipRow
-                      label={t`Realized PnL`}
-                      showDollar={false}
-                      value={
-                        <span className={signedValueClassName(pinnedRowData.account.realizedPnl)}>
-                          {formatDelta(pinnedRowData.account.realizedPnl, { signed: true, prefix: "$" })}
-                        </span>
-                      }
-                    />
-                    <StatsTooltipRow
-                      label={t`Pending PnL`}
-                      showDollar={false}
-                      value={
-                        <span className={signedValueClassName(pinnedRowData.account.pendingPnl)}>
-                          {formatDelta(pinnedRowData.account.pendingPnl, { signed: true, prefix: "$" })}
-                        </span>
-                      }
-                    />
-                    <StatsTooltipRow
-                      label={t`Start Pending PnL`}
-                      showDollar={false}
-                      value={
-                        <span className={signedValueClassName(pinnedRowData.account.startPendingPnl)}>
-                          {formatDelta(pinnedRowData.account.startPendingPnl, { signed: true, prefix: "$" })}
-                        </span>
-                      }
-                    />
-                    <StatsTooltipRow
-                      label={t`Paid Fees`}
-                      showDollar={false}
-                      value={
-                        <span className={signedValueClassName(pinnedRowData.account.paidFees.mul(-1))}>
-                          {formatDelta(pinnedRowData.account.paidFees.mul(-1), { signed: true, prefix: "$" })}
-                        </span>
-                      }
-                    />
-                    <StatsTooltipRow
-                      label={t`Pending Fees`}
-                      showDollar={false}
-                      value={
-                        <span className={signedValueClassName(pinnedRowData.account.pendingFees.mul(-1))}>
-                          {formatDelta(pinnedRowData.account.pendingFees.mul(-1), { signed: true, prefix: "$" })}
-                        </span>
-                      }
-                    />
-                    <StatsTooltipRow
-                      label={t`Start Pending Fees`}
-                      showDollar={false}
-                      value={
-                        <span className={signedValueClassName(pinnedRowData.account.startPendingFees.mul(-1))}>
-                          {formatDelta(pinnedRowData.account.startPendingFees.mul(-1), {
-                            signed: true,
-                            prefix: "$",
-                          })}
-                        </span>
-                      }
-                    />
-                    <StatsTooltipRow
-                      label={t`Paid Price Impact`}
-                      showDollar={false}
-                      value={
-                        <span className={signedValueClassName(pinnedRowData.account.paidPriceImpact.mul(-1))}>
-                          {formatDelta(pinnedRowData.account.paidPriceImpact.mul(-1), { signed: true, prefix: "$" })}
-                        </span>
-                      }
-                    />
-                    {/* <StatsTooltipRow
-                      label={t`Formula PnL`}
-                      showDollar={false}
-                      value={[
-                        `( ${pinnedRowData.account.realizedPnl.toString()}n / 10n**30n`,
-                        `+ ${pinnedRowData.account.pendingPnl.toString()}n / 10n**30n`,
-                        `- ${pinnedRowData.account.startPendingPnl.toString()}n / 10n**30n )`,
-                        ``,
-                        `== ${pinnedRowData.account.totalPnl.toString()}n / 10n**30n `,
-                      ].join(" ")}
-                    />
-                    <StatsTooltipRow
-                      label={t`Formula Fees`}
-                      showDollar={false}
-                      value={[
-                        `( ${pinnedRowData.account.paidFees.toString()}n / 10n**30n`,
-                        `+ ${pinnedRowData.account.pendingFees.toString()}n / 10n**30n`,
-                        `- ${pinnedRowData.account.startPendingFees.toString()}n / 10n**30n )`,
-                        ``,
-                        `== ${pinnedRowData.account.totalFees.toString()}n / 10n**30n `,
-                      ].join(" ")}
-                    />
-                    <StatsTooltipRow
-                      label={t`Formula Total`}
-                      showDollar={false}
-                      value={[
-                        `( ${pinnedRowData.account.realizedPnl.toString()}n`,
-                        `+ ${pinnedRowData.account.pendingPnl.toString()}n`,
-                        `- ${pinnedRowData.account.startPendingPnl.toString()}n`,
-                        `- ${pinnedRowData.account.paidFees.toString()}n`,
-                        `- ${pinnedRowData.account.pendingFees.toString()}n`,
-                        `+ ${pinnedRowData.account.startPendingFees.toString()}n`,
-                        `- ${pinnedRowData.account.paidPriceImpact.toString()}n ) / 10n**30n`,
-                        ``,
-                        `== ${pinnedRowData.account.totalQualifyingPnl.toString()}n / 10n**30n `,
-                      ].join(" ")}
-                    /> */}
-                  </div>
-                )}
-              />
-            ) : (
-              "-"
-            )}
-          </TableCell>
-          <TableCell>
-            {shouldRenderValueForPinnedRow ? (
-              <TooltipWithPortal
-                handle={
-                  <span className={signedValueClassName(pinnedRowData.account.pnlPercentage)}>
-                    {formatDelta(pinnedRowData.account.pnlPercentage, {
-                      signed: true,
-                      postfix: "%",
-                      decimals: 2,
-                    })}
-                  </span>
-                }
-                position="right-bottom"
-                className="nowrap"
-                renderContent={() => (
-                  <StatsTooltipRow
-                    label={t`Max Collateral`}
-                    showDollar={false}
-                    value={<span>{formatUsd(pinnedRowData.account.maxCollateral)}</span>}
-                  />
-                )}
-              />
-            ) : (
-              "-"
-            )}
-          </TableCell>
-          <TableCell>
-            {shouldRenderValueForPinnedRow ? formatUsd(pinnedRowData.account.averageSize) || "" : "-"}
-          </TableCell>
-          <TableCell>
-            {shouldRenderValueForPinnedRow ? `${formatAmount(pinnedRowData.account.averageLeverage, 4, 2)}x` : "-"}
-          </TableCell>
-          <TableCell className="text-right">
-            {shouldRenderValueForPinnedRow ? `${pinnedRowData.account.wins}/${pinnedRowData.account.losses}` : "-"}
-          </TableCell>
-        </tr>
+        <TableRow
+          account={pinnedRowData.account}
+          index={-1}
+          pinned
+          rank={pinnedRowData.rank}
+          activeCompetition={activeCompetition}
+          breakpoint={breakpoint}
+        />
       )}
-      {rowsData.map(({ account, index, pinned, rank }) => {
-        const shouldRenderValue = rank !== null;
+      {rowsData.map(({ account, index, rank }) => {
         return (
-          <tr className={getRowClassname(rank, activeCompetition, pinned)} key={account.account}>
-            <TableCell>
-              <span className={getWinnerRankClassname(rank, activeCompetition)}>{rank === null ? "-" : rank}</span>
-            </TableCell>
-            <TableCell>
-              <AddressView size={20} address={account.account} breakpoint={breakpoint} />
-            </TableCell>
-            <TableCell>
-              {shouldRenderValue ? (
-                <TooltipWithPortal
-                  handle={
-                    <span className={signedValueClassName(account.totalQualifyingPnl)}>
-                      {formatDelta(account.totalQualifyingPnl, { signed: true, prefix: "$" })}
-                    </span>
-                  }
-                  position={index > 7 ? "right-top" : "right-bottom"}
-                  className="nowrap"
-                  renderContent={() => (
-                    <div>
-                      <StatsTooltipRow
-                        label={t`Realized PnL`}
-                        showDollar={false}
-                        value={
-                          <span className={signedValueClassName(account.realizedPnl)}>
-                            {formatDelta(account.realizedPnl, { signed: true, prefix: "$" })}
-                          </span>
-                        }
-                      />
-                      <StatsTooltipRow
-                        label={t`Unrealized PnL`}
-                        showDollar={false}
-                        value={
-                          <span className={signedValueClassName(account.pendingPnl)}>
-                            {formatDelta(account.pendingPnl, { signed: true, prefix: "$" })}
-                          </span>
-                        }
-                      />
-                      <StatsTooltipRow
-                        label={t`Start Pending PnL`}
-                        showDollar={false}
-                        value={
-                          <span className={signedValueClassName(account.startPendingPnl)}>
-                            {formatDelta(account.startPendingPnl, { signed: true, prefix: "$" })}
-                          </span>
-                        }
-                      />
-                      <StatsTooltipRow
-                        label={t`Paid Fees`}
-                        showDollar={false}
-                        value={
-                          <span className={signedValueClassName(account.paidFees.mul(-1))}>
-                            {formatDelta(account.paidFees.mul(-1), { signed: true, prefix: "$" })}
-                          </span>
-                        }
-                      />
-                      <StatsTooltipRow
-                        label={t`Pending Fees`}
-                        showDollar={false}
-                        value={
-                          <span className={signedValueClassName(account.pendingFees.mul(-1))}>
-                            {formatDelta(account.pendingFees.mul(-1), { signed: true, prefix: "$" })}
-                          </span>
-                        }
-                      />
-                      <StatsTooltipRow
-                        label={t`Start Pending Fees`}
-                        showDollar={false}
-                        value={
-                          <span className={signedValueClassName(account.startPendingFees.mul(-1))}>
-                            {formatDelta(account.startPendingFees.mul(-1), { signed: true, prefix: "$" })}
-                          </span>
-                        }
-                      />
-                      <StatsTooltipRow
-                        label={t`Paid Price Impact`}
-                        showDollar={false}
-                        value={
-                          <span className={signedValueClassName(account.paidPriceImpact)}>
-                            {formatDelta(account.paidPriceImpact, { signed: true, prefix: "$" })}
-                          </span>
-                        }
-                      />
-                    </div>
-                  )}
-                />
-              ) : (
-                "-"
-              )}
-            </TableCell>
-            <TableCell>
-              {shouldRenderValue ? (
-                <TooltipWithPortal
-                  handle={
-                    <span className={signedValueClassName(account.pnlPercentage)}>
-                      {formatDelta(account.pnlPercentage, { signed: true, postfix: "%", decimals: 2 })}
-                    </span>
-                  }
-                  position={index > 7 ? "right-top" : "right-bottom"}
-                  className="nowrap"
-                  renderContent={() => (
-                    <StatsTooltipRow
-                      label={t`Max Collateral`}
-                      showDollar={false}
-                      value={<span>{formatUsd(account.maxCollateral)}</span>}
-                    />
-                  )}
-                />
-              ) : (
-                "-"
-              )}
-            </TableCell>
-            <TableCell>{shouldRenderValue ? formatUsd(account.averageSize) || "" : "-"}</TableCell>
-            <TableCell>{shouldRenderValue ? `${formatAmount(account.averageLeverage, 4, 2)}x` : "-"}</TableCell>
-            <TableCell className="text-right">
-              {shouldRenderValue ? `${account.wins}/${account.losses}` : "-"}
-            </TableCell>
-          </tr>
+          <TableRow
+            key={account.account}
+            account={account}
+            index={index}
+            pinned={false}
+            rank={rank}
+            activeCompetition={activeCompetition}
+            breakpoint={breakpoint}
+          />
         );
       })}
     </>
@@ -529,49 +255,247 @@ export function LeaderboardAccountsTable({
   );
 }
 
-const TableHeaderCell = ({
-  breakpoint,
-  columnName,
-  title,
-  className,
-  onClick,
-  tooltip,
-  tooltipPosition,
-  width,
-}: {
-  title: string;
-  className?: string;
-  tooltip?: string | (() => ReactNode);
-  tooltipPosition?: TooltipPosition;
-  onClick?: (columnName: string) => void;
-  columnName: string;
-  width?: number | ((breakpoint?: string) => number);
-  breakpoint?: string;
-}) => {
-  const style = width
-    ? {
-        width: `${typeof width === "function" ? width(breakpoint) : width}%`,
-      }
-    : undefined;
+const TableHeaderCell = memo(
+  ({
+    breakpoint,
+    columnName,
+    title,
+    className,
+    onClick,
+    tooltip,
+    tooltipPosition,
+    width,
+  }: {
+    title: string;
+    className?: string;
+    tooltip?: string | (() => ReactNode);
+    tooltipPosition?: TooltipPosition;
+    onClick?: (columnName: string) => void;
+    columnName: string;
+    width?: number | ((breakpoint?: string) => number);
+    breakpoint?: string;
+  }) => {
+    const style = width
+      ? {
+          width: `${typeof width === "function" ? width(breakpoint) : width}%`,
+        }
+      : undefined;
 
-  const handleClick = useCallback(() => onClick?.(columnName), [columnName, onClick]);
+    const handleClick = useCallback(() => onClick?.(columnName), [columnName, onClick]);
 
-  return (
-    <th onClick={handleClick} className={cx("TableHeader", className)} style={style}>
-      {tooltip ? (
-        <TooltipWithPortal
-          handle={<span className="TableHeaderTitle">{title}</span>}
-          position={tooltipPosition || "right-bottom"}
-          className="TableHeaderTooltip"
-          renderContent={typeof tooltip === "function" ? tooltip : () => <p>{tooltip}</p>}
-        />
-      ) : (
-        <span className="TableHeaderTitle">{title}</span>
-      )}
-    </th>
-  );
-};
+    return (
+      <th onClick={handleClick} className={cx("TableHeader", className)} style={style}>
+        {tooltip ? (
+          <TooltipWithPortal
+            handle={<span className="TableHeaderTitle">{title}</span>}
+            position={tooltipPosition || "right-bottom"}
+            className="TableHeaderTooltip"
+            renderContent={typeof tooltip === "function" ? tooltip : () => <p>{tooltip}</p>}
+          />
+        ) : (
+          <span className="TableHeaderTitle">{title}</span>
+        )}
+      </th>
+    );
+  }
+);
 
-const TableCell = ({ children, className }: { children: ReactNode; className?: string }) => {
+const TableRow = memo(
+  ({
+    account,
+    pinned,
+    rank,
+    activeCompetition,
+    breakpoint,
+    index,
+  }: {
+    account: LeaderboardAccount;
+    index: number;
+    pinned: boolean;
+    rank: number | null;
+    activeCompetition: CompetitionType | undefined;
+    breakpoint: string | undefined;
+  }) => {
+    const shouldRenderValue = rank !== null;
+    const renderWinsLossesTooltipContent = useCallback(() => {
+      if (!shouldRenderValue) return null;
+      const winRate = `${((account.wins / (account.wins + account.losses)) * 100).toFixed(2)}%`;
+      return (
+        <div>
+          <StatsTooltipRow label={t`Total trades`} showDollar={false} value={account.totalCount} />
+          {account.wins + account.losses > 0 ? (
+            <StatsTooltipRow label={t`Win Rate`} showDollar={false} value={winRate} />
+          ) : null}
+        </div>
+      );
+    }, [account.losses, account.totalCount, account.wins, shouldRenderValue]);
+
+    return (
+      <tr className={getRowClassname(rank, activeCompetition, pinned)} key={account.account}>
+        <TableCell>
+          <span className={getWinnerRankClassname(rank, activeCompetition)}>{rank === null ? "-" : rank}</span>
+        </TableCell>
+        <TableCell>
+          <AddressView size={20} address={account.account} breakpoint={breakpoint} />
+        </TableCell>
+        <TableCell>
+          {shouldRenderValue ? (
+            <TooltipWithPortal
+              handle={
+                <span className={signedValueClassName(account.totalQualifyingPnl)}>
+                  {formatDelta(account.totalQualifyingPnl, { signed: true, prefix: "$" })}
+                </span>
+              }
+              position={index > 7 ? "right-top" : "right-bottom"}
+              className="nowrap"
+              renderContent={() => (
+                <div>
+                  <StatsTooltipRow
+                    label={t`Realized PnL`}
+                    showDollar={false}
+                    value={
+                      <span className={signedValueClassName(account.realizedPnl)}>
+                        {formatDelta(account.realizedPnl, { signed: true, prefix: "$" })}
+                      </span>
+                    }
+                  />
+                  <StatsTooltipRow
+                    label={t`Unrealized PnL`}
+                    showDollar={false}
+                    value={
+                      <span className={signedValueClassName(account.pendingPnl)}>
+                        {formatDelta(account.pendingPnl, { signed: true, prefix: "$" })}
+                      </span>
+                    }
+                  />
+                  <StatsTooltipRow
+                    label={t`Start Pending PnL`}
+                    showDollar={false}
+                    value={
+                      <span className={signedValueClassName(account.startPendingPnl)}>
+                        {formatDelta(account.startPendingPnl, { signed: true, prefix: "$" })}
+                      </span>
+                    }
+                  />
+                  <StatsTooltipRow
+                    label={t`Paid Fees`}
+                    showDollar={false}
+                    value={
+                      <span className={signedValueClassName(account.paidFees.mul(-1))}>
+                        {formatDelta(account.paidFees.mul(-1), { signed: true, prefix: "$" })}
+                      </span>
+                    }
+                  />
+                  <StatsTooltipRow
+                    label={t`Pending Fees`}
+                    showDollar={false}
+                    value={
+                      <span className={signedValueClassName(account.pendingFees.mul(-1))}>
+                        {formatDelta(account.pendingFees.mul(-1), { signed: true, prefix: "$" })}
+                      </span>
+                    }
+                  />
+                  <StatsTooltipRow
+                    label={t`Start Pending Fees`}
+                    showDollar={false}
+                    value={
+                      <span className={signedValueClassName(account.startPendingFees.mul(-1))}>
+                        {formatDelta(account.startPendingFees.mul(-1), { signed: true, prefix: "$" })}
+                      </span>
+                    }
+                  />
+                  <StatsTooltipRow
+                    label={t`Paid Price Impact`}
+                    showDollar={false}
+                    value={
+                      <span className={signedValueClassName(account.paidPriceImpact)}>
+                        {formatDelta(account.paidPriceImpact, { signed: true, prefix: "$" })}
+                      </span>
+                    }
+                  />
+                  {/* <StatsTooltipRow
+                      label={t`Formula PnL`}
+                      showDollar={false}
+                      value={[
+                        `( ${pinnedRowData.account.realizedPnl.toString()}n / 10n**30n`,
+                        `+ ${pinnedRowData.account.pendingPnl.toString()}n / 10n**30n`,
+                        `- ${pinnedRowData.account.startPendingPnl.toString()}n / 10n**30n )`,
+                        ``,
+                        `== ${pinnedRowData.account.totalPnl.toString()}n / 10n**30n `,
+                      ].join(" ")}
+                    />
+                    <StatsTooltipRow
+                      label={t`Formula Fees`}
+                      showDollar={false}
+                      value={[
+                        `( ${pinnedRowData.account.paidFees.toString()}n / 10n**30n`,
+                        `+ ${pinnedRowData.account.pendingFees.toString()}n / 10n**30n`,
+                        `- ${pinnedRowData.account.startPendingFees.toString()}n / 10n**30n )`,
+                        ``,
+                        `== ${pinnedRowData.account.totalFees.toString()}n / 10n**30n `,
+                      ].join(" ")}
+                    />
+                    <StatsTooltipRow
+                      label={t`Formula Total`}
+                      showDollar={false}
+                      value={[
+                        `( ${pinnedRowData.account.realizedPnl.toString()}n`,
+                        `+ ${pinnedRowData.account.pendingPnl.toString()}n`,
+                        `- ${pinnedRowData.account.startPendingPnl.toString()}n`,
+                        `- ${pinnedRowData.account.paidFees.toString()}n`,
+                        `- ${pinnedRowData.account.pendingFees.toString()}n`,
+                        `+ ${pinnedRowData.account.startPendingFees.toString()}n`,
+                        `- ${pinnedRowData.account.paidPriceImpact.toString()}n ) / 10n**30n`,
+                        ``,
+                        `== ${pinnedRowData.account.totalQualifyingPnl.toString()}n / 10n**30n `,
+                      ].join(" ")}
+                    /> */}
+                </div>
+              )}
+            />
+          ) : (
+            "-"
+          )}
+        </TableCell>
+        <TableCell>
+          {shouldRenderValue ? (
+            <TooltipWithPortal
+              handle={
+                <span className={signedValueClassName(account.pnlPercentage)}>
+                  {formatDelta(account.pnlPercentage, { signed: true, postfix: "%", decimals: 2 })}
+                </span>
+              }
+              position={index > 7 ? "right-top" : "right-bottom"}
+              className="nowrap"
+              renderContent={() => (
+                <StatsTooltipRow
+                  label={t`Max Collateral`}
+                  showDollar={false}
+                  value={<span>{formatUsd(account.maxCollateral)}</span>}
+                />
+              )}
+            />
+          ) : (
+            "-"
+          )}
+        </TableCell>
+        <TableCell>{shouldRenderValue ? formatUsd(account.averageSize) || "" : "-"}</TableCell>
+        <TableCell>{shouldRenderValue ? `${formatAmount(account.averageLeverage, 4, 2)}x` : "-"}</TableCell>
+        <TableCell className="text-right">
+          {shouldRenderValue ? (
+            <TooltipWithPortal
+              handle={`${account.wins}/${account.losses}`}
+              renderContent={renderWinsLossesTooltipContent}
+            />
+          ) : (
+            "-"
+          )}
+        </TableCell>
+      </tr>
+    );
+  }
+);
+
+const TableCell = memo(({ children, className }: { children: ReactNode; className?: string }) => {
   return <td className={className}>{children}</td>;
-};
+});
