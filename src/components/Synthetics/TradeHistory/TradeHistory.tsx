@@ -4,6 +4,7 @@ import type { BigNumber } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { downloadAsCsv } from "components/DownloadAsCsv/DownloadAsCsv";
+import { getExplorerUrl } from "config/chains";
 import { TRADE_HISTORY_PER_PAGE } from "config/ui";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
@@ -30,9 +31,9 @@ import usePagination from "components/Referrals/usePagination";
 import { TradesHistorySkeleton } from "components/Skeleton/Skeleton";
 
 import { DateRangeSelect } from "../DateRangeSelect/DateRangeSelect";
-import { ActionFilter } from "./filters/ActionFilter";
 import { MarketFilter } from "../TableMarketFilter/MarketFilter";
 import { TradeHistoryRow } from "./TradeHistoryRow/TradeHistoryRow";
+import { ActionFilter } from "./filters/ActionFilter";
 
 import downloadIcon from "img/ic_download_simple.svg";
 
@@ -78,6 +79,7 @@ function useMarketAddressesFromTokenAddresses(tokenAddresses: string[]): string[
 }
 
 function useDownloadAsCsv(tradeActions: TradeAction[] | undefined, minCollateralUsd?: BigNumber) {
+  const { chainId } = useChainId();
   const marketsInfoData = useMarketsInfoData();
   const handleCsvDownload = useCallback(() => {
     if (!tradeActions || !minCollateralUsd) {
@@ -86,13 +88,22 @@ function useDownloadAsCsv(tradeActions: TradeAction[] | undefined, minCollateral
 
     const fullFormattedData = tradeActions
       .map((tradeAction) => {
+        const explorerUrl = getExplorerUrl(chainId) + `tx/${tradeAction.transaction.hash}`;
+
+        let rowDetails: RowDetails | null;
+
         if (isSwapOrderType(tradeAction.orderType!)) {
-          return formatSwapMessage(tradeAction as SwapTradeAction, marketsInfoData, false);
+          rowDetails = formatSwapMessage(tradeAction as SwapTradeAction, marketsInfoData, false);
+        } else {
+          rowDetails = formatPositionMessage(tradeAction as PositionTradeAction, minCollateralUsd, false);
         }
 
-        return formatPositionMessage(tradeAction as PositionTradeAction, minCollateralUsd, false);
+        return {
+          ...rowDetails,
+          explorerUrl,
+        };
       })
-      .filter<RowDetails>(Boolean as any);
+      .filter(Boolean);
 
     const timezone = dateFns.format(new Date(), "z");
 
@@ -107,8 +118,9 @@ function useDownloadAsCsv(tradeActions: TradeAction[] | undefined, minCollateral
       executionPrice: t`Execution Price`,
       triggerPrice: t`Trigger Price`,
       priceImpact: t`Price Impact`,
+      explorerUrl: t`Transaction ID`,
     });
-  }, [marketsInfoData, minCollateralUsd, tradeActions]);
+  }, [chainId, marketsInfoData, minCollateralUsd, tradeActions]);
 
   return handleCsvDownload;
 }

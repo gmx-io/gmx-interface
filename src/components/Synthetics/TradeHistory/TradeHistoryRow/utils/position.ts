@@ -26,7 +26,7 @@ export const formatPositionMessage = (
   tradeAction: PositionTradeAction,
   minCollateralUsd: BigNumber,
   relativeTimestamp = true
-): RowDetails | null => {
+): RowDetails => {
   const collateralToken = tradeAction.initialCollateralToken;
   const sizeDeltaUsd = tradeAction.sizeDeltaUsd;
   const collateralDeltaAmount = tradeAction.initialCollateralDeltaAmount;
