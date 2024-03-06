@@ -381,7 +381,7 @@ export function OrderItem(p: Props) {
             </div>
           </td>
         )}
-        <td className="Exchange-list-item-type">
+        <td className="Exchange-list-item-type" onClick={p.onSelectOrder}>
           {isDecreaseOrderType(orderType) ? getTriggerNameByOrderType(positionOrder.orderType) : t`Limit`}
         </td>
         <td className="Order-list-item-text">{renderTitle()}</td>
