@@ -363,53 +363,53 @@ const TableRow = memo(
                     label={t`Unrealized PnL`}
                     showDollar={false}
                     value={
-                      <span className={signedValueClassName(account.pendingPnl)}>
-                        {formatDelta(account.pendingPnl, { signed: true, prefix: "$" })}
+                      <span className={signedValueClassName(account.unrealizedPnl)}>
+                        {formatDelta(account.unrealizedPnl, { signed: true, prefix: "$" })}
                       </span>
                     }
                   />
                   <StatsTooltipRow
-                    label={t`Start Pending PnL`}
+                    label={t`Start Unrealized PnL`}
                     showDollar={false}
                     value={
-                      <span className={signedValueClassName(account.startPendingPnl)}>
-                        {formatDelta(account.startPendingPnl, { signed: true, prefix: "$" })}
+                      <span className={signedValueClassName(account.startUnrealizedPnl)}>
+                        {formatDelta(account.startUnrealizedPnl, { signed: true, prefix: "$" })}
                       </span>
                     }
                   />
                   <StatsTooltipRow
-                    label={t`Paid Fees`}
+                    label={t`Realized Fees`}
                     showDollar={false}
                     value={
-                      <span className={signedValueClassName(account.paidFees.mul(-1))}>
-                        {formatDelta(account.paidFees.mul(-1), { signed: true, prefix: "$" })}
+                      <span className={signedValueClassName(account.realizedFees.mul(-1))}>
+                        {formatDelta(account.realizedFees.mul(-1), { signed: true, prefix: "$" })}
                       </span>
                     }
                   />
                   <StatsTooltipRow
-                    label={t`Pending Fees`}
+                    label={t`Unrealized Fees`}
                     showDollar={false}
                     value={
-                      <span className={signedValueClassName(account.pendingFees.mul(-1))}>
-                        {formatDelta(account.pendingFees.mul(-1), { signed: true, prefix: "$" })}
+                      <span className={signedValueClassName(account.unrealizedFees.mul(-1))}>
+                        {formatDelta(account.unrealizedFees.mul(-1), { signed: true, prefix: "$" })}
                       </span>
                     }
                   />
                   <StatsTooltipRow
-                    label={t`Start Pending Fees`}
+                    label={t`Start Unrealized Fees`}
                     showDollar={false}
                     value={
-                      <span className={signedValueClassName(account.startPendingFees.mul(-1))}>
-                        {formatDelta(account.startPendingFees.mul(-1), { signed: true, prefix: "$" })}
+                      <span className={signedValueClassName(account.startUnrealizedFees.mul(-1))}>
+                        {formatDelta(account.startUnrealizedFees.mul(-1), { signed: true, prefix: "$" })}
                       </span>
                     }
                   />
                   <StatsTooltipRow
-                    label={t`Paid Price Impact`}
+                    label={t`Realized Price Impact`}
                     showDollar={false}
                     value={
-                      <span className={signedValueClassName(account.paidPriceImpact)}>
-                        {formatDelta(account.paidPriceImpact, { signed: true, prefix: "$" })}
+                      <span className={signedValueClassName(account.realizedPriceImpact)}>
+                        {formatDelta(account.realizedPriceImpact, { signed: true, prefix: "$" })}
                       </span>
                     }
                   />
@@ -418,8 +418,8 @@ const TableRow = memo(
                       showDollar={false}
                       value={[
                         `( ${pinnedRowData.account.realizedPnl.toString()}n / 10n**30n`,
-                        `+ ${pinnedRowData.account.pendingPnl.toString()}n / 10n**30n`,
-                        `- ${pinnedRowData.account.startPendingPnl.toString()}n / 10n**30n )`,
+                        `+ ${pinnedRowData.account.unrealizedPnl.toString()}n / 10n**30n`,
+                        `- ${pinnedRowData.account.startUnrealizedPnl.toString()}n / 10n**30n )`,
                         ``,
                         `== ${pinnedRowData.account.totalPnl.toString()}n / 10n**30n `,
                       ].join(" ")}
@@ -428,9 +428,9 @@ const TableRow = memo(
                       label={t`Formula Fees`}
                       showDollar={false}
                       value={[
-                        `( ${pinnedRowData.account.paidFees.toString()}n / 10n**30n`,
-                        `+ ${pinnedRowData.account.pendingFees.toString()}n / 10n**30n`,
-                        `- ${pinnedRowData.account.startPendingFees.toString()}n / 10n**30n )`,
+                        `( ${pinnedRowData.account.realizedFees.toString()}n / 10n**30n`,
+                        `+ ${pinnedRowData.account.unrealizedFees.toString()}n / 10n**30n`,
+                        `- ${pinnedRowData.account.startUnrealizedFees.toString()}n / 10n**30n )`,
                         ``,
                         `== ${pinnedRowData.account.totalFees.toString()}n / 10n**30n `,
                       ].join(" ")}
@@ -440,12 +440,12 @@ const TableRow = memo(
                       showDollar={false}
                       value={[
                         `( ${pinnedRowData.account.realizedPnl.toString()}n`,
-                        `+ ${pinnedRowData.account.pendingPnl.toString()}n`,
-                        `- ${pinnedRowData.account.startPendingPnl.toString()}n`,
-                        `- ${pinnedRowData.account.paidFees.toString()}n`,
-                        `- ${pinnedRowData.account.pendingFees.toString()}n`,
-                        `+ ${pinnedRowData.account.startPendingFees.toString()}n`,
-                        `- ${pinnedRowData.account.paidPriceImpact.toString()}n ) / 10n**30n`,
+                        `+ ${pinnedRowData.account.unrealizedPnl.toString()}n`,
+                        `- ${pinnedRowData.account.startUnrealizedPnl.toString()}n`,
+                        `- ${pinnedRowData.account.realizedFees.toString()}n`,
+                        `- ${pinnedRowData.account.unrealizedFees.toString()}n`,
+                        `+ ${pinnedRowData.account.startUnrealizedFees.toString()}n`,
+                        `- ${pinnedRowData.account.realizedPriceImpact.toString()}n ) / 10n**30n`,
                         ``,
                         `== ${pinnedRowData.account.totalQualifyingPnl.toString()}n / 10n**30n `,
                       ].join(" ")}
@@ -471,7 +471,7 @@ const TableRow = memo(
                 <StatsTooltipRow
                   label={t`Max Collateral`}
                   showDollar={false}
-                  value={<span>{formatUsd(account.maxCollateral)}</span>}
+                  value={<span>{formatUsd(account.maxCapital)}</span>}
                 />
               )}
             />

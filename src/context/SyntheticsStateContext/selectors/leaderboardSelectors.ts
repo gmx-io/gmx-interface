@@ -32,17 +32,17 @@ export const selectLeaderboardCurrentAccount = createEnhancedSelector((q): Leade
     cumsumSize: BigNumber.from(0),
     hasRank: false,
     losses: 0,
-    maxCollateral: BigNumber.from(0),
-    netCollateral: BigNumber.from(0),
-    paidFees: BigNumber.from(0),
-    paidPriceImpact: BigNumber.from(0),
+    maxCapital: BigNumber.from(0),
+    netCapital: BigNumber.from(0),
+    realizedFees: BigNumber.from(0),
+    realizedPriceImpact: BigNumber.from(0),
     pnlPercentage: BigNumber.from(0),
     realizedPnl: BigNumber.from(0),
-    startPendingFees: BigNumber.from(0),
-    startPendingPnl: BigNumber.from(0),
-    startPendingPriceImpact: BigNumber.from(0),
-    pendingFees: BigNumber.from(0),
-    pendingPnl: BigNumber.from(0),
+    startUnrealizedFees: BigNumber.from(0),
+    startUnrealizedPnl: BigNumber.from(0),
+    startUnrealizedPriceImpact: BigNumber.from(0),
+    unrealizedFees: BigNumber.from(0),
+    unrealizedPnl: BigNumber.from(0),
     sumMaxSize: BigNumber.from(0),
     totalCount: 0,
     totalFees: BigNumber.from(0),
@@ -80,9 +80,9 @@ const selectLeaderboardAccounts = createEnhancedSelector((q) => {
       totalCount: base.closedCount,
       totalPnl: base.realizedPnl,
       totalQualifyingPnl: BigNumber.from(0),
-      pendingPnl: BigNumber.from(0),
-      pendingFees: BigNumber.from(0),
-      totalFees: base.paidFees,
+      unrealizedPnl: BigNumber.from(0),
+      unrealizedFees: BigNumber.from(0),
+      totalFees: base.realizedFees,
       pnlPercentage: BigNumber.from(0),
       averageSize: BigNumber.from(0),
       averageLeverage: BigNumber.from(0),
@@ -90,19 +90,19 @@ const selectLeaderboardAccounts = createEnhancedSelector((q) => {
 
     for (const p of positionBasesByAccount[base.account] || []) {
       const market = (marketsInfoData || {})[p.market];
-      const pendingPnl = getPositionPnl(p, market);
+      const unrealizedPnl = getPositionPnl(p, market);
       account.totalCount++;
       account.sumMaxSize = account.sumMaxSize.add(p.maxSize);
-      account.pendingFees = account.pendingFees.add(p.pendingFees);
-      account.pendingPnl = account.pendingPnl.add(pendingPnl);
+      account.unrealizedFees = account.unrealizedFees.add(p.unrealizedFees);
+      account.unrealizedPnl = account.unrealizedPnl.add(unrealizedPnl);
     }
 
-    account.totalFees = account.totalFees.add(account.pendingFees).sub(account.startPendingFees);
-    account.totalPnl = account.totalPnl.add(account.pendingPnl).sub(account.startPendingPnl);
-    account.totalQualifyingPnl = account.totalPnl.sub(account.totalFees).add(account.paidPriceImpact);
+    account.totalFees = account.totalFees.add(account.unrealizedFees).sub(account.startUnrealizedFees);
+    account.totalPnl = account.totalPnl.add(account.unrealizedPnl).sub(account.startUnrealizedPnl);
+    account.totalQualifyingPnl = account.totalPnl.sub(account.totalFees).add(account.realizedPriceImpact);
 
-    if (account.maxCollateral.gt(0)) {
-      account.pnlPercentage = account.totalQualifyingPnl.mul(BASIS_POINTS_DIVISOR).div(account.maxCollateral);
+    if (account.maxCapital.gt(0)) {
+      account.pnlPercentage = account.totalQualifyingPnl.mul(BASIS_POINTS_DIVISOR).div(account.maxCapital);
     }
 
     if (account.totalCount > 0) {
@@ -153,17 +153,17 @@ export const selectLeaderboardPositions = createEnhancedSelector((q) => {
 
   return positionBases.map((position) => {
     const market = (marketsInfoData || {})[position.market];
-    const pendingPnl = getPositionPnl(position, market);
+    const unrealizedPnl = getPositionPnl(position, market);
     return {
       ...position,
-      pendingPnl,
+      unrealizedPnl,
     };
   });
 });
 
 function getPositionPnl(position: LeaderboardPositionBase, market: MarketInfo) {
   if (position.isSnapshot) {
-    return position.pendingPnl;
+    return position.unrealizedPnl;
   }
 
   if (!market) {

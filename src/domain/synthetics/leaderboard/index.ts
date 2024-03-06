@@ -14,16 +14,16 @@ type LeaderboardAccountsJson = {
     cumsumSize: string;
     sumMaxSize: string;
 
-    maxCollateral: string;
-    netCollateral: string;
+    maxCapital: string;
+    netCapital: string;
 
     realizedPnl: string;
-    paidPriceImpact: string;
-    paidFees: string;
+    realizedPriceImpact: string;
+    realizedFees: string;
 
-    startPendingPnl: string;
-    startPendingPriceImpact: string;
-    startPendingFees: string;
+    startUnrealizedPnl: string;
+    startUnrealizedPriceImpact: string;
+    startUnrealizedFees: string;
 
     closedCount: number;
     volume: string;
@@ -40,17 +40,17 @@ export type LeaderboardAccountBase = {
   cumsumSize: BigNumber;
   sumMaxSize: BigNumber;
 
-  maxCollateral: BigNumber;
-  netCollateral: BigNumber;
+  maxCapital: BigNumber;
+  netCapital: BigNumber;
   hasRank: boolean;
 
-  paidPriceImpact: BigNumber;
-  paidFees: BigNumber;
+  realizedPriceImpact: BigNumber;
+  realizedFees: BigNumber;
   realizedPnl: BigNumber;
 
-  startPendingPnl: BigNumber;
-  startPendingPriceImpact: BigNumber;
-  startPendingFees: BigNumber;
+  startUnrealizedPnl: BigNumber;
+  startUnrealizedPriceImpact: BigNumber;
+  startUnrealizedFees: BigNumber;
 
   closedCount: number;
   volume: BigNumber;
@@ -63,8 +63,8 @@ export type LeaderboardAccount = LeaderboardAccountBase & {
   totalPnl: BigNumber;
   totalQualifyingPnl: BigNumber;
   totalFees: BigNumber;
-  pendingFees: BigNumber;
-  pendingPnl: BigNumber;
+  unrealizedFees: BigNumber;
+  unrealizedPnl: BigNumber;
   pnlPercentage: BigNumber;
   averageSize: BigNumber;
   averageLeverage: BigNumber;
@@ -81,11 +81,11 @@ type LeaderboardPositionsJson = {
     isSnapshot: boolean;
     market: string;
     maxSize: string;
-    paidFees: string;
-    paidPriceImpact: string;
-    pendingFees: string;
-    pendingPnl: string;
-    pendingPriceImpact: string;
+    realizedFees: string;
+    realizedPriceImpact: string;
+    unrealizedFees: string;
+    unrealizedPnl: string;
+    unrealizedPriceImpact: string;
     realizedPnl: string;
     sizeInTokens: string;
     sizeInUsd: string;
@@ -96,15 +96,15 @@ type LeaderboardPositionsJson = {
 export type LeaderboardPositionBase = {
   key: string;
   account: string;
-  paidFees: BigNumber;
-  pendingFees: BigNumber;
+  realizedFees: BigNumber;
+  unrealizedFees: BigNumber;
   isLong: boolean;
   market: string;
   maxSize: BigNumber;
-  paidPriceImpact: BigNumber;
-  pendingPriceImpact: BigNumber;
+  realizedPriceImpact: BigNumber;
+  unrealizedPriceImpact: BigNumber;
   isSnapshot: boolean;
-  pendingPnl: BigNumber;
+  unrealizedPnl: BigNumber;
   realizedPnl: BigNumber;
   sizeInTokens: BigNumber;
   sizeInUsd: BigNumber;
@@ -115,7 +115,7 @@ export type LeaderboardPositionBase = {
 };
 
 export type LeaderboardPosition = LeaderboardPositionBase & {
-  pendingPnl: BigNumber;
+  unrealizedPnl: BigNumber;
 };
 
 const fetchAccounts = async (
@@ -132,29 +132,29 @@ const fetchAccounts = async (
   const [allAccounts, currentAccount] = await Promise.all([
     client.query<LeaderboardAccountsJson>({
       query: gql`
-        query PeriodAccountStats($requiredMaxCollateral: String, $from: Int, $to: Int) {
-          periodAccountStats(limit: 10000, where: { maxCollateral_gte: $requiredMaxCollateral, from: $from, to: $to }) {
+        query PeriodAccountStats($requiredMaxCapital: String, $from: Int, $to: Int) {
+          periodAccountStats(limit: 10000, where: { maxCapital_gte: $requiredMaxCapital, from: $from, to: $to }) {
             id
             closedCount
             cumsumCollateral
             cumsumSize
             losses
-            maxCollateral
-            paidPriceImpact
+            maxCapital
+            realizedPriceImpact
             sumMaxSize
-            netCollateral
-            paidFees
+            netCapital
+            realizedFees
             realizedPnl
             volume
             wins
-            startPendingPnl
-            startPendingFees
-            startPendingPriceImpact
+            startUnrealizedPnl
+            startUnrealizedFees
+            startUnrealizedPriceImpact
           }
         }
       `,
       variables: {
-        requiredMaxCollateral: MIN_COLLATERAL_USD_IN_LEADERBOARD.toString(),
+        requiredMaxCapital: MIN_COLLATERAL_USD_IN_LEADERBOARD.toString(),
         from: p?.from,
         to: p?.to,
       },
@@ -169,17 +169,17 @@ const fetchAccounts = async (
             cumsumCollateral
             cumsumSize
             losses
-            maxCollateral
-            paidPriceImpact
+            maxCapital
+            realizedPriceImpact
             sumMaxSize
-            netCollateral
-            paidFees
+            netCapital
+            realizedFees
             realizedPnl
             volume
             wins
-            startPendingPnl
-            startPendingFees
-            startPendingPriceImpact
+            startUnrealizedPnl
+            startUnrealizedFees
+            startUnrealizedPriceImpact
           }
         }
       `,
@@ -202,16 +202,16 @@ const fetchAccounts = async (
       cumsumCollateral: BigNumber.from(p.cumsumCollateral),
       cumsumSize: BigNumber.from(p.cumsumSize),
       sumMaxSize: BigNumber.from(p.sumMaxSize),
-      maxCollateral: BigNumber.from(p.maxCollateral),
-      netCollateral: BigNumber.from(p.netCollateral),
+      maxCapital: BigNumber.from(p.maxCapital),
+      netCapital: BigNumber.from(p.netCapital),
 
       realizedPnl: BigNumber.from(p.realizedPnl),
-      paidPriceImpact: BigNumber.from(p.paidPriceImpact),
-      paidFees: BigNumber.from(p.paidFees),
+      realizedPriceImpact: BigNumber.from(p.realizedPriceImpact),
+      realizedFees: BigNumber.from(p.realizedFees),
 
-      startPendingPnl: BigNumber.from(p.startPendingPnl),
-      startPendingPriceImpact: BigNumber.from(p.startPendingPriceImpact),
-      startPendingFees: BigNumber.from(p.startPendingFees),
+      startUnrealizedPnl: BigNumber.from(p.startUnrealizedPnl),
+      startUnrealizedPriceImpact: BigNumber.from(p.startUnrealizedPriceImpact),
+      startUnrealizedFees: BigNumber.from(p.startUnrealizedFees),
 
       volume: BigNumber.from(p.volume),
       closedCount: p.closedCount,
@@ -269,13 +269,13 @@ const fetchPositions = async (
 
   const response = await client.query<LeaderboardPositionsJson>({
     query: gql`
-      query PositionQuery($requiredMaxCollateral: BigInt, $isSnapshot: Boolean, $snapshotTimestamp: Int) {
+      query PositionQuery($requiredMaxCapital: BigInt, $isSnapshot: Boolean, $snapshotTimestamp: Int) {
         positions(
           limit: 20000
           where: {
             isSnapshot_eq: $isSnapshot
             snapshotTimestamp_eq: $snapshotTimestamp
-            accountStat: { maxCollateral_gt: $requiredMaxCollateral }
+            accountStat: { maxCapital_gt: $requiredMaxCapital }
           }
         ) {
           id
@@ -283,12 +283,12 @@ const fetchPositions = async (
           market
           collateralToken
           isLong
-          paidFees
-          pendingFees
+          realizedFees
+          unrealizedFees
           maxSize
-          paidPriceImpact
-          pendingPriceImpact
-          pendingPnl
+          realizedPriceImpact
+          unrealizedPriceImpact
+          unrealizedPnl
           realizedPnl
           sizeInTokens
           sizeInUsd
@@ -301,7 +301,7 @@ const fetchPositions = async (
     `,
     variables: {
       isSnapshot: snapshotTimestamp !== undefined,
-      requiredMaxCollateral: MIN_COLLATERAL_USD_IN_LEADERBOARD.toString(),
+      requiredMaxCapital: MIN_COLLATERAL_USD_IN_LEADERBOARD.toString(),
       snapshotTimestamp,
     },
     fetchPolicy: "no-cache",
@@ -314,16 +314,16 @@ const fetchPositions = async (
       market: p.market,
       collateralToken: p.collateralToken,
       isLong: p.isLong,
-      paidPriceImpact: BigNumber.from(p.paidPriceImpact),
-      paidFees: BigNumber.from(p.paidFees),
+      realizedPriceImpact: BigNumber.from(p.realizedPriceImpact),
+      realizedFees: BigNumber.from(p.realizedFees),
       collateralAmount: BigNumber.from(p.collateralAmount),
-      pendingFees: BigNumber.from(p.pendingFees),
+      unrealizedFees: BigNumber.from(p.unrealizedFees),
       entryPrice: BigNumber.from(p.entryPrice),
       sizeInUsd: BigNumber.from(p.sizeInUsd),
       sizeInTokens: BigNumber.from(p.sizeInTokens),
       realizedPnl: BigNumber.from(p.realizedPnl),
-      pendingPriceImpact: BigNumber.from(p.pendingPriceImpact),
-      pendingPnl: BigNumber.from(p.pendingPnl),
+      unrealizedPriceImpact: BigNumber.from(p.unrealizedPriceImpact),
+      unrealizedPnl: BigNumber.from(p.unrealizedPnl),
       maxSize: BigNumber.from(p.maxSize),
       snapshotTimestamp: p.snapshotTimestamp,
       isSnapshot: p.isSnapshot,
