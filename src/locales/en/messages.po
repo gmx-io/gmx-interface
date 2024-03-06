@@ -934,11 +934,6 @@ msgstr "Claim <0>{0}</0>"
 msgid "Claim Affiliate Vault Rewards"
 msgstr "Claim Affiliate Vault Rewards"
 
-#: src/components/Synthetics/Claims/filters/ActionFilter.tsx
-#: src/components/Synthetics/Claims/filters/ActionFilter.tsx
-#~ msgid "Claim Collateral"
-#~ msgstr "Claim Collateral"
-
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 msgid "Claim Funding Fees"
@@ -6680,10 +6675,6 @@ msgstr "esGMX OTC Market"
 msgid "fee"
 msgstr "fee"
 
-#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
-#~ msgid "from"
-#~ msgstr "from"
-
 #: src/components/Exchange/ConfirmationBox.js
 msgid "hide"
 msgstr "hide"
@@ -6913,10 +6904,6 @@ msgstr "{count, plural, one {Order} other {# Orders}}"
 msgid "{daysConsidered}d accrued Fees"
 msgstr "{daysConsidered}d accrued Fees"
 
-#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
-#~ msgid "{eventTitle} from"
-#~ msgstr "{eventTitle} from"
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
@@ -6974,10 +6961,6 @@ msgstr "{longShortText} {0} Reserve"
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 msgid "{marketsCount, plural, one {# Market} other {# Markets} many {# Markets}}"
 msgstr "{marketsCount, plural, one {# Market} other {# Markets} many {# Markets}}"
-
-#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
-#~ msgid "{marketsCount, plural, one {# Market} other {# Markets}}"
-#~ msgstr "{marketsCount, plural, one {# Market} other {# Markets}}"
 
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"

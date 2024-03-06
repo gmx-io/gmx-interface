@@ -934,11 +934,6 @@ msgstr ""
 msgid "Claim Affiliate Vault Rewards"
 msgstr ""
 
-#: src/components/Synthetics/Claims/filters/ActionFilter.tsx
-#: src/components/Synthetics/Claims/filters/ActionFilter.tsx
-#~ msgid "Claim Collateral"
-#~ msgstr "Запрос Залога"
-
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 msgid "Claim Funding Fees"
@@ -6673,10 +6668,6 @@ msgstr ""
 msgid "fee"
 msgstr "комиссия"
 
-#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
-#~ msgid "from"
-#~ msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.js
 msgid "hide"
 msgstr "скрыть"
@@ -6903,10 +6894,6 @@ msgstr ""
 msgid "{daysConsidered}d accrued Fees"
 msgstr ""
 
-#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
-#~ msgid "{eventTitle} from"
-#~ msgstr ""
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
@@ -6964,10 +6951,6 @@ msgstr ""
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 msgid "{marketsCount, plural, one {# Market} other {# Markets} many {# Markets}}"
 msgstr ""
-
-#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
-#~ msgid "{marketsCount, plural, one {# Market} other {# Markets}}"
-#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
