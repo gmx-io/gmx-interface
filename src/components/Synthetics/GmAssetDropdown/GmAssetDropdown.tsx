@@ -100,7 +100,7 @@ function AddToWalletButton({ active, connector, token, marketName }) {
     return null;
   }
 
-  const { address, decimals, imageUrl, symbol, metamaskSymbol } = token;
+  const { address, decimals, imageUrl, symbol, metamaskSymbol, explorerSymbol, assetSymbol } = token;
 
   return (
     <Menu.Item as="div">
@@ -110,7 +110,7 @@ function AddToWalletButton({ active, connector, token, marketName }) {
             address,
             decimals,
             image: imageUrl,
-            symbol: metamaskSymbol ?? symbol,
+            symbol: explorerSymbol ?? assetSymbol ?? metamaskSymbol ?? symbol,
           });
         }}
         className="asset-item"

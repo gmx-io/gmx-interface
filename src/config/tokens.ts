@@ -61,6 +61,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoUrl: "https://www.coingecko.com/en/coins/solana",
       coingeckoSymbol: "SOL",
       explorerUrl: "https://arbiscan.io/token/0x2bCc6D6CdBbDC0a4071e48bb3B969b06B3330c07",
+      explorerSymbol: "SOL",
     },
     {
       name: "Chainlink",
@@ -236,6 +237,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoSymbol: "BNB",
       metamaskSymbol: "WBNB",
       explorerUrl: "https://arbiscan.io/token/0xa9004A5421372E1D83fB1f85b0fc986c912f91f3",
+      explorerSymbol: "WBNB",
     },
     {
       name: "Cosmos",
@@ -268,6 +270,17 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/12645/standard/AAVE.png?1696512452",
       coingeckoUrl: "https://www.coingecko.com/en/coins/aave",
       coingeckoSymbol: "AAVE",
+    },
+    {
+      name: "Wrapped AVAX (Wormhole)",
+      symbol: "AVAX",
+      assetSymbol: "WAVAX (Wormhole)",
+      address: "0x565609fAF65B92F7be02468acF86f8979423e514",
+      decimals: 18,
+      imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/avalanche",
+      coingeckoSymbol: "AVAX",
+      explorerSymbol: "WAVAX",
     },
   ],
   [AVALANCHE]: [
