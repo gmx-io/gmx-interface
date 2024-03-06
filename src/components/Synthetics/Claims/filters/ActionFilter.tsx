@@ -20,22 +20,16 @@ type Groups = Group[];
 
 const GROUPS: Groups = [
   {
-    groupName: /*i18n*/ "Claim Collateral",
+    groupName: /*i18n*/ "Funding Fees",
     items: [
+      {
+        data: ClaimType.SettleFundingFeeExecuted,
+        text: /*i18n*/ "Settled Funding Fees",
+      },
       {
         data: ClaimType.ClaimFunding,
         text: /*i18n*/ "Claim Funding Fees",
       },
-      {
-        data: ClaimType.ClaimPriceImpact,
-        text: /*i18n*/ "Claim Price Impact Rebates",
-      },
-    ],
-  },
-
-  {
-    groupName: /*i18n*/ "Claim Collateral",
-    items: [
       {
         data: ClaimType.SettleFundingFeeCancelled,
         text: /*i18n*/ "Failed Settlement of Funding Fees",
@@ -44,9 +38,15 @@ const GROUPS: Groups = [
         data: ClaimType.SettleFundingFeeCreated,
         text: /*i18n*/ "Request Settlement of Funding Fees",
       },
+    ],
+  },
+
+  {
+    groupName: /*i18n*/ "Price Impact",
+    items: [
       {
-        data: ClaimType.SettleFundingFeeExecuted,
-        text: /*i18n*/ "Settled Funding Fees",
+        data: ClaimType.ClaimPriceImpact,
+        text: /*i18n*/ "Claim Price Impact Rebates",
       },
     ],
   },

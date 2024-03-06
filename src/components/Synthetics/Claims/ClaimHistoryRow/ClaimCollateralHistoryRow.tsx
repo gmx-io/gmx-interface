@@ -99,7 +99,7 @@ function MarketTooltip({ claimAction }: { claimAction: ClaimCollateralAction }) 
               className="ClaimHistoryRow-tooltip-row"
               key={market.marketTokenAddress}
               label={
-                <div className="items-top">
+                <div className="items-top text-white">
                   <span>{indexName}</span>
                   <span className="subtext lh-1">[{poolName}]</span>
                 </div>
