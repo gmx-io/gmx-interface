@@ -936,8 +936,8 @@ msgstr ""
 
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
-msgid "Claim Collateral"
-msgstr ""
+#~ msgid "Claim Collateral"
+#~ msgstr "담보 수령"
 
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
@@ -2244,6 +2244,10 @@ msgstr "자금 수수료"
 msgid "Funding Fee Rate"
 msgstr ""
 
+#: src/components/Synthetics/Claims/filters/ActionFilter.tsx
+msgid "Funding Fees"
+msgstr "자금 수수료"
+
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 msgid "Funding fees"
 msgstr ""
@@ -3161,7 +3165,6 @@ msgstr "청산을 위한 시장 평균가"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the order."
 msgstr "주문을 위한 시장 평균가"
 
@@ -3639,6 +3642,14 @@ msgstr "선택한 필터와 일치하는 거래가 없습니다"
 msgid "No trades yet"
 msgstr "거래가 아직 없습니다"
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity."
+msgstr "주문을 채울만한 충분한 유동성이 없습니다. 조건이 충족되고 충분한 유동성이 있을 때 주문이 채워집니다."
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity."
+msgstr "주문을 채울만한 충분한 스왑 유동성이 없습니다. 조건이 충족되고 충분한 스왑 유동성이 있을 때 주문이 채워집니다."
+
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "Not enough {0} on your Main Account. Use the \"<0>Convert {1} to {2}</0>\" field to increase the Main Account {3} balance."
 msgstr ""
@@ -3735,7 +3746,6 @@ msgstr "여는 중..."
 msgid "Order"
 msgstr "주문"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -4108,6 +4118,7 @@ msgstr "이전"
 msgid "Price"
 msgstr "가격"
 
+#: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -4311,9 +4322,10 @@ msgstr ""
 msgid "Realized Price Impact"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistoryRow/utils.ts
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Reason: {0}"
-msgstr ""
+msgstr "이유: {0}"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -5333,6 +5345,10 @@ msgstr ""
 msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met."
+msgstr "실행 가격이 허용 가능한 가격 조건을 충족하지 않았습니다. 조건이 충족되면 주문이 체결됩니다."
+
 #: src/pages/Stake/StakeV1.js
 msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
 msgstr "해당 Gambit 프로토콜은 베타 버전입니다. 참여하기 전에 <0>스테이킹 세부사항</0>을 참조해주세요."
@@ -5767,8 +5783,9 @@ msgid "Transaction"
 msgstr "거래"
 
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Transaction ID"
-msgstr ""
+msgstr "트랜잭션 ID"
 
 #: src/lib/contracts/callContract.tsx
 msgid "Transaction completed!"

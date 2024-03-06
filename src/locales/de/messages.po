@@ -936,8 +936,8 @@ msgstr ""
 
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
-msgid "Claim Collateral"
-msgstr ""
+#~ msgid "Claim Collateral"
+#~ msgstr "Kollateral beanspruchen"
 
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
@@ -2244,9 +2244,13 @@ msgstr "Finanzierungsgebühr"
 msgid "Funding Fee Rate"
 msgstr ""
 
+#: src/components/Synthetics/Claims/filters/ActionFilter.tsx
+msgid "Funding Fees"
+msgstr "Finanzierungsgebühren"
+
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 msgid "Funding fees"
-msgstr ""
+msgstr "Finanzierungsgebühren"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
@@ -3161,7 +3165,6 @@ msgstr "Marktpreis für die Liquidation."
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the order."
 msgstr "Marktpreis für die Order."
 
@@ -3639,6 +3642,14 @@ msgstr "Keine Trades entsprechen den ausgewählten Filtern"
 msgid "No trades yet"
 msgstr "Noch keine Trades"
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity."
+msgstr "Nicht genügend verfügbare Liquidität, um den Auftrag zu erfüllen. Der Auftrag wird ausgeführt, wenn die Bedingung erfüllt ist und genügend verfügbare Liquidität vorhanden ist."
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity."
+msgstr "Nicht genügend verfügbare Swap-Liquidität, um den Auftrag zu erfüllen. Der Auftrag wird ausgeführt, wenn die Bedingung erfüllt ist und genügend verfügbare Swap-Liquidität vorhanden ist."
+
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "Not enough {0} on your Main Account. Use the \"<0>Convert {1} to {2}</0>\" field to increase the Main Account {3} balance."
 msgstr ""
@@ -3735,7 +3746,6 @@ msgstr "Öffnen..."
 msgid "Order"
 msgstr "Order"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -4108,6 +4118,7 @@ msgstr "Prev"
 msgid "Price"
 msgstr "Preis"
 
+#: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -4311,9 +4322,9 @@ msgstr ""
 msgid "Realized Price Impact"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistoryRow/utils.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Reason: {0}"
-msgstr ""
+msgstr "Grund: {0}"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -5333,6 +5344,10 @@ msgstr ""
 msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met."
+msgstr "Der Ausführungspreis erfüllt die akzeptable Preisbedingung nicht. Der Auftrag wird ausgeführt, wenn die Bedingung erfüllt ist."
+
 #: src/pages/Stake/StakeV1.js
 msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
 msgstr "Das Gambit-Protokoll befindet sich in der Beta-Phase, bitte lese die <0>Details zum Staking</0>, bevor du teilnimmst."
@@ -5771,8 +5786,9 @@ msgid "Transaction"
 msgstr "Transaktion"
 
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Transaction ID"
-msgstr ""
+msgstr "Transaktions-ID"
 
 #: src/lib/contracts/callContract.tsx
 msgid "Transaction completed!"

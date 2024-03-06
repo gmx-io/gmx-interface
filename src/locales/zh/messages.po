@@ -936,8 +936,8 @@ msgstr ""
 
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
-msgid "Claim Collateral"
-msgstr ""
+#~ msgid "Claim Collateral"
+#~ msgstr "领取抵押品"
 
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
@@ -2244,9 +2244,13 @@ msgstr "资金费用"
 msgid "Funding Fee Rate"
 msgstr ""
 
+#: src/components/Synthetics/Claims/filters/ActionFilter.tsx
+msgid "Funding Fees"
+msgstr "资金费用"
+
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 msgid "Funding fees"
-msgstr ""
+msgstr "资金费用"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
@@ -3161,7 +3165,6 @@ msgstr "清算的市场价格。"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the order."
 msgstr "标记订单价格。"
 
@@ -3639,6 +3642,14 @@ msgstr "没有符合选定筛选条件的交易"
 msgid "No trades yet"
 msgstr "暂时没有交易"
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity."
+msgstr "没有足够的可用流动性来填补订单。当条件满足并且有足够的可用流动性时，订单将被填充。"
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity."
+msgstr "没有足够的可用交换流动性来填补订单。当条件满足并且有足够的可用交换流动性时，订单将被填充。"
+
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "Not enough {0} on your Main Account. Use the \"<0>Convert {1} to {2}</0>\" field to increase the Main Account {3} balance."
 msgstr ""
@@ -3735,7 +3746,6 @@ msgstr "开仓中"
 msgid "Order"
 msgstr "订单"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -4108,6 +4118,7 @@ msgstr "上一页"
 msgid "Price"
 msgstr "价钱"
 
+#: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -4311,9 +4322,10 @@ msgstr ""
 msgid "Realized Price Impact"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistoryRow/utils.ts
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Reason: {0}"
-msgstr ""
+msgstr "原因: {0}"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -5333,6 +5345,10 @@ msgstr ""
 msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met."
+msgstr "执行价格未满足可接受价格条件。当条件满足时，订单将被填充"
+
 #: src/pages/Stake/StakeV1.js
 msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
 msgstr "Gambit协议处于测试阶段，请在参与之前阅读<0>质押细节</0>"
@@ -5767,8 +5783,9 @@ msgid "Transaction"
 msgstr "交易"
 
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Transaction ID"
-msgstr ""
+msgstr "交易ID"
 
 #: src/lib/contracts/callContract.tsx
 msgid "Transaction completed!"

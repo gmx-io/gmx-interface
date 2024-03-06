@@ -936,8 +936,8 @@ msgstr ""
 
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
-msgid "Claim Collateral"
-msgstr ""
+#~ msgid "Claim Collateral"
+#~ msgstr "担保の請求"
 
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
@@ -2244,9 +2244,13 @@ msgstr "ファンディング手数料"
 msgid "Funding Fee Rate"
 msgstr ""
 
+#: src/components/Synthetics/Claims/filters/ActionFilter.tsx
+msgid "Funding Fees"
+msgstr "ファンディング手数料"
+
 #: src/components/Synthetics/Claims/ClaimableCardUI.tsx
 msgid "Funding fees"
-msgstr ""
+msgstr "ファンディング手数料"
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
@@ -3161,7 +3165,6 @@ msgstr "清算のためのマーク価格"
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the order."
 msgstr "注文のためのマーク価格"
 
@@ -3639,6 +3642,14 @@ msgstr "選択したフィルターに一致するトレードはありません
 msgid "No trades yet"
 msgstr "トレード履歴はありません"
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity."
+msgstr "注文を執行するための利用可能な流動性が不足しています。条件が満たされ、利用可能な流動性がある場合に注文が執行されます。"
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity."
+msgstr "注文を執行するための利用可能なスワップ流動性が不足しています。条件が満たされ、利用可能なスワップ流動性がある場合に注文が執行されます。"
+
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "Not enough {0} on your Main Account. Use the \"<0>Convert {1} to {2}</0>\" field to increase the Main Account {3} balance."
 msgstr ""
@@ -3735,7 +3746,6 @@ msgstr "オープン中..."
 msgid "Order"
 msgstr "注文"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -4108,6 +4118,7 @@ msgstr "前へ"
 msgid "Price"
 msgstr "価格"
 
+#: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -4311,9 +4322,10 @@ msgstr ""
 msgid "Realized Price Impact"
 msgstr ""
 
-#: src/components/Synthetics/TradeHistoryRow/utils.ts
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Reason: {0}"
-msgstr ""
+msgstr "理由: {0}"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -5333,6 +5345,10 @@ msgstr ""
 msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met."
+msgstr "実行価格が許容価格条件を満たしませんでした。条件を満たしたときに注文が執行されます。"
+
 #: src/pages/Stake/StakeV1.js
 msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
 msgstr "Gambitプロトコルはベータ版であり、参加する前に<0>ステーキングの詳細</0>を読んでください。"
@@ -5767,8 +5783,9 @@ msgid "Transaction"
 msgstr "取引"
 
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
+#: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "Transaction ID"
-msgstr ""
+msgstr "取引ID"
 
 #: src/lib/contracts/callContract.tsx
 msgid "Transaction completed!"
