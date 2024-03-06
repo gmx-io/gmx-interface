@@ -1,28 +1,23 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import Tooltip from "components/Tooltip/Tooltip";
+import { BigNumber } from "ethers";
+import { ReactNode, useMemo } from "react";
+
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { getToken } from "config/tokens";
 import { useTradingIncentives } from "domain/synthetics/common/useIncentiveStats";
-import { ExecutionFee, FeeItem, SwapFeeItem } from "domain/synthetics/fees";
+import { FeeItem, SwapFeeItem } from "domain/synthetics/fees";
 import { TradeFeesType } from "domain/synthetics/trade";
-import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import {
-  formatAmount,
-  formatDeltaUsd,
-  formatPercentage,
-  formatTokenAmountWithUsd,
-  roundToTwoDecimals,
-} from "lib/numbers";
-import { ReactNode, useMemo } from "react";
-import "./TradeFeesRow.scss";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { useExecutionFeeBufferBps } from "context/SyntheticsStateContext/hooks/settingsHooks";
+import { formatAmount, formatDeltaUsd, formatPercentage } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
+
+import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import "./TradeFeesRow.scss";
 
 type Props = {
   totalFees?: FeeItem;
@@ -33,7 +28,6 @@ type Props = {
   positionFee?: FeeItem;
   positionPriceImpact?: FeeItem;
   priceImpactDiff?: FeeItem;
-  executionFee?: ExecutionFee;
   borrowFee?: FeeItem;
   fundingFee?: FeeItem;
   borrowFeeRateStr?: string;
@@ -53,7 +47,6 @@ type FeeRow = {
 };
 
 export function TradeFeesRow(p: Props) {
-  const executionFeeBufferBps = useExecutionFeeBufferBps();
   const { chainId } = useChainId();
   const tradingIncentives = useTradingIncentives();
   const shouldShowRebate = p.shouldShowRebate ?? true;
@@ -64,15 +57,19 @@ export function TradeFeesRow(p: Props) {
     p.positionPriceImpact,
     p.priceImpactDiff
   );
-  const rebatesMessage = hasRebates ? (
-    <Trans>
-      Price Impact Rebates for closing trades are claimable under the Claims tab.{" "}
-      <ExternalLink newTab href="https://docs.gmx.io/docs/trading/v2/#price-impact-rebates">
-        Read more
-      </ExternalLink>
-      .
-    </Trans>
-  ) : undefined;
+  const rebatesMessage = useMemo(
+    () =>
+      hasRebates ? (
+        <Trans>
+          Price Impact Rebates for closing trades are claimable under the Claims tab.{" "}
+          <ExternalLink newTab href="https://docs.gmx.io/docs/trading/v2/#price-impact-rebates">
+            Read more
+          </ExternalLink>
+          .
+        </Trans>
+      ) : undefined,
+    [hasRebates]
+  );
 
   const feeRows: FeeRow[] = useMemo(() => {
     const positionPriceImpactRow = fullPositionPriceImpact?.deltaUsd.abs().gt(0)
@@ -274,21 +271,8 @@ export function TradeFeesRow(p: Props) {
           }
         : undefined;
 
-    const executionFeeRow = p.executionFee?.feeTokenAmount.gt(0)
-      ? {
-          label: <div className="text-white">{t`Max Execution Fee`}:</div>,
-          value: formatTokenAmountWithUsd(
-            p.executionFee.feeTokenAmount.mul(-1),
-            p.executionFee.feeUsd.mul(-1),
-            p.executionFee.feeToken.symbol,
-            p.executionFee.feeToken.decimals
-          ),
-          id: "executionFee",
-        }
-      : undefined;
-
     if (p.feesType === "swap") {
-      return [swapPriceImpactRow, ...swapFeeRows, uiSwapFeeRow, executionFeeRow].filter(Boolean) as FeeRow[];
+      return [swapPriceImpactRow, ...swapFeeRows, uiSwapFeeRow].filter(Boolean) as FeeRow[];
     }
 
     if (p.feesType === "increase") {
@@ -305,7 +289,6 @@ export function TradeFeesRow(p: Props) {
         fundingFeeRow,
         borrowFeeRateRow,
         fundingFeeRateRow,
-        executionFeeRow,
       ].filter(Boolean) as FeeRow[];
     }
 
@@ -323,12 +306,11 @@ export function TradeFeesRow(p: Props) {
         uiSwapFeeRow,
         swapProfitFeeRow,
         ...swapFeeRows,
-        executionFeeRow,
       ].filter(Boolean) as FeeRow[];
     }
 
     if (p.feesType === "edit") {
-      return [borrowFeeRow, fundingFeeRow, executionFeeRow].filter(Boolean) as FeeRow[];
+      return [borrowFeeRow, fundingFeeRow].filter(Boolean) as FeeRow[];
     }
 
     return [];
@@ -345,7 +327,6 @@ export function TradeFeesRow(p: Props) {
     p.borrowFee,
     p.borrowFeeRateStr,
     p.fundingFeeRateStr,
-    p.executionFee,
     p.uiFee,
     p.uiSwapFee,
     tradingIncentives,
@@ -354,7 +335,7 @@ export function TradeFeesRow(p: Props) {
   ]);
 
   const totalFeeUsd = useMemo(() => {
-    const totalBeforeRebate = p.totalFees?.deltaUsd.sub(p.executionFee?.feeUsd || 0);
+    const totalBeforeRebate = p.totalFees?.deltaUsd;
 
     if (!rebateIsApplicable || !p.positionFee || !tradingIncentives) {
       return totalBeforeRebate;
@@ -362,7 +343,7 @@ export function TradeFeesRow(p: Props) {
     const rebate = p.positionFee.deltaUsd.mul(tradingIncentives.rebatePercent).div(BASIS_POINTS_DIVISOR).mul(-1);
 
     return totalBeforeRebate?.add(rebate);
-  }, [p.executionFee?.feeUsd, p.positionFee, p.totalFees?.deltaUsd, rebateIsApplicable, tradingIncentives]);
+  }, [p.positionFee, p.totalFees?.deltaUsd, rebateIsApplicable, tradingIncentives]);
 
   const title = useMemo(() => {
     if (p.feesType !== "swap" && shouldShowRebate && tradingIncentives) {
@@ -391,76 +372,44 @@ export function TradeFeesRow(p: Props) {
     );
   }, [rebateIsApplicable, tradingIncentives]);
 
-  const maxExecutionFeeText = useMemo(() => {
-    if (executionFeeBufferBps !== undefined) {
-      const bps = executionFeeBufferBps;
-      return roundToTwoDecimals((bps / BASIS_POINTS_DIVISOR) * 100);
-    }
-  }, [executionFeeBufferBps]);
-
-  return (
-    <ExchangeInfoRow
-      className="TradeFeesRow"
-      isTop={p.isTop}
-      label={
-        <Tooltip
-          position="left-top"
-          handle={title}
+  let value: ReactNode = useMemo(() => {
+    if (!totalFeeUsd || totalFeeUsd.eq(0)) {
+      return "-";
+    } else if (!feeRows.length && !hasRebates && !incentivesBottomText) {
+      return <span className={cx({ positive: totalFeeUsd.gt(0) })}>{formatDeltaUsd(totalFeeUsd)}</span>;
+    } else {
+      return (
+        <TooltipWithPortal
+          portalClassName="TradeFeesRow-tooltip"
+          handle={<span className={cx({ positive: totalFeeUsd.gt(0) })}>{formatDeltaUsd(totalFeeUsd)}</span>}
+          position="top-end"
           renderContent={() => (
-            <>
-              {p.executionFee?.warning && (
-                <span className="text-white">
-                  {p.executionFee?.warning} <br />
+            <div>
+              {feeRows.map((feeRow) => (
+                <StatsTooltipRow
+                  key={feeRow.id}
+                  className={feeRow.className}
+                  label={feeRow.label}
+                  value={feeRow.value}
+                  showDollar={false}
+                />
+              ))}
+              {hasRebates && (
+                <>
                   <br />
-                </span>
+                  {rebatesMessage}
+                </>
               )}
-              <div className="text-white">
-                <Trans>
-                  The Max Execution Fee is overestimated by {maxExecutionFeeText}%. Upon execution, the excess Execution
-                  Fee is sent back to your account.
-                </Trans>
-                <ExternalLink href="https://docs.gmx.io/docs/trading/v2#execution-fee">Read more</ExternalLink>.
-              </div>
-            </>
+              {incentivesBottomText && <br />}
+              {incentivesBottomText}
+            </div>
           )}
         />
-      }
-      value={
-        <>
-          {!totalFeeUsd || totalFeeUsd.eq(0) ? (
-            "-"
-          ) : (
-            <TooltipWithPortal
-              portalClassName="TradeFeesRow-tooltip"
-              handle={<span className={cx({ positive: totalFeeUsd.gt(0) })}>{formatDeltaUsd(totalFeeUsd)}</span>}
-              position="right-top"
-              renderContent={() => (
-                <div>
-                  {feeRows.map((feeRow) => (
-                    <StatsTooltipRow
-                      key={feeRow.id}
-                      className={feeRow.className}
-                      label={feeRow.label}
-                      value={feeRow.value}
-                      showDollar={false}
-                    />
-                  ))}
-                  {hasRebates && (
-                    <>
-                      <br />
-                      {rebatesMessage}
-                    </>
-                  )}
-                  {incentivesBottomText && <br />}
-                  {incentivesBottomText}
-                </div>
-              )}
-            />
-          )}
-        </>
-      }
-    />
-  );
+      );
+    }
+  }, [feeRows, hasRebates, incentivesBottomText, rebatesMessage, totalFeeUsd]);
+
+  return <ExchangeInfoRow className="TradeFeesRow" isTop={p.isTop} label={title} value={value} />;
 }
 
 function mergePositionPriceImpactWithPriceImpactDiff(

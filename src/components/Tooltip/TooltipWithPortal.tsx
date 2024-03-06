@@ -1,11 +1,21 @@
-import React, { CSSProperties, MouseEvent, PropsWithChildren, useCallback, useMemo, useRef, useState } from "react";
+import React, {
+  CSSProperties,
+  MouseEvent,
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import cx from "classnames";
 
 import "./Tooltip.scss";
 import { IS_TOUCH } from "config/env";
 import Portal from "../Common/Portal";
 import { TooltipPosition } from "./Tooltip";
-import { TOOLTIP_CLOSE_DELAY, TOOLTIP_OPEN_DELAY } from "config/ui";
+import { DEFAULT_TOOLTIP_POSITION, TOOLTIP_CLOSE_DELAY, TOOLTIP_OPEN_DELAY } from "config/ui";
+import { computePosition, flip, size } from "@floating-ui/dom";
 
 type Props = PropsWithChildren<{
   /**
@@ -25,6 +35,7 @@ type Props = PropsWithChildren<{
   openDelay?: number;
   closeDelay?: number;
   shouldStopPropagation?: boolean;
+  maxAllowedWidth?: number;
   disabled?: boolean;
 }>;
 
@@ -35,16 +46,64 @@ type Coords = {
   top?: number;
 };
 
-export default function TooltipWithPortal(props: Props) {
+export default function TooltipWithPortal({
+  handle,
+  renderContent,
+  position = DEFAULT_TOOLTIP_POSITION,
+  trigger = "hover",
+  className,
+  portalClassName,
+  disableHandleStyle,
+  handleClassName,
+  isHandlerDisabled,
+  fitHandleWidth,
+  closeOnDoubleClick,
+  openDelay = TOOLTIP_OPEN_DELAY,
+  closeDelay = TOOLTIP_CLOSE_DELAY,
+  shouldStopPropagation,
+  maxAllowedWidth,
+  disabled,
+  children,
+}: Props) {
   const [visible, setVisible] = useState(false);
   const [coords, setCoords] = useState<Coords>({});
   const [tooltipWidth, setTooltipWidth] = useState<string>();
   const intervalCloseRef = useRef<ReturnType<typeof setTimeout> | null>();
   const intervalOpenRef = useRef<ReturnType<typeof setTimeout> | null>();
 
-  const position = props.position ?? "left-bottom";
-  const trigger = props.trigger ?? "hover";
-  const handlerRef = useRef<null | HTMLInputElement>(null);
+  const handlerRef = useRef<HTMLSpanElement>(null);
+  const popupRef = useRef<HTMLDivElement>(null);
+
+  const [computedPlacement, setComputedPlacement] = useState<TooltipPosition | undefined>(position);
+
+  useEffect(() => {
+    async function computeTooltipPlacement() {
+      if (!handlerRef.current || !popupRef.current) return;
+
+      const { placement } = await computePosition(handlerRef.current, popupRef.current, {
+        middleware: [
+          flip({ fallbackStrategy: "initialPlacement" }),
+          size({
+            padding: 10,
+            apply({ availableWidth, elements }) {
+              const { floating } = elements;
+              if (!floating) return;
+              const maxWidth = maxAllowedWidth ?? floating.offsetWidth;
+              const minWidth = Math.min(availableWidth, maxWidth);
+              Object.assign(floating.style, {
+                minWidth: `${minWidth}px`,
+                maxWidth: `${maxWidth}px`,
+              });
+            },
+          }),
+        ].filter(Boolean),
+        placement: position,
+      });
+      setComputedPlacement(placement);
+    }
+
+    computeTooltipPlacement();
+  }, [visible, position, maxAllowedWidth]);
 
   const updateTooltipCoords = useCallback(() => {
     const rect = handlerRef?.current?.getBoundingClientRect();
@@ -56,11 +115,11 @@ export default function TooltipWithPortal(props: Props) {
         left: rect.x,
         top: rect.y + window.scrollY,
       });
-      if (props.fitHandleWidth) {
+      if (fitHandleWidth) {
         setTooltipWidth(`${rect.width}px`);
       }
     }
-  }, [handlerRef, props.fitHandleWidth]);
+  }, [handlerRef, fitHandleWidth]);
 
   const onMouseEnter = useCallback(() => {
     if (trigger !== "hover" || IS_TOUCH) return;
@@ -73,14 +132,14 @@ export default function TooltipWithPortal(props: Props) {
       intervalOpenRef.current = setTimeout(() => {
         setVisible(true);
         intervalOpenRef.current = null;
-      }, props.openDelay ?? TOOLTIP_OPEN_DELAY);
+      }, openDelay);
     }
     updateTooltipCoords();
-  }, [setVisible, trigger, updateTooltipCoords, props.openDelay]);
+  }, [setVisible, trigger, updateTooltipCoords, openDelay]);
 
   const onMouseClick = useCallback(
     (event: MouseEvent) => {
-      if (props.shouldStopPropagation) {
+      if (shouldStopPropagation) {
         event.stopPropagation();
       }
       if (trigger !== "click" && !IS_TOUCH) return;
@@ -94,54 +153,59 @@ export default function TooltipWithPortal(props: Props) {
       }
       updateTooltipCoords();
 
-      if (props.closeOnDoubleClick) {
+      if (closeOnDoubleClick) {
         setVisible((old) => !old);
       } else {
         setVisible(true);
       }
     },
-    [props.closeOnDoubleClick, props.shouldStopPropagation, trigger, updateTooltipCoords]
+    [closeOnDoubleClick, shouldStopPropagation, trigger, updateTooltipCoords]
   );
 
   const onMouseLeave = useCallback(() => {
     intervalCloseRef.current = setTimeout(() => {
       setVisible(false);
       intervalCloseRef.current = null;
-    }, props.closeDelay ?? TOOLTIP_CLOSE_DELAY);
+    }, closeDelay);
+
     if (intervalOpenRef.current) {
       clearInterval(intervalOpenRef.current);
       intervalOpenRef.current = null;
     }
     updateTooltipCoords();
-  }, [setVisible, updateTooltipCoords, props.closeDelay]);
+  }, [setVisible, updateTooltipCoords, closeDelay]);
 
   const onHandleClick = useCallback((event: MouseEvent) => {
     event.preventDefault();
   }, []);
 
-  const className = cx("Tooltip", props.className);
   const portalStyle = useMemo<CSSProperties>(() => ({ ...coords, position: "absolute" }), [coords]);
   const popupStyle = useMemo(() => ({ width: tooltipWidth }), [tooltipWidth]);
 
   return (
-    <span className={className} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onMouseClick}>
+    <span
+      className={cx("Tooltip", className)}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      onClick={onMouseClick}
+    >
       <span
-        className={cx({ "Tooltip-handle": !props.disableHandleStyle }, [props.handleClassName], { active: visible })}
+        className={cx({ "Tooltip-handle": !disableHandleStyle }, [handleClassName], { active: visible })}
         onClick={onHandleClick}
         ref={handlerRef}
       >
         {/* For onMouseLeave to work on disabled button https://github.com/react-component/tooltip/issues/18#issuecomment-411476678 */}
-        {props.isHandlerDisabled ? (
-          <div className="Tooltip-disabled-wrapper">{props.handle || props.children}</div>
+        {isHandlerDisabled ? (
+          <div className="Tooltip-disabled-wrapper">{handle || children}</div>
         ) : (
-          <>{props.handle || props.children}</>
+          <>{handle || children}</>
         )}
       </span>
-      {visible && coords.left && !props.disabled && (
+      {visible && coords.left && !disabled && (
         <Portal>
-          <div style={portalStyle} className={props.portalClassName}>
-            <div className={cx(["Tooltip-popup z-index-1001", position])} style={popupStyle}>
-              {props.renderContent()}
+          <div style={portalStyle} className={portalClassName}>
+            <div ref={popupRef} className={cx(["Tooltip-popup z-index-1001", computedPlacement])} style={popupStyle}>
+              {renderContent()}
             </div>
           </div>
         </Portal>

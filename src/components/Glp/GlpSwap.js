@@ -922,7 +922,7 @@ export default function GlpSwap(props) {
                       2,
                       true
                     )})`}
-                    position="right-bottom"
+                    position="bottom-end"
                     renderContent={() =>
                       t`${formatAmount(reservedAmount, 18, 4, true)} GLP have been reserved for vesting.`
                     }
@@ -937,7 +937,7 @@ export default function GlpSwap(props) {
               <div className="value">
                 <Tooltip
                   handle={`${formatAmount(totalApr, 2, 2, true)}%`}
-                  position="right-bottom"
+                  position="bottom-end"
                   renderContent={() => {
                     return (
                       <>
@@ -1094,7 +1094,7 @@ export default function GlpSwap(props) {
                   {isBuying && (
                     <Tooltip
                       handle={isBuying && isSwapTokenCapReached ? "NA" : feePercentageText}
-                      position="right-bottom"
+                      position="bottom-end"
                       renderContent={() => {
                         if (!feeBasisPoints) {
                           return (
@@ -1115,7 +1115,7 @@ export default function GlpSwap(props) {
                   {!isBuying && (
                     <Tooltip
                       handle={feePercentageText}
-                      position="right-bottom"
+                      position="bottom-end"
                       renderContent={() => {
                         if (!feeBasisPoints) {
                           return (
@@ -1192,7 +1192,8 @@ export default function GlpSwap(props) {
                   <Tooltip
                     handle={t`AVAILABLE`}
                     tooltipIconPosition="right"
-                    position="right-bottom text-none"
+                    className="text-none"
+                    position="bottom-end"
                     renderContent={() => (
                       <p className="text-white">
                         <Trans>Available amount to deposit into GLP.</Trans>
@@ -1203,7 +1204,8 @@ export default function GlpSwap(props) {
                   <Tooltip
                     handle={t`AVAILABLE`}
                     tooltipIconPosition="right"
-                    position="center-bottom text-none"
+                    className="text-none"
+                    position="bottom"
                     renderContent={() => {
                       return (
                         <p className="text-white">
@@ -1223,7 +1225,8 @@ export default function GlpSwap(props) {
                 <Tooltip
                   handle={t`FEES`}
                   tooltipIconPosition="right"
-                  position="right-bottom text-none"
+                  className="text-none"
+                  position="bottom"
                   renderContent={() => {
                     return (
                       <div className="text-white">
@@ -1294,7 +1297,7 @@ export default function GlpSwap(props) {
                     return (
                       <Tooltip
                         handle="NA"
-                        position="right-bottom"
+                        position="bottom-end"
                         renderContent={() => (
                           <div className="text-white">
                             <Trans>
@@ -1349,7 +1352,7 @@ export default function GlpSwap(props) {
                               : `$${formatAmount(amountLeftToDeposit, USD_DECIMALS, 2, true)}`
                           }
                           className="nowrap"
-                          position="right-bottom"
+                          position="bottom-end"
                           tooltipIconPosition="right"
                           renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
                         />
@@ -1364,7 +1367,7 @@ export default function GlpSwap(props) {
                               : `$${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)}`
                           }
                           className="nowrap"
-                          position="right-bottom"
+                          position="bottom-end"
                           tooltipIconPosition="right"
                           renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
                         />
@@ -1448,7 +1451,7 @@ export default function GlpSwap(props) {
                   return (
                     <Tooltip
                       handle="NA"
-                      position="right-bottom"
+                      position="bottom-end"
                       renderContent={() => (
                         <Trans>
                           Max pool capacity reached for {tokenInfo.symbol}. Please mint GLP using another token
@@ -1486,7 +1489,7 @@ export default function GlpSwap(props) {
                     <div className="App-card-row">
                       <Tooltip
                         handle={t`Available`}
-                        position="left-bottom"
+                        position="bottom-start"
                         className="label"
                         renderContent={() => (
                           <p className="text-white">
@@ -1497,7 +1500,7 @@ export default function GlpSwap(props) {
                       <div>
                         <Tooltip
                           handle={amountLeftToDeposit && `$${formatAmount(amountLeftToDeposit, USD_DECIMALS, 2, true)}`}
-                          position="right-bottom"
+                          position="bottom-end"
                           tooltipIconPosition="right"
                           renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
                         />
@@ -1509,7 +1512,7 @@ export default function GlpSwap(props) {
                       <div className="label">
                         <Tooltip
                           handle={t`Available`}
-                          position="left-bottom"
+                          position="bottom-start"
                           renderContent={() => {
                             return (
                               <p className="text-white">
@@ -1529,7 +1532,7 @@ export default function GlpSwap(props) {
                               ? "$0.00"
                               : `$${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)}`
                           }
-                          position="right-bottom"
+                          position="bottom-end"
                           tooltipIconPosition="right"
                           renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
                         />

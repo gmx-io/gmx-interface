@@ -188,7 +188,7 @@ export function SettleAccruedFundingFeeModal({
             <div className="ClaimSettleModal-header-right">
               <Tooltip
                 className="ClaimSettleModal-tooltip"
-                position="right-top"
+                position="top-end"
                 handle={<Trans>FUNDING FEE</Trans>}
                 renderContent={renderTooltipContent}
               />

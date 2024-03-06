@@ -78,7 +78,7 @@ export const GmTokensBalanceInfo = ({
     return content;
   }
 
-  return <Tooltip renderContent={renderTooltipContent} handle={content} position="right-bottom" />;
+  return <Tooltip renderContent={renderTooltipContent} handle={content} position="bottom-end" />;
 };
 
 export const GmTokensTotalBalanceInfo = ({
@@ -157,7 +157,8 @@ export const GmTokensTotalBalanceInfo = ({
     <Tooltip
       handle={label}
       className="text-none"
-      position={tooltipPosition ?? "right-bottom"}
+      maxAllowedWidth={340}
+      position={tooltipPosition ?? "bottom-end"}
       renderContent={renderTooltipContent}
     />
   ) : (

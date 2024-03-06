@@ -6,6 +6,7 @@ import { helperToast } from "../helperToast";
 import { getErrorMessage } from "./transactionErrors";
 import { getGasLimit, setGasPrice } from "./utils";
 import { ReactNode } from "react";
+import React from "react";
 
 export async function callContract(
   chainId: number,
@@ -20,6 +21,7 @@ export async function callContract(
     successMsg?: string;
     hideSentMsg?: boolean;
     hideSuccessMsg?: boolean;
+    showPreliminaryMsg?: boolean;
     failMsg?: string;
     setPendingTxns?: (txns: any) => void;
   }
@@ -40,6 +42,14 @@ export async function callContract(
       txnOpts.value = opts.value;
     }
 
+    if (opts.showPreliminaryMsg && !opts.hideSentMsg) {
+      showCallContractToast({
+        chainId,
+        sentMsg: opts.sentMsg || t`Transaction sent.`,
+        detailsMsg: opts.detailsMsg || "",
+      });
+    }
+
     txnOpts.gasLimit = opts.gasLimit ? opts.gasLimit : await getGasLimit(contract, method, params, opts.value);
 
     await setGasPrice(txnOpts, contract.provider, chainId);
@@ -47,20 +57,12 @@ export async function callContract(
     const res = await contract[method](...params, txnOpts);
 
     if (!opts.hideSentMsg) {
-      const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
-      const sentMsg = opts.sentMsg || t`Transaction sent.`;
-
-      helperToast.success(
-        <div>
-          {sentMsg}{" "}
-          <ExternalLink href={txUrl}>
-            <Trans>View status.</Trans>
-          </ExternalLink>
-          <br />
-          {opts.detailsMsg && <br />}
-          {opts.detailsMsg}
-        </div>
-      );
+      showCallContractToast({
+        chainId,
+        sentMsg: opts.sentMsg || t`Transaction sent.`,
+        detailsMsg: opts.detailsMsg || "",
+        hash: res.hash,
+      });
     }
 
     if (opts.setPendingTxns) {
@@ -80,4 +82,35 @@ export async function callContract(
     helperToast.error(failMsg, { autoClose: autoCloseToast });
     throw e;
   }
+}
+
+function showCallContractToast({
+  chainId,
+  hash,
+  sentMsg,
+  detailsMsg,
+  toastId,
+}: {
+  chainId: number;
+  hash?: string;
+  sentMsg: string;
+  detailsMsg?: React.ReactNode;
+  toastId?: string;
+}) {
+  helperToast.success(
+    <div>
+      {sentMsg || t`Transaction sent.`}{" "}
+      {hash && (
+        <ExternalLink href={getExplorerUrl(chainId) + "tx/" + hash}>
+          <Trans>View status.</Trans>
+        </ExternalLink>
+      )}
+      <br />
+      {detailsMsg && <br />}
+      {detailsMsg}
+    </div>,
+    {
+      toastId,
+    }
+  );
 }

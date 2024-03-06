@@ -78,6 +78,7 @@ import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
+import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 
 import "./PositionSeller.scss";
 
@@ -406,7 +407,7 @@ export function PositionSeller(p: Props) {
 
     setIsSubmitting(true);
 
-    createDecreaseOrderTxn(
+    const txnPromise = createDecreaseOrderTxn(
       chainId,
       signer,
       subaccount,
@@ -437,10 +438,19 @@ export function PositionSeller(p: Props) {
         setPendingTxns,
         setPendingPosition,
       }
-    )
-      .then(onClose)
-      .finally(() => setIsSubmitting(false));
+    );
+
+    if (subaccount) {
+      onClose();
+      setIsSubmitting(false);
+      return;
+    }
+
+    txnPromise.then(onClose).finally(() => {
+      setIsSubmitting(false);
+    });
   }
+
   useEffect(
     function resetForm() {
       if (!isVisible !== prevIsVisible) {
@@ -792,7 +802,7 @@ export function PositionSeller(p: Props) {
                           <Trans>Collateral ({position.collateralToken?.symbol})</Trans>
                         </span>
                       }
-                      position="left-top"
+                      position="top-start"
                       renderContent={() => {
                         return <Trans>Initial Collateral (Collateral excluding Borrow and Funding Fee).</Trans>;
                       }}
@@ -806,7 +816,8 @@ export function PositionSeller(p: Props) {
                   </div>
                 </div>
 
-                <TradeFeesRow {...fees} executionFee={executionFee} feesType="decrease" />
+                <TradeFeesRow {...fees} feesType="decrease" />
+                <NetworkFeeRow executionFee={executionFee} />
               </ExchangeInfo.Group>
 
               <ExchangeInfo.Group>{receiveTokenRow}</ExchangeInfo.Group>
