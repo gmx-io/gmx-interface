@@ -6328,12 +6328,12 @@ msgid "collateral"
 msgstr "担保"
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "day"
-msgstr ""
+#~ msgid "day"
+#~ msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "days"
-msgstr ""
+#~ msgid "days"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "esGMX OTC Market"
@@ -6352,12 +6352,12 @@ msgid "hide"
 msgstr "隠す"
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "hour"
-msgstr ""
+#~ msgid "hour"
+#~ msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "hours"
-msgstr ""
+#~ msgid "hours"
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "in liquidity"
@@ -6372,12 +6372,12 @@ msgid "long"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "minute"
-msgstr ""
+#~ msgid "minute"
+#~ msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "minutes"
-msgstr ""
+#~ msgid "minutes"
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "not staked"
@@ -6394,12 +6394,12 @@ msgid "receive"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "second"
-msgstr ""
+#~ msgid "second"
+#~ msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "seconds"
-msgstr ""
+#~ msgid "seconds"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "short"
@@ -6727,8 +6727,16 @@ msgid "{positionName} Fees settling"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "{prefix} {days}d {hours}h {minutes}m {0}"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 #~ msgid "{seconds, plural, }"
 #~ msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "{seconds}s"
+msgstr ""
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"

@@ -6331,12 +6331,12 @@ msgid "collateral"
 msgstr "collateral"
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "day"
-msgstr "day"
+#~ msgid "day"
+#~ msgstr "day"
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "days"
-msgstr "days"
+#~ msgid "days"
+#~ msgstr "days"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "esGMX OTC Market"
@@ -6355,12 +6355,12 @@ msgid "hide"
 msgstr "hide"
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "hour"
-msgstr "hour"
+#~ msgid "hour"
+#~ msgstr "hour"
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "hours"
-msgstr "hours"
+#~ msgid "hours"
+#~ msgstr "hours"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "in liquidity"
@@ -6375,12 +6375,12 @@ msgid "long"
 msgstr "long"
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "minute"
-msgstr "minute"
+#~ msgid "minute"
+#~ msgstr "minute"
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "minutes"
-msgstr "minutes"
+#~ msgid "minutes"
+#~ msgstr "minutes"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "not staked"
@@ -6397,12 +6397,12 @@ msgid "receive"
 msgstr "receive"
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "second"
-msgstr "second"
+#~ msgid "second"
+#~ msgstr "second"
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "seconds"
-msgstr "seconds"
+#~ msgid "seconds"
+#~ msgstr "seconds"
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "short"
@@ -6733,8 +6733,16 @@ msgid "{positionName} Fees settling"
 msgstr "{positionName} Fees settling"
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "{prefix} {days}d {hours}h {minutes}m {0}"
+msgstr "{prefix} {days}d {hours}h {minutes}m {0}"
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 #~ msgid "{seconds, plural, }"
 #~ msgstr "{seconds, plural, }"
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "{seconds}s"
+msgstr "{seconds}s"
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"

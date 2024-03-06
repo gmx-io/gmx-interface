@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import cx from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -10,7 +9,6 @@ import {
   useLeaderboardPageKey,
   useLeaderboardRankedAccounts,
   useLeaderboardTiming,
-  useLeaderboardTypeState,
 } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import { CompetitionType } from "domain/synthetics/leaderboard";
 import { mustNeverExist } from "lib/types";
@@ -30,7 +28,7 @@ export function LeaderboardContainer({ isCompetitions }: { isCompetitions: boole
   const { isStartInFuture } = useLeaderboardTiming();
   const [activeLeaderboardIndex, setActiveLeaderboardIndex] = useState(0);
   const [activeCompetitionIndex, setActiveCompetitionIndex] = useState(0);
-  const [, setLeaderboardType] = useLeaderboardTypeState();
+  // const [, setLeaderboardType] = useLeaderboardTypeState();
   const accounts = useLeaderboardRankedAccounts();
   const leaderboardCurrentAccount = useLeaderboardCurrentAccount();
   const isLoading = !accounts;
@@ -62,15 +60,15 @@ export function LeaderboardContainer({ isCompetitions }: { isCompetitions: boole
     setActiveCompetitionIndex(0);
   }, [isCompetitions]);
 
-  useEffect(() => {
-    if (activeLeaderboardIndex === 0) {
-      setLeaderboardType("all");
-    } else if (activeLeaderboardIndex === 1) {
-      setLeaderboardType("30days");
-    } else {
-      setLeaderboardType("7days");
-    }
-  }, [activeLeaderboardIndex, setLeaderboardType]);
+  // useEffect(() => {
+  //   if (activeLeaderboardIndex === 0) {
+  //     setLeaderboardType("all");
+  //   } else if (activeLeaderboardIndex === 1) {
+  //     setLeaderboardType("30days");
+  //   } else {
+  //     setLeaderboardType("7days");
+  //   }
+  // }, [activeLeaderboardIndex, setLeaderboardType]);
 
   const title = useMemo(() => {
     switch (leaderboardPageKey) {
@@ -114,6 +112,8 @@ export function LeaderboardContainer({ isCompetitions }: { isCompetitions: boole
     }
   }, [leaderboardPageKey]);
 
+  const setValue = useCallback((e) => setSearch(e.target.value), []);
+
   return (
     <div className="GlobalLeaderboards">
       <LeaderboardNavigation />
@@ -150,9 +150,9 @@ export function LeaderboardContainer({ isCompetitions }: { isCompetitions: boole
           <div className="LeaderboardHeader">
             <SearchInput
               placeholder={t`Search Address`}
-              className={cx("LeaderboardSearch")}
+              className="LeaderboardSearch"
               value={search}
-              setValue={(e) => setSearch(e.target.value)}
+              setValue={setValue}
               onKeyDown={handleKeyDown}
             />
           </div>

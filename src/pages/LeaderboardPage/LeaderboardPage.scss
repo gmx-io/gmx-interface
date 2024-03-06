@@ -129,7 +129,7 @@
   position: absolute;
   left: 0;
   top: 0;
-  background-color: red;
+  background-color: rgba(180, 187, 255, 0.1);
 }
 
 .LeaderboardRankRow-1 td:first-child::before,
@@ -225,47 +225,10 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
-.CompetitionCountdown__countdown {
-  display: flex;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.CompetitionCountdown__ended {
+.CompetitionCountdown {
   font-size: 2rem;
   margin-top: 4.3rem;
   color: rgba(255, 255, 255, 0.7);
-}
-
-.CompetitionCountdown__section {
-  display: flex;
-  flex-direction: column;
-  height: 7rem;
-}
-
-.CompetitionCountdown__section-number {
-  color: white;
-  font-size: 4.2rem;
-}
-
-.CompetitionCountdown__section-label {
-  font-size: 1.4rem;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  justify-content: flex-end;
-}
-
-.CompetitionCountdown-separator {
-  color: white;
-  display: flex;
-  flex-direction: column;
-  font-size: 4.2rem;
-  margin: 0 6px;
-}
-
-.CompetitionCountdown__prefix {
-  margin-right: 2.1rem;
-  font-size: 2rem;
 }
 
 .LeaderboardNavigation {
@@ -363,6 +326,7 @@ table.Table.Exchange-list th {
   display: flex;
   height: 100%;
   white-space: nowrap;
+  text-transform: uppercase;
 }
 
 .TableHeader.sortable .TableHeaderTitle::after,

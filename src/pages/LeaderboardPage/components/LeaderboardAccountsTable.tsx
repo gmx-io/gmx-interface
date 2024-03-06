@@ -23,10 +23,9 @@ import { BigNumber } from "ethers";
 import { createBreakpoint } from "react-use";
 
 function getRowClassname(rank: number | null, competition: CompetitionType | undefined, pinned: boolean) {
-  if (pinned) return "LeaderboardRankRow-Pinned";
-  if (rank === null) return undefined;
-  if (!competition) return rank <= 3 ? `LeaderboardRankRow-${rank}` : undefined;
-  return undefined;
+  if (pinned) return cx("LeaderboardRankRow-Pinned", "Table_tr");
+  if (rank === null) return "Table_tr";
+  return rank <= 3 ? cx(`LeaderboardRankRow-${rank}`, "Table_tr") : "Table_tr";
 }
 
 function getWinnerRankClassname(rank: number | null, competition: CompetitionType | undefined) {

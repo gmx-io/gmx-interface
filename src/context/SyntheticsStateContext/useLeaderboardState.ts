@@ -6,11 +6,10 @@ import {
 } from "domain/synthetics/leaderboard";
 import { LEADERBOARD_TIMEFRAMES } from "domain/synthetics/leaderboard/constants";
 import { useChainId } from "lib/chains";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { useEffect, useMemo, useState } from "react";
-import { SyntheticsPageType } from "./SyntheticsStateContextProvider";
 import { mustNeverExist } from "lib/types";
+import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
+import { SyntheticsPageType } from "./SyntheticsStateContextProvider";
 
 export type LeaderboardState = ReturnType<typeof useLeaderboardState>;
 
@@ -129,41 +128,9 @@ function useLeaderboardTimeframe(
   }, [leaderboardType]);
   const defaultTimeframe = isCompetitions ? competitionsDefaultTimeframe : leaderboardDefaultTimeframe;
   const defaultTimeframeStr = useMemo(() => serializeTimeframe(defaultTimeframe), [defaultTimeframe]);
-  const [overrideTimeframeStr, setOverrideTimeframeStr] = useLocalStorageSerializeKey<string>(
-    `${pageType}/leaderboardTimeframe`,
-    ""
-  );
-  const timeframeStr = overrideTimeframeStr || defaultTimeframeStr;
+
+  const timeframeStr = defaultTimeframeStr;
   const timeframe = useMemo(() => deserializeTimeframe(timeframeStr), [timeframeStr]);
-
-  useEffect(() => {
-    // @ts-ignore
-    window.overrideLeaderboardTimeframe = (from: number, to: number | undefined) => {
-      if (from in LEADERBOARD_TIMEFRAMES) {
-        setOverrideTimeframeStr(serializeTimeframe(LEADERBOARD_TIMEFRAMES[from]));
-        return;
-      }
-
-      setOverrideTimeframeStr(serializeTimeframe({ from, to }));
-    };
-
-    //@ts-ignore
-    window.getLeaderboardTimeframe = () => {
-      return {
-        from: timeframe.from,
-        to: timeframe.to,
-        iso: `${new Date(timeframe.from * 1000).toISOString()} - ${
-          timeframe.to && new Date(timeframe.to * 1000).toISOString()
-        }`,
-        isOverride: overrideTimeframeStr !== "",
-      };
-    };
-
-    // @ts-ignore
-    window.resetLeaderboardTimeframe = () => {
-      setOverrideTimeframeStr("");
-    };
-  }, [overrideTimeframeStr, setOverrideTimeframeStr, timeframe.from, timeframe.to]);
 
   return timeframe;
 }
