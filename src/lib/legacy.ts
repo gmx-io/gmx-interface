@@ -119,7 +119,7 @@ export function shouldInvertTriggerRatio(tokenA, tokenB) {
 }
 
 export function getExchangeRateDisplay(rate, tokenA, tokenB, opts: { omitSymbols?: boolean } = {}) {
-  if (!rate || !tokenA || !tokenB) return "...";
+  if (!rate || rate.isZero() || !tokenA || !tokenB) return "...";
   if (shouldInvertTriggerRatio(tokenA, tokenB)) {
     [tokenA, tokenB] = [tokenB, tokenA];
     rate = PRECISION.mul(PRECISION).div(rate);

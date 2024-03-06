@@ -16,6 +16,7 @@ import {
   RowDetails,
   formatTradeActionTimestamp,
   formatTradeActionTimestampISO,
+  getErrorTooltipTitle,
   infoRow,
   lines,
   numberToState,
@@ -118,9 +119,10 @@ export const formatPositionMessage = (
       priceComment: priceComment,
       acceptablePrice: "<  " + formattedAcceptablePrice!,
     };
-  } else if (ot === OrderType.MarketIncrease && ev === TradeActionType.OrderFrozen) {
-    const customAction = sizeDeltaUsd.gt(0) ? action : i18n._(actionTextMap["Deposit-OrderFrozen"]!);
+  } else if (ot === OrderType.MarketIncrease && ev === TradeActionType.OrderCancelled) {
+    const customAction = sizeDeltaUsd.gt(0) ? action : i18n._(actionTextMap["Deposit-OrderCancelled"]!);
     const customSize = sizeDeltaUsd.gt(0) ? sizeDeltaText : formattedCollateralDelta;
+    const error = tradeAction.reasonBytes && tryGetError(tradeAction.reasonBytes);
 
     const priceComment = sizeDeltaUsd.gt(0)
       ? lines(t`Mark price for the order.`, "", infoRow(t`Order Acceptable Price`, "<  " + formattedAcceptablePrice!))
@@ -128,6 +130,12 @@ export const formatPositionMessage = (
 
     result = {
       action: customAction,
+      actionComment:
+        error &&
+        lines({
+          text: getErrorTooltipTitle(error.name),
+          state: "error",
+        }),
       size: customSize,
       priceComment,
       acceptablePrice: "<  " + formattedAcceptablePrice!,
@@ -171,6 +179,12 @@ export const formatPositionMessage = (
     let error = tradeAction.reasonBytes && tryGetError(tradeAction.reasonBytes);
 
     result = {
+      actionComment:
+        error &&
+        lines({
+          text: getErrorTooltipTitle(error.name),
+          state: "error",
+        }),
       priceComment: lines(
         t`Mark price for the order.`,
         "",
@@ -199,9 +213,16 @@ export const formatPositionMessage = (
     const customSize = sizeDeltaUsd.gt(0) ? sizeDeltaText : formattedCollateralDelta;
     const customPrice = ">  " + formattedAcceptablePrice!;
     const priceComment = lines(t`Acceptable price for the order.`);
+    const error = tradeAction.reasonBytes && tryGetError(tradeAction.reasonBytes);
 
     result = {
       action: customAction,
+      actionComment:
+        error &&
+        lines({
+          text: getErrorTooltipTitle(error.name),
+          state: "error",
+        }),
       size: customSize,
       price: customPrice,
       priceComment,
@@ -225,20 +246,6 @@ export const formatPositionMessage = (
         }),
         "",
         t`Order execution price takes into account price impact.`
-      ),
-      acceptablePrice: ">  " + formattedAcceptablePrice!,
-    };
-  } else if (ot === OrderType.MarketDecrease && ev === TradeActionType.OrderFrozen) {
-    const customAction = sizeDeltaUsd.gt(0) ? action : i18n._(actionTextMap["Withdraw-OrderFrozen"]!);
-    const customSize = sizeDeltaUsd.gt(0) ? sizeDeltaText : formattedCollateralDelta;
-
-    result = {
-      action: customAction,
-      size: customSize,
-      priceComment: lines(
-        t`Mark price for the order.`,
-        "",
-        infoRow(t`Order Acceptable Price`, ">  " + formattedAcceptablePrice!)
       ),
       acceptablePrice: ">  " + formattedAcceptablePrice!,
     };
@@ -281,6 +288,12 @@ export const formatPositionMessage = (
     let error = tradeAction.reasonBytes && tryGetError(tradeAction.reasonBytes);
 
     result = {
+      actionComment:
+        error &&
+        lines({
+          text: getErrorTooltipTitle(error.name),
+          state: "error",
+        }),
       priceComment: lines(
         t`Mark price for the order.`,
         "",
@@ -326,6 +339,12 @@ export const formatPositionMessage = (
     let error = tradeAction.reasonBytes && tryGetError(tradeAction.reasonBytes);
 
     result = {
+      actionComment:
+        error &&
+        lines({
+          text: getErrorTooltipTitle(error.name),
+          state: "error",
+        }),
       priceComment: lines(
         t`Mark price for the order.`,
         "",

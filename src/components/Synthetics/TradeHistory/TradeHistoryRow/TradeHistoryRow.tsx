@@ -125,7 +125,14 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
             className="TradeHistoryRow-action plain"
             href={`${getExplorerUrl(chainId)}tx/${tradeAction.transaction.hash}`}
           >
-            {msg.action}
+            {msg.actionComment ? (
+              <TooltipWithPortal
+                handle={msg.action}
+                renderContent={() => <TooltipContentComponent content={msg.actionComment!} />}
+              />
+            ) : (
+              msg.action
+            )}
           </ExternalLink>
           <br />
           <TooltipWithPortal

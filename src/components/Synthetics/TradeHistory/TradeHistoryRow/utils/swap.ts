@@ -15,6 +15,7 @@ import {
   RowDetails,
   formatTradeActionTimestamp,
   formatTradeActionTimestampISO,
+  getErrorTooltipTitle,
   infoRow,
   lines,
   tryGetError,
@@ -166,6 +167,12 @@ export const formatSwapMessage = (
     });
 
     result = {
+      actionComment:
+        error &&
+        lines({
+          text: getErrorTooltipTitle(error.name),
+          state: "error",
+        }),
       price: rate,
       priceComment: lines(
         t`Execution price for the order.`,
@@ -210,6 +217,12 @@ export const formatSwapMessage = (
     });
 
     result = {
+      actionComment:
+        error &&
+        lines({
+          text: getErrorTooltipTitle(error.name),
+          state: "error",
+        }),
       price: rate,
       priceComment: lines(
         t`Execution price for the order.`,

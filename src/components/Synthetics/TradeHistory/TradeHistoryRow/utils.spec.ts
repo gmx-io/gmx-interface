@@ -216,6 +216,7 @@ describe("TradeHistoryRow helpers", () => {
       Object {
         "acceptablePrice": "<  $26,937.90",
         "action": "Failed Limit Order",
+        "actionComment": undefined,
         "executionPrice": undefined,
         "fullMarket": "BTC/USD [BTC-USDC]",
         "indexName": "BTC/USD",
@@ -450,6 +451,12 @@ describe("TradeHistoryRow helpers", () => {
       Object {
         "acceptablePrice": "<  2,054.58 USDC / ETH",
         "action": "Failed Limit Swap",
+        "actionComment": Array [
+          Object {
+            "state": "error",
+            "text": "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity.",
+          },
+        ],
         "executionPrice": "...",
         "fullMarket": "...",
         "fullMarketNames": undefined,

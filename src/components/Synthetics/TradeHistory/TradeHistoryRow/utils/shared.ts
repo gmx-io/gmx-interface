@@ -5,6 +5,7 @@ import format from "date-fns/format";
 import formatISO from "date-fns/formatISO";
 import formatRelative from "date-fns/formatRelative";
 import { BigNumber, ethers } from "ethers";
+import words from "lodash/words";
 
 import dateEn from "date-fns/locale/en-US";
 
@@ -81,6 +82,7 @@ export function infoRow(key: string, value: TooltipString): Line {
 
 export type RowDetails = {
   action: string;
+  actionComment?: TooltipContent;
   timestamp: string;
   timestampISO: string;
   market: string;
@@ -161,4 +163,23 @@ export function tryGetError(
   }
 
   return error;
+}
+
+export function getErrorTooltipTitle(errorName: string) {
+  switch (errorName) {
+    case "OrderNotFulfillableAtAcceptablePrice": {
+      return t`The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met.`;
+    }
+
+    case "InsufficientReserveForOpenInterest": {
+      return t`Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity.`;
+    }
+
+    case "InsufficientSwapOutputAmount": {
+      return t`Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity.`;
+    }
+
+    default:
+      return t`Reason: ${words(errorName).join(" ").toLowerCase()}`;
+  }
 }

@@ -47,7 +47,7 @@ export function TableOptionsFilter<T>({
 }: Props<T>) {
   const isActive = multiple ? Boolean(value?.length) : Boolean(value);
 
-  const isGrouped = "groupName" in options[0] && "items" in options[0];
+  const isGrouped = options.length > 0 && "groupName" in options[0] && "items" in options[0];
 
   const showGroupToggle = multiple && !disableGroupSelection && isGrouped;
 
