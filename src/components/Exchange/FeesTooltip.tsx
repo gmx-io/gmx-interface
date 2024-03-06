@@ -113,7 +113,7 @@ function FeesTooltip({
 
   return (
     <Tooltip
-      position="right-top"
+      position="top-end"
       className="PositionSeller-fees-tooltip"
       handle={<div>{totalFees?.gt(0) ? `$${formatAmount(totalFees, USD_DECIMALS, 2, true)}` : "-"}</div>}
       renderContent={() => (

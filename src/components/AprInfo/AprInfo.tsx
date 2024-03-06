@@ -34,7 +34,7 @@ export function AprInfo({
     );
   }, [apr, incentiveApr]);
   return showTooltip && incentiveApr && incentiveApr.gt(0) ? (
-    <Tooltip handle={aprNode} position="right-bottom" renderContent={renderTooltipContent} />
+    <Tooltip maxAllowedWidth={280} handle={aprNode} position="bottom-end" renderContent={renderTooltipContent} />
   ) : (
     aprNode
   );

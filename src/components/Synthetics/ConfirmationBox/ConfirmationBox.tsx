@@ -112,9 +112,11 @@ import { useKey, useLatest } from "react-use";
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
-import "./ConfirmationBox.scss";
 import SLTPEntries from "./SLTPEntries";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
+import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
+
+import "./ConfirmationBox.scss";
 
 export type Props = {
   isVisible: boolean;
@@ -697,6 +699,13 @@ export function ConfirmationBox(p: Props) {
       txnPromise = onSubmitDecreaseOrder();
     }
 
+    if (subaccount) {
+      onSubmitted();
+      setIsSubmitting(false);
+
+      return;
+    }
+
     txnPromise
       .then(() => {
         onSubmitted();
@@ -1009,7 +1018,7 @@ export function ConfirmationBox(p: Props) {
     return (
       <ExchangeInfoRow label={t`Available Liquidity`}>
         <Tooltip
-          position="right-bottom"
+          position="bottom-end"
           handleClassName={isLiquidityRisk ? "negative" : ""}
           handle={
             isSwap
@@ -1079,7 +1088,7 @@ export function ConfirmationBox(p: Props) {
               handle={`${formatUsd(entriesInfo?.totalPnL)} (${formatPercentage(entriesInfo?.totalPnLPercentage, {
                 signed: true,
               })})`}
-              position="right-bottom"
+              position="bottom-end"
               handleClassName={entriesInfo.totalPnL?.isNegative() ? "text-red" : "text-green"}
               className="SLTP-pnl-tooltip"
               renderContent={() =>
@@ -1288,7 +1297,7 @@ export function ConfirmationBox(p: Props) {
                       <Trans>Collateral ({collateralToken?.symbol})</Trans>
                     </span>
                   }
-                  position="left-top"
+                  position="top-start"
                   renderContent={() => {
                     return (
                       <div>
@@ -1318,7 +1327,7 @@ export function ConfirmationBox(p: Props) {
                     to={formatUsd(nextPositionValues?.nextCollateralUsd)}
                   />
                 }
-                position="right-top"
+                position="top-end"
                 renderContent={() => {
                   return (
                     <>
@@ -1365,9 +1374,9 @@ export function ConfirmationBox(p: Props) {
               fundigRate && `${getPlusOrMinusSymbol(fundigRate)}${formatAmount(fundigRate.abs(), 30, 4)}% / 1h`
             }
             borrowFeeRateStr={borrowingRate && `-${formatAmount(borrowingRate, 30, 4)}% / 1h`}
-            executionFee={p.executionFee}
             feesType="increase"
           />
+          <NetworkFeeRow executionFee={p.executionFee} />
         </ExchangeInfo.Group>
 
         <ExchangeInfo.Group>
@@ -1416,7 +1425,7 @@ export function ConfirmationBox(p: Props) {
           {isLimit && (
             <ExchangeInfoRow label={t`Limit Price`}>
               <Tooltip
-                position="right-bottom"
+                position="bottom-end"
                 handle={formatTokensRatio(fromToken, toToken, triggerRatio)}
                 renderContent={() =>
                   t`Limit Order Price to guarantee Min. Receive amount is updated in real time in the Orders tab after the order has been created.`
@@ -1438,7 +1447,12 @@ export function ConfirmationBox(p: Props) {
         </ExchangeInfo.Group>
 
         <ExchangeInfo.Group>
-          {!isWrapOrUnwrap && <TradeFeesRow {...fees} executionFee={p.executionFee} feesType="swap" />}
+          {!isWrapOrUnwrap && (
+            <>
+              <TradeFeesRow {...fees} feesType="swap" />
+              <NetworkFeeRow executionFee={p.executionFee} />
+            </>
+          )}
         </ExchangeInfo.Group>
 
         <ExchangeInfo.Group>
@@ -1620,7 +1634,8 @@ export function ConfirmationBox(p: Props) {
             />
           )}
 
-          <TradeFeesRow {...fees} executionFee={p.executionFee} feesType="decrease" />
+          <TradeFeesRow {...fees} feesType="decrease" />
+          <NetworkFeeRow executionFee={p.executionFee} />
         </ExchangeInfo.Group>
 
         <ExchangeInfo.Group>

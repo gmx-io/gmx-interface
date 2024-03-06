@@ -81,7 +81,7 @@ export function PositionItem(p: Props) {
     return (
       <Tooltip
         handle={formatUsd(p.position.netValue)}
-        position={p.isLarge ? "left-bottom" : "right-bottom"}
+        position={p.isLarge ? "bottom-start" : "bottom-end"}
         handleClassName="plain"
         renderContent={() => (
           <div>
@@ -150,7 +150,7 @@ export function PositionItem(p: Props) {
         <div className={cx("position-list-collateral", { isSmall: !p.isLarge })}>
           <Tooltip
             handle={`${formatUsd(p.position.remainingCollateralUsd)}`}
-            position={p.isLarge ? "left-bottom" : "right-bottom"}
+            position={p.isLarge ? "bottom-start" : "bottom-end"}
             className="PositionItem-collateral-tooltip"
             handleClassName={cx("plain", { negative: p.position.hasLowCollateral })}
             renderContent={() => {
@@ -318,7 +318,7 @@ export function PositionItem(p: Props) {
       return (
         <Tooltip
           handle={formatLiquidationPrice(p.position.liquidationPrice, { displayDecimals: indexPriceDecimals }) || "..."}
-          position={"right-bottom"}
+          position="bottom-end"
           handleClassName={cx("plain", {
             "LiqPrice-soft-warning": estimatedLiquidationHours && estimatedLiquidationHours < 24 * 7,
             "LiqPrice-hard-warning": estimatedLiquidationHours && estimatedLiquidationHours < 24,
@@ -360,7 +360,7 @@ export function PositionItem(p: Props) {
             <div key={order.key} className="Position-list-order">
               <Tooltip
                 handle={renderOrderText(order)}
-                position="right-bottom"
+                position="bottom-end"
                 handleClassName={cx("position-order-error", {
                   "level-warning": order.errorLevel === "warning",
                   "level-error": order.errorLevel === "error",
@@ -412,7 +412,7 @@ export function PositionItem(p: Props) {
               </span>
             </Trans>
           }
-          position="left-bottom"
+          position="bottom-start"
           handleClassName={cx([
             "Exchange-list-info-label",
             "Exchange-position-list-orders",
@@ -479,7 +479,7 @@ export function PositionItem(p: Props) {
                   {p.position.marketInfo.indexToken.symbol}
                 </>
               }
-              position="left-bottom"
+              position="bottom-start"
               handleClassName="plain"
               renderContent={() => (
                 <div>

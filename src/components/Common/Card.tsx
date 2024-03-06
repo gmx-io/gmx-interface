@@ -15,7 +15,7 @@ function Card({ title, children, className, tooltipText }: Props) {
       {tooltipText ? (
         <Tooltip
           handle={<div className="card-header">{title}</div>}
-          position="left-bottom"
+          position="bottom-start"
           renderContent={() => tooltipText}
         />
       ) : (

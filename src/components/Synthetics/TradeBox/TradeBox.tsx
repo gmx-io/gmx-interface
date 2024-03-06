@@ -100,6 +100,8 @@ import { SwapCard } from "../SwapCard/SwapCard";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { CollateralSelectorRow } from "./CollateralSelectorRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
+import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
+
 import "./TradeBox.scss";
 
 export type Props = {
@@ -985,8 +987,7 @@ export function TradeBox(p: Props) {
       >
         {markRatio && (
           <>
-            <TokenWithIcon symbol={markRatio.smallestToken.symbol} displaySize={20} />
-             per 
+            <TokenWithIcon symbol={markRatio.smallestToken.symbol} displaySize={20} /> per{" "}
             <TokenWithIcon symbol={markRatio.largestToken.symbol} displaySize={20} />
           </>
         )}
@@ -1305,7 +1306,7 @@ export function TradeBox(p: Props) {
       renderContent={() => tooltipContent}
       handle={buttonContent}
       handleClassName="w-full"
-      position="center-bottom"
+      position="bottom"
     />
   ) : (
     buttonContent
@@ -1357,7 +1358,12 @@ export function TradeBox(p: Props) {
 
               <ExchangeInfo.Group>
                 {selectedPosition && !isSwap && renderExistingPositionInfo()}
-                {feesType && <TradeFeesRow {...fees} executionFee={executionFee} feesType={feesType} />}
+                {feesType && (
+                  <>
+                    <TradeFeesRow {...fees} feesType={feesType} />
+                    <NetworkFeeRow executionFee={executionFee} />
+                  </>
+                )}
               </ExchangeInfo.Group>
 
               <ExchangeInfo.Group>

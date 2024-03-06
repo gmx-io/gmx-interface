@@ -71,7 +71,7 @@ function renderAllowedSlippage(setAllowedSlippage, defaultSlippage, allowedSlipp
       label={
         <TooltipWithPortal
           handle={t`Allowed Slippage`}
-          position="left-top"
+          position="top-start"
           renderContent={() => {
             return (
               <div className="text-white">
@@ -614,7 +614,7 @@ export default function ConfirmationBox(props) {
     return (
       <ExchangeInfoRow label={t`Available Liquidity`}>
         <Tooltip
-          position="right-bottom"
+          position="bottom-end"
           handleClassName={isLiquidityRisk ? "negative" : null}
           handle={
             <>
@@ -717,7 +717,7 @@ export default function ConfirmationBox(props) {
           <ExchangeInfoRow label={t`Collateral (${collateralToken.symbol})`} isTop>
             <Tooltip
               handle={`$${formatAmount(collateralAfterFees, USD_DECIMALS, 2, true)}`}
-              position="right-top"
+              position="top-end"
               renderContent={() => {
                 return (
                   <>
