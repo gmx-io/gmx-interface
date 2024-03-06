@@ -270,7 +270,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoSymbol: "AAVE",
     },
     {
-      name: "Avalanche",
+      name: "Wrapped AVAX (Wormhole)",
       symbol: "AVAX",
       assetSymbol: "WAVAX",
       address: "0x565609fAF65B92F7be02468acF86f8979423e514",
