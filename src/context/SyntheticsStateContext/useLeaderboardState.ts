@@ -6,10 +6,11 @@ import {
 } from "domain/synthetics/leaderboard";
 import { LEADERBOARD_TIMEFRAMES } from "domain/synthetics/leaderboard/constants";
 import { useChainId } from "lib/chains";
-import { mustNeverExist } from "lib/types";
-import { useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { useEffect, useMemo, useState } from "react";
 import { SyntheticsPageType } from "./SyntheticsStateContextProvider";
+import { mustNeverExist } from "lib/types";
+import { useParams } from "react-router-dom";
 
 export type LeaderboardState = ReturnType<typeof useLeaderboardState>;
 
@@ -24,6 +25,7 @@ export const useLeaderboardState = (account: string | undefined, pageType: Synth
   const leaderboardPageKey = leaderboardPageKeyRaw ?? "leaderboard";
 
   const timeframe = useLeaderboardTimeframe(pageType, leaderboardType, leaderboardPageKey);
+
   const isEndInFuture = timeframe.to === undefined || timeframe.to > Date.now() / 1000;
   const isStartInFuture = timeframe.from > Date.now() / 1000;
   const positionsSnapshotTimestamp = isEndInFuture ? undefined : timeframe.to;
@@ -127,9 +129,41 @@ function useLeaderboardTimeframe(
   }, [leaderboardType]);
   const defaultTimeframe = isCompetitions ? competitionsDefaultTimeframe : leaderboardDefaultTimeframe;
   const defaultTimeframeStr = useMemo(() => serializeTimeframe(defaultTimeframe), [defaultTimeframe]);
-
-  const timeframeStr = defaultTimeframeStr;
+  const [overrideTimeframeStr, setOverrideTimeframeStr] = useLocalStorageSerializeKey<string>(
+    `${pageType}/leaderboardTimeframe`,
+    ""
+  );
+  const timeframeStr = overrideTimeframeStr || defaultTimeframeStr;
   const timeframe = useMemo(() => deserializeTimeframe(timeframeStr), [timeframeStr]);
+
+  useEffect(() => {
+    // @ts-ignore
+    window.overrideLeaderboardTimeframe = (from: number, to: number | undefined) => {
+      if (from in LEADERBOARD_TIMEFRAMES) {
+        setOverrideTimeframeStr(serializeTimeframe(LEADERBOARD_TIMEFRAMES[from]));
+        return;
+      }
+
+      setOverrideTimeframeStr(serializeTimeframe({ from, to }));
+    };
+
+    //@ts-ignore
+    window.getLeaderboardTimeframe = () => {
+      return {
+        from: timeframe.from,
+        to: timeframe.to,
+        iso: `${new Date(timeframe.from * 1000).toISOString()} - ${
+          timeframe.to && new Date(timeframe.to * 1000).toISOString()
+        }`,
+        isOverride: overrideTimeframeStr !== "",
+      };
+    };
+
+    // @ts-ignore
+    window.resetLeaderboardTimeframe = () => {
+      setOverrideTimeframeStr("");
+    };
+  }, [overrideTimeframeStr, setOverrideTimeframeStr, timeframe.from, timeframe.to]);
 
   return timeframe;
 }
