@@ -3,7 +3,7 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { BigNumber } from "ethers";
 import React, { useEffect, useMemo, useState } from "react";
-import { useLatest } from "react-use";
+import { useKey, useLatest } from "react-use";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -450,6 +450,17 @@ export function PositionSeller(p: Props) {
       setIsSubmitting(false);
     });
   }
+
+  useKey(
+    "Enter",
+    () => {
+      if (isVisible && !error) {
+        onSubmit();
+      }
+    },
+    {},
+    [isVisible]
+  );
 
   useEffect(
     function resetForm() {

@@ -66,6 +66,7 @@ import ExchangeInfoRow from "./ExchangeInfoRow";
 import FeesTooltip from "./FeesTooltip";
 import "./PositionSeller.css";
 import { ErrorCode, ErrorDisplayType } from "./constants";
+import { useKey } from "react-use";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -955,6 +956,17 @@ export default function PositionSeller(props) {
         setIsSubmitting(false);
       });
   };
+
+  useKey(
+    "Enter",
+    () => {
+      if (isVisible && isPrimaryEnabled()) {
+        onClickPrimary();
+      }
+    },
+    {},
+    [isVisible]
+  );
 
   const renderExistingOrderWarning = useCallback(() => {
     if (!existingOrder) {
