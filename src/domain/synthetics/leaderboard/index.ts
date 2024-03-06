@@ -231,7 +231,6 @@ export function useLeaderboardData(
     from: number;
     to: number | undefined;
     positionsSnapshotTimestamp: number | undefined;
-    isLeaderboard: boolean;
   }
 ) {
   const { data, error } = useSWR(
@@ -239,11 +238,10 @@ export function useLeaderboardData(
       ? ["leaderboard/useLeaderboardAccounts", chainId, p.account, p.from, p.to, p.positionsSnapshotTimestamp]
       : null,
     async () => {
-      const accounts = await fetchAccounts(chainId, p);
-
-      if (!accounts || !accounts.length) return undefined;
-
-      const positions = await fetchPositions(chainId, p.positionsSnapshotTimestamp, p.isLeaderboard);
+      const [accounts, positions] = await Promise.all([
+        fetchAccounts(chainId, p),
+        fetchPositions(chainId, p.positionsSnapshotTimestamp),
+      ]);
 
       return {
         accounts,
@@ -260,8 +258,7 @@ export function useLeaderboardData(
 
 const fetchPositions = async (
   chainId: number,
-  snapshotTimestamp: number | undefined,
-  isLeaderboard: boolean
+  snapshotTimestamp: number | undefined
 ): Promise<LeaderboardPositionBase[] | undefined> => {
   const client = getLeaderboardGraphClient(chainId);
   if (!client) {
@@ -304,7 +301,7 @@ const fetchPositions = async (
     `,
     variables: {
       isSnapshot: snapshotTimestamp !== undefined,
-      requiredMaxCollateral: isLeaderboard ? undefined : MIN_COLLATERAL_USD_IN_LEADERBOARD.toString(),
+      requiredMaxCollateral: MIN_COLLATERAL_USD_IN_LEADERBOARD.toString(),
       snapshotTimestamp,
     },
     fetchPolicy: "no-cache",

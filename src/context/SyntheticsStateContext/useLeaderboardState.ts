@@ -33,7 +33,6 @@ export const useLeaderboardState = (account: string | undefined, pageType: Synth
     from: timeframe.from,
     to: timeframe.to,
     positionsSnapshotTimestamp,
-    isLeaderboard,
   });
 
   return useMemo(
