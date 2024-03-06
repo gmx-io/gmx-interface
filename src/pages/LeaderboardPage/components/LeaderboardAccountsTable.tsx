@@ -56,7 +56,7 @@ export function LeaderboardAccountsTable({
   const perPage = 20;
   const { isLoading, data } = accounts;
   const [page, setPage] = useState(1);
-  const [orderBy, setOrderBy] = useState<LeaderboardAccountField>("totalPnlAfterFees");
+  const [orderBy, setOrderBy] = useState<LeaderboardAccountField>("totalQualifyingPnl");
   const [direction, setDirection] = useState<number>(1);
   const handleColumnClick = useCallback(
     (key: string) => {
@@ -78,7 +78,7 @@ export function LeaderboardAccountsTable({
     if (!isCompetitions) return;
 
     if (activeCompetition === "notionalPnl") {
-      setOrderBy("totalPnlAfterFees");
+      setOrderBy("totalQualifyingPnl");
       setDirection(1);
     }
     if (activeCompetition === "pnlPercentage") {
@@ -171,8 +171,8 @@ export function LeaderboardAccountsTable({
             {shouldRenderValueForPinnedRow ? (
               <TooltipWithPortal
                 handle={
-                  <span className={signedValueClassName(pinnedRowData.account.totalPnlAfterFees)}>
-                    {formatDelta(pinnedRowData.account.totalPnlAfterFees, { signed: true, prefix: "$" })}
+                  <span className={signedValueClassName(pinnedRowData.account.totalQualifyingPnl)}>
+                    {formatDelta(pinnedRowData.account.totalQualifyingPnl, { signed: true, prefix: "$" })}
                   </span>
                 }
                 position="right-bottom"
@@ -189,11 +189,11 @@ export function LeaderboardAccountsTable({
                       }
                     />
                     <StatsTooltipRow
-                      label={t`Unrealized PnL`}
+                      label={t`Pending PnL`}
                       showDollar={false}
                       value={
-                        <span className={signedValueClassName(pinnedRowData.account.unrealizedPnl)}>
-                          {formatDelta(pinnedRowData.account.unrealizedPnl, { signed: true, prefix: "$" })}
+                        <span className={signedValueClassName(pinnedRowData.account.pendingPnl)}>
+                          {formatDelta(pinnedRowData.account.pendingPnl, { signed: true, prefix: "$" })}
                         </span>
                       }
                     />
@@ -240,11 +240,48 @@ export function LeaderboardAccountsTable({
                       label={t`Paid Price Impact`}
                       showDollar={false}
                       value={
-                        <span className={signedValueClassName(pinnedRowData.account.paidPriceImpact)}>
-                          {formatDelta(pinnedRowData.account.paidPriceImpact, { signed: true, prefix: "$" })}
+                        <span className={signedValueClassName(pinnedRowData.account.paidPriceImpact.mul(-1))}>
+                          {formatDelta(pinnedRowData.account.paidPriceImpact.mul(-1), { signed: true, prefix: "$" })}
                         </span>
                       }
                     />
+                    {/* <StatsTooltipRow
+                      label={t`Formula PnL`}
+                      showDollar={false}
+                      value={[
+                        `( ${pinnedRowData.account.realizedPnl.toString()}n / 10n**30n`,
+                        `+ ${pinnedRowData.account.pendingPnl.toString()}n / 10n**30n`,
+                        `- ${pinnedRowData.account.startPendingPnl.toString()}n / 10n**30n )`,
+                        ``,
+                        `== ${pinnedRowData.account.totalPnl.toString()}n / 10n**30n `,
+                      ].join(" ")}
+                    />
+                    <StatsTooltipRow
+                      label={t`Formula Fees`}
+                      showDollar={false}
+                      value={[
+                        `( ${pinnedRowData.account.paidFees.toString()}n / 10n**30n`,
+                        `+ ${pinnedRowData.account.pendingFees.toString()}n / 10n**30n`,
+                        `- ${pinnedRowData.account.startPendingFees.toString()}n / 10n**30n )`,
+                        ``,
+                        `== ${pinnedRowData.account.totalFees.toString()}n / 10n**30n `,
+                      ].join(" ")}
+                    />
+                    <StatsTooltipRow
+                      label={t`Formula Total`}
+                      showDollar={false}
+                      value={[
+                        `( ${pinnedRowData.account.realizedPnl.toString()}n`,
+                        `+ ${pinnedRowData.account.pendingPnl.toString()}n`,
+                        `- ${pinnedRowData.account.startPendingPnl.toString()}n`,
+                        `- ${pinnedRowData.account.paidFees.toString()}n`,
+                        `- ${pinnedRowData.account.pendingFees.toString()}n`,
+                        `+ ${pinnedRowData.account.startPendingFees.toString()}n`,
+                        `- ${pinnedRowData.account.paidPriceImpact.toString()}n ) / 10n**30n`,
+                        ``,
+                        `== ${pinnedRowData.account.totalQualifyingPnl.toString()}n / 10n**30n `,
+                      ].join(" ")}
+                    /> */}
                   </div>
                 )}
               />
@@ -303,8 +340,8 @@ export function LeaderboardAccountsTable({
               {shouldRenderValue ? (
                 <TooltipWithPortal
                   handle={
-                    <span className={signedValueClassName(account.totalPnlAfterFees)}>
-                      {formatDelta(account.totalPnlAfterFees, { signed: true, prefix: "$" })}
+                    <span className={signedValueClassName(account.totalQualifyingPnl)}>
+                      {formatDelta(account.totalQualifyingPnl, { signed: true, prefix: "$" })}
                     </span>
                   }
                   position={index > 7 ? "right-top" : "right-bottom"}
@@ -324,8 +361,8 @@ export function LeaderboardAccountsTable({
                         label={t`Unrealized PnL`}
                         showDollar={false}
                         value={
-                          <span className={signedValueClassName(account.unrealizedPnl)}>
-                            {formatDelta(account.unrealizedPnl, { signed: true, prefix: "$" })}
+                          <span className={signedValueClassName(account.pendingPnl)}>
+                            {formatDelta(account.pendingPnl, { signed: true, prefix: "$" })}
                           </span>
                         }
                       />
@@ -444,7 +481,7 @@ export function LeaderboardAccountsTable({
                 tooltipPosition="left-bottom"
                 onClick={handleColumnClick}
                 columnName="totalPnlAfterFees"
-                className={getSortableClass("totalPnlAfterFees")}
+                className={getSortableClass("totalQualifyingPnl")}
               />
               <TableHeaderCell
                 title={t`PnL (%)`}

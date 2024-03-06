@@ -3759,6 +3759,10 @@ msgstr ""
 msgid "Pending Fees"
 msgstr ""
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Pending PnL"
+msgstr ""
+
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Pending Wallet message sign"
 msgstr ""
@@ -5656,7 +5660,6 @@ msgstr ""
 msgid "Unknown sell GM order"
 msgstr ""
 
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Unrealized PnL"
 msgstr ""

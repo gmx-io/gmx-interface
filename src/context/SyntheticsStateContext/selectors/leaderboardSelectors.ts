@@ -47,9 +47,8 @@ export const selectLeaderboardCurrentAccount = createEnhancedSelector((q): Leade
     totalCount: 0,
     totalFees: BigNumber.from(0),
     totalPnl: BigNumber.from(0),
-    totalPnlAfterFees: BigNumber.from(0),
+    totalQualifyingPnl: BigNumber.from(0),
     volume: BigNumber.from(0),
-    unrealizedPnl: BigNumber.from(0),
     wins: 0,
   };
 });
@@ -80,14 +79,13 @@ const selectLeaderboardAccounts = createEnhancedSelector((q) => {
       ...base,
       totalCount: base.closedCount,
       totalPnl: base.realizedPnl,
-      totalPnlAfterFees: BigNumber.from(0),
+      totalQualifyingPnl: BigNumber.from(0),
       pendingPnl: BigNumber.from(0),
       pendingFees: BigNumber.from(0),
       totalFees: base.paidFees,
       pnlPercentage: BigNumber.from(0),
       averageSize: BigNumber.from(0),
       averageLeverage: BigNumber.from(0),
-      unrealizedPnl: BigNumber.from(0),
     };
 
     for (const p of positionBasesByAccount[base.account] || []) {
@@ -96,16 +94,15 @@ const selectLeaderboardAccounts = createEnhancedSelector((q) => {
       account.totalCount++;
       account.sumMaxSize = account.sumMaxSize.add(p.maxSize);
       account.pendingFees = account.pendingFees.add(p.pendingFees);
-      account.pendingPnl = account.pendingPnl.add(pendingPnl).sub(p.pendingFees);
-      account.unrealizedPnl = account.unrealizedPnl.add(pendingPnl);
+      account.pendingPnl = account.pendingPnl.add(pendingPnl);
     }
 
     account.totalFees = account.totalFees.add(account.pendingFees).sub(account.startPendingFees);
     account.totalPnl = account.totalPnl.add(account.pendingPnl).sub(account.startPendingPnl);
-    account.totalPnlAfterFees = account.totalPnl.sub(account.totalFees).add(account.paidPriceImpact);
+    account.totalQualifyingPnl = account.totalPnl.sub(account.totalFees).sub(account.paidPriceImpact);
 
     if (account.maxCollateral.gt(0)) {
-      account.pnlPercentage = account.totalPnlAfterFees.mul(BASIS_POINTS_DIVISOR).div(account.maxCollateral);
+      account.pnlPercentage = account.totalQualifyingPnl.mul(BASIS_POINTS_DIVISOR).div(account.maxCollateral);
     }
 
     if (account.totalCount > 0) {
@@ -134,7 +131,7 @@ export const selectLeaderboardAccountsRanks = createEnhancedSelector((q) => {
   const accountsCopy = [...accounts];
 
   accountsCopy
-    .sort((a, b) => (b.totalPnlAfterFees.sub(a.totalPnlAfterFees).gt(0) ? 1 : -1))
+    .sort((a, b) => (b.totalQualifyingPnl.sub(a.totalQualifyingPnl).gt(0) ? 1 : -1))
     .forEach((account, index) => {
       ranks.pnl.set(account.account, index + 1);
     });

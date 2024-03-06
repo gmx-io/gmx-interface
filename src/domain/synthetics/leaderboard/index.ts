@@ -61,14 +61,13 @@ export type LeaderboardAccountBase = {
 export type LeaderboardAccount = LeaderboardAccountBase & {
   totalCount: number;
   totalPnl: BigNumber;
-  totalPnlAfterFees: BigNumber;
+  totalQualifyingPnl: BigNumber;
   totalFees: BigNumber;
   pendingFees: BigNumber;
   pendingPnl: BigNumber;
   pnlPercentage: BigNumber;
   averageSize: BigNumber;
   averageLeverage: BigNumber;
-  unrealizedPnl: BigNumber;
 };
 
 type LeaderboardPositionsJson = {
