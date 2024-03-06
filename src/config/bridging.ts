@@ -1,20 +1,12 @@
-import { ARBITRUM, AVALANCHE } from "./chains";
-
-const SOLANA_BRIDGING_IDS = {
-  [ARBITRUM]: 23,
-  [AVALANCHE]: 6,
-};
-
 type BridgingOption = {
   name: string;
   generateLink: (chainId: number) => string;
 };
-
 const BRIDGING_OPTIONS: { [symbol: string]: BridgingOption[] } = {
   SOL: [
     {
       name: "Portalbridge",
-      generateLink: (chainId: number) => `https://www.portalbridge.com/${SOLANA_BRIDGING_IDS[chainId]}/from/solana`,
+      generateLink: () => "https://portalbridge.com/?sourceChain=solana&targetChain=arbitrum",
     },
   ],
   BNB: [
@@ -32,7 +24,7 @@ const BRIDGING_OPTIONS: { [symbol: string]: BridgingOption[] } = {
   AVAX: [
     {
       name: "Portalbridge",
-      generateLink: () => "https://portalbridge.com/#/transfer",
+      generateLink: () => "https://portalbridge.com/?sourceChain=ethereum&targetChain=arbitrum",
     },
   ],
 };
