@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { BigNumber } from "ethers";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useKey, useLatest } from "react-use";
 
 import Button from "components/Button/Button";
@@ -119,6 +119,7 @@ export function PositionSeller(p: Props) {
   const uiFeeFactor = useUiFeeFactor(chainId);
   const savedAcceptablePriceImpactBuffer = useSavedAcceptablePriceImpactBuffer();
   const tradeFlags = useTradeboxTradeFlags();
+  const submitButtonRef = useRef<HTMLButtonElement>(null);
 
   const isVisible = Boolean(position);
   const prevIsVisible = usePrevious(isVisible);
@@ -455,11 +456,12 @@ export function PositionSeller(p: Props) {
     "Enter",
     () => {
       if (isVisible && !error) {
+        submitButtonRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
         onSubmit();
       }
     },
     {},
-    [isVisible]
+    [isVisible, error]
   );
 
   useEffect(
@@ -851,6 +853,7 @@ export function PositionSeller(p: Props) {
                 variant="primary-action"
                 disabled={Boolean(error) && !p.shouldDisableValidation}
                 onClick={onSubmit}
+                buttonRef={submitButtonRef}
               >
                 {error ||
                   (isTrigger

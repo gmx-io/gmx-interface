@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ethers } from "ethers";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BsArrowRight } from "react-icons/bs";
 
 import PositionRouter from "abis/PositionRouter.json";
@@ -227,6 +227,7 @@ export default function PositionSeller(props) {
   const prevIsVisible = usePrevious(isVisible);
   const [allowedSlippage, setAllowedSlippage] = useState(savedSlippageAmount);
   const positionPriceDecimal = getPriceDecimals(chainId, position?.indexToken?.symbol);
+  const submitButtonRef = useRef(null);
 
   useEffect(() => {
     setAllowedSlippage(savedSlippageAmount);
@@ -961,11 +962,12 @@ export default function PositionSeller(props) {
     "Enter",
     () => {
       if (isVisible && isPrimaryEnabled()) {
+        submitButtonRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
         onClickPrimary();
       }
     },
     {},
-    [isVisible]
+    [isVisible, isPrimaryEnabled]
   );
 
   const renderExistingOrderWarning = useCallback(() => {
@@ -1042,7 +1044,12 @@ export default function PositionSeller(props) {
         <Tooltip
           isHandlerDisabled
           handle={
-            <Button variant="primary-action w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+            <Button
+              buttonRef={submitButtonRef}
+              variant="primary-action w-full"
+              onClick={onClickPrimary}
+              disabled={!isPrimaryEnabled()}
+            >
               {primaryTextMessage}
             </Button>
           }
@@ -1054,7 +1061,12 @@ export default function PositionSeller(props) {
     }
 
     return (
-      <Button variant="primary-action w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+      <Button
+        buttonRef={submitButtonRef}
+        variant="primary-action w-full"
+        onClick={onClickPrimary}
+        disabled={!isPrimaryEnabled()}
+      >
         {primaryTextMessage}
       </Button>
     );

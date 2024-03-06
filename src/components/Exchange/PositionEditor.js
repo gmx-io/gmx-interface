@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import useSWR from "swr";
 import { Trans, t } from "@lingui/macro";
 import { ethers } from "ethers";
@@ -31,6 +31,7 @@ import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { useKey } from "react-use";
 
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";
@@ -84,6 +85,8 @@ export default function PositionEditor(props) {
   const prevIsVisible = usePrevious(isVisible);
   const longOrShortText = position?.isLong ? t`Long` : t`Short`;
   const positionPriceDecimal = getPriceDecimals(chainId, position?.indexToken?.symbol);
+
+  const submitButtonRef = useRef(null);
 
   const routerAddress = getContract(chainId, "Router");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
@@ -489,6 +492,18 @@ export default function PositionEditor(props) {
     withdrawCollateral();
   };
 
+  useKey(
+    "Enter",
+    () => {
+      if (isVisible && isPrimaryEnabled()) {
+        submitButtonRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+        onClickPrimary();
+      }
+    },
+    {},
+    [isVisible, isPrimaryEnabled]
+  );
+
   function renderPrimaryButton() {
     const [errorMessage, errorType, errorCode] = getError();
     const primaryTextMessage = getPrimaryText();
@@ -497,7 +512,13 @@ export default function PositionEditor(props) {
         <Tooltip
           isHandlerDisabled
           handle={
-            <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+            <Button
+              buttonRef={submitButtonRef}
+              variant="primary-action"
+              className="w-full"
+              onClick={onClickPrimary}
+              disabled={!isPrimaryEnabled()}
+            >
               {primaryTextMessage}
             </Button>
           }
@@ -508,7 +529,13 @@ export default function PositionEditor(props) {
       );
     }
     return (
-      <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+      <Button
+        buttonRef={submitButtonRef}
+        variant="primary-action"
+        className="w-full"
+        onClick={onClickPrimary}
+        disabled={!isPrimaryEnabled()}
+      >
         {primaryTextMessage}
       </Button>
     );
