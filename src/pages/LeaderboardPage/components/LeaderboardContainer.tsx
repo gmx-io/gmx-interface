@@ -9,6 +9,7 @@ import {
   useLeaderboardPageKey,
   useLeaderboardRankedAccounts,
   useLeaderboardTiming,
+  useLeaderboardTypeState,
 } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import { CompetitionType } from "domain/synthetics/leaderboard";
 import { mustNeverExist } from "lib/types";
@@ -43,6 +44,8 @@ export function LeaderboardContainer({ isCompetitions }: { isCompetitions: boole
   );
   const handleKeyDown = useCallback(() => null, []);
 
+  const [, setLeaderboardType] = useLeaderboardTypeState();
+
   const activeCompetition: CompetitionType = activeCompetitionIndex === 0 ? "notionalPnl" : "pnlPercentage";
   const leaderboardPageKey = useLeaderboardPageKey();
 
@@ -60,15 +63,15 @@ export function LeaderboardContainer({ isCompetitions }: { isCompetitions: boole
     setActiveCompetitionIndex(0);
   }, [isCompetitions]);
 
-  // useEffect(() => {
-  //   if (activeLeaderboardIndex === 0) {
-  //     setLeaderboardType("all");
-  //   } else if (activeLeaderboardIndex === 1) {
-  //     setLeaderboardType("30days");
-  //   } else {
-  //     setLeaderboardType("7days");
-  //   }
-  // }, [activeLeaderboardIndex, setLeaderboardType]);
+  useEffect(() => {
+    if (activeLeaderboardIndex === 0) {
+      setLeaderboardType("all");
+    } else if (activeLeaderboardIndex === 1) {
+      setLeaderboardType("30days");
+    } else {
+      setLeaderboardType("7days");
+    }
+  }, [activeLeaderboardIndex, setLeaderboardType]);
 
   const title = useMemo(() => {
     switch (leaderboardPageKey) {

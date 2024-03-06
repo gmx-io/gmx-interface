@@ -77,6 +77,15 @@ export function AppHeaderLinks({
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
+        <HeaderLink
+          to="/leaderboard"
+          redirectPopupTimestamp={redirectPopupTimestamp}
+          showRedirectModal={showRedirectModal}
+        >
+          <Trans>Leaderboard</Trans>
+        </HeaderLink>
+      </div>
+      <div className="App-header-link-container">
         <ExternalLink href="https://docs.gmx.io/">
           <Trans>Docs</Trans>
         </ExternalLink>
