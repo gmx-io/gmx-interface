@@ -174,4 +174,11 @@ export const appEventsData: EventData[] = [
       },
     ],
   },
+  {
+    id: "avax-market",
+    title: "AVAX market added on Arbitrum!",
+    isActive: true,
+    validTill: "21 Mar 2024, 12:00",
+    bodyText: ["Trade AVAX or provide liquidity using WAVAX or USDC in the GM Pool."],
+  },
 ];
