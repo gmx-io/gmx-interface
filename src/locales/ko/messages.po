@@ -4970,7 +4970,7 @@ msgstr "최대 실행 수수료가 과도하게 추정되었습니다. 설정에
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"<0>Max allowed actions</0>\" field."
-msgstr "<<<<<<< HEAD"
+msgstr ""
 
 #: src/domain/legacy.ts
 msgid "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
