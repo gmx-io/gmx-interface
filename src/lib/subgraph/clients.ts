@@ -3,6 +3,7 @@ import {
   ARBITRUM,
   ARBITRUM_TESTNET,
   AVALANCHE,
+  BLAST_SEPOLIA_TESTNET,
   ETH_MAINNET,
   OPTIMISM_GOERLI_TESTNET,
   OPTIMISM_MAINNET,
@@ -31,6 +32,8 @@ export function getGmxGraphClient(chainId: number) {
     return null;
   } else if (chainId === OPTIMISM_MAINNET) {
     return null;
+  } else if (chainId === BLAST_SEPOLIA_TESTNET) {
+    return null
   }
 
   throw new Error(`Unsupported chain ${chainId}`);
