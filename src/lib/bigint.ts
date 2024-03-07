@@ -118,7 +118,7 @@ export function formatUsd(
   }
 
   const exceedingInfo = getLimitedDisplay(usd, USD_DECIMALS, opts);
-  const sign = usd > 0 ? "-" : "";
+  const sign = usd < 0 ? "-" : "";
   const symbol = exceedingInfo.symbol ? `${exceedingInfo.symbol} ` : "";
   const displayUsd = formatAmount(exceedingInfo.value, USD_DECIMALS, displayDecimals, true);
   return `${symbol}${sign}$${displayUsd}`;
