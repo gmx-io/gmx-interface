@@ -17,6 +17,12 @@
     }
   }
 
+  @media (max-width: 380px) {
+    .chart-token-selector {
+      font-size: 1.6rem;
+    }
+  }
+
   .chart-token-label--active {
     color: #7885ff;
     span {
@@ -42,6 +48,13 @@
     left: 0;
     cursor: auto;
   }
+
+  @media (max-width: 1100px) {
+    .chart-token-menu-items.menu-items {
+      top: 5.05rem;
+    }
+  }
+
   .chart-token-menu-items.menu-items.isSwap {
     max-width: 22rem;
   }
@@ -128,17 +141,5 @@
         }
       }
     }
-  }
-}
-
-@media (max-width: 1100px) {
-  .chart-token-menu-items.menu-items {
-    top: 5.05rem;
-  }
-}
-
-@media (max-width: 380px) {
-  .chart-token-selector {
-    font-size: 1.6rem;
   }
 }
