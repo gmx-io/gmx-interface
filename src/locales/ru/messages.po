@@ -830,6 +830,10 @@ msgstr "Отмена завершена."
 msgid "Cancelling {ordersText}"
 msgstr ""
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Capital Used"
+msgstr ""
+
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Chain Icon"
 msgstr ""
@@ -3057,8 +3061,8 @@ msgid "Max Capacity for {0} Reached"
 msgstr "Максимальная Вместимость для {0} Достигнута"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "Max Collateral"
-msgstr ""
+#~ msgid "Max Collateral"
+#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx

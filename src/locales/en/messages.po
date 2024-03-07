@@ -830,6 +830,10 @@ msgstr "Cancel submitted."
 msgid "Cancelling {ordersText}"
 msgstr "Cancelling {ordersText}"
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Capital Used"
+msgstr "Capital Used"
+
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Chain Icon"
 msgstr "Chain Icon"
@@ -3060,8 +3064,8 @@ msgid "Max Capacity for {0} Reached"
 msgstr "Max Capacity for {0} Reached"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "Max Collateral"
-msgstr "Max Collateral"
+#~ msgid "Max Collateral"
+#~ msgstr "Max Collateral"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx

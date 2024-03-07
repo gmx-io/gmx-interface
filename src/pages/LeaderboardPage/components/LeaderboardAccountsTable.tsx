@@ -377,6 +377,7 @@ const TableRow = memo(
                       </span>
                     }
                   />
+                  <br />
                   <StatsTooltipRow
                     label={t`Realized Fees`}
                     showDollar={false}
@@ -404,6 +405,7 @@ const TableRow = memo(
                       </span>
                     }
                   />
+                  <br />
                   <StatsTooltipRow
                     label={t`Realized Price Impact`}
                     showDollar={false}
