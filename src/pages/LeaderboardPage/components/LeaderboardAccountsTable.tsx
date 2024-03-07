@@ -469,7 +469,7 @@ const TableRow = memo(
               className="nowrap"
               renderContent={() => (
                 <StatsTooltipRow
-                  label={t`Max Collateral`}
+                  label={t`Capital Used`}
                   showDollar={false}
                   value={<span>{formatUsd(account.maxCapital)}</span>}
                 />
