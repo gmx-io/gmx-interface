@@ -3332,6 +3332,7 @@ msgstr "Multiplier Points APR"
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "NA"
 msgstr "NA"
 
@@ -6275,6 +6276,10 @@ msgstr "You have multiple existing Increase {longOrShortText} {0} limit orders"
 #: src/pages/Stake/StakeV2.js
 msgid "You have not deposited any tokens for vesting."
 msgstr "You have not deposited any tokens for vesting."
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "You have not traded during the competition window."
+msgstr "You have not traded during the competition window."
 
 #: src/components/Stake/GMXAprTooltip.tsx
 #: src/pages/Stake/StakeV2.js
