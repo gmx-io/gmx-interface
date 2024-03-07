@@ -13,6 +13,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import {
   useLeaderboardAccountsRanks,
   useLeaderboardCurrentAccount,
+  useLeaderboardIsCompetition,
 } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import {
   CompetitionType,
@@ -211,7 +212,7 @@ export function LeaderboardAccountsTable({
               <TableHeaderCell
                 title={t`PnL ($)`}
                 width={12}
-                tooltip={t`Total Realized and Unrealized Profit and Loss.`}
+                tooltip={t`The total realized and unrealized profit and loss for the period, including fees and price impact..`}
                 tooltipPosition="left-bottom"
                 onClick={handleColumnClick}
                 columnName="totalQualifyingPnl"
@@ -220,7 +221,14 @@ export function LeaderboardAccountsTable({
               <TableHeaderCell
                 title={t`PnL (%)`}
                 width={10}
-                tooltip={t`Total Realized and Unrealized Profit and Loss.`}
+                tooltip={
+                  <Trans>
+                    The PnL ($) compared to the capital used.
+                    <br />
+                    The capital used is calculated as the highest value of [
+                    <i>sum of collateral of open positions - realized PnL + period start pending PnL</i>].
+                  </Trans>
+                }
                 tooltipPosition="left-bottom"
                 onClick={handleColumnClick}
                 columnName="pnlPercentage"
@@ -276,7 +284,7 @@ const TableHeaderCell = memo(
   }: {
     title: string;
     className?: string;
-    tooltip?: string | (() => ReactNode);
+    tooltip?: ReactNode;
     tooltipPosition?: TooltipPosition;
     onClick?: (columnName: string) => void;
     columnName: string;
@@ -290,6 +298,8 @@ const TableHeaderCell = memo(
       : undefined;
 
     const handleClick = useCallback(() => onClick?.(columnName), [columnName, onClick]);
+    const stopPropagation = useCallback((e) => e.stopPropagation(), []);
+    const renderContent = useCallback(() => <div onClick={stopPropagation}>{tooltip}</div>, [stopPropagation, tooltip]);
 
     return (
       <th onClick={handleClick} className={cx("TableHeader", className)} style={style}>
@@ -298,7 +308,7 @@ const TableHeaderCell = memo(
             handle={<span className="TableHeaderTitle">{title}</span>}
             position={tooltipPosition || "right-bottom"}
             className="TableHeaderTooltip"
-            renderContent={typeof tooltip === "function" ? tooltip : () => <p>{tooltip}</p>}
+            renderContent={renderContent}
           />
         ) : (
           <span className="TableHeaderTitle">{title}</span>
@@ -486,9 +496,17 @@ const EmptyRow = memo(() => {
 });
 
 const RankInfo = memo(({ rank }: { rank: number | null }) => {
+  const isCompetition = useLeaderboardIsCompetition();
   if (rank === null)
     return (
-      <TooltipWithPortal handle={t`NA`} renderContent={() => t`You have not traded during the competition window.`} />
+      <TooltipWithPortal
+        handle={t`NA`}
+        renderContent={() =>
+          isCompetition
+            ? t`You have not traded during the competition window.`
+            : t`You have not traded during selected period.`
+        }
+      />
     );
   return <span>{rank}</span>;
 });
