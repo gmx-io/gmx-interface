@@ -49,4 +49,4 @@ export const LEADERBOARD_PAGES = {
   },
 } as const;
 
-export const LEADERBOARD_PAGES_ORDER = ["leaderboard", "march24", "test1", "test2"] as const;
+export const LEADERBOARD_PAGES_ORDER = ["leaderboard", "test2", "march24", "test1"] as const;

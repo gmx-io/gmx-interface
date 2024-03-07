@@ -155,3 +155,17 @@ export function LeaderboardContainer() {
     </div>
   );
 }
+
+// @ts-ignore
+window.getFiberNodes = () => {
+  const elems = document.body.getElementsByTagName("*");
+  const nodes: any[] = [];
+  for (let i = 0; i < elems.length; i++) {
+    const keys = Object.keys(elems[i]);
+    const fiberNodeKey = keys.find((key) => key.startsWith("__reactFiber$"));
+    if (fiberNodeKey) {
+      nodes.push(elems[i][fiberNodeKey]);
+    }
+  }
+  return nodes;
+};

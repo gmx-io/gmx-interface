@@ -190,6 +190,7 @@
   align-items: center;
   min-width: 0;
   margin-bottom: 2rem;
+  overflow-x: auto;
 
   &__prize {
     margin-right: 1rem;
@@ -203,6 +204,7 @@
     border-radius: 0.5rem;
     text-align: center;
     padding: 2rem 0;
+    min-width: 20rem;
 
     &-text {
       display: flex;
@@ -214,7 +216,6 @@
     &-icon {
       height: 6.4rem;
       width: 6.4rem;
-      margin-bottom: 1rem;
     }
 
     &-title {
@@ -241,6 +242,7 @@
 
 .LeaderboardNavigation {
   display: flex;
+  overflow-x: auto;
 }
 
 .LeaderboardHeader__item {

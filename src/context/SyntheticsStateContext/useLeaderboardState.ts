@@ -8,7 +8,7 @@ import { LEADERBOARD_TIMEFRAMES } from "domain/synthetics/leaderboard/constants"
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { mustNeverExist } from "lib/types";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
 export type LeaderboardState = ReturnType<typeof useLeaderboardState>;
@@ -126,34 +126,34 @@ function useLeaderboardTimeframe(
   const timeframeStr = overrideTimeframeStr || defaultTimeframeStr;
   const timeframe = useMemo(() => deserializeTimeframe(timeframeStr), [timeframeStr]);
 
-  useEffect(() => {
-    // @ts-ignore
-    window.overrideLeaderboardTimeframe = (from: number, to: number | undefined) => {
-      if (from in LEADERBOARD_TIMEFRAMES) {
-        setOverrideTimeframeStr(serializeTimeframe(LEADERBOARD_TIMEFRAMES[from]));
-        return;
-      }
+  // FIXME these functions're leaking memory
 
-      setOverrideTimeframeStr(serializeTimeframe({ from, to }));
-    };
+  // @ts-ignore
+  window.overrideLeaderboardTimeframe = (from: number, to: number | undefined) => {
+    if (from in LEADERBOARD_TIMEFRAMES) {
+      setOverrideTimeframeStr(serializeTimeframe(LEADERBOARD_TIMEFRAMES[from]));
+      return;
+    }
 
-    //@ts-ignore
-    window.getLeaderboardTimeframe = () => {
-      return {
-        from: timeframe.from,
-        to: timeframe.to,
-        iso: `${new Date(timeframe.from * 1000).toISOString()} - ${
-          timeframe.to && new Date(timeframe.to * 1000).toISOString()
-        }`,
-        isOverride: overrideTimeframeStr !== "",
-      };
-    };
+    setOverrideTimeframeStr(serializeTimeframe({ from, to }));
+  };
 
-    // @ts-ignore
-    window.resetLeaderboardTimeframe = () => {
-      setOverrideTimeframeStr("");
+  //@ts-ignore
+  window.getLeaderboardTimeframe = () => {
+    return {
+      from: timeframe.from,
+      to: timeframe.to,
+      iso: `${new Date(timeframe.from * 1000).toISOString()} - ${
+        timeframe.to && new Date(timeframe.to * 1000).toISOString()
+      }`,
+      isOverride: overrideTimeframeStr !== "",
     };
-  }, [overrideTimeframeStr, setOverrideTimeframeStr, timeframe.from, timeframe.to]);
+  };
+
+  // @ts-ignore
+  window.resetLeaderboardTimeframe = () => {
+    setOverrideTimeframeStr("");
+  };
 
   return timeframe;
 }

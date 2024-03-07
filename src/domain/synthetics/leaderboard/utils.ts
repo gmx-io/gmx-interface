@@ -1,6 +1,13 @@
-import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
+
+function abs(num: bigint) {
+  if (num < 0n) {
+    return -num;
+  } else {
+    return num;
+  }
+}
 
 export const floorTimestamp = (timestamp?: number) => {
   if (!timestamp) {
@@ -13,11 +20,10 @@ export const floorTimestamp = (timestamp?: number) => {
   return date.setSeconds(seconds < 30 ? 0 : 30, 0);
 };
 
-export const signedValueClassName = (num: BigNumber) =>
-  num.isZero() ? "" : num.isNegative() ? "negative" : "positive";
+export const signedValueClassName = (num: bigint) => (num === 0n ? "" : num < 0 ? "negative" : "positive");
 
 export const formatDelta = (
-  delta: BigNumber,
+  delta: bigint,
   {
     decimals = USD_DECIMALS,
     displayDecimals = 2,
@@ -33,9 +39,9 @@ export const formatDelta = (
     postfix?: string;
   } = {}
 ) =>
-  `${p.prefixoid ? `${p.prefixoid} ` : ""}${p.signed ? (delta.eq(0) ? "" : delta.gt(0) ? "+" : "-") : ""}${
+  `${p.prefixoid ? `${p.prefixoid} ` : ""}${p.signed ? (delta === 0n ? "" : delta > 0 ? "+" : "-") : ""}${
     p.prefix || ""
-  }${formatAmount(p.signed ? delta.abs() : delta, decimals, displayDecimals, useCommas)}${p.postfix || ""}`;
+  }${formatAmount(p.signed ? abs(delta) : delta, decimals, displayDecimals, useCommas)}${p.postfix || ""}`;
 
 export type Profiler = ((msg: string) => number) & {
   getTime(): number;

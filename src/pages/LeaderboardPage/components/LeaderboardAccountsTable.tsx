@@ -3,7 +3,7 @@ import cx from "classnames";
 import AddressView from "components/AddressView/AddressView";
 import Pagination from "components/Pagination/Pagination";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { formatAmount, formatUsd } from "lib/numbers";
+import { formatAmount, formatUsd } from "lib/bigint";
 import { useDebounce } from "lib/useDebounce";
 import { ReactNode, memo, useCallback, useLayoutEffect, useMemo, useState } from "react";
 
@@ -23,7 +23,6 @@ import {
   signedValueClassName,
 } from "domain/synthetics/leaderboard";
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "domain/synthetics/leaderboard/constants";
-import { BigNumber } from "ethers";
 import { createBreakpoint } from "react-use";
 import SearchInput from "components/SearchInput/SearchInput";
 
@@ -99,8 +98,8 @@ export function LeaderboardAccountsTable({
     return [...data].sort((a, b) => {
       const key = orderBy;
 
-      if (BigNumber.isBigNumber(a[key]) && BigNumber.isBigNumber(b[key])) {
-        return direction * ((a[key] as BigNumber).gt(b[key] as BigNumber) ? -1 : 1);
+      if (typeof a[key] === "bigint" && typeof b[key] === "bigint") {
+        return direction * ((a[key] as bigint) > (b[key] as bigint) ? -1 : 1);
       } else if (typeof a[key] === "number" && typeof b[key] === "number") {
         return direction * (a[key] > b[key] ? -1 : 1);
       } else {
@@ -209,7 +208,7 @@ export function LeaderboardAccountsTable({
                 width={6}
                 tooltip={
                   activeCompetition
-                    ? t`Only Addresses with over ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD)} are ranked.`
+                    ? t`Only Addresses with over ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD.toBigInt())} are ranked.`
                     : undefined
                 }
                 tooltipPosition="left-bottom"
@@ -416,8 +415,8 @@ const TableRow = memo(
                     label={t`Realized Fees`}
                     showDollar={false}
                     value={
-                      <span className={signedValueClassName(account.realizedFees.mul(-1))}>
-                        {formatDelta(account.realizedFees.mul(-1), { signed: true, prefix: "$" })}
+                      <span className={signedValueClassName(account.realizedFees * -1n)}>
+                        {formatDelta(account.realizedFees * -1n, { signed: true, prefix: "$" })}
                       </span>
                     }
                   />
@@ -425,8 +424,8 @@ const TableRow = memo(
                     label={t`Unrealized Fees`}
                     showDollar={false}
                     value={
-                      <span className={signedValueClassName(account.unrealizedFees.mul(-1))}>
-                        {formatDelta(account.unrealizedFees.mul(-1), { signed: true, prefix: "$" })}
+                      <span className={signedValueClassName(account.unrealizedFees * -1n)}>
+                        {formatDelta(account.unrealizedFees * -1n, { signed: true, prefix: "$" })}
                       </span>
                     }
                   />
@@ -434,8 +433,8 @@ const TableRow = memo(
                     label={t`Start Unrealized Fees`}
                     showDollar={false}
                     value={
-                      <span className={signedValueClassName(account.startUnrealizedFees.mul(-1))}>
-                        {formatDelta(account.startUnrealizedFees.mul(-1), { signed: true, prefix: "$" })}
+                      <span className={signedValueClassName(account.startUnrealizedFees * -1n)}>
+                        {formatDelta(account.startUnrealizedFees * -1n, { signed: true, prefix: "$" })}
                       </span>
                     }
                   />

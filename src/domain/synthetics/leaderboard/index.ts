@@ -1,5 +1,4 @@
 import { gql } from "@apollo/client";
-import { BigNumber } from "ethers";
 import { getLeaderboardGraphClient } from "lib/subgraph";
 import useSWR from "swr";
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "./constants";
@@ -36,38 +35,38 @@ type LeaderboardAccountsJson = {
 
 export type LeaderboardAccountBase = {
   account: string;
-  cumsumCollateral: BigNumber;
-  cumsumSize: BigNumber;
-  sumMaxSize: BigNumber;
+  cumsumCollateral: bigint;
+  cumsumSize: bigint;
+  sumMaxSize: bigint;
 
-  maxCapital: BigNumber;
-  netCapital: BigNumber;
+  maxCapital: bigint;
+  netCapital: bigint;
   hasRank: boolean;
 
-  realizedPriceImpact: BigNumber;
-  realizedFees: BigNumber;
-  realizedPnl: BigNumber;
+  realizedPriceImpact: bigint;
+  realizedFees: bigint;
+  realizedPnl: bigint;
 
-  startUnrealizedPnl: BigNumber;
-  startUnrealizedPriceImpact: BigNumber;
-  startUnrealizedFees: BigNumber;
+  startUnrealizedPnl: bigint;
+  startUnrealizedPriceImpact: bigint;
+  startUnrealizedFees: bigint;
 
   closedCount: number;
-  volume: BigNumber;
+  volume: bigint;
   losses: number;
   wins: number;
 };
 
 export type LeaderboardAccount = LeaderboardAccountBase & {
   totalCount: number;
-  totalPnl: BigNumber;
-  totalQualifyingPnl: BigNumber;
-  totalFees: BigNumber;
-  unrealizedFees: BigNumber;
-  unrealizedPnl: BigNumber;
-  pnlPercentage: BigNumber;
-  averageSize: BigNumber;
-  averageLeverage: BigNumber;
+  totalPnl: bigint;
+  totalQualifyingPnl: bigint;
+  totalFees: bigint;
+  unrealizedFees: bigint;
+  unrealizedPnl: bigint;
+  pnlPercentage: bigint;
+  averageSize: bigint;
+  averageLeverage: bigint;
 };
 
 type LeaderboardPositionsJson = {
@@ -96,26 +95,26 @@ type LeaderboardPositionsJson = {
 export type LeaderboardPositionBase = {
   key: string;
   account: string;
-  realizedFees: BigNumber;
-  unrealizedFees: BigNumber;
+  realizedFees: bigint;
+  unrealizedFees: bigint;
   isLong: boolean;
   market: string;
-  maxSize: BigNumber;
-  realizedPriceImpact: BigNumber;
-  unrealizedPriceImpact: BigNumber;
+  maxSize: bigint;
+  realizedPriceImpact: bigint;
+  unrealizedPriceImpact: bigint;
   isSnapshot: boolean;
-  unrealizedPnl: BigNumber;
-  realizedPnl: BigNumber;
-  sizeInTokens: BigNumber;
-  sizeInUsd: BigNumber;
-  entryPrice: BigNumber;
+  unrealizedPnl: bigint;
+  realizedPnl: bigint;
+  sizeInTokens: bigint;
+  sizeInUsd: bigint;
+  entryPrice: bigint;
   collateralToken: string;
-  collateralAmount: BigNumber;
+  collateralAmount: bigint;
   snapshotTimestamp: number;
 };
 
 export type LeaderboardPosition = LeaderboardPositionBase & {
-  unrealizedPnl: BigNumber;
+  unrealizedPnl: bigint;
 };
 
 const fetchAccounts = async (
@@ -199,21 +198,21 @@ const fetchAccounts = async (
   return allAccounts?.data.periodAccountStats.map((p) => {
     return {
       account: p.id,
-      cumsumCollateral: BigNumber.from(p.cumsumCollateral),
-      cumsumSize: BigNumber.from(p.cumsumSize),
-      sumMaxSize: BigNumber.from(p.sumMaxSize),
-      maxCapital: BigNumber.from(p.maxCapital),
-      netCapital: BigNumber.from(p.netCapital),
+      cumsumCollateral: BigInt(p.cumsumCollateral),
+      cumsumSize: BigInt(p.cumsumSize),
+      sumMaxSize: BigInt(p.sumMaxSize),
+      maxCapital: BigInt(p.maxCapital),
+      netCapital: BigInt(p.netCapital),
 
-      realizedPnl: BigNumber.from(p.realizedPnl),
-      realizedPriceImpact: BigNumber.from(p.realizedPriceImpact),
-      realizedFees: BigNumber.from(p.realizedFees),
+      realizedPnl: BigInt(p.realizedPnl),
+      realizedPriceImpact: BigInt(p.realizedPriceImpact),
+      realizedFees: BigInt(p.realizedFees),
 
-      startUnrealizedPnl: BigNumber.from(p.startUnrealizedPnl),
-      startUnrealizedPriceImpact: BigNumber.from(p.startUnrealizedPriceImpact),
-      startUnrealizedFees: BigNumber.from(p.startUnrealizedFees),
+      startUnrealizedPnl: BigInt(p.startUnrealizedPnl),
+      startUnrealizedPriceImpact: BigInt(p.startUnrealizedPriceImpact),
+      startUnrealizedFees: BigInt(p.startUnrealizedFees),
 
-      volume: BigNumber.from(p.volume),
+      volume: BigInt(p.volume),
       closedCount: p.closedCount,
       losses: p.losses,
       wins: p.wins,
@@ -314,17 +313,17 @@ const fetchPositions = async (
       market: p.market,
       collateralToken: p.collateralToken,
       isLong: p.isLong,
-      realizedPriceImpact: BigNumber.from(p.realizedPriceImpact),
-      realizedFees: BigNumber.from(p.realizedFees),
-      collateralAmount: BigNumber.from(p.collateralAmount),
-      unrealizedFees: BigNumber.from(p.unrealizedFees),
-      entryPrice: BigNumber.from(p.entryPrice),
-      sizeInUsd: BigNumber.from(p.sizeInUsd),
-      sizeInTokens: BigNumber.from(p.sizeInTokens),
-      realizedPnl: BigNumber.from(p.realizedPnl),
-      unrealizedPriceImpact: BigNumber.from(p.unrealizedPriceImpact),
-      unrealizedPnl: BigNumber.from(p.unrealizedPnl),
-      maxSize: BigNumber.from(p.maxSize),
+      realizedPriceImpact: BigInt(p.realizedPriceImpact),
+      realizedFees: BigInt(p.realizedFees),
+      collateralAmount: BigInt(p.collateralAmount),
+      unrealizedFees: BigInt(p.unrealizedFees),
+      entryPrice: BigInt(p.entryPrice),
+      sizeInUsd: BigInt(p.sizeInUsd),
+      sizeInTokens: BigInt(p.sizeInTokens),
+      realizedPnl: BigInt(p.realizedPnl),
+      unrealizedPriceImpact: BigInt(p.unrealizedPriceImpact),
+      unrealizedPnl: BigInt(p.unrealizedPnl),
+      maxSize: BigInt(p.maxSize),
       snapshotTimestamp: p.snapshotTimestamp,
       isSnapshot: p.isSnapshot,
     };

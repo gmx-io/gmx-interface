@@ -1,23 +1,37 @@
-import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { LeaderboardAccount, LeaderboardPositionBase } from "domain/synthetics/leaderboard";
 import { MarketInfo } from "domain/synthetics/markets";
-import { BigNumber } from "ethers";
 import { mustNeverExist } from "lib/types";
 import { SyntheticsTradeState } from "../SyntheticsStateContextProvider";
 import { createEnhancedSelector } from "../utils";
 import { selectAccount, selectMarketsInfoData } from "./globalSelectors";
 
-export const selectLeaderboardAccountBases = (s: SyntheticsTradeState) => s.leaderboard.accounts;
-export const selectLeaderboardPositionBases = (s: SyntheticsTradeState) => s.leaderboard.positions;
+const BASIS_POINTS_DIVISOR = 10000n;
 
-export const selectLeaderboardType = (s: SyntheticsTradeState) => s.leaderboard.leaderboardType;
-export const selectLeaderboardSetType = (s: SyntheticsTradeState) => s.leaderboard.setLeaderboardType;
+export function selectLeaderboardAccountBases(s: SyntheticsTradeState) {
+  return s.leaderboard.accounts;
+}
+export function selectLeaderboardPositionBases(s: SyntheticsTradeState) {
+  return s.leaderboard.positions;
+}
 
-export const selectLeaderboardTimeframe = (s: SyntheticsTradeState) => s.leaderboard.timeframe;
-export const selectLeaderboardIsEndInFuture = (s: SyntheticsTradeState) => s.leaderboard.isEndInFuture;
-export const selectLeaderboardIsStartInFuture = (s: SyntheticsTradeState) => s.leaderboard.isStartInFuture;
+export function selectLeaderboardType(s: SyntheticsTradeState) {
+  return s.leaderboard.leaderboardType;
+}
+export function selectLeaderboardSetType(s: SyntheticsTradeState) {
+  return s.leaderboard.setLeaderboardType;
+}
 
-export const selectLeaderboardIsCompetition = createEnhancedSelector((q) => {
+export function selectLeaderboardTimeframe(s: SyntheticsTradeState) {
+  return s.leaderboard.timeframe;
+}
+export function selectLeaderboardIsEndInFuture(s: SyntheticsTradeState) {
+  return s.leaderboard.isEndInFuture;
+}
+export function selectLeaderboardIsStartInFuture(s: SyntheticsTradeState) {
+  return s.leaderboard.isStartInFuture;
+}
+
+export const selectLeaderboardIsCompetition = createEnhancedSelector(function selectLeaderboardIsCompetition(q) {
   const pageKey = q((s) => s.leaderboard.leaderboardPageKey);
 
   switch (pageKey) {
@@ -34,7 +48,9 @@ export const selectLeaderboardIsCompetition = createEnhancedSelector((q) => {
   }
 });
 
-export const selectLeaderboardIsCompetitionOver = createEnhancedSelector((q) => {
+export const selectLeaderboardIsCompetitionOver = createEnhancedSelector(function selectLeaderboardIsCompetitionOver(
+  q
+) {
   const isEndInFuture = q(selectLeaderboardIsEndInFuture);
   if (isEndInFuture) return false;
 
@@ -45,7 +61,9 @@ export const selectLeaderboardIsCompetitionOver = createEnhancedSelector((q) => 
   return q(selectLeaderboardIsCompetition);
 });
 
-export const selectLeaderboardCurrentAccount = createEnhancedSelector((q): LeaderboardAccount | undefined => {
+export const selectLeaderboardCurrentAccount = createEnhancedSelector(function selectLeaderboardCurrentAccount(
+  q
+): LeaderboardAccount | undefined {
   const accounts = q(selectLeaderboardAccounts);
   const currentAccount = q(selectAccount);
   const leaderboardAccount = accounts?.find((a) => a.account === currentAccount);
@@ -54,35 +72,35 @@ export const selectLeaderboardCurrentAccount = createEnhancedSelector((q): Leade
 
   return {
     account: currentAccount,
-    averageLeverage: BigNumber.from(0),
-    averageSize: BigNumber.from(0),
+    averageLeverage: 0n,
+    averageSize: 0n,
     closedCount: 0,
-    cumsumCollateral: BigNumber.from(0),
-    cumsumSize: BigNumber.from(0),
+    cumsumCollateral: 0n,
+    cumsumSize: 0n,
     hasRank: false,
     losses: 0,
-    maxCapital: BigNumber.from(0),
-    netCapital: BigNumber.from(0),
-    realizedFees: BigNumber.from(0),
-    realizedPriceImpact: BigNumber.from(0),
-    pnlPercentage: BigNumber.from(0),
-    realizedPnl: BigNumber.from(0),
-    startUnrealizedFees: BigNumber.from(0),
-    startUnrealizedPnl: BigNumber.from(0),
-    startUnrealizedPriceImpact: BigNumber.from(0),
-    unrealizedFees: BigNumber.from(0),
-    unrealizedPnl: BigNumber.from(0),
-    sumMaxSize: BigNumber.from(0),
+    maxCapital: 0n,
+    netCapital: 0n,
+    realizedFees: 0n,
+    realizedPriceImpact: 0n,
+    pnlPercentage: 0n,
+    realizedPnl: 0n,
+    startUnrealizedFees: 0n,
+    startUnrealizedPnl: 0n,
+    startUnrealizedPriceImpact: 0n,
+    unrealizedFees: 0n,
+    unrealizedPnl: 0n,
+    sumMaxSize: 0n,
     totalCount: 0,
-    totalFees: BigNumber.from(0),
-    totalPnl: BigNumber.from(0),
-    totalQualifyingPnl: BigNumber.from(0),
-    volume: BigNumber.from(0),
+    totalFees: 0n,
+    totalPnl: 0n,
+    totalQualifyingPnl: 0n,
+    volume: 0n,
     wins: 0,
   };
 });
 
-const selectPositionBasesByAccount = createEnhancedSelector((q) => {
+const selectPositionBasesByAccount = createEnhancedSelector(function selectPositionBasesByAccount(q) {
   const positionBases = q(selectLeaderboardPositionBases);
 
   if (!positionBases) return {};
@@ -96,7 +114,7 @@ const selectPositionBasesByAccount = createEnhancedSelector((q) => {
   }, {} as Record<string, LeaderboardPositionBase[]>);
 });
 
-const selectLeaderboardAccounts = createEnhancedSelector((q) => {
+const selectLeaderboardAccounts = createEnhancedSelector(function selectLeaderboardAccounts(q) {
   const baseAccounts = q(selectLeaderboardAccountBases);
   const positionBasesByAccount = q(selectPositionBasesByAccount);
   const marketsInfoData = q(selectMarketsInfoData);
@@ -108,51 +126,51 @@ const selectLeaderboardAccounts = createEnhancedSelector((q) => {
       ...base,
       totalCount: base.closedCount,
       totalPnl: base.realizedPnl,
-      totalQualifyingPnl: BigNumber.from(0),
-      unrealizedPnl: BigNumber.from(0),
-      unrealizedFees: BigNumber.from(0),
+      totalQualifyingPnl: 0n,
+      unrealizedPnl: 0n,
+      unrealizedFees: 0n,
       totalFees: base.realizedFees,
-      pnlPercentage: BigNumber.from(0),
-      averageSize: BigNumber.from(0),
-      averageLeverage: BigNumber.from(0),
+      pnlPercentage: 0n,
+      averageSize: 0n,
+      averageLeverage: 0n,
     };
 
     for (const p of positionBasesByAccount[base.account] || []) {
       const market = (marketsInfoData || {})[p.market];
       const unrealizedPnl = getPositionPnl(p, market);
       account.totalCount++;
-      account.sumMaxSize = account.sumMaxSize.add(p.maxSize);
-      account.unrealizedFees = account.unrealizedFees.add(p.unrealizedFees);
-      account.unrealizedPnl = account.unrealizedPnl.add(unrealizedPnl);
+      account.sumMaxSize = account.sumMaxSize + p.maxSize;
+      account.unrealizedFees = account.unrealizedFees + p.unrealizedFees;
+      account.unrealizedPnl = account.unrealizedPnl + unrealizedPnl;
     }
 
-    account.totalFees = account.totalFees.add(account.unrealizedFees).sub(account.startUnrealizedFees);
-    account.totalPnl = account.totalPnl.add(account.unrealizedPnl).sub(account.startUnrealizedPnl);
-    account.totalQualifyingPnl = account.totalPnl.sub(account.totalFees).add(account.realizedPriceImpact);
+    account.totalFees = account.totalFees + account.unrealizedFees - account.startUnrealizedFees;
+    account.totalPnl = account.totalPnl + account.unrealizedPnl - account.startUnrealizedPnl;
+    account.totalQualifyingPnl = account.totalPnl - account.totalFees + account.realizedPriceImpact;
 
-    if (account.maxCapital.gt(0)) {
-      account.pnlPercentage = account.totalQualifyingPnl.mul(BASIS_POINTS_DIVISOR).div(account.maxCapital);
+    if (account.maxCapital > 0n) {
+      account.pnlPercentage = (account.totalQualifyingPnl * BASIS_POINTS_DIVISOR) / account.maxCapital;
     }
 
     if (account.totalCount > 0) {
-      account.averageSize = account.sumMaxSize.div(account.totalCount);
+      account.averageSize = account.sumMaxSize / BigInt(account.totalCount);
     }
 
-    if (base.cumsumCollateral.gt(0)) {
-      account.averageLeverage = base.cumsumSize.mul(BASIS_POINTS_DIVISOR).div(base.cumsumCollateral);
+    if (base.cumsumCollateral > 0n) {
+      account.averageLeverage = (base.cumsumSize * BASIS_POINTS_DIVISOR) / base.cumsumCollateral;
     }
 
     return account;
   });
 });
 
-export const selectLeaderboardRankedAccounts = createEnhancedSelector((q) => {
+export const selectLeaderboardRankedAccounts = createEnhancedSelector(function selectLeaderboardRankedAccounts(q) {
   const accounts = q(selectLeaderboardAccounts);
   if (!accounts) return undefined;
   return accounts.filter((a) => a.hasRank);
 });
 
-export const selectLeaderboardAccountsRanks = createEnhancedSelector((q) => {
+export const selectLeaderboardAccountsRanks = createEnhancedSelector(function selectLeaderboardAccountsRanks(q) {
   const accounts = q(selectLeaderboardRankedAccounts);
   const ranks = { pnl: new Map<string, number>(), pnlPercentage: new Map<string, number>() };
   if (!accounts) return ranks;
@@ -160,13 +178,13 @@ export const selectLeaderboardAccountsRanks = createEnhancedSelector((q) => {
   const accountsCopy = [...accounts];
 
   accountsCopy
-    .sort((a, b) => (b.totalQualifyingPnl.sub(a.totalQualifyingPnl).gt(0) ? 1 : -1))
+    .sort((a, b) => (b.totalQualifyingPnl - a.totalQualifyingPnl > 0n ? 1 : -1))
     .forEach((account, index) => {
       ranks.pnl.set(account.account, index + 1);
     });
 
   accountsCopy
-    .sort((a, b) => (b.pnlPercentage.sub(a.pnlPercentage).gt(0) ? 1 : -1))
+    .sort((a, b) => (b.pnlPercentage - a.pnlPercentage > 0n ? 1 : -1))
     .forEach((account, index) => {
       ranks.pnlPercentage.set(account.account, index + 1);
     });
@@ -174,7 +192,7 @@ export const selectLeaderboardAccountsRanks = createEnhancedSelector((q) => {
   return ranks;
 });
 
-export const selectLeaderboardPositions = createEnhancedSelector((q) => {
+export const selectLeaderboardPositions = createEnhancedSelector(function selectLeaderboardPositions(q) {
   const positionBases = q(selectLeaderboardPositionBases);
   const marketsInfoData = q(selectMarketsInfoData);
 
@@ -196,14 +214,16 @@ function getPositionPnl(position: LeaderboardPositionBase, market: MarketInfo) {
   }
 
   if (!market) {
-    return BigNumber.from(0);
+    return 0n;
   }
 
-  let pnl = BigNumber.from(position.sizeInTokens)
-    .mul(market.indexToken.prices.minPrice.div(BigNumber.from(10).pow(market.indexToken.decimals)))
-    .sub(position.sizeInUsd);
+  let pnl =
+    (position.sizeInTokens * market.indexToken.prices.minPrice.toBigInt()) / 10n ** BigInt(market.indexToken.decimals) -
+    position.sizeInUsd;
+
   if (!position.isLong) {
-    pnl = pnl.mul(-1);
+    pnl = pnl * -1n;
   }
+
   return pnl;
 }
