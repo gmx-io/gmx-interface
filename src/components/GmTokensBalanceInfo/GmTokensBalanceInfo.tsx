@@ -15,27 +15,18 @@ export const GmTokensBalanceInfo = ({
   earnedTotal,
   earnedRecently,
   daysConsidered,
-  oneLine = false,
 }: {
   token: TokenData;
   earnedTotal?: BigNumber;
   earnedRecently?: BigNumber;
   daysConsidered: number;
-  oneLine?: boolean;
 }) => {
   const shouldShowIncentivesNote = useLpIncentivesIsActive();
   const content = (
     <>
-      {formatTokenAmount(token.balance, token.decimals, "GM", {
-        useCommas: true,
-        displayDecimals: 2,
-        fallbackToZero: true,
-      })}
-      {oneLine ? " " : <br />}(
       {formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice), {
         fallbackToZero: true,
       })}
-      )
     </>
   );
 

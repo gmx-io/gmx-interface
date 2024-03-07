@@ -214,10 +214,16 @@ export function GmList({
                       </td>
 
                       <td>
+                        <div>
+                          {formatTokenAmount(token.balance, token.decimals, "GM", {
+                            useCommas: true,
+                            displayDecimals: 2,
+                            fallbackToZero: true,
+                          })}
+                        </div>
                         <GmTokensBalanceInfo
                           token={token}
                           daysConsidered={daysConsidered}
-                          oneLine={false}
                           earnedRecently={marketEarnings?.recent}
                           earnedTotal={marketEarnings?.total}
                         />
@@ -365,10 +371,14 @@ export function GmList({
                         />
                       </div>
                       <div>
+                        {formatTokenAmount(token.balance, token.decimals, "GM", {
+                          useCommas: true,
+                          displayDecimals: 2,
+                          fallbackToZero: true,
+                        })}{" "}
                         <GmTokensBalanceInfo
                           token={token}
                           daysConsidered={daysConsidered}
-                          oneLine
                           earnedRecently={marketEarnings?.recent}
                           earnedTotal={marketEarnings?.total}
                         />
