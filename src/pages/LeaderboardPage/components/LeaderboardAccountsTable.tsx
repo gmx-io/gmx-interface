@@ -25,6 +25,7 @@ import {
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "domain/synthetics/leaderboard/constants";
 import { BigNumber } from "ethers";
 import { createBreakpoint } from "react-use";
+import SearchInput from "components/SearchInput/SearchInput";
 
 function getRowClassname(rank: number | null, competition: CompetitionType | undefined, pinned: boolean) {
   if (pinned) return cx("LeaderboardRankRow-Pinned", "Table_tr");
@@ -44,13 +45,11 @@ type LeaderboardAccountField = keyof LeaderboardAccount;
 
 export function LeaderboardAccountsTable({
   accounts,
-  search,
   activeCompetition,
   sortingEnabled = true,
   skeletonCount = 15,
 }: {
   accounts: RemoteData<LeaderboardAccount>;
-  search: string;
   activeCompetition: CompetitionType | undefined;
   sortingEnabled?: boolean;
   skeletonCount?: number;
@@ -90,6 +89,9 @@ export function LeaderboardAccountsTable({
     }
   }, [activeCompetition, isCompetitions]);
 
+  const [search, setSearch] = useState("");
+  const setValue = useCallback((e) => setSearch(e.target.value), []);
+  const handleKeyDown = useCallback(() => null, []);
   const ranks = useLeaderboardAccountsRanks();
   const term = useDebounce(search, 300);
 
@@ -188,6 +190,16 @@ export function LeaderboardAccountsTable({
 
   return (
     <div>
+      <div className="TableBox__head">
+        <SearchInput
+          placeholder={t`Search Address`}
+          className="LeaderboardSearch"
+          value={search}
+          setValue={setValue}
+          onKeyDown={handleKeyDown}
+          size="s"
+        />
+      </div>
       <div className="TableBox">
         <table className={cx("Exchange-list", "App-box", "Table")}>
           <tbody>
@@ -266,7 +278,9 @@ export function LeaderboardAccountsTable({
           </tbody>
         </table>
       </div>
-      <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
+      <div className="TableBox__footer">
+        <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
+      </div>
     </div>
   );
 }

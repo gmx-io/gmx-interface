@@ -2,7 +2,6 @@ import { Trans, t } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import SearchInput from "components/SearchInput/SearchInput";
 import Tab from "components/Tab/Tab";
 import {
   useLeaderboardIsCompetition,
@@ -25,7 +24,6 @@ const leaderboardLabels = [t`Total`, t`Last 30 days`, t`Last 7 days`];
 const leaderboardTabs = [0, 1, 2];
 
 export function LeaderboardContainer() {
-  const [search, setSearch] = useState("");
   const { isStartInFuture } = useLeaderboardTiming();
   const isCompetition = useLeaderboardIsCompetition();
   const [activeLeaderboardIndex, setActiveLeaderboardIndex] = useState(0);
@@ -41,7 +39,6 @@ export function LeaderboardContainer() {
     }),
     [accounts, isLoading]
   );
-  const handleKeyDown = useCallback(() => null, []);
 
   const [, setLeaderboardType] = useLeaderboardTypeState();
 
@@ -112,12 +109,6 @@ export function LeaderboardContainer() {
     }
   }, [leaderboardPageKey]);
 
-  const setValue = useCallback((e) => setSearch(e.target.value), []);
-
-  useEffect(() => {
-    setSearch("");
-  }, [activeCompetition, isCompetition]);
-
   return (
     <div className="GlobalLeaderboards">
       <LeaderboardNavigation />
@@ -128,39 +119,37 @@ export function LeaderboardContainer() {
         </div>
         {isCompetition && <CompetitionCountdown />}
       </div>
-      {isCompetition && <CompetitionPrizes competition={activeCompetition} />}
+      {!isCompetition && (
+        <>
+          <Tab
+            option={activeLeaderboardIndex}
+            onChange={handleLeaderboardTabChange}
+            options={leaderboardTabs}
+            optionLabels={leaderboardLabels}
+          />
+          <br />
+          <br />
+        </>
+      )}
+      {isCompetition && (
+        <>
+          <Tab
+            option={activeCompetitionIndex}
+            onChange={handleCompetitionTabChange}
+            options={competitionsTabs}
+            optionLabels={competitionLabels}
+          />
+          <br />
+          <br />
+        </>
+      )}
+      {isCompetition && (
+        <CompetitionPrizes leaderboardPageKey={leaderboardPageKey} competitionType={activeCompetition} />
+      )}
 
       {!isStartInFuture && (
         <>
-          {!isCompetition && (
-            <>
-              <br />
-              <Tab
-                option={activeLeaderboardIndex}
-                onChange={handleLeaderboardTabChange}
-                options={leaderboardTabs}
-                optionLabels={leaderboardLabels}
-              />
-            </>
-          )}
-          {isCompetition && (
-            <Tab
-              option={activeCompetitionIndex}
-              onChange={handleCompetitionTabChange}
-              options={competitionsTabs}
-              optionLabels={competitionLabels}
-            />
-          )}
-          <div className="LeaderboardHeader">
-            <SearchInput
-              placeholder={t`Search Address`}
-              className="LeaderboardSearch"
-              value={search}
-              setValue={setValue}
-              onKeyDown={handleKeyDown}
-            />
-          </div>
-          <LeaderboardAccountsTable activeCompetition={activeCompetition} accounts={accountsStruct} search={search} />
+          <LeaderboardAccountsTable activeCompetition={activeCompetition} accounts={accountsStruct} />
         </>
       )}
     </div>

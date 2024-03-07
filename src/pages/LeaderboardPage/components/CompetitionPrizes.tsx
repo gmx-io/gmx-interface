@@ -1,46 +1,66 @@
 import { t } from "@lingui/macro";
-import { CompetitionType } from "domain/synthetics/leaderboard";
+import { CompetitionType, LeaderboardPageKey } from "domain/synthetics/leaderboard";
 import { mustNeverExist } from "lib/types";
 import { useMemo } from "react";
-import goldIcon from "img/leaderboard_gold.svg";
+import rank1Icon from "img/rank1.png";
+import rank2Icon from "img/rank2.png";
+import rank3Icon from "img/rank3.png";
+import rank4Icon from "img/rank4.png";
+
+const iconByType = {
+  gold: rank1Icon,
+  silver: rank2Icon,
+  bronze: rank3Icon,
+  other: rank4Icon,
+} as const;
 
 type Prize = {
   title: string;
   description: string;
-  imgType: "gold" | "silver" | "bronze" | "winner";
+  imgType: "gold" | "silver" | "bronze" | "other";
   key: string;
 };
 
-export function CompetitionPrizes({ competition }: { competition: CompetitionType }) {
+export function CompetitionPrizes({
+  competitionType,
+  leaderboardPageKey,
+}: {
+  competitionType: CompetitionType;
+  leaderboardPageKey: LeaderboardPageKey;
+}) {
   const prizes: Prize[] = useMemo(() => {
-    switch (competition) {
+    if (leaderboardPageKey === "leaderboard") {
+      return [];
+    }
+
+    switch (competitionType) {
       case "notionalPnl":
       case "pnlPercentage":
         return [
-          { title: t`1st Place`, description: t`50000 ARB tokens`, imgType: "gold", key: "1" },
+          { title: t`1st Place`, description: t`50 000 ARB`, imgType: "gold", key: "1" },
           {
             title: t`2nd Place`,
-            description: t`30000 ARB tokens`,
+            description: t`30 000 ARB`,
             imgType: "silver",
             key: "2",
           },
           {
             title: t`3rd Place`,
             imgType: "bronze",
-            description: t`20000 ARB tokens`,
+            description: t`20 000 ARB`,
             key: "3",
           },
           {
             title: t`4-12 Places`,
-            imgType: "winner",
-            description: t`10000 ARB tokens`,
+            imgType: "other",
+            description: t`10 000 ARB`,
             key: "4-12",
           },
         ];
       default:
-        throw mustNeverExist(competition);
+        throw mustNeverExist(competitionType);
     }
-  }, [competition]);
+  }, [competitionType, leaderboardPageKey]);
 
   return (
     <div className="CompetitionPrizes">
@@ -53,10 +73,12 @@ export function CompetitionPrizes({ competition }: { competition: CompetitionTyp
 
 function CompetitionPrize({ prize }: { prize: Prize }) {
   return (
-    <div className="CompetitionsPrizes__prize">
-      <img className="CompetitionPrizes__prize-icon" src={goldIcon} />
-      <div className="CompetitionPrizes__prize-title">{prize.title}</div>
-      <div className="CompetitionPrizes__prize-description">{prize.description}</div>
+    <div className="CompetitionPrizes__prize">
+      <img className="CompetitionPrizes__prize-icon" src={iconByType[prize.imgType]} />
+      <div className="CompetitionPrizes__prize-text">
+        <div className="CompetitionPrizes__prize-title">{prize.title}</div>
+        <div className="CompetitionPrizes__prize-description">{prize.description}</div>
+      </div>
     </div>
   );
 }

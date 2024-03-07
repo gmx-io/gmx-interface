@@ -26,16 +26,24 @@ msgid "06 Jan 2022"
 msgstr "2022년 1월 6일"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-msgid "10000 ARB tokens"
+msgid "10 000 ARB"
 msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+#~ msgid "10000 ARB tokens"
+#~ msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "1st Place"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-msgid "20000 ARB tokens"
+msgid "20 000 ARB"
 msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+#~ msgid "20000 ARB tokens"
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "24h Volume"
@@ -46,8 +54,12 @@ msgid "2nd Place"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-msgid "30000 ARB tokens"
+msgid "30 000 ARB"
 msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+#~ msgid "30000 ARB tokens"
+#~ msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "3rd Place"
@@ -58,8 +70,12 @@ msgid "4-12 Places"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-msgid "50000 ARB tokens"
+msgid "50 000 ARB"
 msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+#~ msgid "50000 ARB tokens"
+#~ msgstr ""
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "<0><1>{eventTitle}</1> from <2>{0} {indexName} <3>[{poolName}]</3> Position</2></0>"
@@ -4357,7 +4373,7 @@ msgstr "비용 절감"
 msgid "Save on Fees"
 msgstr "수수료 절약"
 
-#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Search Address"
 msgstr ""
 

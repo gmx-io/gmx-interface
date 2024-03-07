@@ -190,39 +190,47 @@
   align-items: center;
   min-width: 0;
   margin-bottom: 2rem;
-}
 
-.CompetitionsPrizes__prize {
-  margin-right: 1rem;
-  margin-bottom: 1rem;
-  width: 22.8rem;
-  height: 18.6rem;
-  background-color: #16182e;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0.5rem;
-  text-align: center;
-}
+  &__prize {
+    margin-right: 1rem;
+    margin-bottom: 1rem;
+    flex: 1;
+    background-color: #16182e;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    text-align: center;
+    padding: 2rem 0;
 
-.CompetitionPrizes__prize-icon {
-  height: 6.4rem;
-  width: 6.4rem;
-  margin-bottom: 1rem;
-}
+    &-text {
+      display: flex;
+      flex-direction: column;
+      white-space: nowrap;
+      margin-left: 2rem;
+    }
 
-.CompetitionPrizes__prize-title {
-  color: white;
-  font-weight: bold;
-  margin-bottom: 1rem;
-  width: 80%;
-}
+    &-icon {
+      height: 6.4rem;
+      width: 6.4rem;
+      margin-bottom: 1rem;
+    }
 
-.CompetitionPrizes__prize-description {
-  width: 80%;
-  color: rgba(255, 255, 255, 0.7);
+    &-title {
+      width: 80%;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 0.5rem;
+    }
+
+    &-description {
+      color: white;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      width: 80%;
+      white-space: nowrap;
+    }
+  }
 }
 
 .CompetitionCountdown {
@@ -296,6 +304,29 @@
 .TableBox {
   width: 100%;
   overflow: visible;
+}
+
+.TableBox table.Exchange-list.App-box.Table {
+  border-radius: 0;
+}
+
+.TableBox__head {
+  background-color: #16182e;
+  padding: 1rem 1.6rem;
+  border-radius: 0.4rem 0.4rem 0 0;
+  border-bottom: 1px solid rgb(255 255 255 / 8%);
+}
+
+.TableBox__footer {
+  background-color: #16182e;
+  padding: 1rem 1.6rem;
+  border-radius: 0 0 0.4rem 0.4rem;
+  border-top: 1px solid rgb(255 255 255 / 8%);
+  height: 5.8rem;
+
+  & .pagination {
+    margin-top: 0;
+  }
 }
 
 .TableBox table.Exchange-list tr {

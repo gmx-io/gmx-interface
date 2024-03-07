@@ -1,11 +1,11 @@
+import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { LeaderboardAccount, LeaderboardPositionBase } from "domain/synthetics/leaderboard";
+import { MarketInfo } from "domain/synthetics/markets";
 import { BigNumber } from "ethers";
+import { mustNeverExist } from "lib/types";
 import { SyntheticsTradeState } from "../SyntheticsStateContextProvider";
 import { createEnhancedSelector } from "../utils";
-import { LeaderboardAccount, LeaderboardPositionBase } from "domain/synthetics/leaderboard";
 import { selectAccount, selectMarketsInfoData } from "./globalSelectors";
-import { MarketInfo } from "domain/synthetics/markets";
-import { BASIS_POINTS_DIVISOR } from "config/factors";
-import { mustNeverExist } from "lib/types";
 
 export const selectLeaderboardAccountBases = (s: SyntheticsTradeState) => s.leaderboard.accounts;
 export const selectLeaderboardPositionBases = (s: SyntheticsTradeState) => s.leaderboard.positions;
@@ -32,6 +32,17 @@ export const selectLeaderboardIsCompetition = createEnhancedSelector((q) => {
     default:
       throw mustNeverExist(pageKey);
   }
+});
+
+export const selectLeaderboardIsCompetitionOver = createEnhancedSelector((q) => {
+  const isEndInFuture = q(selectLeaderboardIsEndInFuture);
+  if (isEndInFuture) return false;
+
+  const timeframe = q(selectLeaderboardTimeframe);
+
+  if (timeframe.to === undefined) return false;
+
+  return q(selectLeaderboardIsCompetition);
 });
 
 export const selectLeaderboardCurrentAccount = createEnhancedSelector((q): LeaderboardAccount | undefined => {

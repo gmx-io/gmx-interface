@@ -1,14 +1,14 @@
 import { useMemo } from "react";
 import {
-  selectLeaderboardRankedAccounts,
   selectLeaderboardAccountsRanks,
   selectLeaderboardCurrentAccount,
-  selectLeaderboardType,
-  selectLeaderboardSetType,
-  selectLeaderboardTimeframe,
+  selectLeaderboardIsCompetition,
   selectLeaderboardIsEndInFuture,
   selectLeaderboardIsStartInFuture,
-  selectLeaderboardIsCompetition,
+  selectLeaderboardRankedAccounts,
+  selectLeaderboardSetType,
+  selectLeaderboardTimeframe,
+  selectLeaderboardType,
 } from "../selectors/leaderboardSelectors";
 import { useSelector } from "../utils";
 
