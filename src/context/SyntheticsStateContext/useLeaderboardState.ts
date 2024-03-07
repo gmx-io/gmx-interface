@@ -105,12 +105,12 @@ function useLeaderboardTimeframe(
       return LEADERBOARD_TIMEFRAMES.all;
     } else if (leaderboardType === "30days") {
       return {
-        from: Math.floor(Date.now() / 1000) - 30 * 24 * 60 * 60,
+        from: Math.floor(Date.now() / 1000 / 86400) * 86400 - 30 * 24 * 60 * 60,
         to: undefined,
       };
     } else if (leaderboardType === "7days") {
       return {
-        from: Math.floor(Date.now() / 1000) - 7 * 24 * 60 * 60,
+        from: Math.floor(Date.now() / 1000 / 86400) * 86400 - 7 * 24 * 60 * 60,
         to: undefined,
       };
     } else {
