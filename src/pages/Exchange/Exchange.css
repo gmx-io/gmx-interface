@@ -888,6 +888,9 @@ table.Exchange-list-small td {
 
 .Position-list-active-orders .Tooltip-popup {
   max-width: 5rem;
+}
+
+.Position-list-active-orders .Tooltip-popup .order__list {
   max-height: 350px;
   overflow-y: auto;
 }
