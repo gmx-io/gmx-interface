@@ -3458,6 +3458,10 @@ msgstr "ポジションなし"
 msgid "No rebates distribution history yet."
 msgstr "紹介報酬支払い履歴はありません。"
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "No results found"
+msgstr ""
+
 #: src/pages/Stake/StakeV1.js
 msgid "No rewards to claim yet"
 msgstr "請求できる報酬はありません"

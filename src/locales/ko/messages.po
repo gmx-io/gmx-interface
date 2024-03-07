@@ -3458,6 +3458,10 @@ msgstr "열려있는 포지션이 없음"
 msgid "No rebates distribution history yet."
 msgstr "소개 보수 분배 내역이 없습니다."
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "No results found"
+msgstr ""
+
 #: src/pages/Stake/StakeV1.js
 msgid "No rewards to claim yet"
 msgstr "수령할 보상이 아직 없습니다"

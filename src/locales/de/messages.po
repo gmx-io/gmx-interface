@@ -3458,6 +3458,10 @@ msgstr "Keine Position"
 msgid "No rebates distribution history yet."
 msgstr "Noch keine Geschichte der Rabattverteilung."
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "No results found"
+msgstr ""
+
 #: src/pages/Stake/StakeV1.js
 msgid "No rewards to claim yet"
 msgstr "Noch keine Belohnungen zu beanspruchen"

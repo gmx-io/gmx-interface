@@ -7,25 +7,18 @@ import {
 import { LEADERBOARD_TIMEFRAMES } from "domain/synthetics/leaderboard/constants";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { useEffect, useMemo, useState } from "react";
-import { SyntheticsPageType } from "./SyntheticsStateContextProvider";
 import { mustNeverExist } from "lib/types";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
 export type LeaderboardState = ReturnType<typeof useLeaderboardState>;
 
-export const useLeaderboardState = (account: string | undefined, pageType: SyntheticsPageType) => {
+export const useLeaderboardState = (account: string | undefined, enabled: boolean) => {
   const { chainId } = useChainId();
   const [leaderboardType, setLeaderboardType] = useState<LeaderboardType>("all");
   const { leaderboardPageKey: leaderboardPageKeyRaw } = useParams<{ leaderboardPageKey?: LeaderboardPageKey }>();
-
-  const isLeaderboard = pageType === "leaderboard";
-  const isCompetitions = pageType === "competitions";
-  const enabled = isLeaderboard || isCompetitions;
   const leaderboardPageKey = leaderboardPageKeyRaw ?? "leaderboard";
-
-  const timeframe = useLeaderboardTimeframe(pageType, leaderboardType, leaderboardPageKey);
-
+  const timeframe = useLeaderboardTimeframe(leaderboardPageKey, leaderboardType, leaderboardPageKey);
   const isEndInFuture = timeframe.to === undefined || timeframe.to > Date.now() / 1000;
   const isStartInFuture = timeframe.from > Date.now() / 1000;
   const positionsSnapshotTimestamp = isEndInFuture ? undefined : timeframe.to;
@@ -79,11 +72,11 @@ function deserializeTimeframe(timeframeStr: string): LeaderboardTimeframe {
 }
 
 function useLeaderboardTimeframe(
-  pageType: SyntheticsPageType,
+  pageType: LeaderboardPageKey,
   leaderboardType: LeaderboardType,
   pageKey: LeaderboardPageKey | undefined
 ): LeaderboardTimeframe {
-  const isCompetitions = pageType === "competitions";
+  const isCompetitions = pageKey !== "leaderboard";
   const competitionsDefaultTimeframe: LeaderboardTimeframe = useMemo(() => {
     switch (pageKey) {
       case "leaderboard":

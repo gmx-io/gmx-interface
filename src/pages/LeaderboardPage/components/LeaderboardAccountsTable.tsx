@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import AddressView from "components/AddressView/AddressView";
 import Pagination from "components/Pagination/Pagination";
@@ -10,7 +10,10 @@ import { ReactNode, memo, useCallback, useLayoutEffect, useMemo, useState } from
 import { TopAccountsSkeleton } from "components/Skeleton/Skeleton";
 import { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { useLeaderboardAccountsRanks } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
+import {
+  useLeaderboardAccountsRanks,
+  useLeaderboardCurrentAccount,
+} from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import {
   CompetitionType,
   LeaderboardAccount,
@@ -40,19 +43,18 @@ type LeaderboardAccountField = keyof LeaderboardAccount;
 
 export function LeaderboardAccountsTable({
   accounts,
-  currentAccount,
   search,
   activeCompetition,
   sortingEnabled = true,
   skeletonCount = 15,
 }: {
   accounts: RemoteData<LeaderboardAccount>;
-  currentAccount: LeaderboardAccount | undefined;
   search: string;
   activeCompetition: CompetitionType | undefined;
   sortingEnabled?: boolean;
   skeletonCount?: number;
 }) {
+  const currentAccount = useLeaderboardCurrentAccount();
   const perPage = 20;
   const { isLoading, data } = accounts;
   const [page, setPage] = useState(1);
@@ -104,10 +106,10 @@ export function LeaderboardAccountsTable({
     });
   }, [data, direction, orderBy]);
 
-  const filteredStats = useMemo(
-    () => sorted.filter((a) => a.account.toLowerCase().indexOf(term.toLowerCase()) >= 0),
-    [sorted, term]
-  );
+  const filteredStats = useMemo(() => {
+    const q = term.toLowerCase().trim();
+    return sorted.filter((a) => a.account.toLowerCase().indexOf(q) >= 0);
+  }, [sorted, term]);
 
   const indexFrom = (page - 1) * perPage;
   const activeRank = activeCompetition === "pnlPercentage" ? ranks.pnlPercentage : ranks.pnl;
@@ -122,13 +124,15 @@ export function LeaderboardAccountsTable({
   );
   const pinnedRowData = useMemo(() => {
     if (!currentAccount) return undefined;
+    if (term) return undefined;
+
     const rank = activeRank.get(currentAccount.account) ?? null;
     return {
       account: currentAccount,
       index: 0,
       rank,
     };
-  }, [activeRank, currentAccount]);
+  }, [activeRank, currentAccount, term]);
   const pageCount = Math.ceil(filteredStats.length / perPage);
 
   const getSortableClass = useCallback(
@@ -161,19 +165,23 @@ export function LeaderboardAccountsTable({
           breakpoint={breakpoint}
         />
       )}
-      {rowsData.map(({ account, index, rank }) => {
-        return (
-          <TableRow
-            key={account.account}
-            account={account}
-            index={index}
-            pinned={false}
-            rank={rank}
-            activeCompetition={activeCompetition}
-            breakpoint={breakpoint}
-          />
-        );
-      })}
+      {rowsData.length ? (
+        rowsData.map(({ account, index, rank }) => {
+          return (
+            <TableRow
+              key={account.account}
+              account={account}
+              index={index}
+              pinned={false}
+              rank={rank}
+              activeCompetition={activeCompetition}
+              breakpoint={breakpoint}
+            />
+          );
+        })
+      ) : (
+        <EmptyRow />
+      )}
     </>
   );
 
@@ -333,7 +341,9 @@ const TableRow = memo(
     return (
       <tr className={getRowClassname(rank, activeCompetition, pinned)} key={account.account}>
         <TableCell>
-          <span className={getWinnerRankClassname(rank, activeCompetition)}>{rank === null ? "-" : rank}</span>
+          <span className={getWinnerRankClassname(rank, activeCompetition)}>
+            <RankInfo rank={rank} />
+          </span>
         </TableCell>
         <TableCell>
           <AddressView size={20} address={account.account} breakpoint={breakpoint} />
@@ -415,43 +425,6 @@ const TableRow = memo(
                       </span>
                     }
                   />
-                  {/* <StatsTooltipRow
-                      label={t`Formula PnL`}
-                      showDollar={false}
-                      value={[
-                        `( ${pinnedRowData.account.realizedPnl.toString()}n / 10n**30n`,
-                        `+ ${pinnedRowData.account.unrealizedPnl.toString()}n / 10n**30n`,
-                        `- ${pinnedRowData.account.startUnrealizedPnl.toString()}n / 10n**30n )`,
-                        ``,
-                        `== ${pinnedRowData.account.totalPnl.toString()}n / 10n**30n `,
-                      ].join(" ")}
-                    />
-                    <StatsTooltipRow
-                      label={t`Formula Fees`}
-                      showDollar={false}
-                      value={[
-                        `( ${pinnedRowData.account.realizedFees.toString()}n / 10n**30n`,
-                        `+ ${pinnedRowData.account.unrealizedFees.toString()}n / 10n**30n`,
-                        `- ${pinnedRowData.account.startUnrealizedFees.toString()}n / 10n**30n )`,
-                        ``,
-                        `== ${pinnedRowData.account.totalFees.toString()}n / 10n**30n `,
-                      ].join(" ")}
-                    />
-                    <StatsTooltipRow
-                      label={t`Formula Total`}
-                      showDollar={false}
-                      value={[
-                        `( ${pinnedRowData.account.realizedPnl.toString()}n`,
-                        `+ ${pinnedRowData.account.unrealizedPnl.toString()}n`,
-                        `- ${pinnedRowData.account.startUnrealizedPnl.toString()}n`,
-                        `- ${pinnedRowData.account.realizedFees.toString()}n`,
-                        `- ${pinnedRowData.account.unrealizedFees.toString()}n`,
-                        `+ ${pinnedRowData.account.startUnrealizedFees.toString()}n`,
-                        `- ${pinnedRowData.account.realizedPriceImpact.toString()}n ) / 10n**30n`,
-                        ``,
-                        `== ${pinnedRowData.account.totalQualifyingPnl.toString()}n / 10n**30n `,
-                      ].join(" ")}
-                    /> */}
                 </div>
               )}
             />
@@ -500,4 +473,22 @@ const TableRow = memo(
 
 const TableCell = memo(({ children, className }: { children: ReactNode; className?: string }) => {
   return <td className={className}>{children}</td>;
+});
+
+const EmptyRow = memo(() => {
+  return (
+    <tr className="Table_tr">
+      <td colSpan={7} className="Table_no-results-row">
+        <Trans>No results found</Trans>
+      </td>
+    </tr>
+  );
+});
+
+const RankInfo = memo(({ rank }: { rank: number | null }) => {
+  if (rank === null)
+    return (
+      <TooltipWithPortal handle={t`NA`} renderContent={() => t`You have not traded during the competition window.`} />
+    );
+  return <span>{rank}</span>;
 });

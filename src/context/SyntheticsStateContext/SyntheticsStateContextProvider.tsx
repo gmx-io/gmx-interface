@@ -93,7 +93,7 @@ export function SyntheticsStateContextProvider({
     tokensData: marketsInfo.tokensData,
   });
 
-  const leaderboard = useLeaderboardState(account, pageType);
+  const leaderboard = useLeaderboardState(account, pageType === "competitions" || pageType === "leaderboard");
 
   const state = useMemo(() => {
     const s: SyntheticsTradeState = {

@@ -8,6 +8,7 @@ import {
   selectLeaderboardTimeframe,
   selectLeaderboardIsEndInFuture,
   selectLeaderboardIsStartInFuture,
+  selectLeaderboardIsCompetition,
 } from "../selectors/leaderboardSelectors";
 import { useSelector } from "../utils";
 
@@ -28,3 +29,5 @@ export const useLeaderboardTiming = () => {
 };
 
 export const useLeaderboardPageKey = () => useSelector((s) => s.leaderboard.leaderboardPageKey);
+
+export const useLeaderboardIsCompetition = () => useSelector(selectLeaderboardIsCompetition);

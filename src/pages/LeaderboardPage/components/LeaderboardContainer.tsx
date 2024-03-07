@@ -5,7 +5,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import SearchInput from "components/SearchInput/SearchInput";
 import Tab from "components/Tab/Tab";
 import {
-  useLeaderboardCurrentAccount,
+  useLeaderboardIsCompetition,
   useLeaderboardPageKey,
   useLeaderboardRankedAccounts,
   useLeaderboardTiming,
@@ -24,14 +24,13 @@ const competitionsTabs = [0, 1];
 const leaderboardLabels = [t`Total`, t`Last 30 days`, t`Last 7 days`];
 const leaderboardTabs = [0, 1, 2];
 
-export function LeaderboardContainer({ isCompetitions }: { isCompetitions: boolean }) {
+export function LeaderboardContainer() {
   const [search, setSearch] = useState("");
   const { isStartInFuture } = useLeaderboardTiming();
+  const isCompetition = useLeaderboardIsCompetition();
   const [activeLeaderboardIndex, setActiveLeaderboardIndex] = useState(0);
   const [activeCompetitionIndex, setActiveCompetitionIndex] = useState(0);
-  // const [, setLeaderboardType] = useLeaderboardTypeState();
   const accounts = useLeaderboardRankedAccounts();
-  const leaderboardCurrentAccount = useLeaderboardCurrentAccount();
   const isLoading = !accounts;
   const accountsStruct = useMemo(
     () => ({
@@ -58,10 +57,12 @@ export function LeaderboardContainer({ isCompetitions }: { isCompetitions: boole
     [setActiveCompetitionIndex]
   );
 
+  const pageKey = useLeaderboardPageKey();
+
   useEffect(() => {
     setActiveLeaderboardIndex(0);
     setActiveCompetitionIndex(0);
-  }, [isCompetitions]);
+  }, [pageKey]);
 
   useEffect(() => {
     if (activeLeaderboardIndex === 0) {
@@ -113,6 +114,10 @@ export function LeaderboardContainer({ isCompetitions }: { isCompetitions: boole
 
   const setValue = useCallback((e) => setSearch(e.target.value), []);
 
+  useEffect(() => {
+    setSearch("");
+  }, [activeCompetition, isCompetition]);
+
   return (
     <div className="GlobalLeaderboards">
       <LeaderboardNavigation />
@@ -121,13 +126,13 @@ export function LeaderboardContainer({ isCompetitions }: { isCompetitions: boole
           <h1>{title}</h1>
           <div className="Leaderboard-Title__description">{description}</div>
         </div>
-        {isCompetitions && <CompetitionCountdown />}
+        {isCompetition && <CompetitionCountdown />}
       </div>
-      {isCompetitions && <CompetitionPrizes competition={activeCompetition} />}
+      {isCompetition && <CompetitionPrizes competition={activeCompetition} />}
 
       {!isStartInFuture && (
         <>
-          {!isCompetitions && (
+          {!isCompetition && (
             <>
               <br />
               <Tab
@@ -138,7 +143,7 @@ export function LeaderboardContainer({ isCompetitions }: { isCompetitions: boole
               />
             </>
           )}
-          {isCompetitions && (
+          {isCompetition && (
             <Tab
               option={activeCompetitionIndex}
               onChange={handleCompetitionTabChange}
@@ -155,12 +160,7 @@ export function LeaderboardContainer({ isCompetitions }: { isCompetitions: boole
               onKeyDown={handleKeyDown}
             />
           </div>
-          <LeaderboardAccountsTable
-            currentAccount={leaderboardCurrentAccount}
-            activeCompetition={isCompetitions ? activeCompetition : undefined}
-            accounts={accountsStruct}
-            search={search}
-          />
+          <LeaderboardAccountsTable activeCompetition={activeCompetition} accounts={accountsStruct} search={search} />
         </>
       )}
     </div>

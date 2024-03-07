@@ -5,6 +5,7 @@ import { LeaderboardAccount, LeaderboardPositionBase } from "domain/synthetics/l
 import { selectAccount, selectMarketsInfoData } from "./globalSelectors";
 import { MarketInfo } from "domain/synthetics/markets";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
+import { mustNeverExist } from "lib/types";
 
 export const selectLeaderboardAccountBases = (s: SyntheticsTradeState) => s.leaderboard.accounts;
 export const selectLeaderboardPositionBases = (s: SyntheticsTradeState) => s.leaderboard.positions;
@@ -15,6 +16,23 @@ export const selectLeaderboardSetType = (s: SyntheticsTradeState) => s.leaderboa
 export const selectLeaderboardTimeframe = (s: SyntheticsTradeState) => s.leaderboard.timeframe;
 export const selectLeaderboardIsEndInFuture = (s: SyntheticsTradeState) => s.leaderboard.isEndInFuture;
 export const selectLeaderboardIsStartInFuture = (s: SyntheticsTradeState) => s.leaderboard.isStartInFuture;
+
+export const selectLeaderboardIsCompetition = createEnhancedSelector((q) => {
+  const pageKey = q((s) => s.leaderboard.leaderboardPageKey);
+
+  switch (pageKey) {
+    case "leaderboard":
+      return false;
+
+    case "march24":
+    case "test1":
+    case "test2":
+      return true;
+
+    default:
+      throw mustNeverExist(pageKey);
+  }
+});
 
 export const selectLeaderboardCurrentAccount = createEnhancedSelector((q): LeaderboardAccount | undefined => {
   const accounts = q(selectLeaderboardAccounts);

@@ -5,7 +5,7 @@ import "./LeaderboardPage.scss";
 import { LeaderboardContainer } from "./components/LeaderboardContainer";
 import Footer from "components/Footer/Footer";
 
-export function Leaderboard({ isCompetitions }: { isCompetitions?: boolean }) {
+export function Leaderboard() {
   const { chainId } = useChainId();
 
   const title = <Trans>Leaderboards</Trans>;
@@ -19,7 +19,7 @@ export function Leaderboard({ isCompetitions }: { isCompetitions?: boolean }) {
           </div>
         </div>
       </div>
-      <LeaderboardContainer isCompetitions={isCompetitions ?? false} />
+      <LeaderboardContainer />
       <Footer />
     </div>
   );
