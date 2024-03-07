@@ -89,14 +89,11 @@ function useLeaderboardTimeframe(
       case "leaderboard":
         return LEADERBOARD_TIMEFRAMES.all;
 
-      case "march24abspnl":
-        return LEADERBOARD_TIMEFRAMES.march24abspnl;
+      case "march24":
+        return LEADERBOARD_TIMEFRAMES.march24;
 
-      case "march24relpnl":
-        return LEADERBOARD_TIMEFRAMES.march24relpnl;
-
-      case "test":
-        return LEADERBOARD_TIMEFRAMES.test;
+      case "test1":
+        return LEADERBOARD_TIMEFRAMES.test1;
 
       case "test2":
         return LEADERBOARD_TIMEFRAMES.test2;

@@ -78,17 +78,14 @@ export function LeaderboardContainer({ isCompetitions }: { isCompetitions: boole
       case "leaderboard":
         return t`Global leaderboard`;
 
-      case "march24abspnl":
-        return t`March '24 Absolute PnL`;
-
-      case "march24relpnl":
+      case "march24":
         return t`March '24 Relative PnL`;
 
-      case "test":
+      case "test1":
         return "Test championship March '24";
 
       case "test2":
-        return "Test championship 14-16 Feb '24";
+        return "Test championship Feb '24";
 
       default:
         throw mustNeverExist(leaderboardPageKey);
@@ -100,9 +97,8 @@ export function LeaderboardContainer({ isCompetitions }: { isCompetitions: boole
       case "leaderboard":
         return t`Leaderboard for traders on GMX V2`;
 
-      case "march24abspnl":
-      case "march24relpnl":
-      case "test":
+      case "march24":
+      case "test1":
       case "test2":
         return (
           <ExternalLink href="#">

@@ -206,7 +206,7 @@ export function LeaderboardAccountsTable({
                 tooltip={t`Total Realized and Unrealized Profit and Loss.`}
                 tooltipPosition="left-bottom"
                 onClick={handleColumnClick}
-                columnName="totalPnlAfterFees"
+                columnName="totalQualifyingPnl"
                 className={getSortableClass("totalQualifyingPnl")}
               />
               <TableHeaderCell

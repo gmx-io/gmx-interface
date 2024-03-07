@@ -2943,9 +2943,13 @@ msgstr "Main Account Balance"
 msgid "Main Account {0} Balance is used to top up Subaccount Balance on each Action up to the set Max auto top-up amount. Use the \"Сonvert {1} to {2}\" field if the Main Account {3} Balance is low."
 msgstr "Main Account {0} Balance is used to top up Subaccount Balance on each Action up to the set Max auto top-up amount. Use the \"Сonvert {1} to {2}\" field if the Main Account {3} Balance is low."
 
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "March '24"
+msgstr "March '24"
+
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "March '24 Absolute PnL"
-msgstr "March '24 Absolute PnL"
+#~ msgid "March '24 Absolute PnL"
+#~ msgstr "March '24 Absolute PnL"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "March '24 Relative PnL"
@@ -3708,12 +3712,12 @@ msgid "Page outdated, please refresh"
 msgstr "Page outdated, please refresh"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "Paid Fees"
-msgstr "Paid Fees"
+#~ msgid "Paid Fees"
+#~ msgstr "Paid Fees"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "Paid Price Impact"
-msgstr "Paid Price Impact"
+#~ msgid "Paid Price Impact"
+#~ msgstr "Paid Price Impact"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Pair"
@@ -3756,8 +3760,8 @@ msgid "Pay Amount"
 msgstr "Pay Amount"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "Pending Fees"
-msgstr "Pending Fees"
+#~ msgid "Pending Fees"
+#~ msgstr "Pending Fees"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #~ msgid "Pending PnL"
@@ -4101,12 +4105,20 @@ msgid "Read the rules"
 msgstr "Read the rules"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Realized Fees"
+msgstr "Realized Fees"
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Realized PnL"
 msgstr "Realized PnL"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Realized PnL insufficient for Fees"
 msgstr "Realized PnL insufficient for Fees"
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Realized Price Impact"
+msgstr "Realized Price Impact"
 
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Reason: {0}"
@@ -4768,12 +4780,20 @@ msgid "Staking..."
 msgstr "Staking..."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "Start Pending Fees"
-msgstr "Start Pending Fees"
+#~ msgid "Start Pending Fees"
+#~ msgstr "Start Pending Fees"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "Start Pending PnL"
-msgstr "Start Pending PnL"
+#~ msgid "Start Pending PnL"
+#~ msgstr "Start Pending PnL"
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Start Unrealized Fees"
+msgstr "Start Unrealized Fees"
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Start Unrealized PnL"
+msgstr "Start Unrealized PnL"
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "Starts in"
@@ -5342,12 +5362,12 @@ msgid "Tokens"
 msgstr "Tokens"
 
 #: src/domain/synthetics/leaderboard/constants.ts
-msgid "Top PnL $ March '24"
-msgstr "Top PnL $ March '24"
+#~ msgid "Top PnL $ March '24"
+#~ msgstr "Top PnL $ March '24"
 
 #: src/domain/synthetics/leaderboard/constants.ts
-msgid "Top Pnl % March '24"
-msgstr "Top Pnl % March '24"
+#~ msgid "Top Pnl % March '24"
+#~ msgstr "Top Pnl % March '24"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Top-up"
@@ -5660,6 +5680,10 @@ msgstr "Unknown order"
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown sell GM order"
 msgstr "Unknown sell GM order"
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Unrealized Fees"
+msgstr "Unrealized Fees"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Unrealized PnL"
