@@ -5137,6 +5137,10 @@ msgstr ""
 msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 msgstr ""
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "The PnL ($) compared to the capital used.<0/>The capital used is calculated as the highest value of [<1>sum of collateral of open positions - realized PnL + period start pending PnL</1>]."
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
 msgstr "Адрес токена esGMX называется {esGmxIouAddress}."
@@ -5232,6 +5236,10 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "The spread is > 1%, please ensure the trade details are acceptable before confirming"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "The total realized and unrealized profit and loss for the period, including fees and price impact.."
 msgstr ""
 
 #: src/components/ModalViews/RedirectModal.js
@@ -5403,8 +5411,8 @@ msgstr "Общая сумма Комиссии"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "Total Realized and Unrealized Profit and Loss."
-msgstr ""
+#~ msgid "Total Realized and Unrealized Profit and Loss."
+#~ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Rebates"
@@ -6273,6 +6281,10 @@ msgstr "У вас есть несколько существующих на ув
 #: src/pages/Stake/StakeV2.js
 msgid "You have not deposited any tokens for vesting."
 msgstr "Вы не внесли ни одного токена для вестнига."
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "You have not traded during selected period."
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "You have not traded during the competition window."

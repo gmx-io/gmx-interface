@@ -5140,6 +5140,10 @@ msgstr "The Max Execution Fee is overestimated by {maxExecutionFeeText}%. Upon e
 msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 msgstr "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "The PnL ($) compared to the capital used.<0/>The capital used is calculated as the highest value of [<1>sum of collateral of open positions - realized PnL + period start pending PnL</1>]."
+msgstr "The PnL ($) compared to the capital used.<0/>The capital used is calculated as the highest value of [<1>sum of collateral of open positions - realized PnL + period start pending PnL</1>]."
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
 msgstr "The address of the esGMX (IOU) token is {esGmxIouAddress}."
@@ -5236,6 +5240,10 @@ msgstr "The spread is > 1%, please ensure the trade details are acceptable befor
 #: src/components/Exchange/ConfirmationBox.js
 msgid "The spread is > 1%, please ensure the trade details are acceptable before confirming"
 msgstr "The spread is > 1%, please ensure the trade details are acceptable before confirming"
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "The total realized and unrealized profit and loss for the period, including fees and price impact.."
+msgstr "The total realized and unrealized profit and loss for the period, including fees and price impact.."
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
@@ -5406,8 +5414,8 @@ msgstr "Total Fees"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "Total Realized and Unrealized Profit and Loss."
-msgstr "Total Realized and Unrealized Profit and Loss."
+#~ msgid "Total Realized and Unrealized Profit and Loss."
+#~ msgstr "Total Realized and Unrealized Profit and Loss."
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total Rebates"
@@ -6276,6 +6284,10 @@ msgstr "You have multiple existing Increase {longOrShortText} {0} limit orders"
 #: src/pages/Stake/StakeV2.js
 msgid "You have not deposited any tokens for vesting."
 msgstr "You have not deposited any tokens for vesting."
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "You have not traded during selected period."
+msgstr "You have not traded during selected period."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "You have not traded during the competition window."
