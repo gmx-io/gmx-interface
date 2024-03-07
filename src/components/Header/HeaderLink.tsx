@@ -12,7 +12,7 @@ type Props = {
   exact?: boolean;
   to: string;
   showRedirectModal: (to: string) => void;
-  redirectPopupTimestamp: number;
+  redirectPopupTimestamp?: number;
   onClick?: MouseEventHandler<HTMLDivElement | HTMLAnchorElement>;
   children?: ReactNode;
 };
