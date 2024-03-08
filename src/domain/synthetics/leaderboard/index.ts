@@ -7,7 +7,31 @@ export * from "./types";
 export * from "./utils";
 
 type LeaderboardAccountsJson = {
-  periodAccountStats: {
+  all: {
+    id: string;
+    cumsumCollateral: string;
+    cumsumSize: string;
+    sumMaxSize: string;
+
+    maxCapital: string;
+    netCapital: string;
+
+    realizedPnl: string;
+    realizedPriceImpact: string;
+    realizedFees: string;
+
+    startUnrealizedPnl: string;
+    startUnrealizedPriceImpact: string;
+    startUnrealizedFees: string;
+
+    closedCount: number;
+    volume: string;
+    losses: number;
+    wins: number;
+
+    hasRank?: boolean;
+  }[];
+  account: {
     id: string;
     cumsumCollateral: string;
     cumsumSize: string;
@@ -128,74 +152,62 @@ const fetchAccounts = async (
     return;
   }
 
-  const [allAccounts, currentAccount] = await Promise.all([
-    client.query<LeaderboardAccountsJson>({
-      query: gql`
-        query PeriodAccountStats($requiredMaxCapital: String, $from: Int, $to: Int) {
-          periodAccountStats(limit: 10000, where: { maxCapital_gte: $requiredMaxCapital, from: $from, to: $to }) {
-            id
-            closedCount
-            cumsumCollateral
-            cumsumSize
-            losses
-            maxCapital
-            realizedPriceImpact
-            sumMaxSize
-            netCapital
-            realizedFees
-            realizedPnl
-            volume
-            wins
-            startUnrealizedPnl
-            startUnrealizedFees
-            startUnrealizedPriceImpact
-          }
+  const allAccounts = await client.query<LeaderboardAccountsJson>({
+    query: gql`
+      query PeriodAccountStats($requiredMaxCapital: String, $from: Int, $to: Int, $account: String) {
+        all: periodAccountStats(limit: 10000, where: { maxCapital_gte: $requiredMaxCapital, from: $from, to: $to }) {
+          id
+          closedCount
+          cumsumCollateral
+          cumsumSize
+          losses
+          maxCapital
+          realizedPriceImpact
+          sumMaxSize
+          netCapital
+          realizedFees
+          realizedPnl
+          volume
+          wins
+          startUnrealizedPnl
+          startUnrealizedFees
+          startUnrealizedPriceImpact
         }
-      `,
-      variables: {
-        requiredMaxCapital: MIN_COLLATERAL_USD_IN_LEADERBOARD.toString(),
-        from: p?.from,
-        to: p?.to,
-      },
-      fetchPolicy: "no-cache",
-    }),
-    client.query<LeaderboardAccountsJson>({
-      query: gql`
-        query PeriodAccountStats($account: String) {
-          periodAccountStats(limit: 1, where: { id_eq: $account }) {
-            id
-            closedCount
-            cumsumCollateral
-            cumsumSize
-            losses
-            maxCapital
-            realizedPriceImpact
-            sumMaxSize
-            netCapital
-            realizedFees
-            realizedPnl
-            volume
-            wins
-            startUnrealizedPnl
-            startUnrealizedFees
-            startUnrealizedPriceImpact
-          }
+        account: periodAccountStats(limit: 1, where: { id_eq: $account }) {
+          id
+          closedCount
+          cumsumCollateral
+          cumsumSize
+          losses
+          maxCapital
+          realizedPriceImpact
+          sumMaxSize
+          netCapital
+          realizedFees
+          realizedPnl
+          volume
+          wins
+          startUnrealizedPnl
+          startUnrealizedFees
+          startUnrealizedPriceImpact
         }
-      `,
-      variables: {
-        account: p.account,
-      },
-      fetchPolicy: "no-cache",
-    }),
-  ]);
+      }
+    `,
+    variables: {
+      requiredMaxCapital: MIN_COLLATERAL_USD_IN_LEADERBOARD.toString(),
+      from: p?.from,
+      to: p?.to,
+    },
+    fetchPolicy: "no-cache",
+  });
 
-  const allAccountsSet = new Set(allAccounts?.data.periodAccountStats.map((p) => p.id));
+  const allAccountsSet = new Set(allAccounts?.data.all.map((p) => p.id));
 
-  if (p.account && !allAccountsSet.has(p.account) && currentAccount?.data.periodAccountStats.length) {
-    allAccounts?.data.periodAccountStats.push({ ...currentAccount.data.periodAccountStats[0], hasRank: false });
+  if (p.account && !allAccountsSet.has(p.account) && allAccounts?.data.account.length) {
+    allAccounts?.data.all.push({ ...allAccounts.data.account[0], hasRank: false });
   }
 
-  return allAccounts?.data.periodAccountStats.map((p) => {
+  return allAccounts?.data.all.map((p) => {
     return {
       account: p.id,
       cumsumCollateral: BigInt(p.cumsumCollateral),
