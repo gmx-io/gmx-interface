@@ -366,7 +366,7 @@ const TableRow = memo(
       <tr className={getRowClassname(rank, activeCompetition, pinned)} key={account.account}>
         <TableCell>
           <span className={getWinnerRankClassname(rank, activeCompetition)}>
-            <RankInfo rank={rank} />
+            <RankInfo rank={rank} hasSomeCapital={account.totalQualifyingPnl !== 0n} />
           </span>
         </TableCell>
         <TableCell>
@@ -509,18 +509,21 @@ const EmptyRow = memo(() => {
   );
 });
 
-const RankInfo = memo(({ rank }: { rank: number | null }) => {
+const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeCapital: boolean }) => {
   const isCompetition = useLeaderboardIsCompetition();
-  if (rank === null)
-    return (
-      <TooltipWithPortal
-        handle={t`NA`}
-        renderContent={() =>
-          isCompetition
-            ? t`You have not traded during the competition window.`
-            : t`You have not traded during selected period.`
-        }
-      />
-    );
+
+  const message = useMemo(() => {
+    let msg = t`You have not traded during selected period.`;
+    if (hasSomeCapital)
+      msg = t`You have yet to reach the minimum "Capital Used" of ${formatUsd(
+        MIN_COLLATERAL_USD_IN_LEADERBOARD.toBigInt()
+      )} to be eligible for PnL (%).`;
+    else if (isCompetition) msg = t`You have not traded during the competition window.`;
+    return msg;
+  }, [hasSomeCapital, isCompetition]);
+  const tooltipContent = useCallback(() => message, [message]);
+
+  if (rank === null) return <TooltipWithPortal handle={t`NA`} renderContent={tooltipContent} />;
+
   return <span>{rank}</span>;
 });
