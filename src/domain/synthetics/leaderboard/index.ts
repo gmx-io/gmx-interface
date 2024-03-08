@@ -173,7 +173,7 @@ const fetchAccounts = async (
           startUnrealizedFees
           startUnrealizedPriceImpact
         }
-        account: periodAccountStats(limit: 1, where: { id_eq: $account }) {
+        account: periodAccountStats(limit: 1, where: { id_eq: $account, from: $from, to: $to }) {
           id
           closedCount
           cumsumCollateral

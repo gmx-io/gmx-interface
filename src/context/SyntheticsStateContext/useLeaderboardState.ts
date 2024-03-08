@@ -47,8 +47,10 @@ export const useLeaderboardState = (account: string | undefined, enabled: boolea
       isEndInFuture,
       timeframe,
       leaderboardPageKey,
+      chainId,
     }),
     [
+      chainId,
       data?.accounts,
       data?.positions,
       isEndInFuture,

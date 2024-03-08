@@ -55,7 +55,8 @@ export function SyntheticsStateContextProvider({
   skipLocalReferralCode: boolean;
   pageType: SyntheticsTradeState["pageType"];
 }) {
-  const { chainId } = useChainId();
+  const { chainId: selectedChainId } = useChainId();
+
   const { account: walletAccount, signer } = useWallet();
   const { account: paramsAccount } = useParams<{ account?: string }>();
 
@@ -66,6 +67,10 @@ export function SyntheticsStateContextProvider({
   }
 
   const account = pageType === "actions" ? checkSummedAccount : walletAccount;
+  const isLeaderboardPage = pageType === "competitions" || pageType === "leaderboard";
+  const leaderboard = useLeaderboardState(account, isLeaderboardPage);
+  const chainId = isLeaderboardPage ? leaderboard.chainId : selectedChainId;
+
   const markets = useMarkets(chainId);
   const marketsInfo = useMarketsInfoRequest(chainId);
   const positionsConstants = usePositionsConstantsRequest(chainId);
@@ -92,8 +97,6 @@ export function SyntheticsStateContextProvider({
     marketsInfoData: marketsInfo.marketsInfoData,
     tokensData: marketsInfo.tokensData,
   });
-
-  const leaderboard = useLeaderboardState(account, pageType === "competitions" || pageType === "leaderboard");
 
   const state = useMemo(() => {
     const s: SyntheticsTradeState = {

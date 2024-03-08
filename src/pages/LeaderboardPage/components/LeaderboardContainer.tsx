@@ -18,9 +18,6 @@ import { LeaderboardAccountsTable } from "./LeaderboardAccountsTable";
 import { LeaderboardNavigation } from "./LeaderboardNavigation";
 import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
 import { useChainId } from "lib/chains";
-import { switchNetwork } from "lib/wallets";
-import useWallet from "lib/wallets/useWallet";
-import { useLatest } from "react-use";
 import { getIcon } from "config/icons";
 
 const competitionLabels = [t`Notional PnL`, t`PnL Percentage`];
@@ -47,19 +44,8 @@ export function LeaderboardContainer() {
     [accounts, isLoading]
   );
   const { chainId } = useChainId();
-  const { active } = useWallet();
-
-  const activeRef = useLatest(active);
-  const chainIdRef = useLatest(chainId);
 
   const page = LEADERBOARD_PAGES[leaderboardPageKey];
-
-  useEffect(() => {
-    if (!page.isCompetition) return;
-    if (chainIdRef.current === page.chainId) return;
-
-    switchNetwork(page.chainId, activeRef.current);
-  }, [activeRef, chainIdRef, leaderboardPageKey, page]);
 
   const [, setLeaderboardType] = useLeaderboardTypeState();
 

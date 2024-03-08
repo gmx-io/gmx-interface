@@ -1,4 +1,3 @@
-import { Trans } from "@lingui/macro";
 import Footer from "components/Footer/Footer";
 import { LeaderboardPageConfig } from "domain/synthetics/leaderboard";
 import { LEADERBOARD_PAGES, LEADERBOARD_TIMEFRAMES } from "domain/synthetics/leaderboard/constants";
@@ -9,15 +8,8 @@ import "./LeaderboardPage.scss";
 import { LeaderboardContainer } from "./components/LeaderboardContainer";
 
 export function LeaderboardPage() {
-  const title = <Trans>Leaderboards</Trans>;
-
   return (
     <div className="default-container page-layout LeaderboardTest">
-      <div className="section-title-block">
-        <div className="section-title-content">
-          <div className="Page-title">{title}</div>
-        </div>
-      </div>
       <LeaderboardContainer />
       <Footer />
     </div>

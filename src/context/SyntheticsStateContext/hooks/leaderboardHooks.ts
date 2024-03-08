@@ -31,3 +31,5 @@ export const useLeaderboardTiming = () => {
 export const useLeaderboardPageKey = () => useSelector((s) => s.leaderboard.leaderboardPageKey);
 
 export const useLeaderboardIsCompetition = () => useSelector(selectLeaderboardIsCompetition);
+
+export const useLeaderboardChainId = () => useSelector((s) => s.leaderboard.chainId);

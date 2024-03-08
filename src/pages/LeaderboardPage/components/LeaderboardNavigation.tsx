@@ -1,4 +1,6 @@
+import { t } from "@lingui/macro";
 import cx from "classnames";
+import { getIcon } from "config/icons";
 import { useLeaderboardPageKey } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import { LeaderboardPageKey } from "domain/synthetics/leaderboard";
 import {
@@ -16,6 +18,7 @@ type LeaderboardNavigationItem = {
   chip: "live" | "soon" | "over" | "none";
   isSelected: boolean;
   isCompetition: boolean;
+  chainId?: number;
   href: string;
 };
 
@@ -43,6 +46,7 @@ export function LeaderboardNavigation() {
         isSelected: page.key === pageKey,
         isCompetition: page.key !== "leaderboard",
         href: page.href,
+        chainId: page.isCompetition ? page.chainId : undefined,
       };
     });
     return items;
@@ -89,7 +93,13 @@ function NavigationItem({ item }: { item: LeaderboardNavigationItem }) {
         LeaderboardHeader__item_selected: item.isSelected,
       })}
     >
-      {item.label} {chip}
+      {item.label}{" "}
+      {item.chainId ? (
+        <>
+          <img className="LeaderboardHeader__network-icon" alt={t`Chain Icon`} src={getIcon(item.chainId, "network")} />
+        </>
+      ) : undefined}{" "}
+      {chip}
     </Link>
   );
 }
