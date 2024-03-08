@@ -76,14 +76,11 @@ export function LeaderboardContainer() {
       case "leaderboard":
         return t`Global leaderboard`;
 
-      case "march24":
-        return t`March '24 Relative PnL`;
+      case "march24arbitrum":
+        return t`March '24 Arbitrum`;
 
-      case "test1":
-        return "Test championship March '24";
-
-      case "test2":
-        return "Test championship Feb '24";
+      case "march24fuji":
+        return "March '24 Fuji";
 
       default:
         throw mustNeverExist(leaderboardPageKey);
@@ -95,9 +92,8 @@ export function LeaderboardContainer() {
       case "leaderboard":
         return t`Leaderboard for traders on GMX V2`;
 
-      case "march24":
-      case "test1":
-      case "test2":
+      case "march24arbitrum":
+      case "march24fuji":
         return (
           <ExternalLink href="#">
             <Trans>Read the rules</Trans>

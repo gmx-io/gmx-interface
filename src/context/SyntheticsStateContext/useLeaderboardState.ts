@@ -78,31 +78,12 @@ function useLeaderboardTimeframe(
 ): LeaderboardTimeframe {
   const isCompetitions = pageKey !== "leaderboard";
   const competitionsDefaultTimeframe: LeaderboardTimeframe = useMemo(() => {
-    switch (pageKey) {
-      case "leaderboard":
-        return LEADERBOARD_TIMEFRAMES.all;
-
-      case "march24":
-        return LEADERBOARD_TIMEFRAMES.march24;
-
-      case "test1":
-        return LEADERBOARD_TIMEFRAMES.test1;
-
-      case "test2":
-        return LEADERBOARD_TIMEFRAMES.test2;
-
-      default:
-        if (pageKey) {
-          throw mustNeverExist(pageKey);
-        } else {
-          return LEADERBOARD_TIMEFRAMES.all;
-        }
-    }
+    return LEADERBOARD_TIMEFRAMES[pageKey ?? "leaderboard"];
   }, [pageKey]);
 
   const leaderboardDefaultTimeframe: LeaderboardTimeframe = useMemo(() => {
     if (leaderboardType === "all") {
-      return LEADERBOARD_TIMEFRAMES.all;
+      return LEADERBOARD_TIMEFRAMES.leaderboard;
     } else if (leaderboardType === "30days") {
       return {
         from: Math.floor(Date.now() / 1000 / 86400) * 86400 - 30 * 24 * 60 * 60,

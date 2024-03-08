@@ -2972,8 +2972,12 @@ msgstr "March '24"
 #~ msgstr "March '24 Absolute PnL"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "March '24 Relative PnL"
-msgstr "March '24 Relative PnL"
+msgid "March '24 Arbitrum"
+msgstr "March '24 Arbitrum"
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+#~ msgid "March '24 Relative PnL"
+#~ msgstr "March '24 Relative PnL"
 
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 #~ msgid "March 2014 Competitions"

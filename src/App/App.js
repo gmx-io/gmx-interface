@@ -90,7 +90,7 @@ import useTradeRedirect from "lib/useTradeRedirect";
 import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContext";
 import { SubaccountModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
-import { Leaderboard } from "pages/LeaderboardPage/LeaderboardPage";
+import { LeaderboardPage, CompetitionRedirect } from "pages/LeaderboardPage/LeaderboardPage";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -367,13 +367,26 @@ function FullApp({ pendingTxns, setPendingTxns }) {
                     skipLocalReferralCode
                     pageType="leaderboard"
                   >
-                    <Leaderboard />
+                    <LeaderboardPage />
                   </SyntheticsStateContextProvider>
                 ) : (
                   <SyntheticsFallbackPage />
                 )}
               </Route>
-              <Redirect exact from="/competitions" to="/leaderboard" />
+              <Route exact path="/competitions/">
+                {getIsSyntheticsSupported(chainId) ? (
+                  <SyntheticsStateContextProvider
+                    savedIsPnlInLeverage={settings.isPnlInLeverage}
+                    savedShowPnlAfterFees={settings.showPnlAfterFees}
+                    skipLocalReferralCode
+                    pageType="competitions"
+                  >
+                    <CompetitionRedirect />
+                  </SyntheticsStateContextProvider>
+                ) : (
+                  <SyntheticsFallbackPage />
+                )}
+              </Route>
               <Route path="/competitions/:leaderboardPageKey">
                 {getIsSyntheticsSupported(chainId) ? (
                   <SyntheticsStateContextProvider
@@ -382,7 +395,7 @@ function FullApp({ pendingTxns, setPendingTxns }) {
                     skipLocalReferralCode
                     pageType="competitions"
                   >
-                    <Leaderboard isCompetitions />
+                    <LeaderboardPage isCompetitions />
                   </SyntheticsStateContextProvider>
                 ) : (
                   <SyntheticsFallbackPage />

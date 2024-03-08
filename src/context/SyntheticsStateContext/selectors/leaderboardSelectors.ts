@@ -1,6 +1,6 @@
 import { LeaderboardAccount, LeaderboardPositionBase } from "domain/synthetics/leaderboard";
+import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
 import { MarketInfo } from "domain/synthetics/markets";
-import { mustNeverExist } from "lib/types";
 import { SyntheticsTradeState } from "../SyntheticsStateContextProvider";
 import { createEnhancedSelector } from "../utils";
 import { selectAccount, selectMarketsInfoData } from "./globalSelectors";
@@ -33,19 +33,7 @@ export function selectLeaderboardIsStartInFuture(s: SyntheticsTradeState) {
 
 export const selectLeaderboardIsCompetition = createEnhancedSelector(function selectLeaderboardIsCompetition(q) {
   const pageKey = q((s) => s.leaderboard.leaderboardPageKey);
-
-  switch (pageKey) {
-    case "leaderboard":
-      return false;
-
-    case "march24":
-    case "test1":
-    case "test2":
-      return true;
-
-    default:
-      throw mustNeverExist(pageKey);
-  }
+  return LEADERBOARD_PAGES[pageKey].isCompetition;
 });
 
 export const selectLeaderboardIsCompetitionOver = createEnhancedSelector(function selectLeaderboardIsCompetitionOver(

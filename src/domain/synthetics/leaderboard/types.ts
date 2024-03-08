@@ -1,4 +1,4 @@
-import { LEADERBOARD_PAGES } from "./constants";
+import { LEADERBOARD_PAGES_ORDER } from "./constants";
 
 export enum PerfPeriod {
   DAY = "24 hours",
@@ -23,4 +23,19 @@ export type LeaderboardTimeframe = {
 
 export type LeaderboardType = "all" | "30days" | "7days";
 
-export type LeaderboardPageKey = keyof typeof LEADERBOARD_PAGES;
+export type LeaderboardPageKey = typeof LEADERBOARD_PAGES_ORDER[number];
+
+export type LeaderboardPageConfig =
+  | {
+      key: LeaderboardPageKey;
+      label: string;
+      href: string;
+      isCompetition: false;
+    }
+  | {
+      key: LeaderboardPageKey;
+      label: string;
+      href: string;
+      isCompetition: true;
+      chainId: number;
+    };
