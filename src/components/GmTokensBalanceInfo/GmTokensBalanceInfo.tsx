@@ -61,7 +61,7 @@ export const GmTokensBalanceInfo = ({
         )}
         <br />
         <div className="text-white">
-          <Trans>Fees USD value is calculated at the time they are accrued.</Trans>
+          <Trans>The fees' USD value is calculated at the time they are accrued and does not include incentives.</Trans>
         </div>
         {shouldShowIncentivesNote && (
           <>
