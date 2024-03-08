@@ -5154,8 +5154,12 @@ msgid "The Max Execution Fee is set to a higher value to handle potential increa
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "The PnL ($) compared to the capital used.<0/>The capital used is calculated as the highest value of [<1>sum of collateral of open positions - realized PnL + period start pending PnL</1>]."
+msgid "The PnL ($) compared to the capital used.<0/><1/>The capital used is calculated as the highest value of [<2>sum of collateral of open positions - realized PnL + period start pending PnL</2>]."
 msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+#~ msgid "The PnL ($) compared to the capital used.<0/>The capital used is calculated as the highest value of [<1>sum of collateral of open positions - realized PnL + period start pending PnL</1>]."
+#~ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
@@ -5255,8 +5259,12 @@ msgid "The spread is > 1%, please ensure the trade details are acceptable before
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "The total realized and unrealized profit and loss for the period, including fees and price impact.."
+msgid "The total realized and unrealized profit and loss for the period, including fees and price impact."
 msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+#~ msgid "The total realized and unrealized profit and loss for the period, including fees and price impact.."
+#~ msgstr ""
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
