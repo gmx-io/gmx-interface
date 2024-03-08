@@ -850,7 +850,7 @@ msgstr "Cancelling {ordersText}"
 msgid "Capital Used"
 msgstr "Capital Used"
 
-#: src/pages/LeaderboardPage/LeaderboardPage.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Chain Icon"
 msgstr "Chain Icon"
 
