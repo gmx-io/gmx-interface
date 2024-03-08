@@ -2961,13 +2961,14 @@ msgid "Main Account {0} Balance is used to top up Subaccount Balance on each Act
 msgstr ""
 
 #: src/domain/synthetics/leaderboard/constants.ts
-msgid "March '24"
-msgstr ""
+#~ msgid "March '24"
+#~ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #~ msgid "March '24 Absolute PnL"
 #~ msgstr ""
 
+#: src/domain/synthetics/leaderboard/constants.ts
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "March '24 Arbitrum"
 msgstr ""

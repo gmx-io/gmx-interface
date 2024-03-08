@@ -2964,13 +2964,14 @@ msgid "Main Account {0} Balance is used to top up Subaccount Balance on each Act
 msgstr "Main Account {0} Balance is used to top up Subaccount Balance on each Action up to the set Max auto top-up amount. Use the \"Сonvert {1} to {2}\" field if the Main Account {3} Balance is low."
 
 #: src/domain/synthetics/leaderboard/constants.ts
-msgid "March '24"
-msgstr "March '24"
+#~ msgid "March '24"
+#~ msgstr "March '24"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #~ msgid "March '24 Absolute PnL"
 #~ msgstr "March '24 Absolute PnL"
 
+#: src/domain/synthetics/leaderboard/constants.ts
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "March '24 Arbitrum"
 msgstr "March '24 Arbitrum"
