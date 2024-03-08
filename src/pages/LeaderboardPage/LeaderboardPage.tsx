@@ -1,26 +1,21 @@
-import { Trans, t } from "@lingui/macro";
-import { getIcon } from "config/icons";
-import { useChainId } from "lib/chains";
-import "./LeaderboardPage.scss";
-import { LeaderboardContainer } from "./components/LeaderboardContainer";
+import { Trans } from "@lingui/macro";
 import Footer from "components/Footer/Footer";
+import { LeaderboardPageConfig } from "domain/synthetics/leaderboard";
+import { LEADERBOARD_PAGES, LEADERBOARD_TIMEFRAMES } from "domain/synthetics/leaderboard/constants";
+import { useChainId } from "lib/chains";
 import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { LEADERBOARD_PAGES, LEADERBOARD_TIMEFRAMES } from "domain/synthetics/leaderboard/constants";
-import { LeaderboardPageConfig } from "domain/synthetics/leaderboard";
+import "./LeaderboardPage.scss";
+import { LeaderboardContainer } from "./components/LeaderboardContainer";
 
 export function LeaderboardPage() {
-  const { chainId } = useChainId();
-
   const title = <Trans>Leaderboards</Trans>;
 
   return (
     <div className="default-container page-layout LeaderboardTest">
       <div className="section-title-block">
         <div className="section-title-content">
-          <div className="Page-title">
-            {title} <img alt={t`Chain Icon`} src={getIcon(chainId, "network")} />
-          </div>
+          <div className="Page-title">{title}</div>
         </div>
       </div>
       <LeaderboardContainer />

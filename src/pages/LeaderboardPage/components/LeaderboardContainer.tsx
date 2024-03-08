@@ -16,6 +16,12 @@ import { CompetitionCountdown } from "./CompetitionCountdown";
 import { CompetitionPrizes } from "./CompetitionPrizes";
 import { LeaderboardAccountsTable } from "./LeaderboardAccountsTable";
 import { LeaderboardNavigation } from "./LeaderboardNavigation";
+import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
+import { useChainId } from "lib/chains";
+import { switchNetwork } from "lib/wallets";
+import useWallet from "lib/wallets/useWallet";
+import { useLatest } from "react-use";
+import { getIcon } from "config/icons";
 
 const competitionLabels = [t`Notional PnL`, t`PnL Percentage`];
 const competitionsTabs = [0, 1];
@@ -29,6 +35,7 @@ export function LeaderboardContainer() {
   const [activeLeaderboardIndex, setActiveLeaderboardIndex] = useState(0);
   const [activeCompetitionIndex, setActiveCompetitionIndex] = useState(0);
   const accounts = useLeaderboardRankedAccounts();
+  const leaderboardPageKey = useLeaderboardPageKey();
   const isLoading = !accounts;
   const accountsStruct = useMemo(
     () => ({
@@ -39,11 +46,24 @@ export function LeaderboardContainer() {
     }),
     [accounts, isLoading]
   );
+  const { chainId } = useChainId();
+  const { active } = useWallet();
+
+  const activeRef = useLatest(active);
+  const chainIdRef = useLatest(chainId);
+
+  const page = LEADERBOARD_PAGES[leaderboardPageKey];
+
+  useEffect(() => {
+    if (!page.isCompetition) return;
+    if (chainIdRef.current === page.chainId) return;
+
+    switchNetwork(page.chainId, activeRef.current);
+  }, [activeRef, chainIdRef, leaderboardPageKey, page]);
 
   const [, setLeaderboardType] = useLeaderboardTypeState();
 
   const activeCompetition: CompetitionType = activeCompetitionIndex === 0 ? "notionalPnl" : "pnlPercentage";
-  const leaderboardPageKey = useLeaderboardPageKey();
 
   const handleLeaderboardTabChange = useCallback(
     (index: number) => setActiveLeaderboardIndex(index),
@@ -110,7 +130,9 @@ export function LeaderboardContainer() {
       <LeaderboardNavigation />
       <div className="Leaderboard-Title">
         <div>
-          <h1>{title}</h1>
+          <h1>
+            {title} <img alt={t`Chain Icon`} src={getIcon(page.isCompetition ? page.chainId : chainId, "network")} />
+          </h1>
           <div className="Leaderboard-Title__description">{description}</div>
         </div>
         {isCompetition && <CompetitionCountdown />}

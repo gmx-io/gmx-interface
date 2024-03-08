@@ -4,7 +4,7 @@ import {
   LeaderboardType,
   useLeaderboardData,
 } from "domain/synthetics/leaderboard";
-import { LEADERBOARD_TIMEFRAMES } from "domain/synthetics/leaderboard/constants";
+import { LEADERBOARD_PAGES, LEADERBOARD_TIMEFRAMES } from "domain/synthetics/leaderboard/constants";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { mustNeverExist } from "lib/types";
@@ -14,7 +14,6 @@ import { useParams } from "react-router-dom";
 export type LeaderboardState = ReturnType<typeof useLeaderboardState>;
 
 export const useLeaderboardState = (account: string | undefined, enabled: boolean) => {
-  const { chainId } = useChainId();
   const [leaderboardType, setLeaderboardType] = useState<LeaderboardType>("all");
   const { leaderboardPageKey: leaderboardPageKeyRaw } = useParams<{ leaderboardPageKey?: LeaderboardPageKey }>();
   const leaderboardPageKey = leaderboardPageKeyRaw ?? "leaderboard";
@@ -22,6 +21,13 @@ export const useLeaderboardState = (account: string | undefined, enabled: boolea
   const isEndInFuture = timeframe.to === undefined || timeframe.to > Date.now() / 1000;
   const isStartInFuture = timeframe.from > Date.now() / 1000;
   const positionsSnapshotTimestamp = isEndInFuture ? undefined : timeframe.to;
+  const { chainId: activeChainId } = useChainId();
+  const competitionChainId = useMemo(() => {
+    const page = LEADERBOARD_PAGES[leaderboardPageKey];
+    if (!page.isCompetition) return;
+    return page.chainId;
+  }, [leaderboardPageKey]);
+  const chainId = competitionChainId ?? activeChainId;
 
   const { data, error: leaderboardDataError } = useLeaderboardData(enabled, chainId, {
     account,
