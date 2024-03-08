@@ -5,7 +5,7 @@ import Pagination from "components/Pagination/Pagination";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { formatAmount, formatUsd } from "lib/bigint";
 import { useDebounce } from "lib/useDebounce";
-import { ReactNode, memo, useCallback, useLayoutEffect, useMemo, useState } from "react";
+import { ReactNode, memo, useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 
 import { TopAccountsSkeleton } from "components/Skeleton/Skeleton";
 import { TooltipPosition } from "components/Tooltip/Tooltip";
@@ -95,6 +95,10 @@ export function LeaderboardAccountsTable({
   const handleKeyDown = useCallback(() => null, []);
   const ranks = useLeaderboardAccountsRanks();
   const term = useDebounce(search, 300);
+
+  useEffect(() => {
+    setPage(1);
+  }, [term]);
 
   const sorted = useMemo(() => {
     return [...data].sort((a, b) => {
