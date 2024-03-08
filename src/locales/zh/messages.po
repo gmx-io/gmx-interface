@@ -5360,8 +5360,12 @@ msgid "This competition has ended"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "This competition is held on {0} network. <0>Click to switch network</0>."
+msgid "This competition is held on {0} network, <0>change your network</0>."
 msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+#~ msgid "This competition is held on {0} network. <0>Click to switch network</0>."
+#~ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
@@ -6826,8 +6830,12 @@ msgid "{positionName} Fees settling"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "{prefix} {days}d {hours}h {minutes}m {0}"
+msgid "{prefix} <0>{days}d {hours}h {minutes}m {0}</0>"
 msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+#~ msgid "{prefix} {days}d {hours}h {minutes}m {0}"
+#~ msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 #~ msgid "{seconds, plural, }"
