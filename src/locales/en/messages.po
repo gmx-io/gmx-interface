@@ -6342,6 +6342,10 @@ msgstr "You have selected {collateralTokenSymbol} as collateral, the Liquidation
 msgid "You have set a high Acceptable Price Impact. The current Price Impact is {0}."
 msgstr "You have set a high Acceptable Price Impact. The current Price Impact is {0}."
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "You have yet to reach the minimum \"Capital Used\" of {0} to be eligible for PnL (%)."
+msgstr "You have yet to reach the minimum \"Capital Used\" of {0} to be eligible for PnL (%)."
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You have {0} esGMX (IOU) tokens."
 msgstr "You have {0} esGMX (IOU) tokens."

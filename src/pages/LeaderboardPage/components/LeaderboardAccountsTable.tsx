@@ -14,6 +14,7 @@ import {
   useLeaderboardAccountsRanks,
   useLeaderboardCurrentAccount,
   useLeaderboardIsCompetition,
+  useLeaderboardTypeState,
 } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import {
   CompetitionType,
@@ -25,6 +26,7 @@ import {
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "domain/synthetics/leaderboard/constants";
 import { createBreakpoint } from "react-use";
 import SearchInput from "components/SearchInput/SearchInput";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 function getRowClassname(rank: number | null, competition: CompetitionType | undefined, pinned: boolean) {
   if (pinned) return cx("LeaderboardRankRow-Pinned", "Table_tr");
@@ -362,6 +364,8 @@ const TableRow = memo(
       );
     }, [account.losses, account.totalCount, account.wins, shouldRenderValue]);
 
+    const renderPnlTooltipContent = useCallback(() => <LeaderboardPnlTooltipContent account={account} />, [account]);
+
     return (
       <tr className={getRowClassname(rank, activeCompetition, pinned)} key={account.account}>
         <TableCell>
@@ -382,75 +386,7 @@ const TableRow = memo(
               }
               position={index > 7 ? "right-top" : "right-bottom"}
               className="nowrap"
-              renderContent={() => (
-                <div>
-                  <StatsTooltipRow
-                    label={t`Realized PnL`}
-                    showDollar={false}
-                    value={
-                      <span className={signedValueClassName(account.realizedPnl)}>
-                        {formatDelta(account.realizedPnl, { signed: true, prefix: "$" })}
-                      </span>
-                    }
-                  />
-                  <StatsTooltipRow
-                    label={t`Unrealized PnL`}
-                    showDollar={false}
-                    value={
-                      <span className={signedValueClassName(account.unrealizedPnl)}>
-                        {formatDelta(account.unrealizedPnl, { signed: true, prefix: "$" })}
-                      </span>
-                    }
-                  />
-                  <StatsTooltipRow
-                    label={t`Start Unrealized PnL`}
-                    showDollar={false}
-                    value={
-                      <span className={signedValueClassName(account.startUnrealizedPnl)}>
-                        {formatDelta(account.startUnrealizedPnl, { signed: true, prefix: "$" })}
-                      </span>
-                    }
-                  />
-                  <br />
-                  <StatsTooltipRow
-                    label={t`Realized Fees`}
-                    showDollar={false}
-                    value={
-                      <span className={signedValueClassName(account.realizedFees * -1n)}>
-                        {formatDelta(account.realizedFees * -1n, { signed: true, prefix: "$" })}
-                      </span>
-                    }
-                  />
-                  <StatsTooltipRow
-                    label={t`Unrealized Fees`}
-                    showDollar={false}
-                    value={
-                      <span className={signedValueClassName(account.unrealizedFees * -1n)}>
-                        {formatDelta(account.unrealizedFees * -1n, { signed: true, prefix: "$" })}
-                      </span>
-                    }
-                  />
-                  <StatsTooltipRow
-                    label={t`Start Unrealized Fees`}
-                    showDollar={false}
-                    value={
-                      <span className={signedValueClassName(account.startUnrealizedFees * -1n)}>
-                        {formatDelta(account.startUnrealizedFees * -1n, { signed: true, prefix: "$" })}
-                      </span>
-                    }
-                  />
-                  <br />
-                  <StatsTooltipRow
-                    label={t`Realized Price Impact`}
-                    showDollar={false}
-                    value={
-                      <span className={signedValueClassName(account.realizedPriceImpact)}>
-                        {formatDelta(account.realizedPriceImpact, { signed: true, prefix: "$" })}
-                      </span>
-                    }
-                  />
-                </div>
-              )}
+              renderContent={renderPnlTooltipContent}
             />
           ) : (
             "-"
@@ -526,4 +462,107 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
   if (rank === null) return <TooltipWithPortal handle={t`NA`} renderContent={tooltipContent} />;
 
   return <span>{rank}</span>;
+});
+
+const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAccount }) => {
+  const [isPnlAfterFees] = useLocalStorageSerializeKey("leaderboardPnlAfterFees", true);
+  const [type] = useLeaderboardTypeState();
+  const isCompetition = useLeaderboardIsCompetition();
+  const shouldShowStartValues = isCompetition || type !== "all";
+
+  const realizedFees = useMemo(() => account.realizedFees * -1n, [account.realizedFees]);
+  const realizedPnl = useMemo(
+    () => (isPnlAfterFees ? account.realizedPnl + realizedFees + account.realizedPriceImpact : account.realizedPnl),
+    [account.realizedPnl, account.realizedPriceImpact, isPnlAfterFees, realizedFees]
+  );
+
+  const unrealizedFees = useMemo(() => account.unrealizedFees * -1n, [account.unrealizedFees]);
+  const unrealizedPnl = useMemo(
+    () => (isPnlAfterFees ? account.unrealizedPnl + unrealizedFees : account.unrealizedPnl),
+    [account.unrealizedPnl, isPnlAfterFees, unrealizedFees]
+  );
+
+  const startUnrealizedFees = useMemo(() => account.startUnrealizedFees * -1n, [account.startUnrealizedFees]);
+  const startUnrealizedPnl = useMemo(
+    () => (isPnlAfterFees ? account.startUnrealizedPnl + startUnrealizedFees : account.startUnrealizedPnl),
+    [account.startUnrealizedPnl, isPnlAfterFees, startUnrealizedFees]
+  );
+
+  return (
+    <div>
+      <StatsTooltipRow
+        label={t`Realized PnL`}
+        showDollar={false}
+        value={
+          <span className={signedValueClassName(realizedPnl)}>
+            {formatDelta(realizedPnl, { signed: true, prefix: "$" })}
+          </span>
+        }
+      />
+      <StatsTooltipRow
+        label={t`Unrealized PnL`}
+        showDollar={false}
+        value={
+          <span className={signedValueClassName(unrealizedPnl)}>
+            {formatDelta(unrealizedPnl, { signed: true, prefix: "$" })}
+          </span>
+        }
+      />
+      {shouldShowStartValues && (
+        <StatsTooltipRow
+          label={t`Start Unrealized PnL`}
+          showDollar={false}
+          value={
+            <span className={signedValueClassName(startUnrealizedPnl)}>
+              {formatDelta(startUnrealizedPnl, { signed: true, prefix: "$" })}
+            </span>
+          }
+        />
+      )}
+      {!isPnlAfterFees && (
+        <>
+          <br />
+          <StatsTooltipRow
+            label={t`Realized Fees`}
+            showDollar={false}
+            value={
+              <span className={signedValueClassName(realizedFees)}>
+                {formatDelta(realizedFees, { signed: true, prefix: "$" })}
+              </span>
+            }
+          />
+          <StatsTooltipRow
+            label={t`Unrealized Fees`}
+            showDollar={false}
+            value={
+              <span className={signedValueClassName(unrealizedFees)}>
+                {formatDelta(unrealizedFees, { signed: true, prefix: "$" })}
+              </span>
+            }
+          />
+          {shouldShowStartValues && (
+            <StatsTooltipRow
+              label={t`Start Unrealized Fees`}
+              showDollar={false}
+              value={
+                <span className={signedValueClassName(startUnrealizedFees)}>
+                  {formatDelta(startUnrealizedFees, { signed: true, prefix: "$" })}
+                </span>
+              }
+            />
+          )}
+          <br />
+          <StatsTooltipRow
+            label={t`Realized Price Impact`}
+            showDollar={false}
+            value={
+              <span className={signedValueClassName(account.realizedPriceImpact)}>
+                {formatDelta(account.realizedPriceImpact, { signed: true, prefix: "$" })}
+              </span>
+            }
+          />
+        </>
+      )}
+    </div>
+  );
 });

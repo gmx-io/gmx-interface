@@ -6339,6 +6339,10 @@ msgstr ""
 msgid "You have set a high Acceptable Price Impact. The current Price Impact is {0}."
 msgstr ""
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "You have yet to reach the minimum \"Capital Used\" of {0} to be eligible for PnL (%)."
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You have {0} esGMX (IOU) tokens."
 msgstr "你有{0}个esGMX (IOU) 代币"
