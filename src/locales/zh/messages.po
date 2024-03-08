@@ -5517,6 +5517,10 @@ msgstr ""
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 msgstr "在GMX上进行交易，赢取<0>$250.000</0> 美元的奖金! 活动至11月30h, <1>点击这里</1> 了解更多"
 
+#: src/components/Header/Header.tsx
+msgid "Trade on GMX V2 in Arbitrum and win $500,000 in prizes in <0>two weekly</0> competitions. Live until March 27th."
+msgstr ""
+
 #: src/components/Common/SEO.js
 msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet on Arbitrum and Avalanche."
 msgstr ""
