@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Tab from "components/Tab/Tab";
 import {
+  useLeaderboardChainId,
   useLeaderboardIsCompetition,
   useLeaderboardPageKey,
   useLeaderboardRankedAccounts,
@@ -19,6 +20,9 @@ import { LeaderboardNavigation } from "./LeaderboardNavigation";
 import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
 import { useChainId } from "lib/chains";
 import { getIcon } from "config/icons";
+import { getChainName } from "config/chains";
+import { switchNetwork } from "lib/wallets";
+import useWallet from "lib/wallets/useWallet";
 
 const competitionLabels = [t`Notional PnL`, t`PnL Percentage`];
 const competitionsTabs = [0, 1];
@@ -44,6 +48,7 @@ export function LeaderboardContainer() {
     [accounts, isLoading]
   );
   const { chainId } = useChainId();
+  const { active } = useWallet();
 
   const page = LEADERBOARD_PAGES[leaderboardPageKey];
 
@@ -61,6 +66,7 @@ export function LeaderboardContainer() {
   );
 
   const pageKey = useLeaderboardPageKey();
+  const leaderboardChainId = useLeaderboardChainId();
 
   useEffect(() => {
     setActiveLeaderboardIndex(0);
@@ -93,6 +99,28 @@ export function LeaderboardContainer() {
     }
   }, [leaderboardPageKey]);
 
+  const handleSwitchNetworkClick = useCallback(() => {
+    switchNetwork(leaderboardChainId, active);
+  }, [active, leaderboardChainId]);
+
+  const wrongNetworkSwitcher = useMemo(() => {
+    if (leaderboardPageKey === "leaderboard") return null;
+    if (chainId === leaderboardChainId) return null;
+    if (!page.isCompetition) return null;
+
+    return (
+      <p>
+        <Trans>
+          This competition is held on {getChainName(page.chainId)} network.{" "}
+          <span className="link-underline" onClick={handleSwitchNetworkClick}>
+            Click to switch network
+          </span>
+          .
+        </Trans>
+      </p>
+    );
+  }, [chainId, handleSwitchNetworkClick, leaderboardChainId, leaderboardPageKey, page]);
+
   const description = useMemo(() => {
     switch (leaderboardPageKey) {
       case "leaderboard":
@@ -101,15 +129,18 @@ export function LeaderboardContainer() {
       case "march24arbitrum":
       case "march24fuji":
         return (
-          <ExternalLink href="#">
-            <Trans>Read the rules</Trans>
-          </ExternalLink>
+          <>
+            <ExternalLink href="#">
+              <Trans>Read the rules</Trans>
+            </ExternalLink>
+            {wrongNetworkSwitcher}
+          </>
         );
 
       default:
         throw mustNeverExist(leaderboardPageKey);
     }
-  }, [leaderboardPageKey]);
+  }, [leaderboardPageKey, wrongNetworkSwitcher]);
 
   return (
     <div className="GlobalLeaderboards">
