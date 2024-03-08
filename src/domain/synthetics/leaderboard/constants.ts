@@ -13,8 +13,8 @@ export const LEADERBOARD_TIMEFRAMES = {
     to: 1710633600, // 17 mar 2024
   },
   march24: {
-    from: 1709841600, // 8 mar 2024
-    to: 1711051200, // 22 mar 2024
+    from: 1709856000, // 8 mar 2024
+    to: 1711065600, // 22 mar 2024
   },
   all: {
     from: 0,
