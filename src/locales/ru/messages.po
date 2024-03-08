@@ -851,6 +851,7 @@ msgid "Capital Used"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "Chain Icon"
 msgstr ""
 
@@ -2659,8 +2660,8 @@ msgstr ""
 #~ msgstr ""
 
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
-msgid "Leaderboards"
-msgstr ""
+#~ msgid "Leaderboards"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Leave at least {0} ETH for gas"
