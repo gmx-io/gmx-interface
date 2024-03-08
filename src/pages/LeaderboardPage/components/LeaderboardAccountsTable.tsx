@@ -223,7 +223,7 @@ export function LeaderboardAccountsTable({
               <TableHeaderCell
                 title={t`PnL ($)`}
                 width={12}
-                tooltip={t`The total realized and unrealized profit and loss for the period, including fees and price impact..`}
+                tooltip={t`The total realized and unrealized profit and loss for the period, including fees and price impact.`}
                 tooltipPosition="left-bottom"
                 onClick={handleColumnClick}
                 columnName="totalQualifyingPnl"
@@ -235,6 +235,7 @@ export function LeaderboardAccountsTable({
                 tooltip={
                   <Trans>
                     The PnL ($) compared to the capital used.
+                    <br />
                     <br />
                     The capital used is calculated as the highest value of [
                     <i>sum of collateral of open positions - realized PnL + period start pending PnL</i>].
