@@ -58,7 +58,10 @@ function Countdown({ end, prefix }: { end: number; prefix: string }) {
   return (
     <div className="CompetitionCountdown">
       <Trans>
-        {prefix} {days}d {hours}h {minutes}m {isEndClose ? t`${seconds}s` : ""}
+        {prefix}{" "}
+        <span className="CompetitionCountdown__time">
+          {days}d {hours}h {minutes}m {isEndClose ? t`${seconds}s` : ""}
+        </span>
       </Trans>
     </div>
   );

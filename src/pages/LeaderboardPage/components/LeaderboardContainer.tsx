@@ -109,15 +109,15 @@ export function LeaderboardContainer() {
     if (!page.isCompetition) return null;
 
     return (
-      <p>
+      <div className="Leaderboard__another-network">
         <Trans>
-          This competition is held on {getChainName(page.chainId)} network.{" "}
+          This competition is held on {getChainName(page.chainId)} network,{" "}
           <span className="link-underline" onClick={handleSwitchNetworkClick}>
-            Click to switch network
+            change your network
           </span>
           .
         </Trans>
-      </p>
+      </div>
     );
   }, [chainId, handleSwitchNetworkClick, leaderboardChainId, leaderboardPageKey, page]);
 

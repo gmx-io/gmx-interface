@@ -235,9 +235,13 @@
 }
 
 .CompetitionCountdown {
-  font-size: 2rem;
-  margin-top: 4.3rem;
   color: rgba(255, 255, 255, 0.7);
+
+  &__time {
+    white-space: nowrap;
+    font-size: 3rem;
+    color: white;
+  }
 }
 
 .LeaderboardNavigation {
@@ -258,6 +262,10 @@
   &_selected {
     background: rgba(80, 87, 126, 0.7);
   }
+}
+
+.Leaderboard__another-network {
+  margin-top: 0.7rem;
 }
 
 .LeaderboardNavigation__chip {
