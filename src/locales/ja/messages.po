@@ -5356,6 +5356,10 @@ msgstr "このコードは{0}上ではまだ登録されていないため、紹
 msgid "This competition has ended"
 msgstr ""
 
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "This competition is held on {0} network. <0>Click to switch network</0>."
+msgstr ""
+
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
 msgstr ""

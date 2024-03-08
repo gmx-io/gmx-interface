@@ -31,14 +31,14 @@ export const LEADERBOARD_PAGES: Record<LeaderboardPageKey, LeaderboardPageConfig
   },
   march24arbitrum: {
     key: "march24arbitrum",
-    label: t`March '24 Arbitrum`,
+    label: t`March '24`,
     href: "/competitions/march24arbitrum",
     isCompetition: true,
     chainId: ARBITRUM,
   },
   march24fuji: {
     key: "march24fuji",
-    label: "March '24 Fuji",
+    label: t`March '24`,
     href: "/competitions/march24fuji",
     isCompetition: true,
     chainId: AVALANCHE_FUJI,

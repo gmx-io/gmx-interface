@@ -89,17 +89,16 @@ function NavigationItem({ item }: { item: LeaderboardNavigationItem }) {
   return (
     <Link
       to={item.href}
-      className={cx("LeaderboardHeader__item", {
+      className={cx("LeaderboardHeader__item button secondary center", {
         LeaderboardHeader__item_selected: item.isSelected,
       })}
     >
-      {item.label}{" "}
+      {chip} {item.label}
       {item.chainId ? (
         <>
           <img className="LeaderboardHeader__network-icon" alt={t`Chain Icon`} src={getIcon(item.chainId, "network")} />
         </>
-      ) : undefined}{" "}
-      {chip}
+      ) : undefined}
     </Link>
   );
 }

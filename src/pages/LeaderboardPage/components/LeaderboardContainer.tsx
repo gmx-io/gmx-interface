@@ -89,10 +89,10 @@ export function LeaderboardContainer() {
         return t`Global leaderboard`;
 
       case "march24arbitrum":
-        return t`March '24 Arbitrum`;
+        return t`March '24`;
 
       case "march24fuji":
-        return "March '24 Fuji";
+        return t`March '24`;
 
       default:
         throw mustNeverExist(leaderboardPageKey);
