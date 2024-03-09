@@ -17,6 +17,7 @@ type Props = {
   nativeTokenSymbol: string;
   isUserConnected: boolean;
   recommendStakeGmx?: BigNumber;
+  averageBoostRatio?: BigNumber;
 };
 
 function renderEscrowedGMXApr(processedData) {
@@ -34,6 +35,7 @@ export default function GMXAprTooltip({
   processedData,
   nativeTokenSymbol,
   recommendStakeGmx,
+  averageBoostRatio,
   isUserConnected = false,
 }: Props) {
   const accumulatedBnGMXAmount = useAccumulatedBnGMXAmount();
@@ -56,8 +58,19 @@ export default function GMXAprTooltip({
           value={`${maxGmxAprPercentage}%`}
         />
         <br />
+        {averageBoostRatio && (
+          <>
+            <Trans>
+              Avg. ETH APR is calculated with the average account boost percentage (
+              {formatAmount(averageBoostRatio, 2, 2, true)}%).
+            </Trans>
+            <br />
+            <br />
+          </>
+        )}
+
         <Trans>
-          Max. {nativeTokenSymbol} APR is calculated with the max. 200% Boost Percentage by staking{" "}
+          Max. {nativeTokenSymbol} APR is calculated with the maximum account boost percentage (200%) by staking{" "}
           <ExternalLink href={DOCS_LINKS.multiplierPoints}>Multiplier Points</ExternalLink>.
         </Trans>
         <br />

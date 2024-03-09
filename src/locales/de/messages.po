@@ -160,8 +160,6 @@ msgstr "Bei der Eröffnung der Position wird eine Momentaufnahme des USD-Wertes 
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "APR"
 msgstr "APR"
 
@@ -529,6 +527,15 @@ msgstr "Verfügbar in deinem bevorzugten Netzwerk"
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "Avg. APR"
+msgstr ""
+
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "Avg. ETH APR is calculated with the average account boost percentage ({0}%)."
+msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "BUYABLE"
@@ -3100,7 +3107,7 @@ msgid "Max. {nativeTokenSymbol} APR"
 msgstr ""
 
 #: src/components/Stake/GMXAprTooltip.tsx
-msgid "Max. {nativeTokenSymbol} APR is calculated with the max. 200% Boost Percentage by staking <0>Multiplier Points</0>."
+msgid "Max. {nativeTokenSymbol} APR is calculated with the maximum account boost percentage (200%) by staking <0>Multiplier Points</0>."
 msgstr ""
 
 #: src/components/Migration/Migration.js

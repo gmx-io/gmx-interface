@@ -160,8 +160,6 @@ msgstr "您的{0}抵押品快照在您开启头寸时已以USD价值被存取"
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "APR"
 msgstr "年利率"
 
@@ -529,6 +527,15 @@ msgstr "可在您的首选网络上使用"
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche APR:"
 msgstr "Avalanche年利率"
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "Avg. APR"
+msgstr ""
+
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "Avg. ETH APR is calculated with the average account boost percentage ({0}%)."
+msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "BUYABLE"
@@ -3100,7 +3107,7 @@ msgid "Max. {nativeTokenSymbol} APR"
 msgstr ""
 
 #: src/components/Stake/GMXAprTooltip.tsx
-msgid "Max. {nativeTokenSymbol} APR is calculated with the max. 200% Boost Percentage by staking <0>Multiplier Points</0>."
+msgid "Max. {nativeTokenSymbol} APR is calculated with the maximum account boost percentage (200%) by staking <0>Multiplier Points</0>."
 msgstr ""
 
 #: src/components/Migration/Migration.js
