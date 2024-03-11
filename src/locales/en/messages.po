@@ -2143,16 +2143,16 @@ msgid "GMX V1 Account"
 msgstr "GMX V1 Account"
 
 #: src/pages/Actions/Actions.js
+msgid "GMX V1 Arbitrum information for account: {checkSummedAccount}"
+msgstr "GMX V1 Arbitrum information for account: {checkSummedAccount}"
+
+#: src/pages/Actions/Actions.js
 msgid "GMX V1 actions for all accounts."
 msgstr "GMX V1 actions for all accounts."
 
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
 msgid "GMX V2 Account"
 msgstr "GMX V2 Account"
-
-#: src/pages/Actions/Actions.js
-msgid "GMX V2 Arbitrum information for account: {checkSummedAccount}"
-msgstr "GMX V2 Arbitrum information for account: {checkSummedAccount}"
 
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
 msgid "GMX V2 actions for all accounts."

@@ -102,7 +102,7 @@ export default function Actions({ savedIsPnlInLeverage, savedShowPnlAfterFees })
             title={t`GMX V1 Account`}
             subtitle={
               <>
-                <Trans>GMX V2 Arbitrum information for account: {checkSummedAccount}</Trans>
+                <Trans>GMX V1 Arbitrum information for account: {checkSummedAccount}</Trans>
                 {getIsSyntheticsSupported(chainId) && (
                   <div>
                     <ExternalLink newTab={false} href={`/#/actions/${checkSummedAccount}`}>
