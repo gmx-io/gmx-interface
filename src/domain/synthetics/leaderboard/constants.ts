@@ -26,7 +26,7 @@ export const LEADERBOARD_PAGES: Record<LeaderboardPageKey, LeaderboardPageConfig
   },
   "march_8-22_2024": {
     key: "march_8-22_2024",
-    label: t`STIP 8-22 Mar`,
+    label: t`TEST 8-22 Mar`,
     href: "/competitions/march_8-22_2024",
     isCompetition: true,
     chainId: ARBITRUM,
