@@ -1,15 +1,22 @@
-import { useAccount, useNetwork, useSigner } from "wagmi";
+import { UseWalletClientReturnType, useAccount, useConnectorClient, useWalletClient } from "wagmi";
+import { useEthersSigner } from "./useEthersSigner";
+
+export type WalletClient = UseWalletClientReturnType["data"];
 
 export default function useWallet() {
-  const { address, isConnected, connector } = useAccount();
-  const { chain } = useNetwork();
-  const { data: signer } = useSigner();
+  const { address, isConnected, connector, chainId } = useAccount();
+  const { data: connectorClient } = useConnectorClient();
+  const { data: walletClient } = useWalletClient();
+
+  const signer = useEthersSigner();
 
   return {
     account: address,
     active: isConnected,
-    connector,
-    chainId: chain?.id,
-    signer: signer ?? undefined,
+    connector: connector!,
+    chainId: chainId,
+    signer: signer,
+    connectorClient,
+    walletClient,
   };
 }
