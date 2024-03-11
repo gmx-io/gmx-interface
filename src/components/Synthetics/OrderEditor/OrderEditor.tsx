@@ -3,15 +3,6 @@ import { BigNumber } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 
 import { UserReferralInfo } from "domain/referrals";
-import {
-  estimateExecuteDecreaseOrderGasLimit,
-  estimateExecuteIncreaseOrderGasLimit,
-  estimateExecuteSwapOrderGasLimit,
-  getExecutionFee,
-  getFeeItem,
-  useGasLimits,
-  useGasPrice,
-} from "domain/synthetics/fees";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 import {
   OrderInfo,
@@ -57,6 +48,7 @@ import {
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
+import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
 import { getWrappedToken } from "config/tokens";
 import {
@@ -68,7 +60,16 @@ import {
   getIncreasePositionAmounts,
   getSwapPathOutputAddresses,
 } from "domain/synthetics/trade";
-
+import {
+  estimateExecuteDecreaseOrderGasLimit,
+  estimateExecuteIncreaseOrderGasLimit,
+  estimateExecuteSwapOrderGasLimit,
+  getExecutionFee,
+  getFeeItem,
+  useGasLimits,
+  useGasPrice,
+} from "domain/synthetics/fees";
+import { getTradeFlagsForOrder } from "domain/synthetics/trade/utils/common";
 import Button from "components/Button/Button";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -481,7 +482,7 @@ export function OrderEditor(p: Props) {
 
     setIsSubmitting(true);
 
-    updateOrderTxn(chainId, signer, subaccount, {
+    const txnPromise = updateOrderTxn(chainId, signer, subaccount, {
       orderKey: p.order.key,
       sizeDeltaUsd: sizeDeltaUsd || positionOrder.sizeDeltaUsd,
       triggerPrice: triggerPrice || positionOrder.triggerPrice,
@@ -490,7 +491,15 @@ export function OrderEditor(p: Props) {
       executionFee: additionalExecutionFee?.feeTokenAmount,
       indexToken: indexToken,
       setPendingTxns: p.setPendingTxns,
-    })
+    });
+
+    if (subaccount) {
+      p.onClose();
+      setIsSubmitting(false);
+      return;
+    }
+
+    txnPromise
       .then(() => p.onClose())
       .finally(() => {
         setIsSubmitting(false);
@@ -521,6 +530,8 @@ export function OrderEditor(p: Props) {
     [fromToken, indexPriceDecimals, isInited, p.order, sizeInputValue, toToken]
   );
 
+  const tradeFlags = useMemo(() => getTradeFlagsForOrder(p.order), [p.order]);
+
   return (
     <div className="PositionEditor">
       <Modal
@@ -529,6 +540,12 @@ export function OrderEditor(p: Props) {
         setIsVisible={p.onClose}
         label={<Trans>Edit {p.order.title}</Trans>}
       >
+        <SubaccountNavigationButton
+          className="PositionEditor-subaccount-button"
+          executionFee={executionFee?.feeTokenAmount}
+          closeConfirmationBox={p.onClose}
+          tradeFlags={tradeFlags}
+        />
         {!isSwapOrderType(p.order.orderType) && (
           <>
             <BuyInputSection
@@ -627,7 +644,7 @@ export function OrderEditor(p: Props) {
                 label={t`Fees`}
                 value={
                   <TooltipWithPortal
-                    position="right-top"
+                    position="top-end"
                     portalClassName="PositionEditor-fees-tooltip"
                     handle={formatDeltaUsd(additionalExecutionFee.feeUsd?.mul(-1))}
                     renderContent={() => (

@@ -79,7 +79,7 @@ function TradersStats({
               <div className="tier">
                 <Tooltip
                   handle={t`Tier ${getTierIdDisplay(traderTier)} (${currentTierDiscount}% discount)`}
-                  position="center-bottom"
+                  position="bottom"
                   className={discountShare?.gt(0) ? "tier-discount-warning" : ""}
                   renderContent={() => (
                     <p className="text-white">
@@ -257,7 +257,8 @@ function TradersStats({
                         <td data-label="Type">V1 Airdrop</td>
                         <td data-label="Amount" className="Rebate-amount">
                           <Tooltip
-                            position="center-bottom"
+                            position="bottom"
+                            className="nowrap"
                             handle={
                               <div className="Rebate-amount-value">
                                 {tokensWithoutPrices.length > 0 && (

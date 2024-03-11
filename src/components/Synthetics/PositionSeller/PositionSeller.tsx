@@ -8,6 +8,7 @@ import { useLatest } from "react-use";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import Modal from "components/Modal/Modal";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 import Tab from "components/Tab/Tab";
@@ -77,6 +78,7 @@ import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
+import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 
 import "./PositionSeller.scss";
 
@@ -405,7 +407,7 @@ export function PositionSeller(p: Props) {
 
     setIsSubmitting(true);
 
-    createDecreaseOrderTxn(
+    const txnPromise = createDecreaseOrderTxn(
       chainId,
       signer,
       subaccount,
@@ -436,10 +438,19 @@ export function PositionSeller(p: Props) {
         setPendingTxns,
         setPendingPosition,
       }
-    )
-      .then(onClose)
-      .finally(() => setIsSubmitting(false));
+    );
+
+    if (subaccount) {
+      onClose();
+      setIsSubmitting(false);
+      return;
+    }
+
+    txnPromise.then(onClose).finally(() => {
+      setIsSubmitting(false);
+    });
   }
+
   useEffect(
     function resetForm() {
       if (!isVisible !== prevIsVisible) {
@@ -504,7 +515,6 @@ export function PositionSeller(p: Props) {
 
   const entryPriceRow = (
     <ExchangeInfoRow
-      isTop
       label={t`Entry Price`}
       value={
         formatUsd(position?.entryPrice, {
@@ -572,7 +582,6 @@ export function PositionSeller(p: Props) {
 
   const sizeRow = (
     <ExchangeInfoRow
-      isTop={true}
       label={t`Size`}
       value={<ValueTransition from={formatUsd(position?.sizeInUsd)!} to={formatUsd(nextPositionValues?.nextSizeUsd)} />}
     />
@@ -616,7 +625,6 @@ export function PositionSeller(p: Props) {
 
   const receiveTokenRow = isTrigger ? (
     <ExchangeInfoRow
-      isTop
       className="SwapBox-info-row"
       label={t`Receive`}
       value={formatTokenAmountWithUsd(
@@ -628,7 +636,6 @@ export function PositionSeller(p: Props) {
     />
   ) : (
     <ExchangeInfoRow
-      isTop
       label={t`Receive`}
       className="Exchange-info-row PositionSeller-receive-row "
       value={
@@ -751,85 +758,82 @@ export function PositionSeller(p: Props) {
               </BuyInputSection>
             )}
 
-            <div className="PositionEditor-info-box">
-              <ExchangeInfoRow label={t`Leverage`} value={leverageValue} />
+            <ExchangeInfo className="PositionEditor-info-box">
+              <ExchangeInfo.Group>
+                <ExchangeInfoRow label={t`Leverage`} value={leverageValue} />
 
-              <div className="PositionEditor-keep-leverage-settings">
-                <ToggleSwitch
-                  isChecked={keepLeverageChecked}
-                  setIsChecked={setKeepLeverage}
-                  disabled={decreaseAmounts?.isFullClose}
-                >
-                  <span className="text-gray font-sm">
-                    <Trans>Keep leverage at {keepLeverageAtValue}</Trans>
-                  </span>
-                </ToggleSwitch>
-              </div>
+                <div className="PositionEditor-keep-leverage-settings">
+                  <ToggleSwitch
+                    isChecked={keepLeverageChecked}
+                    setIsChecked={setKeepLeverage}
+                    disabled={decreaseAmounts?.isFullClose}
+                  >
+                    <span className="text-gray font-sm">
+                      <Trans>Keep leverage at {keepLeverageAtValue}</Trans>
+                    </span>
+                  </ToggleSwitch>
+                </div>
+              </ExchangeInfo.Group>
 
-              <div className="App-card-divider" />
-
-              {isTrigger ? (
-                <>
-                  {acceptablePriceImpactInputRow}
-                  <div className="App-card-divider" />
-                  {triggerPriceRow}
-                  {acceptablePriceRow}
-                  {liqPriceRow}
-                  {sizeRow}
-                </>
-              ) : (
-                <>
+              <ExchangeInfo.Group>
+                {isTrigger && !isStopLoss && acceptablePriceImpactInputRow}
+                {!isTrigger && (
                   <AllowedSlippageRow allowedSlippage={allowedSlippage} setAllowedSlippage={setAllowedSlippage} />
-                  {entryPriceRow}
-                  {acceptablePriceRow}
-                  {markPriceRow}
-                  {liqPriceRow}
-                  {sizeRow}
-                </>
+                )}
+              </ExchangeInfo.Group>
+
+              <ExchangeInfo.Group>
+                {isTrigger && triggerPriceRow}
+                {!isTrigger && entryPriceRow}
+                {acceptablePriceRow}
+                {!isTrigger && markPriceRow}
+                {liqPriceRow}
+              </ExchangeInfo.Group>
+
+              <ExchangeInfo.Group>
+                {sizeRow}
+                {pnlRow}
+
+                <div className="Exchange-info-row">
+                  <div>
+                    <Tooltip
+                      handle={
+                        <span className="Exchange-info-label">
+                          <Trans>Collateral ({position.collateralToken?.symbol})</Trans>
+                        </span>
+                      }
+                      position="top-start"
+                      renderContent={() => {
+                        return <Trans>Initial Collateral (Collateral excluding Borrow and Funding Fee).</Trans>;
+                      }}
+                    />
+                  </div>
+                  <div className="align-right">
+                    <ValueTransition
+                      from={formatUsd(position?.collateralUsd)!}
+                      to={formatUsd(nextPositionValues?.nextCollateralUsd)}
+                    />
+                  </div>
+                </div>
+
+                <TradeFeesRow {...fees} feesType="decrease" />
+                <NetworkFeeRow executionFee={executionFee} />
+              </ExchangeInfo.Group>
+
+              <ExchangeInfo.Group>{receiveTokenRow}</ExchangeInfo.Group>
+
+              {(priceImpactWarningState.shouldShowWarning || highExecutionFeeAcknowledgement) && (
+                <ExchangeInfo.Group>
+                  <div className="PositionSeller-price-impact-warning">
+                    {priceImpactWarningState.shouldShowWarning && (
+                      <HighPriceImpactWarning priceImpactWarinigState={priceImpactWarningState} />
+                    )}
+
+                    {highExecutionFeeAcknowledgement}
+                  </div>
+                </ExchangeInfo.Group>
               )}
-
-              {pnlRow}
-
-              <div className="Exchange-info-row">
-                <div>
-                  <Tooltip
-                    handle={
-                      <span className="Exchange-info-label">
-                        <Trans>Collateral ({position.collateralToken?.symbol})</Trans>
-                      </span>
-                    }
-                    position="left-top"
-                    renderContent={() => {
-                      return <Trans>Initial Collateral (Collateral excluding Borrow and Funding Fee).</Trans>;
-                    }}
-                  />
-                </div>
-                <div className="align-right">
-                  <ValueTransition
-                    from={formatUsd(position?.collateralUsd)!}
-                    to={formatUsd(nextPositionValues?.nextCollateralUsd)}
-                  />
-                </div>
-              </div>
-
-              <TradeFeesRow {...fees} executionFee={executionFee} feesType="decrease" />
-
-              {receiveTokenRow}
-            </div>
-
-            {(priceImpactWarningState.shouldShowWarning || highExecutionFeeAcknowledgement) && (
-              <>
-                <div className="App-card-divider" />
-                <div className="PositionSeller-price-impact-warning">
-                  {priceImpactWarningState.shouldShowWarning && (
-                    <HighPriceImpactWarning priceImpactWarinigState={priceImpactWarningState} />
-                  )}
-
-                  {highExecutionFeeAcknowledgement}
-                </div>
-              </>
-            )}
-
+            </ExchangeInfo>
             <div className="Exchange-swap-button-container">
               <Button
                 className="w-full"

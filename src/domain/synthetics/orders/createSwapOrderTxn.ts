@@ -50,6 +50,23 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
 
   const initialCollateralTokenAddress = convertTokenAddress(chainId, p.fromTokenAddress, "wrapped");
 
+  const swapOrder = {
+    account: p.account,
+    marketAddress: AddressZero,
+    initialCollateralTokenAddress,
+    initialCollateralDeltaAmount: p.fromTokenAmount,
+    swapPath: p.swapPath,
+    sizeDeltaUsd: BigNumber.from(0),
+    minOutputAmount,
+    isLong: false,
+    orderType: p.orderType,
+    shouldUnwrapNativeToken: isNativeReceive,
+  };
+
+  if (subaccount) {
+    p.setPendingOrder(swapOrder);
+  }
+
   if (p.orderType !== OrderType.LimitSwap) {
     await simulateExecuteOrderTxn(chainId, {
       account: p.account,
@@ -62,25 +79,16 @@ export async function createSwapOrderTxn(chainId: number, signer: Signer, subacc
     });
   }
 
-  return callContract(chainId, router, "multicall", [encodedPayload], {
+  await callContract(chainId, router, "multicall", [encodedPayload], {
     value: totalWntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
     setPendingTxns: p.setPendingTxns,
-  }).then(() => {
-    p.setPendingOrder({
-      account: p.account,
-      marketAddress: AddressZero,
-      initialCollateralTokenAddress,
-      initialCollateralDeltaAmount: p.fromTokenAmount,
-      swapPath: p.swapPath,
-      sizeDeltaUsd: BigNumber.from(0),
-      minOutputAmount,
-      isLong: false,
-      orderType: p.orderType,
-      shouldUnwrapNativeToken: isNativeReceive,
-    });
   });
+
+  if (!subaccount) {
+    p.setPendingOrder(swapOrder);
+  }
 }
 
 async function getParams(

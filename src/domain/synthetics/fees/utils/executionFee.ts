@@ -29,12 +29,9 @@ export function getExecutionFee(
   const isFeeHigh = feeUsd.gt(expandDecimals(getHighExecutionFee(chainId), USD_DECIMALS));
   const isFeeVeryHigh = feeUsd.gt(expandDecimals(getExcessiveExecutionFee(chainId), USD_DECIMALS));
 
-  const highWarning = t`The network Fees are high currently, which may be due to a temporary increase in transactions on the ${getChainName(
-    chainId
-  )} network.`;
-  const veryHighWarning = t`The network Fees are very high currently, which may be due to a temporary increase in transactions on the ${getChainName(
-    chainId
-  )} network.`;
+  const chainName = getChainName(chainId);
+  const highWarning = t`The network fees are high currently, which may be due to a temporary increase in transactions on the ${chainName} network.`;
+  const veryHighWarning = t`The network fees are very high currently, which may be due to a temporary increase in transactions on the ${chainName} network.`;
 
   const warning = isFeeVeryHigh ? veryHighWarning : isFeeHigh ? highWarning : undefined;
 

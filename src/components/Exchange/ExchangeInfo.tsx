@@ -2,7 +2,7 @@ import React, { ReactNode } from "react";
 
 interface ExchangeInfoProps {
   children?: ReactNode;
-  divider?: ReactNode;
+  dividerClassName?: string;
   className?: string;
 }
 
@@ -10,22 +10,19 @@ interface ExchangeInfoGroupProps {
   children?: ReactNode;
 }
 
-const LINE_DIVIDER = <div className="line-divider" />;
-
-function ExchangeInfo({ children, className, divider = LINE_DIVIDER }: ExchangeInfoProps) {
+function ExchangeInfo({ children, className, dividerClassName = "line-divider" }: ExchangeInfoProps) {
   const childrenArr = React.Children.toArray(children) as React.ReactElement[];
 
   return (
     <div className={className}>
       {childrenArr
-        .reduce((acc, child, index) => {
+        .reduce((acc, child) => {
           if (isExchangeInfoGroup(child)) {
             const groupChildren = React.Children.toArray(child.props.children).filter(Boolean) as React.ReactElement[];
 
             if (groupChildren.length) {
               acc.push(
                 React.cloneElement(child, {
-                  key: child.props.key ?? index,
                   children: groupChildren,
                 })
               );
@@ -40,10 +37,10 @@ function ExchangeInfo({ children, className, divider = LINE_DIVIDER }: ExchangeI
           const isLast = index === arr.length - 1;
 
           return (
-            <>
+            <React.Fragment key={child.props.key ?? index}>
               {child}
-              {!isLast && divider}
-            </>
+              {!isLast && isExchangeInfoGroup(child) && <div className={dividerClassName} />}
+            </React.Fragment>
           );
         })}
     </div>

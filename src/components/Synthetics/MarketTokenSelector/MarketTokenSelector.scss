@@ -72,7 +72,10 @@
 
   .chart-token-list {
     overflow-x: auto;
-    max-height: 20rem;
+    $header-height: 32px;
+    $row-height: 34.5px;
+    $rows-to-show: 10;
+    max-height: $header-height + $row-height * $rows-to-show;
     padding-bottom: 1rem;
 
     table {

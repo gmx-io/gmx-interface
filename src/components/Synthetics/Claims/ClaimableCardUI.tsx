@@ -59,7 +59,7 @@ function Section({
         <span className="muted">{title}</span>
         <span>
           {tooltipText ? (
-            <Tooltip handle={usdFormatted} position="left-bottom" renderContent={renderTooltipContent} />
+            <Tooltip handle={usdFormatted} position="bottom-start" renderContent={renderTooltipContent} />
           ) : (
             usdFormatted
           )}
