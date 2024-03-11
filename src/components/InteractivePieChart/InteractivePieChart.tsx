@@ -1,4 +1,3 @@
-import { TOKEN_COLOR_MAP } from "config/tokens";
 import hexToRgba from "hex-to-rgba";
 import { useMemo, useState } from "react";
 import { Cell, Pie, PieChart, Tooltip } from "recharts";
@@ -8,23 +7,20 @@ type Props = {
     name: string;
     value: number;
     symbol: string;
+    color: string;
   }[];
-  colorMap?: { [key: string]: string };
 };
 
-export default function InteractivePieChart({ data, colorMap = TOKEN_COLOR_MAP }: Props) {
+export default function InteractivePieChart({ data }: Props) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   const cellStyles = useMemo(
     () =>
       data.map((entry, index) => ({
-        filter:
-          activeIndex === index
-            ? `drop-shadow(0px 0px 6px ${hexToRgba(getChartColor(colorMap, entry.symbol), 0.7)})`
-            : "none",
+        filter: activeIndex === index ? `drop-shadow(0px 0px 6px ${hexToRgba(entry.color, 0.7)})` : "none",
         cursor: "pointer",
       })),
-    [activeIndex, colorMap, data]
+    [activeIndex, data]
   );
 
   const onChartEnter = (_, index) => {
@@ -56,9 +52,9 @@ export default function InteractivePieChart({ data, colorMap = TOKEN_COLOR_MAP }
             {data.map((entry, index) => (
               <Cell
                 key={`cell-${index}`}
-                fill={getChartColor(colorMap, entry?.symbol)}
+                fill={entry.color}
                 style={cellStyles[index]}
-                stroke={getChartColor(colorMap, entry.symbol)}
+                stroke={entry.color}
                 strokeWidth={1}
               />
             ))}
@@ -71,10 +67,6 @@ export default function InteractivePieChart({ data, colorMap = TOKEN_COLOR_MAP }
       )}
     </div>
   );
-}
-
-function getChartColor(colorMap: { [key: string]: string }, symbol?: string) {
-  return colorMap[symbol ?? "default"] ?? colorMap["default"];
 }
 
 function CustomTooltip({ active, payload }) {

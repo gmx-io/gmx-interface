@@ -1528,10 +1528,6 @@ msgstr "Déconnecter"
 msgid "Display PnL after fees"
 msgstr "Afficher PnL après les frais"
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Distribution"
-msgstr "Distribution"
-
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Docs"

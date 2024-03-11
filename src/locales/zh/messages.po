@@ -1528,10 +1528,6 @@ msgstr "连线中断"
 msgid "Display PnL after fees"
 msgstr "收费后显示PnL"
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Distribution"
-msgstr "分发情况"
-
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Docs"

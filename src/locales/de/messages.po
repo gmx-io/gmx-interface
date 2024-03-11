@@ -1528,10 +1528,6 @@ msgstr "Verbindung trennen"
 msgid "Display PnL after fees"
 msgstr "PnL nach Gebühren anzeigen"
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Distribution"
-msgstr "Verteilung"
-
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Docs"

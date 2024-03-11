@@ -1528,10 +1528,6 @@ msgstr "Разъединить"
 msgid "Display PnL after fees"
 msgstr "Отображение PnL после комиссии"
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Distribution"
-msgstr "Распределение"
-
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Docs"

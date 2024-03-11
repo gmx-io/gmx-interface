@@ -1,12 +1,10 @@
 import { Trans, t } from "@lingui/macro";
 import TooltipComponent from "components/Tooltip/Tooltip";
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
-import { Cell, Pie, PieChart, Tooltip } from "recharts";
 import useSWR from "swr";
 
 import { ethers } from "ethers";
-import hexToRgba from "hex-to-rgba";
 
 import { useGmxPrice, useTotalGmxInLiquidity, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 import { DEFAULT_MAX_USDG_AMOUNT, GLP_DECIMALS, GMX_DECIMALS, USD_DECIMALS, getPageTitle } from "lib/legacy";
@@ -30,7 +28,7 @@ import { getServerUrl } from "config/backend";
 import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
 import { getIsSyntheticsSupported } from "config/features";
 import { getIcons } from "config/icons";
-import { getTokenBySymbol, getWhitelistedV1Tokens } from "config/tokens";
+import { TOKEN_COLOR_MAP, getTokenBySymbol, getWhitelistedV1Tokens } from "config/tokens";
 import { useFeesSummary, useTotalVolume, useVolumeInfo } from "domain/stats";
 import useUniqueUsers from "domain/stats/useUniqueUsers";
 import { useInfoTokens } from "domain/tokens";
@@ -455,7 +453,7 @@ export default function DashboardV2(props) {
       return {
         fullname: token.name,
         name: token.symbol,
-        symbol: token.symbol,
+        color: TOKEN_COLOR_MAP[token.symbol ?? "default"] ?? TOKEN_COLOR_MAP.default,
         value: parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`),
       };
     }
@@ -472,16 +470,6 @@ export default function DashboardV2(props) {
     if (a.value < b.value) return 1;
     else return -1;
   });
-
-  const [gmxActiveIndex, setGMXActiveIndex] = useState(null);
-
-  const onGMXDistributionChartEnter = (_, index) => {
-    setGMXActiveIndex(index);
-  };
-
-  const onGMXDistributionChartLeave = () => {
-    setGMXActiveIndex(null);
-  };
 
   const dailyVolumeEntries = useMemo(
     () => ({
@@ -915,48 +903,7 @@ export default function DashboardV2(props) {
                     </div>
                   </div>
                 </div>
-                <div className="stats-piechart" onMouseLeave={onGMXDistributionChartLeave}>
-                  {gmxDistributionData.length > 0 && (
-                    <PieChart width={210} height={210}>
-                      <Pie
-                        data={gmxDistributionData}
-                        cx={100}
-                        cy={100}
-                        innerRadius={73}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                        startAngle={90}
-                        endAngle={-270}
-                        paddingAngle={2}
-                        onMouseEnter={onGMXDistributionChartEnter}
-                        onMouseOut={onGMXDistributionChartLeave}
-                        onMouseLeave={onGMXDistributionChartLeave}
-                      >
-                        {gmxDistributionData.map((entry, index) => (
-                          <Cell
-                            key={`cell-${index}`}
-                            fill={entry.color}
-                            // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-                            style={{
-                              filter:
-                                gmxActiveIndex === index
-                                  ? `drop-shadow(0px 0px 6px ${hexToRgba(entry.color, 0.7)})`
-                                  : "none",
-                              cursor: "pointer",
-                            }}
-                            stroke={entry.color}
-                            strokeWidth={gmxActiveIndex === index ? 1 : 1}
-                          />
-                        ))}
-                      </Pie>
-                      <text x={"50%"} y={"50%"} fill="white" textAnchor="middle" dominantBaseline="middle">
-                        <Trans>Distribution</Trans>
-                      </text>
-                      <Tooltip content={<CustomTooltip />} />
-                    </PieChart>
-                  )}
-                </div>
+                <InteractivePieChart data={gmxDistributionData} />
               </div>
               {isV1 && (
                 <div className="App-card">
@@ -1233,24 +1180,6 @@ export default function DashboardV2(props) {
   );
 }
 
-function CustomTooltip({ active, payload }) {
-  const customTooltipStyle = useMemo(
-    () => (payload && payload.length ? { backgroundColor: payload[0].color } : undefined),
-    [payload]
-  );
-
-  if (active && payload && payload.length) {
-    return (
-      <div className="stats-label">
-        <div className="stats-label-color" style={customTooltipStyle}></div>
-        {payload[0].value}% {payload[0].name}
-      </div>
-    );
-  }
-
-  return null;
-}
-
 function GMCard() {
   const { chainId } = useChainId();
   const currentIcons = getIcons(chainId);
@@ -1282,12 +1211,13 @@ function GMCard() {
       const marketInfo = getByKey(marketsInfoData, market.address);
       const marketSupplyPercentage =
         market.totalSupply.mul(BASIS_POINTS_DIVISOR).div(totalGMSupply.amount)?.toNumber() / 100;
+      const symbol = marketInfo.isSpotOnly ? marketInfo.shortToken.symbol : marketInfo.indexToken.symbol;
 
       return {
         fullName: marketInfo.name,
         name: marketInfo.isSpotOnly ? getMarketPoolName(marketInfo) : getMarketIndexName(marketInfo),
         value: marketSupplyPercentage,
-        symbol: marketInfo.isSpotOnly ? marketInfo.shortToken.symbol : marketInfo.indexToken.symbol,
+        color: TOKEN_COLOR_MAP[symbol ?? "default"] ?? TOKEN_COLOR_MAP.default,
       };
     });
   }, [marketTokensData, marketsInfoData, totalGMSupply]);

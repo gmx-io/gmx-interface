@@ -1528,10 +1528,6 @@ msgstr "Desconectar"
 msgid "Display PnL after fees"
 msgstr "Mostrar GyP después de comisiones"
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Distribution"
-msgstr "Distribución"
-
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Docs"

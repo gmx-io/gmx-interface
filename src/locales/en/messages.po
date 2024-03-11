@@ -1528,10 +1528,6 @@ msgstr "Disconnect"
 msgid "Display PnL after fees"
 msgstr "Display PnL after fees"
 
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Distribution"
-msgstr "Distribution"
-
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Docs"
