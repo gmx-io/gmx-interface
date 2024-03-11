@@ -460,7 +460,7 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
       msg = t`You have yet to reach the minimum "Capital Used" of ${formatUsd(
         MIN_COLLATERAL_USD_IN_LEADERBOARD.toBigInt()
       )} to be eligible for PnL (%).`;
-    else if (isCompetition) msg = t`You have not traded during the competition window.`;
+    else if (isCompetition) msg = t`You do not have any eligible trade during the competition window.`;
     return msg;
   }, [hasSomeCapital, isCompetition, rank]);
   const tooltipContent = useCallback(() => message, [message]);
