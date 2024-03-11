@@ -6333,6 +6333,10 @@ msgstr "You can transfer AVAX from other networks to Avalanche using any of the 
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
 msgstr "You can transfer ETH from other networks to Arbitrum using any of the below options:"
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "You do not have any eligible trade during the competition window."
+msgstr "You do not have any eligible trade during the competition window."
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "You have a <0>pending transfer</0> to {pendingReceiver}."
 msgstr "You have a <0>pending transfer</0> to {pendingReceiver}."
@@ -6387,8 +6391,8 @@ msgid "You have not traded during selected period."
 msgstr "You have not traded during selected period."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "You have not traded during the competition window."
-msgstr "You have not traded during the competition window."
+#~ msgid "You have not traded during the competition window."
+#~ msgstr "You have not traded during the competition window."
 
 #: src/components/Stake/GMXAprTooltip.tsx
 #: src/pages/Stake/StakeV2.js
