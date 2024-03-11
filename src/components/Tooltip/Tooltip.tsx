@@ -78,9 +78,11 @@ export default function Tooltip(props: Props) {
     return () => {
       if (intervalCloseRef.current) {
         clearInterval(intervalCloseRef.current);
+        intervalCloseRef.current = null;
       }
       if (intervalOpenRef.current) {
         clearInterval(intervalOpenRef.current);
+        intervalOpenRef.current = null;
       }
     };
   }, []);

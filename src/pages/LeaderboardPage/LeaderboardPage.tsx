@@ -1,6 +1,6 @@
 import Footer from "components/Footer/Footer";
 import { LeaderboardPageConfig } from "domain/synthetics/leaderboard";
-import { LEADERBOARD_PAGES, LEADERBOARD_TIMEFRAMES } from "domain/synthetics/leaderboard/constants";
+import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
 import { useChainId } from "lib/chains";
 import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
@@ -32,7 +32,7 @@ function getClosestCompetition(chainId: number) {
   const competitions = Object.values(LEADERBOARD_PAGES)
     .filter((page) => page.isCompetition)
     .filter((page) => {
-      const timeframe = LEADERBOARD_TIMEFRAMES[page.key];
+      const timeframe = LEADERBOARD_PAGES[page.key].timeframe;
       return timeframe.from < Date.now() / 1000 || (timeframe.to && timeframe.to > Date.now() / 1000);
     });
   const competitionsOnSameNetwork = competitions.filter((page) => page.isCompetition && page.chainId === chainId);
@@ -50,8 +50,8 @@ function getClosestCompetition(chainId: number) {
 
 function getClosestCompetitionByTimeframe(competitions: LeaderboardPageConfig[]) {
   competitions.sort((a, b) => {
-    const timeframeA = LEADERBOARD_TIMEFRAMES[a.key];
-    const timeframeB = LEADERBOARD_TIMEFRAMES[b.key];
+    const timeframeA = LEADERBOARD_PAGES[a.key].timeframe;
+    const timeframeB = LEADERBOARD_PAGES[b.key].timeframe;
     return timeframeA.from - timeframeB.from;
   });
   return competitions[0];

@@ -4,8 +4,9 @@ import {
   LeaderboardType,
   useLeaderboardData,
 } from "domain/synthetics/leaderboard";
-import { LEADERBOARD_PAGES, LEADERBOARD_TIMEFRAMES } from "domain/synthetics/leaderboard/constants";
+import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
 import { useChainId } from "lib/chains";
+import { getTimestampByDaysAgo } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { mustNeverExist } from "lib/types";
 import { useMemo, useState } from "react";
@@ -86,26 +87,27 @@ function useLeaderboardTimeframe(
 ): LeaderboardTimeframe {
   const isCompetitions = pageKey !== "leaderboard";
   const competitionsDefaultTimeframe: LeaderboardTimeframe = useMemo(() => {
-    return LEADERBOARD_TIMEFRAMES[pageKey ?? "leaderboard"];
+    return LEADERBOARD_PAGES[pageKey ?? "leaderboard"].timeframe;
   }, [pageKey]);
 
   const leaderboardDefaultTimeframe: LeaderboardTimeframe = useMemo(() => {
     if (leaderboardType === "all") {
-      return LEADERBOARD_TIMEFRAMES.leaderboard;
+      return LEADERBOARD_PAGES.leaderboard.timeframe;
     } else if (leaderboardType === "30days") {
       return {
-        from: Math.floor(Date.now() / 1000 / 86400) * 86400 - 30 * 24 * 60 * 60,
+        from: getTimestampByDaysAgo(30),
         to: undefined,
       };
     } else if (leaderboardType === "7days") {
       return {
-        from: Math.floor(Date.now() / 1000 / 86400) * 86400 - 7 * 24 * 60 * 60,
+        from: getTimestampByDaysAgo(7),
         to: undefined,
       };
     } else {
       throw mustNeverExist(leaderboardType);
     }
   }, [leaderboardType]);
+
   const defaultTimeframe = isCompetitions ? competitionsDefaultTimeframe : leaderboardDefaultTimeframe;
   const defaultTimeframeStr = useMemo(() => serializeTimeframe(defaultTimeframe), [defaultTimeframe]);
   const [overrideTimeframeStr, setOverrideTimeframeStr] = useLocalStorageSerializeKey<string>(
@@ -119,11 +121,6 @@ function useLeaderboardTimeframe(
 
   // @ts-ignore
   window.overrideLeaderboardTimeframe = (from: number, to: number | undefined) => {
-    if (from in LEADERBOARD_TIMEFRAMES) {
-      setOverrideTimeframeStr(serializeTimeframe(LEADERBOARD_TIMEFRAMES[from]));
-      return;
-    }
-
     setOverrideTimeframeStr(serializeTimeframe({ from, to }));
   };
 

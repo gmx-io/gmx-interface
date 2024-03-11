@@ -31,6 +31,7 @@ export type LeaderboardPageConfig =
       label: string;
       href: string;
       isCompetition: false;
+      timeframe: LeaderboardTimeframe;
     }
   | {
       key: LeaderboardPageKey;
@@ -39,4 +40,5 @@ export type LeaderboardPageConfig =
       isCompetition: true;
       chainId: number;
       enabled: boolean;
+      timeframe: LeaderboardTimeframe;
     };

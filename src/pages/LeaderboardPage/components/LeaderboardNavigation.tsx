@@ -3,11 +3,7 @@ import cx from "classnames";
 import { getIcon } from "config/icons";
 import { useLeaderboardPageKey } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import { LeaderboardPageKey } from "domain/synthetics/leaderboard";
-import {
-  LEADERBOARD_PAGES,
-  LEADERBOARD_PAGES_ORDER,
-  LEADERBOARD_TIMEFRAMES,
-} from "domain/synthetics/leaderboard/constants";
+import { LEADERBOARD_PAGES, LEADERBOARD_PAGES_ORDER } from "domain/synthetics/leaderboard/constants";
 import { mustNeverExist } from "lib/types";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
@@ -25,7 +21,7 @@ type LeaderboardNavigationItem = {
 function getChip(pageKey: LeaderboardPageKey) {
   if (pageKey === "leaderboard") return "none";
 
-  const timeframe = LEADERBOARD_TIMEFRAMES[pageKey];
+  const timeframe = LEADERBOARD_PAGES[pageKey].timeframe;
   const isStartInFuture = timeframe.from > Date.now() / 1000;
   const isEndInFuture = timeframe.to === undefined || timeframe.to > Date.now() / 1000;
 

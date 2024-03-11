@@ -3,7 +3,7 @@ import cx from "classnames";
 import AddressView from "components/AddressView/AddressView";
 import Pagination from "components/Pagination/Pagination";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { formatAmount, formatUsd } from "lib/bigint";
+import { abs, formatAmount, formatUsd } from "lib/bigint";
 import { useDebounce } from "lib/useDebounce";
 import { ReactNode, memo, useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 
@@ -16,17 +16,12 @@ import {
   useLeaderboardIsCompetition,
   useLeaderboardTypeState,
 } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
-import {
-  CompetitionType,
-  LeaderboardAccount,
-  RemoteData,
-  formatDelta,
-  signedValueClassName,
-} from "domain/synthetics/leaderboard";
+import { CompetitionType, LeaderboardAccount, RemoteData } from "domain/synthetics/leaderboard";
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "domain/synthetics/leaderboard/constants";
 import { createBreakpoint } from "react-use";
 import SearchInput from "components/SearchInput/SearchInput";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { USD_DECIMALS } from "lib/legacy";
 
 function getRowClassname(rank: number | null, competition: CompetitionType | undefined, pinned: boolean) {
   if (pinned) return cx("LeaderboardRankRow-Pinned", "Table_tr");
@@ -386,7 +381,7 @@ const TableRow = memo(
           {shouldRenderValue ? (
             <TooltipWithPortal
               handle={
-                <span className={signedValueClassName(account.totalQualifyingPnl)}>
+                <span className={getSignedValueClassName(account.totalQualifyingPnl)}>
                   {formatDelta(account.totalQualifyingPnl, { signed: true, prefix: "$" })}
                 </span>
               }
@@ -402,7 +397,7 @@ const TableRow = memo(
           {shouldRenderValue ? (
             <TooltipWithPortal
               handle={
-                <span className={signedValueClassName(account.pnlPercentage)}>
+                <span className={getSignedValueClassName(account.pnlPercentage)}>
                   {formatDelta(account.pnlPercentage, { signed: true, postfix: "%", decimals: 2 })}
                 </span>
               }
@@ -503,7 +498,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
         label={t`Realized PnL`}
         showDollar={false}
         value={
-          <span className={signedValueClassName(realizedPnl)}>
+          <span className={getSignedValueClassName(realizedPnl)}>
             {formatDelta(realizedPnl, { signed: true, prefix: "$" })}
           </span>
         }
@@ -512,7 +507,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
         label={t`Unrealized PnL`}
         showDollar={false}
         value={
-          <span className={signedValueClassName(unrealizedPnl)}>
+          <span className={getSignedValueClassName(unrealizedPnl)}>
             {formatDelta(unrealizedPnl, { signed: true, prefix: "$" })}
           </span>
         }
@@ -522,7 +517,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
           label={t`Start Unrealized PnL`}
           showDollar={false}
           value={
-            <span className={signedValueClassName(startUnrealizedPnl)}>
+            <span className={getSignedValueClassName(startUnrealizedPnl)}>
               {formatDelta(startUnrealizedPnl, { signed: true, prefix: "$" })}
             </span>
           }
@@ -535,7 +530,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
             label={t`Realized Fees`}
             showDollar={false}
             value={
-              <span className={signedValueClassName(realizedFees)}>
+              <span className={getSignedValueClassName(realizedFees)}>
                 {formatDelta(realizedFees, { signed: true, prefix: "$" })}
               </span>
             }
@@ -544,7 +539,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
             label={t`Unrealized Fees`}
             showDollar={false}
             value={
-              <span className={signedValueClassName(unrealizedFees)}>
+              <span className={getSignedValueClassName(unrealizedFees)}>
                 {formatDelta(unrealizedFees, { signed: true, prefix: "$" })}
               </span>
             }
@@ -554,7 +549,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
               label={t`Start Unrealized Fees`}
               showDollar={false}
               value={
-                <span className={signedValueClassName(startUnrealizedFees)}>
+                <span className={getSignedValueClassName(startUnrealizedFees)}>
                   {formatDelta(startUnrealizedFees, { signed: true, prefix: "$" })}
                 </span>
               }
@@ -565,7 +560,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
             label={t`Realized Price Impact`}
             showDollar={false}
             value={
-              <span className={signedValueClassName(account.realizedPriceImpact)}>
+              <span className={getSignedValueClassName(account.realizedPriceImpact)}>
                 {formatDelta(account.realizedPriceImpact, { signed: true, prefix: "$" })}
               </span>
             }
@@ -575,3 +570,29 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
     </div>
   );
 });
+
+function formatDelta(
+  delta: bigint,
+  {
+    decimals = USD_DECIMALS,
+    displayDecimals = 2,
+    useCommas = true,
+    ...p
+  }: {
+    decimals?: number;
+    displayDecimals?: number;
+    useCommas?: boolean;
+    prefixoid?: string;
+    signed?: boolean;
+    prefix?: string;
+    postfix?: string;
+  } = {}
+) {
+  return `${p.prefixoid ? `${p.prefixoid} ` : ""}${p.signed ? (delta === 0n ? "" : delta > 0 ? "+" : "-") : ""}${
+    p.prefix || ""
+  }${formatAmount(p.signed ? abs(delta) : delta, decimals, displayDecimals, useCommas)}${p.postfix || ""}`;
+}
+
+function getSignedValueClassName(num: bigint) {
+  return num === 0n ? "" : num < 0 ? "negative" : "positive";
+}

@@ -5,7 +5,7 @@ import { USD_DECIMALS } from "./legacy";
 const MAX_EXCEEDING_THRESHOLD = "1000000000";
 const MIN_EXCEEDING_THRESHOLD = "0.01";
 
-function abs(num: bigint) {
+export function abs(num: bigint) {
   if (num < 0n) {
     return -num;
   } else {

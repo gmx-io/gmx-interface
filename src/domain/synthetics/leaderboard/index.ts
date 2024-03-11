@@ -4,7 +4,6 @@ import useSWR from "swr";
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "./constants";
 
 export * from "./types";
-export * from "./utils";
 
 type LeaderboardAccountsJson = {
   all: {
@@ -155,7 +154,7 @@ const fetchAccounts = async (
   const allAccounts = await client.query<LeaderboardAccountsJson>({
     query: gql`
       query PeriodAccountStats($requiredMaxCapital: String, $from: Int, $to: Int, $account: String) {
-        all: periodAccountStats(limit: 10000, where: { maxCapital_gte: $requiredMaxCapital, from: $from, to: $to }) {
+        all: periodAccountStats(limit: 100000, where: { maxCapital_gte: $requiredMaxCapital, from: $from, to: $to }) {
           id
           closedCount
           cumsumCollateral
@@ -283,7 +282,7 @@ const fetchPositions = async (
     query: gql`
       query PositionQuery($requiredMaxCapital: BigInt, $isSnapshot: Boolean, $snapshotTimestamp: Int) {
         positions(
-          limit: 20000
+          limit: 100000
           where: {
             isSnapshot_eq: $isSnapshot
             snapshotTimestamp_eq: $snapshotTimestamp
