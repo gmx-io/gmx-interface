@@ -30,7 +30,7 @@ export const LEADERBOARD_PAGES: Record<LeaderboardPageKey, LeaderboardPageConfig
     href: "/competitions/march_8-22_2024",
     isCompetition: true,
     chainId: ARBITRUM,
-    enabled: true,
+    enabled: false,
     timeframe: {
       from: 1709856000, // 8 mar 2024
       to: 1711065600, // 22 mar 2024
@@ -42,7 +42,7 @@ export const LEADERBOARD_PAGES: Record<LeaderboardPageKey, LeaderboardPageConfig
     href: "/competitions/march24fuji",
     isCompetition: true,
     chainId: AVALANCHE_FUJI,
-    enabled: true,
+    enabled: false,
     timeframe: {
       from: 1709856000, // 8 mar 2024
       to: 1711065600, // 22 mar 2024
