@@ -2143,11 +2143,15 @@ msgid "GMX V1 Account"
 msgstr ""
 
 #: src/pages/Actions/Actions.js
+msgid "GMX V1 Actions"
+msgstr ""
+
+#: src/pages/Actions/Actions.js
 msgid "GMX V1 Arbitrum information for account: {checkSummedAccount}"
 msgstr ""
 
 #: src/pages/Actions/Actions.js
-msgid "GMX V1 actions for all accounts."
+msgid "GMX V1 {networkName} actions for all accounts."
 msgstr ""
 
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
@@ -2155,7 +2159,11 @@ msgid "GMX V2 Account"
 msgstr ""
 
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
-msgid "GMX V2 actions for all accounts."
+msgid "GMX V2 Actions"
+msgstr ""
+
+#: src/pages/SyntheticsActions/SyntheticsActions.tsx
+msgid "GMX V2 {networkName} actions for all accounts."
 msgstr ""
 
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
@@ -5592,10 +5600,6 @@ msgstr ""
 msgid "Utilization"
 msgstr ""
 
-#: src/pages/Actions/Actions.js
-msgid "V1 Actions"
-msgstr ""
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V1 Airdrop"
 msgstr ""
@@ -5632,10 +5636,6 @@ msgstr ""
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "V1 rebates are airdropped weekly. V2 rebates are automatically applied as fee discounts on each trade and do not show on this table."
-msgstr ""
-
-#: src/pages/SyntheticsActions/SyntheticsActions.tsx
-msgid "V2 Actions"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
