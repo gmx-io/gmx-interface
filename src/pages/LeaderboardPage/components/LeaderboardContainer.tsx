@@ -122,8 +122,9 @@ export function LeaderboardContainer() {
       case "march24fuji":
         return (
           <>
-            <ExternalLink href="#">
-              <Trans>Read the rules</Trans>
+            Powered by the Arbitrum DAO STIP.&nbsp;
+            <ExternalLink href="https://open.substack.com/pub/gmxio/p/the-gmx-eip4844-trading-competition">
+              <Trans>Read the rules.</Trans>
             </ExternalLink>
             {wrongNetworkSwitcher}
           </>

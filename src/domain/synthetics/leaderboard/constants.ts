@@ -50,7 +50,7 @@ export const LEADERBOARD_PAGES: Record<LeaderboardPageKey, LeaderboardPageConfig
   },
   "march_13-20_2024": {
     key: "march_13-20_2024",
-    label: t`STIP 13-20 Mar`,
+    label: t`EIP-4844, 13-20 Mar`,
     href: "/competitions/march_13-20_2024",
     isCompetition: true,
     chainId: ARBITRUM,
@@ -62,7 +62,7 @@ export const LEADERBOARD_PAGES: Record<LeaderboardPageKey, LeaderboardPageConfig
   },
   "march_20-27_2024": {
     key: "march_20-27_2024",
-    label: t`STIP 20-27 Mar`,
+    label: t`EIP-4844, 20-27 Mar`,
     href: "/competitions/march_20-27_2024",
     isCompetition: true,
     chainId: ARBITRUM,
