@@ -4944,7 +4944,7 @@ msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
 msgstr "Die Adresse des esGMX (IOU)-Tokens lautet {esGmxIouAddress}"
 
 #: src/components/Stake/GMXAprTooltip.tsx
-msgid "The average {nativeTokenSymbol} APR is calculated with the average account boost percentage {0}%), while the maximum {nativeTokenSymbol} APR is calculated with the maximum boost (200%) by staking <0>Multiplier Points</0>."
+msgid "The average {nativeTokenSymbol} APR is calculated with the average account boost percentage ({0}%), while the maximum {nativeTokenSymbol} APR is calculated with the maximum boost (200%) by staking <0>Multiplier Points</0>."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
