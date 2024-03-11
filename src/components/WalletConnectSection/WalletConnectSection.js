@@ -5,7 +5,7 @@ import "./WalletConnectSection.css";
 import arrowIcn from "img/arrow_icn.svg";
 
 const WalletConnectSection = ({ walletIco, text, handleClick, walletConnected }) => {
-  const [isCompleted, setIsCompleted] = useState(false);
+  const [setIsCompleted] = useState(false);
 
   useEffect(() => {
     if (walletConnected) {

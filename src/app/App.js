@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect, useCallback, useRef, useMemo, useContext, useReducer } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo, useContext } from "react";
 import useSWR, { SWRConfig } from "swr";
 import { ethers } from "ethers";
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
@@ -49,7 +49,6 @@ import "styles/Input.css";
 import metamaskImg from "img/metamask.png";
 import coinbaseImg from "img/coinbaseWallet.png";
 import walletConnectImg from "img/walletconnect-circle-blue.svg";
-import emailIcn from "img/icn_email.svg";
 import useEventToast from "components/EventToast/useEventToast";
 import EventToastContainer from "components/EventToast/EventToastContainer";
 import SEO from "components/Common/SEO";
@@ -67,12 +66,11 @@ import TermsAndConditions from "pages/TermsAndConditions/TermsAndConditions";
 import { useLocalStorage } from "react-use";
 import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
 import { REDIRECT_POPUP_TIMESTAMP_KEY } from "config/localStorage";
-import { useImmer } from "use-immer";
 
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { Trans, t } from "@lingui/macro";
-import { AnimatePresence, motion } from "framer-motion";
+
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { Header } from "components/Header/Header";
 import { ARBITRUM, AVALANCHE, getAlchemyWsUrl, getExplorerUrl } from "config/chains";
@@ -110,15 +108,9 @@ import { useInfoTokens } from "domain/tokens";
 import { contractFetcher } from "lib/contracts";
 import { getTokens } from "config/tokens";
 import { SwapBox } from "pages/Swap/Swap";
-import UserOnboardSection from "components/UserOnboardSection/UserOnboardSection";
-import OtpInput from "react-otp-input";
-import { createOtp } from "config/tool";
-import sendOtp from "external/sendOtp";
 import { addUser, getUserByWalletAddress, updateUserEmail } from "external/supabase/supabaseFns";
 import ThemeProvider, { ThemeContext } from "store/theme-provider";
 import WalletConnectSection from "components/WalletConnectSection/WalletConnectSection";
-import SignUp from "pages/SignUp/SignUp";
-import ButtonLink from "components/Button/ButtonLink";
 import AuthFlow from "components/AuthFlow/AuthFlow";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
@@ -167,8 +159,7 @@ function FullApp() {
   const history = useHistory();
   useEventToast();
   const [activatingConnector, setActivatingConnector] = useState();
-  // const [authFlowState, setAuthFlowState] = useImmer(authFlow);
-  const [authStep, setAuthStep] = useState(1);
+
   useEffect(() => {
     if (activatingConnector && activatingConnector === connector) {
       setActivatingConnector(undefined);
@@ -224,18 +215,9 @@ function FullApp() {
     setActiveStep(2);
   };
 
-  const handleApproveTokens = () => {
-    setApprovalsModalVisible(true);
-    setWalletModalVisible(false);
-  };
 
-  const handleConnectWallet = () => {
-    setShowConnectOptions(!showConnectOptions);
-  };
-
-  const handleEmailVerifyClick = () => {
-    setShowEmailVerification(true);
-  };
+ 
+ 
 
   // const updateAuthFlow = (flowCompleted) => {
   //   setAuthFlowState((draft) => {
@@ -301,12 +283,10 @@ function FullApp() {
   const [redirectPopupTimestamp, setRedirectPopupTimestamp] = useLocalStorage(REDIRECT_POPUP_TIMESTAMP_KEY);
   const [selectedToPage, setSelectedToPage] = useState("");
   const [approvalsModalVisible, setApprovalsModalVisible] = useState(false);
-  const [showConnectOptions, setShowConnectOptions] = useState(false);
+  const [, setShowConnectOptions] = useState(false);
   const [isNewUser, setNewUser] = useState(false);
-  const [hasTokens, setHasTokens] = useState(false);
-  const [showEmailVerification, setShowEmailVerification] = useState(false);
+  const [, setHasTokens] = useState(false);
 
-  const [userEnteredOtp, setUserEnteredOtp] = useState("");
   const [doesUserHaveEmail, setDoesUserHaveEmail] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
   const [activeModal, setActiveModal] = useState(null);
@@ -400,10 +380,6 @@ function FullApp() {
     setIsSettingsVisible(false);
   };
 
-  const handleOtpEntered = (userEnteredOtp) => {
-    setUserEnteredOtp(userEnteredOtp);
-  };
-
   const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
   const baseUrl = getAppBaseUrl();
   let appRedirectUrl = baseUrl + selectedToPage;
@@ -449,7 +425,7 @@ function FullApp() {
           if (user.email_address) setDoesUserHaveEmail(true);
         } else {
           setNewUser(true);
-          const newUser = await addUser(account);
+          await addUser(account);
           // eslint-disable-next-line no-console
         }
 

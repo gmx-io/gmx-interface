@@ -17,16 +17,6 @@ export const addUser = async (walletAddress: string) => {
   return data;
 };
 
-export const getUserReferralCode = async (walletAddress: string) => {
-  const { data, error } = await supabase
-    .from("users")
-    .select("referral_code")
-    .eq("wallet_address", walletAddress)
-    .single();
-
-  return data;
-};
-
 function generateReferralCode(length: number) {
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   const code = crypto

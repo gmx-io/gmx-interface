@@ -1,7 +1,7 @@
 import { useWeb3React } from "@web3-react/core";
 import AddressDropdown from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../Common/ConnectWalletButton";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { HeaderLink } from "./HeaderLink";
 import connectWalletImgDrk from "img/ic_wallet_24-dark.svg";
 import connectWalletImglight from "img/ic_wallet_24-light.svg";
@@ -23,7 +23,6 @@ import { useChainId } from "lib/chains";
 import { isDevelopment } from "config/env";
 import { getIcon } from "config/icons";
 import FaucetDropdown from "../FaucetDropdown/FaucetDropdown";
-import { addUser, getUserByWalletAddress, getUserReferralCode } from "external/supabase/supabaseFns";
 import SettingDropdown from "components/SettingDropdown/SettingDropdown";
 import { ThemeContext } from "store/theme-provider";
 
@@ -81,7 +80,6 @@ export function AppHeaderUser({
   const { chainId } = useChainId();
   const { active, account } = useWeb3React();
   const showConnectionOptions = !isHomeSite();
-  const [refCode, setRefCode] = useState("");
 
   const onNetworkSelect = useCallback(
     (option) => {
