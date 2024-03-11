@@ -721,7 +721,7 @@ export function getSwapFeeBasisPoints(isStable) {
   return isStable ? STABLE_SWAP_FEE_BASIS_POINTS : SWAP_FEE_BASIS_POINTS;
 }
 
-export function shortenAddress(address, length) {
+export function shortenAddress(address, length, padStart = 1) {
   if (!length) {
     return "";
   }
@@ -731,7 +731,10 @@ export function shortenAddress(address, length) {
   if (address.length < 10) {
     return address;
   }
-  let left = Math.floor((length - 3) / 2) + 1;
+  if (length >= address.length) {
+    return address;
+  }
+  let left = Math.floor((length - 3) / 2) + (padStart || 0);
   return address.substring(0, left) + "..." + address.substring(address.length - (length - (left + 3)), address.length);
 }
 

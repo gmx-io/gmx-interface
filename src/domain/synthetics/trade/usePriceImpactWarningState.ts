@@ -1,5 +1,5 @@
 import { HIGH_POSITION_IMPACT_BPS, HIGH_SWAP_IMPACT_BPS } from "config/factors";
-import { museNeverExist } from "lib/types";
+import { mustNeverExist } from "lib/types";
 import { usePrevious } from "lib/usePrevious";
 import { useEffect, useMemo, useState } from "react";
 import shallowEqual from "shallowequal";
@@ -81,7 +81,7 @@ export function usePriceImpactWarningState({
       shouldShowWarningForPosition = isHighPositionImpact;
       shouldShowWarningForSwap = isHighSwapImpact;
     } else {
-      throw museNeverExist(place);
+      throw mustNeverExist(place);
     }
 
     return {

@@ -25,9 +25,58 @@ msgstr "01 Сен 2021"
 msgid "06 Jan 2022"
 msgstr "6 Янв 2022"
 
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "1 000 ARB"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "1 200 ARB"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "10 000 ARB"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "1st Place"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "24h Volume"
 msgstr "24ч Объём"
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "25 000 ARB"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "2nd Place"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "3rd Place"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "4-18 Places"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "5 000 ARB"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "50 000 ARB"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "7 000 ARB"
+msgstr ""
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "<0><1>{eventTitle}</1> from <2>{0} {indexName} <3>[{poolName}]</3> Position</2></0>"
@@ -335,6 +384,10 @@ msgstr ""
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr "Кроме того, триггерные ордера являются рыночными и не гарантируют расчет по триггерной цене."
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Address"
+msgstr ""
+
 #: src/components/AddressDropdown/AddressDropdown.tsx
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Address copied to your clipboard"
@@ -529,6 +582,22 @@ msgstr "Доступно в предпочитаемой сети"
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Average Leverage used."
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Average Position Size."
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Avg. Lev."
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Avg. Size"
+msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "BUYABLE"
@@ -781,6 +850,15 @@ msgstr "Отмена завершена."
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Cancelling {ordersText}"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Capital Used"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+msgid "Chain Icon"
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
@@ -1673,6 +1751,10 @@ msgstr "Создание Леверидж..."
 msgid "Enabling Orders..."
 msgstr "Создание Ордеров..."
 
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "Ends in"
+msgstr ""
+
 #: src/pages/NftWallet/NftWallet.js
 msgid "Enter NFT Address"
 msgstr "Введите Адрес NFT"
@@ -2244,6 +2326,10 @@ msgstr "Создание изображения, доступного для с�
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 msgstr ""
 
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "Global leaderboard"
+msgstr ""
+
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
 msgstr ""
@@ -2544,6 +2630,14 @@ msgstr ""
 msgid "Language"
 msgstr "Язык"
 
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "Last 30 days"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "Last 7 days"
+msgstr ""
+
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/ModalViews/RedirectModal.js
@@ -2552,12 +2646,17 @@ msgid "Launch App"
 msgstr "Запустить Приложение"
 
 #: src/components/Exchange/UsefulLinks.tsx
+#: src/components/Header/AppHeaderLinks.tsx
 msgid "Leaderboard"
 msgstr "Таблица лидеров"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Leaderboard for GMX traders"
 msgstr "Таблица лидеров для трейдеров GMX"
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "Leaderboard for traders on GMX V2"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Leave at least {0} ETH for gas"
@@ -3217,6 +3316,7 @@ msgstr ""
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "NA"
 msgstr ""
 
@@ -3346,6 +3446,10 @@ msgstr "Нет позиции"
 msgid "No rebates distribution history yet."
 msgstr "История распределения возвратов пока отсутствует."
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "No results found"
+msgstr ""
+
 #: src/pages/Stake/StakeV1.js
 msgid "No rewards to claim yet"
 msgstr "Вознаграждений пока нет"
@@ -3386,6 +3490,10 @@ msgstr ""
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 msgid "One-Click Trading is not available using network's native token {0}. Consider using {1} instead."
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Only Addresses with over {0} in \"Capital Used\" are ranked."
 msgstr ""
 
 #: src/components/Referrals/referralsHelper.js
@@ -3680,6 +3788,14 @@ msgstr ""
 msgid "PnL"
 msgstr "PnL"
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "PnL ($)"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "PnL (%)"
+msgstr ""
+
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
@@ -3943,6 +4059,10 @@ msgstr ""
 msgid "REBATE"
 msgstr ""
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Rank"
+msgstr ""
+
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
@@ -3950,8 +4070,24 @@ msgstr ""
 msgid "Read more"
 msgstr "Читать больше"
 
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "Read the rules"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Realized Fees"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Realized PnL"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Realized PnL insufficient for Fees"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Realized Price Impact"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
@@ -4173,6 +4309,14 @@ msgstr ""
 msgid "SL"
 msgstr ""
 
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "STIP 13-20 Mar"
+msgstr ""
+
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "STIP 20-27 Mar"
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Same as current active code"
 msgstr "Такой же, как и текущий действующий код"
@@ -4188,6 +4332,10 @@ msgstr "Сэкономь на Расходах"
 #: src/components/Glp/GlpSwap.js
 msgid "Save on Fees"
 msgstr "Сэкономь на Комиссиях"
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Search Address"
+msgstr ""
 
 #: src/components/MarketSelector/MarketSelector.tsx
 msgid "Search Market"
@@ -4613,6 +4761,18 @@ msgstr ""
 msgid "Staking..."
 msgstr "Размещение стакинга..."
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Start Unrealized Fees"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Start Unrealized PnL"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "Starts in"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Stats"
 msgstr "Статистика"
@@ -4829,6 +4989,10 @@ msgstr ""
 msgid "T"
 msgstr ""
 
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "TEST 8-22 Mar"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.js
@@ -4904,6 +5068,10 @@ msgstr "Telegram бот для Открытого Процента на GMX"
 msgid "Terms and Conditions"
 msgstr "Правила и Условия"
 
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "Test"
+msgstr ""
+
 #: src/pages/Stake/StakeV1.js
 msgid "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
 msgstr "Идет <0>GMX перенос</0>, пожалуйста, перенесите ваши токены GMT, xGMT, GMT-USDG и xGMT-USDG.<1/>Токены USDG будут продолжать функционировать как прежде и не нуждаются в переносе."
@@ -4938,6 +5106,10 @@ msgstr "Протокол Gambit находится в стадии бета-те
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "The PnL ($) compared to the capital used.<0/><1/>The capital used is calculated as the highest value of [<2>sum of collateral of open positions - realized PnL + period start pending PnL</2>]."
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
@@ -5040,6 +5212,10 @@ msgstr ""
 msgid "The spread is > 1%, please ensure the trade details are acceptable before confirming"
 msgstr ""
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "The total realized and unrealized profit and loss for the period, including fees and price impact."
+msgstr ""
+
 #: src/components/ModalViews/RedirectModal.js
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
 msgstr "Сайт представляет собой развернутый и поддерживаемый сообществом экземпляр открытого источника <0>GMX фронт-энда</0>, размещенный и обслуживаемый в распределенной, peer-to-peer <1>IPFS сети</1>."
@@ -5116,6 +5292,14 @@ msgstr "Этот код был взят кем-то другим на {0}, вы 
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 msgstr "Этот код еще не зарегистрирован на {0}, вы не будете получать рибейты там.<0/><1/>Переключите свою сеть, чтобы создать этот код на {1}."
 
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "This competition has ended"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "This competition is held on the {0} network, please <0>change your network</0>."
+msgstr ""
+
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
 msgstr ""
@@ -5165,6 +5349,14 @@ msgstr "Чтобы уменьшить комиссию, выберите дру�
 msgid "Tokens"
 msgstr "Токены"
 
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "Top PnL ($)"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "Top PnL (%)"
+msgstr ""
+
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Top-up"
 msgstr ""
@@ -5174,6 +5366,7 @@ msgstr ""
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/Referrals/TradersStats.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/Stake/StakeV2.js
 msgid "Total"
 msgstr "Итого"
@@ -5248,6 +5441,10 @@ msgstr ""
 msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 msgstr "Всего активных: {openTotal}, выполненных: {executedTotal}, отмененных: {cancelledTotal}"
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Total trades"
+msgstr ""
+
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
 msgstr "Всего:"
@@ -5294,6 +5491,10 @@ msgstr ""
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trades"
 msgstr "Торги"
+
+#: src/components/Header/Header.tsx
+msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (>$500k) in prizes in <0>two weekly</0> competitions. Live from March 13th-27th."
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -5467,6 +5668,14 @@ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown sell GM order"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Unrealized Fees"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Unrealized PnL"
 msgstr ""
 
 #: src/pages/Stake/StakeV1.js
@@ -5849,6 +6058,18 @@ msgstr "Вес"
 msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr "При закрытии позиции вы можете выбрать, в каком токене вы хотели бы получить прибыль."
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Win Rate"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Win/Loss"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Wins and Losses for fully closed Positions."
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -5953,6 +6174,10 @@ msgstr "Доходные Хранилища"
 msgid "Yield simulator for GMX"
 msgstr "Симулятор доходности для GMX"
 
+#: src/components/AddressView/AddressView.tsx
+msgid "You"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "You are earning rewards with {0} tokens.<0/>Tokens: {amountStr}."
 msgstr ""
@@ -6009,6 +6234,10 @@ msgstr ""
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
 msgstr "Вы можете перевести ETH в Arbitrum, используя любой из приведенных ниже вариантов."
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "You do not have any eligible trade during the competition window."
+msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "You have a <0>pending transfer</0> to {pendingReceiver}."
@@ -6068,6 +6297,10 @@ msgstr ""
 msgid "You have not deposited any tokens for vesting."
 msgstr ""
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "You have not traded during selected period."
+msgstr ""
+
 #: src/components/Stake/GMXAprTooltip.tsx
 #: src/pages/Stake/StakeV2.js
 msgid "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points using the \"Compound\" button."
@@ -6091,6 +6324,10 @@ msgstr ""
 
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "You have set a high Acceptable Price Impact. The current Price Impact is {0}."
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for the rankings."
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
@@ -6513,6 +6750,14 @@ msgstr ""
 
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} Fees settling"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "{prefix} <0>{days}d {hours}h {minutes}m {0}</0>"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "{seconds}s"
 msgstr ""
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx

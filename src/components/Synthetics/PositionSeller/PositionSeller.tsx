@@ -71,7 +71,7 @@ import {
   parseValue,
 } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { museNeverExist } from "lib/types";
+import { mustNeverExist } from "lib/types";
 import { usePrevious } from "lib/usePrevious";
 import useWallet from "lib/wallets/useWallet";
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
@@ -199,7 +199,7 @@ export function PositionSeller(p: Props) {
     } else if (orderOption === OrderOption.Trigger) {
       return decreaseAmounts.acceptablePrice;
     } else {
-      museNeverExist(orderOption);
+      mustNeverExist(orderOption);
     }
   }, [allowedSlippage, decreaseAmounts?.acceptablePrice, orderOption, position]);
 

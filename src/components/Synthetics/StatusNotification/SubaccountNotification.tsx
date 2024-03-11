@@ -8,7 +8,7 @@ import {
   useSubaccountPendingTx,
 } from "context/SubaccountContext/SubaccountContext";
 import { useChainId } from "lib/chains";
-import { museNeverExist } from "lib/types";
+import { mustNeverExist } from "lib/types";
 import { usePrevious } from "lib/usePrevious";
 import { ReactNode, memo, useMemo } from "react";
 import { useToastAutoClose } from "./useToastAutoClose";
@@ -139,7 +139,7 @@ const SubaccountNotificationImpl = ({
       return null;
 
     default:
-      museNeverExist(notificationState);
+      mustNeverExist(notificationState);
   }
 
   return (
