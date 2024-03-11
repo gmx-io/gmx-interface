@@ -30,7 +30,7 @@ export function CompetitionRedirect() {
 
 function getClosestCompetition(chainId: number) {
   const competitions = Object.values(LEADERBOARD_PAGES)
-    .filter((page) => page.isCompetition)
+    .filter((page) => page.isCompetition && page.enabled)
     .filter((page) => {
       const timeframe = LEADERBOARD_PAGES[page.key].timeframe;
       return timeframe.from < Date.now() / 1000 || (timeframe.to && timeframe.to > Date.now() / 1000);
