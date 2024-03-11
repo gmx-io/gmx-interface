@@ -4410,8 +4410,8 @@ msgid "STIP 20-27 Mar"
 msgstr "STIP 20-27 Mar"
 
 #: src/domain/synthetics/leaderboard/constants.ts
-msgid "STIP 8-22 Mar"
-msgstr "STIP 8-22 Mar"
+#~ msgid "STIP 8-22 Mar"
+#~ msgstr "STIP 8-22 Mar"
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Same as current active code"
@@ -5092,6 +5092,10 @@ msgstr "Switch to {0} collateral."
 #: src/domain/synthetics/positions/utils.ts
 msgid "T"
 msgstr "T"
+
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "TEST 8-22 Mar"
+msgstr "TEST 8-22 Mar"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
