@@ -288,7 +288,7 @@ function FullApp() {
   const [, setHasTokens] = useState(false);
 
   const [doesUserHaveEmail, setDoesUserHaveEmail] = useState(false);
-  const [activeStep, setActiveStep] = useState(1);
+  const [, setActiveStep] = useState(1);
   const [activeModal, setActiveModal] = useState(null);
 
   // if (!doesUserHaveEmail) {

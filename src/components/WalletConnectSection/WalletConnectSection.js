@@ -14,7 +14,7 @@ const WalletConnectSection = ({ walletIco, text, handleClick }) => {
   return (
     <button className="Wallet-btn-approve" onClick={handleClick}>
       <div style={{ display: "flex", alignItems: "center", fontFamily: "tektur" }}>
-        <img className="wallet-ctn-img" src={walletIco}></img>
+        <img className="wallet-ctn-img" src={walletIco} alt="wallet connect"></img>
         <Trans>{text}</Trans>
       </div>
       <div className="Wallet-btn-end">

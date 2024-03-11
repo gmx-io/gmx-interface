@@ -1631,30 +1631,28 @@ button.App-button {
 }
 
 .btn-loading {
-    background: gray !important;
+  background: gray !important;
 }
 
 .t3-anchor {
-  color : #3274D7 !important;
+  color: #3274d7 !important;
   text-decoration: underline !important;
 }
 
 .referral-skip-btn {
   background-color: transparent !important;
-  color : #ffffff;
+  color: #ffffff;
   border: none !important;
 }
 
 #light .referral-skip-btn {
-  color : black !important
+  color: black !important;
 }
 
 .referral-input {
   background: #f6f6f6 !important;
-  color : black !important
+  color: black !important;
 }
-
-
 
 .referral-input-section input {
   height: 47px;
@@ -1744,13 +1742,13 @@ a:hover {
 }
 
 .otp-input {
-    background-color: #F6F6F6 !important;
-    width: 6em !important;
-    color : black !important;
+  background-color: #f6f6f6 !important;
+  width: 6em !important;
+  color: black !important;
 }
 
 #light .otp-input {
-  color : #ffffff;
+  color: #ffffff;
 }
 
 .tour-content {
@@ -1781,4 +1779,32 @@ a:hover {
   border: 0px;
   background: #fff;
   font-family: Tektur;
+}
+
+.signup-wrapper {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 30em;
+  height: 18em;
+  margin-top: -9em; /*set to a negative number 1/2 of your height*/
+  margin-left: -15em; /*set to a negative number 1/2 of your width*/
+  /* border: 1px solid #ccc;
+  background-color: #f3f3f3; */
+}
+
+.connect-wallet-description {
+  font-family: tektur;
+  font-weight: 400;
+}
+
+#light .connect-wallet-description {
+  color: #747474;
+}
+
+.connect-wallet-title {
+  font-size: 26px; /* var(--font-md); */
+  font-family: tektur;
+  font-weight: 600;
+  line-height: 1;
 }
