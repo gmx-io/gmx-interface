@@ -1623,6 +1623,14 @@ msgstr "Don't show this message again for 30 days."
 msgid "Download"
 msgstr "Download"
 
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "EIP-4844, 13-20 Mar"
+msgstr "EIP-4844, 13-20 Mar"
+
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "EIP-4844, 20-27 Mar"
+msgstr "EIP-4844, 20-27 Mar"
+
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -4074,8 +4082,12 @@ msgid "Read more"
 msgstr "Read more"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "Read the rules"
-msgstr "Read the rules"
+#~ msgid "Read the rules"
+#~ msgstr "Read the rules"
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "Read the rules."
+msgstr "Read the rules."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Realized Fees"
@@ -4313,12 +4325,12 @@ msgid "SL"
 msgstr "SL"
 
 #: src/domain/synthetics/leaderboard/constants.ts
-msgid "STIP 13-20 Mar"
-msgstr "STIP 13-20 Mar"
+#~ msgid "STIP 13-20 Mar"
+#~ msgstr "STIP 13-20 Mar"
 
 #: src/domain/synthetics/leaderboard/constants.ts
-msgid "STIP 20-27 Mar"
-msgstr "STIP 20-27 Mar"
+#~ msgid "STIP 20-27 Mar"
+#~ msgstr "STIP 20-27 Mar"
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Same as current active code"
