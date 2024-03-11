@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect, useCallback, useRef, useMemo, useContext } from "react";
+import React, { useState, useEffect, useCallback, useRef, useMemo, useContext, useReducer } from "react";
 import useSWR, { SWRConfig } from "swr";
 import { ethers } from "ethers";
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
@@ -67,6 +67,7 @@ import TermsAndConditions from "pages/TermsAndConditions/TermsAndConditions";
 import { useLocalStorage } from "react-use";
 import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
 import { REDIRECT_POPUP_TIMESTAMP_KEY } from "config/localStorage";
+import { useImmer } from "use-immer";
 
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
@@ -110,11 +111,15 @@ import { contractFetcher } from "lib/contracts";
 import { getTokens } from "config/tokens";
 import { SwapBox } from "pages/Swap/Swap";
 import UserOnboardSection from "components/UserOnboardSection/UserOnboardSection";
-import OtpInput from "components/OtpInput/OtpInput";
+import OtpInput from "react-otp-input";
 import { createOtp } from "config/tool";
 import sendOtp from "external/sendOtp";
-import { updateUserEmail } from "external/supabase/supabaseFns";
+import { addUser, getUserByWalletAddress, updateUserEmail } from "external/supabase/supabaseFns";
 import ThemeProvider, { ThemeContext } from "store/theme-provider";
+import WalletConnectSection from "components/WalletConnectSection/WalletConnectSection";
+import SignUp from "pages/SignUp/SignUp";
+import ButtonLink from "components/Button/ButtonLink";
+import AuthFlow from "components/AuthFlow/AuthFlow";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -156,11 +161,14 @@ function FullApp() {
   const isHome = isHomeSite();
   const exchangeRef = useRef();
   const { connector, library, deactivate, activate, active, account } = useWeb3React();
+
   const { chainId } = useChainId();
   const location = useLocation();
   const history = useHistory();
   useEventToast();
   const [activatingConnector, setActivatingConnector] = useState();
+  // const [authFlowState, setAuthFlowState] = useImmer(authFlow);
+  const [authStep, setAuthStep] = useState(1);
   useEffect(() => {
     if (activatingConnector && activatingConnector === connector) {
       setActivatingConnector(undefined);
@@ -229,6 +237,13 @@ function FullApp() {
     setShowEmailVerification(true);
   };
 
+  // const updateAuthFlow = (flowCompleted) => {
+  //   setAuthFlowState((draft) => {
+  //     const auth = draft.find((flow) => flow.name === flowCompleted);
+  //     auth.status = true;
+  //   });
+  // };
+
   const userOnMobileDevice = "navigator" in window && isMobileDevice(window.navigator);
 
   const activateMetaMask = () => {
@@ -280,21 +295,38 @@ function FullApp() {
   };
 
   const [walletModalVisible, setWalletModalVisible] = useState(false);
+  const [authFlowModal, setAuthFlowModalVisible] = useState(false);
   const [redirectModalVisible, setRedirectModalVisible] = useState(false);
   const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
   const [redirectPopupTimestamp, setRedirectPopupTimestamp] = useLocalStorage(REDIRECT_POPUP_TIMESTAMP_KEY);
   const [selectedToPage, setSelectedToPage] = useState("");
   const [approvalsModalVisible, setApprovalsModalVisible] = useState(false);
   const [showConnectOptions, setShowConnectOptions] = useState(false);
+  const [isNewUser, setNewUser] = useState(false);
   const [hasTokens, setHasTokens] = useState(false);
   const [showEmailVerification, setShowEmailVerification] = useState(false);
-  const [showOtp, setShowOtp] = useState(false);
-  const [generatedOtp, setGeneratedOtp] = useState(0);
+
   const [userEnteredOtp, setUserEnteredOtp] = useState("");
   const [doesUserHaveEmail, setDoesUserHaveEmail] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
   const [activeModal, setActiveModal] = useState(null);
 
+  // if (!doesUserHaveEmail) {
+  //   setAuthFlow((draft) => {
+  //     draft.push([
+  //       {
+  //         sequence: 4,
+  //         modal: <VerifyEmailModal />,
+  //       },
+  //       {
+  //         sequence: 4,
+  //         modal: <VerifyOtpModal />,
+  //       },
+  //     ]);
+  //   });
+  // }
+
+  console.log("is new user", isNewUser);
   const connectWallet = () => setWalletModalVisible(true);
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
@@ -306,7 +338,6 @@ function FullApp() {
   const [isPnlInLeverage, setIsPnlInLeverage] = useState(false);
   const [shouldDisableValidationForTesting, setShouldDisableValidationForTesting] = useState(false);
   const [showPnlAfterFees, setShowPnlAfterFees] = useState(true);
-  const [emailText, setEmailText] = useState("");
 
   const [savedIsPnlInLeverage, setSavedIsPnlInLeverage] = useLocalStorageSerializeKey(
     [chainId, IS_PNL_IN_LEVERAGE_KEY],
@@ -331,7 +362,9 @@ function FullApp() {
     activateInjectedProvider(providerName);
     connectInjectedWallet();
     setActiveStep(2);
+    // updateAuthFlow("signup");
     setShowConnectOptions(false);
+    // setWalletModalVisible(false);
   };
 
   const openSettings = () => {
@@ -365,28 +398,6 @@ function FullApp() {
     setSavedShouldDisableValidationForTesting(shouldDisableValidationForTesting);
     setSavedSlippageAmount(basisPoints);
     setIsSettingsVisible(false);
-  };
-
-  const handleEmailEntered = (email) => {
-    // Regular expression for email validation
-    const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
-    return Boolean(emailRegex.test(email));
-  };
-
-  const handleEmailSubmit = async (email) => {
-    if (handleEmailEntered(emailText)) {
-      // generate new otp
-      const otp = createOtp();
-      setGeneratedOtp(otp);
-
-      // check if email has been sent with otp
-      const otpSentSuccessfully = await sendOtp(email, otp);
-      if (otpSentSuccessfully) {
-        setShowOtp(true);
-      }
-    } else {
-      helperToast.error("Invalid Email Address.");
-    }
   };
 
   const handleOtpEntered = (userEnteredOtp) => {
@@ -426,6 +437,31 @@ function FullApp() {
     visible: { opacity: 1, scaleY: 1, transition: { type: "ease", duration: 1 } },
     exit: { opacity: 0, scaleY: 0, transition: { type: "ease", duration: 1 } },
   };
+
+  useEffect(() => {
+    if (active && account) {
+      const checkAndCreateUser = async () => {
+        const user = await getUserByWalletAddress(account);
+
+        if (user) {
+          setNewUser(false);
+
+          if (user.email_address) setDoesUserHaveEmail(true);
+        } else {
+          setNewUser(true);
+          const newUser = await addUser(account);
+          // eslint-disable-next-line no-console
+        }
+
+        setWalletModalVisible(false);
+        setAuthFlowModalVisible(true);
+      };
+
+      checkAndCreateUser();
+
+      //  auth flow begins
+    }
+  }, [active]);
 
   useEffect(() => {
     for (let key in infoTokens) {
@@ -488,37 +524,37 @@ function FullApp() {
     return () => clearInterval(interval);
   }, [library, pendingTxns, chainId]);
 
-  useEffect(() => {
-    if (userEnteredOtp.match(/^\d{4}$/)) {
-      if (userEnteredOtp === generatedOtp) {
-        const updateEmail = async () => {
-          const updateEmail = await updateUserEmail(account, emailText);
+  // useEffect(() => {
+  //   if (userEnteredOtp.match(/^\d{4}$/)) {
+  //     if (userEnteredOtp === generatedOtp) {
+  //       const updateEmail = async () => {
+  //         const updateEmail = await updateUserEmail(account, emailText);
 
-          if (updateEmail) {
-            helperToast.success("Email verified successfully!");
+  //         if (updateEmail) {
+  //           helperToast.success("Email verified successfully!");
 
-            // reset state vars
-            setWalletModalVisible(false);
-            setShowOtp(false);
-          } else {
-            helperToast.error("Error updating email.");
-          }
-        };
+  //           // reset state vars
+  //           setWalletModalVisible(false);
+  //           setShowOtp(false);
+  //         } else {
+  //           helperToast.error("Error updating email.");
+  //         }
+  //       };
 
-        updateEmail();
+  //       updateEmail();
 
-        // reset email vars
-        setShowEmailVerification(false);
-        setEmailText("");
-        setUserEnteredOtp("");
-        setActiveStep(1);
-      } else {
-        helperToast.error("OTP entered is incorrect.");
-      }
-    } else {
-      return;
-    }
-  }, [userEnteredOtp, generatedOtp, account, emailText]);
+  //       // reset email vars
+  //       setShowEmailVerification(false);
+  //       setEmailText("");
+  //       setUserEnteredOtp("");
+  //       setActiveStep(1);
+  //     } else {
+  //       helperToast.error("OTP entered is incorrect.");
+  //     }
+  //   } else {
+  //     return;
+  //   }
+  // }, [userEnteredOtp, generatedOtp, account, emailText]);
 
   const vaultAddress = getContract(chainId, "Vault");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
@@ -710,6 +746,7 @@ function FullApp() {
               showRedirectModal={showRedirectModal}
               activeModal={activeModal}
               setActiveModal={setActiveModal}
+              setNewUser={setNewUser}
             />
             {isHome && (
               <Switch>
@@ -750,6 +787,9 @@ function FullApp() {
                 <Route exact path="/dashboard">
                   <Dashboard />
                 </Route>
+                {/* <Route exact path="/signup">
+                  <SignUp/>
+                </Route> */}
                 <Route exact path="/stats">
                   <Stats />
                 </Route>
@@ -847,131 +887,56 @@ function FullApp() {
           shouldHideRedirectModal={shouldHideRedirectModal}
         />
         <Modal
+          className="auth-flow-modal"
+          isVisible={authFlowModal}
+          setIsVisible={setAuthFlowModalVisible}
+          isWalletConnect={false}
+        >
+          <AuthFlow
+            account={account}
+            setModalVisible={setAuthFlowModalVisible}
+            isNewUser={isNewUser}
+            emailExists={doesUserHaveEmail}
+          />
+        </Modal>
+        <Modal
           className="Connect-wallet-modal"
           isVisible={walletModalVisible}
           setIsVisible={setWalletModalVisible}
-          label={`Connect Wallet`}
+          // label={`Connect Wallet`}
+          isWalletConnect={true}
         >
-          <div className="Wallet-modal-description">
-            <input id="tos" type="checkbox" />
-            <label for="tos">
-              I certify that I have read and accept the
-              <br />
-              <a href="#">
-                <span>Terms of Services</span>
-              </a>{" "}
-              and{" "}
-              <a href="#">
-                <span>Privacy Policy</span>
-              </a>
-              .
+          <div style={{ display: "flex", flexDirection: "column", textAlign: "center" }}>
+            <div style={{ padding: "12px" }}>
+              <label className="connect-wallet-title">Connect Wallet</label>
+            </div>
+            <label style={{ fontSize: "15px" }} className="connect-wallet-description">
+              Select your favourite wallet to log in T3 Finance
             </label>
           </div>
           <div className="Modal-content-wrapper">
-            <UserOnboardSection
-              step={1}
-              text={`Connect Wallet`}
-              handleClick={handleConnectWallet}
-              disabled={false}
-              showArrow={true}
-              isActive={activeStep === 2}
-              showSkip={false}
+            <WalletConnectSection
+              walletIco={metamaskImg}
+              text={`Connect Metamask`}
+              handleClick={activateMetaMask}
+              walletConnected={activeStep === 2}
+              // disabled={false}
+              // showArrow={true}
+              // isActive={activeStep === 2}
+              // showSkip={false}
             />
-
-            <AnimatePresence>
-              {showConnectOptions && (
-                <motion.div
-                  className="Wallets-container"
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                  variants={optionalSectionVisibilityVariants}
-                  style={{ originY: 0 }}
-                >
-                  <button className="Wallet-btn" onClick={activateMetaMask}>
-                    <img src={metamaskImg} alt="MetaMask" />
-                    <div>
-                      <Trans>Connect Metamask</Trans>
-                    </div>
-                  </button>
-                  <button className="Wallet-btn CoinbaseWallet-btn" onClick={activateCoinBase}>
-                    <img src={coinbaseImg} alt="Coinbase Wallet" />
-                    <div>
-                      <Trans>Coinbase Wallet</Trans>
-                    </div>
-                  </button>
-                  <button className="Wallet-btn" onClick={activateWalletConnect}>
-                    <img src={walletConnectImg} alt="WalletConnect" />
-                    <div>
-                      <Trans>Wallet Connect</Trans>
-                    </div>
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            <UserOnboardSection
-              step={2}
-              text={`Enable One-Click Trading`}
-              handleClick={handleApproveTokens}
-              disabled={!(active && hasTokens)}
-              showArrow={true}
-              isActive={activeStep === 3}
-              showSkip={true}
+            <WalletConnectSection
+              walletIco={coinbaseImg}
+              walletConnected={activeStep === 2}
+              text={`Coinbase wallet`}
+              handleClick={activateCoinBase}
             />
-
-            {!doesUserHaveEmail && (
-              <UserOnboardSection
-                step={3}
-                text={`Enable Email Notifications`}
-                handleClick={handleEmailVerifyClick}
-                disabled={!active}
-                showArrow={true}
-                isActive={activeStep === 4}
-                showSkip={true}
-              />
-            )}
-
-            <AnimatePresence>
-              {showEmailVerification && (
-                <motion.div
-                  className="Wallets-container"
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                  variants={optionalSectionVisibilityVariants}
-                  style={{ originY: 0 }}
-                >
-                  <div className="Email-input-section">
-                    <label>Your email</label>
-                    <img src={emailIcn} alt="Email icon" />
-                    <input
-                      type="text"
-                      placeholder="name@example.com"
-                      value={emailText}
-                      onChange={(e) => setEmailText(e.target.value)}
-                    />
-                    <Button onClick={() => handleEmailSubmit(emailText)}>{`Verify`}</Button>
-                  </div>
-                  {showOtp && (
-                    <motion.div
-                      className="Wallets-container"
-                      initial="hidden"
-                      animate="visible"
-                      exit="exit"
-                      variants={optionalSectionVisibilityVariants}
-                      style={{ originY: 0 }}
-                    >
-                      <OtpInput
-                        onOtpEntered={handleOtpEntered}
-                        generatedOtp={generatedOtp}
-                        resendHandler={() => handleEmailSubmit(emailText)}
-                      />
-                    </motion.div>
-                  )}
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <WalletConnectSection
+              walletConnected={activeStep === 2}
+              walletIco={walletConnectImg}
+              text={`Wallet Connect`}
+              handleClick={activateWalletConnect}
+            />
           </div>
         </Modal>
 

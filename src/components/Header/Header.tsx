@@ -42,6 +42,8 @@ type Props = {
   showRedirectModal: (to: string) => void;
   activeModal: string | null;
   setActiveModal: (modal: string | null) => void;
+  setNewUser: (status: boolean) => void;
+ 
 };
 
 export function Header({
@@ -54,6 +56,7 @@ export function Header({
   showRedirectModal,
   activeModal,
   setActiveModal,
+  setNewUser,
 }: Props) {
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [isNativeSelectorModalVisible, setIsNativeSelectorModalVisible] = useState(false);
@@ -128,6 +131,7 @@ export function Header({
               showRedirectModal={showRedirectModal}
               activeModal={activeModal}
               setActiveModal={setActiveModal}
+              setNewUser={setNewUser}
             />
           </div>
         </div>
@@ -155,6 +159,7 @@ export function Header({
                 showRedirectModal={showRedirectModal}
                 activeModal={activeModal}
                 setActiveModal={setActiveModal}
+                setNewUser={setNewUser}
               />
               <div className="App-header-menu-icon-block" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
                 {!isDrawerVisible && (

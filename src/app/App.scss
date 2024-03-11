@@ -6,12 +6,18 @@
   background-color: #060817;
 }
 
-#light .App{
+#light .App {
   background-color: #f7f7fa;
 }
 
 #dark .App {
   color: #ffffff;
+}
+
+.wallet-ctn-img {
+  height: 24px;
+  width: 24px;
+  margin-right: 15px;
 }
 
 .App-header-backdrop {
@@ -44,7 +50,7 @@
   height: 1.3rem;
   width: 100%;
   content: " ";
- // background: transparent linear-gradient(180deg, #00000030 0%, #00000000 100%) 0% 0% no-repeat padding-box;
+  // background: transparent linear-gradient(180deg, #00000030 0%, #00000000 100%) 0% 0% no-repeat padding-box;
   position: absolute;
   bottom: -1.3rem;
   left: 0;
@@ -140,8 +146,8 @@
   align-items: center;
 }
 
-#light .App-header-menu-icon{
-  color : #000000;
+#light .App-header-menu-icon {
+  color: #000000;
 }
 
 .App-header-menu-icon {
@@ -175,26 +181,25 @@
   position: relative;
   // border: 1px solid #1e2136;
   border-radius: 0.4rem;
-  color : #ffffff;
-  background: #0E1020;
+  color: #ffffff;
+  background: #0e1020;
   font-size: var(--font-base);
 }
 
-#light
-.App-box-highlight{
-  border : none;
+#light .App-box-highlight {
+  border: none;
   background: #ffffff;
   color: #000000;
 }
 
 #light .App-box {
   background: #ffffff;
-  color : #000000;
+  color: #000000;
 }
 
 #light .App-card {
   background: #ffffff;
-  color : #000000;
+  color: #000000;
 }
 
 .App-card-bottom-placeholder {
@@ -331,7 +336,7 @@
 }
 
 #light .App-card-info-title {
-  color : #000000;
+  color: #000000;
 }
 
 .App-card-info-subtitle {
@@ -358,7 +363,7 @@
 }
 
 .Wallets-container {
-  display:flex;
+  display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
@@ -368,10 +373,10 @@
 
 .Wallet-btn {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
-  background: rgba(45, 45, 45, 0.50);
+  justify-content: space-between;
+  background: rgba(45, 45, 45, 0.5);
   height: 122px;
   width: 125px;
   border-radius: 8px;
@@ -391,8 +396,6 @@
   color: #000000;
 }
 
-
-
 .Wallet-btn:hover {
   background: var(--dark-blue-hover);
   border-color: var(--dark-blue-border);
@@ -408,7 +411,6 @@
   margin-left: 16px;
   margin-right: 16px;
 }
-
 
 button.App-connect-wallet {
   cursor: pointer;
@@ -531,11 +533,11 @@ button.App-connect-wallet:hover {
   font-weight: 500;
   margin-bottom: 0.8rem;
   font-weight: bold;
-  color : #ffffff;
+  color: #ffffff;
 }
 
 #light .Page-title {
-  color : #000000;
+  color: #000000;
 }
 
 .Page-description {
@@ -555,38 +557,38 @@ button.App-connect-wallet:hover {
   color: rgba(255, 255, 255, 0.71);
   font-size: 17px;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 400;
   margin: 0px 14px;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
 }
-.Wallet-modal-description input[type=checkbox] {
+.Wallet-modal-description input[type="checkbox"] {
   cursor: pointer;
   width: 20px;
   height: 20px;
   margin-right: 10px;
   appearance: none;
-  background: no-repeat url('/img/unchecked.svg');
+  background: no-repeat url("/img/unchecked.svg");
   background-size: 20px;
 }
 .Wallet-modal-description input:checked {
-  background: no-repeat url('/img/checked.svg');
+  background: no-repeat url("/img/checked.svg");
   background-size: 20px;
 }
 
-
 #light .Wallet-modal-description label {
-  color : #000000;
+  color: #747474;
 }
 
 .Wallet-modal-description span {
-  color: #3274D7;
+  color: #3274d7;
   font-family: tektur;
   text-decoration: underline;
   text-underline-offset: 4px;
 }
-.Wallet-modal-description a, .Wallet-modal-description a:hover {
+.Wallet-modal-description a,
+.Wallet-modal-description a:hover {
   text-decoration: none;
 }
 .Wallet-modal-description label {
@@ -601,12 +603,12 @@ button.App-connect-wallet:hover {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: #0D0F19;
+  background: #0d0f19;
   border-radius: 8px;
 }
 
 #light .Modal-content-wrapper {
-  background-color: #f7f7fa;
+  background-color: #ffffff;
 }
 
 .Page-description span,
@@ -653,7 +655,7 @@ button.App-connect-wallet:hover {
 
 .App-card {
   padding: 1.5rem 1.5rem 1.86rem;
- // border: 1px solid #1e2136;
+  // border: 1px solid #1e2136;
   border-radius: 0.4rem;
   font-size: var(--font-base);
 }
@@ -670,8 +672,8 @@ button.App-connect-wallet:hover {
   justify-content: space-between;
 }
 
-#light .App-card-title{
-  color : #000000;
+#light .App-card-title {
+  color: #000000;
 }
 
 .App-card-title-small {
@@ -1238,7 +1240,7 @@ button.App-button {
 }
 
 #light .rc-slider-rail {
-  background: #DCDCDC;
+  background: #dcdcdc;
 }
 
 // .rc-slider-track {
@@ -1257,8 +1259,8 @@ button.App-button {
   background: rgba(40, 45, 74, 1);
 }
 
-#light .rc-slider-dot{
-  background: #DCDCDC;
+#light .rc-slider-dot {
+  background: #dcdcdc;
 }
 
 .App-slider .rc-slider-dot-active {
@@ -1267,12 +1269,11 @@ button.App-button {
 
 .App-slider .rc-slider-handle {
   background: #303652;
-  border : solid 3px #ff7028;
+  border: solid 3px #ff7028;
 }
 
 #light .rc-slider-handle {
   background: #ffffff;
-
 }
 
 .App-slider .rc-slider-handle:active {
@@ -1285,8 +1286,8 @@ button.App-button {
   opacity: 0.5;
 }
 
-#light .rc-slider-mark-text{
-  color : #000000;
+#light .rc-slider-mark-text {
+  color: #000000;
 }
 
 .App-slider .rc-slider-mark-text:hover,
@@ -1492,7 +1493,6 @@ button.App-button {
 }
 
 @media (max-width: 600px) {
-
   .Modal-content {
     min-width: 90%;
   }
@@ -1613,7 +1613,7 @@ button.App-button {
 }
 
 .Email-input-section label {
-  color: #FFF;
+  color: #fff;
   font-family: tektur;
   font-size: 16px;
   font-style: normal;
@@ -1628,6 +1628,44 @@ button.App-button {
   top: 48px;
   left: 14px;
   margin-right: 5px; /* Add spacing after the image */
+}
+
+.btn-loading {
+    background: gray !important;
+}
+
+.t3-anchor {
+  color : #3274D7 !important;
+  text-decoration: underline !important;
+}
+
+.referral-skip-btn {
+  background-color: transparent !important;
+  color : #ffffff;
+  border: none !important;
+}
+
+#light .referral-skip-btn {
+  color : black !important
+}
+
+.referral-input {
+  background: #f6f6f6 !important;
+  color : black !important
+}
+
+
+
+.referral-input-section input {
+  height: 47px;
+  padding: 12px 42px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: #f6f6f6;
+  width: 100%;
+  font-family: tektur;
+  font-size: 16px;
+  font-weight: 400;
 }
 
 .Email-input-section input {
@@ -1646,12 +1684,11 @@ button.App-button {
   height: 47px;
   margin-top: 20px;
   border-radius: 8px;
-  background: #FF7028;
+  background: #ff7028;
   font-family: tektur;
   font-size: 18px;
   font-weight: 600;
   color: white;
-
 }
 
 .Email-input-container {
@@ -1660,7 +1697,7 @@ button.App-button {
 }
 
 .tour-title {
-  color: #FFF;
+  color: #fff;
   font-family: Tektur;
   font-size: 18px;
   font-style: normal;
@@ -1680,9 +1717,12 @@ button.App-button {
   text-align: end;
   font-family: Tektur;
 }
-.tour-control a, a:link, a:visited, a:hover {
+.tour-control a,
+a:link,
+a:visited,
+a:hover {
   text-decoration: none;
-  color: #FFF;
+  color: #fff;
   font-family: Tektur;
 }
 .tour-control button {
@@ -1690,18 +1730,29 @@ button.App-button {
   padding: 10px 26px;
   border-radius: 3px;
   border: 0px;
-  background: #FFF;
+  background: #fff;
   font-family: Tektur;
 }
 
 .tour-title {
-  color: #FFF;
+  color: #fff;
   font-family: Tektur;
   font-size: 18px;
   font-style: normal;
   font-weight: 500;
   line-height: normal;
 }
+
+.otp-input {
+    background-color: #F6F6F6 !important;
+    width: 6em !important;
+    color : black !important;
+}
+
+#light .otp-input {
+  color : #ffffff;
+}
+
 .tour-content {
   color: rgba(255, 255, 255, 0.62);
   font-family: Tektur;
@@ -1715,9 +1766,12 @@ button.App-button {
   text-align: end;
   font-family: Tektur;
 }
-.tour-control a, a:link, a:visited, a:hover {
+.tour-control a,
+a:link,
+a:visited,
+a:hover {
   text-decoration: none;
-  color: #FFF;
+  color: #fff;
   font-family: Tektur;
 }
 .tour-control button {
@@ -1725,6 +1779,6 @@ button.App-button {
   padding: 10px 26px;
   border-radius: 3px;
   border: 0px;
-  background: #FFF;
+  background: #fff;
   font-family: Tektur;
 }

@@ -1,7 +1,7 @@
 import { useWeb3React } from "@web3-react/core";
 import AddressDropdown from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../Common/ConnectWalletButton";
-import { useCallback, useContext, useEffect } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { HeaderLink } from "./HeaderLink";
 import connectWalletImgDrk from "img/ic_wallet_24-dark.svg";
 import connectWalletImglight from "img/ic_wallet_24-light.svg";
@@ -11,13 +11,19 @@ import cx from "classnames";
 import { Trans } from "@lingui/macro";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
-import { BLAST_SEPOLIA_TESTNET, OPTIMISM_GOERLI_TESTNET, OPTIMISM_MAINNET, SEPOLIA_TESTNET, getChainName } from "config/chains";
+import {
+  BLAST_SEPOLIA_TESTNET,
+  OPTIMISM_GOERLI_TESTNET,
+  OPTIMISM_MAINNET,
+  SEPOLIA_TESTNET,
+  getChainName,
+} from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import { useChainId } from "lib/chains";
 import { isDevelopment } from "config/env";
 import { getIcon } from "config/icons";
 import FaucetDropdown from "../FaucetDropdown/FaucetDropdown";
-import { addUser, getUserByWalletAddress } from "external/supabase/supabaseFns";
+import { addUser, getUserByWalletAddress, getUserReferralCode } from "external/supabase/supabaseFns";
 import SettingDropdown from "components/SettingDropdown/SettingDropdown";
 import { ThemeContext } from "store/theme-provider";
 
@@ -32,6 +38,7 @@ type Props = {
   showRedirectModal: (to: string) => void;
   activeModal: string | null;
   setActiveModal: (modal: string | null) => void;
+  setNewUser: (status: boolean) => void;
 };
 
 const NETWORK_OPTIONS = [
@@ -69,32 +76,12 @@ export function AppHeaderUser({
   showRedirectModal,
   activeModal,
   setActiveModal,
+  setNewUser,
 }: Props) {
   const { chainId } = useChainId();
   const { active, account } = useWeb3React();
   const showConnectionOptions = !isHomeSite();
-
-  useEffect(() => {
-    if (active && account) {
-      // check that user is active and account is successfully signed up
-      const checkAndCreateUser = async () => {
-        const user = await getUserByWalletAddress(account);
-
-        if (user) {
-          // User exists, check if email_address is present
-          if (user?.email_address) {
-            setDoesUserHaveEmail(true);
-          }
-        } else {
-          const newUser = await addUser(account);
-          // eslint-disable-next-line no-console
-          console.log("New user added:", newUser);
-        }
-      };
-
-      checkAndCreateUser();
-    }
-  }, [account, active, setDoesUserHaveEmail, setWalletModalVisible]);
+  const [refCode, setRefCode] = useState("");
 
   const onNetworkSelect = useCallback(
     (option) => {
