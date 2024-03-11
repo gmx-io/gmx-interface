@@ -2912,6 +2912,7 @@ msgstr "市场"
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 msgid "Market Cap"
 msgstr "标记上限"
 
@@ -4683,6 +4684,7 @@ msgstr "送出"
 msgid "Success claimings"
 msgstr ""
 
+#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Supply"

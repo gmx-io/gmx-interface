@@ -893,7 +893,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
   ],
 };
 
-export const GLP_POOL_COLORS = {
+export const TOKEN_COLOR_MAP = {
   ETH: "#6062a6",
   BTC: "#F7931A",
   WBTC: "#F7931A",
@@ -906,6 +906,15 @@ export const GLP_POOL_COLORS = {
   UNI: "#E9167C",
   AVAX: "#E84142",
   LINK: "#3256D6",
+  DOGE: "#BA9F2F",
+  SOL: "#38cbc1",
+  ARB: "#203147",
+  NEAR: "#07eb98",
+  BNB: "#efb90b",
+  ATOM: "#6f7390",
+  XRP: "#23292f",
+  LTC: "#16182e",
+  default: "#6062a6",
 };
 
 export const TOKENS_MAP: { [chainId: number]: { [address: string]: Token } } = {};

@@ -284,7 +284,7 @@ function FullApp({ pendingTxns, setPendingTxns }) {
                 />
               </Route>
               <Route exact path="/dashboard">
-                <Dashboard />
+                <Dashboard tradePageVersion={tradePageVersion} setTradePageVersion={setTradePageVersion} />
               </Route>
               <Route exact path="/stats/v1">
                 <Stats />

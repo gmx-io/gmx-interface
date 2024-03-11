@@ -2915,6 +2915,7 @@ msgstr "Market"
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 msgid "Market Cap"
 msgstr "Market Cap"
 
@@ -4686,6 +4687,7 @@ msgstr "Submit"
 msgid "Success claimings"
 msgstr "Success claimings"
 
+#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Supply"

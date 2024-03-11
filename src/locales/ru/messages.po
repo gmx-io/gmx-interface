@@ -2912,6 +2912,7 @@ msgstr "Рынок"
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 msgid "Market Cap"
 msgstr "Рыночная капитализация"
 
@@ -4683,6 +4684,7 @@ msgstr "Подать"
 msgid "Success claimings"
 msgstr ""
 
+#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Supply"

@@ -2912,6 +2912,7 @@ msgstr "マーケット"
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 msgid "Market Cap"
 msgstr "時価総額"
 
@@ -4683,6 +4684,7 @@ msgstr "提出"
 msgid "Success claimings"
 msgstr ""
 
+#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Supply"

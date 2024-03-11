@@ -10,9 +10,17 @@ type Props = {
   className?: string;
   isTop?: boolean;
   showNetworkIcon?: boolean;
+  afterTitle?: ReactNode;
 };
 
-export default function PageTitle({ title, subtitle, className, isTop = false, showNetworkIcon = true }: Props) {
+export default function PageTitle({
+  title,
+  subtitle,
+  className,
+  isTop = false,
+  showNetworkIcon = true,
+  afterTitle,
+}: Props) {
   const classNames = cx("Page-title-wrapper", className, { gapTop: !isTop });
   const { chainId } = useChainId();
   const currentNetworkIcon = getIcon(chainId, "network");
@@ -21,6 +29,7 @@ export default function PageTitle({ title, subtitle, className, isTop = false, s
       <div className="Page-title-group">
         <h2 className="Page-title__text">{title}</h2>
         {showNetworkIcon && <img className="Page-title__icon" src={currentNetworkIcon} alt="Current Network Icon" />}
+        {afterTitle}
       </div>
       <div className="Page-subtitle-group">{subtitle}</div>
     </div>
