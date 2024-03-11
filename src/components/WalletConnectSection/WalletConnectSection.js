@@ -1,17 +1,15 @@
-import React from "react";
-import { useState, useEffect } from "react";
 import { Trans } from "@lingui/macro";
 import "./WalletConnectSection.css";
 import arrowIcn from "img/arrow_icn.svg";
 
-const WalletConnectSection = ({ walletIco, text, handleClick, walletConnected }) => {
-  const [setIsCompleted] = useState(false);
+const WalletConnectSection = ({ walletIco, text, handleClick }) => {
+  // const [icompleted,setIsCompleted] = useState(false);
 
-  useEffect(() => {
-    if (walletConnected) {
-      setIsCompleted(true);
-    }
-  }, [walletConnected]);
+  // useEffect(() => {
+  //   if (walletConnected) {
+  //     setIsCompleted(true);
+  //   }
+  // }, [walletConnected]);
 
   return (
     <button className="Wallet-btn-approve" onClick={handleClick}>

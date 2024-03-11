@@ -108,7 +108,7 @@ import { useInfoTokens } from "domain/tokens";
 import { contractFetcher } from "lib/contracts";
 import { getTokens } from "config/tokens";
 import { SwapBox } from "pages/Swap/Swap";
-import { addUser, getUserByWalletAddress, updateUserEmail } from "external/supabase/supabaseFns";
+import { addUser, getUserByWalletAddress } from "external/supabase/supabaseFns";
 import ThemeProvider, { ThemeContext } from "store/theme-provider";
 import WalletConnectSection from "components/WalletConnectSection/WalletConnectSection";
 import AuthFlow from "components/AuthFlow/AuthFlow";
@@ -306,7 +306,7 @@ function FullApp() {
   //   });
   // }
 
-  console.log("is new user", isNewUser);
+  
   const connectWallet = () => setWalletModalVisible(true);
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
@@ -408,11 +408,11 @@ function FullApp() {
     return [];
   }, []);
 
-  const optionalSectionVisibilityVariants = {
-    hidden: { opacity: 0, scaleY: 0 },
-    visible: { opacity: 1, scaleY: 1, transition: { type: "ease", duration: 1 } },
-    exit: { opacity: 0, scaleY: 0, transition: { type: "ease", duration: 1 } },
-  };
+  // const optionalSectionVisibilityVariants = {
+  //   hidden: { opacity: 0, scaleY: 0 },
+  //   visible: { opacity: 1, scaleY: 1, transition: { type: "ease", duration: 1 } },
+  //   exit: { opacity: 0, scaleY: 0, transition: { type: "ease", duration: 1 } },
+  // };
 
   useEffect(() => {
     if (active && account) {
@@ -437,7 +437,7 @@ function FullApp() {
 
       //  auth flow begins
     }
-  }, [active]);
+  }, [active,account]);
 
   useEffect(() => {
     for (let key in infoTokens) {
@@ -895,7 +895,7 @@ function FullApp() {
               walletIco={metamaskImg}
               text={`Connect Metamask`}
               handleClick={activateMetaMask}
-              walletConnected={activeStep === 2}
+            
               // disabled={false}
               // showArrow={true}
               // isActive={activeStep === 2}
@@ -903,12 +903,12 @@ function FullApp() {
             />
             <WalletConnectSection
               walletIco={coinbaseImg}
-              walletConnected={activeStep === 2}
+             
               text={`Coinbase wallet`}
               handleClick={activateCoinBase}
             />
             <WalletConnectSection
-              walletConnected={activeStep === 2}
+              
               walletIco={walletConnectImg}
               text={`Wallet Connect`}
               handleClick={activateWalletConnect}

@@ -1,7 +1,7 @@
 import { useWeb3React } from "@web3-react/core";
 import AddressDropdown from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../Common/ConnectWalletButton";
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useContext } from "react";
 import { HeaderLink } from "./HeaderLink";
 import connectWalletImgDrk from "img/ic_wallet_24-dark.svg";
 import connectWalletImglight from "img/ic_wallet_24-light.svg";
