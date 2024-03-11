@@ -214,20 +214,20 @@ export function LeaderboardAccountsTable({
                       })} in "Capital Used" are ranked.`
                     : undefined
                 }
-                tooltipPosition="left-end"
+                tooltipPosition="bottom-end"
                 columnName="rank"
               />
               <TableHeaderCell
                 title={t`Address`}
                 width={(p = "XL") => ({ XL: 16, L: 16, M: 16, S: 10 }[p] || 16)}
-                tooltipPosition="left-end"
+                tooltipPosition="bottom-end"
                 columnName="account"
               />
               <TableHeaderCell
                 title={t`PnL ($)`}
                 width={12}
                 tooltip={t`The total realized and unrealized profit and loss for the period, including fees and price impact.`}
-                tooltipPosition="left-end"
+                tooltipPosition="bottom-end"
                 onClick={handleColumnClick}
                 columnName="totalQualifyingPnl"
                 className={getSortableClass("totalQualifyingPnl")}
@@ -244,7 +244,7 @@ export function LeaderboardAccountsTable({
                     <i>sum of collateral of open positions - realized PnL + period start pending PnL</i>].
                   </Trans>
                 }
-                tooltipPosition="left-end"
+                tooltipPosition="bottom-end"
                 onClick={handleColumnClick}
                 columnName="pnlPercentage"
                 className={getSortableClass("pnlPercentage")}
@@ -253,7 +253,7 @@ export function LeaderboardAccountsTable({
                 title={t`Avg. Size`}
                 width={12}
                 tooltip={t`Average Position Size.`}
-                tooltipPosition="left-end"
+                tooltipPosition="bottom-end"
                 onClick={handleColumnClick}
                 columnName="averageSize"
                 className={getSortableClass("averageSize")}
@@ -262,7 +262,7 @@ export function LeaderboardAccountsTable({
                 title={t`Avg. Lev.`}
                 width={10}
                 tooltip={t`Average Leverage used.`}
-                tooltipPosition="left-end"
+                tooltipPosition="bottom-end"
                 onClick={handleColumnClick}
                 columnName="averageLeverage"
                 className={getSortableClass("averageLeverage")}
@@ -271,7 +271,7 @@ export function LeaderboardAccountsTable({
                 title={t`Win/Loss`}
                 width={10}
                 tooltip={t`Wins and Losses for fully closed Positions.`}
-                tooltipPosition="left-end"
+                tooltipPosition="bottom-end"
                 onClick={handleColumnClick}
                 columnName="wins"
                 className={cx("text-right", getSortableClass("wins"))}
@@ -323,7 +323,7 @@ const TableHeaderCell = memo(
         {tooltip ? (
           <TooltipWithPortal
             handle={<span className="TableHeaderTitle">{title}</span>}
-            position={tooltipPosition || "right-end"}
+            position={tooltipPosition || "bottom"}
             className="TableHeaderTooltip"
             renderContent={renderContent}
           />
@@ -385,7 +385,7 @@ const TableRow = memo(
                   {formatDelta(account.totalQualifyingPnl, { signed: true, prefix: "$" })}
                 </span>
               }
-              position={index > 7 ? "right-start" : "right-end"}
+              position={index > 7 ? "top" : "bottom"}
               className="nowrap"
               renderContent={renderPnlTooltipContent}
             />
@@ -401,7 +401,7 @@ const TableRow = memo(
                   {formatDelta(account.pnlPercentage, { signed: true, postfix: "%", decimals: 2 })}
                 </span>
               }
-              position={index > 7 ? "right-start" : "right-end"}
+              position={index > 7 ? "top" : "bottom"}
               className="nowrap"
               renderContent={() => (
                 <StatsTooltipRow
