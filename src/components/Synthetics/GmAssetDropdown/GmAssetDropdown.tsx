@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import cx from "classnames";
 import "./GmAssetDropdown.scss";
 import walletIcon from "img/ic_wallet_24.svg";
@@ -10,7 +11,7 @@ import { getByKey } from "lib/objects";
 import { Trans } from "@lingui/macro";
 import { getIcon } from "config/icons";
 import { useChainId } from "lib/chains";
-import useWallet from "lib/wallets/useWallet";
+import useWallet, { WalletClient } from "lib/wallets/useWallet";
 import { getExplorerUrl } from "config/chains";
 import { createBreakpoint } from "react-use";
 
@@ -41,7 +42,7 @@ function renderMarketName(market?: MarketInfo) {
 
 export default function GmAssetDropdown({ token, marketsInfoData, tokensData, position = "right" }: Props) {
   const { chainId } = useChainId();
-  const { active, connector } = useWallet();
+  const { active, walletClient } = useWallet();
   const chainIcon = getIcon(chainId, "network");
 
   const market = getByKey(marketsInfoData, token?.address);
@@ -73,19 +74,19 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
               </ExternalLink>
             </Menu.Item>
           )}
-          <AddToWalletButton active={active} connector={connector} token={token} marketName={marketName} />
-          {active && shortToken && connector && (
+          <AddToWalletButton active={active} walletClient={walletClient} token={token} marketName={marketName} />
+          {active && shortToken && walletClient && (
             <AddToWalletButton
               active={active}
-              connector={connector}
+              walletClient={walletClient}
               token={longToken}
               marketName={longToken?.assetSymbol ?? longToken?.symbol}
             />
           )}
-          {!isSameCollaterals && active && shortToken && connector && (
+          {!isSameCollaterals && active && shortToken && walletClient && (
             <AddToWalletButton
               active={active}
-              connector={connector}
+              walletClient={walletClient}
               token={shortToken}
               marketName={shortToken?.assetSymbol ?? shortToken?.symbol}
             />
@@ -96,8 +97,18 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
   );
 }
 
-function AddToWalletButton({ active, connector, token, marketName }) {
-  if (!active || !connector?.watchAsset || !token) {
+function AddToWalletButton({
+  active,
+  walletClient,
+  token,
+  marketName,
+}: {
+  active?: boolean;
+  walletClient: WalletClient;
+  token?: TokenData;
+  marketName: ReactNode;
+}) {
+  if (!active || !walletClient?.watchAsset || !token) {
     return null;
   }
 
@@ -107,11 +118,14 @@ function AddToWalletButton({ active, connector, token, marketName }) {
     <Menu.Item as="div">
       <div
         onClick={() => {
-          connector.watchAsset({
-            address,
-            decimals,
-            image: imageUrl,
-            symbol: explorerSymbol ?? assetSymbol ?? metamaskSymbol ?? symbol,
+          walletClient.watchAsset({
+            type: "ERC20",
+            options: {
+              address,
+              symbol: explorerSymbol ?? assetSymbol ?? metamaskSymbol ?? symbol,
+              decimals,
+              image: imageUrl,
+            },
           });
         }}
         className="asset-item"

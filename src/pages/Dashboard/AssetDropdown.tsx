@@ -31,7 +31,7 @@ type Props = {
 };
 
 function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: Props) {
-  const { active, connector } = useWallet();
+  const { active, walletClient } = useWallet();
   const { chainId } = useChainId();
 
   const token = propsToken ? propsToken : assetSymbol && getTokenBySymbol(chainId, assetSymbol);
@@ -92,13 +92,16 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
             {active && !token.isNative && !token.isSynthetic && ethers.utils.isAddress(token.address) && (
               <div
                 onClick={() => {
-                  if (connector?.watchAsset && token) {
+                  if (walletClient?.watchAsset && token) {
                     const { address, decimals, imageUrl, metamaskSymbol, assetSymbol, symbol } = token;
-                    connector.watchAsset?.({
-                      address: address,
-                      decimals: decimals,
-                      image: imageUrl,
-                      symbol: assetSymbol ?? metamaskSymbol ?? symbol,
+                    walletClient.watchAsset({
+                      type: "ERC20",
+                      options: {
+                        address: address,
+                        decimals: decimals,
+                        image: imageUrl,
+                        symbol: assetSymbol ?? metamaskSymbol ?? symbol,
+                      },
                     });
                   }
                 }}
