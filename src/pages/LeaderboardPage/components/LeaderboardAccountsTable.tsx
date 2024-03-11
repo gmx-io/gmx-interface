@@ -453,6 +453,8 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
   const isCompetition = useLeaderboardIsCompetition();
 
   const message = useMemo(() => {
+    if (rank !== null) return null;
+
     let msg = t`You have not traded during selected period.`;
     if (hasSomeCapital)
       msg = t`You have yet to reach the minimum "Capital Used" of ${formatUsd(
@@ -460,7 +462,7 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
       )} to be eligible for PnL (%).`;
     else if (isCompetition) msg = t`You have not traded during the competition window.`;
     return msg;
-  }, [hasSomeCapital, isCompetition]);
+  }, [hasSomeCapital, isCompetition, rank]);
   const tooltipContent = useCallback(() => message, [message]);
 
   if (rank === null) return <TooltipWithPortal handle={t`NA`} renderContent={tooltipContent} />;

@@ -195,8 +195,9 @@ const fetchAccounts = async (
     `,
     variables: {
       requiredMaxCapital: MIN_COLLATERAL_USD_IN_LEADERBOARD.toString(),
-      from: p?.from,
-      to: p?.to,
+      from: p.from,
+      to: p.to,
+      account: p.account,
     },
     fetchPolicy: "no-cache",
   });
