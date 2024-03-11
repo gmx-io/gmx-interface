@@ -133,11 +133,11 @@ const SignMessageModal = ({ handleAuthFlow, handleWalletDisconnect }) => {
         </div>
         <label style={{ fontSize: "15px" }} className="connect-wallet-description">
           By connecting your wallet and using T3, You agree to our{" "}
-          <a className="t3-anchor" href="#">
+          <a className="t3-anchor" href="https://t3.finance">
             Terms and Conditions
           </a>{" "}
           and{" "}
-          <a className="t3-anchor" href="#">
+          <a className="t3-anchor" href="https://t3.finance">
             Privacy Policy
           </a>
           .
