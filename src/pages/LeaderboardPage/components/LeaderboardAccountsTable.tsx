@@ -351,7 +351,7 @@ const TableRow = memo(
     activeCompetition: CompetitionType | undefined;
     breakpoint: string | undefined;
   }) => {
-    const shouldRenderValue = rank !== null;
+    const shouldRenderValue = rank !== null || !activeCompetition;
     const renderWinsLossesTooltipContent = useCallback(() => {
       if (!shouldRenderValue) return null;
       const winRate = `${((account.wins / (account.wins + account.losses)) * 100).toFixed(2)}%`;

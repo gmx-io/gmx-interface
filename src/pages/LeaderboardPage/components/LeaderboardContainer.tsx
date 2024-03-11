@@ -54,7 +54,11 @@ export function LeaderboardContainer() {
 
   const [, setLeaderboardType] = useLeaderboardTypeState();
 
-  const activeCompetition: CompetitionType = activeCompetitionIndex === 0 ? "notionalPnl" : "pnlPercentage";
+  const activeCompetition: CompetitionType | undefined = isCompetition
+    ? activeCompetitionIndex === 0
+      ? "notionalPnl"
+      : "pnlPercentage"
+    : undefined;
 
   const handleLeaderboardTabChange = useCallback(
     (index: number) => setActiveLeaderboardIndex(index),
@@ -168,7 +172,7 @@ export function LeaderboardContainer() {
           <br />
         </>
       )}
-      {isCompetition && (
+      {isCompetition && activeCompetition && (
         <CompetitionPrizes leaderboardPageKey={leaderboardPageKey} competitionType={activeCompetition} />
       )}
 
