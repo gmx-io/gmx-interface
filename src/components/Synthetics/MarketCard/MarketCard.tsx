@@ -233,6 +233,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
                 handle={
                   totalInterestUsd?.gt(0) ? (
                     <ShareBar
+                      showPercentage
                       className="MarketCard-pool-balance-bar"
                       share={marketInfo?.longInterestUsd}
                       total={totalInterestUsd}

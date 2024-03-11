@@ -27,6 +27,10 @@
   }
 }
 
+.MarketCard-pool-balance .Tooltip-handle {
+  text-decoration: none;
+}
+
 @media (max-width: 350px) {
   .MarketCard-net-fee {
     .Tooltip-popup {
