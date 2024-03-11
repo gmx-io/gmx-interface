@@ -59,20 +59,14 @@ export default function GMXAprTooltip({
         />
         <br />
         {averageBoostRatio && (
-          <>
-            <Trans>
-              Avg. ETH APR is calculated with the average account boost percentage (
-              {formatAmount(averageBoostRatio, 2, 2, true)}%).
-            </Trans>
-            <br />
-            <br />
-          </>
+          <Trans>
+            The average {nativeTokenSymbol} APR is calculated with the average account boost percentage (
+            {formatAmount(averageBoostRatio, 2, 2, true)}%), while the maximum {nativeTokenSymbol} APR is calculated
+            with the maximum boost (200%) by staking{" "}
+            <ExternalLink href={DOCS_LINKS.multiplierPoints}>Multiplier Points</ExternalLink>.
+          </Trans>
         )}
 
-        <Trans>
-          Max. {nativeTokenSymbol} APR is calculated with the maximum account boost percentage (200%) by staking{" "}
-          <ExternalLink href={DOCS_LINKS.multiplierPoints}>Multiplier Points</ExternalLink>.
-        </Trans>
         <br />
         <br />
         {aprUpdateMsg}

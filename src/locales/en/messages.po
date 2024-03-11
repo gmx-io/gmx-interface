@@ -533,10 +533,6 @@ msgstr "Avalanche APR:"
 msgid "Avg. APR"
 msgstr "Avg. APR"
 
-#: src/components/Stake/GMXAprTooltip.tsx
-msgid "Avg. ETH APR is calculated with the average account boost percentage ({0}%)."
-msgstr "Avg. ETH APR is calculated with the average account boost percentage ({0}%)."
-
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "BUYABLE"
 msgstr "BUYABLE"
@@ -3109,10 +3105,6 @@ msgstr "Max. Leverage exceeded"
 msgid "Max. {nativeTokenSymbol} APR"
 msgstr "Max. {nativeTokenSymbol} APR"
 
-#: src/components/Stake/GMXAprTooltip.tsx
-msgid "Max. {nativeTokenSymbol} APR is calculated with the maximum account boost percentage (200%) by staking <0>Multiplier Points</0>."
-msgstr "Max. {nativeTokenSymbol} APR is calculated with the maximum account boost percentage (200%) by staking <0>Multiplier Points</0>."
-
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -4953,6 +4945,10 @@ msgstr "The Max Execution Fee is set to a higher value to handle potential incre
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
 msgstr "The address of the esGMX (IOU) token is {esGmxIouAddress}."
+
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "The average {nativeTokenSymbol} APR is calculated with the average account boost percentage {0}%), while the maximum {nativeTokenSymbol} APR is calculated with the maximum boost (200%) by staking <0>Multiplier Points</0>."
+msgstr "The average {nativeTokenSymbol} APR is calculated with the average account boost percentage {0}%), while the maximum {nativeTokenSymbol} APR is calculated with the maximum boost (200%) by staking <0>Multiplier Points</0>."
 
 #: src/components/Exchange/SwapBox.js
 msgid "The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour."
