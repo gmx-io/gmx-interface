@@ -35,28 +35,50 @@ export function CompetitionPrizes({
 
     switch (competitionType) {
       case "notionalPnl":
-      case "pnlPercentage":
         return [
           { title: t`1st Place`, description: t`50 000 ARB`, imgType: "gold", key: "1" },
           {
             title: t`2nd Place`,
-            description: t`30 000 ARB`,
+            description: t`25 000 ARB`,
             imgType: "silver",
             key: "2",
           },
           {
             title: t`3rd Place`,
             imgType: "bronze",
-            description: t`20 000 ARB`,
+            description: t`10 000 ARB`,
             key: "3",
           },
           {
-            title: t`4-12 Places`,
+            title: t`4-18 Places`,
             imgType: "other",
-            description: t`10 000 ARB`,
-            key: "4-12",
+            description: t`1 000 ARB`,
+            key: "4-18",
           },
         ];
+      case "pnlPercentage":
+        return [
+          { title: t`1st Place`, description: t`10 000 ARB`, imgType: "gold", key: "1" },
+          {
+            title: t`2nd Place`,
+            description: t`7 000 ARB`,
+            imgType: "silver",
+            key: "2",
+          },
+          {
+            title: t`3rd Place`,
+            imgType: "bronze",
+            description: t`5 000 ARB`,
+            key: "3",
+          },
+          {
+            title: t`4-18 Places`,
+            imgType: "other",
+            description: t`1 200 ARB`,
+            key: "4-18",
+          },
+        ];
+
       default:
         throw mustNeverExist(competitionType);
     }

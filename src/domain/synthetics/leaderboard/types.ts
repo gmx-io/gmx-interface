@@ -38,4 +38,5 @@ export type LeaderboardPageConfig =
       href: string;
       isCompetition: true;
       chainId: number;
+      enabled: boolean;
     };

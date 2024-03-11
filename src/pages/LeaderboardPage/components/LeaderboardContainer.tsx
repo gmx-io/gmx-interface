@@ -24,7 +24,7 @@ import { getChainName } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 
-const competitionLabels = [t`Notional PnL`, t`PnL Percentage`];
+const competitionLabels = [t`Top PnL ($)`, t`Top PnL (%)`];
 const competitionsTabs = [0, 1];
 
 const leaderboardLabels = [t`Total`, t`Last 30 days`, t`Last 7 days`];
@@ -83,21 +83,7 @@ export function LeaderboardContainer() {
     }
   }, [activeLeaderboardIndex, setLeaderboardType]);
 
-  const title = useMemo(() => {
-    switch (leaderboardPageKey) {
-      case "leaderboard":
-        return t`Global leaderboard`;
-
-      case "march24arbitrum":
-        return t`March '24`;
-
-      case "march24fuji":
-        return t`March '24`;
-
-      default:
-        throw mustNeverExist(leaderboardPageKey);
-    }
-  }, [leaderboardPageKey]);
+  const title = LEADERBOARD_PAGES[leaderboardPageKey].label;
 
   const handleSwitchNetworkClick = useCallback(() => {
     switchNetwork(leaderboardChainId, active);
@@ -126,7 +112,9 @@ export function LeaderboardContainer() {
       case "leaderboard":
         return t`Leaderboard for traders on GMX V2`;
 
-      case "march24arbitrum":
+      case "march_13-20_2024":
+      case "march_20-27_2024":
+      case "march_8-22_2024":
       case "march24fuji":
         return (
           <>

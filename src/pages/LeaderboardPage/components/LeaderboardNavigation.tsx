@@ -37,18 +37,19 @@ function getChip(pageKey: LeaderboardPageKey) {
 export function LeaderboardNavigation() {
   const pageKey = useLeaderboardPageKey();
   const navigationItems = useMemo(() => {
-    const items: LeaderboardNavigationItem[] = LEADERBOARD_PAGES_ORDER.map((key) => {
-      const page = LEADERBOARD_PAGES[key];
-      return {
-        key: page.key,
-        label: page.label,
-        chip: getChip(page.key),
-        isSelected: page.key === pageKey,
-        isCompetition: page.key !== "leaderboard",
-        href: page.href,
-        chainId: page.isCompetition ? page.chainId : undefined,
-      };
-    });
+    const items: LeaderboardNavigationItem[] = LEADERBOARD_PAGES_ORDER.map((key) => LEADERBOARD_PAGES[key])
+      .filter((page) => !page.isCompetition || page.enabled)
+      .map((page) => {
+        return {
+          key: page.key,
+          label: page.label,
+          chip: getChip(page.key),
+          isSelected: page.key === pageKey,
+          isCompetition: page.key !== "leaderboard",
+          href: page.href,
+          chainId: page.isCompetition ? page.chainId : undefined,
+        };
+      });
     return items;
   }, [pageKey]);
 
