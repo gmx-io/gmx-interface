@@ -3563,7 +3563,11 @@ msgstr ""
 #~ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "Only Addresses with over {0} are ranked."
+#~ msgid "Only Addresses with over {0} are ranked."
+#~ msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Only Addresses with over {0} in \"Capital Used\" are ranked."
 msgstr ""
 
 #: src/components/Referrals/referralsHelper.js
@@ -4392,6 +4396,18 @@ msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "SL"
+msgstr ""
+
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "STIP 13-20 Mar"
+msgstr ""
+
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "STIP 20-27 Mar"
+msgstr ""
+
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "STIP 8-22 Mar"
 msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
@@ -5392,8 +5408,12 @@ msgid "This competition has ended"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "This competition is held on {0} network, <0>change your network</0>."
+msgid "This competition is held on the {0} network, please <0>change your network</0>."
 msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+#~ msgid "This competition is held on {0} network, <0>change your network</0>."
+#~ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #~ msgid "This competition is held on {0} network. <0>Click to switch network</0>."
@@ -6159,16 +6179,16 @@ msgid "Wallet {daysConsidered}d accrued Fees"
 msgstr ""
 
 #: src/domain/synthetics/leaderboard/constants.ts
-msgid "Weekly competition 13-20 Mar"
-msgstr ""
+#~ msgid "Weekly competition 13-20 Mar"
+#~ msgstr ""
 
 #: src/domain/synthetics/leaderboard/constants.ts
-msgid "Weekly competition 20-27 Mar"
-msgstr ""
+#~ msgid "Weekly competition 20-27 Mar"
+#~ msgstr ""
 
 #: src/domain/synthetics/leaderboard/constants.ts
-msgid "Weekly competition 8-22 Mar"
-msgstr ""
+#~ msgid "Weekly competition 8-22 Mar"
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Weight"
@@ -6421,7 +6441,11 @@ msgid "You have set a high Acceptable Price Impact. The current Price Impact is 
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "You have yet to reach the minimum \"Capital Used\" of {0} to be eligible for PnL (%)."
+#~ msgid "You have yet to reach the minimum \"Capital Used\" of {0} to be eligible for PnL (%)."
+#~ msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for the rankings."
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js

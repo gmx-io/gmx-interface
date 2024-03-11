@@ -3566,8 +3566,12 @@ msgstr "One-Click Trading is not available using network's native token {0}. Con
 #~ msgstr "Only Addresses with over $1,000 in traded volume are displayed."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "Only Addresses with over {0} are ranked."
-msgstr "Only Addresses with over {0} are ranked."
+#~ msgid "Only Addresses with over {0} are ranked."
+#~ msgstr "Only Addresses with over {0} are ranked."
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Only Addresses with over {0} in \"Capital Used\" are ranked."
+msgstr "Only Addresses with over {0} in \"Capital Used\" are ranked."
 
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
@@ -4396,6 +4400,18 @@ msgstr "SHORT LIQ."
 #: src/domain/synthetics/positions/utils.ts
 msgid "SL"
 msgstr "SL"
+
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "STIP 13-20 Mar"
+msgstr "STIP 13-20 Mar"
+
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "STIP 20-27 Mar"
+msgstr "STIP 20-27 Mar"
+
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "STIP 8-22 Mar"
+msgstr "STIP 8-22 Mar"
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Same as current active code"
@@ -5395,8 +5411,12 @@ msgid "This competition has ended"
 msgstr "This competition has ended"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "This competition is held on {0} network, <0>change your network</0>."
-msgstr "This competition is held on {0} network, <0>change your network</0>."
+msgid "This competition is held on the {0} network, please <0>change your network</0>."
+msgstr "This competition is held on the {0} network, please <0>change your network</0>."
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+#~ msgid "This competition is held on {0} network, <0>change your network</0>."
+#~ msgstr "This competition is held on {0} network, <0>change your network</0>."
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #~ msgid "This competition is held on {0} network. <0>Click to switch network</0>."
@@ -6162,16 +6182,16 @@ msgid "Wallet {daysConsidered}d accrued Fees"
 msgstr "Wallet {daysConsidered}d accrued Fees"
 
 #: src/domain/synthetics/leaderboard/constants.ts
-msgid "Weekly competition 13-20 Mar"
-msgstr "Weekly competition 13-20 Mar"
+#~ msgid "Weekly competition 13-20 Mar"
+#~ msgstr "Weekly competition 13-20 Mar"
 
 #: src/domain/synthetics/leaderboard/constants.ts
-msgid "Weekly competition 20-27 Mar"
-msgstr "Weekly competition 20-27 Mar"
+#~ msgid "Weekly competition 20-27 Mar"
+#~ msgstr "Weekly competition 20-27 Mar"
 
 #: src/domain/synthetics/leaderboard/constants.ts
-msgid "Weekly competition 8-22 Mar"
-msgstr "Weekly competition 8-22 Mar"
+#~ msgid "Weekly competition 8-22 Mar"
+#~ msgstr "Weekly competition 8-22 Mar"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Weight"
@@ -6424,8 +6444,12 @@ msgid "You have set a high Acceptable Price Impact. The current Price Impact is 
 msgstr "You have set a high Acceptable Price Impact. The current Price Impact is {0}."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "You have yet to reach the minimum \"Capital Used\" of {0} to be eligible for PnL (%)."
-msgstr "You have yet to reach the minimum \"Capital Used\" of {0} to be eligible for PnL (%)."
+#~ msgid "You have yet to reach the minimum \"Capital Used\" of {0} to be eligible for PnL (%)."
+#~ msgstr "You have yet to reach the minimum \"Capital Used\" of {0} to be eligible for PnL (%)."
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for the rankings."
+msgstr "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for the rankings."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You have {0} esGMX (IOU) tokens."
