@@ -30,7 +30,7 @@ import { getServerUrl } from "config/backend";
 import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
 import { getIsSyntheticsSupported } from "config/features";
 import { getIcons } from "config/icons";
-import { TOKEN_COLOR_MAP, getTokenBySymbol, getWhitelistedV1Tokens } from "config/tokens";
+import { getTokenBySymbol, getWhitelistedV1Tokens } from "config/tokens";
 import { useFeesSummary, useTotalVolume, useVolumeInfo } from "domain/stats";
 import useUniqueUsers from "domain/stats/useUniqueUsers";
 import { useInfoTokens } from "domain/tokens";
@@ -455,6 +455,7 @@ export default function DashboardV2(props) {
       return {
         fullname: token.name,
         name: token.symbol,
+        symbol: token.symbol,
         value: parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`),
       };
     }
@@ -480,16 +481,6 @@ export default function DashboardV2(props) {
 
   const onGMXDistributionChartLeave = () => {
     setGMXActiveIndex(null);
-  };
-
-  const [glpActiveIndex, setGLPActiveIndex] = useState(null);
-
-  const onGLPPoolChartEnter = (_, index) => {
-    setGLPActiveIndex(index);
-  };
-
-  const onGLPPoolChartLeave = () => {
-    setGLPActiveIndex(null);
   };
 
   const dailyVolumeEntries = useMemo(
@@ -1018,48 +1009,7 @@ export default function DashboardV2(props) {
                       </div>
                     </div>
                   </div>
-                  <div className="stats-piechart" onMouseOut={onGLPPoolChartLeave}>
-                    {glpPool.length > 0 && (
-                      <PieChart width={210} height={210}>
-                        <Pie
-                          data={glpPool}
-                          cx={100}
-                          cy={100}
-                          innerRadius={73}
-                          outerRadius={80}
-                          fill="#8884d8"
-                          dataKey="value"
-                          startAngle={90}
-                          endAngle={-270}
-                          onMouseEnter={onGLPPoolChartEnter}
-                          onMouseOut={onGLPPoolChartLeave}
-                          onMouseLeave={onGLPPoolChartLeave}
-                          paddingAngle={2}
-                        >
-                          {glpPool.map((entry, index) => (
-                            <Cell
-                              key={`cell-${index}`}
-                              fill={TOKEN_COLOR_MAP[entry.name]}
-                              // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-                              style={{
-                                filter:
-                                  glpActiveIndex === index
-                                    ? `drop-shadow(0px 0px 6px ${hexToRgba(TOKEN_COLOR_MAP[entry.name], 0.7)})`
-                                    : "none",
-                                cursor: "pointer",
-                              }}
-                              stroke={TOKEN_COLOR_MAP[entry.name]}
-                              strokeWidth={glpActiveIndex === index ? 1 : 1}
-                            />
-                          ))}
-                        </Pie>
-                        <text x={"50%"} y={"50%"} fill="white" textAnchor="middle" dominantBaseline="middle">
-                          GLP Pool
-                        </text>
-                        <Tooltip content={<CustomTooltip />} />
-                      </PieChart>
-                    )}
-                  </div>
+                  <InteractivePieChart data={glpPool} />
                 </div>
               )}
               {isV2 && <GMCard />}
