@@ -26,6 +26,15 @@ msgid "06 Jan 2022"
 msgstr "06 Jan 2022"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "1 000 ARB"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "1 200 ARB"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "10 000 ARB"
 msgstr ""
 
@@ -34,12 +43,13 @@ msgstr ""
 #~ msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "1st Place"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-msgid "20 000 ARB"
-msgstr ""
+#~ msgid "20 000 ARB"
+#~ msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #~ msgid "20000 ARB tokens"
@@ -50,23 +60,38 @@ msgid "24h Volume"
 msgstr "Volume sur 24h"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "25 000 ARB"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "2nd Place"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-msgid "30 000 ARB"
-msgstr ""
+#~ msgid "30 000 ARB"
+#~ msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #~ msgid "30000 ARB tokens"
 #~ msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "3rd Place"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-msgid "4-12 Places"
+#~ msgid "4-12 Places"
+#~ msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "4-18 Places"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "5 000 ARB"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
@@ -76,6 +101,10 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #~ msgid "50000 ARB tokens"
 #~ msgstr ""
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "7 000 ARB"
+msgstr ""
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "<0><1>{eventTitle}</1> from <2>{0} {indexName} <3>[{poolName}]</3> Position</2></0>"
@@ -2312,7 +2341,6 @@ msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>F
 msgstr ""
 
 #: src/domain/synthetics/leaderboard/constants.ts
-#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Global leaderboard"
 msgstr ""
 
@@ -2965,8 +2993,8 @@ msgstr ""
 #: src/domain/synthetics/leaderboard/constants.ts
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "March '24"
-msgstr ""
+#~ msgid "March '24"
+#~ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #~ msgid "March '24 Absolute PnL"
@@ -3514,8 +3542,8 @@ msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur
 msgstr "Notez que l'exécution des ordres n'est pas garantie d'être exécutée.<0/><1/>Cela peut se produire dans plusieurs situations, notamment, mais pas exclusivement:"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "Notional PnL"
-msgstr ""
+#~ msgid "Notional PnL"
+#~ msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Old Collateral"
@@ -3861,8 +3889,8 @@ msgid "PnL After Fees"
 msgstr "PnL Après Frais"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "PnL Percentage"
-msgstr ""
+#~ msgid "PnL Percentage"
+#~ msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
@@ -5121,6 +5149,10 @@ msgstr "Bot Telegram pour l'intérêt ouvert sur GMX"
 msgid "Terms and Conditions"
 msgstr "Termes et conditions"
 
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "Test"
+msgstr ""
+
 #: src/pages/Stake/StakeV1.js
 msgid "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
 msgstr "La <0>migration GMX</0>est en cours, veuillez migrer vos tokens GMT, xGMT, GMT-USDG et xGMT-USDG.<1/>Les tokens USDG continueront à fonctionner comme avant et ne doivent pas être transférés."
@@ -5419,6 +5451,14 @@ msgstr "Tokens"
 #: src/domain/synthetics/leaderboard/constants.ts
 #~ msgid "Top PnL $ March '24"
 #~ msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "Top PnL ($)"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "Top PnL (%)"
+msgstr ""
 
 #: src/domain/synthetics/leaderboard/constants.ts
 #~ msgid "Top Pnl % March '24"
@@ -6112,6 +6152,18 @@ msgstr ""
 
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
 msgid "Wallet {daysConsidered}d accrued Fees"
+msgstr ""
+
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "Weekly competition 13-20 Mar"
+msgstr ""
+
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "Weekly competition 20-27 Mar"
+msgstr ""
+
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "Weekly competition 8-22 Mar"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js

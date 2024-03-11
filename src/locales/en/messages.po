@@ -26,6 +26,15 @@ msgid "06 Jan 2022"
 msgstr "06 Jan 2022"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "1 000 ARB"
+msgstr "1 000 ARB"
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "1 200 ARB"
+msgstr "1 200 ARB"
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "10 000 ARB"
 msgstr "10 000 ARB"
 
@@ -34,12 +43,13 @@ msgstr "10 000 ARB"
 #~ msgstr "10000 ARB tokens"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "1st Place"
 msgstr "1st Place"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-msgid "20 000 ARB"
-msgstr "20 000 ARB"
+#~ msgid "20 000 ARB"
+#~ msgstr "20 000 ARB"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #~ msgid "20000 ARB tokens"
@@ -50,24 +60,39 @@ msgid "24h Volume"
 msgstr "24h Volume"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "25 000 ARB"
+msgstr "25 000 ARB"
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "2nd Place"
 msgstr "2nd Place"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-msgid "30 000 ARB"
-msgstr "30 000 ARB"
+#~ msgid "30 000 ARB"
+#~ msgstr "30 000 ARB"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #~ msgid "30000 ARB tokens"
 #~ msgstr "30000 ARB tokens"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "3rd Place"
 msgstr "3rd Place"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-msgid "4-12 Places"
-msgstr "4-12 Places"
+#~ msgid "4-12 Places"
+#~ msgstr "4-12 Places"
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "4-18 Places"
+msgstr "4-18 Places"
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "5 000 ARB"
+msgstr "5 000 ARB"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "50 000 ARB"
@@ -76,6 +101,10 @@ msgstr "50 000 ARB"
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #~ msgid "50000 ARB tokens"
 #~ msgstr "50000 ARB tokens"
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "7 000 ARB"
+msgstr "7 000 ARB"
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "<0><1>{eventTitle}</1> from <2>{0} {indexName} <3>[{poolName}]</3> Position</2></0>"
@@ -2312,7 +2341,6 @@ msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>F
 msgstr "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 
 #: src/domain/synthetics/leaderboard/constants.ts
-#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Global leaderboard"
 msgstr "Global leaderboard"
 
@@ -2968,8 +2996,8 @@ msgstr "Main Account {0} Balance is used to top up Subaccount Balance on each Ac
 #: src/domain/synthetics/leaderboard/constants.ts
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "March '24"
-msgstr "March '24"
+#~ msgid "March '24"
+#~ msgstr "March '24"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #~ msgid "March '24 Absolute PnL"
@@ -3517,8 +3545,8 @@ msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur
 msgstr "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "Notional PnL"
-msgstr "Notional PnL"
+#~ msgid "Notional PnL"
+#~ msgstr "Notional PnL"
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "Old Collateral"
@@ -3864,8 +3892,8 @@ msgid "PnL After Fees"
 msgstr "PnL After Fees"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "PnL Percentage"
-msgstr "PnL Percentage"
+#~ msgid "PnL Percentage"
+#~ msgstr "PnL Percentage"
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
@@ -5124,6 +5152,10 @@ msgstr "Telegram bot for Open Interest on GMX"
 msgid "Terms and Conditions"
 msgstr "Terms and Conditions"
 
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "Test"
+msgstr "Test"
+
 #: src/pages/Stake/StakeV1.js
 msgid "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
 msgstr "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
@@ -5422,6 +5454,14 @@ msgstr "Tokens"
 #: src/domain/synthetics/leaderboard/constants.ts
 #~ msgid "Top PnL $ March '24"
 #~ msgstr "Top PnL $ March '24"
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "Top PnL ($)"
+msgstr "Top PnL ($)"
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "Top PnL (%)"
+msgstr "Top PnL (%)"
 
 #: src/domain/synthetics/leaderboard/constants.ts
 #~ msgid "Top Pnl % March '24"
@@ -6116,6 +6156,18 @@ msgstr "Wallet total accrued Fees"
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
 msgid "Wallet {daysConsidered}d accrued Fees"
 msgstr "Wallet {daysConsidered}d accrued Fees"
+
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "Weekly competition 13-20 Mar"
+msgstr "Weekly competition 13-20 Mar"
+
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "Weekly competition 20-27 Mar"
+msgstr "Weekly competition 20-27 Mar"
+
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "Weekly competition 8-22 Mar"
+msgstr "Weekly competition 8-22 Mar"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Weight"
