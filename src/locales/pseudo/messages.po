@@ -1894,7 +1894,6 @@ msgid "Failed to update order"
 msgstr ""
 
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
 msgid "Fee values do not include incentives."
 msgstr ""
 
