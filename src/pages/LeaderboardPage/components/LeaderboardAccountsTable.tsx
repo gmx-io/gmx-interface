@@ -214,7 +214,9 @@ export function LeaderboardAccountsTable({
                 width={6}
                 tooltip={
                   activeCompetition
-                    ? t`Only Addresses with over ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD.toBigInt())} are ranked.`
+                    ? t`Only Addresses with over ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD.toBigInt(), {
+                        displayDecimals: 0,
+                      })} in "Capital Used" are ranked.`
                     : undefined
                 }
                 tooltipPosition="left-bottom"
@@ -458,8 +460,9 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
     let msg = t`You have not traded during selected period.`;
     if (hasSomeCapital)
       msg = t`You have yet to reach the minimum "Capital Used" of ${formatUsd(
-        MIN_COLLATERAL_USD_IN_LEADERBOARD.toBigInt()
-      )} to be eligible for PnL (%).`;
+        MIN_COLLATERAL_USD_IN_LEADERBOARD.toBigInt(),
+        { displayDecimals: 0 }
+      )} to qualify for the rankings.`;
     else if (isCompetition) msg = t`You do not have any eligible trade during the competition window.`;
     return msg;
   }, [hasSomeCapital, isCompetition, rank]);
