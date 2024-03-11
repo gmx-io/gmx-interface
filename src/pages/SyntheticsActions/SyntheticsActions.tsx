@@ -102,16 +102,26 @@ export default function SyntheticsActions() {
           ) : (
             <PageTitle
               isTop
-              title={t`V2 Actions`}
+              title={t`GMX V2 Actions`}
               subtitle={
                 <>
-                  {<Trans>GMX V2 actions for all accounts.</Trans>}
-                  <div>
-                    <ExternalLink newTab={false} href={`/#/actions/v1`}>
-                      Check on GMX V1
-                    </ExternalLink>
-                    .
-                  </div>
+                  {<Trans>GMX V2 {networkName} actions for all accounts.</Trans>}
+
+                  {getIsV1Supported(chainId) && (
+                    <div>
+                      <ExternalLink newTab={false} href="/#/actions/v1">
+                        Check on GMX V1 {networkName}
+                      </ExternalLink>{" "}
+                      or{" "}
+                      <span
+                        className="underline cursor-pointer"
+                        onClick={() => switchNetwork(chainId === ARBITRUM ? AVALANCHE : ARBITRUM, active)}
+                      >
+                        switch network to {chainId === ARBITRUM ? "Avalanche" : "Arbitrum"}
+                      </span>
+                      .
+                    </div>
+                  )}
                 </>
               }
             />
