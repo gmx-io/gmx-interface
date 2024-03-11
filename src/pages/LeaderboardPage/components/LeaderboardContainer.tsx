@@ -140,7 +140,6 @@ export function LeaderboardContainer() {
           </h1>
           <div className="Leaderboard-Title__description">{description}</div>
         </div>
-        {isCompetition && <CompetitionCountdown />}
       </div>
       {!isCompetition && (
         <>
@@ -156,12 +155,15 @@ export function LeaderboardContainer() {
       )}
       {isCompetition && (
         <>
-          <Tab
-            option={activeCompetitionIndex}
-            onChange={handleCompetitionTabChange}
-            options={competitionsTabs}
-            optionLabels={competitionLabels}
-          />
+          <div className="LeaderboardContainer__competition-tabs">
+            <Tab
+              option={activeCompetitionIndex}
+              onChange={handleCompetitionTabChange}
+              options={competitionsTabs}
+              optionLabels={competitionLabels}
+            />
+            <CompetitionCountdown />
+          </div>
           <br />
           <br />
         </>

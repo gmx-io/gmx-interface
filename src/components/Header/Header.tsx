@@ -149,8 +149,8 @@ export function Header({
         </div>
         <HeaderPromoBanner>
           <Trans>
-            Trade on GMX&nbsp;V2 in&nbsp;Arbitrum and win&nbsp;$500,000 in prizes in{" "}
-            <Link to="/competitions/">two&nbsp;weekly</Link> competitions. Live&nbsp;until&nbsp;March&nbsp;27th.
+            Trade&nbsp;on GMX&nbsp;V2 in&nbsp;Arbitrum and win&nbsp;280,000&nbsp;ARB ({">"}$500k) in prizes in{" "}
+            <Link to="/competitions/">two&nbsp;weekly</Link> competitions. Live&nbsp;from&nbsp;March 13th-27th.
           </Trans>
         </HeaderPromoBanner>
       </header>
