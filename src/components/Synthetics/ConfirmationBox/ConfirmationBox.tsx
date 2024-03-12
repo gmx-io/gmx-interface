@@ -746,7 +746,9 @@ export function ConfirmationBox(p: Props) {
           <div className="Confirmation-box-main trade-info-wrapper">
             <div className="trade-info">
               <div className="trade-token-amount">
-                <Trans>Pay</Trans>{" "}
+                <div>
+                  <Trans>Pay</Trans>
+                </div>
                 <span>
                   {formatTokenAmount(swapAmounts?.amountIn, fromToken?.decimals, fromToken?.symbol, {
                     useCommas: true,
@@ -777,7 +779,9 @@ export function ConfirmationBox(p: Props) {
           <div className="Confirmation-box-main trade-info-wrapper">
             <div className="trade-info">
               <div className="trade-token-amount">
-                <Trans>Pay</Trans>{" "}
+                <div>
+                  <Trans>Pay</Trans>
+                </div>
                 <span>
                   {formatTokenAmount(increaseAmounts?.initialCollateralAmount, fromToken?.decimals, fromToken?.symbol, {
                     useCommas: true,
@@ -789,7 +793,7 @@ export function ConfirmationBox(p: Props) {
             <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
             <div className="trade-info">
               <div className="trade-token-amount">
-                {isLong ? t`Long` : t`Short`}{" "}
+                <div>{isLong ? t`Long` : t`Short`}</div>
                 <span>
                   {formatTokenAmount(increaseAmounts?.sizeDeltaInTokens, toToken?.decimals, toToken?.symbol, {
                     useCommas: true,
@@ -807,7 +811,10 @@ export function ConfirmationBox(p: Props) {
     return (
       <>
         <div className={cx("Confirmation-box-main ConfirmationBox-main")}>
-          <Trans>Decrease</Trans>&nbsp;{indexToken?.symbol} {isLong ? t`Long` : t`Short`}
+          <div>
+            <Trans>Decrease</Trans>
+          </div>
+          {indexToken?.symbol} {isLong ? t`Long` : t`Short`}
         </div>
         {renderSubaccountNavigationButton()}
       </>
