@@ -209,7 +209,7 @@ export function LeaderboardAccountsTable({
                 width={6}
                 tooltip={
                   activeCompetition
-                    ? t`Only Addresses with over ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD.toBigInt(), {
+                    ? t`Only addresses with over ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD.toBigInt(), {
                         displayDecimals: 0,
                       })} in "Capital Used" are ranked.`
                     : undefined
