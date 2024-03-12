@@ -1220,7 +1220,9 @@ function GMCard() {
               <div className="App-card-title-mark-title">GM</div>
               <div className="App-card-title-mark-subtitle">GM</div>
             </div>
-            <div>{/* <AssetDropdown assetSymbol="GM" /> */}</div>
+            <div>
+              <AssetDropdown assetSymbol="GM" />
+            </div>
           </div>
         </div>
         <div className="App-card-divider"></div>
