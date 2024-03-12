@@ -2062,11 +2062,8 @@ msgid "GLP Index Composition"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "GLP Pool"
-msgstr ""
-
 #: src/pages/Dashboard/DashboardV2.js
-msgid "GLP Pools"
+msgid "GLP Pool"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js

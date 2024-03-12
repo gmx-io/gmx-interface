@@ -942,7 +942,7 @@ export default function DashboardV2(props) {
                       </div>
                     </div>
                   </div>
-                  <InteractivePieChart data={glpPool} lebel={t`GLP Pools`} />
+                  <InteractivePieChart data={glpPool} label={t`GLP Pool`} />
                 </div>
               )}
               {isV2 && <GMCard />}

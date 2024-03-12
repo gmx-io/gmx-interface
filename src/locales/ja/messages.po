@@ -2062,12 +2062,9 @@ msgid "GLP Index Composition"
 msgstr "GLPインデックス構成"
 
 #: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 msgid "GLP Pool"
 msgstr "GLPプール"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "GLP Pools"
-msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
