@@ -9,18 +9,21 @@ type Props = {
     symbol: string;
     color: string;
   }[];
+  title: string;
 };
 
-export default function InteractivePieChart({ data }: Props) {
+export default function InteractivePieChart({ data, title }: Props) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+
+  const sortedData = useMemo(() => data.filter(Boolean).sort((a, b) => b.value - a.value), [data]);
 
   const cellStyles = useMemo(
     () =>
-      data.map((entry, index) => ({
+      sortedData.map((entry, index) => ({
         filter: activeIndex === index ? `drop-shadow(0px 0px 6px ${hexToRgba(entry.color, 0.7)})` : "none",
         cursor: "pointer",
       })),
-    [activeIndex, data]
+    [activeIndex, sortedData]
   );
 
   const onChartEnter = (_, index) => {
@@ -32,10 +35,10 @@ export default function InteractivePieChart({ data }: Props) {
   };
   return (
     <div className="stats-piechart" onMouseOut={onChartLeave}>
-      {data.length > 0 && (
+      {sortedData.length > 0 && (
         <PieChart width={210} height={210}>
           <Pie
-            data={data}
+            data={sortedData}
             cx={100}
             cy={100}
             innerRadius={73}
@@ -60,7 +63,7 @@ export default function InteractivePieChart({ data }: Props) {
             ))}
           </Pie>
           <text x={"50%"} y={"50%"} fill="white" textAnchor="middle" dominantBaseline="middle">
-            GM Pools
+            {title}
           </text>
           <Tooltip content={(props) => <CustomTooltip active={props.active} payload={props.payload} />} />
         </PieChart>

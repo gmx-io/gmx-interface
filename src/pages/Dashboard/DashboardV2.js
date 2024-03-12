@@ -429,11 +429,6 @@ export default function DashboardV2(props) {
       },
     ];
 
-    arr = arr.sort(function (a, b) {
-      if (a.value < b.value) return 1;
-      else return -1;
-    });
-
     return arr;
   }, [liquidityPercent, notStakedPercent, stakedPercent]);
 
@@ -442,7 +437,7 @@ export default function DashboardV2(props) {
   let stableGlp = 0;
   let totalGlp = 0;
 
-  let glpPool = tokenList.map((token) => {
+  const glpPool = tokenList.map((token) => {
     const tokenInfo = infoTokens[token.address];
     if (tokenInfo.usdgAmount && adjustedUsdgSupply && adjustedUsdgSupply.gt(0)) {
       const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply);
@@ -461,15 +456,6 @@ export default function DashboardV2(props) {
   });
 
   let stablePercentage = totalGlp > 0 ? ((stableGlp * 100) / totalGlp).toFixed(2) : "0.0";
-
-  glpPool = glpPool.filter(function (element) {
-    return element !== null;
-  });
-
-  glpPool = glpPool.sort(function (a, b) {
-    if (a.value < b.value) return 1;
-    else return -1;
-  });
 
   const dailyVolumeEntries = useMemo(
     () => ({
@@ -903,7 +889,7 @@ export default function DashboardV2(props) {
                     </div>
                   </div>
                 </div>
-                <InteractivePieChart data={gmxDistributionData} />
+                <InteractivePieChart data={gmxDistributionData} title={t`Distribution`} />
               </div>
               {isV1 && (
                 <div className="App-card">
@@ -956,7 +942,7 @@ export default function DashboardV2(props) {
                       </div>
                     </div>
                   </div>
-                  <InteractivePieChart data={glpPool} />
+                  <InteractivePieChart data={glpPool} title={t`GLP Pools`} />
                 </div>
               )}
               {isV2 && <GMCard />}
@@ -1264,7 +1250,7 @@ function GMCard() {
           </div>
         </div>
       </div>
-      <InteractivePieChart data={chartData} />
+      <InteractivePieChart data={chartData} title={t`GM Pool`} />
     </div>
   );
 }
