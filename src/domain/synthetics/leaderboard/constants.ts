@@ -16,7 +16,7 @@ export const LEADERBOARD_PAGES_ORDER = [
 export const LEADERBOARD_PAGES: Record<LeaderboardPageKey, LeaderboardPageConfig> = {
   leaderboard: {
     key: "leaderboard",
-    label: t`Global leaderboard`,
+    label: t`Global Leaderboard`,
     href: "/leaderboard",
     isCompetition: false,
     timeframe: {
