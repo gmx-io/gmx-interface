@@ -147,16 +147,14 @@ export function LeaderboardContainer() {
         </div>
       </div>
       {!isCompetition && (
-        <>
-          <Tab
-            option={activeLeaderboardIndex}
-            onChange={handleLeaderboardTabChange}
-            options={leaderboardTabs}
-            optionLabels={leaderboardLabels}
-          />
-          <br />
-          <br />
-        </>
+        <Tab
+          option={activeLeaderboardIndex}
+          onChange={handleLeaderboardTabChange}
+          options={leaderboardTabs}
+          optionLabels={leaderboardLabels}
+          type="inline"
+          className="LeaderboardContainer__leaderboard-tabs"
+        />
       )}
       {isCompetition && (
         <>

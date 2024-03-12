@@ -31,7 +31,7 @@ $tabs-threshold: 990px;
   color: rgb(255 255 255 / 70%);
 }
 
-.GlobalLeaderboards .Tab {
+.GlobalLeaderboards .LeaderboardContainer__competition-tabs .Tab {
   width: 40rem;
   margin: 0 auto;
   grid-auto-columns: minmax(0, 1fr);
@@ -288,6 +288,11 @@ $tabs-threshold: 990px;
       font-size: 2rem;
     }
   }
+}
+
+.LeaderboardContainer__leaderboard-tabs {
+  margin-bottom: 1rem;
+  margin-top: 3rem;
 }
 
 .LeaderboardNavigation {
