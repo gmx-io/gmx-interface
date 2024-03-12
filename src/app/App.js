@@ -216,16 +216,6 @@ function FullApp() {
   };
 
 
- 
- 
-
-  // const updateAuthFlow = (flowCompleted) => {
-  //   setAuthFlowState((draft) => {
-  //     const auth = draft.find((flow) => flow.name === flowCompleted);
-  //     auth.status = true;
-  //   });
-  // };
-
   const userOnMobileDevice = "navigator" in window && isMobileDevice(window.navigator);
 
   const activateMetaMask = () => {
@@ -928,7 +918,7 @@ function FullApp() {
       </div>
       <Tour
         steps={steps}
-        isOpen={isTourOpen && active && account && !walletModalVisible}
+        isOpen={isTourOpen && active && account && !walletModalVisible && !authFlowModal}
         showCloseButton={false}
         showNumber={false}
         showNavigation={false}
