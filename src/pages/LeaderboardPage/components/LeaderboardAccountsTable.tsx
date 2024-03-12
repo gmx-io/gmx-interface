@@ -248,7 +248,7 @@ export function LeaderboardAccountsTable({
               <TableHeaderCell
                 title={t`Avg. Size`}
                 width={12}
-                tooltip={t`Average Position Size.`}
+                tooltip={t`Average position size.`}
                 tooltipPosition="bottom-end"
                 onClick={handleColumnClick}
                 columnName="averageSize"
@@ -257,7 +257,7 @@ export function LeaderboardAccountsTable({
               <TableHeaderCell
                 title={t`Avg. Lev.`}
                 width={10}
-                tooltip={t`Average Leverage used.`}
+                tooltip={t`Average leverage used.`}
                 tooltipPosition="bottom-end"
                 onClick={handleColumnClick}
                 columnName="averageLeverage"
@@ -266,7 +266,7 @@ export function LeaderboardAccountsTable({
               <TableHeaderCell
                 title={t`Win/Loss`}
                 width={10}
-                tooltip={t`Wins and Losses for fully closed Positions.`}
+                tooltip={t`Wins and losses for fully closed positions.`}
                 tooltipPosition="bottom-end"
                 onClick={handleColumnClick}
                 columnName="wins"
@@ -353,7 +353,7 @@ const TableRow = memo(
       const winRate = `${((account.wins / (account.wins + account.losses)) * 100).toFixed(2)}%`;
       return (
         <div>
-          <StatsTooltipRow label={t`Total trades`} showDollar={false} value={account.wins + account.losses} />
+          <StatsTooltipRow label={t`Total Trades`} showDollar={false} value={account.wins + account.losses} />
           {account.wins + account.losses > 0 ? (
             <StatsTooltipRow label={t`Win Rate`} showDollar={false} value={winRate} />
           ) : null}
@@ -448,7 +448,7 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
   const message = useMemo(() => {
     if (rank !== null) return null;
 
-    let msg = t`You have not traded during selected period.`;
+    let msg = t`You have not traded during the selected period.`;
     if (hasSomeCapital)
       msg = t`You have yet to reach the minimum "Capital Used" of ${formatUsd(
         MIN_COLLATERAL_USD_IN_LEADERBOARD.toBigInt(),
