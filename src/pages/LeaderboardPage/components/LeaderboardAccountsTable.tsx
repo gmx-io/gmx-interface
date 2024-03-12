@@ -207,14 +207,10 @@ export function LeaderboardAccountsTable({
               <TableHeaderCell
                 title={t`Rank`}
                 width={6}
-                tooltip={
-                  activeCompetition
-                    ? t`Only addresses with over ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD.toBigInt(), {
-                        displayDecimals: 0,
-                      })} in "Capital Used" are ranked.`
-                    : undefined
-                }
-                tooltipPosition="bottom-end"
+                tooltip={t`Only addresses with over ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD.toBigInt(), {
+                  displayDecimals: 0,
+                })} in "Capital Used" are ranked.`}
+                tooltipPosition="bottom-start"
                 columnName="rank"
               />
               <TableHeaderCell
