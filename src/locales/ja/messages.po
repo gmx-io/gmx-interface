@@ -1624,6 +1624,11 @@ msgid "Download"
 msgstr "ダウンロード"
 
 #: src/domain/synthetics/leaderboard/constants.ts
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "EIP-4844 Competition"
+msgstr ""
+
+#: src/domain/synthetics/leaderboard/constants.ts
 msgid "EIP-4844, 13-20 Mar"
 msgstr ""
 
@@ -2334,6 +2339,7 @@ msgstr "シェア可能な画像を作成中..."
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 msgstr ""
 
+#: src/domain/synthetics/leaderboard/constants.ts
 #: src/domain/synthetics/leaderboard/constants.ts
 msgid "Global Leaderboard"
 msgstr ""
@@ -4087,12 +4093,12 @@ msgid "Read more"
 msgstr "詳細について読む"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-#~ msgid "Read the rules"
-#~ msgstr ""
+msgid "Read the rules"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "Read the rules."
-msgstr ""
+#~ msgid "Read the rules."
+#~ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Realized Fees"
@@ -5010,8 +5016,8 @@ msgid "T"
 msgstr ""
 
 #: src/domain/synthetics/leaderboard/constants.ts
-msgid "TEST 8-22 Mar"
-msgstr ""
+#~ msgid "TEST 8-22 Mar"
+#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
@@ -5089,8 +5095,8 @@ msgid "Terms and Conditions"
 msgstr "規約"
 
 #: src/domain/synthetics/leaderboard/constants.ts
-msgid "Test"
-msgstr ""
+#~ msgid "Test"
+#~ msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 msgid "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."

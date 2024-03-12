@@ -1624,6 +1624,11 @@ msgid "Download"
 msgstr "Download"
 
 #: src/domain/synthetics/leaderboard/constants.ts
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "EIP-4844 Competition"
+msgstr "EIP-4844 Competition"
+
+#: src/domain/synthetics/leaderboard/constants.ts
 msgid "EIP-4844, 13-20 Mar"
 msgstr "EIP-4844, 13-20 Mar"
 
@@ -2334,6 +2339,7 @@ msgstr "Generating shareable image..."
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 msgstr "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 
+#: src/domain/synthetics/leaderboard/constants.ts
 #: src/domain/synthetics/leaderboard/constants.ts
 msgid "Global Leaderboard"
 msgstr "Global Leaderboard"
@@ -4090,12 +4096,12 @@ msgid "Read more"
 msgstr "Read more"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-#~ msgid "Read the rules"
-#~ msgstr "Read the rules"
+msgid "Read the rules"
+msgstr "Read the rules"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "Read the rules."
-msgstr "Read the rules."
+#~ msgid "Read the rules."
+#~ msgstr "Read the rules."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Realized Fees"
@@ -5013,8 +5019,8 @@ msgid "T"
 msgstr "T"
 
 #: src/domain/synthetics/leaderboard/constants.ts
-msgid "TEST 8-22 Mar"
-msgstr "TEST 8-22 Mar"
+#~ msgid "TEST 8-22 Mar"
+#~ msgstr "TEST 8-22 Mar"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
@@ -5092,8 +5098,8 @@ msgid "Terms and Conditions"
 msgstr "Terms and Conditions"
 
 #: src/domain/synthetics/leaderboard/constants.ts
-msgid "Test"
-msgstr "Test"
+#~ msgid "Test"
+#~ msgstr "Test"
 
 #: src/pages/Stake/StakeV1.js
 msgid "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."

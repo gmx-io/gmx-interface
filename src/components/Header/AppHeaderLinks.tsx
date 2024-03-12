@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { FiX } from "react-icons/fi";
 import { Trans } from "@lingui/macro";
 import { Link } from "react-router-dom";
@@ -24,6 +24,10 @@ export function AppHeaderLinks({
   redirectPopupTimestamp,
   showRedirectModal,
 }: Props) {
+  const isLeaderboardActive = useCallback(
+    (match, location) => Boolean(match) || location.pathname.startsWith("/competitions"),
+    []
+  );
   return (
     <div className="App-header-links">
       {small && (
@@ -72,7 +76,7 @@ export function AppHeaderLinks({
           to="/leaderboard"
           redirectPopupTimestamp={redirectPopupTimestamp}
           showRedirectModal={showRedirectModal}
-          isActive={(match, location) => Boolean(match) || location.pathname.startsWith("/competitions")}
+          isActive={isLeaderboardActive}
         >
           <Trans>Leaderboard</Trans>
         </HeaderLink>
