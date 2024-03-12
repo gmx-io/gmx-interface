@@ -2335,8 +2335,12 @@ msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>F
 msgstr "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 
 #: src/domain/synthetics/leaderboard/constants.ts
-msgid "Global leaderboard"
-msgstr "Global leaderboard"
+msgid "Global Leaderboard"
+msgstr "Global Leaderboard"
+
+#: src/domain/synthetics/leaderboard/constants.ts
+#~ msgid "Global leaderboard"
+#~ msgstr "Global leaderboard"
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
