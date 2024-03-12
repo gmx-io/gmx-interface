@@ -3,7 +3,7 @@ import { useLeaderboardTiming } from "context/SyntheticsStateContext/hooks/leade
 import { ReactNode, useEffect, useState } from "react";
 import cx from "classnames";
 
-export function CompetitionCountdown({ size }: { size: "mobile" | "desktop" }) {
+export function CompetitionCountdown({ className, size }: { className?: string; size: "mobile" | "desktop" }) {
   const { isEndInFuture, isStartInFuture, timeframe } = useLeaderboardTiming();
 
   let counter: null | ReactNode = null;
@@ -22,7 +22,7 @@ export function CompetitionCountdown({ size }: { size: "mobile" | "desktop" }) {
 
   return (
     <div
-      className={cx("CompetitionCountdown", {
+      className={cx("CompetitionCountdown", className, {
         CompetitionCountdown_mobile: size === "mobile",
         CompetitionCountdown_desktop: size === "desktop",
       })}

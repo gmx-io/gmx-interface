@@ -214,6 +214,11 @@ $tabs-threshold: 990px;
 
   &__prize {
     margin-right: 1rem;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
     margin-bottom: 1rem;
     flex: 1 1;
     background-color: #16182e;

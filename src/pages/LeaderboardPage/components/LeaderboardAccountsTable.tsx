@@ -357,13 +357,13 @@ const TableRow = memo(
       const winRate = `${((account.wins / (account.wins + account.losses)) * 100).toFixed(2)}%`;
       return (
         <div>
-          <StatsTooltipRow label={t`Total trades`} showDollar={false} value={account.totalCount} />
+          <StatsTooltipRow label={t`Total trades`} showDollar={false} value={account.wins + account.losses} />
           {account.wins + account.losses > 0 ? (
             <StatsTooltipRow label={t`Win Rate`} showDollar={false} value={winRate} />
           ) : null}
         </div>
       );
-    }, [account.losses, account.totalCount, account.wins, shouldRenderValue]);
+    }, [account.losses, account.wins, shouldRenderValue]);
 
     const renderPnlTooltipContent = useCallback(() => <LeaderboardPnlTooltipContent account={account} />, [account]);
 

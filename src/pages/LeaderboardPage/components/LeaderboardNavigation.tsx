@@ -50,7 +50,7 @@ export function LeaderboardNavigation() {
   }, [pageKey]);
 
   return (
-    <div className="LeaderboardNavigation">
+    <div className="LeaderboardNavigation default-container-mobile-one-sided">
       {navigationItems.map((item) => (
         <NavigationItem item={item} key={item.key} />
       ))}

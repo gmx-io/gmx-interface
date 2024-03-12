@@ -144,7 +144,7 @@ export function LeaderboardContainer() {
   return (
     <div className="GlobalLeaderboards">
       <LeaderboardNavigation />
-      <div className="Leaderboard-Title">
+      <div className="Leaderboard-Title default-container">
         <div>
           <h1>
             {title} <img alt={t`Chain Icon`} src={getIcon(page.isCompetition ? page.chainId : chainId, "network")} />
@@ -159,19 +159,19 @@ export function LeaderboardContainer() {
           options={leaderboardTabs}
           optionLabels={leaderboardLabels}
           type="inline"
-          className="LeaderboardContainer__leaderboard-tabs"
+          className="LeaderboardContainer__leaderboard-tabs default-container"
         />
       )}
       {isCompetition && (
         <>
-          <div className="LeaderboardContainer__competition-tabs">
+          <div className="LeaderboardContainer__competition-tabs default-container">
             <Tab
               option={activeCompetitionIndex}
               onChange={handleCompetitionTabChange}
               options={competitionsTabs}
               optionLabels={competitionLabels}
             />
-            {!isMobile && <CompetitionCountdown size="desktop" />}
+            {!isMobile && <CompetitionCountdown className="default-container" size="desktop" />}
           </div>
           <br />
           <br />
@@ -182,9 +182,9 @@ export function LeaderboardContainer() {
       )}
 
       {!isStartInFuture && (
-        <>
+        <div className="default-container">
           <LeaderboardAccountsTable activeCompetition={activeCompetition} accounts={accountsStruct} />
-        </>
+        </div>
       )}
     </div>
   );
