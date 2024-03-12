@@ -14,7 +14,7 @@ export type NetworkMetadata = {
   blockExplorerUrls: string[];
 };
 
-export async function switchNetwork(chainId, active) {
+export async function switchNetwork(chainId: number, active: boolean) {
   if (active) {
     await switchChain(rainbowKitConfig, {
       chainId,

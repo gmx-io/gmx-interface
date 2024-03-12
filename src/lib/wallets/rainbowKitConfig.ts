@@ -19,6 +19,8 @@ import { isDevelopment } from "config/env";
 import { http } from "viem";
 import { arbitrum, arbitrumGoerli, avalanche, avalancheFuji } from "viem/chains";
 
+import binanceWallet from "./connecters/binanceW3W/binanceWallet";
+
 const WALLET_CONNECT_PROJECT_ID = "de24cddbaf2a68f027eae30d9bb5df58";
 const APP_NAME = "GMX";
 
@@ -35,6 +37,7 @@ const othersWalletList: WalletList = [
     wallets: [
       coreWallet,
       coinbaseWallet,
+      binanceWallet,
       trustWallet,
       okxWallet,
       ledgerWallet,

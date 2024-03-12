@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@apollo/client": "3.5.6",
+    "@binance/w3w-utils": "1.1.4",
     "@davatar/react": "1.8.1",
     "@ensdomains/ens-avatar": "1.0.0-alpha.0.ethers.6",
     "@ethersproject/providers": "5.5.1",
@@ -13,7 +14,7 @@
     "@headlessui/react": "1.6.1",
     "@lingui/core": "3.13.3",
     "@lingui/react": "3.13.3",
-    "@rainbow-me/rainbowkit": "2.0.1",
+    "@rainbow-me/rainbowkit": "2.0.2",
     "@tanstack/react-query": "5.25.0",
     "@taskworld.com/rereselect": "0.3.0",
     "@testing-library/jest-dom": "5.16.1",

@@ -1702,6 +1702,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@binance/w3w-types@npm:1.1.4":
+  version: 1.1.4
+  resolution: "@binance/w3w-types@npm:1.1.4"
+  dependencies:
+    eventemitter3: ^5.0.0
+  checksum: 1fdf99a29c478dcd693f645604b6ef366173de16f16f09ba09595ed95b8bc15f2bf23f7087902a979dc6a2c57ff10615add3dafed0b103e6fc04cb86c022784b
+  languageName: node
+  linkType: hard
+
+"@binance/w3w-utils@npm:1.1.4":
+  version: 1.1.4
+  resolution: "@binance/w3w-utils@npm:1.1.4"
+  dependencies:
+    "@binance/w3w-types": 1.1.4
+    eventemitter3: ^5.0.0
+    hash.js: ^1.1.7
+    js-base64: ^3.7.5
+  checksum: e5f570c875facce05b97d5b59b3cc7d97781ed42f05128a109e61ad7fbbc4db07cc03f4956431c22c553bcf3f8b562a86b9ac55fdbd3b5daf77e7ce4d3085b9a
+  languageName: node
+  linkType: hard
+
 "@coinbase/wallet-sdk@npm:3.9.1":
   version: 3.9.1
   resolution: "@coinbase/wallet-sdk@npm:3.9.1"
@@ -4300,9 +4321,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rainbow-me/rainbowkit@npm:2.0.1":
-  version: 2.0.1
-  resolution: "@rainbow-me/rainbowkit@npm:2.0.1"
+"@rainbow-me/rainbowkit@npm:2.0.2":
+  version: 2.0.2
+  resolution: "@rainbow-me/rainbowkit@npm:2.0.2"
   dependencies:
     "@vanilla-extract/css": 1.14.0
     "@vanilla-extract/dynamic": 2.1.0
@@ -4316,7 +4337,7 @@ __metadata:
     react-dom: ">=17"
     viem: 2.x
     wagmi: 2.x
-  checksum: f83e692ab9e56d765f89f931a7aac7ea9df40add2549eef54e884db7119ad725efddf467e326832b24a8aaa24fce7e34b8a42229dc5198687586ce0bfe6f9a0b
+  checksum: ece6ce515431e4dc33ecb3e1cc2d5f76d0f2dbeaaeae882a3369c881f100f6564da25a50c40f624cddf73aaa4e34caac23198d4b90750807c83228e908fda742
   languageName: node
   linkType: hard
 
@@ -10465,7 +10486,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eventemitter3@npm:5.0.1, eventemitter3@npm:^5.0.1":
+"eventemitter3@npm:5.0.1, eventemitter3@npm:^5.0.0, eventemitter3@npm:^5.0.1":
   version: 5.0.1
   resolution: "eventemitter3@npm:5.0.1"
   checksum: 543d6c858ab699303c3c32e0f0f47fc64d360bf73c3daf0ac0b5079710e340d6fe9f15487f94e66c629f5f82cd1a8678d692f3dbb6f6fcd1190e1b97fcad36f8
@@ -11184,6 +11205,7 @@ __metadata:
   dependencies:
     "@apollo/client": 3.5.6
     "@babel/plugin-proposal-private-property-in-object": 7.21.11
+    "@binance/w3w-utils": 1.1.4
     "@davatar/react": 1.8.1
     "@ensdomains/ens-avatar": 1.0.0-alpha.0.ethers.6
     "@ethersproject/providers": 5.5.1
@@ -11196,7 +11218,7 @@ __metadata:
     "@lingui/loader": 3.13.3
     "@lingui/macro": 3.13.3
     "@lingui/react": 3.13.3
-    "@rainbow-me/rainbowkit": 2.0.1
+    "@rainbow-me/rainbowkit": 2.0.2
     "@tanstack/react-query": 5.25.0
     "@taskworld.com/rereselect": 0.3.0
     "@testing-library/jest-dom": 5.16.1
@@ -11690,7 +11712,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hash.js@npm:1.1.7, hash.js@npm:^1.0.0, hash.js@npm:^1.0.3":
+"hash.js@npm:1.1.7, hash.js@npm:^1.0.0, hash.js@npm:^1.0.3, hash.js@npm:^1.1.7":
   version: 1.1.7
   resolution: "hash.js@npm:1.1.7"
   dependencies:
@@ -13569,6 +13591,13 @@ __metadata:
   bin:
     jiti: bin/jiti.js
   checksum: a7bd5d63921c170eaec91eecd686388181c7828e1fa0657ab374b9372bfc1f383cf4b039e6b272383d5cb25607509880af814a39abdff967322459cca41f2961
+  languageName: node
+  linkType: hard
+
+"js-base64@npm:^3.7.5":
+  version: 3.7.7
+  resolution: "js-base64@npm:3.7.7"
+  checksum: d1b02971db9dc0fd35baecfaf6ba499731fb44fe3373e7e1d6681fbd3ba665f29e8d9d17910254ef8104e2cb8b44117fe4202d3dc54c7cafe9ba300fe5433358
   languageName: node
   linkType: hard
 
