@@ -28,7 +28,8 @@ $tabs-threshold: 990px;
 }
 
 .Leaderboard-Title__description {
-  color: rgb(255 255 255 / 70%);
+  color: rgb(183, 183, 189);
+  line-height: 2.15rem;
 }
 
 .GlobalLeaderboards .LeaderboardContainer__competition-tabs .Tab {
@@ -327,7 +328,7 @@ $tabs-threshold: 990px;
 }
 
 .Leaderboard__another-network {
-  margin-top: 0.7rem;
+  margin-top: 0.3rem;
 }
 
 .LeaderboardNavigation__chip {
