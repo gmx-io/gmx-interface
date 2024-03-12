@@ -1331,7 +1331,11 @@ export function getOrderError(account, order, positionsMap, position) {
   }
 }
 
-export function shouldShowRedirectModal(timestamp) {
+export function shouldShowRedirectModal(timestamp?: number): boolean {
+  if (!timestamp) {
+    return true;
+  }
+
   const thirtyDays = 1000 * 60 * 60 * 24 * 30;
   const expiryTime = timestamp + thirtyDays;
   return !isValidTimestamp(timestamp) || Date.now() > expiryTime;

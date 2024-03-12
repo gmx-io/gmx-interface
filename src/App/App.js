@@ -157,7 +157,21 @@ function FullApp({ pendingTxns, setPendingTxns }) {
   );
   const [redirectModalVisible, setRedirectModalVisible] = useState(false);
   const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
-  const [redirectPopupTimestamp, setRedirectPopupTimestamp] = useLocalStorage(REDIRECT_POPUP_TIMESTAMP_KEY);
+  const [redirectPopupTimestamp, setRedirectPopupTimestamp] = useLocalStorage(REDIRECT_POPUP_TIMESTAMP_KEY, undefined, {
+    deserializer: (val) => {
+      if (!val) {
+        return undefined;
+      }
+      const num = parseInt(val);
+
+      if (Number.isNaN(num)) {
+        return undefined;
+      }
+
+      return num;
+    },
+    serializer: (val) => (val ? val.toString() : undefined),
+  });
   const [selectedToPage, setSelectedToPage] = useState("");
 
   const settings = useSettings();
