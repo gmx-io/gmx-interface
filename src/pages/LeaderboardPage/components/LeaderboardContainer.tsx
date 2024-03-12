@@ -87,7 +87,7 @@ export function LeaderboardContainer() {
     }
   }, [activeLeaderboardIndex, setLeaderboardType]);
 
-  const title = LEADERBOARD_PAGES[leaderboardPageKey].label;
+  const title = LEADERBOARD_PAGES[leaderboardPageKey].title;
 
   const handleSwitchNetworkClick = useCallback(() => {
     switchNetwork(leaderboardChainId, active);
@@ -118,15 +118,13 @@ export function LeaderboardContainer() {
 
       case "march_13-20_2024":
       case "march_20-27_2024":
-      case "march_8-22_2024":
-      case "march24fuji":
         return (
           <>
             Powered by the Arbitrum DAO STIP.&nbsp;
             <ExternalLink href="https://open.substack.com/pub/gmxio/p/the-gmx-eip4844-trading-competition">
-              <Trans>Read the rules.</Trans>
+              <Trans>Read the rules</Trans>
             </ExternalLink>
-            {wrongNetworkSwitcher}
+            .{wrongNetworkSwitcher}
           </>
         );
 
