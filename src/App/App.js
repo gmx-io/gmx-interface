@@ -85,6 +85,7 @@ import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import useTradeRedirect from "lib/useTradeRedirect";
 import { rainbowKitConfig } from "lib/wallets/rainbowKitConfig";
 import useWallet from "lib/wallets/useWallet";
+import { RainbowKitProviderWrapper } from "lib/wallets/WalletProvider";
 import { CompetitionRedirect, LeaderboardPage } from "pages/LeaderboardPage/LeaderboardPage";
 import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
 import SyntheticsActions from "pages/SyntheticsActions/SyntheticsActions";
@@ -599,11 +600,12 @@ function App() {
 
   let app = <FullApp pendingTxn={pendingTxns} setPendingTxns={setPendingTxns} />;
   app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;
-  app = <I18nProvider i18n={i18n}>{app}</I18nProvider>;
   app = <SyntheticsEventsProvider setPendingTxns={setPendingTxns}>{app}</SyntheticsEventsProvider>;
   app = <WebsocketContextProvider>{app}</WebsocketContextProvider>;
   app = <Router>{app}</Router>;
   app = <SEO>{app}</SEO>;
+  app = <RainbowKitProviderWrapper>{app}</RainbowKitProviderWrapper>;
+  app = <I18nProvider i18n={i18n}>{app}</I18nProvider>;
   app = <SettingsContextProvider>{app}</SettingsContextProvider>;
   app = (
     <SWRConfig key={chainId} value={SWRConfigProp}>

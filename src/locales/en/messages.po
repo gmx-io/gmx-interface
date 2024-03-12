@@ -389,6 +389,10 @@ msgstr "After claiming you will be able to vest a maximum of {0} esGMX at a rati
 msgid "After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days."
 msgstr "After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days."
 
+#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
+msgid "After you scan, a connection prompt will appear for you to connect your wallet."
+msgstr "After you scan, a connection prompt will appear for you to connect your wallet."
+
 #: src/components/ModalViews/RedirectModal.js
 msgid "Agree"
 msgstr "Agree"
@@ -1372,6 +1376,10 @@ msgstr "Create Stop-Loss Order"
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Create Take-Profit Order"
 msgstr "Create Take-Profit Order"
+
+#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
+msgid "Create or Import a Wallet"
+msgstr "Create or Import a Wallet"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -3052,6 +3060,10 @@ msgstr "Liquidity data not loaded"
 msgid "Loading..."
 msgstr "Loading..."
 
+#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
+msgid "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
+msgstr "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -3764,6 +3776,10 @@ msgstr "Only letters, numbers and underscores are allowed."
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Only positions with over {0} in \"Capital Used\" are ranked."
 msgstr "Only positions with over {0} in \"Capital Used\" are ranked."
+
+#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
+msgid "Open Binance app"
+msgstr "Open Binance app"
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
@@ -4669,6 +4685,10 @@ msgstr "Save on Costs"
 msgid "Save on Fees"
 msgstr "Save on Fees"
 
+#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
+msgid "Scan the QR code"
+msgstr "Scan the QR code"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Search Address"
@@ -5405,6 +5425,10 @@ msgstr "Take-Profit PnL"
 #: src/components/Exchange/SwapBox.js
 msgid "Take-profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
 msgstr "Take-profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
+
+#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
+msgid "Tap [Create Wallet] to start using your Web3 Wallet."
+msgstr "Tap [Create Wallet] to start using your Web3 Wallet."
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js

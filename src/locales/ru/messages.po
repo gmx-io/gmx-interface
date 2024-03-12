@@ -389,6 +389,10 @@ msgstr "После подачи заявки вы сможете получит�
 msgid "After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days."
 msgstr "После подачи заявки токены esGMX будут перечислены на ваш счет в выбранной сети в течение 7 дней."
 
+#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
+msgid "After you scan, a connection prompt will appear for you to connect your wallet."
+msgstr "После сканирования появится запрос на подключение вашего кошелька."
+
 #: src/components/ModalViews/RedirectModal.js
 msgid "Agree"
 msgstr "Согласен"
@@ -1372,6 +1376,10 @@ msgstr "Создание стоп-лосс ордера"
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Create Take-Profit Order"
 msgstr "Создание тейк-профит ордера"
+
+#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
+msgid "Create or Import a Wallet"
+msgstr "Создать или импортировать Кошелек"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
@@ -3049,6 +3057,10 @@ msgstr "Данные о ликвидности не загружены"
 msgid "Loading..."
 msgstr "Загрузка..."
 
+#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
+msgid "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
+msgstr "Войдите в свое приложение Binance и нажмите [Кошельки]. Перейдите в [Web3]."
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -3756,11 +3768,15 @@ msgstr ""
 
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
-msgstr "Допускаются только буквы, цифры и знаки подчеркивания."
+msgstr "Допускаются только буквы, цифры и знаки подчеркивания.<<<<<<< HEAD"
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Only positions with over {0} in \"Capital Used\" are ranked."
-msgstr ""
+msgstr "======="
+
+#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
+msgid "Open Binance app"
+msgstr "Открыть приложение Binance>>>>>>> 39b3c52d2 (Update dependencies and add Binance wallet connector)"
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
@@ -4666,6 +4682,10 @@ msgstr "Сэкономь на Расходах"
 msgid "Save on Fees"
 msgstr "Сэкономь на Комиссиях"
 
+#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
+msgid "Scan the QR code"
+msgstr "Отсканируйте QR-код"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Search Address"
@@ -5402,6 +5422,10 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 msgid "Take-profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a \"Close\" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>."
 msgstr "Ордера тейк-профит и стоп-лосс могут быть установлены после открытия позиции. <0/><1/>В каждой строке позиции будет кнопка \"Закрыть\", нажав на которую, можно установить триггерные ордера. <2/><3/> Для получения скриншотов и дополнительной информации, пожалуйста, смотрите <4>документы</4>."
+
+#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
+msgid "Tap [Create Wallet] to start using your Web3 Wallet."
+msgstr "Нажмите [Создать кошелек], чтобы начать использовать ваш Web3 кошелек."
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
