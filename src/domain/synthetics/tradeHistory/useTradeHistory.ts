@@ -9,7 +9,7 @@ import { parseContractPrice } from "domain/synthetics/tokens";
 import { bigNumberify } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getSyntheticsGraphClient } from "lib/subgraph";
-import { buildFiltersBody } from "lib/subgraph/utils";
+import { buildFiltersBody } from "lib/subgraph";
 
 import { OrderType, isSwapOrderType } from "../orders";
 import { getSwapPathOutputAddresses } from "../trade/utils";
