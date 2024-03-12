@@ -27,7 +27,6 @@
     "bigdecimal": "0.6.1",
     "bignumber.js": "^9.0.0",
     "classnames": "2.3.1",
-    "crypto": "^1.0.1",
     "date-fns": "2.27.0",
     "env-cmd": "^10.1.0",
     "eth-testing": "1.9.1",

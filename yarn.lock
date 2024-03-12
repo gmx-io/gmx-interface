@@ -7532,13 +7532,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"crypto@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "crypto@npm:1.0.1"
-  checksum: 087fe3165bd94c333a49e6ed66a0193911f63eac38a24f379b3001a5fe260a59c413646e53a0f67875ba13902b2686d81dc703cb2c147a4ec727dcdc04e5645e
-  languageName: node
-  linkType: hard
-
 "css-blank-pseudo@npm:^0.1.4":
   version: 0.1.4
   resolution: "css-blank-pseudo@npm:0.1.4"
@@ -10162,7 +10155,6 @@ __metadata:
     bigdecimal: 0.6.1
     bignumber.js: ^9.0.0
     classnames: 2.3.1
-    crypto: ^1.0.1
     date-fns: 2.27.0
     env-cmd: ^10.1.0
     eslint: 7.32.0
