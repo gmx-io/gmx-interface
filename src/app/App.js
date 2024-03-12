@@ -922,13 +922,13 @@ function FullApp() {
           )}
 
           <Button variant="primary-action" className="w-100 mt-md" onClick={saveAndCloseSettings}>
-            <Trans>Save</Trans>
+            <Trans>Save</Tgitrans>
           </Button>
         </Modal>
       </div>
       <Tour
         steps={steps}
-        isOpen={isTourOpen && active && account && !walletModalVisible}
+        isOpen={isTourOpen && active && account && !walletModalVisible && !authFlowModal}
         showCloseButton={false}
         showNumber={false}
         showNavigation={false}
