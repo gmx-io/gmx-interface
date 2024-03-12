@@ -3501,7 +3501,11 @@ msgid "One-Click Trading is not available using network's native token {0}. Cons
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "Only Addresses with over {0} in \"Capital Used\" are ranked."
+#~ msgid "Only Addresses with over {0} in \"Capital Used\" are ranked."
+#~ msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Only addresses with over {0} in \"Capital Used\" are ranked."
 msgstr ""
 
 #: src/components/Referrals/referralsHelper.js
