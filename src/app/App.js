@@ -291,21 +291,6 @@ function FullApp() {
   const [, setActiveStep] = useState(1);
   const [activeModal, setActiveModal] = useState(null);
 
-  // if (!doesUserHaveEmail) {
-  //   setAuthFlow((draft) => {
-  //     draft.push([
-  //       {
-  //         sequence: 4,
-  //         modal: <VerifyEmailModal />,
-  //       },
-  //       {
-  //         sequence: 4,
-  //         modal: <VerifyOtpModal />,
-  //       },
-  //     ]);
-  //   });
-  // }
-
   
   const connectWallet = () => setWalletModalVisible(true);
 
@@ -408,11 +393,6 @@ function FullApp() {
     return [];
   }, []);
 
-  // const optionalSectionVisibilityVariants = {
-  //   hidden: { opacity: 0, scaleY: 0 },
-  //   visible: { opacity: 1, scaleY: 1, transition: { type: "ease", duration: 1 } },
-  //   exit: { opacity: 0, scaleY: 0, transition: { type: "ease", duration: 1 } },
-  // };
 
   useEffect(() => {
     if (active && account) {
@@ -434,8 +414,6 @@ function FullApp() {
       };
 
       checkAndCreateUser();
-
-      //  auth flow begins
     }
   }, [active,account]);
 
@@ -499,38 +477,6 @@ function FullApp() {
     }, 2 * 1000);
     return () => clearInterval(interval);
   }, [library, pendingTxns, chainId]);
-
-  // useEffect(() => {
-  //   if (userEnteredOtp.match(/^\d{4}$/)) {
-  //     if (userEnteredOtp === generatedOtp) {
-  //       const updateEmail = async () => {
-  //         const updateEmail = await updateUserEmail(account, emailText);
-
-  //         if (updateEmail) {
-  //           helperToast.success("Email verified successfully!");
-
-  //           // reset state vars
-  //           setWalletModalVisible(false);
-  //           setShowOtp(false);
-  //         } else {
-  //           helperToast.error("Error updating email.");
-  //         }
-  //       };
-
-  //       updateEmail();
-
-  //       // reset email vars
-  //       setShowEmailVerification(false);
-  //       setEmailText("");
-  //       setUserEnteredOtp("");
-  //       setActiveStep(1);
-  //     } else {
-  //       helperToast.error("OTP entered is incorrect.");
-  //     }
-  //   } else {
-  //     return;
-  //   }
-  // }, [userEnteredOtp, generatedOtp, account, emailText]);
 
   const vaultAddress = getContract(chainId, "Vault");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
@@ -763,9 +709,6 @@ function FullApp() {
                 <Route exact path="/dashboard">
                   <Dashboard />
                 </Route>
-                {/* <Route exact path="/signup">
-                  <SignUp/>
-                </Route> */}
                 <Route exact path="/stats">
                   <Stats />
                 </Route>
@@ -895,11 +838,6 @@ function FullApp() {
               walletIco={metamaskImg}
               text={`Connect Metamask`}
               handleClick={activateMetaMask}
-            
-              // disabled={false}
-              // showArrow={true}
-              // isActive={activeStep === 2}
-              // showSkip={false}
             />
             <WalletConnectSection
               walletIco={coinbaseImg}
