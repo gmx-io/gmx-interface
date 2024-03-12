@@ -181,4 +181,11 @@ export const appEventsData: EventData[] = [
     validTill: "21 Mar 2024, 12:00",
     bodyText: ["Trade AVAX or provide liquidity using WAVAX or USDC in the GM Pool."],
   },
+  {
+    id: "op-market",
+    title: "OP market added on Arbitrum!",
+    isActive: true,
+    validTill: "26 Mar 2024, 12:00",
+    bodyText: ["Trade OP or provide liquidity using OP or USDC in the GM Pool."],
+  },
 ];
