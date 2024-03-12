@@ -36,45 +36,45 @@ export function CompetitionPrizes({
     switch (competitionType) {
       case "notionalPnl":
         return [
-          { title: t`1st Place`, description: t`50 000 ARB`, imgType: "gold", key: "1" },
+          { title: t`1st Place`, description: `50,000 ARB`, imgType: "gold", key: "1" },
           {
             title: t`2nd Place`,
-            description: t`25 000 ARB`,
+            description: `25,000 ARB`,
             imgType: "silver",
             key: "2",
           },
           {
             title: t`3rd Place`,
             imgType: "bronze",
-            description: t`10 000 ARB`,
+            description: `10,000 ARB`,
             key: "3",
           },
           {
             title: t`4-18 Places`,
             imgType: "other",
-            description: t`1 000 ARB`,
+            description: `1,000 ARB`,
             key: "4-18",
           },
         ];
       case "pnlPercentage":
         return [
-          { title: t`1st Place`, description: t`10 000 ARB`, imgType: "gold", key: "1" },
+          { title: t`1st Place`, description: `10,000 ARB`, imgType: "gold", key: "1" },
           {
             title: t`2nd Place`,
-            description: t`7 000 ARB`,
+            description: `7,000 ARB`,
             imgType: "silver",
             key: "2",
           },
           {
             title: t`3rd Place`,
             imgType: "bronze",
-            description: t`5 000 ARB`,
+            description: `5,000 ARB`,
             key: "3",
           },
           {
             title: t`4-18 Places`,
             imgType: "other",
-            description: t`1 200 ARB`,
+            description: `1,200 ARB`,
             key: "4-18",
           },
         ];
@@ -96,7 +96,9 @@ export function CompetitionPrizes({
 function CompetitionPrize({ prize }: { prize: Prize }) {
   return (
     <div className="CompetitionPrizes__prize">
-      <img className="CompetitionPrizes__prize-icon" src={iconByType[prize.imgType]} />
+      <div className="CompetitionPrizes__prize-icon-container">
+        <img className="CompetitionPrizes__prize-icon" src={iconByType[prize.imgType]} />
+      </div>
       <div className="CompetitionPrizes__prize-text">
         <div className="CompetitionPrizes__prize-title">{prize.title}</div>
         <div className="CompetitionPrizes__prize-description">{prize.description}</div>

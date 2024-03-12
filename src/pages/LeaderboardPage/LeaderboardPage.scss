@@ -230,23 +230,37 @@ $tabs-threshold: 990px;
       flex-direction: column;
       white-space: nowrap;
       margin-left: 2rem;
-      width: 8.2rem;
+      width: 50%;
+    }
+
+    &-icon-container {
+      width: 50%;
+      text-align: center;
     }
 
     &-icon {
-      width: 40%;
+      max-width: 8rem;
     }
 
     &-title {
       color: rgba(255, 255, 255, 0.7);
       margin-bottom: 0.5rem;
+      font-size: 1.5rem;
+
+      @media screen and (max-width: 1100px) {
+        font-size: 1.2rem;
+      }
     }
 
     &-description {
       color: white;
-      font-weight: bold;
       margin-bottom: 1rem;
       white-space: nowrap;
+      font-size: 2rem;
+
+      @media screen and (max-width: 1100px) {
+        font-size: 1.5rem;
+      }
     }
   }
 }
