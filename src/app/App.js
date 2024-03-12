@@ -216,16 +216,6 @@ function FullApp() {
   };
 
 
- 
- 
-
-  // const updateAuthFlow = (flowCompleted) => {
-  //   setAuthFlowState((draft) => {
-  //     const auth = draft.find((flow) => flow.name === flowCompleted);
-  //     auth.status = true;
-  //   });
-  // };
-
   const userOnMobileDevice = "navigator" in window && isMobileDevice(window.navigator);
 
   const activateMetaMask = () => {
@@ -922,7 +912,7 @@ function FullApp() {
           )}
 
           <Button variant="primary-action" className="w-100 mt-md" onClick={saveAndCloseSettings}>
-            <Trans>Save</Tgitrans>
+            <Trans>Save</Trans>
           </Button>
         </Modal>
       </div>
