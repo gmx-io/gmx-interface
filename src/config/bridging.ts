@@ -27,6 +27,12 @@ const BRIDGING_OPTIONS: { [symbol: string]: BridgingOption[] } = {
       generateLink: () => "https://portalbridge.com/?sourceChain=avalanche&targetChain=arbitrum",
     },
   ],
+  OP: [
+    {
+      name: "Stargate",
+      generateLink: () => " https://stargate.finance/transfer",
+    },
+  ],
 };
 
 export function getBridgingOptionsForToken(tokenSymbol?: string): BridgingOption[] | undefined {
