@@ -1528,6 +1528,10 @@ msgstr "연결 끊기"
 msgid "Display PnL after fees"
 msgstr "수수료포함 손익 표시"
 
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Distribution"
+msgstr ""
+
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Docs"
@@ -2057,6 +2061,10 @@ msgstr "GLP 인덱스 구성"
 msgid "GLP Pool"
 msgstr "GLP 풀"
 
+#: src/pages/Dashboard/DashboardV2.js
+msgid "GLP Pools"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "GLP Vault"
@@ -2084,6 +2092,10 @@ msgstr "{0} 업그레이드를 위해 GLP 판매가 비활성화되었습니다"
 
 #: src/pages/BuyGlp/BuyGlp.js
 msgid "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more</0>."
+msgstr ""
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "GM Pool"
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx

@@ -1528,6 +1528,10 @@ msgstr "Déconnecter"
 msgid "Display PnL after fees"
 msgstr "Afficher PnL après les frais"
 
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Distribution"
+msgstr ""
+
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Docs"
@@ -2057,6 +2061,10 @@ msgstr "Composition de l'indice GLP"
 msgid "GLP Pool"
 msgstr "Pool de GLP"
 
+#: src/pages/Dashboard/DashboardV2.js
+msgid "GLP Pools"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "GLP Vault"
@@ -2084,6 +2092,10 @@ msgstr "Vente GLP désactivé, en attente de {0} actualisations"
 
 #: src/pages/BuyGlp/BuyGlp.js
 msgid "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more</0>."
+msgstr ""
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "GM Pool"
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx

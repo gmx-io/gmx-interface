@@ -9,10 +9,10 @@ type Props = {
     symbol: string;
     color: string;
   }[];
-  title: string;
+  label: string;
 };
 
-export default function InteractivePieChart({ data, title }: Props) {
+export default function InteractivePieChart({ data, label }: Props) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   const sortedData = useMemo(() => data.filter(Boolean).sort((a, b) => b.value - a.value), [data]);
@@ -63,7 +63,7 @@ export default function InteractivePieChart({ data, title }: Props) {
             ))}
           </Pie>
           <text x={"50%"} y={"50%"} fill="white" textAnchor="middle" dominantBaseline="middle">
-            {title}
+            {label}
           </text>
           <Tooltip content={(props) => <CustomTooltip active={props.active} payload={props.payload} />} />
         </PieChart>

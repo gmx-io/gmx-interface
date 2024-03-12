@@ -889,7 +889,7 @@ export default function DashboardV2(props) {
                     </div>
                   </div>
                 </div>
-                <InteractivePieChart data={gmxDistributionData} title={t`Distribution`} />
+                <InteractivePieChart data={gmxDistributionData} label={t`Distribution`} />
               </div>
               {isV1 && (
                 <div className="App-card">
@@ -942,7 +942,7 @@ export default function DashboardV2(props) {
                       </div>
                     </div>
                   </div>
-                  <InteractivePieChart data={glpPool} title={t`GLP Pools`} />
+                  <InteractivePieChart data={glpPool} lebel={t`GLP Pools`} />
                 </div>
               )}
               {isV2 && <GMCard />}
@@ -1250,7 +1250,7 @@ function GMCard() {
           </div>
         </div>
       </div>
-      <InteractivePieChart data={chartData} title={t`GM Pool`} />
+      <InteractivePieChart data={chartData} label={t`GM Pool`} />
     </div>
   );
 }
