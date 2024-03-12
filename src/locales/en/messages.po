@@ -4082,10 +4082,6 @@ msgid "Read more"
 msgstr "Read more"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-#~ msgid "Read the rules"
-#~ msgstr "Read the rules"
-
-#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Read the rules."
 msgstr "Read the rules."
 
@@ -4323,14 +4319,6 @@ msgstr "SHORT LIQ."
 #: src/domain/synthetics/positions/utils.ts
 msgid "SL"
 msgstr "SL"
-
-#: src/domain/synthetics/leaderboard/constants.ts
-#~ msgid "STIP 13-20 Mar"
-#~ msgstr "STIP 13-20 Mar"
-
-#: src/domain/synthetics/leaderboard/constants.ts
-#~ msgid "STIP 20-27 Mar"
-#~ msgstr "STIP 20-27 Mar"
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Same as current active code"
@@ -5330,6 +5318,10 @@ msgstr "This position was liquidated as the max leverage of 100x was exceeded."
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded."
 msgstr "This position was liquidated as the max leverage of {maxLeverageText} was exceeded."
+
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "This swap is routed through several GM pools for the lowest possible fees and price impact."
+msgstr "This swap is routed through several GM pools for the lowest possible fees and price impact."
 
 #: src/pages/Home/Home.js
 msgid "Three tokens create our ecosystem"
