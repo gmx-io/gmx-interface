@@ -28,7 +28,7 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
 
   return (
     <Menu>
-      <Menu.Button as="div" className='header-address'>
+      <Menu.Button as="div" className="header-address">
         <button className="App-cta small transparent address-btn menu-bar-address">
           <div className="user-avatar">
             {ethereumProvider && <Davatar size={20} address={account} provider={ethereumProvider} />}

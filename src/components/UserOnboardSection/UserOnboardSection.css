@@ -9,7 +9,7 @@
   border: 1px solid rgba(255, 255, 255, 0.04);
   background: #141620;
   position: relative;
-  color: white;
+  /* color: white; */
   font-size: 1.7rem;
   padding-left: 1.6rem;
   padding-right: 1.6rem;
@@ -17,7 +17,9 @@
 }
 
 #light .Wallet-btn-approve{
-  background: #FFFFFF;
+  border-radius: 18px;
+  border : solid 1px #E0E2E5;
+  background: #ffffff;
   color: #000000;
 }
 

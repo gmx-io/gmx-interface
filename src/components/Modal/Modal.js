@@ -7,7 +7,7 @@ import { MdClose } from "react-icons/md";
 import { ThemeContext } from "store/theme-provider";
 
 export default function Modal(props) {
-  const { isVisible, setIsVisible, className, zIndex, onAfterOpen } = props;
+  const { isVisible, setIsVisible, className, zIndex, onAfterOpen, isWalletConnect } = props;
 
   const modalRef = useRef(null);
 
@@ -48,7 +48,7 @@ export default function Modal(props) {
           transition={{ duration: 0.2 }}
         >
           <div
-            className="Modal-backdrop"
+            className={`${isWalletConnect ? "Wallet-Connect-Modal-backdrop" : "Modal-backdrop"}  `}
             style={{
               overflow: isVisible ? "hidden" : "visible",
               position: "fixed",
@@ -59,13 +59,15 @@ export default function Modal(props) {
             <div className="Modal-header-wrapper">
               <div className="Modal-title-bar">
                 <div className="Modal-title">{props.label}</div>
-                <div className="Modal-close-button" onClick={() => setIsVisible(false)}>
-                  <MdClose fontSize={20} className="Modal-close-icon" />
-                </div>
+                {!isWalletConnect && (
+                  <div className="Modal-close-button" onClick={() => setIsVisible(false)}>
+                    <MdClose fontSize={20} className="Modal-close-icon" />
+                  </div>
+                )}
               </div>
               {props.headerContent && props.headerContent()}
             </div>
-            <div className="divider" />
+            {/* <div className="divider" /> */}
             <RemoveScroll>
               <div className={cx("Modal-body")} ref={modalRef}>
                 {props.children}

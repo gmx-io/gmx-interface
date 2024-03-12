@@ -28,14 +28,28 @@
   background: rgba(0, 0, 0, 0.9);
 }
 
+.Wallet-Connect-Modal-backdrop {
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #0d0f19;
+}
+
+#light .Wallet-Connect-Modal-backdrop {
+  background: #ffffff;
+}
+
 .Modal-content {
   z-index: 20;
   position: relative;
-  min-width: 498.372px;
-  max-width: 100%;
+  min-width: 30%;
+  max-width: 30%;
   max-height: 90vh;
   overflow: auto;
-  background: #141414;
+  background: #0d0f19;
   border-radius: 14px;
   color: #ffffff;
 }

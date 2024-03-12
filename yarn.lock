@@ -7532,6 +7532,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"crypto@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "crypto@npm:1.0.1"
+  checksum: 087fe3165bd94c333a49e6ed66a0193911f63eac38a24f379b3001a5fe260a59c413646e53a0f67875ba13902b2686d81dc703cb2c147a4ec727dcdc04e5645e
+  languageName: node
+  linkType: hard
+
 "css-blank-pseudo@npm:^0.1.4":
   version: 0.1.4
   resolution: "css-blank-pseudo@npm:0.1.4"
@@ -10155,6 +10162,7 @@ __metadata:
     bigdecimal: 0.6.1
     bignumber.js: ^9.0.0
     classnames: 2.3.1
+    crypto: ^1.0.1
     date-fns: 2.27.0
     env-cmd: ^10.1.0
     eslint: 7.32.0
@@ -10173,10 +10181,12 @@ __metadata:
     qrcode.react: ^3.1.0
     rc-slider: 9.7.5
     react: 17.0.2
+    react-confetti: ^6.1.0
     react-dom: 17.0.2
     react-helmet: 6.1.0
     react-hot-toast: 2.2.0
     react-icons: 4.3.1
+    react-otp-input: ^3.1.1
     react-remove-scroll: 2.5.5
     react-router-dom: 5.3.0
     react-scripts: 4.0.3
@@ -10191,6 +10201,7 @@ __metadata:
     styled-components: ^4.0.0
     swr: 0.4.2
     typescript: 4.7.4
+    use-immer: ^0.9.0
     web-vitals: 1.1.2
   languageName: unknown
   linkType: soft
@@ -16171,6 +16182,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-confetti@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "react-confetti@npm:6.1.0"
+  dependencies:
+    tween-functions: ^1.2.0
+  peerDependencies:
+    react: ^16.3.0 || ^17.0.1 || ^18.0.0
+  checksum: 24b6975df144d2bf09d8e1c95ddc49e547775f911efaa8d96b49e522659d931539e9d9e48cc0db3a01f3a671be7e3824e6e728db85096f5527db5d1c69ebb153
+  languageName: node
+  linkType: hard
+
 "react-dev-utils@npm:^11.0.3":
   version: 11.0.4
   resolution: "react-dev-utils@npm:11.0.4"
@@ -16306,6 +16328,16 @@ __metadata:
   version: 3.0.4
   resolution: "react-lifecycles-compat@npm:3.0.4"
   checksum: a904b0fc0a8eeb15a148c9feb7bc17cec7ef96e71188280061fc340043fd6d8ee3ff233381f0e8f95c1cf926210b2c4a31f38182c8f35ac55057e453d6df204f
+  languageName: node
+  linkType: hard
+
+"react-otp-input@npm:^3.1.1":
+  version: 3.1.1
+  resolution: "react-otp-input@npm:3.1.1"
+  peerDependencies:
+    react: ">=16.8.6 || ^17.0.0 || ^18.0.0"
+    react-dom: ">=16.8.6 || ^17.0.0 || ^18.0.0"
+  checksum: a442e3a0ee1ad429f698ceca322cdd5a3a6a4d8fa7da3abf3b8c193ce06edd629b148aafdb6c47d240a872e8f5827d8c9fb1b8ef3aa34ea81ba80cbef6b5ff6d
   languageName: node
   linkType: hard
 
@@ -19197,6 +19229,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tween-functions@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "tween-functions@npm:1.2.0"
+  checksum: 880708d680eff5c347ddcb9f922ad121703a91c78ce308ed309073e73a794b633eb0b80589a839365803f150515ad34c9646809ae8a0e90f09e62686eefb1ab6
+  languageName: node
+  linkType: hard
+
 "type-check@npm:^0.4.0, type-check@npm:~0.4.0":
   version: 0.4.0
   resolution: "type-check@npm:0.4.0"
@@ -19554,6 +19593,16 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 7913df383a5a6fcb399212eedefaac2e0c6f843555202d4e3010bac3848afe38ecaa3d0d6500ad1d936fbeffd637e6c517e68edb024af5e6beca7f27f3ce7b21
+  languageName: node
+  linkType: hard
+
+"use-immer@npm:^0.9.0":
+  version: 0.9.0
+  resolution: "use-immer@npm:0.9.0"
+  peerDependencies:
+    immer: ">=2.0.0"
+    react: ^16.8.0 || ^17.0.1 || ^18.0.0
+  checksum: 3f02e31d38f354125e6cffaaed0a08d9bf122b9df261aa7b38a25246813b3bd8b22bf97b192099d4e84adcfbbb07e69e14ba29520e0ac8d93f3991ef3a3652b4
   languageName: node
   linkType: hard
 

@@ -1,0 +1,27 @@
+.signup-wrapper {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 30em;
+  height: 18em;
+  margin-top: -9em; /*set to a negative number 1/2 of your height*/
+  margin-left: -15em; /*set to a negative number 1/2 of your width*/
+  /* border: 1px solid #ccc;
+  background-color: #f3f3f3; */
+}
+
+.connect-wallet-description {
+  font-family: tektur;
+  font-weight: 400;
+}
+
+#light .connect-wallet-description {
+  color: #747474;
+}
+
+.connect-wallet-title {
+  font-size: 26px; /* var(--font-md); */
+  font-family: tektur;
+  font-weight: 600;
+  line-height: 1;
+}
