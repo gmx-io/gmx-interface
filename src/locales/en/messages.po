@@ -584,12 +584,20 @@ msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "Average Leverage used."
-msgstr "Average Leverage used."
+#~ msgid "Average Leverage used."
+#~ msgstr "Average Leverage used."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "Average Position Size."
-msgstr "Average Position Size."
+#~ msgid "Average Position Size."
+#~ msgstr "Average Position Size."
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Average leverage used."
+msgstr "Average leverage used."
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Average position size."
+msgstr "Average position size."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Avg. Lev."
@@ -2673,8 +2681,12 @@ msgid "Leaderboard for GMX traders"
 msgstr "Leaderboard for GMX traders"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "Leaderboard for traders on GMX V2"
-msgstr "Leaderboard for traders on GMX V2"
+#~ msgid "Leaderboard for traders on GMX V2"
+#~ msgstr "Leaderboard for traders on GMX V2"
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "Leaderboard for traders on GMX V2."
+msgstr "Leaderboard for traders on GMX V2."
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Leave at least {0} ETH for gas"
@@ -5448,6 +5460,10 @@ msgstr "Total Stats"
 msgid "Total Supply"
 msgstr "Total Supply"
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Total Trades"
+msgstr "Total Trades"
+
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "Total Trading Volume"
@@ -5471,8 +5487,8 @@ msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancell
 msgstr "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "Total trades"
-msgstr "Total trades"
+#~ msgid "Total trades"
+#~ msgstr "Total trades"
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
@@ -6100,8 +6116,12 @@ msgid "Win/Loss"
 msgstr "Win/Loss"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "Wins and Losses for fully closed Positions."
-msgstr "Wins and Losses for fully closed Positions."
+#~ msgid "Wins and Losses for fully closed Positions."
+#~ msgstr "Wins and Losses for fully closed Positions."
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Wins and losses for fully closed positions."
+msgstr "Wins and losses for fully closed positions."
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -6331,8 +6351,12 @@ msgid "You have not deposited any tokens for vesting."
 msgstr "You have not deposited any tokens for vesting."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "You have not traded during selected period."
-msgstr "You have not traded during selected period."
+#~ msgid "You have not traded during selected period."
+#~ msgstr "You have not traded during selected period."
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "You have not traded during the selected period."
+msgstr "You have not traded during the selected period."
 
 #: src/components/Stake/GMXAprTooltip.tsx
 #: src/pages/Stake/StakeV2.js
