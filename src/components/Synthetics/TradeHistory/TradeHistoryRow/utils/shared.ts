@@ -130,7 +130,7 @@ const CUSTOM_DATE_LOCALES = Object.fromEntries(
 export function formatTradeActionTimestamp(timestamp: number, relativeTimestamp = true) {
   const localeStr = i18n.locale;
 
-  const locale: DateLocale = CUSTOM_DATE_LOCALES[localeStr] || dateEn;
+  const locale: DateLocale = CUSTOM_DATE_LOCALES[localeStr] ?? dateEn;
 
   if (!relativeTimestamp) {
     return format(new Date(timestamp * 1000), "yyyy-MM-dd HH:mm:ss", {

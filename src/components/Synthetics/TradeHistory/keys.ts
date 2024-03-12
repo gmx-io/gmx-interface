@@ -1,5 +1,6 @@
 import { i18n } from "@lingui/core";
-import { OrderType, isLimitOrderType } from "domain/synthetics/orders";
+import { t } from "@lingui/macro";
+import { isLimitOrderType, OrderType } from "domain/synthetics/orders";
 import { getTriggerNameByOrderType } from "domain/synthetics/positions";
 import type { TradeActionType } from "domain/synthetics/tradeHistory";
 import { museNeverExist } from "lib/types";
@@ -77,9 +78,9 @@ export function orderTypeToKey(orderType: OrderType): keyof typeof OrderType {
       return "StopLossDecrease";
     case OrderType.Liquidation:
       return "Liquidation";
+    default:
+      return museNeverExist(orderType);
   }
-
-  museNeverExist(orderType as never);
 }
 
 export function getActionTitle(orderType: OrderType, eventName: TradeActionType) {
@@ -89,7 +90,7 @@ export function getActionTitle(orderType: OrderType, eventName: TradeActionType)
     return i18n._(title);
   }
 
-  const fallbackOrderTypeName = isLimitOrderType(orderType) ? "Limit" : getTriggerNameByOrderType(orderType);
+  const fallbackOrderTypeName = isLimitOrderType(orderType) ? t`Limit` : getTriggerNameByOrderType(orderType);
 
   return `${getOrderActionText(eventName)} ${fallbackOrderTypeName}`;
 }

@@ -1,5 +1,6 @@
 import isEqual from "lodash/isEqual";
-import React, { ComponentType, useState } from "react";
+import { ComponentType, useCallback, useState, KeyboardEvent as ReactKeyboardEvent, ChangeEventHandler } from "react";
+
 import type { Placement } from "@floating-ui/dom";
 
 import { EMPTY_ARRAY } from "lib/objects";
@@ -49,9 +50,13 @@ export function TableOptionsFilter<T>({
 
   const isGrouped = options.length > 0 && "groupName" in options[0] && "items" in options[0];
 
-  const showGroupToggle = multiple && !disableGroupSelection && isGrouped;
+  const showGroupToggle = Boolean(multiple && !disableGroupSelection && isGrouped);
 
   const [search, setSearch] = useState("");
+  const handleSetValue = useCallback<ChangeEventHandler<HTMLInputElement>>(
+    (event) => setSearch(event.target.value),
+    []
+  );
 
   const filteredGroups = useFilteredGroups({
     isGrouped,
@@ -67,59 +72,71 @@ export function TableOptionsFilter<T>({
     search,
   });
 
-  function togglePair(newItem: T) {
-    if (multiple) {
-      const ensuredValue = value || EMPTY_ARRAY;
-      if (ensuredValue.some((pair) => isEqual(pair, newItem))) {
-        onChange(ensuredValue.filter((pair) => !isEqual(pair, newItem)));
-      } else {
-        onChange([...ensuredValue, newItem]);
+  const togglePair = useCallback(
+    (newItem: T) => {
+      if (multiple) {
+        const ensuredValue = value || EMPTY_ARRAY;
+        if (ensuredValue.some((pair) => isEqual(pair, newItem))) {
+          onChange(ensuredValue.filter((pair) => !isEqual(pair, newItem)));
+        } else {
+          onChange([...ensuredValue, newItem]);
+        }
+
+        return;
       }
 
-      return;
-    }
+      onChange(newItem);
+    },
+    [multiple, onChange, value]
+  );
 
-    onChange(newItem);
-  }
+  const handleSearchEnterKey = useCallback(
+    (e: ReactKeyboardEvent) => {
+      if (e.key !== "Enter") {
+        return;
+      }
 
-  function handleSearchEnterKey(e: React.KeyboardEvent) {
-    if (e.key !== "Enter") {
-      return;
-    }
+      if (isGrouped && filteredGroups!.length > 0) {
+        togglePair(filteredGroups![0].items[0].data);
 
-    if (isGrouped && filteredGroups!.length > 0) {
-      togglePair(filteredGroups![0].items[0].data);
+        return;
+      }
 
-      return;
-    }
+      if (filteredFlatItems!.length > 0) {
+        togglePair(filteredFlatItems![0].data);
+      }
+    },
+    [filteredFlatItems, filteredGroups, isGrouped, togglePair]
+  );
 
-    if (filteredFlatItems!.length > 0) {
-      togglePair(filteredFlatItems![0].data);
-    }
-  }
+  const getIsSelected = useCallback(
+    (item: T) => {
+      if (multiple) {
+        const ensuredValue = value || EMPTY_ARRAY;
+        return ensuredValue.some((selectedPair) => isEqual(selectedPair, item));
+      }
 
-  function getIsSelected(item: T) {
-    if (multiple) {
+      return isEqual(value, item);
+    },
+    [multiple, value]
+  );
+
+  const handleGroupToggle = useCallback(
+    (group: FilteredGroup<T>) => {
+      if (!multiple || disableGroupSelection) {
+        return;
+      }
+
       const ensuredValue = value || EMPTY_ARRAY;
-      return ensuredValue.some((selectedPair) => isEqual(selectedPair, item));
-    }
 
-    return isEqual(value, item);
-  }
-
-  function handleGroupToggle(group: FilteredGroup<T>) {
-    if (!multiple || disableGroupSelection) {
-      return;
-    }
-
-    const ensuredValue = value || EMPTY_ARRAY;
-
-    if (group.isEverythingFilteredSelected) {
-      onChange(ensuredValue.filter((pair) => !group.items.some((item) => isEqual(pair, item.data))));
-    } else {
-      onChange(ensuredValue.concat(group.items.map((item) => item.data)));
-    }
-  }
+      if (group.isEverythingFilteredSelected) {
+        onChange(ensuredValue.filter((pair) => !group.items.some((item) => isEqual(pair, item.data))));
+      } else {
+        onChange(ensuredValue.concat(group.items.map((item) => item.data)));
+      }
+    },
+    [disableGroupSelection, multiple, onChange, value]
+  );
 
   return (
     <TableFilterBase label={label} isActive={isActive} popupPlacement={popupPlacement}>
@@ -127,7 +144,7 @@ export function TableOptionsFilter<T>({
         className="TableOptionsFilter-search"
         placeholder={placeholder}
         value={search}
-        setValue={(event) => setSearch(event.target.value)}
+        setValue={handleSetValue}
         onKeyDown={handleSearchEnterKey}
       />
 

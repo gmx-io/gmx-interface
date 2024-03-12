@@ -8,11 +8,11 @@ import useWallet from "lib/wallets/useWallet";
 
 import { getExplorerUrl } from "config/chains";
 import { CLAIMS_HISTORY_PER_PAGE } from "config/ui";
-import { useNormalizeDateRange } from "lib/dates";
+import { useDateRange, useNormalizeDateRange } from "lib/dates";
 import { formatTokenAmount } from "lib/numbers";
 
 import Button from "components/Button/Button";
-import { downloadAsCsv } from "components/DownloadAsCsv/DownloadAsCsv";
+import { downloadAsCsv } from "lib/csv";
 import Pagination from "components/Pagination/Pagination";
 import usePagination from "components/Referrals/usePagination";
 import { ClaimsHistorySkeleton } from "components/Skeleton/Skeleton";
@@ -39,11 +39,11 @@ export function ClaimsHistory({ shouldShowPaginationButtons }: { shouldShowPagin
   const { chainId } = useChainId();
   const { account } = useWallet();
 
-  const [dateRange, setDateRange] = useState<[Date | undefined, Date | undefined]>([undefined, undefined]);
+  const [startDate, endDate, setDateRange] = useDateRange();
   const [eventNameFilter, setEventNameFilter] = useState<string[]>([]);
   const [tokenAddressesFilter, setTokenAddressesFilter] = useState<string[]>([]);
 
-  const [fromTxTimestamp, toTxTimestamp] = useNormalizeDateRange(dateRange);
+  const [fromTxTimestamp, toTxTimestamp] = useNormalizeDateRange(startDate, endDate);
 
   const { claimActions, pageIndex, setPageIndex, isLoading } = useClaimCollateralHistory(chainId, {
     pageSize: CLAIMS_HISTORY_PREFETCH_SIZE,
@@ -61,7 +61,7 @@ export function ClaimsHistory({ shouldShowPaginationButtons }: { shouldShowPagin
   const currentPageData = getCurrentData();
 
   const isEmpty = !account || claimActions?.length === 0;
-  const hasFilters = Boolean(dateRange[0] || dateRange[1] || eventNameFilter.length);
+  const hasFilters = Boolean(startDate || endDate || eventNameFilter.length);
 
   useEffect(() => {
     if (!pageCount || !currentPage) return;
@@ -85,7 +85,7 @@ export function ClaimsHistory({ shouldShowPaginationButtons }: { shouldShowPagin
           </div>
           <div className="ClaimsHistory-controls-right">
             <div className="ClaimsHistory-filters">
-              <DateRangeSelect startDate={dateRange[0]} endDate={dateRange[1]} onChange={setDateRange} />
+              <DateRangeSelect startDate={startDate} endDate={endDate} onChange={setDateRange} />
             </div>
             <Button variant="secondary" imgInfo={CSV_ICON_INFO} onClick={handleCsvDownload}>
               CSV
@@ -199,7 +199,7 @@ function useDownloadAsCsv(claimActions?: ClaimAction[]) {
 
     const timezone = formatDate(new Date(), "z");
 
-    downloadAsCsv("claims-history", fullFormattedData, [], ",", {
+    downloadAsCsv("claims-history", fullFormattedData, [], {
       timestamp: t`Date` + ` (${timezone})`,
       action: t`Action`,
       market: t`Market`,

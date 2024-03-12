@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 
-import { flip, offset, shift, useFloating } from "@floating-ui/react";
+import { flip, offset, shift, useFloating, autoUpdate } from "@floating-ui/react";
 import { Popover } from "@headlessui/react";
 import { i18n } from "@lingui/core";
 import { t } from "@lingui/macro";
@@ -53,7 +53,10 @@ const CALENDAR_ICON_INFO = {
   src: calendarIcon,
 };
 
-const MIN_DATE = new Date(2021, 0, 1);
+/**
+ * 4th of August 2023
+ */
+const MIN_DATE = new Date(2023, 7, 4);
 const MAX_DATE = addYears(new Date(), 1);
 
 const DATE_RANGE_CLASSNAMES: DateRangeClassNames = {
@@ -85,35 +88,37 @@ export function DateRangeSelect({ startDate, endDate, onChange }: Props) {
     [endDate, startDate]
   );
 
-  const {
-    refs,
-    floatingStyles,
-    update: updateFloatingPosition,
-  } = useFloating({
+  const { refs, floatingStyles } = useFloating({
     middleware: [offset(10), flip(), shift()],
     placement: "bottom-end",
+    whileElementsMounted: autoUpdate,
   });
 
-  const onDateRangeChange = (item: RangeKeyDict) => {
-    if (item.selection.startDate == item.selection.endDate) {
-      return;
-    }
-    onChange([item.selection.startDate, item.selection.endDate]);
-    updateFloatingPosition();
-  };
+  const onDateRangeChange = useCallback(
+    (item: RangeKeyDict) => {
+      if (item.selection.startDate == item.selection.endDate) {
+        return;
+      }
+      onChange([item.selection.startDate, item.selection.endDate]);
+    },
+    [onChange]
+  );
 
   const localeStr = i18n.locale;
 
-  const locale: DateLocale = LOCALE_DATE_LOCALE_MAP[localeStr] || LOCALE_DATE_LOCALE_MAP.en;
+  const locale: DateLocale = LOCALE_DATE_LOCALE_MAP[localeStr] ?? LOCALE_DATE_LOCALE_MAP.en;
 
   const buttonText = useMemo(() => {
-    const start =
-      startDate &&
-      format(startDate, "dd MMM yyyy", {
-        locale,
-      });
-    const end = endDate && format(endDate, "dd MMM yyyy", { locale });
-    return start && end ? `${start} — ${end}` : t`All time`;
+    if (!startDate || !endDate) {
+      return t`All time`;
+    }
+
+    const start = format(startDate, "dd MMM yyyy", {
+      locale,
+    });
+    const end = format(endDate, "dd MMM yyyy", { locale });
+
+    return `${start} — ${end}`;
   }, [startDate, locale, endDate]);
 
   const handleSelectLastMonth = useCallback(() => {
@@ -125,13 +130,11 @@ export function DateRangeSelect({ startDate, endDate, onChange }: Props) {
     });
     const lastMonth = subMonths(now, 1);
     onChange([lastMonth, now]);
-    updateFloatingPosition();
-  }, [onChange, updateFloatingPosition]);
+  }, [onChange]);
 
   const handleSelectAllTime = useCallback(() => {
     onChange([undefined, undefined]);
-    updateFloatingPosition();
-  }, [onChange, updateFloatingPosition]);
+  }, [onChange]);
 
   return (
     <>

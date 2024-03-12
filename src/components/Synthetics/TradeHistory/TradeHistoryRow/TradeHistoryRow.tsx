@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
 import { BigNumber } from "ethers";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 
 import { isSwapOrderType } from "domain/synthetics/orders";
@@ -111,7 +111,41 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSwapOrderType(tradeAction.orderType!) && marketsInfoData, minCollateralUsd.toString(), tradeAction.id]);
 
-  if (msg === null) return null;
+  const renderTimestamp = useCallback(() => msg.timestampISO, [msg.timestampISO]);
+
+  const renderMarketContent = useCallback(() => {
+    if (msg.indexName) {
+      return (
+        <StatsTooltipRow
+          label={t`Market`}
+          value={
+            <div className="items-center">
+              <span>{msg.indexName!}</span>
+              <span className="subtext lh-1">[{msg.poolName!}]</span>
+            </div>
+          }
+          showDollar={false}
+        />
+      );
+    }
+
+    return (
+      <>
+        {msg.fullMarketNames?.map((market, index) => (
+          <span key={market.indexName}>
+            {index > 0 && " → "}
+            <span>{market.indexName}</span>
+            <span className="subtext lh-1">[{market.poolName}]</span>
+          </span>
+        ))}
+      </>
+    );
+  }, [msg.fullMarketNames, msg.indexName, msg.poolName]);
+
+  const renderPriceContent = useCallback(
+    () => <TooltipContentComponent content={msg.priceComment} />,
+    [msg.priceComment]
+  );
 
   return (
     <>
@@ -139,7 +173,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
             disableHandleStyle
             handle={<span className="TradeHistoryRow-time muted">{msg.timestamp}</span>}
             portalClassName="TradeHistoryRow-tooltip-portal"
-            renderContent={() => msg.timestampISO}
+            renderContent={renderTimestamp}
           />
           {shouldDisplayAccount && (
             <Link className="TradeHistoryRow-account muted" to={`/actions/${tradeAction.account}`}>
@@ -148,47 +182,11 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           )}
         </td>
         <td>
-          {msg.indexName ? (
-            <TooltipWithPortal
-              handle={msg.market}
-              renderContent={() => (
-                <>
-                  <StatsTooltipRow
-                    label={t`Market`}
-                    value={
-                      <div className="items-center">
-                        <span>{msg.indexName!}</span>
-                        <span className="subtext lh-1">[{msg.poolName!}]</span>
-                      </div>
-                    }
-                    showDollar={false}
-                  />
-                </>
-              )}
-            />
-          ) : (
-            <TooltipWithPortal
-              handle={msg.market}
-              renderContent={() => (
-                <>
-                  {msg.fullMarketNames?.map((market, index) => (
-                    <span key={market.indexName}>
-                      {index > 0 && " → "}
-                      <span>{market.indexName}</span>
-                      <span className="subtext lh-1">[{market.poolName}]</span>
-                    </span>
-                  ))}
-                </>
-              )}
-            />
-          )}
+          <TooltipWithPortal handle={msg.market} renderContent={renderMarketContent} />
         </td>
         <td>{msg.size}</td>
         <td className="TradeHistoryRow-price">
-          <TooltipWithPortal
-            handle={msg.price}
-            renderContent={() => <TooltipContentComponent content={msg.priceComment} />}
-          />
+          <TooltipWithPortal handle={msg.price} renderContent={renderPriceContent} />
         </td>
       </tr>
       {showDebugValues && (

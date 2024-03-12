@@ -31,6 +31,19 @@ export function sortTokens(
       const aSecondarySortIndex = getIndex(a, secondarySortSequence);
       const bSecondarySortIndex = getIndex(b, secondarySortSequence);
 
+      if (aSecondarySortIndex === bSecondarySortIndex) {
+        const isAWrapped = Boolean(a.wrappedAddress);
+        const isBWrapped = Boolean(b.wrappedAddress);
+
+        // Put wrapped tokens after the unwrapped ones
+        if (isAWrapped && !isBWrapped) {
+          return 1;
+        }
+        if (!isAWrapped && isBWrapped) {
+          return -1;
+        }
+      }
+
       return aSecondarySortIndex - bSecondarySortIndex;
     }
 
@@ -40,6 +53,19 @@ export function sortTokens(
 
     if (bIndex === -1) {
       return -1;
+    }
+
+    if (aIndex === bIndex) {
+      const isAWrapped = Boolean(a.wrappedAddress);
+      const isBWrapped = Boolean(b.wrappedAddress);
+
+      // Put wrapped tokens after the unwrapped ones
+      if (isAWrapped && !isBWrapped) {
+        return 1;
+      }
+      if (!isAWrapped && isBWrapped) {
+        return -1;
+      }
     }
 
     return aIndex - bIndex;

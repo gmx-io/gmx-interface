@@ -10,7 +10,7 @@ export default function TradesHistorySkeletonStructure(props: Props) {
       <td>
         <Skeleton width={150} count={1} />
         <Skeleton width={120} count={1} />
-        {props.withTimestamp && <Skeleton width={300} className="Skeleton-max-w-full" count={1} />}
+        {props.withTimestamp && <Skeleton width={300} className="max-w-full" count={1} />}
       </td>
       <td>
         <Skeleton width={110} count={1} />

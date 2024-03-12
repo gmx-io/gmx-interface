@@ -1,8 +1,9 @@
 import { HTMLProps, MouseEvent as ReactMouseEvent, ReactNode, RefObject } from "react";
-
 import cx from "classnames";
-import "./Button.scss";
+
 import ButtonLink from "./ButtonLink";
+
+import "./Button.scss";
 
 type ButtonVariant = "primary" | "primary-action" | "secondary";
 

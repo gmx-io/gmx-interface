@@ -17,8 +17,17 @@ type GraphQlFilters =
       and: GraphQlFilters[];
     }
   | {
+      /**
+       * `or` must be a single key-value pair in the object.
+       */
       or?: never;
+      /**
+       * `and` must be a single key-value pair in the object.
+       */
       and?: never;
+      /**
+       * Key must not start with an `_`. Add `_` to the parent key itself if possible.
+       */
       [key: `_${string}`]: never;
       [key: string]: string | number | boolean | undefined | GraphQlFilters | string[] | number[] | GraphQlFilters[];
     };

@@ -1,14 +1,12 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import * as dateFns from "date-fns";
 import type { BigNumber } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { downloadAsCsv } from "components/DownloadAsCsv/DownloadAsCsv";
 import { getExplorerUrl } from "config/chains";
 import { TRADE_HISTORY_PER_PAGE } from "config/ui";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
-import { useMarkets } from "domain/synthetics/markets";
 import { OrderType } from "domain/synthetics/orders/types";
 import { isSwapOrderType } from "domain/synthetics/orders/utils";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions/usePositionsConstants";
@@ -20,7 +18,9 @@ import {
   useTradeHistory,
 } from "domain/synthetics/tradeHistory";
 import { useChainId } from "lib/chains";
-import { useNormalizeDateRange } from "lib/dates";
+import { downloadAsCsv } from "lib/csv";
+import { useDateRange, useNormalizeDateRange } from "lib/dates";
+import { EMPTY_ARRAY } from "lib/objects";
 import { formatPositionMessage } from "./TradeHistoryRow/utils/position";
 import type { RowDetails } from "./TradeHistoryRow/utils/shared";
 import { formatSwapMessage } from "./TradeHistoryRow/utils/swap";
@@ -32,8 +32,8 @@ import { TradesHistorySkeleton } from "components/Skeleton/Skeleton";
 
 import { DateRangeSelect } from "../DateRangeSelect/DateRangeSelect";
 import { MarketFilter } from "../TableMarketFilter/MarketFilter";
-import { TradeHistoryRow } from "./TradeHistoryRow/TradeHistoryRow";
 import { ActionFilter } from "./filters/ActionFilter";
+import { TradeHistoryRow } from "./TradeHistoryRow/TradeHistoryRow";
 
 import downloadIcon from "img/ic_download_simple.svg";
 
@@ -53,27 +53,26 @@ type Props = {
 };
 
 function useMarketAddressesFromTokenAddresses(tokenAddresses: string[]): string[] {
-  const { chainId } = useChainId();
-  const markets = useMarkets(chainId);
+  const marketsInfo = useMarketsInfoData();
+  const tokenAddressesSet = useMemo(() => new Set(tokenAddresses), [tokenAddresses]);
 
   const marketAddresses = useMemo(() => {
-    const { marketsAddresses, marketsData } = markets;
-    if (!marketsAddresses || !marketsData) {
-      return [];
+    if (!marketsInfo) {
+      return EMPTY_ARRAY;
     }
 
+    const marketsAddresses = Object.keys(marketsInfo);
+
     return marketsAddresses.filter((marketAddress) => {
-      const marketData = marketsData[marketAddress];
+      const marketData = marketsInfo[marketAddress];
 
-      const marketTokenAddresses = [
-        marketData.longTokenAddress,
-        marketData.shortTokenAddress,
-        marketData.indexTokenAddress,
-      ];
-
-      return tokenAddresses.some((tokenAddress) => marketTokenAddresses.includes(tokenAddress));
+      return (
+        tokenAddressesSet.has(marketData.longTokenAddress) ||
+        tokenAddressesSet.has(marketData.shortTokenAddress) ||
+        tokenAddressesSet.has(marketData.indexTokenAddress)
+      );
     });
-  }, [tokenAddresses, markets]);
+  }, [marketsInfo, tokenAddressesSet]);
 
   return marketAddresses;
 }
@@ -107,7 +106,7 @@ function useDownloadAsCsv(tradeActions: TradeAction[] | undefined, minCollateral
 
     const timezone = dateFns.format(new Date(), "z");
 
-    downloadAsCsv("trade-history", fullFormattedData, ["priceComment"], ",", {
+    downloadAsCsv("trade-history", fullFormattedData, ["priceComment"], {
       timestamp: t`Date` + ` (${timezone})`,
       action: t`Action`,
       size: t`Size`,
@@ -129,7 +128,7 @@ export function TradeHistory(p: Props) {
   const { shouldShowPaginationButtons, forAllAccounts, account } = p;
   const { chainId } = useChainId();
   const showDebugValues = useShowDebugValues();
-  const [dateRange, setDateRange] = useState<[Date | undefined, Date | undefined]>([undefined, undefined]);
+  const [startDate, endDate, setDateRange] = useDateRange();
   const [tokenAddressesFilter, setTokenAddressesFilter] = useState<string[]>([]);
   const [actionFilter, setActionFilter] = useState<
     {
@@ -139,7 +138,7 @@ export function TradeHistory(p: Props) {
     }[]
   >([]);
 
-  const [fromTxTimestamp, toTxTimestamp] = useNormalizeDateRange(dateRange);
+  const [fromTxTimestamp, toTxTimestamp] = useNormalizeDateRange(startDate, endDate);
 
   const marketAddresses = useMarketAddressesFromTokenAddresses(tokenAddressesFilter);
 
@@ -170,7 +169,7 @@ export function TradeHistory(p: Props) {
     ENTITIES_PER_PAGE
   );
   const currentPageData = getCurrentData();
-  const hasFilters = Boolean(dateRange[0] || dateRange[1] || tokenAddressesFilter.length || actionFilter.length);
+  const hasFilters = Boolean(startDate || endDate || tokenAddressesFilter.length || actionFilter.length);
 
   useEffect(() => {
     if (!pageCount || !currentPage) return;
@@ -194,7 +193,7 @@ export function TradeHistory(p: Props) {
           </div>
           <div className="TradeHistorySynthetics-controls-right">
             <div className="TradeHistorySynthetics-filters">
-              <DateRangeSelect startDate={dateRange[0]} endDate={dateRange[1]} onChange={setDateRange} />
+              <DateRangeSelect startDate={startDate} endDate={endDate} onChange={setDateRange} />
             </div>
             <Button variant="secondary" imgInfo={CSV_ICON_INFO} onClick={handleCsvDownload}>
               CSV
