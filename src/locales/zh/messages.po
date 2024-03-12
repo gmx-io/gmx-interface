@@ -723,6 +723,10 @@ msgstr "送出购买"
 msgid "Buy with {0}"
 msgstr "以{0}购买"
 
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Buy {0}"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol}"
 msgstr ""

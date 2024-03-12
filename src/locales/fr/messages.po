@@ -723,6 +723,10 @@ msgstr "Achat soumis."
 msgid "Buy with {0}"
 msgstr "Acheter avec {0}"
 
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Buy {0}"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol}"
 msgstr ""

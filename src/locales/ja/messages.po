@@ -723,6 +723,10 @@ msgstr "購入申し込み完了"
 msgid "Buy with {0}"
 msgstr "{0}で購入"
 
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Buy {0}"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol}"
 msgstr ""
