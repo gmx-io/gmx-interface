@@ -266,20 +266,7 @@ $tabs-threshold: 990px;
 }
 
 .CompetitionCountdown {
-  position: absolute;
-  right: 0;
-  top: 0;
-
-  color: rgba(255, 255, 255, 0.7);
-  white-space: nowrap;
-
-  @media screen and (max-width: $tabs-threshold) {
-    position: relative;
-    text-align: center;
-    margin-top: 2rem;
-  }
-
-  &__time {
+  &_desktop &__time {
     white-space: nowrap;
     font-size: 3rem;
     color: white;
@@ -287,6 +274,25 @@ $tabs-threshold: 990px;
     @media screen and (max-width: $tabs-threshold) {
       font-size: 2rem;
     }
+  }
+
+  &_desktop {
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    color: rgba(255, 255, 255, 0.7);
+    white-space: nowrap;
+
+    @media screen and (max-width: $tabs-threshold) {
+      position: relative;
+      text-align: center;
+      margin-top: 2rem;
+    }
+  }
+
+  &_mobile {
+    display: inline;
   }
 }
 

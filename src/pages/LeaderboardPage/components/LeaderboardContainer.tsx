@@ -23,6 +23,7 @@ import { getIcon } from "config/icons";
 import { getChainName } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
+import { useMedia } from "react-use";
 
 const competitionLabels = [t`Top PnL ($)`, t`Top PnL (%)`];
 const competitionsTabs = [0, 1];
@@ -111,6 +112,8 @@ export function LeaderboardContainer() {
     );
   }, [chainId, handleSwitchNetworkClick, leaderboardChainId, leaderboardPageKey, page]);
 
+  const isMobile = useMedia("(max-width: 1000px)");
+
   const description = useMemo(() => {
     switch (leaderboardPageKey) {
       case "leaderboard":
@@ -124,14 +127,19 @@ export function LeaderboardContainer() {
             <ExternalLink href="https://open.substack.com/pub/gmxio/p/the-gmx-eip4844-trading-competition">
               <Trans>Read the rules</Trans>
             </ExternalLink>
-            .{wrongNetworkSwitcher}
+            .{wrongNetworkSwitcher}{" "}
+            {isMobile && (
+              <>
+                <CompetitionCountdown size="mobile" />.
+              </>
+            )}
           </>
         );
 
       default:
         throw mustNeverExist(leaderboardPageKey);
     }
-  }, [leaderboardPageKey, wrongNetworkSwitcher]);
+  }, [isMobile, leaderboardPageKey, wrongNetworkSwitcher]);
 
   return (
     <div className="GlobalLeaderboards">
@@ -163,7 +171,7 @@ export function LeaderboardContainer() {
               options={competitionsTabs}
               optionLabels={competitionLabels}
             />
-            <CompetitionCountdown />
+            {!isMobile && <CompetitionCountdown size="desktop" />}
           </div>
           <br />
           <br />
