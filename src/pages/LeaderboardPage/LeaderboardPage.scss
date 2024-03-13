@@ -275,6 +275,7 @@ $tabs-threshold: 990px;
   &_desktop &__time {
     white-space: nowrap;
     font-size: 3rem;
+    margin-left: 0.5rem;
 
     @media screen and (max-width: $tabs-threshold) {
       font-size: 2rem;
