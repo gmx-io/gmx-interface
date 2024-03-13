@@ -411,6 +411,7 @@ $tabs-threshold: 990px;
 
 .TableBox table.Exchange-list tr:hover {
   cursor: default;
+  box-shadow: none;
 }
 
 @media screen and (max-width: 1200px) {
