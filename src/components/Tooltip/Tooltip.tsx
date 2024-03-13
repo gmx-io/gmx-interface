@@ -1,6 +1,6 @@
-import "./Tooltip.scss";
 import cx from "classnames";
 import { useCallback, useState, useRef, MouseEvent, ReactNode, useEffect } from "react";
+import "./Tooltip.scss";
 import { IS_TOUCH } from "config/env";
 import { computePosition, flip, size } from "@floating-ui/dom";
 import { DEFAULT_TOOLTIP_POSITION } from "config/ui";
@@ -122,6 +122,19 @@ export default function Tooltip({
       intervalOpenRef.current = null;
     }
   }, [setVisible, closeDelay]);
+
+  useEffect(() => {
+    return () => {
+      if (intervalCloseRef.current) {
+        clearInterval(intervalCloseRef.current);
+        intervalCloseRef.current = null;
+      }
+      if (intervalOpenRef.current) {
+        clearInterval(intervalOpenRef.current);
+        intervalOpenRef.current = null;
+      }
+    };
+  }, []);
 
   const onHandleClick = useCallback((event: MouseEvent) => {
     event.preventDefault();

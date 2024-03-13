@@ -15,6 +15,8 @@ import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 import { Link } from "react-router-dom";
 import { ethers } from "ethers";
+import { isAddress } from "ethers/lib/utils.js";
+import { getTokenExplorerUrl } from "config/chains";
 
 const PLATFORM_TOKEN_ROUTES = {
   GMX: "/buy_gmx",
@@ -84,8 +86,8 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
             )}
           </Menu.Item>
           <Menu.Item as="div">
-            {token.explorerUrl && (
-              <ExternalLink href={token.explorerUrl} className="asset-item">
+            {!token.isNative && !token.isSynthetic && token.address && isAddress(token.address) && (
+              <ExternalLink href={getTokenExplorerUrl(chainId, token.address)} className="asset-item">
                 <img className="asset-item-icon" src={chainIcon} alt="Open in explorer" />
                 <p>
                   <Trans>Open {token.assetSymbol ?? token.symbol} in Explorer</Trans>

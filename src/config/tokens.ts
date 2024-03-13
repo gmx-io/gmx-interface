@@ -282,6 +282,14 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoSymbol: "AVAX",
       explorerSymbol: "WAVAX",
     },
+    {
+      name: "Optimism",
+      symbol: "OP",
+      address: "0xaC800FD6159c2a2CB8fC31EF74621eB430287a5A",
+      decimals: 18,
+      imageUrl: "https://assets.coingecko.com/coins/images/25244/standard/Optimism.png?1696524385",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/optimism",
+    },
   ],
   [AVALANCHE]: [
     {
