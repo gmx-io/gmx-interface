@@ -78,6 +78,16 @@ msgstr "50 000 ARB"
 msgid "7 000 ARB"
 msgstr "7 000 ARB"
 
+#: src/pages/SyntheticsActions/SyntheticsActions.tsx
+#: src/pages/SyntheticsActions/SyntheticsActions.tsx
+msgid "<0><1>Check on GMX V1 {networkName}</1> or <2>switch network to {0}</2>.</0>"
+msgstr "<0><1>Check on GMX V1 {networkName}</1> or <2>switch network to {0}</2>.</0>"
+
+#: src/pages/Actions/Actions.js
+#: src/pages/Actions/Actions.js
+msgid "<0><1>Check on GMX V2 {networkName}</1> or <2>switch network to {0}</2>.</0>"
+msgstr "<0><1>Check on GMX V2 {networkName}</1> or <2>switch network to {0}</2>.</0>"
+
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "<0><1>{eventTitle}</1> from <2>{0} {indexName} <3>[{poolName}]</3> Position</2></0>"
 msgstr "<0><1>{eventTitle}</1> from <2>{0} {indexName} <3>[{poolName}]</3> Position</2></0>"
@@ -2227,20 +2237,36 @@ msgid "GMX Stats Page"
 msgstr "GMX Stats Page"
 
 #: src/pages/Actions/Actions.js
-msgid "GMX V1 actions for all accounts."
-msgstr "GMX V1 actions for all accounts."
+msgid "GMX V1 Account"
+msgstr "GMX V1 Account"
 
 #: src/pages/Actions/Actions.js
-msgid "GMX V1 information for account: {checkSummedAccount}"
-msgstr "GMX V1 information for account: {checkSummedAccount}"
+msgid "GMX V1 Actions"
+msgstr "GMX V1 Actions"
+
+#: src/pages/Actions/Actions.js
+msgid "GMX V1 Arbitrum information for account: {checkSummedAccount}"
+msgstr "GMX V1 Arbitrum information for account: {checkSummedAccount}"
+
+#: src/pages/Actions/Actions.js
+msgid "GMX V1 {networkName} actions for all accounts."
+msgstr "GMX V1 {networkName} actions for all accounts."
 
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
-msgid "GMX V2 actions for all accounts."
-msgstr "GMX V2 actions for all accounts."
+msgid "GMX V2 Account"
+msgstr "GMX V2 Account"
 
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
-msgid "GMX V2 information for account: {checkSummedAccount}"
-msgstr "GMX V2 information for account: {checkSummedAccount}"
+msgid "GMX V2 Actions"
+msgstr "GMX V2 Actions"
+
+#: src/pages/SyntheticsActions/SyntheticsActions.tsx
+msgid "GMX V2 {networkName} actions for all accounts."
+msgstr "GMX V2 {networkName} actions for all accounts."
+
+#: src/pages/SyntheticsActions/SyntheticsActions.tsx
+msgid "GMX V2 {networkName} information for account: {checkSummedAccount}"
+msgstr "GMX V2 {networkName} information for account: {checkSummedAccount}"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -5798,14 +5824,6 @@ msgstr "Useful Links"
 msgid "Utilization"
 msgstr "Utilization"
 
-#: src/pages/Actions/Actions.js
-msgid "V1 Account"
-msgstr "V1 Account"
-
-#: src/pages/Actions/Actions.js
-msgid "V1 Actions"
-msgstr "V1 Actions"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V1 Airdrop"
 msgstr "V1 Airdrop"
@@ -5843,14 +5861,6 @@ msgstr "V1 esGMX"
 #: src/components/Referrals/TradersStats.tsx
 msgid "V1 rebates are airdropped weekly. V2 rebates are automatically applied as fee discounts on each trade and do not show on this table."
 msgstr "V1 rebates are airdropped weekly. V2 rebates are automatically applied as fee discounts on each trade and do not show on this table."
-
-#: src/pages/SyntheticsActions/SyntheticsActions.tsx
-msgid "V2 Account"
-msgstr "V2 Account"
-
-#: src/pages/SyntheticsActions/SyntheticsActions.tsx
-msgid "V2 Actions"
-msgstr "V2 Actions"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
