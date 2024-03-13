@@ -74,7 +74,6 @@ export function GmConfirmationBox({
   const { marketsData } = useMarkets(chainId);
   const { tokensData } = useTokensDataRequest(chainId);
   const { setPendingDeposit, setPendingWithdrawal } = useSyntheticsEvents();
-
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const market = getByKey(marketsData, marketToken?.address);

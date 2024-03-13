@@ -4259,7 +4259,7 @@ msgstr "Affiliés"
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Request"
-msgstr ">>>>>>> master"
+msgstr ""
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "Request Settlement of Funding Fees"
