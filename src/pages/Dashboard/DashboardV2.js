@@ -1186,7 +1186,7 @@ function GMCard() {
   );
 
   const chartData = useMemo(() => {
-    if (!totalGMSupply || !marketTokensData || !marketsInfoData) return [];
+    if (!totalGMSupply?.amount?.gt(0) || !marketsInfoData) return [];
 
     const poolsByIndexToken = groupBy(
       Object.values(marketsInfoData || EMPTY_OBJECT),
@@ -1194,13 +1194,11 @@ function GMCard() {
     );
 
     return Object.values(poolsByIndexToken || EMPTY_OBJECT).map((pools) => {
-      const marketTotalGM = pools.reduce(
-        (acc, pool) => acc.add(marketTokensData[pool.marketTokenAddress]?.totalSupply ?? 0),
-        BN_ZERO
-      );
+      const totalMarketUSD = pools.reduce((acc, pool) => acc.add(pool.poolValueMax), BN_ZERO);
+
       const marketInfo = pools[0];
       const indexToken = marketInfo.isSpotOnly ? marketInfo.shortToken : marketInfo.indexToken;
-      const marketSupplyPercentage = marketTotalGM.mul(BASIS_POINTS_DIVISOR).div(totalGMSupply.amount).toNumber() / 100;
+      const marketSupplyPercentage = totalMarketUSD.mul(BASIS_POINTS_DIVISOR).div(totalGMSupply.usd).toNumber() / 100;
 
       return {
         fullName: marketInfo.name,
@@ -1209,7 +1207,7 @@ function GMCard() {
         color: TOKEN_COLOR_MAP[indexToken.baseSymbol ?? indexToken.symbol ?? "default"] ?? TOKEN_COLOR_MAP.default,
       };
     });
-  }, [marketTokensData, marketsInfoData, totalGMSupply]);
+  }, [marketsInfoData, totalGMSupply]);
 
   return (
     <div className="App-card">
