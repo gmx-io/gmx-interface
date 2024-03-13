@@ -2096,7 +2096,7 @@ msgid "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "GM Pool"
+msgid "GM Markets"
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx

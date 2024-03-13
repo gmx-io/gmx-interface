@@ -14,7 +14,7 @@ import {
   getSellableMarketToken,
 } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
-import useSortedMarketsWithIndexToken from "domain/synthetics/trade/useSortedMarketsWithIndexToken";
+import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { getByKey } from "lib/objects";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -33,7 +33,7 @@ type Props = {
 export default function MarketTokenSelector(props: Props) {
   const { marketsTokensIncentiveAprData, marketsTokensAPRData, marketsInfoData, marketTokensData, currentMarketInfo } =
     props;
-  const { markets: sortedMarketsByIndexToken } = useSortedMarketsWithIndexToken(marketsInfoData, marketTokensData);
+  const { markets: sortedMarketsByIndexToken } = useSortedPoolsWithIndexToken(marketsInfoData, marketTokensData);
   const [searchKeyword, setSearchKeyword] = useState("");
   const history = useHistory();
   const indexName = currentMarketInfo && getMarketIndexName(currentMarketInfo);

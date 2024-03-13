@@ -908,12 +908,13 @@ export const TOKEN_COLOR_MAP = {
   LINK: "#3256D6",
   DOGE: "#BA9F2F",
   SOL: "#38cbc1",
-  ARB: "#203147",
+  ARB: "#162c4f",
   NEAR: "#07eb98",
   BNB: "#efb90b",
   ATOM: "#6f7390",
   XRP: "#23292f",
   LTC: "#16182e",
+  OP: "#ff0421",
   default: "#6062a6",
 };
 

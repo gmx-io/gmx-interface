@@ -19,10 +19,12 @@ export default function InteractivePieChart({ data, label }: Props) {
 
   const cellStyles = useMemo(
     () =>
-      sortedData.map((entry, index) => ({
-        filter: activeIndex === index ? `drop-shadow(0px 0px 6px ${hexToRgba(entry.color, 0.7)})` : "none",
-        cursor: "pointer",
-      })),
+      sortedData.map((entry, index) => {
+        return {
+          filter: activeIndex === index ? `drop-shadow(0px 0px 6px ${hexToRgba(entry.color, 0.7)})` : "none",
+          cursor: "pointer",
+        };
+      }),
     [activeIndex, sortedData]
   );
 
@@ -52,12 +54,13 @@ export default function InteractivePieChart({ data, label }: Props) {
             onMouseLeave={onChartLeave}
             paddingAngle={2}
           >
-            {data.map((entry, index) => (
+            {sortedData.map((entry, index) => (
               <Cell
                 key={`cell-${index}`}
-                fill={entry.color}
                 style={cellStyles[index]}
+                fill={entry.color}
                 stroke={entry.color}
+                color={entry.color}
                 strokeWidth={1}
               />
             ))}

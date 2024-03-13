@@ -5,7 +5,7 @@ import { getByKey } from "lib/objects";
 import { TokensData, convertToUsd } from "../tokens";
 import { bigNumberify } from "lib/numbers";
 
-function useSortedMarketsWithIndexToken(marketsInfoData?: MarketsInfoData, marketTokensData?: TokensData) {
+function useSortedPoolsWithIndexToken(marketsInfoData?: MarketsInfoData, marketTokensData?: TokensData) {
   const sortedMarketsWithIndexToken = useMemo(() => {
     if (!marketsInfoData || !marketTokensData) {
       return {
@@ -65,4 +65,4 @@ function useSortedMarketsWithIndexToken(marketsInfoData?: MarketsInfoData, marke
   return sortedMarketsWithIndexToken;
 }
 
-export default useSortedMarketsWithIndexToken;
+export default useSortedPoolsWithIndexToken;

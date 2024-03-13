@@ -59,9 +59,10 @@ import {
   useMarketTokensData,
   useMarketsInfoRequest,
 } from "domain/synthetics/markets";
-import { EMPTY_OBJECT, getByKey } from "lib/objects";
+import { EMPTY_OBJECT } from "lib/objects";
 import { convertToUsd } from "domain/synthetics/tokens";
 import InteractivePieChart from "components/InteractivePieChart/InteractivePieChart";
+import { groupBy } from "lodash";
 
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
@@ -1172,38 +1173,40 @@ function GMCard() {
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
 
-  const totalGMSupply = useMemo(() => {
-    return Object.values(marketTokensData || EMPTY_OBJECT)?.reduce(
-      (acc, market) => {
-        const marketTotalSupply = market?.totalSupply;
-        const marketTotalSupplyUsd = convertToUsd(marketTotalSupply, market?.decimals, market?.prices?.maxPrice);
-
-        acc.amount = acc.amount.add(marketTotalSupply ?? 0);
-        acc.usd = acc.usd.add(marketTotalSupplyUsd ?? 0);
-        return acc;
-      },
-      {
-        amount: BN_ZERO,
-        usd: BN_ZERO,
-      }
-    );
-  }, [marketTokensData]);
+  const totalGMSupply = useMemo(
+    () =>
+      Object.values(marketTokensData || {}).reduce(
+        (acc, { totalSupply, decimals, prices }) => ({
+          amount: acc.amount.add(totalSupply ?? 0),
+          usd: acc.usd.add(convertToUsd(totalSupply, decimals, prices?.maxPrice) ?? 0),
+        }),
+        { amount: BN_ZERO, usd: BN_ZERO }
+      ),
+    [marketTokensData]
+  );
 
   const chartData = useMemo(() => {
-    if (!totalGMSupply || !marketTokensData || !marketsInfoData) {
-      return [];
-    }
-    return Object.values(marketTokensData || EMPTY_OBJECT)?.map((market) => {
-      const marketInfo = getByKey(marketsInfoData, market.address);
-      const marketSupplyPercentage =
-        market.totalSupply.mul(BASIS_POINTS_DIVISOR).div(totalGMSupply.amount)?.toNumber() / 100;
-      const symbol = marketInfo.isSpotOnly ? marketInfo.shortToken.symbol : marketInfo.indexToken.symbol;
+    if (!totalGMSupply || !marketTokensData || !marketsInfoData) return [];
+
+    const poolsByIndexToken = groupBy(
+      Object.values(marketsInfoData || EMPTY_OBJECT),
+      (market) => market[market.isSpotOnly ? "marketTokenAddress" : "indexTokenAddress"]
+    );
+
+    return Object.values(poolsByIndexToken || EMPTY_OBJECT).map((pools) => {
+      const marketTotalGM = pools.reduce(
+        (acc, pool) => acc.add(marketTokensData[pool.marketTokenAddress]?.totalSupply ?? 0),
+        BN_ZERO
+      );
+      const marketInfo = pools[0];
+      const indexToken = marketInfo.isSpotOnly ? marketInfo.shortToken : marketInfo.indexToken;
+      const marketSupplyPercentage = marketTotalGM.mul(BASIS_POINTS_DIVISOR).div(totalGMSupply.amount).toNumber() / 100;
 
       return {
         fullName: marketInfo.name,
         name: marketInfo.isSpotOnly ? getMarketPoolName(marketInfo) : getMarketIndexName(marketInfo),
         value: marketSupplyPercentage,
-        color: TOKEN_COLOR_MAP[symbol ?? "default"] ?? TOKEN_COLOR_MAP.default,
+        color: TOKEN_COLOR_MAP[indexToken.baseSymbol ?? indexToken.symbol ?? "default"] ?? TOKEN_COLOR_MAP.default,
       };
     });
   }, [marketTokensData, marketsInfoData, totalGMSupply]);
@@ -1252,7 +1255,7 @@ function GMCard() {
           </div>
         </div>
       </div>
-      <InteractivePieChart data={chartData} label={t`GM Pool`} />
+      <InteractivePieChart data={chartData} label={t`GM Markets`} />
     </div>
   );
 }
