@@ -4079,10 +4079,6 @@ msgid "Read more"
 msgstr "詳細について読む"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-#~ msgid "Read the rules"
-#~ msgstr ""
-
-#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Read the rules."
 msgstr ""
 
@@ -4320,14 +4316,6 @@ msgstr ""
 #: src/domain/synthetics/positions/utils.ts
 msgid "SL"
 msgstr ""
-
-#: src/domain/synthetics/leaderboard/constants.ts
-#~ msgid "STIP 13-20 Mar"
-#~ msgstr ""
-
-#: src/domain/synthetics/leaderboard/constants.ts
-#~ msgid "STIP 20-27 Mar"
-#~ msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Same as current active code"
