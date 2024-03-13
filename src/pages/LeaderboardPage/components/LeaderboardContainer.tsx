@@ -130,7 +130,7 @@ export function LeaderboardContainer() {
             .{wrongNetworkSwitcher}{" "}
             {isMobile && (
               <>
-                <CompetitionCountdown size="mobile" />.
+                <CompetitionCountdown size="mobile" />
               </>
             )}
           </>

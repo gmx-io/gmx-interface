@@ -272,10 +272,12 @@ $tabs-threshold: 990px;
 }
 
 .CompetitionCountdown {
+  &__time {
+    color: white;
+  }
   &_desktop &__time {
     white-space: nowrap;
     font-size: 3rem;
-    color: white;
 
     @media screen and (max-width: $tabs-threshold) {
       font-size: 2rem;
@@ -298,7 +300,11 @@ $tabs-threshold: 990px;
   }
 
   &_mobile {
-    display: inline;
+    display: block;
+  }
+
+  &_mobile::after {
+    content: ".";
   }
 }
 
