@@ -209,8 +209,6 @@ msgstr "{0}の担保のUSドル建の価値は、ポジションがオープン�
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "APR"
 msgstr "APR(実質年利)"
 
@@ -589,6 +587,11 @@ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average Position Size."
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "Avg. APR"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -3201,10 +3204,6 @@ msgstr ""
 msgid "Max. {nativeTokenSymbol} APR"
 msgstr ""
 
-#: src/components/Stake/GMXAprTooltip.tsx
-msgid "Max. {nativeTokenSymbol} APR is calculated with the max. 200% Boost Percentage by staking <0>Multiplier Points</0>."
-msgstr ""
-
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -4074,10 +4073,6 @@ msgid "Read more"
 msgstr "詳細について読む"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-#~ msgid "Read the rules"
-#~ msgstr ""
-
-#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Read the rules."
 msgstr ""
 
@@ -4315,14 +4310,6 @@ msgstr ""
 #: src/domain/synthetics/positions/utils.ts
 msgid "SL"
 msgstr ""
-
-#: src/domain/synthetics/leaderboard/constants.ts
-#~ msgid "STIP 13-20 Mar"
-#~ msgstr ""
-
-#: src/domain/synthetics/leaderboard/constants.ts
-#~ msgid "STIP 20-27 Mar"
-#~ msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Same as current active code"
@@ -5122,6 +5109,10 @@ msgstr ""
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
 msgstr "esGMX (IOU)トークンのアドレスは{esGmxIouAddress}です。"
+
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "The average {nativeTokenSymbol} APR is calculated with the average account boost percentage ({0}%), while the maximum {nativeTokenSymbol} APR is calculated with the maximum boost (200%) by staking <0>Multiplier Points</0>."
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour."
