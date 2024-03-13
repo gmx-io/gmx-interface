@@ -42,10 +42,6 @@ $tabs-threshold: 990px;
 .LeaderboardContainer__competition-tabs {
   position: relative;
   display: flex;
-
-  @media screen and (max-width: $tabs-threshold) {
-    flex-direction: column;
-  }
 }
 
 @media screen and (max-width: 600px) {
