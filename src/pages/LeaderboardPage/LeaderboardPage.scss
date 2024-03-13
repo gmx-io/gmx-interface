@@ -375,6 +375,11 @@ $tabs-threshold: 990px;
 .TableBox {
   width: 100%;
   overflow: visible;
+
+  .text-right {
+    text-align: right;
+    padding-right: 2rem;
+  }
 }
 
 .TableBox table.Exchange-list.App-box.Table {
