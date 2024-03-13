@@ -470,3 +470,15 @@ table.Table.Exchange-list th {
   z-index: 1;
   position: relative;
 }
+
+.GlobalLeaderboards__table {
+  max-width: var(--default-container-max-width);
+  margin: 0 auto;
+  padding-left: var(--default-container-padding);
+  padding-right: var(--default-container-padding);
+
+  @media (max-width: 1200px) {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}

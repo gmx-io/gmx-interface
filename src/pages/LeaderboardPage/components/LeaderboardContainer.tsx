@@ -182,7 +182,7 @@ export function LeaderboardContainer() {
       )}
 
       {!isStartInFuture && (
-        <div className="default-container">
+        <div className="GlobalLeaderboards__table">
           <LeaderboardAccountsTable activeCompetition={activeCompetition} accounts={accountsStruct} />
         </div>
       )}
