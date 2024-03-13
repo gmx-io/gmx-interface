@@ -18,4 +18,10 @@
   .Tokenselector-search-input::placeholder {
     color: var(--dark-blue-accent);
   }
+
+  &_size_s .Tokenselector-search-input {
+    font-size: 1.3rem;
+    padding: 0.85rem 1rem 0.85rem 3.4rem;
+    background-size: 1.5rem;
+  }
 }

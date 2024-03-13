@@ -90,7 +90,7 @@ import {
   parseValue,
 } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { museNeverExist } from "lib/types";
+import { mustNeverExist } from "lib/types";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 
@@ -526,7 +526,7 @@ export function TradeBox(p: Props) {
           break;
 
         default:
-          museNeverExist(tooltipName);
+          mustNeverExist(tooltipName);
       }
     }
 

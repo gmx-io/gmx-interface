@@ -14,6 +14,8 @@ import "./Header.css";
 import { Link } from "react-router-dom";
 import { isHomeSite } from "lib/legacy";
 import { HomeHeaderLinks } from "./HomeHeaderLinks";
+import { Trans } from "@lingui/macro";
+import { HeaderPromoBanner } from "components/HeaderPromoBanner/HeaderPromoBanner";
 
 // Fix framer-motion old React FC type (solved in react 18)
 const AnimatePresence = (props: React.ComponentProps<typeof FramerAnimatePresence> & { children: ReactNode }) => (
@@ -145,6 +147,12 @@ export function Header({
             </div>
           </div>
         </div>
+        <HeaderPromoBanner>
+          <Trans>
+            Trade&nbsp;on GMX&nbsp;V2 in&nbsp;Arbitrum and win&nbsp;280,000&nbsp;ARB ({">"}$500k) in prizes in{" "}
+            <Link to="/competitions/">two&nbsp;weekly</Link> competitions. Live&nbsp;from&nbsp;March 13th-27th.
+          </Trans>
+        </HeaderPromoBanner>
       </header>
       <AnimatePresence>
         {isDrawerVisible && (
