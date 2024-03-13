@@ -12,7 +12,7 @@ function EventToastContainer() {
   const breakpoint = useBreakpoint();
   const containerStyle = useMemo(
     () => ({
-      zIndex: 2,
+      zIndex: 801,
       transition: "all 200ms",
       top: scrollY > 60 ? "30px" : `${93 - scrollY}px`,
       right: breakpoint === "XL" ? "30px" : "1rem",

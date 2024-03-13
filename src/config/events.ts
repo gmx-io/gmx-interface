@@ -4,7 +4,8 @@ export type EventData = {
   id: string;
   title: string;
   isActive?: boolean;
-  validTill: string;
+  startDate?: string;
+  endDate: string;
   bodyText: string | string[];
   chains?: number[];
   buttons?: {
@@ -19,7 +20,7 @@ export const homeEventsData: EventData[] = [
     id: "v2-live",
     title: "GMX V2 beta is live",
     isActive: true,
-    validTill: "9 Sep 2023, 12:00",
+    endDate: "9 Sep 2023, 12:00",
     bodyText: "GMX V2 beta is now available for public use.",
     buttons: [
       {
@@ -40,7 +41,7 @@ export const appEventsData: EventData[] = [
     id: "v2-live",
     title: "GMX V2 beta is live",
     isActive: true,
-    validTill: "9 Sep 2023, 12:00",
+    endDate: "9 Sep 2023, 12:00",
     bodyText: "GMX V2 beta is now available for public use.",
     buttons: [
       {
@@ -58,7 +59,7 @@ export const appEventsData: EventData[] = [
     id: "v2-adaptive-funding",
     title: "Adaptive Funding is live",
     isActive: true,
-    validTill: "7 Nov 2023, 12:00",
+    endDate: "7 Nov 2023, 12:00",
     bodyText:
       "Adaptive Funding Rates are enabled for the ARB/USD market on Arbitrum and AVAX/USD market on Avalanche. This is a trial to improve the open interest balance and reduce price impact for markets.",
     buttons: [
@@ -73,7 +74,7 @@ export const appEventsData: EventData[] = [
     id: "v2-adaptive-funding-coming-soon",
     title: "Adaptive Funding",
     isActive: true,
-    validTill: "7 Nov 2023, 12:00",
+    endDate: "7 Nov 2023, 12:00",
     bodyText:
       "Adaptive Funding Rates will be enabled for the ARB/USD market on Arbitrum and AVAX/USD market on Avalanche this week. This is a trial to improve the open interest balance and reduce price impact for markets.",
     buttons: [
@@ -88,7 +89,7 @@ export const appEventsData: EventData[] = [
     id: "incentives-launch",
     title: "Incentives are live",
     isActive: true,
-    validTill: "31 Oct 2024, 12:00",
+    endDate: "31 Oct 2024, 12:00",
     bodyText: "Arbitrum STIP incentives are live for Arbitrum GM pools and GLP to GM migrations.",
     buttons: [
       {
@@ -102,7 +103,7 @@ export const appEventsData: EventData[] = [
     id: "all-incentives-launch",
     title: "Incentives are live",
     isActive: true,
-    validTill: "30 Mar 2024, 00:00",
+    endDate: "30 Mar 2024, 00:00",
     bodyText: [
       `Arbitrum STIP incentives are live for:`,
       "",
@@ -121,7 +122,7 @@ export const appEventsData: EventData[] = [
     id: "v2-adaptive-funding-all-markets",
     title: "Adaptive Funding",
     isActive: true,
-    validTill: "21 Dec 2023, 12:00",
+    endDate: "21 Dec 2023, 12:00",
     bodyText:
       "Adaptive Funding Rates are enabled for all markets. This is to improve the open interest balance and reduce price impact for markets.",
     buttons: [
@@ -136,21 +137,21 @@ export const appEventsData: EventData[] = [
     id: "ledger-issue",
     title: "GMX is unaffected",
     isActive: true,
-    validTill: "15 Dec 2023, 16:00",
+    endDate: "15 Dec 2023, 16:00",
     bodyText: ["The recent issue with Ledger Connect kit did not affect GMX."],
   },
   {
     id: "arbitrum-issue",
     title: "The Arbitrum Network is currently down",
     isActive: true,
-    validTill: "16 Dec 2023, 12:00",
+    endDate: "16 Dec 2023, 12:00",
     bodyText: ["They are currently working to resolve the issue."],
   },
   {
     id: "bnb-market",
     title: "BNB market added on Arbitrum!",
     isActive: true,
-    validTill: "15 Feb 2024, 12:00",
+    endDate: "15 Feb 2024, 12:00",
     bodyText: ["Trade BNB or provide liquidity using BNB or USDC in the GM Pool."],
     buttons: [
       {
@@ -164,7 +165,7 @@ export const appEventsData: EventData[] = [
     id: "feb-2024-markets",
     title: "NEAR, ATOM and AAVE markets added on Arbitrum!",
     isActive: true,
-    validTill: "14 Mar 2024, 12:00",
+    endDate: "14 Mar 2024, 12:00",
     bodyText: ["Trade NEAR, ATOM and AAVE or provide liquidity in the GM Pool."],
     buttons: [
       {
@@ -178,7 +179,15 @@ export const appEventsData: EventData[] = [
     id: "avax-market",
     title: "AVAX market added on Arbitrum!",
     isActive: true,
-    validTill: "21 Mar 2024, 12:00",
+    endDate: "21 Mar 2024, 12:00",
     bodyText: ["Trade AVAX or provide liquidity using WAVAX or USDC in the GM Pool."],
+  },
+  {
+    id: "op-market",
+    title: "OP market added on Arbitrum!",
+    isActive: true,
+    startDate: "13 Mar 2024, 00:00",
+    endDate: "26 Mar 2024, 12:00",
+    bodyText: ["Trade OP or provide liquidity using OP or USDC in the GM Pool."],
   },
 ];

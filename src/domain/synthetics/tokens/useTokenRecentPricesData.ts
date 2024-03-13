@@ -4,6 +4,8 @@ import useSWR from "swr";
 import { TokenPricesData } from "./types";
 import { useOracleKeeperFetcher } from "./useOracleKeeperFetcher";
 import { parseContractPrice } from "./utils";
+import { useLocation } from "react-router-dom";
+import { useMemo } from "react";
 
 type TokenPricesDataResult = {
   pricesData?: TokenPricesData;
@@ -12,8 +14,15 @@ type TokenPricesDataResult = {
 
 export function useTokenRecentPrices(chainId: number): TokenPricesDataResult {
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
+  const pathname = useLocation().pathname;
+
+  // TODO temp workaround
+  const refreshPricesInterval = useMemo(() => {
+    return pathname.startsWith("/leaderboard") || pathname.startsWith("/competitions") ? 60_000 : undefined;
+  }, [pathname]);
 
   const { data } = useSWR([chainId, oracleKeeperFetcher.oracleKeeperUrl, "useTokenRecentPrices"], {
+    refreshInterval: refreshPricesInterval,
     fetcher: ([chainId]) =>
       oracleKeeperFetcher.fetchTickers().then((priceItems) => {
         const result: TokenPricesData = {};

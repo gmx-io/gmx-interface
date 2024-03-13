@@ -10,7 +10,7 @@ import { PositionTradeAction, SwapTradeAction, TradeAction, TradeActionType } fr
 import { BigNumber, ethers } from "ethers";
 import { PRECISION, getExchangeRateDisplay } from "lib/legacy";
 import { formatDeltaUsd, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
-import { museNeverExist } from "lib/types";
+import { mustNeverExist } from "lib/types";
 import { trimStart } from "lodash";
 
 type TooltipProps = StatsTooltipRowProps & { key: string };
@@ -216,7 +216,7 @@ export const formatPositionMessage = (
     }
 
     default: {
-      museNeverExist(tradeAction.orderType);
+      mustNeverExist(tradeAction.orderType);
     }
   }
 
