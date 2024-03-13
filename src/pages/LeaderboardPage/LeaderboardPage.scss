@@ -234,6 +234,8 @@ $tabs-threshold: 990px;
       white-space: nowrap;
       margin-left: 2rem;
       flex: 2;
+      position: relative;
+      top: 0.5rem;
     }
 
     &-icon-container {
@@ -242,6 +244,8 @@ $tabs-threshold: 990px;
     }
 
     &-icon {
+      position: relative;
+      top: 0.1rem;
       width: 100%;
     }
 
