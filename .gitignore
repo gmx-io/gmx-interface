@@ -37,3 +37,7 @@ package-lock.json
 !.yarn/sdks
 !.yarn/versions
 /.idea/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

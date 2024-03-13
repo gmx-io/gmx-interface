@@ -124,6 +124,7 @@
     "@lingui/cli": "3.13.3",
     "@lingui/loader": "3.13.3",
     "@lingui/macro": "3.13.3",
+    "@playwright/test": "1.42.1",
     "buffer": "6.0.3",
     "eslint": "^8.41.0",
     "eslint-config-react-app": "^7.0.1",
@@ -133,7 +134,8 @@
     "husky": "7.0.4",
     "lint-staged": "12.3.4",
     "prettier": "2.5.1",
-    "react-app-rewired": "2.2.1"
+    "react-app-rewired": "2.2.1",
+    "tailwindcss": "3.4.1"
   },
   "lint-staged": {
     "src/**/*.{js,ts,jsx,tsx}": [
