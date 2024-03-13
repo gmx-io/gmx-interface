@@ -63,7 +63,8 @@ function useEventToast() {
 
     eventsData
       .filter((event) => event.isActive)
-      .filter((event) => isFuture(parse(event.validTill + ", +00", "d MMM yyyy, H:mm, x", new Date())))
+      .filter((event) => !isFuture(parse(event.startDate + ", +00", "d MMM yyyy, H:mm, x", new Date())))
+      .filter((event) => isFuture(parse(event.endDate + ", +00", "d MMM yyyy, H:mm, x", new Date())))
       .filter((event) => Array.isArray(visited) && !visited.includes(event.id))
       .filter((event) => !event.networks || event.chains.includes(chainId))
       .filter((event) => !(event.id in validationParams) || validationParams[event.id])

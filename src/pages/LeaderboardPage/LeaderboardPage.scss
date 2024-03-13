@@ -1,0 +1,434 @@
+$tabs-threshold: 990px;
+
+.LeaderboardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1.5rem 0;
+}
+
+.Leaderboard-Title {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+}
+
+.Leaderboard-Title h1 {
+  margin: 0 0 1rem;
+  display: flex;
+
+  @media screen and (max-width: $tabs-threshold) {
+    font-size: 2rem;
+  }
+}
+
+.Leaderboard-Title img {
+  margin-left: 1rem;
+}
+
+.Leaderboard-Title__description {
+  color: rgb(255 255 255 / 70%);
+}
+
+.GlobalLeaderboards .Tab {
+  width: 40rem;
+  margin: 0 auto;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+}
+
+.LeaderboardContainer__competition-tabs {
+  position: relative;
+  display: flex;
+
+  @media screen and (max-width: $tabs-threshold) {
+    flex-direction: column;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .GlobalLeaderboards .Tab {
+    width: unset;
+  }
+
+  .GlobalLeaderboards .Tab-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .LeaderboardHeader {
+    display: block;
+  }
+
+  .LeaderboardSearch.TopPositionsSearch {
+    width: unset;
+  }
+}
+
+.Table .formula {
+  font-style: italic;
+}
+
+.TopPositionsItem {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.TopPositionsItem img,
+.TopPositionsItem span {
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+.LeaderboardSearch {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 30rem;
+}
+
+.TopPositionsPositionCell .Tooltip {
+  display: inline-block;
+  width: 100%;
+}
+
+.TopPositionsPositionCell .Tooltip-handle {
+  display: inline-block;
+  width: 100%;
+}
+
+.TopPositionsPositionView {
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+  text-decoration: inherit;
+}
+
+.TopPositionsPositionView .TopPositionsSymbol {
+  display: inline-block;
+  text-decoration: inherit;
+}
+
+.TopPositionsMarketName {
+  margin-right: 0.5rem;
+}
+
+.TopPositionsDirection {
+  margin-left: 0.5rem;
+  text-align: left;
+  width: 4.4rem;
+}
+
+.LeaderboardSearch.disabled {
+  cursor: not-allowed;
+}
+
+.LeaderboardSearch:hover {
+  background: var(--dark-blue-hover);
+}
+
+.LeaderboardSearch:active {
+  background: var(--dark-blue-active);
+}
+
+.LeaderboardRank-1,
+.LeaderboardRank-2,
+.LeaderboardRank-3,
+.LeaderboardRank-TopCompetitor {
+  display: inline-flex;
+}
+
+.LeaderboardRankRow-Pinned td:first-child::before {
+  content: "";
+  display: inline-block;
+  width: 0.3rem;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: rgba(180, 187, 255, 0.1);
+}
+
+.LeaderboardRankRow-1 td:first-child::before,
+.LeaderboardRankRow-2 td:first-child::before,
+.LeaderboardRankRow-3 td:first-child::before {
+  content: "";
+  display: inline-block;
+  width: 35rem;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0.2;
+}
+
+.LeaderboardRankRow-1 td:first-child::before {
+  background: linear-gradient(90deg, #ffd22f, #ffd22f00);
+}
+
+.LeaderboardRankRow-2 td:first-child::before {
+  background: linear-gradient(90deg, #a7abe1, #a7abe100);
+}
+
+.LeaderboardRankRow-3 td:first-child::before {
+  background: linear-gradient(90deg, #ff932f, #ff932f00);
+}
+
+.LeaderboardRank-1::after,
+.LeaderboardRank-2::after,
+.LeaderboardRank-3::after {
+  content: "";
+  width: 2.5rem;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  margin-left: 0.5rem;
+}
+
+.NoLiqPriceTooltip {
+  min-width: 28rem;
+  white-space: normal;
+}
+
+.LeaderboardRank-1::after {
+  background-image: url(../../img/ic_trophy_1.svg);
+}
+
+.LeaderboardRank-2::after {
+  background-image: url(../../img/ic_trophy_2.svg);
+}
+
+.LeaderboardRank-3::after {
+  background-image: url(../../img/ic_trophy_3.svg);
+}
+
+.CompetitionPrizes {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  margin-bottom: 2rem;
+  overflow-x: auto;
+
+  &__prize {
+    margin-right: 1rem;
+    margin-bottom: 1rem;
+    flex: 1 1;
+    background-color: #16182e;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 0.5rem;
+    text-align: left;
+    padding: 2rem 2rem;
+    min-width: 21rem;
+
+    &-text {
+      display: flex;
+      flex-direction: column;
+      white-space: nowrap;
+      margin-left: 2rem;
+      width: 8.2rem;
+    }
+
+    &-icon {
+      width: 40%;
+    }
+
+    &-title {
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 0.5rem;
+    }
+
+    &-description {
+      color: white;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      white-space: nowrap;
+    }
+  }
+}
+
+.CompetitionCountdown {
+  position: absolute;
+  right: 0;
+  top: 0;
+
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+
+  @media screen and (max-width: $tabs-threshold) {
+    position: relative;
+    text-align: center;
+    margin-top: 2rem;
+  }
+
+  &__time {
+    white-space: nowrap;
+    font-size: 3rem;
+    color: white;
+
+    @media screen and (max-width: $tabs-threshold) {
+      font-size: 2rem;
+    }
+  }
+}
+
+.LeaderboardNavigation {
+  display: flex;
+  overflow-x: auto;
+}
+
+.LeaderboardHeader__network-icon {
+  margin-left: 1rem;
+  width: 1.7rem;
+}
+
+.LeaderboardNavigation .LeaderboardHeader__item {
+  margin-right: 0.8rem;
+  margin-bottom: 0.8rem;
+  white-space: nowrap;
+
+  &_selected {
+    background: rgba(80, 87, 126, 0.7);
+  }
+}
+
+.Leaderboard__another-network {
+  margin-top: 0.7rem;
+}
+
+.LeaderboardNavigation__chip {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 999rem;
+  font-size: 1.1rem;
+  padding: 0.3rem 0.6rem;
+  font-weight: bold;
+  margin-right: 0.8rem;
+  height: 2.2rem;
+
+  &_soon {
+    background-color: #2d42fc;
+  }
+
+  &_over {
+    background-color: rgb(180 187 255 / 10%);
+  }
+
+  &_live {
+    background-color: #b42941;
+    color: white;
+  }
+
+  &-circle {
+    background-color: white;
+    border-radius: 9999rem;
+    width: 1.1rem;
+    height: 1.1rem;
+    display: inline-block;
+    margin-right: 0.3rem;
+  }
+}
+
+.TableBox {
+  width: 100%;
+  overflow: visible;
+}
+
+.TableBox table.Exchange-list.App-box.Table {
+  border-radius: 0;
+}
+
+.TableBox__head {
+  background-color: #16182e;
+  padding: 1rem 1.6rem;
+  border-radius: 0.4rem 0.4rem 0 0;
+  border-bottom: 1px solid rgb(255 255 255 / 8%);
+}
+
+.TableBox__footer {
+  background-color: #16182e;
+  padding: 1rem 1.6rem;
+  border-radius: 0 0 0.4rem 0.4rem;
+  border-top: 1px solid rgb(255 255 255 / 8%);
+  height: 5.8rem;
+
+  & .pagination {
+    margin-top: 0;
+  }
+}
+
+.TableBox table.Exchange-list tr {
+  border: none;
+}
+
+.TableBox table.Exchange-list tr:hover {
+  cursor: default;
+}
+
+@media screen and (max-width: 1200px) {
+  .TableBox {
+    width: 100%;
+    overflow-x: scroll;
+    overflow-y: visible;
+  }
+  .Table {
+    width: 1200px;
+  }
+}
+
+table.Table.Exchange-list th {
+  opacity: unset;
+}
+
+.TableHeader .TableHeaderTitle {
+  opacity: 0.7;
+  display: flex;
+  height: 100%;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+.TableHeader.sortable .TableHeaderTitle,
+.TableHeader.sorted-asc .TableHeaderTitle,
+.TableHeader.sorted-desc .TableHeaderTitle {
+  cursor: pointer;
+}
+
+.TableHeader.sortable .TableHeaderTitle::after,
+.TableHeader.sorted-asc .TableHeaderTitle::after,
+.TableHeader.sorted-desc .TableHeaderTitle::after {
+  content: "";
+  display: inline-block;
+  width: 1.5rem;
+  margin-left: 0.5rem;
+  background-repeat: no-repeat;
+}
+
+.TableHeader.sortable .TableHeaderTitle::after {
+  background-position: center 0.25rem;
+  background-image: url(../../img/ic_sortable.svg);
+}
+
+.TableHeader.sorted-asc .TableHeaderTitle::after {
+  background-image: url(../../img/ic_sorted_asc.svg);
+  background-position: center 0.5rem;
+}
+
+.TableHeader.sorted-desc .TableHeaderTitle::after {
+  background-image: url(../../img/ic_sorted_desc.svg);
+  background-position: center 0.4rem;
+}
+
+.Table_tr {
+  position: relative;
+}
+
+.Table_tr td {
+  z-index: 1;
+  position: relative;
+}

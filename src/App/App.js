@@ -90,6 +90,7 @@ import useTradeRedirect from "lib/useTradeRedirect";
 import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContext";
 import { SubaccountModal } from "components/Synthetics/SubaccountModal/SubaccountModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
+import { LeaderboardPage, CompetitionRedirect } from "pages/LeaderboardPage/LeaderboardPage";
 
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -156,7 +157,21 @@ function FullApp({ pendingTxns, setPendingTxns }) {
   );
   const [redirectModalVisible, setRedirectModalVisible] = useState(false);
   const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
-  const [redirectPopupTimestamp, setRedirectPopupTimestamp] = useLocalStorage(REDIRECT_POPUP_TIMESTAMP_KEY);
+  const [redirectPopupTimestamp, setRedirectPopupTimestamp] = useLocalStorage(REDIRECT_POPUP_TIMESTAMP_KEY, undefined, {
+    deserializer: (val) => {
+      if (!val) {
+        return undefined;
+      }
+      const num = parseInt(val);
+
+      if (Number.isNaN(num)) {
+        return undefined;
+      }
+
+      return num;
+    },
+    serializer: (val) => (val ? val.toString() : undefined),
+  });
   const [selectedToPage, setSelectedToPage] = useState("");
 
   const settings = useSettings();
@@ -357,6 +372,48 @@ function FullApp({ pendingTxns, setPendingTxns }) {
               </Route>
               <Route exact path="/ecosystem">
                 <Ecosystem />
+              </Route>
+              <Route path="/leaderboard/">
+                {getIsSyntheticsSupported(chainId) ? (
+                  <SyntheticsStateContextProvider
+                    savedIsPnlInLeverage={settings.isPnlInLeverage}
+                    savedShowPnlAfterFees={settings.showPnlAfterFees}
+                    skipLocalReferralCode
+                    pageType="leaderboard"
+                  >
+                    <LeaderboardPage />
+                  </SyntheticsStateContextProvider>
+                ) : (
+                  <SyntheticsFallbackPage />
+                )}
+              </Route>
+              <Route exact path="/competitions/">
+                {getIsSyntheticsSupported(chainId) ? (
+                  <SyntheticsStateContextProvider
+                    savedIsPnlInLeverage={settings.isPnlInLeverage}
+                    savedShowPnlAfterFees={settings.showPnlAfterFees}
+                    skipLocalReferralCode
+                    pageType="competitions"
+                  >
+                    <CompetitionRedirect />
+                  </SyntheticsStateContextProvider>
+                ) : (
+                  <SyntheticsFallbackPage />
+                )}
+              </Route>
+              <Route path="/competitions/:leaderboardPageKey">
+                {getIsSyntheticsSupported(chainId) ? (
+                  <SyntheticsStateContextProvider
+                    savedIsPnlInLeverage={settings.isPnlInLeverage}
+                    savedShowPnlAfterFees={settings.showPnlAfterFees}
+                    skipLocalReferralCode
+                    pageType="competitions"
+                  >
+                    <LeaderboardPage isCompetitions />
+                  </SyntheticsStateContextProvider>
+                ) : (
+                  <SyntheticsFallbackPage />
+                )}
               </Route>
               <Route exact path="/referrals">
                 <Referrals pendingTxns={pendingTxns} setPendingTxns={setPendingTxns} />

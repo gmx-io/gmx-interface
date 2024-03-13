@@ -31,3 +31,7 @@ export function getTimeRemaining(time: number) {
 export function isValidTimestamp(timestamp: any) {
   return new Date(timestamp).getTime() > 0;
 }
+
+export function getTimestampByDaysAgo(daysAgo: number) {
+  return Math.floor(Date.now() / 1000 / 86400) * 86400 - daysAgo * 24 * 60 * 60;
+}

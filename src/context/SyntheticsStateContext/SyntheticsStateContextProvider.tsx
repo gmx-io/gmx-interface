@@ -16,9 +16,12 @@ import useWallet from "lib/wallets/useWallet";
 import { ReactNode, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
+import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
+
+export type SyntheticsPageType = "actions" | "trade" | "pools" | "leaderboard" | "competitions";
 
 export type SyntheticsTradeState = {
-  pageType: "actions" | "trade" | "pools";
+  pageType: SyntheticsPageType;
   globals: {
     chainId: number;
     markets: MarketsResult;
@@ -32,6 +35,7 @@ export type SyntheticsTradeState = {
     savedIsPnlInLeverage: boolean;
     savedShowPnlAfterFees: boolean;
   };
+  leaderboard: LeaderboardState;
   settings: SettingsContextType;
   tradebox: TradeState;
 };
@@ -49,9 +53,10 @@ export function SyntheticsStateContextProvider({
   savedIsPnlInLeverage: boolean;
   savedShowPnlAfterFees: boolean;
   skipLocalReferralCode: boolean;
-  pageType: "actions" | "trade" | "pools";
+  pageType: SyntheticsTradeState["pageType"];
 }) {
-  const { chainId } = useChainId();
+  const { chainId: selectedChainId } = useChainId();
+
   const { account: walletAccount, signer } = useWallet();
   const { account: paramsAccount } = useParams<{ account?: string }>();
 
@@ -62,6 +67,10 @@ export function SyntheticsStateContextProvider({
   }
 
   const account = pageType === "actions" ? checkSummedAccount : walletAccount;
+  const isLeaderboardPage = pageType === "competitions" || pageType === "leaderboard";
+  const leaderboard = useLeaderboardState(account, isLeaderboardPage);
+  const chainId = isLeaderboardPage ? leaderboard.chainId : selectedChainId;
+
   const markets = useMarkets(chainId);
   const marketsInfo = useMarketsInfoRequest(chainId);
   const positionsConstants = usePositionsConstantsRequest(chainId);
@@ -106,6 +115,7 @@ export function SyntheticsStateContextProvider({
         savedIsPnlInLeverage,
         savedShowPnlAfterFees,
       },
+      leaderboard,
       settings,
       tradebox: tradeState,
     };
@@ -124,6 +134,7 @@ export function SyntheticsStateContextProvider({
     userReferralInfo,
     savedIsPnlInLeverage,
     savedShowPnlAfterFees,
+    leaderboard,
     settings,
     tradeState,
   ]);
