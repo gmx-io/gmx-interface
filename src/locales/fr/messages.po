@@ -5335,7 +5335,11 @@ msgid "This competition has ended"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "This competition is held on the {0} network, please <0>change your network</0>."
+#~ msgid "This competition is held on the {0} network, please <0>change your network</0>."
+#~ msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "This competition is held on the {0} network. <0>Change your network</0> to participate."
 msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx

@@ -5338,8 +5338,12 @@ msgid "This competition has ended"
 msgstr "This competition has ended"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "This competition is held on the {0} network, please <0>change your network</0>."
-msgstr "This competition is held on the {0} network, please <0>change your network</0>."
+#~ msgid "This competition is held on the {0} network, please <0>change your network</0>."
+#~ msgstr "This competition is held on the {0} network, please <0>change your network</0>."
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "This competition is held on the {0} network. <0>Change your network</0> to participate."
+msgstr "This competition is held on the {0} network. <0>Change your network</0> to participate."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
