@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ethers } from "ethers";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BsArrowRight } from "react-icons/bs";
 
 import PositionRouter from "abis/PositionRouter.json";
@@ -66,6 +66,7 @@ import ExchangeInfoRow from "./ExchangeInfoRow";
 import FeesTooltip from "./FeesTooltip";
 import "./PositionSeller.css";
 import { ErrorCode, ErrorDisplayType } from "./constants";
+import { useKey } from "react-use";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -226,6 +227,7 @@ export default function PositionSeller(props) {
   const prevIsVisible = usePrevious(isVisible);
   const [allowedSlippage, setAllowedSlippage] = useState(savedSlippageAmount);
   const positionPriceDecimal = getPriceDecimals(chainId, position?.indexToken?.symbol);
+  const submitButtonRef = useRef(null);
 
   useEffect(() => {
     setAllowedSlippage(savedSlippageAmount);
@@ -956,6 +958,18 @@ export default function PositionSeller(props) {
       });
   };
 
+  useKey(
+    "Enter",
+    () => {
+      if (isVisible && isPrimaryEnabled()) {
+        submitButtonRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+        onClickPrimary();
+      }
+    },
+    {},
+    [isVisible, isPrimaryEnabled]
+  );
+
   const renderExistingOrderWarning = useCallback(() => {
     if (!existingOrder) {
       return;
@@ -1030,7 +1044,12 @@ export default function PositionSeller(props) {
         <Tooltip
           isHandlerDisabled
           handle={
-            <Button variant="primary-action w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+            <Button
+              buttonRef={submitButtonRef}
+              variant="primary-action w-full"
+              onClick={onClickPrimary}
+              disabled={!isPrimaryEnabled()}
+            >
               {primaryTextMessage}
             </Button>
           }
@@ -1042,7 +1061,12 @@ export default function PositionSeller(props) {
     }
 
     return (
-      <Button variant="primary-action w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+      <Button
+        buttonRef={submitButtonRef}
+        variant="primary-action w-full"
+        onClick={onClickPrimary}
+        disabled={!isPrimaryEnabled()}
+      >
         {primaryTextMessage}
       </Button>
     );

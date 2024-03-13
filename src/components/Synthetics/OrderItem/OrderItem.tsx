@@ -375,10 +375,8 @@ export function OrderItem(p: Props) {
     return (
       <tr ref={p.setRef} className="Exchange-list-item">
         {!p.hideActions && p.onSelectOrder && (
-          <td className="Exchange-list-item-type">
-            <div>
-              <Checkbox isChecked={p.isSelected} setIsChecked={p.onSelectOrder} />
-            </div>
+          <td className="Exchange-list-item-type" onClick={p.onSelectOrder}>
+            <Checkbox isChecked={p.isSelected} setIsChecked={p.onSelectOrder} />
           </td>
         )}
         <td className="Exchange-list-item-type">

@@ -890,6 +890,11 @@ table.Exchange-list-small td {
   max-width: 5rem;
 }
 
+.Position-list-active-orders .Tooltip-popup .order__list {
+  max-height: 350px;
+  overflow-y: auto;
+}
+
 .Exchange-list-info-label {
   font-size: var(--font-sm);
   margin-top: 0.31rem;

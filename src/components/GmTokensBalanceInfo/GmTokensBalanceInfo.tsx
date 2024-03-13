@@ -23,7 +23,6 @@ export const GmTokensBalanceInfo = ({
   daysConsidered: number;
   oneLine?: boolean;
 }) => {
-  const shouldShowIncentivesNote = useLpIncentivesIsActive();
   const content = (
     <>
       {formatTokenAmount(token.balance, token.decimals, "GM", {
@@ -61,19 +60,11 @@ export const GmTokensBalanceInfo = ({
         )}
         <br />
         <div className="text-white">
-          <Trans>Fees USD value is calculated at the time they are accrued.</Trans>
+          <Trans>The fees' USD value is calculated at the time they are accrued and does not include incentives.</Trans>
         </div>
-        {shouldShowIncentivesNote && (
-          <>
-            <br />
-            <div className="text-white">
-              <Trans>Fee values do not include incentives.</Trans>
-            </div>
-          </>
-        )}
       </>
     );
-  }, [daysConsidered, earnedRecently, earnedTotal, shouldShowIncentivesNote]);
+  }, [daysConsidered, earnedRecently, earnedTotal]);
   if (!earnedTotal && !earnedRecently) {
     return content;
   }

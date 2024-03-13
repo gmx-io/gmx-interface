@@ -73,7 +73,7 @@ $left-arrow-bg: #2e3351;
     &::after {
       display: block;
       bottom: -4px;
-      background: #232640;
+      background: #2a2c46;
     }
   }
 
@@ -111,14 +111,13 @@ $left-arrow-bg: #2e3351;
     &::after {
       display: block;
       top: -4px;
-      background: #282b43;
+      background: #232740;
     }
   }
 
   &.bottom-end {
     right: 0;
     transform: translateY(0.8rem);
-    top: 100%;
 
     &::after {
       display: block;

@@ -93,6 +93,7 @@ import Modal from "components/Modal/Modal";
 import { AcceptablePriceImpactInputRow } from "components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 
 import "./OrderEditor.scss";
+import { useKey } from "react-use";
 
 type Props = {
   order: OrderInfo;
@@ -507,6 +508,17 @@ export function OrderEditor(p: Props) {
   }
 
   const submitButtonState = getSubmitButtonState();
+
+  useKey(
+    "Enter",
+    () => {
+      if (!submitButtonState.disabled) {
+        onSubmit();
+      }
+    },
+    {},
+    [submitButtonState.disabled]
+  );
 
   useEffect(
     function initValues() {
