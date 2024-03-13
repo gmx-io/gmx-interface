@@ -2,6 +2,7 @@ import { gql } from "@apollo/client";
 import { getLeaderboardGraphClient } from "lib/subgraph";
 import useSWR from "swr";
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "./constants";
+import { expandDecimals } from "lib/numbers";
 
 export * from "./types";
 
@@ -312,7 +313,12 @@ const fetchPositions = async (
     `,
     variables: {
       isSnapshot: snapshotTimestamp !== undefined,
-      requiredMaxCapital: MIN_COLLATERAL_USD_IN_LEADERBOARD.toString(),
+      // filtering by maxCapital capital is not accurate for any specific period
+      // because it uses maxCapital of total period
+      // if trader's pnl is positive at the start of the period
+      // then maxCapital at the start of the period is higher than total maxCapital
+      // use lower threshold to mitigate this issue
+      requiredMaxCapital: expandDecimals(50, 30).toString(),
       snapshotTimestamp,
     },
     fetchPolicy: "no-cache",
