@@ -214,7 +214,8 @@ $tabs-threshold: 990px;
   overflow-x: auto;
 
   &__prize {
-    margin-right: 1rem;
+    width: 100%;
+    margin-right: 1.8rem;
 
     &:last-child {
       margin-right: 0;
@@ -236,16 +237,16 @@ $tabs-threshold: 990px;
       flex-direction: column;
       white-space: nowrap;
       margin-left: 2rem;
-      width: 50%;
+      flex: 2;
     }
 
     &-icon-container {
-      width: 50%;
+      flex: 1;
       text-align: center;
     }
 
     &-icon {
-      max-width: 8rem;
+      width: 100%;
     }
 
     &-title {
