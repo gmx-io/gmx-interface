@@ -2,10 +2,10 @@ import { t } from "@lingui/macro";
 import { CompetitionType, LeaderboardPageKey } from "domain/synthetics/leaderboard";
 import { mustNeverExist } from "lib/types";
 import { useMemo } from "react";
-import rank1Icon from "img/rank1.png";
-import rank2Icon from "img/rank2.png";
-import rank3Icon from "img/rank3.png";
-import rank4Icon from "img/rank4.png";
+import rank1Icon from "img/rank1.svg";
+import rank2Icon from "img/rank2.svg";
+import rank3Icon from "img/rank3.svg";
+import rank4Icon from "img/rank4.svg";
 
 const iconByType = {
   gold: rank1Icon,
