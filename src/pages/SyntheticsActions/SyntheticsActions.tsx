@@ -43,19 +43,21 @@ export default function SyntheticsActions() {
                   GMX V2 {networkName} information for account: {checkSummedAccount}
                 </Trans>
                 {getIsV1Supported(chainId) && (
-                  <div>
-                    <ExternalLink newTab={false} href={`/#/actions/v1/${checkSummedAccount}`}>
-                      Check on GMX V1 {networkName}
-                    </ExternalLink>{" "}
-                    or{" "}
-                    <span
-                      className="underline cursor-pointer"
-                      onClick={() => switchNetwork(chainId === ARBITRUM ? AVALANCHE : ARBITRUM, active)}
-                    >
-                      switch network to {chainId === ARBITRUM ? "Avalanche" : "Arbitrum"}
-                    </span>
-                    .
-                  </div>
+                  <Trans>
+                    <div>
+                      <ExternalLink newTab={false} href={`/#/actions/v1/${checkSummedAccount}`}>
+                        Check on GMX V1 {networkName}
+                      </ExternalLink>{" "}
+                      or{" "}
+                      <span
+                        className="underline cursor-pointer"
+                        onClick={() => switchNetwork(chainId === ARBITRUM ? AVALANCHE : ARBITRUM, active)}
+                      >
+                        switch network to {chainId === ARBITRUM ? "Avalanche" : "Arbitrum"}
+                      </span>
+                      .
+                    </div>
+                  </Trans>
                 )}
               </>
             }
@@ -105,22 +107,24 @@ export default function SyntheticsActions() {
               title={t`GMX V2 Actions`}
               subtitle={
                 <>
-                  {<Trans>GMX V2 {networkName} actions for all accounts.</Trans>}
+                  <Trans>GMX V2 {networkName} actions for all accounts.</Trans>
 
                   {getIsV1Supported(chainId) && (
-                    <div>
-                      <ExternalLink newTab={false} href="/#/actions/v1">
-                        Check on GMX V1 {networkName}
-                      </ExternalLink>{" "}
-                      or{" "}
-                      <span
-                        className="underline cursor-pointer"
-                        onClick={() => switchNetwork(chainId === ARBITRUM ? AVALANCHE : ARBITRUM, active)}
-                      >
-                        switch network to {chainId === ARBITRUM ? "Avalanche" : "Arbitrum"}
-                      </span>
-                      .
-                    </div>
+                    <Trans>
+                      <div>
+                        <ExternalLink newTab={false} href="/#/actions/v1">
+                          Check on GMX V1 {networkName}
+                        </ExternalLink>{" "}
+                        or{" "}
+                        <span
+                          className="underline cursor-pointer"
+                          onClick={() => switchNetwork(chainId === ARBITRUM ? AVALANCHE : ARBITRUM, active)}
+                        >
+                          switch network to {chainId === ARBITRUM ? "Avalanche" : "Arbitrum"}
+                        </span>
+                        .
+                      </div>
+                    </Trans>
                   )}
                 </>
               }

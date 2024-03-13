@@ -104,19 +104,21 @@ export default function Actions({ savedIsPnlInLeverage, savedShowPnlAfterFees })
               <>
                 <Trans>GMX V1 Arbitrum information for account: {checkSummedAccount}</Trans>
                 {getIsSyntheticsSupported(chainId) && (
-                  <div>
-                    <ExternalLink newTab={false} href={`/#/actions/${checkSummedAccount}`}>
-                      Check on GMX V2 {networkName}
-                    </ExternalLink>{" "}
-                    or{" "}
-                    <span
-                      className="underline cursor-pointer"
-                      onClick={() => switchNetwork(chainId === ARBITRUM ? AVALANCHE : ARBITRUM, active)}
-                    >
-                      switch network to {chainId === ARBITRUM ? "Avalanche" : "Arbitrum"}
-                    </span>
-                    .
-                  </div>
+                  <Trans>
+                    <div>
+                      <ExternalLink newTab={false} href={`/#/actions/${checkSummedAccount}`}>
+                        Check on GMX V2 {networkName}
+                      </ExternalLink>{" "}
+                      or{" "}
+                      <span
+                        className="underline cursor-pointer"
+                        onClick={() => switchNetwork(chainId === ARBITRUM ? AVALANCHE : ARBITRUM, active)}
+                      >
+                        switch network to {chainId === ARBITRUM ? "Avalanche" : "Arbitrum"}
+                      </span>
+                      .
+                    </div>
+                  </Trans>
                 )}
               </>
             }
@@ -200,21 +202,23 @@ export default function Actions({ savedIsPnlInLeverage, savedShowPnlAfterFees })
               title={t`GMX V1 Actions`}
               subtitle={
                 <>
-                  {<Trans>GMX V1 {networkName} actions for all accounts.</Trans>}
+                  <Trans>GMX V1 {networkName} actions for all accounts.</Trans>
                   {getIsSyntheticsSupported(chainId) && (
-                    <div>
-                      <ExternalLink newTab={false} href="/#/actions">
-                        Check on GMX V2 {networkName}
-                      </ExternalLink>{" "}
-                      or{" "}
-                      <span
-                        className="underline cursor-pointer"
-                        onClick={() => switchNetwork(chainId === ARBITRUM ? AVALANCHE : ARBITRUM, active)}
-                      >
-                        switch network to {chainId === ARBITRUM ? "Avalanche" : "Arbitrum"}
-                      </span>
-                      .
-                    </div>
+                    <Trans>
+                      <div>
+                        <ExternalLink newTab={false} href="/#/actions">
+                          Check on GMX V2 {networkName}
+                        </ExternalLink>{" "}
+                        or{" "}
+                        <span
+                          className="underline cursor-pointer"
+                          onClick={() => switchNetwork(chainId === ARBITRUM ? AVALANCHE : ARBITRUM, active)}
+                        >
+                          switch network to {chainId === ARBITRUM ? "Avalanche" : "Arbitrum"}
+                        </span>
+                        .
+                      </div>
+                    </Trans>
                   )}
                 </>
               }
