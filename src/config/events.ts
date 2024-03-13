@@ -166,7 +166,7 @@ export const appEventsData: EventData[] = [
     title: "New markets added on Arbitrum!",
     isActive: true,
     endDate: "14 Mar 2024, 12:00",
-    bodyText: ["Trade NEAR, ATOM, AAVE, AVAX, OP, or provide liquidity in their GM Pools."],
+    bodyText: ["Trade NEAR, ATOM, AAVE, AVAX, OP or provide liquidity in their GM Pools."],
     buttons: [
       {
         text: "Read more.",
