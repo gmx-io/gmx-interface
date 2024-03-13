@@ -102,11 +102,11 @@ export function LeaderboardContainer() {
     return (
       <div className="Leaderboard__another-network">
         <Trans>
-          This competition is held on the {getChainName(page.chainId)} network, please{" "}
+          This competition is held on the {getChainName(page.chainId)} network.{" "}
           <span className="link-underline" onClick={handleSwitchNetworkClick}>
-            change your network
-          </span>
-          .
+            Change your network
+          </span>{" "}
+          to participate.
         </Trans>
       </div>
     );
