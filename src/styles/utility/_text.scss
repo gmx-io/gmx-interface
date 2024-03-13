@@ -1,0 +1,43 @@
+.strong {
+  font-weight: bold;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+.text-none {
+  text-transform: none;
+}
+
+.text-white {
+  color: white;
+}
+
+.text-gray {
+  color: var(--text-gray);
+}
+
+.text-red {
+  color: var(--error-red);
+}
+
+.text-green {
+  color: var(--green);
+}
+
+.text-warning {
+  color: var(--warning-yellow);
+}
+
+.font-sm {
+  font-size: var(--font-sm);
+}
+
+.font-base {
+  font-size: var(--font-base);
+}

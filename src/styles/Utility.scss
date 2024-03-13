@@ -1,0 +1,51 @@
+@use "utility/text";
+@use "utility/margin";
+@use "utility/flex";
+
+.border {
+  border: 1px solid rgba(163, 165, 196, 0.2);
+}
+
+.muted {
+  opacity: 0.7;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.relative {
+  position: relative;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.display-inline {
+  display: inline;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.lh-1 {
+  line-height: 1;
+}
+
+.nobr {
+  white-space: nowrap;
+}
+
+.rotate-90 {
+  transform: rotate(90deg);
+}
