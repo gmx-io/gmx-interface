@@ -1178,7 +1178,7 @@ export default function StakeV2({ setPendingTxns }) {
     feeGlpTrackerAddress,
   ];
 
-  const totalStakedBnGMXAmount = useStakedBnGMXAmount();
+  const stakedBnGmxSupply = useStakedBnGMXAmount();
   const { marketsInfoData, tokensData } = useMarketsInfoRequest(chainId);
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
   const { marketsTokensAPRData, marketsTokensIncentiveAprData } = useMarketTokensAPR(chainId, {
@@ -1296,6 +1296,7 @@ export default function StakeV2({ setPendingTxns }) {
     aum,
     nativeTokenPrice,
     stakedGmxSupply,
+    stakedBnGmxSupply,
     gmxPrice,
     gmxSupply,
     maxBoostBasicPoints?.div(BASIS_POINTS_DIVISOR)
@@ -1569,23 +1570,9 @@ export default function StakeV2({ setPendingTxns }) {
     );
   }, [nativeTokenSymbol, processedData, recommendStakeGmx, accumulatedBnGMXAmount]);
 
-  const averageBoostRatio = useMemo(() => {
-    const currentStakedGMX = stakedGMXInfo[chainId] ?? BN_ZERO;
-    if (!totalStakedBnGMXAmount || !currentStakedGMX || !processedData?.stakedEsGmxSupply) {
-      return;
-    }
-
-    return totalStakedBnGMXAmount
-      ?.mul(BASIS_POINTS_DIVISOR)
-      .div(currentStakedGMX?.add(processedData?.stakedEsGmxSupply ?? 0));
-  }, [totalStakedBnGMXAmount, processedData?.stakedEsGmxSupply, stakedGMXInfo, chainId]);
-
   const gmxAvgAprText = useMemo(() => {
-    const avgBoostApr = processedData?.gmxAprForNativeToken?.mul(averageBoostRatio).div(BASIS_POINTS_DIVISOR);
-    const avgApr = processedData?.gmxAprForNativeToken?.add(avgBoostApr ?? 0);
-
-    return `${formatAmount(avgApr, 2, 2, true)}%`;
-  }, [processedData?.gmxAprForNativeToken, averageBoostRatio]);
+    return `${formatAmount(processedData?.avgGMXAprForNativeToken, 2, 2, true)}%`;
+  }, [processedData?.avgGMXAprForNativeToken]);
 
   const renderMultiplierPointsLabel = useCallback(() => {
     return t`Multiplier Points APR`;
@@ -1860,11 +1847,7 @@ export default function StakeV2({ setPendingTxns }) {
                     handle={gmxAvgAprText}
                     position="bottom-end"
                     renderContent={() => (
-                      <GMXAprTooltip
-                        averageBoostRatio={averageBoostRatio}
-                        processedData={processedData}
-                        nativeTokenSymbol={nativeTokenSymbol}
-                      />
+                      <GMXAprTooltip processedData={processedData} nativeTokenSymbol={nativeTokenSymbol} />
                     )}
                   />
                 </div>
@@ -2298,11 +2281,7 @@ export default function StakeV2({ setPendingTxns }) {
                     handle={gmxAvgAprText}
                     position="bottom-end"
                     renderContent={() => (
-                      <GMXAprTooltip
-                        averageBoostRatio={averageBoostRatio}
-                        processedData={processedData}
-                        nativeTokenSymbol={nativeTokenSymbol}
-                      />
+                      <GMXAprTooltip processedData={processedData} nativeTokenSymbol={nativeTokenSymbol} />
                     )}
                   />
                 </div>
