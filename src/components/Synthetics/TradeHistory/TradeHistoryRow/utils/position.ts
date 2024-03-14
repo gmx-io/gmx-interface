@@ -407,11 +407,16 @@ export const formatPositionMessage = (
       triggerPrice: customPrice,
     };
   } else if (ot === OrderType.StopLossDecrease && ev === TradeActionType.OrderExecuted) {
+    const isAcceptablePriceUseful =
+      !tradeAction.acceptablePrice.isZero() && !tradeAction.acceptablePrice.gte(BN_BILLION);
+
     result = {
       priceComment: lines(
         t`Mark price for the order.`,
         "",
-        infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice),
+        isAcceptablePriceUseful
+          ? infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice)
+          : undefined,
         infoRow(t`Order Execution Price`, formattedExecutionPrice!),
         infoRow(t`Price Impact`, {
           text: formattedPriceImpact!,
