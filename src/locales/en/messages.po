@@ -59,10 +59,6 @@ msgstr "<0><1>Check on GMX V1 {networkName}</1> or <2>switch network to {0}</2>.
 msgid "<0><1>Check on GMX V2 {networkName}</1> or <2>switch network to {0}</2>.</0>"
 msgstr "<0><1>Check on GMX V2 {networkName}</1> or <2>switch network to {0}</2>.</0>"
 
-#: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
-#~ msgid "<0><1>{eventTitle}</1> from <2>{0} {indexName} <3>[{poolName}]</3> Position</2></0>"
-#~ msgstr "<0><1>{eventTitle}</1> from <2>{0} {indexName} <3>[{poolName}]</3> Position</2></0>"
-
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "<0>APR is based on the Fees collected for the past {daysConsidered} days. It is an estimate as actual Fees are auto-compounded into the pool in real-time.</0><1>Check Pools performance against other LP Positions in <2>GMX Dune Dashboard</2>.</1>"
 msgstr "<0>APR is based on the Fees collected for the past {daysConsidered} days. It is an estimate as actual Fees are auto-compounded into the pool in real-time.</0><1>Check Pools performance against other LP Positions in <2>GMX Dune Dashboard</2>.</1>"
@@ -2781,7 +2777,7 @@ msgstr "Last 30 days"
 msgid "Last 7 days"
 msgstr "Last 7 days"
 
-#: src/components/Synthetics/TradeHistory/DateRangeSelect/DateRangeSelect.tsx
+#: src/components/Synthetics/DateRangeSelect/DateRangeSelect.tsx
 msgid "Last month"
 msgstr "Last month"
 
@@ -4290,10 +4286,6 @@ msgstr "REBATE"
 msgid "Rank"
 msgstr "Rank"
 
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/swap.ts
-msgid "Ratio price for the order at the time of creation."
-msgstr "Ratio price for the order at the time of creation."
-
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
@@ -4321,7 +4313,6 @@ msgstr "Realized PnL insufficient for Fees"
 msgid "Realized Price Impact"
 msgstr "Realized Price Impact"
 
-#: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Reason: {0}"
 msgstr "Reason: {0}"

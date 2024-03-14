@@ -3,7 +3,7 @@ import { t } from "@lingui/macro";
 import { isLimitOrderType, OrderType } from "domain/synthetics/orders";
 import { getTriggerNameByOrderType } from "domain/synthetics/positions";
 import type { TradeActionType } from "domain/synthetics/tradeHistory";
-import { museNeverExist } from "lib/types";
+import { mustNeverExist } from "lib/types";
 import { getOrderActionText } from "./TradeHistoryRow/utils/shared";
 
 type OrderTypes = keyof typeof OrderType;
@@ -79,7 +79,7 @@ export function orderTypeToKey(orderType: OrderType): keyof typeof OrderType {
     case OrderType.Liquidation:
       return "Liquidation";
     default:
-      return museNeverExist(orderType);
+      return mustNeverExist(orderType);
   }
 }
 
