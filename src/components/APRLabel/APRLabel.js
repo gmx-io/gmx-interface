@@ -113,7 +113,7 @@ export default function APRLabel({ chainId, label }) {
       fetcher: contractFetcher(undefined, Vault),
     }
   );
-  const stakedBnGmxSupply = useStakedBnGMXAmount();
+  const stakedBnGmxSupply = useStakedBnGMXAmount(chainId);
   const { gmxPrice } = useGmxPrice(chainId, {}, active);
 
   const maxBoostBasicPoints = useMaxBoostBasicPoints();

@@ -535,9 +535,12 @@ msgid "Approving..."
 msgstr "승인중..."
 
 #: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
 msgid "Arbitrum APR:"
 msgstr "Arbitrum APR:"
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Arbitrum Avg. APR:"
+msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "As network fees have increased, an additional execution fee is needed."
@@ -587,9 +590,12 @@ msgid "Available on your preferred network"
 msgstr "선택한 네트워크에서 이용가능"
 
 #: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Avalanche Avg. APR:"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average Leverage used."

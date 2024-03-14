@@ -1178,7 +1178,7 @@ export default function StakeV2({ setPendingTxns }) {
     feeGlpTrackerAddress,
   ];
 
-  const stakedBnGmxSupply = useStakedBnGMXAmount();
+  const stakedBnGmxSupply = useStakedBnGMXAmount(chainId);
   const { marketsInfoData, tokensData } = useMarketsInfoRequest(chainId);
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
   const { marketsTokensAPRData, marketsTokensIncentiveAprData } = useMarketTokensAPR(chainId, {

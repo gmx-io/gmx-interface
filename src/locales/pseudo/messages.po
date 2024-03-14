@@ -535,8 +535,11 @@ msgid "Approving..."
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
 msgid "Arbitrum APR:"
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Arbitrum Avg. APR:"
 msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -587,8 +590,11 @@ msgid "Available on your preferred network"
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche APR:"
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Avalanche Avg. APR:"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
