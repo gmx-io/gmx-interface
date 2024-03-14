@@ -408,7 +408,7 @@ export function SyntheticsStats() {
                       <TooltipWithPortal
                         handle={
                           <>
-                            <span className={getPositiveOrNegativeClass(borrowingRateLong.mul(-1))}>
+                            <span className={getPositiveOrNegativeClass(borrowingRateLong.mul(-1).add(1))}>
                               {formatAmount(borrowingRateLong.mul(-1), 30, 4)}%
                             </span>
                             {" / "}
