@@ -421,7 +421,7 @@ export function PositionItem(p: Props) {
             "text-gray",
           ])}
           renderContent={() => (
-            <>
+            <div className="order__list">
               <strong>
                 <Trans>Active Orders</Trans>
               </strong>
@@ -448,7 +448,7 @@ export function PositionItem(p: Props) {
                   </div>
                 );
               })}
-            </>
+            </div>
           )}
         />
       </div>

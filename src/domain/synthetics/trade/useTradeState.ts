@@ -22,6 +22,15 @@ type ReactSetState<T> = Dispatch<SetStateAction<T>>;
 type LocalStorageSetState<T> = Dispatch<SetStateAction<T | undefined>>;
 type TradeStage = "trade" | "confirmation" | "processing";
 
+type TradeOptions = {
+  tradeType?: TradeType;
+  tradeMode?: TradeMode;
+  fromTokenAddress?: string;
+  toTokenAddress?: string;
+  marketAddress?: string;
+  collateralAddress?: string;
+};
+
 export type TradeState = {
   tradeType: TradeType;
   tradeMode: TradeMode;
@@ -43,6 +52,14 @@ export type TradeState = {
   setMarketAddress: (marketAddress?: string) => void;
   setCollateralAddress: (tokenAddress?: string) => void;
   switchTokenAddresses: () => void;
+  setTradeConfig: ({
+    tradeType,
+    tradeMode,
+    fromTokenAddress,
+    toTokenAddress,
+    marketAddress,
+    collateralAddress,
+  }: TradeOptions) => void;
 
   fromTokenInputValue: string;
   setFromTokenInputValue: ReactSetState<string>;
@@ -256,7 +273,6 @@ export function useTradeState(
   const setMarketAddress = useCallback(
     (marketAddress?: string) => {
       const oldState = JSON.parse(JSON.stringify(storedOptions));
-
       if (!toTokenAddress) {
         return;
       }
@@ -301,6 +317,48 @@ export function useTradeState(
       const oldState = JSON.parse(JSON.stringify(storedOptions));
 
       oldState.collateralAddress = tokenAddress;
+
+      setStoredOptions(oldState);
+    },
+    [setStoredOptions, storedOptions]
+  );
+
+  const setTradeConfig = useCallback(
+    (tradeOptions: TradeOptions) => {
+      const { tradeType, tradeMode, fromTokenAddress, toTokenAddress, marketAddress, collateralAddress } = tradeOptions;
+      const oldState = JSON.parse(JSON.stringify(storedOptions));
+
+      if (tradeType) {
+        oldState.tradeType = tradeType;
+      }
+
+      if (tradeMode) {
+        oldState.tradeMode = tradeMode;
+      }
+
+      if (fromTokenAddress) {
+        oldState.tokens.fromTokenAddress = fromTokenAddress;
+      }
+
+      if (toTokenAddress) {
+        if (oldState.tradeType === TradeType.Swap) {
+          oldState.tokens.swapToTokenAddress = toTokenAddress;
+        } else {
+          oldState.tokens.indexTokenAddress = toTokenAddress;
+          if (toTokenAddress && marketAddress) {
+            oldState.markets[toTokenAddress] = oldState.markets[toTokenAddress] || {};
+            if (oldState.tradeType === TradeType.Long) {
+              oldState.markets[toTokenAddress].long = marketAddress;
+            } else if (oldState.tradeType === TradeType.Short) {
+              oldState.markets[toTokenAddress].short = marketAddress;
+            }
+          }
+        }
+      }
+
+      if (collateralAddress) {
+        oldState.collateralAddress = collateralAddress;
+      }
 
       setStoredOptions(oldState);
     },
@@ -407,6 +465,7 @@ export function useTradeState(
     setTradeType,
     setTradeMode,
     switchTokenAddresses,
+    setTradeConfig,
     fromTokenInputValue,
     setFromTokenInputValue,
     toTokenInputValue,

@@ -929,6 +929,7 @@ export const TOKEN_COLOR_MAP = {
 export const TOKENS_MAP: { [chainId: number]: { [address: string]: Token } } = {};
 export const V1_TOKENS: { [chainId: number]: Token[] } = {};
 export const V2_TOKENS: { [chainId: number]: Token[] } = {};
+export const SYNTHETIC_TOKENS: { [chainId: number]: Token[] } = {};
 export const TOKENS_BY_SYMBOL_MAP: { [chainId: number]: { [symbol: string]: Token } } = {};
 export const WRAPPED_TOKENS_MAP: { [chainId: number]: Token } = {};
 export const NATIVE_TOKENS_MAP: { [chainId: number]: Token } = {};
@@ -940,6 +941,7 @@ for (let j = 0; j < CHAIN_IDS.length; j++) {
 
   TOKENS_MAP[chainId] = {};
   TOKENS_BY_SYMBOL_MAP[chainId] = {};
+  SYNTHETIC_TOKENS[chainId] = [];
   V1_TOKENS[chainId] = [];
   V2_TOKENS[chainId] = [];
 
@@ -967,9 +969,17 @@ for (let j = 0; j < CHAIN_IDS.length; j++) {
     if (!token.isPlatformToken && !token.isTempHidden) {
       V2_TOKENS[chainId].push(token);
     }
+
+    if (token.isSynthetic) {
+      SYNTHETIC_TOKENS[chainId].push(token);
+    }
   }
 
   NATIVE_TOKENS_MAP[chainId].wrappedAddress = wrappedTokenAddress;
+}
+
+export function getSyntheticTokens(chainId: number) {
+  return SYNTHETIC_TOKENS[chainId];
 }
 
 export function getWrappedToken(chainId: number) {
@@ -1022,11 +1032,34 @@ export function getToken(chainId: number, address: string) {
   return TOKENS_MAP[chainId][address];
 }
 
-export function getTokenBySymbol(chainId: number, symbol: string) {
-  const token = TOKENS_BY_SYMBOL_MAP[chainId][symbol];
+export function getTokenBySymbol(
+  chainId: number,
+  symbol: string,
+  { isSynthetic = false, version }: { isSynthetic?: boolean; version?: "v1" | "v2" } = {}
+) {
+  let tokens = Object.values(TOKENS_MAP[chainId]);
+
+  if (version) {
+    tokens = version === "v1" ? getV1Tokens(chainId) : getV2Tokens(chainId);
+  }
+
+  if (isSynthetic) {
+    const syntheticToken = tokens.find((token) => {
+      return token.symbol.toLowerCase() === symbol.toLowerCase() && token.isSynthetic;
+    });
+    if (syntheticToken) {
+      return syntheticToken;
+    }
+  }
+
+  const token =
+    tokens.find((token) => token.symbol.toLowerCase() === symbol.toLowerCase()) ||
+    TOKENS_BY_SYMBOL_MAP[chainId][symbol];
+
   if (!token) {
     throw new Error(`Incorrect symbol "${symbol}" for chainId ${chainId}`);
   }
+
   return token;
 }
 
@@ -1076,4 +1109,20 @@ export function getPriceDecimals(chainId: number, tokenSymbol?: string) {
   } catch (e) {
     return 2;
   }
+}
+
+export function getTokenBySymbolSafe(
+  chainId: number,
+  symbol: string,
+  { isSynthetic = false, version }: { isSynthetic?: boolean; version?: "v1" | "v2" } = {}
+) {
+  try {
+    return getTokenBySymbol(chainId, symbol, { isSynthetic, version });
+  } catch (e) {
+    return;
+  }
+}
+
+export function isTokenInList(token: Token, tokenList: Token[]): boolean {
+  return tokenList.some((t) => t.address === token.address);
 }

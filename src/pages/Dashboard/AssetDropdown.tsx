@@ -25,7 +25,7 @@ const PLATFORM_TOKEN_ROUTES = {
 };
 
 type Props = {
-  assetSymbol: string;
+  assetSymbol?: string;
   token?: Token;
   position?: "left" | "right";
 };
@@ -34,19 +34,12 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
   const { active, connector } = useWallet();
   const { chainId } = useChainId();
 
-  let token: Token;
-
-  if (propsToken) {
-    token = propsToken;
-  } else {
-    try {
-      token = getTokenBySymbol(chainId, assetSymbol);
-    } catch (e) {
-      return null;
-    }
-  }
-
+  const token = propsToken ? propsToken : assetSymbol && getTokenBySymbol(chainId, assetSymbol);
   const chainIcon = getIcon(chainId, "network");
+
+  if (!token) {
+    return null;
+  }
 
   return (
     <div className="AssetDropdown-wrapper">

@@ -236,3 +236,12 @@ export type GmSwapFees = {
   swapPriceImpact?: FeeItem;
   uiFee?: FeeItem;
 };
+
+export type TradeSearchParams = {
+  from?: string;
+  to?: string;
+  mode?: string;
+  pool?: string;
+  collateral?: string;
+  market?: string;
+};

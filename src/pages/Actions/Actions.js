@@ -28,6 +28,9 @@ import useWallet from "lib/wallets/useWallet";
 import PageTitle from "components/PageTitle/PageTitle";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Footer from "components/Footer/Footer";
+import { getIsSyntheticsSupported } from "config/features";
+import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
+import { switchNetwork } from "lib/wallets";
 
 const USD_DECIMALS = 30;
 
@@ -39,6 +42,8 @@ export default function Actions({ savedIsPnlInLeverage, savedShowPnlAfterFees })
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
   const vaultAddress = getContract(chainId, "Vault");
   const readerAddress = getContract(chainId, "Reader");
+
+  const networkName = getChainName(chainId);
 
   const shouldShowPnl = false;
 
@@ -94,16 +99,27 @@ export default function Actions({ savedIsPnlInLeverage, savedShowPnlAfterFees })
       {checkSummedAccount.length > 0 && (
         <div className="Actions-section">
           <PageTitle
-            title={t`V1 Account`}
+            title={t`GMX V1 Account`}
             subtitle={
               <>
-                <Trans>GMX V1 information for account: {checkSummedAccount}</Trans>
-                <div>
-                  <ExternalLink newTab={false} href={`/#/actions/${checkSummedAccount}`}>
-                    Check on GMX V2
-                  </ExternalLink>
-                  .
-                </div>
+                <Trans>GMX V1 Arbitrum information for account: {checkSummedAccount}</Trans>
+                {getIsSyntheticsSupported(chainId) && (
+                  <Trans>
+                    <div>
+                      <ExternalLink newTab={false} href={`/#/actions/${checkSummedAccount}`}>
+                        Check on GMX V2 {networkName}
+                      </ExternalLink>{" "}
+                      or{" "}
+                      <span
+                        className="underline cursor-pointer"
+                        onClick={() => switchNetwork(chainId === ARBITRUM ? AVALANCHE : ARBITRUM, active)}
+                      >
+                        switch network to {chainId === ARBITRUM ? "Avalanche" : "Arbitrum"}
+                      </span>
+                      .
+                    </div>
+                  </Trans>
+                )}
               </>
             }
           />
@@ -183,16 +199,27 @@ export default function Actions({ savedIsPnlInLeverage, savedShowPnlAfterFees })
           ) : (
             <PageTitle
               isTop
-              title={t`V1 Actions`}
+              title={t`GMX V1 Actions`}
               subtitle={
                 <>
-                  {<Trans>GMX V1 actions for all accounts.</Trans>}
-                  <div>
-                    <ExternalLink newTab={false} href={`/#/actions/`}>
-                      Check on GMX V2
-                    </ExternalLink>
-                    .
-                  </div>
+                  <Trans>GMX V1 {networkName} actions for all accounts.</Trans>
+                  {getIsSyntheticsSupported(chainId) && (
+                    <Trans>
+                      <div>
+                        <ExternalLink newTab={false} href="/#/actions">
+                          Check on GMX V2 {networkName}
+                        </ExternalLink>{" "}
+                        or{" "}
+                        <span
+                          className="underline cursor-pointer"
+                          onClick={() => switchNetwork(chainId === ARBITRUM ? AVALANCHE : ARBITRUM, active)}
+                        >
+                          switch network to {chainId === ARBITRUM ? "Avalanche" : "Arbitrum"}
+                        </span>
+                        .
+                      </div>
+                    </Trans>
+                  )}
                 </>
               }
             />

@@ -17,6 +17,8 @@ import {
   selectTradeboxSwapAmounts,
   selectTradeboxNextPositionValuesForIncrease,
   selectTradeboxNextPositionValuesForDecrease,
+  selectTradeboxSetTradeConfig,
+  selectTradeboxTradeMode,
 } from "../selectors/tradeboxSelectors";
 import { useSelector } from "../utils";
 
@@ -32,7 +34,9 @@ export const useTradeboxCollateralAddress = () => useSelector(selectTradeboxColl
 export const useTradeboxAvailableTokensOptions = () => useSelector(selectTradeboxAvailableTokensOptions);
 export const useTradeboxSetActivePosition = () => useSelector(selectTradeboxSetActivePosition);
 export const useTradeboxTradeType = () => useSelector(selectTradeboxTradeType);
+export const useTradeboxTradeMode = () => useSelector(selectTradeboxTradeMode);
 export const useTradeboxSetToTokenAddress = () => useSelector(selectTradeboxSetToTokenAddress);
+export const useTradeboxSetTradeConfig = () => useSelector(selectTradeboxSetTradeConfig);
 
 export const useTradeboxSwapAmounts = () => useSelector(selectTradeboxSwapAmounts);
 export const useTradeboxNextPositionValuesForIncrease = () => useSelector(selectTradeboxNextPositionValuesForIncrease);
