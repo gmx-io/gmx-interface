@@ -35,3 +35,9 @@
     min-width: max-content;
   }
 }
+
+.TradeHistoryRow-price-tooltip-portal {
+  .Tooltip-popup {
+    top: 100%;
+  }
+}
