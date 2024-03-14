@@ -23,6 +23,10 @@ import {
   tryGetError,
 } from "./shared";
 
+const DOUBLE_NON_BREAKING_SPACE = String.fromCharCode(160) + String.fromCharCode(160);
+const INEQUALITY_GT = ">" + DOUBLE_NON_BREAKING_SPACE;
+const INEQUALITY_LT = "<" + DOUBLE_NON_BREAKING_SPACE;
+
 export const formatPositionMessage = (
   tradeAction: PositionTradeAction,
   minCollateralUsd: BigNumber,
@@ -33,8 +37,20 @@ export const formatPositionMessage = (
   const collateralDeltaAmount = tradeAction.initialCollateralDeltaAmount;
 
   const isIncrease = isIncreaseOrderType(tradeAction.orderType);
-  const longShortText = tradeAction.isLong ? t`Long` : t`Short`;
+  const isLong = tradeAction.isLong;
+  const longShortText = isLong ? t`Long` : t`Short`;
   const sign = isIncrease ? "+" : "-";
+  let inequality: string;
+  if (isIncrease && isLong) {
+    inequality = INEQUALITY_LT;
+  } else if (isIncrease && !isLong) {
+    inequality = INEQUALITY_GT;
+  } else if (!isIncrease && isLong) {
+    inequality = INEQUALITY_GT;
+  } else {
+    inequality = INEQUALITY_LT;
+  }
+
   const sizeDeltaText = `${sign}${formatUsd(sizeDeltaUsd)}`;
 
   const indexName = getMarketIndexName({
@@ -85,7 +101,7 @@ export const formatPositionMessage = (
   if (ot === OrderType.MarketIncrease && ev === TradeActionType.OrderCreated) {
     const customAction = sizeDeltaUsd.gt(0) ? action : i18n._(actionTextMap["Deposit-OrderCreated"]!);
     const customSize = sizeDeltaUsd.gt(0) ? sizeDeltaText : formattedCollateralDelta;
-    const customPrice = "<  " + formattedAcceptablePrice!;
+    const customPrice = inequality + formattedAcceptablePrice!;
     const priceComment = lines(t`Acceptable price for the order.`);
 
     result = {
@@ -102,7 +118,7 @@ export const formatPositionMessage = (
       ? lines(
           t`Mark price for the order.`,
           "",
-          infoRow(t`Order Acceptable Price`, "<  " + formattedAcceptablePrice!),
+          infoRow(t`Order Acceptable Price`, inequality + formattedAcceptablePrice!),
           infoRow(t`Order Execution Price`, formattedExecutionPrice!),
           infoRow(t`Price Impact`, {
             text: formattedPriceImpact!,
@@ -117,7 +133,7 @@ export const formatPositionMessage = (
       action: customAction,
       size: customSize,
       priceComment: priceComment,
-      acceptablePrice: "<  " + formattedAcceptablePrice!,
+      acceptablePrice: inequality + formattedAcceptablePrice!,
     };
   } else if (ot === OrderType.MarketIncrease && ev === TradeActionType.OrderCancelled) {
     const customAction = sizeDeltaUsd.gt(0) ? action : i18n._(actionTextMap["Deposit-OrderCancelled"]!);
@@ -125,7 +141,11 @@ export const formatPositionMessage = (
     const error = tradeAction.reasonBytes && tryGetError(tradeAction.reasonBytes);
 
     const priceComment = sizeDeltaUsd.gt(0)
-      ? lines(t`Mark price for the order.`, "", infoRow(t`Order Acceptable Price`, "<  " + formattedAcceptablePrice!))
+      ? lines(
+          t`Mark price for the order.`,
+          "",
+          infoRow(t`Order Acceptable Price`, inequality + formattedAcceptablePrice!)
+        )
       : lines(t`Mark price for the order.`);
 
     result = {
@@ -138,7 +158,7 @@ export const formatPositionMessage = (
         }),
       size: customSize,
       priceComment,
-      acceptablePrice: "<  " + formattedAcceptablePrice!,
+      acceptablePrice: inequality + formattedAcceptablePrice!,
       isActionError: true,
     };
     //#endregion MarketIncrease
@@ -148,24 +168,24 @@ export const formatPositionMessage = (
     (ot === OrderType.LimitIncrease && ev === TradeActionType.OrderUpdated) ||
     (ot === OrderType.LimitIncrease && ev === TradeActionType.OrderCancelled)
   ) {
-    const customPrice = "<  " + formatUsd(tradeAction.triggerPrice)!;
+    const customPrice = inequality + formatUsd(tradeAction.triggerPrice)!;
 
     result = {
       price: customPrice,
       priceComment: lines(
         t`Trigger price for the order.`,
         "",
-        infoRow(t`Order Acceptable Price`, "<  " + formattedAcceptablePrice!)
+        infoRow(t`Order Acceptable Price`, inequality + formattedAcceptablePrice!)
       ),
       triggerPrice: customPrice,
-      acceptablePrice: "<  " + formattedAcceptablePrice!,
+      acceptablePrice: inequality + formattedAcceptablePrice!,
     };
   } else if (ot === OrderType.LimitIncrease && ev === TradeActionType.OrderExecuted) {
     result = {
       priceComment: lines(
         t`Mark price for the order.`,
         "",
-        infoRow(t`Order Acceptable Price`, "<  " + formattedAcceptablePrice!),
+        infoRow(t`Order Acceptable Price`, inequality + formattedAcceptablePrice!),
         infoRow(t`Order Execution Price`, formattedExecutionPrice!),
         infoRow(t`Price Impact`, {
           text: formattedPriceImpact!,
@@ -174,7 +194,7 @@ export const formatPositionMessage = (
         "",
         t`Order execution price takes into account price impact.`
       ),
-      acceptablePrice: "<  " + formattedAcceptablePrice!,
+      acceptablePrice: inequality + formattedAcceptablePrice!,
     };
   } else if (ot === OrderType.LimitIncrease && ev === TradeActionType.OrderFrozen) {
     let error = tradeAction.reasonBytes && tryGetError(tradeAction.reasonBytes);
@@ -189,10 +209,10 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order.`,
         "",
-        infoRow(t`Order Acceptable Price`, "<  " + formattedAcceptablePrice!),
+        infoRow(t`Order Acceptable Price`, inequality + formattedAcceptablePrice!),
         error?.args?.price && infoRow(t`Order Execution Price`, formatUsd(error.args.price))
       ),
-      acceptablePrice: "<  " + formattedAcceptablePrice!,
+      acceptablePrice: inequality + formattedAcceptablePrice!,
       isActionError: true,
     };
     //#endregion LimitIncrease
@@ -200,7 +220,7 @@ export const formatPositionMessage = (
   } else if (ot === OrderType.MarketDecrease && ev === TradeActionType.OrderCreated) {
     const customAction = sizeDeltaUsd.gt(0) ? action : i18n._(actionTextMap["Withdraw-OrderCreated"]!);
     const customSize = sizeDeltaUsd.gt(0) ? sizeDeltaText : formattedCollateralDelta;
-    const customPrice = ">  " + formattedAcceptablePrice!;
+    const customPrice = inequality + formattedAcceptablePrice!;
     const priceComment = lines(t`Acceptable price for the order.`);
 
     result = {
@@ -208,12 +228,12 @@ export const formatPositionMessage = (
       size: customSize,
       price: customPrice,
       priceComment,
-      acceptablePrice: ">  " + formattedAcceptablePrice!,
+      acceptablePrice: inequality + formattedAcceptablePrice!,
     };
   } else if (ot === OrderType.MarketDecrease && ev === TradeActionType.OrderCancelled) {
     const customAction = sizeDeltaUsd.gt(0) ? action : i18n._(actionTextMap["Withdraw-OrderCreated"]!);
     const customSize = sizeDeltaUsd.gt(0) ? sizeDeltaText : formattedCollateralDelta;
-    const customPrice = ">  " + formattedAcceptablePrice!;
+    const customPrice = inequality + formattedAcceptablePrice!;
     const priceComment = lines(t`Acceptable price for the order.`);
     const error = tradeAction.reasonBytes && tryGetError(tradeAction.reasonBytes);
 
@@ -228,7 +248,7 @@ export const formatPositionMessage = (
       size: customSize,
       price: customPrice,
       priceComment,
-      acceptablePrice: ">  " + formattedAcceptablePrice!,
+      acceptablePrice: inequality + formattedAcceptablePrice!,
       isActionError: true,
     };
   } else if (ot === OrderType.MarketDecrease && ev === TradeActionType.OrderExecuted) {
@@ -241,7 +261,7 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order.`,
         "",
-        infoRow(t`Order Acceptable Price`, ">  " + formattedAcceptablePrice!),
+        infoRow(t`Order Acceptable Price`, inequality + formattedAcceptablePrice!),
         infoRow(t`Order Execution Price`, formattedExecutionPrice!),
         infoRow(t`Price Impact`, {
           text: formattedPriceImpact!,
@@ -250,7 +270,7 @@ export const formatPositionMessage = (
         "",
         t`Order execution price takes into account price impact.`
       ),
-      acceptablePrice: ">  " + formattedAcceptablePrice!,
+      acceptablePrice: inequality + formattedAcceptablePrice!,
     };
     //#endregion MarketDecrease
     //#region LimitDecrease
@@ -259,24 +279,24 @@ export const formatPositionMessage = (
     (ot === OrderType.LimitDecrease && ev === TradeActionType.OrderUpdated) ||
     (ot === OrderType.LimitDecrease && ev === TradeActionType.OrderCancelled)
   ) {
-    const customPrice = ">  " + formatUsd(tradeAction.triggerPrice)!;
+    const customPrice = inequality + formatUsd(tradeAction.triggerPrice)!;
 
     result = {
       price: customPrice,
       priceComment: lines(
         t`Trigger price for the order.`,
         "",
-        infoRow(t`Order Acceptable Price`, ">  " + formattedAcceptablePrice!)
+        infoRow(t`Order Acceptable Price`, inequality + formattedAcceptablePrice!)
       ),
       triggerPrice: customPrice,
-      acceptablePrice: ">  " + formattedAcceptablePrice!,
+      acceptablePrice: inequality + formattedAcceptablePrice!,
     };
   } else if (ot === OrderType.LimitDecrease && ev === TradeActionType.OrderExecuted) {
     result = {
       priceComment: lines(
         t`Mark price for the order.`,
         "",
-        infoRow(t`Order Acceptable Price`, ">  " + formattedAcceptablePrice!),
+        infoRow(t`Order Acceptable Price`, inequality + formattedAcceptablePrice!),
         infoRow(t`Order Execution Price`, formattedExecutionPrice!),
         infoRow(t`Price Impact`, {
           text: formattedPriceImpact!,
@@ -285,7 +305,7 @@ export const formatPositionMessage = (
         "",
         t`Order execution price takes into account price impact.`
       ),
-      acceptablePrice: ">  " + formattedAcceptablePrice!,
+      acceptablePrice: inequality + formattedAcceptablePrice!,
     };
   } else if (ot === OrderType.LimitDecrease && ev === TradeActionType.OrderFrozen) {
     let error = tradeAction.reasonBytes && tryGetError(tradeAction.reasonBytes);
@@ -300,10 +320,10 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order.`,
         "",
-        infoRow(t`Order Acceptable Price`, ">  " + formattedAcceptablePrice!),
+        infoRow(t`Order Acceptable Price`, inequality + formattedAcceptablePrice!),
         error?.args?.price && [t`Order Execution Price`, ": ", formatUsd(error.args.price)]
       ),
-      acceptablePrice: ">  " + formattedAcceptablePrice!,
+      acceptablePrice: inequality + formattedAcceptablePrice!,
       isActionError: true,
     };
     //#endregion LimitDecrease
@@ -313,7 +333,7 @@ export const formatPositionMessage = (
     (ot === OrderType.StopLossDecrease && ev === TradeActionType.OrderUpdated) ||
     (ot === OrderType.StopLossDecrease && ev === TradeActionType.OrderCancelled)
   ) {
-    const customPrice = "<  " + formatUsd(tradeAction.triggerPrice)!;
+    const customPrice = inequality + formatUsd(tradeAction.triggerPrice)!;
 
     const isAcceptablePriceUseful =
       !tradeAction.acceptablePrice.isZero() && !tradeAction.acceptablePrice.gte(BN_BILLION);
@@ -321,7 +341,7 @@ export const formatPositionMessage = (
       ? lines(
           t`Trigger price for the order.`,
           "",
-          infoRow(t`Order Acceptable Price`, "<  " + formattedAcceptablePrice!)
+          infoRow(t`Order Acceptable Price`, inequality + formattedAcceptablePrice!)
         )
       : lines(t`Trigger price for the order.`);
 
@@ -335,7 +355,7 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order.`,
         "",
-        infoRow(t`Order Acceptable Price`, "<  " + formattedAcceptablePrice!),
+        infoRow(t`Order Acceptable Price`, inequality + formattedAcceptablePrice!),
         infoRow(t`Order Execution Price`, formattedExecutionPrice!),
         infoRow(t`Price Impact`, {
           text: formattedPriceImpact!,
@@ -360,7 +380,9 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order.`,
         isAcceptablePriceUseful || error?.args?.price ? "" : undefined,
-        isAcceptablePriceUseful ? infoRow(t`Order Acceptable Price`, "<  " + formattedAcceptablePrice!) : undefined,
+        isAcceptablePriceUseful
+          ? infoRow(t`Order Acceptable Price`, inequality + formattedAcceptablePrice!)
+          : undefined,
         error?.args?.price && infoRow(t`Order Execution Price`, formatUsd(error.args.price))
       ),
       isActionError: true,

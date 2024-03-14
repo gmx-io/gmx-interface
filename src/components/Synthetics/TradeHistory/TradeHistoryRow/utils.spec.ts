@@ -33,7 +33,7 @@ describe("TradeHistoryRow helpers", () => {
 
     expect(formatPositionMessage(requestIncreasePosition, minCollateralUsd)).toMatchInlineSnapshot(`
       Object {
-        "acceptablePrice": "<  $35.05",
+        "acceptablePrice": ">  $35.05",
         "action": "Request Market Increase",
         "executionPrice": undefined,
         "fullMarket": "AVAX/USD [WAVAX-USDC]",
@@ -41,7 +41,7 @@ describe("TradeHistoryRow helpers", () => {
         "market": "Short AVAX/USD",
         "marketPrice": undefined,
         "poolName": "WAVAX-USDC",
-        "price": "<  $35.05",
+        "price": ">  $35.05",
         "priceComment": Array [
           "Acceptable price for the order.",
         ],
@@ -54,7 +54,7 @@ describe("TradeHistoryRow helpers", () => {
 
     expect(formatPositionMessage(withdraw1Usd, minCollateralUsd)).toMatchInlineSnapshot(`
       Object {
-        "acceptablePrice": ">  $43.23",
+        "acceptablePrice": "<  $43.23",
         "action": "Request Withdraw",
         "executionPrice": undefined,
         "fullMarket": "AVAX/USD [WAVAX-USDC]",
@@ -62,7 +62,7 @@ describe("TradeHistoryRow helpers", () => {
         "market": "Short AVAX/USD",
         "marketPrice": undefined,
         "poolName": "WAVAX-USDC",
-        "price": ">  $43.23",
+        "price": "<  $43.23",
         "priceComment": Array [
           "Acceptable price for the order.",
         ],
@@ -177,7 +177,7 @@ describe("TradeHistoryRow helpers", () => {
 
     expect(formatPositionMessage(executeOrderIncreaseLong, minCollateralUsd)).toMatchInlineSnapshot(`
       Object {
-        "acceptablePrice": "<  $0.82",
+        "acceptablePrice": ">  $0.82",
         "action": "Execute Limit Order",
         "executionPrice": "$0.83",
         "fullMarket": "ARB/USD [ARB-USDC]",
@@ -191,7 +191,7 @@ describe("TradeHistoryRow helpers", () => {
           "",
           Object {
             "key": "Order Acceptable Price",
-            "value": "<  $0.82",
+            "value": ">  $0.82",
           },
           Object {
             "key": "Order Execution Price",
@@ -216,7 +216,7 @@ describe("TradeHistoryRow helpers", () => {
 
     expect(formatPositionMessage(frozenOrderIncreaseShort, minCollateralUsd)).toMatchInlineSnapshot(`
       Object {
-        "acceptablePrice": "<  $26,937.90",
+        "acceptablePrice": ">  $26,937.90",
         "action": "Failed Limit Order",
         "actionComment": undefined,
         "executionPrice": undefined,
@@ -232,7 +232,7 @@ describe("TradeHistoryRow helpers", () => {
           "",
           Object {
             "key": "Order Acceptable Price",
-            "value": "<  $26,937.90",
+            "value": ">  $26,937.90",
           },
           undefined,
         ],
