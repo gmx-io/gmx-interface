@@ -213,7 +213,7 @@ export function GmStatusNotification({
         }
 
         const matchedStatusKey = Object.values(depositStatuses).find(
-          (status) => !status.isViewed && getPendingDepositKey(status.data) === pendingDepositKey
+          (status) => !status.isViewed && status.data && getPendingDepositKey(status.data) === pendingDepositKey
         )?.key;
 
         if (matchedStatusKey) {
@@ -226,7 +226,7 @@ export function GmStatusNotification({
         }
 
         const matchedStatusKey = Object.values(withdrawalStatuses).find(
-          (status) => !status.isViewed && getPendingWithdrawalKey(status.data) === pendingWithdrawalKey
+          (status) => !status.isViewed && status.data && getPendingWithdrawalKey(status.data) === pendingWithdrawalKey
         )?.key;
 
         if (matchedStatusKey) {

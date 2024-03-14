@@ -867,6 +867,7 @@ msgstr "Can't execute because of an error"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Cancel"
 msgstr "Cancel"
@@ -895,6 +896,10 @@ msgstr "Cancel failed"
 #: src/pages/Exchange/Exchange.tsx
 msgid "Cancel failed."
 msgstr "Cancel failed."
+
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+msgid "Cancel newly created orders"
+msgstr "Cancel newly created orders"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Cancel submitted"
@@ -1373,6 +1378,7 @@ msgstr "Couldn't find a swap route with enough liquidity"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/AddAffiliateCode.js
 #: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -1597,8 +1603,8 @@ msgid "Decrease the withdraw size to match the max. <0>Read more</0>.<1/><2/><3>
 msgstr "Decrease the withdraw size to match the max. <0>Read more</0>.<1/><2/><3>Set max withdrawal</3>"
 
 #: src/components/Synthetics/ConfirmationBox/SLTPEntries.tsx
-msgid "Decrease {0} Long by {1} at ${2}."
-msgstr "Decrease {0} Long by {1} at ${2}."
+#~ msgid "Decrease {0} Long by {1} at ${2}."
+#~ msgstr "Decrease {0} Long by {1} at ${2}."
 
 #: src/components/Exchange/TradeHistory.js
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -2972,6 +2978,7 @@ msgstr "Leverage slider"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
@@ -3014,12 +3021,16 @@ msgid "Limit order creation failed."
 msgstr "Limit order creation failed."
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
-msgid "Limit order for"
-msgstr "Limit order for"
+#~ msgid "Limit order for"
+#~ msgstr "Limit order for"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Limit order submitted!"
 msgstr "Limit order submitted!"
+
+#: src/domain/synthetics/orders/useSLTPEntries.ts
+msgid "Limit size is required."
+msgstr "Limit size is required."
 
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
@@ -3383,6 +3394,10 @@ msgstr "Max Execution Fee Buffer"
 msgid "Max Execution Fee buffer below {0}% may result in failed orders."
 msgstr "Max Execution Fee buffer below {0}% may result in failed orders."
 
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "Max Execution Fee includes fees for additional orders. It will be sent back in full to your account if they don't trigger and are cancelled. <0>Read more</0>."
+msgstr "Max Execution Fee includes fees for additional orders. It will be sent back in full to your account if they don't trigger and are cancelled. <0>Read more</0>."
+
 #: src/components/Exchange/ChartTokenSelector.tsx
 msgid "Max In"
 msgstr "Max In"
@@ -3437,6 +3452,7 @@ msgstr "Max leverage without PnL: {0}x"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/orders/useSLTPEntries.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5495,6 +5511,10 @@ msgstr "TP"
 msgid "TP/SL"
 msgstr "TP/SL"
 
+#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
+msgid "TP/SL orders exceed the position"
+msgstr "TP/SL orders exceed the position"
+
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "TRADING Airdrop"
 msgstr "TRADING Airdrop"
@@ -6296,6 +6316,7 @@ msgstr "Unsupported network"
 
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/JoinReferralCode.js
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/components/Synthetics/SubaccountModal/utils.ts
 #: src/components/Synthetics/SubaccountModal/utils.ts
 #: src/components/Synthetics/SubaccountModal/utils.ts
@@ -6482,9 +6503,8 @@ msgid "Vesting Status"
 msgstr "Vesting Status"
 
 #: src/App/App.tsx
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
 #: src/lib/contracts/notifications.tsx
-#: src/lib/contracts/notifications.tsx
-#: src/pages/Exchange/Exchange.tsx
 #: src/pages/Exchange/Exchange.tsx
 msgid "View"
 msgstr "View"
@@ -7062,8 +7082,8 @@ msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsT
 msgstr "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
-msgid "{0, plural, one {You have an active Limit Order to Increase} other {You have multiple active Limit Orders to Increase}}"
-msgstr "{0, plural, one {You have an active Limit Order to Increase} other {You have multiple active Limit Orders to Increase}}"
+#~ msgid "{0, plural, one {You have an active Limit Order to Increase} other {You have multiple active Limit Orders to Increase}}"
+#~ msgstr "{0, plural, one {You have an active Limit Order to Increase} other {You have multiple active Limit Orders to Increase}}"
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0} <0><1>{indexName}</1><2>[{poolName}]</2></0> <3>market selected</3>."
@@ -7146,8 +7166,8 @@ msgid "{0} is required for collateral."
 msgstr "{0} is required for collateral."
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
-msgid "{0} order for"
-msgstr "{0} order for"
+#~ msgid "{0} order for"
+#~ msgstr "{0} order for"
 
 #: src/components/Glp/GlpSwap.js
 msgid "{0} pool exceeded, try different token"
@@ -7176,6 +7196,14 @@ msgstr "{0} will be swapped to {1} on order execution."
 #: src/components/Exchange/SwapBox.js
 msgid "{0} {1} not supported"
 msgstr "{0} {1} not supported"
+
+#: src/components/Synthetics/ConfirmationBox/SLTPEntries.tsx
+#~ msgid "{0} {1} {2} by {3} at ${4}."
+#~ msgstr "{0} {1} {2} by {3} at ${4}."
+
+#: src/components/Synthetics/ConfirmationBox/SLTPEntries.tsx
+msgid "{0} {1} {2} by {3} at {4}."
+msgstr "{0} {1} {2} by {3} at {4}."
 
 #: src/components/Exchange/TradeHistory.js
 msgid "{0}: Swap {amountInDisplay}{1} for{minOutDisplay} {2}, Price:{3} USD"
@@ -7216,7 +7244,6 @@ msgid "{daysConsidered}d accrued Fees"
 msgstr "{daysConsidered}d accrued Fees"
 
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
 msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger order that could impact this position.} other {You have # active trigger orders that could impact this position.}}"
 
@@ -7336,6 +7363,14 @@ msgstr "{seconds}s"
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"
 msgstr "{title}"
+
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+msgid "{txnTypeText} limit order for"
+msgstr "{txnTypeText} limit order for"
+
+#: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
+msgid "{txnTypeText} {0} order for"
+msgstr "{txnTypeText} {0} order for"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Сonvert {0} to {1}"

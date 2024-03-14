@@ -11,6 +11,7 @@
       margin-bottom: 1rem;
     }
 
+    .SLTP-size,
     .SLTP-price {
       border: 1px solid #212540;
       border-radius: var(--border-radius-sm);
@@ -19,6 +20,7 @@
       background: #212540;
       position: relative;
 
+      .size-input,
       .price-input {
         padding: 0.2rem 0.5rem 0.2rem;
         font-size: 1.4rem;
@@ -43,7 +45,8 @@
         cursor: pointer;
         opacity: 0.7;
       }
-      .SLTP-price-error {
+      .SLTP-price-error,
+      .SLTP-size-error {
         display: none;
         &.Tooltip-popup {
           min-width: 0;
@@ -52,10 +55,33 @@
       }
 
       &:hover {
-        .SLTP-price-error {
+        .SLTP-price-error,
+        .SLTP-size-error {
           display: block;
         }
       }
+
+      .SLTP-size-info {
+        display: none;
+        &.Tooltip-popup {
+          min-width: 25rem;
+        }
+      }
+
+      &:focus-within {
+        .SLTP-size-info {
+          display: none;
+        }
+      }
+
+      &:hover {
+        .SLTP-size-info {
+          display: block;
+        }
+      }
+    }
+    .SLTP-size .size-input {
+      max-width: 8rem;
     }
     .SLTP-percentage {
       position: relative;
@@ -72,7 +98,7 @@
         }
       }
 
-      .SLTP-percent-info {
+      .SLTP-size-info {
         display: none;
         &.Tooltip-popup {
           min-width: 25rem;
@@ -80,13 +106,13 @@
       }
 
       &:focus-within {
-        .SLTP-percent-info {
+        .SLTP-size-info {
           display: none;
         }
       }
 
       &:hover {
-        .SLTP-percent-info {
+        .SLTP-size-info {
           display: block;
         }
       }

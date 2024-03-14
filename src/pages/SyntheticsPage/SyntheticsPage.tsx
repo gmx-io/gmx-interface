@@ -26,7 +26,6 @@ import Helmet from "react-helmet";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
-  useIsLastSubaccountAction,
   useSubaccount,
   useSubaccountCancelOrdersDetailsMessage,
 } from "context/SubaccountContext/SubaccountContext";
@@ -95,7 +94,6 @@ export function SyntheticsPage(p: Props) {
 
   const subaccount = useSubaccount(null, selectedOrdersKeysArr.length);
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, selectedOrdersKeysArr.length);
-  const isLastSubaccountAction = useIsLastSubaccountAction();
 
   const { savedAllowedSlippage, shouldShowPositionLines, setShouldShowPositionLines } = useSettings();
 
@@ -110,8 +108,7 @@ export function SyntheticsPage(p: Props) {
     setIsCancelOrdersProcessig(true);
     cancelOrdersTxn(chainId, signer, subaccount, {
       orderKeys: selectedOrdersKeysArr,
-      setPendingTxns,
-      isLastSubaccountAction,
+      setPendingTxns: setPendingTxns,
       detailsMsg: cancelOrdersDetailsMessage,
     })
       .then(async (tx) => {
@@ -126,7 +123,6 @@ export function SyntheticsPage(p: Props) {
   }, [
     cancelOrdersDetailsMessage,
     chainId,
-    isLastSubaccountAction,
     selectedOrdersKeysArr,
     setPendingTxns,
     signer,

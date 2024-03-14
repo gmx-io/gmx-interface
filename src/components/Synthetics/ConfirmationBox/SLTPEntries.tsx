@@ -8,18 +8,20 @@ import { formatUsd } from "lib/numbers";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import { MarketInfo } from "domain/synthetics/markets";
 import { t } from "@lingui/macro";
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 import { SLTPInfo } from "domain/synthetics/orders/useSLTPEntries";
+import { isIncreaseOrderType } from "domain/synthetics/orders";
 
 const SUGGESTION_PERCENTAGE_LIST = [10, 25, 50, 75, 100];
 
 type Props = {
   entriesInfo: SLTPInfo;
   marketInfo?: MarketInfo;
+  displayMode: "percentage" | "sizeUsd";
 };
 
-function SLTPEntries({ entriesInfo, marketInfo }: Props) {
-  const { addEntry, updateEntry, canAddEntry, deleteEntry } = entriesInfo;
+function SLTPEntries({ entriesInfo, marketInfo, displayMode }: Props) {
+  const { addEntry, updateEntry, canAddEntry, allowAddEntry, deleteEntry } = entriesInfo;
   const sltpRef = useRef<HTMLDivElement>(null);
 
   function handleAddEntry() {
@@ -30,75 +32,125 @@ function SLTPEntries({ entriesInfo, marketInfo }: Props) {
     });
   }
 
+  const displayableEntries = useMemo(
+    () => entriesInfo.entries.filter((entry) => entry.txnType !== "cancel"),
+    [entriesInfo]
+  );
+
   return (
     <div className="SLTPEntries-wrapper" ref={sltpRef}>
-      {entriesInfo.entries.map((entry) => {
+      {displayableEntries?.map((entry) => {
         const indexToken = marketInfo?.indexToken;
-        const entrySizeUsd = entry.amounts?.sizeDeltaUsd;
+        const entrySizeUsd = entry.increaseAmounts?.sizeDeltaUsd || entry.decreaseAmounts?.sizeDeltaUsd;
+
+        const percentageError = entriesInfo.error?.percentage || entry.percentage?.error;
+        const sizeError = entry.sizeUsd?.error;
+        const priceError = entriesInfo.error?.price || entry.price?.error;
+
+        const isIncrease = entry.order && isIncreaseOrderType(entry.order.orderType);
+        const isLong = entry.order?.isLong;
+
         const priceTooltipMsg =
-          !entry.error &&
+          !percentageError &&
+          !priceError &&
           entry.price &&
           indexToken &&
           entrySizeUsd &&
-          t`Decrease ${indexToken?.symbol} Long by ${formatUsd(entrySizeUsd)} at $${entry.price}.`;
+          t`${isIncrease ? "Increase" : "Decrease"} ${indexToken?.symbol} ${isLong ? "Long" : "Short"} by ${formatUsd(
+            entrySizeUsd
+          )} at ${formatUsd(entry.price.value ?? undefined)}.`;
 
+        /* eslint-disable react-perf/jsx-no-new-object-as-prop */
         return (
           <div key={entry.id}>
-            <div className="SLTPEntry-row" key={entry.id}>
-              <div className={cx("SLTP-price", { "input-error": !!entry.error?.price })}>
+            <div className="SLTPEntry-row" key={entry.id} style={{ position: "relative" }}>
+              <div style={{ position: "absolute", right: "100%" }}>
+                {
+                  {
+                    keepSize: "ks",
+                    keepPercentage: "kp",
+                    fitPercentage: "fp",
+                  }[entry.mode]
+                }
+              </div>
+
+              <div className={cx("SLTP-price", { "input-error": priceError })}>
                 <span className="price-symbol">$</span>
 
                 <NumberInput
-                  value={entry.price}
-                  onValueChange={(e) => updateEntry(entry.id, { ...entry, price: e.target.value })}
+                  value={entry.price.input}
+                  onValueChange={(e) => updateEntry(entry.id, "price", e.target.value)}
                   placeholder="Price"
                   className="price-input"
                 />
 
-                {entry.error?.price && (
-                  <div className={cx("SLTP-price-error", "Tooltip-popup", "z-index-1001", "bottom")}>
-                    {entry.error?.price}
-                  </div>
+                {priceError && (
+                  <div className={cx("SLTP-price-error", "Tooltip-popup", "z-index-1001", "bottom")}>{priceError}</div>
                 )}
               </div>
-              <div className={cx("SLTP-percentage", { "input-error": !!entry.error?.percentage })}>
-                <SuggestionInput
-                  value={entry.percentage}
-                  setValue={(value) => {
-                    if (NUMBER_WITH_TWO_DECIMALS.test(value) || value.length === 0) {
-                      updateEntry(entry.id, { ...entry, percentage: value });
-                    }
-                  }}
-                  placeholder="Size"
-                  suggestionList={SUGGESTION_PERCENTAGE_LIST}
-                  symbol="%"
-                />
-                {entry.error?.percentage && (
-                  <div className={cx("SLTP-percent-error", "Tooltip-popup", "z-index-1001", "top-end")}>
-                    {entry.error?.percentage}
-                  </div>
-                )}
-                {entrySizeUsd && priceTooltipMsg ? (
-                  <div className={cx("SLTP-percent-info", "Tooltip-popup", "z-index-1001", "top-end")}>
-                    {priceTooltipMsg}
-                  </div>
-                ) : (
-                  ""
-                )}
-              </div>
+              {displayMode === "percentage" && (
+                <div className={cx("SLTP-percentage", { "input-error": !!percentageError })}>
+                  <SuggestionInput
+                    value={entry.percentage?.input ?? ""}
+                    setValue={(value) => {
+                      if (NUMBER_WITH_TWO_DECIMALS.test(value) || value.length === 0) {
+                        updateEntry(entry.id, "percentage", value);
+                      }
+                    }}
+                    placeholder="Size"
+                    suggestionList={SUGGESTION_PERCENTAGE_LIST}
+                    symbol="%"
+                  />
+                  {percentageError && (
+                    <div className={cx("SLTP-percent-error", "Tooltip-popup", "z-index-1001", "top-end")}>
+                      {percentageError}
+                    </div>
+                  )}
+                  {entrySizeUsd && priceTooltipMsg ? (
+                    <div className={cx("SLTP-size-info", "Tooltip-popup", "z-index-1001", "top-end")}>
+                      {priceTooltipMsg}
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              )}
+              {displayMode === "sizeUsd" && (
+                <div className={cx("SLTP-size", { "input-error": !!sizeError })}>
+                  <span className="price-symbol">$</span>
+                  <NumberInput
+                    value={entry.sizeUsd.input ?? ""}
+                    onValueChange={(e) => updateEntry(entry.id, "sizeUsd", e.target.value)}
+                    placeholder="Size"
+                    className="size-input"
+                  />
+                  {sizeError && (
+                    <div className={cx("SLTP-size-error", "Tooltip-popup", "z-index-1001", "top-end")}>{sizeError}</div>
+                  )}
+                  {entrySizeUsd && priceTooltipMsg ? (
+                    <div className={cx("SLTP-size-info", "Tooltip-popup", "z-index-1001", "top-end")}>
+                      {priceTooltipMsg}
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              )}
               <div className="SLTP-actions">
-                <TooltipWithPortal
-                  handle={
-                    <button className="action-add" disabled={!canAddEntry} onClick={handleAddEntry}>
-                      <FaPlus color="#5EC989" />
-                    </button>
-                  }
-                  portalClassName="SLTP-helper-text"
-                  handleClassName="mr-xs"
-                  position="right"
-                  renderContent={() => <span>Add Row</span>}
-                  openDelay={1500}
-                />
+                {canAddEntry && (
+                  <TooltipWithPortal
+                    handle={
+                      <button className="action-add" disabled={!allowAddEntry} onClick={handleAddEntry}>
+                        <FaPlus color="#5EC989" />
+                      </button>
+                    }
+                    portalClassName="SLTP-helper-text"
+                    handleClassName="mr-xs"
+                    position="right"
+                    renderContent={() => <span>Add Row</span>}
+                    openDelay={1500}
+                  />
+                )}
                 <TooltipWithPortal
                   handle={
                     <button
