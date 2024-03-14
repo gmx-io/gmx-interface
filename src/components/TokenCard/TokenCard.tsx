@@ -153,8 +153,8 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }:
             />
           )}
           <div className="Home-token-card-option-apr">
-            <Trans>Max. Arbitrum APR:</Trans> {maxAprText?.[ARBITRUM]},{" "}
-            <Trans>Max. Avalanche APR: {maxAprText?.[AVALANCHE]}</Trans>{" "}
+            <Trans>Arbitrum Max. APR:</Trans> {maxAprText?.[ARBITRUM]},{" "}
+            <Trans>Avalanche Max. APR: {maxAprText?.[AVALANCHE]}</Trans>{" "}
           </div>
         </div>
 
