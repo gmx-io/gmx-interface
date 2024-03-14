@@ -777,7 +777,7 @@ export function ConfirmationBox(p: Props) {
 
       return {
         amount: { fontSize: `${selectedSize}px` },
-        usd: { fontSize: `${selectedSize - 1}px` },
+        usd: { fontSize: `${selectedSize - 2}px` },
       };
     }
   }, [formattedAmounts]);
