@@ -473,5 +473,6 @@ table.Table.Exchange-list th {
   @media (max-width: 1200px) {
     padding-left: 0;
     padding-right: 0;
+    margin-left: var(--default-container-padding);
   }
 }
