@@ -77,6 +77,10 @@ input {
   --font-md: 1.6rem;
   --font-lg: 2.4rem;
   --font-xl: 3.4rem;
+
+  --default-container-max-width: 126.4rem;
+  --default-container-padding: 3.2rem;
+  --default-container-padding-mobile: 3.2rem;
 }
 
 a {
@@ -280,10 +284,34 @@ a.plain {
 }
 
 .default-container {
-  max-width: 126.4rem;
-  padding-left: 3.2rem;
-  padding-right: 3.2rem;
+  max-width: var(--default-container-max-width);
+  padding-left: var(--default-container-padding);
+  padding-right: var(--default-container-padding);
   margin: 0 auto;
+
+  @media (max-width: 600px) {
+    padding-left: var(--default-container-padding-mobile);
+    padding-right: var(--default-container-padding-mobile);
+  }
+}
+
+.default-container-mobile-one-sided {
+  max-width: var(--default-container-max-width);
+  margin: 0 auto;
+  padding-left: var(--default-container-padding);
+  padding-right: var(--default-container-padding);
+
+  @media (max-width: 600px) {
+    margin-left: var(--default-container-padding-mobile);
+    padding-left: 0;
+    max-width: none;
+  }
+
+  @media (max-width: 1264px) {
+    max-width: none;
+    padding-left: 0;
+    margin-left: var(--default-container-padding);
+  }
 }
 
 .secondary-btn {

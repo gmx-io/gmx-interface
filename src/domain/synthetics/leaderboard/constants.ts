@@ -1,22 +1,17 @@
 import { t } from "@lingui/macro";
+import { ARBITRUM } from "config/chains";
 import { expandDecimals } from "lib/numbers";
 import { LeaderboardPageConfig, LeaderboardPageKey } from "./types";
-import { ARBITRUM, AVALANCHE_FUJI } from "config/chains";
 
 export const MIN_COLLATERAL_USD_IN_LEADERBOARD = expandDecimals(500, 30);
 
-export const LEADERBOARD_PAGES_ORDER = [
-  "leaderboard",
-  "march_8-22_2024",
-  "march24fuji",
-  "march_13-20_2024",
-  "march_20-27_2024",
-] as const;
+export const LEADERBOARD_PAGES_ORDER = ["leaderboard", "march_13-20_2024", "march_20-27_2024"] as const;
 
 export const LEADERBOARD_PAGES: Record<LeaderboardPageKey, LeaderboardPageConfig> = {
   leaderboard: {
     key: "leaderboard",
-    label: t`Global leaderboard`,
+    label: t`Global Leaderboard`,
+    title: t`Global Leaderboard`,
     href: "/leaderboard",
     isCompetition: false,
     timeframe: {
@@ -24,33 +19,10 @@ export const LEADERBOARD_PAGES: Record<LeaderboardPageKey, LeaderboardPageConfig
       to: undefined,
     },
   },
-  "march_8-22_2024": {
-    key: "march_8-22_2024",
-    label: t`TEST 8-22 Mar`,
-    href: "/competitions/march_8-22_2024",
-    isCompetition: true,
-    chainId: ARBITRUM,
-    enabled: false,
-    timeframe: {
-      from: 1709856000, // 8 mar 2024
-      to: 1711065600, // 22 mar 2024
-    },
-  },
-  march24fuji: {
-    key: "march24fuji",
-    label: t`Test`,
-    href: "/competitions/march24fuji",
-    isCompetition: true,
-    chainId: AVALANCHE_FUJI,
-    enabled: false,
-    timeframe: {
-      from: 1709856000, // 8 mar 2024
-      to: 1711065600, // 22 mar 2024
-    },
-  },
   "march_13-20_2024": {
     key: "march_13-20_2024",
     label: t`EIP-4844, 13-20 Mar`,
+    title: t`EIP-4844 Competition`,
     href: "/competitions/march_13-20_2024",
     isCompetition: true,
     chainId: ARBITRUM,
@@ -63,6 +35,7 @@ export const LEADERBOARD_PAGES: Record<LeaderboardPageKey, LeaderboardPageConfig
   "march_20-27_2024": {
     key: "march_20-27_2024",
     label: t`EIP-4844, 20-27 Mar`,
+    title: t`EIP-4844 Competition`,
     href: "/competitions/march_20-27_2024",
     isCompetition: true,
     chainId: ARBITRUM,
