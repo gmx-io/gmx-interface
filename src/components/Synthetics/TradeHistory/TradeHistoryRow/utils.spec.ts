@@ -75,7 +75,7 @@ describe("TradeHistoryRow helpers", () => {
 
     expect(formatPositionMessage(deposit1Usd, minCollateralUsd)).toMatchInlineSnapshot(`
       Object {
-        "acceptablePrice": "<  $0.08",
+        "acceptablePrice": "<  $0.0851",
         "action": "Request Deposit",
         "executionPrice": undefined,
         "fullMarket": "DOGE/USD [ETH-DAI]",
@@ -83,7 +83,7 @@ describe("TradeHistoryRow helpers", () => {
         "market": "Long DOGE/USD",
         "marketPrice": undefined,
         "poolName": "ETH-DAI",
-        "price": "<  $0.08",
+        "price": "<  $0.0851",
         "priceComment": Array [
           "Acceptable price for the order.",
         ],
@@ -177,25 +177,25 @@ describe("TradeHistoryRow helpers", () => {
 
     expect(formatPositionMessage(executeOrderIncreaseLong, minCollateralUsd)).toMatchInlineSnapshot(`
       Object {
-        "acceptablePrice": ">  $0.82",
+        "acceptablePrice": ">  $0.827",
         "action": "Execute Limit Order",
-        "executionPrice": "$0.83",
+        "executionPrice": "$0.837",
         "fullMarket": "ARB/USD [ARB-USDC]",
         "indexName": "ARB/USD",
         "market": "Short ARB/USD",
-        "marketPrice": "< $0.01",
+        "marketPrice": "< $0.010",
         "poolName": "ARB-USDC",
-        "price": "< $0.01",
+        "price": "< $0.010",
         "priceComment": Array [
           "Mark price for the order.",
           "",
           Object {
             "key": "Order Acceptable Price",
-            "value": ">  $0.82",
+            "value": ">  $0.827",
           },
           Object {
             "key": "Order Execution Price",
-            "value": "$0.83",
+            "value": "$0.837",
           },
           Object {
             "key": "Price Impact",
@@ -208,7 +208,7 @@ describe("TradeHistoryRow helpers", () => {
           "Order execution price takes into account price impact.",
         ],
         "priceImpact": "-$16.82",
-        "size": "+$2,070.18",
+        "size": "+$2,070.187",
         "timestamp": "18 Sep 2023, 16:43",
         "timestampISO": "2023-09-18T16:43:18+04:00",
       }
@@ -254,7 +254,7 @@ describe("TradeHistoryRow helpers", () => {
         "poolName": "WETH-USDC",
         "price": "",
         "priceImpact": undefined,
-        "size": "-$4,954.24",
+        "size": "-$4,954.2429",
         "timestamp": "18 Sep 2023, 11:52",
         "timestampISO": "2023-09-18T11:52:39+04:00",
       }
@@ -263,14 +263,14 @@ describe("TradeHistoryRow helpers", () => {
     expect(formatPositionMessage(liquidated, minCollateralUsd)).toMatchInlineSnapshot(`
       Object {
         "action": "Liquidated",
-        "executionPrice": "$6.10",
+        "executionPrice": "$6.106",
         "fullMarket": "LINK/USD [LINK-USDC]",
         "indexName": "LINK/USD",
         "isActionError": true,
         "market": "Short LINK/USD",
-        "marketPrice": "$6.09",
+        "marketPrice": "$6.090",
         "poolName": "LINK-USDC",
-        "price": "$6.09",
+        "price": "$6.090",
         "priceComment": Array [
           "Mark price for the liquidation.",
           "",
@@ -278,14 +278,14 @@ describe("TradeHistoryRow helpers", () => {
           "",
           Object {
             "key": "Order Execution Price",
-            "value": "$6.10",
+            "value": "$6.106",
           },
           "",
           "Order execution price takes into account price impact.",
           "",
           Object {
             "key": "Initial Collateral",
-            "value": "214.7790 USDC ($214.77)",
+            "value": "214.779 USDC ($214.77)",
           },
           Object {
             "key": "PnL",
@@ -341,7 +341,7 @@ describe("TradeHistoryRow helpers", () => {
           },
         ],
         "priceImpact": "-$16.82",
-        "size": "-$6,441.90",
+        "size": "-$6,441.900",
         "timestamp": "04 Sep 2023, 06:38",
         "timestampISO": "2023-09-04T06:38:49+04:00",
       }
