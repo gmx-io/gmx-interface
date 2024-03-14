@@ -1,5 +1,5 @@
 import React, { MouseEventHandler, ReactNode } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, NavLinkProps } from "react-router-dom";
 import cx from "classnames";
 import { getAppBaseUrl, getHomeUrl } from "lib/legacy";
 
@@ -15,6 +15,7 @@ type Props = {
   redirectPopupTimestamp?: number;
   onClick?: MouseEventHandler<HTMLDivElement | HTMLAnchorElement>;
   children?: ReactNode;
+  isActive?: NavLinkProps["isActive"];
 };
 
 export function HeaderLink({
@@ -26,6 +27,7 @@ export function HeaderLink({
   redirectPopupTimestamp,
   showRedirectModal,
   onClick,
+  isActive,
 }: Props) {
   const isOnHomePage = window.location.pathname === "/";
   const isHome = isHomeSite();
@@ -64,7 +66,14 @@ export function HeaderLink({
   }
 
   return (
-    <NavLink activeClassName="active" className={cx(className)} exact={exact} to={to} onClick={onClick}>
+    <NavLink
+      isActive={isActive}
+      activeClassName="active"
+      className={cx(className)}
+      exact={exact}
+      to={to}
+      onClick={onClick}
+    >
       {children}
     </NavLink>
   );

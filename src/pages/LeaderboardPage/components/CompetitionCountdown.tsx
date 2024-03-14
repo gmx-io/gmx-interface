@@ -1,8 +1,9 @@
 import { Trans, t } from "@lingui/macro";
 import { useLeaderboardTiming } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import { ReactNode, useEffect, useState } from "react";
+import cx from "classnames";
 
-export function CompetitionCountdown() {
+export function CompetitionCountdown({ className, size }: { className?: string; size: "mobile" | "desktop" }) {
   const { isEndInFuture, isStartInFuture, timeframe } = useLeaderboardTiming();
 
   let counter: null | ReactNode = null;
@@ -16,14 +17,19 @@ export function CompetitionCountdown() {
       return null;
     }
   } else {
-    return (
-      <div className="CompetitionCountdown">
-        <Trans>This competition has ended</Trans>
-      </div>
-    );
+    return <Trans>This competition has ended</Trans>;
   }
 
-  return counter;
+  return (
+    <div
+      className={cx("CompetitionCountdown", className, {
+        CompetitionCountdown_mobile: size === "mobile",
+        CompetitionCountdown_desktop: size === "desktop",
+      })}
+    >
+      {counter}
+    </div>
+  );
 }
 
 function Countdown({ end, prefix }: { end: number; prefix: string }) {
@@ -55,15 +61,12 @@ function Countdown({ end, prefix }: { end: number; prefix: string }) {
   const minutes = Math.floor((timeLeft % 3600) / 60);
   const seconds = timeLeft % 60;
 
+  const text = `${days}d ${hours}h ${minutes}m ${isEndClose ? t`${seconds}s` : ""}`.trim();
+
   return (
-    <div className="CompetitionCountdown">
-      <Trans>
-        {prefix}{" "}
-        <span className="CompetitionCountdown__time">
-          {days}d {hours}h {minutes}m {isEndClose ? t`${seconds}s` : ""}
-        </span>
-      </Trans>
-    </div>
+    <Trans>
+      {prefix} <span className="CompetitionCountdown__time">{text}</span>
+    </Trans>
   );
 }
 

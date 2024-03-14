@@ -29,6 +29,7 @@ export type LeaderboardPageConfig =
   | {
       key: LeaderboardPageKey;
       label: string;
+      title: string;
       href: string;
       isCompetition: false;
       timeframe: LeaderboardTimeframe;
@@ -36,6 +37,7 @@ export type LeaderboardPageConfig =
   | {
       key: LeaderboardPageKey;
       label: string;
+      title: string;
       href: string;
       isCompetition: true;
       chainId: number;

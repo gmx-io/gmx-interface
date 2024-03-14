@@ -26,17 +26,17 @@ msgid "06 Jan 2022"
 msgstr "06 Jan 2022"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-msgid "1 000 ARB"
-msgstr "1 000 ARB"
+#~ msgid "1 000 ARB"
+#~ msgstr "1 000 ARB"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-msgid "1 200 ARB"
-msgstr "1 200 ARB"
+#~ msgid "1 200 ARB"
+#~ msgstr "1 200 ARB"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-msgid "10 000 ARB"
-msgstr "10 000 ARB"
+#~ msgid "10 000 ARB"
+#~ msgstr "10 000 ARB"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
@@ -48,8 +48,8 @@ msgid "24h Volume"
 msgstr "24h Volume"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-msgid "25 000 ARB"
-msgstr "25 000 ARB"
+#~ msgid "25 000 ARB"
+#~ msgstr "25 000 ARB"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
@@ -67,16 +67,16 @@ msgid "4-18 Places"
 msgstr "4-18 Places"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-msgid "5 000 ARB"
-msgstr "5 000 ARB"
+#~ msgid "5 000 ARB"
+#~ msgstr "5 000 ARB"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-msgid "50 000 ARB"
-msgstr "50 000 ARB"
+#~ msgid "50 000 ARB"
+#~ msgstr "50 000 ARB"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-msgid "7 000 ARB"
-msgstr "7 000 ARB"
+#~ msgid "7 000 ARB"
+#~ msgstr "7 000 ARB"
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "<0><1>{eventTitle}</1> from <2>{0} {indexName} <3>[{poolName}]</3> Position</2></0>"
@@ -584,12 +584,20 @@ msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "Average Leverage used."
-msgstr "Average Leverage used."
+#~ msgid "Average Leverage used."
+#~ msgstr "Average Leverage used."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "Average Position Size."
-msgstr "Average Position Size."
+#~ msgid "Average Position Size."
+#~ msgstr "Average Position Size."
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Average leverage used."
+msgstr "Average leverage used."
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Average position size."
+msgstr "Average position size."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Avg. Lev."
@@ -1624,6 +1632,11 @@ msgid "Download"
 msgstr "Download"
 
 #: src/domain/synthetics/leaderboard/constants.ts
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "EIP-4844 Competition"
+msgstr "EIP-4844 Competition"
+
+#: src/domain/synthetics/leaderboard/constants.ts
 msgid "EIP-4844, 13-20 Mar"
 msgstr "EIP-4844, 13-20 Mar"
 
@@ -2335,8 +2348,13 @@ msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>F
 msgstr "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 
 #: src/domain/synthetics/leaderboard/constants.ts
-msgid "Global leaderboard"
-msgstr "Global leaderboard"
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "Global Leaderboard"
+msgstr "Global Leaderboard"
+
+#: src/domain/synthetics/leaderboard/constants.ts
+#~ msgid "Global leaderboard"
+#~ msgstr "Global leaderboard"
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
@@ -2663,8 +2681,12 @@ msgid "Leaderboard for GMX traders"
 msgstr "Leaderboard for GMX traders"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "Leaderboard for traders on GMX V2"
-msgstr "Leaderboard for traders on GMX V2"
+#~ msgid "Leaderboard for traders on GMX V2"
+#~ msgstr "Leaderboard for traders on GMX V2"
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "Leaderboard for traders on GMX V2."
+msgstr "Leaderboard for traders on GMX V2."
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Leave at least {0} ETH for gas"
@@ -3504,8 +3526,12 @@ msgid "One-Click Trading is not available using network's native token {0}. Cons
 msgstr "One-Click Trading is not available using network's native token {0}. Consider using {1} instead."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "Only Addresses with over {0} in \"Capital Used\" are ranked."
-msgstr "Only Addresses with over {0} in \"Capital Used\" are ranked."
+#~ msgid "Only Addresses with over {0} in \"Capital Used\" are ranked."
+#~ msgstr "Only Addresses with over {0} in \"Capital Used\" are ranked."
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Only addresses with over {0} in \"Capital Used\" are ranked."
+msgstr "Only addresses with over {0} in \"Capital Used\" are ranked."
 
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
@@ -4082,12 +4108,12 @@ msgid "Read more"
 msgstr "Read more"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-#~ msgid "Read the rules"
-#~ msgstr "Read the rules"
+msgid "Read the rules"
+msgstr "Read the rules"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "Read the rules."
-msgstr "Read the rules."
+#~ msgid "Read the rules."
+#~ msgstr "Read the rules."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Realized Fees"
@@ -5005,8 +5031,8 @@ msgid "T"
 msgstr "T"
 
 #: src/domain/synthetics/leaderboard/constants.ts
-msgid "TEST 8-22 Mar"
-msgstr "TEST 8-22 Mar"
+#~ msgid "TEST 8-22 Mar"
+#~ msgstr "TEST 8-22 Mar"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
@@ -5084,8 +5110,8 @@ msgid "Terms and Conditions"
 msgstr "Terms and Conditions"
 
 #: src/domain/synthetics/leaderboard/constants.ts
-msgid "Test"
-msgstr "Test"
+#~ msgid "Test"
+#~ msgstr "Test"
 
 #: src/pages/Stake/StakeV1.js
 msgid "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
@@ -5312,8 +5338,12 @@ msgid "This competition has ended"
 msgstr "This competition has ended"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "This competition is held on the {0} network, please <0>change your network</0>."
-msgstr "This competition is held on the {0} network, please <0>change your network</0>."
+#~ msgid "This competition is held on the {0} network, please <0>change your network</0>."
+#~ msgstr "This competition is held on the {0} network, please <0>change your network</0>."
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "This competition is held on the {0} network. <0>Change your network</0> to participate."
+msgstr "This competition is held on the {0} network. <0>Change your network</0> to participate."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
@@ -5434,6 +5464,10 @@ msgstr "Total Stats"
 msgid "Total Supply"
 msgstr "Total Supply"
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Total Trades"
+msgstr "Total Trades"
+
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "Total Trading Volume"
@@ -5457,8 +5491,8 @@ msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancell
 msgstr "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "Total trades"
-msgstr "Total trades"
+#~ msgid "Total trades"
+#~ msgstr "Total trades"
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
@@ -5508,8 +5542,12 @@ msgid "Trades"
 msgstr "Trades"
 
 #: src/components/Header/Header.tsx
-msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (>$500k) in prizes in <0>two weekly</0> competitions. Live from March 13th-27th."
-msgstr "Trade on GMX V2 in Arbitrum and win 280,000 ARB (>$500k) in prizes in <0>two weekly</0> competitions. Live from March 13th-27th."
+msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
+msgstr "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
+
+#: src/components/Header/Header.tsx
+#~ msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (>$500k) in prizes in <0>two weekly</0> competitions. Live from March 13th-27th."
+#~ msgstr "Trade on GMX V2 in Arbitrum and win 280,000 ARB (>$500k) in prizes in <0>two weekly</0> competitions. Live from March 13th-27th."
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -6082,8 +6120,12 @@ msgid "Win/Loss"
 msgstr "Win/Loss"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "Wins and Losses for fully closed Positions."
-msgstr "Wins and Losses for fully closed Positions."
+#~ msgid "Wins and Losses for fully closed Positions."
+#~ msgstr "Wins and Losses for fully closed Positions."
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Wins and losses for fully closed positions."
+msgstr "Wins and losses for fully closed positions."
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -6313,8 +6355,12 @@ msgid "You have not deposited any tokens for vesting."
 msgstr "You have not deposited any tokens for vesting."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-msgid "You have not traded during selected period."
-msgstr "You have not traded during selected period."
+#~ msgid "You have not traded during selected period."
+#~ msgstr "You have not traded during selected period."
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "You have not traded during the selected period."
+msgstr "You have not traded during the selected period."
 
 #: src/components/Stake/GMXAprTooltip.tsx
 #: src/pages/Stake/StakeV2.js
@@ -6771,8 +6817,12 @@ msgid "{positionName} Fees settling"
 msgstr "{positionName} Fees settling"
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "{prefix} <0>{days}d {hours}h {minutes}m {0}</0>"
-msgstr "{prefix} <0>{days}d {hours}h {minutes}m {0}</0>"
+#~ msgid "{prefix} <0>{days}d {hours}h {minutes}m {0}</0>"
+#~ msgstr "{prefix} <0>{days}d {hours}h {minutes}m {0}</0>"
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "{prefix} <0>{text}</0>"
+msgstr "{prefix} <0>{text}</0>"
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "{seconds}s"
