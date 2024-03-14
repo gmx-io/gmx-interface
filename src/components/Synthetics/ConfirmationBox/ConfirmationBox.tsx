@@ -740,8 +740,7 @@ export function ConfirmationBox(p: Props) {
   }
 
   const formattedAmounts = useMemo(() => {
-    if (!isSwap || !isIncrease) return;
-
+    if (!isSwap && !isIncrease) return;
     const amounts = isSwap ? swapAmounts : increaseAmounts;
 
     if (!amounts) return;
@@ -767,28 +766,51 @@ export function ConfirmationBox(p: Props) {
     };
   }, [isSwap, isIncrease, swapAmounts, fromToken, toToken, increaseAmounts]);
 
+  const fontSizeForToken = useMemo(() => {
+    const payAmountLength = formattedAmounts?.payTokenAmount?.length || 0;
+    const receiveAmountLength = formattedAmounts?.receiveTokenAmount?.length || 0;
+    const maxTokenAmountLength = Math.max(payAmountLength, receiveAmountLength);
+
+    if (maxTokenAmountLength > 17) {
+      const sizes = { 17: 17, 18: 16, 19: 16, 20: 15, 21: 14 };
+      const selectedSize = sizes[maxTokenAmountLength] || 13;
+
+      return {
+        amount: { fontSize: `${selectedSize}px` },
+        usd: { fontSize: `${selectedSize - 1}px` },
+      };
+    }
+  }, [formattedAmounts]);
+
   function renderMain() {
     if (isSwap || isIncrease) {
+      if (!formattedAmounts) return;
       const receiveLabel = isSwap ? t`Receive` : isLong ? t`Long` : t`Short`;
       return (
         <>
           <div className="Confirmation-box-main trade-info-wrapper">
             <div className="trade-info">
-              <div className="trade-token-amount">
+              <div className="trade-token-amount" style={fontSizeForToken?.amount}>
                 <div>
                   <Trans>Pay</Trans>
                 </div>
                 <span>{formattedAmounts?.payTokenAmount}</span>
               </div>
-              <div className="trade-amount-usd">{formattedAmounts?.payTokenUsd}</div>
+              <div className="trade-amount-usd" style={fontSizeForToken?.usd}>
+                {formattedAmounts?.payTokenUsd}
+              </div>
             </div>
-            <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
+            <div>
+              <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
+            </div>
             <div className="trade-info">
-              <div className="trade-token-amount">
+              <div className="trade-token-amount" style={fontSizeForToken?.amount}>
                 <div>{receiveLabel}</div>
                 <span>{formattedAmounts?.receiveTokenAmount}</span>
               </div>
-              <div className="trade-amount-usd">{formattedAmounts?.receiveTokenUsd}</div>
+              <div className="trade-amount-usd" style={fontSizeForToken?.usd}>
+                {formattedAmounts?.receiveTokenUsd}
+              </div>
             </div>
           </div>
           <div>{renderSubaccountNavigationButton()}</div>

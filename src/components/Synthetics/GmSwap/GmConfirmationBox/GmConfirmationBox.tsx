@@ -351,7 +351,9 @@ export function GmConfirmationBox({
                     className: "mt-xs",
                   })}
                 </div>
-                <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
+                <div>
+                  <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
+                </div>
                 <div className="trade-info">
                   <Trans>Receive</Trans>{" "}
                   {renderTokenInfo({
@@ -372,7 +374,9 @@ export function GmConfirmationBox({
                     token: marketToken,
                   })}
                 </div>
-                <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
+                <div>
+                  <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
+                </div>
                 <div className="trade-info">
                   <Trans>Receive</Trans>{" "}
                   {renderTokenInfo({
