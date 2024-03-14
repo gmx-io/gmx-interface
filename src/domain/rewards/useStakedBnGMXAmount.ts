@@ -9,7 +9,7 @@ export function useStakedBnGMXAmount(chainId: number) {
   const feeGmxTrackerAddress = getContract(chainId, "FeeGmxTracker");
 
   const { data: stakedBnGMXAmount } = useSWR(
-    [`stakedBNGMXAmount:${chainId}`, chainId, bnGmxAddress, "balanceOf", feeGmxTrackerAddress],
+    [`stakedBnGMXAmount:${chainId}`, chainId, bnGmxAddress, "balanceOf", feeGmxTrackerAddress],
     {
       fetcher: contractFetcher(undefined, Token),
     }
