@@ -1,6 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip, { TooltipPosition } from "components/Tooltip/Tooltip";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { UserEarningsData } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
@@ -69,7 +70,7 @@ export const GmTokensBalanceInfo = ({
     return content;
   }
 
-  return <Tooltip renderContent={renderTooltipContent} handle={content} position="bottom-end" />;
+  return <TooltipWithPortal renderContent={renderTooltipContent} handle={content} position="bottom-end" />;
 };
 
 export const GmTokensTotalBalanceInfo = ({
