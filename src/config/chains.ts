@@ -355,6 +355,10 @@ export function getExplorerUrl(chainId) {
   return "https://etherscan.io/";
 }
 
+export function getTokenExplorerUrl(chainId: number, tokenAddress: string) {
+  return `${getExplorerUrl(chainId)}token/${tokenAddress}`;
+}
+
 export function getHighExecutionFee(chainId) {
   return HIGH_EXECUTION_FEES_MAP[chainId] ?? 5;
 }

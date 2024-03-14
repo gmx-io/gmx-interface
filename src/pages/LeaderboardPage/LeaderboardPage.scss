@@ -28,10 +28,11 @@ $tabs-threshold: 990px;
 }
 
 .Leaderboard-Title__description {
-  color: rgb(255 255 255 / 70%);
+  color: rgb(183, 183, 189);
+  line-height: 2.15rem;
 }
 
-.GlobalLeaderboards .Tab {
+.GlobalLeaderboards .LeaderboardContainer__competition-tabs .Tab {
   width: 40rem;
   margin: 0 auto;
   grid-auto-columns: minmax(0, 1fr);
@@ -41,10 +42,6 @@ $tabs-threshold: 990px;
 .LeaderboardContainer__competition-tabs {
   position: relative;
   display: flex;
-
-  @media screen and (max-width: $tabs-threshold) {
-    flex-direction: column;
-  }
 }
 
 @media screen and (max-width: 600px) {
@@ -137,55 +134,36 @@ $tabs-threshold: 990px;
 .LeaderboardRank-1,
 .LeaderboardRank-2,
 .LeaderboardRank-3,
-.LeaderboardRank-TopCompetitor {
+.LeaderboardRank-4 {
   display: inline-flex;
 }
 
 .LeaderboardRankRow-Pinned td:first-child::before {
   content: "";
   display: inline-block;
-  width: 0.3rem;
+  width: 0.2rem;
   height: 100%;
   position: absolute;
   left: 0;
   top: 0;
-  background-color: rgba(180, 187, 255, 0.1);
-}
-
-.LeaderboardRankRow-1 td:first-child::before,
-.LeaderboardRankRow-2 td:first-child::before,
-.LeaderboardRankRow-3 td:first-child::before {
-  content: "";
-  display: inline-block;
-  width: 35rem;
-  height: 100%;
-  position: absolute;
-  left: 0;
-  top: 0;
-  opacity: 0.2;
-}
-
-.LeaderboardRankRow-1 td:first-child::before {
-  background: linear-gradient(90deg, #ffd22f, #ffd22f00);
-}
-
-.LeaderboardRankRow-2 td:first-child::before {
-  background: linear-gradient(90deg, #a7abe1, #a7abe100);
-}
-
-.LeaderboardRankRow-3 td:first-child::before {
-  background: linear-gradient(90deg, #ff932f, #ff932f00);
+  background-color: #3a3f79;
 }
 
 .LeaderboardRank-1::after,
 .LeaderboardRank-2::after,
-.LeaderboardRank-3::after {
+.LeaderboardRank-3::after,
+.LeaderboardRank-4::after {
   content: "";
   width: 2.5rem;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
   margin-left: 0.5rem;
+  position: absolute;
+  left: 31px;
+  top: 10px;
+  z-index: 111;
+  height: 2.5rem;
 }
 
 .NoLiqPriceTooltip {
@@ -194,15 +172,19 @@ $tabs-threshold: 990px;
 }
 
 .LeaderboardRank-1::after {
-  background-image: url(../../img/ic_trophy_1.svg);
+  background-image: url(../../img/rank1.svg);
 }
 
 .LeaderboardRank-2::after {
-  background-image: url(../../img/ic_trophy_2.svg);
+  background-image: url(../../img/rank2.svg);
 }
 
 .LeaderboardRank-3::after {
-  background-image: url(../../img/ic_trophy_3.svg);
+  background-image: url(../../img/rank3.svg);
+}
+
+.LeaderboardRank-4::after {
+  background-image: url(../../img/rank4.svg);
 }
 
 .CompetitionPrizes {
@@ -213,7 +195,13 @@ $tabs-threshold: 990px;
   overflow-x: auto;
 
   &__prize {
-    margin-right: 1rem;
+    width: 100%;
+    margin-right: 1.8rem;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
     margin-bottom: 1rem;
     flex: 1 1;
     background-color: #16182e;
@@ -230,50 +218,86 @@ $tabs-threshold: 990px;
       flex-direction: column;
       white-space: nowrap;
       margin-left: 2rem;
-      width: 8.2rem;
+      flex: 2;
+      position: relative;
+      top: 0.5rem;
+    }
+
+    &-icon-container {
+      flex: 1;
+      text-align: center;
     }
 
     &-icon {
-      width: 40%;
+      position: relative;
+      top: 0.1rem;
+      width: 100%;
     }
 
     &-title {
       color: rgba(255, 255, 255, 0.7);
       margin-bottom: 0.5rem;
+      font-size: 1.5rem;
+
+      @media screen and (max-width: 1100px) {
+        font-size: 1.2rem;
+      }
     }
 
     &-description {
       color: white;
-      font-weight: bold;
       margin-bottom: 1rem;
       white-space: nowrap;
+      font-size: 2rem;
+
+      @media screen and (max-width: 1100px) {
+        font-size: 1.5rem;
+      }
     }
   }
 }
 
 .CompetitionCountdown {
-  position: absolute;
-  right: 0;
-  top: 0;
-
-  color: rgba(255, 255, 255, 0.7);
-  white-space: nowrap;
-
-  @media screen and (max-width: $tabs-threshold) {
-    position: relative;
-    text-align: center;
-    margin-top: 2rem;
-  }
-
   &__time {
+    color: white;
+  }
+  &_desktop &__time {
     white-space: nowrap;
     font-size: 3rem;
-    color: white;
+    margin-left: 0.5rem;
 
     @media screen and (max-width: $tabs-threshold) {
       font-size: 2rem;
     }
   }
+
+  &_desktop {
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    color: rgba(255, 255, 255, 0.7);
+    white-space: nowrap;
+
+    @media screen and (max-width: $tabs-threshold) {
+      position: relative;
+      text-align: center;
+      margin-top: 2rem;
+    }
+  }
+
+  &_mobile {
+    display: block;
+  }
+
+  &_mobile::after {
+    content: ".";
+  }
+}
+
+.LeaderboardContainer__leaderboard-tabs {
+  margin-bottom: 1rem;
+  margin-top: 3rem;
 }
 
 .LeaderboardNavigation {
@@ -292,12 +316,12 @@ $tabs-threshold: 990px;
   white-space: nowrap;
 
   &_selected {
-    background: rgba(80, 87, 126, 0.7);
+    background: rgba(80, 87, 126, 0.7) !important;
   }
 }
 
 .Leaderboard__another-network {
-  margin-top: 0.7rem;
+  margin-top: 0.1rem;
 }
 
 .LeaderboardNavigation__chip {
@@ -337,6 +361,15 @@ $tabs-threshold: 990px;
 .TableBox {
   width: 100%;
   overflow: visible;
+
+  .text-right {
+    text-align: right;
+    padding-right: 2rem;
+  }
+
+  .Exchange-list-header .text-right {
+    padding-right: 1.6rem;
+  }
 }
 
 .TableBox table.Exchange-list.App-box.Table {
@@ -368,6 +401,7 @@ $tabs-threshold: 990px;
 
 .TableBox table.Exchange-list tr:hover {
   cursor: default;
+  box-shadow: none;
 }
 
 @media screen and (max-width: 1200px) {
@@ -391,6 +425,7 @@ table.Table.Exchange-list th {
   height: 100%;
   white-space: nowrap;
   text-transform: uppercase;
+  font-size: var(--font-base);
 }
 
 .TableHeader.sortable .TableHeaderTitle,
@@ -431,4 +466,17 @@ table.Table.Exchange-list th {
 .Table_tr td {
   z-index: 1;
   position: relative;
+}
+
+.GlobalLeaderboards__table {
+  max-width: var(--default-container-max-width);
+  margin: 0 auto;
+  padding-left: var(--default-container-padding);
+  padding-right: var(--default-container-padding);
+
+  @media (max-width: 1200px) {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: var(--default-container-padding);
+  }
 }

@@ -23,6 +23,7 @@ import { getIcon } from "config/icons";
 import { getChainName } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
+import { useMedia } from "react-use";
 
 const competitionLabels = [t`Top PnL ($)`, t`Top PnL (%)`];
 const competitionsTabs = [0, 1];
@@ -87,7 +88,7 @@ export function LeaderboardContainer() {
     }
   }, [activeLeaderboardIndex, setLeaderboardType]);
 
-  const title = LEADERBOARD_PAGES[leaderboardPageKey].label;
+  const title = LEADERBOARD_PAGES[leaderboardPageKey].title;
 
   const handleSwitchNetworkClick = useCallback(() => {
     switchNetwork(leaderboardChainId, active);
@@ -101,44 +102,49 @@ export function LeaderboardContainer() {
     return (
       <div className="Leaderboard__another-network">
         <Trans>
-          This competition is held on the {getChainName(page.chainId)} network, please{" "}
+          This competition is held on the {getChainName(page.chainId)} network.{" "}
           <span className="link-underline" onClick={handleSwitchNetworkClick}>
-            change your network
-          </span>
-          .
+            Change your network
+          </span>{" "}
+          to participate.
         </Trans>
       </div>
     );
   }, [chainId, handleSwitchNetworkClick, leaderboardChainId, leaderboardPageKey, page]);
 
+  const isMobile = useMedia("(max-width: 1000px)");
+
   const description = useMemo(() => {
     switch (leaderboardPageKey) {
       case "leaderboard":
-        return t`Leaderboard for traders on GMX V2`;
+        return t`Leaderboard for traders on GMX V2.`;
 
       case "march_13-20_2024":
       case "march_20-27_2024":
-      case "march_8-22_2024":
-      case "march24fuji":
         return (
           <>
             Powered by the Arbitrum DAO STIP.&nbsp;
             <ExternalLink href="https://open.substack.com/pub/gmxio/p/the-gmx-eip4844-trading-competition">
-              <Trans>Read the rules.</Trans>
+              <Trans>Read the rules</Trans>
             </ExternalLink>
-            {wrongNetworkSwitcher}
+            .{wrongNetworkSwitcher}{" "}
+            {isMobile && (
+              <>
+                <CompetitionCountdown size="mobile" />
+              </>
+            )}
           </>
         );
 
       default:
         throw mustNeverExist(leaderboardPageKey);
     }
-  }, [leaderboardPageKey, wrongNetworkSwitcher]);
+  }, [isMobile, leaderboardPageKey, wrongNetworkSwitcher]);
 
   return (
     <div className="GlobalLeaderboards">
       <LeaderboardNavigation />
-      <div className="Leaderboard-Title">
+      <div className="Leaderboard-Title default-container">
         <div>
           <h1>
             {title} <img alt={t`Chain Icon`} src={getIcon(page.isCompetition ? page.chainId : chainId, "network")} />
@@ -147,27 +153,25 @@ export function LeaderboardContainer() {
         </div>
       </div>
       {!isCompetition && (
-        <>
-          <Tab
-            option={activeLeaderboardIndex}
-            onChange={handleLeaderboardTabChange}
-            options={leaderboardTabs}
-            optionLabels={leaderboardLabels}
-          />
-          <br />
-          <br />
-        </>
+        <Tab
+          option={activeLeaderboardIndex}
+          onChange={handleLeaderboardTabChange}
+          options={leaderboardTabs}
+          optionLabels={leaderboardLabels}
+          type="inline"
+          className="LeaderboardContainer__leaderboard-tabs default-container"
+        />
       )}
       {isCompetition && (
         <>
-          <div className="LeaderboardContainer__competition-tabs">
+          <div className="LeaderboardContainer__competition-tabs default-container">
             <Tab
               option={activeCompetitionIndex}
               onChange={handleCompetitionTabChange}
               options={competitionsTabs}
               optionLabels={competitionLabels}
             />
-            <CompetitionCountdown />
+            {!isMobile && <CompetitionCountdown className="default-container" size="desktop" />}
           </div>
           <br />
           <br />
@@ -178,9 +182,9 @@ export function LeaderboardContainer() {
       )}
 
       {!isStartInFuture && (
-        <>
+        <div className="GlobalLeaderboards__table">
           <LeaderboardAccountsTable activeCompetition={activeCompetition} accounts={accountsStruct} />
-        </>
+        </div>
       )}
     </div>
   );
