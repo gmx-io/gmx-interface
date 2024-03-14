@@ -31,8 +31,10 @@ function getRowClassname(rank: number | null, competition: CompetitionType | und
 
 function getWinnerRankClassname(rank: number | null, competition: CompetitionType | undefined) {
   if (rank === null) return undefined;
-  if (!competition) return rank <= 3 ? `LeaderboardRank-${rank}` : undefined;
-  return rank <= 10 ? `LeaderboardRank-TopCompetitor` : undefined;
+  if (rank <= 3) return `LeaderboardRank-${rank}`;
+  if (competition && rank <= 18) return "LeaderboardRank-4";
+
+  return undefined;
 }
 
 const useBreakpoint = createBreakpoint({ XL: 1200, L: 1000, M: 800, S: 500 });
