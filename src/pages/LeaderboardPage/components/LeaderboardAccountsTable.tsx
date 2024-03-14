@@ -267,7 +267,7 @@ export function LeaderboardAccountsTable({
               />
               <TableHeaderCell
                 title={t`Win/Loss`}
-                width={0}
+                width={10}
                 tooltip={t`Wins and losses for fully closed positions.`}
                 tooltipPosition="bottom-end"
                 onClick={handleColumnClick}
