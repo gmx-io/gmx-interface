@@ -739,41 +739,37 @@ export function ConfirmationBox(p: Props) {
     );
   }
 
-  function renderMain() {
-    if (isSwap) {
-      return (
-        <>
-          <div className="Confirmation-box-main trade-info-wrapper">
-            <div className="trade-info">
-              <div className="trade-token-amount">
-                <div>
-                  <Trans>Pay</Trans>
-                </div>
-                <span>
-                  {formatTokenAmount(swapAmounts?.amountIn, fromToken?.decimals, fromToken?.symbol, {
-                    useCommas: true,
-                  })}
-                </span>
-              </div>
-              <div className="trade-amount-usd">{formatUsd(swapAmounts?.usdIn)}</div>
-            </div>
-            <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
-            <div className="trade-info">
-              <div className="trade-token-amount">
-                <Trans>Receive</Trans>{" "}
-                <span>
-                  {formatTokenAmount(swapAmounts?.amountOut, toToken?.decimals, toToken?.symbol, { useCommas: true })}
-                </span>
-              </div>
-              <div className="trade-amount-usd">{formatUsd(swapAmounts?.usdOut)}</div>
-            </div>
-          </div>
-          <div>{renderSubaccountNavigationButton()}</div>
-        </>
-      );
-    }
+  const formattedAmounts = useMemo(() => {
+    if (!isSwap || !isIncrease) return;
 
-    if (isIncrease) {
+    const amounts = isSwap ? swapAmounts : increaseAmounts;
+
+    if (!amounts) return;
+
+    const keys = isSwap
+      ? { amountInKey: "amountIn", usdInKey: "usdIn", amountOutKey: "amountOut", usdOutKey: "usdOut" }
+      : {
+          amountInKey: "initialCollateralAmount",
+          usdInKey: "initialCollateralUsd",
+          amountOutKey: "sizeDeltaInTokens",
+          usdOutKey: "sizeDeltaUsd",
+        };
+
+    return {
+      payTokenAmount: formatTokenAmount(amounts[keys.amountInKey], fromToken?.decimals, fromToken?.symbol, {
+        useCommas: true,
+      }),
+      payTokenUsd: formatUsd(amounts[keys.usdInKey]),
+      receiveTokenAmount: formatTokenAmount(amounts[keys.amountOutKey], toToken?.decimals, toToken?.symbol, {
+        useCommas: true,
+      }),
+      receiveTokenUsd: formatUsd(amounts[keys.usdOutKey]),
+    };
+  }, [isSwap, isIncrease, swapAmounts, fromToken, toToken, increaseAmounts]);
+
+  function renderMain() {
+    if (isSwap || isIncrease) {
+      const receiveLabel = isSwap ? t`Receive` : isLong ? t`Long` : t`Short`;
       return (
         <>
           <div className="Confirmation-box-main trade-info-wrapper">
@@ -782,25 +778,17 @@ export function ConfirmationBox(p: Props) {
                 <div>
                   <Trans>Pay</Trans>
                 </div>
-                <span>
-                  {formatTokenAmount(increaseAmounts?.initialCollateralAmount, fromToken?.decimals, fromToken?.symbol, {
-                    useCommas: true,
-                  })}
-                </span>
+                <span>{formattedAmounts?.payTokenAmount}</span>
               </div>
-              <div className="trade-amount-usd">{formatUsd(increaseAmounts?.initialCollateralUsd)}</div>
+              <div className="trade-amount-usd">{formattedAmounts?.payTokenUsd}</div>
             </div>
             <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
             <div className="trade-info">
               <div className="trade-token-amount">
-                <div>{isLong ? t`Long` : t`Short`}</div>
-                <span>
-                  {formatTokenAmount(increaseAmounts?.sizeDeltaInTokens, toToken?.decimals, toToken?.symbol, {
-                    useCommas: true,
-                  })}
-                </span>
+                <div>{receiveLabel}</div>
+                <span>{formattedAmounts?.receiveTokenAmount}</span>
               </div>
-              <div className="trade-amount-usd">{formatUsd(increaseAmounts?.sizeDeltaUsd)}</div>
+              <div className="trade-amount-usd">{formattedAmounts?.receiveTokenUsd}</div>
             </div>
           </div>
           <div>{renderSubaccountNavigationButton()}</div>
