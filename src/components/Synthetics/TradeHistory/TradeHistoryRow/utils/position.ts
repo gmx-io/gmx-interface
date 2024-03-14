@@ -8,7 +8,7 @@ import { convertToUsd } from "domain/synthetics/tokens/utils";
 import { getShouldUseMaxPrice } from "domain/synthetics/trade";
 import { PositionTradeAction, TradeActionType } from "domain/synthetics/tradeHistory";
 import { PRECISION } from "lib/legacy";
-import { formatDeltaUsd, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { BN_BILLION, formatDeltaUsd, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 
 import { actionTextMap, getActionTitle } from "../../keys";
 import {
@@ -139,6 +139,7 @@ export const formatPositionMessage = (
       size: customSize,
       priceComment,
       acceptablePrice: "<  " + formattedAcceptablePrice!,
+      isActionError: true,
     };
     //#endregion MarketIncrease
     //#region LimitIncrease
@@ -192,6 +193,7 @@ export const formatPositionMessage = (
         error?.args?.price && infoRow(t`Order Execution Price`, formatUsd(error.args.price))
       ),
       acceptablePrice: "<  " + formattedAcceptablePrice!,
+      isActionError: true,
     };
     //#endregion LimitIncrease
     //#region MarketDecrease
@@ -227,6 +229,7 @@ export const formatPositionMessage = (
       price: customPrice,
       priceComment,
       acceptablePrice: ">  " + formattedAcceptablePrice!,
+      isActionError: true,
     };
   } else if (ot === OrderType.MarketDecrease && ev === TradeActionType.OrderExecuted) {
     const customAction = sizeDeltaUsd.gt(0) ? action : i18n._(actionTextMap["Withdraw-OrderExecuted"]!);
@@ -301,6 +304,7 @@ export const formatPositionMessage = (
         error?.args?.price && [t`Order Execution Price`, ": ", formatUsd(error.args.price)]
       ),
       acceptablePrice: ">  " + formattedAcceptablePrice!,
+      isActionError: true,
     };
     //#endregion LimitDecrease
     //#region StopLossDecrease
@@ -311,13 +315,19 @@ export const formatPositionMessage = (
   ) {
     const customPrice = "<  " + formatUsd(tradeAction.triggerPrice)!;
 
+    const isAcceptablePriceUseful =
+      !tradeAction.acceptablePrice.isZero() && !tradeAction.acceptablePrice.gte(BN_BILLION);
+    const priceComment = isAcceptablePriceUseful
+      ? lines(
+          t`Trigger price for the order.`,
+          "",
+          infoRow(t`Order Acceptable Price`, "<  " + formattedAcceptablePrice!)
+        )
+      : lines(t`Trigger price for the order.`);
+
     result = {
       price: customPrice,
-      priceComment: lines(
-        t`Trigger price for the order.`,
-        "",
-        infoRow(t`Order Acceptable Price`, "<  " + formattedAcceptablePrice!)
-      ),
+      priceComment: priceComment,
       triggerPrice: customPrice,
     };
   } else if (ot === OrderType.StopLossDecrease && ev === TradeActionType.OrderExecuted) {
@@ -337,6 +347,8 @@ export const formatPositionMessage = (
     };
   } else if (ot === OrderType.StopLossDecrease && ev === TradeActionType.OrderFrozen) {
     let error = tradeAction.reasonBytes && tryGetError(tradeAction.reasonBytes);
+    const isAcceptablePriceUseful =
+      !tradeAction.acceptablePrice.isZero() && !tradeAction.acceptablePrice.gte(BN_BILLION);
 
     result = {
       actionComment:
@@ -347,10 +359,11 @@ export const formatPositionMessage = (
         }),
       priceComment: lines(
         t`Mark price for the order.`,
-        "",
-        infoRow(t`Order Acceptable Price`, "<  " + formattedAcceptablePrice!),
-        error?.args?.price && [t`Order Execution Price`, ": ", formatUsd(error.args.price)]
+        isAcceptablePriceUseful || error?.args?.price ? "" : undefined,
+        isAcceptablePriceUseful ? infoRow(t`Order Acceptable Price`, "<  " + formattedAcceptablePrice!) : undefined,
+        error?.args?.price && infoRow(t`Order Execution Price`, formatUsd(error.args.price))
       ),
+      isActionError: true,
     };
 
     //#endregion StopLossDecrease
@@ -438,6 +451,7 @@ export const formatPositionMessage = (
         infoRow(t`Leftover Collateral`, formattedMinCollateral),
         infoRow(t`Min. required Collateral`, formattedMinCollateral)
       ),
+      isActionError: true,
     };
     //#endregion Liquidation
   }

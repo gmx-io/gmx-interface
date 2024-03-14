@@ -38,7 +38,12 @@ export function Groups<T>({
                   <PartialCheckedIcon className="Checkbox-icon" />
                 </div>
               ) : (
-                <Checkbox isChecked={group.isEverythingSelected} />
+                <Checkbox
+                  isChecked={group.isEverythingSelected}
+                  setIsChecked={() => {
+                    handleGroupToggle!(group);
+                  }}
+                />
               )}
               <span>{group.groupName}</span>
             </div>
@@ -53,7 +58,12 @@ export function Groups<T>({
                 togglePair(pair.data);
               }}
             >
-              <Checkbox isChecked={getIsSelected(pair.data)}>
+              <Checkbox
+                isChecked={getIsSelected(pair.data)}
+                setIsChecked={() => {
+                  togglePair(pair.data);
+                }}
+              >
                 {ItemComponent ? <ItemComponent item={pair.data} /> : pair.text}
               </Checkbox>
             </div>

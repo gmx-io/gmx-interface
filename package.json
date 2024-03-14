@@ -119,7 +119,8 @@
     "testEnvironment": "jsdom",
     "setupFilesAfterEnv": [
       "./jest-env.js"
-    ]
+    ],
+    "globalSetup": "./jest-global-setup.js"
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "7.21.11",

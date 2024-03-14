@@ -8,6 +8,7 @@ const MAX_EXCEEDING_THRESHOLD = "1000000000";
 const MIN_EXCEEDING_THRESHOLD = "0.01";
 
 export const BN_ZERO = BigNumber.from(0);
+export const BN_BILLION = BigNumber.from(10 ** 9);
 
 export function bigNumberify(n?: BigNumberish) {
   try {

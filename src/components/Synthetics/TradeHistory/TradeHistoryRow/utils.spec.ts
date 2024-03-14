@@ -29,6 +29,8 @@ const minCollateralUsd = BigNumber.from(100);
 
 describe("TradeHistoryRow helpers", () => {
   it("formatPositionMessage", () => {
+    expect(Intl.DateTimeFormat().resolvedOptions().timeZone).toBe("Asia/Dubai");
+
     expect(formatPositionMessage(requestIncreasePosition, minCollateralUsd)).toMatchInlineSnapshot(`
       Object {
         "acceptablePrice": "<  $35.05",
@@ -220,6 +222,7 @@ describe("TradeHistoryRow helpers", () => {
         "executionPrice": undefined,
         "fullMarket": "BTC/USD [BTC-USDC]",
         "indexName": "BTC/USD",
+        "isActionError": true,
         "market": "Short BTC/USD",
         "marketPrice": undefined,
         "poolName": "BTC-USDC",
@@ -263,6 +266,7 @@ describe("TradeHistoryRow helpers", () => {
         "executionPrice": "$6.10",
         "fullMarket": "LINK/USD [LINK-USDC]",
         "indexName": "LINK/USD",
+        "isActionError": true,
         "market": "Short LINK/USD",
         "marketPrice": "$6.09",
         "poolName": "LINK-USDC",
@@ -460,6 +464,7 @@ describe("TradeHistoryRow helpers", () => {
         "executionPrice": "...",
         "fullMarket": "...",
         "fullMarketNames": undefined,
+        "isActionError": true,
         "market": "...",
         "price": "2,056.13 USDC / ETH",
         "priceComment": Array [

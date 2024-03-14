@@ -180,6 +180,7 @@ export const formatSwapMessage = (
         infoRow(t`Order Acceptable Price`, `${greaterSign}${acceptableRate}`)
       ),
       size: t`${fromText} to ${toExecutionText}`,
+      isActionError: true,
     };
   } else if (
     (ot === OrderType.MarketSwap && ev === TradeActionType.OrderCreated) ||
@@ -230,6 +231,7 @@ export const formatSwapMessage = (
         infoRow(t`Order Acceptable Price`, `${greaterSign}${acceptableRate}`)
       ),
       size: t`${fromText} to ${toExecutionText}`,
+      isActionError: true,
     };
   }
 

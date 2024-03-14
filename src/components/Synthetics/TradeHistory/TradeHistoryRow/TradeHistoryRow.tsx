@@ -161,11 +161,20 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           >
             {msg.actionComment ? (
               <TooltipWithPortal
+                className={cx({
+                  "Tooltip-error": msg.isActionError,
+                })}
                 handle={msg.action}
                 renderContent={() => <TooltipContentComponent content={msg.actionComment!} />}
               />
             ) : (
-              msg.action
+              <span
+                className={cx({
+                  "text-red": msg.isActionError,
+                })}
+              >
+                {msg.action}
+              </span>
             )}
           </ExternalLink>
           <br />

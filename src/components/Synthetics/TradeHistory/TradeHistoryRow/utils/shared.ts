@@ -83,6 +83,7 @@ export function infoRow(key: string, value: TooltipString): Line {
 export type RowDetails = {
   action: string;
   actionComment?: TooltipContent;
+  isActionError?: boolean;
   timestamp: string;
   timestampISO: string;
   market: string;
