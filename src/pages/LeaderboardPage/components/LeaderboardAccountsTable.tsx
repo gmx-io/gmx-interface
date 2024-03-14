@@ -258,7 +258,7 @@ export function LeaderboardAccountsTable({
               />
               <TableHeaderCell
                 title={t`Avg. Lev.`}
-                width={10}
+                width={0}
                 tooltip={t`Average leverage used.`}
                 tooltipPosition="bottom-end"
                 onClick={handleColumnClick}
@@ -267,7 +267,7 @@ export function LeaderboardAccountsTable({
               />
               <TableHeaderCell
                 title={t`Win/Loss`}
-                width={10}
+                width={0}
                 tooltip={t`Wins and losses for fully closed positions.`}
                 tooltipPosition="bottom-end"
                 onClick={handleColumnClick}
@@ -306,11 +306,12 @@ const TableHeaderCell = memo(
     width?: number | ((breakpoint?: string) => number);
     breakpoint?: string;
   }) => {
-    const style = width
-      ? {
-          width: `${typeof width === "function" ? width(breakpoint) : width}%`,
-        }
-      : undefined;
+    const style =
+      width !== undefined
+        ? {
+            width: `${typeof width === "function" ? width(breakpoint) : width}%`,
+          }
+        : undefined;
 
     const handleClick = useCallback(() => onClick?.(columnName), [columnName, onClick]);
     const stopPropagation = useCallback((e) => e.stopPropagation(), []);
