@@ -1,11 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
 
-import {
-  useIsLastSubaccountAction,
-  useSubaccount,
-  useSubaccountCancelOrdersDetailsMessage,
-} from "context/SubaccountContext/SubaccountContext";
+import { useSubaccount, useSubaccountCancelOrdersDetailsMessage } from "context/SubaccountContext/SubaccountContext";
 import {
   useMarketsInfoData,
   useOrdersInfoData,
@@ -78,7 +74,6 @@ export function OrderList(p: Props) {
 
   const isAllOrdersSelected = orders.length > 0 && orders.every((o) => p.selectedOrdersKeys?.[o.key]);
   const editingOrder = orders.find((o) => o.key === editingOrderKey);
-  const isLastSubaccountAction = useIsLastSubaccountAction();
   const cancelOrdersDetailsMessage = useSubaccountCancelOrdersDetailsMessage(undefined, 1);
 
   const orderRefs = useRef<{ [key: string]: HTMLTableRowElement | null }>({});
@@ -124,7 +119,6 @@ export function OrderList(p: Props) {
     cancelOrdersTxn(chainId, signer, subaccount, {
       orderKeys: [key],
       setPendingTxns: p.setPendingTxns,
-      isLastSubaccountAction,
       detailsMsg: cancelOrdersDetailsMessage,
     }).finally(() => {
       setCanellingOrdersKeys((prev) => prev.filter((k) => k !== key));

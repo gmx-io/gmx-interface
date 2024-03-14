@@ -133,7 +133,7 @@ export function getDecreasePositionAmounts(p: {
 
   values.sizeDeltaUsd = closeSizeUsd;
 
-  if (!position) {
+  if (!position || !position.sizeInUsd.gt(0) || !position.sizeInTokens.gt(0)) {
     applyAcceptablePrice({
       marketInfo,
       isLong,
@@ -172,7 +172,7 @@ export function getDecreasePositionAmounts(p: {
 
   let estimatedCollateralDeltaUsd = BigNumber.from(0);
 
-  if (keepLeverage && position.sizeInUsd.gt(0)) {
+  if (keepLeverage) {
     estimatedCollateralDeltaUsd = values.sizeDeltaUsd.mul(estimatedCollateralUsd).div(position.sizeInUsd);
   }
 
