@@ -1045,6 +1045,11 @@ msgstr ""
 msgid "Claims History"
 msgstr ""
 
+#. Button to clear the filter
+#: src/components/Synthetics/TableOptionsFilter/TableOptionsFilter.tsx
+msgid "Clear"
+msgstr "清除"
+
 #: src/components/Exchange/PositionsList.js
 msgid "Click on the Position to select its market, then use the trade box to increase your Position Size if needed."
 msgstr ""
@@ -5866,6 +5871,7 @@ msgstr "触发价格"
 msgid "Trigger order disabled, pending {0} upgrade"
 msgstr ""
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts

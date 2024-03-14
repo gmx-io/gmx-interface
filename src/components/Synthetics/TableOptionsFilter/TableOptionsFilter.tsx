@@ -1,7 +1,7 @@
-import isEqual from "lodash/isEqual";
-import { ComponentType, useCallback, useState, KeyboardEvent as ReactKeyboardEvent, ChangeEventHandler } from "react";
-
 import type { Placement } from "@floating-ui/dom";
+import { Trans } from "@lingui/macro";
+import isEqual from "lodash/isEqual";
+import { ChangeEventHandler, ComponentType, KeyboardEvent as ReactKeyboardEvent, useCallback, useState } from "react";
 
 import { EMPTY_ARRAY } from "lib/objects";
 
@@ -9,6 +9,7 @@ import { FlatItems, useFilteredFlatItems } from "./flat";
 import { Groups, useFilteredGroups } from "./groups";
 import { FilteredGroup, Group, Item } from "./types";
 
+import Button from "components/Button/Button";
 import SearchInput from "components/SearchInput/SearchInput";
 import { TableFilterBase } from "components/Synthetics/TableFilterBase/TableFilterBase";
 
@@ -25,7 +26,7 @@ export type Props<T> = {
       multiple?: false;
       disableGroupSelection?: false;
       value?: T;
-      onChange: (value: T) => void;
+      onChange: (value: T | undefined) => void;
     }
   | {
       multiple: true;
@@ -138,15 +139,28 @@ export function TableOptionsFilter<T>({
     [disableGroupSelection, multiple, onChange, value]
   );
 
+  const handleClear = useCallback(() => {
+    if (multiple) {
+      onChange(EMPTY_ARRAY);
+    } else {
+      onChange(undefined);
+    }
+  }, [multiple, onChange]);
+
   return (
     <TableFilterBase label={label} isActive={isActive} popupPlacement={popupPlacement}>
-      <SearchInput
-        className="TableOptionsFilter-search"
-        placeholder={placeholder}
-        value={search}
-        setValue={handleSetValue}
-        onKeyDown={handleSearchEnterKey}
-      />
+      <div className="flex">
+        <SearchInput
+          className="TableOptionsFilter-search"
+          placeholder={placeholder}
+          value={search}
+          setValue={handleSetValue}
+          onKeyDown={handleSearchEnterKey}
+        />
+        <Button variant="secondary" className="my-sm mr-sm" onClick={handleClear}>
+          <Trans comment="Button to clear the filter">Clear</Trans>
+        </Button>
+      </div>
 
       <div className="TableOptionsFilter-options">
         {isGrouped ? (

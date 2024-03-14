@@ -1045,6 +1045,11 @@ msgstr "Claims ({totalClaimables})"
 msgid "Claims History"
 msgstr "Claims History"
 
+#. Button to clear the filter
+#: src/components/Synthetics/TableOptionsFilter/TableOptionsFilter.tsx
+msgid "Clear"
+msgstr "Clear"
+
 #: src/components/Exchange/PositionsList.js
 msgid "Click on the Position to select its market, then use the trade box to increase your Position Size if needed."
 msgstr "Click on the Position to select its market, then use the trade box to increase your Position Size if needed."
@@ -5869,6 +5874,7 @@ msgstr "Trigger Price"
 msgid "Trigger order disabled, pending {0} upgrade"
 msgstr "Trigger order disabled, pending {0} upgrade"
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
