@@ -76,6 +76,10 @@ export function getTokensRatioByPrice(p: {
   return { ratio, largestToken, smallestToken };
 }
 
+/**
+ * Even though its not a generic function, it return the same type as the input.
+ * If `TokenData` is passed, it returns `TokenData`, if `Token` is passed, it returns `Token`.
+ */
 export function getTokensRatioByAmounts(p: {
   fromToken: Token;
   toToken: Token;

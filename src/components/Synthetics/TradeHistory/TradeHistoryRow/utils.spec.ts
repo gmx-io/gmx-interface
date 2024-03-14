@@ -391,13 +391,13 @@ describe("TradeHistoryRow helpers", () => {
     // MARKET SWAPS
     expect(formatSwapMessage(requestSwap)).toMatchInlineSnapshot(`
       Object {
-        "acceptablePrice": "<  0.00 USDC / WETH",
+        "acceptablePrice": ">  3,327.54 USDC / WETH",
         "action": "Request Market Swap",
         "executionPrice": "...",
         "fullMarket": "...",
         "fullMarketNames": undefined,
         "market": "...",
-        "price": "<  0.00 USDC / WETH",
+        "price": ">  3,327.54 USDC / WETH",
         "priceComment": Array [
           "Acceptable price for the order.",
         ],
@@ -431,7 +431,7 @@ describe("TradeHistoryRow helpers", () => {
     // LIMIT SWAPS
     expect(formatSwapMessage(executeOrderSwap)).toMatchInlineSnapshot(`
       Object {
-        "acceptablePrice": ">  0.4422 WETH / BTC",
+        "acceptablePrice": "<  2.2613 WETH / BTC",
         "action": "Execute Limit Swap",
         "executionPrice": "0.8110 WETH / BTC",
         "fullMarket": "...",
@@ -443,7 +443,7 @@ describe("TradeHistoryRow helpers", () => {
           "",
           Object {
             "key": "Order Acceptable Price",
-            "value": ">  0.4422 WETH / BTC",
+            "value": "<  2.2613 WETH / BTC",
           },
         ],
         "size": "0.3000 WETH to 0.3698 BTC",

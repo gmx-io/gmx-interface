@@ -184,3 +184,7 @@ export function getErrorTooltipTitle(errorName: string) {
       return t`Reason: ${words(errorName).join(" ").toLowerCase()}`;
   }
 }
+
+const DOUBLE_NON_BREAKING_SPACE = String.fromCharCode(160) + String.fromCharCode(160);
+export const INEQUALITY_GT = ">" + DOUBLE_NON_BREAKING_SPACE;
+export const INEQUALITY_LT = "<" + DOUBLE_NON_BREAKING_SPACE;

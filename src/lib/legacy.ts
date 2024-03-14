@@ -113,7 +113,7 @@ export function getExchangeRate(tokenAInfo, tokenBInfo, inverted) {
 }
 
 export function shouldInvertTriggerRatio(tokenA, tokenB) {
-  if (tokenB.isStable || tokenB.isUsdg) return true;
+  if ((tokenB.isStable || tokenB.isUsdg) && !tokenA.isStable) return true;
   if (tokenB.maxPrice && tokenA.maxPrice && tokenB.maxPrice.lt(tokenA.maxPrice)) return true;
   return false;
 }

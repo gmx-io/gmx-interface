@@ -6,11 +6,14 @@ import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets
 import { OrderType } from "domain/synthetics/orders";
 import { TokenData, adaptToV1TokenInfo, getTokensRatioByAmounts } from "domain/synthetics/tokens";
 import { SwapTradeAction, TradeActionType } from "domain/synthetics/tradeHistory";
+import type { Token, TokenInfo } from "domain/tokens/types";
 import { getExchangeRateDisplay } from "lib/legacy";
 import { formatTokenAmount } from "lib/numbers";
 
 import { getActionTitle } from "../../keys";
 import {
+  INEQUALITY_GT,
+  INEQUALITY_LT,
   MakeOptional,
   RowDetails,
   formatTradeActionTimestamp,
@@ -21,16 +24,27 @@ import {
   tryGetError,
 } from "./shared";
 
+const ELLIPSIS = "...";
+const ARROW_SEPARATOR = " → ";
+
+/**
+ * getTokensRatioByAmounts return the same type as the input. But types are TokenData.
+ */
+const adapt = (token: Token | undefined): TokenInfo | undefined => {
+  return token ? adaptToV1TokenInfo(token as TokenData) : undefined;
+};
+
 export const formatSwapMessage = (
   tradeAction: SwapTradeAction,
   marketsInfoData?: MarketsInfoData,
   relativeTimestamp = true
 ): RowDetails => {
-  const tokenIn = tradeAction.initialCollateralToken!;
+  const tokenIn = tradeAction.initialCollateralToken;
+
   const tokenOut = tradeAction.targetCollateralToken!;
   const amountIn = tradeAction.initialCollateralDeltaAmount!;
 
-  const fromText = formatTokenAmount(amountIn, tokenIn?.decimals, tokenIn?.symbol, {
+  const fromText = formatTokenAmount(amountIn, tokenIn.decimals, tokenIn.symbol, {
     useCommas: true,
   });
 
@@ -59,20 +73,23 @@ export const formatSwapMessage = (
       toTokenAmount: tradeAction.minOutputAmount,
     });
 
-  const fromTokenInfo = tokenIn ? adaptToV1TokenInfo(tokenIn) : undefined;
-  const toTokenInfo = tokenOut ? adaptToV1TokenInfo(tokenOut) : undefined;
+  const acceptablePriceInequality =
+    tokensMinRatio.largestToken?.address === tokenOut?.address ? INEQUALITY_LT : INEQUALITY_GT;
 
-  const [largest, smallest] =
-    tokensExecutionRatio?.largestToken.address === tokenIn?.address
-      ? [fromTokenInfo, toTokenInfo]
-      : [toTokenInfo, fromTokenInfo];
+  const executionRate = getExchangeRateDisplay(
+    tokensExecutionRatio?.ratio,
+    adapt(tokensExecutionRatio?.smallestToken),
+    adapt(tokensExecutionRatio?.largestToken)
+  );
 
-  const greaterSign = largest?.address === tokenOut?.address ? "<  " : ">  ";
-  const executionRate = getExchangeRateDisplay(tokensExecutionRatio?.ratio, smallest, largest);
-  const acceptableRate = getExchangeRateDisplay(tokensMinRatio?.ratio, smallest, largest);
+  const acceptableRate = getExchangeRateDisplay(
+    tokensMinRatio.ratio,
+    adapt(tokensMinRatio.smallestToken),
+    adapt(tokensMinRatio.largestToken)
+  );
 
   const market = !marketsInfoData
-    ? "..."
+    ? ELLIPSIS
     : tradeAction.swapPath
         ?.map((marketAddress) => marketsInfoData?.[marketAddress])
         .reduce(
@@ -90,11 +107,11 @@ export const formatSwapMessage = (
           [tradeAction.initialCollateralToken] as TokenData[]
         )
         .map((token: TokenData) => token?.symbol)
-        .join(" → ");
+        .join(ARROW_SEPARATOR);
 
   const fullMarket = !marketsInfoData
-    ? "..."
-    : tradeAction.swapPath?.map((marketAddress) => marketsInfoData?.[marketAddress].name).join(" → ");
+    ? ELLIPSIS
+    : tradeAction.swapPath?.map((marketAddress) => marketsInfoData?.[marketAddress].name).join(ARROW_SEPARATOR);
 
   const fullMarketNames: RowDetails["fullMarketNames"] = !marketsInfoData
     ? undefined
@@ -132,7 +149,7 @@ export const formatSwapMessage = (
     });
 
     result = {
-      price: `${greaterSign}${acceptableRate}`,
+      price: `${acceptablePriceInequality}${acceptableRate}`,
       priceComment: lines(
         t`Acceptable price for the order.`,
         "",
@@ -146,7 +163,7 @@ export const formatSwapMessage = (
       priceComment: lines(
         t`Execution price for the order.`,
         "",
-        infoRow(t`Order Acceptable Price`, `${greaterSign}${acceptableRate}`)
+        infoRow(t`Order Acceptable Price`, `${acceptablePriceInequality}${acceptableRate}`)
       ),
       size: t`${fromText} to ${toExecutionText}`,
     };
@@ -161,7 +178,7 @@ export const formatSwapMessage = (
         fromTokenAmount: amountIn,
         toTokenAmount: outputAmount,
       });
-    const rate = getExchangeRateDisplay(ratio?.ratio, tokenIn, tokenOut);
+    const rate = getExchangeRateDisplay(ratio?.ratio, adapt(ratio?.smallestToken), adapt(ratio?.largestToken));
     const toExecutionText = formatTokenAmount(outputAmount, tokenOut?.decimals, tokenOut?.symbol, {
       useCommas: true,
     });
@@ -177,7 +194,7 @@ export const formatSwapMessage = (
       priceComment: lines(
         t`Execution price for the order.`,
         "",
-        infoRow(t`Order Acceptable Price`, `${greaterSign}${acceptableRate}`)
+        infoRow(t`Order Acceptable Price`, `${acceptablePriceInequality}${acceptableRate}`)
       ),
       size: t`${fromText} to ${toExecutionText}`,
       isActionError: true,
@@ -187,7 +204,7 @@ export const formatSwapMessage = (
     (ot === OrderType.MarketSwap && ev === TradeActionType.OrderUpdated)
   ) {
     result = {
-      price: `${greaterSign}${acceptableRate}`,
+      price: `${acceptablePriceInequality}${acceptableRate}`,
       priceComment: lines(t`Acceptable price for the order.`),
       size: t`${fromText} to ${toMinText}`,
     };
@@ -197,7 +214,7 @@ export const formatSwapMessage = (
       priceComment: lines(
         t`Execution price for the order.`,
         "",
-        infoRow(t`Order Acceptable Price`, `${greaterSign}${acceptableRate}`)
+        infoRow(t`Order Acceptable Price`, `${acceptablePriceInequality}${acceptableRate}`)
       ),
       size: t`${fromText} to ${toExecutionText}`,
     };
@@ -212,7 +229,7 @@ export const formatSwapMessage = (
         fromTokenAmount: amountIn,
         toTokenAmount: outputAmount,
       });
-    const rate = getExchangeRateDisplay(ratio?.ratio, tokenIn, tokenOut);
+    const rate = getExchangeRateDisplay(ratio?.ratio, adapt(ratio?.smallestToken), adapt(ratio?.smallestToken));
     const toExecutionText = formatTokenAmount(outputAmount, tokenOut?.decimals, tokenOut?.symbol, {
       useCommas: true,
     });
@@ -228,7 +245,7 @@ export const formatSwapMessage = (
       priceComment: lines(
         t`Execution price for the order.`,
         "",
-        infoRow(t`Order Acceptable Price`, `${greaterSign}${acceptableRate}`)
+        infoRow(t`Order Acceptable Price`, `${acceptablePriceInequality}${acceptableRate}`)
       ),
       size: t`${fromText} to ${toExecutionText}`,
       isActionError: true,
@@ -241,7 +258,7 @@ export const formatSwapMessage = (
     fullMarket: fullMarket,
     timestamp: formatTradeActionTimestamp(tradeAction.transaction.timestamp, relativeTimestamp),
     timestampISO: formatTradeActionTimestampISO(tradeAction.transaction.timestamp),
-    acceptablePrice: `${greaterSign}${acceptableRate}`,
+    acceptablePrice: `${acceptablePriceInequality}${acceptableRate}`,
     executionPrice: executionRate,
     fullMarketNames,
     ...result!,

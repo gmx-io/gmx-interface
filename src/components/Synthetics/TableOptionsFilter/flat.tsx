@@ -47,7 +47,12 @@ export function FlatItems<T>({
             togglePair(pair.data);
           }}
         >
-          <Checkbox isChecked={getIsSelected(pair.data)}>
+          <Checkbox
+            isChecked={getIsSelected(pair.data)}
+            setIsChecked={() => {
+              togglePair(pair.data);
+            }}
+          >
             {ItemComponent ? <ItemComponent item={pair.data} /> : pair.text}
           </Checkbox>
         </div>

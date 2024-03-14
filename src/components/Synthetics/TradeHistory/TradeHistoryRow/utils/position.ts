@@ -20,6 +20,8 @@ import {
 
 import { actionTextMap, getActionTitle } from "../../keys";
 import {
+  INEQUALITY_GT,
+  INEQUALITY_LT,
   MakeOptional,
   RowDetails,
   formatTradeActionTimestamp,
@@ -30,10 +32,6 @@ import {
   numberToState,
   tryGetError,
 } from "./shared";
-
-const DOUBLE_NON_BREAKING_SPACE = String.fromCharCode(160) + String.fromCharCode(160);
-const INEQUALITY_GT = ">" + DOUBLE_NON_BREAKING_SPACE;
-const INEQUALITY_LT = "<" + DOUBLE_NON_BREAKING_SPACE;
 
 export const formatPositionMessage = (
   tradeAction: PositionTradeAction,
