@@ -1,6 +1,6 @@
 import { i18n } from "@lingui/core";
 import { t } from "@lingui/macro";
-import { BigNumber } from "ethers";
+import { BigNumber, constants as ethersConstants } from "ethers";
 
 import { getMarketFullName, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { OrderType, isIncreaseOrderType } from "domain/synthetics/orders";
@@ -9,7 +9,6 @@ import { getShouldUseMaxPrice } from "domain/synthetics/trade";
 import { PositionTradeAction, TradeActionType } from "domain/synthetics/tradeHistory";
 import { PRECISION } from "lib/legacy";
 import {
-  BN_BILLION,
   BN_NEGATIVE_ONE,
   BN_ONE,
   applyFactor,
@@ -395,7 +394,8 @@ export const formatPositionMessage = (
       triggerPriceInequality + formatUsd(tradeAction.triggerPrice, { displayDecimals: priceDecimals })!;
 
     const isAcceptablePriceUseful =
-      !tradeAction.acceptablePrice.isZero() && !tradeAction.acceptablePrice.gte(BN_BILLION);
+      !tradeAction.acceptablePrice.isZero() && !tradeAction.acceptablePrice.gte(ethersConstants.MaxInt256);
+
     const priceComment = isAcceptablePriceUseful
       ? lines(
           t`Trigger price for the order.`,
@@ -411,7 +411,7 @@ export const formatPositionMessage = (
     };
   } else if (ot === OrderType.StopLossDecrease && ev === TradeActionType.OrderExecuted) {
     const isAcceptablePriceUseful =
-      !tradeAction.acceptablePrice.isZero() && !tradeAction.acceptablePrice.gte(BN_BILLION);
+      !tradeAction.acceptablePrice.isZero() && !tradeAction.acceptablePrice.gte(ethersConstants.MaxInt256);
 
     result = {
       priceComment: lines(
@@ -433,7 +433,7 @@ export const formatPositionMessage = (
   } else if (ot === OrderType.StopLossDecrease && ev === TradeActionType.OrderFrozen) {
     let error = tradeAction.reasonBytes && tryGetError(tradeAction.reasonBytes);
     const isAcceptablePriceUseful =
-      !tradeAction.acceptablePrice.isZero() && !tradeAction.acceptablePrice.gte(BN_BILLION);
+      !tradeAction.acceptablePrice.isZero() && !tradeAction.acceptablePrice.gte(ethersConstants.MaxInt256);
 
     result = {
       actionComment:
