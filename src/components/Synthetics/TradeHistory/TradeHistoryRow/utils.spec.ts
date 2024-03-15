@@ -340,12 +340,12 @@ describe("TradeHistoryRow helpers", () => {
           },
           "",
           Object {
-            "key": "Leftover Collateral",
-            "value": "< $0.01",
+            "key": "Leftover Collateral Excluding Impact",
+            "value": "$83.95",
           },
           Object {
             "key": "Min. required Collateral",
-            "value": "< $0.01",
+            "value": "$64.41",
           },
         ],
         "priceImpact": "-$16.82",
