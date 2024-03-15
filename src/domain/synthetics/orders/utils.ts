@@ -5,7 +5,7 @@ import { formatPercentage, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getFeeItem, getIsHighPriceImpact, getPriceImpactByAcceptablePrice } from "../fees";
 import { MarketsInfoData, getAvailableUsdLiquidityForPosition } from "../markets";
-import { PositionsInfoData, parsePositionKey } from "../positions";
+import { PositionInfo, PositionsInfoData, parsePositionKey } from "../positions";
 import { TokensData, convertToTokenAmount, convertToUsd, getTokensRatioByAmounts, parseContractPrice } from "../tokens";
 import {
   getAcceptablePriceInfo,
@@ -15,6 +15,7 @@ import {
   getTriggerThresholdType,
 } from "../trade";
 import { Order, OrderError, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo } from "./types";
+import { validateMaxLeverage } from "../trade/utils/validation";
 
 export function isVisibleOrder(orderType: OrderType) {
   return isLimitOrderType(orderType) || isTriggerDecreaseOrderType(orderType) || isLimitSwapOrderType(orderType);
@@ -427,6 +428,17 @@ export function getOrderErrors(p: {
     }
   }
 
+  if (isDecreaseOrderType(order.orderType)) {
+    const isMaxLeverageError = checkMaxLeverageError(positionOrder, position);
+
+    if (isMaxLeverageError) {
+      errors.push({
+        msg: t`The order will not be executed as it will increase the position's leverage beyond the maximum allowed.`,
+        level: "error",
+      });
+    }
+  }
+
   const errorsLevelPriority = {
     error: 1,
     warning: 2,
@@ -490,4 +502,20 @@ export function sortSwapOrders(orders: SwapOrderInfo[], tokenSortOrder?: string[
 
     return a.minOutputAmount.sub(b.minOutputAmount).isNegative() ? -1 : 1;
   });
+}
+
+function checkMaxLeverageError(order: PositionOrderInfo, position: PositionInfo | undefined) {
+  const sizeDeltaUsd = order.sizeDeltaUsd;
+  const isLong = order.isLong;
+  const marketInfo = order.marketInfo;
+  const positionLeverage = position?.leverage ?? BigNumber.from(0);
+  const nextLeverage = position
+    ? isLong
+      ? positionLeverage.add(sizeDeltaUsd.div(position.collateralUsd))
+      : positionLeverage.sub(sizeDeltaUsd.div(position.collateralUsd))
+    : BigNumber.from(0);
+
+  const [error] = validateMaxLeverage(nextLeverage, marketInfo, isLong, sizeDeltaUsd);
+
+  return Boolean(error);
 }
