@@ -3,6 +3,8 @@ import cx from "classnames";
 import "./ShareBar.scss";
 import { useMemo } from "react";
 
+const PERCENTAGE_HIDE_THRESHOLD = 25;
+
 export type Props = {
   share?: BigNumberish;
   total?: BigNumberish;
@@ -47,13 +49,20 @@ export function ShareBar(p: Props) {
       {showPercentage && (
         <div className="ShareBar-fill__percentage">
           <div className="ShareBar-fill__left" style={percentageStyle.leftStyle}>
-            {progress}%
+            {formatPercentageDisplay(progress)}
           </div>
           <div className="ShareBar-fill__right" style={percentageStyle.rightStyle}>
-            {100 - progress}%
+            {formatPercentageDisplay(100 - progress)}
           </div>
         </div>
       )}
     </div>
   );
+}
+
+function formatPercentageDisplay(percentage: number) {
+  if (percentage < PERCENTAGE_HIDE_THRESHOLD) {
+    return "";
+  }
+  return `${percentage}%`;
 }
