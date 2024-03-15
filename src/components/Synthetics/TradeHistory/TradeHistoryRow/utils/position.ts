@@ -12,6 +12,7 @@ import {
   BN_BILLION,
   BN_NEGATIVE_ONE,
   BN_ONE,
+  applyFactor,
   formatDeltaUsd,
   formatTokenAmount,
   formatTokenAmountWithUsd,
@@ -500,7 +501,19 @@ export const formatPositionMessage = (
     );
     const formattedPositionFee = formatUsd(positionFeeUsd?.mul(-1))!;
 
-    const formattedMinCollateral = formatUsd(minCollateralUsd)!;
+    let liquidationCollateralUsd = applyFactor(sizeDeltaUsd, tradeAction.marketInfo.minCollateralFactor);
+    if (liquidationCollateralUsd.lt(minCollateralUsd)) {
+      liquidationCollateralUsd = minCollateralUsd;
+    }
+
+    let leftoverCollateralUsd = initialCollateralUsd
+      ?.add(tradeAction.basePnlUsd!)
+      .sub(borrowingFeeUsd!)
+      .sub(fundingFeeUsd!)
+      .sub(positionFeeUsd!);
+
+    const formattedLeftoverCollateral = formatUsd(leftoverCollateralUsd!);
+    const formattedMinCollateral = formatUsd(liquidationCollateralUsd)!;
 
     result = {
       priceComment: lines(
@@ -515,7 +528,7 @@ export const formatPositionMessage = (
         infoRow(t`Initial Collateral`, formattedInitialCollateral!),
         infoRow(t`PnL`, {
           text: formattedBasePnl,
-          state: numberToState(tradeAction.pnlUsd!),
+          state: numberToState(tradeAction.basePnlUsd!),
         }),
         infoRow(t`Borrow Fee`, {
           text: formattedBorrowFee,
@@ -539,7 +552,7 @@ export const formatPositionMessage = (
           state: numberToState(tradeAction.pnlUsd!),
         }),
         "",
-        infoRow(t`Leftover Collateral`, formattedMinCollateral),
+        infoRow(t`Leftover Collateral without impact`, formattedLeftoverCollateral),
         infoRow(t`Min. required Collateral`, formattedMinCollateral)
       ),
       isActionError: true,
