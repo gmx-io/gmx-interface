@@ -3639,8 +3639,16 @@ msgid "No trades yet"
 msgstr "暂时没有交易"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Not enough Available Liquidity to fill the Order."
+msgstr "没有足够的可用流动性来填补订单。"
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity."
 msgstr "没有足够的可用流动性来填补订单。当条件满足并且有足够的可用流动性时，订单将被填充。"
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Not enough Available Swap Liquidity to fill the Order."
+msgstr "没有足够的可用交换流动性来填补订单。"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity."
@@ -3760,6 +3768,8 @@ msgstr "订单"
 msgid "Order Acceptable Price"
 msgstr "订单可接受价格"
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -4594,6 +4604,10 @@ msgstr "搜索代币"
 msgid "Search action"
 msgstr "搜索操作"
 
+#: src/components/Synthetics/TableMarketFilter/MarketFilter.tsx
+msgid "Search market"
+msgstr "搜索市场"
+
 #: src/components/NetworkDropdown/LanguagePopupHome.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Select Language"
@@ -5343,6 +5357,10 @@ msgstr ""
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
 msgstr ""
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "The Execution Price didn't meet the Acceptable Price condition."
+msgstr "执行价格未满足可接受价格条件"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met."

@@ -3642,8 +3642,16 @@ msgid "No trades yet"
 msgstr "No trades yet"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Not enough Available Liquidity to fill the Order."
+msgstr "Not enough Available Liquidity to fill the Order."
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity."
 msgstr "Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity."
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Not enough Available Swap Liquidity to fill the Order."
+msgstr "Not enough Available Swap Liquidity to fill the Order."
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity."
@@ -3763,6 +3771,8 @@ msgstr "Order"
 msgid "Order Acceptable Price"
 msgstr "Order Acceptable Price"
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -4597,6 +4607,10 @@ msgstr "Search Token"
 msgid "Search action"
 msgstr "Search action"
 
+#: src/components/Synthetics/TableMarketFilter/MarketFilter.tsx
+msgid "Search market"
+msgstr "Search market"
+
 #: src/components/NetworkDropdown/LanguagePopupHome.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Select Language"
@@ -5346,6 +5360,10 @@ msgstr "The Bonus Rebate will be airdropped as ARB tokens on a pro-rata basis. <
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
 msgstr "The Current Price Impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "The Execution Price didn't meet the Acceptable Price condition."
+msgstr "The Execution Price didn't meet the Acceptable Price condition."
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met."

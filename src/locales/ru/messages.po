@@ -3639,8 +3639,16 @@ msgid "No trades yet"
 msgstr "Пока нет сделок"
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Not enough Available Liquidity to fill the Order."
+msgstr "Недостаточно доступной ликвидности для выполнения ордера."
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity."
 msgstr "Недостаточно доступной ликвидности для выполнения ордера. Ордер будет выполнен, когда условие будет выполнено и будет достаточно доступной ликвидности."
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Not enough Available Swap Liquidity to fill the Order."
+msgstr "Недостаточно доступной ликвидности обмена для выполнения ордера."
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity."
@@ -3760,6 +3768,8 @@ msgstr "Ордер"
 msgid "Order Acceptable Price"
 msgstr "Допустимая цена ордера"
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -4594,6 +4604,10 @@ msgstr "Искать Токен"
 msgid "Search action"
 msgstr "Искать действие"
 
+#: src/components/Synthetics/TableMarketFilter/MarketFilter.tsx
+msgid "Search market"
+msgstr "Искать рынок"
+
 #: src/components/NetworkDropdown/LanguagePopupHome.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Select Language"
@@ -5343,6 +5357,10 @@ msgstr ""
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
 msgstr ""
+
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "The Execution Price didn't meet the Acceptable Price condition."
+msgstr "Цена исполнения не соответствует условиям Допустимой Цены."
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met."
