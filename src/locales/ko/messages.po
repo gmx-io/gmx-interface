@@ -3497,6 +3497,10 @@ msgstr "수령할 보상이 아직 없습니다"
 msgid "No trades yet"
 msgstr "거래가 아직 없습니다"
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "None"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistoryRow/utils.tsx
 msgid "Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity."
 msgstr ""

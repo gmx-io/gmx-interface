@@ -3500,6 +3500,10 @@ msgstr "No rewards to claim yet"
 msgid "No trades yet"
 msgstr "No trades yet"
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "None"
+msgstr "None"
+
 #: src/components/Synthetics/TradeHistoryRow/utils.tsx
 msgid "Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity."
 msgstr "Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity."

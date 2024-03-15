@@ -3497,6 +3497,10 @@ msgstr "Вознаграждений пока нет"
 msgid "No trades yet"
 msgstr "Пока нет сделок"
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "None"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistoryRow/utils.tsx
 msgid "Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity."
 msgstr ""

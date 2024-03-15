@@ -3497,6 +3497,10 @@ msgstr "請求できる報酬はありません"
 msgid "No trades yet"
 msgstr "トレード履歴はありません"
 
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "None"
+msgstr ""
+
 #: src/components/Synthetics/TradeHistoryRow/utils.tsx
 msgid "Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity."
 msgstr ""
