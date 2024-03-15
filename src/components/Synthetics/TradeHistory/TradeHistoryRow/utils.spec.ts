@@ -190,6 +190,10 @@ describe("TradeHistoryRow helpers", () => {
           "Mark price for the order.",
           "",
           Object {
+            "key": "Order Trigger Price",
+            "value": ">  $0.836",
+          },
+          Object {
             "key": "Order Acceptable Price",
             "value": ">  $0.827",
           },
@@ -230,6 +234,10 @@ describe("TradeHistoryRow helpers", () => {
         "priceComment": Array [
           "Mark price for the order.",
           "",
+          Object {
+            "key": "Order Trigger Price",
+            "value": ">  $27,210.00",
+          },
           Object {
             "key": "Order Acceptable Price",
             "value": ">  $26,937.90",
