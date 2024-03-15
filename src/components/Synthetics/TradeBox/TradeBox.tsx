@@ -522,7 +522,7 @@ export function TradeBox(p: Props) {
               </Trans>
               <br />
               <br />
-              <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">More Info</ExternalLink>.
+              <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
             </>
           );
           break;

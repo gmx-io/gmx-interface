@@ -1588,7 +1588,7 @@ export default function StakeV2({ setPendingTxns }) {
             <Trans>
               Boost your rewards with Multiplier Points.&nbsp;
               <ExternalLink href="https://docs.gmx.io/docs/tokenomics/rewards#multiplier-points">
-                More info
+                Read more
               </ExternalLink>
               .
             </Trans>
