@@ -98,6 +98,8 @@ function TooltipContentComponent({ content }: { content: TooltipContent }) {
   );
 }
 
+const PRICE_TOOLTIP_WIDTH = 400;
+
 export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAccount, showDebugValues }: Props) {
   const { chainId } = useChainId();
   const marketsInfoData = useMarketsInfoData();
@@ -200,6 +202,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
             handle={msg.price}
             renderContent={renderPriceContent}
             position="bottom-end"
+            maxAllowedWidth={PRICE_TOOLTIP_WIDTH}
           />
         </td>
       </tr>
