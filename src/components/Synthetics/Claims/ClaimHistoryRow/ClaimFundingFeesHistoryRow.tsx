@@ -9,6 +9,8 @@ import { useChainId } from "lib/chains";
 import { formatTokenAmount } from "lib/numbers";
 import { Fragment, useMemo } from "react";
 
+import { ReactComponent as NewLink20ReactComponent } from "img/ic_new_link_20.svg";
+
 export type ClaimFundingFeesHistoryRowProps = {
   claimAction: ClaimFundingFeeAction;
 };
@@ -111,11 +113,12 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
   return (
     <tr>
       <td>
+        {eventTitle}
         <ExternalLink
-          className="ClaimHistoryRow-action plain"
+          className="ClaimHistoryRow-external-link ml-xs"
           href={`${getExplorerUrl(chainId)}tx/${claimAction.transactionHash}`}
         >
-          {eventTitle}
+          <NewLink20ReactComponent />
         </ExternalLink>
         <br />
         <span className="ClaimHistoryRow-time muted">{formatTradeActionTimestamp(claimAction.timestamp)}</span>

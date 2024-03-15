@@ -1,5 +1,11 @@
-.ClaimHistoryRow-action {
-  color: white;
+.ClaimHistoryRow-external-link {
+  vertical-align: top;
+
+  svg {
+    path {
+      fill: currentColor;
+    }
+  }
 }
 
 .ClaimHistoryRow-tooltip-row {

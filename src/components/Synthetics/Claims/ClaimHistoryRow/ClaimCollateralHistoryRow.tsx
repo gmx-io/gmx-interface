@@ -15,6 +15,8 @@ import Tooltip from "components/Tooltip/Tooltip";
 
 import { formatTradeActionTimestamp } from "../../TradeHistory/TradeHistoryRow/utils/shared";
 
+import { ReactComponent as NewLink20ReactComponent } from "img/ic_new_link_20.svg";
+
 export type ClaimCollateralHistoryRowProps = {
   claimAction: ClaimCollateralAction;
 };
@@ -62,11 +64,12 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
   return (
     <tr>
       <td>
+        {eventTitle}
         <ExternalLink
-          className="ClaimHistoryRow-action plain"
+          className="ClaimHistoryRow-external-link ml-xs"
           href={`${getExplorerUrl(chainId)}tx/${claimAction.transactionHash}`}
         >
-          {eventTitle}
+          <NewLink20ReactComponent />
         </ExternalLink>
         <br />
         <span className="ClaimHistoryRow-time muted">{timestamp}</span>
