@@ -182,8 +182,17 @@ export const formatPositionMessage = (
     const customSize = sizeDeltaUsd.gt(0) ? sizeDeltaText : formattedCollateralDelta;
     const customPrice = acceptablePriceInequality + formattedAcceptablePrice;
     const error = tradeAction.reasonBytes && tryGetError(tradeAction.reasonBytes);
-
-    const priceComment = lines(t`Acceptable price for the order.`);
+    const priceComment = lines(
+      t`Acceptable price for the order.`,
+      error?.args?.price && "",
+      error?.args?.price &&
+        infoRow(
+          t`Order Execution Price`,
+          formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
+            displayDecimals: priceDecimals,
+          })
+        )
+    );
 
     result = {
       action: customAction,
@@ -284,8 +293,18 @@ export const formatPositionMessage = (
     const customAction = sizeDeltaUsd.gt(0) ? action : i18n._(actionTextMap["Withdraw-OrderCreated"]!);
     const customSize = sizeDeltaUsd.gt(0) ? sizeDeltaText : formattedCollateralDelta;
     const customPrice = acceptablePriceInequality + formattedAcceptablePrice;
-    const priceComment = lines(t`Acceptable price for the order.`);
     const error = tradeAction.reasonBytes && tryGetError(tradeAction.reasonBytes);
+    const priceComment = lines(
+      t`Acceptable price for the order.`,
+      error?.args?.price && "",
+      error?.args?.price &&
+        infoRow(
+          t`Order Execution Price`,
+          formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
+            displayDecimals: priceDecimals,
+          })
+        )
+    );
 
     result = {
       action: customAction,
