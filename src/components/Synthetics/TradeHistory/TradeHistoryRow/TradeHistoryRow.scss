@@ -47,3 +47,11 @@
     width: 400px;
   }
 }
+
+.TradeHistoryRow-action-handle {
+  display: block;
+  min-width: 0px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -4476,7 +4476,7 @@ msgstr "Запрос на депозит"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Decrease"
-msgstr "Зыпрос на рыночное уменьшение"
+msgstr "Запрос на рыночное уменьшение"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Market Increase"

@@ -159,30 +159,32 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
         })}
       >
         <td>
-          {msg.actionComment ? (
-            <TooltipWithPortal
-              className={cx({
-                "Tooltip-error": msg.isActionError,
-              })}
-              handle={msg.action}
-              renderContent={() => <TooltipContentComponent content={msg.actionComment!} />}
-            />
-          ) : (
-            <span
-              className={cx({
-                "text-red": msg.isActionError,
-              })}
+          <div className="flex">
+            {msg.actionComment ? (
+              <TooltipWithPortal
+                className={cx("TradeHistoryRow-action-handle", {
+                  "Tooltip-error": msg.isActionError,
+                })}
+                handleClassName="TradeHistoryRow-action-handle"
+                handle={msg.action}
+                renderContent={() => <TooltipContentComponent content={msg.actionComment!} />}
+              />
+            ) : (
+              <span
+                className={cx("TradeHistoryRow-action-handle", {
+                  "text-red": msg.isActionError,
+                })}
+              >
+                {msg.action}
+              </span>
+            )}
+            <ExternalLink
+              className="TradeHistoryRow-external-link ml-xs"
+              href={`${getExplorerUrl(chainId)}tx/${tradeAction.transaction.hash}`}
             >
-              {msg.action}
-            </span>
-          )}
-          <ExternalLink
-            className="TradeHistoryRow-external-link ml-xs"
-            href={`${getExplorerUrl(chainId)}tx/${tradeAction.transaction.hash}`}
-          >
-            <NewLink20ReactComponent />
-          </ExternalLink>
-          <br />
+              <NewLink20ReactComponent />
+            </ExternalLink>
+          </div>
           <TooltipWithPortal
             disableHandleStyle
             handle={<span className="TradeHistoryRow-time muted">{msg.timestamp}</span>}
