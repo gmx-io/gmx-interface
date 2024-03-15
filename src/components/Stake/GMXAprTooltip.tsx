@@ -13,11 +13,11 @@ type Props = {
     maxGmxAprForNativeToken: BigNumber;
     gmxAprForNativeTokenWithBoost: BigNumber;
     gmxBoostAprForNativeToken?: BigNumber;
+    avgBoostMultiplier?: BigNumber;
   };
   nativeTokenSymbol: string;
   isUserConnected: boolean;
   recommendStakeGmx?: BigNumber;
-  averageBoostRatio?: BigNumber;
 };
 
 function renderEscrowedGMXApr(processedData) {
@@ -35,7 +35,6 @@ export default function GMXAprTooltip({
   processedData,
   nativeTokenSymbol,
   recommendStakeGmx,
-  averageBoostRatio,
   isUserConnected = false,
 }: Props) {
   const accumulatedBnGMXAmount = useAccumulatedBnGMXAmount();
@@ -58,11 +57,11 @@ export default function GMXAprTooltip({
           value={`${maxGmxAprPercentage}%`}
         />
         <br />
-        {averageBoostRatio && (
+        {processedData?.avgBoostMultiplier && (
           <Trans>
             The average {nativeTokenSymbol} APR is calculated with the average account boost percentage (
-            {formatAmount(averageBoostRatio, 2, 2, true)}%), while the maximum {nativeTokenSymbol} APR is calculated
-            with the maximum boost (200%) by staking{" "}
+            {formatAmount(processedData?.avgBoostMultiplier, 2, 2, true)}%), while the maximum {nativeTokenSymbol} APR
+            is calculated with the maximum boost (200%) by staking{" "}
             <ExternalLink href={DOCS_LINKS.multiplierPoints}>Multiplier Points</ExternalLink>.
           </Trans>
         )}

@@ -506,8 +506,15 @@ msgid "Approving..."
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
 msgid "Arbitrum APR:"
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Arbitrum Avg. APR:"
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Arbitrum Max. APR:"
 msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
@@ -558,8 +565,15 @@ msgid "Available on your preferred network"
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche APR:"
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Avalanche Avg. APR:"
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Avalanche Max. APR: {0}"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -3199,14 +3213,6 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} short exceeded"
-msgstr ""
-
-#: src/components/TokenCard/TokenCard.tsx
-msgid "Max. Arbitrum APR:"
-msgstr ""
-
-#: src/components/TokenCard/TokenCard.tsx
-msgid "Max. Avalanche APR: {0}"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts

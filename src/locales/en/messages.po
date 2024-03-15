@@ -506,9 +506,16 @@ msgid "Approving..."
 msgstr "Approving..."
 
 #: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
 msgid "Arbitrum APR:"
 msgstr "Arbitrum APR:"
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Arbitrum Avg. APR:"
+msgstr "Arbitrum Avg. APR:"
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Arbitrum Max. APR:"
+msgstr "Arbitrum Max. APR:"
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "As network fees have increased, an additional execution fee is needed."
@@ -558,9 +565,16 @@ msgid "Available on your preferred network"
 msgstr "Available on your preferred network"
 
 #: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Avalanche Avg. APR:"
+msgstr "Avalanche Avg. APR:"
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Avalanche Max. APR: {0}"
+msgstr "Avalanche Max. APR: {0}"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average leverage used."
@@ -3203,14 +3217,6 @@ msgstr "Max {0} short capacity"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} short exceeded"
 msgstr "Max {0} short exceeded"
-
-#: src/components/TokenCard/TokenCard.tsx
-msgid "Max. Arbitrum APR:"
-msgstr "Max. Arbitrum APR:"
-
-#: src/components/TokenCard/TokenCard.tsx
-msgid "Max. Avalanche APR: {0}"
-msgstr "Max. Avalanche APR: {0}"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max. Leverage exceeded"

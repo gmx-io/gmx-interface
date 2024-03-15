@@ -1091,6 +1091,7 @@ export function getProcessedData(
   aum,
   nativeTokenPrice,
   stakedGmxSupply,
+  stakedBnGmxSupply,
   gmxPrice,
   gmxSupply,
   maxBoostMultiplier
@@ -1104,6 +1105,7 @@ export function getProcessedData(
     !aum ||
     !nativeTokenPrice ||
     !stakedGmxSupply ||
+    !stakedBnGmxSupply ||
     !gmxPrice ||
     !gmxSupply ||
     !maxBoostMultiplier
@@ -1224,6 +1226,12 @@ export function getProcessedData(
   data.totalNativeTokenRewardsUsd = data.feeGmxTrackerRewardsUsd.add(data.feeGlpTrackerRewardsUsd);
 
   data.totalRewardsUsd = data.totalEsGmxRewardsUsd.add(data.totalNativeTokenRewardsUsd).add(data.totalVesterRewardsUsd);
+
+  data.avgBoostMultiplier = stakedBnGmxSupply
+    ?.mul(BASIS_POINTS_DIVISOR)
+    .div(stakedGmxSupply?.add(data?.stakedEsGmxSupply ?? 0));
+  data.avgBoostAprForNativeToken = data.gmxAprForNativeToken?.mul(data.avgBoostMultiplier).div(BASIS_POINTS_DIVISOR);
+  data.avgGMXAprForNativeToken = data.gmxAprForNativeToken?.add(data.avgBoostAprForNativeToken ?? 0);
 
   return data;
 }

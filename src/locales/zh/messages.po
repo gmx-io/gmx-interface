@@ -506,9 +506,16 @@ msgid "Approving..."
 msgstr "核准中"
 
 #: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
 msgid "Arbitrum APR:"
 msgstr "Arbitrum年利率"
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Arbitrum Avg. APR:"
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Arbitrum Max. APR:"
+msgstr ""
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "As network fees have increased, an additional execution fee is needed."
@@ -558,9 +565,16 @@ msgid "Available on your preferred network"
 msgstr "可在您的首选网络上使用"
 
 #: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche APR:"
 msgstr "Avalanche年利率"
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Avalanche Avg. APR:"
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Avalanche Max. APR: {0}"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average leverage used."
@@ -3200,14 +3214,6 @@ msgstr "最大{0}做空范围"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} short exceeded"
 msgstr "超过了最大{0}做空范围"
-
-#: src/components/TokenCard/TokenCard.tsx
-msgid "Max. Arbitrum APR:"
-msgstr ""
-
-#: src/components/TokenCard/TokenCard.tsx
-msgid "Max. Avalanche APR: {0}"
-msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max. Leverage exceeded"
