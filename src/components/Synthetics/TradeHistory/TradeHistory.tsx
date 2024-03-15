@@ -1,7 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import * as dateFns from "date-fns";
 import type { BigNumber } from "ethers";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { getExplorerUrl } from "config/chains";
 import { TRADE_HISTORY_PER_PAGE } from "config/ui";
@@ -20,7 +20,6 @@ import {
 import { useChainId } from "lib/chains";
 import { downloadAsCsv } from "lib/csv";
 import { useDateRange, useNormalizeDateRange } from "lib/dates";
-import { EMPTY_ARRAY } from "lib/objects";
 import { formatPositionMessage } from "./TradeHistoryRow/utils/position";
 import type { RowDetails } from "./TradeHistoryRow/utils/shared";
 import { formatSwapMessage } from "./TradeHistoryRow/utils/swap";
