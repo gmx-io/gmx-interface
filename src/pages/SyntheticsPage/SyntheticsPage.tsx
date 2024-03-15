@@ -43,14 +43,18 @@ import {
   useTradeboxAvailableTokensOptions,
   useTradeboxFromTokenAddress,
   useTradeboxSetActivePosition,
+  useTradeboxSetTradeConfig,
   useTradeboxToTokenAddress,
   useTradeboxTradeFlags,
+  useTradeboxTradeMode,
+  useTradeboxTradeType,
 } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { getMarketIndexName, getMarketPoolName, getTotalClaimableFundingUsd } from "domain/synthetics/markets";
 import { TradeMode } from "domain/synthetics/trade";
 import { getMidPrice } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import useWallet from "lib/wallets/useWallet";
+import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
 import { useRebatesInfo } from "domain/synthetics/fees/useRebatesInfo";
 import { calcTotalRebateUsd } from "components/Synthetics/Claims/utils";
 
@@ -112,7 +116,19 @@ export function SyntheticsPage(p: Props) {
     (key: string | undefined) => requestAnimationFrame(() => setClosingPositionKeyRaw(key)),
     [setClosingPositionKeyRaw]
   );
-  const { indexTokens, sortedIndexTokensWithPoolValue, swapTokens, sortedLongAndShortTokens } = availableTokensOptions;
+  const { indexTokens, sortedIndexTokensWithPoolValue, swapTokens, sortedLongAndShortTokens, sortedAllMarkets } =
+    availableTokensOptions;
+  const setTradeConfig = useTradeboxSetTradeConfig();
+  const tradeMode = useTradeboxTradeMode();
+  const tradeType = useTradeboxTradeType();
+
+  useTradeParamsProcessor({
+    setTradeConfig,
+    markets: sortedAllMarkets,
+    tradeMode,
+    tradeType,
+    availableTokensOptions,
+  });
 
   const { chartToken, availableChartTokens } = useMemo(() => {
     if (!fromTokenAddress || !toTokenAddress) {

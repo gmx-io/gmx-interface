@@ -10,16 +10,19 @@ import {
   usePositionsInfoRequest,
 } from "domain/synthetics/positions";
 import { PositionSellerState, usePositionSellerState } from "domain/synthetics/trade/usePositionSellerState";
-import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
+import { TradeState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 import { ReactNode, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
+import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
+
+export type SyntheticsPageType = "actions" | "trade" | "pools" | "leaderboard" | "competitions";
 
 export type SyntheticsTradeState = {
-  pageType: "actions" | "trade" | "pools";
+  pageType: SyntheticsPageType;
   globals: {
     chainId: number;
     markets: MarketsResult;
@@ -36,8 +39,9 @@ export type SyntheticsTradeState = {
     closingPositionKey: string | undefined;
     setClosingPositionKey: (key: string | undefined) => void;
   };
+  leaderboard: LeaderboardState;
   settings: SettingsContextType;
-  tradebox: TradeboxState;
+  tradebox: TradeState;
   positionSeller: PositionSellerState;
 };
 
@@ -54,9 +58,10 @@ export function SyntheticsStateContextProvider({
   savedIsPnlInLeverage: boolean;
   savedShowPnlAfterFees: boolean;
   skipLocalReferralCode: boolean;
-  pageType: "actions" | "trade" | "pools";
+  pageType: SyntheticsTradeState["pageType"];
 }) {
-  const { chainId } = useChainId();
+  const { chainId: selectedChainId } = useChainId();
+
   const { account: walletAccount, signer } = useWallet();
   const { account: paramsAccount } = useParams<{ account?: string }>();
 
@@ -67,6 +72,10 @@ export function SyntheticsStateContextProvider({
   }
 
   const account = pageType === "actions" ? checkSummedAccount : walletAccount;
+  const isLeaderboardPage = pageType === "competitions" || pageType === "leaderboard";
+  const leaderboard = useLeaderboardState(account, isLeaderboardPage);
+  const chainId = isLeaderboardPage ? leaderboard.chainId : selectedChainId;
+
   const markets = useMarkets(chainId);
   const marketsInfo = useMarketsInfoRequest(chainId);
   const positionsConstants = usePositionsConstantsRequest(chainId);
@@ -121,6 +130,7 @@ export function SyntheticsStateContextProvider({
         closingPositionKey,
         setClosingPositionKey,
       },
+      leaderboard,
       settings,
       tradebox: tradeboxState,
       positionSeller: positionSellerState,
@@ -142,6 +152,7 @@ export function SyntheticsStateContextProvider({
     savedIsPnlInLeverage,
     savedShowPnlAfterFees,
     closingPositionKey,
+    leaderboard,
     settings,
     tradeboxState,
     positionSellerState,

@@ -26,6 +26,7 @@ import { contractFetcher } from "lib/contracts";
 import { formatKeyAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 import useVestingData from "domain/vesting/useVestingData";
+import { useStakedBnGMXAmount } from "domain/rewards/useStakedBnGMXAmount";
 
 export default function APRLabel({ chainId, label }) {
   const { active } = useWallet();
@@ -112,7 +113,7 @@ export default function APRLabel({ chainId, label }) {
       fetcher: contractFetcher(undefined, Vault),
     }
   );
-
+  const stakedBnGmxSupply = useStakedBnGMXAmount(chainId);
   const { gmxPrice } = useGmxPrice(chainId, {}, active);
 
   const maxBoostBasicPoints = useMaxBoostBasicPoints();
@@ -140,6 +141,7 @@ export default function APRLabel({ chainId, label }) {
     aum,
     nativeTokenPrice,
     stakedGmxSupply,
+    stakedBnGmxSupply,
     gmxPrice,
     gmxSupply,
     maxBoostBasicPoints?.div(BASIS_POINTS_DIVISOR)

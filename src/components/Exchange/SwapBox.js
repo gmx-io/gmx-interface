@@ -61,7 +61,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import { get1InchSwapUrl } from "config/links";
-import { getPriceDecimals, getToken, getTokenBySymbol, getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
+import { getPriceDecimals, getToken, getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
 import { useUserReferralCode } from "domain/referrals/hooks";
 import {
   approveTokens,
@@ -72,7 +72,7 @@ import {
 import { getMinResidualAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
-import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, limitDecimals, parseValue } from "lib/numbers";
 import { getLeverage } from "lib/positions/getLeverage";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
@@ -87,6 +87,7 @@ import useWallet from "lib/wallets/useWallet";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { useHistory } from "react-router-dom";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -165,6 +166,10 @@ export default function SwapBox(props) {
     minExecutionFee,
     minExecutionFeeUSD,
     minExecutionFeeErrorMessage,
+    orderOption,
+    setOrderOption,
+    setShortCollateralAddress,
+    shortCollateralAddress,
   } = props;
   const { account, active, signer } = useWallet();
   const isMetamaskMobile = useIsMetamaskMobile();
@@ -178,19 +183,13 @@ export default function SwapBox(props) {
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
   const { attachedOnChain, userReferralCode } = useUserReferralCode(signer, chainId, account);
   const { openConnectModal } = useConnectModal();
+  const history = useHistory();
 
   let allowedSlippage = savedSlippageAmount;
   if (isHigherSlippageAllowed) {
     allowedSlippage = DEFAULT_HIGHER_SLIPPAGE_AMOUNT;
   }
 
-  const defaultCollateralSymbol = getConstant(chainId, "defaultCollateralSymbol");
-  // TODO hack with useLocalStorageSerializeKey
-  const [shortCollateralAddress, setShortCollateralAddress] = useLocalStorageByChainId(
-    chainId,
-    "Short-Collateral-Address",
-    getTokenBySymbol(chainId, defaultCollateralSymbol).address
-  );
   const isLong = swapOption === LONG;
   const isShort = swapOption === SHORT;
   const isSwap = swapOption === SWAP;
@@ -220,11 +219,6 @@ export default function SwapBox(props) {
   const hasLeverageOption = isLeverageSliderEnabled && !isNaN(parseFloat(leverageOption));
 
   const [ordersToaOpen, setOrdersToaOpen] = useState(false);
-
-  let [orderOption, setOrderOption] = useLocalStorageSerializeKey([chainId, "Order-option"], MARKET);
-  if (!flagOrdersEnabled) {
-    orderOption = MARKET;
-  }
 
   const onOrderOptionChange = (option) => {
     setOrderOption(option);
@@ -338,7 +332,7 @@ export default function SwapBox(props) {
         <div className="align-right">
           <Tooltip
             handle={`$${formatAmount(toTokenInfo?.maxAvailableLong, USD_DECIMALS, 2, true)}`}
-            position="right-bottom"
+            position="bottom-end"
             renderContent={() => {
               return (
                 <>
@@ -1566,6 +1560,10 @@ export default function SwapBox(props) {
         setShortCollateralAddress(stableToken.address);
       }
     }
+
+    if (swapOption !== opt) {
+      history.push(`/v1/${opt.toLowerCase()}`);
+    }
   };
 
   const onConfirmationClick = () => {
@@ -1934,7 +1932,7 @@ export default function SwapBox(props) {
               {primaryTextMessage}
             </Button>
           }
-          position="center-bottom"
+          position="bottom"
           className="Tooltip-flex"
           renderContent={() => ERROR_TOOLTIP_MSG[errorCode]}
         />
@@ -2114,7 +2112,7 @@ export default function SwapBox(props) {
                   {isExistingAndCollateralTokenDifferent ? (
                     <Tooltip
                       className="Collateral-warning"
-                      position="left-bottom"
+                      position="bottom-start"
                       handle={<Trans>Collateral In</Trans>}
                       renderContent={() => (
                         <span>
@@ -2160,7 +2158,7 @@ export default function SwapBox(props) {
                   </div>
                   <div className="align-right">
                     <Tooltip
-                      position="right-bottom"
+                      position="bottom-end"
                       handle="USD"
                       renderContent={() => (
                         <span className="SwapBox-collateral-tooltip-text">
@@ -2296,7 +2294,7 @@ export default function SwapBox(props) {
               <div className="align-right al-swap">
                 <Tooltip
                   handle={`$${formatAmount(maxSwapAmountUsd, USD_DECIMALS, 2, true)}`}
-                  position="right-bottom"
+                  position="bottom-end"
                   renderContent={() => {
                     return (
                       <div>
@@ -2328,7 +2326,7 @@ export default function SwapBox(props) {
               <div className="align-right">
                 <Tooltip
                   handle={`$${formatAmount(entryMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
-                  position="right-bottom"
+                  position="bottom-end"
                   renderContent={() => {
                     return (
                       <div>
@@ -2359,7 +2357,7 @@ export default function SwapBox(props) {
               <div className="align-right">
                 <Tooltip
                   handle={`$${formatAmount(exitMarkPrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
-                  position="right-bottom"
+                  position="bottom-end"
                   renderContent={() => {
                     return (
                       <div>
@@ -2388,7 +2386,7 @@ export default function SwapBox(props) {
               <div className="align-right">
                 <Tooltip
                   handle={borrowFeeText}
-                  position="right-bottom"
+                  position="bottom-end"
                   renderContent={() => {
                     return (
                       <div>
@@ -2430,7 +2428,7 @@ export default function SwapBox(props) {
                 <div className="align-right">
                   <Tooltip
                     handle={`$${formatAmount(toTokenInfo.maxAvailableShort, USD_DECIMALS, 2, true)}`}
-                    position="right-bottom"
+                    position="bottom-end"
                     renderContent={() => {
                       return (
                         <>

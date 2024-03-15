@@ -194,7 +194,7 @@ const Row = memo(
         <div className="Exchange-info-label">{label}</div>
         <div className="ClaimSettleModal-info-label-usd">
           <TooltipWithPortal
-            position="right-top"
+            position="top-end"
             portalClassName="ClaimModal-row-tooltip"
             handle={usd}
             renderContent={renderContent}

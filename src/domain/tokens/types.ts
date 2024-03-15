@@ -12,6 +12,7 @@ export type Token = {
   coingeckoUrl?: string;
   coingeckoSymbol?: string;
   metamaskSymbol?: string;
+  explorerSymbol?: string;
   explorerUrl?: string;
   reservesUrl?: string;
   imageUrl?: string;

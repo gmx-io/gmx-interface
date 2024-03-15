@@ -17,6 +17,12 @@
     }
   }
 
+  @media (max-width: 380px) {
+    .chart-token-selector {
+      font-size: 1.6rem;
+    }
+  }
+
   .chart-token-label--active {
     color: #7885ff;
     span {
@@ -42,6 +48,13 @@
     left: 0;
     cursor: auto;
   }
+
+  @media (max-width: 1100px) {
+    .chart-token-menu-items.menu-items {
+      top: 5.05rem;
+    }
+  }
+
   .chart-token-menu-items.menu-items.isSwap {
     max-width: 22rem;
   }
@@ -54,7 +67,10 @@
 
   .chart-token-list {
     overflow-x: auto;
-    max-height: 20rem;
+    $header-height: 32.5px;
+    $row-height: 34.5px;
+    $rows-to-show: 10;
+    max-height: $header-height + $row-height * $rows-to-show;
     padding-bottom: 1rem;
 
     table {
@@ -125,17 +141,5 @@
         }
       }
     }
-  }
-}
-
-@media (max-width: 1100px) {
-  .chart-token-menu-items.menu-items {
-    top: 5.05rem;
-  }
-}
-
-@media (max-width: 380px) {
-  .chart-token-selector {
-    font-size: 1.6rem;
   }
 }

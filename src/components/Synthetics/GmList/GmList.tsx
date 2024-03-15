@@ -15,7 +15,6 @@ import { useChainId } from "lib/chains";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useMedia } from "react-use";
-import { Operation } from "../GmSwap/GmSwapBox/GmSwapBox";
 import "./GmList.scss";
 import Tooltip from "components/Tooltip/Tooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -25,7 +24,7 @@ import useWallet from "lib/wallets/useWallet";
 import { AprInfo } from "components/AprInfo/AprInfo";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
-import useSortedMarketsWithIndexToken from "domain/synthetics/trade/useSortedMarketsWithIndexToken";
+import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { GmTokensBalanceInfo, GmTokensTotalBalanceInfo } from "components/GmTokensBalanceInfo/GmTokensBalanceInfo";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { getNormalizedTokenSymbol } from "config/tokens";
@@ -60,7 +59,7 @@ export function GmList({
   const userEarnings = useUserEarnings(chainId);
   const isMobile = useMedia("(max-width: 1100px)");
   const daysConsidered = useDaysConsideredInMarketsApr();
-  const { markets: sortedMarketsByIndexToken } = useSortedMarketsWithIndexToken(marketsInfoData, marketTokensData);
+  const { markets: sortedMarketsByIndexToken } = useSortedPoolsWithIndexToken(marketsInfoData, marketTokensData);
 
   const userTotalGmInfo = useMemo(() => {
     if (!active) return;
@@ -97,7 +96,7 @@ export function GmList({
                   <Tooltip
                     handle={<Trans>BUYABLE</Trans>}
                     className="text-none"
-                    position="right-bottom"
+                    position="bottom-end"
                     renderContent={() => (
                       <p className="text-white">
                         <Trans>Available amount to deposit into the specific GM pool.</Trans>
@@ -115,9 +114,9 @@ export function GmList({
                 </th>
                 <th>
                   <Tooltip
-                    handle={<Trans>APR</Trans>}
+                    handle={t`APR`}
                     className="text-none"
-                    position="right-bottom"
+                    position="bottom-end"
                     renderContent={() => (
                       <p className="text-white">
                         <Trans>
@@ -231,18 +230,14 @@ export function GmList({
                         <Button
                           className="GmList-action"
                           variant="secondary"
-                          to={`/pools?operation=${Operation.Deposit}&market=${token.address}&scroll=${
-                            shouldScrollToTop ? "1" : "0"
-                          }`}
+                          to={`/pools/?pool=${token.address}&operation=buy&scroll=${shouldScrollToTop ? "1" : "0"}`}
                         >
                           <Trans>Buy</Trans>
                         </Button>
                         <Button
                           className="GmList-action GmList-last-action"
                           variant="secondary"
-                          to={`/pools?operation=${Operation.Withdrawal}&market=${token.address}&scroll=${
-                            shouldScrollToTop ? "1" : "0"
-                          }`}
+                          to={`/pools/?pool=${token.address}&operation=sell&scroll=${shouldScrollToTop ? "1" : "0"}`}
                         >
                           <Trans>Sell</Trans>
                         </Button>
@@ -336,7 +331,7 @@ export function GmList({
                         <Tooltip
                           handle={<Trans>Buyable</Trans>}
                           className="text-none"
-                          position="left-bottom"
+                          position="bottom-start"
                           renderContent={() => (
                             <p className="text-white">
                               <Trans>Available amount to deposit into the specific GM pool.</Trans>
@@ -360,7 +355,7 @@ export function GmList({
                           balance={userTotalGmInfo?.balance}
                           balanceUsd={userTotalGmInfo?.balanceUsd}
                           userEarnings={userEarnings}
-                          tooltipPosition="left-bottom"
+                          tooltipPosition="bottom-start"
                           label={t`Wallet`}
                         />
                       </div>
@@ -385,16 +380,10 @@ export function GmList({
 
                     <div className="App-card-divider"></div>
                     <div className="App-card-buttons m-0" onClick={buySellActionHandler}>
-                      <Button
-                        variant="secondary"
-                        to={`/pools?operation=${Operation.Deposit}&market=${token.address}&scroll=0`}
-                      >
+                      <Button variant="secondary" to={`/pools/?pool=${token.address}&operation=buy&scroll=0`}>
                         <Trans>Buy</Trans>
                       </Button>
-                      <Button
-                        variant="secondary"
-                        to={`/pools?operation=${Operation.Withdrawal}&market=${token.address}&scroll=0`}
-                      >
+                      <Button variant="secondary" to={`/pools/?pool=${token.address}&operation=sell&scroll=0`}>
                         <Trans>Sell</Trans>
                       </Button>
                     </div>
@@ -442,6 +431,7 @@ function MintableAmount({ mintableInfo, market, token, longToken, shortToken }) 
   );
   return (
     <Tooltip
+      maxAllowedWidth={350}
       handle={
         <>
           {formatTokenAmount(mintableInfo?.mintableAmount, token.decimals, "GM", {
@@ -456,7 +446,7 @@ function MintableAmount({ mintableInfo, market, token, longToken, shortToken }) 
         </>
       }
       className="text-none"
-      position="right-bottom"
+      position="bottom-end"
       renderContent={() => (
         <>
           <p className="text-white">

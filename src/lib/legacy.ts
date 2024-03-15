@@ -721,7 +721,7 @@ export function getSwapFeeBasisPoints(isStable) {
   return isStable ? STABLE_SWAP_FEE_BASIS_POINTS : SWAP_FEE_BASIS_POINTS;
 }
 
-export function shortenAddress(address, length) {
+export function shortenAddress(address, length, padStart = 1) {
   if (!length) {
     return "";
   }
@@ -731,7 +731,10 @@ export function shortenAddress(address, length) {
   if (address.length < 10) {
     return address;
   }
-  let left = Math.floor((length - 3) / 2) + 1;
+  if (length >= address.length) {
+    return address;
+  }
+  let left = Math.floor((length - 3) / 2) + (padStart || 0);
   return address.substring(0, left) + "..." + address.substring(address.length - (length - (left + 3)), address.length);
 }
 
@@ -1088,6 +1091,7 @@ export function getProcessedData(
   aum,
   nativeTokenPrice,
   stakedGmxSupply,
+  stakedBnGmxSupply,
   gmxPrice,
   gmxSupply,
   maxBoostMultiplier
@@ -1101,6 +1105,7 @@ export function getProcessedData(
     !aum ||
     !nativeTokenPrice ||
     !stakedGmxSupply ||
+    !stakedBnGmxSupply ||
     !gmxPrice ||
     !gmxSupply ||
     !maxBoostMultiplier
@@ -1222,6 +1227,12 @@ export function getProcessedData(
 
   data.totalRewardsUsd = data.totalEsGmxRewardsUsd.add(data.totalNativeTokenRewardsUsd).add(data.totalVesterRewardsUsd);
 
+  data.avgBoostMultiplier = stakedBnGmxSupply
+    ?.mul(BASIS_POINTS_DIVISOR)
+    .div(stakedGmxSupply?.add(data?.stakedEsGmxSupply ?? 0));
+  data.avgBoostAprForNativeToken = data.gmxAprForNativeToken?.mul(data.avgBoostMultiplier).div(BASIS_POINTS_DIVISOR);
+  data.avgGMXAprForNativeToken = data.gmxAprForNativeToken?.add(data.avgBoostAprForNativeToken ?? 0);
+
   return data;
 }
 
@@ -1328,7 +1339,11 @@ export function getOrderError(account, order, positionsMap, position) {
   }
 }
 
-export function shouldShowRedirectModal(timestamp) {
+export function shouldShowRedirectModal(timestamp?: number): boolean {
+  if (!timestamp) {
+    return true;
+  }
+
   const thirtyDays = 1000 * 60 * 60 * 24 * 30;
   const expiryTime = timestamp + thirtyDays;
   return !isValidTimestamp(timestamp) || Date.now() > expiryTime;

@@ -2,14 +2,14 @@ import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { BigNumber } from "ethers";
-import React, { useCallback, useEffect, useMemo } from "react";
-import { useLatest } from "react-use";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import { useKey, useLatest } from "react-use";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import Modal from "components/Modal/Modal";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 import Tab from "components/Tab/Tab";
@@ -74,11 +74,12 @@ import {
   parseValue,
 } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { museNeverExist } from "lib/types";
+import { mustNeverExist } from "lib/types";
 import { useDebouncedInputValue } from "lib/useDebouncedInputValue";
 import useWallet from "lib/wallets/useWallet";
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
+import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 
@@ -117,6 +118,7 @@ export function PositionSeller(p: Props) {
   const uiFeeFactor = useUiFeeFactor(chainId);
   const tradeFlags = useTradeboxTradeFlags();
   const position = usePositionSellerPosition();
+  const submitButtonRef = useRef<HTMLButtonElement>(null);
 
   const isVisible = Boolean(position);
 
@@ -189,7 +191,7 @@ export function PositionSeller(p: Props) {
     } else if (orderOption === OrderOption.Trigger) {
       return decreaseAmounts.acceptablePrice;
     } else {
-      museNeverExist(orderOption);
+      mustNeverExist(orderOption);
     }
   }, [allowedSlippage, decreaseAmounts?.acceptablePrice, orderOption, position]);
 
@@ -376,7 +378,7 @@ export function PositionSeller(p: Props) {
 
     setIsSubmitting(true);
 
-    createDecreaseOrderTxn(
+    const txnPromise = createDecreaseOrderTxn(
       chainId,
       signer,
       subaccount,
@@ -407,10 +409,30 @@ export function PositionSeller(p: Props) {
         setPendingTxns,
         setPendingPosition,
       }
-    )
-      .then(onClose)
-      .finally(() => setIsSubmitting(false));
+    );
+
+    if (subaccount) {
+      onClose();
+      setIsSubmitting(false);
+      return;
+    }
+
+    txnPromise.then(onClose).finally(() => {
+      setIsSubmitting(false);
+    });
   }
+
+  useKey(
+    "Enter",
+    () => {
+      if (isVisible && !error) {
+        submitButtonRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+        onSubmit();
+      }
+    },
+    {},
+    [isVisible, error]
+  );
 
   useEffect(
     function initReceiveToken() {
@@ -768,7 +790,7 @@ export function PositionSeller(p: Props) {
                           <Trans>Collateral ({position.collateralToken?.symbol})</Trans>
                         </span>
                       }
-                      position="left-top"
+                      position="top-start"
                       renderContent={() => {
                         return <Trans>Initial Collateral (Collateral excluding Borrow and Funding Fee).</Trans>;
                       }}
@@ -782,7 +804,8 @@ export function PositionSeller(p: Props) {
                   </div>
                 </div>
 
-                <TradeFeesRow {...fees} executionFee={executionFee} feesType="decrease" />
+                <TradeFeesRow {...fees} feesType="decrease" />
+                <NetworkFeeRow executionFee={executionFee} />
               </ExchangeInfo.Group>
 
               <ExchangeInfo.Group>{receiveTokenRow}</ExchangeInfo.Group>
@@ -805,6 +828,7 @@ export function PositionSeller(p: Props) {
                 variant="primary-action"
                 disabled={Boolean(error) && !p.shouldDisableValidation}
                 onClick={onSubmit}
+                buttonRef={submitButtonRef}
               >
                 {error ||
                   (isTrigger

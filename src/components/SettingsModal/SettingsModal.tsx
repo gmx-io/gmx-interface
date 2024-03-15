@@ -1,5 +1,5 @@
 import { t, Trans } from "@lingui/macro";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { DEFAULT_ALLOWED_SLIPPAGE_BPS, EXECUTION_FEE_CONFIG_V2 } from "config/chains";
 import { isDevelopment } from "config/env";
@@ -16,6 +16,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
 import NumberInput from "components/NumberInput/NumberInput";
 import Tooltip from "components/Tooltip/Tooltip";
+import { useKey } from "react-use";
 
 import "./SettingsModal.scss";
 
@@ -53,7 +54,7 @@ export function SettingsModal({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSettingsVisible]);
 
-  const saveAndCloseSettings = () => {
+  const saveAndCloseSettings = useCallback(() => {
     const slippage = parseFloat(String(slippageAmount));
     if (isNaN(slippage)) {
       helperToast.error(t`Invalid slippage value`);
@@ -92,7 +93,27 @@ export function SettingsModal({
     settings.setShouldDisableValidationForTesting(shouldDisableValidationForTesting);
     settings.setShowDebugValues(showDebugValues);
     setIsSettingsVisible(false);
-  };
+  }, [
+    settings,
+    slippageAmount,
+    executionFeeBufferBps,
+    isPnlInLeverage,
+    showPnlAfterFees,
+    shouldDisableValidationForTesting,
+    showDebugValues,
+    setIsSettingsVisible,
+  ]);
+
+  useKey(
+    "Enter",
+    () => {
+      if (isSettingsVisible) {
+        saveAndCloseSettings();
+      }
+    },
+    {},
+    [isSettingsVisible, saveAndCloseSettings]
+  );
 
   return (
     <Modal
@@ -116,12 +137,12 @@ export function SettingsModal({
           <div className="App-slippage-tolerance-input-percent">%</div>
         </div>
         {parseFloat(slippageAmount) < (DEFAULT_ALLOWED_SLIPPAGE_BPS / BASIS_POINTS_DIVISOR) * 100 && (
-          <div className="warning settings-modal-error">
+          <AlertInfo type="warning">
             <Trans>
               Allowed Slippage below {(DEFAULT_ALLOWED_SLIPPAGE_BPS / BASIS_POINTS_DIVISOR) * 100}% may result in failed
               orders.
             </Trans>
-          </div>
+          </AlertInfo>
         )}
       </div>
       {settings.shouldUseExecutionFeeBuffer && (

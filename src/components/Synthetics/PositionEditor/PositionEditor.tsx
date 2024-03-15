@@ -61,10 +61,10 @@ import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import useSWR from "swr";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
-import "./PositionEditor.scss";
+import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { getMinResidualAmount } from "domain/tokens";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 import {
@@ -78,6 +78,9 @@ import { useMinCollateralFactorForPosition } from "context/SyntheticsStateContex
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { bigNumberBinarySearch } from "lib/binarySearch";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import "./PositionEditor.scss";
+import { useKey } from "react-use";
 
 export type Props = {
   position?: PositionInfo;
@@ -112,6 +115,8 @@ export function PositionEditor(p: Props) {
   const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
+
+  const submitButtonRef = useRef<HTMLButtonElement>(null);
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
   const minResidualAmount = getMinResidualAmount(nativeToken?.decimals, nativeToken?.prices?.maxPrice);
@@ -401,10 +406,12 @@ export function PositionEditor(p: Props) {
       return;
     }
 
+    let txnPromise: Promise<void>;
+
     if (isDeposit) {
       setIsSubmitting(true);
 
-      createIncreaseOrderTxn(chainId, signer, subaccount, {
+      txnPromise = createIncreaseOrderTxn(chainId, signer, subaccount, {
         account,
         marketAddress: position.marketAddress,
         initialCollateralAddress: selectedCollateralAddress,
@@ -427,11 +434,7 @@ export function PositionEditor(p: Props) {
         setPendingTxns,
         setPendingOrder,
         setPendingPosition,
-      })
-        .then(onClose)
-        .finally(() => {
-          setIsSubmitting(false);
-        });
+      });
     } else {
       if (!receiveUsd) {
         return;
@@ -439,7 +442,7 @@ export function PositionEditor(p: Props) {
 
       setIsSubmitting(true);
 
-      createDecreaseOrderTxn(
+      txnPromise = createDecreaseOrderTxn(
         chainId,
         signer,
         subaccount,
@@ -470,13 +473,31 @@ export function PositionEditor(p: Props) {
           setPendingOrder,
           setPendingPosition,
         }
-      )
-        .then(onClose)
-        .finally(() => {
-          setIsSubmitting(false);
-        });
+      );
     }
+
+    if (subaccount) {
+      onClose();
+      setIsSubmitting(false);
+      return;
+    }
+
+    txnPromise.then(onClose).finally(() => {
+      setIsSubmitting(false);
+    });
   }
+
+  useKey(
+    "Enter",
+    () => {
+      if (isVisible && !error) {
+        submitButtonRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+        onSubmit();
+      }
+    },
+    {},
+    [isVisible, error]
+  );
 
   useEffect(
     function initCollateral() {
@@ -515,6 +536,7 @@ export function PositionEditor(p: Props) {
       variant="primary-action"
       onClick={onSubmit}
       disabled={Boolean(error) && !p.shouldDisableValidation}
+      buttonRef={submitButtonRef}
     >
       {error || OPERATION_LABELS[operation]}
     </Button>
@@ -525,7 +547,7 @@ export function PositionEditor(p: Props) {
       renderContent={renderErrorTooltipContent}
       handle={buttonContent}
       handleClassName="w-full"
-      position="center-top"
+      position="top"
     />
   ) : (
     buttonContent
@@ -672,7 +694,7 @@ export function PositionEditor(p: Props) {
                           <Trans>Collateral ({position?.collateralToken?.symbol})</Trans>
                         </span>
                       }
-                      position="left-top"
+                      position="top-start"
                       renderContent={() => {
                         return <Trans>Initial Collateral (Collateral excluding Borrow and Funding Fee).</Trans>;
                       }}
@@ -685,7 +707,8 @@ export function PositionEditor(p: Props) {
                     />
                   </div>
                 </div>
-                <TradeFeesRow {...fees} executionFee={executionFee} feesType="edit" shouldShowRebate={false} />
+                <TradeFeesRow {...fees} feesType="edit" shouldShowRebate={false} />
+                <NetworkFeeRow executionFee={executionFee} />
               </ExchangeInfo.Group>
 
               <ExchangeInfo.Group>

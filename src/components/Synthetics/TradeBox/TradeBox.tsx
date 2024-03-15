@@ -103,7 +103,7 @@ import {
   parseValue,
 } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { museNeverExist } from "lib/types";
+import { mustNeverExist } from "lib/types";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 
@@ -113,7 +113,10 @@ import { SwapCard } from "../SwapCard/SwapCard";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { CollateralSelectorRow } from "./CollateralSelectorRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
+import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
+
 import "./TradeBox.scss";
+import { useHistory } from "react-router-dom";
 
 export type Props = {
   avaialbleTokenOptions: AvailableTokenOptions;
@@ -146,6 +149,7 @@ export function TradeBox(p: Props) {
   const { avaialbleTokenOptions, shouldDisableValidation, allowedSlippage, setPendingTxns } = p;
 
   const { openConnectModal } = useConnectModal();
+  const history = useHistory();
   const {
     swapTokens,
     indexTokens,
@@ -642,7 +646,7 @@ export function TradeBox(p: Props) {
         }
 
         default:
-          museNeverExist(tooltipName);
+          mustNeverExist(tooltipName);
       }
     }
 
@@ -880,6 +884,13 @@ export function TradeBox(p: Props) {
     setToTokenInputValue(fromTokenInputValue || "", true);
   }
 
+  function onTradeTypeChange(type: TradeType) {
+    onSelectTradeType(type);
+    if (tradeType !== type) {
+      history.push(`/trade/${type.toLowerCase()}`);
+    }
+  }
+
   const onConfirmationClose = useCallback(() => {
     setSelectedAcceptablePriceImpactBps(undefined);
     setDefaultTriggerAcceptablePriceImpactBps(undefined);
@@ -1105,8 +1116,7 @@ export function TradeBox(p: Props) {
       >
         {markRatio && (
           <>
-            <TokenWithIcon symbol={markRatio.smallestToken.symbol} displaySize={20} />
-             per 
+            <TokenWithIcon symbol={markRatio.smallestToken.symbol} displaySize={20} /> per{" "}
             <TokenWithIcon symbol={markRatio.largestToken.symbol} displaySize={20} />
           </>
         )}
@@ -1425,7 +1435,7 @@ export function TradeBox(p: Props) {
       renderContent={() => tooltipContent}
       handle={buttonContent}
       handleClassName="w-full"
-      position="center-bottom"
+      position="bottom"
     />
   ) : (
     buttonContent
@@ -1440,7 +1450,7 @@ export function TradeBox(p: Props) {
             options={Object.values(TradeType)}
             optionLabels={tradeTypeLabels}
             option={tradeType}
-            onChange={onSelectTradeType}
+            onChange={onTradeTypeChange}
             className="SwapBox-option-tabs"
           />
 
@@ -1477,7 +1487,12 @@ export function TradeBox(p: Props) {
 
               <ExchangeInfo.Group>
                 {selectedPosition && !isSwap && renderExistingPositionInfo()}
-                {feesType && <TradeFeesRow {...fees} executionFee={executionFee} feesType={feesType} />}
+                {feesType && (
+                  <>
+                    <TradeFeesRow {...fees} feesType={feesType} />
+                    <NetworkFeeRow executionFee={executionFee} />
+                  </>
+                )}
               </ExchangeInfo.Group>
 
               <ExchangeInfo.Group>

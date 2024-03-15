@@ -638,7 +638,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
                   <TooltipWithPortal
                     handle={subAccNativeTokenBalanceFormatted}
                     renderContent={renderSubaccountBalanceTooltipContent}
-                    position="right-top"
+                    position="top-end"
                   />
                 ) : (
                   subAccNativeTokenBalanceFormatted
@@ -658,7 +658,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
                   displayDecimals: 4,
                 })}
                 renderContent={renderMainAccountBalanceTooltipContent}
-                position="right-top"
+                position="top-end"
               />
             }
             showDollar={false}
@@ -771,7 +771,7 @@ const InputRowBase = forwardRef<HTMLInputElement, InputRowProps>(
       <div>
         <div className="SubaccountModal-input-row flex text-gray">
           <div className="SubaccountModal-input-row-label">
-            <TooltipWithPortal position="left-top" handle={label} renderContent={renderTooltipContent} />
+            <TooltipWithPortal position="top-start" handle={label} renderContent={renderTooltipContent} />
           </div>
           <Input
             ref={ref}
@@ -819,9 +819,7 @@ const InputBase = forwardRef<HTMLInputElement, InputProp>(
           </label>
         </div>
         {tooltip && (
-          <div className={cx("SubaccountModal-field-info", "Tooltip-popup", "z-index-1001", "right-top")}>
-            {tooltip}
-          </div>
+          <div className={cx("SubaccountModal-field-info", "Tooltip-popup", "z-index-1001", "top-end")}>{tooltip}</div>
         )}
       </div>
     );

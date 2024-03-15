@@ -17,6 +17,11 @@ export const avalancheSyntheticsStatsClient = createClient(AVALANCHE, "synthetic
 export const avalancheFujiSyntheticsStatsClient = createClient(AVALANCHE_FUJI, "syntheticsStats");
 export const arbitrumGoerliSyntheticsStatsClient = createClient(ARBITRUM_GOERLI, "syntheticsStats");
 
+export const arbitrumLeaderboardClient = createClient(ARBITRUM, "leaderboard");
+export const avalancheLeaderboardClient = createClient(AVALANCHE, "leaderboard");
+export const avalancheFujiLeaderboardClient = createClient(AVALANCHE_FUJI, "leaderboard");
+export const arbitrumGoerliLeaderboardClient = createClient(ARBITRUM_GOERLI, "leaderboard");
+
 export function getSyntheticsGraphClient(chainId: number) {
   if (chainId === ARBITRUM) {
     return arbitrumSyntheticsStatsClient;
@@ -32,6 +37,26 @@ export function getSyntheticsGraphClient(chainId: number) {
 
   if (chainId === ARBITRUM_GOERLI) {
     return arbitrumGoerliSyntheticsStatsClient;
+  }
+
+  return null;
+}
+
+export function getLeaderboardGraphClient(chainId: number) {
+  if (chainId === ARBITRUM) {
+    return arbitrumLeaderboardClient;
+  }
+
+  if (chainId === AVALANCHE) {
+    return avalancheLeaderboardClient;
+  }
+
+  if (chainId === AVALANCHE_FUJI) {
+    return avalancheFujiLeaderboardClient;
+  }
+
+  if (chainId === ARBITRUM_GOERLI) {
+    return arbitrumGoerliLeaderboardClient;
   }
 
   return null;

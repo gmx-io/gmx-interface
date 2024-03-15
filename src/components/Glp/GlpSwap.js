@@ -40,7 +40,14 @@ import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ARBITRUM, FEES_HIGH_BPS, getChainName, IS_NETWORK_DISABLED } from "config/chains";
 import { getIcon } from "config/icons";
-import { getNativeToken, getToken, getV1Tokens, getWhitelistedV1Tokens, getWrappedToken } from "config/tokens";
+import {
+  getNativeToken,
+  getToken,
+  getV1Tokens,
+  getTokenBySymbolSafe,
+  getWhitelistedV1Tokens,
+  getWrappedToken,
+} from "config/tokens";
 import { approveTokens, useInfoTokens } from "domain/tokens";
 import { getMinResidualAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
 import { useChainId } from "lib/chains";
@@ -70,6 +77,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import PageTitle from "components/PageTitle/PageTitle";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import useSearchParams from "lib/useSearchParams";
 import { getFeeItem } from "domain/synthetics/fees";
 import { differenceInSeconds, intervalToDuration, nextWednesday } from "date-fns";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
@@ -153,6 +161,7 @@ const tabOptions = [t`Buy GLP`, t`Sell GLP`];
 export default function GlpSwap(props) {
   const { savedSlippageAmount, isBuying, setPendingTxns, setIsBuying, savedShouldDisableValidationForTesting } = props;
   const history = useHistory();
+  const searchParams = useSearchParams();
   const isMetamaskMobile = useIsMetamaskMobile();
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp";
   const tabLabel = isBuying ? t`Buy GLP` : t`Sell GLP`;
@@ -487,10 +496,54 @@ export default function GlpSwap(props) {
     totalTokenWeights,
   ]);
 
+  useEffect(() => {
+    const { operation, from, to } = searchParams;
+
+    if (operation) {
+      setTimeout(() => {
+        setIsBuying(operation.toLowerCase() === "buy");
+      });
+    }
+
+    if (from) {
+      const fromTokenInfo = getTokenBySymbolSafe(chainId, from, {
+        version: "v1",
+      });
+      if (fromTokenInfo) {
+        setSwapTokenAddress(fromTokenInfo.address);
+      }
+    }
+
+    if (to) {
+      const toTokenInfo = getTokenBySymbolSafe(chainId, to, {
+        version: "v1",
+      });
+      if (toTokenInfo) {
+        setSwapTokenAddress(toTokenInfo.address);
+      }
+    }
+
+    let timeoutId;
+
+    if (from || to || operation) {
+      if (history.location.search) {
+        timeoutId = setTimeout(() => {
+          history.replace({ search: "" });
+        }, 2000); // Delays the execution by 2 seconds
+      }
+    }
+
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [searchParams, setIsBuying, isBuying, chainId, setSwapTokenAddress, history]);
+
   const switchSwapOption = (hash = "") => {
     const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
     history.push(`${history.location.pathname}#${hash}`);
-    props.setIsBuying(hash === "redeem" ? false : true);
+    setIsBuying(hash === "redeem" ? false : true);
     window.scrollTo(0, currentScrollPosition);
   };
 
@@ -922,7 +975,7 @@ export default function GlpSwap(props) {
                       2,
                       true
                     )})`}
-                    position="right-bottom"
+                    position="bottom-end"
                     renderContent={() =>
                       t`${formatAmount(reservedAmount, 18, 4, true)} GLP have been reserved for vesting.`
                     }
@@ -937,7 +990,7 @@ export default function GlpSwap(props) {
               <div className="value">
                 <Tooltip
                   handle={`${formatAmount(totalApr, 2, 2, true)}%`}
-                  position="right-bottom"
+                  position="bottom-end"
                   renderContent={() => {
                     return (
                       <>
@@ -1094,7 +1147,7 @@ export default function GlpSwap(props) {
                   {isBuying && (
                     <Tooltip
                       handle={isBuying && isSwapTokenCapReached ? "NA" : feePercentageText}
-                      position="right-bottom"
+                      position="bottom-end"
                       renderContent={() => {
                         if (!feeBasisPoints) {
                           return (
@@ -1115,7 +1168,7 @@ export default function GlpSwap(props) {
                   {!isBuying && (
                     <Tooltip
                       handle={feePercentageText}
-                      position="right-bottom"
+                      position="bottom-end"
                       renderContent={() => {
                         if (!feeBasisPoints) {
                           return (
@@ -1192,7 +1245,8 @@ export default function GlpSwap(props) {
                   <Tooltip
                     handle={t`AVAILABLE`}
                     tooltipIconPosition="right"
-                    position="right-bottom text-none"
+                    className="text-none"
+                    position="bottom-end"
                     renderContent={() => (
                       <p className="text-white">
                         <Trans>Available amount to deposit into GLP.</Trans>
@@ -1203,7 +1257,8 @@ export default function GlpSwap(props) {
                   <Tooltip
                     handle={t`AVAILABLE`}
                     tooltipIconPosition="right"
-                    position="center-bottom text-none"
+                    className="text-none"
+                    position="bottom"
                     renderContent={() => {
                       return (
                         <p className="text-white">
@@ -1223,7 +1278,8 @@ export default function GlpSwap(props) {
                 <Tooltip
                   handle={t`FEES`}
                   tooltipIconPosition="right"
-                  position="right-bottom text-none"
+                  className="text-none"
+                  position="bottom"
                   renderContent={() => {
                     return (
                       <div className="text-white">
@@ -1294,7 +1350,7 @@ export default function GlpSwap(props) {
                     return (
                       <Tooltip
                         handle="NA"
-                        position="right-bottom"
+                        position="bottom-end"
                         renderContent={() => (
                           <div className="text-white">
                             <Trans>
@@ -1334,7 +1390,7 @@ export default function GlpSwap(props) {
                         <div className="App-card-info-subtitle">{token.symbol}</div>
                       </div>
                       <div>
-                        <AssetDropdown assetSymbol={token.symbol} />
+                        <AssetDropdown token={token} />
                       </div>
                     </div>
                   </td>
@@ -1349,7 +1405,7 @@ export default function GlpSwap(props) {
                               : `$${formatAmount(amountLeftToDeposit, USD_DECIMALS, 2, true)}`
                           }
                           className="nowrap"
-                          position="right-bottom"
+                          position="bottom-end"
                           tooltipIconPosition="right"
                           renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
                         />
@@ -1364,7 +1420,7 @@ export default function GlpSwap(props) {
                               : `$${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)}`
                           }
                           className="nowrap"
-                          position="right-bottom"
+                          position="bottom-end"
                           tooltipIconPosition="right"
                           renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
                         />
@@ -1448,7 +1504,7 @@ export default function GlpSwap(props) {
                   return (
                     <Tooltip
                       handle="NA"
-                      position="right-bottom"
+                      position="bottom-end"
                       renderContent={() => (
                         <Trans>
                           Max pool capacity reached for {tokenInfo.symbol}. Please mint GLP using another token
@@ -1471,7 +1527,7 @@ export default function GlpSwap(props) {
                   <TokenIcon symbol={token.symbol} displaySize={24} importSize={24} />
                   <div className="token-symbol-text">{token.symbol}</div>
                   <div>
-                    <AssetDropdown assetSymbol={token.symbol} />
+                    <AssetDropdown token={token} />
                   </div>
                 </div>
                 <div className="App-card-divider" />
@@ -1486,7 +1542,7 @@ export default function GlpSwap(props) {
                     <div className="App-card-row">
                       <Tooltip
                         handle={t`Available`}
-                        position="left-bottom"
+                        position="bottom-start"
                         className="label"
                         renderContent={() => (
                           <p className="text-white">
@@ -1497,7 +1553,7 @@ export default function GlpSwap(props) {
                       <div>
                         <Tooltip
                           handle={amountLeftToDeposit && `$${formatAmount(amountLeftToDeposit, USD_DECIMALS, 2, true)}`}
-                          position="right-bottom"
+                          position="bottom-end"
                           tooltipIconPosition="right"
                           renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
                         />
@@ -1509,7 +1565,7 @@ export default function GlpSwap(props) {
                       <div className="label">
                         <Tooltip
                           handle={t`Available`}
-                          position="left-bottom"
+                          position="bottom-start"
                           renderContent={() => {
                             return (
                               <p className="text-white">
@@ -1529,7 +1585,7 @@ export default function GlpSwap(props) {
                               ? "$0.00"
                               : `$${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)}`
                           }
-                          position="right-bottom"
+                          position="bottom-end"
                           tooltipIconPosition="right"
                           renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
                         />

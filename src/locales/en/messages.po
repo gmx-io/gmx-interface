@@ -25,9 +25,39 @@ msgstr "01 Sep 2021"
 msgid "06 Jan 2022"
 msgstr "06 Jan 2022"
 
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "1st Place"
+msgstr "1st Place"
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "24h Volume"
 msgstr "24h Volume"
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "2nd Place"
+msgstr "2nd Place"
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "3rd Place"
+msgstr "3rd Place"
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "4-18 Places"
+msgstr "4-18 Places"
+
+#: src/pages/SyntheticsActions/SyntheticsActions.tsx
+#: src/pages/SyntheticsActions/SyntheticsActions.tsx
+msgid "<0><1>Check on GMX V1 {networkName}</1> or <2>switch network to {0}</2>.</0>"
+msgstr "<0><1>Check on GMX V1 {networkName}</1> or <2>switch network to {0}</2>.</0>"
+
+#: src/pages/Actions/Actions.js
+#: src/pages/Actions/Actions.js
+msgid "<0><1>Check on GMX V2 {networkName}</1> or <2>switch network to {0}</2>.</0>"
+msgstr "<0><1>Check on GMX V2 {networkName}</1> or <2>switch network to {0}</2>.</0>"
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "<0><1>{eventTitle}</1> from <2>{0} {indexName} <3>[{poolName}]</3> Position</2></0>"
@@ -160,8 +190,6 @@ msgstr "A snapshot of the USD value of your {0} collateral is taken when the pos
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "APR"
 msgstr "APR"
 
@@ -212,8 +240,8 @@ msgstr "Accept that orders are not guaranteed to execute and trigger orders may 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Acceptable Price"
 msgstr "Acceptable Price"
 
@@ -221,7 +249,7 @@ msgstr "Acceptable Price"
 msgid "Acceptable Price Impact"
 msgstr "Acceptable Price Impact"
 
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Acceptable Price: {0}"
 msgstr "Acceptable Price: {0}"
 
@@ -303,7 +331,7 @@ msgstr "Active Orders"
 msgid "Active Referral Code"
 msgstr "Active Referral Code"
 
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Actual Price Impact"
 msgstr "Actual Price Impact"
 
@@ -334,6 +362,10 @@ msgstr "Additional reserve required"
 #: src/components/Exchange/OrdersToa.js
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Address"
+msgstr "Address"
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
@@ -474,9 +506,16 @@ msgid "Approving..."
 msgstr "Approving..."
 
 #: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
 msgid "Arbitrum APR:"
 msgstr "Arbitrum APR:"
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Arbitrum Avg. APR:"
+msgstr "Arbitrum Avg. APR:"
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Arbitrum Max. APR:"
+msgstr "Arbitrum Max. APR:"
 
 #: src/components/Synthetics/OrderEditor/OrderEditor.tsx
 msgid "As network fees have increased, an additional execution fee is needed."
@@ -526,9 +565,37 @@ msgid "Available on your preferred network"
 msgstr "Available on your preferred network"
 
 #: src/components/TokenCard/TokenCard.tsx
-#: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Avalanche Avg. APR:"
+msgstr "Avalanche Avg. APR:"
+
+#: src/components/TokenCard/TokenCard.tsx
+msgid "Avalanche Max. APR: {0}"
+msgstr "Avalanche Max. APR: {0}"
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Average leverage used."
+msgstr "Average leverage used."
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Average position size."
+msgstr "Average position size."
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "Avg. APR"
+msgstr "Avg. APR"
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Avg. Lev."
+msgstr "Avg. Lev."
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Avg. Size"
+msgstr "Avg. Size"
 
 #: src/components/Synthetics/GmList/GmList.tsx
 msgid "BUYABLE"
@@ -584,7 +651,7 @@ msgstr "Boost your rewards with Multiplier Points. <0>More info</0>."
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Borrow Fee"
 msgstr "Borrow Fee"
 
@@ -723,6 +790,10 @@ msgstr "Buy submitted."
 msgid "Buy with {0}"
 msgstr "Buy with {0}"
 
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Buy {0}"
+msgstr "Buy {0}"
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol}"
 msgstr "Buy {nativeTokenSymbol}"
@@ -756,8 +827,8 @@ msgstr "Can't execute because of an error"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -782,6 +853,15 @@ msgstr "Cancel submitted."
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Cancelling {ordersText}"
 msgstr "Cancelling {ordersText}"
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Capital Used"
+msgstr "Capital Used"
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
+msgid "Chain Icon"
+msgstr "Chain Icon"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 #: src/pages/Exchange/Exchange.js
@@ -1225,7 +1305,7 @@ msgstr "Couldn't find a swap route with enough liquidity"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Referrals/AddAffiliateCode.js
 #: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -1400,7 +1480,7 @@ msgstr "Decentralized<0/>Perpetual Exchange"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/domain/synthetics/orders/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
@@ -1415,28 +1495,8 @@ msgid "Decrease size"
 msgstr "Decrease size"
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#~ msgid "Decrease the Leverage by using the slider. If the Leverage slider is disabled, you can increase the Pay amount or reduce the Order size."
-#~ msgstr "Decrease the Leverage by using the slider. If the Leverage slider is disabled, you can increase the Pay amount or reduce the Order size."
-
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#~ msgid "Decrease the Leverage to match the Max. Allowed Leverage."
-#~ msgstr "Decrease the Leverage to match the Max. Allowed Leverage."
-
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-#~ msgid "Decrease the Size to match the Max. Allowed Leverage:"
-#~ msgstr "Decrease the Size to match the Max. Allowed Leverage:"
-
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-msgid "Decrease the leverage to match the max. allowed leverage."
-msgstr "Decrease the leverage to match the max. allowed leverage."
-
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-msgid "Decrease the size to match the max. allowed leverage:"
-msgstr "Decrease the size to match the max. allowed leverage:"
-
-#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
-msgid "Decrease the withdraw size to match the max. <0>Read more</0>.<1/><2/><3>Set max withdrawal</3>"
-msgstr "Decrease the withdraw size to match the max. <0>Read more</0>.<1/><2/><3>Set max withdrawal</3>"
+msgid "Decrease the Leverage by using the slider. If the Leverage slider is disabled, you can increase the Pay amount or reduce the Order size."
+msgstr "Decrease the Leverage by using the slider. If the Leverage slider is disabled, you can increase the Pay amount or reduce the Order size."
 
 #: src/components/Synthetics/ConfirmationBox/SLTPEntries.tsx
 msgid "Decrease {0} Long by {1} at ${2}."
@@ -1565,6 +1625,19 @@ msgstr "Don't show this message again for 30 days."
 msgid "Download"
 msgstr "Download"
 
+#: src/domain/synthetics/leaderboard/constants.ts
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "EIP-4844 Competition"
+msgstr "EIP-4844 Competition"
+
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "EIP-4844, 13-20 Mar"
+msgstr "EIP-4844, 13-20 Mar"
+
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "EIP-4844, 20-27 Mar"
+msgstr "EIP-4844, 20-27 Mar"
+
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1692,6 +1765,10 @@ msgstr "Enabling Leverage..."
 #: src/components/Exchange/SwapBox.js
 msgid "Enabling Orders..."
 msgstr "Enabling Orders..."
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "Ends in"
+msgstr "Ends in"
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "Enter NFT Address"
@@ -1825,7 +1902,11 @@ msgstr "Escrowed GMX"
 msgid "Escrowed GMX APR"
 msgstr "Escrowed GMX APR"
 
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "Estimated Fee Refund"
+msgstr "Estimated Fee Refund"
+
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Execute"
 msgstr "Execute"
@@ -1843,7 +1924,7 @@ msgstr "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay}
 msgid "Execute order simulation failed."
 msgstr "Execute order simulation failed."
 
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Execute {orderTypeName} Order: {positionText} {sizeDeltaText},"
 msgstr "Execute {orderTypeName} Order: {positionText} {sizeDeltaText},"
 
@@ -1854,12 +1935,12 @@ msgstr "Execution Fee"
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Execution Price"
 msgstr "Execution Price"
 
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Execution Price: {0}"
 msgstr "Execution Price: {0}"
 
@@ -1910,7 +1991,6 @@ msgid "Failed to update order"
 msgstr "Failed to update order"
 
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
 msgid "Fee values do not include incentives."
 msgstr "Fee values do not include incentives."
 
@@ -1938,10 +2018,6 @@ msgstr "Fees (Rebated)"
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees (Rebated) and Price Impact"
 msgstr "Fees (Rebated) and Price Impact"
-
-#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
-msgid "Fees USD value is calculated at the time they are accrued."
-msgstr "Fees USD value is calculated at the time they are accrued."
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
@@ -2025,8 +2101,8 @@ msgstr "Forfeit profit and {action}"
 msgid "Forfeit profit not checked"
 msgstr "Forfeit profit not checked"
 
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Freeze"
 msgstr "Freeze"
 
@@ -2047,7 +2123,7 @@ msgid "Funding Claimed"
 msgstr "Funding Claimed"
 
 #: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Funding Fee"
 msgstr "Funding Fee"
 
@@ -2073,6 +2149,7 @@ msgstr "GBC NFTs APR tracker and rewards"
 msgid "GLP Index Composition"
 msgstr "GLP Index Composition"
 
+#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "GLP Pool"
 msgstr "GLP Pool"
@@ -2105,6 +2182,10 @@ msgstr "GLP sell disabled, pending {0} upgrade"
 #: src/pages/BuyGlp/BuyGlp.js
 msgid "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more</0>."
 msgstr "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more</0>."
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "GM Markets"
+msgstr "GM Markets"
 
 #: src/components/Synthetics/GmList/GmList.tsx
 #: src/components/Synthetics/GmList/GmList.tsx
@@ -2155,20 +2236,36 @@ msgid "GMX Stats Page"
 msgstr "GMX Stats Page"
 
 #: src/pages/Actions/Actions.js
-msgid "GMX V1 actions for all accounts."
-msgstr "GMX V1 actions for all accounts."
+msgid "GMX V1 Account"
+msgstr "GMX V1 Account"
 
 #: src/pages/Actions/Actions.js
-msgid "GMX V1 information for account: {checkSummedAccount}"
-msgstr "GMX V1 information for account: {checkSummedAccount}"
+msgid "GMX V1 Actions"
+msgstr "GMX V1 Actions"
+
+#: src/pages/Actions/Actions.js
+msgid "GMX V1 Arbitrum information for account: {checkSummedAccount}"
+msgstr "GMX V1 Arbitrum information for account: {checkSummedAccount}"
+
+#: src/pages/Actions/Actions.js
+msgid "GMX V1 {networkName} actions for all accounts."
+msgstr "GMX V1 {networkName} actions for all accounts."
 
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
-msgid "GMX V2 actions for all accounts."
-msgstr "GMX V2 actions for all accounts."
+msgid "GMX V2 Account"
+msgstr "GMX V2 Account"
 
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
-msgid "GMX V2 information for account: {checkSummedAccount}"
-msgstr "GMX V2 information for account: {checkSummedAccount}"
+msgid "GMX V2 Actions"
+msgstr "GMX V2 Actions"
+
+#: src/pages/SyntheticsActions/SyntheticsActions.tsx
+msgid "GMX V2 {networkName} actions for all accounts."
+msgstr "GMX V2 {networkName} actions for all accounts."
+
+#: src/pages/SyntheticsActions/SyntheticsActions.tsx
+msgid "GMX V2 {networkName} information for account: {checkSummedAccount}"
+msgstr "GMX V2 {networkName} information for account: {checkSummedAccount}"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -2260,6 +2357,11 @@ msgstr "Generating shareable image..."
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 msgstr "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 
+#: src/domain/synthetics/leaderboard/constants.ts
+#: src/domain/synthetics/leaderboard/constants.ts
+msgid "Global Leaderboard"
+msgstr "Global Leaderboard"
+
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
 msgstr "Governance"
@@ -2341,7 +2443,7 @@ msgstr "Incorrect network"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/domain/synthetics/orders/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
@@ -2397,7 +2499,7 @@ msgid "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
 msgstr "Initial Collateral (Collateral excluding Borrow and Funding Fee)."
 
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Initial collateral"
 msgstr "Initial collateral"
 
@@ -2552,10 +2654,6 @@ msgstr "Keep leverage at {0}x"
 msgid "Keep leverage at {keepLeverageAtValue}"
 msgstr "Keep leverage at {keepLeverageAtValue}"
 
-#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-msgid "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
-msgstr "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
-
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "LONG LIQ."
 msgstr "LONG LIQ."
@@ -2563,6 +2661,14 @@ msgstr "LONG LIQ."
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Language"
 msgstr "Language"
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "Last 30 days"
+msgstr "Last 30 days"
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "Last 7 days"
+msgstr "Last 7 days"
 
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Header/AppHeaderUser.tsx
@@ -2572,12 +2678,17 @@ msgid "Launch App"
 msgstr "Launch App"
 
 #: src/components/Exchange/UsefulLinks.tsx
+#: src/components/Header/AppHeaderLinks.tsx
 msgid "Leaderboard"
 msgstr "Leaderboard"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Leaderboard for GMX traders"
 msgstr "Leaderboard for GMX traders"
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "Leaderboard for traders on GMX V2."
+msgstr "Leaderboard for traders on GMX V2."
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Leave at least {0} ETH for gas"
@@ -2639,7 +2750,7 @@ msgstr "Leverage slider"
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Limit"
 msgstr "Limit"
 
@@ -2812,7 +2923,7 @@ msgstr "Loading..."
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/domain/synthetics/orders/utils.ts
@@ -2909,8 +3020,8 @@ msgstr "Mark"
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark Price"
 msgstr "Mark Price"
@@ -2928,11 +3039,12 @@ msgstr "Mark Price"
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
 #: src/components/Synthetics/TradeHistoryRow/TradeHistoryRow.tsx
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Market"
 msgstr "Market"
 
+#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Market Cap"
@@ -2976,8 +3088,7 @@ msgstr "Max Capacity"
 msgid "Max Capacity for {0} Reached"
 msgstr "Max Capacity for {0} Reached"
 
-#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max Execution Fee"
 msgstr "Max Execution Fee"
 
@@ -3107,15 +3218,6 @@ msgstr "Max {0} short capacity"
 msgid "Max {0} short exceeded"
 msgstr "Max {0} short exceeded"
 
-#: src/components/TokenCard/TokenCard.tsx
-msgid "Max. Arbitrum APR:"
-msgstr "Max. Arbitrum APR:"
-
-#: src/components/TokenCard/TokenCard.tsx
-msgid "Max. Avalanche APR: {0}"
-msgstr "Max. Avalanche APR: {0}"
-
-#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max. Leverage exceeded"
 msgstr "Max. Leverage exceeded"
@@ -3123,10 +3225,6 @@ msgstr "Max. Leverage exceeded"
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "Max. {nativeTokenSymbol} APR"
 msgstr "Max. {nativeTokenSymbol} APR"
-
-#: src/components/Stake/GMXAprTooltip.tsx
-msgid "Max. {nativeTokenSymbol} APR is calculated with the max. 200% Boost Percentage by staking <0>Multiplier Points</0>."
-msgstr "Max. {nativeTokenSymbol} APR is calculated with the max. 200% Boost Percentage by staking <0>Multiplier Points</0>."
 
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
@@ -3141,6 +3239,10 @@ msgstr "Maximum allowed actions is required"
 #: src/components/Synthetics/SubaccountModal/utils.ts
 msgid "Maximum auto top-up amount is required"
 msgstr "Maximum auto top-up amount is required"
+
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "Maximum execution fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does not impact your collateral."
+msgstr "Maximum execution fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does not impact your collateral."
 
 #: src/components/Footer/constants.ts
 #: src/components/Footer/constants.ts
@@ -3198,7 +3300,7 @@ msgid "Min order: {0}"
 msgstr "Min order: {0}"
 
 #: src/components/Exchange/TradeHistory.js
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Min required collateral"
 msgstr "Min required collateral"
 
@@ -3238,6 +3340,7 @@ msgstr "Multiplier Points APR"
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "NA"
 msgstr "NA"
 
@@ -3297,6 +3400,10 @@ msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee 
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
 msgid "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee"
 msgstr "Net Value: Initial Collateral + PnL - Borrow Fee - Negative Funding Fee - Close Fee - UI Fee"
+
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "Network Fee"
+msgstr "Network Fee"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -3363,6 +3470,10 @@ msgstr "No position"
 msgid "No rebates distribution history yet."
 msgstr "No rebates distribution history yet."
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "No results found"
+msgstr "No results found"
+
 #: src/pages/Stake/StakeV1.js
 msgid "No rewards to claim yet"
 msgstr "No rewards to claim yet"
@@ -3372,21 +3483,17 @@ msgstr "No rewards to claim yet"
 msgid "No trades yet"
 msgstr "No trades yet"
 
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity."
 msgstr "Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity."
 
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity."
 msgstr "Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "Not enough {0} on your Main Account. Use the \"<0>Convert {1} to {2}</0>\" field to increase the Main Account {3} balance."
 msgstr "Not enough {0} on your Main Account. Use the \"<0>Convert {1} to {2}</0>\" field to increase the Main Account {3} balance."
-
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "Not enough {0} on your Main Account. Use the \"Convert {1} to {2}\" field to increase the Main Account {3} balance."
-#~ msgstr "Not enough {0} on your Main Account. Use the \"Convert {1} to {2}\" field to increase the Main Account {3} balance."
 
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
@@ -3402,24 +3509,16 @@ msgid "One-Click Trading"
 msgstr "One-Click Trading"
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-#~ msgid "One-Click Trading is not available for Wrapping or Unwrapping native token {0}"
-#~ msgstr "One-Click Trading is not available for Wrapping or Unwrapping native token {0}"
-
-#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-#~ msgid "One-Click Trading is not available for wrapping or unwrapping native token {0}"
-#~ msgstr "One-Click Trading is not available for wrapping or unwrapping native token {0}"
-
-#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 msgid "One-Click Trading is not available for wrapping or unwrapping native token {0}."
 msgstr "One-Click Trading is not available for wrapping or unwrapping native token {0}."
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-#~ msgid "One-Click Trading is not available using network's native token {0}. Consider using {1} as Pay token instead."
-#~ msgstr "One-Click Trading is not available using network's native token {0}. Consider using {1} as Pay token instead."
-
-#: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 msgid "One-Click Trading is not available using network's native token {0}. Consider using {1} instead."
 msgstr "One-Click Trading is not available using network's native token {0}. Consider using {1} instead."
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Only addresses with over {0} in \"Capital Used\" are ranked."
+msgstr "Only addresses with over {0} in \"Capital Used\" are ranked."
 
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
@@ -3548,7 +3647,7 @@ msgstr "Order size is bigger than position, will only be executable if position 
 msgid "Order submitted!"
 msgstr "Order submitted!"
 
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Order trigger price"
 msgstr "Order trigger price"
 
@@ -3713,9 +3812,17 @@ msgstr "Please uncheck \"Keep Leverage\", or close a larger position amount."
 msgid "PnL"
 msgstr "PnL"
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "PnL ($)"
+msgstr "PnL ($)"
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "PnL (%)"
+msgstr "PnL (%)"
+
 #: src/components/Exchange/NetValueTooltip.tsx
 #: src/components/Synthetics/PositionItem/PositionItem.tsx
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "PnL After Fees"
 msgstr "PnL After Fees"
 
@@ -3746,7 +3853,7 @@ msgstr "Pools"
 msgid "Position"
 msgstr "Position"
 
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Position Fee"
 msgstr "Position Fee"
 
@@ -3814,8 +3921,8 @@ msgid "Price"
 msgstr "Price"
 
 #: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Price Impact"
 msgstr "Price Impact"
 
@@ -3976,17 +4083,38 @@ msgstr "Purchase Insurance"
 msgid "REBATE"
 msgstr "REBATE"
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Rank"
+msgstr "Rank"
+
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Read more"
 msgstr "Read more"
 
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "Read the rules"
+msgstr "Read the rules"
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Realized Fees"
+msgstr "Realized Fees"
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Realized PnL"
+msgstr "Realized PnL"
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Realized PnL insufficient for Fees"
 msgstr "Realized PnL insufficient for Fees"
 
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Realized Price Impact"
+msgstr "Realized Price Impact"
+
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Reason: {0}"
 msgstr "Reason: {0}"
 
@@ -4124,8 +4252,8 @@ msgstr "Referral code updated!"
 msgid "Referrals"
 msgstr "Referrals"
 
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Request"
 msgstr "Request"
 
@@ -4220,6 +4348,10 @@ msgstr "Save on Costs"
 #: src/components/Glp/GlpSwap.js
 msgid "Save on Fees"
 msgstr "Save on Fees"
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Search Address"
+msgstr "Search Address"
 
 #: src/components/MarketSelector/MarketSelector.tsx
 msgid "Search Market"
@@ -4375,10 +4507,6 @@ msgstr "Sending order request"
 msgid "Sending settle request"
 msgstr "Sending settle request"
 
-#: src/components/Synthetics/TradeBox/TradeBox.tsx
-msgid "Set Max Leverage"
-msgstr "Set Max Leverage"
-
 #: src/components/Exchange/PositionDropdown.tsx
 msgid "Set TP/SL"
 msgstr "Set TP/SL"
@@ -4462,7 +4590,7 @@ msgstr "Share Position"
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TVChart/TVChart.tsx
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/domain/synthetics/orders/utils.ts
@@ -4649,6 +4777,18 @@ msgstr "Staked Tokens"
 msgid "Staking..."
 msgstr "Staking..."
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Start Unrealized Fees"
+msgstr "Start Unrealized Fees"
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Start Unrealized PnL"
+msgstr "Start Unrealized PnL"
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "Starts in"
+msgstr "Starts in"
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Stats"
 msgstr "Stats"
@@ -4683,10 +4823,6 @@ msgid "Subaccount activation failed"
 msgstr "Subaccount activation failed"
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-#~ msgid "Subaccount activation failed."
-#~ msgstr "Subaccount activation failed."
-
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount created"
 msgstr "Subaccount created"
 
@@ -4695,24 +4831,12 @@ msgid "Subaccount deactivated"
 msgstr "Subaccount deactivated"
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-#~ msgid "Subaccount deactivated."
-#~ msgstr "Subaccount deactivated."
-
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount deactivation failed"
 msgstr "Subaccount deactivation failed"
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-#~ msgid "Subaccount deactivation failed."
-#~ msgstr "Subaccount deactivation failed."
-
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount generation failed"
 msgstr "Subaccount generation failed"
-
-#: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
-#~ msgid "Subaccount generation failed."
-#~ msgstr "Subaccount generation failed."
 
 #: src/components/Synthetics/StatusNotification/SubaccountNotification.tsx
 msgid "Subaccount is updated"
@@ -4735,6 +4859,7 @@ msgstr "Submit"
 msgid "Success claimings"
 msgstr "Success claimings"
 
+#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Supply"
@@ -4981,25 +5106,28 @@ msgid "The Current Price Impact is {0}. Consider adding a buffer of 0.30% to it 
 msgstr "The Current Price Impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
 
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
-#~ msgid "The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met."
-#~ msgstr "The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met."
+msgid "The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met."
+msgstr "The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met."
 
 #: src/pages/Stake/StakeV1.js
 msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
 msgstr "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
 
-#: src/components/Synthetics/GmSwap/GmFees/GmFees.tsx
-#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
-msgid "The Max Execution Fee is overestimated by {maxExecutionFeeText}%. Upon execution, the excess Execution Fee is sent back to your account."
-msgstr "The Max Execution Fee is overestimated by {maxExecutionFeeText}%. Upon execution, the excess Execution Fee is sent back to your account."
-
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 msgstr "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "The PnL ($) compared to the capital used.<0/><1/>The capital used is calculated as the highest value of [<2>sum of collateral of open positions - realized PnL + period start pending PnL</2>]."
+msgstr "The PnL ($) compared to the capital used.<0/><1/>The capital used is calculated as the highest value of [<2>sum of collateral of open positions - realized PnL + period start pending PnL</2>]."
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
 msgstr "The address of the esGMX (IOU) token is {esGmxIouAddress}."
+
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "The average {nativeTokenSymbol} APR is calculated with the average account boost percentage ({0}%), while the maximum {nativeTokenSymbol} APR is calculated with the maximum boost (200%) by staking <0>Multiplier Points</0>."
+msgstr "The average {nativeTokenSymbol} APR is calculated with the average account boost percentage ({0}%), while the maximum {nativeTokenSymbol} APR is calculated with the maximum boost (200%) by staking <0>Multiplier Points</0>."
 
 #: src/components/Exchange/SwapBox.js
 msgid "The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour."
@@ -5017,26 +5145,33 @@ msgstr "The esGMX (IOU) token is transferrable. You can add the token to your wa
 msgid "The esGMX tokens can be staked or vested at any time."
 msgstr "The esGMX tokens can be staked or vested at any time."
 
+#: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
+msgid "The fees' USD value is calculated at the time they are accrued and does not include incentives."
+msgstr "The fees' USD value is calculated at the time they are accrued and does not include incentives."
+
 #: src/lib/contracts/transactionErrors.tsx
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
 msgstr "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
+
+#: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
+msgid "The max execution fee is overestimated, including by the buffer set under settings. Upon execution, any excess execution fee is sent back to your account."
+msgstr "The max execution fee is overestimated, including by the buffer set under settings. Upon execution, any excess execution fee is sent back to your account."
 
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"<0>Max allowed actions</0>\" field."
 msgstr "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"<0>Max allowed actions</0>\" field."
 
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"Max allowed actions\" field."
-#~ msgstr "The maximum number of authorized Actions has been reached. Re-authorize a higher value using the \"Max allowed actions\" field."
-
-#: src/domain/synthetics/fees/utils/executionFee.ts
-msgid "The network Fees are high currently, which may be due to a temporary increase in transactions on the {0} network."
-msgstr "The network Fees are high currently, which may be due to a temporary increase in transactions on the {0} network."
-
 #: src/domain/legacy.ts
-#: src/domain/synthetics/fees/utils/executionFee.ts
 msgid "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
 msgstr "The network Fees are very high currently, which may be due to a temporary increase in transactions on the {0} network."
+
+#: src/domain/synthetics/fees/utils/executionFee.ts
+msgid "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
+msgstr "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
+
+#: src/domain/synthetics/fees/utils/executionFee.ts
+msgid "The network fees are very high currently, which may be due to a temporary increase in transactions on the {chainName} network."
+msgstr "The network fees are very high currently, which may be due to a temporary increase in transactions on the {chainName} network."
 
 #: src/domain/synthetics/orders/utils.ts
 msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedOrderAcceptablePriceImpact}, which is lower than the current market price impact of {formattedCurrentAcceptablePriceImpact}. It can be edited using the \"Edit\" button."
@@ -5094,13 +5229,13 @@ msgstr "The spread is > 1%, please ensure the trade details are acceptable befor
 msgid "The spread is > 1%, please ensure the trade details are acceptable before confirming"
 msgstr "The spread is > 1%, please ensure the trade details are acceptable before confirming"
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "The total realized and unrealized profit and loss for the period, including fees and price impact."
+msgstr "The total realized and unrealized profit and loss for the period, including fees and price impact."
+
 #: src/components/ModalViews/RedirectModal.js
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
 msgstr "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
-
-#: src/context/SubaccountContext/SubaccountContext.tsx
-#~ msgid "There are insufficient funds in your Main account for One-Click Trading auto top-ups. <0>Click here</0> to convert."
-#~ msgstr "There are insufficient funds in your Main account for One-Click Trading auto top-ups. <0>Click here</0> to convert."
 
 #: src/context/SubaccountContext/SubaccountContext.tsx
 msgid "There are insufficient funds in your Subaccount for One-Click Trading. <0>Click here</0> to top-up."
@@ -5113,10 +5248,6 @@ msgstr "There are insufficient funds in your Subaccount for One-Click Trading. C
 #: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
 msgid "There are insufficient funds in your Subaccount for One-Click Trading. Use the \"<0>Top-up</0>\" field to increase the Subaccount Balance."
 msgstr "There are insufficient funds in your Subaccount for One-Click Trading. Use the \"<0>Top-up</0>\" field to increase the Subaccount Balance."
-
-#: src/components/Synthetics/SubaccountModal/SubaccountStatus.tsx
-#~ msgid "There are insufficient funds in your Subaccount for One-Click Trading. Use the \"Top-up\" field to increase the Subaccount Balance."
-#~ msgstr "There are insufficient funds in your Subaccount for One-Click Trading. Use the \"Top-up\" field to increase the Subaccount Balance."
 
 #: src/components/Exchange/SwapBox.js
 msgid "There are more longs than shorts, borrow fees for shorting is currently zero"
@@ -5178,6 +5309,14 @@ msgstr "This code has been taken by someone else on {0}, you will not receive re
 msgid "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 msgstr "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "This competition has ended"
+msgstr "This competition has ended"
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "This competition is held on the {0} network. <0>Change your network</0> to participate."
+msgstr "This competition is held on the {0} network. <0>Change your network</0> to participate."
+
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
 msgstr "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
@@ -5190,7 +5329,7 @@ msgstr "This order using {collateralSymbol} as collateral will not be valid for 
 msgid "This position was liquidated as the max leverage of 100x was exceeded."
 msgstr "This position was liquidated as the max leverage of 100x was exceeded."
 
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded."
 msgstr "This position was liquidated as the max leverage of {maxLeverageText} was exceeded."
 
@@ -5227,6 +5366,14 @@ msgstr "To reduce fees, select a different asset to pay with."
 msgid "Tokens"
 msgstr "Tokens"
 
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "Top PnL ($)"
+msgstr "Top PnL ($)"
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "Top PnL (%)"
+msgstr "Top PnL (%)"
+
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Top-up"
 msgstr "Top-up"
@@ -5236,6 +5383,7 @@ msgstr "Top-up"
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/Referrals/TradersStats.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/Stake/StakeV2.js
 msgid "Total"
 msgstr "Total"
@@ -5287,6 +5435,10 @@ msgstr "Total Stats"
 #: src/pages/Stake/StakeV2.js
 msgid "Total Supply"
 msgstr "Total Supply"
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Total Trades"
+msgstr "Total Trades"
 
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
@@ -5357,6 +5509,10 @@ msgstr "Traders Referred on Avalanche Fuji"
 msgid "Trades"
 msgstr "Trades"
 
+#: src/components/Header/Header.tsx
+msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
+msgstr "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Trading Volume"
@@ -5394,6 +5550,8 @@ msgstr "Transaction failed"
 msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings. <2>More info</2>"
 msgstr "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings. <2>More info</2>"
 
+#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx
 msgid "Transaction sent."
 msgstr "Transaction sent."
@@ -5459,7 +5617,7 @@ msgstr "Trigger"
 msgid "Trigger Price"
 msgstr "Trigger Price"
 
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Trigger Price: {pricePrefix} {0}"
 msgstr "Trigger Price: {pricePrefix} {0}"
 
@@ -5467,7 +5625,7 @@ msgstr "Trigger Price: {pricePrefix} {0}"
 msgid "Trigger order disabled, pending {0} upgrade"
 msgstr "Trigger order disabled, pending {0} upgrade"
 
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Triggered at: {0}"
 msgstr "Triggered at: {0}"
 
@@ -5529,6 +5687,14 @@ msgstr "Unknown order"
 msgid "Unknown sell GM order"
 msgstr "Unknown sell GM order"
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Unrealized Fees"
+msgstr "Unrealized Fees"
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Unrealized PnL"
+msgstr "Unrealized PnL"
+
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -5587,8 +5753,8 @@ msgstr "Unsupported network"
 #: src/components/Synthetics/SubaccountModal/utils.ts
 #: src/components/Synthetics/SubaccountModal/utils.ts
 #: src/components/Synthetics/SubaccountModal/utils.ts
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "Update"
 msgstr "Update"
 
@@ -5644,14 +5810,6 @@ msgstr "Useful Links"
 msgid "Utilization"
 msgstr "Utilization"
 
-#: src/pages/Actions/Actions.js
-msgid "V1 Account"
-msgstr "V1 Account"
-
-#: src/pages/Actions/Actions.js
-msgid "V1 Actions"
-msgstr "V1 Actions"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V1 Airdrop"
 msgstr "V1 Airdrop"
@@ -5689,14 +5847,6 @@ msgstr "V1 esGMX"
 #: src/components/Referrals/TradersStats.tsx
 msgid "V1 rebates are airdropped weekly. V2 rebates are automatically applied as fee discounts on each trade and do not show on this table."
 msgstr "V1 rebates are airdropped weekly. V2 rebates are automatically applied as fee discounts on each trade and do not show on this table."
-
-#: src/pages/SyntheticsActions/SyntheticsActions.tsx
-msgid "V2 Account"
-msgstr "V2 Account"
-
-#: src/pages/SyntheticsActions/SyntheticsActions.tsx
-msgid "V2 Actions"
-msgstr "V2 Actions"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -5909,6 +6059,18 @@ msgstr "Weight"
 msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr "When closing the position, you can select which token you would like to receive the profits in."
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Win Rate"
+msgstr "Win Rate"
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Win/Loss"
+msgstr "Win/Loss"
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "Wins and losses for fully closed positions."
+msgstr "Wins and losses for fully closed positions."
+
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -6013,6 +6175,10 @@ msgstr "Yield Vaults"
 msgid "Yield simulator for GMX"
 msgstr "Yield simulator for GMX"
 
+#: src/components/AddressView/AddressView.tsx
+msgid "You"
+msgstr "You"
+
 #: src/pages/Stake/StakeV2.js
 msgid "You are earning rewards with {0} tokens.<0/>Tokens: {amountStr}."
 msgstr "You are earning rewards with {0} tokens.<0/>Tokens: {amountStr}."
@@ -6069,6 +6235,10 @@ msgstr "You can transfer AVAX from other networks to Avalanche using any of the 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
 msgstr "You can transfer ETH from other networks to Arbitrum using any of the below options:"
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "You do not have any eligible trade during the competition window."
+msgstr "You do not have any eligible trade during the competition window."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "You have a <0>pending transfer</0> to {pendingReceiver}."
@@ -6128,6 +6298,10 @@ msgstr "You have no GMX tokens to claim."
 msgid "You have not deposited any tokens for vesting."
 msgstr "You have not deposited any tokens for vesting."
 
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "You have not traded during the selected period."
+msgstr "You have not traded during the selected period."
+
 #: src/components/Stake/GMXAprTooltip.tsx
 #: src/pages/Stake/StakeV2.js
 msgid "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points using the \"Compound\" button."
@@ -6152,6 +6326,10 @@ msgstr "You have selected {collateralTokenSymbol} as collateral, the Liquidation
 #: src/components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "You have set a high Acceptable Price Impact. The current Price Impact is {0}."
 msgstr "You have set a high Acceptable Price Impact. The current Price Impact is {0}."
+
+#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
+msgid "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for the rankings."
+msgstr "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for the rankings."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You have {0} esGMX (IOU) tokens."
@@ -6440,41 +6618,25 @@ msgstr ""
 "-{1} USD,\n"
 "{2} Price: {3} USD"
 
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
-msgid "{actionText} Deposit"
-msgstr "{actionText} Deposit"
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
+msgid "{actionText} Deposit {collateralText} into {positionText}"
+msgstr "{actionText} Deposit {collateralText} into {positionText}"
 
 #: src/components/Synthetics/TradeHistoryRow/utils.ts
-#~ msgid "{actionText} Deposit {collateralText} into {positionText}"
-#~ msgstr "{actionText} Deposit {collateralText} into {positionText}"
-
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
-msgid "{actionText} Withdraw"
-msgstr "{actionText} Withdraw"
-
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
 msgid "{actionText} Withdraw {collateralText} from {positionText}"
 msgstr "{actionText} Withdraw {collateralText} from {positionText}"
 
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "{actionText} {orderTypeName} Swap: {fromText} for {toText}"
 msgstr "{actionText} {orderTypeName} Swap: {fromText} for {toText}"
 
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "{actionText} {orderTypeName} Swap: {fromText} for {toText}, Price: {ratioText}"
 msgstr "{actionText} {orderTypeName} Swap: {fromText} for {toText}, Price: {ratioText}"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{chainName} Total Stats start from {totalStatsStartDate}.<0/> For detailed stats:"
 msgstr "{chainName} Total Stats start from {totalStatsStartDate}.<0/> For detailed stats:"
-
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
-msgid "{collateralText} from {positionText}"
-msgstr "{collateralText} from {positionText}"
-
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
-msgid "{collateralText} into {positionText}"
-msgstr "{collateralText} into {positionText}"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{count, plural, one {Order} other {# Orders}}"
@@ -6562,11 +6724,11 @@ msgstr "{nativeTokenSymbol} is not available"
 msgid "{orderTypeLabel} {positionText}, -{0}"
 msgstr "{orderTypeLabel} {positionText}, -{0}"
 
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "{orderTypeName} Order Execution Failed"
 msgstr "{orderTypeName} Order Execution Failed"
 
-#: src/components/Synthetics/TradeHistoryRow/utils.tsx
+#: src/components/Synthetics/TradeHistoryRow/utils.ts
 msgid "{orderTypeName} Swap Execution Failed: {fromText} for {toText}, Price: {ratioText}"
 msgstr "{orderTypeName} Swap Execution Failed: {fromText} for {toText}, Price: {ratioText}"
 
@@ -6593,6 +6755,14 @@ msgstr "{positionName} Fees settled"
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} Fees settling"
 msgstr "{positionName} Fees settling"
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "{prefix} <0>{text}</0>"
+msgstr "{prefix} <0>{text}</0>"
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "{seconds}s"
+msgstr "{seconds}s"
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"

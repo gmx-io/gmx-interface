@@ -170,7 +170,7 @@ export function MarketStats(p: Props) {
                   displayDecimals: 3,
                 }) || "..."
               }
-              position="right-bottom"
+              position="bottom-end"
               renderContent={() => {
                 return (
                   <div>
@@ -210,6 +210,7 @@ export function MarketStats(p: Props) {
           value={
             mintableInfo && marketTotalSupplyUsd && marketToken ? (
               <Tooltip
+                maxAllowedWidth={350}
                 handle={formatTokenAmountWithUsd(
                   mintableInfo.mintableAmount,
                   mintableInfo.mintableUsd,
@@ -219,7 +220,7 @@ export function MarketStats(p: Props) {
                     displayDecimals: 0,
                   }
                 )}
-                position="right-bottom"
+                position="bottom-end"
                 renderContent={() => {
                   return (
                     <div>
@@ -267,6 +268,7 @@ export function MarketStats(p: Props) {
           label={t`Sellable`}
           value={
             <Tooltip
+              maxAllowedWidth={300}
               handle={formatTokenAmountWithUsd(
                 sellableInfo?.totalAmount,
                 sellableInfo?.totalUsd,
@@ -276,7 +278,7 @@ export function MarketStats(p: Props) {
                   displayDecimals: 0,
                 }
               )}
-              position="right-bottom"
+              position="bottom-end"
               renderContent={() => (
                 <div>
                   <Trans>

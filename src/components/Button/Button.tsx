@@ -1,4 +1,4 @@
-import { ReactNode, HTMLProps } from "react";
+import { ReactNode, HTMLProps, RefObject } from "react";
 import cx from "classnames";
 import ButtonLink from "./ButtonLink";
 import "./Button.scss";
@@ -19,6 +19,7 @@ type ButtonProps = HTMLProps<HTMLButtonElement> & {
     alt?: string;
   };
   newTab?: boolean;
+  buttonRef?: RefObject<HTMLButtonElement>;
 };
 
 export default function Button({
@@ -32,6 +33,7 @@ export default function Button({
   imgInfo,
   type,
   newTab,
+  buttonRef,
   ...rest
 }: ButtonProps) {
   const classNames = cx("button", variant, className, textAlign);
@@ -56,6 +58,7 @@ export default function Button({
         newTab={newTab}
         showExternalLinkArrow={showExternalLinkArrow}
         disabled={disabled}
+        ref={buttonRef}
         {...rest}
       >
         {imgInfo && <img className="btn-image" src={imgInfo.src} alt={imgInfo.alt || ""} />}
@@ -66,7 +69,7 @@ export default function Button({
 
   if (onClick) {
     return (
-      <button className={classNames} onClick={handleClick} disabled={disabled} {...rest}>
+      <button ref={buttonRef} className={classNames} onClick={handleClick} disabled={disabled} {...rest}>
         {imgInfo && <img className="btn-image" src={imgInfo.src} alt={imgInfo.alt || ""} />}
         {children}
       </button>
@@ -74,7 +77,7 @@ export default function Button({
   }
 
   return (
-    <button type={type} className={classNames} disabled={disabled} {...rest}>
+    <button ref={buttonRef} type={type} className={classNames} disabled={disabled} {...rest}>
       {imgInfo && <img className="btn-image" src={imgInfo.src} alt={imgInfo.alt || ""} />}
       {children}
     </button>

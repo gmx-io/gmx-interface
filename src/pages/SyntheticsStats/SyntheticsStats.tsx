@@ -139,7 +139,7 @@ export function SyntheticsStats() {
               <th>
                 <TooltipWithPortal
                   handle="VI Positions"
-                  position="right-bottom"
+                  position="bottom-end"
                   renderContent={() => (
                     <>
                       <p>Virtual inventory for positons</p>
@@ -154,7 +154,7 @@ export function SyntheticsStats() {
               <th>
                 <TooltipWithPortal
                   handle="VI Swaps"
-                  position="right-bottom"
+                  position="bottom-end"
                   renderContent={() => (
                     <>
                       <p>Virtual inventory for swaps (Long / Short)</p>
@@ -406,18 +406,22 @@ export function SyntheticsStats() {
                       "..."
                     ) : (
                       <TooltipWithPortal
-                        handle={`$${formatAmountHuman(market.totalBorrowingFees, 30)}`}
+                        handle={
+                          <>
+                            <span className={getPositiveOrNegativeClass(borrowingRateLong.mul(-1).add(1))}>
+                              {formatAmount(borrowingRateLong.mul(-1), 30, 4)}%
+                            </span>
+                            {" / "}
+                            <span className={getPositiveOrNegativeClass(borrowingRateShort.mul(-1).add(1))}>
+                              {formatAmount(borrowingRateShort.mul(-1), 30, 4)}%
+                            </span>
+                          </>
+                        }
                         renderContent={() => (
                           <>
                             <StatsTooltipRow
-                              label="Rate Long"
-                              value={`-${formatAmount(borrowingRateLong, 30, 4)}% / 1h`}
-                              showDollar={false}
-                            />
-                            <StatsTooltipRow
-                              label="Rate Short"
-                              value={`-${formatAmount(borrowingRateShort, 30, 4)}% / 1h`}
-                              showDollar={false}
+                              label="Pending borrowing fee"
+                              value={formatAmountHuman(market.totalBorrowingFees, 30)}
                             />
                             <StatsTooltipRow
                               label="Borrowing Factor Long"
@@ -709,7 +713,7 @@ export function SyntheticsStats() {
                   <div className="cell">
                     <TooltipWithPortal
                       handle={`$${formatAmount(positionImpactUsd, 30, 2, true)}`}
-                      position="right-bottom"
+                      position="bottom-end"
                       renderContent={() => (
                         <>
                           <StatsTooltipRow
@@ -844,7 +848,7 @@ export function SyntheticsStats() {
                         "..."
                       ) : (
                         <TooltipWithPortal
-                          position="right-bottom"
+                          position="bottom-end"
                           handle={
                             <>
                               <div>
@@ -869,7 +873,7 @@ export function SyntheticsStats() {
                   <td>
                     <div className="cell">
                       <TooltipWithPortal
-                        position="right-bottom"
+                        position="bottom-end"
                         handle={
                           <div>
                             {formatAmountHuman(
@@ -910,7 +914,7 @@ export function SyntheticsStats() {
                   <td>
                     <div className="cell">
                       <TooltipWithPortal
-                        position={"right-bottom"}
+                        position="bottom-end"
                         handle="..."
                         portalClassName="MarketCard-config-tooltip"
                         renderContent={() => (

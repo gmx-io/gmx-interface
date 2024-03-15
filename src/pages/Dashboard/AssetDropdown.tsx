@@ -13,9 +13,19 @@ import { getTokenBySymbol } from "config/tokens";
 import { Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
+import { Link } from "react-router-dom";
+import { ethers } from "ethers";
+import { isAddress } from "ethers/lib/utils.js";
+import { getTokenExplorerUrl } from "config/chains";
+
+const PLATFORM_TOKEN_ROUTES = {
+  GMX: "/buy_gmx",
+  GLP: "/buy_glp",
+  GM: "/pools",
+};
 
 type Props = {
-  assetSymbol: string;
+  assetSymbol?: string;
   token?: Token;
   position?: "left" | "right";
 };
@@ -24,19 +34,12 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
   const { active, connector } = useWallet();
   const { chainId } = useChainId();
 
-  let token: Token;
-
-  if (propsToken) {
-    token = propsToken;
-  } else {
-    try {
-      token = getTokenBySymbol(chainId, assetSymbol);
-    } catch (e) {
-      return null;
-    }
-  }
-
+  const token = propsToken ? propsToken : assetSymbol && getTokenBySymbol(chainId, assetSymbol);
   const chainIcon = getIcon(chainId, "network");
+
+  if (!token) {
+    return null;
+  }
 
   return (
     <div className="AssetDropdown-wrapper">
@@ -45,6 +48,16 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
           <FiChevronDown size={20} />
         </Menu.Button>
         <Menu.Items as="div" className={cx("asset-menu-items", { left: position === "left" })}>
+          <Menu.Item as="div">
+            {token.isPlatformToken && (
+              <Link to={PLATFORM_TOKEN_ROUTES[token.symbol]} className="asset-item">
+                <img className="asset-item-icon" src={token.imageUrl} alt={token.symbol} />
+                <p>
+                  <Trans>Buy {token.symbol}</Trans>
+                </p>
+              </Link>
+            )}
+          </Menu.Item>
           <Menu.Item as="div">
             {token.reservesUrl && (
               <ExternalLink href={token.reservesUrl} className="asset-item">
@@ -66,8 +79,8 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
             )}
           </Menu.Item>
           <Menu.Item as="div">
-            {token.explorerUrl && (
-              <ExternalLink href={token.explorerUrl} className="asset-item">
+            {!token.isNative && !token.isSynthetic && token.address && isAddress(token.address) && (
+              <ExternalLink href={getTokenExplorerUrl(chainId, token.address)} className="asset-item">
                 <img className="asset-item-icon" src={chainIcon} alt="Open in explorer" />
                 <p>
                   <Trans>Open {token.assetSymbol ?? token.symbol} in Explorer</Trans>
@@ -76,16 +89,16 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
             )}
           </Menu.Item>
           <Menu.Item as="div">
-            {active && !token.isNative && !token.isSynthetic && (
+            {active && !token.isNative && !token.isSynthetic && ethers.utils.isAddress(token.address) && (
               <div
                 onClick={() => {
                   if (connector?.watchAsset && token) {
-                    const { address, decimals, imageUrl, metamaskSymbol, symbol } = token;
+                    const { address, decimals, imageUrl, metamaskSymbol, assetSymbol, symbol } = token;
                     connector.watchAsset?.({
                       address: address,
                       decimals: decimals,
                       image: imageUrl,
-                      symbol: metamaskSymbol ?? symbol,
+                      symbol: assetSymbol ?? metamaskSymbol ?? symbol,
                     });
                   }
                 }}
