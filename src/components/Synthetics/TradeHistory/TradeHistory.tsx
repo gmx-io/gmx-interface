@@ -52,31 +52,6 @@ type Props = {
   forAllAccounts?: boolean;
 };
 
-function useMarketAddressesFromTokenAddresses(tokenAddresses: string[]): string[] {
-  const marketsInfo = useMarketsInfoData();
-  const tokenAddressesSet = useMemo(() => new Set(tokenAddresses), [tokenAddresses]);
-
-  const marketAddresses = useMemo(() => {
-    if (!marketsInfo) {
-      return EMPTY_ARRAY;
-    }
-
-    const marketsAddresses = Object.keys(marketsInfo);
-
-    return marketsAddresses.filter((marketAddress) => {
-      const marketData = marketsInfo[marketAddress];
-
-      return (
-        tokenAddressesSet.has(marketData.longTokenAddress) ||
-        tokenAddressesSet.has(marketData.shortTokenAddress) ||
-        tokenAddressesSet.has(marketData.indexTokenAddress)
-      );
-    });
-  }, [marketsInfo, tokenAddressesSet]);
-
-  return marketAddresses;
-}
-
 function useDownloadAsCsv(tradeActions: TradeAction[] | undefined, minCollateralUsd?: BigNumber) {
   const { chainId } = useChainId();
   const marketsInfoData = useMarketsInfoData();
@@ -129,7 +104,7 @@ export function TradeHistory(p: Props) {
   const { chainId } = useChainId();
   const showDebugValues = useShowDebugValues();
   const [startDate, endDate, setDateRange] = useDateRange();
-  const [tokenAddressesFilter, setTokenAddressesFilter] = useState<string[]>([]);
+  const [marketAddressesFilter, setMarketAddressesFilter] = useState<string[]>([]);
   const [actionFilter, setActionFilter] = useState<
     {
       orderType: OrderType;
@@ -139,8 +114,6 @@ export function TradeHistory(p: Props) {
   >([]);
 
   const [fromTxTimestamp, toTxTimestamp] = useNormalizeDateRange(startDate, endDate);
-
-  const marketAddresses = useMarketAddressesFromTokenAddresses(tokenAddressesFilter);
 
   const { minCollateralUsd } = usePositionsConstantsRequest(chainId);
   const {
@@ -154,8 +127,7 @@ export function TradeHistory(p: Props) {
     pageSize: TRADE_HISTORY_PREFETCH_SIZE,
     fromTxTimestamp,
     toTxTimestamp,
-    marketAddresses: marketAddresses,
-    tokenAddresses: tokenAddressesFilter,
+    marketAddresses: marketAddressesFilter,
     orderEventCombinations: actionFilter,
   });
 
@@ -169,7 +141,7 @@ export function TradeHistory(p: Props) {
     ENTITIES_PER_PAGE
   );
   const currentPageData = getCurrentData();
-  const hasFilters = Boolean(startDate || endDate || tokenAddressesFilter.length || actionFilter.length);
+  const hasFilters = Boolean(startDate || endDate || marketAddressesFilter.length || actionFilter.length);
 
   useEffect(() => {
     if (!pageCount || !currentPage) return;
@@ -214,7 +186,7 @@ export function TradeHistory(p: Props) {
                   <ActionFilter value={actionFilter} onChange={setActionFilter} />
                 </th>
                 <th>
-                  <MarketFilter value={tokenAddressesFilter} onChange={setTokenAddressesFilter} />
+                  <MarketFilter value={marketAddressesFilter} onChange={setMarketAddressesFilter} />
                 </th>
                 <th>
                   <Trans>Size</Trans>

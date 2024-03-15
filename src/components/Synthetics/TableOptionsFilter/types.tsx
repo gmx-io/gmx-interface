@@ -1,12 +1,9 @@
-import type { ReactNode } from "react";
-
 export type Item<T> = {
   /**
    * Localized item name
    */
   text: string;
   data: T;
-  label?: ReactNode;
 };
 
 export type Group<T> = {

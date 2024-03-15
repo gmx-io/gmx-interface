@@ -15,7 +15,7 @@ import { TableFilterBase } from "components/Synthetics/TableFilterBase/TableFilt
 
 import "./TableOptionsFilter.scss";
 
-export type Props<T> = {
+type Props<T> = {
   placeholder?: string;
   label: string;
   ItemComponent?: ComponentType<{ item: T }>;

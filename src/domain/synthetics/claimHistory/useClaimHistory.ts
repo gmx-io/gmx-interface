@@ -41,10 +41,10 @@ export function useClaimCollateralHistory(
     fromTxTimestamp?: number;
     toTxTimestamp?: number;
     eventName?: string[];
-    tokenAddresses?: string[];
+    marketAddresses?: string[];
   }
 ): ClaimCollateralHistoryResult {
-  const { pageSize, fromTxTimestamp, toTxTimestamp, eventName, tokenAddresses } = p;
+  const { pageSize, fromTxTimestamp, toTxTimestamp, eventName, marketAddresses } = p;
   const marketsInfoData = useMarketsInfoData();
   const tokensData = useTokensData();
 
@@ -67,8 +67,8 @@ export function useClaimCollateralHistory(
       pageSize,
       fromTxTimestamp,
       toTxTimestamp,
-      eventName?.sort().join(","),
-      tokenAddresses?.sort().join(","),
+      structuredClone(eventName)?.sort().join(","),
+      structuredClone(marketAddresses)?.sort().join(","),
     ];
   };
 
@@ -94,8 +94,8 @@ export function useClaimCollateralHistory(
             eventName_in: eventName,
           },
           {
-            or: tokenAddresses?.map((tokenAddress) => ({
-              tokenAddresses_contains: [tokenAddress.toLowerCase()],
+            or: marketAddresses?.map((tokenAddress) => ({
+              marketAddresses_contains: [tokenAddress.toLowerCase()],
             })),
           },
         ],

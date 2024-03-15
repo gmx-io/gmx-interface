@@ -8,7 +8,7 @@ import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContex
 import { parseContractPrice } from "domain/synthetics/tokens";
 import { bigNumberify } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { getSyntheticsGraphClient } from "lib/subgraph";
+import { GraphQlFilters, getSyntheticsGraphClient } from "lib/subgraph";
 import { buildFiltersBody } from "lib/subgraph";
 
 import { OrderType, isSwapOrderType } from "../orders";
@@ -31,8 +31,6 @@ export function useTradeHistory(
     fromTxTimestamp?: number;
     toTxTimestamp?: number;
     marketAddresses?: string[];
-    tokenAddresses?: string[];
-
     orderEventCombinations?: {
       eventName?: TradeActionType;
       orderType?: OrderType;
@@ -40,16 +38,8 @@ export function useTradeHistory(
     }[];
   }
 ): TradeHistoryResult {
-  const {
-    pageSize,
-    account,
-    forAllAccounts,
-    fromTxTimestamp,
-    toTxTimestamp,
-    marketAddresses,
-    orderEventCombinations,
-    tokenAddresses,
-  } = p;
+  const { pageSize, account, forAllAccounts, fromTxTimestamp, toTxTimestamp, marketAddresses, orderEventCombinations } =
+    p;
   const marketsInfoData = useMarketsInfoData();
   const tokensData = useTokensData();
 
@@ -67,8 +57,7 @@ export function useTradeHistory(
         fromTxTimestamp,
         toTxTimestamp,
         JSON.stringify(orderEventCombinations),
-        JSON.stringify(marketAddresses),
-        JSON.stringify(tokenAddresses),
+        structuredClone(marketAddresses)?.sort().join(","),
       ];
     }
     return null;
@@ -85,6 +74,8 @@ export function useTradeHistory(
       const skip = pageIndex * pageSize;
       const first = pageSize;
 
+      const maybeLowercaseMarketAddresses = marketAddresses?.map((s) => s.toLowerCase());
+
       const filtersStr = buildFiltersBody({
         and: [
           {
@@ -96,15 +87,31 @@ export function useTradeHistory(
           },
           {
             or: [
-              { marketAddress_in: marketAddresses?.length ? marketAddresses.map((s) => s.toLowerCase()) : undefined },
+              // For non-swap orders
               {
-                initialCollateralTokenAddress_in: tokenAddresses?.length
-                  ? tokenAddresses.map((s) => s.toLowerCase())
-                  : undefined,
+                orderType_not_in: [OrderType.LimitSwap, OrderType.MarketSwap],
+                marketAddress_in: maybeLowercaseMarketAddresses,
               },
-              ...(marketAddresses?.length
-                ? marketAddresses.map((s) => ({ swapPath_contains: [s.toLowerCase()] }))
-                : []),
+              // For swap orders
+              {
+                and: [
+                  {
+                    orderType_in: [OrderType.LimitSwap, OrderType.MarketSwap],
+                  },
+                  {
+                    or: [
+                      // Source token is not in swap path so we add it to the or filter
+                      {
+                        marketAddress_in: maybeLowercaseMarketAddresses,
+                      } as GraphQlFilters,
+                    ].concat(
+                      maybeLowercaseMarketAddresses?.map((marketAddress) => ({
+                        swapPath_contains: [marketAddress],
+                      })) || []
+                    ),
+                  },
+                ],
+              },
             ],
           },
           {

@@ -1,58 +1,75 @@
 import { t } from "@lingui/macro";
 import { useCallback, useMemo } from "react";
 
-import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+
+import { getNormalizedTokenSymbol } from "config/tokens";
+import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
+import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
+import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
+import { useChainId } from "lib/chains";
 
 import { TableOptionsFilter } from "components/Synthetics/TableOptionsFilter/TableOptionsFilter";
+import type { Item } from "components/Synthetics/TableOptionsFilter/types";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import { sortTokens } from "./sortTokens";
 
 type Props = {
   /**
-   * Token addresses
+   * Market addresses
    */
   value: string[];
   onChange: (value: string[]) => void;
 };
 
 export function MarketFilter({ value, onChange }: Props) {
-  const sortOptions = useTradeboxAvailableTokensOptions();
+  const marketsInfoData = useMarketsInfoData();
+  const { chainId } = useChainId();
+  const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
+  const { marketsInfo: markets } = useSortedPoolsWithIndexToken(marketsInfoData, depositMarketTokensData);
 
-  const tokensData = useTokensData();
-
-  const tokensOptions = useMemo(() => {
-    const tokenDataArr = Object.values(tokensData || {});
-    const sortedTokens = sortTokens(sortOptions, tokenDataArr);
-
-    return sortedTokens.map((token) => ({
-      text: token.assetSymbol || token.symbol,
-      data: token.address,
-    }));
-  }, [sortOptions, tokensData]);
+  const marketsOptions = useMemo<Item<string>[]>(() => {
+    return markets.map((market) => {
+      return {
+        text: market.name,
+        data: market.marketTokenAddress,
+      };
+    });
+  }, [markets]);
 
   const ItemComponent = useCallback(
     (props: { item: string }) => {
-      if (!tokensData) {
+      if (!marketsInfoData) {
         return <></>;
       }
-      const token = tokensData[props.item];
+
+      const market = marketsInfoData[props.item];
+      const indexName = getMarketIndexName(market);
+      const poolName = getMarketPoolName(market);
+
+      const iconName = market?.isSpotOnly
+        ? getNormalizedTokenSymbol(market.longToken.symbol) + getNormalizedTokenSymbol(market.shortToken.symbol)
+        : market.indexToken.symbol;
+
       return (
         <>
-          <TokenIcon symbol={token.symbol} displaySize={16} importSize={24} className="mr-xs" />
-          {token.assetSymbol || token.symbol}
+          <TokenIcon symbol={iconName} displaySize={16} importSize={40} className="mr-xs" />
+          <div className="items-center">
+            <span>{indexName}</span>
+            <span className="subtext">[{poolName}]</span>
+          </div>
         </>
       );
     },
-    [tokensData]
+    [marketsInfoData]
   );
 
   return (
     <TableOptionsFilter<string>
       multiple
       label={t`Market`}
+      placeholder={t`Search market`}
       onChange={onChange}
-      options={tokensOptions}
+      options={marketsOptions}
       ItemComponent={ItemComponent}
       value={value}
     />

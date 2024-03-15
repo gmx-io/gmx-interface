@@ -41,7 +41,7 @@ export function ClaimsHistory({ shouldShowPaginationButtons }: { shouldShowPagin
 
   const [startDate, endDate, setDateRange] = useDateRange();
   const [eventNameFilter, setEventNameFilter] = useState<string[]>([]);
-  const [tokenAddressesFilter, setTokenAddressesFilter] = useState<string[]>([]);
+  const [marketAddressesFilter, setMarketAddressesFilter] = useState<string[]>([]);
 
   const [fromTxTimestamp, toTxTimestamp] = useNormalizeDateRange(startDate, endDate);
 
@@ -50,7 +50,7 @@ export function ClaimsHistory({ shouldShowPaginationButtons }: { shouldShowPagin
     fromTxTimestamp: fromTxTimestamp,
     toTxTimestamp: toTxTimestamp,
     eventName: eventNameFilter,
-    tokenAddresses: tokenAddressesFilter,
+    marketAddresses: marketAddressesFilter,
   });
 
   const { currentPage, setCurrentPage, getCurrentData, pageCount } = usePagination(
@@ -104,7 +104,7 @@ export function ClaimsHistory({ shouldShowPaginationButtons }: { shouldShowPagin
                 <ActionFilter value={eventNameFilter} onChange={setEventNameFilter} />
               </th>
               <th>
-                <MarketFilter value={tokenAddressesFilter} onChange={setTokenAddressesFilter} />
+                <MarketFilter value={marketAddressesFilter} onChange={setMarketAddressesFilter} />
               </th>
               <th>
                 <Trans>Size</Trans>
