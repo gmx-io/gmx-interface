@@ -2816,13 +2816,13 @@ msgstr ""
 msgid "Leave at least {0} {1} for gas"
 msgstr "Mindestens {0} {1} für Gas lassen"
 
+#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Leftover Collateral Excluding Impact"
+msgstr "Restliches Kollateral ohne Auswirkung"
+
 #: src/components/Exchange/PositionEditor.js
 msgid "Leftover Collateral not enough to cover fees"
 msgstr ""
-
-#: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Leftover Collateral without impact"
-msgstr "Restliches Kollateral ohne Auswirkung"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Leftover collateral below 5 USD"

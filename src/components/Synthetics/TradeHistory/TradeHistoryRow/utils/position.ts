@@ -552,7 +552,7 @@ export const formatPositionMessage = (
           state: numberToState(tradeAction.pnlUsd!),
         }),
         "",
-        infoRow(t`Leftover Collateral without impact`, formattedLeftoverCollateral),
+        infoRow(t`Leftover Collateral Excluding Impact`, formattedLeftoverCollateral),
         infoRow(t`Min. required Collateral`, formattedMinCollateral)
       ),
       isActionError: true,
