@@ -5200,6 +5200,10 @@ msgid "The order may not execute at the desired {priceText} as its acceptable pr
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.ts
+msgid "The order will not be executed as it will increase the position's leverage beyond the maximum allowed."
+msgstr ""
+
+#: src/domain/synthetics/orders/utils.ts
 msgid "The order will not be executed as its trigger price is beyond the position's liquidation price."
 msgstr ""
 

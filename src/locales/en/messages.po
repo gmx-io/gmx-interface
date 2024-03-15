@@ -5203,6 +5203,10 @@ msgid "The order may not execute at the desired {priceText} as its acceptable pr
 msgstr "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedOrderAcceptablePriceImpact}, which is lower than the current market price impact of {formattedCurrentAcceptablePriceImpact}. It can be edited using the \"Edit\" button."
 
 #: src/domain/synthetics/orders/utils.ts
+msgid "The order will not be executed as it will increase the position's leverage beyond the maximum allowed."
+msgstr "The order will not be executed as it will increase the position's leverage beyond the maximum allowed."
+
+#: src/domain/synthetics/orders/utils.ts
 msgid "The order will not be executed as its trigger price is beyond the position's liquidation price."
 msgstr "The order will not be executed as its trigger price is beyond the position's liquidation price."
 
