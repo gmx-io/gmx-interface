@@ -12,6 +12,8 @@ import dateEn from "date-fns/locale/en-US";
 import { LOCALE_DATE_LOCALE_MAP } from "components/Synthetics/DateRangeSelect/DateRangeSelect";
 import { TradeActionType } from "domain/synthetics/tradeHistory";
 
+import { CustomErrorName } from "./CustomErrorName";
+
 import CustomErrors from "abis/CustomErrors.json";
 
 export function getOrderActionText(eventName: TradeActionType) {
@@ -166,23 +168,22 @@ export function tryGetError(
   return error;
 }
 
-export function getErrorTooltipTitle(errorName: string) {
-  switch (errorName) {
-    case "OrderNotFulfillableAtAcceptablePrice": {
-      return t`The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met.`;
-    }
-
-    case "InsufficientReserveForOpenInterest": {
-      return t`Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity.`;
-    }
-
-    case "InsufficientSwapOutputAmount": {
-      return t`Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity.`;
-    }
-
-    default:
-      return t`Reason: ${words(errorName).join(" ").toLowerCase()}`;
+export function getErrorTooltipTitle(errorName: string, isMarketOrder: boolean) {
+  if (errorName === CustomErrorName.OrderNotFulfillableAtAcceptablePrice && !isMarketOrder) {
+    return t`The Execution Price didn't meet the Acceptable Price condition. The Order will get filled when the condition is met.`;
+  } else if (errorName === CustomErrorName.OrderNotFulfillableAtAcceptablePrice && isMarketOrder) {
+    return t`The Execution Price didn't meet the Acceptable Price condition.`;
+  } else if (errorName === CustomErrorName.InsufficientReserveForOpenInterest && !isMarketOrder) {
+    return t`Not enough Available Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Liquidity.`;
+  } else if (errorName === CustomErrorName.InsufficientReserveForOpenInterest && isMarketOrder) {
+    return t`Not enough Available Liquidity to fill the Order.`;
+  } else if (errorName === CustomErrorName.InsufficientSwapOutputAmount && !isMarketOrder) {
+    return t`Not enough Available Swap Liquidity to fill the Order. The Order will get filled when the condition is met and there is enough Available Swap Liquidity.`;
+  } else if (errorName === CustomErrorName.InsufficientSwapOutputAmount && isMarketOrder) {
+    return t`Not enough Available Swap Liquidity to fill the Order.`;
   }
+
+  return t`Reason: ${words(errorName).join(" ").toLowerCase()}`;
 }
 
 const DOUBLE_NON_BREAKING_SPACE = String.fromCharCode(160) + String.fromCharCode(160);

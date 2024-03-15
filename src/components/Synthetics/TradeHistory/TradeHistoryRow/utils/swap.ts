@@ -187,7 +187,7 @@ export const formatSwapMessage = (
       actionComment:
         error &&
         lines({
-          text: getErrorTooltipTitle(error.name),
+          text: getErrorTooltipTitle(error.name, false),
           state: "error",
         }),
       price: rate,
@@ -238,7 +238,7 @@ export const formatSwapMessage = (
       actionComment:
         error &&
         lines({
-          text: getErrorTooltipTitle(error.name),
+          text: getErrorTooltipTitle(error.name, true),
           state: "error",
         }),
       price: rate,

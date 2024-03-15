@@ -191,7 +191,7 @@ export const formatPositionMessage = (
       actionComment:
         error &&
         lines({
-          text: getErrorTooltipTitle(error.name),
+          text: getErrorTooltipTitle(error.name, true),
           state: "error",
         }),
       size: customSize,
@@ -247,7 +247,7 @@ export const formatPositionMessage = (
       actionComment:
         error &&
         lines({
-          text: getErrorTooltipTitle(error.name),
+          text: getErrorTooltipTitle(error.name, false),
           state: "error",
         }),
       priceComment: lines(
@@ -293,7 +293,7 @@ export const formatPositionMessage = (
       actionComment:
         error &&
         lines({
-          text: getErrorTooltipTitle(error.name),
+          text: getErrorTooltipTitle(error.name, true),
           state: "error",
         }),
       size: customSize,
@@ -370,7 +370,7 @@ export const formatPositionMessage = (
       actionComment:
         error &&
         lines({
-          text: getErrorTooltipTitle(error.name),
+          text: getErrorTooltipTitle(error.name, false),
           state: "error",
         }),
       priceComment: lines(
@@ -439,7 +439,7 @@ export const formatPositionMessage = (
       actionComment:
         error &&
         lines({
-          text: getErrorTooltipTitle(error.name),
+          text: getErrorTooltipTitle(error.name, false),
           state: "error",
         }),
       priceComment: lines(
