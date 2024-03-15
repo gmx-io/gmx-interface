@@ -13,8 +13,16 @@ import { getTokenBySymbol } from "config/tokens";
 import { Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
+import { Link } from "react-router-dom";
+import { ethers } from "ethers";
 import { isAddress } from "ethers/lib/utils.js";
 import { getTokenExplorerUrl } from "config/chains";
+
+const PLATFORM_TOKEN_ROUTES = {
+  GMX: "/buy_gmx",
+  GLP: "/buy_glp",
+  GM: "/pools",
+};
 
 type Props = {
   assetSymbol?: string;
@@ -40,6 +48,16 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
           <FiChevronDown size={20} />
         </Menu.Button>
         <Menu.Items as="div" className={cx("asset-menu-items", { left: position === "left" })}>
+          <Menu.Item as="div">
+            {token.isPlatformToken && (
+              <Link to={PLATFORM_TOKEN_ROUTES[token.symbol]} className="asset-item">
+                <img className="asset-item-icon" src={token.imageUrl} alt={token.symbol} />
+                <p>
+                  <Trans>Buy {token.symbol}</Trans>
+                </p>
+              </Link>
+            )}
+          </Menu.Item>
           <Menu.Item as="div">
             {token.reservesUrl && (
               <ExternalLink href={token.reservesUrl} className="asset-item">
@@ -71,7 +89,7 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right" }: P
             )}
           </Menu.Item>
           <Menu.Item as="div">
-            {active && !token.isNative && !token.isSynthetic && (
+            {active && !token.isNative && !token.isSynthetic && ethers.utils.isAddress(token.address) && (
               <div
                 onClick={() => {
                   if (connector?.watchAsset && token) {

@@ -59,7 +59,7 @@ import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { isAddress } from "ethers/lib/utils.js";
 import useSearchParams from "lib/useSearchParams";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
-import useSortedMarketsWithIndexToken from "domain/synthetics/trade/useSortedMarketsWithIndexToken";
+import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
 
 const SWAP_MARKET_REGEX = /^(swap-only|swap)$/i;
@@ -142,7 +142,7 @@ export function GmSwapBox(p: Props) {
   const [focusedInput, setFocusedInput] = useState<"longCollateral" | "shortCollateral" | "market">("market");
   const [stage, setStage] = useState<"swap" | "confirmation" | "processing">();
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
-  const { marketsInfo: sortedMarketsInfoByIndexToken } = useSortedMarketsWithIndexToken(
+  const { marketsInfo: sortedMarketsInfoByIndexToken } = useSortedPoolsWithIndexToken(
     marketsInfoData,
     depositMarketTokensData
   );

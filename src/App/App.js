@@ -34,7 +34,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import "styles/Font.css";
 import "styles/Input.css";
-import "styles/Shared.css";
+import "styles/Shared.scss";
 import "./App.scss";
 
 import SEO from "components/Common/SEO";
@@ -299,7 +299,7 @@ function FullApp({ pendingTxns, setPendingTxns }) {
                 />
               </Route>
               <Route exact path="/dashboard">
-                <Dashboard />
+                <Dashboard tradePageVersion={tradePageVersion} setTradePageVersion={setTradePageVersion} />
               </Route>
               <Route exact path="/stats/v1">
                 <Stats />
