@@ -19,6 +19,8 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import { ReactComponent as NewLink20ReactComponent } from "img/ic_new_link_20.svg";
+
 import "./TradeHistoryRow.scss";
 
 type Props = {
@@ -157,27 +159,28 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
         })}
       >
         <td>
+          {msg.actionComment ? (
+            <TooltipWithPortal
+              className={cx({
+                "Tooltip-error": msg.isActionError,
+              })}
+              handle={msg.action}
+              renderContent={() => <TooltipContentComponent content={msg.actionComment!} />}
+            />
+          ) : (
+            <span
+              className={cx({
+                "text-red": msg.isActionError,
+              })}
+            >
+              {msg.action}
+            </span>
+          )}
           <ExternalLink
-            className="TradeHistoryRow-action plain"
+            className="TradeHistoryRow-external-link ml-xs"
             href={`${getExplorerUrl(chainId)}tx/${tradeAction.transaction.hash}`}
           >
-            {msg.actionComment ? (
-              <TooltipWithPortal
-                className={cx({
-                  "Tooltip-error": msg.isActionError,
-                })}
-                handle={msg.action}
-                renderContent={() => <TooltipContentComponent content={msg.actionComment!} />}
-              />
-            ) : (
-              <span
-                className={cx({
-                  "text-red": msg.isActionError,
-                })}
-              >
-                {msg.action}
-              </span>
-            )}
+            <NewLink20ReactComponent />
           </ExternalLink>
           <br />
           <TooltipWithPortal

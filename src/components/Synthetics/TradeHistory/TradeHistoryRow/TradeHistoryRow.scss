@@ -2,8 +2,14 @@
   border-bottom: none !important;
 }
 
-.TradeHistoryRow-action {
-  color: white !important;
+.TradeHistoryRow-external-link {
+  vertical-align: top;
+
+  svg {
+    path {
+      fill: currentColor;
+    }
+  }
 }
 
 .TradeHistoryRow-time {
