@@ -28,6 +28,7 @@
 .ShareBar-fill__percentage {
   display: flex;
   height: 1.6rem;
+  font-size: 1.2rem;
 
   .ShareBar-fill__left,
   .ShareBar-fill__right {
@@ -35,7 +36,6 @@
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    min-width: 4ch;
   }
 
   .ShareBar-fill__left {
