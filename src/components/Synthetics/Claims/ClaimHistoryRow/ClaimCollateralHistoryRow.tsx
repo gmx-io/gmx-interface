@@ -64,14 +64,15 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
   return (
     <tr>
       <td>
-        {eventTitle}
-        <ExternalLink
-          className="ClaimHistoryRow-external-link ml-xs"
-          href={`${getExplorerUrl(chainId)}tx/${claimAction.transactionHash}`}
-        >
-          <NewLink20ReactComponent />
-        </ExternalLink>
-        <br />
+        <div className="flex">
+          <div className="ClaimHistoryRow-action-handle">{eventTitle}</div>
+          <ExternalLink
+            className="ClaimHistoryRow-external-link ml-xs"
+            href={`${getExplorerUrl(chainId)}tx/${claimAction.transactionHash}`}
+          >
+            <NewLink20ReactComponent />
+          </ExternalLink>
+        </div>
         <span className="ClaimHistoryRow-time muted">{timestamp}</span>
       </td>
       <td>
