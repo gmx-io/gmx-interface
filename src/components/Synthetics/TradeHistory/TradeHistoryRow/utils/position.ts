@@ -112,6 +112,9 @@ export const formatPositionMessage = (
   const formattedAcceptablePrice = formatUsd(tradeAction.acceptablePrice, {
     displayDecimals: priceDecimals,
   })!;
+  const formattedTriggerPrice = formatUsd(tradeAction.triggerPrice, {
+    displayDecimals: priceDecimals,
+  })!;
 
   const action = getActionTitle(tradeAction.orderType, tradeAction.eventName);
   const timestamp = formatTradeActionTimestamp(tradeAction.transaction.timestamp, relativeTimestamp);
@@ -224,6 +227,7 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order.`,
         "",
+        infoRow(t`Order Trigger Price`, triggerPriceInequality + formattedTriggerPrice),
         infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice),
         infoRow(t`Order Execution Price`, formattedExecutionPrice!),
         infoRow(t`Price Impact`, {
@@ -248,6 +252,7 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order.`,
         "",
+        infoRow(t`Order Trigger Price`, triggerPriceInequality + formattedTriggerPrice),
         infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice),
         error?.args?.price &&
           infoRow(
@@ -345,6 +350,7 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order.`,
         "",
+        infoRow(t`Order Trigger Price`, triggerPriceInequality + formattedTriggerPrice),
         infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice),
         infoRow(t`Order Execution Price`, formattedExecutionPrice!),
         infoRow(t`Price Impact`, {
@@ -369,12 +375,10 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order.`,
         "",
+        infoRow(t`Order Trigger Price`, triggerPriceInequality + formattedTriggerPrice),
         infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice),
-        error?.args?.price && [
-          t`Order Execution Price`,
-          ": ",
-          formatUsd(error.args.price, { displayDecimals: priceDecimals }),
-        ]
+        error?.args?.price &&
+          infoRow(t`Order Execution Price`, formatUsd(error.args.price, { displayDecimals: priceDecimals }))
       ),
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
       isActionError: true,
@@ -412,6 +416,7 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order.`,
         "",
+        infoRow(t`Order Trigger Price`, triggerPriceInequality + formattedTriggerPrice),
         isAcceptablePriceUseful
           ? infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice)
           : undefined,
@@ -438,7 +443,8 @@ export const formatPositionMessage = (
         }),
       priceComment: lines(
         t`Mark price for the order.`,
-        isAcceptablePriceUseful || error?.args?.price ? "" : undefined,
+        "",
+        infoRow(t`Order Trigger Price`, triggerPriceInequality + formattedTriggerPrice),
         isAcceptablePriceUseful
           ? infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice)
           : undefined,
