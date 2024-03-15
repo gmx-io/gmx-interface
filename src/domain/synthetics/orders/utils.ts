@@ -125,12 +125,11 @@ export function getOrderTypeLabel(orderType: OrderType) {
 
 export function getOrderInfo(p: {
   marketsInfoData: MarketsInfoData;
-  positionsInfoData?: PositionsInfoData;
   tokensData: TokensData;
   wrappedNativeToken: Token;
   order: Order;
 }) {
-  const { marketsInfoData, positionsInfoData, tokensData, wrappedNativeToken, order } = p;
+  const { marketsInfoData, tokensData, wrappedNativeToken, order } = p;
 
   if (isSwapOrderType(order.orderType)) {
     const initialCollateralToken = getByKey(tokensData, order.initialCollateralTokenAddress);
@@ -192,22 +191,12 @@ export function getOrderInfo(p: {
 
     const orderInfo: SwapOrderInfo = {
       ...order,
-      errors: [],
       swapPathStats,
       triggerRatio,
       title,
       initialCollateralToken,
       targetCollateralToken,
     };
-
-    const { errors, level } = getOrderErrors({
-      order: orderInfo,
-      positionsInfoData,
-      marketsInfoData,
-    });
-
-    orderInfo.errors = errors;
-    orderInfo.errorLevel = level;
 
     return orderInfo;
   } else {
@@ -258,7 +247,6 @@ export function getOrderInfo(p: {
     const orderInfo: PositionOrderInfo = {
       ...order,
       title,
-      errors: [],
       swapPathStats,
       marketInfo,
       indexToken,
@@ -268,15 +256,6 @@ export function getOrderInfo(p: {
       triggerPrice,
       triggerThresholdType,
     };
-
-    const { errors, level } = getOrderErrors({
-      order: orderInfo,
-      positionsInfoData,
-      marketsInfoData,
-    });
-
-    orderInfo.errors = errors;
-    orderInfo.errorLevel = level;
 
     return orderInfo;
   }

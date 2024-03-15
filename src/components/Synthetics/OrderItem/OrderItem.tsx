@@ -27,6 +27,7 @@ import { getByKey } from "lib/objects";
 import { useMemo } from "react";
 import { useChainId } from "lib/chains";
 import { getWrappedToken } from "config/tokens";
+import { useOrderErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
 
 type Props = {
   order: OrderInfo;
@@ -51,9 +52,8 @@ export function OrderItem(p: Props) {
     orderType,
     minOutputAmount,
     key,
-    errors,
-    errorLevel,
   } = p.order;
+  const { errors, level } = useOrderErrors(key);
   const { chainId } = useChainId();
   const { showDebugValues } = useSettings();
   const wrappedToken = getWrappedToken(chainId);
@@ -139,7 +139,7 @@ export function OrderItem(p: Props) {
         return (
           <Tooltip
             handle={renderTitleWithIcon(p.order)}
-            className={cx(`order-error-text-msg`, `level-${errorLevel}`)}
+            className={cx(`order-error-text-msg`, `level-${level}`)}
             position="bottom-start"
             renderContent={() => (
               <>
@@ -170,7 +170,7 @@ export function OrderItem(p: Props) {
       <Tooltip
         handle={renderTitleWithIcon(p.order)}
         position="bottom-start"
-        className={errorLevel ? `order-error-text-msg level-${errorLevel}` : undefined}
+        className={level ? `order-error-text-msg level-${level}` : undefined}
         renderContent={() => {
           return (
             <>

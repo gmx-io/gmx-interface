@@ -13,7 +13,6 @@ import {
   useAccount,
   useIsOrdersLoading,
   useIsPositionsLoading,
-  useSavedShowPnlAfterFees,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { useChainId } from "lib/chains";
@@ -23,7 +22,6 @@ import useWallet from "lib/wallets/useWallet";
 export default function SyntheticsActions() {
   const { chainId } = useChainId();
   const { active } = useWallet();
-  const savedShowPnlAfterFees = useSavedShowPnlAfterFees();
   const checkSummedAccount = useAccount();
   const isPositionsLoading = useIsPositionsLoading();
   const isOrdersLoading = useIsOrdersLoading();
@@ -77,7 +75,6 @@ export default function SyntheticsActions() {
             onClosePositionClick={() => null}
             onEditCollateralClick={() => null}
             onSettlePositionFeesClick={() => null}
-            showPnlAfterFees={savedShowPnlAfterFees}
             openSettings={() => null}
             hideActions
           />

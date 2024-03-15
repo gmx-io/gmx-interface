@@ -57,11 +57,11 @@ import useWallet from "lib/wallets/useWallet";
 import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
 import { useRebatesInfo } from "domain/synthetics/fees/useRebatesInfo";
 import { calcTotalRebateUsd } from "components/Synthetics/Claims/utils";
+import { useOrderErrorsCount, useOrdersCount } from "context/SyntheticsStateContext/hooks/orderHooks";
 
 export type Props = {
   shouldDisableValidation: boolean;
   savedShouldShowPositionLines: boolean;
-  showPnlAfterFees: boolean;
   savedSlippageAmount: number;
   setSavedShouldShowPositionLines: (value: boolean) => void;
   setPendingTxns: (txns: any) => void;
@@ -81,7 +81,6 @@ export function SyntheticsPage(p: Props) {
   const {
     shouldDisableValidation,
     savedShouldShowPositionLines,
-    showPnlAfterFees,
     tradePageVersion,
     setSavedShouldShowPositionLines,
     setPendingTxns,
@@ -175,18 +174,11 @@ export function SyntheticsPage(p: Props) {
   const [selectedOrdersKeys, setSelectedOrdersKeys] = useState<{ [key: string]: boolean }>({});
   const selectedOrdersKeysArr = Object.keys(selectedOrdersKeys).filter((key) => selectedOrdersKeys[key]);
   const [isCancelOrdersProcessig, setIsCancelOrdersProcessig] = useState(false);
-
-  const { positionsCount, ordersCount, ordersErrorsCount, ordersWarningsCount } = useMemo(() => {
-    const positions = Object.values(positionsInfoData || {});
-    const orders = Object.values(ordersInfoData || {});
-
-    return {
-      positionsCount: positions.length,
-      ordersCount: orders.length,
-      ordersErrorsCount: orders.filter((order) => order.errorLevel === "error").length,
-      ordersWarningsCount: orders.filter((order) => order.errorLevel === "warning").length,
-    };
-  }, [ordersInfoData, positionsInfoData]);
+  const { errors: ordersErrorsCount, warnings: ordersWarningsCount } = useOrderErrorsCount();
+  const ordersCount = useOrdersCount();
+  const positionsCount = useMemo(() => {
+    return Object.values(positionsInfoData || {}).length;
+  }, [positionsInfoData]);
   const hasClaimableFees = useMemo(() => {
     const markets = Object.values(marketsInfoData ?? {});
     const totalClaimableFundingUsd = getTotalClaimableFundingUsd(markets);
@@ -403,7 +395,6 @@ export function SyntheticsPage(p: Props) {
                 onSelectPositionClick={onSelectPositionClick}
                 onClosePositionClick={setClosingPositionKey}
                 onEditCollateralClick={setEditingPositionKey}
-                showPnlAfterFees={showPnlAfterFees}
                 openSettings={openSettings}
               />
             )}
@@ -455,7 +446,6 @@ export function SyntheticsPage(p: Props) {
               onClosePositionClick={setClosingPositionKey}
               onEditCollateralClick={setEditingPositionKey}
               onSettlePositionFeesClick={handleSettlePositionFeesClick}
-              showPnlAfterFees={showPnlAfterFees}
               openSettings={openSettings}
             />
           )}

@@ -345,7 +345,6 @@ function FullApp({ pendingTxns, setPendingTxns }) {
                       savedShouldShowPositionLines={settings.shouldShowPositionLines}
                       setSavedShouldShowPositionLines={settings.setShouldShowPositionLines}
                       setPendingTxns={setPendingTxns}
-                      showPnlAfterFees={settings.showPnlAfterFees}
                       tradePageVersion={tradePageVersion}
                       setTradePageVersion={setTradePageVersion}
                       savedSlippageAmount={settings.savedAllowedSlippage}

@@ -3,12 +3,7 @@ import cx from "classnames";
 import PositionDropdown from "components/Exchange/PositionDropdown";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
-import {
-  PositionOrderInfo,
-  isDecreaseOrderType,
-  isIncreaseOrderType,
-  sortPositionOrders,
-} from "domain/synthetics/orders";
+import { PositionOrderInfo, isDecreaseOrderType, isIncreaseOrderType } from "domain/synthetics/orders";
 import {
   PositionInfo,
   formatEstimatedLiquidationTime,
@@ -25,6 +20,7 @@ import Button from "components/Button/Button";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePositionsConstants, useSavedShowPnlAfterFees } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { usePositionOrdersWithErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
 import {
   useTradeboxCollateralAddress,
   useTradeboxMarketAddress,
@@ -35,14 +31,13 @@ import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets
 import { TradeMode, TradeType, getTriggerThresholdType } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
 import { getPositiveOrNegativeClass } from "lib/utils";
-import { Fragment, useMemo } from "react";
+import { Fragment } from "react";
 import { FaAngleRight } from "react-icons/fa";
 import { useMedia } from "react-use";
 import "./PositionItem.scss";
 
 export type Props = {
   position: PositionInfo;
-  positionOrders: PositionOrderInfo[];
   hideActions?: boolean;
   showPnlAfterFees: boolean;
   onClosePositionClick?: () => void;
@@ -56,7 +51,7 @@ export type Props = {
 };
 
 export function PositionItem(p: Props) {
-  const { positionOrders } = p;
+  const ordersWithErrors = usePositionOrdersWithErrors(p.position.key);
   const { showDebugValues } = useSettings();
   const savedShowPnlAfterFees = useSavedShowPnlAfterFees();
   const currentTradeType = useTradeboxTradeType();
@@ -72,10 +67,6 @@ export function PositionItem(p: Props) {
     currentMarketAddress === p.position.marketAddress &&
     currentCollateralAddress === p.position.collateralTokenAddress &&
     isCurrentTradeTypeLong === p.position.isLong;
-
-  const sortedPositionOrders = useMemo(() => {
-    return sortPositionOrders(positionOrders);
-  }, [positionOrders]);
 
   function renderNetValue() {
     return (
@@ -351,27 +342,28 @@ export function PositionItem(p: Props) {
   }
 
   function renderPositionOrders(isSmall = false) {
-    if (sortedPositionOrders.length === 0) return null;
+    if (ordersWithErrors.length === 0) return null;
 
     if (isSmall) {
-      return sortedPositionOrders.map((order) => {
-        if (order.errorLevel) {
+      return ordersWithErrors.map(({ order, orderErrors }) => {
+        const { errors, level } = orderErrors;
+        if (level) {
           return (
             <div key={order.key} className="Position-list-order">
               <Tooltip
                 handle={renderOrderText(order)}
                 position="bottom-end"
                 handleClassName={cx("position-order-error", {
-                  "level-warning": order.errorLevel === "warning",
-                  "level-error": order.errorLevel === "error",
+                  "level-warning": level === "warning",
+                  "level-error": level === "error",
                 })}
                 renderContent={() =>
-                  order.errors.map((error) => (
+                  errors.map((error) => (
                     <span
                       key={error.msg}
                       className={cx("mb-xs", "position-order-error", {
-                        "level-warning": order.errorLevel === "warning",
-                        "level-error": order.errorLevel === "error",
+                        "level-warning": level === "warning",
+                        "level-error": level === "error",
                       })}
                     >
                       {error.msg}
@@ -390,8 +382,8 @@ export function PositionItem(p: Props) {
       });
     }
 
-    const ordersErrorList = sortedPositionOrders.filter((order) => order.errorLevel === "error");
-    const ordersWarningsList = sortedPositionOrders.filter((order) => order.errorLevel === "warning");
+    const ordersErrorList = ordersWithErrors.filter(({ orderErrors }) => orderErrors.level === "error");
+    const ordersWarningsList = ordersWithErrors.filter(({ orderErrors }) => orderErrors.level === "warning");
     const hasErrors = ordersErrorList.length + ordersWarningsList.length > 0;
 
     return (
@@ -408,7 +400,7 @@ export function PositionItem(p: Props) {
                   "level-warning": !ordersErrorList.length && ordersWarningsList.length > 0,
                 })}
               >
-                ({sortedPositionOrders.length})
+                ({ordersWithErrors.length})
               </span>
             </Trans>
           }
@@ -425,8 +417,8 @@ export function PositionItem(p: Props) {
               <strong>
                 <Trans>Active Orders</Trans>
               </strong>
-              {sortedPositionOrders.map((order) => {
-                const errors = order.errors;
+              {ordersWithErrors.map(({ order, orderErrors }) => {
+                const errors = orderErrors.errors;
                 return (
                   <div
                     key={order.key}
@@ -727,7 +719,7 @@ export function PositionItem(p: Props) {
               <Trans>Orders</Trans>
             </div>
             <div>
-              {!sortedPositionOrders?.length && "None"}
+              {ordersWithErrors.length ? undefined : t`None`}
               {renderPositionOrders(true)}
             </div>
           </div>

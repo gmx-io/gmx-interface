@@ -95,7 +95,6 @@ export function SyntheticsStateContextProvider({
   const ordersInfo = useOrdersInfoRequest(chainId, {
     account,
     marketsInfoData: marketsInfo.marketsInfoData,
-    positionsInfoData: positionsInfoData,
     tokensData: marketsInfo.tokensData,
   });
   const settings = useSettings();
