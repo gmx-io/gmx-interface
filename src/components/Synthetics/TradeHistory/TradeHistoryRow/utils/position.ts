@@ -4,7 +4,7 @@ import { BigNumber, constants as ethersConstants } from "ethers";
 
 import { getMarketFullName, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { OrderType, isIncreaseOrderType } from "domain/synthetics/orders";
-import { convertToUsd } from "domain/synthetics/tokens/utils";
+import { convertToUsd, parseContractPrice } from "domain/synthetics/tokens/utils";
 import { getShouldUseMaxPrice } from "domain/synthetics/trade";
 import { PositionTradeAction, TradeActionType } from "domain/synthetics/tradeHistory";
 import { PRECISION } from "lib/legacy";
@@ -257,7 +257,7 @@ export const formatPositionMessage = (
         error?.args?.price &&
           infoRow(
             t`Order Execution Price`,
-            formatUsd(error.args.price, {
+            formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
               displayDecimals: priceDecimals,
             })
           )
@@ -378,7 +378,12 @@ export const formatPositionMessage = (
         infoRow(t`Order Trigger Price`, triggerPriceInequality + formattedTriggerPrice),
         infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice),
         error?.args?.price &&
-          infoRow(t`Order Execution Price`, formatUsd(error.args.price, { displayDecimals: priceDecimals }))
+          infoRow(
+            t`Order Execution Price`,
+            formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
+              displayDecimals: priceDecimals,
+            })
+          )
       ),
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
       isActionError: true,
@@ -450,7 +455,12 @@ export const formatPositionMessage = (
           ? infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice)
           : undefined,
         error?.args?.price &&
-          infoRow(t`Order Execution Price`, formatUsd(error.args.price, { displayDecimals: priceDecimals }))
+          infoRow(
+            t`Order Execution Price`,
+            formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
+              displayDecimals: priceDecimals,
+            })
+          )
       ),
       isActionError: true,
     };
