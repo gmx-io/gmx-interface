@@ -253,7 +253,14 @@ export const formatPositionMessage = (
         t`Mark price for the order.`,
         "",
         infoRow(t`Order Trigger Price`, triggerPriceInequality + formattedTriggerPrice),
-        infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice)
+        infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice),
+        error?.args?.price &&
+          infoRow(
+            t`Order Execution Price`,
+            formatUsd(error.args.price, {
+              displayDecimals: priceDecimals,
+            })
+          )
       ),
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
       isActionError: true,
@@ -369,7 +376,9 @@ export const formatPositionMessage = (
         t`Mark price for the order.`,
         "",
         infoRow(t`Order Trigger Price`, triggerPriceInequality + formattedTriggerPrice),
-        infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice)
+        infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice),
+        error?.args?.price &&
+          infoRow(t`Order Execution Price`, formatUsd(error.args.price, { displayDecimals: priceDecimals }))
       ),
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
       isActionError: true,
@@ -439,7 +448,9 @@ export const formatPositionMessage = (
         infoRow(t`Order Trigger Price`, triggerPriceInequality + formattedTriggerPrice),
         isAcceptablePriceUseful
           ? infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice)
-          : undefined
+          : undefined,
+        error?.args?.price &&
+          infoRow(t`Order Execution Price`, formatUsd(error.args.price, { displayDecimals: priceDecimals }))
       ),
       isActionError: true,
     };

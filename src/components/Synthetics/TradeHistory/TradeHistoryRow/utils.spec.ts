@@ -242,6 +242,7 @@ describe("TradeHistoryRow helpers", () => {
             "key": "Order Acceptable Price",
             "value": ">  $26,937.90",
           },
+          undefined,
         ],
         "priceImpact": "-$9,488.98",
         "size": "+$1,348.82",
