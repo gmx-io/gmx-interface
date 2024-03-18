@@ -17,7 +17,7 @@ import {
   getSwapPathStats,
   getTriggerThresholdType,
 } from "../trade";
-import { validateMaxLeverage } from "../trade/utils/validation";
+import { getIsMaxLeverageExceeded } from "../trade/utils/validation";
 import { Order, OrderError, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo } from "./types";
 
 export function isVisibleOrder(orderType: OrderType) {
@@ -566,6 +566,5 @@ export function getIsMaxLeverageError(
 
   if (!leverage) return false;
 
-  const [error] = validateMaxLeverage(leverage, marketInfo, isLong, sizeDeltaUsd);
-  return error;
+  return getIsMaxLeverageExceeded(leverage, marketInfo, isLong, sizeDeltaUsd);
 }

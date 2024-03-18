@@ -82,7 +82,7 @@ import {
   getDecreaseError,
   getIncreaseError,
   getSwapError,
-  validateMaxLeverage,
+  getIsMaxLeverageExceeded,
 } from "domain/synthetics/trade/utils/validation";
 import { getMinResidualAmount } from "domain/tokens";
 import longImg from "img/long.svg";
@@ -495,24 +495,17 @@ export function TradeBox(p: Props) {
         });
 
         if (nextPositionValues.nextLeverage) {
-          const [error] = validateMaxLeverage(
+          const isMaxLeverageExceeded = getIsMaxLeverageExceeded(
             nextPositionValues.nextLeverage,
             marketInfo,
             isLong,
             increaseAmounts.sizeDeltaUsd
           );
 
-          if (error) {
-            return {
-              isValid: false,
-              returnValue: increaseAmounts.sizeDeltaInTokens,
-            };
-          } else {
-            return {
-              isValid: true,
-              returnValue: increaseAmounts.sizeDeltaInTokens,
-            };
-          }
+          return {
+            isValid: !isMaxLeverageExceeded,
+            returnValue: increaseAmounts.sizeDeltaInTokens,
+          };
         }
 
         return {

@@ -265,7 +265,7 @@ export function getIncreaseError(p: {
   }
 
   if (nextLeverageWithoutPnl) {
-    const [maxLeverageError] = validateMaxLeverage(nextLeverageWithoutPnl, marketInfo, isLong, sizeDeltaUsd);
+    const maxLeverageError = getIsMaxLeverageExceeded(nextLeverageWithoutPnl, marketInfo, isLong, sizeDeltaUsd);
 
     if (maxLeverageError) {
       return [t`Max. Leverage exceeded`, "maxLeverage"];
@@ -275,12 +275,12 @@ export function getIncreaseError(p: {
   return [undefined];
 }
 
-export function validateMaxLeverage(
+export function getIsMaxLeverageExceeded(
   nextLeverage: BigNumber,
   marketInfo: MarketInfo,
   isLong: boolean,
   sizeDeltaUsd: BigNumber
-): [boolean, BigNumber | undefined] {
+): boolean {
   const openInterest = getOpenInterestUsd(marketInfo, isLong);
   const minCollateralFactorMultiplier = isLong
     ? marketInfo.minCollateralFactorForOpenInterestLong
@@ -295,10 +295,10 @@ export function validateMaxLeverage(
   const maxLeverage = PRECISION.mul(BASIS_POINTS_DIVISOR).div(minCollateralFactor);
 
   if (nextLeverage.gt(maxLeverage)) {
-    return [true, maxLeverage];
+    return true;
   }
 
-  return [false, undefined];
+  return false;
 }
 
 export function getDecreaseError(p: {

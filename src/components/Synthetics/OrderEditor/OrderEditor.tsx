@@ -95,7 +95,7 @@ import { AcceptablePriceImpactInputRow } from "components/Synthetics/AcceptableP
 
 import "./OrderEditor.scss";
 import { useKey } from "react-use";
-import { validateMaxLeverage } from "domain/synthetics/trade/utils/validation";
+import { getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { numericBinarySearch } from "lib/binarySearch";
 
@@ -469,13 +469,12 @@ export function OrderEditor(p: Props) {
       }
 
       const positionOrder = p.order as PositionOrderInfo;
-      const [error] = validateMaxLeverage(
+      return getIsMaxLeverageExceeded(
         nextPositionValuesForIncrease?.nextLeverage,
         positionOrder.marketInfo,
         positionOrder.isLong,
         sizeDeltaUsd
       );
-      return error;
     }
     return false;
   }
@@ -529,24 +528,17 @@ export function OrderEditor(p: Props) {
         });
 
         if (nextPositionValues.nextLeverage) {
-          const [error] = validateMaxLeverage(
+          const isMaxLeverageExceeded = getIsMaxLeverageExceeded(
             nextPositionValues.nextLeverage,
             marketInfo,
             positionOrder.isLong,
             increaseAmounts.sizeDeltaUsd
           );
 
-          if (error) {
-            return {
-              isValid: false,
-              returnValue: increaseAmounts.sizeDeltaUsd,
-            };
-          } else {
-            return {
-              isValid: true,
-              returnValue: increaseAmounts.sizeDeltaUsd,
-            };
-          }
+          return {
+            isValid: !isMaxLeverageExceeded,
+            returnValue: increaseAmounts.sizeDeltaUsd,
+          };
         }
 
         return {
