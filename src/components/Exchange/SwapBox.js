@@ -2371,8 +2371,9 @@ export default function SwapBox(props) {
                           <br />
                           <br />
                           <ExternalLink href="https://docs.gmx.io/docs/trading/v1#opening-a-position">
-                            Read more.
+                            Read more
                           </ExternalLink>
+                          .
                         </Trans>
                       </div>
                     );
@@ -2410,8 +2411,9 @@ export default function SwapBox(props) {
                         )}
                         <br />
                         <ExternalLink href="https://docs.gmx.io/docs/trading/v1#opening-a-position">
-                          <Trans>Read more.</Trans>
+                          <Trans>Read more</Trans>
                         </ExternalLink>
+                        .
                       </div>
                     );
                   }}

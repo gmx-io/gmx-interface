@@ -165,7 +165,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
                   This exit price will change with the price of the asset.
                   <br />
                   <br />
-                  <ExternalLink href="https://docs.gmx.io/docs/trading/v2#opening-a-position">Read more</ExternalLink>
+                  <ExternalLink href="https://docs.gmx.io/docs/trading/v2#opening-a-position">Read more</ExternalLink>.
                 </Trans>
               )}
             />
