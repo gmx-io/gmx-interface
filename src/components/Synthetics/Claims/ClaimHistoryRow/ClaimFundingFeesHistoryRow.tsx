@@ -1,15 +1,17 @@
-import { plural, t } from "@lingui/macro";
+import { t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { formatTradeActionTimestamp } from "components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared";
 import Tooltip from "components/Tooltip/Tooltip";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { getExplorerUrl } from "config/chains";
 import { ClaimFundingFeeAction, ClaimType } from "domain/synthetics/claimHistory";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { useChainId } from "lib/chains";
-import { formatTokenAmount } from "lib/numbers";
+import { formatTokenAmountWithUsd } from "lib/numbers";
 import { Fragment, useMemo } from "react";
 
 import { ReactComponent as NewLink20ReactComponent } from "img/ic_new_link_20.svg";
+import { getFormattedTotalClaimAction } from "./getFormattedTotalClaimAction";
 
 export type ClaimFundingFeesHistoryRowProps = {
   claimAction: ClaimFundingFeeAction;
@@ -21,6 +23,8 @@ export const claimFundingFeeEventTitles: Record<ClaimFundingFeeAction["eventName
   [ClaimType.SettleFundingFeeExecuted]: t`Settled Funding Fees`,
 };
 
+const NBSP = String.fromCharCode(160);
+
 export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHistoryRowProps) {
   const { chainId } = useChainId();
 
@@ -28,9 +32,23 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
 
   const marketContent = useMemo(() => {
     if (claimAction.eventName === ClaimType.SettleFundingFeeCreated) {
+      const formattedMarketNames = claimAction.markets
+        .map((market, index) => {
+          const isLong = claimAction.isLongOrders[index];
+
+          let res = "";
+          if (index !== 0) {
+            res += ", ";
+          }
+          res += `${isLong ? t`Long` : t`Short`}${NBSP}${getMarketIndexName(market)}`;
+
+          return res;
+        })
+        .join("");
+
       return (
         <Tooltip
-          handle={plural(claimAction.markets.length, { one: "# Position", other: "# Positions" })}
+          handle={formattedMarketNames}
           renderContent={() => {
             return claimAction.markets.map((market, index) => {
               const indexName = getMarketIndexName(market);
@@ -93,22 +111,24 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
     const amounts = claimAction.markets.map((market, index) => {
       const token = claimAction.tokens[index];
       const amount = claimAction.amounts[index];
+      const price = claimAction.tokenPrices[index];
+      const amountUsd = amount.mul(price);
 
       return (
         <Fragment key={`${token.address}/${market.marketTokenAddress}`}>
           {index !== 0 && <br />}
-          {formatTokenAmount(amount, token.decimals, token.symbol)}
+          {formatTokenAmountWithUsd(amount, amountUsd, token.symbol, token.decimals)}
         </Fragment>
       );
     });
 
+    const formattedTotalUsd = getFormattedTotalClaimAction(claimAction);
+
     return (
-      <Tooltip
+      <TooltipWithPortal
+        portalClassName="ClaimHistoryRow-size-tooltip-portal"
         renderContent={() => <>{amounts}</>}
-        handle={plural(claimAction.markets.length, {
-          one: "# Size",
-          other: "# Sizes",
-        })}
+        handle={formattedTotalUsd}
       />
     );
   }, [claimAction]);
@@ -128,7 +148,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
         <span className="ClaimHistoryRow-time muted">{formatTradeActionTimestamp(claimAction.timestamp)}</span>
       </td>
       <td>{marketContent}</td>
-      <td className="ClaimHistoryRow-price">{sizeContent}</td>
+      <td className="ClaimHistoryRow-size">{sizeContent}</td>
     </tr>
   );
 }

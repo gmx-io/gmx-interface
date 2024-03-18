@@ -21,9 +21,12 @@ export type ClaimCollateralAction = {
   type: "collateral";
   eventName: ClaimType.ClaimFunding | ClaimType.ClaimPriceImpact;
   account: string;
+  amounts: BigNumber[];
+  tokenPrices: BigNumber[];
   claimItems: ClaimMarketItem[];
   timestamp: number;
   transactionHash: string;
+  tokens: Token[];
 };
 
 export type ClaimFundingFeeAction = {
@@ -35,6 +38,7 @@ export type ClaimFundingFeeAction = {
     | ClaimType.SettleFundingFeeExecuted;
   account: string;
   amounts: BigNumber[];
+  tokenPrices: BigNumber[];
   markets: MarketInfo[];
   tokens: Token[];
   isLongOrders: boolean[];

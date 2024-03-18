@@ -17,7 +17,7 @@
   font-size: var(--font-sm);
 }
 
-.ClaimHistoryRow-price {
+.ClaimHistoryRow-size {
   text-align: end !important;
 }
 
@@ -27,4 +27,10 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.ClaimHistoryRow-size-tooltip-portal .Tooltip-popup {
+  min-width: unset !important;
+  width: max-content;
+  max-width: unset !important;
 }

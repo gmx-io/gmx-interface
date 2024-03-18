@@ -1,17 +1,16 @@
-import { plural, t } from "@lingui/macro";
-import { BigNumber } from "ethers";
+import { t } from "@lingui/macro";
 import { Fragment, useCallback, useMemo } from "react";
 
 import { getExplorerUrl } from "config/chains";
-import { getToken } from "config/tokens";
 import { ClaimCollateralAction, ClaimType } from "domain/synthetics/claimHistory";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { useChainId } from "lib/chains";
-import { formatTokenAmount } from "lib/numbers";
+import { formatTokenAmount, formatTokenAmountWithUsd } from "lib/numbers";
+import { getFormattedTotalClaimAction } from "./getFormattedTotalClaimAction";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import Tooltip from "components/Tooltip/Tooltip";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { formatTradeActionTimestamp } from "../../TradeHistory/TradeHistoryRow/utils/shared";
 
@@ -30,39 +29,44 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
   const { chainId } = useChainId();
   const { claimAction } = p;
 
-  const marketsCount = claimAction.claimItems.length;
-
   const eventTitle = claimCollateralEventTitles[claimAction.eventName];
 
-  const [tokens, amountByToken] = useMemo(() => {
-    const amountByToken = claimAction.claimItems.reduce((acc, { marketInfo, longTokenAmount, shortTokenAmount }) => {
-      if (longTokenAmount.gt(0)) {
-        acc[marketInfo.longTokenAddress] = acc[marketInfo.longTokenAddress] || BigNumber.from(0);
-        acc[marketInfo.longTokenAddress] = acc[marketInfo.longTokenAddress].add(longTokenAmount);
-      }
-      if (shortTokenAmount.gt(0)) {
-        acc[marketInfo.shortTokenAddress] = acc[marketInfo.shortTokenAddress] || BigNumber.from(0);
-        acc[marketInfo.shortTokenAddress] = acc[marketInfo.shortTokenAddress].add(shortTokenAmount);
-      }
-
-      return acc;
-    }, {} as { [tokenAddress: string]: BigNumber });
-
-    const tokens = Object.entries(amountByToken)
-      .map(([tokenAddress, amount]) => {
-        const token = getToken(chainId, tokenAddress);
-
-        return formatTokenAmount(amount, token.decimals, token.symbol);
+  const marketNamesJoined = useMemo(() => {
+    return claimAction.claimItems
+      .map(({ marketInfo }) => {
+        return getMarketIndexName(marketInfo);
       })
-      .filter(Boolean) as string[];
-
-    return [tokens, amountByToken];
-  }, [chainId, claimAction.claimItems]);
+      .join(", ");
+  }, [claimAction.claimItems]);
 
   const timestamp = formatTradeActionTimestamp(claimAction.timestamp);
 
-  const renderPriceTooltipContent = useCallback(() => <SizeTooltip tokens={tokens} />, [tokens]);
   const renderMarketTooltipContent = useCallback(() => <MarketTooltip claimAction={claimAction} />, [claimAction]);
+
+  const sizeContent = useMemo(() => {
+    const amounts = claimAction.tokens.map((token, index) => {
+      const amount = claimAction.amounts[index];
+      const price = claimAction.tokenPrices[index];
+      const amountUsd = amount.mul(price);
+
+      return (
+        <Fragment key={token.address}>
+          {index !== 0 && <br />}
+          {formatTokenAmountWithUsd(amount, amountUsd, token.symbol, token.decimals)}
+        </Fragment>
+      );
+    });
+
+    const formattedTotalUsd = getFormattedTotalClaimAction(claimAction);
+
+    return (
+      <TooltipWithPortal
+        portalClassName="ClaimHistoryRow-size-tooltip-portal"
+        renderContent={() => <>{amounts}</>}
+        handle={formattedTotalUsd}
+      />
+    );
+  }, [claimAction]);
 
   return (
     <tr>
@@ -79,20 +83,9 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
         <span className="ClaimHistoryRow-time muted">{timestamp}</span>
       </td>
       <td>
-        <Tooltip
-          renderContent={renderMarketTooltipContent}
-          handle={plural(marketsCount, { one: "# Market", other: "# Markets", many: "# Markets" })}
-        />
+        <TooltipWithPortal renderContent={renderMarketTooltipContent} handle={marketNamesJoined} />
       </td>
-      <td className="ClaimHistoryRow-price">
-        <Tooltip
-          renderContent={renderPriceTooltipContent}
-          handle={plural(Object.keys(amountByToken).length, {
-            one: "# Size",
-            other: "# Sizes",
-          })}
-        />
-      </td>
+      <td className="ClaimHistoryRow-size">{sizeContent}</td>
     </tr>
   );
 }
@@ -135,13 +128,3 @@ function MarketTooltip({ claimAction }: { claimAction: ClaimCollateralAction }) 
     </>
   );
 }
-
-const SizeTooltip = ({ tokens }: { tokens: string[] }) => {
-  return (
-    <>
-      {tokens.map((token, index) => (
-        <div key={index}>{token}</div>
-      ))}
-    </>
-  );
-};

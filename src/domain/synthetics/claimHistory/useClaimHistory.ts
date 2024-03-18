@@ -27,6 +27,7 @@ type RawClaimAction = {
   marketAddresses: string[];
   tokenAddresses: string[];
   amounts: string[];
+  tokenPrices: string[];
   isLongOrders?: boolean[];
   transaction: {
     timestamp: number;
@@ -117,6 +118,7 @@ export function useClaimCollateralHistory(
             marketAddresses
             tokenAddresses
             amounts
+            tokenPrices
             isLongOrders
             transaction {
                 timestamp
@@ -145,6 +147,7 @@ export function useClaimCollateralHistory(
         case ClaimType.ClaimFunding:
         case ClaimType.ClaimPriceImpact: {
           const claimCollateralAction = createClaimCollateralAction(
+            chainId,
             eventName,
             rawAction,
             fixedAddresses,
@@ -175,11 +178,14 @@ export function useClaimCollateralHistory(
 }
 
 function createClaimCollateralAction(
+  chainId: number,
   eventName: ClaimCollateralAction["eventName"],
   rawAction: RawClaimAction,
   fixedAddresses: Record<string, string>,
   marketsInfoData: MarketsInfoData | undefined
 ): ClaimCollateralAction | null {
+  const tokens = rawAction.tokenAddresses.map((address) => getToken(chainId, getAddress(address))).filter(Boolean);
+
   const claimItemsMap: { [marketAddress: string]: ClaimMarketItem } = {};
   const claimAction: ClaimCollateralAction = {
     id: rawAction.id,
@@ -189,6 +195,9 @@ function createClaimCollateralAction(
     claimItems: [],
     timestamp: rawAction.transaction.timestamp,
     transactionHash: rawAction.transaction.hash,
+    tokens,
+    amounts: rawAction.amounts.map((amount) => bigNumberify(amount)!),
+    tokenPrices: rawAction.tokenPrices.map((price) => bigNumberify(price)!),
   };
 
   for (let i = 0; i < rawAction.marketAddresses.length; i++) {
@@ -242,6 +251,7 @@ function createSettleFundingFeeAction(
     type: "fundingFee",
     account: rawAction.account,
     amounts: rawAction.amounts.map((amount) => bigNumberify(amount)!),
+    tokenPrices: rawAction.tokenPrices.map((price) => bigNumberify(price)!),
     markets,
     tokens,
     isLongOrders: rawAction.isLongOrders ?? [],
