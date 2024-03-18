@@ -1,11 +1,12 @@
-import { t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { formatPercentage, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getFeeItem, getIsHighPriceImpact, getPriceImpactByAcceptablePrice } from "../fees";
 import { MarketsInfoData, getAvailableUsdLiquidityForPosition } from "../markets";
-import { PositionInfo, PositionsInfoData, parsePositionKey } from "../positions";
+import { PositionInfo, PositionsInfoData, getLeverage, parsePositionKey } from "../positions";
 import { TokensData, convertToTokenAmount, convertToUsd, getTokensRatioByAmounts, parseContractPrice } from "../tokens";
 import {
   getAcceptablePriceInfo,
@@ -14,8 +15,8 @@ import {
   getSwapPathStats,
   getTriggerThresholdType,
 } from "../trade";
-import { Order, OrderError, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo } from "./types";
 import { validateMaxLeverage } from "../trade/utils/validation";
+import { Order, OrderError, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo } from "./types";
 
 export function isVisibleOrder(orderType: OrderType) {
   return isLimitOrderType(orderType) || isTriggerDecreaseOrderType(orderType) || isLimitSwapOrderType(orderType);
@@ -288,6 +289,7 @@ export function getOrderErrors(p: {
       errors.push({
         msg: t`There may not be sufficient liquidity to execute the Swap when the Min. Receive conditions are met.`,
         level: "error",
+        key: "liquidity0",
       });
     }
 
@@ -304,6 +306,7 @@ export function getOrderErrors(p: {
       errors.push({
         msg: t`Currently, There is a high Swap Price Impact for the Order Swap path.`,
         level: "warning",
+        key: "highPriceImpact",
       });
     }
   }
@@ -339,6 +342,7 @@ export function getOrderErrors(p: {
       errors.push({
         msg: t`The order may not execute at the desired ${priceText} as its acceptable price impact is set to ${formattedOrderAcceptablePriceImpact}, which is lower than the current market price impact of ${formattedCurrentAcceptablePriceImpact}. It can be edited using the "Edit" button.`,
         level: "warning",
+        key: "acceptablePrice",
       });
     }
   }
@@ -350,6 +354,7 @@ export function getOrderErrors(p: {
       errors.push({
         msg: t`There may not be sufficient liquidity to execute your Order when the Price conditions are met.`,
         level: "error",
+        key: "liquidity1",
       });
     }
 
@@ -370,6 +375,7 @@ export function getOrderErrors(p: {
         errors.push({
           msg: t`There may not be sufficient liquidity to execute the Pay Token to Collateral Token swap when the Price conditions are met.`,
           level: "error",
+          key: "liquidity2",
         });
       }
     }
@@ -388,6 +394,7 @@ export function getOrderErrors(p: {
       errors.push({
         msg: t`This order using ${collateralSymbol} as collateral will not be valid for the existing ${longText} position using ${symbol} as collateral.`,
         level: "warning",
+        key: "collateralToken",
       });
     }
   }
@@ -403,6 +410,7 @@ export function getOrderErrors(p: {
       errors.push({
         msg: t`The order will not be executed as its trigger price is beyond the position's liquidation price.`,
         level: "error",
+        key: "triggerPrice",
       });
     }
 
@@ -423,17 +431,25 @@ export function getOrderErrors(p: {
         errors.push({
           msg: t`There may not be sufficient liquidity to execute swap to Receive Token when the Price conditions are met.`,
           level: "error",
+          key: "swapPath",
         });
       }
     }
   }
 
-  if (isDecreaseOrderType(order.orderType)) {
+  if (isIncreaseOrderType(order.orderType)) {
     const isMaxLeverageError = checkMaxLeverageError(positionOrder, position);
 
     if (isMaxLeverageError) {
       errors.push({
-        msg: t`The order will not be executed as it will increase the position's leverage beyond the maximum allowed.`,
+        msg: (
+          <Trans>
+            The Order may not execute as the Max. Allowed Leverage is exceeded. Consider decreasing the Order's Leverage
+            by editing and decreasing its Size.{" "}
+            <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
+          </Trans>
+        ),
+        key: "maxLeverage",
         level: "error",
       });
     }
@@ -504,18 +520,25 @@ export function sortSwapOrders(orders: SwapOrderInfo[], tokenSortOrder?: string[
   });
 }
 
-function checkMaxLeverageError(order: PositionOrderInfo, position: PositionInfo | undefined) {
+export function checkMaxLeverageError(order: PositionOrderInfo, position: PositionInfo | undefined) {
+  const markPrice = order.marketInfo.indexToken.prices.minPrice;
   const sizeDeltaUsd = order.sizeDeltaUsd;
+  const sizeDeltaInTokens = convertToTokenAmount(sizeDeltaUsd, order.marketInfo.indexToken.decimals, markPrice);
+
+  if (!sizeDeltaInTokens) return false;
+
   const isLong = order.isLong;
   const marketInfo = order.marketInfo;
-  const positionLeverage = position?.leverage ?? BigNumber.from(0);
-  const nextLeverage = position
-    ? isLong
-      ? positionLeverage.add(sizeDeltaUsd.div(position.collateralUsd))
-      : positionLeverage.sub(sizeDeltaUsd.div(position.collateralUsd))
-    : BigNumber.from(0);
 
-  const [error] = validateMaxLeverage(nextLeverage, marketInfo, isLong, sizeDeltaUsd);
+  const leverage = getLeverage({
+    sizeInUsd: order.sizeDeltaUsd.add(position?.sizeInUsd ?? BigNumber.from(0)),
+    collateralUsd: order.initialCollateralDeltaAmount,
+    pnl: undefined,
+    pendingBorrowingFeesUsd: BigNumber.from(0),
+    pendingFundingFeesUsd: BigNumber.from(0),
+  });
 
-  return Boolean(error);
+  if (!leverage) return false;
+
+  return validateMaxLeverage(leverage, marketInfo, isLong, sizeDeltaUsd);
 }

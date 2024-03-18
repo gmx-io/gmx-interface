@@ -360,7 +360,7 @@ export function PositionItem(p: Props) {
                 renderContent={() =>
                   errors.map((error) => (
                     <span
-                      key={error.msg}
+                      key={error.key}
                       className={cx("mb-xs", "position-order-error", {
                         "level-warning": level === "warning",
                         "level-error": level === "error",
@@ -432,7 +432,7 @@ export function PositionItem(p: Props) {
                       <FaAngleRight fontSize={14} />
                     </div>
                     {errors.map((err, i) => (
-                      <Fragment key={err.msg}>
+                      <Fragment key={err.key}>
                         <div className={cx("order-error-text", `level-${err.level}`)}>{err.msg}</div>
                         {i < errors.length - 1 && <br />}
                       </Fragment>

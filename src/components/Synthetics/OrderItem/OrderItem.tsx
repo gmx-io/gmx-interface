@@ -148,7 +148,7 @@ export function OrderItem(p: Props) {
                     className={cx({
                       "OrderItem-tooltip-row": i > 0,
                     })}
-                    key={error.msg}
+                    key={error.key}
                   >
                     <span className={error!.level === "error" ? "negative" : "warning"}>{error.msg}</span>
                   </div>
@@ -214,7 +214,7 @@ export function OrderItem(p: Props) {
               {errors.length ? (
                 <>
                   {errors.map((error) => (
-                    <div className="OrderItem-tooltip-row" key={error.msg}>
+                    <div className="OrderItem-tooltip-row" key={error.key}>
                       <span className={error!.level === "error" ? "negative" : "warning"}>{error.msg}</span>
                     </div>
                   ))}
