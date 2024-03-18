@@ -27,7 +27,7 @@
   }
 
   &-table {
-    width: max(100%, 500px);
+    width: max(100%, 600px);
 
     table-layout: fixed;
   }
@@ -53,13 +53,25 @@
   }
 
   &-action-column {
-    width: 45%;
+    width: 50%;
   }
   &-market-column {
     width: 30%;
   }
   &-size-column {
-    width: 25%;
+    width: 20%;
+  }
+
+  @media (max-width: 600px) {
+    &-action-column {
+      width: 55%;
+    }
+    &-market-column {
+      width: 25%;
+    }
+    &-size-column {
+      width: 20%;
+    }
   }
 
   &-fake-row {
