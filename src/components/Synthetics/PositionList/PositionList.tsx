@@ -113,7 +113,7 @@ export function PositionList(p: Props) {
                 onGetPendingFeesClick={onSettlePositionFeesClick}
                 onOrdersClick={onOrdersClick}
                 onSelectPositionClick={onSelectPositionClick}
-                isLarge={false}
+                isLarge
                 onShareClick={handleSharePositionClick}
                 openSettings={openSettings}
                 hideActions={hideActions}
