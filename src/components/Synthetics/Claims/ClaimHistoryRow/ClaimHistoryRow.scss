@@ -17,6 +17,10 @@
   font-size: var(--font-sm);
 }
 
+.ClaimHistoryRow-price {
+  text-align: end !important;
+}
+
 .ClaimHistoryRow-action-handle {
   display: block;
   min-width: 0px;

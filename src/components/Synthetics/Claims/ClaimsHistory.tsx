@@ -106,7 +106,7 @@ export function ClaimsHistory({ shouldShowPaginationButtons }: { shouldShowPagin
               <th>
                 <MarketFilter excludeSpotOnly value={marketAddressesFilter} onChange={setMarketAddressesFilter} />
               </th>
-              <th>
+              <th className="ClaimsHistory-price-header">
                 <Trans>Size</Trans>
               </th>
             </tr>

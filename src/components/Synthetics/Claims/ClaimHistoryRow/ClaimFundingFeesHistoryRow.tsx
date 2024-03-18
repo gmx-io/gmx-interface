@@ -125,7 +125,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
         <span className="ClaimHistoryRow-time muted">{formatTradeActionTimestamp(claimAction.timestamp)}</span>
       </td>
       <td>{marketContent}</td>
-      <td>{sizeContent}</td>
+      <td className="ClaimHistoryRow-price">{sizeContent}</td>
     </tr>
   );
 }

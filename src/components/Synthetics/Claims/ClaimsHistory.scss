@@ -25,6 +25,27 @@
   &-table {
     table-layout: fixed;
   }
+
+  &-header {
+    tr {
+      cursor: default !important;
+      border-bottom: none !important;
+
+      &:hover {
+        background: unset !important;
+        box-shadow: none !important;
+      }
+    }
+
+    th {
+      text-transform: uppercase;
+    }
+  }
+
+  &-price-header {
+    text-align: end !important;
+  }
+
   &-action-column {
     width: 45%;
   }

@@ -9,7 +9,6 @@ import { FlatItems, useFilteredFlatItems } from "./flat";
 import { Groups, useFilteredGroups } from "./groups";
 import { FilteredGroup, Group, Item } from "./types";
 
-import Button from "components/Button/Button";
 import SearchInput from "components/SearchInput/SearchInput";
 import { TableFilterBase } from "components/Synthetics/TableFilterBase/TableFilterBase";
 
