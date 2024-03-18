@@ -89,8 +89,8 @@ msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which
 msgstr "<0>주문을 체결하기 위한 유동성이 부족합니다</0><1>시장 평균가가 지정된 가격에 도달하지 않았습니다</1><2>지정된 가격에 도달했지만 실행하기에 충분한 시간이 지나지 않았습니다</2>주문을 체결할 수 있는 키퍼가 없습니다.<3>"
 
 #: src/components/Exchange/FeesTooltip.tsx
-msgid "<0>More Info</0> about fees."
-msgstr "수수료에 대한 <0>더 많은 정보</0>."
+msgid "<0>Read more</0> about fees."
+msgstr "수수료에 대해 <0>더 읽기</0>"
 
 #: src/pages/PageNotFound/PageNotFound.js
 msgid "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
@@ -640,8 +640,8 @@ msgid "Boost Percentage"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
-msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
-msgstr ""
+msgid "Boost your rewards with Multiplier Points. <0>Read more</0>."
+msgstr "보너스 포인트로 보상을 높이세요. <0>더 읽기</0>."
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
@@ -2391,12 +2391,12 @@ msgid "I do not want to transfer the Affiliate esGMX tokens"
 msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "If you have an existing position, the position will be closed at a reference price of {0}, not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
-msgstr ""
+msgid "If you have an existing position, the position will be closed at a reference price of {0}, not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>Read more</4>."
+msgstr "기존 포지션을 보유하고 있다면, 포지션은 {0} USD의 참조 가격에서 종료됩니다. 가격 영향을 고려하지 않습니다.<0/><1/>이 종료 가격은 자산의 가격과 함께 변동됩니다.<2/><3/><4>더 읽기</4>."
 
 #: src/components/Exchange/SwapBox.js
-msgid "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
-msgstr "포지션이 이미 존재한다면, 해당 포지션은 {0} USD에 종료될 것입니다.<0/><1/>이 종료 가격은 자산의 가격 변화에 따라 변경됩니다.<2/><3/><4>더 자세한 정보</4>"
+msgid "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>Read more</4>."
+msgstr "포지션이 이미 존재한다면, 해당 포지션은 {0} USD에 종료될 것입니다.<0/><1/>이 종료 가격은 자산의 가격 변화에 따라 변경됩니다.<2/><3/><4>더 읽기</4>."
 
 #: src/components/Exchange/PositionShare.tsx
 msgid "Image generation error, please refresh and try again."
@@ -3315,12 +3315,6 @@ msgstr "최소 수취량"
 msgid "Minimum received"
 msgstr "최소량 수치 완료"
 
-#: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/MarketStats/MarketStats.tsx
-#: src/pages/Dashboard/DashboardV2.js
-msgid "More Info"
-msgstr "더 자세한 정보"
-
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "More Options"
 msgstr "더 많은 설정"
@@ -4084,10 +4078,13 @@ msgstr ""
 msgid "Rank"
 msgstr ""
 
+#: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
+#: src/pages/Dashboard/DashboardV2.js
 msgid "Read more"
 msgstr "더 알아보기"
 
@@ -4195,8 +4192,8 @@ msgid "Reduce Liquidation Risks"
 msgstr "청산 위험 감소하기"
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-msgid "Reduce wallet signing popups with One-Click Trading. This option is also available through the Wallet menu in the top right. <0>More Info</0>."
-msgstr ""
+msgid "Reduce wallet signing popups with One-Click Trading. This option is also available through the Wallet menu in the top right. <0>Read more</0>."
+msgstr "원클릭 트레이딩으로 지갑 서명 팝업을 줄이세요. 이 옵션은 오른쪽 상단의 지갑 메뉴를 통해서도 사용할 수 있습니다. <0>더 알아보기</0>."
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Code"
@@ -5199,12 +5196,12 @@ msgid "The pending borrow fee will be charged on this transaction."
 msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of -{1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
-msgstr ""
+msgid "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of -{1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>Read more</4>."
+msgstr "포지션은 참조 가격 {0}에서 열릴 것이며, 가격 영향을 고려하지 않고 최대 슬리피지는 -{1}%입니다.<0/><1/>슬리피지는 설정에서 구성할 수 있으며, 지갑 연결 후 페이지 우측 상단의 주소를 클릭하여 찾을 수 있습니다.<2/><3/><4>더 읽기</4>."
 
 #: src/components/Exchange/SwapBox.js
-msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
-msgstr "해당 포지션은 최대 슬리피지 {1}%의 {0} USD에서 열리게 됩니다.<0/><1/>슬리피지 설정은 지갑 연동 후 최상단 우측, 귀하의 지갑주소 우측의 세팅을 통해서 설정할 수 있습니다.<2/><3/><4>더 자세한 정보<4/>"
+msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>Read more</4>."
+msgstr "해당 포지션은 최대 슬리피지 {1}%의 {0} USD에서 열리게 됩니다.<0/><1/>슬리피지 설정은 지갑 연동 후 최상단 우측, 귀하의 지갑주소 우측의 세팅을 통해서 설정할 수 있습니다.<2/><3/><4>더 읽기</4>."
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 msgid "The previously authorized maximum number of Actions has been reached for One-Click Trading. Click here to re-authorize."
@@ -5544,8 +5541,8 @@ msgid "Transaction failed"
 msgstr "트랜잭션 실패"
 
 #: src/lib/contracts/transactionErrors.tsx
-msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings. <2>More info</2>"
-msgstr "RPC 에러로 인해 트랜잭션이 실패했스빈아.<0/><1/>지갑 설정에서 RPC url을 변경하여 시도해주세요. <2>더 자세한 정보</2>"
+msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings. <2>Read more</2>."
+msgstr "RPC 에러로 인해 트랜잭션이 실패했스빈아.<0/><1/>지갑 설정에서 RPC url을 변경하여 시도해주세요. <2>더 읽기</2>."
 
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx

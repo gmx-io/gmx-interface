@@ -96,7 +96,7 @@ export const SubaccountNavigationButton = memo(
         <div onClick={(e) => e.stopPropagation()}>
           <Trans>
             Reduce wallet signing popups with One-Click Trading. This option is also available through the Wallet menu
-            in the top right. <ExternalLink href={SUBACCOUNT_DOCS_URL}>More Info</ExternalLink>.
+            in the top right. <ExternalLink href={SUBACCOUNT_DOCS_URL}>Read more</ExternalLink>.
           </Trans>
         </div>
       );

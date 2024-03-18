@@ -89,8 +89,8 @@ msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which
 msgstr "执行订单的流动性不足</0><1>作为交易所价格总和的标记价格未达到指定价格</1><2>已达到指定价格但时间不足以执行 </2><3>没有守门员领取执行令</3>"
 
 #: src/components/Exchange/FeesTooltip.tsx
-msgid "<0>More Info</0> about fees."
-msgstr "<0>更多资讯</0> 关于手续费用"
+msgid "<0>Read more</0> about fees."
+msgstr "<0>阅读更多</0>关于费用"
 
 #: src/pages/PageNotFound/PageNotFound.js
 msgid "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
@@ -640,8 +640,8 @@ msgid "Boost Percentage"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
-msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
-msgstr ""
+msgid "Boost your rewards with Multiplier Points. <0>Read more</0>."
+msgstr "使用倍增点数提高您的奖励。<0>阅读更多</0>"
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
@@ -2391,12 +2391,12 @@ msgid "I do not want to transfer the Affiliate esGMX tokens"
 msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "If you have an existing position, the position will be closed at a reference price of {0}, not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
-msgstr ""
+msgid "If you have an existing position, the position will be closed at a reference price of {0}, not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>Read more</4>."
+msgstr "如果你有一个现有的头寸，它将在{0}美元被关闭，不考虑价格影响。<0/><1/>这个退出价格将随着资产的价格所变化。<2/><3/><4>阅读更多</4>"
 
 #: src/components/Exchange/SwapBox.js
-msgid "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
-msgstr "如果你有一个现有的头寸，它将在{0}美元被关闭。<0/><1/>这个退出价格将随着资产的价格所变化。<2/><3/><4>更多信息</4>"
+msgid "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>Read more</4>."
+msgstr "如果你有一个现有的头寸，它将在{0}美元被关闭。<0/><1/>这个退出价格将随着资产的价格所变化。<2/><3/><4>阅读更多</4>"
 
 #: src/components/Exchange/PositionShare.tsx
 msgid "Image generation error, please refresh and try again."
@@ -3315,12 +3315,6 @@ msgstr "最低接收"
 msgid "Minimum received"
 msgstr "最低已接收"
 
-#: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/MarketStats/MarketStats.tsx
-#: src/pages/Dashboard/DashboardV2.js
-msgid "More Info"
-msgstr "更多资讯"
-
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "More Options"
 msgstr "更多选项"
@@ -4084,10 +4078,13 @@ msgstr ""
 msgid "Rank"
 msgstr ""
 
+#: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
+#: src/pages/Dashboard/DashboardV2.js
 msgid "Read more"
 msgstr "了解更多"
 
@@ -4195,8 +4192,8 @@ msgid "Reduce Liquidation Risks"
 msgstr "降低清算风险"
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-msgid "Reduce wallet signing popups with One-Click Trading. This option is also available through the Wallet menu in the top right. <0>More Info</0>."
-msgstr ""
+msgid "Reduce wallet signing popups with One-Click Trading. This option is also available through the Wallet menu in the top right. <0>Read more</0>."
+msgstr "通过一键交易减少钱包签名弹出窗口。此选项也可通过右上角的钱包菜单获得。"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Code"
@@ -5199,12 +5196,12 @@ msgid "The pending borrow fee will be charged on this transaction."
 msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of -{1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
-msgstr ""
+msgid "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of -{1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>Read more</4>."
+msgstr "该仓位将在参考价格 {0} 开仓，不考虑价格影响，最大滑点为-{1}%.<0/><1/>滑点金额可在设置下配置, 在连接你的钱包后，点击页面右上方的地址即可找到<2/><3/><4>阅读更多</4>"
 
 #: src/components/Exchange/SwapBox.js
-msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
-msgstr "该仓位将在 {0} USD 开仓,最大滑点为{1}%.<0/><1/>滑点金额可在设置下配置, 在连接你的钱包后，点击页面右上方的地址即可找到<2/><3/><4>更多资讯</4>"
+msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>Read more</4>."
+msgstr "该仓位将在 {0} USD 开仓,最大滑点为{1}%.<0/><1/>滑点金额可在设置下配置, 在连接你的钱包后，点击页面右上方的地址即可找到<2/><3/><4>阅读更多</4>"
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 msgid "The previously authorized maximum number of Actions has been reached for One-Click Trading. Click here to re-authorize."
@@ -5544,8 +5541,8 @@ msgid "Transaction failed"
 msgstr "交易失败"
 
 #: src/lib/contracts/transactionErrors.tsx
-msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings. <2>More info</2>"
-msgstr "由于RPC错误，交易失败<0/><1/>请尝试在你的钱包设置中改变RPC网址 <2>更多信息</2>"
+msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings. <2>Read more</2>."
+msgstr "由于RPC错误，交易失败<0/><1/>请尝试在你的钱包设置中改变RPC网址 <2>阅读更多</2>"
 
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx

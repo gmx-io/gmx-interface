@@ -89,8 +89,8 @@ msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which
 msgstr "<0>Недостаточная ликвидность для выполнения заказа</0><1>Цена маркировки, которая представляет собой средневзвешенную биржевую стоимость, не достигла указанной цены</1><2>Указанная цена была достигнута, но недостаточно долго для ее выполнения</2><3>Ни один держатель не взял заказ для исполнения</3>"
 
 #: src/components/Exchange/FeesTooltip.tsx
-msgid "<0>More Info</0> about fees."
-msgstr "<0>Больше информации</0> о комиссии."
+msgid "<0>Read more</0> about fees."
+msgstr "<0>Подробнее</0> о комиссиях."
 
 #: src/pages/PageNotFound/PageNotFound.js
 msgid "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
@@ -640,8 +640,8 @@ msgid "Boost Percentage"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
-msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
-msgstr ""
+msgid "Boost your rewards with Multiplier Points. <0>Read more</0>."
+msgstr "Увеличьте свои награды с помощью баллов множителя. <0>Подробнее</0>."
 
 #: src/components/Exchange/FeesTooltip.tsx
 #: src/components/Exchange/NetValueTooltip.tsx
@@ -2391,12 +2391,12 @@ msgid "I do not want to transfer the Affiliate esGMX tokens"
 msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "If you have an existing position, the position will be closed at a reference price of {0}, not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
-msgstr ""
+msgid "If you have an existing position, the position will be closed at a reference price of {0}, not accounting for price impact.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>Read more</4>."
+msgstr "Если у вас есть открытая позиция, позиция будет закрыта по цене {0}, без учета влияния цены.<0/><1/>Эта цена выхода будет меняться вместе с ценой актива.<2/><3/><4>Подробнее</4>."
 
 #: src/components/Exchange/SwapBox.js
-msgid "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
-msgstr "Если у вас есть существующая позиция, позиция будет закрыта по цене {0} USD.<0/><1/>Цена выхода будет меняться в зависимости от цены актива.<2/><3/><4>Более подробная Информация</4>"
+msgid "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>Read more</4>."
+msgstr "Если у вас есть существующая позиция, позиция будет закрыта по цене {0} USD.<0/><1/>Цена выхода будет меняться в зависимости от цены актива.<2/><3/><4>Подробнее</4>."
 
 #: src/components/Exchange/PositionShare.tsx
 msgid "Image generation error, please refresh and try again."
@@ -3315,12 +3315,6 @@ msgstr "Мин. Приём"
 msgid "Minimum received"
 msgstr "Минимум получен"
 
-#: src/components/Exchange/SwapBox.js
-#: src/components/Synthetics/MarketStats/MarketStats.tsx
-#: src/pages/Dashboard/DashboardV2.js
-msgid "More Info"
-msgstr "Больше Информации"
-
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "More Options"
 msgstr "Больше вариантов"
@@ -4084,12 +4078,15 @@ msgstr ""
 msgid "Rank"
 msgstr ""
 
+#: src/components/Exchange/SwapBox.js
+#: src/components/Synthetics/MarketStats/MarketStats.tsx
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
 #: src/components/TokenCard/TokenCard.tsx
+#: src/pages/Dashboard/DashboardV2.js
 msgid "Read more"
-msgstr "Читать больше"
+msgstr "Подробнее"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Read the rules"
@@ -4195,8 +4192,8 @@ msgid "Reduce Liquidation Risks"
 msgstr "Снизить Риски Ликвидации"
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
-msgid "Reduce wallet signing popups with One-Click Trading. This option is also available through the Wallet menu in the top right. <0>More Info</0>."
-msgstr ""
+msgid "Reduce wallet signing popups with One-Click Trading. This option is also available through the Wallet menu in the top right. <0>Read more</0>."
+msgstr "Снизьте количество всплывающих окон подписи кошелька с помощью One-Click Trading. Этот вариант также доступен через меню кошелька в верхнем правом углу. <0>Подробнее</0>."
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Code"
@@ -5199,12 +5196,12 @@ msgid "The pending borrow fee will be charged on this transaction."
 msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
-msgid "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of -{1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
-msgstr ""
+msgid "The position will be opened at a reference price of {0}, not accounting for price impact, with a max slippage of -{1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>Read more</4>."
+msgstr "Позиция будет открыта по цене {0}, не учитывая влияние цены, с максимальным скольжением -{1}%.<0/><1/>Сумма скольжения может быть настроена в Настройках, найденных по нажатию на ваш адрес в верхнем правом углу страницы после подключения вашего кошелька.<2/><3/><4>Подробнее</4>."
 
 #: src/components/Exchange/SwapBox.js
-msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
-msgstr "Позиция будет открыта на {0} USD с максимальным скольжением в {1}%.<0/><1/>Сумма скольжения может быть настроена в разделе Настройки, который можно найти, нажав на свой адрес в правом верхнем углу страницы после подключения кошелька.<2/><3/><4>Более подробная информация</4>"
+msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>Read more</4>."
+msgstr "Позиция будет открыта на {0} USD с максимальным скольжением в {1}%.<0/><1/>Сумма скольжения может быть настроена в разделе Настройки, который можно найти, нажав на свой адрес в правом верхнем углу страницы после подключения кошелька.<2/><3/><4>Подробнее</4>."
 
 #: src/components/SubaccountNavigationButton/SubaccountNavigationButton.tsx
 msgid "The previously authorized maximum number of Actions has been reached for One-Click Trading. Click here to re-authorize."
@@ -5544,8 +5541,8 @@ msgid "Transaction failed"
 msgstr "Транзакция не прошла"
 
 #: src/lib/contracts/transactionErrors.tsx
-msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings. <2>More info</2>"
-msgstr "Транзакция не прошла из-за ошибки RPC.<0/><1/>Попробуйте изменить RPC url в настройках вашего кошелька. <2> Дополнительная информация</2>"
+msgid "Transaction failed due to RPC error.<0/><1/>Please try changing the RPC url in your wallet settings. <2>Read more</2>."
+msgstr "Транзакция не прошла из-за ошибки RPC.<0/><1/>Попробуйте изменить RPC url в настройках вашего кошелька. <2>Подробнее</2>."
 
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx

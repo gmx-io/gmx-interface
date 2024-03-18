@@ -387,8 +387,9 @@ export default function DashboardV2(props) {
               <br />
               <div>
                 <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v1">
-                  <Trans>More Info</Trans>
+                  <Trans>Read more</Trans>
                 </ExternalLink>
+                .
               </div>
             </>
           );
