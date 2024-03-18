@@ -1046,10 +1046,10 @@ msgstr ""
 msgid "Claims History"
 msgstr ""
 
-#. Button to clear the filter
+#. Button to clear the filter selection
 #: src/components/Synthetics/TableOptionsFilter/TableOptionsFilter.tsx
-msgid "Clear"
-msgstr "Limpiar"
+msgid "Clear selection"
+msgstr "Limpiar selección"
 
 #: src/components/Exchange/PositionsList.js
 msgid "Click on the Position to select its market, then use the trade box to increase your Position Size if needed."

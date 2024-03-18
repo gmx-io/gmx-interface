@@ -149,20 +149,19 @@ export function TableOptionsFilter<T>({
 
   return (
     <TableFilterBase label={label} isActive={isActive} popupPlacement={popupPlacement}>
-      <div className="flex">
-        <SearchInput
-          className="TableOptionsFilter-search"
-          placeholder={placeholder}
-          value={search}
-          setValue={handleSetValue}
-          onKeyDown={handleSearchEnterKey}
-        />
-        <Button variant="secondary" className="my-sm mr-sm" onClick={handleClear}>
-          <Trans comment="Button to clear the filter">Clear</Trans>
-        </Button>
-      </div>
+      <SearchInput
+        className="TableOptionsFilter-search"
+        placeholder={placeholder}
+        value={search}
+        setValue={handleSetValue}
+        onKeyDown={handleSearchEnterKey}
+      />
 
       <div className="TableOptionsFilter-options">
+        <div className="TableOptionsFilter-clear" onClick={handleClear}>
+          <Trans comment="Button to clear the filter selection">Clear selection</Trans>
+        </div>
+
         {isGrouped ? (
           <Groups
             filteredGroups={filteredGroups!}

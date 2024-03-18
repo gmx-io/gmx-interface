@@ -1046,9 +1046,9 @@ msgstr ""
 msgid "Claims History"
 msgstr ""
 
-#. Button to clear the filter
+#. Button to clear the filter selection
 #: src/components/Synthetics/TableOptionsFilter/TableOptionsFilter.tsx
-msgid "Clear"
+msgid "Clear selection"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js

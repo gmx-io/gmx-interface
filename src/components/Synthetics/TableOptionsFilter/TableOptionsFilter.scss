@@ -35,4 +35,17 @@
   &-search {
     margin: 1rem;
   }
+
+  &-clear {
+    font-size: var(--font-sm);
+    padding: 0.5rem 1rem;
+
+    color: var(--text-gray);
+
+    cursor: pointer;
+
+    &:hover {
+      color: white;
+    }
+  }
 }
