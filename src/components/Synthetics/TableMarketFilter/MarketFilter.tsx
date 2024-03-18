@@ -19,22 +19,31 @@ type Props = {
    */
   value: string[];
   onChange: (value: string[]) => void;
+  excludeSpotOnly?: boolean;
 };
 
-export function MarketFilter({ value, onChange }: Props) {
+export function MarketFilter({ value, onChange, excludeSpotOnly }: Props) {
   const marketsInfoData = useMarketsInfoData();
   const { chainId } = useChainId();
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
   const { marketsInfo: markets } = useSortedPoolsWithIndexToken(marketsInfoData, depositMarketTokensData);
 
   const marketsOptions = useMemo<Item<string>[]>(() => {
-    return markets.map((market) => {
-      return {
-        text: market.name,
-        data: market.marketTokenAddress,
-      };
-    });
-  }, [markets]);
+    return markets
+      .filter((market) => {
+        if (excludeSpotOnly !== undefined) {
+          return !market.isSpotOnly;
+        }
+
+        return true;
+      })
+      .map((market) => {
+        return {
+          text: market.name,
+          data: market.marketTokenAddress,
+        };
+      });
+  }, [excludeSpotOnly, markets]);
 
   const ItemComponent = useCallback(
     (props: { item: string }) => {

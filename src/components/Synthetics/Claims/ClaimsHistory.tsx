@@ -104,7 +104,7 @@ export function ClaimsHistory({ shouldShowPaginationButtons }: { shouldShowPagin
                 <ActionFilter value={eventNameFilter} onChange={setEventNameFilter} />
               </th>
               <th>
-                <MarketFilter value={marketAddressesFilter} onChange={setMarketAddressesFilter} />
+                <MarketFilter excludeSpotOnly value={marketAddressesFilter} onChange={setMarketAddressesFilter} />
               </th>
               <th>
                 <Trans>Size</Trans>
