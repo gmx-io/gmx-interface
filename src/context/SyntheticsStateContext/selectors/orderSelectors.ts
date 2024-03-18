@@ -7,7 +7,8 @@ import {
 } from "domain/synthetics/orders";
 import { createEnhancedSelector, createSelectorFactory } from "../utils";
 import { SyntheticsTradeState } from "../SyntheticsStateContextProvider";
-import { selectMarketsInfoData, selectPositionsInfoData } from "./globalSelectors";
+import { selectMarketsInfoData, selectPositionsInfoData, selectUiFeeFactor } from "./globalSelectors";
+import { makeSelectSwapRoutes } from "./tradeSelectors";
 
 const selectOrdersInfoData = (s: SyntheticsTradeState) => s.globals.ordersInfo.ordersInfoData;
 
@@ -20,10 +21,17 @@ export const makeSelectOrderErrorByOrderKey = createSelectorFactory((orderId: st
     if (!orderInfo) return { errors: [], level: undefined };
     if (!marketsInfoData) return { errors: [], level: undefined };
 
+    const uiFeeFactor = q(selectUiFeeFactor);
+    const { findSwapPath } = q(
+      makeSelectSwapRoutes(orderInfo.initialCollateralToken.address, orderInfo.targetCollateralToken.address)
+    );
+
     const { errors, level } = getOrderErrors({
       order: orderInfo,
       positionsInfoData,
       marketsInfoData,
+      findSwapPath,
+      uiFeeFactor,
     });
 
     return { errors, level };

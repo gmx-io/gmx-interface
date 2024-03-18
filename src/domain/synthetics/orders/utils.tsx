@@ -2,15 +2,17 @@ import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
-import { expandDecimals, formatPercentage, formatTokenAmount, formatUsd } from "lib/numbers";
+import { formatPercentage, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getFeeItem, getIsHighPriceImpact, getPriceImpactByAcceptablePrice } from "../fees";
 import { MarketsInfoData, getAvailableUsdLiquidityForPosition } from "../markets";
 import { PositionInfo, PositionsInfoData, getLeverage, parsePositionKey } from "../positions";
 import { TokensData, convertToTokenAmount, convertToUsd, getTokensRatioByAmounts, parseContractPrice } from "../tokens";
 import {
+  FindSwapPath,
   getAcceptablePriceInfo,
   getMaxSwapPathLiquidity,
+  getSwapAmountsByFromValue,
   getSwapPathOutputAddresses,
   getSwapPathStats,
   getTriggerThresholdType,
@@ -267,6 +269,8 @@ export function getOrderErrors(p: {
   order: OrderInfo;
   marketsInfoData: MarketsInfoData;
   positionsInfoData: PositionsInfoData | undefined;
+  findSwapPath: FindSwapPath;
+  uiFeeFactor: BigNumber;
 }): { errors: OrderError[]; level: "error" | "warning" | undefined } {
   const { order, positionsInfoData, marketsInfoData } = p;
 
@@ -438,7 +442,7 @@ export function getOrderErrors(p: {
   }
 
   if (isIncreaseOrderType(order.orderType)) {
-    const isMaxLeverageError = checkMaxLeverageError(positionOrder, position);
+    const isMaxLeverageError = getIsMaxLeverageError(positionOrder, position, p.findSwapPath, p.uiFeeFactor);
 
     if (isMaxLeverageError) {
       errors.push({
@@ -520,7 +524,20 @@ export function sortSwapOrders(orders: SwapOrderInfo[], tokenSortOrder?: string[
   });
 }
 
-export function checkMaxLeverageError(order: PositionOrderInfo, position: PositionInfo | undefined) {
+export function getIsMaxLeverageError(
+  order: PositionOrderInfo,
+  position: PositionInfo | undefined,
+  findSwapPath: FindSwapPath,
+  uiFeeFactor: BigNumber
+) {
+  const swapAmounts = getSwapAmountsByFromValue({
+    tokenIn: order.initialCollateralToken,
+    tokenOut: order.targetCollateralToken,
+    amountIn: order.initialCollateralDeltaAmount,
+    isLimit: false,
+    findSwapPath,
+    uiFeeFactor,
+  });
   const markPrice = order.marketInfo.indexToken.prices.minPrice;
   const sizeDeltaUsd = order.sizeDeltaUsd;
   const sizeDeltaInTokens = convertToTokenAmount(sizeDeltaUsd, order.marketInfo.indexToken.decimals, markPrice);
@@ -530,8 +547,7 @@ export function checkMaxLeverageError(order: PositionOrderInfo, position: Positi
   const isLong = order.isLong;
   const marketInfo = order.marketInfo;
 
-  // FIXME initialCollateralDeltaAmount != collateralDeltaAmount
-  const collateralDeltaAmount = order.initialCollateralDeltaAmount;
+  const collateralDeltaAmount = swapAmounts.amountOut;
   const collateralDeltaUsd = convertToUsd(
     collateralDeltaAmount,
     order.initialCollateralToken.decimals,
