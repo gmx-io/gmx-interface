@@ -10,7 +10,7 @@ export default function ClaimsHistorySkeletonStructure() {
       <td>
         <Skeleton width={110} />
       </td>
-      <td>
+      <td className="ClaimHistoryRow-price">
         <Skeleton width={110} />
       </td>
     </tr>

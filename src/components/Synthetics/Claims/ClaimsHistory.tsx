@@ -92,33 +92,35 @@ export function ClaimsHistory({ shouldShowPaginationButtons }: { shouldShowPagin
             </Button>
           </div>
         </div>
-        <table className="Exchange-list ClaimsHistory-table">
-          <colgroup>
-            <col className="ClaimsHistory-action-column" />
-            <col className="ClaimsHistory-market-column" />
-            <col className="ClaimsHistory-size-column" />
-          </colgroup>
-          <thead className="ClaimsHistory-header">
-            <tr>
-              <th>
-                <ActionFilter value={eventNameFilter} onChange={setEventNameFilter} />
-              </th>
-              <th>
-                <MarketFilter excludeSpotOnly value={marketAddressesFilter} onChange={setMarketAddressesFilter} />
-              </th>
-              <th className="ClaimsHistory-price-header">
-                <Trans>Size</Trans>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {isLoading ? (
-              <ClaimsHistorySkeleton />
-            ) : (
-              currentPageData.map((claimAction) => <ClaimHistoryRow key={claimAction.id} claimAction={claimAction} />)
-            )}
-          </tbody>
-        </table>
+        <div className="ClaimsHistory-horizontal-scroll-container">
+          <table className="Exchange-list ClaimsHistory-table">
+            <colgroup>
+              <col className="ClaimsHistory-action-column" />
+              <col className="ClaimsHistory-market-column" />
+              <col className="ClaimsHistory-size-column" />
+            </colgroup>
+            <thead className="ClaimsHistory-header">
+              <tr>
+                <th>
+                  <ActionFilter value={eventNameFilter} onChange={setEventNameFilter} />
+                </th>
+                <th>
+                  <MarketFilter excludeSpotOnly value={marketAddressesFilter} onChange={setMarketAddressesFilter} />
+                </th>
+                <th className="ClaimsHistory-price-header">
+                  <Trans>Size</Trans>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {isLoading ? (
+                <ClaimsHistorySkeleton />
+              ) : (
+                currentPageData.map((claimAction) => <ClaimHistoryRow key={claimAction.id} claimAction={claimAction} />)
+              )}
+            </tbody>
+          </table>
+        </div>
 
         {isEmpty && !hasFilters && (
           <div className="ClaimsHistory-fake-row">

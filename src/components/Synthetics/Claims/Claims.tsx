@@ -109,7 +109,7 @@ export function Claims({
 
       <div>
         {account && isLoading && (
-          <div className="Claims-history-row App-box">
+          <div className="Claims-loading App-box">
             <Trans>Loading...</Trans>
           </div>
         )}
