@@ -105,7 +105,10 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
     return (
       <Tooltip
         renderContent={() => <>{amounts}</>}
-        handle={plural(claimAction.markets.length, { one: "# Size", other: "# Sizes" })}
+        handle={plural(claimAction.markets.length, {
+          one: "# Size",
+          other: "# Sizes",
+        })}
       />
     );
   }, [claimAction]);

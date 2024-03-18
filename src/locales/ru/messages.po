@@ -4489,7 +4489,7 @@ msgstr "Запрос на рыночный обмен"
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 msgid "Request Settlement of Funding Fees"
-msgstr ""
+msgstr "Запрос на урегулирование комиссии за финансирование"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Withdraw"
@@ -6751,15 +6751,12 @@ msgstr "смотреть"
 
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 msgid "{0, plural, one {# Position} other {# Positions}}"
-msgstr ""
+msgstr "{0, plural, one {# Позиция} few {# Позиции} other {# Позиций}}"
 
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
-msgid "{0, plural, one {# Size} other {# Sizes} many {# Sizes}}"
-msgstr ""
-
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 msgid "{0, plural, one {# Size} other {# Sizes}}"
-msgstr ""
+msgstr "{0, plural, one {# Размер} few {# Размера} other {# Размеров}}"
 
 #: src/pages/Exchange/Exchange.js
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx

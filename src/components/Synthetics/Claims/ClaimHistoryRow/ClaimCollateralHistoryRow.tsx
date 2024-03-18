@@ -84,7 +84,10 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
       <td className="ClaimHistoryRow-price">
         <Tooltip
           renderContent={() => <SizeTooltip tokens={tokens} />}
-          handle={plural(Object.keys(amountByToken).length, { one: "# Size", other: "# Sizes", many: "# Sizes" })}
+          handle={plural(Object.keys(amountByToken).length, {
+            one: "# Size",
+            other: "# Sizes",
+          })}
         />
       </td>
     </tr>

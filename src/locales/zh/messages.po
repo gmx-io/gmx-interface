@@ -4489,7 +4489,7 @@ msgstr "要求市场交换"
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/filters/ActionFilter.tsx
 msgid "Request Settlement of Funding Fees"
-msgstr ""
+msgstr "要求结算资金费用"
 
 #: src/components/Synthetics/TradeHistory/keys.ts
 msgid "Request Withdraw"
@@ -6749,17 +6749,13 @@ msgstr ""
 msgid "view"
 msgstr "查看"
 
-#: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 msgid "{0, plural, one {# Position} other {# Positions}}"
-msgstr ""
+msgstr "{0}个位置"
 
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
-msgid "{0, plural, one {# Size} other {# Sizes} many {# Sizes}}"
-msgstr ""
-
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 msgid "{0, plural, one {# Size} other {# Sizes}}"
-msgstr ""
+msgstr "{0}个大小"
 
 #: src/pages/Exchange/Exchange.js
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx

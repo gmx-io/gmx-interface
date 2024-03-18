@@ -6757,9 +6757,6 @@ msgid "{0, plural, one {# Position} other {# Positions}}"
 msgstr "{0, plural, one {# Position} other {# Positions}}"
 
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
-msgid "{0, plural, one {# Size} other {# Sizes} many {# Sizes}}"
-msgstr "{0, plural, one {# Size} other {# Sizes} many {# Sizes}}"
-
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 msgid "{0, plural, one {# Size} other {# Sizes}}"
 msgstr "{0, plural, one {# Size} other {# Sizes}}"
