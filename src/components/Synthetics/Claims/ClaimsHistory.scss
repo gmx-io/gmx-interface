@@ -30,6 +30,11 @@
     width: max(100%, 600px);
 
     table-layout: fixed;
+
+    // TODO midas-myth 18.03.2024 decouple these styles and make a separate base table component
+    tbody tr {
+      cursor: default !important;
+    }
   }
 
   &-header {
