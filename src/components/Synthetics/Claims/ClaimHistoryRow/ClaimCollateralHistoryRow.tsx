@@ -1,6 +1,6 @@
 import { plural, t } from "@lingui/macro";
 import { BigNumber } from "ethers";
-import { Fragment, useMemo } from "react";
+import { Fragment, useCallback, useMemo } from "react";
 
 import { getExplorerUrl } from "config/chains";
 import { getToken } from "config/tokens";
@@ -61,6 +61,9 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
 
   const timestamp = formatTradeActionTimestamp(claimAction.timestamp);
 
+  const renderPriceTooltipContent = useCallback(() => <SizeTooltip tokens={tokens} />, [tokens]);
+  const renderMarketTooltipContent = useCallback(() => <MarketTooltip claimAction={claimAction} />, [claimAction]);
+
   return (
     <tr>
       <td>
@@ -77,13 +80,13 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
       </td>
       <td>
         <Tooltip
-          renderContent={() => <MarketTooltip claimAction={claimAction} />}
+          renderContent={renderMarketTooltipContent}
           handle={plural(marketsCount, { one: "# Market", other: "# Markets", many: "# Markets" })}
         />
       </td>
       <td className="ClaimHistoryRow-price">
         <Tooltip
-          renderContent={() => <SizeTooltip tokens={tokens} />}
+          renderContent={renderPriceTooltipContent}
           handle={plural(Object.keys(amountByToken).length, {
             one: "# Size",
             other: "# Sizes",

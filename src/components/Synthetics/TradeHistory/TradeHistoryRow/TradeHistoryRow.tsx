@@ -151,6 +151,11 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
     [msg.priceComment]
   );
 
+  const renderActionTooltipContent = useCallback(
+    () => <TooltipContentComponent content={msg.actionComment!} />,
+    [msg.actionComment]
+  );
+
   return (
     <>
       <tr
@@ -167,7 +172,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
                 })}
                 handleClassName="TradeHistoryRow-action-handle"
                 handle={msg.action}
-                renderContent={() => <TooltipContentComponent content={msg.actionComment!} />}
+                renderContent={renderActionTooltipContent}
               />
             ) : (
               <span

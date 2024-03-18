@@ -35,6 +35,16 @@ type Props<T> = {
     }
 );
 
+export function definedOrThrow<T>(value: T): asserts value is NonNullable<T> {
+  if (value === undefined || value === null) {
+    throw new Error("Item is null or undefined");
+  }
+}
+
+export function defined<T>(value: T): value is NonNullable<T> {
+  return value !== undefined && value !== null;
+}
+
 export function TableOptionsFilter<T>({
   value,
   onChange,
@@ -96,14 +106,16 @@ export function TableOptionsFilter<T>({
         return;
       }
 
-      if (isGrouped && filteredGroups!.length > 0) {
-        togglePair(filteredGroups![0].items[0].data);
-
-        return;
-      }
-
-      if (filteredFlatItems!.length > 0) {
-        togglePair(filteredFlatItems![0].data);
+      if (isGrouped) {
+        definedOrThrow(filteredGroups);
+        if (filteredGroups.length > 0) {
+          togglePair(filteredGroups[0].items[0].data);
+        }
+      } else {
+        definedOrThrow(filteredFlatItems);
+        if (filteredFlatItems.length > 0) {
+          togglePair(filteredFlatItems[0].data);
+        }
       }
     },
     [filteredFlatItems, filteredGroups, isGrouped, togglePair]
@@ -160,21 +172,22 @@ export function TableOptionsFilter<T>({
         <div className="TableOptionsFilter-clear" onClick={handleClear}>
           <Trans comment="Button to clear the filter selection">Clear selection</Trans>
         </div>
-
-        {isGrouped ? (
+        {isGrouped && defined(filteredGroups) && (
           <Groups
-            filteredGroups={filteredGroups!}
-            handleGroupToggle={handleGroupToggle}
-            togglePair={togglePair}
+            filteredGroups={filteredGroups}
+            onToggleGroup={handleGroupToggle}
+            onTogglePair={togglePair}
             getIsSelected={getIsSelected}
             showGroupToggle={showGroupToggle}
             ItemComponent={ItemComponent}
           />
-        ) : (
+        )}
+
+        {!isGrouped && defined(filteredFlatItems) && (
           <FlatItems
-            filteredFlatItems={filteredFlatItems!}
+            filteredFlatItems={filteredFlatItems}
             getIsSelected={getIsSelected}
-            togglePair={togglePair}
+            onTogglePair={togglePair}
             ItemComponent={ItemComponent}
           />
         )}
