@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
-import { formatPercentage, formatTokenAmount, formatUsd } from "lib/numbers";
+import { expandDecimals, formatPercentage, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getFeeItem, getIsHighPriceImpact, getPriceImpactByAcceptablePrice } from "../fees";
 import { MarketsInfoData, getAvailableUsdLiquidityForPosition } from "../markets";
@@ -444,8 +444,8 @@ export function getOrderErrors(p: {
       errors.push({
         msg: (
           <Trans>
-            The Order may not execute as the Max. Allowed Leverage is exceeded. Consider decreasing the Order's Leverage
-            by editing and decreasing its Size.{" "}
+            The Order may not execute as the Max.&nbsp;Allowed&nbsp;Leverage is exceeded. Consider decreasing the
+            Order's Leverage by editing and decreasing its Size.{" "}
             <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
           </Trans>
         ),
@@ -530,9 +530,19 @@ export function checkMaxLeverageError(order: PositionOrderInfo, position: Positi
   const isLong = order.isLong;
   const marketInfo = order.marketInfo;
 
+  // FIXME initialCollateralDeltaAmount != collateralDeltaAmount
+  const collateralDeltaAmount = order.initialCollateralDeltaAmount;
+  const collateralDeltaUsd = convertToUsd(
+    collateralDeltaAmount,
+    order.initialCollateralToken.decimals,
+    order.initialCollateralToken.prices.minPrice
+  );
+
+  if (!collateralDeltaUsd) return false;
+
   const leverage = getLeverage({
     sizeInUsd: order.sizeDeltaUsd.add(position?.sizeInUsd ?? BigNumber.from(0)),
-    collateralUsd: order.initialCollateralDeltaAmount,
+    collateralUsd: collateralDeltaUsd.add(position?.collateralUsd ?? BigNumber.from(0)),
     pnl: undefined,
     pendingBorrowingFeesUsd: BigNumber.from(0),
     pendingFundingFeesUsd: BigNumber.from(0),
@@ -540,5 +550,6 @@ export function checkMaxLeverageError(order: PositionOrderInfo, position: Positi
 
   if (!leverage) return false;
 
-  return validateMaxLeverage(leverage, marketInfo, isLong, sizeDeltaUsd);
+  const [error] = validateMaxLeverage(leverage, marketInfo, isLong, sizeDeltaUsd);
+  return error;
 }
