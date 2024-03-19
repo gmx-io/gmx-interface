@@ -162,11 +162,11 @@ export const appEventsData: EventData[] = [
     ],
   },
   {
-    id: "feb-2024-markets",
-    title: "NEAR, ATOM and AAVE markets added on Arbitrum!",
+    id: "op-market", // id is taken from the newest notification, see commit diff
+    title: "New markets added on Arbitrum!",
     isActive: true,
     endDate: "14 Mar 2024, 12:00",
-    bodyText: ["Trade NEAR, ATOM and AAVE or provide liquidity in the GM Pool."],
+    bodyText: ["Trade NEAR, ATOM, AAVE, AVAX, OP or provide liquidity in their GM Pools."],
     buttons: [
       {
         text: "Read more.",
@@ -174,20 +174,5 @@ export const appEventsData: EventData[] = [
         newTab: true,
       },
     ],
-  },
-  {
-    id: "avax-market",
-    title: "AVAX market added on Arbitrum!",
-    isActive: true,
-    endDate: "21 Mar 2024, 12:00",
-    bodyText: ["Trade AVAX or provide liquidity using WAVAX or USDC in the GM Pool."],
-  },
-  {
-    id: "op-market",
-    title: "OP market added on Arbitrum!",
-    isActive: true,
-    startDate: "13 Mar 2024, 00:00",
-    endDate: "26 Mar 2024, 12:00",
-    bodyText: ["Trade OP or provide liquidity using OP or USDC in the GM Pool."],
   },
 ];
