@@ -79,7 +79,7 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }:
   );
 
   const BuyLink = ({ className, to, children, network }) => {
-    if (isHome && showRedirectModal && redirectPopupTimestamp !== undefined) {
+    if (isHome && showRedirectModal) {
       return (
         <HeaderLink
           to={to}

@@ -74,7 +74,6 @@ export function GmConfirmationBox({
   const { marketsData } = useMarkets(chainId);
   const { tokensData } = useTokensDataRequest(chainId);
   const { setPendingDeposit, setPendingWithdrawal } = useSyntheticsEvents();
-
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const market = getByKey(marketsData, marketToken?.address);
@@ -409,12 +408,17 @@ export function GmConfirmationBox({
               <div>
                 {tokensToApprove.map((address) => {
                   const token = getTokenData(tokensData, address)!;
+                  const marketTokenData =
+                    address === marketToken?.address && getByKey(marketsData, marketToken?.address);
+
                   return (
                     <div key={address}>
                       <ApproveTokenButton
                         key={address}
                         tokenAddress={address}
-                        tokenSymbol={address === marketToken?.address ? "GM" : token.assetSymbol ?? token.symbol}
+                        tokenSymbol={
+                          marketTokenData ? `GM: ${marketTokenData.name}` : token.assetSymbol ?? token.symbol
+                        }
                         spenderAddress={routerAddress}
                       />
                     </div>

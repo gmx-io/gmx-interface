@@ -7,7 +7,7 @@ import { isHomeSite, getAppBaseUrl, shouldShowRedirectModal } from "lib/legacy";
 import { getFooterLinks, SOCIAL_LINKS } from "./constants";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
-type Props = { showRedirectModal?: (to: string) => void; redirectPopupTimestamp?: () => void };
+type Props = { showRedirectModal?: (to: string) => void; redirectPopupTimestamp?: number };
 
 export default function Footer({ showRedirectModal, redirectPopupTimestamp }: Props) {
   const isHome = isHomeSite();
