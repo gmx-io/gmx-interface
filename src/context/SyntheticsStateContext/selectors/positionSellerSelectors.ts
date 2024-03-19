@@ -44,6 +44,7 @@ export const selectPositionSellerNextPositionValuesForDecrease = createEnhancedS
   return q(selector);
 });
 
+// temporary not used
 export const selectPositionSellerNextPositionValuesForDecreaseWithoutKeepLeverage = createEnhancedSelector((q) => {
   const decreaseAmountArgs = q(selectPositionSellerDecreaseAmountArgs);
 
@@ -96,6 +97,7 @@ export const selectPositionSellerDecreaseAmounts = createEnhancedSelector((q) =>
   return q(selector);
 });
 
+// temporary not used
 export const selectPositionSellerDecreaseAmountsWithKeepLeverage = createEnhancedSelector((q) => {
   const decreaseAmountArgs = q(selectPositionSellerDecreaseAmountArgs);
 

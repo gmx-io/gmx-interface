@@ -32,7 +32,6 @@ import {
   usePositionSellerKeepLeverage,
   usePositionSellerLeverageDisabledByCollateral,
   usePositionSellerNextPositionValuesForDecrease,
-  usePositionSellerNextPositionValuesForDecreaseWithoutKeepLeverage,
   usePositionSellerPosition,
 } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
 import { useSwapRoutes } from "context/SyntheticsStateContext/hooks/tradeHooks";
@@ -225,7 +224,6 @@ export function PositionSeller(p: Props) {
   const receiveTokenAmount = swapAmounts?.amountOut || decreaseAmounts?.receiveTokenAmount;
 
   const nextPositionValues = usePositionSellerNextPositionValuesForDecrease();
-  const nextPositionValuesWithoutKeepLeverage = usePositionSellerNextPositionValuesForDecreaseWithoutKeepLeverage();
 
   const { fees, executionFee } = useMemo(() => {
     if (!position || !decreaseAmounts || !gasLimits || !tokensData || !gasPrice) {
@@ -679,7 +677,7 @@ export function PositionSeller(p: Props) {
       leverageValue = (
         <ValueTransition
           from={formatLeverage(position.leverage)}
-          to={formatLeverage(nextPositionValuesWithoutKeepLeverage?.nextLeverage)}
+          to={formatLeverage(nextPositionValues?.nextLeverage)}
         />
       );
     }
