@@ -50,7 +50,8 @@ export function Header({
   showRedirectModal,
   tradePageVersion,
 }: Props) {
-  const isLarge = useMedia("(min-width: 1200px)");
+  const isMobile = useMedia("(max-width: 1200px)");
+
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [isNativeSelectorModalVisible, setIsNativeSelectorModalVisible] = useState(false);
 
@@ -99,7 +100,7 @@ export function Header({
         </AnimatePresence>
       )}
       <header>
-        {isLarge && (
+        {!isMobile && (
           <div className="App-header large">
             <div className="App-header-container-left">
               <Link className="App-header-link-main" to="/">
@@ -126,7 +127,7 @@ export function Header({
             </div>
           </div>
         )}
-        {!isLarge && (
+        {isMobile && (
           <div className={cx("App-header", "small", { active: isDrawerVisible })}>
             <div
               className={cx("App-header-link-container", "App-header-top", {
