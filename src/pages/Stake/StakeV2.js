@@ -14,7 +14,7 @@ import Token from "abis/Token.json";
 import Vault from "abis/Vault.json";
 import Vester from "abis/Vester.json";
 
-import { ARBITRUM, getConstant } from "config/chains";
+import { ARBITRUM, AVALANCHE, getConstant } from "config/chains";
 import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 import { useRecommendStakeGmxAmount } from "domain/stake/useRecommendStakeGmxAmount";
 import { useAccumulatedBnGMXAmount } from "domain/rewards/useAccumulatedBnGMXAmount";
@@ -75,6 +75,7 @@ import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import UserIncentiveDistributionList from "components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import useVestingData from "domain/vesting/useVestingData";
+import { useStakedBnGMXAmount } from "domain/rewards/useStakedBnGMXAmount";
 
 const { AddressZero } = ethers.constants;
 
@@ -201,7 +202,7 @@ function StakeModal(props) {
           <div className="Stake-modal-icons">
             <img
               className="mr-xs icon"
-              width="25"
+              height="22"
               src={icons[stakingTokenSymbol.toLowerCase()]}
               alt={stakingTokenSymbol}
             />
@@ -327,7 +328,7 @@ function UnstakeModal(props) {
           <div className="Stake-modal-icons">
             <img
               className="mr-xs icon"
-              width="25"
+              height="22"
               src={icons[unstakingTokenSymbol.toLowerCase()]}
               alt={unstakingTokenSymbol}
             />
@@ -470,7 +471,7 @@ function VesterDepositModal(props) {
             showMaxButton={false}
           >
             <div className="Stake-modal-icons">
-              <img className="mr-xs icon" width="25" src={icons.esgmx} alt="esGMX" />
+              <img className="mr-xs icon" height="22" src={icons.esgmx} alt="esGMX" />
               esGMX
             </div>
           </BuyInputSection>
@@ -1177,6 +1178,7 @@ export default function StakeV2({ setPendingTxns }) {
     feeGlpTrackerAddress,
   ];
 
+  const stakedBnGmxSupply = useStakedBnGMXAmount(chainId);
   const { marketsInfoData, tokensData } = useMarketsInfoRequest(chainId);
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
   const { marketsTokensAPRData, marketsTokensIncentiveAprData } = useMarketTokensAPR(chainId, {
@@ -1256,7 +1258,8 @@ export default function StakeV2({ setPendingTxns }) {
 
   let { total: totalGmxSupply } = useTotalGmxSupply();
 
-  let { avax: avaxGmxStaked, arbitrum: arbitrumGmxStaked, total: totalGmxStaked } = useTotalGmxStaked();
+  const stakedGMXInfo = useTotalGmxStaked();
+  const { [AVALANCHE]: avaxGmxStaked, [ARBITRUM]: arbitrumGmxStaked, total: totalGmxStaked } = stakedGMXInfo;
 
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply");
   const { data: gmxSupply } = useSWR([gmxSupplyUrl], {
@@ -1293,6 +1296,7 @@ export default function StakeV2({ setPendingTxns }) {
     aum,
     nativeTokenPrice,
     stakedGmxSupply,
+    stakedBnGmxSupply,
     gmxPrice,
     gmxSupply,
     maxBoostBasicPoints?.div(BASIS_POINTS_DIVISOR)
@@ -1566,15 +1570,9 @@ export default function StakeV2({ setPendingTxns }) {
     );
   }, [nativeTokenSymbol, processedData, recommendStakeGmx, accumulatedBnGMXAmount]);
 
-  const gmxAprText = useMemo(() => {
-    return `${formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true)}% - ${formatKeyAmount(
-      processedData,
-      "maxGmxAprForNativeToken",
-      2,
-      2,
-      true
-    )}%`;
-  }, [processedData]);
+  const gmxAvgAprText = useMemo(() => {
+    return `${formatAmount(processedData?.avgGMXAprForNativeToken, 2, 2, true)}%`;
+  }, [processedData?.avgGMXAprForNativeToken]);
 
   const renderMultiplierPointsLabel = useCallback(() => {
     return t`Multiplier Points APR`;
@@ -1590,7 +1588,7 @@ export default function StakeV2({ setPendingTxns }) {
             <Trans>
               Boost your rewards with Multiplier Points.&nbsp;
               <ExternalLink href="https://docs.gmx.io/docs/tokenomics/rewards#multiplier-points">
-                More info
+                Read more
               </ExternalLink>
               .
             </Trans>
@@ -1842,11 +1840,11 @@ export default function StakeV2({ setPendingTxns }) {
               <div className="App-card-divider"></div>
               <div className="App-card-row">
                 <div className="label">
-                  <Trans>APR</Trans>
+                  <Trans>Avg. APR</Trans>
                 </div>
                 <div>
                   <Tooltip
-                    handle={gmxAprText}
+                    handle={gmxAvgAprText}
                     position="bottom-end"
                     renderContent={() => (
                       <GMXAprTooltip processedData={processedData} nativeTokenSymbol={nativeTokenSymbol} />
@@ -2276,11 +2274,11 @@ export default function StakeV2({ setPendingTxns }) {
               <div className="App-card-divider"></div>
               <div className="App-card-row">
                 <div className="label">
-                  <Trans>APR</Trans>
+                  <Trans>Avg. APR</Trans>
                 </div>
                 <div>
                   <Tooltip
-                    handle={gmxAprText}
+                    handle={gmxAvgAprText}
                     position="bottom-end"
                     renderContent={() => (
                       <GMXAprTooltip processedData={processedData} nativeTokenSymbol={nativeTokenSymbol} />

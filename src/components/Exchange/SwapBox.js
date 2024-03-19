@@ -61,7 +61,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import { get1InchSwapUrl } from "config/links";
-import { getPriceDecimals, getToken, getTokenBySymbol, getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
+import { getPriceDecimals, getToken, getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
 import { useUserReferralCode } from "domain/referrals/hooks";
 import {
   approveTokens,
@@ -72,7 +72,7 @@ import {
 import { getMinResidualAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
-import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, limitDecimals, parseValue } from "lib/numbers";
 import { getLeverage } from "lib/positions/getLeverage";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
@@ -87,6 +87,7 @@ import useWallet from "lib/wallets/useWallet";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { useHistory } from "react-router-dom";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -165,6 +166,10 @@ export default function SwapBox(props) {
     minExecutionFee,
     minExecutionFeeUSD,
     minExecutionFeeErrorMessage,
+    orderOption,
+    setOrderOption,
+    setShortCollateralAddress,
+    shortCollateralAddress,
   } = props;
   const { account, active, signer } = useWallet();
   const isMetamaskMobile = useIsMetamaskMobile();
@@ -178,19 +183,13 @@ export default function SwapBox(props) {
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
   const { attachedOnChain, userReferralCode } = useUserReferralCode(signer, chainId, account);
   const { openConnectModal } = useConnectModal();
+  const history = useHistory();
 
   let allowedSlippage = savedSlippageAmount;
   if (isHigherSlippageAllowed) {
     allowedSlippage = DEFAULT_HIGHER_SLIPPAGE_AMOUNT;
   }
 
-  const defaultCollateralSymbol = getConstant(chainId, "defaultCollateralSymbol");
-  // TODO hack with useLocalStorageSerializeKey
-  const [shortCollateralAddress, setShortCollateralAddress] = useLocalStorageByChainId(
-    chainId,
-    "Short-Collateral-Address",
-    getTokenBySymbol(chainId, defaultCollateralSymbol).address
-  );
   const isLong = swapOption === LONG;
   const isShort = swapOption === SHORT;
   const isSwap = swapOption === SWAP;
@@ -220,11 +219,6 @@ export default function SwapBox(props) {
   const hasLeverageOption = isLeverageSliderEnabled && !isNaN(parseFloat(leverageOption));
 
   const [ordersToaOpen, setOrdersToaOpen] = useState(false);
-
-  let [orderOption, setOrderOption] = useLocalStorageSerializeKey([chainId, "Order-option"], MARKET);
-  if (!flagOrdersEnabled) {
-    orderOption = MARKET;
-  }
 
   const onOrderOptionChange = (option) => {
     setOrderOption(option);
@@ -1566,6 +1560,10 @@ export default function SwapBox(props) {
         setShortCollateralAddress(stableToken.address);
       }
     }
+
+    if (swapOption !== opt) {
+      history.push(`/v1/${opt.toLowerCase()}`);
+    }
   };
 
   const onConfirmationClick = () => {
@@ -2343,8 +2341,9 @@ export default function SwapBox(props) {
                           <br />
                           <br />
                           <ExternalLink href="https://docs.gmx.io/docs/trading/v1#opening-a-position">
-                            More Info
+                            Read more
                           </ExternalLink>
+                          .
                         </Trans>
                       </div>
                     );
@@ -2372,8 +2371,9 @@ export default function SwapBox(props) {
                           <br />
                           <br />
                           <ExternalLink href="https://docs.gmx.io/docs/trading/v1#opening-a-position">
-                            More Info
+                            Read more
                           </ExternalLink>
+                          .
                         </Trans>
                       </div>
                     );
@@ -2411,8 +2411,9 @@ export default function SwapBox(props) {
                         )}
                         <br />
                         <ExternalLink href="https://docs.gmx.io/docs/trading/v1#opening-a-position">
-                          <Trans>More Info</Trans>
+                          <Trans>Read more</Trans>
                         </ExternalLink>
+                        .
                       </div>
                     );
                   }}

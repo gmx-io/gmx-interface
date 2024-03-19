@@ -565,8 +565,8 @@ export function useTotalGmxStaked() {
   }
 
   return {
-    avax: stakedGmxSupplyAvax,
-    arbitrum: stakedGmxSupplyArbitrum,
+    [AVALANCHE]: stakedGmxSupplyAvax,
+    [ARBITRUM]: stakedGmxSupplyArbitrum,
     total: totalStakedGmx.current,
     mutate,
   };
@@ -599,8 +599,8 @@ export function useTotalGmxInLiquidity() {
     totalGMX.current = total;
   }
   return {
-    avax: gmxInLiquidityOnAvax,
-    arbitrum: gmxInLiquidityOnArbitrum,
+    [AVALANCHE]: gmxInLiquidityOnAvax,
+    [ARBITRUM]: gmxInLiquidityOnArbitrum,
     total: totalGMX.current,
     mutate,
   };

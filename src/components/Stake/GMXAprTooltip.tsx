@@ -13,6 +13,7 @@ type Props = {
     maxGmxAprForNativeToken: BigNumber;
     gmxAprForNativeTokenWithBoost: BigNumber;
     gmxBoostAprForNativeToken?: BigNumber;
+    avgBoostMultiplier?: BigNumber;
   };
   nativeTokenSymbol: string;
   isUserConnected: boolean;
@@ -56,10 +57,15 @@ export default function GMXAprTooltip({
           value={`${maxGmxAprPercentage}%`}
         />
         <br />
-        <Trans>
-          Max. {nativeTokenSymbol} APR is calculated with the max. 200% Boost Percentage by staking{" "}
-          <ExternalLink href={DOCS_LINKS.multiplierPoints}>Multiplier Points</ExternalLink>.
-        </Trans>
+        {processedData?.avgBoostMultiplier && (
+          <Trans>
+            The average {nativeTokenSymbol} APR is calculated with the average account boost percentage (
+            {formatAmount(processedData?.avgBoostMultiplier, 2, 2, true)}%), while the maximum {nativeTokenSymbol} APR
+            is calculated with the maximum boost (200%) by staking{" "}
+            <ExternalLink href={DOCS_LINKS.multiplierPoints}>Multiplier Points</ExternalLink>.
+          </Trans>
+        )}
+
         <br />
         <br />
         {aprUpdateMsg}

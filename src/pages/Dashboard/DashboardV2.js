@@ -1,12 +1,10 @@
 import { Trans, t } from "@lingui/macro";
 import TooltipComponent from "components/Tooltip/Tooltip";
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
-import { Cell, Pie, PieChart, Tooltip } from "recharts";
 import useSWR from "swr";
 
 import { ethers } from "ethers";
-import hexToRgba from "hex-to-rgba";
 
 import { useGmxPrice, useTotalGmxInLiquidity, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 import { DEFAULT_MAX_USDG_AMOUNT, GLP_DECIMALS, GMX_DECIMALS, USD_DECIMALS, getPageTitle } from "lib/legacy";
@@ -30,7 +28,7 @@ import { getServerUrl } from "config/backend";
 import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
 import { getIsSyntheticsSupported } from "config/features";
 import { getIcons } from "config/icons";
-import { GLP_POOL_COLORS, getTokenBySymbol, getWhitelistedV1Tokens } from "config/tokens";
+import { TOKEN_COLOR_MAP, getTokenBySymbol, getWhitelistedV1Tokens } from "config/tokens";
 import { useFeesSummary, useTotalVolume, useVolumeInfo } from "domain/stats";
 import useUniqueUsers from "domain/stats/useUniqueUsers";
 import { useInfoTokens } from "domain/tokens";
@@ -45,12 +43,27 @@ import {
   formatAmount,
   formatKeyAmount,
   numberWithCommas,
+  BN_ZERO,
+  formatTokenAmount,
+  formatUsd,
 } from "lib/numbers";
 import AssetDropdown from "./AssetDropdown";
 import useWallet from "lib/wallets/useWallet";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import PageTitle from "components/PageTitle/PageTitle";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
+import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
+import {
+  getMarketIndexName,
+  getMarketPoolName,
+  useMarketTokensData,
+  useMarketsInfoRequest,
+} from "domain/synthetics/markets";
+import { EMPTY_OBJECT } from "lib/objects";
+import { convertToUsd } from "domain/synthetics/tokens";
+import InteractivePieChart from "components/InteractivePieChart/InteractivePieChart";
+import { groupBy } from "lodash";
+
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
@@ -97,7 +110,7 @@ function getCurrentFeesUsd(tokenAddresses, fees, infoTokens) {
   return currentFeesUsd;
 }
 
-export default function DashboardV2() {
+export default function DashboardV2(props) {
   const { active, signer } = useWallet();
   const { chainId } = useChainId();
   const totalVolume = useTotalVolume();
@@ -120,6 +133,9 @@ export default function DashboardV2() {
       fetcher: arrayURLFetcher,
     }
   );
+
+  const isV1 = props.tradePageVersion === 1;
+  const isV2 = props.tradePageVersion === 2;
 
   let { total: totalGmxSupply } = useTotalGmxSupply();
 
@@ -236,7 +252,7 @@ export default function DashboardV2() {
 
   let { total: totalGmxInLiquidity } = useTotalGmxInLiquidity(chainId, active);
 
-  let { avax: avaxStakedGmx, arbitrum: arbitrumStakedGmx, total: totalStakedGmx } = useTotalGmxStaked();
+  let { [AVALANCHE]: avaxStakedGmx, [ARBITRUM]: arbitrumStakedGmx, total: totalStakedGmx } = useTotalGmxStaked();
 
   let gmxMarketCap;
   if (gmxPrice && totalGmxSupply) {
@@ -371,8 +387,9 @@ export default function DashboardV2() {
               <br />
               <div>
                 <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v1">
-                  <Trans>More Info</Trans>
+                  <Trans>Read more</Trans>
                 </ExternalLink>
+                .
               </div>
             </>
           );
@@ -414,11 +431,6 @@ export default function DashboardV2() {
       },
     ];
 
-    arr = arr.sort(function (a, b) {
-      if (a.value < b.value) return 1;
-      else return -1;
-    });
-
     return arr;
   }, [liquidityPercent, notStakedPercent, stakedPercent]);
 
@@ -427,7 +439,7 @@ export default function DashboardV2() {
   let stableGlp = 0;
   let totalGlp = 0;
 
-  let glpPool = tokenList.map((token) => {
+  const glpPool = tokenList.map((token) => {
     const tokenInfo = infoTokens[token.address];
     if (tokenInfo.usdgAmount && adjustedUsdgSupply && adjustedUsdgSupply.gt(0)) {
       const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply);
@@ -438,6 +450,7 @@ export default function DashboardV2() {
       return {
         fullname: token.name,
         name: token.symbol,
+        color: TOKEN_COLOR_MAP[token.symbol ?? "default"] ?? TOKEN_COLOR_MAP.default,
         value: parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`),
       };
     }
@@ -445,53 +458,6 @@ export default function DashboardV2() {
   });
 
   let stablePercentage = totalGlp > 0 ? ((stableGlp * 100) / totalGlp).toFixed(2) : "0.0";
-
-  glpPool = glpPool.filter(function (element) {
-    return element !== null;
-  });
-
-  glpPool = glpPool.sort(function (a, b) {
-    if (a.value < b.value) return 1;
-    else return -1;
-  });
-
-  const [gmxActiveIndex, setGMXActiveIndex] = useState(null);
-
-  const onGMXDistributionChartEnter = (_, index) => {
-    setGMXActiveIndex(index);
-  };
-
-  const onGMXDistributionChartLeave = () => {
-    setGMXActiveIndex(null);
-  };
-
-  const [glpActiveIndex, setGLPActiveIndex] = useState(null);
-
-  const onGLPPoolChartEnter = (_, index) => {
-    setGLPActiveIndex(index);
-  };
-
-  const onGLPPoolChartLeave = () => {
-    setGLPActiveIndex(null);
-  };
-
-  const CustomTooltip = ({ active, payload }) => {
-    const customTooltipStyle = useMemo(
-      () => (payload && payload.length ? { backgroundColor: payload[0].color } : undefined),
-      [payload]
-    );
-
-    if (active && payload && payload.length) {
-      return (
-        <div className="stats-label">
-          <div className="stats-label-color" style={customTooltipStyle}></div>
-          {payload[0].value}% {payload[0].name}
-        </div>
-      );
-    }
-
-    return null;
-  };
 
   const dailyVolumeEntries = useMemo(
     () => ({
@@ -832,7 +798,17 @@ export default function DashboardV2() {
               </div>
             </div>
           </div>
-          <PageTitle title={t`Tokens`} subtitle={t`Platform, GLP and GM tokens.`} />
+          <PageTitle
+            title={t`Tokens`}
+            afterTitle={
+              <VersionSwitch
+                className="ml-base"
+                currentVersion={props.tradePageVersion}
+                setCurrentVersion={props.setTradePageVersion}
+              />
+            }
+            subtitle={t`Platform, GLP and GM tokens.`}
+          />
           <div className="DashboardV2-token-cards">
             <div className="stats-wrapper stats-wrapper--gmx">
               <div className="App-card">
@@ -915,151 +891,72 @@ export default function DashboardV2() {
                     </div>
                   </div>
                 </div>
-                <div className="stats-piechart" onMouseLeave={onGMXDistributionChartLeave}>
-                  {gmxDistributionData.length > 0 && (
-                    <PieChart width={210} height={210}>
-                      <Pie
-                        data={gmxDistributionData}
-                        cx={100}
-                        cy={100}
-                        innerRadius={73}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                        startAngle={90}
-                        endAngle={-270}
-                        paddingAngle={2}
-                        onMouseEnter={onGMXDistributionChartEnter}
-                        onMouseOut={onGMXDistributionChartLeave}
-                        onMouseLeave={onGMXDistributionChartLeave}
-                      >
-                        {gmxDistributionData.map((entry, index) => (
-                          <Cell
-                            key={`cell-${index}`}
-                            fill={entry.color}
-                            // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-                            style={{
-                              filter:
-                                gmxActiveIndex === index
-                                  ? `drop-shadow(0px 0px 6px ${hexToRgba(entry.color, 0.7)})`
-                                  : "none",
-                              cursor: "pointer",
-                            }}
-                            stroke={entry.color}
-                            strokeWidth={gmxActiveIndex === index ? 1 : 1}
-                          />
-                        ))}
-                      </Pie>
-                      <text x={"50%"} y={"50%"} fill="white" textAnchor="middle" dominantBaseline="middle">
-                        <Trans>Distribution</Trans>
-                      </text>
-                      <Tooltip content={<CustomTooltip />} />
-                    </PieChart>
-                  )}
-                </div>
+                <InteractivePieChart data={gmxDistributionData} label={t`Distribution`} />
               </div>
-              <div className="App-card">
-                <div className="stats-block">
-                  <div className="App-card-title">
-                    <div className="App-card-title-mark">
-                      <div className="App-card-title-mark-icon">
-                        <img src={currentIcons.glp} width="40" alt="GLP Icon" />
+              {isV1 && (
+                <div className="App-card">
+                  <div className="stats-block">
+                    <div className="App-card-title">
+                      <div className="App-card-title-mark">
+                        <div className="App-card-title-mark-icon">
+                          <img src={currentIcons.glp} width="40" alt="GLP Icon" />
+                        </div>
+                        <div className="App-card-title-mark-info">
+                          <div className="App-card-title-mark-title">GLP</div>
+                          <div className="App-card-title-mark-subtitle">GLP</div>
+                        </div>
+                        <div>
+                          <AssetDropdown assetSymbol="GLP" />
+                        </div>
                       </div>
-                      <div className="App-card-title-mark-info">
-                        <div className="App-card-title-mark-title">GLP</div>
-                        <div className="App-card-title-mark-subtitle">GLP</div>
+                    </div>
+                    <div className="App-card-divider"></div>
+                    <div className="App-card-content">
+                      <div className="App-card-row">
+                        <div className="label">
+                          <Trans>Price</Trans>
+                        </div>
+                        <div>${formatAmount(glpPrice, USD_DECIMALS, 3, true)}</div>
                       </div>
-                      <div>
-                        <AssetDropdown assetSymbol="GLP" />
+                      <div className="App-card-row">
+                        <div className="label">
+                          <Trans>Supply</Trans>
+                        </div>
+                        <div>{formatAmount(glpSupply, GLP_DECIMALS, 0, true)} GLP</div>
+                      </div>
+                      <div className="App-card-row">
+                        <div className="label">
+                          <Trans>Total Staked</Trans>
+                        </div>
+                        <div>${formatAmount(glpMarketCap, USD_DECIMALS, 0, true)}</div>
+                      </div>
+                      <div className="App-card-row">
+                        <div className="label">
+                          <Trans>Market Cap</Trans>
+                        </div>
+                        <div>${formatAmount(glpMarketCap, USD_DECIMALS, 0, true)}</div>
+                      </div>
+                      <div className="App-card-row">
+                        <div className="label">
+                          <Trans>Stablecoin Percentage</Trans>
+                        </div>
+                        <div>{stablePercentage}%</div>
                       </div>
                     </div>
                   </div>
-                  <div className="App-card-divider"></div>
-                  <div className="App-card-content">
-                    <div className="App-card-row">
-                      <div className="label">
-                        <Trans>Price</Trans>
-                      </div>
-                      <div>${formatAmount(glpPrice, USD_DECIMALS, 3, true)}</div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">
-                        <Trans>Supply</Trans>
-                      </div>
-                      <div>{formatAmount(glpSupply, GLP_DECIMALS, 0, true)} GLP</div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">
-                        <Trans>Total Staked</Trans>
-                      </div>
-                      <div>${formatAmount(glpMarketCap, USD_DECIMALS, 0, true)}</div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">
-                        <Trans>Market Cap</Trans>
-                      </div>
-                      <div>${formatAmount(glpMarketCap, USD_DECIMALS, 0, true)}</div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">
-                        <Trans>Stablecoin Percentage</Trans>
-                      </div>
-                      <div>{stablePercentage}%</div>
-                    </div>
-                  </div>
+                  <InteractivePieChart data={glpPool} label={t`GLP Pool`} />
                 </div>
-                <div className="stats-piechart" onMouseOut={onGLPPoolChartLeave}>
-                  {glpPool.length > 0 && (
-                    <PieChart width={210} height={210}>
-                      <Pie
-                        data={glpPool}
-                        cx={100}
-                        cy={100}
-                        innerRadius={73}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                        startAngle={90}
-                        endAngle={-270}
-                        onMouseEnter={onGLPPoolChartEnter}
-                        onMouseOut={onGLPPoolChartLeave}
-                        onMouseLeave={onGLPPoolChartLeave}
-                        paddingAngle={2}
-                      >
-                        {glpPool.map((entry, index) => (
-                          <Cell
-                            key={`cell-${index}`}
-                            fill={GLP_POOL_COLORS[entry.name]}
-                            // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-                            style={{
-                              filter:
-                                glpActiveIndex === index
-                                  ? `drop-shadow(0px 0px 6px ${hexToRgba(GLP_POOL_COLORS[entry.name], 0.7)})`
-                                  : "none",
-                              cursor: "pointer",
-                            }}
-                            stroke={GLP_POOL_COLORS[entry.name]}
-                            strokeWidth={glpActiveIndex === index ? 1 : 1}
-                          />
-                        ))}
-                      </Pie>
-                      <text x={"50%"} y={"50%"} fill="white" textAnchor="middle" dominantBaseline="middle">
-                        GLP Pool
-                      </text>
-                      <Tooltip content={<CustomTooltip />} />
-                    </PieChart>
-                  )}
-                </div>
-              </div>
+              )}
+              {isV2 && <GMCard />}
             </div>
-            {visibleTokens.length > 0 && (
+            {isV1 && visibleTokens.length > 0 && (
               <>
                 <div className="token-table-wrapper App-card">
                   <div className="App-card-title">
                     <Trans>GLP Index Composition</Trans>{" "}
                     <img src={currentIcons.network} width="16" alt="Network Icon" />
                   </div>
-                  <div className="App-card-divider"></div>
+                  <div className="App-card-divider" />
                   <table className="token-table">
                     <thead>
                       <tr>
@@ -1262,12 +1159,102 @@ export default function DashboardV2() {
                 </div>
               </>
             )}
-
-            {getIsSyntheticsSupported(chainId) && <MarketsList />}
+            {isV2 && getIsSyntheticsSupported(chainId) && <MarketsList />}
           </div>
         </div>
         <Footer />
       </div>
     </SEO>
+  );
+}
+
+function GMCard() {
+  const { chainId } = useChainId();
+  const currentIcons = getIcons(chainId);
+  const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
+  const { marketsInfoData } = useMarketsInfoRequest(chainId);
+
+  const totalGMSupply = useMemo(
+    () =>
+      Object.values(marketTokensData || {}).reduce(
+        (acc, { totalSupply, decimals, prices }) => ({
+          amount: acc.amount.add(totalSupply ?? 0),
+          usd: acc.usd.add(convertToUsd(totalSupply, decimals, prices?.maxPrice) ?? 0),
+        }),
+        { amount: BN_ZERO, usd: BN_ZERO }
+      ),
+    [marketTokensData]
+  );
+
+  const chartData = useMemo(() => {
+    if (!totalGMSupply?.amount?.gt(0) || !marketsInfoData) return [];
+
+    const poolsByIndexToken = groupBy(
+      Object.values(marketsInfoData || EMPTY_OBJECT),
+      (market) => market[market.isSpotOnly ? "marketTokenAddress" : "indexTokenAddress"]
+    );
+
+    return Object.values(poolsByIndexToken || EMPTY_OBJECT).map((pools) => {
+      const totalMarketUSD = pools.reduce((acc, pool) => acc.add(pool.poolValueMax), BN_ZERO);
+
+      const marketInfo = pools[0];
+      const indexToken = marketInfo.isSpotOnly ? marketInfo.shortToken : marketInfo.indexToken;
+      const marketSupplyPercentage = totalMarketUSD.mul(BASIS_POINTS_DIVISOR).div(totalGMSupply.usd).toNumber() / 100;
+
+      return {
+        fullName: marketInfo.name,
+        name: marketInfo.isSpotOnly ? getMarketPoolName(marketInfo) : getMarketIndexName(marketInfo),
+        value: marketSupplyPercentage,
+        color: TOKEN_COLOR_MAP[indexToken.baseSymbol ?? indexToken.symbol ?? "default"] ?? TOKEN_COLOR_MAP.default,
+      };
+    });
+  }, [marketsInfoData, totalGMSupply]);
+
+  return (
+    <div className="App-card">
+      <div className="stats-block">
+        <div className="App-card-title">
+          <div className="App-card-title-mark">
+            <div className="App-card-title-mark-icon">
+              <img src={currentIcons.gm} width="40" alt="GM Icon" />
+            </div>
+            <div className="App-card-title-mark-info">
+              <div className="App-card-title-mark-title">GM</div>
+              <div className="App-card-title-mark-subtitle">GM</div>
+            </div>
+            <div>
+              <AssetDropdown assetSymbol="GM" />
+            </div>
+          </div>
+        </div>
+        <div className="App-card-divider"></div>
+        <div className="App-card-content">
+          <div className="App-card-row">
+            <div className="label">
+              <Trans>Supply</Trans>
+            </div>
+
+            <div>
+              {formatTokenAmount(totalGMSupply?.amount, 18, "GM", {
+                useCommas: true,
+                fallbackToZero: true,
+                displayDecimals: 0,
+              })}
+            </div>
+          </div>
+          <div className="App-card-row">
+            <div className="label">
+              <Trans>Market Cap</Trans>
+            </div>
+            <div>
+              {formatUsd(totalGMSupply?.usd, {
+                displayDecimals: 0,
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+      <InteractivePieChart data={chartData} label={t`GM Markets`} />
+    </div>
   );
 }
