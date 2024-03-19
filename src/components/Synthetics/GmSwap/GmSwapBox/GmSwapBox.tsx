@@ -6,7 +6,7 @@ import Tab from "components/Tab/Tab";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
 import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, getSyntheticsDepositIndexTokenKey } from "config/localStorage";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "config/tokens";
+import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getTokenBySymbolSafe } from "config/tokens";
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import {
   FeeItem,
@@ -19,7 +19,7 @@ import {
   useGasPrice,
 } from "domain/synthetics/fees";
 import { useMarketTokensData } from "domain/synthetics/markets";
-import { Market, MarketsInfoData } from "domain/synthetics/markets/types";
+import { Market, MarketInfo, MarketsInfoData } from "domain/synthetics/markets/types";
 import {
   getAvailableUsdLiquidityForCollateral,
   getMarketIndexName,
@@ -35,7 +35,7 @@ import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmountFree, formatTokenAmount, formatUsd, limitDecimals, parseValue } from "lib/numbers";
-import { getByKey } from "lib/objects";
+import { getByKey, getMatchingValueFromObject } from "lib/objects";
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 import { IoMdSwap } from "react-icons/io";
 import { GmConfirmationBox } from "../GmConfirmationBox/GmConfirmationBox";
@@ -46,7 +46,7 @@ import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
 import { helperToast } from "lib/helperToast";
 import { useSafeState } from "lib/useSafeState";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import "./GmSwapBox.scss";
 import Checkbox from "components/Checkbox/Checkbox";
 import Tooltip from "components/Tooltip/Tooltip";
@@ -56,9 +56,22 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { isAddress } from "ethers/lib/utils.js";
+import useSearchParams from "lib/useSearchParams";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
-import useSortedMarketsWithIndexToken from "domain/synthetics/trade/useSortedMarketsWithIndexToken";
+import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
+
+const SWAP_MARKET_REGEX = /^(swap-only|swap)$/i;
+
+type SearchParams = {
+  market?: string;
+  operation?: string;
+  mode?: string;
+  from?: string;
+  pool?: string;
+  scroll?: string;
+};
 
 export enum Operation {
   Deposit = "Deposit",
@@ -94,33 +107,6 @@ const MODE_LABELS = {
   [Mode.Pair]: t`Pair`,
 };
 
-const getAvailableModes = (operation: Operation, market?: Market) => {
-  if (operation === Operation.Deposit) {
-    if (!market?.isSameCollaterals) {
-      return [Mode.Single, Mode.Pair];
-    }
-
-    return [Mode.Single];
-  }
-
-  return [Mode.Pair];
-};
-
-function showMarketToast(market) {
-  if (!market) return;
-  const indexName = getMarketIndexName(market);
-  const poolName = getMarketPoolName(market);
-  helperToast.success(
-    <Trans>
-      <div className="inline-flex">
-        GM:&nbsp;<span>{indexName}</span>
-        <span className="subtext gm-toast">[{poolName}]</span>
-      </div>{" "}
-      <span>selected in order form</span>
-    </Trans>
-  );
-}
-
 export function GmSwapBox(p: Props) {
   const {
     operation,
@@ -132,12 +118,10 @@ export function GmSwapBox(p: Props) {
     tokensData,
     shouldDisableValidation,
   } = p;
-  const { search } = useLocation();
   const isMetamaskMobile = useIsMetamaskMobile();
   const history = useHistory();
   const { openConnectModal } = useConnectModal();
-  const queryParams = useMemo(() => new URLSearchParams(search), [search]);
-
+  const searchParams = useSearchParams<SearchParams>();
   const marketAddress = p.selectedMarketAddress;
 
   const { chainId } = useChainId();
@@ -158,7 +142,7 @@ export function GmSwapBox(p: Props) {
   const [focusedInput, setFocusedInput] = useState<"longCollateral" | "shortCollateral" | "market">("market");
   const [stage, setStage] = useState<"swap" | "confirmation" | "processing">();
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
-  const { marketsInfo: sortedMarketsInfoByIndexToken } = useSortedMarketsWithIndexToken(
+  const { marketsInfo: sortedMarketsInfoByIndexToken } = useSortedPoolsWithIndexToken(
     marketsInfoData,
     depositMarketTokensData
   );
@@ -706,17 +690,53 @@ export function GmSwapBox(p: Props) {
 
   useEffect(
     function updateByQueryParams() {
-      if (queryParams.get("operation") === Operation.Withdrawal) {
-        setOperation(Operation.Withdrawal);
-      } else if (queryParams.get("operation") === Operation.Deposit) {
-        setOperation(Operation.Deposit);
+      const { market, operation, mode, from: fromToken, pool, scroll } = searchParams;
+      if (operation) {
+        let finalOperation;
+
+        if (operation.toLowerCase() === "buy") {
+          finalOperation = Operation.Deposit;
+        } else if (operation.toLowerCase() === "sell") {
+          finalOperation = Operation.Withdrawal;
+        }
+
+        if (finalOperation) {
+          setOperation(finalOperation as Operation);
+        }
       }
 
-      if (queryParams.get("market")) {
-        const marketInfo = getByKey(marketsInfoData, queryParams.get("market")!);
+      if (mode) {
+        const validMode = getMatchingValueFromObject(Mode, mode);
+        if (validMode) {
+          setMode(validMode as Mode);
+        }
+      }
+
+      if (fromToken) {
+        const fromTokenInfo = getTokenBySymbolSafe(chainId, fromToken, {
+          version: "v2",
+        });
+        if (fromTokenInfo) {
+          setFirstTokenAddress(convertTokenAddress(chainId, fromTokenInfo.address, "wrapped"));
+        }
+      }
+
+      if (scroll === "1") {
+        window.scrollTo({ top: 0, left: 0 });
+      }
+
+      if ((market || pool) && markets.length > 0) {
+        let indexTokenAddress;
+        if (SWAP_MARKET_REGEX.test(market || "")) {
+          indexTokenAddress = NATIVE_TOKEN_ADDRESS;
+        } else {
+          const indexTokenInfo = market && getTokenBySymbolSafe(chainId, market, { isSynthetic: true, version: "v2" });
+          indexTokenAddress = indexTokenInfo && convertTokenAddress(chainId, indexTokenInfo.address, "wrapped");
+        }
+        const marketInfo = findMarketInfoByPool(markets, pool, indexTokenAddress);
         if (marketInfo) {
           setIndexName(getMarketIndexName(marketInfo));
-          onSelectMarket(marketInfo?.marketTokenAddress);
+          onSelectMarket(marketInfo.marketTokenAddress);
           const indexName = getMarketIndexName(marketInfo);
           const poolName = getMarketPoolName(marketInfo);
           helperToast.success(
@@ -730,16 +750,18 @@ export function GmSwapBox(p: Props) {
           );
         }
 
-        if (queryParams.get("scroll") === "1") {
-          window.scrollTo({ top: 0, left: 0 });
+        if (history.location.search) {
+          history.replace({ search: "" });
         }
       }
 
-      if (history.location.search) {
-        history.replace({ search: "" });
+      if (!market && !pool) {
+        if (history.location.search) {
+          history.replace({ search: "" });
+        }
       }
     },
-    [history, marketsInfoData, onSelectMarket, queryParams, setIndexName, setOperation]
+    [history, onSelectMarket, searchParams, setIndexName, setOperation, setMode, setFirstTokenAddress, chainId, markets]
   );
 
   useEffect(
@@ -1102,4 +1124,56 @@ export function GmSwapBox(p: Props) {
       />
     </div>
   );
+}
+
+const getAvailableModes = (operation: Operation, market?: Market) => {
+  if (operation === Operation.Deposit) {
+    if (!market?.isSameCollaterals) {
+      return [Mode.Single, Mode.Pair];
+    }
+
+    return [Mode.Single];
+  }
+
+  return [Mode.Pair];
+};
+
+function showMarketToast(market) {
+  if (!market) return;
+  const indexName = getMarketIndexName(market);
+  const poolName = getMarketPoolName(market);
+  helperToast.success(
+    <Trans>
+      <div className="inline-flex">
+        GM:&nbsp;<span>{indexName}</span>
+        <span className="subtext gm-toast">[{poolName}]</span>
+      </div>{" "}
+      <span>selected in order form</span>
+    </Trans>
+  );
+}
+
+function findMarketInfoByPool(markets: MarketInfo[], pool?: string, indexTokenAddress?: string) {
+  const poolMaketInfo =
+    pool &&
+    markets.find((marketInfo) => {
+      if (isAddress(pool)) {
+        return marketInfo.marketTokenAddress === pool;
+      }
+      if (indexTokenAddress) {
+        const poolName = getMarketPoolName(marketInfo);
+        const reversedPoolName = poolName.split("-").reverse().join("-");
+        return (
+          marketInfo.indexTokenAddress === indexTokenAddress &&
+          (poolName.toLowerCase() === pool.toLowerCase() || reversedPoolName.toLowerCase() === pool.toLowerCase())
+        );
+      }
+      return false;
+    });
+
+  if (poolMaketInfo) {
+    return poolMaketInfo;
+  }
+
+  return markets.find((marketInfo) => marketInfo.indexTokenAddress === indexTokenAddress);
 }

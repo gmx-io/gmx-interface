@@ -103,6 +103,7 @@ import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 
 import "./TradeBox.scss";
+import { useHistory } from "react-router-dom";
 
 export type Props = {
   avaialbleTokenOptions: AvailableTokenOptions;
@@ -135,6 +136,7 @@ export function TradeBox(p: Props) {
   const { avaialbleTokenOptions, shouldDisableValidation, allowedSlippage, setPendingTxns } = p;
 
   const { openConnectModal } = useConnectModal();
+  const history = useHistory();
   const {
     swapTokens,
     indexTokens,
@@ -520,7 +522,7 @@ export function TradeBox(p: Props) {
               </Trans>
               <br />
               <br />
-              <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">More Info</ExternalLink>.
+              <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
             </>
           );
           break;
@@ -760,6 +762,13 @@ export function TradeBox(p: Props) {
     switchTokenAddresses();
     setFromTokenInputValue(toTokenInputValue || "", true);
     setToTokenInputValue(fromTokenInputValue || "", true);
+  }
+
+  function onTradeTypeChange(type: TradeType) {
+    onSelectTradeType(type);
+    if (tradeType !== type) {
+      history.push(`/trade/${type.toLowerCase()}`);
+    }
   }
 
   const onConfirmationClose = useCallback(() => {
@@ -1321,7 +1330,7 @@ export function TradeBox(p: Props) {
             options={Object.values(TradeType)}
             optionLabels={tradeTypeLabels}
             option={tradeType}
-            onChange={onSelectTradeType}
+            onChange={onTradeTypeChange}
             className="SwapBox-option-tabs"
           />
 

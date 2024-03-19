@@ -59,7 +59,7 @@ import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
@@ -69,6 +69,7 @@ import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsSt
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 
 import "./PositionEditor.scss";
+import { useKey } from "react-use";
 
 export type Props = {
   position?: PositionInfo;
@@ -103,6 +104,8 @@ export function PositionEditor(p: Props) {
   const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
+
+  const submitButtonRef = useRef<HTMLButtonElement>(null);
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
   const minResidualAmount = getMinResidualAmount(nativeToken?.decimals, nativeToken?.prices?.maxPrice);
@@ -425,6 +428,18 @@ export function PositionEditor(p: Props) {
     });
   }
 
+  useKey(
+    "Enter",
+    () => {
+      if (isVisible && !error) {
+        submitButtonRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+        onSubmit();
+      }
+    },
+    {},
+    [isVisible, error]
+  );
+
   useEffect(
     function initCollateral() {
       if (!position) {
@@ -644,6 +659,7 @@ export function PositionEditor(p: Props) {
                 className="w-full"
                 variant="primary-action"
                 onClick={onSubmit}
+                buttonRef={submitButtonRef}
                 disabled={Boolean(error) && !p.shouldDisableValidation}
               >
                 {error || OPERATION_LABELS[operation]}

@@ -9,6 +9,7 @@ import { approvePlugin, cancelMultipleOrders, useExecutionFee } from "domain/leg
 import {
   LONG,
   MARGIN_FEE_BASIS_POINTS,
+  MARKET,
   SHORT,
   SWAP,
   USD_DECIMALS,
@@ -53,6 +54,7 @@ import { getLeverage, getLeverageStr } from "lib/positions/getLeverage";
 import "./Exchange.css";
 import { getIsV1Supported } from "config/features";
 import useWallet from "lib/wallets/useWallet";
+import useV1TradeParamsProcessor from "domain/trade/useV1TradeParamsProcessor";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
@@ -430,8 +432,14 @@ export const Exchange = forwardRef((props, ref) => {
     "Exchange-token-selection-v2",
     defaultTokenSelection
   );
+  // TODO hack with useLocalStorageSerializeKey
+  const [shortCollateralAddress, setShortCollateralAddress] = useLocalStorageByChainId(
+    chainId,
+    "Short-Collateral-Address",
+    getTokenBySymbol(chainId, defaultCollateralSymbol).address
+  );
   const [swapOption, setSwapOption] = useLocalStorageByChainId(chainId, "Swap-option-v2", LONG);
-
+  let [orderOption, setOrderOption] = useLocalStorageSerializeKey([chainId, "Order-option"], MARKET);
   const fromTokenAddress = tokenSelection[swapOption].from;
   const toTokenAddress = tokenSelection[swapOption].to;
 
@@ -455,6 +463,20 @@ export const Exchange = forwardRef((props, ref) => {
       setTokenSelection(newTokenSelection);
     },
     [tokenSelection, setTokenSelection]
+  );
+
+  const setFromAndToTokenAddress = useCallback(
+    (selectedSwapOption, fromTokenAddress, toTokenAddress) => {
+      const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection));
+      newTokenSelection[selectedSwapOption].from = fromTokenAddress;
+      newTokenSelection[selectedSwapOption].to = toTokenAddress;
+      if (selectedSwapOption === LONG || selectedSwapOption === SHORT) {
+        newTokenSelection[LONG].to = toTokenAddress;
+        newTokenSelection[SHORT].to = toTokenAddress;
+      }
+      setTokenSelection(newTokenSelection);
+    },
+    [setTokenSelection, tokenSelection]
   );
 
   const setMarket = (selectedSwapOption, toTokenAddress) => {
@@ -494,6 +516,41 @@ export const Exchange = forwardRef((props, ref) => {
   const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
     fetcher: contractFetcher(signer, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
   });
+
+  const updateTradeOptions = useCallback(
+    (options) => {
+      if (options.tradeType) {
+        setSwapOption(options.tradeType);
+      }
+      if (options.tradeMode) {
+        setOrderOption(options.tradeMode);
+      }
+      if (options.toTokenAddress && options.fromTokenAddress) {
+        setFromAndToTokenAddress(options.tradeType, options.fromTokenAddress, options.toTokenAddress);
+      } else {
+        if (options.fromTokenAddress) {
+          setFromTokenAddress(options.tradeType, options.fromTokenAddress);
+        }
+        if (options.toTokenAddress) {
+          setToTokenAddress(options.tradeType, options.toTokenAddress);
+        }
+      }
+
+      if (options.collateralTokenAddress) {
+        setShortCollateralAddress(options.collateralTokenAddress);
+      }
+    },
+    [
+      setSwapOption,
+      setOrderOption,
+      setFromAndToTokenAddress,
+      setFromTokenAddress,
+      setToTokenAddress,
+      setShortCollateralAddress,
+    ]
+  );
+
+  useV1TradeParamsProcessor({ updateTradeOptions, swapOption });
 
   const { data: totalTokenWeights } = useSWR(
     [`Exchange:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],
@@ -724,6 +781,10 @@ export const Exchange = forwardRef((props, ref) => {
   const [isPositionRouterApproving, setIsPositionRouterApproving] = useState(false);
   const [isCancelMultipleOrderProcessing, setIsCancelMultipleOrderProcessing] = useState(false);
   const [cancelOrderIdList, setCancelOrderIdList] = useState([]);
+
+  if (!flagOrdersEnabled) {
+    orderOption = MARKET;
+  }
 
   const onMultipleCancelClick = useCallback(
     async function () {
@@ -996,6 +1057,10 @@ export const Exchange = forwardRef((props, ref) => {
               minExecutionFeeUSD={minExecutionFeeUSD}
               minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}
               positions={positions}
+              orderOption={orderOption}
+              setOrderOption={setOrderOption}
+              setShortCollateralAddress={setShortCollateralAddress}
+              shortCollateralAddress={shortCollateralAddress}
             />
           )}
 

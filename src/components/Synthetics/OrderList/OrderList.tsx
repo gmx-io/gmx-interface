@@ -126,7 +126,10 @@ export function OrderList(p: Props) {
       setPendingTxns: p.setPendingTxns,
       isLastSubaccountAction,
       detailsMsg: cancelOrdersDetailsMessage,
-    }).finally(() => setCanellingOrdersKeys((prev) => prev.filter((k) => k !== key)));
+    }).finally(() => {
+      setCanellingOrdersKeys((prev) => prev.filter((k) => k !== key));
+      setSelectedOrdersKeys?.({});
+    });
   }
 
   return (
