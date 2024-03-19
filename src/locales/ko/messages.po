@@ -5327,6 +5327,10 @@ msgstr "해당 포지션은 최대 레버리지인 100x를 초과하여 청산�
 msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded."
 msgstr ""
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "This swap is routed through several GM pools for the lowest possible fees and price impact."
+msgstr ""
+
 #: src/pages/Home/Home.js
 msgid "Three tokens create our ecosystem"
 msgstr ""

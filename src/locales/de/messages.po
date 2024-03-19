@@ -5327,6 +5327,10 @@ msgstr "Diese Position wurde liquidiert, da die maximale Hebelwirkung von 100x Ã
 msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded."
 msgstr ""
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "This swap is routed through several GM pools for the lowest possible fees and price impact."
+msgstr ""
+
 #: src/pages/Home/Home.js
 msgid "Three tokens create our ecosystem"
 msgstr ""

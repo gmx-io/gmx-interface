@@ -5330,6 +5330,10 @@ msgstr "This position was liquidated as the max leverage of 100x was exceeded."
 msgid "This position was liquidated as the max leverage of {maxLeverageText} was exceeded."
 msgstr "This position was liquidated as the max leverage of {maxLeverageText} was exceeded."
 
+#: src/components/Synthetics/TradeFeesRow/TradeFeesRow.tsx
+msgid "This swap is routed through several GM pools for the lowest possible fees and price impact."
+msgstr "This swap is routed through several GM pools for the lowest possible fees and price impact."
+
 #: src/pages/Home/Home.js
 msgid "Three tokens create our ecosystem"
 msgstr "Three tokens create our ecosystem"
