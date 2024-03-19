@@ -128,7 +128,7 @@ export function PoolSelector({
     if (!marketInfo) return "...";
     const name = showAllPools ? `GM: ${getMarketIndexName(marketInfo)}` : getMarketPoolName(marketInfo);
 
-    if (filteredOptions?.length > 1) {
+    if (marketsOptions?.length > 1) {
       return (
         <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
           {name ? name : "..."}
