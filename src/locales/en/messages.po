@@ -6119,6 +6119,14 @@ msgstr "Win Rate"
 msgid "Win/Loss"
 msgstr "Win/Loss"
 
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "Winner:"
+msgstr "Winner:"
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "Winners:"
+msgstr "Winners:"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #~ msgid "Wins and Losses for fully closed Positions."
 #~ msgstr "Wins and Losses for fully closed Positions."
