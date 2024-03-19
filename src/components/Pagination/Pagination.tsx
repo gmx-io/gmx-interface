@@ -4,7 +4,7 @@ import "./Pagination.css";
 type Props = {
   page: number;
   pageCount: number;
-  onPageChange: any;
+  onPageChange: (page: number) => void;
 };
 
 function getPageNumbers(current, max = 1) {

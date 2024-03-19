@@ -544,7 +544,7 @@ table.Exchange-list tr {
   border-bottom: 1px solid #23263b;
 }
 
-table.Exchange-list tr:last-child {
+table.Exchange-list tbody tr:last-child {
   border-bottom: none;
 }
 

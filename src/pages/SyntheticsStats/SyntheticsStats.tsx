@@ -8,6 +8,7 @@ import { ShareBar } from "components/ShareBar/ShareBar";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod, getPriceImpactUsd } from "domain/synthetics/fees";
 import {
+  MarketInfo,
   getAvailableLiquidity,
   getAvailableUsdLiquidityForCollateral,
   getMarketIndexName,
@@ -66,7 +67,7 @@ function formatFactor(factor: BigNumber) {
   return formatAmount(factor, 30, factorDecimals);
 }
 
-const CSV_EXCLUDED_FIELDS = [
+const CSV_EXCLUDED_FIELDS: (keyof MarketInfo)[] = [
   "longToken",
   "shortToken",
   "indexToken",

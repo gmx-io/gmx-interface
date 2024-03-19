@@ -1,0 +1,56 @@
+.TableOptionsFilter {
+  &-options {
+    max-height: 20rem;
+    overflow-y: auto;
+
+    overscroll-behavior: contain;
+
+    border-top: 1px solid #32344c;
+  }
+
+  &-group-name {
+    font-size: var(--font-sm);
+
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+
+    cursor: pointer;
+  }
+
+  &-option {
+    font-size: var(--font-sm);
+
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+
+    cursor: pointer;
+
+    &-in-group {
+      padding-left: 25px;
+    }
+  }
+
+  &-search {
+    margin: 1rem;
+  }
+
+  &-clear {
+    font-size: var(--font-sm);
+    padding: 0.5rem 1rem;
+    padding-top: 1rem;
+
+    color: var(--text-gray);
+
+    cursor: pointer;
+
+    &:hover {
+      color: white;
+    }
+
+    &:last-child {
+      padding-bottom: 1rem;
+    }
+  }
+}

@@ -1,6 +1,8 @@
-import { ReactNode, HTMLProps, RefObject } from "react";
+import { HTMLProps, MouseEvent as ReactMouseEvent, ReactNode, RefObject } from "react";
 import cx from "classnames";
+
 import ButtonLink from "./ButtonLink";
+
 import "./Button.scss";
 
 type ButtonVariant = "primary" | "primary-action" | "secondary";
@@ -11,7 +13,7 @@ type ButtonProps = HTMLProps<HTMLButtonElement> & {
   className?: string;
   textAlign?: "center" | "left" | "right";
   disabled?: boolean;
-  onClick?: () => void;
+  onClick?: (event: ReactMouseEvent) => void;
   to?: string;
   type?: "button" | "submit" | "reset";
   imgInfo?: {
@@ -39,13 +41,13 @@ export default function Button({
   const classNames = cx("button", variant, className, textAlign);
   const showExternalLinkArrow = variant === "secondary";
 
-  function handleClick() {
+  function handleClick(event: ReactMouseEvent) {
     if (disabled || !onClick) {
       return;
     }
 
     if (onClick) {
-      onClick();
+      onClick(event);
     }
   }
 

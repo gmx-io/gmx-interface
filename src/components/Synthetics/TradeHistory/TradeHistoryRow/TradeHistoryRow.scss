@@ -1,0 +1,59 @@
+.TradeHistoryRow {
+  border-bottom: none !important;
+}
+
+.TradeHistoryRow-external-link {
+  vertical-align: top;
+
+  svg {
+    path {
+      fill: currentColor;
+    }
+  }
+}
+
+.TradeHistoryRow-time {
+  font-size: 1.25rem;
+}
+
+.TradeHistoryRow-account {
+  display: block;
+  font-size: 1.25rem;
+  margin-top: 0.25rem;
+
+  min-width: 0;
+  white-space: pre;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.TradeHistoryRow-tooltip {
+  white-space: pre-line;
+}
+
+.TradeHistoryRow-price {
+  text-align: end !important;
+}
+
+.TradeHistoryRow-tooltip-portal {
+  .Tooltip-popup {
+    min-width: max-content;
+  }
+}
+
+.TradeHistoryRow-price-tooltip-portal {
+  .Tooltip-popup {
+    @media (min-width: 600px) {
+      width: 400px;
+    }
+  }
+}
+
+.TradeHistoryRow-action-handle {
+  display: block;
+  min-width: 0px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

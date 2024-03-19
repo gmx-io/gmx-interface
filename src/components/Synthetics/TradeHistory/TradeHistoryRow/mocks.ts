@@ -27,53 +27,54 @@ const prepareSwap = (action: any): SwapTradeAction => {
 };
 
 export const requestIncreasePosition = prepare({
-  id: "0xde5c5f634b81dd10eb96a2cc1b08a9d15d09a35a8d07f8252498855b68b4f3df:19",
+  id: "0x54c09779cf511553be331c932eb5909ef19e712ff73bf839e0cd95d6a76360c2:2",
   eventName: "OrderCreated",
-  account: "0xc9e1ce91d3f782499cfe787b6f1d2af0ca76c049",
-  marketAddress: "0x339eF6aAcF8F4B2AD15BdcECBEED1842Ec4dBcBf",
+  account: "0x414da6c7c50eadfbd4c67c902c7daf59f58d32c7",
+  marketAddress: "0xD996ff47A1F763E1e55415BC4437c59292D1F415",
   marketInfo: {
-    marketTokenAddress: "0x339eF6aAcF8F4B2AD15BdcECBEED1842Ec4dBcBf",
-    indexTokenAddress: "0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
-    longTokenAddress: "0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
-    shortTokenAddress: "0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
+    marketTokenAddress: "0xD996ff47A1F763E1e55415BC4437c59292D1F415",
+    indexTokenAddress: "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
+    longTokenAddress: "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
+    shortTokenAddress: "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
     isSameCollaterals: false,
     isSpotOnly: false,
-    name: "BTC/USD [BTC-USDC]",
+    name: "AVAX/USD [WAVAX-USDC]",
     data: "",
     isDisabled: false,
     longToken: {
-      name: "Bitcoin",
-      symbol: "BTC",
-      decimals: 8,
-      address: "0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
-      isShortable: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
-      explorerUrl: "https://goerli.arbiscan.io/address/0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
+      name: "Wrapped AVAX",
+      symbol: "WAVAX",
+      decimals: 18,
+      address: "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
+      isWrapped: true,
+      baseSymbol: "AVAX",
+      imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/avalanche",
+      explorerUrl: "https://testnet.snowtrace.io/address/0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
       prices: {
         minPrice: {
           type: "BigNumber",
-          hex: "0x0516af396904d1b6510b3ce0000000",
+          hex: "0x020848ce70e679b47f64d9000000",
         },
         maxPrice: {
           type: "BigNumber",
-          hex: "0x0516af396904d1b6510b3ce0000000",
+          hex: "0x020848ce70e679b47f64d9000000",
         },
       },
       balance: {
         type: "BigNumber",
-        hex: "0x04b571c0",
+        hex: "0x1e9b7a9f0b6f20",
       },
     },
     shortToken: {
       name: "USD Coin",
       symbol: "USDC",
+      address: "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
       decimals: 6,
-      address: "0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
       coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
-      explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
+      explorerUrl: "https://testnet.snowtrace.io/address/0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
       prices: {
         minPrice: {
           type: "BigNumber",
@@ -81,61 +82,69 @@ export const requestIncreasePosition = prepare({
         },
         maxPrice: {
           type: "BigNumber",
-          hex: "0x0c9f456d8f88b0f1c31e000000",
+          hex: "0x0ca0b1305ce70e40af20000000",
         },
       },
       balance: {
         type: "BigNumber",
-        hex: "0x03312adc93",
+        hex: "0x1260d05b",
       },
     },
     indexToken: {
-      name: "Bitcoin",
-      symbol: "BTC",
-      decimals: 8,
-      address: "0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
+      name: "Avalanche",
+      symbol: "AVAX",
+      decimals: 18,
+      address: "0x0000000000000000000000000000000000000000",
+      isNative: true,
       isShortable: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
-      explorerUrl: "https://goerli.arbiscan.io/address/0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
+      imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
+      wrappedAddress: "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
       prices: {
         minPrice: {
           type: "BigNumber",
-          hex: "0x0516af396904d1b6510b3ce0000000",
+          hex: "0x020848ce70e679b47f64d9000000",
         },
         maxPrice: {
           type: "BigNumber",
-          hex: "0x0516af396904d1b6510b3ce0000000",
+          hex: "0x020848ce70e679b47f64d9000000",
         },
       },
       balance: {
         type: "BigNumber",
-        hex: "0x04b571c0",
+        hex: "0x7ad19dcc2e798676",
       },
     },
     longInterestUsd: {
       type: "BigNumber",
-      hex: "0x8d151dda39e2f3d6ca7318000000",
+      hex: "0x3594cfa5ef4e727dd1634908c000",
     },
     shortInterestUsd: {
       type: "BigNumber",
-      hex: "0xdbe32f323e0c4c6831d2dc900000",
+      hex: "0x1e26b364eac3d5b12bf666c10000",
     },
     longInterestInTokens: {
       type: "BigNumber",
-      hex: "0xa3ea16",
+      hex: "0x0374e917e36ae364a1",
     },
     shortInterestInTokens: {
       type: "BigNumber",
-      hex: "0x0107657e",
+      hex: "0xc84ac80825452690",
     },
     longPoolAmount: {
       type: "BigNumber",
-      hex: "0x02b24068",
+      hex: "0x03d18d6b0bdbb860af",
     },
     shortPoolAmount: {
       type: "BigNumber",
-      hex: "0x06102f5c1c",
+      hex: "0x8dea649b",
+    },
+    maxLongPoolAmountForDeposit: {
+      type: "BigNumber",
+      hex: "0x033b2e3c9fd0803ce8000000",
+    },
+    maxShortPoolAmountForDeposit: {
+      type: "BigNumber",
+      hex: "0x033b2e3c9fd0803ce8000000",
     },
     maxLongPoolAmount: {
       type: "BigNumber",
@@ -155,27 +164,27 @@ export const requestIncreasePosition = prepare({
     },
     poolValueMin: {
       type: "BigNumber",
-      hex: "0x0756183d9182a41c17e70e0d050c2e",
+      hex: "0xb9a13c1cd44fb107b4317ba1aff5",
     },
     poolValueMax: {
       type: "BigNumber",
-      hex: "0x07562219e455012cdbbe016d250c2e",
+      hex: "0xb9af5a1931b19e9f389ff621aff5",
     },
     reserveFactorLong: {
       type: "BigNumber",
-      hex: "0x0b5c0e8d21d902d61fa0000000",
+      hex: "0x0bfd9d94f90fbbe204f0000000",
     },
     reserveFactorShort: {
       type: "BigNumber",
-      hex: "0x0b5c0e8d21d902d61fa0000000",
+      hex: "0x0bfd9d94f90fbbe204f0000000",
     },
     openInterestReserveFactorLong: {
       type: "BigNumber",
-      hex: "0x0a18f07d736b90be5500000000",
+      hex: "0x0b5c0e8d21d902d61fa0000000",
     },
     openInterestReserveFactorShort: {
       type: "BigNumber",
-      hex: "0x0a18f07d736b90be5500000000",
+      hex: "0x0b5c0e8d21d902d61fa0000000",
     },
     maxOpenInterestLong: {
       type: "BigNumber",
@@ -187,19 +196,27 @@ export const requestIncreasePosition = prepare({
     },
     totalBorrowingFees: {
       type: "BigNumber",
-      hex: "0x2adc767eea32cd45c3bd39ca32",
+      hex: "0x0312dc3edf3f01f94db43caa6644",
     },
     positionImpactPoolAmount: {
       type: "BigNumber",
-      hex: "0x0197ea",
+      hex: "0x2d33d8623f8865",
+    },
+    minPositionImpactPoolAmount: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    positionImpactPoolDistributionRate: {
+      type: "BigNumber",
+      hex: "0x00",
     },
     swapImpactPoolAmountLong: {
       type: "BigNumber",
-      hex: "0x49",
+      hex: "0x147d7ff57b9ad81a",
     },
     swapImpactPoolAmountShort: {
       type: "BigNumber",
-      hex: "0x04b76bc737",
+      hex: "0x01a8e72a",
     },
     borrowingFactorLong: {
       type: "BigNumber",
@@ -225,29 +242,53 @@ export const requestIncreasePosition = prepare({
       type: "BigNumber",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
+    fundingIncreaseFactorPerSecond: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    fundingDecreaseFactorPerSecond: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    thresholdForDecreaseFunding: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    thresholdForStableFunding: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    minFundingFactorPerSecond: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecond: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
     pnlLongMax: {
       type: "BigNumber",
-      hex: "-0x0124f0436c81ae646eba34c00000",
+      hex: "0x4c02e020d1ee78ba803cfa652840",
     },
     pnlLongMin: {
       type: "BigNumber",
-      hex: "-0x0124f0436c81ae646eba34c00000",
+      hex: "0x4c02e020d1ee78ba803cfa652840",
     },
     pnlShortMax: {
       type: "BigNumber",
-      hex: "-0x04fb36ab0d2e7114ad5bc1b00000",
+      hex: "0xd1a92c3d3e1a249d4868cb5c00",
     },
     pnlShortMin: {
       type: "BigNumber",
-      hex: "-0x04fb36ab0d2e7114ad5bc1b00000",
+      hex: "0xd1a92c3d3e1a249d4868cb5c00",
     },
     netPnlMax: {
       type: "BigNumber",
-      hex: "-0x062026ee79b01f791c15f6700000",
+      hex: "0x4cd4894d0f2c92df1d8563308440",
     },
     netPnlMin: {
       type: "BigNumber",
-      hex: "-0x062026ee79b01f791c15f6700000",
+      hex: "0x4cd4894d0f2c92df1d8563308440",
     },
     maxPnlFactorForTradersLong: {
       type: "BigNumber",
@@ -271,11 +312,11 @@ export const requestIncreasePosition = prepare({
     },
     claimableFundingAmountLong: {
       type: "BigNumber",
-      hex: "0x00",
+      hex: "0x13165c0e3542c3",
     },
     claimableFundingAmountShort: {
       type: "BigNumber",
-      hex: "0x0bbc20",
+      hex: "0x01d670",
     },
     positionFeeFactorForPositiveImpact: {
       type: "BigNumber",
@@ -331,92 +372,93 @@ export const requestIncreasePosition = prepare({
     },
     borrowingFactorPerSecondForLongs: {
       type: "BigNumber",
-      hex: "0x00",
+      hex: "0x0132b440c5a7c78c000c",
     },
     borrowingFactorPerSecondForShorts: {
       type: "BigNumber",
-      hex: "0x3a06759dd7f012b91a",
+      hex: "0x00",
     },
     fundingFactorPerSecond: {
       type: "BigNumber",
-      hex: "0xecb26eec42fc7658e0",
+      hex: "0x012f61fb21f0403f2694",
     },
-    longsPayShorts: false,
+    longsPayShorts: true,
     virtualPoolAmountForLongToken: {
       type: "BigNumber",
-      hex: "0x02b24068",
+      hex: "0x00",
     },
     virtualPoolAmountForShortToken: {
       type: "BigNumber",
-      hex: "0x06102f5c1c",
+      hex: "0x00",
     },
     virtualInventoryForPositions: {
       type: "BigNumber",
-      hex: "-0x3885f95a824cd6d349eb2ab00000",
+      hex: "0x00",
     },
-    virtualMarketId: "0x11111137e2e8ae1c70c421e7a0dd36e023e0d6217198f889f9eb9c2a6727481f",
-    virtualLongTokenId: "0x04533137e2e8ae1c11111111a0dd36e023e0d6217198f889f9eb9c2a6727481d",
+    virtualMarketId: "0x0000000000000000000000000000000000000000000000000000000000000000",
+    virtualLongTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
   },
   indexToken: {
-    name: "Bitcoin",
-    symbol: "BTC",
-    decimals: 8,
-    address: "0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
+    name: "Avalanche",
+    symbol: "AVAX",
+    decimals: 18,
+    address: "0x0000000000000000000000000000000000000000",
+    isNative: true,
     isShortable: true,
-    imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
-    explorerUrl: "https://goerli.arbiscan.io/address/0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
+    imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
+    wrappedAddress: "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
     prices: {
       minPrice: {
         type: "BigNumber",
-        hex: "0x0516af396904d1b6510b3ce0000000",
+        hex: "0x020848ce70e679b47f64d9000000",
       },
       maxPrice: {
         type: "BigNumber",
-        hex: "0x0516af396904d1b6510b3ce0000000",
+        hex: "0x020848ce70e679b47f64d9000000",
       },
     },
     balance: {
       type: "BigNumber",
-      hex: "0x04b571c0",
+      hex: "0x7ad19dcc2e798676",
     },
   },
-  swapPath: ["0x339eF6aAcF8F4B2AD15BdcECBEED1842Ec4dBcBf"],
-  initialCollateralTokenAddress: "0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
+  swapPath: ["0xD996ff47A1F763E1e55415BC4437c59292D1F415"],
+  initialCollateralTokenAddress: "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
   initialCollateralToken: {
-    name: "Bitcoin",
-    symbol: "BTC",
-    decimals: 8,
-    address: "0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
-    isShortable: true,
-    imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
-    explorerUrl: "https://goerli.arbiscan.io/address/0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
+    name: "Wrapped AVAX",
+    symbol: "WAVAX",
+    decimals: 18,
+    address: "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
+    isWrapped: true,
+    baseSymbol: "AVAX",
+    imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/avalanche",
+    explorerUrl: "https://testnet.snowtrace.io/address/0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
     prices: {
       minPrice: {
         type: "BigNumber",
-        hex: "0x0516af396904d1b6510b3ce0000000",
+        hex: "0x020848ce70e679b47f64d9000000",
       },
       maxPrice: {
         type: "BigNumber",
-        hex: "0x0516af396904d1b6510b3ce0000000",
+        hex: "0x020848ce70e679b47f64d9000000",
       },
     },
     balance: {
       type: "BigNumber",
-      hex: "0x04b571c0",
+      hex: "0x1e9b7a9f0b6f20",
     },
   },
   targetCollateralToken: {
     name: "USD Coin",
     symbol: "USDC",
+    address: "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
     decimals: 6,
-    address: "0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
     isStable: true,
     imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
     coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
-    explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
+    explorerUrl: "https://testnet.snowtrace.io/address/0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
     prices: {
       minPrice: {
         type: "BigNumber",
@@ -424,21 +466,21 @@ export const requestIncreasePosition = prepare({
       },
       maxPrice: {
         type: "BigNumber",
-        hex: "0x0c9f456d8f88b0f1c31e000000",
+        hex: "0x0ca0b1305ce70e40af20000000",
       },
     },
     balance: {
       type: "BigNumber",
-      hex: "0x03312adc93",
+      hex: "0x1260d05b",
     },
   },
   initialCollateralDeltaAmount: {
     type: "BigNumber",
-    hex: "0x0f4240",
+    hex: "0x8ac7230489e80000",
   },
   sizeDeltaUsd: {
     type: "BigNumber",
-    hex: "0xb82beb3e1d7ddda8e3d6f3400000",
+    hex: "0x34027e417db6da41c6bace000000",
   },
   triggerPrice: {
     type: "BigNumber",
@@ -446,71 +488,73 @@ export const requestIncreasePosition = prepare({
   },
   acceptablePrice: {
     type: "BigNumber",
-    hex: "0x04f8c47b7d14785de1d2f9796d9d00",
+    hex: "0x01ba7ddecf686427743628600000",
   },
   minOutputAmount: {
     type: "BigNumber",
     hex: "0x00",
   },
   orderType: 2,
-  orderKey: "0xf8e636c761363279c51f48a5d584964c4b1ce1a4003c8baa03f0dacef7e1f651",
-  isLong: true,
+  orderKey: "0x8a7c8b5f3a2026b7dcca239a957d684e2dcffda4f8b901657eff8d5e5e3717fc",
+  isLong: false,
   reason: null,
+  reasonBytes: null,
   transaction: {
-    timestamp: 1694168065,
-    hash: "0xde5c5f634b81dd10eb96a2cc1b08a9d15d09a35a8d07f8252498855b68b4f3df",
+    timestamp: 1707375050,
+    hash: "0x54c09779cf511553be331c932eb5909ef19e712ff73bf839e0cd95d6a76360c2",
     __typename: "Transaction",
   },
 });
 
 export const withdraw1Usd = prepare({
-  id: "0x99776b15021a80a63b477ae7ebbdeabc472354c415a49b89137d8a27bbc48bb5:2",
+  id: "0x0e55cbb747fc2bae9c2fc38588af6f6e3eeab823e4afd32afc628c773de33007:2",
   eventName: "OrderCreated",
-  account: "0xc9e1ce91d3f782499cfe787b6f1d2af0ca76c049",
-  marketAddress: "0x339eF6aAcF8F4B2AD15BdcECBEED1842Ec4dBcBf",
+  account: "0x414da6c7c50eadfbd4c67c902c7daf59f58d32c7",
+  marketAddress: "0xD996ff47A1F763E1e55415BC4437c59292D1F415",
   marketInfo: {
-    marketTokenAddress: "0x339eF6aAcF8F4B2AD15BdcECBEED1842Ec4dBcBf",
-    indexTokenAddress: "0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
-    longTokenAddress: "0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
-    shortTokenAddress: "0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
+    marketTokenAddress: "0xD996ff47A1F763E1e55415BC4437c59292D1F415",
+    indexTokenAddress: "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
+    longTokenAddress: "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
+    shortTokenAddress: "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
     isSameCollaterals: false,
     isSpotOnly: false,
-    name: "BTC/USD [BTC-USDC]",
+    name: "AVAX/USD [WAVAX-USDC]",
     data: "",
     isDisabled: false,
     longToken: {
-      name: "Bitcoin",
-      symbol: "BTC",
-      decimals: 8,
-      address: "0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
-      isShortable: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
-      explorerUrl: "https://goerli.arbiscan.io/address/0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
+      name: "Wrapped AVAX",
+      symbol: "WAVAX",
+      decimals: 18,
+      address: "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
+      isWrapped: true,
+      baseSymbol: "AVAX",
+      imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/avalanche",
+      explorerUrl: "https://testnet.snowtrace.io/address/0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
       prices: {
         minPrice: {
           type: "BigNumber",
-          hex: "0x0515d0732f350f4127a40990000000",
+          hex: "0x0208e8c9ceb8ae36e64f41000000",
         },
         maxPrice: {
           type: "BigNumber",
-          hex: "0x0515d0732f350f4127a40990000000",
+          hex: "0x0208e8c9ceb8ae36e64f41000000",
         },
       },
       balance: {
         type: "BigNumber",
-        hex: "0x04b571c0",
+        hex: "0x1e9b7a9f0b6f20",
       },
     },
     shortToken: {
       name: "USD Coin",
       symbol: "USDC",
+      address: "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
       decimals: 6,
-      address: "0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
       coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
-      explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
+      explorerUrl: "https://testnet.snowtrace.io/address/0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
       prices: {
         minPrice: {
           type: "BigNumber",
@@ -518,61 +562,69 @@ export const withdraw1Usd = prepare({
         },
         maxPrice: {
           type: "BigNumber",
-          hex: "0x0c9f456d8f88b0f1c31e000000",
+          hex: "0x0ca0b1305ce70e40af20000000",
         },
       },
       balance: {
         type: "BigNumber",
-        hex: "0x03312adc93",
+        hex: "0x1260d05b",
       },
     },
     indexToken: {
-      name: "Bitcoin",
-      symbol: "BTC",
-      decimals: 8,
-      address: "0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
+      name: "Avalanche",
+      symbol: "AVAX",
+      decimals: 18,
+      address: "0x0000000000000000000000000000000000000000",
+      isNative: true,
       isShortable: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
-      explorerUrl: "https://goerli.arbiscan.io/address/0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
+      imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
+      wrappedAddress: "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
       prices: {
         minPrice: {
           type: "BigNumber",
-          hex: "0x0515d0732f350f4127a40990000000",
+          hex: "0x0208e8c9ceb8ae36e64f41000000",
         },
         maxPrice: {
           type: "BigNumber",
-          hex: "0x0515d0732f350f4127a40990000000",
+          hex: "0x0208e8c9ceb8ae36e64f41000000",
         },
       },
       balance: {
         type: "BigNumber",
-        hex: "0x04b571c0",
+        hex: "0x7ad19dcc2e798676",
       },
     },
     longInterestUsd: {
       type: "BigNumber",
-      hex: "0x8d151dda39e2f3d6ca7318000000",
+      hex: "0x3594cfa5ef4e727dd1634908c000",
     },
     shortInterestUsd: {
       type: "BigNumber",
-      hex: "0xdbe32f323e0c4c6831d2dc900000",
+      hex: "0x1e26b364eac3d5b12bf666c10000",
     },
     longInterestInTokens: {
       type: "BigNumber",
-      hex: "0xa3ea16",
+      hex: "0x0374e917e36ae364a1",
     },
     shortInterestInTokens: {
       type: "BigNumber",
-      hex: "0x0107657e",
+      hex: "0xc84ac80825452690",
     },
     longPoolAmount: {
       type: "BigNumber",
-      hex: "0x02b24068",
+      hex: "0x03d18d6b0bdbb860af",
     },
     shortPoolAmount: {
       type: "BigNumber",
-      hex: "0x06102f5c1c",
+      hex: "0x8dea649b",
+    },
+    maxLongPoolAmountForDeposit: {
+      type: "BigNumber",
+      hex: "0x033b2e3c9fd0803ce8000000",
+    },
+    maxShortPoolAmountForDeposit: {
+      type: "BigNumber",
+      hex: "0x033b2e3c9fd0803ce8000000",
     },
     maxLongPoolAmount: {
       type: "BigNumber",
@@ -592,27 +644,27 @@ export const withdraw1Usd = prepare({
     },
     poolValueMin: {
       type: "BigNumber",
-      hex: "0x0755a5289305f59bb14033003391fe",
+      hex: "0xb9ae6f030e75b41fc7ad7c5c4a59",
     },
     poolValueMax: {
       type: "BigNumber",
-      hex: "0x0755af04e5d852ac751726605391fe",
+      hex: "0xb9bc8cff6bd7a1b74c1bf6dc4a59",
     },
     reserveFactorLong: {
       type: "BigNumber",
-      hex: "0x0b5c0e8d21d902d61fa0000000",
+      hex: "0x0bfd9d94f90fbbe204f0000000",
     },
     reserveFactorShort: {
       type: "BigNumber",
-      hex: "0x0b5c0e8d21d902d61fa0000000",
+      hex: "0x0bfd9d94f90fbbe204f0000000",
     },
     openInterestReserveFactorLong: {
       type: "BigNumber",
-      hex: "0x0a18f07d736b90be5500000000",
+      hex: "0x0b5c0e8d21d902d61fa0000000",
     },
     openInterestReserveFactorShort: {
       type: "BigNumber",
-      hex: "0x0a18f07d736b90be5500000000",
+      hex: "0x0b5c0e8d21d902d61fa0000000",
     },
     maxOpenInterestLong: {
       type: "BigNumber",
@@ -624,19 +676,27 @@ export const withdraw1Usd = prepare({
     },
     totalBorrowingFees: {
       type: "BigNumber",
-      hex: "0x2ad61f91d4709979147d61187f",
+      hex: "0x0312e29f769647e643be40a5b828",
     },
     positionImpactPoolAmount: {
       type: "BigNumber",
-      hex: "0x0197ea",
+      hex: "0x2d33d8623f8865",
+    },
+    minPositionImpactPoolAmount: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    positionImpactPoolDistributionRate: {
+      type: "BigNumber",
+      hex: "0x00",
     },
     swapImpactPoolAmountLong: {
       type: "BigNumber",
-      hex: "0x49",
+      hex: "0x147d7ff57b9ad81a",
     },
     swapImpactPoolAmountShort: {
       type: "BigNumber",
-      hex: "0x04b76bc737",
+      hex: "0x01a8e72a",
     },
     borrowingFactorLong: {
       type: "BigNumber",
@@ -662,29 +722,529 @@ export const withdraw1Usd = prepare({
       type: "BigNumber",
       hex: "0x0c9f2c9cd04674edea40000000",
     },
+    fundingIncreaseFactorPerSecond: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    fundingDecreaseFactorPerSecond: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    thresholdForDecreaseFunding: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    thresholdForStableFunding: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    minFundingFactorPerSecond: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecond: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
     pnlLongMax: {
       type: "BigNumber",
-      hex: "-0x013cde9e2ecc08d9367d19a00000",
+      hex: "0x4c2ab94c3b2bafa77f9fbb2c9240",
     },
     pnlLongMin: {
       type: "BigNumber",
-      hex: "-0x013cde9e2ecc08d9367d19a00000",
+      hex: "0x4c2ab94c3b2bafa77f9fbb2c9240",
     },
     pnlShortMax: {
       type: "BigNumber",
-      hex: "-0x04d4c2239c3e66717d1484500000",
+      hex: "0xc8a43921bd0685c4a68da7bc00",
     },
     pnlShortMin: {
       type: "BigNumber",
-      hex: "-0x04d4c2239c3e66717d1484500000",
+      hex: "0xc8a43921bd0685c4a68da7bc00",
     },
     netPnlMax: {
       type: "BigNumber",
-      hex: "-0x0611a0c1cb0a6f4ab3919df00000",
+      hex: "0x4cf35d855ce8b62d444648d44e40",
     },
     netPnlMin: {
       type: "BigNumber",
-      hex: "-0x0611a0c1cb0a6f4ab3919df00000",
+      hex: "0x4cf35d855ce8b62d444648d44e40",
+    },
+    maxPnlFactorForTradersLong: {
+      type: "BigNumber",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForTradersShort: {
+      type: "BigNumber",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    minCollateralFactor: {
+      type: "BigNumber",
+      hex: "0x204fce5e3e25026110000000",
+    },
+    minCollateralFactorForOpenInterestLong: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    minCollateralFactorForOpenInterestShort: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    claimableFundingAmountLong: {
+      type: "BigNumber",
+      hex: "0x13165c0e3542c3",
+    },
+    claimableFundingAmountShort: {
+      type: "BigNumber",
+      hex: "0x01d670",
+    },
+    positionFeeFactorForPositiveImpact: {
+      type: "BigNumber",
+      hex: "0x019d971e4fe8401e74000000",
+    },
+    positionFeeFactorForNegativeImpact: {
+      type: "BigNumber",
+      hex: "0x024306c4097859c43c000000",
+    },
+    positionImpactFactorPositive: {
+      type: "BigNumber",
+      hex: "0x0a968163f0a57b400000",
+    },
+    positionImpactFactorNegative: {
+      type: "BigNumber",
+      hex: "0x152d02c7e14af6800000",
+    },
+    maxPositionImpactFactorPositive: {
+      type: "BigNumber",
+      hex: "0x204fce5e3e25026110000000",
+    },
+    maxPositionImpactFactorNegative: {
+      type: "BigNumber",
+      hex: "0x204fce5e3e25026110000000",
+    },
+    maxPositionImpactFactorForLiquidations: {
+      type: "BigNumber",
+      hex: "0x204fce5e3e25026110000000",
+    },
+    positionImpactExponentFactor: {
+      type: "BigNumber",
+      hex: "0x193e5939a08ce9dbd480000000",
+    },
+    swapFeeFactorForPositiveImpact: {
+      type: "BigNumber",
+      hex: "0x019d971e4fe8401e74000000",
+    },
+    swapFeeFactorForNegativeImpact: {
+      type: "BigNumber",
+      hex: "0x024306c4097859c43c000000",
+    },
+    swapImpactFactorPositive: {
+      type: "BigNumber",
+      hex: "0x0422ca8b0a00a425000000",
+    },
+    swapImpactFactorNegative: {
+      type: "BigNumber",
+      hex: "0x084595161401484a000000",
+    },
+    swapImpactExponentFactor: {
+      type: "BigNumber",
+      hex: "0x193e5939a08ce9dbd480000000",
+    },
+    borrowingFactorPerSecondForLongs: {
+      type: "BigNumber",
+      hex: "0x0132b440c5a7c78c000c",
+    },
+    borrowingFactorPerSecondForShorts: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    fundingFactorPerSecond: {
+      type: "BigNumber",
+      hex: "0x012f61fb21f0403f2694",
+    },
+    longsPayShorts: true,
+    virtualPoolAmountForLongToken: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    virtualPoolAmountForShortToken: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    virtualInventoryForPositions: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    virtualMarketId: "0x0000000000000000000000000000000000000000000000000000000000000000",
+    virtualLongTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
+    virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
+  },
+  indexToken: {
+    name: "Avalanche",
+    symbol: "AVAX",
+    decimals: 18,
+    address: "0x0000000000000000000000000000000000000000",
+    isNative: true,
+    isShortable: true,
+    imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
+    wrappedAddress: "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
+    prices: {
+      minPrice: {
+        type: "BigNumber",
+        hex: "0x0208e8c9ceb8ae36e64f41000000",
+      },
+      maxPrice: {
+        type: "BigNumber",
+        hex: "0x0208e8c9ceb8ae36e64f41000000",
+      },
+    },
+    balance: {
+      type: "BigNumber",
+      hex: "0x7ad19dcc2e798676",
+    },
+  },
+  swapPath: [],
+  initialCollateralTokenAddress: "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
+  initialCollateralToken: {
+    name: "USD Coin",
+    symbol: "USDC",
+    address: "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
+    decimals: 6,
+    isStable: true,
+    imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
+    explorerUrl: "https://testnet.snowtrace.io/address/0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
+    prices: {
+      minPrice: {
+        type: "BigNumber",
+        hex: "0x0c9f2c9cd04674edea40000000",
+      },
+      maxPrice: {
+        type: "BigNumber",
+        hex: "0x0ca0b1305ce70e40af20000000",
+      },
+    },
+    balance: {
+      type: "BigNumber",
+      hex: "0x1260d05b",
+    },
+  },
+  targetCollateralToken: {
+    name: "USD Coin",
+    symbol: "USDC",
+    address: "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
+    decimals: 6,
+    isStable: true,
+    imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
+    explorerUrl: "https://testnet.snowtrace.io/address/0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
+    prices: {
+      minPrice: {
+        type: "BigNumber",
+        hex: "0x0c9f2c9cd04674edea40000000",
+      },
+      maxPrice: {
+        type: "BigNumber",
+        hex: "0x0ca0b1305ce70e40af20000000",
+      },
+    },
+    balance: {
+      type: "BigNumber",
+      hex: "0x1260d05b",
+    },
+  },
+  initialCollateralDeltaAmount: {
+    type: "BigNumber",
+    hex: "0xbc3ab0",
+  },
+  sizeDeltaUsd: {
+    type: "BigNumber",
+    hex: "0x00",
+  },
+  triggerPrice: {
+    type: "BigNumber",
+    hex: "0x00",
+  },
+  acceptablePrice: {
+    type: "BigNumber",
+    hex: "0x0221bc46098b5dbc3eb3ebc00000",
+  },
+  minOutputAmount: {
+    type: "BigNumber",
+    hex: "0x9b8b3c0e0e2dc72bdf62000000",
+  },
+  orderType: 4,
+  orderKey: "0xb892cdce3d8bc139e56bc9162feecb98f6a3e8e3394d296d5bbb3768d78f39e6",
+  isLong: false,
+  reason: null,
+  reasonBytes: null,
+  transaction: {
+    timestamp: 1708007688,
+    hash: "0x0e55cbb747fc2bae9c2fc38588af6f6e3eeab823e4afd32afc628c773de33007",
+    __typename: "Transaction",
+  },
+});
+
+export const deposit1Usd = prepare({
+  id: "0x2917cbae7e1d07e0a7126d0488fb00be3443d19025e28b66ff9ea4abe90b4618:3",
+  eventName: "OrderCreated",
+  account: "0x414da6c7c50eadfbd4c67c902c7daf59f58d32c7",
+  marketAddress: "0xAC2c6C1b0cd1CabF78B4e8ad58aA9d43375318Cb",
+  marketInfo: {
+    marketTokenAddress: "0xAC2c6C1b0cd1CabF78B4e8ad58aA9d43375318Cb",
+    indexTokenAddress: "0x2265F317eA5f47A684E5B26c50948617c945d986",
+    longTokenAddress: "0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
+    shortTokenAddress: "0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
+    isSameCollaterals: false,
+    isSpotOnly: false,
+    name: "DOGE/USD [ETH-DAI]",
+    data: "",
+    isDisabled: false,
+    longToken: {
+      name: "Ethereum (WETH.e)",
+      symbol: "ETH",
+      assetSymbol: "WETH.e",
+      address: "0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
+      decimals: 18,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/weth",
+      coingeckoSymbol: "WETH",
+      explorerUrl: "https://testnet.snowtrace.io/address/0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
+      prices: {
+        minPrice: {
+          type: "BigNumber",
+          hex: "0x8c29bef70ea3f7c069ee80000000",
+        },
+        maxPrice: {
+          type: "BigNumber",
+          hex: "0x8c29bef70ea3f7c069ee80000000",
+        },
+      },
+      balance: {
+        type: "BigNumber",
+        hex: "0x11431e0210d745",
+      },
+    },
+    shortToken: {
+      name: "Dai",
+      symbol: "DAI",
+      address: "0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
+      decimals: 6,
+      isStable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/9956/thumb/4943.png?1636636734",
+      coingeckoUrl: "https://www.coingecko.com/en/coins/dai",
+      explorerUrl: "https://testnet.snowtrace.io/address/0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
+      prices: {
+        minPrice: {
+          type: "BigNumber",
+          hex: "0x0c9f2c9cd04674edea40000000",
+        },
+        maxPrice: {
+          type: "BigNumber",
+          hex: "0x0ca0b1305ce70e40af20000000",
+        },
+      },
+      balance: {
+        type: "BigNumber",
+        hex: "0x072e",
+      },
+    },
+    indexToken: {
+      name: "Dogecoin",
+      symbol: "DOGE",
+      decimals: 8,
+      priceDecimals: 4,
+      address: "0x2265F317eA5f47A684E5B26c50948617c945d986",
+      isSynthetic: true,
+      isShortable: true,
+      coingeckoUrl: "https://www.coingecko.com/en/coins/dogecoin",
+      prices: {
+        minPrice: {
+          type: "BigNumber",
+          hex: "0x011b7142687318ed15d1800000",
+        },
+        maxPrice: {
+          type: "BigNumber",
+          hex: "0x011b7142687318ed15d1800000",
+        },
+      },
+    },
+    longInterestUsd: {
+      type: "BigNumber",
+      hex: "0xfa55dabd2e2e76bec0e834d40000",
+    },
+    shortInterestUsd: {
+      type: "BigNumber",
+      hex: "0x0140631b25be0bf21fef9d4b480000",
+    },
+    longInterestInTokens: {
+      type: "BigNumber",
+      hex: "0x058d5715ac9f",
+    },
+    shortInterestInTokens: {
+      type: "BigNumber",
+      hex: "0x0718c35873fc",
+    },
+    longPoolAmount: {
+      type: "BigNumber",
+      hex: "0x6af50383aaf91cc8",
+    },
+    shortPoolAmount: {
+      type: "BigNumber",
+      hex: "0x01dc2a3c6d",
+    },
+    maxLongPoolAmountForDeposit: {
+      type: "BigNumber",
+      hex: "0x033b2e3c9fd0803ce8000000",
+    },
+    maxShortPoolAmountForDeposit: {
+      type: "BigNumber",
+      hex: "0x033b2e3c9fd0803ce8000000",
+    },
+    maxLongPoolAmount: {
+      type: "BigNumber",
+      hex: "0x033b2e3c9fd0803ce8000000",
+    },
+    maxShortPoolAmount: {
+      type: "BigNumber",
+      hex: "0x033b2e3c9fd0803ce8000000",
+    },
+    longPoolAmountAdjustment: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    shortPoolAmountAdjustment: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    poolValueMin: {
+      type: "BigNumber",
+      hex: "0x05c5aff17ef19c51e3390cc886d66d",
+    },
+    poolValueMax: {
+      type: "BigNumber",
+      hex: "0x05c5df4f63ce406fada4fc8a06d66d",
+    },
+    reserveFactorLong: {
+      type: "BigNumber",
+      hex: "0x0bfd9d94f90fbbe204f0000000",
+    },
+    reserveFactorShort: {
+      type: "BigNumber",
+      hex: "0x0bfd9d94f90fbbe204f0000000",
+    },
+    openInterestReserveFactorLong: {
+      type: "BigNumber",
+      hex: "0x0b5c0e8d21d902d61fa0000000",
+    },
+    openInterestReserveFactorShort: {
+      type: "BigNumber",
+      hex: "0x0b5c0e8d21d902d61fa0000000",
+    },
+    maxOpenInterestLong: {
+      type: "BigNumber",
+      hex: "0x02f050fe938943acc45f65568000000000",
+    },
+    maxOpenInterestShort: {
+      type: "BigNumber",
+      hex: "0x02f050fe938943acc45f65568000000000",
+    },
+    totalBorrowingFees: {
+      type: "BigNumber",
+      hex: "0x44ffb6d9efc35b60f80a10eab6",
+    },
+    positionImpactPoolAmount: {
+      type: "BigNumber",
+      hex: "0x05f5e100",
+    },
+    minPositionImpactPoolAmount: {
+      type: "BigNumber",
+      hex: "0x05f5e100",
+    },
+    positionImpactPoolDistributionRate: {
+      type: "BigNumber",
+      hex: "0x024fa54b36a2e6a910447800000000",
+    },
+    swapImpactPoolAmountLong: {
+      type: "BigNumber",
+      hex: "0x29ddf0e98e7da8d7",
+    },
+    swapImpactPoolAmountShort: {
+      type: "BigNumber",
+      hex: "0x175a0e44",
+    },
+    borrowingFactorLong: {
+      type: "BigNumber",
+      hex: "0x0152d02c7e14af680000",
+    },
+    borrowingFactorShort: {
+      type: "BigNumber",
+      hex: "0x0152d02c7e14af680000",
+    },
+    borrowingExponentFactorLong: {
+      type: "BigNumber",
+      hex: "0x0c9f2c9cd04674edea40000000",
+    },
+    borrowingExponentFactorShort: {
+      type: "BigNumber",
+      hex: "0x0c9f2c9cd04674edea40000000",
+    },
+    fundingFactor: {
+      type: "BigNumber",
+      hex: "0x043c33c1937564800000",
+    },
+    fundingExponentFactor: {
+      type: "BigNumber",
+      hex: "0x0c9f2c9cd04674edea40000000",
+    },
+    fundingIncreaseFactorPerSecond: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    fundingDecreaseFactorPerSecond: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    thresholdForDecreaseFunding: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    thresholdForStableFunding: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    minFundingFactorPerSecond: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecond: {
+      type: "BigNumber",
+      hex: "0x00",
+    },
+    pnlLongMax: {
+      type: "BigNumber",
+      hex: "0x0db03251a3cfee703fe0a91a8000",
+    },
+    pnlLongMin: {
+      type: "BigNumber",
+      hex: "0x0db03251a3cfee703fe0a91a8000",
+    },
+    pnlShortMax: {
+      type: "BigNumber",
+      hex: "-0x1116c903466f9180acf04eb20000",
+    },
+    pnlShortMin: {
+      type: "BigNumber",
+      hex: "-0x1116c903466f9180acf04eb20000",
+    },
+    netPnlMax: {
+      type: "BigNumber",
+      hex: "-0x036696b1a29fa3106d0fa5978000",
+    },
+    netPnlMin: {
+      type: "BigNumber",
+      hex: "-0x036696b1a29fa3106d0fa5978000",
     },
     maxPnlFactorForTradersLong: {
       type: "BigNumber",
@@ -712,7 +1272,7 @@ export const withdraw1Usd = prepare({
     },
     claimableFundingAmountShort: {
       type: "BigNumber",
-      hex: "0x0bbc20",
+      hex: "0xa3aa",
     },
     positionFeeFactorForPositiveImpact: {
       type: "BigNumber",
@@ -772,64 +1332,60 @@ export const withdraw1Usd = prepare({
     },
     borrowingFactorPerSecondForShorts: {
       type: "BigNumber",
-      hex: "0x3a06759dd7f012b91a",
+      hex: "0x01139954c6584c493782",
     },
     fundingFactorPerSecond: {
       type: "BigNumber",
-      hex: "0xecb26eec42fc7658e0",
+      hex: "0x8513d16a358eebbe3c",
     },
     longsPayShorts: false,
     virtualPoolAmountForLongToken: {
       type: "BigNumber",
-      hex: "0x02b24068",
+      hex: "0x00",
     },
     virtualPoolAmountForShortToken: {
       type: "BigNumber",
-      hex: "0x06102f5c1c",
+      hex: "0x00",
     },
     virtualInventoryForPositions: {
       type: "BigNumber",
-      hex: "-0x3885f95a824cd6d349eb2ab00000",
+      hex: "0x00",
     },
-    virtualMarketId: "0x11111137e2e8ae1c70c421e7a0dd36e023e0d6217198f889f9eb9c2a6727481f",
-    virtualLongTokenId: "0x04533137e2e8ae1c11111111a0dd36e023e0d6217198f889f9eb9c2a6727481d",
+    virtualMarketId: "0x0000000000000000000000000000000000000000000000000000000000000000",
+    virtualLongTokenId: "0x275d2a6e341e6a078d4eee59b08907d1e50825031c5481f9551284f4b7ee2fb9",
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
   },
   indexToken: {
-    name: "Bitcoin",
-    symbol: "BTC",
+    name: "Dogecoin",
+    symbol: "DOGE",
     decimals: 8,
-    address: "0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
+    priceDecimals: 4,
+    address: "0x2265F317eA5f47A684E5B26c50948617c945d986",
+    isSynthetic: true,
     isShortable: true,
-    imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
-    explorerUrl: "https://goerli.arbiscan.io/address/0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/dogecoin",
     prices: {
       minPrice: {
         type: "BigNumber",
-        hex: "0x0515d0732f350f4127a40990000000",
+        hex: "0x011b7142687318ed15d1800000",
       },
       maxPrice: {
         type: "BigNumber",
-        hex: "0x0515d0732f350f4127a40990000000",
+        hex: "0x011b7142687318ed15d1800000",
       },
-    },
-    balance: {
-      type: "BigNumber",
-      hex: "0x04b571c0",
     },
   },
   swapPath: [],
-  initialCollateralTokenAddress: "0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
+  initialCollateralTokenAddress: "0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
   initialCollateralToken: {
-    name: "USD Coin",
-    symbol: "USDC",
+    name: "Dai",
+    symbol: "DAI",
+    address: "0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
     decimals: 6,
-    address: "0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
     isStable: true,
-    imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
-    explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
+    imageUrl: "https://assets.coingecko.com/coins/images/9956/thumb/4943.png?1636636734",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/dai",
+    explorerUrl: "https://testnet.snowtrace.io/address/0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
     prices: {
       minPrice: {
         type: "BigNumber",
@@ -837,23 +1393,23 @@ export const withdraw1Usd = prepare({
       },
       maxPrice: {
         type: "BigNumber",
-        hex: "0x0c9f456d8f88b0f1c31e000000",
+        hex: "0x0ca0b1305ce70e40af20000000",
       },
     },
     balance: {
       type: "BigNumber",
-      hex: "0x03312adc93",
+      hex: "0x072e",
     },
   },
   targetCollateralToken: {
-    name: "USD Coin",
-    symbol: "USDC",
+    name: "Dai",
+    symbol: "DAI",
+    address: "0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
     decimals: 6,
-    address: "0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
     isStable: true,
-    imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
-    explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
+    imageUrl: "https://assets.coingecko.com/coins/images/9956/thumb/4943.png?1636636734",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/dai",
+    explorerUrl: "https://testnet.snowtrace.io/address/0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
     prices: {
       minPrice: {
         type: "BigNumber",
@@ -861,17 +1417,17 @@ export const withdraw1Usd = prepare({
       },
       maxPrice: {
         type: "BigNumber",
-        hex: "0x0c9f456d8f88b0f1c31e000000",
+        hex: "0x0ca0b1305ce70e40af20000000",
       },
     },
     balance: {
       type: "BigNumber",
-      hex: "0x03312adc93",
+      hex: "0x072e",
     },
   },
   initialCollateralDeltaAmount: {
     type: "BigNumber",
-    hex: "0x0f4240",
+    hex: "0xc350",
   },
   sizeDeltaUsd: {
     type: "BigNumber",
@@ -883,19 +1439,20 @@ export const withdraw1Usd = prepare({
   },
   acceptablePrice: {
     type: "BigNumber",
-    hex: "0x05053c5e0696d43545b589da000000",
+    hex: "0x011323b776d9589200e7e80000",
   },
   minOutputAmount: {
     type: "BigNumber",
-    hex: "0x0c957b121a67036d3388000000",
+    hex: "0x00",
   },
-  orderType: 4,
-  orderKey: "0x0e3ec97a0bcaf2ac18f02d24804e7ee90bead927c9cf5ab9f86fe1f73d4396fb",
-  isLong: false,
+  orderType: 2,
+  orderKey: "0x6bafe2942d6feb80ca9c851201c46a6ac41471f141dfa7c781edd6629c5cfb70",
+  isLong: true,
   reason: null,
+  reasonBytes: null,
   transaction: {
-    timestamp: 1694590697,
-    hash: "0x99776b15021a80a63b477ae7ebbdeabc472354c415a49b89137d8a27bbc48bb5",
+    timestamp: 1708018244,
+    hash: "0x2917cbae7e1d07e0a7126d0488fb00be3443d19025e28b66ff9ea4abe90b4618",
     __typename: "Transaction",
   },
 });
@@ -3072,6 +3629,10 @@ export const executeOrderIncreaseLong = prepare({
     type: "BigNumber",
     hex: "0x0c13bc90",
   },
+  priceImpactUsd: {
+    type: "BigNumber",
+    hex: "-0xd44fc1b1b9374c28a82ccd8f80",
+  },
   sizeDeltaUsd: {
     type: "BigNumber",
     hex: "0x661171efc3f661f9e69990000000",
@@ -3195,6 +3756,10 @@ export const frozenOrderIncreaseShort = prepare({
           hex: "0x054351f8192ce28e4e687b20000000",
         },
       },
+    },
+    priceImpactUsd: {
+      type: "BigNumber",
+      hex: "-0xd44fc1b1b9374c28a82ccd8f80",
     },
     longInterestUsd: {
       type: "BigNumber",
@@ -3520,6 +4085,10 @@ export const frozenOrderIncreaseShort = prepare({
   sizeDeltaUsd: {
     type: "BigNumber",
     hex: "0x428098a6d7b79147095d81580000",
+  },
+  priceImpactUsd: {
+    type: "BigNumber",
+    hex: "-0x1d3d7d6c5d7c5c8b9c6a7b8c00000",
   },
   triggerPrice: {
     type: "BigNumber",
@@ -4434,6 +5003,10 @@ export const liquidated = prepare({
     type: "BigNumber",
     hex: "-0x063a58761b08e374686d824c44f0",
   },
+  basePnlUsd: {
+    type: "BigNumber",
+    hex: "-0x063a58761b08e374686d824c44f0",
+  },
   priceImpactDiffUsd: {
     type: "BigNumber",
     hex: "0x00",
@@ -5144,74 +5717,78 @@ export const executeOrderSwap = prepareSwap({
 });
 
 export const failedSwap = prepareSwap({
-  id: "0x027f087350d07d205840cf777a1a37913caf2cf4c5492cefe215c9b007aff61a:8",
+  id: "0xa099b53637fa6b5e50a877cbe638c11d1063e56b631df16aa7a6739d585dd310:2",
   eventName: "OrderFrozen",
-  account: "0xd0fa2ebeac5e1b5876ce2754100e9009fc0bd4fc",
-  swapPath: ["0x1529876A9348D61C6c4a3EEe1fe6CbF1117Ca315", "0x339eF6aAcF8F4B2AD15BdcECBEED1842Ec4dBcBf"],
+  account: "0x414da6c7c50eadfbd4c67c902c7daf59f58d32c7",
+  swapPath: ["0xbf338a6C595f06B7Cfff2FA8c958d49201466374"],
   orderType: 1,
-  orderKey: "0x0c9cef614c72abac6d78e4bad1310225bca88436b69a6396e54b76d5a3297b5f",
-  initialCollateralTokenAddress: "0xe39ab88f8a4777030a534146a9ca3b52bd5d43a3",
+  orderKey: "0x93f2aea553e314c682d539fd06ea21ffb636d84fab63e8235d69f33442a1fd92",
+  initialCollateralTokenAddress: "0x3ebdeaa0db3ffde96e7a0dbbafec961fc50f725f",
   initialCollateralDeltaAmount: {
     type: "BigNumber",
-    hex: "0x0429d069189e0000",
+    hex: "0x0f4240",
   },
   minOutputAmount: {
     type: "BigNumber",
-    hex: "0xca6ece",
+    hex: "0x01baaa97524bc9",
   },
   shouldUnwrapNativeToken: false,
   targetCollateralToken: {
-    name: "Bitcoin",
-    symbol: "BTC",
-    decimals: 8,
-    address: "0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
+    name: "Ethereum (WETH.e)",
+    symbol: "ETH",
+    assetSymbol: "WETH.e",
+    address: "0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
+    decimals: 18,
     isShortable: true,
-    imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
-    explorerUrl: "https://goerli.arbiscan.io/address/0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
+    imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/weth",
+    coingeckoSymbol: "WETH",
+    explorerUrl: "https://testnet.snowtrace.io/address/0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
     prices: {
       minPrice: {
         type: "BigNumber",
-        hex: "0x056a5ca059157e7ea7ff60d2c00000",
+        hex: "0xa78605e37704c320258d40000000",
       },
       maxPrice: {
         type: "BigNumber",
-        hex: "0x056a73fcfb84ba487580064b000000",
+        hex: "0xa78605e37704c320258d40000000",
       },
     },
     balance: {
       type: "BigNumber",
-      hex: "0x04b6ac44",
+      hex: "0x11431e0210d745",
     },
   },
   initialCollateralToken: {
-    name: "Wrapped Ethereum",
-    symbol: "WETH",
-    decimals: 18,
-    address: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
-    isWrapped: true,
-    baseSymbol: "ETH",
-    imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
-    explorerUrl: "https://goerli.arbiscan.io/address/0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
+    name: "USD Coin",
+    symbol: "USDC",
+    address: "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
+    decimals: 6,
+    isStable: true,
+    imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
+    explorerUrl: "https://testnet.snowtrace.io/address/0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
     prices: {
       minPrice: {
         type: "BigNumber",
-        hex: "0x538ed4f5fc330a6a53d645800000",
+        hex: "0x0c9f2c9cd04674edea40000000",
       },
       maxPrice: {
         type: "BigNumber",
-        hex: "0x5393ab3da897ec3e9716a6c00000",
+        hex: "0x0ca03d95081f09183bca000000",
       },
     },
     balance: {
       type: "BigNumber",
-      hex: "0x00",
+      hex: "0x154e10cc",
     },
   },
   transaction: {
-    timestamp: 1695969904,
-    hash: "0x027f087350d07d205840cf777a1a37913caf2cf4c5492cefe215c9b007aff61a",
+    timestamp: 1707903199,
+    hash: "0xa099b53637fa6b5e50a877cbe638c11d1063e56b631df16aa7a6739d585dd310",
     __typename: "Transaction",
   },
+  reason: "",
+  reasonBytes:
+    "0xa7aebadc0000000000000000000000000000000000000000000000000001ba552327845f0000000000000000000000000000000000000000000000000001baaa97524bc9",
 });

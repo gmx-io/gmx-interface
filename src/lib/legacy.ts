@@ -113,13 +113,13 @@ export function getExchangeRate(tokenAInfo, tokenBInfo, inverted) {
 }
 
 export function shouldInvertTriggerRatio(tokenA, tokenB) {
-  if (tokenB.isStable || tokenB.isUsdg) return true;
+  if ((tokenB.isStable || tokenB.isUsdg) && !tokenA.isStable) return true;
   if (tokenB.maxPrice && tokenA.maxPrice && tokenB.maxPrice.lt(tokenA.maxPrice)) return true;
   return false;
 }
 
 export function getExchangeRateDisplay(rate, tokenA, tokenB, opts: { omitSymbols?: boolean } = {}) {
-  if (!rate || !tokenA || !tokenB) return "...";
+  if (!rate || rate.isZero() || !tokenA || !tokenB) return "...";
   if (shouldInvertTriggerRatio(tokenA, tokenB)) {
     [tokenA, tokenB] = [tokenB, tokenA];
     rate = PRECISION.mul(PRECISION).div(rate);

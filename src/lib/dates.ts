@@ -1,4 +1,5 @@
-import { addMinutes, format as formatDateFn } from "date-fns";
+import { addMinutes, format as formatDateFn, set as setTime } from "date-fns";
+import { useMemo, useState } from "react";
 
 export function formatDateTime(time: number) {
   return formatDateFn(time * 1000, "dd MMM yyyy, h:mm a");
@@ -34,4 +35,55 @@ export function isValidTimestamp(timestamp: any) {
 
 export function getTimestampByDaysAgo(daysAgo: number) {
   return Math.floor(Date.now() / 1000 / 86400) * 86400 - daysAgo * 24 * 60 * 60;
+}
+
+function toSeconds(date: Date) {
+  return Math.round(date.getTime() / 1000);
+}
+
+const START_OF_DAY_DURATION = {
+  hours: 0,
+  minutes: 0,
+  seconds: 0,
+  milliseconds: 0,
+};
+
+const INCLUDING_CURRENT_DAY_DURATION = {
+  hours: 23,
+  minutes: 59,
+  seconds: 59,
+  milliseconds: 999,
+};
+
+function normalizeDateRange(start: Date | undefined, end: Date | undefined): [number | undefined, number | undefined] {
+  const fromTxTimestamp = start ? toSeconds(setTime(start, START_OF_DAY_DURATION)) : undefined;
+  const toTxTimestamp = end ? toSeconds(setTime(end, INCLUDING_CURRENT_DAY_DURATION)) : undefined;
+
+  return [fromTxTimestamp, toTxTimestamp];
+}
+
+/**
+ * Normalizes timestamps to start of the day and end of the day respectively
+ */
+export function useNormalizeDateRange(
+  start: Date | undefined,
+  end: Date | undefined
+): [number | undefined, number | undefined] {
+  const [fromTxTimestamp, toTxTimestamp] = useMemo(() => normalizeDateRange(start, end), [start, end]);
+  return [fromTxTimestamp, toTxTimestamp];
+}
+
+/**
+ * By default, the date range is undefined
+ */
+export function useDateRange() {
+  const [dateRange, setDateRange] = useState<[startDate: Date | undefined, endDate: Date | undefined]>([
+    undefined,
+    undefined,
+  ]);
+
+  const startDate = dateRange[0];
+  const endDate = dateRange[1];
+
+  return [startDate, endDate, setDateRange] as const;
 }
