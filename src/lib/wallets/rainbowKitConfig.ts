@@ -1,3 +1,4 @@
+import { isInBinance } from "@binance/w3w-utils";
 import { getDefaultConfig, WalletList } from "@rainbow-me/rainbowkit";
 import {
   injectedWallet,
@@ -15,10 +16,10 @@ import binanceWallet from "./connecters/binanceW3W/binanceWallet";
 const WALLET_CONNECT_PROJECT_ID = "de24cddbaf2a68f027eae30d9bb5df58";
 const APP_NAME = "GMX";
 
-//
 const popularWalletList: WalletList = [
   {
-    groupName: "Recommended",
+    // Group name with standard name is localized by rainbow kit
+    groupName: "Popular",
     wallets: [
       rabbyWallet,
       metaMaskWallet,
@@ -34,7 +35,7 @@ const popularWalletList: WalletList = [
 const othersWalletList: WalletList = [
   {
     groupName: "Others",
-    wallets: [binanceWallet],
+    wallets: isInBinance() ? [binanceWallet] : [],
   },
 ];
 
