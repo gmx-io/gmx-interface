@@ -44,11 +44,7 @@ function getNormalizedIncentive(incentive: UserIncentiveData, tokens: Token[]) {
       tokenAmount: BigNumber.from(incentive.amounts[index]),
       tokenUsd: BigNumber.from(incentive.amountsInUsd[index]),
       id: `${incentive.id}-${tokenAddress}`,
-      // typeId: incentive.typeId,
-
-      typeId: 2002,
-      amounts: [1, 2, 3],
-      amountsInUsd: [1, 2, 3],
+      typeId: incentive.typeId,
     };
   });
 
