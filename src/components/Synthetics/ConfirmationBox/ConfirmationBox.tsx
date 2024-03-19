@@ -772,8 +772,7 @@ export function ConfirmationBox(p: Props) {
     const maxTokenAmountLength = Math.max(payAmountLength, receiveAmountLength);
 
     if (maxTokenAmountLength > 17) {
-      const sizes = { 17: 17, 18: 16, 19: 16, 20: 15, 21: 14 };
-      const selectedSize = sizes[maxTokenAmountLength] || 13;
+      const selectedSize = getFontSizeFromLength(maxTokenAmountLength);
 
       return {
         amount: { fontSize: `${selectedSize}px` },
@@ -1728,4 +1727,10 @@ function renderLimitPriceWarning() {
       <Trans>Limit Order Price will vary based on Fees and Price Impact to guarantee the Min. Receive amount.</Trans>
     </AlertInfo>
   );
+}
+
+export function getFontSizeFromLength(length: number) {
+  if (length < 17) return;
+  const sizes = { 17: 17, 18: 16, 19: 16, 20: 15, 21: 14 };
+  return sizes[length] || 13;
 }

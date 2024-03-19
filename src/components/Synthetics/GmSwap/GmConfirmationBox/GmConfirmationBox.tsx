@@ -20,13 +20,14 @@ import { GmFees } from "../GmFees/GmFees";
 import Button from "components/Button/Button";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { useState } from "react";
+import React, { useMemo, useState } from "react";
 import "./GmConfirmationBox.scss";
 import { useKey } from "react-use";
 import useWallet from "lib/wallets/useWallet";
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
 import { FaArrowRight } from "react-icons/fa";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
+import { getFontSizeFromLength } from "components/Synthetics/ConfirmationBox/ConfirmationBox";
 
 type Props = {
   isVisible: boolean;
@@ -304,29 +305,84 @@ export function GmConfirmationBox({
     overrideSymbol,
     token,
     usd,
+    fontSizes,
   }: {
     amount?: BigNumber;
     usd?: BigNumber;
     token?: TokenData;
     className?: string;
     overrideSymbol?: string;
+    fontSizes?: {
+      amount: React.CSSProperties;
+      usd: React.CSSProperties;
+    };
   }) => {
     if (!amount || !usd || !token) return;
     return (
       <div className={className ?? ""}>
-        <div className="trade-token-amount">
+        <div className="trade-token-amount" style={fontSizes?.amount}>
           <span>
             {formatTokenAmount(amount, token?.decimals, overrideSymbol ?? token?.symbol, {
               useCommas: true,
             })}
           </span>
         </div>
-        <div className="trade-amount-usd">{formatUsd(usd)}</div>
+        <div className="trade-amount-usd" style={fontSizes?.usd}>
+          {formatUsd(usd)}
+        </div>
       </div>
     );
   };
 
   const shouldRenderDivider = Boolean(tokensToApprove?.length > 0) || Boolean(highExecutionFeeAcknowledgement);
+
+  const formattedAmounts = useMemo(() => {
+    return {
+      longTokenAmount: formatTokenAmount(longTokenAmount, longToken?.decimals, longSymbol, {
+        useCommas: true,
+      }),
+      longTokenUsd: formatUsd(longTokenUsd),
+      shortTokenAmount: formatTokenAmount(shortTokenAmount, shortToken?.decimals, shortSymbol, {
+        useCommas: true,
+      }),
+      shortTokenUsd: formatUsd(shortTokenUsd),
+      marketTokenAmount: formatTokenAmount(marketTokenAmount, marketToken?.decimals, marketToken?.symbol, {
+        useCommas: true,
+      }),
+      marketTokenUsd: formatUsd(marketTokenUsd),
+    };
+  }, [
+    longTokenAmount,
+    longTokenUsd,
+    longToken,
+    longSymbol,
+    shortTokenAmount,
+    shortTokenUsd,
+    shortToken,
+    shortSymbol,
+    marketTokenAmount,
+    marketTokenUsd,
+    marketToken,
+  ]);
+
+  const fontSizes = useMemo(() => {
+    if (!formattedAmounts) return;
+    const maxLength = Math.max(
+      formattedAmounts.longTokenAmount?.length || 0,
+      formattedAmounts.shortTokenAmount?.length || 0,
+      formattedAmounts.marketTokenAmount?.length || 0
+    );
+
+    const selectedSize = getFontSizeFromLength(maxLength);
+
+    if (!selectedSize) return;
+
+    return {
+      amount: { fontSize: `${selectedSize}px` },
+      usd: { fontSize: `${selectedSize - 2}px` },
+    };
+    return;
+  }, [formattedAmounts]);
 
   return (
     <div className="Confirmation-box GmConfirmationBox">
@@ -336,12 +392,15 @@ export function GmConfirmationBox({
             {isDeposit && (
               <div className="Confirmation-box-main trade-info-wrapper">
                 <div className="trade-info">
-                  <Trans>Pay</Trans>{" "}
+                  <div style={fontSizes?.amount}>
+                    <Trans>Pay</Trans>
+                  </div>{" "}
                   {renderTokenInfo({
                     amount: longTokenAmount,
                     usd: longTokenUsd,
                     token: longToken,
                     overrideSymbol: longSymbol,
+                    fontSizes,
                   })}
                   {renderTokenInfo({
                     amount: shortTokenAmount,
@@ -349,17 +408,21 @@ export function GmConfirmationBox({
                     token: shortToken,
                     overrideSymbol: shortSymbol,
                     className: "mt-xs",
+                    fontSizes,
                   })}
                 </div>
                 <div>
                   <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
                 </div>
                 <div className="trade-info">
-                  <Trans>Receive</Trans>{" "}
+                  <div style={fontSizes?.amount}>
+                    <Trans>Receive</Trans>
+                  </div>{" "}
                   {renderTokenInfo({
                     amount: marketTokenAmount,
                     usd: marketTokenUsd,
                     token: marketToken,
+                    fontSizes,
                   })}
                 </div>
               </div>
@@ -367,23 +430,29 @@ export function GmConfirmationBox({
             {!isDeposit && (
               <div className="Confirmation-box-main trade-info-wrapper">
                 <div className="trade-info">
-                  <Trans>Pay</Trans>{" "}
+                  <div style={fontSizes?.amount}>
+                    <Trans>Pay</Trans>
+                  </div>{" "}
                   {renderTokenInfo({
                     amount: marketTokenAmount,
                     usd: marketTokenUsd,
                     token: marketToken,
+                    fontSizes,
                   })}
                 </div>
                 <div>
                   <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
                 </div>
                 <div className="trade-info">
-                  <Trans>Receive</Trans>{" "}
+                  <div style={fontSizes?.amount}>
+                    <Trans>Receive</Trans>
+                  </div>{" "}
                   {renderTokenInfo({
                     amount: longTokenAmount,
                     usd: longTokenUsd,
                     token: longToken,
                     overrideSymbol: longSymbol,
+                    fontSizes,
                   })}
                   {renderTokenInfo({
                     amount: shortTokenAmount,
@@ -391,6 +460,7 @@ export function GmConfirmationBox({
                     token: shortToken,
                     overrideSymbol: shortSymbol,
                     className: "mt-xs",
+                    fontSizes,
                   })}
                 </div>
               </div>
