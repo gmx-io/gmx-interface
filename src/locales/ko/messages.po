@@ -26,19 +26,6 @@ msgid "06 Jan 2022"
 msgstr "2022년 1월 6일"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-#~ msgid "1 000 ARB"
-#~ msgstr ""
-
-#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-#~ msgid "1 200 ARB"
-#~ msgstr ""
-
-#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-#~ msgid "10 000 ARB"
-#~ msgstr ""
-
-#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "1st Place"
 msgstr ""
@@ -46,10 +33,6 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.js
 msgid "24h Volume"
 msgstr "24시간 거래량"
-
-#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-#~ msgid "25 000 ARB"
-#~ msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
@@ -65,18 +48,6 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "4-18 Places"
 msgstr ""
-
-#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-#~ msgid "5 000 ARB"
-#~ msgstr ""
-
-#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-#~ msgid "50 000 ARB"
-#~ msgstr ""
-
-#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
-#~ msgid "7 000 ARB"
-#~ msgstr ""
 
 #: src/components/Synthetics/ClaimHistoryRow/ClaimHistoryRow.tsx
 msgid "<0><1>{eventTitle}</1> from <2>{0} {indexName} <3>[{poolName}]</3> Position</2></0>"
@@ -582,14 +553,6 @@ msgstr "선택한 네트워크에서 이용가능"
 #: src/components/TokenCard/TokenCard.tsx
 msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
-
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#~ msgid "Average Leverage used."
-#~ msgstr ""
-
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#~ msgid "Average Position Size."
-#~ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average leverage used."
@@ -2352,10 +2315,6 @@ msgstr ""
 msgid "Global Leaderboard"
 msgstr ""
 
-#: src/domain/synthetics/leaderboard/constants.ts
-#~ msgid "Global leaderboard"
-#~ msgstr ""
-
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Governance"
 msgstr ""
@@ -2679,10 +2638,6 @@ msgstr "리더보드"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Leaderboard for GMX traders"
 msgstr "GMX 트레이더를 위한 리더보드"
-
-#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-#~ msgid "Leaderboard for traders on GMX V2"
-#~ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Leaderboard for traders on GMX V2."
@@ -3523,10 +3478,6 @@ msgid "One-Click Trading is not available using network's native token {0}. Cons
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#~ msgid "Only Addresses with over {0} in \"Capital Used\" are ranked."
-#~ msgstr ""
-
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Only addresses with over {0} in \"Capital Used\" are ranked."
 msgstr ""
 
@@ -4107,10 +4058,6 @@ msgstr "더 알아보기"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Read the rules"
 msgstr ""
-
-#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-#~ msgid "Read the rules."
-#~ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Realized Fees"
@@ -5019,10 +4966,6 @@ msgstr ""
 msgid "T"
 msgstr ""
 
-#: src/domain/synthetics/leaderboard/constants.ts
-#~ msgid "TEST 8-22 Mar"
-#~ msgstr ""
-
 #: src/components/Glp/GlpSwap.js
 #: src/components/Synthetics/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/DashboardV2.js
@@ -5097,10 +5040,6 @@ msgstr "GMX 미결제약정을 위한 텔레그램 봇"
 #: src/pages/TermsAndConditions/TermsAndConditions.js
 msgid "Terms and Conditions"
 msgstr "약관"
-
-#: src/domain/synthetics/leaderboard/constants.ts
-#~ msgid "Test"
-#~ msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 msgid "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
@@ -5327,10 +5266,6 @@ msgid "This competition has ended"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-#~ msgid "This competition is held on the {0} network, please <0>change your network</0>."
-#~ msgstr ""
-
-#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "This competition is held on the {0} network. <0>Change your network</0> to participate."
 msgstr ""
 
@@ -5479,10 +5414,6 @@ msgstr ""
 msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 msgstr "전체 액티브: {openTotal}, 실행 완료: {executedTotal}, 취소 완료: {cancelledTotal}"
 
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#~ msgid "Total trades"
-#~ msgstr ""
-
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
 msgstr "총계:"
@@ -5533,10 +5464,6 @@ msgstr "트레이드"
 #: src/components/Header/Header.tsx
 msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
 msgstr ""
-
-#: src/components/Header/Header.tsx
-#~ msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (>$500k) in prizes in <0>two weekly</0> competitions. Live from March 13th-27th."
-#~ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -6109,10 +6036,6 @@ msgid "Win/Loss"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#~ msgid "Wins and Losses for fully closed Positions."
-#~ msgstr ""
-
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Wins and losses for fully closed positions."
 msgstr ""
 
@@ -6342,10 +6265,6 @@ msgstr ""
 #: src/pages/Stake/StakeV2.js
 msgid "You have not deposited any tokens for vesting."
 msgstr ""
-
-#: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
-#~ msgid "You have not traded during selected period."
-#~ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "You have not traded during the selected period."
@@ -6801,10 +6720,6 @@ msgstr ""
 #: src/components/Synthetics/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} Fees settling"
 msgstr ""
-
-#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-#~ msgid "{prefix} <0>{days}d {hours}h {minutes}m {0}</0>"
-#~ msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "{prefix} <0>{text}</0>"
