@@ -1651,7 +1651,11 @@ msgid "Earn"
 msgstr "보상"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2."
+#~ msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2."
+#~ msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2.<0/>Earn prizes by participating in GMX Trading Competitions."
 msgstr ""
 
 #: src/components/Stake/GMXAprTooltip.tsx
@@ -2189,8 +2193,16 @@ msgstr ""
 msgid "GLP sell disabled, pending {0} upgrade"
 msgstr "{0} 업그레이드를 위해 GLP 판매가 비활성화되었습니다"
 
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "GLP to GM Airdrop"
+msgstr ""
+
 #: src/pages/BuyGlp/BuyGlp.js
 msgid "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more</0>."
+msgstr ""
+
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "GM Airdrop"
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
@@ -2402,7 +2414,11 @@ msgid "Inc."
 msgstr "Inc."
 
 #: src/pages/Stake/StakeV2.js
-msgid "Incentives"
+#~ msgid "Incentives"
+#~ msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Incentives & Prizes"
 msgstr ""
 
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
@@ -4043,6 +4059,14 @@ msgstr "Arbitrum에서 가격"
 msgid "Price on Avalanche"
 msgstr "Avalanche에서 가격"
 
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "Prize Airdrop (13-20 Mar)"
+msgstr ""
+
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "Prize Airdrop (20-27 Mar)"
+msgstr ""
+
 #: src/pages/Actions/Actions.js
 msgid "Profit"
 msgstr "수익"
@@ -5051,6 +5075,10 @@ msgstr ""
 msgid "TP/SL"
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "TRADING Airdrop"
+msgstr ""
+
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take-Profit"
@@ -5705,6 +5733,7 @@ msgid "UTILIZATION"
 msgstr "이용률"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Unknown"
 msgstr ""
 
