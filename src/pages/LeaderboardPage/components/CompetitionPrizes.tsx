@@ -190,13 +190,13 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
       </div>
     ) : null;
   const renderTooltipContent = useCallback(() => {
-    return winners.slice(showCount).map((winner) => (
+    return winners.map((winner) => (
       <Link to={`/actions/v2/${winner.account}`} className="CompetitionPrizes__tooltip-winner" key={winner.account}>
         <Jazzicon diameter={20} seed={jsNumberForAddress(winner.account)} />
         <div className="CompetitionPrizes__prize-rest">{shortenAddress(winner.account, 20)}</div>
       </Link>
     ));
-  }, [showCount, winners]);
+  }, [winners]);
   const manyWinners =
     restCount > 0 ? (
       <TooltipWithPortal
