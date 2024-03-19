@@ -100,15 +100,18 @@ export function PoolSelector({
     return [...sortedMartketsWithBalance, ...marketsWithoutBalance];
   }, [getMarketState, marketTokensData, markets, selectedIndexName, showAllPools]);
 
-  const marketInfo = marketsOptions.find(
-    (option) => option.marketInfo.marketTokenAddress === selectedMarketAddress
-  )?.marketInfo;
+  const marketInfo = useMemo(
+    () => marketsOptions.find((option) => option.marketInfo.marketTokenAddress === selectedMarketAddress)?.marketInfo,
+    [marketsOptions, selectedMarketAddress]
+  );
 
-  const lowercaseSearchKeyword = searchKeyword.toLowerCase();
-  const filteredOptions = marketsOptions.filter((option) => {
-    const name = option.name.toLowerCase();
-    return name.includes(lowercaseSearchKeyword);
-  });
+  const filteredOptions = useMemo(() => {
+    const lowercaseSearchKeyword = searchKeyword.toLowerCase();
+    return marketsOptions.filter((option) => {
+      const name = option.name.toLowerCase();
+      return name.includes(lowercaseSearchKeyword);
+    });
+  }, [marketsOptions, searchKeyword]);
 
   function onSelectOption(option: MarketOption) {
     onSelectMarket(option.marketInfo);
