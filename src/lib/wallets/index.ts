@@ -1,5 +1,6 @@
-import { switchNetwork as switchNetworkWagmi } from "@wagmi/core";
+import { switchChain } from "@wagmi/core";
 import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
+import { rainbowKitConfig } from "./rainbowKitConfig";
 
 export type NetworkMetadata = {
   chainId: string;
@@ -13,9 +14,11 @@ export type NetworkMetadata = {
   blockExplorerUrls: string[];
 };
 
-export async function switchNetwork(chainId, active) {
+export async function switchNetwork(chainId: number, active: boolean) {
   if (active) {
-    await switchNetworkWagmi({ chainId });
+    await switchChain(rainbowKitConfig, {
+      chainId,
+    });
   } else {
     // chainId in localStorage allows to switch network even if wallet is not connected
     // or there is no wallet at all
