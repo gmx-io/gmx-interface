@@ -336,7 +336,7 @@ const TableRow = memo(
     rank: number | null;
     activeCompetition: CompetitionType | undefined;
   }) => {
-    const shouldRenderValue = rank !== null || !activeCompetition;
+    const shouldRenderValue = true;
     const renderWinsLossesTooltipContent = useCallback(() => {
       if (!shouldRenderValue) return null;
       const winRate = `${((account.wins / (account.wins + account.losses)) * 100).toFixed(2)}%`;
@@ -448,7 +448,8 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
   }, [hasSomeCapital, isCompetition, rank]);
   const tooltipContent = useCallback(() => message, [message]);
 
-  if (rank === null) return <TooltipWithPortal handle={t`NA`} renderContent={tooltipContent} />;
+  if (rank === null)
+    return <TooltipWithPortal handleClassName="text-red" handle={t`NA`} renderContent={tooltipContent} />;
 
   return <span>{rank}</span>;
 });
