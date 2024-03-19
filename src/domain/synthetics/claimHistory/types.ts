@@ -13,7 +13,9 @@ export enum ClaimType {
 export type ClaimMarketItem = {
   marketInfo: MarketInfo;
   longTokenAmount: BigNumber;
+  longTokenAmountUsd: BigNumber;
   shortTokenAmount: BigNumber;
+  shortTokenAmountUsd: BigNumber;
 };
 
 export type ClaimCollateralAction = {
@@ -44,6 +46,7 @@ export type ClaimFundingFeeAction = {
   isLongOrders: boolean[];
   timestamp: number;
   transactionHash: string;
+  claimItems: ClaimMarketItem[];
 };
 
 export type ClaimAction = ClaimCollateralAction | ClaimFundingFeeAction;

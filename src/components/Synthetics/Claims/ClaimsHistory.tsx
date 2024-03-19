@@ -1,18 +1,18 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import formatDate from "date-fns/format";
 import { useCallback, useEffect, useState } from "react";
 
-import { ClaimAction, ClaimType, useClaimCollateralHistory } from "domain/synthetics/claimHistory";
-import { useChainId } from "lib/chains";
-import useWallet from "lib/wallets/useWallet";
-
 import { getExplorerUrl } from "config/chains";
 import { CLAIMS_HISTORY_PER_PAGE } from "config/ui";
+import { ClaimAction, ClaimType, useClaimCollateralHistory } from "domain/synthetics/claimHistory";
+import { useChainId } from "lib/chains";
+import { downloadAsCsv } from "lib/csv";
 import { useDateRange, useNormalizeDateRange } from "lib/dates";
 import { formatTokenAmount } from "lib/numbers";
+import { EMPTY_ARRAY } from "lib/objects";
+import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
-import { downloadAsCsv } from "lib/csv";
 import Pagination from "components/Pagination/Pagination";
 import usePagination from "components/Referrals/usePagination";
 import { ClaimsHistorySkeleton } from "components/Skeleton/Skeleton";
@@ -55,7 +55,7 @@ export function ClaimsHistory({ shouldShowPaginationButtons }: { shouldShowPagin
 
   const { currentPage, setCurrentPage, getCurrentData, pageCount } = usePagination(
     String(account),
-    claimActions,
+    claimActions || EMPTY_ARRAY,
     CLAIMS_HISTORY_PER_PAGE
   );
   const currentPageData = getCurrentData();

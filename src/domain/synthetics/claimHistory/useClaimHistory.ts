@@ -2,9 +2,8 @@ import { gql } from "@apollo/client";
 import { getToken } from "config/tokens";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { MarketsInfoData } from "domain/synthetics/markets";
-import { BigNumber } from "ethers";
 import { getAddress } from "ethers/lib/utils.js";
-import { bigNumberify } from "lib/numbers";
+import { bigNumberify, BN_ZERO } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { buildFiltersBody, getSyntheticsGraphClient } from "lib/subgraph";
 import useWallet from "lib/wallets/useWallet";
@@ -160,7 +159,13 @@ export function useClaimCollateralHistory(
         case ClaimType.SettleFundingFeeCreated:
         case ClaimType.SettleFundingFeeExecuted:
         case ClaimType.SettleFundingFeeCancelled: {
-          const settleAction = createSettleFundingFeeAction(chainId, eventName, rawAction, marketsInfoData);
+          const settleAction = createSettleFundingFeeAction(
+            chainId,
+            eventName,
+            rawAction,
+            fixedAddresses,
+            marketsInfoData
+          );
           return settleAction ? [...acc, settleAction] : acc;
         }
         default:
@@ -204,6 +209,7 @@ function createClaimCollateralAction(
     const marketAddress = fixedAddresses[rawAction.marketAddresses[i]];
     const tokenAddress = fixedAddresses[rawAction.tokenAddresses[i]];
     const amount = bigNumberify(rawAction.amounts[i])!;
+    const price = bigNumberify(rawAction.tokenPrices[i])!;
     const marketInfo = getByKey(marketsInfoData, marketAddress);
 
     if (!marketInfo) {
@@ -213,15 +219,23 @@ function createClaimCollateralAction(
     if (!claimItemsMap[marketInfo.marketTokenAddress]) {
       claimItemsMap[marketInfo.marketTokenAddress] = {
         marketInfo: marketInfo,
-        longTokenAmount: BigNumber.from(0),
-        shortTokenAmount: BigNumber.from(0),
+        longTokenAmount: BN_ZERO,
+        longTokenAmountUsd: BN_ZERO,
+        shortTokenAmount: BN_ZERO,
+        shortTokenAmountUsd: BN_ZERO,
       };
     }
 
     if (tokenAddress === marketInfo.longTokenAddress) {
       claimItemsMap[marketAddress].longTokenAmount = claimItemsMap[marketAddress].longTokenAmount.add(amount);
+      claimItemsMap[marketAddress].longTokenAmountUsd = claimItemsMap[marketAddress].longTokenAmountUsd.add(
+        amount.mul(price)
+      );
     } else {
       claimItemsMap[marketAddress].shortTokenAmount = claimItemsMap[marketAddress].shortTokenAmount.add(amount);
+      claimItemsMap[marketAddress].shortTokenAmountUsd = claimItemsMap[marketAddress].shortTokenAmountUsd.add(
+        amount.mul(price)
+      );
     }
   }
 
@@ -234,6 +248,7 @@ function createSettleFundingFeeAction(
   chainId: number,
   eventName: ClaimFundingFeeAction["eventName"],
   rawAction: RawClaimAction,
+  fixedAddresses: Record<string, string>,
   marketsInfoData: MarketsInfoData | null
 ): ClaimFundingFeeAction | null {
   if (!marketsInfoData) return null;
@@ -245,6 +260,45 @@ function createSettleFundingFeeAction(
   if (!markets.length) return null;
 
   const tokens = rawAction.tokenAddresses.map((address) => getToken(chainId, getAddress(address))).filter(Boolean);
+
+  const claimItemsMap: { [marketAddress: string]: ClaimMarketItem } = {};
+  if (rawAction.eventName === ClaimType.SettleFundingFeeExecuted) {
+    for (let i = 0; i < rawAction.marketAddresses.length; i++) {
+      const marketAddress = fixedAddresses[rawAction.marketAddresses[i]];
+      const tokenAddress = fixedAddresses[rawAction.tokenAddresses[i]];
+
+      const amount = bigNumberify(rawAction.amounts[i])!;
+      const price = bigNumberify(rawAction.tokenPrices[i])!;
+
+      const marketInfo = getByKey(marketsInfoData, marketAddress);
+
+      if (!marketInfo) {
+        return null;
+      }
+
+      if (!claimItemsMap[marketInfo.marketTokenAddress]) {
+        claimItemsMap[marketInfo.marketTokenAddress] = {
+          marketInfo: marketInfo,
+          longTokenAmount: BN_ZERO,
+          shortTokenAmount: BN_ZERO,
+          longTokenAmountUsd: BN_ZERO,
+          shortTokenAmountUsd: BN_ZERO,
+        };
+      }
+
+      if (tokenAddress === marketInfo.longTokenAddress) {
+        claimItemsMap[marketAddress].longTokenAmount = claimItemsMap[marketAddress].longTokenAmount.add(amount);
+        claimItemsMap[marketAddress].longTokenAmountUsd = claimItemsMap[marketAddress].longTokenAmountUsd.add(
+          amount.mul(price)
+        );
+      } else {
+        claimItemsMap[marketAddress].shortTokenAmount = claimItemsMap[marketAddress].shortTokenAmount.add(amount);
+        claimItemsMap[marketAddress].shortTokenAmountUsd = claimItemsMap[marketAddress].shortTokenAmountUsd.add(
+          amount.mul(price)
+        );
+      }
+    }
+  }
 
   return {
     id: rawAction.id,
@@ -258,5 +312,6 @@ function createSettleFundingFeeAction(
     transactionHash: rawAction.transaction.hash,
     eventName,
     timestamp: rawAction.transaction.timestamp,
+    claimItems: Object.values(claimItemsMap),
   };
 }

@@ -1,11 +1,11 @@
 import { t } from "@lingui/macro";
-import { Fragment, useCallback, useMemo } from "react";
+import { Fragment, useMemo } from "react";
 
 import { getExplorerUrl } from "config/chains";
 import { ClaimCollateralAction, ClaimType } from "domain/synthetics/claimHistory";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { useChainId } from "lib/chains";
-import { formatTokenAmount, formatTokenAmountWithUsd } from "lib/numbers";
+import { formatTokenAmountWithUsd } from "lib/numbers";
 import { getFormattedTotalClaimAction } from "./getFormattedTotalClaimAction";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -41,28 +41,13 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
 
   const timestamp = formatTradeActionTimestamp(claimAction.timestamp);
 
-  const renderMarketTooltipContent = useCallback(() => <MarketTooltip claimAction={claimAction} />, [claimAction]);
-
   const sizeContent = useMemo(() => {
-    const amounts = claimAction.tokens.map((token, index) => {
-      const amount = claimAction.amounts[index];
-      const price = claimAction.tokenPrices[index];
-      const amountUsd = amount.mul(price);
-
-      return (
-        <Fragment key={token.address}>
-          {index !== 0 && <br />}
-          {formatTokenAmountWithUsd(amount, amountUsd, token.symbol, token.decimals)}
-        </Fragment>
-      );
-    });
-
     const formattedTotalUsd = getFormattedTotalClaimAction(claimAction);
 
     return (
       <TooltipWithPortal
         portalClassName="ClaimHistoryRow-size-tooltip-portal"
-        renderContent={() => <>{amounts}</>}
+        renderContent={() => <SizeTooltip claimAction={claimAction} />}
         handle={formattedTotalUsd}
       />
     );
@@ -82,49 +67,61 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
         </div>
         <span className="ClaimHistoryRow-time muted">{timestamp}</span>
       </td>
-      <td>
-        <TooltipWithPortal renderContent={renderMarketTooltipContent} handle={marketNamesJoined} />
-      </td>
+      <td>{marketNamesJoined}</td>
       <td className="ClaimHistoryRow-size">{sizeContent}</td>
     </tr>
   );
 }
 
-function MarketTooltip({ claimAction }: { claimAction: ClaimCollateralAction }) {
+function SizeTooltip({ claimAction }: { claimAction: ClaimCollateralAction }) {
   return (
     <>
-      {claimAction.claimItems.map(({ marketInfo: market, longTokenAmount, shortTokenAmount }) => {
-        const indexName = getMarketIndexName(market);
-        const poolName = getMarketPoolName(market);
-        return (
-          <Fragment key={market.indexTokenAddress}>
-            <StatsTooltipRow
-              className="ClaimHistoryRow-tooltip-row"
-              key={market.marketTokenAddress}
-              label={
-                <div className="items-top text-white">
-                  <span>{indexName}</span>
-                  <span className="subtext lh-1">[{poolName}]</span>
-                </div>
-              }
-              showDollar={false}
-              value={
-                <>
-                  {longTokenAmount.gt(0) && (
-                    <div>{formatTokenAmount(longTokenAmount, market.longToken.decimals, market.longToken.symbol)}</div>
-                  )}
+      {claimAction.claimItems.map(
+        ({ marketInfo: market, longTokenAmount, shortTokenAmount, longTokenAmountUsd, shortTokenAmountUsd }) => {
+          const indexName = getMarketIndexName(market);
+          const poolName = getMarketPoolName(market);
+          return (
+            <Fragment key={market.indexTokenAddress}>
+              <StatsTooltipRow
+                className="ClaimHistoryRow-tooltip-row"
+                key={market.marketTokenAddress}
+                label={
+                  <div className="items-top text-white">
+                    <span>{indexName}</span>
+                    <span className="subtext lh-1">[{poolName}]</span>
+                  </div>
+                }
+                showDollar={false}
+                value={
+                  <>
+                    {longTokenAmount.gt(0) && (
+                      <div>
+                        {formatTokenAmountWithUsd(
+                          longTokenAmount,
+                          longTokenAmountUsd,
+                          market.longToken.symbol,
+                          market.longToken.decimals
+                        )}
+                      </div>
+                    )}
 
-                  {shortTokenAmount.gt(0) && (
-                    <div>
-                      {formatTokenAmount(shortTokenAmount, market.shortToken.decimals, market.shortToken.symbol)}
-                    </div>
-                  )}
-                </>
-              }
-            />
-          </Fragment>
-        );
-      })}
+                    {shortTokenAmount.gt(0) && (
+                      <div>
+                        {formatTokenAmountWithUsd(
+                          shortTokenAmount,
+                          shortTokenAmountUsd,
+                          market.shortToken.symbol,
+                          market.shortToken.decimals
+                        )}
+                      </div>
+                    )}
+                  </>
+                }
+              />
+            </Fragment>
+          );
+        }
+      )}
     </>
   );
 }

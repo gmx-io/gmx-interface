@@ -1,17 +1,20 @@
 import { t } from "@lingui/macro";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import { formatTradeActionTimestamp } from "components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared";
-import Tooltip from "components/Tooltip/Tooltip";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { useMemo } from "react";
+
 import { getExplorerUrl } from "config/chains";
 import { ClaimFundingFeeAction, ClaimType } from "domain/synthetics/claimHistory";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { useChainId } from "lib/chains";
 import { formatTokenAmountWithUsd } from "lib/numbers";
-import { Fragment, useMemo } from "react";
+import { getFormattedTotalClaimAction } from "./getFormattedTotalClaimAction";
+
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { formatTradeActionTimestamp } from "components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared";
+import Tooltip from "components/Tooltip/Tooltip";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { ReactComponent as NewLink20ReactComponent } from "img/ic_new_link_20.svg";
-import { getFormattedTotalClaimAction } from "./getFormattedTotalClaimAction";
 
 export type ClaimFundingFeesHistoryRowProps = {
   claimAction: ClaimFundingFeeAction;
@@ -67,60 +70,97 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
 
     if (claimAction.eventName === ClaimType.SettleFundingFeeCancelled) {
       const indexName = getMarketIndexName(claimAction.markets[0]);
-      const poolName = getMarketPoolName(claimAction.markets[0]);
       return (
-        <span>
-          {claimAction.isLongOrders[0] ? "Long" : "Short"} {indexName} <span className="subtext">[{poolName}]</span>
-          &nbsp;Position
-        </span>
+        <TooltipWithPortal
+          handle={
+            <span className="items-top">
+              {claimAction.isLongOrders[0] ? t`Long` : t`Short`} {indexName}
+            </span>
+          }
+          renderContent={() => {
+            return claimAction.markets.map((market, index) => {
+              const indexName = getMarketIndexName(market);
+              const poolName = getMarketPoolName(market);
+              const isLong = claimAction.isLongOrders[index];
+              return (
+                <div className="text-white ClaimHistoryRow-tooltip-row items-top" key={`${market.name}/${isLong}`}>
+                  {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext lh-1">[{poolName}]</span>
+                </div>
+              );
+            });
+          }}
+        />
       );
     }
 
     if (claimAction.eventName === ClaimType.SettleFundingFeeExecuted) {
       const indexName = getMarketIndexName(claimAction.markets[0]);
-      const poolName = getMarketPoolName(claimAction.markets[0]);
 
       const positionName = (
         <span className="items-top">
           {claimAction.isLongOrders[0] ? t`Long` : t`Short`} {indexName}
         </span>
       );
-      const isLong = claimAction.isLongOrders[0];
 
-      return (
-        <Tooltip
-          handle={positionName}
-          renderContent={() => (
-            <div className="items-center">
-              <span>{isLong ? t`Long` : t`Short`}</span>&nbsp;<span>{indexName && indexName}</span>
-              <span className="subtext lh-1">{poolName && `[${poolName}]`}</span>
-            </div>
-          )}
-        />
-      );
+      return positionName;
     }
 
     return null;
   }, [claimAction.eventName, claimAction.isLongOrders, claimAction.markets]);
 
   const sizeContent = useMemo(() => {
-    if (claimAction.eventName === ClaimType.SettleFundingFeeCreated) {
+    if (
+      claimAction.eventName === ClaimType.SettleFundingFeeCreated ||
+      claimAction.eventName === ClaimType.SettleFundingFeeCancelled
+    ) {
       return "-";
     }
 
-    const amounts = claimAction.markets.map((market, index) => {
-      const token = claimAction.tokens[index];
-      const amount = claimAction.amounts[index];
-      const price = claimAction.tokenPrices[index];
-      const amountUsd = amount.mul(price);
+    const amounts = claimAction.claimItems.map(
+      ({ marketInfo: market, longTokenAmount, shortTokenAmount, longTokenAmountUsd, shortTokenAmountUsd }) => {
+        const indexName = getMarketIndexName(market);
+        const poolName = getMarketPoolName(market);
 
-      return (
-        <Fragment key={`${token.address}/${market.marketTokenAddress}`}>
-          {index !== 0 && <br />}
-          {formatTokenAmountWithUsd(amount, amountUsd, token.symbol, token.decimals)}
-        </Fragment>
-      );
-    });
+        return (
+          <StatsTooltipRow
+            className="ClaimHistoryRow-tooltip-row"
+            key={market.marketTokenAddress}
+            label={
+              <div className="items-top text-white">
+                <span>{indexName}</span>
+                <span className="subtext lh-1">[{poolName}]</span>
+              </div>
+            }
+            showDollar={false}
+            value={
+              <>
+                {longTokenAmount.gt(0) && (
+                  <div>
+                    {formatTokenAmountWithUsd(
+                      longTokenAmount,
+                      longTokenAmountUsd,
+                      market.longToken.symbol,
+                      market.longToken.decimals
+                    )}
+                  </div>
+                )}
+
+                {shortTokenAmount.gt(0) && (
+                  <div>
+                    {formatTokenAmountWithUsd(
+                      shortTokenAmount,
+                      shortTokenAmountUsd,
+                      market.shortToken.symbol,
+                      market.shortToken.decimals
+                    )}
+                  </div>
+                )}
+              </>
+            }
+          />
+        );
+      }
+    );
 
     const formattedTotalUsd = getFormattedTotalClaimAction(claimAction);
 
