@@ -1,19 +1,10 @@
-import { WalletList, getDefaultConfig } from "@rainbow-me/rainbowkit";
+import { getDefaultConfig, WalletList } from "@rainbow-me/rainbowkit";
 import {
-  bitgetWallet,
-  coinbaseWallet,
-  coreWallet,
-  imTokenWallet,
   injectedWallet,
-  ledgerWallet,
   metaMaskWallet,
-  okxWallet,
   rabbyWallet,
-  rainbowWallet,
   safeWallet,
-  trustWallet,
   walletConnectWallet,
-  zerionWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 import { isDevelopment } from "config/env";
 import { http } from "viem";
@@ -24,28 +15,25 @@ import binanceWallet from "./connecters/binanceW3W/binanceWallet";
 const WALLET_CONNECT_PROJECT_ID = "de24cddbaf2a68f027eae30d9bb5df58";
 const APP_NAME = "GMX";
 
-const recommendedWalletList: WalletList = [
+const popularWalletList: WalletList = [
   {
     groupName: "Recommended",
-    wallets: [injectedWallet, safeWallet, rabbyWallet, metaMaskWallet, walletConnectWallet],
+    wallets: [
+      rabbyWallet,
+      metaMaskWallet,
+      walletConnectWallet,
+      // This wallet will automatically hide itself from the list when the fallback is not necessary or if there is no injected wallet available.
+      injectedWallet,
+      // The Safe option will only appear in the Safe Wallet browser environment.
+      safeWallet,
+    ],
   },
 ];
 
 const othersWalletList: WalletList = [
   {
     groupName: "Others",
-    wallets: [
-      coreWallet,
-      coinbaseWallet,
-      binanceWallet,
-      trustWallet,
-      okxWallet,
-      ledgerWallet,
-      rainbowWallet,
-      bitgetWallet,
-      zerionWallet,
-      imTokenWallet,
-    ],
+    wallets: [binanceWallet],
   },
 ];
 
@@ -59,5 +47,5 @@ export const rainbowKitConfig = getDefaultConfig({
     [arbitrumGoerli.id]: http(),
     [avalancheFuji.id]: http(),
   },
-  wallets: [...recommendedWalletList, ...othersWalletList],
+  wallets: [...popularWalletList, ...othersWalletList],
 });
