@@ -31,6 +31,7 @@
 
 .App-header.large .App-header-links {
   display: flex;
+  min-width: 0;
 }
 
 .App-header.small {
@@ -83,6 +84,10 @@
   color: white;
 }
 
+.App-header.large .App-header-link-container {
+  min-width: 0;
+}
+
 .App-header-links-header {
   height: 6.2rem;
   display: flex;
@@ -93,6 +98,7 @@
 .App-header-container-left {
   display: flex;
   align-items: center;
+  min-width: 0;
 }
 
 .App-header-top {
@@ -171,8 +177,12 @@
   line-height: 1.8rem;
   font-weight: normal;
 }
+.App-header.large .App-header-container-left a {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
-.App-header-container-left .a.active,
 .App-header-container-left a.active {
   color: white;
 }
