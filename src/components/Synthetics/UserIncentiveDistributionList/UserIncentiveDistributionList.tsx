@@ -51,7 +51,7 @@ function getNormalizedIncentive(incentive: UserIncentiveData, tokens: Token[]) {
     ...incentive,
     tokenIncentiveDetails,
     totalUsd,
-    typeId: Number(incentive.typeId),
+    typeId: 2001,
   };
 }
 
