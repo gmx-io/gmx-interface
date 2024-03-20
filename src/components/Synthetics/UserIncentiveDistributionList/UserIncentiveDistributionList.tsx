@@ -18,20 +18,18 @@ import { formatDate } from "lib/dates";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 
 const INCENTIVE_TYPE_MAP = {
   1001: t`GM Airdrop`,
   1002: t`GLP to GM Airdrop`,
   1003: t`TRADING Airdrop`,
-  2001: t`Prize Airdrop (13-20 Mar)`,
-  2002: t`Prize Airdrop (20-27 Mar)`,
 };
 
-const INCENTIVE_LINK_MAP = {
-  2001: "/competitions/march_13-20_2024",
-  2002: "/competitions/march_20-27_2024",
+const INCENTIVE_TOOLTIP_MAP = {
+  2001: { link: "/competitions/march_13-20_2024", text: t`EIP-4844, 13-20 Mar` },
+  2002: { link: "/competitions/march_20-27_2024", text: t`EIP-4844, 20-27 Mar` },
 };
 
 type NormalizedIncentiveData = ReturnType<typeof getNormalizedIncentive>;
@@ -44,7 +42,6 @@ function getNormalizedIncentive(incentive: UserIncentiveData, tokens: Token[]) {
       tokenAmount: BigNumber.from(incentive.amounts[index]),
       tokenUsd: BigNumber.from(incentive.amountsInUsd[index]),
       id: `${incentive.id}-${tokenAddress}`,
-      typeId: incentive.typeId,
     };
   });
 
@@ -132,37 +129,35 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
   const { tokenIncentiveDetails, totalUsd, timestamp, typeId, transactionHash } = incentive;
   const { chainId } = useChainId();
   const explorerURL = getExplorerUrl(chainId);
-  const typeStr = INCENTIVE_TYPE_MAP[typeId] ?? t`Unknown`;
-  const link = INCENTIVE_LINK_MAP[typeId];
-  const type = link ? (
-    <Link className="link-underline" to={link}>
-      {typeStr}
-    </Link>
-  ) : (
-    typeStr
+
+  const isCompetition = typeId > 2000 && typeId < 3000;
+  const typeStr = isCompetition ? t`COMPETITION Airdrop` : INCENTIVE_TYPE_MAP[typeId];
+  const tooltipData = INCENTIVE_TOOLTIP_MAP[typeId];
+
+  const renderTotalTooltipContent = useCallback(() => {
+    return tokenIncentiveDetails.map((tokenInfo) => (
+      <StatsTooltipRow
+        key={tokenInfo.id}
+        showDollar={false}
+        label={tokenInfo.tokenInfo?.symbol}
+        value={formatTokenAmount(tokenInfo.tokenAmount, tokenInfo.tokenInfo?.decimals, "", {
+          useCommas: true,
+        })}
+      />
+    ));
+  }, [tokenIncentiveDetails]);
+  const renderTooltipTypeContent = useCallback(
+    () => (tooltipData ? <Link to={tooltipData.link}>{tooltipData.text}</Link> : null),
+    [tooltipData]
   );
+  const type = tooltipData ? <Tooltip handle={typeStr} renderContent={renderTooltipTypeContent} /> : typeStr;
 
   return (
     <tr>
       <td data-label="Date">{formatDate(timestamp)}</td>
       <td data-label="Type">{type}</td>
       <td data-label="Amount">
-        <Tooltip
-          handle={formatUsd(totalUsd)}
-          className="nowrap"
-          renderContent={() => {
-            return tokenIncentiveDetails.map((tokenInfo) => (
-              <StatsTooltipRow
-                key={tokenInfo.id}
-                showDollar={false}
-                label={tokenInfo.tokenInfo?.symbol}
-                value={formatTokenAmount(tokenInfo.tokenAmount, tokenInfo.tokenInfo?.decimals, "", {
-                  useCommas: true,
-                })}
-              />
-            ));
-          }}
-        />
+        <Tooltip handle={formatUsd(totalUsd)} className="nowrap" renderContent={renderTotalTooltipContent} />
       </td>
       <td data-label="Transaction">
         <ExternalLink href={`${explorerURL}tx/${transactionHash}`}>
