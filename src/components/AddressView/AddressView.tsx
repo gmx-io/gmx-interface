@@ -54,7 +54,7 @@ export default function AddressView({
   );
 
   return (
-    <Link className="AddressView" to={`/actions/v2/${address}`}>
+    <Link target="_blank" className="AddressView" to={`/actions/v2/${address}`}>
       {avatarUrl ? (
         <span className="AddressView-ens-avatar" style={style} />
       ) : (

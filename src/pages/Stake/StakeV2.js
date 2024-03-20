@@ -2668,11 +2668,13 @@ export default function StakeV2({ setPendingTxns }) {
         <>
           <div className="mt-sm">
             <PageTitle
-              title={t`Incentives`}
+              title={t`Incentives & Prizes`}
               subtitle={
                 <Trans>
                   Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX
                   V2.
+                  <br />
+                  Earn prizes by participating in GMX Trading Competitions.
                 </Trans>
               }
             />

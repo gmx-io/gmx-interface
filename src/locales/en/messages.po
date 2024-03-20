@@ -823,6 +823,10 @@ msgstr "Buying GM..."
 msgid "Buying..."
 msgstr "Buying..."
 
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "COMPETITION Airdrop"
+msgstr "COMPETITION Airdrop"
+
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Can't execute because of an error"
 msgstr "Can't execute because of an error"
@@ -1682,10 +1686,12 @@ msgstr "Download"
 msgid "EIP-4844 Competition"
 msgstr "EIP-4844 Competition"
 
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 #: src/domain/synthetics/leaderboard/constants.ts
 msgid "EIP-4844, 13-20 Mar"
 msgstr "EIP-4844, 13-20 Mar"
 
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 #: src/domain/synthetics/leaderboard/constants.ts
 msgid "EIP-4844, 20-27 Mar"
 msgstr "EIP-4844, 20-27 Mar"
@@ -1697,8 +1703,12 @@ msgid "Earn"
 msgstr "Earn"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2."
-msgstr "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2."
+#~ msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2."
+#~ msgstr "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2."
+
+#: src/pages/Stake/StakeV2.js
+msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2.<0/>Earn prizes by participating in GMX Trading Competitions."
+msgstr "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2.<0/>Earn prizes by participating in GMX Trading Competitions."
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "Earn an extra {0}% {nativeTokenSymbol} Boosted APR by increasing your staked <0>Multiplier Points</0>."
@@ -2293,9 +2303,17 @@ msgstr "GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of t
 msgid "GLP sell disabled, pending {0} upgrade"
 msgstr "GLP sell disabled, pending {0} upgrade"
 
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "GLP to GM Airdrop"
+msgstr "GLP to GM Airdrop"
+
 #: src/pages/BuyGlp/BuyGlp.js
 msgid "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more</0>."
 msgstr "GLP to GM migration has reduced Fees due to STIP incentives. <0>Read more</0>."
+
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "GM Airdrop"
+msgstr "GM Airdrop"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "GM Markets"
@@ -2522,8 +2540,12 @@ msgid "Inc."
 msgstr "Inc."
 
 #: src/pages/Stake/StakeV2.js
-msgid "Incentives"
-msgstr "Incentives"
+#~ msgid "Incentives"
+#~ msgstr "Incentives"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Incentives & Prizes"
+msgstr "Incentives & Prizes"
 
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Incentives Distribution History"
@@ -5283,6 +5305,10 @@ msgstr "TP"
 msgid "TP/SL"
 msgstr "TP/SL"
 
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "TRADING Airdrop"
+msgstr "TRADING Airdrop"
+
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take-Profit"
@@ -5575,8 +5601,12 @@ msgid "This code is not yet registered on {0}, you will not receive rebates ther
 msgstr "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "This competition has ended"
-msgstr "This competition has ended"
+#~ msgid "This competition has ended"
+#~ msgstr "This competition has ended"
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "This competition has ended."
+msgstr "This competition has ended."
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "This competition is held on the {0} network. <0>Change your network</0> to participate."
@@ -6363,6 +6393,14 @@ msgstr "Win Rate"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Win/Loss"
 msgstr "Win/Loss"
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "Winner:"
+msgstr "Winner:"
+
+#: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
+msgid "Winners:"
+msgstr "Winners:"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Wins and losses for fully closed positions."

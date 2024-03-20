@@ -17,7 +17,11 @@ export function CompetitionCountdown({ className, size }: { className?: string; 
       return null;
     }
   } else {
-    return <Trans>This competition has ended</Trans>;
+    return (
+      <div className="CompetitionCountdown__end">
+        <Trans>This competition has ended.</Trans>
+      </div>
+    );
   }
 
   return (
