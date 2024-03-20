@@ -42,6 +42,7 @@ $tabs-threshold: 990px;
 .LeaderboardContainer__competition-tabs {
   position: relative;
   display: flex;
+  align-items: center;
 }
 
 @media screen and (max-width: 600px) {
@@ -356,6 +357,17 @@ $tabs-threshold: 990px;
 
     @media screen and (max-width: $tabs-threshold) {
       font-size: 2rem;
+    }
+  }
+
+  &__end {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    right: var(--default-container-padding);
+
+    @media screen and (max-width: 1000px) {
+      position: static;
     }
   }
 

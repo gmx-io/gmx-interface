@@ -821,6 +821,10 @@ msgstr ""
 msgid "Buying..."
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
+msgid "COMPETITION Airdrop"
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Can't execute because of an error"
 msgstr ""
@@ -1636,10 +1640,12 @@ msgstr ""
 msgid "EIP-4844 Competition"
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 #: src/domain/synthetics/leaderboard/constants.ts
 msgid "EIP-4844, 13-20 Mar"
 msgstr ""
 
+#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 #: src/domain/synthetics/leaderboard/constants.ts
 msgid "EIP-4844, 20-27 Mar"
 msgstr ""
@@ -4060,12 +4066,12 @@ msgid "Price on Avalanche"
 msgstr ""
 
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
-msgid "Prize Airdrop (13-20 Mar)"
-msgstr ""
+#~ msgid "Prize Airdrop (13-20 Mar)"
+#~ msgstr ""
 
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
-msgid "Prize Airdrop (20-27 Mar)"
-msgstr ""
+#~ msgid "Prize Airdrop (20-27 Mar)"
+#~ msgstr ""
 
 #: src/pages/Actions/Actions.js
 msgid "Profit"
@@ -5733,7 +5739,6 @@ msgid "UTILIZATION"
 msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
-#: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "Unknown"
 msgstr ""
 
