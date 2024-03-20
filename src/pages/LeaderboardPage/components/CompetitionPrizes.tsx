@@ -168,7 +168,7 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
   const oneWinner =
     showCount === 1 && winner ? (
       <div className="CompetitionPrizes__prize-winners">
-        <Link to={`/actions/v2/${winner.account}`} className="CompetitionPrizes__prize-winner">
+        <Link target="_blank" to={`/actions/v2/${winner.account}`} className="CompetitionPrizes__prize-winner">
           <Jazzicon diameter={20} seed={jsNumberForAddress(winner.account)} />
           <div className="CompetitionPrizes__prize-rest">{shortenAddress(winner.account, 14)}</div>
         </Link>
@@ -179,6 +179,7 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
       <div className="CompetitionPrizes__prize-winners">
         {winners.slice(0, showCount).map((winner) => (
           <Link
+            target="_blank"
             to={`/actions/v2/${winner.account}`}
             className="CompetitionPrizes__prize-winner CompetitionPrizes__prize-winner_many "
             key={winner.account}
@@ -191,7 +192,12 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
     ) : null;
   const renderTooltipContent = useCallback(() => {
     return winners.map((winner) => (
-      <Link to={`/actions/v2/${winner.account}`} className="CompetitionPrizes__tooltip-winner" key={winner.account}>
+      <Link
+        target="_blank"
+        to={`/actions/v2/${winner.account}`}
+        className="CompetitionPrizes__tooltip-winner"
+        key={winner.account}
+      >
         <Jazzicon diameter={20} seed={jsNumberForAddress(winner.account)} />
         <div className="CompetitionPrizes__prize-rest">{shortenAddress(winner.account, 20)}</div>
       </Link>

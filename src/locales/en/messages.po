@@ -5368,8 +5368,12 @@ msgid "This code is not yet registered on {0}, you will not receive rebates ther
 msgstr "This code is not yet registered on {0}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {1}."
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "This competition has ended"
-msgstr "This competition has ended"
+#~ msgid "This competition has ended"
+#~ msgstr "This competition has ended"
+
+#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
+msgid "This competition has ended."
+msgstr "This competition has ended."
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #~ msgid "This competition is held on the {0} network, please <0>change your network</0>."
