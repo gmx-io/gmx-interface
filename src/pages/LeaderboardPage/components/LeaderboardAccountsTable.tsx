@@ -246,7 +246,7 @@ export function LeaderboardAccountsTable({
               />
               <TableHeaderCell
                 title={t`Avg. Lev.`}
-                width={0}
+                width={1}
                 tooltip={t`Average leverage used.`}
                 tooltipPosition="bottom-end"
                 onClick={handleColumnClick}
