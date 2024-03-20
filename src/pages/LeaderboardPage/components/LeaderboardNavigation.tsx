@@ -37,6 +37,22 @@ function getChip(pageKey: LeaderboardPageKey): LeaderboardNavigationItem["chip"]
   return "over";
 }
 
+function getLabel(pageKey: LeaderboardPageKey) {
+  switch (pageKey) {
+    case "leaderboard":
+      return t`Global Leaderboard`;
+
+    case "march_13-20_2024":
+      return t`EIP-4844, 13-20 Mar`;
+
+    case "march_20-27_2024":
+      return t`EIP-4844, 20-27 Mar`;
+
+    default:
+      throw mustNeverExist(pageKey);
+  }
+}
+
 export function LeaderboardNavigation() {
   const pageKey = useLeaderboardPageKey();
   const navigationItems = useMemo(() => {
@@ -45,7 +61,7 @@ export function LeaderboardNavigation() {
       .map((page) => {
         return {
           key: page.key,
-          label: page.label,
+          label: getLabel(page.key),
           chip: getChip(page.key),
           isSelected: page.key === pageKey,
           isCompetition: page.key !== "leaderboard",

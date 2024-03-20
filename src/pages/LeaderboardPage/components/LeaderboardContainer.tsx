@@ -88,7 +88,21 @@ export function LeaderboardContainer() {
     }
   }, [activeLeaderboardIndex, setLeaderboardType]);
 
-  const title = LEADERBOARD_PAGES[leaderboardPageKey].title;
+  const title = useMemo(() => {
+    switch (leaderboardPageKey) {
+      case "leaderboard":
+        return t`Global Leaderboard`;
+
+      case "march_13-20_2024":
+        return t`EIP-4844 Competition`;
+
+      case "march_20-27_2024":
+        return t`EIP-4844 Competition`;
+
+      default:
+        throw mustNeverExist(leaderboardPageKey);
+    }
+  }, [leaderboardPageKey]);
 
   const handleSwitchNetworkClick = useCallback(() => {
     switchNetwork(leaderboardChainId, active);

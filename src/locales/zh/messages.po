@@ -1681,18 +1681,18 @@ msgstr "30天内不要再显示此信息"
 msgid "Download"
 msgstr "下载"
 
-#: src/domain/synthetics/leaderboard/constants.ts
-#: src/domain/synthetics/leaderboard/constants.ts
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "EIP-4844 Competition"
 msgstr ""
 
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
-#: src/domain/synthetics/leaderboard/constants.ts
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "EIP-4844, 13-20 Mar"
 msgstr ""
 
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
-#: src/domain/synthetics/leaderboard/constants.ts
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "EIP-4844, 20-27 Mar"
 msgstr ""
 
@@ -2489,8 +2489,8 @@ msgstr "生成可分享的图像中..."
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 msgstr ""
 
-#: src/domain/synthetics/leaderboard/constants.ts
-#: src/domain/synthetics/leaderboard/constants.ts
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "Global Leaderboard"
 msgstr ""
 
