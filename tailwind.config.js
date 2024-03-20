@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 const range = require("lodash/range");
 const fromPairs = require("lodash/fromPairs");
 const merge = require("lodash/merge");
