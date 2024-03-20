@@ -147,7 +147,12 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
     ));
   }, [tokenIncentiveDetails]);
   const renderTooltipTypeContent = useCallback(
-    () => (tooltipData ? <Link to={tooltipData.link}>{tooltipData.text}</Link> : null),
+    () =>
+      tooltipData ? (
+        <Link className="link-underline" to={tooltipData.link}>
+          {tooltipData.text}
+        </Link>
+      ) : null,
     [tooltipData]
   );
   const type = tooltipData ? <Tooltip handle={typeStr} renderContent={renderTooltipTypeContent} /> : typeStr;
