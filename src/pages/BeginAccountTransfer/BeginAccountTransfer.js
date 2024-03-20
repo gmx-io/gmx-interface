@@ -313,7 +313,7 @@ export default function BeginAccountTransfer() {
                   isChecked={isAffiliateVesterSkipValidation}
                   setIsChecked={setIsAffiliateVesterSkipValidation}
                 >
-                  <span className="text-warning font-sm">
+                  <span className="text-yellow text-sm">
                     <Trans>I do not want to transfer the Affiliate esGMX tokens</Trans>
                   </span>
                 </Checkbox>

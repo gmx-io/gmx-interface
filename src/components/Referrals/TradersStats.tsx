@@ -246,7 +246,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                         <td data-label="Amount" className="Rebate-amount">
                           <Tooltip
                             position="bottom"
-                            className="nowrap"
+                            className="whitespace-nowrap"
                             handle={
                               <div className="Rebate-amount-value">
                                 {tokensWithoutPrices.length > 0 && (

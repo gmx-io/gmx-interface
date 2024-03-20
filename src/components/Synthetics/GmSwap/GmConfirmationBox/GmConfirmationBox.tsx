@@ -360,7 +360,7 @@ export function GmConfirmationBox({
                         usd: shortTokenUsd,
                         token: shortToken,
                         overrideSymbol: shortSymbol,
-                        className: "mt-xs",
+                        className: "mt-8",
                       })}
                     </>
                   )}
@@ -408,7 +408,7 @@ export function GmConfirmationBox({
                         usd: shortTokenUsd,
                         token: shortToken,
                         overrideSymbol: shortSymbol,
-                        className: "mt-xs",
+                        className: "mt-8",
                       })}
                     </>
                   )}

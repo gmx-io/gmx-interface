@@ -76,7 +76,7 @@ export function ClaimAffiliatesModal(p: Props) {
           className="ClaimModal-row"
           label={t`Market`}
           value={
-            <div className="items-center">
+            <div className="flex items-center">
               <span>{indexName}</span>
               <span className="subtext">[{poolName}]</span>
             </div>

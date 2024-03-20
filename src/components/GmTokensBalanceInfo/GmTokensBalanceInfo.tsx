@@ -148,7 +148,7 @@ export const GmTokensTotalBalanceInfo = ({
   return balance && balanceUsd ? (
     <Tooltip
       handle={label}
-      className="text-none"
+      className="normal-case"
       maxAllowedWidth={340}
       position={tooltipPosition ?? "bottom-end"}
       renderContent={renderTooltipContent}

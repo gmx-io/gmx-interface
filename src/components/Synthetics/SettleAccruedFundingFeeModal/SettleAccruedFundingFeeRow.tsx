@@ -20,7 +20,7 @@ export const SettleAccruedFundingFeeRow = ({ position, isSelected, onCheckboxCha
     [position.marketInfo]
   );
   const label = (
-    <div key={position.key} className="items-top">
+    <div key={position.key} className="flex items-start">
       <span className="ClaimSettleModal-row-text">
         {position.isLong ? t`Long` : t`Short`} {indexName}
       </span>{" "}

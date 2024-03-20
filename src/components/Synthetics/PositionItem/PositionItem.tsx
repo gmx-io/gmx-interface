@@ -363,7 +363,7 @@ export function PositionItem(p: Props) {
                   errors.map((error) => (
                     <span
                       key={error.key}
-                      className={cx("mb-xs", "position-order-error", {
+                      className={cx("mb-8", "position-order-error", {
                         "level-warning": level === "warning",
                         "level-error": level === "error",
                       })}
@@ -480,9 +480,9 @@ export function PositionItem(p: Props) {
                   <StatsTooltipRow
                     label={t`Market`}
                     value={
-                      <div className="items-center">
+                      <div className="flex items-center">
                         <span>{indexName && indexName}</span>
-                        <span className="subtext lh-1">{poolName && `[${poolName}]`}</span>
+                        <span className="subtext leading-none">{poolName && `[${poolName}]`}</span>
                       </div>
                     }
                     showDollar={false}
@@ -644,7 +644,7 @@ export function PositionItem(p: Props) {
                 <Trans>Market</Trans>
               </div>
               <div onClick={() => p.onSelectPositionClick?.()}>
-                <div className="items-top">
+                <div className="flex items-start">
                   <span>{indexName && indexName}</span>
                   <span className="subtext">{poolName && `[${poolName}]`}</span>
                 </div>

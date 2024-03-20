@@ -855,7 +855,7 @@ export function TradeBox(p: Props) {
         </BuyInputSection>
 
         <div className="Exchange-swap-ball-container">
-          <button type="button" className="Exchange-swap-ball" onClick={onSwitchTokens}>
+          <button type="button" className="Exchange-swap-ball bg-blue" onClick={onSwitchTokens}>
             <IoMdSwap className="Exchange-swap-ball-icon" />
           </button>
         </div>
@@ -1090,7 +1090,7 @@ export function TradeBox(p: Props) {
               setIsChecked={setKeepLeverage}
               disabled={decreaseAmounts?.isFullClose}
             >
-              <span className="text-gray font-sm">
+              <span className="text-gray text-sm">
                 <Trans>Keep leverage at {formatLeverage(selectedPosition.leverage)}</Trans>
               </span>
             </ToggleSwitch>

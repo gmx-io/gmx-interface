@@ -75,8 +75,8 @@ export function MarketFilterBase({
 
       return (
         <>
-          <TokenIcon symbol={iconName} displaySize={16} importSize={40} className="mr-xs" />
-          <div className="items-center">
+          <TokenIcon symbol={iconName} displaySize={16} importSize={40} className="mr-8" />
+          <div className="inline-flex items-center">
             <span>{indexName}</span>
             <span className="subtext">[{poolName}]</span>
           </div>

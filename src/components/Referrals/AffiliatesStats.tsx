@@ -328,7 +328,7 @@ function AffiliatesStats({
                         <Tooltip
                           handle={`$${getUSDValue(stat.volume)}`}
                           position="bottom-start"
-                          className="nowrap"
+                          className="whitespace-nowrap"
                           renderContent={() => (
                             <>
                               <StatsTooltipRow label={t`Volume on V1`} value={getUSDValue(stat?.v1Data.volume)} />
@@ -342,7 +342,7 @@ function AffiliatesStats({
                         <Tooltip
                           handle={`$${getUSDValue(stat.affiliateRebateUsd)}`}
                           position="bottom-start"
-                          className="nowrap"
+                          className="whitespace-nowrap"
                           renderContent={() => (
                             <>
                               <StatsTooltipRow
@@ -437,7 +437,7 @@ function AffiliatesStats({
                         <td data-label="Type">{rebateType}</td>
                         <td data-label="Amount">
                           <Tooltip
-                            className="nowrap"
+                            className="whitespace-nowrap"
                             handle={
                               <div className="Rebate-amount-value">
                                 {tokensWithoutPrices.length > 0 && (

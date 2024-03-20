@@ -82,7 +82,7 @@ export default function ChartTokenSelector(props: Props) {
             <Popover.Button as="div">
               <button className={cx("chart-token-selector", { "chart-token-label--active": open })}>
                 {selectedToken && (
-                  <span className="chart-token-selector--current inline-items-center">
+                  <span className="chart-token-selector--current inline-flex items-center">
                     <TokenIcon
                       className="chart-token-current-icon"
                       symbol={selectedToken.symbol}
@@ -98,7 +98,7 @@ export default function ChartTokenSelector(props: Props) {
             <div className="chart-token-menu">
               <Popover.Panel as="div" className={cx("menu-items chart-token-menu-items", { isSwap: isSwap })}>
                 <SearchInput
-                  className="m-md"
+                  className="m-24"
                   value={searchKeyword}
                   setValue={({ target }) => setSearchKeyword(target.value)}
                   onKeyDown={(e) => {
@@ -136,7 +136,7 @@ export default function ChartTokenSelector(props: Props) {
                               className="token-item"
                               onClick={() => handleMarketSelect(token.address, "largestPosition")}
                             >
-                              <span className="inline-items-center">
+                              <span className="inline-flex items-center">
                                 <TokenIcon
                                   className="ChartToken-list-icon"
                                   symbol={token.symbol}

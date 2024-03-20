@@ -366,7 +366,7 @@ const TableRow = memo(
               </span>
             }
             position={index > 7 ? "top" : "bottom"}
-            className="nowrap"
+            className="whitespace-nowrap"
             renderContent={renderPnlTooltipContent}
           />
         </TableCell>
@@ -378,7 +378,7 @@ const TableRow = memo(
               </span>
             }
             position={index > 7 ? "top" : "bottom"}
-            className="nowrap"
+            className="whitespace-nowrap"
             renderContent={() => (
               <StatsTooltipRow
                 label={t`Capital Used`}

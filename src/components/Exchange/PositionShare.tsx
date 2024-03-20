@@ -125,15 +125,15 @@ function PositionShare({
       {uploadedImageError && <span className="error">{uploadedImageError}</span>}
 
       <div className="actions">
-        <Button variant="secondary" disabled={!uploadedImageInfo} className="mr-md" onClick={handleCopy}>
+        <Button variant="secondary" disabled={!uploadedImageInfo} className="mr-24" onClick={handleCopy}>
           <BiCopy className="icon" />
           <Trans>Copy</Trans>
         </Button>
-        <Button variant="secondary" disabled={!uploadedImageInfo} className="mr-md" onClick={handleDownload}>
+        <Button variant="secondary" disabled={!uploadedImageInfo} className="mr-24" onClick={handleDownload}>
           <RiFileDownloadLine className="icon" />
           <Trans>Download</Trans>
         </Button>
-        <Button newTab variant="secondary" disabled={!uploadedImageInfo} className="mr-md" to={tweetLink}>
+        <Button newTab variant="secondary" disabled={!uploadedImageInfo} className="mr-24" to={tweetLink}>
           <FiTwitter className="icon" />
           <Trans>Tweet</Trans>
         </Button>

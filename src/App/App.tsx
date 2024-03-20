@@ -1,10 +1,10 @@
 import "@wagmi/connectors";
 import { ethers } from "ethers";
 import useScrollToTop from "lib/useScrollToTop";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { SWRConfig } from "swr";
 
-import { HashRouter as Router, Redirect, Route, Switch, useHistory, useLocation } from "react-router-dom";
+import { Redirect, Route, HashRouter as Router, Switch, useHistory, useLocation } from "react-router-dom";
 
 import { getAppBaseUrl, isHomeSite, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 
@@ -29,8 +29,8 @@ import Stake from "pages/Stake/Stake";
 import Stats from "pages/Stats/Stats";
 
 import { cssTransition, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
+import "react-toastify/dist/ReactToastify.css";
 import "styles/Font.css";
 import "styles/Input.css";
 import "styles/Shared.scss";
@@ -51,6 +51,7 @@ import PageNotFound from "pages/PageNotFound/PageNotFound";
 import ReferralTerms from "pages/ReferralTerms/ReferralTerms";
 import TermsAndConditions from "pages/TermsAndConditions/TermsAndConditions";
 
+import { Provider } from "@ethersproject/providers";
 import { i18n } from "@lingui/core";
 import { Trans } from "@lingui/macro";
 import { I18nProvider } from "@lingui/react";
@@ -83,6 +84,7 @@ import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import { rainbowKitConfig } from "lib/wallets/rainbowKitConfig";
 import useWallet from "lib/wallets/useWallet";
 import { RainbowKitProviderWrapper } from "lib/wallets/WalletProvider";
+import DashboardV2 from "pages/Dashboard/DashboardV2";
 import { CompetitionRedirect, LeaderboardPage } from "pages/LeaderboardPage/LeaderboardPage";
 import { MarketPoolsPage } from "pages/MarketPoolsPage/MarketPoolsPage";
 import SyntheticsActions from "pages/SyntheticsActions/SyntheticsActions";
@@ -90,14 +92,15 @@ import { SyntheticsFallbackPage } from "pages/SyntheticsFallbackPage/SyntheticsF
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import { useDisconnect } from "wagmi";
-import DashboardV2 from "pages/Dashboard/DashboardV2";
-import { Provider } from "@ethersproject/providers";
 
 // @ts-ignore
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   // @ts-ignore
   window.ethereum.autoRefreshOnNetworkChange = false;
 }
+
+const LazyUiPage = lazy(() => import("pages/UiPage/UiPage"));
+const UiPage = () => <Suspense fallback={<Trans>Loading...</Trans>}>{<LazyUiPage />}</Suspense>;
 
 const Zoom = cssTransition({
   enter: "zoomIn",
@@ -387,6 +390,9 @@ function FullApp() {
               </Route>
               <Route exact path="/complete_account_transfer/:sender/:receiver">
                 <CompleteAccountTransfer />
+              </Route>
+              <Route exact path="/ui">
+                <UiPage />
               </Route>
 
               <Route path="*">

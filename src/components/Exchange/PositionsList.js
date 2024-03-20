@@ -428,7 +428,7 @@ export default function PositionsList(props) {
                       <div className="remove-top-margin">
                         <Button
                           variant="secondary"
-                          className="mr-md mt-md"
+                          className="mr-24 mt-24"
                           disabled={position.size.eq(0)}
                           onClick={() => sellPosition(position)}
                         >
@@ -436,7 +436,7 @@ export default function PositionsList(props) {
                         </Button>
                         <Button
                           variant="secondary"
-                          className="mr-md mt-md"
+                          className="mr-24 mt-24"
                           disabled={position.size.eq(0)}
                           onClick={() => editPosition(position)}
                         >
@@ -444,7 +444,7 @@ export default function PositionsList(props) {
                         </Button>
                         <Button
                           variant="secondary"
-                          className="mt-md"
+                          className="mt-24"
                           onClick={() => {
                             setPositionToShare(position);
                             setIsPositionShareModalOpen(true);

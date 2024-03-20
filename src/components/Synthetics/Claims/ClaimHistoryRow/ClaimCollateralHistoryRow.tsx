@@ -66,7 +66,7 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
         <div className="flex">
           <div className="ClaimHistoryRow-action-handle">{eventTitle}</div>
           <ExternalLink
-            className="ClaimHistoryRow-external-link ml-xs"
+            className="ClaimHistoryRow-external-link ml-8"
             href={`${getExplorerUrl(chainId)}tx/${claimAction.transactionHash}`}
           >
             <NewLink20ReactComponent />
@@ -98,9 +98,9 @@ function SizeTooltip({ claimAction }: { claimAction: ClaimCollateralAction }) {
                 className="ClaimHistoryRow-tooltip-row"
                 key={market.marketTokenAddress}
                 label={
-                  <div className="items-top text-white">
+                  <div className="flex items-start text-white">
                     <span>{indexName}</span>
-                    <span className="subtext lh-1">[{poolName}]</span>
+                    <span className="subtext leading-none">[{poolName}]</span>
                   </div>
                 }
                 showDollar={false}

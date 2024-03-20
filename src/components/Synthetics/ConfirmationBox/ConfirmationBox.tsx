@@ -1021,7 +1021,7 @@ export function ConfirmationBox(p: Props) {
 
     if (swapSpreadInfo.spread && swapSpreadInfo.isHigh) {
       return (
-        <div className="mb-sm">
+        <div className="mb-16">
           <AlertInfo compact type="warning">
             <Trans>The spread is {`>`} 1%, please ensure the trade details are acceptable before comfirming</Trans>
           </AlertInfo>
@@ -1078,8 +1078,8 @@ export function ConfirmationBox(p: Props) {
                 entriesInfo?.entries?.map((entry, index) => {
                   if (!entry || !entry.amounts) return;
                   return (
-                    <div className="space-between mb-xs" key={index}>
-                      <span className="mr-md">
+                    <div className="flex justify-between mb-8" key={index}>
+                      <span className="mr-24">
                         At ${entry.price}, SL {entry?.percentage}%:
                       </span>
                       <span className={entry.amounts?.realizedPnl.isNegative() ? "text-red" : "text-green"}>
@@ -1368,7 +1368,7 @@ export function ConfirmationBox(p: Props) {
           {decreaseOrdersThatWillBeExecuted?.length > 0 && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox isChecked={isTriggerWarningAccepted} setIsChecked={setIsTriggerWarningAccepted}>
-                <span className="text-warning font-sm">
+                <span className="text-yellow text-sm">
                   <Trans>I am aware of the trigger orders</Trans>
                 </span>
               </Checkbox>
@@ -1472,7 +1472,7 @@ export function ConfirmationBox(p: Props) {
             )}
             {isTrigger && (
               <ToggleSwitch isChecked={keepLeverage ?? false} setIsChecked={setKeepLeverage}>
-                <span className="text-gray font-sm">
+                <span className="text-gray text-sm">
                   <Trans>Keep leverage at {formatLeverage(existingPosition.leverage)}</Trans>
                 </span>
               </ToggleSwitch>

@@ -78,10 +78,10 @@ export default function UserIncentiveDistributionList() {
       <EmptyMessage
         tooltipText={t`Incentives are airdropped weekly.`}
         message={t`No incentives distribution history yet.`}
-        className="mt-sm"
+        className="mt-16"
       >
         {!active && (
-          <div className="mt-md">
+          <div className="mt-24">
             <Button variant="secondary" onClick={openConnectModal}>
               <Trans>Connect Wallet</Trans>
             </Button>
@@ -162,7 +162,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
       <td data-label="Date">{formatDate(timestamp)}</td>
       <td data-label="Type">{type}</td>
       <td data-label="Amount">
-        <Tooltip handle={formatUsd(totalUsd)} className="nowrap" renderContent={renderTotalTooltipContent} />
+        <Tooltip handle={formatUsd(totalUsd)} className="whitespace-nowrap" renderContent={renderTotalTooltipContent} />
       </td>
       <td data-label="Transaction">
         <ExternalLink href={`${explorerURL}tx/${transactionHash}`}>

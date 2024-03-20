@@ -160,45 +160,13 @@ td {
   font-weight: bold;
 }
 
-.text-center {
-  text-align: center;
-}
-
 .clickable {
   cursor: pointer;
-}
-
-.underline {
-  text-decoration: underline;
-}
-
-.text-none {
-  text-transform: none;
-}
-
-.relative {
-  position: relative;
-}
-
-.margin-bottom {
-  margin-bottom: 0.465rem;
 }
 
 .transition-arrow {
   vertical-align: middle;
   margin-top: -0.31rem;
-}
-
-.inline-block {
-  display: inline-block;
-}
-
-.display-inline {
-  display: inline;
-}
-
-.text-white {
-  color: white;
 }
 
 .label,
@@ -419,30 +387,6 @@ button.btn-link:hover .logout-icon {
   max-width: 108.8rem;
 }
 
-.mt-0 {
-  margin-top: 0 !important;
-}
-
-.m-0 {
-  margin: 0 !important;
-}
-
-.mt-xs {
-  margin-top: 0.5rem;
-}
-
-.mt-sm {
-  margin-top: 1rem;
-}
-
-.mt-md {
-  margin-top: 1.5rem;
-}
-
-.items-start {
-  align-items: flex-start;
-}
-
 .page-layout {
   min-height: calc(100vh - 62px);
   display: flex;
@@ -451,67 +395,10 @@ button.btn-link:hover .logout-icon {
   padding-top: 4.65rem;
 }
 
-.flex,
-.d-flex {
-  display: flex;
-}
-
-.space-between {
-  display: flex;
-  justify-content: space-between;
-}
-
-.flex-wrap {
-  flex-wrap: wrap;
-}
-
-.flex-column {
-  flex-direction: column;
-}
-
-.items-center {
-  display: inline-flex;
-  align-items: center;
-}
-
-.items-top {
-  display: inline-flex;
-  align-items: flex-start;
-}
-
-.inline-flex {
-  display: inline-flex;
-}
-
-.w-full {
-  width: 100%;
-}
-
-.max-w-full {
-  max-width: 100%;
-}
-
-.font-sm {
-  font-size: var(--font-sm);
-}
-.font-base {
-  font-size: var(--font-base);
-}
-
-.mr-sm {
-  margin-right: 1rem;
-}
-
-.mr-md {
-  margin-right: 1.5rem;
-}
-
 .default-cursor.App-cta {
   cursor: default;
 }
-.nowrap {
-  white-space: nowrap;
-}
+
 .gap-right > *:not(:last-child) {
   margin-right: 1rem;
 }
@@ -521,118 +408,14 @@ button.btn-link:hover .logout-icon {
   max-width: 30rem;
 }
 
-.cursor-pointer {
-  cursor: pointer;
-}
-
-.text-gray {
-  color: var(--text-gray);
-}
-
-.inline-flex {
-  display: inline-flex;
-}
-
-.inline-items-center {
-  display: inline-flex;
-  align-items: center;
-}
-
-.mr-xxs {
-  margin-right: 0.25rem;
-}
-.mr-xs {
-  margin-right: 0.5rem;
-}
-
-.ml-xxs {
-  margin-left: 0.25rem;
-}
-.ml-xs {
-  margin-left: 0.5rem;
-}
-.ml-sm {
-  margin-left: 1rem;
-}
-.ml-base {
-  margin-left: 1.5rem;
-}
-
-.mx-xs {
-  margin: 0 0.5rem;
-}
-
-.my-sm {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
-
-.my-base {
-  margin: 1.5rem 0;
-}
-
-.mx-xxs {
-  margin: 0 0.25rem;
-}
-
-.m-sm {
-  margin-right: 1rem;
-}
-.m-md {
-  margin: 1.5rem;
-}
-.text-warning {
-  color: var(--warning-yellow);
-}
-
-.ml-xs {
-  margin-left: 0.5rem;
-}
-
-.mb-xs {
-  margin-bottom: 0.5rem;
-}
-
-.mb-sm {
-  margin-bottom: 1rem;
-}
-
-.mb-base {
-  margin-bottom: 1.5rem;
-}
-
 .subtext {
   font-size: 1.2rem;
   color: var(--text-gray);
   margin-left: 0.25rem;
 }
 
-.lh-1 {
-  line-height: 1;
-}
-
-.nobr {
-  white-space: nowrap;
-}
-
-.text-red {
-  color: var(--error-red);
-}
-
 a:hover .text-red {
   color: var(--error-red-hover);
-}
-
-.text-green {
-  color: var(--green);
-}
-
-.rotate-90 {
-  transform: rotate(90deg);
-}
-
-.self-center {
-  align-self: center;
 }
 
 .Toastify__toast-container {

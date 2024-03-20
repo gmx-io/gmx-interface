@@ -4,9 +4,8 @@ export default function MarketListSkeletonStructure() {
   return (
     <tr>
       <td>
-        <div className="items-center">
-          <Skeleton className="mr-sm" height={40} width={40} circle />
-
+        <div className="flex items-center">
+          <Skeleton className="mr-16" height={40} width={40} circle />
           <Skeleton width={60} height={12} />
         </div>
       </td>

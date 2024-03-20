@@ -157,7 +157,7 @@ export function AffiliateCodeForm({
         ref={inputRef}
         value={referralCode}
         disabled={isProcessing}
-        className={cx("text-input", { "mb-base": !error })}
+        className={cx("text-input", { "mb-24": !error })}
         placeholder={t`Enter a code`}
         onChange={({ target }) => {
           const { value } = target;
