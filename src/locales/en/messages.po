@@ -3030,6 +3030,8 @@ msgstr "Loading..."
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
+#: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
+#: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -4813,6 +4815,8 @@ msgstr "Share Position"
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
+#: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
@@ -6754,13 +6758,13 @@ msgid "view"
 msgstr "view"
 
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
-msgid "{0, plural, one {# Position} other {# Positions}}"
-msgstr "{0, plural, one {# Position} other {# Positions}}"
+#~ msgid "{0, plural, one {# Position} other {# Positions}}"
+#~ msgstr "{0, plural, one {# Position} other {# Positions}}"
 
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
-msgid "{0, plural, one {# Size} other {# Sizes}}"
-msgstr "{0, plural, one {# Size} other {# Sizes}}"
+#~ msgid "{0, plural, one {# Size} other {# Sizes}}"
+#~ msgstr "{0, plural, one {# Size} other {# Sizes}}"
 
 #: src/pages/Exchange/Exchange.js
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -6980,8 +6984,8 @@ msgid "{longShortText} {0} Reserve"
 msgstr "{longShortText} {0} Reserve"
 
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
-msgid "{marketsCount, plural, one {# Market} other {# Markets} many {# Markets}}"
-msgstr "{marketsCount, plural, one {# Market} other {# Markets} many {# Markets}}"
+#~ msgid "{marketsCount, plural, one {# Market} other {# Markets} many {# Markets}}"
+#~ msgstr "{marketsCount, plural, one {# Market} other {# Markets} many {# Markets}}"
 
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
