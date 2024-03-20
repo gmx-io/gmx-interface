@@ -13,7 +13,9 @@ export enum ClaimType {
 export type ClaimMarketItem = {
   marketInfo: MarketInfo;
   longTokenAmount: BigNumber;
+  longTokenAmountUsd: BigNumber;
   shortTokenAmount: BigNumber;
+  shortTokenAmountUsd: BigNumber;
 };
 
 export type ClaimCollateralAction = {
@@ -21,9 +23,12 @@ export type ClaimCollateralAction = {
   type: "collateral";
   eventName: ClaimType.ClaimFunding | ClaimType.ClaimPriceImpact;
   account: string;
+  amounts: BigNumber[];
+  tokenPrices: BigNumber[];
   claimItems: ClaimMarketItem[];
   timestamp: number;
   transactionHash: string;
+  tokens: Token[];
 };
 
 export type ClaimFundingFeeAction = {
@@ -35,11 +40,13 @@ export type ClaimFundingFeeAction = {
     | ClaimType.SettleFundingFeeExecuted;
   account: string;
   amounts: BigNumber[];
+  tokenPrices: BigNumber[];
   markets: MarketInfo[];
   tokens: Token[];
   isLongOrders: boolean[];
   timestamp: number;
   transactionHash: string;
+  claimItems: ClaimMarketItem[];
 };
 
 export type ClaimAction = ClaimCollateralAction | ClaimFundingFeeAction;

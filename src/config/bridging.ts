@@ -18,7 +18,8 @@ const BRIDGING_OPTIONS: { [symbol: string]: BridgingOption[] } = {
   AAVE: [
     {
       name: "Arbitrum",
-      generateLink: () => "https://bridge.arbitrum.io/?destinationChain=arbitrum-one&sourceChain=ethereum",
+      generateLink: () =>
+        "https://bridge.arbitrum.io/?destinationChain=arbitrum-one&sourceChain=ethereum&token=0xba5ddd1f9d7f570dc94a51479a000e3bce967196",
     },
   ],
   AVAX: [

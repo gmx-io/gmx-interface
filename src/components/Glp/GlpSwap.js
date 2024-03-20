@@ -40,7 +40,14 @@ import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ARBITRUM, FEES_HIGH_BPS, getChainName, IS_NETWORK_DISABLED } from "config/chains";
 import { getIcon } from "config/icons";
-import { getNativeToken, getToken, getV1Tokens, getWhitelistedV1Tokens, getWrappedToken } from "config/tokens";
+import {
+  getNativeToken,
+  getToken,
+  getV1Tokens,
+  getTokenBySymbolSafe,
+  getWhitelistedV1Tokens,
+  getWrappedToken,
+} from "config/tokens";
 import { approveTokens, useInfoTokens } from "domain/tokens";
 import { getMinResidualAmount, getTokenInfo, getUsd } from "domain/tokens/utils";
 import { useChainId } from "lib/chains";
@@ -70,6 +77,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import PageTitle from "components/PageTitle/PageTitle";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import useSearchParams from "lib/useSearchParams";
 import { getFeeItem } from "domain/synthetics/fees";
 import { differenceInSeconds, intervalToDuration, nextWednesday } from "date-fns";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
@@ -153,6 +161,7 @@ const tabOptions = [t`Buy GLP`, t`Sell GLP`];
 export default function GlpSwap(props) {
   const { savedSlippageAmount, isBuying, setPendingTxns, setIsBuying, savedShouldDisableValidationForTesting } = props;
   const history = useHistory();
+  const searchParams = useSearchParams();
   const isMetamaskMobile = useIsMetamaskMobile();
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp";
   const tabLabel = isBuying ? t`Buy GLP` : t`Sell GLP`;
@@ -487,10 +496,54 @@ export default function GlpSwap(props) {
     totalTokenWeights,
   ]);
 
+  useEffect(() => {
+    const { operation, from, to } = searchParams;
+
+    if (operation) {
+      setTimeout(() => {
+        setIsBuying(operation.toLowerCase() === "buy");
+      });
+    }
+
+    if (from) {
+      const fromTokenInfo = getTokenBySymbolSafe(chainId, from, {
+        version: "v1",
+      });
+      if (fromTokenInfo) {
+        setSwapTokenAddress(fromTokenInfo.address);
+      }
+    }
+
+    if (to) {
+      const toTokenInfo = getTokenBySymbolSafe(chainId, to, {
+        version: "v1",
+      });
+      if (toTokenInfo) {
+        setSwapTokenAddress(toTokenInfo.address);
+      }
+    }
+
+    let timeoutId;
+
+    if (from || to || operation) {
+      if (history.location.search) {
+        timeoutId = setTimeout(() => {
+          history.replace({ search: "" });
+        }, 2000); // Delays the execution by 2 seconds
+      }
+    }
+
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [searchParams, setIsBuying, isBuying, chainId, setSwapTokenAddress, history]);
+
   const switchSwapOption = (hash = "") => {
     const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
     history.push(`${history.location.pathname}#${hash}`);
-    props.setIsBuying(hash === "redeem" ? false : true);
+    setIsBuying(hash === "redeem" ? false : true);
     window.scrollTo(0, currentScrollPosition);
   };
 
@@ -1337,7 +1390,7 @@ export default function GlpSwap(props) {
                         <div className="App-card-info-subtitle">{token.symbol}</div>
                       </div>
                       <div>
-                        <AssetDropdown assetSymbol={token.symbol} />
+                        <AssetDropdown token={token} />
                       </div>
                     </div>
                   </td>
@@ -1474,7 +1527,7 @@ export default function GlpSwap(props) {
                   <TokenIcon symbol={token.symbol} displaySize={24} importSize={24} />
                   <div className="token-symbol-text">{token.symbol}</div>
                   <div>
-                    <AssetDropdown assetSymbol={token.symbol} />
+                    <AssetDropdown token={token} />
                   </div>
                 </div>
                 <div className="App-card-divider" />

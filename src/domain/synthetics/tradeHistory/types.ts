@@ -34,6 +34,7 @@ export type RawTradeAction = {
   borrowingFeeAmount?: string;
   fundingFeeAmount?: string;
   pnlUsd?: string;
+  basePnlUsd?: string;
 
   collateralTokenPriceMax?: string;
   collateralTokenPriceMin?: string;
@@ -82,6 +83,7 @@ export type PositionTradeAction = {
   borrowingFeeAmount?: BigNumber;
   fundingFeeAmount?: BigNumber;
   pnlUsd?: BigNumber;
+  basePnlUsd?: BigNumber;
   orderType: OrderType;
   orderKey: string;
   isLong: boolean;
@@ -110,6 +112,7 @@ export type SwapTradeAction = {
   orderKey: string;
 
   reason?: string;
+  reasonBytes?: Bytes;
 
   transaction: {
     timestamp: number;
