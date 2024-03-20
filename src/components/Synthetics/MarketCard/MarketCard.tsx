@@ -88,9 +88,9 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
     return (
       <div>
         {currentFeeElement}
-        <div className="divider my-base" />
+        <div className="divider my-24" />
         {oppositeFeeElement}
-        <div className="divider my-base" />
+        <div className="divider my-24" />
         <Trans>
           Funding fees help to balance longs and shorts and are exchanged between both sides.{" "}
           <ExternalLink href={DOCS_LINKS.fundingFees}>Read more</ExternalLink>.
@@ -116,7 +116,7 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
         <ExchangeInfoRow
           label={t`Market`}
           value={
-            <div className="items-top">
+            <div className="flex items-start">
               <span>{indexName && indexName}</span>
               <span className="subtext">{poolName && `[${poolName}]`}</span>
             </div>

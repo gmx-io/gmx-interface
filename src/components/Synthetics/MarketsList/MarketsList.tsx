@@ -139,15 +139,15 @@ export function MarketsList() {
           const { marketInfo: market, fundingRateLong, fundingRateShort, borrowingRateLong, borrowingRateShort } = stat;
 
           return (
-            <div className="mb-base" key={market.marketTokenAddress}>
-              <div className="mb-sm text-white">[{getMarketPoolName(market)}]</div>
+            <div className="mb-24" key={market.marketTokenAddress}>
+              <div className="mb-16 text-white">[{getMarketPoolName(market)}]</div>
               <MarketNetFee borrowRateHourly={borrowingRateLong} fundingRateHourly={fundingRateLong} isLong={true} />
-              <div className="divider my-base" />
+              <div className="divider my-24" />
               <MarketNetFee borrowRateHourly={borrowingRateShort} fundingRateHourly={fundingRateShort} isLong={false} />
             </div>
           );
         })}
-        <div className="divider my-base" />
+        <div className="divider my-24" />
         <Trans>
           Funding fees help to balance longs and shorts and are exchanged between both sides.{" "}
           <ExternalLink href={DOCS_LINKS.fundingFees}>Read more</ExternalLink>.
@@ -227,7 +227,7 @@ export function MarketsList() {
                       <td>{formatUsd(stats.token.prices?.minPrice)}</td>
                       <td>
                         <Tooltip
-                          className="nowrap"
+                          className="whitespace-nowrap"
                           handle={formatUsd(stats.totalPoolValue)}
                           renderContent={() => (
                             <>

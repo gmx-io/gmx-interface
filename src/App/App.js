@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import useScrollToTop from "lib/useScrollToTop";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, lazy, Suspense } from "react";
 import { SWRConfig } from "swr";
 import "@wagmi/connectors";
 
@@ -30,8 +30,8 @@ import Stats from "pages/Stats/Stats";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 
 import { cssTransition, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
+import "react-toastify/dist/ReactToastify.css";
 import "styles/Font.css";
 import "styles/Input.css";
 import "styles/Shared.scss";
@@ -95,6 +95,9 @@ import { LeaderboardPage, CompetitionRedirect } from "pages/LeaderboardPage/Lead
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
   window.ethereum.autoRefreshOnNetworkChange = false;
 }
+
+const LazyUiPage = lazy(() => import("pages/UiPage/UiPage"));
+const UiPage = () => <Suspense fallback={<Trans>Loading...</Trans>}>{<LazyUiPage />}</Suspense>;
 
 const Zoom = cssTransition({
   enter: "zoomIn",
@@ -478,6 +481,9 @@ function FullApp({ pendingTxns, setPendingTxns }) {
               </Route>
               <Route exact path="/complete_account_transfer/:sender/:receiver">
                 <CompleteAccountTransfer setPendingTxns={setPendingTxns} />
+              </Route>
+              <Route exact path="/ui">
+                <UiPage />
               </Route>
 
               <Route path="*">

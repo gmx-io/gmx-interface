@@ -629,7 +629,7 @@ export default function DashboardV2(props) {
                   <div>
                     <TooltipComponent
                       position="bottom-end"
-                      className="nowrap"
+                      className="whitespace-nowrap"
                       handle={`$${formatAmount(
                         sumBigNumbers(currentVolumeInfo?.[chainId], v2MarketsOverview?.[chainId]?.dailyVolume),
                         USD_DECIMALS,
@@ -647,7 +647,7 @@ export default function DashboardV2(props) {
                   <div>
                     <TooltipComponent
                       position="bottom-end"
-                      className="nowrap"
+                      className="whitespace-nowrap"
                       handle={`$${formatAmount(
                         sumBigNumbers(
                           positionStatsInfo?.[chainId]?.openInterest,
@@ -668,7 +668,7 @@ export default function DashboardV2(props) {
                   <div>
                     <TooltipComponent
                       position="bottom-end"
-                      className="nowrap"
+                      className="whitespace-nowrap"
                       handle={`$${formatAmount(
                         sumBigNumbers(
                           positionStatsInfo?.[chainId]?.totalLongPositionSizes,
@@ -689,7 +689,7 @@ export default function DashboardV2(props) {
                   <div>
                     <TooltipComponent
                       position="bottom-end"
-                      className="nowrap"
+                      className="whitespace-nowrap"
                       handle={`$${formatAmount(
                         sumBigNumbers(
                           positionStatsInfo?.[chainId]?.totalShortPositionSizes,
@@ -711,7 +711,7 @@ export default function DashboardV2(props) {
                     <div>
                       <TooltipComponent
                         position="bottom-end"
-                        className="nowrap"
+                        className="whitespace-nowrap"
                         handle={`$${formatAmount(
                           sumBigNumbers(currentFees?.[chainId], v2MarketsOverview?.[chainId]?.weeklyFees),
                           USD_DECIMALS,
@@ -738,7 +738,7 @@ export default function DashboardV2(props) {
                   <div>
                     <TooltipComponent
                       position="bottom-end"
-                      className="nowrap"
+                      className="whitespace-nowrap"
                       handle={`$${numberWithCommas(
                         sumBigNumbers(
                           totalFees?.[chainId],
@@ -758,7 +758,7 @@ export default function DashboardV2(props) {
                   <div>
                     <TooltipComponent
                       position="bottom-end"
-                      className="nowrap"
+                      className="whitespace-nowrap"
                       handle={`$${formatAmount(
                         sumBigNumbers(totalVolume?.[chainId], v2MarketsOverview?.[chainId]?.totalVolume),
                         USD_DECIMALS,
@@ -776,7 +776,7 @@ export default function DashboardV2(props) {
                   <div>
                     <TooltipComponent
                       position="bottom-end"
-                      className="nowrap"
+                      className="whitespace-nowrap"
                       handle={formatAmount(
                         sumBigNumbers(uniqueUsers?.[chainId], v2MarketsOverview?.[chainId]?.totalUsers),
                         0,
@@ -802,7 +802,7 @@ export default function DashboardV2(props) {
             title={t`Tokens`}
             afterTitle={
               <VersionSwitch
-                className="ml-base"
+                className="ml-24"
                 currentVersion={props.tradePageVersion}
                 setCurrentVersion={props.setTradePageVersion}
               />
@@ -838,7 +838,7 @@ export default function DashboardV2(props) {
                         {gmxPrice && (
                           <TooltipComponent
                             position="bottom-end"
-                            className="nowrap"
+                            className="whitespace-nowrap"
                             handle={"$" + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
                             renderContent={() => (
                               <>
@@ -871,7 +871,7 @@ export default function DashboardV2(props) {
                       <div>
                         <TooltipComponent
                           position="bottom-end"
-                          className="nowrap"
+                          className="whitespace-nowrap"
                           handle={`$${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)}`}
                           renderContent={() => (
                             <ChainsStatsTooltipRow
@@ -1017,7 +1017,7 @@ export default function DashboardV2(props) {
                               <TooltipComponent
                                 handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
                                 position="bottom-end"
-                                className="nowrap"
+                                className="whitespace-nowrap"
                                 renderContent={() => {
                                   return (
                                     <>

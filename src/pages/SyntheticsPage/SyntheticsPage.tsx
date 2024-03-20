@@ -346,7 +346,7 @@ export function SyntheticsPage(p: Props) {
         <style type="text/css">
           {`
             :root {
-              --main-bg-color: #08091b;                   
+              --main-bg-color: #08091b;
              {
          `}
         </style>
@@ -379,7 +379,7 @@ export function SyntheticsPage(p: Props) {
               <div className="align-right Exchange-should-show-position-lines">
                 {listSection === ListSection.Orders && selectedOrdersKeysArr.length > 0 && (
                   <button
-                    className="muted font-base cancel-order-btn"
+                    className="muted text-base cancel-order-btn"
                     disabled={isCancelOrdersProcessig}
                     type="button"
                     onClick={onCancelOrdersClick}

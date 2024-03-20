@@ -95,7 +95,7 @@ export function GmList({
                 <th>
                   <Tooltip
                     handle={<Trans>BUYABLE</Trans>}
-                    className="text-none"
+                    className="normal-case"
                     position="bottom-end"
                     renderContent={() => (
                       <p className="text-white">
@@ -115,7 +115,7 @@ export function GmList({
                 <th>
                   <Tooltip
                     handle={t`APR`}
-                    className="text-none"
+                    className="normal-case"
                     position="bottom-end"
                     renderContent={() => (
                       <p className="text-white">
@@ -286,7 +286,7 @@ export function GmList({
                     <div className="mobile-token-card">
                       <TokenIcon symbol={tokenIconName} displaySize={20} importSize={40} />
                       <div className="token-symbol-text">
-                        <div className="items-center">
+                        <div className="flex items-center">
                           <span>{indexName && indexName}</span>
                           <span className="subtext">{poolName && `[${poolName}]`}</span>
                         </div>
@@ -330,7 +330,7 @@ export function GmList({
                       <div className="label">
                         <Tooltip
                           handle={<Trans>Buyable</Trans>}
-                          className="text-none"
+                          className="normal-case"
                           position="bottom-start"
                           renderContent={() => (
                             <p className="text-white">
@@ -445,7 +445,7 @@ function MintableAmount({ mintableInfo, market, token, longToken, shortToken }) 
           )
         </>
       }
-      className="text-none"
+      className="normal-case"
       position="bottom-end"
       renderContent={() => (
         <>

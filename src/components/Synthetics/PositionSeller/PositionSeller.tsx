@@ -781,7 +781,7 @@ export function PositionSeller(p: Props) {
                     setIsChecked={setKeepLeverage}
                     disabled={decreaseAmounts?.isFullClose}
                   >
-                    <span className="text-gray font-sm">
+                    <span className="text-gray text-sm">
                       <Trans>Keep leverage at {keepLeverageAtValue}</Trans>
                     </span>
                   </ToggleSwitch>

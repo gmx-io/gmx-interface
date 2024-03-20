@@ -896,7 +896,7 @@ export default function GlpSwap(props) {
     return (
       <div className="PositionSeller-price-impact-warning">
         <Checkbox asRow isChecked={isEpochAcknowledgeSelected} setIsChecked={setIsEpochAcknowledgeSelected}>
-          <span className="text-warning font-sm">
+          <span className="text-yellow text-sm">
             <Trans>Acknowledge epoch is ending in {minutes} minutes</Trans>
           </span>
         </Checkbox>
@@ -1077,8 +1077,8 @@ export default function GlpSwap(props) {
                 onClickMax={fillMaxAmount}
                 topLeftValue={payBalance}
               >
-                <div className="selected-token inline-items-center">
-                  <img className="mr-xs" width={20} src={glpIcon} alt="GLP" />
+                <div className="selected-token inline-flex items-center">
+                  <img className="mr-8" width={20} src={glpIcon} alt="GLP" />
                   GLP
                 </div>
               </BuyInputSection>
@@ -1108,8 +1108,8 @@ export default function GlpSwap(props) {
                 defaultTokenName="GLP"
                 preventFocusOnLabelClick="right"
               >
-                <div className="selected-token inline-items-center">
-                  <img className="mr-xs" width={20} src={glpIcon} alt="GLP" />
+                <div className="selected-token inline-flex items-center">
+                  <img className="mr-8" width={20} src={glpIcon} alt="GLP" />
                   GLP
                 </div>
               </BuyInputSection>
@@ -1245,7 +1245,7 @@ export default function GlpSwap(props) {
                   <Tooltip
                     handle={t`AVAILABLE`}
                     tooltipIconPosition="right"
-                    className="text-none"
+                    className="normal-case"
                     position="bottom-end"
                     renderContent={() => (
                       <p className="text-white">
@@ -1257,7 +1257,7 @@ export default function GlpSwap(props) {
                   <Tooltip
                     handle={t`AVAILABLE`}
                     tooltipIconPosition="right"
-                    className="text-none"
+                    className="normal-case"
                     position="bottom"
                     renderContent={() => {
                       return (
@@ -1278,7 +1278,7 @@ export default function GlpSwap(props) {
                 <Tooltip
                   handle={t`FEES`}
                   tooltipIconPosition="right"
-                  className="text-none"
+                  className="normal-case"
                   position="bottom"
                   renderContent={() => {
                     return (
@@ -1404,7 +1404,7 @@ export default function GlpSwap(props) {
                               ? "$0.00"
                               : `$${formatAmount(amountLeftToDeposit, USD_DECIMALS, 2, true)}`
                           }
-                          className="nowrap"
+                          className="whitespace-nowrap"
                           position="bottom-end"
                           tooltipIconPosition="right"
                           renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
@@ -1419,7 +1419,7 @@ export default function GlpSwap(props) {
                               ? "$0.00"
                               : `$${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)}`
                           }
-                          className="nowrap"
+                          className="whitespace-nowrap"
                           position="bottom-end"
                           tooltipIconPosition="right"
                           renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}

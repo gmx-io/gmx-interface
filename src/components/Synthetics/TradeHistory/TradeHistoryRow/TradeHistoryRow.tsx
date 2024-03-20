@@ -123,9 +123,9 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
         <StatsTooltipRow
           label={t`Market`}
           value={
-            <div className="items-center">
+            <div className="flex items-center">
               <span>{msg.indexName!}</span>
-              <span className="subtext lh-1">[{msg.poolName!}]</span>
+              <span className="subtext leading-none">[{msg.poolName!}]</span>
             </div>
           }
           showDollar={false}
@@ -139,7 +139,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           <span key={market.indexName}>
             {index > 0 && " → "}
             <span>{market.indexName}</span>
-            <span className="subtext lh-1">[{market.poolName}]</span>
+            <span className="subtext leading-none">[{market.poolName}]</span>
           </span>
         ))}
       </>
@@ -184,7 +184,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
               </span>
             )}
             <ExternalLink
-              className="TradeHistoryRow-external-link ml-xs"
+              className="TradeHistoryRow-external-link ml-8"
               href={`${getExplorerUrl(chainId)}tx/${tradeAction.transaction.hash}`}
             >
               <NewLink20ReactComponent />
