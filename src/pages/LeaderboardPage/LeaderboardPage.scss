@@ -362,9 +362,9 @@ $tabs-threshold: 990px;
 
   &__end {
     display: flex;
-    align-items: center;
     position: absolute;
     right: var(--default-container-padding);
+    top: 1.8rem;
 
     @media screen and (max-width: 1000px) {
       position: static;
@@ -431,7 +431,6 @@ $tabs-threshold: 990px;
   border-radius: 999rem;
   font-size: 1.1rem;
   padding: 0.3rem 0.6rem;
-  font-weight: bold;
   margin-right: 0.8rem;
   height: 2.2rem;
 
