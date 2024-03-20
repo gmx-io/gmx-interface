@@ -1,0 +1,94 @@
+.TradeHistorySynthetics {
+  &-horizontal-scroll-container {
+    overflow-x: auto;
+  }
+
+  &-table {
+    width: max(100%, 750px);
+
+    // Table causes global layout issues on mobile
+    margin-right: -10px;
+
+    table-layout: fixed;
+
+    // TODO midas-myth 18.03.2024 decouple these styles and make a separate base table component
+    tbody tr {
+      cursor: default !important;
+    }
+  }
+
+  &-header tr {
+    cursor: default !important;
+    border-bottom: none !important;
+  }
+
+  &-header tr:hover {
+    background: unset !important;
+    box-shadow: none !important;
+  }
+
+  &-header th {
+    text-transform: uppercase;
+  }
+
+  &-padded-cell {
+    padding: 1em;
+    padding-left: 1.4em;
+  }
+
+  &-controls {
+    padding: 1em 1.05rem;
+    border-bottom: 1px solid #23263b;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .button {
+      padding: 6px 10px !important;
+    }
+  }
+
+  &-controls-right {
+    display: flex;
+    gap: 0.5em;
+  }
+
+  &-filters {
+    display: flex;
+    gap: 0.5em;
+  }
+
+  &-price-header {
+    text-align: end !important;
+  }
+
+  &-action-column {
+    width: 30%;
+  }
+
+  &-market-column {
+    width: 23.333%;
+  }
+  &-size-column {
+    width: 28.333%;
+  }
+  &-price-column {
+    width: 18.333%;
+  }
+
+  @media (max-width: 800px) {
+    &-action-column {
+      width: 33.333333%;
+    }
+    &-market-column {
+      width: 23.333%;
+    }
+    &-size-column {
+      width: 23.333%;
+    }
+    &-price-column {
+      width: 20%;
+    }
+  }
+}

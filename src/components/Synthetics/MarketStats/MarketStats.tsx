@@ -321,7 +321,7 @@ export function MarketStats(p: Props) {
           value={formatTokenAmountWithUsd(longPoolAmount, longPoolAmountUsd, longToken?.symbol, longToken?.decimals)}
         />
         {shouldShowMoreInfo && (
-          <CardRow label={t`More Info`} value={<BridgingInfo chainId={chainId} tokenSymbol={longToken?.symbol} />} />
+          <CardRow label={t`Read more`} value={<BridgingInfo chainId={chainId} tokenSymbol={longToken?.symbol} />} />
         )}
 
         <div className="App-card-divider" />

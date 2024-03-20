@@ -1,0 +1,85 @@
+.ClaimsHistory {
+  &-controls {
+    padding: 1em 1.05rem;
+    border-bottom: 1px solid #23263b;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .button {
+      padding: 6px 10px !important;
+    }
+  }
+
+  &-controls-right {
+    display: flex;
+    gap: 0.5em;
+  }
+
+  &-filters {
+    display: flex;
+    gap: 0.5em;
+  }
+
+  &-horizontal-scroll-container {
+    overflow-x: auto;
+  }
+
+  &-table {
+    width: max(100%, 600px);
+
+    table-layout: fixed;
+
+    // TODO midas-myth 18.03.2024 decouple these styles and make a separate base table component
+    tbody tr {
+      cursor: default !important;
+    }
+  }
+
+  &-header {
+    tr {
+      cursor: default !important;
+      border-bottom: none !important;
+
+      &:hover {
+        background: unset !important;
+        box-shadow: none !important;
+      }
+    }
+
+    th {
+      text-transform: uppercase;
+    }
+  }
+
+  &-price-header {
+    text-align: end !important;
+  }
+
+  &-action-column {
+    width: 50%;
+  }
+  &-market-column {
+    width: 35%;
+  }
+  &-size-column {
+    width: 15%;
+  }
+
+  @media (max-width: 600px) {
+    &-action-column {
+      width: 55%;
+    }
+    &-market-column {
+      width: 30%;
+    }
+    &-size-column {
+      width: 15%;
+    }
+  }
+
+  &-fake-row {
+    padding: 1.5rem;
+  }
+}

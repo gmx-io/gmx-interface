@@ -9,13 +9,13 @@ export default function useTradeRedirect({ chainId, setTradePageVersion, tradePa
   const canUpdateTradePath = useRef(false);
 
   const isActiveOnTradePage = useMemo(() => {
-    return !!matchPath(location.pathname, { path: ["/v1", "/trade"] });
+    return !!matchPath(location.pathname, { path: ["/v1/:tradeType?", "/trade/:tradeType?"] });
   }, [location.pathname]);
 
   useEffect(
     function redirectTradePage() {
-      const isV1Matched = matchPath(location.pathname, { path: "/v1" });
-      const isV2Matched = matchPath(location.pathname, { path: "/trade" });
+      const isV1Matched = matchPath(location.pathname, { path: "/v1/:tradeType?" });
+      const isV2Matched = matchPath(location.pathname, { path: "/trade/:tradeType?" });
 
       if (isV1Matched && getIsV1Supported(chainId)) {
         setTradePageVersion(1);

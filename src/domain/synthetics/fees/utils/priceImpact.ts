@@ -1,7 +1,14 @@
 import { MarketInfo, getTokenPoolType } from "domain/synthetics/markets";
 import { TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
-import { applyFactor, bigNumberify, expandDecimals, getBasisPoints, roundUpMagnitudeDivision } from "lib/numbers";
+import {
+  BN_ZERO,
+  applyFactor,
+  bigNumberify,
+  expandDecimals,
+  getBasisPoints,
+  roundUpMagnitudeDivision,
+} from "lib/numbers";
 
 export function getPriceImpactByAcceptablePrice(p: {
   sizeDeltaUsd: BigNumber;
@@ -15,11 +22,11 @@ export function getPriceImpactByAcceptablePrice(p: {
   const shouldFlipPriceDiff = isIncrease ? !isLong : isLong;
 
   const priceDelta = markPrice.sub(acceptablePrice).mul(shouldFlipPriceDiff ? -1 : 1);
-  const acceptablePriceDeltaBps = getBasisPoints(priceDelta, p.indexPrice);
+  const acceptablePriceDeltaBps = markPrice.isZero() ? BN_ZERO : getBasisPoints(priceDelta, markPrice);
 
-  const priceImpactDeltaUsd = sizeDeltaUsd.mul(priceDelta).div(acceptablePrice);
+  const priceImpactDeltaUsd = acceptablePrice.isZero() ? BN_ZERO : sizeDeltaUsd.mul(priceDelta).div(acceptablePrice);
 
-  const priceImpactDeltaAmount = priceImpactDeltaUsd.div(markPrice);
+  const priceImpactDeltaAmount = markPrice.isZero() ? BN_ZERO : priceImpactDeltaUsd.div(markPrice);
 
   return {
     priceImpactDeltaUsd,

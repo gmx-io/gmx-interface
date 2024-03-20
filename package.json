@@ -10,6 +10,7 @@
     "@ethersproject/providers": "5.5.1",
     "@ethersproject/units": "5.5.0",
     "@floating-ui/dom": "1.6.3",
+    "@floating-ui/react": "0.26.9",
     "@headlessui/react": "1.6.1",
     "@lingui/core": "3.13.3",
     "@lingui/react": "3.13.3",
@@ -43,6 +44,7 @@
     "query-string": "7.1.1",
     "rc-slider": "9.7.5",
     "react": "17.0.2",
+    "react-date-range": "2.0.0-alpha.4",
     "react-dom": "17.0.2",
     "react-helmet": "6.1.0",
     "react-hot-toast": "2.2.0",
@@ -117,13 +119,15 @@
     "testEnvironment": "jsdom",
     "setupFilesAfterEnv": [
       "./jest-env.js"
-    ]
+    ],
+    "globalSetup": "./jest-global-setup.js"
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "7.21.11",
     "@lingui/cli": "3.13.3",
     "@lingui/loader": "3.13.3",
     "@lingui/macro": "3.13.3",
+    "@types/react-date-range": "1.4.9",
     "buffer": "6.0.3",
     "eslint": "^8.41.0",
     "eslint-config-react-app": "^7.0.1",
