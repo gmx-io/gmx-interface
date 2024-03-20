@@ -215,7 +215,7 @@ export const RPC_PROVIDERS = {
 };
 
 export const FALLBACK_PROVIDERS = {
-  [ARBITRUM]: ENV_ARBITRUM_RPC_URLS ? JSON.parse(ENV_ARBITRUM_RPC_URLS) : [getAlchemyHttpUrl()],
+  [ARBITRUM]: ENV_ARBITRUM_RPC_URLS ? JSON.parse(ENV_ARBITRUM_RPC_URLS) : [getRpcUrl(ARBITRUM)],
   [AVALANCHE]: ENV_AVALANCHE_RPC_URLS
     ? JSON.parse(ENV_AVALANCHE_RPC_URLS)
     : ["https://avax-mainnet.gateway.pokt.network/v1/lb/626f37766c499d003aada23b"],
@@ -320,12 +320,12 @@ export function getFallbackRpcUrl(chainId: number): string | undefined {
   return sample(FALLBACK_PROVIDERS[chainId]);
 }
 
-export function getAlchemyHttpUrl() {
-  if (ALCHEMY_WHITELISTED_DOMAINS.includes(window.location.host)) {
-    return "https://arb-mainnet.g.alchemy.com/v2/RcaXYTizJs51m-w9SnRyDrxSZhE5H9Mf";
-  }
-  return "https://arb-mainnet.g.alchemy.com/v2/hxBqIr-vfpJ105JPYLei_ibbJLe66k46";
-}
+// export function getAlchemyHttpUrl() {
+//   if (ALCHEMY_WHITELISTED_DOMAINS.includes(window.location.host)) {
+//     return "https://arb-mainnet.g.alchemy.com/v2/RcaXYTizJs51m-w9SnRyDrxSZhE5H9Mf";
+//   }
+//   return "https://arb-mainnet.g.alchemy.com/v2/hxBqIr-vfpJ105JPYLei_ibbJLe66k46";
+// }
 
 export function getAlchemyWsUrl() {
   if (ALCHEMY_WHITELISTED_DOMAINS.includes(window.location.host)) {
