@@ -1,4 +1,5 @@
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getWrappedToken } from "config/tokens";
+import { TokensRatio, getTokensRatioByPrice } from "domain/synthetics/tokens";
 import {
   TradeFlags,
   TradeMode,
@@ -17,6 +18,7 @@ import {
 } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { getByKey } from "lib/objects";
+import { createSelector, createSelectorFactory } from "../utils";
 import {
   selectChainId,
   selectMarketsInfoData,
@@ -27,10 +29,6 @@ import {
   selectUserReferralInfo,
 } from "./globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "./settingsSelectors";
-import { TokensRatio, getTokensRatioByPrice } from "domain/synthetics/tokens";
-import { createEnhancedSelector, createSelector, createSelectorFactory } from "../utils";
-import { getOpenInterestUsd } from "domain/synthetics/markets";
-import { PRECISION } from "lib/legacy";
 
 export type TokenTypeForSwapRoute = "collateralToken" | "indexToken";
 
@@ -583,28 +581,4 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
         }
       }
     )
-);
-
-export const makeSelectMinCollateralFactorForPosition = createSelectorFactory((positionKey: string | undefined) =>
-  !positionKey
-    ? () => undefined
-    : createEnhancedSelector((q) => {
-        const position = q((state) => state.globals.positionsInfo?.positionsInfoData?.[positionKey]);
-
-        if (!position) return undefined;
-        const marketInfo = position.marketInfo;
-        const isLong = position.isLong;
-        const openInterest = getOpenInterestUsd(marketInfo, isLong);
-        const minCollateralFactorMultiplier = isLong
-          ? marketInfo.minCollateralFactorForOpenInterestLong
-          : marketInfo.minCollateralFactorForOpenInterestShort;
-        let minCollateralFactor = openInterest.mul(minCollateralFactorMultiplier).div(PRECISION);
-        const minCollateralFactorForMarket = marketInfo.minCollateralFactor;
-
-        if (minCollateralFactorForMarket.gt(minCollateralFactor)) {
-          minCollateralFactor = minCollateralFactorForMarket;
-        }
-
-        return minCollateralFactor;
-      })
 );

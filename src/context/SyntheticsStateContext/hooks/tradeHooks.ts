@@ -4,7 +4,6 @@ import { useMemo } from "react";
 import {
   TokenTypeForSwapRoute,
   createTradeFlags,
-  makeSelectMinCollateralFactorForPosition,
   makeSelectNextPositionValuesForIncrease,
   makeSelectSwapRoutes,
   makeSelectTradeRatios,
@@ -121,9 +120,4 @@ export const useTradeRatios = ({
 
 export const useTradeFlags = ({ tradeType, tradeMode }: { tradeType: TradeType; tradeMode: TradeMode }) => {
   return useMemo(() => createTradeFlags(tradeType, tradeMode), [tradeType, tradeMode]);
-};
-
-export const useMinCollateralFactorForPosition = (positionKey: string | undefined) => {
-  const selector = useMemo(() => makeSelectMinCollateralFactorForPosition(positionKey), [positionKey]);
-  return useSelector(selector);
 };

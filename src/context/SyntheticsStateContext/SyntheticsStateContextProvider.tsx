@@ -18,6 +18,7 @@ import { ReactNode, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
+import { PositionEditorState, usePositionEditorState } from "domain/synthetics/trade/usePositionEditorState";
 
 export type SyntheticsPageType = "actions" | "trade" | "pools" | "leaderboard" | "competitions";
 
@@ -43,6 +44,7 @@ export type SyntheticsTradeState = {
   settings: SettingsContextType;
   tradebox: TradeState;
   positionSeller: PositionSellerState;
+  positionEditor: PositionEditorState;
 };
 
 const StateCtx = createContext<SyntheticsTradeState | null>(null);
@@ -105,6 +107,7 @@ export function SyntheticsStateContextProvider({
   });
 
   const positionSellerState = usePositionSellerState(chainId);
+  const positionEditorState = usePositionEditorState(chainId);
 
   const state = useMemo(() => {
     const s: SyntheticsTradeState = {
@@ -133,6 +136,7 @@ export function SyntheticsStateContextProvider({
       settings,
       tradebox: tradeboxState,
       positionSeller: positionSellerState,
+      positionEditor: positionEditorState,
     };
 
     return s;
@@ -155,6 +159,7 @@ export function SyntheticsStateContextProvider({
     settings,
     tradeboxState,
     positionSellerState,
+    positionEditorState,
   ]);
 
   return <StateCtx.Provider value={state}>{children}</StateCtx.Provider>;

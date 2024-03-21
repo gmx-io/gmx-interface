@@ -1,8 +1,8 @@
 import { UserReferralInfo } from "domain/referrals";
-import { MarketInfo, getCappedPoolPnl, getPoolUsdWithoutPnl } from "domain/synthetics/markets";
+import { MarketInfo, getCappedPoolPnl, getOpenInterestUsd, getPoolUsdWithoutPnl } from "domain/synthetics/markets";
 import { Token, getIsEquivalentTokens } from "domain/tokens";
 import { BigNumber, ethers } from "ethers";
-import { CHART_PERIODS } from "lib/legacy";
+import { CHART_PERIODS, PRECISION } from "lib/legacy";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { applyFactor, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd, getPositionFee, getPriceImpactForPosition } from "../fees";
@@ -375,4 +375,21 @@ export function willPositionCollateralBeSufficientForPosition(
     minCollateralFactor,
     position.sizeInUsd
   );
+}
+
+export function getMinCollateralFactorForPosition(position: PositionInfo, openInterestDelta: BigNumber) {
+  const marketInfo = position.marketInfo;
+  const isLong = position.isLong;
+  const openInterest = getOpenInterestUsd(marketInfo, isLong).add(openInterestDelta);
+  const minCollateralFactorMultiplier = isLong
+    ? marketInfo.minCollateralFactorForOpenInterestLong
+    : marketInfo.minCollateralFactorForOpenInterestShort;
+  let minCollateralFactor = openInterest.mul(minCollateralFactorMultiplier).div(PRECISION);
+  const minCollateralFactorForMarket = marketInfo.minCollateralFactor;
+
+  if (minCollateralFactorForMarket.gt(minCollateralFactor)) {
+    minCollateralFactor = minCollateralFactorForMarket;
+  }
+
+  return minCollateralFactor;
 }

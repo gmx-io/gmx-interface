@@ -5,12 +5,11 @@ import { parseValue } from "lib/numbers";
 import { SyntheticsTradeState } from "../SyntheticsStateContextProvider";
 import { createEnhancedSelector } from "../utils";
 import { selectClosingPositionKey, selectPositionsInfoData, selectSavedIsPnlInLeverage } from "./globalSelectors";
+import { makeSelectDecreasePositionAmounts, makeSelectNextPositionValuesForDecrease } from "./tradeSelectors";
 import {
-  makeSelectDecreasePositionAmounts,
-  makeSelectMinCollateralFactorForPosition,
-  makeSelectNextPositionValuesForDecrease,
-} from "./tradeSelectors";
-import { willPositionCollateralBeSufficientForPosition } from "domain/synthetics/positions";
+  getMinCollateralFactorForPosition,
+  willPositionCollateralBeSufficientForPosition,
+} from "domain/synthetics/positions";
 
 export const selectPositionSeller = (state: SyntheticsTradeState) => state.positionSeller;
 
@@ -127,15 +126,18 @@ export const selectPositionSellerLeverageDisabledByCollateral = createEnhancedSe
 
   if (!position) return false;
 
-  const minCollateralFactor = q(makeSelectMinCollateralFactorForPosition(position.key));
-
-  if (!minCollateralFactor) return false;
-
   const decreaseAmountsWithKeepLeverage = q(selectPositionSellerDecreaseAmountsWithKeepLeverage);
 
   if (!decreaseAmountsWithKeepLeverage) return false;
 
   if (decreaseAmountsWithKeepLeverage.sizeDeltaUsd.gte(position.sizeInUsd)) return false;
+
+  const minCollateralFactor = getMinCollateralFactorForPosition(
+    position,
+    decreaseAmountsWithKeepLeverage.sizeDeltaUsd.mul(-1)
+  );
+
+  if (!minCollateralFactor) return false;
 
   return !willPositionCollateralBeSufficientForPosition(
     position,

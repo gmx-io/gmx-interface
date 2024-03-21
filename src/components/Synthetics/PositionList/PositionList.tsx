@@ -2,6 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import PositionShare from "components/Exchange/PositionShare";
 import { PositionItem } from "components/Synthetics/PositionItem/PositionItem";
 import { usePositionsInfoData, useSavedShowPnlAfterFees } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { usePositionEditorPositionState } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
 import { PositionInfo } from "domain/synthetics/positions";
 import { TradeMode } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
@@ -12,7 +13,6 @@ import { memo, useCallback, useState } from "react";
 type Props = {
   onSelectPositionClick: (key: string, tradeMode?: TradeMode) => void;
   onClosePositionClick: (key: string) => void;
-  onEditCollateralClick: (key: string) => void;
   onSettlePositionFeesClick: (key: string) => void;
   isLoading: boolean;
   onOrdersClick: (key?: string) => void;
@@ -24,7 +24,6 @@ export function PositionList(p: Props) {
   const {
     isLoading,
     onClosePositionClick,
-    onEditCollateralClick,
     onOrdersClick,
     onSelectPositionClick,
     onSettlePositionFeesClick,
@@ -42,6 +41,7 @@ export function PositionList(p: Props) {
     setPositionToShareKey(positionKey);
     setIsPositionShareModalOpen(true);
   };
+  const [, setEditingPositionKey] = usePositionEditorPositionState();
 
   return (
     <div>
@@ -56,7 +56,7 @@ export function PositionList(p: Props) {
             <PositionItemWrapper
               key={position.key}
               position={position}
-              onEditCollateralClick={onEditCollateralClick}
+              onEditCollateralClick={setEditingPositionKey}
               onClosePositionClick={onClosePositionClick}
               onGetPendingFeesClick={onSettlePositionFeesClick}
               onOrdersClick={onOrdersClick}
@@ -108,7 +108,7 @@ export function PositionList(p: Props) {
               <PositionItemWrapper
                 key={position.key}
                 position={position}
-                onEditCollateralClick={onEditCollateralClick}
+                onEditCollateralClick={setEditingPositionKey}
                 onClosePositionClick={onClosePositionClick}
                 onGetPendingFeesClick={onSettlePositionFeesClick}
                 onOrdersClick={onOrdersClick}

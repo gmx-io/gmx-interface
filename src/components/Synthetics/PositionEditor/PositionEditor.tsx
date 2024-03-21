@@ -34,7 +34,6 @@ import {
   createIncreaseOrderTxn,
 } from "domain/synthetics/orders";
 import {
-  PositionInfo,
   formatLeverage,
   formatLiquidationPrice,
   getLeverage,
@@ -74,19 +73,21 @@ import {
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
-import { useMinCollateralFactorForPosition } from "context/SyntheticsStateContext/hooks/tradeHooks";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { bigNumberBinarySearch } from "lib/binarySearch";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import "./PositionEditor.scss";
 import { useKey } from "react-use";
+import {
+  usePositionEditorMinCollateralFactor,
+  usePositionEditorPosition,
+  usePositionEditorPositionState,
+} from "context/SyntheticsStateContext/hooks/positionEditorHooks";
 
 export type Props = {
-  position?: PositionInfo;
   allowedSlippage: number;
   setPendingTxns: (txns: any) => void;
-  onClose: () => void;
   shouldDisableValidation: boolean;
 };
 
@@ -101,7 +102,8 @@ const OPERATION_LABELS = {
 };
 
 export function PositionEditor(p: Props) {
-  const { position, setPendingTxns, onClose, allowedSlippage } = p;
+  const [, setEditingPositionKey] = usePositionEditorPositionState();
+  const { setPendingTxns, allowedSlippage } = p;
   const { chainId } = useChainId();
   const showPnlInLeverage = useSavedIsPnlInLeverage();
   const tokensData = useTokensData();
@@ -115,6 +117,7 @@ export function PositionEditor(p: Props) {
   const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
+  const position = usePositionEditorPosition();
 
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -157,6 +160,10 @@ export function PositionEditor(p: Props) {
       ? [getToken(chainId, position.collateralTokenAddress), getToken(chainId, NATIVE_TOKEN_ADDRESS)]
       : undefined;
   }, [chainId, position?.collateralToken.isWrapped, position?.collateralTokenAddress]);
+
+  const onClose = useCallback(() => {
+    setEditingPositionKey(undefined);
+  }, [setEditingPositionKey]);
 
   const collateralPrice = collateralToken?.prices.minPrice;
 
@@ -283,7 +290,7 @@ export function PositionEditor(p: Props) {
     userReferralInfo,
   ]);
 
-  const minCollateralFactor = useMinCollateralFactorForPosition(position?.key);
+  const minCollateralFactor = usePositionEditorMinCollateralFactor();
 
   const [error, tooltipName] = useMemo(() => {
     const commonError = getCommonError({

@@ -73,7 +73,6 @@ export default function SyntheticsActions() {
             onOrdersClick={() => null}
             onSelectPositionClick={() => null}
             onClosePositionClick={() => null}
-            onEditCollateralClick={() => null}
             onSettlePositionFeesClick={() => null}
             openSettings={() => null}
             hideActions

@@ -166,9 +166,6 @@ export function SyntheticsPage(p: Props) {
     sortedLongAndShortTokens,
   ]);
 
-  const [editingPositionKey, setEditingPositionKey] = useState<string>();
-  const editingPosition = getByKey(positionsInfoData, editingPositionKey);
-
   const [gettingPendingFeePositionKeys, setGettingPendingFeePositionKeys] = useState<string[]>([]);
 
   const [selectedOrdersKeys, setSelectedOrdersKeys] = useState<{ [key: string]: boolean }>({});
@@ -204,10 +201,6 @@ export function SyntheticsPage(p: Props) {
   if (isHigherSlippageAllowed) {
     allowedSlippage = DEFAULT_HIGHER_SLIPPAGE_AMOUNT;
   }
-
-  const onPositionEditorClose = useCallback(() => {
-    setEditingPositionKey(undefined);
-  }, []);
 
   function onCancelOrdersClick() {
     if (!signer) return;
@@ -394,7 +387,6 @@ export function SyntheticsPage(p: Props) {
                 onSettlePositionFeesClick={handleSettlePositionFeesClick}
                 onSelectPositionClick={onSelectPositionClick}
                 onClosePositionClick={setClosingPositionKey}
-                onEditCollateralClick={setEditingPositionKey}
                 openSettings={openSettings}
               />
             )}
@@ -444,7 +436,6 @@ export function SyntheticsPage(p: Props) {
               onOrdersClick={handlePositionListOrdersClick}
               onSelectPositionClick={onSelectPositionClick}
               onClosePositionClick={setClosingPositionKey}
-              onEditCollateralClick={setEditingPositionKey}
               onSettlePositionFeesClick={handleSettlePositionFeesClick}
               openSettings={openSettings}
             />
@@ -473,9 +464,7 @@ export function SyntheticsPage(p: Props) {
       />
 
       <PositionEditor
-        position={editingPosition}
         allowedSlippage={allowedSlippage}
-        onClose={onPositionEditorClose}
         setPendingTxns={setPendingTxns}
         shouldDisableValidation={shouldDisableValidation}
       />
