@@ -72,10 +72,10 @@ export default function UserIncentiveDistributionList() {
       <EmptyMessage
         tooltipText={t`Incentives are airdropped weekly.`}
         message={t`No incentives distribution history yet.`}
-        className="mt-sm"
+        className="mt-16"
       >
         {!active && (
-          <div className="mt-md">
+          <div className="mt-24">
             <Button variant="secondary" onClick={openConnectModal}>
               <Trans>Connect Wallet</Trans>
             </Button>
@@ -117,7 +117,7 @@ export default function UserIncentiveDistributionList() {
                     <td data-label="Amount">
                       <Tooltip
                         handle={formatUsd(totalUsd)}
-                        className="nowrap"
+                        className="whitespace-nowrap"
                         renderContent={() => {
                           return tokenIncentiveDetails.map((tokenInfo) => (
                             <StatsTooltipRow

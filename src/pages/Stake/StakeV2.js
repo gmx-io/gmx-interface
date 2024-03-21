@@ -201,7 +201,7 @@ function StakeModal(props) {
         >
           <div className="Stake-modal-icons">
             <img
-              className="mr-xs icon"
+              className="mr-8 icon"
               height="22"
               src={icons[stakingTokenSymbol.toLowerCase()]}
               alt={stakingTokenSymbol}
@@ -327,7 +327,7 @@ function UnstakeModal(props) {
         >
           <div className="Stake-modal-icons">
             <img
-              className="mr-xs icon"
+              className="mr-8 icon"
               height="22"
               src={icons[unstakingTokenSymbol.toLowerCase()]}
               alt={unstakingTokenSymbol}
@@ -344,7 +344,7 @@ function UnstakeModal(props) {
           <AlertInfo type="warning">
             <Trans>
               Unstaking will burn&nbsp;
-              <ExternalLink className="display-inline" href="https://docs.gmx.io/docs/tokenomics/rewards">
+              <ExternalLink className="inline" href="https://docs.gmx.io/docs/tokenomics/rewards">
                 {formatAmount(burnAmount, 18, 4, true)} Multiplier Points
               </ExternalLink>
               .&nbsp;
@@ -471,7 +471,7 @@ function VesterDepositModal(props) {
             showMaxButton={false}
           >
             <div className="Stake-modal-icons">
-              <img className="mr-xs icon" height="22" src={icons.esgmx} alt="esGMX" />
+              <img className="mr-8 icon" height="22" src={icons.esgmx} alt="esGMX" />
               esGMX
             </div>
           </BuyInputSection>
@@ -1785,8 +1785,8 @@ export default function StakeV2({ setPendingTxns }) {
         <div className="StakeV2-cards">
           <div className="App-card StakeV2-gmx-card">
             <div className="App-card-title">
-              <div className="inline-items-center">
-                <img className="mr-xs" alt="GMX" src={icons.gmx} height={20} />
+              <div className="inline-flex items-center">
+                <img className="mr-8" alt="GMX" src={icons.gmx} height={20} />
                 GMX
               </div>
             </div>
@@ -1801,7 +1801,7 @@ export default function StakeV2({ setPendingTxns }) {
                   {gmxPrice && (
                     <Tooltip
                       position="bottom-end"
-                      className="nowrap"
+                      className="whitespace-nowrap"
                       handle={"$" + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
                       renderContent={() => (
                         <>
@@ -1942,7 +1942,7 @@ export default function StakeV2({ setPendingTxns }) {
                   {totalGmxStaked && (
                     <Tooltip
                       position="bottom-end"
-                      className="nowrap"
+                      className="whitespace-nowrap"
                       handle={
                         formatAmount(totalGmxStaked, 18, 0, true) +
                         " GMX" +
@@ -2069,8 +2069,8 @@ export default function StakeV2({ setPendingTxns }) {
           <div className="App-card App-card-space-between">
             <div>
               <div className="App-card-title">
-                <div className="inline-items-center">
-                  <img className="mr-xs" alt="GLP" src={icons.glp} height={20} />
+                <div className="inline-flex items-center">
+                  <img className="mr-8" alt="GLP" src={icons.glp} height={20} />
                   GLP
                 </div>
               </div>
@@ -2238,8 +2238,8 @@ export default function StakeV2({ setPendingTxns }) {
           </div>
           <div className="App-card">
             <div className="App-card-title">
-              <div className="inline-items-center">
-                <img className="mr-xs" alt="GLP" src={icons.esgmx} height={20} />
+              <div className="inline-flex items-center">
+                <img className="mr-8" alt="GLP" src={icons.esgmx} height={20} />
                 <span>
                   <Trans>Escrowed GMX</Trans>
                 </span>
@@ -2385,8 +2385,8 @@ export default function StakeV2({ setPendingTxns }) {
           <div className="StakeV2-cards">
             <div className="App-card StakeV2-gmx-card">
               <div className="App-card-title">
-                <div className="inline-items-center">
-                  <img className="mr-xs" alt="GMX" src={icons.gmx} height={20} />
+                <div className="inline-flex items-center">
+                  <img className="mr-8" alt="GMX" src={icons.gmx} height={20} />
                   <Trans>GMX Vault</Trans>
                 </div>
               </div>
@@ -2502,8 +2502,8 @@ export default function StakeV2({ setPendingTxns }) {
             </div>
             <div className="App-card StakeV2-gmx-card">
               <div className="App-card-title">
-                <div className="inline-items-center">
-                  <img className="mr-xs" alt="GLP" src={icons.glp} height={20} />
+                <div className="inline-flex items-center">
+                  <img className="mr-8" alt="GLP" src={icons.glp} height={20} />
                   <Trans>GLP Vault</Trans>
                 </div>
               </div>
@@ -2593,8 +2593,8 @@ export default function StakeV2({ setPendingTxns }) {
             {vestingData?.affiliateVesterMaxVestableAmount?.gt(0) && (
               <div className="App-card StakeV2-gmx-card">
                 <div className="App-card-title">
-                  <div className="inline-items-center">
-                    <img className="mr-xs" alt="GLP" src={icons.gmx} height={20} />
+                  <div className="inline-flex items-center">
+                    <img className="mr-8" alt="GLP" src={icons.gmx} height={20} />
                     <Trans>Affiliate Vault</Trans>
                   </div>
                 </div>
@@ -2666,7 +2666,7 @@ export default function StakeV2({ setPendingTxns }) {
       </div>
       {Object.values(incentiveStats || {}).some((incentiveType) => incentiveType?.isActive) && (
         <>
-          <div className="mt-sm">
+          <div className="mt-16">
             <PageTitle
               title={t`Incentives`}
               subtitle={

@@ -2991,6 +2991,7 @@ msgstr "Liquidity and trading incentives program is live on Arbitrum. <0>Read mo
 msgid "Liquidity data not loaded"
 msgstr "Liquidity data not loaded"
 
+#: src/App/App.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/Claims/Claims.tsx
@@ -6757,15 +6758,6 @@ msgstr "trigger price"
 msgid "view"
 msgstr "view"
 
-#: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
-#~ msgid "{0, plural, one {# Position} other {# Positions}}"
-#~ msgstr "{0, plural, one {# Position} other {# Positions}}"
-
-#: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
-#: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
-#~ msgid "{0, plural, one {# Size} other {# Sizes}}"
-#~ msgstr "{0, plural, one {# Size} other {# Sizes}}"
-
 #: src/pages/Exchange/Exchange.js
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
@@ -6982,10 +6974,6 @@ msgstr "{longShortText} {0} Open Interest"
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "{longShortText} {0} Reserve"
 msgstr "{longShortText} {0} Reserve"
-
-#: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
-#~ msgid "{marketsCount, plural, one {# Market} other {# Markets} many {# Markets}}"
-#~ msgstr "{marketsCount, plural, one {# Market} other {# Markets} many {# Markets}}"
 
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"

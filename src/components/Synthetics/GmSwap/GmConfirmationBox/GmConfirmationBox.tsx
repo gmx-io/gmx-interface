@@ -347,7 +347,7 @@ export function GmConfirmationBox({
                     usd: shortTokenUsd,
                     token: shortToken,
                     overrideSymbol: shortSymbol,
-                    className: "mt-xs",
+                    className: "mt-8",
                   })}
                 </div>
                 <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
@@ -385,7 +385,7 @@ export function GmConfirmationBox({
                     usd: shortTokenUsd,
                     token: shortToken,
                     overrideSymbol: shortSymbol,
-                    className: "mt-xs",
+                    className: "mt-8",
                   })}
                 </div>
               </div>
