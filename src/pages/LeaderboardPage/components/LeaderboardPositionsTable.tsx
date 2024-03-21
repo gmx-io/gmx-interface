@@ -17,7 +17,7 @@ import {
   useLeaderboardIsCompetition,
   useLeaderboardTimeframeTypeState,
 } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
-import { CompetitionType, LeaderboardAccount, RemoteData } from "domain/synthetics/leaderboard";
+import { CompetitionType, LeaderboardPosition, RemoteData } from "domain/synthetics/leaderboard";
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "domain/synthetics/leaderboard/constants";
 import { USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -36,15 +36,15 @@ function getWinnerRankClassname(rank: number | null, competition: CompetitionTyp
   return undefined;
 }
 
-type LeaderboardAccountField = keyof LeaderboardAccount;
+type LeaderboardPositionField = keyof LeaderboardPosition;
 
-export function LeaderboardAccountsTable({
+export function LeaderboardPositionsTable({
   accounts,
   activeCompetition,
   sortingEnabled = true,
   skeletonCount = 15,
 }: {
-  accounts: RemoteData<LeaderboardAccount>;
+  accounts: RemoteData<LeaderboardPosition>;
   activeCompetition: CompetitionType | undefined;
   sortingEnabled?: boolean;
   skeletonCount?: number;
@@ -53,36 +53,19 @@ export function LeaderboardAccountsTable({
   const perPage = 20;
   const { isLoading, data } = accounts;
   const [page, setPage] = useState(1);
-  const [orderBy, setOrderBy] = useState<LeaderboardAccountField>("totalQualifyingPnl");
+  const [orderBy, setOrderBy] = useState<LeaderboardPositionField>("qualifyingPnl");
   const [direction, setDirection] = useState<number>(1);
   const handleColumnClick = useCallback(
     (key: string) => {
-      if (key === "wins") {
-        setOrderBy(orderBy === "wins" ? "losses" : "wins");
-        setDirection(1);
-      } else if (key === orderBy) {
+      if (key === orderBy) {
         setDirection((d: number) => -1 * d);
       } else {
-        setOrderBy(key as LeaderboardAccountField);
+        setOrderBy(key as LeaderboardPositionField);
         setDirection(1);
       }
     },
     [orderBy]
   );
-  const isCompetitions = Boolean(activeCompetition);
-
-  useLayoutEffect(() => {
-    if (!isCompetitions) return;
-
-    if (activeCompetition === "notionalPnl") {
-      setOrderBy("totalQualifyingPnl");
-      setDirection(1);
-    }
-    if (activeCompetition === "pnlPercentage") {
-      setOrderBy("pnlPercentage");
-      setDirection(1);
-    }
-  }, [activeCompetition, isCompetitions]);
 
   const [search, setSearch] = useState("");
   const setValue = useCallback((e) => setSearch(e.target.value), []);
@@ -138,7 +121,7 @@ export function LeaderboardAccountsTable({
   const pageCount = Math.ceil(filteredStats.length / perPage);
 
   const getSortableClass = useCallback(
-    (key: LeaderboardAccountField) =>
+    (key: LeaderboardPositionField) =>
       sortingEnabled
         ? cx(
             orderBy === key || (key === "wins" && orderBy === "losses")

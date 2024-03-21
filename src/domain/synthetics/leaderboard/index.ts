@@ -3,6 +3,7 @@ import { getLeaderboardGraphClient } from "lib/subgraph";
 import useSWR from "swr";
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "./constants";
 import { expandDecimals } from "lib/numbers";
+import { LeaderboardDataType } from "./types";
 
 export * from "./types";
 
@@ -138,7 +139,10 @@ export type LeaderboardPositionBase = {
 };
 
 export type LeaderboardPosition = LeaderboardPositionBase & {
-  unrealizedPnl: bigint;
+  rank: number;
+  fees: bigint;
+  pnl: bigint;
+  qualifyingPnl: bigint;
 };
 
 const fetchAccounts = async (
@@ -243,15 +247,14 @@ export function useLeaderboardData(
     from: number;
     to: number | undefined;
     positionsSnapshotTimestamp: number | undefined;
+    leaderboardDataType: LeaderboardDataType | undefined;
   }
 ) {
   const { data, error } = useSWR(
-    enabled
-      ? ["leaderboard/useLeaderboardAccounts", chainId, p.account, p.from, p.to, p.positionsSnapshotTimestamp]
-      : null,
+    enabled ? ["leaderboard/useLeaderboardData", chainId, p.account, p.from, p.to, p.positionsSnapshotTimestamp] : null,
     async () => {
       const [accounts, positions] = await Promise.all([
-        fetchAccounts(chainId, p),
+        p.leaderboardDataType === "positions" ? Promise.resolve([]) : fetchAccounts(chainId, p),
         fetchPositions(chainId, p.positionsSnapshotTimestamp),
       ]);
 

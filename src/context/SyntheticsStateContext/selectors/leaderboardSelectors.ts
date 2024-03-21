@@ -1,4 +1,4 @@
-import { LeaderboardAccount, LeaderboardPositionBase } from "domain/synthetics/leaderboard";
+import { LeaderboardAccount, LeaderboardPosition, LeaderboardPositionBase } from "domain/synthetics/leaderboard";
 import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
 import { MarketInfo } from "domain/synthetics/markets";
 import { SyntheticsTradeState } from "../SyntheticsStateContextProvider";
@@ -14,11 +14,19 @@ export function selectLeaderboardPositionBases(s: SyntheticsTradeState) {
   return s.leaderboard.positions;
 }
 
-export function selectLeaderboardType(s: SyntheticsTradeState) {
-  return s.leaderboard.leaderboardType;
+export function selectLeaderboardTimeframeType(s: SyntheticsTradeState) {
+  return s.leaderboard.leaderboardTimeframeType;
 }
-export function selectLeaderboardSetType(s: SyntheticsTradeState) {
-  return s.leaderboard.setLeaderboardType;
+export function selectLeaderboardSetTimeframeType(s: SyntheticsTradeState) {
+  return s.leaderboard.setLeaderboardTimeframeType;
+}
+
+export function selectLeaderboardDataType(s: SyntheticsTradeState) {
+  return s.leaderboard.leaderboardDataType;
+}
+
+export function selectLeaderboardSetDataType(s: SyntheticsTradeState) {
+  return s.leaderboard.setLeaderboardDataType;
 }
 
 export function selectLeaderboardTimeframe(s: SyntheticsTradeState) {
@@ -103,6 +111,12 @@ const selectPositionBasesByAccount = createEnhancedSelector(function selectPosit
 });
 
 const selectLeaderboardAccounts = createEnhancedSelector(function selectLeaderboardAccounts(q) {
+  const pageKey = q((s) => s.leaderboard.leaderboardPageKey);
+  const leaderboardDataType = q(selectLeaderboardDataType);
+
+  // top positions selected, no need to iterate accounts
+  if (pageKey === "leaderboard" && leaderboardDataType === "positions") return undefined;
+
   const baseAccounts = q(selectLeaderboardAccountBases);
   const positionBasesByAccount = q(selectPositionBasesByAccount);
   const marketsInfoData = q(selectMarketsInfoData);
@@ -197,19 +211,48 @@ export const selectLeaderboardAccountsRanks = createEnhancedSelector(function se
 });
 
 export const selectLeaderboardPositions = createEnhancedSelector(function selectLeaderboardPositions(q) {
+  const pageKey = q((s) => s.leaderboard.leaderboardPageKey);
+  const leaderboardDataType = q(selectLeaderboardDataType);
+
+  const shouldCalcPositions = pageKey === "leaderboard" && leaderboardDataType === "positions";
+
+  if (!shouldCalcPositions) return undefined;
+
   const positionBases = q(selectLeaderboardPositionBases);
-  const marketsInfoData = q(selectMarketsInfoData);
 
   if (!positionBases) return undefined;
 
-  return positionBases.map((position) => {
-    const market = (marketsInfoData || {})[position.market];
-    const unrealizedPnl = getPositionPnl(position, market);
-    return {
-      ...position,
-      unrealizedPnl,
-    };
-  });
+  const positions = positionBases
+    .map((position) => {
+      const market = q((s) => selectMarketsInfoData(s)?.[position.market]);
+
+      if (!market) return undefined;
+
+      const unrealizedPnl = getPositionPnl(position, market);
+
+      const pnl = position.realizedPnl + position.unrealizedPnl;
+      const fees = position.realizedFees + position.unrealizedFees;
+      const qualifyingPnl = pnl - fees + position.realizedPriceImpact;
+
+      const p: LeaderboardPosition = {
+        ...position,
+        unrealizedPnl,
+        rank: 1,
+        qualifyingPnl,
+        fees,
+        pnl,
+      };
+
+      return p;
+    })
+    .filter((x: LeaderboardPosition | undefined): x is LeaderboardPosition => x !== undefined)
+    .forEach((position, index) => {
+      position.rank = index + 1;
+    });
+
+  positions.sort((a, b) => (b.qualifyingPnl - a.qualifyingPnl > 0n ? 1 : -1));
+
+  return positions;
 });
 
 function getPositionPnl(position: LeaderboardPositionBase, market: MarketInfo) {

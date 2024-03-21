@@ -3,57 +3,54 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Tab from "components/Tab/Tab";
+import { getChainName } from "config/chains";
+import { getIcon } from "config/icons";
 import {
   useLeaderboardChainId,
+  useLeaderboardDataTypeState,
   useLeaderboardIsCompetition,
   useLeaderboardPageKey,
+  useLeaderboardPositions,
   useLeaderboardRankedAccounts,
+  useLeaderboardTimeframeTypeState,
   useLeaderboardTiming,
-  useLeaderboardTypeState,
 } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import { CompetitionType } from "domain/synthetics/leaderboard";
+import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
+import { useChainId } from "lib/chains";
 import { mustNeverExist } from "lib/types";
+import { switchNetwork } from "lib/wallets";
+import useWallet from "lib/wallets/useWallet";
+import { useMedia } from "react-use";
 import { CompetitionCountdown } from "./CompetitionCountdown";
 import { CompetitionPrizes } from "./CompetitionPrizes";
 import { LeaderboardAccountsTable } from "./LeaderboardAccountsTable";
 import { LeaderboardNavigation } from "./LeaderboardNavigation";
-import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
-import { useChainId } from "lib/chains";
-import { getIcon } from "config/icons";
-import { getChainName } from "config/chains";
-import { switchNetwork } from "lib/wallets";
-import useWallet from "lib/wallets/useWallet";
-import { useMedia } from "react-use";
 
-const competitionLabels = [t`Top PnL ($)`, t`Top PnL (%)`];
 const competitionsTabs = [0, 1];
-
-const leaderboardLabels = [t`Total`, t`Last 30 days`, t`Last 7 days`];
-const leaderboardTabs = [0, 1, 2];
+const leaderboardTimeframeTabs = [0, 1, 2];
+const leaderboardDataTypeTabs = [0, 1];
 
 export function LeaderboardContainer() {
-  const { isStartInFuture } = useLeaderboardTiming();
   const isCompetition = useLeaderboardIsCompetition();
-  const [activeLeaderboardIndex, setActiveLeaderboardIndex] = useState(0);
+
+  const [activeLeaderboardTimeframeIndex, setActiveLeaderboardTimeframeIndex] = useState(0);
+  const [activeLeaderboardDataTypeIndex, setActiveLeaderboardDataTypeIndex] = useState(0);
   const [activeCompetitionIndex, setActiveCompetitionIndex] = useState(0);
-  const accounts = useLeaderboardRankedAccounts();
+
   const leaderboardPageKey = useLeaderboardPageKey();
-  const isLoading = !accounts;
-  const accountsStruct = useMemo(
-    () => ({
-      isLoading,
-      data: accounts ? accounts : [],
-      error: null,
-      updatedAt: 0,
-    }),
-    [accounts, isLoading]
-  );
+
   const { chainId } = useChainId();
   const { active } = useWallet();
 
   const page = LEADERBOARD_PAGES[leaderboardPageKey];
 
-  const [, setLeaderboardType] = useLeaderboardTypeState();
+  const [, setLeaderboardTimeframeType] = useLeaderboardTimeframeTypeState();
+  const [, setLeaderboardDataType] = useLeaderboardDataTypeState();
+
+  const competitionLabels = useMemo(() => [t`Top PnL ($)`, t`Top PnL (%)`], []);
+  const leaderboardTimeframeLabels = useMemo(() => [t`Total`, t`Last 30 days`, t`Last 7 days`], []);
+  const leaderboardDataTypeLabels = useMemo(() => [t`Top addresses`, t`Top positions`], []);
 
   const activeCompetition: CompetitionType | undefined = isCompetition
     ? activeCompetitionIndex === 0
@@ -61,32 +58,45 @@ export function LeaderboardContainer() {
       : "pnlPercentage"
     : undefined;
 
-  const handleLeaderboardTabChange = useCallback(
-    (index: number) => setActiveLeaderboardIndex(index),
-    [setActiveLeaderboardIndex]
+  const handleLeaderboardTimeframeTabChange = useCallback(
+    (index: number) => setActiveLeaderboardTimeframeIndex(index),
+    [setActiveLeaderboardTimeframeIndex]
   );
   const handleCompetitionTabChange = useCallback(
     (index: number) => setActiveCompetitionIndex(index),
     [setActiveCompetitionIndex]
   );
 
+  const handleLeaderboardDataTypeTabChange = useCallback(
+    (index: number) => setActiveLeaderboardDataTypeIndex(index),
+    []
+  );
+
   const pageKey = useLeaderboardPageKey();
   const leaderboardChainId = useLeaderboardChainId();
 
   useEffect(() => {
-    setActiveLeaderboardIndex(0);
+    setActiveLeaderboardTimeframeIndex(0);
     setActiveCompetitionIndex(0);
   }, [pageKey]);
 
   useEffect(() => {
-    if (activeLeaderboardIndex === 0) {
-      setLeaderboardType("all");
-    } else if (activeLeaderboardIndex === 1) {
-      setLeaderboardType("30days");
+    if (activeLeaderboardTimeframeIndex === 0) {
+      setLeaderboardTimeframeType("all");
+    } else if (activeLeaderboardTimeframeIndex === 1) {
+      setLeaderboardTimeframeType("30days");
     } else {
-      setLeaderboardType("7days");
+      setLeaderboardTimeframeType("7days");
     }
-  }, [activeLeaderboardIndex, setLeaderboardType]);
+  }, [activeLeaderboardTimeframeIndex, setLeaderboardTimeframeType]);
+
+  useEffect(() => {
+    if (activeLeaderboardDataTypeIndex === 0) {
+      setLeaderboardDataType("accounts");
+    } else {
+      setLeaderboardDataType("positions");
+    }
+  }, [activeLeaderboardDataTypeIndex, setLeaderboardDataType]);
 
   const title = useMemo(() => {
     switch (leaderboardPageKey) {
@@ -167,15 +177,28 @@ export function LeaderboardContainer() {
         </div>
       </div>
       {!isCompetition && (
+        <>
+          <div className="LeaderboardContainer__competition-tabs default-container">
+            <Tab
+              option={activeLeaderboardDataTypeIndex}
+              onChange={handleLeaderboardDataTypeTabChange}
+              options={leaderboardDataTypeTabs}
+              optionLabels={leaderboardDataTypeLabels}
+            />
+          </div>
+        </>
+      )}
+      {!isCompetition && (
         <Tab
-          option={activeLeaderboardIndex}
-          onChange={handleLeaderboardTabChange}
-          options={leaderboardTabs}
-          optionLabels={leaderboardLabels}
+          option={activeLeaderboardTimeframeIndex}
+          onChange={handleLeaderboardTimeframeTabChange}
+          options={leaderboardTimeframeTabs}
+          optionLabels={leaderboardTimeframeLabels}
           type="inline"
           className="LeaderboardContainer__leaderboard-tabs default-container"
         />
       )}
+
       {isCompetition && (
         <>
           <div className="LeaderboardContainer__competition-tabs default-container">
@@ -195,25 +218,44 @@ export function LeaderboardContainer() {
         <CompetitionPrizes leaderboardPageKey={leaderboardPageKey} competitionType={activeCompetition} />
       )}
 
-      {!isStartInFuture && (
-        <div className="GlobalLeaderboards__table">
-          <LeaderboardAccountsTable activeCompetition={activeCompetition} accounts={accountsStruct} />
-        </div>
-      )}
+      <Table activeCompetition={activeCompetition} />
     </div>
   );
 }
 
-// @ts-ignore
-window.getFiberNodes = () => {
-  const elems = document.body.getElementsByTagName("*");
-  const nodes: any[] = [];
-  for (let i = 0; i < elems.length; i++) {
-    const keys = Object.keys(elems[i]);
-    const fiberNodeKey = keys.find((key) => key.startsWith("__reactFiber$"));
-    if (fiberNodeKey) {
-      nodes.push(elems[i][fiberNodeKey]);
-    }
-  }
-  return nodes;
-};
+function Table({ activeCompetition }: { activeCompetition: CompetitionType | undefined }) {
+  const { isStartInFuture } = useLeaderboardTiming();
+  const leaderboardPageKey = useLeaderboardPageKey();
+  const leaderboardDataType = useLeaderboardDataTypeState()[0];
+  if (isStartInFuture) return null;
+
+  const table =
+    leaderboardPageKey === "leaderboard" && leaderboardDataType === "positions" ? (
+      <PositionsTable />
+    ) : (
+      <AccountsTable activeCompetition={activeCompetition} />
+    );
+
+  return <div className="GlobalLeaderboards__table">{table}</div>;
+}
+
+function AccountsTable({ activeCompetition }: { activeCompetition: CompetitionType | undefined }) {
+  const accounts = useLeaderboardRankedAccounts();
+  const isLoading = !accounts;
+  const accountsStruct = useMemo(
+    () => ({
+      isLoading,
+      data: accounts ? accounts : [],
+      error: null,
+      updatedAt: 0,
+    }),
+    [accounts, isLoading]
+  );
+
+  return <LeaderboardAccountsTable activeCompetition={activeCompetition} accounts={accountsStruct} />;
+}
+
+function PositionsTable() {
+  const positions = useLeaderboardPositions();
+  return <span>Positions</span>;
+}
