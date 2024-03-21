@@ -3102,6 +3102,7 @@ msgstr "Liquidity and trading incentives program is live on Arbitrum. <0>Read mo
 msgid "Liquidity data not loaded"
 msgstr "Liquidity data not loaded"
 
+#: src/App/App.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/Claims/Claims.tsx

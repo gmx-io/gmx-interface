@@ -3099,6 +3099,7 @@ msgstr ""
 msgid "Liquidity data not loaded"
 msgstr ""
 
+#: src/App/App.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Synthetics/Claims/Claims.tsx
