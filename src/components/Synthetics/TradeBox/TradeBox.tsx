@@ -3,7 +3,7 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { BigNumber } from "ethers";
 import { ReactNode, useCallback, useEffect, useMemo } from "react";
 import { IoMdSwap } from "react-icons/io";
-import { useLatest, usePrevious } from "react-use";
+import { useKey, useLatest, usePrevious } from "react-use";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -1299,6 +1299,17 @@ export function TradeBox(p: Props) {
     );
   }
 
+  useKey(
+    "Enter",
+    () => {
+      if (!isSubmitButtonDisabled || shouldDisableValidation) {
+        onSubmit();
+      }
+    },
+    {},
+    [isSubmitButtonDisabled, shouldDisableValidation]
+  );
+
   const buttonContent = (
     <Button
       variant="primary-action"
@@ -1343,12 +1354,7 @@ export function TradeBox(p: Props) {
             onChange={onSelectTradeMode}
           />
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              onSubmit();
-            }}
-          >
+          <div>
             {(isSwap || isIncrease) && renderTokenInputs()}
             {isTrigger && renderDecreaseSizeInput()}
 
@@ -1401,7 +1407,7 @@ export function TradeBox(p: Props) {
             </ExchangeInfo>
 
             <div className="Exchange-swap-button-container">{button}</div>
-          </form>
+          </div>
         </div>
       </div>
 
