@@ -23,6 +23,7 @@ import { useCallback, useMemo } from "react";
 import MarketNetFee from "../MarketNetFee/MarketNetFee";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { DOCS_LINKS } from "config/links";
+import { getTokenPriceDecimals } from "config/tokens";
 
 export type Props = {
   marketInfo?: MarketInfo;
@@ -35,6 +36,8 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
 
   const entryPrice = isLong ? indexToken?.prices?.maxPrice : indexToken?.prices?.minPrice;
   const exitPrice = isLong ? indexToken?.prices?.minPrice : indexToken?.prices?.maxPrice;
+  const entryPriceDecimals = getTokenPriceDecimals(entryPrice);
+  const exitPriceDecimals = getTokenPriceDecimals(exitPrice);
 
   const longShortText = isLong ? t`Long` : t`Short`;
 
@@ -47,7 +50,6 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
     fundingRateLong,
     fundingRateShort,
     totalInterestUsd,
-    priceDecimals,
     currentOpenInterest,
     maxOpenInterest,
   } = useMemo(() => {
@@ -126,13 +128,13 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
           label={t`Entry Price`}
           value={
             <Tooltip
-              handle={formatUsd(entryPrice, { displayDecimals: priceDecimals }) || "..."}
+              handle={formatUsd(entryPrice, { displayDecimals: entryPriceDecimals }) || "..."}
               position="bottom-end"
               renderContent={() => (
                 <Trans>
                   The position will be opened at a reference price of{" "}
-                  {formatUsd(entryPrice, { displayDecimals: priceDecimals })}, not accounting for price impact, with a
-                  max slippage of -{allowedSlippage ? (allowedSlippage / 100.0).toFixed(2) : "..."}%.
+                  {formatUsd(entryPrice, { displayDecimals: entryPriceDecimals })}, not accounting for price impact,
+                  with a max slippage of -{allowedSlippage ? (allowedSlippage / 100.0).toFixed(2) : "..."}%.
                   <br />
                   <br />
                   The slippage amount can be configured under Settings, found by clicking on your address at the top
@@ -152,14 +154,14 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
             <Tooltip
               handle={
                 formatUsd(exitPrice, {
-                  displayDecimals: priceDecimals,
+                  displayDecimals: exitPriceDecimals,
                 }) || "..."
               }
               position="bottom-end"
               renderContent={() => (
                 <Trans>
                   If you have an existing position, the position will be closed at a reference price of{" "}
-                  {formatUsd(entryPrice)}, not accounting for price impact.
+                  {formatUsd(entryPrice, { displayDecimals: entryPriceDecimals })}, not accounting for price impact.
                   <br />
                   <br />
                   This exit price will change with the price of the asset.
