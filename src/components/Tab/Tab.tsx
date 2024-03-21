@@ -26,7 +26,7 @@ export default function Tab(props: Props) {
   };
 
   return (
-    <div className={cx("Tab", type, className)}>
+    <div className={cx("Tab", `Tab__${type}`, className)}>
       {options.map((opt) => {
         const label = optionLabels && optionLabels[opt] ? optionLabels[opt] : opt;
         return (
