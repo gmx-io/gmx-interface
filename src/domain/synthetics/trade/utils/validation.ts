@@ -461,12 +461,13 @@ export function getEditCollateralError(p: {
     return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
   }
 
-  if (!isFullClose && position && minCollateralFactor) {
+  if (!isFullClose && position && minCollateralFactor && !isDeposit) {
     const isPositionCollateralSufficient = willPositionCollateralBeSufficientForPosition(
       position,
       collateralDeltaAmount,
       BigNumber.from(0),
-      minCollateralFactor
+      minCollateralFactor,
+      BigNumber.from(0)
     );
 
     if (!isPositionCollateralSufficient) {

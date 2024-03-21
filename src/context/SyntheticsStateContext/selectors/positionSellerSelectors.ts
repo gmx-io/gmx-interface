@@ -143,6 +143,7 @@ export const selectPositionSellerLeverageDisabledByCollateral = createEnhancedSe
     position,
     decreaseAmountsWithKeepLeverage.collateralDeltaAmount,
     decreaseAmountsWithKeepLeverage.realizedPnl,
-    minCollateralFactor
+    minCollateralFactor,
+    decreaseAmountsWithKeepLeverage.sizeDeltaUsd.mul(-1)
   );
 });

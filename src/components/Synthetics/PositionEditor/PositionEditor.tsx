@@ -369,7 +369,8 @@ export function PositionEditor(p: Props) {
           position,
           x,
           BigNumber.from(0),
-          minCollateralFactor
+          minCollateralFactor,
+          BigNumber.from(0)
         );
         return { isValid, returnValue: null };
       }

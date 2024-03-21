@@ -333,7 +333,7 @@ export function getTriggerNameByOrderType(orderType: OrderType | undefined, abbr
   return triggerStr;
 }
 
-export function willPositionCollateralBeSufficient(
+function willPositionCollateralBeSufficient(
   collateralTokenMinPrice: BigNumber,
   collateralAmount: BigNumber,
   collateralDeltaAmount: BigNumber,
@@ -364,7 +364,8 @@ export function willPositionCollateralBeSufficientForPosition(
   position: PositionInfo,
   collateralDeltaAmount: BigNumber,
   realizedPnlUsd: BigNumber,
-  minCollateralFactor: BigNumber
+  minCollateralFactor: BigNumber,
+  sideDeltaUsd: BigNumber
 ) {
   return willPositionCollateralBeSufficient(
     position.collateralToken.prices.minPrice,
@@ -373,7 +374,7 @@ export function willPositionCollateralBeSufficientForPosition(
     position.collateralToken.decimals,
     realizedPnlUsd,
     minCollateralFactor,
-    position.sizeInUsd
+    position.sizeInUsd.add(sideDeltaUsd)
   );
 }
 
