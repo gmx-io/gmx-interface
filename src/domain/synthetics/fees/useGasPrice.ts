@@ -4,10 +4,12 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { BigNumber } from "ethers";
 import { bigNumberify } from "lib/numbers";
 import { getProvider } from "lib/rpc";
+import useWallet from "lib/wallets/useWallet";
 import useSWR from "swr";
 
 export function useGasPrice(chainId: number) {
   const settings = useSettings();
+  const { signer } = useWallet();
 
   const executionFeeConfig = EXECUTION_FEE_CONFIG_V2[chainId];
 
@@ -16,7 +18,7 @@ export function useGasPrice(chainId: number) {
     {
       fetcher: () => {
         return new Promise<BigNumber | undefined>(async (resolve, reject) => {
-          const provider = getProvider(undefined, chainId);
+          const provider = getProvider(signer, chainId);
 
           if (!provider) {
             resolve(undefined);
@@ -24,7 +26,7 @@ export function useGasPrice(chainId: number) {
           }
 
           try {
-            let gasPrice = await provider.getGasPrice();
+            let gasPrice = (await provider.getFeeData()).gasPrice;
 
             if (executionFeeConfig.shouldUseMaxPriorityFeePerGas) {
               const feeData = await provider.getFeeData();
