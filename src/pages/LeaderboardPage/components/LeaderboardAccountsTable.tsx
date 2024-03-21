@@ -400,7 +400,7 @@ const TableRow = memo(
             "-"
           )}
         </TableCell>
-        <TableCell>{shouldRenderValue ? formatUsd(account.averageSize) || "" : "-"}</TableCell>
+        <TableCell>{shouldRenderValue ? formatUsd(account.averageSize) || "-" : "-"}</TableCell>
         <TableCell>{shouldRenderValue ? `${formatAmount(account.averageLeverage, 4, 2)}x` : "-"}</TableCell>
         <TableCell className="text-right">
           {shouldRenderValue ? (
