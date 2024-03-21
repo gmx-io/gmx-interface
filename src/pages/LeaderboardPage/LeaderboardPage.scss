@@ -308,7 +308,6 @@ $tabs-threshold: 990px;
   &__prize-rest {
     margin-left: 0.5rem;
     text-decoration: none;
-    font-family: monospace;
     display: flex;
     align-items: center;
   }
@@ -320,7 +319,6 @@ $tabs-threshold: 990px;
   &__tooltip-winner {
     display: flex;
     text-decoration: none !important;
-    font-family: monospace;
     margin-bottom: 1rem;
     color: white !important;
 
@@ -335,7 +333,6 @@ $tabs-threshold: 990px;
 
   .Tooltip-handle {
     text-decoration: none;
-    font-family: monospace;
     align-items: center;
     top: 0.2rem;
   }
