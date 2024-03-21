@@ -1074,20 +1074,34 @@ export function TradeBox(p: Props) {
   function renderLeverageInfo() {
     if (isIncrease) {
       return (
-        <ExchangeInfoRow
-          className="SwapBox-info-row"
-          label={t`Leverage`}
-          value={
-            nextPositionValues?.nextLeverage && increaseAmounts?.sizeDeltaUsd.gt(0) ? (
-              <ValueTransition
-                from={formatLeverage(selectedPosition?.leverage)}
-                to={formatLeverage(nextPositionValues?.nextLeverage) || "-"}
-              />
-            ) : (
-              formatLeverage(isLeverageEnabled ? leverage : increaseAmounts?.estimatedLeverage) || "-"
-            )
-          }
-        />
+        <>
+          <ExchangeInfoRow
+            className="SwapBox-info-row"
+            label={t`Leverage`}
+            value={
+              nextPositionValues?.nextLeverage && increaseAmounts?.sizeDeltaUsd.gt(0) ? (
+                <ValueTransition
+                  from={formatLeverage(selectedPosition?.leverage)}
+                  to={formatLeverage(nextPositionValues?.nextLeverage) || "-"}
+                />
+              ) : (
+                formatLeverage(isLeverageEnabled ? leverage : increaseAmounts?.estimatedLeverage) || "-"
+              )
+            }
+          />
+          <ExchangeInfoRow
+            className="SwapBox-info-row"
+            label={t`Test Data`}
+            value={
+              <ul>
+                <li>Gas Price: {gasPrice?.toString()}</li>
+                <li>Gas Limit: {gasLimits?.increaseOrder?.toString()}</li>
+                <li>Fee Amount: {executionFee?.feeTokenAmount?.toString()}</li>
+                <li>Fee USD: {executionFee?.feeUsd?.toString()}</li>
+              </ul>
+            }
+          />
+        </>
       );
     } else if (isTrigger && selectedPosition) {
       let leverageValue: ReactNode = "-";
