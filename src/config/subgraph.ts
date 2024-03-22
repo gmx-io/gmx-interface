@@ -39,7 +39,7 @@ const SUBGRAPH_URLS = {
   },
 };
 
-export function getSubgraphUrl(chainId: number, subgraph: string) {
+export function getSubgraphUrl(chainId: number, subgraph: string): string | undefined {
   if (isDevelopment()) {
     const localStorageKey = getSubgraphUrlKey(chainId, subgraph);
     const url = localStorage.getItem(localStorageKey);
@@ -48,6 +48,10 @@ export function getSubgraphUrl(chainId: number, subgraph: string) {
       console.warn("%s subgraph on chain %s url is overriden: %s", subgraph, chainId, url);
       return url;
     }
+  }
+
+  if (chainId === ETH_MAINNET) {
+    return SUBGRAPH_URLS.common[ETH_MAINNET]?.[subgraph];
   }
 
   return SUBGRAPH_URLS?.[chainId]?.[subgraph];

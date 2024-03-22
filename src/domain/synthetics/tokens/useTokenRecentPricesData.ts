@@ -21,7 +21,7 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
     return pathname.startsWith("/leaderboard") || pathname.startsWith("/competitions") ? 60_000 : 5000;
   }, [pathname]);
 
-  const { data } = useSWR([chainId, oracleKeeperFetcher.oracleKeeperUrl, "useTokenRecentPrices"], {
+  const { data } = useSWR([chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"], {
     refreshInterval: refreshPricesInterval,
     fetcher: ([chainId]) =>
       oracleKeeperFetcher.fetchTickers().then((priceItems) => {

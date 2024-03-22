@@ -9,13 +9,14 @@ import { chainlinkClient } from "lib/subgraph/clients";
 import { sleep } from "lib/sleep";
 import { formatAmount } from "lib/numbers";
 import { getNativeToken, getNormalizedTokenSymbol, isChartAvailabeForToken } from "config/tokens";
+import type { Bar, FromOldToNewArray } from "./tradingview/types";
 
 const BigNumber = ethers.BigNumber;
 
 // Ethereum network, Chainlink Aggregator contracts
 const FEED_ID_MAP = {
   BTC_USD: "0xae74faa92cb67a95ebcab07358bc222e33a34da7",
-  ETH_USD: "0x37bc7498f4ff12c19678ee8fe19d713b87f6a9e6",
+  ETH_USD: "0xE62B71cf983019BFf55bC83B48601ce8419650CC".toLowerCase(),
   BNB_USD: "0xc45ebd0f901ba6b2b8c7e70b717778f055ef5e6d",
   LINK_USD: "0xdfd03bfc3465107ce570a0397b247f546a42d0fa",
   UNI_USD: "0x68577f915131087199fe48913d8b416b3984fd38",
@@ -25,12 +26,20 @@ const FEED_ID_MAP = {
   YFI_USD: "0x8a4d74003870064d41d4f84940550911fbfccf04",
   SPELL_USD: "0x8640b23468815902e011948f3ab173e1e83f9879",
 };
-export const timezoneOffset = -new Date().getTimezoneOffset() * 60;
+export const TIMEZONE_OFFSET_SEC = -new Date().getTimezoneOffset() * 60;
 
-function formatBarInfo(bar) {
-  const { t, o: open, c: close, h: high, l: low } = bar;
+type CompactBar = {
+  t: number;
+  o: number;
+  c: number;
+  h: number;
+  l: number;
+};
+
+function formatBarInfo(compactBar: CompactBar): Bar {
+  const { t, o: open, c: close, h: high, l: low } = compactBar;
   return {
-    time: t + timezoneOffset,
+    time: t + TIMEZONE_OFFSET_SEC,
     open,
     close,
     high,
@@ -68,7 +77,12 @@ export function fillGaps(prices, periodSeconds) {
   return newPrices;
 }
 
-export async function getLimitChartPricesFromStats(chainId, symbol, period, limit = 1) {
+export async function getLimitChartPricesFromStats(
+  chainId: number,
+  symbol: string,
+  period: string,
+  limit = 1
+): Promise<FromOldToNewArray<Bar>> {
   symbol = getNormalizedTokenSymbol(symbol);
 
   if (!isChartAvailabeForToken(chainId, symbol)) {
@@ -91,7 +105,11 @@ export async function getLimitChartPricesFromStats(chainId, symbol, period, limi
   }
 }
 
-export async function getChartPricesFromStats(chainId, symbol, period) {
+export async function getChartPricesFromStats(
+  chainId: number,
+  symbol: string,
+  period: string
+): Promise<FromOldToNewArray<Bar>> {
   symbol = getNormalizedTokenSymbol(symbol);
 
   const timeDiff = CHART_PERIODS[period] * 3000;
@@ -123,10 +141,10 @@ export async function getChartPricesFromStats(chainId, symbol, period) {
   if (!res.ok) {
     throw new Error(`request failed ${res.status} ${res.statusText}`);
   }
-  const json = await res.json();
-  let prices = json?.prices;
-  if (!prices || prices.length < 1) {
-    throw new Error(`not enough prices data: ${prices?.length}`);
+  const json: { prices: CompactBar[]; updatedAt: number; period: string } = await res.json();
+  let compactPrices = json?.prices;
+  if (!compactPrices || compactPrices.length < 1) {
+    throw new Error(`not enough prices data: ${compactPrices?.length}`);
   }
 
   const OBSOLETE_THRESHOLD = Date.now() / 1000 - 60 * 30; // 30 min ago
@@ -140,7 +158,7 @@ export async function getChartPricesFromStats(chainId, symbol, period) {
     );
   }
 
-  prices = prices.map(formatBarInfo);
+  const prices = compactPrices.map(formatBarInfo);
 
   return prices;
 }
@@ -164,7 +182,7 @@ function getCandlesFromPrices(prices, period) {
     const [ts, price] = prices[i];
     const tsGroup = Math.floor(ts / periodTime) * periodTime;
     if (prevTsGroup !== tsGroup) {
-      candles.push({ t: prevTsGroup + timezoneOffset, o, h, l, c });
+      candles.push({ t: prevTsGroup + TIMEZONE_OFFSET_SEC, o, h, l, c });
       o = c;
       h = Math.max(o, c);
       l = Math.min(o, c);
@@ -184,7 +202,7 @@ function getCandlesFromPrices(prices, period) {
   }));
 }
 
-export function getChainlinkChartPricesFromGraph(tokenSymbol, period) {
+export function getChainlinkChartPricesFromGraph(tokenSymbol: string, period: string): Promise<FromOldToNewArray<Bar>> {
   tokenSymbol = getNormalizedTokenSymbol(tokenSymbol);
   const marketName = tokenSymbol + "_USD";
   const feedId = FEED_ID_MAP[marketName];
@@ -233,6 +251,7 @@ export function getChainlinkChartPricesFromGraph(tokenSymbol, period) {
     .catch((err) => {
       // eslint-disable-next-line no-console
       console.error(err);
+      return [];
     });
 }
 
@@ -285,7 +304,7 @@ export function useChartPrices(chainId, symbol, isStable, period, currentAverage
 
 function appendCurrentAveragePrice(prices, currentAveragePrice, period) {
   const periodSeconds = CHART_PERIODS[period];
-  const currentCandleTime = Math.floor(Date.now() / 1000 / periodSeconds) * periodSeconds + timezoneOffset;
+  const currentCandleTime = Math.floor(Date.now() / 1000 / periodSeconds) * periodSeconds + TIMEZONE_OFFSET_SEC;
   const last = prices[prices.length - 1];
   const averagePriceValue = parseFloat(formatAmount(currentAveragePrice, USD_DECIMALS, 2));
   if (currentCandleTime === last.time) {
