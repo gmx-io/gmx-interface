@@ -5,33 +5,31 @@ import Pagination from "components/Pagination/Pagination";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { abs, formatAmount, formatUsd } from "lib/bigint";
 import { useDebounce } from "lib/useDebounce";
-import { ReactNode, memo, useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { ReactNode, memo, useCallback, useEffect, useMemo, useState } from "react";
 
 import SearchInput from "components/SearchInput/SearchInput";
 import { TopAccountsSkeleton } from "components/Skeleton/Skeleton";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 import { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { useLeaderboardIsCompetition } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
+import { useMarketInfo, useTokenInfo } from "context/SyntheticsStateContext/hooks/tradeHooks";
 import {
-  useLeaderboardAccountsRanks,
-  useLeaderboardCurrentAccount,
-  useLeaderboardIsCompetition,
-  useLeaderboardTimeframeTypeState,
-} from "context/SyntheticsStateContext/hooks/leaderboardHooks";
-import { CompetitionType, LeaderboardPosition, RemoteData } from "domain/synthetics/leaderboard";
+  selectPositionConstants,
+  selectUserReferralInfo,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { LeaderboardPosition, RemoteData } from "domain/synthetics/leaderboard";
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "domain/synthetics/leaderboard/constants";
+import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import { getLiquidationPrice } from "domain/synthetics/positions";
+import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
-function getRowClassname(rank: number | null, competition: CompetitionType | undefined, pinned: boolean) {
-  if (pinned) return cx("LeaderboardRankRow-Pinned", "Table_tr");
-  if (rank === null) return "Table_tr";
-  return rank <= 3 ? cx(`LeaderboardRankRow-${rank}`, "Table_tr") : "Table_tr";
-}
-
-function getWinnerRankClassname(rank: number | null, competition: CompetitionType | undefined) {
+function getWinnerRankClassname(rank: number | null) {
   if (rank === null) return undefined;
   if (rank <= 3) return `LeaderboardRank-${rank}`;
-  if (competition && rank <= 18) return "LeaderboardRank-4";
 
   return undefined;
 }
@@ -39,19 +37,14 @@ function getWinnerRankClassname(rank: number | null, competition: CompetitionTyp
 type LeaderboardPositionField = keyof LeaderboardPosition;
 
 export function LeaderboardPositionsTable({
-  accounts,
-  activeCompetition,
-  sortingEnabled = true,
+  positions,
   skeletonCount = 15,
 }: {
-  accounts: RemoteData<LeaderboardPosition>;
-  activeCompetition: CompetitionType | undefined;
-  sortingEnabled?: boolean;
+  positions: RemoteData<LeaderboardPosition>;
   skeletonCount?: number;
 }) {
-  const currentAccount = useLeaderboardCurrentAccount();
   const perPage = 20;
-  const { isLoading, data } = accounts;
+  const { isLoading, data } = positions;
   const [page, setPage] = useState(1);
   const [orderBy, setOrderBy] = useState<LeaderboardPositionField>("qualifyingPnl");
   const [direction, setDirection] = useState<number>(1);
@@ -70,7 +63,6 @@ export function LeaderboardPositionsTable({
   const [search, setSearch] = useState("");
   const setValue = useCallback((e) => setSearch(e.target.value), []);
   const handleKeyDown = useCallback(() => null, []);
-  const ranks = useLeaderboardAccountsRanks();
   const term = useDebounce(search, 300);
 
   useEffect(() => {
@@ -97,68 +89,31 @@ export function LeaderboardPositionsTable({
   }, [sorted, term]);
 
   const indexFrom = (page - 1) * perPage;
-  const activeRank = activeCompetition === "pnlPercentage" ? ranks.pnlPercentage : ranks.pnl;
   const rowsData = useMemo(
     () =>
-      filteredStats.slice(indexFrom, indexFrom + perPage).map((leaderboardAccount, i) => ({
-        account: leaderboardAccount,
+      filteredStats.slice(indexFrom, indexFrom + perPage).map((position, i) => ({
+        position,
         index: i,
-        rank: activeRank.get(leaderboardAccount.account) ?? null,
+        rank: position.rank,
       })),
-    [activeRank, filteredStats, indexFrom]
+    [filteredStats, indexFrom]
   );
-  const pinnedRowData = useMemo(() => {
-    if (!currentAccount) return undefined;
-    if (term) return undefined;
 
-    const rank = activeRank.get(currentAccount.account) ?? null;
-    return {
-      account: currentAccount,
-      index: 0,
-      rank,
-    };
-  }, [activeRank, currentAccount, term]);
   const pageCount = Math.ceil(filteredStats.length / perPage);
 
   const getSortableClass = useCallback(
     (key: LeaderboardPositionField) =>
-      sortingEnabled
-        ? cx(
-            orderBy === key || (key === "wins" && orderBy === "losses")
-              ? direction > 0
-                ? "sorted-asc"
-                : "sorted-desc"
-              : "sortable"
-          )
-        : undefined,
-    [direction, orderBy, sortingEnabled]
+      cx(orderBy === key ? (direction > 0 ? "sorted-asc" : "sorted-desc") : "sortable"),
+    [direction, orderBy]
   );
 
   const content = isLoading ? (
     <TopAccountsSkeleton count={skeletonCount} />
   ) : (
     <>
-      {pinnedRowData && (
-        <TableRow
-          account={pinnedRowData.account}
-          index={-1}
-          pinned
-          rank={pinnedRowData.rank}
-          activeCompetition={activeCompetition}
-        />
-      )}
       {rowsData.length ? (
-        rowsData.map(({ account, index, rank }) => {
-          return (
-            <TableRow
-              key={account.account}
-              account={account}
-              index={index}
-              pinned={false}
-              rank={rank}
-              activeCompetition={activeCompetition}
-            />
-          );
+        rowsData.map(({ position: position, index, rank }) => {
+          return <TableRow key={position.key} position={position} index={index} rank={rank} />;
         })
       ) : (
         <EmptyRow />
@@ -187,7 +142,7 @@ export function LeaderboardPositionsTable({
                 width={6}
                 tooltip={t`Only addresses with over ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD.toBigInt(), {
                   displayDecimals: 0,
-                })} in "Capital Used" are ranked.`}
+                })} in Collateral are ranked.`}
                 tooltipPosition="bottom-start"
                 columnName="rank"
               />
@@ -198,52 +153,36 @@ export function LeaderboardPositionsTable({
                 tooltip={t`The total realized and unrealized profit and loss for the period, including fees and price impact.`}
                 tooltipPosition="bottom-end"
                 onClick={handleColumnClick}
-                columnName="totalQualifyingPnl"
-                className={getSortableClass("totalQualifyingPnl")}
+                columnName="qualifyingPnl"
+                className={getSortableClass("qualifyingPnl")}
               />
+              <TableHeaderCell title={t`Position`} width={10} tooltipPosition="bottom-end" columnName="key" />
               <TableHeaderCell
-                title={t`PnL (%)`}
-                width={10}
-                tooltip={
-                  <Trans>
-                    The PnL ($) compared to the capital used.
-                    <br />
-                    <br />
-                    The capital used is calculated as the highest value of [
-                    <i>sum of collateral of open positions - realized PnL + period start pending PnL</i>].
-                  </Trans>
-                }
-                tooltipPosition="bottom-end"
+                title={t`Entry Price`}
+                width={2}
                 onClick={handleColumnClick}
-                columnName="pnlPercentage"
-                className={getSortableClass("pnlPercentage")}
+                columnName="entryPrice"
+                className={getSortableClass("entryPrice")}
               />
               <TableHeaderCell
-                title={t`Avg. Size`}
-                width={12}
-                tooltip={t`Average position size.`}
-                tooltipPosition="bottom-end"
-                onClick={handleColumnClick}
-                columnName="averageSize"
-                className={getSortableClass("averageSize")}
-              />
-              <TableHeaderCell
-                title={t`Avg. Lev.`}
+                title={t`Size`}
                 width={1}
-                tooltip={t`Average leverage used.`}
-                tooltipPosition="bottom-end"
                 onClick={handleColumnClick}
-                columnName="averageLeverage"
-                className={getSortableClass("averageLeverage")}
+                columnName="sizeInUsd"
+                className={getSortableClass("sizeInUsd")}
               />
               <TableHeaderCell
-                title={t`Win/Loss`}
+                title={t`Lev.`}
                 width={10}
-                tooltip={t`Wins and losses for fully closed positions.`}
-                tooltipPosition="bottom-end"
                 onClick={handleColumnClick}
-                columnName="wins"
-                className={cx("text-right", getSortableClass("wins"))}
+                columnName="leverage"
+                className={cx("text-right", getSortableClass("leverage"))}
+              />
+              <TableHeaderCell
+                title={t`Liq. Price`}
+                width={10}
+                columnName="liquidationPrice"
+                className={cx("text-right")}
               />
             </tr>
             {content}
@@ -272,8 +211,8 @@ const TableHeaderCell = memo(
     className?: string;
     tooltip?: ReactNode;
     tooltipPosition?: TooltipPosition;
-    onClick?: (columnName: string) => void;
-    columnName: string;
+    onClick?: (columnName: LeaderboardPositionField | "liquidationPrice") => void;
+    columnName: LeaderboardPositionField | "liquidationPrice";
     width?: number | ((breakpoint?: string) => number);
     breakpoint?: string;
   }) => {
@@ -306,95 +245,108 @@ const TableHeaderCell = memo(
 );
 
 const TableRow = memo(
-  ({
-    account,
-    pinned,
-    rank,
-    activeCompetition,
-    index,
-  }: {
-    account: LeaderboardAccount;
-    index: number;
-    pinned: boolean;
-    rank: number | null;
-    activeCompetition: CompetitionType | undefined;
-  }) => {
-    const shouldRenderValue = true;
-    const renderWinsLossesTooltipContent = useCallback(() => {
-      if (!shouldRenderValue) return null;
-      const winRate = `${((account.wins / (account.wins + account.losses)) * 100).toFixed(2)}%`;
-      return (
-        <div>
-          <StatsTooltipRow label={t`Total Trades`} showDollar={false} value={account.wins + account.losses} />
-          {account.wins + account.losses > 0 ? (
-            <StatsTooltipRow label={t`Win Rate`} showDollar={false} value={winRate} />
-          ) : null}
-        </div>
-      );
-    }, [account.losses, account.wins, shouldRenderValue]);
+  ({ position, rank, index }: { position: LeaderboardPosition; index: number; rank: number | null }) => {
+    const renderPnlTooltipContent = useCallback(() => <LeaderboardPnlTooltipContent position={position} />, [position]);
+    const { minCollateralUsd } = useSelector(selectPositionConstants);
+    const userReferralInfo = useSelector(selectUserReferralInfo);
 
-    const renderPnlTooltipContent = useCallback(() => <LeaderboardPnlTooltipContent account={account} />, [account]);
+    const collateralToken = useTokenInfo(position.collateralToken);
+    const marketInfo = useMarketInfo(position.market);
+    const indexToken = marketInfo?.indexToken;
+
+    const liquidationPrice = useMemo(() => {
+      if (!collateralToken || !marketInfo || !minCollateralUsd) return undefined;
+
+      return getLiquidationPrice({
+        marketInfo,
+        collateralToken,
+        sizeInUsd: BigNumber.from(position.sizeInUsd),
+        sizeInTokens: BigNumber.from(position.sizeInTokens),
+        collateralUsd: BigNumber.from(position.collateralUsd),
+        collateralAmount: BigNumber.from(position.collateralAmount),
+        minCollateralUsd,
+        pendingBorrowingFeesUsd: BigNumber.from(position.unrealizedFees),
+        pendingFundingFeesUsd: BigNumber.from(0),
+        isLong: position.isLong,
+        userReferralInfo,
+      })?.toBigInt();
+    }, [
+      collateralToken,
+      marketInfo,
+      minCollateralUsd,
+      position.collateralAmount,
+      position.collateralUsd,
+      position.isLong,
+      position.sizeInTokens,
+      position.sizeInUsd,
+      position.unrealizedFees,
+      userReferralInfo,
+    ]);
+
+    const indexName = marketInfo ? getMarketIndexName(marketInfo) : "";
+    const poolName = marketInfo ? getMarketPoolName(marketInfo) : "";
+
+    const renderTooltipContent = useCallback(() => {
+      return (
+        <>
+          <div className="items-top mr-xs lh-1">
+            <span>{indexName}</span>
+            <span className="subtext">[{poolName}]</span>
+          </div>
+          <span className={cx(position.isLong ? "positive" : "negative")}>{position.isLong ? t`Long` : t`Short`}</span>
+        </>
+      );
+    }, [indexName, poolName, position.isLong]);
 
     return (
-      <tr className={getRowClassname(rank, activeCompetition, pinned)} key={account.account}>
+      <tr className="Table_tr" key={position.key}>
         <TableCell>
-          <span className={getWinnerRankClassname(rank, activeCompetition)}>
-            <RankInfo rank={rank} hasSomeCapital={account.totalQualifyingPnl !== 0n} />
+          <span className={getWinnerRankClassname(rank)}>
+            <RankInfo rank={rank} hasSomeCapital />
           </span>
         </TableCell>
         <TableCell>
-          <AddressView size={20} address={account.account} breakpoint="XL" />
+          <AddressView size={20} address={position.account} breakpoint="XL" />
         </TableCell>
         <TableCell>
-          {shouldRenderValue ? (
-            <TooltipWithPortal
-              handle={
-                <span className={getSignedValueClassName(account.totalQualifyingPnl)}>
-                  {formatDelta(account.totalQualifyingPnl, { signed: true, prefix: "$" })}
-                </span>
-              }
-              position={index > 7 ? "top" : "bottom"}
-              className="nowrap"
-              renderContent={renderPnlTooltipContent}
-            />
-          ) : (
-            "-"
-          )}
+          <TooltipWithPortal
+            handle={
+              <span className={getSignedValueClassName(position.qualifyingPnl)}>
+                {formatDelta(position.qualifyingPnl, { signed: true, prefix: "$" })}
+              </span>
+            }
+            position={index > 7 ? "top" : "bottom"}
+            className="nowrap"
+            renderContent={renderPnlTooltipContent}
+          />
         </TableCell>
         <TableCell>
-          {shouldRenderValue ? (
-            <TooltipWithPortal
-              handle={
-                <span className={getSignedValueClassName(account.pnlPercentage)}>
-                  {formatDelta(account.pnlPercentage, { signed: true, postfix: "%", decimals: 2 })}
+          <TooltipWithPortal
+            handle={
+              <span className="">
+                {indexToken ? (
+                  <TokenIcon
+                    className="PositionList-token-icon"
+                    symbol={indexToken.symbol}
+                    displaySize={20}
+                    importSize={24}
+                  />
+                ) : null}
+                <span className="">{marketInfo?.indexToken.symbol}</span>
+                <span className={cx("TopPositionsDirection", position.isLong ? "positive" : "negative")}>
+                  {position.isLong ? t`Long` : t`Short`}
                 </span>
-              }
-              position={index > 7 ? "top" : "bottom"}
-              className="nowrap"
-              renderContent={() => (
-                <StatsTooltipRow
-                  label={t`Capital Used`}
-                  showDollar={false}
-                  value={<span>{formatUsd(account.maxCapital)}</span>}
-                />
-              )}
-            />
-          ) : (
-            "-"
-          )}
+              </span>
+            }
+            position={index > 7 ? "top" : "bottom"}
+            className="nowrap"
+            renderContent={renderTooltipContent}
+          />
         </TableCell>
-        <TableCell>{shouldRenderValue ? formatUsd(account.averageSize) || "-" : "-"}</TableCell>
-        <TableCell>{shouldRenderValue ? `${formatAmount(account.averageLeverage, 4, 2)}x` : "-"}</TableCell>
-        <TableCell className="text-right">
-          {shouldRenderValue ? (
-            <TooltipWithPortal
-              handle={`${account.wins}/${account.losses}`}
-              renderContent={renderWinsLossesTooltipContent}
-            />
-          ) : (
-            "-"
-          )}
-        </TableCell>
+        <TableCell>{formatUsd(position.entryPrice)}</TableCell>
+        <TableCell>{formatUsd(position.sizeInUsd)}</TableCell>
+        <TableCell>{`${formatAmount(position.leverage, 4, 2)}x`}</TableCell>
+        <TableCell>{liquidationPrice ? formatUsd(liquidationPrice) : "-"}</TableCell>
       </tr>
     );
   }
@@ -437,28 +389,18 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
   return <span>{rank}</span>;
 });
 
-const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAccount }) => {
-  const [isPnlAfterFees] = useLocalStorageSerializeKey("leaderboardPnlAfterFees", true);
-  const [type] = useLeaderboardTimeframeTypeState();
-  const isCompetition = useLeaderboardIsCompetition();
-  const shouldShowStartValues = isCompetition || type !== "all";
-
-  const realizedFees = useMemo(() => account.realizedFees * -1n, [account.realizedFees]);
+const LeaderboardPnlTooltipContent = memo(({ position }: { position: LeaderboardPosition }) => {
+  const [isPnlAfterFees] = useLocalStorageSerializeKey("leaderboardPositionsPnlAfterFees", true);
+  const realizedFees = useMemo(() => position.realizedFees * -1n, [position.realizedFees]);
   const realizedPnl = useMemo(
-    () => (isPnlAfterFees ? account.realizedPnl + realizedFees + account.realizedPriceImpact : account.realizedPnl),
-    [account.realizedPnl, account.realizedPriceImpact, isPnlAfterFees, realizedFees]
+    () => (isPnlAfterFees ? position.realizedPnl + realizedFees + position.realizedPriceImpact : position.realizedPnl),
+    [position.realizedPnl, position.realizedPriceImpact, isPnlAfterFees, realizedFees]
   );
 
-  const unrealizedFees = useMemo(() => account.unrealizedFees * -1n, [account.unrealizedFees]);
+  const unrealizedFees = useMemo(() => position.unrealizedFees * -1n, [position.unrealizedFees]);
   const unrealizedPnl = useMemo(
-    () => (isPnlAfterFees ? account.unrealizedPnl + unrealizedFees : account.unrealizedPnl),
-    [account.unrealizedPnl, isPnlAfterFees, unrealizedFees]
-  );
-
-  const startUnrealizedFees = useMemo(() => account.startUnrealizedFees * -1n, [account.startUnrealizedFees]);
-  const startUnrealizedPnl = useMemo(
-    () => (isPnlAfterFees ? account.startUnrealizedPnl + startUnrealizedFees : account.startUnrealizedPnl),
-    [account.startUnrealizedPnl, isPnlAfterFees, startUnrealizedFees]
+    () => (isPnlAfterFees ? position.unrealizedPnl + unrealizedFees : position.unrealizedPnl),
+    [position.unrealizedPnl, isPnlAfterFees, unrealizedFees]
   );
 
   return (
@@ -481,17 +423,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
           </span>
         }
       />
-      {shouldShowStartValues && (
-        <StatsTooltipRow
-          label={t`Start Unrealized PnL`}
-          showDollar={false}
-          value={
-            <span className={getSignedValueClassName(startUnrealizedPnl)}>
-              {formatDelta(startUnrealizedPnl, { signed: true, prefix: "$" })}
-            </span>
-          }
-        />
-      )}
+
       {!isPnlAfterFees && (
         <>
           <br />
@@ -513,24 +445,13 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
               </span>
             }
           />
-          {shouldShowStartValues && (
-            <StatsTooltipRow
-              label={t`Start Unrealized Fees`}
-              showDollar={false}
-              value={
-                <span className={getSignedValueClassName(startUnrealizedFees)}>
-                  {formatDelta(startUnrealizedFees, { signed: true, prefix: "$" })}
-                </span>
-              }
-            />
-          )}
           <br />
           <StatsTooltipRow
             label={t`Realized Price Impact`}
             showDollar={false}
             value={
-              <span className={getSignedValueClassName(account.realizedPriceImpact)}>
-                {formatDelta(account.realizedPriceImpact, { signed: true, prefix: "$" })}
+              <span className={getSignedValueClassName(position.realizedPriceImpact)}>
+                {formatDelta(position.realizedPriceImpact, { signed: true, prefix: "$" })}
               </span>
             }
           />

@@ -109,7 +109,7 @@ export function formatUsd(
 ) {
   const { fallbackToZero = false, displayDecimals = 2 } = opts;
 
-  if (!usd) {
+  if (usd === undefined || usd === null) {
     if (fallbackToZero) {
       usd = 0n;
     } else {

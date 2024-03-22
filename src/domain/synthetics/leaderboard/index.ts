@@ -143,6 +143,8 @@ export type LeaderboardPosition = LeaderboardPositionBase & {
   fees: bigint;
   pnl: bigint;
   qualifyingPnl: bigint;
+  leverage: bigint;
+  collateralUsd: bigint;
 };
 
 const fetchAccounts = async (

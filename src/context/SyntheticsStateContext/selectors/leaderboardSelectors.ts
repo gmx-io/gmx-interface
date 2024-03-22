@@ -3,7 +3,7 @@ import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
 import { MarketInfo } from "domain/synthetics/markets";
 import { SyntheticsTradeState } from "../SyntheticsStateContextProvider";
 import { createEnhancedSelector } from "../utils";
-import { selectAccount, selectMarketsInfoData } from "./globalSelectors";
+import { selectAccount, selectMarketsInfoData, selectTokensData } from "./globalSelectors";
 
 const BASIS_POINTS_DIVISOR = 10000n;
 
@@ -234,6 +234,17 @@ export const selectLeaderboardPositions = createEnhancedSelector(function select
       const fees = position.realizedFees + position.unrealizedFees;
       const qualifyingPnl = pnl - fees + position.realizedPriceImpact;
 
+      const collateralTokenPrice = q((s) =>
+        selectTokensData(s)?.[position.collateralToken]?.prices.minPrice.toBigInt()
+      );
+      const collateralTokenDecimals = q((s) => selectTokensData(s)?.[position.collateralToken]?.decimals);
+
+      if (!collateralTokenPrice || !collateralTokenDecimals) return undefined;
+
+      const collateralUsd = (position.collateralAmount * collateralTokenPrice) / 10n ** BigInt(collateralTokenDecimals);
+
+      const leverage = collateralUsd > 0n ? (position.sizeInUsd * BASIS_POINTS_DIVISOR) / collateralUsd : 0n;
+
       const p: LeaderboardPosition = {
         ...position,
         unrealizedPnl,
@@ -241,16 +252,19 @@ export const selectLeaderboardPositions = createEnhancedSelector(function select
         qualifyingPnl,
         fees,
         pnl,
+        leverage,
+        collateralUsd,
       };
 
       return p;
     })
-    .filter((x: LeaderboardPosition | undefined): x is LeaderboardPosition => x !== undefined)
-    .forEach((position, index) => {
-      position.rank = index + 1;
-    });
+    .filter((x: LeaderboardPosition | undefined): x is LeaderboardPosition => x !== undefined);
 
   positions.sort((a, b) => (b.qualifyingPnl - a.qualifyingPnl > 0n ? 1 : -1));
+
+  positions.forEach((position, index) => {
+    position.rank = index + 1;
+  });
 
   return positions;
 });

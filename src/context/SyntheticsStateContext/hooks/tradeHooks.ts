@@ -9,6 +9,7 @@ import {
   makeSelectTradeRatios,
 } from "../selectors/tradeSelectors";
 import { useSelector } from "../utils";
+import { selectMarketsInfoData, selectTokensData } from "../selectors/globalSelectors";
 
 export const useNextPositionValuesForIncrease = ({
   collateralTokenAddress,
@@ -116,4 +117,14 @@ export const useTradeRatios = ({
 
 export const useTradeFlags = ({ tradeType, tradeMode }: { tradeType: TradeType; tradeMode: TradeMode }) => {
   return useMemo(() => createTradeFlags(tradeType, tradeMode), [tradeType, tradeMode]);
+};
+
+// const market = q((s) => selectMarketsInfoData(s)?.[position.market]);
+
+export const useMarketInfo = (marketAddress: string | undefined) => {
+  return useSelector((s) => (marketAddress ? selectMarketsInfoData(s)?.[marketAddress] : undefined));
+};
+
+export const useTokenInfo = (tokenAddress: string | undefined) => {
+  return useSelector((s) => (tokenAddress ? selectTokensData(s)?.[tokenAddress] : undefined));
 };

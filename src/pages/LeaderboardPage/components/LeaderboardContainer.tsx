@@ -26,6 +26,7 @@ import { CompetitionCountdown } from "./CompetitionCountdown";
 import { CompetitionPrizes } from "./CompetitionPrizes";
 import { LeaderboardAccountsTable } from "./LeaderboardAccountsTable";
 import { LeaderboardNavigation } from "./LeaderboardNavigation";
+import { LeaderboardPositionsTable } from "./LeaderboardPositionsTable";
 
 const competitionsTabs = [0, 1];
 const leaderboardTimeframeTabs = [0, 1, 2];
@@ -241,6 +242,7 @@ function Table({ activeCompetition }: { activeCompetition: CompetitionType | und
 
 function AccountsTable({ activeCompetition }: { activeCompetition: CompetitionType | undefined }) {
   const accounts = useLeaderboardRankedAccounts();
+  // FIXME isLoading
   const isLoading = !accounts;
   const accountsStruct = useMemo(
     () => ({
@@ -257,5 +259,15 @@ function AccountsTable({ activeCompetition }: { activeCompetition: CompetitionTy
 
 function PositionsTable() {
   const positions = useLeaderboardPositions();
-  return <span>Positions</span>;
+  const isLoading = !positions;
+  const positionsStruct = useMemo(
+    () => ({
+      isLoading,
+      data: positions ? positions : [],
+      error: null,
+      updatedAt: 0,
+    }),
+    [positions, isLoading]
+  );
+  return <LeaderboardPositionsTable positions={positionsStruct} />;
 }

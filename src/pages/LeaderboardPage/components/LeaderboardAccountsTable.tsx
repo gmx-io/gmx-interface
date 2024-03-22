@@ -336,9 +336,7 @@ const TableRow = memo(
     rank: number | null;
     activeCompetition: CompetitionType | undefined;
   }) => {
-    const shouldRenderValue = true;
     const renderWinsLossesTooltipContent = useCallback(() => {
-      if (!shouldRenderValue) return null;
       const winRate = `${((account.wins / (account.wins + account.losses)) * 100).toFixed(2)}%`;
       return (
         <div>
@@ -348,7 +346,7 @@ const TableRow = memo(
           ) : null}
         </div>
       );
-    }, [account.losses, account.wins, shouldRenderValue]);
+    }, [account.losses, account.wins]);
 
     const renderPnlTooltipContent = useCallback(() => <LeaderboardPnlTooltipContent account={account} />, [account]);
 
@@ -363,54 +361,42 @@ const TableRow = memo(
           <AddressView size={20} address={account.account} breakpoint="XL" />
         </TableCell>
         <TableCell>
-          {shouldRenderValue ? (
-            <TooltipWithPortal
-              handle={
-                <span className={getSignedValueClassName(account.totalQualifyingPnl)}>
-                  {formatDelta(account.totalQualifyingPnl, { signed: true, prefix: "$" })}
-                </span>
-              }
-              position={index > 7 ? "top" : "bottom"}
-              className="nowrap"
-              renderContent={renderPnlTooltipContent}
-            />
-          ) : (
-            "-"
-          )}
+          <TooltipWithPortal
+            handle={
+              <span className={getSignedValueClassName(account.totalQualifyingPnl)}>
+                {formatDelta(account.totalQualifyingPnl, { signed: true, prefix: "$" })}
+              </span>
+            }
+            position={index > 7 ? "top" : "bottom"}
+            className="nowrap"
+            renderContent={renderPnlTooltipContent}
+          />
         </TableCell>
         <TableCell>
-          {shouldRenderValue ? (
-            <TooltipWithPortal
-              handle={
-                <span className={getSignedValueClassName(account.pnlPercentage)}>
-                  {formatDelta(account.pnlPercentage, { signed: true, postfix: "%", decimals: 2 })}
-                </span>
-              }
-              position={index > 7 ? "top" : "bottom"}
-              className="nowrap"
-              renderContent={() => (
-                <StatsTooltipRow
-                  label={t`Capital Used`}
-                  showDollar={false}
-                  value={<span>{formatUsd(account.maxCapital)}</span>}
-                />
-              )}
-            />
-          ) : (
-            "-"
-          )}
+          <TooltipWithPortal
+            handle={
+              <span className={getSignedValueClassName(account.pnlPercentage)}>
+                {formatDelta(account.pnlPercentage, { signed: true, postfix: "%", decimals: 2 })}
+              </span>
+            }
+            position={index > 7 ? "top" : "bottom"}
+            className="nowrap"
+            renderContent={() => (
+              <StatsTooltipRow
+                label={t`Capital Used`}
+                showDollar={false}
+                value={<span>{formatUsd(account.maxCapital)}</span>}
+              />
+            )}
+          />
         </TableCell>
-        <TableCell>{shouldRenderValue ? formatUsd(account.averageSize) || "-" : "-"}</TableCell>
-        <TableCell>{shouldRenderValue ? `${formatAmount(account.averageLeverage, 4, 2)}x` : "-"}</TableCell>
+        <TableCell>{formatUsd(account.averageSize ?? 0n)}</TableCell>
+        <TableCell>{`${formatAmount(account.averageLeverage ?? 0n, 4, 2)}x`}</TableCell>
         <TableCell className="text-right">
-          {shouldRenderValue ? (
-            <TooltipWithPortal
-              handle={`${account.wins}/${account.losses}`}
-              renderContent={renderWinsLossesTooltipContent}
-            />
-          ) : (
-            "-"
-          )}
+          <TooltipWithPortal
+            handle={`${account.wins}/${account.losses}`}
+            renderContent={renderWinsLossesTooltipContent}
+          />
         </TableCell>
       </tr>
     );
