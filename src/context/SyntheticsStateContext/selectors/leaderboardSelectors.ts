@@ -7,37 +7,25 @@ import { selectAccount, selectMarketsInfoData, selectTokensData } from "./global
 
 const BASIS_POINTS_DIVISOR = 10000n;
 
-export function selectLeaderboardAccountBases(s: SyntheticsTradeState) {
-  return s.leaderboard.accounts;
-}
-export function selectLeaderboardPositionBases(s: SyntheticsTradeState) {
-  return s.leaderboard.positions;
-}
+export const selectLeaderboardAccountBases = (s: SyntheticsTradeState) => s.leaderboard.accounts;
 
-export function selectLeaderboardTimeframeType(s: SyntheticsTradeState) {
-  return s.leaderboard.leaderboardTimeframeType;
-}
-export function selectLeaderboardSetTimeframeType(s: SyntheticsTradeState) {
-  return s.leaderboard.setLeaderboardTimeframeType;
-}
+export const selectLeaderboardPositionBases = (s: SyntheticsTradeState) => s.leaderboard.positions;
 
-export function selectLeaderboardDataType(s: SyntheticsTradeState) {
-  return s.leaderboard.leaderboardDataType;
-}
+export const selectLeaderboardTimeframeType = (s: SyntheticsTradeState) => s.leaderboard.leaderboardTimeframeType;
 
-export function selectLeaderboardSetDataType(s: SyntheticsTradeState) {
-  return s.leaderboard.setLeaderboardDataType;
-}
+export const selectLeaderboardSetTimeframeType = (s: SyntheticsTradeState) => s.leaderboard.setLeaderboardTimeframeType;
 
-export function selectLeaderboardTimeframe(s: SyntheticsTradeState) {
-  return s.leaderboard.timeframe;
-}
-export function selectLeaderboardIsEndInFuture(s: SyntheticsTradeState) {
-  return s.leaderboard.isEndInFuture;
-}
-export function selectLeaderboardIsStartInFuture(s: SyntheticsTradeState) {
-  return s.leaderboard.isStartInFuture;
-}
+export const selectLeaderboardDataType = (s: SyntheticsTradeState) => s.leaderboard.leaderboardDataType;
+
+export const selectLeaderboardSetDataType = (s: SyntheticsTradeState) => s.leaderboard.setLeaderboardDataType;
+
+export const selectLeaderboardTimeframe = (s: SyntheticsTradeState) => s.leaderboard.timeframe;
+
+export const selectLeaderboardIsEndInFuture = (s: SyntheticsTradeState) => s.leaderboard.isEndInFuture;
+
+export const selectLeaderboardIsStartInFuture = (s: SyntheticsTradeState) => s.leaderboard.isStartInFuture;
+
+export const selectLeaderboardIsLoading = (s: SyntheticsTradeState) => s.leaderboard.isLoading;
 
 export const selectLeaderboardIsCompetition = createEnhancedSelector(function selectLeaderboardIsCompetition(q) {
   const pageKey = q((s) => s.leaderboard.leaderboardPageKey);

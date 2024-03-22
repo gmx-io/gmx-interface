@@ -27,6 +27,8 @@ import { CompetitionPrizes } from "./CompetitionPrizes";
 import { LeaderboardAccountsTable } from "./LeaderboardAccountsTable";
 import { LeaderboardNavigation } from "./LeaderboardNavigation";
 import { LeaderboardPositionsTable } from "./LeaderboardPositionsTable";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { selectLeaderboardIsLoading } from "context/SyntheticsStateContext/selectors/leaderboardSelectors";
 
 const competitionsTabs = [0, 1];
 const leaderboardTimeframeTabs = [0, 1, 2];
@@ -242,8 +244,7 @@ function Table({ activeCompetition }: { activeCompetition: CompetitionType | und
 
 function AccountsTable({ activeCompetition }: { activeCompetition: CompetitionType | undefined }) {
   const accounts = useLeaderboardRankedAccounts();
-  // FIXME isLoading
-  const isLoading = !accounts;
+  const isLoading = useSelector(selectLeaderboardIsLoading);
   const accountsStruct = useMemo(
     () => ({
       isLoading,
@@ -259,7 +260,7 @@ function AccountsTable({ activeCompetition }: { activeCompetition: CompetitionTy
 
 function PositionsTable() {
   const positions = useLeaderboardPositions();
-  const isLoading = !positions;
+  const isLoading = useSelector(selectLeaderboardIsLoading);
   const positionsStruct = useMemo(
     () => ({
       isLoading,

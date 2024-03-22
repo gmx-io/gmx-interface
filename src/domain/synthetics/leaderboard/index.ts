@@ -252,8 +252,18 @@ export function useLeaderboardData(
     leaderboardDataType: LeaderboardDataType | undefined;
   }
 ) {
-  const { data, error } = useSWR(
-    enabled ? ["leaderboard/useLeaderboardData", chainId, p.account, p.from, p.to, p.positionsSnapshotTimestamp] : null,
+  const { data, error, isLoading } = useSWR(
+    enabled
+      ? [
+          "leaderboard/useLeaderboardData",
+          chainId,
+          p.account,
+          p.from,
+          p.to,
+          p.positionsSnapshotTimestamp,
+          p.leaderboardDataType,
+        ]
+      : null,
     async () => {
       const [accounts, positions] = await Promise.all([
         p.leaderboardDataType === "positions" ? Promise.resolve([]) : fetchAccounts(chainId, p),
@@ -270,7 +280,7 @@ export function useLeaderboardData(
     }
   );
 
-  return { data, error };
+  return { data, error, isLoading };
 }
 
 const fetchPositions = async (

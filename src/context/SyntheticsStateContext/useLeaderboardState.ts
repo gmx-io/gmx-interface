@@ -31,7 +31,11 @@ export const useLeaderboardState = (account: string | undefined, enabled: boolea
   }, [leaderboardPageKey]);
   const chainId = competitionChainId ?? activeChainId;
 
-  const { data, error: leaderboardDataError } = useLeaderboardData(enabled, chainId, {
+  const {
+    data,
+    error: leaderboardDataError,
+    isLoading,
+  } = useLeaderboardData(enabled, chainId, {
     account,
     from: timeframe.from,
     to: timeframe.to,
@@ -53,18 +57,20 @@ export const useLeaderboardState = (account: string | undefined, enabled: boolea
       timeframe,
       leaderboardPageKey,
       chainId,
+      isLoading,
     }),
     [
-      chainId,
       data?.accounts,
       data?.positions,
-      isEndInFuture,
-      isStartInFuture,
       leaderboardDataError,
-      leaderboardPageKey,
       leaderboardTimeframeType,
       leaderboardDataType,
+      isStartInFuture,
+      isEndInFuture,
       timeframe,
+      leaderboardPageKey,
+      chainId,
+      isLoading,
     ]
   );
 };
