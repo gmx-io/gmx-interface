@@ -1,15 +1,20 @@
 import { getServerUrl } from "config/backend";
 import { getTokenBySymbol, getWrappedToken } from "config/tokens";
-import { getChainlinkChartPricesFromGraph, getChartPricesFromStats, timezoneOffset } from "domain/prices";
+import { getChainlinkChartPricesFromGraph, getChartPricesFromStats, TIMEZONE_OFFSET_SEC } from "domain/prices";
 
 import { CHART_PERIODS } from "lib/legacy";
+import { Bar, FromOldToNewArray } from "./types";
 
-function getCurrentBarTimestamp(periodSeconds) {
+function getCurrentBarTimestamp(periodSeconds: number) {
   return Math.floor(Date.now() / (periodSeconds * 1000)) * (periodSeconds * 1000);
 }
 
-export const getTokenChartPrice = async (chainId: number, symbol: string, period: string) => {
-  let prices;
+export const getTokenChartPrice = async (
+  chainId: number,
+  symbol: string,
+  period: string
+): Promise<FromOldToNewArray<Bar>> => {
+  let prices: FromOldToNewArray<Bar> = [];
   try {
     prices = await getChartPricesFromStats(chainId, symbol, period);
   } catch (ex) {
@@ -26,7 +31,7 @@ export const getTokenChartPrice = async (chainId: number, symbol: string, period
   return prices;
 };
 
-export async function getCurrentPriceOfToken(chainId: number, symbol: string) {
+export async function getCurrentPriceOfToken(chainId: number, symbol: string): Promise<number | undefined> {
   try {
     const indexPricesUrl = getServerUrl(chainId, "/prices");
     const response = await fetch(indexPricesUrl);
@@ -46,10 +51,10 @@ export async function getCurrentPriceOfToken(chainId: number, symbol: string) {
   }
 }
 
-export function fillBarGaps(prices, periodSeconds) {
+export function fillBarGaps(prices: FromOldToNewArray<Bar>, periodSeconds: number): FromOldToNewArray<Bar> {
   if (prices.length < 2) return prices;
 
-  const lastChartPeriod = getCurrentBarTimestamp(periodSeconds) / 1000 + timezoneOffset;
+  const lastChartPeriod = getCurrentBarTimestamp(periodSeconds) / 1000 + TIMEZONE_OFFSET_SEC;
   let lastBar = prices[prices.length - 1];
 
   if (lastBar.time !== lastChartPeriod) {
@@ -67,15 +72,18 @@ export function fillBarGaps(prices, periodSeconds) {
     const { time, open } = prices[i];
     if (prevTime) {
       const numBarsToFill = Math.floor((time - prevTime) / periodSeconds) - 1;
-      for (let j = numBarsToFill; j > 0; j--) {
-        const newBar = {
-          time: time - j * periodSeconds,
-          open,
-          close: open,
-          high: open * 1.0003,
-          low: open * 0.9996,
-        };
-        newPrices.push(newBar);
+
+      if (numBarsToFill >= 1) {
+        for (let j = numBarsToFill; j > 0; j--) {
+          const newBar = {
+            time: time - j * periodSeconds,
+            open,
+            close: open,
+            high: open * 1.0003,
+            low: open * 0.9996,
+          };
+          newPrices.push(newBar);
+        }
       }
     }
     prevTime = time;
@@ -85,7 +93,7 @@ export function fillBarGaps(prices, periodSeconds) {
   return newPrices;
 }
 
-export function getStableCoinPrice(period: string, from: number, to: number) {
+export function getStableCoinPrice(period: string, from: number, to: number): FromOldToNewArray<Bar> {
   const periodSeconds = CHART_PERIODS[period];
   const fromCandle = Math.floor(from / periodSeconds) * periodSeconds;
   const toCandle = Math.floor(to / periodSeconds) * periodSeconds;
@@ -101,5 +109,5 @@ export function getStableCoinPrice(period: string, from: number, to: number) {
   }
   return priceData
     .filter((candle) => candle.time >= from && candle.time <= to)
-    .map((bar) => ({ ...bar, time: bar.time + timezoneOffset }));
+    .map((bar) => ({ ...bar, time: bar.time + TIMEZONE_OFFSET_SEC }));
 }

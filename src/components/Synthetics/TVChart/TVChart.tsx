@@ -165,7 +165,9 @@ export function TVChart({
   }
 
   useEffect(() => {
-    setDataProvider(new SyntheticsTVDataProvider({ resolutions: SUPPORTED_RESOLUTIONS_V2, oracleKeeperFetcher }));
+    setDataProvider(
+      new SyntheticsTVDataProvider({ resolutions: SUPPORTED_RESOLUTIONS_V2, oracleFetcher: oracleKeeperFetcher })
+    );
   }, [oracleKeeperFetcher]);
 
   useEffect(

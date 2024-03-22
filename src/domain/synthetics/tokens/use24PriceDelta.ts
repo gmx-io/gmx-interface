@@ -5,7 +5,7 @@ import { useOracleKeeperFetcher } from "./useOracleKeeperFetcher";
 export function use24hPriceDelta(chainId: number, tokenSymbol?: string) {
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
 
-  const { data } = useSWR([chainId, oracleKeeperFetcher.oracleKeeperUrl, "use24PriceDelta"], {
+  const { data } = useSWR([chainId, oracleKeeperFetcher.url, "use24PriceDelta"], {
     fetcher: () => oracleKeeperFetcher.fetch24hPrices(),
   });
 
