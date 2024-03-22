@@ -9,6 +9,7 @@ import TradesHistorySkeletonStructure from "./TradesHistorySkeletonStructure";
 
 import "react-loading-skeleton/dist/skeleton.css";
 import "./Skeleton.scss";
+import { LeaderboardTopPositionsStructure } from "./LeaderboardTopPositionsStructure";
 
 type Props = {
   count?: number;
@@ -39,6 +40,10 @@ export function GMListSkeleton(props: SkeletonProps<typeof GMListSkeletonStructu
 
 export function TopAccountsSkeleton(props) {
   return <TableListSkeleton {...props} Structure={LeaderboardTopAccountsStructure} />;
+}
+
+export function TopPositionsSkeleton(props) {
+  return <TableListSkeleton {...props} Structure={LeaderboardTopPositionsStructure} />;
 }
 
 export function TradesHistorySkeleton(props: SkeletonProps<typeof TradesHistorySkeletonStructure>) {

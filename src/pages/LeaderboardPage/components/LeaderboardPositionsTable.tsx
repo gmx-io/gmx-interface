@@ -8,7 +8,7 @@ import { useDebounce } from "lib/useDebounce";
 import { ReactNode, memo, useCallback, useEffect, useMemo, useState } from "react";
 
 import SearchInput from "components/SearchInput/SearchInput";
-import { TopAccountsSkeleton } from "components/Skeleton/Skeleton";
+import { TopPositionsSkeleton } from "components/Skeleton/Skeleton";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -36,13 +36,7 @@ function getWinnerRankClassname(rank: number | null) {
 
 type LeaderboardPositionField = keyof LeaderboardPosition;
 
-export function LeaderboardPositionsTable({
-  positions,
-  skeletonCount = 15,
-}: {
-  positions: RemoteData<LeaderboardPosition>;
-  skeletonCount?: number;
-}) {
+export function LeaderboardPositionsTable({ positions }: { positions: RemoteData<LeaderboardPosition> }) {
   const perPage = 20;
   const { isLoading, data } = positions;
   const [page, setPage] = useState(1);
@@ -108,7 +102,7 @@ export function LeaderboardPositionsTable({
   );
 
   const content = isLoading ? (
-    <TopAccountsSkeleton count={skeletonCount} />
+    <TopPositionsSkeleton count={perPage} />
   ) : (
     <>
       {rowsData.length ? (
@@ -176,7 +170,7 @@ export function LeaderboardPositionsTable({
                 width={10}
                 onClick={handleColumnClick}
                 columnName="leverage"
-                className={cx("text-right", getSortableClass("leverage"))}
+                className={getSortableClass("leverage")}
               />
               <TableHeaderCell
                 title={t`Liq. Price`}
@@ -346,7 +340,7 @@ const TableRow = memo(
         <TableCell>{formatUsd(position.entryPrice)}</TableCell>
         <TableCell>{formatUsd(position.sizeInUsd)}</TableCell>
         <TableCell>{`${formatAmount(position.leverage, 4, 2)}x`}</TableCell>
-        <TableCell>{liquidationPrice ? formatUsd(liquidationPrice) : "-"}</TableCell>
+        <TableCell className="text-right">{liquidationPrice ? formatUsd(liquidationPrice) : "-"}</TableCell>
       </tr>
     );
   }

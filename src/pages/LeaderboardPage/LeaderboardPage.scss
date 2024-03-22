@@ -525,6 +525,9 @@ table.Table.Exchange-list th {
   text-transform: uppercase;
   font-size: var(--font-base);
 }
+.TableHeader.text-right .TableHeaderTitle {
+  justify-content: flex-end;
+}
 
 .TableHeader.sortable .TableHeaderTitle,
 .TableHeader.sorted-asc .TableHeaderTitle,

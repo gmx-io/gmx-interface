@@ -42,12 +42,10 @@ export function LeaderboardAccountsTable({
   accounts,
   activeCompetition,
   sortingEnabled = true,
-  skeletonCount = 15,
 }: {
   accounts: RemoteData<LeaderboardAccount>;
   activeCompetition: CompetitionType | undefined;
   sortingEnabled?: boolean;
-  skeletonCount?: number;
 }) {
   const currentAccount = useLeaderboardCurrentAccount();
   const perPage = 20;
@@ -152,7 +150,7 @@ export function LeaderboardAccountsTable({
   );
 
   const content = isLoading ? (
-    <TopAccountsSkeleton count={skeletonCount} />
+    <TopAccountsSkeleton count={perPage} />
   ) : (
     <>
       {pinnedRowData && (
