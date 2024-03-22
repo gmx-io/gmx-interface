@@ -1237,11 +1237,7 @@ export function ConfirmationBox(p: Props) {
           <ExchangeInfoRow
             className="SwapBox-info-row"
             label={t`Acceptable Price`}
-            value={
-              formatAcceptablePrice(acceptablePrice, {
-                displayDecimals: toTokenPriceDecimals,
-              }) || "-"
-            }
+            value={formatAcceptablePrice(acceptablePrice) || "-"}
           />
 
           <ExchangeInfoRow
@@ -1259,18 +1255,8 @@ export function ConfirmationBox(p: Props) {
             label={t`Liq. Price`}
             value={
               <ValueTransition
-                from={
-                  p.existingPosition
-                    ? formatLiquidationPrice(p.existingPosition?.liquidationPrice, {
-                        displayDecimals: existingPriceDecimals,
-                      })
-                    : undefined
-                }
-                to={
-                  formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
-                    displayDecimals: toTokenPriceDecimals,
-                  }) || "-"
-                }
+                from={p.existingPosition ? formatLiquidationPrice(p.existingPosition?.liquidationPrice) : undefined}
+                to={formatLiquidationPrice(nextPositionValues?.nextLiqPrice) || "-"}
               />
             }
           />
@@ -1538,11 +1524,7 @@ export function ConfirmationBox(p: Props) {
               <ExchangeInfoRow
                 className="SwapBox-info-row"
                 label={t`Acceptable Price`}
-                value={
-                  formatAcceptablePrice(decreaseAmounts?.acceptablePrice, {
-                    displayDecimals: toTokenPriceDecimals,
-                  }) || "-"
-                }
+                value={formatAcceptablePrice(decreaseAmounts?.acceptablePrice) || "-"}
               />
             </>
           )}

@@ -1155,18 +1155,10 @@ export function TradeBox(p: Props) {
           label={t`Liq. Price`}
           value={
             <ValueTransition
-              from={
-                selectedPosition
-                  ? formatLiquidationPrice(selectedPosition?.liquidationPrice, {
-                      displayDecimals: selectedPosition?.indexToken?.priceDecimals,
-                    })
-                  : undefined
-              }
+              from={selectedPosition ? formatLiquidationPrice(selectedPosition?.liquidationPrice) : undefined}
               to={
                 increaseAmounts?.sizeDeltaUsd.gt(0)
-                  ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
-                      displayDecimals: toToken?.priceDecimals,
-                    })
+                  ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice)
                   : selectedPosition
                   ? undefined
                   : "-"
@@ -1223,20 +1215,12 @@ export function TradeBox(p: Props) {
             label={t`Liq. Price`}
             value={
               <ValueTransition
-                from={
-                  selectedPosition
-                    ? formatLiquidationPrice(selectedPosition?.liquidationPrice, {
-                        displayDecimals: selectedPosition?.indexToken?.priceDecimals,
-                      })
-                    : undefined
-                }
+                from={selectedPosition ? formatLiquidationPrice(selectedPosition?.liquidationPrice) : undefined}
                 to={
                   decreaseAmounts?.isFullClose
                     ? "-"
                     : decreaseAmounts?.sizeDeltaUsd.gt(0)
-                    ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
-                        displayDecimals: toToken?.priceDecimals,
-                      })
+                    ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice)
                     : undefined
                 }
               />

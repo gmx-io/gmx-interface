@@ -559,9 +559,7 @@ export function PositionSeller(p: Props) {
   if (isStopLoss) {
     acceptablePriceValue = t`NA`;
   } else if (decreaseAmounts?.sizeDeltaUsd.gt(0)) {
-    acceptablePriceValue = formatAcceptablePrice(acceptablePrice, {
-      displayDecimals: indexPriceDecimals,
-    });
+    acceptablePriceValue = formatAcceptablePrice(acceptablePrice);
   } else {
     acceptablePriceValue = "-";
   }
@@ -574,18 +572,12 @@ export function PositionSeller(p: Props) {
       label={t`Liq. Price`}
       value={
         <ValueTransition
-          from={
-            formatLiquidationPrice(position.liquidationPrice, {
-              displayDecimals: indexPriceDecimals,
-            })!
-          }
+          from={formatLiquidationPrice(position.liquidationPrice)!}
           to={
             decreaseAmounts?.isFullClose
               ? "-"
               : decreaseAmounts?.sizeDeltaUsd.gt(0)
-              ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
-                  displayDecimals: indexPriceDecimals,
-                })
+              ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice)
               : undefined
           }
         />

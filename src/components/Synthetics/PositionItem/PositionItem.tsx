@@ -317,7 +317,7 @@ export function PositionItem(p: Props) {
     if (liqPriceWarning || estimatedLiquidationHours) {
       return (
         <Tooltip
-          handle={formatLiquidationPrice(p.position.liquidationPrice, { displayDecimals: indexPriceDecimals }) || "..."}
+          handle={formatLiquidationPrice(p.position.liquidationPrice) || "..."}
           position="bottom-end"
           handleClassName={cx("plain", {
             "LiqPrice-soft-warning": estimatedLiquidationHours && estimatedLiquidationHours < 24 * 7,
@@ -328,7 +328,7 @@ export function PositionItem(p: Props) {
       );
     }
 
-    return formatLiquidationPrice(p.position.liquidationPrice, { displayDecimals: indexPriceDecimals }) || "...";
+    return formatLiquidationPrice(p.position.liquidationPrice) || "...";
   }
 
   function renderOrderText(order: PositionOrderInfo) {
