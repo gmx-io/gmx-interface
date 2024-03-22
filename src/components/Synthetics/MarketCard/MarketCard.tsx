@@ -23,6 +23,7 @@ import { useCallback, useMemo } from "react";
 import MarketNetFee from "../MarketNetFee/MarketNetFee";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { DOCS_LINKS } from "config/links";
+import { useTestGas } from "domain/synthetics/fees/useTestGas";
 
 export type Props = {
   marketInfo?: MarketInfo;
@@ -32,6 +33,7 @@ export type Props = {
 
 export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
   const { indexToken } = marketInfo || {};
+  const feeData = useTestGas();
 
   const entryPrice = isLong ? indexToken?.prices?.maxPrice : indexToken?.prices?.minPrice;
   const exitPrice = isLong ? indexToken?.prices?.minPrice : indexToken?.prices?.maxPrice;
@@ -122,6 +124,13 @@ export function MarketCard({ marketInfo, allowedSlippage, isLong }: Props) {
             </div>
           }
         />
+        <ExchangeInfoRow label={t`Provider Gas Price`} value={feeData?.providerGasPrice?.toString()} />
+        <ExchangeInfoRow
+          label={t`Provider Fee Data Gas Price`}
+          value={feeData?.providerGasFeeData?.gasPrice?.toString()}
+        />
+        <ExchangeInfoRow label={t`RPC Gas Price`} value={feeData?.rpcGasPrice?.toString()} />
+        <ExchangeInfoRow label={t`RPC Fee Data Gas Price`} value={feeData?.rpcGasFeeData?.gasPrice?.toString()} />
         <ExchangeInfoRow
           label={t`Entry Price`}
           value={
