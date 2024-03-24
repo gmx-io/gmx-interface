@@ -21,7 +21,7 @@ import { MarketListSkeleton } from "components/Skeleton/Skeleton";
 import { DOCS_LINKS } from "config/links";
 import MarketNetFee from "../MarketNetFee/MarketNetFee";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { getTokenPriceDecimals } from "config/tokens";
+import { formatUsdPrice } from "domain/synthetics/positions";
 
 export function MarketsList() {
   const { chainId } = useChainId();
@@ -225,11 +225,7 @@ export function MarketsList() {
                           </div>
                         </div>
                       </td>
-                      <td>
-                        {formatUsd(stats.token.prices?.minPrice, {
-                          displayDecimals: getTokenPriceDecimals(stats.token.prices?.minPrice),
-                        })}
-                      </td>
+                      <td>{formatUsdPrice(stats.token.prices?.minPrice)}</td>
                       <td>
                         <Tooltip
                           className="nowrap"

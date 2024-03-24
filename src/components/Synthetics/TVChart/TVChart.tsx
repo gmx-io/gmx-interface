@@ -2,10 +2,16 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChartContainer";
 import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
-import { convertTokenAddress, getPriceDecimals, getToken, isChartAvailabeForToken } from "config/tokens";
+import {
+  calculatePricePrecision,
+  convertTokenAddress,
+  getPriceDecimals,
+  getToken,
+  isChartAvailabeForToken,
+} from "config/tokens";
 import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { OrdersInfoData, PositionOrderInfo, isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
-import { PositionsInfoData } from "domain/synthetics/positions";
+import { PositionsInfoData, formatUsdPrice } from "domain/synthetics/positions";
 import { TokensData, getTokenData } from "domain/synthetics/tokens";
 import { use24hPriceDelta } from "domain/synthetics/tokens/use24PriceDelta";
 import { useOracleKeeperFetcher } from "domain/synthetics/tokens/useOracleKeeperFetcher";
@@ -14,7 +20,7 @@ import { Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatAmount, formatUsd, numberWithCommas } from "lib/numbers";
+import { formatAmount, numberWithCommas } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 import "./TVChart.scss";
 import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
@@ -206,16 +212,8 @@ export function TVChart({
               positionsInfo={positionsInfo}
             />
             <div className="Chart-min-max-price">
-              <div className="ExchangeChart-main-price">
-                {formatUsd(chartToken?.prices?.maxPrice, {
-                  displayDecimals: chartToken?.priceDecimals,
-                }) || "..."}
-              </div>
-              <div className="ExchangeChart-info-label">
-                {formatUsd(chartToken?.prices?.minPrice, {
-                  displayDecimals: chartToken?.priceDecimals,
-                }) || "..."}
-              </div>
+              <div className="ExchangeChart-main-price">{formatUsdPrice(chartToken?.prices?.maxPrice) || "..."}</div>
+              <div className="ExchangeChart-info-label">{formatUsdPrice(chartToken?.prices?.minPrice) || "..."}</div>
             </div>
 
             <div className="Chart-24h-change">
@@ -233,7 +231,7 @@ export function TVChart({
               <div className="ExchangeChart-info-label">24h High</div>
               <div>
                 {dayPriceDelta?.high
-                  ? numberWithCommas(dayPriceDelta.high.toFixed(chartToken?.priceDecimals || 2))
+                  ? numberWithCommas(dayPriceDelta.high.toFixed(calculatePricePrecision(dayPriceDelta.high, 0)))
                   : "-"}
               </div>
             </div>
@@ -241,7 +239,7 @@ export function TVChart({
               <div className="ExchangeChart-info-label">24h Low</div>
               <div>
                 {dayPriceDelta?.low
-                  ? numberWithCommas(dayPriceDelta?.low.toFixed(chartToken?.priceDecimals || 2))
+                  ? numberWithCommas(dayPriceDelta?.low.toFixed(calculatePricePrecision(dayPriceDelta.low, 0)))
                   : "-"}
               </div>
             </div>

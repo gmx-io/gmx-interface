@@ -10,7 +10,7 @@ import { TokenData, convertToUsd } from "../tokens";
 import { PositionInfo } from "./types";
 import { OrderType } from "../orders/types";
 import { t } from "@lingui/macro";
-import { getTokenPriceDecimals } from "config/tokens";
+import { calculatePricePrecision } from "config/tokens";
 
 export function getPositionKey(account: string, marketAddress: string, collateralAddress: string, isLong: boolean) {
   return `${account}:${marketAddress}:${collateralAddress}:${isLong}`;
@@ -221,7 +221,7 @@ export function formatLiquidationPrice(liquidationPrice?: BigNumber, opts: { dis
   if (!liquidationPrice || liquidationPrice.lte(0)) {
     return "NA";
   }
-  const priceDecimalPlaces = getTokenPriceDecimals(liquidationPrice);
+  const priceDecimalPlaces = calculatePricePrecision(liquidationPrice);
 
   return formatUsd(liquidationPrice, {
     ...opts,
@@ -235,9 +235,21 @@ export function formatAcceptablePrice(acceptablePrice?: BigNumber, opts: { displ
     return "NA";
   }
 
-  const priceDecimalPlaces = getTokenPriceDecimals(acceptablePrice);
+  const priceDecimalPlaces = calculatePricePrecision(acceptablePrice);
 
   return formatUsd(acceptablePrice, { ...opts, displayDecimals: opts.displayDecimals ?? priceDecimalPlaces });
+}
+
+export function formatUsdPrice(price?: BigNumber, opts: { displayDecimals?: number } = {}) {
+  if (!price || price.lte(0)) {
+    return;
+  }
+  const priceDecimalPlaces = calculatePricePrecision(price);
+
+  return formatUsd(price, {
+    ...opts,
+    displayDecimals: opts.displayDecimals ?? priceDecimalPlaces,
+  });
 }
 
 export function getLeverage(p: {

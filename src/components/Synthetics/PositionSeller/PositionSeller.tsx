@@ -41,6 +41,7 @@ import {
   formatAcceptablePrice,
   formatLeverage,
   formatLiquidationPrice,
+  formatUsdPrice,
   getTriggerNameByOrderType,
 } from "domain/synthetics/positions";
 import { TokensData } from "domain/synthetics/tokens";
@@ -500,42 +501,19 @@ export function PositionSeller(p: Props) {
     }
   }, [decreaseAmounts, defaultTriggerAcceptablePriceImpactBps, isTrigger]);
 
-  const indexPriceDecimals = position?.indexToken?.priceDecimals;
   const toToken = position?.indexToken;
 
   const triggerPriceRow = (
     <ExchangeInfoRow
       className="SwapBox-info-row"
       label={t`Trigger Price`}
-      value={`${decreaseAmounts?.triggerThresholdType || ""} ${
-        formatUsd(decreaseAmounts?.triggerPrice, {
-          displayDecimals: toToken?.priceDecimals,
-        }) || "-"
-      }`}
+      value={`${decreaseAmounts?.triggerThresholdType || ""} ${formatUsdPrice(decreaseAmounts?.triggerPrice) || "-"}`}
     />
   );
 
-  const markPriceRow = (
-    <ExchangeInfoRow
-      label={t`Mark Price`}
-      value={
-        formatUsd(markPrice, {
-          displayDecimals: indexPriceDecimals,
-        }) || "-"
-      }
-    />
-  );
+  const markPriceRow = <ExchangeInfoRow label={t`Mark Price`} value={formatUsdPrice(markPrice) || "-"} />;
 
-  const entryPriceRow = (
-    <ExchangeInfoRow
-      label={t`Entry Price`}
-      value={
-        formatUsd(position?.entryPrice, {
-          displayDecimals: indexPriceDecimals,
-        }) || "-"
-      }
-    />
-  );
+  const entryPriceRow = <ExchangeInfoRow label={t`Entry Price`} value={formatUsdPrice(position?.entryPrice) || "-"} />;
 
   const isStopLoss = decreaseAmounts?.triggerOrderType === OrderType.StopLossDecrease;
 

@@ -14,6 +14,7 @@ import {
   formatEstimatedLiquidationTime,
   formatLeverage,
   formatLiquidationPrice,
+  formatUsdPrice,
   getEstimatedLiquidationTimeInHours,
   getTriggerNameByOrderType,
 } from "domain/synthetics/positions";
@@ -65,7 +66,6 @@ export function PositionItem(p: Props) {
   const displayedPnl = savedShowPnlAfterFees ? p.position.pnlAfterFees : p.position.pnl;
   const displayedPnlPercentage = savedShowPnlAfterFees ? p.position.pnlAfterFeesPercentage : p.position.pnlPercentage;
   const isMobile = useMedia("(max-width: 1100px)");
-  const indexPriceDecimals = p.position?.indexToken?.priceDecimals;
   const { minCollateralUsd } = usePositionsConstants();
   const isCurrentTradeTypeLong = currentTradeType === TradeType.Long;
   const isCurrentMarket =
@@ -560,17 +560,11 @@ export function PositionItem(p: Props) {
         </td>
         <td>
           {/* entryPrice */}
-          {p.position.isOpening
-            ? t`Opening...`
-            : formatUsd(p.position.entryPrice, {
-                displayDecimals: indexPriceDecimals,
-              })}
+          {p.position.isOpening ? t`Opening...` : formatUsdPrice(p.position.entryPrice)}
         </td>
         <td>
           {/* markPrice */}
-          {formatUsd(p.position.markPrice, {
-            displayDecimals: indexPriceDecimals,
-          })}
+          {formatUsdPrice(p.position.markPrice)}
         </td>
         <td>
           {/* liqPrice */}
@@ -698,21 +692,13 @@ export function PositionItem(p: Props) {
               <div className="label">
                 <Trans>Entry Price</Trans>
               </div>
-              <div>
-                {formatUsd(p.position.entryPrice, {
-                  displayDecimals: indexPriceDecimals,
-                })}
-              </div>
+              <div>{formatUsdPrice(p.position.entryPrice)}</div>
             </div>
             <div className="App-card-row">
               <div className="label">
                 <Trans>Mark Price</Trans>
               </div>
-              <div>
-                {formatUsd(p.position.markPrice, {
-                  displayDecimals: indexPriceDecimals,
-                })}
-              </div>
+              <div>{formatUsdPrice(p.position.markPrice)}</div>
             </div>
             <div className="App-card-row">
               <div className="label">

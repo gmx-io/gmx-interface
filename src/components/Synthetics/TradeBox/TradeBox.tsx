@@ -50,6 +50,7 @@ import { DecreasePositionSwapType } from "domain/synthetics/orders";
 import {
   formatLeverage,
   formatLiquidationPrice,
+  formatUsdPrice,
   getTriggerNameByOrderType,
   usePositionsConstantsRequest,
 } from "domain/synthetics/positions";
@@ -1135,17 +1136,11 @@ export function TradeBox(p: Props) {
           value={
             nextPositionValues?.nextEntryPrice || selectedPosition?.entryPrice ? (
               <ValueTransition
-                from={formatUsd(selectedPosition?.entryPrice, {
-                  displayDecimals: toToken?.priceDecimals,
-                })}
-                to={formatUsd(nextPositionValues?.nextEntryPrice, {
-                  displayDecimals: toToken?.priceDecimals,
-                })}
+                from={formatUsdPrice(selectedPosition?.entryPrice)}
+                to={formatUsdPrice(nextPositionValues?.nextEntryPrice)}
               />
             ) : (
-              formatUsd(markPrice, {
-                displayDecimals: toToken?.priceDecimals,
-              })
+              formatUsdPrice(markPrice)
             )
           }
         />
@@ -1191,22 +1186,14 @@ export function TradeBox(p: Props) {
           className="SwapBox-info-row"
           label={t`Trigger Price`}
           value={`${decreaseAmounts?.triggerThresholdType || ""} ${
-            formatUsd(decreaseAmounts?.triggerPrice, {
-              displayDecimals: toToken?.priceDecimals,
-            }) || "-"
+            formatUsdPrice(decreaseAmounts?.triggerPrice) || "-"
           }`}
         />
 
         <ExchangeInfoRow
           className="SwapBox-info-row"
           label={t`Execution Price`}
-          value={
-            executionPriceUsd
-              ? formatUsd(executionPriceUsd, {
-                  displayDecimals: toToken?.priceDecimals,
-                })
-              : "-"
-          }
+          value={executionPriceUsd ? formatUsdPrice(executionPriceUsd) : "-"}
         />
 
         {selectedPosition && (
