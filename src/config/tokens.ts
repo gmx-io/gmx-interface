@@ -1145,7 +1145,7 @@ export function isTokenInList(token: Token, tokenList: Token[]): boolean {
   return tokenList.some((t) => t.address === token.address);
 }
 
-export function calculatePricePrecision(price?: BigNumber, decimals = USD_DECIMALS) {
+export function calculatePriceDecimals(price?: BigNumber, decimals = USD_DECIMALS) {
   if (!price) return 2;
   const priceNumber = Number(price.toString()) / Math.pow(10, decimals);
 

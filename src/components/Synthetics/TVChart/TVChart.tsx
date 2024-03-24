@@ -3,7 +3,7 @@ import cx from "classnames";
 import TVChartContainer, { ChartLine } from "components/TVChartContainer/TVChartContainer";
 import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 import {
-  calculatePricePrecision,
+  calculatePriceDecimals,
   convertTokenAddress,
   getPriceDecimals,
   getToken,
@@ -231,7 +231,7 @@ export function TVChart({
               <div className="ExchangeChart-info-label">24h High</div>
               <div>
                 {dayPriceDelta?.high
-                  ? numberWithCommas(dayPriceDelta.high.toFixed(calculatePricePrecision(dayPriceDelta.high, 0)))
+                  ? numberWithCommas(dayPriceDelta.high.toFixed(calculatePriceDecimals(dayPriceDelta.high, 0)))
                   : "-"}
               </div>
             </div>
@@ -239,7 +239,7 @@ export function TVChart({
               <div className="ExchangeChart-info-label">24h Low</div>
               <div>
                 {dayPriceDelta?.low
-                  ? numberWithCommas(dayPriceDelta?.low.toFixed(calculatePricePrecision(dayPriceDelta.low, 0)))
+                  ? numberWithCommas(dayPriceDelta?.low.toFixed(calculatePriceDecimals(dayPriceDelta.low, 0)))
                   : "-"}
               </div>
             </div>
