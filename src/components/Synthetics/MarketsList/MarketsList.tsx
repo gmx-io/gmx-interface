@@ -301,7 +301,7 @@ export function MarketsList() {
                       <div className="label">
                         <Trans>Price</Trans>
                       </div>
-                      <div>{formatUsd(stats.token.prices?.minPrice)}</div>
+                      <div>{formatUsdPrice(stats.token.prices?.minPrice)}</div>
                     </div>
                     <div className="App-card-row">
                       <div className="label">
