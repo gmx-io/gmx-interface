@@ -488,7 +488,7 @@ export function ConfirmationBox(p: Props) {
       }
     },
     {},
-    [p.isVisible, submitButtonState.disabled]
+    [p.isVisible, submitButtonState.disabled, onSubmit]
   );
 
   const subaccountRequiredBalance =
@@ -697,6 +697,13 @@ export function ConfirmationBox(p: Props) {
       txnPromise = onSubmitIncreaseOrder();
     } else {
       txnPromise = onSubmitDecreaseOrder();
+    }
+
+    if (subaccount) {
+      onSubmitted();
+      setIsSubmitting(false);
+
+      return;
     }
 
     txnPromise
