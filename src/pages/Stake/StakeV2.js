@@ -1766,18 +1766,20 @@ export default function StakeV2({ setPendingTxns }) {
               <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v1">GLP</ExternalLink> to earn rewards.
             </Trans>
             {earnMsg && <div className="Page-description">{earnMsg}</div>}
-            <div>
-              <Trans>
-                Liquidity and trading incentives program is live on Arbitrum.{" "}
-                <ExternalLink
-                  newTab
-                  href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3"
-                >
-                  Read more
-                </ExternalLink>
-                .
-              </Trans>
-            </div>
+            {(incentiveStats?.lp?.isActive || incentiveStats?.trading?.isActive) && (
+              <div>
+                <Trans>
+                  Liquidity and trading incentives program is live on Arbitrum.{" "}
+                  <ExternalLink
+                    newTab
+                    href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3"
+                  >
+                    Read more
+                  </ExternalLink>
+                  .
+                </Trans>
+              </div>
+            )}
           </div>
         }
       />
