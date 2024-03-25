@@ -16,6 +16,7 @@ import { isHomeSite } from "lib/legacy";
 import { HomeHeaderLinks } from "./HomeHeaderLinks";
 import { Trans } from "@lingui/macro";
 import { HeaderPromoBanner } from "components/HeaderPromoBanner/HeaderPromoBanner";
+import { HeaderLink } from "./HeaderLink";
 
 // Fix framer-motion old React FC type (solved in react 18)
 const AnimatePresence = (props: React.ComponentProps<typeof FramerAnimatePresence> & { children: ReactNode }) => (
@@ -150,7 +151,15 @@ export function Header({
         <HeaderPromoBanner>
           <Trans>
             Trade&nbsp;on GMX&nbsp;V2 in&nbsp;Arbitrum and win&nbsp;280,000&nbsp;ARB ({">"} $500k) in prizes in{" "}
-            <Link to="/competitions/">two&nbsp;weekly</Link> competitions. Live&nbsp;from&nbsp;March 13th to 27th.
+            <HeaderLink
+              to="/competitions/"
+              redirectPopupTimestamp={redirectPopupTimestamp}
+              showRedirectModal={showRedirectModal}
+              className="underline inline-block clickable"
+            >
+              two&nbsp;weekly
+            </HeaderLink>{" "}
+            competitions. Live&nbsp;from&nbsp;March 13th to 27th.
           </Trans>
         </HeaderPromoBanner>
       </header>

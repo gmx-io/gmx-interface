@@ -1703,10 +1703,6 @@ msgid "Earn"
 msgstr "보상"
 
 #: src/pages/Stake/StakeV2.js
-#~ msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2."
-#~ msgstr ""
-
-#: src/pages/Stake/StakeV2.js
 msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2.<0/>Earn prizes by participating in GMX Trading Competitions."
 msgstr ""
 
@@ -2538,10 +2534,6 @@ msgstr "이미지 생성 에러. 새로고침 후 다시 시도해주세요."
 #: src/components/Synthetics/TVChart/TVChart.tsx
 msgid "Inc."
 msgstr "Inc."
-
-#: src/pages/Stake/StakeV2.js
-#~ msgid "Incentives"
-#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Incentives & Prizes"
@@ -5598,10 +5590,6 @@ msgid "This code is not yet registered on {0}, you will not receive rebates ther
 msgstr "해당 코드는 {0}에 아직 등록되지 않았기때문에, 소개 보수를 받을 수 없습니다.<0/><1/>네트워크를 변경후 해당 코드를 {1}상에서 생성하세요."
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-#~ msgid "This competition has ended"
-#~ msgstr ""
-
-#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "This competition has ended."
 msgstr ""
 
@@ -6792,15 +6780,6 @@ msgstr ""
 msgid "view"
 msgstr "보기"
 
-#: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
-#~ msgid "{0, plural, one {# Position} other {# Positions}}"
-#~ msgstr "{0}개의 포지션"
-
-#: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
-#: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
-#~ msgid "{0, plural, one {# Size} other {# Sizes}}"
-#~ msgstr "{0}개의 크기"
-
 #: src/pages/Exchange/Exchange.js
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
@@ -7014,10 +6993,6 @@ msgstr ""
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "{longShortText} {0} Reserve"
 msgstr ""
-
-#: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
-#~ msgid "{marketsCount, plural, one {# Market} other {# Markets} many {# Markets}}"
-#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
