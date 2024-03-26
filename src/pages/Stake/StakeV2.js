@@ -2666,24 +2666,24 @@ export default function StakeV2({ setPendingTxns }) {
           </div>
         </div>
       </div>
-      {Object.values(incentiveStats || {}).some((incentiveType) => incentiveType?.isActive) && (
-        <>
-          <div className="mt-sm">
-            <PageTitle
-              title={t`Incentives & Prizes`}
-              subtitle={
-                <Trans>
-                  Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX
-                  V2.
-                  <br />
-                  Earn prizes by participating in GMX Trading Competitions.
-                </Trans>
-              }
-            />
-          </div>
-          <UserIncentiveDistributionList />
-        </>
-      )}
+      <div className="mt-sm">
+        <PageTitle
+          title={t`Incentives & Prizes`}
+          subtitle={
+            incentiveStats?.lp?.isActive || incentiveStats?.trading?.isActive ? (
+              <Trans>
+                Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX
+                V2.
+                <br />
+                Earn prizes by participating in GMX Trading Competitions.
+              </Trans>
+            ) : (
+              <Trans>Earn prizes by participating in GMX Trading Competitions.</Trans>
+            )
+          }
+        />
+      </div>
+      <UserIncentiveDistributionList />
       <Footer />
     </div>
   );
