@@ -63,6 +63,7 @@ import { EMPTY_OBJECT } from "lib/objects";
 import { convertToUsd } from "domain/synthetics/tokens";
 import InteractivePieChart from "components/InteractivePieChart/InteractivePieChart";
 import { groupBy } from "lodash";
+import { formatUsdPrice } from "domain/synthetics/positions";
 
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
@@ -1012,7 +1013,7 @@ export default function DashboardV2(props) {
                                 </div>
                               </div>
                             </td>
-                            <td>${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}</td>
+                            <td>{formatUsdPrice(tokenInfo?.minPrice)}</td>
                             <td>
                               <TooltipComponent
                                 handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
