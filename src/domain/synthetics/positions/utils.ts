@@ -394,3 +394,13 @@ export function getMinCollateralFactorForPosition(position: PositionInfo, openIn
 
   return minCollateralFactor;
 }
+
+// 1% slippage
+export function substractMaxLeverageSlippage(number: BigNumber): BigNumber;
+export function substractMaxLeverageSlippage(number: number): number;
+export function substractMaxLeverageSlippage(number: BigNumber | number): BigNumber | number {
+  if (typeof number === "number") {
+    return Math.floor(number * 0.99);
+  }
+  return number.mul(99).div(100);
+}

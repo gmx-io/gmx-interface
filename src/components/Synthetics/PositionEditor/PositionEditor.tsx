@@ -38,6 +38,7 @@ import {
   formatLiquidationPrice,
   getLeverage,
   getLiquidationPrice,
+  substractMaxLeverageSlippage,
   willPositionCollateralBeSufficientForPosition,
 } from "domain/synthetics/positions";
 import { adaptToV1InfoTokens, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
@@ -375,7 +376,9 @@ export function PositionEditor(p: Props) {
         return { isValid, returnValue: null };
       }
     );
-    setCollateralInputValue(formatAmountFree(safeMaxWithdrawal, collateralToken.decimals));
+    setCollateralInputValue(
+      formatAmountFree(substractMaxLeverageSlippage(safeMaxWithdrawal), collateralToken.decimals)
+    );
   }, [collateralToken, maxWithdrawAmount, minCollateralFactor, position]);
 
   const errorTooltipContent = useMemo(() => {

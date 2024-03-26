@@ -60,6 +60,7 @@ import {
   formatLeverage,
   formatLiquidationPrice,
   getTriggerNameByOrderType,
+  substractMaxLeverageSlippage,
   usePositionsConstantsRequest,
 } from "domain/synthetics/positions";
 import { convertToUsd } from "domain/synthetics/tokens";
@@ -516,9 +517,12 @@ export function TradeBox(p: Props) {
     );
 
     if (isLeverageEnabled) {
-      setLeverageOption(maxLeverage);
+      setLeverageOption(substractMaxLeverageSlippage(maxLeverage));
     } else if (sizeDeltaInTokens) {
-      setToTokenInputValue(formatAmountFree(sizeDeltaInTokens, toToken.decimals, 8), true);
+      setToTokenInputValue(
+        formatAmountFree(substractMaxLeverageSlippage(sizeDeltaInTokens), toToken.decimals, 8),
+        true
+      );
     }
   }, [
     acceptablePriceImpactBuffer,

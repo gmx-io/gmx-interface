@@ -23,6 +23,7 @@ import {
   formatLiquidationPrice,
   getPositionKey,
   getTriggerNameByOrderType,
+  substractMaxLeverageSlippage,
 } from "domain/synthetics/positions";
 import {
   TokensRatio,
@@ -549,7 +550,7 @@ export function OrderEditor(p: Props) {
     );
 
     if (newSizeDeltaUsd) {
-      setSizeInputValue(formatAmountFree(newSizeDeltaUsd, USD_DECIMALS, 2));
+      setSizeInputValue(formatAmountFree(substractMaxLeverageSlippage(newSizeDeltaUsd), USD_DECIMALS, 2));
     }
   }
 
