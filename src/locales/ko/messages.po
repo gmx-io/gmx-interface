@@ -623,6 +623,7 @@ msgid "Balance"
 msgstr "잔고"
 
 #: src/components/AprInfo/AprInfo.tsx
+#: src/components/AprInfo/AprInfo.tsx
 msgid "Base APR"
 msgstr ""
 
@@ -1709,6 +1710,10 @@ msgstr ""
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "Earn an extra {0}% {nativeTokenSymbol} Boosted APR by increasing your staked <0>Multiplier Points</0>."
 msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Earn prizes by participating in GMX Trading Competitions."
+msgstr "GMX 거래 대회에 참여하여 상금을 획득하세요."
 
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Ecosystem"
