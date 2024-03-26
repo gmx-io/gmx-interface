@@ -517,7 +517,7 @@ export function TradeBox(p: Props) {
     );
 
     if (isLeverageEnabled) {
-      setLeverageOption(substractMaxLeverageSlippage(maxLeverage));
+      setLeverageOption(maxLeverage);
     } else if (sizeDeltaInTokens) {
       setToTokenInputValue(
         formatAmountFree(substractMaxLeverageSlippage(sizeDeltaInTokens), toToken.decimals, 8),
