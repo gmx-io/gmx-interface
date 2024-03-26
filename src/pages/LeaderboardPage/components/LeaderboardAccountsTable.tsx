@@ -388,7 +388,7 @@ const TableRow = memo(
             )}
           />
         </TableCell>
-        <TableCell>{formatUsd(account.averageSize ?? 0n)}</TableCell>
+        <TableCell>{account.averageSize ? formatUsd(account.averageSize) : "$0.00"}</TableCell>
         <TableCell>{`${formatAmount(account.averageLeverage ?? 0n, 4, 2)}x`}</TableCell>
         <TableCell className="text-right">
           <TooltipWithPortal
