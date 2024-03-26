@@ -35,22 +35,13 @@ export const selectPositionSellerPosition = createEnhancedSelector((q) => {
 
 export const selectPositionSellerNextPositionValuesForDecrease = createEnhancedSelector((q) => {
   const decreaseAmountArgs = q(selectPositionSellerDecreaseAmountArgs);
-  const keepLeverage = q(selectPositionSellerKeepLeverageRaw);
+  const keepLeverageRaw = q(selectPositionSellerKeepLeverageRaw);
+  const keepLeverageDisabledByCollateral = q(selectPositionSellerLeverageDisabledByCollateral);
+  const keepLeverage = keepLeverageDisabledByCollateral ? false : keepLeverageRaw;
 
   if (!decreaseAmountArgs) return undefined;
 
   const selector = makeSelectNextPositionValuesForDecrease({ ...decreaseAmountArgs, keepLeverage });
-  return q(selector);
-});
-
-// temporary not used
-export const selectPositionSellerNextPositionValuesForDecreaseWithoutKeepLeverage = createEnhancedSelector((q) => {
-  const decreaseAmountArgs = q(selectPositionSellerDecreaseAmountArgs);
-
-  if (!decreaseAmountArgs) return undefined;
-
-  const selector = makeSelectNextPositionValuesForDecrease({ ...decreaseAmountArgs, keepLeverage: false });
-
   return q(selector);
 });
 
@@ -87,7 +78,9 @@ const selectPositionSellerDecreaseAmountArgs = createEnhancedSelector((q) => {
 
 export const selectPositionSellerDecreaseAmounts = createEnhancedSelector((q) => {
   const decreaseAmountArgs = q(selectPositionSellerDecreaseAmountArgs);
-  const keepLeverage = q(selectPositionSellerKeepLeverageRaw);
+  const keepLeverageRaw = q(selectPositionSellerKeepLeverageRaw);
+  const keepLeverageDisabledByCollateral = q(selectPositionSellerLeverageDisabledByCollateral);
+  const keepLeverage = keepLeverageDisabledByCollateral ? false : keepLeverageRaw;
 
   if (!decreaseAmountArgs) return undefined;
 
