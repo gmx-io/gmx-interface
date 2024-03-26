@@ -752,6 +752,7 @@ export function PositionSeller(p: Props) {
 
                 <div className="PositionEditor-keep-leverage-settings">
                   <ToggleSwitch
+                    textClassName="Exchange-info-label"
                     isChecked={leverageCheckboxDisabledByCollateral ? false : keepLeverageChecked}
                     setIsChecked={setKeepLeverage}
                     disabled={leverageCheckboxDisabledByCollateral ?? decreaseAmounts?.isFullClose}
