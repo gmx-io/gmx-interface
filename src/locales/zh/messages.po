@@ -5689,6 +5689,10 @@ msgid "Tokens"
 msgstr "代币"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "Top Addresses"
+msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL ($)"
 msgstr ""
 
@@ -5697,12 +5701,16 @@ msgid "Top PnL (%)"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "Top addresses"
+msgid "Top Positions"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "Top positions"
-msgstr ""
+#~ msgid "Top addresses"
+#~ msgstr ""
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+#~ msgid "Top positions"
+#~ msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Top-up"

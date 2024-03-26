@@ -5692,6 +5692,10 @@ msgid "Tokens"
 msgstr "Tokens"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+msgid "Top Addresses"
+msgstr "Top Addresses"
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL ($)"
 msgstr "Top PnL ($)"
 
@@ -5700,12 +5704,16 @@ msgid "Top PnL (%)"
 msgstr "Top PnL (%)"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "Top addresses"
-msgstr "Top addresses"
+msgid "Top Positions"
+msgstr "Top Positions"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "Top positions"
-msgstr "Top positions"
+#~ msgid "Top addresses"
+#~ msgstr "Top addresses"
+
+#: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
+#~ msgid "Top positions"
+#~ msgstr "Top positions"
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
 msgid "Top-up"
