@@ -157,6 +157,8 @@ export function useOracleKeeperFetcher(chainId: number) {
       return fetch(
         buildUrl(oracleKeeperUrl!, "/incentives/stip", {
           ignoreStartDate: forceIncentivesActive ? "1" : undefined,
+          // DO NOT MERGE THIS (midas-myth)
+          timestamp: 1721497600,
         })
       )
         .then((res) => res.json())
