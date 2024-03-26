@@ -242,6 +242,7 @@ export const selectLeaderboardPositions = createEnhancedSelector(function select
         pnl,
         leverage,
         collateralUsd,
+        entryPrice: position.entryPrice * 10n ** BigInt(market.indexToken.decimals),
       };
 
       return p;
