@@ -57,10 +57,12 @@ function useIncentivesBonusApr(chainId: number): MarketTokensAPRData {
       arbTokenPrice = tokensData[arbTokenAddress]?.prices?.minPrice ?? BigNumber.from(0);
     }
 
-    const shouldCalcBonusApr = arbTokenPrice.gt(0) && (chainId === ARBITRUM || chainId === ARBITRUM_GOERLI);
+    const shouldCalcBonusApr =
+      arbTokenPrice.gt(0) && (chainId === ARBITRUM || chainId === ARBITRUM_GOERLI) && rawIncentivesStats?.lp.isActive;
 
     return marketAddresses.reduce((acc, marketAddress) => {
-      if (!shouldCalcBonusApr || !rawIncentivesStats) return { ...acc, [marketAddress]: BigNumber.from(0) };
+      if (!shouldCalcBonusApr || !rawIncentivesStats || !rawIncentivesStats.lp.isActive)
+        return { ...acc, [marketAddress]: BigNumber.from(0) };
 
       const arbTokensAmount = BigNumber.from(rawIncentivesStats.lp.rewardsPerMarket[marketAddress] ?? 0);
       const yearMultiplier = Math.floor((365 * 24 * 60 * 60) / rawIncentivesStats.lp.period);
