@@ -153,21 +153,21 @@ export function LeaderboardPositionsTable({ positions }: { positions: RemoteData
               <TableHeaderCell title={t`Position`} width={10} tooltipPosition="bottom-end" columnName="key" />
               <TableHeaderCell
                 title={t`Entry Price`}
-                width={2}
+                width={10}
                 onClick={handleColumnClick}
                 columnName="entryPrice"
                 className={getSortableClass("entryPrice")}
               />
               <TableHeaderCell
                 title={t`Size`}
-                width={1}
+                width={12}
                 onClick={handleColumnClick}
                 columnName="sizeInUsd"
                 className={getSortableClass("sizeInUsd")}
               />
               <TableHeaderCell
                 title={t`Lev.`}
-                width={10}
+                width={1}
                 onClick={handleColumnClick}
                 columnName="leverage"
                 className={getSortableClass("leverage")}

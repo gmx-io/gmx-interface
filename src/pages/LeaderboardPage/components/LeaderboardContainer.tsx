@@ -53,7 +53,7 @@ export function LeaderboardContainer() {
 
   const competitionLabels = useMemo(() => [t`Top PnL ($)`, t`Top PnL (%)`], []);
   const leaderboardTimeframeLabels = useMemo(() => [t`Total`, t`Last 30 days`, t`Last 7 days`], []);
-  const leaderboardDataTypeLabels = useMemo(() => [t`Top addresses`, t`Top positions`], []);
+  const leaderboardDataTypeLabels = useMemo(() => [t`Top Addresses`, t`Top Positions`], []);
 
   const activeCompetition: CompetitionType | undefined = isCompetition
     ? activeCompetitionIndex === 0
