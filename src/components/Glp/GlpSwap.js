@@ -82,6 +82,7 @@ import { getFeeItem } from "domain/synthetics/fees";
 import { differenceInSeconds, intervalToDuration, nextWednesday } from "date-fns";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import Checkbox from "components/Checkbox/Checkbox";
+import { formatUsdPrice } from "domain/synthetics/positions";
 
 const { AddressZero } = ethers.constants;
 
@@ -1394,7 +1395,7 @@ export default function GlpSwap(props) {
                       </div>
                     </div>
                   </td>
-                  <td>${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}</td>
+                  <td>{formatUsdPrice(tokenInfo.minPrice)}</td>
                   <td>
                     {isBuying && (
                       <div>
@@ -1536,7 +1537,7 @@ export default function GlpSwap(props) {
                     <div className="label">
                       <Trans>Price</Trans>
                     </div>
-                    <div>${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}</div>
+                    <div>{formatUsdPrice(tokenInfo.minPrice)}</div>
                   </div>
                   {isBuying && (
                     <div className="App-card-row">

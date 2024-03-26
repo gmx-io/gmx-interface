@@ -1096,7 +1096,7 @@ export default function DashboardV2(props) {
                             <div className="label">
                               <Trans>Price</Trans>
                             </div>
-                            <div>${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}</div>
+                            <div>{formatUsdPrice(tokenInfo.minPrice)}</div>
                           </div>
                           <div className="App-card-row">
                             <div className="label">
