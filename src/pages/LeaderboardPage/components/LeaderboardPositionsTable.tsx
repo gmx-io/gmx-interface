@@ -310,11 +310,27 @@ const TableRow = memo(
       );
     }, [collateralToken?.decimals, collateralToken?.symbol, position.collateralAmount, position.collateralUsd]);
 
-    const renderLiquidationTooltip = useCallback(
+    const renderNaLiquidationTooltip = useCallback(
       () =>
         t`There is no liquidation price, as the position's collateral value will increase to cover any negative PnL.`,
       []
     );
+
+    const renderLiquidationTooltip = useCallback(() => {
+      const markPrice = marketInfo?.indexToken.prices.maxPrice.toBigInt();
+      return (
+        <>
+          <StatsTooltipRow label={t`Mark Price`} value={formatUsd(markPrice)} showDollar={false} />
+          {markPrice && liquidationPrice && (
+            <StatsTooltipRow
+              label={t`Price change to Liq.`}
+              value={formatUsd(liquidationPrice - markPrice, { maxThreshold: "1000000" })}
+              showDollar={false}
+            />
+          )}
+        </>
+      );
+    }, [liquidationPrice, marketInfo?.indexToken.prices.maxPrice]);
 
     return (
       <tr className="Table_tr" key={position.key}>
@@ -373,11 +389,15 @@ const TableRow = memo(
         <TableCell>{`${formatAmount(position.leverage, 4, 2)}x`}</TableCell>
         <TableCell className="text-right">
           {liquidationPrice ? (
-            formatUsd(liquidationPrice, { maxThreshold: "1000000" })
-          ) : (
             <TooltipWithPortal
               position={index > 9 ? "top-end" : "bottom-end"}
               renderContent={renderLiquidationTooltip}
+              handle={formatUsd(liquidationPrice, { maxThreshold: "1000000" })}
+            />
+          ) : (
+            <TooltipWithPortal
+              position={index > 9 ? "top-end" : "bottom-end"}
+              renderContent={renderNaLiquidationTooltip}
               handle={t`NA`}
             />
           )}
