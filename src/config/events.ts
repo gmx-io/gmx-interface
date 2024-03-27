@@ -175,4 +175,18 @@ export const appEventsData: EventData[] = [
       },
     ],
   },
+  {
+    id: "binance-wallet-campaign",
+    title: "Binance Web3 Wallet Trading Campaign is Live",
+    isActive: true,
+    endDate: "09 Apr 2024, 23:59",
+    bodyText: ["Complete any or all of the six GMX campaign tasks and qualify for rewards!"],
+    buttons: [
+      {
+        text: "Check your tasks and their completion status.",
+        link: "https://www.binance.com/en/activity/mission/gmx-airdrop",
+        newTab: true,
+      },
+    ],
+  },
 ];
