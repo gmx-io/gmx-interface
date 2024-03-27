@@ -17,7 +17,7 @@ const USER_INCENTIVE_QUERY = gql`
     distributions(
       orderBy: timestamp
       orderDirection: desc
-      where: { receiver: $account, typeId_in: [1001, 1002, 1003] }
+      where: { receiver: $account, typeId_in: [1001, 1002, 1003, 2001, 2002] }
       first: 1000
     ) {
       typeId

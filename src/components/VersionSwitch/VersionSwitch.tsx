@@ -6,13 +6,14 @@ import { getIsSyntheticsSupported, getIsV1Supported } from "config/features";
 type Props = {
   currentVersion: number;
   setCurrentVersion: (version: number) => void;
+  className?: string;
 };
 
-export function VersionSwitch({ currentVersion, setCurrentVersion }: Props) {
+export function VersionSwitch({ currentVersion, setCurrentVersion, className }: Props) {
   const { chainId } = useChainId();
 
   return (
-    <div className="VersionSwitch">
+    <div className={cx("VersionSwitch", className)}>
       {getIsV1Supported(chainId) && (
         <div
           className={cx("VersionSwitch-option v1", { active: currentVersion === 1 })}

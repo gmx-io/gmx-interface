@@ -42,6 +42,7 @@ $tabs-threshold: 990px;
 .LeaderboardContainer__competition-tabs {
   position: relative;
   display: flex;
+  align-items: center;
 }
 
 @media screen and (max-width: 600px) {
@@ -195,23 +196,28 @@ $tabs-threshold: 990px;
   overflow-x: auto;
 
   &__prize {
-    width: 100%;
-    margin-right: 1.8rem;
-
-    &:last-child {
-      margin-right: 0;
-    }
-
-    margin-bottom: 1rem;
-    flex: 1 1;
-    background-color: #16182e;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-radius: 0.5rem;
-    text-align: left;
-    padding: 2rem 2rem;
-    min-width: 21rem;
+    width: 100%;
+
+    &-container {
+      flex: 1 1;
+      margin-right: 1.8rem;
+      margin-bottom: 1rem;
+      background-color: #16182e;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 0.5rem;
+      text-align: left;
+      padding: 2rem 2rem;
+      min-width: 21rem;
+      display: flex;
+      flex-direction: column;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
 
     &-text {
       display: flex;
@@ -224,6 +230,7 @@ $tabs-threshold: 990px;
     }
 
     &-icon-container {
+      display: flex;
       flex: 1;
       text-align: center;
     }
@@ -255,6 +262,88 @@ $tabs-threshold: 990px;
       }
     }
   }
+
+  &__prize-winners-container {
+    display: flex;
+    align-items: center;
+    font-size: 1.4rem;
+    user-select: none;
+    margin-top: 1rem;
+    justify-content: space-between;
+    width: 100%;
+
+    @media screen and (max-width: 1180px) {
+      justify-content: center;
+    }
+  }
+
+  &__prize-winners {
+    display: flex;
+    background: #222641;
+    border-radius: 9999rem;
+    padding: 0.3rem 1rem;
+  }
+
+  &__prize-winners-text {
+    color: #ffffffb3;
+
+    @media screen and (max-width: 1180px) {
+      display: none;
+    }
+  }
+
+  &__prize-winner {
+    display: flex;
+    align-items: center;
+
+    &_many {
+      margin-right: 0.5rem;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+
+  &__prize-rest {
+    margin-left: 0.5rem;
+    text-decoration: none;
+    font-family: monospace;
+    display: flex;
+    align-items: center;
+  }
+
+  &__tooltip-winner &__prize-rest {
+    margin-left: 1rem;
+  }
+
+  &__tooltip-winner {
+    display: flex;
+    text-decoration: none !important;
+    font-family: monospace;
+    margin-bottom: 1rem;
+    color: white !important;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__prize-winner-tooltip .Tooltip-popup {
+    min-width: 0 !important;
+  }
+
+  .Tooltip-handle {
+    text-decoration: none;
+    font-family: monospace;
+    align-items: center;
+    top: 0.2rem;
+  }
+
+  a {
+    text-decoration: none;
+    font-family: monospace;
+  }
 }
 
 .CompetitionCountdown {
@@ -268,6 +357,17 @@ $tabs-threshold: 990px;
 
     @media screen and (max-width: $tabs-threshold) {
       font-size: 2rem;
+    }
+  }
+
+  &__end {
+    display: flex;
+    position: absolute;
+    right: var(--default-container-padding);
+    top: 1.8rem;
+
+    @media screen and (max-width: 1000px) {
+      position: static;
     }
   }
 
@@ -331,7 +431,6 @@ $tabs-threshold: 990px;
   border-radius: 999rem;
   font-size: 1.1rem;
   padding: 0.3rem 0.6rem;
-  font-weight: bold;
   margin-right: 0.8rem;
   height: 2.2rem;
 
@@ -361,6 +460,8 @@ $tabs-threshold: 990px;
 .TableBox {
   width: 100%;
   overflow: visible;
+  background-color: #16182e;
+  padding-bottom: 10px;
 
   .text-right {
     text-align: right;

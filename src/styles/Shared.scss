@@ -487,6 +487,10 @@ button.btn-link:hover .logout-icon {
   width: 100%;
 }
 
+.max-w-full {
+  max-width: 100%;
+}
+
 .font-sm {
   font-size: var(--font-sm);
 }
@@ -550,13 +554,17 @@ button.btn-link:hover .logout-icon {
 .ml-sm {
   margin-left: 1rem;
 }
+.ml-base {
+  margin-left: 1.5rem;
+}
 
 .mx-xs {
   margin: 0 0.5rem;
 }
 
 .my-sm {
-  margin: 1rem 0;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .my-base {

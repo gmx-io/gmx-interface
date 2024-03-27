@@ -10,12 +10,12 @@ import {
   getMintableMarketTokens,
   getTotalGmInfo,
 } from "domain/synthetics/markets";
+import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useMedia } from "react-use";
-import { Operation } from "../GmSwap/GmSwapBox/GmSwapBox";
 import "./GmList.scss";
 import Tooltip from "components/Tooltip/Tooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -25,7 +25,7 @@ import useWallet from "lib/wallets/useWallet";
 import { AprInfo } from "components/AprInfo/AprInfo";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
-import useSortedMarketsWithIndexToken from "domain/synthetics/trade/useSortedMarketsWithIndexToken";
+import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { GmTokensBalanceInfo, GmTokensTotalBalanceInfo } from "components/GmTokensBalanceInfo/GmTokensBalanceInfo";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { getNormalizedTokenSymbol } from "config/tokens";
@@ -60,7 +60,8 @@ export function GmList({
   const userEarnings = useUserEarnings(chainId);
   const isMobile = useMedia("(max-width: 1100px)");
   const daysConsidered = useDaysConsideredInMarketsApr();
-  const { markets: sortedMarketsByIndexToken } = useSortedMarketsWithIndexToken(marketsInfoData, marketTokensData);
+  const { markets: sortedMarketsByIndexToken } = useSortedPoolsWithIndexToken(marketsInfoData, marketTokensData);
+  const isLpIncentiveActive = useIncentiveStats()?.lp?.isActive ?? false;
 
   const userTotalGmInfo = useMemo(() => {
     if (!active) return;
@@ -224,25 +225,21 @@ export function GmList({
                       </td>
 
                       <td>
-                        <AprInfo apr={apr} incentiveApr={incentiveApr} />
+                        <AprInfo apr={apr} incentiveApr={incentiveApr} isIncentiveActive={isLpIncentiveActive} />
                       </td>
 
                       <td className="GmList-actions">
                         <Button
                           className="GmList-action"
                           variant="secondary"
-                          to={`/pools?operation=${Operation.Deposit}&market=${token.address}&scroll=${
-                            shouldScrollToTop ? "1" : "0"
-                          }`}
+                          to={`/pools/?pool=${token.address}&operation=buy&scroll=${shouldScrollToTop ? "1" : "0"}`}
                         >
                           <Trans>Buy</Trans>
                         </Button>
                         <Button
                           className="GmList-action GmList-last-action"
                           variant="secondary"
-                          to={`/pools?operation=${Operation.Withdrawal}&market=${token.address}&scroll=${
-                            shouldScrollToTop ? "1" : "0"
-                          }`}
+                          to={`/pools/?pool=${token.address}&operation=sell&scroll=${shouldScrollToTop ? "1" : "0"}`}
                         >
                           <Trans>Sell</Trans>
                         </Button>
@@ -379,22 +376,16 @@ export function GmList({
                         <Trans>APR</Trans>
                       </div>
                       <div>
-                        <AprInfo apr={apr} incentiveApr={incentiveApr} />
+                        <AprInfo apr={apr} incentiveApr={incentiveApr} isIncentiveActive={isLpIncentiveActive} />
                       </div>
                     </div>
 
                     <div className="App-card-divider"></div>
                     <div className="App-card-buttons m-0" onClick={buySellActionHandler}>
-                      <Button
-                        variant="secondary"
-                        to={`/pools?operation=${Operation.Deposit}&market=${token.address}&scroll=0`}
-                      >
+                      <Button variant="secondary" to={`/pools/?pool=${token.address}&operation=buy&scroll=0`}>
                         <Trans>Buy</Trans>
                       </Button>
-                      <Button
-                        variant="secondary"
-                        to={`/pools?operation=${Operation.Withdrawal}&market=${token.address}&scroll=0`}
-                      >
+                      <Button variant="secondary" to={`/pools/?pool=${token.address}&operation=sell&scroll=0`}>
                         <Trans>Sell</Trans>
                       </Button>
                     </div>

@@ -281,7 +281,7 @@ function FullApp({ pendingTxns, setPendingTxns }) {
               <Route exact path="/price_impact_rebates_stats">
                 <PriceImpactRebatesStatsPage />
               </Route>
-              <Route exact path="/v1">
+              <Route exact path="/v1/:tradeType?">
                 <Exchange
                   ref={exchangeRef}
                   savedShowPnlAfterFees={settings.showPnlAfterFees}
@@ -299,7 +299,7 @@ function FullApp({ pendingTxns, setPendingTxns }) {
                 />
               </Route>
               <Route exact path="/dashboard">
-                <Dashboard />
+                <Dashboard tradePageVersion={tradePageVersion} setTradePageVersion={setTradePageVersion} />
               </Route>
               <Route exact path="/stats/v1">
                 <Stats />
@@ -332,7 +332,7 @@ function FullApp({ pendingTxns, setPendingTxns }) {
                 )}
               </Route>
 
-              <Route exact path="/trade">
+              <Route exact path="/trade/:tradeType?">
                 {getIsSyntheticsSupported(chainId) ? (
                   <SyntheticsStateContextProvider
                     savedIsPnlInLeverage={settings.isPnlInLeverage}

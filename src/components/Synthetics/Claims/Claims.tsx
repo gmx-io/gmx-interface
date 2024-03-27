@@ -8,15 +8,16 @@ import useWallet from "lib/wallets/useWallet";
 import { useCallback, useState } from "react";
 import { useMedia } from "react-use";
 import { AccruedPositionPriceImpactRebateModal } from "../AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal";
-import { ClaimHistoryRow } from "../ClaimHistoryRow/ClaimHistoryRow";
 import { ClaimModal } from "../ClaimModal/ClaimModal";
 import { ClaimablePositionPriceImpactRebateModal } from "../ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal";
 import { SettleAccruedFundingFeeModal } from "../SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal";
 import { ClaimableCard } from "./ClaimableCard";
-import "./Claims.scss";
+import { ClaimsHistory } from "./ClaimsHistory";
 import { SettleAccruedCard } from "./SettleAccruedCard";
 
-const PAGE_SIZE = 100;
+import "./Claims.scss";
+
+const CLAIMS_HISTORY_PREFETCH_SIZE = 100;
 
 const MARGIN_RIGHT = { marginRight: 4 };
 const MARGIN_LEFT = { marginLeft: 4 };
@@ -46,7 +47,6 @@ export function Claims({
 }) {
   const { chainId } = useChainId();
   const { account } = useWallet();
-  const [pageIndex, setPageIndex] = useState(0);
   const [isClaiming, setIsClaiming] = useState(false);
 
   const [isAccruedPositionPriceImpactRebateModalVisible, setIsAccruedPositionPriceImpactRebateModalVisible] =
@@ -54,12 +54,9 @@ export function Claims({
   const [isClaimablePositionPriceImpactFeesModalVisible, setIsClaimablePositionPriceImpactFeesModalVisible] =
     useState(false);
 
-  const { claimActions, isLoading } = useClaimCollateralHistory(chainId, {
-    pageIndex,
-    pageSize: PAGE_SIZE,
+  const { isLoading } = useClaimCollateralHistory(chainId, {
+    pageSize: CLAIMS_HISTORY_PREFETCH_SIZE,
   });
-
-  const isEmpty = !account || claimActions?.length === 0;
 
   const handleClaimClick = useCallback(() => setIsClaiming(true), [setIsClaiming]);
   const handleSettleClick = useCallback(() => setIsSettling(true), [setIsSettling]);
@@ -110,9 +107,9 @@ export function Claims({
         claimablePositionPriceImpactFees={claimablePositionPriceImpactFees}
       />
 
-      <div className="TradeHistory">
+      <div>
         {account && isLoading && (
-          <div className="TradeHistoryRow App-box">
+          <div className="Claims-loading App-box">
             <Trans>Loading...</Trans>
           </div>
         )}
@@ -139,28 +136,8 @@ export function Claims({
             />
           )}
         </div>
-        {isEmpty && (
-          <div className="TradeHistoryRow App-box">
-            <Trans>No claims yet</Trans>
-          </div>
-        )}
-        {claimActions?.map((claimAction) => (
-          <ClaimHistoryRow key={claimAction.id} claimAction={claimAction} />
-        ))}
-        {shouldShowPaginationButtons && (
-          <div>
-            {pageIndex > 0 && (
-              <button className="App-button-option App-card-option" onClick={() => setPageIndex((old) => old - 1)}>
-                <Trans>Prev</Trans>
-              </button>
-            )}
-            {claimActions && claimActions.length >= PAGE_SIZE && (
-              <button className="App-button-option App-card-option" onClick={() => setPageIndex((old) => old + 1)}>
-                <Trans>Next</Trans>
-              </button>
-            )}
-          </div>
-        )}
+
+        <ClaimsHistory shouldShowPaginationButtons={shouldShowPaginationButtons} />
       </div>
     </>
   );

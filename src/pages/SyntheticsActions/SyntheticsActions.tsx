@@ -7,6 +7,8 @@ import PageTitle from "components/PageTitle/PageTitle";
 import { OrderList } from "components/Synthetics/OrderList/OrderList";
 import { PositionList } from "components/Synthetics/PositionList/PositionList";
 import { TradeHistory } from "components/Synthetics/TradeHistory/TradeHistory";
+import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
+import { getIsV1Supported } from "config/features";
 import {
   useAccount,
   useIsOrdersLoading,
@@ -14,29 +16,49 @@ import {
   useSavedShowPnlAfterFees,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+import { useChainId } from "lib/chains";
+import { switchNetwork } from "lib/wallets";
+import useWallet from "lib/wallets/useWallet";
 
 export default function SyntheticsActions() {
+  const { chainId } = useChainId();
+  const { active } = useWallet();
   const savedShowPnlAfterFees = useSavedShowPnlAfterFees();
   const checkSummedAccount = useAccount();
   const isPositionsLoading = useIsPositionsLoading();
   const isOrdersLoading = useIsOrdersLoading();
   const availableTokensOptions = useTradeboxAvailableTokensOptions();
 
+  const networkName = getChainName(chainId);
+
   return (
     <div className="default-container page-layout">
       {checkSummedAccount && (
         <div className="Actions-section">
           <PageTitle
-            title={t`V2 Account`}
+            title={t`GMX V2 Account`}
             subtitle={
               <>
-                <Trans>GMX V2 information for account: {checkSummedAccount}</Trans>
-                <div>
-                  <ExternalLink newTab={false} href={`/#/actions/v1/${checkSummedAccount}`}>
-                    Check on GMX V1
-                  </ExternalLink>
-                  .
-                </div>
+                <Trans>
+                  GMX V2 {networkName} information for account: {checkSummedAccount}
+                </Trans>
+                {getIsV1Supported(chainId) && (
+                  <Trans>
+                    <div>
+                      <ExternalLink newTab={false} href={`/#/actions/v1/${checkSummedAccount}`}>
+                        Check on GMX V1 {networkName}
+                      </ExternalLink>{" "}
+                      or{" "}
+                      <span
+                        className="underline cursor-pointer"
+                        onClick={() => switchNetwork(chainId === ARBITRUM ? AVALANCHE : ARBITRUM, active)}
+                      >
+                        switch network to {chainId === ARBITRUM ? "Avalanche" : "Arbitrum"}
+                      </span>
+                      .
+                    </div>
+                  </Trans>
+                )}
               </>
             }
           />
@@ -82,16 +104,28 @@ export default function SyntheticsActions() {
           ) : (
             <PageTitle
               isTop
-              title={t`V2 Actions`}
+              title={t`GMX V2 Actions`}
               subtitle={
                 <>
-                  {<Trans>GMX V2 actions for all accounts.</Trans>}
-                  <div>
-                    <ExternalLink newTab={false} href={`/#/actions/v1`}>
-                      Check on GMX V1
-                    </ExternalLink>
-                    .
-                  </div>
+                  <Trans>GMX V2 {networkName} actions for all accounts.</Trans>
+
+                  {getIsV1Supported(chainId) && (
+                    <Trans>
+                      <div>
+                        <ExternalLink newTab={false} href="/#/actions/v1">
+                          Check on GMX V1 {networkName}
+                        </ExternalLink>{" "}
+                        or{" "}
+                        <span
+                          className="underline cursor-pointer"
+                          onClick={() => switchNetwork(chainId === ARBITRUM ? AVALANCHE : ARBITRUM, active)}
+                        >
+                          switch network to {chainId === ARBITRUM ? "Avalanche" : "Arbitrum"}
+                        </span>
+                        .
+                      </div>
+                    </Trans>
+                  )}
                 </>
               }
             />

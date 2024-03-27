@@ -4,11 +4,54 @@
   height: 2px;
   width: 100%;
   min-width: 10rem;
+
+  &.ShareBar__percentage {
+    height: 2rem;
+    border-radius: var(--border-radius-sm);
+    background: none;
+
+    &.warning .ShareBar-fill__left {
+      background: #5b5449;
+      color: var(--warning-yellow);
+    }
+  }
+  &.warning .ShareBar-fill {
+    background-color: var(--warning-yellow);
+  }
 }
 
 .ShareBar-fill {
   height: 100%;
   background: #fff;
+}
+
+.ShareBar-fill__percentage {
+  display: flex;
+  height: 1.6rem;
+  font-size: 1.2rem;
+
+  .ShareBar-fill__left,
+  .ShareBar-fill__right {
+    height: 100%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .ShareBar-fill__left {
+    background: rgba(94, 201, 137, 0.15);
+    color: var(--green);
+    border-top-left-radius: var(--border-radius-sm);
+    border-bottom-left-radius: var(--border-radius-sm);
+  }
+
+  .ShareBar-fill__right {
+    background: rgba(231, 78, 93, 0.15);
+    color: var(--error-red);
+    border-top-right-radius: var(--border-radius-sm);
+    border-bottom-right-radius: var(--border-radius-sm);
+    text-align: center;
+  }
 }
 
 .ShareBar.warning .ShareBar-fill {
