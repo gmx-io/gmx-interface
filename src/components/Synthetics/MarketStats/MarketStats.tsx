@@ -23,6 +23,7 @@ import { BigNumber } from "ethers";
 import { AprInfo } from "components/AprInfo/AprInfo";
 import MarketTokenSelector from "../MarketTokenSelector/MarketTokenSelector";
 import { useMemo } from "react";
+import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 
 type Props = {
   marketsInfoData?: MarketsInfoData;
@@ -73,6 +74,7 @@ export function MarketStats(p: Props) {
 
   const apr = getByKey(marketsTokensAPRData, marketInfo?.marketTokenAddress);
   const incentiveApr = getByKey(marketsTokensIncentiveAprData, marketInfo?.marketTokenAddress);
+  const isLpIncentiveActive = useIncentiveStats()?.lp?.isActive ?? false;
   const indexName = marketInfo && getMarketIndexName(marketInfo);
   const poolName = marketInfo && getMarketPoolName(marketInfo);
 
@@ -192,7 +194,10 @@ export function MarketStats(p: Props) {
           )}
         />
 
-        <CardRow label={t`APR`} value={<AprInfo apr={apr} incentiveApr={incentiveApr} />} />
+        <CardRow
+          label={t`APR`}
+          value={<AprInfo apr={apr} incentiveApr={incentiveApr} isIncentiveActive={isLpIncentiveActive} />}
+        />
 
         <CardRow
           label={t`Total Supply`}

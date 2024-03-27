@@ -623,6 +623,7 @@ msgid "Balance"
 msgstr "残高"
 
 #: src/components/AprInfo/AprInfo.tsx
+#: src/components/AprInfo/AprInfo.tsx
 msgid "Base APR"
 msgstr ""
 
@@ -1703,16 +1704,16 @@ msgid "Earn"
 msgstr "報酬獲得"
 
 #: src/pages/Stake/StakeV2.js
-#~ msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2."
-#~ msgstr ""
-
-#: src/pages/Stake/StakeV2.js
 msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2.<0/>Earn prizes by participating in GMX Trading Competitions."
 msgstr ""
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "Earn an extra {0}% {nativeTokenSymbol} Boosted APR by increasing your staked <0>Multiplier Points</0>."
 msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Earn prizes by participating in GMX Trading Competitions."
+msgstr "GMX取引コンペティションに参加して賞品を獲得"
 
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Ecosystem"
@@ -2538,10 +2539,6 @@ msgstr "画像生成エラーにつき、ページを更新して再度試して
 #: src/components/Synthetics/TVChart/TVChart.tsx
 msgid "Inc."
 msgstr "含む"
-
-#: src/pages/Stake/StakeV2.js
-#~ msgid "Incentives"
-#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Incentives & Prizes"
@@ -5598,10 +5595,6 @@ msgid "This code is not yet registered on {0}, you will not receive rebates ther
 msgstr "このコードは{0}上ではまだ登録されていないため、紹介報酬を受け取ることはできません。<0/><1/>ネットワークを切り替えて、{1}上でこのコードを作成してください。"
 
 #: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-#~ msgid "This competition has ended"
-#~ msgstr ""
-
-#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
 msgid "This competition has ended."
 msgstr ""
 
@@ -6792,15 +6785,6 @@ msgstr ""
 msgid "view"
 msgstr "見る"
 
-#: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
-#~ msgid "{0, plural, one {# Position} other {# Positions}}"
-#~ msgstr "{0} ポジション"
-
-#: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
-#: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
-#~ msgid "{0, plural, one {# Size} other {# Sizes}}"
-#~ msgstr "{0} サイズ"
-
 #: src/pages/Exchange/Exchange.js
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
@@ -7014,10 +6998,6 @@ msgstr ""
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "{longShortText} {0} Reserve"
 msgstr ""
-
-#: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
-#~ msgid "{marketsCount, plural, one {# Market} other {# Markets} many {# Markets}}"
-#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
