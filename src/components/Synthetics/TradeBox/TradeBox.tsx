@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { BigNumber } from "ethers";
-import { ReactNode, useCallback, useEffect, useMemo } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
 import { IoMdSwap } from "react-icons/io";
 import { useKey, useLatest, usePrevious } from "react-use";
 
@@ -104,6 +104,7 @@ import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 
 import "./TradeBox.scss";
 import { useHistory } from "react-router-dom";
+import { useCursorInside } from "lib/useCursorInside";
 
 export type Props = {
   avaialbleTokenOptions: AvailableTokenOptions;
@@ -133,6 +134,9 @@ const tradeTypeLabels = {
 };
 
 export function TradeBox(p: Props) {
+  const formRef = useRef<HTMLDivElement>(null);
+  const isCursorInside = useCursorInside(formRef);
+
   const { avaialbleTokenOptions, shouldDisableValidation, allowedSlippage, setPendingTxns } = p;
 
   const { openConnectModal } = useConnectModal();
@@ -1302,12 +1306,12 @@ export function TradeBox(p: Props) {
   useKey(
     "Enter",
     () => {
-      if (!isSubmitButtonDisabled || shouldDisableValidation) {
+      if (isCursorInside && (!isSubmitButtonDisabled || shouldDisableValidation)) {
         onSubmit();
       }
     },
     {},
-    [isSubmitButtonDisabled, shouldDisableValidation]
+    [isSubmitButtonDisabled, shouldDisableValidation, isCursorInside]
   );
 
   const buttonContent = (
@@ -1354,7 +1358,7 @@ export function TradeBox(p: Props) {
             onChange={onSelectTradeMode}
           />
 
-          <div>
+          <div ref={formRef}>
             {(isSwap || isIncrease) && renderTokenInputs()}
             {isTrigger && renderDecreaseSizeInput()}
 
@@ -1405,7 +1409,6 @@ export function TradeBox(p: Props) {
                 )}
               </ExchangeInfo.Group>
             </ExchangeInfo>
-
             <div className="Exchange-swap-button-container">{button}</div>
           </div>
         </div>
