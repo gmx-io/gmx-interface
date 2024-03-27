@@ -103,7 +103,7 @@ export const appEventsData: EventData[] = [
     id: "all-incentives-launch",
     title: "Incentives are live",
     isActive: true,
-    endDate: "30 Mar 2024, 00:00",
+    endDate: "27 Mar 2024, 00:00",
     bodyText: [
       `Arbitrum STIP incentives are live for:`,
       "",
