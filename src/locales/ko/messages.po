@@ -3446,6 +3446,11 @@ msgstr "다음"
 msgid "No PnLs found"
 msgstr "손익을 찾지 못했습니다."
 
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "No available leverage found"
+msgstr ""
+
 #: src/components/Synthetics/Claims/Claims.tsx
 msgid "No claims yet"
 msgstr ""

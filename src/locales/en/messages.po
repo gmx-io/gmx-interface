@@ -3449,6 +3449,11 @@ msgstr "Next"
 msgid "No PnLs found"
 msgstr "No PnLs found"
 
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "No available leverage found"
+msgstr "No available leverage found"
+
 #: src/components/Synthetics/Claims/Claims.tsx
 msgid "No claims yet"
 msgstr "No claims yet"
