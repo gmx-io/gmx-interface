@@ -43,7 +43,7 @@ export default function EventToast({
           <ExternalLink key={event.id + event.link.text} href={event.link.href} newTab={event.link?.newTab ?? false}>
             {event.link.text}
           </ExternalLink>
-          <span>.</span>
+          .
         </div>
       )}
     </div>

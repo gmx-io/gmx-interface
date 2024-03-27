@@ -28,13 +28,12 @@ function useEventToast() {
     async function helper() {
       const provider = getProvider(undefined, chainId);
       const blockNumber = await provider.getBlockNumber();
+      const block = await provider.getBlock(blockNumber);
+      const now = Date.now() / 1000;
 
-      provider.getBlock(blockNumber).then((block) => {
-        const now = Date.now() / 1000;
-        if (now - block.timestamp > 60) {
-          setIsArbitrumDown(true);
-        }
-      });
+      if (now - block.timestamp > 60) {
+        setIsArbitrumDown(true);
+      }
     }
 
     helper();
