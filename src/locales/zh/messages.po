@@ -4264,6 +4264,10 @@ msgstr "价格低于标价"
 msgid "Price below Mark Price."
 msgstr ""
 
+#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+msgid "Price change to Liq."
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Price conditions are met"
 msgstr "符合价格条件"
@@ -4287,8 +4291,8 @@ msgid "Price on Avalanche"
 msgstr "Avalanche上的价格"
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
-msgid "Price to Change"
-msgstr ""
+#~ msgid "Price to Change"
+#~ msgstr ""
 
 #: src/pages/Actions/Actions.js
 msgid "Profit"

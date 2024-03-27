@@ -4267,6 +4267,10 @@ msgstr "Price below Mark Price"
 msgid "Price below Mark Price."
 msgstr "Price below Mark Price."
 
+#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+msgid "Price change to Liq."
+msgstr "Price change to Liq."
+
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Price conditions are met"
 msgstr "Price conditions are met"
@@ -4290,8 +4294,8 @@ msgid "Price on Avalanche"
 msgstr "Price on Avalanche"
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
-msgid "Price to Change"
-msgstr "Price to Change"
+#~ msgid "Price to Change"
+#~ msgstr "Price to Change"
 
 #: src/pages/Actions/Actions.js
 msgid "Profit"
