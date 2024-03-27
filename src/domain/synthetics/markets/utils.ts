@@ -180,7 +180,7 @@ export function getAvailableUsdLiquidityForCollateral(marketInfo: MarketInfo, is
   return liqudiity;
 }
 
-export function getAvailableLiquidity(marketInfo: MarketInfo, isLong: boolean) {
+export function getAvailableLiquidity(marketInfo: MarketInfo, isLong: boolean): [BigNumber, BigNumber] {
   if (marketInfo.isSpotOnly) {
     return [BigNumber.from(0), BigNumber.from(0)];
   }
