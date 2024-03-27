@@ -581,3 +581,8 @@ table.Table.Exchange-list th {
     margin-left: var(--default-container-padding);
   }
 }
+
+.Table-SizeTooltip .Tooltip-popup {
+  min-width: 38rem !important;
+  max-width: 38rem !important;
+}

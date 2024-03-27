@@ -26,6 +26,7 @@ import { getLiquidationPrice } from "domain/synthetics/positions";
 import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { formatTokenAmountWithUsd } from "lib/numbers";
 
 function getWinnerRankClassname(rank: number | null) {
   if (rank === null) return undefined;
@@ -280,7 +281,7 @@ const TableRow = memo(
     const indexName = marketInfo ? getMarketIndexName(marketInfo) : "";
     const poolName = marketInfo ? getMarketPoolName(marketInfo) : "";
 
-    const renderTooltipContent = useCallback(() => {
+    const renderPositionTooltip = useCallback(() => {
       return (
         <>
           <div className="items-top mr-xs lh-1">
@@ -291,6 +292,23 @@ const TableRow = memo(
         </>
       );
     }, [indexName, poolName, position.isLong]);
+
+    const renderSizeTooltip = useCallback(() => {
+      return (
+        <>
+          <StatsTooltipRow
+            label={t`Collateral`}
+            showDollar={false}
+            value={formatTokenAmountWithUsd(
+              BigNumber.from(position.collateralAmount),
+              BigNumber.from(position.collateralUsd),
+              collateralToken?.symbol,
+              collateralToken?.decimals
+            )}
+          />
+        </>
+      );
+    }, [collateralToken?.decimals, collateralToken?.symbol, position.collateralAmount, position.collateralUsd]);
 
     return (
       <tr className="Table_tr" key={position.key}>
@@ -334,11 +352,18 @@ const TableRow = memo(
             }
             position={index > 7 ? "top" : "bottom"}
             className="nowrap"
-            renderContent={renderTooltipContent}
+            renderContent={renderPositionTooltip}
           />
         </TableCell>
         <TableCell>{formatUsd(position.entryPrice)}</TableCell>
-        <TableCell>{formatUsd(position.sizeInUsd)}</TableCell>
+        <TableCell>
+          <TooltipWithPortal
+            handle={formatUsd(position.sizeInUsd)}
+            position={index > 7 ? "top-end" : "bottom-end"}
+            renderContent={renderSizeTooltip}
+            portalClassName="Table-SizeTooltip"
+          />
+        </TableCell>
         <TableCell>{`${formatAmount(position.leverage, 4, 2)}x`}</TableCell>
         <TableCell className="text-right">{liquidationPrice ? formatUsd(liquidationPrice) : "-"}</TableCell>
       </tr>
