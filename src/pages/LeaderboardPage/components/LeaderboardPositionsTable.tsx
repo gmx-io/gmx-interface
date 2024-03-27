@@ -310,6 +310,12 @@ const TableRow = memo(
       );
     }, [collateralToken?.decimals, collateralToken?.symbol, position.collateralAmount, position.collateralUsd]);
 
+    const renderLiquidationTooltip = useCallback(
+      () =>
+        t`There is no liquidation price, as the position's collateral value will increase to cover any negative PnL.`,
+      []
+    );
+
     return (
       <tr className="Table_tr" key={position.key}>
         <TableCell>
@@ -327,7 +333,7 @@ const TableRow = memo(
                 {formatDelta(position.qualifyingPnl, { signed: true, prefix: "$" })}
               </span>
             }
-            position={index > 7 ? "top" : "bottom"}
+            position={index > 9 ? "top" : "bottom"}
             className="nowrap"
             renderContent={renderPnlTooltipContent}
           />
@@ -350,7 +356,7 @@ const TableRow = memo(
                 </span>
               </span>
             }
-            position={index > 7 ? "top" : "bottom"}
+            position={index > 9 ? "top" : "bottom"}
             className="nowrap"
             renderContent={renderPositionTooltip}
           />
@@ -359,13 +365,23 @@ const TableRow = memo(
         <TableCell>
           <TooltipWithPortal
             handle={formatUsd(position.sizeInUsd)}
-            position={index > 7 ? "top-end" : "bottom-end"}
+            position={index > 9 ? "top-end" : "bottom-end"}
             renderContent={renderSizeTooltip}
             portalClassName="Table-SizeTooltip"
           />
         </TableCell>
         <TableCell>{`${formatAmount(position.leverage, 4, 2)}x`}</TableCell>
-        <TableCell className="text-right">{liquidationPrice ? formatUsd(liquidationPrice) : "-"}</TableCell>
+        <TableCell className="text-right">
+          {liquidationPrice ? (
+            formatUsd(liquidationPrice)
+          ) : (
+            <TooltipWithPortal
+              position={index > 9 ? "top-end" : "bottom-end"}
+              renderContent={renderLiquidationTooltip}
+              handle={t`NA`}
+            />
+          )}
+        </TableCell>
       </tr>
     );
   }
