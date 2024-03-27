@@ -99,6 +99,7 @@ import { useKey } from "react-use";
 import { getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { numericBinarySearch } from "lib/binarySearch";
+import { helperToast } from "lib/helperToast";
 
 type Props = {
   order: OrderInfo;
@@ -265,21 +266,40 @@ export function OrderEditor(p: Props) {
       positionIndexToken ? convertToTokenAmount(sizeDeltaUsd, positionIndexToken.decimals, triggerPrice) : undefined,
     [positionIndexToken, sizeDeltaUsd, triggerPrice]
   );
-  const nextPositionValuesForIncrease = useNextPositionValuesForIncrease({
-    collateralTokenAddress: positionOrder?.targetCollateralToken.address,
-    fixedAcceptablePriceImpactBps: undefined,
-    indexTokenAddress: positionIndexToken?.address,
-    indexTokenAmount,
-    initialCollateralAmount: positionOrder?.initialCollateralDeltaAmount ?? BigNumber.from(0),
-    initialCollateralTokenAddress: fromToken?.address,
-    leverage: existingPosition?.leverage,
-    marketAddress: positionOrder?.marketAddress,
-    positionKey: existingPosition?.key,
-    strategy: "independent",
-    tradeMode: isLimitOrderType(p.order.orderType) ? TradeMode.Limit : TradeMode.Trigger,
-    tradeType: positionOrder?.isLong ? TradeType.Long : TradeType.Short,
-    triggerPrice: isLimitOrderType(p.order.orderType) ? triggerPrice : undefined,
-    tokenTypeForSwapRoute: existingPosition ? "collateralToken" : "indexToken",
+  const nextPositionValuesArg: Parameters<typeof useNextPositionValuesForIncrease>[0] = useMemo(
+    () => ({
+      collateralTokenAddress: positionOrder?.targetCollateralToken.address,
+      fixedAcceptablePriceImpactBps: undefined,
+      indexTokenAddress: positionIndexToken?.address,
+      indexTokenAmount,
+      initialCollateralAmount: positionOrder?.initialCollateralDeltaAmount ?? BigNumber.from(0),
+      initialCollateralTokenAddress: fromToken?.address,
+      leverage: existingPosition?.leverage,
+      marketAddress: positionOrder?.marketAddress,
+      positionKey: existingPosition?.key,
+      strategy: "independent",
+      tradeMode: isLimitOrderType(p.order.orderType) ? TradeMode.Limit : TradeMode.Trigger,
+      tradeType: positionOrder?.isLong ? TradeType.Long : TradeType.Short,
+      triggerPrice: isLimitOrderType(p.order.orderType) ? triggerPrice : undefined,
+      tokenTypeForSwapRoute: existingPosition ? "collateralToken" : "indexToken",
+    }),
+    [
+      existingPosition,
+      fromToken?.address,
+      indexTokenAmount,
+      p.order.orderType,
+      positionIndexToken?.address,
+      positionOrder?.initialCollateralDeltaAmount,
+      positionOrder?.isLong,
+      positionOrder?.marketAddress,
+      positionOrder?.targetCollateralToken.address,
+      triggerPrice,
+    ]
+  );
+  const nextPositionValuesForIncrease = useNextPositionValuesForIncrease(nextPositionValuesArg);
+  const nextPositionValuesWithoutPnlForIncrease = useNextPositionValuesForIncrease({
+    ...nextPositionValuesArg,
+    overrideIsPnlInLeverage: false,
   });
 
   const swapRoute = useSwapRoutes(p.order.initialCollateralTokenAddress, toTokenAddress);
@@ -465,13 +485,13 @@ export function OrderEditor(p: Props) {
 
   function getIsMaxLeverageError() {
     if (isLimitIncreaseOrder && sizeDeltaUsd) {
-      if (!nextPositionValuesForIncrease?.nextLeverage) {
-        return true;
+      if (!nextPositionValuesWithoutPnlForIncrease?.nextLeverage) {
+        return false;
       }
 
       const positionOrder = p.order as PositionOrderInfo;
       return getIsMaxLeverageExceeded(
-        nextPositionValuesForIncrease?.nextLeverage,
+        nextPositionValuesWithoutPnlForIncrease?.nextLeverage,
         positionOrder.marketInfo,
         positionOrder.isLong,
         sizeDeltaUsd
@@ -491,9 +511,10 @@ export function OrderEditor(p: Props) {
 
     const { returnValue: newSizeDeltaUsd } = numericBinarySearch<BigNumber | undefined>(
       1,
-      MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR,
+      // "10 *" means we do 1..50 search but with 0.1x step
+      (10 * MAX_ALLOWED_LEVERAGE) / BASIS_POINTS_DIVISOR,
       (lev) => {
-        const leverage = BigNumber.from(lev * BASIS_POINTS_DIVISOR);
+        const leverage = BigNumber.from((lev / 10) * BASIS_POINTS_DIVISOR);
         const increaseAmounts = getIncreasePositionAmounts({
           collateralToken,
           findSwapPath: swapRoute.findSwapPath,
@@ -551,6 +572,8 @@ export function OrderEditor(p: Props) {
 
     if (newSizeDeltaUsd) {
       setSizeInputValue(formatAmountFree(substractMaxLeverageSlippage(newSizeDeltaUsd), USD_DECIMALS, 2));
+    } else {
+      helperToast.error(t`No available leverage found`);
     }
   }
 

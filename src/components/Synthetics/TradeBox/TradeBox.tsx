@@ -118,6 +118,7 @@ import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 
 import "./TradeBox.scss";
 import { useHistory } from "react-router-dom";
+import { helperToast } from "lib/helperToast";
 
 export type Props = {
   avaialbleTokenOptions: AvailableTokenOptions;
@@ -458,9 +459,10 @@ export function TradeBox(p: Props) {
 
     const { result: maxLeverage, returnValue: sizeDeltaInTokens } = numericBinarySearch<BigNumber | undefined>(
       1,
-      MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR,
+      // "10 *" means we do 1..50 search but with 0.1x step
+      (10 * MAX_ALLOWED_LEVERAGE) / BASIS_POINTS_DIVISOR,
       (lev) => {
-        const leverage = BigNumber.from(lev * BASIS_POINTS_DIVISOR);
+        const leverage = BigNumber.from((lev / 10) * BASIS_POINTS_DIVISOR);
         const increaseAmounts = getIncreasePositionAmounts({
           collateralToken,
           findSwapPath: swapRoutes.findSwapPath,
@@ -516,13 +518,20 @@ export function TradeBox(p: Props) {
       }
     );
 
-    if (isLeverageEnabled) {
-      setLeverageOption(maxLeverage);
-    } else if (sizeDeltaInTokens) {
-      setToTokenInputValue(
-        formatAmountFree(substractMaxLeverageSlippage(sizeDeltaInTokens), toToken.decimals, 8),
-        true
-      );
+    if (sizeDeltaInTokens) {
+      if (isLeverageEnabled) {
+        // round to int if it's > 1x
+        const resultLeverage = maxLeverage > 10 ? Math.floor(maxLeverage / 10) : Math.floor(maxLeverage) / 10;
+
+        setLeverageOption(resultLeverage);
+      } else {
+        setToTokenInputValue(
+          formatAmountFree(substractMaxLeverageSlippage(sizeDeltaInTokens), toToken.decimals, 8),
+          true
+        );
+      }
+    } else {
+      helperToast.error(t`No available leverage found`);
     }
   }, [
     acceptablePriceImpactBuffer,

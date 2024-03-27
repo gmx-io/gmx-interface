@@ -26,6 +26,7 @@ export const useNextPositionValuesForIncrease = ({
   tradeType,
   triggerPrice,
   tokenTypeForSwapRoute,
+  overrideIsPnlInLeverage,
 }: {
   initialCollateralTokenAddress: string | undefined;
   indexTokenAddress: string | undefined;
@@ -41,6 +42,7 @@ export const useNextPositionValuesForIncrease = ({
   fixedAcceptablePriceImpactBps: BigNumber | undefined;
   strategy: "leverageByCollateral" | "leverageBySize" | "independent";
   tokenTypeForSwapRoute: TokenTypeForSwapRoute;
+  overrideIsPnlInLeverage?: boolean;
 }) => {
   const isPnlInLeverage = useSavedIsPnlInLeverage();
   const selector = useMemo(
@@ -60,7 +62,7 @@ export const useNextPositionValuesForIncrease = ({
         tradeType,
         triggerPrice,
         tokenTypeForSwapRoute,
-        isPnlInLeverage,
+        isPnlInLeverage: overrideIsPnlInLeverage ?? isPnlInLeverage,
       }),
     [
       collateralTokenAddress,
@@ -72,6 +74,7 @@ export const useNextPositionValuesForIncrease = ({
       isPnlInLeverage,
       leverage,
       marketAddress,
+      overrideIsPnlInLeverage,
       positionKey,
       strategy,
       tokenTypeForSwapRoute,
