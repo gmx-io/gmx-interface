@@ -373,7 +373,7 @@ const TableRow = memo(
         <TableCell>{`${formatAmount(position.leverage, 4, 2)}x`}</TableCell>
         <TableCell className="text-right">
           {liquidationPrice ? (
-            formatUsd(liquidationPrice)
+            formatUsd(liquidationPrice, { maxThreshold: "1000000" })
           ) : (
             <TooltipWithPortal
               position={index > 9 ? "top-end" : "bottom-end"}

@@ -27,7 +27,7 @@ function getLimitedDisplay(
   const min = ethers.utils.parseUnits(minThreshold, tokenDecimals).toBigInt();
   const absAmount = abs(amount);
 
-  if (absAmount > 0) {
+  if (absAmount === 0n) {
     return {
       symbol: "",
       value: absAmount,
