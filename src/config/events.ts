@@ -19,6 +19,23 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "all-incentives-launch",
+    title: "Incentives are live",
+    isActive: true,
+    endDate: "27 Mar 2024, 00:00",
+    bodyText: [
+      `Arbitrum STIP incentives are live for:`,
+      "",
+      "• Arbitrum GM Pools Liquidity.",
+      "• Arbitrum GMX V2 Trading.",
+    ],
+    link: {
+      text: "Read more.",
+      href: "https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3",
+      newTab: true,
+    },
+  },
+  {
     id: "incentives-launch",
     title: "Incentives are live",
     isActive: true,
