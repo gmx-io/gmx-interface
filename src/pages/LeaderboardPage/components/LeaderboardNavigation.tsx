@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 import cx from "classnames";
 import { getIcon } from "config/icons";
 import { useLeaderboardPageKey } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
-import { LeaderboardPageKey } from "domain/synthetics/leaderboard";
+import { LeaderboardPageKey, LeaderboardTimeframe } from "domain/synthetics/leaderboard";
 import { LEADERBOARD_PAGES, LEADERBOARD_PAGES_ORDER } from "domain/synthetics/leaderboard/constants";
 import { mustNeverExist } from "lib/types";
 import { useMemo } from "react";
@@ -16,6 +16,7 @@ type LeaderboardNavigationItem = {
   isCompetition: boolean;
   chainId?: number;
   href: string;
+  timeframe: LeaderboardTimeframe;
 };
 
 const sortingPoints: Record<LeaderboardNavigationItem["chip"], number> = {
@@ -67,9 +68,19 @@ export function LeaderboardNavigation() {
           isCompetition: page.key !== "leaderboard",
           href: page.href,
           chainId: page.isCompetition ? page.chainId : undefined,
+          timeframe: page.timeframe,
         };
       })
-      .sort((a, b) => sortingPoints[a.chip] - sortingPoints[b.chip]);
+      .sort((a, b) => {
+        const sortingPointA = sortingPoints[a.chip];
+        const sortingPointB = sortingPoints[b.chip];
+
+        if (sortingPointA === sortingPointB) {
+          return b.timeframe.from - a.timeframe.from;
+        }
+
+        return sortingPointA - sortingPointB;
+      });
 
     return items;
   }, [pageKey]);
