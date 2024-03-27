@@ -134,7 +134,7 @@ const tradeTypeLabels = {
 };
 
 export function TradeBox(p: Props) {
-  const formRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const isCursorInside = useCursorInside(formRef);
 
   const { avaialbleTokenOptions, shouldDisableValidation, allowedSlippage, setPendingTxns } = p;
@@ -1358,7 +1358,15 @@ export function TradeBox(p: Props) {
             onChange={onSelectTradeMode}
           />
 
-          <div ref={formRef}>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (!isCursorInside && (!isSubmitButtonDisabled || shouldDisableValidation)) {
+                onSubmit();
+              }
+            }}
+            ref={formRef}
+          >
             {(isSwap || isIncrease) && renderTokenInputs()}
             {isTrigger && renderDecreaseSizeInput()}
 
@@ -1410,7 +1418,7 @@ export function TradeBox(p: Props) {
               </ExchangeInfo.Group>
             </ExchangeInfo>
             <div className="Exchange-swap-button-container">{button}</div>
-          </div>
+          </form>
         </div>
       </div>
 
