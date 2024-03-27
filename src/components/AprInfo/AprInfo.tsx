@@ -9,15 +9,21 @@ import { useCallback } from "react";
 export function AprInfo({
   apr,
   incentiveApr,
+  isIncentiveActive,
   showTooltip = true,
 }: {
   apr: BigNumber | undefined;
   incentiveApr: BigNumber | undefined;
+  isIncentiveActive?: boolean;
   showTooltip?: boolean;
 }) {
   const totalApr = apr?.add(incentiveApr ?? 0) ?? BigNumber.from(0);
   const aprNode = <>{apr ? `${formatAmount(totalApr, 2, 2)}%` : "..."}</>;
   const renderTooltipContent = useCallback(() => {
+    if (!isIncentiveActive) {
+      return <StatsTooltipRow showDollar={false} label={t`Base APR`} value={`${formatAmount(apr, 2, 2)}%`} />;
+    }
+
     return (
       <>
         <StatsTooltipRow showDollar={false} label={t`Base APR`} value={`${formatAmount(apr, 2, 2)}%`} />
@@ -32,7 +38,8 @@ export function AprInfo({
         </Trans>
       </>
     );
-  }, [apr, incentiveApr]);
+  }, [apr, incentiveApr, isIncentiveActive]);
+
   return showTooltip && incentiveApr && incentiveApr.gt(0) ? (
     <Tooltip maxAllowedWidth={280} handle={aprNode} position="bottom-end" renderContent={renderTooltipContent} />
   ) : (

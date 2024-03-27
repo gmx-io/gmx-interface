@@ -1766,18 +1766,20 @@ export default function StakeV2({ setPendingTxns }) {
               <ExternalLink href="https://docs.gmx.io/docs/providing-liquidity/v1">GLP</ExternalLink> to earn rewards.
             </Trans>
             {earnMsg && <div className="Page-description">{earnMsg}</div>}
-            <div>
-              <Trans>
-                Liquidity and trading incentives program is live on Arbitrum.{" "}
-                <ExternalLink
-                  newTab
-                  href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3"
-                >
-                  Read more
-                </ExternalLink>
-                .
-              </Trans>
-            </div>
+            {(incentiveStats?.lp?.isActive || incentiveStats?.trading?.isActive) && (
+              <div>
+                <Trans>
+                  Liquidity and trading incentives program is live on Arbitrum.{" "}
+                  <ExternalLink
+                    newTab
+                    href="https://gmxio.notion.site/GMX-S-T-I-P-Incentives-Distribution-1a5ab9ca432b4f1798ff8810ce51fec3"
+                  >
+                    Read more
+                  </ExternalLink>
+                  .
+                </Trans>
+              </div>
+            )}
           </div>
         }
       />
@@ -2664,24 +2666,24 @@ export default function StakeV2({ setPendingTxns }) {
           </div>
         </div>
       </div>
-      {Object.values(incentiveStats || {}).some((incentiveType) => incentiveType?.isActive) && (
-        <>
-          <div className="mt-sm">
-            <PageTitle
-              title={t`Incentives & Prizes`}
-              subtitle={
-                <Trans>
-                  Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX
-                  V2.
-                  <br />
-                  Earn prizes by participating in GMX Trading Competitions.
-                </Trans>
-              }
-            />
-          </div>
-          <UserIncentiveDistributionList />
-        </>
-      )}
+      <div className="mt-sm">
+        <PageTitle
+          title={t`Incentives & Prizes`}
+          subtitle={
+            incentiveStats?.lp?.isActive || incentiveStats?.trading?.isActive ? (
+              <Trans>
+                Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX
+                V2.
+                <br />
+                Earn prizes by participating in GMX Trading Competitions.
+              </Trans>
+            ) : (
+              <Trans>Earn prizes by participating in GMX Trading Competitions.</Trans>
+            )
+          }
+        />
+      </div>
+      <UserIncentiveDistributionList />
       <Footer />
     </div>
   );
