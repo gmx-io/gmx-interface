@@ -34,6 +34,7 @@ export type MarketStat = {
   marketInfo: MarketInfo;
   poolValueUsd: BigNumber;
   availableLiquidity: BigNumber;
+  maxLiquidity: BigNumber;
   netFeeLong: BigNumber;
   netFeeShort: BigNumber;
   // fundingRateLong: BigNumber;
@@ -137,6 +138,7 @@ function marketsInfoDataToIndexTokensStats(marketsInfoData: MarketsInfoData): In
       netFeeShort,
       availableLiquidity,
       poolValueUsd,
+      maxLiquidity,
     });
   }
 
@@ -284,11 +286,11 @@ function MarketsListMobile({ indexTokensStats }: { indexTokensStats: IndexTokenS
                   </div>
                   <div>
                     <Tooltip
-                      handle={formatUsd(stats.totalAvailableLiquidity)}
+                      handle={formatUsd(stats.totalMaxLiquidity)}
                       className="MarketList-mobile-tvl-tooltip"
                       renderContent={() => (
                         <>
-                          {stats.marketsStats.map(({ marketInfo, availableLiquidity }) => (
+                          {stats.marketsStats.map(({ marketInfo, maxLiquidity }) => (
                             <StatsTooltipRow
                               key={marketInfo.marketTokenAddress}
                               showDollar={false}
@@ -298,7 +300,7 @@ function MarketsListMobile({ indexTokensStats }: { indexTokensStats: IndexTokenS
                                   <span className="subtext lh-1">[{getMarketPoolName(marketInfo)}]</span>
                                 </div>
                               }
-                              value={formatUsd(availableLiquidity)}
+                              value={formatUsd(maxLiquidity)}
                             />
                           ))}
                         </>
@@ -392,10 +394,10 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
       <td>
         <Tooltip
           className="nowrap"
-          handle={formatUsd(stats.totalAvailableLiquidity)}
+          handle={formatUsd(stats.totalMaxLiquidity)}
           renderContent={() => (
             <>
-              {stats.marketsStats.map(({ marketInfo, availableLiquidity }) => (
+              {stats.marketsStats.map(({ marketInfo, maxLiquidity }) => (
                 <StatsTooltipRow
                   key={marketInfo.marketTokenAddress}
                   showDollar={false}
@@ -405,7 +407,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
                       <span className="subtext lh-1">[{getMarketPoolName(marketInfo)}]</span>
                     </div>
                   }
-                  value={formatUsd(availableLiquidity)}
+                  value={formatUsd(maxLiquidity)}
                 />
               ))}
             </>
