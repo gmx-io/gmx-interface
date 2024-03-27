@@ -13,7 +13,7 @@ import { getProvider } from "lib/rpc";
 
 function useEventToast() {
   const isHome = isHomeSite();
-  const [visited, setVisited] = useLocalStorage("visited-announcements", []);
+  const [visited, setVisited] = useLocalStorage<string[]>("visited-announcements", []);
   const { chainId } = useChainId();
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
   const incentiveStats = useIncentiveStats(ARBITRUM);
@@ -25,13 +25,19 @@ function useEventToast() {
       return;
     }
 
-    const provider = getProvider(undefined, chainId);
-    provider.getBlock().then((block) => {
-      const now = Date.now() / 1000;
-      if (now - block.timestamp > 60) {
-        setIsArbitrumDown(true);
-      }
-    });
+    async function helper() {
+      const provider = getProvider(undefined, chainId);
+      const blockNumber = await provider.getBlockNumber();
+
+      provider.getBlock(blockNumber).then((block) => {
+        const now = Date.now() / 1000;
+        if (now - block.timestamp > 60) {
+          setIsArbitrumDown(true);
+        }
+      });
+    }
+
+    helper();
   }, [setIsArbitrumDown, chainId]);
 
   const isAdaptiveFundingActiveSomeMarkets = useMemo(() => {
@@ -63,10 +69,12 @@ function useEventToast() {
 
     eventsData
       .filter((event) => event.isActive)
-      .filter((event) => !isFuture(parse(event.startDate + ", +00", "d MMM yyyy, H:mm, x", new Date())))
+      .filter(
+        (event) => !event.startDate || !isFuture(parse(event.startDate + ", +00", "d MMM yyyy, H:mm, x", new Date()))
+      )
       .filter((event) => isFuture(parse(event.endDate + ", +00", "d MMM yyyy, H:mm, x", new Date())))
       .filter((event) => Array.isArray(visited) && !visited.includes(event.id))
-      .filter((event) => !event.networks || event.chains.includes(chainId))
+      .filter((event) => !event.chains || event.chains.includes(chainId))
       .filter((event) => !(event.id in validationParams) || validationParams[event.id])
       .forEach((event) => {
         toast.custom(
@@ -74,11 +82,10 @@ function useEventToast() {
             <EventToast
               event={event}
               id={event.id}
-              t={t}
+              toast={t}
               onClick={() => {
                 toast.dismiss(event.id);
-                visited.push(event.id);
-                setVisited(visited);
+                setVisited((x) => (x ? [...x, event.id] : [event.id]));
               }}
             />
           ),
