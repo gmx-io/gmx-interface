@@ -3175,6 +3175,7 @@ msgstr ""
 #: src/components/Synthetics/PositionList/PositionList.tsx
 #: src/components/Synthetics/PositionSeller/PositionSeller.tsx
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
+#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark Price"
 msgstr "Precio de Referencia"
@@ -4284,6 +4285,10 @@ msgstr "Precio en Arbitrum"
 #: src/pages/Stake/StakeV2.js
 msgid "Price on Avalanche"
 msgstr "Precio en Avalanche"
+
+#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+msgid "Price to Change"
+msgstr ""
 
 #: src/pages/Actions/Actions.js
 msgid "Profit"
