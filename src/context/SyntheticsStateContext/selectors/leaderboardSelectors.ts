@@ -158,6 +158,22 @@ export const selectLeaderboardRankedAccounts = createEnhancedSelector(function s
   return accounts.filter((a) => a.hasRank);
 });
 
+export const selectLeaderboardRankedAccountsByPnl = createEnhancedSelector(
+  function selectLeaderboardRankedAccountsByPnl(q) {
+    const accounts = q(selectLeaderboardRankedAccounts);
+    if (!accounts) return undefined;
+    return [...accounts].sort((a, b) => (b.totalQualifyingPnl - a.totalQualifyingPnl > 0n ? 1 : -1));
+  }
+);
+
+export const selectLeaderboardRankedAccountsByPnlPercentage = createEnhancedSelector(
+  function selectLeaderboardRankedAccountsByPnlPercentage(q) {
+    const accounts = q(selectLeaderboardRankedAccounts);
+    if (!accounts) return undefined;
+    return [...accounts].sort((a, b) => (b.pnlPercentage - a.pnlPercentage > 0n ? 1 : -1));
+  }
+);
+
 export const selectLeaderboardAccountsRanks = createEnhancedSelector(function selectLeaderboardAccountsRanks(q) {
   const accounts = q(selectLeaderboardRankedAccounts);
   const ranks = { pnl: new Map<string, number>(), pnlPercentage: new Map<string, number>() };

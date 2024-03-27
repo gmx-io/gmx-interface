@@ -18,13 +18,21 @@ import { formatDate } from "lib/dates";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
+import { Link } from "react-router-dom";
 
-const INCENTIVE_DISTRIBUTION_TYPEID_MAP = {
-  1001: "GM Airdrop",
-  1002: "GLP to GM Airdrop",
-  1003: "TRADING Airdrop",
+const INCENTIVE_TYPE_MAP = {
+  1001: t`GM Airdrop`,
+  1002: t`GLP to GM Airdrop`,
+  1003: t`TRADING Airdrop`,
 };
+
+const INCENTIVE_TOOLTIP_MAP = {
+  2001: { link: "/competitions/march_13-20_2024", text: t`EIP-4844, 13-20 Mar` },
+  2002: { link: "/competitions/march_20-27_2024", text: t`EIP-4844, 20-27 Mar` },
+};
+
+type NormalizedIncentiveData = ReturnType<typeof getNormalizedIncentive>;
 
 function getNormalizedIncentive(incentive: UserIncentiveData, tokens: Token[]) {
   const tokenIncentiveDetails = incentive.tokens.map((tokenAddress, index) => {
@@ -40,8 +48,10 @@ function getNormalizedIncentive(incentive: UserIncentiveData, tokens: Token[]) {
   const totalUsd = tokenIncentiveDetails.reduce((total, tokenInfo) => total.add(tokenInfo.tokenUsd), BigNumber.from(0));
 
   return {
+    ...incentive,
     tokenIncentiveDetails,
     totalUsd,
+    typeId: Number(incentive.typeId),
   };
 }
 
@@ -52,14 +62,10 @@ export default function UserIncentiveDistributionList() {
   const tokens = getTokens(chainId);
   const userIncentiveData = useUserIncentiveData(chainId, account);
 
-  const normalizedIncentiveData = useMemo(() => {
-    return userIncentiveData?.data?.map((incentive) => {
-      return {
-        ...incentive,
-        ...getNormalizedIncentive(incentive, tokens),
-      };
-    });
-  }, [userIncentiveData, tokens]);
+  const normalizedIncentiveData: NormalizedIncentiveData[] = useMemo(
+    () => userIncentiveData?.data?.map((incentive) => getNormalizedIncentive(incentive, tokens)) ?? [],
+    [userIncentiveData, tokens]
+  );
 
   const { currentPage, getCurrentData, setCurrentPage, pageCount } = usePagination(
     "UserIncentiveDistributionList",
@@ -107,44 +113,62 @@ export default function UserIncentiveDistributionList() {
               </tr>
             </thead>
             <tbody>
-              {currentIncentiveData?.map((incentive) => {
-                const { tokenIncentiveDetails, totalUsd, id, timestamp, typeId, transactionHash } = incentive;
-                const explorerURL = getExplorerUrl(chainId);
-                return (
-                  <tr key={id}>
-                    <td data-label="Date">{formatDate(timestamp)}</td>
-                    <td data-label="Type">{INCENTIVE_DISTRIBUTION_TYPEID_MAP[typeId]}</td>
-                    <td data-label="Amount">
-                      <Tooltip
-                        handle={formatUsd(totalUsd)}
-                        className="nowrap"
-                        renderContent={() => {
-                          return tokenIncentiveDetails.map((tokenInfo) => (
-                            <StatsTooltipRow
-                              key={tokenInfo.id}
-                              showDollar={false}
-                              label={tokenInfo.tokenInfo?.symbol}
-                              value={formatTokenAmount(tokenInfo.tokenAmount, tokenInfo.tokenInfo?.decimals, "", {
-                                useCommas: true,
-                              })}
-                            />
-                          ));
-                        }}
-                      />
-                    </td>
-                    <td data-label="Transaction">
-                      <ExternalLink href={`${explorerURL}tx/${transactionHash}`}>
-                        {shortenAddressOrEns(transactionHash, 13)}
-                      </ExternalLink>
-                    </td>
-                  </tr>
-                );
-              })}
+              {currentIncentiveData?.map((incentive) => (
+                <IncentiveItem incentive={incentive} key={incentive.id} />
+              ))}
             </tbody>
           </table>
         </div>
       </Card>
       <Pagination page={currentPage} pageCount={pageCount} onPageChange={(page) => setCurrentPage(page)} />
     </div>
+  );
+}
+
+function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
+  const { tokenIncentiveDetails, totalUsd, timestamp, typeId, transactionHash } = incentive;
+  const { chainId } = useChainId();
+  const explorerURL = getExplorerUrl(chainId);
+
+  const isCompetition = typeId > 2000 && typeId < 3000;
+  const typeStr = isCompetition ? t`COMPETITION Airdrop` : INCENTIVE_TYPE_MAP[typeId];
+  const tooltipData = INCENTIVE_TOOLTIP_MAP[typeId];
+
+  const renderTotalTooltipContent = useCallback(() => {
+    return tokenIncentiveDetails.map((tokenInfo) => (
+      <StatsTooltipRow
+        key={tokenInfo.id}
+        showDollar={false}
+        label={tokenInfo.tokenInfo?.symbol}
+        value={formatTokenAmount(tokenInfo.tokenAmount, tokenInfo.tokenInfo?.decimals, "", {
+          useCommas: true,
+        })}
+      />
+    ));
+  }, [tokenIncentiveDetails]);
+  const renderTooltipTypeContent = useCallback(
+    () =>
+      tooltipData ? (
+        <Link className="link-underline" to={tooltipData.link}>
+          {tooltipData.text}
+        </Link>
+      ) : null,
+    [tooltipData]
+  );
+  const type = tooltipData ? <Tooltip handle={typeStr} renderContent={renderTooltipTypeContent} /> : typeStr;
+
+  return (
+    <tr>
+      <td data-label="Date">{formatDate(timestamp)}</td>
+      <td data-label="Type">{type}</td>
+      <td data-label="Amount">
+        <Tooltip handle={formatUsd(totalUsd)} className="nowrap" renderContent={renderTotalTooltipContent} />
+      </td>
+      <td data-label="Transaction">
+        <ExternalLink href={`${explorerURL}tx/${transactionHash}`}>
+          {shortenAddressOrEns(transactionHash, 13)}
+        </ExternalLink>
+      </td>
+    </tr>
   );
 }

@@ -10,6 +10,7 @@ import {
   getMintableMarketTokens,
   getTotalGmInfo,
 } from "domain/synthetics/markets";
+import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
@@ -60,6 +61,7 @@ export function GmList({
   const isMobile = useMedia("(max-width: 1100px)");
   const daysConsidered = useDaysConsideredInMarketsApr();
   const { markets: sortedMarketsByIndexToken } = useSortedPoolsWithIndexToken(marketsInfoData, marketTokensData);
+  const isLpIncentiveActive = useIncentiveStats()?.lp?.isActive ?? false;
 
   const userTotalGmInfo = useMemo(() => {
     if (!active) return;
@@ -223,7 +225,7 @@ export function GmList({
                       </td>
 
                       <td>
-                        <AprInfo apr={apr} incentiveApr={incentiveApr} />
+                        <AprInfo apr={apr} incentiveApr={incentiveApr} isIncentiveActive={isLpIncentiveActive} />
                       </td>
 
                       <td className="GmList-actions">
@@ -374,7 +376,7 @@ export function GmList({
                         <Trans>APR</Trans>
                       </div>
                       <div>
-                        <AprInfo apr={apr} incentiveApr={incentiveApr} />
+                        <AprInfo apr={apr} incentiveApr={incentiveApr} isIncentiveActive={isLpIncentiveActive} />
                       </div>
                     </div>
 

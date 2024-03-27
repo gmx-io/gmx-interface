@@ -7,6 +7,7 @@ import { abs, formatAmount, formatUsd } from "lib/bigint";
 import { useDebounce } from "lib/useDebounce";
 import { ReactNode, memo, useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 
+import SearchInput from "components/SearchInput/SearchInput";
 import { TopAccountsSkeleton } from "components/Skeleton/Skeleton";
 import { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -18,10 +19,8 @@ import {
 } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import { CompetitionType, LeaderboardAccount, RemoteData } from "domain/synthetics/leaderboard";
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "domain/synthetics/leaderboard/constants";
-import { createBreakpoint } from "react-use";
-import SearchInput from "components/SearchInput/SearchInput";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { USD_DECIMALS } from "lib/legacy";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 function getRowClassname(rank: number | null, competition: CompetitionType | undefined, pinned: boolean) {
   if (pinned) return cx("LeaderboardRankRow-Pinned", "Table_tr");
@@ -36,8 +35,6 @@ function getWinnerRankClassname(rank: number | null, competition: CompetitionTyp
 
   return undefined;
 }
-
-const useBreakpoint = createBreakpoint({ XL: 1200, L: 1000, M: 800, S: 500 });
 
 type LeaderboardAccountField = keyof LeaderboardAccount;
 
@@ -154,8 +151,6 @@ export function LeaderboardAccountsTable({
     [direction, orderBy, sortingEnabled]
   );
 
-  const breakpoint = useBreakpoint();
-
   const content = isLoading ? (
     <TopAccountsSkeleton count={skeletonCount} />
   ) : (
@@ -167,7 +162,6 @@ export function LeaderboardAccountsTable({
           pinned
           rank={pinnedRowData.rank}
           activeCompetition={activeCompetition}
-          breakpoint={breakpoint}
         />
       )}
       {rowsData.length ? (
@@ -180,7 +174,6 @@ export function LeaderboardAccountsTable({
               pinned={false}
               rank={rank}
               activeCompetition={activeCompetition}
-              breakpoint={breakpoint}
             />
           );
         })
@@ -215,12 +208,7 @@ export function LeaderboardAccountsTable({
                 tooltipPosition="bottom-start"
                 columnName="rank"
               />
-              <TableHeaderCell
-                title={t`Address`}
-                width={(p = "XL") => ({ XL: 16, L: 16, M: 16, S: 10 }[p] || 16)}
-                tooltipPosition="bottom-end"
-                columnName="account"
-              />
+              <TableHeaderCell title={t`Address`} width={16} tooltipPosition="bottom-end" columnName="account" />
               <TableHeaderCell
                 title={t`PnL ($)`}
                 width={12}
@@ -258,7 +246,7 @@ export function LeaderboardAccountsTable({
               />
               <TableHeaderCell
                 title={t`Avg. Lev.`}
-                width={0}
+                width={1}
                 tooltip={t`Average leverage used.`}
                 tooltipPosition="bottom-end"
                 onClick={handleColumnClick}
@@ -340,7 +328,6 @@ const TableRow = memo(
     pinned,
     rank,
     activeCompetition,
-    breakpoint,
     index,
   }: {
     account: LeaderboardAccount;
@@ -348,9 +335,8 @@ const TableRow = memo(
     pinned: boolean;
     rank: number | null;
     activeCompetition: CompetitionType | undefined;
-    breakpoint: string | undefined;
   }) => {
-    const shouldRenderValue = rank !== null || !activeCompetition;
+    const shouldRenderValue = true;
     const renderWinsLossesTooltipContent = useCallback(() => {
       if (!shouldRenderValue) return null;
       const winRate = `${((account.wins / (account.wins + account.losses)) * 100).toFixed(2)}%`;
@@ -374,7 +360,7 @@ const TableRow = memo(
           </span>
         </TableCell>
         <TableCell>
-          <AddressView size={20} address={account.account} breakpoint={breakpoint} />
+          <AddressView size={20} address={account.account} breakpoint="XL" />
         </TableCell>
         <TableCell>
           {shouldRenderValue ? (
@@ -462,7 +448,8 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
   }, [hasSomeCapital, isCompetition, rank]);
   const tooltipContent = useCallback(() => message, [message]);
 
-  if (rank === null) return <TooltipWithPortal handle={t`NA`} renderContent={tooltipContent} />;
+  if (rank === null)
+    return <TooltipWithPortal handleClassName="text-red" handle={t`NA`} renderContent={tooltipContent} />;
 
   return <span>{rank}</span>;
 });
