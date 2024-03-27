@@ -8,8 +8,8 @@ import useWallet from "lib/wallets/useWallet";
 import useSWR from "swr";
 
 export function useGasPrice(chainId: number) {
-  const { signer } = useWallet();
   const settings = useSettings();
+  const { signer } = useWallet();
 
   const executionFeeConfig = EXECUTION_FEE_CONFIG_V2[chainId];
 
