@@ -2,7 +2,7 @@ import { TradeMode, TradeType } from "domain/synthetics/trade/types";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { USD_DECIMALS } from "lib/legacy";
 import { parseValue } from "lib/numbers";
-import { SyntheticsTradeState } from "../SyntheticsStateContextProvider";
+import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createEnhancedSelector } from "../utils";
 import { selectClosingPositionKey, selectPositionsInfoData, selectSavedIsPnlInLeverage } from "./globalSelectors";
 import { makeSelectDecreasePositionAmounts, makeSelectNextPositionValuesForDecrease } from "./tradeSelectors";
@@ -11,23 +11,22 @@ import {
   willPositionCollateralBeSufficientForPosition,
 } from "domain/synthetics/positions";
 
-export const selectPositionSeller = (state: SyntheticsTradeState) => state.positionSeller;
+export const selectPositionSeller = (state: SyntheticsState) => state.positionSeller;
 
-export const selectPositionSellerOrderOption = (state: SyntheticsTradeState) => state.positionSeller.orderOption;
-export const selectPositionSellerTriggerPriceInputValue = (state: SyntheticsTradeState) =>
+export const selectPositionSellerOrderOption = (state: SyntheticsState) => state.positionSeller.orderOption;
+export const selectPositionSellerTriggerPriceInputValue = (state: SyntheticsState) =>
   state.positionSeller.triggerPriceInputValue;
-export const selectPositionSellerKeepLeverageRaw = (state: SyntheticsTradeState) => state.positionSeller.keepLeverage;
-export const selectPositionSellerDefaultTriggerAcceptablePriceImpactBps = (state: SyntheticsTradeState) =>
+export const selectPositionSellerKeepLeverageRaw = (state: SyntheticsState) => state.positionSeller.keepLeverage;
+export const selectPositionSellerDefaultTriggerAcceptablePriceImpactBps = (state: SyntheticsState) =>
   state.positionSeller.defaultTriggerAcceptablePriceImpactBps;
-export const selectPositionSellerSelectedTriggerAcceptablePriceImpactBps = (state: SyntheticsTradeState) =>
+export const selectPositionSellerSelectedTriggerAcceptablePriceImpactBps = (state: SyntheticsState) =>
   state.positionSeller.selectedTriggerAcceptablePriceImpactBps;
-export const selectPositionSellerCloseUsdInputValue = (state: SyntheticsTradeState) =>
+export const selectPositionSellerCloseUsdInputValue = (state: SyntheticsState) =>
   state.positionSeller.closeUsdInputValue;
-export const selectPositionSellerReceiveTokenAddress = (state: SyntheticsTradeState) =>
+export const selectPositionSellerReceiveTokenAddress = (state: SyntheticsState) =>
   state.positionSeller.receiveTokenAddress;
-export const selectPositionSellerAllowedSlippage = (state: SyntheticsTradeState) =>
-  state.positionSeller.allowedSlippage;
-export const selectPositionSellerIsSubmitting = (state: SyntheticsTradeState) => state.positionSeller.isSubmitting;
+export const selectPositionSellerAllowedSlippage = (state: SyntheticsState) => state.positionSeller.allowedSlippage;
+export const selectPositionSellerIsSubmitting = (state: SyntheticsState) => state.positionSeller.isSubmitting;
 export const selectPositionSellerPosition = createEnhancedSelector((q) => {
   const positionKey = q(selectClosingPositionKey);
   return q((s) => (positionKey ? selectPositionsInfoData(s)?.[positionKey] : undefined));

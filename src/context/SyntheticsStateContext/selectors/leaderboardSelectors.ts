@@ -1,33 +1,33 @@
 import { LeaderboardAccount, LeaderboardPositionBase } from "domain/synthetics/leaderboard";
 import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
 import { MarketInfo } from "domain/synthetics/markets";
-import { SyntheticsTradeState } from "../SyntheticsStateContextProvider";
+import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createEnhancedSelector } from "../utils";
 import { selectAccount, selectMarketsInfoData } from "./globalSelectors";
 
 const BASIS_POINTS_DIVISOR = 10000n;
 
-export function selectLeaderboardAccountBases(s: SyntheticsTradeState) {
+export function selectLeaderboardAccountBases(s: SyntheticsState) {
   return s.leaderboard.accounts;
 }
-export function selectLeaderboardPositionBases(s: SyntheticsTradeState) {
+export function selectLeaderboardPositionBases(s: SyntheticsState) {
   return s.leaderboard.positions;
 }
 
-export function selectLeaderboardType(s: SyntheticsTradeState) {
+export function selectLeaderboardType(s: SyntheticsState) {
   return s.leaderboard.leaderboardType;
 }
-export function selectLeaderboardSetType(s: SyntheticsTradeState) {
+export function selectLeaderboardSetType(s: SyntheticsState) {
   return s.leaderboard.setLeaderboardType;
 }
 
-export function selectLeaderboardTimeframe(s: SyntheticsTradeState) {
+export function selectLeaderboardTimeframe(s: SyntheticsState) {
   return s.leaderboard.timeframe;
 }
-export function selectLeaderboardIsEndInFuture(s: SyntheticsTradeState) {
+export function selectLeaderboardIsEndInFuture(s: SyntheticsState) {
   return s.leaderboard.isEndInFuture;
 }
-export function selectLeaderboardIsStartInFuture(s: SyntheticsTradeState) {
+export function selectLeaderboardIsStartInFuture(s: SyntheticsState) {
   return s.leaderboard.isStartInFuture;
 }
 

@@ -6,11 +6,11 @@ import {
   sortPositionOrders,
 } from "domain/synthetics/orders";
 import { createEnhancedSelector, createSelectorFactory } from "../utils";
-import { SyntheticsTradeState } from "../SyntheticsStateContextProvider";
+import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { selectMarketsInfoData, selectPositionsInfoData, selectUiFeeFactor } from "./globalSelectors";
 import { makeSelectSwapRoutes } from "./tradeSelectors";
 
-const selectOrdersInfoData = (s: SyntheticsTradeState) => s.globals.ordersInfo.ordersInfoData;
+const selectOrdersInfoData = (s: SyntheticsState) => s.globals.ordersInfo.ordersInfoData;
 
 export const makeSelectOrderErrorByOrderKey = createSelectorFactory((orderId: string | undefined) =>
   createEnhancedSelector(function selectOrderErrorByOrderId(q): OrderErrors {

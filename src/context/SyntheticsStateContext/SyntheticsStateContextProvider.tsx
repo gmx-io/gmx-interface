@@ -22,7 +22,7 @@ import { PositionEditorState, usePositionEditorState } from "domain/synthetics/t
 
 export type SyntheticsPageType = "actions" | "trade" | "pools" | "leaderboard" | "competitions";
 
-export type SyntheticsTradeState = {
+export type SyntheticsState = {
   pageType: SyntheticsPageType;
   globals: {
     chainId: number;
@@ -47,7 +47,7 @@ export type SyntheticsTradeState = {
   positionEditor: PositionEditorState;
 };
 
-const StateCtx = createContext<SyntheticsTradeState | null>(null);
+const StateCtx = createContext<SyntheticsState | null>(null);
 
 export function SyntheticsStateContextProvider({
   children,
@@ -60,7 +60,7 @@ export function SyntheticsStateContextProvider({
   savedIsPnlInLeverage: boolean;
   savedShowPnlAfterFees: boolean;
   skipLocalReferralCode: boolean;
-  pageType: SyntheticsTradeState["pageType"];
+  pageType: SyntheticsState["pageType"];
 }) {
   const { chainId: selectedChainId } = useChainId();
 
@@ -110,7 +110,7 @@ export function SyntheticsStateContextProvider({
   const positionEditorState = usePositionEditorState(chainId);
 
   const state = useMemo(() => {
-    const s: SyntheticsTradeState = {
+    const s: SyntheticsState = {
       pageType,
       globals: {
         chainId,
@@ -165,11 +165,10 @@ export function SyntheticsStateContextProvider({
   return <StateCtx.Provider value={state}>{children}</StateCtx.Provider>;
 }
 
-export function useSyntheticsStateSelector<Selected>(selector: (s: SyntheticsTradeState) => Selected) {
+export function useSyntheticsStateSelector<Selected>(selector: (s: SyntheticsState) => Selected) {
   const value = useContext(StateCtx);
   if (!value) {
     throw new Error("Used useSyntheticsStateSelector outside of SyntheticsStateContextProvider");
   }
-
-  return useContextSelector(StateCtx as Context<SyntheticsTradeState>, selector) as Selected;
+  return useContextSelector(StateCtx as Context<SyntheticsState>, selector) as Selected;
 }

@@ -7,14 +7,14 @@
 //   };
 
 import { BigNumber } from "ethers";
-import { SyntheticsTradeState } from "../SyntheticsStateContextProvider";
+import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createEnhancedSelector } from "../utils";
 import { selectPositionsInfoData } from "./globalSelectors";
 import { getMinCollateralFactorForPosition } from "domain/synthetics/positions";
 
-export const selectPositionEditorEditingPositionKey = (state: SyntheticsTradeState) =>
+export const selectPositionEditorEditingPositionKey = (state: SyntheticsState) =>
   state.positionEditor.editingPositionKey;
-export const selectPositionEditorSetEditingPositionKey = (state: SyntheticsTradeState) =>
+export const selectPositionEditorSetEditingPositionKey = (state: SyntheticsState) =>
   state.positionEditor.setEditingPositionKey;
 
 export const selectPositionEditorPosition = createEnhancedSelector((q) => {
