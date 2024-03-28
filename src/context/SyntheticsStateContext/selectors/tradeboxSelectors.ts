@@ -1,6 +1,9 @@
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import {
   selectAccount,
+  selectChainId,
+  selectGasLimits,
+  selectGasPrice,
   selectOrdersInfoData,
   selectPositionsInfoData,
   selectSavedIsPnlInLeverage,
@@ -22,9 +25,23 @@ import {
 import { USD_DECIMALS, getPositionKey } from "lib/legacy";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { createSelector, createSelectorDeprecated } from "../utils";
-import { isSwapOrderType } from "domain/synthetics/orders";
-import { SwapAmounts, TradeType, getSwapAmountsByFromValue, getSwapAmountsByToValue } from "domain/synthetics/trade";
+import { DecreasePositionSwapType, isSwapOrderType } from "domain/synthetics/orders";
+import {
+  SwapAmounts,
+  TradeFeesType,
+  TradeType,
+  getSwapAmountsByFromValue,
+  getSwapAmountsByToValue,
+  getTradeFees,
+} from "domain/synthetics/trade";
 import { convertToUsd } from "domain/synthetics/tokens";
+import {
+  estimateExecuteDecreaseOrderGasLimit,
+  estimateExecuteIncreaseOrderGasLimit,
+  estimateExecuteSwapOrderGasLimit,
+  getExecutionFee,
+} from "domain/synthetics/fees";
+import { mustNeverExist } from "lib/types";
 
 const selectOnlyOnTradeboxPage = <T>(s: SyntheticsState, selection: T) =>
   s.pageType === "trade" ? selection : undefined;
@@ -241,6 +258,173 @@ export const selectTradeboxTradeFlags = createSelectorDeprecated(
 export const selectTradeboxLeverage = createSelectorDeprecated([selectTradeboxLeverageOption], (leverageOption) =>
   BigNumber.from(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)))
 );
+
+export const selectTradeboxTradeFeesType = createSelector(function selectTradeboxTradeFeesType(
+  q
+): TradeFeesType | null {
+  const { isSwap, isIncrease, isTrigger } = q(selectTradeboxTradeFlags);
+
+  if (isSwap) {
+    const swapAmounts = q(selectTradeboxSwapAmounts)?.swapPathStats;
+    if (swapAmounts) return "swap";
+  }
+
+  if (isIncrease) {
+    const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
+    if (increaseAmounts) return "increase";
+  }
+
+  if (isTrigger) {
+    const decreaseAmounts = q(selectTradeboxDecreasePositionAmounts);
+    if (decreaseAmounts) return "decrease";
+  }
+
+  return null;
+});
+
+const selectTradeboxEstimatedGas = createSelector(function selectTradeboxEstimatedGas(q) {
+  const tradeFeesType = q(selectTradeboxTradeFeesType);
+
+  if (!tradeFeesType) return null;
+
+  const gasLimits = q(selectGasLimits);
+
+  if (!gasLimits) return null;
+
+  switch (tradeFeesType) {
+    case "swap": {
+      const swapAmounts = q(selectTradeboxSwapAmounts);
+
+      if (!swapAmounts || !swapAmounts.swapPathStats) return null;
+
+      return estimateExecuteSwapOrderGasLimit(gasLimits, {
+        swapsCount: swapAmounts.swapPathStats.swapPath.length,
+      });
+    }
+    case "increase": {
+      const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
+
+      if (!increaseAmounts) return null;
+
+      return estimateExecuteIncreaseOrderGasLimit(gasLimits, {
+        swapsCount: increaseAmounts.swapPathStats?.swapPath.length,
+      });
+    }
+    case "decrease": {
+      const decreaseAmounts = q(selectTradeboxDecreasePositionAmounts);
+
+      if (!decreaseAmounts) return null;
+
+      return estimateExecuteDecreaseOrderGasLimit(gasLimits, {
+        swapsCount: decreaseAmounts.decreaseSwapType === DecreasePositionSwapType.NoSwap ? 0 : 1,
+      });
+    }
+    case "edit":
+      return null;
+    default:
+      throw mustNeverExist(tradeFeesType);
+  }
+});
+
+export const selectTradeboxExecutionFee = createSelector(function selectTradeboxExecutionFee(q) {
+  const gasLimits = q(selectGasLimits);
+  if (!gasLimits) return undefined;
+
+  const tokensData = q(selectTokensData);
+  if (!tokensData) return undefined;
+
+  const gasPrice = q(selectGasPrice);
+  if (!gasPrice) return undefined;
+
+  const estimatedGas = q(selectTradeboxEstimatedGas);
+  if (!estimatedGas) return undefined;
+
+  const chainId = q(selectChainId);
+
+  return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice);
+});
+
+export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) {
+  const tradeFeesType = q(selectTradeboxTradeFeesType);
+
+  if (!tradeFeesType) return undefined;
+
+  const uiFeeFactor = q(selectUiFeeFactor);
+
+  switch (tradeFeesType) {
+    case "swap": {
+      const swapAmounts = q(selectTradeboxSwapAmounts);
+
+      if (!swapAmounts || !swapAmounts.swapPathStats) return undefined;
+
+      return getTradeFees({
+        isIncrease: false,
+        initialCollateralUsd: swapAmounts.usdIn,
+        sizeDeltaUsd: BigNumber.from(0),
+        swapSteps: swapAmounts.swapPathStats.swapSteps,
+        positionFeeUsd: BigNumber.from(0),
+        swapPriceImpactDeltaUsd: swapAmounts.swapPathStats.totalSwapPriceImpactDeltaUsd,
+        positionPriceImpactDeltaUsd: BigNumber.from(0),
+        priceImpactDiffUsd: BigNumber.from(0),
+        borrowingFeeUsd: BigNumber.from(0),
+        fundingFeeUsd: BigNumber.from(0),
+        feeDiscountUsd: BigNumber.from(0),
+        swapProfitFeeUsd: BigNumber.from(0),
+        uiFeeFactor,
+      });
+    }
+    case "increase": {
+      const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
+
+      if (!increaseAmounts) return undefined;
+
+      const selectedPosition = q(selectTradeboxSelectedPosition);
+
+      return getTradeFees({
+        isIncrease: true,
+        initialCollateralUsd: increaseAmounts.initialCollateralUsd,
+        sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+        swapSteps: increaseAmounts.swapPathStats?.swapSteps || [],
+        positionFeeUsd: increaseAmounts.positionFeeUsd,
+        swapPriceImpactDeltaUsd: increaseAmounts.swapPathStats?.totalSwapPriceImpactDeltaUsd || BigNumber.from(0),
+        positionPriceImpactDeltaUsd: increaseAmounts.positionPriceImpactDeltaUsd,
+        priceImpactDiffUsd: BigNumber.from(0),
+        borrowingFeeUsd: selectedPosition?.pendingBorrowingFeesUsd || BigNumber.from(0),
+        fundingFeeUsd: selectedPosition?.pendingFundingFeesUsd || BigNumber.from(0),
+        feeDiscountUsd: increaseAmounts.feeDiscountUsd,
+        swapProfitFeeUsd: BigNumber.from(0),
+        uiFeeFactor,
+      });
+    }
+    case "decrease": {
+      const decreaseAmounts = q(selectTradeboxDecreasePositionAmounts);
+
+      if (!decreaseAmounts) return undefined;
+
+      const selectedPosition = q(selectTradeboxSelectedPosition);
+
+      return getTradeFees({
+        isIncrease: false,
+        initialCollateralUsd: selectedPosition?.collateralUsd || BigNumber.from(0),
+        sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
+        swapSteps: [],
+        positionFeeUsd: decreaseAmounts.positionFeeUsd,
+        swapPriceImpactDeltaUsd: BigNumber.from(0),
+        positionPriceImpactDeltaUsd: decreaseAmounts.positionPriceImpactDeltaUsd,
+        priceImpactDiffUsd: decreaseAmounts.priceImpactDiffUsd,
+        borrowingFeeUsd: decreaseAmounts.borrowingFeeUsd,
+        fundingFeeUsd: decreaseAmounts.fundingFeeUsd,
+        feeDiscountUsd: decreaseAmounts.feeDiscountUsd,
+        swapProfitFeeUsd: decreaseAmounts.swapProfitFeeUsd,
+        uiFeeFactor,
+      });
+    }
+    case "edit":
+      return undefined;
+    default:
+      throw mustNeverExist(tradeFeesType);
+  }
+});
 
 const selectNextValuesForIncrease = createSelector(
   (q): Parameters<typeof makeSelectNextPositionValuesForIncrease>[0] => {

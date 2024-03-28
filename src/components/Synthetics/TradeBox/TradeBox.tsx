@@ -33,7 +33,9 @@ import { useSwapRoutes, useTradeRatios } from "context/SyntheticsStateContext/ho
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxDecreasePositionAmounts,
+  selectTradeboxExecutionFee,
   selectTradeboxExistingOrder,
+  selectTradeboxFees,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxLeverage,
   selectTradeboxNextLeverageWithoutPnl,
@@ -42,18 +44,12 @@ import {
   selectTradeboxState,
   selectTradeboxSwapAmounts,
   selectTradeboxSwapRoutes,
+  selectTradeboxTradeFeesType,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useHasOutdatedUi } from "domain/legacy";
-import {
-  estimateExecuteDecreaseOrderGasLimit,
-  estimateExecuteIncreaseOrderGasLimit,
-  estimateExecuteSwapOrderGasLimit,
-  getExecutionFee,
-} from "domain/synthetics/fees";
 import { getAvailableUsdLiquidityForPosition, getMarketIndexName } from "domain/synthetics/markets";
-import { DecreasePositionSwapType } from "domain/synthetics/orders";
 import {
   formatLeverage,
   formatLiquidationPrice,
@@ -64,14 +60,12 @@ import {
 import { convertToUsd } from "domain/synthetics/tokens";
 import {
   AvailableTokenOptions,
-  TradeFeesType,
   TradeMode,
   TradeType,
   getExecutionPriceForDecrease,
   getIncreasePositionAmounts,
   getMarkPrice,
   getNextPositionValuesForIncreaseTrade,
-  getTradeFees,
 } from "domain/synthetics/trade";
 import { useAvailableMarketsOptions } from "domain/synthetics/trade/useAvailableMarketsOptions";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
@@ -114,7 +108,6 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { CollateralSelectorRow } from "./CollateralSelectorRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 
-import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { helperToast } from "lib/helperToast";
 import { useHistory } from "react-router-dom";
 import "./TradeBox.scss";
@@ -260,110 +253,9 @@ export function TradeBox(p: Props) {
   const existingOrder = useSelector(selectTradeboxExistingOrder);
   const leverage = useSelector(selectTradeboxLeverage);
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
-  const gasLimits = useSelector(selectGasLimits);
-  const gasPrice = useSelector(selectGasPrice);
-
-  const { fees, feesType, executionFee } = useMemo(() => {
-    if (!gasLimits || !gasPrice || !tokensData) {
-      return {};
-    }
-
-    if (isSwap && swapAmounts?.swapPathStats) {
-      const estimatedGas = estimateExecuteSwapOrderGasLimit(gasLimits, {
-        swapsCount: swapAmounts.swapPathStats.swapPath.length,
-      });
-
-      return {
-        fees: getTradeFees({
-          isIncrease: false,
-          initialCollateralUsd: swapAmounts.usdIn,
-          sizeDeltaUsd: BigNumber.from(0),
-          swapSteps: swapAmounts.swapPathStats.swapSteps,
-          positionFeeUsd: BigNumber.from(0),
-          swapPriceImpactDeltaUsd: swapAmounts.swapPathStats.totalSwapPriceImpactDeltaUsd,
-          positionPriceImpactDeltaUsd: BigNumber.from(0),
-          priceImpactDiffUsd: BigNumber.from(0),
-          borrowingFeeUsd: BigNumber.from(0),
-          fundingFeeUsd: BigNumber.from(0),
-          feeDiscountUsd: BigNumber.from(0),
-          swapProfitFeeUsd: BigNumber.from(0),
-          uiFeeFactor,
-        }),
-        executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
-        feesType: "swap" as TradeFeesType,
-      };
-    }
-
-    if (isIncrease && increaseAmounts) {
-      const estimatedGas = estimateExecuteIncreaseOrderGasLimit(gasLimits, {
-        swapsCount: increaseAmounts.swapPathStats?.swapPath.length,
-      });
-
-      return {
-        fees: getTradeFees({
-          isIncrease: true,
-          initialCollateralUsd: increaseAmounts.initialCollateralUsd,
-          sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
-          swapSteps: increaseAmounts.swapPathStats?.swapSteps || [],
-          positionFeeUsd: increaseAmounts.positionFeeUsd,
-          swapPriceImpactDeltaUsd: increaseAmounts.swapPathStats?.totalSwapPriceImpactDeltaUsd || BigNumber.from(0),
-          positionPriceImpactDeltaUsd: increaseAmounts.positionPriceImpactDeltaUsd,
-          priceImpactDiffUsd: BigNumber.from(0),
-          borrowingFeeUsd: selectedPosition?.pendingBorrowingFeesUsd || BigNumber.from(0),
-          fundingFeeUsd: selectedPosition?.pendingFundingFeesUsd || BigNumber.from(0),
-          feeDiscountUsd: increaseAmounts.feeDiscountUsd,
-          swapProfitFeeUsd: BigNumber.from(0),
-          uiFeeFactor,
-        }),
-        executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
-        feesType: "increase" as TradeFeesType,
-      };
-    }
-
-    if (isTrigger && decreaseAmounts) {
-      const swapsCount = decreaseAmounts.decreaseSwapType === DecreasePositionSwapType.NoSwap ? 0 : 1;
-      const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
-        swapsCount,
-      });
-
-      return {
-        fees: getTradeFees({
-          isIncrease: false,
-          initialCollateralUsd: selectedPosition?.collateralUsd || BigNumber.from(0),
-          sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
-          swapSteps: [],
-          positionFeeUsd: decreaseAmounts.positionFeeUsd,
-          swapPriceImpactDeltaUsd: BigNumber.from(0),
-          positionPriceImpactDeltaUsd: decreaseAmounts.positionPriceImpactDeltaUsd,
-          priceImpactDiffUsd: decreaseAmounts.priceImpactDiffUsd,
-          borrowingFeeUsd: decreaseAmounts.borrowingFeeUsd,
-          fundingFeeUsd: decreaseAmounts.fundingFeeUsd,
-          feeDiscountUsd: decreaseAmounts.feeDiscountUsd,
-          swapProfitFeeUsd: decreaseAmounts.swapProfitFeeUsd,
-          uiFeeFactor,
-        }),
-        executionFee: getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice),
-        feesType: "decrease" as TradeFeesType,
-      };
-    }
-
-    return {};
-  }, [
-    gasLimits,
-    gasPrice,
-    tokensData,
-    isSwap,
-    swapAmounts,
-    isIncrease,
-    increaseAmounts,
-    isTrigger,
-    decreaseAmounts,
-    uiFeeFactor,
-    chainId,
-    selectedPosition?.pendingBorrowingFeesUsd,
-    selectedPosition?.pendingFundingFeesUsd,
-    selectedPosition?.collateralUsd,
-  ]);
+  const fees = useSelector(selectTradeboxFees);
+  const feesType = useSelector(selectTradeboxTradeFeesType);
+  const executionFee = useSelector(selectTradeboxExecutionFee);
 
   const priceImpactWarningState = usePriceImpactWarningState({
     positionPriceImpact: fees?.positionPriceImpact,
