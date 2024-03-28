@@ -31,12 +31,12 @@ import {
   useSubaccountCancelOrdersDetailsMessage,
 } from "context/SubaccountContext/SubaccountContext";
 import {
+  useClosingPositionKeyState,
   useIsOrdersLoading,
   useIsPositionsLoading,
   useMarketsInfoData,
   useOrdersInfoData,
   usePositionsInfoData,
-  useSavedIsPnlInLeverage,
   useTokensData,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
@@ -57,11 +57,11 @@ import useWallet from "lib/wallets/useWallet";
 import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
 import { useRebatesInfo } from "domain/synthetics/fees/useRebatesInfo";
 import { calcTotalRebateUsd } from "components/Synthetics/Claims/utils";
+import { useOrderErrorsCount, useOrdersCount } from "context/SyntheticsStateContext/hooks/orderHooks";
 
 export type Props = {
   shouldDisableValidation: boolean;
   savedShouldShowPositionLines: boolean;
-  showPnlAfterFees: boolean;
   savedSlippageAmount: number;
   setSavedShouldShowPositionLines: (value: boolean) => void;
   setPendingTxns: (txns: any) => void;
@@ -81,7 +81,6 @@ export function SyntheticsPage(p: Props) {
   const {
     shouldDisableValidation,
     savedShouldShowPositionLines,
-    showPnlAfterFees,
     tradePageVersion,
     setSavedShouldShowPositionLines,
     setPendingTxns,
@@ -91,7 +90,6 @@ export function SyntheticsPage(p: Props) {
   } = p;
   const { chainId } = useChainId();
   const { signer, account } = useWallet();
-  const savedIsPnlInLeverage = useSavedIsPnlInLeverage();
   const marketsInfoData = useMarketsInfoData();
   const tokensData = useTokensData();
   const positionsInfoData = usePositionsInfoData();
@@ -112,12 +110,16 @@ export function SyntheticsPage(p: Props) {
   const toTokenAddress = useTradeboxToTokenAddress();
   const availableTokensOptions = useTradeboxAvailableTokensOptions();
   const setActivePosition = useTradeboxSetActivePosition();
+  const [, setClosingPositionKeyRaw] = useClosingPositionKeyState();
+  const setClosingPositionKey = useCallback(
+    (key: string | undefined) => requestAnimationFrame(() => setClosingPositionKeyRaw(key)),
+    [setClosingPositionKeyRaw]
+  );
+  const { indexTokens, sortedIndexTokensWithPoolValue, swapTokens, sortedLongAndShortTokens, sortedAllMarkets } =
+    availableTokensOptions;
   const setTradeConfig = useTradeboxSetTradeConfig();
   const tradeMode = useTradeboxTradeMode();
   const tradeType = useTradeboxTradeType();
-
-  const { indexTokens, sortedIndexTokensWithPoolValue, swapTokens, sortedLongAndShortTokens, sortedAllMarkets } =
-    availableTokensOptions;
 
   useTradeParamsProcessor({
     setTradeConfig,
@@ -164,31 +166,16 @@ export function SyntheticsPage(p: Props) {
     sortedLongAndShortTokens,
   ]);
 
-  const [closingPositionKey, setClosingPositionKey] = useState<string>();
-  const closingPosition = getByKey(positionsInfoData, closingPositionKey);
-
-  const [selectedPositionOrderKey, setSelectedPositionOrderKey] = useState<string>();
-
-  const [editingPositionKey, setEditingPositionKey] = useState<string>();
-  const editingPosition = getByKey(positionsInfoData, editingPositionKey);
-
   const [gettingPendingFeePositionKeys, setGettingPendingFeePositionKeys] = useState<string[]>([]);
 
   const [selectedOrdersKeys, setSelectedOrdersKeys] = useState<{ [key: string]: boolean }>({});
   const selectedOrdersKeysArr = Object.keys(selectedOrdersKeys).filter((key) => selectedOrdersKeys[key]);
   const [isCancelOrdersProcessig, setIsCancelOrdersProcessig] = useState(false);
-
-  const { positionsCount, ordersCount, ordersErrorsCount, ordersWarningsCount } = useMemo(() => {
-    const positions = Object.values(positionsInfoData || {});
-    const orders = Object.values(ordersInfoData || {});
-
-    return {
-      positionsCount: positions.length,
-      ordersCount: orders.length,
-      ordersErrorsCount: orders.filter((order) => order.errorLevel === "error").length,
-      ordersWarningsCount: orders.filter((order) => order.errorLevel === "warning").length,
-    };
-  }, [ordersInfoData, positionsInfoData]);
+  const { errors: ordersErrorsCount, warnings: ordersWarningsCount } = useOrderErrorsCount();
+  const ordersCount = useOrdersCount();
+  const positionsCount = useMemo(() => {
+    return Object.values(positionsInfoData || {}).length;
+  }, [positionsInfoData]);
   const hasClaimableFees = useMemo(() => {
     const markets = Object.values(marketsInfoData ?? {});
     const totalClaimableFundingUsd = getTotalClaimableFundingUsd(markets);
@@ -215,14 +202,6 @@ export function SyntheticsPage(p: Props) {
     allowedSlippage = DEFAULT_HIGHER_SLIPPAGE_AMOUNT;
   }
 
-  const onPositionSellerClose = useCallback(() => {
-    setClosingPositionKey(undefined);
-  }, []);
-
-  const onPositionEditorClose = useCallback(() => {
-    setEditingPositionKey(undefined);
-  }, []);
-
   function onCancelOrdersClick() {
     if (!signer) return;
     setIsCancelOrdersProcessig(true);
@@ -243,7 +222,9 @@ export function SyntheticsPage(p: Props) {
       });
   }
 
-  function handleOrderClick(key?: string) {
+  const [selectedPositionOrderKey, setSelectedPositionOrderKey] = useState<string>();
+
+  function handlePositionListOrdersClick(key?: string) {
     setListSection(ListSection.Orders);
     setSelectedPositionOrderKey(key);
     if (key) {
@@ -402,12 +383,10 @@ export function SyntheticsPage(p: Props) {
             {listSection === ListSection.Positions && (
               <PositionList
                 isLoading={isPositionsLoading}
-                onOrdersClick={handleOrderClick}
+                onOrdersClick={handlePositionListOrdersClick}
                 onSettlePositionFeesClick={handleSettlePositionFeesClick}
                 onSelectPositionClick={onSelectPositionClick}
                 onClosePositionClick={setClosingPositionKey}
-                onEditCollateralClick={setEditingPositionKey}
-                showPnlAfterFees={showPnlAfterFees}
                 openSettings={openSettings}
               />
             )}
@@ -454,12 +433,10 @@ export function SyntheticsPage(p: Props) {
           {listSection === ListSection.Positions && (
             <PositionList
               isLoading={isPositionsLoading}
-              onOrdersClick={handleOrderClick}
+              onOrdersClick={handlePositionListOrdersClick}
               onSelectPositionClick={onSelectPositionClick}
               onClosePositionClick={setClosingPositionKey}
-              onEditCollateralClick={setEditingPositionKey}
               onSettlePositionFeesClick={handleSettlePositionFeesClick}
-              showPnlAfterFees={showPnlAfterFees}
               openSettings={openSettings}
             />
           )}
@@ -480,23 +457,14 @@ export function SyntheticsPage(p: Props) {
       </div>
 
       <PositionSeller
-        position={closingPosition!}
-        tokensData={tokensData}
-        showPnlInLeverage={savedIsPnlInLeverage}
-        onClose={onPositionSellerClose}
         setPendingTxns={setPendingTxns}
-        availableTokensOptions={availableTokensOptions}
         isHigherSlippageAllowed={isHigherSlippageAllowed}
         setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
         shouldDisableValidation={shouldDisableValidation}
       />
 
       <PositionEditor
-        tokensData={tokensData}
-        showPnlInLeverage={savedIsPnlInLeverage}
-        position={editingPosition}
         allowedSlippage={allowedSlippage}
-        onClose={onPositionEditorClose}
         setPendingTxns={setPendingTxns}
         shouldDisableValidation={shouldDisableValidation}
       />

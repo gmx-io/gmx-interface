@@ -43,6 +43,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
   const { data, mutate } = useSWR<TResult | undefined>(swrFullKey, {
     ...swrOpts,
     fetcher: async () => {
+      performance.mark(`multicall-${name}-start`);
       try {
         // prettier-ignore
         const request = typeof params.request === "function" 
@@ -70,6 +71,9 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
         console.error(`Multicall request failed: ${name}`, e);
 
         throw e;
+      } finally {
+        performance.mark(`multicall-${name}-end`);
+        performance.measure(`multicall-${name}`, `multicall-${name}-start`, `multicall-${name}-end`);
       }
     },
   });

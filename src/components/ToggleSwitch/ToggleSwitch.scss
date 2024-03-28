@@ -41,4 +41,9 @@
   align-items: center;
   justify-content: space-between;
   font-size: var(--font-sm);
+
+  &_disabled .Switch-toggle {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }

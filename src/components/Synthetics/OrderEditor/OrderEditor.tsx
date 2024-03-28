@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { BigNumber } from "ethers";
-import { useEffect, useMemo, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 
 import { UserReferralInfo } from "domain/referrals";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
@@ -23,6 +23,7 @@ import {
   formatLiquidationPrice,
   getPositionKey,
   getTriggerNameByOrderType,
+  substractMaxLeverageSlippage,
 } from "domain/synthetics/positions";
 import {
   TokensRatio,
@@ -58,6 +59,7 @@ import {
   getAcceptablePriceInfo,
   getDecreasePositionAmounts,
   getIncreasePositionAmounts,
+  getNextPositionValuesForIncreaseTrade,
   getSwapPathOutputAddresses,
 } from "domain/synthetics/trade";
 import {
@@ -94,6 +96,10 @@ import { AcceptablePriceImpactInputRow } from "components/Synthetics/AcceptableP
 
 import "./OrderEditor.scss";
 import { useKey } from "react-use";
+import { getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { numericBinarySearch } from "lib/binarySearch";
+import { helperToast } from "lib/helperToast";
 
 type Props = {
   order: OrderInfo;
@@ -260,21 +266,40 @@ export function OrderEditor(p: Props) {
       positionIndexToken ? convertToTokenAmount(sizeDeltaUsd, positionIndexToken.decimals, triggerPrice) : undefined,
     [positionIndexToken, sizeDeltaUsd, triggerPrice]
   );
-  const nextPositionValuesForIncrease = useNextPositionValuesForIncrease({
-    collateralTokenAddress: positionOrder?.targetCollateralToken.address,
-    fixedAcceptablePriceImpactBps: undefined,
-    indexTokenAddress: positionIndexToken?.address,
-    indexTokenAmount,
-    initialCollateralAmount: positionOrder?.initialCollateralDeltaAmount ?? BigNumber.from(0),
-    initialCollateralTokenAddress: fromToken?.address,
-    leverage: existingPosition?.leverage,
-    marketAddress: positionOrder?.marketAddress,
-    positionKey: existingPosition?.key,
-    strategy: "independent",
-    tradeMode: isLimitOrderType(p.order.orderType) ? TradeMode.Limit : TradeMode.Trigger,
-    tradeType: positionOrder?.isLong ? TradeType.Long : TradeType.Short,
-    triggerPrice: isLimitOrderType(p.order.orderType) ? triggerPrice : undefined,
-    tokenTypeForSwapRoute: existingPosition ? "collateralToken" : "indexToken",
+  const nextPositionValuesArg: Parameters<typeof useNextPositionValuesForIncrease>[0] = useMemo(
+    () => ({
+      collateralTokenAddress: positionOrder?.targetCollateralToken.address,
+      fixedAcceptablePriceImpactBps: undefined,
+      indexTokenAddress: positionIndexToken?.address,
+      indexTokenAmount,
+      initialCollateralAmount: positionOrder?.initialCollateralDeltaAmount ?? BigNumber.from(0),
+      initialCollateralTokenAddress: fromToken?.address,
+      leverage: existingPosition?.leverage,
+      marketAddress: positionOrder?.marketAddress,
+      positionKey: existingPosition?.key,
+      strategy: "independent",
+      tradeMode: isLimitOrderType(p.order.orderType) ? TradeMode.Limit : TradeMode.Trigger,
+      tradeType: positionOrder?.isLong ? TradeType.Long : TradeType.Short,
+      triggerPrice: isLimitOrderType(p.order.orderType) ? triggerPrice : undefined,
+      tokenTypeForSwapRoute: existingPosition ? "collateralToken" : "indexToken",
+    }),
+    [
+      existingPosition,
+      fromToken?.address,
+      indexTokenAmount,
+      p.order.orderType,
+      positionIndexToken?.address,
+      positionOrder?.initialCollateralDeltaAmount,
+      positionOrder?.isLong,
+      positionOrder?.marketAddress,
+      positionOrder?.targetCollateralToken.address,
+      triggerPrice,
+    ]
+  );
+  const nextPositionValuesForIncrease = useNextPositionValuesForIncrease(nextPositionValuesArg);
+  const nextPositionValuesWithoutPnlForIncrease = useNextPositionValuesForIncrease({
+    ...nextPositionValuesArg,
+    overrideIsPnlInLeverage: false,
   });
 
   const swapRoute = useSwapRoutes(p.order.initialCollateralTokenAddress, toTokenAddress);
@@ -330,6 +355,7 @@ export function OrderEditor(p: Props) {
     userReferralInfo,
     uiFeeFactor,
   });
+  const { minCollateralUsd } = usePositionsConstants();
 
   const recommendedAcceptablePriceImpactBps =
     isLimitIncreaseOrder && increaseAmounts?.acceptablePrice
@@ -457,8 +483,121 @@ export function OrderEditor(p: Props) {
     }
   }
 
-  function getSubmitButtonState(): { text: string; disabled?: boolean; onClick?: () => void } {
+  function getIsMaxLeverageError() {
+    if (isLimitIncreaseOrder && sizeDeltaUsd) {
+      if (!nextPositionValuesWithoutPnlForIncrease?.nextLeverage) {
+        return false;
+      }
+
+      const positionOrder = p.order as PositionOrderInfo;
+      return getIsMaxLeverageExceeded(
+        nextPositionValuesWithoutPnlForIncrease?.nextLeverage,
+        positionOrder.marketInfo,
+        positionOrder.isLong,
+        sizeDeltaUsd
+      );
+    }
+    return false;
+  }
+
+  const { savedAcceptablePriceImpactBuffer } = useSettings();
+
+  function detectAndSetAvailableMaxLeverage() {
+    const positionOrder = p.order as PositionOrderInfo;
+    const marketInfo = positionOrder.marketInfo;
+    const collateralToken = positionOrder.targetCollateralToken;
+
+    if (!positionIndexToken || !fromToken || !minCollateralUsd) return;
+
+    const { returnValue: newSizeDeltaUsd } = numericBinarySearch<BigNumber | undefined>(
+      1,
+      // "10 *" means we do 1..50 search but with 0.1x step
+      (10 * MAX_ALLOWED_LEVERAGE) / BASIS_POINTS_DIVISOR,
+      (lev) => {
+        const leverage = BigNumber.from((lev / 10) * BASIS_POINTS_DIVISOR);
+        const increaseAmounts = getIncreasePositionAmounts({
+          collateralToken,
+          findSwapPath: swapRoute.findSwapPath,
+          indexToken: positionIndexToken,
+          indexTokenAmount,
+          initialCollateralAmount: positionOrder.initialCollateralDeltaAmount,
+          initialCollateralToken: fromToken,
+          isLong: positionOrder.isLong,
+          marketInfo: positionOrder.marketInfo,
+          position: existingPosition,
+          strategy: "leverageByCollateral",
+          uiFeeFactor,
+          userReferralInfo,
+          acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
+          fixedAcceptablePriceImpactBps: acceptablePriceImpactBps,
+          leverage,
+          triggerPrice,
+        });
+
+        const nextPositionValues = getNextPositionValuesForIncreaseTrade({
+          collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
+          collateralDeltaUsd: increaseAmounts.collateralDeltaUsd,
+          collateralToken,
+          existingPosition,
+          indexPrice: increaseAmounts.indexPrice,
+          isLong: positionOrder.isLong,
+          marketInfo,
+          minCollateralUsd,
+          showPnlInLeverage: false,
+          sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
+          sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+          userReferralInfo,
+        });
+
+        if (nextPositionValues.nextLeverage) {
+          const isMaxLeverageExceeded = getIsMaxLeverageExceeded(
+            nextPositionValues.nextLeverage,
+            marketInfo,
+            positionOrder.isLong,
+            increaseAmounts.sizeDeltaUsd
+          );
+
+          return {
+            isValid: !isMaxLeverageExceeded,
+            returnValue: increaseAmounts.sizeDeltaUsd,
+          };
+        }
+
+        return {
+          isValid: false,
+          returnValue: increaseAmounts.sizeDeltaUsd,
+        };
+      }
+    );
+
+    if (newSizeDeltaUsd) {
+      setSizeInputValue(formatAmountFree(substractMaxLeverageSlippage(newSizeDeltaUsd), USD_DECIMALS, 2));
+    } else {
+      helperToast.error(t`No available leverage found`);
+    }
+  }
+
+  function getSubmitButtonState(): { text: ReactNode; disabled?: boolean; tooltip?: ReactNode; onClick?: () => void } {
     const error = getError();
+    const isMaxLeverageError = getIsMaxLeverageError();
+
+    if (isMaxLeverageError) {
+      return {
+        text: t`Max. Leverage Exceeded`,
+        tooltip: (
+          <>
+            <Trans>Decrease the size to match the max. allowed leverage:</Trans>{" "}
+            <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
+            <br />
+            <br />
+            <span onClick={detectAndSetAvailableMaxLeverage} className="Tradebox-handle">
+              <Trans>Set Max Leverage</Trans>
+            </span>
+          </>
+        ),
+        disabled: true,
+      };
+    }
 
     if (error) {
       return {
@@ -543,6 +682,29 @@ export function OrderEditor(p: Props) {
   );
 
   const tradeFlags = useMemo(() => getTradeFlagsForOrder(p.order), [p.order]);
+
+  const buttonContent = (
+    <Button
+      className="w-full"
+      variant="primary-action"
+      onClick={submitButtonState.onClick}
+      disabled={submitButtonState.disabled}
+    >
+      {submitButtonState.text}
+    </Button>
+  );
+
+  const button = submitButtonState.tooltip ? (
+    <TooltipWithPortal
+      position="top"
+      handleClassName="w-full"
+      portalClassName="PositionEditor-tooltip"
+      handle={buttonContent}
+      renderContent={() => submitButtonState.tooltip}
+    />
+  ) : (
+    buttonContent
+  );
 
   return (
     <div className="PositionEditor">
@@ -700,16 +862,7 @@ export function OrderEditor(p: Props) {
           </ExchangeInfo.Group>
         </ExchangeInfo>
 
-        <div className="Exchange-swap-button-container">
-          <Button
-            className="w-full"
-            variant="primary-action"
-            onClick={submitButtonState.onClick}
-            disabled={submitButtonState.disabled}
-          >
-            {submitButtonState.text}
-          </Button>
-        </div>
+        <div className="Exchange-swap-button-container">{button}</div>
       </Modal>
     </div>
   );

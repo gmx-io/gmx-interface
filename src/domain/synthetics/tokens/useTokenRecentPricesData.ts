@@ -12,7 +12,7 @@ type TokenPricesDataResult = {
   updatedAt?: number;
 };
 
-export function useTokenRecentPrices(chainId: number): TokenPricesDataResult {
+export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataResult {
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
   const pathname = useLocation().pathname;
 

@@ -2,13 +2,14 @@ import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { BigNumber } from "ethers";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { useKey, useLatest } from "react-use";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
+import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
 import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 import Tab from "components/Tab/Tab";
@@ -16,17 +17,28 @@ import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import { getKeepLeverageKey } from "config/localStorage";
 import { convertTokenAddress } from "config/tokens";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
-  useSavedAcceptablePriceImpactBuffer,
-  useSavedAllowedSlippage,
-} from "context/SyntheticsStateContext/hooks/settingsHooks";
+  useClosingPositionKeyState,
+  usePositionsConstants,
+  useTokensData,
+  useUserReferralInfo,
+} from "context/SyntheticsStateContext/hooks/globalsHooks";
+import {
+  usePositionSeller,
+  usePositionSellerDecreaseAmount,
+  usePositionSellerKeepLeverage,
+  usePositionSellerLeverageDisabledByCollateral,
+  usePositionSellerNextPositionValuesForDecrease,
+  usePositionSellerPosition,
+} from "context/SyntheticsStateContext/hooks/positionSellerHooks";
 import { useSwapRoutes } from "context/SyntheticsStateContext/hooks/tradeHooks";
-import { useTradeboxTradeFlags } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+import {
+  useTradeboxAvailableTokensOptions,
+  useTradeboxTradeFlags,
+} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { useHasOutdatedUi } from "domain/legacy";
 import {
   estimateExecuteDecreaseOrderGasLimit,
@@ -37,30 +49,20 @@ import {
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { DecreasePositionSwapType, OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
 import {
-  PositionInfo,
   formatAcceptablePrice,
   formatLeverage,
   formatLiquidationPrice,
   getTriggerNameByOrderType,
 } from "domain/synthetics/positions";
-import { TokensData } from "domain/synthetics/tokens";
-import {
-  AvailableTokenOptions,
-  applySlippageToPrice,
-  getDecreasePositionAmounts,
-  getMarkPrice,
-  getNextPositionValuesForDecreaseTrade,
-  getSwapAmountsByFromValue,
-  getTradeFees,
-} from "domain/synthetics/trade";
+import { applySlippageToPrice, getMarkPrice, getSwapAmountsByFromValue, getTradeFees } from "domain/synthetics/trade";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
+import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { getCommonError, getDecreaseError } from "domain/synthetics/trade/utils/validation";
 import { getIsEquivalentTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { USD_DECIMALS } from "lib/legacy";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   formatAmount,
   formatAmountFree,
@@ -72,32 +74,23 @@ import {
 } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
-import { usePrevious } from "lib/usePrevious";
+import { useDebouncedInputValue } from "lib/useDebouncedInputValue";
 import useWallet from "lib/wallets/useWallet";
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
+import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
-import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import "./PositionSeller.scss";
 
 export type Props = {
-  position?: PositionInfo;
-  tokensData?: TokensData;
-  showPnlInLeverage: boolean;
-  availableTokensOptions?: AvailableTokenOptions;
-  onClose: () => void;
   setPendingTxns: (txns: any) => void;
   isHigherSlippageAllowed: boolean;
   setIsHigherSlippageAllowed: (isAllowed: boolean) => void;
   shouldDisableValidation: boolean;
 };
-
-enum OrderOption {
-  Market = "Market",
-  Trigger = "Trigger",
-}
 
 const ORDER_OPTION_LABELS = {
   [OrderOption.Market]: t`Market`,
@@ -105,50 +98,79 @@ const ORDER_OPTION_LABELS = {
 };
 
 export function PositionSeller(p: Props) {
-  const { position, tokensData, showPnlInLeverage, onClose, setPendingTxns, availableTokensOptions } = p;
+  const { setPendingTxns } = p;
+  const [, setClosingPositionKey] = useClosingPositionKeyState();
 
+  const onClose = useCallback(() => {
+    setClosingPositionKey(undefined);
+  }, [setClosingPositionKey]);
+  const availableTokensOptions = useTradeboxAvailableTokensOptions();
+  const tokensData = useTokensData();
   const { chainId } = useChainId();
-  const savedAllowedSlippage = useSavedAllowedSlippage();
   const { signer, account } = useWallet();
   const { openConnectModal } = useConnectModal();
   const { gasPrice } = useGasPrice(chainId);
   const { gasLimits } = useGasLimits(chainId);
-  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
+  const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const uiFeeFactor = useUiFeeFactor(chainId);
-  const savedAcceptablePriceImpactBuffer = useSavedAcceptablePriceImpactBuffer();
   const tradeFlags = useTradeboxTradeFlags();
+  const position = usePositionSellerPosition();
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
   const isVisible = Boolean(position);
-  const prevIsVisible = usePrevious(isVisible);
 
-  const [orderOption, setOrderOption] = useState<OrderOption>(OrderOption.Market);
-  const [triggerPriceInputValue, setTriggerPriceInputValue] = useState("");
+  const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
+
+  const {
+    allowedSlippage,
+    closeUsdInputValue: closeUsdInputValueRaw,
+    defaultTriggerAcceptablePriceImpactBps,
+    isSubmitting,
+    orderOption,
+    receiveTokenAddress,
+    setAllowedSlippage,
+    setCloseUsdInputValue: setCloseUsdInputValueRaw,
+    setDefaultTriggerAcceptablePriceImpactBps,
+    setIsSubmitting,
+    setKeepLeverage,
+    setOrderOption,
+    setReceiveTokenAddress,
+    setSelectedTriggerAcceptablePriceImpactBps,
+    selectedTriggerAcceptablePriceImpactBps,
+    setTriggerPriceInputValue: setTriggerPriceInputValueRaw,
+    triggerPriceInputValue: triggerPriceInputValueRaw,
+    resetPositionSeller,
+  } = usePositionSeller();
+  const keepLeverage = usePositionSellerKeepLeverage();
+  const leverageCheckboxDisabledByCollateral = usePositionSellerLeverageDisabledByCollateral();
+
+  const [closeUsdInputValue, setCloseUsdInputValue] = useDebouncedInputValue(
+    closeUsdInputValueRaw,
+    setCloseUsdInputValueRaw
+  );
+  const [triggerPriceInputValue, setTriggerPriceInputValue] = useDebouncedInputValue(
+    triggerPriceInputValueRaw,
+    setTriggerPriceInputValueRaw
+  );
   const triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
 
   const isTrigger = orderOption === OrderOption.Trigger;
 
-  const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
-  const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
-
-  const [defaultTriggerAcceptablePriceImpactBps, setDefaultTriggerAcceptablePriceImpactBps] = useState<BigNumber>();
-  const [selectedTriggerAcceptablePriceImpactBps, setSelectedTriggerAcceptablePriceImpactBps] = useState<BigNumber>();
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const [closeUsdInputValue, setCloseUsdInputValue] = useState("");
   const closeSizeUsd = parseValue(closeUsdInputValue || "0", USD_DECIMALS)!;
   const maxCloseSize = position?.sizeInUsd || BigNumber.from(0);
 
-  const [receiveTokenAddress, setReceiveTokenAddress] = useState<string>();
-  const [allowedSlippage, setAllowedSlippage] = useState(savedAllowedSlippage);
   const receiveToken = isTrigger ? position?.collateralToken : getByKey(tokensData, receiveTokenAddress);
 
   useEffect(() => {
-    setAllowedSlippage(savedAllowedSlippage);
-  }, [savedAllowedSlippage, isVisible]);
+    if (!isVisible) {
+      // timeout to not disturb animation
+      setTimeout(() => {
+        resetPositionSeller();
+      }, 200);
+    }
+  }, [isVisible, resetPositionSeller]);
 
   const markPrice = position
     ? getMarkPrice({ prices: position.indexToken.prices, isLong: position.isLong, isIncrease: false })
@@ -156,39 +178,7 @@ export function PositionSeller(p: Props) {
 
   const { findSwapPath, maxSwapLiquidity } = useSwapRoutes(position?.collateralTokenAddress, receiveTokenAddress);
 
-  const decreaseAmounts = useMemo(() => {
-    if (!position || !minCollateralUsd || !minPositionSizeUsd) {
-      return undefined;
-    }
-
-    return getDecreasePositionAmounts({
-      marketInfo: position.marketInfo,
-      collateralToken: position.collateralToken,
-      isLong: position.isLong,
-      position,
-      closeSizeUsd: closeSizeUsd,
-      keepLeverage: keepLeverage!,
-      triggerPrice: isTrigger ? triggerPrice : undefined,
-      acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
-      fixedAcceptablePriceImpactBps: isTrigger ? selectedTriggerAcceptablePriceImpactBps : undefined,
-      userReferralInfo,
-      minCollateralUsd,
-      minPositionSizeUsd,
-      uiFeeFactor,
-    });
-  }, [
-    closeSizeUsd,
-    isTrigger,
-    keepLeverage,
-    minCollateralUsd,
-    minPositionSizeUsd,
-    position,
-    savedAcceptablePriceImpactBuffer,
-    selectedTriggerAcceptablePriceImpactBps,
-    triggerPrice,
-    userReferralInfo,
-    uiFeeFactor,
-  ]);
+  const decreaseAmounts = usePositionSellerDecreaseAmount();
 
   const acceptablePrice = useMemo(() => {
     if (!position || !decreaseAmounts?.acceptablePrice) {
@@ -233,29 +223,7 @@ export function PositionSeller(p: Props) {
   const receiveUsd = swapAmounts?.usdOut || decreaseAmounts?.receiveUsd;
   const receiveTokenAmount = swapAmounts?.amountOut || decreaseAmounts?.receiveTokenAmount;
 
-  const nextPositionValues = useMemo(() => {
-    if (!position || !decreaseAmounts?.sizeDeltaUsd.gt(0) || !minCollateralUsd) {
-      return undefined;
-    }
-
-    return getNextPositionValuesForDecreaseTrade({
-      existingPosition: position,
-      marketInfo: position.marketInfo,
-      collateralToken: position.collateralToken,
-      sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
-      sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
-      collateralDeltaUsd: decreaseAmounts.collateralDeltaUsd,
-      collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount,
-      payedRemainingCollateralUsd: decreaseAmounts.payedRemainingCollateralUsd,
-      payedRemainingCollateralAmount: decreaseAmounts.payedRemainingCollateralAmount,
-      realizedPnl: decreaseAmounts.realizedPnl,
-      estimatedPnl: decreaseAmounts.estimatedPnl,
-      showPnlInLeverage,
-      isLong: position.isLong,
-      minCollateralUsd,
-      userReferralInfo,
-    });
-  }, [decreaseAmounts, minCollateralUsd, position, showPnlInLeverage, userReferralInfo]);
+  const nextPositionValues = usePositionSellerNextPositionValuesForDecrease();
 
   const { fees, executionFee } = useMemo(() => {
     if (!position || !decreaseAmounts || !gasLimits || !tokensData || !gasPrice) {
@@ -465,27 +433,13 @@ export function PositionSeller(p: Props) {
   );
 
   useEffect(
-    function resetForm() {
-      if (!isVisible !== prevIsVisible) {
-        setCloseUsdInputValue("");
-        setIsHighPositionImpactAcceptedLatestRef.current(false);
-        setIsHighSwapImpactAcceptedLatestRef.current(false);
-        setTriggerPriceInputValue("");
-        setReceiveTokenAddress(undefined);
-        setOrderOption(OrderOption.Market);
-      }
-    },
-    [isVisible, prevIsVisible, setIsHighPositionImpactAcceptedLatestRef, setIsHighSwapImpactAcceptedLatestRef]
-  );
-
-  useEffect(
     function initReceiveToken() {
       if (!receiveTokenAddress && position?.collateralToken?.address) {
         const convertedAddress = convertTokenAddress(chainId, position?.collateralToken.address, "native");
         setReceiveTokenAddress(convertedAddress);
       }
     },
-    [chainId, position?.collateralToken, receiveTokenAddress]
+    [chainId, position?.collateralToken, receiveTokenAddress, setReceiveTokenAddress]
   );
 
   useEffect(() => {
@@ -498,7 +452,13 @@ export function PositionSeller(p: Props) {
         setSelectedTriggerAcceptablePriceImpactBps(decreaseAmounts.recommendedAcceptablePriceDeltaBps.abs());
       }
     }
-  }, [decreaseAmounts, defaultTriggerAcceptablePriceImpactBps, isTrigger]);
+  }, [
+    decreaseAmounts,
+    defaultTriggerAcceptablePriceImpactBps,
+    isTrigger,
+    setDefaultTriggerAcceptablePriceImpactBps,
+    setSelectedTriggerAcceptablePriceImpactBps,
+  ]);
 
   const indexPriceDecimals = position?.indexToken?.priceDecimals;
   const toToken = position?.indexToken;
@@ -685,6 +645,27 @@ export function PositionSeller(p: Props) {
     />
   );
 
+  const keepLeverageChecked = decreaseAmounts?.isFullClose ? false : keepLeverage ?? false;
+  let keepLeverageAtValue: string | undefined = "...";
+  if (position?.leverage && !decreaseAmounts?.isFullClose) {
+    keepLeverageAtValue = formatLeverage(position.leverage);
+  }
+
+  const keepLeverageText = <Trans>Keep leverage at {keepLeverageAtValue}</Trans>;
+  const renderKeepLeverageTooltipContent = useCallback(
+    () => (
+      <Trans>
+        Keep leverage is not available as Position exceeds max. allowed leverage.{" "}
+        <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
+      </Trans>
+    ),
+    []
+  );
+  const keepLeverageTextElem = leverageCheckboxDisabledByCollateral ? (
+    <TooltipWithPortal handle={keepLeverageText} renderContent={renderKeepLeverageTooltipContent} />
+  ) : (
+    keepLeverageText
+  );
   let leverageValue: React.ReactNode = "-";
 
   if (decreaseAmounts?.isFullClose) {
@@ -702,21 +683,15 @@ export function PositionSeller(p: Props) {
     }
   }
 
-  const keepLeverageChecked = decreaseAmounts?.isFullClose ? false : keepLeverage ?? false;
-  let keepLeverageAtValue: string | undefined = "...";
-  if (position?.leverage && !decreaseAmounts?.isFullClose) {
-    keepLeverageAtValue = formatLeverage(position.leverage);
-  }
-
   return (
     <div className="PositionEditor PositionSeller">
       <Modal
         className="PositionSeller-modal"
         isVisible={isVisible}
-        setIsVisible={p.onClose}
+        setIsVisible={onClose}
         label={
           <Trans>
-            Close {p.position?.isLong ? t`Long` : t`Short`} {p.position?.indexToken?.symbol}
+            Close {position?.isLong ? t`Long` : t`Short`} {position?.indexToken?.symbol}
           </Trans>
         }
       >
@@ -742,11 +717,11 @@ export function PositionSeller(p: Props) {
                 inputValue={closeUsdInputValue}
                 onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
                 showMaxButton={maxCloseSize?.gt(0) && !closeSizeUsd?.eq(maxCloseSize)}
-                onClickMax={() => setCloseUsdInputValue(formatAmountFree(maxCloseSize, USD_DECIMALS))}
+                onClickMax={() => setCloseUsdInputValueRaw(formatAmountFree(maxCloseSize, USD_DECIMALS))}
                 showPercentSelector={true}
                 onPercentChange={(percentage) => {
                   const formattedAmount = formatAmountFree(maxCloseSize.mul(percentage).div(100), USD_DECIMALS, 2);
-                  setCloseUsdInputValue(formattedAmount);
+                  setCloseUsdInputValueRaw(formattedAmount);
                 }}
               >
                 USD
@@ -760,7 +735,7 @@ export function PositionSeller(p: Props) {
                   displayDecimals: toToken?.priceDecimals,
                 })}
                 onClickTopRightLabel={() => {
-                  setTriggerPriceInputValue(formatAmount(markPrice, USD_DECIMALS, toToken?.priceDecimals || 2));
+                  setTriggerPriceInputValueRaw(formatAmount(markPrice, USD_DECIMALS, toToken?.priceDecimals || 2));
                 }}
                 inputValue={triggerPriceInputValue}
                 onInputValueChange={(e) => {
@@ -777,13 +752,12 @@ export function PositionSeller(p: Props) {
 
                 <div className="PositionEditor-keep-leverage-settings">
                   <ToggleSwitch
-                    isChecked={keepLeverageChecked}
+                    textClassName="Exchange-info-label"
+                    isChecked={leverageCheckboxDisabledByCollateral ? false : keepLeverageChecked}
                     setIsChecked={setKeepLeverage}
-                    disabled={decreaseAmounts?.isFullClose}
+                    disabled={leverageCheckboxDisabledByCollateral ?? decreaseAmounts?.isFullClose}
                   >
-                    <span className="text-gray font-sm">
-                      <Trans>Keep leverage at {keepLeverageAtValue}</Trans>
-                    </span>
+                    {keepLeverageTextElem}
                   </ToggleSwitch>
                 </div>
               </ExchangeInfo.Group>

@@ -27,6 +27,7 @@ import { getByKey } from "lib/objects";
 import { useMemo } from "react";
 import { useChainId } from "lib/chains";
 import { getWrappedToken } from "config/tokens";
+import { useOrderErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
 
 type Props = {
   order: OrderInfo;
@@ -51,9 +52,8 @@ export function OrderItem(p: Props) {
     orderType,
     minOutputAmount,
     key,
-    errors,
-    errorLevel,
   } = p.order;
+  const { errors, level } = useOrderErrors(key);
   const { chainId } = useChainId();
   const { showDebugValues } = useSettings();
   const wrappedToken = getWrappedToken(chainId);
@@ -139,7 +139,7 @@ export function OrderItem(p: Props) {
         return (
           <Tooltip
             handle={renderTitleWithIcon(p.order)}
-            className={cx(`order-error-text-msg`, `level-${errorLevel}`)}
+            className={cx(`order-error-text-msg`, `level-${level}`)}
             position="bottom-start"
             renderContent={() => (
               <>
@@ -148,7 +148,7 @@ export function OrderItem(p: Props) {
                     className={cx({
                       "OrderItem-tooltip-row": i > 0,
                     })}
-                    key={error.msg}
+                    key={error.key}
                   >
                     <span className={error!.level === "error" ? "negative" : "warning"}>{error.msg}</span>
                   </div>
@@ -170,7 +170,7 @@ export function OrderItem(p: Props) {
       <Tooltip
         handle={renderTitleWithIcon(p.order)}
         position="bottom-start"
-        className={errorLevel ? `order-error-text-msg level-${errorLevel}` : undefined}
+        className={level ? `order-error-text-msg level-${level}` : undefined}
         renderContent={() => {
           return (
             <>
@@ -214,7 +214,7 @@ export function OrderItem(p: Props) {
               {errors.length ? (
                 <>
                   {errors.map((error) => (
-                    <div className="OrderItem-tooltip-row" key={error.msg}>
+                    <div className="OrderItem-tooltip-row" key={error.key}>
                       <span className={error!.level === "error" ? "negative" : "warning"}>{error.msg}</span>
                     </div>
                   ))}
