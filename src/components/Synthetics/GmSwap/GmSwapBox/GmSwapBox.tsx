@@ -1,23 +1,28 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
-import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
-import Tab from "components/Tab/Tab";
-import TokenSelector from "components/TokenSelector/TokenSelector";
+import { BigNumber } from "ethers";
+import { isAddress } from "ethers/lib/utils.js";
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
+import { IoMdSwap } from "react-icons/io";
+import { useHistory } from "react-router-dom";
+
 import { HIGH_PRICE_IMPACT_BPS } from "config/factors";
-import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, getSyntheticsDepositIndexTokenKey } from "config/localStorage";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getTokenBySymbolSafe } from "config/tokens";
-import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
+import { getSyntheticsDepositIndexTokenKey, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY } from "config/localStorage";
+import { convertTokenAddress, getTokenBySymbolSafe, NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
+import { useHasOutdatedUi } from "domain/legacy";
 import {
-  FeeItem,
   estimateExecuteDepositGasLimit,
   estimateExecuteWithdrawalGasLimit,
+  FeeItem,
   getExecutionFee,
   getFeeItem,
   getTotalFeeItem,
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
+import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { useMarketTokensData } from "domain/synthetics/markets";
 import { Market, MarketInfo, MarketsInfoData } from "domain/synthetics/markets/types";
 import {
@@ -26,41 +31,39 @@ import {
   getMarketPoolName,
   getTokenPoolType,
 } from "domain/synthetics/markets/utils";
-import { TokenData, TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
+import { convertToUsd, getTokenData, TokenData, TokensData } from "domain/synthetics/tokens";
 import { GmSwapFees, useAvailableTokenOptions } from "domain/synthetics/trade";
+import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { getDepositAmounts } from "domain/synthetics/trade/utils/deposit";
+import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
 import { getWithdrawalAmounts } from "domain/synthetics/trade/utils/withdrawal";
-import { Token, getMinResidualAmount } from "domain/tokens";
-import { BigNumber } from "ethers";
+import { getMinResidualAmount, Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
+import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatAmountFree, formatTokenAmount, formatUsd, limitDecimals, parseValue } from "lib/numbers";
+import { BN_ZERO, formatAmountFree, formatTokenAmount, formatUsd, limitDecimals, parseValue } from "lib/numbers";
 import { getByKey, getMatchingValueFromObject } from "lib/objects";
-import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
-import { IoMdSwap } from "react-icons/io";
-import { GmConfirmationBox } from "../GmConfirmationBox/GmConfirmationBox";
+import { useSafeState } from "lib/useSafeState";
+import useSearchParams from "lib/useSearchParams";
+import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
+import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import Checkbox from "components/Checkbox/Checkbox";
+import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
-import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
-import { helperToast } from "lib/helperToast";
-import { useSafeState } from "lib/useSafeState";
-import { useHistory } from "react-router-dom";
-import "./GmSwapBox.scss";
-import Checkbox from "components/Checkbox/Checkbox";
-import Tooltip from "components/Tooltip/Tooltip";
-import { useHasOutdatedUi } from "domain/legacy";
-import useWallet from "lib/wallets/useWallet";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
-import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
-import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
-import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
-import { isAddress } from "ethers/lib/utils.js";
-import useSearchParams from "lib/useSearchParams";
-import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
-import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
+import { GmFees } from "components/Synthetics/GmSwap/GmFees/GmFees";
 import { NetworkFeeRow } from "components/Synthetics/NetworkFeeRow/NetworkFeeRow";
+import Tab from "components/Tab/Tab";
+import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
+import TokenSelector from "components/TokenSelector/TokenSelector";
+import Tooltip from "components/Tooltip/Tooltip";
+import { GmConfirmationBox } from "../GmConfirmationBox/GmConfirmationBox";
+import { getGmSwapBoxAvailableModes } from "./getGmSwapBoxAvailableModes";
+
+import "./GmSwapBox.scss";
 
 const SWAP_MARKET_REGEX = /^(swap-only|swap)$/i;
 
@@ -158,7 +161,7 @@ export function GmSwapBox(p: Props) {
     [marketsInfoData]
   );
   const marketInfo = getByKey(marketsInfoData, marketAddress);
-  const availableModes = getAvailableModes(operation, marketInfo);
+  const availableModes = getGmSwapBoxAvailableModes(operation, marketInfo);
 
   const [indexName, setIndexName] = useLocalStorageSerializeKey<string | undefined>(
     getSyntheticsDepositIndexTokenKey(chainId),
@@ -568,6 +571,8 @@ export function GmSwapBox(p: Props) {
             return;
           }
         }
+
+        return;
       }
 
       if (isWithdrawal) {
@@ -583,9 +588,7 @@ export function GmSwapBox(p: Props) {
               setFirstTokenInputValue(
                 amounts.longTokenAmount?.gt(0) ? formatAmountFree(amounts.longTokenAmount, longToken!.decimals) : ""
               );
-              setSecondTokenInputValue(
-                amounts.shortTokenAmount?.gt(0) ? formatAmountFree(amounts.shortTokenAmount, shortToken!.decimals) : ""
-              );
+              setSecondTokenInputValue(formatAmountFree(BN_ZERO, longToken!.decimals));
             } else {
               longTokenInputState?.setValue(
                 amounts.longTokenAmount?.gt(0) ? formatAmountFree(amounts.longTokenAmount, longToken!.decimals) : ""
@@ -626,9 +629,7 @@ export function GmSwapBox(p: Props) {
             }
             if (amounts.shortTokenAmount) {
               if (marketInfo.isSameCollaterals) {
-                setSecondTokenInputValue(
-                  amounts.shortTokenAmount.gt(0) ? formatAmountFree(amounts.shortTokenAmount, shortToken!.decimals) : ""
-                );
+                setSecondTokenInputValue(formatAmountFree(BN_ZERO, longToken!.decimals));
               } else {
                 shortTokenInputState?.setValue(
                   amounts.shortTokenAmount.gt(0) ? formatAmountFree(amounts.shortTokenAmount, shortToken!.decimals) : ""
@@ -654,15 +655,6 @@ export function GmSwapBox(p: Props) {
       shortTokenInputState,
     ]
   );
-
-  // useEffect(
-  //   function updateMode() {
-  //     if (!availableModes.includes(mode)) {
-  //       setMode(availableModes[0]);
-  //     }
-  //   },
-  //   [availableModes, mode, operation, setMode]
-  // );
 
   useEffect(
     function updateIndexToken() {
@@ -1125,18 +1117,6 @@ export function GmSwapBox(p: Props) {
     </div>
   );
 }
-
-const getAvailableModes = (operation: Operation, market?: Market) => {
-  if (operation === Operation.Deposit) {
-    if (!market?.isSameCollaterals) {
-      return [Mode.Single, Mode.Pair];
-    }
-
-    return [Mode.Single];
-  }
-
-  return [Mode.Pair];
-};
 
 function showMarketToast(market) {
   if (!market) return;
