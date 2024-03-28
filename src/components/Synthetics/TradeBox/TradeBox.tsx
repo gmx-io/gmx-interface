@@ -1,9 +1,9 @@
 import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { BigNumber } from "ethers";
-import { ReactNode, useCallback, useEffect, useMemo } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
 import { IoMdSwap } from "react-icons/io";
-import { useLatest, usePrevious } from "react-use";
+import { useKey, useLatest, usePrevious } from "react-use";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -104,6 +104,7 @@ import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 
 import "./TradeBox.scss";
 import { useHistory } from "react-router-dom";
+import { useCursorInside } from "lib/useCursorInside";
 
 export type Props = {
   avaialbleTokenOptions: AvailableTokenOptions;
@@ -133,6 +134,9 @@ const tradeTypeLabels = {
 };
 
 export function TradeBox(p: Props) {
+  const formRef = useRef<HTMLFormElement>(null);
+  const isCursorInside = useCursorInside(formRef);
+
   const { avaialbleTokenOptions, shouldDisableValidation, allowedSlippage, setPendingTxns } = p;
 
   const { openConnectModal } = useConnectModal();
@@ -1299,6 +1303,17 @@ export function TradeBox(p: Props) {
     );
   }
 
+  useKey(
+    "Enter",
+    () => {
+      if (isCursorInside && (!isSubmitButtonDisabled || shouldDisableValidation)) {
+        onSubmit();
+      }
+    },
+    {},
+    [isSubmitButtonDisabled, shouldDisableValidation, isCursorInside]
+  );
+
   const buttonContent = (
     <Button
       variant="primary-action"
@@ -1346,8 +1361,11 @@ export function TradeBox(p: Props) {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              onSubmit();
+              if (!isCursorInside && (!isSubmitButtonDisabled || shouldDisableValidation)) {
+                onSubmit();
+              }
             }}
+            ref={formRef}
           >
             {(isSwap || isIncrease) && renderTokenInputs()}
             {isTrigger && renderDecreaseSizeInput()}
@@ -1399,7 +1417,6 @@ export function TradeBox(p: Props) {
                 )}
               </ExchangeInfo.Group>
             </ExchangeInfo>
-
             <div className="Exchange-swap-button-container">{button}</div>
           </form>
         </div>

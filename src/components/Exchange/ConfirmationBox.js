@@ -873,7 +873,8 @@ export default function ConfirmationBox(props) {
   ]);
   const submitButtonRef = useRef(null);
 
-  useKey("Enter", () => {
+  useKey("Enter", (event) => {
+    event.stopPropagation();
     submitButtonRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
     onConfirmationClick();
   });
