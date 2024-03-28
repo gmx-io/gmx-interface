@@ -9,8 +9,9 @@ import {
   usePositionsConstantsRequest,
   usePositionsInfoRequest,
 } from "domain/synthetics/positions";
+import { PositionEditorState, usePositionEditorState } from "domain/synthetics/trade/usePositionEditorState";
 import { PositionSellerState, usePositionSellerState } from "domain/synthetics/trade/usePositionSellerState";
-import { TradeState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
+import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
 import { BigNumber, ethers } from "ethers";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
@@ -18,7 +19,6 @@ import { ReactNode, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
-import { PositionEditorState, usePositionEditorState } from "domain/synthetics/trade/usePositionEditorState";
 
 export type SyntheticsPageType = "actions" | "trade" | "pools" | "leaderboard" | "competitions";
 
@@ -42,7 +42,7 @@ export type SyntheticsState = {
   };
   leaderboard: LeaderboardState;
   settings: SettingsContextType;
-  tradebox: TradeState;
+  tradebox: TradeboxState;
   positionSeller: PositionSellerState;
   positionEditor: PositionEditorState;
 };
