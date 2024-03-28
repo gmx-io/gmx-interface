@@ -1439,7 +1439,7 @@ msgstr ""
 msgid "Current {0} shorts"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Currently, There is a high Swap Price Impact for the Order Swap path."
 msgstr ""
 
@@ -1537,7 +1537,7 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
 msgstr ""
@@ -1551,7 +1551,20 @@ msgid "Decrease size"
 msgstr ""
 
 #: src/components/Synthetics/TradeBox/TradeBox.tsx
-msgid "Decrease the Leverage by using the slider. If the Leverage slider is disabled, you can increase the Pay amount or reduce the Order size."
+#~ msgid "Decrease the Leverage by using the slider. If the Leverage slider is disabled, you can increase the Pay amount or reduce the Order size."
+#~ msgstr ""
+
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "Decrease the leverage to match the max. allowed leverage."
+msgstr ""
+
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "Decrease the size to match the max. allowed leverage:"
+msgstr ""
+
+#: src/components/Synthetics/PositionEditor/PositionEditor.tsx
+msgid "Decrease the withdraw size to match the max. <0>Read more</0>.<1/><2/><3>Set max withdrawal</3>"
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/SLTPEntries.tsx
@@ -2576,7 +2589,7 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/OrderItem/OrderItem.tsx
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
 msgstr ""
@@ -2786,6 +2799,10 @@ msgstr ""
 msgid "Keep leverage at {keepLeverageAtValue}"
 msgstr ""
 
+#: src/components/Synthetics/PositionSeller/PositionSeller.tsx
+msgid "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
+msgstr ""
+
 #: src/components/Synthetics/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "LONG LIQ."
 msgstr ""
@@ -2894,11 +2911,11 @@ msgstr ""
 msgid "Limit"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Decrease"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Increase"
 msgstr ""
 
@@ -2918,7 +2935,7 @@ msgid "Limit Price"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/OrderStatusNotification.tsx
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Swap"
 msgstr ""
 
@@ -3070,7 +3087,7 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -3211,12 +3228,12 @@ msgid "Market Cap"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Market Decrease"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/keys.ts
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Market Increase"
 msgstr ""
 
@@ -3224,7 +3241,7 @@ msgstr ""
 msgid "Market Orders"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Market Swap"
 msgstr ""
 
@@ -3384,6 +3401,11 @@ msgstr ""
 msgid "Max {0} short exceeded"
 msgstr ""
 
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+msgid "Max. Leverage Exceeded"
+msgstr ""
+
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max. Leverage exceeded"
 msgstr ""
@@ -3589,6 +3611,11 @@ msgstr ""
 msgid "No PnLs found"
 msgstr ""
 
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "No available leverage found"
+msgstr ""
+
 #: src/components/Synthetics/Claims/ClaimsHistory.tsx
 msgid "No claims match the selected filters"
 msgstr ""
@@ -3651,6 +3678,10 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Synthetics/TradeHistory/TradeHistory.tsx
 msgid "No trades yet"
+msgstr ""
+
+#: src/components/Synthetics/PositionItem/PositionItem.tsx
+msgid "None"
 msgstr ""
 
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/shared.ts
@@ -4768,6 +4799,11 @@ msgstr ""
 msgid "Sending settle request"
 msgstr ""
 
+#: src/components/Synthetics/OrderEditor/OrderEditor.tsx
+#: src/components/Synthetics/TradeBox/TradeBox.tsx
+msgid "Set Max Leverage"
+msgstr ""
+
 #: src/components/Exchange/PositionDropdown.tsx
 msgid "Set TP/SL"
 msgstr ""
@@ -4858,7 +4894,7 @@ msgstr ""
 #: src/components/Synthetics/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Exchange/Exchange.js
@@ -5062,7 +5098,7 @@ msgstr ""
 msgid "Stats"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Stop Loss Decrease"
 msgstr ""
 
@@ -5244,7 +5280,7 @@ msgstr ""
 msgid "Swap {0} {1} for{2} USDG"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Swap {fromTokenText} for {toTokenText}"
 msgstr ""
 
@@ -5398,6 +5434,10 @@ msgstr ""
 msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
 msgstr ""
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "The Order may not execute as the Max. Allowed Leverage is exceeded. Consider decreasing the Order's Leverage by editing and decreasing its Size. <0>Read more</0>."
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "The PnL ($) compared to the capital used.<0/><1/>The capital used is calculated as the highest value of [<2>sum of collateral of open positions - realized PnL + period start pending PnL</2>]."
 msgstr ""
@@ -5454,11 +5494,11 @@ msgstr ""
 msgid "The network fees are very high currently, which may be due to a temporary increase in transactions on the {chainName} network."
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedOrderAcceptablePriceImpact}, which is lower than the current market price impact of {formattedCurrentAcceptablePriceImpact}. It can be edited using the \"Edit\" button."
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "The order will not be executed as its trigger price is beyond the position's liquidation price."
 msgstr ""
 
@@ -5554,19 +5594,19 @@ msgstr ""
 msgid "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute swap to Receive Token when the Price conditions are met."
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute the Pay Token to Collateral Token swap when the Price conditions are met."
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute the Swap when the Min. Receive conditions are met."
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "There may not be sufficient liquidity to execute your Order when the Price conditions are met."
 msgstr ""
 
@@ -5606,7 +5646,7 @@ msgstr ""
 msgid "This is the maximum top-up amount that will be sent from your Main account to your Subaccount after each transaction. The actual amount sent will depend on the final transaction fee."
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "This order using {collateralSymbol} as collateral will not be valid for the existing {longText} position using {symbol} as collateral."
 msgstr ""
 
@@ -6739,11 +6779,11 @@ msgstr ""
 msgid "in liquidity"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "limit price"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "long"
 msgstr ""
 
@@ -6761,7 +6801,7 @@ msgstr ""
 msgid "receive"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "short"
 msgstr ""
 
@@ -6777,7 +6817,7 @@ msgstr ""
 msgid "time to liq"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "trigger price"
 msgstr ""
 
@@ -6967,7 +7007,7 @@ msgstr ""
 msgid "{fromText} to {toMinText}"
 msgstr ""
 
-#: src/domain/synthetics/orders/utils.ts
+#: src/domain/synthetics/orders/utils.tsx
 msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 msgstr ""
 
