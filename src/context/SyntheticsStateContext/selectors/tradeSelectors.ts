@@ -18,7 +18,7 @@ import {
 } from "domain/synthetics/trade";
 import { BigNumber } from "ethers";
 import { getByKey } from "lib/objects";
-import { createSelector, createSelectorFactory } from "../utils";
+import { createSelectorDeprecated, createSelectorFactory } from "../utils";
 import {
   selectChainId,
   selectMarketsInfoData,
@@ -35,7 +35,7 @@ export type TokenTypeForSwapRoute = "collateralToken" | "indexToken";
 // dont swap addresses here
 export const makeSelectSwapRoutes = createSelectorFactory(
   (fromTokenAddress: string | undefined, toTokenAddress: string | undefined) =>
-    createSelector([selectChainId, selectMarketsInfoData], (chainId, marketsInfoData) => {
+    createSelectorDeprecated([selectChainId, selectMarketsInfoData], (chainId, marketsInfoData) => {
       const wrappedToken = getWrappedToken(chainId);
 
       const isWrap = fromTokenAddress === NATIVE_TOKEN_ADDRESS && toTokenAddress === wrappedToken.address;
@@ -181,7 +181,7 @@ export const makeSelectIncreasePositionAmounts = createSelectorFactory(
     strategy: "leverageByCollateral" | "leverageBySize" | "independent";
     tokenTypeForSwapRoute: TokenTypeForSwapRoute;
   }) =>
-    createSelector(
+    createSelectorDeprecated(
       [
         selectTokensData,
         selectMarketsInfoData,
@@ -291,7 +291,7 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
     fixedAcceptablePriceImpactBps: BigNumber | undefined;
     keepLeverage: boolean | undefined;
   }) =>
-    createSelector(
+    createSelectorDeprecated(
       [
         selectPositionsInfoData,
         selectTokensData,
@@ -348,7 +348,7 @@ export const makeSelectMarkPrice = createSelectorFactory(
     tradeType: TradeType;
     tradeMode: TradeMode;
   }) =>
-    createSelector([selectTokensData], (tokensData) => {
+    createSelectorDeprecated([selectTokensData], (tokensData) => {
       const tradeFlags = createTradeFlags(tradeType, tradeMode);
       const toToken = toTokenAddress ? getByKey(tokensData, toTokenAddress) : undefined;
 
@@ -378,7 +378,7 @@ export const makeSelectTradeRatios = createSelectorFactory(
     tradeMode: TradeMode;
     triggerRatioValue: BigNumber | undefined;
   }) =>
-    createSelector(
+    createSelectorDeprecated(
       [
         selectTokensData,
         makeSelectMarkPrice({
@@ -451,7 +451,7 @@ export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
     tokenTypeForSwapRoute: TokenTypeForSwapRoute;
     isPnlInLeverage: boolean;
   }) =>
-    createSelector(
+    createSelectorDeprecated(
       [
         selectPositionConstants,
         selectMarketsInfoData,
@@ -529,7 +529,7 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
     triggerPrice: BigNumber | undefined;
     isPnlInLeverage: boolean;
   }) =>
-    createSelector(
+    createSelectorDeprecated(
       [
         selectPositionConstants,
         selectMarketsInfoData,

@@ -21,7 +21,7 @@ import {
 } from "./tradeSelectors";
 import { USD_DECIMALS, getPositionKey } from "lib/legacy";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
-import { createEnhancedSelector, createSelector } from "../utils";
+import { createSelector, createSelectorDeprecated } from "../utils";
 import { isSwapOrderType } from "domain/synthetics/orders";
 import { SwapAmounts, TradeType, getSwapAmountsByFromValue, getSwapAmountsByToValue } from "domain/synthetics/trade";
 import { convertToUsd } from "domain/synthetics/tokens";
@@ -62,7 +62,7 @@ export const selectTradeboxSetActivePosition = (s: SyntheticsState) => s.tradebo
 export const selectTradeboxSetToTokenAddress = (s: SyntheticsState) => s.tradebox.setToTokenAddress;
 export const selectTradeboxSetTradeConfig = (s: SyntheticsState) => s.tradebox.setTradeConfig;
 
-export const selectTradeboxSwapRoutes = createEnhancedSelector((q) => {
+export const selectTradeboxSwapRoutes = createSelector((q) => {
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
   const toTokenAddress = q(selectTradeboxToTokenAddress);
   const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
@@ -73,7 +73,7 @@ export const selectTradeboxSwapRoutes = createEnhancedSelector((q) => {
   return q(makeSelectSwapRoutes(fromTokenAddress, tradeFlags.isPosition ? collateralTokenAddress : toTokenAddress));
 });
 
-export const selectTradeboxIncreasePositionAmounts = createEnhancedSelector((q) => {
+export const selectTradeboxIncreasePositionAmounts = createSelector((q) => {
   const tokensData = q(selectTokensData);
   const tradeMode = q(selectTradeboxTradeMode);
   const tradeType = q(selectTradeboxTradeType);
@@ -118,7 +118,7 @@ export const selectTradeboxIncreasePositionAmounts = createEnhancedSelector((q) 
   return q(selector);
 });
 
-export const selectTradeboxDecreasePositionAmounts = createEnhancedSelector((q) => {
+export const selectTradeboxDecreasePositionAmounts = createSelector((q) => {
   const tradeMode = q(selectTradeboxTradeMode);
   const tradeType = q(selectTradeboxTradeType);
   const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
@@ -150,7 +150,7 @@ export const selectTradeboxDecreasePositionAmounts = createEnhancedSelector((q) 
   return q(selector);
 });
 
-export const selectTradeboxSwapAmounts = createEnhancedSelector((q) => {
+export const selectTradeboxSwapAmounts = createSelector((q) => {
   const tokensData = q(selectTokensData);
   const tradeMode = q(selectTradeboxTradeMode);
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
@@ -230,7 +230,7 @@ export const selectTradeboxSwapAmounts = createEnhancedSelector((q) => {
   }
 });
 
-export const selectTradeboxTradeFlags = createSelector(
+export const selectTradeboxTradeFlags = createSelectorDeprecated(
   [selectTradeboxTradeType, selectTradeboxTradeMode],
   (tradeType, tradeMode) => {
     const tradeFlags = createTradeFlags(tradeType, tradeMode);
@@ -238,11 +238,11 @@ export const selectTradeboxTradeFlags = createSelector(
   }
 );
 
-export const selectTradeboxLeverage = createSelector([selectTradeboxLeverageOption], (leverageOption) =>
+export const selectTradeboxLeverage = createSelectorDeprecated([selectTradeboxLeverageOption], (leverageOption) =>
   BigNumber.from(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)))
 );
 
-const selectNextValuesForIncrease = createEnhancedSelector(
+const selectNextValuesForIncrease = createSelector(
   (q): Parameters<typeof makeSelectNextPositionValuesForIncrease>[0] => {
     const tokensData = q(selectTokensData);
     const tradeMode = q(selectTradeboxTradeMode);
@@ -293,7 +293,7 @@ const selectNextValuesForIncrease = createEnhancedSelector(
   }
 );
 
-export const selectTradeboxNextPositionValuesForIncrease = createEnhancedSelector((q) => {
+export const selectTradeboxNextPositionValuesForIncrease = createSelector((q) => {
   const increaseArgs = q(selectNextValuesForIncrease);
 
   if (!increaseArgs) return undefined;
@@ -303,7 +303,7 @@ export const selectTradeboxNextPositionValuesForIncrease = createEnhancedSelecto
   return q(selector);
 });
 
-const selectTradeboxNextPositionValuesForIncreaseWithoutPnlInLeverage = createEnhancedSelector((q) => {
+const selectTradeboxNextPositionValuesForIncreaseWithoutPnlInLeverage = createSelector((q) => {
   const increaseArgs = q(selectNextValuesForIncrease);
 
   if (!increaseArgs) return undefined;
@@ -313,7 +313,7 @@ const selectTradeboxNextPositionValuesForIncreaseWithoutPnlInLeverage = createEn
   return q(selector);
 });
 
-const selectNextValuesDecreaseArgs = createEnhancedSelector((q) => {
+const selectNextValuesDecreaseArgs = createSelector((q) => {
   const tradeMode = q(selectTradeboxTradeMode);
   const tradeType = q(selectTradeboxTradeType);
   const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
@@ -342,7 +342,7 @@ const selectNextValuesDecreaseArgs = createEnhancedSelector((q) => {
   };
 });
 
-export const selectTradeboxNextPositionValuesForDecrease = createEnhancedSelector((q) => {
+export const selectTradeboxNextPositionValuesForDecrease = createSelector((q) => {
   const decreaseArgs = q(selectNextValuesDecreaseArgs);
 
   if (!decreaseArgs) return undefined;
@@ -352,7 +352,7 @@ export const selectTradeboxNextPositionValuesForDecrease = createEnhancedSelecto
   return q(selector);
 });
 
-const selectTradeboxNextPositionValuesForDecreaseWithoutPnlInLeverage = createEnhancedSelector((q) => {
+const selectTradeboxNextPositionValuesForDecreaseWithoutPnlInLeverage = createSelector((q) => {
   const decreaseArgs = q(selectNextValuesDecreaseArgs);
 
   if (!decreaseArgs) return undefined;
@@ -362,7 +362,7 @@ const selectTradeboxNextPositionValuesForDecreaseWithoutPnlInLeverage = createEn
   return q(selector);
 });
 
-export const selectTradeboxNextLeverageWithoutPnl = createEnhancedSelector((q) => {
+export const selectTradeboxNextLeverageWithoutPnl = createSelector((q) => {
   const tradeFlags = q(selectTradeboxTradeFlags);
   const nextValues = tradeFlags.isIncrease
     ? q(selectTradeboxNextPositionValuesForIncreaseWithoutPnlInLeverage)
@@ -371,12 +371,12 @@ export const selectTradeboxNextLeverageWithoutPnl = createEnhancedSelector((q) =
   return nextValues?.nextLeverage;
 });
 
-export const selectTradeboxNextPositionValues = createEnhancedSelector((q) => {
+export const selectTradeboxNextPositionValues = createSelector((q) => {
   const { isIncrease } = q(selectTradeboxTradeFlags);
   return isIncrease ? q(selectTradeboxNextPositionValuesForIncrease) : q(selectTradeboxNextPositionValuesForDecrease);
 });
 
-export const selectTradeboxSelectedPositionKey = createSelector(
+export const selectTradeboxSelectedPositionKey = createSelectorDeprecated(
   [selectAccount, selectTradeboxCollateralTokenAddress, selectTradeboxMarketAddress, selectTradeboxTradeFlags],
   (account, collateralAddress, marketAddress, tradeFlags) => {
     if (!account || !collateralAddress || !marketAddress) {
@@ -387,12 +387,12 @@ export const selectTradeboxSelectedPositionKey = createSelector(
   }
 );
 
-export const selectTradeboxSelectedPosition = createSelector(
+export const selectTradeboxSelectedPosition = createSelectorDeprecated(
   [selectTradeboxSelectedPositionKey, selectPositionsInfoData],
   (selectedPositionKey, positionsInfoData) => getByKey(positionsInfoData, selectedPositionKey)
 );
 
-export const selectTradeboxExistingOrder = createSelector(
+export const selectTradeboxExistingOrder = createSelectorDeprecated(
   [selectTradeboxSelectedPositionKey, selectOrdersInfoData],
   (selectedPositionKey, ordersInfoData) => {
     if (!selectedPositionKey) {

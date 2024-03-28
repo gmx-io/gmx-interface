@@ -1,5 +1,5 @@
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
-import { createSelector } from "../utils";
+import { createSelectorDeprecated } from "../utils";
 
 export const selectAccount = (s: SyntheticsState) => s.globals.account;
 export const selectOrdersInfoData = (s: SyntheticsState) => s.globals.ordersInfo.ordersInfoData;
@@ -21,7 +21,7 @@ export const selectMinPositionSizeUsd = (s: SyntheticsState) => s.globals.positi
 export const selectClosingPositionKey = (s: SyntheticsState) => s.globals.closingPositionKey;
 export const selectSetClosingPositionKey = (s: SyntheticsState) => s.globals.setClosingPositionKey;
 
-export const selectPositionConstants = createSelector(
+export const selectPositionConstants = createSelectorDeprecated(
   [selectMinCollateralUsd, selectMinPositionSizeUsd],
   (minCollateralUsd, minPositionSizeUsd) => ({
     minCollateralUsd,
@@ -29,7 +29,7 @@ export const selectPositionConstants = createSelector(
   })
 );
 
-export const selectClosingPositionKeyState = createSelector(
+export const selectClosingPositionKeyState = createSelectorDeprecated(
   [selectClosingPositionKey, selectSetClosingPositionKey],
   (closingPositionKey, setClosingPositionKey) => [closingPositionKey, setClosingPositionKey] as const
 );

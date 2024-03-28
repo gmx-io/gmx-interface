@@ -2,7 +2,7 @@ import { LeaderboardAccount, LeaderboardPositionBase } from "domain/synthetics/l
 import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
 import { MarketInfo } from "domain/synthetics/markets";
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
-import { createEnhancedSelector } from "../utils";
+import { createSelector } from "../utils";
 import { selectAccount, selectMarketsInfoData } from "./globalSelectors";
 
 const BASIS_POINTS_DIVISOR = 10000n;
@@ -31,14 +31,12 @@ export function selectLeaderboardIsStartInFuture(s: SyntheticsState) {
   return s.leaderboard.isStartInFuture;
 }
 
-export const selectLeaderboardIsCompetition = createEnhancedSelector(function selectLeaderboardIsCompetition(q) {
+export const selectLeaderboardIsCompetition = createSelector(function selectLeaderboardIsCompetition(q) {
   const pageKey = q((s) => s.leaderboard.leaderboardPageKey);
   return LEADERBOARD_PAGES[pageKey].isCompetition;
 });
 
-export const selectLeaderboardIsCompetitionOver = createEnhancedSelector(function selectLeaderboardIsCompetitionOver(
-  q
-) {
+export const selectLeaderboardIsCompetitionOver = createSelector(function selectLeaderboardIsCompetitionOver(q) {
   const isEndInFuture = q(selectLeaderboardIsEndInFuture);
   if (isEndInFuture) return false;
 
@@ -49,7 +47,7 @@ export const selectLeaderboardIsCompetitionOver = createEnhancedSelector(functio
   return q(selectLeaderboardIsCompetition);
 });
 
-export const selectLeaderboardCurrentAccount = createEnhancedSelector(function selectLeaderboardCurrentAccount(
+export const selectLeaderboardCurrentAccount = createSelector(function selectLeaderboardCurrentAccount(
   q
 ): LeaderboardAccount | undefined {
   const accounts = q(selectLeaderboardAccounts);
@@ -88,7 +86,7 @@ export const selectLeaderboardCurrentAccount = createEnhancedSelector(function s
   };
 });
 
-const selectPositionBasesByAccount = createEnhancedSelector(function selectPositionBasesByAccount(q) {
+const selectPositionBasesByAccount = createSelector(function selectPositionBasesByAccount(q) {
   const positionBases = q(selectLeaderboardPositionBases);
 
   if (!positionBases) return {};
@@ -102,7 +100,7 @@ const selectPositionBasesByAccount = createEnhancedSelector(function selectPosit
   }, {} as Record<string, LeaderboardPositionBase[]>);
 });
 
-const selectLeaderboardAccounts = createEnhancedSelector(function selectLeaderboardAccounts(q) {
+const selectLeaderboardAccounts = createSelector(function selectLeaderboardAccounts(q) {
   const baseAccounts = q(selectLeaderboardAccountBases);
   const positionBasesByAccount = q(selectPositionBasesByAccount);
   const marketsInfoData = q(selectMarketsInfoData);
@@ -152,21 +150,19 @@ const selectLeaderboardAccounts = createEnhancedSelector(function selectLeaderbo
   });
 });
 
-export const selectLeaderboardRankedAccounts = createEnhancedSelector(function selectLeaderboardRankedAccounts(q) {
+export const selectLeaderboardRankedAccounts = createSelector(function selectLeaderboardRankedAccounts(q) {
   const accounts = q(selectLeaderboardAccounts);
   if (!accounts) return undefined;
   return accounts.filter((a) => a.hasRank);
 });
 
-export const selectLeaderboardRankedAccountsByPnl = createEnhancedSelector(
-  function selectLeaderboardRankedAccountsByPnl(q) {
-    const accounts = q(selectLeaderboardRankedAccounts);
-    if (!accounts) return undefined;
-    return [...accounts].sort((a, b) => (b.totalQualifyingPnl - a.totalQualifyingPnl > 0n ? 1 : -1));
-  }
-);
+export const selectLeaderboardRankedAccountsByPnl = createSelector(function selectLeaderboardRankedAccountsByPnl(q) {
+  const accounts = q(selectLeaderboardRankedAccounts);
+  if (!accounts) return undefined;
+  return [...accounts].sort((a, b) => (b.totalQualifyingPnl - a.totalQualifyingPnl > 0n ? 1 : -1));
+});
 
-export const selectLeaderboardRankedAccountsByPnlPercentage = createEnhancedSelector(
+export const selectLeaderboardRankedAccountsByPnlPercentage = createSelector(
   function selectLeaderboardRankedAccountsByPnlPercentage(q) {
     const accounts = q(selectLeaderboardRankedAccounts);
     if (!accounts) return undefined;
@@ -174,7 +170,7 @@ export const selectLeaderboardRankedAccountsByPnlPercentage = createEnhancedSele
   }
 );
 
-export const selectLeaderboardAccountsRanks = createEnhancedSelector(function selectLeaderboardAccountsRanks(q) {
+export const selectLeaderboardAccountsRanks = createSelector(function selectLeaderboardAccountsRanks(q) {
   const accounts = q(selectLeaderboardRankedAccounts);
   const ranks = { pnl: new Map<string, number>(), pnlPercentage: new Map<string, number>() };
   if (!accounts) return ranks;
@@ -196,7 +192,7 @@ export const selectLeaderboardAccountsRanks = createEnhancedSelector(function se
   return ranks;
 });
 
-export const selectLeaderboardPositions = createEnhancedSelector(function selectLeaderboardPositions(q) {
+export const selectLeaderboardPositions = createSelector(function selectLeaderboardPositions(q) {
   const positionBases = q(selectLeaderboardPositionBases);
   const marketsInfoData = q(selectMarketsInfoData);
 

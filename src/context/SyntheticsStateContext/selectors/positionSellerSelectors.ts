@@ -3,7 +3,7 @@ import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { USD_DECIMALS } from "lib/legacy";
 import { parseValue } from "lib/numbers";
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
-import { createEnhancedSelector } from "../utils";
+import { createSelector } from "../utils";
 import { selectClosingPositionKey, selectPositionsInfoData, selectSavedIsPnlInLeverage } from "./globalSelectors";
 import { makeSelectDecreasePositionAmounts, makeSelectNextPositionValuesForDecrease } from "./tradeSelectors";
 import {
@@ -27,12 +27,12 @@ export const selectPositionSellerReceiveTokenAddress = (state: SyntheticsState) 
   state.positionSeller.receiveTokenAddress;
 export const selectPositionSellerAllowedSlippage = (state: SyntheticsState) => state.positionSeller.allowedSlippage;
 export const selectPositionSellerIsSubmitting = (state: SyntheticsState) => state.positionSeller.isSubmitting;
-export const selectPositionSellerPosition = createEnhancedSelector((q) => {
+export const selectPositionSellerPosition = createSelector((q) => {
   const positionKey = q(selectClosingPositionKey);
   return q((s) => (positionKey ? selectPositionsInfoData(s)?.[positionKey] : undefined));
 });
 
-export const selectPositionSellerNextPositionValuesForDecrease = createEnhancedSelector((q) => {
+export const selectPositionSellerNextPositionValuesForDecrease = createSelector((q) => {
   const decreaseAmountArgs = q(selectPositionSellerDecreaseAmountArgs);
   const keepLeverageRaw = q(selectPositionSellerKeepLeverageRaw);
   const keepLeverageDisabledByCollateral = q(selectPositionSellerLeverageDisabledByCollateral);
@@ -44,7 +44,7 @@ export const selectPositionSellerNextPositionValuesForDecrease = createEnhancedS
   return q(selector);
 });
 
-const selectPositionSellerDecreaseAmountArgs = createEnhancedSelector((q) => {
+const selectPositionSellerDecreaseAmountArgs = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
 
   if (!position) return undefined;
@@ -75,7 +75,7 @@ const selectPositionSellerDecreaseAmountArgs = createEnhancedSelector((q) => {
   };
 });
 
-export const selectPositionSellerDecreaseAmounts = createEnhancedSelector((q) => {
+export const selectPositionSellerDecreaseAmounts = createSelector((q) => {
   const decreaseAmountArgs = q(selectPositionSellerDecreaseAmountArgs);
   const keepLeverageRaw = q(selectPositionSellerKeepLeverageRaw);
   const keepLeverageDisabledByCollateral = q(selectPositionSellerLeverageDisabledByCollateral);
@@ -89,7 +89,7 @@ export const selectPositionSellerDecreaseAmounts = createEnhancedSelector((q) =>
 });
 
 // temporary not used
-export const selectPositionSellerDecreaseAmountsWithKeepLeverage = createEnhancedSelector((q) => {
+export const selectPositionSellerDecreaseAmountsWithKeepLeverage = createSelector((q) => {
   const decreaseAmountArgs = q(selectPositionSellerDecreaseAmountArgs);
 
   if (!decreaseAmountArgs) return undefined;
@@ -99,7 +99,7 @@ export const selectPositionSellerDecreaseAmountsWithKeepLeverage = createEnhance
   return q(selector);
 });
 
-export const selectPositionSellerKeepLeverage = createEnhancedSelector((q) => {
+export const selectPositionSellerKeepLeverage = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
 
   if (!position) return false;
@@ -113,7 +113,7 @@ export const selectPositionSellerKeepLeverage = createEnhancedSelector((q) => {
   return !disabledByCollateral;
 });
 
-export const selectPositionSellerLeverageDisabledByCollateral = createEnhancedSelector((q) => {
+export const selectPositionSellerLeverageDisabledByCollateral = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
 
   if (!position) return false;

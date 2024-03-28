@@ -8,10 +8,13 @@ import { LRUCache } from "./LruCache";
 import { SyntheticsState } from "./SyntheticsStateContextProvider";
 export { useSyntheticsStateSelector as useSelector } from "./SyntheticsStateContextProvider";
 
-export const createSelector = createSelectorCommon.withTypes<SyntheticsState>();
+/**
+ * @deprecated use createSelector instead
+ */
+export const createSelectorDeprecated = createSelectorCommon.withTypes<SyntheticsState>();
 const context = createSelectionContext<SyntheticsState>();
 
-export const createEnhancedSelector = context.makeSelector;
+export const createSelector = context.makeSelector;
 
 type Arg = boolean | string | BigNumber | undefined | null | number | TradeMode | TradeType | OrderOption;
 type SupportedArg = Arg | Record<string, Arg>;
