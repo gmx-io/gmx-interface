@@ -634,17 +634,12 @@ export function OrderEditor(p: Props) {
                   </>
                 )}
 
-                <ExchangeInfoRow
-                  label={t`Acceptable Price`}
-                  value={formatAcceptablePrice(acceptablePrice, { displayDecimals: indexPriceDecimals })}
-                />
+                <ExchangeInfoRow label={t`Acceptable Price`} value={formatAcceptablePrice(acceptablePrice)} />
 
                 {existingPosition && (
                   <ExchangeInfoRow
                     label={t`Liq. Price`}
-                    value={formatLiquidationPrice(existingPosition.liquidationPrice, {
-                      displayDecimals: indexPriceDecimals,
-                    })}
+                    value={formatLiquidationPrice(existingPosition.liquidationPrice)}
                   />
                 )}
               </>
