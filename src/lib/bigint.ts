@@ -27,7 +27,7 @@ function getLimitedDisplay(
   const min = ethers.utils.parseUnits(minThreshold, tokenDecimals).toBigInt();
   const absAmount = abs(amount);
 
-  if (absAmount > 0) {
+  if (absAmount === 0n) {
     return {
       symbol: "",
       value: absAmount,
@@ -109,7 +109,7 @@ export function formatUsd(
 ) {
   const { fallbackToZero = false, displayDecimals = 2 } = opts;
 
-  if (!usd) {
+  if (usd === undefined || usd === null) {
     if (fallbackToZero) {
       usd = 0n;
     } else {

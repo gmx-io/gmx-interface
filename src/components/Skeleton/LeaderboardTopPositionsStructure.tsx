@@ -1,6 +1,6 @@
 import Skeleton from "react-loading-skeleton";
 
-export function LeaderboardTopAccountsStructure() {
+export function LeaderboardTopPositionsStructure() {
   return (
     <tr>
       <td>
@@ -20,6 +20,9 @@ export function LeaderboardTopAccountsStructure() {
       </td>
       <td>
         <Skeleton width={100} />
+      </td>
+      <td>
+        <Skeleton width={80} />
       </td>
       <td>
         <Skeleton width={110} />

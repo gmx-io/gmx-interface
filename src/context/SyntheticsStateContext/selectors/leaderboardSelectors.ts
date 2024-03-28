@@ -1,35 +1,31 @@
-import { LeaderboardAccount, LeaderboardPositionBase } from "domain/synthetics/leaderboard";
+import { LeaderboardAccount, LeaderboardPosition, LeaderboardPositionBase } from "domain/synthetics/leaderboard";
 import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
 import { MarketInfo } from "domain/synthetics/markets";
 import { SyntheticsTradeState } from "../SyntheticsStateContextProvider";
 import { createEnhancedSelector } from "../utils";
-import { selectAccount, selectMarketsInfoData } from "./globalSelectors";
+import { selectAccount, selectMarketsInfoData, selectTokensData } from "./globalSelectors";
 
 const BASIS_POINTS_DIVISOR = 10000n;
 
-export function selectLeaderboardAccountBases(s: SyntheticsTradeState) {
-  return s.leaderboard.accounts;
-}
-export function selectLeaderboardPositionBases(s: SyntheticsTradeState) {
-  return s.leaderboard.positions;
-}
+export const selectLeaderboardAccountBases = (s: SyntheticsTradeState) => s.leaderboard.accounts;
 
-export function selectLeaderboardType(s: SyntheticsTradeState) {
-  return s.leaderboard.leaderboardType;
-}
-export function selectLeaderboardSetType(s: SyntheticsTradeState) {
-  return s.leaderboard.setLeaderboardType;
-}
+export const selectLeaderboardPositionBases = (s: SyntheticsTradeState) => s.leaderboard.positions;
 
-export function selectLeaderboardTimeframe(s: SyntheticsTradeState) {
-  return s.leaderboard.timeframe;
-}
-export function selectLeaderboardIsEndInFuture(s: SyntheticsTradeState) {
-  return s.leaderboard.isEndInFuture;
-}
-export function selectLeaderboardIsStartInFuture(s: SyntheticsTradeState) {
-  return s.leaderboard.isStartInFuture;
-}
+export const selectLeaderboardTimeframeType = (s: SyntheticsTradeState) => s.leaderboard.leaderboardTimeframeType;
+
+export const selectLeaderboardSetTimeframeType = (s: SyntheticsTradeState) => s.leaderboard.setLeaderboardTimeframeType;
+
+export const selectLeaderboardDataType = (s: SyntheticsTradeState) => s.leaderboard.leaderboardDataType;
+
+export const selectLeaderboardSetDataType = (s: SyntheticsTradeState) => s.leaderboard.setLeaderboardDataType;
+
+export const selectLeaderboardTimeframe = (s: SyntheticsTradeState) => s.leaderboard.timeframe;
+
+export const selectLeaderboardIsEndInFuture = (s: SyntheticsTradeState) => s.leaderboard.isEndInFuture;
+
+export const selectLeaderboardIsStartInFuture = (s: SyntheticsTradeState) => s.leaderboard.isStartInFuture;
+
+export const selectLeaderboardIsLoading = (s: SyntheticsTradeState) => s.leaderboard.isLoading;
 
 export const selectLeaderboardIsCompetition = createEnhancedSelector(function selectLeaderboardIsCompetition(q) {
   const pageKey = q((s) => s.leaderboard.leaderboardPageKey);
@@ -103,6 +99,12 @@ const selectPositionBasesByAccount = createEnhancedSelector(function selectPosit
 });
 
 const selectLeaderboardAccounts = createEnhancedSelector(function selectLeaderboardAccounts(q) {
+  const pageKey = q((s) => s.leaderboard.leaderboardPageKey);
+  const leaderboardDataType = q(selectLeaderboardDataType);
+
+  // top positions selected, no need to iterate accounts
+  if (pageKey === "leaderboard" && leaderboardDataType === "positions") return undefined;
+
   const baseAccounts = q(selectLeaderboardAccountBases);
   const positionBasesByAccount = q(selectPositionBasesByAccount);
   const marketsInfoData = q(selectMarketsInfoData);
@@ -197,19 +199,63 @@ export const selectLeaderboardAccountsRanks = createEnhancedSelector(function se
 });
 
 export const selectLeaderboardPositions = createEnhancedSelector(function selectLeaderboardPositions(q) {
+  const pageKey = q((s) => s.leaderboard.leaderboardPageKey);
+  const leaderboardDataType = q(selectLeaderboardDataType);
+
+  const shouldCalcPositions = pageKey === "leaderboard" && leaderboardDataType === "positions";
+
+  if (!shouldCalcPositions) return undefined;
+
   const positionBases = q(selectLeaderboardPositionBases);
-  const marketsInfoData = q(selectMarketsInfoData);
 
   if (!positionBases) return undefined;
 
-  return positionBases.map((position) => {
-    const market = (marketsInfoData || {})[position.market];
-    const unrealizedPnl = getPositionPnl(position, market);
-    return {
-      ...position,
-      unrealizedPnl,
-    };
+  const positions = positionBases
+    .map((position) => {
+      const market = q((s) => selectMarketsInfoData(s)?.[position.market]);
+
+      if (!market) return undefined;
+
+      const unrealizedPnl = getPositionPnl(position, market);
+
+      const pnl = position.realizedPnl + position.unrealizedPnl;
+      const fees = position.realizedFees + position.unrealizedFees;
+      const qualifyingPnl = pnl - fees + position.realizedPriceImpact;
+
+      const collateralTokenPrice = q((s) =>
+        selectTokensData(s)?.[position.collateralToken]?.prices.minPrice.toBigInt()
+      );
+      const collateralTokenDecimals = q((s) => selectTokensData(s)?.[position.collateralToken]?.decimals);
+
+      if (!collateralTokenPrice || !collateralTokenDecimals) return undefined;
+
+      const collateralUsd = (position.collateralAmount * collateralTokenPrice) / 10n ** BigInt(collateralTokenDecimals);
+
+      const leverage = collateralUsd > 0n ? (position.sizeInUsd * BASIS_POINTS_DIVISOR) / collateralUsd : 0n;
+
+      const p: LeaderboardPosition = {
+        ...position,
+        unrealizedPnl,
+        rank: 1,
+        qualifyingPnl,
+        fees,
+        pnl,
+        leverage,
+        collateralUsd,
+        entryPrice: position.entryPrice * 10n ** BigInt(market.indexToken.decimals),
+      };
+
+      return p;
+    })
+    .filter((x: LeaderboardPosition | undefined): x is LeaderboardPosition => x !== undefined);
+
+  positions.sort((a, b) => (b.qualifyingPnl - a.qualifyingPnl > 0n ? 1 : -1));
+
+  positions.forEach((position, index) => {
+    position.rank = index + 1;
   });
+
+  return positions;
 });
 
 function getPositionPnl(position: LeaderboardPositionBase, market: MarketInfo) {
