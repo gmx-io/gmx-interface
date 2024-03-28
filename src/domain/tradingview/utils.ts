@@ -1,4 +1,4 @@
-import { timezoneOffset } from "domain/prices";
+import { TIMEZONE_OFFSET_SEC } from "domain/prices";
 import { CHART_PERIODS } from "lib/legacy";
 import { Bar } from "./types";
 
@@ -16,7 +16,7 @@ export function formatTimeInBarToMs(bar: Bar) {
 export function getCurrentCandleTime(period: string) {
   // Converts current time to seconds, rounds down to nearest period, adds timezone offset, and converts back to milliseconds
   const periodSeconds = CHART_PERIODS[period];
-  return Math.floor(Date.now() / 1000 / periodSeconds) * periodSeconds + timezoneOffset;
+  return Math.floor(Date.now() / 1000 / periodSeconds) * periodSeconds + TIMEZONE_OFFSET_SEC;
 }
 
 export function getMax(...values: (number | undefined)[]): number {
