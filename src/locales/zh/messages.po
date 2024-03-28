@@ -3470,8 +3470,8 @@ msgid "Min collateral: {0}"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
-msgid "Min collateral: {0} USD"
-msgstr ""
+#~ msgid "Min collateral: {0} USD"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js

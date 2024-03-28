@@ -9,7 +9,6 @@ import { BigNumber, ethers } from "ethers";
 import { DUST_USD, PRECISION, USD_DECIMALS, isAddressZero } from "lib/legacy";
 import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { GmSwapFees, NextPositionValues, SwapPathStats, TradeFees, TriggerThresholdType } from "../types";
-import { getMinCollateralUsdForLeverage } from "./decrease";
 import { PriceImpactWarningState } from "../usePriceImpactWarningState";
 
 export type ValidationTooltipName = "maxLeverage";
@@ -403,8 +402,6 @@ export function getDecreaseError(p: {
 export function getEditCollateralError(p: {
   collateralDeltaAmount: BigNumber | undefined;
   collateralDeltaUsd: BigNumber | undefined;
-  nextCollateralUsd: BigNumber | undefined;
-  minCollateralUsd: BigNumber | undefined;
   nextLiqPrice: BigNumber | undefined;
   nextLeverage: BigNumber | undefined;
   position: PositionInfo | undefined;
@@ -416,8 +413,6 @@ export function getEditCollateralError(p: {
   const {
     collateralDeltaAmount,
     collateralDeltaUsd,
-    minCollateralUsd,
-    nextCollateralUsd,
     nextLeverage,
     nextLiqPrice,
     position,
@@ -433,14 +428,6 @@ export function getEditCollateralError(p: {
 
   if (isDeposit && depositToken && depositAmount && depositAmount.gt(depositToken.balance || 0)) {
     return [t`Insufficient ${depositToken.symbol} balance`];
-  }
-
-  if (nextCollateralUsd && minCollateralUsd && position) {
-    const minCollateralUsdForLeverage = getMinCollateralUsdForLeverage(position, BigNumber.from(0));
-
-    if (nextCollateralUsd.lt(minCollateralUsdForLeverage)) {
-      return [t`Min collateral: ${formatAmount(minCollateralUsdForLeverage, USD_DECIMALS, 2)} USD`];
-    }
   }
 
   if (nextLiqPrice && position?.markPrice) {
