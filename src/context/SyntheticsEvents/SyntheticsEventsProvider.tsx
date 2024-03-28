@@ -58,6 +58,7 @@ export const WITHDRAWAL_CANCELLED_HASH = ethers.utils.id("WithdrawalCancelled");
 
 export const ORDER_CREATED_HASH = ethers.utils.id("OrderCreated");
 export const ORDER_EXECUTED_HASH = ethers.utils.id("OrderExecuted");
+export const ORDER_UPDATED_HASH = ethers.utils.id("OrderUpdated");
 export const ORDER_CANCELLED_HASH = ethers.utils.id("OrderCancelled");
 
 export const POSITION_INCREASE_HASH = ethers.utils.id("PositionIncrease");
@@ -138,6 +139,32 @@ export function SyntheticsEventsProvider({
       );
     },
 
+    OrderUpdated: (eventData: EventLogData, txnParams: EventTxnParams) => {
+      const key = eventData.bytes32Items.items.key;
+      const account = eventData.addressItems.items.account;
+
+      if (account !== currentAccount) {
+        return;
+      }
+
+      if (orderStatuses[key]) {
+        setOrderStatuses((old) =>
+          updateByKey(old, key, {
+            updatedTxnHash: txnParams.transactionHash,
+            isViewed: false,
+          })
+        );
+      } else {
+        setOrderStatuses((old) =>
+          setByKey(old, key, {
+            key,
+            createdAt: Date.now(),
+            updatedTxnHash: txnParams.transactionHash,
+          })
+        );
+      }
+    },
+
     OrderExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const key = eventData.bytes32Items.items.key;
 
@@ -148,9 +175,27 @@ export function SyntheticsEventsProvider({
 
     OrderCancelled: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const key = eventData.bytes32Items.items.key;
+      const account = eventData.addressItems.items.account;
+
+      if (account !== currentAccount) {
+        return;
+      }
 
       if (orderStatuses[key]) {
-        setOrderStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
+        setOrderStatuses((old) =>
+          updateByKey(old, key, {
+            cancelledTxnHash: txnParams.transactionHash,
+            isViewed: false,
+          })
+        );
+      } else {
+        setOrderStatuses((old) =>
+          setByKey(old, key, {
+            key,
+            createdAt: Date.now(),
+            cancelledTxnHash: txnParams.transactionHash,
+          })
+        );
       }
 
       const order = orderStatuses[key]?.data;
@@ -509,12 +554,17 @@ export function SyntheticsEventsProvider({
         },
         {
           address: getContract(chainId, "EventEmitter"),
-          topics: [EVENT_LOG1_TOPIC, [ORDER_CANCELLED_HASH, ORDER_EXECUTED_HASH]],
+          topics: [EVENT_LOG1_TOPIC, [ORDER_CANCELLED_HASH, ORDER_UPDATED_HASH, ORDER_EXECUTED_HASH]],
         },
         // NEW CONTRACTS
         {
           address: getContract(chainId, "EventEmitter"),
-          topics: [EVENT_LOG2_TOPIC, [ORDER_CANCELLED_HASH, ORDER_EXECUTED_HASH], null, addressHash],
+          topics: [
+            EVENT_LOG2_TOPIC,
+            [ORDER_CANCELLED_HASH, ORDER_UPDATED_HASH, ORDER_EXECUTED_HASH],
+            null,
+            addressHash,
+          ],
         },
         // POSITIONS
         {

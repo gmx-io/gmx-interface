@@ -25,7 +25,7 @@ export function parseEventLogData(eventData): EventLogData {
   return ret as EventLogData;
 }
 
-export function getPendingOrderKey(data: PendingOrderData) {
+export function getPendingOrderKey(data: Omit<PendingOrderData, "txnType">) {
   return [
     data.account,
     data.marketAddress,

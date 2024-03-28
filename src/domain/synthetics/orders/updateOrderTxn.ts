@@ -42,12 +42,56 @@ export function updateOrderTxn(
     ? getSubaccountRouterContract(chainId, subaccount.signer)
     : new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, signer);
 
+  const encodedPayload = createUpdateEncodedPayload({
+    chainId,
+    router,
+    orderKey,
+    sizeDeltaUsd,
+    executionFee,
+    indexToken,
+    acceptablePrice,
+    triggerPrice,
+    minOutputAmount,
+  });
+
+  return callContract(chainId, router, "multicall", [encodedPayload], {
+    value: executionFee?.gt(0) ? executionFee : undefined,
+    sentMsg: t`Updating order`,
+    successMsg: t`Update order executed`,
+    failMsg: t`Failed to update order`,
+    setPendingTxns,
+    showPreliminaryMsg: Boolean(subaccount),
+  });
+}
+
+export function createUpdateEncodedPayload({
+  chainId,
+  router,
+  orderKey,
+  sizeDeltaUsd,
+  executionFee,
+  indexToken,
+  acceptablePrice,
+  triggerPrice,
+  minOutputAmount,
+}: {
+  chainId: number;
+  router: ethers.Contract;
+  orderKey: string;
+  sizeDeltaUsd: BigNumber;
+  executionFee?: BigNumber;
+  indexToken?: Token;
+  acceptablePrice: BigNumber;
+  triggerPrice: BigNumber;
+  minOutputAmount: BigNumber;
+}) {
   const orderVaultAddress = getContract(chainId, "OrderVault");
 
   const multicall: { method: string; params: any[] }[] = [];
   if (executionFee?.gt(0)) {
     multicall.push({ method: "sendWnt", params: [orderVaultAddress, executionFee] });
   }
+
   multicall.push({
     method: "updateOrder",
     params: [
@@ -59,16 +103,5 @@ export function updateOrderTxn(
     ],
   });
 
-  const encodedPayload = multicall
-    .filter(Boolean)
-    .map((call) => router.interface.encodeFunctionData(call!.method, call!.params));
-
-  return callContract(chainId, router, "multicall", [encodedPayload], {
-    value: executionFee?.gt(0) ? executionFee : undefined,
-    sentMsg: t`Updating order`,
-    successMsg: t`Update order executed`,
-    failMsg: t`Failed to update order`,
-    setPendingTxns,
-    showPreliminaryMsg: Boolean(subaccount),
-  });
+  return multicall.filter(Boolean).map((call) => router.interface.encodeFunctionData(call!.method, call!.params));
 }

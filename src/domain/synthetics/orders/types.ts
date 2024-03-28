@@ -92,3 +92,5 @@ export type OrdersData = {
 export type OrdersInfoData = {
   [orderKey: string]: OrderInfo;
 };
+
+export type OrderTxnType = "create" | "update" | "cancel";
