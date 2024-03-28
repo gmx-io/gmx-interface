@@ -78,15 +78,6 @@ import {
 } from "context/SubaccountContext/SubaccountContext";
 import { useOrdersInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useTradeRatios } from "context/SyntheticsStateContext/hooks/tradeHooks";
-import {
-  useTradeboxDecreasePositionAmounts,
-  useTradeboxIncreasePositionAmounts,
-  useTradeboxNextPositionValuesForDecrease,
-  useTradeboxNextPositionValuesForIncrease,
-  useTradeboxState,
-  useTradeboxSwapAmounts,
-  useTradeboxTradeFlags,
-} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import useSLTPEntries from "domain/synthetics/orders/useSLTPEntries";
 import { AvailableMarketsOptions } from "domain/synthetics/trade/useAvailableMarketsOptions";
 import { useHighExecutionFeeConsent } from "domain/synthetics/trade/useHighExecutionFeeConsent";
@@ -117,6 +108,16 @@ import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 
 import "./ConfirmationBox.scss";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import {
+  selectTradeboxDecreasePositionAmounts,
+  selectTradeboxIncreasePositionAmounts,
+  selectTradeboxNextPositionValuesForDecrease,
+  selectTradeboxNextPositionValuesForIncrease,
+  selectTradeboxState,
+  selectTradeboxSwapAmounts,
+  selectTradeboxTradeFlags,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 
 export type Props = {
   isVisible: boolean;
@@ -174,7 +175,7 @@ export function ConfirmationBox(p: Props) {
     setKeepLeverage,
     tradeMode,
     tradeType,
-  } = useTradeboxState();
+  } = useSelector(selectTradeboxState);
 
   const { element: highExecutionFeeAcknowledgement, isHighFeeConsentError } = useHighExecutionFeeConsent(
     executionFee?.feeUsd
@@ -190,12 +191,12 @@ export function ConfirmationBox(p: Props) {
 
   const tokensData = useTokensData();
   const ordersData = useOrdersInfoData();
-  const swapAmounts = useTradeboxSwapAmounts();
-  const increaseAmounts = useTradeboxIncreasePositionAmounts();
-  const decreaseAmounts = useTradeboxDecreasePositionAmounts();
-  const nextPositionValuesForIncrease = useTradeboxNextPositionValuesForIncrease();
-  const nextPositionValuesForDecrease = useTradeboxNextPositionValuesForDecrease();
-  const tradeFlags = useTradeboxTradeFlags();
+  const swapAmounts = useSelector(selectTradeboxSwapAmounts);
+  const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
+  const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
+  const nextPositionValuesForIncrease = useSelector(selectTradeboxNextPositionValuesForIncrease);
+  const nextPositionValuesForDecrease = useSelector(selectTradeboxNextPositionValuesForDecrease);
+  const tradeFlags = useSelector(selectTradeboxTradeFlags);
 
   const nextPositionValues = useMemo(() => {
     return tradeFlags.isIncrease ? nextPositionValuesForIncrease : nextPositionValuesForDecrease;

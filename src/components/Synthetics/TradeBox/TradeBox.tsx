@@ -7,8 +7,8 @@ import { useLatest, usePrevious } from "react-use";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
+import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
 import { MarketSelector } from "components/MarketSelector/MarketSelector";
@@ -30,20 +30,20 @@ import {
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useSwapRoutes, useTradeRatios } from "context/SyntheticsStateContext/hooks/tradeHooks";
-import {
-  useTradeboxDecreasePositionAmounts,
-  useTradeboxExistingOrder,
-  useTradeboxIncreasePositionAmounts,
-  useTradeboxLeverage,
-  useTradeboxNextLeverageWithoutPnl,
-  useTradeboxNextPositionValues,
-  useTradeboxSelectedPosition,
-  useTradeboxState,
-  useTradeboxSwapAmounts,
-  useTradeboxTradeFlags,
-} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
-import { selectTradeboxSwapRoutes } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import {
+  selectTradeboxDecreasePositionAmounts,
+  selectTradeboxExistingOrder,
+  selectTradeboxIncreasePositionAmounts,
+  selectTradeboxLeverage,
+  selectTradeboxNextLeverageWithoutPnl,
+  selectTradeboxNextPositionValues,
+  selectTradeboxSelectedPosition,
+  selectTradeboxState,
+  selectTradeboxSwapAmounts,
+  selectTradeboxSwapRoutes,
+  selectTradeboxTradeFlags,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useHasOutdatedUi } from "domain/legacy";
 import {
@@ -82,8 +82,8 @@ import {
   getCommonError,
   getDecreaseError,
   getIncreaseError,
-  getSwapError,
   getIsMaxLeverageExceeded,
+  getSwapError,
 } from "domain/synthetics/trade/utils/validation";
 import { getMinResidualAmount } from "domain/tokens";
 import longImg from "img/long.svg";
@@ -110,15 +110,15 @@ import useWallet from "lib/wallets/useWallet";
 
 import { HighPriceImpactWarning } from "../HighPriceImpactWarning/HighPriceImpactWarning";
 import { MarketCard } from "../MarketCard/MarketCard";
+import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { SwapCard } from "../SwapCard/SwapCard";
 import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { CollateralSelectorRow } from "./CollateralSelectorRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
-import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 
-import "./TradeBox.scss";
-import { useHistory } from "react-router-dom";
 import { helperToast } from "lib/helperToast";
+import { useHistory } from "react-router-dom";
+import "./TradeBox.scss";
 
 export type Props = {
   avaialbleTokenOptions: AvailableTokenOptions;
@@ -163,7 +163,7 @@ export function TradeBox(p: Props) {
   const tokensData = useTokensData();
   const marketsInfoData = useMarketsInfoData();
 
-  const tradeFlags = useTradeboxTradeFlags();
+  const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket } = tradeFlags;
 
   const { chainId } = useChainId();
@@ -223,7 +223,7 @@ export function TradeBox(p: Props) {
     marketInfo,
     toTokenAddress,
     avaialbleTradeModes: availalbleTradeModes,
-  } = useTradeboxState();
+  } = useSelector(selectTradeboxState);
 
   const fromToken = getByKey(tokensData, fromTokenAddress);
   const toToken = getByKey(tokensData, toTokenAddress);
@@ -235,8 +235,6 @@ export function TradeBox(p: Props) {
     fromToken?.balance?.gt(0) &&
     !fromToken.balance.eq(fromTokenAmount) &&
     (fromToken?.isNative ? minResidualAmount && fromToken.balance.gt(minResidualAmount) : true);
-
-  const nextLeverageWithoutPnl = useTradeboxNextLeverageWithoutPnl();
 
   const markPrice = useMemo(() => {
     if (!toToken) {
@@ -256,14 +254,15 @@ export function TradeBox(p: Props) {
   const uiFeeFactor = useUiFeeFactor();
 
   const swapRoute = useSwapRoutes(fromTokenAddress, isPosition ? collateralAddress : toTokenAddress);
-  const swapAmounts = useTradeboxSwapAmounts();
-  const increaseAmounts = useTradeboxIncreasePositionAmounts();
-  const decreaseAmounts = useTradeboxDecreasePositionAmounts();
-  const selectedPosition = useTradeboxSelectedPosition();
-  const existingOrder = useTradeboxExistingOrder();
-  const leverage = useTradeboxLeverage();
 
-  const nextPositionValues = useTradeboxNextPositionValues();
+  const nextLeverageWithoutPnl = useSelector(selectTradeboxNextLeverageWithoutPnl);
+  const swapAmounts = useSelector(selectTradeboxSwapAmounts);
+  const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
+  const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
+  const selectedPosition = useSelector(selectTradeboxSelectedPosition);
+  const existingOrder = useSelector(selectTradeboxExistingOrder);
+  const leverage = useSelector(selectTradeboxLeverage);
+  const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
 
   const { fees, feesType, executionFee } = useMemo(() => {
     if (!gasLimits || !gasPrice || !tokensData) {

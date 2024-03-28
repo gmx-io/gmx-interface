@@ -22,10 +22,11 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePositionsConstants, useSavedShowPnlAfterFees } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { usePositionOrdersWithErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
 import {
-  useTradeboxCollateralAddress,
-  useTradeboxMarketAddress,
-  useTradeboxTradeType,
-} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+  selectTradeboxCollateralTokenAddress,
+  selectTradeboxMarketAddress,
+  selectTradeboxTradeType,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { TradeMode, TradeType, getTriggerThresholdType } from "domain/synthetics/trade";
@@ -54,9 +55,9 @@ export function PositionItem(p: Props) {
   const ordersWithErrors = usePositionOrdersWithErrors(p.position.key);
   const { showDebugValues } = useSettings();
   const savedShowPnlAfterFees = useSavedShowPnlAfterFees();
-  const currentTradeType = useTradeboxTradeType();
-  const currentMarketAddress = useTradeboxMarketAddress();
-  const currentCollateralAddress = useTradeboxCollateralAddress();
+  const currentTradeType = useSelector(selectTradeboxTradeType);
+  const currentMarketAddress = useSelector(selectTradeboxMarketAddress);
+  const currentCollateralAddress = useSelector(selectTradeboxCollateralTokenAddress);
   const displayedPnl = savedShowPnlAfterFees ? p.position.pnlAfterFees : p.position.pnl;
   const displayedPnlPercentage = savedShowPnlAfterFees ? p.position.pnlAfterFeesPercentage : p.position.pnlPercentage;
   const isMobile = useMedia("(max-width: 1100px)");

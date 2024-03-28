@@ -35,10 +35,6 @@ import {
   usePositionSellerPosition,
 } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
 import { useSwapRoutes } from "context/SyntheticsStateContext/hooks/tradeHooks";
-import {
-  useTradeboxAvailableTokensOptions,
-  useTradeboxTradeFlags,
-} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { useHasOutdatedUi } from "domain/legacy";
 import {
   estimateExecuteDecreaseOrderGasLimit,
@@ -83,6 +79,11 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import {
+  selectTradeboxAvailableTokensOptions,
+  selectTradeboxTradeFlags,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import "./PositionSeller.scss";
 
 export type Props = {
@@ -104,7 +105,7 @@ export function PositionSeller(p: Props) {
   const onClose = useCallback(() => {
     setClosingPositionKey(undefined);
   }, [setClosingPositionKey]);
-  const availableTokensOptions = useTradeboxAvailableTokensOptions();
+  const availableTokensOptions = useSelector(selectTradeboxAvailableTokensOptions);
   const tokensData = useTokensData();
   const { chainId } = useChainId();
   const { signer, account } = useWallet();
@@ -115,8 +116,8 @@ export function PositionSeller(p: Props) {
   const userReferralInfo = useUserReferralInfo();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const uiFeeFactor = useUiFeeFactor(chainId);
-  const tradeFlags = useTradeboxTradeFlags();
   const position = usePositionSellerPosition();
+  const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
   const isVisible = Boolean(position);

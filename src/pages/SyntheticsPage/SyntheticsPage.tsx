@@ -39,16 +39,6 @@ import {
   usePositionsInfoData,
   useTokensData,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import {
-  useTradeboxAvailableTokensOptions,
-  useTradeboxFromTokenAddress,
-  useTradeboxSetActivePosition,
-  useTradeboxSetTradeConfig,
-  useTradeboxToTokenAddress,
-  useTradeboxTradeFlags,
-  useTradeboxTradeMode,
-  useTradeboxTradeType,
-} from "context/SyntheticsStateContext/hooks/tradeboxHooks";
 import { getMarketIndexName, getMarketPoolName, getTotalClaimableFundingUsd } from "domain/synthetics/markets";
 import { TradeMode } from "domain/synthetics/trade";
 import { getMidPrice } from "domain/tokens";
@@ -58,6 +48,17 @@ import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsP
 import { useRebatesInfo } from "domain/synthetics/fees/useRebatesInfo";
 import { calcTotalRebateUsd } from "components/Synthetics/Claims/utils";
 import { useOrderErrorsCount, useOrdersCount } from "context/SyntheticsStateContext/hooks/orderHooks";
+import {
+  selectTradeboxAvailableTokensOptions,
+  selectTradeboxFromTokenAddress,
+  selectTradeboxSetActivePosition,
+  selectTradeboxSetTradeConfig,
+  selectTradeboxToTokenAddress,
+  selectTradeboxTradeFlags,
+  selectTradeboxTradeMode,
+  selectTradeboxTradeType,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 
 export type Props = {
   shouldDisableValidation: boolean;
@@ -105,21 +106,21 @@ export function SyntheticsPage(p: Props) {
     ListSection.Positions
   );
 
-  const { isSwap } = useTradeboxTradeFlags();
-  const fromTokenAddress = useTradeboxFromTokenAddress();
-  const toTokenAddress = useTradeboxToTokenAddress();
-  const availableTokensOptions = useTradeboxAvailableTokensOptions();
-  const setActivePosition = useTradeboxSetActivePosition();
   const [, setClosingPositionKeyRaw] = useClosingPositionKeyState();
   const setClosingPositionKey = useCallback(
     (key: string | undefined) => requestAnimationFrame(() => setClosingPositionKeyRaw(key)),
     [setClosingPositionKeyRaw]
   );
+  const { isSwap } = useSelector(selectTradeboxTradeFlags);
+  const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
+  const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
+  const availableTokensOptions = useSelector(selectTradeboxAvailableTokensOptions);
   const { indexTokens, sortedIndexTokensWithPoolValue, swapTokens, sortedLongAndShortTokens, sortedAllMarkets } =
     availableTokensOptions;
-  const setTradeConfig = useTradeboxSetTradeConfig();
-  const tradeMode = useTradeboxTradeMode();
-  const tradeType = useTradeboxTradeType();
+  const setActivePosition = useSelector(selectTradeboxSetActivePosition);
+  const setTradeConfig = useSelector(selectTradeboxSetTradeConfig);
+  const tradeMode = useSelector(selectTradeboxTradeMode);
+  const tradeType = useSelector(selectTradeboxTradeType);
 
   useTradeParamsProcessor({
     setTradeConfig,

@@ -14,7 +14,8 @@ import groupBy from "lodash/groupBy";
 import { useMemo, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import "./ChartTokenSelector.scss";
-import { useTradeboxTradeFlags } from "context/SyntheticsStateContext/hooks/tradeboxHooks";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 
 type TokenOption = Token & {
   maxLongLiquidity: BigNumber;
@@ -35,7 +36,7 @@ type Props = {
 export default function ChartTokenSelector(props: Props) {
   const { chainId, options, selectedToken, onSelectToken, avaialbleTokenOptions, positionsInfo } = props;
   const { sortedAllMarkets } = avaialbleTokenOptions;
-  const { isSwap, isLong, isShort } = useTradeboxTradeFlags();
+  const { isSwap, isLong, isShort } = useSelector(selectTradeboxTradeFlags);
   const [searchKeyword, setSearchKeyword] = useState("");
 
   const onSelect = (token: { indexTokenAddress: string; marketTokenAddress?: string; tradeType?: TradeType }) => {
