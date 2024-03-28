@@ -1,29 +1,32 @@
 import { t, Trans } from "@lingui/macro";
-import Modal from "components/Modal/Modal";
-import { formatDeltaUsd, formatUsd } from "lib/numbers";
-import Button from "components/Button/Button";
-import { getTotalAccruedFundingUsd } from "domain/synthetics/markets";
+import { BigNumber } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { SettleAccruedFundingFeeRow } from "./SettleAccruedFundingFeeRow";
 
-import Tooltip from "components/Tooltip/Tooltip";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import {
+  usePositionsInfoData,
+  useTokensData,
+  useUserReferralInfo,
+} from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   getExecutionFee,
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
+import { getTotalAccruedFundingUsd } from "domain/synthetics/markets";
 import { createDecreaseOrderTxn, DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
-import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
+import { formatDeltaUsd, formatUsd } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
+
+import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import Button from "components/Button/Button";
+import Modal from "components/Modal/Modal";
+import Tooltip from "components/Tooltip/Tooltip";
+import { SettleAccruedFundingFeeRow } from "./SettleAccruedFundingFeeRow";
+
 import "./SettleAccruedFundingFeeModal.scss";
-import {
-  usePositionsInfoData,
-  useTokensData,
-  useUserReferralInfo,
-} from "context/SyntheticsStateContext/hooks/globalsHooks";
 
 type Props = {
   allowedSlippage: number;
@@ -173,12 +176,12 @@ export function SettleAccruedFundingFeeModal({
       <div className="App-card-divider ClaimModal-divider FeeModal-divider ClaimSettleModal-divider" />
       <div className="ClaimModal-content ClaimSettleModal-modal-content">
         <div className="App-card-content">
-          <div className="ClaimSettleModal-alert">
+          <AlertInfo type="warning" compact>
             <Trans>
               Consider selecting only Positions where the accrued Funding Fees exceed the gas spent to Settle, which is
               around {formatUsd(feeUsd)} per each selected Position.
             </Trans>
-          </div>
+          </AlertInfo>
 
           <div className="App-card-divider" />
           <div className="ClaimSettleModal-header">
