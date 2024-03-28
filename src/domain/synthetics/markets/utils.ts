@@ -36,8 +36,15 @@ export function getMarketPoolName(p: { longToken: Token; shortToken: Token }) {
   return `${longToken.symbol}-${shortToken.symbol}`;
 }
 
-export function getTokenPoolType(marketInfo: MarketInfo, tokenAddress: string) {
+/**
+ * Apart from usual cases, returns `long` for single token backed markets.
+ */
+export function getTokenPoolType(marketInfo: MarketInfo, tokenAddress: string): "long" | "short" | undefined {
   const { longToken, shortToken } = marketInfo;
+
+  if (longToken.address === shortToken.address && tokenAddress === longToken.address) {
+    return "long";
+  }
 
   if (tokenAddress === longToken.address || (tokenAddress === NATIVE_TOKEN_ADDRESS && longToken.isWrapped)) {
     return "long";
