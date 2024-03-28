@@ -739,64 +739,77 @@ export function ConfirmationBox(p: Props) {
     );
   }
 
-  function renderMain() {
-    if (isSwap) {
-      return (
-        <>
-          <div className="Confirmation-box-main trade-info-wrapper">
-            <div className="trade-info">
-              <div className="trade-token-amount">
-                <Trans>Pay</Trans>{" "}
-                <span>
-                  {formatTokenAmount(swapAmounts?.amountIn, fromToken?.decimals, fromToken?.symbol, {
-                    useCommas: true,
-                  })}
-                </span>
-              </div>
-              <div className="trade-amount-usd">{formatUsd(swapAmounts?.usdIn)}</div>
-            </div>
-            <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
-            <div className="trade-info">
-              <div className="trade-token-amount">
-                <Trans>Receive</Trans>{" "}
-                <span>
-                  {formatTokenAmount(swapAmounts?.amountOut, toToken?.decimals, toToken?.symbol, { useCommas: true })}
-                </span>
-              </div>
-              <div className="trade-amount-usd">{formatUsd(swapAmounts?.usdOut)}</div>
-            </div>
-          </div>
-          <div>{renderSubaccountNavigationButton()}</div>
-        </>
-      );
-    }
+  const formattedAmounts = useMemo(() => {
+    if (!isSwap && !isIncrease) return;
+    const amounts = isSwap ? swapAmounts : increaseAmounts;
 
-    if (isIncrease) {
+    if (!amounts) return;
+
+    const keys = isSwap
+      ? { amountInKey: "amountIn", usdInKey: "usdIn", amountOutKey: "amountOut", usdOutKey: "usdOut" }
+      : {
+          amountInKey: "initialCollateralAmount",
+          usdInKey: "initialCollateralUsd",
+          amountOutKey: "sizeDeltaInTokens",
+          usdOutKey: "sizeDeltaUsd",
+        };
+
+    return {
+      payTokenAmount: formatTokenAmount(amounts[keys.amountInKey], fromToken?.decimals, fromToken?.symbol, {
+        useCommas: true,
+      }),
+      payTokenUsd: formatUsd(amounts[keys.usdInKey]),
+      receiveTokenAmount: formatTokenAmount(amounts[keys.amountOutKey], toToken?.decimals, toToken?.symbol, {
+        useCommas: true,
+      }),
+      receiveTokenUsd: formatUsd(amounts[keys.usdOutKey]),
+    };
+  }, [isSwap, isIncrease, swapAmounts, fromToken, toToken, increaseAmounts]);
+
+  const fontSizeForToken = useMemo(() => {
+    const payAmountLength = formattedAmounts?.payTokenAmount?.length || 0;
+    const receiveAmountLength = formattedAmounts?.receiveTokenAmount?.length || 0;
+    const maxTokenAmountLength = Math.max(payAmountLength, receiveAmountLength);
+
+    if (maxTokenAmountLength > 17) {
+      const selectedSize = getFontSizeFromLength(maxTokenAmountLength);
+
+      return {
+        amount: { fontSize: `${selectedSize}px` },
+        usd: { fontSize: `${selectedSize - 2}px` },
+      };
+    }
+  }, [formattedAmounts]);
+
+  function renderMain() {
+    if (isSwap || isIncrease) {
+      if (!formattedAmounts) return;
+      const receiveLabel = isSwap ? t`Receive` : isLong ? t`Long` : t`Short`;
       return (
         <>
           <div className="Confirmation-box-main trade-info-wrapper">
             <div className="trade-info">
-              <div className="trade-token-amount">
-                <Trans>Pay</Trans>{" "}
-                <span>
-                  {formatTokenAmount(increaseAmounts?.initialCollateralAmount, fromToken?.decimals, fromToken?.symbol, {
-                    useCommas: true,
-                  })}
-                </span>
+              <div className="trade-token-amount" style={fontSizeForToken?.amount}>
+                <div>
+                  <Trans>Pay</Trans>
+                </div>
+                <span>{formattedAmounts?.payTokenAmount}</span>
               </div>
-              <div className="trade-amount-usd">{formatUsd(increaseAmounts?.initialCollateralUsd)}</div>
+              <div className="trade-amount-usd" style={fontSizeForToken?.usd}>
+                {formattedAmounts?.payTokenUsd}
+              </div>
             </div>
-            <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
+            <div>
+              <FaArrowRight className="arrow-icon" fontSize={12} color="#ffffffb3" />
+            </div>
             <div className="trade-info">
-              <div className="trade-token-amount">
-                {isLong ? t`Long` : t`Short`}{" "}
-                <span>
-                  {formatTokenAmount(increaseAmounts?.sizeDeltaInTokens, toToken?.decimals, toToken?.symbol, {
-                    useCommas: true,
-                  })}
-                </span>
+              <div className="trade-token-amount" style={fontSizeForToken?.amount}>
+                <div>{receiveLabel}</div>
+                <span>{formattedAmounts?.receiveTokenAmount}</span>
               </div>
-              <div className="trade-amount-usd">{formatUsd(increaseAmounts?.sizeDeltaUsd)}</div>
+              <div className="trade-amount-usd" style={fontSizeForToken?.usd}>
+                {formattedAmounts?.receiveTokenUsd}
+              </div>
             </div>
           </div>
           <div>{renderSubaccountNavigationButton()}</div>
@@ -807,7 +820,10 @@ export function ConfirmationBox(p: Props) {
     return (
       <>
         <div className={cx("Confirmation-box-main ConfirmationBox-main")}>
-          <Trans>Decrease</Trans>&nbsp;{indexToken?.symbol} {isLong ? t`Long` : t`Short`}
+          <div>
+            <Trans>Decrease</Trans>
+          </div>
+          {indexToken?.symbol} {isLong ? t`Long` : t`Short`}
         </div>
         {renderSubaccountNavigationButton()}
       </>
@@ -1711,4 +1727,10 @@ function renderLimitPriceWarning() {
       <Trans>Limit Order Price will vary based on Fees and Price Impact to guarantee the Min. Receive amount.</Trans>
     </AlertInfo>
   );
+}
+
+export function getFontSizeFromLength(length: number) {
+  if (length < 17) return;
+  const sizes = { 17: 17, 18: 16, 19: 16, 20: 15, 21: 14 };
+  return sizes[length] || 13;
 }
