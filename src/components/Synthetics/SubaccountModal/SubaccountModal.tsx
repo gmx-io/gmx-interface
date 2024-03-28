@@ -507,7 +507,7 @@ const MainView = memo(({ setPendingTxns }: { setPendingTxns: (txns: any) => void
     ]
   );
 
-  const { gasPrice } = useGasPrice(chainId);
+  const gasPrice = useGasPrice(chainId);
 
   const subaccount = useSubaccount(null, 1);
 

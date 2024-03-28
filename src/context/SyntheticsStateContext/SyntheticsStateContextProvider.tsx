@@ -19,6 +19,7 @@ import { ReactNode, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
+import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 
 export type SyntheticsPageType = "actions" | "trade" | "pools" | "leaderboard" | "competitions";
 
@@ -39,6 +40,9 @@ export type SyntheticsState = {
 
     closingPositionKey: string | undefined;
     setClosingPositionKey: (key: string | undefined) => void;
+
+    gasLimits: ReturnType<typeof useGasLimits>;
+    gasPrice: ReturnType<typeof useGasPrice>;
   };
   leaderboard: LeaderboardState;
   settings: SettingsContextType;
@@ -109,6 +113,9 @@ export function SyntheticsStateContextProvider({
   const positionSellerState = usePositionSellerState(chainId);
   const positionEditorState = usePositionEditorState(chainId);
 
+  const gasLimits = useGasLimits(chainId);
+  const gasPrice = useGasPrice(chainId);
+
   const state = useMemo(() => {
     const s: SyntheticsState = {
       pageType,
@@ -131,6 +138,9 @@ export function SyntheticsStateContextProvider({
 
         closingPositionKey,
         setClosingPositionKey,
+
+        gasLimits,
+        gasPrice,
       },
       leaderboard,
       settings,
@@ -155,6 +165,8 @@ export function SyntheticsStateContextProvider({
     savedIsPnlInLeverage,
     savedShowPnlAfterFees,
     closingPositionKey,
+    gasLimits,
+    gasPrice,
     leaderboard,
     settings,
     tradeboxState,

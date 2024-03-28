@@ -46,36 +46,16 @@ import {
   parseValue,
 } from "lib/numbers";
 
+import Button from "components/Button/Button";
 import { ExchangeInfo } from "components/Exchange/ExchangeInfo";
 import ExchangeInfoRow from "components/Exchange/ExchangeInfoRow";
-import { ValueTransition } from "components/ValueTransition/ValueTransition";
-import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
-import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
-import { getWrappedToken } from "config/tokens";
-import {
-  TradeMode,
-  TradeType,
-  applySlippageToPrice,
-  getAcceptablePriceInfo,
-  getDecreasePositionAmounts,
-  getIncreasePositionAmounts,
-  getNextPositionValuesForIncreaseTrade,
-  getSwapPathOutputAddresses,
-} from "domain/synthetics/trade";
-import {
-  estimateExecuteDecreaseOrderGasLimit,
-  estimateExecuteIncreaseOrderGasLimit,
-  estimateExecuteSwapOrderGasLimit,
-  getExecutionFee,
-  getFeeItem,
-  useGasLimits,
-  useGasPrice,
-} from "domain/synthetics/fees";
-import { getTradeFlagsForOrder } from "domain/synthetics/trade/utils/common";
-import Button from "components/Button/Button";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { SubaccountNavigationButton } from "components/SubaccountNavigationButton/SubaccountNavigationButton";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { ValueTransition } from "components/ValueTransition/ValueTransition";
+import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
 import { getKeepLeverageKey } from "config/localStorage";
+import { getWrappedToken } from "config/tokens";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccount } from "context/SubaccountContext/SubaccountContext";
 import {
@@ -86,6 +66,24 @@ import {
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useNextPositionValuesForIncrease, useSwapRoutes } from "context/SyntheticsStateContext/hooks/tradeHooks";
+import {
+  estimateExecuteDecreaseOrderGasLimit,
+  estimateExecuteIncreaseOrderGasLimit,
+  estimateExecuteSwapOrderGasLimit,
+  getExecutionFee,
+  getFeeItem,
+} from "domain/synthetics/fees";
+import {
+  TradeMode,
+  TradeType,
+  applySlippageToPrice,
+  getAcceptablePriceInfo,
+  getDecreasePositionAmounts,
+  getIncreasePositionAmounts,
+  getNextPositionValuesForIncreaseTrade,
+  getSwapPathOutputAddresses,
+} from "domain/synthetics/trade";
+import { getTradeFlagsForOrder } from "domain/synthetics/trade/utils/common";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
@@ -94,12 +92,14 @@ import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Modal from "components/Modal/Modal";
 import { AcceptablePriceImpactInputRow } from "components/Synthetics/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 
-import "./OrderEditor.scss";
-import { useKey } from "react-use";
-import { getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
 import { numericBinarySearch } from "lib/binarySearch";
 import { helperToast } from "lib/helperToast";
+import { useKey } from "react-use";
+import "./OrderEditor.scss";
 
 type Props = {
   order: OrderInfo;
@@ -113,9 +113,6 @@ export function OrderEditor(p: Props) {
   const tokensData = useTokensData();
   const marketsInfoData = useMarketsInfoData();
   const positionsData = usePositionsInfoData();
-
-  const { gasPrice } = useGasPrice(chainId);
-  const { gasLimits } = useGasLimits(chainId);
 
   const [isInited, setIsInited] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -211,6 +208,9 @@ export function OrderEditor(p: Props) {
   );
 
   const existingPosition = getByKey(positionsData, positionKey);
+
+  const gasLimits = useSelector(selectGasLimits);
+  const gasPrice = useSelector(selectGasPrice);
 
   const executionFee = useMemo(() => {
     if (!gasLimits || !gasPrice || !tokensData) return undefined;

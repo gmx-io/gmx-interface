@@ -132,8 +132,8 @@ export function GmSwapBox(p: Props) {
 
   const uiFeeFactor = useUiFeeFactor(chainId);
 
-  const { gasLimits } = useGasLimits(chainId);
-  const { gasPrice } = useGasPrice(chainId);
+  const gasLimits = useGasLimits(chainId);
+  const gasPrice = useGasPrice(chainId);
 
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, { isDeposit: true });

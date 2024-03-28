@@ -51,8 +51,6 @@ import {
   estimateExecuteIncreaseOrderGasLimit,
   estimateExecuteSwapOrderGasLimit,
   getExecutionFee,
-  useGasLimits,
-  useGasPrice,
 } from "domain/synthetics/fees";
 import { getAvailableUsdLiquidityForPosition, getMarketIndexName } from "domain/synthetics/markets";
 import { DecreasePositionSwapType } from "domain/synthetics/orders";
@@ -116,6 +114,7 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { CollateralSelectorRow } from "./CollateralSelectorRow";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 
+import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { helperToast } from "lib/helperToast";
 import { useHistory } from "react-router-dom";
 import "./TradeBox.scss";
@@ -169,8 +168,6 @@ export function TradeBox(p: Props) {
   const { chainId } = useChainId();
   const { account } = useWallet();
   const isMetamaskMobile = useIsMetamaskMobile();
-  const { gasPrice } = useGasPrice(chainId);
-  const { gasLimits } = useGasLimits(chainId);
   const { showDebugValues } = useSettings();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
 
@@ -263,6 +260,8 @@ export function TradeBox(p: Props) {
   const existingOrder = useSelector(selectTradeboxExistingOrder);
   const leverage = useSelector(selectTradeboxLeverage);
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
+  const gasLimits = useSelector(selectGasLimits);
+  const gasPrice = useSelector(selectGasPrice);
 
   const { fees, feesType, executionFee } = useMemo(() => {
     if (!gasLimits || !gasPrice || !tokensData) {

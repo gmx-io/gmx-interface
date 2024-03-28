@@ -21,6 +21,9 @@ export const selectMinPositionSizeUsd = (s: SyntheticsState) => s.globals.positi
 export const selectClosingPositionKey = (s: SyntheticsState) => s.globals.closingPositionKey;
 export const selectSetClosingPositionKey = (s: SyntheticsState) => s.globals.setClosingPositionKey;
 
+export const selectGasLimits = (s: SyntheticsState) => s.globals.gasLimits;
+export const selectGasPrice = (s: SyntheticsState) => s.globals.gasPrice;
+
 export const selectPositionConstants = createSelectorDeprecated(
   [selectMinCollateralUsd, selectMinPositionSizeUsd],
   (minCollateralUsd, minPositionSizeUsd) => ({

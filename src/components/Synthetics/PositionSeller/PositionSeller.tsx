@@ -36,12 +36,7 @@ import {
 } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
 import { useSwapRoutes } from "context/SyntheticsStateContext/hooks/tradeHooks";
 import { useHasOutdatedUi } from "domain/legacy";
-import {
-  estimateExecuteDecreaseOrderGasLimit,
-  getExecutionFee,
-  useGasLimits,
-  useGasPrice,
-} from "domain/synthetics/fees";
+import { estimateExecuteDecreaseOrderGasLimit, getExecutionFee } from "domain/synthetics/fees";
 import useUiFeeFactor from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { DecreasePositionSwapType, OrderType, createDecreaseOrderTxn } from "domain/synthetics/orders";
 import {
@@ -79,6 +74,7 @@ import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxAvailableTokensOptions,
   selectTradeboxTradeFlags,
@@ -110,14 +106,14 @@ export function PositionSeller(p: Props) {
   const { chainId } = useChainId();
   const { signer, account } = useWallet();
   const { openConnectModal } = useConnectModal();
-  const { gasPrice } = useGasPrice(chainId);
-  const { gasLimits } = useGasLimits(chainId);
   const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
   const { data: hasOutdatedUi } = useHasOutdatedUi();
   const uiFeeFactor = useUiFeeFactor(chainId);
   const position = usePositionSellerPosition();
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
+  const gasLimits = useSelector(selectGasLimits);
+  const gasPrice = useSelector(selectGasPrice);
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
   const isVisible = Boolean(position);

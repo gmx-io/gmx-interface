@@ -24,8 +24,6 @@ import {
   getBorrowingFactorPerPeriod,
   getExecutionFee,
   getFundingFactorPerPeriod,
-  useGasLimits,
-  useGasPrice,
 } from "domain/synthetics/fees";
 import {
   DecreasePositionSwapType,
@@ -118,6 +116,7 @@ import {
   selectTradeboxSwapAmounts,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
 
 export type Props = {
   isVisible: boolean;
@@ -197,6 +196,8 @@ export function ConfirmationBox(p: Props) {
   const nextPositionValuesForIncrease = useSelector(selectTradeboxNextPositionValuesForIncrease);
   const nextPositionValuesForDecrease = useSelector(selectTradeboxNextPositionValuesForDecrease);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
+  const gasLimits = useSelector(selectGasLimits);
+  const gasPrice = useSelector(selectGasPrice);
 
   const nextPositionValues = useMemo(() => {
     return tradeFlags.isIncrease ? nextPositionValuesForIncrease : nextPositionValuesForDecrease;
@@ -213,8 +214,6 @@ export function ConfirmationBox(p: Props) {
   const { openConnectModal } = useConnectModal();
   const { setPendingPosition, setPendingOrder } = useSyntheticsEvents();
   const { savedAllowedSlippage } = useSettings();
-  const { gasLimits } = useGasLimits(chainId);
-  const { gasPrice } = useGasPrice(chainId);
   const prevIsVisible = usePrevious(p.isVisible);
 
   const { referralCodeForTxn } = useUserReferralCode(signer, chainId, account);
